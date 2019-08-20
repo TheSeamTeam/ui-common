@@ -1,0 +1,11 @@
+<seam-modal-body>
+  <h5>{{ message }}</h5>
+
+  <div *ngIf="alertMessage" class="alert {{ alertType ? 'alert-' + alertType : '' }} mb-0">
+    {{ alertMessage }}
+  </div>
+</seam-modal-body>
+<seam-modal-footer>
+  <button class="btn btn-primary" seamModalClose="confirm">Yes</button>
+  <button class="btn btn-lightgray" data-dismiss="modal" seamModalClose="cancel" seamAutoFocus>No</button>
+</seam-modal-footer>

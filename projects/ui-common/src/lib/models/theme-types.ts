@@ -1,0 +1,12 @@
+export type ThemeTypes =
+  'default'
+  | 'primary'
+  | 'secondary'
+  | 'success'
+  | 'danger'
+  | 'warning'
+  | 'info'
+  | 'light'
+  | 'dark'
+  | 'lightgray'
+  | 'lightblue'

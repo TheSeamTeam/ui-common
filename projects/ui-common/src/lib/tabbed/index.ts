@@ -1,0 +1,5 @@
+export * from './tabbed.module'
+export * from './tabbed.component'
+export * from './tabbed-item/tabbed-item.component'
+export * from './directives/tabbed-tab-content.directive'
+export * from './directives/tabbed-tab.directive'

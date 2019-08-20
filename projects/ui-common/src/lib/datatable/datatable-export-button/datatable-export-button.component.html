@@ -1,0 +1,20 @@
+<seam-menu #menu>
+  <button *ngFor="let exp of exporters"
+    seamMenuItem
+    [icon]="exp?.icon"
+    (click)="_onExporterClicked(exp)">
+    {{ exp.label }}
+  </button>
+</seam-menu>
+<button
+  [seamMenuToggle]="menu"
+  seamButton
+  theme="lightgray"
+  size="sm"
+  class="dropdown-toggle"
+  style="padding-left: 10px; padding-right: 10px;"
+  title="Export"
+  [disabled]="disabled"
+  >
+  <seam-icon [icon]="icon" class="mr-2"></seam-icon>
+</button>

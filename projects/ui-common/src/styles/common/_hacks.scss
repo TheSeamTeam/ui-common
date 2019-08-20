@@ -1,0 +1,8 @@
+// HACK: MSEdge is allowing a child to position itself below a parent with
+// `z-index`, so this should fix the modals by keeping the content above the
+// overlay with 1 index above bootstrap modal `z-index`.
+.cdk-overlay-pane {
+  .os-padding {
+    z-index: $zindex-modal + 1;
+  }
+}

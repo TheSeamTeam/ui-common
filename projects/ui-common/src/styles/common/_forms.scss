@@ -1,0 +1,15 @@
+// Disable Edge password eye icon
+input[type=password].no-native-eye::-ms-reveal,
+input[type=password].no-native-eye::-ms-clear
+{
+    display: none;
+}
+
+// Disable number spinner
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
+}

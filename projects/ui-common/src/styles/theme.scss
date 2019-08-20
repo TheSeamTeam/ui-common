@@ -1,0 +1,16 @@
+/* You can add global styles to this file, and also import other style files */
+@import '~@angular/cdk/overlay-prebuilt';
+@import '~overlayscrollbars/css/OverlayScrollbars.min';
+
+@import './variables';
+
+@import './bootstrap/bootstrap';
+
+@import './common/forms';
+@import './common/global';
+@import './common/hacks';
+@import './common/text';
+
+@import '~ngx-toastr/toastr-bs4-alert';
+
+@import './vendor/vendor';

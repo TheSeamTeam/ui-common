@@ -1,0 +1,12 @@
+<ng-template>
+  <div class="overflow-hidden" @slideDown>
+    <div class="dropdown-menu show position-static"
+      (keydown)="_handleKeydown($event)"
+      (click)="closed.emit('click')"
+      tabindex="-1"
+      role="menu"
+      >
+      <ng-content></ng-content>
+    </div>
+  </div>
+</ng-template>

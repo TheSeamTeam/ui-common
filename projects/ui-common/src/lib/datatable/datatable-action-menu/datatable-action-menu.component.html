@@ -1,0 +1,37 @@
+<ul class="list-group">
+  <ng-container *ngFor="let item of items">
+    <ng-container *ngIf="item.routerLink || item.href; else noRouterLink">
+      <a *ngIf="item.href; else noHref"
+        class="list-group-item list-group-item-action py-1"
+        [attr.href]="item.href"
+        [target]="item.target"
+        (click)="activateItem($event, item)">
+        {{ item.label }}
+      </a>
+      <ng-template #noHref>
+        <a
+          class="list-group-item list-group-item-action py-1"
+          [queryParams]="item.queryParams"
+          [fragment]="item.fragment"
+          [queryParamsHandling]="item.queryParamsHandling"
+          [preserveFragment]="item.preserveFragment"
+          [skipLocationChange]="item.skipLocationChange"
+          [replaceUrl]="item.replaceUrl"
+          [state]="item.state"
+          [routerLink]="item.routerLink"
+          [target]="item.target"
+          (click)="activateItem($event, item)">
+          {{ item.label }}
+        </a>
+      </ng-template>
+    </ng-container>
+    <ng-template #noRouterLink>
+      <button
+        type="button"
+        class="list-group-item list-group-item-action py-1"
+        (click)="activateItem($event, item)">
+        {{ item.label }}
+      </button>
+    </ng-template>
+  </ng-container>
+</ul>

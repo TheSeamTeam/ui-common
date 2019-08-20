@@ -1,0 +1,22 @@
+:host {
+  display: block;
+}
+
+.data-filter-text-has-icon {
+  > input {
+    padding-left: 30px;
+  }
+
+  ::ng-deep {
+    fa-icon {
+      position: absolute;
+      top: 3px;
+      left: 10px;
+      bottom: 0px;
+
+      .svg-inline--fa {
+        vertical-align: middle;
+      }
+    }
+  }
+}

@@ -1,0 +1,2 @@
+<ng-template *ngIf="componentPortal; else noPortal" [cdkPortalOutlet]="componentPortal"></ng-template>
+<ng-template #noPortal>{{ value }}</ng-template>

@@ -1,0 +1,30 @@
+<div class="seam-progress-circle" *ngIf="getProgress() as p"
+  [class.seam-progress-circle--in-complete]="p.percent < 100"
+  [class.seam-progress-circle--fill-bg]="fillBackground">
+  <div class="seam-progress-circle-inner">
+    <ng-container *ngIf="p.percent > 0 || !hiddenOnEmpty">
+      <svg class="seam-progress-circle--icon-spinner" viewBox="20 20 40 40" [attr.data-percent]="p.percent">
+        <circle class="seam-progress-circle--icon-spinner-path seam-progress-circle--icon-spinner-path-bg" cx="40" cy="40" r="15" fill="none"
+          stroke-width="4">
+        </circle>
+        <circle class="seam-progress-circle--icon-spinner-path" cx="40" cy="40" r="15" fill="none"
+          stroke-width="4"
+          stroke-miterlimit="10"
+          [attr.stroke-dashoffset]="p.dashoffset"
+          [style.stroke-dasharray]="p.circumference">
+        </circle>
+        <path *ngIf="p.percent === 100"
+          class="seam-progress-circle--icon-spinner-path"
+          fill="none"
+          stroke-width="4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M 31,42 L 38,48 L 48.5,37">
+        </path>
+      </svg>
+    </ng-container>
+    <div class="seam-progress-circle--icon-text" *ngIf="showText && p.percent > 0 && p.percent < 100">
+      <span>{{ p.percent }}</span>
+    </div>
+  </div>
+</div>

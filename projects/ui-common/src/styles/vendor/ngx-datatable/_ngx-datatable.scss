@@ -1,0 +1,48 @@
+@import '~@marklb/ngx-datatable/release/index';
+@import '~@marklb/ngx-datatable/release/themes/bootstrap';
+// @import '~@marklb/ngx-datatable/release/assets/icons';
+
+.ngx-datatable.bootstrap {
+  font-size: 16px;
+
+  .datatable-header .datatable-header-cell {
+    border-right: 0;
+
+    .datatable-checkbox {
+      margin-bottom: 0;
+    }
+  }
+
+  .datatable-body {
+    margin-top: -1px;
+  }
+
+  .datatable-footer {
+    background: transparent;
+
+    .datatable-footer-inner {
+      background: $light;
+      border: $border-width $border-color solid;
+      border-radius: $border-radius;
+      color: $body-color;
+
+      .datatable-pager {
+        ul {
+          li {
+            &:not(.disabled) {
+              &.active,
+              &:hover {
+                a {
+                  background-color: darken($light, 5%);
+                }
+              }
+            }
+          }
+        }
+        a {
+          color: $body-color;
+        }
+      }
+    }
+  }
+}

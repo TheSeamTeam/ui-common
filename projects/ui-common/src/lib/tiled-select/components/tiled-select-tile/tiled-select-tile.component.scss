@@ -1,0 +1,169 @@
+$light-grey: rgba(230,230,230,1);
+$light-blue: rgba(60,150,200,1);
+
+:host {
+  display: block;
+}
+
+.tiled-select-tile-panel {
+  width: 100%;
+  height: 100%;
+
+  box-sizing: border-box;
+  border: 1px solid $light-grey;
+  background-color: white;
+  color: rgba(80,80,80,1);
+  position: relative;
+  overflow: hidden;
+
+  &:disabled:not(.no-grayscale) {
+    filter: grayscale(1);
+  }
+
+  .grey-fix {
+    visibility: hidden;
+    display: block;
+  }
+
+  &.selected {
+    border: 1px solid $light-blue;
+  }
+
+  &.selectable {
+    &:hover:not(:disabled) {
+      box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+                  0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+                  0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+      cursor: pointer;
+    }
+
+    &:focus:not(:disabled) {
+      outline: none;
+    }
+  }
+
+  &:not(.selectable) {
+    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+                0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+                0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+  }
+
+  .tiled-select-tile-panel--content {
+    display: flex;
+    height: 100%;
+    width: 100%;
+
+    // .tiled-select-tile-panel--icon {
+    //   user-select: none;
+    //   overflow: hidden;
+    // }
+
+    .tiled-select-tile-panel--selected {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      // max-width: 24px;
+      // max-height: 24px;
+    }
+
+    .selected-backdrop {
+      opacity: 0.2;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      border-radius: 15px;
+      transition: ease-in-out 0.2s background-color;
+      pointer-events: none;
+    }
+  }
+
+  .tiled-select-tile-panel--overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    // background-color: rgba(150,150,150,0.5);
+  }
+
+  //
+  // Grid
+  //
+  &.grid {
+    border-radius: 15px;
+    padding: 0;
+    margin: 0;
+
+    .tiled-select-tile-panel--content {
+      flex-direction: column;
+
+      .selected-backdrop {
+        border-radius: 15px;
+      }
+    }
+
+    .tiled-select-tile-panel--label-container {
+      flex: 0 0 auto;
+      height: 2.5em;
+      line-height: 1em;
+
+      .tiled-select-tile-panel--label {
+        display: block;
+        font-size: 90%;
+        padding: 0 1em;
+        white-space: initial;
+      }
+    }
+
+    @media screen and (max-width: 600px) {
+      .tiled-select-tile-panel--label-container {
+        height: 2rem;
+        line-height: 0.9em;
+
+        .tiled-select-tile-panel--label {
+          font-size: 13px;
+          padding: 0 0.7em;
+        }
+      }
+    }
+  }
+
+  //
+  // List
+  //
+  &.list {
+    border-radius: 10px;
+    padding: 4px 4px 4px 4px;
+
+    .tiled-select-tile-panel--content {
+      flex-direction: row;
+
+      .selected-backdrop {
+        border-radius: 10px;
+      }
+    }
+
+    .tiled-select-tile-panel--label-container {
+      display: flex;
+      max-height: 100%;
+      flex-direction: column;
+      padding-right: 40px;
+
+      .tiled-select-tile-panel--label {
+        padding: 0 6px;
+        text-align: left;
+        margin: auto 0;
+        font-size: 80%;
+        white-space: initial;
+      }
+    }
+
+    .tiled-select-tile-panel--selected {
+      ::ng-deep .svg-inline--fa {
+        height: 39px;
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+.seam-form-field-inline {
+  display: flex;
+  flex-direction: row;
+
+  .control-label {
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}

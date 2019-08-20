@@ -1,0 +1,7 @@
+<!-- <div class="fade-left" fxFlexFill> -->
+<div fxFlexFill>
+  <ng-container *ngIf="tabbedItem">
+    <ng-template *ngIf="tabbedItem.tabbedContentTpl" [ngTemplateOutlet]="tabbedItem.tabbedContentTpl"></ng-template>
+    <ng-container *ngIf="tabbedItem.contentFromRoute"><router-outlet></router-outlet></ng-container>
+  </ng-container>
+</div>

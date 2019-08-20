@@ -1,0 +1,37 @@
+{
+  "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../dist/ui-common",
+  "lib": {
+    "entryFile": "src/public_api.ts"
+  },
+  "whitelistedNonPeerDependencies": [
+    "tslib",
+    "@angular/forms",
+    "@angular/animations",
+    "@angular/cdk",
+    "@angular/router",
+    "@angular/flex-layout",
+    "@fortawesome/angular-fontawesome",
+    "@fortawesome/fontawesome-svg-core",
+    "@fortawesome/free-brands-svg-icons",
+    "@fortawesome/free-regular-svg-icons",
+    "@fortawesome/free-solid-svg-icons",
+    "@marklb/file-type",
+    "@marklb/ngx-datatable",
+    "@ng-select/ng-select",
+    "overlayscrollbars",
+    "@types/overlayscrollbars",
+    "bootstrap",
+    "buffer",
+    "css-element-queries",
+    "file-saver",
+    "localstorage-memory",
+    "lodash-es",
+    "ngx-loading",
+    "ngx-take-until-destroy",
+    "ngx-toastr",
+    "pdfjs-dist",
+    "rxjs",
+    "xlsx"
+  ]
+}

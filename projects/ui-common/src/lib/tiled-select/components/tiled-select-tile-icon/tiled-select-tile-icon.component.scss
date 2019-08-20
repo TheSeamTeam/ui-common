@@ -1,0 +1,73 @@
+$light-grey: rgba(230,230,230,1);
+$light-blue: rgba(60,150,200,1);
+
+:host {
+  display: block;
+
+  user-select: none;
+  overflow: hidden;
+
+  &.grid {
+    flex: 1 1 auto;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    width: 100%; // Needed for Firefox
+
+    .tiled-select-tile-panel--icon-img {
+      width: 100%;
+      max-width: 75px;
+      max-height: 75px;
+      margin: 0 auto;
+
+      &[src$=".svg"] {
+        height: 100%; // Needed for IE
+      }
+    }
+
+    > .grayscale-fix {
+      max-width: 75px;
+      max-height: 75px;
+      margin: 0 auto;
+    }
+  }
+
+  &.list {
+    border: 1px solid $light-grey;
+    border-radius: 8px;
+    min-width: 39px;
+    width: 39px;
+    min-height: 39px;
+    height: 39px;
+    padding: 1px;
+    align-items: center;
+    display: flex;
+
+    img {
+      max-width: 100%;
+      max-height: 100%;
+      margin: 0 auto;
+    }
+  }
+}
+
+.grey-fix {
+  visibility: hidden;
+  display: block;
+}
+
+.tiled-select-tile-icon--fa {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  padding: 2px;
+
+  ::ng-deep .svg-inline--fa {
+    max-width: 100%;
+    height: 100%;
+    width: 100%;
+  }
+}

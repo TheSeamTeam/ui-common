@@ -1,0 +1,28 @@
+:host {
+  padding-right: 45px;
+  position: relative;
+
+  &.btn-sm {
+    padding-right: 40px;
+
+    ::ng-deep .seam-progress-circle {
+      padding: 8px;
+    }
+  }
+
+  &.btn-lg {
+    padding-right: 50px;
+
+    ::ng-deep .seam-progress-circle {
+      padding: 0px;
+    }
+  }
+
+  seam-progress-circle.progress-circle-btn--icon {
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 45px;
+    position: absolute;
+  }
+}

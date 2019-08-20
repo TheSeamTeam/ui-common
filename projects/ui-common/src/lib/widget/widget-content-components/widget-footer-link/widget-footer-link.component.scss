@@ -1,0 +1,8 @@
+@import '../../styles/utilities';
+
+:host {
+  display: block;
+  text-align: center;
+
+  margin-top: $seam-widget-footer-link-margin-top;
+}

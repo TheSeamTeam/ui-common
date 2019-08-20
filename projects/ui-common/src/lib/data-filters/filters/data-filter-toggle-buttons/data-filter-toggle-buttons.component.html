@@ -1,0 +1,17 @@
+<div class="btn-group" role="group" aria-label="Progress Filter"
+  *ngIf="options as opts"
+  [formControl]="_control"
+  seamToggleGroup
+  [multiple]="opts.multiple"
+  [selectionToggleable]="opts.selectionToggleable">
+  <ng-container *ngFor="let btn of buttons">
+    <button type="button" class="btn btn-sm px-4"
+      [seamToggleGroupOption]="btn.value"
+      #opt="seamToggleGroupOption"
+      [class.btn-lightgray]="!opt.selected"
+      [class.btn-primary]="opt.selected"
+      (click)="opt.selected=!opt.selected">
+      {{ btn.name || btn.value }}
+    </button>
+  </ng-container>
+</div>

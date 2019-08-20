@@ -1,0 +1,55 @@
+<div class="toggle-edit-not-editing rounded"
+  [class.w-100]="editing"
+  [class.toggle-edit-editing]="editing"
+  [class.is-disabled]="disabled"
+  (seamElemResized)="resized()">
+  <div class="toggle-edit-content-container">
+    <div class="toggle-edit-content" (click)="toggleEditing(true)">
+      <ng-container *ngIf="editing; else notEditingTpl">
+        <ng-content></ng-content>
+      </ng-container>
+      <ng-template #notEditingTpl>
+        <ng-container *ngIf="displayTpl; else noDisplayTpl">
+          <ng-template [ngTemplateOutlet]="displayTpl.template" [ngTemplateOutletContext]="{ $implicit: getValue() || placeholder }"></ng-template>
+        </ng-container>
+        <ng-template #noDisplayTpl>
+          <div class="pl-1 pr-1">
+            {{ getValue() || placeholder }}
+          </div>
+        </ng-template>
+      </ng-template>
+    </div>
+    <div>
+      <ng-template *ngIf="!editing" [cdkPortalOutlet]="templatePortal"></ng-template>
+      <ng-template #templatePortalContent>
+        <seam-toggle-edit-actions-container
+          [class.bg-light]="editing"
+          tabindex="-1"
+          cdkMonitorSubtreeFocus
+          (cdkFocusChange)="actionsFocusChange($event)">
+          <button *ngIf="!editing"
+            type="button"
+            class="toggle-edit-edit-btn btn text-secondary bg-transparent p-1 border-0"
+            (click)="toggleEditing(true)">
+            <fa-icon [icon]="faPen"></fa-icon>
+          </button>
+          <button *ngIf="editing"
+            type="button"
+            [disabled]="!canSubmit()"
+            class="toggle-edit-submit-btn btn text-secondary bg-transparent p-1 border-0"
+            (click)="submitEdit()">
+            <fa-icon [icon]="faCheck"></fa-icon>
+          </button>
+          <button *ngIf="editing"
+            type="button"
+            class="toggle-edit-cancel-btn btn text-secondary bg-transparent p-1 border-0"
+            (click)="cancelEdit()">
+            <fa-icon [icon]="faTimes"></fa-icon>
+          </button>
+        </seam-toggle-edit-actions-container>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<seam-loading *ngIf="isSubmitting()"></seam-loading>

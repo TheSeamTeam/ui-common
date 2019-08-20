@@ -1,0 +1,11 @@
+<div class="d-flex flex-row">
+  <seam-icon *ngIf="icon"
+    style="width: 30px; height: 20px;"
+    class="pr-2"
+    [icon]="icon"
+    iconType="image-fill">
+  </seam-icon>
+  <span class="text-nowrap">
+    <ng-content></ng-content>
+  </span>
+</div>

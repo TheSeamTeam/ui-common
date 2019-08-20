@@ -1,0 +1,16 @@
+// Alerts
+//
+// Custom alert rules.
+
+.alert-slim {
+  padding-top: $alert-padding-y-slim;
+  padding-bottom: $alert-padding-y-slim;
+
+  &.alert-dismissible {
+
+    .close {
+      padding-top: $alert-padding-y-slim;
+      padding-bottom: $alert-padding-y-slim;
+    }
+  }
+}

@@ -1,0 +1,29 @@
+@import '../../../styles/utilities';
+
+:host {
+  display: block;
+}
+
+.btn {
+  transition: 500ms ease-in-out;
+
+  &:not([data-last-action='true']) {
+    @include border-radius(0);
+  }
+
+  &[data-last-action='true'] {
+    @include border-radius();
+    @include border-top-radius(0);
+    @include border-left-radius(0);
+  }
+}
+
+// .btn:not(:last-child) {
+//   @include border-radius(0);
+// }
+
+// .btn:last-child {
+//   @include border-radius();
+//   @include border-top-radius(0);
+//   @include border-left-radius(0);
+// }

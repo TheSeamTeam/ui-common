@@ -1,0 +1,35 @@
+@import '../../styles/utilities';
+
+:host {
+  display: block;
+  color: $body-color;
+  font-size: $seam-widget-tile-font-size;
+  font-weight: $font-weight-normal;
+  line-height: $seam-widget-tile-line-height;
+  border: 1px solid $seam-widget-tile-border-color;
+  width: 100%;
+  border-radius: $seam-widget-tile-border-radius;
+  padding: 4px 4px 4px 4px;
+  margin-bottom: $seam-widget-tile-margin-bottom;
+
+  &a {
+    text-decoration: none;
+  }
+
+  &.disabled {
+    pointer-events: none;
+    cursor: default;
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.widget-tile--notification-icon {
+  position: absolute;
+  bottom: -3px;
+  right: -3px;
+  width: 15px !important;
+  height: 15px !important;
+}

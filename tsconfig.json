@@ -17,7 +17,20 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "strictNullChecks": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "paths": {
+      // Fixes imports from linked npm packages
+      "@angular/*": ["node_modules/@angular/*"],
+      "@theseam/ui-common": [
+        "dist/ui-common"
+      ],
+      "@theseam/ui-common/*": [
+        "dist/ui-common/*"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,

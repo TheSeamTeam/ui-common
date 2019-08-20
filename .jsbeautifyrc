@@ -1,0 +1,20 @@
+{
+  "html": {
+    "allowed_file_extensions": ["htm", "html", "xhtml", "shtml", "xml", "svg", "dust"],
+    "brace_style": "collapse", // [collapse|expand|end-expand|none] Put braces on the same line as control statements (default), or put braces on own line (Allman / ANSI style), or just put end braces on own line, or attempt to keep them where they are
+    "indent_inner_html": false, // Indent <head> and <body> sections
+    "indent_scripts": "keep", // [keep|separate|normal]
+    "max_preserve_newlines": 10, // Maximum number of line breaks to be preserved in one chunk (0 disables)
+    "preserve_newlines": true, // Whether existing line breaks before elements should be preserved (only works before elements, not inside tags or for text)
+    "unformatted": ["a", "span", "img", "code", "pre", "sub", "sup", "em", "strong", "b", "i", "u", "strike", "big", "small", "pre", "h1", "h2", "h3", "h4", "h5", "h6"], // List of tags that should not be reformatted
+    "wrap_line_length": 0 // Lines should wrap at next opportunity after this number of characters (0 disables)
+  },
+  "css": {
+      "allowed_file_extensions": ["css", "scss", "sass", "less"],
+      "newline_between_rules": true, // Add a new line after every css rule
+      "selector_separator": " ",
+      "selector_separator_newline": true, // Separate selectors with newline or not (e.g. "a,\nbr" or "a, br")
+      "preserve_newlines": true,
+      "max_preserve_newlines": 10
+  }
+}

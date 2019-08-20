@@ -1,0 +1,31 @@
+{
+  "beautify.language": {
+    "js": {
+      "filename": [".jshintrc", ".jsbeautifyrc"]
+    },
+    "css": ["css", "scss"],
+    "html": ["htm", "html"]
+  },
+  // Set the default
+  "editor.formatOnSave": false,
+  // Enable per-language
+  "[javascript]": {
+    "editor.formatOnSave": false
+  },
+  "[typescript]": {
+    "editor.formatOnSave": false
+  },
+  // Remove when everyone has moved on from deprecated tslint extension.
+  "tslint.autoFixOnSave": [
+    "ordered-imports",
+    "semicolon"
+  ],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.tslint": true
+  },
+  // "tslint.trace.server": "verbose",
+  "tslint.exclude": [
+    "**/src/assets/**/*.js"
+  ],
+  "typescript.tsdk": "node_modules\\typescript\\lib"
+}

@@ -1,0 +1,14 @@
+// Utilities
+//
+// Use this script if you need to import global scss variables/mixins/functions
+// into components.
+//
+// NOTE: This script should not contain or import any scripts containing rules,
+// only things that are used by rules at compile time. Anything that outputs a
+// css rule will get duplicated in each component that imports this script if
+// so, because the components sccs styles are compiled independently to add
+// angulars scope attributes.
+//
+
+@import './variables';
+@import './bootstrap/bs-utilities';

@@ -1,0 +1,7 @@
+export * from './widget.module'
+export * from './widget/widget.component'
+export * from './directives/widget-icon-tpl.directive'
+export * from './directives/widget-title-tpl.directive'
+export * from './widget-content-components/widget-footer-text/widget-footer-text.component'
+export * from './widget-content-components/widget-tile/widget-tile-secondary-icon.directive'
+export * from './widget-content-components/widget-tile/widget-tile.component'

@@ -1,0 +1,17 @@
+<ng-container *ngFor="let record of displayRecords$ | async">
+  <ng-container *ngIf="record.template; else noTemplate">
+    <div>
+      <ng-template
+        [ngTemplateOutlet]="record.template"
+        [ngTemplateOutletContext]="{ $implicit: record.error, errors: record._errors }">
+      </ng-template>
+    </div>
+  </ng-container>
+  <ng-template #noTemplate>
+    <seam-form-field-error
+      [validatorName]="record.validatorName"
+      [message]="record.message"
+      [showValidatorName]="showValidatorName">
+    </seam-form-field-error>
+  </ng-template>
+</ng-container>
