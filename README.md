@@ -1,27 +1,123 @@
-# TheseamUiCommon
+# UI Common
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.1.0.
+## Getting Started
 
-## Development server
+The default app is for building usage demos for development. When working on components it is most likely prefered to use storybook. It is configured with hot-reloading, so you can see the changes as you save. The stories also serve as documentation. Try to avoid any external data, by providing alternate services or component input properties with hard-coded data, because the stories should be about the components functionally and still be available as documentation offline with nothing but this repo available, sort of like tests. Eventually we will probably use the stories for automated visual testing.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Start storybook:
 
-## Code scaffolding
+```sh
+$ npm run storybook
+```
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Usage
 
-## Build
+### npm install
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+> This package will be on a registry soon, but for now just use the `npm link` instructions.
 
-## Running unit tests
+### npm link
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+#### In this project
 
-## Running end-to-end tests
+```sh
+$ npm run build:ui-common # For development you can use build-w:ui-common for watch mode.
+$ cd dist/ui-common
+$ npm i
+$ npm link
+```
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+#### In other project
 
-## Further help
+```sh
+$ npm link @theseam/ui-common
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+angular.json
+
+> This change shouldn't be needed when the build process is more refined. The libraries icons include font files as a path that the sass compiler isn't finding through npm link.
+> If not using npm link, change "node_modules/@theseam/ui-common/node_modules/@marklb/ngx-datatable/release/assets/icons.css" to "node_modules/@marklb/ngx-datatable/release/assets/icons.css"
+
+```json
+{
+  ...,
+  "projects": {
+    "app": {
+      "architect": {
+        "build": {
+          ...,
+          "options": {
+            ...,
+            "styles": [
+              ...,
+"node_modules/@theseam/ui-common/node_modules/@marklb/ngx-datatable/release/assets/icons.css"
+            ],
+            "es5BrowserSupport": true,
+            "preserveSymlinks": true
+          }
+        },
+        "test": {
+          "options": {
+            "styles": {
+              ...,
+              "node_modules/@theseam/ui-common/node_modules/@marklb/ngx-datatable/release/assets/icons.css"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+tsconfig.json
+
+> The compiler options are for importing js libraries that don't have valid ES module exports.
+
+```json
+{
+  "compilerOptions": {
+    ...,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+  },
+  "paths": {
+    "@angular/*": ["node_modules/@angular/*"]
+  }
+}
+
+```
+
+polyfils.ts
+
+> This is needed for a library that checks if a property is defined on the global object.
+
+```ts
+...
+ // Add global to window, assigning the value of window itself.
+(window as any).global = window
+```
+
+#### Styles
+
+The files used for the styles aren't very important, but the two separate files are.
+
+styles/styles.scss
+
+> This is the global stylesheet. There will not be any component scoping added, so the rules will be applied to any matching elements like normal.
+
+```scss
+@import '~@theseam/ui-common/styles/theme';
+...
+```
+
+styles/_utilities.scss
+
+> This is the file that should be careful about its imports. There should not be any css rules in this file or any files imported by this file. It should only have compile time only code, such as variables, functions, and mixins.
+> If you need access to variables in a component's stylesheet, then import this file.
+> The reason this file should not have any rules is, because each component's stylesheet is compiled independently scoped to that component and any rules in a imported file will be copied for each component that imports that file whether is is used or not.
+
+```scss
+@import '~@theseam/ui-common/styles/utilities';
+...
+```
