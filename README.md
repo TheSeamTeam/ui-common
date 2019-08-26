@@ -14,7 +14,18 @@ $ npm run storybook
 
 ### npm install
 
-> This package will be on a registry soon, but for now just use the `npm link` instructions.
+To access the registry you will need authentication credentials and the registry defined in your projects `.npmrc` file. Go here to learn how to setup authentication: https://docs.microsoft.com/en-us/azure/devops/artifacts/get-started-npm?view=azure-devops&tabs=windows#set-up-authentication-on-your-development-machine
+
+Put this line in the local project `.npmrc` file.
+
+```sh
+@theseam:registry=https://pkgs.dev.azure.com/theseam/_packaging/TheSeam.Packages/npm/registry/
+always-auth=true
+```
+
+```sh
+$ npm i @theseam/ui-common
+```
 
 ### npm link
 
