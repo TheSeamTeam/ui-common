@@ -91,7 +91,7 @@ export class TiledSelectTileComponent {
   @ContentChild(TiledSelectTileLabelTplDirective, { static: true }) labelTpl: TiledSelectTileLabelTplDirective
 
   pulsing = false
-  pulsingTimeout: any /* NodeJS.Timeout */
+  pulsingTimeout: number | undefined
 
   constructor(
     private cdr: ChangeDetectorRef
@@ -118,8 +118,7 @@ export class TiledSelectTileComponent {
     }
 
     // console.log('start')
-    this.pulsingTimeout =
-    setTimeout(() => {
+    this.pulsingTimeout = window.setTimeout(() => {
       this.pulsing = false
       // this.cdr.detectChanges()
       this.pulsingTimeout = undefined

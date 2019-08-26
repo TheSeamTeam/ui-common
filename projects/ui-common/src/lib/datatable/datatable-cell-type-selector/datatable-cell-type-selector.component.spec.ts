@@ -1,25 +1,25 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+// import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { DatatableCellTypeSelectorComponent } from './datatable-cell-type-selector.component'
+// import { DatatableCellTypeSelectorComponent } from './datatable-cell-type-selector.component'
 
-describe('DatatableCellTypeSelectorComponent', () => {
-  let component: DatatableCellTypeSelectorComponent
-  let fixture: ComponentFixture<DatatableCellTypeSelectorComponent>
+// describe('DatatableCellTypeSelectorComponent', () => {
+//   let component: DatatableCellTypeSelectorComponent
+//   let fixture: ComponentFixture<DatatableCellTypeSelectorComponent>
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ DatatableCellTypeSelectorComponent ]
-    })
-    .compileComponents()
-  }))
+//   beforeEach(async(() => {
+//     TestBed.configureTestingModule({
+//       declarations: [ DatatableCellTypeSelectorComponent ]
+//     })
+//     .compileComponents()
+//   }))
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(DatatableCellTypeSelectorComponent)
-    component = fixture.componentInstance
-    fixture.detectChanges()
-  })
+//   beforeEach(() => {
+//     fixture = TestBed.createComponent(DatatableCellTypeSelectorComponent)
+//     component = fixture.componentInstance
+//     fixture.detectChanges()
+//   })
 
-  it('should create', () => {
-    expect(component).toBeTruthy()
-  })
-})
+//   it('should create', () => {
+//     expect(component).toBeTruthy()
+//   })
+// })

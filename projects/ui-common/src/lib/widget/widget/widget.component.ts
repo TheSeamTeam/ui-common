@@ -16,11 +16,11 @@ import { WidgetTitleTplDirective } from '../directives/widget-title-tpl.directiv
     trigger('loadingAnim', [
       transition(':enter', [
         style({ opacity: 0 }),
-        animate('500ms ease-in-out', style({ opacity: 1 }))
+        animate('250ms ease-in-out', style({ opacity: 1 }))
       ]),
       transition(':leave', [
         style({ opacity: 1 }),
-        animate('500ms ease-in-out', style({ opacity: 0 }))
+        animate('250ms ease-in-out', style({ opacity: 0 }))
       ])
     ])
   ]
@@ -53,7 +53,6 @@ export class WidgetComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
 }

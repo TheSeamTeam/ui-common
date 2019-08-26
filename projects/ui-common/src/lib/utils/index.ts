@@ -1,4 +1,5 @@
 export * from './operators/index'
+export * from './operators/tap-first'
 
 export * from './dom-utils'
 export * from './input-masks'
@@ -8,3 +9,5 @@ export * from './file-utils'
 export * from './not-null-or-undefined'
 export * from './wait-on-condition-async'
 export * from './form-utils'
+export * from './polling-ticker'
+export * from './refreshable'
