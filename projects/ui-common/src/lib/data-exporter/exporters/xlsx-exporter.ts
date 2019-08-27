@@ -6,7 +6,7 @@ import { Buffer } from 'buffer/'
 import FileSaver from 'file-saver'
 import XLSX from 'xlsx'
 
-import { fileDataFromBuffer } from '../../utils'
+import { fileDataFromBuffer } from '../../utils/index'
 import { IDataExporter } from '../data-exporter'
 
 export class XLSXDataExporter implements IDataExporter {

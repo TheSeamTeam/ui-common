@@ -2,9 +2,9 @@ import { Directive, ElementRef, HostBinding, HostListener, Input, isDevMode, Opt
 import { from, Observable, of, throwError } from 'rxjs'
 import { catchError, map, mapTo, switchMap, tap } from 'rxjs/operators'
 
-import { TheSeamLoadingOverlayService } from '../../loading'
-import { EncryptedAssetReader } from '../../shared/models'
-import { fileDataFromBuffer, openBlob, readFileAsync } from '../../utils'
+import { TheSeamLoadingOverlayService } from '../../loading/index'
+import { EncryptedAssetReader } from '../../shared/models/index'
+import { fileDataFromBuffer, openBlob, readFileAsync } from '../../utils/index'
 
 // TODO: Add a dev warning or handle both `seamEncryptedAssetLink` and `attr.href` being set on a single element.
 

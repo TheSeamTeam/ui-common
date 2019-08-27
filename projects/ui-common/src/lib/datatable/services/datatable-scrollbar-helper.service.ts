@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core'
 
-import { OverlayScrollbarsService } from '../../scrollbar'
+import { OverlayScrollbarsService } from '../../scrollbar/index'
 
 @Injectable()
 export class TheSeamDatatableScrollbarHelperService {

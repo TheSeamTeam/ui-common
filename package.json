@@ -50,6 +50,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.10.1",
     "@marklb/file-type": "~10.6.5",
     "@marklb/ngx-datatable": "~14.0.4",
+    "@netbasal/spectator": "^3.12.0",
     "@ng-select/ng-select": "2.20.0",
     "@storybook/addon-knobs": "^5.1.11",
     "@storybook/addon-storysource": "^5.1.11",

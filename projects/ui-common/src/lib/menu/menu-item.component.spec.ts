@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { TheSeamIconModule } from '../icon'
+import { TheSeamIconModule } from '../icon/index'
 
 import { MenuItemComponent } from './menu-item.component'
 

@@ -22,7 +22,7 @@ import {
 import { defer, Observable, of as observableOf, Subject } from 'rxjs'
 import { startWith } from 'rxjs/operators'
 
-import { OverlayScrollbarsService } from '../scrollbar'
+import { OverlayScrollbarsService } from '../scrollbar/index'
 
 import { ModalConfig } from './modal-config'
 import { ModalContainerComponent } from './modal-container/modal-container.component'

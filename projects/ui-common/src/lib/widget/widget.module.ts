@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core'
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 
 import { TheSeamIconModule } from '../icon/icon.module'
-import { TheSeamLoadingModule } from '../loading'
+import { TheSeamLoadingModule } from '../loading/index'
 
 import { WidgetIconTplDirective } from './directives/widget-icon-tpl.directive'
 import { WidgetTitleTplDirective } from './directives/widget-title-tpl.directive'

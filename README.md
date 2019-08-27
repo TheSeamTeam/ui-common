@@ -34,7 +34,7 @@ $ npm i @theseam/ui-common
 ```sh
 $ npm run build:ui-common # For development you can use build-w:ui-common for watch mode.
 $ cd dist/ui-common
-$ npm i
+# $ npm i # May be needed if linking in a new project, which may not have the dependencies in its own node_modules, since `npm link @theseam/ui-common` doesn't install dependencies like `npm i @theseam/ui-common`
 $ npm link
 ```
 
@@ -61,7 +61,7 @@ angular.json
             ...,
             "styles": [
               ...,
-"node_modules/@theseam/ui-common/node_modules/@marklb/ngx-datatable/release/assets/icons.css"
+              "node_modules/@theseam/ui-common/node_modules/@marklb/ngx-datatable/release/assets/icons.css"
             ],
             "es5BrowserSupport": true,
             "preserveSymlinks": true

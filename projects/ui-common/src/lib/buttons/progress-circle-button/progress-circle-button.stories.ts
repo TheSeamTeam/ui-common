@@ -4,8 +4,8 @@ import { storiesOf } from '@storybook/angular'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
-import { ThemeNames } from '../../models'
-import { TheSeamProgressModule } from '../../progress'
+import { ThemeNames } from '../../models/index'
+import { TheSeamProgressModule } from '../../progress/index'
 
 import { _knobUndefinedNullHACK } from '../../utils/storybook-knobs-hack'
 import { ProgressCircleButtonComponent } from './progress-circle-button.component'

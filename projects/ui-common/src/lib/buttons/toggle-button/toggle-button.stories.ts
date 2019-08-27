@@ -5,7 +5,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
-import { ThemeNames } from '../../models'
+import { ThemeNames } from '../../models/index'
 
 import { ToggleButtonComponent } from './toggle-button.component'
 

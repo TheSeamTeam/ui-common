@@ -3,9 +3,9 @@ import { NgModule } from '@angular/core'
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 
-import { TheSeamLoadingModule } from '../loading'
-import { TheSeamModalModule } from '../modal'
-import { TheSeamScrollbarModule } from '../scrollbar'
+import { TheSeamLoadingModule } from '../loading/index'
+import { TheSeamModalModule } from '../modal/index'
+import { TheSeamScrollbarModule } from '../scrollbar/index'
 
 import { AutoFocusDirective } from './directives/auto-focus.directive'
 import { ClickOutsideDirective } from './directives/click-outside.directive'

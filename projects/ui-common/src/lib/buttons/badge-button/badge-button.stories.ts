@@ -4,7 +4,7 @@ import { storiesOf } from '@storybook/angular'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
-import { ThemeNames } from '../../models'
+import { ThemeNames } from '../../models/index'
 
 import { BadgeButtonComponent } from './badge-button.component'
 

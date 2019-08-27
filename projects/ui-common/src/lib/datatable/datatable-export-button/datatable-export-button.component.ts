@@ -6,7 +6,7 @@ import { faFileDownload } from '@fortawesome/free-solid-svg-icons'
 import { ToastrService } from 'ngx-toastr'
 
 import { IDataExporter } from '../../data-exporter/data-exporter'
-import { TheSeamLoadingOverlayService } from '../../loading'
+import { TheSeamLoadingOverlayService } from '../../loading/index'
 
 import { DatatableComponent, THESEAM_DATATABLE } from '../datatable/datatable.component'
 import { ITheSeamTableColumn } from '../models/table-column'

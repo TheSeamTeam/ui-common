@@ -5,7 +5,7 @@ import { untilDestroyed } from 'ngx-take-until-destroy'
 import { Observable } from 'rxjs'
 import { map, startWith } from 'rxjs/operators'
 
-import { isNullOrUndefined } from '../../../utils'
+import { isNullOrUndefined } from '../../../utils/index'
 
 import { IDataFilter, THESEAM_DATA_FILTER } from '../../data-filter'
 import { ITextFilterOptions, textDataFilter } from '../data-filter-text/data-filter-text.component'

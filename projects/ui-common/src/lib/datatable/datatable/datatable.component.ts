@@ -11,8 +11,8 @@ import { ColumnMode, ContextmenuType, SelectionType, SortType, TreeStatus } from
 import { DatatableComponent as NgxDatatableComponent } from '@marklb/ngx-datatable'
 import { camelCase, deCamelCase, getterForProp, isNullOrUndefined } from '@marklb/ngx-datatable/release/utils'
 
-import { composeDataFilters, IDataFilter } from '../../data-filters'
-import { IElementResizedEvent } from '../../shared'
+import { composeDataFilters, IDataFilter } from '../../data-filters/index'
+import { IElementResizedEvent } from '../../shared/index'
 
 import { DatatableActionMenuComponent } from '../datatable-action-menu/datatable-action-menu.component'
 import { DatatableColumnComponent } from '../datatable-column/datatable-column.component'

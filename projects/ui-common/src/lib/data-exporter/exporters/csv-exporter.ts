@@ -6,7 +6,7 @@ import { faFileCsv } from '@fortawesome/free-solid-svg-icons'
 import FileSaver from 'file-saver'
 import XLSX from 'xlsx'
 
-import { fileDataFromBuffer } from '../../utils'
+import { fileDataFromBuffer } from '../../utils/index'
 
 import { IDataExporter } from '../data-exporter'
 

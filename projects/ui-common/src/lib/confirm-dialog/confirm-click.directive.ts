@@ -1,6 +1,6 @@
 import { Directive, EventEmitter, HostBinding, HostListener, Input, OnDestroy, Output } from '@angular/core'
 
-import { ThemeTypes } from '../models'
+import { ThemeTypes } from '../models/index'
 import { ModalRef } from './../modal/modal-ref'
 
 import { ConfirmDialogComponent } from './confirm-dialog.component'

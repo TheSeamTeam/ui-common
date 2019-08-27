@@ -4,7 +4,7 @@ import { storiesOf } from '@storybook/angular'
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
-import { CSVDataExporter, XLSXDataExporter } from '../../data-exporter'
+import { CSVDataExporter, XLSXDataExporter } from '../../data-exporter/index'
 
 import { TheSeamDatatableModule } from '../datatable.module'
 

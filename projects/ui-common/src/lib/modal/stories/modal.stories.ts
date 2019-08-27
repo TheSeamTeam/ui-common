@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/angular'
 import { Component } from '@angular/core'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
-import { TheSeamScrollbarModule } from '../../scrollbar'
+import { TheSeamScrollbarModule } from '../../scrollbar/index'
 
 import { ModalConfig } from '../modal-config'
 import { TheSeamModalModule } from '../modal.module'
