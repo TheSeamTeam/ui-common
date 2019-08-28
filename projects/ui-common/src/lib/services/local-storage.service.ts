@@ -28,7 +28,6 @@ export class LocalStorageService implements ILocalStorageService {
   constructor() {
     fromEvent<StorageEvent>(window, 'storage')
       .pipe(
-        tap(e => console.log(`storage`, e)),
         map(e => e.key),
         filter(notNullOrUndefined),
         tap(key => {
@@ -36,10 +35,8 @@ export class LocalStorageService implements ILocalStorageService {
           const storedValue = this._localStorage.getItem(key)
           if (subjectValue !== storedValue) {
             if (storedValue) {
-              console.log(`updating[${key}]`, storedValue)
               this.set(key, storedValue)
             } else {
-              console.log(`removing[${key}]`)
               this.remove(key)
             }
           }
