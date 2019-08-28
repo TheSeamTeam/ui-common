@@ -1,5 +1,5 @@
 import { BehaviorSubject, isObservable, Observable, Subject } from 'rxjs'
-import { distinctUntilChanged, mapTo, shareReplay, skip, take, tap } from 'rxjs/operators'
+import { distinctUntilChanged, mapTo, publishReplay, refCount, shareReplay, skip, take, tap } from 'rxjs/operators'
 
 import { tapFirst } from './operators/tap-first'
 import { pollingTicker } from './polling-ticker'
@@ -31,7 +31,8 @@ export class Refreshable<T> {
     this.data$ = pollingTicker(this._actionHandler(action), pollingInterval, this._ticker)
       .pipe(
         tapFirst(() => this._initialized = true),
-        shareReplay(1)
+        publishReplay(),
+        refCount()
       )
   }
 
@@ -59,7 +60,7 @@ export class Refreshable<T> {
    */
   public select(refresh?: boolean): Observable<T> {
     if (refresh && this._initialized && !this._pending.value) { this._ticker.next() }
-    return this.data$.pipe(shareReplay(1))
+    return this.data$
   }
 
   public refresh(): Observable<void> {
