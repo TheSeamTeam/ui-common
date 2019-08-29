@@ -15,5 +15,14 @@ module.exports = baseConfig => {
     enforce: 'pre'
   });
 
+  baseConfig.config.module.rules.push({
+    test: /\.(ts)$/,
+    exclude: /\.spec\.ts$/,
+    use: [
+        require.resolve('./fix-component-template-import-loader.js'),
+        'angular2-template-loader'
+    ]
+  })
+
   return baseConfig.config;
 };
