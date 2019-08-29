@@ -1,0 +1,5 @@
+<h2 class="mb-0" [ngStyle]="{ 'font-size.px': 32 }" [ngStyle.lt-md]="{ 'font-size.px': 26 }">
+  {{ titleText }}
+  <br fxHide.gt-sm>
+  <small *ngIf="subTitle" class="text-muted">{{ subTitleText }}</small>
+</h2>
