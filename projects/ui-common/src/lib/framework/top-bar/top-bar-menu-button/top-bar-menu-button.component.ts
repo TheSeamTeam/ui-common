@@ -20,7 +20,7 @@ const _TopBarMenuButtonMixinBase: CanDisableCtor & typeof TopBarMenuButtonBase =
   // tslint:disable-next-line:use-host-property-decorator
   host: {
     '[attr.type]': 'button',
-    'class': 'btn-link border text-decoration-none',
+    'class': 'btn btn-link border text-decoration-none',
     '[attr.aria-disabled]': 'disabled.toString()',
     '[attr.disabled]': 'disabled || null',
   },
@@ -30,7 +30,7 @@ export class TopBarMenuButtonComponent extends _TopBarMenuButtonMixinBase implem
 
   faAngleDown = faAngleDown
 
-  @Input() userName: string
+  @Input() displayName: string
   @Input() organizationName?: string | null
 
   ngOnInit() { }

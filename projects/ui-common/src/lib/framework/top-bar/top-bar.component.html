@@ -1,12 +1,23 @@
 <!-- Logo -->
-<div class="top-bar--logo d-flex flex-column justify-content-center" routerLink="/">
+<div class="top-bar--logo d-flex flex-column justify-content-center pr-2" routerLink="/">
   <img [src]="logo" [src.lt-md]="logoSm" alt="Logo">
 </div>
 <!-- Title -->
 <seam-top-bar-title [titleText]="titleText" [subTitleText]="subTitleText"></seam-top-bar-title>
 <!-- Notifications -->
+<div class="top-bar-icon-container">
+  <button seamIconBtn [icon]="faBell" iconType="borderless-styled-square">
+    <span class="sr-only">Notifications</span>
+    <seam-icon-notification iconClass="text-danger"></seam-icon-notification>
+  </button>
+</div>
+
 <!-- Menu -->
-<button seamTopBarMenuButton [seamMenuToggle]="menu"></button>
+<button seamTopBarMenuButton
+  [seamMenuToggle]="menu"
+  [displayName]="displayName"
+  [organizationName]="organizationName">
+</button>
 
 <seam-menu #menu>
   <a seamMenuItem [icon]="faUserAlt" routerLink="/profile">Profile</a>

@@ -25,7 +25,10 @@ import { MenuComponent } from './menu.component'
     MenuComponent,
     MenuToggleDirective,
     MenuItemComponent,
-    MenuDividerComponent
+    MenuDividerComponent,
+
+    TheSeamIconModule,
+    OverlayModule
   ]
 })
 export class TheSeamMenuModule { }
