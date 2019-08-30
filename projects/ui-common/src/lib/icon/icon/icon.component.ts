@@ -119,7 +119,7 @@ export class IconComponent {
   public _defaultIconUrl: string | undefined
   public _defaultIconObj: IconProp | undefined
 
-  @Input() iconType: '' | 'styled-square' | 'image-fill'
+  @Input() iconType: '' | 'borderless-styled-square' | 'styled-square' | 'image-fill'
 
   @HostBinding('attr.icon-type')
   get _iconTypeAttr() { return this.iconType }
