@@ -1,0 +1,35 @@
+@import '../../../../styles/utilities';
+
+:host {
+  display: block;
+}
+
+.side-nav-item--icon {
+  width: 35px;
+  max-width: 35px;
+  min-width: 35px;
+  height: 24px;
+  max-height: 24px;
+  min-height: 24px;
+}
+
+.side-nav-item--toggle-btn-container {
+  transition: 250ms ease-in-out background-color;
+  padding: 0.5rem 1rem;
+
+  // &:hover {
+  //   background-color: $gray-300;
+  // }
+}
+
+.side-nav-item--toggle-btn {
+  ::ng-deep .svg-inline--fa {
+    transition: 100ms ease-in-out transform;
+  }
+
+  &.side-nav-item--toggle-btn-expanded {
+    ::ng-deep .svg-inline--fa {
+      transform: rotate(-90deg);
+    }
+  }
+}

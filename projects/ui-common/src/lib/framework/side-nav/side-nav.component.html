@@ -1,0 +1,12 @@
+<nav class="nav flex-column">
+  <!-- <li class="nav-item" *ngFor="let item of items">
+    <a class="nav-link" [routerLink]="item?.link">{{ item?.label }}</a>
+  </li> -->
+  <seam-side-nav-item *ngFor="let item of items"
+    [icon]="item.icon"
+    [label]="item.label"
+    [link]="item.link"
+    [queryParams]="item.queryParams"
+    [children]="item.children">
+  </seam-side-nav-item>
+</nav>

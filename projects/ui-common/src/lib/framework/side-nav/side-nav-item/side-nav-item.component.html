@@ -1,0 +1,44 @@
+<div class="d-flex flex-row">
+  <a *ngIf="link; else noLink" class="nav-link d-flex flex-row bg-light"
+    [routerLink]="link"
+    [queryParams]="queryParams"
+    routerLinkActive="active">
+    <div class="side-nav-item--icon">
+      <seam-icon *ngIf="icon" [icon]="icon"></seam-icon>
+    </div>
+    {{ label }}
+  </a>
+
+  <ng-template #noLink>
+    <a class="nav-link d-flex flex-row bg-light">
+      <div class="side-nav-item--icon">
+        <seam-icon *ngIf="icon" [icon]="icon"></seam-icon>
+      </div>
+      {{ label }}
+    </a>
+  </ng-template>
+
+  <div *ngIf="hasChildren"
+    class="side-nav-item--toggle-btn-container"
+    (click)="toggleChildren()">
+    <seam-icon
+      class="side-nav-item--toggle-btn"
+      [class.side-nav-item--toggle-btn-expanded]="expanded"
+      [icon]="faAngleLeft"
+      type>
+    </seam-icon>
+  </div>
+</div>
+
+<ng-container *ngIf="hasChildren">
+  <div class="pl-4">
+    <seam-side-nav-item *ngFor="let child of children"
+      [icon]="child.icon"
+      [label]="child.label"
+      [link]="child.link"
+      [queryParams]="child.queryParams"
+      routerLinkActive="active"
+      [children]="child.children">
+    </seam-side-nav-item>
+  </div>
+</ng-container>
