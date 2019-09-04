@@ -1,6 +1,6 @@
 import { animate, AnimationEvent, state, style, transition, trigger } from '@angular/animations'
 import { FocusTrapFactory } from '@angular/cdk/a11y'
-import { BasePortalOutlet, ComponentPortal, PortalHostDirective, TemplatePortal } from '@angular/cdk/portal'
+import { BasePortalOutlet, CdkPortalOutlet, ComponentPortal, TemplatePortal } from '@angular/cdk/portal'
 import { DOCUMENT } from '@angular/common'
 import {
   ChangeDetectorRef,
@@ -123,7 +123,7 @@ export class ModalContainerComponent extends BasePortalOutlet implements OnDestr
   @HostBinding('class.modal-xl') get _modalDialogXl() { return this._config.modalSize === 'xl' }
 
   /** The portal host inside of this container into which the dialog content will be loaded. */
-  @ViewChild(PortalHostDirective /*, { static: true }*/, { static: true }) _portalHost: PortalHostDirective
+  @ViewChild(CdkPortalOutlet /*, { static: true }*/, { static: true }) _portalHost: CdkPortalOutlet
 
   /** A subject emitting before the dialog enters the view. */
   _beforeEnter: Subject<void> = new Subject()
