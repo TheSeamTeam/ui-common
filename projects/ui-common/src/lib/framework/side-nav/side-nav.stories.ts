@@ -6,7 +6,7 @@ import { Component } from '@angular/core'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { Router, RouterModule } from '@angular/router'
 
-import { faBuilding, faSignature } from '@fortawesome/free-solid-svg-icons'
+import { faBook, faBuilding, faSignature } from '@fortawesome/free-solid-svg-icons'
 
 import { TheSeamSideNavModule } from './side-nav.module'
 
@@ -39,42 +39,79 @@ storiesOf('Framework/SideNav', module)
     props: {
       navItems: [
         {
+          itemType: 'link',
           label: 'Example 1',
           icon: faSignature,
           link: 'example1',
         },
         {
+          itemType: 'link',
           label: 'Example 2',
           icon: faBuilding,
           link: 'example2',
           children: [
             {
+              itemType: 'link',
               label: 'Example 1.1',
               icon: faSignature,
               link: 'example1.1',
             },
             {
+              itemType: 'link',
               label: 'Example 1.2',
               icon: faBuilding,
               link: 'example1.2'
             },
             {
+              itemType: 'link',
               label: 'Example 1.3',
               link: 'example1.3'
             },
             {
+              itemType: 'link',
               label: 'Example 1.4',
               // link: 'example1.4'
             }
           ]
         },
         {
+          itemType: 'basic',
           label: 'Example 3',
-          link: 'example3'
+          icon: faBook,
+          children: [
+            {
+              itemType: 'link',
+              label: 'Example 1.1',
+              icon: faSignature,
+              link: 'example1.1',
+            },
+            {
+              itemType: 'link',
+              label: 'Example 1.2',
+              icon: faBuilding,
+              link: 'example1.2'
+            },
+            {
+              itemType: 'link',
+              label: 'Example 1.3',
+              link: 'example1.3'
+            },
+            {
+              itemType: 'link',
+              label: 'Example 1.4',
+              // link: 'example1.4'
+            }
+          ]
         },
         {
+          itemType: 'link',
           label: 'Example 4',
-          // link: 'example4'
+          link: 'example4'
+        },
+        {
+          itemType: 'link',
+          label: 'Example 5',
+          // link: 'example5'
         }
       ]
     },

@@ -3,6 +3,7 @@
     <a class="nav-link" [routerLink]="item?.link">{{ item?.label }}</a>
   </li> -->
   <seam-side-nav-item *ngFor="let item of items"
+    [itemType]="item.itemType"
     [icon]="item.icon"
     [label]="item.label"
     [link]="item.link"

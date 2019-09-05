@@ -16,6 +16,8 @@ export class SideNavItemComponent implements OnInit {
 
   faAngleLeft = faAngleLeft
 
+  @Input() itemType: 'divider' | 'basic' | 'link' | 'button'
+
   @Input() icon?: LibIcon
 
   @Input() label: string

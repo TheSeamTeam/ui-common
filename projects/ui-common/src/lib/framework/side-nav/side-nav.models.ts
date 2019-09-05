@@ -11,6 +11,13 @@ export interface ISideNavDivider extends ISideNavItemBase<'divider'> {
   label?: string
 }
 
+export interface ISideNavBasic extends ISideNavItemBase<'basic'> {
+  icon?: LibIcon
+  label: string
+
+  children?: ISideNavItem[]
+}
+
 export interface ISideNavLink extends ISideNavItemBase<'link'> {
   icon?: LibIcon
   label: string

@@ -1,4 +1,49 @@
 <div class="d-flex flex-row">
+  <ng-container *ngIf="itemType === 'basic'">
+    <ng-template [ngTemplateOutlet]="itemTypeBasic"></ng-template>
+  </ng-container>
+  <ng-container *ngIf="itemType === 'link'">
+    <ng-template [ngTemplateOutlet]="itemTypeLink"></ng-template>
+  </ng-container>
+</div>
+
+<ng-container *ngIf="hasChildren && expanded">
+  <div class="pl-4">
+    <seam-side-nav-item *ngFor="let child of children"
+      [itemType]="child.itemType"
+      [icon]="child.icon"
+      [label]="child.label"
+      [link]="child.link"
+      [queryParams]="child.queryParams"
+      routerLinkActive="active"
+      [children]="child.children">
+    </seam-side-nav-item>
+  </div>
+</ng-container>
+
+<ng-template #itemTypeBasic>
+  <button class="btn btn-link p-0 d-flex flex-row bg-light rounded-0 text-decoration-none"
+    (click)="toggleChildren()">
+    <div class="nav-link d-flex flex-row">
+      <div class="side-nav-item--icon text-left">
+        <seam-icon *ngIf="icon" [icon]="icon"></seam-icon>
+      </div>
+      {{ label }}
+    </div>
+
+    <div *ngIf="hasChildren"
+      class="btn btn-link side-nav-item--toggle-btn-container">
+      <seam-icon
+        class="side-nav-item--toggle-btn"
+        [class.side-nav-item--toggle-btn-expanded]="expanded"
+        [icon]="faAngleLeft"
+        type>
+      </seam-icon>
+    </div>
+  </button>
+</ng-template>
+
+<ng-template #itemTypeLink>
   <a *ngIf="link; else noLink" class="nav-link d-flex flex-row bg-light"
     [routerLink]="link"
     [queryParams]="queryParams"
@@ -18,8 +63,9 @@
     </a>
   </ng-template>
 
-  <div *ngIf="hasChildren"
-    class="side-nav-item--toggle-btn-container"
+  <button *ngIf="hasChildren"
+    type="button"
+    class="btn btn-link side-nav-item--toggle-btn-container bg-light rounded-0"
     (click)="toggleChildren()">
     <seam-icon
       class="side-nav-item--toggle-btn"
@@ -27,18 +73,5 @@
       [icon]="faAngleLeft"
       type>
     </seam-icon>
-  </div>
-</div>
-
-<ng-container *ngIf="hasChildren">
-  <div class="pl-4">
-    <seam-side-nav-item *ngFor="let child of children"
-      [icon]="child.icon"
-      [label]="child.label"
-      [link]="child.link"
-      [queryParams]="child.queryParams"
-      routerLinkActive="active"
-      [children]="child.children">
-    </seam-side-nav-item>
-  </div>
-</ng-container>
+  </button>
+</ng-template>
