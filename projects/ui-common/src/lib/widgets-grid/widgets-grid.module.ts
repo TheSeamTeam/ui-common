@@ -1,3 +1,4 @@
+import { PortalModule } from '@angular/cdk/portal'
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 
@@ -11,7 +12,8 @@ import { WidgetsGridComponent } from './widgets-grid.component'
   ],
   imports: [
     CommonModule,
-    GridsterModule
+    GridsterModule,
+    PortalModule
   ],
   exports: [
     WidgetsGridComponent
