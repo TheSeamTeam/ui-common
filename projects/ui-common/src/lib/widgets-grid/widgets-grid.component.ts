@@ -76,7 +76,13 @@ export class WidgetsGridComponent implements OnInit, OnDestroy {
   ngOnDestroy() { }
 
   private _createWidgetGridItem(def: IWidgetsGridItemDef): IWidgetsGridItem {
-    const portal = new ComponentPortal(def.type)
+    console.log(this.injector)
+    let portal: ComponentPortal<any>
+    if (def.componentFactoryResolver) {
+      portal = new ComponentPortal(def.type, undefined, undefined, def.componentFactoryResolver)
+    } else {
+      portal = new ComponentPortal(def.type)
+    }
 
     const item: IWidgetsGridItem = {
       ...def,

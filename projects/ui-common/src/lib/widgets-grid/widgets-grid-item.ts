@@ -6,6 +6,8 @@ export interface IWidgetsGridItemDef<T = any> {
   y?: number
   x?: number
 
+  componentFactoryResolver?: any
+
   type: ComponentType<T>
 }
 

@@ -1,1 +1,19 @@
-<p>lazy-widget-one works!</p>
+<!-- <p>lazy-widget-one works!</p> -->
+
+<seam-widget [icon]="faWrench" titleText="Lazy Widget 1" [loading]="!(initialized$ | async)">
+  <seam-widget-content-header>
+    Widget example 1
+  </seam-widget-content-header>
+
+  <seam-widget-tile-list>
+    <button *ngFor="let item of items"
+      seam-widget-tile
+      [icon]="faBell">
+      {{ item }}
+    </button>
+  </seam-widget-tile-list>
+
+  <seam-widget-footer-text *ngIf="p?.length">
+    Submitted: {{ Date.now() | date: 'MM-dd-yyyy h:mm aaa' }}
+  </seam-widget-footer-text>
+</seam-widget>

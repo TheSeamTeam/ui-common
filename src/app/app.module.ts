@@ -1,9 +1,22 @@
 import { NgModule } from '@angular/core'
 import { BrowserModule } from '@angular/platform-browser'
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { ExampleLazyLoadedWidgetsModule } from './example-lazy-loaded-widgets/example-lazy-loaded-widgets.module'
 
+import {
+  DynamicComponentLoaderModule,
+  IDynamicComponentManifest
+} from 'projects/ui-common/src/lib/dynamic-component-loader/dynamic-component-loader.module'
 import { AppComponent } from './app.component'
+
+const manifests: IDynamicComponentManifest[] = [
+  {
+    componentId: 'widget-one',
+    path: 'widget-one',
+    loadChildren: () => import('./example-lazy-loaded-widgets/lazy-widget-one/lazy-widget-one.module').then(m => m.LazyWidgetOneModule)
+  }
+]
 
 @NgModule({
   declarations: [
@@ -11,6 +24,8 @@ import { AppComponent } from './app.component'
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
+    DynamicComponentLoaderModule.forRoot(manifests),
     ExampleLazyLoadedWidgetsModule
   ],
   providers: [],
