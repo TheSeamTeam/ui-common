@@ -117,10 +117,10 @@ storiesOf('Framework/Dashboard', module)
     },
     props: {
       widgets: [
-        { type: StoryExWidget1Component },
-        { type: StoryExWidget2Component },
-        { type: StoryExWidget3Component },
-        { type: StoryExWidget4Component }
+        { col: 1, order: 0, type: StoryExWidget1Component },
+        { col: 2, order: 0, type: StoryExWidget2Component },
+        { col: 3, order: 0, type: StoryExWidget3Component },
+        { col: 2, order: 1, type: StoryExWidget4Component }
       ]
     },
     template: `

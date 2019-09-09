@@ -1,1 +1,3 @@
-<p>dashboard-widgets works!</p>
+<div *ngFor="let item of widgetItems$ | async">
+  <ng-template [cdkPortalOutlet]="item.portal"></ng-template>
+</div>

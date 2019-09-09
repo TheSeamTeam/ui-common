@@ -8,6 +8,7 @@ import { untilDestroyed } from 'ngx-take-until-destroy'
 import { notNullOrUndefined } from '../../../utils/index'
 
 import { IDashboardWidgetsItem, IDashboardWidgetsItemDef } from './dashboard-widgets-item'
+import { DashboardWidgetsService } from './dashboard-widgets.service'
 
 @Component({
   selector: 'seam-dashboard-widgets',
@@ -18,41 +19,21 @@ import { IDashboardWidgetsItem, IDashboardWidgetsItemDef } from './dashboard-wid
 export class DashboardWidgetsComponent implements OnInit, OnDestroy {
 
   @Input()
-  get widgets(): IDashboardWidgetsItemDef[] { return this._widgets.value }
-  set widgets(value: IDashboardWidgetsItemDef[]) { this._widgets.next(value) }
-  private _widgets = new BehaviorSubject<IDashboardWidgetsItemDef[]>([])
+  get widgets(): IDashboardWidgetsItemDef[] { return this._dashboardWidgets.widgets }
+  set widgets(value: IDashboardWidgetsItemDef[]) { this._dashboardWidgets.widgets = value }
 
   public widgetItems$: Observable<IDashboardWidgetsItem[]>
 
-  constructor() { }
+  constructor(
+    private _dashboardWidgets: DashboardWidgetsService
+  ) { }
 
   ngOnInit() {
-    this.widgetItems$ = this._widgets
-      .pipe(
-        untilDestroyed(this),
-        map(defs => defs.map(d => this._createWidgetItem(d)).filter(notNullOrUndefined)),
-        tap(items => console.log('items', items))
-      )
+    this.widgetItems$ = this._dashboardWidgets.widgetItems$
 
     this.widgetItems$.subscribe()
   }
 
   ngOnDestroy() { }
-
-  private _createWidgetItem(def: IDashboardWidgetsItemDef): IDashboardWidgetsItem {
-    let portal: ComponentPortal<any>
-    if (def.componentFactoryResolver) {
-      portal = new ComponentPortal(def.type, undefined, undefined, def.componentFactoryResolver)
-    } else {
-      portal = new ComponentPortal(def.type)
-    }
-
-    const item: IDashboardWidgetsItem = {
-      ...def,
-      portal: portal
-    }
-
-    return item
-  }
 
 }
