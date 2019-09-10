@@ -1,3 +1,18 @@
-<div *ngFor="let item of widgetItems$ | async">
-  <ng-template [cdkPortalOutlet]="item.portal"></ng-template>
+<div class="d-flex flex-row" [style.padding.px]="gapSize / 2" cdkDropListGroup>
+  <div *ngFor="let col of widgetColumns$ | async; last as isLastCol; first as isFirstCol" class="d-flex flex-column flex-grow-1"
+    cdkDropList
+    [cdkDropListData]="col.items"
+    (cdkDropListDropped)="drop($event)">
+    <div *ngFor="let item of col.items; last as isLastItm; first as isFirstItm"
+
+      cdkDrag>
+      <div [style.margin.px]="gapSize / 2">
+        <!-- <div style="width: 50px; height: 50px; background-color: blue;" cdkDragHandle></div> -->
+        <ng-template [cdkPortalOutlet]="item.portal"></ng-template>
+      </div>
+    </div>
+  </div>
 </div>
+<!-- <div *ngFor="let item of widgetItems$ | async">
+  <ng-template [cdkPortalOutlet]="item.portal"></ng-template>
+</div> -->

@@ -1,11 +1,11 @@
 import { ComponentPortal } from '@angular/cdk/portal'
 import { Injectable } from '@angular/core'
 import { BehaviorSubject, Observable } from 'rxjs'
-import { map, tap } from 'rxjs/operators'
+import { map, mapTo, take, tap } from 'rxjs/operators'
 
 import { notNullOrUndefined } from '../../../utils/index'
 
-import { IDashboardWidgetsItem, IDashboardWidgetsItemDef } from './dashboard-widgets-item'
+import { IDashboardWidgetsColumnRecord, IDashboardWidgetsItem, IDashboardWidgetsItemDef } from './dashboard-widgets-item'
 
 @Injectable({
   providedIn: 'root'
@@ -17,8 +17,7 @@ export class DashboardWidgetsService {
   private _widgets = new BehaviorSubject<IDashboardWidgetsItemDef[]>([])
 
   public widgetItems$: Observable<IDashboardWidgetsItem[]>
-
-  private _columns = new Map<number, BehaviorSubject<IDashboardWidgetsItem[]>>()
+  public widgetColumns$: Observable<IDashboardWidgetsColumnRecord[]>
 
   /** Used for operations, such as 'addWidget', if the column is not specified. */
   public defaultColumn = 0
@@ -28,6 +27,30 @@ export class DashboardWidgetsService {
       .pipe(
         map(defs => defs.map(d => this.createWidgetItem(d)).filter(notNullOrUndefined)),
         tap(items => console.log('items', items))
+      )
+
+    this.widgetColumns$ = this.widgetItems$
+      .pipe(
+        // Distribute items into columns
+        map(items => {
+          const columns: IDashboardWidgetsColumnRecord[] = []
+
+          for (const item of items) {
+            const col: IDashboardWidgetsColumnRecord | undefined = columns.find(c => c.column === item.col)
+            if (!col) {
+              columns.push({ column: item.col, items: [ item ] })
+            } else {
+              col.items.push(item)
+            }
+          }
+
+          return columns
+        }),
+        // Sort columns
+        map(columns => columns.sort((a, b) => a.column - b.column)),
+        // Sort columns items
+        tap(columns => columns.forEach(col => col.items.sort((a, b) => a.order - b.order))),
+        tap(v => console.log('v', v))
       )
   }
 
@@ -56,6 +79,8 @@ export class DashboardWidgetsService {
   public createWidgetItem(def: IDashboardWidgetsItemDef): IDashboardWidgetsItem {
     const item: IDashboardWidgetsItem = {
       ...def,
+      col: def.col || this.defaultColumn,
+      order: def.order || 0,
       portal: this.createWidgetPortal(def),
       __itemDef: def
     }
@@ -71,6 +96,18 @@ export class DashboardWidgetsService {
       portal = new ComponentPortal(def.type)
     }
     return portal
+  }
+
+  public updateOrder(): Observable<void> {
+    return this.widgetColumns$
+      .pipe(
+        take(1),
+        tap(columns => columns.forEach(col => {
+          let i = 0
+          col.items.forEach(itm => itm.order = i++)
+        })),
+        mapTo(undefined)
+      )
   }
 
   // public selectColumns(): Observable<> {

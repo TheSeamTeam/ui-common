@@ -1,3 +1,4 @@
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { PortalModule } from '@angular/cdk/portal'
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
@@ -12,7 +13,8 @@ import { DashboardComponent } from './dashboard.component'
   ],
   imports: [
     CommonModule,
-    PortalModule
+    PortalModule,
+    DragDropModule
   ],
   exports: [
     DashboardComponent,
