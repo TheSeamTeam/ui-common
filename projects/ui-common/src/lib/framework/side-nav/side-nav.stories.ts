@@ -27,8 +27,28 @@ storiesOf('Framework/SideNav', module)
         BrowserAnimationsModule,
         RouterModule.forRoot([
           { path: 'example1', component: StoryRoutePlacholderComponent },
-          { path: 'example2', component: StoryRoutePlacholderComponent },
-          { path: 'example3', component: StoryRoutePlacholderComponent }
+          {
+            path: 'example2',
+            component: StoryRoutePlacholderComponent,
+            children: [
+              { path: 'example1.1', component: StoryRoutePlacholderComponent },
+              { path: 'example1.2', component: StoryRoutePlacholderComponent },
+              { path: 'example1.3', component: StoryRoutePlacholderComponent },
+              { path: 'example1.4', component: StoryRoutePlacholderComponent }
+            ]
+          },
+          {
+            path: 'example3',
+            component: StoryRoutePlacholderComponent,
+            children: [
+              { path: 'example1.1', component: StoryRoutePlacholderComponent },
+              { path: 'example1.2', component: StoryRoutePlacholderComponent },
+              { path: 'example1.3', component: StoryRoutePlacholderComponent },
+              { path: 'example1.4', component: StoryRoutePlacholderComponent }
+            ]
+          },
+          { path: 'example4', component: StoryRoutePlacholderComponent },
+          { path: 'example5', component: StoryRoutePlacholderComponent }
         ], { useHash: true }),
         TheSeamSideNavModule
       ],
@@ -54,23 +74,23 @@ storiesOf('Framework/SideNav', module)
               itemType: 'link',
               label: 'Example 1.1',
               icon: faSignature,
-              link: 'example1.1',
+              link: 'example2/example1.1',
             },
             {
               itemType: 'link',
               label: 'Example 1.2',
               icon: faBuilding,
-              link: 'example1.2'
+              link: 'example2/example1.2'
             },
             {
               itemType: 'link',
               label: 'Example 1.3',
-              link: 'example1.3'
+              link: 'example2/example1.3'
             },
             {
               itemType: 'link',
               label: 'Example 1.4',
-              // link: 'example1.4'
+              // link: 'example2/example1.4'
             }
           ]
         },
@@ -83,23 +103,23 @@ storiesOf('Framework/SideNav', module)
               itemType: 'link',
               label: 'Example 1.1',
               icon: faSignature,
-              link: 'example1.1',
+              link: 'example3/example1.1',
             },
             {
               itemType: 'link',
               label: 'Example 1.2',
               icon: faBuilding,
-              link: 'example1.2'
+              link: 'example3/example1.2'
             },
             {
               itemType: 'link',
               label: 'Example 1.3',
-              link: 'example1.3'
+              link: 'example3/example1.3'
             },
             {
               itemType: 'link',
               label: 'Example 1.4',
-              // link: 'example1.4'
+              // link: 'example3/example1.4'
             }
           ]
         },

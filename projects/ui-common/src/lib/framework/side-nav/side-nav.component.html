@@ -2,7 +2,7 @@
   <!-- <li class="nav-item" *ngFor="let item of items">
     <a class="nav-link" [routerLink]="item?.link">{{ item?.label }}</a>
   </li> -->
-  <seam-side-nav-item *ngFor="let item of items"
+  <seam-side-nav-item *ngFor="let item of items$ | async"
     [itemType]="item.itemType"
     [icon]="item.icon"
     [label]="item.label"

@@ -1,10 +1,17 @@
 import { LibIcon } from '../../icon/index'
 
+export interface ISideNavItemStatus {
+  active: boolean
+}
+
 export interface ISideNavItemBase<T extends string> {
   /**
    * default: 'route'
    */
   itemType?: T
+
+  /** This prop is set by the nav bar. If manually set it may be overwritten. */
+  status?: ISideNavItemStatus
 }
 
 export interface ISideNavDivider extends ISideNavItemBase<'divider'> {
