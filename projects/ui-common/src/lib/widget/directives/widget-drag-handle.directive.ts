@@ -95,18 +95,18 @@ export class WidgetDragHandleDirective implements OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    // We need to wait for the zone to stabilize, in order for the reference
-    // element to be in the proper place in the DOM. This is mostly relevant
-    // for draggable elements inside portals since they get stamped out in
-    // their original DOM position and then they get transferred to the portal.
-    this._ngZone.onStable.asObservable()
-      .pipe(take(1), untilDestroyed(this))
-      .subscribe(() => {
-        const parent = <any>this._parentDrag
-        parent._handles.reset([ ...parent._handles._results, this ])
-        parent._handles.notifyOnChanges()
-        parent._dragRef.enableHandle(this.element.nativeElement)
-      })
+    if (this._parentDrag) {
+      // HACK: This is a hack to allow the `CdkDrag` directive to manage a
+      // handle that is not visible to `ContentChildren` query.
+      this._ngZone.onStable.asObservable()
+        .pipe(take(1), untilDestroyed(this))
+        .subscribe(() => {
+          const parent = <any>this._parentDrag
+          parent._handles.reset([ ...parent._handles._results, this ])
+          parent._handles.notifyOnChanges()
+          parent._dragRef.enableHandle(this.element.nativeElement)
+        })
+    }
   }
 
   ngOnDestroy() {
