@@ -25,8 +25,7 @@ export class DashboardWidgetsService {
   constructor() {
     this.widgetItems$ = this._widgets
       .pipe(
-        map(defs => defs.map(d => this.createWidgetItem(d)).filter(notNullOrUndefined)),
-        tap(items => console.log('items', items))
+        map(defs => defs.map(d => this.createWidgetItem(d)).filter(notNullOrUndefined))
       )
 
     this.widgetColumns$ = this.widgetItems$
@@ -49,32 +48,9 @@ export class DashboardWidgetsService {
         // Sort columns
         map(columns => columns.sort((a, b) => a.column - b.column)),
         // Sort columns items
-        tap(columns => columns.forEach(col => col.items.sort((a, b) => a.order - b.order))),
-        tap(v => console.log('v', v))
+        tap(columns => columns.forEach(col => col.items.sort((a, b) => a.order - b.order)))
       )
   }
-
-  // public patchWidgets(defs: IDashboardWidgetsItemDef[]) {
-
-  // }
-
-  // TODO: Finish when initial implementation is done.
-  // public addWidget(def: IDashboardWidgetsItemDef): Observable<IDashboardWidgetsItem> {
-  //   const col = def.col || this.defaultColumn
-
-  //   const widgetsSubject = this._columns.get(col) || new BehaviorSubject<IDashboardWidgetsItem[]>([])
-
-  //   // if () {
-
-  //   // }
-  //   const item
-
-  //   const newWidgets = [ ...widgetsSubject.value, this.createWidgetItem() ]
-  // }
-
-  // public addWidgets(defs: IDashboardWidgetsItemDef[]): Observable<IDashboardWidgetsItem[]> {
-
-  // }
 
   public createWidgetItem(def: IDashboardWidgetsItemDef): IDashboardWidgetsItem {
     const item: IDashboardWidgetsItem = {
@@ -109,12 +85,5 @@ export class DashboardWidgetsService {
         mapTo(undefined)
       )
   }
-
-  // public selectColumns(): Observable<> {
-  //   this.widgetItems$
-  //     .pipe(
-
-  //     )
-  // }
 
 }

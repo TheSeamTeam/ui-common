@@ -37,14 +37,15 @@ interface DragCSSStyleDeclaration extends CSSStyleDeclaration {
 
 export function extendStyles(
   dest: Writeable<CSSStyleDeclaration>,
-  source: Partial<DragCSSStyleDeclaration>) {
-for (const key in source) {
-  if (source.hasOwnProperty(key)) {
-    dest[key as keyof CSSStyleDeclaration] = source[key as keyof CSSStyleDeclaration]
+  source: Partial<DragCSSStyleDeclaration>
+) {
+  for (const key in source) {
+    if (source.hasOwnProperty(key)) {
+      dest[key as keyof CSSStyleDeclaration] = source[key as keyof CSSStyleDeclaration]
+    }
   }
-}
 
-return dest
+  return dest
 }
 
 export function toggleNativeDragInteractions(element: HTMLElement, enable: boolean) {
@@ -79,7 +80,6 @@ export class WidgetDragHandleDirective implements OnDestroy, AfterViewInit {
   @Input('cdkDragHandleDisabled')
   get disabled(): boolean { return this._disabled }
   set disabled(value: boolean) {
-    console.log('disabled', this.disabled)
     this._disabled = coerceBooleanProperty(value)
     this._stateChanges.next(<any>this)
   }
@@ -103,7 +103,6 @@ export class WidgetDragHandleDirective implements OnDestroy, AfterViewInit {
       .pipe(take(1), untilDestroyed(this))
       .subscribe(() => {
         const parent = <any>this._parentDrag
-        parent._handles.changes.subscribe((h) => console.log('handles', h))
         parent._handles.reset([ ...parent._handles._results, this ])
         parent._handles.notifyOnChanges()
         parent._dragRef.enableHandle(this.element.nativeElement)

@@ -1,12 +1,6 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop'
-import { ComponentPortal } from '@angular/cdk/portal'
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core'
-import { BehaviorSubject, Observable } from 'rxjs'
-import { map, tap } from 'rxjs/operators'
-
-import { untilDestroyed } from 'ngx-take-until-destroy'
-
-import { notNullOrUndefined } from '../../../utils/index'
+import { Observable } from 'rxjs'
 
 import { IDashboardWidgetsColumnRecord, IDashboardWidgetsItem, IDashboardWidgetsItemDef } from './dashboard-widgets-item'
 import { DashboardWidgetsService } from './dashboard-widgets.service'

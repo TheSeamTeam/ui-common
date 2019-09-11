@@ -26,7 +26,7 @@
       <ng-template #noTitleTpl>{{ titleText }}</ng-template>
     </span>
   </div>
-  <div class="position-relative" [style.height.px]="loading ? 150 : undefined">
+  <div class="position-relative bg-white" [style.height.px]="loading ? 150 : undefined">
     <div class="p-2" *ngIf="!loading else loadingTpl">
       <ng-content></ng-content>
     </div>
