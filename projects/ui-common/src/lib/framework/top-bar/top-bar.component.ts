@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core'
 
-import { faBell } from '@fortawesome/free-regular-svg-icons'
-import { faQuestionCircle, faSignOutAlt, faUserAlt } from '@fortawesome/free-solid-svg-icons'
+import { faBell, faComment } from '@fortawesome/free-regular-svg-icons'
+import { faExclamationTriangle, faQuestionCircle, faSignOutAlt, faUserAlt } from '@fortawesome/free-solid-svg-icons'
 
 @Component({
   selector: 'seam-top-bar',
@@ -15,6 +15,8 @@ export class TopBarComponent implements OnInit {
   faQuestionCircle = faQuestionCircle
   faSignOutAlt = faSignOutAlt
   faBell = faBell
+  faExclamationTriangle = faExclamationTriangle
+  faComment = faComment
 
   @Input() logo: string
   @Input() logoSm?: string | null

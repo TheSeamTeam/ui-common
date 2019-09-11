@@ -38,6 +38,7 @@ export class MenuItemComponent extends _seamMenuItemMixinBase implements OnInit,
   @Input() role: 'menuitem' | 'menuitemradio' | 'menuitemcheckbox' = 'menuitem'
 
   @Input() icon: IconProp | string
+  @Input() iconClass: string
 
   /** Stream that emits when the menu item is hovered. */
   readonly _hovered: Subject<MenuItemComponent> = new Subject<MenuItemComponent>()

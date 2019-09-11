@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
+import { RouterModule } from '@angular/router'
 
 import { TheSeamButtonsModule } from '../../buttons/index'
 import { TheSeamIconModule } from '../../icon/index'
@@ -21,7 +22,8 @@ import { TopBarComponent } from './top-bar.component'
     TheSeamLayoutModule,
     TheSeamButtonsModule,
     TheSeamIconModule,
-    TheSeamMenuModule
+    TheSeamMenuModule,
+    RouterModule
   ],
   exports: [
     TopBarComponent

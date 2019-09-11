@@ -6,10 +6,28 @@
 <seam-top-bar-title [titleText]="titleText" [subTitleText]="subTitleText"></seam-top-bar-title>
 <!-- Notifications -->
 <div class="top-bar-icon-container mr-2">
-  <button seamIconBtn [icon]="faBell" iconType="borderless-styled-square">
+  <button seamIconBtn
+    [icon]="faBell"
+    iconType="borderless-styled-square"
+    [seamMenuToggle]="notificationMenu">
     <span class="sr-only">Notifications</span>
     <seam-icon-notification iconClass="text-danger"></seam-icon-notification>
   </button>
+  <seam-menu #notificationMenu>
+    <div style="width: 400px">
+      <a seamMenuItem [icon]="faExclamationTriangle" iconClass="text-warning" routerLink="/profile">There is a problem with you self-assessment answers.</a>
+      <a seamMenuItem [icon]="faExclamationTriangle" iconClass="text-warning" routerLink="/profile">Your password expires in 10 days.</a>
+      <button seamMenuItem [icon]="faComment" iconClass="text-primary" (click)="openAboutModal()">You have unread feedback on your document.</button>
+      <!-- <seam-menu-divider></seam-menu-divider> -->
+      <!-- <div class="d-flex flex-column text-center bg-light">
+        <a routerLink="/notifications">See All</a>
+      </div> -->
+      <seam-menu-footer>
+        <a seamMenuFooterAction routerLink="/notifications">See All</a>
+        <!-- <button seamMenuFooterAction>See All</button> -->
+      </seam-menu-footer>
+    </div>
+  </seam-menu>
 </div>
 
 <!-- Menu -->
