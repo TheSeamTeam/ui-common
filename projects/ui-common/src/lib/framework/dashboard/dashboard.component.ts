@@ -1,4 +1,6 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core'
+
+import { IDashboardWidgetsItemDef } from './dashboard-widgets/dashboard-widgets-item'
 
 @Component({
   selector: 'seam-dashboard',
@@ -7,6 +9,8 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardComponent implements OnInit {
+
+  @Input() widgets: IDashboardWidgetsItemDef[]
 
   constructor() { }
 

@@ -16,10 +16,11 @@
 .side-nav-item--toggle-btn-container {
   transition: 250ms ease-in-out background-color;
   padding: 0.5rem 1rem;
-
-  // &:hover {
-  //   background-color: $gray-300;
-  // }
+}
+button.side-nav-item--toggle-btn-container {
+  &:hover {
+    background-color: $gray-300;
+  }
 }
 
 .side-nav-item--toggle-btn {

@@ -1,0 +1,26 @@
+<div *ngIf="hasSideBar$ | async"
+  class="base-layout-side-bar-container border-right bordered"
+  [style.width.px]="sideBarSize$ | async"
+  [@sideBarToggle]="sideBarToggleState$ | async"
+  style="will-change: width;">
+  <div class="base-layout-side-bar-nav-content">
+    <ng-template [cdkPortalOutlet]="_sideBarPortal"></ng-template>
+  </div>
+  <div class="d-flex flex-row justify-content-end" style="padding: 7px 4px 7px 4px">
+    <button seamIconBtn
+      style="transform: translateZ(0)"
+      [icon]="sideBarToggleIcon$ | async"
+      [style.height.px]="50"
+      [style.width.px]="50"
+      (click)="toggleSideBar()">
+    </button>
+  </div>
+</div>
+<div class="base-layout-main-container bg-white">
+  <div class="base-layout-top-bar-container border-bottom bordered">
+    <ng-template [cdkPortalOutlet]="_topBarPortal"></ng-template>
+  </div>
+  <div class="base-layout-content-container" seamOverlayScrollbar>
+    <ng-template [cdkPortalOutlet]="_contentPortal"></ng-template>
+  </div>
+</div>

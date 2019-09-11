@@ -1,6 +1,10 @@
-<div class="d-flex flex-row" [style.padding.px]="gapSize / 2" cdkDropListGroup>
+<div class="d-flex flex-row mx-auto"
+  style="max-width: 1400px;"
+  [style.padding.px]="gapSize / 2"
+  cdkDropListGroup>
   <div *ngFor="let col of widgetColumns$ | async"
     class="d-flex flex-column flex-grow-1 dashboard-widgets-list"
+    style="width: 446.67px;"
     cdkDropList
     [cdkDropListData]="col.items"
     (cdkDropListDropped)="drop($event)">

@@ -1,0 +1,35 @@
+:host {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  width: 100%;
+}
+
+.base-layout-side-bar-container {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+
+  .base-layout-side-bar-nav-content {
+    flex: 1 1 0;
+  }
+
+  // .base-layout-sidebar-toggle {
+
+  // }
+}
+
+.base-layout-main-container {
+  flex: 1 1 100%;
+  display: flex;
+  flex-direction: column;
+  transform: translateZ(0);
+}
+
+.base-layout-top-bar-container {
+  flex: 0 0 auto;
+}
+
+.base-layout-content-container {
+  flex: 1 1 100%;
+}

@@ -22,7 +22,7 @@
 </ng-container>
 
 <ng-template #itemTypeBasic>
-  <button class="btn btn-link p-0 d-flex flex-row bg-light rounded-0 text-decoration-none"
+  <button class="btn btn-link p-0 d-flex flex-row rounded-0 text-decoration-none text-nowrap"
     (click)="toggleChildren()">
     <div class="nav-link d-flex flex-row">
       <div class="side-nav-item--icon text-left">
@@ -32,7 +32,7 @@
     </div>
 
     <div *ngIf="hasChildren"
-      class="btn btn-link side-nav-item--toggle-btn-container">
+      class="btn btn-link side-nav-item--toggle-btn-container rounded-0">
       <seam-icon
         class="side-nav-item--toggle-btn"
         [class.side-nav-item--toggle-btn-expanded]="expanded"
@@ -44,7 +44,7 @@
 </ng-template>
 
 <ng-template #itemTypeLink>
-  <a *ngIf="link; else noLink" class="nav-link d-flex flex-row bg-light"
+  <a *ngIf="link; else noLink" class="nav-link d-flex flex-row text-nowrap"
     [routerLink]="link"
     [queryParams]="queryParams"
     routerLinkActive="active">
@@ -55,7 +55,7 @@
   </a>
 
   <ng-template #noLink>
-    <a class="nav-link d-flex flex-row bg-light">
+    <a class="nav-link d-flex flex-row text-nowrap">
       <div class="side-nav-item--icon">
         <seam-icon *ngIf="icon" [icon]="icon"></seam-icon>
       </div>
@@ -65,7 +65,7 @@
 
   <button *ngIf="hasChildren"
     type="button"
-    class="btn btn-link side-nav-item--toggle-btn-container bg-light rounded-0"
+    class="btn btn-link side-nav-item--toggle-btn-container rounded-0"
     (click)="toggleChildren()">
     <seam-icon
       class="side-nav-item--toggle-btn"

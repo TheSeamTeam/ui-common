@@ -39,4 +39,4 @@ export interface ISideNavButton extends ISideNavItemBase<'button'> {
   onClick: (event) => void
 }
 
-export type ISideNavItem = ISideNavDivider | ISideNavLink | ISideNavButton
+export type ISideNavItem = ISideNavDivider | ISideNavBasic | ISideNavLink | ISideNavButton
