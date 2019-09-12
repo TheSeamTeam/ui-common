@@ -112,3 +112,23 @@ storiesOf('Widget', module)
         </seam-widget>
       </div>`
   }))
+
+  .add('Loading', () => ({
+    moduleMetadata: {
+      imports: [
+        TheSeamWidgetModule,
+        BrowserAnimationsModule
+      ]
+    },
+    props: {
+      icon: faWrench,
+      title: text('Header Title', 'Example Widget'),
+      loading: boolean('Loading', true)
+    },
+    template: `
+      <div class="p-4" style="height: 400px; width: 500px;">
+        <seam-widget [icon]="icon" [titleText]="title" [loading]="loading">
+          Widget Body
+        </seam-widget>
+      </div>`
+  }))
