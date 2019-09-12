@@ -28,4 +28,8 @@ export class LazyWidgetOneComponent implements OnInit {
   ngOnInit() {
   }
 
+  getDate() {
+    return Date.now()
+  }
+
 }

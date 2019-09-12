@@ -13,7 +13,7 @@
     </button>
   </seam-widget-tile-list>
 
-  <seam-widget-footer-text *ngIf="p?.length">
-    Submitted: {{ Date.now() | date: 'MM-dd-yyyy h:mm aaa' }}
+  <seam-widget-footer-text>
+    Submitted: {{ getDate() | date: 'MM-dd-yyyy h:mm aaa' }}
   </seam-widget-footer-text>
 </seam-widget>

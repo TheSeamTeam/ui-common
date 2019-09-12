@@ -1,7 +1,8 @@
 <div class="datatable-wrapper">
   <ng-content select="seam-datatable-menu-bar"></ng-content>
   <div class="datatable-table-wrapper">
-    <ng-container *ngIf="columns">
+    <ng-container>
+      <!-- [loadingIndicator]="true" -->
       <ngx-datatable
         class="bootstrap"
         [columnMode]="columnMode"
@@ -77,7 +78,7 @@
           [checkboxable]="true">
         </ngx-datatable-column>
 
-        <ng-container *ngFor="let col of columns trackBy: trackByFnColumn">
+        <ng-container *ngFor="let col of (columns || []) trackBy: trackByFnColumn">
           <ng-container *ngIf="_columnData(col) as colData">
 
             <ngx-datatable-column
