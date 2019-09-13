@@ -90,6 +90,8 @@ export function toggleButtonsFilter(data: any[], values: string[], options = Def
 })
 export class DataFilterToggleButtonsComponent implements OnInit, OnDestroy, IDataFilter {
 
+  public readonly name = 'toggle-buttons'
+
   _control = new FormControl()
 
   @Input() properties: string[]

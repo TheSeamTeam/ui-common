@@ -1,7 +1,10 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 
+import { TheSeamDataExporterModule } from '../data-exporter/index'
+import { TheSeamDataFiltersModule } from '../data-filters/index'
 import { TheSeamDatatableModule } from '../datatable/index'
+import { TheSeamSharedModule } from '../shared/index'
 
 import { DatatableDynamicComponent } from './datatable-dynamic.component'
 
@@ -12,7 +15,10 @@ import { DatatableDynamicComponent } from './datatable-dynamic.component'
   ],
   imports: [
     CommonModule,
-    TheSeamDatatableModule
+    TheSeamSharedModule,
+    TheSeamDatatableModule,
+    TheSeamDataExporterModule,
+    TheSeamDataFiltersModule
   ],
   exports: [
     DatatableDynamicComponent,

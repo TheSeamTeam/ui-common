@@ -1,5 +1,17 @@
-<seam-datatable
+<seam-datatable *ngIf="{ data: data$ | async } as obj"
   class="w-100 h-100"
-  [columns]="columns"
-  [rows]="rows">
+  [columns]="obj.data && obj.data.columns"
+  [rows]="obj.data && obj.data.rows"
+  [virtualization]="obj.virtualization && obj.data.virtualization">
+
+  <seam-datatable-menu-bar *ngIf="_hasFilterMenu$ | async">
+    <div class="d-flex flex-row">
+      <div class="d-flex justify-content-center flex-grow-1">
+
+      </div>
+      <seam-datatable-export-button *ngIf="_exporters$ | async as exporters"
+        [exporters]="exporters">
+      </seam-datatable-export-button>
+    </div>
+  </seam-datatable-menu-bar>
 </seam-datatable>

@@ -2,7 +2,7 @@ import { ComponentPortal, PortalInjector } from '@angular/cdk/portal'
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector, Input, isDevMode, OnInit } from '@angular/core'
 import { IDatatableCellData } from './datatable-cell.models'
 
-import { ComponentType } from 'ngx-toastr'
+import { ComponentType } from '@angular/cdk/portal'
 
 import { DatatableCellTypeDateComponent } from '../datatable-cell-types/datatable-cell-type-date/datatable-cell-type-date.component'
 import { ITheSeamTableColumn, TheSeamTableCellType } from '../models/table-column'

@@ -100,6 +100,8 @@ export function textDataFilter(data: any[], text: string, options = DefaultTextF
 })
 export class DataFilterTextComponent implements OnInit, OnDestroy, IDataFilter {
 
+  public readonly name = 'text'
+
   _control = new FormControl()
 
   @Input() properties: string[]

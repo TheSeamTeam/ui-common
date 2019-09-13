@@ -6,6 +6,10 @@ export type IDataFilterFunction = <T>(data: T[]) => Observable<T[]>
 
 export interface IDataFilter {
   /**
+   * Name used when referencing filter by string.
+   */
+  name: string
+  /**
    * Filters the data based on the conditions of the filter.
    */
   filter<T>(data: T[]): Observable<T[]>

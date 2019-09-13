@@ -28,7 +28,7 @@ storiesOf('Datatable/Dynamic', module)
       data: exampleData1
     },
     template: `
-      <div style="width: 100vw; height: 100vh;">
+      <div style="width: 100vw; height: 100vh;" class="p-1">
         <seam-datatable-dynamic class="w-100 h-100" [data]="data"></seam-datatable-dynamic>
       </div>
     `

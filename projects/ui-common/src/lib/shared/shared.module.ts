@@ -39,7 +39,7 @@ import { PasswordInputRevealComponent } from './components/password-input-reveal
     DisableControlDirective,
     MaskCharsPipe,
     EncryptedAssetLinkDirective,
-    TruncatePipe,
+    TruncatePipe
   ],
   exports: [
     AutoFocusDirective,

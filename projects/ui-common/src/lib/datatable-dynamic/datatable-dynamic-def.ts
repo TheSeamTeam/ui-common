@@ -5,25 +5,46 @@ export type IDynamicDatatableCellType = 'string' | 'integer' | 'decimal'
 
 export interface IDynamicDatatableColumn {
   prop: string
-  cellType: IDynamicDatatableCellType
+  name: string
+  /**
+   * Default: 'string'
+   */
+  cellType?: IDynamicDatatableCellType
+  /**
+   * String to display if the exporter uses a header.
+   */
+  exportHeader?: string
+  /**
+   * Expression to calculate export value.
+   * TODO: Implement. Jexl is most likely going to be used.
+   */
+  exportExpr?: string
 }
 
 export interface IDynamicDatatableRow {
   [prop: string]: any
 }
 
-export interface IDynamicDatatableFilterDef {
+export interface IDynamicDatatableFilterDef<O = any> {
   name: string
-  position?: string
-  options?: any
+  /**
+   * Default: 'common'
+   */
+  type?: 'common' | 'full-search'
+  /**
+   * Default: 0
+   */
+  order?: number
+  options?: O
 }
 
 export interface IDynamicDatatableFilterMenu {
   /**
-   * Default: false
+   * Default 'default'
    */
-  hidden: boolean
-  items: IDynamicDatatableFilterDef[]
+  state?: 'hidden' | 'always-visible' | 'default'
+  filters?: IDynamicDatatableFilterDef[]
+  exporters?: IDynamicDatatableExporter[]
 }
 
 export type IDynamicDatatableFooterMenuItemType = 'button' | 'text'
@@ -41,6 +62,13 @@ export interface IDynamicDatatableFooterMenuItemText extends IDynamicDatatableFo
   text: string
 }
 
+export interface IDynamicDatatableOptions {
+  /**
+   * Default: false
+   */
+  virtualization?: boolean
+}
+
 export interface IDynamicDatatableFooterMenu {
   /**
    * Default: false
@@ -49,9 +77,29 @@ export interface IDynamicDatatableFooterMenu {
   items: IDynamicDatatableFooterMenuItem[]
 }
 
+export interface IDynamicDatatableRowActionDef {
+  /**
+   * Label displayed on the menu item.
+   */
+  label: string
+  /**
+   * TODO: Decide on a good way to handle the actions configuration through json.
+   */
+  // action:
+  /**
+   * Expression executed each row to decide if the action will be visible.
+   */
+  // isHiddenExpr?: string
+}
+
+// TODO: Define object definition to allow extra exporter options.
+export type IDynamicDatatableExporter = 'exporter:csv' | 'exporter:xlsx'
+
 export interface IDatatableDynamicDef {
-  filters?: IDynamicDatatableFilterMenu
+  filterMenu?: IDynamicDatatableFilterMenu
   columns: IDynamicDatatableColumn[]
   rows: IDynamicDatatableRow[]
+  rowActions?: IDynamicDatatableRowActionDef[]
   footerMenu?: IDynamicDatatableFooterMenu
+  options?: IDynamicDatatableOptions
 }
