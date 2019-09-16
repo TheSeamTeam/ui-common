@@ -5,6 +5,11 @@
   [virtualization]="obj.virtualization && obj.data.virtualization">
 
   <seam-datatable-menu-bar *ngIf="_hasFilterMenu$ | async">
+    <div class="d-flex flex-row pb-2">
+      <div class="d-flex flex-row justify-content-end flex-grow-1">
+        <seam-data-filter-search seamDatatableFilter *ngIf="_hasFullSearch$"></seam-data-filter-search>
+      </div>
+    </div>
     <div class="d-flex flex-row">
       <div class="d-flex justify-content-center flex-grow-1">
 

@@ -25,7 +25,7 @@ export interface IDynamicDatatableRow {
   [prop: string]: any
 }
 
-export interface IDynamicDatatableFilterDef<O = any> {
+export interface IDynamicDatatableFilterMenuItemDef<O = any> {
   name: string
   /**
    * Default: 'common'
@@ -43,7 +43,7 @@ export interface IDynamicDatatableFilterMenu {
    * Default 'default'
    */
   state?: 'hidden' | 'always-visible' | 'default'
-  filters?: IDynamicDatatableFilterDef[]
+  filters?: IDynamicDatatableFilterMenuItemDef[]
   exporters?: IDynamicDatatableExporter[]
 }
 

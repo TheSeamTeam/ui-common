@@ -1,1 +1,17 @@
-<p>data-filter-search works!</p>
+<div class="position-relative"
+  [class.data-filter-search-has-icon]="iconTpl || icon"
+  (click)="inp.focus()">
+  <input seamInput #inp="seamInput" seamInputSize="sm" [formControl]="_control" [placeholder]="placeholder">
+  <ng-container *ngIf="iconTpl; else searchIconTpl">
+    <div class="data-filter-search--icon-wrapper">
+      <ng-container *ngTemplateOutlet="iconTpl"></ng-container>
+    </div>
+  </ng-container>
+  <ng-template #searchIconTpl>
+    <ng-container *ngIf="icon">
+      <div class="data-filter-search--icon-wrapper">
+        <seam-icon [icon]="icon" class="text-muted"></seam-icon>
+      </div>
+    </ng-container>
+  </ng-template>
+</div>

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, Input, OnInit } from '@angular/core'
-import { BehaviorSubject, Observable, of } from 'rxjs'
+import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
 import { IDataExporter, THESEAM_DATA_EXPORTER } from '../data-exporter/index'
@@ -29,6 +29,7 @@ export class DatatableDynamicComponent implements OnInit {
   public data$ = this._data.asObservable()
 
   _exporters$: Observable<IDataExporter[] | undefined>
+  _hasFullSearch$: Observable<boolean>
   _hasFilterMenu$: Observable<boolean>
 
   constructor(
@@ -45,6 +46,15 @@ export class DatatableDynamicComponent implements OnInit {
       return undefined
     }))
 
+    this._hasFullSearch$ = this.data$.pipe(map(data => {
+      if (data && data.filterMenu && Array.isArray(data.filterMenu.filters)
+        && data.filterMenu.filters.findIndex(f => f.type === 'full-search') !== -1
+      ) {
+        return true
+      }
+      return false
+    }))
+
     this._hasFilterMenu$ = this.data$.pipe(
       switchMap(data => {
         if (data && data.filterMenu) {
@@ -54,7 +64,10 @@ export class DatatableDynamicComponent implements OnInit {
 
           }
         }
-        return this._exporters$.pipe(map(e => (e || []).length > 0))
+        return combineLatest([
+          this._exporters$.pipe(map(e => (e || []).length > 0)),
+          this._hasFullSearch$
+        ]).pipe(map(v => v.indexOf(false) === -1))
       })
     )
   }

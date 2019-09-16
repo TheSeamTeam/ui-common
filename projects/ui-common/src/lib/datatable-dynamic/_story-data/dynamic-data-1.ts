@@ -3,7 +3,9 @@ import { IDatatableDynamicDef } from '../datatable-dynamic-def'
 export const exampleData1: IDatatableDynamicDef = {
   filterMenu: {
     state: 'always-visible',
-    filters: [],
+    filters: [
+      { name: 'search', type: 'full-search' }
+    ],
     exporters: [
       'exporter:csv',
       'exporter:xlsx'
