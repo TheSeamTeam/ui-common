@@ -30,7 +30,7 @@ export interface IDynamicDatatableFilterMenuItemDef<O = any> {
   /**
    * Default: 'common'
    */
-  type?: 'common' | 'full-search'
+  type: 'common' | 'full-search'
   /**
    * Default: 0
    */

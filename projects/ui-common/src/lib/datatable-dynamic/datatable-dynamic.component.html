@@ -12,7 +12,12 @@
     </div>
     <div class="d-flex flex-row">
       <div class="d-flex justify-content-center flex-grow-1">
-
+        <ng-container *ngFor="let r of _commonFilterComponents$ | async">
+          <seam-datatable-dynamic-filter-container
+            [filterComponent]="r.component"
+            [options]="r.options">
+          </seam-datatable-dynamic-filter-container>
+        </ng-container>
       </div>
       <seam-datatable-export-button *ngIf="_exporters$ | async as exporters"
         [exporters]="exporters">

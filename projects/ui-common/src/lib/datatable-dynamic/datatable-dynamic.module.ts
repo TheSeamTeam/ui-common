@@ -1,3 +1,4 @@
+import { PortalModule } from '@angular/cdk/portal'
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 
@@ -7,12 +8,14 @@ import { TheSeamDatatableModule } from '../datatable/index'
 import { TheSeamIconModule } from '../icon/index'
 import { TheSeamSharedModule } from '../shared/index'
 
+import { DatatableDynamicFilterContainerComponent } from './datatable-dynamic-filter-container/datatable-dynamic-filter-container.component'
 import { DatatableDynamicComponent } from './datatable-dynamic.component'
 
 
 @NgModule({
   declarations: [
-    DatatableDynamicComponent
+    DatatableDynamicComponent,
+    DatatableDynamicFilterContainerComponent
   ],
   imports: [
     CommonModule,
@@ -20,7 +23,8 @@ import { DatatableDynamicComponent } from './datatable-dynamic.component'
     TheSeamDatatableModule,
     TheSeamDataExporterModule,
     TheSeamDataFiltersModule,
-    TheSeamIconModule
+    TheSeamIconModule,
+    PortalModule
   ],
   exports: [
     DatatableDynamicComponent,

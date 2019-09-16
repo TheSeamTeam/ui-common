@@ -1,11 +1,20 @@
+import { ComponentType } from '@angular/cdk/portal'
 import { ChangeDetectionStrategy, Component, Inject, Input, OnInit } from '@angular/core'
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
 import { IDataExporter, THESEAM_DATA_EXPORTER } from '../data-exporter/index'
+import { THESEAM_DATA_FILTER_DEF } from '../data-filters/data-filter-def'
+import { IDataFilter } from '../data-filters/index'
 import { notNullOrUndefined } from '../utils/index'
 
 import { IDatatableDynamicDef } from './datatable-dynamic-def'
+
+export interface IFilterComponentRecord {
+  component: ComponentType<IDataFilter>
+  options?: any
+  order?: number
+}
 
 @Component({
   selector: 'seam-datatable-dynamic',
@@ -29,11 +38,13 @@ export class DatatableDynamicComponent implements OnInit {
   public data$ = this._data.asObservable()
 
   _exporters$: Observable<IDataExporter[] | undefined>
+  _commonFilterComponents$: Observable<IFilterComponentRecord[]>
   _hasFullSearch$: Observable<boolean>
   _hasFilterMenu$: Observable<boolean>
 
   constructor(
-    @Inject(THESEAM_DATA_EXPORTER) public _dataExporters: IDataExporter[]
+    @Inject(THESEAM_DATA_EXPORTER) public _dataExporters: IDataExporter[],
+    @Inject(THESEAM_DATA_FILTER_DEF) public _dataFilters: { name: string, component: ComponentType<IDataFilter> }[]
   ) { }
 
   ngOnInit() {
@@ -44,6 +55,37 @@ export class DatatableDynamicComponent implements OnInit {
           .filter(notNullOrUndefined)
       }
       return undefined
+    }))
+
+    this._commonFilterComponents$ = this.data$.pipe(map(data => {
+      if (
+        data && data.filterMenu && Array.isArray(data.filterMenu.filters) &&
+        this._dataFilters && Array.isArray(this._dataFilters)
+      ) {
+        const commonFilters = data.filterMenu.filters.filter(f => f.type === 'common')
+
+        if (!commonFilters || commonFilters.length < 1) {
+          return []
+        }
+
+        const r = commonFilters
+          .map(cf => {
+            const _df = this._dataFilters.find(df => df.name === cf.name)
+            if (_df) {
+              const record: IFilterComponentRecord = {
+                component: _df.component,
+                options: cf.options,
+                order: cf.order || 0
+              }
+              return record
+            }
+            return null
+          })
+          .filter(notNullOrUndefined)
+
+        return r
+      }
+      return []
     }))
 
     this._hasFullSearch$ = this.data$.pipe(map(data => {
@@ -66,6 +108,7 @@ export class DatatableDynamicComponent implements OnInit {
         }
         return combineLatest([
           this._exporters$.pipe(map(e => (e || []).length > 0)),
+          this._commonFilterComponents$.pipe(map(cfc => cfc.length > 0)),
           this._hasFullSearch$
         ]).pipe(map(v => v.indexOf(false) === -1))
       })

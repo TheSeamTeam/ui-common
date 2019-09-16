@@ -16,6 +16,7 @@ export interface IDataFilter {
 }
 
 export const THESEAM_DATA_FILTER = new InjectionToken<IDataFilter>('TheSeamDataFilter')
+export const THESEAM_DATA_FILTER_OPTIONS = new InjectionToken<{}>('TheSeamDataFilterOptions')
 
 export function filterOperator<T>(filterFn: IDataFilterFunction) {
   return (source$: Observable<T[]>) =>

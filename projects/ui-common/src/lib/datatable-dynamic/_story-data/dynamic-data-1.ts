@@ -4,7 +4,8 @@ export const exampleData1: IDatatableDynamicDef = {
   filterMenu: {
     state: 'always-visible',
     filters: [
-      { name: 'search', type: 'full-search' }
+      { name: 'search', type: 'full-search' },
+      { name: 'text', type: 'common' }
     ],
     exporters: [
       'exporter:csv',
