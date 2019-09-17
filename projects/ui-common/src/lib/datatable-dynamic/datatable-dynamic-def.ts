@@ -71,10 +71,10 @@ export interface IDynamicDatatableOptions {
 
 export interface IDynamicDatatableFooterMenu {
   /**
-   * Default: false
+   * Default 'default'
    */
-  hidden: boolean
-  items: IDynamicDatatableFooterMenuItem[]
+  state?: 'hidden' | 'always-visible' | 'default'
+  items?: IDynamicDatatableFooterMenuItem[]
 }
 
 export interface IDynamicDatatableRowActionDef {
@@ -100,6 +100,6 @@ export interface IDatatableDynamicDef {
   columns: IDynamicDatatableColumn[]
   rows: IDynamicDatatableRow[]
   rowActions?: IDynamicDatatableRowActionDef[]
-  footerMenu?: IDynamicDatatableFooterMenu
+  // footerMenu?: IDynamicDatatableFooterMenu
   options?: IDynamicDatatableOptions
 }
