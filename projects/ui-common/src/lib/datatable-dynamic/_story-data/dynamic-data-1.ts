@@ -6,13 +6,14 @@ export const exampleData1: IDatatableDynamicDef = {
     filters: [
       { name: 'search', type: 'full-search' },
       { name: 'text', type: 'common' },
+      { name: 'search', type: 'common' },
       {
         name: 'toggle-buttons',
         type: 'common',
         options: {
           buttons: [
-            { name: '30', value: 30 },
-            { name: '32', value: 32 }
+            { name: '30', value: '30' },
+            { name: '32', value: '32' }
           ]
         }
       }

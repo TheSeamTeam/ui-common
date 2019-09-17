@@ -1,11 +1,12 @@
-import { Component, forwardRef, Input, OnDestroy, OnInit, TemplateRef } from '@angular/core'
+import { Component, forwardRef, Inject, Input, OnDestroy, OnInit, Optional, TemplateRef } from '@angular/core'
 import { FormControl } from '@angular/forms'
 import { untilDestroyed } from 'ngx-take-until-destroy'
 import { Observable } from 'rxjs'
 import { map, startWith } from 'rxjs/operators'
 
+import { DatatableMenuBarComponent } from '../../../datatable/datatable-menu-bar/datatable-menu-bar.component'
 import { isNullOrUndefined } from '../../../utils/index'
-import { IDataFilter, THESEAM_DATA_FILTER } from '../../data-filter'
+import { IDataFilter, THESEAM_DATA_FILTER, THESEAM_DATA_FILTER_OPTIONS } from '../../data-filter'
 
 export const DATA_FILTER_TEXT: any = {
   provide: THESEAM_DATA_FILTER,
@@ -51,6 +52,7 @@ export function textDataFilter(data: any[], text: string, options = DefaultTextF
   if (!data || !text) {
     return data
   }
+  console.log('text', text)
 
   if (data.length <= 0) {
     return data
@@ -92,6 +94,8 @@ export function textDataFilter(data: any[], text: string, options = DefaultTextF
   return filtered
 }
 
+let _uid = 0
+
 @Component({
   selector: 'seam-data-filter-text',
   templateUrl: './data-filter-text.component.html',
@@ -101,13 +105,14 @@ export function textDataFilter(data: any[], text: string, options = DefaultTextF
 export class DataFilterTextComponent implements OnInit, OnDestroy, IDataFilter {
 
   public readonly name = 'text'
+  public readonly uid = `text__${_uid++}`
 
   _control = new FormControl()
 
-  @Input() properties: string[]
-  @Input() omitProperties: string[]
-  @Input() exact: boolean
-  @Input() caseSensitive: boolean
+  @Input() properties = this._optDefault('properties')
+  @Input() omitProperties = this._optDefault('omitProperties')
+  @Input() exact = this._optDefault('exact')
+  @Input() caseSensitive = this._optDefault('caseSensitive')
 
   @Input() placeholder: string
   @Input() iconTpl: TemplateRef<HTMLElement>
@@ -120,11 +125,21 @@ export class DataFilterTextComponent implements OnInit, OnDestroy, IDataFilter {
     }
   }
 
-  constructor() { }
+  constructor(
+    private _menuBar: DatatableMenuBarComponent,
+    @Optional() @Inject(THESEAM_DATA_FILTER_OPTIONS) private _filterOptions: ITextFilterOptions | null
+  ) { }
 
-  ngOnInit() { }
+  ngOnInit() { this._menuBar.addFilter(this) }
 
-  ngOnDestroy() { }
+  ngOnDestroy() { this._menuBar.removeFilter(this) }
+
+  private _optDefault<K extends keyof ITextFilterOptions>(prop: K) {
+    if (this._filterOptions && this._filterOptions.hasOwnProperty(prop)) {
+      return this._filterOptions[prop]
+    }
+    return DefaultTextFilterOptions[prop]
+  }
 
   get options(): ITextFilterOptions {
     return {

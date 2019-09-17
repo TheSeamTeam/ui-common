@@ -29,7 +29,6 @@ export class DatatableDynamicFilterContainerComponent<C> implements OnInit {
   _portal: ComponentPortal<C> | null = null
 
   constructor(
-    private _viewContainerRef: ViewContainerRef,
     private _injector: Injector
   ) { }
 
@@ -43,7 +42,7 @@ export class DatatableDynamicFilterContainerComponent<C> implements OnInit {
     }
 
     if (component) {
-      this._portal = new ComponentPortal(component, this._viewContainerRef, this._createInjector())
+      this._portal = new ComponentPortal(component, undefined, this._createInjector())
     } else {
       this._portal = null
     }

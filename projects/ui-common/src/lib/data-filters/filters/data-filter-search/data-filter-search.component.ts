@@ -1,14 +1,16 @@
-import { ChangeDetectionStrategy, Component, forwardRef, Input, OnDestroy, OnInit, TemplateRef } from '@angular/core'
+import { ChangeDetectionStrategy, Component, forwardRef, Inject, Input, OnDestroy, OnInit, Optional, TemplateRef } from '@angular/core'
 import { FormControl } from '@angular/forms'
 import { untilDestroyed } from 'ngx-take-until-destroy'
 import { Observable } from 'rxjs'
 import { map, startWith } from 'rxjs/operators'
 
+import { faSearch } from '@fortawesome/free-solid-svg-icons'
+
+import { DatatableMenuBarComponent } from '../../../datatable/datatable-menu-bar/datatable-menu-bar.component'
 import { LibIcon } from '../../../icon/index'
 import { isNullOrUndefined } from '../../../utils/index'
 
-import { faSearch } from '@fortawesome/free-solid-svg-icons'
-import { IDataFilter, THESEAM_DATA_FILTER } from '../../data-filter'
+import { IDataFilter, THESEAM_DATA_FILTER, THESEAM_DATA_FILTER_OPTIONS } from '../../data-filter'
 import { ITextFilterOptions, textDataFilter } from '../data-filter-text/data-filter-text.component'
 
 
@@ -32,6 +34,8 @@ export function searchDataFilter(data: any[], values: string, options = DefaultS
   return textDataFilter(data, values, options)
 }
 
+let _uid = 0
+
 @Component({
   selector: 'seam-data-filter-search',
   templateUrl: './data-filter-search.component.html',
@@ -42,13 +46,14 @@ export function searchDataFilter(data: any[], values: string, options = DefaultS
 export class DataFilterSearchComponent implements OnInit, OnDestroy, IDataFilter {
 
   public readonly name = 'search'
+  public readonly uid = `search__${_uid++}`
 
   _control = new FormControl()
 
-  @Input() properties: string[]
-  @Input() omitProperties: string[]
-  @Input() exact: boolean
-  @Input() caseSensitive: boolean
+  @Input() properties = this._optDefault('properties')
+  @Input() omitProperties = this._optDefault('omitProperties')
+  @Input() exact = this._optDefault('exact')
+  @Input() caseSensitive = this._optDefault('caseSensitive')
 
   @Input() placeholder = 'Search...'
   @Input() icon: LibIcon = faSearch
@@ -62,11 +67,21 @@ export class DataFilterSearchComponent implements OnInit, OnDestroy, IDataFilter
     }
   }
 
-  constructor() { }
+  constructor(
+    private _menuBar: DatatableMenuBarComponent,
+    @Optional() @Inject(THESEAM_DATA_FILTER_OPTIONS) private _filterOptions: ISearchFilterOptions | null
+  ) { }
 
-  ngOnInit() { }
+  ngOnInit() { this._menuBar.addFilter(this) }
 
-  ngOnDestroy() { }
+  ngOnDestroy() { this._menuBar.removeFilter(this) }
+
+  private _optDefault<K extends keyof ISearchFilterOptions>(prop: K) {
+    if (this._filterOptions && this._filterOptions.hasOwnProperty(prop)) {
+      return this._filterOptions[prop]
+    }
+    return DefaultSearchFilterOptions[prop]
+  }
 
   get options(): ISearchFilterOptions {
     return {

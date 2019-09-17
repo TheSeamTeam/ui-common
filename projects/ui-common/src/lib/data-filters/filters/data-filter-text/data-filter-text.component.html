@@ -1,6 +1,7 @@
 <div class="position-relative"
   [class.data-filter-text-has-icon]="iconTpl"
   (click)="inp.focus()">
+  <label [attr.for]="inp.id" class="sr-only">Text filter</label>
   <input seamInput #inp="seamInput" seamInputSize="sm" [formControl]="_control" [placeholder]="placeholder">
   <ng-container *ngIf="iconTpl">
     <ng-container *ngTemplateOutlet="iconTpl"></ng-container>
