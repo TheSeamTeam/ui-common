@@ -1,5 +1,5 @@
 import { coerceArray } from '@angular/cdk/coercion'
-import { Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core'
+import { Component, forwardRef, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core'
 import { FormControl } from '@angular/forms'
 import { untilDestroyed } from 'ngx-take-until-destroy'
 import { Observable } from 'rxjs'
@@ -7,7 +7,7 @@ import { map, startWith } from 'rxjs/operators'
 
 import { isNullOrUndefined } from '../../../utils/index'
 
-import { IDataFilter, THESEAM_DATA_FILTER } from '../../data-filter'
+import { IDataFilter, THESEAM_DATA_FILTER, THESEAM_DATA_FILTER_OPTIONS } from '../../data-filter'
 import { ITextFilterOptions, textDataFilter } from '../data-filter-text/data-filter-text.component'
 
 
@@ -110,14 +110,16 @@ export class DataFilterToggleButtonsComponent implements OnInit, OnDestroy, IDat
     }
   }
 
-  constructor() { }
+  constructor(
+    @Optional() @Inject(THESEAM_DATA_FILTER_OPTIONS) private _filterOptions: IToggleButtonsFilterOptions | null
+  ) { console.log('_filterOptions', this._filterOptions) }
 
   ngOnInit() { }
 
   ngOnDestroy() { }
 
   get options(): IToggleButtonsFilterOptions {
-    return {
+    const inputOpts = {
       properties: this.properties,
       omitProperties: this.omitProperties,
       multiple: this.multiple,
@@ -126,6 +128,14 @@ export class DataFilterToggleButtonsComponent implements OnInit, OnDestroy, IDat
       exact: this.exact,
       caseSensitive: this.caseSensitive
     }
+    console.log({ _filterOptions: this._filterOptions, inputOpts })
+    const opt = {
+      ...DefaultToggleButtonsFilterOptions,
+      ...(this._filterOptions || {}),
+      ...inputOpts
+    }
+    console.log('opt', opt)
+    return opt
   }
 
   public filter<T>(data: T[]): Observable<T[]> {

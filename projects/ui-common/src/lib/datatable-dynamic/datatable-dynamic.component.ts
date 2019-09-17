@@ -1,7 +1,7 @@
 import { ComponentType } from '@angular/cdk/portal'
 import { ChangeDetectionStrategy, Component, Inject, Input, OnInit } from '@angular/core'
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs'
-import { map, switchMap } from 'rxjs/operators'
+import { map, switchMap, tap } from 'rxjs/operators'
 
 import { IDataExporter, THESEAM_DATA_EXPORTER } from '../data-exporter/index'
 import { THESEAM_DATA_FILTER_DEF } from '../data-filters/data-filter-def'
@@ -102,15 +102,16 @@ export class DatatableDynamicComponent implements OnInit {
         if (data && data.filterMenu) {
           if (data.filterMenu.state === 'always-visible') {
             return of(true)
-          } else if (data.filterMenu.state !== 'hidden') {
-
+          } else if (data.filterMenu.state === 'hidden') {
+            return of(false)
           }
         }
+
         return combineLatest([
           this._exporters$.pipe(map(e => (e || []).length > 0)),
           this._commonFilterComponents$.pipe(map(cfc => cfc.length > 0)),
           this._hasFullSearch$
-        ]).pipe(map(v => v.indexOf(false) === -1))
+        ]).pipe(map(v => v.indexOf(true) !== -1))
       })
     )
   }
@@ -119,6 +120,12 @@ export class DatatableDynamicComponent implements OnInit {
     for (const col of def.columns) {
       if (!col.cellType) {
         col.cellType = 'string'
+      }
+    }
+
+    if (def.filterMenu) {
+      if (!def.filterMenu.state) {
+        def.filterMenu.state = 'default'
       }
     }
 
