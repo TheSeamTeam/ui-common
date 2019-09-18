@@ -1,16 +1,17 @@
 import { select, text, withKnobs } from '@storybook/addon-knobs'
 import { storiesOf } from '@storybook/angular'
 
+import { CommonModule } from '@angular/common'
 import { Component, Inject, NgModule } from '@angular/core'
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
-import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, Route, Router, RouterModule, RouterStateSnapshot, ROUTES, UrlTree } from '@angular/router'
+import { ActivatedRoute, Route, Router, RouterModule } from '@angular/router'
 import { Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-import { CommonModule } from '@angular/common'
 import { TheSeamFormFieldModule } from '../../../form-field/index'
 import { TheSeamDynamicRouterModule } from '../dynamic-router.module'
+import { HierarchyLevelResolver } from '../resolvers/hierarchy-level.resolver'
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -43,13 +44,11 @@ class StoryNameExComponent {
 
   constructor(
     private _route: ActivatedRoute,
-    private _router: Router,
-    @Inject(ROUTES) private _routes: Route
+    private _router: Router
   ) {
     console.log('name-ex', this)
     this.name$ = this._route.data.pipe(map(v => v['name'] || undefined))
 
-    console.log('_routes', this._routes)
     console.log('config', this._router.config)
     console.log('config2', this._route.routeConfig)
     // this._router.config.unshift(this._routes)
@@ -62,9 +61,9 @@ class StoryNameExComponent {
   template: `
     URL: {{ _router.url }}
     <div class="my-2 p-2">
-      <div class="mb-2">
+      <form class="mb-2" (ngSubmit)="go()">
         <input seamInput [formControl]="_control">
-      </div>
+      </form>
       <button class="btn btn-sm btn-light" type="button" [routerLink]="_control.value">Go</button>
     </div>
     <div>
@@ -74,7 +73,7 @@ class StoryNameExComponent {
 })
 class StoryExBaseComponent {
 
-  _control = new FormControl('/name-ex')
+  _control = new FormControl('/name-ex/sub-name')
 
   constructor(
     private _route: ActivatedRoute,
@@ -82,7 +81,10 @@ class StoryExBaseComponent {
   ) {
     console.log('this._route', this._route)
     console.log('this._router', this._router)
-    this._control.setValue(this._router.url)
+  }
+
+  public go() {
+    this._router.navigateByUrl(this._control.value)
   }
 }
 
@@ -93,7 +95,7 @@ class StoryExBaseComponent {
 // ////////////////////////////////////////////////////////////////////////////
 @Component({
   // tslint:disable-next-line:component-selector
-  selector: 'recursive-id-start',
+  selector: 'recursive-id-start-1',
   template: `
     <div>
       <div>{{ type$ | async }} : {{ id$ | async }}</div>
@@ -105,7 +107,7 @@ class StoryExBaseComponent {
     <router-outlet></router-outlet>
   `
 })
-class RecursiveIdComponent {
+class RecursiveIdOneComponent {
 
   id$: Observable<string | undefined>
   type$: Observable<string | undefined>
@@ -122,42 +124,132 @@ class RecursiveIdComponent {
 
 }
 
+@Component({
+  // tslint:disable-next-line:component-selector
+  selector: 'recursive-id-start-2',
+  template: `
+    <div>
+      <div>{{ type$ | async }} : {{ id$ | async }}</div>
+      <button type="button" class="btn btn-sm btn-light px-4" routerLink="table/{{ nextId }}">Next[table]</button>
+      <button type="button" class="btn btn-sm btn-light px-4" routerLink="new/{{ nextId }}">Next[new]</button>
+      <button type="button" class="btn btn-sm btn-light px-4" routerLink="edit/{{ nextId }}">Next[edit]</button>
+      <button type="button" class="btn btn-sm btn-light px-4" routerLink="view/{{ nextId }}">Next[view]</button>
+    </div>
+    <router-outlet></router-outlet>
+  `
+})
+class RecursiveIdTwoComponent {
+
+  id$: Observable<string | undefined>
+  type$: Observable<string | undefined>
+
+  nextId = (Math.random() * 1 * 50).toFixed(0)
+
+  constructor(
+    private _route: ActivatedRoute,
+    private _router: Router
+  ) {
+    this.id$ = this._route.paramMap.pipe(map(v => v.get('id') || undefined))
+    // this.type$ = this._route.data.pipe(map(v => v['type'] || undefined))
+    this.type$ = this._route.paramMap.pipe(map(v => v.get('type') || undefined))
+  }
+
+}
+
+@Component({
+  // tslint:disable-next-line:component-selector
+  selector: 'recursive-id-start-3',
+  template: `
+    <seam-hierarchy-router-outlet>
+      <div>
+        <div>Type: {{ type$ | async }}</div>
+        <button type="button" class="btn btn-sm btn-light px-4" routerLink="table/{{ nextId }}">Next[table]</button>
+        <button type="button" class="btn btn-sm btn-light px-4" routerLink="new/{{ nextId }}">Next[new]</button>
+        <button type="button" class="btn btn-sm btn-light px-4" routerLink="edit/{{ nextId }}">Next[edit]</button>
+        <button type="button" class="btn btn-sm btn-light px-4" routerLink="view/{{ nextId }}">Next[view]</button>
+        <button type="button" class="btn btn-sm btn-light px-4" routerLink="{{ nextId }}">Next Random</button>
+      </div>
+    </seam-hierarchy-router-outlet>
+    <!--<router-outlet></router-outlet>-->
+  `,
+  styles: [`
+    :host {
+      display: block;
+      background: rgba(30,30,80,0.3);
+      outline: red;
+      width: 100%;
+      height: 100px;
+    }
+  `]
+})
+class RecursiveIdThreeComponent {
+
+  type$: Observable<string | undefined>
+
+  nextId = (Math.random() * 1 * 50).toFixed(0)
+
+  constructor(
+    private _route: ActivatedRoute,
+    private _router: Router
+  ) {
+    this.type$ = this._route.paramMap.pipe(map(v => v.get('type') || undefined))
+  }
+
+}
+
 @NgModule({
   declarations: [
-    RecursiveIdComponent
+    RecursiveIdOneComponent,
+    RecursiveIdTwoComponent,
+    RecursiveIdThreeComponent
   ],
   imports: [
     CommonModule,
+    TheSeamDynamicRouterModule,
     RouterModule.forChild([
+      // {
+      //   path: 'table/:id',
+      //   component: RecursiveIdOneComponent,
+      //   data: { type: 'table' },
+      //   loadChildren: () => RecursiveIdModule
+      // },
+      // {
+      //   path: 'new/:id',
+      //   component: RecursiveIdOneComponent,
+      //   data: { type: 'new' },
+      //   loadChildren: () => RecursiveIdModule
+      // },
+      // {
+      //   path: 'edit/:id',
+      //   component: RecursiveIdOneComponent,
+      //   data: { type: 'edit' },
+      //   loadChildren: () => RecursiveIdModule
+      // },
+      // {
+      //   path: 'view/:id',
+      //   component: RecursiveIdOneComponent,
+      //   data: { type: 'view' },
+      //   loadChildren: () => RecursiveIdModule
+      // }
+
+      // {
+      //   path: ':type/:id',
+      //   component: RecursiveIdTwoComponent,
+      //   // data: { type: 'view' },
+      //   loadChildren: () => RecursiveIdModule
+      // }
+
       {
-        path: 'table/:id',
-        component: RecursiveIdComponent,
-        data: { type: 'table' },
-        loadChildren: () => RecursiveIdModule
-      },
-      {
-        path: 'new/:id',
-        component: RecursiveIdComponent,
-        data: { type: 'new' },
-        loadChildren: () => RecursiveIdModule
-      },
-      {
-        path: 'edit/:id',
-        component: RecursiveIdComponent,
-        data: { type: 'edit' },
-        loadChildren: () => RecursiveIdModule
-      },
-      {
-        path: 'view/:id',
-        component: RecursiveIdComponent,
-        data: { type: 'view' },
+        path: ':type',
+        component: RecursiveIdThreeComponent,
+        resolve: {
+          hierLevel: HierarchyLevelResolver
+        },
         loadChildren: () => RecursiveIdModule
       }
     ])
   ],
-  entryComponents: [
-    RecursiveIdComponent
-  ]
+  entryComponents: [ ]
 })
 class RecursiveIdModule { }
 // ////////////////////////////////////////////////////////////////////////////

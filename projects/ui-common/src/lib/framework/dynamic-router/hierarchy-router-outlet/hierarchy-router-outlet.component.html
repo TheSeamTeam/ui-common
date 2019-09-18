@@ -1,0 +1,14 @@
+<div>
+  <div class="hierarchy-router-outlet--content">
+    {{ animState }}
+    <ng-content></ng-content>
+  </div>
+  <div [@routeAnimations]="prepareRoute(outlet)">
+  <!-- <div [@routeAnimations]="animState"> -->
+  <!-- <div class="hierarchy-router-outlet--route-content"> -->
+    <router-outlet #outlet="outlet"
+      (activate)="outletActivate($event)"
+      (deactivate)="outletDeactivate($event)">
+    </router-outlet>
+  </div>
+</div>
