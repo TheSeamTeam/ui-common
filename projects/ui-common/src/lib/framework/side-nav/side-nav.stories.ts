@@ -6,7 +6,8 @@ import { Component } from '@angular/core'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { Router, RouterModule } from '@angular/router'
 
-import { faBook, faBuilding, faSignature } from '@fortawesome/free-solid-svg-icons'
+import { faBuilding, faCompass } from '@fortawesome/free-regular-svg-icons'
+import { faSignature } from '@fortawesome/free-solid-svg-icons'
 
 import { TheSeamSideNavModule } from './side-nav.module'
 
@@ -97,7 +98,7 @@ storiesOf('Framework/SideNav', module)
         {
           itemType: 'basic',
           label: 'Example 3',
-          icon: faBook,
+          icon: faCompass,
           children: [
             {
               itemType: 'link',
@@ -120,7 +121,12 @@ storiesOf('Framework/SideNav', module)
               itemType: 'link',
               label: 'Example 1.4',
               // link: 'example3/example1.4'
-            }
+            },
+            {
+              itemType: 'link',
+              label: 'Example 1.3',
+              link: 'example3/example1.3'
+            },
           ]
         },
         {
@@ -136,11 +142,15 @@ storiesOf('Framework/SideNav', module)
       ]
     },
     template: `
-      <seam-side-nav [items]="navItems"></seam-side-nav>
+      <div class="d-flex flex-row vh-100">
+        <div style="width: 240px;" class="h-100">
+          <seam-side-nav [items]="navItems"></seam-side-nav>
+        </div>
 
 
-      <div class="mt-4">
-        <router-outlet></router-outlet>
+        <div class="p-4">
+          <router-outlet></router-outlet>
+        </div>
       </div>
     `
   }))

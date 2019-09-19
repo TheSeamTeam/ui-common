@@ -8,8 +8,11 @@
 </div>
 
 <ng-container *ngIf="hasChildren && expanded">
-  <div class="pl-4">
+  <!-- <div class="pl-4"> -->
+  <!-- <div class="side-nav--group side-nav--group-collapsed" [class.d-none]="!expanded"> -->
+  <!-- <div class="side-nav--group" [class.side-nav--group-expanded]="expanded"> -->
     <seam-side-nav-item *ngFor="let child of children"
+      hierLevel="1"
       [itemType]="child.itemType"
       [icon]="child.icon"
       [label]="child.label"
@@ -18,13 +21,15 @@
       routerLinkActive="active"
       [children]="child.children">
     </seam-side-nav-item>
-  </div>
+  <!-- </div> -->
+  <!-- </div> -->
 </ng-container>
 
 <ng-template #itemTypeBasic>
-  <button class="btn btn-link p-0 d-flex flex-row rounded-0 text-decoration-none text-nowrap"
+  <button class="side-nav-item btn btn-link p-0 d-flex flex-row rounded-0 text-decoration-none text-nowrap w-100"
     (click)="toggleChildren()">
-    <div class="nav-link d-flex flex-row">
+    <div class="nav-link d-flex flex-row w-100">
+      <div [style.padding-left.px]="hierLevel * indentSize"></div>
       <div class="side-nav-item--icon text-left">
         <seam-icon *ngIf="icon" [icon]="icon"></seam-icon>
       </div>
@@ -44,10 +49,11 @@
 </ng-template>
 
 <ng-template #itemTypeLink>
-  <a *ngIf="link; else noLink" class="nav-link d-flex flex-row text-nowrap"
+  <a *ngIf="link; else noLink" class="side-nav-item nav-link d-flex flex-row text-nowrap w-100"
     [routerLink]="link"
     [queryParams]="queryParams"
     routerLinkActive="active">
+    <div [style.padding-left.px]="hierLevel * indentSize"></div>
     <div class="side-nav-item--icon">
       <seam-icon *ngIf="icon" [icon]="icon"></seam-icon>
     </div>
@@ -55,7 +61,8 @@
   </a>
 
   <ng-template #noLink>
-    <a class="nav-link d-flex flex-row text-nowrap">
+    <a class="side-nav-item nav-link d-flex flex-row text-nowrap w-100">
+      <div [style.padding-left.px]="hierLevel * indentSize"></div>
       <div class="side-nav-item--icon">
         <seam-icon *ngIf="icon" [icon]="icon"></seam-icon>
       </div>

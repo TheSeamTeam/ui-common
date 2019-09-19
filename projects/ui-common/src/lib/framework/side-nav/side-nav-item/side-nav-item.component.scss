@@ -2,6 +2,15 @@
 
 :host {
   display: block;
+
+  &.seam-side-nav-item--active {
+    transition: 250ms ease-in-out background-color;
+
+    .active,
+    &:active {
+      background-color: $white;
+    }
+  }
 }
 
 .side-nav-item--icon {
@@ -11,6 +20,17 @@
   height: 24px;
   max-height: 24px;
   min-height: 24px;
+}
+
+.side-nav-item {
+  transition: 250ms ease-in-out background-color;
+  &:hover {
+    background-color: $gray-300;
+  }
+}
+
+.nav-link {
+  color: $dark;
 }
 
 .side-nav-item--toggle-btn-container {
@@ -24,6 +44,8 @@ button.side-nav-item--toggle-btn-container {
 }
 
 .side-nav-item--toggle-btn {
+  color: $dark;
+
   ::ng-deep .svg-inline--fa {
     transition: 100ms ease-in-out transform;
   }
@@ -32,5 +54,18 @@ button.side-nav-item--toggle-btn-container {
     ::ng-deep .svg-inline--fa {
       transform: rotate(-90deg);
     }
+  }
+}
+
+.side-nav--group {
+  // transition: 250ms ease-in-out height;
+  will-change: height;
+  height: 0;
+  overflow: hidden;
+
+  &.side-nav--group-expanded {
+    height: auto;
+    transition: 250ms ease-in-out height;
+    // display: none;
   }
 }
