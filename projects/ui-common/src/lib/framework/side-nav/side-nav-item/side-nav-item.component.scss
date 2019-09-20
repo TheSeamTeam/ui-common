@@ -1,36 +1,90 @@
-@import '../../../../styles/utilities';
+@import '../styles/utilities';
 
 :host {
   display: block;
 
+  transition: 250ms ease-in-out background-color;
   &.seam-side-nav-item--active {
-    transition: 250ms ease-in-out background-color;
+    background-color: $white;
 
     .active,
     &:active {
       background-color: $white;
     }
+
+    .side-nav-item {
+      &:hover {
+        // background-color: rgba($gray-300, 0.3);
+        background-color: rgba($primary, 0.4);
+      }
+    }
   }
 }
 
 .side-nav-item--icon {
-  width: 35px;
-  max-width: 35px;
-  min-width: 35px;
+  // width: 35px;
+  // max-width: 35px;
+  // min-width: 35px;
+  width: 24px;
+  max-width: 24px;
+  min-width: 24px;
   height: 24px;
   max-height: 24px;
   min-height: 24px;
 }
 
 .side-nav-item {
+  min-height: 45px;
   transition: 250ms ease-in-out background-color;
   &:hover {
-    background-color: $gray-300;
+    // background-color: $gray-300;
+    background-color: rgba($primary, 0.3);
+  }
+
+  &.active {
+    pointer-events: none;
+    cursor: default;
+  }
+}
+
+a.side-nav-item:not([href]):not([tabindex]) {
+  &:hover {
+    background-color: transparent;
   }
 }
 
 .nav-link {
   color: $dark;
+}
+
+.side-nav-btn {
+  font-weight: $font-weight-normal;
+  color: $link-color;
+  text-decoration: $link-decoration;
+
+  @include hover {
+    color: $link-hover-color;
+    text-decoration: $link-hover-decoration;
+  }
+
+  &:focus,
+  &.focus {
+    text-decoration: $link-hover-decoration;
+    box-shadow: none;
+  }
+
+  &:disabled,
+  &.disabled {
+    color: $btn-link-disabled-color;
+    pointer-events: none;
+  }
+}
+
+// Add the button focus like a link when navigating with keyboard.
+.cdk-keyboard-focused {
+  // outline: -webkit-focus-ring-color auto 1px;
+  outline: 1px dotted;
+  outline: 5px auto -webkit-focus-ring-color;
 }
 
 .side-nav-item--toggle-btn-container {
@@ -58,14 +112,24 @@ button.side-nav-item--toggle-btn-container {
 }
 
 .side-nav--group {
-  // transition: 250ms ease-in-out height;
   will-change: height;
-  height: 0;
   overflow: hidden;
+}
 
-  &.side-nav--group-expanded {
-    height: auto;
-    transition: 250ms ease-in-out height;
-    // display: none;
+$side-nav-level-darken-inc: 3%;
+@for $i from 1 through 9 {
+  .side-nav--group--level-#{$i} {
+    background-color: darken($gray-200, ($i * $side-nav-level-darken-inc));
   }
+}
+
+.side-nav-item--divider {
+  display: block;
+  border-top: 1px solid $gray-500;
+  width: 100%;
+}
+
+.side-nav-item--title {
+  font-size: 24px;
+  padding-left: 10px;
 }

@@ -1,8 +1,14 @@
-<nav class="nav flex-column">
+<nav class="nav flex-column" >
+  <!-- [@sideNavExpand]="sideNavExpandedState$ | async" -->
+  <seam-side-nav-toggle
+    [expanded]="expanded$ | async"
+    (toggleExpand)="toggleExpanded()">
+  </seam-side-nav-toggle>
   <!-- <li class="nav-item" *ngFor="let item of items">
     <a class="nav-link" [routerLink]="item?.link">{{ item?.label }}</a>
   </li> -->
   <seam-side-nav-item *ngFor="let item of items$ | async"
+    [compact]="!(expanded$ | async)"
     [itemType]="item.itemType"
     [icon]="item.icon"
     [label]="item.label"

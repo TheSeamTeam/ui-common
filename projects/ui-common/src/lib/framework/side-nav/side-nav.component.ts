@@ -1,17 +1,41 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core'
+import {
+  animate,
+  animateChild,
+  group,
+  keyframes,
+  query,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations'
+import { coerceBooleanProperty } from '@angular/cdk/coercion'
+import { ChangeDetectionStrategy, Component, HostBinding, Input, OnInit } from '@angular/core'
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router'
-import { BehaviorSubject, combineLatest } from 'rxjs'
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs'
 import { filter, map, mapTo, publishReplay, refCount, startWith, switchMap } from 'rxjs/operators'
 
 import { ISideNavItem } from './side-nav.models'
+
+const EXPANDED_STATE = 'expanded'
+const COLLAPSED_STATE = 'collapsed'
 
 @Component({
   selector: 'seam-side-nav',
   templateUrl: './side-nav.component.html',
   styleUrls: ['./side-nav.component.scss'],
+  animations: [
+    trigger('sideNavExpand', [
+      state(EXPANDED_STATE, style({ width: '*' })),
+      state(COLLAPSED_STATE, style({ width: '50px', 'overflow-x': 'hidden' })),
+      transition(`${EXPANDED_STATE} <=> ${COLLAPSED_STATE}`, animate('0.2s ease-in-out')),
+    ])
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SideNavComponent implements OnInit {
+
+  @HostBinding('@sideNavExpand') _sideNavExpand = EXPANDED_STATE
 
   @Input()
   get items(): ISideNavItem[] { return this._items.value }
@@ -22,6 +46,13 @@ export class SideNavComponent implements OnInit {
   // private _itemsWithState = new BehaviorSubject<ISideNavItem[]>([])
   // public itemsWithState$ = this._itemsWithState.asObservable()
 
+  @Input()
+  get expanded(): boolean { return this._expanded.value }
+  set expanded(value: boolean) { this._expanded.next(coerceBooleanProperty(value)) }
+  private _expanded = new BehaviorSubject<boolean>(true)
+  public expanded$ = this._expanded.asObservable()
+
+  public sideNavExpandedState$: Observable<string>
 
   constructor(
     private _router: Router,
@@ -62,10 +93,14 @@ export class SideNavComponent implements OnInit {
       )
       .subscribe()
 
+    this.sideNavExpandedState$ = this.expanded$
+      .pipe(map(expanded => expanded ? EXPANDED_STATE : COLLAPSED_STATE))
 
+    this.sideNavExpandedState$.subscribe(v => this._sideNavExpand = v)
+  }
 
-      // publishReplay(1),
-      // refCount()
+  public toggleExpanded() {
+    this.expanded = !this.expanded
   }
 
 }

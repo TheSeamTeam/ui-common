@@ -14,6 +14,10 @@ export interface ISideNavItemBase<T extends string> {
   status?: ISideNavItemStatus
 }
 
+export interface ISideNavTitle extends ISideNavItemBase<'title'> {
+  label?: string
+}
+
 export interface ISideNavDivider extends ISideNavItemBase<'divider'> {
   label?: string
 }
@@ -39,4 +43,4 @@ export interface ISideNavButton extends ISideNavItemBase<'button'> {
   onClick: (event) => void
 }
 
-export type ISideNavItem = ISideNavDivider | ISideNavBasic | ISideNavLink | ISideNavButton
+export type ISideNavItem = ISideNavTitle | ISideNavDivider | ISideNavBasic | ISideNavLink | ISideNavButton

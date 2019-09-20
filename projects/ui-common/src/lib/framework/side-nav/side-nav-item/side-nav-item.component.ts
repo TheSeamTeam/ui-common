@@ -1,7 +1,29 @@
-import { coerceNumberProperty } from '@angular/cdk/coercion'
-import { ChangeDetectionStrategy, Component, ElementRef, Input, OnDestroy, OnInit, Renderer2 } from '@angular/core'
-import { BehaviorSubject, Observable, of } from 'rxjs'
-import { switchMap } from 'rxjs/operators'
+import {
+  animate,
+  animateChild,
+  group,
+  keyframes,
+  query,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations'
+import { coerceBooleanProperty, coerceNumberProperty } from '@angular/cdk/coercion'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  Host,
+  Input,
+  OnDestroy,
+  OnInit,
+  Optional,
+  Renderer2,
+  SkipSelf
+} from '@angular/core'
+import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs'
+import { auditTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators'
 
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons'
 import { untilDestroyed } from 'ngx-take-until-destroy'
@@ -11,11 +33,21 @@ import { RouterHelpersService } from '../../../services/router-helpers.service'
 
 import { ISideNavItem } from '../side-nav.models'
 
+const EXPANDED_STATE = 'expanded'
+const COLLAPSED_STATE = 'collapsed'
+
 @Component({
   selector: 'seam-side-nav-item',
   templateUrl: './side-nav-item.component.html',
   styleUrls: ['./side-nav-item.component.scss'],
   exportAs: 'seamSideNavItem',
+  animations: [
+    trigger('childGroupAnim', [
+      state(EXPANDED_STATE, style({ height: '*' })),
+      state(COLLAPSED_STATE, style({ height: 0, 'overflow-y': 'hidden', visibility: 'hidden' })),
+      transition(`${EXPANDED_STATE} <=> ${COLLAPSED_STATE}`, animate('0.2s ease-in-out')),
+    ])
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SideNavItemComponent implements OnInit, OnDestroy {
@@ -45,33 +77,70 @@ export class SideNavItemComponent implements OnInit, OnDestroy {
 
   @Input() indentSize = 10
 
-  @Input() expanded = true
+  @Input()
+  set expanded(value: boolean | undefined) { this._expanded.next(coerceBooleanProperty(value)) }
+  get expanded() { return this._expanded.value }
+  private _expanded = new BehaviorSubject<boolean>(false)
+  public expanded$ = this._expanded.asObservable()
+
+  @Input() compact = false
 
   public isActive$: Observable<boolean>
+  public childGroupAnimState$: Observable<string>
+  public hasActiveChild$: Observable<boolean>
+
+  private _registeredChildren = new BehaviorSubject<SideNavItemComponent[]>([])
 
   constructor(
     private _routerHelpers: RouterHelpersService,
     private _renderer: Renderer2,
-    private _element: ElementRef
+    private _element: ElementRef,
+    @Optional() @SkipSelf() @Host() private _parent?: SideNavItemComponent
   ) {
+    this.hasActiveChild$ = this._registeredChildren.pipe(
+      switchMap(children => Array.isArray(children) && children.length > 0
+        ? combineLatest(children.map(c => c.isActive$)) : of([])
+      ),
+      auditTime(0),
+      map(v => v.findIndex(b => !!b) !== -1),
+      distinctUntilChanged()
+    )
+
     this.isActive$ = this.link$.pipe(
       switchMap(link => link ? this._routerHelpers.isActive(link, true) : of(false)),
     )
 
-    this.isActive$
+    this.childGroupAnimState$ = this.expanded$
+      .pipe(map(expanded => expanded ? EXPANDED_STATE : COLLAPSED_STATE))
+  }
+
+  ngOnInit() {
+    if (this._parent) { this._parent._registerChild(this) }
+
+    const isActive2 = combineLatest(this.hasActiveChild$, this.expanded$, this.isActive$).pipe(
+      map(([ hasActiveChild, expanded, isActive]) => {
+        if (!expanded && hasActiveChild) {
+          return true
+        }
+        return isActive
+      })
+    )
+
+    isActive2
       .pipe(untilDestroyed(this))
       .subscribe(isActive => {
         const c = 'seam-side-nav-item--active'
         if (isActive) {
           this._renderer.addClass(this._element.nativeElement, c)
         } else {
-          this._renderer.removeClass(this._element.nativeElement, c)        }
+          this._renderer.removeClass(this._element.nativeElement, c)
+        }
       })
   }
 
-  ngOnInit() { }
-
-  ngOnDestroy() { }
+  ngOnDestroy() {
+    if (this._parent) { this._parent._unregisterChild(this) }
+  }
 
   get hasChildren() {
     return Array.isArray(this.children) && this.children.length > 0
@@ -79,6 +148,16 @@ export class SideNavItemComponent implements OnInit, OnDestroy {
 
   public toggleChildren(): void {
     this.expanded = !this.expanded
+  }
+
+  _registerChild(child: SideNavItemComponent) {
+    const children = this._registeredChildren.value
+    this._registeredChildren.next([ ...children, child ])
+  }
+
+  _unregisterChild(child: SideNavItemComponent) {
+    const children = this._registeredChildren.value.filter(c => c !== child)
+    this._registeredChildren.next([ ...children ])
   }
 
 }

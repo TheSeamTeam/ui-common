@@ -129,14 +129,21 @@ storiesOf('Framework/SideNav', module)
             },
           ]
         },
+        { itemType: 'divider' },
+        {
+          itemType: 'title',
+          label: 'Extra'
+        },
         {
           itemType: 'link',
           label: 'Example 4',
+          icon: faSignature,
           link: 'example4'
         },
         {
           itemType: 'link',
           label: 'Example 5',
+          icon: faBuilding,
           // link: 'example5'
         }
       ]
