@@ -5,26 +5,26 @@
 
   transition: 250ms ease-in-out background-color;
   &.seam-side-nav-item--active {
-    background-color: $white;
+    background-color: $seam-side-nav-item-bg-color-active;
 
     .active,
     &:active {
-      background-color: $white;
+      background-color: $seam-side-nav-item-bg-color-active;
     }
 
     .side-nav-item {
       &:hover {
-        // background-color: rgba($gray-300, 0.3);
-        background-color: rgba($primary, 0.4);
+        background-color: $seam-side-nav-item-bg-color-hover;
       }
+    }
+
+    .nav-link {
+      color: $seam-side-nav-item-color-active;
     }
   }
 }
 
 .side-nav-item--icon {
-  // width: 35px;
-  // max-width: 35px;
-  // min-width: 35px;
   width: 24px;
   max-width: 24px;
   min-width: 24px;
@@ -36,9 +36,9 @@
 .side-nav-item {
   min-height: 45px;
   transition: 250ms ease-in-out background-color;
+
   &:hover {
-    // background-color: $gray-300;
-    background-color: rgba($primary, 0.3);
+    background-color: $seam-side-nav-item-bg-color-hover;
   }
 
   &.active {
@@ -48,22 +48,24 @@
 }
 
 a.side-nav-item:not([href]):not([tabindex]) {
+  color: $seam-side-nav-item-disabled-color;
+
   &:hover {
     background-color: transparent;
   }
 }
 
 .nav-link {
-  color: $dark;
+  color: $seam-side-nav-item-color;
 }
 
 .side-nav-btn {
   font-weight: $font-weight-normal;
-  color: $link-color;
+  color: $seam-side-nav-item-color;
   text-decoration: $link-decoration;
 
   @include hover {
-    color: $link-hover-color;
+    color: $seam-side-nav-item-bg-color-hover;
     text-decoration: $link-hover-decoration;
   }
 
@@ -75,7 +77,7 @@ a.side-nav-item:not([href]):not([tabindex]) {
 
   &:disabled,
   &.disabled {
-    color: $btn-link-disabled-color;
+    color: $seam-side-nav-item-disabled-color;
     pointer-events: none;
   }
 }
@@ -93,12 +95,12 @@ a.side-nav-item:not([href]):not([tabindex]) {
 }
 button.side-nav-item--toggle-btn-container {
   &:hover {
-    background-color: $gray-300;
+    background-color: $seam-side-nav-item-bg-color-hover;
   }
 }
 
 .side-nav-item--toggle-btn {
-  color: $dark;
+  color: $seam-side-nav-item-color-active;
 
   ::ng-deep .svg-inline--fa {
     transition: 100ms ease-in-out transform;
@@ -116,20 +118,20 @@ button.side-nav-item--toggle-btn-container {
   overflow: hidden;
 }
 
-$side-nav-level-darken-inc: 3%;
 @for $i from 1 through 9 {
   .side-nav--group--level-#{$i} {
-    background-color: darken($gray-200, ($i * $side-nav-level-darken-inc));
+    background-color: darken($seam-side-nav-bg-color, ($i * $seam-side-nav-group-bg-variation-amount));
   }
 }
 
 .side-nav-item--divider {
   display: block;
-  border-top: 1px solid $gray-500;
+  border-top: $seam-side-nav-divider-size solid $seam-side-nav-divider-color;
   width: 100%;
 }
 
 .side-nav-item--title {
-  font-size: 24px;
-  padding-left: 10px;
+  color: $seam-side-nav-title-color;
+  font-size: $seam-side-nav-title-font-size;
+  padding-left: $seam-side-nav-title-padding-left;
 }

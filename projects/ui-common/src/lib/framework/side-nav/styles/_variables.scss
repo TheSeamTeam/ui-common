@@ -1,22 +1,2 @@
-$seam-widget-header-title-font-size: 17px;
-
-$seam-widget-header-icon-height: 20px;
-$seam-widget-header-icon-width: 20px;
-
-$seam-widget-body-font-size: 15px;
-
-$seam-widget-content-header-padding: 0.5rem 0.5rem 1rem 0.5rem;
-
-$seam-widget-footer-font-size: 13px;
-
-$seam-widget-footer-link-margin-top: 0.5rem;
-$seam-widget-footer-text-margin-top: 0.5rem;
-
-$seam-widget-tile-font-size: 14px;
-$seam-widget-tile-line-height: 18px;
-
-$seam-widget-tile-border-color: $primary;
-$seam-widget-tile-border-radius: 10px;
-$seam-widget-tile-margin-bottom: 0.5rem;
-
-$seam-widget-empty-label-padding: 0.5rem;
+// @import './_themes/light/_variables';
+@import './_themes/primary/_variables';

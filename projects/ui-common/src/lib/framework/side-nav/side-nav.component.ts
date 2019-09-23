@@ -26,7 +26,7 @@ const COLLAPSED_STATE = 'collapsed'
   styleUrls: ['./side-nav.component.scss'],
   animations: [
     trigger('sideNavExpand', [
-      state(EXPANDED_STATE, style({ width: '*' })),
+      state(EXPANDED_STATE, style({ width: '260px' })),
       state(COLLAPSED_STATE, style({ width: '50px', 'overflow-x': 'hidden' })),
       transition(`${EXPANDED_STATE} <=> ${COLLAPSED_STATE}`, animate('0.2s ease-in-out')),
     ])
