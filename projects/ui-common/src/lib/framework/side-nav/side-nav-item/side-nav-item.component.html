@@ -41,9 +41,13 @@
       <div class="side-nav-item--icon text-left">
         <seam-icon *ngIf="icon" [icon]="icon"></seam-icon>
       </div>
-      <span *ngIf="!compact" style="margin-left: 11px;">
-        {{ label }}
+      <!-- NOTE: This is temporarily formatted oddly while fixing animation. -->
+      <span style="margin-left: 11px;" [@compactAnim]="compactAnimState$ | async">
+        <span *ngIf="!compact">
+          {{ label }}
+        </span>
       </span>
+      <span *ngIf="compact" class="sr-only">{{ label }}</span>
     </div>
 
     <div *ngIf="hasChildren && !compact"
@@ -72,6 +76,7 @@
     <span *ngIf="!compact" style="margin-left: 11px;">
       {{ label }}
     </span>
+    <span *ngIf="compact" class="sr-only">{{ label }}</span>
   </a>
 
   <ng-template #noLink>
@@ -83,6 +88,7 @@
       <span *ngIf="!compact" style="margin-left: 11px;">
         {{ label }}
       </span>
+      <span *ngIf="compact" class="sr-only">{{ label }}</span>
     </a>
   </ng-template>
 

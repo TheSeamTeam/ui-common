@@ -23,7 +23,7 @@ import {
   SkipSelf
 } from '@angular/core'
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs'
-import { auditTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators'
+import { auditTime, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators'
 
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons'
 import { untilDestroyed } from 'ngx-take-until-destroy'
@@ -36,6 +36,9 @@ import { ISideNavItem } from '../side-nav.models'
 const EXPANDED_STATE = 'expanded'
 const COLLAPSED_STATE = 'collapsed'
 
+const FULL_STATE = 'full'
+const COMPACT_STATE = 'compact'
+
 @Component({
   selector: 'seam-side-nav-item',
   templateUrl: './side-nav-item.component.html',
@@ -46,6 +49,32 @@ const COLLAPSED_STATE = 'collapsed'
       state(EXPANDED_STATE, style({ height: '*' })),
       state(COLLAPSED_STATE, style({ height: 0, 'overflow-y': 'hidden', visibility: 'hidden' })),
       transition(`${EXPANDED_STATE} <=> ${COLLAPSED_STATE}`, animate('0.2s ease-in-out')),
+    ]),
+
+
+    trigger('compactAnim', [
+      transition('* <=> *', [
+        query(':enter', [
+          style({ opacity: '0' }),
+          animate('5.2s ease-in-out', style({ opacity: '1' }))
+        ], { optional: true }),
+        query(':leave', [
+          style({ opacity: '1' }),
+          animate('5.2s ease-in-out', style({ opacity: '0' }))
+        ], { optional: true })
+      ])
+      // state(FULL_STATE, style({ opacity: '1' })),
+      // state(COMPACT_STATE, style({ opacity: '0' })),
+      // transition(`${FULL_STATE} <=> ${COMPACT_STATE}`, animate('5.2s ease-in-out')),
+      // transition(`${FULL_STATE} <=> ${COMPACT_STATE}`, [
+      // transition('* <=> *', [
+      //   query(':leave', [
+      //     style({ opacity: '1' }),
+      //     animate('5.2s ease-in-out', style({ opacity: '0' }))
+      //   ], { optional: true })
+      // ]),
+
+
     ])
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -83,10 +112,15 @@ export class SideNavItemComponent implements OnInit, OnDestroy {
   private _expanded = new BehaviorSubject<boolean>(false)
   public expanded$ = this._expanded.asObservable()
 
-  @Input() compact = false
+  @Input()
+  set compact(value: boolean | undefined) { this._compact.next(coerceBooleanProperty(value)) }
+  get compact() { return this._compact.value }
+  private _compact = new BehaviorSubject<boolean>(false)
+  public compact$ = this._compact.asObservable()
 
   public isActive$: Observable<boolean>
   public childGroupAnimState$: Observable<string>
+  public compactAnimState$: Observable<string>
   public hasActiveChild$: Observable<boolean>
 
   private _registeredChildren = new BehaviorSubject<SideNavItemComponent[]>([])
@@ -112,6 +146,10 @@ export class SideNavItemComponent implements OnInit, OnDestroy {
 
     this.childGroupAnimState$ = this.expanded$
       .pipe(map(expanded => expanded ? EXPANDED_STATE : COLLAPSED_STATE))
+
+    this.compactAnimState$ = this.compact$
+      .pipe(map(compact => compact ? COMPACT_STATE : FULL_STATE))
+      .pipe(tap(compact => console.log('compactState', compact)))
   }
 
   ngOnInit() {
