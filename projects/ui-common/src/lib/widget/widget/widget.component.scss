@@ -9,6 +9,44 @@
   background-color: #F4F4F4;
   border-bottom: 1px solid $border-color;
   font-size: $seam-widget-header-title-font-size;
+  display: flex;
+  flex-direction: row;
+
+  .widget-header-content {
+    flex: 1 1 100%;
+  }
+
+  .widget-header-btns-container {
+    display: flex;
+    flex-direction: row;
+
+    > div {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 4px;
+    }
+
+    ::ng-deep {
+      .widget-header-btn-config {
+
+        .seam-icon--fa {
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          text-align: center;
+          height: 25px;
+          width: 30px;
+
+          ::ng-deep .svg-inline--fa {
+            max-width: 100%;
+            height: 100%;
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
 
   .widget-header-title {
     font-size: $seam-widget-header-title-font-size;

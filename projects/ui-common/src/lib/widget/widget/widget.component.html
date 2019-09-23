@@ -1,30 +1,45 @@
 <div class="border rounded overflow-hidden">
-  <div class="widget-header p-2" seamWidgetDragHandle>
-    <span class="mr-1 widget-header-icon">
-      <ng-container *ngIf="iconTpl; else noIconTpl">
-        <ng-template
-          [ngTemplateOutlet]="iconTpl.template"
-          [ngTemplateOutletContext]="{ $implicit: icon, icon: icon, title: titleText }">
+  <div class="widget-header" seamWidgetDragHandle>
+    <div class="widget-header-content p-2">
+      <span class="mr-1 widget-header-icon">
+        <ng-container *ngIf="iconTpl; else noIconTpl">
+          <ng-template
+            [ngTemplateOutlet]="iconTpl.template"
+            [ngTemplateOutletContext]="{ $implicit: icon, icon: icon, title: titleText }">
+          </ng-template>
+        </ng-container>
+        <ng-template #noIconTpl>
+          <fa-icon *ngIf="_iconObj"
+            class="widget-header-icon--fa {{ iconClass }}"
+            [icon]="_iconObj"></fa-icon>
+          <img *ngIf="_iconUrl"
+            class="widget-header-icon--img {{ iconClass }}"
+            [src]="_iconUrl" [alt]="titleText">
         </ng-template>
-      </ng-container>
-      <ng-template #noIconTpl>
-        <fa-icon *ngIf="_iconObj"
-          class="widget-header-icon--fa {{ iconClass }}"
-          [icon]="_iconObj"></fa-icon>
-        <img *ngIf="_iconUrl"
-          class="widget-header-icon--img {{ iconClass }}"
-          [src]="_iconUrl" [alt]="titleText">
-      </ng-template>
-    </span>
-    <span class="widget-header-title">
-      <ng-container *ngIf="titleTpl; else noTitleTpl">
-        <ng-template
-          [ngTemplateOutlet]="titleTpl.template"
-          [ngTemplateOutletContext]="{ $implicit: titleText, icon: icon, title: titleText }">
-        </ng-template>
-      </ng-container>
-      <ng-template #noTitleTpl>{{ titleText }}</ng-template>
-    </span>
+      </span>
+      <span class="widget-header-title">
+        <ng-container *ngIf="titleTpl; else noTitleTpl">
+          <ng-template
+            [ngTemplateOutlet]="titleTpl.template"
+            [ngTemplateOutletContext]="{ $implicit: titleText, icon: icon, title: titleText }">
+          </ng-template>
+        </ng-container>
+        <ng-template #noTitleTpl>{{ titleText }}</ng-template>
+      </span>
+    </div>
+    <div class="widget-header-btns-container" *ngIf="hasConfig">
+      <div>
+        <!-- <button seamIconBtn [icon]="configIcon"
+          class="widget-header-btn-config"
+          iconType="">
+          <span class="sr-only">Widget configuration menu</span>
+        </button> -->
+        <button seamButton class="widget-header-btn-config p-0">
+          <seam-icon class="d-block" [icon]="configIcon"></seam-icon>
+          <span class="sr-only">Widget configuration menu</span>
+        </button>
+      </div>
+    </div>
   </div>
   <div class="position-relative bg-white" [style.height.px]="loading ? 150 : undefined">
     <div class="p-2" *ngIf="!loading else loadingTpl">

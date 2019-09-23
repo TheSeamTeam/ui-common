@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core'
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 
+import { TheSeamButtonsModule } from '../buttons/index'
 import { TheSeamIconModule } from '../icon/icon.module'
 import { TheSeamLoadingModule } from '../loading/index'
 
@@ -40,7 +41,8 @@ import { WidgetComponent } from './widget/widget.component'
     FontAwesomeModule,
     TheSeamIconModule,
     TheSeamLoadingModule,
-    DragDropModule
+    DragDropModule,
+    TheSeamButtonsModule
   ],
   exports: [
     WidgetComponent,
