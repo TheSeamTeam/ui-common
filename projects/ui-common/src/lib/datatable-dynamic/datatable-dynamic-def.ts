@@ -1,7 +1,6 @@
 import { ThemeTypes } from '../models/index'
 
-export type IDynamicDatatableCellType = 'string' | 'integer' | 'decimal'
-  | 'date' | 'icon' | 'url'
+import { IDynamicDatatableCellType } from './models/cell-type'
 
 export interface IDynamicDatatableColumn {
   prop: string
