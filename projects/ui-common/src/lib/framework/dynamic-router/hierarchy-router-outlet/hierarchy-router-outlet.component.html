@@ -1,9 +1,13 @@
-<div>
-  <div class="hierarchy-router-outlet--content">
-    {{ animState }}
+<div class="h-100">
+  <div class="hierarchy-router-outlet--content h-100" *ngIf="ngContentVisible">
+    <!-- {{ animState }} -->
     <ng-content></ng-content>
   </div>
-  <div [@routeAnimations]="prepareRoute(outlet)">
+  <div
+    [class.h-100]="!ngContentVisible"
+    [@routeAnimations]="prepareRoute(outlet)"
+    (@routeAnimations.start)="routeAnimationsStart($event)"
+    (@routeAnimations.done)="routeAnimationsDone($event)">
   <!-- <div [@routeAnimations]="animState"> -->
   <!-- <div class="hierarchy-router-outlet--route-content"> -->
     <router-outlet #outlet="outlet"

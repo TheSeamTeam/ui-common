@@ -47,6 +47,8 @@ export class HierarchyRouterOutletComponent implements OnInit, OnDestroy {
 
   outletActive = false
 
+  ngContentVisible = true
+
   constructor(
     private _route: ActivatedRoute,
     private _router: Router
@@ -58,18 +60,18 @@ export class HierarchyRouterOutletComponent implements OnInit, OnDestroy {
     )
     .subscribe()
 
-    routeChanges(this._router)
-      .pipe(
-        untilDestroyed(this),
-        tap(() => {
-          // if (this._hasChildren()) {
-          //   this.animState = 'isLeft'
-          // } else {
-          //   this.animState = 'isRight'
-          // }
-        })
-      )
-      .subscribe(v => console.log(`routeChanges[${this._uid}]`, v))
+    // routeChanges(this._router)
+    //   .pipe(
+    //     untilDestroyed(this),
+    //     tap(() => {
+    //       // if (this._hasChildren()) {
+    //       //   this.animState = 'isLeft'
+    //       // } else {
+    //       //   this.animState = 'isRight'
+    //       // }
+    //     })
+    //   )
+    //   .subscribe(v => console.log(`routeChanges[${this._uid}]`, v))
   }
 
   ngOnInit() { }
@@ -78,13 +80,16 @@ export class HierarchyRouterOutletComponent implements OnInit, OnDestroy {
 
   private _hasChildren() {
     const count = this._route.pathFromRoot.length - 1
-    const countFull = this._router.parseUrl(this._router.url).root.children.primary.segments.length
+    let countFull = 0
+    if (this._router.parseUrl(this._router.url).root.children.primary) {
+      countFull = this._router.parseUrl(this._router.url).root.children.primary.segments.length
+    }
     // console.log(`_hasChildren[${this._uid}]`, { count, countFull })
     return countFull > count
   }
 
   prepareRoute(outlet: RouterOutlet) {
-    console.log(`outlet[${this._uid}]`, outlet, this.animState, this._hasChildren(), this.outletActive)
+    // console.log(`outlet[${this._uid}]`, outlet, this.animState, this._hasChildren(), this.outletActive)
     if (outlet.isActivated) {
       // console.log(outlet.isActivated)
       // console.log(outlet.component)
@@ -103,13 +108,23 @@ export class HierarchyRouterOutletComponent implements OnInit, OnDestroy {
   }
 
   outletActivate(event) {
-    console.log(`outletActivate[${this._uid}]`, event)
+    // console.log(`outletActivate[${this._uid}]`, event)
     this.outletActive = true
   }
 
   outletDeactivate(event) {
-    console.log(`outletDeactivate[${this._uid}]`, event)
+    // console.log(`outletDeactivate[${this._uid}]`, event)
     this.outletActive = false
+  }
+
+  routeAnimationsStart(event) {
+    // console.log('routeAnimationsStart', event)
+    this.ngContentVisible = true
+  }
+
+  routeAnimationsDone(event) {
+    // console.log('routeAnimationsDone', event)
+    this.ngContentVisible = !this.outletActive
   }
 
 }

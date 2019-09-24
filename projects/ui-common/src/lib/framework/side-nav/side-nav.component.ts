@@ -28,17 +28,17 @@ const COLLAPSED_STATE = 'collapsed'
     trigger('sideNavExpand', [
       state(EXPANDED_STATE, style({ width: '260px' })),
       state(COLLAPSED_STATE, style({ width: '50px', 'overflow-x': 'hidden' })),
-      // transition(`${EXPANDED_STATE} <=> ${COLLAPSED_STATE}`, animate('0.2s ease-in-out')),
-      transition(`${EXPANDED_STATE} <=> ${COLLAPSED_STATE}`, [
-        // query(':leave', animateChild(), { optional: true }),
-        // query(':enter', animateChild(), { optional: true }),
-        group([
-          query(':leave', animateChild(), { optional: true }),
-          query(':enter', animateChild(), { optional: true }),
-          query('@compactAnim', animateChild(), { optional: true }),
-          animate('5.2s ease-in-out')
-        ])
-      ]),
+      transition(`${EXPANDED_STATE} <=> ${COLLAPSED_STATE}`, animate('0.2s ease-in-out')),
+      // transition(`${EXPANDED_STATE} <=> ${COLLAPSED_STATE}`, [
+      //   // query(':leave', animateChild(), { optional: true }),
+      //   // query(':enter', animateChild(), { optional: true }),
+      //   group([
+      //     query(':leave', animateChild(), { optional: true }),
+      //     query(':enter', animateChild(), { optional: true }),
+      //     query('@compactAnim', animateChild(), { optional: true }),
+      //     animate('5.2s ease-in-out')
+      //   ])
+      // ]),
     ])
   ],
   changeDetection: ChangeDetectionStrategy.OnPush

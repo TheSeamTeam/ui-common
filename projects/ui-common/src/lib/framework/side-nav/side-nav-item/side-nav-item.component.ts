@@ -53,16 +53,17 @@ const COMPACT_STATE = 'compact'
 
 
     trigger('compactAnim', [
-      transition('* <=> *', [
-        query(':enter', [
-          style({ opacity: '0' }),
-          animate('5.2s ease-in-out', style({ opacity: '1' }))
-        ], { optional: true }),
-        query(':leave', [
-          style({ opacity: '1' }),
-          animate('5.2s ease-in-out', style({ opacity: '0' }))
-        ], { optional: true })
-      ])
+      // transition('* <=> *', [
+      //   query(':enter', [
+      //     style({ opacity: '0' }),
+      //     animate('5.2s ease-in-out', style({ opacity: '1' }))
+      //   ], { optional: true }),
+      //   query(':leave', [
+      //     style({ opacity: '1' }),
+      //     animate('5.2s ease-in-out', style({ opacity: '0' }))
+      //   ], { optional: true })
+      // ])
+
       // state(FULL_STATE, style({ opacity: '1' })),
       // state(COMPACT_STATE, style({ opacity: '0' })),
       // transition(`${FULL_STATE} <=> ${COMPACT_STATE}`, animate('5.2s ease-in-out')),
@@ -149,7 +150,7 @@ export class SideNavItemComponent implements OnInit, OnDestroy {
 
     this.compactAnimState$ = this.compact$
       .pipe(map(compact => compact ? COMPACT_STATE : FULL_STATE))
-      .pipe(tap(compact => console.log('compactState', compact)))
+      // .pipe(tap(compact => console.log('compactState', compact)))
   }
 
   ngOnInit() {

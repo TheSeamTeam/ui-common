@@ -1,0 +1,11 @@
+<seam-hierarchy-router-outlet>
+  <div class="p-2 w-100 h-100 d-flex flex-column">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/">Dashboard</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Users</li>
+      </ol>
+    </nav>
+    <seam-datatable-dynamic class="w-100 flex-grow-1" [data]="tableDef$ | async"></seam-datatable-dynamic>
+  </div>
+</seam-hierarchy-router-outlet>
