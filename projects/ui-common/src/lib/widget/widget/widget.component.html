@@ -1,6 +1,6 @@
 <div class="border rounded overflow-hidden">
   <div class="widget-header" seamWidgetDragHandle>
-    <div class="widget-header-content p-2">
+    <div class="widget-header-content p-2 text-nowrap">
       <span class="mr-1 widget-header-icon">
         <ng-container *ngIf="iconTpl; else noIconTpl">
           <ng-template
@@ -17,7 +17,7 @@
             [src]="_iconUrl" [alt]="titleText">
         </ng-template>
       </span>
-      <span class="widget-header-title">
+      <span class="widget-header-title text-truncate">
         <ng-container *ngIf="titleTpl; else noTitleTpl">
           <ng-template
             [ngTemplateOutlet]="titleTpl.template"
@@ -27,28 +27,37 @@
         <ng-template #noTitleTpl>{{ titleText }}</ng-template>
       </span>
     </div>
-    <div class="widget-header-btns-container" *ngIf="hasConfig">
-      <div>
+    <div class="widget-header-btns-container" *ngIf="hasConfig || canCollapse">
+      <div *ngIf="hasConfig">
         <!-- <button seamIconBtn [icon]="configIcon"
           class="widget-header-btn-config"
           iconType="">
           <span class="sr-only">Widget configuration menu</span>
         </button> -->
         <button seamButton class="widget-header-btn-config p-0">
-          <seam-icon class="d-block" [icon]="configIcon"></seam-icon>
+          <seam-icon class="d-block" [icon]="configIcon" iconClass="text-secondary"></seam-icon>
           <span class="sr-only">Widget configuration menu</span>
+        </button>
+      </div>
+
+      <div *ngIf="canCollapse" class="px-0">
+        <button seamButton class="widget-header-btn-collapse p-0" (click)="collapse()">
+          <seam-icon class="d-block" [icon]="collapseIcon" iconClass="text-secondary" style="margin-left: -10px; margin-right: -5px;"></seam-icon>
+          <span class="sr-only">Widget collapse</span>
         </button>
       </div>
     </div>
   </div>
   <div class="position-relative bg-white" [style.height.px]="loading ? 150 : undefined">
-    <div class="p-2" *ngIf="!loading else loadingTpl">
-      <ng-content></ng-content>
-    </div>
-    <ng-template #loadingTpl>
-      <div class="position-absolute" @loadingAnim style="top:0;right:0;bottom:0;left:0">
-        <seam-loading [theme]="'primary'"></seam-loading>
+    <ng-container *ngIf="!collapsed">
+      <div class="p-2" *ngIf="!loading else loadingTpl">
+        <ng-content></ng-content>
       </div>
-    </ng-template>
+      <ng-template #loadingTpl>
+        <div class="position-absolute" @loadingAnim style="top:0;right:0;bottom:0;left:0">
+          <seam-loading [theme]="'primary'"></seam-loading>
+        </div>
+      </ng-template>
+    </ng-container>
   </div>
 </div>
