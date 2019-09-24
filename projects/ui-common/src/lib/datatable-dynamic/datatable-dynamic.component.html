@@ -25,4 +25,21 @@
       </seam-datatable-export-button>
     </div>
   </seam-datatable-menu-bar>
+
+  <ng-template seamDatatableRowActionItem let-row>
+    <seam-datatable-action-menu>
+
+      <ng-container *ngIf="obj.data.rowActions">
+        <ng-container *ngFor="let a of obj.data.rowActions">
+          <seam-datatable-action-menu-item *ngIf="!a.action" [label]="a.label"></seam-datatable-action-menu-item>
+          <seam-datatable-action-menu-item *ngIf="a.action && a.action.type === 'link'"
+            [label]="a.label"
+            [routerLink]="a.action.link">
+          </seam-datatable-action-menu-item>
+        </ng-container>
+      </ng-container>
+
+    </seam-datatable-action-menu>
+  </ng-template>
+
 </seam-datatable>

@@ -77,6 +77,20 @@ export interface IDynamicDatatableFooterMenu {
   items?: IDynamicDatatableFooterMenuItem[]
 }
 
+export type DynamicDatatableRowActionType = 'link' // | 'modal'
+
+export interface IDynamicDatatableRowActionRecord<T = DynamicDatatableRowActionType> {
+  type: T
+}
+
+export interface IDynamicDatatableRowActionLink extends IDynamicDatatableRowActionRecord<'link'> {
+  link: string
+}
+
+// export interface IDynamicDatatableRowActionModal extends IDynamicDatatableRowActionRecord<'modal'> {
+//   modal: 0
+// }
+
 export interface IDynamicDatatableRowActionDef {
   /**
    * Label displayed on the menu item.
@@ -85,7 +99,7 @@ export interface IDynamicDatatableRowActionDef {
   /**
    * TODO: Decide on a good way to handle the actions configuration through json.
    */
-  // action:
+  action?: IDynamicDatatableRowActionLink // | IDynamicDatatableRowActionModal
   /**
    * Expression executed each row to decide if the action will be visible.
    */

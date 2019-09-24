@@ -1,12 +1,10 @@
 import { IDatatableDynamicDef } from '../datatable-dynamic-def'
 
-export const exampleData1: IDatatableDynamicDef = {
+export const exampleData2: IDatatableDynamicDef = {
   filterMenu: {
     state: 'always-visible',
     filters: [
       { name: 'search', type: 'full-search' },
-      { name: 'text', type: 'common' },
-      { name: 'search', type: 'common' },
       {
         name: 'toggle-buttons',
         type: 'common',
@@ -31,8 +29,8 @@ export const exampleData1: IDatatableDynamicDef = {
   ],
   rows: [
     { firstName: 'User1', lastName: 'Last1', age: 28, sentDate: '2019-07-22T16:25:58.0266996+00:00' },
-    { firstName: 'User2', lastName: 'Last2', age: 30, sentDate: '' },
-    { firstName: 'User3', lastName: 'Last3', age: 32, sentDate: '' },
+    { firstName: 'User2', lastName: 'Last2', age: 30, sentDate: '2019-04-22T12:15:58.0266996+00:00' },
+    { firstName: 'User3', lastName: 'Last3', age: 32, sentDate: '2019-08-22T19:23:58.0266996+00:00' },
   ],
   rowActions: [
     {

@@ -1,6 +1,7 @@
 import { PortalModule } from '@angular/cdk/portal'
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
+import { RouterModule } from '@angular/router'
 
 import { TheSeamDataExporterModule } from '../data-exporter/index'
 import { TheSeamDataFiltersModule } from '../data-filters/index'
@@ -24,7 +25,8 @@ import { DatatableDynamicComponent } from './datatable-dynamic.component'
     TheSeamDataExporterModule,
     TheSeamDataFiltersModule,
     TheSeamIconModule,
-    PortalModule
+    PortalModule,
+    RouterModule
   ],
   exports: [
     DatatableDynamicComponent,
