@@ -5,11 +5,13 @@ import { IDatatableCellData } from './datatable-cell.models'
 import { ComponentType } from '@angular/cdk/portal'
 
 import { DatatableCellTypeDateComponent } from '../datatable-cell-types/datatable-cell-type-date/datatable-cell-type-date.component'
+import { DatatableCellTypeIconComponent } from '../datatable-cell-types/datatable-cell-type-icon/datatable-cell-type-icon.component'
 import { ITheSeamTableColumn, TheSeamTableCellType } from '../models/table-column'
 import { DATATABLE_CELL_DATA } from './datatable-cell-tokens'
 
 export const cellTypeCompsMap: { [type: string /* TheSeamTableCellType */]: ComponentType<{}> } = {
-  'date': DatatableCellTypeDateComponent
+  'date': DatatableCellTypeDateComponent,
+  'icon': DatatableCellTypeIconComponent
 }
 
 @Component({

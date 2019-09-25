@@ -1,14 +1,19 @@
 import { ThemeTypes } from '../models/index'
 
 import { IDynamicDatatableCellType } from './models/cell-type'
+import { DynamicDatatableCellTypeConfig } from './models/cell-type-config'
 
-export interface IDynamicDatatableColumn {
+export interface IDynamicDatatableColumn<T = IDynamicDatatableCellType> {
   prop: string
   name: string
   /**
    * Default: 'string'
    */
-  cellType?: IDynamicDatatableCellType
+  cellType?: T
+  /**
+   * Config passed to the cell type component.
+   */
+  cellTypeConfig?: DynamicDatatableCellTypeConfig<T>
   /**
    * String to display if the exporter uses a header.
    */

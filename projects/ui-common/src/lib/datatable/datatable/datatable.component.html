@@ -119,7 +119,7 @@
                     [value]="value"
                     [rowIndex]="rowIndex"
                     [row]="row"
-                    [colData]="colData">
+                    [colData]="colData.comp || colData.col">
                   </seam-datatable-cell-type-selector>
                   <ng-template #noCellType>
                     {{ value }}

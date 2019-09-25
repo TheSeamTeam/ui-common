@@ -1,10 +1,16 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
+import { RouterModule } from '@angular/router'
+
+import { TheSeamIconModule } from '../../icon/index'
+import { TheSeamSharedModule } from '../../shared/index'
 
 import { DatatableCellTypeDateComponent } from './datatable-cell-type-date/datatable-cell-type-date.component'
+import { DatatableCellTypeIconComponent } from './datatable-cell-type-icon/datatable-cell-type-icon.component'
 
 export const cellTypeComponents = [
-  DatatableCellTypeDateComponent
+  DatatableCellTypeDateComponent,
+  DatatableCellTypeIconComponent
 ]
 
 @NgModule({
@@ -12,7 +18,10 @@ export const cellTypeComponents = [
     ...cellTypeComponents
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    RouterModule,
+    TheSeamSharedModule,
+    TheSeamIconModule
   ],
   exports: [
     ...cellTypeComponents

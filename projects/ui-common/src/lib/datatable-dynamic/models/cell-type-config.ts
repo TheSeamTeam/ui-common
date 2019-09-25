@@ -2,40 +2,77 @@ import { IDynamicDatatableCellType } from './cell-type'
 
 // tslint:disable:no-inferrable-types
 
-export class DynamicDatatableCellTypeConfigBase<T = IDynamicDatatableCellType> {
+export class DynamicDatatableCellActionBase<T = string> {
+  type: T
+
+  disabled?: boolean = false
+}
+
+export class DynamicDatatableCellActionLink extends DynamicDatatableCellActionBase<'link'> {
+  link: string
+
+  /**
+   * Make sure the application provides an `EncryptedAssetReader` that the
+   * datatable's injector can find if linking to encrypted data that needs
+   * additional information to access the link, such as our assets that require
+   * an additional header for decryption.
+   */
+  encrypted?: boolean = false
+
+  /**
+   * If the link is not going to get handled by the current applications router.
+   * If `encrypted` is true, then this may be ignored depending on the
+   * `EncryptedAssetReader` implementation.
+   */
+  external?: boolean = false
+}
+
+export class DynamicDatatableCellTypeConfig<T = IDynamicDatatableCellType> {
   type: T
 
   /**
    * Styles added to the root cell elements `style` attribute.
    */
-  styles?: 'string' | 'string'[]
+  styles?: string | string[]
 
   /**
    * Classes added to the root cell elements `class` attribute.
    */
-  cssClass?: 'string' | 'string'[]
+  cssClass?: string | string[]
 }
 
-export class DynamicDatatableCellTypeConfigString extends DynamicDatatableCellTypeConfigBase<'string'> {
+export class DynamicDatatableCellTypeConfigString extends DynamicDatatableCellTypeConfig<'string'> {
   // truncate?: boolean = false
 }
 
-export class DynamicDatatableCellTypeConfigInteger extends DynamicDatatableCellTypeConfigBase<'integer'> {
+export class DynamicDatatableCellTypeConfigInteger extends DynamicDatatableCellTypeConfig<'integer'> {
 
 }
 
-export class DynamicDatatableCellTypeConfigDecimal extends DynamicDatatableCellTypeConfigBase<'decimal'> {
+export class DynamicDatatableCellTypeConfigDecimal extends DynamicDatatableCellTypeConfig<'decimal'> {
 
 }
 
-export class DynamicDatatableCellTypeConfigDate extends DynamicDatatableCellTypeConfigBase<'date'> {
+export class DynamicDatatableCellTypeConfigDate extends DynamicDatatableCellTypeConfig<'date'> {
   format?: string = 'MM-dd-yyyy h:mm aaa'
 }
 
-// export class DynamicDatatableCellTypeConfigIcon extends DynamicDatatableCellTypeConfigBase<'icon'> {
+export type DynamicDatatableCellTypeConfigIconAction = DynamicDatatableCellActionLink
 
-// }
+export class DynamicDatatableCellTypeConfigIcon extends DynamicDatatableCellTypeConfig<'icon'> {
+  action: DynamicDatatableCellTypeConfigIconAction
 
-// export class DynamicDatatableCellTypeConfigUrl extends DynamicDatatableCellTypeConfigBase<'url'> {
+  /**
+   * Element title attribute.
+   */
+  titleAttr: string
+
+  /**
+   * Screen-reader text.
+   */
+  srOnly?: string
+}
+
+// export class DynamicDatatableCellTypeConfigUrl extends DynamicDatatableCellTypeConfig<'url'> {
 
 // }

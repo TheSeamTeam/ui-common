@@ -1,0 +1,40 @@
+<a *ngIf="!_tplType || _tplType === 'default'"
+  class="btn btn-link p-0"
+  [attr.title]="_title">
+  <seam-icon *ngIf="_icon" [icon]="_icon" size="lg"></seam-icon>
+  <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
+</a>
+
+<a *ngIf="_tplType === 'link'"
+  class="btn btn-link p-0"
+  [routerLink]="_value"
+  [attr.title]="_title">
+  <seam-icon *ngIf="_icon" [icon]="_icon" size="lg"></seam-icon>
+  <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
+</a>
+
+<a *ngIf="_tplType === 'link-external'"
+  class="btn btn-link p-0"
+  type="button"
+  [attr.href]="_value"
+  [attr.title]="_title">
+  <seam-icon *ngIf="_icon" [icon]="_icon" size="lg"></seam-icon>
+  <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
+</a>
+
+<button *ngIf="_tplType === 'link-encrypted'"
+  class="btn btn-link p-0"
+  type="button"
+  [seamEncryptedAssetLink]="value"
+  [attr.title]="_title">
+  <seam-icon *ngIf="_icon" [icon]="_icon" size="lg"></seam-icon>
+  <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
+</button>
+
+<button *ngIf="_tplType === 'button'"
+  class="btn btn-link p-0"
+  type="button"
+  [attr.title]="_title">
+  <seam-icon *ngIf="_icon" [icon]="_icon" size="lg"></seam-icon>
+  <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
+</button>
