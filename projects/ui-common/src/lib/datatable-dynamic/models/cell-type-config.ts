@@ -1,5 +1,7 @@
 import { IDynamicDatatableCellType } from './cell-type'
 
+import { TheSeamIconType } from '../../icon/index'
+
 // tslint:disable:no-inferrable-types
 
 export class DynamicDatatableCellActionBase<T = string> {
@@ -60,17 +62,32 @@ export class DynamicDatatableCellTypeConfigDate extends DynamicDatatableCellType
 export type DynamicDatatableCellTypeConfigIconAction = DynamicDatatableCellActionLink
 
 export class DynamicDatatableCellTypeConfigIcon extends DynamicDatatableCellTypeConfig<'icon'> {
-  action: DynamicDatatableCellTypeConfigIconAction
+  action?: DynamicDatatableCellTypeConfigIconAction
 
   /**
    * Element title attribute.
    */
-  titleAttr: string
+  titleAttr?: string
 
   /**
    * Screen-reader text.
    */
   srOnly?: string
+
+  /**
+   * Css class added to the link element.
+   */
+  linkClass?: string
+
+  /**
+   * seam-icon `iconClass` input.
+   */
+  iconClass?: string
+
+  /**
+   * Can apply pre-defined icon styles.
+   */
+  iconType?: TheSeamIconType
 }
 
 // export class DynamicDatatableCellTypeConfigUrl extends DynamicDatatableCellTypeConfig<'url'> {

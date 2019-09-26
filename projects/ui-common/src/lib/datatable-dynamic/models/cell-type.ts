@@ -5,5 +5,5 @@ export type IDynamicDatatableCellType =
   | 'integer'
   | 'decimal'
   | 'date'
-  | 'icon' // TODO: Implement
+  | 'icon'
   | 'url' // TODO: Implement

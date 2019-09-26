@@ -12,6 +12,8 @@ import { LibIcon } from '../icon'
 // Browsers that do not support css grayscale filter.
 const needToFix = /(MSIE 10)|(Trident.*rv:11\.0)|( Edge\/[\d\.]+$)/.test(navigator.userAgent)
 
+export type TheSeamIconType = 'borderless-styled-square' | 'styled-square' | 'image-fill' | undefined
+
 @Component({
   selector: 'seam-icon',
   templateUrl: './icon.component.html',
@@ -119,7 +121,7 @@ export class IconComponent {
   public _defaultIconUrl: string | undefined
   public _defaultIconObj: IconProp | undefined
 
-  @Input() iconType: '' | 'borderless-styled-square' | 'styled-square' | 'image-fill'
+  @Input() iconType: TheSeamIconType
 
   @HostBinding('attr.icon-type')
   get _iconTypeAttr() { return this.iconType }

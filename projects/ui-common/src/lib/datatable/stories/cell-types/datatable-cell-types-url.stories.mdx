@@ -18,6 +18,8 @@ import { TheSeamDatatableModule } from '../../datatable.module'
 
 ## Url
 
+> Url cell type is not implemented yet and will just display as a string for now.
+
 ### Config Model
 
 ```
@@ -76,10 +78,10 @@ import { TheSeamDatatableModule } from '../../datatable.module'
       template: `<seam-datatable class="vw-100 vh-100" [columns]="columns" [rows]="rows"></seam-datatable>`,
       props: {
         columns: [
-          { prop: 'name', name: 'Name', cellType: 'string' }
+          { prop: 'logo', name: 'Logo', cellType: 'url' }
         ],
         rows: [
-          { name: 'Some Value' }
+          { logo: 'assets/images/theseam_logo.svg' }
         ]
       },
     }}

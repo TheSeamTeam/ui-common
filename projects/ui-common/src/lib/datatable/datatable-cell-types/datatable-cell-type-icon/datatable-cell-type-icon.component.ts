@@ -9,6 +9,8 @@ import { getKnownIcon, LibIcon } from '../../../icon/index'
 import { DATATABLE_CELL_DATA } from '../../datatable-cell-type-selector/datatable-cell-tokens'
 import { IDatatableCellData } from '../../datatable-cell-type-selector/datatable-cell.models'
 
+export type IconTemplateType = 'default' | 'link' | 'link-external' | 'link-encrypted' | 'button'
+
 @Component({
   selector: 'seam-datatable-cell-type-icon',
   templateUrl: './datatable-cell-type-icon.component.html',
@@ -31,14 +33,18 @@ export class DatatableCellTypeIconComponent implements OnInit {
     this._config = value
     if (value) {
       this.setAction(value.action)
+      this._linkClass = value.linkClass
+      this._iconClass = value.iconClass
     }
   }
   private _config: DynamicDatatableCellTypeConfigIcon | undefined | null
 
   _icon: LibIcon | undefined | null
-  _tplType: 'default' | 'link' | 'link-external' | 'link-encrypted' | 'button' = 'default'
+  _tplType: IconTemplateType = 'default'
   _title?: string
   _srOnly?: string
+  _linkClass?: string
+  _iconClass?: string
 
   constructor(
     @Optional() @Inject(DATATABLE_CELL_DATA) private _data?: IDatatableCellData<any, string>
@@ -51,13 +57,15 @@ export class DatatableCellTypeIconComponent implements OnInit {
 
   ngOnInit() { }
 
-  public setAction(value?: DynamicDatatableCellTypeConfigIconAction) {
-    console.log('setAction', value)
-    if (value) {
-      if (value.type === 'link') {
-        this._tplType = value.encrypted ? 'link-encrypted' : 'link'
+  public setAction(configAction?: DynamicDatatableCellTypeConfigIconAction) {
+    let newTplType: IconTemplateType = 'default'
+    if (configAction) {
+      if (configAction.type === 'link') {
+        newTplType = configAction.encrypted ? 'link-encrypted' : 'link'
       }
     }
+
+    this._tplType = newTplType
   }
 
 }
