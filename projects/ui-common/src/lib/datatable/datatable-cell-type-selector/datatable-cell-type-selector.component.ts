@@ -11,7 +11,8 @@ import { DATATABLE_CELL_DATA } from './datatable-cell-tokens'
 
 export const cellTypeCompsMap: { [type: string /* TheSeamTableCellType */]: ComponentType<{}> } = {
   'date': DatatableCellTypeDateComponent,
-  'icon': DatatableCellTypeIconComponent
+  'icon': DatatableCellTypeIconComponent,
+  'image': DatatableCellTypeIconComponent
 }
 
 @Component({

@@ -4,7 +4,7 @@ import {
   DynamicDatatableCellTypeConfigIcon,
   DynamicDatatableCellTypeConfigIconAction
 } from '../../../datatable-dynamic/models/cell-type-config'
-import { getKnownIcon, LibIcon } from '../../../icon/index'
+import { getKnownIcon, LibIcon, TheSeamIconType } from '../../../icon/index'
 
 import { DATATABLE_CELL_DATA } from '../../datatable-cell-type-selector/datatable-cell-tokens'
 import { IDatatableCellData } from '../../datatable-cell-type-selector/datatable-cell.models'
@@ -35,6 +35,7 @@ export class DatatableCellTypeIconComponent implements OnInit {
       this.setAction(value.action)
       this._linkClass = value.linkClass
       this._iconClass = value.iconClass
+      this._iconType = value.iconType
     }
   }
   private _config: DynamicDatatableCellTypeConfigIcon | undefined | null
@@ -45,6 +46,7 @@ export class DatatableCellTypeIconComponent implements OnInit {
   _srOnly?: string
   _linkClass?: string
   _iconClass?: string
+  _iconType?: TheSeamIconType
 
   constructor(
     @Optional() @Inject(DATATABLE_CELL_DATA) private _data?: IDatatableCellData<any, string>
