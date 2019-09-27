@@ -20,6 +20,7 @@ storiesOf('Datatable/Dynamic', module)
       declarations: [ ],
       imports: [
         BrowserAnimationsModule,
+        RouterModule.forRoot([], { useHash: true }),
         TheSeamDatatableDynamicModule
       ],
       entryComponents: [ ]

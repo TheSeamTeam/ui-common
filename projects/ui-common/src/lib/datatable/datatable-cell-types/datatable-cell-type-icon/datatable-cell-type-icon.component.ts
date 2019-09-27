@@ -1,4 +1,6 @@
-import { ChangeDetectionStrategy, Component, Inject, Input, OnInit, Optional } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core'
+
+import { untilDestroyed } from 'ngx-take-until-destroy'
 
 import {
   DynamicDatatableCellTypeConfigIcon,
@@ -17,7 +19,7 @@ export type IconTemplateType = 'default' | 'link' | 'link-external' | 'link-encr
   styleUrls: ['./datatable-cell-type-icon.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DatatableCellTypeIconComponent implements OnInit {
+export class DatatableCellTypeIconComponent implements OnInit, OnDestroy {
 
   @Input()
   get value() { return this._value }
@@ -55,9 +57,30 @@ export class DatatableCellTypeIconComponent implements OnInit {
     if (this._data && this._data.colData && (<any>this._data.colData).cellTypeConfig) {
       this.config = (<any>this._data.colData).cellTypeConfig
     }
+
+    if (_data) {
+      _data.changed
+        .pipe(untilDestroyed(this))
+        .subscribe(v => {
+          if (v.changes.hasOwnProperty('value')) {
+            this.value = v.changes.value.currentValue
+          }
+
+          if (v.changes.hasOwnProperty('colData')) {
+            const colData = v.changes.colData.currentValue
+            if (colData && colData.cellTypeConfig !== this.config) {
+              this.config = colData.cellTypeConfig
+            } else {
+              this.config = undefined
+            }
+          }
+        })
+    }
   }
 
   ngOnInit() { }
+
+  ngOnDestroy() { }
 
   public setAction(configAction?: DynamicDatatableCellTypeConfigIconAction) {
     let newTplType: IconTemplateType = 'default'

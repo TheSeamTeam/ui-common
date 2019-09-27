@@ -24,16 +24,17 @@ export const exampleData1: IDatatableDynamicDef = {
     ],
   },
   columns: [
+    { prop: 'icn', name: 'Icon', cellType: 'icon' },
     { prop: 'firstName', name: 'First Name' },
     { prop: 'lastName', name: 'Last Name' },
     { prop: 'age', name: 'Age' },
     { prop: 'sentDate', name: 'Sent Date', cellType: 'date' }
   ],
   rows: [
-    { firstName: 'User1', lastName: 'Last1', age: 28, sentDate: '2019-07-22T16:25:58.0266996+00:00' },
-    { firstName: 'User2', lastName: 'Last2', age: 30, sentDate: '2019-08-22T19:23:58.0266996+00:00' },
-    { firstName: 'User3', lastName: 'Last3', age: 32, sentDate: '' },
-    { firstName: 'User4', lastName: 'Last4', age: 34, sentDate: '2019-08-22T19:23:58.0266996+00:00' },
+    { icn: 'faEnvelope', firstName: 'User1', lastName: 'Last1', age: 28, sentDate: '2019-07-22T16:25:58.0266996+00:00' },
+    { icn: 'faEnvelope', firstName: 'User2', lastName: 'Last2', age: 30, sentDate: '2019-08-22T19:23:58.0266996+00:00' },
+    { icn: 'faEnvelope', firstName: 'User3', lastName: 'Last3', age: 32, sentDate: '' },
+    { icn: 'faEnvelope', firstName: 'User4', lastName: 'Last4', age: 34, sentDate: '2019-08-22T19:23:58.0266996+00:00' },
   ],
   rowActions: [
     {
