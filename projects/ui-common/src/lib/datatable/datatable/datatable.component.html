@@ -167,7 +167,8 @@
             <ng-template let-value="value" let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
               <button type="button" class="datatable-action-button btn"
                 [seamDatatableActionMenuToggle]="actionMenuOverlayTpl"
-                #actionMenuToggle="seamDatatableActionMenuToggle">
+                #actionMenuToggle="seamDatatableActionMenuToggle"
+                title="Row Actions">
                 <fa-icon [icon]="faEllipsisH"></fa-icon>
               </button>
               <ng-template #actionMenuOverlayTpl>
