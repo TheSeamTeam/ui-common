@@ -38,8 +38,12 @@ export const exampleData1: IDatatableDynamicDef = {
   ],
   rowActions: [
     {
-      label: 'View Detail',
+      label: 'Link',
       action: { type: 'link', link: 'details' }
+    },
+    {
+      label: 'Link External',
+      action: { type: 'link', link: 'https://bing.com', external: true }
     }
   ],
   options: {

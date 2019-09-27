@@ -2,6 +2,10 @@ import { ThemeTypes } from '../models/index'
 
 import { IDynamicDatatableCellType } from './models/cell-type'
 import { DynamicDatatableCellTypeConfig } from './models/cell-type-config'
+import {
+  DynamicDatatableRowActionApi,
+  DynamicDatatableRowActionLink
+} from './models/row-action'
 
 export interface IDynamicDatatableColumn<T = IDynamicDatatableCellType> {
   prop: string
@@ -81,19 +85,9 @@ export interface IDynamicDatatableFooterMenu {
   items?: IDynamicDatatableFooterMenuItem[]
 }
 
-export type DynamicDatatableRowActionType = 'link' // | 'modal'
-
-export interface IDynamicDatatableRowActionRecord<T = DynamicDatatableRowActionType> {
-  type: T
-}
-
-export interface IDynamicDatatableRowActionLink extends IDynamicDatatableRowActionRecord<'link'> {
-  link: string
-}
-
-// export interface IDynamicDatatableRowActionModal extends IDynamicDatatableRowActionRecord<'modal'> {
-//   modal: 0
-// }
+export type DynamicDatatableRowActionType =
+  DynamicDatatableRowActionLink
+  | DynamicDatatableRowActionApi
 
 export interface IDynamicDatatableRowActionDef {
   /**
@@ -103,7 +97,7 @@ export interface IDynamicDatatableRowActionDef {
   /**
    * TODO: Decide on a good way to handle the actions configuration through json.
    */
-  action?: IDynamicDatatableRowActionLink // | IDynamicDatatableRowActionModal
+  action?: DynamicDatatableRowActionType
   /**
    * Expression executed each row to decide if the action will be visible.
    */
