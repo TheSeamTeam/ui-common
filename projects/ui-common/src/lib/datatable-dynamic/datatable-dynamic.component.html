@@ -27,19 +27,38 @@
   </seam-datatable-menu-bar>
 
   <ng-template seamDatatableRowActionItem let-row>
-    <seam-datatable-action-menu>
-
-      <ng-container *ngIf="obj.data.rowActions">
-        <ng-container *ngFor="let a of obj.data.rowActions">
+    <ng-container *ngIf="(_rowActions(row, obj.data.rowActions) | async) as rActions">
+      <seam-datatable-action-menu>
+        <ng-container *ngFor="let a of rActions">
+          <!-- TODO: Cleanup action-menu-item to be easier to use with or without dynamic. -->
           <seam-datatable-action-menu-item *ngIf="!a.action" [label]="a.label"></seam-datatable-action-menu-item>
-          <seam-datatable-action-menu-item *ngIf="a.action && a.action.type === 'link'"
+          <seam-datatable-action-menu-item *ngIf="a.action && a.action.type === 'link' && a.action.external"
             [label]="a.label"
-            [routerLink]="a.action.link">
+            [attr.href]="a.action.link"
+            [confirmDialog]="a.action.confirmDialog">
+          </seam-datatable-action-menu-item>
+          <seam-datatable-action-menu-item *ngIf="a.action && a.action.type === 'link' && !a.action.external"
+            [label]="a.label"
+            [routerLink]="a.action.link"
+            [confirmDialog]="a.action.confirmDialog">
+          </seam-datatable-action-menu-item>
+          <seam-datatable-action-menu-item *ngIf="a.action && a.action.type === 'api'"
+            [label]="a.label"
+            [endpointConfig]="a.action"
+            [row]="row"
+            [confirmDialog]="a.action.confirmDialog">
+          </seam-datatable-action-menu-item>
+          <seam-datatable-action-menu-item *ngIf="a.action && a.action.type === 'modal'"
+            [label]="a.label"
+            [modalConfig]="a.action"
+            [row]="row"
+            [confirmDialog]="a.action.confirmDialog">
           </seam-datatable-action-menu-item>
         </ng-container>
-      </ng-container>
-
-    </seam-datatable-action-menu>
+      </seam-datatable-action-menu>
+    </ng-container>
   </ng-template>
 
 </seam-datatable>
+
+<!-- <router-outlet name="modal"></router-outlet> -->

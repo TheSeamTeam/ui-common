@@ -1,19 +1,25 @@
 import { ComponentType } from '@angular/cdk/portal'
 import { ChangeDetectionStrategy, Component, Inject, Input, OnInit } from '@angular/core'
-import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs'
-import { map, switchMap, tap } from 'rxjs/operators'
+import { BehaviorSubject, combineLatest, from, Observable, of } from 'rxjs'
+import { filter, map, switchMap, tap, toArray } from 'rxjs/operators'
+
+import jexl from 'jexl'
 
 import { IDataExporter, THESEAM_DATA_EXPORTER } from '../data-exporter/index'
 import { THESEAM_DATA_FILTER_DEF } from '../data-filters/data-filter-def'
 import { IDataFilter } from '../data-filters/index'
 import { notNullOrUndefined } from '../utils/index'
 
-import { IDatatableDynamicDef } from './datatable-dynamic-def'
+import { IDatatableDynamicDef, IDynamicDatatableRow, IDynamicDatatableRowActionDef } from './datatable-dynamic-def'
 
 export interface IFilterComponentRecord {
   component: ComponentType<IDataFilter>
   options?: any
   order?: number
+}
+
+export interface IActionRowExprContext {
+  row: IDynamicDatatableRow
 }
 
 @Component({
@@ -133,6 +139,54 @@ export class DatatableDynamicComponent implements OnInit {
       if (def.options.virtualization === undefined || def.options.virtualization === null) {
         def.options.virtualization = false
       }
+    }
+  }
+
+  public _rowActions(row: IDynamicDatatableRow, rowActions: IDynamicDatatableRowActionDef[]): Observable<IDynamicDatatableRowActionDef[]> {
+    const rActions: IDynamicDatatableRowActionDef[] = []
+    for (const rowAction of rowActions) {
+      if (rowAction.isHiddenExpr) {
+        const context = this._getActionRowContext(row, rowAction)
+        const isHidden = jexl.evalSync(rowAction.isHiddenExpr, context)
+        if (!isHidden) {
+          rActions.push(rowAction)
+        }
+      } else {
+        rActions.push(rowAction)
+      }
+    }
+
+    return of(rActions)
+
+    // TODO: Fix async eval. I think it is a problem with the action-menu or
+    // menu component.
+
+    // if (!rowActions) { return of([]) }
+
+    // return from((async () => {
+    //   const rActions: IDynamicDatatableRowActionDef[] = []
+    //   for (const rowAction of rowActions) {
+    //     if (rowAction.isHiddenExpr) {
+    //       const context = {
+    //         row: row
+    //       }
+    //       // console.log(jexl)
+    //       const isHidden = await jexl.eval(rowAction.isHiddenExpr, context)
+    //       console.log('isHidden', isHidden)
+    //       if (!isHidden) {
+    //         rActions.push(rowAction)
+    //       }
+    //     } else {
+    //       rActions.push(rowAction)
+    //     }
+    //   }
+    //   return rActions
+    // })()).pipe(tap(r => console.log('result', r)))
+  }
+
+  private _getActionRowContext(row: IDynamicDatatableRow, rowActionDef: IDynamicDatatableRowActionDef): IActionRowExprContext {
+    return {
+      row
     }
   }
 

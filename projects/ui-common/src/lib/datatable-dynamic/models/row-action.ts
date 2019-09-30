@@ -1,3 +1,4 @@
+import { ComponentType } from '@angular/cdk/portal'
 import { IDynamicDatatableConfirmDialog } from './confirm-dialog'
 
 // tslint:disable:no-inferrable-types
@@ -42,5 +43,30 @@ export class DynamicDatatableRowActionApi extends DynamicDatatableRowActionBase<
   /**
    * Api endpoint.
    */
-  endpoint: string
+  endpoint?: string
+
+  endpointExpr?: string
+
+  method: 'GET' | 'POST' | 'PATCH' | 'DELETE'
+
+  bodyExpr?: string
+
+  paramsExpr?: string
+}
+
+/**
+ * Call provided api endpoint.
+ */
+export class DynamicDatatableRowActionModal extends DynamicDatatableRowActionBase<'modal'> {
+  /**
+   * Modal Component.
+   *
+   * If the component class is provided it needs to be an entry component to
+   * allow the factory to be found.
+   *
+   * If passing a string it needs to be provided as a
+   * `IDynamicComponentManifest`. Check `TheSeamDynamicComponentLoader` for how
+   * to provide a manifest. The component that be lazy loaded this way.
+   */
+  component: ComponentType<{}> |  string
 }

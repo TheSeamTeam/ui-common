@@ -8,5 +8,5 @@ export interface IDynamicDatatableConfirmDialog {
    *
    * Default alert type is 'warning'.
    */
-  alert: string | { message: string, type: ThemeTypes }
+  alert?: string | { message: string, type: ThemeTypes }
 }

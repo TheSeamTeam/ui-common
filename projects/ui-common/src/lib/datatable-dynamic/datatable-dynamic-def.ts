@@ -4,7 +4,8 @@ import { IDynamicDatatableCellType } from './models/cell-type'
 import { DynamicDatatableCellTypeConfig } from './models/cell-type-config'
 import {
   DynamicDatatableRowActionApi,
-  DynamicDatatableRowActionLink
+  DynamicDatatableRowActionLink,
+  DynamicDatatableRowActionModal
 } from './models/row-action'
 
 export interface IDynamicDatatableColumn<T = IDynamicDatatableCellType> {
@@ -88,6 +89,7 @@ export interface IDynamicDatatableFooterMenu {
 export type DynamicDatatableRowActionType =
   DynamicDatatableRowActionLink
   | DynamicDatatableRowActionApi
+  | DynamicDatatableRowActionModal
 
 export interface IDynamicDatatableRowActionDef {
   /**
@@ -101,7 +103,7 @@ export interface IDynamicDatatableRowActionDef {
   /**
    * Expression executed each row to decide if the action will be visible.
    */
-  // isHiddenExpr?: string
+  isHiddenExpr?: string
 }
 
 // TODO: Define object definition to allow extra exporter options.

@@ -9,6 +9,7 @@ import {
 import { ComponentPortal, PortalInjector, TemplatePortal } from '@angular/cdk/portal'
 import { Location } from '@angular/common'
 import {
+  ComponentFactoryResolver,
   ComponentRef,
   Inject,
   Injectable,
@@ -95,7 +96,12 @@ export class Modal implements OnDestroy {
   }
 
   /** Opens a dialog from a component. */
-  openFromComponent<T, D = any>(component: ComponentType<T>, config?: ModalConfig<D>): ModalRef<T, D> {
+  openFromComponent<T, D = any>(
+    component: ComponentType<T>,
+    config?: ModalConfig<D>,
+    // NOTE: Should only be needed with the current implementation of `DynamicComponentLoader`.
+    componentFactoryResolver?: ComponentFactoryResolver | null | undefined
+  ): ModalRef<T, D> {
     config = this._applyConfigDefaults(config)
 
     if (config.id && this.getById(config.id)) {
@@ -105,7 +111,7 @@ export class Modal implements OnDestroy {
     const overlayRef = this._createOverlay(config)
     const dialogContainer = this._attachDialogContainer(overlayRef, config)
     const dialogRef = this._attachDialogContentForComponent(component, dialogContainer,
-      overlayRef, config)
+      overlayRef, config, componentFactoryResolver)
 
     this._scrollbars.initializeInstance(overlayRef.overlayElement)
 
@@ -225,14 +231,15 @@ export class Modal implements OnDestroy {
       componentOrTemplateRef: ComponentType<T>,
       dialogContainer: ModalContainerComponent,
       overlayRef: OverlayRef,
-      config: ModalConfig): ModalRef<any> {
+      config: ModalConfig,
+      componentFactoryResolver?: ComponentFactoryResolver | null | undefined): ModalRef<any> {
 
     // Create a reference to the dialog we're creating in order to give the user a handle
     // to modify and close it.
     const dialogRef = new this.dialogRefConstructor(overlayRef, dialogContainer, config.id)
     const injector = this._createInjector<T>(config, dialogRef, dialogContainer)
     const contentRef = dialogContainer.attachComponentPortal(
-        new ComponentPortal(componentOrTemplateRef, undefined, injector))
+        new ComponentPortal(componentOrTemplateRef, undefined, injector, componentFactoryResolver))
 
     dialogRef.componentInstance = contentRef.instance
     dialogRef.disableClose = config.disableClose

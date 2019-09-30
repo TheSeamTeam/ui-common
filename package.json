@@ -57,6 +57,7 @@
     "buffer": "^5.2.1",
     "css-element-queries": "~1.2.0",
     "file-saver": "~2.0.2",
+    "jexl": "^2.2.2",
     "localstorage-memory": "~1.0.3",
     "lodash-es": "~4.17.11",
     "ngx-loading": "~3.0.1",

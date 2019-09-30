@@ -43,7 +43,29 @@ export const exampleData1: IDatatableDynamicDef = {
     },
     {
       label: 'Link External',
-      action: { type: 'link', link: 'https://bing.com', external: true }
+      action: { type: 'link', link: 'https://bing.com', external: true },
+      isHiddenExpr: 'row.age > 30'
+    },
+    {
+      label: 'Link External Config',
+      action: { type: 'link', link: 'https://bing.com', external: true, confirmDialog: { 'message': 'Are you sure?' } },
+      isHiddenExpr: 'row.age > 30'
+    },
+    {
+      label: 'Api Endpoint',
+      action: {
+        type: 'api',
+        // endpoint: 'example/users',
+        endpointExpr: '"example/users/" + row.age',
+        method: 'POST',
+        bodyExpr: '{ thing: row.age }',
+        paramsExpr: '{ age: row.age, name: row.firstName + " " + row.lastName }'
+      },
+      isHiddenExpr: 'row.age > 30'
+    },
+    {
+      label: 'Modal',
+      action: { type: 'modal', component: 'story-ex-modal' }
     }
   ],
   options: {
