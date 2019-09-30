@@ -3,34 +3,34 @@ import { Story, Meta, ColorItem, ColorPalette } from '@storybook/addon-docs/bloc
 import { Welcome, Button } from '@storybook/angular/demo';
 // import { linkTo } from '@storybook/addon-links';
 
-import { ColorPreview, PropsExample, ColorDisp } from './components/color-preview'
+import { ColorDisp } from './components/color-preview'
 
 # Colors
 
 <Meta title="Docs|Colors" decorators={[moduleMetadata({ declarations: [Button] })]} />
 
-<ColorPreview />
+## Theme Text Colors
 
 <ColorPalette>
-  <ColorItem
-    title="theme.color.greyscale"
-    subtitle="Some of the greys"
-    colors={['#FFFFFF', '#F8F8F8', '#F3F3F3']}
-  />
-  <ColorItem title="theme.color.primary" subtitle="Coral" colors={['#FF4785']} />
-  <ColorItem title="theme.color.secondary" subtitle="Ocean" colors={['#1EA7FD']} />
-  <ColorItem
-    title="theme.color.positive"
-    subtitle="Green"
-    colors={[
-      'rgba(102,191,60,1)',
-      'rgba(102,191,60,.8)',
-      'rgba(102,191,60,.6)',
-      'rgba(102,191,60,.3)',
-    ]}
-  />
+  <ColorDisp themeClass='text-primary' styleProp='color' />
+  <ColorDisp themeClass='text-secondary' styleProp='color' />
+  <ColorDisp themeClass='text-success' styleProp='color' />
+  <ColorDisp themeClass='text-info' styleProp='color' />
+  <ColorDisp themeClass='text-warning' styleProp='color' />
+  <ColorDisp themeClass='text-danger' styleProp='color' />
+  <ColorDisp themeClass='text-light' styleProp='color' />
+  <ColorDisp themeClass='text-dark' styleProp='color' />
 </ColorPalette>
 
-<PropsExample />
+## Theme Background Colors
 
-<ColorDisp />
+<ColorPalette>
+  <ColorDisp themeClass='bg-primary' styleProp='background-color' />
+  <ColorDisp themeClass='bg-secondary' styleProp='background-color' />
+  <ColorDisp themeClass='bg-success' styleProp='background-color' />
+  <ColorDisp themeClass='bg-info' styleProp='background-color' />
+  <ColorDisp themeClass='bg-warning' styleProp='background-color' />
+  <ColorDisp themeClass='bg-danger' styleProp='background-color' />
+  <ColorDisp themeClass='bg-light' styleProp='background-color' />
+  <ColorDisp themeClass='bg-dark' styleProp='background-color' />
+</ColorPalette>

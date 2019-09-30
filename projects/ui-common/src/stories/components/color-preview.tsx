@@ -1,6 +1,7 @@
 import * as React from 'react'
 
 import { Props } from '@storybook/addon-docs/blocks'
+import { ColorItem, ColorPalette, Meta, Story } from '@storybook/addon-docs/blocks'
 import { PropDef, PropsTable, PropsTableError, PropsTableProps } from '@storybook/components'
 import { PropRow } from '@storybook/components/dist/blocks/PropsTable/PropRow'
 import { styled } from '@storybook/theming'
@@ -12,69 +13,66 @@ export const StyledDiv = styled.div({
   width: '400px'
 })
 
-export const ColorPreview = (props) => (<StyledDiv>Color Preview</StyledDiv>)
+export const HiddenDiv = styled.div({
+  display: 'none'
+})
+
+// export const ColorPreview = (props) => (<StyledDiv>Color Preview</StyledDiv>)
 
 // export const PropsExample = () => (<PropsTable rows={[]} />)
 
 
-const ex = {
-  name: 'Thing',
-  type: 'number',
-  required: 'true',
-  description: 'A thing',
-  defaultValue: '39'
-}
+// const ex = {
+//   name: 'Thing',
+//   type: 'number',
+//   required: 'true',
+//   description: 'A thing',
+//   defaultValue: '39'
+// }
 
-export const stringDef = {
-  name: 'someString',
-  type: { name: 'string' },
-  required: true,
-  description: 'someString description',
-  defaultValue: 'fixme',
-}
+// export const stringDef = {
+//   name: 'someString',
+//   type: { name: 'string' },
+//   required: true,
+//   description: 'someString description',
+//   defaultValue: 'fixme',
+// }
 
 // console.log(Props)
 // console.log(PropsTable)
 
-export const PropsExample = (props) => (<PropsTable rows={[]} error={PropsTableError.NO_COMPONENT} /> )
+// export const PropsExample = (props) => (<PropsTable rows={[]} error={PropsTableError.NO_COMPONENT} /> )
 
 interface ColorDispProps {
-  id: string
-  key?: string
-  title: string
-  src: string
-  allowFullScreen: boolean
-  scale: number
-  style?: any
+  themeClass: string
+  styleProp: string
 }
 
 export class ColorDisp extends React.Component<ColorDispProps> {
 
+  color: string | null = ''
+
   componentDidMount() {
-    // const { id } = this.props
-    // this.iframe = window.document.getElementById(id)
-    const elem = document.querySelector('#colorDisp_text-primary')
-    console.log(elem)
-    console.dir(elem)
+    const { themeClass, styleProp } = this.props
+    const elem = document.querySelector(`#themeDisp_${themeClass}`)
     if (elem) {
-      const c = window.getComputedStyle(elem, 'color')
-      console.log(c)
+      const c = window.getComputedStyle(elem)
+      this.color = c[styleProp]
+      this.setState({})
     }
   }
 
-  // shouldComponentUpdate(nextProps: ColorDispProps) {
-  //   const { scale } = nextProps
-  //   // eslint-disable-next-line react/destructuring-assignment
-
-  //   return false
-  // }
-
   render() {
-    // const { id, title, src, allowFullScreen, scale, ...rest } = this.props
+    const { themeClass } = this.props
+    const id = `themeDisp_${themeClass}`
     return (
-      <StyledDiv id='colorDisp_text-primary' className='text-primary'>
-
-      </StyledDiv>
+      <>
+        <HiddenDiv id={id} className={themeClass}></HiddenDiv>
+        <ColorItem
+          title={themeClass}
+          colors={[ this.color ]}
+        />
+      </>
     )
   }
 }
