@@ -21,6 +21,7 @@
     "strictNullChecks": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "jsx": "react",
     "paths": {
       // Fixes imports from linked npm packages
       "@angular/*": ["node_modules/@angular/*"],
