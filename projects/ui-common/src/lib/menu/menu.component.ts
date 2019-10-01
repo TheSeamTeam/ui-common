@@ -5,21 +5,25 @@ import {
   AfterContentInit,
   ChangeDetectionStrategy,
   Component,
+  ContentChild,
   EventEmitter,
   forwardRef,
+  Input,
   OnDestroy,
   OnInit,
   Output,
   TemplateRef,
   ViewChild
 } from '@angular/core'
-import { merge, Observable, Subject, Subscription } from 'rxjs'
+import { BehaviorSubject, merge, Observable, Subject, Subscription } from 'rxjs'
 
-import { startWith, switchMap } from 'rxjs/operators'
+import { map, startWith, switchMap } from 'rxjs/operators'
 import { menuDropdownPanelSlideIn, menuDropdownPanelSlideOut } from './menu-animations'
 import { MenuItemComponent } from './menu-item.component'
 import { ITheSeamMenuPanel } from './menu-panel'
 import { THESEAM_MENU_PANEL } from './menu-panel-token'
+
+import { MenuFooterComponent } from './menu-footer/menu-footer.component'
 
 export const LIB_MENU: any = {
   provide: THESEAM_MENU_PANEL,
@@ -42,6 +46,16 @@ export const LIB_MENU: any = {
 })
 export class MenuComponent implements OnInit, OnDestroy, AfterContentInit, ITheSeamMenuPanel {
 
+  @ContentChild(MenuFooterComponent, { static: false })
+  get footerComponent() { return this._footer.value }
+  set footerComponent(value: MenuFooterComponent | undefined | null) {
+    // console.log('set footer', value)
+    // this._footer = value
+    this._footer.next(value)
+  }
+  private _footer = new BehaviorSubject<MenuFooterComponent | undefined | null>(undefined)
+  public hasFooter$ = this._footer.pipe(map(v => v !== null && v !== undefined))
+
   private _keyManager: FocusKeyManager<MenuItemComponent>
 
   /** Menu items inside the current menu. */
@@ -59,6 +73,8 @@ export class MenuComponent implements OnInit, OnDestroy, AfterContentInit, ITheS
   @ViewChild(TemplateRef, { static: false }) templateRef: TemplateRef<any>
 
   @Output() readonly closed = new EventEmitter<void | 'click' | 'keydown' | 'tab'>()
+
+  @Input() menuClass: string
 
   constructor() { }
 

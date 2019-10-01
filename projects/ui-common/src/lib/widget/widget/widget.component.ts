@@ -2,6 +2,7 @@ import { animate, query, style, transition, trigger } from '@angular/animations'
 import { Component, ContentChild, Input, OnInit } from '@angular/core'
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
+import { faAngleDown, faCog } from '@fortawesome/free-solid-svg-icons'
 
 import { LibIcon } from '../../icon/icon'
 
@@ -27,6 +28,11 @@ import { WidgetTitleTplDirective } from '../directives/widget-title-tpl.directiv
 })
 export class WidgetComponent implements OnInit {
 
+  configIcon = faCog
+  collapseIcon = faAngleDown
+
+  collapsed = false
+
   @Input() titleText: string
 
   @Input()
@@ -48,11 +54,18 @@ export class WidgetComponent implements OnInit {
 
   @Input() loading = false
 
+  @Input() hasConfig = false
+  @Input() canCollapse = false
+
   @ContentChild(WidgetIconTplDirective, { static: true }) iconTpl: WidgetIconTplDirective
   @ContentChild(WidgetTitleTplDirective, { static: true }) titleTpl: WidgetTitleTplDirective
 
   constructor() { }
 
   ngOnInit() { }
+
+  collapse() {
+    this.collapsed = !this.collapsed
+  }
 
 }

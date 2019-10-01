@@ -2,7 +2,7 @@ import { TableColumn } from '@marklb/ngx-datatable'
 
 export type TheSeamTableColumnExportValueFn<D = any> = (row: D) => string
 
-export type TheSeamTableCellType = 'date'
+export type TheSeamTableCellType = 'date' | 'icon'
 
 export interface ITheSeamTableColumn<D = any, P = any> extends TableColumn {
 

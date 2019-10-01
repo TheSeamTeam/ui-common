@@ -1,0 +1,87 @@
+import { moduleMetadata } from '@storybook/angular'
+import { Story, Meta, Preview } from '@storybook/addon-docs/blocks'
+// import { linkTo } from '@storybook/addon-links'
+
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+
+import { FormControl, ReactiveFormsModule } from '@angular/forms'
+import { TheSeamDatatableModule } from '../../datatable.module'
+
+# Datatable Cell Types
+
+<Meta title="Docs|Datatable/CellTypes/Decimal" decorators={[moduleMetadata({
+  imports: [
+    TheSeamDatatableModule,
+    BrowserAnimationsModule
+  ]
+})]} />
+
+## Decimal
+
+### Config Model
+
+```
+{
+  type = 'decimal',
+
+  /**
+   * Styles added to the root cell elements `style` attribute.
+   */
+  styles?: 'string' | 'string'[]
+
+  /**
+   * Classes added to the root cell elements `class` attribute.
+   */
+  cssClass?: 'string' | 'string'[]
+}
+```
+
+### Definition
+
+#### No Config
+
+```
+{
+  ...,
+  cellype = 'decimal'
+}
+```
+
+#### Basic Config
+```
+{
+  ...,
+  cellType = {
+    type = 'decimal'
+  }
+}
+```
+
+#### Config with styles
+```
+{
+  ...,
+  cellType = {
+    type = 'decimal',
+    styles = 'color: red; background-color: blue'
+  }
+}
+```
+
+### Example
+
+<Preview>
+  <Story name="Basic" height="150px">
+    {{
+      template: `<seam-datatable class="vw-100 vh-100" [columns]="columns" [rows]="rows"></seam-datatable>`,
+      props: {
+        columns: [
+          { prop: 'amt', name: 'Amount', cellType: 'decimal' }
+        ],
+        rows: [
+          { amt: 98.34 }
+        ]
+      },
+    }}
+  </Story>
+</Preview>

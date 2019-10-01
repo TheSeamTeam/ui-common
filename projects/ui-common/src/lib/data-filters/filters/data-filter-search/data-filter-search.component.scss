@@ -1,0 +1,25 @@
+:host {
+  display: block;
+  width: 300px;
+}
+
+.data-filter-search-has-icon {
+  > input {
+    padding-left: 30px;
+  }
+
+  // ::ng-deep {
+    .data-filter-search--icon-wrapper {
+      position: absolute;
+      top: 3px;
+      left: 10px;
+      bottom: 0px;
+
+      ::ng-deep {
+        .svg-inline--fa {
+          vertical-align: middle;
+        }
+      }
+    }
+  // }
+}

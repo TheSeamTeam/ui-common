@@ -18,6 +18,7 @@ import { LibIcon } from '../icon'
       [showDefaultOnError]="showDefaultOnError"
       [iconType]="iconType">
     </seam-icon>
+    <ng-content select=".sr-only,seam-icon-notification"></ng-content>
   `,
   styles: [],
   // tslint:disable-next-line:use-host-property-decorator
@@ -65,7 +66,7 @@ export class IconBtnComponent implements OnInit, DoCheck {
    */
   // @Input() defaultIcon: LibIcon
 
-  @Input() iconType: '' | 'styled-square' | 'image-fill' = 'image-fill'
+  @Input() iconType: '' | 'borderless-styled-square' | 'styled-square' | 'image-fill' = 'image-fill'
 
   @HostBinding('class.p-0') _cssPadding0 = true
 

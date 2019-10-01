@@ -1,0 +1,10 @@
+<div class="side-nav-toggle--content" *ngIf="expanded">
+  <ng-content></ng-content>
+</div>
+<button seamIconBtn [icon]="faBars"
+  iconType="borderless-styled-square"
+  btnSize="sm"
+  class="side-nav-toggle--btn ml-1"
+  (click)="toggle()">
+  <span class="sr-only">Toggle sidebar</span>
+</button>

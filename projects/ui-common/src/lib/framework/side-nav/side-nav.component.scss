@@ -1,0 +1,21 @@
+@import './styles/utilities';
+
+:host {
+  display: block;
+  background-color: $seam-side-nav-bg-color;
+  height: 100%;
+}
+
+.side-nav-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex-wrap: nowrap;
+}
+
+.side-nav-items-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex: 1 1 100%;
+}

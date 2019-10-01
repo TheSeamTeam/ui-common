@@ -6,6 +6,7 @@
     "module": "es2015",
     "moduleResolution": "node",
     "declaration": true,
+    "jsx": "react",
     "sourceMap": true,
     "inlineSources": true,
     "emitDecoratorMetadata": true,
@@ -31,6 +32,7 @@
   "exclude": [
     "src/test.ts",
     "**/*.spec.ts",
-    "**/*.stories.ts"
+    "**/*.stories.ts",
+    "**/_story-data/**/*"
   ]
 }

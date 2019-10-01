@@ -1,11 +1,15 @@
 <div class="d-flex flex-row">
   <seam-icon *ngIf="icon"
-    style="width: 30px; height: 20px;"
+    style="width: 30px; height: 20px; flex: 0 0 auto;"
     class="pr-2"
     [icon]="icon"
+    [iconClass]="iconClass"
     iconType="image-fill">
   </seam-icon>
-  <span class="text-nowrap">
+  <!-- <span class="text-nowrap">
     <ng-content></ng-content>
-  </span>
+  </span> -->
+  <div class="text-truncate">
+    <ng-content></ng-content>
+  </div>
 </div>

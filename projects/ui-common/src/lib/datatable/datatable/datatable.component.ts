@@ -208,7 +208,7 @@ export class DatatableComponent implements OnInit {
   @ContentChild(DatatableActionMenuComponent, { static: true }) actionMenu: DatatableActionMenuComponent
   @ContentChild(DatatableRowActionItemDirective, { static: true }) rowActionItem: DatatableRowActionItemDirective
 
-  @ContentChild(DatatableMenuBarComponent, { static: true })
+  @ContentChild(DatatableMenuBarComponent, { static: false })
   get menuBarComponent(): DatatableMenuBarComponent { return this._menuBarComponent }
   set menuBarComponent(value: DatatableMenuBarComponent) {
     this._menuBarComponent = value

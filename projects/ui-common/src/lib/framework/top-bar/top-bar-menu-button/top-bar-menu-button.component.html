@@ -1,0 +1,12 @@
+<div class="d-flex flex-row">
+  <div class="text-left flex-grow-1">
+    <span class="text-truncate">{{ displayName }}</span>
+    <br>
+    <span *ngIf="organizationName" class="text-truncate">{{ organizationName }}</span>
+  </div>
+  <div class="pl-2 d-flex flex-column">
+    <div class="flex-grow-1"></div>
+    <seam-icon class="d-block" [icon]="faAngleDown"></seam-icon>
+    <div class="flex-grow-1"></div>
+  </div>
+</div>

@@ -1,0 +1,8 @@
+<gridster [options]="options">
+  <!-- <gridster-item [item]="item" *ngFor="let item of dashboard">
+    {{ item.type }}
+  </gridster-item> -->
+  <gridster-item [item]="item" *ngFor="let item of widgetItems$ | async">
+    <ng-template [cdkPortalOutlet]="item.portal"></ng-template>
+  </gridster-item>
+</gridster>

@@ -19,9 +19,11 @@ export class DatatableMenuBarComponent implements OnInit, AfterViewInit {
     this._filterDirectives = value
     this.filtersChanged.emit(this.filters())
   }
-  _filterDirectives: QueryList<DatatableFilterDirective>
+  private _filterDirectives: QueryList<DatatableFilterDirective>
 
-  filtersChanged = new EventEmitter<IDataFilter[]>()
+  private _filtersArr: IDataFilter[] = []
+
+  public readonly filtersChanged = new EventEmitter<IDataFilter[]>()
 
   constructor() { }
 
@@ -31,10 +33,23 @@ export class DatatableMenuBarComponent implements OnInit, AfterViewInit {
     // console.log('_filterDirectives', this._filterDirectives, this.filters())
   }
 
-  filters(): IDataFilter[] {
-    return this._filterDirectives
+  public filters(): IDataFilter[] {
+    const fDirectives = this._filterDirectives
       ? this._filterDirectives.map(f => f.filter).filter(f => f !== undefined)
       : []
+
+    const fArr = this._filtersArr.filter(f => fDirectives.findIndex(fd => fd.uid === f.uid) === -1)
+    return [ ...fArr, ...fDirectives ]
+  }
+
+  public addFilter(dataFilter: IDataFilter): void {
+    this._filtersArr.push(dataFilter)
+    this.filtersChanged.emit(this.filters())
+  }
+
+  public removeFilter(dataFilter: IDataFilter): void {
+    this._filtersArr = this._filtersArr.filter(f => f !== dataFilter)
+    this.filtersChanged.emit(this.filters())
   }
 
 }

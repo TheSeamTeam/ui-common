@@ -1,6 +1,6 @@
 <ul class="list-group">
   <ng-container *ngFor="let item of items">
-    <ng-container *ngIf="item.routerLink || item.href; else noRouterLink">
+    <ng-container *ngIf="(item.routerLink || item.href) && !item.confirmDialog; else noRouterLink">
       <a *ngIf="item.href; else noHref"
         class="list-group-item list-group-item-action py-1"
         [attr.href]="item.href"

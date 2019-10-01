@@ -1,11 +1,14 @@
+import { DragDropModule } from '@angular/cdk/drag-drop'
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 
+import { TheSeamButtonsModule } from '../buttons/index'
 import { TheSeamIconModule } from '../icon/icon.module'
 import { TheSeamLoadingModule } from '../loading/index'
 
+import { WidgetDragHandleDirective } from './directives/widget-drag-handle.directive'
 import { WidgetIconTplDirective } from './directives/widget-icon-tpl.directive'
 import { WidgetTitleTplDirective } from './directives/widget-title-tpl.directive'
 import { WidgetContentHeaderComponent } from './widget-content-components/widget-content-header/widget-content-header.component'
@@ -31,12 +34,15 @@ import { WidgetComponent } from './widget/widget.component'
     WidgetTileListComponent,
     WidgetEmptyLabelComponent,
     WidgetContentHeaderComponent,
+    WidgetDragHandleDirective,
   ],
   imports: [
     CommonModule,
     FontAwesomeModule,
     TheSeamIconModule,
-    TheSeamLoadingModule
+    TheSeamLoadingModule,
+    DragDropModule,
+    TheSeamButtonsModule
   ],
   exports: [
     WidgetComponent,

@@ -1,13 +1,14 @@
 import { coerceArray } from '@angular/cdk/coercion'
-import { Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core'
+import { Component, forwardRef, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core'
 import { FormControl } from '@angular/forms'
 import { untilDestroyed } from 'ngx-take-until-destroy'
 import { Observable } from 'rxjs'
 import { map, startWith } from 'rxjs/operators'
 
+import { DatatableMenuBarComponent } from '../../../datatable/datatable-menu-bar/datatable-menu-bar.component'
 import { isNullOrUndefined } from '../../../utils/index'
+import { IDataFilter, THESEAM_DATA_FILTER, THESEAM_DATA_FILTER_OPTIONS } from '../../data-filter'
 
-import { IDataFilter, THESEAM_DATA_FILTER } from '../../data-filter'
 import { ITextFilterOptions, textDataFilter } from '../data-filter-text/data-filter-text.component'
 
 
@@ -82,6 +83,8 @@ export function toggleButtonsFilter(data: any[], values: string[], options = Def
   return _data
 }
 
+let _uid = 0
+
 @Component({
   selector: 'seam-data-filter-toggle-buttons',
   templateUrl: './data-filter-toggle-buttons.component.html',
@@ -90,15 +93,18 @@ export function toggleButtonsFilter(data: any[], values: string[], options = Def
 })
 export class DataFilterToggleButtonsComponent implements OnInit, OnDestroy, IDataFilter {
 
+  public readonly name = 'toggle-buttons'
+  public readonly uid = `toggle-buttons__${_uid++}`
+
   _control = new FormControl()
 
-  @Input() properties: string[]
-  @Input() omitProperties: string[]
-  @Input() multiple: boolean
-  @Input() selectionToggleable: boolean
-  @Input() buttons: IToggleButton[]
-  @Input() exact: boolean
-  @Input() caseSensitive: boolean
+  @Input() properties = this._optDefault('properties')
+  @Input() omitProperties = this._optDefault('omitProperties')
+  @Input() multiple = this._optDefault('multiple')
+  @Input() selectionToggleable = this._optDefault('selectionToggleable')
+  @Input() buttons = this._optDefault('buttons')
+  @Input() exact = this._optDefault('exact')
+  @Input() caseSensitive = this._optDefault('caseSensitive')
 
   @Input()
   set value(value: string | string[]) {
@@ -108,11 +114,21 @@ export class DataFilterToggleButtonsComponent implements OnInit, OnDestroy, IDat
     }
   }
 
-  constructor() { }
+  constructor(
+    private _menuBar: DatatableMenuBarComponent,
+    @Optional() @Inject(THESEAM_DATA_FILTER_OPTIONS) private _filterOptions: IToggleButtonsFilterOptions | null
+  ) { }
 
-  ngOnInit() { }
+  ngOnInit() { this._menuBar.addFilter(this) }
 
-  ngOnDestroy() { }
+  ngOnDestroy() { this._menuBar.removeFilter(this) }
+
+  private _optDefault<K extends keyof IToggleButtonsFilterOptions>(prop: K) {
+    if (this._filterOptions && this._filterOptions.hasOwnProperty(prop)) {
+      return this._filterOptions[prop]
+    }
+    return DefaultToggleButtonsFilterOptions[prop]
+  }
 
   get options(): IToggleButtonsFilterOptions {
     return {

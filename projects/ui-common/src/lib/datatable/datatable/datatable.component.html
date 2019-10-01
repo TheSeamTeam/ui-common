@@ -1,7 +1,8 @@
 <div class="datatable-wrapper">
   <ng-content select="seam-datatable-menu-bar"></ng-content>
   <div class="datatable-table-wrapper">
-    <ng-container *ngIf="columns">
+    <ng-container>
+      <!-- [loadingIndicator]="true" -->
       <ngx-datatable
         class="bootstrap"
         [columnMode]="columnMode"
@@ -77,7 +78,7 @@
           [checkboxable]="true">
         </ngx-datatable-column>
 
-        <ng-container *ngFor="let col of columns trackBy: trackByFnColumn">
+        <ng-container *ngFor="let col of (columns || []) trackBy: trackByFnColumn">
           <ng-container *ngIf="_columnData(col) as colData">
 
             <ngx-datatable-column
@@ -118,7 +119,7 @@
                     [value]="value"
                     [rowIndex]="rowIndex"
                     [row]="row"
-                    [colData]="colData">
+                    [colData]="colData.comp || colData.col">
                   </seam-datatable-cell-type-selector>
                   <ng-template #noCellType>
                     {{ value }}
@@ -166,7 +167,8 @@
             <ng-template let-value="value" let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
               <button type="button" class="datatable-action-button btn"
                 [seamDatatableActionMenuToggle]="actionMenuOverlayTpl"
-                #actionMenuToggle="seamDatatableActionMenuToggle">
+                #actionMenuToggle="seamDatatableActionMenuToggle"
+                title="Row Actions">
                 <fa-icon [icon]="faEllipsisH"></fa-icon>
               </button>
               <ng-template #actionMenuOverlayTpl>

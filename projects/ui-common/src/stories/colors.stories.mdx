@@ -1,0 +1,36 @@
+import { moduleMetadata } from '@storybook/angular';
+import { Story, Meta, ColorItem, ColorPalette } from '@storybook/addon-docs/blocks';
+import { Welcome, Button } from '@storybook/angular/demo';
+// import { linkTo } from '@storybook/addon-links';
+
+import { ColorDisp } from './components/color-preview'
+
+# Colors
+
+<Meta title="Docs|Colors" decorators={[moduleMetadata({ declarations: [Button] })]} />
+
+## Theme Text Colors
+
+<ColorPalette>
+  <ColorDisp themeClass='text-primary' styleProp='color' />
+  <ColorDisp themeClass='text-secondary' styleProp='color' />
+  <ColorDisp themeClass='text-success' styleProp='color' />
+  <ColorDisp themeClass='text-info' styleProp='color' />
+  <ColorDisp themeClass='text-warning' styleProp='color' />
+  <ColorDisp themeClass='text-danger' styleProp='color' />
+  <ColorDisp themeClass='text-light' styleProp='color' />
+  <ColorDisp themeClass='text-dark' styleProp='color' />
+</ColorPalette>
+
+## Theme Background Colors
+
+<ColorPalette>
+  <ColorDisp themeClass='bg-primary' styleProp='background-color' />
+  <ColorDisp themeClass='bg-secondary' styleProp='background-color' />
+  <ColorDisp themeClass='bg-success' styleProp='background-color' />
+  <ColorDisp themeClass='bg-info' styleProp='background-color' />
+  <ColorDisp themeClass='bg-warning' styleProp='background-color' />
+  <ColorDisp themeClass='bg-danger' styleProp='background-color' />
+  <ColorDisp themeClass='bg-light' styleProp='background-color' />
+  <ColorDisp themeClass='bg-dark' styleProp='background-color' />
+</ColorPalette>

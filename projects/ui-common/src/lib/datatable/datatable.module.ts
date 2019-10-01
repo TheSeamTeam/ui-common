@@ -10,6 +10,7 @@ import { NgxDatatableModule, ScrollbarHelper } from '@marklb/ngx-datatable'
 import { ToastrModule } from 'ngx-toastr'
 
 import { TheSeamButtonsModule } from '../buttons/buttons.module'
+import { TheSeamConfirmDialogModule } from '../confirm-dialog/confirm-dialog.module'
 import { TheSeamIconModule } from '../icon/icon.module'
 import { TheSeamLoadingModule } from '../loading/loading.module'
 import { TheSeamMenuModule } from '../menu/menu.module'
@@ -57,7 +58,8 @@ import { TheSeamDatatableScrollbarHelperService } from './services/datatable-scr
     ToastrModule.forRoot(),
     TheSeamLoadingModule,
     TheSeamDatatableCellTypesModule,
-    PortalModule
+    PortalModule,
+    TheSeamConfirmDialogModule
   ],
   exports: [
     DatatableComponent,

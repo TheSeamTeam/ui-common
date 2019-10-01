@@ -5,14 +5,24 @@ import { ReactiveFormsModule } from '@angular/forms'
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 
 import { TheSeamFormFieldModule } from '../form-field/form-field.module'
+import { TheSeamIconModule } from '../icon/index'
 import { TheSeamToggleGroupModule } from '../toggle-group/toggle-group.module'
 
+import { THESEAM_DATA_FILTER_DEF } from './data-filter-def'
+import { DataFilterSearchComponent } from './filters/data-filter-search/data-filter-search.component'
 import { DataFilterTextComponent } from './filters/data-filter-text/data-filter-text.component'
 import { DataFilterToggleButtonsComponent } from './filters/data-filter-toggle-buttons/data-filter-toggle-buttons.component'
 
 const filterComponents = [
+  DataFilterSearchComponent,
   DataFilterTextComponent,
   DataFilterToggleButtonsComponent
+]
+
+const filterDefProviders = [
+  { provide: THESEAM_DATA_FILTER_DEF, useValue: { name: 'search', component: DataFilterSearchComponent }, multi: true },
+  { provide: THESEAM_DATA_FILTER_DEF, useValue: { name: 'text', component: DataFilterTextComponent }, multi: true },
+  { provide: THESEAM_DATA_FILTER_DEF, useValue: { name: 'toggle-buttons', component: DataFilterToggleButtonsComponent }, multi: true },
 ]
 
 @NgModule({
@@ -24,7 +34,11 @@ const filterComponents = [
     ReactiveFormsModule,
     TheSeamFormFieldModule,
     FontAwesomeModule,
-    TheSeamToggleGroupModule
+    TheSeamToggleGroupModule,
+    TheSeamIconModule
+  ],
+  providers: [
+    ...filterDefProviders
   ],
   exports: [
     ...filterComponents
