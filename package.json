@@ -118,5 +118,9 @@
     "tsickle": "^0.36.0",
     "tslint": "~5.15.0",
     "typescript": "~3.5.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TheSeamTeam/ui-common"
   }
 }

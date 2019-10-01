@@ -44,36 +44,28 @@ export const HiddenDiv = styled.div({
 // export const PropsExample = (props) => (<PropsTable rows={[]} error={PropsTableError.NO_COMPONENT} /> )
 
 interface ColorDispProps {
-  themeClass: string
-  styleProp: string
+  title: string
+  subtitle: string
+  colorVars: string[]
 }
 
 export class ColorDisp extends React.Component<ColorDispProps> {
 
-  color: string | null = ''
-
-  componentDidMount() {
-    const { themeClass, styleProp } = this.props
-    const elem = document.querySelector(`#themeDisp_${themeClass}`)
-    if (elem) {
-      const c = window.getComputedStyle(elem)
-      this.color = c[styleProp]
-      this.setState({})
-    }
-  }
-
   render() {
-    const { themeClass } = this.props
-    const id = `themeDisp_${themeClass}`
+    const { title, subtitle, colorVars } = this.props
+
+    const colors: string[] = []
+    for (const c of colorVars) {
+      colors.push(getComputedStyle(document.documentElement).getPropertyValue(c))
+    }
     return (
       <>
-        <HiddenDiv id={id} className={themeClass}></HiddenDiv>
         <ColorItem
-          title={themeClass}
-          colors={[ this.color ]}
+          title={title}
+          subtitle={subtitle}
+          colors={colors}
         />
       </>
     )
   }
 }
-

@@ -11,7 +11,7 @@ import { filter } from 'rxjs/operators'
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 
-import { LibIcon } from '../../icon/index'
+import { SeamIcon } from '../../icon/index'
 
 import { ModalFooterTplDirective } from '../directives/modal-footer-tpl.directive'
 import { ModalHeaderIconTplDirective } from '../directives/modal-header-icon-tpl.directive'
@@ -40,8 +40,8 @@ export class ModalComponent implements OnInit, OnDestroy, AfterViewInit, IModalC
   @Input() titleText: string
 
   @Input()
-  get icon(): LibIcon | undefined { return this._iconUrl || this._iconObj }
-  set icon(value: LibIcon | undefined) {
+  get icon(): SeamIcon | undefined { return this._iconUrl || this._iconObj }
+  set icon(value: SeamIcon | undefined) {
     if (typeof value === 'string') {
       this._iconUrl = value
       this._iconObj = undefined

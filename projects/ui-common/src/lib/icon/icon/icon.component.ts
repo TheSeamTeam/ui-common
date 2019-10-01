@@ -2,7 +2,7 @@ import { Component, HostBinding, Input } from '@angular/core'
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 
-import { LibIcon } from '../icon'
+import { SeamIcon } from '../icon'
 
 //
 // TODO: Ensure all inputs correctly update the state whenever changed, not just
@@ -41,8 +41,8 @@ export class IconComponent {
    * If the input is not a string it will be assumed to be a font-awesome IconProp object.
    */
   @Input()
-  get icon(): LibIcon | undefined { return this._iconUrl || this._iconObj }
-  set icon(value: LibIcon | undefined) {
+  get icon(): SeamIcon | undefined { return this._iconUrl || this._iconObj }
+  set icon(value: SeamIcon | undefined) {
     if (typeof value === 'string') {
       this._iconUrl = value
       this._iconObj = undefined
@@ -97,8 +97,8 @@ export class IconComponent {
    * Shown if icon is not set or if showDefaultOnError is true and img has thrown an error.
    */
   @Input()
-  get defaultIcon(): LibIcon | undefined { return this._defaultIconUrl || this._defaultIconObj }
-  set defaultIcon(value: LibIcon | undefined) {
+  get defaultIcon(): SeamIcon | undefined { return this._defaultIconUrl || this._defaultIconObj }
+  set defaultIcon(value: SeamIcon | undefined) {
     if (typeof value === 'string') {
       this._defaultIconUrl = value
       this._defaultIconObj = undefined

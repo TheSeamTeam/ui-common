@@ -9,28 +9,17 @@ import { ColorDisp } from './components/color-preview'
 
 <Meta title="Docs|Colors" decorators={[moduleMetadata({ declarations: [Button] })]} />
 
-## Theme Text Colors
+## Theme Colors
+
+The theme colors should work with any bootstrap theme class, such as '.text-primary' and '.bg-primary'
 
 <ColorPalette>
-  <ColorDisp themeClass='text-primary' styleProp='color' />
-  <ColorDisp themeClass='text-secondary' styleProp='color' />
-  <ColorDisp themeClass='text-success' styleProp='color' />
-  <ColorDisp themeClass='text-info' styleProp='color' />
-  <ColorDisp themeClass='text-warning' styleProp='color' />
-  <ColorDisp themeClass='text-danger' styleProp='color' />
-  <ColorDisp themeClass='text-light' styleProp='color' />
-  <ColorDisp themeClass='text-dark' styleProp='color' />
-</ColorPalette>
-
-## Theme Background Colors
-
-<ColorPalette>
-  <ColorDisp themeClass='bg-primary' styleProp='background-color' />
-  <ColorDisp themeClass='bg-secondary' styleProp='background-color' />
-  <ColorDisp themeClass='bg-success' styleProp='background-color' />
-  <ColorDisp themeClass='bg-info' styleProp='background-color' />
-  <ColorDisp themeClass='bg-warning' styleProp='background-color' />
-  <ColorDisp themeClass='bg-danger' styleProp='background-color' />
-  <ColorDisp themeClass='bg-light' styleProp='background-color' />
-  <ColorDisp themeClass='bg-dark' styleProp='background-color' />
+  <ColorDisp title='primary' colorVars={['--primary']} />
+  <ColorDisp title='secondary' colorVars={['--secondary']} />
+  <ColorDisp title='success' colorVars={['--success']} />
+  <ColorDisp title='info' colorVars={['--info']} />
+  <ColorDisp title='warning' colorVars={['--warning']} />
+  <ColorDisp title='danger' colorVars={['--danger']} />
+  <ColorDisp title='light' colorVars={['--light']} />
+  <ColorDisp title='dark' colorVars={['--dark']} />
 </ColorPalette>

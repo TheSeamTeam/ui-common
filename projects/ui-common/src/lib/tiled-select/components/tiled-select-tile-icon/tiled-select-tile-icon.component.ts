@@ -2,7 +2,7 @@ import { Component, ContentChild, HostBinding, Input, OnInit } from '@angular/co
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 
-import { LibIcon } from '../../../icon/index'
+import { SeamIcon } from '../../../icon/index'
 
 import { TiledSelectTileIconTplDirective } from '../../directives/tiled-select-tile-icon-tpl.directive'
 
@@ -27,8 +27,8 @@ export class TiledSelectTileIconComponent implements OnInit {
   @Input() iconClass: string
 
   @Input()
-  get icon(): LibIcon | undefined { return this._iconUrl || this._iconObj }
-  set icon(value: LibIcon | undefined) {
+  get icon(): SeamIcon | undefined { return this._iconUrl || this._iconObj }
+  set icon(value: SeamIcon | undefined) {
     if (typeof value === 'string') {
       this._iconUrl = value
       this._iconObj = undefined

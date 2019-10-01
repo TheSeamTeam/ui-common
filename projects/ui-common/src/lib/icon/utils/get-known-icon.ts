@@ -72,7 +72,7 @@ import {
   faUsers,
   faUserTimes
 } from '@fortawesome/free-solid-svg-icons'
-import { LibIcon } from '@theseam/ui-common/lib/icon'
+import { SeamIcon } from '../icon'
 
 // TODO: Decide a good way to do this, so that we don't have to import full icon
 // libraries, but still provide icon choices to use from a string. One way could
@@ -151,6 +151,6 @@ const knownIcons = {
   'faUserPlus': faUserPlus
 }
 
-export function getKnownIcon(iconStr: string): LibIcon | undefined {
+export function getKnownIcon(iconStr: string): SeamIcon | undefined {
   return knownIcons[iconStr]
 }

@@ -9,7 +9,7 @@ import {
   faFileWord
 } from '@fortawesome/free-regular-svg-icons'
 
-import { LibIcon } from '../icon'
+import { SeamIcon } from '../icon'
 
 const FILE_EXTENSION_ICONS = {
   'pdf': faFilePdf,
@@ -30,7 +30,7 @@ const FILE_EXTENSION_ICONS = {
 
 const DEFAULT_FILE_EXTENSION_ICON = faFile
 
-export function fileExtensionIcon(extension: string | null | undefined, defaultIfNotFound: boolean = true): LibIcon | undefined {
+export function fileExtensionIcon(extension: string | null | undefined, defaultIfNotFound: boolean = true): SeamIcon | undefined {
   if (!extension) {
     return DEFAULT_FILE_EXTENSION_ICON
   }

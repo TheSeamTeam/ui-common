@@ -28,7 +28,7 @@ import { auditTime, distinctUntilChanged, map, switchMap, tap } from 'rxjs/opera
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons'
 import { untilDestroyed } from 'ngx-take-until-destroy'
 
-import { LibIcon } from '../../../icon/index'
+import { SeamIcon } from '../../../icon/index'
 import { RouterHelpersService } from '../../../services/router-helpers.service'
 
 import { ISideNavItem } from '../side-nav.models'
@@ -86,7 +86,7 @@ export class SideNavItemComponent implements OnInit, OnDestroy {
 
   @Input() itemType: 'divider' | 'basic' | 'link' | 'button'
 
-  @Input() icon?: LibIcon
+  @Input() icon?: SeamIcon
 
   @Input() label: string
 

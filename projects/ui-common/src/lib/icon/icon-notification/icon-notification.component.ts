@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit } from '@
 
 import { faCircle } from '@fortawesome/free-solid-svg-icons'
 
-import { LibIcon } from '../icon'
+import { SeamIcon } from '../icon'
 
 @Component({
   selector: 'seam-icon-notification',
@@ -65,7 +65,7 @@ export class IconNotificationComponent implements OnInit {
    * If the input icon is a string an `img` element will be used with icon as `src`.
    * If the input is not a string it will be assumed to be a font-awesome IconProp object.
    */
-  @Input() icon: LibIcon | undefined = faCircle
+  @Input() icon: SeamIcon | undefined = faCircle
 
   /**
    * Toggles whether an image that has thrown the `onerror` event should show
@@ -78,7 +78,7 @@ export class IconNotificationComponent implements OnInit {
    *
    * NOTE: Not supported for icon-notification yet.
    */
-  // @Input() defaultIcon: LibIcon
+  // @Input() defaultIcon: SeamIcon
 
   /**
    * NOTE: Only works for fa-icon for now.

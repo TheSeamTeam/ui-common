@@ -7,11 +7,14 @@ import { map, startWith } from 'rxjs/operators'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
 
 import { DatatableMenuBarComponent } from '../../../datatable/datatable-menu-bar/datatable-menu-bar.component'
-import { LibIcon } from '../../../icon/index'
+import { SeamIcon } from '../../../icon/index'
 import { isNullOrUndefined } from '../../../utils/index'
 
 import { IDataFilter, THESEAM_DATA_FILTER, THESEAM_DATA_FILTER_OPTIONS } from '../../data-filter'
-import { ITextFilterOptions, textDataFilter } from '../data-filter-text/data-filter-text.component'
+import { textDataFilter } from '../data-filter-text/data-filter-text.component'
+import { ITextFilterOptions } from '../data-filter-text/text-filter-options'
+
+import { ISearchFilterOptions } from './search-filter-options'
 
 
 export const DATA_FILTER_SEARCH: any = {
@@ -20,8 +23,6 @@ export const DATA_FILTER_SEARCH: any = {
   useExisting: forwardRef(() => DataFilterSearchComponent),
   multi: true,
 }
-
-export type ISearchFilterOptions = ITextFilterOptions
 
 export const DefaultSearchFilterOptions: ISearchFilterOptions = {
   properties: undefined,
@@ -56,7 +57,7 @@ export class DataFilterSearchComponent implements OnInit, OnDestroy, IDataFilter
   @Input() caseSensitive = this._optDefault('caseSensitive')
 
   @Input() placeholder = 'Search...'
-  @Input() icon: LibIcon = faSearch
+  @Input() icon: SeamIcon = faSearch
   @Input() iconTpl: TemplateRef<HTMLElement>
 
   @Input()

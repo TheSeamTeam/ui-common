@@ -1,6 +1,6 @@
 {
   "name": "@theseam/ui-common",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "peerDependencies": {
     "@angular/common": "^8.2.3",
     "@angular/core": "^8.2.3",
@@ -33,5 +33,9 @@
     "ngx-toastr": "~10.0.4",
     "pdfjs-dist": "^2.0.943",
     "xlsx": "^0.14.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TheSeamTeam/ui-common"
   }
 }

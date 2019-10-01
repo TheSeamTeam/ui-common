@@ -12,7 +12,7 @@
   class="d-flex align-items-center justify-center"
   style="margin-top: calc(-1px - 0.75rem); height: calc(50px)">
   <a class="d-block m-auto{{ _linkClass ? ' ' + _linkClass : '' }}"
-    [routerLink]="_value"
+    [routerLink]="value"
     [attr.title]="_title">
     <seam-icon *ngIf="_icon" [icon]="_icon" size="lg" [iconType]="_iconType" [iconClass]="_iconClass"></seam-icon>
     <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
@@ -23,7 +23,7 @@
   class="d-flex align-items-center justify-center"
   style="margin-top: calc(-1px - 0.75rem); height: calc(50px)">
   <a class="d-block m-auto{{ _linkClass ? ' ' + _linkClass : '' }}"
-    [attr.href]="_value"
+    [attr.href]="value"
     [attr.title]="_title">
     <seam-icon *ngIf="_icon" [icon]="_icon" size="lg" [iconType]="_iconType" [iconClass]="_iconClass"></seam-icon>
     <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>

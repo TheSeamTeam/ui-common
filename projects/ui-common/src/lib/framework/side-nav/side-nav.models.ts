@@ -1,4 +1,4 @@
-import { LibIcon } from '../../icon/index'
+import { SeamIcon } from '../../icon/index'
 
 export interface ISideNavItemStatus {
   active: boolean
@@ -23,14 +23,14 @@ export interface ISideNavDivider extends ISideNavItemBase<'divider'> {
 }
 
 export interface ISideNavBasic extends ISideNavItemBase<'basic'> {
-  icon?: LibIcon
+  icon?: SeamIcon
   label: string
 
   children?: ISideNavItem[]
 }
 
 export interface ISideNavLink extends ISideNavItemBase<'link'> {
-  icon?: LibIcon
+  icon?: SeamIcon
   label: string
 
   link?: any[]|string

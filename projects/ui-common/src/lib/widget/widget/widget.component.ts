@@ -4,7 +4,7 @@ import { Component, ContentChild, Input, OnInit } from '@angular/core'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { faAngleDown, faCog } from '@fortawesome/free-solid-svg-icons'
 
-import { LibIcon } from '../../icon/icon'
+import { SeamIcon } from '../../icon/icon'
 
 import { WidgetIconTplDirective } from '../directives/widget-icon-tpl.directive'
 import { WidgetTitleTplDirective } from '../directives/widget-title-tpl.directive'
@@ -36,8 +36,8 @@ export class WidgetComponent implements OnInit {
   @Input() titleText: string
 
   @Input()
-  get icon(): LibIcon | undefined { return this._iconUrl || this._iconObj }
-  set icon(value: LibIcon | undefined) {
+  get icon(): SeamIcon | undefined { return this._iconUrl || this._iconObj }
+  set icon(value: SeamIcon | undefined) {
     if (typeof value === 'string') {
       this._iconUrl = value
       this._iconObj = undefined

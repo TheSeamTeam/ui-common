@@ -6,7 +6,7 @@ import {
   DynamicDatatableCellTypeConfigIcon,
   DynamicDatatableCellTypeConfigIconAction
 } from '../../../datatable-dynamic/models/cell-type-config'
-import { getKnownIcon, LibIcon, TheSeamIconType } from '../../../icon/index'
+import { getKnownIcon, SeamIcon, TheSeamIconType } from '../../../icon/index'
 
 import { DATATABLE_CELL_DATA } from '../../datatable-cell-type-selector/datatable-cell-tokens'
 import { IDatatableCellData } from '../../datatable-cell-type-selector/datatable-cell.models'
@@ -42,7 +42,7 @@ export class DatatableCellTypeIconComponent implements OnInit, OnDestroy {
   }
   private _config: DynamicDatatableCellTypeConfigIcon | undefined | null
 
-  _icon: LibIcon | undefined | null
+  _icon: SeamIcon | undefined | null
   _tplType: IconTemplateType = 'default'
   _title?: string
   _srOnly?: string

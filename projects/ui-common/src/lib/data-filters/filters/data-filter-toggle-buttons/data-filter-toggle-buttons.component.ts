@@ -9,7 +9,8 @@ import { DatatableMenuBarComponent } from '../../../datatable/datatable-menu-bar
 import { isNullOrUndefined } from '../../../utils/index'
 import { IDataFilter, THESEAM_DATA_FILTER, THESEAM_DATA_FILTER_OPTIONS } from '../../data-filter'
 
-import { ITextFilterOptions, textDataFilter } from '../data-filter-text/data-filter-text.component'
+import { textDataFilter } from '../data-filter-text/data-filter-text.component'
+import { ITextFilterOptions } from '../data-filter-text/text-filter-options'
 
 
 export const DATA_FILTER_TOGGLE_BUTTON: any = {

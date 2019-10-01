@@ -3,7 +3,7 @@ import { Component, DoCheck, ElementRef, HostBinding, Input, OnInit, Renderer2 }
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 
 import { ThemeTypes } from '../../models/index'
-import { LibIcon } from '../icon'
+import { SeamIcon } from '../icon'
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -46,7 +46,7 @@ export class IconBtnComponent implements OnInit, DoCheck {
    * If the input icon is a string an `img` element will be used with icon as `src`.
    * If the input is not a string it will be assumed to be a font-awesome IconProp object.
    */
-  @Input() icon: LibIcon
+  @Input() icon: SeamIcon
 
   /**
    * NOTE: Only works for fa-icon for now.
@@ -64,7 +64,7 @@ export class IconBtnComponent implements OnInit, DoCheck {
    *
    * NOTE: Not supported for icon-btn yet.
    */
-  // @Input() defaultIcon: LibIcon
+  // @Input() defaultIcon: SeamIcon
 
   @Input() iconType: '' | 'borderless-styled-square' | 'styled-square' | 'image-fill' = 'image-fill'
 

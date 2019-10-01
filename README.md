@@ -1,8 +1,10 @@
 # UI Common
 
+This project is for common components and styles to be used in applications developed for The Seam.
+
 ## Getting Started
 
-The default app is for building usage demos for development. When working on components it is most likely prefered to use storybook. It is configured with hot-reloading, so you can see the changes as you save. The stories also serve as documentation. Try to avoid any external data, by providing alternate services or component input properties with hard-coded data, because the stories should be about the components functionally and still be available as documentation offline with nothing but this repo available, sort of like tests. Eventually we will probably use the stories for automated visual testing.
+Development is mainly done in Storybook for this project. You can add demos to the default app if they don't work well in a story scenario.
 
 Start storybook:
 
@@ -13,15 +15,6 @@ $ npm run storybook
 ## Usage
 
 ### npm install
-
-To access the registry you will need authentication credentials and the registry defined in your projects `.npmrc` file. Go here to learn how to setup authentication: https://docs.microsoft.com/en-us/azure/devops/artifacts/get-started-npm?view=azure-devops&tabs=windows#set-up-authentication-on-your-development-machine
-
-Put this line in the local project `.npmrc` file.
-
-```sh
-@theseam:registry=https://pkgs.dev.azure.com/theseam/_packaging/TheSeam.Packages/npm/registry/
-always-auth=true
-```
 
 ```sh
 $ npm i @theseam/ui-common
@@ -129,7 +122,7 @@ styles/_utilities.scss
 
 > This is the file that should be careful about its imports. There should not be any css rules in this file or any files imported by this file. It should only have compile time only code, such as variables, functions, and mixins.
 > If you need access to variables in a component's stylesheet, then import this file.
-> The reason this file should not have any rules is, because each component's stylesheet is compiled independently scoped to that component and any rules in a imported file will be copied for each component that imports that file whether is is used or not.
+> The reason this file should not have any rules is, because each component's stylesheet is compiled independently scoped to that component and any rules in an imported file will be copied for each component that imports that file whether is is used or not.
 
 ```scss
 @import '~@theseam/ui-common/styles/utilities';
