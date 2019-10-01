@@ -9,12 +9,12 @@ import {
 import { ROUTES } from '@angular/router'
 
 import { DynamicComponentLoader } from './dynamic-component-loader.service'
+import { IDynamicComponentManifest } from './dynamic-component-manifest'
 import {
   DYNAMIC_COMPONENT,
   DYNAMIC_COMPONENT_MANIFESTS,
-  DYNAMIC_MODULE,
-  IDynamicComponentManifest,
-} from './dynamic-component-manifest'
+  DYNAMIC_MODULE
+} from './dynamic-component-tokens'
 
 @NgModule()
 export class DynamicComponentLoaderModule {

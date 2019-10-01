@@ -4,12 +4,12 @@ import { from, throwError } from 'rxjs'
 import { mergeMap, switchMap } from 'rxjs/operators'
 
 import { LoadChildren } from '@angular/router'
+import { IDynamicComponentManifest } from './dynamic-component-manifest'
 import {
   DYNAMIC_COMPONENT,
   DYNAMIC_COMPONENT_MANIFESTS,
-  DYNAMIC_MODULE,
-  IDynamicComponentManifest,
-} from './dynamic-component-manifest'
+  DYNAMIC_MODULE
+} from './dynamic-component-tokens'
 
 import { wrapIntoObservable } from '../utils/index'
 

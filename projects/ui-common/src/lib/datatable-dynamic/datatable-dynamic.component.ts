@@ -1,7 +1,7 @@
 import { ComponentType } from '@angular/cdk/portal'
 import { ChangeDetectionStrategy, Component, Inject, Input, OnInit } from '@angular/core'
 import { BehaviorSubject, combineLatest, from, Observable, of } from 'rxjs'
-import { filter, map, switchMap, tap, toArray } from 'rxjs/operators'
+import { concatMap, map, switchMap, take, tap, toArray } from 'rxjs/operators'
 
 import jexl from 'jexl'
 
@@ -11,6 +11,10 @@ import { IDataFilter } from '../data-filters/index'
 import { notNullOrUndefined } from '../utils/index'
 
 import { IDatatableDynamicDef, IDynamicDatatableRow, IDynamicDatatableRowActionDef } from './datatable-dynamic-def'
+
+export function jexlObservable<R = any>(expression: string, context?: any): Observable<R> {
+  return from(jexl.eval(expression, context) as Promise<R>)
+}
 
 export interface IFilterComponentRecord {
   component: ComponentType<IDataFilter>
@@ -143,45 +147,29 @@ export class DatatableDynamicComponent implements OnInit {
   }
 
   public _rowActions(row: IDynamicDatatableRow, rowActions: IDynamicDatatableRowActionDef[]): Observable<IDynamicDatatableRowActionDef[]> {
-    const rActions: IDynamicDatatableRowActionDef[] = []
-    for (const rowAction of rowActions) {
-      if (rowAction.isHiddenExpr) {
-        const context = this._getActionRowContext(row, rowAction)
-        const isHidden = jexl.evalSync(rowAction.isHiddenExpr, context)
-        if (!isHidden) {
-          rActions.push(rowAction)
+    // TODO: Fix async eval.
+
+    if (!rowActions) { return of([]) }
+
+    return from(rowActions).pipe(
+      // concatMap(rowAction => rowAction.isHiddenExpr
+      //   ? jexlObservable(rowAction.isHiddenExpr).pipe(take(1), map(v => v ? rowAction : undefined))
+      //   : of(rowAction)
+      // ),
+
+      map(rowAction => {
+        if (rowAction.isHiddenExpr) {
+          const context = this._getActionRowContext(row, rowAction)
+          const isHidden = jexl.evalSync(rowAction.isHiddenExpr, context)
+          return isHidden ? undefined : rowAction
         }
-      } else {
-        rActions.push(rowAction)
-      }
-    }
+        return rowAction
+      }),
 
-    return of(rActions)
-
-    // TODO: Fix async eval. I think it is a problem with the action-menu or
-    // menu component.
-
-    // if (!rowActions) { return of([]) }
-
-    // return from((async () => {
-    //   const rActions: IDynamicDatatableRowActionDef[] = []
-    //   for (const rowAction of rowActions) {
-    //     if (rowAction.isHiddenExpr) {
-    //       const context = {
-    //         row: row
-    //       }
-    //       // console.log(jexl)
-    //       const isHidden = await jexl.eval(rowAction.isHiddenExpr, context)
-    //       console.log('isHidden', isHidden)
-    //       if (!isHidden) {
-    //         rActions.push(rowAction)
-    //       }
-    //     } else {
-    //       rActions.push(rowAction)
-    //     }
-    //   }
-    //   return rActions
-    // })()).pipe(tap(r => console.log('result', r)))
+      toArray(),
+      map(v => v.filter(notNullOrUndefined)),
+      // tap(r => console.log('result', r)),
+    )
   }
 
   private _getActionRowContext(row: IDynamicDatatableRow, rowActionDef: IDynamicDatatableRowActionDef): IActionRowExprContext {
