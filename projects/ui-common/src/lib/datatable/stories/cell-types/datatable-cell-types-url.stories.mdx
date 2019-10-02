@@ -22,19 +22,19 @@ import { TheSeamDatatableModule } from '../../datatable.module'
 
 ### Config Model
 
-```
+```js
 {
   type = 'url',
 
   /**
    * Styles added to the root cell elements `style` attribute.
    */
-  styles?: 'string' | 'string'[]
+  styles?: string | string[]
 
   /**
    * Classes added to the root cell elements `class` attribute.
    */
-  cssClass?: 'string' | 'string'[]
+  cssClass?: string | string[]
 }
 ```
 
@@ -42,7 +42,7 @@ import { TheSeamDatatableModule } from '../../datatable.module'
 
 #### No Config
 
-```
+```js
 {
   ...,
   cellype = 'url'
@@ -50,7 +50,8 @@ import { TheSeamDatatableModule } from '../../datatable.module'
 ```
 
 #### Basic Config
-```
+
+```js
 {
   ...,
   cellType = {
@@ -60,7 +61,8 @@ import { TheSeamDatatableModule } from '../../datatable.module'
 ```
 
 #### Config with styles
-```
+
+```js
 {
   ...,
   cellType = {

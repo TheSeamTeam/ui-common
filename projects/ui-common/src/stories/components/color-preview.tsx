@@ -19,13 +19,11 @@ export class ColorDisp extends React.Component<ColorDispProps> {
       colors.push(getComputedStyle(document.documentElement).getPropertyValue(c))
     }
     return (
-      <>
-        <ColorItem
-          title={title}
-          subtitle={subtitle}
-          colors={colors}
-        />
-      </>
+      <ColorItem
+        title={title}
+        subtitle={subtitle}
+        colors={colors}
+      />
     )
   }
 }
