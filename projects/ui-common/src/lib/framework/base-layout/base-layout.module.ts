@@ -6,8 +6,9 @@ import { TheSeamButtonsModule } from '../../buttons/index'
 import { TheSeamIconModule } from '../../icon/index'
 import { TheSeamScrollbarModule } from '../../scrollbar/index'
 
-import { BaseLayoutComponent } from './base-layout.component'
+import { TheSeamBaseLayoutComponent } from './base-layout.component'
 import { BaseLayoutContentDirective } from './directives/base-layout-content.directive'
+import { BaseLayoutNavToggleDirective } from './directives/base-layout-nav-toggle.directive'
 import { BaseLayoutSideBarDirective } from './directives/base-layout-side-bar.directive'
 import { BaseLayoutTopBarDirective } from './directives/base-layout-top-bar.directive'
 
@@ -15,10 +16,11 @@ import { BaseLayoutTopBarDirective } from './directives/base-layout-top-bar.dire
 
 @NgModule({
   declarations: [
-    BaseLayoutComponent,
+    TheSeamBaseLayoutComponent,
     BaseLayoutContentDirective,
     BaseLayoutSideBarDirective,
-    BaseLayoutTopBarDirective
+    BaseLayoutTopBarDirective,
+    BaseLayoutNavToggleDirective
   ],
   imports: [
     CommonModule,
@@ -28,10 +30,11 @@ import { BaseLayoutTopBarDirective } from './directives/base-layout-top-bar.dire
     TheSeamButtonsModule
   ],
   exports: [
-    BaseLayoutComponent,
+    TheSeamBaseLayoutComponent,
     BaseLayoutContentDirective,
     BaseLayoutSideBarDirective,
-    BaseLayoutTopBarDirective
+    BaseLayoutTopBarDirective,
+    BaseLayoutNavToggleDirective
   ]
 })
 export class TheSeamBaseLayoutModule { }

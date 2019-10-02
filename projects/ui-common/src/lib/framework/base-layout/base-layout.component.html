@@ -1,12 +1,16 @@
-<div *ngIf="hasSideBar$ | async"
-  class="base-layout-side-bar-container border-right bordered">
-  <div class="base-layout-side-bar-nav-content">
-    <ng-template [cdkPortalOutlet]="_sideBarPortal"></ng-template>
-  </div>
+<div class="base-layout-side-bar-nav-content-mobile" *ngIf="isMobile$ | async">
+  <ng-template [cdkPortalOutlet]="_sideBarPortal"></ng-template>
+</div>
+
+<div class="base-layout-top-bar-container border-bottom bordered">
+  <ng-template [cdkPortalOutlet]="_topBarPortal"></ng-template>
 </div>
 <div class="base-layout-main-container bg-white">
-  <div class="base-layout-top-bar-container border-bottom bordered">
-    <ng-template [cdkPortalOutlet]="_topBarPortal"></ng-template>
+  <div *ngIf="hasSideBar$ | async"
+    class="base-layout-side-bar-container border-right bordered">
+    <div class="base-layout-side-bar-nav-content" *ngIf="!(isMobile$ | async)">
+      <ng-template [cdkPortalOutlet]="_sideBarPortal"></ng-template>
+    </div>
   </div>
   <div class="base-layout-content-container" seamOverlayScrollbar>
     <ng-template [cdkPortalOutlet]="_contentPortal"></ng-template>

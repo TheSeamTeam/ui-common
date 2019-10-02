@@ -33,7 +33,7 @@ storiesOf('Framework/SideNav/Toggle', module)
     },
     template: `
       <div class="d-flex flex-row vh-100">
-        <div style="width: 240px; background-color: #e9ecef;" class="h-100">
+        <div style="width: 260px; background-color: #e9ecef;" class="h-100">
           <seam-side-nav-toggle
             >
           </seam-side-nav-toggle>

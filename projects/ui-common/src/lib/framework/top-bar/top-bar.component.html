@@ -1,3 +1,8 @@
+<!-- Nav Toggle -->
+<div class="d-flex flex-column justify-content-center pr-2" *ngIf="isMobile$ | async">
+  <button seamBaseLayoutNavToggle seamIconBtn [icon]="faBars" iconType="borderless-styled-square"></button>
+</div>
+
 <!-- Logo -->
 <div class="top-bar--logo d-flex flex-column justify-content-center pr-2" routerLink="/">
   <img [src]="logo" [src.lt-md]="logoSm" alt="Logo">

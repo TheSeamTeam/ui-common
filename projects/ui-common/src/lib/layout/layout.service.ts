@@ -10,9 +10,16 @@ import { observeMediaQuery } from './observe-media-query'
 })
 export class TheSeamLayoutService {
 
+  /**
+   * Is app a mobile-like size.
+   */
+  public isMobile$: Observable<boolean>
+
   constructor(
     private _media: MediaObserver
-  ) { }
+  ) {
+    this.isMobile$ = this.observe('lt-sm')
+  }
 
   public observe(alias: MediaQueryAliases): Observable<boolean> {
     return observeMediaQuery(this._media, alias)

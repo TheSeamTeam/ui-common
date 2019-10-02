@@ -6,6 +6,7 @@ import { TheSeamButtonsModule } from '../../buttons/index'
 import { TheSeamIconModule } from '../../icon/index'
 import { TheSeamLayoutModule } from '../../layout/index'
 import { TheSeamMenuModule } from '../../menu/index'
+import { TheSeamBaseLayoutModule } from '../base-layout/index'
 
 import { TopBarMenuButtonComponent } from './top-bar-menu-button/top-bar-menu-button.component'
 import { TopBarTitleComponent } from './top-bar-title/top-bar-title.component'
@@ -23,6 +24,7 @@ import { TopBarComponent } from './top-bar.component'
     TheSeamButtonsModule,
     TheSeamIconModule,
     TheSeamMenuModule,
+    TheSeamBaseLayoutModule,
     RouterModule
   ],
   exports: [

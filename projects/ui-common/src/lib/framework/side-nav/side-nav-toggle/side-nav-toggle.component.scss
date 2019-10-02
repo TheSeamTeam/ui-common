@@ -3,6 +3,7 @@
 :host {
   display: flex;
   flex-direction: row;
+  flex-shrink: 0;
 
   // &.side-nav-toggle--compact {
   //   width: 50px;

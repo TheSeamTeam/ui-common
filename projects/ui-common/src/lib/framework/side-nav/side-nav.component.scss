@@ -2,8 +2,29 @@
 
 :host {
   display: block;
-  background-color: $seam-side-nav-bg-color;
+  // background-color: $seam-side-nav-bg-color;
   height: 100%;
+
+  .side-nav-inner-wrapper {
+    background-color: $seam-side-nav-bg-color;
+    height: 100%;
+  }
+
+  .side-nav-backdrop {
+    background-color: $seam-side-nav-background-bg-color;
+    width: 100vw;
+    height: 100vh;
+
+    &.side-nav-backdrop-hidden {
+      display: none;
+      width: 0;
+      height: 0;
+      padding: 0;
+      margin: 0;
+    }
+  }
+
+  overflow: hidden;
 }
 
 .side-nav-content {

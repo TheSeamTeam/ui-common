@@ -1,8 +1,17 @@
 :host {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   height: 100%;
   width: 100%;
+}
+
+.base-layout-side-bar-nav-content-mobile {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  float: left;
+  z-index: 9999;
 }
 
 .base-layout-side-bar-container {
@@ -13,16 +22,12 @@
   .base-layout-side-bar-nav-content {
     flex: 1 1 0;
   }
-
-  // .base-layout-sidebar-toggle {
-
-  // }
 }
 
 .base-layout-main-container {
   flex: 1 1 100%;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   transform: translateZ(0);
 }
 

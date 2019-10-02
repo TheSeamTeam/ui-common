@@ -23,7 +23,7 @@ import {
   SkipSelf
 } from '@angular/core'
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs'
-import { auditTime, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators'
+import { auditTime, distinctUntilChanged, map, switchMap, take, tap } from 'rxjs/operators'
 
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons'
 import { untilDestroyed } from 'ngx-take-until-destroy'
@@ -84,6 +84,8 @@ export class SideNavItemComponent implements OnInit, OnDestroy {
 
   faAngleLeft = faAngleLeft
 
+  private _initializad = false
+
   @Input() itemType: 'divider' | 'basic' | 'link' | 'button'
 
   @Input() icon?: SeamIcon
@@ -132,6 +134,7 @@ export class SideNavItemComponent implements OnInit, OnDestroy {
     private _element: ElementRef,
     @Optional() @SkipSelf() @Host() private _parent?: SideNavItemComponent
   ) {
+
     this.hasActiveChild$ = this._registeredChildren.pipe(
       switchMap(children => Array.isArray(children) && children.length > 0
         ? combineLatest(children.map(c => c.isActive$)) : of([])
@@ -175,6 +178,19 @@ export class SideNavItemComponent implements OnInit, OnDestroy {
           this._renderer.removeClass(this._element.nativeElement, c)
         }
       })
+
+    // TODO: Make parent nodes of active child expanded on initialization.
+    //
+    // This worked for children of root nodes only. This will probably not work
+    // in a clean way from the node components only, because the child
+    // components are rendered as needed and register with the parent component
+    // when in initializes.
+
+    // this.hasActiveChild$.pipe(
+    //   take(1),
+    //   // tap(hasChildren => console.log('hasChildren', hasChildren)),
+    //   tap(hasChildren => hasChildren ? this.expanded = true : false)
+    // ).subscribe()
   }
 
   ngOnDestroy() {

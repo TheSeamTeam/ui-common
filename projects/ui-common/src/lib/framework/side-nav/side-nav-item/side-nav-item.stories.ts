@@ -47,7 +47,7 @@ storiesOf('Framework/SideNav/Item/Basic', module)
     },
     template: `
       <div class="d-flex flex-row vh-100">
-        <div style="width: 240px; background-color: #e9ecef;" class="h-100">
+        <div style="width: 260px; background-color: #e9ecef;" class="h-100">
           <seam-side-nav-item
             [itemType]="itemType"
             [icon]="icon"
@@ -134,7 +134,7 @@ storiesOf('Framework/SideNav/Item/Basic', module)
     },
     template: `
       <div class="d-flex flex-row vh-100" [storyNavToggle]="currentUrl">
-        <div style="width: 240px; background-color: #e9ecef;" class="h-100">
+        <div style="width: 260px; background-color: #e9ecef;" class="h-100">
           <seam-side-nav-item
             [itemType]="itemType"
             [icon]="icon"
@@ -191,7 +191,7 @@ storiesOf('Framework/SideNav/Item/Link', module)
     },
     template: `
       <div class="d-flex flex-row vh-100" [storyNavToggle]="currentUrl">
-        <div style="width: 240px; background-color: #e9ecef;" class="h-100">
+        <div style="width: 260px; background-color: #e9ecef;" class="h-100">
           <seam-side-nav-item
             [itemType]="itemType"
             [icon]="icon"
@@ -264,7 +264,7 @@ storiesOf('Framework/SideNav/Item/Link', module)
     },
     template: `
       <div class="d-flex flex-row vh-100" [storyNavToggle]="currentUrl">
-        <div style="width: 240px; background-color: #e9ecef;" class="h-100">
+        <div style="width: 260px; background-color: #e9ecef;" class="h-100">
           <seam-side-nav-item
             [itemType]="itemType"
             [icon]="icon"

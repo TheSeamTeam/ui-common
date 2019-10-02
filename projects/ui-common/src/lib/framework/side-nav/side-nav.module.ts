@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core'
 import { RouterModule } from '@angular/router'
 
 import { TheSeamIconModule } from '../../icon/index'
+import { TheSeamLayoutModule } from '../../layout/index'
 import { TheSeamScrollbarModule } from '../../scrollbar/index'
 
 import { SideNavItemComponent } from './side-nav-item/side-nav-item.component'
@@ -21,7 +22,8 @@ import { SideNavComponent } from './side-nav.component'
     RouterModule,
     TheSeamIconModule,
     A11yModule,
-    TheSeamScrollbarModule
+    TheSeamScrollbarModule,
+    TheSeamLayoutModule
   ],
   exports: [
     SideNavItemComponent,

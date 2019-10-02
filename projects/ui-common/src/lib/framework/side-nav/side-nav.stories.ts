@@ -45,7 +45,17 @@ storiesOf('Framework/SideNav', module)
               { path: 'example1.1', component: StoryRoutePlacholderComponent },
               { path: 'example1.2', component: StoryRoutePlacholderComponent },
               { path: 'example1.3', component: StoryRoutePlacholderComponent },
-              { path: 'example1.4', component: StoryRoutePlacholderComponent }
+              { path: 'example1.4', component: StoryRoutePlacholderComponent },
+              {
+                path: 'ex2',
+                component: StoryRoutePlacholderComponent,
+                children: [
+                  { path: 'example1.1', component: StoryRoutePlacholderComponent },
+                  { path: 'example1.2', component: StoryRoutePlacholderComponent },
+                  { path: 'example1.3', component: StoryRoutePlacholderComponent },
+                  { path: 'example1.4', component: StoryRoutePlacholderComponent }
+                ]
+              }
             ]
           },
           { path: 'example4', component: StoryRoutePlacholderComponent },
@@ -123,6 +133,40 @@ storiesOf('Framework/SideNav', module)
               // link: 'example3/example1.4'
             },
             {
+              itemType: 'basic',
+              label: 'Example 3.2',
+              icon: faCompass,
+              children: [
+                {
+                  itemType: 'link',
+                  label: 'Example 1.1',
+                  icon: faSignature,
+                  link: 'example3/ex2/example1.1',
+                },
+                {
+                  itemType: 'link',
+                  label: 'Example 1.2',
+                  icon: faBuilding,
+                  link: 'example3/ex2/example1.2'
+                },
+                {
+                  itemType: 'link',
+                  label: 'Example 1.3',
+                  link: 'example3/ex2/example1.3'
+                },
+                {
+                  itemType: 'link',
+                  label: 'Example 1.4',
+                  // link: 'example3/ex2/example1.4'
+                },
+                {
+                  itemType: 'link',
+                  label: 'Example 1.3',
+                  link: 'example3/ex2/example1.3'
+                },
+              ]
+            },
+            {
               itemType: 'link',
               label: 'Example 1.3',
               link: 'example3/example1.3'
@@ -150,7 +194,7 @@ storiesOf('Framework/SideNav', module)
     },
     template: `
       <div class="d-flex flex-row vh-100">
-        <div style="width: 240px;" class="h-100">
+        <div style="width: 260px;" class="h-100">
           <seam-side-nav [items]="navItems"></seam-side-nav>
         </div>
 
