@@ -28,7 +28,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "storybook": "start-storybook -p 6006 --ci",
-    "build-storybook": "build-storybook -o dist/_docs",
+    "build-storybook": "build-storybook -o docs",
     "refreshVSToken": "vsts-npm-auth -config .npmrc"
   },
   "private": true,
