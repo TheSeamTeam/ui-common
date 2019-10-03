@@ -11,7 +11,7 @@
 <seam-top-bar-title [titleText]="titleText" [subTitleText]="subTitleText"></seam-top-bar-title>
 <!-- Notifications -->
 <div class="top-bar-icon-container mr-2">
-  <button seamIconBtn
+  <button seamIconBtn *ngIf="hasNotificationsBtn"
     [icon]="faBell"
     iconType="borderless-styled-square"
     [seamMenuToggle]="notificationMenu">

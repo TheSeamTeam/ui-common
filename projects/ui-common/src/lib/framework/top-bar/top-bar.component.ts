@@ -31,6 +31,8 @@ export class TopBarComponent implements OnInit {
   @Input() displayName: string
   @Input() organizationName?: string | null
 
+  @Input() hasNotificationsBtn = true
+
   public isMobile$: Observable<boolean>
 
   constructor(

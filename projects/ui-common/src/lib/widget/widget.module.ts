@@ -1,4 +1,5 @@
 import { DragDropModule } from '@angular/cdk/drag-drop'
+import { CdkTableModule } from '@angular/cdk/table'
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 
@@ -16,6 +17,7 @@ import { WidgetEmptyLabelComponent } from './widget-content-components/widget-em
 import { WidgetFooterLinkComponent } from './widget-content-components/widget-footer-link/widget-footer-link.component'
 import { WidgetFooterTextComponent } from './widget-content-components/widget-footer-text/widget-footer-text.component'
 import { WidgetHeaderBadgeComponent } from './widget-content-components/widget-header-badge/widget-header-badge.component'
+import { WidgetTableComponent } from './widget-content-components/widget-table/widget-table.component'
 import { WidgetTileListComponent } from './widget-content-components/widget-tile-list/widget-tile-list.component'
 import { WidgetTileSecondaryIconDirective } from './widget-content-components/widget-tile/widget-tile-secondary-icon.directive'
 import { WidgetTileComponent } from './widget-content-components/widget-tile/widget-tile.component'
@@ -35,6 +37,7 @@ import { WidgetComponent } from './widget/widget.component'
     WidgetEmptyLabelComponent,
     WidgetContentHeaderComponent,
     WidgetDragHandleDirective,
+    WidgetTableComponent,
   ],
   imports: [
     CommonModule,
@@ -42,7 +45,8 @@ import { WidgetComponent } from './widget/widget.component'
     TheSeamIconModule,
     TheSeamLoadingModule,
     DragDropModule,
-    TheSeamButtonsModule
+    TheSeamButtonsModule,
+    CdkTableModule
   ],
   exports: [
     WidgetComponent,
@@ -55,7 +59,8 @@ import { WidgetComponent } from './widget/widget.component'
     WidgetFooterLinkComponent,
     WidgetTileListComponent,
     WidgetEmptyLabelComponent,
-    WidgetContentHeaderComponent
+    WidgetContentHeaderComponent,
+    WidgetTableComponent
   ]
 })
 export class TheSeamWidgetModule { }
