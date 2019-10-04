@@ -19,6 +19,28 @@
 //
 //
 
-.table th {
-  border-top: 0;
+.table.table-header-divider-indented {
+  th {
+    border-top: 0;
+    position: relative;
+
+    &:not(:last-child):after {
+      content: '';
+      position: absolute;
+      top: 12px;
+      bottom: 12px;
+      right: 0;
+      width: 2px;
+      background-color: #e1e3e6;
+    }
+  }
+
+  &.table-sm {
+    th {
+      &:not(:last-child):after {
+        top: 7px;
+        bottom: 7px;
+      }
+    }
+  }
 }

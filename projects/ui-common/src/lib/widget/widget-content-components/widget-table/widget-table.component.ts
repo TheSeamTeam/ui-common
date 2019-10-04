@@ -19,6 +19,11 @@ export type TrackByFunction<T> = (index: number, item: T) => any
 // go. This component will wrap it for extra functionality if so. For now this
 // will just be a simple table to make our widget tables look the same.
 
+export interface ITableColumn {
+  prop: string
+  name?: string
+}
+
 @Component({
   selector: 'seam-widget-table',
   templateUrl: './widget-table.component.html',
@@ -27,14 +32,46 @@ export type TrackByFunction<T> = (index: number, item: T) => any
 })
 export class WidgetTableComponent<T> implements OnInit {
 
-  @Input() columns: { [key: string]: string }[]
+  @Input()
+  get columns() { return this._columns }
+  set columns(value: (string | ITableColumn)[]) {
+    this._columns = value
+    this._setColumns(value)
+  }
+  private _columns: (string | ITableColumn)[]
 
   @Input() rows: T[]
 
   @Input() trackBy: TrackByFunction<T>
 
+  public displayedRecords: ITableColumn[]
+  public displayedColumns: string[]
+
   constructor() { }
 
   ngOnInit() { }
+
+  private _setColumns(cols: (string | ITableColumn)[]) {
+    const newCols: ITableColumn[] = []
+
+    for (const col of cols) {
+      if (typeof col === 'string') {
+        const newCol: ITableColumn = {
+          prop: col,
+          name: col
+        }
+        newCols.push(newCol)
+      } else {
+        const newCol: ITableColumn = {
+          prop: col.prop,
+          name: col.name || col.prop
+        }
+        newCols.push(newCol)
+      }
+    }
+
+    this.displayedRecords = newCols
+    this.displayedColumns = newCols.map(c => c.prop)
+  }
 
 }

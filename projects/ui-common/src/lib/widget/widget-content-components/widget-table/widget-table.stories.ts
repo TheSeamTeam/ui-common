@@ -92,8 +92,7 @@ storiesOf('Widget/Content', module)
     moduleMetadata: {
       imports: [
         TheSeamWidgetModule,
-        BrowserAnimationsModule,
-        TheSeamDatatableModule
+        BrowserAnimationsModule
       ]
     },
     props: {
@@ -101,12 +100,14 @@ storiesOf('Widget/Content', module)
       title: text('Header Title', 'Example Widget'),
       loading: boolean('Loading', false),
 
-      displayedColumns: [ 'ginCode', 'name' ],
-      // dataSource: new ExampleDataSource()
+      displayedColumns: [
+        { prop: 'ginCode', name: 'Gin Code' },
+        { prop: 'name', name: 'Name' }
+      ],
       dataSource: GIN_DATA
     },
     template: `
-      <div class="p-4" style="height: 400px; width: 500px;">
+      <div class="p-1" style="max-height: 400px; width: 500px;">
         <seam-widget [icon]="icon" [titleText]="title" [loading]="loading">
           <seam-widget-table [columns]="displayedColumns" [rows]="dataSource"></seam-widget-table>
         </seam-widget>
