@@ -13,6 +13,7 @@ import { WidgetDragHandleDirective } from './directives/widget-drag-handle.direc
 import { WidgetIconTplDirective } from './directives/widget-icon-tpl.directive'
 import { WidgetTitleTplDirective } from './directives/widget-title-tpl.directive'
 import { WidgetContentHeaderComponent } from './widget-content-components/widget-content-header/widget-content-header.component'
+import { WidgetDescriptionComponent } from './widget-content-components/widget-description/widget-description.component'
 import { WidgetEmptyLabelComponent } from './widget-content-components/widget-empty-label/widget-empty-label.component'
 import { WidgetFooterLinkComponent } from './widget-content-components/widget-footer-link/widget-footer-link.component'
 import { WidgetFooterTextComponent } from './widget-content-components/widget-footer-text/widget-footer-text.component'
@@ -38,6 +39,7 @@ import { WidgetComponent } from './widget/widget.component'
     WidgetContentHeaderComponent,
     WidgetDragHandleDirective,
     WidgetTableComponent,
+    WidgetDescriptionComponent,
   ],
   imports: [
     CommonModule,
@@ -60,7 +62,8 @@ import { WidgetComponent } from './widget/widget.component'
     WidgetTileListComponent,
     WidgetEmptyLabelComponent,
     WidgetContentHeaderComponent,
-    WidgetTableComponent
+    WidgetTableComponent,
+    WidgetDescriptionComponent
   ]
 })
 export class TheSeamWidgetModule { }
