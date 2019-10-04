@@ -1,3 +1,5 @@
+export * from './router/index'
+
 export * from './operators/index'
 export * from './operators/tap-first'
 
