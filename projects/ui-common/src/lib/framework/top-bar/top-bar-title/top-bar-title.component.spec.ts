@@ -1,25 +1,25 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+// import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { TopBarTitleComponent } from './top-bar-title.component'
+// import { TopBarTitleComponent } from './top-bar-title.component'
 
-describe('TopBarTitleComponent', () => {
-  let component: TopBarTitleComponent
-  let fixture: ComponentFixture<TopBarTitleComponent>
+// describe('TopBarTitleComponent', () => {
+//   let component: TopBarTitleComponent
+//   let fixture: ComponentFixture<TopBarTitleComponent>
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ TopBarTitleComponent ]
-    })
-    .compileComponents()
-  }))
+//   beforeEach(async(() => {
+//     TestBed.configureTestingModule({
+//       declarations: [ TopBarTitleComponent ]
+//     })
+//     .compileComponents()
+//   }))
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(TopBarTitleComponent)
-    component = fixture.componentInstance
-    fixture.detectChanges()
-  })
+//   beforeEach(() => {
+//     fixture = TestBed.createComponent(TopBarTitleComponent)
+//     component = fixture.componentInstance
+//     fixture.detectChanges()
+//   })
 
-  it('should create', () => {
-    expect(component).toBeTruthy()
-  })
-})
+//   it('should create', () => {
+//     expect(component).toBeTruthy()
+//   })
+// })

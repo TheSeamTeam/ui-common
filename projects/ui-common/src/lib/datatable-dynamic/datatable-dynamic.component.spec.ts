@@ -1,25 +1,25 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+// import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { DatatableDynamicComponent } from './datatable-dynamic.component'
+// import { DatatableDynamicComponent } from './datatable-dynamic.component'
 
-describe('DatatableDynamicComponent', () => {
-  let component: DatatableDynamicComponent
-  let fixture: ComponentFixture<DatatableDynamicComponent>
+// describe('DatatableDynamicComponent', () => {
+//   let component: DatatableDynamicComponent
+//   let fixture: ComponentFixture<DatatableDynamicComponent>
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ DatatableDynamicComponent ]
-    })
-    .compileComponents()
-  }))
+//   beforeEach(async(() => {
+//     TestBed.configureTestingModule({
+//       declarations: [ DatatableDynamicComponent ]
+//     })
+//     .compileComponents()
+//   }))
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(DatatableDynamicComponent)
-    component = fixture.componentInstance
-    fixture.detectChanges()
-  })
+//   beforeEach(() => {
+//     fixture = TestBed.createComponent(DatatableDynamicComponent)
+//     component = fixture.componentInstance
+//     fixture.detectChanges()
+//   })
 
-  it('should create', () => {
-    expect(component).toBeTruthy()
-  })
-})
+//   it('should create', () => {
+//     expect(component).toBeTruthy()
+//   })
+// })

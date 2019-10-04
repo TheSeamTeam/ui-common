@@ -1,25 +1,25 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+// import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { SideNavItemComponent } from './side-nav-item.component'
+// import { SideNavItemComponent } from './side-nav-item.component'
 
-describe('SideNavItemComponent', () => {
-  let component: SideNavItemComponent
-  let fixture: ComponentFixture<SideNavItemComponent>
+// describe('SideNavItemComponent', () => {
+//   let component: SideNavItemComponent
+//   let fixture: ComponentFixture<SideNavItemComponent>
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ SideNavItemComponent ]
-    })
-    .compileComponents()
-  }))
+//   beforeEach(async(() => {
+//     TestBed.configureTestingModule({
+//       declarations: [ SideNavItemComponent ]
+//     })
+//     .compileComponents()
+//   }))
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(SideNavItemComponent)
-    component = fixture.componentInstance
-    fixture.detectChanges()
-  })
+//   beforeEach(() => {
+//     fixture = TestBed.createComponent(SideNavItemComponent)
+//     component = fixture.componentInstance
+//     fixture.detectChanges()
+//   })
 
-  it('should create', () => {
-    expect(component).toBeTruthy()
-  })
-})
+//   it('should create', () => {
+//     expect(component).toBeTruthy()
+//   })
+// })
