@@ -1,4 +1,5 @@
-<table cdk-table [dataSource]="rows" class="table table-striped table-header-divider-indented mb-0">
+<table cdk-table [dataSource]="rows" class="table table-striped table-header-divider-indented mb-0"
+  [class.table-sm]="size === 'sm'">
   <ng-container *ngFor="let r of displayedRecords">
     <ng-container [cdkColumnDef]="r.prop">
       <th cdk-header-cell *cdkHeaderCellDef>{{ r.name }}</th>

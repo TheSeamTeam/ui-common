@@ -44,6 +44,8 @@ export class WidgetTableComponent<T> implements OnInit {
 
   @Input() trackBy: TrackByFunction<T>
 
+  @Input() size: 'sm' | undefined | null
+
   public displayedRecords: ITableColumn[]
   public displayedColumns: string[]
 
