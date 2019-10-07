@@ -1,6 +1,7 @@
-import { moduleMetadata } from '@storybook/angular';
-import { Story, Meta, Preview } from '@storybook/addon-docs/blocks';
-// import { linkTo } from '@storybook/addon-links';
+
+import { moduleMetadata } from '@storybook/angular'
+import { Story, Meta, Preview } from '@storybook/addon-docs/blocks'
+import { LinkTo } from '@storybook/addon-links'
 
 <Meta title="Docs|Widget/Content" />
 
@@ -49,8 +50,11 @@ added as a widgets component or input to an existing components.
 
 ## Table
 
+This component is still new, but the inputs are being made to match the inputs
+of the datatable as much as possible in a simple html table.
+
 <Preview>
-  <Story id="widget-content--table" height="450px" />
+  <Story id="widget-content-table--basic" height="450px" />
 </Preview>
 
 ## Tile Link

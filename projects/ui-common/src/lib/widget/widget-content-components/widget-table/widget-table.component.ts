@@ -1,3 +1,4 @@
+import { coerceArray } from '@angular/cdk/coercion'
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core'
 
 /**
@@ -40,11 +41,14 @@ export class WidgetTableComponent<T> implements OnInit {
   }
   private _columns: (string | ITableColumn)[]
 
-  @Input() rows: T[]
+  @Input()
+  get rows(): T[] { return this._rows }
+  set rows(value: T[]) { this._rows = coerceArray(value) }
+  private _rows: T[] = []
 
   @Input() trackBy: TrackByFunction<T>
 
-  @Input() size: 'sm' | undefined | null
+  @Input() size: 'sm' | 'md' | undefined | null = 'sm'
 
   public displayedRecords: ITableColumn[]
   public displayedColumns: string[]

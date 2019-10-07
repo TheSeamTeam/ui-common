@@ -114,6 +114,32 @@ storiesOf('Widget/Content/Table', module)
       </div>`
   }))
 
+  .add('Medium', () => ({
+    moduleMetadata: {
+      imports: [
+        TheSeamWidgetModule,
+        BrowserAnimationsModule
+      ]
+    },
+    props: {
+      icon: faWrench,
+      title: text('Header Title', 'Example Widget'),
+      loading: boolean('Loading', false),
+
+      displayedColumns: [
+        { prop: 'ginCode', name: 'Gin Code' },
+        { prop: 'name', name: 'Name' }
+      ],
+      dataSource: GIN_DATA
+    },
+    template: `
+      <div class="p-1" style="max-height: 400px; width: 500px;">
+        <seam-widget [icon]="icon" [titleText]="title" [loading]="loading">
+          <seam-widget-table [columns]="displayedColumns" [rows]="dataSource" size="md"></seam-widget-table>
+        </seam-widget>
+      </div>`
+  }))
+
   .add('Small', () => ({
     moduleMetadata: {
       imports: [
