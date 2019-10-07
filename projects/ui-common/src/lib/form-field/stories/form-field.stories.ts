@@ -3,6 +3,7 @@ import { number, withKnobs } from '@storybook/addon-knobs'
 import { linkTo } from '@storybook/addon-links'
 import { storiesOf } from '@storybook/angular'
 
+import { NgSelectModule } from '@ng-select/ng-select'
 import dedent from 'ts-dedent'
 
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms'
@@ -137,3 +138,42 @@ storiesOf('Form Field', module)
       `)
     }
   })
+
+  .add('NgSelect', () => ({
+    moduleMetadata: {
+      imports: [
+        TheSeamFormFieldModule,
+        BrowserAnimationsModule,
+        ReactiveFormsModule,
+        NgSelectModule
+      ]
+    },
+    props: {
+      control: new FormControl('', [ Validators.required ]),
+      items: [
+        { id: 1, name: 'one' },
+        { id: 2, name: 'two' },
+        { id: 3, name: 'three' }
+      ]
+    },
+    template: `
+      <div class="p-4" style="height: 400px; width: 500px;">
+        <span class="p-1 border bg-light">
+          <em>Focus input then unfocus without a value.</em>
+        </span>
+        <seam-form-field label="Example">
+          <ng-select
+            seamInput
+            [formControl]="control"
+            [items]="items"
+            bindLabel="id"
+            bindValue="name"
+            placeholder="Select an item"
+            [clearable]="false"
+            required>
+          </ng-select>
+          <ng-template seamFormFieldError="required">Valid is required.</ng-template>
+        </seam-form-field>
+      </div>`
+  }))
+

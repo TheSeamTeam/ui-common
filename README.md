@@ -89,7 +89,8 @@ tsconfig.json
     // These paths may not be needed, but sometimes the way the build tools reference modules will confuse the type checking by including the path in the `.d.ts` files, causing the same named objects to not be the same.
     "@angular/*": ["node_modules/@angular/*"],
     "rxjs/*": ["node_modules/rxjs/*"],
-    "rxjs": ["node_modules/rxjs"]
+    "rxjs": ["node_modules/rxjs"],
+    "@ng-select/*": ["node_modules/@ng-select/*"],
   }
 }
 

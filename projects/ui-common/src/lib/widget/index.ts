@@ -1,7 +1,15 @@
-export * from './widget.module'
-export * from './widget/widget.component'
 export * from './directives/widget-icon-tpl.directive'
 export * from './directives/widget-title-tpl.directive'
+
+export * from './widget-content-components/widget-content-header/widget-content-header.component'
+export * from './widget-content-components/widget-description/widget-description.component'
+export * from './widget-content-components/widget-empty-label/widget-empty-label.component'
+export * from './widget-content-components/widget-footer-link/widget-footer-link.component'
 export * from './widget-content-components/widget-footer-text/widget-footer-text.component'
+export * from './widget-content-components/widget-header-badge/widget-header-badge.component'
+export * from './widget-content-components/widget-table/widget-table.component'
 export * from './widget-content-components/widget-tile/widget-tile-secondary-icon.directive'
 export * from './widget-content-components/widget-tile/widget-tile.component'
+
+export * from './widget.module'
+export * from './widget/widget.component'

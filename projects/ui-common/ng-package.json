@@ -32,6 +32,7 @@
     "ngx-toastr",
     "pdfjs-dist",
     "rxjs",
-    "xlsx"
+    "xlsx",
+    "jexl"
   ]
 }
