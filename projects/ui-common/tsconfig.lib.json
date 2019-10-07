@@ -33,6 +33,7 @@
     "src/test.ts",
     "**/*.spec.ts",
     "**/*.stories.ts",
+    "**/stories/**/*",
     "**/_story-data/**/*"
   ]
 }
