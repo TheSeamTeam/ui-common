@@ -6,18 +6,12 @@ import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { Router, RouterModule } from '@angular/router'
 
-import { StoryEmptyComponent, StoryInitialRouteModule } from '../../../stories/helpers/index'
+import { routeButton, StoryEmptyComponent, StoryInitialRouteModule } from '../../../stories/helpers/index'
 
 import { StoryUsersDataService } from './story-user-data.service'
 import { StoryUserIdToNameResolver } from './story-userid-to-name.resolver'
 
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component'
-
-const groupId = 'GROUP-ID1'
-const routeButton = (url: string) => button(url, () => {
-  location.hash = `#${url}`
-  return false
-}, groupId)
 
 storiesOf('Components|Breadcrumbs', module)
   .addDecorator(withKnobs)
@@ -30,14 +24,7 @@ storiesOf('Components|Breadcrumbs', module)
       ],
       providers: [
         StoryUsersDataService,
-        StoryUserIdToNameResolver,
-        // {
-        //   provide: APP_INITIALIZER,
-        //   useFactory: storyInitialRoute('/home'),
-        //   // deps: [ Router ],
-        //   // deps: [ Injector ],
-        //   multi: true
-        // }
+        StoryUserIdToNameResolver
       ],
       imports: [
         BrowserAnimationsModule,
@@ -82,26 +69,19 @@ storiesOf('Components|Breadcrumbs', module)
             ]
           }
         ], { useHash: true }),
-        StoryInitialRouteModule.forRoot('/dashboard/users')
+        StoryInitialRouteModule.forRoot('/dashboard/users/123')
       ]
     },
     props: {
       btn1: routeButton('/'),
       btn2: routeButton('/home'),
-      btn3: routeButton('/dashboard')
+      btn3: routeButton('/dashboard'),
+      btn4: routeButton('/dashboard/users'),
+      btn5: routeButton('/dashboard/users/123'),
+      btn6: routeButton('/dashboard/users/987'),
     },
     template: `
       <seam-breadcrumbs></seam-breadcrumbs>
-
-      <div class="d-flex flex-row flex-wrap">
-        <button type="button" class="btn btn-primary mx-1 mb-1" routerLink="/">'/'</button>
-        <button type="button" class="btn btn-primary mx-1 mb-1" routerLink="/home">'/home'</button>
-        <button type="button" class="btn btn-primary mx-1 mb-1" routerLink="/dashboard">'/dashboard'</button>
-        <button type="button" class="btn btn-primary mx-1 mb-1" routerLink="/dashboard/users">'/dashboard/users'</button>
-        <button type="button" class="btn btn-primary mx-1 mb-1" routerLink="/dashboard/users/123">'/dashboard/users/123'</button>
-        <button type="button" class="btn btn-primary mx-1 mb-1" routerLink="/dashboard/users/987">'/dashboard/users/987'</button>
-        <a class="btn btn-primary mx-1 mb-1" routerLink="/dashboard/users/987">'/dashboard/users/987'</a>
-      </div>
       <router-outlet></router-outlet>
     `
   }))

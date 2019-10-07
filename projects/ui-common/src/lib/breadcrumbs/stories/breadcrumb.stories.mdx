@@ -1,0 +1,91 @@
+import { moduleMetadata } from '@storybook/angular'
+import { Story, Meta, Preview } from '@storybook/addon-docs/blocks'
+// import { linkTo } from '@storybook/addon-links'
+
+
+<Meta title="Docs|Components/Breadcrumbs" />
+
+# Breadcrumbs
+
+## Full Example
+
+The following story is an example using all breadcrumb methods.
+
+```js
+const routes: Routes = [
+  ...,
+  {
+    path: 'dashboard',
+    component: StoryEmptyComponent,
+    data: {
+      breadcrumb: 'Dashboard'
+    },
+    children: [
+      {
+        path: 'users',
+        component: StoryEmptyComponent,
+        data: {
+          breadcrumb: 'Users'
+        },
+        children: [
+          {
+            path: ':userId',
+            component: StoryEmptyComponent,
+            data: { },
+            resolve: {
+              breadcrumb: StoryUserIdToNameResolver
+            }
+          }
+        ]
+      }
+    ]
+  }
+]
+```
+
+<Preview>
+  <Story id="components-breadcrumbs--full-example" height="70px"></Story>
+</Preview>
+
+## Simple
+
+A simple static string breadcrumb example. By just placing a string `breadcrumb`
+data value it will be used as the breadcrumb.
+
+```js
+const routes: Routes[] = [
+  ...,
+  {
+    path: 'users',
+    component: SomeComponent,
+    data: { breadcrumb: 'Users' }
+  }
+]
+```
+
+<Preview>
+  <Story id="components-breadcrumbs--simple" height="70px"></Story>
+</Preview>
+
+## Resolver
+
+If a breadcrumb needs to be dynamically built at runtime use a resolver. The
+resolver can implement the `ITheSeamBreadcrumbsResolver` to make sure the
+resolve type is correct.
+
+```js
+const routes: Routes[] = [
+  ...,
+  {
+    path: 'userId',
+    component: SomeComponent,
+    resolve: {
+      breadcrumb: StoryUserIdToNameResolver
+    }
+  }
+]
+```
+
+<Preview>
+  <Story id="components-breadcrumbs--resolver" height="70px"></Story>
+</Preview>
