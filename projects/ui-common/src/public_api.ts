@@ -29,3 +29,5 @@ export * from './lib/tabbed/index'
 export * from './lib/unsaved-changes-dialog/index'
 export * from './lib/viewers/pdf-viewer/index'
 export * from './lib/breadcrumbs/index'
+
+export * from './lib/story-helpers/index'

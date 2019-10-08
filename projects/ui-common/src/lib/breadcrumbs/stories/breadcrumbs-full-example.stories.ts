@@ -6,7 +6,7 @@ import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { Router, RouterModule } from '@angular/router'
 
-import { routeButton, StoryEmptyComponent, StoryInitialRouteModule } from '../../../stories/helpers/index'
+import { routeButton, StoryEmptyComponent, StoryInitialRouteModule } from '../../story-helpers/index'
 
 import { StoryUsersDataService } from './story-user-data.service'
 import { StoryUserIdToNameResolver } from './story-userid-to-name.resolver'
@@ -73,12 +73,12 @@ storiesOf('Components|Breadcrumbs', module)
       ]
     },
     props: {
-      btn1: routeButton('/'),
-      btn2: routeButton('/home'),
-      btn3: routeButton('/dashboard'),
-      btn4: routeButton('/dashboard/users'),
-      btn5: routeButton('/dashboard/users/123'),
-      btn6: routeButton('/dashboard/users/987'),
+      btn1: routeButton(button, '/'),
+      btn2: routeButton(button, '/home'),
+      btn3: routeButton(button, '/dashboard'),
+      btn4: routeButton(button, '/dashboard/users'),
+      btn5: routeButton(button, '/dashboard/users/123'),
+      btn6: routeButton(button, '/dashboard/users/987'),
     },
     template: `
       <seam-breadcrumbs></seam-breadcrumbs>

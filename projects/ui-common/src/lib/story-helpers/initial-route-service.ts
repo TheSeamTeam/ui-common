@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, Injectable, InjectionToken, Injector, ModuleWithProviders, NgModule } from '@angular/core'
+import { Injectable, InjectionToken, Injector } from '@angular/core'
 import { NavigationEnd, Router } from '@angular/router'
 import { filter, take } from 'rxjs/operators'
 
@@ -16,6 +16,7 @@ export class StoryInitialRouteService {
   ) { }
 
   public setInitialRoute() {
+    console.log('setInitialRoute')
     const _router = this._injector.get(Router)
     const url = this._injector.get(STORY_INITIAL_ROUTE_URL)
     if (_router.navigated) {
@@ -26,26 +27,6 @@ export class StoryInitialRouteService {
           take(1)
         )
         .subscribe(() => { _router.navigateByUrl(url) })
-    }
-  }
-
-}
-
-@NgModule()
-export class StoryInitialRouteModule {
-  static forRoot(url: string): ModuleWithProviders {
-    return {
-      ngModule: StoryInitialRouteModule,
-      providers: [
-        StoryInitialRouteService,
-        {
-          provide: APP_INITIALIZER,
-          useFactory: storyInitialRouteFactory,
-          deps: [ StoryInitialRouteService ],
-          multi: true
-        },
-        { provide: STORY_INITIAL_ROUTE_URL, useValue: url }
-      ]
     }
   }
 
