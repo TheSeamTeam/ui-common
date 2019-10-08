@@ -43,8 +43,21 @@ export class WidgetTableComponent<T> implements OnInit {
 
   @Input()
   get rows(): T[] { return this._rows }
-  set rows(value: T[]) { this._rows = coerceArray(value) }
+  set rows(value: T[]) {
+    this._rows = coerceArray(value)
+
+    if (this._rows.length < 1) {
+      this._displayedRows = [
+        { _emptyDisplay: true } as any
+      ]
+    } else {
+      this._displayedRows = this._rows
+    }
+  }
   private _rows: T[] = []
+
+  get displayedRows() { return this._displayedRows }
+  private _displayedRows: T[] & { _colSpan?: number } = []
 
   @Input() trackBy: TrackByFunction<T>
 

@@ -44,3 +44,10 @@
     }
   }
 }
+
+
+.table {
+  thead th {
+    border-bottom: $table-border-width solid $table-border-color;
+  }
+}
