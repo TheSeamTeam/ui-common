@@ -11,7 +11,7 @@ import { faSignature } from '@fortawesome/free-solid-svg-icons'
 
 import { TheSeamSideNavModule } from '../side-nav.module'
 
-storiesOf('Framework/SideNav/Toggle', module)
+storiesOf('Framework|SideNav/Toggle', module)
   .addDecorator(withKnobs)
 
   .add('Basic', () => ({

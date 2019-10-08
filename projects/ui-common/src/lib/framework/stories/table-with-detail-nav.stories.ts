@@ -292,7 +292,7 @@ class UserDetailsExComponent {
 
 
 
-storiesOf('Framework/Examples', module)
+storiesOf('Framework|Examples', module)
   .addDecorator(withKnobs)
 
   .add('Table With Detail Nav', () => ({

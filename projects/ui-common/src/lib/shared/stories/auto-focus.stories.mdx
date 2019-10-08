@@ -1,0 +1,46 @@
+import { moduleMetadata } from '@storybook/angular'
+import { Story, Meta, Preview } from '@storybook/addon-docs/blocks'
+
+import { DocAlert } from '../../../stories/mdx/components/index'
+
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+
+import { TheSeamSharedModule } from '../shared.module'
+
+<Meta title="Directives|AutoFocus" decorators={[moduleMetadata({
+  imports: [
+    BrowserAnimationsModule,
+    TheSeamSharedModule
+  ]
+})]} />
+
+# AutoFocus
+
+Focuses the directive's element when initialized. Useful for forms and modals.
+
+<DocAlert>If the element will be initialized multiple times or while a form is being
+filled out don't use this directive.</DocAlert>
+
+<Preview>
+  <Story name="Example" height="250px">
+    {{
+      template: `
+        <button type="button" class="btn btn-primary" (click)="visible=!visible">
+          Toggle Form
+        </button>
+        <form *ngIf="visible">
+          <div class="form-group">
+            <label for="one">Not Focused</label>
+            <input id="one" type="text" class="form-control" />
+          </div>
+          <div class="form-group">
+            <label for="two">Focused</label>
+            <input id="two" type="text" seamAutoFocus class="form-control" />
+          </div>
+        </form>`,
+      props: {
+        visible: false
+      },
+    }}
+  </Story>
+</Preview>

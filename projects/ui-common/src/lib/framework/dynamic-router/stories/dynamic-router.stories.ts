@@ -279,7 +279,7 @@ class RecursiveIdModule { }
 class LevelTwoModule { }
 
 
-storiesOf('Framework/DynamicRouter', module)
+storiesOf('Framework|DynamicRouter', module)
   .addDecorator(withKnobs)
 
   .add('Basic', () => ({

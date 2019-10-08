@@ -5,7 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { TheSeamTopBarModule } from './top-bar.module'
 
-storiesOf('Framework/TopBar', module)
+storiesOf('Framework|TopBar', module)
   .addDecorator(withKnobs)
 
   .add('Basic', () => ({
