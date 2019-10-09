@@ -86,7 +86,7 @@ export class SideNavItemComponent implements OnInit, OnDestroy {
 
   private _initializad = false
 
-  @Input() itemType: 'divider' | 'basic' | 'link' | 'button'
+  @Input() itemType: 'divider' | 'basic' | 'link' | 'button' | 'title'
 
   @Input() icon?: SeamIcon
 

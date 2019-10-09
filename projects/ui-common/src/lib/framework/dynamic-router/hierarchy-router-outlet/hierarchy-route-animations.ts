@@ -31,16 +31,7 @@ export const fader =
   ])
 
 
-export const slider =
-  trigger('routeAnimations', [
-    transition('* => isLeft', slideTo('left') ),
-    transition('* => isRight', slideTo('right') ),
-    transition('isRight => *', slideTo('left') ),
-    transition('isLeft => *', slideTo('right') )
-  ])
-
 function slideTo(direction) {
-  const optional = { optional: true }
   return [
     query(':enter, :leave', [
       style({
@@ -49,14 +40,14 @@ function slideTo(direction) {
         [direction]: 0,
         width: '100%'
       })
-    ], optional),
+    ], { optional: true }),
     query(':enter', [
       style({ [direction]: '-100%'})
     ], { optional: true }),
     group([
       query(':leave', [
         animate('1000ms ease', style({ [direction]: '100%'}))
-      ], optional),
+      ], { optional: true }),
       query(':enter', [
         animate('1000ms ease', style({ [direction]: '0%'}))
       ], { optional: true })
@@ -68,6 +59,14 @@ function slideTo(direction) {
     query(':enter', animateChild(), { optional: true }),
   ]
 }
+
+export const slider =
+  trigger('routeAnimations', [
+    transition('* => isLeft', slideTo('left') ),
+    transition('* => isRight', slideTo('right') ),
+    transition('isRight => *', slideTo('left') ),
+    transition('isLeft => *', slideTo('right') )
+  ])
 
 
 export const transformer =

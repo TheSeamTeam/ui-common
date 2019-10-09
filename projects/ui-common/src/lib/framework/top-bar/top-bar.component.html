@@ -22,7 +22,7 @@
     <div style="width: 400px">
       <a seamMenuItem [icon]="faExclamationTriangle" iconClass="text-warning" routerLink="/profile">There is a problem with you self-assessment answers.</a>
       <a seamMenuItem [icon]="faExclamationTriangle" iconClass="text-warning" routerLink="/profile">Your password expires in 10 days.</a>
-      <button seamMenuItem [icon]="faComment" iconClass="text-primary" (click)="openAboutModal()">You have unread feedback on your document.</button>
+      <button seamMenuItem [icon]="faComment" iconClass="text-primary">You have unread feedback on your document.</button>
       <!-- <seam-menu-divider></seam-menu-divider> -->
       <!-- <div class="d-flex flex-column text-center bg-light">
         <a routerLink="/notifications">See All</a>
@@ -44,7 +44,7 @@
 
 <seam-menu #menu>
   <a seamMenuItem [icon]="faUserAlt" routerLink="/profile">Profile</a>
-  <button seamMenuItem [icon]="faQuestionCircle" (click)="openAboutModal()">About</button>
+  <button seamMenuItem [icon]="faQuestionCircle">About</button>
   <seam-menu-divider></seam-menu-divider>
   <a seamMenuItem [icon]="faSignOutAlt" routerLink="/logout">Sign out</a>
 </seam-menu>

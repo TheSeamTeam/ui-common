@@ -34,7 +34,7 @@ const EXPANDED_STATES = [ EXPANDED_STATE, EXPANDED_OVERLAY_STATE ]
 const COLLAPSED_STATES = [ COLLAPSED_STATE, COLLAPSED_OVERLAY_STATE ]
 const EXPAND_STATES = [ ...EXPANDED_STATES, ...COLLAPSED_STATES ]
 
-function sideNavExpandStateChangeFn(fromState: string, toState: string) {
+export function sideNavExpandStateChangeFn(fromState: string, toState: string) {
   // console.log({ fromState, toState })
   return fromState !== toState &&
     (

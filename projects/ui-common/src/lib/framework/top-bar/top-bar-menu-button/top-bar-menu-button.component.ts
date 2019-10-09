@@ -19,7 +19,7 @@ const _TopBarMenuButtonMixinBase: CanDisableCtor & typeof TopBarMenuButtonBase =
   inputs: [ 'disabled' ],
   // tslint:disable-next-line:use-host-property-decorator
   host: {
-    '[attr.type]': 'button',
+    'attr.type': 'button',
     'class': 'btn btn-link border text-decoration-none',
     '[attr.aria-disabled]': 'disabled.toString()',
     '[attr.disabled]': 'disabled || null',

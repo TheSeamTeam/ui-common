@@ -30,6 +30,9 @@ import { DatatableFilterDirective } from './directives/datatable-filter.directiv
 import { DatatableRowActionItemDirective } from './directives/datatable-row-action-item.directive'
 import { TheSeamDatatableScrollbarHelperService } from './services/datatable-scrollbar-helper.service'
 
+// NOTE: Named export used for this because of a function calling bug in the builder.
+export const toastrForRoot = ToastrModule.forRoot()
+
 @NgModule({
   declarations: [
     DatatableComponent,
@@ -55,7 +58,7 @@ import { TheSeamDatatableScrollbarHelperService } from './services/datatable-scr
     TheSeamMenuModule,
     TheSeamButtonsModule,
     TheSeamIconModule,
-    ToastrModule.forRoot(),
+    toastrForRoot,
     TheSeamLoadingModule,
     TheSeamDatatableCellTypesModule,
     PortalModule,

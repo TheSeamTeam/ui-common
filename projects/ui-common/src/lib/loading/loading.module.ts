@@ -8,13 +8,16 @@ import { NgxLoadingModule } from 'ngx-loading'
 import { defaultThemeConfig } from './loading-themes'
 import { LoadingComponent } from './loading/loading.component'
 
+// NOTE: Named export used for this because of a function calling bug in the builder.
+export const loadingForRoot = NgxLoadingModule.forRoot(defaultThemeConfig)
+
 @NgModule({
   declarations: [LoadingComponent],
   imports: [
     CommonModule,
     OverlayModule,
     PortalModule,
-    NgxLoadingModule.forRoot(defaultThemeConfig),
+    loadingForRoot
   ],
   exports: [LoadingComponent],
   entryComponents: [LoadingComponent]
