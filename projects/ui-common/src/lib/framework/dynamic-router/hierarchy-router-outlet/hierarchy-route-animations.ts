@@ -31,41 +31,151 @@ export const fader =
   ])
 
 
-function slideTo(direction) {
-  return [
-    query(':enter, :leave', [
-      style({
-        position: 'absolute',
-        top: 0,
-        [direction]: 0,
-        width: '100%'
-      })
-    ], { optional: true }),
-    query(':enter', [
-      style({ [direction]: '-100%'})
-    ], { optional: true }),
-    group([
-      query(':leave', [
-        animate('1000ms ease', style({ [direction]: '100%'}))
-      ], { optional: true }),
-      query(':enter', [
-        animate('1000ms ease', style({ [direction]: '0%'}))
-      ], { optional: true })
-    ]),
-    // Normalize the page style... Might not be necessary
+// function slideTo(direction) {
+//   return [
+//     query(':enter, :leave', [
+//       style({
+//         position: 'absolute',
+//         top: 0,
+//         [direction]: 0,
+//         width: '100%'
+//       })
+//     ], { optional: true }),
+//     query(':enter', [
+//       style({ [direction]: '-100%'})
+//     ], { optional: true }),
+//     group([
+//       query(':leave', [
+//         animate('1000ms ease', style({ [direction]: '100%'}))
+//       ], { optional: true }),
+//       query(':enter', [
+//         animate('1000ms ease', style({ [direction]: '0%'}))
+//       ], { optional: true })
+//     ]),
+//     // Normalize the page style... Might not be necessary
 
-    // Required only if you have child animations on the page
-    query(':leave', animateChild(), { optional: true }),
-    query(':enter', animateChild(), { optional: true }),
-  ]
-}
+//     // Required only if you have child animations on the page
+//     query(':leave', animateChild(), { optional: true }),
+//     query(':enter', animateChild(), { optional: true }),
+//   ]
+// }
+
+// TODO: Refactor the slider animation, because AOT or ng-packagr, I haven't
+// looked into what exactly is preventing it, doesn't allow the function call.
+// export const slider =
+//   trigger('routeAnimations', [
+//     transition('* => isLeft', slideTo('left') ),
+//     transition('* => isRight', slideTo('right') ),
+//     transition('isRight => *', slideTo('left') ),
+//     transition('isLeft => *', slideTo('right') )
+//   ])
 
 export const slider =
   trigger('routeAnimations', [
-    transition('* => isLeft', slideTo('left') ),
-    transition('* => isRight', slideTo('right') ),
-    transition('isRight => *', slideTo('left') ),
-    transition('isLeft => *', slideTo('right') )
+    transition('* => isLeft', [
+      query(':enter, :leave', [
+        style({
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%'
+        })
+      ], { optional: true }),
+      query(':enter', [
+        style({ left: '-100%'})
+      ], { optional: true }),
+      group([
+        query(':leave', [
+          animate('1000ms ease', style({ left: '100%'}))
+        ], { optional: true }),
+        query(':enter', [
+          animate('1000ms ease', style({ left: '0%'}))
+        ], { optional: true })
+      ]),
+      // Normalize the page style... Might not be necessary
+
+      // Required only if you have child animations on the page
+      query(':leave', animateChild(), { optional: true }),
+      query(':enter', animateChild(), { optional: true }),
+    ]),
+    transition('* => isRight', [
+      query(':enter, :leave', [
+        style({
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          width: '100%'
+        })
+      ], { optional: true }),
+      query(':enter', [
+        style({ right: '-100%'})
+      ], { optional: true }),
+      group([
+        query(':leave', [
+          animate('1000ms ease', style({ right: '100%'}))
+        ], { optional: true }),
+        query(':enter', [
+          animate('1000ms ease', style({ right: '0%'}))
+        ], { optional: true })
+      ]),
+      // Normalize the page style... Might not be necessary
+
+      // Required only if you have child animations on the page
+      query(':leave', animateChild(), { optional: true }),
+      query(':enter', animateChild(), { optional: true }),
+    ]),
+    transition('isRight => *', [
+      query(':enter, :leave', [
+        style({
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%'
+        })
+      ], { optional: true }),
+      query(':enter', [
+        style({ left: '-100%'})
+      ], { optional: true }),
+      group([
+        query(':leave', [
+          animate('1000ms ease', style({ left: '100%'}))
+        ], { optional: true }),
+        query(':enter', [
+          animate('1000ms ease', style({ left: '0%'}))
+        ], { optional: true })
+      ]),
+      // Normalize the page style... Might not be necessary
+
+      // Required only if you have child animations on the page
+      query(':leave', animateChild(), { optional: true }),
+      query(':enter', animateChild(), { optional: true }),
+    ]),
+    transition('isLeft => *', [
+      query(':enter, :leave', [
+        style({
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          width: '100%'
+        })
+      ], { optional: true }),
+      query(':enter', [
+        style({ right: '-100%'})
+      ], { optional: true }),
+      group([
+        query(':leave', [
+          animate('1000ms ease', style({ right: '100%'}))
+        ], { optional: true }),
+        query(':enter', [
+          animate('1000ms ease', style({ right: '0%'}))
+        ], { optional: true })
+      ]),
+      // Normalize the page style... Might not be necessary
+
+      // Required only if you have child animations on the page
+      query(':leave', animateChild(), { optional: true }),
+      query(':enter', animateChild(), { optional: true }),
+    ])
   ])
 
 

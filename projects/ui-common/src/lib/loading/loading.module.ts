@@ -5,6 +5,7 @@ import { NgModule } from '@angular/core'
 
 import { NgxLoadingModule } from 'ngx-loading'
 
+import { TheSeamLoadingOverlayService } from './loading-overlay.service'
 import { defaultThemeConfig } from './loading-themes'
 import { LoadingComponent } from './loading/loading.component'
 
@@ -18,6 +19,9 @@ export const loadingForRoot = NgxLoadingModule.forRoot(defaultThemeConfig)
     OverlayModule,
     PortalModule,
     loadingForRoot
+  ],
+  providers: [
+    TheSeamLoadingOverlayService
   ],
   exports: [LoadingComponent],
   entryComponents: [LoadingComponent]

@@ -4,12 +4,9 @@ import { Injectable } from '@angular/core'
 import { Observable, throwError } from 'rxjs'
 import { catchError, finalize, tap } from 'rxjs/operators'
 
-import { TheSeamLoadingModule } from './loading.module'
 import { LoadingComponent } from './loading/loading.component'
 
-@Injectable({
-  providedIn: TheSeamLoadingModule
-})
+@Injectable()
 export class TheSeamLoadingOverlayService {
 
   private _enabled = false

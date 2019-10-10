@@ -3,8 +3,9 @@ import { AfterViewInit, Directive, ElementRef, Input, OnDestroy, OnInit } from '
 
 import OverlayScrollbars from 'overlayscrollbars'
 
-import { IOverlayScrollbarsConfig } from './overlay-scrollbars-config-model'
 import { OverlayScrollbarsService } from './overlay-scrollbars.service'
+
+import { IOverlayScrollbarsConfig } from './overlay-scrollbars-config-model'
 
 @Directive({
   selector: '[seamOverlayScrollbar]',

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core'
+import { inject, Injectable, InjectionToken } from '@angular/core'
 import { MediaObserver } from '@angular/flex-layout'
 import { Observable } from 'rxjs'
 

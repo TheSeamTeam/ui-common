@@ -1,5 +1,5 @@
 import { Platform } from '@angular/cdk/platform'
-import { Injectable, Injector, NgZone } from '@angular/core'
+import { forwardRef, inject, Injectable, InjectionToken, Injector, INJECTOR, NgZone } from '@angular/core'
 import { fromEvent, Subscription } from 'rxjs'
 
 import OverlayScrollbars from 'overlayscrollbars'

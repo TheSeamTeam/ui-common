@@ -16,7 +16,6 @@ export class StoryInitialRouteService {
   ) { }
 
   public setInitialRoute() {
-    console.log('setInitialRoute')
     const _router = this._injector.get(Router)
     const url = this._injector.get(STORY_INITIAL_ROUTE_URL)
     if (_router.navigated) {
