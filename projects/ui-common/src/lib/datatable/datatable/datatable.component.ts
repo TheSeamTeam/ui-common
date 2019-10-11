@@ -18,7 +18,7 @@ import { DatatableActionMenuComponent } from '../datatable-action-menu/datatable
 import { DatatableColumnComponent } from '../datatable-column/datatable-column.component'
 import { DatatableMenuBarComponent } from '../datatable-menu-bar/datatable-menu-bar.component'
 import { DatatableRowActionItemDirective } from '../directives/datatable-row-action-item.directive'
-import { ITheSeamTableColumn } from '../models/table-column'
+import { ITheSeamDatatableColumn } from '../models/table-column'
 
 /**
  * NOTE: This is still being worked on. I am trying to figure out this model
@@ -39,7 +39,7 @@ export interface ICellContext {
   row?: any
   group?: any
   value?: any
-  column?: ITheSeamTableColumn
+  column?: ITheSeamDatatableColumn
   rowHeight?: number
   isSelected?: boolean
   rowIndex?: number
@@ -48,7 +48,7 @@ export interface ICellContext {
 }
 
 export interface IDatatableAccessor {
-  columns: ITheSeamTableColumn[]
+  columns: ITheSeamDatatableColumn[]
   rows$: Observable<any[]>
 }
 
@@ -95,8 +95,8 @@ export class DatatableComponent implements OnInit {
   @Input() targetMarkerTemplate: any
 
   @Input()
-  get columns(): ITheSeamTableColumn[] { return this._columns }
-  set columns(value: ITheSeamTableColumn[]) {
+  get columns(): ITheSeamDatatableColumn[] { return this._columns }
+  set columns(value: ITheSeamDatatableColumn[]) {
     if (value) {
       // Need to call `setColumnDefaults` before ngx-datatable gets it because
       // of how this wrapper is implemented.
@@ -112,7 +112,7 @@ export class DatatableComponent implements OnInit {
     }
     this._columns = value
   }
-  private _columns: ITheSeamTableColumn[]
+  private _columns: ITheSeamDatatableColumn[]
 
   @Input()
   get rows(): any[] { return this._rows.value }
@@ -277,7 +277,7 @@ export class DatatableComponent implements OnInit {
    * '@marklb/ngx-datatable/release/utils' without the internally maintained
    * properties( the props starting with '$$').
    */
-  private _setColumnDefaults(columns: ITheSeamTableColumn[]) {
+  private _setColumnDefaults(columns: ITheSeamDatatableColumn[]) {
     if (!columns) { return }
 
     // Only one column should hold the tree view

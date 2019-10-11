@@ -1,0 +1,36 @@
+<table cdk-table [dataSource]="displayedRows" class="table table-header-divider-indented mb-0"
+  [class.table-striped]="rows?.length > 0"
+  [class.table-sm]="size === 'sm'">
+  <ng-container *ngFor="let r of displayedRecords; first as isFirst">
+    <ng-container [cdkColumnDef]="r.prop">
+      <th cdk-header-cell *cdkHeaderCellDef>{{ r.name }}</th>
+      <td cdk-cell *cdkCellDef="let element; index as rowIndex"
+        [attr.colspan]="element?._emptyDisplay && isFirst ? 2 : undefined"
+        [class.border-top-0]="element?._emptyDisplay && isFirst"
+        [class.d-none]="element?._emptyDisplay && !isFirst">
+        <!-- {{ element[r.prop] }} -->
+
+        <ng-container *ngIf="element?._emptyDisplay && isFirst; else hasDataTpl">
+          No data to display
+        </ng-container>
+
+        <ng-template #hasDataTpl>
+          <seam-table-cell-type-selector *ngIf="r?.cellType; else noCellType"
+            [type]="r?.cellType"
+            [value]="element[r.prop]"
+            [rowIndex]="rowIndex"
+            [row]="element"
+            [colData]="r">
+          </seam-table-cell-type-selector>
+          <ng-template #noCellType>
+            {{ element[r.prop] }}
+          </ng-template>
+        </ng-template>
+
+      </td>
+    </ng-container>
+  </ng-container>
+
+  <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+  <tr cdk-row *cdkRowDef="let row; columns: displayedColumns;"></tr>
+</table>

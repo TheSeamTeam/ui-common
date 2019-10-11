@@ -4,3 +4,5 @@ export * from './models/index'
 
 export * from './datatable-dynamic-def'
 export * from './datatable-dynamic.component'
+
+export * from './datatable-dynamic.module'

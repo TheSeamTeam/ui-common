@@ -1,10 +1,8 @@
 import { TableColumn } from '@marklb/ngx-datatable'
 
-export type TheSeamTableColumnExportValueFn<D = any> = (row: D) => string
+import { TheSeamTableCellType, TheSeamTableColumnExportValueFn } from '../../table/index'
 
-export type TheSeamTableCellType = 'date' | 'icon'
-
-export interface ITheSeamTableColumn<D = any, P = any> extends TableColumn {
+export interface ITheSeamDatatableColumn<D = any, P = any> extends TableColumn {
 
   /**
    * If undefined the value will be rendered as a string.

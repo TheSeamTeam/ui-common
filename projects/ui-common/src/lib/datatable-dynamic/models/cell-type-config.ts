@@ -5,6 +5,11 @@ import { IDynamicDatatableCellType } from './cell-type'
 
 // tslint:disable:no-inferrable-types
 
+export interface IDyanmicDatatableCellTypeJexl {
+  type: 'jexl'
+  expr: string
+}
+
 export class DynamicDatatableCellTypeConfig<T = IDynamicDatatableCellType> {
   type: T
 
@@ -43,22 +48,22 @@ export class DynamicDatatableCellTypeConfigIcon extends DynamicDatatableCellType
   /**
    * Element title attribute.
    */
-  titleAttr?: string
+  titleAttr?: string | IDyanmicDatatableCellTypeJexl
 
   /**
    * Screen-reader text.
    */
-  srOnly?: string
+  srOnly?: string | IDyanmicDatatableCellTypeJexl
 
   /**
    * Css class added to the link element.
    */
-  linkClass?: string
+  linkClass?: string | IDyanmicDatatableCellTypeJexl
 
   /**
    * seam-icon `iconClass` input.
    */
-  iconClass?: string
+  iconClass?: string | IDyanmicDatatableCellTypeJexl
 
   /**
    * Can apply pre-defined icon styles.

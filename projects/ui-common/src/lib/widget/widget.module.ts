@@ -8,6 +8,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 import { TheSeamButtonsModule } from '../buttons/index'
 import { TheSeamIconModule } from '../icon/icon.module'
 import { TheSeamLoadingModule } from '../loading/index'
+import { TheSeamTableModule } from '../table/index'
 
 import { WidgetDragHandleDirective } from './directives/widget-drag-handle.directive'
 import { WidgetIconTplDirective } from './directives/widget-icon-tpl.directive'
@@ -48,7 +49,8 @@ import { WidgetComponent } from './widget/widget.component'
     TheSeamLoadingModule,
     DragDropModule,
     TheSeamButtonsModule,
-    CdkTableModule
+    CdkTableModule,
+    TheSeamTableModule
   ],
   exports: [
     WidgetComponent,

@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, Inject, Input, OnDestroy, OnInit, O
 
 import { untilDestroyed } from 'ngx-take-until-destroy'
 
+import jexl from 'jexl'
+
 import {
   DynamicDatatableCellTypeConfigIcon,
   DynamicDatatableCellTypeConfigIconAction
@@ -35,8 +37,8 @@ export class DatatableCellTypeIconComponent implements OnInit, OnDestroy {
     this._config = value
     if (value) {
       this.setAction(value.action)
-      this._linkClass = value.linkClass
-      this._iconClass = value.iconClass
+      this._linkClass = this._parseConfigValue(value.linkClass)
+      this._iconClass = this._parseConfigValue(value.iconClass)
       this._iconType = value.iconType
     }
   }
@@ -50,12 +52,19 @@ export class DatatableCellTypeIconComponent implements OnInit, OnDestroy {
   _iconClass?: string
   _iconType?: TheSeamIconType
 
+  _row?: any
+  _rowIndex?: number
+
   constructor(
-    @Optional() @Inject(DATATABLE_CELL_DATA) private _data?: IDatatableCellData<any, string>
+    @Optional() @Inject(DATATABLE_CELL_DATA) _data?: IDatatableCellData<any, string>
   ) {
-    this.value = this._data && this._data.value
-    if (this._data && this._data.colData && (<any>this._data.colData).cellTypeConfig) {
-      this.config = (<any>this._data.colData).cellTypeConfig
+
+    this._row = _data && _data.row
+    this._rowIndex = _data && _data.rowIndex
+
+    this.value = _data && _data.value
+    if (_data && _data.colData && (<any>_data.colData).cellTypeConfig) {
+      this.config = (<any>_data.colData).cellTypeConfig
     }
 
     if (_data) {
@@ -91,6 +100,20 @@ export class DatatableCellTypeIconComponent implements OnInit, OnDestroy {
     }
 
     this._tplType = newTplType
+  }
+
+  private _parseConfigValue(val) {
+    if (!val) {
+      return
+    }
+
+    if (typeof val === 'string') {
+      return val
+    }
+
+    if (val.type === 'jexl') {
+      return jexl.evalSync(val.expr, this._row)
+    }
   }
 
 }

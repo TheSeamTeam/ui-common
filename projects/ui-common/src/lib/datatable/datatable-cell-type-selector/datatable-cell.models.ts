@@ -1,7 +1,7 @@
 import { SimpleChanges } from '@angular/core'
 import { Observable } from 'rxjs'
 
-import { ITheSeamTableColumn } from '../models/table-column'
+import { ITheSeamDatatableColumn } from '../models/table-column'
 
 export interface IDatatableCellDataChange {
   data: IDatatableCellData
@@ -11,7 +11,7 @@ export interface IDatatableCellDataChange {
 export interface IDatatableCellData<R = any, V = any> {
   row: R
   rowIndex: number
-  colData: ITheSeamTableColumn<R>
+  colData: ITheSeamDatatableColumn<R>
   value: V
   changed: Observable<IDatatableCellDataChange>
 }

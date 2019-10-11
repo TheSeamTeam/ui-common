@@ -9,7 +9,7 @@ import { IDataExporter } from '../../data-exporter/data-exporter'
 import { TheSeamLoadingOverlayService } from '../../loading/index'
 
 import { DatatableComponent, THESEAM_DATATABLE } from '../datatable/datatable.component'
-import { ITheSeamTableColumn } from '../models/table-column'
+import { ITheSeamDatatableColumn } from '../models/table-column'
 
 @Component({
   selector: 'seam-datatable-export-button',
@@ -63,7 +63,7 @@ export class DatatableExportButtonComponent implements OnInit {
     this._loading.while(export$).subscribe()
   }
 
-  private _mapExportData(columns: ITheSeamTableColumn[], rows: any[]) {
+  private _mapExportData(columns: ITheSeamDatatableColumn[], rows: any[]) {
     const data: any[] = []
 
     for (const row of rows) {
@@ -84,7 +84,7 @@ export class DatatableExportButtonComponent implements OnInit {
     return data
   }
 
-  private _rowValue(column: ITheSeamTableColumn, row: any) {
+  private _rowValue(column: ITheSeamDatatableColumn, row: any) {
     if (column.exportValueFn) {
       return column.exportValueFn(row)
     }

@@ -1,0 +1,37 @@
+:host {
+  &.datatable-cell-type {
+    ::ng-deep {
+      .seam-icon--img {
+        max-height: 40px;
+      }
+    }
+
+    a {
+      max-height: 40px;
+    }
+
+    button {
+      max-height: 40px;
+    }
+  }
+  &:not(.datatable-cell-type) {
+    ::ng-deep {
+      .seam-icon--img {
+        max-height: 20px;
+      }
+    }
+
+    a {
+      max-height: 20px;
+    }
+
+    button {
+      max-height: 20px;
+    }
+  }
+}
+
+.datatable-icon-fix {
+  margin-top: calc(-1px - 0.75rem);
+  height: calc(50px);
+}

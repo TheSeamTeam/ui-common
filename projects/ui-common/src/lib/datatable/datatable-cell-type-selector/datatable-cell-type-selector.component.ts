@@ -14,9 +14,11 @@ import {
 import { ComponentType } from '@angular/cdk/portal'
 import { Subject } from 'rxjs'
 
+import { TheSeamTableCellType } from '../../table/table-column'
+
 import { DatatableCellTypeDateComponent } from '../datatable-cell-types/datatable-cell-type-date/datatable-cell-type-date.component'
 import { DatatableCellTypeIconComponent } from '../datatable-cell-types/datatable-cell-type-icon/datatable-cell-type-icon.component'
-import { ITheSeamTableColumn, TheSeamTableCellType } from '../models/table-column'
+import { ITheSeamDatatableColumn } from '../models/table-column'
 import { DATATABLE_CELL_DATA } from './datatable-cell-tokens'
 import { IDatatableCellData, IDatatableCellDataChange } from './datatable-cell.models'
 
@@ -38,7 +40,7 @@ export class DatatableCellTypeSelectorComponent<D = any, V = any> implements OnI
   @Input() value: V
   @Input() rowIndex: number
   @Input() row: D
-  @Input() colData: ITheSeamTableColumn<D>
+  @Input() colData: ITheSeamDatatableColumn<D>
 
   public componentPortal: ComponentPortal<{}>
 
