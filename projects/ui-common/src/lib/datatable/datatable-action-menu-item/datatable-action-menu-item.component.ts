@@ -8,7 +8,7 @@ import jexl from 'jexl'
 import { untilDestroyed } from 'ngx-take-until-destroy'
 
 import { IDynamicDatatableRow } from '../../datatable-dynamic/datatable-dynamic-def'
-import { DynamicComponentLoader } from '../../dynamic-component-loader/dynamic-component-loader.service'
+import { TheSeamDynamicComponentLoader } from '../../dynamic-component-loader/dynamic-component-loader.service'
 import { Modal } from '../../modal/index'
 
 //
@@ -106,7 +106,7 @@ export class DatatableActionMenuItemComponent implements OnInit, OnDestroy {
   constructor(
     private _http: HttpClient,
     private _modal: Modal,
-    private _dynamicComponentLoader: DynamicComponentLoader
+    private _dynamicComponentLoader: TheSeamDynamicComponentLoader
   ) { }
 
   ngOnInit() { }

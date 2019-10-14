@@ -31,6 +31,7 @@ export * from './lib/viewers/pdf-viewer/index'
 export * from './lib/breadcrumbs/index'
 export * from './lib/table/index'
 export * from './lib/table-cell-types'
+export * from './lib/dynamic-component-loader/index'
 
 export * from './lib/framework/index'
 

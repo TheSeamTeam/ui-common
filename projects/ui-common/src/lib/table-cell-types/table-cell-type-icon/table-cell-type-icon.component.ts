@@ -1,3 +1,4 @@
+import { ComponentType } from '@angular/cdk/portal/index'
 import { ChangeDetectionStrategy, Component, HostBinding, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core'
 
 import { untilDestroyed } from 'ngx-take-until-destroy'
@@ -5,11 +6,14 @@ import { untilDestroyed } from 'ngx-take-until-destroy'
 import jexl from 'jexl'
 
 import {
+  DynamicDatatableCellActionModal,
   DynamicDatatableCellTypeConfigIcon,
   DynamicDatatableCellTypeConfigIconAction
 } from '../../datatable-dynamic/index'
 import { getKnownIcon, SeamIcon, TheSeamIconType } from '../../icon/index'
+import { Modal } from '../../modal/index'
 
+import { TheSeamDynamicComponentLoader } from '../../dynamic-component-loader'
 import { TABLE_CELL_DATA } from '../../table/table-cell-tokens'
 import { ITableCellData } from '../../table/table-cell.models'
 
@@ -49,6 +53,7 @@ export class TableCellTypeIconComponent implements OnInit, OnDestroy {
   private _config: DynamicDatatableCellTypeConfigIcon | undefined | null
 
   _icon: SeamIcon | undefined | null
+  _link?: string
   _tplType: IconTemplateType = 'default'
   _title?: string
   _srOnly?: string
@@ -56,12 +61,16 @@ export class TableCellTypeIconComponent implements OnInit, OnDestroy {
   _iconClass?: string
   _iconType?: TheSeamIconType
 
+  _buttonAction?: DynamicDatatableCellTypeConfigIconAction
+
   _row?: any
   _rowIndex?: number
 
   @HostBinding('class.datatable-cell-type') _isDatatable = false
 
   constructor(
+    private _dynamicComponentLoaderModule: TheSeamDynamicComponentLoader,
+    private _modal: Modal,
     @Optional() @Inject(THESEAM_DATATABLE) _datatable?: DatatableComponent,
     @Optional() @Inject(DATATABLE_CELL_DATA) _datatableData?: IDatatableCellData<any, string>,
     @Optional() @Inject(TABLE_CELL_DATA) _tableData?: ITableCellData<any, string>
@@ -106,13 +115,26 @@ export class TableCellTypeIconComponent implements OnInit, OnDestroy {
 
   public setAction(configAction?: DynamicDatatableCellTypeConfigIconAction) {
     let newTplType: IconTemplateType = 'default'
+    let link: string | undefined
+
     if (configAction) {
       if (configAction.type === 'link') {
         newTplType = configAction.encrypted ? 'link-encrypted' : 'link'
+        if (configAction.link && typeof configAction.link !== 'string') {
+          if (configAction.link.type === 'jexl') {
+            link = jexl.evalSync(configAction.link.expr, { row: this._row })
+          }
+        } else {
+          link = configAction.link
+        }
+      } else if (configAction.type === 'modal') {
+        newTplType = 'button'
+        this._buttonAction = configAction
       }
     }
 
     this._tplType = newTplType
+    this._link = link
   }
 
   private _parseConfigValue(val) {
@@ -125,8 +147,54 @@ export class TableCellTypeIconComponent implements OnInit, OnDestroy {
     }
 
     if (val.type === 'jexl') {
-      console.log(jexl, val.expr, this._row)
-      return jexl.evalSync(val.expr, this._row)
+      return jexl.evalSync(val.expr, { row: this._row })
+    }
+  }
+
+  _doButtonAction() {
+    if (this._buttonAction && this._buttonAction.type === 'modal') {
+      this._handleModalAction(this._buttonAction)
+    }
+  }
+
+  private _handleModalAction(
+    action: DynamicDatatableCellActionModal,
+  ) {
+    let data: any | undefined
+    if (action.data) {
+      if (action.data.type === 'jexl') {
+        data = jexl.evalSync(action.data.expr, { row: this._row })
+      }
+    }
+
+    if (typeof action.component === 'string') {
+      this._dynamicComponentLoaderModule
+        .getComponentFactory<{}>(action.component)
+        .subscribe(componentFactory => {
+          console.log('componentFactory', componentFactory)
+          console.log('data', data)
+
+          const modalRef = this._modal.openFromComponent(
+            componentFactory.componentType,
+            { modalSize: 'lg', data },
+            (<any /* ComponentFactoryBoundToModule */>componentFactory).ngModule.componentFactoryResolver
+          )
+
+          if (action.resultActions) {
+            modalRef.afterClosed()
+              .pipe(untilDestroyed(this))
+              .subscribe(result => {
+                if (action.resultActions && action.resultActions[result]) {
+                  const resultAction = action.resultActions[result]
+                  if (resultAction.type === 'modal') {
+                    this._handleModalAction(resultAction)
+                  }
+                }
+              })
+          }
+        }, error => {
+          console.warn(error)
+        })
     }
   }
 

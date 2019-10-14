@@ -1,3 +1,6 @@
+import { ComponentType } from '@angular/cdk/portal'
+
+import { IJexlExprDef } from './jexl-expr-def'
 
 // tslint:disable:no-inferrable-types
 
@@ -8,7 +11,7 @@ export class DynamicDatatableCellActionBase<T = string> {
 }
 
 export class DynamicDatatableCellActionLink extends DynamicDatatableCellActionBase<'link'> {
-  link: string
+  link: string | IJexlExprDef
 
   /**
    * Make sure the application provides an `EncryptedAssetReader` that the
@@ -24,4 +27,14 @@ export class DynamicDatatableCellActionLink extends DynamicDatatableCellActionBa
    * `EncryptedAssetReader` implementation.
    */
   external?: boolean = false
+}
+
+export class DynamicDatatableCellActionModal extends DynamicDatatableCellActionBase<'modal'> {
+  component: string | ComponentType<{}>
+
+  data?: any
+
+  resultActions?: {
+    [result: string]: DynamicDatatableCellActionModal
+  }
 }

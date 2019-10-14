@@ -5,8 +5,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { ExampleLazyLoadedWidgetsModule } from './example-lazy-loaded-widgets/example-lazy-loaded-widgets.module'
 
 import {
-  DynamicComponentLoaderModule,
-  IDynamicComponentManifest
+  IDynamicComponentManifest,
+  TheSeamDynamicComponentLoaderModule
 } from 'projects/ui-common/src/lib/dynamic-component-loader/dynamic-component-loader.module'
 import { AppComponent } from './app.component'
 
@@ -25,7 +25,7 @@ const manifests: IDynamicComponentManifest[] = [
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    DynamicComponentLoaderModule.forRoot(manifests),
+    TheSeamDynamicComponentLoaderModule.forRoot(manifests),
     ExampleLazyLoadedWidgetsModule
   ],
   providers: [],

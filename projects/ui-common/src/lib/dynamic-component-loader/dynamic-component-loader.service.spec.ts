@@ -1,12 +1,12 @@
 // import { TestBed } from '@angular/core/testing'
 
-// import { DynamicComponentLoaderService } from './dynamic-component-loader.service'
+// import { TheSeamDynamicComponentLoaderService } from './dynamic-component-loader.service'
 
-// describe('DynamicComponentLoaderService', () => {
+// describe('TheSeamDynamicComponentLoaderService', () => {
 //   beforeEach(() => TestBed.configureTestingModule({}))
 
 //   it('should be created', () => {
-//     const service: DynamicComponentLoaderService = TestBed.get(DynamicComponentLoaderService)
+//     const service: TheSeamDynamicComponentLoaderService = TestBed.get(TheSeamDynamicComponentLoaderService)
 //     expect(service).toBeTruthy()
 //   })
 // })

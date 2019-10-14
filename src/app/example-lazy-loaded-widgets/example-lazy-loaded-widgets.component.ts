@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core'
-import { DynamicComponentLoader } from 'projects/ui-common/src/lib/dynamic-component-loader/dynamic-component-loader.service'
+import { TheSeamDynamicComponentLoader } from 'projects/ui-common/src/lib/dynamic-component-loader/dynamic-component-loader.service'
 import { IWidgetsGridItemDef } from 'projects/ui-common/src/lib/widgets-grid/widgets-grid-item'
 import { LazyWidgetOneComponent } from 'src/app/example-lazy-loaded-widgets/lazy-widget-one/lazy-widget-one.component'
 
@@ -15,13 +15,13 @@ export class ExampleLazyLoadedWidgetsComponent implements OnInit {
   widgets: IWidgetsGridItemDef[] = []
 
   constructor(
-    private dynamicComponentLoader: DynamicComponentLoader
+    private _dynamicComponentLoaderModule: TheSeamDynamicComponentLoader
   ) { }
 
   ngOnInit() { }
 
   loadComponent() {
-    this.dynamicComponentLoader
+    this._dynamicComponentLoaderModule
       .getComponentFactory<LazyWidgetOneComponent>('widget-one')
       .subscribe(componentFactory => {
         console.log('componentFactory', componentFactory)

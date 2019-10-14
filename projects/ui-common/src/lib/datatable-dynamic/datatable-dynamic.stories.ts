@@ -9,7 +9,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-import { DynamicComponentLoaderModule } from '../dynamic-component-loader/dynamic-component-loader.module'
+import { TheSeamDynamicComponentLoaderModule } from '../dynamic-component-loader/dynamic-component-loader.module'
 import { TheSeamModalModule } from '../modal/index'
 
 import { exampleData1 } from './_story-data/dynamic-data-1'
@@ -47,7 +47,7 @@ export class StoryExModalLazyComponent { }
   imports: [
     CommonModule,
     TheSeamModalModule,
-    DynamicComponentLoaderModule.forChild(StoryExModalLazyComponent),
+    TheSeamDynamicComponentLoaderModule.forChild(StoryExModalLazyComponent),
   ],
   entryComponents: [
     StoryExModalLazyComponent
@@ -81,7 +81,7 @@ export class StoryExModalLazyModule { }
 //     //     component: StoryExRouteModalComponent
 //     //   }
 //     // ]),
-//     DynamicComponentLoaderModule.forModule({
+//     TheSeamDynamicComponentLoaderModule.forModule({
 //       componentId: 'widget-one',
 //       path: 'widget-one',
 
@@ -123,7 +123,7 @@ storiesOf('Datatable/Dynamic', module)
         RouterModule.forRoot(routes, { useHash: true }),
         TheSeamDatatableDynamicModule,
         // ExampleModalModule
-        DynamicComponentLoaderModule.forRoot([
+        TheSeamDynamicComponentLoaderModule.forRoot([
           {
             componentId: 'story-ex-modal',
             path: 'story-ex-modal',

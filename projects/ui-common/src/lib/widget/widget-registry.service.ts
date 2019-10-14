@@ -3,7 +3,7 @@ import { ComponentFactoryResolver, Inject, Injectable, Injector, ViewContainerRe
 import { Observable, of, throwError } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-import { DynamicComponentLoader } from '../dynamic-component-loader/dynamic-component-loader.service'
+import { TheSeamDynamicComponentLoader } from '../dynamic-component-loader/dynamic-component-loader.service'
 
 import { IWidgetRegistryRecord } from './widget-registry.models'
 import { THESEAM_WIDGETS } from './widget-token'
@@ -20,7 +20,7 @@ export class WidgetRegistryService {
 
   constructor(
     @Inject(THESEAM_WIDGETS) private _widgets: IWidgetRegistryRecord[],
-    private _dynamicComponentLoader: DynamicComponentLoader
+    private _dynamicComponentLoader: TheSeamDynamicComponentLoader
   ) { }
 
   public createWidgetPortal<T>(

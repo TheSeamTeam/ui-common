@@ -99,7 +99,7 @@ export class Modal implements OnDestroy {
   openFromComponent<T, D = any>(
     component: ComponentType<T>,
     config?: ModalConfig<D>,
-    // NOTE: Should only be needed with the current implementation of `DynamicComponentLoader`.
+    // NOTE: Should only be needed with the current implementation of `TheSeamDynamicComponentLoader`.
     componentFactoryResolver?: ComponentFactoryResolver | null | undefined
   ): ModalRef<T, D> {
     config = this._applyConfigDefaults(config)

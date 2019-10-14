@@ -8,7 +8,7 @@ import {
 } from '@angular/core'
 import { ROUTES } from '@angular/router'
 
-import { DynamicComponentLoader } from './dynamic-component-loader.service'
+import { TheSeamDynamicComponentLoader } from './dynamic-component-loader.service'
 import { IDynamicComponentManifest } from './dynamic-component-manifest'
 import {
   DYNAMIC_COMPONENT,
@@ -17,39 +17,39 @@ import {
 } from './dynamic-component-tokens'
 
 @NgModule()
-export class DynamicComponentLoaderModule {
+export class TheSeamDynamicComponentLoaderModule {
   static forRoot(manifests: IDynamicComponentManifest[]): ModuleWithProviders {
     return {
-      ngModule: DynamicComponentLoaderModule,
+      ngModule: TheSeamDynamicComponentLoaderModule,
       providers: [
-        DynamicComponentLoader,
+        TheSeamDynamicComponentLoader,
         { provide: NgModuleFactoryLoader, useClass: SystemJsNgModuleLoader },
         // provider for Angular CLI to analyze
         { provide: ROUTES, useValue: manifests, multi: true },
-        // provider for DynamicComponentLoader to analyze
+        // provider for TheSeamDynamicComponentLoader to analyze
         { provide: DYNAMIC_COMPONENT_MANIFESTS, useValue: manifests },
       ],
     }
   }
   static forModule(manifest: IDynamicComponentManifest): ModuleWithProviders {
     return {
-      ngModule: DynamicComponentLoaderModule,
+      ngModule: TheSeamDynamicComponentLoaderModule,
       providers: [
         { provide: ANALYZE_FOR_ENTRY_COMPONENTS, useValue: manifest, multi: true },
         // provider for @angular/router to parse
         { provide: ROUTES, useValue: manifest, multi: true },
-        // provider for DynamicComponentLoader to analyze
+        // provider for TheSeamDynamicComponentLoader to analyze
         { provide: DYNAMIC_MODULE, useValue: manifest }],
     }
   }
   static forChild(component: Type<any>): ModuleWithProviders {
     return {
-      ngModule: DynamicComponentLoaderModule,
+      ngModule: TheSeamDynamicComponentLoaderModule,
       providers: [
         { provide: ANALYZE_FOR_ENTRY_COMPONENTS, useValue: component, multi: true },
         // provider for @angular/router to parse
         { provide: ROUTES, useValue: [], multi: true },
-        // provider for DynamicComponentLoader to analyze
+        // provider for TheSeamDynamicComponentLoader to analyze
         { provide: DYNAMIC_COMPONENT, useValue: component },
       ],
     }

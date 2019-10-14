@@ -16,7 +16,7 @@ import { wrapIntoObservable } from '../utils/index'
 @Injectable({
   providedIn: 'root'
 })
-export class DynamicComponentLoader {
+export class TheSeamDynamicComponentLoader {
 
   constructor(
     @Inject(DYNAMIC_COMPONENT_MANIFESTS) private manifests: IDynamicComponentManifest[],
@@ -30,7 +30,7 @@ export class DynamicComponentLoader {
     const manifest = this.manifests
       .find(m => m.componentId === componentId)
     if (!manifest) {
-      return throwError(`DynamicComponentLoader: Unknown componentId "${componentId}"`)
+      return throwError(`TheSeamDynamicComponentLoader: Unknown componentId "${componentId}"`)
     }
 
     // const path = manifest.loadChildren
@@ -71,14 +71,14 @@ export class DynamicComponentLoader {
 
       if (!dynamicModule) {
         throw new Error(
-          'DynamicComponentLoader: Dynamic module for'
+          'TheSeamDynamicComponentLoader: Dynamic module for'
           + ` componentId "${componentId}" does not contain`
           + ' DYNAMIC_COMPONENT or DYNAMIC_MODULE as a provider.',
         )
       }
       if (dynamicModule.componentId !== componentId) {
         throw new Error(
-          'DynamicComponentLoader: Dynamic module for'
+          'TheSeamDynamicComponentLoader: Dynamic module for'
           + `${componentId} does not match manifest.`,
         )
       }

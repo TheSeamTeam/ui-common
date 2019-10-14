@@ -1,14 +1,10 @@
 import { TheSeamIconType } from '../../icon/index'
 
-import { DynamicDatatableCellActionLink } from './cell-action'
+import { DynamicDatatableCellActionLink, DynamicDatatableCellActionModal } from './cell-action'
 import { IDynamicDatatableCellType } from './cell-type'
+import { IJexlExprDef } from './jexl-expr-def'
 
 // tslint:disable:no-inferrable-types
-
-export interface IDyanmicDatatableCellTypeJexl {
-  type: 'jexl'
-  expr: string
-}
 
 export class DynamicDatatableCellTypeConfig<T = IDynamicDatatableCellType> {
   type: T
@@ -40,7 +36,7 @@ export class DynamicDatatableCellTypeConfigDate extends DynamicDatatableCellType
   format?: string = 'MM-dd-yyyy h:mm aaa'
 }
 
-export type DynamicDatatableCellTypeConfigIconAction = DynamicDatatableCellActionLink
+export type DynamicDatatableCellTypeConfigIconAction = DynamicDatatableCellActionLink | DynamicDatatableCellActionModal
 
 export class DynamicDatatableCellTypeConfigIcon extends DynamicDatatableCellTypeConfig<'icon'> {
   action?: DynamicDatatableCellTypeConfigIconAction
@@ -48,22 +44,22 @@ export class DynamicDatatableCellTypeConfigIcon extends DynamicDatatableCellType
   /**
    * Element title attribute.
    */
-  titleAttr?: string | IDyanmicDatatableCellTypeJexl
+  titleAttr?: string | IJexlExprDef
 
   /**
    * Screen-reader text.
    */
-  srOnly?: string | IDyanmicDatatableCellTypeJexl
+  srOnly?: string | IJexlExprDef
 
   /**
    * Css class added to the link element.
    */
-  linkClass?: string | IDyanmicDatatableCellTypeJexl
+  linkClass?: string | IJexlExprDef
 
   /**
    * seam-icon `iconClass` input.
    */
-  iconClass?: string | IDyanmicDatatableCellTypeJexl
+  iconClass?: string | IJexlExprDef
 
   /**
    * Can apply pre-defined icon styles.

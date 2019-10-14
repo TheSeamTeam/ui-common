@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 
-import { DynamicComponentLoaderModule } from 'projects/ui-common/src/lib/dynamic-component-loader/dynamic-component-loader.module'
+import { TheSeamDynamicComponentLoaderModule } from 'projects/ui-common/src/lib/dynamic-component-loader/dynamic-component-loader.module'
 import { TheSeamWidgetModule } from 'projects/ui-common/src/lib/widget'
 import { LazyWidgetOneComponent } from 'src/app/example-lazy-loaded-widgets/lazy-widget-one/lazy-widget-one.component'
 
@@ -12,7 +12,7 @@ import { LazyWidgetOneComponent } from 'src/app/example-lazy-loaded-widgets/lazy
   imports: [
     CommonModule,
     TheSeamWidgetModule,
-    DynamicComponentLoaderModule.forChild(LazyWidgetOneComponent),
+    TheSeamDynamicComponentLoaderModule.forChild(LazyWidgetOneComponent),
   ]
 })
 export class LazyWidgetOneModule { }
