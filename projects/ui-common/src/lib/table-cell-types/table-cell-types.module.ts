@@ -10,9 +10,21 @@ import { TableCellTypeDateComponent } from './table-cell-type-date/table-cell-ty
 import { TableCellTypeIconComponent } from './table-cell-type-icon/table-cell-type-icon.component'
 import { TableCellTypeSelectorComponent } from './table-cell-type-selector.component'
 
+import {
+  TABLE_CELL_TYPE_MANIFEST_DATE,
+  TABLE_CELL_TYPE_MANIFEST_ICON,
+  TABLE_CELL_TYPE_MANIFEST_IMAGE,
+} from './table-cell-type-manifests'
+
 export const cellTypeComponents = [
   TableCellTypeDateComponent,
   TableCellTypeIconComponent
+]
+
+export const cellTypeProviders = [
+  TABLE_CELL_TYPE_MANIFEST_DATE,
+  TABLE_CELL_TYPE_MANIFEST_ICON,
+  TABLE_CELL_TYPE_MANIFEST_IMAGE
 ]
 
 @NgModule({
@@ -26,6 +38,9 @@ export const cellTypeComponents = [
     TheSeamSharedModule,
     TheSeamIconModule,
     PortalModule
+  ],
+  providers: [
+    ...cellTypeProviders
   ],
   exports: [
     ...cellTypeComponents,

@@ -1,31 +1,27 @@
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal'
+import { ComponentType } from '@angular/cdk/portal'
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Inject,
   Injector,
   Input,
+  isDevMode,
   OnChanges,
   OnInit,
+  Optional,
   SimpleChanges
 } from '@angular/core'
-
-import { ComponentType } from '@angular/cdk/portal'
 import { Subject } from 'rxjs'
 
 import { TABLE_CELL_DATA } from '../table/table-cell-tokens'
 import { ITableCellData, ITableCellDataChange } from '../table/table-cell.models'
 import { ITheSeamTableColumn, TheSeamTableCellType } from '../table/table-column'
 
-import { TableCellTypeDateComponent } from '../table-cell-types/table-cell-type-date/table-cell-type-date.component'
-import { TableCellTypeIconComponent } from '../table-cell-types/table-cell-type-icon/table-cell-type-icon.component'
-
-export const cellTypeCompsMap: { [type: string /* TheSeamTableCellType */]: ComponentType<{}> } = {
-  'date': TableCellTypeDateComponent,
-  'icon': TableCellTypeIconComponent,
-  'image': TableCellTypeIconComponent
-}
+import { ITableCellTypeManifest } from '../table-cell-types/table-cell-types-models'
+import { TABLE_CELL_TYPE_MANIFEST } from '../table-cell-types/table-cell-types-tokens'
 
 @Component({
   selector: 'seam-table-cell-type-selector',
@@ -48,16 +44,18 @@ export class TableCellTypeSelectorComponent<D = any, V = any> implements OnInit,
 
   private _data: ITableCellData | undefined
   private _dataChangeSubject: Subject<ITableCellDataChange>
+  private _manifests: ITableCellTypeManifest[]
 
   constructor(
     private _injector: Injector,
-    private _ref: ChangeDetectorRef
-  ) { }
+    private _ref: ChangeDetectorRef,
+    @Optional() @Inject(TABLE_CELL_TYPE_MANIFEST) manifests?: ITableCellTypeManifest[]
+  ) { this._manifests = manifests || [] }
 
   ngOnInit() { }
 
   ngAfterViewInit() {
-    const comp = cellTypeCompsMap[this.type]
+    const comp = this._getComponent(this.type)
     if (comp) {
       this._dataChangeSubject = new Subject<ITableCellDataChange>()
 
@@ -72,12 +70,17 @@ export class TableCellTypeSelectorComponent<D = any, V = any> implements OnInit,
       this.componentPortal = new ComponentPortal(comp, null, this._createInjector(this._data))
       this._ref.detectChanges()
     } else {
-      // if (isDevMode()) {
-      //   throw new Error(`CellType '${this.type}' not found.`)
-      // } else {
-      //   // TODO: Implement fallback
-      // }
+      if (isDevMode()) {
+        throw new Error(`CellType '${this.type}' not found.`)
+      } else {
+        // TODO: Implement fallback
+      }
     }
+  }
+
+  private _getComponent(name: string): ComponentType<{}> | undefined {
+    const manifest = this._manifests.find(m => m.name === name)
+    return manifest ? manifest.component : undefined
   }
 
   private _createInjector(cellData: ITableCellData): PortalInjector {

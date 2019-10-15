@@ -15,11 +15,10 @@ import { TheSeamIconModule } from '../icon/icon.module'
 import { TheSeamLoadingModule } from '../loading/loading.module'
 import { TheSeamMenuModule } from '../menu/menu.module'
 import { TheSeamSharedModule } from '../shared/shared.module'
+import { TheSeamTableCellTypesModule } from '../table-cell-types/table-cell-types.module'
 
 import { DatatableActionMenuItemComponent } from './datatable-action-menu-item/datatable-action-menu-item.component'
 import { DatatableActionMenuComponent } from './datatable-action-menu/datatable-action-menu.component'
-import { DatatableCellTypeSelectorComponent } from './datatable-cell-type-selector/datatable-cell-type-selector.component'
-import { TheSeamDatatableCellTypesModule } from './datatable-cell-types/datatable-cell-types.module'
 import { DatatableColumnComponent } from './datatable-column/datatable-column.component'
 import { DatatableExportButtonComponent } from './datatable-export-button/datatable-export-button.component'
 import { DatatableMenuBarComponent } from './datatable-menu-bar/datatable-menu-bar.component'
@@ -30,8 +29,6 @@ import { DatatableFilterDirective } from './directives/datatable-filter.directiv
 import { DatatableRowActionItemDirective } from './directives/datatable-row-action-item.directive'
 import { TheSeamDatatableScrollbarHelperService } from './services/datatable-scrollbar-helper.service'
 
-// NOTE: Named export used for this because of a function calling bug in the builder.
-export const toastrForRoot = ToastrModule.forRoot()
 
 @NgModule({
   declarations: [
@@ -44,8 +41,7 @@ export const toastrForRoot = ToastrModule.forRoot()
     DatatableMenuBarComponent,
     DatatableFilterDirective,
     DatatableRowActionItemDirective,
-    DatatableExportButtonComponent,
-    DatatableCellTypeSelectorComponent
+    DatatableExportButtonComponent
   ],
   imports: [
     CommonModule,
@@ -58,11 +54,11 @@ export const toastrForRoot = ToastrModule.forRoot()
     TheSeamMenuModule,
     TheSeamButtonsModule,
     TheSeamIconModule,
-    toastrForRoot,
+    ToastrModule.forRoot(),
     TheSeamLoadingModule,
-    TheSeamDatatableCellTypesModule,
     PortalModule,
-    TheSeamConfirmDialogModule
+    TheSeamConfirmDialogModule,
+    TheSeamTableCellTypesModule
   ],
   exports: [
     DatatableComponent,

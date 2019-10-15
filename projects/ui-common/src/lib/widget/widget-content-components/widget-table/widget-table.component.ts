@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 
 import { ITableColumn, TrackByFunction } from '../../../table/index'
 
@@ -15,8 +15,14 @@ export class WidgetTableComponent<T> implements OnInit {
   @Input() trackBy: TrackByFunction<T>
   @Input() size: 'sm' | 'md' | undefined | null = 'sm'
 
+  @Output() readonly actionRefreshRequest = new EventEmitter<any>()
+
   constructor() { }
 
   ngOnInit() { }
+
+  _actionRefreshRequest() {
+    this.actionRefreshRequest.emit()
+  }
 
 }

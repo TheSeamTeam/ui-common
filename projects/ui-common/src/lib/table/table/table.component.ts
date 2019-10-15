@@ -1,5 +1,5 @@
 import { coerceArray } from '@angular/cdk/coercion'
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 
 /**
  * An optional function passed into the `NgForOf` directive that defines how to track
@@ -24,7 +24,7 @@ export interface ITableColumn {
   styleUrls: ['./table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TableComponent<T> implements OnInit {
+export class TableComponent<T = any> implements OnInit {
 
   @Input()
   get columns() { return this._columns }
@@ -59,6 +59,8 @@ export class TableComponent<T> implements OnInit {
   public displayedRecords: ITableColumn[]
   public displayedColumns: string[]
 
+  @Output() readonly actionRefreshRequest = new EventEmitter<void>()
+
   constructor() { }
 
   ngOnInit() { }
@@ -85,6 +87,10 @@ export class TableComponent<T> implements OnInit {
 
     this.displayedRecords = newCols
     this.displayedColumns = newCols.map(c => c.prop)
+  }
+
+  public triggerActionRefreshRequest() {
+    this.actionRefreshRequest.emit(undefined)
   }
 
 }
