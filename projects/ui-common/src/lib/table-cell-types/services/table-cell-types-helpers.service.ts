@@ -22,8 +22,8 @@ export class TableCellTypesHelpersService {
   ) { }
 
   public parseValueProp(value: any, contextOrContextFn: CaluclatedValueContextType) {
-    if (!value) {
-      return
+    if (value === undefined || value === null) {
+      return value
     }
 
     if (typeof value === 'string') {
@@ -34,6 +34,8 @@ export class TableCellTypesHelpersService {
       const context = this._resolveValueContext(contextOrContextFn)
       return jexl.evalSync(value.expr, context)
     }
+
+    return value
   }
 
   public getValueContext(value: any, data?: ITableCellData<any, string>): ICalucatedValueContext {

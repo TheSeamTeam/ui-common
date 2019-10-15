@@ -124,13 +124,9 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
 
     if (configAction) {
       if (configAction.type === 'link') {
-        newTplType = configAction.encrypted ? 'link-encrypted' : 'link'
-        if (configAction.link && typeof configAction.link !== 'string') {
-          if (configAction.link.type === 'jexl') {
-            link = jexl.evalSync(configAction.link.expr, { row: this._row })
-          }
-        } else {
-          link = configAction.link
+        link = this._parseConfigValue(configAction.link)
+        if (link !== undefined && link !== null) {
+          newTplType = configAction.encrypted ? 'link-encrypted' : 'link'
         }
       } else if (configAction.type === 'modal') {
         newTplType = 'button'
