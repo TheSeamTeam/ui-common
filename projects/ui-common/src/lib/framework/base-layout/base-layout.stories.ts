@@ -1,21 +1,31 @@
-import { select, text, withKnobs } from '@storybook/addon-knobs'
+import { boolean, select, text, withKnobs } from '@storybook/addon-knobs'
 import { storiesOf } from '@storybook/angular'
 
+import { APP_BASE_HREF } from '@angular/common'
 import { Component } from '@angular/core'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { Route, Router, RouterModule } from '@angular/router'
 import { of } from 'rxjs'
 import { delay } from 'rxjs/operators'
 
-import { faBell, faBook, faBuilding, faSignature, faWrench } from '@fortawesome/free-solid-svg-icons'
+import {
+  faBell,
+  faBook,
+  faBuilding,
+  faQuestionCircle,
+  faSignature,
+  faSignOutAlt,
+  faUserAlt,
+  faWrench
+} from '@fortawesome/free-solid-svg-icons'
 
-import { TheSeamWidgetModule } from '../../widget'
+import { TheSeamBreadcrumbsModule } from '../../breadcrumbs/index'
+import { TheSeamWidgetModule } from '../../widget/index'
 import { TheSeamDashboardModule } from '../dashboard/dashboard.module'
 import { ISideNavItem } from '../side-nav/side-nav.models'
 import { TheSeamSideNavModule } from '../side-nav/side-nav.module'
 import { TheSeamTopBarModule } from '../top-bar/top-bar.module'
 
-import { APP_BASE_HREF } from '@angular/common'
 import { TheSeamBaseLayoutModule } from './base-layout.module'
 
 
@@ -106,29 +116,37 @@ class StoryRoutePlacholderComponent {
 
 
 const routes: Route[] = [
-  { path: 'example1', component: StoryRoutePlacholderComponent },
   {
-    path: 'example2',
-    component: StoryRoutePlacholderComponent,
+    path: '',
+    data: { breadcrumb: 'Dashboard' },
     children: [
-      { path: 'example1.1', component: StoryRoutePlacholderComponent },
-      { path: 'example1.2', component: StoryRoutePlacholderComponent },
-      { path: 'example1.3', component: StoryRoutePlacholderComponent },
-      { path: 'example1.4', component: StoryRoutePlacholderComponent }
+      { path: 'example1', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example1' } },
+      {
+        path: 'example2',
+        component: StoryRoutePlacholderComponent,
+        data: { breadcrumb: 'example2' },
+        children: [
+          { path: 'example1.1', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example1.1' } },
+          { path: 'example1.2', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example1.2' } },
+          { path: 'example1.3', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example1.3' } },
+          { path: 'example1.4', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example1.4' } }
+        ]
+      },
+      {
+        path: 'example3',
+        component: StoryRoutePlacholderComponent,
+        data: { breadcrumb: 'example3' },
+        children: [
+          { path: 'example1.1', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example1.1' } },
+          { path: 'example1.2', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example1.2' } },
+          { path: 'example1.3', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example1.3' } },
+          { path: 'example1.4', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example1.4' } }
+        ]
+      },
+      { path: 'example4', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example4' } },
+      { path: 'example5', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example5' } }
     ]
-  },
-  {
-    path: 'example3',
-    component: StoryRoutePlacholderComponent,
-    children: [
-      { path: 'example1.1', component: StoryRoutePlacholderComponent },
-      { path: 'example1.2', component: StoryRoutePlacholderComponent },
-      { path: 'example1.3', component: StoryRoutePlacholderComponent },
-      { path: 'example1.4', component: StoryRoutePlacholderComponent }
-    ]
-  },
-  { path: 'example4', component: StoryRoutePlacholderComponent },
-  { path: 'example5', component: StoryRoutePlacholderComponent }
+  }
 ]
 
 const navItems: ISideNavItem[] = [
@@ -228,7 +246,8 @@ storiesOf('Framework|BaseLayout', module)
         TheSeamDashboardModule,
         TheSeamSideNavModule,
         TheSeamTopBarModule,
-        TheSeamWidgetModule
+        TheSeamWidgetModule,
+        TheSeamBreadcrumbsModule
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
@@ -243,17 +262,22 @@ storiesOf('Framework|BaseLayout', module)
     props: {
       logo: text('logo', 'assets/images/theseam_logo.svg'),
       logoSm: text('logoSm', 'assets/images/theseam_logo_notext.svg'),
+      hasTitle: boolean('hasTitle', false),
       titleText: text('titleText', 'Dashboard'),
       subTitleText: text('subTitleText', 'Example'),
       displayName: text('displayName', 'Mark Berry'),
       organizationName: text('organizationName', 'The Seam'),
+      hasNotificationsMenu: boolean('hasNotificationsMenu', true),
       navItems,
       widgets: [
         { col: 1, order: 0, type: StoryExWidget1Component },
         { col: 2, order: 0, type: StoryExWidget2Component },
         { col: 3, order: 0, type: StoryExWidget3Component },
         { col: 2, order: 1, type: StoryExWidget4Component }
-      ]
+      ],
+      faUserAlt: faUserAlt,
+      faQuestionCircle: faQuestionCircle,
+      faSignOutAlt: faSignOutAlt
     },
     template: `
       <div style="height: 100vh; width: 100vw;">
@@ -262,14 +286,25 @@ storiesOf('Framework|BaseLayout', module)
             *seamBaseLayoutSideBar
             [items]="navItems">
           </seam-side-nav>
+          <div class="p-1" *seamBaseLayoutContentHeader>
+            <seam-breadcrumbs></seam-breadcrumbs>
+          </div>
           <seam-top-bar
             *seamBaseLayoutTopBar
             [logo]="logo"
             [logoSm]="logoSm"
+            [hasTitle]="hasTitle"
             [titleText]="titleText"
             [subTitleText]="subTitleText"
             [displayName]="displayName"
-            [organizationName]="organizationName">
+            [organizationName]="organizationName"
+            [hasNotificationsMenu]="hasNotificationsMenu">
+            <seam-menu seamTopBarMenu>
+              <a seamMenuItem [icon]="faUserAlt" routerLink="/profile">Profile</a>
+              <button seamMenuItem [icon]="faQuestionCircle">About</button>
+              <seam-menu-divider></seam-menu-divider>
+              <a seamMenuItem [icon]="faSignOutAlt" routerLink="/logout">Sign out</a>
+            </seam-menu>
           </seam-top-bar>
           <seam-dashboard
             *seamBaseLayoutContent

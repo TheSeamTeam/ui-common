@@ -9,6 +9,7 @@ import { TheSeamMenuModule } from '../../menu/index'
 import { TheSeamBaseLayoutModule } from '../base-layout/index'
 
 import { TopBarMenuButtonComponent } from './top-bar-menu-button/top-bar-menu-button.component'
+import { TopBarMenuDirective } from './top-bar-menu.directive'
 import { TopBarTitleComponent } from './top-bar-title/top-bar-title.component'
 import { TopBarComponent } from './top-bar.component'
 
@@ -16,7 +17,8 @@ import { TopBarComponent } from './top-bar.component'
   declarations: [
     TopBarComponent,
     TopBarTitleComponent,
-    TopBarMenuButtonComponent
+    TopBarMenuButtonComponent,
+    TopBarMenuDirective
   ],
   imports: [
     CommonModule,
@@ -28,7 +30,10 @@ import { TopBarComponent } from './top-bar.component'
     RouterModule
   ],
   exports: [
-    TopBarComponent
+    TopBarComponent,
+    TopBarMenuButtonComponent,
+    TopBarMenuDirective,
+    TheSeamMenuModule
   ]
 })
 export class TheSeamTopBarModule { }

@@ -5,13 +5,15 @@
 
 <!-- Logo -->
 <div class="top-bar--logo d-flex flex-column justify-content-center pr-2" routerLink="/">
-  <img [src]="logo" [src.lt-md]="logoSm" alt="Logo">
+  <img [src]="logo" [src.lt-md]="hasTitle ? logoSm : logo" alt="Logo">
 </div>
 <!-- Title -->
-<seam-top-bar-title [titleText]="titleText" [subTitleText]="subTitleText"></seam-top-bar-title>
+<div class="d-flex flex-column flex-grow-1">
+  <seam-top-bar-title *ngIf="hasTitle" [titleText]="titleText" [subTitleText]="subTitleText"></seam-top-bar-title>
+</div>
 <!-- Notifications -->
 <div class="top-bar-icon-container mr-2">
-  <button seamIconBtn *ngIf="hasNotificationsBtn"
+  <button seamIconBtn *ngIf="hasNotificationsMenu"
     [icon]="faBell"
     iconType="borderless-styled-square"
     [seamMenuToggle]="notificationMenu">
@@ -37,14 +39,7 @@
 
 <!-- Menu -->
 <button seamTopBarMenuButton
-  [seamMenuToggle]="menu"
+  [seamMenuToggle]="_topBarMenu?.menu"
   [displayName]="displayName"
   [organizationName]="organizationName">
 </button>
-
-<seam-menu #menu>
-  <a seamMenuItem [icon]="faUserAlt" routerLink="/profile">Profile</a>
-  <button seamMenuItem [icon]="faQuestionCircle">About</button>
-  <seam-menu-divider></seam-menu-divider>
-  <a seamMenuItem [icon]="faSignOutAlt" routerLink="/logout">Sign out</a>
-</seam-menu>

@@ -180,6 +180,7 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
     if (this._baseLayoutRef) { this._baseLayoutRef.registerNav(this) }
 
     this.isMobile$ = this._layout.isMobile$
+      .pipe(tap(isMobile => isMobile && this.collapse()))
 
     const routed$ = this._router.events
       .pipe(

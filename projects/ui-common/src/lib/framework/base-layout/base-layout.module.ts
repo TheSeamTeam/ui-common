@@ -7,6 +7,8 @@ import { TheSeamIconModule } from '../../icon/index'
 import { TheSeamScrollbarModule } from '../../scrollbar/index'
 
 import { TheSeamBaseLayoutComponent } from './base-layout.component'
+import { BaseLayoutContentFooterDirective } from './directives/base-layout-content-footer.directive'
+import { BaseLayoutContentHeaderDirective } from './directives/base-layout-content-header.directive'
 import { BaseLayoutContentDirective } from './directives/base-layout-content.directive'
 import { BaseLayoutNavToggleDirective } from './directives/base-layout-nav-toggle.directive'
 import { BaseLayoutSideBarDirective } from './directives/base-layout-side-bar.directive'
@@ -20,7 +22,9 @@ import { BaseLayoutTopBarDirective } from './directives/base-layout-top-bar.dire
     BaseLayoutContentDirective,
     BaseLayoutSideBarDirective,
     BaseLayoutTopBarDirective,
-    BaseLayoutNavToggleDirective
+    BaseLayoutNavToggleDirective,
+    BaseLayoutContentHeaderDirective,
+    BaseLayoutContentFooterDirective
   ],
   imports: [
     CommonModule,
@@ -34,7 +38,9 @@ import { BaseLayoutTopBarDirective } from './directives/base-layout-top-bar.dire
     BaseLayoutContentDirective,
     BaseLayoutSideBarDirective,
     BaseLayoutTopBarDirective,
-    BaseLayoutNavToggleDirective
+    BaseLayoutNavToggleDirective,
+    BaseLayoutContentHeaderDirective,
+    BaseLayoutContentFooterDirective
   ]
 })
 export class TheSeamBaseLayoutModule { }

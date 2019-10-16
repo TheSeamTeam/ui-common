@@ -9,6 +9,8 @@ import { TheSeamLayoutService } from '../../layout/index'
 import { ITheSeamBaseLayoutNav } from './base-layout-nav'
 import { ITheSeamBaseLayoutRef } from './base-layout-ref'
 import { THESEAM_BASE_LAYOUT_REF } from './base-layout-tokens'
+import { BaseLayoutContentFooterDirective } from './directives/base-layout-content-footer.directive'
+import { BaseLayoutContentHeaderDirective } from './directives/base-layout-content-header.directive'
 import { BaseLayoutContentDirective } from './directives/base-layout-content.directive'
 import { BaseLayoutSideBarDirective } from './directives/base-layout-side-bar.directive'
 import { BaseLayoutTopBarDirective } from './directives/base-layout-top-bar.directive'
@@ -34,13 +36,20 @@ export class TheSeamBaseLayoutComponent implements OnInit, ITheSeamBaseLayoutRef
 
   @Input() overlayNav = false
 
-  @ContentChild(BaseLayoutTopBarDirective, { static: true, read: TemplateRef }) _topBarTpl: TemplateRef<any> | undefined | null
-  @ContentChild(BaseLayoutSideBarDirective, { static: true, read: TemplateRef }) _sideBarTpl: TemplateRef<any> | undefined | null
-  @ContentChild(BaseLayoutContentDirective, { static: true, read: TemplateRef }) _contentTpl: TemplateRef<any> | undefined | null
+  // TODO: Consider making the template queries not be dynamic. I can see this
+  // potentially causing confusion or issues with potential layouts built with
+  // this component.
+  @ContentChild(BaseLayoutTopBarDirective, { static: true, read: TemplateRef }) _topBarTpl?: TemplateRef<any> | null
+  @ContentChild(BaseLayoutSideBarDirective, { static: true, read: TemplateRef }) _sideBarTpl?: TemplateRef<any> | null
+  @ContentChild(BaseLayoutContentDirective, { static: true, read: TemplateRef }) _contentTpl?: TemplateRef<any> | null
+  @ContentChild(BaseLayoutContentHeaderDirective, { static: true, read: TemplateRef }) _contentHeaderTpl?: TemplateRef<any> | null
+  @ContentChild(BaseLayoutContentFooterDirective, { static: true, read: TemplateRef }) _contentFooterTpl?: TemplateRef<any> | null
 
   _topBarPortal: TemplatePortal
   _sideBarPortal: TemplatePortal
   _contentPortal: TemplatePortal
+  _contentHeaderPortal: TemplatePortal
+  _contentFooterPortal: TemplatePortal
 
   private _hasSideBar = new BehaviorSubject<boolean>(false)
 
@@ -70,6 +79,14 @@ export class TheSeamBaseLayoutComponent implements OnInit, ITheSeamBaseLayoutRef
 
     if (this._contentTpl) {
       this._contentPortal = new TemplatePortal(this._contentTpl, this._viewContainerRef)
+    }
+
+    if (this._contentHeaderTpl) {
+      this._contentHeaderPortal = new TemplatePortal(this._contentHeaderTpl, this._viewContainerRef)
+    }
+
+    if (this._contentFooterTpl) {
+      this._contentFooterPortal = new TemplatePortal(this._contentFooterTpl, this._viewContainerRef)
     }
 
     this.hasSideBar$ = this._hasSideBar.asObservable()
