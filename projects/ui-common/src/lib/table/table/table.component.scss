@@ -1,0 +1,9 @@
+:host {
+  display: block;
+
+  .table-no-header {
+    ::ng-deep thead {
+      display: none;
+    }
+  }
+}

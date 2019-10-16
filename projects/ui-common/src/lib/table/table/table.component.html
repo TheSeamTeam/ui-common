@@ -1,9 +1,14 @@
 <table cdk-table [dataSource]="displayedRows" class="table table-header-divider-indented mb-0"
   [class.table-striped]="rows?.length > 0"
-  [class.table-sm]="size === 'sm'">
+  [class.table-sm]="size === 'sm'"
+  [class.table-no-header]="!hasHeader">
   <ng-container *ngFor="let r of displayedRecords; first as isFirst">
     <ng-container [cdkColumnDef]="r.prop">
-      <th cdk-header-cell *cdkHeaderCellDef>{{ r.name }}</th>
+      <th cdk-header-cell *cdkHeaderCellDef>
+        <ng-container *ngIf="hasHeader">
+          {{ r.name }}
+        </ng-container>
+      </th>
       <td cdk-cell *cdkCellDef="let element; index as rowIndex"
         [attr.colspan]="element?._emptyDisplay && isFirst ? 2 : undefined"
         [class.border-top-0]="element?._emptyDisplay && isFirst"

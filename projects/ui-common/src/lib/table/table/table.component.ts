@@ -56,6 +56,8 @@ export class TableComponent<T> implements OnInit {
 
   @Input() size: 'sm' | 'md' | undefined | null
 
+  @Input() hasHeader = true
+
   public displayedRecords: ITableColumn[]
   public displayedColumns: string[]
 

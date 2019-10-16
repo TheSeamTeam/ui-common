@@ -14,6 +14,7 @@ export class WidgetTableComponent<T> implements OnInit {
   @Input() rows: T[] = []
   @Input() trackBy: TrackByFunction<T>
   @Input() size: 'sm' | 'md' | undefined | null = 'sm'
+  @Input() hasHeader = true
 
   constructor() { }
 
