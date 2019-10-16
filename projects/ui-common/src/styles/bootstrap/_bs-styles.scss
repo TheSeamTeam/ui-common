@@ -51,3 +51,19 @@
     border-bottom: $table-border-width solid $table-border-color;
   }
 }
+
+// Breadcrumbs
+//
+//
+.breadcrumb-item {
+
+  &::before {
+    display: inline-block; // Suppress underlining of the separator in modern browsers
+    font-weight: $font-weight-base;
+  }
+
+  &.active {
+    color: $breadcrumb-active-color;
+    font-weight: $font-weight-bold;
+  }
+}
