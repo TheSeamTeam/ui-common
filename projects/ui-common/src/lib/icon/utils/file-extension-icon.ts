@@ -28,11 +28,11 @@ const FILE_EXTENSION_ICONS = {
   'json': faFileAlt
 }
 
-const DEFAULT_FILE_EXTENSION_ICON = faFile
+export const DEFAULT_FILE_EXTENSION_ICON = faFile
 
 export function fileExtensionIcon(extension: string | null | undefined, defaultIfNotFound: boolean = true): SeamIcon | undefined {
   if (!extension) {
-    return DEFAULT_FILE_EXTENSION_ICON
+    return defaultIfNotFound ? DEFAULT_FILE_EXTENSION_ICON : undefined
   }
 
   let ext = extension

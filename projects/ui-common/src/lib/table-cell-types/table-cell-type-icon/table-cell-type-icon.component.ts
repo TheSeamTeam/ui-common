@@ -1,4 +1,3 @@
-import { ComponentType } from '@angular/cdk/portal/index'
 import { ChangeDetectionStrategy, Component, HostBinding, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core'
 
 import { untilDestroyed } from 'ngx-take-until-destroy'
@@ -11,15 +10,14 @@ import {
   DynamicDatatableCellTypeConfigIconAction
 } from '../../datatable-dynamic/index'
 import { getKnownIcon, SeamIcon, TheSeamIconType } from '../../icon/index'
-import { Modal } from '../../modal/index'
 
-import { TheSeamDynamicComponentLoader } from '../../dynamic-component-loader'
 import { TABLE_CELL_DATA } from '../../table/table-cell-tokens'
 import { ITableCellData } from '../../table/table-cell.models'
+import { ITheSeamTableColumn } from '../../table/table-column'
+import { TableComponent } from '../../table/table/table.component'
 
-import { DATATABLE_CELL_DATA } from '../../datatable/datatable-cell-type-selector/datatable-cell-tokens'
-import { IDatatableCellData } from '../../datatable/datatable-cell-type-selector/datatable-cell.models'
 import { DatatableComponent, THESEAM_DATATABLE } from '../../datatable/datatable/datatable.component'
+import { TableCellTypesHelpersService } from '../services/table-cell-types-helpers.service'
 
 export type IconTemplateType = 'default' | 'link' | 'link-external' | 'link-encrypted' | 'button'
 
@@ -29,7 +27,7 @@ export type IconTemplateType = 'default' | 'link' | 'link-external' | 'link-encr
   styleUrls: ['./table-cell-type-icon.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TableCellTypeIconComponent implements OnInit, OnDestroy {
+export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnDestroy {
 
   @Input()
   get value() { return this._value }
@@ -63,28 +61,35 @@ export class TableCellTypeIconComponent implements OnInit, OnDestroy {
 
   _buttonAction?: DynamicDatatableCellTypeConfigIconAction
 
+  _tableCellData?: ITableCellData<any, string>
   _row?: any
   _rowIndex?: number
+  _colData?: ITheSeamTableColumn<R>
 
   @HostBinding('class.datatable-cell-type') _isDatatable = false
 
   constructor(
-    private _dynamicComponentLoaderModule: TheSeamDynamicComponentLoader,
-    private _modal: Modal,
-    @Optional() @Inject(THESEAM_DATATABLE) _datatable?: DatatableComponent,
-    @Optional() @Inject(DATATABLE_CELL_DATA) _datatableData?: IDatatableCellData<any, string>,
+    private _tableCellTypeHelpers: TableCellTypesHelpersService,
+    @Optional() private _datatable?: DatatableComponent,
+    @Optional() private _table?: TableComponent,
     @Optional() @Inject(TABLE_CELL_DATA) _tableData?: ITableCellData<any, string>
   ) {
     if (_datatable) {
       this._isDatatable = true
+      // console.log('isDataTable')
     }
+    // if (_table) {
+    //   console.log('isTable')
+    // }
 
-    const _data = _datatableData || _tableData
+    const _data = _tableData
+    this._tableCellData = _tableData
 
     this._row = _data && _data.row
     this._rowIndex = _data && _data.rowIndex
 
     this.value = _data && _data.value
+    this._colData = _data && _data.colData
     if (_data && _data.colData && (<any>_data.colData).cellTypeConfig) {
       this.config = (<any>_data.colData).cellTypeConfig
     }
@@ -119,13 +124,9 @@ export class TableCellTypeIconComponent implements OnInit, OnDestroy {
 
     if (configAction) {
       if (configAction.type === 'link') {
-        newTplType = configAction.encrypted ? 'link-encrypted' : 'link'
-        if (configAction.link && typeof configAction.link !== 'string') {
-          if (configAction.link.type === 'jexl') {
-            link = jexl.evalSync(configAction.link.expr, { row: this._row })
-          }
-        } else {
-          link = configAction.link
+        link = this._parseConfigValue(configAction.link)
+        if (link !== undefined && link !== null) {
+          newTplType = configAction.encrypted ? 'link-encrypted' : 'link'
         }
       } else if (configAction.type === 'modal') {
         newTplType = 'button'
@@ -138,63 +139,27 @@ export class TableCellTypeIconComponent implements OnInit, OnDestroy {
   }
 
   private _parseConfigValue(val) {
-    if (!val) {
-      return
-    }
-
-    if (typeof val === 'string') {
-      return val
-    }
-
-    if (val.type === 'jexl') {
-      return jexl.evalSync(val.expr, { row: this._row })
-    }
+    const contextFn = () => this._tableCellTypeHelpers.getValueContext(val, this._tableCellData)
+    return this._tableCellTypeHelpers.parseValueProp(val, contextFn)
   }
 
   _doButtonAction() {
     if (this._buttonAction && this._buttonAction.type === 'modal') {
-      this._handleModalAction(this._buttonAction)
+      const contextFn = () => this._tableCellTypeHelpers.getValueContext(this.value, this._tableCellData)
+      this._tableCellTypeHelpers.handleModalAction(this._buttonAction, contextFn)
+        .subscribe(
+          r => {},
+          err => console.error(err),
+          () => this._actionRefreshRequest()
+        )
     }
   }
 
-  private _handleModalAction(
-    action: DynamicDatatableCellActionModal,
-  ) {
-    let data: any | undefined
-    if (action.data) {
-      if (action.data.type === 'jexl') {
-        data = jexl.evalSync(action.data.expr, { row: this._row })
-      }
-    }
-
-    if (typeof action.component === 'string') {
-      this._dynamicComponentLoaderModule
-        .getComponentFactory<{}>(action.component)
-        .subscribe(componentFactory => {
-          console.log('componentFactory', componentFactory)
-          console.log('data', data)
-
-          const modalRef = this._modal.openFromComponent(
-            componentFactory.componentType,
-            { modalSize: 'lg', data },
-            (<any /* ComponentFactoryBoundToModule */>componentFactory).ngModule.componentFactoryResolver
-          )
-
-          if (action.resultActions) {
-            modalRef.afterClosed()
-              .pipe(untilDestroyed(this))
-              .subscribe(result => {
-                if (action.resultActions && action.resultActions[result]) {
-                  const resultAction = action.resultActions[result]
-                  if (resultAction.type === 'modal') {
-                    this._handleModalAction(resultAction)
-                  }
-                }
-              })
-          }
-        }, error => {
-          console.warn(error)
-        })
+  private _actionRefreshRequest() {
+    if (this._datatable) {
+      this._datatable.triggerActionRefreshRequest()
+    } else if (this._table) {
+      this._table.triggerActionRefreshRequest()
     }
   }
 

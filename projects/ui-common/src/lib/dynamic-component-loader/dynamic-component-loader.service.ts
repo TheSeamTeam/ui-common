@@ -1,4 +1,4 @@
-import { Compiler, ComponentFactory, Inject, Injectable, Injector, NgModuleFactory, NgModuleFactoryLoader } from '@angular/core'
+import { Compiler, ComponentFactory, Inject, Injectable, Injector, NgModuleFactory, NgModuleFactoryLoader, Optional } from '@angular/core'
 import { Observable, of } from 'rxjs'
 import { from, throwError } from 'rxjs'
 import { mergeMap, switchMap } from 'rxjs/operators'
@@ -18,16 +18,20 @@ import { wrapIntoObservable } from '../utils/index'
 })
 export class TheSeamDynamicComponentLoader {
 
+  private _manifests: IDynamicComponentManifest[]
+
   constructor(
-    @Inject(DYNAMIC_COMPONENT_MANIFESTS) private manifests: IDynamicComponentManifest[],
-    private loader: NgModuleFactoryLoader,
     private compiler: Compiler,
     private injector: Injector,
-  ) { }
+    @Optional() @Inject(DYNAMIC_COMPONENT_MANIFESTS) manifests: IDynamicComponentManifest[],
+    // TODO: Remove the loader now that all our code should have updated from
+    // the string `loadChildren` by now.
+    @Optional() private _loader: NgModuleFactoryLoader
+  ) { this._manifests = manifests || [] }
 
   /** Retrieve a ComponentFactory, based on the specified componentId (defined in the IDynamicComponentManifest array). */
   getComponentFactory<T>(componentId: string, injector?: Injector): Observable<ComponentFactory<T>> {
-    const manifest = this.manifests
+    const manifest = this._manifests
       .find(m => m.componentId === componentId)
     if (!manifest) {
       return throwError(`TheSeamDynamicComponentLoader: Unknown componentId "${componentId}"`)
@@ -45,13 +49,13 @@ export class TheSeamDynamicComponentLoader {
   }
 
   load<T>(path: string, componentId: string, injector?: Injector): Promise<ComponentFactory<T>> {
-    return this.loader.load(path)
+    return this._loader.load(path)
       .then((ngModuleFactory) => this.loadFactory<T>(ngModuleFactory, componentId, injector))
   }
 
   private loadModuleFactory(loadChildren: LoadChildren): Observable<NgModuleFactory<any>> {
     if (typeof loadChildren === 'string') {
-      return from(this.loader.load(loadChildren))
+      return from(this._loader.load(loadChildren))
     } else {
       return wrapIntoObservable(loadChildren()).pipe(mergeMap((t: any) => {
         if (t instanceof NgModuleFactory) {

@@ -203,6 +203,8 @@ export class DatatableComponent implements OnInit {
   @Output() tableContextmenu = new EventEmitter<{ event: MouseEvent, type: ContextmenuType, content: any }>(false)
   @Output() treeAction = new EventEmitter<any>()
 
+  @Output() readonly actionRefreshRequest = new EventEmitter<void>()
+
   @ContentChildren(DatatableColumnComponent) columnComponents: QueryList<DatatableColumnComponent>
 
   @ContentChild(DatatableActionMenuComponent, { static: true }) actionMenu: DatatableActionMenuComponent
@@ -351,6 +353,10 @@ export class DatatableComponent implements OnInit {
       row.treeStatus = 'collapsed'
     }
     this.rows = [ ...this.rows ]
+  }
+
+  public triggerActionRefreshRequest() {
+    this.actionRefreshRequest.emit(undefined)
   }
 
 }

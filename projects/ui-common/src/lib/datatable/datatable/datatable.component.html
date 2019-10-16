@@ -114,13 +114,13 @@
                   [ngTemplateOutletContext]="{ $implicit: value, value: value, rowIndex: rowIndex, row: row }">
                 </ng-template>
                 <ng-template #noCellTpl>
-                  <seam-datatable-cell-type-selector *ngIf="colData.comp?.cellType || colData.col?.cellType; else noCellType"
+                  <seam-table-cell-type-selector *ngIf="colData.comp?.cellType || colData.col?.cellType; else noCellType"
                     [type]="colData.comp?.cellType || colData.col?.cellType"
                     [value]="value"
                     [rowIndex]="rowIndex"
                     [row]="row"
                     [colData]="colData.comp || colData.col">
-                  </seam-datatable-cell-type-selector>
+                  </seam-table-cell-type-selector>
                   <ng-template #noCellType>
                     {{ value }}
                   </ng-template>
