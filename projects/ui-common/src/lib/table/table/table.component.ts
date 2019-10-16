@@ -1,5 +1,6 @@
 import { coerceArray } from '@angular/cdk/coercion'
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
+import { DomSanitizer } from '@angular/platform-browser'
 
 /**
  * An optional function passed into the `NgForOf` directive that defines how to track
@@ -63,7 +64,9 @@ export class TableComponent<T = any> implements OnInit {
 
   @Output() readonly actionRefreshRequest = new EventEmitter<void>()
 
-  constructor() { }
+  constructor(
+    private _sanitizer: DomSanitizer
+  ) { }
 
   ngOnInit() { }
 
@@ -78,17 +81,30 @@ export class TableComponent<T = any> implements OnInit {
         }
         newCols.push(newCol)
       } else {
+        let name = col.name
+        if (name === undefined || name === null) {
+          name = col.prop
+        }
         const newCol: ITableColumn = {
           ...col,
           prop: col.prop,
-          name: col.name || col.prop
+          name
         }
         newCols.push(newCol)
       }
     }
 
+    for (const col of newCols) {
+      const _col = col as any
+      if (_col && _col.cellTypeConfig && _col.cellTypeConfig.styles) {
+        _col.cellTypeConfig.styles = this._sanitizer.bypassSecurityTrustStyle(_col.cellTypeConfig.styles)
+      }
+    }
+
     this.displayedRecords = newCols
     this.displayedColumns = newCols.map(c => c.prop)
+    console.log(this.displayedRecords)
+    console.log(this.displayedColumns)
   }
 
   public triggerActionRefreshRequest() {

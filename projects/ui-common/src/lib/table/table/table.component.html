@@ -12,8 +12,10 @@
       <td cdk-cell *cdkCellDef="let element; index as rowIndex"
         [attr.colspan]="element?._emptyDisplay && isFirst ? 2 : undefined"
         [class.border-top-0]="element?._emptyDisplay && isFirst"
-        [class.d-none]="element?._emptyDisplay && !isFirst">
+        [class.d-none]="element?._emptyDisplay && !isFirst"
+        [style]="r?.cellTypeConfig?.styles">
         <!-- {{ element[r.prop] }} -->
+        <span [style]="r?.cellTypeConfig?.styles"></span>
 
         <ng-container *ngIf="element?._emptyDisplay && isFirst; else hasDataTpl">
           No data to display
