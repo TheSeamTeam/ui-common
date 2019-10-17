@@ -16,6 +16,7 @@ import {
   ElementRef,
   Host,
   Input,
+  isDevMode,
   OnDestroy,
   OnInit,
   Optional,
@@ -186,13 +187,21 @@ export class SideNavItemComponent implements OnInit, OnDestroy {
     // This worked for children of root nodes only. This will probably not work
     // in a clean way from the node components only, because the child
     // components are rendered as needed and register with the parent component
-    // when in initializes.
-
-    // this.hasActiveChild$.pipe(
-    //   take(1),
-    //   // tap(hasChildren => console.log('hasChildren', hasChildren)),
-    //   tap(hasChildren => hasChildren ? this.expanded = true : false)
-    // ).subscribe()
+    // when it initializes.
+    this.hasActiveChild$.pipe(
+      take(1),
+      // tap(hasChildren => console.log('hasChildren', hasChildren)),
+      tap(() => {
+        if (isDevMode() && this.hierLevel > 1) {
+          console.warn(
+            '[SideNavItem] SideNav has a bug expanding nodes to the active node ' +
+            'when it initializes. Initial side nav state may be incorrect until ' +
+            'fixed.'
+          )
+        }
+      }),
+      tap(hasChildren => hasChildren ? this.expanded = true : false)
+    ).subscribe()
   }
 
   ngOnDestroy() {
