@@ -2,8 +2,11 @@
 
 :host {
   display: block;
-  // background-color: $seam-side-nav-bg-color;
   height: 100%;
+
+  // Prevent main page content layer overlapping the side-nav while animating.
+  position: relative;
+  z-index: 2;
 
   .side-nav-inner-wrapper {
     background-color: $seam-side-nav-bg-color;
