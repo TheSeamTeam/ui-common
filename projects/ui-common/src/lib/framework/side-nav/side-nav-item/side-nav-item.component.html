@@ -68,7 +68,8 @@
     [routerLink]="link"
     [queryParams]="queryParams"
     routerLinkActive="active"
-    [routerLinkActiveOptions]="{ exact: true }">
+    [routerLinkActiveOptions]="{ exact: true }"
+    (click)="_linkClicked()">
     <div [style.padding-left.px]="hierLevel * indentSize"></div>
     <div class="side-nav-item--icon">
       <seam-icon *ngIf="icon" [icon]="icon"></seam-icon>

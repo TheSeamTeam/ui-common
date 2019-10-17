@@ -31,6 +31,7 @@ import { untilDestroyed } from 'ngx-take-until-destroy'
 import { SeamIcon } from '../../../icon/index'
 import { RouterHelpersService } from '../../../services/router-helpers.service'
 
+import { SideNavComponent } from '../side-nav.component'
 import { ISideNavItem } from '../side-nav.models'
 
 const EXPANDED_STATE = 'expanded'
@@ -132,6 +133,7 @@ export class SideNavItemComponent implements OnInit, OnDestroy {
     private _routerHelpers: RouterHelpersService,
     private _renderer: Renderer2,
     private _element: ElementRef,
+    private _sideNav: SideNavComponent,
     @Optional() @SkipSelf() @Host() private _parent?: SideNavItemComponent
   ) {
 
@@ -213,6 +215,13 @@ export class SideNavItemComponent implements OnInit, OnDestroy {
   _unregisterChild(child: SideNavItemComponent) {
     const children = this._registeredChildren.value.filter(c => c !== child)
     this._registeredChildren.next([ ...children ])
+  }
+
+  _linkClicked() {
+    // Close nav when link is clicked while in overlay state
+    if (this._sideNav.overlay) {
+      this._sideNav.collapse()
+    }
   }
 
 }
