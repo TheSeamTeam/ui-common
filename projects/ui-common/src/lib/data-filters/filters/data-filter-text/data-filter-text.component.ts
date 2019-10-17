@@ -28,7 +28,6 @@ export function textDataFilter(data: any[], text: string, options = DefaultTextF
   if (!data || !text) {
     return data
   }
-  console.log('text', text)
 
   if (data.length <= 0) {
     return data

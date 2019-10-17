@@ -67,7 +67,7 @@ export class WidgetsGridComponent implements OnInit, OnDestroy {
       .pipe(
         untilDestroyed(this),
         map(defs => defs.map(d => this._createWidgetGridItem(d)).filter(notNullOrUndefined)),
-        tap(items => console.log('items', items))
+        // tap(items => console.log('items', items))
       )
 
     this.widgetItems$.subscribe()
@@ -76,7 +76,6 @@ export class WidgetsGridComponent implements OnInit, OnDestroy {
   ngOnDestroy() { }
 
   private _createWidgetGridItem(def: IWidgetsGridItemDef): IWidgetsGridItem {
-    console.log(this.injector)
     let portal: ComponentPortal<any>
     if (def.componentFactoryResolver) {
       portal = new ComponentPortal(def.type, undefined, undefined, def.componentFactoryResolver)

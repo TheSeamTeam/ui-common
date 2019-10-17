@@ -103,8 +103,6 @@ export class TableComponent<T = any> implements OnInit {
 
     this.displayedRecords = newCols
     this.displayedColumns = newCols.map(c => c.prop)
-    console.log(this.displayedRecords)
-    console.log(this.displayedColumns)
   }
 
   public triggerActionRefreshRequest() {

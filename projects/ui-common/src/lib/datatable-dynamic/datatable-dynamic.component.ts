@@ -36,7 +36,6 @@ export class DatatableDynamicComponent implements OnInit {
 
   @Input()
   set data(value: IDatatableDynamicDef | undefined | null) {
-    console.log('value', value)
     if (value) {
       this._setDefaults(value)
     }

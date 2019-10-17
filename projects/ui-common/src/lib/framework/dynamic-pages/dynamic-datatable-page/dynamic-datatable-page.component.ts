@@ -23,8 +23,8 @@ export class DynamicDatatablePageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    console.log(this._route)
-    console.log(this._router)
+    // console.log(this._route)
+    // console.log(this._router)
     this.tableDef$
       .pipe(untilDestroyed(this))
       .subscribe(v => console.log('tableDef$', v))

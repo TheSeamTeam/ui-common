@@ -153,17 +153,13 @@ export class DatatableActionMenuItemComponent implements OnInit, OnDestroy {
   }
 
   private _handleModalAction() {
-    console.log('open modal', this._modalConfig.component)
     if (typeof this._modalConfig.component === 'string') {
-      console.log('open dynamic modal')
       this._dynamicComponentLoader.getComponentFactory('story-ex-modal')
         .subscribe(componentFactory => {
-          console.log('componentFactory', componentFactory)
           const factoryResolver = (<any /* ComponentFactoryBoundToModule */>componentFactory).ngModule.componentFactoryResolver
           this._modal.openFromComponent(componentFactory.componentType, undefined, factoryResolver)
         })
     } else {
-      console.log('open component modal')
       this._modal.openFromComponent(this._modalConfig.component)
     }
   }

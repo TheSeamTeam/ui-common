@@ -29,7 +29,7 @@ export class RouteModalComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe(data => {
         // console.log('data', data)
         if (data.routeComponent) {
-          console.log(this._route.snapshot)
+          // console.log(this._route.snapshot)
           const modalRef = this._modal.openFromComponent(data.routeComponent, {
             modalSize: 'lg',
             data

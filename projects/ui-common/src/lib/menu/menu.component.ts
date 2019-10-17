@@ -142,7 +142,6 @@ export class MenuComponent implements OnInit, OnDestroy, AfterContentInit, ITheS
    * @param origin Action from which the focus originated. Used to set the correct styling.
    */
   focusFirstItem(origin: FocusOrigin = 'program'): void {
-    console.log('focusFirstItem', this._items, origin)
     this._keyManager.setFocusOrigin(origin).setFirstItemActive()
   }
 

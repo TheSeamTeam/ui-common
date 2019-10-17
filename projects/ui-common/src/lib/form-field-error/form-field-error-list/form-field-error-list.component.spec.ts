@@ -82,8 +82,8 @@ describe('FormFieldErrorListComponent', () => {
 
 
     expect(control.errors!.required).toBeDefined()
-    console.log(control.errors)
-    console.log(records)
+    // console.log(control.errors)
+    // console.log(records)
     expect(countRecordsByValidator('__padding__', records)).toBe(0)
     expect(countRecordsByValidator('required', records)).toBe(1)
   }))
