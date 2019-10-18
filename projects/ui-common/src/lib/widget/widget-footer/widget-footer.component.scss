@@ -1,0 +1,13 @@
+:host {
+  display: flex;
+  flex-direction: row;
+  margin: 0.25rem;
+}
+
+.widget-footer--left {
+  flex: 1 1 100%;
+}
+
+.widget-footer--right {
+  flex: 0 0 auto;
+}

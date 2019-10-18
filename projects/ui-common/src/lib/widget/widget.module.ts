@@ -13,6 +13,7 @@ import { TheSeamTableModule } from '../table/index'
 import { WidgetDragHandleDirective } from './directives/widget-drag-handle.directive'
 import { WidgetIconTplDirective } from './directives/widget-icon-tpl.directive'
 import { WidgetTitleTplDirective } from './directives/widget-title-tpl.directive'
+import { WidgetButtonGroupComponent } from './widget-content-components/widget-button-group/widget-button-group.component'
 import { WidgetContentHeaderComponent } from './widget-content-components/widget-content-header/widget-content-header.component'
 import { WidgetDescriptionComponent } from './widget-content-components/widget-description/widget-description.component'
 import { WidgetEmptyLabelComponent } from './widget-content-components/widget-empty-label/widget-empty-label.component'
@@ -23,6 +24,7 @@ import { WidgetTableComponent } from './widget-content-components/widget-table/w
 import { WidgetTileListComponent } from './widget-content-components/widget-tile-list/widget-tile-list.component'
 import { WidgetTileSecondaryIconDirective } from './widget-content-components/widget-tile/widget-tile-secondary-icon.directive'
 import { WidgetTileComponent } from './widget-content-components/widget-tile/widget-tile.component'
+import { WidgetFooterComponent } from './widget-footer/widget-footer.component'
 import { WidgetComponent } from './widget/widget.component'
 
 @NgModule({
@@ -41,6 +43,8 @@ import { WidgetComponent } from './widget/widget.component'
     WidgetDragHandleDirective,
     WidgetTableComponent,
     WidgetDescriptionComponent,
+    WidgetButtonGroupComponent,
+    WidgetFooterComponent,
   ],
   imports: [
     CommonModule,
@@ -65,7 +69,9 @@ import { WidgetComponent } from './widget/widget.component'
     WidgetEmptyLabelComponent,
     WidgetContentHeaderComponent,
     WidgetTableComponent,
-    WidgetDescriptionComponent
+    WidgetDescriptionComponent,
+    WidgetButtonGroupComponent,
+    WidgetFooterComponent
   ]
 })
 export class TheSeamWidgetModule { }

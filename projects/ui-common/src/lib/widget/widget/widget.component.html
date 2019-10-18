@@ -53,6 +53,7 @@
       <div class="p-2" *ngIf="!loading else loadingTpl">
         <ng-content></ng-content>
       </div>
+      <ng-content select="seam-widget-footer"></ng-content>
       <ng-template #loadingTpl>
         <div class="position-absolute" @loadingAnim style="top:0;right:0;bottom:0;left:0">
           <seam-loading [theme]="'primary'"></seam-loading>
