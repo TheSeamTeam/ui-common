@@ -20,9 +20,10 @@ import {
   TemplateRef,
   Type
 } from '@angular/core'
-import { defer, Observable, of as observableOf, Subject } from 'rxjs'
-import { startWith } from 'rxjs/operators'
+import { defer, Observable, of, of as observableOf, Subject } from 'rxjs'
+import { startWith, switchMap } from 'rxjs/operators'
 
+import { TheSeamDynamicComponentLoader } from '../dynamic-component-loader/index'
 import { OverlayScrollbarsService } from '../scrollbar/index'
 
 import { ModalConfig } from './modal-config'
@@ -72,7 +73,8 @@ export class Modal implements OnDestroy {
     @Inject(MODAL_SCROLL_STRATEGY) scrollStrategy: any,
     @Optional() @SkipSelf() private _parentDialog: Modal,
     @Optional() location: Location,
-    private _scrollbars: OverlayScrollbarsService
+    private _scrollbars: OverlayScrollbarsService,
+    private _dynamicComponentLoaderModule: TheSeamDynamicComponentLoader
   ) {
 
     // Close all of the dialogs when the user goes forwards/backwards in history or when the
@@ -136,6 +138,31 @@ export class Modal implements OnDestroy {
 
     this.registerDialogRef(dialogRef)
     return dialogRef
+  }
+
+  /** Opens a dialog from a lazy-loaded component. */
+  openFromLazyComponent<T, D = any>(
+    componentId: string,
+    config?: ModalConfig<D>
+  ): Observable<ModalRef<T, D>> {
+    config = this._applyConfigDefaults(config)
+
+    if (config.id && this.getById(config.id)) {
+      throw Error(`Modal with id "${config.id}" exists already. The modal id must be unique.`)
+    }
+
+    return this._dynamicComponentLoaderModule
+      .getComponentFactory<{}>(componentId)
+      .pipe(
+        switchMap(componentFactory => {
+          const modalRef = this.openFromComponent(
+            componentFactory.componentType,
+            config,
+            (<any /* ComponentFactoryBoundToModule */>componentFactory).ngModule.componentFactoryResolver
+          )
+          return of(modalRef)
+        })
+      )
   }
 
   ngOnDestroy() {
