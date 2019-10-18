@@ -1,6 +1,6 @@
 import { Directive, Self } from '@angular/core'
 
-import { MenuComponent } from '../../menu'
+import { MenuComponent } from '../../menu/menu.component'
 
 @Directive({
   selector: 'seam-menu[seamTopBarMenu]'
