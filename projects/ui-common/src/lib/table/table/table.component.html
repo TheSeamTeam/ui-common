@@ -14,7 +14,7 @@
         [class.border-top-0]="element?._emptyDisplay && isFirst"
         [class.d-none]="element?._emptyDisplay && !isFirst"
         [style]="r?.cellTypeConfig?.styles">
-        <!-- {{ element[r.prop] }} -->
+
         <span [style]="r?.cellTypeConfig?.styles"></span>
 
         <ng-container *ngIf="element?._emptyDisplay && isFirst; else hasDataTpl">
@@ -30,7 +30,9 @@
             [colData]="r">
           </seam-table-cell-type-selector>
           <ng-template #noCellType>
-            {{ element[r.prop] }}
+            <div class="td-text-truncate" [title]="element[r.prop]">
+              {{ element[r.prop] }}
+            </div>
           </ng-template>
         </ng-template>
 
