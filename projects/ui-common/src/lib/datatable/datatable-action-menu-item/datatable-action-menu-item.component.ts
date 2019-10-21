@@ -1,7 +1,7 @@
 // import { QueryParamsHandling } from '@angular/router/src/config'
 import { ComponentType } from '@angular/cdk/portal'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { Component, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Output } from '@angular/core'
+import { Component, EventEmitter, HostBinding, Input, isDevMode, OnDestroy, OnInit, Output } from '@angular/core'
 import { Subscription } from 'rxjs'
 
 import jexl from 'jexl'
@@ -116,6 +116,12 @@ export class DatatableActionMenuItemComponent implements OnInit, OnDestroy {
   private _handleEndpointAction() {
     // console.log('_handleEndpointAction')
     // TODO: This should probably be done through a provider that uses the api.
+    if (isDevMode()) {
+      console.warn(`[DatatableActionMenuItemComponent] '_handleEndpointAction()' is not ready for production yet.`)
+    } else {
+      // I don't expect this to be attempted in prod before completed, so I am just adding a console warning.
+      console.warn(`Unable to complete request. Contact support for assistance.`)
+    }
 
     let endpoint = ''
     const method = this._endpointConfig.method
