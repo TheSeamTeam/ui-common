@@ -1,7 +1,7 @@
 <div class="d-flex flex-row">
   <ng-container *ngIf="iconTpl; else noIconTpl">
     <span class="pr-2">
-      <ng-container *ngTemplateOutlet="_iconTpl"></ng-container>
+      <ng-container *ngTemplateOutlet="iconTpl"></ng-container>
     </span>
   </ng-container>
   <ng-template #noIconTpl>
