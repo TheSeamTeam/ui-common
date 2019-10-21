@@ -12,7 +12,7 @@ import {
   mixinActive,
   mixinDisabled,
   mixinTheme
-} from '../../../core/common-behaviors/index'
+} from '../../../../core/common-behaviors/index'
 
 class WidgetListGroupItemBase {
   constructor(

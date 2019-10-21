@@ -9,11 +9,11 @@ import { RouterModule } from '@angular/router'
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons'
 import { faWrench } from '@fortawesome/free-solid-svg-icons'
 
-import { TheSeamButtonsModule } from '../../../buttons/index'
-import { TheSeamIconModule } from '../../../icon/index'
-import { ThemeNames } from '../../../models/theme-names'
+import { TheSeamButtonsModule } from '../../../../buttons/index'
+import { TheSeamIconModule } from '../../../../icon/index'
+import { ThemeNames } from '../../../../models/theme-names'
 
-import { TheSeamWidgetModule } from '../../widget.module'
+import { TheSeamWidgetModule } from '../../../widget.module'
 
 storiesOf('Widget/Content/List Group/Item', module)
   .addDecorator(withKnobs)
