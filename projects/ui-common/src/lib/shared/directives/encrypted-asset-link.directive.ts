@@ -39,7 +39,12 @@ export class EncryptedAssetLinkDirective {
     if (!(this.seamEncryptedAssetLink === undefined || this.seamEncryptedAssetLink === null)) {
       if (!this._assetReader) {
         // Fallback
-        window.open(this.seamEncryptedAssetLink)
+        const target = this._isAnchor() && this._hasTarget() ? this._getTarget() : undefined
+        const win = window.open(this.seamEncryptedAssetLink, target)
+        // TODO: Consider if always setting opener to null is to restrictive
+        // if (win && target && target.toLowerCase() === '_blank') {
+        //   win.opener = null
+        // }
         return of(false)
       }
 

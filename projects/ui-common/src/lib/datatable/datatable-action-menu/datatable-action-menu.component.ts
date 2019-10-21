@@ -29,7 +29,11 @@ export class DatatableActionMenuComponent {
           if (v === 'confirm') {
             item.click.emit(event)
             if (item.href) {
-              window.open(item.href, item.target)
+              const win = window.open(item.href, item.target)
+              // TODO: Consider if always setting opener to null is to restrictive
+              // if (win && item.target && item.target.toLowerCase() === '_blank') {
+              //   win.opener = null
+              // }
             } else {
               const extras: NavigationExtras = {}
               if (item.queryParams) { extras.queryParams = item.queryParams }

@@ -93,6 +93,13 @@ export class AnchorButtonComponent extends _TheSeamButtonMixinBase implements On
   /** Tabindex of the button. */
   @Input() tabIndex: number
 
+  // TODO: Consider adding dev warning for `window.opener` exploit. Could maybe
+  // add `rel` it if the href isn't on the current domain or not specified in an
+  // injected list. This probably isn't needed and may be to strict for our
+  // usage, so I am just adding this as a reminder to think about it.
+  //
+  // rel="noopener noreferrer"
+
   constructor(
     _elementRef: ElementRef,
     _focusMonitor: FocusMonitor,

@@ -69,6 +69,11 @@ export function openBlob(blob: Blob, target?: string, filename?: string) {
     window.navigator.msSaveOrOpenBlob(blob, filename)
   } else {
     const url = URL.createObjectURL(blob)
-    window.open(url, target)
+    const win = window.open(url, target)
+    // TODO: Consider if always setting opener to null is to restrictive
+    // if (win && target && target.toLowerCase() === '_blank') {
+    //   win.opener = null
+    // }
+
   }
 }
