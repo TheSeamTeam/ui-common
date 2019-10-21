@@ -15,7 +15,7 @@ import { ThemeNames } from '../../../models/theme-names'
 
 import { TheSeamWidgetModule } from '../../widget.module'
 
-storiesOf('Widget/Content', module)
+storiesOf('Components|Widget/Content', module)
   .addDecorator(withKnobs)
 
   .add('Button Group', () => ({

@@ -85,7 +85,7 @@ const GIN_DATA = [
 ]
 // tslint:enable:quotemark
 
-storiesOf('Widget/Content/Table', module)
+storiesOf('Components|Widget/Content/Table', module)
   .addDecorator(withKnobs)
 
   .add('Basic', () => ({

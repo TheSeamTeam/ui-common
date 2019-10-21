@@ -15,7 +15,7 @@ import { ThemeNames } from '../../../../models/theme-names'
 
 import { TheSeamWidgetModule } from '../../../widget.module'
 
-storiesOf('Widget/Content/List Group/Item', module)
+storiesOf('Components|Widget/Content/List Group/Item', module)
   .addDecorator(withKnobs)
 
   .add('Basic', () => ({

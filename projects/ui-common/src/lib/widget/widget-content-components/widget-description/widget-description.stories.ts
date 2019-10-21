@@ -9,7 +9,7 @@ import { faWrench } from '@fortawesome/free-solid-svg-icons'
 
 import { TheSeamWidgetModule } from '../../widget.module'
 
-storiesOf('Widget/Content', module)
+storiesOf('Components|Widget/Content', module)
   .addDecorator(withKnobs)
 
   .add('Description', () => ({
@@ -24,7 +24,7 @@ storiesOf('Widget/Content', module)
       title: text('Header Title', 'Example Widget'),
       loading: boolean('Loading', false),
       // tslint:disable-next-line:max-line-length
-      descText: text('Description Text', 'Sharing your enrollment with the merchants and coops who you deal with allows them to better market your cotton.  To add additional entities to share with, click the "Modify/Add Additional" link below, then click the "Share+" button at the bottom of your screen'),
+      descText: text('Description Text', 'Anim eiusmod aliquip veniam anim est do. Pariatur officia dolore proident do ad et enim laborum voluptate reprehenderit. Aute voluptate irure deserunt do est dolore esse minim. Deserunt do enim ea esse duis velit id cillum sunt. Officia laboris incididunt esse elit laboris. Occaecat anim magna quis mollit occaecat ad quis proident laborum.'),
     },
     template: `
       <div class="p-1" style="max-height: 400px; width: 500px;">
