@@ -1,5 +1,5 @@
 import { FocusMonitor } from '@angular/cdk/a11y'
-import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, Input, OnDestroy, OnInit, Renderer2 } from '@angular/core'
+import { ChangeDetectionStrategy, Component, ContentChild, ElementRef, Input, OnDestroy, OnInit, Renderer2 } from '@angular/core'
 
 import {
   CanBeActive,
@@ -13,8 +13,20 @@ import {
   mixinDisabled,
   mixinTheme
 } from '../../../../core/common-behaviors/index'
+import { SeamIcon } from '../../../../icon/index'
+
+import { WidgetListGroupItemIconTplDirective } from './widget-list-group-item-icon-tpl.directive'
+
+const WIDGET_LIST_GROUP_ITEM_INPUTS = [ 'disabled', 'theme', 'active', 'icon', 'label' ]
 
 class WidgetListGroupItemBase {
+
+  @ContentChild(WidgetListGroupItemIconTplDirective, { static: true }) iconTpl?: WidgetListGroupItemIconTplDirective
+
+  icon?: SeamIcon
+
+  label?: string
+
   constructor(
     public _elementRef: ElementRef,
     public _renderer: Renderer2
@@ -57,7 +69,7 @@ const _WidgetListGroupItemActionableBase: CanDisableCtor & CanThemeCtor & CanBeA
   templateUrl: './widget-list-group-item.component.html',
   styleUrls: ['./widget-list-group-item.component.scss'],
   exportAs: 'seamWidgetListGroupItem',
-  inputs: [ 'disabled', 'theme', 'active' ],
+  inputs: WIDGET_LIST_GROUP_ITEM_INPUTS,
   host: {
     'class': 'list-group-item',
     '[class.active]': 'active',
@@ -86,7 +98,7 @@ export class WidgetListGroupItemComponent extends _WidgetListGroupItemBase
   templateUrl: './widget-list-group-item.component.html',
   styleUrls: ['./widget-list-group-item.component.scss'],
   exportAs: 'seamWidgetListGroupItem',
-  inputs: [ 'disabled', 'theme', 'active' ],
+  inputs: WIDGET_LIST_GROUP_ITEM_INPUTS,
   host: {
     '[attr.type]': 'type',
     'class': 'list-group-item list-group-item-action',
@@ -122,7 +134,7 @@ export class WidgetListGroupItemButtonComponent extends _WidgetListGroupItemActi
   templateUrl: './widget-list-group-item.component.html',
   styleUrls: ['./widget-list-group-item.component.scss'],
   exportAs: 'seamWidgetListGroupItem',
-  inputs: [ 'disabled', 'theme', 'active' ],
+  inputs: WIDGET_LIST_GROUP_ITEM_INPUTS,
   host: {
     'class': 'list-group-item list-group-item-action',
     '[class.active]': 'active',

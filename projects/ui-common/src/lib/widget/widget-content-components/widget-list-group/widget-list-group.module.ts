@@ -1,6 +1,9 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 
+import { TheSeamIconModule } from '../../../icon/index'
+
+import { WidgetListGroupItemIconTplDirective } from './widget-list-group-item/widget-list-group-item-icon-tpl.directive'
 import {
   WidgetListGroupItemAnchorComponent,
   WidgetListGroupItemButtonComponent,
@@ -13,16 +16,19 @@ import { WidgetListGroupComponent } from './widget-list-group.component'
     WidgetListGroupComponent,
     WidgetListGroupItemAnchorComponent,
     WidgetListGroupItemButtonComponent,
-    WidgetListGroupItemComponent
+    WidgetListGroupItemComponent,
+    WidgetListGroupItemIconTplDirective
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    TheSeamIconModule
   ],
   exports: [
     WidgetListGroupComponent,
     WidgetListGroupItemAnchorComponent,
     WidgetListGroupItemButtonComponent,
-    WidgetListGroupItemComponent
+    WidgetListGroupItemComponent,
+    WidgetListGroupItemIconTplDirective
   ]
 })
 export class TheSeamWidgetListGroupModule { }
