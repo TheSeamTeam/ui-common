@@ -20,6 +20,12 @@ import { WidgetEmptyLabelComponent } from './widget-content-components/widget-em
 import { WidgetFooterLinkComponent } from './widget-content-components/widget-footer-link/widget-footer-link.component'
 import { WidgetFooterTextComponent } from './widget-content-components/widget-footer-text/widget-footer-text.component'
 import { WidgetHeaderBadgeComponent } from './widget-content-components/widget-header-badge/widget-header-badge.component'
+import {
+  WidgetListGroupItemAnchorComponent,
+  WidgetListGroupItemButtonComponent,
+  WidgetListGroupItemComponent
+} from './widget-content-components/widget-list-group-item/widget-list-group-item.component'
+import { WidgetListGroupComponent } from './widget-content-components/widget-list-group/widget-list-group.component'
 import { WidgetTableComponent } from './widget-content-components/widget-table/widget-table.component'
 import { WidgetTileListComponent } from './widget-content-components/widget-tile-list/widget-tile-list.component'
 import { WidgetTileSecondaryIconDirective } from './widget-content-components/widget-tile/widget-tile-secondary-icon.directive'
@@ -45,6 +51,10 @@ import { WidgetComponent } from './widget/widget.component'
     WidgetDescriptionComponent,
     WidgetButtonGroupComponent,
     WidgetFooterComponent,
+    WidgetListGroupComponent,
+    WidgetListGroupItemComponent,
+    WidgetListGroupItemButtonComponent,
+    WidgetListGroupItemAnchorComponent
   ],
   imports: [
     CommonModule,
@@ -71,7 +81,11 @@ import { WidgetComponent } from './widget/widget.component'
     WidgetTableComponent,
     WidgetDescriptionComponent,
     WidgetButtonGroupComponent,
-    WidgetFooterComponent
+    WidgetFooterComponent,
+    WidgetListGroupComponent,
+    WidgetListGroupItemComponent,
+    WidgetListGroupItemButtonComponent,
+    WidgetListGroupItemAnchorComponent
   ]
 })
 export class TheSeamWidgetModule { }

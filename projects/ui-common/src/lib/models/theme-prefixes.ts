@@ -1,1 +1,1 @@
-export type ThemePrefixes = 'btn' | 'text' | 'bg' | 'badge'
+export type ThemePrefixes = 'btn' | 'text' | 'bg' | 'badge' | 'list-group-item'
