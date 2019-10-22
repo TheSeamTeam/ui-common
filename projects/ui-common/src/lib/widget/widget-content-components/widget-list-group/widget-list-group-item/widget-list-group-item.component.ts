@@ -17,13 +17,14 @@ import { SeamIcon } from '../../../../icon/index'
 
 import { WidgetListGroupItemIconTplDirective } from './widget-list-group-item-icon-tpl.directive'
 
-const WIDGET_LIST_GROUP_ITEM_INPUTS = [ 'disabled', 'theme', 'active', 'icon', 'label' ]
+const WIDGET_LIST_GROUP_ITEM_INPUTS = [ 'disabled', 'theme', 'active', 'icon', 'iconClass', 'label' ]
 
 class WidgetListGroupItemBase {
 
   @ContentChild(WidgetListGroupItemIconTplDirective, { static: true }) iconTpl?: WidgetListGroupItemIconTplDirective
 
   icon?: SeamIcon
+  iconClass?: string
 
   label?: string
 

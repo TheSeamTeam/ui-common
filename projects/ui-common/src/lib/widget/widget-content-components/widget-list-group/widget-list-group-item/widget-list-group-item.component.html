@@ -6,7 +6,11 @@
   </ng-container>
   <ng-template #noIconTpl>
     <span class="pr-2">
-      <seam-icon *ngIf="icon" [icon]="icon" iconType="borderless-styled-square"></seam-icon>
+      <seam-icon *ngIf="icon"
+        [icon]="icon"
+        [iconClass]="iconClass"
+        iconType="borderless-styled-square">
+      </seam-icon>
     </span>
   </ng-template>
 
@@ -14,5 +18,3 @@
     {{ label }}
   </div>
 </div>
-
-<!-- <ng-content></ng-content> -->
