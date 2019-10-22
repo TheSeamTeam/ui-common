@@ -7,7 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
 import { TheSeamDatatableModule } from '../datatable.module'
 
-storiesOf('Datatable', module)
+storiesOf('Components|Datatable', module)
 
   .add('Simple', () => ({
     moduleMetadata: {
@@ -149,7 +149,7 @@ storiesOf('Datatable', module)
 
 
 
-storiesOf('Datatable/CheckboxSelection', module)
+storiesOf('Components|Datatable/CheckboxSelection', module)
   .add('Basic', () => ({
     moduleMetadata: {
       imports: [
@@ -294,7 +294,7 @@ storiesOf('Datatable/CheckboxSelection', module)
 
 
 // NOTE: Still being worked on, but is usable.
-storiesOf('Datatable', module)
+storiesOf('Components|Datatable', module)
   .add('Tree', () => ({
     moduleMetadata: {
       imports: [

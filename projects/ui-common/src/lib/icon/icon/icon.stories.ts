@@ -7,7 +7,7 @@ import { faShare } from '@fortawesome/free-solid-svg-icons'
 
 import { IconComponent } from './icon.component'
 
-storiesOf('Icon/Image', module)
+storiesOf('Components|Icon/Image', module)
 
   .add('Url', () => ({
     moduleMetadata: {

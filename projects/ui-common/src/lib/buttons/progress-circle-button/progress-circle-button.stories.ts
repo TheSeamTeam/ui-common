@@ -10,7 +10,7 @@ import { TheSeamProgressModule } from '../../progress/index'
 import { _knobUndefinedNullHACK } from '../../utils/storybook-knobs-hack'
 import { ProgressCircleButtonComponent } from './progress-circle-button.component'
 
-storiesOf('Buttons/ProgressCircleButton', module)
+storiesOf('Components|Buttons/ProgressCircleButton', module)
   .addDecorator(withKnobs)
   .add('Basic', () => ({
     moduleMetadata: {

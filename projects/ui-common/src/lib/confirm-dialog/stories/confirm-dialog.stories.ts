@@ -9,7 +9,7 @@ import { ThemeNames, ThemeTypes } from '../../models/index'
 import { TheSeamConfirmDialogModule } from '../confirm-dialog.module'
 import { SeamConfirmDialogService } from '../confirm-dialog.service'
 
-storiesOf('ConfirmDialog/Directive', module)
+storiesOf('Components|ConfirmDialog/Directive', module)
   .addDecorator(withKnobs)
 
   .add('Basic', () => ({
@@ -152,7 +152,7 @@ export class StoryLibConfirmDialogAlertServiceComponent {
 
 }
 
-storiesOf('ConfirmDialog/Service', module)
+storiesOf('Components|ConfirmDialog/Service', module)
   .addDecorator(withKnobs)
 
   .add('Basic', () => ({

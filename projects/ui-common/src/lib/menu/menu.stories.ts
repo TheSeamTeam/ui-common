@@ -8,7 +8,7 @@ import { TheSeamButtonsModule } from '../buttons/buttons.module'
 
 import { TheSeamMenuModule } from './menu.module'
 
-storiesOf('Menu', module)
+storiesOf('Components|Menu', module)
   .addDecorator(withKnobs)
 
   .add('Menu', () => ({

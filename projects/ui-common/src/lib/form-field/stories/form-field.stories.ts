@@ -11,7 +11,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { TheSeamFormFieldModule } from '../form-field.module'
 
-storiesOf('Form Field', module)
+storiesOf('Components|Form Field', module)
   .addDecorator(withKnobs)
 
   .add('Simple', () => ({

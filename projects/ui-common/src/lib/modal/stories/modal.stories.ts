@@ -87,7 +87,7 @@ export class StoryseamModalSimpleExampleComponent {
 }
 
 
-storiesOf('Modal/Service/Component', module)
+storiesOf('Components|Modal/Service/Component', module)
 
   .add('Basic', () => ({
     moduleMetadata: {
@@ -130,7 +130,7 @@ storiesOf('Modal/Service/Component', module)
 
 
 
-storiesOf('Modal/Directive/Template', module)
+storiesOf('Components|Modal/Directive/Template', module)
 
   .add('Basic', () => ({
     moduleMetadata: {
