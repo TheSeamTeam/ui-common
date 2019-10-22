@@ -279,38 +279,38 @@ class RecursiveIdModule { }
 class LevelTwoModule { }
 
 
-storiesOf('Framework|DynamicRouter', module)
-  .addDecorator(withKnobs)
+// storiesOf('Framework|DynamicRouter', module)
+//   .addDecorator(withKnobs)
 
-  .add('Basic', () => ({
-    moduleMetadata: {
-      declarations: [
-        StoryNameExComponent,
-        StoryExBaseComponent
-      ],
-      imports: [
-        BrowserAnimationsModule,
-        ReactiveFormsModule,
-        TheSeamFormFieldModule,
-        TheSeamDynamicRouterModule,
-        RouterModule.forRoot([
-          {
-            path: 'name-ex',
-            component: StoryNameExComponent,
-            data: {
-              name: 'Mark'
-            },
-            // loadChildren: () => Promise.resolve(LevelTwoModule)
-            loadChildren: () => of(LevelTwoModule)
-          }
-        ], { useHash: true })
-      ],
-      entryComponents: [
-        StoryNameExComponent
-      ]
-    },
-    props: { },
-    template: `
-      <story-ex-base></story-ex-base>
-    `
-  }))
+//   .add('Basic', () => ({
+//     moduleMetadata: {
+//       declarations: [
+//         StoryNameExComponent,
+//         StoryExBaseComponent
+//       ],
+//       imports: [
+//         BrowserAnimationsModule,
+//         ReactiveFormsModule,
+//         TheSeamFormFieldModule,
+//         TheSeamDynamicRouterModule,
+//         RouterModule.forRoot([
+//           {
+//             path: 'name-ex',
+//             component: StoryNameExComponent,
+//             data: {
+//               name: 'Mark'
+//             },
+//             // loadChildren: () => Promise.resolve(LevelTwoModule)
+//             loadChildren: () => of(LevelTwoModule)
+//           }
+//         ], { useHash: true })
+//       ],
+//       entryComponents: [
+//         StoryNameExComponent
+//       ]
+//     },
+//     props: { },
+//     template: `
+//       <story-ex-base></story-ex-base>
+//     `
+//   }))

@@ -34,39 +34,39 @@ class StoryExWidget3Component {  }
 })
 class StoryExWidget4Component {  }
 
-storiesOf('WidgetsGrid', module)
-  .addDecorator(withKnobs)
+// storiesOf('WidgetsGrid', module)
+//   .addDecorator(withKnobs)
 
-  .add('Basic', () => ({
-    moduleMetadata: {
-      declarations: [
-        StoryExWidget1Component,
-        StoryExWidget2Component,
-        StoryExWidget3Component,
-        StoryExWidget4Component
-      ],
-      imports: [
-        BrowserAnimationsModule,
-        TheSeamWidgetsGridModule
-      ],
-      entryComponents: [
-        StoryExWidget1Component,
-        StoryExWidget2Component,
-        StoryExWidget3Component,
-        StoryExWidget4Component
-      ]
-    },
-    props: {
-      widgets: [
-        { type: StoryExWidget1Component },
-        { type: StoryExWidget2Component },
-        { type: StoryExWidget3Component },
-        { type: StoryExWidget4Component }
-      ]
-    },
-    template: `
-      <div style="height: 100vh;">
-        <seam-widgets-grid [widgets]="widgets"></seam-widgets-grid>
-      </div>
-    `
-  }))
+//   .add('Basic', () => ({
+//     moduleMetadata: {
+//       declarations: [
+//         StoryExWidget1Component,
+//         StoryExWidget2Component,
+//         StoryExWidget3Component,
+//         StoryExWidget4Component
+//       ],
+//       imports: [
+//         BrowserAnimationsModule,
+//         TheSeamWidgetsGridModule
+//       ],
+//       entryComponents: [
+//         StoryExWidget1Component,
+//         StoryExWidget2Component,
+//         StoryExWidget3Component,
+//         StoryExWidget4Component
+//       ]
+//     },
+//     props: {
+//       widgets: [
+//         { type: StoryExWidget1Component },
+//         { type: StoryExWidget2Component },
+//         { type: StoryExWidget3Component },
+//         { type: StoryExWidget4Component }
+//       ]
+//     },
+//     template: `
+//       <div style="height: 100vh;">
+//         <seam-widgets-grid [widgets]="widgets"></seam-widgets-grid>
+//       </div>
+//     `
+//   }))
