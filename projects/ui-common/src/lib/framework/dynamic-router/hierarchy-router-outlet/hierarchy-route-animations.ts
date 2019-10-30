@@ -70,10 +70,17 @@ export const fader =
 //     transition('isLeft => *', slideTo('right') )
 //   ])
 
+// export const contentLeave =
+//   trigger('contentLeave', [
+//     transition(':leave', [
+
+//     ])
+//   ])
+
 export const slider =
   trigger('routeAnimations', [
     transition('* => isLeft', [
-      query(':enter, :leave', [
+      query('.router-container :enter, .router-container :leave', [
         style({
           position: 'absolute',
           top: 0,
@@ -81,25 +88,31 @@ export const slider =
           width: '100%'
         })
       ], { optional: true }),
-      query(':enter', [
+      query('.router-container :enter', [
         style({ left: '-100%'})
       ], { optional: true }),
+      query('.hierarchy-router-outlet--content', [
+        style({ left: '0%', position: 'absolute' })
+      ], { optional: true }),
       group([
-        query(':leave', [
+        query('.router-container :leave', [
           animate('1000ms ease', style({ left: '100%'}))
         ], { optional: true }),
-        query(':enter', [
+        query('.router-container :enter', [
           animate('1000ms ease', style({ left: '0%'}))
-        ], { optional: true })
+        ], { optional: true }),
+        query('.hierarchy-router-outlet--content', [
+          animate('1000ms ease', style({ left: '-100%'}))
+        ], { optional: true }),
       ]),
       // Normalize the page style... Might not be necessary
 
       // Required only if you have child animations on the page
-      query(':leave', animateChild(), { optional: true }),
-      query(':enter', animateChild(), { optional: true }),
+      query('.router-container :leave', animateChild(), { optional: true }),
+      query('.router-container :enter', animateChild(), { optional: true }),
     ]),
     transition('* => isRight', [
-      query(':enter, :leave', [
+      query('.router-container :enter, .router-container :leave', [
         style({
           position: 'absolute',
           top: 0,
@@ -107,25 +120,31 @@ export const slider =
           width: '100%'
         })
       ], { optional: true }),
-      query(':enter', [
+      query('.router-container :enter', [
         style({ right: '-100%'})
       ], { optional: true }),
+      query('.hierarchy-router-outlet--content', [
+        style({ left: '0%', position: 'absolute' })
+      ], { optional: true }),
       group([
-        query(':leave', [
+        query('.router-container :leave', [
           animate('1000ms ease', style({ right: '100%'}))
         ], { optional: true }),
-        query(':enter', [
+        query('.router-container :enter', [
           animate('1000ms ease', style({ right: '0%'}))
-        ], { optional: true })
+        ], { optional: true }),
+        query('.hierarchy-router-outlet--content', [
+          animate('1000ms ease', style({ left: '-100%'}))
+        ], { optional: true }),
       ]),
       // Normalize the page style... Might not be necessary
 
       // Required only if you have child animations on the page
-      query(':leave', animateChild(), { optional: true }),
-      query(':enter', animateChild(), { optional: true }),
+      query('.router-container :leave', animateChild(), { optional: true }),
+      query('.router-container :enter', animateChild(), { optional: true }),
     ]),
     transition('isRight => *', [
-      query(':enter, :leave', [
+      query('.router-container :enter, .router-container :leave', [
         style({
           position: 'absolute',
           top: 0,
@@ -133,25 +152,31 @@ export const slider =
           width: '100%'
         })
       ], { optional: true }),
-      query(':enter', [
+      query('.router-container :enter', [
         style({ left: '-100%'})
       ], { optional: true }),
+      query('.hierarchy-router-outlet--content', [
+        style({ left: '0%', position: 'absolute' })
+      ], { optional: true }),
       group([
-        query(':leave', [
+        query('.router-container :leave', [
           animate('1000ms ease', style({ left: '100%'}))
         ], { optional: true }),
-        query(':enter', [
+        query('.router-container :enter', [
           animate('1000ms ease', style({ left: '0%'}))
-        ], { optional: true })
+        ], { optional: true }),
+        query('.hierarchy-router-outlet--content', [
+          animate('1000ms ease', style({ left: '-100%'}))
+        ], { optional: true }),
       ]),
       // Normalize the page style... Might not be necessary
 
       // Required only if you have child animations on the page
-      query(':leave', animateChild(), { optional: true }),
-      query(':enter', animateChild(), { optional: true }),
+      query('.router-container :leave', animateChild(), { optional: true }),
+      query('.router-container :enter', animateChild(), { optional: true }),
     ]),
     transition('isLeft => *', [
-      query(':enter, :leave', [
+      query('.router-container :enter, .router-container :leave', [
         style({
           position: 'absolute',
           top: 0,
@@ -159,22 +184,22 @@ export const slider =
           width: '100%'
         })
       ], { optional: true }),
-      query(':enter', [
+      query('.router-container :enter', [
         style({ right: '-100%'})
       ], { optional: true }),
       group([
-        query(':leave', [
+        query('.router-container :leave', [
           animate('1000ms ease', style({ right: '100%'}))
         ], { optional: true }),
-        query(':enter', [
+        query('.router-container :enter', [
           animate('1000ms ease', style({ right: '0%'}))
         ], { optional: true })
       ]),
       // Normalize the page style... Might not be necessary
 
       // Required only if you have child animations on the page
-      query(':leave', animateChild(), { optional: true }),
-      query(':enter', animateChild(), { optional: true }),
+      query('.router-container :leave', animateChild(), { optional: true }),
+      query('.router-container :enter', animateChild(), { optional: true }),
     ])
   ])
 

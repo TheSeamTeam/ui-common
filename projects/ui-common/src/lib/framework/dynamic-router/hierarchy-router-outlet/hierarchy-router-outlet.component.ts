@@ -35,6 +35,7 @@ let _uid = 0
     // transformer,
     // stepper,
     // sideToSide
+    // contentLeave
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -93,6 +94,7 @@ export class HierarchyRouterOutletComponent implements OnInit, OnDestroy {
     if (outlet.isActivated) {
       // console.log(outlet.isActivated)
       // console.log(outlet.component)
+      console.log(this.animState)
       return this.animState
     } else {
       return undefined

@@ -279,10 +279,67 @@ class RecursiveIdModule { }
 class LevelTwoModule { }
 
 
+
+
+//
+// Example
+//
+
+@Component({
+  // tslint:disable-next-line:component-selector
+  selector: 'ex-1',
+  template: `
+    <seam-hierarchy-router-outlet>
+      <button type="button" routerLink="/ex-1/ex-2">Next</button>
+    </seam-hierarchy-router-outlet>
+  `
+})
+class StoryEx1Component {
+  constructor() {
+    console.log('[StoryEx1Component]')
+  }
+}
+
+@Component({
+  // tslint:disable-next-line:component-selector
+  selector: 'ex-2',
+  template: `
+    <seam-hierarchy-router-outlet>
+      <button type="button" routerLink="/ex-1">Prev</button>
+      <button type="button" routerLink="/ex-1/ex-2/ex-3">Next</button>
+    </seam-hierarchy-router-outlet>
+  `
+})
+class StoryEx2Component {
+  constructor() {
+    console.log('[StoryEx2Component]')
+  }
+}
+
+@Component({
+  // tslint:disable-next-line:component-selector
+  selector: 'ex-2',
+  template: `
+    <seam-hierarchy-router-outlet>
+      <button type="button" routerLink="/ex-1/ex-2">Prev</button>
+    </seam-hierarchy-router-outlet>
+  `
+})
+class StoryEx3Component {
+  constructor() {
+    console.log('[StoryEx3Component]')
+  }
+}
+
+
+
+
+
+
 // storiesOf('Framework|DynamicRouter', module)
 //   .addDecorator(withKnobs)
 
-//   .add('Basic', () => ({
+//   .add('Recursive', () => ({
 //     moduleMetadata: {
 //       declarations: [
 //         StoryNameExComponent,
@@ -312,5 +369,52 @@ class LevelTwoModule { }
 //     props: { },
 //     template: `
 //       <story-ex-base></story-ex-base>
+//     `
+//   }))
+
+
+//   .add('Example', () => ({
+//     moduleMetadata: {
+//       declarations: [
+//         StoryEx1Component,
+//         StoryEx2Component,
+//         StoryEx3Component
+//       ],
+//       imports: [
+//         BrowserAnimationsModule,
+//         ReactiveFormsModule,
+//         TheSeamFormFieldModule,
+//         TheSeamDynamicRouterModule,
+//         RouterModule.forRoot([
+//           {
+//             path: '',
+//             pathMatch: 'full',
+//             redirectTo: '/ex-1',
+//           },
+//           {
+//             path: 'ex-1',
+//             component: StoryEx1Component,
+//             children: [
+//               {
+//                 path: 'ex-2',
+//                 component: StoryEx2Component,
+//                 children: [
+//                   {
+//                     path: 'ex-3',
+//                     component: StoryEx3Component
+//                   }
+//                 ]
+//               }
+//             ]
+//           }
+//         ], { useHash: true })
+//       ],
+//       entryComponents: [
+
+//       ]
+//     },
+//     props: { },
+//     template: `
+//       <router-outlet></router-outlet>
 //     `
 //   }))
