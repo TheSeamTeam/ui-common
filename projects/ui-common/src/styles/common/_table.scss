@@ -71,7 +71,18 @@
 //
 .td-text-truncate[title],
 .td-text-truncate[td-text] {
-  max-height: 1.1em;
+  /*
+    Using 22px, because 1.1em wasn't large enough for our font size and the ways
+    I tried to calculate the height caused it to be slightly larger/smaller. If
+    the hard-coded max-height is an issue we can change it to a dynamic
+    calculation, which should be close, but may cause a slight height jump when
+    overflow happens.
+
+    TODO: Find our if there is an accurate way to calculate the correct
+      max-height dynamically without using js.
+  */
+  max-height: 22px;
+
   overflow: hidden;
   position: relative;
   color: transparent;
