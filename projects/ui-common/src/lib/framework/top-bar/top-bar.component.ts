@@ -1,11 +1,23 @@
-import { ChangeDetectionStrategy, Component, ContentChild, Input, OnInit, TemplateRef } from '@angular/core'
+import {
+  AfterContentInit,
+  ChangeDetectionStrategy,
+  Component,
+  ContentChild,
+  ContentChildren,
+  Input,
+  OnDestroy,
+  OnInit,
+  QueryList
+} from '@angular/core'
 import { Observable } from 'rxjs'
 
-import { faBell, faComment } from '@fortawesome/free-regular-svg-icons'
-import { faBars, faExclamationTriangle, faQuestionCircle, faSignOutAlt, faUserAlt } from '@fortawesome/free-solid-svg-icons'
+import { faBars } from '@fortawesome/free-solid-svg-icons'
 
 import { TheSeamLayoutService } from '../../layout/index'
 
+import { untilDestroyed } from 'ngx-take-until-destroy'
+import { map, shareReplay, startWith, tap } from 'rxjs/operators'
+import { TopBarItemDirective } from './top-bar-item.directive'
 import { TopBarMenuDirective } from './top-bar-menu.directive'
 
 @Component({
@@ -14,17 +26,12 @@ import { TopBarMenuDirective } from './top-bar-menu.directive'
   styleUrls: ['./top-bar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TopBarComponent implements OnInit {
+export class TopBarComponent implements OnInit, OnDestroy, AfterContentInit {
 
-  faUserAlt = faUserAlt
-  faQuestionCircle = faQuestionCircle
-  faSignOutAlt = faSignOutAlt
-  faBell = faBell
-  faExclamationTriangle = faExclamationTriangle
-  faComment = faComment
   faBars = faBars
 
   @ContentChild(TopBarMenuDirective, { static: true }) _topBarMenu?: TopBarMenuDirective | null
+  @ContentChildren(TopBarItemDirective) _topBarItems: QueryList<TopBarItemDirective>
 
   @Input() logo: string
   @Input() logoSm?: string | null
@@ -36,7 +43,7 @@ export class TopBarComponent implements OnInit {
   @Input() displayName: string
   @Input() organizationName?: string | null
 
-  @Input() hasNotificationsMenu = true
+  _items$: Observable<TopBarItemDirective[]>
 
   public isMobile$: Observable<boolean>
 
@@ -47,5 +54,16 @@ export class TopBarComponent implements OnInit {
   }
 
   ngOnInit() { }
+
+  ngOnDestroy() { }
+
+  ngAfterContentInit() {
+    this._items$ = this._topBarItems.changes.pipe(
+      startWith(undefined),
+      untilDestroyed(this),
+      map(() => this._topBarItems.toArray()),
+      shareReplay({ bufferSize: 1, refCount: true })
+    )
+  }
 
 }

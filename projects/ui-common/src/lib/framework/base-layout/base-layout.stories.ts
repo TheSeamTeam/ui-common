@@ -10,8 +10,12 @@ import { delay } from 'rxjs/operators'
 
 import {
   faBell,
+  faComment
+} from '@fortawesome/free-regular-svg-icons'
+import {
   faBook,
   faBuilding,
+  faExclamationTriangle,
   faQuestionCircle,
   faSignature,
   faSignOutAlt,
@@ -275,9 +279,12 @@ storiesOf('Framework|BaseLayout', module)
         { col: 3, order: 0, type: StoryExWidget3Component },
         { col: 2, order: 1, type: StoryExWidget4Component }
       ],
-      faUserAlt: faUserAlt,
-      faQuestionCircle: faQuestionCircle,
-      faSignOutAlt: faSignOutAlt
+      faUserAlt,
+      faQuestionCircle,
+      faSignOutAlt,
+      faBell,
+      faExclamationTriangle,
+      faComment
     },
     template: `
       <div style="height: 100vh; width: 100vw;">
@@ -297,13 +304,36 @@ storiesOf('Framework|BaseLayout', module)
             [titleText]="titleText"
             [subTitleText]="subTitleText"
             [displayName]="displayName"
-            [organizationName]="organizationName"
-            [hasNotificationsMenu]="hasNotificationsMenu">
+            [organizationName]="organizationName">
             <seam-menu seamTopBarMenu>
               <a seamMenuItem [icon]="faUserAlt" routerLink="/profile">Profile</a>
               <button seamMenuItem [icon]="faQuestionCircle">About</button>
               <seam-menu-divider></seam-menu-divider>
               <a seamMenuItem [icon]="faSignOutAlt" routerLink="/logout">Sign out</a>
+            </seam-menu>
+
+            <button seamIconBtn *seamTopBarItem
+              [icon]="faBell"
+              iconType="borderless-styled-square"
+              [seamMenuToggle]="notificationMenu">
+              <span class="sr-only">Notifications</span>
+              <seam-icon-notification iconClass="text-danger"></seam-icon-notification>
+            </button>
+            <seam-menu #notificationMenu>
+              <div style="width: 400px">
+                <a seamMenuItem [icon]="faExclamationTriangle" iconClass="text-warning" routerLink="/profile">
+                  There is a problem with you self-assessment answers.
+                </a>
+                <a seamMenuItem [icon]="faExclamationTriangle" iconClass="text-warning" routerLink="/profile">
+                  Your password expires in 10 days.
+                </a>
+                <button seamMenuItem [icon]="faComment" iconClass="text-primary">
+                  You have unread feedback on your document.
+                </button>
+                <seam-menu-footer>
+                  <a seamMenuFooterAction routerLink="/notifications">See All</a>
+                </seam-menu-footer>
+              </div>
             </seam-menu>
           </seam-top-bar>
           <seam-dashboard

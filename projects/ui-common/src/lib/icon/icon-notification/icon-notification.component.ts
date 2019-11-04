@@ -1,13 +1,26 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit } from '@angular/core'
+import { animate, animation, keyframes, style, transition, trigger, useAnimation } from '@angular/animations'
+import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, Input, OnInit } from '@angular/core'
 
 import { faCircle } from '@fortawesome/free-solid-svg-icons'
 
 import { SeamIcon } from '../icon'
 
+export const pulseAnimation = animation([
+  style({ transform: 'scale(1)' }),
+  animate(
+    '{{ timings }}',
+    keyframes([
+      style({ transform: 'scale(1)', offset: 0 }),
+      style({ transform: 'scale({{ scale }})', offset: 0.5 }),
+      style({ transform: 'scale(1)', offset: 1 })
+    ])
+  )
+])
+
 @Component({
   selector: 'seam-icon-notification',
   template: `
-    <seam-icon *ngIf="icon && !hidden"
+    <seam-icon *ngIf="icon && !hidden" [@counterChange]="count"
       [grayscaleOnDisable]="grayscaleOnDisable"
       [disabled]="disabled"
       [iconClass]="iconClass"
@@ -42,9 +55,24 @@ import { SeamIcon } from '../icon'
     '[attr.aria-disabled]': 'disabled.toString()',
     '[attr.disabled]': 'disabled || null',
   },
+  animations: [
+    trigger('counterChange', [
+      transition(
+        ':increment',
+        useAnimation(pulseAnimation, {
+          params: {
+            timings: '400ms ease-in-out',
+            scale: 1.2
+          }
+        })
+      )
+    ])
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IconNotificationComponent implements OnInit {
+
+  @Input() count: number | undefined
 
   @Input() hidden = false
 

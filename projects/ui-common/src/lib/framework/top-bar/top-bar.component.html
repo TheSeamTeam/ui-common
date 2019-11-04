@@ -7,34 +7,17 @@
 <div class="top-bar--logo d-flex flex-column justify-content-center pr-2" routerLink="/">
   <img [src]="logo" [src.lt-md]="hasTitle ? logoSm : logo" alt="Logo">
 </div>
+
 <!-- Title -->
 <div class="d-flex flex-column flex-grow-1">
   <seam-top-bar-title *ngIf="hasTitle" [titleText]="titleText" [subTitleText]="subTitleText"></seam-top-bar-title>
 </div>
-<!-- Notifications -->
+
+<!-- Items -->
 <div class="top-bar-icon-container mr-2">
-  <button seamIconBtn *ngIf="hasNotificationsMenu"
-    [icon]="faBell"
-    iconType="borderless-styled-square"
-    [seamMenuToggle]="notificationMenu">
-    <span class="sr-only">Notifications</span>
-    <seam-icon-notification iconClass="text-danger"></seam-icon-notification>
-  </button>
-  <seam-menu #notificationMenu>
-    <div style="width: 400px">
-      <a seamMenuItem [icon]="faExclamationTriangle" iconClass="text-warning" routerLink="/profile">There is a problem with you self-assessment answers.</a>
-      <a seamMenuItem [icon]="faExclamationTriangle" iconClass="text-warning" routerLink="/profile">Your password expires in 10 days.</a>
-      <button seamMenuItem [icon]="faComment" iconClass="text-primary">You have unread feedback on your document.</button>
-      <!-- <seam-menu-divider></seam-menu-divider> -->
-      <!-- <div class="d-flex flex-column text-center bg-light">
-        <a routerLink="/notifications">See All</a>
-      </div> -->
-      <seam-menu-footer>
-        <a seamMenuFooterAction routerLink="/notifications">See All</a>
-        <!-- <button seamMenuFooterAction>See All</button> -->
-      </seam-menu-footer>
-    </div>
-  </seam-menu>
+  <ng-container *ngFor="let item of _items$ | async">
+    <ng-template [ngTemplateOutlet]="item.template"></ng-template>
+  </ng-container>
 </div>
 
 <!-- Menu -->
