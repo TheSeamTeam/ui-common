@@ -29,6 +29,12 @@ export class ModalRef<T, R = any> {
     // Pass the id along to the container.
     _containerInstance._id = id
 
+    const _bootstrapBackdropClickListener = (e) => {
+      if (!this.disableClose) {
+        this.close()
+      }
+    }
+
     // If the dialog has a backdrop, handle clicks from the backdrop.
     if (_containerInstance._config.hasBackdrop) {
       _overlayRef.backdropClick().subscribe(() => {
@@ -38,11 +44,7 @@ export class ModalRef<T, R = any> {
       })
 
       // NOTE: For current bootstrap style modal
-      _overlayRef.overlayElement.addEventListener('click', (e) => {
-        if (!this.disableClose) {
-          this.close()
-        }
-      })
+      _overlayRef.overlayElement.addEventListener('click', _bootstrapBackdropClickListener)
     }
 
     this.beforeClosed().subscribe(() => {
@@ -50,6 +52,9 @@ export class ModalRef<T, R = any> {
     })
 
     this.afterClosed().subscribe(() => {
+      if (this._containerInstance._config.hasBackdrop) {
+        this._overlayRef.overlayElement.removeEventListener('click', _bootstrapBackdropClickListener)
+      }
       this._overlayRef.detach()
       this._overlayRef.dispose()
       this.componentInstance = null
