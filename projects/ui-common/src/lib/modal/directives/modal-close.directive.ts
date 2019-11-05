@@ -27,9 +27,22 @@ export class ModalCloseDirective implements OnInit {
 
   @Input() seamModalClose: any
 
+  // NOTE: This will most likely be temporary.
+  @Input() seamModalNext: any
+  @Input() seamModalNextConfig: any
+
   @HostListener('click')
   _onClick() {
     if (this.modalRef) {
+      if (this.seamModalNext) {
+        this.modalRef.afterClosed().subscribe(() => {
+          if (typeof this.seamModalNext === 'string') {
+            this._modal.openFromLazyComponent(this.seamModalNext, this.seamModalNextConfig).subscribe()
+          } else {
+            this._modal.openFromComponent(this.seamModalNext, this.seamModalNextConfig)
+          }
+        })
+      }
       this.modalRef.close(this.seamModalClose)
     }
   }
