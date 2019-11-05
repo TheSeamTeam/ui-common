@@ -46,13 +46,13 @@ export const LIB_MENU: any = {
 })
 export class MenuComponent implements OnInit, OnDestroy, AfterContentInit, ITheSeamMenuPanel {
 
-  @ContentChild(MenuFooterComponent, { static: false })
-  get footerComponent() { return this._footer.value }
-  set footerComponent(value: MenuFooterComponent | undefined | null) {
-    // console.log('set footer', value)
-    // this._footer = value
-    this._footer.next(value)
-  }
+  // @ContentChild(MenuFooterComponent, { static: false })
+  // get footerComponent() { return this._footer.value }
+  // set footerComponent(value: MenuFooterComponent | undefined | null) {
+  //   // console.log('set footer', value)
+  //   // this._footer = value
+  //   this._footer.next(value)
+  // }
   private _footer = new BehaviorSubject<MenuFooterComponent | undefined | null>(undefined)
   public hasFooter$ = this._footer.pipe(map(v => v !== null && v !== undefined))
 
@@ -174,6 +174,11 @@ export class MenuComponent implements OnInit, OnDestroy, AfterContentInit, ITheS
       this._items.splice(index, 1)
       this._itemChanges.next(this._items)
     }
+  }
+
+  /** Sets the footer component. */
+  setFooter(footer?: MenuFooterComponent) {
+    this._footer.next(footer)
   }
 
 }

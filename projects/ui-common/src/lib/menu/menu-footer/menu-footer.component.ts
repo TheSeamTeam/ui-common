@@ -1,4 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Inject, OnInit, Optional } from '@angular/core'
+
+import { MenuItemComponent } from '../menu-item.component'
+import { ITheSeamMenuPanel } from '../menu-panel'
+import { THESEAM_MENU_PANEL } from '../menu-panel-token'
 
 @Component({
   selector: 'seam-menu-footer',
@@ -11,7 +15,13 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 })
 export class MenuFooterComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    @Inject(THESEAM_MENU_PANEL) @Optional() private _parentMenu?: ITheSeamMenuPanel<MenuItemComponent>
+  ) {
+    if (_parentMenu && _parentMenu.setFooter) {
+      _parentMenu.setFooter(this)
+    }
+  }
 
   ngOnInit() { }
 

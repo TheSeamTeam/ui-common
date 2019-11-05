@@ -2,6 +2,8 @@ import { FocusOrigin } from '@angular/cdk/a11y'
 import { Direction } from '@angular/cdk/bidi'
 import { EventEmitter, TemplateRef } from '@angular/core'
 
+import { MenuFooterComponent } from './menu-footer/menu-footer.component'
+
 /**
  * Interface for a custom menu panel that can be used with `seamMenuToggle`.
  */
@@ -14,4 +16,5 @@ export interface ITheSeamMenuPanel<T = any> {
   resetActiveItem: () => void
   addItem?: (item: T) => void
   removeItem?: (item: T) => void
+  setFooter?: (footer?: MenuFooterComponent) => void
 }
