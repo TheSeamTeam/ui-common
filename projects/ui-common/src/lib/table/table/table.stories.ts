@@ -67,7 +67,7 @@ storiesOf('Components|Table', module)
           cellType: 'icon',
           cellTypeConfig: {
             type: 'icon',
-            iconClass: { type: 'jexl', expr: 'name == "Gin 4" ? "text-danger" : "text-primary"' }
+            iconClass: { type: 'jexl', expr: 'row.name == "Gin 4" ? "text-danger" : "text-primary"' }
           }
         },
         { prop: 'ginCode', name: 'Gin Code' },
