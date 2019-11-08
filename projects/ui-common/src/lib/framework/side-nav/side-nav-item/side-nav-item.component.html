@@ -38,7 +38,7 @@
     [attr.aria-expanded]="expanded">
     <div class="nav-link d-flex flex-row w-100" [class.pr-0]="compact">
       <div [style.padding-left.px]="hierLevel * indentSize"></div>
-      <div class="side-nav-item--icon text-left">
+      <div class="side-nav-item--icon">
         <seam-icon *ngIf="icon" [icon]="icon"></seam-icon>
       </div>
       <!-- NOTE: This is temporarily formatted oddly while fixing animation. -->
@@ -51,7 +51,7 @@
     </div>
 
     <div *ngIf="hasChildren && !compact"
-      class="btn side-nav-btn side-nav-item--toggle-btn-container rounded-0">
+      class="btn side-nav-btn side-nav-item--toggle-btn-container rounded-0 side-nav-item--icon">
       <seam-icon
         class="side-nav-item--toggle-btn"
         [class.side-nav-item--toggle-btn-expanded]="expanded"
