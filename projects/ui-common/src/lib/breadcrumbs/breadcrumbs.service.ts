@@ -24,7 +24,7 @@ export class TheSeamBreadcrumbsService {
       filter(event => event instanceof NavigationEnd),
       map(_ => this._activatedRoute),
       startWith(this._activatedRoute),
-      activatedRoutesWithDataProperty(this.breadcrumbDataKey),
+      activatedRoutesWithDataProperty(this.breadcrumbDataKey, true),
       switchMap(rwdArr => combineLatest(rwdArr.map(rwd => this._parseBreadcrumbData(rwd))))
     )
   }

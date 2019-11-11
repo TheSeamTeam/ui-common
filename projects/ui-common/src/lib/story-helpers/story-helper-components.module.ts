@@ -1,17 +1,22 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
+import { RouterModule } from '@angular/router'
 
+import { StoryEmptyWithRouteComponent } from './story-empty-with-route.component'
 import { StoryEmptyComponent } from './story-empty.component'
 
 @NgModule({
   declarations: [
-    StoryEmptyComponent
+    StoryEmptyComponent,
+    StoryEmptyWithRouteComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    RouterModule
   ],
   exports: [
-    StoryEmptyComponent
+    StoryEmptyComponent,
+    StoryEmptyWithRouteComponent
   ]
 })
 export class StoryHelperComponentsModule { }
