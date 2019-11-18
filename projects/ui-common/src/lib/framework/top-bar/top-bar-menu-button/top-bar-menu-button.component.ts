@@ -32,6 +32,7 @@ export class TopBarMenuButtonComponent extends _TopBarMenuButtonMixinBase implem
 
   @Input() displayName: string
   @Input() organizationName?: string | null
+  @Input() originalDisplayName?: string | null
 
   ngOnInit() { }
 

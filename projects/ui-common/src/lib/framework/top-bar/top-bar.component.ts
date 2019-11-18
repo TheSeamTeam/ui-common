@@ -42,6 +42,7 @@ export class TopBarComponent implements OnInit, OnDestroy, AfterContentInit {
 
   @Input() displayName: string
   @Input() organizationName?: string | null
+  @Input() originalDisplayName?: string | null
 
   _items$: Observable<TopBarItemDirective[]>
 

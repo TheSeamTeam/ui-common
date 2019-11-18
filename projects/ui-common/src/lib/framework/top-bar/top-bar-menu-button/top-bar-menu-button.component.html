@@ -1,5 +1,6 @@
 <div class="d-flex flex-row">
   <div class="text-left flex-grow-1">
+    <span *ngIf="originalDisplayName" class="text-truncate">{{ originalDisplayName }} as </span>
     <span class="text-truncate">{{ displayName }}</span>
     <br>
     <span *ngIf="organizationName" class="text-truncate">{{ organizationName }}</span>

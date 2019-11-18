@@ -28,6 +28,7 @@ storiesOf('Framework|TopBar', module)
       subTitleText: text('subTitleText', 'Example'),
       displayName: text('displayName', 'Mark Berry'),
       organizationName: text('organizationName', 'The Seam'),
+      originalUserName: text('originalUserName', 'Leslie Knope'),
       faUserAlt,
       faQuestionCircle,
       faSignOutAlt,
@@ -42,7 +43,8 @@ storiesOf('Framework|TopBar', module)
         [titleText]="titleText"
         [subTitleText]="subTitleText"
         [displayName]="displayName"
-        [organizationName]="organizationName">
+        [organizationName]="organizationName"
+        [originalUserName]="originalUserName">
         <seam-menu seamTopBarMenu>
           <a seamMenuItem [icon]="faUserAlt" routerLink="/profile">Profile</a>
           <button seamMenuItem [icon]="faQuestionCircle">About</button>
