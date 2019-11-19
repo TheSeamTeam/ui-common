@@ -1,4 +1,14 @@
-import { ChangeDetectionStrategy, Component, HostBinding, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  HostBinding,
+  Inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  Optional
+} from '@angular/core'
 
 import { untilDestroyed } from 'ngx-take-until-destroy'
 
@@ -69,6 +79,7 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
   @HostBinding('class.datatable-cell-type') _isDatatable = false
 
   constructor(
+    private _cdf: ChangeDetectorRef,
     private _tableCellTypeHelpers: TableCellTypesHelpersService,
     @Optional() private _datatable?: DatatableComponent,
     @Optional() private _table?: TableComponent,
@@ -100,6 +111,7 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
         .subscribe(v => {
           if (v.changes.hasOwnProperty('value')) {
             this.value = v.changes.value.currentValue
+            this._cdf.markForCheck()
           }
 
           if (v.changes.hasOwnProperty('colData')) {
@@ -109,6 +121,7 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
             } else {
               this.config = undefined
             }
+            this._cdf.markForCheck()
           }
         })
     }

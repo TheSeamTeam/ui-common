@@ -1,7 +1,7 @@
 // import { QueryParamsHandling } from '@angular/router/src/config'
 import { ComponentType } from '@angular/cdk/portal'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { Component, EventEmitter, HostBinding, Input, isDevMode, OnDestroy, OnInit, Output } from '@angular/core'
+import { Component, EventEmitter, HostBinding, Input, isDevMode, OnDestroy, OnInit, Optional, Output } from '@angular/core'
 import { Subscription } from 'rxjs'
 
 import jexl from 'jexl'
@@ -104,9 +104,9 @@ export class DatatableActionMenuItemComponent implements OnInit, OnDestroy {
   @Output() click = new EventEmitter<any>()
 
   constructor(
-    private _http: HttpClient,
     private _modal: Modal,
-    private _dynamicComponentLoader: TheSeamDynamicComponentLoader
+    private _dynamicComponentLoader: TheSeamDynamicComponentLoader,
+    @Optional() private _http: HttpClient,
   ) { }
 
   ngOnInit() { }
@@ -114,6 +114,13 @@ export class DatatableActionMenuItemComponent implements OnInit, OnDestroy {
   ngOnDestroy() { }
 
   private _handleEndpointAction() {
+    if (!this._http) {
+      if (isDevMode()) {
+        console.warn(`[DatatableActionMenuItemComponent] Endpoint actions require \`HttpClientModule\` to be imported.`)
+      }
+      return
+    }
+
     // console.log('_handleEndpointAction')
     // TODO: This should probably be done through a provider that uses the api.
     if (isDevMode()) {
@@ -160,7 +167,7 @@ export class DatatableActionMenuItemComponent implements OnInit, OnDestroy {
 
   private _handleModalAction() {
     if (typeof this._modalConfig.component === 'string') {
-      this._dynamicComponentLoader.getComponentFactory('story-ex-modal')
+      this._dynamicComponentLoader.getComponentFactory(this._modalConfig.component)
         .subscribe(componentFactory => {
           const factoryResolver = (<any /* ComponentFactoryBoundToModule */>componentFactory).ngModule.componentFactoryResolver
           this._modal.openFromComponent(componentFactory.componentType, undefined, factoryResolver)
