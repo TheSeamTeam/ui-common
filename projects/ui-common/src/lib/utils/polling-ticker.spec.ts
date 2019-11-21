@@ -1,22 +1,10 @@
 import { fakeAsync, tick } from '@angular/core/testing'
 
-import { BehaviorSubject, of, Subject } from 'rxjs'
+import { BehaviorSubject, interval, Observable, of, Subject, Subscriber, Subscription } from 'rxjs'
+import { delay, repeatWhen, tap } from 'rxjs/operators'
 
+import { TickHelper } from '../test-helpers/index'
 import { pollingTicker } from './polling-ticker'
-
-class TickHelper {
-
-  private _startTime = Date.now()
-
-  public get ticksElapsed() { return Date.now() - this._startTime }
-
-  constructor() { }
-
-  public tickTo(ticks: number) {
-    tick(ticks - this.ticksElapsed)
-  }
-
-}
 
 fdescribe('pollingTicker', () => {
 
@@ -110,15 +98,32 @@ fdescribe('pollingTicker', () => {
 
     fdescribe('action emmits periodically', () => {
       it('should resubscribe each interval', fakeAsync(() => {
-        const data = new BehaviorSubject<number>(0)
+        const _data = new BehaviorSubject<number>(123)
+        const data$ = _data.asObservable()
 
         let count = 0
         const t = new TickHelper()
-        const pt$ = pollingTicker(() => data.asObservable(), 100).subscribe(() => { count++; console.log('emit', t.ticksElapsed) })
+        const pt$ = pollingTicker(() => data$, 100).subscribe(v => { count++; console.log('emit', t.ticksElapsed, v) })
 
-        t.tickTo(800)
+        expect(count).toBe(1)
 
-        expect(count).toBe(9)
+        tick(99)
+        expect(count).toBe(1)
+
+        tick(1)
+        expect(count).toBe(2)
+
+        tick(100)
+        expect(count).toBe(3)
+
+        _data.next(124)
+        expect(count).toBe(4)
+
+        tick(50)
+        expect(count).toBe(4)
+
+        _data.next(125)
+        expect(count).toBe(5)
 
         pt$.unsubscribe()
       }))
