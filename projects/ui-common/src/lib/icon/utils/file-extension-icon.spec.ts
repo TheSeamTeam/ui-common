@@ -2,7 +2,7 @@ import { faFilePdf } from '@fortawesome/free-regular-svg-icons'
 
 import { DEFAULT_FILE_EXTENSION_ICON, fileExtensionIcon } from './file-extension-icon'
 
-fdescribe('fileExtensionIcon', () => {
+describe('fileExtensionIcon', () => {
 
   describe('`defaultIfNotFound` is `true`', () => {
 
