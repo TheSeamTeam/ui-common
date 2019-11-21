@@ -1,10 +1,24 @@
 import { fakeAsync, tick } from '@angular/core/testing'
 
-import { of, Subject } from 'rxjs'
+import { BehaviorSubject, of, Subject } from 'rxjs'
 
 import { pollingTicker } from './polling-ticker'
 
-describe('pollingTicker', () => {
+class TickHelper {
+
+  private _startTime = Date.now()
+
+  public get ticksElapsed() { return Date.now() - this._startTime }
+
+  constructor() { }
+
+  public tickTo(ticks: number) {
+    tick(ticks - this.ticksElapsed)
+  }
+
+}
+
+fdescribe('pollingTicker', () => {
 
   describe('sync action', () => {
     it('should skip first emit if emitOnInit = false', fakeAsync(() => {
@@ -48,44 +62,68 @@ describe('pollingTicker', () => {
   })
 
   describe('observable action', () => {
-    it('should skip first emit if emitOnInit = false', fakeAsync(() => {
-      let count = 0
-      const pt$ = pollingTicker(() => of('api result'), 100, undefined, { emitOnInit: false }).subscribe(() => { count++ })
-      tick(99)
-      expect(count).toBe(0)
-      pt$.unsubscribe()
-    }))
 
-    it('should emit immediately if emitOnInit = true', fakeAsync(() => {
-      let count = 0
-      const pt$ = pollingTicker(() => of('api result'), 100, undefined, { emitOnInit: true }).subscribe(() => { count++ })
-      expect(count).toBe(1)
-      pt$.unsubscribe()
-    }))
+    describe('action completes immediately', () => {
+      it('should skip first emit if emitOnInit = false', fakeAsync(() => {
+        let count = 0
+        const pt$ = pollingTicker(() => of('api result'), 100, undefined, { emitOnInit: false }).subscribe(() => { count++ })
+        tick(99)
+        expect(count).toBe(0)
+        pt$.unsubscribe()
+      }))
 
-    it('should not emit before polling interval', fakeAsync(() => {
-      let result
-      const pt$ = pollingTicker(() => of('api result'), 100, undefined, { emitOnInit: false }).subscribe((v) => { result = v })
-      tick(99)
-      expect(result).toBeUndefined()
-      pt$.unsubscribe()
-    }))
+      it('should emit immediately if emitOnInit = true', fakeAsync(() => {
+        let count = 0
+        const pt$ = pollingTicker(() => of('api result'), 100, undefined, { emitOnInit: true }).subscribe(() => { count++ })
+        expect(count).toBe(1)
+        pt$.unsubscribe()
+      }))
 
-    it('should emit at polling interval', fakeAsync(() => {
-      let result
-      const pt$ = pollingTicker(() => of('api result'), 100, undefined, { emitOnInit: false }).subscribe((v) => { result = v })
-      tick(100)
-      expect(result).toBe('api result')
-      pt$.unsubscribe()
-    }))
+      it('should not emit before polling interval', fakeAsync(() => {
+        let result
+        const pt$ = pollingTicker(() => of('api result'), 100, undefined, { emitOnInit: false }).subscribe((v) => { result = v })
+        tick(99)
+        expect(result).toBeUndefined()
+        pt$.unsubscribe()
+      }))
 
-    it('should emit at each polling interval', fakeAsync(() => {
-      let count = 0
-      const pt$ = pollingTicker(() => of('api result'), 100).subscribe(() => { count++ })
-      tick(300)
-      expect(count).toBe(4)
-      pt$.unsubscribe()
-    }))
+      it('should emit at polling interval', fakeAsync(() => {
+        let result
+        const pt$ = pollingTicker(() => of('api result'), 100, undefined, { emitOnInit: false }).subscribe((v) => { result = v })
+        tick(100)
+        expect(result).toBe('api result')
+        pt$.unsubscribe()
+      }))
+
+      it('should emit at each polling interval', fakeAsync(() => {
+        let count = 0
+        const pt$ = pollingTicker(() => of('api result'), 100).subscribe(() => { count++ })
+        tick(300)
+        expect(count).toBe(4)
+        pt$.unsubscribe()
+      }))
+    })
+
+    // describe('action emmits after time and complete', () => {
+    //   // TODO: Write tests
+    // })
+
+    fdescribe('action emmits periodically', () => {
+      it('should resubscribe each interval', fakeAsync(() => {
+        const data = new BehaviorSubject<number>(0)
+
+        let count = 0
+        const t = new TickHelper()
+        const pt$ = pollingTicker(() => data.asObservable(), 100).subscribe(() => { count++; console.log('emit', t.ticksElapsed) })
+
+        t.tickTo(800)
+
+        expect(count).toBe(9)
+
+        pt$.unsubscribe()
+      }))
+    })
+
   })
 
   describe('ticker only', ()  => {
