@@ -53,6 +53,8 @@ export class PollingTickerOptions {
 }
 // tslint:enable:no-inferrable-types
 
+// TODO: Simplify complexity.
+
 /**
  * Call an action and emits the result to its subscriber on an interval or when
  * ticker emits. When the ticker emits, the interval time will reset.
@@ -84,7 +86,7 @@ export function pollingTicker<R>(
             actionSub.unsubscribe()
           }
           actionSub = actionResult.subscribe(
-            (v: R) => { subscriber.next(v) },
+            (v: R) => { subscriber.next(v); if (timer) { timer.reset() } },
             (err) => { subscriber.error(err) },
             () => {
               actionSub = null
@@ -93,8 +95,8 @@ export function pollingTicker<R>(
           )
         } else {
           subscriber.next(actionResult)
-          if (timer) { timer.start() }
         }
+        if (timer) { timer.start() }
       }
 
       if (_opts.emitOnInit) {
