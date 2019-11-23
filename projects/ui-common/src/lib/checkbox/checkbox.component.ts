@@ -66,6 +66,7 @@ let _uid = 0
 export class TheSeamCheckboxComponent extends _MatCheckboxMixinBase
   implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor, CanDisable, HasTabIndex {
 
+  /** @ignore */
   private _uid = `seam-chk-${_uid++}`
 
   /** A unique id for the checkbox input. If none is supplied, it will be auto-generated. */
@@ -157,9 +158,11 @@ export class TheSeamCheckboxComponent extends _MatCheckboxMixinBase
 
   /**
    * Called when the checkbox is blurred. Needed to properly implement ControlValueAccessor.
+   * @ignore
    */
   _onTouched: () => any = () => {}
 
+  /** @ignore */
   private _controlValueAccessorChangeFn: (value: any) => void = () => {}
 
   constructor(
@@ -198,7 +201,10 @@ export class TheSeamCheckboxComponent extends _MatCheckboxMixinBase
     this._syncIndeterminate(this._indeterminate)
   }
 
-  /** Method being called whenever the label text changes. */
+  /**
+   * Method being called whenever the label text changes.
+   * @ignore
+   */
   _onLabelTextChange() {
     // Since the event of the `cdkObserveContent` directive runs outside of the zone, the checkbox
     // component will be only marked for check, but no actual change detection runs automatically.
@@ -228,10 +234,12 @@ export class TheSeamCheckboxComponent extends _MatCheckboxMixinBase
     this.disabled = isDisabled
   }
 
+  /** @ignore */
   _getAriaChecked(): 'true' | 'false' | 'mixed' {
     return this.checked ? 'true' : (this.indeterminate ? 'mixed' : 'false')
   }
 
+  /** @ignore */
   private _emitChangeEvent() {
     const event = new TheSeamCheckboxChange()
     event.source = this
@@ -251,6 +259,7 @@ export class TheSeamCheckboxComponent extends _MatCheckboxMixinBase
    * Toggles checked state if element is not disabled.
    * Do not toggle on (change) event since IE doesn't fire change event when
    *   indeterminate checkbox is clicked.
+   * @ignore
    */
   _onInputClick(event: Event) {
     // If resetIndeterminate is false, and the current state is indeterminate, do nothing on click
@@ -278,6 +287,7 @@ export class TheSeamCheckboxComponent extends _MatCheckboxMixinBase
     this._focusMonitor.focusVia(this._inputElement, origin, options)
   }
 
+  /** @ignore */
   _onInteractionEvent(event: Event) {
     // We always have to stop propagation on the change event.
     // Otherwise the change event, from the input element, will bubble up and
@@ -292,6 +302,7 @@ export class TheSeamCheckboxComponent extends _MatCheckboxMixinBase
    * property is supported on an element boils down to `if (propName in element)`. Domino's
    * HTMLInputElement doesn't have an `indeterminate` property so Ivy will warn during
    * server-side rendering.
+   * @ignore
    */
   private _syncIndeterminate(value: boolean) {
     const nativeCheckbox = this._inputElement
