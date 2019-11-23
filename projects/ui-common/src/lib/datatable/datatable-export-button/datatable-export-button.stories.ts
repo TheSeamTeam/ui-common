@@ -8,7 +8,7 @@ import { CSVDataExporter, XLSXDataExporter } from '../../data-exporter/index'
 
 import { TheSeamDatatableModule } from '../datatable.module'
 
-storiesOf('Components|Datatable', module)
+storiesOf('Components/Datatable', module)
 
   .add('Exports', () => ({
     moduleMetadata: {

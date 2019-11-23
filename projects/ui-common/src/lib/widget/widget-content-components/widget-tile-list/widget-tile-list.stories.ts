@@ -10,7 +10,7 @@ import { faPersonBooth, faPlusCircle, faWrench } from '@fortawesome/free-solid-s
 
 import { TheSeamWidgetModule } from '../../widget.module'
 
-storiesOf('Components|Widget/Content', module)
+storiesOf('Components/Widget/Content', module)
   .addDecorator(withKnobs)
 
   .add('Tile List', () => ({

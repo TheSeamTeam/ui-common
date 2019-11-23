@@ -8,7 +8,7 @@ import { StoryEmptyComponent, StoryEmptyWithRouteComponent, StoryInitialRouteMod
 
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component'
 
-storiesOf('Components|Breadcrumbs', module)
+storiesOf('Components/Breadcrumbs', module)
 
   .add('Parent Defined', () => ({
     moduleMetadata: {

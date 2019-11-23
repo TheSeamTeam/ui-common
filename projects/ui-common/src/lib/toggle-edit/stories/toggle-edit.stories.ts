@@ -8,7 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { TheSeamFormFieldModule } from '../../form-field/form-field.module'
 import { TheSeamToggleEditModule } from '../toggle-edit.module'
 
-storiesOf('Components|Toggle Edit', module)
+storiesOf('Components/Toggle Edit', module)
 
   .add('Simple', () => ({
     moduleMetadata: {

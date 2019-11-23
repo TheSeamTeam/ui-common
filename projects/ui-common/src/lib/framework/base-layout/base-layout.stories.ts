@@ -231,7 +231,7 @@ const navItems: ISideNavItem[] = [
   }
 ]
 
-storiesOf('Framework|BaseLayout', module)
+storiesOf('Framework/BaseLayout', module)
   .addDecorator(withKnobs)
 
   .add('Basic', () => ({

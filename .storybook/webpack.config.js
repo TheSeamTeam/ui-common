@@ -5,7 +5,7 @@ module.exports = baseConfig => {
     test: [/\.stories\.tsx?$/, /index\.ts$/],
     loaders: [
       {
-        loader: require.resolve('@storybook/addon-storysource/loader'),
+        loader: require.resolve('@storybook/source-loader'),
         options: {
           parser: 'typescript'
         }
@@ -15,14 +15,14 @@ module.exports = baseConfig => {
     enforce: 'pre'
   });
 
-  baseConfig.config.module.rules.push({
-    test: /\.(ts)$/,
-    exclude: /\.spec\.ts$/,
-    use: [
-        require.resolve('./fix-component-template-import-loader.js'),
-        'angular2-template-loader'
-    ]
-  })
+  // baseConfig.config.module.rules.push({
+  //   test: /\.(ts)$/,
+  //   exclude: /\.spec\.ts$/,
+  //   use: [
+  //       require.resolve('./fix-component-template-import-loader.js'),
+  //       'angular2-template-loader'
+  //   ]
+  // })
 
   return baseConfig.config;
 };

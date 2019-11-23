@@ -8,7 +8,7 @@ import { _knobUndefinedNullHACK } from '../utils/storybook-knobs-hack'
 
 import { TheSeamCheckboxComponent } from './checkbox.component'
 
-storiesOf('Components|Checkbox', module)
+storiesOf('Components/Checkbox', module)
   .addDecorator(withKnobs)
   .add('Basic', () => ({
     moduleMetadata: {
