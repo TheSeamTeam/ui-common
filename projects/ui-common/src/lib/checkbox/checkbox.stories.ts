@@ -1,5 +1,5 @@
 import { select, text, withKnobs } from '@storybook/addon-knobs'
-import { storiesOf } from '@storybook/angular'
+import { moduleMetadata } from '@storybook/angular'
 
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
@@ -7,25 +7,29 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { _knobUndefinedNullHACK } from '../utils/storybook-knobs-hack'
 
 import { TheSeamCheckboxComponent } from './checkbox.component'
+import { TheSeamCheckboxModule } from './checkbox.module'
 
-storiesOf('Components/Checkbox', module)
-  .addDecorator(withKnobs)
-  .add('Basic', () => ({
-    moduleMetadata: {
-      declarations: [
-        TheSeamCheckboxComponent
-      ],
+export default {
+  title: 'Components/Checkbox',
+  decorators: [
+    moduleMetadata({
       imports: [
         BrowserAnimationsModule,
-        BrowserModule
+        BrowserModule,
+        TheSeamCheckboxModule
       ]
-    },
-    props: {
-      labelText: 'Allow this member to upload bales and receive protocol credits on my behalf.'
-    },
-    template: `
-      <div class="p-5">
-        <seam-checkbox seamInput>{{ labelText }}</seam-checkbox>
-      </div>
-    `
-  }))
+    })
+  ]
+}
+
+export const InitiallyChecked = () => ({
+  component: TheSeamCheckboxComponent,
+  props: {
+    labelText: 'Initially checked.'
+  },
+  // template: `<seam-checkbox [checked]="true">{{ labelText }}</seam-checkbox>`
+})
+
+InitiallyChecked.story = {
+  name: 'Checked'
+}

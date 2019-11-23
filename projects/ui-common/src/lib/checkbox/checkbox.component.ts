@@ -47,13 +47,15 @@ const _MatCheckboxMixinBase: HasTabIndexCtor & CanDisableCtor &
 
 let _uid = 0
 
+/**
+ * A Checkbox.
+ */
 @Component({
   selector: 'seam-checkbox',
   templateUrl: './checkbox.component.html',
   styleUrls: ['./checkbox.component.scss'],
   exportAs: 'seamCheckbox',
   host: {
-    '[id]': 'id',
     '[attr.tabindex]': 'null',
     'class': 'custom-control custom-checkbox'
   },
@@ -193,7 +195,6 @@ export class TheSeamCheckboxComponent extends _MatCheckboxMixinBase
   }
 
   ngAfterViewInit() {
-    console.log('inp', this._inputElement)
     this._syncIndeterminate(this._indeterminate)
   }
 
@@ -252,16 +253,6 @@ export class TheSeamCheckboxComponent extends _MatCheckboxMixinBase
    *   indeterminate checkbox is clicked.
    */
   _onInputClick(event: Event) {
-    // We have to stop propagation for click events on the visual hidden input element.
-    // By default, when a user clicks on a label element, a generated click event will be
-    // dispatched on the associated input element. Since we are using a label element as our
-    // root container, the click event on the `checkbox` will be executed twice.
-    // The real click event will bubble up, and the generated click event also tries to bubble up.
-    // This will lead to multiple click events.
-    // Preventing bubbling for the second event will solve that issue.
-    // event.stopPropagation()
-    console.log('_onInputClick')
-
     // If resetIndeterminate is false, and the current state is indeterminate, do nothing on click
     if (!this.disabled) {
       // When user manually click on the checkbox, `indeterminate` is set to false.
@@ -291,8 +282,7 @@ export class TheSeamCheckboxComponent extends _MatCheckboxMixinBase
     // We always have to stop propagation on the change event.
     // Otherwise the change event, from the input element, will bubble up and
     // emit its event object to the `change` output.
-    // event.stopPropagation()
-    console.log('_onInteractionEvent')
+    event.stopPropagation()
   }
 
   /**
