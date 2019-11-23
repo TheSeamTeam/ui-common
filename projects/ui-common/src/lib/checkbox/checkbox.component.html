@@ -1,0 +1,21 @@
+<input #input
+  type="checkbox"
+  class="custom-control-input"
+  [id]="inputId"
+  [required]="required"
+  [checked]="checked"
+  [attr.value]="value"
+  [disabled]="disabled"
+  [attr.name]="name"
+  [tabIndex]="tabIndex"
+  [attr.aria-label]="ariaLabel || null"
+  [attr.aria-labelledby]="ariaLabelledby"
+  [attr.aria-checked]="_getAriaChecked()"
+  (change)="_onInteractionEvent($event)"
+  (click)="_onInputClick($event)">
+<label #checkboxLabel
+  class="custom-control-label"
+  [attr.for]="inputId"
+  (cdkObserveContent)="_onLabelTextChange()">
+  <ng-content></ng-content>
+</label>
