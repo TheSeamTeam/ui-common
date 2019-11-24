@@ -70,7 +70,7 @@ export class TheSeamCheckboxComponent extends _MatCheckboxMixinBase
   private _uid = `seam-chk-${_uid++}`
 
   /** A unique id for the checkbox input. If none is supplied, it will be auto-generated. */
-  @Input() id: string = this._uid
+  @Input() id?: string = this._uid
 
   /** Returns the unique id for the input. */
   get inputId(): string { return `${this.id || this._uid}` }
@@ -79,17 +79,18 @@ export class TheSeamCheckboxComponent extends _MatCheckboxMixinBase
    * Attached to the aria-label attribute of the host element. In most cases, aria-labelledby will
    * take precedence so this may be omitted.
    */
-  @Input('aria-label') ariaLabel = ''
+  @Input('aria-label') ariaLabel?: string = ''
 
   /**
    * Users can specify the `aria-labelledby` attribute which will be forwarded to the input element
    */
-  @Input('aria-labelledby') ariaLabelledby: string | null = null
+  @Input('aria-labelledby') ariaLabelledby?: string | null = null
 
   /** Whether the checkbox is required. */
   @Input()
   get required(): boolean { return this._required }
   set required(value: boolean) { this._required = coerceBooleanProperty(value) }
+  /** @ignore */
   private _required: boolean
 
   /**
@@ -103,15 +104,17 @@ export class TheSeamCheckboxComponent extends _MatCheckboxMixinBase
       this._changeDetectorRef.markForCheck()
     }
   }
+  /** @ignore */
   private _checked = false
 
   /**
-   * Whether the checkbox is disabled. This fully overrides the implementation provided by
-   * mixinDisabled, but the mixin is still required because mixinTabIndex requires it.
+   * Whether the checkbox is disabled.
    */
+  // This fully overrides the implementation provided by mixinDisabled, but the
+  // mixin is still required because mixinTabIndex requires it.
   @Input()
-  get disabled() { return this._disabled }
-  set disabled(value: any) {
+  get disabled(): boolean { return this._disabled }
+  set disabled(value: boolean) {
     const newValue = coerceBooleanProperty(value)
 
     if (newValue !== this.disabled) {
@@ -119,6 +122,7 @@ export class TheSeamCheckboxComponent extends _MatCheckboxMixinBase
       this._changeDetectorRef.markForCheck()
     }
   }
+  /** @ignore */
   private _disabled = false
 
   /**
@@ -139,6 +143,7 @@ export class TheSeamCheckboxComponent extends _MatCheckboxMixinBase
 
     this._syncIndeterminate(this._indeterminate)
   }
+  /** @ignore */
   private _indeterminate = false
 
   /** Name value will be applied to the input element if present */
@@ -153,7 +158,10 @@ export class TheSeamCheckboxComponent extends _MatCheckboxMixinBase
   /** The value attribute of the native input element */
   @Input() value: string
 
-  /** The native `<input type="checkbox">` element */
+  /**
+   * The native `<input type="checkbox">` element
+   * @ignore
+   */
   @ViewChild('input', { static: true }) _inputElement: ElementRef<HTMLInputElement>
 
   /**
@@ -191,12 +199,15 @@ export class TheSeamCheckboxComponent extends _MatCheckboxMixinBase
     })
   }
 
+  /** @ignore */
   ngOnInit() { }
 
+  /** @ignore */
   ngOnDestroy() {
     this._focusMonitor.stopMonitoring(this._elementRef)
   }
 
+  /** @ignore */
   ngAfterViewInit() {
     this._syncIndeterminate(this._indeterminate)
   }
@@ -215,21 +226,25 @@ export class TheSeamCheckboxComponent extends _MatCheckboxMixinBase
   }
 
   // Implemented as part of ControlValueAccessor.
+  /** @ignore */
   writeValue(value: any) {
     this.checked = !!value
   }
 
   // Implemented as part of ControlValueAccessor.
+  /** @ignore */
   registerOnChange(fn: (value: any) => void) {
     this._controlValueAccessorChangeFn = fn
   }
 
   // Implemented as part of ControlValueAccessor.
+  /** @ignore */
   registerOnTouched(fn: any) {
     this._onTouched = fn
   }
 
   // Implemented as part of ControlValueAccessor.
+  /** @ignore */
   setDisabledState(isDisabled: boolean) {
     this.disabled = isDisabled
   }

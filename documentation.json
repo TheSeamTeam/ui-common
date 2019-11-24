@@ -8591,10 +8591,10 @@
         },
         {
             "name": "TheSeamCheckboxChange",
-            "id": "class-TheSeamCheckboxChange-4c5038623f3989b2aeed83e4ab694bc4",
+            "id": "class-TheSeamCheckboxChange-7a31375751d871285749ca33e354dca5",
             "file": "projects/ui-common/src/lib/checkbox/checkbox.component.ts",
             "type": "class",
-            "sourceCode": "import { FocusMonitor, FocusOrigin } from '@angular/cdk/a11y'\r\nimport { coerceBooleanProperty } from '@angular/cdk/coercion'\r\nimport {\r\n  AfterViewInit,\r\n  Attribute,\r\n  ChangeDetectionStrategy,\r\n  ChangeDetectorRef,\r\n  Component,\r\n  ElementRef,\r\n  EventEmitter,\r\n  forwardRef,\r\n  Input,\r\n  NgZone,\r\n  OnDestroy,\r\n  OnInit,\r\n  Output,\r\n  ViewChild\r\n} from '@angular/core'\r\nimport { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'\r\n\r\nimport { CanDisable, CanDisableCtor, HasTabIndex, HasTabIndexCtor, mixinDisabled, mixinTabIndex } from '../core/common-behaviors/index'\r\n\r\n// NOTE: Partially based on mat-checkbox: https://github.com/angular/components/blob/master/src/material/checkbox/checkbox.ts\r\n\r\n/** Change event object emitted by TheSeamCheckboxComponent. */\r\nexport class TheSeamCheckboxChange {\r\n  /** The source TheSeamCheckboxComponent of the event. */\r\n  source: TheSeamCheckboxComponent\r\n  /** The new `checked` value of the checkbox. */\r\n  checked: boolean\r\n}\r\n\r\nexport const THESEAM_CHECKBOX_CONTROL_VALUE_ACCESSOR: any = {\r\n  provide: NG_VALUE_ACCESSOR,\r\n  // tslint:disable-next-line: no-use-before-declare\r\n  useExisting: forwardRef(() => TheSeamCheckboxComponent),\r\n  multi: true\r\n}\r\n\r\nclass TheSeamCheckboxComponentBase {\r\n  constructor(public _elementRef: ElementRef) {}\r\n}\r\n\r\nconst _MatCheckboxMixinBase: HasTabIndexCtor & CanDisableCtor &\r\n  typeof TheSeamCheckboxComponentBase =\r\n    mixinTabIndex(mixinDisabled(TheSeamCheckboxComponentBase))\r\n\r\nlet _uid = 0\r\n\r\n/**\r\n * A Checkbox.\r\n */\r\n@Component({\r\n  selector: 'seam-checkbox',\r\n  templateUrl: './checkbox.component.html',\r\n  styleUrls: ['./checkbox.component.scss'],\r\n  exportAs: 'seamCheckbox',\r\n  host: {\r\n    '[attr.tabindex]': 'null',\r\n    'class': 'custom-control custom-checkbox'\r\n  },\r\n  providers: [ THESEAM_CHECKBOX_CONTROL_VALUE_ACCESSOR ],\r\n  inputs: [ 'tabIndex' ],\r\n  changeDetection: ChangeDetectionStrategy.OnPush\r\n})\r\nexport class TheSeamCheckboxComponent extends _MatCheckboxMixinBase\r\n  implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor, CanDisable, HasTabIndex {\r\n\r\n  /** @ignore */\r\n  private _uid = `seam-chk-${_uid++}`\r\n\r\n  /** A unique id for the checkbox input. If none is supplied, it will be auto-generated. */\r\n  @Input() id: string = this._uid\r\n\r\n  /** Returns the unique id for the input. */\r\n  get inputId(): string { return `${this.id || this._uid}` }\r\n\r\n  /**\r\n   * Attached to the aria-label attribute of the host element. In most cases, aria-labelledby will\r\n   * take precedence so this may be omitted.\r\n   */\r\n  @Input('aria-label') ariaLabel = ''\r\n\r\n  /**\r\n   * Users can specify the `aria-labelledby` attribute which will be forwarded to the input element\r\n   */\r\n  @Input('aria-labelledby') ariaLabelledby: string | null = null\r\n\r\n  /** Whether the checkbox is required. */\r\n  @Input()\r\n  get required(): boolean { return this._required }\r\n  set required(value: boolean) { this._required = coerceBooleanProperty(value) }\r\n  private _required: boolean\r\n\r\n  /**\r\n   * Whether the checkbox is checked.\r\n   */\r\n  @Input()\r\n  get checked(): boolean { return this._checked }\r\n  set checked(value: boolean) {\r\n    if (value !== this.checked) {\r\n      this._checked = value\r\n      this._changeDetectorRef.markForCheck()\r\n    }\r\n  }\r\n  private _checked = false\r\n\r\n  /**\r\n   * Whether the checkbox is disabled. This fully overrides the implementation provided by\r\n   * mixinDisabled, but the mixin is still required because mixinTabIndex requires it.\r\n   */\r\n  @Input()\r\n  get disabled() { return this._disabled }\r\n  set disabled(value: any) {\r\n    const newValue = coerceBooleanProperty(value)\r\n\r\n    if (newValue !== this.disabled) {\r\n      this._disabled = newValue\r\n      this._changeDetectorRef.markForCheck()\r\n    }\r\n  }\r\n  private _disabled = false\r\n\r\n  /**\r\n   * Whether the checkbox is indeterminate. This is also known as \"mixed\" mode and can be used to\r\n   * represent a checkbox with three states, e.g. a checkbox that represents a nested list of\r\n   * checkable items. Note that whenever checkbox is manually clicked, indeterminate is immediately\r\n   * set to false.\r\n   */\r\n  @Input()\r\n  get indeterminate(): boolean { return this._indeterminate }\r\n  set indeterminate(value: boolean) {\r\n    const changed = value !== this._indeterminate\r\n    this._indeterminate = coerceBooleanProperty(value)\r\n\r\n    if (changed) {\r\n      this.indeterminateChange.emit(this._indeterminate)\r\n    }\r\n\r\n    this._syncIndeterminate(this._indeterminate)\r\n  }\r\n  private _indeterminate = false\r\n\r\n  /** Name value will be applied to the input element if present */\r\n  @Input() name: string | null = null\r\n\r\n  /** Event emitted when the checkbox's `checked` value changes. */\r\n  @Output() readonly change = new EventEmitter<TheSeamCheckboxChange>()\r\n\r\n  /** Event emitted when the checkbox's `indeterminate` value changes. */\r\n  @Output() readonly indeterminateChange: EventEmitter<boolean> = new EventEmitter<boolean>()\r\n\r\n  /** The value attribute of the native input element */\r\n  @Input() value: string\r\n\r\n  /** The native `<input type=\"checkbox\">` element */\r\n  @ViewChild('input', { static: true }) _inputElement: ElementRef<HTMLInputElement>\r\n\r\n  /**\r\n   * Called when the checkbox is blurred. Needed to properly implement ControlValueAccessor.\r\n   * @ignore\r\n   */\r\n  _onTouched: () => any = () => {}\r\n\r\n  /** @ignore */\r\n  private _controlValueAccessorChangeFn: (value: any) => void = () => {}\r\n\r\n  constructor(\r\n    elementRef: ElementRef,\r\n    private _changeDetectorRef: ChangeDetectorRef,\r\n    private _focusMonitor: FocusMonitor,\r\n    private _ngZone: NgZone,\r\n    @Attribute('tabindex') tabIndex: string\r\n  ) {\r\n    super(elementRef)\r\n\r\n    this.tabIndex = parseInt(tabIndex, 10) || 0\r\n\r\n    this._focusMonitor.monitor(elementRef, true).subscribe(focusOrigin => {\r\n      if (!focusOrigin) {\r\n        // When a focused element becomes disabled, the browser *immediately* fires a blur event.\r\n        // Angular does not expect events to be raised during change detection, so any state change\r\n        // (such as a form control's 'ng-touched') will cause a changed-after-checked error.\r\n        // See https://github.com/angular/angular/issues/17793. To work around this, we defer\r\n        // telling the form control it has been touched until the next tick.\r\n        Promise.resolve().then(() => {\r\n          this._onTouched()\r\n          _changeDetectorRef.markForCheck()\r\n        })\r\n      }\r\n    })\r\n  }\r\n\r\n  ngOnInit() { }\r\n\r\n  ngOnDestroy() {\r\n    this._focusMonitor.stopMonitoring(this._elementRef)\r\n  }\r\n\r\n  ngAfterViewInit() {\r\n    this._syncIndeterminate(this._indeterminate)\r\n  }\r\n\r\n  /**\r\n   * Method being called whenever the label text changes.\r\n   * @ignore\r\n   */\r\n  _onLabelTextChange() {\r\n    // Since the event of the `cdkObserveContent` directive runs outside of the zone, the checkbox\r\n    // component will be only marked for check, but no actual change detection runs automatically.\r\n    // Instead of going back into the zone in order to trigger a change detection which causes\r\n    // *all* components to be checked (if explicitly marked or not using OnPush), we only trigger\r\n    // an explicit change detection for the checkbox view and its children.\r\n    this._changeDetectorRef.detectChanges()\r\n  }\r\n\r\n  // Implemented as part of ControlValueAccessor.\r\n  writeValue(value: any) {\r\n    this.checked = !!value\r\n  }\r\n\r\n  // Implemented as part of ControlValueAccessor.\r\n  registerOnChange(fn: (value: any) => void) {\r\n    this._controlValueAccessorChangeFn = fn\r\n  }\r\n\r\n  // Implemented as part of ControlValueAccessor.\r\n  registerOnTouched(fn: any) {\r\n    this._onTouched = fn\r\n  }\r\n\r\n  // Implemented as part of ControlValueAccessor.\r\n  setDisabledState(isDisabled: boolean) {\r\n    this.disabled = isDisabled\r\n  }\r\n\r\n  /** @ignore */\r\n  _getAriaChecked(): 'true' | 'false' | 'mixed' {\r\n    return this.checked ? 'true' : (this.indeterminate ? 'mixed' : 'false')\r\n  }\r\n\r\n  /** @ignore */\r\n  private _emitChangeEvent() {\r\n    const event = new TheSeamCheckboxChange()\r\n    event.source = this\r\n    event.checked = this.checked\r\n\r\n    this._controlValueAccessorChangeFn(this.checked)\r\n    this.change.emit(event)\r\n  }\r\n\r\n  /** Toggles the `checked` state of the checkbox. */\r\n  toggle(): void {\r\n    this.checked = !this.checked\r\n  }\r\n\r\n  /**\r\n   * Event handler for checkbox input element.\r\n   * Toggles checked state if element is not disabled.\r\n   * Do not toggle on (change) event since IE doesn't fire change event when\r\n   *   indeterminate checkbox is clicked.\r\n   * @ignore\r\n   */\r\n  _onInputClick(event: Event) {\r\n    // If resetIndeterminate is false, and the current state is indeterminate, do nothing on click\r\n    if (!this.disabled) {\r\n      // When user manually click on the checkbox, `indeterminate` is set to false.\r\n      if (this.indeterminate) {\r\n\r\n        Promise.resolve().then(() => {\r\n          this._indeterminate = false\r\n          this.indeterminateChange.emit(this._indeterminate)\r\n        })\r\n      }\r\n\r\n      this.toggle()\r\n\r\n      // Emit our custom change event if the native input emitted one.\r\n      // It is important to only emit it, if the native input triggered one, because\r\n      // we don't want to trigger a change event, when the `checked` variable changes for example.\r\n      this._emitChangeEvent()\r\n    }\r\n  }\r\n\r\n  /** Focuses the checkbox. */\r\n  focus(origin: FocusOrigin = 'keyboard', options?: FocusOptions): void {\r\n    this._focusMonitor.focusVia(this._inputElement, origin, options)\r\n  }\r\n\r\n  /** @ignore */\r\n  _onInteractionEvent(event: Event) {\r\n    // We always have to stop propagation on the change event.\r\n    // Otherwise the change event, from the input element, will bubble up and\r\n    // emit its event object to the `change` output.\r\n    event.stopPropagation()\r\n  }\r\n\r\n  /**\r\n   * Syncs the indeterminate value with the checkbox DOM node.\r\n   *\r\n   * We sync `indeterminate` directly on the DOM node, because in Ivy the check for whether a\r\n   * property is supported on an element boils down to `if (propName in element)`. Domino's\r\n   * HTMLInputElement doesn't have an `indeterminate` property so Ivy will warn during\r\n   * server-side rendering.\r\n   * @ignore\r\n   */\r\n  private _syncIndeterminate(value: boolean) {\r\n    const nativeCheckbox = this._inputElement\r\n\r\n    if (nativeCheckbox) {\r\n      nativeCheckbox.nativeElement.indeterminate = value\r\n    }\r\n  }\r\n\r\n}\r\n",
+            "sourceCode": "import { FocusMonitor, FocusOrigin } from '@angular/cdk/a11y'\r\nimport { coerceBooleanProperty } from '@angular/cdk/coercion'\r\nimport {\r\n  AfterViewInit,\r\n  Attribute,\r\n  ChangeDetectionStrategy,\r\n  ChangeDetectorRef,\r\n  Component,\r\n  ElementRef,\r\n  EventEmitter,\r\n  forwardRef,\r\n  Input,\r\n  NgZone,\r\n  OnDestroy,\r\n  OnInit,\r\n  Output,\r\n  ViewChild\r\n} from '@angular/core'\r\nimport { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'\r\n\r\nimport { CanDisable, CanDisableCtor, HasTabIndex, HasTabIndexCtor, mixinDisabled, mixinTabIndex } from '../core/common-behaviors/index'\r\n\r\n// NOTE: Partially based on mat-checkbox: https://github.com/angular/components/blob/master/src/material/checkbox/checkbox.ts\r\n\r\n/** Change event object emitted by TheSeamCheckboxComponent. */\r\nexport class TheSeamCheckboxChange {\r\n  /** The source TheSeamCheckboxComponent of the event. */\r\n  source: TheSeamCheckboxComponent\r\n  /** The new `checked` value of the checkbox. */\r\n  checked: boolean\r\n}\r\n\r\nexport const THESEAM_CHECKBOX_CONTROL_VALUE_ACCESSOR: any = {\r\n  provide: NG_VALUE_ACCESSOR,\r\n  // tslint:disable-next-line: no-use-before-declare\r\n  useExisting: forwardRef(() => TheSeamCheckboxComponent),\r\n  multi: true\r\n}\r\n\r\nclass TheSeamCheckboxComponentBase {\r\n  constructor(public _elementRef: ElementRef) {}\r\n}\r\n\r\nconst _MatCheckboxMixinBase: HasTabIndexCtor & CanDisableCtor &\r\n  typeof TheSeamCheckboxComponentBase =\r\n    mixinTabIndex(mixinDisabled(TheSeamCheckboxComponentBase))\r\n\r\nlet _uid = 0\r\n\r\n/**\r\n * A Checkbox.\r\n */\r\n@Component({\r\n  selector: 'seam-checkbox',\r\n  templateUrl: './checkbox.component.html',\r\n  styleUrls: ['./checkbox.component.scss'],\r\n  exportAs: 'seamCheckbox',\r\n  host: {\r\n    '[attr.tabindex]': 'null',\r\n    'class': 'custom-control custom-checkbox'\r\n  },\r\n  providers: [ THESEAM_CHECKBOX_CONTROL_VALUE_ACCESSOR ],\r\n  inputs: [ 'tabIndex' ],\r\n  changeDetection: ChangeDetectionStrategy.OnPush\r\n})\r\nexport class TheSeamCheckboxComponent extends _MatCheckboxMixinBase\r\n  implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor, CanDisable, HasTabIndex {\r\n\r\n  /** @ignore */\r\n  private _uid = `seam-chk-${_uid++}`\r\n\r\n  /** A unique id for the checkbox input. If none is supplied, it will be auto-generated. */\r\n  @Input() id?: string = this._uid\r\n\r\n  /** Returns the unique id for the input. */\r\n  get inputId(): string { return `${this.id || this._uid}` }\r\n\r\n  /**\r\n   * Attached to the aria-label attribute of the host element. In most cases, aria-labelledby will\r\n   * take precedence so this may be omitted.\r\n   */\r\n  @Input('aria-label') ariaLabel?: string = ''\r\n\r\n  /**\r\n   * Users can specify the `aria-labelledby` attribute which will be forwarded to the input element\r\n   */\r\n  @Input('aria-labelledby') ariaLabelledby?: string | null = null\r\n\r\n  /** Whether the checkbox is required. */\r\n  @Input()\r\n  get required(): boolean { return this._required }\r\n  set required(value: boolean) { this._required = coerceBooleanProperty(value) }\r\n  /** @ignore */\r\n  private _required: boolean\r\n\r\n  /**\r\n   * Whether the checkbox is checked.\r\n   */\r\n  @Input()\r\n  get checked(): boolean { return this._checked }\r\n  set checked(value: boolean) {\r\n    if (value !== this.checked) {\r\n      this._checked = value\r\n      this._changeDetectorRef.markForCheck()\r\n    }\r\n  }\r\n  /** @ignore */\r\n  private _checked = false\r\n\r\n  /**\r\n   * Whether the checkbox is disabled.\r\n   */\r\n  // This fully overrides the implementation provided by mixinDisabled, but the\r\n  // mixin is still required because mixinTabIndex requires it.\r\n  @Input()\r\n  get disabled(): boolean { return this._disabled }\r\n  set disabled(value: boolean) {\r\n    const newValue = coerceBooleanProperty(value)\r\n\r\n    if (newValue !== this.disabled) {\r\n      this._disabled = newValue\r\n      this._changeDetectorRef.markForCheck()\r\n    }\r\n  }\r\n  /** @ignore */\r\n  private _disabled = false\r\n\r\n  /**\r\n   * Whether the checkbox is indeterminate. This is also known as \"mixed\" mode and can be used to\r\n   * represent a checkbox with three states, e.g. a checkbox that represents a nested list of\r\n   * checkable items. Note that whenever checkbox is manually clicked, indeterminate is immediately\r\n   * set to false.\r\n   */\r\n  @Input()\r\n  get indeterminate(): boolean { return this._indeterminate }\r\n  set indeterminate(value: boolean) {\r\n    const changed = value !== this._indeterminate\r\n    this._indeterminate = coerceBooleanProperty(value)\r\n\r\n    if (changed) {\r\n      this.indeterminateChange.emit(this._indeterminate)\r\n    }\r\n\r\n    this._syncIndeterminate(this._indeterminate)\r\n  }\r\n  /** @ignore */\r\n  private _indeterminate = false\r\n\r\n  /** Name value will be applied to the input element if present */\r\n  @Input() name: string | null = null\r\n\r\n  /** Event emitted when the checkbox's `checked` value changes. */\r\n  @Output() readonly change = new EventEmitter<TheSeamCheckboxChange>()\r\n\r\n  /** Event emitted when the checkbox's `indeterminate` value changes. */\r\n  @Output() readonly indeterminateChange: EventEmitter<boolean> = new EventEmitter<boolean>()\r\n\r\n  /** The value attribute of the native input element */\r\n  @Input() value: string\r\n\r\n  /**\r\n   * The native `<input type=\"checkbox\">` element\r\n   * @ignore\r\n   */\r\n  @ViewChild('input', { static: true }) _inputElement: ElementRef<HTMLInputElement>\r\n\r\n  /**\r\n   * Called when the checkbox is blurred. Needed to properly implement ControlValueAccessor.\r\n   * @ignore\r\n   */\r\n  _onTouched: () => any = () => {}\r\n\r\n  /** @ignore */\r\n  private _controlValueAccessorChangeFn: (value: any) => void = () => {}\r\n\r\n  constructor(\r\n    elementRef: ElementRef,\r\n    private _changeDetectorRef: ChangeDetectorRef,\r\n    private _focusMonitor: FocusMonitor,\r\n    private _ngZone: NgZone,\r\n    @Attribute('tabindex') tabIndex: string\r\n  ) {\r\n    super(elementRef)\r\n\r\n    this.tabIndex = parseInt(tabIndex, 10) || 0\r\n\r\n    this._focusMonitor.monitor(elementRef, true).subscribe(focusOrigin => {\r\n      if (!focusOrigin) {\r\n        // When a focused element becomes disabled, the browser *immediately* fires a blur event.\r\n        // Angular does not expect events to be raised during change detection, so any state change\r\n        // (such as a form control's 'ng-touched') will cause a changed-after-checked error.\r\n        // See https://github.com/angular/angular/issues/17793. To work around this, we defer\r\n        // telling the form control it has been touched until the next tick.\r\n        Promise.resolve().then(() => {\r\n          this._onTouched()\r\n          _changeDetectorRef.markForCheck()\r\n        })\r\n      }\r\n    })\r\n  }\r\n\r\n  /** @ignore */\r\n  ngOnInit() { }\r\n\r\n  /** @ignore */\r\n  ngOnDestroy() {\r\n    this._focusMonitor.stopMonitoring(this._elementRef)\r\n  }\r\n\r\n  /** @ignore */\r\n  ngAfterViewInit() {\r\n    this._syncIndeterminate(this._indeterminate)\r\n  }\r\n\r\n  /**\r\n   * Method being called whenever the label text changes.\r\n   * @ignore\r\n   */\r\n  _onLabelTextChange() {\r\n    // Since the event of the `cdkObserveContent` directive runs outside of the zone, the checkbox\r\n    // component will be only marked for check, but no actual change detection runs automatically.\r\n    // Instead of going back into the zone in order to trigger a change detection which causes\r\n    // *all* components to be checked (if explicitly marked or not using OnPush), we only trigger\r\n    // an explicit change detection for the checkbox view and its children.\r\n    this._changeDetectorRef.detectChanges()\r\n  }\r\n\r\n  // Implemented as part of ControlValueAccessor.\r\n  /** @ignore */\r\n  writeValue(value: any) {\r\n    this.checked = !!value\r\n  }\r\n\r\n  // Implemented as part of ControlValueAccessor.\r\n  /** @ignore */\r\n  registerOnChange(fn: (value: any) => void) {\r\n    this._controlValueAccessorChangeFn = fn\r\n  }\r\n\r\n  // Implemented as part of ControlValueAccessor.\r\n  /** @ignore */\r\n  registerOnTouched(fn: any) {\r\n    this._onTouched = fn\r\n  }\r\n\r\n  // Implemented as part of ControlValueAccessor.\r\n  /** @ignore */\r\n  setDisabledState(isDisabled: boolean) {\r\n    this.disabled = isDisabled\r\n  }\r\n\r\n  /** @ignore */\r\n  _getAriaChecked(): 'true' | 'false' | 'mixed' {\r\n    return this.checked ? 'true' : (this.indeterminate ? 'mixed' : 'false')\r\n  }\r\n\r\n  /** @ignore */\r\n  private _emitChangeEvent() {\r\n    const event = new TheSeamCheckboxChange()\r\n    event.source = this\r\n    event.checked = this.checked\r\n\r\n    this._controlValueAccessorChangeFn(this.checked)\r\n    this.change.emit(event)\r\n  }\r\n\r\n  /** Toggles the `checked` state of the checkbox. */\r\n  toggle(): void {\r\n    this.checked = !this.checked\r\n  }\r\n\r\n  /**\r\n   * Event handler for checkbox input element.\r\n   * Toggles checked state if element is not disabled.\r\n   * Do not toggle on (change) event since IE doesn't fire change event when\r\n   *   indeterminate checkbox is clicked.\r\n   * @ignore\r\n   */\r\n  _onInputClick(event: Event) {\r\n    // If resetIndeterminate is false, and the current state is indeterminate, do nothing on click\r\n    if (!this.disabled) {\r\n      // When user manually click on the checkbox, `indeterminate` is set to false.\r\n      if (this.indeterminate) {\r\n\r\n        Promise.resolve().then(() => {\r\n          this._indeterminate = false\r\n          this.indeterminateChange.emit(this._indeterminate)\r\n        })\r\n      }\r\n\r\n      this.toggle()\r\n\r\n      // Emit our custom change event if the native input emitted one.\r\n      // It is important to only emit it, if the native input triggered one, because\r\n      // we don't want to trigger a change event, when the `checked` variable changes for example.\r\n      this._emitChangeEvent()\r\n    }\r\n  }\r\n\r\n  /** Focuses the checkbox. */\r\n  focus(origin: FocusOrigin = 'keyboard', options?: FocusOptions): void {\r\n    this._focusMonitor.focusVia(this._inputElement, origin, options)\r\n  }\r\n\r\n  /** @ignore */\r\n  _onInteractionEvent(event: Event) {\r\n    // We always have to stop propagation on the change event.\r\n    // Otherwise the change event, from the input element, will bubble up and\r\n    // emit its event object to the `change` output.\r\n    event.stopPropagation()\r\n  }\r\n\r\n  /**\r\n   * Syncs the indeterminate value with the checkbox DOM node.\r\n   *\r\n   * We sync `indeterminate` directly on the DOM node, because in Ivy the check for whether a\r\n   * property is supported on an element boils down to `if (propName in element)`. Domino's\r\n   * HTMLInputElement doesn't have an `indeterminate` property so Ivy will warn during\r\n   * server-side rendering.\r\n   * @ignore\r\n   */\r\n  private _syncIndeterminate(value: boolean) {\r\n    const nativeCheckbox = this._inputElement\r\n\r\n    if (nativeCheckbox) {\r\n      nativeCheckbox.nativeElement.indeterminate = value\r\n    }\r\n  }\r\n\r\n}\r\n",
             "properties": [
                 {
                     "name": "checked",
@@ -8622,10 +8622,10 @@
         },
         {
             "name": "TheSeamCheckboxComponentBase",
-            "id": "class-TheSeamCheckboxComponentBase-4c5038623f3989b2aeed83e4ab694bc4",
+            "id": "class-TheSeamCheckboxComponentBase-7a31375751d871285749ca33e354dca5",
             "file": "projects/ui-common/src/lib/checkbox/checkbox.component.ts",
             "type": "class",
-            "sourceCode": "import { FocusMonitor, FocusOrigin } from '@angular/cdk/a11y'\r\nimport { coerceBooleanProperty } from '@angular/cdk/coercion'\r\nimport {\r\n  AfterViewInit,\r\n  Attribute,\r\n  ChangeDetectionStrategy,\r\n  ChangeDetectorRef,\r\n  Component,\r\n  ElementRef,\r\n  EventEmitter,\r\n  forwardRef,\r\n  Input,\r\n  NgZone,\r\n  OnDestroy,\r\n  OnInit,\r\n  Output,\r\n  ViewChild\r\n} from '@angular/core'\r\nimport { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'\r\n\r\nimport { CanDisable, CanDisableCtor, HasTabIndex, HasTabIndexCtor, mixinDisabled, mixinTabIndex } from '../core/common-behaviors/index'\r\n\r\n// NOTE: Partially based on mat-checkbox: https://github.com/angular/components/blob/master/src/material/checkbox/checkbox.ts\r\n\r\n/** Change event object emitted by TheSeamCheckboxComponent. */\r\nexport class TheSeamCheckboxChange {\r\n  /** The source TheSeamCheckboxComponent of the event. */\r\n  source: TheSeamCheckboxComponent\r\n  /** The new `checked` value of the checkbox. */\r\n  checked: boolean\r\n}\r\n\r\nexport const THESEAM_CHECKBOX_CONTROL_VALUE_ACCESSOR: any = {\r\n  provide: NG_VALUE_ACCESSOR,\r\n  // tslint:disable-next-line: no-use-before-declare\r\n  useExisting: forwardRef(() => TheSeamCheckboxComponent),\r\n  multi: true\r\n}\r\n\r\nclass TheSeamCheckboxComponentBase {\r\n  constructor(public _elementRef: ElementRef) {}\r\n}\r\n\r\nconst _MatCheckboxMixinBase: HasTabIndexCtor & CanDisableCtor &\r\n  typeof TheSeamCheckboxComponentBase =\r\n    mixinTabIndex(mixinDisabled(TheSeamCheckboxComponentBase))\r\n\r\nlet _uid = 0\r\n\r\n/**\r\n * A Checkbox.\r\n */\r\n@Component({\r\n  selector: 'seam-checkbox',\r\n  templateUrl: './checkbox.component.html',\r\n  styleUrls: ['./checkbox.component.scss'],\r\n  exportAs: 'seamCheckbox',\r\n  host: {\r\n    '[attr.tabindex]': 'null',\r\n    'class': 'custom-control custom-checkbox'\r\n  },\r\n  providers: [ THESEAM_CHECKBOX_CONTROL_VALUE_ACCESSOR ],\r\n  inputs: [ 'tabIndex' ],\r\n  changeDetection: ChangeDetectionStrategy.OnPush\r\n})\r\nexport class TheSeamCheckboxComponent extends _MatCheckboxMixinBase\r\n  implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor, CanDisable, HasTabIndex {\r\n\r\n  /** @ignore */\r\n  private _uid = `seam-chk-${_uid++}`\r\n\r\n  /** A unique id for the checkbox input. If none is supplied, it will be auto-generated. */\r\n  @Input() id: string = this._uid\r\n\r\n  /** Returns the unique id for the input. */\r\n  get inputId(): string { return `${this.id || this._uid}` }\r\n\r\n  /**\r\n   * Attached to the aria-label attribute of the host element. In most cases, aria-labelledby will\r\n   * take precedence so this may be omitted.\r\n   */\r\n  @Input('aria-label') ariaLabel = ''\r\n\r\n  /**\r\n   * Users can specify the `aria-labelledby` attribute which will be forwarded to the input element\r\n   */\r\n  @Input('aria-labelledby') ariaLabelledby: string | null = null\r\n\r\n  /** Whether the checkbox is required. */\r\n  @Input()\r\n  get required(): boolean { return this._required }\r\n  set required(value: boolean) { this._required = coerceBooleanProperty(value) }\r\n  private _required: boolean\r\n\r\n  /**\r\n   * Whether the checkbox is checked.\r\n   */\r\n  @Input()\r\n  get checked(): boolean { return this._checked }\r\n  set checked(value: boolean) {\r\n    if (value !== this.checked) {\r\n      this._checked = value\r\n      this._changeDetectorRef.markForCheck()\r\n    }\r\n  }\r\n  private _checked = false\r\n\r\n  /**\r\n   * Whether the checkbox is disabled. This fully overrides the implementation provided by\r\n   * mixinDisabled, but the mixin is still required because mixinTabIndex requires it.\r\n   */\r\n  @Input()\r\n  get disabled() { return this._disabled }\r\n  set disabled(value: any) {\r\n    const newValue = coerceBooleanProperty(value)\r\n\r\n    if (newValue !== this.disabled) {\r\n      this._disabled = newValue\r\n      this._changeDetectorRef.markForCheck()\r\n    }\r\n  }\r\n  private _disabled = false\r\n\r\n  /**\r\n   * Whether the checkbox is indeterminate. This is also known as \"mixed\" mode and can be used to\r\n   * represent a checkbox with three states, e.g. a checkbox that represents a nested list of\r\n   * checkable items. Note that whenever checkbox is manually clicked, indeterminate is immediately\r\n   * set to false.\r\n   */\r\n  @Input()\r\n  get indeterminate(): boolean { return this._indeterminate }\r\n  set indeterminate(value: boolean) {\r\n    const changed = value !== this._indeterminate\r\n    this._indeterminate = coerceBooleanProperty(value)\r\n\r\n    if (changed) {\r\n      this.indeterminateChange.emit(this._indeterminate)\r\n    }\r\n\r\n    this._syncIndeterminate(this._indeterminate)\r\n  }\r\n  private _indeterminate = false\r\n\r\n  /** Name value will be applied to the input element if present */\r\n  @Input() name: string | null = null\r\n\r\n  /** Event emitted when the checkbox's `checked` value changes. */\r\n  @Output() readonly change = new EventEmitter<TheSeamCheckboxChange>()\r\n\r\n  /** Event emitted when the checkbox's `indeterminate` value changes. */\r\n  @Output() readonly indeterminateChange: EventEmitter<boolean> = new EventEmitter<boolean>()\r\n\r\n  /** The value attribute of the native input element */\r\n  @Input() value: string\r\n\r\n  /** The native `<input type=\"checkbox\">` element */\r\n  @ViewChild('input', { static: true }) _inputElement: ElementRef<HTMLInputElement>\r\n\r\n  /**\r\n   * Called when the checkbox is blurred. Needed to properly implement ControlValueAccessor.\r\n   * @ignore\r\n   */\r\n  _onTouched: () => any = () => {}\r\n\r\n  /** @ignore */\r\n  private _controlValueAccessorChangeFn: (value: any) => void = () => {}\r\n\r\n  constructor(\r\n    elementRef: ElementRef,\r\n    private _changeDetectorRef: ChangeDetectorRef,\r\n    private _focusMonitor: FocusMonitor,\r\n    private _ngZone: NgZone,\r\n    @Attribute('tabindex') tabIndex: string\r\n  ) {\r\n    super(elementRef)\r\n\r\n    this.tabIndex = parseInt(tabIndex, 10) || 0\r\n\r\n    this._focusMonitor.monitor(elementRef, true).subscribe(focusOrigin => {\r\n      if (!focusOrigin) {\r\n        // When a focused element becomes disabled, the browser *immediately* fires a blur event.\r\n        // Angular does not expect events to be raised during change detection, so any state change\r\n        // (such as a form control's 'ng-touched') will cause a changed-after-checked error.\r\n        // See https://github.com/angular/angular/issues/17793. To work around this, we defer\r\n        // telling the form control it has been touched until the next tick.\r\n        Promise.resolve().then(() => {\r\n          this._onTouched()\r\n          _changeDetectorRef.markForCheck()\r\n        })\r\n      }\r\n    })\r\n  }\r\n\r\n  ngOnInit() { }\r\n\r\n  ngOnDestroy() {\r\n    this._focusMonitor.stopMonitoring(this._elementRef)\r\n  }\r\n\r\n  ngAfterViewInit() {\r\n    this._syncIndeterminate(this._indeterminate)\r\n  }\r\n\r\n  /**\r\n   * Method being called whenever the label text changes.\r\n   * @ignore\r\n   */\r\n  _onLabelTextChange() {\r\n    // Since the event of the `cdkObserveContent` directive runs outside of the zone, the checkbox\r\n    // component will be only marked for check, but no actual change detection runs automatically.\r\n    // Instead of going back into the zone in order to trigger a change detection which causes\r\n    // *all* components to be checked (if explicitly marked or not using OnPush), we only trigger\r\n    // an explicit change detection for the checkbox view and its children.\r\n    this._changeDetectorRef.detectChanges()\r\n  }\r\n\r\n  // Implemented as part of ControlValueAccessor.\r\n  writeValue(value: any) {\r\n    this.checked = !!value\r\n  }\r\n\r\n  // Implemented as part of ControlValueAccessor.\r\n  registerOnChange(fn: (value: any) => void) {\r\n    this._controlValueAccessorChangeFn = fn\r\n  }\r\n\r\n  // Implemented as part of ControlValueAccessor.\r\n  registerOnTouched(fn: any) {\r\n    this._onTouched = fn\r\n  }\r\n\r\n  // Implemented as part of ControlValueAccessor.\r\n  setDisabledState(isDisabled: boolean) {\r\n    this.disabled = isDisabled\r\n  }\r\n\r\n  /** @ignore */\r\n  _getAriaChecked(): 'true' | 'false' | 'mixed' {\r\n    return this.checked ? 'true' : (this.indeterminate ? 'mixed' : 'false')\r\n  }\r\n\r\n  /** @ignore */\r\n  private _emitChangeEvent() {\r\n    const event = new TheSeamCheckboxChange()\r\n    event.source = this\r\n    event.checked = this.checked\r\n\r\n    this._controlValueAccessorChangeFn(this.checked)\r\n    this.change.emit(event)\r\n  }\r\n\r\n  /** Toggles the `checked` state of the checkbox. */\r\n  toggle(): void {\r\n    this.checked = !this.checked\r\n  }\r\n\r\n  /**\r\n   * Event handler for checkbox input element.\r\n   * Toggles checked state if element is not disabled.\r\n   * Do not toggle on (change) event since IE doesn't fire change event when\r\n   *   indeterminate checkbox is clicked.\r\n   * @ignore\r\n   */\r\n  _onInputClick(event: Event) {\r\n    // If resetIndeterminate is false, and the current state is indeterminate, do nothing on click\r\n    if (!this.disabled) {\r\n      // When user manually click on the checkbox, `indeterminate` is set to false.\r\n      if (this.indeterminate) {\r\n\r\n        Promise.resolve().then(() => {\r\n          this._indeterminate = false\r\n          this.indeterminateChange.emit(this._indeterminate)\r\n        })\r\n      }\r\n\r\n      this.toggle()\r\n\r\n      // Emit our custom change event if the native input emitted one.\r\n      // It is important to only emit it, if the native input triggered one, because\r\n      // we don't want to trigger a change event, when the `checked` variable changes for example.\r\n      this._emitChangeEvent()\r\n    }\r\n  }\r\n\r\n  /** Focuses the checkbox. */\r\n  focus(origin: FocusOrigin = 'keyboard', options?: FocusOptions): void {\r\n    this._focusMonitor.focusVia(this._inputElement, origin, options)\r\n  }\r\n\r\n  /** @ignore */\r\n  _onInteractionEvent(event: Event) {\r\n    // We always have to stop propagation on the change event.\r\n    // Otherwise the change event, from the input element, will bubble up and\r\n    // emit its event object to the `change` output.\r\n    event.stopPropagation()\r\n  }\r\n\r\n  /**\r\n   * Syncs the indeterminate value with the checkbox DOM node.\r\n   *\r\n   * We sync `indeterminate` directly on the DOM node, because in Ivy the check for whether a\r\n   * property is supported on an element boils down to `if (propName in element)`. Domino's\r\n   * HTMLInputElement doesn't have an `indeterminate` property so Ivy will warn during\r\n   * server-side rendering.\r\n   * @ignore\r\n   */\r\n  private _syncIndeterminate(value: boolean) {\r\n    const nativeCheckbox = this._inputElement\r\n\r\n    if (nativeCheckbox) {\r\n      nativeCheckbox.nativeElement.indeterminate = value\r\n    }\r\n  }\r\n\r\n}\r\n",
+            "sourceCode": "import { FocusMonitor, FocusOrigin } from '@angular/cdk/a11y'\r\nimport { coerceBooleanProperty } from '@angular/cdk/coercion'\r\nimport {\r\n  AfterViewInit,\r\n  Attribute,\r\n  ChangeDetectionStrategy,\r\n  ChangeDetectorRef,\r\n  Component,\r\n  ElementRef,\r\n  EventEmitter,\r\n  forwardRef,\r\n  Input,\r\n  NgZone,\r\n  OnDestroy,\r\n  OnInit,\r\n  Output,\r\n  ViewChild\r\n} from '@angular/core'\r\nimport { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'\r\n\r\nimport { CanDisable, CanDisableCtor, HasTabIndex, HasTabIndexCtor, mixinDisabled, mixinTabIndex } from '../core/common-behaviors/index'\r\n\r\n// NOTE: Partially based on mat-checkbox: https://github.com/angular/components/blob/master/src/material/checkbox/checkbox.ts\r\n\r\n/** Change event object emitted by TheSeamCheckboxComponent. */\r\nexport class TheSeamCheckboxChange {\r\n  /** The source TheSeamCheckboxComponent of the event. */\r\n  source: TheSeamCheckboxComponent\r\n  /** The new `checked` value of the checkbox. */\r\n  checked: boolean\r\n}\r\n\r\nexport const THESEAM_CHECKBOX_CONTROL_VALUE_ACCESSOR: any = {\r\n  provide: NG_VALUE_ACCESSOR,\r\n  // tslint:disable-next-line: no-use-before-declare\r\n  useExisting: forwardRef(() => TheSeamCheckboxComponent),\r\n  multi: true\r\n}\r\n\r\nclass TheSeamCheckboxComponentBase {\r\n  constructor(public _elementRef: ElementRef) {}\r\n}\r\n\r\nconst _MatCheckboxMixinBase: HasTabIndexCtor & CanDisableCtor &\r\n  typeof TheSeamCheckboxComponentBase =\r\n    mixinTabIndex(mixinDisabled(TheSeamCheckboxComponentBase))\r\n\r\nlet _uid = 0\r\n\r\n/**\r\n * A Checkbox.\r\n */\r\n@Component({\r\n  selector: 'seam-checkbox',\r\n  templateUrl: './checkbox.component.html',\r\n  styleUrls: ['./checkbox.component.scss'],\r\n  exportAs: 'seamCheckbox',\r\n  host: {\r\n    '[attr.tabindex]': 'null',\r\n    'class': 'custom-control custom-checkbox'\r\n  },\r\n  providers: [ THESEAM_CHECKBOX_CONTROL_VALUE_ACCESSOR ],\r\n  inputs: [ 'tabIndex' ],\r\n  changeDetection: ChangeDetectionStrategy.OnPush\r\n})\r\nexport class TheSeamCheckboxComponent extends _MatCheckboxMixinBase\r\n  implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor, CanDisable, HasTabIndex {\r\n\r\n  /** @ignore */\r\n  private _uid = `seam-chk-${_uid++}`\r\n\r\n  /** A unique id for the checkbox input. If none is supplied, it will be auto-generated. */\r\n  @Input() id?: string = this._uid\r\n\r\n  /** Returns the unique id for the input. */\r\n  get inputId(): string { return `${this.id || this._uid}` }\r\n\r\n  /**\r\n   * Attached to the aria-label attribute of the host element. In most cases, aria-labelledby will\r\n   * take precedence so this may be omitted.\r\n   */\r\n  @Input('aria-label') ariaLabel?: string = ''\r\n\r\n  /**\r\n   * Users can specify the `aria-labelledby` attribute which will be forwarded to the input element\r\n   */\r\n  @Input('aria-labelledby') ariaLabelledby?: string | null = null\r\n\r\n  /** Whether the checkbox is required. */\r\n  @Input()\r\n  get required(): boolean { return this._required }\r\n  set required(value: boolean) { this._required = coerceBooleanProperty(value) }\r\n  /** @ignore */\r\n  private _required: boolean\r\n\r\n  /**\r\n   * Whether the checkbox is checked.\r\n   */\r\n  @Input()\r\n  get checked(): boolean { return this._checked }\r\n  set checked(value: boolean) {\r\n    if (value !== this.checked) {\r\n      this._checked = value\r\n      this._changeDetectorRef.markForCheck()\r\n    }\r\n  }\r\n  /** @ignore */\r\n  private _checked = false\r\n\r\n  /**\r\n   * Whether the checkbox is disabled.\r\n   */\r\n  // This fully overrides the implementation provided by mixinDisabled, but the\r\n  // mixin is still required because mixinTabIndex requires it.\r\n  @Input()\r\n  get disabled(): boolean { return this._disabled }\r\n  set disabled(value: boolean) {\r\n    const newValue = coerceBooleanProperty(value)\r\n\r\n    if (newValue !== this.disabled) {\r\n      this._disabled = newValue\r\n      this._changeDetectorRef.markForCheck()\r\n    }\r\n  }\r\n  /** @ignore */\r\n  private _disabled = false\r\n\r\n  /**\r\n   * Whether the checkbox is indeterminate. This is also known as \"mixed\" mode and can be used to\r\n   * represent a checkbox with three states, e.g. a checkbox that represents a nested list of\r\n   * checkable items. Note that whenever checkbox is manually clicked, indeterminate is immediately\r\n   * set to false.\r\n   */\r\n  @Input()\r\n  get indeterminate(): boolean { return this._indeterminate }\r\n  set indeterminate(value: boolean) {\r\n    const changed = value !== this._indeterminate\r\n    this._indeterminate = coerceBooleanProperty(value)\r\n\r\n    if (changed) {\r\n      this.indeterminateChange.emit(this._indeterminate)\r\n    }\r\n\r\n    this._syncIndeterminate(this._indeterminate)\r\n  }\r\n  /** @ignore */\r\n  private _indeterminate = false\r\n\r\n  /** Name value will be applied to the input element if present */\r\n  @Input() name: string | null = null\r\n\r\n  /** Event emitted when the checkbox's `checked` value changes. */\r\n  @Output() readonly change = new EventEmitter<TheSeamCheckboxChange>()\r\n\r\n  /** Event emitted when the checkbox's `indeterminate` value changes. */\r\n  @Output() readonly indeterminateChange: EventEmitter<boolean> = new EventEmitter<boolean>()\r\n\r\n  /** The value attribute of the native input element */\r\n  @Input() value: string\r\n\r\n  /**\r\n   * The native `<input type=\"checkbox\">` element\r\n   * @ignore\r\n   */\r\n  @ViewChild('input', { static: true }) _inputElement: ElementRef<HTMLInputElement>\r\n\r\n  /**\r\n   * Called when the checkbox is blurred. Needed to properly implement ControlValueAccessor.\r\n   * @ignore\r\n   */\r\n  _onTouched: () => any = () => {}\r\n\r\n  /** @ignore */\r\n  private _controlValueAccessorChangeFn: (value: any) => void = () => {}\r\n\r\n  constructor(\r\n    elementRef: ElementRef,\r\n    private _changeDetectorRef: ChangeDetectorRef,\r\n    private _focusMonitor: FocusMonitor,\r\n    private _ngZone: NgZone,\r\n    @Attribute('tabindex') tabIndex: string\r\n  ) {\r\n    super(elementRef)\r\n\r\n    this.tabIndex = parseInt(tabIndex, 10) || 0\r\n\r\n    this._focusMonitor.monitor(elementRef, true).subscribe(focusOrigin => {\r\n      if (!focusOrigin) {\r\n        // When a focused element becomes disabled, the browser *immediately* fires a blur event.\r\n        // Angular does not expect events to be raised during change detection, so any state change\r\n        // (such as a form control's 'ng-touched') will cause a changed-after-checked error.\r\n        // See https://github.com/angular/angular/issues/17793. To work around this, we defer\r\n        // telling the form control it has been touched until the next tick.\r\n        Promise.resolve().then(() => {\r\n          this._onTouched()\r\n          _changeDetectorRef.markForCheck()\r\n        })\r\n      }\r\n    })\r\n  }\r\n\r\n  /** @ignore */\r\n  ngOnInit() { }\r\n\r\n  /** @ignore */\r\n  ngOnDestroy() {\r\n    this._focusMonitor.stopMonitoring(this._elementRef)\r\n  }\r\n\r\n  /** @ignore */\r\n  ngAfterViewInit() {\r\n    this._syncIndeterminate(this._indeterminate)\r\n  }\r\n\r\n  /**\r\n   * Method being called whenever the label text changes.\r\n   * @ignore\r\n   */\r\n  _onLabelTextChange() {\r\n    // Since the event of the `cdkObserveContent` directive runs outside of the zone, the checkbox\r\n    // component will be only marked for check, but no actual change detection runs automatically.\r\n    // Instead of going back into the zone in order to trigger a change detection which causes\r\n    // *all* components to be checked (if explicitly marked or not using OnPush), we only trigger\r\n    // an explicit change detection for the checkbox view and its children.\r\n    this._changeDetectorRef.detectChanges()\r\n  }\r\n\r\n  // Implemented as part of ControlValueAccessor.\r\n  /** @ignore */\r\n  writeValue(value: any) {\r\n    this.checked = !!value\r\n  }\r\n\r\n  // Implemented as part of ControlValueAccessor.\r\n  /** @ignore */\r\n  registerOnChange(fn: (value: any) => void) {\r\n    this._controlValueAccessorChangeFn = fn\r\n  }\r\n\r\n  // Implemented as part of ControlValueAccessor.\r\n  /** @ignore */\r\n  registerOnTouched(fn: any) {\r\n    this._onTouched = fn\r\n  }\r\n\r\n  // Implemented as part of ControlValueAccessor.\r\n  /** @ignore */\r\n  setDisabledState(isDisabled: boolean) {\r\n    this.disabled = isDisabled\r\n  }\r\n\r\n  /** @ignore */\r\n  _getAriaChecked(): 'true' | 'false' | 'mixed' {\r\n    return this.checked ? 'true' : (this.indeterminate ? 'mixed' : 'false')\r\n  }\r\n\r\n  /** @ignore */\r\n  private _emitChangeEvent() {\r\n    const event = new TheSeamCheckboxChange()\r\n    event.source = this\r\n    event.checked = this.checked\r\n\r\n    this._controlValueAccessorChangeFn(this.checked)\r\n    this.change.emit(event)\r\n  }\r\n\r\n  /** Toggles the `checked` state of the checkbox. */\r\n  toggle(): void {\r\n    this.checked = !this.checked\r\n  }\r\n\r\n  /**\r\n   * Event handler for checkbox input element.\r\n   * Toggles checked state if element is not disabled.\r\n   * Do not toggle on (change) event since IE doesn't fire change event when\r\n   *   indeterminate checkbox is clicked.\r\n   * @ignore\r\n   */\r\n  _onInputClick(event: Event) {\r\n    // If resetIndeterminate is false, and the current state is indeterminate, do nothing on click\r\n    if (!this.disabled) {\r\n      // When user manually click on the checkbox, `indeterminate` is set to false.\r\n      if (this.indeterminate) {\r\n\r\n        Promise.resolve().then(() => {\r\n          this._indeterminate = false\r\n          this.indeterminateChange.emit(this._indeterminate)\r\n        })\r\n      }\r\n\r\n      this.toggle()\r\n\r\n      // Emit our custom change event if the native input emitted one.\r\n      // It is important to only emit it, if the native input triggered one, because\r\n      // we don't want to trigger a change event, when the `checked` variable changes for example.\r\n      this._emitChangeEvent()\r\n    }\r\n  }\r\n\r\n  /** Focuses the checkbox. */\r\n  focus(origin: FocusOrigin = 'keyboard', options?: FocusOptions): void {\r\n    this._focusMonitor.focusVia(this._inputElement, origin, options)\r\n  }\r\n\r\n  /** @ignore */\r\n  _onInteractionEvent(event: Event) {\r\n    // We always have to stop propagation on the change event.\r\n    // Otherwise the change event, from the input element, will bubble up and\r\n    // emit its event object to the `change` output.\r\n    event.stopPropagation()\r\n  }\r\n\r\n  /**\r\n   * Syncs the indeterminate value with the checkbox DOM node.\r\n   *\r\n   * We sync `indeterminate` directly on the DOM node, because in Ivy the check for whether a\r\n   * property is supported on an element boils down to `if (propName in element)`. Domino's\r\n   * HTMLInputElement doesn't have an `indeterminate` property so Ivy will warn during\r\n   * server-side rendering.\r\n   * @ignore\r\n   */\r\n  private _syncIndeterminate(value: boolean) {\r\n    const nativeCheckbox = this._inputElement\r\n\r\n    if (nativeCheckbox) {\r\n      nativeCheckbox.nativeElement.indeterminate = value\r\n    }\r\n  }\r\n\r\n}\r\n",
             "constructorObj": {
                 "name": "constructor",
                 "description": "",
@@ -29504,7 +29504,7 @@
         },
         {
             "name": "TheSeamCheckboxComponent",
-            "id": "component-TheSeamCheckboxComponent-4c5038623f3989b2aeed83e4ab694bc4",
+            "id": "component-TheSeamCheckboxComponent-7a31375751d871285749ca33e354dca5",
             "file": "projects/ui-common/src/lib/checkbox/checkbox.component.ts",
             "changeDetection": "ChangeDetectionStrategy.OnPush",
             "encapsulation": [],
@@ -29534,7 +29534,8 @@
                     "name": "aria-label",
                     "defaultValue": "''",
                     "description": "<p>Attached to the aria-label attribute of the host element. In most cases, aria-labelledby will\ntake precedence so this may be omitted.</p>\n",
-                    "line": 82
+                    "line": 82,
+                    "type": "string"
                 },
                 {
                     "name": "aria-labelledby",
@@ -29546,13 +29547,14 @@
                 {
                     "name": "checked",
                     "description": "<p>Whether the checkbox is checked.</p>\n",
-                    "line": 99,
+                    "line": 100,
                     "type": "boolean"
                 },
                 {
                     "name": "disabled",
-                    "description": "<p>Whether the checkbox is disabled. This fully overrides the implementation provided by\nmixinDisabled, but the mixin is still required because mixinTabIndex requires it.</p>\n",
-                    "line": 113
+                    "description": "<p>Whether the checkbox is disabled.</p>\n",
+                    "line": 116,
+                    "type": "boolean"
                 },
                 {
                     "name": "id",
@@ -29564,14 +29566,14 @@
                 {
                     "name": "indeterminate",
                     "description": "<p>Whether the checkbox is indeterminate. This is also known as &quot;mixed&quot; mode and can be used to\nrepresent a checkbox with three states, e.g. a checkbox that represents a nested list of\ncheckable items. Note that whenever checkbox is manually clicked, indeterminate is immediately\nset to false.</p>\n",
-                    "line": 131,
+                    "line": 135,
                     "type": "boolean"
                 },
                 {
                     "name": "name",
                     "defaultValue": "null",
                     "description": "<p>Name value will be applied to the input element if present </p>\n",
-                    "line": 145,
+                    "line": 150,
                     "type": "string | null"
                 },
                 {
@@ -29583,7 +29585,7 @@
                 {
                     "name": "value",
                     "description": "<p>The value attribute of the native input element </p>\n",
-                    "line": 154,
+                    "line": 159,
                     "type": "string"
                 }
             ],
@@ -29592,75 +29594,18 @@
                     "name": "change",
                     "defaultValue": "new EventEmitter<TheSeamCheckboxChange>()",
                     "description": "<p>Event emitted when the checkbox&#39;s <code>checked</code> value changes. </p>\n",
-                    "line": 148,
+                    "line": 153,
                     "type": "EventEmitter"
                 },
                 {
                     "name": "indeterminateChange",
                     "defaultValue": "new EventEmitter<boolean>()",
                     "description": "<p>Event emitted when the checkbox&#39;s <code>indeterminate</code> value changes. </p>\n",
-                    "line": 151,
+                    "line": 156,
                     "type": "EventEmitter<boolean>"
                 }
             ],
-            "propertiesClass": [
-                {
-                    "name": "_checked",
-                    "defaultValue": "false",
-                    "type": "",
-                    "optional": false,
-                    "description": "",
-                    "line": 106,
-                    "modifierKind": [
-                        112
-                    ]
-                },
-                {
-                    "name": "_disabled",
-                    "defaultValue": "false",
-                    "type": "",
-                    "optional": false,
-                    "description": "",
-                    "line": 122,
-                    "modifierKind": [
-                        112
-                    ]
-                },
-                {
-                    "name": "_indeterminate",
-                    "defaultValue": "false",
-                    "type": "",
-                    "optional": false,
-                    "description": "",
-                    "line": 142,
-                    "modifierKind": [
-                        112
-                    ]
-                },
-                {
-                    "name": "_inputElement",
-                    "type": "ElementRef<HTMLInputElement>",
-                    "optional": false,
-                    "description": "<p>The native <code>&lt;input type=&quot;checkbox&quot;&gt;</code> element </p>\n",
-                    "line": 157,
-                    "decorators": [
-                        {
-                            "name": "ViewChild",
-                            "stringifiedArguments": "'input', {static: true}"
-                        }
-                    ]
-                },
-                {
-                    "name": "_required",
-                    "type": "boolean",
-                    "optional": false,
-                    "description": "",
-                    "line": 93,
-                    "modifierKind": [
-                        112
-                    ]
-                }
-            ],
+            "propertiesClass": [],
             "methodsClass": [
                 {
                     "name": "focus",
@@ -29679,7 +29624,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 286,
+                    "line": 301,
                     "description": "<p>Focuses the checkbox. </p>\n",
                     "jsdoctags": [
                         {
@@ -29701,137 +29646,13 @@
                     ]
                 },
                 {
-                    "name": "ngAfterViewInit",
-                    "args": [],
-                    "optional": false,
-                    "returnType": "void",
-                    "typeParameters": [],
-                    "line": 200
-                },
-                {
-                    "name": "ngOnDestroy",
-                    "args": [],
-                    "optional": false,
-                    "returnType": "void",
-                    "typeParameters": [],
-                    "line": 196
-                },
-                {
-                    "name": "ngOnInit",
-                    "args": [],
-                    "optional": false,
-                    "returnType": "void",
-                    "typeParameters": [],
-                    "line": 194
-                },
-                {
-                    "name": "registerOnChange",
-                    "args": [
-                        {
-                            "name": "fn",
-                            "type": "function",
-                            "function": [
-                                {
-                                    "name": "value",
-                                    "type": "any"
-                                }
-                            ]
-                        }
-                    ],
-                    "optional": false,
-                    "returnType": "void",
-                    "typeParameters": [],
-                    "line": 223,
-                    "jsdoctags": [
-                        {
-                            "name": "fn",
-                            "type": "function",
-                            "function": [
-                                {
-                                    "name": "value",
-                                    "type": "any"
-                                }
-                            ],
-                            "tagName": {
-                                "text": "param"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "name": "registerOnTouched",
-                    "args": [
-                        {
-                            "name": "fn",
-                            "type": "any"
-                        }
-                    ],
-                    "optional": false,
-                    "returnType": "void",
-                    "typeParameters": [],
-                    "line": 228,
-                    "jsdoctags": [
-                        {
-                            "name": "fn",
-                            "type": "any",
-                            "tagName": {
-                                "text": "param"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "name": "setDisabledState",
-                    "args": [
-                        {
-                            "name": "isDisabled",
-                            "type": "boolean"
-                        }
-                    ],
-                    "optional": false,
-                    "returnType": "void",
-                    "typeParameters": [],
-                    "line": 233,
-                    "jsdoctags": [
-                        {
-                            "name": "isDisabled",
-                            "type": "boolean",
-                            "tagName": {
-                                "text": "param"
-                            }
-                        }
-                    ]
-                },
-                {
                     "name": "toggle",
                     "args": [],
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 253,
+                    "line": 268,
                     "description": "<p>Toggles the <code>checked</code> state of the checkbox. </p>\n"
-                },
-                {
-                    "name": "writeValue",
-                    "args": [
-                        {
-                            "name": "value",
-                            "type": "any"
-                        }
-                    ],
-                    "optional": false,
-                    "returnType": "void",
-                    "typeParameters": [],
-                    "line": 218,
-                    "jsdoctags": [
-                        {
-                            "name": "value",
-                            "type": "any",
-                            "tagName": {
-                                "text": "param"
-                            }
-                        }
-                    ]
                 }
             ],
             "hostBindings": [],
@@ -29839,7 +29660,7 @@
             "description": "<p>A Checkbox.</p>\n",
             "rawdescription": "A Checkbox.",
             "type": "component",
-            "sourceCode": "import { FocusMonitor, FocusOrigin } from '@angular/cdk/a11y'\r\nimport { coerceBooleanProperty } from '@angular/cdk/coercion'\r\nimport {\r\n  AfterViewInit,\r\n  Attribute,\r\n  ChangeDetectionStrategy,\r\n  ChangeDetectorRef,\r\n  Component,\r\n  ElementRef,\r\n  EventEmitter,\r\n  forwardRef,\r\n  Input,\r\n  NgZone,\r\n  OnDestroy,\r\n  OnInit,\r\n  Output,\r\n  ViewChild\r\n} from '@angular/core'\r\nimport { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'\r\n\r\nimport { CanDisable, CanDisableCtor, HasTabIndex, HasTabIndexCtor, mixinDisabled, mixinTabIndex } from '../core/common-behaviors/index'\r\n\r\n// NOTE: Partially based on mat-checkbox: https://github.com/angular/components/blob/master/src/material/checkbox/checkbox.ts\r\n\r\n/** Change event object emitted by TheSeamCheckboxComponent. */\r\nexport class TheSeamCheckboxChange {\r\n  /** The source TheSeamCheckboxComponent of the event. */\r\n  source: TheSeamCheckboxComponent\r\n  /** The new `checked` value of the checkbox. */\r\n  checked: boolean\r\n}\r\n\r\nexport const THESEAM_CHECKBOX_CONTROL_VALUE_ACCESSOR: any = {\r\n  provide: NG_VALUE_ACCESSOR,\r\n  // tslint:disable-next-line: no-use-before-declare\r\n  useExisting: forwardRef(() => TheSeamCheckboxComponent),\r\n  multi: true\r\n}\r\n\r\nclass TheSeamCheckboxComponentBase {\r\n  constructor(public _elementRef: ElementRef) {}\r\n}\r\n\r\nconst _MatCheckboxMixinBase: HasTabIndexCtor & CanDisableCtor &\r\n  typeof TheSeamCheckboxComponentBase =\r\n    mixinTabIndex(mixinDisabled(TheSeamCheckboxComponentBase))\r\n\r\nlet _uid = 0\r\n\r\n/**\r\n * A Checkbox.\r\n */\r\n@Component({\r\n  selector: 'seam-checkbox',\r\n  templateUrl: './checkbox.component.html',\r\n  styleUrls: ['./checkbox.component.scss'],\r\n  exportAs: 'seamCheckbox',\r\n  host: {\r\n    '[attr.tabindex]': 'null',\r\n    'class': 'custom-control custom-checkbox'\r\n  },\r\n  providers: [ THESEAM_CHECKBOX_CONTROL_VALUE_ACCESSOR ],\r\n  inputs: [ 'tabIndex' ],\r\n  changeDetection: ChangeDetectionStrategy.OnPush\r\n})\r\nexport class TheSeamCheckboxComponent extends _MatCheckboxMixinBase\r\n  implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor, CanDisable, HasTabIndex {\r\n\r\n  /** @ignore */\r\n  private _uid = `seam-chk-${_uid++}`\r\n\r\n  /** A unique id for the checkbox input. If none is supplied, it will be auto-generated. */\r\n  @Input() id: string = this._uid\r\n\r\n  /** Returns the unique id for the input. */\r\n  get inputId(): string { return `${this.id || this._uid}` }\r\n\r\n  /**\r\n   * Attached to the aria-label attribute of the host element. In most cases, aria-labelledby will\r\n   * take precedence so this may be omitted.\r\n   */\r\n  @Input('aria-label') ariaLabel = ''\r\n\r\n  /**\r\n   * Users can specify the `aria-labelledby` attribute which will be forwarded to the input element\r\n   */\r\n  @Input('aria-labelledby') ariaLabelledby: string | null = null\r\n\r\n  /** Whether the checkbox is required. */\r\n  @Input()\r\n  get required(): boolean { return this._required }\r\n  set required(value: boolean) { this._required = coerceBooleanProperty(value) }\r\n  private _required: boolean\r\n\r\n  /**\r\n   * Whether the checkbox is checked.\r\n   */\r\n  @Input()\r\n  get checked(): boolean { return this._checked }\r\n  set checked(value: boolean) {\r\n    if (value !== this.checked) {\r\n      this._checked = value\r\n      this._changeDetectorRef.markForCheck()\r\n    }\r\n  }\r\n  private _checked = false\r\n\r\n  /**\r\n   * Whether the checkbox is disabled. This fully overrides the implementation provided by\r\n   * mixinDisabled, but the mixin is still required because mixinTabIndex requires it.\r\n   */\r\n  @Input()\r\n  get disabled() { return this._disabled }\r\n  set disabled(value: any) {\r\n    const newValue = coerceBooleanProperty(value)\r\n\r\n    if (newValue !== this.disabled) {\r\n      this._disabled = newValue\r\n      this._changeDetectorRef.markForCheck()\r\n    }\r\n  }\r\n  private _disabled = false\r\n\r\n  /**\r\n   * Whether the checkbox is indeterminate. This is also known as \"mixed\" mode and can be used to\r\n   * represent a checkbox with three states, e.g. a checkbox that represents a nested list of\r\n   * checkable items. Note that whenever checkbox is manually clicked, indeterminate is immediately\r\n   * set to false.\r\n   */\r\n  @Input()\r\n  get indeterminate(): boolean { return this._indeterminate }\r\n  set indeterminate(value: boolean) {\r\n    const changed = value !== this._indeterminate\r\n    this._indeterminate = coerceBooleanProperty(value)\r\n\r\n    if (changed) {\r\n      this.indeterminateChange.emit(this._indeterminate)\r\n    }\r\n\r\n    this._syncIndeterminate(this._indeterminate)\r\n  }\r\n  private _indeterminate = false\r\n\r\n  /** Name value will be applied to the input element if present */\r\n  @Input() name: string | null = null\r\n\r\n  /** Event emitted when the checkbox's `checked` value changes. */\r\n  @Output() readonly change = new EventEmitter<TheSeamCheckboxChange>()\r\n\r\n  /** Event emitted when the checkbox's `indeterminate` value changes. */\r\n  @Output() readonly indeterminateChange: EventEmitter<boolean> = new EventEmitter<boolean>()\r\n\r\n  /** The value attribute of the native input element */\r\n  @Input() value: string\r\n\r\n  /** The native `<input type=\"checkbox\">` element */\r\n  @ViewChild('input', { static: true }) _inputElement: ElementRef<HTMLInputElement>\r\n\r\n  /**\r\n   * Called when the checkbox is blurred. Needed to properly implement ControlValueAccessor.\r\n   * @ignore\r\n   */\r\n  _onTouched: () => any = () => {}\r\n\r\n  /** @ignore */\r\n  private _controlValueAccessorChangeFn: (value: any) => void = () => {}\r\n\r\n  constructor(\r\n    elementRef: ElementRef,\r\n    private _changeDetectorRef: ChangeDetectorRef,\r\n    private _focusMonitor: FocusMonitor,\r\n    private _ngZone: NgZone,\r\n    @Attribute('tabindex') tabIndex: string\r\n  ) {\r\n    super(elementRef)\r\n\r\n    this.tabIndex = parseInt(tabIndex, 10) || 0\r\n\r\n    this._focusMonitor.monitor(elementRef, true).subscribe(focusOrigin => {\r\n      if (!focusOrigin) {\r\n        // When a focused element becomes disabled, the browser *immediately* fires a blur event.\r\n        // Angular does not expect events to be raised during change detection, so any state change\r\n        // (such as a form control's 'ng-touched') will cause a changed-after-checked error.\r\n        // See https://github.com/angular/angular/issues/17793. To work around this, we defer\r\n        // telling the form control it has been touched until the next tick.\r\n        Promise.resolve().then(() => {\r\n          this._onTouched()\r\n          _changeDetectorRef.markForCheck()\r\n        })\r\n      }\r\n    })\r\n  }\r\n\r\n  ngOnInit() { }\r\n\r\n  ngOnDestroy() {\r\n    this._focusMonitor.stopMonitoring(this._elementRef)\r\n  }\r\n\r\n  ngAfterViewInit() {\r\n    this._syncIndeterminate(this._indeterminate)\r\n  }\r\n\r\n  /**\r\n   * Method being called whenever the label text changes.\r\n   * @ignore\r\n   */\r\n  _onLabelTextChange() {\r\n    // Since the event of the `cdkObserveContent` directive runs outside of the zone, the checkbox\r\n    // component will be only marked for check, but no actual change detection runs automatically.\r\n    // Instead of going back into the zone in order to trigger a change detection which causes\r\n    // *all* components to be checked (if explicitly marked or not using OnPush), we only trigger\r\n    // an explicit change detection for the checkbox view and its children.\r\n    this._changeDetectorRef.detectChanges()\r\n  }\r\n\r\n  // Implemented as part of ControlValueAccessor.\r\n  writeValue(value: any) {\r\n    this.checked = !!value\r\n  }\r\n\r\n  // Implemented as part of ControlValueAccessor.\r\n  registerOnChange(fn: (value: any) => void) {\r\n    this._controlValueAccessorChangeFn = fn\r\n  }\r\n\r\n  // Implemented as part of ControlValueAccessor.\r\n  registerOnTouched(fn: any) {\r\n    this._onTouched = fn\r\n  }\r\n\r\n  // Implemented as part of ControlValueAccessor.\r\n  setDisabledState(isDisabled: boolean) {\r\n    this.disabled = isDisabled\r\n  }\r\n\r\n  /** @ignore */\r\n  _getAriaChecked(): 'true' | 'false' | 'mixed' {\r\n    return this.checked ? 'true' : (this.indeterminate ? 'mixed' : 'false')\r\n  }\r\n\r\n  /** @ignore */\r\n  private _emitChangeEvent() {\r\n    const event = new TheSeamCheckboxChange()\r\n    event.source = this\r\n    event.checked = this.checked\r\n\r\n    this._controlValueAccessorChangeFn(this.checked)\r\n    this.change.emit(event)\r\n  }\r\n\r\n  /** Toggles the `checked` state of the checkbox. */\r\n  toggle(): void {\r\n    this.checked = !this.checked\r\n  }\r\n\r\n  /**\r\n   * Event handler for checkbox input element.\r\n   * Toggles checked state if element is not disabled.\r\n   * Do not toggle on (change) event since IE doesn't fire change event when\r\n   *   indeterminate checkbox is clicked.\r\n   * @ignore\r\n   */\r\n  _onInputClick(event: Event) {\r\n    // If resetIndeterminate is false, and the current state is indeterminate, do nothing on click\r\n    if (!this.disabled) {\r\n      // When user manually click on the checkbox, `indeterminate` is set to false.\r\n      if (this.indeterminate) {\r\n\r\n        Promise.resolve().then(() => {\r\n          this._indeterminate = false\r\n          this.indeterminateChange.emit(this._indeterminate)\r\n        })\r\n      }\r\n\r\n      this.toggle()\r\n\r\n      // Emit our custom change event if the native input emitted one.\r\n      // It is important to only emit it, if the native input triggered one, because\r\n      // we don't want to trigger a change event, when the `checked` variable changes for example.\r\n      this._emitChangeEvent()\r\n    }\r\n  }\r\n\r\n  /** Focuses the checkbox. */\r\n  focus(origin: FocusOrigin = 'keyboard', options?: FocusOptions): void {\r\n    this._focusMonitor.focusVia(this._inputElement, origin, options)\r\n  }\r\n\r\n  /** @ignore */\r\n  _onInteractionEvent(event: Event) {\r\n    // We always have to stop propagation on the change event.\r\n    // Otherwise the change event, from the input element, will bubble up and\r\n    // emit its event object to the `change` output.\r\n    event.stopPropagation()\r\n  }\r\n\r\n  /**\r\n   * Syncs the indeterminate value with the checkbox DOM node.\r\n   *\r\n   * We sync `indeterminate` directly on the DOM node, because in Ivy the check for whether a\r\n   * property is supported on an element boils down to `if (propName in element)`. Domino's\r\n   * HTMLInputElement doesn't have an `indeterminate` property so Ivy will warn during\r\n   * server-side rendering.\r\n   * @ignore\r\n   */\r\n  private _syncIndeterminate(value: boolean) {\r\n    const nativeCheckbox = this._inputElement\r\n\r\n    if (nativeCheckbox) {\r\n      nativeCheckbox.nativeElement.indeterminate = value\r\n    }\r\n  }\r\n\r\n}\r\n",
+            "sourceCode": "import { FocusMonitor, FocusOrigin } from '@angular/cdk/a11y'\r\nimport { coerceBooleanProperty } from '@angular/cdk/coercion'\r\nimport {\r\n  AfterViewInit,\r\n  Attribute,\r\n  ChangeDetectionStrategy,\r\n  ChangeDetectorRef,\r\n  Component,\r\n  ElementRef,\r\n  EventEmitter,\r\n  forwardRef,\r\n  Input,\r\n  NgZone,\r\n  OnDestroy,\r\n  OnInit,\r\n  Output,\r\n  ViewChild\r\n} from '@angular/core'\r\nimport { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'\r\n\r\nimport { CanDisable, CanDisableCtor, HasTabIndex, HasTabIndexCtor, mixinDisabled, mixinTabIndex } from '../core/common-behaviors/index'\r\n\r\n// NOTE: Partially based on mat-checkbox: https://github.com/angular/components/blob/master/src/material/checkbox/checkbox.ts\r\n\r\n/** Change event object emitted by TheSeamCheckboxComponent. */\r\nexport class TheSeamCheckboxChange {\r\n  /** The source TheSeamCheckboxComponent of the event. */\r\n  source: TheSeamCheckboxComponent\r\n  /** The new `checked` value of the checkbox. */\r\n  checked: boolean\r\n}\r\n\r\nexport const THESEAM_CHECKBOX_CONTROL_VALUE_ACCESSOR: any = {\r\n  provide: NG_VALUE_ACCESSOR,\r\n  // tslint:disable-next-line: no-use-before-declare\r\n  useExisting: forwardRef(() => TheSeamCheckboxComponent),\r\n  multi: true\r\n}\r\n\r\nclass TheSeamCheckboxComponentBase {\r\n  constructor(public _elementRef: ElementRef) {}\r\n}\r\n\r\nconst _MatCheckboxMixinBase: HasTabIndexCtor & CanDisableCtor &\r\n  typeof TheSeamCheckboxComponentBase =\r\n    mixinTabIndex(mixinDisabled(TheSeamCheckboxComponentBase))\r\n\r\nlet _uid = 0\r\n\r\n/**\r\n * A Checkbox.\r\n */\r\n@Component({\r\n  selector: 'seam-checkbox',\r\n  templateUrl: './checkbox.component.html',\r\n  styleUrls: ['./checkbox.component.scss'],\r\n  exportAs: 'seamCheckbox',\r\n  host: {\r\n    '[attr.tabindex]': 'null',\r\n    'class': 'custom-control custom-checkbox'\r\n  },\r\n  providers: [ THESEAM_CHECKBOX_CONTROL_VALUE_ACCESSOR ],\r\n  inputs: [ 'tabIndex' ],\r\n  changeDetection: ChangeDetectionStrategy.OnPush\r\n})\r\nexport class TheSeamCheckboxComponent extends _MatCheckboxMixinBase\r\n  implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor, CanDisable, HasTabIndex {\r\n\r\n  /** @ignore */\r\n  private _uid = `seam-chk-${_uid++}`\r\n\r\n  /** A unique id for the checkbox input. If none is supplied, it will be auto-generated. */\r\n  @Input() id?: string = this._uid\r\n\r\n  /** Returns the unique id for the input. */\r\n  get inputId(): string { return `${this.id || this._uid}` }\r\n\r\n  /**\r\n   * Attached to the aria-label attribute of the host element. In most cases, aria-labelledby will\r\n   * take precedence so this may be omitted.\r\n   */\r\n  @Input('aria-label') ariaLabel?: string = ''\r\n\r\n  /**\r\n   * Users can specify the `aria-labelledby` attribute which will be forwarded to the input element\r\n   */\r\n  @Input('aria-labelledby') ariaLabelledby?: string | null = null\r\n\r\n  /** Whether the checkbox is required. */\r\n  @Input()\r\n  get required(): boolean { return this._required }\r\n  set required(value: boolean) { this._required = coerceBooleanProperty(value) }\r\n  /** @ignore */\r\n  private _required: boolean\r\n\r\n  /**\r\n   * Whether the checkbox is checked.\r\n   */\r\n  @Input()\r\n  get checked(): boolean { return this._checked }\r\n  set checked(value: boolean) {\r\n    if (value !== this.checked) {\r\n      this._checked = value\r\n      this._changeDetectorRef.markForCheck()\r\n    }\r\n  }\r\n  /** @ignore */\r\n  private _checked = false\r\n\r\n  /**\r\n   * Whether the checkbox is disabled.\r\n   */\r\n  // This fully overrides the implementation provided by mixinDisabled, but the\r\n  // mixin is still required because mixinTabIndex requires it.\r\n  @Input()\r\n  get disabled(): boolean { return this._disabled }\r\n  set disabled(value: boolean) {\r\n    const newValue = coerceBooleanProperty(value)\r\n\r\n    if (newValue !== this.disabled) {\r\n      this._disabled = newValue\r\n      this._changeDetectorRef.markForCheck()\r\n    }\r\n  }\r\n  /** @ignore */\r\n  private _disabled = false\r\n\r\n  /**\r\n   * Whether the checkbox is indeterminate. This is also known as \"mixed\" mode and can be used to\r\n   * represent a checkbox with three states, e.g. a checkbox that represents a nested list of\r\n   * checkable items. Note that whenever checkbox is manually clicked, indeterminate is immediately\r\n   * set to false.\r\n   */\r\n  @Input()\r\n  get indeterminate(): boolean { return this._indeterminate }\r\n  set indeterminate(value: boolean) {\r\n    const changed = value !== this._indeterminate\r\n    this._indeterminate = coerceBooleanProperty(value)\r\n\r\n    if (changed) {\r\n      this.indeterminateChange.emit(this._indeterminate)\r\n    }\r\n\r\n    this._syncIndeterminate(this._indeterminate)\r\n  }\r\n  /** @ignore */\r\n  private _indeterminate = false\r\n\r\n  /** Name value will be applied to the input element if present */\r\n  @Input() name: string | null = null\r\n\r\n  /** Event emitted when the checkbox's `checked` value changes. */\r\n  @Output() readonly change = new EventEmitter<TheSeamCheckboxChange>()\r\n\r\n  /** Event emitted when the checkbox's `indeterminate` value changes. */\r\n  @Output() readonly indeterminateChange: EventEmitter<boolean> = new EventEmitter<boolean>()\r\n\r\n  /** The value attribute of the native input element */\r\n  @Input() value: string\r\n\r\n  /**\r\n   * The native `<input type=\"checkbox\">` element\r\n   * @ignore\r\n   */\r\n  @ViewChild('input', { static: true }) _inputElement: ElementRef<HTMLInputElement>\r\n\r\n  /**\r\n   * Called when the checkbox is blurred. Needed to properly implement ControlValueAccessor.\r\n   * @ignore\r\n   */\r\n  _onTouched: () => any = () => {}\r\n\r\n  /** @ignore */\r\n  private _controlValueAccessorChangeFn: (value: any) => void = () => {}\r\n\r\n  constructor(\r\n    elementRef: ElementRef,\r\n    private _changeDetectorRef: ChangeDetectorRef,\r\n    private _focusMonitor: FocusMonitor,\r\n    private _ngZone: NgZone,\r\n    @Attribute('tabindex') tabIndex: string\r\n  ) {\r\n    super(elementRef)\r\n\r\n    this.tabIndex = parseInt(tabIndex, 10) || 0\r\n\r\n    this._focusMonitor.monitor(elementRef, true).subscribe(focusOrigin => {\r\n      if (!focusOrigin) {\r\n        // When a focused element becomes disabled, the browser *immediately* fires a blur event.\r\n        // Angular does not expect events to be raised during change detection, so any state change\r\n        // (such as a form control's 'ng-touched') will cause a changed-after-checked error.\r\n        // See https://github.com/angular/angular/issues/17793. To work around this, we defer\r\n        // telling the form control it has been touched until the next tick.\r\n        Promise.resolve().then(() => {\r\n          this._onTouched()\r\n          _changeDetectorRef.markForCheck()\r\n        })\r\n      }\r\n    })\r\n  }\r\n\r\n  /** @ignore */\r\n  ngOnInit() { }\r\n\r\n  /** @ignore */\r\n  ngOnDestroy() {\r\n    this._focusMonitor.stopMonitoring(this._elementRef)\r\n  }\r\n\r\n  /** @ignore */\r\n  ngAfterViewInit() {\r\n    this._syncIndeterminate(this._indeterminate)\r\n  }\r\n\r\n  /**\r\n   * Method being called whenever the label text changes.\r\n   * @ignore\r\n   */\r\n  _onLabelTextChange() {\r\n    // Since the event of the `cdkObserveContent` directive runs outside of the zone, the checkbox\r\n    // component will be only marked for check, but no actual change detection runs automatically.\r\n    // Instead of going back into the zone in order to trigger a change detection which causes\r\n    // *all* components to be checked (if explicitly marked or not using OnPush), we only trigger\r\n    // an explicit change detection for the checkbox view and its children.\r\n    this._changeDetectorRef.detectChanges()\r\n  }\r\n\r\n  // Implemented as part of ControlValueAccessor.\r\n  /** @ignore */\r\n  writeValue(value: any) {\r\n    this.checked = !!value\r\n  }\r\n\r\n  // Implemented as part of ControlValueAccessor.\r\n  /** @ignore */\r\n  registerOnChange(fn: (value: any) => void) {\r\n    this._controlValueAccessorChangeFn = fn\r\n  }\r\n\r\n  // Implemented as part of ControlValueAccessor.\r\n  /** @ignore */\r\n  registerOnTouched(fn: any) {\r\n    this._onTouched = fn\r\n  }\r\n\r\n  // Implemented as part of ControlValueAccessor.\r\n  /** @ignore */\r\n  setDisabledState(isDisabled: boolean) {\r\n    this.disabled = isDisabled\r\n  }\r\n\r\n  /** @ignore */\r\n  _getAriaChecked(): 'true' | 'false' | 'mixed' {\r\n    return this.checked ? 'true' : (this.indeterminate ? 'mixed' : 'false')\r\n  }\r\n\r\n  /** @ignore */\r\n  private _emitChangeEvent() {\r\n    const event = new TheSeamCheckboxChange()\r\n    event.source = this\r\n    event.checked = this.checked\r\n\r\n    this._controlValueAccessorChangeFn(this.checked)\r\n    this.change.emit(event)\r\n  }\r\n\r\n  /** Toggles the `checked` state of the checkbox. */\r\n  toggle(): void {\r\n    this.checked = !this.checked\r\n  }\r\n\r\n  /**\r\n   * Event handler for checkbox input element.\r\n   * Toggles checked state if element is not disabled.\r\n   * Do not toggle on (change) event since IE doesn't fire change event when\r\n   *   indeterminate checkbox is clicked.\r\n   * @ignore\r\n   */\r\n  _onInputClick(event: Event) {\r\n    // If resetIndeterminate is false, and the current state is indeterminate, do nothing on click\r\n    if (!this.disabled) {\r\n      // When user manually click on the checkbox, `indeterminate` is set to false.\r\n      if (this.indeterminate) {\r\n\r\n        Promise.resolve().then(() => {\r\n          this._indeterminate = false\r\n          this.indeterminateChange.emit(this._indeterminate)\r\n        })\r\n      }\r\n\r\n      this.toggle()\r\n\r\n      // Emit our custom change event if the native input emitted one.\r\n      // It is important to only emit it, if the native input triggered one, because\r\n      // we don't want to trigger a change event, when the `checked` variable changes for example.\r\n      this._emitChangeEvent()\r\n    }\r\n  }\r\n\r\n  /** Focuses the checkbox. */\r\n  focus(origin: FocusOrigin = 'keyboard', options?: FocusOptions): void {\r\n    this._focusMonitor.focusVia(this._inputElement, origin, options)\r\n  }\r\n\r\n  /** @ignore */\r\n  _onInteractionEvent(event: Event) {\r\n    // We always have to stop propagation on the change event.\r\n    // Otherwise the change event, from the input element, will bubble up and\r\n    // emit its event object to the `change` output.\r\n    event.stopPropagation()\r\n  }\r\n\r\n  /**\r\n   * Syncs the indeterminate value with the checkbox DOM node.\r\n   *\r\n   * We sync `indeterminate` directly on the DOM node, because in Ivy the check for whether a\r\n   * property is supported on an element boils down to `if (propName in element)`. Domino's\r\n   * HTMLInputElement doesn't have an `indeterminate` property so Ivy will warn during\r\n   * server-side rendering.\r\n   * @ignore\r\n   */\r\n  private _syncIndeterminate(value: boolean) {\r\n    const nativeCheckbox = this._inputElement\r\n\r\n    if (nativeCheckbox) {\r\n      nativeCheckbox.nativeElement.indeterminate = value\r\n    }\r\n  }\r\n\r\n}\r\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
@@ -29873,7 +29694,7 @@
                         "type": "string"
                     }
                 ],
-                "line": 166,
+                "line": 174,
                 "jsdoctags": [
                     {
                         "name": "elementRef",
@@ -29968,7 +29789,7 @@
                             }
                         ],
                         "returnType": "void",
-                        "line": 100,
+                        "line": 101,
                         "jsdoctags": [
                             {
                                 "name": "value",
@@ -29988,15 +29809,15 @@
                         "args": [
                             {
                                 "name": "value",
-                                "type": "any"
+                                "type": "boolean"
                             }
                         ],
                         "returnType": "void",
-                        "line": 114,
+                        "line": 117,
                         "jsdoctags": [
                             {
                                 "name": "value",
-                                "type": "any",
+                                "type": "boolean",
                                 "tagName": {
                                     "text": "param"
                                 }
@@ -30016,7 +29837,7 @@
                             }
                         ],
                         "returnType": "void",
-                        "line": 132,
+                        "line": 136,
                         "jsdoctags": [
                             {
                                 "name": "value",
@@ -37142,23 +36963,15 @@
                 "name": "_uid",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "projects/ui-common/src/lib/data-filters/filters/data-filter-text/data-filter-text.component.ts",
-                "type": "number",
-                "defaultValue": "0"
-            },
-            {
-                "name": "_uid",
-                "ctype": "miscellaneous",
-                "subtype": "variable",
-                "file": "projects/ui-common/src/lib/data-filters/filters/data-filter-toggle-buttons/data-filter-toggle-buttons.component.ts",
-                "type": "number",
-                "defaultValue": "0"
-            },
-            {
-                "name": "_uid",
-                "ctype": "miscellaneous",
-                "subtype": "variable",
                 "file": "projects/ui-common/src/lib/checkbox/checkbox.component.ts",
+                "type": "number",
+                "defaultValue": "0"
+            },
+            {
+                "name": "_uid",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "projects/ui-common/src/lib/framework/dynamic-router/hierarchy-router-outlet/hierarchy-router-outlet.component.ts",
                 "type": "number",
                 "defaultValue": "0"
             },
@@ -37174,7 +36987,15 @@
                 "name": "_uid",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "projects/ui-common/src/lib/framework/dynamic-router/hierarchy-router-outlet/hierarchy-router-outlet.component.ts",
+                "file": "projects/ui-common/src/lib/data-filters/filters/data-filter-text/data-filter-text.component.ts",
+                "type": "number",
+                "defaultValue": "0"
+            },
+            {
+                "name": "_uid",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "projects/ui-common/src/lib/data-filters/filters/data-filter-toggle-buttons/data-filter-toggle-buttons.component.ts",
                 "type": "number",
                 "defaultValue": "0"
             },
@@ -37227,6 +37048,14 @@
                 "defaultValue": "[\r\n  TABLE_CELL_TYPE_MANIFEST_DATE,\r\n  TABLE_CELL_TYPE_MANIFEST_ICON,\r\n  TABLE_CELL_TYPE_MANIFEST_IMAGE\r\n]"
             },
             {
+                "name": "Checkbox",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "projects/ui-common/src/lib/checkbox/checkbox.stories.ts",
+                "type": "",
+                "defaultValue": "() => ({\r\n  template: `<seam-checkbox>Checkbox</seam-checkbox>`\r\n})"
+            },
+            {
                 "name": "COLLAPSED_OVERLAY_STATE",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
@@ -37238,7 +37067,7 @@
                 "name": "COLLAPSED_STATE",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "projects/ui-common/src/lib/framework/side-nav/side-nav-item/side-nav-item.component.ts",
+                "file": "projects/ui-common/src/lib/framework/side-nav/side-nav.component.ts",
                 "type": "string",
                 "defaultValue": "'collapsed'"
             },
@@ -37246,7 +37075,7 @@
                 "name": "COLLAPSED_STATE",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "projects/ui-common/src/lib/framework/side-nav/side-nav.component.ts",
+                "file": "projects/ui-common/src/lib/framework/side-nav/side-nav-item/side-nav-item.component.ts",
                 "type": "string",
                 "defaultValue": "'collapsed'"
             },
@@ -37278,7 +37107,7 @@
                 "name": "context",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "projects/ui-common/src/test.ts",
+                "file": "src/test.ts",
                 "type": "",
                 "defaultValue": "require.context('./', true, /\\.spec\\.ts$/)"
             },
@@ -37286,7 +37115,7 @@
                 "name": "context",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "src/test.ts",
+                "file": "projects/ui-common/src/test.ts",
                 "type": "",
                 "defaultValue": "require.context('./', true, /\\.spec\\.ts$/)"
             },
@@ -37382,17 +37211,17 @@
                 "name": "environment",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "src/environments/environment.ts",
+                "file": "src/environments/environment.prod.ts",
                 "type": "object",
-                "defaultValue": "{\r\n  production: false\r\n}"
+                "defaultValue": "{\r\n  production: true\r\n}"
             },
             {
                 "name": "environment",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "src/environments/environment.prod.ts",
+                "file": "src/environments/environment.ts",
                 "type": "object",
-                "defaultValue": "{\r\n  production: true\r\n}"
+                "defaultValue": "{\r\n  production: false\r\n}"
             },
             {
                 "name": "exampleData1",
@@ -37430,7 +37259,7 @@
                 "name": "EXPANDED_STATE",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "projects/ui-common/src/lib/framework/side-nav/side-nav.component.ts",
+                "file": "projects/ui-common/src/lib/framework/side-nav/side-nav-item/side-nav-item.component.ts",
                 "type": "string",
                 "defaultValue": "'expanded'"
             },
@@ -37438,7 +37267,7 @@
                 "name": "EXPANDED_STATE",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "projects/ui-common/src/lib/framework/side-nav/side-nav-item/side-nav-item.component.ts",
+                "file": "projects/ui-common/src/lib/framework/side-nav/side-nav.component.ts",
                 "type": "string",
                 "defaultValue": "'expanded'"
             },
@@ -37512,7 +37341,23 @@
                 "subtype": "variable",
                 "file": "projects/ui-common/src/lib/checkbox/checkbox.stories.ts",
                 "type": "",
-                "defaultValue": "() => ({\r\n  props: {\r\n    labelText: 'Initially checked.'\r\n  },\r\n  template: `<seam-checkbox [checked]=\"true\">{{ labelText }}</seam-checkbox>`\r\n})"
+                "defaultValue": "() => ({\r\n  template: `<seam-checkbox [checked]=\"true\">Initially checked.</seam-checkbox>`\r\n})"
+            },
+            {
+                "name": "InitiallyIndeterminate",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "projects/ui-common/src/lib/checkbox/checkbox.stories.ts",
+                "type": "",
+                "defaultValue": "() => ({\r\n  template: `<seam-checkbox [indeterminate]=\"true\">Initially indeterminate.</seam-checkbox>`\r\n})"
+            },
+            {
+                "name": "InitiallyUnchecked",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "projects/ui-common/src/lib/checkbox/checkbox.stories.ts",
+                "type": "",
+                "defaultValue": "() => ({\r\n  template: `<seam-checkbox [checked]=\"false\">Initially unchecked.</seam-checkbox>`\r\n})"
             },
             {
                 "name": "IS_ABSOLUTE_URL_REGEX",
@@ -37735,7 +37580,7 @@
                 "name": "pdfjsLib",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "projects/ui-common/src/lib/viewers/pdf-viewer/pdf-viewer.component.ts",
+                "file": "projects/ui-common/src/lib/viewers/pdf-viewer/pdf-page/pdf-page.component.ts",
                 "type": "",
                 "defaultValue": "require('pdfjs-dist/build/pdf')"
             },
@@ -37743,7 +37588,7 @@
                 "name": "pdfjsLib",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "projects/ui-common/src/lib/viewers/pdf-viewer/pdf-page/pdf-page.component.ts",
+                "file": "projects/ui-common/src/lib/viewers/pdf-viewer/pdf-viewer.component.ts",
                 "type": "",
                 "defaultValue": "require('pdfjs-dist/build/pdf')"
             },
@@ -37775,14 +37620,14 @@
                 "name": "require",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "src/test.ts",
+                "file": "projects/ui-common/src/test.ts",
                 "type": "any"
             },
             {
                 "name": "require",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "projects/ui-common/src/test.ts",
+                "file": "src/test.ts",
                 "type": "any"
             },
             {
@@ -37845,7 +37690,7 @@
                 "name": "STORY_INITIAL_ROUTE_URL",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "projects/ui-common/src/lib/story-helpers/initial-route-service.ts",
+                "file": "projects/ui-common/src/lib/story-helpers/initial-route.service.ts",
                 "type": "",
                 "defaultValue": "new InjectionToken<any>('STORY_INITIAL_ROUTE_URL')"
             },
@@ -37853,7 +37698,7 @@
                 "name": "STORY_INITIAL_ROUTE_URL",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "projects/ui-common/src/lib/story-helpers/initial-route.service.ts",
+                "file": "projects/ui-common/src/lib/story-helpers/initial-route-service.ts",
                 "type": "",
                 "defaultValue": "new InjectionToken<any>('STORY_INITIAL_ROUTE_URL')"
             },
@@ -39529,7 +39374,7 @@
             },
             {
                 "name": "storyInitialRouteFactory",
-                "file": "projects/ui-common/src/lib/story-helpers/initial-route-service.ts",
+                "file": "projects/ui-common/src/lib/story-helpers/initial-route-factory.ts",
                 "ctype": "miscellaneous",
                 "subtype": "function",
                 "description": "",
@@ -39549,7 +39394,7 @@
             },
             {
                 "name": "storyInitialRouteFactory",
-                "file": "projects/ui-common/src/lib/story-helpers/initial-route-factory.ts",
+                "file": "projects/ui-common/src/lib/story-helpers/initial-route-service.ts",
                 "ctype": "miscellaneous",
                 "subtype": "function",
                 "description": "",
@@ -40492,6 +40337,42 @@
                     "defaultValue": "mixinDisabled(TopBarMenuButtonBase)"
                 }
             ],
+            "projects/ui-common/src/lib/framework/dynamic-router/hierarchy-router-outlet/hierarchy-router-outlet.component.ts": [
+                {
+                    "name": "_uid",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "projects/ui-common/src/lib/framework/dynamic-router/hierarchy-router-outlet/hierarchy-router-outlet.component.ts",
+                    "type": "number",
+                    "defaultValue": "0"
+                }
+            ],
+            "projects/ui-common/src/lib/data-filters/filters/data-filter-search/data-filter-search.component.ts": [
+                {
+                    "name": "_uid",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "projects/ui-common/src/lib/data-filters/filters/data-filter-search/data-filter-search.component.ts",
+                    "type": "number",
+                    "defaultValue": "0"
+                },
+                {
+                    "name": "DATA_FILTER_SEARCH",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "projects/ui-common/src/lib/data-filters/filters/data-filter-search/data-filter-search.component.ts",
+                    "type": "any",
+                    "defaultValue": "{\r\n  provide: THESEAM_DATA_FILTER,\r\n  // tslint:disable-next-line:no-use-before-declare\r\n  useExisting: forwardRef(() => DataFilterSearchComponent),\r\n  multi: true,\r\n}"
+                },
+                {
+                    "name": "DefaultSearchFilterOptions",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "projects/ui-common/src/lib/data-filters/filters/data-filter-search/data-filter-search.component.ts",
+                    "type": "ISearchFilterOptions",
+                    "defaultValue": "{\r\n  properties: undefined,\r\n  omitProperties: undefined,\r\n  exact: false,\r\n  caseSensitive: false\r\n}"
+                }
+            ],
             "projects/ui-common/src/lib/data-filters/filters/data-filter-text/data-filter-text.component.ts": [
                 {
                     "name": "_uid",
@@ -40542,42 +40423,6 @@
                     "file": "projects/ui-common/src/lib/data-filters/filters/data-filter-toggle-buttons/data-filter-toggle-buttons.component.ts",
                     "type": "IToggleButtonsFilterOptions",
                     "defaultValue": "{\r\n  properties: undefined,\r\n  omitProperties: undefined,\r\n  multiple: false,\r\n  selectionToggleable: false,\r\n  buttons: [],\r\n  exact: false,\r\n  caseSensitive: false\r\n}"
-                }
-            ],
-            "projects/ui-common/src/lib/data-filters/filters/data-filter-search/data-filter-search.component.ts": [
-                {
-                    "name": "_uid",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "projects/ui-common/src/lib/data-filters/filters/data-filter-search/data-filter-search.component.ts",
-                    "type": "number",
-                    "defaultValue": "0"
-                },
-                {
-                    "name": "DATA_FILTER_SEARCH",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "projects/ui-common/src/lib/data-filters/filters/data-filter-search/data-filter-search.component.ts",
-                    "type": "any",
-                    "defaultValue": "{\r\n  provide: THESEAM_DATA_FILTER,\r\n  // tslint:disable-next-line:no-use-before-declare\r\n  useExisting: forwardRef(() => DataFilterSearchComponent),\r\n  multi: true,\r\n}"
-                },
-                {
-                    "name": "DefaultSearchFilterOptions",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "projects/ui-common/src/lib/data-filters/filters/data-filter-search/data-filter-search.component.ts",
-                    "type": "ISearchFilterOptions",
-                    "defaultValue": "{\r\n  properties: undefined,\r\n  omitProperties: undefined,\r\n  exact: false,\r\n  caseSensitive: false\r\n}"
-                }
-            ],
-            "projects/ui-common/src/lib/framework/dynamic-router/hierarchy-router-outlet/hierarchy-router-outlet.component.ts": [
-                {
-                    "name": "_uid",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "projects/ui-common/src/lib/framework/dynamic-router/hierarchy-router-outlet/hierarchy-router-outlet.component.ts",
-                    "type": "number",
-                    "defaultValue": "0"
                 }
             ],
             "projects/ui-common/src/lib/widget/widget-content-components/widget-header-badge/widget-header-badge.component.ts": [
@@ -40642,6 +40487,40 @@
                     "file": "projects/ui-common/src/lib/table-cell-types/table-cell-types.module.ts",
                     "type": "[]",
                     "defaultValue": "[\r\n  TABLE_CELL_TYPE_MANIFEST_DATE,\r\n  TABLE_CELL_TYPE_MANIFEST_ICON,\r\n  TABLE_CELL_TYPE_MANIFEST_IMAGE\r\n]"
+                }
+            ],
+            "projects/ui-common/src/lib/checkbox/checkbox.stories.ts": [
+                {
+                    "name": "Checkbox",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "projects/ui-common/src/lib/checkbox/checkbox.stories.ts",
+                    "type": "",
+                    "defaultValue": "() => ({\r\n  template: `<seam-checkbox>Checkbox</seam-checkbox>`\r\n})"
+                },
+                {
+                    "name": "InitiallyChecked",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "projects/ui-common/src/lib/checkbox/checkbox.stories.ts",
+                    "type": "",
+                    "defaultValue": "() => ({\r\n  template: `<seam-checkbox [checked]=\"true\">Initially checked.</seam-checkbox>`\r\n})"
+                },
+                {
+                    "name": "InitiallyIndeterminate",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "projects/ui-common/src/lib/checkbox/checkbox.stories.ts",
+                    "type": "",
+                    "defaultValue": "() => ({\r\n  template: `<seam-checkbox [indeterminate]=\"true\">Initially indeterminate.</seam-checkbox>`\r\n})"
+                },
+                {
+                    "name": "InitiallyUnchecked",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "projects/ui-common/src/lib/checkbox/checkbox.stories.ts",
+                    "type": "",
+                    "defaultValue": "() => ({\r\n  template: `<seam-checkbox [checked]=\"false\">Initially unchecked.</seam-checkbox>`\r\n})"
                 }
             ],
             "projects/ui-common/src/lib/framework/side-nav/side-nav.component.ts": [
@@ -40746,23 +40625,6 @@
                     "defaultValue": "[\r\n  TheSeamWidgetButtonGroupModule,\r\n  TheSeamWidgetContentHeaderModule,\r\n  TheSeamWidgetDescriptionModule,\r\n  TheSeamWidgetEmptyLabelModule,\r\n  TheSeamWidgetFooterLinkModule,\r\n  TheSeamWidgetFooterTextModule,\r\n  TheSeamWidgetHeaderBadgeModule,\r\n  TheSeamWidgetListGroupModule,\r\n  TheSeamWidgetTableModule,\r\n  TheSeamWidgetTileListModule,\r\n  TheSeamWidgetTileModule\r\n]"
                 }
             ],
-            "projects/ui-common/src/test.ts": [
-                {
-                    "name": "context",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "projects/ui-common/src/test.ts",
-                    "type": "",
-                    "defaultValue": "require.context('./', true, /\\.spec\\.ts$/)"
-                },
-                {
-                    "name": "require",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "projects/ui-common/src/test.ts",
-                    "type": "any"
-                }
-            ],
             "src/test.ts": [
                 {
                     "name": "context",
@@ -40777,6 +40639,23 @@
                     "ctype": "miscellaneous",
                     "subtype": "variable",
                     "file": "src/test.ts",
+                    "type": "any"
+                }
+            ],
+            "projects/ui-common/src/test.ts": [
+                {
+                    "name": "context",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "projects/ui-common/src/test.ts",
+                    "type": "",
+                    "defaultValue": "require.context('./', true, /\\.spec\\.ts$/)"
+                },
+                {
+                    "name": "require",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "projects/ui-common/src/test.ts",
                     "type": "any"
                 }
             ],
@@ -40842,16 +40721,6 @@
                     "defaultValue": "new InjectionToken<any>('DYNAMIC_MODULE')"
                 }
             ],
-            "src/environments/environment.ts": [
-                {
-                    "name": "environment",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "src/environments/environment.ts",
-                    "type": "object",
-                    "defaultValue": "{\r\n  production: false\r\n}"
-                }
-            ],
             "src/environments/environment.prod.ts": [
                 {
                     "name": "environment",
@@ -40860,6 +40729,16 @@
                     "file": "src/environments/environment.prod.ts",
                     "type": "object",
                     "defaultValue": "{\r\n  production: true\r\n}"
+                }
+            ],
+            "src/environments/environment.ts": [
+                {
+                    "name": "environment",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/environments/environment.ts",
+                    "type": "object",
+                    "defaultValue": "{\r\n  production: false\r\n}"
                 }
             ],
             "projects/ui-common/src/lib/datatable-dynamic/_story-data/dynamic-data-1.ts": [
@@ -40960,16 +40839,6 @@
                     "file": "projects/ui-common/src/lib/table/table/table.stories.ts",
                     "type": "[]",
                     "defaultValue": "[\r\n  {\r\n    \"ginCode\": \"12345\",\r\n    \"name\": \"Gin 1\",\r\n    \"icon\": faEnvelope\r\n  },\r\n  {\r\n    \"ginCode\": \"12346\",\r\n    \"name\": \"Gin 2\",\r\n    \"icon\": faEnvelope\r\n  },\r\n  {\r\n    \"ginCode\": \"12347\",\r\n    \"name\": \"Gin 3\",\r\n    \"icon\": faEnvelope\r\n  },\r\n  {\r\n    \"ginCode\": \"12348\",\r\n    \"name\": \"Gin 4\",\r\n    \"icon\": faEnvelope\r\n  },\r\n  {\r\n    \"ginCode\": \"12349\",\r\n    \"name\": \"Gin 5\",\r\n    \"icon\": faEnvelope\r\n  },\r\n  {\r\n    \"ginCode\": \"12350\",\r\n    \"name\": \"Gin 6\",\r\n    \"icon\": faEnvelope\r\n  },\r\n  {\r\n    \"ginCode\": \"12351\",\r\n    \"name\": \"Gin 7\",\r\n    \"icon\": faEnvelope\r\n  }\r\n]"
-                }
-            ],
-            "projects/ui-common/src/lib/checkbox/checkbox.stories.ts": [
-                {
-                    "name": "InitiallyChecked",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "projects/ui-common/src/lib/checkbox/checkbox.stories.ts",
-                    "type": "",
-                    "defaultValue": "() => ({\r\n  props: {\r\n    labelText: 'Initially checked.'\r\n  },\r\n  template: `<seam-checkbox [checked]=\"true\">{{ labelText }}</seam-checkbox>`\r\n})"
                 }
             ],
             "projects/ui-common/src/lib/utils/is-absolute-url.ts": [
@@ -41232,22 +41101,22 @@
                     "description": "<p>Options for binding a passive event listener. </p>\n"
                 }
             ],
-            "projects/ui-common/src/lib/viewers/pdf-viewer/pdf-viewer.component.ts": [
-                {
-                    "name": "pdfjsLib",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "projects/ui-common/src/lib/viewers/pdf-viewer/pdf-viewer.component.ts",
-                    "type": "",
-                    "defaultValue": "require('pdfjs-dist/build/pdf')"
-                }
-            ],
             "projects/ui-common/src/lib/viewers/pdf-viewer/pdf-page/pdf-page.component.ts": [
                 {
                     "name": "pdfjsLib",
                     "ctype": "miscellaneous",
                     "subtype": "variable",
                     "file": "projects/ui-common/src/lib/viewers/pdf-viewer/pdf-page/pdf-page.component.ts",
+                    "type": "",
+                    "defaultValue": "require('pdfjs-dist/build/pdf')"
+                }
+            ],
+            "projects/ui-common/src/lib/viewers/pdf-viewer/pdf-viewer.component.ts": [
+                {
+                    "name": "pdfjsLib",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "projects/ui-common/src/lib/viewers/pdf-viewer/pdf-viewer.component.ts",
                     "type": "",
                     "defaultValue": "require('pdfjs-dist/build/pdf')"
                 }
@@ -41310,22 +41179,22 @@
                     "defaultValue": "{\r\n  provide: NG_VALUE_ACCESSOR,\r\n  // tslint:disable-next-line:no-use-before-declare\r\n  useExisting: forwardRef(() => TiledSelectComponent),\r\n  multi: true,\r\n}"
                 }
             ],
-            "projects/ui-common/src/lib/story-helpers/initial-route-service.ts": [
-                {
-                    "name": "STORY_INITIAL_ROUTE_URL",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "projects/ui-common/src/lib/story-helpers/initial-route-service.ts",
-                    "type": "",
-                    "defaultValue": "new InjectionToken<any>('STORY_INITIAL_ROUTE_URL')"
-                }
-            ],
             "projects/ui-common/src/lib/story-helpers/initial-route.service.ts": [
                 {
                     "name": "STORY_INITIAL_ROUTE_URL",
                     "ctype": "miscellaneous",
                     "subtype": "variable",
                     "file": "projects/ui-common/src/lib/story-helpers/initial-route.service.ts",
+                    "type": "",
+                    "defaultValue": "new InjectionToken<any>('STORY_INITIAL_ROUTE_URL')"
+                }
+            ],
+            "projects/ui-common/src/lib/story-helpers/initial-route-service.ts": [
+                {
+                    "name": "STORY_INITIAL_ROUTE_URL",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "projects/ui-common/src/lib/story-helpers/initial-route-service.ts",
                     "type": "",
                     "defaultValue": "new InjectionToken<any>('STORY_INITIAL_ROUTE_URL')"
                 }
@@ -43169,10 +43038,10 @@
                     ]
                 }
             ],
-            "projects/ui-common/src/lib/story-helpers/initial-route-service.ts": [
+            "projects/ui-common/src/lib/story-helpers/initial-route-factory.ts": [
                 {
                     "name": "storyInitialRouteFactory",
-                    "file": "projects/ui-common/src/lib/story-helpers/initial-route-service.ts",
+                    "file": "projects/ui-common/src/lib/story-helpers/initial-route-factory.ts",
                     "ctype": "miscellaneous",
                     "subtype": "function",
                     "description": "",
@@ -43191,10 +43060,10 @@
                     ]
                 }
             ],
-            "projects/ui-common/src/lib/story-helpers/initial-route-factory.ts": [
+            "projects/ui-common/src/lib/story-helpers/initial-route-service.ts": [
                 {
                     "name": "storyInitialRouteFactory",
-                    "file": "projects/ui-common/src/lib/story-helpers/initial-route-factory.ts",
+                    "file": "projects/ui-common/src/lib/story-helpers/initial-route-service.ts",
                     "ctype": "miscellaneous",
                     "subtype": "function",
                     "description": "",
@@ -44229,9 +44098,9 @@
                 "type": "component",
                 "linktype": "component",
                 "name": "TheSeamCheckboxComponent",
-                "coveragePercent": 55,
-                "coverageCount": "15/27",
-                "status": "good"
+                "coveragePercent": 93,
+                "coverageCount": "14/15",
+                "status": "very-good"
             },
             {
                 "filePath": "projects/ui-common/src/lib/checkbox/checkbox.component.ts",
@@ -44286,7 +44155,37 @@
                 "type": "variable",
                 "linktype": "miscellaneous",
                 "linksubtype": "variable",
+                "name": "Checkbox",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "projects/ui-common/src/lib/checkbox/checkbox.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
                 "name": "InitiallyChecked",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "projects/ui-common/src/lib/checkbox/checkbox.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "InitiallyIndeterminate",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "projects/ui-common/src/lib/checkbox/checkbox.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "InitiallyUnchecked",
                 "coveragePercent": 0,
                 "coverageCount": "0/1",
                 "status": "low"

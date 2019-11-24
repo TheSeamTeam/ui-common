@@ -12,6 +12,7 @@
     "e2e": "ng e2e",
     "docs:json": "compodoc -p ./tsconfig.json -e json -d .",
     "storybook": "start-storybook -p 6006 --ci",
+    "docs:storybook": "npm run docs:json && npm run storybook",
     "build-storybook": "build-storybook -o docs",
     "refreshVSToken": "vsts-npm-auth -config .npmrc"
   },
