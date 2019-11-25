@@ -336,7 +336,7 @@ class StoryEx3Component {
 
 
 
-// storiesOf('Framework|DynamicRouter', module)
+// storiesOf('Framework/DynamicRouter', module)
 //   .addDecorator(withKnobs)
 
 //   .add('Recursive', () => ({

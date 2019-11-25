@@ -9,7 +9,7 @@ import { faShare } from '@fortawesome/free-solid-svg-icons'
 import { IconComponent } from '../icon/icon.component'
 import { IconNotificationComponent } from './icon-notification.component'
 
-storiesOf('Components|Icon/Notification', module)
+storiesOf('Components/Icon/Notification', module)
   .addDecorator(withKnobs)
 
   .add('Url', () => ({

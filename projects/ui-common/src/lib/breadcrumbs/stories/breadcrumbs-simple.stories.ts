@@ -8,7 +8,7 @@ import { StoryEmptyComponent, StoryInitialRouteModule } from '../../story-helper
 
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component'
 
-storiesOf('Components|Breadcrumbs', module)
+storiesOf('Components/Breadcrumbs', module)
 
   .add('Simple', () => ({
     moduleMetadata: {

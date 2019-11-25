@@ -9,7 +9,7 @@ import { _knobUndefinedNullHACK } from '../../utils/storybook-knobs-hack'
 
 import { ButtonComponent } from './button.component'
 
-storiesOf('Components|Buttons/Button', module)
+storiesOf('Components/Buttons/Button', module)
   .addDecorator(withKnobs)
   .add('Basic', () => ({
     moduleMetadata: {

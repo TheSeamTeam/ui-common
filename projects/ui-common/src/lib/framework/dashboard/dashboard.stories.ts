@@ -5,7 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { TheSeamDashboardModule } from './dashboard.module'
 
-storiesOf('Framework|Dashboard', module)
+storiesOf('Framework/Dashboard', module)
   .addDecorator(withKnobs)
 
   .add('Basic', () => ({

@@ -23,7 +23,7 @@ class StoryNavToggleDirective {
   constructor(private _router: Router) { }
 }
 
-storiesOf('Framework|SideNav/Item/Basic', module)
+storiesOf('Framework/SideNav/Item/Basic', module)
   .addDecorator(withKnobs)
 
   .add('No Children', () => ({
@@ -158,7 +158,7 @@ storiesOf('Framework|SideNav/Item/Basic', module)
   }))
 
 
-storiesOf('Framework|SideNav/Item/Link', module)
+storiesOf('Framework/SideNav/Item/Link', module)
   .addDecorator(withKnobs)
 
   .add('No Children', () => ({

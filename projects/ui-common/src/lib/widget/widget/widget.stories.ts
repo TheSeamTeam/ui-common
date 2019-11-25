@@ -9,7 +9,7 @@ import { faWrench } from '@fortawesome/free-solid-svg-icons'
 
 import { TheSeamWidgetModule } from '../widget.module'
 
-storiesOf('Components|Widget', module)
+storiesOf('Components/Widget', module)
   .addDecorator(withKnobs)
 
   .add('Simple', () => ({

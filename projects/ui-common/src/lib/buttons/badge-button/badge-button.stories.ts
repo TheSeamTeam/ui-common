@@ -8,7 +8,7 @@ import { ThemeNames } from '../../models/index'
 
 import { BadgeButtonComponent } from './badge-button.component'
 
-storiesOf('Components|Buttons/BadgeButton', module)
+storiesOf('Components/Buttons/BadgeButton', module)
   .addDecorator(withKnobs)
   .add('Basic', () => ({
     moduleMetadata: {
