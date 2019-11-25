@@ -111,7 +111,7 @@ const routes = [
   // }
 ]
 
-storiesOf('Components|Datatable/Dynamic', module)
+storiesOf('Components/Datatable/Dynamic', module)
   .addDecorator(withKnobs)
 
   .add('Basic', () => ({

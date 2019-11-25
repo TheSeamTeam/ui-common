@@ -9,7 +9,7 @@ import { faExclamationTriangle, faQuestionCircle, faSignOutAlt, faUserAlt } from
 
 import { TheSeamTopBarModule } from './top-bar.module'
 
-storiesOf('Framework|TopBar', module)
+storiesOf('Framework/TopBar', module)
   .addDecorator(withKnobs)
 
   .add('Basic', () => ({

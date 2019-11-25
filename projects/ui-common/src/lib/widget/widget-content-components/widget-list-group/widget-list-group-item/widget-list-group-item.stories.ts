@@ -15,7 +15,7 @@ import { ThemeNames } from '../../../../models/theme-names'
 
 import { TheSeamWidgetModule } from '../../../widget.module'
 
-storiesOf('Components|Widget/Content/List Group/Item', module)
+storiesOf('Components/Widget/Content/List Group/Item', module)
   .addDecorator(withKnobs)
 
   .add('Basic', () => ({
@@ -102,7 +102,7 @@ storiesOf('Components|Widget/Content/List Group/Item', module)
       </div>`
   }))
 
-storiesOf('Components|Widget/Content/List Group/Item/Content', module)
+storiesOf('Components/Widget/Content/List Group/Item/Content', module)
   .addDecorator(withKnobs)
 
   .add('Label Only', () => ({

@@ -9,7 +9,7 @@ import { ThemeNames } from '../../models/index'
 
 import { ToggleButtonComponent } from './toggle-button.component'
 
-storiesOf('Components|Buttons/ToggleButton', module)
+storiesOf('Components/Buttons/ToggleButton', module)
   .addDecorator(withKnobs)
 
   .add('Basic', () => ({

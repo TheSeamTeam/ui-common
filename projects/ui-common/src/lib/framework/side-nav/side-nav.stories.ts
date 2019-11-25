@@ -16,7 +16,7 @@ class StoryRoutePlacholderComponent {
   constructor(public router: Router) { }
 }
 
-storiesOf('Framework|SideNav', module)
+storiesOf('Framework/SideNav', module)
   .addDecorator(withKnobs)
 
   .add('Basic', () => ({
