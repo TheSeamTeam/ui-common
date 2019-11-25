@@ -12,7 +12,9 @@ import { toggleAttribute } from '../utils/index'
 let nextUniqueId = 0
 
 @Directive({
-  selector: 'input[seamInput], textarea[seamInput], ng-select[seamInput]',
+  // TODO: Consider removing restriction and instead adding a dev warning. A few
+  // inputs in the app need to be changed for this first.
+  selector: 'input[seamInput], textarea[seamInput], ng-select[seamInput], seam-checkbox[seamInput]',
   exportAs: 'seamInput',
 })
 export class InputDirective implements DoCheck {
@@ -21,7 +23,7 @@ export class InputDirective implements DoCheck {
 
   @HostBinding('class.form-control') _isFormControl = true
   @HostBinding('class.form-control-sm') get _isFormControlSmall() {
-    return this.seamInputSize === 'sm'
+    return this._isFormControl && this.seamInputSize === 'sm'
   }
   @HostBinding('class.is-invalid') get _isInvalid() {
     return this.ngControl.invalid && (this.ngControl.dirty || this.ngControl.touched)
@@ -120,6 +122,10 @@ export class InputDirective implements DoCheck {
   ) {
     // Force setter to be called in case id was not specified.
     this.id = this.id
+
+    if (this._isSeamCheckbox()) {
+      this._isFormControl = false
+    }
   }
 
   ngDoCheck() {
@@ -140,6 +146,11 @@ export class InputDirective implements DoCheck {
   /** Determines if the component host is a ng-select. */
   protected _isNgSelect() {
     return this._elementRef.nativeElement.nodeName.toLowerCase() === 'ng-select'
+  }
+
+  /** Determines if the component host is a seam-checkbox. */
+  protected _isSeamCheckbox() {
+    return this._elementRef.nativeElement.nodeName.toLowerCase() === 'seam-checkbox'
   }
 
   /** Make sure the input is a supported type. */
