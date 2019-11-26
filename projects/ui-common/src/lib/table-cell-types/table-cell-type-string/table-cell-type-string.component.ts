@@ -6,15 +6,14 @@ import { TABLE_CELL_DATA } from '../../table/table-cell-tokens'
 import { ITableCellData } from '../../table/table-cell.models'
 
 @Component({
-  selector: 'seam-table-cell-type-date',
-  templateUrl: './table-cell-type-date.component.html',
-  styleUrls: ['./table-cell-type-date.component.scss'],
+  selector: 'seam-table-cell-type-string',
+  templateUrl: './table-cell-type-string.component.html',
+  styleUrls: ['./table-cell-type-string.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TableCellTypeDateComponent implements OnInit, OnDestroy {
+export class TableCellTypeStringComponent implements OnInit, OnDestroy {
 
   @Input() value?: string | null
-  @Input() format?: string
 
   constructor(
     private _cdf: ChangeDetectorRef,
@@ -23,7 +22,6 @@ export class TableCellTypeDateComponent implements OnInit, OnDestroy {
     const _data = _tableData
 
     this.value = _data && _data.value
-    this.format = _data && _data.colData && _data.colData.cellProps
 
     if (_data) {
       _data.changed
@@ -31,16 +29,6 @@ export class TableCellTypeDateComponent implements OnInit, OnDestroy {
         .subscribe(v => {
           if (v.changes.hasOwnProperty('value')) {
             this.value = v.changes.value.currentValue
-            this._cdf.markForCheck()
-          }
-
-          if (v.changes.hasOwnProperty('colData')) {
-            const colData = v.changes.colData.currentValue
-            if (colData && colData.format !== this.format) {
-              this.format = colData.format
-            } else {
-              this.format = undefined
-            }
             this._cdf.markForCheck()
           }
         })
