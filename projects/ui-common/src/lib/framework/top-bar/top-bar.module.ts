@@ -12,11 +12,11 @@ import { TopBarItemDirective } from './top-bar-item.directive'
 import { TopBarMenuButtonComponent } from './top-bar-menu-button/top-bar-menu-button.component'
 import { TopBarMenuDirective } from './top-bar-menu.directive'
 import { TopBarTitleComponent } from './top-bar-title/top-bar-title.component'
-import { TopBarComponent } from './top-bar.component'
+import { TheSeamTopBarComponent } from './top-bar.component'
 
 @NgModule({
   declarations: [
-    TopBarComponent,
+    TheSeamTopBarComponent,
     TopBarTitleComponent,
     TopBarMenuButtonComponent,
     TopBarMenuDirective,
@@ -32,7 +32,7 @@ import { TopBarComponent } from './top-bar.component'
     RouterModule
   ],
   exports: [
-    TopBarComponent,
+    TheSeamTopBarComponent,
     TopBarMenuButtonComponent,
     TopBarMenuDirective,
     TheSeamMenuModule,

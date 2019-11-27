@@ -8,6 +8,11 @@
   <img [src]="logo" [src.lt-md]="hasTitle ? logoSm : logo" alt="Logo">
 </div>
 
+<!-- Info -->
+<div *ngIf="!hasTitle" class="d-flex flex-column flex-grow-1 p-1">
+  <div><strong>Org ID:</strong> {{ organizationId }}</div>
+</div>
+
 <!-- Title -->
 <div class="d-flex flex-column flex-grow-1">
   <seam-top-bar-title *ngIf="hasTitle" [titleText]="titleText" [subTitleText]="subTitleText"></seam-top-bar-title>
