@@ -13,7 +13,7 @@
     "docs:json": "compodoc -p ./tsconfig.json -e json -d .",
     "storybook": "npm run docs:json && start-storybook -p 6006 --ci",
     "docs:storybook": "npm run docs:json && npm run storybook",
-    "build-storybook": "build-storybook -o docs",
+    "build-storybook": "npm run docs:json && build-storybook -o docs",
     "refreshVSToken": "vsts-npm-auth -config .npmrc"
   },
   "private": true,
