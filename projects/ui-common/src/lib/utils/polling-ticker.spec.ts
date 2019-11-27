@@ -6,7 +6,7 @@ import { delay, repeatWhen, tap } from 'rxjs/operators'
 import { TickHelper } from '../test-helpers/index'
 import { pollingTicker } from './polling-ticker'
 
-fdescribe('pollingTicker', () => {
+describe('pollingTicker', () => {
 
   describe('sync action', () => {
     it('should skip first emit if emitOnInit = false', fakeAsync(() => {
@@ -96,7 +96,7 @@ fdescribe('pollingTicker', () => {
     //   // TODO: Write tests
     // })
 
-    fdescribe('action emmits periodically', () => {
+    describe('action emmits periodically', () => {
       it('should resubscribe each interval', fakeAsync(() => {
         const _data = new BehaviorSubject<number>(123)
         const data$ = _data.asObservable()

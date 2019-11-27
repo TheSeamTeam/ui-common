@@ -1,4 +1,6 @@
-import { Injectable } from '@angular/core'
+import { Injectable, isDevMode } from '@angular/core'
+
+import jexl from 'jexl'
 
 import { DynamicValue } from './models/dynamic-value'
 
@@ -15,6 +17,31 @@ export class DynamicValueHelperService {
    * TODO: Make async evaluation possible. A datatable bug is preventing this.
    */
   public eval(value: DynamicValue, context?: any): any {
+    if (this.isTransformableType(value)) {
 
+    }
+  }
+
+  /**
+   * Checks is a DynamicValue is a type that can be transformed.
+   */
+  public isTransformableType(value: DynamicValue): boolean {
+    if (value === undefined || value === null) {
+      return false
+    }
+
+    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+      return false
+    }
+
+    if (value.type === 'jexl') {
+      return true
+    }
+
+    if (isDevMode()) {
+      console.warn('[DynamicValueHelperService] DynamicValue type not recognized.', value)
+    }
+
+    return false
   }
 }
