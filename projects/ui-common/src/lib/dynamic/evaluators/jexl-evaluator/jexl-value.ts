@@ -1,4 +1,4 @@
-import { IDynamicValueType } from './dynamic-value-type'
+import { IDynamicValueType } from '../../models/dynamic-value-type'
 
 /**
  * Value for defining an expression using Jexl syntax. The context will depend
@@ -6,6 +6,6 @@ import { IDynamicValueType } from './dynamic-value-type'
  *
  * Jexl: https://github.com/TomFrost/Jexl
  */
-export interface IJexlExpression extends IDynamicValueType<'jexl'> {
+export interface IJexlValue extends IDynamicValueType<'jexl'> {
   expr: string
 }

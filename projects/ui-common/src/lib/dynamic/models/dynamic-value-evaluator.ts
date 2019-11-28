@@ -1,11 +1,11 @@
-import { DynamicValue } from './dynamic-value'
+import { IDynamicValueType } from './dynamic-value-type'
 
 export interface IDynamicValueEvaluator<T = string> {
 
   readonly evaluatorType: T
 
-  eval?(value: DynamicValue, context?: any): Promise<any>
+  eval?(value: IDynamicValueType<T>, context?: any): Promise<any>
 
-  evalSync?(value: DynamicValue, context?: any): any
+  evalSync?(value: IDynamicValueType<T>, context?: any): any
 
 }
