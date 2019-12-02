@@ -21,11 +21,11 @@ export class DynamicValueHelperService {
     // Only one evaluator should exist for a type, so map them for faster lookup.
     for (const e of evaluators) {
       if (isDevMode()) {
-        if (this._evaluatorMap.has(e.evaluatorType)) {
-          console.warn(`[DynamicValueHelperService] Multiple evaluators found for type '${e.evaluatorType}'`)
+        if (this._evaluatorMap.has(e.type)) {
+          console.warn(`[DynamicValueHelperService] Multiple evaluators found for type '${e.type}'`)
         }
       }
-      this._evaluatorMap.set(e.evaluatorType, e)
+      this._evaluatorMap.set(e.type, e)
     }
   }
 

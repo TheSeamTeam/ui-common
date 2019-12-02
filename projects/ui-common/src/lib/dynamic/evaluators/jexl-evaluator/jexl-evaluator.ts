@@ -9,7 +9,7 @@ import { IJexlValue } from './jexl-value'
 @Injectable()
 export class JexlEvaluator implements IDynamicValueEvaluator<'jexl'> {
 
-  public readonly evaluatorType = 'jexl'
+  public readonly type = 'jexl'
 
   public eval(value: IJexlValue, context?: any): Promise<any> {
     return jexl.eval(value.expr, context)

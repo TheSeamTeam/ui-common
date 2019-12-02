@@ -11,7 +11,7 @@ interface ITestValueSync extends IDynamicValueType<'test-sync'> {
 
 class TestEvaluatorSync implements IDynamicValueEvaluator<'test-sync'> {
 
-  readonly evaluatorType = 'test-sync'
+  readonly type = 'test-sync'
 
   evalSync(value, context) { return context[value.propOnContext] }
 
@@ -23,7 +23,7 @@ interface ITestValueAsync extends IDynamicValueType<'test-async'> {
 
 class TestEvaluatorAsync implements IDynamicValueEvaluator<'test-async'> {
 
-  readonly evaluatorType = 'test-async'
+  readonly type = 'test-async'
 
   eval(value, context) { return Promise.resolve(context[value.propOnContext]) }
 
