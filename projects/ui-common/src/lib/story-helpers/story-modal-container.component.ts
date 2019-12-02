@@ -1,8 +1,8 @@
-import { ComponentType } from '@angular/cdk/overlay'
 import { Component, Injector, Input } from '@angular/core'
 import { of } from 'rxjs'
 
 import { ModalRef } from '../modal/index'
+import { ComponentType } from '../models/index'
 
 class FakeModalRef<T, R = any> implements Partial<ModalRef<T, R>> {
 
