@@ -1,3 +1,5 @@
+@import './styles/utilities';
+
 :host {
   flex: 1 1 100%;
   display: flex;
@@ -10,6 +12,7 @@
   flex: 0 0 auto;
   overflow: hidden;
   cursor: pointer;
+  min-width: 252px;
 
   img {
     max-height: 60px;

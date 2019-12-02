@@ -1,10 +1,19 @@
 <div class="d-flex flex-row">
-  <div class="text-left flex-grow-1 text-truncate">
-    <span *ngIf="originalDisplayName">{{ originalDisplayName }} as </span>
-    <span>{{ displayName }}</span>
-    <br>
-    <span *ngIf="organizationName">{{ organizationName }}</span>
+  <div class="text-left flex-grow-1 text-truncate top-bar-menu-button--text">
+    <div>
+      <span *ngIf="originalDisplayName" class="top-bar-menu--orig-disp-name">{{ originalDisplayName }} as </span>
+      <span class="top-bar-menu--display-name">{{ displayName }}</span>
+    </div>
+    <!-- <br> -->
+    <div>
+      <span *ngIf="organizationName" class="top-bar-menu--org-name">{{ organizationName }}</span>
+    </div>
+    <!-- <br> -->
+    <div>
+      <span class="top-bar-menu--org-id">Org ID: 123456789</span>
+    </div>
   </div>
+  <!-- Arrow Button -->
   <div class="pl-2 d-flex flex-column">
     <div class="flex-grow-1"></div>
     <seam-icon class="d-block" [icon]="faAngleDown"></seam-icon>

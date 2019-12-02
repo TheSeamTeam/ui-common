@@ -30,6 +30,9 @@ import { TopBarMenuDirective } from './top-bar-menu.directive'
   selector: 'seam-top-bar',
   templateUrl: './top-bar.component.html',
   styleUrls: ['./top-bar.component.scss'],
+  host: {
+    'class': 'bg-white'
+  },
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TheSeamTopBarComponent implements OnInit, OnDestroy, AfterContentInit {

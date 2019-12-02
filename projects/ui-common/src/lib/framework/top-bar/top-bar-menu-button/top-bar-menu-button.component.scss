@@ -1,3 +1,5 @@
+@import '../styles/utilities';
+
 :host {
   min-width: 200px;
 
@@ -6,3 +8,28 @@
   border-bottom: 0 !important;
   border-right: 0 !important;
 }
+
+.top-bar-menu-button--text {
+  font-size: $seam-top-bar-menu-button-font-size;
+  line-height: $seam-top-bar-menu-button-line-height;
+}
+
+// .top-bar-menu--orig-disp-name {
+//   font-size: $seam-top-bar-menu-button-font-size;
+//   line-height: $seam-top-bar-menu-button-line-height;
+// }
+
+// .top-bar-menu--display-name {
+//   font-size: $seam-top-bar-menu-button-font-size;
+//   line-height: $seam-top-bar-menu-button-line-height;
+// }
+
+// .top-bar-menu--org-name {
+//   font-size: $seam-top-bar-menu-button-font-size;
+//   line-height: $seam-top-bar-menu-button-line-height;
+// }
+
+// .top-bar-menu--org-id {
+//   font-size: $seam-top-bar-menu-button-font-size;
+//   line-height: $seam-top-bar-menu-button-line-height;
+// }
