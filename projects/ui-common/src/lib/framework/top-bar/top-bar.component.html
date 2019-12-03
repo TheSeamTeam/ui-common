@@ -30,9 +30,6 @@
 <!-- Menu -->
 <button seamTopBarMenuButton
   [seamMenuToggle]="_topBarMenu?.menu"
-  [displayName]="displayName"
-  [organizationName]="organizationName"
-  [originalDisplayName]="originalDisplayName"
-  [organizationId]="organizationId"
+  [detailTpl]="_topBarMenuBtnDetailTpl?.template"
   [compact]="isMobile$ | async">
 </button>

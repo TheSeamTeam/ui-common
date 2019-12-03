@@ -9,7 +9,7 @@ import { THESEAM_MENU_PANEL } from '../menu-panel-token'
   templateUrl: './menu-header.component.html',
   styleUrls: ['./menu-header.component.scss'],
   host: {
-    'class': 'd-flex flex-column bg-light border-bottom rounded-top py-2'
+    'class': 'd-flex flex-column bg-light border-bottom rounded-top py-2 mb-2'
   },
   changeDetection: ChangeDetectionStrategy.OnPush
 })

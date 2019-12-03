@@ -18,6 +18,7 @@ import { TheSeamLayoutService } from '../../layout/index'
 import { untilDestroyed } from 'ngx-take-until-destroy'
 import { map, shareReplay, startWith, tap } from 'rxjs/operators'
 import { TopBarItemDirective } from './top-bar-item.directive'
+import { TopBarMenuBtnDetailDirective } from './top-bar-menu-btn-detail.directive'
 import { TopBarMenuDirective } from './top-bar-menu.directive'
 
 /**
@@ -35,6 +36,7 @@ import { TopBarMenuDirective } from './top-bar-menu.directive'
   selector: 'seam-top-bar',
   templateUrl: './top-bar.component.html',
   styleUrls: ['./top-bar.component.scss'],
+  exportAs: 'seamTopBar',
   host: {
     'class': 'bg-white'
   },
@@ -49,6 +51,8 @@ export class TheSeamTopBarComponent implements OnInit, OnDestroy, AfterContentIn
   @ContentChild(TopBarMenuDirective, { static: true }) _topBarMenu?: TopBarMenuDirective | null
   /** @ignore */
   @ContentChildren(TopBarItemDirective) _topBarItems: QueryList<TopBarItemDirective>
+  /** @ignore */
+  @ContentChild(TopBarMenuBtnDetailDirective, { static: false }) _topBarMenuBtnDetailTpl?: TopBarMenuBtnDetailDirective | null
 
   /** Logo displayed on the top bar. */
   @Input() logo: string
@@ -63,18 +67,6 @@ export class TheSeamTopBarComponent implements OnInit, OnDestroy, AfterContentIn
 
   /** Sub Title text displayed when `hasTitle` is true. The sub title will be less prominent. */
   @Input() subTitleText?: string | null
-
-  /** Display name of the authenticated user or user being impersonated. */
-  @Input() displayName: string
-
-  /** Display name of the authenticated user if a user is being impersonated. */
-  @Input() originalDisplayName?: string | null
-
-  /** Organization name of the authenticated user or user being impersonated. */
-  @Input() organizationName?: string | null
-
-  /** Organization id of the authenticated user or user being impersonated. */
-  @Input() organizationId?: string | null
 
   /** @ignore */
   _items$: Observable<TopBarItemDirective[]>

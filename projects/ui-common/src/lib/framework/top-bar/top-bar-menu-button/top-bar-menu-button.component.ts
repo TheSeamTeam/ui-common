@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component, HostBinding, Input, OnDestroy, OnInit, TemplateRef } from '@angular/core'
 
 import { faUserCircle } from '@fortawesome/free-regular-svg-icons'
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons'
@@ -32,10 +32,7 @@ export class TopBarMenuButtonComponent extends _TopBarMenuButtonMixinBase implem
   faAngleDown = faAngleDown
   profileIcon = faUserCircle
 
-  @Input() displayName: string
-  @Input() organizationName?: string | null
-  @Input() originalDisplayName?: string | null
-  @Input() organizationId?: string | null
+  @Input() detailTpl: TemplateRef<{}> | null
 
   @Input() compact: boolean = false
 

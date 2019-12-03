@@ -39,10 +39,6 @@ export const Basic = () => ({
     hasTitle: boolean('hasTitle', false),
     titleText: text('titleText', 'Dashboard'),
     subTitleText: text('subTitleText', 'Example'),
-    displayName: text('displayName', 'Mark Berry'),
-    originalDisplayName: text('originalDisplayName', 'Leslie Knope'),
-    organizationName: text('organizationName', 'The Seam'),
-    organizationId: text('organizationId', '123456789'),
     faUserAlt,
     faQuestionCircle,
     faSignOutAlt,
@@ -51,17 +47,25 @@ export const Basic = () => ({
     faComment
   },
   template: `
-    <seam-top-bar
+    <seam-top-bar #seamTopBar
       [logo]="logo"
       [logoSm]="logoSm"
       [hasTitle]="hasTitle"
       [titleText]="titleText"
-      [subTitleText]="subTitleText"
-      [displayName]="displayName"
-      [organizationName]="organizationName"
-      [originalDisplayName]="originalDisplayName"
-      [organizationId]="organizationId">
+      [subTitleText]="subTitleText">
+
+      <ng-template seamTopBarMenuBtnDetail>
+        <div>Mark Berry</div>
+        <div>The Seam</div>
+        <div>123456789</div>
+      </ng-template>
+
       <seam-menu seamTopBarMenu>
+        <seam-menu-header class="px-2" *ngIf="seamTopBar?.isMobile$ | async">
+          <div>Mark Berry</div>
+          <div>The Seam</div>
+          <div>123456789</div>
+        </seam-menu-header>
         <a seamMenuItem [icon]="faUserAlt" routerLink="/profile">Profile</a>
         <button seamMenuItem [icon]="faQuestionCircle">About</button>
         <seam-menu-divider></seam-menu-divider>

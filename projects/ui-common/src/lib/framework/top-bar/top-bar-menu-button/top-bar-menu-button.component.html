@@ -1,17 +1,6 @@
 <div class="d-flex flex-row" *ngIf="!compact; else compactTpl">
-  <div class="text-left flex-grow-1 text-truncate top-bar-menu-button--text">
-    <div>
-      <span *ngIf="originalDisplayName" class="top-bar-menu--orig-disp-name">{{ originalDisplayName }} as </span>
-      <span class="top-bar-menu--display-name">{{ displayName }}</span>
-    </div>
-    <!-- <br> -->
-    <div>
-      <span *ngIf="organizationName" class="top-bar-menu--org-name">{{ organizationName }}</span>
-    </div>
-    <!-- <br> -->
-    <div *ngIf="organizationId?.length > 0">
-      <span class="top-bar-menu--org-id">{{ organizationId }}</span>
-    </div>
+  <div class="text-left flex-grow-1 text-truncate">
+    <ng-template [ngTemplateOutlet]="detailTpl"></ng-template>
   </div>
   <!-- Arrow Button -->
   <div class="pl-2 d-flex flex-column">
