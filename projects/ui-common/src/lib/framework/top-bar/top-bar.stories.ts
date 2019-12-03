@@ -75,10 +75,10 @@ export const Basic = () => ({
         <span class="sr-only">Notifications</span>
         <seam-icon-notification iconClass="text-danger"></seam-icon-notification>
       </button>
-      <seam-menu #notificationMenu>
-        <div style="width: 400px">
+      <seam-menu #notificationMenu baseWidth="400">
+        <div>
           <a seamMenuItem [icon]="faExclamationTriangle" iconClass="text-warning" routerLink="/profile">
-            There is a problem with you self-assessment answers.
+            There is a problem with your self-assessment answers.
           </a>
           <a seamMenuItem [icon]="faExclamationTriangle" iconClass="text-warning" routerLink="/profile">
             Your password expires in 10 days.

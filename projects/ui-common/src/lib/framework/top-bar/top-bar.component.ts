@@ -21,7 +21,7 @@ import { TopBarItemDirective } from './top-bar-item.directive'
 import { TopBarMenuDirective } from './top-bar-menu.directive'
 
 /**
- * Top bar of a app.
+ * Top bar of an app.
  *
  * The top bar is fairly opinionated, so most parts are not intended to be
  * customized unless there is an input.

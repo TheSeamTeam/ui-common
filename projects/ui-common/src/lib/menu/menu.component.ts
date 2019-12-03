@@ -1,5 +1,6 @@
 import { animate, group, query, style, transition, trigger, useAnimation } from '@angular/animations'
 import { FocusKeyManager, FocusOrigin } from '@angular/cdk/a11y'
+import { coerceNumberProperty } from '@angular/cdk/coercion'
 import { DOWN_ARROW, END, ESCAPE, hasModifierKey, HOME, LEFT_ARROW, RIGHT_ARROW, UP_ARROW } from '@angular/cdk/keycodes'
 import {
   AfterContentInit,
@@ -15,7 +16,7 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core'
-import { BehaviorSubject, merge, Observable, Subject, Subscription } from 'rxjs'
+import { BehaviorSubject, fromEvent, merge, Observable, of, Subject, Subscription } from 'rxjs'
 
 import { map, startWith, switchMap } from 'rxjs/operators'
 import { menuDropdownPanelSlideIn, menuDropdownPanelSlideOut } from './menu-animations'
@@ -23,6 +24,7 @@ import { MenuItemComponent } from './menu-item.component'
 import { ITheSeamMenuPanel } from './menu-panel'
 import { THESEAM_MENU_PANEL } from './menu-panel-token'
 
+import { untilDestroyed } from 'ngx-take-until-destroy'
 import { MenuFooterComponent } from './menu-footer/menu-footer.component'
 
 export const LIB_MENU: any = {
@@ -76,9 +78,37 @@ export class MenuComponent implements OnInit, OnDestroy, AfterContentInit, ITheS
 
   @Input() menuClass: string
 
+  /**
+   * Defines a width for a menu that will scale down if the window innerWidth is
+   * smaller than the value.
+   */
+  @Input()
+  get baseWidth() { return this._baseWidth.value }
+  set baseWidth(value: number | null) {
+    const _val = coerceNumberProperty(value, null)
+    if (_val !== this._baseWidth.value) {
+      this._baseWidth.next(_val)
+    }
+  }
+  private _baseWidth = new BehaviorSubject<number | null>(null)
+  _menuWidth$: Observable<string | undefined>
+
   constructor() { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this._menuWidth$ = this._baseWidth.pipe(
+      switchMap(baseWidth => {
+        if (baseWidth) {
+          return fromEvent(window, 'resize').pipe(
+            startWith(undefined),
+            map(() => window.innerWidth < baseWidth ? '100%' : `${baseWidth}px`)
+          )
+        }
+        return of(undefined)
+      }),
+      untilDestroyed(this)
+    )
+  }
 
   ngOnDestroy() {
     this._tabSubscription.unsubscribe()
