@@ -25,6 +25,11 @@ import { TopBarMenuDirective } from './top-bar-menu.directive'
  *
  * The top bar is fairly opinionated, so most parts are not intended to be
  * customized unless there is an input.
+ *
+ * > If you have to make a change and apply it externally with a css class or js
+ * > make sure there is an issue to get the feature changed, so we don't have
+ * > different modifications across our apps. Also, this will help make sure
+ * > your change should have even been done.
  */
 @Component({
   selector: 'seam-top-bar',
@@ -50,18 +55,13 @@ export class TheSeamTopBarComponent implements OnInit, OnDestroy, AfterContentIn
   /** Logo displayed on the top bar when a smaller logo is needed. */
   @Input() logoSm?: string | null
 
-  /**
-   * Determines if the title should be displayed.
-   *
-   * A title and info section are not supported yet, so if the title is true
-   * then the info section will be hidden.
-   */
-  @Input() hasTitle = false
+  /** Determines if the title should be displayed. */
+  @Input() hasTitle: boolean = false
 
-  /** Title displayed when `hasTitle` is true. */
+  /** Title text displayed when `hasTitle` is true. */
   @Input() titleText: string
 
-  /** Sub Title displayed when `hasTitle` is true. The sub title will be less prominent. */
+  /** Sub Title text displayed when `hasTitle` is true. The sub title will be less prominent. */
   @Input() subTitleText?: string | null
 
   /** Display name of the authenticated user or user being impersonated. */

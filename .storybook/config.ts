@@ -1,5 +1,6 @@
 import { withA11y } from '@storybook/addon-a11y'
 import { setCompodocJson } from '@storybook/addon-docs/angular'
+import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import { addDecorator, addParameters, configure } from '@storybook/angular'
 import { themes } from '@storybook/theming'
 
@@ -20,6 +21,7 @@ addParameters({
     //   iframeHeight: '60px',
     // },
   },
+  viewports: INITIAL_VIEWPORTS
 })
 
 configure(require.context('../projects/ui-common/src', true, /\.stories\.(ts|mdx)$/), module)

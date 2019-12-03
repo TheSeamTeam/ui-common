@@ -4,20 +4,20 @@
 </div>
 
 <!-- Logo -->
-<div class="top-bar--logo d-flex flex-column justify-content-center" routerLink="/">
+<div class="top-bar--logo d-flex flex-column justify-content-center" routerLink="/"
+  [class.top-bar--logo-mobile]="isMobile$ | async">
   <div>
     <img [src]="logo" [src.lt-md]="hasTitle ? logoSm : logo" alt="Logo">
   </div>
 </div>
 
-<!-- Info -->
-<div *ngIf="!hasTitle" class="d-flex flex-column flex-grow-1 p-1">
-  <div><strong>Org ID:</strong> {{ organizationId }}</div>
-</div>
-
 <!-- Title -->
 <div class="d-flex flex-column flex-grow-1">
-  <seam-top-bar-title *ngIf="hasTitle" [titleText]="titleText" [subTitleText]="subTitleText"></seam-top-bar-title>
+  <seam-top-bar-title *ngIf="hasTitle"
+    [titleText]="titleText"
+    [subTitleText]="subTitleText"
+    [class.ml-2]="isMobile$ | async">
+  </seam-top-bar-title>
 </div>
 
 <!-- Items -->
@@ -32,5 +32,6 @@
   [seamMenuToggle]="_topBarMenu?.menu"
   [displayName]="displayName"
   [organizationName]="organizationName"
-  [originalDisplayName]="originalDisplayName">
+  [originalDisplayName]="originalDisplayName"
+  [compact]="isMobile$ | async">
 </button>

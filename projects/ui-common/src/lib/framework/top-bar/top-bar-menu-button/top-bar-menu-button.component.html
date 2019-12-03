@@ -1,4 +1,4 @@
-<div class="d-flex flex-row">
+<div class="d-flex flex-row" *ngIf="!compact; else compactTpl">
   <div class="text-left flex-grow-1 text-truncate top-bar-menu-button--text">
     <div>
       <span *ngIf="originalDisplayName" class="top-bar-menu--orig-disp-name">{{ originalDisplayName }} as </span>
@@ -20,3 +20,6 @@
     <div class="flex-grow-1"></div>
   </div>
 </div>
+<ng-template #compactTpl>
+  <seam-icon [icon]="profileIcon" iconType="borderless-styled-square"></seam-icon>
+</ng-template>
