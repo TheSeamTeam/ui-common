@@ -76,20 +76,18 @@ export const Basic = () => ({
         <seam-icon-notification iconClass="text-danger"></seam-icon-notification>
       </button>
       <seam-menu #notificationMenu baseWidth="400">
-        <div>
-          <a seamMenuItem [icon]="faExclamationTriangle" iconClass="text-warning" routerLink="/profile">
-            There is a problem with your self-assessment answers.
-          </a>
-          <a seamMenuItem [icon]="faExclamationTriangle" iconClass="text-warning" routerLink="/profile">
-            Your password expires in 10 days.
-          </a>
-          <button seamMenuItem [icon]="faComment" iconClass="text-primary">
-            You have unread feedback on your document.
-          </button>
-          <seam-menu-footer>
-            <a seamMenuFooterAction routerLink="/notifications">See All</a>
-          </seam-menu-footer>
-        </div>
+        <a seamMenuItem [icon]="faExclamationTriangle" iconClass="text-warning" routerLink="/profile">
+          There is a problem with your self-assessment answers.
+        </a>
+        <a seamMenuItem [icon]="faExclamationTriangle" iconClass="text-warning" routerLink="/profile">
+          Your password expires in 10 days.
+        </a>
+        <button seamMenuItem [icon]="faComment" iconClass="text-primary">
+          You have unread feedback on your document.
+        </button>
+        <seam-menu-footer>
+          <a seamMenuFooterAction routerLink="/notifications">See All</a>
+        </seam-menu-footer>
       </seam-menu>
     </seam-top-bar>
   `

@@ -1,6 +1,7 @@
 <ng-template>
   <div class="overflow-hidden" @slideDown>
     <div class="dropdown-menu show position-static" [style.width]="_menuWidth$ | async"
+      [class.pt-0]="hasHeader$ | async"
       [class.pb-0]="hasFooter$ | async"
       (keydown)="_handleKeydown($event)"
       (click)="closed.emit('click')"
