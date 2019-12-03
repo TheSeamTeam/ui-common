@@ -1,8 +1,15 @@
+@import '../styles/utilities';
+
 :host {
-  min-width: 200px;
+  min-width: $seam-top-bar-menu-button-min-width;
 
   border-radius: 0;
   border-top: 0 !important;
   border-bottom: 0 !important;
   border-right: 0 !important;
+
+  &.top-bar-menu-button--compact {
+    min-width: 40px;
+    border-left: 0 !important;
+  }
 }

@@ -5,3 +5,6 @@ export * from './menu-panel'
 export * from './menu-toggle.directive'
 export * from './menu.component'
 export * from './menu.module'
+
+export * from './menu-header/menu-header.component'
+export * from './menu-footer/menu-footer.component'
