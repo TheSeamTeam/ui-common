@@ -98,7 +98,7 @@ export class MenuComponent implements OnInit, OnDestroy, AfterContentInit, ITheS
         if (baseWidth) {
           return fromEvent(window, 'resize').pipe(
             startWith(undefined),
-            map(() => window.innerWidth < baseWidth ? '100%' : `${baseWidth}px`)
+            map(() => window.innerWidth < baseWidth ? `${window.innerWidth}px` : `${baseWidth}px`)
           )
         }
         return of(undefined)
