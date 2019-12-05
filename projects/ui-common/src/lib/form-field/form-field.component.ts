@@ -21,39 +21,86 @@ import { InputDirective } from './input.directive'
 
 let nextLabelUniqueId = 0
 
+/**
+ * Should wrap all form controls.
+ */
 @Component({
   selector: 'seam-form-field',
   templateUrl: './form-field.component.html',
   styleUrls: ['./form-field.component.scss']
 })
-export class FormFieldComponent implements OnInit, OnDestroy {
+export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
 
+  /** @ignore */
   protected _labelUid = `lib-label-${nextLabelUniqueId++}`
 
+  /** @ignore */
   public _errorPadding = '0px'
 
+  /** @ignore */
   @HostBinding('style.display') get _displayStyle() { return this.inline ? 'inline-block' : 'block' }
 
+  /**
+   * Used to declare an inline element.
+   *
+   * NOTE: Not well tested or supported, so it may have some issues currently
+   * and could change.
+   */
   @Input() inline = false
 
+  /** Add a text label for the form control. */
   @Input() label: string
+
+  /**
+   * The label can be on top or inline.
+   *
+   * > Only supports `ltr` direction, so inline will only place the label on the
+   * > left.
+   */
   @Input() labelPosition: 'top' | 'inline' = 'top'
+
+  /**
+   * CSS class to add to the label element.
+   *
+   * Accepts a single space separated string of classes, like the html class
+   * attribute.
+   */
   @Input() labelClass: string
 
+  /**
+   * CSS class to add to the `.form-group` element.
+   *
+   * Accepts a single space separated string of classes, like the html class
+   * attribute.
+   */
   @Input() formGroupClass: string
 
+  /** Max errors to display. */
   @Input() maxErrors = -1
+
+  /**
+   * A padding error is an always allocated space equivalent to a single line
+   * error string.
+   */
   @Input() numPaddingErrors = 1
 
+  /**
+   * `id` attribute to add to the label element. This should not be needed in
+   * most situations, because a unique id will be generated if not provided.
+   */
   @Input()
   get labelId(): string { return this._labelId }
   set labelId(value: string) { this._labelId = value || this._labelUid }
+  /** @ignore */
   protected _labelId: string
 
+  /** @ignore */
   @ContentChild(FormFieldLabelTplDirective, { static: true }) labelTpl: FormFieldLabelTplDirective
 
+  /** @ignore */
   @ContentChild(InputDirective, { static: true }) contentInput: InputDirective
 
+  /** @ignore */
   @ContentChildren(FormFieldErrorDirective)
   get fieldErrors() { return this._fieldErrors }
   set fieldErrors(value: QueryList<FormFieldErrorDirective[]>) {
@@ -80,13 +127,19 @@ export class FormFieldComponent implements OnInit, OnDestroy {
         .subscribe(v => this._fieldErrorsSubject.next(v))
     }
   }
+  /** @ignore */
   private _fieldErrors: QueryList<FormFieldErrorDirective[]>
+  /** @ignore */
   private _sub: Subscription
 
+  /** @ignore */
   private readonly _fieldErrorsSubject = new ReplaySubject<FormFieldErrorDirective[]>(1)
+  /** @ignore */
   public readonly fieldErrors$: Observable<FormFieldErrorDirective[]> = this._fieldErrorsSubject.asObservable()
 
+  /** @ignore */
   private readonly _fieldErrorsSubject2 = new ReplaySubject<IErrorRecord[]>(1)
+  /** @ignore */
   public readonly fieldErrors2$: Observable<IErrorRecord[]> = this._fieldErrorsSubject2.asObservable()
 
   get isPasswordInput() {
@@ -96,12 +149,16 @@ export class FormFieldComponent implements OnInit, OnDestroy {
     return this.contentInput && this.contentInput._elementRef && this.contentInput._elementRef.nativeElement
   }
 
+  /** @ignore */
   constructor() { }
 
+  /** @ignore */
   ngOnInit() { }
 
+  /** @ignore */
   ngOnDestroy() { }
 
+  /** @ignore */
   public isValidatorMatch(validatorName: string, tplValidatorName: string, errors: any): boolean {
     const tplValidatorNames = tplValidatorName.split(' ')
 
@@ -115,6 +172,7 @@ export class FormFieldComponent implements OnInit, OnDestroy {
     return false
   }
 
+  /** @ignore */
   public _labelElemResized(labelElem: HTMLLabelElement) {
     if (labelElem) {
       this._errorPadding = `${labelElem.getBoundingClientRect().width}px`

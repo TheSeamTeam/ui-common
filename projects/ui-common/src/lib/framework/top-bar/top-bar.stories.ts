@@ -1,5 +1,5 @@
-import { boolean, select, text, withKnobs } from '@storybook/addon-knobs'
-import { moduleMetadata, storiesOf } from '@storybook/angular'
+import { boolean, text, withKnobs } from '@storybook/addon-knobs'
+import { moduleMetadata } from '@storybook/angular'
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { RouterModule } from '@angular/router'
@@ -57,14 +57,12 @@ export const Basic = () => ({
       <ng-template seamTopBarMenuBtnDetail>
         <div>Mark Berry</div>
         <div>The Seam</div>
-        <div>123456789</div>
       </ng-template>
 
       <seam-menu seamTopBarMenu>
         <seam-menu-header class="px-2" *ngIf="seamTopBar?.isMobile$ | async">
           <div>Mark Berry</div>
           <div>The Seam</div>
-          <div>123456789</div>
         </seam-menu-header>
         <a seamMenuItem [icon]="faUserAlt" routerLink="/profile">Profile</a>
         <button seamMenuItem [icon]="faQuestionCircle">About</button>
