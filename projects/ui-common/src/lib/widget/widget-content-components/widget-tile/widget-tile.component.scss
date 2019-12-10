@@ -32,4 +32,9 @@
   right: -3px;
   width: 15px !important;
   height: 15px !important;
+
+}
+
+seam-icon ::ng-deep img[src$=".svg"] {
+  height: 100%; // Needed for IE
 }

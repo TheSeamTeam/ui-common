@@ -7,12 +7,12 @@ import { TheSeamSharedModule } from '../shared/shared.module'
 
 import { FormFieldErrorDirective } from './form-field-error.directive'
 import { FormFieldLabelTplDirective } from './form-field-label-tpl.directive'
-import { FormFieldComponent } from './form-field.component'
+import { TheSeamFormFieldComponent } from './form-field.component'
 import { InputDirective } from './input.directive'
 
 @NgModule({
   declarations: [
-    FormFieldComponent,
+    TheSeamFormFieldComponent,
     InputDirective,
     FormFieldErrorDirective,
     FormFieldLabelTplDirective
@@ -24,7 +24,7 @@ import { InputDirective } from './input.directive'
     TheSeamSharedModule
   ],
   exports: [
-    FormFieldComponent,
+    TheSeamFormFieldComponent,
     InputDirective,
     FormFieldErrorDirective,
     FormFieldLabelTplDirective

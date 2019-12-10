@@ -2,9 +2,7 @@ import { ComponentPortal, PortalInjector } from '@angular/cdk/portal'
 import { ChangeDetectionStrategy, Component, Injector, Input, OnInit, ViewContainerRef } from '@angular/core'
 
 import { THESEAM_DATA_FILTER_OPTIONS } from '../../data-filters/data-filter'
-
-/** Interface that can be used to generically type a class. */
-export type ComponentType<T> = new (...args: any[]) => T
+import { ComponentType } from '../../models/index'
 
 @Component({
   selector: 'seam-datatable-dynamic-filter-container',

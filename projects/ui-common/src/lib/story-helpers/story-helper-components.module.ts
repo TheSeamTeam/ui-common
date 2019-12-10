@@ -4,11 +4,13 @@ import { RouterModule } from '@angular/router'
 
 import { StoryEmptyWithRouteComponent } from './story-empty-with-route.component'
 import { StoryEmptyComponent } from './story-empty.component'
+import { StoryModalContainerComponent } from './story-modal-container.component'
 
 @NgModule({
   declarations: [
     StoryEmptyComponent,
-    StoryEmptyWithRouteComponent
+    StoryEmptyWithRouteComponent,
+    StoryModalContainerComponent
   ],
   imports: [
     CommonModule,
@@ -16,7 +18,8 @@ import { StoryEmptyComponent } from './story-empty.component'
   ],
   exports: [
     StoryEmptyComponent,
-    StoryEmptyWithRouteComponent
+    StoryEmptyWithRouteComponent,
+    StoryModalContainerComponent
   ]
 })
 export class StoryHelperComponentsModule { }

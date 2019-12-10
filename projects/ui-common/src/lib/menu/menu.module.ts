@@ -7,6 +7,7 @@ import { TheSeamIconModule } from '../icon/icon.module'
 import { MenuDividerComponent } from './menu-divider.component'
 import { MenuFooterActionComponent } from './menu-footer-action/menu-footer-action.component'
 import { MenuFooterComponent } from './menu-footer/menu-footer.component'
+import { MenuHeaderComponent } from './menu-header/menu-header.component'
 import { MenuItemComponent } from './menu-item.component'
 import { MenuToggleDirective } from './menu-toggle.directive'
 import { MenuComponent } from './menu.component'
@@ -19,6 +20,7 @@ import { MenuComponent } from './menu.component'
     MenuDividerComponent,
     MenuFooterComponent,
     MenuFooterActionComponent,
+    MenuHeaderComponent,
   ],
   imports: [
     CommonModule,
@@ -35,6 +37,7 @@ import { MenuComponent } from './menu.component'
     OverlayModule,
     MenuFooterComponent,
     MenuFooterActionComponent,
+    MenuHeaderComponent
   ]
 })
 export class TheSeamMenuModule { }

@@ -169,7 +169,7 @@ export class MenuToggleDirective implements OnDestroy {
       .flexibleConnectedTo(origin)
       .withPositions(this.getPositions())
       .withFlexibleDimensions(false)
-      .withPush(false)
+      .withPush(true)
 
     return positionStrategy
   }

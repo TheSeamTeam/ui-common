@@ -1,20 +1,20 @@
 // import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
-// import { FormFieldComponent } from './form-field.component'
+// import { TheSeamFormFieldComponent } from './form-field.component'
 
-// describe('FormFieldComponent', () => {
-//   let component: FormFieldComponent
-//   let fixture: ComponentFixture<FormFieldComponent>
+// describe('TheSeamFormFieldComponent', () => {
+//   let component: TheSeamFormFieldComponent
+//   let fixture: ComponentFixture<TheSeamFormFieldComponent>
 
 //   beforeEach(async(() => {
 //     TestBed.configureTestingModule({
-//       declarations: [ FormFieldComponent ]
+//       declarations: [ TheSeamFormFieldComponent ]
 //     })
 //     .compileComponents()
 //   }))
 
 //   beforeEach(() => {
-//     fixture = TestBed.createComponent(FormFieldComponent)
+//     fixture = TestBed.createComponent(TheSeamFormFieldComponent)
 //     component = fixture.componentInstance
 //     fixture.detectChanges()
 //   })

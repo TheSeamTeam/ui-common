@@ -18,35 +18,61 @@ import { TheSeamLayoutService } from '../../layout/index'
 import { untilDestroyed } from 'ngx-take-until-destroy'
 import { map, shareReplay, startWith, tap } from 'rxjs/operators'
 import { TopBarItemDirective } from './top-bar-item.directive'
+import { TopBarMenuBtnDetailDirective } from './top-bar-menu-btn-detail.directive'
 import { TopBarMenuDirective } from './top-bar-menu.directive'
 
+/**
+ * Top bar of an app.
+ *
+ * The top bar is fairly opinionated, so most parts are not intended to be
+ * customized unless there is an input.
+ *
+ * > If you have to make a change and apply it externally with a css class or js
+ * > make sure there is an issue to get the feature changed, so we don't have
+ * > different modifications across our apps. Also, this will help make sure
+ * > your change should have even been done.
+ */
 @Component({
   selector: 'seam-top-bar',
   templateUrl: './top-bar.component.html',
   styleUrls: ['./top-bar.component.scss'],
+  exportAs: 'seamTopBar',
+  host: {
+    'class': 'bg-white'
+  },
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TopBarComponent implements OnInit, OnDestroy, AfterContentInit {
+export class TheSeamTopBarComponent implements OnInit, OnDestroy, AfterContentInit {
 
+  /** @ignore */
   faBars = faBars
 
+  /** @ignore */
   @ContentChild(TopBarMenuDirective, { static: true }) _topBarMenu?: TopBarMenuDirective | null
+  /** @ignore */
   @ContentChildren(TopBarItemDirective) _topBarItems: QueryList<TopBarItemDirective>
+  /** @ignore */
+  @ContentChild(TopBarMenuBtnDetailDirective, { static: false }) _topBarMenuBtnDetailTpl?: TopBarMenuBtnDetailDirective | null
 
+  /** Logo displayed on the top bar. */
   @Input() logo: string
+  /** Logo displayed on the top bar when a smaller logo is needed. */
   @Input() logoSm?: string | null
 
-  @Input() hasTitle = false
+  /** Determines if the title should be displayed. */
+  @Input() hasTitle: boolean = false
+
+  /** Title text displayed when `hasTitle` is true. */
   @Input() titleText: string
+
+  /** Sub Title text displayed when `hasTitle` is true. The sub title will be less prominent. */
   @Input() subTitleText?: string | null
 
-  @Input() displayName: string
-  @Input() organizationName?: string | null
-  @Input() originalDisplayName?: string | null
-
+  /** @ignore */
   _items$: Observable<TopBarItemDirective[]>
 
-  public isMobile$: Observable<boolean>
+  /** @ignore */
+  isMobile$: Observable<boolean>
 
   constructor(
     private _layout: TheSeamLayoutService
@@ -54,10 +80,13 @@ export class TopBarComponent implements OnInit, OnDestroy, AfterContentInit {
     this.isMobile$ = this._layout.isMobile$
   }
 
+  /** @ignore */
   ngOnInit() { }
 
+  /** @ignore */
   ngOnDestroy() { }
 
+  /** @ignore */
   ngAfterContentInit() {
     this._items$ = this._topBarItems.changes.pipe(
       startWith(undefined),

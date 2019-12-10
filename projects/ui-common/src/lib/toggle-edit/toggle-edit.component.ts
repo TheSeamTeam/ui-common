@@ -28,7 +28,7 @@ import { AbstractControl, ControlContainer, FormControl, FormGroup } from '@angu
 
 import { faCheck, faPen, faTimes } from '@fortawesome/free-solid-svg-icons'
 
-import { FormFieldComponent } from '../form-field/form-field.component'
+import { TheSeamFormFieldComponent } from '../form-field/form-field.component'
 import { ICanToggleEdit } from './models/can-toggle-edit'
 import { IToggleEditRef } from './models/toggle-edit-ref'
 import { ToggleEditDisplayTplDirective } from './toggle-edit-display-tpl.directive'
@@ -95,7 +95,7 @@ export class ToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, Do
   constructor(
     private _elementRef: ElementRef<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
     @Optional() @Self() private controlContainer: ControlContainer,
-    @Optional() @Host() private formFieldComponent: FormFieldComponent,
+    @Optional() @Host() private TheSeamFormFieldComponent: TheSeamFormFieldComponent,
     private _kbListener: ToggleEditKeyboardListenerService,
     private _focusMonitor: FocusMonitor,
     private _ngZone: NgZone,
@@ -119,9 +119,9 @@ export class ToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, Do
 
   ngOnInit() {
     this._initMonitors()
-    if (this.formFieldComponent) {
+    if (this.TheSeamFormFieldComponent) {
       // TODO: Consider making this smarter, such as avoiding overwritting when input set.
-      this.formFieldComponent.numPaddingErrors = 0
+      this.TheSeamFormFieldComponent.numPaddingErrors = 0
     }
   }
 
@@ -130,8 +130,8 @@ export class ToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, Do
   }
 
   ngAfterViewInit() {
-    if (this.formFieldComponent && this.formFieldComponent.contentInput) {
-      this.formFieldComponent.contentInput.stateChanges.subscribe(_ => {
+    if (this.TheSeamFormFieldComponent && this.TheSeamFormFieldComponent.contentInput) {
+      this.TheSeamFormFieldComponent.contentInput.stateChanges.subscribe(_ => {
         this._checkDisabledChange()
       })
     }
@@ -243,12 +243,12 @@ export class ToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, Do
   }
 
   public isInFormField(): boolean {
-    return !!this.formFieldComponent
+    return !!this.TheSeamFormFieldComponent
   }
 
   public getFormControl(): FormControl |  null {
     if (!this.isInFormField()) { return null }
-    return <FormControl>this.formFieldComponent.contentInput.ngControl.control
+    return <FormControl>this.TheSeamFormFieldComponent.contentInput.ngControl.control
   }
 
   public hasControl(): boolean {

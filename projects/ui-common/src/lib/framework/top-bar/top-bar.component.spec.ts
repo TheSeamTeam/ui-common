@@ -1,20 +1,20 @@
 // import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
-// import { TopBarComponent } from './top-bar.component'
+// import { TheSeamTopBarComponent } from './top-bar.component'
 
-// describe('TopBarComponent', () => {
-//   let component: TopBarComponent
-//   let fixture: ComponentFixture<TopBarComponent>
+// describe('TheSeamTopBarComponent', () => {
+//   let component: TheSeamTopBarComponent
+//   let fixture: ComponentFixture<TheSeamTopBarComponent>
 
 //   beforeEach(async(() => {
 //     TestBed.configureTestingModule({
-//       declarations: [ TopBarComponent ]
+//       declarations: [ TheSeamTopBarComponent ]
 //     })
 //     .compileComponents()
 //   }))
 
 //   beforeEach(() => {
-//     fixture = TestBed.createComponent(TopBarComponent)
+//     fixture = TestBed.createComponent(TheSeamTopBarComponent)
 //     component = fixture.componentInstance
 //     fixture.detectChanges()
 //   })

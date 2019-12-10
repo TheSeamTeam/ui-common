@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject, Input, isDevMode, OnInit } from '@angular/core'
 import { of } from 'rxjs'
-import { catchError, concatMap, map, tap } from 'rxjs/operators'
+import { catchError, concatMap, map, take, tap } from 'rxjs/operators'
 
 import { faFileDownload } from '@fortawesome/free-solid-svg-icons'
 import { ToastrService } from 'ngx-toastr'
@@ -45,6 +45,7 @@ export class DatatableExportButtonComponent implements OnInit {
 
     const export$ = this._datatable.rows$
       .pipe(
+        take(1),
         map(rows => this._mapExportData(this._datatable.columns, rows)),
         concatMap(data => exporter.export(data)),
         catchError(err => {
