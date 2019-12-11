@@ -8,11 +8,12 @@ import { DynamicValueHelperService } from '../../dynamic-value-helper.service'
 import { DynamicValue } from '../../models/dynamic-value'
 import { IApiConfig, THESEAM_API_CONFIG } from '../../tokens/api-config'
 
+import { map, switchMap, take, tap } from 'rxjs/operators'
 import { IDynamicActionApi } from './dynamic-action-api'
 import { IDynamicActionApiArgs } from './dynamic-action-api-args'
 
 /**
- * HAndles execution of api call actions.
+ * Handles execution of api call actions.
  *
  * This action service should be generic enough to
  * work with any url endpoint, but will be biast towards our api where needed.
@@ -39,24 +40,49 @@ export class DynamicActionApiService implements IDynamicActionApi {
     }
 
     return from(async () => {
-      const method = args.method || 'GET'
-
-      const url = await this._getUrl(args, context)
-      if (url === null) {
-        throw new Error('[DynamicActionApiService] Unable to determine url.')
-      }
-
-      const body = await this._getBody(args, context)
-      const params = await this._getParams(args, context)
-
-      const headers = await this._getHeaders(args, context)
-
-      this._http.request<any>(method, url, { body, params, headers })
-        .subscribe()
-        // .subscribe(v => console.log('v', v))
-
+      const v = await this._getExecInfo(args, context)
+      console.log('v', v)
+      const result = await this._http.request<any>(v.method, v.url).toPromise()
+      console.log('result', result)
+      return result
     })
+    // .pipe(
+    //   tap(v => console.log('v', v)),
+    //   // switchMap(v => this._http.request<any>(v.method, v.url, v.options)),
+    //   take(1),
+    //   switchMap(v => {
+    //     console.log('__v', v)
+    //     this._http.request<any>(v.method, v.url).pipe(tap(f => console.log('f1', f))).subscribe()
+    //     return this._http.request<any>(v.method, v.url).pipe(tap(f => console.log('f', f)))
+    //   }),
+    //   tap(v => console.log('v2', v)),
+    // )
+  }
 
+  private async _getExecInfo(args: IDynamicActionApiArgs, context?: any) {
+    const method = args.method || 'GET'
+
+    const url = await this._getUrl(args, context)
+    if (url === null) {
+      throw new Error('[DynamicActionApiService] Unable to determine url.')
+    }
+
+    const body = await this._getBody(args, context)
+    const params = await this._getParams(args, context)
+
+    const headers = await this._getHeaders(args, context)
+
+    // return this._http.request<any>(method, url, { body, params, headers })
+      // .subscribe()
+      // .subscribe(v => console.log('v', v))
+
+    const result = {
+      url,
+      method,
+      options: { body, params, headers }
+    }
+    console.log('result', result)
+    return result
   }
 
   private async _getUrl(args: IDynamicActionApiArgs, context?: any): Promise<string | null> {
