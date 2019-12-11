@@ -2,7 +2,7 @@ import { DynamicValue } from '../../models/dynamic-value'
 
 export interface IDynamicActionApiArgs {
   /**
-   * Id to identify which `THESEAM_API_CONFIG` to use. If not provided the first
+   * Id to identify which `THESEAM_API_CONFIG` to use. If not provided, the first
    * provided config will be used.
    */
   id?: string
@@ -20,7 +20,10 @@ export interface IDynamicActionApiArgs {
    */
   endpoint?: DynamicValue
 
-  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+  /**
+   * Defaults to 'GET'
+   */
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 
   body?: DynamicValue
 

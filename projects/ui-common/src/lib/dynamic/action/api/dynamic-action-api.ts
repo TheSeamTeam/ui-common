@@ -1,4 +1,7 @@
+import { IDynamicAction } from '../../models/dynamic-action'
 
-export interface IDynamicActionApi {
+export interface IDynamicActionApi extends IDynamicAction<'api'> {
+
+
 
 }

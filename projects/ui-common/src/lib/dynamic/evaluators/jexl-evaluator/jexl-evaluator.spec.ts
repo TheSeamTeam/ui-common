@@ -6,7 +6,7 @@ import { THESEAM_DYNAMIC_VALUE_EVALUATOR } from '../../tokens/dynamic-value-eval
 import { JexlEvaluator } from './jexl-evaluator'
 import { IJexlValue } from './jexl-value'
 
-fdescribe('JexlEvaluator', () => {
+describe('JexlEvaluator', () => {
 
   beforeEach(() => TestBed.configureTestingModule({
     providers: [

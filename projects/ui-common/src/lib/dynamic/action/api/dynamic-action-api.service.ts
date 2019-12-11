@@ -1,16 +1,30 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { Inject, Injectable, isDevMode, Optional } from '@angular/core'
+import { from, Observable, of } from 'rxjs'
 
 import { isAbsoluteUrl } from '../../../utils/index'
+
 import { DynamicValueHelperService } from '../../dynamic-value-helper.service'
 import { DynamicValue } from '../../models/dynamic-value'
 import { IApiConfig, THESEAM_API_CONFIG } from '../../tokens/api-config'
+
+import { IDynamicActionApi } from './dynamic-action-api'
 import { IDynamicActionApiArgs } from './dynamic-action-api-args'
 
+/**
+ * HAndles execution of api call actions.
+ *
+ * This action service should be generic enough to
+ * work with any url endpoint, but will be biast towards our api where needed.
+ */
 @Injectable({
   providedIn: 'root'
 })
-export class DynamicActionApiService {
+export class DynamicActionApiService implements IDynamicActionApi {
+
+  readonly type = 'api'
+
+  label = 'Api Action'
 
   constructor(
     private _valueHelper: DynamicValueHelperService,
@@ -18,32 +32,39 @@ export class DynamicActionApiService {
     @Optional() @Inject(THESEAM_API_CONFIG) private _configs: IApiConfig[]
   ) { }
 
-  public handleAction(args: IDynamicActionApiArgs, context?: any) {
+  public exec(args: IDynamicActionApiArgs, context?: any): Observable<any> {
     if (!this._isSupported()) {
-      return
+      // TODO: Should an error be thrown or try to gracefully continue?
+      return of(null)
     }
 
-    const url = this._getUrl(args, context)
-    if (url === null) {
-      throw new Error('[DynamicActionApiService] Unable to determine url.')
-    }
+    return from(async () => {
+      const method = args.method || 'GET'
 
-    const body = this._getBody(args, context)
-    const params = this._getParams(args, context)
+      const url = await this._getUrl(args, context)
+      if (url === null) {
+        throw new Error('[DynamicActionApiService] Unable to determine url.')
+      }
 
-    const headers = this._getHeaders(args, context)
+      const body = await this._getBody(args, context)
+      const params = await this._getParams(args, context)
 
-    // this._http.request<any>(method, url, { ...options, headers })
-    //   .subscribe()
-    //   // .subscribe(v => console.log('v', v))
+      const headers = await this._getHeaders(args, context)
+
+      this._http.request<any>(method, url, { body, params, headers })
+        .subscribe()
+        // .subscribe(v => console.log('v', v))
+
+    })
+
   }
 
-  private _getUrl(args: IDynamicActionApiArgs, context?: any): string | null {
+  private async _getUrl(args: IDynamicActionApiArgs, context?: any): Promise<string | null> {
     const config = this._getApiConfig(args)
 
     let endpoint = ''
     if (args.endpoint) {
-      endpoint = this._valueHelper.eval(args.endpoint, context)
+      endpoint = await this._valueHelper.eval(args.endpoint, context)
     }
 
     if (isAbsoluteUrl(endpoint)) {
@@ -74,24 +95,24 @@ export class DynamicActionApiService {
     return null
   }
 
-  private _getBody(args: IDynamicActionApiArgs, context?: any) {
+  private async _getBody(args: IDynamicActionApiArgs, context?: any) {
     if (args.body !== undefined && args.body !== null) {
-      return this._valueHelper.eval(args.body, context)
+      return await this._valueHelper.eval(args.body, context)
     }
 
     return undefined
   }
 
-  private _getParams(args: IDynamicActionApiArgs, context?: any) {
+  private async _getParams(args: IDynamicActionApiArgs, context?: any) {
     if (args.params !== undefined && args.params !== null) {
-      return this._valueHelper.eval(args.params, context)
+      return await this._valueHelper.eval(args.params, context)
     }
 
     return undefined
   }
 
-  private _getHeaders(args: IDynamicActionApiArgs, context?: any): HttpHeaders {
-    let headers: string | { [name: string]: string } = {}
+  private async _getHeaders(args: IDynamicActionApiArgs, context?: any): Promise<HttpHeaders> {
+    let headers: string | { [name: string]: string | string[] } = {}
 
     const config = this._getApiConfig(args)
 
@@ -106,10 +127,11 @@ export class DynamicActionApiService {
 
       const h = method && config.methodHeaders[method]
       if (h !== undefined && h !== null) {
-        headers = this._evalHeaders(h, context)
+        headers = await this._evalHeaders(h, context)
       }
     }
 
+    // TODO: Cleanup messing multiple level logic
     const argHeaders = args.headers
     if (argHeaders !== undefined && argHeaders !== null) {
       if (typeof argHeaders === 'string') {
@@ -119,16 +141,17 @@ export class DynamicActionApiService {
         if (typeof _val === 'string') {
           headers = _val
         } else {
-          Object.keys(argHeaders).forEach((k, i) => {
-            const value = argHeaders[k]
+          const keys = Object.keys(argHeaders)
+          for (const key of keys) {
+            const value = argHeaders[key]
             if (typeof value === 'string') {
-              headers[k] = value
+              headers[key] = value
             } else if (Array.isArray(value)) {
-              headers[k] = value.map(v => this._valueHelper.eval(v as DynamicValue, context))
+              headers[key] = await Promise.all(value.map(async v => await this._valueHelper.eval(v as DynamicValue, context)))
             } else {
-              headers[k] = this._valueHelper.eval(value as DynamicValue, context)
+              headers[key] = await this._valueHelper.eval(value as DynamicValue, context)
             }
-          })
+          }
         }
       }
     }
@@ -136,8 +159,10 @@ export class DynamicActionApiService {
     return new HttpHeaders(headers)
   }
 
-  private _evalHeaders(headers: string | DynamicValue | { [name: string]: DynamicValue | DynamicValue[] }, context?: any) {
-    let res: string | { [name: string]: string } = {}
+  private async _evalHeaders(headers: string | DynamicValue | { [name: string]: DynamicValue | DynamicValue[] }, context?: any) {
+    let res: string | { [name: string]: string | string[] } = {}
+
+    // TODO: Cleanup messing multiple level logic
     if (typeof headers === 'string') {
       res = headers
     } else {
@@ -145,16 +170,17 @@ export class DynamicActionApiService {
       if (typeof _val === 'string') {
         res = _val
       } else {
-        Object.keys(headers).forEach((k, i) => {
-          const value = headers[k]
+        const keys = Object.keys(headers)
+        for (const key of keys) {
+          const value = headers[key]
           if (typeof value === 'string') {
-            res[k] = value
+            res[key] = value
           } else if (Array.isArray(value)) {
-            res[k] = value.map(v => this._valueHelper.eval(v as DynamicValue, context))
+            res[key] = await Promise.all(value.map(async v => await this._valueHelper.eval(v as DynamicValue, context)))
           } else {
-            res[k] = this._valueHelper.eval(value as DynamicValue, context)
+            res[key] = await this._valueHelper.eval(value as DynamicValue, context)
           }
-        })
+        }
       }
     }
     return res
