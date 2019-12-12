@@ -1,6 +1,6 @@
-@import '~@marklb/ngx-datatable/release/index';
-@import '~@marklb/ngx-datatable/release/themes/bootstrap';
-// @import '~@marklb/ngx-datatable/release/assets/icons';
+@import '~@marklb/ngx-datatable/index';
+@import '~@marklb/ngx-datatable/themes/bootstrap';
+// @import '~@marklb/ngx-datatable/assets/icons';
 
 .ngx-datatable.bootstrap {
   font-size: 16px;
@@ -19,12 +19,18 @@
 
   .datatable-footer {
     background: transparent;
+    overflow: hidden;
 
     .datatable-footer-inner {
       background: $light;
       border: $border-width $border-color solid;
       border-radius: $border-radius;
       color: $body-color;
+
+      > .page-count {
+        line-height: 40px;
+        height: 40px;
+      }
 
       .datatable-pager {
         ul {
