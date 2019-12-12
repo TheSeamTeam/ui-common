@@ -9,7 +9,7 @@ import { switchMap } from 'rxjs/operators'
 import { faChevronDown, faChevronRight, faEllipsisH, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { ColumnMode, ContextmenuType, SelectionType, SortType, TreeStatus } from '@marklb/ngx-datatable'
 import { DatatableComponent as NgxDatatableComponent } from '@marklb/ngx-datatable'
-import { camelCase, deCamelCase, getterForProp, isNullOrUndefined } from '@marklb/ngx-datatable/release/utils'
+import { camelCase, deCamelCase, getterForProp, isNullOrUndefined } from '@marklb/ngx-datatable'
 
 import { composeDataFilters, IDataFilter } from '../../data-filters/index'
 import { IElementResizedEvent } from '../../shared/index'
@@ -97,6 +97,7 @@ export class DatatableComponent implements OnInit {
   @Input()
   get columns(): ITheSeamDatatableColumn[] { return this._columns }
   set columns(value: ITheSeamDatatableColumn[]) {
+    // console.log('columns')
     if (value) {
       // Need to call `setColumnDefaults` before ngx-datatable gets it because
       // of how this wrapper is implemented.
@@ -184,7 +185,7 @@ export class DatatableComponent implements OnInit {
   @Input() summaryHeight = 30
   @Input() summaryPosition = 'top'
 
-  @Input() virtualization = false
+  @Input() virtualization = true
 
   @Input() headerHeight = 50
   @Input() rowHeight = 50
@@ -235,6 +236,9 @@ export class DatatableComponent implements OnInit {
       .pipe(switchMap(filters => this._rows.asObservable()
         .pipe(composeDataFilters(filters))
       ))
+
+    const _w: any = window
+    _w._dt = this
   }
 
   ngOnInit() { }
@@ -257,6 +261,7 @@ export class DatatableComponent implements OnInit {
   }
 
   _columnData(col: any): { col: any, comp: DatatableColumnComponent | null } {
+    // console.log('_columnData', col)
     const comp = this.getColumnComponent(col.prop)
     return { col, comp }
   }
@@ -266,12 +271,17 @@ export class DatatableComponent implements OnInit {
   }
 
   public onDatatableResize(event: IElementResizedEvent) {
-    // console.log('onDatatableResize')
+    console.log('onDatatableResize')
     if (this.ngxDatatable && this.ngxDatatableElement && this.ngxDatatableElement.nativeElement) {
       // TODO: Consider integrating this into the ngx-datatable library to avoid
       // multiple resize calls when the table resizes itself.
       this.ngxDatatable.recalculate()
     }
+  }
+
+  _onResize(event) {
+    // console.log('resize', event)
+    this.resize.emit(event)
   }
 
   /**

@@ -48,7 +48,7 @@
         (sort)="sort.emit($event)"
         (page)="page.emit($event)"
         (reorder)="reorder.emit($event)"
-        (resize)="resize.emit($event)"
+        (resize)="_onResize($event)"
         (tableContextmenu)="tableContextmenu.emit($event)"
         (treeAction)="treeAction.emit($event)"
         (seamElemResized)="onDatatableResize($event)"
@@ -91,7 +91,7 @@
               [resizeable]="colData.comp?.resizeable || colData.col.resizeable"
               [sortable]="colData.comp?.sortable || colData.col.sortable"
               [draggable]="colData.comp?.draggable || colData.col.draggable"
-              [canAutoResize]="colData.comp?.canAutoResize || colData.col.canAutoResize"
+
               [comparator]="colData.comp?.comparator || colData.col.comparator"
               [checkboxable]="colData.comp?.checkboxable || colData.col.checkboxable"
               [headerCheckboxable]="colData.comp?.headerCheckboxable || colData.col.headerCheckboxable"

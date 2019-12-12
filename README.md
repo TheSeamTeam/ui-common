@@ -40,7 +40,7 @@ $ npm link @theseam/ui-common
 angular.json
 
 > This change shouldn't be needed when the build process is more refined. The libraries icons include font files as a path that the sass compiler isn't finding through npm link.
-> If not using npm link, change "node_modules/@theseam/ui-common/node_modules/@marklb/ngx-datatable/release/assets/icons.css" to "node_modules/@marklb/ngx-datatable/release/assets/icons.css"
+> If not using npm link, change "node_modules/@theseam/ui-common/node_modules/@marklb/ngx-datatable/assets/icons.css" to "node_modules/@marklb/ngx-datatable/assets/icons.css"
 
 ```json
 {
@@ -54,7 +54,7 @@ angular.json
             ...,
             "styles": [
               ...,
-              "node_modules/@theseam/ui-common/node_modules/@marklb/ngx-datatable/release/assets/icons.css"
+              "node_modules/@theseam/ui-common/node_modules/@marklb/ngx-datatable/assets/icons.css"
             ],
             "es5BrowserSupport": true,
             "preserveSymlinks": true
@@ -64,7 +64,7 @@ angular.json
           "options": {
             "styles": {
               ...,
-              "node_modules/@theseam/ui-common/node_modules/@marklb/ngx-datatable/release/assets/icons.css"
+              "node_modules/@theseam/ui-common/node_modules/@marklb/ngx-datatable/assets/icons.css"
             }
           }
         }

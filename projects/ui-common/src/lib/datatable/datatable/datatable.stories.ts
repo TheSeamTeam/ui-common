@@ -19,22 +19,66 @@ storiesOf('Components/Datatable', module)
     props: {
       columns: [
         { prop: 'name', name: 'Name' },
-        { prop: 'age', name: 'Age' },
+        // { prop: 'age', name: 'Age' },
         { prop: 'color', name: 'Color' }
       ],
       rows: [
         { name: 'Mark', age: 27, color: 'blue' },
         { name: 'Joe', age: 33, color: 'green' },
-      ]
+
+        { name: 'Mark', age: 27, color: 'blue' },
+        { name: 'Joe', age: 33, color: 'green' },
+        { name: 'Mark', age: 27, color: 'blue' },
+        { name: 'Joe', age: 33, color: 'green' },
+        { name: 'Mark', age: 27, color: 'blue' },
+        { name: 'Joe', age: 33, color: 'green' },
+        { name: 'Mark', age: 27, color: 'blue' },
+        { name: 'Joe', age: 33, color: 'green' },
+        { name: 'Mark', age: 27, color: 'blue' },
+        { name: 'Joe', age: 33, color: 'green' },
+        { name: 'Mark', age: 27, color: 'blue' },
+        { name: 'Joe', age: 33, color: 'green' },
+        { name: 'Mark', age: 27, color: 'blue' },
+        { name: 'Joe', age: 33, color: 'green' },
+        { name: 'Mark', age: 27, color: 'blue' },
+        { name: 'Joe', age: 33, color: 'green' },
+        { name: 'Mark', age: 27, color: 'blue' },
+        { name: 'Joe', age: 33, color: 'green' },
+        { name: 'Mark', age: 27, color: 'blue' },
+        { name: 'Joe', age: 33, color: 'green' },
+        { name: 'Mark', age: 27, color: 'blue' },
+        { name: 'Joe', age: 33, color: 'green' },
+        { name: 'Mark', age: 27, color: 'blue' },
+        { name: 'Joe', age: 33, color: 'green' },
+        { name: 'Mark', age: 27, color: 'blue' },
+        { name: 'Joe', age: 33, color: 'green' },
+        { name: 'Mark', age: 27, color: 'blue' },
+        { name: 'Joe', age: 33, color: 'green' },
+        { name: 'Mark', age: 27, color: 'blue' },
+        { name: 'Joe', age: 33, color: 'green' },
+        { name: 'Mark', age: 27, color: 'blue' },
+        // { name: 'Joe', age: 33, color: 'green' },
+      ],
+      onAdd() {
+        console.log('Add Event', this.rows)
+
+        // this.selected.splice(0, this.selected.length)
+        // this.selected.push(...selected)
+
+        this.rows = [ ...this.rows, { name: 'Joe', age: 33, color: 'green' } ]
+      }
     },
+    // <div style="height: 400px; width: 600px;">
     template: `
-      <div style="height: 400px; width: 600px;">
+      <div style="height: 450px; width: 100%;">
         <seam-datatable
           class="w-100 h-100"
           [columns]="columns"
           [rows]="rows">
         </seam-datatable>
-      </div>`
+      </div>
+      <button type="button" (click)="onAdd()">Add</button>
+      `
   }))
 
   .add('Column Template', () => ({

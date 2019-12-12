@@ -38,6 +38,7 @@ export class TheSeamDatatableScrollbarHelperService {
   }
 
   setOffset(scroller: any, offsetY: number): void {
+    console.log('setOffset', offsetY)
     // TODO: Move the NgZone decision to the service
     this._ngZone.runOutsideAngular(() => {
       if (this.animatedScrolling) {
