@@ -271,7 +271,6 @@ export class DatatableComponent implements OnInit {
   }
 
   public onDatatableResize(event: IElementResizedEvent) {
-    console.log('onDatatableResize')
     if (this.ngxDatatable && this.ngxDatatableElement && this.ngxDatatableElement.nativeElement) {
       // TODO: Consider integrating this into the ngx-datatable library to avoid
       // multiple resize calls when the table resizes itself.

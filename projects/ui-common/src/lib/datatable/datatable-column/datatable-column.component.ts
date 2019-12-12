@@ -47,9 +47,9 @@ export class DatatableColumnComponent implements OnInit {
 
   @ContentChild(DatatableCellTplDirective, { static: true }) cellTplDirective: DatatableCellTplDirective
 
-  constructor() { console.log('column constructor') }
+  constructor() { }
 
-  ngOnInit() { console.log('column init', this.prop) }
+  ngOnInit() { }
 
   public getCellDirective(): DatatableCellTplDirective | null {
     if (this.cellTplDirective) {
