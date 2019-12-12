@@ -1,3 +1,3 @@
 import { IDynamicValueType } from './dynamic-value-type'
 
-export type DynamicValue = string | number | boolean | IDynamicValueType
+export type DynamicValue = string | number | boolean | { [key: string]: any } | IDynamicValueType

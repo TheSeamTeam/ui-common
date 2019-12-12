@@ -1,29 +1,32 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing'
-import { TestBed } from '@angular/core/testing'
+import { fakeAsync, flushMicrotasks, TestBed, tick } from '@angular/core/testing'
 
-import { HttpClient } from '@angular/common/http'
-import { Injectable } from '@angular/core'
-import { Observable, of } from 'rxjs'
-
+import { HttpRequest } from '@angular/common/http'
+import { from, Observable, of } from 'rxjs'
 import { tap } from 'rxjs/operators'
+
 import { JexlEvaluator } from '../../evaluators'
 import { THESEAM_DYNAMIC_VALUE_EVALUATOR } from '../../tokens/dynamic-value-evaluator'
 import { IDynamicActionApiArgs } from './dynamic-action-api-args'
 import { DynamicActionApiService } from './dynamic-action-api.service'
 
-@Injectable()
-class MockApiService {
-
-  constructor(
-    private _http: HttpClient
-  ) {}
-
-  public profile(): Observable<any> {
-    return this._http.get<any>('http://example.com/profile')
-      .pipe(tap(v => console.log('profile', v)))
+function isRequestMatchArgs(req: HttpRequest<any>, args: IDynamicActionApiArgs, url?: string): boolean {
+  // TODO: Handle case where endpoint isn't absolute ur;.
+  if (args.endpoint && req.url !== args.endpoint) {
+    return false
   }
 
+  if (args.method && req.method !== args.method) {
+    return false
+  }
+
+  if (args.body && JSON.stringify(req.body) !== JSON.stringify(args.body)) {
+    return false
+  }
+
+  return true
 }
+
 
 fdescribe('DynamicActionApiService', () => {
   beforeEach(() => TestBed.configureTestingModule({
@@ -32,7 +35,6 @@ fdescribe('DynamicActionApiService', () => {
     ],
     providers: [
       { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
-      MockApiService
     ]
   }))
 
@@ -54,26 +56,63 @@ fdescribe('DynamicActionApiService', () => {
     expect((service as any)._configs.find(c => c.id === undefined)).toBeDefined()
   })
 
-  it('should return get request data', () => {
+  it('should return "GET" request data', fakeAsync(() => {
     const service: DynamicActionApiService = TestBed.get(DynamicActionApiService)
+    const http: HttpTestingController = TestBed.get(HttpTestingController)
 
     const args: IDynamicActionApiArgs = {
+      method: 'GET',
       endpoint: 'http://example.com/profile'
     }
 
-    const profileInfo = { name: 'Bob', age: 23 }
-    // const profileInfo2 = { name: 'Alice', age: 33 }
-    const http = TestBed.get(HttpTestingController)
+    const profileInfo = { name: 'Bob', age: 24 }
+
     let profileResponse
-
-    // const mockApi = TestBed.get(MockApiService)
-    // mockApi.profile().subscribe(response => profileResponse = response)
-
     service.exec(args).subscribe(response => profileResponse = response)
 
-    http.expectOne('http://example.com/profile').flush(profileInfo)
+    tick()
+
+    http.expectOne((req: HttpRequest<any>) => isRequestMatchArgs(req, args)).flush(profileInfo, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+
     expect(profileResponse).toEqual(profileInfo)
-  })
+
+    http.verify()
+  }))
+
+  it('should return "POST" request data', fakeAsync(() => {
+    const service: DynamicActionApiService = TestBed.get(DynamicActionApiService)
+    const http: HttpTestingController = TestBed.get(HttpTestingController)
+
+    const args: IDynamicActionApiArgs = {
+      method: 'POST',
+      endpoint: 'http://example.com/profile',
+      body: {
+        userName: 'bob@example.com'
+      }
+    }
+
+    const profileInfo = { name: 'Bob', age: 24 }
+
+    let profileResponse
+    service.exec(args).subscribe(response => profileResponse = response)
+
+    tick()
+
+    http.expectOne((req: HttpRequest<any>) => isRequestMatchArgs(req, args))
+      .flush(profileInfo)
+
+    expect(profileResponse).toEqual(profileInfo, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+
+    http.verify()
+  }))
 
   // it('should add the default config headers to a request', () => {
 
