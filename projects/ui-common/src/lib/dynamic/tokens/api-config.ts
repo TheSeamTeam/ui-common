@@ -26,7 +26,7 @@ export interface IApiConfig {
 }
 
 export const THESEAM_API_CONFIG_DEFAULT: IApiConfig = {
-  url: './',
+  url: '/',
 
   methodHeaders: {
     'GET': { 'Content-Type': 'application/json' },

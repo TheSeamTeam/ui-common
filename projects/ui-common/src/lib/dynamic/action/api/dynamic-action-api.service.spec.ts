@@ -6,12 +6,13 @@ import { from, Observable, of } from 'rxjs'
 import { tap } from 'rxjs/operators'
 
 import { JexlEvaluator } from '../../evaluators'
+import { THESEAM_API_CONFIG_DEFAULT } from '../../tokens/api-config'
 import { THESEAM_DYNAMIC_VALUE_EVALUATOR } from '../../tokens/dynamic-value-evaluator'
 import { IDynamicActionApiArgs } from './dynamic-action-api-args'
 import { DynamicActionApiService } from './dynamic-action-api.service'
 
 function isRequestMatchArgs(req: HttpRequest<any>, args: IDynamicActionApiArgs, url?: string): boolean {
-  // TODO: Handle case where endpoint isn't absolute ur;.
+  // TODO: Handle case where endpoint isn't absolute url.
   if (args.endpoint && req.url !== args.endpoint) {
     return false
   }
@@ -114,9 +115,32 @@ fdescribe('DynamicActionApiService', () => {
     http.verify()
   }))
 
-  // it('should add the default config headers to a request', () => {
+  it('should add the default config headers to a request', fakeAsync(() => {
+    const service: DynamicActionApiService = TestBed.get(DynamicActionApiService)
+    const http: HttpTestingController = TestBed.get(HttpTestingController)
 
-  // })
+    const args: IDynamicActionApiArgs = { }
+
+    const profileInfo = { name: 'Bob', age: 24 }
+
+    let profileResponse
+    service.exec(args).subscribe(response => profileResponse = response)
+
+    tick()
+
+    http.expectOne((req: HttpRequest<any>) => {
+      const defaultHeaders = THESEAM_API_CONFIG_DEFAULT.methodHeaders || {}
+      const defaultGetHeaders = defaultHeaders['GET'] || {}
+      const keys = Object.keys(defaultGetHeaders)
+
+      return req.url === THESEAM_API_CONFIG_DEFAULT.url &&
+        keys.filter(k => req.headers.get(k) === defaultGetHeaders[k]).length === keys.length
+    }).flush(profileInfo)
+
+    expect(profileResponse).toEqual(profileInfo)
+
+    http.verify()
+  }))
 
   // it('should add the config headers to a request matching provided id', () => {
 
@@ -130,9 +154,27 @@ fdescribe('DynamicActionApiService', () => {
 
   // })
 
-  // it('should append config url to endpoint', () => {
+  it('should append config url to endpoint', fakeAsync(() => {
+    const service: DynamicActionApiService = TestBed.get(DynamicActionApiService)
+    const http: HttpTestingController = TestBed.get(HttpTestingController)
 
-  // })
+    const args: IDynamicActionApiArgs = {
+      endpoint: 'user/Bob/profile'
+    }
+
+    const profileInfo = { name: 'Bob', age: 24 }
+
+    let profileResponse
+    service.exec(args).subscribe(response => profileResponse = response)
+
+    tick()
+
+    http.expectOne(`${THESEAM_API_CONFIG_DEFAULT.url}${args.endpoint}`).flush(profileInfo)
+
+    expect(profileResponse).toEqual(profileInfo)
+
+    http.verify()
+  }))
 
   // it('should use endpoint only as url', () => {
 

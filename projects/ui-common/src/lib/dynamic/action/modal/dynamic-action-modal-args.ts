@@ -1,10 +1,24 @@
+import { IDynamicActionDef } from '../../models/dynamic-action-def'
 import { DynamicValue } from '../../models/dynamic-value'
 
-export interface IDynamicActionModalArgs {
+export interface IDynamicActionModalResultAction {
+
   /**
-   * Id to identify which `THESEAM_MODAL_CONFIG` to use. If not provided, the first
-   * provided config will be used.
+   * If the modal result equals this value then the action will execute.
    */
-  id?: string
+  value?: DynamicValue
+
+  /**
+   * Action to execute when modal result equals value.
+   */
+  action?: IDynamicActionDef
+
+}
+
+export interface IDynamicActionModalArgs extends IDynamicActionDef {
+
+  modal?: DynamicValue
+
+  resultAction?: IDynamicActionModalResultAction
 
 }

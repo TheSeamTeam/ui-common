@@ -78,9 +78,13 @@ export class DynamicActionApiService implements IDynamicActionApi {
       return endpoint
     }
 
-    if (config && config.url) {
-      const addSlash = endpoint.length > 0 && endpoint.indexOf('/') !== 0
-      return `${config.url}${addSlash ? '/' : ''}${endpoint}`
+    if (config && config.url !== undefined && config.url !== null) {
+      const url = await this._valueHelper.eval(config.url, context)
+      if (typeof url === 'string') {
+        const addSlash = endpoint.length > 0 && endpoint.indexOf('/') !== 0 &&
+          url.length > 0 && url.indexOf('/') !== 0
+        return `${config.url}${addSlash ? '/' : ''}${endpoint}`
+      }
     }
 
     return null
