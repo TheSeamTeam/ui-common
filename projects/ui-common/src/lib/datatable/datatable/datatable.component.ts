@@ -1,24 +1,27 @@
 import { animate, style, transition, trigger } from '@angular/animations'
 import {
   ChangeDetectionStrategy, Component, ContentChild, ContentChildren,
-  ElementRef, EventEmitter, forwardRef, InjectionToken, Input, OnInit, Output, QueryList, ViewChild
+  ElementRef, EventEmitter, forwardRef, InjectionToken, Input, OnDestroy, OnInit, Output, QueryList, ViewChild
 } from '@angular/core'
 import { BehaviorSubject, Observable, Subscription } from 'rxjs'
-import { switchMap } from 'rxjs/operators'
+import { startWith, switchMap, tap } from 'rxjs/operators'
 
 import { faChevronDown, faChevronRight, faEllipsisH, faSpinner } from '@fortawesome/free-solid-svg-icons'
-import { ColumnMode, ContextmenuType, SelectionType, SortType, TreeStatus } from '@marklb/ngx-datatable'
+import { ColumnMode, ContextmenuType, DatatableRowDetailDirective, SelectionType, SortType, TreeStatus } from '@marklb/ngx-datatable'
 import { DatatableComponent as NgxDatatableComponent } from '@marklb/ngx-datatable'
 import { camelCase, deCamelCase, getterForProp, isNullOrUndefined } from '@marklb/ngx-datatable'
 
 import { composeDataFilters, IDataFilter } from '../../data-filters/index'
 import { IElementResizedEvent } from '../../shared/index'
 
+import { untilDestroyed } from 'ngx-take-until-destroy'
 import { DatatableActionMenuComponent } from '../datatable-action-menu/datatable-action-menu.component'
 import { DatatableColumnComponent } from '../datatable-column/datatable-column.component'
 import { DatatableMenuBarComponent } from '../datatable-menu-bar/datatable-menu-bar.component'
+import { TheSeamDatatableRowDetailDirective } from '../datatable-row-detail/datatable-row-detail.directive'
 import { DatatableRowActionItemDirective } from '../directives/datatable-row-action-item.directive'
 import { ITheSeamDatatableColumn } from '../models/table-column'
+
 
 /**
  * NOTE: This is still being worked on. I am trying to figure out this model
@@ -82,7 +85,7 @@ export const _THESEAM_DATATABLE: any = {
   ],
   providers: [ _THESEAM_DATATABLE ]
 })
-export class DatatableComponent implements OnInit {
+export class DatatableComponent implements OnInit, OnDestroy {
 
   faEllipsisH = faEllipsisH
   faChevronDown = faChevronDown
@@ -210,6 +213,7 @@ export class DatatableComponent implements OnInit {
 
   @ContentChild(DatatableActionMenuComponent, { static: true }) actionMenu: DatatableActionMenuComponent
   @ContentChild(DatatableRowActionItemDirective, { static: true }) rowActionItem: DatatableRowActionItemDirective
+  @ContentChild(TheSeamDatatableRowDetailDirective, { static: true }) rowDetail: TheSeamDatatableRowDetailDirective
 
   @ContentChild(DatatableMenuBarComponent, { static: false })
   get menuBarComponent(): DatatableMenuBarComponent { return this._menuBarComponent }
@@ -230,6 +234,7 @@ export class DatatableComponent implements OnInit {
 
   @ViewChild(NgxDatatableComponent, { static: false }) ngxDatatable: NgxDatatableComponent
   @ViewChild(NgxDatatableComponent, { read: ElementRef, static: false }) ngxDatatableElement: ElementRef
+  @ViewChild(DatatableRowDetailDirective, { static: false }) ngxRowDetail: DatatableRowDetailDirective
 
   constructor() {
     this.rows$ = this._filtersSubject.asObservable()
@@ -241,7 +246,19 @@ export class DatatableComponent implements OnInit {
     _w._dt = this
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    if (this.rowDetail) {
+      this.rowDetail._toggle.pipe(
+        untilDestroyed(this)
+      ).subscribe(event => {
+        if (this.ngxRowDetail) {
+          this.ngxRowDetail.toggle.emit(event)
+        }
+      })
+    }
+  }
+
+  ngOnDestroy() { }
 
   private _setMenuBarFilters(filters: IDataFilter[]) {
     this._filtersSubject.next(filters || [])
@@ -264,6 +281,13 @@ export class DatatableComponent implements OnInit {
     // console.log('_columnData', col)
     const comp = this.getColumnComponent(col.prop)
     return { col, comp }
+  }
+
+  _getRowExpanded(row) {
+    if (this.ngxDatatable && this.ngxDatatable.bodyComponent) {
+      return this.ngxDatatable.bodyComponent.getRowExpanded(row)
+    }
+    return false
   }
 
   public trackByFnColumn(index, item) {

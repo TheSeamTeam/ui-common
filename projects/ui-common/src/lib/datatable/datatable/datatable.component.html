@@ -68,6 +68,38 @@
           </ng-template>
         </ngx-datatable-group-header>
 
+        <ngx-datatable-row-detail *ngIf="rowDetail"
+          [rowHeight]="rowDetail.rowHeight"
+          [template]="rowDetail.template"
+          (toggle)="rowDetail.toggle.emit($event)">
+          <!-- <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+            <div style="padding-left:35px;">
+              <div><strong>Profile</strong></div>
+              <div>Name: {{ row.name }}</div>
+              <div>Age: {{ row.age }}</div>
+              <div>Favorite Color: {{ row.color }}</div>
+            </div>
+          </ng-template> -->
+        </ngx-datatable-row-detail>
+
+        <!-- <ngx-datatable-column *ngIf="rowDetail"
+          [width]="50"
+          [resizeable]="false"
+          [sortable]="false"
+          [draggable]="false"
+          [canAutoResize]="false"
+        >
+          <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
+            <button type="button" class="btn btn-link p-0 text-decoration-none"
+              [class.datatable-icon-right]="!expanded"
+              [class.datatable-icon-down]="expanded"
+              title="Expand/Collapse Row"
+              (click)="rowDetail.toggleExpandRow(row)"
+            >
+            </button>
+          </ng-template>
+        </ngx-datatable-column> -->
+
         <ngx-datatable-column *ngIf="selectionType === 'checkbox'"
           [width]="30"
           [sortable]="false"
@@ -111,7 +143,7 @@
               <ng-template let-value="value" let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
                 <ng-template *ngIf="colData.comp?.cellTplDirective as cellDir; else noCellTpl"
                   [ngTemplateOutlet]="cellDir.template"
-                  [ngTemplateOutletContext]="{ $implicit: value, value: value, rowIndex: rowIndex, row: row }">
+                  [ngTemplateOutletContext]="{ $implicit: value, value: value, rowIndex: rowIndex, row: row, expanded: _getRowExpanded(row) }">
                 </ng-template>
                 <ng-template #noCellTpl>
                   <seam-table-cell-type-selector *ngIf="colData.comp?.cellType || colData.col?.cellType; else noCellType"

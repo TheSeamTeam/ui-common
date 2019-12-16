@@ -373,3 +373,65 @@ storiesOf('Components/Datatable', module)
         </seam-datatable>
       </div>`
   }))
+
+  .add('Detail', () => ({
+    moduleMetadata: {
+      imports: [
+        TheSeamDatatableModule,
+        BrowserAnimationsModule
+      ]
+    },
+    props: {
+      columns: [
+        { prop: 'detailToggle', name: '' },
+        { prop: 'name', name: 'Name' },
+        // { prop: 'age', name: 'Age' },
+        { prop: 'color', name: 'Color' }
+      ],
+      rows: [
+        { name: 'Alice', age: 25, color: 'red' },
+        { name: 'Joe', age: 33, color: 'green' },
+        { name: 'Mark', age: 27, color: 'blue' },
+      ]
+    },
+    template: `
+      <div style="height: 450px; width: 100%;">
+        <seam-datatable #table
+          class="w-100 h-100"
+          [columns]="columns"
+          [rows]="rows">
+
+          <seam-datatable-row-detail rowHeight="100">
+            <ng-template let-row="row" let-expanded="expanded" seamDatatableRowDetailTpl>
+              <div style="padding-left:35px;">
+                <div><strong>Profile</strong></div>
+                <div>Name: {{ row.name }}</div>
+                <div>Age: {{ row.age }}</div>
+                <div>Favorite Color: {{ row.color }}</div>
+              </div>
+            </ng-template>
+          </seam-datatable-row-detail>
+
+          <seam-datatable-column prop="detailToggle"
+            [width]="50"
+            [minWidth]="50"
+            [maxWidth]="50"
+            [resizeable]="false"
+            [sortable]="false"
+            [draggable]="false"
+            [canAutoResize]="false">
+            <ng-template seamDatatableCellTpl let-row="row" let-expanded="expanded">
+              <button type="button" class="btn btn-link p-0 text-decoration-none"
+                [class.datatable-icon-right]="!expanded"
+                [class.datatable-icon-down]="expanded"
+                title="Expand/Collapse Row"
+                (click)="table.rowDetail.toggleExpandRow(row)"
+              >
+              </button>
+            </ng-template>
+          </seam-datatable-column>
+
+        </seam-datatable>
+      </div>
+      `
+  }))

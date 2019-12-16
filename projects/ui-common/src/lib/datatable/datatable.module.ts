@@ -22,6 +22,8 @@ import { DatatableActionMenuComponent } from './datatable-action-menu/datatable-
 import { DatatableColumnComponent } from './datatable-column/datatable-column.component'
 import { DatatableExportButtonComponent } from './datatable-export-button/datatable-export-button.component'
 import { DatatableMenuBarComponent } from './datatable-menu-bar/datatable-menu-bar.component'
+import { DatatableRowDetailTplDirective } from './datatable-row-detail/datatable-row-detail-tpl.directive'
+import { TheSeamDatatableRowDetailDirective } from './datatable-row-detail/datatable-row-detail.directive'
 import { DatatableComponent } from './datatable/datatable.component'
 import { DatatableActionMenuToggleDirective } from './directives/datatable-action-menu-toggle.directive'
 import { DatatableCellTplDirective } from './directives/datatable-cell-tpl.directive'
@@ -41,7 +43,9 @@ import { TheSeamDatatableScrollbarHelperService } from './services/datatable-scr
     DatatableMenuBarComponent,
     DatatableFilterDirective,
     DatatableRowActionItemDirective,
-    DatatableExportButtonComponent
+    DatatableExportButtonComponent,
+    TheSeamDatatableRowDetailDirective,
+    DatatableRowDetailTplDirective,
   ],
   imports: [
     CommonModule,
@@ -69,7 +73,9 @@ import { TheSeamDatatableScrollbarHelperService } from './services/datatable-scr
     DatatableMenuBarComponent,
     DatatableFilterDirective,
     DatatableRowActionItemDirective,
-    DatatableExportButtonComponent
+    DatatableExportButtonComponent,
+    TheSeamDatatableRowDetailDirective,
+    DatatableRowDetailTplDirective,
   ],
   providers: [
     { provide: ScrollbarHelper, useClass: TheSeamDatatableScrollbarHelperService }
