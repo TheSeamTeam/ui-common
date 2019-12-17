@@ -1,5 +1,5 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop'
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core'
 import { Observable } from 'rxjs'
 
 import { IDashboardWidgetsColumnRecord, IDashboardWidgetsItem, IDashboardWidgetsItemDef } from './dashboard-widgets-item'
@@ -23,10 +23,13 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy {
   public widgetColumns$: Observable<IDashboardWidgetsColumnRecord[]>
 
   constructor(
-    private _dashboardWidgets: DashboardWidgetsService
+    private _dashboardWidgets: DashboardWidgetsService,
+    private _viewContainerRef: ViewContainerRef
   ) { }
 
   ngOnInit() {
+    // this._dashboardWidgets.setViewContainerRef(this._viewContainerRef)
+
     this.widgetItems$ = this._dashboardWidgets.widgetItems$
     this.widgetColumns$ = this._dashboardWidgets.widgetColumns$
 
