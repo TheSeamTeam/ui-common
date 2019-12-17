@@ -1,6 +1,6 @@
 {
   "name": "@theseam/ui-common",
-  "version": "0.0.34",
+  "version": "0.0.35",
   "peerDependencies": {
     "@angular/common": "^8.2.3",
     "@angular/core": "^8.2.3",
@@ -33,7 +33,8 @@
     "ngx-toastr": "~10.0.4",
     "pdfjs-dist": "^2.0.943",
     "xlsx": "^0.14.4",
-    "jexl": "^2.2.2"
+    "jexl": "^2.2.2",
+    "@types/file-saver": "^2.0.1"
   },
   "repository": {
     "type": "git",
