@@ -1,15 +1,27 @@
 import { animate, style, transition, trigger } from '@angular/animations'
 import {
-  ChangeDetectionStrategy, Component, ContentChild, ContentChildren,
+  AfterContentInit, ChangeDetectionStrategy, Component, ContentChild, ContentChildren,
   ElementRef, EventEmitter, forwardRef, InjectionToken, Input, OnDestroy, OnInit, Output, QueryList, ViewChild
 } from '@angular/core'
-import { BehaviorSubject, Observable, Subscription } from 'rxjs'
-import { startWith, switchMap, tap } from 'rxjs/operators'
+import { BehaviorSubject, combineLatest, merge, Observable, of, Subscription } from 'rxjs'
+import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators'
 
 import { faChevronDown, faChevronRight, faEllipsisH, faSpinner } from '@fortawesome/free-solid-svg-icons'
-import { ColumnMode, ContextmenuType, DatatableRowDetailDirective, SelectionType, SortType, TreeStatus } from '@marklb/ngx-datatable'
-import { DatatableComponent as NgxDatatableComponent } from '@marklb/ngx-datatable'
-import { camelCase, deCamelCase, getterForProp, isNullOrUndefined } from '@marklb/ngx-datatable'
+import {
+  camelCase,
+  ColumnChangesService,
+  ColumnMode,
+  ContextmenuType,
+  DatatableComponent as NgxDatatableComponent,
+  DatatableRowDetailDirective,
+  deCamelCase,
+  getterForProp,
+  isNullOrUndefined,
+  SelectionType,
+  SortType,
+  TableColumn,
+  TreeStatus
+} from '@marklb/ngx-datatable'
 
 import { composeDataFilters, IDataFilter } from '../../data-filters/index'
 import { IElementResizedEvent } from '../../shared/index'
@@ -85,7 +97,7 @@ export const _THESEAM_DATATABLE: any = {
   ],
   providers: [ _THESEAM_DATATABLE ]
 })
-export class DatatableComponent implements OnInit, OnDestroy {
+export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
 
   faEllipsisH = faEllipsisH
   faChevronDown = faChevronDown
@@ -98,9 +110,9 @@ export class DatatableComponent implements OnInit, OnDestroy {
   @Input() targetMarkerTemplate: any
 
   @Input()
-  get columns(): ITheSeamDatatableColumn[] { return this._columns }
+  get columns(): ITheSeamDatatableColumn[] { return this._columns.value }
   set columns(value: ITheSeamDatatableColumn[]) {
-    // console.log('columns')
+    console.log('columns')
     if (value) {
       // Need to call `setColumnDefaults` before ngx-datatable gets it because
       // of how this wrapper is implemented.
@@ -114,9 +126,9 @@ export class DatatableComponent implements OnInit, OnDestroy {
       // in the `ngx-datatable` utilities that shouldn't be set yet.
       this._setColumnDefaults(value)
     }
-    this._columns = value
+    this._columns.next(value)
   }
-  private _columns: ITheSeamDatatableColumn[]
+  private _columns = new BehaviorSubject<ITheSeamDatatableColumn[]>([])
 
   @Input()
   get rows(): any[] { return this._rows.value }
@@ -236,7 +248,12 @@ export class DatatableComponent implements OnInit, OnDestroy {
   @ViewChild(NgxDatatableComponent, { read: ElementRef, static: false }) ngxDatatableElement: ElementRef
   @ViewChild(DatatableRowDetailDirective, { static: false }) ngxRowDetail: DatatableRowDetailDirective
 
-  constructor() {
+  public columnComponents$: Observable<DatatableColumnComponent[]>
+  public columns$: Observable<ITheSeamDatatableColumn[]>
+
+  constructor(
+    private _columnChangesService: ColumnChangesService
+  ) {
     this.rows$ = this._filtersSubject.asObservable()
       .pipe(switchMap(filters => this._rows.asObservable()
         .pipe(composeDataFilters(filters))
@@ -259,6 +276,54 @@ export class DatatableComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() { }
+
+  ngAfterContentInit() {
+    console.log('ngAfterContentInit')
+    this.columnComponents$ = merge(
+      this._columnChangesService.columnInputChanges$.pipe(
+        map(() => this.columnComponents),
+        startWith(this.columnComponents)
+      ),
+      this.columnComponents.changes.pipe(
+        startWith(this.columnComponents)
+      )
+    )
+      .pipe(
+        tap(v => console.log('columnComponents$', v)),
+        shareReplay({ bufferSize: 1, refCount: true })
+      )
+
+    this.columns$ =
+      combineLatest([
+        this.columnComponents$.pipe(tap(v => console.log('columnComponents$'))),
+        this._columns.pipe(tap(v => console.log('_columns')))
+      ]).pipe(
+        tap(v => console.log('~v', v)),
+        map(v => this._mergeTplAndInputColumns(v[0], v[1])),
+        tap(v => console.log('~merged', v)),
+        tap(v => this._setColumnDefaults(v)),
+        tap(v => console.log('~defaults', v)),
+      )
+      // .subscribe()
+  }
+
+  private _mergeTplAndInputColumns(
+    tplCols: DatatableColumnComponent[],
+    inpCols: ITheSeamDatatableColumn[]
+  ) {
+    const cols: ITheSeamDatatableColumn[] = []
+
+    for (const col of inpCols) {
+      const tplCol = tplCols.find(t => t.prop === col.prop)
+      const c: ITheSeamDatatableColumn = {
+        ...col,
+        ...tplCol
+      }
+      cols.push(c)
+    }
+
+    return cols
+  }
 
   private _setMenuBarFilters(filters: IDataFilter[]) {
     this._filtersSubject.next(filters || [])

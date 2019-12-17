@@ -110,7 +110,7 @@
           [checkboxable]="true">
         </ngx-datatable-column>
 
-        <ng-container *ngFor="let col of (columns || []) trackBy: trackByFnColumn">
+        <!-- <ng-container *ngFor="let col of (columns || []) trackBy: trackByFnColumn">
           <ng-container *ngIf="_columnData(col) as colData">
 
             <ngx-datatable-column
@@ -182,7 +182,81 @@
             </ngx-datatable-column>
 
           </ng-container>
+        </ng-container> -->
+
+        <ng-container *ngFor="let col of columns$ | async; trackBy: trackByFnColumn">
+
+          <ngx-datatable-column
+            [prop]="col.prop"
+            [name]="col.name"
+            [flexGrow]="col.flexGrow"
+            [minWidth]="col.minWidth"
+            [maxWidth]="col.maxWidth"
+            [width]="col.width"
+            [resizeable]="col.resizeable"
+            [sortable]="col.sortable"
+            [draggable]="col.draggable"
+
+            [comparator]="col.comparator"
+            [checkboxable]="col.checkboxable"
+            [headerCheckboxable]="col.headerCheckboxable"
+            [headerClass]="col.headerClass"
+            [cellClass]="col.cellClass"
+            [frozenLeft]="col.frozenLeft"
+            [frozenRight]="col.frozenRight"
+            [pipe]="col.pipe"
+            [isTreeColumn]="col.isTreeColumn">
+
+            <ng-template let-column="column" let-sortFn="sortFn" ngx-datatable-header-template>
+              <strong *ngIf="!column.sortable" class="draggable">{{column.name}}</strong>
+              <strong *ngIf="column.sortable" class="datatable-sort-target draggable" (click)="sortFn()">{{column.name}}</strong>
+              <div class="datatable-column-header-separator"></div>
+            </ng-template>
+
+            <ng-template let-value="value" let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
+              <ng-template *ngIf="col?.cellTplDirective as cellDir; else noCellTpl"
+                [ngTemplateOutlet]="cellDir.template"
+                [ngTemplateOutletContext]="{ $implicit: value, value: value, rowIndex: rowIndex, row: row, expanded: _getRowExpanded(row) }">
+              </ng-template>
+              <ng-template #noCellTpl>
+                <seam-table-cell-type-selector *ngIf="col?.cellType; else noCellType"
+                  [type]="col?.cellType"
+                  [value]="value"
+                  [rowIndex]="rowIndex"
+                  [row]="row"
+                  [colData]="col">
+                </seam-table-cell-type-selector>
+                <ng-template #noCellType>
+                  {{ value }}
+                </ng-template>
+              </ng-template>
+            </ng-template>
+
+            <ng-template ngx-datatable-tree-toggle let-tree="cellContext">
+              <button
+                class="p-0 bg-transparent border-0 btn"
+                [disabled]="tree.treeStatus==='disabled'"
+                (click)="tree.onTreeAction()">
+                <span *ngIf="tree.treeStatus==='loading'">
+                  <fa-icon [icon]="faSpinner"></fa-icon>
+                </span>
+                <span *ngIf="tree.treeStatus==='collapsed'">
+                  <fa-icon [icon]="faChevronRight"></fa-icon>
+                </span>
+                <span *ngIf="tree.treeStatus==='expanded'">
+                  <fa-icon [icon]="faChevronDown"></fa-icon>
+                </span>
+                <span *ngIf="tree.treeStatus==='disabled'">
+                  <fa-icon [icon]="faChevronRight"></fa-icon>
+                </span>
+              </button>
+            </ng-template>
+
+          </ngx-datatable-column>
+
         </ng-container>
+
+
 
         <ng-container *ngIf="rowActionItem">
           <ngx-datatable-column prop="actionMenu" name="Actions"

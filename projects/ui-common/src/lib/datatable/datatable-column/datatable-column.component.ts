@@ -1,4 +1,6 @@
-import { Component, ContentChild, Input, OnInit, PipeTransform, TemplateRef } from '@angular/core'
+import { Component, ContentChild, Input, OnChanges, OnInit, PipeTransform, SimpleChanges, TemplateRef } from '@angular/core'
+
+import { ColumnChangesService } from '@marklb/ngx-datatable'
 
 import { DatatableCellTplDirective } from '../directives/datatable-cell-tpl.directive'
 
@@ -10,21 +12,21 @@ type _PipeTransform = PipeTransform | PipeTransform
   templateUrl: './datatable-column.component.html',
   styleUrls: ['./datatable-column.component.scss']
 })
-export class DatatableColumnComponent implements OnInit {
+export class DatatableColumnComponent implements OnInit, OnChanges {
 
   @Input() name: string
   @Input() prop: string | number
 
   @Input() flexGrow: number
-  @Input() minWidth = 100
+  @Input() minWidth: number
   @Input() maxWidth: number
-  @Input() width = 150
+  @Input() width: number
 
-  @Input() resizeable = true
-  @Input() sortable = true
-  @Input() draggable = true
+  @Input() resizeable: boolean
+  @Input() sortable: boolean
+  @Input() draggable: boolean
 
-  @Input() canAutoResize = true
+  @Input() canAutoResize: boolean
 
   @Input() comparator: (valueA, valueB, rowA?, rowB?, sortDirection?: 'asc' | 'desc') => -1 | 0 | 1
 
@@ -37,19 +39,30 @@ export class DatatableColumnComponent implements OnInit {
   @Input() headerClass: string | ((data: any) => string|any)
   @Input() cellClass: string | ((data: any) => string|any)
 
-  @Input() frozenLeft = false
-  @Input() frozenRight = false
+  @Input() frozenLeft: boolean
+  @Input() frozenRight: boolean
 
   @Input() pipe: _PipeTransform
 
-  @Input() isTreeColumn = false
+  @Input() isTreeColumn: boolean
 
+  private _isFirstChange = true
 
   @ContentChild(DatatableCellTplDirective, { static: true }) cellTplDirective: DatatableCellTplDirective
 
-  constructor() { }
+  // constructor() { }
+  constructor(private _columnChangesService: ColumnChangesService) {}
 
   ngOnInit() { }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (this._isFirstChange) {
+      this._isFirstChange = false
+    } else {
+      // console.log('changes', changes)
+      this._columnChangesService.onInputChange()
+    }
+  }
 
   public getCellDirective(): DatatableCellTplDirective | null {
     if (this.cellTplDirective) {
