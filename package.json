@@ -34,7 +34,7 @@
     "@fortawesome/free-regular-svg-icons": "^5.10.1",
     "@fortawesome/free-solid-svg-icons": "^5.10.1",
     "@marklb/file-type": "~10.6.5",
-    "@marklb/ngx-datatable": "~16.0.2",
+    "@marklb/ngx-datatable": "~16.0.3",
     "@netbasal/spectator": "^3.12.0",
     "@ng-select/ng-select": "2.20.0",
     "angular-gridster2": "^8.2.0",

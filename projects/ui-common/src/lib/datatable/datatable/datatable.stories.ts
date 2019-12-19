@@ -1,4 +1,5 @@
 import { action } from '@storybook/addon-actions'
+import { boolean, number, text, withKnobs } from '@storybook/addon-knobs'
 import { linkTo } from '@storybook/addon-links'
 import { storiesOf } from '@storybook/angular'
 
@@ -8,6 +9,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms'
 import { TheSeamDatatableModule } from '../datatable.module'
 
 storiesOf('Components/Datatable', module)
+  .addDecorator(withKnobs)
 
   .add('Simple', () => ({
     moduleMetadata: {
@@ -17,6 +19,10 @@ storiesOf('Components/Datatable', module)
       ]
     },
     props: {
+      // title: text('Header Title', 'Example Widget'),
+      width: number('Width', 150),
+      // loading: boolean('Loading', true),
+
       columns: [
         { prop: 'name', name: 'Name' },
         // { prop: 'age', name: 'Age' },
@@ -66,18 +72,35 @@ storiesOf('Components/Datatable', module)
         // this.selected.push(...selected)
 
         this.rows = [ ...this.rows, { name: 'Joe', age: 33, color: 'green' } ]
+      },
+      onChangeWidth() {
+        console.log('Width Event')
+
+        // this.selected.splice(0, this.selected.length)
+        // this.selected.push(...selected)
+
+        this.width = this.width + 1
       }
     },
     // <div style="height: 400px; width: 600px;">
     template: `
-      <div style="height: 450px; width: 100%;">
+      <div style="height: 440px; width: 100%;">
         <seam-datatable
           class="w-100 h-100"
           [columns]="columns"
           [rows]="rows">
+
+          <seam-datatable-column name="Color" prop="color" [width]="width">
+            <ng-template seamDatatableCellTpl let-value="value">
+              <span *ngIf="value === 'blue'; else notBlue" style="color: blue;">{{ value }}</span>
+              <ng-template #notBlue>~{{ value }}~</ng-template>
+            </ng-template>
+          </seam-datatable-column>
+
         </seam-datatable>
       </div>
       <button type="button" (click)="onAdd()">Add</button>
+      <button type="button" (click)="onChangeWidth()">Width</button>
       `
   }))
 
