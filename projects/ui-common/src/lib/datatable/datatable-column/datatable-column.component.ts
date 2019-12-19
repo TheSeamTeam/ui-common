@@ -3,6 +3,7 @@ import { Component, ContentChild, Input, OnChanges, OnInit, PipeTransform, Simpl
 import { ColumnChangesService } from '@marklb/ngx-datatable'
 
 import { DatatableCellTplDirective } from '../directives/datatable-cell-tpl.directive'
+import { DatatableColumnChangesService } from '../services/datatable-column-changes.service'
 
 // HACK: Union type prevents the not found warning
 type _PipeTransform = PipeTransform | PipeTransform
@@ -51,7 +52,8 @@ export class DatatableColumnComponent implements OnInit, OnChanges {
   @ContentChild(DatatableCellTplDirective, { static: true }) cellTplDirective: DatatableCellTplDirective
 
   // constructor() { }
-  constructor(private _columnChangesService: ColumnChangesService) {}
+  // constructor(private _columnChangesService: ColumnChangesService) {}
+  constructor(private _columnChangesService: DatatableColumnChangesService) {}
 
   ngOnInit() { }
 
@@ -59,7 +61,7 @@ export class DatatableColumnComponent implements OnInit, OnChanges {
     if (this._isFirstChange) {
       this._isFirstChange = false
     } else {
-      // console.log('changes', changes)
+      console.log('changes', changes)
       this._columnChangesService.onInputChange()
     }
   }

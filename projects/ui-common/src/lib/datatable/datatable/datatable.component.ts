@@ -1,7 +1,7 @@
 import { animate, style, transition, trigger } from '@angular/animations'
 import {
   AfterContentInit, ChangeDetectionStrategy, Component, ContentChild, ContentChildren,
-  ElementRef, EventEmitter, forwardRef, InjectionToken, Input, OnDestroy, OnInit, Output, QueryList, ViewChild
+  ElementRef, EventEmitter, forwardRef, InjectionToken, Input, KeyValueDiffer, KeyValueDiffers, OnDestroy, OnInit, Output, QueryList, ViewChild
 } from '@angular/core'
 import { BehaviorSubject, combineLatest, merge, Observable, of, Subscription } from 'rxjs'
 import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators'
@@ -33,6 +33,7 @@ import { DatatableMenuBarComponent } from '../datatable-menu-bar/datatable-menu-
 import { TheSeamDatatableRowDetailDirective } from '../datatable-row-detail/datatable-row-detail.directive'
 import { DatatableRowActionItemDirective } from '../directives/datatable-row-action-item.directive'
 import { ITheSeamDatatableColumn } from '../models/table-column'
+import { DatatableColumnChangesService } from '../services/datatable-column-changes.service'
 
 
 /**
@@ -95,7 +96,7 @@ export const _THESEAM_DATATABLE: any = {
       ])
     ])
   ],
-  providers: [ _THESEAM_DATATABLE ]
+  providers: [ _THESEAM_DATATABLE, DatatableColumnChangesService ]
 })
 export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
 
@@ -113,19 +114,19 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
   get columns(): ITheSeamDatatableColumn[] { return this._columns.value }
   set columns(value: ITheSeamDatatableColumn[]) {
     console.log('columns')
-    if (value) {
-      // Need to call `setColumnDefaults` before ngx-datatable gets it because
-      // of how this wrapper is implemented.
+    // if (value) {
+    //   // Need to call `setColumnDefaults` before ngx-datatable gets it because
+    //   // of how this wrapper is implemented.
 
-      // NOTE: Custom `this._setColumnDefaults` used because the
-      // `setColumnDefaults` imported from `ngx-datatable` is causing a circular
-      // dependency.
-      //
-      // TODO: Consider implementing differently to avoid maintaining defaults
-      // or having to remove the properties set by `setColumnDefaults` function
-      // in the `ngx-datatable` utilities that shouldn't be set yet.
-      this._setColumnDefaults(value)
-    }
+    //   // NOTE: Custom `this._setColumnDefaults` used because the
+    //   // `setColumnDefaults` imported from `ngx-datatable` is causing a circular
+    //   // dependency.
+    //   //
+    //   // TODO: Consider implementing differently to avoid maintaining defaults
+    //   // or having to remove the properties set by `setColumnDefaults` function
+    //   // in the `ngx-datatable` utilities that shouldn't be set yet.
+    //   this._setColumnDefaults(value)
+    // }
     this._columns.next(value)
   }
   private _columns = new BehaviorSubject<ITheSeamDatatableColumn[]>([])
@@ -250,14 +251,22 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
 
   public columnComponents$: Observable<DatatableColumnComponent[]>
   public columns$: Observable<ITheSeamDatatableColumn[]>
+  private _prevColumns: ITheSeamDatatableColumn[] = []
+  private _colDiffersInp: { [propName: string]: KeyValueDiffer<any, any> } = {}
+  private _colDiffersTpl: { [propName: string]: KeyValueDiffer<any, any> } = {}
 
   constructor(
-    private _columnChangesService: ColumnChangesService
+    // private _columnChangesService: ColumnChangesService,
+    private _columnChangesService: DatatableColumnChangesService,
+    private _differs: KeyValueDiffers
   ) {
     this.rows$ = this._filtersSubject.asObservable()
       .pipe(switchMap(filters => this._rows.asObservable()
         .pipe(composeDataFilters(filters))
       ))
+      .pipe(tap(v => {
+        console.log('rows', v, this._prevColumns)
+      }))
 
     const _w: any = window
     _w._dt = this
@@ -278,15 +287,19 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
   ngOnDestroy() { }
 
   ngAfterContentInit() {
-    console.log('ngAfterContentInit')
-    this.columnComponents$ = merge(
-      this._columnChangesService.columnInputChanges$.pipe(
-        map(() => this.columnComponents),
-        startWith(this.columnComponents)
-      ),
-      this.columnComponents.changes.pipe(
-        startWith(this.columnComponents)
-      )
+    // console.log('ngAfterContentInit')
+    // this.columnComponents$ = merge(
+    //   this._columnChangesService.columnInputChanges$.pipe(
+    //     map(() => this.columnComponents),
+    //     startWith(this.columnComponents)
+    //   ),
+    //   this.columnComponents.changes.pipe(
+    //     startWith(this.columnComponents)
+    //   )
+    // )
+    this.columnComponents$ = this._columnChangesService.columnInputChanges$.pipe(
+      map(() => this.columnComponents.toArray()),
+      startWith(this.columnComponents.toArray())
     )
       .pipe(
         tap(v => console.log('columnComponents$', v)),
@@ -295,14 +308,61 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
 
     this.columns$ =
       combineLatest([
-        this.columnComponents$.pipe(tap(v => console.log('columnComponents$'))),
-        this._columns.pipe(tap(v => console.log('_columns')))
+        this.columnComponents$, // .pipe(tap(v => console.log('columnComponents$'))),
+        this._columns // .pipe(tap(v => console.log('_columns')))
       ]).pipe(
         tap(v => console.log('~v', v)),
-        map(v => this._mergeTplAndInputColumns(v[0], v[1])),
-        tap(v => console.log('~merged', v)),
-        tap(v => this._setColumnDefaults(v)),
-        tap(v => console.log('~defaults', v)),
+        // map(v => this._mergeTplAndInputColumns(v[0], v[1])),
+        // tap(v => console.log('~merged', v)),
+        // tap(v => this._setColumnDefaults(v)),
+        // tap(v => console.log('~defaults', v)),
+        // // tap(v => v.forEach(c => c.canAutoResize = false)),
+        // tap(v => {
+        //   console.log('Diffs')
+        //   const cols: ITheSeamDatatableColumn[] = []
+        //   for (const col of v) {
+        //     const prev = (this._prevColumns || []).find(c => c.prop === col.prop) || {}
+
+        //     if (prev) {
+        //       const differ: KeyValueDiffer<any, any> = this._differs.find({}).create()
+        //       differ.diff(prev)
+        //       const diff = differ.diff(col)
+        //       console.log('\tdiff', diff)
+        //       if (diff) {
+        //         // diff.forEachItem(r => {
+        //         //   console.log(r)
+        //         // })
+        //         const _col: ITheSeamDatatableColumn = { ...prev }
+
+        //         diff.forEachAddedItem(r => {
+        //           console.log('added', r)
+        //           _col[r.key] = r.currentValue
+        //         })
+
+        //         diff.forEachChangedItem(r => {
+        //           console.log('changed', r)
+        //           _col[r.key] = r.currentValue
+        //         })
+
+        //         diff.forEachRemovedItem(r => {
+        //           console.log('removed', r)
+        //           delete _col[r.key]
+        //         })
+
+        //         cols.push(_col)
+        //       } else {
+        //         cols.push(prev)
+        //       }
+        //     } else {
+        //       cols.push({ ...col })
+        //     }
+        //   }
+        //   this._prevColumns = cols
+        // }),
+
+        map(v => this._getMergedTplAndInpColumns(v[0], v[1])),
+
+        tap(v => console.log('~withPrev', v)),
       )
       // .subscribe()
   }
@@ -323,6 +383,95 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     return cols
+  }
+
+  private _getMergedTplAndInpColumns(
+    tplCols: DatatableColumnComponent[],
+    inpCols: ITheSeamDatatableColumn[]
+  ): ITheSeamDatatableColumn[] {
+    const cols: ITheSeamDatatableColumn[] = []
+
+    for (const col of inpCols) {
+      const tplCol = tplCols.find(t => t.prop === col.prop)
+
+      // const prev = (this._prevColumns || []).find(c => c.prop === col.prop)
+      const dtColumns = (this.ngxDatatable && this.ngxDatatable._internalColumns) || []
+      const prev = dtColumns.find(c => c.prop === col.prop)
+
+      const inpColDiff = this._getColDiff(col)
+      // console.log('inpColDiff', inpColDiff)
+      // if (inpColDiff) {
+      //   inpColDiff.forEachItem(r => console.log(r))
+      //   inpColDiff.forEachChangedItem(r => console.log('changed', r))
+      // }
+      const _inpCol = inpColDiff ? {} : this._hasPrevColDiff(col) ? {} : col
+      if (inpColDiff) {
+        inpColDiff.forEachRemovedItem(r => {
+          if (prev && prev.hasOwnProperty(r.key)) {
+            delete prev[r.key]
+          }
+        })
+        inpColDiff.forEachAddedItem(r => _inpCol[r.key] = r.currentValue)
+        inpColDiff.forEachChangedItem(r => _inpCol[r.key] = r.currentValue)
+      }
+
+      let _tplCol: ITheSeamDatatableColumn = {}
+      if (tplCol) {
+        const tplColDiff = tplCol ? this._getColDiff(tplCol, true) : undefined
+        _tplCol = tplColDiff ? {} : this._hasPrevColDiff(col, true) ? {} : tplCol
+        if (tplColDiff) {
+          tplColDiff.forEachRemovedItem(r => {
+            if (prev && prev.hasOwnProperty(r.key)) {
+              delete prev[r.key]
+            }
+          })
+          tplColDiff.forEachAddedItem(r => _tplCol[r.key] = r.currentValue)
+          tplColDiff.forEachChangedItem(r => _tplCol[r.key] = r.currentValue)
+        }
+      }
+
+      // console.log(col.prop, prev, _inpCol, _tplCol)
+
+      const _col: ITheSeamDatatableColumn = {
+        ...(prev || {}),
+        ..._inpCol,
+        ..._tplCol
+      }
+      // console.log('result', { ..._col })
+      cols.push(_col)
+    }
+
+    this._setColumnDefaults(cols)
+
+    this._prevColumns = cols
+    return cols
+  }
+
+  private _hasPrevColDiff(col: ITheSeamDatatableColumn, isTpl: boolean = false): boolean {
+    if (!col || !col.prop) {
+      return false
+    }
+
+    const differsMap = isTpl ? this._colDiffersTpl : this._colDiffersInp
+
+    return !!differsMap
+  }
+
+  private _getColDiff(col: ITheSeamDatatableColumn, isTpl: boolean = false) {
+    if (!col || !col.prop) {
+      return
+    }
+
+    const differsMap = isTpl ? this._colDiffersTpl : this._colDiffersInp
+
+    if (!differsMap[col.prop]) {
+      differsMap[col.prop] = this._differs.find({}).create()
+    }
+
+    const differ = differsMap[col.prop]
+
+    const diff = differ.diff(col)
+    return diff
   }
 
   private _setMenuBarFilters(filters: IDataFilter[]) {
@@ -363,13 +512,36 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
     if (this.ngxDatatable && this.ngxDatatableElement && this.ngxDatatableElement.nativeElement) {
       // TODO: Consider integrating this into the ngx-datatable library to avoid
       // multiple resize calls when the table resizes itself.
-      this.ngxDatatable.recalculate()
+      // this.ngxDatatable.recalculate()
     }
   }
 
   _onResize(event) {
-    // console.log('resize', event)
+    console.log('resize', event, event.column.prop)
     this.resize.emit(event)
+
+    // const prev = (this._prevColumns || []).find(c => c.prop === event.column.prop)
+    // if (prev) {
+    //   prev.width = event.newValue
+    //   prev.$$oldWidth = event.newValue
+    //   prev.canAutoResize = false
+    // }
+
+    if (event.isDone) {
+      const columns = this.columns
+      // console.log('columns', columns)
+      const col = (columns || []).find(c => c.prop === event.column.prop)
+      if (col) {
+        // col.width = event.newValue
+        col.canAutoResize = false
+      }
+      this.columns = [ ...columns ]
+    }
+
+    // event.column.$$oldWidth = event.newValue
+    // if (this._columnMode === ColumnMode.force) {
+
+    // }
   }
 
   /**

@@ -90,12 +90,18 @@ storiesOf('Components/Datatable', module)
           [columns]="columns"
           [rows]="rows">
 
-          <seam-datatable-column name="Color" prop="color" [width]="width">
+          <seam-datatable-column name="Name" prop="name" [width]="width">
+            <ng-template seamDatatableCellTpl let-value="value">
+              {{ value }}
+            </ng-template>
+          </seam-datatable-column>
+
+          <!-- <seam-datatable-column name="Color" prop="color" [width]="width">
             <ng-template seamDatatableCellTpl let-value="value">
               <span *ngIf="value === 'blue'; else notBlue" style="color: blue;">{{ value }}</span>
               <ng-template #notBlue>{{ value }}</ng-template>
             </ng-template>
-          </seam-datatable-column>
+          </seam-datatable-column> -->
 
         </seam-datatable>
       </div>
