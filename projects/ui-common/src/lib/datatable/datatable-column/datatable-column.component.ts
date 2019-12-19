@@ -31,7 +31,6 @@ export class DatatableColumnComponent implements OnInit, OnChanges {
 
   @Input() comparator: (valueA, valueB, rowA?, rowB?, sortDirection?: 'asc' | 'desc') => -1 | 0 | 1
 
-  @Input() cellTemplate: TemplateRef<any>
   @Input() headerTemplate: TemplateRef<any>
 
   @Input() checkboxable: boolean
@@ -46,14 +45,49 @@ export class DatatableColumnComponent implements OnInit, OnChanges {
   @Input() pipe: _PipeTransform
 
   @Input() isTreeColumn: boolean
+  @Input() treeLevelIndent: number
+
+  @Input() summaryFunc: (cells: any[]) => any
+  @Input() summaryTemplate: TemplateRef<any>
 
   private _isFirstChange = true
 
   @ContentChild(DatatableCellTplDirective, { static: true }) cellTplDirective: DatatableCellTplDirective
 
-  // constructor() { }
-  // constructor(private _columnChangesService: ColumnChangesService) {}
-  constructor(private _columnChangesService: DatatableColumnChangesService) {}
+  // tslint:disable-next-line: no-input-rename
+  @Input('cellTemplate')
+  _cellTemplateInput: TemplateRef<any>
+
+  @ContentChild(DatatableCellTplDirective, { read: TemplateRef, static: true })
+  _cellTemplateQuery: TemplateRef<any>
+
+  get cellTemplate(): TemplateRef<any> {
+    return this._cellTemplateInput || this._cellTemplateQuery
+  }
+
+  // @Input('headerTemplate')
+  // _headerTemplateInput: TemplateRef<any>;
+
+  // @ContentChild(DataTableColumnHeaderDirective, { read: TemplateRef, static: true })
+  // _headerTemplateQuery: TemplateRef<any>;
+
+  // get headerTemplate(): TemplateRef<any> {
+  //   return this._headerTemplateInput || this._headerTemplateQuery;
+  // }
+
+  // @Input('treeToggleTemplate')
+  // _treeToggleTemplateInput: TemplateRef<any>;
+
+  // @ContentChild(DataTableColumnCellTreeToggle, { read: TemplateRef, static: true })
+  // _treeToggleTemplateQuery: TemplateRef<any>;
+
+  // get treeToggleTemplate(): TemplateRef<any> {
+  //   return this._treeToggleTemplateInput || this._treeToggleTemplateQuery;
+  // }
+
+  constructor(
+    private _columnChangesService: DatatableColumnChangesService
+  ) {}
 
   ngOnInit() { }
 
@@ -61,7 +95,6 @@ export class DatatableColumnComponent implements OnInit, OnChanges {
     if (this._isFirstChange) {
       this._isFirstChange = false
     } else {
-      console.log('changes', changes)
       this._columnChangesService.onInputChange()
     }
   }
