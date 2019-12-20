@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core'
 import { RouterModule } from '@angular/router'
 
 import { TheSeamIconModule } from '../icon/index'
+import { TheSeamPopoverModule } from '../popover/index'
 import { TheSeamSharedModule } from '../shared/index'
 
 import { TableCellTypeDateComponent } from './table-cell-type-date/table-cell-type-date.component'
@@ -45,7 +46,8 @@ export const cellTypeProviders = [
     RouterModule,
     TheSeamSharedModule,
     TheSeamIconModule,
-    PortalModule
+    PortalModule,
+    TheSeamPopoverModule
   ],
   providers: [
     ...cellTypeProviders
