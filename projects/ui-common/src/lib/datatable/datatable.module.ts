@@ -19,6 +19,7 @@ import { TheSeamTableCellTypesModule } from '../table-cell-types/table-cell-type
 
 import { DatatableActionMenuItemComponent } from './datatable-action-menu-item/datatable-action-menu-item.component'
 import { DatatableActionMenuComponent } from './datatable-action-menu/datatable-action-menu.component'
+import { DatatableColumnPreferencesComponent } from './datatable-column-preferences/datatable-column-preferences.component'
 import { DatatableColumnComponent } from './datatable-column/datatable-column.component'
 import { DatatableExportButtonComponent } from './datatable-export-button/datatable-export-button.component'
 import { DatatableMenuBarComponent } from './datatable-menu-bar/datatable-menu-bar.component'
@@ -46,6 +47,7 @@ import { TheSeamDatatableScrollbarHelperService } from './services/datatable-scr
     DatatableExportButtonComponent,
     TheSeamDatatableRowDetailDirective,
     DatatableRowDetailTplDirective,
+    DatatableColumnPreferencesComponent,
   ],
   imports: [
     CommonModule,
@@ -79,6 +81,7 @@ import { TheSeamDatatableScrollbarHelperService } from './services/datatable-scr
   ],
   providers: [
     { provide: ScrollbarHelper, useClass: TheSeamDatatableScrollbarHelperService }
-  ]
+  ],
+  entryComponents: [DatatableColumnPreferencesComponent]
 })
 export class TheSeamDatatableModule { }
