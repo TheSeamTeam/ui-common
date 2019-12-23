@@ -1,0 +1,17 @@
+<ng-template #colPrefsTpl>
+  <seam-datatable-column-preferences></seam-datatable-column-preferences>
+</ng-template>
+
+
+<button
+  seamButton
+  [seamPopover]="colPrefsTpl"
+  theme="lightgray"
+  size="sm"
+  style="padding-left: 10px; padding-right: 10px;"
+  title="Column Preferences"
+  [disabled]="disabled"
+  >
+  <seam-icon [icon]="icon"></seam-icon>
+  <span class="sr-only">Column Preferences</span>
+</button>

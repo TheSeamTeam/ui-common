@@ -39,6 +39,7 @@
         [summaryHeight]="summaryHeight"
         [summaryPosition]="summaryPosition"
         [rows]="rows$ | async"
+        [columns]="displayColumns$ | async"
         [headerHeight]="headerHeight"
         [rowHeight]="rowHeight"
         [footerHeight]="footerHeight"
@@ -48,7 +49,7 @@
         (sort)="sort.emit($event)"
         (page)="page.emit($event)"
         (reorder)="reorder.emit($event)"
-        (resize)="resize.emit($event)"
+        (resize)="_onResize($event)"
         (tableContextmenu)="tableContextmenu.emit($event)"
         (treeAction)="treeAction.emit($event)"
         (seamElemResized)="onDatatableResize($event)"
@@ -68,128 +69,75 @@
           </ng-template>
         </ngx-datatable-group-header>
 
-        <ngx-datatable-column *ngIf="selectionType === 'checkbox'"
-          [width]="30"
-          [sortable]="false"
-          [canAutoResize]="false"
-          [draggable]="false"
-          [resizeable]="false"
-          [headerCheckboxable]="true"
-          [checkboxable]="true">
-        </ngx-datatable-column>
-
-        <ng-container *ngFor="let col of (columns || []) trackBy: trackByFnColumn">
-          <ng-container *ngIf="_columnData(col) as colData">
-
-            <ngx-datatable-column
-              [prop]="colData.comp?.prop || colData.col.prop"
-              [name]="colData.comp?.name || colData.col.name"
-              [flexGrow]="colData.comp?.flexGrow || colData.col.flexGrow"
-              [minWidth]="colData.comp?.minWidth || colData.col.minWidth"
-              [maxWidth]="colData.comp?.maxWidth || colData.col.maxWidth"
-              [width]="colData.comp?.width || colData.col.width"
-              [resizeable]="colData.comp?.resizeable || colData.col.resizeable"
-              [sortable]="colData.comp?.sortable || colData.col.sortable"
-              [draggable]="colData.comp?.draggable || colData.col.draggable"
-              [canAutoResize]="colData.comp?.canAutoResize || colData.col.canAutoResize"
-              [comparator]="colData.comp?.comparator || colData.col.comparator"
-              [checkboxable]="colData.comp?.checkboxable || colData.col.checkboxable"
-              [headerCheckboxable]="colData.comp?.headerCheckboxable || colData.col.headerCheckboxable"
-              [headerClass]="colData.comp?.headerClass || colData.col.headerClass"
-              [cellClass]="colData.comp?.cellClass || colData.col.cellClass"
-              [frozenLeft]="colData.comp?.frozenLeft || colData.col.frozenLeft"
-              [frozenRight]="colData.comp?.frozenRight || colData.col.frozenRight"
-              [pipe]="colData.comp?.pipe || colData.col.pipe"
-              [isTreeColumn]="colData.comp?.isTreeColumn || colData.col.isTreeColumn">
-
-              <ng-template let-column="column" let-sortFn="sortFn" ngx-datatable-header-template>
-                <strong *ngIf="!column.sortable" class="draggable">{{column.name}}</strong>
-                <strong *ngIf="column.sortable" class="datatable-sort-target draggable" (click)="sortFn()">{{column.name}}</strong>
-                <div class="datatable-column-header-separator"></div>
-              </ng-template>
-
-              <ng-template let-value="value" let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
-                <ng-template *ngIf="colData.comp?.cellTplDirective as cellDir; else noCellTpl"
-                  [ngTemplateOutlet]="cellDir.template"
-                  [ngTemplateOutletContext]="{ $implicit: value, value: value, rowIndex: rowIndex, row: row }">
-                </ng-template>
-                <ng-template #noCellTpl>
-                  <seam-table-cell-type-selector *ngIf="colData.comp?.cellType || colData.col?.cellType; else noCellType"
-                    [type]="colData.comp?.cellType || colData.col?.cellType"
-                    [value]="value"
-                    [rowIndex]="rowIndex"
-                    [row]="row"
-                    [colData]="colData.comp || colData.col">
-                  </seam-table-cell-type-selector>
-                  <ng-template #noCellType>
-                    {{ value }}
-                  </ng-template>
-                </ng-template>
-              </ng-template>
-
-              <ng-template ngx-datatable-tree-toggle let-tree="cellContext">
-                <button
-                  class="p-0 bg-transparent border-0 btn"
-                  [disabled]="tree.treeStatus==='disabled'"
-                  (click)="tree.onTreeAction()">
-                  <span *ngIf="tree.treeStatus==='loading'">
-                    <fa-icon [icon]="faSpinner"></fa-icon>
-                  </span>
-                  <span *ngIf="tree.treeStatus==='collapsed'">
-                    <fa-icon [icon]="faChevronRight"></fa-icon>
-                  </span>
-                  <span *ngIf="tree.treeStatus==='expanded'">
-                    <fa-icon [icon]="faChevronDown"></fa-icon>
-                  </span>
-                  <span *ngIf="tree.treeStatus==='disabled'">
-                    <fa-icon [icon]="faChevronRight"></fa-icon>
-                  </span>
-                </button>
-              </ng-template>
-
-            </ngx-datatable-column>
-
-          </ng-container>
-        </ng-container>
-
-        <ng-container *ngIf="rowActionItem">
-          <ngx-datatable-column prop="actionMenu" name="Actions"
-            [width]="50"
-            [minWidth]="50"
-            [maxWidth]="50"
-            [resizeable]="false"
-            [sortable]="false"
-            [draggable]="false"
-            [frozenRight]="false">
-            <ng-template let-column="column" ngx-datatable-header-template>
-              <!-- <strong>Actions</strong> -->
-            </ng-template>
-            <ng-template let-value="value" let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
-              <button type="button" class="datatable-action-button btn"
-                [seamDatatableActionMenuToggle]="actionMenuOverlayTpl"
-                #actionMenuToggle="seamDatatableActionMenuToggle"
-                title="Row Actions">
-                <fa-icon [icon]="faEllipsisH"></fa-icon>
-              </button>
-              <ng-template #actionMenuOverlayTpl>
-                <div @slideDown
-                  cdkMonitorSubtreeFocus
-                  (cdkFocusChange)="actionMenuToggle.onFocusChangeOverlay($event)"
-                  tabindex="-1"
-                  seamAutoFocus>
-                  <!-- <ng-content select="seam-datatable-action-menu"></ng-content> -->
-                  <!-- <seam-datatable-action-menu [row]="row"></seam-datatable-action-menu> -->
-                  <ng-template
-                    [ngTemplateOutlet]="rowActionItem.template"
-                    [ngTemplateOutletContext]="{ $implicit: row, row: row, rowIndex: rowIndex }">
-                  </ng-template>
-                </div>
-              </ng-template>
-            </ng-template>
-          </ngx-datatable-column>
-        </ng-container>
+        <ngx-datatable-row-detail *ngIf="rowDetail"
+          [rowHeight]="rowDetail.rowHeight"
+          [template]="rowDetail.template"
+          (toggle)="rowDetail.toggle.emit($event)">
+        </ngx-datatable-row-detail>
 
       </ngx-datatable>
     </ng-container>
   </div>
 </div>
+
+<ng-template #blankHeaderTpl ngx-datatable-header-template></ng-template>
+
+<ng-template #headerTpl ngx-datatable-header-template
+  let-column="column" let-sortFn="sortFn">
+  <strong *ngIf="!column.sortable" class="draggable">{{column.name}}</strong>
+  <strong *ngIf="column.sortable" class="datatable-sort-target draggable" (click)="sortFn()">{{column.name}}</strong>
+  <div class="datatable-column-header-separator"></div>
+</ng-template>
+
+<ng-template #cellTypeSelectorTpl ngx-datatable-cell-template
+  let-value="value" let-rowIndex="rowIndex" let-row="row" let-column="column">
+  <seam-table-cell-type-selector
+    [type]="column.cellType"
+    [value]="value"
+    [rowIndex]="rowIndex"
+    [row]="row"
+    [colData]="column">
+  </seam-table-cell-type-selector>
+</ng-template>
+
+<ng-template #actionMenuCellTpl ngx-datatable-cell-template
+  let-value="value" let-rowIndex="rowIndex" let-row="row">
+  <button type="button" class="datatable-action-button btn"
+    [seamDatatableActionMenuToggle]="actionMenuOverlayTpl"
+    #actionMenuToggle="seamDatatableActionMenuToggle"
+    title="Row Actions">
+    <fa-icon [icon]="faEllipsisH"></fa-icon>
+  </button>
+  <ng-template #actionMenuOverlayTpl>
+    <div @slideDown
+      cdkMonitorSubtreeFocus
+      (cdkFocusChange)="actionMenuToggle.onFocusChangeOverlay($event)"
+      tabindex="-1"
+      seamAutoFocus>
+      <ng-template
+        [ngTemplateOutlet]="rowActionItem.template"
+        [ngTemplateOutletContext]="{ $implicit: row, row: row, rowIndex: rowIndex }">
+      </ng-template>
+    </div>
+  </ng-template>
+</ng-template>
+
+<ng-template #treeToggleTpl ngx-datatable-tree-toggle let-tree="cellContext">
+  <button
+    class="p-0 bg-transparent border-0 btn"
+    [disabled]="tree.treeStatus==='disabled'"
+    (click)="tree.onTreeAction()">
+    <span *ngIf="tree.treeStatus==='loading'">
+      <fa-icon [icon]="faSpinner"></fa-icon>
+    </span>
+    <span *ngIf="tree.treeStatus==='collapsed'">
+      <fa-icon [icon]="faChevronRight"></fa-icon>
+    </span>
+    <span *ngIf="tree.treeStatus==='expanded'">
+      <fa-icon [icon]="faChevronDown"></fa-icon>
+    </span>
+    <span *ngIf="tree.treeStatus==='disabled'">
+      <fa-icon [icon]="faChevronRight"></fa-icon>
+    </span>
+  </button>
+</ng-template>

@@ -2,6 +2,8 @@ import { Directive, ElementRef, HostBinding, HostListener, Input, isDevMode, Opt
 import { from, Observable, of, throwError } from 'rxjs'
 import { catchError, map, mapTo, switchMap, tap } from 'rxjs/operators'
 
+import FileSaver from 'file-saver'
+
 import { TheSeamLoadingOverlayService } from '../../loading/index'
 import { EncryptedAssetReader } from '../../shared/models/index'
 import { fileDataFromBuffer, openBlob, readFileAsync } from '../../utils/index'
@@ -16,6 +18,7 @@ export class EncryptedAssetLinkDirective {
   @Input() seamEncryptedAssetLink: string
   @Input() seamShowLoadingOverlay = true
   @Input() seamDetectMimeFromContent = true
+  @Input() seamDownloadAsset = false
 
   // TODO: Find out why I need this for buttons.
   @HostBinding('attr.href') get _atrrHref() { return this.seamEncryptedAssetLink }
@@ -50,15 +53,18 @@ export class EncryptedAssetLinkDirective {
 
       const data$ = this._assetReader.getAssetBlobFromUrl(this.seamEncryptedAssetLink, this.seamDetectMimeFromContent)
         .pipe(
-          switchMap(v => from(readFileAsync(v))
-            .pipe(
-              switchMap(_buf => !!_buf
-                ? from(fileDataFromBuffer(_buf))
-                : throwError('Unable to read file.')
-              ),
-              map(data => ({ ...data, blob: v }))
-            )
-          )
+          switchMap(v => {
+            const filename: string | undefined = v instanceof Blob ? undefined : v.filename
+            const blob: Blob = v instanceof Blob ? v : v.blob
+            return from(readFileAsync(blob))
+              .pipe(
+                switchMap(_buf => !!_buf
+                  ? from(fileDataFromBuffer(_buf))
+                  : throwError('Unable to read file.')
+                ),
+                map(data => ({ ...data, blob, filename }))
+              )
+          })
         )
 
       const open$ = data$
@@ -66,8 +72,12 @@ export class EncryptedAssetLinkDirective {
           tap(data => {
             if (!data || !data.blob) { throw new Error('File unsuccessfully read.') }
             const target = this._isAnchor() && this._hasTarget() ? this._getTarget() : undefined
-            const filename = `Untitled${data.ext ? `.${data.ext}` : ''}`
-            openBlob(data.blob, target, filename)
+            const filename = data.filename ? data.filename : `Untitled${data.ext ? `.${data.ext}` : ''}`
+            if (this.seamDownloadAsset) {
+              FileSaver.saveAs(data.blob, filename)
+            } else {
+              openBlob(data.blob, target, filename)
+            }
           }),
           catchError(err => {
             if (isDevMode()) { console.error('err', err) }

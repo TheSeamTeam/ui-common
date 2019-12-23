@@ -189,9 +189,19 @@ export default {
 }
 
 export const Dynamic = () => ({
+  props: {
+      data: exampleData1
+  },
   template: `
-    <div style="width: 100vw; height: 100vh;" class="p-1">
-      <seam-datatable-dynamic class="w-100 h-100" [data]="data"></seam-datatable-dynamic>
+    <div style="width: 100vw; height: 100vh;" class="p-1 f-flex flex-column">
+      <div class="alert alert-danger">
+        This component is still being worked on. Not all features are guaranteed
+        to work yet, but eventually we plan to start building the datatables in
+        our app from json with this component when all necessary features are stable.
+      </div>
+      <div class="d-flex flex-column h-100">
+        <seam-datatable-dynamic class="w-100 h-100" [data]="data"></seam-datatable-dynamic>
+      </div>
     </div>
   `
 })

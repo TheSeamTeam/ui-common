@@ -3,6 +3,7 @@ import { OverlayModule } from '@angular/cdk/overlay'
 import { PortalModule } from '@angular/cdk/portal'
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
+import { ReactiveFormsModule } from '@angular/forms'
 import { RouterModule } from '@angular/router'
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
@@ -10,18 +11,25 @@ import { NgxDatatableModule, ScrollbarHelper } from '@marklb/ngx-datatable'
 import { ToastrModule } from 'ngx-toastr'
 
 import { TheSeamButtonsModule } from '../buttons/buttons.module'
+import { TheSeamCheckboxModule } from '../checkbox/checkbox.module'
 import { TheSeamConfirmDialogModule } from '../confirm-dialog/confirm-dialog.module'
+import { TheSeamFormFieldModule } from '../form-field/form-field.module'
 import { TheSeamIconModule } from '../icon/icon.module'
 import { TheSeamLoadingModule } from '../loading/loading.module'
 import { TheSeamMenuModule } from '../menu/menu.module'
+import { TheSeamPopoverModule } from '../popover/popover.module'
 import { TheSeamSharedModule } from '../shared/shared.module'
 import { TheSeamTableCellTypesModule } from '../table-cell-types/table-cell-types.module'
 
 import { DatatableActionMenuItemComponent } from './datatable-action-menu-item/datatable-action-menu-item.component'
 import { DatatableActionMenuComponent } from './datatable-action-menu/datatable-action-menu.component'
+import { DatatableColumnPreferencesButtonComponent } from './datatable-column-preferences-button/datatable-column-preferences-button.component' // tslint:disable-line: max-line-length
+import { DatatableColumnPreferencesComponent } from './datatable-column-preferences/datatable-column-preferences.component'
 import { DatatableColumnComponent } from './datatable-column/datatable-column.component'
 import { DatatableExportButtonComponent } from './datatable-export-button/datatable-export-button.component'
 import { DatatableMenuBarComponent } from './datatable-menu-bar/datatable-menu-bar.component'
+import { DatatableRowDetailTplDirective } from './datatable-row-detail/datatable-row-detail-tpl.directive'
+import { TheSeamDatatableRowDetailDirective } from './datatable-row-detail/datatable-row-detail.directive'
 import { DatatableComponent } from './datatable/datatable.component'
 import { DatatableActionMenuToggleDirective } from './directives/datatable-action-menu-toggle.directive'
 import { DatatableCellTplDirective } from './directives/datatable-cell-tpl.directive'
@@ -41,7 +49,11 @@ import { TheSeamDatatableScrollbarHelperService } from './services/datatable-scr
     DatatableMenuBarComponent,
     DatatableFilterDirective,
     DatatableRowActionItemDirective,
-    DatatableExportButtonComponent
+    DatatableExportButtonComponent,
+    TheSeamDatatableRowDetailDirective,
+    DatatableRowDetailTplDirective,
+    DatatableColumnPreferencesComponent,
+    DatatableColumnPreferencesButtonComponent,
   ],
   imports: [
     CommonModule,
@@ -58,7 +70,11 @@ import { TheSeamDatatableScrollbarHelperService } from './services/datatable-scr
     TheSeamLoadingModule,
     PortalModule,
     TheSeamConfirmDialogModule,
-    TheSeamTableCellTypesModule
+    TheSeamTableCellTypesModule,
+    TheSeamPopoverModule,
+    TheSeamCheckboxModule,
+    TheSeamFormFieldModule,
+    ReactiveFormsModule
   ],
   exports: [
     DatatableComponent,
@@ -69,10 +85,15 @@ import { TheSeamDatatableScrollbarHelperService } from './services/datatable-scr
     DatatableMenuBarComponent,
     DatatableFilterDirective,
     DatatableRowActionItemDirective,
-    DatatableExportButtonComponent
+    DatatableExportButtonComponent,
+    TheSeamDatatableRowDetailDirective,
+    DatatableRowDetailTplDirective,
+    DatatableColumnPreferencesComponent,
+    DatatableColumnPreferencesButtonComponent,
   ],
   providers: [
     { provide: ScrollbarHelper, useClass: TheSeamDatatableScrollbarHelperService }
-  ]
+  ],
+  entryComponents: [DatatableColumnPreferencesComponent]
 })
 export class TheSeamDatatableModule { }

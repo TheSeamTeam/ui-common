@@ -1,6 +1,6 @@
 import { ComponentPortal } from '@angular/cdk/portal'
-import { Injectable } from '@angular/core'
-import { BehaviorSubject, Observable } from 'rxjs'
+import { Injectable, ViewContainerRef } from '@angular/core'
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs'
 import { map, mapTo, take, tap } from 'rxjs/operators'
 
 import { notNullOrUndefined } from '../../../utils/index'
@@ -22,10 +22,16 @@ export class DashboardWidgetsService {
   /** Used for operations, such as 'addWidget', if the column is not specified. */
   public defaultColumn = 0
 
+  private _viewContainerRefSubject = new BehaviorSubject<ViewContainerRef | undefined>(undefined)
+
   constructor() {
-    this.widgetItems$ = this._widgets
+    this.widgetItems$ = combineLatest([ this._widgets, this._viewContainerRefSubject ])
       .pipe(
-        map(defs => defs.map(d => this.createWidgetItem(d)).filter(notNullOrUndefined))
+        map(([ defs, vcr ]) => {
+          console.log(defs, vcr)
+          return (defs || []).map(d => this.createWidgetItem(d, vcr))
+            .filter(notNullOrUndefined)
+        })
       )
 
     this.widgetColumns$ = this.widgetItems$
@@ -52,24 +58,28 @@ export class DashboardWidgetsService {
       )
   }
 
-  public createWidgetItem(def: IDashboardWidgetsItemDef): IDashboardWidgetsItem {
+  public setViewContainerRef(vcr: ViewContainerRef | undefined) {
+    this._viewContainerRefSubject.next(vcr)
+  }
+
+  public createWidgetItem(def: IDashboardWidgetsItemDef, vcr?: ViewContainerRef): IDashboardWidgetsItem {
     const item: IDashboardWidgetsItem = {
       ...def,
       col: def.col || this.defaultColumn,
       order: def.order || 0,
-      portal: this.createWidgetPortal(def),
+      portal: this.createWidgetPortal(def, vcr),
       __itemDef: def
     }
 
     return item
   }
 
-  public createWidgetPortal(def: IDashboardWidgetsItemDef): ComponentPortal<any> {
+  public createWidgetPortal(def: IDashboardWidgetsItemDef, vcr?: ViewContainerRef): ComponentPortal<any> {
     let portal: ComponentPortal<any>
     if (def.componentFactoryResolver) {
-      portal = new ComponentPortal(def.type, undefined, undefined, def.componentFactoryResolver)
+      portal = new ComponentPortal(def.type, vcr, undefined, def.componentFactoryResolver)
     } else {
-      portal = new ComponentPortal(def.type)
+      portal = new ComponentPortal(def.type, vcr)
     }
     return portal
   }
