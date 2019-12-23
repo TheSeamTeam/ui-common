@@ -35,6 +35,7 @@ export const exampleData1: IDatatableDynamicDef = {
     { icn: 'faEnvelope', firstName: 'User1', lastName: 'Last1', age: 28, sentDate: '2019-07-22T16:25:58.0266996+00:00' },
     { icn: 'faEnvelope', firstName: 'User2', lastName: 'Last2', age: 30, sentDate: '2019-08-22T19:23:58.0266996+00:00' },
     { icn: 'faEnvelope', firstName: 'User3', lastName: 'Last3', age: 32, sentDate: '' },
+    // tslint:disable-next-line: max-line-length
     { icn: 'faEnvelope', firstName: 'User4', lastName: 'Last4', age: 34, sentDate: '2019-08-22T19:23:58.0266996+00:00', error: 'Sint enim do adipisicing in veniamaa' },
     // tslint:disable-next-line: max-line-length
     { icn: 'faEnvelope', firstName: 'User4', lastName: 'Last4', age: 34, sentDate: '2019-08-22T19:23:58.0266996+00:00', error: 'Sint enim do adipisicing in veniam ullamco tempor sunt sunt cillum magna. Proident ullamco ut nulla nisi ullamco occaecat cupidatat nisi. Elit proident sint ex ex reprehenderit anim adipisicing dolore pariatur ea officia est quis fugiat. Quis nostrud amet magna do proident consequat irure minim quis. Aute sit et pariatur ipsum.' },

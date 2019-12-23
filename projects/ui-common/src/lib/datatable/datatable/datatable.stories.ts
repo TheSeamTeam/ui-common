@@ -20,8 +20,9 @@ storiesOf('Components/Datatable', module)
     },
     props: {
       // title: text('Header Title', 'Example Widget'),
-      width: number('Width', 150),
+      // width: number('Width', 150),
       // loading: boolean('Loading', true),
+      width: 300,
 
       columns: [
         { prop: 'name', name: 'Name' },

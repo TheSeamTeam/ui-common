@@ -29,4 +29,14 @@ export interface ITheSeamDatatableColumn<D = any, P = any> extends TableColumn {
    */
   exportValueFn?: TheSeamTableColumnExportValueFn<D>
 
+  /**
+   * Hide a column, but let the datatable still know about it. Useful for
+   * hidding a columns that can be unhidden through a setting.
+   *
+   * NOTE: If you filter out the column before passing it to the datatable it
+   * will not be able to provide that column as an option in the column toggle
+   * list.
+   */
+  hidden?: boolean
+
 }

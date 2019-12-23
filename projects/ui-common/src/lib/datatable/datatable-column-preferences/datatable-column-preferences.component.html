@@ -1,1 +1,19 @@
-<p>datatable-column-preferences works!</p>
+<h3>Columns</h3>
+
+<seam-form-field [numPaddingErrors]="0" >
+  <input seamInput [formControl]="_filterControl" seamInputSize="sm" placeholder="Search">
+</seam-form-field>
+
+<div seamOverlayScrollbar style="min-height: 200px; max-height: 600px; min-width: 250px;" class="flex-grow-1 mb-2">
+  <div class="p-2">
+    <ng-container *ngFor="let col of _columns$ | async">
+      <seam-checkbox [checked]="!col.hidden" (change)="_onChange($event, col)">{{ col.name || col.prop }}</seam-checkbox>
+    </ng-container>
+  </div>
+
+</div>
+<div class="d-flex flex-row justify-content-end">
+  <!-- <button seamButton size="sm" theme="lightgray" (click)="_onCloseClick()">Close</button> -->
+  <!-- <button seamButton size="sm" theme="lightgray" class="mr-1">Cancel</button>
+  <button seamButton size="sm" theme="success">Done</button> -->
+</div>

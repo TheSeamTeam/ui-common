@@ -5,7 +5,7 @@ import {
   KeyValueDiffers, OnDestroy, OnInit, Output, QueryList, TemplateRef, ViewChild
 } from '@angular/core'
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs'
-import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators'
+import { distinctUntilChanged, map, shareReplay, skip, startWith, switchMap, tap } from 'rxjs/operators'
 
 import { faChevronDown, faChevronRight, faEllipsisH, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import {
@@ -35,6 +35,14 @@ import { DatatableRowActionItemDirective } from '../directives/datatable-row-act
 import { ITheSeamDatatableColumn } from '../models/table-column'
 import { DatatableColumnChangesService } from '../services/datatable-column-changes.service'
 
+export function _setColumnDefaults(columns: ITheSeamDatatableColumn[]): void {
+  for (const column of columns) {
+    if (!column.hasOwnProperty('hidden')) {
+      column.hidden = false
+    }
+  }
+  setColumnDefaults(columns)
+}
 
 /**
  * NOTE: This is still being worked on. I am trying to figure out this model
@@ -112,7 +120,10 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
 
   @Input()
   get columns(): ITheSeamDatatableColumn[] { return this._columns.value }
-  set columns(value: ITheSeamDatatableColumn[]) { this._columns.next(value) }
+  set columns(value: ITheSeamDatatableColumn[]) {
+    console.log('columns input', value)
+    this._columns.next(value)
+  }
   private _columns = new BehaviorSubject<ITheSeamDatatableColumn[]>([])
 
   @Input()
@@ -205,6 +216,7 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
   @Output() treeAction = new EventEmitter<any>()
 
   @Output() readonly actionRefreshRequest = new EventEmitter<void>()
+  @Output() readonly hiddenColumnsChange = new EventEmitter<string[]>()
 
   @ContentChildren(DatatableColumnComponent) columnComponents: QueryList<DatatableColumnComponent>
 
@@ -241,9 +253,14 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
 
   public columnComponents$: Observable<DatatableColumnComponent[]>
   public columns$: Observable<ITheSeamDatatableColumn[]>
-  private _prevColumns: ITheSeamDatatableColumn[] = []
+  public displayColumns$: Observable<ITheSeamDatatableColumn[]>
   private _colDiffersInp: { [propName: string]: KeyValueDiffer<any, any> } = {}
   private _colDiffersTpl: { [propName: string]: KeyValueDiffer<any, any> } = {}
+
+  // get hiddenColumns(): string[] { return this._hiddenColumns.value }
+  // // set hiddenColumns(val: string[]) { this._hiddenColumns.next(val) }
+  // private _hiddenColumns = new BehaviorSubject<string[]>([])
+  // hiddenColumns$: Observable<string[]>
 
   constructor(
     private _columnChangesService: DatatableColumnChangesService,
@@ -253,6 +270,22 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
       .pipe(switchMap(filters => this._rows.asObservable()
         .pipe(composeDataFilters(filters))
       ))
+
+    // this.hiddenColumns$ = this._hiddenColumns.asObservable()
+
+    // this._hiddenColumns.pipe(
+    //   skip(1),
+    //   distinctUntilChanged((a, b) => {
+    //     const _a = Array.isArray(a) ? a : []
+    //     const _b = Array.isArray(b) ? b : []
+    //     if (_a.length !== _b.length) { return false }
+    //     const _as = _a.sort()
+    //     const _bs = _b.sort()
+    //     return !_as.sort().every((value: string, index: number) => _bs[index] === value)
+    //   }),
+    //   tap(v => this.hiddenColumnsChange.emit(v)),
+    //   untilDestroyed(this)
+    // ).subscribe(v => console.log('hiddenColumnsChange', v))
   }
 
   ngOnInit() {
@@ -282,7 +315,18 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
         this._columns
       ]).pipe(
         map(v => this._getMergedTplAndInpColumns(v[0], v[1])),
+        // tap(v => console.log('cols', v)),
+        shareReplay({ bufferSize: 1, refCount: true })
       )
+
+    // this.displayColumns$ = this.hiddenColumns$.pipe(
+    //   switchMap(hiddenColumns => this.columns$.pipe(map(cols => cols.filter(c => hiddenColumns.findIndex(hc => hc === c.prop) === -1))))
+    // )
+
+    this.displayColumns$ = this.columns$.pipe(
+      map(cols => cols.filter(c => !c.hidden)),
+      tap(v => this._removeUnusedDiffs(v))
+    )
   }
 
   private _getMergedTplAndInpColumns(
@@ -310,6 +354,7 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
     const _tplCols = translateTemplates(<any>(tplCols || []))
     for (const col of inpCols) {
       const tplCol = _tplCols.find(t => t.prop === col.prop)
+      // console.log({ col: { ...(col || {}) }, tplCol: { ...(tplCol || {}) } })
 
       const dtColumns = (this.ngxDatatable && this.ngxDatatable._internalColumns) || []
       const prev = dtColumns.find(c => c.prop === col.prop)
@@ -340,8 +385,6 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
           tplColDiff.forEachChangedItem(r => _tplCol[r.key] = r.currentValue)
         }
       }
-
-      // console.log(prev ? prev.prop : _inpCol.prop, { ...(prev || {}) }, { ..._inpCol }, { ..._tplCol })
 
       const _col: ITheSeamDatatableColumn = {
         ...(prev || {}),
@@ -384,9 +427,9 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
       }
     }
 
-    setColumnDefaults(cols)
+    // setColumnDefaults(cols)
+    _setColumnDefaults(cols)
 
-    this._prevColumns = cols
 
     // console.log(cols.map(c => ({ prop: c.prop, canAutoResize: c.canAutoResize })))
 
@@ -418,6 +461,16 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
 
     const diff = differ.diff(col)
     return diff
+  }
+
+  private _removeUnusedDiffs(cols: ITheSeamDatatableColumn[]) {
+    const inpKeys = Object.keys(this._colDiffersInp)
+    inpKeys.filter(k => cols.findIndex(c => c.prop === k) === -1)
+      .forEach(k => { delete this._colDiffersInp[k] })
+
+    const tplKeys = Object.keys(this._colDiffersTpl)
+    tplKeys.filter(k => cols.findIndex(c => c.prop === k) === -1)
+      .forEach(k => { delete this._colDiffersTpl[k] })
   }
 
   private _setMenuBarFilters(filters: IDataFilter[]) {
