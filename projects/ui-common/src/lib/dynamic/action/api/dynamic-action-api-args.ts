@@ -1,7 +1,8 @@
 import { IDynamicActionDef } from '../../models/dynamic-action-def'
 import { DynamicValue } from '../../models/dynamic-value'
 
-export interface IDynamicActionApiArgs extends IDynamicActionDef {
+export interface IDynamicActionApiArgs extends IDynamicActionDef<'api'> {
+
   /**
    * Id to identify which `THESEAM_API_CONFIG` to use. If not provided, the first
    * provided config will be used.
@@ -36,4 +37,5 @@ export interface IDynamicActionApiArgs extends IDynamicActionDef {
    * `string`.
    */
   headers?: string | DynamicValue | { [name: string]: DynamicValue | DynamicValue[] }
+
 }

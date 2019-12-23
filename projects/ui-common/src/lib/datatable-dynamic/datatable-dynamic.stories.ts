@@ -193,7 +193,7 @@ export const Dynamic = () => ({
       data: exampleData1
   },
   template: `
-    <div style="width: 100vw; height: 100vh;" class="p-1 f-flex flex-column">
+    <div style="width: 100vw; height: 100vh;" class="p-1 d-flex flex-column">
       <div class="alert alert-danger">
         This component is still being worked on. Not all features are guaranteed
         to work yet, but eventually we plan to start building the datatables in

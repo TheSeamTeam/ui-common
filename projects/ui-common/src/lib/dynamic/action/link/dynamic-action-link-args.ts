@@ -1,6 +1,7 @@
+import { IDynamicActionDef } from '../../models/dynamic-action-def'
 import { DynamicValue } from '../../models/dynamic-value'
 
-export interface IDynamicActionLinkArgs {
+export interface IDynamicActionLinkArgs extends IDynamicActionDef<'link'> {
 
   /**
    * Link url.
@@ -21,4 +22,5 @@ export interface IDynamicActionLinkArgs {
    *
    */
   target?: DynamicValue
+
 }

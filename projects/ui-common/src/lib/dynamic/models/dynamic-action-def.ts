@@ -1,3 +1,5 @@
-export interface IDynamicActionDef {
+export interface IDynamicActionDef<T = string> {
+
+  type: T
 
 }

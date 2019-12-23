@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs'
 
-import { IDynamicActionDef } from './dynamic-action-def';
+import { IDynamicActionDef } from './dynamic-action-def'
 import { DynamicValue } from './dynamic-value'
 
 export interface IDynamicAction<T = string, D = any, R = any> {
@@ -10,8 +10,8 @@ export interface IDynamicAction<T = string, D = any, R = any> {
   // TODO: Is this neccessary?
   label: DynamicValue
 
-  exec?: (args: IDynamicActionDef, context: D) => Observable<R>
+  exec?: (args: IDynamicActionDef<T>, context: D) => Observable<R>
 
-  execSync?: (args: IDynamicActionDef, context: D) => R
+  execSync?: (args: IDynamicActionDef<T>, context: D) => R
 
 }
