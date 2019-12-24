@@ -48,12 +48,14 @@ export const exampleData1: IDatatableDynamicDef = {
     {
       label: 'Link External',
       action: { type: 'link', link: 'https://bing.com', external: true },
-      isHiddenExpr: 'row.age > 30'
+      // isHiddenExpr: 'row.age > 30'
+      hidden: { type: 'jexl', expr: 'row.age > 30' }
     },
     {
       label: 'Link External Config',
       action: { type: 'link', link: 'https://bing.com', external: true, confirmDialog: { 'message': 'Are you sure?' } },
-      isHiddenExpr: 'row.age > 30'
+      // isHiddenExpr: 'row.age > 30'
+      hidden: { type: 'jexl', expr: 'row.age > 30' }
     },
     {
       label: 'Api Endpoint',
@@ -65,7 +67,8 @@ export const exampleData1: IDatatableDynamicDef = {
         bodyExpr: '{ thing: row.age }',
         paramsExpr: '{ age: row.age, name: row.firstName + " " + row.lastName }'
       },
-      isHiddenExpr: 'row.age > 30'
+      // isHiddenExpr: 'row.age > 30'
+      hidden: { type: 'jexl', expr: 'row.age > 30' }
     },
     {
       label: 'Modal',

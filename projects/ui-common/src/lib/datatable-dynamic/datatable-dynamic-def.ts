@@ -1,3 +1,4 @@
+import { DynamicValue } from '../dynamic/index'
 import { ThemeTypes } from '../models/index'
 
 import { IDynamicDatatableCellType } from './models/cell-type'
@@ -104,6 +105,7 @@ export interface IDynamicDatatableRowActionDef {
    * Expression executed each row to decide if the action will be visible.
    */
   isHiddenExpr?: string
+  hidden?: DynamicValue
 }
 
 // TODO: Define object definition to allow extra exporter options.

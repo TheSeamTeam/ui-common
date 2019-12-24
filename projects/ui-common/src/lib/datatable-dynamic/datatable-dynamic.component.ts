@@ -3,18 +3,21 @@ import { ChangeDetectionStrategy, Component, Inject, Input, OnInit } from '@angu
 import { BehaviorSubject, combineLatest, from, Observable, of } from 'rxjs'
 import { concatMap, map, switchMap, take, tap, toArray } from 'rxjs/operators'
 
-import jexl from 'jexl'
+// import jexl from 'jexl'
 
 import { IDataExporter, THESEAM_DATA_EXPORTER } from '../data-exporter/index'
 import { THESEAM_DATA_FILTER_DEF } from '../data-filters/data-filter-def'
 import { IDataFilter } from '../data-filters/index'
+import { DynamicValueHelperService } from '../dynamic/index'
 import { notNullOrUndefined } from '../utils/index'
 
 import { IDatatableDynamicDef, IDynamicDatatableRow, IDynamicDatatableRowActionDef } from './datatable-dynamic-def'
+import { DynamicDatatableDefService } from './dynamic-datatable-def.service'
+import { dynamicDatatableDefHasFullSearch, setDynamicDatatableDefDefaults } from './utils/index'
 
-export function jexlObservable<R = any>(expression: string, context?: any): Observable<R> {
-  return from(jexl.eval(expression, context) as Promise<R>)
-}
+// export function jexlObservable<R = any>(expression: string, context?: any): Observable<R> {
+//   return from(jexl.eval(expression, context) as Promise<R>)
+// }
 
 export interface IFilterComponentRecord {
   component: ComponentType<IDataFilter>
@@ -30,15 +33,14 @@ export interface IActionRowExprContext {
   selector: 'seam-datatable-dynamic',
   templateUrl: './datatable-dynamic.component.html',
   styleUrls: ['./datatable-dynamic.component.scss'],
+  providers: [ DynamicDatatableDefService ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DatatableDynamicComponent implements OnInit {
 
   @Input()
   set data(value: IDatatableDynamicDef | undefined | null) {
-    if (value) {
-      this._setDefaults(value)
-    }
+    if (value) { setDynamicDatatableDefDefaults(value) }
     this._data.next(value)
   }
   get data() { return this._data.value }
@@ -53,7 +55,9 @@ export class DatatableDynamicComponent implements OnInit {
 
   constructor(
     @Inject(THESEAM_DATA_EXPORTER) public _dataExporters: IDataExporter[],
-    @Inject(THESEAM_DATA_FILTER_DEF) public _dataFilters: { name: string, component: ComponentType<IDataFilter> }[]
+    @Inject(THESEAM_DATA_FILTER_DEF) public _dataFilters: { name: string, component: ComponentType<IDataFilter> }[],
+    private _valueHelper: DynamicValueHelperService,
+    private _dynamicDef: DynamicDatatableDefService
   ) { }
 
   ngOnInit() {
@@ -97,14 +101,7 @@ export class DatatableDynamicComponent implements OnInit {
       return []
     }))
 
-    this._hasFullSearch$ = this.data$.pipe(map(data => {
-      if (data && data.filterMenu && Array.isArray(data.filterMenu.filters)
-        && data.filterMenu.filters.findIndex(f => f.type === 'full-search') !== -1
-      ) {
-        return true
-      }
-      return false
-    }))
+    this._hasFullSearch$ = this.data$.pipe(map(data => !!data && dynamicDatatableDefHasFullSearch(data)))
 
     this._hasFilterMenu$ = this.data$.pipe(
       switchMap(data => {
@@ -125,26 +122,6 @@ export class DatatableDynamicComponent implements OnInit {
     )
   }
 
-  private _setDefaults(def: IDatatableDynamicDef): void {
-    for (const col of def.columns) {
-      if (!col.cellType) {
-        col.cellType = 'string'
-      }
-    }
-
-    if (def.filterMenu) {
-      if (!def.filterMenu.state) {
-        def.filterMenu.state = 'default'
-      }
-    }
-
-    if (def.options) {
-      if (def.options.virtualization === undefined || def.options.virtualization === null) {
-        def.options.virtualization = false
-      }
-    }
-  }
-
   public _rowActions(row: IDynamicDatatableRow, rowActions: IDynamicDatatableRowActionDef[]): Observable<IDynamicDatatableRowActionDef[]> {
     // TODO: Fix async eval.
 
@@ -157,9 +134,9 @@ export class DatatableDynamicComponent implements OnInit {
       // ),
 
       map(rowAction => {
-        if (rowAction.isHiddenExpr) {
+        if (rowAction.hidden) {
           const context = this._getActionRowContext(row, rowAction)
-          const isHidden = jexl.evalSync(rowAction.isHiddenExpr, context)
+          const isHidden = this._valueHelper.evalSync(rowAction.hidden, context)
           return isHidden ? undefined : rowAction
         }
         return rowAction

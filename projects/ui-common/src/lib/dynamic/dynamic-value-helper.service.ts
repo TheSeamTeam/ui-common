@@ -56,7 +56,7 @@ export class DynamicValueHelperService {
   }
 
   /**
-   * Checks is a DynamicValue is a type that can be evaluated.
+   * Checks if a DynamicValue is a type that can be evaluated.
    */
   public isEvaluatableType(value: DynamicValue, isAsync: boolean): boolean {
     if (value === undefined || value === null) {

@@ -5,17 +5,19 @@ import { DatatableDynamicComponent } from './datatable-dynamic.component'
 import { CommonModule } from '@angular/common'
 import { HttpClientModule } from '@angular/common/http'
 import { Component, NgModule } from '@angular/core'
+import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { ActivatedRoute, RouterModule } from '@angular/router'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 import { TheSeamDynamicComponentLoaderModule } from '../dynamic-component-loader/dynamic-component-loader.module'
+import { JexlEvaluator, THESEAM_DYNAMIC_VALUE_EVALUATOR } from '../dynamic/index'
 import { TheSeamModalModule } from '../modal/index'
 
-import { BrowserModule } from '@angular/platform-browser'
 import { exampleData1 } from './_story-data/dynamic-data-1'
 import { TheSeamDatatableDynamicModule } from './datatable-dynamic.module'
+
 
 @Component({
   // tslint:disable-next-line: component-selector
@@ -182,6 +184,9 @@ export default {
             loadChildren: () => StoryExModalLazyModule
           }
         ])
+      ],
+      providers: [
+        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true }
       ]
     })
   ],
