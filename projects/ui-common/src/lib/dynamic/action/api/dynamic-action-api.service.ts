@@ -10,7 +10,7 @@ import { DynamicValue } from '../../models/dynamic-value'
 import { IApiConfig, THESEAM_API_CONFIG } from '../../tokens/api-config'
 
 import { IDynamicActionApi } from './dynamic-action-api'
-import { IDynamicActionApiArgs } from './dynamic-action-api-args'
+import { IDynamicActionApiDef } from './dynamic-action-api-def'
 import { dynamicActionApiNotSupportedError } from './dynamic-action-api-errors'
 
 /**
@@ -34,7 +34,7 @@ export class DynamicActionApiService implements IDynamicActionApi {
     @Optional() @Inject(THESEAM_API_CONFIG) private _configs: IApiConfig[]
   ) { }
 
-  public exec(args: IDynamicActionApiArgs, context?: any): Observable<any> {
+  public exec(args: IDynamicActionApiDef, context?: any): Observable<any> {
     if (!this._isSupported()) {
       throw dynamicActionApiNotSupportedError()
     }
@@ -44,7 +44,7 @@ export class DynamicActionApiService implements IDynamicActionApi {
     )
   }
 
-  private async _getExecInfo(args: IDynamicActionApiArgs, context?: any) {
+  private async _getExecInfo(args: IDynamicActionApiDef, context?: any) {
     const method = args.method || 'GET'
 
     const url = await this._getUrl(args, context)
@@ -66,7 +66,7 @@ export class DynamicActionApiService implements IDynamicActionApi {
     return result
   }
 
-  private async _getUrl(args: IDynamicActionApiArgs, context?: any): Promise<string | null> {
+  private async _getUrl(args: IDynamicActionApiDef, context?: any): Promise<string | null> {
     const config = this._getApiConfig(args)
 
     let endpoint = ''
@@ -90,7 +90,7 @@ export class DynamicActionApiService implements IDynamicActionApi {
     return null
   }
 
-  private _getApiConfig(args: IDynamicActionApiArgs): IApiConfig | null {
+  private _getApiConfig(args: IDynamicActionApiDef): IApiConfig | null {
     const configs = this._configs || []
 
     if (args.id === undefined || args.id === null) {
@@ -106,7 +106,7 @@ export class DynamicActionApiService implements IDynamicActionApi {
     return null
   }
 
-  private async _getBody(args: IDynamicActionApiArgs, context?: any) {
+  private async _getBody(args: IDynamicActionApiDef, context?: any) {
     if (args.body !== undefined && args.body !== null) {
       return await this._valueHelper.eval(args.body, context)
     }
@@ -114,7 +114,7 @@ export class DynamicActionApiService implements IDynamicActionApi {
     return undefined
   }
 
-  private async _getParams(args: IDynamicActionApiArgs, context?: any) {
+  private async _getParams(args: IDynamicActionApiDef, context?: any) {
     if (args.params !== undefined && args.params !== null) {
       return await this._valueHelper.eval(args.params, context)
     }
@@ -122,7 +122,7 @@ export class DynamicActionApiService implements IDynamicActionApi {
     return undefined
   }
 
-  private async _getHeaders(args: IDynamicActionApiArgs, context?: any): Promise<HttpHeaders> {
+  private async _getHeaders(args: IDynamicActionApiDef, context?: any): Promise<HttpHeaders> {
     let headers: string | { [name: string]: string | string[] } = {}
 
     const config = this._getApiConfig(args)
@@ -170,7 +170,10 @@ export class DynamicActionApiService implements IDynamicActionApi {
     return new HttpHeaders(headers)
   }
 
-  private async _evalHeaders(headers: string | DynamicValue | { [name: string]: DynamicValue | DynamicValue[] }, context?: any) {
+  private async _evalHeaders(
+    headers: string | DynamicValue<string> | { [name: string]: DynamicValue<string> | DynamicValue<string>[] },
+    context?: any
+  ) {
     let res: string | { [name: string]: string | string[] } = {}
 
     // TODO: Cleanup messing multiple level logic

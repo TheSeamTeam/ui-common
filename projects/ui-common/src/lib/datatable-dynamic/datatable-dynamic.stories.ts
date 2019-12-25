@@ -205,7 +205,7 @@ export const Dynamic = () => ({
         our app from json with this component when all necessary features are stable.
       </div>
       <div class="d-flex flex-column h-100">
-        <seam-datatable-dynamic class="w-100 h-100" [data]="data"></seam-datatable-dynamic>
+        <seam-datatable-dynamic class="w-100 h-100" [def]="data"></seam-datatable-dynamic>
       </div>
     </div>
   `

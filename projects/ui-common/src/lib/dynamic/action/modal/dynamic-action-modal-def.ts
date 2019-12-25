@@ -15,7 +15,7 @@ export interface IDynamicActionModalResultAction {
 
 }
 
-export interface IDynamicActionModalArgs extends IDynamicActionDef<'modal'> {
+export interface IDynamicActionModalDef extends IDynamicActionDef<'modal'> {
 
   modal?: DynamicValue
 

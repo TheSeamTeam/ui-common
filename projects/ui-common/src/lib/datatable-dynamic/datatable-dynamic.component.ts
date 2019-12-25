@@ -1,9 +1,7 @@
 import { ComponentType } from '@angular/cdk/portal'
 import { ChangeDetectionStrategy, Component, Inject, Input, OnInit } from '@angular/core'
-import { BehaviorSubject, combineLatest, from, Observable, of } from 'rxjs'
-import { concatMap, map, switchMap, take, tap, toArray } from 'rxjs/operators'
-
-// import jexl from 'jexl'
+import { from, Observable, of } from 'rxjs'
+import { map, switchMap, toArray } from 'rxjs/operators'
 
 import { IDataExporter, THESEAM_DATA_EXPORTER } from '../data-exporter/index'
 import { THESEAM_DATA_FILTER_DEF } from '../data-filters/data-filter-def'
@@ -11,147 +9,147 @@ import { IDataFilter } from '../data-filters/index'
 import { DynamicValueHelperService } from '../dynamic/index'
 import { notNullOrUndefined } from '../utils/index'
 
-import { IDatatableDynamicDef, IDynamicDatatableRow, IDynamicDatatableRowActionDef } from './datatable-dynamic-def'
+import {
+  IDatatableDynamicDef,
+  IDynamicDatatableOptions,
+  IDynamicDatatableRow
+} from './datatable-dynamic-def'
 import { DynamicDatatableDefService } from './dynamic-datatable-def.service'
-import { dynamicDatatableDefHasFullSearch, setDynamicDatatableDefDefaults } from './utils/index'
+import { DynamicDatatableRowActionsService } from './dynamic-datatable-row-actions.service'
+import { IDynamicDatatableFilterMenuItem } from './models/dynamic-datatable-filter-menu-item'
+import { IDynamicDatatableRowAction } from './models/dynamic-datatable-row-action'
 
-// export function jexlObservable<R = any>(expression: string, context?: any): Observable<R> {
-//   return from(jexl.eval(expression, context) as Promise<R>)
-// }
-
-export interface IFilterComponentRecord {
-  component: ComponentType<IDataFilter>
-  options?: any
-  order?: number
-}
-
-export interface IActionRowExprContext {
-  row: IDynamicDatatableRow
-}
-
+/**
+ * # EXPERIMENTAL
+ *
+ * NOTE: This component is still experimental. When stable all standard
+ * datatables must use this component, unless there is a good reason not to, in
+ * our apps.
+ *
+ * ----------------------------------------------------------------------------
+ *
+ * Datatable that is built from a json definition.
+ *
+ * All standard datatables in our apps must use this component, unless there is
+ * a good reason not to. If a standard datatable does not use this component
+ * then an explaination comment needs to be clearly provided in the code to
+ * avoid getting migrated to this component.
+ *
+ * A few reasons this component should to be used:
+ * - We can, more easily, control what a datatable in our app does by requiring
+ *   the definition follow a json schema, instead of having full scripting
+ *   access available to the developer.
+ *   + By using json we can maintain the tables from any external app/language
+ *     that can produce a json string.
+ *   + More scripting access often leads to different hacks across the tables
+ *     that should have just been supported by this component if it is a feature
+ *     a datatable should be able to do in an app of ours.
+ * - We can allow any of our tables to be configured by the server.
+ *   + By supporting configuration on the server we can change the tables
+ *     without a new build and do things like allowing non-developers/clients to
+ *     maintain the tables functionality.
+ */
 @Component({
   selector: 'seam-datatable-dynamic',
   templateUrl: './datatable-dynamic.component.html',
   styleUrls: ['./datatable-dynamic.component.scss'],
-  providers: [ DynamicDatatableDefService ],
+  providers: [
+    DynamicDatatableDefService,
+    DynamicDatatableRowActionsService
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DatatableDynamicComponent implements OnInit {
 
-  @Input()
-  set data(value: IDatatableDynamicDef | undefined | null) {
-    if (value) { setDynamicDatatableDefDefaults(value) }
-    this._data.next(value)
+  /** The `IDatatableDynamicDef` that defines the datatable. */
+  @Input() set def(value: IDatatableDynamicDef | undefined | null) {
+    this._dynamicDef.setDef(value || undefined)
   }
-  get data() { return this._data.value }
-  private _data = new BehaviorSubject<IDatatableDynamicDef | undefined | null>(undefined)
 
-  public data$ = this._data.asObservable()
+  /**
+   * Observes whether the datatable has a def.
+   * @ignore
+   */
+  _hasDef$: Observable<boolean>
 
-  _exporters$: Observable<IDataExporter[] | undefined>
-  _commonFilterComponents$: Observable<IFilterComponentRecord[]>
+  /**
+   * The available exporters.
+   * @ignore
+   */
+  _exporters$: Observable<IDataExporter[]>
+
+  /**
+   * The 'common' type filter menu items.
+   * @ignore
+   */
+  _commonFilterMenuItems$: Observable<IDynamicDatatableFilterMenuItem[]>
+
+  /**
+   * Observes whether the datatable has a 'full-search' menu item.
+   * @ignore
+   */
   _hasFullSearch$: Observable<boolean>
+
+  /**
+   * Observes whether the datatable has a filter menu.
+   * @ignore
+   */
   _hasFilterMenu$: Observable<boolean>
+
+  /**
+   * Observes datatable options.
+   * @ignore
+   */
+  _options$: Observable<IDynamicDatatableOptions | undefined>
+
+  /**
+   * TODO: Implement def columns parser.
+   * @ignore
+   */
+  _tmp_columns$: Observable<any>
+
+  /**
+   * TODO: Implement def rows parser.
+   * @ignore
+   */
+  _tmp_rows$: Observable<any>
 
   constructor(
     @Inject(THESEAM_DATA_EXPORTER) public _dataExporters: IDataExporter[],
     @Inject(THESEAM_DATA_FILTER_DEF) public _dataFilters: { name: string, component: ComponentType<IDataFilter> }[],
     private _valueHelper: DynamicValueHelperService,
-    private _dynamicDef: DynamicDatatableDefService
-  ) { }
+    private _dynamicDef: DynamicDatatableDefService,
+    private _dynamicRowActions: DynamicDatatableRowActionsService
+  ) {
+    this._hasDef$ = this._dynamicDef.def$.pipe(map(def => !!def))
 
-  ngOnInit() {
-    this._exporters$ = this.data$.pipe(map(data => {
-      if (data && data.filterMenu && Array.isArray(data.filterMenu.exporters)) {
-        return data.filterMenu.exporters
-          .map(e => this._dataExporters.find(de => de.name === e))
-          .filter(notNullOrUndefined)
-      }
-      return undefined
-    }))
+    this._exporters$ = this._dynamicDef.exporters$
 
-    this._commonFilterComponents$ = this.data$.pipe(map(data => {
-      if (
-        data && data.filterMenu && Array.isArray(data.filterMenu.filters) &&
-        this._dataFilters && Array.isArray(this._dataFilters)
-      ) {
-        const commonFilters = data.filterMenu.filters.filter(f => f.type === 'common')
+    this._commonFilterMenuItems$ = this._dynamicDef.filterMenuItems$
+      .pipe(map(f => f.filter(_f => _f.type === 'common')))
 
-        if (!commonFilters || commonFilters.length < 1) {
-          return []
-        }
+    this._hasFullSearch$ = this._dynamicDef.filterMenuItems$
+      .pipe(map(f => !!f.find(_f => _f.type === 'full-search')))
 
-        const r = commonFilters
-          .map(cf => {
-            const _df = this._dataFilters.find(df => df.name === cf.name)
-            if (_df) {
-              const record: IFilterComponentRecord = {
-                component: _df.component,
-                options: cf.options,
-                order: cf.order || 0
-              }
-              return record
-            }
-            return null
-          })
-          .filter(notNullOrUndefined)
+    this._hasFilterMenu$ = this._dynamicDef.hasFilterMenu$
 
-        return r
-      }
-      return []
-    }))
+    this._options$ = this._dynamicDef.options$
 
-    this._hasFullSearch$ = this.data$.pipe(map(data => !!data && dynamicDatatableDefHasFullSearch(data)))
+    this._tmp_columns$ = this._dynamicDef.def$.pipe(
+      map(def => def ? def.columns : [])
+    )
 
-    this._hasFilterMenu$ = this.data$.pipe(
-      switchMap(data => {
-        if (data && data.filterMenu) {
-          if (data.filterMenu.state === 'always-visible') {
-            return of(true)
-          } else if (data.filterMenu.state === 'hidden') {
-            return of(false)
-          }
-        }
-
-        return combineLatest([
-          this._exporters$.pipe(map(e => (e || []).length > 0)),
-          this._commonFilterComponents$.pipe(map(cfc => cfc.length > 0)),
-          this._hasFullSearch$
-        ]).pipe(map(v => v.indexOf(true) !== -1))
-      })
+    this._tmp_rows$ = this._dynamicDef.def$.pipe(
+      map(def => def ? def.rows : [])
     )
   }
 
-  public _rowActions(row: IDynamicDatatableRow, rowActions: IDynamicDatatableRowActionDef[]): Observable<IDynamicDatatableRowActionDef[]> {
-    // TODO: Fix async eval.
+  /** @ignore */
+  ngOnInit() { }
 
-    if (!rowActions) { return of([]) }
-
-    return from(rowActions).pipe(
-      // concatMap(rowAction => rowAction.isHiddenExpr
-      //   ? jexlObservable(rowAction.isHiddenExpr).pipe(take(1), map(v => v ? rowAction : undefined))
-      //   : of(rowAction)
-      // ),
-
-      map(rowAction => {
-        if (rowAction.hidden) {
-          const context = this._getActionRowContext(row, rowAction)
-          const isHidden = this._valueHelper.evalSync(rowAction.hidden, context)
-          return isHidden ? undefined : rowAction
-        }
-        return rowAction
-      }),
-
-      toArray(),
-      map(v => v.filter(notNullOrUndefined)),
-      // tap(r => console.log('result', r)),
-    )
-  }
-
-  private _getActionRowContext(row: IDynamicDatatableRow, rowActionDef: IDynamicDatatableRowActionDef): IActionRowExprContext {
-    return {
-      row
-    }
+  /** @ignore */
+  _rowActions(row: IDynamicDatatableRow): Observable<IDynamicDatatableRowAction[]> {
+    return this._dynamicRowActions.rowActions(row)
   }
 
 }

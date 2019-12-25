@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
 
 import { IDynamicActionLink } from './dynamic-action-link'
-import { IDynamicActionLinkArgs } from './dynamic-action-link-args'
+import { IDynamicActionLinkDef } from './dynamic-action-link-def'
 
 /**
  * Handles execution of link actions.

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
 
 import { IDynamicActionModal } from './dynamic-action-modal'
-import { IDynamicActionModalArgs } from './dynamic-action-modal-args'
+import { IDynamicActionModalDef } from './dynamic-action-modal-def'
 
 /**
  * Handles execution of modal actions.

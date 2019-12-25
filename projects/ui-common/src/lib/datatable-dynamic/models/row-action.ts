@@ -1,5 +1,6 @@
 import { ComponentType } from '@angular/cdk/portal'
-import { IDynamicDatatableConfirmDialog } from './confirm-dialog'
+
+import { IDynamicDatatableConfirmDialog } from './dynamic-datatable-confirm-dialog'
 
 // tslint:disable:no-inferrable-types
 
