@@ -96,13 +96,25 @@ export class DatatableActionMenuToggleDirective {
         overlayX: 'end',
         overlayY: 'bottom',
       },
+      {
+        originX: 'end',
+        originY: 'bottom',
+        overlayX: 'start',
+        overlayY: 'top',
+      },
+      {
+        originX: 'end',
+        originY: 'top',
+        overlayX: 'start',
+        overlayY: 'bottom',
+      },
     ]
   }
 
   onFocusChangeOverlay(event: any) {
     if (event === null) {
       if (!this._actionDown) {
-        this.disable()
+        // this.disable()
       }
     }
   }

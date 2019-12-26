@@ -6,6 +6,14 @@
   flex-direction: column;
 }
 
+// NOTE: Global styles should not be set by a component. This is only here to
+// make the action menu items look the same as they did before the switch to
+// `seam-menu` component, which has a `min-width` set. This should probably just
+// be removed and allow the `min-width`.
+::ng-deep .seam-datatable-action-menu {
+  min-width: auto !important;
+}
+
 ngx-datatable {
   position: absolute;
   top: 0;
@@ -22,29 +30,6 @@ ngx-datatable {
   .datatable-table-wrapper {
     position: relative;
     flex: 1 1 100%;
-  }
-}
-
-.datatable-action-button {
-  font-size: 20px;
-  line-height: 20px;
-
-  width: 30px;
-  height: 30px;
-
-  padding: 0;
-  border-radius: 15px;
-  text-align: center;
-
-  &::ng-deep {
-    .svg-inline--fa {
-      vertical-align: middle;
-    }
-  }
-
-  &:hover {
-    color: $primary;
-    background-color: $gray-200;
   }
 }
 

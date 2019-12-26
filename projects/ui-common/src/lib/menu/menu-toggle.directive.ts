@@ -38,6 +38,41 @@ export class MenuToggleDirective implements OnDestroy {
 
   @Input() seamMenuToggle: MenuComponent
 
+  @Input()
+  set positions(val: ConnectionPositionPair[]) {
+    this._positions = val
+    if (this.menuOpen()) {
+      this._overlayRef.updatePositionStrategy(this.getOverlayPosition(this._elementRef.nativeElement))
+    }
+  }
+  get positions() { return this._positions }
+  private _positions: ConnectionPositionPair[] = [
+    {
+      originX: 'end',
+      originY: 'bottom',
+      overlayX: 'end',
+      overlayY: 'top',
+    },
+    {
+      originX: 'start',
+      originY: 'bottom',
+      overlayX: 'start',
+      overlayY: 'top',
+    },
+    {
+      originX: 'end',
+      originY: 'top',
+      overlayX: 'end',
+      overlayY: 'bottom',
+    },
+    {
+      originX: 'start',
+      originY: 'top',
+      overlayX: 'start',
+      overlayY: 'bottom',
+    },
+  ]
+
   @HostListener('mousedown', [ '$event' ])
   _onMouseDown(event: MouseEvent) {
     if (!isFakeMousedownFromScreenReader(event)) {
@@ -167,40 +202,11 @@ export class MenuToggleDirective implements OnDestroy {
   private getOverlayPosition(origin: HTMLElement): PositionStrategy {
     const positionStrategy = this._overlay.position()
       .flexibleConnectedTo(origin)
-      .withPositions(this.getPositions())
+      .withPositions(this.positions)
       .withFlexibleDimensions(false)
       .withPush(true)
 
     return positionStrategy
-  }
-
-  private getPositions(): ConnectionPositionPair[] {
-    return [
-      {
-        originX: 'end',
-        originY: 'bottom',
-        overlayX: 'end',
-        overlayY: 'top',
-      },
-      {
-        originX: 'start',
-        originY: 'bottom',
-        overlayX: 'start',
-        overlayY: 'top',
-      },
-      {
-        originX: 'end',
-        originY: 'top',
-        overlayX: 'end',
-        overlayY: 'bottom',
-      },
-      {
-        originX: 'start',
-        originY: 'top',
-        overlayX: 'start',
-        overlayY: 'bottom',
-      },
-    ]
   }
 
   /**

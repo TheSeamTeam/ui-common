@@ -1,5 +1,13 @@
+.seam-menu-container {
+  &.seam-menu-anim--slide {
+    overflow: hidden;
+  }
+}
+
+.seam-menu-container,
 .dropdown-menu {
   &.ng-animating {
     user-select: none;
+    pointer-events: none;
   }
 }

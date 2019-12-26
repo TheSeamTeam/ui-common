@@ -19,7 +19,7 @@ import {
 import { BehaviorSubject, fromEvent, merge, Observable, of, Subject, Subscription } from 'rxjs'
 
 import { map, startWith, switchMap } from 'rxjs/operators'
-import { menuDropdownPanelSlideIn, menuDropdownPanelSlideOut } from './menu-animations'
+import { menuDropdownPanelIn, menuDropdownPanelOut, menuDropdownPanelSlideIn, menuDropdownPanelSlideOut } from './menu-animations'
 import { MenuItemComponent } from './menu-item.component'
 import { ITheSeamMenuPanel } from './menu-panel'
 import { THESEAM_MENU_PANEL } from './menu-panel-token'
@@ -41,8 +41,8 @@ export const LIB_MENU: any = {
   providers: [ LIB_MENU ],
   animations: [
     trigger('slideDown', [
-      transition(':enter', useAnimation(menuDropdownPanelSlideIn)),
-      transition(':leave', useAnimation(menuDropdownPanelSlideOut)),
+      transition(':enter', useAnimation(menuDropdownPanelIn)),
+      transition(':leave', useAnimation(menuDropdownPanelOut)),
     ])
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -89,6 +89,8 @@ export class MenuComponent implements OnInit, OnDestroy, AfterContentInit, ITheS
   }
   private _baseWidth = new BehaviorSubject<number | null>(null)
   _menuWidth$: Observable<string | undefined>
+
+  @Input() animationType: 'slide' | 'fade' = 'slide'
 
   constructor() { }
 

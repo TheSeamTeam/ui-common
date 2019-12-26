@@ -115,9 +115,6 @@ export class DatatableDynamicComponent implements OnInit {
   _tmp_rows$: Observable<any>
 
   constructor(
-    @Inject(THESEAM_DATA_EXPORTER) public _dataExporters: IDataExporter[],
-    @Inject(THESEAM_DATA_FILTER_DEF) public _dataFilters: { name: string, component: ComponentType<IDataFilter> }[],
-    private _valueHelper: DynamicValueHelperService,
     private _dynamicDef: DynamicDatatableDefService,
     private _dynamicRowActions: DynamicDatatableRowActionsService
   ) {

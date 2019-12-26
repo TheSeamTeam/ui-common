@@ -1,7 +1,11 @@
-<ul class="list-group">
+<seam-menu #menu
+  menuClass="list-group py-0 border-0 seam-datatable-action-menu"
+  animationType="fade">
+
   <ng-container *ngFor="let item of items">
     <ng-container *ngIf="(item.routerLink || item.href) && !item.confirmDialog; else noRouterLink">
       <a *ngIf="item.href; else noHref"
+        seamMenuItem
         class="list-group-item list-group-item-action py-1"
         [attr.href]="item.href"
         [target]="item.target"
@@ -9,7 +13,7 @@
         {{ item.label }}
       </a>
       <ng-template #noHref>
-        <a
+        <a seamMenuItem
           class="list-group-item list-group-item-action py-1"
           [queryParams]="item.queryParams"
           [fragment]="item.fragment"
@@ -26,7 +30,7 @@
       </ng-template>
     </ng-container>
     <ng-template #noRouterLink>
-      <button
+      <button seamMenuItem
         type="button"
         class="list-group-item list-group-item-action py-1"
         (click)="activateItem($event, item)">
@@ -34,4 +38,11 @@
       </button>
     </ng-template>
   </ng-container>
-</ul>
+</seam-menu>
+
+<button type="button" class="datatable-action-button btn"
+  [seamMenuToggle]="menu"
+  [positions]="_actionMenuPositions"
+  title="Row Actions">
+  <seam-icon [icon]="faEllipsisH"></seam-icon>
+</button>

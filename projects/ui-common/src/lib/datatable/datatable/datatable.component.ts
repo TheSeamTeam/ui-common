@@ -121,7 +121,7 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
   @Input()
   get columns(): ITheSeamDatatableColumn[] { return this._columns.value }
   set columns(value: ITheSeamDatatableColumn[]) {
-    console.log('columns input', value)
+    // console.log('columns input', value)
     this._columns.next(value)
   }
   private _columns = new BehaviorSubject<ITheSeamDatatableColumn[]>([])
@@ -257,10 +257,33 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
   private _colDiffersInp: { [propName: string]: KeyValueDiffer<any, any> } = {}
   private _colDiffersTpl: { [propName: string]: KeyValueDiffer<any, any> } = {}
 
-  // get hiddenColumns(): string[] { return this._hiddenColumns.value }
-  // // set hiddenColumns(val: string[]) { this._hiddenColumns.next(val) }
-  // private _hiddenColumns = new BehaviorSubject<string[]>([])
-  // hiddenColumns$: Observable<string[]>
+  // /** @ignore */
+  // _actionMenuPositions = [
+  //   {
+  //     originX: 'start',
+  //     originY: 'bottom',
+  //     overlayX: 'end',
+  //     overlayY: 'top',
+  //   },
+  //   {
+  //     originX: 'start',
+  //     originY: 'top',
+  //     overlayX: 'end',
+  //     overlayY: 'bottom',
+  //   },
+  //   {
+  //     originX: 'end',
+  //     originY: 'bottom',
+  //     overlayX: 'start',
+  //     overlayY: 'top',
+  //   },
+  //   {
+  //     originX: 'end',
+  //     originY: 'top',
+  //     overlayX: 'start',
+  //     overlayY: 'bottom',
+  //   },
+  // ]
 
   constructor(
     private _columnChangesService: DatatableColumnChangesService,
