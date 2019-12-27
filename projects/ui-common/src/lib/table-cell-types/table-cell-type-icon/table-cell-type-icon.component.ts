@@ -76,7 +76,8 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
   _rowIndex?: number
   _colData?: ITheSeamTableColumn<R>
 
-  _download?: boolean
+  _download: boolean
+  _detectMimeContent: boolean
 
   @HostBinding('class.datatable-cell-type') _isDatatable = false
 
@@ -136,12 +137,16 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
   public setAction(configAction?: DynamicDatatableCellTypeConfigIconAction) {
     let newTplType: IconTemplateType = 'default'
     let link: string | undefined
+    let download: boolean = false
+    let detectMimeContent = false
 
     if (configAction) {
       if (configAction.type === 'link') {
         link = this._parseConfigValue(configAction.link)
         if (link !== undefined && link !== null) {
           newTplType = configAction.encrypted ? 'link-encrypted' : 'link'
+          download = configAction.download ? true : false
+          detectMimeContent = configAction.detectMimeContent ? true : false
         }
       } else if (configAction.type === 'modal') {
         newTplType = 'button'
@@ -151,6 +156,8 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
 
     this._tplType = newTplType
     this._link = link
+    this._download = download
+    this._detectMimeContent = detectMimeContent
   }
 
   private _parseConfigValue(val) {

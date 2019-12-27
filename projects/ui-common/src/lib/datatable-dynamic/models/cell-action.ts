@@ -29,6 +29,8 @@ export class DynamicDatatableCellActionLink extends DynamicDatatableCellActionBa
   external?: boolean = false
 
   download?: boolean = false
+
+  detectMimeContent?: boolean = false
 }
 
 export class DynamicDatatableCellActionModal extends DynamicDatatableCellActionBase<'modal'> {
