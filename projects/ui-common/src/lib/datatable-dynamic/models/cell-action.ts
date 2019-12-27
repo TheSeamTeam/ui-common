@@ -30,7 +30,7 @@ export class DynamicDatatableCellActionLink extends DynamicDatatableCellActionBa
 
   download?: boolean = false
 
-  detectMimeContent?: boolean = false
+  detectMimeContent?: boolean = true
 }
 
 export class DynamicDatatableCellActionModal extends DynamicDatatableCellActionBase<'modal'> {
