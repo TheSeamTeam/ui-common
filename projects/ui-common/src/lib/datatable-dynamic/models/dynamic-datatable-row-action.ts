@@ -1,8 +1,9 @@
 import { DynamicValue, IDynamicActionDef } from '../../dynamic/index'
+// import { DynamicActionDefTypeName } from '../../dynamic/models/dynamic-action-def-type';
 
 import { IDynamicDatatableConfirmDialog } from '../models/index'
 
-export interface IDynamicDatatableRowAction<T = string> {
+export interface IDynamicDatatableRowAction<T = 'api' | 'link' | 'modal'> {
 
   /**
    * Label displayed on the menu item.

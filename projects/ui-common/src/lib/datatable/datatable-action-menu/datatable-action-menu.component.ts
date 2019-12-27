@@ -4,6 +4,7 @@ import { NavigationExtras, Router } from '@angular/router'
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons'
 
 import { SeamConfirmDialogService } from '../../confirm-dialog/index'
+
 import { DatatableActionMenuItemComponent } from '../datatable-action-menu-item/datatable-action-menu-item.component'
 
 @Component({

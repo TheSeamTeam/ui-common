@@ -1,6 +1,8 @@
-export interface IDynamicActionDef<T = string> {
+import { DynamicActionDefType, DynamicActionDefTypeName } from './dynamic-action-def-type'
 
-  type: T
+export interface IDynamicActionDef<T = DynamicActionDefTypeName> {
+
+  readonly type: T
 
   // TODO: Fix model to avoid this.
   [key: string]: any

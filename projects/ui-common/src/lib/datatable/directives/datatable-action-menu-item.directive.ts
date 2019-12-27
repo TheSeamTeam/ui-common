@@ -1,14 +1,13 @@
 // import { QueryParamsHandling } from '@angular/router/src/config'
 import { ComponentType } from '@angular/cdk/portal'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, isDevMode, OnDestroy, OnInit, Optional, Output } from '@angular/core'
+import { Component, Directive, EventEmitter, HostBinding, Input, isDevMode, OnDestroy, OnInit, Optional, Output } from '@angular/core'
 import { Subscription } from 'rxjs'
 
 import jexl from 'jexl'
 import { untilDestroyed } from 'ngx-take-until-destroy'
 
 import { IDynamicDatatableRow } from '../../datatable-dynamic/datatable-dynamic-def'
-import { IDynamicDatatableRowAction } from '../../datatable-dynamic/index'
 import { TheSeamDynamicComponentLoader } from '../../dynamic-component-loader/dynamic-component-loader.service'
 import { Modal } from '../../modal/index'
 
@@ -35,14 +34,10 @@ export interface IActionMenuItemModalConfig {
   component: ComponentType<{}> |  string
 }
 
-@Component({
-  // tslint:disable-next-line: component-selector
-  selector: 'seam-datatable-action-menu-item',
-  templateUrl: './datatable-action-menu-item.component.html',
-  styleUrls: ['./datatable-action-menu-item.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+@Directive({
+  selector: '[seamDatatableActionMenuItem]'
 })
-export class DatatableActionMenuItemComponent implements OnInit, OnDestroy {
+export class DatatableActionMenuItemDirective implements OnInit, OnDestroy {
 
   @HostBinding('class.list-group-item') _listGroupItem = true
   @HostBinding('class.list-group-item-action') _listGroupItemAction = true

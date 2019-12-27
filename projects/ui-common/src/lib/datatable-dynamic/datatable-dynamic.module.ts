@@ -11,6 +11,7 @@ import { TheSeamIconModule } from '../icon/index'
 import { TheSeamMenuModule } from '../menu/index'
 import { TheSeamSharedModule } from '../shared/index'
 
+import { DatatableDynamicActionMenuComponent } from './datatable-dynamic-action-menu/datatable-dynamic-action-menu.component'
 import { DatatableDynamicFilterContainerComponent } from './datatable-dynamic-filter-container/datatable-dynamic-filter-container.component'
 import { DatatableDynamicComponent } from './datatable-dynamic.component'
 
@@ -18,7 +19,8 @@ import { DatatableDynamicComponent } from './datatable-dynamic.component'
 @NgModule({
   declarations: [
     DatatableDynamicComponent,
-    DatatableDynamicFilterContainerComponent
+    DatatableDynamicFilterContainerComponent,
+    DatatableDynamicActionMenuComponent
   ],
   imports: [
     CommonModule,
