@@ -39,6 +39,11 @@ export class DynamicValueHelperService {
       return this._evalEvaluatable(<IDynamicValueType>value, context)
     }
 
+    // Use `evalSync` if `eval` isn't provided and `evalSync` is.
+    if (this.isEvaluatableType(value, false)) {
+      return Promise.resolve(this._evalEvaluatableSync(<IDynamicValueType>value, context))
+    }
+
     return Promise.resolve(value)
   }
 

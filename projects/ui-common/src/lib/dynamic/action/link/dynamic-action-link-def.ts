@@ -15,6 +15,12 @@ export interface IDynamicActionLinkDef extends IDynamicActionDef<'link'> {
    */
   external?: DynamicValue<boolean>
 
+  // TODO: Consider adding asset.
+  /**
+   * Default: false
+   */
+  // asset?: DynamicValue<boolean>
+
   /**
    * Default: false
    */

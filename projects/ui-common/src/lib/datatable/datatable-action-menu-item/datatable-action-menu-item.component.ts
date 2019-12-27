@@ -1,7 +1,18 @@
 // import { QueryParamsHandling } from '@angular/router/src/config'
 import { ComponentType } from '@angular/cdk/portal'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, isDevMode, OnDestroy, OnInit, Optional, Output } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  HostBinding,
+  Input,
+  isDevMode,
+  OnDestroy,
+  OnInit,
+  Optional,
+  Output
+} from '@angular/core'
 import { Subscription } from 'rxjs'
 
 import jexl from 'jexl'

@@ -8,7 +8,7 @@ export interface IDynamicDatatableRowAction<T = 'api' | 'link' | 'modal'> {
   /**
    * Label displayed on the menu item.
    */
-  label: string
+  label: DynamicValue<string>
 
   /** */
   action: IDynamicActionDef<T>
