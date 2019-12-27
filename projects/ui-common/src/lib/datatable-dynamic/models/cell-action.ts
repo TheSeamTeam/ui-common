@@ -27,6 +27,8 @@ export class DynamicDatatableCellActionLink extends DynamicDatatableCellActionBa
    * `EncryptedAssetReader` implementation.
    */
   external?: boolean = false
+
+  download?: boolean = false
 }
 
 export class DynamicDatatableCellActionModal extends DynamicDatatableCellActionBase<'modal'> {

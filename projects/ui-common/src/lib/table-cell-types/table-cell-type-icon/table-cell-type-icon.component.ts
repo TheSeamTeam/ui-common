@@ -76,6 +76,8 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
   _rowIndex?: number
   _colData?: ITheSeamTableColumn<R>
 
+  _download?: boolean
+
   @HostBinding('class.datatable-cell-type') _isDatatable = false
 
   constructor(
