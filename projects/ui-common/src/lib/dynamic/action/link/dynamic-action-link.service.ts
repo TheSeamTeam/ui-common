@@ -16,4 +16,8 @@ export class DynamicActionLinkService implements IDynamicActionLink {
   label = 'Link Action'
 
   constructor() { }
+
+  // exec?: (args: IDynamicActionDef<T>, context: D) => Observable<R>
+
+  // execSync?: (args: IDynamicActionDef<T>, context: D) => R
 }

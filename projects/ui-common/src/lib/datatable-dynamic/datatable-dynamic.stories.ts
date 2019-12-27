@@ -12,7 +12,13 @@ import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 import { TheSeamDynamicComponentLoaderModule } from '../dynamic-component-loader/dynamic-component-loader.module'
-import { JexlEvaluator, THESEAM_DYNAMIC_VALUE_EVALUATOR } from '../dynamic/index'
+import {
+  DynamicActionApiService,
+  DynamicActionLinkService,
+  DynamicActionModalService,
+  JexlEvaluator,
+  THESEAM_DYNAMIC_VALUE_EVALUATOR
+} from '../dynamic/index'
 import { TheSeamModalModule } from '../modal/index'
 
 import { exampleData1 } from './_story-data/dynamic-data-1'
@@ -186,7 +192,11 @@ export default {
         ])
       ],
       providers: [
-        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true }
+        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
+
+        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: DynamicActionApiService, multi: true },
+        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: DynamicActionLinkService, multi: true },
+        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: DynamicActionModalService, multi: true }
       ]
     })
   ],

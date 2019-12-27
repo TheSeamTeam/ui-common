@@ -1,4 +1,4 @@
-import { DynamicActionDefType, DynamicActionDefTypeName } from './dynamic-action-def-type'
+import { DynamicActionDefTypeName } from './dynamic-action-def-type'
 
 export interface IDynamicActionDef<T = DynamicActionDefTypeName> {
 

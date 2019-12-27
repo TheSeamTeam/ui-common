@@ -16,4 +16,9 @@ export class DynamicActionModalService implements IDynamicActionModal {
   label = 'Modal Action'
 
   constructor() { }
+
+  // exec?: (args: IDynamicActionDef<T>, context: D) => Observable<R>
+
+  // execSync?: (args: IDynamicActionDef<T>, context: D) => R
+
 }

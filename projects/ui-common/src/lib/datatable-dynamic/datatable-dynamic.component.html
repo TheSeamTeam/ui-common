@@ -29,7 +29,10 @@
 
     <ng-template seamDatatableRowActionItem let-row>
       <ng-container *ngIf="(_rowActions(row) | async) as rActions">
-        <seam-datatable-action-menu>
+
+        <seam-datatable-dynamic-action-menu [def]="rActions"></seam-datatable-dynamic-action-menu>
+
+        <seam-datatable-action-menu *ngIf="false">
           <ng-container *ngFor="let a of rActions">
             <!-- TODO: Cleanup action-menu-item to be easier to use with or without dynamic. -->
             <seam-datatable-action-menu-item *ngIf="!a.action" [label]="a.label"></seam-datatable-action-menu-item>
