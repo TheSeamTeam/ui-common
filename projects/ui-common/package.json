@@ -1,6 +1,6 @@
 {
   "name": "@theseam/ui-common",
-  "version": "0.0.36",
+  "version": "0.0.37",
   "peerDependencies": {
     "@angular/common": "^8.2.3",
     "@angular/core": "^8.2.3",
