@@ -2,7 +2,7 @@ import { ComponentType } from '@angular/cdk/portal'
 import { Inject, Injectable } from '@angular/core'
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'
-import { IDynamicDatatableOptions } from './../../../../../dist/ui-common/lib/datatable-dynamic/datatable-dynamic-def.d'
+import { IDynamicDatatableOptions } from './datatable-dynamic-def'
 
 import { IDataExporter, THESEAM_DATA_EXPORTER } from '../data-exporter/index'
 import { THESEAM_DATA_FILTER_DEF } from '../data-filters/index'

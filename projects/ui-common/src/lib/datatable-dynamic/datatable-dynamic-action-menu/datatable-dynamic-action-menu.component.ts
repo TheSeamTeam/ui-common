@@ -4,6 +4,8 @@ import { faEllipsisH } from '@fortawesome/free-solid-svg-icons'
 
 import { isActionType } from '../../dynamic/utils/index'
 
+import { BehaviorSubject } from 'rxjs';
+import { DynamicValueHelperService } from '../../dynamic/dynamic-value-helper.service'
 import { IDynamicDatatableRow } from '../datatable-dynamic-def'
 import { IDynamicDatatableRowAction } from '../models/dynamic-datatable-row-action'
 
@@ -27,9 +29,15 @@ export class DatatableDynamicActionMenuComponent implements OnInit {
 
   faEllipsisH = faEllipsisH
 
-  @Input() row: IDynamicDatatableRow
+  @Input()
+  get row() { return this._row.value }
+  set row(value: IDynamicDatatableRow | undefined) { this._row.next(value || undefined) }
+  private _row = new BehaviorSubject<IDynamicDatatableRow | undefined>(undefined)
 
-  @Input() def: IDynamicDatatableRowAction
+  @Input()
+  get def() { return this._def.value }
+  set def(value: IDynamicDatatableRowAction | undefined) { this._def.next(value || undefined) }
+  private _def = new BehaviorSubject<IDynamicDatatableRowAction | undefined>(undefined)
 
   /** @ignore */
   _actionMenuPositions = [
@@ -59,9 +67,10 @@ export class DatatableDynamicActionMenuComponent implements OnInit {
     },
   ]
 
-  constructor() { }
+  constructor(
+    private _valueHelper: DynamicValueHelperService
+  ) { }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
 }

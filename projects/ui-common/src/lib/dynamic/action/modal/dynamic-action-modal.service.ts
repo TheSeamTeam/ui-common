@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core'
 
+import { IDynamicActionUiDef } from '../../models/dynamic-action-ui-def'
 import { IDynamicActionModal } from './dynamic-action-modal'
 import { IDynamicActionModalDef } from './dynamic-action-modal-def'
 
@@ -21,4 +22,10 @@ export class DynamicActionModalService implements IDynamicActionModal {
 
   // execSync?: (args: IDynamicActionDef<T>, context: D) => R
 
+  public async getUiProps(args: IDynamicActionModalDef, context: any): Promise<IDynamicActionUiDef<'modal'>> {
+    return {
+      type: this.type,
+      triggerType: 'link'
+    }
+  }
 }

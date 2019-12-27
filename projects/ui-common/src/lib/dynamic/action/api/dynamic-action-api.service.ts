@@ -6,6 +6,7 @@ import { delay, map, switchMap, take, tap } from 'rxjs/operators'
 import { isAbsoluteUrl } from '../../../utils/index'
 
 import { DynamicValueHelperService } from '../../dynamic-value-helper.service'
+import { IDynamicActionUiDef } from '../../models/dynamic-action-ui-def'
 import { DynamicValue } from '../../models/dynamic-value'
 import { IApiConfig, THESEAM_API_CONFIG } from '../../tokens/api-config'
 
@@ -34,14 +35,21 @@ export class DynamicActionApiService implements IDynamicActionApi {
     @Optional() @Inject(THESEAM_API_CONFIG) private _configs: IApiConfig[]
   ) { }
 
-  public exec(args: IDynamicActionApiDef, context?: any): Observable<any> {
+  public exec(args: IDynamicActionApiDef, context: any): Promise<any> {
     if (!this._isSupported()) {
       throw dynamicActionApiNotSupportedError()
     }
 
     return from(this._getExecInfo(args, context)).pipe(
       switchMap(x => this._http.request<any>(x.method, x.url, x.options)),
-    )
+    ).toPromise()
+  }
+
+  public async getUiProps(args: IDynamicActionApiDef, context: any): Promise<IDynamicActionUiDef<'api'>> {
+    return {
+      type: this.type,
+      triggerType: 'click'
+    }
   }
 
   private async _getExecInfo(args: IDynamicActionApiDef, context?: any) {

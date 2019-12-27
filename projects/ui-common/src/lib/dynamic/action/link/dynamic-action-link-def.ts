@@ -6,21 +6,24 @@ export interface IDynamicActionLinkDef extends IDynamicActionDef<'link'> {
   /**
    * Link url.
    */
-  link?: DynamicValue
+  link: DynamicValue<string>
 
   /**
    * If true, the link will use router.
+   *
+   * Default: false
    */
-  external?: DynamicValue
+  external?: DynamicValue<boolean>
+
+  /**
+   * Default: false
+   */
+  encrypted?: DynamicValue<boolean>
 
   /**
    *
+   * Default: undefined
    */
-  encrypted?: DynamicValue
-
-  /**
-   *
-   */
-  target?: DynamicValue
+  target?: DynamicValue<string>
 
 }
