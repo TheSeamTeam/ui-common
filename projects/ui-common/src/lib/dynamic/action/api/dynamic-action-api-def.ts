@@ -27,9 +27,9 @@ export interface IDynamicActionApiDef extends IDynamicActionDef<'api'> {
    */
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 
-  body?: DynamicValue
+  body?: DynamicValue<any>
 
-  params?: DynamicValue
+  params?: DynamicValue<any>
 
   /**
    * `DynamicValue` type definition still needs some work to define the

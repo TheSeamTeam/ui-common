@@ -1,8 +1,8 @@
-import { DynamicValuePrimitive } from './dynamic-value-primitive'
+import { DynamicValueBaseType } from './dynamic-value-base-type'
 
-export interface IDynamicValueType<T = string, R = DynamicValuePrimitive | { [key: string]: any }> {
+export interface IDynamicValueType<T = string, R = DynamicValueBaseType> {
   type: T
 
-  // TODO: Fix model to avoid this.
-  [key: string]: any
+  // // TODO: Fix model to avoid this.
+  // [key: string]: any
 }

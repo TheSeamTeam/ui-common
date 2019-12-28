@@ -11,7 +11,7 @@ export interface IDynamicAction<T = DynamicActionDefTypeName, D = any, R = any> 
   // action. I figured it may be good to at least have a default for thinks like
   // ARIA attributes, but it may be better to just require the action def to
   // decide if a label is necessary.
-  label: DynamicValue
+  label: DynamicValue<string>
 
   // TODO: Consider allowing Observable return. Currently actions are executed
   // and expected to complete, so Promise is enough. Observables could possibly

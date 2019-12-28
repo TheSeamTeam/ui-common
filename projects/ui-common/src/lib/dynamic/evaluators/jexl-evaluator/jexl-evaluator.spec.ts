@@ -16,7 +16,7 @@ describe('JexlEvaluator', () => {
 
   it('should return transformed value if input type is evaluatable', () => {
     const service: DynamicValueHelperService = TestBed.get(DynamicValueHelperService)
-    const inValue: IJexlValue = { type: 'jexl', expr: 'a.b' }
+    const inValue: IJexlValue<string> = { type: 'jexl', expr: 'a.b' }
     const context = { a: { b: 'thing' } }
     const outValue = service.evalSync(inValue, context)
     expect(outValue).toBe(context.a.b)
@@ -24,7 +24,7 @@ describe('JexlEvaluator', () => {
 
   it('should return transformed value if input type is evaluatable', async () => {
     const service: DynamicValueHelperService = TestBed.get(DynamicValueHelperService)
-    const inValue: IJexlValue = { type: 'jexl', expr: 'a.b' }
+    const inValue: IJexlValue<string> = { type: 'jexl', expr: 'a.b' }
     const context = { a: { b: 'thing' } }
     const outValue = await service.eval(inValue, context)
     expect(outValue).toBe(context.a.b)

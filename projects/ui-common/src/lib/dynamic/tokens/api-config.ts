@@ -11,7 +11,7 @@ export interface IApiConfig {
   /**
    * Base url that non-absolute endpoints will be appended to.
    */
-  url?: DynamicValue
+  url?: DynamicValue<string>
 
   /**
    * Default headers to add to requests.

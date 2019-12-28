@@ -6,7 +6,7 @@ export interface IDynamicActionModalResultAction {
   /**
    * If the modal result equals this value then the action will execute.
    */
-  value?: DynamicValue
+  value?: DynamicValue<any>
 
   /**
    * Action to execute when modal result equals value.
@@ -17,7 +17,7 @@ export interface IDynamicActionModalResultAction {
 
 export interface IDynamicActionModalDef extends IDynamicActionDef<'modal'> {
 
-  modal?: DynamicValue
+  modal?: DynamicValue<any>
 
   resultAction?: IDynamicActionModalResultAction
 

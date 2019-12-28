@@ -156,7 +156,7 @@ export class DynamicActionApiService implements IDynamicActionApi {
       if (typeof argHeaders === 'string') {
         headers = argHeaders
       } else {
-        const _val = this._valueHelper.eval(argHeaders as DynamicValue, context)
+        const _val = this._valueHelper.eval(argHeaders, context)
         if (typeof _val === 'string') {
           headers = _val
         } else {
@@ -166,9 +166,9 @@ export class DynamicActionApiService implements IDynamicActionApi {
             if (typeof value === 'string') {
               headers[key] = value
             } else if (Array.isArray(value)) {
-              headers[key] = await Promise.all(value.map(async v => await this._valueHelper.eval(v as DynamicValue, context)))
+              headers[key] = await Promise.all(value.map(async v => await this._valueHelper.eval(v, context)))
             } else {
-              headers[key] = await this._valueHelper.eval(value as DynamicValue, context)
+              headers[key] = await this._valueHelper.eval(value, context)
             }
           }
         }
@@ -188,7 +188,7 @@ export class DynamicActionApiService implements IDynamicActionApi {
     if (typeof headers === 'string') {
       res = headers
     } else {
-      const _val = this._valueHelper.eval(headers as DynamicValue, context)
+      const _val = this._valueHelper.eval(headers, context)
       if (typeof _val === 'string') {
         res = _val
       } else {
@@ -198,9 +198,9 @@ export class DynamicActionApiService implements IDynamicActionApi {
           if (typeof value === 'string') {
             res[key] = value
           } else if (Array.isArray(value)) {
-            res[key] = await Promise.all(value.map(async v => await this._valueHelper.eval(v as DynamicValue, context)))
+            res[key] = await Promise.all(value.map(async v => await this._valueHelper.eval(v, context)))
           } else {
-            res[key] = await this._valueHelper.eval(value as DynamicValue, context)
+            res[key] = await this._valueHelper.eval(value, context)
           }
         }
       }

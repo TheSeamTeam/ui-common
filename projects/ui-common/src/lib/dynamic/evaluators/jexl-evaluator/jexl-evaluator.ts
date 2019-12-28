@@ -11,11 +11,11 @@ export class JexlEvaluator implements IDynamicValueEvaluator<'jexl'> {
 
   public readonly type = 'jexl'
 
-  public eval(value: IJexlValue, context?: any): Promise<any> {
+  public eval<R>(value: IJexlValue<R>, context?: any): Promise<R> {
     return jexl.eval(value.expr, context)
   }
 
-  public evalSync(value: IJexlValue, context?: any): any {
+  public evalSync<R>(value: IJexlValue<R>, context?: any): R {
     return jexl.evalSync(value.expr, context)
   }
 
