@@ -2,6 +2,7 @@ import { Inject, Injectable, isDevMode } from '@angular/core'
 
 import { IDynamicAction } from '../models/dynamic-action'
 import { IDynamicActionDef } from '../models/dynamic-action-def'
+import { IDynamicActionUiDef } from '../models/dynamic-action-ui-def'
 import { THESEAM_DYNAMIC_ACTION } from '../tokens/dynamic-action'
 
 @Injectable({
@@ -57,6 +58,23 @@ export class DynamicActionHelperService {
     }
 
     return action.execSync(actionDef, context)
+  }
+
+  /**
+   * Get UI props for action.
+   *
+   * TODO: Improve context and return typing.
+   */
+  public getUiProps<T extends string>(actionDef: IDynamicActionDef<T>, context?: any): Promise<IDynamicActionUiDef> {
+    const action = this._actionMap.get(actionDef.type)
+    if (!action) {
+      throw Error(`[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' not found.`)
+    }
+    if (!action.getUiProps) {
+      throw Error(`[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' does not implement 'getUiProps()'.`)
+    }
+
+    return action.getUiProps(actionDef, context)
   }
 
   /**

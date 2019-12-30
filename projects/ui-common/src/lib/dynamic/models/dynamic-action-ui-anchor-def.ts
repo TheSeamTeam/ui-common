@@ -36,7 +36,7 @@ export interface IDynamicActionUiAnchorDef extends IDynamicActionUiDef {
    *    ...
    *  }
    */
-  clickExpr?: DynamicValue<boolean>
+  blockClickExpr?: DynamicValue<boolean>
 
   /**
    * Depending on the `triggerType` and features available on the component the

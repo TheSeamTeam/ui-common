@@ -1,8 +1,9 @@
+import { IDynamicActionContext } from './dynamic-action-context'
 import { IDynamicActionDef } from './dynamic-action-def'
 import { IDynamicActionUiDef } from './dynamic-action-ui-def'
 import { DynamicValue } from './dynamic-value'
 
-export interface IDynamicAction<T extends string, D = any, R = any> {
+export interface IDynamicAction<T extends string, D extends IDynamicActionContext = any, R = any> {
 
   readonly type: T
 

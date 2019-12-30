@@ -9,3 +9,5 @@ export * from './link/dynamic-action-link'
 export * from './modal/dynamic-action-modal-def'
 export * from './modal/dynamic-action-modal.service'
 export * from './modal/dynamic-action-modal'
+
+export * from './dynamic-action-helper.service'
