@@ -37,6 +37,8 @@
     class="btn btn-link p-0 m-auto{{ _linkClass ? ' ' + _linkClass : '' }}"
     type="button"
     [seamEncryptedAssetLink]="_link"
+    [seamDetectMimeFromContent]="_detectMimeContent"
+    [seamDownloadAsset]="_download"
     [attr.title]="_title">
     <seam-icon *ngIf="_icon" iconType="styled-square" [icon]="_icon" size="lg" [iconType]="_iconType" [iconClass]="_iconClass"></seam-icon>
     <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
