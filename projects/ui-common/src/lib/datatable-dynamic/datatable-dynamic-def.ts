@@ -1,4 +1,4 @@
-import { DynamicValue, IDynamicActionDef } from '../dynamic/index'
+import { DynamicValue } from '../dynamic/index'
 import { ThemeTypes } from '../models/index'
 
 import { IDynamicDatatableCellType } from './models/cell-type'
@@ -134,11 +134,11 @@ export interface IDynamicDatatableFooterMenu {
 // }
 
 export interface IDatatableDynamicDef {
-  filterMenu?: IDynamicDatatableFilterMenu
-  columns: IDynamicDatatableColumn[]
-  rows: IDynamicDatatableRow[]
+  readonly filterMenu?: IDynamicDatatableFilterMenu
+  readonly columns: IDynamicDatatableColumn[]
+  readonly rows: IDynamicDatatableRow[]
   // rowActions?: IDynamicDatatableRowActionDef[]
-  rowActions?: IDynamicDatatableRowAction[]
+  readonly rowActions?: IDynamicDatatableRowAction[]
   // footerMenu?: IDynamicDatatableFooterMenu
-  options?: IDynamicDatatableOptions
+  readonly options?: IDynamicDatatableOptions
 }

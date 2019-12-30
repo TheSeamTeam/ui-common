@@ -11,7 +11,7 @@ export interface IDynamicActionModalResultAction {
   /**
    * Action to execute when modal result equals value.
    */
-  action?: IDynamicActionDef<'modal'>
+  action?: IDynamicActionDef<string>
 
 }
 

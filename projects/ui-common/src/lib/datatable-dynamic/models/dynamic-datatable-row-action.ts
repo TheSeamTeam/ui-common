@@ -3,7 +3,7 @@ import { DynamicValue, IDynamicActionDef } from '../../dynamic/index'
 
 import { IDynamicDatatableConfirmDialog } from '../models/index'
 
-export interface IDynamicDatatableRowAction<T = 'api' | 'link' | 'modal'> {
+export interface IDynamicDatatableRowAction {
 
   /**
    * Label displayed on the menu item.
@@ -11,7 +11,7 @@ export interface IDynamicDatatableRowAction<T = 'api' | 'link' | 'modal'> {
   label: DynamicValue<string>
 
   /** */
-  action: IDynamicActionDef<T>
+  action: IDynamicActionDef<string>
 
   /**
    * Default: false

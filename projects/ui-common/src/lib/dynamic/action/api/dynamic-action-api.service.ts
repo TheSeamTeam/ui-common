@@ -6,7 +6,7 @@ import { delay, map, switchMap, take, tap } from 'rxjs/operators'
 import { isAbsoluteUrl } from '../../../utils/index'
 
 import { DynamicValueHelperService } from '../../dynamic-value-helper.service'
-import { IDynamicActionUiDef } from '../../models/dynamic-action-ui-def'
+import { IDynamicActionUiButtonDef } from '../../models/dynamic-action-ui-button-def'
 import { DynamicValue } from '../../models/dynamic-value'
 import { IApiConfig, THESEAM_API_CONFIG } from '../../tokens/api-config'
 
@@ -45,9 +45,9 @@ export class DynamicActionApiService implements IDynamicActionApi {
     ).toPromise()
   }
 
-  public async getUiProps(args: IDynamicActionApiDef, context: any): Promise<IDynamicActionUiDef<'api'>> {
+  public async getUiProps(args: IDynamicActionApiDef, context: any): Promise<IDynamicActionUiButtonDef> {
     return {
-      type: this.type,
+      _actionDef: args,
       triggerType: 'click'
     }
   }

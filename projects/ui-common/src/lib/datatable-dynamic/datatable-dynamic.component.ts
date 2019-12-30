@@ -1,7 +1,7 @@
 import { ComponentType } from '@angular/cdk/portal'
 import { ChangeDetectionStrategy, Component, Inject, Input, OnInit } from '@angular/core'
 import { from, Observable, of } from 'rxjs'
-import { map, switchMap, toArray } from 'rxjs/operators'
+import { map, switchMap, tap, toArray } from 'rxjs/operators'
 
 import { IDataExporter, THESEAM_DATA_EXPORTER } from '../data-exporter/index'
 import { THESEAM_DATA_FILTER_DEF } from '../data-filters/data-filter-def'
@@ -137,7 +137,8 @@ export class DatatableDynamicComponent implements OnInit {
     )
 
     this._tmp_rows$ = this._dynamicDef.def$.pipe(
-      map(def => def ? def.rows : [])
+      map(def => def ? def.rows : []),
+      tap(v => console.log('_tmp_rows$', v))
     )
   }
 
@@ -145,8 +146,8 @@ export class DatatableDynamicComponent implements OnInit {
   ngOnInit() { }
 
   /** @ignore */
-  _rowActions(row: IDynamicDatatableRow): Observable<IDynamicDatatableRowAction[]> {
-    return this._dynamicRowActions.rowActions(row)
-  }
+  // _rowActions(row: IDynamicDatatableRow): Observable<IDynamicDatatableRowAction[]> {
+  //   return this._dynamicRowActions.rowActions(row)
+  // }
 
 }

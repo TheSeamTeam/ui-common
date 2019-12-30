@@ -1,0 +1,29 @@
+@import '../../../styles/utilities';
+
+:host {
+  display: block;
+  position: relative;
+}
+
+.datatable-action-button {
+  font-size: 20px;
+  line-height: 20px;
+
+  width: 30px;
+  height: 30px;
+
+  padding: 0;
+  border-radius: 15px;
+  text-align: center;
+
+  &::ng-deep {
+    .svg-inline--fa {
+      vertical-align: middle;
+    }
+  }
+
+  &:hover {
+    color: $primary;
+    background-color: $gray-200;
+  }
+}

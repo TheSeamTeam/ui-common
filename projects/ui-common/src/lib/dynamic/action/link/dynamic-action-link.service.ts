@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
 
 import { DynamicValueHelperService } from '../../dynamic-value-helper.service'
-import { IDynamicActionUiDef } from '../../models/dynamic-action-ui-def'
+import { IDynamicActionUiAnchorDef } from '../../models/dynamic-action-ui-anchor-def'
 import { IDynamicActionLink } from './dynamic-action-link'
 import { IDynamicActionLinkDef } from './dynamic-action-link-def'
 
@@ -25,14 +25,14 @@ export class DynamicActionLinkService implements IDynamicActionLink {
 
   // execSync?: (args: IDynamicActionDef<T>, context: D) => R
 
-  public async getUiProps(args: IDynamicActionLinkDef, context: any): Promise<IDynamicActionUiDef<'link'>> {
+  public async getUiProps(args: IDynamicActionLinkDef, context: any): Promise<IDynamicActionUiAnchorDef> {
     const link: string = await this._valueHandler.eval(args.link)
     const external: boolean = !!(await this._valueHandler.eval(args.external))
     const encrypted: boolean = !!(await this._valueHandler.eval(args.encrypted))
     const target: string | undefined = await this._valueHandler.eval(args.target)
 
-    const def: IDynamicActionUiDef<'link'> = {
-      type: this.type,
+    const def: IDynamicActionUiAnchorDef = {
+      _actionDef: args,
       triggerType: encrypted ? 'link-asset' : external ? 'link-external' : 'link',
       linkUrl: link
     }

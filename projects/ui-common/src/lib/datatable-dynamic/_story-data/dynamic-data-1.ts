@@ -43,7 +43,10 @@ export const exampleData1: IDatatableDynamicDef = {
   rowActions: [
     {
       label: 'Link',
-      action: { type: 'link', link: 'details' }
+      action: {
+        type: 'link',
+        link: 'details'
+      }
     },
     {
       label: 'Link External',

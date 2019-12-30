@@ -1,5 +1,6 @@
-export * from './dynamic-action-def-type'
 export * from './dynamic-action-def'
+export * from './dynamic-action-ui-anchor-def'
+export * from './dynamic-action-ui-button-def'
 export * from './dynamic-action-ui-def'
 export * from './dynamic-action'
 

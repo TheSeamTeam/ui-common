@@ -9,10 +9,10 @@ import { THESEAM_DYNAMIC_ACTION } from '../tokens/dynamic-action'
 })
 export class DynamicActionHelperService {
 
-  private _actionMap = new Map<string, IDynamicAction>()
+  private _actionMap = new Map<string, IDynamicAction<string>>()
 
   constructor(
-    @Inject(THESEAM_DYNAMIC_ACTION) actions: IDynamicAction[]
+    @Inject(THESEAM_DYNAMIC_ACTION) actions: IDynamicAction<string>[]
   ) {
     // Only one evaluator should exist for a type, so map them for faster lookup.
     for (const e of actions) {
@@ -30,7 +30,7 @@ export class DynamicActionHelperService {
    *
    * TODO: Improve context and return typing.
    */
-  public exec(actionDef: IDynamicActionDef, context?: any): Promise<IDynamicActionDef> {
+  public exec<T extends string>(actionDef: IDynamicActionDef<T>, context?: any): Promise<IDynamicActionDef<T>> {
     const action = this._actionMap.get(actionDef.type)
     if (!action) {
       throw Error(`[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' not found.`)
@@ -47,7 +47,7 @@ export class DynamicActionHelperService {
    *
    * TODO: Improve context and return typing.
    */
-  public execSync(actionDef: IDynamicActionDef, context?: any): IDynamicActionDef {
+  public execSync<T extends string>(actionDef: IDynamicActionDef<T>, context?: any): IDynamicActionDef<T> {
     const action = this._actionMap.get(actionDef.type)
     if (!action) {
       throw Error(`[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' not found.`)
@@ -62,7 +62,7 @@ export class DynamicActionHelperService {
   /**
    * Checks if a IDynamicActionDef is a type that can be executed.
    */
-  public isExecutableType(value: IDynamicActionDef, isAsync: boolean): boolean {
+  public isExecutableType<T extends string>(value: IDynamicActionDef<T>, isAsync: boolean): boolean {
     if (value === undefined || value === null) {
       return false
     }

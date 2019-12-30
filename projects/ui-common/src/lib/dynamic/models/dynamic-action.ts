@@ -1,9 +1,8 @@
 import { IDynamicActionDef } from './dynamic-action-def'
-import { DynamicActionDefTypeName } from './dynamic-action-def-type'
 import { IDynamicActionUiDef } from './dynamic-action-ui-def'
 import { DynamicValue } from './dynamic-value'
 
-export interface IDynamicAction<T = DynamicActionDefTypeName, D = any, R = any> {
+export interface IDynamicAction<T extends string, D = any, R = any> {
 
   readonly type: T
 
@@ -21,6 +20,6 @@ export interface IDynamicAction<T = DynamicActionDefTypeName, D = any, R = any> 
 
   execSync?: (args: IDynamicActionDef<T>, context: D) => R
 
-  getUiProps?: (args: IDynamicActionDef<T>, context: D) => Promise<IDynamicActionUiDef<T>>
+  getUiProps?: (args: IDynamicActionDef<T>, context: D) => Promise<IDynamicActionUiDef>
 
 }

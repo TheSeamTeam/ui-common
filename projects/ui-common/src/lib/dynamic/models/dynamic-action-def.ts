@@ -1,6 +1,4 @@
-import { DynamicActionDefTypeName } from './dynamic-action-def-type'
-
-export interface IDynamicActionDef<T = DynamicActionDefTypeName> {
+export interface IDynamicActionDef<T extends string> {
 
   readonly type: T
 

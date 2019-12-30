@@ -48,7 +48,7 @@ export class DynamicDatatableRowActionsService {
   }
 
   /** @ignore */
-  private _getRowActionContext(row: IDynamicDatatableRow, rowActionDef: IDynamicDatatableRowAction): IDynamicDatatableRowActionContext {
+  private _getRowActionContext(row: IDynamicDatatableRow,  rowActionDef: IDynamicDatatableRowAction): IDynamicDatatableRowActionContext {
     return {
       row
     }
