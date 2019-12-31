@@ -17,6 +17,7 @@ import {
   DynamicActionLinkService,
   DynamicActionModalService,
   JexlEvaluator,
+  THESEAM_DYNAMIC_ACTION,
   THESEAM_DYNAMIC_VALUE_EVALUATOR
 } from '../dynamic/index'
 import { TheSeamModalModule } from '../modal/index'
@@ -194,9 +195,9 @@ export default {
       providers: [
         { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
 
-        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: DynamicActionApiService, multi: true },
-        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: DynamicActionLinkService, multi: true },
-        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: DynamicActionModalService, multi: true }
+        { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionApiService, multi: true },
+        { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionLinkService, multi: true },
+        { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionModalService, multi: true }
       ]
     })
   ],

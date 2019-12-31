@@ -29,7 +29,6 @@ export class DatatableDynamicActionMenuComponent implements OnInit {
   get row() { return this._row.value }
   set row(value: IDynamicDatatableRow | undefined) {
     this._row.next(value || undefined)
-    console.log('~~Inp row', value)
   }
   private _row = new BehaviorSubject<IDynamicDatatableRow | undefined>(undefined)
 
@@ -37,7 +36,6 @@ export class DatatableDynamicActionMenuComponent implements OnInit {
   get actionDefs() { return this._actionDefs.value }
   set actionDefs(value: IDynamicDatatableRowAction[]) {
     this._actionDefs.next(value || [])
-    console.log('~Inp actionDefs', value)
   }
   private _actionDefs = new BehaviorSubject<IDynamicDatatableRowAction[]>([])
 

@@ -48,11 +48,11 @@ export const exampleData1: IDatatableDynamicDef = {
         link: 'details'
       }
     },
-    // {
-    //   label: 'Link External',
-    //   action: { type: 'link', link: 'https://bing.com', external: true },
-    //   hidden: { type: 'jexl', expr: 'row.age > 30' }
-    // },
+    {
+      label: 'Link External',
+      action: { type: 'link', link: 'https://bing.com', external: true },
+      hidden: { type: 'jexl', expr: 'row.age > 30' }
+    },
     // {
     //   label: 'Link External Config',
     //   action: { type: 'link', link: 'https://bing.com', external: true, confirmDialog: { 'message': 'Are you sure?' } },

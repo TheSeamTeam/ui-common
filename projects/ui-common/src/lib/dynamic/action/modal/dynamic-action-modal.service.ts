@@ -7,9 +7,7 @@ import { IDynamicActionModalDef } from './dynamic-action-modal-def'
 /**
  * Handles execution of modal actions.
  */
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class DynamicActionModalService implements IDynamicActionModal {
 
   readonly type = 'modal'

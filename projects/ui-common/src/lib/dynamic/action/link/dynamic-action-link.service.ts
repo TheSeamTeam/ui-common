@@ -8,9 +8,7 @@ import { IDynamicActionLinkDef } from './dynamic-action-link-def'
 /**
  * Handles execution of link actions.
  */
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class DynamicActionLinkService implements IDynamicActionLink {
 
   readonly type = 'link'
@@ -34,7 +32,8 @@ export class DynamicActionLinkService implements IDynamicActionLink {
     const def: IDynamicActionUiAnchorDef = {
       _actionDef: args,
       triggerType: encrypted ? 'link-asset' : external ? 'link-external' : 'link',
-      linkUrl: link
+      linkUrl: link,
+      // blockClickExpr: { type: 'jexl', expr: 'event.button == 0 && event.ctrlKey == true ? true : false' }
     }
 
     if (target) {

@@ -1,4 +1,4 @@
-import { Inject, Injectable, isDevMode } from '@angular/core'
+import { Inject, Injectable, isDevMode, Optional } from '@angular/core'
 
 import { IDynamicAction } from '../models/dynamic-action'
 import { IDynamicActionDef } from '../models/dynamic-action-def'
@@ -13,10 +13,11 @@ export class DynamicActionHelperService {
   private _actionMap = new Map<string, IDynamicAction<string>>()
 
   constructor(
-    @Inject(THESEAM_DYNAMIC_ACTION) actions: IDynamicAction<string>[]
+    @Optional() @Inject(THESEAM_DYNAMIC_ACTION) actions: IDynamicAction<string>[]
   ) {
+    console.log('~~~DynamicActionHelperService~~~')
     // Only one evaluator should exist for a type, so map them for faster lookup.
-    for (const e of actions) {
+    for (const e of (actions || [])) {
       if (isDevMode()) {
         if (this._actionMap.has(e.type)) {
           console.warn(`[DynamicActionHelperService] Multiple actions found for type '${e.type}'`)

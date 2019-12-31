@@ -6,15 +6,16 @@
 
     <a *ngIf="record.elementType === 'a'"
       seamMenuItem
+      [seamDatatableDynamicActionMenuItem]="record"
       class="list-group-item list-group-item-action py-1">{{ record.rowAction.label }}</a>
 
     <button *ngIf="record.elementType === 'button'"
       seamMenuItem
+      [seamDatatableDynamicActionMenuItem]="record"
       type="button"
       class="list-group-item list-group-item-action py-1">{{ record.rowAction.label }}</button>
 
   </ng-container>
-
 
     <!-- <ng-container *ngIf="(item.routerLink || item.href) && !item.confirmDialog; else noRouterLink">
       <a *ngIf="item.href; else noHref"

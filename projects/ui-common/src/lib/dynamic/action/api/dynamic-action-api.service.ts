@@ -20,9 +20,7 @@ import { dynamicActionApiNotSupportedError } from './dynamic-action-api-errors'
  * This action service should be generic enough to
  * work with any url endpoint, but will be biased towards our api where needed.
  */
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class DynamicActionApiService implements IDynamicActionApi {
 
   readonly type = 'api'
