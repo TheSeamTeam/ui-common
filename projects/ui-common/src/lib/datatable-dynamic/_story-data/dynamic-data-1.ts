@@ -50,7 +50,7 @@ export const exampleData1: IDatatableDynamicDef = {
     },
     {
       label: 'Link External',
-      action: { type: 'link', link: 'https://bing.com', external: true },
+      action: { type: 'link', link: 'https://bing.com', external: true, target: '_blank' },
       hidden: { type: 'jexl', expr: 'row.age > 30' }
     },
     // {

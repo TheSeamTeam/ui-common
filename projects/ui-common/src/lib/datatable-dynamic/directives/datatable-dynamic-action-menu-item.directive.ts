@@ -268,10 +268,16 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
         console.log('Handle "link-external" triggerType.', uiProps)
         // this._tryInitTabIndex()
         this._tryInitBlockClick(record, uiProps)
-        // if (hasProperty(uiProps, 'linkUrl')) {
-        //   this._setHrefAttr(uiProps.linkUrl)
-        // }
-        this._initMenuItemRouterLink(record, uiProps)
+        if (hasProperty(uiProps, 'linkUrl')) {
+          this._setAttr('href', uiProps.linkUrl)
+        }
+        if (hasProperty(uiProps, 'linkExtras')) {
+          if (hasProperty(uiProps.linkExtras, 'target')) {
+            this._setAttr('target', uiProps.linkExtras.target)
+          }
+        }
+        // TODO: Consider making the ItemRouterLink work with external urls.
+        // this._initMenuItemRouterLink(record, uiProps)
 
         break
       }
@@ -302,8 +308,8 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
     }
   }
 
-  private _setHrefAttr(url: string) {
-    this._renderer.setAttribute(this._elementRef.nativeElement, 'href', url)
+  private _setAttr(attr: string, value: string) {
+    this._renderer.setAttribute(this._elementRef.nativeElement, attr, value)
   }
 
   private _tryInitTabIndex() {
