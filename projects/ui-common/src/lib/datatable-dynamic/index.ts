@@ -9,3 +9,5 @@ export * from './datatable-dynamic.module'
 
 export * from './dynamic-datatable-def.service'
 export * from './dynamic-datatable-row-actions.service'
+
+export * from './utils/index'

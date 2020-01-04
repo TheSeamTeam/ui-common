@@ -1,5 +1,6 @@
 import { Directive, ElementRef, HostBinding, HostListener, Input } from '@angular/core'
 
+import { TheSeamLoadingOverlayService } from '../../loading/index'
 import { AssetReaderHelperService } from '../../services/index'
 
 // TODO: Add a dev warning or handle both `seamEncryptedAssetLink` and `attr.href` being set on a single element.
@@ -19,18 +20,22 @@ export class EncryptedAssetLinkDirective {
 
   @HostListener('click', [ '$event' ])
   _onClick(event) {
-    this._assetReaderHelper.openLink(
+    let open$ = this._assetReaderHelper.openLink(
       this.seamEncryptedAssetLink,
       this.seamDetectMimeFromContent,
-      this.seamShowLoadingOverlay,
       this.seamDownloadAsset,
       this._isAnchor() && this._hasTarget() ? this._getTarget() : undefined
-    ).subscribe()
+    )
+    if (this.seamShowLoadingOverlay) {
+      open$ = this._loading.while(open$)
+    }
+    open$.subscribe()
   }
 
   constructor(
     private _elementRef: ElementRef,
-    private _assetReaderHelper: AssetReaderHelperService
+    private _assetReaderHelper: AssetReaderHelperService,
+    private _loading: TheSeamLoadingOverlayService
   ) { }
 
   /** Determines if the component host is an anchor. */

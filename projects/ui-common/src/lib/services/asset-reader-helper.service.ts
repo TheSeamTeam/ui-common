@@ -4,8 +4,7 @@ import { catchError, map, mapTo, switchMap, tap } from 'rxjs/operators'
 
 import FileSaver from 'file-saver'
 
-import { TheSeamLoadingOverlayService } from '../loading/index'
-import { EncryptedAssetReader } from '../shared/index'
+import { EncryptedAssetReader } from '../shared/models/encrypted-asset-reader'
 import { fileDataFromBuffer, openBlob, readFileAsync } from '../utils/index'
 
 @Injectable({
@@ -14,7 +13,6 @@ import { fileDataFromBuffer, openBlob, readFileAsync } from '../utils/index'
 export class AssetReaderHelperService {
 
   constructor(
-    private _loading: TheSeamLoadingOverlayService,
     @Optional() private _assetReader?: EncryptedAssetReader
   ) {
     if (isDevMode() && !this._assetReader) {
@@ -25,7 +23,6 @@ export class AssetReaderHelperService {
   public openLink(
     url: string,
     detectMimeFromContent: boolean = true,
-    showLoadingOverlay: boolean = true,
     download: boolean = true,
     target?: string
   ): Observable<boolean> {
@@ -74,11 +71,7 @@ export class AssetReaderHelperService {
           mapTo(true)
         )
 
-      if (showLoadingOverlay) {
-        return this._loading.while(open$)
-      } else {
-        return open$
-      }
+      return open$
     }
 
     return of(false)

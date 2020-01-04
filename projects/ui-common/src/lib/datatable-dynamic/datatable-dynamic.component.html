@@ -30,37 +30,36 @@
     <ng-template seamDatatableRowActionItem let-row>
       <!-- <ng-container *ngIf="(_rowActions(row) | async) as rActions"> -->
 
-        <seam-datatable-dynamic-action-menu [row]="row"></seam-datatable-dynamic-action-menu>
+      <seam-datatable-dynamic-action-menu [row]="row"></seam-datatable-dynamic-action-menu>
 
-        <seam-datatable-action-menu *ngIf="false">
-          <ng-container *ngFor="let a of rActions">
-            <!-- TODO: Cleanup action-menu-item to be easier to use with or without dynamic. -->
-            <seam-datatable-action-menu-item *ngIf="!a.action" [label]="a.label"></seam-datatable-action-menu-item>
-            <seam-datatable-action-menu-item *ngIf="a.action && a.action.type === 'link' && a.action.external"
-              [label]="a.label"
-              [attr.href]="a.action.link"
-              [confirmDialog]="a.action.confirmDialog">
-            </seam-datatable-action-menu-item>
-            <seam-datatable-action-menu-item *ngIf="a.action && a.action.type === 'link' && !a.action.external"
-              [label]="a.label"
-              [routerLink]="a.action.link"
-              [confirmDialog]="a.action.confirmDialog">
-            </seam-datatable-action-menu-item>
-            <seam-datatable-action-menu-item *ngIf="a.action && a.action.type === 'api'"
-              [label]="a.label"
-              [endpointConfig]="a.action"
-              [row]="row"
-              [confirmDialog]="a.action.confirmDialog">
-            </seam-datatable-action-menu-item>
-            <seam-datatable-action-menu-item *ngIf="a.action && a.action.type === 'modal'"
-              [label]="a.label"
-              [modalConfig]="a.action"
-              [row]="row"
-              [confirmDialog]="a.action.confirmDialog">
-            </seam-datatable-action-menu-item>
-          </ng-container>
-        </seam-datatable-action-menu>
-      <!-- </ng-container> -->
+      <!-- TODO: Cleanup action-menu-item to be easier to use with or without dynamic. -->
+      <!-- <seam-datatable-action-menu *ngIf="false">
+        <ng-container *ngFor="let a of rActions">
+          <seam-datatable-action-menu-item *ngIf="!a.action" [label]="a.label"></seam-datatable-action-menu-item>
+          <seam-datatable-action-menu-item *ngIf="a.action && a.action.type === 'link' && a.action.external"
+            [label]="a.label"
+            [attr.href]="a.action.link"
+            [confirmDialog]="a.action.confirmDialog">
+          </seam-datatable-action-menu-item>
+          <seam-datatable-action-menu-item *ngIf="a.action && a.action.type === 'link' && !a.action.external"
+            [label]="a.label"
+            [routerLink]="a.action.link"
+            [confirmDialog]="a.action.confirmDialog">
+          </seam-datatable-action-menu-item>
+          <seam-datatable-action-menu-item *ngIf="a.action && a.action.type === 'api'"
+            [label]="a.label"
+            [endpointConfig]="a.action"
+            [row]="row"
+            [confirmDialog]="a.action.confirmDialog">
+          </seam-datatable-action-menu-item>
+          <seam-datatable-action-menu-item *ngIf="a.action && a.action.type === 'modal'"
+            [label]="a.label"
+            [modalConfig]="a.action"
+            [row]="row"
+            [confirmDialog]="a.action.confirmDialog">
+          </seam-datatable-action-menu-item>
+        </ng-container>
+      </seam-datatable-action-menu> -->
     </ng-template>
 
   </seam-datatable>
