@@ -4,8 +4,8 @@ import {
   ElementRef, EventEmitter, forwardRef, InjectionToken, Input, KeyValueDiffer,
   KeyValueDiffers, OnDestroy, OnInit, Output, QueryList, TemplateRef, ViewChild
 } from '@angular/core'
-import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs'
-import { distinctUntilChanged, map, shareReplay, skip, startWith, switchMap, tap } from 'rxjs/operators'
+import { BehaviorSubject, combineLatest, Observable, of, Subscription } from 'rxjs'
+import { auditTime, distinctUntilChanged, map, shareReplay, skip, startWith, switchMap, tap } from 'rxjs/operators'
 
 import { faChevronDown, faChevronRight, faEllipsisH, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import {
@@ -34,6 +34,7 @@ import { TheSeamDatatableRowDetailDirective } from '../datatable-row-detail/data
 import { DatatableRowActionItemDirective } from '../directives/datatable-row-action-item.directive'
 import { ITheSeamDatatableColumn } from '../models/table-column'
 import { DatatableColumnChangesService } from '../services/datatable-column-changes.service'
+import { DatatablePreferencesService } from '../services/datatable-preferences.service'
 
 export function _setColumnDefaults(columns: ITheSeamDatatableColumn[]): void {
   for (const column of columns) {
@@ -115,6 +116,10 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
 
   private _filtersSubject = new BehaviorSubject<IDataFilter[]>([])
 
+  @Input()
+  get preferencesKey(): string | undefined { return this._preferencesKey.value }
+  set preferencesKey(value: string | undefined) { this._preferencesKey.next(value || undefined) }
+  private _preferencesKey = new BehaviorSubject<string | undefined>(undefined)
 
   @Input() targetMarkerTemplate: any
 
@@ -287,12 +292,15 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
 
   constructor(
     private _columnChangesService: DatatableColumnChangesService,
-    private _differs: KeyValueDiffers
+    private _differs: KeyValueDiffers,
+    private _preferences: DatatablePreferencesService
   ) {
     this.rows$ = this._filtersSubject.asObservable()
-      .pipe(switchMap(filters => this._rows.asObservable()
+      .pipe(
+        switchMap(filters => this._rows.asObservable()
         .pipe(composeDataFilters(filters))
-      ))
+        )
+      )
 
     // this.hiddenColumns$ = this._hiddenColumns.asObservable()
 
@@ -339,16 +347,29 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
       ]).pipe(
         map(v => this._getMergedTplAndInpColumns(v[0], v[1])),
         // tap(v => console.log('cols', v)),
-        shareReplay({ bufferSize: 1, refCount: true })
+        shareReplay({ bufferSize: 1, refCount: true }),
       )
 
     // this.displayColumns$ = this.hiddenColumns$.pipe(
     //   switchMap(hiddenColumns => this.columns$.pipe(map(cols => cols.filter(c => hiddenColumns.findIndex(hc => hc === c.prop) === -1))))
     // )
 
+    const applyPrefs = (cols: ITheSeamDatatableColumn[]) => this._preferencesKey.pipe(
+      switchMap(name => !!name
+        // NOTE: This pending check is temporary to avoid table using previously
+        // retrieved preference while the new one is being updated on the
+        // server.
+        ? !this._preferences.pending
+          ? this._preferences.withColumnPreferences(name, cols)
+          : of(cols)
+        : of(cols)
+      )
+    )
+
     this.displayColumns$ = this.columns$.pipe(
       map(cols => cols.filter(c => !c.hidden)),
-      tap(v => this._removeUnusedDiffs(v))
+      tap(v => this._removeUnusedDiffs(v)),
+      switchMap(cols => applyPrefs(cols)),
     )
   }
 
@@ -547,6 +568,12 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
       if (col) {
         col.canAutoResize = false
       }
+
+      if (this.preferencesKey) {
+        const pref = { prop: event.column.prop, width: event.column.width, canAutoResize: false }
+        this._preferences.setColumnPreference(this.preferencesKey, pref)
+      }
+
       this.columns = [ ...this.columns ]
     }
   }
