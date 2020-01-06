@@ -1,12 +1,14 @@
+import { DynamicValue } from '../dynamic/index'
 import { ThemeTypes } from '../models/index'
 
 import { IDynamicDatatableCellType } from './models/cell-type'
 import { DynamicDatatableCellTypeConfig } from './models/cell-type-config'
-import {
-  DynamicDatatableRowActionApi,
-  DynamicDatatableRowActionLink,
-  DynamicDatatableRowActionModal
-} from './models/row-action'
+import { IDynamicDatatableRowAction } from './models/dynamic-datatable-row-action'
+// import {
+//   DynamicDatatableRowActionApi,
+//   DynamicDatatableRowActionLink,
+//   DynamicDatatableRowActionModal
+// } from './models/row-action'
 
 export interface IDynamicDatatableColumn<T = IDynamicDatatableCellType> {
   prop: string
@@ -35,25 +37,45 @@ export interface IDynamicDatatableRow {
 }
 
 export interface IDynamicDatatableFilterMenuItemDef<O = any> {
+
+  /** */
   name: string
+
   /**
+   * TODO: Refactor filter menu items to use locations instead of trying to
+   * maintain a mix of generic and specific types.
+   *
    * Default: 'common'
    */
   type: 'common' | 'full-search'
+
   /**
    * Default: 0
    */
   order?: number
+
+  /** */
   options?: O
 }
 
 export interface IDynamicDatatableFilterMenu {
+
   /**
    * Default 'default'
    */
   state?: 'hidden' | 'always-visible' | 'default'
+
+  /**
+   *
+   */
   filters?: IDynamicDatatableFilterMenuItemDef[]
-  exporters?: IDynamicDatatableExporter[]
+
+  /**
+   *
+   * Example: [ 'exporter:csv', 'exporter:xlsx' ]
+   */
+  exporters?: string[]
+
 }
 
 export type IDynamicDatatableFooterMenuItemType = 'button' | 'text'
@@ -86,34 +108,37 @@ export interface IDynamicDatatableFooterMenu {
   items?: IDynamicDatatableFooterMenuItem[]
 }
 
-export type DynamicDatatableRowActionType =
-  DynamicDatatableRowActionLink
-  | DynamicDatatableRowActionApi
-  | DynamicDatatableRowActionModal
+// TODO: Replace with new implementation.
+// export type DynamicDatatableRowActionType =
+//   DynamicDatatableRowActionLink
+//   | DynamicDatatableRowActionApi
+//   | DynamicDatatableRowActionModal
 
-export interface IDynamicDatatableRowActionDef {
-  /**
-   * Label displayed on the menu item.
-   */
-  label: string
-  /**
-   * TODO: Decide on a good way to handle the actions configuration through json.
-   */
-  action?: DynamicDatatableRowActionType
-  /**
-   * Expression executed each row to decide if the action will be visible.
-   */
-  isHiddenExpr?: string
-}
+// export interface IDynamicDatatableRowActionDef {
 
-// TODO: Define object definition to allow extra exporter options.
-export type IDynamicDatatableExporter = 'exporter:csv' | 'exporter:xlsx'
+//   /**
+//    * Label displayed on the menu item.
+//    */
+//   label: string
+
+//   /**
+//    * TODO: Decide on a good way to handle the actions configuration through json.
+//    */
+//   action?: IDynamicActionDef
+
+//   /**
+//    * Expression executed each row to decide if the action will be visible.
+//    */
+//   hidden?: DynamicValue
+
+// }
 
 export interface IDatatableDynamicDef {
-  filterMenu?: IDynamicDatatableFilterMenu
-  columns: IDynamicDatatableColumn[]
-  rows: IDynamicDatatableRow[]
-  rowActions?: IDynamicDatatableRowActionDef[]
+  readonly filterMenu?: IDynamicDatatableFilterMenu
+  readonly columns: IDynamicDatatableColumn[]
+  readonly rows: IDynamicDatatableRow[]
+  // rowActions?: IDynamicDatatableRowActionDef[]
+  readonly rowActions?: IDynamicDatatableRowAction[]
   // footerMenu?: IDynamicDatatableFooterMenu
-  options?: IDynamicDatatableOptions
+  readonly options?: IDynamicDatatableOptions
 }

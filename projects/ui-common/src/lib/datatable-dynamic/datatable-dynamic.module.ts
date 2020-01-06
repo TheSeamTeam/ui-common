@@ -3,20 +3,26 @@ import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { RouterModule } from '@angular/router'
 
+import { TheSeamButtonsModule } from '../buttons/index'
 import { TheSeamDataExporterModule } from '../data-exporter/index'
 import { TheSeamDataFiltersModule } from '../data-filters/index'
 import { TheSeamDatatableModule } from '../datatable/index'
 import { TheSeamIconModule } from '../icon/index'
+import { TheSeamMenuModule } from '../menu/index'
 import { TheSeamSharedModule } from '../shared/index'
 
+import { DatatableDynamicActionMenuComponent } from './datatable-dynamic-action-menu/datatable-dynamic-action-menu.component'
 import { DatatableDynamicFilterContainerComponent } from './datatable-dynamic-filter-container/datatable-dynamic-filter-container.component'
 import { DatatableDynamicComponent } from './datatable-dynamic.component'
+import { DatatableDynamicActionMenuItemDirective } from './directives/datatable-dynamic-action-menu-item.directive'
 
 
 @NgModule({
   declarations: [
     DatatableDynamicComponent,
-    DatatableDynamicFilterContainerComponent
+    DatatableDynamicFilterContainerComponent,
+    DatatableDynamicActionMenuComponent,
+    DatatableDynamicActionMenuItemDirective
   ],
   imports: [
     CommonModule,
@@ -26,12 +32,16 @@ import { DatatableDynamicComponent } from './datatable-dynamic.component'
     TheSeamDataFiltersModule,
     TheSeamIconModule,
     PortalModule,
-    RouterModule
+    RouterModule,
+    TheSeamMenuModule,
+    TheSeamButtonsModule
   ],
   exports: [
     DatatableDynamicComponent,
 
-    TheSeamDatatableModule
+    TheSeamDatatableModule,
+
+    DatatableDynamicActionMenuItemDirective
   ]
 })
 export class TheSeamDatatableDynamicModule { }

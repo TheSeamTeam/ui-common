@@ -41,7 +41,7 @@ class TheSeamCheckboxComponentBase {
   constructor(public _elementRef: ElementRef) {}
 }
 
-const _MatCheckboxMixinBase: HasTabIndexCtor & CanDisableCtor &
+const _TheSeamCheckboxMixinBase: HasTabIndexCtor & CanDisableCtor &
   typeof TheSeamCheckboxComponentBase =
     mixinTabIndex(mixinDisabled(TheSeamCheckboxComponentBase))
 
@@ -63,7 +63,7 @@ let _uid = 0
   inputs: [ 'tabIndex' ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TheSeamCheckboxComponent extends _MatCheckboxMixinBase
+export class TheSeamCheckboxComponent extends _TheSeamCheckboxMixinBase
   implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor, CanDisable, HasTabIndex {
 
   /** @ignore */

@@ -1,8 +1,10 @@
+import { IDynamicActionDef } from '../../models/dynamic-action-def'
 import { DynamicValue } from '../../models/dynamic-value'
 
-export interface IDynamicActionApiArgs {
+export interface IDynamicActionApiDef extends IDynamicActionDef<'api'> {
+
   /**
-   * Id to identify which `THESEAM_API_CONFIG` to use. If not provided the first
+   * Id to identify which `THESEAM_API_CONFIG` to use. If not provided, the first
    * provided config will be used.
    */
   id?: string
@@ -18,18 +20,22 @@ export interface IDynamicActionApiArgs {
    * NOTE: Some absolute url formats may not be detected, but most formats used
    * by web applications should be detected.
    */
-  endpoint?: DynamicValue
+  endpoint?: DynamicValue<string>
 
-  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+  /**
+   * Defaults to 'GET'
+   */
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 
-  body?: DynamicValue
+  body?: DynamicValue<any>
 
-  params?: DynamicValue
+  params?: DynamicValue<any>
 
   /**
    * `DynamicValue` type definition still needs some work to define the
    * evaluated type, but in this case `DynamicValue` should result in a
    * `string`.
    */
-  headers?: string | DynamicValue | { [name: string]: DynamicValue | DynamicValue[] }
+  headers?: string | DynamicValue<string> | { [name: string]: DynamicValue<string> | DynamicValue<string>[] }
+
 }

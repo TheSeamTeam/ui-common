@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { CheckboxComponent } from './checkbox.component'
+import { TheSeamCheckboxComponent } from './checkbox.component'
 
-describe('CheckboxComponent', () => {
-  let component: CheckboxComponent
-  let fixture: ComponentFixture<CheckboxComponent>
+describe('TheSeamCheckboxComponent', () => {
+  let component: TheSeamCheckboxComponent
+  let fixture: ComponentFixture<TheSeamCheckboxComponent>
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CheckboxComponent ]
+      declarations: [ TheSeamCheckboxComponent ]
     })
     .compileComponents()
   }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CheckboxComponent)
+    fixture = TestBed.createComponent(TheSeamCheckboxComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
   })

@@ -39,7 +39,7 @@
         [summaryHeight]="summaryHeight"
         [summaryPosition]="summaryPosition"
         [rows]="rows$ | async"
-        [columns]="columns$ | async"
+        [columns]="displayColumns$ | async"
         [headerHeight]="headerHeight"
         [rowHeight]="rowHeight"
         [footerHeight]="footerHeight"
@@ -102,24 +102,12 @@
 
 <ng-template #actionMenuCellTpl ngx-datatable-cell-template
   let-value="value" let-rowIndex="rowIndex" let-row="row">
-  <button type="button" class="datatable-action-button btn"
-    [seamDatatableActionMenuToggle]="actionMenuOverlayTpl"
-    #actionMenuToggle="seamDatatableActionMenuToggle"
-    title="Row Actions">
-    <fa-icon [icon]="faEllipsisH"></fa-icon>
-  </button>
-  <ng-template #actionMenuOverlayTpl>
-    <div @slideDown
-      cdkMonitorSubtreeFocus
-      (cdkFocusChange)="actionMenuToggle.onFocusChangeOverlay($event)"
-      tabindex="-1"
-      seamAutoFocus>
-      <ng-template
-        [ngTemplateOutlet]="rowActionItem.template"
-        [ngTemplateOutletContext]="{ $implicit: row, row: row, rowIndex: rowIndex }">
-      </ng-template>
-    </div>
+
+  <ng-template
+    [ngTemplateOutlet]="rowActionItem.template"
+    [ngTemplateOutletContext]="{ $implicit: row, row: row, rowIndex: rowIndex }">
   </ng-template>
+
 </ng-template>
 
 <ng-template #treeToggleTpl ngx-datatable-tree-toggle let-tree="cellContext">

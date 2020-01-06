@@ -8,6 +8,9 @@ import { DatatableColumnChangesService } from '../services/datatable-column-chan
 // HACK: Union type prevents the not found warning
 type _PipeTransform = PipeTransform | PipeTransform
 
+// TODO: The column component should implement `ITheSeamDatatableColumn`, since
+// providing some properties by input and some by template could be confusing.
+
 @Component({
   selector: 'seam-datatable-column',
   templateUrl: './datatable-column.component.html',
@@ -49,6 +52,8 @@ export class DatatableColumnComponent implements OnInit, OnChanges {
 
   @Input() summaryFunc: (cells: any[]) => any
   @Input() summaryTemplate: TemplateRef<any>
+
+  @Input() hidden: boolean
 
   private _isFirstChange = true
 

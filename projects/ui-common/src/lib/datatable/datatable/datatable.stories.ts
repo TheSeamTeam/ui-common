@@ -6,6 +6,7 @@ import { storiesOf } from '@storybook/angular'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
+import { RouterModule } from '@angular/router'
 import { TheSeamDatatableModule } from '../datatable.module'
 
 storiesOf('Components/Datatable', module)
@@ -20,8 +21,9 @@ storiesOf('Components/Datatable', module)
     },
     props: {
       // title: text('Header Title', 'Example Widget'),
-      width: number('Width', 150),
+      // width: number('Width', 150),
       // loading: boolean('Loading', true),
+      width: 300,
 
       columns: [
         { prop: 'name', name: 'Name' },
@@ -141,8 +143,9 @@ storiesOf('Components/Datatable', module)
   .add('Action Menu', () => ({
     moduleMetadata: {
       imports: [
+        RouterModule.forRoot([], { useHash: true }),
         TheSeamDatatableModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
       ]
     },
     props: {
@@ -154,7 +157,8 @@ storiesOf('Components/Datatable', module)
       rows: [
         { name: 'Mark', age: 27, color: 'blue' },
         { name: 'Joe', age: 33, color: 'green' },
-      ]
+      ],
+      there: '/there'
     },
     template: `
       <div style="height: 400px; width: 600px;">

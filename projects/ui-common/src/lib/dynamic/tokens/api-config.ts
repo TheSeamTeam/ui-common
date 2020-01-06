@@ -1,5 +1,7 @@
 import { InjectionToken } from '@angular/core'
 
+import { DynamicValue } from '../models/dynamic-value'
+
 export interface IApiConfig {
   /**
    * Used to identify this config if multiple are provided.
@@ -9,7 +11,7 @@ export interface IApiConfig {
   /**
    * Base url that non-absolute endpoints will be appended to.
    */
-  url?: string
+  url?: DynamicValue<string>
 
   /**
    * Default headers to add to requests.
@@ -24,6 +26,8 @@ export interface IApiConfig {
 }
 
 export const THESEAM_API_CONFIG_DEFAULT: IApiConfig = {
+  url: '/',
+
   methodHeaders: {
     'GET': { 'Content-Type': 'application/json' },
     'POST': { 'Content-Type': 'application/json' },

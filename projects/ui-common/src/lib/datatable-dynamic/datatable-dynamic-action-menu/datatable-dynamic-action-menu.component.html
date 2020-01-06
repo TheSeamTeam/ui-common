@@ -1,0 +1,62 @@
+<seam-menu #menu
+  menuClass="list-group py-0 border-0 seam-datatable-action-menu"
+  animationType="fade">
+
+  <ng-container *ngFor="let record of _menuRecords$ | async">
+
+    <a *ngIf="record.elementType === 'a'"
+      seamMenuItem
+      [seamDatatableDynamicActionMenuItem]="record"
+      class="list-group-item list-group-item-action py-1">{{ record.rowAction.label }}</a>
+
+    <button *ngIf="record.elementType === 'button'"
+      seamMenuItem
+      [seamDatatableDynamicActionMenuItem]="record"
+      type="button"
+      class="list-group-item list-group-item-action py-1">{{ record.rowAction.label }}</button>
+
+  </ng-container>
+
+    <!-- <ng-container *ngIf="(item.routerLink || item.href) && !item.confirmDialog; else noRouterLink">
+      <a *ngIf="item.href; else noHref"
+        seamMenuItem
+        class="list-group-item list-group-item-action py-1"
+        [attr.href]="item.href"
+        [target]="item.target"
+        (click)="activateItem($event, item)">
+        {{ item.label }}
+      </a>
+      <ng-template #noHref>
+        <a seamMenuItem
+          class="list-group-item list-group-item-action py-1"
+          [queryParams]="item.queryParams"
+          [fragment]="item.fragment"
+          [queryParamsHandling]="item.queryParamsHandling"
+          [preserveFragment]="item.preserveFragment"
+          [skipLocationChange]="item.skipLocationChange"
+          [replaceUrl]="item.replaceUrl"
+          [state]="item.state"
+          [routerLink]="item.routerLink"
+          [target]="item.target"
+          (click)="activateItem($event, item)">
+          {{ item.label }}
+        </a>
+      </ng-template>
+    </ng-container>
+    <ng-template #noRouterLink>
+      <button seamMenuItem
+        type="button"
+        class="list-group-item list-group-item-action py-1"
+        (click)="activateItem($event, item)">
+        {{ item.label }}
+      </button>
+    </ng-template>
+  </ng-container> -->
+</seam-menu>
+
+<button type="button" class="datatable-action-button btn"
+  [seamMenuToggle]="menu"
+  [positions]="_actionMenuPositions"
+  title="Row Actions">
+  <seam-icon [icon]="faEllipsisH"></seam-icon>
+</button>

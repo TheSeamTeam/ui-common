@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core'
+import { Observable, of, Subject, Subscriber } from 'rxjs'
+import { switchMap, takeUntil } from 'rxjs/operators'
 
 import jexl from 'jexl'
 
@@ -7,8 +9,6 @@ import { TheSeamDynamicComponentLoader } from '../../dynamic-component-loader/in
 import { Modal, ModalConfig, ModalRef } from '../../modal/index'
 import { ITableCellData } from '../../table/table-cell.models'
 
-import { Observable, of, Subject, Subscriber } from 'rxjs'
-import { switchMap, takeUntil } from 'rxjs/operators'
 import { CaluclatedValueContextType, ICalucatedValueContext } from '../table-cell-types-models'
 
 @Injectable({
