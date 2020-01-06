@@ -63,7 +63,7 @@
 </ng-template>
 
 <ng-template #itemTypeLink>
-  <a *ngIf="link; else noLink" class="side-nav-item nav-link d-flex flex-row text-nowrap w-100"
+  <a *ngIf="link; else noLink" class="side-nav-item nav-link d-flex flex-row text-nowrap w-100 align-items-center"
     [class.pr-0]="compact"
     [routerLink]="link"
     [queryParams]="queryParams"
@@ -81,7 +81,7 @@
   </a>
 
   <ng-template #noLink>
-    <a class="side-nav-item nav-link d-flex flex-row text-nowrap w-100" [class.pr-0]="compact">
+    <a class="side-nav-item nav-link d-flex flex-row text-nowrap w-100 align-items-center" [class.pr-0]="compact">
       <div [style.padding-left.px]="hierLevel * indentSize"></div>
       <div class="side-nav-item--icon">
         <seam-icon *ngIf="icon" [icon]="icon"></seam-icon>
