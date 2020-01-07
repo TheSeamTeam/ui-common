@@ -6,6 +6,7 @@ export * from './form/observe-control-valid'
 export * from './form/observe-control-value-change'
 export * from './form/observe-control-value'
 export * from './form/wait-on-non-pending-status'
+export * from './form/has-required-control'
 
 export * from './operators/index'
 export * from './operators/tap-first'
