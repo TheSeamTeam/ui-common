@@ -1,5 +1,5 @@
 import { LocationStrategy } from '@angular/common'
-import { Attribute, Directive, ElementRef, Input, isDevMode, OnChanges, OnDestroy, OnInit, Renderer2 } from '@angular/core'
+import { Attribute, ChangeDetectorRef, Directive, ElementRef, Input, isDevMode, OnChanges, OnDestroy, OnInit, Optional, Renderer2 } from '@angular/core'
 import { ActivatedRoute, QueryParamsHandling, Router, RouterLink, RouterLinkWithHref } from '@angular/router'
 import { from, fromEvent, Observable, of, ReplaySubject, Subscription } from 'rxjs'
 import { catchError, mapTo, switchMap, tap } from 'rxjs/operators'
@@ -51,6 +51,7 @@ export class DatatableDynamicActionMenuItemRouterLink {
       // console.log('rLinkWithHref', this.rLinkWithHref)
 
       this._rLinkClickEventListener = this.el.nativeElement.addEventListener('click', event => {
+        console.log('this._rLinkWithHref', this._rLinkWithHref, this._rLinkWithHref && this._rLinkWithHref.href)
         if (this._rLinkWithHref) {
           return this._rLinkWithHref.onClick(event.button, event.ctrlKey, event.metaKey, event.shiftKey)
         }
@@ -66,6 +67,7 @@ export class DatatableDynamicActionMenuItemRouterLink {
       // console.log('rLink', this.rLink)
 
       this._rLinkClickEventListener = this.el.nativeElement.addEventListener('click', () => {
+        console.log('this._rLink', this._rLink && this._rLink.urlTree)
         if (this._rLink) { return this._rLink.onClick() }
       })
 
@@ -177,6 +179,8 @@ export class DatatableDynamicActionMenuItemRouterLink {
 
 }
 
+// TODO: Refactor this directive. It got way more complex instead of more
+// simplified like it was supposed to be.
 @Directive({
   selector: '[seamDatatableDynamicActionMenuItem]',
   exportAs: 'seamDatatableDynamicActionMenuItem'
@@ -226,6 +230,7 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
   }
 
   ngOnChanges(changes: {}) {
+    // console.log('ngOnChanges', changes, this, this._menuRouterLink)
     if (this._menuRouterLink && this._menuRouterLink.routerLinkWithHref) {
       this._menuRouterLink.routerLinkWithHref.ngOnChanges({})
       if (this._menuRouterLink.routerLinkWithHref.href) {
@@ -244,7 +249,7 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
     return from(this._getUiProps(record)).pipe(
       switchMap(uiProps => this._isAnchor()
         ? this._updateAnchorElement(record, uiProps as IDynamicActionUiAnchorDef)
-        : this._updateClickElement(record, uiProps as IDynamicActionUiButtonDef)
+        : this._updateButtonElement(record, uiProps as IDynamicActionUiButtonDef)
       )
     )
   }
@@ -281,10 +286,33 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
 
         break
       }
+      // TODO: Unless we decide to add a route for openning assets, this would
+      // be confusing to a user.
+      // case 'link-asset': {
+      //   console.log('Handle "link-asset" triggerType.', uiProps)
+      //   // this._tryInitTabIndex()
+      //   this._tryInitBlockClick(record, uiProps)
+      //   break
+      // }
+      default: throw Error('[DatatableDynamicActionMenuItemDirective] ' +
+        `triggerType ${uiProps.triggerType} is not valid for _updateAnchorElement().`)
+    }
+
+    return _stream// .pipe(mapTo(undefined))
+  }
+
+  private _updateButtonElement(
+    record: IDynamicDatatableActionMenuRecord,
+    uiProps: IDynamicActionUiAnchorDef | IDynamicActionUiButtonDef
+  ): Observable<void> {
+    const _stream: Observable<any> = of(undefined)
+    // this._updateClickElement(record, uiProps as IDynamicActionUiButtonDef)
+    switch (uiProps.triggerType) {
       case 'link-asset': {
         console.log('Handle "link-asset" triggerType.', uiProps)
         // this._tryInitTabIndex()
         this._tryInitBlockClick(record, uiProps)
+        this._updateAssetElement(record, uiProps)
         break
       }
       default: throw Error('[DatatableDynamicActionMenuItemDirective] ' +
@@ -294,11 +322,44 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
     return _stream// .pipe(mapTo(undefined))
   }
 
+  private _updateAssetElement(
+    record: IDynamicDatatableActionMenuRecord,
+    uiProps: IDynamicActionUiAnchorDef | IDynamicActionUiButtonDef
+  ): Observable<void> {
+    console.log('_updateAssetElement')
+    // return of(undefined)
+    console.log('this._elementRef.nativeElement', this._elementRef.nativeElement)
+    return fromEvent(this._elementRef.nativeElement, 'click').pipe(
+      tap(event => {
+        // const _context = this._getContext(record._row, record.rowAction)
+        // const context = { ..._context, event, uiProps }
+        // const result = this._valueHelper.evalSync(uiProps.blockClickExpr, context)
+        console.log(record, uiProps)
+        console.log('_updateClickElement click', (<any>event).button, event)
+        if (this._assetReaderHelper) {
+          if (uiProps.triggerType === 'link-asset' && hasProperty(uiProps, 'linkUrl')) {
+            const url = uiProps.linkUrl
+            let target: string | undefined
+            if (hasProperty(uiProps, 'linkExtras') && hasProperty(uiProps.linkExtras, 'target')) {
+              target = uiProps.linkExtras.target
+            }
+            this._assetReaderHelper.openLink(url, true, true, target)
+          }
+        }
+        // if (!result) {
+        //   event.preventDefault()
+        //   event.stopPropagation()
+        // }
+      }),
+      mapTo(undefined)
+    )
+  }
+
   private _updateClickElement(
     record: IDynamicDatatableActionMenuRecord,
     uiProps: IDynamicActionUiButtonDef
   ): Observable<void> {
-
+    console.log('_updateClickElement')
     return of(undefined)
   }
 
@@ -365,7 +426,7 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
 
     this._menuRouterLink.routerLinkInput = uiProps.linkUrl as string
 
-    if (uiProps.linkExtras) {
+    if (hasProperty(uiProps, 'linkExtras')) {
       if (hasProperty(uiProps.linkExtras, 'target')) {
         this._menuRouterLink.target = uiProps.linkExtras.target
       }
@@ -391,6 +452,8 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
         this._menuRouterLink.state = uiProps.linkExtras.state
       }
     }
+
+    this.ngOnChanges({})
   }
 
   private _isAnchor(): boolean {

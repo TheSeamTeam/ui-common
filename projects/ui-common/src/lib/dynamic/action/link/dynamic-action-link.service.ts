@@ -26,12 +26,12 @@ export class DynamicActionLinkService implements IDynamicActionLink {
   public async getUiProps(args: IDynamicActionLinkDef, context: any): Promise<IDynamicActionUiAnchorDef> {
     const link: string = await this._valueHandler.eval(args.link)
     const external: boolean = !!(await this._valueHandler.eval(args.external))
-    const encrypted: boolean = !!(await this._valueHandler.eval(args.encrypted))
+    const asset: boolean = !!(await this._valueHandler.eval(args.asset))
     const target: string | undefined = await this._valueHandler.eval(args.target)
 
     const def: IDynamicActionUiAnchorDef = {
       _actionDef: args,
-      triggerType: encrypted ? 'link-asset' : external ? 'link-external' : 'link',
+      triggerType: asset ? 'link-asset' : external ? 'link-external' : 'link',
       linkUrl: link,
       // blockClickExpr: { type: 'jexl', expr: 'event.button == 0 && event.ctrlKey == true ? true : false' }
     }

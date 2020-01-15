@@ -41,16 +41,28 @@ export const exampleData1: IDatatableDynamicDef = {
     { icn: 'faEnvelope', firstName: 'User4', lastName: 'Last4', age: 34, sentDate: '2019-08-22T19:23:58.0266996+00:00', error: 'Sint enim do adipisicing in veniam ullamco tempor sunt sunt cillum magna. Proident ullamco ut nulla nisi ullamco occaecat cupidatat nisi. Elit proident sint ex ex reprehenderit anim adipisicing dolore pariatur ea officia est quis fugiat. Quis nostrud amet magna do proident consequat irure minim quis. Aute sit et pariatur ipsum.' },
   ],
   rowActions: [
+    // {
+    //   label: 'Link',
+    //   action: {
+    //     type: 'link',
+    //     link: 'details'
+    //   }
+    // },
+    // {
+    //   label: 'Link External',
+    //   action: { type: 'link', link: 'https://bing.com', external: true, target: '_blank' },
+    //   hidden: { type: 'jexl', expr: 'row.age > 30' }
+    // },
+    // {
+    //   label: 'Link Asset',
+    //   // action: { type: 'link', link: 'https://api.theseam.com/asset/1234', asset: true },
+    //   action: { type: 'link', link: { type: 'jexl', expr: '"https://api.theseam.com/asset/1234"' }, asset: true },
+    //   hidden: { type: 'jexl', expr: 'row.age > 30' }
+    // },
     {
-      label: 'Link',
-      action: {
-        type: 'link',
-        link: 'details'
-      }
-    },
-    {
-      label: 'Link External',
-      action: { type: 'link', link: 'https://bing.com', external: true, target: '_blank' },
+      label: 'Link Asset',
+      // action: { type: 'link', link: 'https://api.theseam.com/asset/1234', asset: true },
+      action: { type: 'link', link: { type: 'jexl', expr: '"https://api.theseam.com/asset/1234"' }, asset: true, target: '_blank' },
       hidden: { type: 'jexl', expr: 'row.age > 30' }
     },
     // {

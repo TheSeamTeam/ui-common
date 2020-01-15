@@ -147,7 +147,7 @@ export class DatatableDynamicActionMenuComponent implements OnInit {
     const action = def.action
 
     if (action.type === 'link') {
-      if (hasProperty(<any>action, 'encrypted')) {
+      if (hasProperty(<any>action, 'asset')) {
         return 'button'
       }
       return 'a'

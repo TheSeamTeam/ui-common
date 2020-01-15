@@ -15,16 +15,17 @@ export interface IDynamicActionLinkDef extends IDynamicActionDef<'link'> {
    */
   external?: DynamicValue<boolean>
 
-  // TODO: Consider adding asset.
   /**
    * Default: false
    */
-  // asset?: DynamicValue<boolean>
+  asset?: DynamicValue<boolean>
 
+  // TODO: Consider if this should have been removed. Now `asset` is used and it
+  // is up to the api endpoint to decide if it is encrypted.
   /**
    * Default: false
    */
-  encrypted?: DynamicValue<boolean>
+  // encrypted?: DynamicValue<boolean>
 
   /**
    *
