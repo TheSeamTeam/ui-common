@@ -33,6 +33,8 @@
     "pdfjs-dist",
     "rxjs",
     "xlsx",
-    "jexl"
+    "jexl",
+    "webfontloader",
+    "@types/webfontloader"
   ]
 }
