@@ -34,7 +34,9 @@
     "pdfjs-dist": "^2.0.943",
     "xlsx": "^0.14.4",
     "jexl": "^2.2.2",
-    "@types/file-saver": "^2.0.1"
+    "@types/file-saver": "^2.0.1",
+    "webfontloader": "^1.6.28",
+    "@types/webfontloader": "^1.6.29"
   },
   "repository": {
     "type": "git",
