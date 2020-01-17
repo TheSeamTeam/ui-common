@@ -59,12 +59,12 @@ export const exampleData1: IDatatableDynamicDef = {
     //   action: { type: 'link', link: { type: 'jexl', expr: '"https://api.theseam.com/asset/1234"' }, asset: true },
     //   hidden: { type: 'jexl', expr: 'row.age > 30' }
     // },
-    {
-      label: 'Link Asset',
-      // action: { type: 'link', link: 'https://api.theseam.com/asset/1234', asset: true },
-      action: { type: 'link', link: { type: 'jexl', expr: '"https://api.theseam.com/asset/1234"' }, asset: true, target: '_blank' },
-      hidden: { type: 'jexl', expr: 'row.age > 30' }
-    },
+    // {
+    //   label: 'Link Asset',
+    //   action: { type: 'link', link: 'https://api.theseam.com/asset/1234', asset: true },
+    //   // action: { type: 'link', link: { type: 'jexl', expr: '"https://api.theseam.com/asset/1234"' }, asset: true, target: '_blank' },
+    //   hidden: { type: 'jexl', expr: 'row.age > 30' }
+    // },
     // {
     //   label: 'Link External Config',
     //   action: { type: 'link', link: 'https://bing.com', external: true, confirmDialog: { 'message': 'Are you sure?' } },
@@ -74,18 +74,18 @@ export const exampleData1: IDatatableDynamicDef = {
     //   label: 'Api Endpoint',
     //   action: {
     //     type: 'api',
-    //     // endpoint: 'example/users',
-    //     endpointExpr: '"example/users/" + row.age',
+    //     endpoint: { type: 'jexl', expr: '"example/users/" + row.age' },
     //     method: 'POST',
-    //     bodyExpr: '{ thing: row.age }',
-    //     paramsExpr: '{ age: row.age, name: row.firstName + " " + row.lastName }'
+    //     body: { type: 'jexl', expr: '{ thing: row.age }' },
+    //     params: { type: 'jexl', expr: '{ age: row.age, name: row.firstName + " " + row.lastName }' }
     //   },
     //   hidden: { type: 'jexl', expr: 'row.age > 30' }
     // },
-    // {
-    //   label: 'Modal',
-    //   action: { type: 'modal', component: 'story-ex-modal' }
-    // }
+    {
+      label: 'Modal',
+      // action: { type: 'modal', modal: 'story-ex-modal' }
+      action: { type: 'modal', modal: { type: 'jexl', expr: 'row.age > 30 ? "story-ex-modal" : "story-ex-modal2"' } }
+    }
   ],
   options: {
     virtualization: true
