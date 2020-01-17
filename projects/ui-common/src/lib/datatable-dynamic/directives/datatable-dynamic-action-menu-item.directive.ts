@@ -305,14 +305,20 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
     record: IDynamicDatatableActionMenuRecord,
     uiProps: IDynamicActionUiAnchorDef | IDynamicActionUiButtonDef
   ): Observable<void> {
-    const _stream: Observable<any> = of(undefined)
+    let _stream: Observable<any> = of(undefined)
     // this._updateClickElement(record, uiProps as IDynamicActionUiButtonDef)
     switch (uiProps.triggerType) {
       case 'link-asset': {
         console.log('Handle "link-asset" triggerType.', uiProps)
         // this._tryInitTabIndex()
         this._tryInitBlockClick(record, uiProps)
-        this._updateAssetElement(record, uiProps)
+        _stream = _stream.pipe(switchMap(() => this._updateAssetElement(record, uiProps)))
+        break
+      }
+      case 'click': {
+        console.log('Handle "click" triggerType.', uiProps)
+        this._tryInitBlockClick(record, uiProps)
+        _stream = _stream.pipe(switchMap(() => this._updateClickElement(record, uiProps)))
         break
       }
       default: throw Error('[DatatableDynamicActionMenuItemDirective] ' +
@@ -329,7 +335,7 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
     console.log('_updateAssetElement')
     // return of(undefined)
     console.log('this._elementRef.nativeElement', this._elementRef.nativeElement)
-    return fromEvent(this._elementRef.nativeElement, 'click').pipe(
+    const t = fromEvent(this._elementRef.nativeElement, 'click').pipe(
       tap(event => {
         // const _context = this._getContext(record._row, record.rowAction)
         // const context = { ..._context, event, uiProps }
@@ -353,14 +359,33 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
       }),
       mapTo(undefined)
     )
+
+    return of(undefined).pipe(
+      tap(() => console.log('starting _updateButtonElement')),
+      switchMap(() => t),
+    )
   }
 
   private _updateClickElement(
     record: IDynamicDatatableActionMenuRecord,
     uiProps: IDynamicActionUiButtonDef
   ): Observable<void> {
-    console.log('_updateClickElement')
-    return of(undefined)
+    console.log('_updateClickElement', record, uiProps)
+    // return of(undefined)
+    return fromEvent(this._elementRef.nativeElement, 'click').pipe(
+      switchMap(event => {
+        const _context = this._getContext(record._row, record.rowAction)
+        const context = { ..._context, event, uiProps }
+        console.log('click', (<any>event).button, event)
+        // if (!result) {
+        //   event.preventDefault()
+        //   event.stopPropagation()
+        // }
+
+        return this._actionHelper.exec(uiProps._actionDef, context)
+      }),
+      mapTo(undefined)
+    )
   }
 
   private _unsubClick() {
