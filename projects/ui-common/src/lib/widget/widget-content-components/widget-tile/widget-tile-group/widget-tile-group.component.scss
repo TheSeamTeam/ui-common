@@ -1,0 +1,14 @@
+@import '../../../styles/utilities';
+
+:host {
+  display: block;
+  margin-bottom: $seam-widget-tile-margin-bottom;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  ::ng-deep [seam-widget-tile] {
+    margin-bottom: 0;
+  }
+}

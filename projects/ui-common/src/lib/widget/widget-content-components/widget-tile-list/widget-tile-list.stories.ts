@@ -34,7 +34,9 @@ storiesOf('Components/Widget/Content', module)
             <a seam-widget-tile [icon]="icons[0]" routerLink="/data-tools" iconClass="text-info">Tile 1</a>
             <a seam-widget-tile [icon]="icons[1]" routerLink="/data-tools" iconClass="text-danger">Tile 2</a>
             <button seam-widget-tile [icon]="icons[2]" iconClass="text-warning">Tile 3</button>
-            <a seam-widget-tile [icon]="icons[3]" routerLink="/data-tools" iconClass="text-success">Tile 4</a>
+            <seam-widget-tile-group>
+              <a seam-widget-tile [icon]="icons[3]" routerLink="/data-tools" iconClass="text-success">Tile 4</a>
+            </seam-widget-tile-group>
           </seam-widget-tile-list>
         </seam-widget>
       </div>`

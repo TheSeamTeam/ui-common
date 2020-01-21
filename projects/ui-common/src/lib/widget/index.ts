@@ -8,8 +8,12 @@ export * from './widget-content-components/widget-footer-link/widget-footer-link
 export * from './widget-content-components/widget-footer-text/widget-footer-text.component'
 export * from './widget-content-components/widget-header-badge/widget-header-badge.component'
 export * from './widget-content-components/widget-table/widget-table.component'
+export * from './widget-content-components/widget-tile/widget-tile-footer/widget-tile-footer.component'
+export * from './widget-content-components/widget-tile/widget-tile-footer-item/widget-tile-footer-item.component'
+export * from './widget-content-components/widget-tile/widget-tile-group/widget-tile-group.component'
 export * from './widget-content-components/widget-tile/widget-tile-secondary-icon.directive'
 export * from './widget-content-components/widget-tile/widget-tile.component'
+export * from './widget-content-components/widget-tile-list/widget-tile-list.component'
 
 export * from './widget.module'
 export * from './widget/widget.component'

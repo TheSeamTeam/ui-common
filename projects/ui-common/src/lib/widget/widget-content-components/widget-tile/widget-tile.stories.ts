@@ -60,3 +60,34 @@ storiesOf('Components/Widget/Content/Tile', module)
         </seam-widget>
       </div>`
   }))
+
+  .add('Button With Footer', () => ({
+    moduleMetadata: {
+      imports: [
+        TheSeamWidgetModule,
+        BrowserAnimationsModule,
+        RouterModule.forRoot([], { useHash: true })
+      ]
+    },
+    props: {
+      icon: faWrench,
+      title: text('Header Title', 'Example Widget'),
+      loading: boolean('Loading', false),
+      tileIcon: faPersonBooth,
+      tileText: text('Tile Text', 'Tile Text'),
+    },
+    template: `
+      <div class="p-1" style="max-height: 400px; width: 500px;">
+        <seam-widget [icon]="icon" [titleText]="title" [loading]="loading">
+          <button seam-widget-tile [icon]="tileIcon">tile 1</button>
+          <seam-widget-tile-group>
+            <button seam-widget-tile [icon]="tileIcon">{{ tileText }}</button>
+            <seam-widget-tile-footer>
+              <button seam-widget-tile-footer-item>Item 1</button>
+              <a seam-widget-tile-footer-item>Item 2</a>
+              <a seam-widget-tile-footer-item href="https://theseamteam.github.io/ui-common">Item 3</a>
+            </seam-widget-tile-footer>
+          </seam-widget-tile-group>
+        </seam-widget>
+      </div>`
+  }))
