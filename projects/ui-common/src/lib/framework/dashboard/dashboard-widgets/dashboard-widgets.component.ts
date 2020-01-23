@@ -1,6 +1,9 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop'
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Inject, Input, OnDestroy, OnInit, Optional, ViewContainerRef } from '@angular/core'
 import { Observable } from 'rxjs'
+
+import { ITheSeamBaseLayoutRef } from '../../base-layout/base-layout-ref'
+import { THESEAM_BASE_LAYOUT_REF } from '../../base-layout/base-layout-tokens'
 
 import { IDashboardWidgetsColumnRecord, IDashboardWidgetsItem, IDashboardWidgetsItemDef } from './dashboard-widgets-item'
 import { DashboardWidgetsService } from './dashboard-widgets.service'
@@ -14,6 +17,7 @@ import { DashboardWidgetsService } from './dashboard-widgets.service'
 export class DashboardWidgetsComponent implements OnInit, OnDestroy {
 
   @Input() gapSize = 60
+  @Input() widgetsDraggable: boolean = true
 
   @Input()
   get widgets(): IDashboardWidgetsItemDef[] { return this._dashboardWidgets.widgets }
@@ -24,10 +28,22 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy {
 
   constructor(
     private _dashboardWidgets: DashboardWidgetsService,
-    private _viewContainerRef: ViewContainerRef
+    private _viewContainerRef: ViewContainerRef,
+    @Optional() @Inject(THESEAM_BASE_LAYOUT_REF) private _baseLayoutRef: ITheSeamBaseLayoutRef
   ) { }
 
   ngOnInit() {
+    if (this._baseLayoutRef) {
+      this._baseLayoutRef.registerAction({
+        type: 'button',
+        name: 'widget-drag-toggle',
+        label: 'Toggle Widget Dragging',
+        exec: () => {
+          console.log('toggle')
+        }
+      })
+    }
+
     // this._dashboardWidgets.setViewContainerRef(this._viewContainerRef)
 
     this.widgetItems$ = this._dashboardWidgets.widgetItems$

@@ -16,9 +16,11 @@ import {
   faBook,
   faBuilding,
   faExclamationTriangle,
+  faLock,
   faQuestionCircle,
   faSignature,
   faSignOutAlt,
+  faUnlock,
   faUserAlt,
   faWrench
 } from '@fortawesome/free-solid-svg-icons'
@@ -284,7 +286,13 @@ storiesOf('Framework/BaseLayout', module)
       faSignOutAlt,
       faBell,
       faExclamationTriangle,
-      faComment
+      faComment,
+      faLock,
+      faUnlock,
+      dragging: true,
+      toggleDragging: function() {
+        this.dragging = !this.dragging
+      }
     },
     template: `
       <div style="height: 100vh; width: 100vw;">
@@ -293,8 +301,13 @@ storiesOf('Framework/BaseLayout', module)
             *seamBaseLayoutSideBar
             [items]="navItems">
           </seam-side-nav>
-          <div class="p-1" *seamBaseLayoutContentHeader>
-            <seam-breadcrumbs></seam-breadcrumbs>
+          <div class="p-1 d-flex flex-row" *seamBaseLayoutContentHeader>
+            <seam-breadcrumbs class="flex-grow-1"></seam-breadcrumbs>
+            <div class="ml-1">
+              <button seamButton theme="baselayout-action" title="Toggle Widget Dragging">
+                <seam-icon [icon]="dragging ? faUnlock : faLock" iconClass="text-secondary" (click)="toggleDragging()"></seam-icon>
+              </button>
+            </div>
           </div>
           <seam-top-bar
             *seamBaseLayoutTopBar
@@ -302,9 +315,7 @@ storiesOf('Framework/BaseLayout', module)
             [logoSm]="logoSm"
             [hasTitle]="hasTitle"
             [titleText]="titleText"
-            [subTitleText]="subTitleText"
-            [displayName]="displayName"
-            [organizationName]="organizationName">
+            [subTitleText]="subTitleText">
             <seam-menu seamTopBarMenu>
               <a seamMenuItem [icon]="faUserAlt" routerLink="/profile">Profile</a>
               <button seamMenuItem [icon]="faQuestionCircle">About</button>
@@ -338,7 +349,8 @@ storiesOf('Framework/BaseLayout', module)
           </seam-top-bar>
           <seam-dashboard
             *seamBaseLayoutContent
-            [widgets]="widgets">
+            [widgets]="widgets"
+            [widgetsDraggable]="dragging">
           </seam-dashboard>
         </seam-base-layout>
       </div>
