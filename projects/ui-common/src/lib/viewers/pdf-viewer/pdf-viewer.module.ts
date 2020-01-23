@@ -3,8 +3,8 @@ import { NgModule } from '@angular/core'
 
 import { TheSeamSharedModule } from '../../shared/index'
 
-import { PdfPageComponent } from './pdf-page/pdf-page.component'
-import { PdfViewerComponent } from './pdf-viewer.component'
+import { TheSeamPdfPageComponent } from './pdf-page/pdf-page.component'
+import { TheSeamPdfViewerComponent } from './pdf-viewer.component'
 
 @NgModule({
   imports: [
@@ -12,12 +12,12 @@ import { PdfViewerComponent } from './pdf-viewer.component'
     TheSeamSharedModule
   ],
   declarations: [
-    PdfViewerComponent,
-    PdfPageComponent
+    TheSeamPdfViewerComponent,
+    TheSeamPdfPageComponent
   ],
   exports: [
-    PdfViewerComponent,
-    PdfPageComponent
+    TheSeamPdfViewerComponent,
+    TheSeamPdfPageComponent
   ]
 })
 export class TheSeamPdfViewerModule { }

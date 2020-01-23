@@ -20,7 +20,7 @@ const pdfjsLib = require('pdfjs-dist/build/pdf')
     canvas { display: block; }
   `]
 })
-export class PdfPageComponent implements OnInit, OnDestroy, AfterViewInit {
+export class TheSeamPdfPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Input()
   public get page() { return this._page }
