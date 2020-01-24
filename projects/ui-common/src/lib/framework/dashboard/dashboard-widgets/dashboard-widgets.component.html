@@ -1,3 +1,14 @@
+<!--
+  This is an ugly trick I am using to render the component into an <ng-content>
+  wrapped in an <ng-template> to move the component to different outlets without
+  reinitializing it. This way the widget won't reload when moving between
+  columns. When I remember how I programatically did this I will remove this
+  weirdness.
+ -->
+<seam-dashboard-widget-container *ngFor="let item of widgetItems$ | async" [def]="item">
+  <ng-template [cdkPortalOutlet]="item.portal"></ng-template>
+</seam-dashboard-widget-container>
+
 <div class="d-flex flex-row mx-auto"
   style="max-width: 1400px;"
   [style.padding.px]="gapSize / 2"
@@ -13,35 +24,8 @@
       cdkDrag
       [cdkDragDisabled]="!widgetsDraggable">
       <div [style.margin.px]="gapSize / 2">
-        <ng-template [cdkPortalOutlet]="item.portal"></ng-template>
+        <seam-dashboard-widget-template-container [item]="item"></seam-dashboard-widget-template-container>
       </div>
     </div>
   </div>
 </div>
-
-
-
-<!-- <div class="d-flex flex-column mx-auto"
-  style="max-width: 1400px;"
-  [style.padding.px]="gapSize / 2"
-  cdkDropListGroup>
-  <ng-container *ngIf="{ items: widgetItems$ | async, cols: widgetColumns$ | async } as o">
-    <div class="d-flex flex-row"
-      cdkDropList
-      [cdkDropListData]="o.items"
-      (cdkDropListDropped)="drop($event)">
-      <div *ngFor="let col of o.cols"
-        class="d-flex flex-column flex-grow-1 dashboard-widgets-list"
-        style="width: 446.67px;">
-        <div *ngFor="let item of col.items"
-          class="dashboard-widgets-list-item"
-          cdkDrag
-          [cdkDragDisabled]="!widgetsDraggable">
-          <div [style.margin.px]="gapSize / 2">
-            <ng-template [cdkPortalOutlet]="item.portal"></ng-template>
-          </div>
-        </div>
-      </div>
-    </div>
-  </ng-container>
-</div> -->

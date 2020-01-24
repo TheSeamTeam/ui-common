@@ -1,9 +1,24 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop'
-import { ChangeDetectionStrategy, Component, Inject, Input, OnDestroy, OnInit, Optional, ViewContainerRef } from '@angular/core'
-import { Observable } from 'rxjs'
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  Optional,
+  QueryList,
+  ViewChildren,
+  ViewContainerRef
+} from '@angular/core'
+import { untilDestroyed } from 'ngx-take-until-destroy'
+import { BehaviorSubject, Observable } from 'rxjs'
+import { finalize, map, startWith } from 'rxjs/operators'
 
 import { ITheSeamBaseLayoutRef } from '../../base-layout/base-layout-ref'
 import { THESEAM_BASE_LAYOUT_REF } from '../../base-layout/base-layout-tokens'
+import { DashboardWidgetContainerComponent } from '../dashboard-widget-container/dashboard-widget-container.component'
 
 import { IDashboardWidgetsColumnRecord, IDashboardWidgetsItem, IDashboardWidgetsItemDef } from './dashboard-widgets-item'
 import { DashboardWidgetsService } from './dashboard-widgets.service'
@@ -14,7 +29,7 @@ import { DashboardWidgetsService } from './dashboard-widgets.service'
   styleUrls: ['./dashboard-widgets.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DashboardWidgetsComponent implements OnInit, OnDestroy {
+export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Input() gapSize = 60
   @Input() widgetsDraggable: boolean = true
@@ -25,12 +40,19 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy {
 
   public widgetItems$: Observable<IDashboardWidgetsItem[]>
   public widgetColumns$: Observable<IDashboardWidgetsColumnRecord[]>
+  public containers$: Observable<DashboardWidgetContainerComponent[]>
+
+  @ViewChildren(DashboardWidgetContainerComponent) containers: QueryList<DashboardWidgetContainerComponent>
+
+  private _containers = new BehaviorSubject<DashboardWidgetContainerComponent[]>([])
 
   constructor(
     private _dashboardWidgets: DashboardWidgetsService,
     private _viewContainerRef: ViewContainerRef,
     @Optional() @Inject(THESEAM_BASE_LAYOUT_REF) private _baseLayoutRef: ITheSeamBaseLayoutRef
-  ) { }
+  ) {
+    this.containers$ = this._containers.asObservable()
+  }
 
   ngOnInit() {
     if (this._baseLayoutRef) {
@@ -53,6 +75,15 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() { }
+
+  ngAfterViewInit() {
+    this.containers.changes.pipe(
+      startWith(undefined),
+      map(() => this.containers.toArray()),
+      untilDestroyed(this),
+      finalize(() => this._containers.next([]))
+    ).subscribe(v => this._containers.next(v))
+  }
 
   drop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {

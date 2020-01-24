@@ -28,7 +28,7 @@ export class DashboardWidgetsService {
     this.widgetItems$ = combineLatest([ this._widgets, this._viewContainerRefSubject ])
       .pipe(
         map(([ defs, vcr ]) => {
-          console.log(defs, vcr)
+          // console.log(defs, vcr)
           return (defs || []).map(d => this.createWidgetItem(d, vcr))
             .filter(notNullOrUndefined)
         })
