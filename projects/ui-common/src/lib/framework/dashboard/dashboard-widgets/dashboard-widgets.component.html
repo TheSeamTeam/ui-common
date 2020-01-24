@@ -21,6 +21,7 @@
     (cdkDropListDropped)="drop($event)">
     <div *ngFor="let item of col.items"
       class="dashboard-widgets-list-item"
+      [attr.data-widget-id]="item.widgetId"
       cdkDrag
       [cdkDragDisabled]="!widgetsDraggable">
       <div [style.margin.px]="gapSize / 2">

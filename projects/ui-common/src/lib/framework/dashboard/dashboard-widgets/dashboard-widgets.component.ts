@@ -1,4 +1,4 @@
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop'
+import { CdkDrag, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop'
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -13,8 +13,8 @@ import {
   ViewContainerRef
 } from '@angular/core'
 import { untilDestroyed } from 'ngx-take-until-destroy'
-import { BehaviorSubject, Observable } from 'rxjs'
-import { finalize, map, startWith } from 'rxjs/operators'
+import { BehaviorSubject, Observable, Subject } from 'rxjs'
+import { finalize, map, startWith, switchMap, tap } from 'rxjs/operators'
 
 import { ITheSeamBaseLayoutRef } from '../../base-layout/base-layout-ref'
 import { THESEAM_BASE_LAYOUT_REF } from '../../base-layout/base-layout-tokens'
@@ -43,8 +43,10 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
   public containers$: Observable<DashboardWidgetContainerComponent[]>
 
   @ViewChildren(DashboardWidgetContainerComponent) containers: QueryList<DashboardWidgetContainerComponent>
+  @ViewChildren(CdkDrag) cdkDragDirectives: QueryList<CdkDrag>
 
   private _containers = new BehaviorSubject<DashboardWidgetContainerComponent[]>([])
+  private _layoutChange = new Subject<void>()
 
   constructor(
     private _dashboardWidgets: DashboardWidgetsService,
@@ -71,7 +73,15 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
     this.widgetItems$ = this._dashboardWidgets.widgetItems$
     this.widgetColumns$ = this._dashboardWidgets.widgetColumns$
 
-    this.widgetItems$.subscribe()
+    // this.widgetItems$.subscribe()
+
+    this._layoutChange.pipe(
+      switchMap(() => this.widgetItems$.pipe(
+        map(widgetItems => this._dashboardWidgets.toSerializeableItems(widgetItems)),
+        tap(v => console.log('serializable', v))
+      )),
+      untilDestroyed(this)
+    ).subscribe()
   }
 
   ngOnDestroy() { }
@@ -88,7 +98,7 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
   drop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex)
-      this._dashboardWidgets.updateOrder().subscribe()
+      this._dashboardWidgets.updateOrder().subscribe(() => this._layoutChange.next())
     } else {
       transferArrayItem(
         event.previousContainer.data,
@@ -96,7 +106,7 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
         event.previousIndex,
         event.currentIndex
       )
-      this._dashboardWidgets.updateOrder().subscribe()
+      this._dashboardWidgets.updateOrder().subscribe(() => this._layoutChange.next())
     }
   }
 
