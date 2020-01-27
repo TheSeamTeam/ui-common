@@ -63,7 +63,6 @@ export class TheSeamBaseLayoutComponent implements OnInit, ITheSeamBaseLayoutRef
   _contentFooterPortal: TemplatePortal
 
   private _hasSideBar = new BehaviorSubject<boolean>(false)
-  private _registeredActions = new BehaviorSubject<BaseLayoutAction[]>([])
 
   public hasSideBar$: Observable<boolean>
   public isMobile$: Observable<boolean>
@@ -72,6 +71,8 @@ export class TheSeamBaseLayoutComponent implements OnInit, ITheSeamBaseLayoutRef
   private _registeredNav = new BehaviorSubject<ITheSeamBaseLayoutNav | undefined>(undefined)
   public registeredNav$ = this._registeredNav.asObservable()
 
+  get registeredActions() { return this._registeredActions.value }
+  private _registeredActions = new BehaviorSubject<BaseLayoutAction[]>([])
   public registeredActions$: Observable<BaseLayoutAction[]>
 
   constructor(

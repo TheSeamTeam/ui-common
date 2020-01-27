@@ -1,84 +1,101 @@
 import { ComponentPortal } from '@angular/cdk/portal'
 import { Injectable, isDevMode, ViewContainerRef } from '@angular/core'
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs'
-import { filter, map, mapTo, shareReplay, switchMap, take, tap } from 'rxjs/operators'
+import { auditTime, filter, map, mapTo, shareReplay, switchMap, take, tap } from 'rxjs/operators'
 
 import { TheSeamDynamicComponentLoader } from '../../../dynamic-component-loader/dynamic-component-loader.service'
 import { notNullOrUndefined } from '../../../utils/index'
 
 import {
+  IDashboardWidgetItemLayout,
+  IDashboardWidgetItemLayoutPreference,
   IDashboardWidgetsColumnRecord,
   IDashboardWidgetsItem,
   IDashboardWidgetsItemDef,
   IDashboardWidgetsItemSerialized
 } from './dashboard-widgets-item'
+import { DashboardWidgetsPreferencesService } from './dashboard-widgets-preferences.service'
 
 @Injectable({
   providedIn: 'root'
 })
 export class DashboardWidgetsService {
 
+  public readonly preferenceKey: string = 'datatable-widgets'
+
+  public readonly defaultNumColumns: number = 3
+
+  /** Used for operations, such as 'addWidget', if the column is not specified. */
+  public readonly defaultColumn: number = 0
+
   get widgets(): IDashboardWidgetsItemDef[] { return this._widgets.value }
   set widgets(value: IDashboardWidgetsItemDef[]) { this._widgets.next(value) }
   private _widgets = new BehaviorSubject<IDashboardWidgetsItemDef[]>([])
 
-  public widgetItems$: Observable<IDashboardWidgetsItem[]>
-  public widgetColumns$: Observable<IDashboardWidgetsColumnRecord[]>
+  get numColumns(): number { return this._numColumns.value }
+  set numColumns(value: number) { this._numColumns.next(value) }
+  private _numColumns = new BehaviorSubject<number>(this.defaultNumColumns)
 
-  /** Used for operations, such as 'addWidget', if the column is not specified. */
-  public defaultColumn = 0
+  public readonly numColumns$: Observable<number>
+  public readonly widgetItems$: Observable<IDashboardWidgetsItem[]>
+  public readonly widgetColumns$: Observable<IDashboardWidgetsColumnRecord[]>
 
-  private _viewContainerRefSubject = new BehaviorSubject<ViewContainerRef | undefined>(undefined)
+  private readonly _viewContainerRefSubject = new BehaviorSubject<ViewContainerRef | undefined>(undefined)
 
   constructor(
-    private _dynamicComponentLoaderModule: TheSeamDynamicComponentLoader
+    private readonly _dynamicComponentLoaderModule: TheSeamDynamicComponentLoader,
+    private readonly _preferences: DashboardWidgetsPreferencesService
   ) {
-    this.widgetItems$ = combineLatest([ this._widgets, this._viewContainerRefSubject ])
+    this.numColumns$ = this._numColumns.asObservable()
+
+    // Widget items without preferences
+    const _widgetItems$ = combineLatest([ this._widgets, this._viewContainerRefSubject ])
+      .pipe(switchMap(([ defs, vcr ]) => this.createWidgetItems(defs, vcr)))
+
+    // Widget items with preferences
+    this.widgetItems$ = combineLatest([ _widgetItems$, this.numColumns$ ])
       .pipe(
-        switchMap(([ defs, vcr ]) => {
-          const _createObservables = (defs || []).map(d => this.createWidgetItem(d, vcr))
-          return combineLatest(_createObservables).pipe(
-            map(items => items.filter(notNullOrUndefined)),
-            tap(items => {
-              if (isDevMode()) {
-                const ids: string[] = items.map(v => v.widgetId)
-                if ((new Set(ids)).size !== ids.length) {
-                  console.warn(`[DashboardWidgetsService] Duplicate widget's with the same 'widgetId' found.`)
-                }
-              }
-            })
+        // Wait until the current tick is done, incase both the widgets and
+        // number of columns are set durring the same tick. Without the audit,
+        // this would get called twice when the component is initialized with
+        // both inputs set one after the other individually.
+        auditTime(0),
+        switchMap(([ items, numColumns ]) =>
+          this._preferences.selectLayout(this.preferenceKey, this._layoutName(numColumns)).pipe(
+            map(layout => layout ? this.withLayoutPreferences(items, layout) : items)
           )
-        }),
+        ),
         shareReplay({ bufferSize: 1, refCount: true })
       )
 
     this.widgetColumns$ = this.widgetItems$
       .pipe(
-        // Distribute items into columns
-        map(items => {
-          const columns: IDashboardWidgetsColumnRecord[] = []
-
-          for (const item of items) {
-            const col: IDashboardWidgetsColumnRecord | undefined = columns.find(c => c.column === item.col)
-            if (!col) {
-              columns.push({ column: item.col, items: [ item ] })
-            } else {
-              col.items.push(item)
-            }
-          }
-
-          return columns
-        }),
-        // Sort columns
-        map(columns => columns.sort((a, b) => a.column - b.column)),
-        // Sort columns items
-        tap(columns => columns.forEach(col => col.items.sort((a, b) => a.order - b.order))),
+        map(items => this.toColumnRecords(items)),
         shareReplay({ bufferSize: 1, refCount: true })
       )
   }
 
+  private _layoutName(numColumns: number): string {
+    return `columns-${numColumns}`
+  }
+
   public setViewContainerRef(vcr: ViewContainerRef | undefined) {
     this._viewContainerRefSubject.next(vcr)
+  }
+
+  public createWidgetItems(defs: IDashboardWidgetsItemDef[], vcr?: ViewContainerRef): Observable<IDashboardWidgetsItem[]> {
+    const _createObservables = (defs || []).map(d => this.createWidgetItem(d, vcr))
+    return combineLatest(_createObservables).pipe(
+      map(items => items.filter(notNullOrUndefined)),
+      tap(items => {
+        if (isDevMode()) {
+          const ids: string[] = items.map(v => v.widgetId)
+          if ((new Set(ids)).size !== ids.length) {
+            console.warn(`[DashboardWidgetsService] Duplicate widget's with the same 'widgetId' found.`)
+          }
+        }
+      })
+    )
   }
 
   public createWidgetItem(def: IDashboardWidgetsItemDef, vcr?: ViewContainerRef): Observable<IDashboardWidgetsItem | undefined> {
@@ -134,46 +151,67 @@ export class DashboardWidgetsService {
       )
   }
 
-  /**
-   * Returns the serializable widget items as objects that can be serialized to
-   * a JSON string for storage.
-   */
-  public toSerializeableItems(widgets: IDashboardWidgetsItem[]): IDashboardWidgetsItemSerialized[] {
-    const serialized: IDashboardWidgetsItemSerialized[] = []
-    for (const w of widgets) {
-      // if (!w.__itemDef.component || typeof w.__itemDef.component !== 'string') {
-      //   console.warn(`[DashboardWidgetsService] Widget item def must have a string 'component' property to be serialized.`, w)
-      //   continue
-      // }
-      // serialized.push({
-      //   widgetId: w.widgetId,
-      //   col: w.col,
-      //   order: w.order,
-      //   component: w.__itemDef.component
-      // })
+  public toColumnRecords(items: IDashboardWidgetsItem[]): IDashboardWidgetsColumnRecord[] {
+    let columns: IDashboardWidgetsColumnRecord[] = []
 
-      // TODO: Remove this, it is only here for initial dev debugging.
-      serialized.push({
-        widgetId: w.widgetId,
-        col: w.col,
-        order: w.order,
-        component: w.__itemDef.component as string
-      })
+    // Distribute items into columns
+    for (const item of items) {
+      const col: IDashboardWidgetsColumnRecord | undefined = columns.find(c => c.column === item.col)
+      if (!col) {
+        columns.push({ column: item.col, items: [ item ] })
+      } else {
+        col.items.push(item)
+      }
     }
-    return serialized
+
+    // Sort columns
+    columns = columns.sort((a, b) => a.column - b.column)
+
+    // Sort columns items
+    columns.forEach(col => col.items.sort((a, b) => a.order - b.order))
+
+    return columns
   }
 
-  public toDeserializedItems(widgets: IDashboardWidgetsItemSerialized[]): IDashboardWidgetsItemDef[] {
-    const items: IDashboardWidgetsItemDef[] = []
-    for (const w of widgets) {
-      items.push({
-        widgetId: w.widgetId,
-        col: w.col,
-        order: w.order,
-        component: w.component
-      })
+  public withLayoutPreferences(items: IDashboardWidgetsItem[], layout: IDashboardWidgetItemLayoutPreference): IDashboardWidgetsItem[] {
+    const _items: IDashboardWidgetsItem[] = []
+
+    for (const item of items) {
+      const itemPref = layout.items.find(x => x.widgetId === item.widgetId)
+      if (itemPref) {
+        _items.push({
+          ...item,
+          ...itemPref
+        })
+      } else {
+        _items.push(item)
+      }
     }
-    return items
+
+    return _items
+  }
+
+  public savePreferences(): Observable<void> {
+    // Right now the items are moved between the column record arrays, but the
+    // 'col' prop is not updated, so it is mapped to corrected items here from
+    // the column records.
+    const items$ = this.widgetColumns$.pipe(
+      map(columns => ([] as IDashboardWidgetsItem[])
+        .concat(...(columns.map(c => c.items.map(itm => ({ ...itm, col: c.column })))))
+      ),
+    )
+
+    return combineLatest([ items$, this.numColumns$ ]).pipe(
+      auditTime(0),
+      take(1),
+      switchMap(([ items, numColumns ]) => {
+        return this._preferences.updateLayout(this.preferenceKey, {
+          name: this._layoutName(numColumns),
+          items
+        })
+      }),
+      mapTo(undefined)
+    )
   }
 
 }

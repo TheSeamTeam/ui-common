@@ -86,7 +86,7 @@ export class DatatablePreferencesService {
     }
   }
 
-  // TODO: Improve this updating to not be more generic, so we can quickly add
+  // TODO: Improve this updating to be more generic, so we can quickly add
   // edits for different preference schema's.
   //
   // TODO: Decide if a send queue/merging of pending queue is needed to avoid

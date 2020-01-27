@@ -16,11 +16,9 @@ import {
   faBook,
   faBuilding,
   faExclamationTriangle,
-  faLock,
   faQuestionCircle,
   faSignature,
   faSignOutAlt,
-  faUnlock,
   faUserAlt,
   faWrench
 } from '@fortawesome/free-solid-svg-icons'
@@ -287,12 +285,7 @@ storiesOf('Framework/BaseLayout', module)
       faBell,
       faExclamationTriangle,
       faComment,
-      faLock,
-      faUnlock,
-      dragging: true,
-      toggleDragging: function() {
-        this.dragging = !this.dragging
-      }
+      widgetsDraggable: boolean('widgetsDraggable', true),
     },
     template: `
       <div style="height: 100vh; width: 100vw;">
@@ -301,13 +294,8 @@ storiesOf('Framework/BaseLayout', module)
             *seamBaseLayoutSideBar
             [items]="navItems">
           </seam-side-nav>
-          <div class="p-1 d-flex flex-row" *seamBaseLayoutContentHeader>
+          <div class="p-1" *seamBaseLayoutContentHeader>
             <seam-breadcrumbs class="flex-grow-1"></seam-breadcrumbs>
-            <div class="ml-1">
-              <button seamButton theme="baselayout-action" title="Toggle Widget Dragging">
-                <seam-icon [icon]="dragging ? faUnlock : faLock" iconClass="text-secondary" (click)="toggleDragging()"></seam-icon>
-              </button>
-            </div>
           </div>
           <seam-top-bar
             *seamBaseLayoutTopBar
@@ -350,7 +338,7 @@ storiesOf('Framework/BaseLayout', module)
           <seam-dashboard
             *seamBaseLayoutContent
             [widgets]="widgets"
-            [widgetsDraggable]="dragging">
+            [widgetsDraggable]="widgetsDraggable">
           </seam-dashboard>
         </seam-base-layout>
       </div>

@@ -6,8 +6,10 @@ import { ITheSeamBaseLayoutNav } from './base-layout-nav'
 export interface ITheSeamBaseLayoutRef {
 
   readonly registeredNav: ITheSeamBaseLayoutNav | undefined
+  readonly registeredActions: BaseLayoutAction[]
 
-  registeredNav$: Observable<ITheSeamBaseLayoutNav | undefined>
+  readonly registeredNav$: Observable<ITheSeamBaseLayoutNav | undefined>
+  readonly registeredActions$: Observable<BaseLayoutAction[]>
 
   registerNav(nav: ITheSeamBaseLayoutNav): void
 

@@ -24,14 +24,36 @@ export interface IDashboardWidgetsColumnRecord {
   items: IDashboardWidgetsItem[]
 }
 
+// export interface IDashboardWidgetItemLayoutDef {
+//   readonly name: string
+
+//   /**
+//    * If not provided, the name will be used for the label.
+//    */
+//   readonly label?: string
+
+//   readonly items: IDashboardWidgetsItemDef[]
+// }
+
+export interface IDashboardWidgetItemLayout {
+  readonly name: string
+
+  /**
+   * If not provided, the name will be used for the label.
+   */
+  readonly label?: string
+
+  readonly items: IDashboardWidgetsItem[]
+}
+
 export interface IDashboardWidgetsItemSerialized {
   readonly widgetId: string
   readonly col: number
   readonly order: number
-  readonly component: string
+  // readonly component: string
 }
 
-export interface IDashboardWidgetItemLayoutSerialized {
+export interface IDashboardWidgetItemLayoutPreference {
   readonly name: string
 
   /**
@@ -40,4 +62,8 @@ export interface IDashboardWidgetItemLayoutSerialized {
   readonly label?: string
 
   readonly items: IDashboardWidgetsItemSerialized[]
+}
+
+export interface IDashboardWidgetsPreferences {
+  layouts?: IDashboardWidgetItemLayoutPreference[]
 }

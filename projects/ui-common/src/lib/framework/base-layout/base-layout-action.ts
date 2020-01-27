@@ -1,3 +1,4 @@
+import { TemplateRef } from '@angular/core'
 import { Observable } from 'rxjs'
 
 export interface IBaseLayoutActionBase {
@@ -40,7 +41,16 @@ export interface IBaseLayoutActionHref extends IBaseLayoutActionBase {
 
 }
 
+export interface IBaseLayoutActionTemplate extends IBaseLayoutActionBase {
+
+  type: 'template'
+
+  template: TemplateRef<any>
+
+}
+
 export type BaseLayoutAction =
   IBaseLayoutActionButton |
   IBaseLayoutActionRouterLink |
-  IBaseLayoutActionHref
+  IBaseLayoutActionHref |
+  IBaseLayoutActionTemplate
