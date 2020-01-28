@@ -107,6 +107,8 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
 
   ngAfterViewInit() {
     if (this._baseLayoutRef) {
+      // This should probably use a component dynamically created from the
+      // config and return a ref to it, instead of using a template.
       this._baseLayoutRef.registerAction({
         // type: 'button',
         type: 'template',

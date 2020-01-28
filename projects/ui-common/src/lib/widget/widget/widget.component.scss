@@ -3,17 +3,6 @@
 :host {
   display: block;
   font-size: $seam-widget-body-font-size;
-
-  ::ng-deep {
-    .cdk-drag-disabled {
-      .cdk-drag-handle {
-        cursor: default;
-      }
-    }
-    .cdk-drag-handle {
-      cursor: move;
-    }
-  }
 }
 
 .widget-header {

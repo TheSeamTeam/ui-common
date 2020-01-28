@@ -154,11 +154,26 @@ export class DashboardWidgetsService {
   public toColumnRecords(items: IDashboardWidgetsItem[]): IDashboardWidgetsColumnRecord[] {
     let columns: IDashboardWidgetsColumnRecord[] = []
 
+    for (let i = 0; i < this.numColumns; i++) {
+      columns.push({ column: i, items: [] })
+    }
+
     // Distribute items into columns
     for (const item of items) {
       const col: IDashboardWidgetsColumnRecord | undefined = columns.find(c => c.column === item.col)
       if (!col) {
         columns.push({ column: item.col, items: [ item ] })
+        if (item.col < 0) {
+          const col0: IDashboardWidgetsColumnRecord | undefined = columns.find(c => c.column === 0)
+          if (col0) {
+            col0.items.push(item)
+          }
+        } else if (item.col > this.numColumns - 1) {
+          const colMax: IDashboardWidgetsColumnRecord | undefined = columns.find(c => c.column === this.numColumns - 1)
+          if (colMax) {
+            colMax.items.push(item)
+          }
+        }
       } else {
         col.items.push(item)
       }

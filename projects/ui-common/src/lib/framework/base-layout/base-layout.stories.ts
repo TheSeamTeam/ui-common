@@ -274,10 +274,10 @@ storiesOf('Framework/BaseLayout', module)
       hasNotificationsMenu: boolean('hasNotificationsMenu', true),
       navItems,
       widgets: [
-        { widgetId: 'widget-1', col: 1, order: 0, component: StoryExWidget1Component },
-        { widgetId: 'widget-2', col: 2, order: 0, component: StoryExWidget2Component },
-        { widgetId: 'widget-3', col: 3, order: 0, component: StoryExWidget3Component },
-        { widgetId: 'widget-4', col: 2, order: 1, component: StoryExWidget4Component }
+        { widgetId: 'widget-1', col: 0, order: 0, component: StoryExWidget1Component },
+        { widgetId: 'widget-2', col: 1, order: 0, component: StoryExWidget2Component },
+        { widgetId: 'widget-3', col: 2, order: 0, component: StoryExWidget3Component },
+        { widgetId: 'widget-4', col: 1, order: 1, component: StoryExWidget4Component }
       ],
       faUserAlt,
       faQuestionCircle,
