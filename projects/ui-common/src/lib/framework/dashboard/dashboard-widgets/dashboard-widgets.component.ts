@@ -134,7 +134,9 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
     ).subscribe()
   }
 
-  ngOnDestroy() { }
+  ngOnDestroy() {
+    this._baseLayoutRef.unregisterAction('widget-drag-toggle')
+  }
 
   ngAfterViewInit() {
     if (this._baseLayoutRef) {
