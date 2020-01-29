@@ -33,7 +33,11 @@ export class DashboardWidgetsService {
   private _widgets = new BehaviorSubject<IDashboardWidgetsItemDef[]>([])
 
   get numColumns(): number { return this._numColumns.value }
-  set numColumns(value: number) { this._numColumns.next(value) }
+  set numColumns(value: number) {
+    if (value !== this._numColumns.value) {
+      this._numColumns.next(value)
+    }
+  }
   private _numColumns = new BehaviorSubject<number>(this.defaultNumColumns)
 
   public readonly numColumns$: Observable<number>
@@ -158,23 +162,37 @@ export class DashboardWidgetsService {
       columns.push({ column: i, items: [] })
     }
 
+    const colNotFound: IDashboardWidgetsItem[] = []
+
     // Distribute items into columns
     for (const item of items) {
       const col: IDashboardWidgetsColumnRecord | undefined = columns.find(c => c.column === item.col)
       if (!col) {
-        columns.push({ column: item.col, items: [ item ] })
-        if (item.col < 0) {
-          const col0: IDashboardWidgetsColumnRecord | undefined = columns.find(c => c.column === 0)
-          if (col0) {
-            col0.items.push(item)
-          }
-        } else if (item.col > this.numColumns - 1) {
-          const colMax: IDashboardWidgetsColumnRecord | undefined = columns.find(c => c.column === this.numColumns - 1)
-          if (colMax) {
-            colMax.items.push(item)
-          }
-        }
+        // columns.push({ column: item.col, items: [ item ] })
+        // if (item.col < 0) {
+        //   const col0: IDashboardWidgetsColumnRecord | undefined = columns.find(c => c.column === 0)
+        //   if (col0) {
+        //     col0.items.push(item)
+        //   }
+        // } else if (item.col > this.numColumns - 1) {
+        //   const colMax: IDashboardWidgetsColumnRecord | undefined = columns.find(c => c.column === this.numColumns - 1)
+        //   if (colMax) {
+        //     colMax.items.push(item)
+        //   }
+        // }
+        colNotFound.push(item)
       } else {
+        col.items.push(item)
+      }
+    }
+
+    for (let i = 0; i < colNotFound.length; i++) {
+      const item = colNotFound[i]
+
+      const col: IDashboardWidgetsColumnRecord | undefined = columns
+        .find(c => c.column === i % this.numColumns)
+
+      if (col) {
         col.items.push(item)
       }
     }

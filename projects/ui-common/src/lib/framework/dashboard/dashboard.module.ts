@@ -5,6 +5,7 @@ import { NgModule } from '@angular/core'
 
 import { TheSeamButtonsModule } from '../../buttons/index'
 import { TheSeamIconModule } from '../../icon/index'
+import { TheSeamSharedModule } from '../../shared/index'
 
 import { DashboardWidgetContainerComponent } from './dashboard-widget-container/dashboard-widget-container.component'
 import {
@@ -25,7 +26,8 @@ import { DashboardComponent } from './dashboard.component'
     PortalModule,
     DragDropModule,
     TheSeamButtonsModule,
-    TheSeamIconModule
+    TheSeamIconModule,
+    TheSeamSharedModule
   ],
   exports: [
     DashboardComponent,

@@ -20,10 +20,11 @@ import {
 } from '@angular/core'
 import { untilDestroyed } from 'ngx-take-until-destroy'
 import { BehaviorSubject, Observable, Subject } from 'rxjs'
-import { finalize, map, startWith, switchMap, take, tap } from 'rxjs/operators'
+import { auditTime, debounceTime, finalize, map, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators'
 
 import { faLock, faUnlock } from '@fortawesome/free-solid-svg-icons'
 
+import { IElementResizedEvent } from '../../../shared/directives/elem-resized.directive'
 import { ITheSeamBaseLayoutRef } from '../../base-layout/base-layout-ref'
 import { THESEAM_BASE_LAYOUT_REF } from '../../base-layout/base-layout-tokens'
 import { DashboardWidgetContainerComponent } from '../dashboard-widget-container/dashboard-widget-container.component'
@@ -43,7 +44,12 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
   faLock = faLock
   faUnlock = faUnlock
 
-  @Input() gapSize: number = 60
+  @Input()
+  get gapSize(): number { return this._gapSize.value }
+  set gapSize(val: number) {
+    this._gapSize.next(coerceNumberProperty(val))
+  }
+  private readonly _gapSize = new BehaviorSubject<number>(30)
 
   @Input()
   get widgetsDraggable(): boolean { return this._widgetsDraggable }
@@ -51,9 +57,10 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
   _widgetsDraggable: boolean = true
 
   @Input()
-  get numColumns(): number { return this._numColumns }
-  set numColumns(val: number) { this._numColumns = coerceNumberProperty(val) }
-  _numColumns: number = 3
+  get numColumns(): number { return this._dashboardWidgets.numColumns }
+  set numColumns(val: number) {
+    this._dashboardWidgets.numColumns = coerceNumberProperty(val)
+  }
 
   @Input()
   set widgets(value: IDashboardWidgetsItemDef[]) { this._dashboardWidgets.widgets = value }
@@ -62,6 +69,8 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
   public widgetItems$: Observable<IDashboardWidgetsItem[]>
   public widgetColumns$: Observable<IDashboardWidgetsColumnRecord[]>
   public containers$: Observable<DashboardWidgetContainerComponent[]>
+
+  readonly _gapStyleSize$: Observable<number>
 
   @ViewChildren(DashboardWidgetContainerComponent) containers: QueryList<DashboardWidgetContainerComponent>
   @ViewChildren(CdkDrag) cdkDragDirectives: QueryList<CdkDrag>
@@ -73,6 +82,8 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
 
   @Output() widgetsChange = new EventEmitter<IDashboardWidgetsItem[]>()
 
+  private readonly _widthChange = new Subject<number>()
+
   constructor(
     private _dashboardWidgets: DashboardWidgetsService,
     private _preferences: DashboardWidgetsPreferencesService,
@@ -81,6 +92,26 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
     @Optional() @Inject(THESEAM_BASE_LAYOUT_REF) private _baseLayoutRef: ITheSeamBaseLayoutRef
   ) {
     this.containers$ = this._containers.asObservable()
+
+    this._gapStyleSize$ = this._gapSize.pipe(
+      auditTime(0),
+      map(size => size / 2),
+      shareReplay({ bufferSize: 1, refCount: true })
+    )
+
+    this._widthChange.pipe(
+      debounceTime(30),
+      tap(width => {
+        if (width > 1300) {
+          this.numColumns = 3
+        } else if (width > 800) {
+          this.numColumns = 2
+        } else {
+          this.numColumns = 1
+        }
+      }),
+      untilDestroyed(this)
+    ).subscribe()
   }
 
   ngOnInit() {
@@ -155,6 +186,17 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
   toggleDragging() {
     this.widgetsDraggable = !this.widgetsDraggable
     this._cdr.detectChanges()
+  }
+
+  _resized(event: IElementResizedEvent) {
+    this._widthChange.next(event.size.width)
+    // if (event.size.width > 1400) {
+    //   this.numColumns = 3
+    // } else if (event.size.width > 950) {
+    //   this.numColumns = 2
+    // } else {
+    //   this.numColumns = 1
+    // }
   }
 
 }
