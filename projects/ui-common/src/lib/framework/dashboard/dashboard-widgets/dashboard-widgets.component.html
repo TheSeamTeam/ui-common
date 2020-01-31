@@ -5,11 +5,12 @@
   columns. When I remember how I programatically did this I will remove this
   weirdness.
  -->
-<seam-dashboard-widget-container *ngFor="let item of widgetItems$ | async; trackBy: _containerTrackByFn" [def]="item">
-  <ng-template [cdkPortalOutlet]="item.portal"></ng-template>
+ <seam-dashboard-widget-container *ngFor="let item of widgetItems$ | async; trackBy: _containerTrackByFn" [def]="item">
+  <!-- <ng-template [cdkPortalOutlet]="item.portal"></ng-template> -->
+  <ng-template [seamDashboardWidgetPortalOutlet]="item.portal"></ng-template>
 </seam-dashboard-widget-container>
 
-<div class="d-flex flex-row mx-auto justify-content-around"
+<div class="d-flex flex-row justify-content-around"
   style="max-width: 1410px;"
   [style.padding.px]="_gapStyleSize$ | async"
   (seamElemResized)="_resized($event)"
