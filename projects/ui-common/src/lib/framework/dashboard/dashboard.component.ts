@@ -11,6 +11,7 @@ import { IDashboardWidgetsItemDef } from './dashboard-widgets/dashboard-widgets-
 export class DashboardComponent implements OnInit {
 
   @Input() widgets: IDashboardWidgetsItemDef[]
+  @Input() widgetsDraggable: boolean = true
 
   constructor() { }
 

@@ -1,19 +1,39 @@
-<div class="d-flex flex-row mx-auto"
-  style="max-width: 1400px;"
-  [style.padding.px]="gapSize / 2"
+<!--
+  This is an ugly trick I am using to render the component into an <ng-content>
+  wrapped in an <ng-template> to move the component to different outlets without
+  reinitializing it. This way the widget won't reload when moving between
+  columns. When I remember how I programatically did this I will remove this
+  weirdness.
+ -->
+<seam-dashboard-widget-container *ngFor="let item of widgetItems$ | async; trackBy: _containerTrackByFn" [def]="item">
+  <ng-template [cdkPortalOutlet]="item.portal"></ng-template>
+</seam-dashboard-widget-container>
+
+<div class="d-flex flex-row mx-auto justify-content-around"
+  style="max-width: 1410px;"
+  [style.padding.px]="_gapStyleSize$ | async"
+  (seamElemResized)="_resized($event)"
   cdkDropListGroup>
-  <div *ngFor="let col of widgetColumns$ | async"
+  <div *ngFor="let col of widgetColumns$ | async; trackBy: _columnsTrackByFn"
     class="d-flex flex-column flex-grow-1 dashboard-widgets-list"
-    style="width: 446.67px;"
+    style="max-width: 500px;"
     cdkDropList
     [cdkDropListData]="col.items"
     (cdkDropListDropped)="drop($event)">
-    <div *ngFor="let item of col.items"
+    <div *ngFor="let item of col.items; trackBy: _containerTrackByFn"
       class="dashboard-widgets-list-item"
-      cdkDrag>
-      <div [style.margin.px]="gapSize / 2">
-        <ng-template [cdkPortalOutlet]="item.portal"></ng-template>
+      [attr.data-widget-id]="item.widgetId"
+      cdkDrag
+      [cdkDragDisabled]="!widgetsDraggable">
+      <div [style.margin.px]="_gapStyleSize$ | async">
+        <seam-dashboard-widget-template-container [item]="item"></seam-dashboard-widget-template-container>
       </div>
     </div>
   </div>
 </div>
+
+<ng-template #toggleBtnTpl>
+  <button seamButton theme="baselayout-action" title="Toggle Widget Dragging" (click)="toggleDragging()">
+    <seam-icon [icon]="widgetsDraggable ? faUnlock : faLock" iconClass="text-secondary"></seam-icon>
+  </button>
+</ng-template>

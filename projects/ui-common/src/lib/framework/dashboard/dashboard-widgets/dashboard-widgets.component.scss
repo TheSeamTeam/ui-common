@@ -2,6 +2,21 @@
 
 :host {
   display: block;
+
+  ::ng-deep {
+    .cdk-drag-disabled {
+      .cdk-drag-handle {
+        cursor: default;
+      }
+    }
+    .cdk-drag-handle {
+      cursor: move;
+    }
+  }
+}
+
+.dashboard-widgets-list {
+  flex-basis: 400px;
 }
 
 .cdk-drag-preview {

@@ -1,9 +1,12 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
-import { CdkDragHandle, ɵb as CDK_DRAG_PARENT } from '@angular/cdk/drag-drop'
-import { AfterViewInit, Directive, ElementRef, Inject, Input, NgZone, OnDestroy, OnInit, Optional } from '@angular/core'
+import { CdkDrag, CdkDragHandle, ɵb as CDK_DRAG_PARENT } from '@angular/cdk/drag-drop'
+import { AfterViewInit, Directive, DoCheck, ElementRef, Inject, Input, NgZone, OnDestroy, OnInit, Optional } from '@angular/core'
 import { untilDestroyed } from 'ngx-take-until-destroy'
-import { Subject } from 'rxjs'
-import { take } from 'rxjs/operators'
+import { BehaviorSubject, Subject } from 'rxjs'
+import { auditTime, filter, switchMap, take } from 'rxjs/operators'
+
+import { getClosestWidgetCdkDrag } from '../../framework/dashboard/dashboard-widgets/dashboard-widgets-utils'
+import { DashboardWidgetsComponent } from '../../framework/dashboard/dashboard-widgets/dashboard-widgets.component'
 
 
 //
@@ -68,10 +71,14 @@ export function toggleNativeDragInteractions(element: HTMLElement, enable: boole
     'class': 'cdk-drag-handle'
   }
 })
-export class WidgetDragHandleDirective implements OnDestroy, AfterViewInit {
+export class WidgetDragHandleDirective implements OnInit, OnDestroy, AfterViewInit, DoCheck {
 
-  /** Closest parent draggable instance. */
-  _parentDrag: {} | undefined
+  private _attachedToDom = new BehaviorSubject<boolean>(false)
+  private _doneCheckingAttached = false
+  private _knownParentDrag: any /* CdkDrag | undefined */
+
+  /** Needed because CdkDrag reads this variable */
+  get _parentDrag() { return this.getParentCdkDrag() }
 
   /** Emits when the state of the handle has changed. */
   _stateChanges = new Subject<CdkDragHandle>()
@@ -88,29 +95,98 @@ export class WidgetDragHandleDirective implements OnDestroy, AfterViewInit {
   constructor(
     public element: ElementRef<HTMLElement>,
     private _ngZone: NgZone,
-    @Inject(CDK_DRAG_PARENT) @Optional() parentDrag?: any
+    @Optional() private _dashboardWidgets?: DashboardWidgetsComponent,
+    @Inject(CDK_DRAG_PARENT) @Optional() private __parentDrag?: CdkDrag
   ) {
-    this._parentDrag = parentDrag
     toggleNativeDragInteractions(element.nativeElement, false)
   }
 
+  ngOnInit() {
+    if (this._dashboardWidgets) {
+      this._dashboardWidgets.widgetsChange.pipe(
+        auditTime(0),
+        untilDestroyed(this)
+      ).subscribe(() => {
+        if (this._knownParentDrag) {
+          const isAttached = this.isAttachedToDom()
+          if (isAttached) {
+            const parent = <any>this.getParentCdkDrag()
+            if (this._knownParentDrag !== parent) {
+              this._attachedToDom.next(isAttached)
+            }
+          }
+
+        }
+      })
+    }
+  }
+
   ngAfterViewInit() {
-    if (this._parentDrag) {
+    if (this.__parentDrag || this._dashboardWidgets) {
+      // FIXME: This only works until the widget is moved to another template
+      // outlet. Now that the component isn't reinitialized when moving between
+      // lists the handle needs to now reflex that change to its new CdkDrag
+      // parent and possibly tell its previous parent to forget it.
+
       // HACK: This is a hack to allow the `CdkDrag` directive to manage a
       // handle that is not visible to `ContentChildren` query.
       this._ngZone.onStable.asObservable()
-        .pipe(take(1), untilDestroyed(this))
+        // .pipe(take(1), untilDestroyed(this))
+        .pipe(
+          take(1),
+          // With the weird trick being done to keep widgets initialized when switching columns
+          switchMap(() => this._attachedToDom.pipe(filter(v => v === true))),
+          // take(1)
+          untilDestroyed(this)
+        )
         .subscribe(() => {
-          const parent = <any>this._parentDrag
-          parent._handles.reset([ ...parent._handles._results, this ])
-          parent._handles.notifyOnChanges()
-          parent._dragRef.enableHandle(this.element.nativeElement)
+          const parent = <any>this.getParentCdkDrag()
+
+          if (this._knownParentDrag && this._knownParentDrag !== parent) {
+            this._knownParentDrag._dragRef.disableHandle(this.element.nativeElement)
+            this._knownParentDrag = undefined
+          }
+
+          if (parent) {
+            this._knownParentDrag = parent
+            parent._handles.reset([ ...parent._handles._results, this ])
+            parent._handles.notifyOnChanges()
+            parent._dragRef.enableHandle(this.element.nativeElement)
+          }
         })
     }
   }
 
   ngOnDestroy() {
     this._stateChanges.complete()
+    this._attachedToDom.complete()
+  }
+
+  ngDoCheck() {
+    // The attached observable only emits once, so we can stop checking if
+    // attached.
+    if (this._doneCheckingAttached) { return }
+
+    const isAttached = this.isAttachedToDom()
+    if (isAttached !== this._attachedToDom.value) {
+      this._attachedToDom.next(isAttached)
+      this._doneCheckingAttached = true
+    }
+  }
+
+  public isAttachedToDom(): boolean {
+    return document.body.contains(this.element.nativeElement)
+  }
+
+  /** Closest parent draggable instance. */
+  public getParentCdkDrag(): CdkDrag | undefined {
+    if (this.__parentDrag) {
+      return this.__parentDrag
+    } else if (this._dashboardWidgets && this._dashboardWidgets.cdkDragDirectives) {
+      const dragsArr = this._dashboardWidgets.cdkDragDirectives.toArray()
+      const closest = getClosestWidgetCdkDrag(this.element, dragsArr)
+      return (closest !== undefined && closest !== null) ? closest : undefined
+    }
   }
 
 }

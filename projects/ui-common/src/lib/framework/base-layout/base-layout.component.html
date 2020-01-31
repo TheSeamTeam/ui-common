@@ -14,7 +14,22 @@
   </div>
   <div class="base-layout-content-container">
     <div class="base-layout-content-container-header">
-      <ng-template [cdkPortalOutlet]="_contentHeaderPortal"></ng-template>
+      <!-- <ng-template [cdkPortalOutlet]="_contentHeaderPortal"></ng-template> -->
+
+      <div class="d-flex d-flex-row">
+        <div class="flex-grow-1">
+          <ng-template [cdkPortalOutlet]="_contentHeaderPortal"></ng-template>
+        </div>
+        <div class="pt-1 pb-1 pr-1">
+          <ng-container *ngFor="let action of registeredActions$ | async; first as isFirst">
+            <div [class.ml-1]="!isFirst">
+              <ng-container [ngTemplateOutlet]="action.template"></ng-container>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+
     </div>
     <div class="base-layout-content-container-inner" seamOverlayScrollbar>
       <ng-template [cdkPortalOutlet]="_contentPortal"></ng-template>

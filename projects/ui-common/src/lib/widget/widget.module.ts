@@ -2,6 +2,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop'
 import { CdkTableModule } from '@angular/cdk/table'
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
+import { RouterModule } from '@angular/router'
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 
@@ -61,6 +62,8 @@ const contentModules = [
     ...contentModules
   ],
   exports: [
+    RouterModule,
+
     WidgetComponent,
     WidgetIconTplDirective,
     WidgetTitleTplDirective,

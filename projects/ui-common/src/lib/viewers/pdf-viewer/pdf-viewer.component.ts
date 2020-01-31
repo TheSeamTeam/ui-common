@@ -25,7 +25,6 @@ export class TheSeamPdfViewerComponent implements OnInit {
   @Input()
   get pdfUrl(): string { return this._pdfUrl }
   set pdfUrl(value: string) {
-    console.log('value', value)
     this._pdfUrl = value
     this._documentSubject.next(value)
   }
@@ -137,18 +136,15 @@ export class TheSeamPdfViewerComponent implements OnInit {
     this.document$ = this._documentSubject.asObservable()
       // .pipe(switchMap(url => from(pdfjsLib.getDocument(url).promise)))
       .pipe(
-        tap(url => console.log('url', url)),
         switchMap(url => {
           if (!url) {
             return of()
           }
           // return from(pdfjsLib.getDocument(url).promise)
           return from(fetch(url)).pipe(
-            tap(v => console.log('result', v)),
             switchMap(v => pdfjsLib.getDocument(v).promise)
           )
-        }),
-        tap(url => console.log('after url', url)),
+        })
       )
 
     const pageNumbers$ = this._pageNumbersSubject.asObservable()
