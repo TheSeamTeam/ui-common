@@ -20,7 +20,7 @@ import {
 } from '@angular/core'
 import { untilDestroyed } from 'ngx-take-until-destroy'
 import { BehaviorSubject, Observable, Subject } from 'rxjs'
-import { auditTime, debounceTime, finalize, map, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators'
+import { auditTime, debounceTime, distinctUntilChanged, finalize, map, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators'
 
 import { faLock, faUnlock } from '@fortawesome/free-solid-svg-icons'
 
@@ -30,7 +30,6 @@ import { THESEAM_BASE_LAYOUT_REF } from '../../base-layout/base-layout-tokens'
 import { DashboardWidgetContainerComponent } from '../dashboard-widget-container/dashboard-widget-container.component'
 
 import { IDashboardWidgetsColumnRecord, IDashboardWidgetsItem, IDashboardWidgetsItemDef } from './dashboard-widgets-item'
-import { DashboardWidgetsPreferencesService } from './dashboard-widgets-preferences.service'
 import { DashboardWidgetsService } from './dashboard-widgets.service'
 
 @Component({
@@ -54,7 +53,14 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
   @Input()
   get widgetsDraggable(): boolean { return this._widgetsDraggable }
   set widgetsDraggable(val: boolean) { this._widgetsDraggable = coerceBooleanProperty(val) }
-  _widgetsDraggable: boolean = true
+  _widgetsDraggable: boolean = false
+
+  @Input()
+  get dragToggleVisible(): boolean { return this._dragToggleVisible.value }
+  set dragToggleVisible(val: boolean) {
+    this._dragToggleVisible.next(coerceBooleanProperty(val))
+  }
+  private _dragToggleVisible = new BehaviorSubject<boolean>(true)
 
   @Input()
   get numColumns(): number { return this._dashboardWidgets.numColumns }
@@ -86,10 +92,9 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
 
   constructor(
     private _dashboardWidgets: DashboardWidgetsService,
-    private _preferences: DashboardWidgetsPreferencesService,
     private _viewContainerRef: ViewContainerRef,
     private _cdr: ChangeDetectorRef,
-    @Optional() @Inject(THESEAM_BASE_LAYOUT_REF) private _baseLayoutRef: ITheSeamBaseLayoutRef
+    @Optional() @Inject(THESEAM_BASE_LAYOUT_REF) private _baseLayoutRef?: ITheSeamBaseLayoutRef
   ) {
     this.containers$ = this._containers.asObservable()
 
@@ -135,10 +140,35 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   ngOnDestroy() {
-    this._baseLayoutRef.unregisterAction('widget-drag-toggle')
+    // console.log('[DashboardWidgetsComponent] ngOnDestroy')
+    this._unregisterToggleAction()
   }
 
   ngAfterViewInit() {
+    if (this._baseLayoutRef) {
+      this._dragToggleVisible.pipe(
+        distinctUntilChanged(),
+        tap(visible => {
+          const isRegistered = this._isActionToggleActionRegistered()
+          if (visible && !isRegistered) {
+            this._registerToggleAction()
+          } else if (!visible && isRegistered) {
+            this._unregisterToggleAction()
+          }
+        }),
+        untilDestroyed(this)
+      ).subscribe()
+    }
+
+    this.containers.changes.pipe(
+      startWith(undefined),
+      map(() => this.containers.toArray()),
+      untilDestroyed(this),
+      finalize(() => this._containers.next([]))
+    ).subscribe(v => this._containers.next(v))
+  }
+
+  private _registerToggleAction() {
     if (this._baseLayoutRef) {
       // This should probably use a component dynamically created from the
       // config and return a ref to it, instead of using a template.
@@ -153,13 +183,19 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
         template: this._toggleBtnTpl
       })
     }
+  }
 
-    this.containers.changes.pipe(
-      startWith(undefined),
-      map(() => this.containers.toArray()),
-      untilDestroyed(this),
-      finalize(() => this._containers.next([]))
-    ).subscribe(v => this._containers.next(v))
+  private _unregisterToggleAction() {
+    if (this._baseLayoutRef) {
+      this._baseLayoutRef.unregisterAction('widget-drag-toggle')
+    }
+  }
+
+  private _isActionToggleActionRegistered() {
+    if (!this._baseLayoutRef) {
+      return false
+    }
+    return this._baseLayoutRef.isActionRegistered('widget-drag-toggle')
   }
 
   drop(event: CdkDragDrop<string[]>) {
@@ -192,13 +228,6 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
 
   _resized(event: IElementResizedEvent) {
     this._widthChange.next(event.size.width)
-    // if (event.size.width > 1400) {
-    //   this.numColumns = 3
-    // } else if (event.size.width > 950) {
-    //   this.numColumns = 2
-    // } else {
-    //   this.numColumns = 1
-    // }
   }
 
 }

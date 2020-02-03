@@ -19,4 +19,6 @@ export interface ITheSeamBaseLayoutRef {
 
   unregisterAction(action: BaseLayoutAction | string): void
 
+  isActionRegistered(actionName: string): boolean
+
 }
