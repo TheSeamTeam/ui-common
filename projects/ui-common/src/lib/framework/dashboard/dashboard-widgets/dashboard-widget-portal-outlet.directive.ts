@@ -1,5 +1,4 @@
 import { BasePortalOutlet, CdkPortalOutletAttachedRef, ComponentPortal, Portal, TemplatePortal } from '@angular/cdk/portal'
-import { DOCUMENT } from '@angular/common'
 import {
   ComponentFactoryResolver,
   ComponentRef,
@@ -7,7 +6,6 @@ import {
   ElementRef,
   EmbeddedViewRef,
   EventEmitter,
-  Inject,
   OnDestroy,
   OnInit,
   Output,
@@ -18,7 +16,8 @@ import {
  * Mostly copied from
  * `https://github.com/angular/components/blob/master/src/cdk/portal/portal-directives.ts`
  * until I can figure out how to hold off removing the DOM nodes with the
- * cdkPortalOutlet.
+ * cdkPortalOutlet. When we update to Angular 9 I may be able to do this better
+ * with the new DomPortal.
  *
  * Directive version of a PortalOutlet. Because the directive *is* a
  * PortalOutlet, portals can be directly attached to it, enabling declarative
@@ -52,7 +51,7 @@ export class DashboardWidgetPortalOutletDirective extends BasePortalOutlet imple
   }
 
   set portal(portal: Portal<any> | null) {
-    console.log('[DashboardWidgetPortalOutletDirective] set portal', portal, this.hasAttached())
+    // console.log('[DashboardWidgetPortalOutletDirective] set portal', portal, this.hasAttached())
     // Ignore the cases where the `portal` is set to a falsy value before the lifecycle hooks have
     // run. This handles the cases where the user might do something like `<div cdkPortalOutlet>`
     // and attach a portal programmatically in the parent component. When Angular does the first CD
@@ -86,11 +85,19 @@ export class DashboardWidgetPortalOutletDirective extends BasePortalOutlet imple
   }
 
   ngOnDestroy() {
-    console.log('[DashboardWidgetPortalOutletDirective] ngOnDestroy')
-    // TODO: Figure out the right way to call dispose without messing up animation.
-    // super.dispose()
-    // this._attachedPortal = null
-    // this._attachedRef = null
+    // console.log('[DashboardWidgetPortalOutletDirective] ngOnDestroy')
+
+    // TODO: Figure out the right way to call dispose without messing up
+    // animation. This setTimeout way assumes the transition is 500ms, but that
+    // may not always be the case and isn't guaranteed to match the animation ms
+    // duration, since setTimeout isn't really meant for accurate timing. It
+    // also makes debugging animations difficult, because you can pause an
+    // animation, but the timeout will still run.
+    setTimeout(() => {
+      super.dispose()
+      this._attachedPortal = null
+      this._attachedRef = null
+    }, 500)
   }
 
   /**

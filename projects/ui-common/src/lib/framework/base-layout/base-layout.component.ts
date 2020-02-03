@@ -144,6 +144,12 @@ export class TheSeamBaseLayoutComponent implements OnInit, ITheSeamBaseLayoutRef
     this._registeredActions.next(actions.filter(f => f.name !== actionName))
   }
 
+  public isActionRegistered(actionName: string): boolean {
+    const actions = this._registeredActions.value
+    const action = actions.find(f => f.name !== actionName)
+    return !!action
+  }
+
   _handleButtonAction(action: IBaseLayoutActionButton): void {
     this._execButtonAction(action).subscribe()
   }

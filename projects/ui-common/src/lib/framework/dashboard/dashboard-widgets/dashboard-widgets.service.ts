@@ -211,14 +211,10 @@ export class DashboardWidgetsService {
 
     for (const item of items) {
       const itemPref = layout.items.find(x => x.widgetId === item.widgetId)
-      if (itemPref) {
-        _items.push({
-          ...item,
-          ...itemPref
-        })
-      } else {
-        _items.push(item)
-      }
+      _items.push({
+        ...item,
+        ...(itemPref || {})
+      })
     }
 
     return _items
