@@ -27,6 +27,7 @@ import { DatatableColumnPreferencesButtonComponent } from './datatable-column-pr
 import { DatatableColumnPreferencesComponent } from './datatable-column-preferences/datatable-column-preferences.component'
 import { DatatableColumnComponent } from './datatable-column/datatable-column.component'
 import { DatatableExportButtonComponent } from './datatable-export-button/datatable-export-button.component'
+import { DatatableMenuBarRowComponent } from './datatable-menu-bar-row/datatable-menu-bar-row.component'
 import { DatatableMenuBarComponent } from './datatable-menu-bar/datatable-menu-bar.component'
 import { DatatableRowDetailTplDirective } from './datatable-row-detail/datatable-row-detail-tpl.directive'
 import { TheSeamDatatableRowDetailDirective } from './datatable-row-detail/datatable-row-detail.directive'
@@ -56,6 +57,7 @@ import { TheSeamDatatableScrollbarHelperService } from './services/datatable-scr
     DatatableColumnPreferencesComponent,
     DatatableColumnPreferencesButtonComponent,
     DatatableActionMenuItemDirective,
+    DatatableMenuBarRowComponent,
   ],
   imports: [
     CommonModule,
@@ -93,6 +95,7 @@ import { TheSeamDatatableScrollbarHelperService } from './services/datatable-scr
     DatatableColumnPreferencesComponent,
     DatatableColumnPreferencesButtonComponent,
     DatatableActionMenuItemDirective,
+    DatatableMenuBarRowComponent
   ],
   providers: [
     { provide: ScrollbarHelper, useClass: TheSeamDatatableScrollbarHelperService }
