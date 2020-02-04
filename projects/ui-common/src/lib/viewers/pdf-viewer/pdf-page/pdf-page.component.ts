@@ -5,8 +5,6 @@ import { auditTime, switchMap } from 'rxjs/operators'
 
 import { waitOnConditionAsync } from '../../../utils/index'
 
-const pdfjsLib = require('pdfjs-dist/build/pdf')
-
 @Component({
   selector: 'seam-pdf-page',
   template: `
@@ -61,12 +59,7 @@ export class TheSeamPdfPageComponent implements OnInit, OnDestroy, AfterViewInit
 
   private _render$: Observable<void>
 
-  constructor() {
-    if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
-      // tslint:disable-next-line:max-line-length
-      pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${ (pdfjsLib as any).version }/pdf.worker.min.js`
-    }
-  }
+  constructor() { }
 
   ngOnInit() {
     this._render$ = this._renderRequestSubject.pipe(
