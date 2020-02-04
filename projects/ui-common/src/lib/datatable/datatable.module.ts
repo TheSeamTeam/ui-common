@@ -27,6 +27,9 @@ import { DatatableColumnPreferencesButtonComponent } from './datatable-column-pr
 import { DatatableColumnPreferencesComponent } from './datatable-column-preferences/datatable-column-preferences.component'
 import { DatatableColumnComponent } from './datatable-column/datatable-column.component'
 import { DatatableExportButtonComponent } from './datatable-export-button/datatable-export-button.component'
+import { DatatableMenuBarColumnCenterComponent } from './datatable-menu-bar-column-center/datatable-menu-bar-column-center.component'
+import { DatatableMenuBarColumnLeftComponent } from './datatable-menu-bar-column-left/datatable-menu-bar-column-left.component'
+import { DatatableMenuBarColumnRightComponent } from './datatable-menu-bar-column-right/datatable-menu-bar-column-right.component'
 import { DatatableMenuBarRowComponent } from './datatable-menu-bar-row/datatable-menu-bar-row.component'
 import { DatatableMenuBarComponent } from './datatable-menu-bar/datatable-menu-bar.component'
 import { DatatableRowDetailTplDirective } from './datatable-row-detail/datatable-row-detail-tpl.directive'
@@ -38,7 +41,6 @@ import { DatatableCellTplDirective } from './directives/datatable-cell-tpl.direc
 import { DatatableFilterDirective } from './directives/datatable-filter.directive'
 import { DatatableRowActionItemDirective } from './directives/datatable-row-action-item.directive'
 import { TheSeamDatatableScrollbarHelperService } from './services/datatable-scrollbar-helper.service'
-
 
 @NgModule({
   declarations: [
@@ -58,6 +60,9 @@ import { TheSeamDatatableScrollbarHelperService } from './services/datatable-scr
     DatatableColumnPreferencesButtonComponent,
     DatatableActionMenuItemDirective,
     DatatableMenuBarRowComponent,
+    DatatableMenuBarColumnLeftComponent,
+    DatatableMenuBarColumnCenterComponent,
+    DatatableMenuBarColumnRightComponent,
   ],
   imports: [
     CommonModule,
@@ -95,7 +100,10 @@ import { TheSeamDatatableScrollbarHelperService } from './services/datatable-scr
     DatatableColumnPreferencesComponent,
     DatatableColumnPreferencesButtonComponent,
     DatatableActionMenuItemDirective,
-    DatatableMenuBarRowComponent
+    DatatableMenuBarRowComponent,
+    DatatableMenuBarColumnLeftComponent,
+    DatatableMenuBarColumnCenterComponent,
+    DatatableMenuBarColumnRightComponent
   ],
   providers: [
     { provide: ScrollbarHelper, useClass: TheSeamDatatableScrollbarHelperService }
