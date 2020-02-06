@@ -146,7 +146,7 @@ export class TheSeamBaseLayoutComponent implements OnInit, ITheSeamBaseLayoutRef
 
   public isActionRegistered(actionName: string): boolean {
     const actions = this._registeredActions.value
-    const action = actions.find(f => f.name !== actionName)
+    const action = actions.find(f => f.name === actionName)
     return !!action
   }
 

@@ -43,6 +43,8 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
   faLock = faLock
   faUnlock = faUnlock
 
+  public readonly _actionWidgetDragToggleName = 'widget-drag-toggle'
+
   @Input()
   get gapSize(): number { return this._gapSize.value }
   set gapSize(val: number) {
@@ -175,7 +177,7 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
       this._baseLayoutRef.registerAction({
         // type: 'button',
         type: 'template',
-        name: 'widget-drag-toggle',
+        name: this._actionWidgetDragToggleName,
         label: 'Toggle Widget Dragging',
         // exec: () => {
         //   console.log('toggle')
@@ -187,7 +189,7 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
 
   private _unregisterToggleAction() {
     if (this._baseLayoutRef) {
-      this._baseLayoutRef.unregisterAction('widget-drag-toggle')
+      this._baseLayoutRef.unregisterAction(this._actionWidgetDragToggleName)
     }
   }
 
@@ -195,7 +197,7 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
     if (!this._baseLayoutRef) {
       return false
     }
-    return this._baseLayoutRef.isActionRegistered('widget-drag-toggle')
+    return this._baseLayoutRef.isActionRegistered(this._actionWidgetDragToggleName)
   }
 
   drop(event: CdkDragDrop<string[]>) {
