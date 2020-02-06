@@ -1,18 +1,16 @@
 import { ComponentPortal } from '@angular/cdk/portal'
 import { Injectable, isDevMode, ViewContainerRef } from '@angular/core'
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs'
-import { auditTime, filter, map, mapTo, shareReplay, switchMap, take, tap } from 'rxjs/operators'
+import { auditTime, map, mapTo, shareReplay, switchMap, take, tap } from 'rxjs/operators'
 
 import { TheSeamDynamicComponentLoader } from '../../../dynamic-component-loader/dynamic-component-loader.service'
 import { notNullOrUndefined } from '../../../utils/index'
 
 import {
-  IDashboardWidgetItemLayout,
   IDashboardWidgetItemLayoutPreference,
   IDashboardWidgetsColumnRecord,
   IDashboardWidgetsItem,
-  IDashboardWidgetsItemDef,
-  IDashboardWidgetsItemSerialized
+  IDashboardWidgetsItemDef
 } from './dashboard-widgets-item'
 import { DashboardWidgetsPreferencesService } from './dashboard-widgets-preferences.service'
 
@@ -89,7 +87,8 @@ export class DashboardWidgetsService {
 
   public createWidgetItems(defs: IDashboardWidgetsItemDef[], vcr?: ViewContainerRef): Observable<IDashboardWidgetsItem[]> {
     const _createObservables = (defs || []).map(d => this.createWidgetItem(d, vcr))
-    return combineLatest(_createObservables).pipe(
+    const items$ = _createObservables.length > 0 ? combineLatest(_createObservables) : of([])
+    return items$.pipe(
       map(items => items.filter(notNullOrUndefined)),
       tap(items => {
         if (isDevMode()) {
