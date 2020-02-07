@@ -7,10 +7,10 @@
       class="control-label {{ labelClass }}"
       (seamElemResized)="_labelElemResized(labelElem)">
       <ng-container *ngIf="labelTpl; else noLabelTpl">
-        <ng-template [ngTemplateOutlet]="labelTpl.template" [ngTemplateOutletContext]="{ $implicit: label }"></ng-template>
+        <ng-template [ngTemplateOutlet]="labelTpl.template" [ngTemplateOutletContext]="{ $implicit: label, label: label, required: contentInput?.required || false }"></ng-template>
       </ng-container>
       <ng-template #noLabelTpl>
-        {{ label }}
+        {{ label }}<seam-form-field-required-indicator class="pl-1"></seam-form-field-required-indicator>
       </ng-template>
     </label>
     <ng-container *ngIf="!isPasswordInput">

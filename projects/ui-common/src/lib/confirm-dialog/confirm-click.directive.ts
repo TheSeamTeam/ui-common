@@ -14,9 +14,9 @@ export class ConfirmClickDirective implements OnDestroy {
 
   private _modalRef: ModalRef<ConfirmDialogComponent, 'confirm' | undefined> | undefined
 
-  @Input() libConfirmMsg: string
-  @Input() libConfirmAlert: string | { message: string, type: ThemeTypes }
-  @Input() libConfirmDisabled = false
+  @Input() seamConfirmMsg: string
+  @Input() seamConfirmAlert: string | { message: string, type: ThemeTypes }
+  @Input() seamConfirmDisabled = false
 
   @Output() seamConfirmClick = new EventEmitter<'confirm'>()
 
@@ -25,7 +25,7 @@ export class ConfirmClickDirective implements OnDestroy {
 
   @HostListener('click', [ '$event' ])
   _onClick(event: any) {
-    if (this.libConfirmDisabled) {
+    if (this.seamConfirmDisabled) {
       if (!!this._modalRef) {
         this._modalRef.close()
         this._modalRef = undefined
@@ -34,7 +34,7 @@ export class ConfirmClickDirective implements OnDestroy {
 
     if (!!this._modalRef) { return }
 
-    this._modalRef = this._confirmService.open(this.libConfirmMsg, this.libConfirmAlert)
+    this._modalRef = this._confirmService.open(this.seamConfirmMsg, this.seamConfirmAlert)
 
     this._modalRef.afterClosed().subscribe(result => {
       if (result === 'confirm') {

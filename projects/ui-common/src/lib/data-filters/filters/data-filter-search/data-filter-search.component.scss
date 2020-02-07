@@ -1,9 +1,13 @@
 :host {
-  display: block;
-  width: 300px;
+  // display: block;
+  // width: 300px;
+  display: flex;
+  flex: 0 1 300px;
 }
 
 .data-filter-search-has-icon {
+  width: 100%;
+
   > input {
     padding-left: 30px;
   }

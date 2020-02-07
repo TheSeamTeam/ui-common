@@ -1,11 +1,22 @@
 import { TemplatePortal } from '@angular/cdk/portal'
-import { ChangeDetectionStrategy, Component, ContentChild, forwardRef, Input, OnInit, TemplateRef, ViewContainerRef } from '@angular/core'
-import { BehaviorSubject, Observable } from 'rxjs'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ContentChild,
+  forwardRef,
+  Input,
+  isDevMode,
+  OnInit,
+  TemplateRef,
+  ViewContainerRef
+} from '@angular/core'
+import { BehaviorSubject, from, isObservable, Observable } from 'rxjs'
 
 import { faAngleDoubleLeft, faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons'
 
 import { TheSeamLayoutService } from '../../layout/index'
 
+import { BaseLayoutAction, IBaseLayoutActionButton } from './base-layout-action'
 import { ITheSeamBaseLayoutNav } from './base-layout-nav'
 import { ITheSeamBaseLayoutRef } from './base-layout-ref'
 import { THESEAM_BASE_LAYOUT_REF } from './base-layout-tokens'
@@ -60,10 +71,16 @@ export class TheSeamBaseLayoutComponent implements OnInit, ITheSeamBaseLayoutRef
   private _registeredNav = new BehaviorSubject<ITheSeamBaseLayoutNav | undefined>(undefined)
   public registeredNav$ = this._registeredNav.asObservable()
 
+  get registeredActions() { return this._registeredActions.value }
+  private _registeredActions = new BehaviorSubject<BaseLayoutAction[]>([])
+  public registeredActions$: Observable<BaseLayoutAction[]>
+
   constructor(
     private _viewContainerRef: ViewContainerRef,
     private _layout: TheSeamLayoutService
-  ) { }
+  ) {
+    this.registeredActions$ = this._registeredActions.asObservable()
+  }
 
   ngOnInit() {
     this.isMobile$ = this._layout.isMobile$
@@ -105,6 +122,41 @@ export class TheSeamBaseLayoutComponent implements OnInit, ITheSeamBaseLayoutRef
     if (this.registeredNav === nav) {
       this._registeredNav.next(undefined)
     }
+  }
+
+  public registerAction(action: BaseLayoutAction): void {
+    const actions = this._registeredActions.value
+    if (actions.findIndex(a => a.name === action.name) !== -1) {
+      if (isDevMode()) {
+        console.warn(
+          `[TheSeamBaseLayoutComponent] registerAction(): Action ${action.name} not ` +
+          'registered, because another action by that name is already registered.'
+        )
+      }
+      return
+    }
+    actions.push(action)
+  }
+
+  public unregisterAction(action: BaseLayoutAction | string): void {
+    const actionName = typeof action === 'string' ? action : action.name
+    const actions = this._registeredActions.value
+    this._registeredActions.next(actions.filter(f => f.name !== actionName))
+  }
+
+  public isActionRegistered(actionName: string): boolean {
+    const actions = this._registeredActions.value
+    const action = actions.find(f => f.name === actionName)
+    return !!action
+  }
+
+  _handleButtonAction(action: IBaseLayoutActionButton): void {
+    this._execButtonAction(action).subscribe()
+  }
+
+  _execButtonAction(action: IBaseLayoutActionButton): Observable<void> {
+    const fnRes = action.exec()
+    return isObservable(fnRes) ? fnRes : from(Promise.resolve(fnRes))
   }
 
 }

@@ -12,4 +12,10 @@
   <div class="text-truncate">
     <ng-content></ng-content>
   </div>
+
+  <div *ngIf="badgeText">
+    <span class="badge badge-pill{{ badgeTheme ? ' badge-' + badgeTheme : '' }} position-relative"
+      style="top: -8px"
+      >{{ badgeText }}</span>
+  </div>
 </div>

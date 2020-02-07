@@ -26,6 +26,7 @@ import { untilDestroyed } from 'ngx-take-until-destroy'
 
 import { composeDataFilters, IDataFilter } from '../../data-filters/index'
 import { IElementResizedEvent } from '../../shared/index'
+import { hasProperty } from '../../utils/index'
 
 import { DatatableActionMenuComponent } from '../datatable-action-menu/datatable-action-menu.component'
 import { DatatableColumnComponent } from '../datatable-column/datatable-column.component'
@@ -458,15 +459,15 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     for (const col of cols) {
-      if (col.isTreeColumn && !col.treeToggleTemplate) {
+      if (col.isTreeColumn && !hasProperty(col, 'treeToggleTemplate')) {
         col.treeToggleTemplate = this.treeToggleTpl
       }
 
-      if (!col.headerTemplate) {
+      if (!hasProperty(col, 'headerTemplate')) {
         col.headerTemplate = this.headerTpl
       }
 
-      if (!!col.cellType) {
+      if (hasProperty(col, 'cellType')) {
         col.cellTemplate = this.cellTypeSelectorTpl
       }
     }

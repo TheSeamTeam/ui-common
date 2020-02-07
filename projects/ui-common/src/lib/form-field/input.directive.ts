@@ -14,13 +14,16 @@ let nextUniqueId = 0
 @Directive({
   // TODO: Consider removing restriction and instead adding a dev warning. A few
   // inputs in the app need to be changed for this first.
-  selector: 'input[seamInput], textarea[seamInput], ng-select[seamInput], seam-checkbox[seamInput]',
+  selector: 'input[seamInput], textarea[seamInput], ng-select[seamInput], seam-checkbox[seamInput] [ngbRadioGroup]',
   exportAs: 'seamInput',
 })
 export class InputDirective implements DoCheck {
 
   protected _uid = `lib-input-${nextUniqueId++}`
 
+  // TODO: Remove this being added to all seamInput elements or break this
+  // directive up. Some elements in our app already have worked around this
+  // class being there, so some refactoring will be required before removal.
   @HostBinding('class.form-control') _isFormControl = true
   @HostBinding('class.form-control-sm') get _isFormControlSmall() {
     return this._isFormControl && this.seamInputSize === 'sm'
@@ -123,7 +126,7 @@ export class InputDirective implements DoCheck {
     // Force setter to be called in case id was not specified.
     this.id = this.id
 
-    if (this._isSeamCheckbox()) {
+    if (!this._shouldHaveFormControlCssClass()) {
       this._isFormControl = false
     }
   }
@@ -136,6 +139,11 @@ export class InputDirective implements DoCheck {
       toggleAttribute(this._elementRef.nativeElement, 'required', this.required)
       toggleAttribute(this._elementRef.nativeElement, 'disabled', this.disabled)
     }
+  }
+
+  /** Should only be textual inputs, but initially our app added to all form controls. */
+  protected _shouldHaveFormControlCssClass() {
+    return !this._isSeamCheckbox() && !this._isRadioInput() && !this._isNgbRadioGroup()
   }
 
   /** Determines if the component host is a textarea. */
@@ -151,6 +159,16 @@ export class InputDirective implements DoCheck {
   /** Determines if the component host is a seam-checkbox. */
   protected _isSeamCheckbox() {
     return this._elementRef.nativeElement.nodeName.toLowerCase() === 'seam-checkbox'
+  }
+
+  /** Determines if the component host is a radio input. */
+  protected _isRadioInput() {
+    return this._elementRef.nativeElement.nodeName.toLowerCase() === 'input' &&
+      this._elementRef.nativeElement.type.toLowerCase() === 'radio'
+  }
+
+  protected _isNgbRadioGroup() {
+    return this._elementRef.nativeElement.getAttribute('ngbRadioGroup') !== null
   }
 
   /** Make sure the input is a supported type. */

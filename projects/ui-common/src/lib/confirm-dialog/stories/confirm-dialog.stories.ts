@@ -29,7 +29,7 @@ storiesOf('Components/ConfirmDialog/Directive', module)
       <div class="p-4">
         <button type="button"
           class="btn btn-lightgray"
-          [libConfirmMsg]="msgText"
+          [seamConfirmMsg]="msgText"
           (seamConfirmClick)="confirmed()">
           Open Dialog
         </button>
@@ -56,8 +56,8 @@ storiesOf('Components/ConfirmDialog/Directive', module)
       <div class="p-4">
         <button type="button"
           class="btn m-2"
-          [libConfirmMsg]="msgText"
-          [libConfirmAlert]="{ message: alertMsgText, type: theme }"
+          [seamConfirmMsg]="msgText"
+          [seamConfirmAlert]="{ message: alertMsgText, type: theme }"
           (seamConfirmClick)="confirmed()">
           Open Dialog
         </button>

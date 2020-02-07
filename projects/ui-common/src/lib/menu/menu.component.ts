@@ -18,7 +18,7 @@ import {
 } from '@angular/core'
 import { BehaviorSubject, fromEvent, merge, Observable, of, Subject, Subscription } from 'rxjs'
 
-import { map, startWith, switchMap } from 'rxjs/operators'
+import { distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators'
 import { menuDropdownPanelIn, menuDropdownPanelOut, menuDropdownPanelSlideIn, menuDropdownPanelSlideOut } from './menu-animations'
 import { MenuItemComponent } from './menu-item.component'
 import { ITheSeamMenuPanel } from './menu-panel'
@@ -45,7 +45,8 @@ export const LIB_MENU: any = {
       transition(':leave', useAnimation(menuDropdownPanelOut)),
     ])
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  exportAs: 'seamMenu'
 })
 export class MenuComponent implements OnInit, OnDestroy, AfterContentInit, ITheSeamMenuPanel {
 
@@ -105,6 +106,7 @@ export class MenuComponent implements OnInit, OnDestroy, AfterContentInit, ITheS
         }
         return of(undefined)
       }),
+      distinctUntilChanged(),
       untilDestroyed(this)
     )
   }

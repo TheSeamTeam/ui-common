@@ -1,9 +1,9 @@
 import { coerceArray, coerceNumberProperty } from '@angular/cdk/coercion'
 import { Component, Input, OnInit } from '@angular/core'
-import { BehaviorSubject, from, Observable, ReplaySubject } from 'rxjs'
-import { map, switchMap } from 'rxjs/operators'
+import { BehaviorSubject, from, Observable, of, ReplaySubject } from 'rxjs'
+import { map, shareReplay, switchMap, tap } from 'rxjs/operators'
 
-const pdfjsLib = require('pdfjs-dist/build/pdf')
+import { wrapIntoObservable } from '../../utils/index'
 
 @Component({
   selector: 'seam-pdf-viewer',
@@ -20,7 +20,7 @@ const pdfjsLib = require('pdfjs-dist/build/pdf')
   `,
   styles: [`:host { display: block; }`]
 })
-export class PdfViewerComponent implements OnInit {
+export class TheSeamPdfViewerComponent implements OnInit {
 
   @Input()
   get pdfUrl(): string { return this._pdfUrl }
@@ -48,7 +48,10 @@ export class PdfViewerComponent implements OnInit {
    *
    * NOTE: Only used when `responsive` is `true`.
    */
-  @Input() renderUpdateThreshold = 100
+  @Input()
+  set renderUpdateThreshold(value: number) { this._renderUpdateThreshold = coerceNumberProperty(value) }
+  get renderUpdateThreshold(): number { return this._renderUpdateThreshold }
+  private _renderUpdateThreshold: number = 100
 
   /**
    * Range of pages to render.
@@ -117,21 +120,39 @@ export class PdfViewerComponent implements OnInit {
   public document$: Observable<any>
   public pages$: Observable<any[]>
 
+  public pdfJs$: Observable<any>
+
   /**
    * Undefined means all a pages
    */
   private _pageNumbersSubject = new BehaviorSubject<number[] | undefined>(undefined)
 
   constructor() {
-    if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
-      // tslint:disable-next-line:max-line-length
-      pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${ (pdfjsLib as any).version }/pdf.worker.min.js`
-    }
+    this.pdfJs$ = wrapIntoObservable(import('pdfjs-dist/build/pdf')).pipe(
+      tap(pdfJs => {
+        if (!pdfJs.GlobalWorkerOptions.workerSrc) {
+          // tslint:disable-next-line:max-line-length
+          pdfJs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${ (pdfJs as any).version }/pdf.worker.min.js`
+        }
+      }),
+      shareReplay({ bufferSize: 1, refCount: true })
+    )
   }
 
   ngOnInit() {
     this.document$ = this._documentSubject.asObservable()
-      .pipe(switchMap(url => from(pdfjsLib.getDocument(url).promise)))
+      .pipe(
+        switchMap(url => {
+          if (!url) {
+            return of()
+          }
+          return from(fetch(url)).pipe(
+            switchMap(v => this.pdfJs$.pipe(
+              switchMap(pdfJs => pdfJs.getDocument(v).promise)
+            ))
+          )
+        })
+      )
 
     const pageNumbers$ = this._pageNumbersSubject.asObservable()
 

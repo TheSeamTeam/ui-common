@@ -95,7 +95,7 @@ export class ToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, Do
   constructor(
     private _elementRef: ElementRef<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
     @Optional() @Self() private controlContainer: ControlContainer,
-    @Optional() @Host() private TheSeamFormFieldComponent: TheSeamFormFieldComponent,
+    @Optional() @Host() private formFieldComponent: TheSeamFormFieldComponent,
     private _kbListener: ToggleEditKeyboardListenerService,
     private _focusMonitor: FocusMonitor,
     private _ngZone: NgZone,
@@ -119,9 +119,9 @@ export class ToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, Do
 
   ngOnInit() {
     this._initMonitors()
-    if (this.TheSeamFormFieldComponent) {
+    if (this.formFieldComponent) {
       // TODO: Consider making this smarter, such as avoiding overwritting when input set.
-      this.TheSeamFormFieldComponent.numPaddingErrors = 0
+      this.formFieldComponent.numPaddingErrors = 0
     }
   }
 
@@ -130,8 +130,8 @@ export class ToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, Do
   }
 
   ngAfterViewInit() {
-    if (this.TheSeamFormFieldComponent && this.TheSeamFormFieldComponent.contentInput) {
-      this.TheSeamFormFieldComponent.contentInput.stateChanges.subscribe(_ => {
+    if (this.formFieldComponent && this.formFieldComponent.contentInput) {
+      this.formFieldComponent.contentInput.stateChanges.subscribe(_ => {
         this._checkDisabledChange()
       })
     }
@@ -243,12 +243,13 @@ export class ToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, Do
   }
 
   public isInFormField(): boolean {
-    return !!this.TheSeamFormFieldComponent
+    return !!this.formFieldComponent
   }
 
   public getFormControl(): FormControl |  null {
     if (!this.isInFormField()) { return null }
-    return <FormControl>this.TheSeamFormFieldComponent.contentInput.ngControl.control
+    if (!this.formFieldComponent.contentInput) { return null }
+    return <FormControl>this.formFieldComponent.contentInput.ngControl.control
   }
 
   public hasControl(): boolean {

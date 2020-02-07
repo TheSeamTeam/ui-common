@@ -40,6 +40,9 @@ export class MenuItemComponent extends _seamMenuItemMixinBase implements OnInit,
   @Input() icon: IconProp | string
   @Input() iconClass: string
 
+  @Input() badgeText: string
+  @Input() badgeTheme: string = 'danger'
+
   /** Stream that emits when the menu item is hovered. */
   readonly _hovered: Subject<MenuItemComponent> = new Subject<MenuItemComponent>()
 

@@ -2,17 +2,17 @@
   {{ value }}
 </ng-template>
 
-<ng-container>
-  <div *ngIf="canPopover; else noPopover" [seamPopover]="popoverTpl">
-    <div class="text-truncate">
-      {{ value }}
-    </div>
-  </div>
-</ng-container>
 <ng-template #noPopover>
-  <div class="text-truncate">
+  <div class="text-truncate" #truncatedElem>
     {{ value }}
   </div>
 </ng-template>
 
-
+<ng-container>
+  <div *ngIf="canPopover; else noPopover" [seamPopover]="popoverTpl">
+    <!-- <div class="text-truncate">
+      {{ value }}
+    </div> -->
+    <ng-template [ngTemplateOutlet]="noPopover"></ng-template>
+  </div>
+</ng-container>

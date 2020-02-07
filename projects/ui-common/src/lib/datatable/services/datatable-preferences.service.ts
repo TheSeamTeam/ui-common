@@ -1,4 +1,4 @@
-import { Inject, Injectable, isDevMode } from '@angular/core'
+import { Inject, Injectable, isDevMode, Optional } from '@angular/core'
 import { Observable, of, Subject } from 'rxjs'
 import { map, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators'
 
@@ -28,7 +28,7 @@ export class DatatablePreferencesService {
   public get pending() { return this._pending }
 
   constructor(
-    @Inject(THESEAM_DATATABLE_PREFERENCES_ACCESSOR) private _prefsAccessor?: ITheSeamDatatablePreferencesAccessor
+    @Optional() @Inject(THESEAM_DATATABLE_PREFERENCES_ACCESSOR) private _prefsAccessor?: ITheSeamDatatablePreferencesAccessor
   ) { }
 
   public preferences(preferenceKey: string): Observable<ITheSeamDatatablePreferences> {
@@ -86,7 +86,7 @@ export class DatatablePreferencesService {
     }
   }
 
-  // TODO: Improve this updating to not be more generic, so we can quickly add
+  // TODO: Improve this updating to be more generic, so we can quickly add
   // edits for different preference schema's.
   //
   // TODO: Decide if a send queue/merging of pending queue is needed to avoid

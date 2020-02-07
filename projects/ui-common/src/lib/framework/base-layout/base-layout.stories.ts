@@ -274,17 +274,18 @@ storiesOf('Framework/BaseLayout', module)
       hasNotificationsMenu: boolean('hasNotificationsMenu', true),
       navItems,
       widgets: [
-        { col: 1, order: 0, type: StoryExWidget1Component },
-        { col: 2, order: 0, type: StoryExWidget2Component },
-        { col: 3, order: 0, type: StoryExWidget3Component },
-        { col: 2, order: 1, type: StoryExWidget4Component }
+        { widgetId: 'widget-1', col: 0, order: 0, component: StoryExWidget1Component },
+        { widgetId: 'widget-2', col: 1, order: 0, component: StoryExWidget2Component },
+        { widgetId: 'widget-3', col: 2, order: 0, component: StoryExWidget3Component },
+        { widgetId: 'widget-4', col: 1, order: 1, component: StoryExWidget4Component }
       ],
       faUserAlt,
       faQuestionCircle,
       faSignOutAlt,
       faBell,
       faExclamationTriangle,
-      faComment
+      faComment,
+      widgetsDraggable: boolean('widgetsDraggable', true),
     },
     template: `
       <div style="height: 100vh; width: 100vw;">
@@ -294,7 +295,7 @@ storiesOf('Framework/BaseLayout', module)
             [items]="navItems">
           </seam-side-nav>
           <div class="p-1" *seamBaseLayoutContentHeader>
-            <seam-breadcrumbs></seam-breadcrumbs>
+            <seam-breadcrumbs class="flex-grow-1"></seam-breadcrumbs>
           </div>
           <seam-top-bar
             *seamBaseLayoutTopBar
@@ -302,9 +303,7 @@ storiesOf('Framework/BaseLayout', module)
             [logoSm]="logoSm"
             [hasTitle]="hasTitle"
             [titleText]="titleText"
-            [subTitleText]="subTitleText"
-            [displayName]="displayName"
-            [organizationName]="organizationName">
+            [subTitleText]="subTitleText">
             <seam-menu seamTopBarMenu>
               <a seamMenuItem [icon]="faUserAlt" routerLink="/profile">Profile</a>
               <button seamMenuItem [icon]="faQuestionCircle">About</button>
@@ -338,7 +337,8 @@ storiesOf('Framework/BaseLayout', module)
           </seam-top-bar>
           <seam-dashboard
             *seamBaseLayoutContent
-            [widgets]="widgets">
+            [widgets]="widgets"
+            [widgetsDraggable]="widgetsDraggable">
           </seam-dashboard>
         </seam-base-layout>
       </div>

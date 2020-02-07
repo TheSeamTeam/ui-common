@@ -5,6 +5,8 @@ export interface IDynamicActionModalResultAction {
 
   /**
    * If the modal result equals this value then the action will execute.
+   *
+   * TODO: Should this be a boolean evaluator instead?
    */
   value?: DynamicValue<any>
 

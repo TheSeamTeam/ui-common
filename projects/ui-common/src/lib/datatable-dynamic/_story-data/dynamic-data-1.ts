@@ -41,18 +41,30 @@ export const exampleData1: IDatatableDynamicDef = {
     { icn: 'faEnvelope', firstName: 'User4', lastName: 'Last4', age: 34, sentDate: '2019-08-22T19:23:58.0266996+00:00', error: 'Sint enim do adipisicing in veniam ullamco tempor sunt sunt cillum magna. Proident ullamco ut nulla nisi ullamco occaecat cupidatat nisi. Elit proident sint ex ex reprehenderit anim adipisicing dolore pariatur ea officia est quis fugiat. Quis nostrud amet magna do proident consequat irure minim quis. Aute sit et pariatur ipsum.' },
   ],
   rowActions: [
-    {
-      label: 'Link',
-      action: {
-        type: 'link',
-        link: 'details'
-      }
-    },
-    {
-      label: 'Link External',
-      action: { type: 'link', link: 'https://bing.com', external: true, target: '_blank' },
-      hidden: { type: 'jexl', expr: 'row.age > 30' }
-    },
+    // {
+    //   label: 'Link',
+    //   action: {
+    //     type: 'link',
+    //     link: 'details'
+    //   }
+    // },
+    // {
+    //   label: 'Link External',
+    //   action: { type: 'link', link: 'https://bing.com', external: true, target: '_blank' },
+    //   hidden: { type: 'jexl', expr: 'row.age > 30' }
+    // },
+    // {
+    //   label: 'Link Asset',
+    //   // action: { type: 'link', link: 'https://api.theseam.com/asset/1234', asset: true },
+    //   action: { type: 'link', link: { type: 'jexl', expr: '"https://api.theseam.com/asset/1234"' }, asset: true },
+    //   hidden: { type: 'jexl', expr: 'row.age > 30' }
+    // },
+    // {
+    //   label: 'Link Asset',
+    //   action: { type: 'link', link: 'https://api.theseam.com/asset/1234', asset: true },
+    //   // action: { type: 'link', link: { type: 'jexl', expr: '"https://api.theseam.com/asset/1234"' }, asset: true, target: '_blank' },
+    //   hidden: { type: 'jexl', expr: 'row.age > 30' }
+    // },
     // {
     //   label: 'Link External Config',
     //   action: { type: 'link', link: 'https://bing.com', external: true, confirmDialog: { 'message': 'Are you sure?' } },
@@ -62,18 +74,18 @@ export const exampleData1: IDatatableDynamicDef = {
     //   label: 'Api Endpoint',
     //   action: {
     //     type: 'api',
-    //     // endpoint: 'example/users',
-    //     endpointExpr: '"example/users/" + row.age',
+    //     endpoint: { type: 'jexl', expr: '"example/users/" + row.age' },
     //     method: 'POST',
-    //     bodyExpr: '{ thing: row.age }',
-    //     paramsExpr: '{ age: row.age, name: row.firstName + " " + row.lastName }'
+    //     body: { type: 'jexl', expr: '{ thing: row.age }' },
+    //     params: { type: 'jexl', expr: '{ age: row.age, name: row.firstName + " " + row.lastName }' }
     //   },
     //   hidden: { type: 'jexl', expr: 'row.age > 30' }
     // },
-    // {
-    //   label: 'Modal',
-    //   action: { type: 'modal', component: 'story-ex-modal' }
-    // }
+    {
+      label: 'Modal',
+      // action: { type: 'modal', modal: 'story-ex-modal' }
+      action: { type: 'modal', modal: { type: 'jexl', expr: 'row.age > 30 ? "story-ex-modal" : "story-ex-modal2"' } }
+    }
   ],
   options: {
     virtualization: true
