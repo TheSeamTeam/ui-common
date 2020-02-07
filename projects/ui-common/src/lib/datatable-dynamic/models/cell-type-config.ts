@@ -1,8 +1,8 @@
+import { DynamicValue } from '../../dynamic/index'
 import { TheSeamIconType } from '../../icon/index'
 
 import { DynamicDatatableCellActionLink, DynamicDatatableCellActionModal } from './cell-action'
 import { IDynamicDatatableCellType } from './cell-type'
-import { IJexlExprDef } from './jexl-expr-def'
 
 // tslint:disable:no-inferrable-types
 
@@ -21,6 +21,11 @@ export class DynamicDatatableCellTypeConfig<T = IDynamicDatatableCellType> {
 }
 
 export class DynamicDatatableCellTypeConfigString extends DynamicDatatableCellTypeConfig<'string'> {
+  action?: DynamicDatatableCellTypeConfigIconAction
+
+  /**
+   * TODO: Implement
+   */
   // truncate?: boolean = false
 }
 
@@ -39,27 +44,30 @@ export class DynamicDatatableCellTypeConfigDate extends DynamicDatatableCellType
 export type DynamicDatatableCellTypeConfigIconAction = DynamicDatatableCellActionLink | DynamicDatatableCellActionModal
 
 export class DynamicDatatableCellTypeConfigIcon extends DynamicDatatableCellTypeConfig<'icon'> {
+  /**
+   * TODO: Consider different trigger types, such as, click, dbclick, hover, etc
+   */
   action?: DynamicDatatableCellTypeConfigIconAction
 
   /**
    * Element title attribute.
    */
-  titleAttr?: string | IJexlExprDef
+  titleAttr?: DynamicValue<string>
 
   /**
    * Screen-reader text.
    */
-  srOnly?: string | IJexlExprDef
+  srOnly?: DynamicValue<string>
 
   /**
    * Css class added to the link element.
    */
-  linkClass?: string | IJexlExprDef
+  linkClass?: DynamicValue<string>
 
   /**
    * seam-icon `iconClass` input.
    */
-  iconClass?: string | IJexlExprDef
+  iconClass?: DynamicValue<string>
 
   /**
    * Can apply pre-defined icon styles.

@@ -2,7 +2,14 @@ import { DynamicValue } from '../dynamic/index'
 import { ThemeTypes } from '../models/index'
 
 import { IDynamicDatatableCellType } from './models/cell-type'
-import { DynamicDatatableCellTypeConfig } from './models/cell-type-config'
+import {
+  DynamicDatatableCellTypeConfig,
+  DynamicDatatableCellTypeConfigDate,
+  DynamicDatatableCellTypeConfigDecimal,
+  DynamicDatatableCellTypeConfigIcon,
+  DynamicDatatableCellTypeConfigInteger,
+  DynamicDatatableCellTypeConfigString
+} from './models/cell-type-config'
 import { IDynamicDatatableRowAction } from './models/dynamic-datatable-row-action'
 // import {
 //   DynamicDatatableRowActionApi,
@@ -10,7 +17,7 @@ import { IDynamicDatatableRowAction } from './models/dynamic-datatable-row-actio
 //   DynamicDatatableRowActionModal
 // } from './models/row-action'
 
-export interface IDynamicDatatableColumn<T = IDynamicDatatableCellType> {
+export interface IDynamicDatatableColumn<T extends IDynamicDatatableCellType, C extends DynamicDatatableCellTypeConfig<T>> {
   prop: string
   name: string
   /**
@@ -20,7 +27,7 @@ export interface IDynamicDatatableColumn<T = IDynamicDatatableCellType> {
   /**
    * Config passed to the cell type component.
    */
-  cellTypeConfig?: DynamicDatatableCellTypeConfig<T>
+  cellTypeConfig?: C
   /**
    * String to display if the exporter uses a header.
    */
@@ -28,9 +35,22 @@ export interface IDynamicDatatableColumn<T = IDynamicDatatableCellType> {
   /**
    * Expression to calculate export value.
    * TODO: Implement. Jexl is most likely going to be used.
+   * @deprecated
    */
   exportExpr?: string
+  /**
+   * Value or DynamicValue object to calculate export value.
+   * TODO: Implement.
+   */
+  exportValue?: DynamicValue<string>
 }
+
+// export type DynamicDatatableColumnType =
+//   IDynamicDatatableColumn<'string', DynamicDatatableCellTypeConfigString> |
+//   IDynamicDatatableColumn<'integer', DynamicDatatableCellTypeConfigInteger> |
+//   IDynamicDatatableColumn<'decimal', DynamicDatatableCellTypeConfigDecimal> |
+//   IDynamicDatatableColumn<'date', DynamicDatatableCellTypeConfigDate> |
+//   IDynamicDatatableColumn<'icon', DynamicDatatableCellTypeConfigIcon>
 
 export interface IDynamicDatatableRow {
   [prop: string]: any
@@ -135,7 +155,7 @@ export interface IDynamicDatatableFooterMenu {
 
 export interface IDatatableDynamicDef {
   readonly filterMenu?: IDynamicDatatableFilterMenu
-  readonly columns: IDynamicDatatableColumn[]
+  readonly columns: IDynamicDatatableColumn<IDynamicDatatableCellType, DynamicDatatableCellTypeConfig<IDynamicDatatableCellType>>[]
   readonly rows: IDynamicDatatableRow[]
   // rowActions?: IDynamicDatatableRowActionDef[]
   readonly rowActions?: IDynamicDatatableRowAction[]
