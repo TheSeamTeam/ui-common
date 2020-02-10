@@ -167,3 +167,26 @@ $light-blue: rgba(60,150,200,1);
     }
   }
 }
+
+:host(.other-org) {
+  .tiled-select-tile-panel.grid {
+    border: 0;
+    &.selectable:hover:not(:disabled){
+      box-shadow: 0 0;
+      .tiled-select-tile-panel--label-container {
+        text-decoration: underline;
+      }
+    }
+    .tiled-select-tile-panel--icon,
+    .tiled-select-tile-panel--selected.text-success  {
+      display: none;
+    }
+    .tiled-select-tile-panel--label-container {
+      height: auto;
+      color: #357ebd;
+    }
+    .tiled-select-tile-panel--label {
+      padding: .5rem 1rem;
+    }
+  }
+}
