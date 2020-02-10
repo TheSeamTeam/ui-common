@@ -10,9 +10,6 @@
 
 <ng-container>
   <div *ngIf="canPopover; else noPopover" [seamPopover]="popoverTpl">
-    <!-- <div class="text-truncate">
-      {{ value }}
-    </div> -->
     <ng-template [ngTemplateOutlet]="noPopover"></ng-template>
   </div>
 </ng-container>

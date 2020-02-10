@@ -2,18 +2,24 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   HostBinding,
   Inject,
   Input,
+  isDevMode,
   OnDestroy,
   OnInit,
   Optional
 } from '@angular/core'
+import { fromEvent, Subscription } from 'rxjs'
 
 import { untilDestroyed } from 'ngx-take-until-destroy'
 
+import { DynamicDatatableCellTypeConfigString } from '../../datatable-dynamic/models/cell-type-config'
 import { TABLE_CELL_DATA } from '../../table/table-cell-tokens'
 import { ITableCellData } from '../../table/table-cell.models'
+import { hasProperty } from '../../utils'
+import { TableCellTypesHelpersService } from '../services/table-cell-types-helpers.service'
 
 @Component({
   selector: 'seam-table-cell-type-string',
@@ -42,19 +48,36 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
   @Input() title?: string | null
 
   @HostBinding('attr.title') get _titleAttr() { return this.title || this.value }
+  @HostBinding('class.cell-has-click-action') get _cellHasClickActionCss() { return !!this._clickSub }
 
   canPopover = false
 
+  private _config?: DynamicDatatableCellTypeConfigString
+  private _clickSub?: Subscription
+  private _data?: ITableCellData<any, string>
+
   constructor(
-    private _cdf: ChangeDetectorRef,
-    @Optional() @Inject(TABLE_CELL_DATA) _tableData?: ITableCellData<any, string>
+    private readonly _cdf: ChangeDetectorRef,
+    private readonly _elementRef: ElementRef,
+    private readonly _tableCellTypeHelpers: TableCellTypesHelpersService,
+    @Optional() @Inject(TABLE_CELL_DATA) readonly _tableData?: ITableCellData<any, string>
   ) {
-    const _data = _tableData
+    this._data = _tableData
 
-    this.value = _data && _data.value
+    this.value = this._data && this._data.value
 
-    if (_data) {
-      _data.changed
+    if (this._data && this._data.colData && (<any>this._data.colData).cellTypeConfig) {
+      this._config = (<any>this._data.colData).cellTypeConfig
+
+      if (this._config) {
+        if (hasProperty(this._config, 'action')) {
+          this._enableClickAction()
+        }
+      }
+    }
+
+    if (this._data) {
+      this._data.changed
         .pipe(untilDestroyed(this))
         .subscribe(v => {
           if (v.changes.hasOwnProperty('value')) {
@@ -68,5 +91,46 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
   ngOnInit() { }
 
   ngOnDestroy() { }
+
+  private _enableClickAction(): void {
+    const element = this.getNativeElement()
+    if (element) {
+      this.canPopover = false
+      if (this._clickSub && !this._clickSub.closed) {
+        this._clickSub.unsubscribe()
+      }
+      this._clickSub = fromEvent(element, 'click').pipe(
+        untilDestroyed(this)
+      ).subscribe(() => this._doAction())
+    } else {
+      if (isDevMode()) {
+        console.warn(
+          `[TableCellTypeStringComponent] Unable to register 'click' event. NativeElement not defined.`
+        )
+      }
+    }
+  }
+
+  public getNativeElement(): HTMLElement | undefined {
+    return this._elementRef && this._elementRef.nativeElement
+  }
+
+  private _parseConfigValue(val) {
+    const contextFn = () => this._tableCellTypeHelpers.getValueContext(val, this._data)
+    return this._tableCellTypeHelpers.parseValueProp(val, contextFn)
+  }
+
+  private _doAction() {
+    const action = this._config && this._config.action
+    if (action && action.type === 'modal') {
+      const contextFn = () => this._tableCellTypeHelpers.getValueContext(this.value, this._data)
+      this._tableCellTypeHelpers.handleModalAction(action, contextFn)
+        .subscribe(
+          r => {},
+          err => console.error(err),
+          // () => this._actionRefreshRequest()
+        )
+    }
+  }
 
 }

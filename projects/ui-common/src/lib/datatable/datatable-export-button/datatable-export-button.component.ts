@@ -6,7 +6,9 @@ import { faFileDownload } from '@fortawesome/free-solid-svg-icons'
 import { ToastrService } from 'ngx-toastr'
 
 import { IDataExporter } from '../../data-exporter/data-exporter'
+import { DynamicValueHelperService } from '../../dynamic/dynamic-value-helper.service'
 import { TheSeamLoadingOverlayService } from '../../loading/index'
+import { hasProperty } from '../../utils/index'
 
 import { DatatableComponent, THESEAM_DATATABLE } from '../datatable/datatable.component'
 import { ITheSeamDatatableColumn } from '../models/table-column'
@@ -28,9 +30,10 @@ export class DatatableExportButtonComponent implements OnInit {
   }
 
   constructor(
-    @Inject(THESEAM_DATATABLE) private _datatable: DatatableComponent,
-    private _toastr: ToastrService,
-    private _loading: TheSeamLoadingOverlayService
+    @Inject(THESEAM_DATATABLE) private readonly _datatable: DatatableComponent,
+    private readonly _toastr: ToastrService,
+    private readonly _loading: TheSeamLoadingOverlayService,
+    private readonly _valueHelper: DynamicValueHelperService
   ) { }
 
   ngOnInit() { }
@@ -86,8 +89,13 @@ export class DatatableExportButtonComponent implements OnInit {
   }
 
   private _rowValue(column: ITheSeamDatatableColumn, row: any) {
-    if (column.exportValueFn) {
+    if (hasProperty(column, 'exportValueFn')) {
       return column.exportValueFn(row)
+    }
+
+    if (hasProperty(column as any, 'exportValue')) {
+      const context = { row }
+      return this._valueHelper.evalSync((column as any).exportValue, context)
     }
 
     const colProp = column.prop

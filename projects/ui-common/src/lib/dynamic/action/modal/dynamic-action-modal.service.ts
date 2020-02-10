@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core'
+import { Observable, of } from 'rxjs'
+import { ModalRef } from './../../../modal/modal-ref'
 
+import { switchMap } from 'rxjs/operators'
 import { TheSeamDynamicComponentLoader } from '../../../dynamic-component-loader/dynamic-component-loader.service'
 import { Modal } from '../../../modal/modal.service'
 import { DynamicValueHelperService } from '../../dynamic-value-helper.service'
@@ -30,15 +33,16 @@ export class DynamicActionModalService implements IDynamicActionModal {
       modal = this._valueHelper.evalSync(modal, context)
     }
     console.log('modal', modal)
-    if (typeof modal === 'string') {
-      this._dynamicComponentLoader.getComponentFactory(modal)
-        .subscribe(componentFactory => {
-          const factoryResolver = (<any /* ComponentFactoryBoundToModule */>componentFactory).ngModule.componentFactoryResolver
-          this._modal.openFromComponent(componentFactory.componentType, undefined, factoryResolver)
-        })
-    } else {
-      this._modal.openFromComponent(modal)
-    }
+    // if (typeof modal === 'string') {
+    //   this._dynamicComponentLoader.getComponentFactory(modal)
+    //     .subscribe(componentFactory => {
+    //       const factoryResolver = (<any /* ComponentFactoryBoundToModule */>componentFactory).ngModule.componentFactoryResolver
+    //       this._modal.openFromComponent(componentFactory.componentType, undefined, factoryResolver)
+    //     })
+    // } else {
+    //   this._modal.openFromComponent(modal)
+    // }
+    return this._openModal(modal).toPromise()
   }
 
   // execSync?: (args: IDynamicActionDef<T>, context: D) => R
@@ -47,6 +51,14 @@ export class DynamicActionModalService implements IDynamicActionModal {
     return {
       _actionDef: args,
       triggerType: 'click'
+    }
+  }
+
+  private _openModal(modal: any): Observable<ModalRef<any>> {
+    if (typeof modal === 'string') {
+      return this._modal.openFromLazyComponent(modal)
+    } else {
+      return of(this._modal.openFromComponent(modal))
     }
   }
 }

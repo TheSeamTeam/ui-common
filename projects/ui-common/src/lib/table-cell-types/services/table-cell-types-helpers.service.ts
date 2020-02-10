@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core'
 import { Observable, of, Subject, Subscriber } from 'rxjs'
 import { switchMap, takeUntil } from 'rxjs/operators'
 
-import jexl from 'jexl'
-
 import { DynamicDatatableCellActionModal } from '../../datatable-dynamic/index'
 import { TheSeamDynamicComponentLoader } from '../../dynamic-component-loader/index'
+import { DynamicValueHelperService } from '../../dynamic/dynamic-value-helper.service'
 import { Modal, ModalConfig, ModalRef } from '../../modal/index'
 import { ITableCellData } from '../../table/table-cell.models'
 
@@ -18,6 +17,7 @@ export class TableCellTypesHelpersService {
 
   constructor(
     private _dynamicComponentLoaderModule: TheSeamDynamicComponentLoader,
+    private _valueHelper: DynamicValueHelperService,
     private _modal: Modal,
   ) { }
 
@@ -30,12 +30,8 @@ export class TableCellTypesHelpersService {
       return value
     }
 
-    if (value.type === 'jexl') {
-      const context = this._resolveValueContext(contextOrContextFn)
-      return jexl.evalSync(value.expr, context)
-    }
-
-    return value
+    const context = this._resolveValueContext(contextOrContextFn)
+    return this._valueHelper.evalSync(value.expr, context)
   }
 
   public getValueContext(value: any, data?: ITableCellData<any, string>): ICalucatedValueContext {

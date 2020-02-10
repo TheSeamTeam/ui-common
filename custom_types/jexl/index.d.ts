@@ -51,7 +51,7 @@ declare module 'jexl' {
      * Jexl with each maintaining its own set of transforms, simply
      * re-instantiate with new jexl.Jexl().
      */
-    Jexl: Jexl
+    Jexl: new (...args: any[]) => Jexl
 
     /**
      * Adds a binary operator to the Jexl instance. A binary operator is one

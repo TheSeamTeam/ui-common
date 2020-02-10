@@ -20,13 +20,10 @@ export class DynamicDatatableCellTypeConfig<T = IDynamicDatatableCellType> {
   cssClass?: string | string[]
 }
 
-export class DynamicDatatableCellTypeConfigString extends DynamicDatatableCellTypeConfig<'string'> {
-  action?: DynamicDatatableCellTypeConfigIconAction
+export type DynamicDatatableCellTypeConfigStringAction = DynamicDatatableCellActionModal
 
-  /**
-   * TODO: Implement
-   */
-  // truncate?: boolean = false
+export class DynamicDatatableCellTypeConfigString extends DynamicDatatableCellTypeConfig<'string'> {
+  action?: DynamicDatatableCellTypeConfigStringAction
 }
 
 export class DynamicDatatableCellTypeConfigInteger extends DynamicDatatableCellTypeConfig<'integer'> {
