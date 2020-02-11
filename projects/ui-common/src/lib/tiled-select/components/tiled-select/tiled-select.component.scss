@@ -19,6 +19,10 @@
       .tiled-select-tile {
         height: 100%;
       }
+      &.other-org {
+        width: auto;
+        height: auto;
+      }
     }
 
     @media screen and (max-width: 600px) {

@@ -7,6 +7,7 @@ export interface ITiledSelectItem {
   icon?: string | IconProp
   disabled?: boolean
   hidden?: boolean
+  customClass?: string
 }
 
 export type TiledSelectLayout = 'grid' | 'list'
