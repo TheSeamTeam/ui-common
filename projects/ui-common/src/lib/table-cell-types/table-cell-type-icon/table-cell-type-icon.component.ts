@@ -12,8 +12,6 @@ import {
 
 import { untilDestroyed } from 'ngx-take-until-destroy'
 
-import jexl from 'jexl'
-
 import {
   DynamicDatatableCellActionModal,
   DynamicDatatableCellTypeConfigIcon,

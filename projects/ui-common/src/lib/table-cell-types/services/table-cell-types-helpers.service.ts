@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core'
-import { Observable, of, Subject, Subscriber } from 'rxjs'
+import { from, Observable, of, Subject, Subscriber } from 'rxjs'
 import { switchMap, takeUntil } from 'rxjs/operators'
 
 import { DynamicDatatableCellActionModal } from '../../datatable-dynamic/index'
 import { TheSeamDynamicComponentLoader } from '../../dynamic-component-loader/index'
+import { DynamicActionHelperService } from '../../dynamic/action/dynamic-action-helper.service'
 import { DynamicValueHelperService } from '../../dynamic/dynamic-value-helper.service'
 import { Modal, ModalConfig, ModalRef } from '../../modal/index'
 import { ITableCellData } from '../../table/table-cell.models'
@@ -17,6 +18,7 @@ export class TableCellTypesHelpersService {
 
   constructor(
     private _dynamicComponentLoaderModule: TheSeamDynamicComponentLoader,
+    private _dynamicActionHelper: DynamicActionHelperService,
     private _valueHelper: DynamicValueHelperService,
     private _modal: Modal,
   ) { }
@@ -95,26 +97,36 @@ export class TableCellTypesHelpersService {
     contextOrContextFn: CaluclatedValueContextType,
     resultSubject: Subject<any>
   ) {
-    const data = this.parseValueProp(action.data, contextOrContextFn)
+    console.log('_handleModalAction', action, contextOrContextFn, resultSubject)
 
-    return this._handleModalActionOpenModal(action, data).pipe(
-      switchMap(modalRef => modalRef.afterClosed().pipe(
-        switchMap(result => {
-          resultSubject.next(result)
+    const context = this._resolveValueContext(contextOrContextFn)
+    console.log('~action', action, context)
+    return from(this._dynamicActionHelper.exec(action, context))
 
-          const resultAction = this._getModalResultAction(action, result)
-          if (resultAction) {
-            return this._handleModalAction(resultAction, contextOrContextFn, resultSubject)
-          }
 
-          resultSubject.complete()
-          return of(undefined)
-        })
-      ))
-    )
+
+
+    // const data = this.parseValueProp(action.data, contextOrContextFn)
+
+    // return this._handleModalActionOpenModal(action, data).pipe(
+    //   switchMap(modalRef => modalRef.afterClosed().pipe(
+    //     switchMap(result => {
+    //       resultSubject.next(result)
+
+    //       const resultAction = this._getModalResultAction(action, result)
+    //       if (resultAction) {
+    //         return this._handleModalAction(resultAction, contextOrContextFn, resultSubject)
+    //       }
+
+    //       resultSubject.complete()
+    //       return of(undefined)
+    //     })
+    //   ))
+    // )
   }
 
   private _handleModalActionOpenModal(action: DynamicDatatableCellActionModal, data?: any): Observable<ModalRef<any, any>> {
+    console.log('_handleModalActionOpenModal', action, data)
     if (!action.component) {
       throw new Error('Cell action type "modal" must have a component defined.')
     }
