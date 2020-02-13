@@ -1,11 +1,18 @@
 import { ComponentType } from '@angular/cdk/portal'
 
+import { IDynamicActionConfirmDef } from '../../dynamic/models/dynamic-action-confirm-def'
+
 import { IJexlExprDef } from './jexl-expr-def'
 
 // tslint:disable:no-inferrable-types
 
 export class DynamicDatatableCellActionBase<T = string> {
   type: T
+
+  /**
+   * If defined, the action must be confirmed.
+   */
+  confirmDef?: IDynamicActionConfirmDef
 
   disabled?: boolean = false
 }

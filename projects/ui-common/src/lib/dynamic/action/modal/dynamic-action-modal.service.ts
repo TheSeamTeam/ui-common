@@ -1,5 +1,5 @@
 import { ComponentType } from '@angular/cdk/portal'
-import { Injectable } from '@angular/core'
+import { Injectable, Injector } from '@angular/core'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
@@ -26,39 +26,23 @@ export class DynamicActionModalService implements IDynamicActionModal {
 
   constructor(
     private _valueHelper: DynamicValueHelperService,
-    private _dynamicActionHelper: DynamicActionHelperService,
     private _modal: Modal,
-    private _dynamicComponentLoader: TheSeamDynamicComponentLoader,
+    private _injector: Injector
   ) { }
 
   async exec(args: IDynamicActionModalDef, context: any): Promise<any> {
-    console.log('[DynamicActionModalService] exec:', args, context)
-
     const component = this._getComponent(args, context)
     const data = this._getData(args, context)
-    console.log('component', component, data)
 
     return this._openModal(component, data).pipe(
       switchMap(modalRef => modalRef.afterClosed().pipe(
         switchMap(result => {
-          // resultSubject.next(result)
-
-
           const resultAction = this._getModalResultAction(args, result)
-          console.log('resultAction', resultAction)
-          // if (resultAction) {
-          //   return this._handleModalAction(resultAction, contextOrContextFn, resultSubject)
-          // }
-
-          // resultSubject.complete()
-          // return of(undefined)
-
-          console.log('result', result)
 
           // TODO: Come up with a way to pass data from previous action
           if (resultAction) {
-            console.log('_dynamicActionHelper', this._dynamicActionHelper)
-            return this._dynamicActionHelper.exec(resultAction, context)
+            const dynamicActionHelper = this._getDynamicActionHelper()
+            return dynamicActionHelper.exec(resultAction, context)
           }
           return of(result)
         })
@@ -73,6 +57,15 @@ export class DynamicActionModalService implements IDynamicActionModal {
       _actionDef: args,
       triggerType: 'click'
     }
+  }
+
+  /**
+   * Get the dynamic action helper from the injector. The injector order causes
+   * the dynamic action helper to not be in the injector when the constructor is
+   * called.
+   */
+  private _getDynamicActionHelper(): DynamicActionHelperService {
+    return this._injector.get(DynamicActionHelperService)
   }
 
   private _getComponent(args: IDynamicActionModalDef, context: any): string | ComponentType<{}> | undefined {

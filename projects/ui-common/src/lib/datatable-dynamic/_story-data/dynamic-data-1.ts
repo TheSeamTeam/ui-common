@@ -83,8 +83,9 @@ export const exampleData1: IDatatableDynamicDef = {
     // },
     {
       label: 'Modal',
-      // action: { type: 'modal', modal: 'story-ex-modal' }
-      action: { type: 'modal', modal: { type: 'jexl', expr: 'row.age > 30 ? "story-ex-modal" : "story-ex-modal2"' } }
+      // action: { type: 'modal', component: 'story-ex-modal' }
+      // action: { type: 'modal', component: { type: 'jexl', expr: 'row.age > 30 ? "story-ex-modal" : "story-ex-modal2"' } }
+      action: { type: 'modal', component: { type: 'jexl', expr: 'row.age > 30 ? "messages-modal" : "messages-create"' } }
     }
   ],
   options: {

@@ -1,5 +1,11 @@
 import { Inject, Injectable, isDevMode, Optional } from '@angular/core'
 
+import { SeamConfirmDialogService } from '../../confirm-dialog/confirm-dialog.service'
+import { ThemeTypes } from '../../models/theme-types'
+import { hasProperty } from '../../utils/index'
+
+import { map } from 'rxjs/operators'
+import { DynamicValueHelperService } from '../dynamic-value-helper.service'
 import { IDynamicAction } from '../models/dynamic-action'
 import { IDynamicActionDef } from '../models/dynamic-action-def'
 import { IDynamicActionUiDef } from '../models/dynamic-action-ui-def'
@@ -13,7 +19,10 @@ export class DynamicActionHelperService {
   private _actionMap = new Map<string, IDynamicAction<string>>()
 
   constructor(
-    @Optional() @Inject(THESEAM_DYNAMIC_ACTION) actions: IDynamicAction<string>[]
+    private _valueHelper: DynamicValueHelperService,
+    // TODO: Consider making the action confirm more generic
+    @Optional() private _confirmDialog?: SeamConfirmDialogService,
+    @Optional() @Inject(THESEAM_DYNAMIC_ACTION) actions?: IDynamicAction<string>[]
   ) {
     console.log('~~~DynamicActionHelperService~~~')
     // Only one evaluator should exist for a type, so map them for faster lookup.
@@ -32,7 +41,7 @@ export class DynamicActionHelperService {
    *
    * TODO: Improve context and return typing.
    */
-  public exec<T extends string>(actionDef: IDynamicActionDef<T>, context?: any): Promise<IDynamicActionDef<T>> {
+  public async exec<T extends string>(actionDef: IDynamicActionDef<T>, context?: any): Promise<IDynamicActionDef<T>> {
     const action = this._actionMap.get(actionDef.type)
     if (!action) {
       throw Error(`[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' not found.`)
@@ -41,7 +50,15 @@ export class DynamicActionHelperService {
       throw Error(`[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' does not implement 'exec()'.`)
     }
 
-    return action.exec(actionDef, context)
+    if (await this.requiresConfirmation(actionDef, context)) {
+      const confirmed = await this.promptConfirmation(actionDef, context)
+      if (!confirmed) {
+        // TODO: Decide a good way to handle a rejected confirm.
+        return 'rejected' as any
+      }
+    }
+
+    return await action.exec(actionDef, context)
   }
 
   /**
@@ -99,6 +116,71 @@ export class DynamicActionHelperService {
     }
 
     return true
+  }
+
+  public async requiresConfirmation<T extends string>(actionDef: IDynamicActionDef<T>, context?: any): Promise<boolean> {
+    if (!hasProperty(actionDef, 'confirmDef')) {
+      return false
+    }
+
+    if (hasProperty(actionDef.confirmDef, 'disabled')) {
+      return !(await this._valueHelper.eval(actionDef.confirmDef.disabled, context))
+    }
+
+    return true
+  }
+
+  public requiresConfirmationSync<T extends string>(actionDef: IDynamicActionDef<T>, context?: any): boolean {
+    if (!hasProperty(actionDef, 'confirmDef')) {
+      return false
+    }
+
+    if (hasProperty(actionDef.confirmDef, 'disabled')) {
+      const disabled = !this._valueHelper.evalSync(actionDef.confirmDef.disabled, context)
+      if (!disabled) {
+        throw Error(
+          `[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' can't open ` +
+          `confirm dialog. Only async actions support confirm dialog.`
+        )
+      }
+      return false
+    }
+
+    throw Error(
+      `[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' can't open ` +
+      `confirm dialog. Only async actions support confirm dialog.`
+    )
+  }
+
+  public async promptConfirmation<T extends string>(actionDef: IDynamicActionDef<T>, context?: any): Promise<boolean> {
+    if (!this._confirmDialog) {
+      throw Error(
+        `[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' can't open ` +
+        `confirm dialog. Confirm dialog service is not injected.`
+      )
+    }
+
+    const confirmDef = actionDef.confirmDef
+    if (!confirmDef) {
+      throw Error(
+        `[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' can't open ` +
+        `confirm dialog. Confirm def is not defined.`
+      )
+    }
+
+    let message: string | undefined
+    if (hasProperty(confirmDef, 'message')) {
+      message = await this._valueHelper.eval(confirmDef.message, context)
+    }
+    let alert: string | { message: string, type: ThemeTypes } | undefined
+    if (hasProperty(confirmDef, 'alert')) {
+      alert = await this._valueHelper.eval(confirmDef.alert, context)
+    }
+
+    const modalDef = this._confirmDialog.open(message, alert)
+    return modalDef.afterClosed().pipe(
+      map(v => v === 'confirm')
+    ).toPromise()
   }
 
 }

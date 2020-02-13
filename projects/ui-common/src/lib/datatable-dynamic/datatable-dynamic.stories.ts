@@ -1,5 +1,6 @@
 import { select, text, withKnobs } from '@storybook/addon-knobs'
 import { moduleMetadata, storiesOf } from '@storybook/angular'
+import { StoryMessagesCreateModalModule, StoryMessagesModalModule } from './_story-data/datatable-modals'
 import { DatatableDynamicComponent } from './datatable-dynamic.component'
 
 import { CommonModule } from '@angular/common'
@@ -11,7 +12,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-import { TheSeamDynamicComponentLoaderModule } from '../dynamic-component-loader/dynamic-component-loader.module'
+import { IDynamicComponentManifest, TheSeamDynamicComponentLoaderModule } from '../dynamic-component-loader/dynamic-component-loader.module'
 import {
   DynamicActionApiService,
   DynamicActionLinkService,
@@ -166,6 +167,19 @@ const routes = [
 //   }))
 
 
+const manifests: IDynamicComponentManifest[] = [
+  {
+    componentId: 'messages-modal',
+    path: 'messages-modal',
+    loadChildren: () => StoryMessagesModalModule
+  },
+  {
+    componentId: 'messages-create',
+    path: 'messages-create',
+    loadChildren: () => StoryMessagesCreateModalModule
+  }
+]
+
 export default {
   title: 'Components/Datatable/Dynamic',
   component: DatatableDynamicComponent,
@@ -179,6 +193,7 @@ export default {
         TheSeamDatatableDynamicModule,
         // ExampleModalModule
         TheSeamDynamicComponentLoaderModule.forRoot([
+          ...manifests,
           {
             componentId: 'story-ex-modal',
             path: 'story-ex-modal',
