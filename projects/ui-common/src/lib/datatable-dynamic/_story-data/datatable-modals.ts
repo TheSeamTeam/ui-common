@@ -11,7 +11,7 @@ import { MODAL_DATA, TheSeamModalModule } from '../../modal/index'
   template: `
     <seam-modal-header>
       <h4 seamModalTitle class="d-flex flex-column">
-        StoryMessagesModal
+        Story Modal 1
       </h4>
       <button type="button" class="close" aria-label="Close" data-dismiss="modal" seamModalClose>
         <span aria-hidden="true">&times;</span>
@@ -21,31 +21,31 @@ import { MODAL_DATA, TheSeamModalModule } from '../../modal/index'
       <pre *ngIf="data">{{ data | json }}</pre>
     </seam-modal-body>
     <seam-modal-footer>
-      <button type="button" class="btn btn-lightgray" data-dismiss="modal" seamModalClose="reply">Reply</button>
+      <button type="button" class="btn btn-lightgray" data-dismiss="modal" seamModalClose="next-modal">Next Modal</button>
       <button type="button" class="btn btn-primary" data-dismiss="modal" seamModalClose>Close</button>
     </seam-modal-footer>
   `
 })
-export class StoryMessagesModalComponent {
+export class StoryModalOneComponent {
   constructor(
     @Optional() @Inject(MODAL_DATA) public data?: any
-  ) { console.log('[StoryMessagesModalComponent] data', data) }
+  ) { console.log('[StoryModalOneComponent] data', data) }
 }
 
 @NgModule({
   imports: [
     CommonModule,
     TheSeamModalModule,
-    TheSeamDynamicComponentLoaderModule.forChild(StoryMessagesModalComponent),
+    TheSeamDynamicComponentLoaderModule.forChild(StoryModalOneComponent),
   ],
   declarations: [
-    StoryMessagesModalComponent
+    StoryModalOneComponent
   ],
   entryComponents: [
-    StoryMessagesModalComponent
+    StoryModalOneComponent
   ]
 })
-export class StoryMessagesModalModule { }
+export class StoryModalOneModule { }
 
 //
 //
@@ -54,7 +54,7 @@ export class StoryMessagesModalModule { }
   template: `
     <seam-modal-header>
       <h4 seamModalTitle class="d-flex flex-column">
-        StoryMessagesCreate
+        Story Modal 2
       </h4>
       <button type="button" class="close" aria-label="Close" data-dismiss="modal" seamModalClose>
         <span aria-hidden="true">&times;</span>
@@ -69,24 +69,24 @@ export class StoryMessagesModalModule { }
     </seam-modal-footer>
   `
 })
-export class StoryMessagesCreateModalComponent {
+export class StoryModalTwoComponent {
   constructor(
     @Optional() @Inject(MODAL_DATA) public data?: any
-  ) { console.log('[StoryMessagesCreateModalComponent] data', data) }
+  ) { console.log('[StoryModalTwoComponent] data', data) }
 }
 
 @NgModule({
   imports: [
     CommonModule,
     TheSeamModalModule,
-    TheSeamDynamicComponentLoaderModule.forChild(StoryMessagesCreateModalComponent),
+    TheSeamDynamicComponentLoaderModule.forChild(StoryModalTwoComponent),
   ],
   declarations: [
-    StoryMessagesCreateModalComponent
+    StoryModalTwoComponent
   ],
   entryComponents: [
-    StoryMessagesCreateModalComponent
+    StoryModalTwoComponent
   ]
 })
-export class StoryMessagesCreateModalModule { }
+export class StoryModalTwoModule { }
 

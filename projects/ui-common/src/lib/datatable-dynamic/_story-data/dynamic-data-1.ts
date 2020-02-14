@@ -1,5 +1,52 @@
-import { IDatatableDynamicDef } from '../datatable-dynamic-def'
+import {
+  DynamicDatatableCellTypeConfigDate,
+  DynamicDatatableCellTypeConfigIcon,
+  DynamicDatatableCellTypeConfigString
+} from '../../datatable-dynamic/index'
+import { IDatatableDynamicDef, IDynamicDatatableColumn } from '../datatable-dynamic-def'
 
+type ColumnDefType =
+  IDynamicDatatableColumn<'string', DynamicDatatableCellTypeConfigString> |
+  IDynamicDatatableColumn<'date', DynamicDatatableCellTypeConfigDate> |
+  IDynamicDatatableColumn<'icon', DynamicDatatableCellTypeConfigIcon>
+
+const _columnDefs: ColumnDefType[] = [
+  // { prop: 'icn', name: 'Icon', cellType: 'icon' },
+  {
+    prop: 'icn', name: 'Icon',
+    width: 60,
+    resizeable: false,
+    canAutoResize: false,
+    cellType: 'icon',
+    cellTypeConfig: {
+      type: 'icon',
+      iconClass: { type: 'jexl', expr: 'row.read ? "" : "text-danger"' },
+      action: {
+        type: 'modal',
+        component: 'story-modal-1',
+        data: { type: 'jexl', expr: '{ message: row.item }' },
+        confirmDef: {
+          message: 'Are you sure you want to view message?'
+        },
+        resultActions: {
+          'next-modal': {
+            type: 'modal',
+            component: 'story-modal-2',
+            data: { type: 'jexl', expr: '{ message: row.item, isReply: true }' }
+          }
+        }
+      }
+    },
+    exportHeader: 'Read Status',
+    exportValue: { type: 'jexl', expr: 'row.read ? "Read" : "Unread"' },
+  },
+  { prop: 'firstName', name: 'First Name' },
+  { prop: 'lastName', name: 'Last Name' },
+  { prop: 'age', name: 'Age' },
+  { prop: 'sentDate', name: 'Sent Date', cellType: 'date' },
+  { prop: 'error', name: 'Error' }
+]
+4
 export const exampleData1: IDatatableDynamicDef = {
   filterMenu: {
     state: 'always-visible',
@@ -12,9 +59,14 @@ export const exampleData1: IDatatableDynamicDef = {
         type: 'common',
         options: {
           buttons: [
+            { name: 'All', value: '' },
             { name: '30', value: '30' },
             { name: '32', value: '32' }
-          ]
+          ],
+          multiple: false,
+          selectionToggleable: false,
+          initialValue: '',
+          properties: ['age']
         }
       }
     ],
@@ -23,14 +75,7 @@ export const exampleData1: IDatatableDynamicDef = {
       'exporter:xlsx'
     ],
   },
-  columns: [
-    { prop: 'icn', name: 'Icon', cellType: 'icon' },
-    { prop: 'firstName', name: 'First Name' },
-    { prop: 'lastName', name: 'Last Name' },
-    { prop: 'age', name: 'Age' },
-    { prop: 'sentDate', name: 'Sent Date', cellType: 'date' },
-    { prop: 'error', name: 'Error' }
-  ],
+  columns: _columnDefs,
   rows: [
     { icn: 'faEnvelope', firstName: 'User1', lastName: 'Last1', age: 28, sentDate: '2019-07-22T16:25:58.0266996+00:00' },
     { icn: 'faEnvelope', firstName: 'User2', lastName: 'Last2', age: 30, sentDate: '2019-08-22T19:23:58.0266996+00:00' },
@@ -85,7 +130,7 @@ export const exampleData1: IDatatableDynamicDef = {
       label: 'Modal',
       // action: { type: 'modal', component: 'story-ex-modal' }
       // action: { type: 'modal', component: { type: 'jexl', expr: 'row.age > 30 ? "story-ex-modal" : "story-ex-modal2"' } }
-      action: { type: 'modal', component: { type: 'jexl', expr: 'row.age > 30 ? "messages-modal" : "messages-create"' } }
+      action: { type: 'modal', component: { type: 'jexl', expr: 'row.age > 30 ? "story-modal-1" : "story-modal-2"' } }
     }
   ],
   options: {

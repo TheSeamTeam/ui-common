@@ -1,7 +1,5 @@
 import { select, text, withKnobs } from '@storybook/addon-knobs'
 import { moduleMetadata, storiesOf } from '@storybook/angular'
-import { StoryMessagesCreateModalModule, StoryMessagesModalModule } from './_story-data/datatable-modals'
-import { DatatableDynamicComponent } from './datatable-dynamic.component'
 
 import { CommonModule } from '@angular/common'
 import { HttpClientModule } from '@angular/common/http'
@@ -23,7 +21,9 @@ import {
 } from '../dynamic/index'
 import { TheSeamModalModule } from '../modal/index'
 
+import { StoryModalOneModule, StoryModalTwoModule } from './_story-data/datatable-modals'
 import { exampleData1 } from './_story-data/dynamic-data-1'
+import { DatatableDynamicComponent } from './datatable-dynamic.component'
 import { TheSeamDatatableDynamicModule } from './datatable-dynamic.module'
 
 
@@ -169,14 +169,14 @@ const routes = [
 
 const manifests: IDynamicComponentManifest[] = [
   {
-    componentId: 'messages-modal',
-    path: 'messages-modal',
-    loadChildren: () => StoryMessagesModalModule
+    componentId: 'story-modal-1',
+    path: 'story-modal-1',
+    loadChildren: () => StoryModalOneModule
   },
   {
-    componentId: 'messages-create',
-    path: 'messages-create',
-    loadChildren: () => StoryMessagesCreateModalModule
+    componentId: 'story-modal-2',
+    path: 'story-modal-2',
+    loadChildren: () => StoryModalTwoModule
   }
 ]
 
