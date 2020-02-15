@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core'
-import { from, Observable, of, Subject, Subscriber } from 'rxjs'
-import { switchMap, takeUntil } from 'rxjs/operators'
+import { from, Observable, Subject, Subscriber } from 'rxjs'
+import { takeUntil } from 'rxjs/operators'
 
 import { DynamicDatatableCellActionModal } from '../../datatable-dynamic/index'
-import { TheSeamDynamicComponentLoader } from '../../dynamic-component-loader/index'
 import { DynamicActionHelperService } from '../../dynamic/action/dynamic-action-helper.service'
 import { DynamicValueHelperService } from '../../dynamic/dynamic-value-helper.service'
-import { Modal, ModalConfig, ModalRef } from '../../modal/index'
 import { ITableCellData } from '../../table/table-cell.models'
 
 import { CaluclatedValueContextType, ICalucatedValueContext } from '../table-cell-types-models'
@@ -17,23 +15,13 @@ import { CaluclatedValueContextType, ICalucatedValueContext } from '../table-cel
 export class TableCellTypesHelpersService {
 
   constructor(
-    private _dynamicComponentLoaderModule: TheSeamDynamicComponentLoader,
     private _dynamicActionHelper: DynamicActionHelperService,
-    private _valueHelper: DynamicValueHelperService,
-    private _modal: Modal,
+    private _valueHelper: DynamicValueHelperService
   ) { }
 
   public parseValueProp(value: any, contextOrContextFn: CaluclatedValueContextType) {
-    if (value === undefined || value === null) {
-      return value
-    }
-
-    if (typeof value === 'string') {
-      return value
-    }
-
     const context = this._resolveValueContext(contextOrContextFn)
-    return this._valueHelper.evalSync(value.expr, context)
+    return this._valueHelper.evalSync(value, context)
   }
 
   public getValueContext(value: any, data?: ITableCellData<any, string>): ICalucatedValueContext {
@@ -97,71 +85,7 @@ export class TableCellTypesHelpersService {
     contextOrContextFn: CaluclatedValueContextType,
     resultSubject: Subject<any>
   ) {
-    console.log('_handleModalAction', action, contextOrContextFn, resultSubject)
-
     const context = this._resolveValueContext(contextOrContextFn)
-    console.log('~action', action, context)
     return from(this._dynamicActionHelper.exec(action, context))
-
-
-
-
-    // const data = this.parseValueProp(action.data, contextOrContextFn)
-
-    // return this._handleModalActionOpenModal(action, data).pipe(
-    //   switchMap(modalRef => modalRef.afterClosed().pipe(
-    //     switchMap(result => {
-    //       resultSubject.next(result)
-
-    //       const resultAction = this._getModalResultAction(action, result)
-    //       if (resultAction) {
-    //         return this._handleModalAction(resultAction, contextOrContextFn, resultSubject)
-    //       }
-
-    //       resultSubject.complete()
-    //       return of(undefined)
-    //     })
-    //   ))
-    // )
-  }
-
-  private _handleModalActionOpenModal(action: DynamicDatatableCellActionModal, data?: any): Observable<ModalRef<any, any>> {
-    console.log('_handleModalActionOpenModal', action, data)
-    if (!action.component) {
-      throw new Error('Cell action type "modal" must have a component defined.')
-    }
-
-    const config: ModalConfig<any> = {
-      modalSize: 'lg',
-      data
-    }
-
-    if (typeof action.component === 'string') {
-      return this._dynamicComponentLoaderModule
-        .getComponentFactory<{}>(action.component)
-        .pipe(
-          switchMap(componentFactory => {
-            const modalRef = this._modal.openFromComponent(
-              componentFactory.componentType,
-              config,
-              (<any /* ComponentFactoryBoundToModule */>componentFactory).ngModule.componentFactoryResolver
-            )
-            return of(modalRef)
-          })
-        )
-    } else {
-      const modalRef = this._modal.openFromComponent(action.component, config)
-      return of(modalRef)
-    }
-  }
-
-  private _getModalResultAction(action: DynamicDatatableCellActionModal, result: any) {
-    if (
-      action.resultActions
-      && action.resultActions[result]
-      && action.resultActions[result].type === 'modal'
-    ) {
-      return action.resultActions[result]
-    }
   }
 }

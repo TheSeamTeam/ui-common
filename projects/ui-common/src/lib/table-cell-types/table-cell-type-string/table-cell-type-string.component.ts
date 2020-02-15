@@ -115,11 +115,6 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
     return this._elementRef && this._elementRef.nativeElement
   }
 
-  private _parseConfigValue(val) {
-    const contextFn = () => this._tableCellTypeHelpers.getValueContext(val, this._data)
-    return this._tableCellTypeHelpers.parseValueProp(val, contextFn)
-  }
-
   private _doAction() {
     const action = this._config && this._config.action
     if (action && action.type === 'modal') {

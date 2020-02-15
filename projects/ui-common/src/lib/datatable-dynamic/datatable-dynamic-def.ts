@@ -243,36 +243,10 @@ export interface IDynamicDatatableFooterMenu {
   items?: IDynamicDatatableFooterMenuItem[]
 }
 
-// TODO: Replace with new implementation.
-// export type DynamicDatatableRowActionType =
-//   DynamicDatatableRowActionLink
-//   | DynamicDatatableRowActionApi
-//   | DynamicDatatableRowActionModal
-
-// export interface IDynamicDatatableRowActionDef {
-
-//   /**
-//    * Label displayed on the menu item.
-//    */
-//   label: string
-
-//   /**
-//    * TODO: Decide on a good way to handle the actions configuration through json.
-//    */
-//   action?: IDynamicActionDef
-
-//   /**
-//    * Expression executed each row to decide if the action will be visible.
-//    */
-//   hidden?: DynamicValue
-
-// }
-
 export interface IDatatableDynamicDef {
   readonly filterMenu?: IDynamicDatatableFilterMenu
   readonly columns: IDynamicDatatableColumn<IDynamicDatatableCellType, DynamicDatatableCellTypeConfig<IDynamicDatatableCellType>>[]
   readonly rows: IDynamicDatatableRow[]
-  // rowActions?: IDynamicDatatableRowActionDef[]
   readonly rowActions?: IDynamicDatatableRowAction[]
   // footerMenu?: IDynamicDatatableFooterMenu
   readonly options?: IDynamicDatatableOptions

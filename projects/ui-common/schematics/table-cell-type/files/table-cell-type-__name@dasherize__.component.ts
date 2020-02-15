@@ -21,9 +21,9 @@ import { hasProperty } from '../../utils'
 import { TableCellTypesHelpersService } from '../services/table-cell-types-helpers.service'
 
 @Component({
-  selector: 'seam-table-cell-type-string',
-  templateUrl: './table-cell-type-string.component.html',
-  styleUrls: ['./table-cell-type-string.component.scss'],
+  selector: 'seam-table-cell-type-<%= dasherize(name) %>',
+  templateUrl: './table-cell-type-<%= dasherize(name) %>.component.html',
+  styleUrls: ['./table-cell-type-<%= dasherize(name) %>.component.scss'],
   host: { },
   changeDetection: ChangeDetectionStrategy.OnPush
 })

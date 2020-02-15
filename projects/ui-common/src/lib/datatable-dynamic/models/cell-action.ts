@@ -1,8 +1,7 @@
 import { ComponentType } from '@angular/cdk/portal'
 
 import { IDynamicActionConfirmDef } from '../../dynamic/models/dynamic-action-confirm-def'
-
-import { IJexlExprDef } from './jexl-expr-def'
+import { DynamicValue } from '../../dynamic/models/dynamic-value'
 
 // tslint:disable:no-inferrable-types
 
@@ -18,7 +17,7 @@ export class DynamicDatatableCellActionBase<T = string> {
 }
 
 export class DynamicDatatableCellActionLink extends DynamicDatatableCellActionBase<'link'> {
-  link: string | IJexlExprDef
+  link: DynamicValue<string>
 
   /**
    * Make sure the application provides an `EncryptedAssetReader` that the
