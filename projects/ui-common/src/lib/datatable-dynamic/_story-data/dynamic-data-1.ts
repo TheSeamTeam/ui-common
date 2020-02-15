@@ -46,7 +46,7 @@ const _columnDefs: ColumnDefType[] = [
   { prop: 'sentDate', name: 'Sent Date', cellType: 'date' },
   { prop: 'error', name: 'Error' }
 ]
-4
+
 export const exampleData1: IDatatableDynamicDef = {
   filterMenu: {
     state: 'always-visible',
