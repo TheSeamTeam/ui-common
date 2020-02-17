@@ -34,6 +34,9 @@ storiesOf('Components/Widget/Content/Tile', module)
           <a seam-widget-tile [icon]="tileIcon" routerLink="/data-tools">
             {{ tileText }}
           </a>
+          <a seam-widget-tile [icon]="tileIcon" routerLink="/data-tools" disabled>
+            {{ tileText }} [disabled]
+          </a>
         </seam-widget>
       </div>`
   }))
@@ -57,6 +60,7 @@ storiesOf('Components/Widget/Content/Tile', module)
       <div class="p-1" style="max-height: 400px; width: 500px;">
         <seam-widget [icon]="icon" [titleText]="title" [loading]="loading">
           <button seam-widget-tile [icon]="tileIcon">{{ tileText }}</button>
+          <button seam-widget-tile [icon]="tileIcon" disabled>{{ tileText }} [disabled]</button>
         </seam-widget>
       </div>`
   }))

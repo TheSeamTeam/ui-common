@@ -2,7 +2,7 @@
 
 :host {
   display: block;
-  color: $body-color;
+  color: $seam-widget-tile-color;
   font-size: $seam-widget-tile-font-size;
   font-weight: $font-weight-normal;
   line-height: $seam-widget-tile-line-height;
@@ -14,14 +14,38 @@
 
   &a {
     text-decoration: none;
-    &:hover {
-      background: #f4f4f4;
-    }
   }
 
-  &.disabled {
+  @include transition($btn-transition);
+
+  @include hover {
+    color: $seam-widget-tile-color;
+    background-color: $seam-widget-tile-background-color-hover;
+    text-decoration: none;
+  }
+
+  &:focus,
+  &.focus {
+    outline: 0;
+    box-shadow: $btn-focus-box-shadow;
+  }
+
+  // Disabled comes first so active can properly restyle
+  &.disabled,
+  &:disabled {
+    opacity: $btn-disabled-opacity;
     pointer-events: none;
     cursor: default;
+    @include box-shadow(none);
+  }
+
+  &:not(:disabled):not(.disabled):active,
+  &:not(:disabled):not(.disabled).active {
+    @include box-shadow($btn-active-box-shadow);
+
+    &:focus {
+      @include box-shadow($btn-focus-box-shadow, $btn-active-box-shadow);
+    }
   }
 
   &:last-child {

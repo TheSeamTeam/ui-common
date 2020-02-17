@@ -1,3 +1,4 @@
+import { coerceBooleanProperty } from '@angular/cdk/coercion'
 import { Component, ContentChild, ElementRef, HostBinding, Input, OnInit } from '@angular/core'
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
@@ -28,7 +29,11 @@ export class WidgetTileComponent implements OnInit {
   get type(): string { return this._type }
 
   @Input() icon: string | IconProp
-  @Input() disabled = false
+
+  @Input()
+  get disabled(): boolean { return this._disabled }
+  set disabled(value: boolean) { this._disabled = coerceBooleanProperty(value) }
+  private _disabled: boolean  = false
 
   @Input() grayscaleOnDisable = true
 
