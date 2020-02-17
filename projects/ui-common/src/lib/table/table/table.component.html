@@ -18,7 +18,7 @@
         <span [style]="r?.cellTypeConfig?.styles"></span>
 
         <ng-container *ngIf="element?._emptyDisplay && isFirst; else hasDataTpl">
-          No data to display
+          No records found
         </ng-container>
 
         <ng-template #hasDataTpl>

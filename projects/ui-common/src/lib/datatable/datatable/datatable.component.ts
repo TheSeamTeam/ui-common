@@ -174,7 +174,7 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
   @Input() messages: any = {
     // Message to show when array is presented
     // but contains no values
-    emptyMessage: 'No data to display',
+    emptyMessage: 'No records found',
 
     // Footer total message
     totalMessage: 'total',
