@@ -67,14 +67,6 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
    */
   @Input() labelClass: string
 
-  /**
-   * CSS class to add to the `.form-group` element.
-   *
-   * Accepts a single space separated string of classes, like the html class
-   * attribute.
-   */
-  @Input() formGroupClass: string
-
   /** Max errors to display. */
   @Input() maxErrors = -1
 
