@@ -3,7 +3,7 @@ import { ThemeTypes } from '../../models/theme-types'
 import { DynamicValue } from './dynamic-value'
 
 // TODO: Consider making this a common action.
-export interface IDynamicActionConfirmDef {
+export interface DynamicActionConfirmDef {
 
   message?: DynamicValue<string>
 

@@ -11,14 +11,14 @@ import { Modal } from '../../../modal/modal.service'
 import { DynamicValueHelperService } from '../../dynamic-value-helper.service'
 import { IDynamicActionUiButtonDef } from '../../models/dynamic-action-ui-button-def'
 import { DynamicActionHelperService } from '../dynamic-action-helper.service'
-import { IDynamicActionModal } from './dynamic-action-modal'
-import { IDynamicActionModalDef } from './dynamic-action-modal-def'
+import { DynamicActionModal } from './dynamic-action-modal'
+import { DynamicActionModalDef } from './dynamic-action-modal-def'
 
 /**
  * Handles execution of modal actions.
  */
 @Injectable()
-export class DynamicActionModalService implements IDynamicActionModal {
+export class DynamicActionModalService implements DynamicActionModal {
 
   readonly type = 'modal'
 
@@ -30,7 +30,7 @@ export class DynamicActionModalService implements IDynamicActionModal {
     private _injector: Injector
   ) { }
 
-  async exec(args: IDynamicActionModalDef, context: any): Promise<any> {
+  async exec(args: DynamicActionModalDef, context: any): Promise<any> {
     const component = this._getComponent(args, context)
     const data = this._getData(args, context)
 
@@ -52,7 +52,7 @@ export class DynamicActionModalService implements IDynamicActionModal {
 
   // execSync?: (args: IDynamicActionDef<T>, context: D) => R
 
-  public async getUiProps(args: IDynamicActionModalDef, context: any): Promise<IDynamicActionUiButtonDef> {
+  public async getUiProps(args: DynamicActionModalDef, context: any): Promise<IDynamicActionUiButtonDef> {
     return {
       _actionDef: args,
       triggerType: 'click'
@@ -68,7 +68,7 @@ export class DynamicActionModalService implements IDynamicActionModal {
     return this._injector.get(DynamicActionHelperService)
   }
 
-  private _getComponent(args: IDynamicActionModalDef, context: any): string | ComponentType<{}> | undefined {
+  private _getComponent(args: DynamicActionModalDef, context: any): string | ComponentType<{}> | undefined {
     let component = args && args.component
     if (component) {
       component = this._valueHelper.evalSync(component, context)
@@ -76,7 +76,7 @@ export class DynamicActionModalService implements IDynamicActionModal {
     return component
   }
 
-  private _getData(args: IDynamicActionModalDef, context: any): any | undefined {
+  private _getData(args: DynamicActionModalDef, context: any): any | undefined {
     let data = args && args.data
     if (data) {
       data = this._valueHelper.evalSync(data, context)
@@ -84,7 +84,7 @@ export class DynamicActionModalService implements IDynamicActionModal {
     return data
   }
 
-  private _getModalResultAction(args: IDynamicActionModalDef, result: any) {
+  private _getModalResultAction(args: DynamicActionModalDef, result: any) {
     if (args.resultActions && args.resultActions[result]) {
       return args.resultActions[result]
     }

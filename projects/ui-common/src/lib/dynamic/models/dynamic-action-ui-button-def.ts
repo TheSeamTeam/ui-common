@@ -1,4 +1,4 @@
-import { IDynamicActionUiDef } from './dynamic-action-ui-def'
+import { DynamicActionUiDef } from './dynamic-action-ui-def'
 import { DynamicValue } from './dynamic-value'
 
 /**
@@ -10,7 +10,7 @@ import { DynamicValue } from './dynamic-value'
  *
  * TODO: Rename to IDynamicActionUiClickDef
  */
-export interface IDynamicActionUiButtonDef extends IDynamicActionUiDef {
+export interface IDynamicActionUiButtonDef extends DynamicActionUiDef {
 
   triggerType: 'click'
 

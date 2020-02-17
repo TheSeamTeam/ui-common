@@ -15,11 +15,12 @@ import { fromEvent, Subscription } from 'rxjs'
 
 import { untilDestroyed } from 'ngx-take-until-destroy'
 
-import { DynamicDatatableCellTypeConfigString } from '../../datatable-dynamic/models/cell-type-config'
 import { TABLE_CELL_DATA } from '../../table/table-cell-tokens'
-import { ITableCellData } from '../../table/table-cell.models'
+import { TableCellData } from '../../table/table-cell.models'
 import { hasProperty } from '../../utils'
 import { TableCellTypesHelpersService } from '../services/table-cell-types-helpers.service'
+
+import { TableCellTypeConfigString } from './table-cell-type-string-config'
 
 @Component({
   selector: 'seam-table-cell-type-string',
@@ -52,15 +53,15 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
 
   canPopover = false
 
-  private _config?: DynamicDatatableCellTypeConfigString
+  private _config?: TableCellTypeConfigString
   private _clickSub?: Subscription
-  private _data?: ITableCellData<any, string>
+  private _data?: TableCellData<'string', TableCellTypeConfigString>
 
   constructor(
     private readonly _cdf: ChangeDetectorRef,
     private readonly _elementRef: ElementRef,
     private readonly _tableCellTypeHelpers: TableCellTypesHelpersService,
-    @Optional() @Inject(TABLE_CELL_DATA) readonly _tableData?: ITableCellData<any, string>
+    @Optional() @Inject(TABLE_CELL_DATA) readonly _tableData?: TableCellData<'string', TableCellTypeConfigString>
   ) {
     this._data = _tableData
 

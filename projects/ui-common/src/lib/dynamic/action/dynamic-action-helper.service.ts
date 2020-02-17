@@ -1,14 +1,14 @@
 import { Inject, Injectable, isDevMode, Optional } from '@angular/core'
+import { map } from 'rxjs/operators'
 
 import { SeamConfirmDialogService } from '../../confirm-dialog/confirm-dialog.service'
 import { ThemeTypes } from '../../models/theme-types'
 import { hasProperty } from '../../utils/index'
 
-import { map } from 'rxjs/operators'
 import { DynamicValueHelperService } from '../dynamic-value-helper.service'
-import { IDynamicAction } from '../models/dynamic-action'
-import { IDynamicActionDef } from '../models/dynamic-action-def'
-import { IDynamicActionUiDef } from '../models/dynamic-action-ui-def'
+import { DynamicAction } from '../models/dynamic-action'
+import { DynamicActionDef } from '../models/dynamic-action-def'
+import { DynamicActionUiDef } from '../models/dynamic-action-ui-def'
 import { THESEAM_DYNAMIC_ACTION } from '../tokens/dynamic-action'
 
 @Injectable({
@@ -16,13 +16,13 @@ import { THESEAM_DYNAMIC_ACTION } from '../tokens/dynamic-action'
 })
 export class DynamicActionHelperService {
 
-  private _actionMap = new Map<string, IDynamicAction<string>>()
+  private _actionMap = new Map<string, DynamicAction<string>>()
 
   constructor(
     private _valueHelper: DynamicValueHelperService,
     // TODO: Consider making the action confirm more generic
     @Optional() private _confirmDialog?: SeamConfirmDialogService,
-    @Optional() @Inject(THESEAM_DYNAMIC_ACTION) actions?: IDynamicAction<string>[]
+    @Optional() @Inject(THESEAM_DYNAMIC_ACTION) actions?: DynamicAction<string>[]
   ) {
     console.log('~~~DynamicActionHelperService~~~')
     // Only one evaluator should exist for a type, so map them for faster lookup.
@@ -41,7 +41,7 @@ export class DynamicActionHelperService {
    *
    * TODO: Improve context and return typing.
    */
-  public async exec<T extends string>(actionDef: IDynamicActionDef<T>, context?: any): Promise<IDynamicActionDef<T>> {
+  public async exec<T extends string>(actionDef: DynamicActionDef<T>, context?: any): Promise<DynamicActionDef<T>> {
     const action = this._actionMap.get(actionDef.type)
     if (!action) {
       throw Error(`[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' not found.`)
@@ -66,7 +66,7 @@ export class DynamicActionHelperService {
    *
    * TODO: Improve context and return typing.
    */
-  public execSync<T extends string>(actionDef: IDynamicActionDef<T>, context?: any): IDynamicActionDef<T> {
+  public execSync<T extends string>(actionDef: DynamicActionDef<T>, context?: any): DynamicActionDef<T> {
     const action = this._actionMap.get(actionDef.type)
     if (!action) {
       throw Error(`[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' not found.`)
@@ -83,7 +83,7 @@ export class DynamicActionHelperService {
    *
    * TODO: Improve context and return typing.
    */
-  public getUiProps<T extends string>(actionDef: IDynamicActionDef<T>, context?: any): Promise<IDynamicActionUiDef> {
+  public getUiProps<T extends string>(actionDef: DynamicActionDef<T>, context?: any): Promise<DynamicActionUiDef> {
     const action = this._actionMap.get(actionDef.type)
     if (!action) {
       throw Error(`[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' not found.`)
@@ -96,9 +96,9 @@ export class DynamicActionHelperService {
   }
 
   /**
-   * Checks if a IDynamicActionDef is a type that can be executed.
+   * Checks if a DynamicActionDef is a type that can be executed.
    */
-  public isExecutableType<T extends string>(value: IDynamicActionDef<T>, isAsync: boolean): boolean {
+  public isExecutableType<T extends string>(value: DynamicActionDef<T>, isAsync: boolean): boolean {
     if (value === undefined || value === null) {
       return false
     }
@@ -118,7 +118,7 @@ export class DynamicActionHelperService {
     return true
   }
 
-  public async requiresConfirmation<T extends string>(actionDef: IDynamicActionDef<T>, context?: any): Promise<boolean> {
+  public async requiresConfirmation<T extends string>(actionDef: DynamicActionDef<T>, context?: any): Promise<boolean> {
     if (!hasProperty(actionDef, 'confirmDef')) {
       return false
     }
@@ -130,7 +130,7 @@ export class DynamicActionHelperService {
     return true
   }
 
-  public requiresConfirmationSync<T extends string>(actionDef: IDynamicActionDef<T>, context?: any): boolean {
+  public requiresConfirmationSync<T extends string>(actionDef: DynamicActionDef<T>, context?: any): boolean {
     if (!hasProperty(actionDef, 'confirmDef')) {
       return false
     }
@@ -152,7 +152,7 @@ export class DynamicActionHelperService {
     )
   }
 
-  public async promptConfirmation<T extends string>(actionDef: IDynamicActionDef<T>, context?: any): Promise<boolean> {
+  public async promptConfirmation<T extends string>(actionDef: DynamicActionDef<T>, context?: any): Promise<boolean> {
     if (!this._confirmDialog) {
       throw Error(
         `[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' can't open ` +

@@ -1,14 +1,13 @@
-import {
-  DynamicDatatableCellTypeConfigDate,
-  DynamicDatatableCellTypeConfigIcon,
-  DynamicDatatableCellTypeConfigString
-} from '../../datatable-dynamic/index'
-import { IDatatableDynamicDef, IDynamicDatatableColumn } from '../datatable-dynamic-def'
+import { TableCellTypeConfigDate } from '../../table-cell-types/table-cell-type-date/table-cell-type-date-config'
+import { TableCellTypeConfigIcon } from '../../table-cell-types/table-cell-type-icon/table-cell-type-icon-config'
+import { TableCellTypeConfigString } from '../../table-cell-types/table-cell-type-string/table-cell-type-string-config'
+
+import { DynamicDatatableColumn, IDatatableDynamicDef } from '../datatable-dynamic-def'
 
 type ColumnDefType =
-  IDynamicDatatableColumn<'string', DynamicDatatableCellTypeConfigString> |
-  IDynamicDatatableColumn<'date', DynamicDatatableCellTypeConfigDate> |
-  IDynamicDatatableColumn<'icon', DynamicDatatableCellTypeConfigIcon>
+  DynamicDatatableColumn<'string', TableCellTypeConfigString> |
+  DynamicDatatableColumn<'date', TableCellTypeConfigDate> |
+  DynamicDatatableColumn<'icon', TableCellTypeConfigIcon>
 
 const _columnDefs: ColumnDefType[] = [
   // { prop: 'icn', name: 'Icon', cellType: 'icon' },

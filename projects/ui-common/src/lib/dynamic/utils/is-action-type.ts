@@ -1,8 +1,8 @@
-import { IDynamicActionDef } from '../models/dynamic-action-def'
+import { DynamicActionDef } from '../models/dynamic-action-def'
 
 export function isActionType<T extends string>(
-  action: IDynamicActionDef<T>,
+  action: DynamicActionDef<T>,
   typeName: T
-): action is IDynamicActionDef<T> {
+): action is DynamicActionDef<T> {
   return action.type === typeName
 }

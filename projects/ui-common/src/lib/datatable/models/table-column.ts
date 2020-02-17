@@ -1,33 +1,11 @@
 import { TableColumn } from '@marklb/ngx-datatable'
 
-import { TheSeamTableCellType, TheSeamTableColumnExportValueFn } from '../../table/index'
+import { TableCellTypeColumn } from '../../table-cell-types/table-cell-type-column'
+import { TableCellTypeConfig } from '../../table-cell-types/table-cell-type-config'
+import { TableCellTypeExportProps } from '../../table-cell-types/table-cell-type-export-props'
+import { TableCellTypeName } from '../../table-cell-types/table-cell-type-name'
 
-export interface ITheSeamDatatableColumn<D = any, P = any> extends TableColumn {
-
-  /**
-   * If undefined the value will be rendered as a string.
-   */
-  cellType?: TheSeamTableCellType
-
-  /**
-   * Properties to pass to the cell component.
-   */
-  cellProps?: P
-
-  /**
-   * Ignore column in export.
-   */
-  exportIgnore?: boolean
-
-  /**
-   * Column header in export.
-   */
-  exportHeader?: string
-
-  /**
-   * Transform function for column value in export.
-   */
-  exportValueFn?: TheSeamTableColumnExportValueFn<D>
+export interface TheSeamDatatableColumnHidable {
 
   /**
    * Hide a column, but let the datatable still know about it. Useful for
@@ -40,3 +18,9 @@ export interface ITheSeamDatatableColumn<D = any, P = any> extends TableColumn {
   hidden?: boolean
 
 }
+
+export type TheSeamDatatableColumn<T extends TableCellTypeName = any, C extends TableCellTypeConfig<T> = any> =
+  TableColumn &
+  TableCellTypeColumn<T, TableCellTypeConfig<T>> &
+  TableCellTypeExportProps &
+  TheSeamDatatableColumnHidable

@@ -1,17 +1,20 @@
 import { SimpleChanges } from '@angular/core'
 import { Observable } from 'rxjs'
 
-import { ITheSeamTableColumn } from './table-column'
+import { TableCellTypeConfig } from '../table-cell-types/table-cell-type-config'
+import { TableCellTypeName } from '../table-cell-types/table-cell-type-name'
 
-export interface ITableCellDataChange {
-  data: ITableCellData
+import { TheSeamTableColumn } from './table-column'
+
+export interface TableCellDataChange<T extends TableCellTypeName, C extends TableCellTypeConfig<T>> {
+  data: TableCellData<T, C>
   changes: SimpleChanges
 }
 
-export interface ITableCellData<R = any, V = any> {
+export interface TableCellData<T extends TableCellTypeName, C extends TableCellTypeConfig<T>, R = any, V = any> {
   row: R
   rowIndex: number
-  colData: ITheSeamTableColumn<R>
+  colData: TheSeamTableColumn<T, C>
   value: V
-  changed: Observable<ITableCellDataChange>
+  changed: Observable<TableCellDataChange<T, C>>
 }

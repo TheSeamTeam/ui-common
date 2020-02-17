@@ -1,6 +1,6 @@
-import { DynamicValue, IDynamicActionDef } from '../../dynamic/index'
+import { DynamicActionDef, DynamicValue } from '../../dynamic/index'
 
-export interface IDynamicDatatableRowAction {
+export interface DynamicDatatableRowAction {
 
   /**
    * Label displayed on the menu item.
@@ -8,7 +8,7 @@ export interface IDynamicDatatableRowAction {
   label: DynamicValue<string>
 
   /** */
-  action: IDynamicActionDef<string>
+  action: DynamicActionDef<string>
 
   /**
    * Default: false

@@ -2,11 +2,13 @@ import { Injectable } from '@angular/core'
 import { from, Observable, Subject, Subscriber } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
 
-import { DynamicDatatableCellActionModal } from '../../datatable-dynamic/index'
 import { DynamicActionHelperService } from '../../dynamic/action/dynamic-action-helper.service'
+import { DynamicActionModalDef } from '../../dynamic/action/modal/dynamic-action-modal-def'
 import { DynamicValueHelperService } from '../../dynamic/dynamic-value-helper.service'
-import { ITableCellData } from '../../table/table-cell.models'
+import { TableCellData } from '../../table/table-cell.models'
 
+import { TableCellTypeConfig } from '../table-cell-type-config'
+import { TableCellTypeName } from '../table-cell-type-name'
 import { CaluclatedValueContextType, ICalucatedValueContext } from '../table-cell-types-models'
 
 @Injectable({
@@ -24,7 +26,7 @@ export class TableCellTypesHelpersService {
     return this._valueHelper.evalSync(value, context)
   }
 
-  public getValueContext(value: any, data?: ITableCellData<any, string>): ICalucatedValueContext {
+  public getValueContext<T extends TableCellTypeName>(value: any, data?: TableCellData<T, TableCellTypeConfig<T>>): ICalucatedValueContext {
     return {
       row: data && data.row,
       rowIndex: data && data.rowIndex,
@@ -42,7 +44,7 @@ export class TableCellTypesHelpersService {
   }
 
   public handleModalAction<R = any>(
-    action: DynamicDatatableCellActionModal,
+    action: DynamicActionModalDef,
     contextOrContextFn: CaluclatedValueContextType
   ) {
     // TODO: Try to simplify this observable. It seems fairly easy to read like
@@ -81,7 +83,7 @@ export class TableCellTypesHelpersService {
   }
 
   private _handleModalAction(
-    action: DynamicDatatableCellActionModal,
+    action: DynamicActionModalDef,
     contextOrContextFn: CaluclatedValueContextType,
     resultSubject: Subject<any>
   ) {
