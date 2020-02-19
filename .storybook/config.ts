@@ -4,6 +4,8 @@ import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import { addDecorator, addParameters, configure } from '@storybook/angular'
 import { themes } from '@storybook/theming'
 
+import { seamTheme } from './theme'
+
 // @ts-ignore
 // eslint-disable-next-line import/extensions, import/no-unresolved
 import docJson from '../documentation.json'
@@ -16,6 +18,7 @@ addDecorator(withA11y)
 addParameters({
   options: {
     // theme: themes.dark,
+    theme: seamTheme,
     showRoots: true,
     // docs: {
     //   iframeHeight: '60px',
