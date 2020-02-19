@@ -3,13 +3,12 @@ import { Injectable, Injector } from '@angular/core'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
-import { TheSeamDynamicComponentLoader } from '../../../dynamic-component-loader/dynamic-component-loader.service'
 import { ModalConfig } from '../../../modal/modal-config'
 import { ModalRef } from '../../../modal/modal-ref'
 import { Modal } from '../../../modal/modal.service'
 
 import { DynamicValueHelperService } from '../../dynamic-value-helper.service'
-import { IDynamicActionUiButtonDef } from '../../models/dynamic-action-ui-button-def'
+import { DynamicActionUiButtonDef } from '../../models/dynamic-action-ui-button-def'
 import { DynamicActionHelperService } from '../dynamic-action-helper.service'
 import { DynamicActionModal } from './dynamic-action-modal'
 import { DynamicActionModalDef } from './dynamic-action-modal-def'
@@ -52,7 +51,7 @@ export class DynamicActionModalService implements DynamicActionModal {
 
   // execSync?: (args: IDynamicActionDef<T>, context: D) => R
 
-  public async getUiProps(args: DynamicActionModalDef, context: any): Promise<IDynamicActionUiButtonDef> {
+  public async getUiProps(args: DynamicActionModalDef, context: any): Promise<DynamicActionUiButtonDef> {
     return {
       _actionDef: args,
       triggerType: 'click'

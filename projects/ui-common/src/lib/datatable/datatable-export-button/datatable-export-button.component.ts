@@ -11,7 +11,7 @@ import { TheSeamLoadingOverlayService } from '../../loading/index'
 import { hasProperty } from '../../utils/index'
 
 import { DatatableComponent, THESEAM_DATATABLE } from '../datatable/datatable.component'
-import { ITheSeamDatatableColumn } from '../models/table-column'
+import { TheSeamDatatableColumn } from '../models/table-column'
 
 @Component({
   selector: 'seam-datatable-export-button',
@@ -67,7 +67,7 @@ export class DatatableExportButtonComponent implements OnInit {
     this._loading.while(export$).subscribe()
   }
 
-  private _mapExportData(columns: ITheSeamDatatableColumn[], rows: any[]) {
+  private _mapExportData(columns: TheSeamDatatableColumn[], rows: any[]) {
     const data: any[] = []
 
     for (const row of rows) {
@@ -88,11 +88,7 @@ export class DatatableExportButtonComponent implements OnInit {
     return data
   }
 
-  private _rowValue(column: ITheSeamDatatableColumn, row: any) {
-    if (hasProperty(column, 'exportValueFn')) {
-      return column.exportValueFn(row)
-    }
-
+  private _rowValue(column: TheSeamDatatableColumn, row: any) {
     if (hasProperty(column as any, 'exportValue')) {
       const context = { row }
       return this._valueHelper.evalSync((column as any).exportValue, context)

@@ -1,19 +1,19 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core'
-import { BehaviorSubject, combineLatest, from, Observable, of } from 'rxjs'
-import { concatMap, filter, map, switchMap, tap, toArray } from 'rxjs/operators'
+import { BehaviorSubject, from, Observable, of } from 'rxjs'
+import { concatMap, filter, switchMap, tap, toArray } from 'rxjs/operators'
 
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons'
 
-import { IDynamicActionUiDef } from '../../dynamic/models/dynamic-action-ui-def'
+import { DynamicActionUiDef } from '../../dynamic/models/dynamic-action-ui-def'
 import { isActionType } from '../../dynamic/utils/index'
 import { hasProperty, notNullOrUndefined } from '../../utils/index'
 
 import { DynamicValueHelperService } from '../../dynamic/dynamic-value-helper.service'
-import { IDynamicDatatableRow } from '../datatable-dynamic-def'
+import { DynamicDatatableRow } from '../datatable-dynamic-def'
 import { DynamicDatatableRowActionsService } from '../dynamic-datatable-row-actions.service'
-import { DynamicDatatableActionMenuElementTypes, IDynamicDatatableActionMenuRecord } from '../models/dynamic-datatable-action-menu-record'
-import { IDynamicDatatableRowAction } from '../models/dynamic-datatable-row-action'
-import { IDynamicDatatableRowActionContext } from '../models/dynamic-datatable-row-action-context'
+import { DynamicDatatableActionMenuElementTypes, DynamicDatatableActionMenuRecord } from '../models/dynamic-datatable-action-menu-record'
+import { DynamicDatatableRowAction } from '../models/dynamic-datatable-row-action'
+import { DynamicDatatableRowActionContext } from '../models/dynamic-datatable-row-action-context'
 
 @Component({
   selector: 'seam-datatable-dynamic-action-menu',
@@ -27,19 +27,19 @@ export class DatatableDynamicActionMenuComponent implements OnInit {
 
   @Input()
   get row() { return this._row.value }
-  set row(value: IDynamicDatatableRow | undefined) {
+  set row(value: DynamicDatatableRow | undefined) {
     this._row.next(value || undefined)
   }
-  private _row = new BehaviorSubject<IDynamicDatatableRow | undefined>(undefined)
+  private _row = new BehaviorSubject<DynamicDatatableRow | undefined>(undefined)
 
   @Input()
   get actionDefs() { return this._actionDefs.value }
-  set actionDefs(value: IDynamicDatatableRowAction[]) {
+  set actionDefs(value: DynamicDatatableRowAction[]) {
     this._actionDefs.next(value || [])
   }
-  private _actionDefs = new BehaviorSubject<IDynamicDatatableRowAction[]>([])
+  private _actionDefs = new BehaviorSubject<DynamicDatatableRowAction[]>([])
 
-  _menuRecords$: Observable<IDynamicDatatableActionMenuRecord[]>
+  _menuRecords$: Observable<DynamicDatatableActionMenuRecord[]>
 
   /** @ignore */
   _actionMenuPositions = [
@@ -92,14 +92,14 @@ export class DatatableDynamicActionMenuComponent implements OnInit {
   ngOnInit() { }
 
   // TODO: Consider moving this to `DynamicDatatableRowActionsService`.
-  private _mapRecords<A extends IDynamicDatatableRowAction>(
-    row: IDynamicDatatableRow,
+  private _mapRecords<A extends DynamicDatatableRowAction>(
+    row: DynamicDatatableRow,
     actionDefs: A[]
-  ): Observable<IDynamicDatatableActionMenuRecord[]> {
+  ): Observable<DynamicDatatableActionMenuRecord[]> {
     return from(actionDefs).pipe(
       concatMap(actionDef => {
         return (async () => {
-          const _rowAction: IDynamicDatatableRowAction = {
+          const _rowAction: DynamicDatatableRowAction = {
             ...actionDef
           }
 
@@ -118,7 +118,7 @@ export class DatatableDynamicActionMenuComponent implements OnInit {
             _rowAction.disabled = await this._valueHelper.eval(_rowAction.disabled, context)
           }
 
-          const record: IDynamicDatatableActionMenuRecord = {
+          const record: DynamicDatatableActionMenuRecord = {
             _row: row,
             _def: actionDef,
             rowAction: _rowAction,
@@ -135,15 +135,15 @@ export class DatatableDynamicActionMenuComponent implements OnInit {
 
   /** @ignore */
   private _getRowActionContext(
-    row: IDynamicDatatableRow,
-    rowActionDef: IDynamicDatatableRowAction
-  ): IDynamicDatatableRowActionContext {
+    row: DynamicDatatableRow,
+    rowActionDef: DynamicDatatableRowAction
+  ): DynamicDatatableRowActionContext {
     return {
       row
     }
   }
 
-  private _expectedElementType(def: IDynamicDatatableRowAction): DynamicDatatableActionMenuElementTypes {
+  private _expectedElementType(def: DynamicDatatableRowAction): DynamicDatatableActionMenuElementTypes {
     const action = def.action
 
     if (action.type === 'link') {

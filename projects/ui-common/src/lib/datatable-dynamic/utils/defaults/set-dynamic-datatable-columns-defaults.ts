@@ -1,9 +1,8 @@
+import { TableCellTypeConfig, TableCellTypeName } from '../../../table-cell-types/index'
 import { DynamicDatatableColumn } from '../../datatable-dynamic-def'
-import { DynamicDatatableCellType } from '../../models/cell-type'
-import { DynamicDatatableCellTypeConfig } from '../../models/cell-type-config'
 
 export function setDynamicDatatableColumnsDefaults(
-  columns: DynamicDatatableColumn<DynamicDatatableCellType, DynamicDatatableCellTypeConfig<DynamicDatatableCellType>>[]
+  columns: DynamicDatatableColumn[]
 ) {
   for (const col of columns) {
     if (!col.cellType) {

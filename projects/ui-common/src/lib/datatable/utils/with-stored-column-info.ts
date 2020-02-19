@@ -1,12 +1,12 @@
-import { ITheSeamDatatableColumn } from '../../datatable/index'
+import { TheSeamDatatableColumn } from '../../datatable/index'
 
 import { ITheSeamDatatablePreferencesColumn } from '../models/preferences'
 
 export function withStoredColumnInfo(
-  columns: ITheSeamDatatableColumn[],
+  columns: TheSeamDatatableColumn[],
   preferenceColumns: ITheSeamDatatablePreferencesColumn[]
-): ITheSeamDatatableColumn[] {
-  const _columns: ITheSeamDatatableColumn[] = []
+): TheSeamDatatableColumn[] {
+  const _columns: TheSeamDatatableColumn[] = []
   for (const col of columns) {
     const storedCol = preferenceColumns.find(v => v.prop === col.prop)
     if (storedCol) {

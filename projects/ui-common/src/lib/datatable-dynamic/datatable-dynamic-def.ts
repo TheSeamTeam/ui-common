@@ -11,7 +11,7 @@ import { TheSeamTableColumn } from '../table/table-column'
 
 import { DynamicDatatableRowAction } from './models/dynamic-datatable-row-action'
 
-export type DynamicDatatableColumn<T extends TableCellTypeName, C extends TableCellTypeConfig<T>> =
+export type DynamicDatatableColumn<T extends TableCellTypeName = any, C extends TableCellTypeConfig<T> = any> =
   TheSeamDatatableColumn<T, C> | TheSeamTableColumn<T, C>
 
 // export interface DynamicDatatableColumn<T extends DynamicDatatableCellType, C extends DynamicDatatableCellTypeConfig<T>> {
@@ -178,7 +178,7 @@ export interface DynamicDatatableRow {
   [prop: string]: any
 }
 
-export interface IDynamicDatatableFilterMenuItemDef<O = any> {
+export interface DynamicDatatableFilterMenuItemDef<O = any> {
 
   /** */
   name: string
@@ -200,7 +200,7 @@ export interface IDynamicDatatableFilterMenuItemDef<O = any> {
   options?: O
 }
 
-export interface IDynamicDatatableFilterMenu {
+export interface DynamicDatatableFilterMenu {
 
   /**
    * Default 'default'
@@ -210,7 +210,7 @@ export interface IDynamicDatatableFilterMenu {
   /**
    *
    */
-  filters?: IDynamicDatatableFilterMenuItemDef[]
+  filters?: DynamicDatatableFilterMenuItemDef[]
 
   /**
    *
@@ -220,41 +220,41 @@ export interface IDynamicDatatableFilterMenu {
 
 }
 
-export type IDynamicDatatableFooterMenuItemType = 'button' | 'text'
+export type DynamicDatatableFooterMenuItemType = 'button' | 'text'
 
-export interface IDynamicDatatableFooterMenuItem<T = IDynamicDatatableFooterMenuItemType> {
+export interface DynamicDatatableFooterMenuItem<T = DynamicDatatableFooterMenuItemType> {
   type: T
 }
 
-export interface IDynamicDatatableFooterMenuItemButton extends IDynamicDatatableFooterMenuItem<'button'> {
+export interface DynamicDatatableFooterMenuItemButton extends DynamicDatatableFooterMenuItem<'button'> {
   text: string
   theme: ThemeTypes
 }
 
-export interface IDynamicDatatableFooterMenuItemText extends IDynamicDatatableFooterMenuItem<'text'> {
+export interface DynamicDatatableFooterMenuItemText extends DynamicDatatableFooterMenuItem<'text'> {
   text: string
 }
 
-export interface IDynamicDatatableOptions {
+export interface DynamicDatatableOptions {
   /**
    * Default: false
    */
   virtualization?: boolean
 }
 
-export interface IDynamicDatatableFooterMenu {
+export interface DynamicDatatableFooterMenu {
   /**
    * Default 'default'
    */
   state?: 'hidden' | 'always-visible' | 'default'
-  items?: IDynamicDatatableFooterMenuItem[]
+  items?: DynamicDatatableFooterMenuItem[]
 }
 
-export interface IDatatableDynamicDef {
-  readonly filterMenu?: IDynamicDatatableFilterMenu
+export interface DatatableDynamicDef {
+  readonly filterMenu?: DynamicDatatableFilterMenu
   readonly columns: DynamicDatatableColumn<TableCellTypeName, TableCellTypeConfig<TableCellTypeName>>[]
-  readonly rows: IDynamicDatatableRow[]
+  readonly rows: DynamicDatatableRow[]
   readonly rowActions?: DynamicDatatableRowAction[]
-  // footerMenu?: IDynamicDatatableFooterMenu
-  readonly options?: IDynamicDatatableOptions
+  // footerMenu?: DynamicDatatableFooterMenu
+  readonly options?: DynamicDatatableOptions
 }

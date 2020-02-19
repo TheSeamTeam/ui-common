@@ -1,5 +1,17 @@
 import { LocationStrategy } from '@angular/common'
-import { Attribute, ChangeDetectorRef, Directive, ElementRef, Input, isDevMode, OnChanges, OnDestroy, OnInit, Optional, Renderer2 } from '@angular/core'
+import {
+  Attribute,
+  ChangeDetectorRef,
+  Directive,
+  ElementRef,
+  Input,
+  isDevMode,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Optional,
+  Renderer2
+} from '@angular/core'
 import { ActivatedRoute, QueryParamsHandling, Router, RouterLink, RouterLinkWithHref } from '@angular/router'
 import { from, fromEvent, Observable, of, ReplaySubject, Subscription } from 'rxjs'
 import { catchError, mapTo, switchMap, tap } from 'rxjs/operators'
@@ -8,19 +20,19 @@ import { untilDestroyed } from 'ngx-take-until-destroy'
 
 import {
   DynamicActionHelperService,
+  DynamicActionUiAnchorDef,
+  DynamicActionUiButtonDef,
+  DynamicActionUiDef,
   DynamicValue,
-  DynamicValueHelperService,
-  IDynamicActionUiAnchorDef,
-  IDynamicActionUiButtonDef,
-  IDynamicActionUiDef
+  DynamicValueHelperService
 } from '../../dynamic/index'
 import { AssetReaderHelperService } from '../../services/index'
 import { getAttribute, hasProperty, toggleAttribute } from '../../utils/index'
 
-import { IDynamicDatatableRow } from '../datatable-dynamic-def'
-import { IDynamicDatatableActionMenuRecord } from '../models/dynamic-datatable-action-menu-record'
-import { IDynamicDatatableRowAction } from '../models/dynamic-datatable-row-action'
-import { IDynamicDatatableRowActionContext } from '../models/dynamic-datatable-row-action-context'
+import { DynamicDatatableRow } from '../datatable-dynamic-def'
+import { DynamicDatatableActionMenuRecord } from '../models/dynamic-datatable-action-menu-record'
+import { DynamicDatatableRowAction } from '../models/dynamic-datatable-row-action'
+import { DynamicDatatableRowActionContext } from '../models/dynamic-datatable-row-action-context'
 
 /**
  * Class to act as a substitute to `routerLink` directive until the menu items
@@ -188,11 +200,11 @@ export class DatatableDynamicActionMenuItemRouterLink {
 export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestroy, OnChanges {
 
   @Input()
-  // get seamDatatableDynamicActionMenuItem(): IDynamicDatatableActionMenuRecord { return this._record }
-  set seamDatatableDynamicActionMenuItem(value: IDynamicDatatableActionMenuRecord) {
+  // get seamDatatableDynamicActionMenuItem(): DynamicDatatableActionMenuRecord { return this._record }
+  set seamDatatableDynamicActionMenuItem(value: DynamicDatatableActionMenuRecord) {
     this._record.next(value)
   }
-  private _record = new ReplaySubject<IDynamicDatatableActionMenuRecord>(1)
+  private _record = new ReplaySubject<DynamicDatatableActionMenuRecord>(1)
 
   private _clickSubscription: Subscription
   private _menuRouterLink?: DatatableDynamicActionMenuItemRouterLink
@@ -243,20 +255,20 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
     }
   }
 
-  public _update(record: IDynamicDatatableActionMenuRecord): Observable<void> {
+  public _update(record: DynamicDatatableActionMenuRecord): Observable<void> {
     this._unsubClick()
 
     return from(this._getUiProps(record)).pipe(
       switchMap(uiProps => this._isAnchor()
-        ? this._updateAnchorElement(record, uiProps as IDynamicActionUiAnchorDef)
-        : this._updateButtonElement(record, uiProps as IDynamicActionUiButtonDef)
+        ? this._updateAnchorElement(record, uiProps as DynamicActionUiAnchorDef)
+        : this._updateButtonElement(record, uiProps as DynamicActionUiButtonDef)
       )
     )
   }
 
   private _updateAnchorElement(
-    record: IDynamicDatatableActionMenuRecord,
-    uiProps: IDynamicActionUiAnchorDef
+    record: DynamicDatatableActionMenuRecord,
+    uiProps: DynamicActionUiAnchorDef
   ): Observable<void> {
     const _stream: Observable<any> = of(undefined)
 
@@ -302,11 +314,11 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
   }
 
   private _updateButtonElement(
-    record: IDynamicDatatableActionMenuRecord,
-    uiProps: IDynamicActionUiAnchorDef | IDynamicActionUiButtonDef
+    record: DynamicDatatableActionMenuRecord,
+    uiProps: DynamicActionUiAnchorDef | DynamicActionUiButtonDef
   ): Observable<void> {
     let _stream: Observable<any> = of(undefined)
-    // this._updateClickElement(record, uiProps as IDynamicActionUiButtonDef)
+    // this._updateClickElement(record, uiProps as DynamicActionUiButtonDef)
     switch (uiProps.triggerType) {
       case 'link-asset': {
         console.log('Handle "link-asset" triggerType.', uiProps)
@@ -329,8 +341,8 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
   }
 
   private _updateAssetElement(
-    record: IDynamicDatatableActionMenuRecord,
-    uiProps: IDynamicActionUiAnchorDef | IDynamicActionUiButtonDef
+    record: DynamicDatatableActionMenuRecord,
+    uiProps: DynamicActionUiAnchorDef | DynamicActionUiButtonDef
   ): Observable<void> {
     console.log('_updateAssetElement')
     // return of(undefined)
@@ -367,8 +379,8 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
   }
 
   private _updateClickElement(
-    record: IDynamicDatatableActionMenuRecord,
-    uiProps: IDynamicActionUiButtonDef
+    record: DynamicDatatableActionMenuRecord,
+    uiProps: DynamicActionUiButtonDef
   ): Observable<void> {
     console.log('_updateClickElement', record, uiProps)
     // return of(undefined)
@@ -405,8 +417,8 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
   }
 
   private _tryInitBlockClick(
-    record: IDynamicDatatableActionMenuRecord,
-    uiProps: IDynamicActionUiDef
+    record: DynamicDatatableActionMenuRecord,
+    uiProps: DynamicActionUiDef
   ) {
     this._unsubClick()
     if (hasProperty(uiProps, 'blockClickExpr')) {
@@ -417,8 +429,8 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
   }
 
   private _blockClickExprObservable(
-    uiProps: IDynamicActionUiDef,
-    record: IDynamicDatatableActionMenuRecord
+    uiProps: DynamicActionUiDef,
+    record: DynamicDatatableActionMenuRecord
   ) {
     return fromEvent(this._elementRef.nativeElement, 'click').pipe(
       tap(event => {
@@ -436,8 +448,8 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
   }
 
   private _initMenuItemRouterLink(
-    record: IDynamicDatatableActionMenuRecord,
-    uiProps: IDynamicActionUiAnchorDef
+    record: DynamicDatatableActionMenuRecord,
+    uiProps: DynamicActionUiAnchorDef
   ) {
     this._menuRouterLink = new DatatableDynamicActionMenuItemRouterLink(
       this._router,
@@ -485,13 +497,13 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
     return this._elementRef.nativeElement.nodeName.toLowerCase() === 'a'
   }
 
-  private _getUiProps(record: IDynamicDatatableActionMenuRecord): Promise<IDynamicActionUiDef> {
+  private _getUiProps(record: DynamicDatatableActionMenuRecord): Promise<DynamicActionUiDef> {
     const context = this._getContext(record._row, record.rowAction)
     return this._actionHelper.getUiProps(record.rowAction.action, context)
   }
 
   /** @ignore */
-  private _getContext(row: IDynamicDatatableRow,  rowActionDef: IDynamicDatatableRowAction): IDynamicDatatableRowActionContext {
+  private _getContext(row: DynamicDatatableRow,  rowActionDef: DynamicDatatableRowAction): DynamicDatatableRowActionContext {
     return {
       row
     }

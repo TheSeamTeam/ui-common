@@ -1,7 +1,7 @@
-import { IDynamicDatatableFilterMenu } from '../../datatable-dynamic-def'
+import { DynamicDatatableFilterMenu } from '../../datatable-dynamic-def'
 
 export function setDynamicDatatableFilterMenuDefaults(
-  filterMenu: IDynamicDatatableFilterMenu
+  filterMenu: DynamicDatatableFilterMenu
 ) {
   if (!filterMenu.state) {
     filterMenu.state = 'default'

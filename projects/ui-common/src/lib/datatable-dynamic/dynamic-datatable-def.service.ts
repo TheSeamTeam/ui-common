@@ -2,7 +2,6 @@ import { ComponentType } from '@angular/cdk/portal'
 import { Inject, Injectable } from '@angular/core'
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'
-import { IDynamicDatatableOptions } from './datatable-dynamic-def'
 
 import { IDataExporter, THESEAM_DATA_EXPORTER } from '../data-exporter/index'
 import { THESEAM_DATA_FILTER_DEF } from '../data-filters/index'
@@ -10,13 +9,14 @@ import { IDataFilter } from '../data-filters/index'
 import { DynamicValueHelperService } from '../dynamic/index'
 import { notNullOrUndefined } from '../utils/index'
 
-import { IDatatableDynamicDef } from './datatable-dynamic-def'
-import { IDynamicDatatableFilterMenuItem } from './models/index'
+import { DynamicDatatableOptions } from './datatable-dynamic-def'
+import { DatatableDynamicDef } from './datatable-dynamic-def'
+import { DynamicDatatableFilterMenuItem } from './models/index'
 import { setDynamicDatatableDefDefaults } from './utils/index'
 
 /**
- * Manages the data defined in the `IDatatableDynamicDef`. Simplifies accessing
- * and observing the needed data based on the `IDatatableDynamicDef`.
+ * Manages the data defined in the `DatatableDynamicDef`. Simplifies accessing
+ * and observing the needed data based on the `DatatableDynamicDef`.
  */
 @Injectable()
 export class DynamicDatatableDefService {
@@ -28,22 +28,22 @@ export class DynamicDatatableDefService {
   private _dataFilters: { name: string, component: ComponentType<IDataFilter> }[]
 
   /** @ignore */
-  private readonly _defSubject = new BehaviorSubject<IDatatableDynamicDef | undefined>(undefined)
+  private readonly _defSubject = new BehaviorSubject<DatatableDynamicDef | undefined>(undefined)
 
   /** Dynamic datatable definition. */
-  public readonly def$: Observable<IDatatableDynamicDef | undefined>
+  public readonly def$: Observable<DatatableDynamicDef | undefined>
 
   /** Exporters in the def that are available. */
   public readonly exporters$: Observable<IDataExporter[]>
 
   /** Filter menu items in the def that are available. */
-  public readonly filterMenuItems$: Observable<IDynamicDatatableFilterMenuItem[]>
+  public readonly filterMenuItems$: Observable<DynamicDatatableFilterMenuItem[]>
 
   /** Observes whether the datatable has a filter menu. */
   public readonly hasFilterMenu$: Observable<boolean>
 
   /** Observes datatable options. */
-  public readonly options$: Observable<IDynamicDatatableOptions | undefined>
+  public readonly options$: Observable<DynamicDatatableOptions | undefined>
 
   constructor(
     @Inject(THESEAM_DATA_EXPORTER) dataExporters: IDataExporter[],
@@ -92,14 +92,14 @@ export class DynamicDatatableDefService {
     )
   }
 
-  /** Sets the `IDatatableDynamicDef` that defines the datatable.  */
-  public setDef(def: IDatatableDynamicDef | undefined): void {
+  /** Sets the `DatatableDynamicDef` that defines the datatable.  */
+  public setDef(def: DatatableDynamicDef | undefined): void {
     if (def) { setDynamicDatatableDefDefaults(def) }
     this._defSubject.next(def || undefined)
   }
 
   /** Map the def exporters to the provided `IDataExporter` objects. */
-  private _mapExporters(def: IDatatableDynamicDef): IDataExporter[] {
+  private _mapExporters(def: DatatableDynamicDef): IDataExporter[] {
     if (!def.filterMenu || !Array.isArray(def.filterMenu.exporters)) {
       return []
     }
@@ -110,7 +110,7 @@ export class DynamicDatatableDefService {
   }
 
   /** Map the def filter menu items to provided components. */
-  private _mapFilterMenuItems(def: IDatatableDynamicDef): IDynamicDatatableFilterMenuItem[] {
+  private _mapFilterMenuItems(def: DatatableDynamicDef): DynamicDatatableFilterMenuItem[] {
     if (!def.filterMenu || !def.filterMenu.filters || !Array.isArray(def.filterMenu.filters)) {
       return []
     }

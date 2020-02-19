@@ -1,12 +1,12 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { Inject, Injectable, isDevMode, Optional } from '@angular/core'
-import { defer, from, Observable, of } from 'rxjs'
-import { delay, map, switchMap, take, tap } from 'rxjs/operators'
+import { from } from 'rxjs'
+import { switchMap } from 'rxjs/operators'
 
 import { isAbsoluteUrl } from '../../../utils/index'
 
 import { DynamicValueHelperService } from '../../dynamic-value-helper.service'
-import { IDynamicActionUiButtonDef } from '../../models/dynamic-action-ui-button-def'
+import { DynamicActionUiButtonDef } from '../../models/dynamic-action-ui-button-def'
 import { DynamicValue } from '../../models/dynamic-value'
 import { IApiConfig, THESEAM_API_CONFIG } from '../../tokens/api-config'
 
@@ -43,7 +43,7 @@ export class DynamicActionApiService implements DynamicActionApi {
     ).toPromise()
   }
 
-  public async getUiProps(args: DynamicActionApiDef, context: any): Promise<IDynamicActionUiButtonDef> {
+  public async getUiProps(args: DynamicActionApiDef, context: any): Promise<DynamicActionUiButtonDef> {
     return {
       _actionDef: args,
       triggerType: 'click'

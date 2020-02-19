@@ -21,6 +21,6 @@ export interface TheSeamDatatableColumnHidable {
 
 export type TheSeamDatatableColumn<T extends TableCellTypeName = any, C extends TableCellTypeConfig<T> = any> =
   TableColumn &
-  TableCellTypeColumn<T, TableCellTypeConfig<T>> &
+  TableCellTypeColumn<T, C> &
   TableCellTypeExportProps &
   TheSeamDatatableColumnHidable

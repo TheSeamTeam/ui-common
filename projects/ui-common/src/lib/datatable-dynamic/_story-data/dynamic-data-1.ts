@@ -2,7 +2,7 @@ import { TableCellTypeConfigDate } from '../../table-cell-types/table-cell-type-
 import { TableCellTypeConfigIcon } from '../../table-cell-types/table-cell-type-icon/table-cell-type-icon-config'
 import { TableCellTypeConfigString } from '../../table-cell-types/table-cell-type-string/table-cell-type-string-config'
 
-import { DynamicDatatableColumn, IDatatableDynamicDef } from '../datatable-dynamic-def'
+import { DatatableDynamicDef, DynamicDatatableColumn } from '../datatable-dynamic-def'
 
 type ColumnDefType =
   DynamicDatatableColumn<'string', TableCellTypeConfigString> |
@@ -46,7 +46,7 @@ const _columnDefs: ColumnDefType[] = [
   { prop: 'error', name: 'Error' }
 ]
 
-export const exampleData1: IDatatableDynamicDef = {
+export const exampleData1: DatatableDynamicDef = {
   filterMenu: {
     state: 'always-visible',
     filters: [
