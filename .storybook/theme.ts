@@ -1,39 +1,61 @@
 import { color, typography } from '@storybook/theming'
+import { themes } from '@storybook/theming'
 
-export const seamTheme = {
-  base: 'dark',
+export const seamThemeDark = {
+  ...themes.dark,
 
-  // Storybook-specific color palette
-  colorPrimary: '#FF5555', // coral
-  colorSecondary: '#1EA7FD', // ocean
+  // base: 'dark',
 
-  // UI
-  appBg: '#2f2f2f',
-  appContentBg: '#333',
-  appBorderColor: 'rgba(255,255,255,.1)',
-  appBorderRadius: 4,
+  // // Storybook-specific color palette
+  // colorPrimary: '#FF5555',
+  // colorSecondary: '#1EA7FD',
 
-  // Fonts
-  fontBase: typography.fonts.base,
-  fontCode: typography.fonts.mono,
+  // // UI
+  // appBg: '#2f2f2f',
+  // appContentBg: '#333',
+  // appBorderColor: 'rgba(255,255,255,.1)',
+  // appBorderRadius: 4,
 
-  // Text colors
-  textColor: color.lightest,
-  textInverseColor: color.darkest,
+  // // Fonts
+  // fontBase: typography.fonts.base,
+  // fontCode: typography.fonts.mono,
 
-  // Toolbar default and active colors
-  barTextColor: '#999999',
-  barSelectedColor: color.secondary,
-  barBg: color.darkest,
+  // // Text colors
+  // textColor: color.lightest,
+  // textInverseColor: color.darkest,
 
-  // Form colors
-  inputBg: '#3f3f3f',
-  inputBorder: 'rgba(0,0,0,.3)',
-  inputTextColor: color.lightest,
-  inputBorderRadius: 4,
+  // // Toolbar default and active colors
+  // barTextColor: '#999999',
+  // barSelectedColor: color.secondary,
+  // // barBg: color.darkest,
+  // barBg: color.darkest,
+
+  // // Form colors
+  // inputBg: '#3f3f3f',
+  // inputBorder: 'rgba(0,0,0,.3)',
+  // inputTextColor: color.lightest,
+  // inputBorderRadius: 4,
 
   // Brand
   brandTitle: 'The Seam',
   brandUrl: 'https://github.com/TheSeamTeam/ui-common',
   brandImage: 'assets/images/theseam_storybook_logo.svg'
+}
+
+export const seamThemeNormal = {
+  ...themes.normal,
+
+  // Brand
+  brandTitle: 'The Seam',
+  brandUrl: 'https://github.com/TheSeamTeam/ui-common',
+  brandImage: 'assets/images/theseam_logo.svg'
+}
+
+export const seamThemeLight = {
+  ...themes.light,
+
+  // Brand
+  brandTitle: 'The Seam',
+  brandUrl: 'https://github.com/TheSeamTeam/ui-common',
+  brandImage: 'assets/images/theseam_logo.svg'
 }
