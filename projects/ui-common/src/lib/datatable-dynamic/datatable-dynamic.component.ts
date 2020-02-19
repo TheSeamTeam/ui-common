@@ -17,6 +17,7 @@ import {
 import { DynamicDatatableDefService } from './dynamic-datatable-def.service'
 import { DynamicDatatableRowActionsService } from './dynamic-datatable-row-actions.service'
 import { DynamicDatatableFilterMenuItem } from './models/dynamic-datatable-filter-menu-item'
+import { DynamicDatatableMenuBar } from './models/dynamic-datatable-menu-bar'
 import { DynamicDatatableRowAction } from './models/dynamic-datatable-row-action'
 
 /**
@@ -73,6 +74,11 @@ export class DatatableDynamicComponent implements OnInit {
   _hasDef$: Observable<boolean>
 
   /**
+   * Observes whether the datatable has a menu bar.
+   */
+  menuBar$: Observable<DynamicDatatableMenuBar  | undefined>
+
+  /**
    * The available exporters.
    * @ignore
    */
@@ -115,10 +121,11 @@ export class DatatableDynamicComponent implements OnInit {
   _tmp_rows$: Observable<any>
 
   constructor(
-    private _dynamicDef: DynamicDatatableDefService,
-    private _dynamicRowActions: DynamicDatatableRowActionsService
+    private readonly _dynamicDef: DynamicDatatableDefService
   ) {
     this._hasDef$ = this._dynamicDef.def$.pipe(map(def => !!def))
+
+    this.menuBar$ = this._dynamicDef.menuBar$
 
     this._exporters$ = this._dynamicDef.exporters$
 
@@ -144,10 +151,5 @@ export class DatatableDynamicComponent implements OnInit {
 
   /** @ignore */
   ngOnInit() { }
-
-  /** @ignore */
-  // _rowActions(row: DynamicDatatableRow): Observable<DynamicDatatableRowAction[]> {
-  //   return this._dynamicRowActions.rowActions(row)
-  // }
 
 }

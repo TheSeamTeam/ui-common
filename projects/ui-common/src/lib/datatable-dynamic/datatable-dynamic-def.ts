@@ -9,6 +9,7 @@ import { TableCellTypeConfig } from '../table-cell-types/table-cell-type-config'
 import { TableCellTypeName } from '../table-cell-types/table-cell-type-name'
 import { TheSeamTableColumn } from '../table/table-column'
 
+import { DynamicDatatableMenuBar } from './models/dynamic-datatable-menu-bar'
 import { DynamicDatatableRowAction } from './models/dynamic-datatable-row-action'
 
 export type DynamicDatatableColumn<T extends TableCellTypeName = any, C extends TableCellTypeConfig<T> = any> =
@@ -251,6 +252,7 @@ export interface DynamicDatatableFooterMenu {
 }
 
 export interface DatatableDynamicDef {
+  readonly menuBar?: DynamicDatatableMenuBar
   readonly filterMenu?: DynamicDatatableFilterMenu
   readonly columns: DynamicDatatableColumn<TableCellTypeName, TableCellTypeConfig<TableCellTypeName>>[]
   readonly rows: DynamicDatatableRow[]

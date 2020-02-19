@@ -7,10 +7,11 @@ import { IDataExporter, THESEAM_DATA_EXPORTER } from '../data-exporter/index'
 import { THESEAM_DATA_FILTER_DEF } from '../data-filters/index'
 import { IDataFilter } from '../data-filters/index'
 import { DynamicValueHelperService } from '../dynamic/index'
-import { notNullOrUndefined } from '../utils/index'
+import { hasProperty, notNullOrUndefined } from '../utils/index'
 
 import { DynamicDatatableOptions } from './datatable-dynamic-def'
 import { DatatableDynamicDef } from './datatable-dynamic-def'
+import { DynamicDatatableMenuBar } from './models/dynamic-datatable-menu-bar'
 import { DynamicDatatableFilterMenuItem } from './models/index'
 import { setDynamicDatatableDefDefaults } from './utils/index'
 
@@ -21,10 +22,16 @@ import { setDynamicDatatableDefDefaults } from './utils/index'
 @Injectable()
 export class DynamicDatatableDefService {
 
-  /** @ignore */
+  /**
+   * @deprecated
+   * @ignore
+   */
   private _dataExporters: IDataExporter[]
 
-  /** @ignore */
+  /**
+   * @deprecated
+   * @ignore
+   */
   private _dataFilters: { name: string, component: ComponentType<IDataFilter> }[]
 
   /** @ignore */
@@ -33,17 +40,29 @@ export class DynamicDatatableDefService {
   /** Dynamic datatable definition. */
   public readonly def$: Observable<DatatableDynamicDef | undefined>
 
-  /** Exporters in the def that are available. */
+  /**
+   * Exporters in the def that are available.
+   * @deprecated
+   */
   public readonly exporters$: Observable<IDataExporter[]>
 
-  /** Filter menu items in the def that are available. */
+  /**
+   * Filter menu items in the def that are available.
+   * @deprecated
+   */
   public readonly filterMenuItems$: Observable<DynamicDatatableFilterMenuItem[]>
 
-  /** Observes whether the datatable has a filter menu. */
+  /**
+   * Observes whether the datatable has a filter menu.
+   * @deprecated
+   */
   public readonly hasFilterMenu$: Observable<boolean>
 
   /** Observes datatable options. */
   public readonly options$: Observable<DynamicDatatableOptions | undefined>
+
+  /** Observes the datatable def menu bar. */
+  public readonly menuBar$: Observable<DynamicDatatableMenuBar | undefined>
 
   constructor(
     @Inject(THESEAM_DATA_EXPORTER) dataExporters: IDataExporter[],
@@ -88,6 +107,11 @@ export class DynamicDatatableDefService {
 
     this.options$ = this.def$.pipe(
       map(def => !!def ? def.options : undefined),
+      shareReplay({ bufferSize: 1, refCount: true })
+    )
+
+    this.menuBar$ = this.def$.pipe(
+      map(def => (notNullOrUndefined(def) && hasProperty(def, 'menuBar')) ? def.menuBar : undefined),
       shareReplay({ bufferSize: 1, refCount: true })
     )
   }
