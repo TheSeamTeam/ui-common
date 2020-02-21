@@ -6,9 +6,9 @@
     [virtualization]="opts.virtualization">
 
     <seam-datatable-menu-bar *ngIf="menuBar$ | async as menuBar">
-      <seam-datatable-dynamic-menu-bar-content></seam-datatable-dynamic-menu-bar-content>
+      <seam-datatable-dynamic-menu-bar-content [def]="menuBar"></seam-datatable-dynamic-menu-bar-content>
     </seam-datatable-menu-bar>
-    <seam-datatable-menu-bar *ngIf="_hasFilterMenu$ | async">
+    <!-- <seam-datatable-menu-bar *ngIf="_hasFilterMenu$ | async">
       <div class="d-flex flex-row pb-2">
         <div class="d-flex flex-row justify-content-end flex-grow-1">
           <seam-data-filter-search seamDatatableFilter *ngIf="_hasFullSearch$"></seam-data-filter-search>
@@ -28,7 +28,7 @@
           [exporters]="exporters">
         </seam-datatable-export-button>
       </div>
-    </seam-datatable-menu-bar>
+    </seam-datatable-menu-bar> -->
 
     <ng-template seamDatatableRowActionItem let-row>
       <seam-datatable-dynamic-action-menu [row]="row"></seam-datatable-dynamic-action-menu>

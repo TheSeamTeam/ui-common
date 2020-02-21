@@ -47,32 +47,52 @@ const _columnDefs: ColumnDefType[] = [
 ]
 
 export const exampleData1: DatatableDynamicDef = {
-  filterMenu: {
-    state: 'always-visible',
-    filters: [
-      { name: 'search', type: 'full-search' },
-      { name: 'text', type: 'common' },
-      { name: 'search', type: 'common' },
+  // filterMenu: {
+  //   state: 'always-visible',
+  //   filters: [
+  //     { name: 'search', type: 'full-search' },
+  //     { name: 'text', type: 'common' },
+  //     { name: 'search', type: 'common' },
+  //     {
+  //       name: 'toggle-buttons',
+  //       type: 'common',
+  //       options: {
+  //         buttons: [
+  //           { name: 'All', value: '' },
+  //           { name: '30', value: '30' },
+  //           { name: '32', value: '32' }
+  //         ],
+  //         multiple: false,
+  //         selectionToggleable: false,
+  //         initialValue: '',
+  //         properties: ['age']
+  //       }
+  //     }
+  //   ],
+  //   exporters: [
+  //     'exporter:csv',
+  //     'exporter:xlsx'
+  //   ],
+  // },
+  menuBar: {
+    rows: [
       {
-        name: 'toggle-buttons',
-        type: 'common',
-        options: {
-          buttons: [
-            { name: 'All', value: '' },
-            { name: '30', value: '30' },
-            { name: '32', value: '32' }
-          ],
-          multiple: false,
-          selectionToggleable: false,
-          initialValue: '',
-          properties: ['age']
+        layout: {
+          type: 'tri-column',
+          columnLeft: {
+            items: []
+          },
+          columnCenter: {
+            items: []
+          },
+          columnRight: {
+            items: [
+              { component: 'filter-search' }
+            ]
+          }
         }
       }
-    ],
-    exporters: [
-      'exporter:csv',
-      'exporter:xlsx'
-    ],
+    ]
   },
   columns: _columnDefs,
   rows: [

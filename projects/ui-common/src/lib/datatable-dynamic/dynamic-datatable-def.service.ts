@@ -1,7 +1,7 @@
 import { ComponentType } from '@angular/cdk/portal'
 import { Inject, Injectable } from '@angular/core'
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs'
-import { map, shareReplay, switchMap } from 'rxjs/operators'
+import { map, shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import { IDataExporter, THESEAM_DATA_EXPORTER } from '../data-exporter/index'
 import { THESEAM_DATA_FILTER_DEF } from '../data-filters/index'
@@ -112,6 +112,7 @@ export class DynamicDatatableDefService {
 
     this.menuBar$ = this.def$.pipe(
       map(def => (notNullOrUndefined(def) && hasProperty(def, 'menuBar')) ? def.menuBar : undefined),
+      tap(v => console.log('menubar', v)),
       shareReplay({ bufferSize: 1, refCount: true })
     )
   }

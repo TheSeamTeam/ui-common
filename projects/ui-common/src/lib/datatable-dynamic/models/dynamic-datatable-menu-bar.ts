@@ -1,21 +1,19 @@
-import { ComponentType } from '@angular/cdk/portal'
-
 import { DynamicValue } from '../../dynamic/models/dynamic-value'
 
 export interface DynamicDatatableMenuBarItem<C = any> {
   /**
    * Styles added to the root cell elements `style` attribute.
    */
-  styles?: DynamicValue<string | string[]>
+  // styles?: DynamicValue<string | string[]>
 
   /**
    * Classes added to the root cell elements `class` attribute.
    */
-  cssClass?: DynamicValue<string | string[]>
+  // cssClass?: DynamicValue<string | string[]>
 
-  component?: DynamicValue<string | ComponentType<{}>>
+  component: DynamicValue<string>
 
-  config?: C
+  config?: DynamicValue<C>
 }
 
 export interface DynamicDatatableMenuBarColumn {
@@ -32,8 +30,8 @@ export interface DynamicDatatableMenuBarColumn {
   items: DynamicDatatableMenuBarItem[]
 }
 
-export interface DynamicDatatableMenuBarRowLayout {
-  type: string
+export interface DynamicDatatableMenuBarRowLayout<T extends string> {
+  type: T
 }
 
 /**
@@ -44,7 +42,7 @@ export interface DynamicDatatableMenuBarRowLayout {
  * If the center column is undefined, then the left column should fill the
  * remaining space to the left of the right column.
  */
-export interface DynamicDatatableMenuBarRowLayoutTriColumn {
+export interface DynamicDatatableMenuBarRowLayoutTriColumn extends DynamicDatatableMenuBarRowLayout<'tri-column'> {
   columnLeft?: DynamicDatatableMenuBarColumn
   columnCenter?: DynamicDatatableMenuBarColumn
   columnRight?: DynamicDatatableMenuBarColumn
@@ -71,11 +69,11 @@ export interface DynamicDatatableMenuBarRow {
    * the same priority will be ordered from lowest to highest array index
    * position.
    */
-  priority?: number
+  priority?: DynamicValue<number>
 
-  layout: DynamicDatatableMenuBarRowLayout
+  layout: DynamicDatatableMenuBarRowLayoutTriColumn
 }
 
 export interface DynamicDatatableMenuBar {
-  rows: DynamicDatatableMenuBarRow
+  rows: DynamicDatatableMenuBarRow[]
 }
