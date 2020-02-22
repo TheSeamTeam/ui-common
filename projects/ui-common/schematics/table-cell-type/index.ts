@@ -6,9 +6,9 @@ import {
 
 import { experimental, normalize, strings } from '@angular-devkit/core'
 
-import { Schema as MyServiceSchema } from './schema'
+import { Schema as TableCellTypeSchema } from './schema'
 
-export function myService(options: MyServiceSchema): Rule {
+export function genTableCellType(options: TableCellTypeSchema): Rule {
   return (tree: Tree) => {
     const workspaceConfig = tree.read('/angular.json')
     if (!workspaceConfig) {
