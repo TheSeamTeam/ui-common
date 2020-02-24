@@ -31,8 +31,8 @@
   // old or newer user machine version.
   "typescript.tsdk": "node_modules\\typescript\\lib",
   // Our custom schematics.
-  "ngschematics.schematics": [
-    // '@theseam/ui-common' schematics.
-    "./dist/ui-common/schematics/collection.json"
-  ]
+  // "ngschematics.schematics": [
+  //   // '@theseam/ui-common' schematics.
+  //   "./dist/ui-common/schematics/collection.json"
+  // ]
 }
