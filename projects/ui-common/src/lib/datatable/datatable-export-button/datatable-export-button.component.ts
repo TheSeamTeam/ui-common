@@ -101,7 +101,7 @@ export class DatatableExportButtonComponent implements OnInit {
 
   private _rowValue(column: TheSeamDatatableColumn, row: any) {
     if (hasProperty(column as any, 'exportValue')) {
-      const context = { row }
+      const context = { value: column.prop ? row[column.prop] : undefined, row }
       return this._valueHelper.evalSync((column as any).exportValue, context)
     }
 
