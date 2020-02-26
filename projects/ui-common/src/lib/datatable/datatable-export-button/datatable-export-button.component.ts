@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, Input, isDevMode, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Inject, Input, isDevMode, OnInit, Optional } from '@angular/core'
 import { of } from 'rxjs'
 import { catchError, concatMap, map, take, tap } from 'rxjs/operators'
 
@@ -39,7 +39,7 @@ export class DatatableExportButtonComponent implements OnInit {
     private readonly _toastr: ToastrService,
     private readonly _loading: TheSeamLoadingOverlayService,
     private readonly _valueHelper: DynamicValueHelperService,
-    @Inject(THESEAM_DYNAMIC_DATA) private readonly _data?: IDatatableExportButtonData
+    @Optional() @Inject(THESEAM_DYNAMIC_DATA) private readonly _data?: IDatatableExportButtonData
   ) {
     console.log('%c_data', 'color:pink', this._data)
     if (this._data && this._data.exporters) {
