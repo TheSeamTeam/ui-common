@@ -120,7 +120,7 @@ export class DataFilterToggleButtonsComponent implements OnInit, OnDestroy, IDat
     private _menuBar: DatatableMenuBarComponent,
     @Optional() @Inject(THESEAM_DATA_FILTER_OPTIONS) private _filterOptions: IToggleButtonsFilterOptions | null
   ) {
-
+    console.log('_filterOptions', this._filterOptions)
   }
 
   ngOnInit() {

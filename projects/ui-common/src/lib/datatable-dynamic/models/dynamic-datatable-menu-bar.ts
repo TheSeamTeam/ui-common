@@ -13,7 +13,7 @@ export interface DynamicDatatableMenuBarItem<C = any> {
 
   component: DynamicValue<string>
 
-  config?: DynamicValue<C>
+  data?: DynamicValue<C>
 }
 
 export interface DynamicDatatableMenuBarColumn {

@@ -1,4 +1,5 @@
-<seam-datatable-menu-bar-row *ngFor="let row of _rows$ | async"
+<seam-datatable-menu-bar-row *ngFor="let row of _rows$ | async; last as isLast"
+  [class.mb-2]="!isLast"
   [ngClass]="row.cssClass"
   [ngStyle]="row.styles">
   <ng-container *ngIf="row.layoutType === 'tri-column'">

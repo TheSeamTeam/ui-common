@@ -108,6 +108,9 @@ import { TheSeamDatatableScrollbarHelperService } from './services/datatable-scr
   providers: [
     { provide: ScrollbarHelper, useClass: TheSeamDatatableScrollbarHelperService }
   ],
-  entryComponents: [DatatableColumnPreferencesComponent]
+  entryComponents: [
+    DatatableColumnPreferencesComponent,
+    DatatableExportButtonComponent
+  ]
 })
 export class TheSeamDatatableModule { }

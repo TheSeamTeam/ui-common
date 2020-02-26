@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr'
 
 import { IDataExporter } from '../../data-exporter/data-exporter'
 import { DynamicValueHelperService } from '../../dynamic/dynamic-value-helper.service'
+import { THESEAM_DYNAMIC_DATA } from '../../dynamic/index'
 import { TheSeamLoadingOverlayService } from '../../loading/index'
 import { hasProperty } from '../../utils/index'
 
@@ -33,8 +34,14 @@ export class DatatableExportButtonComponent implements OnInit {
     @Inject(THESEAM_DATATABLE) private readonly _datatable: DatatableComponent,
     private readonly _toastr: ToastrService,
     private readonly _loading: TheSeamLoadingOverlayService,
-    private readonly _valueHelper: DynamicValueHelperService
-  ) { }
+    private readonly _valueHelper: DynamicValueHelperService,
+    @Inject(THESEAM_DYNAMIC_DATA) private readonly _data: { exporters: IDataExporter[] },
+  ) {
+    console.log('%c_data', 'color:pink', this._data)
+    if (this._data && this._data.exporters) {
+      this.exporters = this._data.exporters
+    }
+  }
 
   ngOnInit() { }
 

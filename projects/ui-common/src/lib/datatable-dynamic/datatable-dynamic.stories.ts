@@ -13,15 +13,20 @@ import { map } from 'rxjs/operators'
 import {
   DataFilterSearchComponent,
   DataFilterTextComponent,
-  DataFilterToggleButtonsComponent
+  DataFilterToggleButtonsComponent,
+  THESEAM_DATA_FILTER_DEF,
+  THESEAM_DATA_FILTER_OPTIONS
 } from '../data-filters/index'
+import { DatatableExportButtonComponent } from '../datatable/datatable-export-button/datatable-export-button.component'
 import { IDynamicComponentManifest, TheSeamDynamicComponentLoaderModule } from '../dynamic-component-loader/dynamic-component-loader.module'
 import {
   DynamicActionApiService,
   DynamicActionLinkService,
   DynamicActionModalService,
+  ExportersDataEvaluator,
   JexlEvaluator,
   THESEAM_DYNAMIC_ACTION,
+  THESEAM_DYNAMIC_DATA,
   THESEAM_DYNAMIC_VALUE_EVALUATOR
 } from '../dynamic/index'
 import { TheSeamModalModule } from '../modal/index'
@@ -215,6 +220,7 @@ export default {
       ],
       providers: [
         { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
+        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: ExportersDataEvaluator, multi: true },
 
         { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionApiService, multi: true },
         { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionLinkService, multi: true },
@@ -222,17 +228,22 @@ export default {
 
         {
           provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
-          useValue: { name: 'filter-search', component: DataFilterSearchComponent },
+          useValue: { name: 'filter-search', component: DataFilterSearchComponent, dataToken: THESEAM_DATA_FILTER_OPTIONS },
           multi: true
         },
         {
           provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
-          useValue: { name: 'filter-text', component: DataFilterTextComponent },
+          useValue: { name: 'filter-text', component: DataFilterTextComponent, dataToken: THESEAM_DATA_FILTER_OPTIONS },
           multi: true
         },
         {
           provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
-          useValue: { name: 'filter-buttons', component: DataFilterToggleButtonsComponent },
+          useValue: { name: 'filter-buttons', component: DataFilterToggleButtonsComponent, dataToken: THESEAM_DATA_FILTER_OPTIONS },
+          multi: true
+        },
+        {
+          provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
+          useValue: { name: 'export-button', component: DatatableExportButtonComponent, dataToken: THESEAM_DYNAMIC_DATA },
           multi: true
         }
       ]

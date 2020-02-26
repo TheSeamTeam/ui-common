@@ -1,4 +1,4 @@
-import { ComponentPortal } from '@angular/cdk/portal'
+import { ComponentPortal, PortalInjector } from '@angular/cdk/portal'
 import { ChangeDetectionStrategy, Component, Inject, Injector, Input, OnInit, Optional } from '@angular/core'
 import { BehaviorSubject, Observable } from 'rxjs'
 
@@ -181,13 +181,15 @@ export class DatatableDynamicMenuBarContentComponent implements OnInit {
       // result.component = await this._valueHelper.eval(item.component, context)
       const component = await this._valueHelper.eval(item.component, context)
 
-      let config: any
-      if (hasProperty(item, 'config')) {
-        // result.config = await this._valueHelper.eval(item.config, context)
-        config = await this._valueHelper.eval(item.config, context)
+      let data: any
+      if (hasProperty(item, 'data')) {
+        // result.data = await this._valueHelper.eval(item.data, context)
+        console.log('%cdata', 'color:cyan', item.data)
+        data = await this._valueHelper.eval(item.data, context)
+        console.log('%cdata', 'color:limegreen', data)
       }
 
-      result.portal = await this._getComponentPortal(component, config)
+      result.portal = await this._getComponentPortal(component, data)
     }
 
     return result
@@ -221,7 +223,7 @@ export class DatatableDynamicMenuBarContentComponent implements OnInit {
     }
   }
 
-  private async _getComponentPortal(component: string, config?: any): Promise<ComponentPortal<{}> | undefined> {
+  private async _getComponentPortal(component: string, data?: any): Promise<ComponentPortal<{}> | undefined> {
     const manifest = (this._menuBarItemManifests || []).find(m => m.name === component)
 
     if (!manifest) {
@@ -229,7 +231,13 @@ export class DatatableDynamicMenuBarContentComponent implements OnInit {
       throw Error(`MenuBar manifest for '${component}' not found.`)
     }
 
-    // TODO: Create a new injector with the config injected
+    // TODO: Create a new injector with the data injected
+    let injector = this._injector
+    if (manifest.dataToken) {
+      injector = new PortalInjector(this._injector, new WeakMap([
+        [manifest.dataToken, data]
+      ]))
+    }
 
     if (typeof manifest.component === 'string') {
       this._dynamicComponentLoader.getComponentFactory<{}>(manifest.component).pipe(
@@ -237,13 +245,13 @@ export class DatatableDynamicMenuBarContentComponent implements OnInit {
           return new ComponentPortal(
             componentFactory.componentType,
             null,
-            this._injector,
+            injector,
             (<any /* ComponentFactoryBoundToModule */>componentFactory).ngModule.componentFactoryResolver
           )
         })
       ).toPromise()
     } else {
-      return new ComponentPortal(manifest.component, null, this._injector, null)
+      return new ComponentPortal(manifest.component, null, injector, null)
     }
   }
 

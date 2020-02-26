@@ -91,6 +91,46 @@ export const exampleData1: DatatableDynamicDef = {
             ]
           }
         }
+      },
+      {
+        layout: {
+          type: 'tri-column',
+          columnLeft: {
+            items: []
+          },
+          columnCenter: {
+            items: [
+              {
+                component: 'filter-buttons',
+                data: {
+                  buttons: [
+                    { name: 'All', value: '' },
+                    { name: '30', value: '30' },
+                    { name: '32', value: '32' }
+                  ],
+                  multiple: false,
+                  selectionToggleable: false,
+                  initialValue: '',
+                  properties: ['age']
+                }
+              }
+            ]
+          },
+          columnRight: {
+            items: [
+              {
+                component: 'export-button',
+                data: {
+                  type: 'exporters-data',
+                  exporters: [
+                    'exporter:csv',
+                    'exporter:xlsx'
+                  ]
+                }
+              }
+            ]
+          }
+        }
       }
     ]
   },
