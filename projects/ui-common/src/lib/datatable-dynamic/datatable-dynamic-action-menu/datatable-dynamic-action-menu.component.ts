@@ -83,7 +83,7 @@ export class DatatableDynamicActionMenuComponent implements OnInit {
           )
         : of([])
       ),
-      tap(v => console.log('actions', v))
+      // tap(v => console.log('actions', v))
     )
 
     // this._menuRecords$.subscribe()

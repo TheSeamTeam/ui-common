@@ -145,7 +145,7 @@ export class DatatableDynamicComponent implements OnInit {
 
     this._tmp_rows$ = this._dynamicDef.def$.pipe(
       map(def => def ? def.rows : []),
-      tap(v => console.log('_tmp_rows$', v))
+      // tap(v => console.log('_tmp_rows$', v))
     )
   }
 

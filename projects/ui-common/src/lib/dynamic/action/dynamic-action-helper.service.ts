@@ -24,7 +24,6 @@ export class DynamicActionHelperService {
     @Optional() private _confirmDialog?: SeamConfirmDialogService,
     @Optional() @Inject(THESEAM_DYNAMIC_ACTION) actions?: DynamicAction<string>[]
   ) {
-    console.log('~~~DynamicActionHelperService~~~')
     // Only one evaluator should exist for a type, so map them for faster lookup.
     for (const e of (actions || [])) {
       if (isDevMode()) {

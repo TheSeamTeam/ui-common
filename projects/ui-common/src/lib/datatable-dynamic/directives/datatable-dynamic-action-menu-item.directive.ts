@@ -63,7 +63,7 @@ export class DatatableDynamicActionMenuItemRouterLink {
       // console.log('rLinkWithHref', this.rLinkWithHref)
 
       this._rLinkClickEventListener = this.el.nativeElement.addEventListener('click', event => {
-        console.log('this._rLinkWithHref', this._rLinkWithHref, this._rLinkWithHref && this._rLinkWithHref.href)
+        // console.log('this._rLinkWithHref', this._rLinkWithHref, this._rLinkWithHref && this._rLinkWithHref.href)
         if (this._rLinkWithHref) {
           return this._rLinkWithHref.onClick(event.button, event.ctrlKey, event.metaKey, event.shiftKey)
         }
@@ -79,7 +79,7 @@ export class DatatableDynamicActionMenuItemRouterLink {
       // console.log('rLink', this.rLink)
 
       this._rLinkClickEventListener = this.el.nativeElement.addEventListener('click', () => {
-        console.log('this._rLink', this._rLink && this._rLink.urlTree)
+        // console.log('this._rLink', this._rLink && this._rLink.urlTree)
         if (this._rLink) { return this._rLink.onClick() }
       })
 
@@ -220,7 +220,7 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
     private _locationStrategy: LocationStrategy
   ) {
     this._record.pipe(
-      tap(v => console.log('record', v)),
+      // tap(v => console.log('record', v)),
       switchMap(record => this._update(record)),
       tap(() => { this._setInvalidActionState(false) }),
       catchError(error => {
@@ -228,7 +228,7 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
         this._setInvalidActionState(true)
         return of(undefined)
       }),
-      tap(v => console.log('record DONE', v)),
+      // tap(v => console.log('record DONE', v)),
       untilDestroyed(this)
     ).subscribe()
   }
@@ -274,7 +274,7 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
 
     switch (uiProps.triggerType) {
       case 'link': {
-        console.log('Handle "link" triggerType.', uiProps)
+        // console.log('Handle "link" triggerType.', uiProps)
         // this._tryInitTabIndex()
         this._tryInitBlockClick(record, uiProps)
         this._initMenuItemRouterLink(record, uiProps)
@@ -282,7 +282,7 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
         break
       }
       case 'link-external': {
-        console.log('Handle "link-external" triggerType.', uiProps)
+        // console.log('Handle "link-external" triggerType.', uiProps)
         // this._tryInitTabIndex()
         this._tryInitBlockClick(record, uiProps)
         if (hasProperty(uiProps, 'linkUrl')) {
@@ -321,14 +321,14 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
     // this._updateClickElement(record, uiProps as DynamicActionUiButtonDef)
     switch (uiProps.triggerType) {
       case 'link-asset': {
-        console.log('Handle "link-asset" triggerType.', uiProps)
+        // console.log('Handle "link-asset" triggerType.', uiProps)
         // this._tryInitTabIndex()
         this._tryInitBlockClick(record, uiProps)
         _stream = _stream.pipe(switchMap(() => this._updateAssetElement(record, uiProps)))
         break
       }
       case 'click': {
-        console.log('Handle "click" triggerType.', uiProps)
+        // console.log('Handle "click" triggerType.', uiProps)
         this._tryInitBlockClick(record, uiProps)
         _stream = _stream.pipe(switchMap(() => this._updateClickElement(record, uiProps)))
         break
@@ -344,16 +344,16 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
     record: DynamicDatatableActionMenuRecord,
     uiProps: DynamicActionUiAnchorDef | DynamicActionUiButtonDef
   ): Observable<void> {
-    console.log('_updateAssetElement')
+    // console.log('_updateAssetElement')
     // return of(undefined)
-    console.log('this._elementRef.nativeElement', this._elementRef.nativeElement)
+    // console.log('this._elementRef.nativeElement', this._elementRef.nativeElement)
     const t = fromEvent(this._elementRef.nativeElement, 'click').pipe(
       tap(event => {
         // const _context = this._getContext(record._row, record.rowAction)
         // const context = { ..._context, event, uiProps }
         // const result = this._valueHelper.evalSync(uiProps.blockClickExpr, context)
-        console.log(record, uiProps)
-        console.log('_updateClickElement click', (<any>event).button, event)
+        // console.log(record, uiProps)
+        // console.log('_updateClickElement click', (<any>event).button, event)
         if (this._assetReaderHelper) {
           if (uiProps.triggerType === 'link-asset' && hasProperty(uiProps, 'linkUrl')) {
             const url = uiProps.linkUrl
@@ -373,7 +373,7 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
     )
 
     return of(undefined).pipe(
-      tap(() => console.log('starting _updateButtonElement')),
+      // tap(() => console.log('starting _updateButtonElement')),
       switchMap(() => t),
     )
   }
@@ -382,13 +382,13 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
     record: DynamicDatatableActionMenuRecord,
     uiProps: DynamicActionUiButtonDef
   ): Observable<void> {
-    console.log('_updateClickElement', record, uiProps)
+    // console.log('_updateClickElement', record, uiProps)
     // return of(undefined)
     return fromEvent(this._elementRef.nativeElement, 'click').pipe(
       switchMap(event => {
         const _context = this._getContext(record._row, record.rowAction)
         const context = { ..._context, event, uiProps }
-        console.log('click', (<any>event).button, event)
+        // console.log('click', (<any>event).button, event)
         // if (!result) {
         //   event.preventDefault()
         //   event.stopPropagation()
@@ -437,7 +437,7 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
         const _context = this._getContext(record._row, record.rowAction)
         const context = { ..._context, event, uiProps }
         const result = this._valueHelper.evalSync(uiProps.blockClickExpr, context)
-        console.log('click', result, (<any>event).button, event)
+        // console.log('click', result, (<any>event).button, event)
         if (!result) {
           event.preventDefault()
           event.stopPropagation()

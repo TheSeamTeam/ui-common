@@ -184,9 +184,9 @@ export class DatatableDynamicMenuBarContentComponent implements OnInit {
       let data: any
       if (hasProperty(item, 'data')) {
         // result.data = await this._valueHelper.eval(item.data, context)
-        console.log('%cdata', 'color:cyan', item.data)
+        // console.log('%cdata', 'color:cyan', item.data)
         data = await this._valueHelper.eval(item.data, context)
-        console.log('%cdata', 'color:limegreen', data)
+        // console.log('%cdata', 'color:limegreen', data)
       }
 
       result.portal = await this._getComponentPortal(component, data)

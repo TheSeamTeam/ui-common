@@ -41,7 +41,6 @@ export class DatatableExportButtonComponent implements OnInit {
     private readonly _valueHelper: DynamicValueHelperService,
     @Optional() @Inject(THESEAM_DYNAMIC_DATA) private readonly _data?: IDatatableExportButtonData
   ) {
-    console.log('%c_data', 'color:pink', this._data)
     if (this._data && this._data.exporters) {
       this.exporters = this._data.exporters
     }

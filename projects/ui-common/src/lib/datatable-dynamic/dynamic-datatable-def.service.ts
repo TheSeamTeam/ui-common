@@ -112,7 +112,7 @@ export class DynamicDatatableDefService {
 
     this.menuBar$ = this.def$.pipe(
       map(def => (notNullOrUndefined(def) && hasProperty(def, 'menuBar')) ? def.menuBar : undefined),
-      tap(v => console.log('menubar', v)),
+      // tap(v => console.log('menubar', v)),
       shareReplay({ bufferSize: 1, refCount: true })
     )
   }
