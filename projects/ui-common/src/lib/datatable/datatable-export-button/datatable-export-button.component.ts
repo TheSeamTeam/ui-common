@@ -14,6 +14,10 @@ import { hasProperty } from '../../utils/index'
 import { DatatableComponent, THESEAM_DATATABLE } from '../datatable/datatable.component'
 import { TheSeamDatatableColumn } from '../models/table-column'
 
+export interface IDatatableExportButtonData {
+  exporters: IDataExporter[]
+}
+
 @Component({
   selector: 'seam-datatable-export-button',
   templateUrl: './datatable-export-button.component.html',
@@ -35,7 +39,7 @@ export class DatatableExportButtonComponent implements OnInit {
     private readonly _toastr: ToastrService,
     private readonly _loading: TheSeamLoadingOverlayService,
     private readonly _valueHelper: DynamicValueHelperService,
-    @Inject(THESEAM_DYNAMIC_DATA) private readonly _data: { exporters: IDataExporter[] },
+    @Inject(THESEAM_DYNAMIC_DATA) private readonly _data?: IDatatableExportButtonData
   ) {
     console.log('%c_data', 'color:pink', this._data)
     if (this._data && this._data.exporters) {
