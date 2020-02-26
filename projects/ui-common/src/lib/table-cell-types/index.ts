@@ -1,5 +1,10 @@
+export * from './table-cell-type-action'
+export * from './table-cell-type-column'
+export * from './table-cell-type-config'
+export * from './table-cell-type-export-props'
 export * from './table-cell-type-manifest-provider'
 export * from './table-cell-type-manifests'
+export * from './table-cell-type-name'
 export * from './table-cell-types-models'
 export * from './table-cell-types-tokens'
 

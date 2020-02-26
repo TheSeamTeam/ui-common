@@ -24,8 +24,6 @@
     "allowSyntheticDefaultImports": true,
     "jsx": "react",
     "paths": {
-      // Fixes imports from linked npm packages
-      "@angular/*": ["node_modules/@angular/*"],
       "@theseam/ui-common": [
         "dist/ui-common"
       ],
@@ -37,5 +35,8 @@
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true
-  }
+  },
+  "exclude": [
+    "projects/ui-common/schematics/**/*"
+  ]
 }

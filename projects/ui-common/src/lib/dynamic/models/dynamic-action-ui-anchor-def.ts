@@ -1,6 +1,6 @@
 import { QueryParamsHandling } from '@angular/router'
 
-import { IDynamicActionUiDef } from './dynamic-action-ui-def'
+import { DynamicActionUiDef } from './dynamic-action-ui-def'
 import { DynamicValue } from './dynamic-value'
 
 /**
@@ -10,7 +10,7 @@ import { DynamicValue } from './dynamic-value'
  * are learned as the features are being implemented. Since this model is so new
  * there will not be a high priority on keeping this backwards compatibile yet.
  */
-export interface IDynamicActionUiAnchorDef extends IDynamicActionUiDef {
+export interface DynamicActionUiAnchorDef extends DynamicActionUiDef {
 
   triggerType: 'link' | 'link-external' | 'link-asset'
 

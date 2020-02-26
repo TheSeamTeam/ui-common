@@ -1,20 +1,20 @@
-import { IDynamicDatatableRow } from '../datatable-dynamic-def'
-import { IDynamicDatatableRowAction } from '../models/dynamic-datatable-row-action'
+import { DynamicDatatableRow } from '../datatable-dynamic-def'
+import { DynamicDatatableRowAction } from '../models/dynamic-datatable-row-action'
 
 export type DynamicDatatableActionMenuElementTypes = 'a' | 'button'
 
-export interface IDynamicDatatableActionMenuRecord {
+export interface DynamicDatatableActionMenuRecord {
 
   /** Row input. */
-  _row: IDynamicDatatableRow
+  _row: DynamicDatatableRow
 
   /** Def input. */
-  _def: IDynamicDatatableRowAction
+  _def: DynamicDatatableRowAction
 
   /**
    * Row action.
    */
-  rowAction: IDynamicDatatableRowAction
+  rowAction: DynamicDatatableRowAction
 
   /**
    * Expected html element type to be used.

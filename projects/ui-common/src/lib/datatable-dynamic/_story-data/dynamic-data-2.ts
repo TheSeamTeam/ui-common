@@ -1,6 +1,6 @@
-import { IDatatableDynamicDef } from '../datatable-dynamic-def'
+import { DatatableDynamicDef } from '../datatable-dynamic-def'
 
-export const exampleData2: IDatatableDynamicDef = {
+export const exampleData2: DatatableDynamicDef = {
   filterMenu: {
     state: 'always-visible',
     filters: [

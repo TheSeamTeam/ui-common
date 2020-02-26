@@ -1,5 +1,4 @@
-import { IDynamicActionUiDef } from './dynamic-action-ui-def'
-import { DynamicValue } from './dynamic-value'
+import { DynamicActionUiDef } from './dynamic-action-ui-def'
 
 /**
  * NOTE: Experimental. This feature may change or go away.
@@ -8,9 +7,9 @@ import { DynamicValue } from './dynamic-value'
  * are learned as the features are being implemented. Since this model is so new
  * there will not be a high priority on keeping this backwards compatibile yet.
  *
- * TODO: Rename to IDynamicActionUiClickDef
+ * TODO: Rename to DynamicActionUiClickDef
  */
-export interface IDynamicActionUiButtonDef extends IDynamicActionUiDef {
+export interface DynamicActionUiButtonDef extends DynamicActionUiDef {
 
   triggerType: 'click'
 

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, Input, isDevMode, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Inject, Input, isDevMode, OnInit, Optional } from '@angular/core'
 import { of } from 'rxjs'
 import { catchError, concatMap, map, take, tap } from 'rxjs/operators'
 
@@ -6,10 +6,17 @@ import { faFileDownload } from '@fortawesome/free-solid-svg-icons'
 import { ToastrService } from 'ngx-toastr'
 
 import { IDataExporter } from '../../data-exporter/data-exporter'
+import { DynamicValueHelperService } from '../../dynamic/dynamic-value-helper.service'
+import { THESEAM_DYNAMIC_DATA } from '../../dynamic/index'
 import { TheSeamLoadingOverlayService } from '../../loading/index'
+import { hasProperty } from '../../utils/index'
 
 import { DatatableComponent, THESEAM_DATATABLE } from '../datatable/datatable.component'
-import { ITheSeamDatatableColumn } from '../models/table-column'
+import { TheSeamDatatableColumn } from '../models/table-column'
+
+export interface IDatatableExportButtonData {
+  exporters: IDataExporter[]
+}
 
 @Component({
   selector: 'seam-datatable-export-button',
@@ -28,10 +35,16 @@ export class DatatableExportButtonComponent implements OnInit {
   }
 
   constructor(
-    @Inject(THESEAM_DATATABLE) private _datatable: DatatableComponent,
-    private _toastr: ToastrService,
-    private _loading: TheSeamLoadingOverlayService
-  ) { }
+    @Inject(THESEAM_DATATABLE) private readonly _datatable: DatatableComponent,
+    private readonly _toastr: ToastrService,
+    private readonly _loading: TheSeamLoadingOverlayService,
+    private readonly _valueHelper: DynamicValueHelperService,
+    @Optional() @Inject(THESEAM_DYNAMIC_DATA) private readonly _data?: IDatatableExportButtonData
+  ) {
+    if (this._data && this._data.exporters) {
+      this.exporters = this._data.exporters
+    }
+  }
 
   ngOnInit() { }
 
@@ -64,7 +77,7 @@ export class DatatableExportButtonComponent implements OnInit {
     this._loading.while(export$).subscribe()
   }
 
-  private _mapExportData(columns: ITheSeamDatatableColumn[], rows: any[]) {
+  private _mapExportData(columns: TheSeamDatatableColumn[], rows: any[]) {
     const data: any[] = []
 
     for (const row of rows) {
@@ -85,9 +98,10 @@ export class DatatableExportButtonComponent implements OnInit {
     return data
   }
 
-  private _rowValue(column: ITheSeamDatatableColumn, row: any) {
-    if (column.exportValueFn) {
-      return column.exportValueFn(row)
+  private _rowValue(column: TheSeamDatatableColumn, row: any) {
+    if (hasProperty(column as any, 'exportValue')) {
+      const context = { value: column.prop ? row[column.prop] : undefined, row }
+      return this._valueHelper.evalSync((column as any).exportValue, context)
     }
 
     const colProp = column.prop

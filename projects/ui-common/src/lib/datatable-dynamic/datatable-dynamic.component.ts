@@ -10,14 +10,15 @@ import { DynamicValueHelperService } from '../dynamic/index'
 import { notNullOrUndefined } from '../utils/index'
 
 import {
-  IDatatableDynamicDef,
-  IDynamicDatatableOptions,
-  IDynamicDatatableRow
+  DatatableDynamicDef,
+  DynamicDatatableOptions,
+  DynamicDatatableRow
 } from './datatable-dynamic-def'
 import { DynamicDatatableDefService } from './dynamic-datatable-def.service'
 import { DynamicDatatableRowActionsService } from './dynamic-datatable-row-actions.service'
-import { IDynamicDatatableFilterMenuItem } from './models/dynamic-datatable-filter-menu-item'
-import { IDynamicDatatableRowAction } from './models/dynamic-datatable-row-action'
+import { DynamicDatatableFilterMenuItem } from './models/dynamic-datatable-filter-menu-item'
+import { DynamicDatatableMenuBar } from './models/dynamic-datatable-menu-bar'
+import { DynamicDatatableRowAction } from './models/dynamic-datatable-row-action'
 
 /**
  * # EXPERIMENTAL
@@ -61,8 +62,8 @@ import { IDynamicDatatableRowAction } from './models/dynamic-datatable-row-actio
 })
 export class DatatableDynamicComponent implements OnInit {
 
-  /** The `IDatatableDynamicDef` that defines the datatable. */
-  @Input() set def(value: IDatatableDynamicDef | undefined | null) {
+  /** The `DatatableDynamicDef` that defines the datatable. */
+  @Input() set def(value: DatatableDynamicDef | undefined | null) {
     this._dynamicDef.setDef(value || undefined)
   }
 
@@ -71,6 +72,11 @@ export class DatatableDynamicComponent implements OnInit {
    * @ignore
    */
   _hasDef$: Observable<boolean>
+
+  /**
+   * Observes whether the datatable has a menu bar.
+   */
+  menuBar$: Observable<DynamicDatatableMenuBar  | undefined>
 
   /**
    * The available exporters.
@@ -82,7 +88,7 @@ export class DatatableDynamicComponent implements OnInit {
    * The 'common' type filter menu items.
    * @ignore
    */
-  _commonFilterMenuItems$: Observable<IDynamicDatatableFilterMenuItem[]>
+  _commonFilterMenuItems$: Observable<DynamicDatatableFilterMenuItem[]>
 
   /**
    * Observes whether the datatable has a 'full-search' menu item.
@@ -100,7 +106,7 @@ export class DatatableDynamicComponent implements OnInit {
    * Observes datatable options.
    * @ignore
    */
-  _options$: Observable<IDynamicDatatableOptions | undefined>
+  _options$: Observable<DynamicDatatableOptions | undefined>
 
   /**
    * TODO: Implement def columns parser.
@@ -115,10 +121,11 @@ export class DatatableDynamicComponent implements OnInit {
   _tmp_rows$: Observable<any>
 
   constructor(
-    private _dynamicDef: DynamicDatatableDefService,
-    private _dynamicRowActions: DynamicDatatableRowActionsService
+    private readonly _dynamicDef: DynamicDatatableDefService
   ) {
     this._hasDef$ = this._dynamicDef.def$.pipe(map(def => !!def))
+
+    this.menuBar$ = this._dynamicDef.menuBar$
 
     this._exporters$ = this._dynamicDef.exporters$
 
@@ -138,16 +145,11 @@ export class DatatableDynamicComponent implements OnInit {
 
     this._tmp_rows$ = this._dynamicDef.def$.pipe(
       map(def => def ? def.rows : []),
-      tap(v => console.log('_tmp_rows$', v))
+      // tap(v => console.log('_tmp_rows$', v))
     )
   }
 
   /** @ignore */
   ngOnInit() { }
-
-  /** @ignore */
-  // _rowActions(row: IDynamicDatatableRow): Observable<IDynamicDatatableRowAction[]> {
-  //   return this._dynamicRowActions.rowActions(row)
-  // }
 
 }

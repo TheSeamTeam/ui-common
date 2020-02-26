@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators'
 import { observeControlValue } from '../../utils/index'
 
 import { DatatableComponent, THESEAM_DATATABLE } from '../datatable/datatable.component'
-import { ITheSeamDatatableColumn } from '../models/table-column'
+import { TheSeamDatatableColumn } from '../models/table-column'
 
 @Component({
   selector: 'seam-datatable-column-preferences',
@@ -16,7 +16,7 @@ import { ITheSeamDatatableColumn } from '../models/table-column'
 })
 export class DatatableColumnPreferencesComponent implements OnInit {
 
-  _columns$: Observable<ITheSeamDatatableColumn[]>
+  _columns$: Observable<TheSeamDatatableColumn[]>
 
   _filterControl = new FormControl()
 
@@ -37,7 +37,7 @@ export class DatatableColumnPreferencesComponent implements OnInit {
 
   ngOnInit() { }
 
-  _onChange(event: any, col: ITheSeamDatatableColumn) {
+  _onChange(event: any, col: TheSeamDatatableColumn) {
     // TODO: Figure out the right way to update this value. If it is set by
     // column component input this may not work right.
     const columns = this._datatable.columns

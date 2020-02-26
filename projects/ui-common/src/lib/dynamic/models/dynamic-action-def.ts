@@ -1,7 +1,16 @@
+import { TableCellTypeName } from '../../table-cell-types/table-cell-type-name'
+
+import { DynamicActionConfirmDef } from './dynamic-action-confirm-def'
+
 // TODO: Add something to the model that clarifies what is supported from JSON or javascript only.
-export interface IDynamicActionDef<T extends string> {
+export interface DynamicActionDef<T extends TableCellTypeName> {
 
   readonly type: T
+
+  /**
+   * If defined, the action must be confirmed.
+   */
+  confirmDef?: DynamicActionConfirmDef
 
   // TODO: Fix model to avoid this.
   [key: string]: any

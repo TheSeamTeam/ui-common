@@ -1,6 +1,13 @@
 {
   "name": "@theseam/ui-common",
   "version": "0.0.54",
+  "scripts": {
+    "build": "../../node_modules/.bin/tsc -p tsconfig.schematics.json",
+    "copy:schemas": "cp --parents schematics/*/schema.json ../../dist/ui-common/",
+    "copy:files": "cp --parents -p schematics/*/files/** ../../dist/ui-common/",
+    "copy:collection": "cp schematics/collection.json ../../dist/ui-common/schematics/collection.json",
+    "postbuild": "npm run copy:schemas && npm run copy:files && npm run copy:collection"
+  },
   "peerDependencies": {
     "@angular/common": "^8.2.3",
     "@angular/core": "^8.2.3",
@@ -41,5 +48,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/TheSeamTeam/ui-common"
-  }
+  },
+  "schematics": "./schematics/collection.json"
 }

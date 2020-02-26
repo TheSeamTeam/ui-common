@@ -1,9 +1,9 @@
-import { IDynamicActionContext } from './dynamic-action-context'
-import { IDynamicActionDef } from './dynamic-action-def'
-import { IDynamicActionUiDef } from './dynamic-action-ui-def'
+import { DynamicActionContext } from './dynamic-action-context'
+import { DynamicActionDef } from './dynamic-action-def'
+import { DynamicActionUiDef } from './dynamic-action-ui-def'
 import { DynamicValue } from './dynamic-value'
 
-export interface IDynamicAction<T extends string, D extends IDynamicActionContext = any, R = any> {
+export interface DynamicAction<T extends string, D extends DynamicActionContext = any, R = any> {
 
   readonly type: T
 
@@ -17,10 +17,10 @@ export interface IDynamicAction<T extends string, D extends IDynamicActionContex
   // and expected to complete, so Promise is enough. Observables could possibly
   // be used to emit multiple outputs, such as progress, with the expectation
   // that it would eventually complete.
-  exec?: (args: IDynamicActionDef<T>, context: D) => Promise<R>
+  exec?: (args: DynamicActionDef<T>, context: D) => Promise<R>
 
-  execSync?: (args: IDynamicActionDef<T>, context: D) => R
+  execSync?: (args: DynamicActionDef<T>, context: D) => R
 
-  getUiProps?: (args: IDynamicActionDef<T>, context: D) => Promise<IDynamicActionUiDef>
+  getUiProps?: (args: DynamicActionDef<T>, context: D) => Promise<DynamicActionUiDef>
 
 }

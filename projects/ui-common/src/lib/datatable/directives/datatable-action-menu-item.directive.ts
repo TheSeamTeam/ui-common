@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs'
 import jexl from 'jexl'
 import { untilDestroyed } from 'ngx-take-until-destroy'
 
-import { IDynamicDatatableRow } from '../../datatable-dynamic/datatable-dynamic-def'
+import { DynamicDatatableRow } from '../../datatable-dynamic/datatable-dynamic-def'
 import { TheSeamDynamicComponentLoader } from '../../dynamic-component-loader/dynamic-component-loader.service'
 import { Modal } from '../../modal/index'
 
@@ -97,7 +97,7 @@ export class DatatableActionMenuItemDirective implements OnInit, OnDestroy {
   private _modalConfig: IActionMenuItemModalConfig
   private _modalConfigSub: Subscription
 
-  @Input() row: IDynamicDatatableRow
+  @Input() row: DynamicDatatableRow
 
   @Output() click = new EventEmitter<any>()
 

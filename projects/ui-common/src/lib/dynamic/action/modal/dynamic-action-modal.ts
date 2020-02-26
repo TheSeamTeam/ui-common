@@ -1,7 +1,5 @@
-import { IDynamicAction } from '../../models/dynamic-action'
+import { DynamicAction } from '../../models/dynamic-action'
 
-export interface IDynamicActionModal extends IDynamicAction<'modal'> {
-
-
+export interface DynamicActionModal extends DynamicAction<'modal'> {
 
 }

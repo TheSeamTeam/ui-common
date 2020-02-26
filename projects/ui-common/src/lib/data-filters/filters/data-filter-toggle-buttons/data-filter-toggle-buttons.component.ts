@@ -6,7 +6,7 @@ import { Observable } from 'rxjs'
 import { map, startWith } from 'rxjs/operators'
 
 import { DatatableMenuBarComponent } from '../../../datatable/datatable-menu-bar/datatable-menu-bar.component'
-import { isNullOrUndefined } from '../../../utils/index'
+import { hasProperty, isNullOrUndefined } from '../../../utils/index'
 import { IDataFilter, THESEAM_DATA_FILTER, THESEAM_DATA_FILTER_OPTIONS } from '../../data-filter'
 
 import { textDataFilter } from '../data-filter-text/data-filter-text.component'
@@ -30,6 +30,7 @@ export interface IToggleButtonsFilterOptions extends ITextFilterOptions {
   selectionToggleable: boolean
   multiple: boolean
   buttons: IToggleButton[]
+  initialValue?: any
 }
 
 export const DefaultToggleButtonsFilterOptions: IToggleButtonsFilterOptions = {
@@ -114,13 +115,16 @@ export class DataFilterToggleButtonsComponent implements OnInit, OnDestroy, IDat
       this._control.setValue(_value)
     }
   }
-
+4
   constructor(
     private _menuBar: DatatableMenuBarComponent,
     @Optional() @Inject(THESEAM_DATA_FILTER_OPTIONS) private _filterOptions: IToggleButtonsFilterOptions | null
   ) { }
 
-  ngOnInit() { this._menuBar.addFilter(this) }
+  ngOnInit() {
+    this._menuBar.addFilter(this)
+    this.value = this._optDefault('initialValue')
+  }
 
   ngOnDestroy() { this._menuBar.removeFilter(this) }
 

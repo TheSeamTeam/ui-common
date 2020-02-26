@@ -27,5 +27,12 @@
   "tslint.exclude": [
     "**/src/assets/**/*.js"
   ],
-  "typescript.tsdk": "node_modules\\typescript\\lib"
+  // Makes sure we use the dependent typescript version, instead of potentially
+  // old or newer user machine version.
+  "typescript.tsdk": "node_modules\\typescript\\lib",
+  // Our custom schematics.
+  // "ngschematics.schematics": [
+  //   // '@theseam/ui-common' schematics.
+  //   "./dist/ui-common/schematics/collection.json"
+  // ]
 }

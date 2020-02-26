@@ -10,4 +10,7 @@ export * from './datatable-dynamic.module'
 export * from './dynamic-datatable-def.service'
 export * from './dynamic-datatable-row-actions.service'
 
+export * from './datatable-dynamic-menu-bar-token'
+export * from './datatable-dynamic-menu-bar-item-manifest'
+
 export * from './utils/index'

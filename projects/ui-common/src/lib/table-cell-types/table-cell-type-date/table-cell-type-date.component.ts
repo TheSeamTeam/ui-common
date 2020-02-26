@@ -3,7 +3,9 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, O
 import { untilDestroyed } from 'ngx-take-until-destroy'
 
 import { TABLE_CELL_DATA } from '../../table/table-cell-tokens'
-import { ITableCellData } from '../../table/table-cell.models'
+import { TableCellData } from '../../table/table-cell.models'
+
+import { TableCellTypeConfigDate } from './table-cell-type-date-config'
 
 @Component({
   selector: 'seam-table-cell-type-date',
@@ -18,12 +20,12 @@ export class TableCellTypeDateComponent implements OnInit, OnDestroy {
 
   constructor(
     private _cdf: ChangeDetectorRef,
-    @Optional() @Inject(TABLE_CELL_DATA) _tableData?: ITableCellData<any, string>
+    @Optional() @Inject(TABLE_CELL_DATA) _tableData?: TableCellData<'date', TableCellTypeConfigDate>
   ) {
     const _data = _tableData
 
     this.value = _data && _data.value
-    this.format = _data && _data.colData && _data.colData.cellProps
+    this.format = _data && _data.colData && _data.colData.cellTypeConfig && _data.colData.cellTypeConfig.format
 
     if (_data) {
       _data.changed

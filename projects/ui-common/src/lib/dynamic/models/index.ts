@@ -1,3 +1,4 @@
+export * from './dynamic-action-confirm-def'
 export * from './dynamic-action-context'
 export * from './dynamic-action-def'
 export * from './dynamic-action-ui-anchor-def'

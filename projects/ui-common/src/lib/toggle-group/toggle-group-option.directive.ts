@@ -1,5 +1,5 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
-import { Directive, EventEmitter, HostBinding, Input, Output } from '@angular/core'
+import { ChangeDetectorRef, Directive, ElementRef, EventEmitter, HostBinding, Input, Output } from '@angular/core'
 
 @Directive({
   selector: '[seamToggleGroupOption]',
@@ -15,6 +15,7 @@ export class ToggleGroupOptionDirective {
     if (!this._canUnselect && !value) { return }
     this._selected = coerceBooleanProperty(value)
     this.selectionChange.emit(this._selected)
+    this._cdr.markForCheck()
   }
   private _selected = false
 
@@ -27,7 +28,10 @@ export class ToggleGroupOptionDirective {
     return this._selected
   }
 
-  constructor() { }
+  constructor(
+    private readonly _elementRef: ElementRef,
+    private readonly _cdr: ChangeDetectorRef
+  ) { }
 
   get value(): string {
     return this.seamToggleGroupOption

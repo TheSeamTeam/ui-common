@@ -5,10 +5,10 @@ import { map, switchMap, toArray } from 'rxjs/operators'
 import { DynamicValueHelperService } from '../dynamic/dynamic-value-helper.service'
 import { notNullOrUndefined } from '../utils/index'
 
-import { IDynamicDatatableRow } from './datatable-dynamic-def'
+import { DynamicDatatableRow } from './datatable-dynamic-def'
 import { DynamicDatatableDefService } from './dynamic-datatable-def.service'
-import { IDynamicDatatableRowActionContext } from './models/index'
-import { IDynamicDatatableRowAction } from './models/index'
+import { DynamicDatatableRowAction } from './models/dynamic-datatable-row-action'
+import { DynamicDatatableRowActionContext } from './models/dynamic-datatable-row-action-context'
 
 @Injectable()
 export class DynamicDatatableRowActionsService {
@@ -21,7 +21,7 @@ export class DynamicDatatableRowActionsService {
   /**
    * Observe actions for specified row
    */
-  public rowActions(row: IDynamicDatatableRow): Observable<IDynamicDatatableRowAction[]> {
+  public rowActions(row: DynamicDatatableRow): Observable<DynamicDatatableRowAction[]> {
     return this._dynamicDef.def$.pipe(
       map(def => (def && def.rowActions) ? def.rowActions || [] : []),
       switchMap(rowActions => !!rowActions
@@ -48,7 +48,7 @@ export class DynamicDatatableRowActionsService {
   }
 
   /** @ignore */
-  private _getRowActionContext(row: IDynamicDatatableRow,  rowActionDef: IDynamicDatatableRowAction): IDynamicDatatableRowActionContext {
+  private _getRowActionContext(row: DynamicDatatableRow,  rowActionDef: DynamicDatatableRowAction): DynamicDatatableRowActionContext {
     return {
       row
     }

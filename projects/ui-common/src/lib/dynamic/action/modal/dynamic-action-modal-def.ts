@@ -1,26 +1,15 @@
-import { IDynamicActionDef } from '../../models/dynamic-action-def'
+import { ComponentType } from '@angular/cdk/portal'
+
+import { DynamicActionDef } from '../../models/dynamic-action-def'
 import { DynamicValue } from '../../models/dynamic-value'
 
-export interface IDynamicActionModalResultAction {
+export interface DynamicActionModalDef extends DynamicActionDef<'modal'> {
 
-  /**
-   * If the modal result equals this value then the action will execute.
-   *
-   * TODO: Should this be a boolean evaluator instead?
-   */
-  value?: DynamicValue<any>
+  component?: DynamicValue<string | ComponentType<{}>>
 
-  /**
-   * Action to execute when modal result equals value.
-   */
-  action?: IDynamicActionDef<string>
+  // TODO: Replace with a JSON valid `ModalConfig`
+  data?: any
 
-}
-
-export interface IDynamicActionModalDef extends IDynamicActionDef<'modal'> {
-
-  modal?: DynamicValue<any>
-
-  resultAction?: IDynamicActionModalResultAction
+  resultActions?: { [value: string]: DynamicActionDef<string> }
 
 }

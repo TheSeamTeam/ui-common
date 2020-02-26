@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core'
-import { Observable, of, Subject, Subscriber } from 'rxjs'
-import { switchMap, takeUntil } from 'rxjs/operators'
+import { from, Observable, Subject, Subscriber } from 'rxjs'
+import { takeUntil } from 'rxjs/operators'
 
-import jexl from 'jexl'
+import { DynamicActionHelperService } from '../../dynamic/action/dynamic-action-helper.service'
+import { DynamicActionModalDef } from '../../dynamic/action/modal/dynamic-action-modal-def'
+import { DynamicValueHelperService } from '../../dynamic/dynamic-value-helper.service'
+import { TableCellData } from '../../table/table-cell.models'
 
-import { DynamicDatatableCellActionModal } from '../../datatable-dynamic/index'
-import { TheSeamDynamicComponentLoader } from '../../dynamic-component-loader/index'
-import { Modal, ModalConfig, ModalRef } from '../../modal/index'
-import { ITableCellData } from '../../table/table-cell.models'
-
+import { TableCellTypeConfig } from '../table-cell-type-config'
+import { TableCellTypeName } from '../table-cell-type-name'
 import { CaluclatedValueContextType, ICalucatedValueContext } from '../table-cell-types-models'
 
 @Injectable({
@@ -17,28 +17,16 @@ import { CaluclatedValueContextType, ICalucatedValueContext } from '../table-cel
 export class TableCellTypesHelpersService {
 
   constructor(
-    private _dynamicComponentLoaderModule: TheSeamDynamicComponentLoader,
-    private _modal: Modal,
+    private _dynamicActionHelper: DynamicActionHelperService,
+    private _valueHelper: DynamicValueHelperService
   ) { }
 
   public parseValueProp(value: any, contextOrContextFn: CaluclatedValueContextType) {
-    if (value === undefined || value === null) {
-      return value
-    }
-
-    if (typeof value === 'string') {
-      return value
-    }
-
-    if (value.type === 'jexl') {
-      const context = this._resolveValueContext(contextOrContextFn)
-      return jexl.evalSync(value.expr, context)
-    }
-
-    return value
+    const context = this._resolveValueContext(contextOrContextFn)
+    return this._valueHelper.evalSync(value, context)
   }
 
-  public getValueContext(value: any, data?: ITableCellData<any, string>): ICalucatedValueContext {
+  public getValueContext<T extends TableCellTypeName>(value: any, data?: TableCellData<T, TableCellTypeConfig<T>>): ICalucatedValueContext {
     return {
       row: data && data.row,
       rowIndex: data && data.rowIndex,
@@ -56,7 +44,7 @@ export class TableCellTypesHelpersService {
   }
 
   public handleModalAction<R = any>(
-    action: DynamicDatatableCellActionModal,
+    action: DynamicActionModalDef,
     contextOrContextFn: CaluclatedValueContextType
   ) {
     // TODO: Try to simplify this observable. It seems fairly easy to read like
@@ -95,65 +83,11 @@ export class TableCellTypesHelpersService {
   }
 
   private _handleModalAction(
-    action: DynamicDatatableCellActionModal,
+    action: DynamicActionModalDef,
     contextOrContextFn: CaluclatedValueContextType,
     resultSubject: Subject<any>
   ) {
-    const data = this.parseValueProp(action.data, contextOrContextFn)
-
-    return this._handleModalActionOpenModal(action, data).pipe(
-      switchMap(modalRef => modalRef.afterClosed().pipe(
-        switchMap(result => {
-          resultSubject.next(result)
-
-          const resultAction = this._getModalResultAction(action, result)
-          if (resultAction) {
-            return this._handleModalAction(resultAction, contextOrContextFn, resultSubject)
-          }
-
-          resultSubject.complete()
-          return of(undefined)
-        })
-      ))
-    )
-  }
-
-  private _handleModalActionOpenModal(action: DynamicDatatableCellActionModal, data?: any): Observable<ModalRef<any, any>> {
-    if (!action.component) {
-      throw new Error('Cell action type "modal" must have a component defined.')
-    }
-
-    const config: ModalConfig<any> = {
-      modalSize: 'lg',
-      data
-    }
-
-    if (typeof action.component === 'string') {
-      return this._dynamicComponentLoaderModule
-        .getComponentFactory<{}>(action.component)
-        .pipe(
-          switchMap(componentFactory => {
-            const modalRef = this._modal.openFromComponent(
-              componentFactory.componentType,
-              config,
-              (<any /* ComponentFactoryBoundToModule */>componentFactory).ngModule.componentFactoryResolver
-            )
-            return of(modalRef)
-          })
-        )
-    } else {
-      const modalRef = this._modal.openFromComponent(action.component, config)
-      return of(modalRef)
-    }
-  }
-
-  private _getModalResultAction(action: DynamicDatatableCellActionModal, result: any) {
-    if (
-      action.resultActions
-      && action.resultActions[result]
-      && action.resultActions[result].type === 'modal'
-    ) {
-      return action.resultActions[result]
-    }
+    const context = this._resolveValueContext(contextOrContextFn)
+    return from(this._dynamicActionHelper.exec(action, context))
   }
 }
