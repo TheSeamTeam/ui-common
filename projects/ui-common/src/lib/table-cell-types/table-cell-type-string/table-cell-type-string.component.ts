@@ -2,25 +2,27 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  ElementRef,
   HostBinding,
   Inject,
   Input,
-  isDevMode,
   OnDestroy,
   OnInit,
   Optional
 } from '@angular/core'
-import { fromEvent, Subscription } from 'rxjs'
 
 import { untilDestroyed } from 'ngx-take-until-destroy'
 
+import { DatatableComponent } from '../../datatable/datatable/datatable.component'
 import { TABLE_CELL_DATA } from '../../table/table-cell-tokens'
 import { TableCellData } from '../../table/table-cell.models'
-import { hasProperty } from '../../utils'
+import { TheSeamTableColumn } from '../../table/table-column'
+import { TableComponent } from '../../table/table/table.component'
+
 import { TableCellTypesHelpersService } from '../services/table-cell-types-helpers.service'
 
-import { TableCellTypeConfigString } from './table-cell-type-string-config'
+import { TableCellTypeConfigString, TableCellTypeStringConfigAction } from './table-cell-type-string-config'
+
+export type StringTemplateType = 'default' | 'link' | 'link-external' | 'link-encrypted' | 'button'
 
 @Component({
   selector: 'seam-table-cell-type-string',
@@ -31,7 +33,6 @@ import { TableCellTypeConfigString } from './table-cell-type-string-config'
 })
 export class TableCellTypeStringComponent implements OnInit, OnDestroy {
 
-  // @Input() value?: string | null
   @Input()
   get value() { return this._value }
   set value(val: string | null | undefined) {
@@ -46,43 +47,73 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
   }
   _value: string | null | undefined
 
-  @Input() title?: string | null
+  @Input()
+  get config() { return this._config }
+  set config(value: TableCellTypeConfigString | undefined | null) {
+    this._config = value
+    if (value) {
+      this.setAction(value.action)
+    }
+  }
+  private _config: TableCellTypeConfigString | undefined | null
+
+  _tplType: StringTemplateType = 'default'
+  _link?: string
+  _title?: string
+
+  _buttonAction?: TableCellTypeStringConfigAction
+
+  _tableCellData?: TableCellData<'string', TableCellTypeConfigString>
+  _row?: any
+  _rowIndex?: number
+  _colData?: TheSeamTableColumn<'string', TableCellTypeConfigString>
+
+  _download: boolean
+  _detectMimeContent: boolean
+
+  @Input()
+  set title(value: string | undefined) { this.title = value }
+  get title(): string | undefined { return this._title }
 
   @HostBinding('attr.title') get _titleAttr() { return this.title || this.value }
-  @HostBinding('class.cell-has-click-action') get _cellHasClickActionCss() { return !!this._clickSub }
 
   canPopover = false
 
-  private _config?: TableCellTypeConfigString
-  private _clickSub?: Subscription
-  private _data?: TableCellData<'string', TableCellTypeConfigString>
-
   constructor(
     private readonly _cdf: ChangeDetectorRef,
-    private readonly _elementRef: ElementRef,
     private readonly _tableCellTypeHelpers: TableCellTypesHelpersService,
+    @Optional() private _datatable?: DatatableComponent,
+    @Optional() private _table?: TableComponent,
     @Optional() @Inject(TABLE_CELL_DATA) readonly _tableData?: TableCellData<'string', TableCellTypeConfigString>
   ) {
-    this._data = _tableData
+    const _data = _tableData
+    this._tableCellData = _tableData
 
-    this.value = this._data && this._data.value
+    this._row = _data && _data.row
+    this._rowIndex = _data && _data.rowIndex
 
-    if (this._data && this._data.colData && (<any>this._data.colData).cellTypeConfig) {
-      this._config = (<any>this._data.colData).cellTypeConfig
-
-      if (this._config) {
-        if (hasProperty(this._config, 'action')) {
-          this._enableClickAction()
-        }
-      }
+    this.value = _data && _data.value
+    this._colData = _data && _data.colData
+    if (_data && _data.colData && (<any>_data.colData).cellTypeConfig) {
+      this.config = (<any>_data.colData).cellTypeConfig
     }
 
-    if (this._data) {
-      this._data.changed
+    if (_data) {
+      _data.changed
         .pipe(untilDestroyed(this))
         .subscribe(v => {
           if (v.changes.hasOwnProperty('value')) {
             this.value = v.changes.value.currentValue
+            this._cdf.markForCheck()
+          }
+
+          if (v.changes.hasOwnProperty('colData')) {
+            const colData = v.changes.colData.currentValue
+            if (colData && colData.cellTypeConfig !== this.config) {
+              this.config = colData.cellTypeConfig
+            } else {
+              this.config = undefined
+            }
             this._cdf.markForCheck()
           }
         })
@@ -93,39 +124,54 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() { }
 
-  private _enableClickAction(): void {
-    const element = this.getNativeElement()
-    if (element) {
-      this.canPopover = false
-      if (this._clickSub && !this._clickSub.closed) {
-        this._clickSub.unsubscribe()
-      }
-      this._clickSub = fromEvent(element, 'click').pipe(
-        untilDestroyed(this)
-      ).subscribe(() => this._doAction())
-    } else {
-      if (isDevMode()) {
-        console.warn(
-          `[TableCellTypeStringComponent] Unable to register 'click' event. NativeElement not defined.`
-        )
+  public setAction(configAction?: TableCellTypeStringConfigAction) {
+    let newTplType: StringTemplateType = 'default'
+    let link: string | undefined
+    let download: boolean = false
+    let detectMimeContent = false
+
+    if (configAction) {
+      if (configAction.type === 'link') {
+        link = this._parseConfigValue(configAction.link)
+        if (link !== undefined && link !== null) {
+          newTplType = this._parseConfigValue(configAction.asset) ? 'link-encrypted' : 'link'
+          download = !!this._parseConfigValue(configAction.download)
+          detectMimeContent = !!this._parseConfigValue(configAction.detectMimeContent)
+        }
+      } else if (configAction.type === 'modal') {
+        newTplType = 'button'
+        this._buttonAction = configAction
       }
     }
+
+    this._tplType = newTplType
+    this._link = link
+    this._download = download
+    this._detectMimeContent = detectMimeContent
   }
 
-  public getNativeElement(): HTMLElement | undefined {
-    return this._elementRef && this._elementRef.nativeElement
+  private _parseConfigValue(val) {
+    const contextFn = () => this._tableCellTypeHelpers.getValueContext(val, this._tableCellData)
+    return this._tableCellTypeHelpers.parseValueProp(val, contextFn)
   }
 
-  private _doAction() {
-    const action = this._config && this._config.action
-    if (action && action.type === 'modal') {
-      const contextFn = () => this._tableCellTypeHelpers.getValueContext(this.value, this._data)
-      this._tableCellTypeHelpers.handleModalAction(action, contextFn)
+  _doButtonAction() {
+    if (this._buttonAction && this._buttonAction.type === 'modal') {
+      const contextFn = () => this._tableCellTypeHelpers.getValueContext(this.value, this._tableCellData)
+      this._tableCellTypeHelpers.handleModalAction(this._buttonAction, contextFn)
         .subscribe(
           r => {},
           err => console.error(err),
-          // () => this._actionRefreshRequest()
+          () => this._actionRefreshRequest()
         )
+    }
+  }
+
+  private _actionRefreshRequest() {
+    if (this._datatable) {
+      this._datatable.triggerActionRefreshRequest()
+    } else if (this._table) {
+      this._table.triggerActionRefreshRequest()
     }
   }
 

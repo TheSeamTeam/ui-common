@@ -10,7 +10,7 @@ export type TableCellTypeIconConfigAction =
 
 export interface TableCellTypeConfigIcon extends TableCellTypeConfig<'icon'> {
   /**
-   * TODO: Consider different trigger types, such as, click, dbclick, hover, etc
+   *
    */
   action?: TableCellTypeIconConfigAction
 
