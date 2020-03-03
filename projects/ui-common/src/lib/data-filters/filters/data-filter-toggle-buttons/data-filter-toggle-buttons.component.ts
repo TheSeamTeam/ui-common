@@ -110,7 +110,9 @@ export class DataFilterToggleButtonsComponent implements OnInit, OnDestroy, IDat
 
   @Input()
   set value(value: string | string[]) {
+    console.log('value', value)
     const _value = !isNullOrUndefined(value) ? coerceArray(value) : undefined
+    console.log('_value', _value, this._control.value)
     if (this._control.value !== _value) {
       this._control.setValue(_value)
     }
@@ -123,7 +125,9 @@ export class DataFilterToggleButtonsComponent implements OnInit, OnDestroy, IDat
 
   ngOnInit() {
     this._menuBar.addFilter(this)
-    this.value = this._optDefault('initialValue')
+    if (this._filterOptions && hasProperty(this._filterOptions, 'initialValue')) {
+      this.value = this._optDefault('initialValue')
+    }
   }
 
   ngOnDestroy() { this._menuBar.removeFilter(this) }
