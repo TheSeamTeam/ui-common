@@ -110,7 +110,6 @@ export class DataFilterToggleButtonsComponent implements OnInit, OnDestroy, IDat
 
   @Input()
   set value(value: string | string[]) {
-    console.log('value', value)
     const _value = !isNullOrUndefined(value) ? coerceArray(value) : undefined
     console.log('_value', _value, this._control.value)
     if (this._control.value !== _value) {
