@@ -62,6 +62,7 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
   _linkClass?: string
   _iconClass?: string
   _iconType?: TheSeamIconType
+  _target?: string
 
   _buttonAction?: TableCellTypeIconConfigAction
 
@@ -133,14 +134,18 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
     let link: string | undefined
     let download: boolean = false
     let detectMimeContent = false
+    let target: string | undefined
 
     if (configAction) {
       if (configAction.type === 'link') {
         link = this._parseConfigValue(configAction.link)
         if (link !== undefined && link !== null) {
-          newTplType = this._parseConfigValue(configAction.asset) ? 'link-encrypted' : 'link'
+          newTplType = this._parseConfigValue(configAction.asset)
+            ? 'link-encrypted'
+            : this._parseConfigValue(configAction.external) ? 'link-external' : 'link'
           download = !!this._parseConfigValue(configAction.download)
           detectMimeContent = !!this._parseConfigValue(configAction.detectMimeContent)
+          target = this._parseConfigValue(configAction.target)
         }
       } else if (configAction.type === 'modal') {
         newTplType = 'button'
@@ -152,6 +157,7 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
     this._link = link
     this._download = download
     this._detectMimeContent = detectMimeContent
+    this._target = target
   }
 
   private _parseConfigValue(val) {

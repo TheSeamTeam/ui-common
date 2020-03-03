@@ -9,7 +9,7 @@ export interface DynamicActionLinkDef extends DynamicActionDef<'link'> {
   link: DynamicValue<string>
 
   /**
-   * If true, the link will use router.
+   * If false, the link will use router.
    *
    * Default: false
    */

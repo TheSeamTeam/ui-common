@@ -2,7 +2,8 @@
   class="d-flex align-items-center justify-center"
   [class.datatable-icon-fix]="_isDatatable">
   <a class="d-block m-auto{{ _linkClass ? ' ' + _linkClass : '' }}"
-    [attr.title]="_title">
+    [attr.title]="_title"
+    [attr.target]="_target">
     <seam-icon *ngIf="_icon" [icon]="_icon" size="lg" [iconType]="_iconType" [iconClass]="_iconClass"></seam-icon>
     <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
   </a>
@@ -13,7 +14,8 @@
   [class.datatable-icon-fix]="_isDatatable">
   <a class="d-block m-auto{{ _linkClass ? ' ' + _linkClass : '' }}"
     [routerLink]="_link"
-    [attr.title]="_title">
+    [attr.title]="_title"
+    [attr.target]="_target">
     <seam-icon *ngIf="_icon" [icon]="_icon" size="lg" [iconType]="_iconType" [iconClass]="_iconClass"></seam-icon>
     <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
   </a>
@@ -24,7 +26,8 @@
   [class.datatable-icon-fix]="_isDatatable">
   <a class="d-block m-auto{{ _linkClass ? ' ' + _linkClass : '' }}"
     [attr.href]="_link"
-    [attr.title]="_title">
+    [attr.title]="_title"
+    [attr.target]="_target">
     <seam-icon *ngIf="_icon" [icon]="_icon" size="lg" [iconType]="_iconType" [iconClass]="_iconClass"></seam-icon>
     <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
   </a>
