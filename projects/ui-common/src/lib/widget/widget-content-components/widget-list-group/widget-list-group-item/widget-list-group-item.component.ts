@@ -17,7 +17,8 @@ import { SeamIcon } from '../../../../icon/index'
 
 import { WidgetListGroupItemIconTplDirective } from './widget-list-group-item-icon-tpl.directive'
 
-const WIDGET_LIST_GROUP_ITEM_INPUTS = [ 'disabled', 'theme', 'active', 'icon', 'iconClass', 'label' ]
+// tslint:disable-next-line: max-line-length
+const WIDGET_LIST_GROUP_ITEM_INPUTS = [ 'disabled', 'theme', 'active', 'icon', 'iconClass', 'label', 'secondaryIcon', 'secondaryIconClass', 'secondaryIconTitle' ]
 
 class WidgetListGroupItemBase {
 
@@ -25,6 +26,9 @@ class WidgetListGroupItemBase {
 
   icon?: SeamIcon
   iconClass?: string
+  secondaryIcon?: SeamIcon
+  secondaryIconClass?: string
+  secondaryIconTitle?: string
 
   label?: string
 
