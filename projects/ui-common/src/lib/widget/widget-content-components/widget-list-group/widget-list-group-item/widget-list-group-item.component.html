@@ -17,4 +17,11 @@
   <div class="d-flex flex-column justify-content-center">
     {{ label }}
   </div>
+  <seam-icon *ngIf="secondaryIcon"
+    [icon]="secondaryIcon"
+    class="secondary-icon"
+    [iconClass]="secondaryIconClass"
+    [title]="secondaryIconTitle"
+    size="lg">
+  </seam-icon>
 </div>
