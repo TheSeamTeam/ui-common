@@ -1,16 +1,56 @@
-import { coerceBooleanProperty } from '@angular/cdk/coercion'
-import { Component, ContentChild, ElementRef, HostBinding, Input, OnInit } from '@angular/core'
+import { FocusMonitor } from '@angular/cdk/a11y'
+import { Component, ContentChild, ElementRef, HostBinding, Input, OnDestroy, OnInit, Renderer2 } from '@angular/core'
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 
 import { WidgetTileSecondaryIconDirective } from './widget-tile-secondary-icon.directive'
 
+import {
+  CanDisableCtor,
+  HasElementRef,
+  HasRenderer2,
+  HasTabIndexCtor,
+  mixinDisabled,
+  mixinTabIndex,
+} from '../../../core/common-behaviors'
+
+class TheSeamWidgetTileBase implements OnDestroy, HasRenderer2, HasElementRef {
+  constructor(
+    public _elementRef: ElementRef,
+    public _focusMonitor: FocusMonitor,
+    public _renderer: Renderer2
+  ) {
+    this._focusMonitor.monitor(this._elementRef, true)
+  }
+
+  ngOnDestroy() {
+    this._focusMonitor.stopMonitoring(this._elementRef)
+  }
+
+  /** Focuses the button. */
+  focus(): void {
+    this._getHostElement().focus()
+  }
+
+  _getHostElement() {
+    return this._elementRef.nativeElement
+  }
+}
+
+const _TheSeamWidgetTileMixinBase: CanDisableCtor & HasTabIndexCtor &
+    typeof TheSeamWidgetTileBase = mixinTabIndex(mixinDisabled(TheSeamWidgetTileBase))
+
+// TODO: Should this component be split into separate components for button and anchor.
 @Component({
   selector: 'seam-widget-tile, a[seam-widget-tile], button[seam-widget-tile]',
   templateUrl: './widget-tile.component.html',
-  styleUrls: ['./widget-tile.component.scss']
+  styleUrls: ['./widget-tile.component.scss'],
+  inputs: [ 'disabled' ],
+  exportAs: 'seamWidgetTile'
 })
-export class WidgetTileComponent implements OnInit {
+export class WidgetTileComponent extends _TheSeamWidgetTileMixinBase implements OnInit, OnDestroy {
+
+  private _clickUnListen: () => void | undefined | null
 
   private _type: string
 
@@ -23,17 +63,21 @@ export class WidgetTileComponent implements OnInit {
   get _btnCss() { return this._isButton() ? true : false }
 
   @HostBinding('class.disabled')
-  get _DisabledCss() { return this.disabled }
+  get _disabledCss() { return this.disabled }
+
+  @HostBinding('attr.aria-disabled')
+  get _ariaDisabled() { return this.disabled.toString() }
+
+  @HostBinding('attr.disabled')
+  get _attrDisabled() { return this.disabled || null }
+
+  @HostBinding('attr.tabindex')
+  get _attrTabIndex() { return this.disabled ? -1 : (this.tabIndex || 0) }
 
   @Input()
   get type(): string { return this._type }
 
   @Input() icon: string | IconProp
-
-  @Input()
-  get disabled(): boolean { return this._disabled }
-  set disabled(value: boolean) { this._disabled = coerceBooleanProperty(value) }
-  private _disabled: boolean  = false
 
   @Input() grayscaleOnDisable = true
 
@@ -45,14 +89,40 @@ export class WidgetTileComponent implements OnInit {
   @ContentChild(WidgetTileSecondaryIconDirective, { static: true }) secondaryIcon: WidgetTileSecondaryIconDirective
 
   constructor(
-    public _elementRef: ElementRef<HTMLElement | HTMLAnchorElement | HTMLButtonElement>
-  ) { }
+    _elementRef: ElementRef<HTMLElement | HTMLAnchorElement | HTMLButtonElement>,
+    _focusMonitor: FocusMonitor,
+    _renderer: Renderer2
+  ) { super(_elementRef, _focusMonitor, _renderer) }
 
-  ngOnInit() { }
+  ngOnInit() {
+    if (this._isAnchor()) {
+      this._clickUnListen = this._renderer.listen(this._getHostElement(), 'click', this._haltDisabledEvents)
+    }
+  }
+
+  ngOnDestroy() {
+    super.ngOnDestroy()
+    if (this._clickUnListen) {
+      this._clickUnListen()
+    }
+  }
 
   /** Determines if the component host is a button. */
   private _isButton(): boolean {
     return this._elementRef.nativeElement.nodeName.toLowerCase() === 'button'
+  }
+
+  /** Determines if the component host is an anchor. */
+  private _isAnchor(): boolean {
+    return this._elementRef.nativeElement.nodeName.toLowerCase() === 'a'
+  }
+
+  _haltDisabledEvents = (event: Event) => {
+    // A disabled button shouldn't apply any actions
+    if (this.disabled) {
+      event.preventDefault()
+      event.stopImmediatePropagation()
+    }
   }
 
 }
