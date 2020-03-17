@@ -2,6 +2,7 @@ import { Component, HostBinding, Input } from '@angular/core'
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 
+import { coerceBooleanProperty } from '@angular/cdk/coercion'
 import { SeamIcon } from '../icon'
 
 //
@@ -24,10 +25,16 @@ export class IconComponent {
   needToFix = needToFix
 
   /** Toggles whether the img/icon will attempt to be grayscale when disabled is true. */
-  @Input() grayscaleOnDisable = true
+  @Input()
+  set grayscaleOnDisable(value: boolean) { this._grayscaleOnDisable = coerceBooleanProperty(value) }
+  get grayscaleOnDisable(): boolean { return this._grayscaleOnDisable }
+  private _grayscaleOnDisable: boolean = true
 
   /** Toggles the img/icon to grayscale if `grayscaleOnDisable` is true. */
-  @Input() disabled = false
+  @Input()
+  set disabled(value: boolean) { this._disabled = coerceBooleanProperty(value) }
+  get disabled(): boolean { return this._disabled }
+  private _disabled: boolean = false
 
   /**
    * Placed on the `.seam-icon--fa` and `seam-icon--img` elements.
@@ -137,5 +144,11 @@ export class IconComponent {
       this._iconObj = this._defaultIconObj
     }
   }
+
+  @HostBinding('class.disabled')
+  get _cssDisabled() { return this.disabled || null }
+
+  @HostBinding('class.no-grayscale')
+  get _cssNoGreyscale() { return !this.grayscaleOnDisable }
 
 }

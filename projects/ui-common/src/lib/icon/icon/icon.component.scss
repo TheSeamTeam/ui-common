@@ -3,6 +3,11 @@
 :host {
   display: inline-block;
 
+  &:disabled:not(.no-grayscale),
+  &.disabled:not(.no-grayscale) {
+    filter: grayscale(1);
+  }
+
   &[icon-type=styled-square] {
     border: 1px solid $border-color;
     border-radius: 8px;

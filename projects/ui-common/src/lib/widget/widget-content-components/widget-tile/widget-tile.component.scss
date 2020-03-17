@@ -37,6 +37,8 @@
     pointer-events: none;
     cursor: default;
     @include box-shadow(none);
+
+    filter: grayscale(1);
   }
 
   &:not(:disabled):not(.disabled):active,
