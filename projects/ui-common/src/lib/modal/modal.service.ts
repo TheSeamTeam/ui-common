@@ -115,8 +115,6 @@ export class Modal implements OnDestroy {
     const dialogRef = this._attachDialogContentForComponent(component, dialogContainer,
       overlayRef, config, componentFactoryResolver)
 
-    this._scrollbars.initializeInstance(overlayRef.overlayElement)
-
     this.registerDialogRef(dialogRef)
     return dialogRef
   }
@@ -133,8 +131,6 @@ export class Modal implements OnDestroy {
     const dialogContainer = this._attachDialogContainer(overlayRef, config)
     const dialogRef = this._attachDialogContentForTemplate(template, dialogContainer,
       overlayRef, config)
-
-    this._scrollbars.destroyInstance(overlayRef.overlayElement)
 
     this.registerDialogRef(dialogRef)
     return dialogRef
@@ -176,12 +172,31 @@ export class Modal implements OnDestroy {
   private registerDialogRef(dialogRef: ModalRef<any>): void {
     this.openDialogs.push(dialogRef)
 
+    let cleanupScroll: (() => void) | undefined
+    const dialogBeforeOpenSub = dialogRef.beforeOpened().subscribe(() => {
+      cleanupScroll = this._registerDialogRefScrollEvents(dialogRef)
+      dialogBeforeOpenSub.unsubscribe()
+    })
+
+    const dialogBeforeCloseSub = dialogRef.beforeClosed().subscribe(() => {
+      // TODO: Do I need to destroy the instance? I feel like I should, but the
+      // way I have this implemented currently causes the native scrollbar to
+      // appear before the element is removed from the DOM.
+      // this._scrollbars.destroyInstance(dialogRef._overlayRef.overlayElement)
+      if (cleanupScroll) {
+        cleanupScroll()
+      }
+
+      dialogBeforeCloseSub.unsubscribe()
+    })
+
     const dialogOpenSub = dialogRef.afterOpened().subscribe(() => {
       this.afterOpened.next(dialogRef)
       dialogOpenSub.unsubscribe()
     })
 
     const dialogCloseSub = dialogRef.afterClosed().subscribe(() => {
+      // this._scrollbars.destroyInstance(dialogRef._overlayRef.overlayElement)
       const dialogIndex = this._openDialogs.indexOf(dialogRef)
 
       if (dialogIndex > -1) {
@@ -193,6 +208,84 @@ export class Modal implements OnDestroy {
         dialogCloseSub.unsubscribe()
       }
     })
+  }
+
+  // TODO: Cleanup. This was rushed together fast and became an unefficient mess.
+  private _registerDialogRefScrollEvents(dialogRef: ModalRef<any>): () => void {
+    const _scrollbarMouseDownListener = (event) => {
+      if (dialogRef) { dialogRef.disableClose = true }
+    }
+    const _scrollbarMouseUpListener = (event) => {
+      setTimeout(() => { if (dialogRef) { dialogRef.disableClose = false } })
+    }
+
+    let verticalHandleElement: HTMLElement | undefined
+    let horizontalHandleElement: HTMLElement | undefined
+    this._scrollbars.initializeInstance(dialogRef._overlayRef.overlayElement, {
+      callbacks: {
+        onInitialized: () => {
+          // console.log('onInitialized')
+          setTimeout(() => {
+            const instance = this._scrollbars.getInstance(dialogRef._overlayRef.overlayElement)
+            if (instance) {
+              verticalHandleElement = instance.getElements().scrollbarVertical.handle
+              if (verticalHandleElement) {
+                verticalHandleElement.addEventListener('mousedown', _scrollbarMouseDownListener)
+                verticalHandleElement.addEventListener('touchstart', _scrollbarMouseDownListener)
+              }
+              horizontalHandleElement = instance.getElements().scrollbarHorizontal.handle
+              if (horizontalHandleElement) {
+                horizontalHandleElement.addEventListener('mousedown', _scrollbarMouseDownListener)
+                horizontalHandleElement.addEventListener('touchstart', _scrollbarMouseDownListener)
+              }
+              if (verticalHandleElement || horizontalHandleElement) {
+                document.addEventListener('mouseup', _scrollbarMouseUpListener)
+                document.addEventListener('touchend', _scrollbarMouseUpListener)
+                document.addEventListener('touchcancel', _scrollbarMouseUpListener)
+              }
+            }
+          })
+        },
+        onDestroyed: () => {
+          // console.log('onDestroyed')
+          // // const instance = this._scrollbars.getInstance(dialogRef._overlayRef.overlayElement)
+          // // const scrollElem = instance.getElements().scrollbarVertical.handle
+          // if (verticalHandleElement) {
+          //   verticalHandleElement.removeEventListener('mousedown', _scrollbarMouseDownListener)
+          //   verticalHandleElement.removeEventListener('touchstart', _scrollbarMouseDownListener)
+          // }
+          // if (horizontalHandleElement) {
+          //   horizontalHandleElement.removeEventListener('mousedown', _scrollbarMouseDownListener)
+          //   horizontalHandleElement.removeEventListener('touchstart', _scrollbarMouseDownListener)
+          // }
+          // if (verticalHandleElement || horizontalHandleElement) {
+          //   document.removeEventListener('mouseup', _scrollbarMouseUpListener)
+          //   document.removeEventListener('touchend', _scrollbarMouseUpListener)
+          //   document.removeEventListener('touchcancel', _scrollbarMouseUpListener)
+          // }
+        }
+      }
+    })
+
+    // Cleans up the registered events.
+    return () => {
+      // console.log('scrollevents cleanup')
+      // const instance = this._scrollbars.getInstance(dialogRef._overlayRef.overlayElement)
+      // const scrollElem = instance.getElements().scrollbarVertical.handle
+      if (verticalHandleElement) {
+        verticalHandleElement.removeEventListener('mousedown', _scrollbarMouseDownListener)
+        verticalHandleElement.removeEventListener('touchstart', _scrollbarMouseDownListener)
+      }
+      if (horizontalHandleElement) {
+        horizontalHandleElement.removeEventListener('mousedown', _scrollbarMouseDownListener)
+        horizontalHandleElement.removeEventListener('touchstart', _scrollbarMouseDownListener)
+      }
+      if (verticalHandleElement || horizontalHandleElement) {
+        document.removeEventListener('mouseup', _scrollbarMouseUpListener)
+        document.removeEventListener('touchend', _scrollbarMouseUpListener)
+        document.removeEventListener('touchcancel', _scrollbarMouseUpListener)
+      }
+    }
   }
 
   /**

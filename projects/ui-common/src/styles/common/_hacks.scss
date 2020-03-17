@@ -1,8 +1,14 @@
-// HACK: MSEdge is allowing a child to position itself below a parent with
-// `z-index`, so this should fix the modals by keeping the content above the
-// overlay with 1 index above bootstrap modal `z-index`.
 .cdk-overlay-pane {
+  // HACK: MSEdge is allowing a child to position itself below a parent with
+  // `z-index`, so this should fix the modals by keeping the content above the
+  // overlay with 1 index above bootstrap modal `z-index`.
   .os-padding {
     z-index: $zindex-modal + 1;
+  }
+
+  // HACK: Scrollbar was getting placed behind the backdrop making it
+  // unreachable.
+  .os-scrollbar{
+    z-index: $zindex-modal + 2;
   }
 }
