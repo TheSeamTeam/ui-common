@@ -217,4 +217,12 @@ export class MenuComponent implements OnInit, OnDestroy, AfterContentInit, ITheS
     this._header.next(header)
   }
 
+  _dropdownMenuClick(event: Event) {
+    // TODO: Decide if it is worth doing this. Each items click is detected from
+    // a single parent event, but there are also side-effects, such as the menu
+    // closing when a disabled item is clicked, since disabled elements often
+    // use `pointer-events: none`.
+    // this.closed.emit('click')
+  }
+
 }

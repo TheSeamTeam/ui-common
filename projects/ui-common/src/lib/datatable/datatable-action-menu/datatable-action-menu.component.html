@@ -7,6 +7,7 @@
       <a *ngIf="item.href; else noHref"
         seamMenuItem
         class="list-group-item list-group-item-action py-1"
+        [disabled]="item.disabled"
         [attr.href]="item.href"
         [target]="item.target"
         (click)="activateItem($event, item)">
@@ -15,6 +16,7 @@
       <ng-template #noHref>
         <a seamMenuItem
           class="list-group-item list-group-item-action py-1"
+          [disabled]="item.disabled"
           [queryParams]="item.queryParams"
           [fragment]="item.fragment"
           [queryParamsHandling]="item.queryParamsHandling"
@@ -33,6 +35,7 @@
       <button seamMenuItem
         type="button"
         class="list-group-item list-group-item-action py-1"
+        [disabled]="item.disabled"
         (click)="activateItem($event, item)">
         {{ item.label }}
       </button>

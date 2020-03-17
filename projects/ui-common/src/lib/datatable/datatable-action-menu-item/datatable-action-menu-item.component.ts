@@ -1,4 +1,5 @@
 // import { QueryParamsHandling } from '@angular/router/src/config'
+import { coerceBooleanProperty } from '@angular/cdk/coercion'
 import { ComponentType } from '@angular/cdk/portal'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import {
@@ -113,6 +114,11 @@ export class DatatableActionMenuItemComponent implements OnInit, OnDestroy {
   private _modalConfigSub: Subscription
 
   @Input() row: DynamicDatatableRow
+
+  @Input()
+  set disabled(value: boolean) { this._disabled = coerceBooleanProperty(value) }
+  get disabled(): boolean { return this._disabled }
+  private _disabled: boolean
 
   @Output() click = new EventEmitter<any>()
 
