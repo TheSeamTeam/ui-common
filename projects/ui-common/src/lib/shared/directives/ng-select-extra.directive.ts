@@ -1,10 +1,12 @@
-import { AfterViewChecked, Directive, ElementRef, HostBinding, HostListener,
-  NgZone, OnDestroy, OnInit, Optional, Self } from '@angular/core'
+import { AfterViewChecked, Directive, ElementRef, EventEmitter, HostBinding,
+  HostListener, NgZone, OnDestroy, OnInit, Optional, Self } from '@angular/core'
 import { NgControl } from '@angular/forms'
 import { NgOption, NgSelectComponent } from '@ng-select/ng-select'
+import { ResizeSensor } from 'css-element-queries'
 import { untilDestroyed } from 'ngx-take-until-destroy'
 import { Subscription } from 'rxjs'
-import { filter } from 'rxjs/operators'
+import { auditTime, filter } from 'rxjs/operators'
+import { IElementResizedEvent } from './elem-resized.directive'
 
 @Directive({
   // tslint:disable-next-line:directive-selector
@@ -17,6 +19,9 @@ export class NgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestr
   private _markedItem: NgOption | null = null
   private _checkMarked = false
   private _keyPressWorkaroundSub: Subscription | null = null
+
+  private _resizedEvent = new EventEmitter<IElementResizedEvent>()
+  private _resizeSensor: ResizeSensor
 
   /**
    * Set the tab index to `-1` to allow the root element of the ng-select
@@ -73,10 +78,27 @@ export class NgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestr
     this.ngSelect.blurEvent
       .subscribe(v => this._disableKeyPressWorkaround())
 
+    // When the input is allowed to change its height the position doesn't update itself.
+    this._resizedEvent.pipe(
+      auditTime(30)
+    ).subscribe(event => {
+      if (this.elementRef && this.elementRef.nativeElement) {
+        if (this.elementRef.nativeElement.classList.contains('ng-select-value-grow-h')) {
+          if (this.ngSelect.isOpen && this.ngSelect.dropdownPanel) {
+            this.ngSelect.dropdownPanel.updateDropdownPosition()
+          }
+        } else {
+          this.elementRef.nativeElement.classList.remove('ng-select-value-grow-h')
+        }
+      }
+    })
+
     this._patch_ngSelect_open()
   }
 
-  ngOnDestroy() { }
+  ngOnDestroy() {
+    this._resizeSensor.detach()
+  }
 
   ngAfterViewChecked() {
     if (this.ngSelect.dropdownPanel) {
@@ -89,6 +111,10 @@ export class NgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestr
       }
     }
     this._checkMarked = false
+
+    this._resizeSensor = new ResizeSensor(this.elementRef.nativeElement, (event) => {
+      this._resizedEvent.emit({ element: this.elementRef.nativeElement, size: event })
+    })
   }
 
   /**
