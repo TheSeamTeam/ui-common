@@ -29,7 +29,7 @@ export class InputDirective implements DoCheck {
     return this._isFormControl && this.seamInputSize === 'sm'
   }
   @HostBinding('class.is-invalid') get _isInvalid() {
-    return this.ngControl.invalid && (this.ngControl.dirty || this.ngControl.touched)
+    return this.ngControl && this.ngControl.invalid && (this.ngControl.dirty || this.ngControl.touched)
   }
 
   @HostBinding('attr.id') get _attrId() { return this._isNgSelect() ? undefined : this.id }
