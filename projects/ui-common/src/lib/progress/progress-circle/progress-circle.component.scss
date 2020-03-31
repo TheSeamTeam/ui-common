@@ -71,6 +71,11 @@
       }
     }
 
+    .seam-progress-circle--icon-hourglass {
+      fill: $green;
+      transition: 500ms;
+    }
+
     .seam-progress-circle--icon-spinner-path-bg {
       stroke-linecap: round;
       stroke: lighten($green, 40%);
