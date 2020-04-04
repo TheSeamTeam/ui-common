@@ -1,4 +1,5 @@
 export * from './menu-animations'
+export * from './menu-divider.component'
 export * from './menu-item.component'
 export * from './menu-panel-token'
 export * from './menu-panel'
@@ -8,3 +9,4 @@ export * from './menu.module'
 
 export * from './menu-header/menu-header.component'
 export * from './menu-footer/menu-footer.component'
+export * from './menu-footer-action/menu-footer-action.component'

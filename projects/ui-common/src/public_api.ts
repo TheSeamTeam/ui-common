@@ -36,6 +36,7 @@ export * from './lib/dynamic-component-loader/index'
 export * from './lib/datatable-dynamic/index'
 export * from './lib/dynamic/index'
 export * from './lib/checkbox/index'
+export * from './lib/toggle-group/index'
 
 export * from './lib/framework/index'
 

@@ -1,4 +1,5 @@
 export * from './side-nav-item/side-nav-item.component'
+export * from './side-nav-toggle/side-nav-toggle.component'
 
 export * from './side-nav.component'
 export * from './side-nav.models'

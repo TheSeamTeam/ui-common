@@ -10,6 +10,7 @@ export * from './form/has-required-control'
 
 export * from './operators/index'
 export * from './operators/tap-first'
+export * from './operators/map-each'
 
 export * from './router/index'
 

@@ -1,14 +1,21 @@
 export * from './modal.module'
 export * from './modal/modal.component'
+export * from './modal-body/modal-body.component'
+export * from './modal-container/modal-container.component'
+export * from './modal-footer/modal-footer.component'
+export * from './modal-header/modal-header.component'
 export * from './route-modal/route-modal.component'
+
+export * from './directives/modal-close.directive'
 export * from './directives/modal-footer-tpl.directive'
 export * from './directives/modal-header-icon-tpl.directive'
 export * from './directives/modal-header-title-tpl.directive'
-
+export * from './directives/modal-title.directive'
 export * from './directives/modal.directive'
-export * from './modal-container/modal-container.component'
+
 export * from './modal-config'
 export * from './modal-injectors'
 export * from './modal-ref'
+export * from './modal-utils'
 export * from './modal.models'
 export * from './modal.service'
