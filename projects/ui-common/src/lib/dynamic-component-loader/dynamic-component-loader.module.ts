@@ -18,7 +18,7 @@ import {
 
 @NgModule()
 export class TheSeamDynamicComponentLoaderModule {
-  static forRoot(manifests: IDynamicComponentManifest[]): ModuleWithProviders {
+  static forRoot(manifests: IDynamicComponentManifest[]): ModuleWithProviders<TheSeamDynamicComponentLoaderModule> {
     return {
       ngModule: TheSeamDynamicComponentLoaderModule,
       providers: [
@@ -31,7 +31,7 @@ export class TheSeamDynamicComponentLoaderModule {
       ],
     }
   }
-  static forModule(manifest: IDynamicComponentManifest): ModuleWithProviders {
+  static forModule(manifest: IDynamicComponentManifest): ModuleWithProviders<TheSeamDynamicComponentLoaderModule> {
     return {
       ngModule: TheSeamDynamicComponentLoaderModule,
       providers: [
@@ -42,7 +42,7 @@ export class TheSeamDynamicComponentLoaderModule {
         { provide: DYNAMIC_MODULE, useValue: manifest }],
     }
   }
-  static forChild(component: Type<any>): ModuleWithProviders {
+  static forChild(component: Type<any>): ModuleWithProviders<TheSeamDynamicComponentLoaderModule> {
     return {
       ngModule: TheSeamDynamicComponentLoaderModule,
       providers: [

@@ -230,7 +230,7 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
   @ContentChild(DatatableRowActionItemDirective, { static: true }) rowActionItem: DatatableRowActionItemDirective
   @ContentChild(TheSeamDatatableRowDetailDirective, { static: true }) rowDetail: TheSeamDatatableRowDetailDirective
 
-  @ContentChild(DatatableMenuBarComponent, { static: false })
+  @ContentChild(DatatableMenuBarComponent)
   get menuBarComponent(): DatatableMenuBarComponent { return this._menuBarComponent }
   set menuBarComponent(value: DatatableMenuBarComponent) {
     this._menuBarComponent = value
@@ -247,9 +247,9 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
   private _menuBarComponent: DatatableMenuBarComponent
   private _menuBarSub: Subscription
 
-  @ViewChild(NgxDatatableComponent, { static: false }) ngxDatatable: NgxDatatableComponent
-  @ViewChild(NgxDatatableComponent, { read: ElementRef, static: false }) ngxDatatableElement: ElementRef
-  @ViewChild(DatatableRowDetailDirective, { static: false }) ngxRowDetail: DatatableRowDetailDirective
+  @ViewChild(NgxDatatableComponent) ngxDatatable: NgxDatatableComponent
+  @ViewChild(NgxDatatableComponent, { read: ElementRef }) ngxDatatableElement: ElementRef
+  @ViewChild(DatatableRowDetailDirective) ngxRowDetail: DatatableRowDetailDirective
 
   @ViewChild('actionMenuCellTpl', { static: true }) actionMenuCellTpl: TemplateRef<DataTableColumnDirective>
   @ViewChild('treeToggleTpl', { static: true }) treeToggleTpl: TemplateRef<DataTableColumnCellTreeToggle>

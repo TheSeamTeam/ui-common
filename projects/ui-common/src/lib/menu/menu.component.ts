@@ -70,7 +70,7 @@ export class MenuComponent implements OnInit, OnDestroy, AfterContentInit, ITheS
   /** Parent menu of the current menu panel. */
   parentMenu: ITheSeamMenuPanel | undefined
 
-  @ViewChild(TemplateRef, { static: false }) templateRef: TemplateRef<any>
+  @ViewChild(TemplateRef) templateRef: TemplateRef<any>
 
   @Output() readonly closed = new EventEmitter<void | 'click' | 'keydown' | 'tab'>()
 

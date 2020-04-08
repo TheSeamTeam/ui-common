@@ -52,7 +52,7 @@ export class TheSeamTopBarComponent implements OnInit, OnDestroy, AfterContentIn
   /** @ignore */
   @ContentChildren(TopBarItemDirective) _topBarItems: QueryList<TopBarItemDirective>
   /** @ignore */
-  @ContentChild(TopBarMenuBtnDetailDirective, { static: false }) _topBarMenuBtnDetailTpl?: TopBarMenuBtnDetailDirective | null
+  @ContentChild(TopBarMenuBtnDetailDirective) _topBarMenuBtnDetailTpl?: TopBarMenuBtnDetailDirective | null
 
   /** Logo displayed on the top bar. */
   @Input() logo: string
