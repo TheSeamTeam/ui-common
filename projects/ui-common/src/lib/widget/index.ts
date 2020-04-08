@@ -37,6 +37,7 @@ export * from './widget-content-components/widget-tile/widget-tile-group/widget-
 
 export * from './widget-content-components/widget-tile/widget-tile-secondary-icon.directive'
 export * from './widget-content-components/widget-tile/widget-tile.component'
+export * from './widget-content-components/widget-tile/widget-tile.module'
 
 export * from './widget-content-components/widget-tile-list/widget-tile-list.component'
 export * from './widget-content-components/widget-tile-list/widget-tile-list.module'

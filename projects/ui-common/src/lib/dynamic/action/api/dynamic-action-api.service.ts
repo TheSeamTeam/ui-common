@@ -154,7 +154,7 @@ export class DynamicActionApiService implements DynamicActionApi {
       if (typeof argHeaders === 'string') {
         headers = argHeaders
       } else {
-        const _val = this._valueHelper.eval(argHeaders, context)
+        const _val = this._valueHelper.eval(argHeaders as any, context) // TODO: Fix argHeaders type
         if (typeof _val === 'string') {
           headers = _val
         } else {
@@ -186,7 +186,7 @@ export class DynamicActionApiService implements DynamicActionApi {
     if (typeof headers === 'string') {
       res = headers
     } else {
-      const _val = this._valueHelper.eval(headers, context)
+      const _val = this._valueHelper.eval(headers as any, context) // TODO: Fix argHeaders type
       if (typeof _val === 'string') {
         res = _val
       } else {

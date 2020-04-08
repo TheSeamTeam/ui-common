@@ -23,7 +23,7 @@ export const DATA_FILTER_TOGGLE_BUTTON: any = {
 export interface IToggleButton {
   name: string
   value: string
-  comparator: (value, row, index) => -1 | 0 | 1
+  comparator?: (value, row, index) => -1 | 0 | 1
 }
 
 export interface IToggleButtonsFilterOptions extends ITextFilterOptions {

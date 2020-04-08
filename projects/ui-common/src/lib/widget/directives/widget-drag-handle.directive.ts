@@ -1,5 +1,5 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
-import { CdkDrag, CdkDragHandle, ɵb as CDK_DRAG_PARENT } from '@angular/cdk/drag-drop'
+import { CdkDrag, CdkDragHandle, ɵangular_material_src_cdk_drag_drop_drag_drop_b as CDK_DRAG_PARENT } from '@angular/cdk/drag-drop'
 import { AfterViewInit, Directive, DoCheck, ElementRef, Inject, Input, NgZone, OnDestroy, OnInit, Optional } from '@angular/core'
 import { untilDestroyed } from 'ngx-take-until-destroy'
 import { BehaviorSubject, Subject } from 'rxjs'
@@ -44,7 +44,7 @@ export function extendStyles(
 ) {
   for (const key in source) {
     if (source.hasOwnProperty(key)) {
-      dest[key as keyof CSSStyleDeclaration] = source[key as keyof CSSStyleDeclaration]
+      dest[key] = source[key as keyof CSSStyleDeclaration]
     }
   }
 
