@@ -11,5 +11,7 @@ export * from './table-cell-types-tokens'
 export * from './table-cell-type-string/table-cell-type-string.component'
 export * from './table-cell-type-date/table-cell-type-date.component'
 export * from './table-cell-type-icon/table-cell-type-icon.component'
+export * from './table-cell-type-progress-circle/table-cell-type-progress-circle.component'
+export * from './table-cell-type-progress-circle-icon/table-cell-type-progress-circle-icon.component'
 
 export * from './table-cell-types.module'

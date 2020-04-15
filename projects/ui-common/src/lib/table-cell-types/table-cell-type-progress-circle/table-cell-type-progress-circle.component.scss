@@ -1,0 +1,11 @@
+.row-progress-circle {
+  position: relative;
+  width: 25px;
+  height: 25px;
+  margin: 0 auto;
+  ::ng-deep {
+    .seam-progress-circle {
+      padding: 0;
+    }
+  }
+}
