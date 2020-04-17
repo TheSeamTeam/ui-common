@@ -7,22 +7,20 @@ export interface TableCellTypeConfigProgressCircle extends TableCellTypeConfig<'
    * Progress circle.
    *
    */
-  fillBackground: boolean
+  fillBackground?: DynamicValue<boolean>
 
-  showText: boolean
+  showText?: DynamicValue<boolean>
 
-  hiddenOnEmpty: boolean
+  hiddenOnEmpty?: DynamicValue<boolean>
 
-  total: number
+  pending?: DynamicValue<boolean>
 
-  numComplete: number
+  tooltip?: DynamicValue<string>
 
-  tooltip: DynamicValue<string>
+  tooltipClass?: DynamicValue<string>
 
-  tooltipClass: string
+  tooltipPlacement?: DynamicValue<string>
 
-  tooltipPlacement: string
-
-  tooltipContainer: string
+  tooltipContainer?: DynamicValue<string>
 
 }

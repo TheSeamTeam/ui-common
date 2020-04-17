@@ -1,9 +1,10 @@
 import { DynamicActionLinkDef } from '../../dynamic/action/link/dynamic-action-link-def'
 import { DynamicActionModalDef } from '../../dynamic/action/modal/dynamic-action-modal-def'
 import { DynamicValue } from '../../dynamic/models/dynamic-value'
-import { SeamIcon } from '../../icon'
 import { TheSeamIconType } from '../../icon/icon/icon.component'
 import { TableCellTypeConfig } from '../table-cell-type-config'
+
+import { SeamIcon } from '../../icon/index'
 
 export type TableCellTypeIconConfigAction =
   DynamicActionLinkDef |
@@ -20,28 +21,28 @@ export interface TableCellTypeConfigProgressCircleIcon extends TableCellTypeConf
    * Progress circle inputs
    *
    */
-  fillBackground: boolean
+  fillBackground?: DynamicValue<boolean>
 
-  showText: boolean
+  showText?: DynamicValue<boolean>
 
-  hiddenOnEmpty: boolean
+  hiddenOnEmpty?: DynamicValue<boolean>
 
-  total: number
+  percentage?: DynamicValue<number>
 
-  numComplete: number
+  pending?: DynamicValue<boolean>
 
-  tooltip: DynamicValue<string>
+  tooltip?: DynamicValue<string>
 
-  tooltipClass: string
+  tooltipClass?: DynamicValue<string>
 
-  tooltipPlacement: string
+  tooltipPlacement?: DynamicValue<string>
 
-  tooltipContainer: string
+  tooltipContainer?: DynamicValue<string>
 
   /**
    * Icon inputs
    */
-  icon?: DynamicValue<string>
+  icon?: DynamicValue<SeamIcon>
 
   action?: TableCellTypeIconConfigAction
 

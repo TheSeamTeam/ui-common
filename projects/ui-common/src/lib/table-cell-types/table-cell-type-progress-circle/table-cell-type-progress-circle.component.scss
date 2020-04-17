@@ -1,11 +1,42 @@
-.row-progress-circle {
-  position: relative;
-  width: 25px;
-  height: 25px;
-  margin: 0 auto;
-  ::ng-deep {
-    .seam-progress-circle {
-      padding: 0;
+:host {
+  &.datatable-cell-type {
+    .progress-circle-wrapper {
+      max-height: 40px;
+    }
+
+    .progress-circle {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      margin: 0 auto;
+      margin-top: calc(-1px - 0.75rem);
+
+      ::ng-deep {
+        .seam-progress-circle {
+          padding: 0;
+        }
+      }
+    }
+  }
+  &:not(.datatable-cell-type) {
+    .progress-circle-wrapper {
+      height: 22px;
+      max-height: 22px;
+    }
+
+    .progress-circle {
+      position: relative;
+      width: 27px;
+      height: 27px;
+      margin: 0 auto;
+      // margin-top: calc(-0.3rem);
+      margin-top: calc(-.15rem);
+
+      ::ng-deep {
+        .seam-progress-circle {
+          padding: 0;
+        }
+      }
     }
   }
 }
