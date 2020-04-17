@@ -13,6 +13,7 @@ export * from './operators/tap-first'
 
 export * from './router/index'
 
+export * from './calc-percentage'
 export * from './toggle-attribute'
 export * from './get-attribute'
 export * from './input-masks'

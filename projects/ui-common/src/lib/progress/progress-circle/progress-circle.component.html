@@ -1,4 +1,4 @@
-<div class="seam-progress-circle" *ngIf="getProgress() as p"
+<div class="seam-progress-circle" *ngIf="_progressInfo as p"
   [class.seam-progress-circle--in-complete]="p.percent < 100"
   [class.seam-progress-circle--fill-bg]="fillBackground">
   <div class="seam-progress-circle-inner">
@@ -13,7 +13,8 @@
           [attr.stroke-dashoffset]="p.dashoffset"
           [style.stroke-dasharray]="p.circumference">
         </circle>
-        <path *ngIf="p.percent === 100"
+        <!-- Checkmark -->
+        <path *ngIf="!pending && p.percent === 100"
           class="seam-progress-circle--icon-spinner-path"
           fill="none"
           stroke-width="4"
@@ -21,7 +22,9 @@
           stroke-linejoin="round"
           d="M 31,42 L 38,48 L 48.5,37">
         </path>
-        <path *ngIf="p.percent === 101"
+        <!-- Hourglass -->
+        <!-- `p.percent === 101` is still here for backwards compatability, but planing to be removed. -->
+        <path *ngIf="pending || p.percent === 101"
           class="seam-progress-circle--icon-hourglass"
           fill="none"
           d="M47.3,45.8c-0.2-2.5-1.6-4.6-3.6-5.8c2-1.2,3.4-3.3,3.6-5.8c0.7-0.3,1.2-1,1.2-1.8c0-1.1-0.9-2-2-2h-13
@@ -31,7 +34,7 @@
         </path>
       </svg>
     </ng-container>
-    <div class="seam-progress-circle--icon-text" *ngIf="showText && p.percent > 0 && p.percent < 100">
+    <div class="seam-progress-circle--icon-text" *ngIf="showText && !pending && p.percent > 0 && p.percent < 100">
       <span>{{ p.percent }}</span>
     </div>
   </div>
