@@ -1,15 +1,14 @@
 :host {
   &.datatable-cell-type {
     .progress-circle-wrapper {
-      max-height: 40px;
+      max-height: 25px;
     }
 
     .progress-circle {
       position: relative;
-      width: 40px;
-      height: 40px;
+      width: 25px;
+      height: 25px;
       margin: 0 auto;
-      margin-top: calc(-1px - 0.75rem);
 
       ::ng-deep {
         .seam-progress-circle {
@@ -26,8 +25,8 @@
 
     .progress-circle {
       position: relative;
-      width: 27px;
-      height: 27px;
+      width: 25px;
+      height: 25px;
       margin: 0 auto;
       // margin-top: calc(-0.3rem);
       margin-top: calc(-.15rem);
