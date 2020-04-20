@@ -64,7 +64,7 @@ export class TableCellTypeProgressCircleIconComponent implements OnInit, OnDestr
       tableData.value >= 100 &&
       tableData.colData &&
       tableData.colData.cellTypeConfig &&
-      tableData.colData.cellTypeConfig.icon) {
+      this._parseConfigValue(tableData.colData.cellTypeConfig.icon, tableData)) {
         const icon = this._parseConfigValue(tableData.colData.cellTypeConfig.icon, tableData)
         this.icon = icon
         this.displayIcon = true
