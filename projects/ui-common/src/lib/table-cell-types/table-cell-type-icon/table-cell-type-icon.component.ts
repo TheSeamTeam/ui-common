@@ -50,6 +50,7 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
       this._linkClass = this._parseConfigValue(value.linkClass)
       this._iconClass = this._parseConfigValue(value.iconClass)
       this._iconType = value.iconType
+      this._title = this._parseConfigValue(value.titleAttr)
     }
   }
   private _config: TableCellTypeConfigIcon | undefined | null
