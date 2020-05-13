@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { RouterModule } from '@angular/router'
 
+import { TheSeamScrollbarModule } from '../scrollbar/index'
+
 import { StoryEmptyWithRouteComponent } from './story-empty-with-route.component'
 import { StoryEmptyComponent } from './story-empty.component'
 import { StoryModalContainerComponent } from './story-modal-container.component'
@@ -14,7 +16,8 @@ import { StoryModalContainerComponent } from './story-modal-container.component'
   ],
   imports: [
     CommonModule,
-    RouterModule
+    RouterModule,
+    TheSeamScrollbarModule
   ],
   exports: [
     StoryEmptyComponent,

@@ -1,6 +1,6 @@
 import { Component, Injector, Input, OnDestroy } from '@angular/core'
 import { combineLatest, Observable, of, ReplaySubject } from 'rxjs'
-import { auditTime, map, startWith, tap } from 'rxjs/operators'
+import { auditTime, map, startWith } from 'rxjs/operators'
 
 import { untilDestroyed } from 'ngx-take-until-destroy'
 
@@ -19,12 +19,18 @@ class FakeModalRef<T, R = any> implements Partial<ModalRef<T, R>> {
   // tslint:disable-next-line: component-selector
   selector: 'story-modal-container-component',
   template: `
-    <div class="cdk-overlay-backdrop cdk-overlay-dark-backdrop cdk-overlay-backdrop-showing">
-      <div class="seam-modal-container modal-dialog modal-dialog-centered modal-lg" tabindex="-1">
-        <div class="modal-content">
-          <ng-container *ngIf="_outletData$ | async as outletData">
-            <ng-container *ngComponentOutlet="outletData.component; injector: outletData.injector;"></ng-container>
-          </ng-container>
+    <div class="cdk-overlay-container">
+      <div class="cdk-overlay-backdrop cdk-overlay-dark-backdrop cdk-overlay-backdrop-showing"></div>
+      <div class="cdk-global-overlay-wrapper"
+        dir="ltr"
+        style="justify-content: flex-start; align-items: center; pointer-events: auto"
+        seamOverlayScrollbar>
+        <div class="seam-modal-container modal-dialog modal-dialog-centered modal-lg" tabindex="-1">
+          <div class="modal-content">
+            <ng-container *ngIf="_outletData$ | async as outletData">
+              <ng-container *ngComponentOutlet="outletData.component; injector: outletData.injector;"></ng-container>
+            </ng-container>
+          </div>
         </div>
       </div>
     </div>
