@@ -7,7 +7,9 @@ import FileSaver from 'file-saver'
 import { fileDataFromBuffer, wrapIntoObservable } from '../../utils/index'
 
 import { IDataExporter } from '../data-exporter'
+import { Injectable } from "@angular/core";
 
+@Injectable()
 export class CSVDataExporter implements IDataExporter {
 
   public readonly name = 'exporter:csv'

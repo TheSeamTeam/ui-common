@@ -166,9 +166,12 @@ export class FormFieldErrorListComponent implements OnInit, OnDestroy, DoCheck {
   // private _listItemTpls: QueryList<FormFieldErrorListItemTplDirective>
   // private listItemTplsObj = {}
 
+  @ContentChildren(FormFieldErrorListItemTplDirective)
+  set _listItemTpls(val: QueryList<FormFieldErrorListItemTplDirective>) {
+    this._initErrorTemplates(val)
+  }
 
   @Input()
-  @ContentChildren(FormFieldErrorListItemTplDirective)
   set listItemTpls(val: QueryList<FormFieldErrorListItemTplDirective>) {
     this._initErrorTemplates(val)
 

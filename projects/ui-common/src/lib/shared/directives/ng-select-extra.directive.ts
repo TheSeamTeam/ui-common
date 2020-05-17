@@ -79,21 +79,21 @@ export class NgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestr
       .subscribe(v => this._disableKeyPressWorkaround())
 
     // When the input is allowed to change its height the position doesn't update itself.
-    this._resizedEvent.pipe(
-      auditTime(30)
-    ).subscribe(event => {
-      if (this.elementRef && this.elementRef.nativeElement) {
-        if (this.elementRef.nativeElement.classList.contains('ng-select-value-grow-h')) {
-          if (this.ngSelect.isOpen && this.ngSelect.dropdownPanel) {
-            this.ngSelect.dropdownPanel.updateDropdownPosition()
-          }
-        } else {
-          this.elementRef.nativeElement.classList.remove('ng-select-value-grow-h')
-        }
-      }
-    })
+    // this._resizedEvent.pipe(
+    //   auditTime(30)
+    // ).subscribe(event => {
+    //   if (this.elementRef && this.elementRef.nativeElement) {
+    //     if (this.elementRef.nativeElement.classList.contains('ng-select-value-grow-h')) {
+    //       if (this.ngSelect.isOpen && this.ngSelect.dropdownPanel) {
+    //         this.ngSelect.dropdownPanel.updateDropdownPosition()
+    //       }
+    //     } else {
+    //       this.elementRef.nativeElement.classList.remove('ng-select-value-grow-h')
+    //     }
+    //   }
+    // })
 
-    this._patch_ngSelect_open()
+    // this._patch_ngSelect_open()
   }
 
   ngOnDestroy() {
@@ -105,7 +105,7 @@ export class NgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestr
       if (this._checkMarked) {
         if (this.ngSelect.dropdownPanel && this._markedItem !== null) {
           if (this._markedItem.index !== this.ngSelect.dropdownPanel.markedItem.index) {
-            this.ngSelect.dropdownPanel.scrollInto(this.ngSelect.dropdownPanel.markedItem)
+            this.ngSelect.dropdownPanel.scrollTo(this.ngSelect.dropdownPanel.markedItem)
           }
         }
       }
@@ -120,34 +120,34 @@ export class NgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestr
   /**
    * Temp fix for: https://github.com/ng-select/ng-select/issues/1122
    */
-  private _patch_ngSelect_open() {
-    const original = this.ngSelect.open
-    const _self = this
-    this.ngSelect.open = function() {
-      original.apply(this, arguments)
-      _self._patch_ngSelectDropdownPanel_updateDropdownPosition()
-    }
-  }
+  // private _patch_ngSelect_open() {
+  //   const original = this.ngSelect.open
+  //   const _self = this
+  //   this.ngSelect.open = function() {
+  //     original.apply(this, arguments)
+  //     _self._patch_ngSelectDropdownPanel_updateDropdownPosition()
+  //   }
+  // }
 
   /** Should ONLY be called by `_patch_ngSelect_open`. */
-  private _patch_ngSelectDropdownPanel_updateDropdownPosition() {
-    if (!this.ngSelect.dropdownPanel) { return }
-    const drop: any = this.ngSelect.dropdownPanel
-    // Only needed once, to update the position before the timeout in
-    // `updateDropdownPosition()`. So, using this variable to check if I already called
-    // `_updateAppendedDropdownPosition()`.
-    if (!drop.__libPatched) {
-      drop.__libPatched = 'patched'
-      const original = drop.updateDropdownPosition
-      const _self = this
-      drop.updateDropdownPosition = function() {
-        original.apply(this, arguments)
-        if (!!_self.ngSelect.appendTo) {
-          drop._updateAppendedDropdownPosition()
-        }
-      }
-    }
-  }
+  // private _patch_ngSelectDropdownPanel_updateDropdownPosition() {
+  //   if (!this.ngSelect.dropdownPanel) { return }
+  //   const drop: any = this.ngSelect.dropdownPanel
+  //   // Only needed once, to update the position before the timeout in
+  //   // `updateDropdownPosition()`. So, using this variable to check if I already called
+  //   // `_updateAppendedDropdownPosition()`.
+  //   if (!drop.__libPatched) {
+  //     drop.__libPatched = 'patched'
+  //     const original = drop.updateDropdownPosition
+  //     const _self = this
+  //     drop.updateDropdownPosition = function() {
+  //       original.apply(this, arguments)
+  //       if (!!_self.ngSelect.appendTo) {
+  //         drop._updateAppendedDropdownPosition()
+  //       }
+  //     }
+  //   }
+  // }
 
   private _enableKeyPressWorkaround() {
     if (this._keyPressWorkaroundSub) { return }
