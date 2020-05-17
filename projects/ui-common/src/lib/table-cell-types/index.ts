@@ -19,6 +19,8 @@ export * from './table-cell-type-decimal/table-cell-type-decimal-config'
 
 export * from './table-cell-type-icon/table-cell-type-icon-config'
 export * from './table-cell-type-icon/table-cell-type-icon.component'
+export * from './table-cell-type-progress-circle/table-cell-type-progress-circle.component'
+export * from './table-cell-type-progress-circle-icon/table-cell-type-progress-circle-icon.component'
 
 export * from './table-cell-type-integer/table-cell-type-integer-config'
 

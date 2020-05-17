@@ -1,0 +1,15 @@
+<seam-table-cell-type-selector
+  *ngIf="displayIcon; else progressCircle"
+  type="icon"
+  [value]="icon"
+  [rowIndex]="rowIndex"
+  [row]="row"
+  [colData]="colData"></seam-table-cell-type-selector>
+<ng-template #progressCircle>
+  <seam-table-cell-type-selector
+    type="progress-circle"
+    [value]="value"
+    [rowIndex]="rowIndex"
+    [row]="row"
+    [colData]="colData"></seam-table-cell-type-selector>
+</ng-template>
