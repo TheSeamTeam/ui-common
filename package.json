@@ -41,7 +41,7 @@
     "@marklb/file-type": "~10.6.5",
     "@marklb/ngx-datatable": "~16.0.3",
     "@netbasal/spectator": "^3.12.0",
-    "@ng-select/ng-select": "2.20.0",
+    "@ng-select/ng-select": "4.0.0",
     "bootstrap": "~4.4.1",
     "buffer": "^5.2.1",
     "css-element-queries": "~1.2.0",
