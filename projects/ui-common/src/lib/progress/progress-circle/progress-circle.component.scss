@@ -54,9 +54,7 @@
 
   .seam-progress-circle--icon-spinner {
     @extend .seam-progress-circle--absolute-fill;
-    // transform-origin: center center;
     margin: auto;
-    // transform: rotate(-90deg);
 
     .seam-progress-circle--icon-spinner-path {
       stroke-linecap: round;
@@ -65,9 +63,6 @@
       transition: 500ms;
       &:not(path) {
         stroke-dasharray: 0;
-        // transform-origin: center center;
-        transform-origin: 40px 40px;
-        transform: rotate(-90deg);
       }
     }
 

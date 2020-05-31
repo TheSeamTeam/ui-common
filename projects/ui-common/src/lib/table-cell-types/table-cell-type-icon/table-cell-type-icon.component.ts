@@ -51,6 +51,15 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
       this._iconClass = this._parseConfigValue(value.iconClass)
       this._iconType = value.iconType
       this._title = this._parseConfigValue(value.titleAttr)
+      this._tooltip = this._parseConfigValue(value.tooltip)
+      if (this._tooltip) {
+        this._tooltipClass = this._parseConfigValue(value.tooltipClass)
+        this._tooltipPlacement = this._parseConfigValue(value.tooltipPlacement) || 'auto'
+        this._tooltipContainer = this._parseConfigValue(value.tooltipContainer)
+        this._tooltipDisabled = false
+      } else {
+        this._tooltipDisabled = true
+      }
     }
   }
   private _config: TableCellTypeConfigIcon | undefined | null
@@ -64,6 +73,11 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
   _iconClass?: string
   _iconType?: TheSeamIconType
   _target?: string
+  _tooltip: string
+  _tooltipClass: string
+  _tooltipPlacement: string
+  _tooltipContainer: string
+  _tooltipDisabled: boolean = true
 
   _buttonAction?: TableCellTypeIconConfigAction
 

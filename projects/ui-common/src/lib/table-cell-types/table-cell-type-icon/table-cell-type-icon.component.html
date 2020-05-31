@@ -3,8 +3,13 @@
     class="d-flex align-items-center justify-center"
     [class.datatable-icon-fix]="_isDatatable">
     <a class="d-block m-auto{{ _linkClass ? ' ' + _linkClass : '' }}"
-      [attr.title]="_title"
-      [attr.target]="_target">
+      [attr.title]="_tooltipDisabled ? _title : undefined"
+      [attr.target]="_target"
+      [ngbTooltip]="_tooltip"
+      [tooltipClass]="_tooltipClass"
+      [placement]="_tooltipPlacement"
+      [container]="_tooltipContainer"
+      [disableTooltip]="_tooltipDisabled">
       <seam-icon [icon]="_icon" size="lg" [iconType]="_iconType" [iconClass]="_iconClass"></seam-icon>
       <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
     </a>
@@ -15,8 +20,13 @@
     [class.datatable-icon-fix]="_isDatatable">
     <a class="d-block m-auto{{ _linkClass ? ' ' + _linkClass : '' }}"
       [routerLink]="_link"
-      [attr.title]="_title"
-      [attr.target]="_target">
+      [attr.title]="_tooltipDisabled ? _title : undefined"
+      [attr.target]="_target"
+      [ngbTooltip]="_tooltip"
+      [tooltipClass]="_tooltipClass"
+      [placement]="_tooltipPlacement"
+      [container]="_tooltipContainer"
+      [disableTooltip]="_tooltipDisabled">
       <seam-icon *ngIf="_icon" [icon]="_icon" size="lg" [iconType]="_iconType" [iconClass]="_iconClass"></seam-icon>
       <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
     </a>
@@ -27,8 +37,13 @@
     [class.datatable-icon-fix]="_isDatatable">
     <a class="d-block m-auto{{ _linkClass ? ' ' + _linkClass : '' }}"
       [attr.href]="_link"
-      [attr.title]="_title"
-      [attr.target]="_target">
+      [attr.title]="_tooltipDisabled ? _title : undefined"
+      [attr.target]="_target"
+      [ngbTooltip]="_tooltip"
+      [tooltipClass]="_tooltipClass"
+      [placement]="_tooltipPlacement"
+      [container]="_tooltipContainer"
+      [disableTooltip]="_tooltipDisabled">
       <seam-icon *ngIf="_icon" [icon]="_icon" size="lg" [iconType]="_iconType" [iconClass]="_iconClass"></seam-icon>
       <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
     </a>
@@ -43,7 +58,12 @@
       [seamEncryptedAssetLink]="_link"
       [seamDetectMimeFromContent]="_detectMimeContent"
       [seamDownloadAsset]="_download"
-      [attr.title]="_title">
+      [attr.title]="_tooltipDisabled ? _title : undefined"
+      [ngbTooltip]="_tooltip"
+      [tooltipClass]="_tooltipClass"
+      [placement]="_tooltipPlacement"
+      [container]="_tooltipContainer"
+      [disableTooltip]="_tooltipDisabled">
       <seam-icon *ngIf="_icon" iconType="styled-square" [icon]="_icon" size="lg" [iconType]="_iconType" [iconClass]="_iconClass"></seam-icon>
       <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
     </button>
@@ -56,7 +76,12 @@
     <button
       class="btn btn-link p-0 m-auto{{ _linkClass ? ' ' + _linkClass : '' }}"
       type="button"
-      [attr.title]="_title">
+      [attr.title]="_tooltipDisabled ? _title : undefined"
+      [ngbTooltip]="_tooltip"
+      [tooltipClass]="_tooltipClass"
+      [placement]="_tooltipPlacement"
+      [container]="_tooltipContainer"
+      [disableTooltip]="_tooltipDisabled">
       <seam-icon *ngIf="_icon" iconType="styled-square" [icon]="_icon" size="lg" [iconType]="_iconType" [iconClass]="_iconClass"></seam-icon>
       <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
     </button>
