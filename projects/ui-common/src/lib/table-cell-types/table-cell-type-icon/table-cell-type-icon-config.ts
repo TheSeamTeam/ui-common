@@ -38,4 +38,12 @@ export interface TableCellTypeConfigIcon extends TableCellTypeConfig<'icon'> {
    * Can apply pre-defined icon styles.
    */
   iconType?: TheSeamIconType
+
+  tooltip?: DynamicValue<string>
+
+  tooltipClass?: DynamicValue<string>
+
+  tooltipPlacement?: DynamicValue<string>
+
+  tooltipContainer?: DynamicValue<string>
 }
