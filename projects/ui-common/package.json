@@ -27,6 +27,7 @@
     "@marklb/file-type": "~10.6.5",
     "@marklb/ngx-datatable": "~16.0.3",
     "@ng-select/ng-select": "~4.0.0",
+    "@ng-bootstrap/ng-bootstrap": "~4.2.0",
     "overlayscrollbars": "~1.7.3",
     "@types/overlayscrollbars": "~1.7.0",
     "bootstrap": "~4.4.1",

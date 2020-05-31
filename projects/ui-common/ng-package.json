@@ -19,6 +19,7 @@
     "@marklb/file-type",
     "@marklb/ngx-datatable",
     "@ng-select/ng-select",
+    "@ng-bootstrap/ng-bootstrap",
     "overlayscrollbars",
     "@types/overlayscrollbars",
     "bootstrap",

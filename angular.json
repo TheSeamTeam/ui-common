@@ -141,6 +141,11 @@
               "src/assets",
               "src/styles"
             ]
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ui-common/tsconfig.lib.prod.json"
+            }
           }
         },
         "test": {
