@@ -134,7 +134,7 @@ export class InputDirective implements DoCheck {
   ngDoCheck() {
     if (this._isNgSelect()) {
       this._ngSelect.labelForId = this.id
-      this._ngSelect.disabled = this.disabled
+      this._ngSelect.setDisabledState(this.disabled)
     } else {
       toggleAttribute(this._elementRef.nativeElement, 'required', this.required)
       toggleAttribute(this._elementRef.nativeElement, 'disabled', this.disabled)

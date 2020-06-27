@@ -13,7 +13,7 @@ export * from './datatable-menu-bar-row/datatable-menu-bar-row.component'
 export * from './datatable-row-detail/datatable-row-detail-tpl.directive'
 export * from './datatable-row-detail/datatable-row-detail.directive'
 
-// export * from './directives/datatable-action-menu-item.directive'
+export * from './directives/datatable-action-menu-item.directive'
 export * from './directives/datatable-action-menu-toggle.directive'
 export * from './directives/datatable-cell-tpl.directive'
 export * from './directives/datatable-filter.directive'

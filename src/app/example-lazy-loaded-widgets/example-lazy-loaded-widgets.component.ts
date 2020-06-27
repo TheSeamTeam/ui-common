@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core'
 import { TheSeamDynamicComponentLoader } from 'projects/ui-common/src/lib/dynamic-component-loader/dynamic-component-loader.service'
-import { IWidgetsGridItemDef } from 'projects/ui-common/src/lib/widgets-grid/widgets-grid-item'
+// import { IWidgetsGridItemDef } from 'projects/ui-common/src/lib/widgets-grid/widgets-grid-item'
 import { LazyWidgetOneComponent } from 'src/app/example-lazy-loaded-widgets/lazy-widget-one/lazy-widget-one.component'
 
 @Component({
@@ -12,7 +12,8 @@ export class ExampleLazyLoadedWidgetsComponent implements OnInit {
 
   @ViewChild('testOutlet', { static: true, read: ViewContainerRef }) testOutlet: ViewContainerRef
 
-  widgets: IWidgetsGridItemDef[] = []
+  // widgets: IWidgetsGridItemDef[] = []
+  widgets: any[] = []
 
   constructor(
     private _dynamicComponentLoaderModule: TheSeamDynamicComponentLoader

@@ -5,7 +5,7 @@ import { STORY_INITIAL_ROUTE_URL, StoryInitialRouteService } from './initial-rou
 
 @NgModule()
 export class StoryInitialRouteModule {
-  static forRoot(url: string): ModuleWithProviders {
+  static forRoot(url: string): ModuleWithProviders<StoryInitialRouteModule> {
     return {
       ngModule: StoryInitialRouteModule,
       providers: [

@@ -64,7 +64,7 @@ export class StoryModalContainerComponent<T, D = any> implements OnDestroy {
 
   ngOnDestroy() { }
 
-  private _createInjector(data: D): Injector {
+  private _createInjector(data?: D): Injector {
     return Injector.create({
       providers: [
         { provide: ModalRef, useClass: FakeModalRef, deps: [] },

@@ -69,7 +69,7 @@ export class ModalContainerComponent extends BasePortalOutlet implements OnDestr
 
   @HostBinding('attr.role') get _role() { return this._config.role }
 
-  @HostBinding('attr.tabindex') get _tabindex() { return -1 }
+  // @HostBinding('attr.tabindex') get _tabindex() { return -1 }
 
   @HostBinding('class.seam-modal-container') _seamModalContainer = true
 
