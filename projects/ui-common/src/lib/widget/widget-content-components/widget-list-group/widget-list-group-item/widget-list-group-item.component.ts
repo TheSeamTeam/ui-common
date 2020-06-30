@@ -48,6 +48,7 @@ class WidgetListGroupItemBase {
   }
 }
 
+@Directive()
 class WidgetListGroupItemActionableBase extends WidgetListGroupItemBase implements OnDestroy {
   constructor(
     public _elementRef: ElementRef,

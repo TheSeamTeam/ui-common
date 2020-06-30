@@ -31,8 +31,7 @@
               "src/styles.scss",
               "node_modules/@marklb/ngx-datatable/assets/icons.css"
             ],
-            "scripts": [],
-            "es5BrowserSupport": true
+            "scripts": []
           },
           "configurations": {
             "production": {

@@ -14,6 +14,7 @@ import {
   mixinTabIndex,
 } from '../../../core/common-behaviors'
 
+// TODO: Add Angular decorator.
 class TheSeamWidgetTileBase implements OnDestroy, HasRenderer2, HasElementRef {
   constructor(
     public _elementRef: ElementRef,

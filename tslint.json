@@ -4,6 +4,12 @@
     "codelyzer"
   ],
   "rules": {
+    "align": {
+      "options": [
+        "parameters",
+        "statements"
+      ]
+    },
     "array-type": false,
     "arrow-parens": false,
     "arrow-return-shorthand": true,
@@ -64,9 +70,17 @@
     "no-string-literal": false,
     "no-string-throw": true,
     "no-trailing-whitespace": true,
-    "no-use-before-declare": true,
     "no-var-keyword": true,
     "no-var-requires": false,
+    "space-before-function-paren": {
+      "options": {
+        "anonymous": "never",
+        "asyncArrow": "always",
+        "constructor": "never",
+        "method": "never",
+        "named": "never"
+      }
+    },
     "variable-name": false,
     "object-literal-key-quotes": false,
     "object-literal-sort-keys": false,

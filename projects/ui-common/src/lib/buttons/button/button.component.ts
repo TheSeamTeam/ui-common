@@ -10,6 +10,7 @@ import {
   mixinTheme
 } from '../../core/common-behaviors'
 
+// TODO: Add Angular decorator.
 class TheSeamButtonBase implements OnDestroy {
   constructor(
     public _elementRef: ElementRef,
