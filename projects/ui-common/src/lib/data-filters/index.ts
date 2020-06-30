@@ -1,5 +1,5 @@
 export * from './data-filter'
-export * from './data-filters.module'
+export { TheSeamDataFiltersModule } from './data-filters.module'
 export * from './data-filter-def'
 
 export * from './filters/data-filter-search/data-filter-search.component'

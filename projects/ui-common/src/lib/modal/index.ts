@@ -1,4 +1,4 @@
-export * from './modal.module'
+export { TheSeamModalModule } from './modal.module'
 export * from './modal/modal.component'
 export * from './modal-body/modal-body.component'
 export * from './modal-container/modal-container.component'
