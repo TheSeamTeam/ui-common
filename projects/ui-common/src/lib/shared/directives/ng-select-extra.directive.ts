@@ -15,8 +15,6 @@ export class NgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestr
 
   private readonly _ngUnsubscribe = new Subject()
 
-  private _labelForId: string
-
   private _markedItem: NgOption | null = null
   private _checkMarked = false
   private _keyPressWorkaroundSub: Subscription | null = null
@@ -42,19 +40,13 @@ export class NgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestr
       this.ngSelect.focus()
     }
 
-    // Disables the labelForId on focus to avoid the browser autofill popup.
-    this._labelForId = this.ngSelect.labelForId
-    this.ngSelect.labelForId = null
-  }
-
-  @HostListener('blur', ['$event']) onBlur($event: any) {
-    // Timeout to avoid `ExpressionChangedAfterItHasBeenCheckedError`
-    setTimeout(() => {
-      // Re-enable the labelForId on blur to enable autofill to work if triggered
-      // outside the ng-select component and allow the label to focus input on
-      // click again.
-      this.ngSelect.labelForId = this._labelForId
-    })
+    // ng-select has an input `labelForId` that sets the autocomplete attribute
+    // in ngOnInit. I am not positive that it is wrong by doing that, but this
+    // hack makes it set the attributes again on focus, because that gives the
+    // result I was expecting, since we don't manually set the `labelForId`
+    // input.
+    const _ngSelect = this.ngSelect as any
+    _ngSelect._setInputAttributes()
   }
 
   @HostBinding('class.is-invalid') get _isInvalid() {
