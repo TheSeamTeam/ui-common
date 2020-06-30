@@ -29,14 +29,12 @@
     "localstorage-memory",
     "lodash-es",
     "ngx-loading",
-    "ngx-take-until-destroy",
     "ngx-toastr",
     "pdfjs-dist",
     "rxjs",
     "xlsx",
     "jexl",
     "webfontloader",
-    "@types/webfontloader",
-    "@ngneat/until-destroy"
+    "@types/webfontloader"
   ]
 }

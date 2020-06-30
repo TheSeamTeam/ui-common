@@ -1,9 +1,9 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router'
 
-import { untilDestroyed } from 'ngx-take-until-destroy'
-
 // import { ModalComponent } from '../modal/modal.component'
+import { Subject } from 'rxjs'
+import { takeUntil } from 'rxjs/operators'
 import { Modal } from '../modal.service'
 
 @Component({
@@ -12,6 +12,8 @@ import { Modal } from '../modal.service'
   styleUrls: ['./route-modal.component.scss']
 })
 export class RouteModalComponent implements OnInit, OnDestroy, AfterViewInit {
+
+  private readonly _ngUnsubscribe = new Subject()
 
   // @ViewChild(ModalComponent, { static: true }) _modal: ModalComponent
 
@@ -24,7 +26,7 @@ export class RouteModalComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit() {
     this._route.data
       .pipe(
-        untilDestroyed(this)
+        takeUntil(this._ngUnsubscribe)
       )
       .subscribe(data => {
         // console.log('data', data)
@@ -46,7 +48,10 @@ export class RouteModalComponent implements OnInit, OnDestroy, AfterViewInit {
       })
   }
 
-  ngOnDestroy() { }
+  ngOnDestroy() {
+    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.complete()
+  }
 
   ngAfterViewInit() { }
 

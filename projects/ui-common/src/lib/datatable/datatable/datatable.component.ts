@@ -22,7 +22,6 @@ import {
   translateTemplates,
   TreeStatus
 } from '@marklb/ngx-datatable'
-import { untilDestroyed } from 'ngx-take-until-destroy'
 
 import { composeDataFilters, IDataFilter } from '../../data-filters/index'
 import { IElementResizedEvent } from '../../shared/index'
@@ -291,6 +290,8 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
   //   },
   // ]
 
+  private _rowDetailToggleSubscription = Subscription.EMPTY
+
   constructor(
     private _columnChangesService: DatatableColumnChangesService,
     private _differs: KeyValueDiffers,
@@ -322,9 +323,7 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
 
   ngOnInit() {
     if (this.rowDetail) {
-      this.rowDetail._toggle.pipe(
-        untilDestroyed(this)
-      ).subscribe(event => {
+      this._rowDetailToggleSubscription = this.rowDetail._toggle.subscribe(event => {
         if (this.ngxRowDetail) {
           this.ngxRowDetail.toggle.emit(event)
         }
@@ -332,7 +331,9 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
     }
   }
 
-  ngOnDestroy() { }
+  ngOnDestroy() {
+    this._rowDetailToggleSubscription.unsubscribe()
+  }
 
   ngAfterContentInit() {
     this.columnComponents$ = this._columnChangesService.columnInputChanges$.pipe(

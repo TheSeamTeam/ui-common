@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core'
 
-import { untilDestroyed } from 'ngx-take-until-destroy'
-
 import { TABLE_CELL_DATA } from '../../table/table-cell-tokens'
 import { TableCellData } from '../../table/table-cell.models'
 
+import { Subject } from 'rxjs'
+import { takeUntil } from 'rxjs/operators'
 import { SeamIcon } from '../../icon'
 import { TheSeamTableColumn } from '../../table/table-column'
 import { TableCellTypesHelpersService } from '../services/table-cell-types-helpers.service'
@@ -17,6 +17,8 @@ import { TableCellTypeConfigProgressCircleIcon } from './table-cell-type-progres
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TableCellTypeProgressCircleIconComponent implements OnInit, OnDestroy {
+
+  private readonly _ngUnsubscribe = new Subject()
 
   @Input() value: number | null | undefined
 
@@ -42,7 +44,7 @@ export class TableCellTypeProgressCircleIconComponent implements OnInit, OnDestr
 
     if (tableData) {
       tableData.changed
-        .pipe(untilDestroyed(this))
+        .pipe(takeUntil(this._ngUnsubscribe))
         .subscribe(v => {
           if (v.changes.hasOwnProperty('value')) {
             this.value = v.changes.value.currentValue
@@ -80,6 +82,9 @@ export class TableCellTypeProgressCircleIconComponent implements OnInit, OnDestr
 
   ngOnInit() { }
 
-  ngOnDestroy() { }
+  ngOnDestroy() {
+    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.complete()
+  }
 
 }

@@ -1,10 +1,8 @@
 import { Component, Injector, Input, OnDestroy } from '@angular/core'
-import { combineLatest, Observable, of, ReplaySubject } from 'rxjs'
-import { auditTime, map, startWith } from 'rxjs/operators'
+import { combineLatest, Observable, of, ReplaySubject, Subject } from 'rxjs'
+import { auditTime, map, startWith, takeUntil } from 'rxjs/operators'
 
-import { untilDestroyed } from 'ngx-take-until-destroy'
-
-import { MODAL_DATA, ModalRef } from '../modal/index'
+import { ModalRef, MODAL_DATA } from '../modal/index'
 import { ComponentType } from '../models/index'
 
 class FakeModalRef<T, R = any> implements Partial<ModalRef<T, R>> {
@@ -38,6 +36,8 @@ class FakeModalRef<T, R = any> implements Partial<ModalRef<T, R>> {
 })
 export class StoryModalContainerComponent<T, D = any> implements OnDestroy {
 
+  private readonly _ngUnsubscribe = new Subject()
+
   @Input() set component(c: ComponentType<T>) { this._component.next(c) }
   @Input() set data(d: D) { this._data.next(d) }
 
@@ -58,11 +58,14 @@ export class StoryModalContainerComponent<T, D = any> implements OnDestroy {
         component,
         injector: this._createInjector(data)
       })),
-      untilDestroyed(this)
+      takeUntil(this._ngUnsubscribe)
     )
   }
 
-  ngOnDestroy() { }
+  ngOnDestroy() {
+    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.complete()
+  }
 
   private _createInjector(data?: D): Injector {
     return Injector.create({

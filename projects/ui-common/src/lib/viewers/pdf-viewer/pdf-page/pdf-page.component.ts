@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, ElementRef, HostBinding, Input, OnDestroy, OnInit, ViewChild } from '@angular/core'
-import { untilDestroyed } from 'ngx-take-until-destroy'
 import { from, Observable, Subject } from 'rxjs'
-import { auditTime, switchMap } from 'rxjs/operators'
+import { auditTime, switchMap, takeUntil } from 'rxjs/operators'
 
 import { waitOnConditionAsync } from '../../../utils/index'
 
@@ -19,6 +18,8 @@ import { waitOnConditionAsync } from '../../../utils/index'
   `]
 })
 export class TheSeamPdfPageComponent implements OnInit, OnDestroy, AfterViewInit {
+
+  private readonly _ngUnsubscribe = new Subject()
 
   @Input()
   public get page() { return this._page }
@@ -63,14 +64,17 @@ export class TheSeamPdfPageComponent implements OnInit, OnDestroy, AfterViewInit
 
   ngOnInit() {
     this._render$ = this._renderRequestSubject.pipe(
-      untilDestroyed(this),
+      takeUntil(this._ngUnsubscribe),
       auditTime(500),
       switchMap(_ => from(waitOnConditionAsync(() => this.rendering === false, 30 * 1000))),
       switchMap(_ => from(this._render()))
     )
   }
 
-  ngOnDestroy() { }
+  ngOnDestroy() {
+    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.complete()
+  }
 
   ngAfterViewInit() {
     this._render$.subscribe()

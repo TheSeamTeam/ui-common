@@ -9,8 +9,8 @@ import {
   OnInit,
   Optional
 } from '@angular/core'
-
-import { untilDestroyed } from 'ngx-take-until-destroy'
+import { Subject } from 'rxjs'
+import { takeUntil } from 'rxjs/operators'
 
 import { DatatableComponent } from '../../datatable/datatable/datatable.component'
 import { TABLE_CELL_DATA } from '../../table/table-cell-tokens'
@@ -32,6 +32,8 @@ export type StringTemplateType = 'default' | 'link' | 'link-external' | 'link-en
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TableCellTypeStringComponent implements OnInit, OnDestroy {
+
+  private readonly _ngUnsubscribe = new Subject()
 
   @Input()
   get value() { return this._value }
@@ -100,7 +102,7 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
 
     if (_data) {
       _data.changed
-        .pipe(untilDestroyed(this))
+        .pipe(takeUntil(this._ngUnsubscribe))
         .subscribe(v => {
           if (v.changes.hasOwnProperty('value')) {
             this.value = v.changes.value.currentValue
@@ -122,7 +124,10 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
 
   ngOnInit() { }
 
-  ngOnDestroy() { }
+  ngOnDestroy() {
+    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.complete()
+  }
 
   public setAction(configAction?: TableCellTypeStringConfigAction) {
     let newTplType: StringTemplateType = 'default'

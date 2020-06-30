@@ -16,8 +16,6 @@ import { ActivatedRoute, QueryParamsHandling, Router, RouterLink, RouterLinkWith
 import { from, fromEvent, Observable, of, ReplaySubject, Subscription } from 'rxjs'
 import { catchError, mapTo, switchMap, tap } from 'rxjs/operators'
 
-import { untilDestroyed } from 'ngx-take-until-destroy'
-
 import {
   DynamicActionHelperService,
   DynamicActionUiAnchorDef,
@@ -209,6 +207,8 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
   private _clickSubscription: Subscription
   private _menuRouterLink?: DatatableDynamicActionMenuItemRouterLink
 
+  private _recordSubscription = Subscription.EMPTY
+
   constructor(
     private _elementRef: ElementRef<HTMLElement>,
     private _renderer: Renderer2,
@@ -219,7 +219,7 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
     private _route: ActivatedRoute,
     private _locationStrategy: LocationStrategy
   ) {
-    this._record.pipe(
+    this._recordSubscription = this._record.pipe(
       // tap(v => console.log('record', v)),
       switchMap(record => this._update(record)),
       tap(() => { this._setInvalidActionState(false) }),
@@ -228,14 +228,15 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
         this._setInvalidActionState(true)
         return of(undefined)
       }),
-      // tap(v => console.log('record DONE', v)),
-      untilDestroyed(this)
+      // tap(v => console.log('record DONE', v))
     ).subscribe()
   }
 
   ngOnInit() { }
 
   ngOnDestroy() {
+    this._recordSubscription.unsubscribe()
+    this._unsubClick()
     if (this._menuRouterLink && this._menuRouterLink.routerLinkWithHref) {
       this._menuRouterLink.routerLinkWithHref.ngOnDestroy()
     }
@@ -422,9 +423,7 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
   ) {
     this._unsubClick()
     if (hasProperty(uiProps, 'blockClickExpr')) {
-      this._clickSubscription = this._blockClickExprObservable(uiProps, record).pipe(
-        untilDestroyed(this)
-      ).subscribe()
+      this._clickSubscription = this._blockClickExprObservable(uiProps, record).subscribe()
     }
   }
 

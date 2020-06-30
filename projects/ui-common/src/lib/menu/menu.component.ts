@@ -18,13 +18,12 @@ import {
 } from '@angular/core'
 import { BehaviorSubject, fromEvent, merge, Observable, of, Subject, Subscription } from 'rxjs'
 
-import { distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators'
+import { distinctUntilChanged, map, startWith, switchMap, takeUntil } from 'rxjs/operators'
 import { menuDropdownPanelIn, menuDropdownPanelOut, menuDropdownPanelSlideIn, menuDropdownPanelSlideOut } from './menu-animations'
 import { MenuItemComponent } from './menu-item.component'
 import { ITheSeamMenuPanel } from './menu-panel'
 import { THESEAM_MENU_PANEL } from './menu-panel-token'
 
-import { untilDestroyed } from 'ngx-take-until-destroy'
 import { MenuFooterComponent } from './menu-footer/menu-footer.component'
 import { MenuHeaderComponent } from './menu-header/menu-header.component'
 
@@ -49,6 +48,8 @@ export const LIB_MENU: any = {
   exportAs: 'seamMenu'
 })
 export class MenuComponent implements OnInit, OnDestroy, AfterContentInit, ITheSeamMenuPanel {
+
+  private readonly _ngUnsubscribe = new Subject()
 
   private _footer = new BehaviorSubject<MenuFooterComponent | undefined | null>(undefined)
   public hasFooter$ = this._footer.pipe(map(v => v !== null && v !== undefined))
@@ -107,13 +108,16 @@ export class MenuComponent implements OnInit, OnDestroy, AfterContentInit, ITheS
         return of(undefined)
       }),
       distinctUntilChanged(),
-      untilDestroyed(this)
+      takeUntil(this._ngUnsubscribe)
     )
   }
 
   ngOnDestroy() {
     this._tabSubscription.unsubscribe()
     this.closed.complete()
+
+    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.complete()
   }
 
   ngAfterContentInit() {

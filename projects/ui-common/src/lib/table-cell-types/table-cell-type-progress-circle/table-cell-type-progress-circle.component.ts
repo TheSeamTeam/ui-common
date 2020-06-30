@@ -11,8 +11,8 @@ import {
   Optional
 } from '@angular/core'
 
-import { untilDestroyed } from 'ngx-take-until-destroy'
-
+import { Subject } from 'rxjs'
+import { takeUntil } from 'rxjs/operators'
 import { DatatableComponent } from '../../datatable/datatable/datatable.component'
 import { TABLE_CELL_DATA } from '../../table/table-cell-tokens'
 import { TableCellData } from '../../table/table-cell.models'
@@ -28,6 +28,8 @@ import { TableCellTypeConfigProgressCircle } from './table-cell-type-progress-ci
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TableCellTypeProgressCircleComponent implements OnInit, OnDestroy {
+
+  private readonly _ngUnsubscribe = new Subject()
 
   @Input() value: number | null | undefined
 
@@ -66,7 +68,7 @@ export class TableCellTypeProgressCircleComponent implements OnInit, OnDestroy {
 
     if (tableData) {
       tableData.changed
-        .pipe(untilDestroyed(this))
+        .pipe(takeUntil(this._ngUnsubscribe))
         .subscribe(v => {
           if (v.changes.hasOwnProperty('value')) {
             this.value = coerceNumberProperty(v.changes.value.currentValue)
@@ -91,7 +93,10 @@ export class TableCellTypeProgressCircleComponent implements OnInit, OnDestroy {
 
   ngOnInit() { }
 
-  ngOnDestroy() { }
+  ngOnDestroy() {
+    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.complete()
+  }
 
   private _setCellTypeConfigProps(config: TableCellTypeConfigProgressCircle, tableData): void {
     this.fillBackground = coerceBooleanProperty(this._parseConfigValue(config.fillBackground, tableData))

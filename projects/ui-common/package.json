@@ -37,7 +37,6 @@
     "localstorage-memory": "~1.0.3",
     "lodash-es": "~4.17.11",
     "ngx-loading": "~3.0.1",
-    "@ngneat/until-destroy": "~7.3.0",
     "ngx-toastr": "~12.1.0",
     "pdfjs-dist": "^2.0.943",
     "tslib": "^2.0.0",

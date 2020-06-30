@@ -12,8 +12,6 @@ import {
 } from '@angular/core'
 import { Subscription } from 'rxjs'
 
-import { untilDestroyed } from 'ngx-take-until-destroy'
-
 import { TableCellType<%= classify(name) %>Config } from './table-cell-type-<%= dasherize(name) %>-config'
 import { TABLE_CELL_DATA } from '../../table/table-cell-tokens'
 import { ITableCellData } from '../../table/table-cell.models'
@@ -39,6 +37,8 @@ export class TableCellType<%= classify(name) %>Component implements OnInit, OnDe
   private _clickSub?: Subscription
   private _data?: ITableCellData<any, string>
 
+  private _dataChangesSubscription = Subscription.EMPTY
+
   constructor(
     private readonly _cdf: ChangeDetectorRef,
     private readonly _elementRef: ElementRef,
@@ -56,22 +56,22 @@ export class TableCellType<%= classify(name) %>Component implements OnInit, OnDe
 
       }
     }
+  }
 
+  ngOnInit() {
     if (this._data) {
-      this._data.changed
-        .pipe(untilDestroyed(this))
-        .subscribe(v => {
-          if (v.changes.hasOwnProperty('value')) {
-            this.value = v.changes.value.currentValue
-            this._cdf.markForCheck()
-          }
-        })
+      this._dataChangesSubscription = this._data.changed.subscribe(v => {
+        if (v.changes.hasOwnProperty('value')) {
+          this.value = v.changes.value.currentValue
+          this._cdf.markForCheck()
+        }
+      })
     }
   }
 
-  ngOnInit() { }
-
-  ngOnDestroy() { }
+  ngOnDestroy() {
+    this._dataChangesSubscription.unsubscribe()
+  }
 
   public getNativeElement(): HTMLElement | undefined {
     return this._elementRef && this._elementRef.nativeElement

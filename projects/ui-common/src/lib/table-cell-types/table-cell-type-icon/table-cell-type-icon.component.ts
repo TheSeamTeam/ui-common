@@ -9,8 +9,8 @@ import {
   OnInit,
   Optional
 } from '@angular/core'
-
-import { untilDestroyed } from 'ngx-take-until-destroy'
+import { Subject } from 'rxjs'
+import { takeUntil } from 'rxjs/operators'
 
 import { DatatableComponent, THESEAM_DATATABLE } from '../../datatable/datatable/datatable.component'
 import { getKnownIcon, SeamIcon, TheSeamIconType } from '../../icon/index'
@@ -32,6 +32,8 @@ export type IconTemplateType = 'default' | 'link' | 'link-external' | 'link-encr
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnDestroy {
+
+  private readonly _ngUnsubscribe = new Subject()
 
   @Input()
   get value() { return this._value }
@@ -120,7 +122,7 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
 
     if (_data) {
       _data.changed
-        .pipe(untilDestroyed(this))
+        .pipe(takeUntil(this._ngUnsubscribe))
         .subscribe(v => {
           if (v.changes.hasOwnProperty('value')) {
             this.value = v.changes.value.currentValue
@@ -142,7 +144,10 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
 
   ngOnInit() { }
 
-  ngOnDestroy() { }
+  ngOnDestroy() {
+    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.complete()
+  }
 
   public setAction(configAction?: TableCellTypeIconConfigAction) {
     let newTplType: IconTemplateType = 'default'

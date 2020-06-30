@@ -11,8 +11,6 @@ import {
 import { Observable, ReplaySubject, Subscription } from 'rxjs'
 import { map, startWith, tap } from 'rxjs/operators'
 
-import { untilDestroyed } from 'ngx-take-until-destroy'
-
 import { IErrorRecord } from '../form-field-error/form-field-error-list/form-field-error-list.component'
 
 import { FormFieldErrorDirective } from './form-field-error.directive'
@@ -101,7 +99,6 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
     if (this._sub) { this._sub.unsubscribe() }
     if (this.fieldErrors) {
       this._sub = this.fieldErrors.changes
-        .pipe(untilDestroyed(this))
         .pipe(startWith(this.fieldErrors))
         .pipe(map(v => v.toArray() as FormFieldErrorDirective[]))
         .pipe(tap(v => {
@@ -148,7 +145,7 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
   ngOnInit() { }
 
   /** @ignore */
-  ngOnDestroy() { }
+  ngOnDestroy() { this._sub.unsubscribe() }
 
   /** @ignore */
   public isValidatorMatch(validatorName: string, tplValidatorName: string, errors: any): boolean {

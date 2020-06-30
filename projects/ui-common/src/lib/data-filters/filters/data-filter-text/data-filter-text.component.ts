@@ -1,6 +1,5 @@
 import { Component, forwardRef, Inject, Input, OnDestroy, OnInit, Optional, TemplateRef } from '@angular/core'
 import { FormControl } from '@angular/forms'
-import { untilDestroyed } from 'ngx-take-until-destroy'
 import { Observable } from 'rxjs'
 import { map, startWith } from 'rxjs/operators'
 
@@ -128,7 +127,6 @@ export class DataFilterTextComponent implements OnInit, OnDestroy, IDataFilter {
   public filter<T>(data: T[]): Observable<T[]> {
     return this._control.valueChanges
       .pipe(
-        untilDestroyed(this),
         map(v => textDataFilter(data, v, this.options)),
         startWith(textDataFilter(data, this._control.value, this.options)),
       )

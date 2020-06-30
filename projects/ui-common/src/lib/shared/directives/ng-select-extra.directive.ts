@@ -3,9 +3,8 @@ import { AfterViewChecked, Directive, ElementRef, EventEmitter, HostBinding,
 import { NgControl } from '@angular/forms'
 import { NgOption, NgSelectComponent } from '@ng-select/ng-select'
 import { ResizeSensor } from 'css-element-queries'
-import { untilDestroyed } from 'ngx-take-until-destroy'
-import { Subscription } from 'rxjs'
-import { auditTime, filter } from 'rxjs/operators'
+import { Subject, Subscription } from 'rxjs'
+import { auditTime, filter, takeUntil } from 'rxjs/operators'
 import { IElementResizedEvent } from './elem-resized.directive'
 
 @Directive({
@@ -13,6 +12,8 @@ import { IElementResizedEvent } from './elem-resized.directive'
   selector: 'ng-select'
 })
 export class NgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestroy {
+
+  private readonly _ngUnsubscribe = new Subject()
 
   private _labelForId: string
 
@@ -98,6 +99,9 @@ export class NgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestr
 
   ngOnDestroy() {
     this._resizeSensor.detach()
+
+    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.complete()
   }
 
   ngAfterViewChecked() {
@@ -154,7 +158,7 @@ export class NgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestr
     const _ngSelect = <any>this.ngSelect
 
     this._keyPressWorkaroundSub = _ngSelect._keyPress$
-      .pipe(untilDestroyed(this))
+      .pipe(takeUntil(this._ngUnsubscribe))
       .pipe(filter(v => !this.ngSelect.searchable))
       .subscribe(v => {
         this._ngZone.runOutsideAngular(() => {
