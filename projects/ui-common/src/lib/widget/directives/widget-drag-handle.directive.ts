@@ -36,6 +36,9 @@ type Writeable<T> = { -readonly [P in keyof T]-?: T[P] }
 interface DragCSSStyleDeclaration extends CSSStyleDeclaration {
   webkitUserDrag: string
   MozUserSelect: string // For some reason the Firefox property is in PascalCase.
+  msScrollSnapType: string
+  scrollSnapType: string
+  msUserSelect: string
 }
 
 export function extendStyles(
@@ -44,7 +47,8 @@ export function extendStyles(
 ) {
   for (const key in source) {
     if (source.hasOwnProperty(key)) {
-      dest[key] = source[key as keyof CSSStyleDeclaration]
+      // tslint:disable-next-line: no-non-null-assertion
+      dest[key] = source[key]!
     }
   }
 
