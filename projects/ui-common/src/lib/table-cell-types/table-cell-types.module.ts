@@ -29,7 +29,7 @@ import {
   TABLE_CELL_TYPE_MANIFEST_STRING,
 } from './table-cell-type-manifests'
 
-export const cellTypeComponents = [
+const cellTypeComponents = [
   TableCellTypeStringComponent,
   TableCellTypeDateComponent,
   TableCellTypeIconComponent,
@@ -37,7 +37,7 @@ export const cellTypeComponents = [
   TableCellTypeProgressCircleIconComponent
 ]
 
-export const cellTypeProviders = [
+const cellTypeProviders = [
   TABLE_CELL_TYPE_MANIFEST_STRING,
   TABLE_CELL_TYPE_MANIFEST_INTEGER,
   TABLE_CELL_TYPE_MANIFEST_DECIMAL,
