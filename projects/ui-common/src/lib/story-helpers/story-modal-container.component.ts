@@ -32,7 +32,14 @@ class FakeModalRef<T, R = any> implements Partial<ModalRef<T, R>> {
         </div>
       </div>
     </div>
-  `
+  `,
+  styles: [`
+    :host {
+      &[tabindex="-1"]:focus:not(:focus-visible) {
+        outline: 0 !important;
+      }
+    }
+  `]
 })
 export class StoryModalContainerComponent<T, D = any> implements OnDestroy {
 
