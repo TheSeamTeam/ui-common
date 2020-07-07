@@ -99,7 +99,10 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
     if (_data && _data.colData && (<any>_data.colData).cellTypeConfig) {
       this.config = (<any>_data.colData).cellTypeConfig
     }
+  }
 
+  ngOnInit() {
+    const _data = this._tableData
     if (_data) {
       _data.changed
         .pipe(takeUntil(this._ngUnsubscribe))
@@ -121,8 +124,6 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
         })
     }
   }
-
-  ngOnInit() { }
 
   ngOnDestroy() {
     this._ngUnsubscribe.next()

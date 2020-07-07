@@ -17,7 +17,7 @@
 
 
 <ng-container *ngIf="_tplType === 'link'">
-  <a class="d-block text-body"
+  <a class="d-block text-body text-decoration-none"
     [routerLink]="_link"
     [attr.title]="_title">
     <ng-template [ngTemplateOutlet]="noPopover"></ng-template>
@@ -25,7 +25,7 @@
 </ng-container>
 
 <ng-container *ngIf="_tplType === 'link-external'">
-  <a class="d-block text-body"
+  <a class="d-block text-body text-decoration-none"
     [attr.href]="_link"
     [attr.title]="_title">
     <ng-template [ngTemplateOutlet]="noPopover"></ng-template>
@@ -34,7 +34,7 @@
 
 <ng-container *ngIf="_tplType === 'link-encrypted'">
   <button
-    class="btn btn-link p-0 d-block text-body"
+    class="btn btn-link p-0 d-block text-body text-decoration-none"
     type="button"
     [seamEncryptedAssetLink]="_link"
     [seamDetectMimeFromContent]="_detectMimeContent"
@@ -46,7 +46,7 @@
 
 <ng-container *ngIf="_tplType === 'button'">
   <button
-    class="btn btn-link p-0 d-block text-body"
+    class="btn btn-link p-0 d-block text-body text-decoration-none"
     type="button"
     [attr.title]="_title"
     (click)="_doButtonAction()">
