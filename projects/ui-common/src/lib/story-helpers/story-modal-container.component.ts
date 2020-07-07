@@ -34,10 +34,8 @@ class FakeModalRef<T, R = any> implements Partial<ModalRef<T, R>> {
     </div>
   `,
   styles: [`
-    :host {
-      &[tabindex="-1"]:focus:not(:focus-visible) {
-        outline: 0 !important;
-      }
+    .seam-modal-container[tabindex="-1"]:focus {
+      outline: 0 !important;
     }
   `]
 })
