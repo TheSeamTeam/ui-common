@@ -18,6 +18,8 @@ import {
   THESEAM_DATA_FILTER_OPTIONS
 } from '../data-filters/index'
 import { DatatableExportButtonComponent } from '../datatable/datatable-export-button/datatable-export-button.component'
+import { DatatableMenuBarTextComponent } from '../datatable/datatable-menu-bar-text/datatable-menu-bar-text.component'
+import { THESEAM_MENUBAR_ITEM_DATA } from '../datatable/tokens/menubar-item-data'
 import { IDynamicComponentManifest, TheSeamDynamicComponentLoaderModule } from '../dynamic-component-loader/dynamic-component-loader.module'
 import {
   DynamicActionApiService,
@@ -31,11 +33,11 @@ import {
 } from '../dynamic/index'
 import { TheSeamModalModule } from '../modal/index'
 
-import { StoryModalOneModule, StoryModalTwoModule } from './_story-data/datatable-modals'
-import { exampleData1 } from './_story-data/dynamic-data-1'
 import { THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM } from './datatable-dynamic-menu-bar-token'
 import { DatatableDynamicComponent } from './datatable-dynamic.component'
 import { TheSeamDatatableDynamicModule } from './datatable-dynamic.module'
+import { StoryModalOneModule, StoryModalTwoModule } from './_story-data/datatable-modals'
+import { exampleData1 } from './_story-data/dynamic-data-1'
 
 
 @Component({
@@ -244,6 +246,11 @@ export default {
         {
           provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
           useValue: { name: 'export-button', component: DatatableExportButtonComponent, dataToken: THESEAM_DYNAMIC_DATA },
+          multi: true
+        },
+        {
+          provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
+          useValue: { name: 'text', component: DatatableMenuBarTextComponent, dataToken: THESEAM_MENUBAR_ITEM_DATA },
           multi: true
         }
       ]

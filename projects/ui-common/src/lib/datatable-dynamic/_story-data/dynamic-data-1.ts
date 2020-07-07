@@ -80,7 +80,9 @@ export const exampleData1: DatatableDynamicDef = {
         layout: {
           type: 'tri-column',
           columnLeft: {
-            items: []
+            items: [
+              { component: 'text', data: { value: 'Test value for text component' } }
+            ]
           },
           columnCenter: {
             items: []

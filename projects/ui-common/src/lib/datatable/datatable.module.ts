@@ -31,6 +31,7 @@ import { DatatableMenuBarColumnCenterComponent } from './datatable-menu-bar-colu
 import { DatatableMenuBarColumnLeftComponent } from './datatable-menu-bar-column-left/datatable-menu-bar-column-left.component'
 import { DatatableMenuBarColumnRightComponent } from './datatable-menu-bar-column-right/datatable-menu-bar-column-right.component'
 import { DatatableMenuBarRowComponent } from './datatable-menu-bar-row/datatable-menu-bar-row.component'
+import { DatatableMenuBarTextComponent } from './datatable-menu-bar-text/datatable-menu-bar-text.component'
 import { DatatableMenuBarComponent } from './datatable-menu-bar/datatable-menu-bar.component'
 import { DatatableRowDetailTplDirective } from './datatable-row-detail/datatable-row-detail-tpl.directive'
 import { TheSeamDatatableRowDetailDirective } from './datatable-row-detail/datatable-row-detail.directive'
@@ -63,6 +64,7 @@ import { TheSeamDatatableScrollbarHelperService } from './services/datatable-scr
     DatatableMenuBarColumnLeftComponent,
     DatatableMenuBarColumnCenterComponent,
     DatatableMenuBarColumnRightComponent,
+    DatatableMenuBarTextComponent,
   ],
   imports: [
     CommonModule,
@@ -103,14 +105,16 @@ import { TheSeamDatatableScrollbarHelperService } from './services/datatable-scr
     DatatableMenuBarRowComponent,
     DatatableMenuBarColumnLeftComponent,
     DatatableMenuBarColumnCenterComponent,
-    DatatableMenuBarColumnRightComponent
+    DatatableMenuBarColumnRightComponent,
+    DatatableMenuBarTextComponent
   ],
   providers: [
     { provide: ScrollbarHelper, useClass: TheSeamDatatableScrollbarHelperService }
   ],
   entryComponents: [
     DatatableColumnPreferencesComponent,
-    DatatableExportButtonComponent
+    DatatableExportButtonComponent,
+    DatatableMenuBarTextComponent
   ]
 })
 export class TheSeamDatatableModule { }

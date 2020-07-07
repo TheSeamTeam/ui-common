@@ -19,6 +19,7 @@ export * from './directives/datatable-cell-tpl.directive'
 export * from './directives/datatable-filter.directive'
 export * from './directives/datatable-row-action-item.directive'
 
+export * from './models/menubar-item-data'
 export * from './models/preferences-accessor'
 export * from './models/preferences'
 export * from './models/table-column'
@@ -28,6 +29,7 @@ export * from './services/datatable-preferences.service'
 export * from './services/datatable-scrollbar-helper.service'
 
 export * from './tokens/datatable-preferences-accessor'
+export * from './tokens/menubar-item-data'
 
 export * from './utils/with-stored-column-info'
 
