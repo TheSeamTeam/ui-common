@@ -2,6 +2,8 @@ import { AfterViewInit, Component, ElementRef, HostBinding, Input, OnDestroy, On
 import { from, Observable, Subject } from 'rxjs'
 import { auditTime, switchMap, takeUntil } from 'rxjs/operators'
 
+import {  } from 'pdfjs-dist'
+
 import { waitOnConditionAsync } from '../../../utils/index'
 
 @Component({
@@ -89,9 +91,9 @@ export class TheSeamPdfPageComponent implements OnInit, OnDestroy, AfterViewInit
     try {
       const w = this.pdfContainer.nativeElement.clientWidth
       const desiredWidth = w
-      const viewport = this.page.getViewport(1)
+      const viewport = this.page.getViewport({ scale: 1 })
       const scale = desiredWidth / viewport.width
-      const scaledViewport = this.page.getViewport(scale)
+      const scaledViewport = this.page.getViewport({ scale })
 
       // Prepare canvas using PDF page dimensions
       const canvas: HTMLCanvasElement = this.pdfCanvas.nativeElement
@@ -107,7 +109,7 @@ export class TheSeamPdfPageComponent implements OnInit, OnDestroy, AfterViewInit
         viewport: scaledViewport
       }
 
-      const renderTask = await this.page.render(renderContext)
+      const renderTask = await this.page.render(renderContext).promise
 
       // TODO: Allow canceling instead of only waiting
       // await renderTask.cancel()
