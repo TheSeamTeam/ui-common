@@ -2,7 +2,7 @@ import { Component, Injector, Input, OnDestroy } from '@angular/core'
 import { combineLatest, Observable, of, ReplaySubject, Subject } from 'rxjs'
 import { auditTime, map, startWith, takeUntil } from 'rxjs/operators'
 
-import { ModalRef, MODAL_DATA } from '../modal/index'
+import { ModalConfig, ModalRef, MODAL_DATA } from '../modal/index'
 import { ComponentType } from '../models/index'
 
 class FakeModalRef<T, R = any> implements Partial<ModalRef<T, R>> {
@@ -23,7 +23,9 @@ class FakeModalRef<T, R = any> implements Partial<ModalRef<T, R>> {
         dir="ltr"
         style="justify-content: flex-start; align-items: center; pointer-events: auto"
         seamOverlayScrollbar>
-        <div class="seam-modal-container modal-dialog modal-dialog-centered modal-lg" tabindex="-1">
+        <div class="seam-modal-container modal-dialog modal-dialog-centered {{ modalConfig ? modalConfig.modalSize : 'modal-lg' }}"
+          tabindex="-1"
+          [class.modal-lg]="!modalConfig">
           <div class="modal-content">
             <ng-container *ngIf="_outletData$ | async as outletData">
               <ng-container *ngComponentOutlet="outletData.component; injector: outletData.injector;"></ng-container>
@@ -45,6 +47,8 @@ export class StoryModalContainerComponent<T, D = any> implements OnDestroy {
 
   @Input() set component(c: ComponentType<T>) { this._component.next(c) }
   @Input() set data(d: D) { this._data.next(d) }
+
+  @Input() modalConfig: ModalConfig<D>
 
   _component = new ReplaySubject<ComponentType<T>>(1)
   _data = new ReplaySubject<D>(1)
