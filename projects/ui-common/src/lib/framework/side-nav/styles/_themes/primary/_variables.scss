@@ -1,29 +1,30 @@
-$seam-side-nav-bg-color: $primary;
+$seam-side-nav-bg-color: $primary !default;
 
-$seam-side-nav-background-bg-color: rgba($dark, 0.6);
+// Backdrop
+$seam-side-nav-background-bg-color: rgba($dark, 0.6) !default;
 
 // Group
-$seam-side-nav-group-bg-variation-amount: 3%;
+$seam-side-nav-group-bg-variation-amount: 3% !default;
 
 // Item
-$seam-side-nav-item-bg-color-active: darken($seam-side-nav-bg-color, 10%);
-$seam-side-nav-item-bg-color-hover: darken($seam-side-nav-bg-color, 5%);
+$seam-side-nav-item-bg-color-active: darken($seam-side-nav-bg-color, 10%) !default;
+$seam-side-nav-item-bg-color-hover: darken($seam-side-nav-bg-color, 5%) !default;
 
-$seam-side-nav-item-color: $white;
-$seam-side-nav-item-color-active: $seam-side-nav-item-color;
+$seam-side-nav-item-color: $white !default;
+$seam-side-nav-item-color-active: $seam-side-nav-item-color !default;
 
-$seam-side-nav-item-disabled-color: darken($seam-side-nav-item-color, 20%);
+$seam-side-nav-item-disabled-color: darken($seam-side-nav-item-color, 20%) !default;
 
 // Divider
-$seam-side-nav-divider-color: darken($seam-side-nav-bg-color, 10%);
-$seam-side-nav-divider-size: 1px;
+$seam-side-nav-divider-color: darken($seam-side-nav-bg-color, 10%) !default;
+$seam-side-nav-divider-size: 1px !default;
 
 // Title
-$seam-side-nav-title-color: $seam-side-nav-item-color;
+$seam-side-nav-title-color: $seam-side-nav-item-color !default;
 
-$seam-side-nav-title-font-size: 24px;
+$seam-side-nav-title-font-size: 24px !default;
 
-$seam-side-nav-title-padding-left: 10px;
+$seam-side-nav-title-padding-left: 10px !default;
 
 // Toggle
-$seam-side-nav-toggle-btn-color: $seam-side-nav-item-color;
+$seam-side-nav-toggle-btn-color: $seam-side-nav-item-color !default;
