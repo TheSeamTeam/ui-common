@@ -1,5 +1,6 @@
 import { boolean, select, text, withKnobs } from '@storybook/addon-knobs'
-import { storiesOf } from '@storybook/angular'
+import { moduleMetadata } from '@storybook/angular'
+import { TheSeamBaseLayoutComponent } from './base-layout.component'
 
 import { APP_BASE_HREF } from '@angular/common'
 import { Component } from '@angular/core'
@@ -231,11 +232,11 @@ const navItems: ISideNavItem[] = [
   }
 ]
 
-storiesOf('Framework/BaseLayout', module)
-  .addDecorator(withKnobs)
-
-  .add('Basic', () => ({
-    moduleMetadata: {
+export default {
+  title: 'Framework/BaseLayout',
+  component: TheSeamBaseLayoutComponent,
+  decorators: [
+    moduleMetadata({
       declarations: [
         StoryExWidget1Component,
         StoryExWidget2Component,
@@ -262,85 +263,86 @@ storiesOf('Framework/BaseLayout', module)
         StoryExWidget3Component,
         StoryExWidget4Component
       ]
-    },
-    props: {
-      logo: text('logo', 'assets/images/theseam_logo.svg'),
-      logoSm: text('logoSm', 'assets/images/theseam_logo_notext.svg'),
-      hasTitle: boolean('hasTitle', false),
-      titleText: text('titleText', 'Dashboard'),
-      subTitleText: text('subTitleText', 'Example'),
-      displayName: text('displayName', 'Mark Berry'),
-      organizationName: text('organizationName', 'The Seam'),
-      hasNotificationsMenu: boolean('hasNotificationsMenu', true),
-      navItems,
-      widgets: [
-        { widgetId: 'widget-1', col: 0, order: 0, component: StoryExWidget1Component },
-        { widgetId: 'widget-2', col: 1, order: 0, component: StoryExWidget2Component },
-        { widgetId: 'widget-3', col: 2, order: 0, component: StoryExWidget3Component },
-        { widgetId: 'widget-4', col: 1, order: 1, component: StoryExWidget4Component }
-      ],
-      faUserAlt,
-      faQuestionCircle,
-      faSignOutAlt,
-      faBell,
-      faExclamationTriangle,
-      faComment,
-      widgetsDraggable: boolean('widgetsDraggable', true),
-    },
-    template: `
-      <div style="height: 100vh; width: 100vw;">
-        <seam-base-layout>
-          <seam-side-nav
-            *seamBaseLayoutSideBar
-            [items]="navItems">
-          </seam-side-nav>
-          <div class="p-1" *seamBaseLayoutContentHeader>
-            <seam-breadcrumbs class="flex-grow-1"></seam-breadcrumbs>
-          </div>
-          <seam-top-bar
-            *seamBaseLayoutTopBar
-            [logo]="logo"
-            [logoSm]="logoSm"
-            [hasTitle]="hasTitle"
-            [titleText]="titleText"
-            [subTitleText]="subTitleText">
-            <seam-menu seamTopBarMenu>
-              <a seamMenuItem [icon]="faUserAlt" routerLink="/profile">Profile</a>
-              <button seamMenuItem [icon]="faQuestionCircle">About</button>
-              <seam-menu-divider></seam-menu-divider>
-              <a seamMenuItem [icon]="faSignOutAlt" routerLink="/logout">Sign out</a>
-            </seam-menu>
+    }),
+  ]
+}
 
-            <button seamIconBtn *seamTopBarItem
-              [icon]="faBell"
-              iconType="borderless-styled-square"
-              [seamMenuToggle]="notificationMenu">
-              <span class="sr-only">Notifications</span>
-              <seam-icon-notification iconClass="text-danger"></seam-icon-notification>
-            </button>
-            <seam-menu #notificationMenu>
-              <div style="width: 400px">
-                <a seamMenuItem [icon]="faExclamationTriangle" iconClass="text-warning" routerLink="/profile">
-                  There is a problem with you self-assessment answers.
-                </a>
-                <a seamMenuItem [icon]="faExclamationTriangle" iconClass="text-warning" routerLink="/profile">
-                  Your password expires in 10 days.
-                </a>
-                <button seamMenuItem [icon]="faComment" iconClass="text-primary">
-                  You have unread feedback on your document.
-                </button>
-                <seam-menu-footer>
-                  <a seamMenuFooterAction routerLink="/notifications">See All</a>
-                </seam-menu-footer>
-              </div>
-            </seam-menu>
-          </seam-top-bar>
-          <seam-dashboard
-            *seamBaseLayoutContent
-            [widgets]="widgets"
-            [widgetsDraggable]="widgetsDraggable">
-          </seam-dashboard>
-        </seam-base-layout>
-      </div>
-    `
-  }))
+export const Basic = () => ({
+  props: {
+    logo: text('logo', 'assets/images/theseam_logo.svg'),
+    logoSm: text('logoSm', 'assets/images/theseam_logo_notext.svg'),
+    hasTitle: boolean('hasTitle', false),
+    titleText: text('titleText', 'Dashboard'),
+    subTitleText: text('subTitleText', 'Example'),
+    navItems,
+    widgets: [
+      { widgetId: 'widget-1', col: 0, order: 0, component: StoryExWidget1Component },
+      { widgetId: 'widget-2', col: 1, order: 0, component: StoryExWidget2Component },
+      { widgetId: 'widget-3', col: 2, order: 0, component: StoryExWidget3Component },
+      { widgetId: 'widget-4', col: 1, order: 1, component: StoryExWidget4Component }
+    ],
+    faUserAlt,
+    faQuestionCircle,
+    faSignOutAlt,
+    faBell,
+    faExclamationTriangle,
+    faComment,
+    widgetsDraggable: boolean('widgetsDraggable', true),
+  },
+  template: `
+    <div style="height: 100vh; width: 100vw;">
+      <seam-base-layout>
+        <seam-side-nav
+          *seamBaseLayoutSideBar
+          [items]="navItems">
+        </seam-side-nav>
+        <div class="p-1" *seamBaseLayoutContentHeader>
+          <seam-breadcrumbs class="flex-grow-1"></seam-breadcrumbs>
+        </div>
+        <seam-top-bar
+          *seamBaseLayoutTopBar
+          [logo]="logo"
+          [logoSm]="logoSm"
+          [hasTitle]="hasTitle"
+          [titleText]="titleText"
+          [subTitleText]="subTitleText">
+          <seam-menu seamTopBarMenu>
+            <a seamMenuItem [icon]="faUserAlt" routerLink="/profile">Profile</a>
+            <button seamMenuItem [icon]="faQuestionCircle">About</button>
+            <seam-menu-divider></seam-menu-divider>
+            <a seamMenuItem [icon]="faSignOutAlt" routerLink="/logout">Sign out</a>
+          </seam-menu>
+
+          <button seamIconBtn *seamTopBarItem
+            [icon]="faBell"
+            iconType="borderless-styled-square"
+            [seamMenuToggle]="notificationMenu">
+            <span class="sr-only">Notifications</span>
+            <seam-icon-notification iconClass="text-danger"></seam-icon-notification>
+          </button>
+          <seam-menu #notificationMenu>
+            <div style="width: 400px">
+              <a seamMenuItem [icon]="faExclamationTriangle" iconClass="text-warning" routerLink="/profile">
+                There is a problem with you self-assessment answers.
+              </a>
+              <a seamMenuItem [icon]="faExclamationTriangle" iconClass="text-warning" routerLink="/profile">
+                Your password expires in 10 days.
+              </a>
+              <button seamMenuItem [icon]="faComment" iconClass="text-primary">
+                You have unread feedback on your document.
+              </button>
+              <seam-menu-footer>
+                <a seamMenuFooterAction routerLink="/notifications">See All</a>
+              </seam-menu-footer>
+            </div>
+          </seam-menu>
+        </seam-top-bar>
+        <seam-dashboard
+          *seamBaseLayoutContent
+          [widgets]="widgets"
+          [widgetsDraggable]="widgetsDraggable">
+        </seam-dashboard>
+      </seam-base-layout>
+    </div>
+  `
+})

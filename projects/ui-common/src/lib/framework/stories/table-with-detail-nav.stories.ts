@@ -458,9 +458,6 @@ storiesOf('Framework/Examples', module)
       logoSm: text('logoSm', 'assets/images/theseam_logo_notext.svg'),
       titleText: text('titleText', 'Dashboard'),
       subTitleText: text('subTitleText', 'Example'),
-      displayName: text('displayName', 'Mark Berry'),
-      organizationName: text('organizationName', 'The Seam'),
-
       dashboardBreadcrubs: boolean('Breadcrumbs on Dashboard', true),
     },
     template: `
@@ -475,9 +472,7 @@ storiesOf('Framework/Examples', module)
             [logo]="logo"
             [logoSm]="logoSm"
             [titleText]="titleText"
-            [subTitleText]="subTitleText"
-            [displayName]="displayName"
-            [organizationName]="organizationName">
+            [subTitleText]="subTitleText">
           </seam-top-bar>
 
           <seam-hierarchy-router-outlet *seamBaseLayoutContent>
