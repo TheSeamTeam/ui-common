@@ -12,7 +12,7 @@ import {
   useAnimation,
 } from '@angular/animations'
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
-import { ChangeDetectionStrategy, Component, HostBinding, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core'
+import { ChangeDetectionStrategy, Component, HostBinding, Inject, Input, OnDestroy, OnInit, Optional, ViewEncapsulation } from '@angular/core'
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router'
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mapTo, pairwise, startWith, takeUntil, tap } from 'rxjs/operators'
@@ -133,7 +133,8 @@ export function sideNavExpandStateChangeFn(fromState: string, toState: string) {
       // ]),
     ])
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None
 })
 export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNav {
 

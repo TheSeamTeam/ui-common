@@ -21,7 +21,8 @@ import {
   OnInit,
   Optional,
   Renderer2,
-  SkipSelf
+  SkipSelf,
+  ViewEncapsulation
 } from '@angular/core'
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs'
 import { auditTime, distinctUntilChanged, map, switchMap, take, takeUntil, tap } from 'rxjs/operators'
@@ -79,7 +80,8 @@ const COMPACT_STATE = 'compact'
 
     ])
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None
 })
 export class SideNavItemComponent implements OnInit, OnDestroy {
 

@@ -1,6 +1,6 @@
 @import './styles/utilities';
 
-:host {
+seam-side-nav {
   display: block;
   height: 100%;
 
@@ -28,18 +28,19 @@
   }
 
   overflow: hidden;
-}
 
-.side-nav-content {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  flex-wrap: nowrap;
-}
+  //
+  .side-nav-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    flex-wrap: nowrap;
+  }
 
-.side-nav-items-container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  flex: 1 1 100%;
+  .side-nav-items-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex: 1 1 100%;
+  }
 }
