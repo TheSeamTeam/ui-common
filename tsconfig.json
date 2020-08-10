@@ -14,6 +14,9 @@
       "path": "./tsconfig.spec.json"
     },
     {
+      "path": "./tsconfig.stories.json"
+    },
+    {
       "path": "./projects/ui-common/tsconfig.lib.json"
     },
     {
