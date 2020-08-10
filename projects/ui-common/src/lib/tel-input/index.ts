@@ -1,4 +1,5 @@
 export { TheSeamTelInputComponent } from './tel-input/tel-input.component'
 export * from './tel-input-constants'
+export { TheSeamTelInputDirective } from './tel-input.directive'
 export { telInputValidator } from './tel-input-validator'
 export { TheSeamTelInputModule } from './tel-input.module'
