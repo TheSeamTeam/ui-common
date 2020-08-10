@@ -1,6 +1,5 @@
 import { Inject, Injectable, isDevMode } from '@angular/core'
 
-import { hasProperty } from 'projects/ui-common/src/lib/utils'
 import { DynamicValue } from './models/dynamic-value'
 import { DynamicValueEvaluatableType } from './models/dynamic-value-evaluatable-type'
 import { IDynamicValueEvaluator } from './models/dynamic-value-evaluator'

@@ -1,6 +1,6 @@
 import { FormControl } from '@angular/forms'
 
-import { notNullOrUndefined, waitOnConditionAsync } from 'projects/ui-common/src/lib/utils'
+import { notNullOrUndefined, waitOnConditionAsync } from '../utils/index'
 import { TEL_INPUT_UTILS_PATH } from './tel-input-constants'
 
 interface TelInputCountryData {
