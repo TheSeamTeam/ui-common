@@ -44,7 +44,9 @@
     "jexl": "^2.2.2",
     "@types/file-saver": "^2.0.1",
     "webfontloader": "^1.6.28",
-    "@types/webfontloader": "^1.6.29"
+    "@types/webfontloader": "^1.6.29",
+    "intl-tel-input": "^17.0.3",
+    "@types/intl-tel-input": "^14.0.1"
   },
   "repository": {
     "type": "git",

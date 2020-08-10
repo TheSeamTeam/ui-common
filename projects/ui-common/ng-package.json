@@ -35,6 +35,8 @@
     "xlsx",
     "jexl",
     "webfontloader",
-    "@types/webfontloader"
+    "@types/webfontloader",
+    "intl-tel-input",
+    "@types/intl-tel-input"
   ]
 }
