@@ -6,11 +6,6 @@
   height: 100%;
   width: 100%;
 
-  ::ng-deep .btn-baselayout-action {
-    @include button-variant($breadcrumb-bg, $breadcrumb-bg);
-    @include button-size($breadcrumb-padding-y, $breadcrumb-padding-x, $font-size-base, $line-height-base, $breadcrumb-border-radius);
-    border: none;
-  }
 }
 
 .base-layout-side-bar-nav-content-mobile {

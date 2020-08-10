@@ -48,7 +48,8 @@ const _TheSeamWidgetTileMixinBase: CanDisableCtor & HasTabIndexCtor &
   templateUrl: './widget-tile.component.html',
   styleUrls: ['./widget-tile.component.scss'],
   inputs: [ 'disabled' ],
-  exportAs: 'seamWidgetTile'
+  exportAs: 'seamWidgetTile',
+  host: {class: 'seam-widget-tile'}
 })
 export class WidgetTileComponent extends _TheSeamWidgetTileMixinBase implements OnInit, OnDestroy {
 

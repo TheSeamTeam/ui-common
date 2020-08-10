@@ -26,7 +26,6 @@
     padding-top: 4px;
     font-size: 1.3rem;
     line-height: 1.3rem;
-    color: $green;
   }
 
   .seam-progress-circle--icon-text {
@@ -36,7 +35,6 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
-    color: $green;
     font-size: 19px;
     font-weight: 700;
     transform: translateZ(0); // Move text up to transition layers
@@ -58,7 +56,6 @@
 
     .seam-progress-circle--icon-spinner-path {
       stroke-linecap: round;
-      stroke: $green;
 
       transition: 500ms;
       &:not(path) {
@@ -67,42 +64,12 @@
     }
 
     .seam-progress-circle--icon-hourglass {
-      fill: $green;
       transition: 500ms;
     }
 
     .seam-progress-circle--icon-spinner-path-bg {
       stroke-linecap: round;
-      stroke: lighten($green, 40%);
       // fill: $white;
     }
-  }
-}
-
-.seam-progress-circle--in-complete {
-  .seam-progress-circle--icon-spinner {
-    .seam-progress-circle--icon-spinner-path {
-      stroke: $orange;
-    }
-
-    .seam-progress-circle--icon-spinner-path-bg {
-      stroke: lighten($orange, 40%);
-    }
-
-    &[data-percent='0'] {
-      .seam-progress-circle--icon-spinner-path {
-        stroke: $gray-600;
-      }
-
-      .seam-progress-circle--icon-spinner-path-bg {
-        stroke: lighten($gray-600, 40%);
-      }
-    }
-  }
-}
-
-.seam-progress-circle--fill-bg {
-  .seam-progress-circle--icon-spinner-path-bg {
-    fill: $white;
   }
 }

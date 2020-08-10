@@ -3,7 +3,8 @@ import { Component, ElementRef, HostBinding, Input, OnInit } from '@angular/core
 @Component({
   selector: 'seam-widget-empty-label,a[seam-widget-empty-label],button[seam-widget-empty-label]',
   templateUrl: './widget-empty-label.component.html',
-  styleUrls: ['./widget-empty-label.component.scss']
+  styleUrls: ['./widget-empty-label.component.scss'],
+  host: {class: 'seam-widget-empty-label'}
 })
 export class WidgetEmptyLabelComponent implements OnInit {
 

@@ -2,52 +2,30 @@
 
 :host {
   display: block;
-  color: $seam-widget-tile-color;
-  font-size: $seam-widget-tile-font-size;
-  font-weight: $font-weight-normal;
-  line-height: $seam-widget-tile-line-height;
-  border: 1px solid $seam-widget-tile-border-color;
   width: 100%;
-  border-radius: $seam-widget-tile-border-radius;
   padding: 4px 4px 4px 4px;
-  margin-bottom: $seam-widget-tile-margin-bottom;
 
   &a {
     text-decoration: none;
   }
 
-  @include transition($btn-transition);
-
   @include hover {
-    color: $seam-widget-tile-color;
-    background-color: $seam-widget-tile-background-color-hover;
     text-decoration: none;
   }
 
   &:focus,
   &.focus {
     outline: 0;
-    box-shadow: $btn-focus-box-shadow;
   }
 
   // Disabled comes first so active can properly restyle
   &.disabled,
   &:disabled {
-    opacity: $btn-disabled-opacity;
     pointer-events: none;
     cursor: default;
     @include box-shadow(none);
 
     filter: grayscale(1);
-  }
-
-  &:not(:disabled):not(.disabled):active,
-  &:not(:disabled):not(.disabled).active {
-    @include box-shadow($btn-active-box-shadow);
-
-    &:focus {
-      @include box-shadow($btn-focus-box-shadow, $btn-active-box-shadow);
-    }
   }
 
   &:last-child {

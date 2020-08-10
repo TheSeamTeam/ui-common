@@ -24,7 +24,7 @@ const _WidgetHeaderBadgeMixinBase:  CanThemeCtor &
   inputs: [ 'theme' ],
   // tslint:disable-next-line:use-host-property-decorator
   host: {
-    'class': 'badge float-right'
+    'class': 'seam-widget-header-badge badge float-right'
   },
   changeDetection: ChangeDetectionStrategy.OnPush
 })

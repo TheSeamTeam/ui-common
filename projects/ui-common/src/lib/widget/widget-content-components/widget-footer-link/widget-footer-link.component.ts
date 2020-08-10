@@ -4,7 +4,8 @@ import { Component, OnInit } from '@angular/core'
   // tslint:disable-next-line:component-selector
   selector: 'a[seam-widget-footer-link]',
   templateUrl: './widget-footer-link.component.html',
-  styleUrls: ['./widget-footer-link.component.scss']
+  styleUrls: ['./widget-footer-link.component.scss'],
+  host: {class: 'seam-widget-footer-link'}
 })
 export class WidgetFooterLinkComponent implements OnInit {
 

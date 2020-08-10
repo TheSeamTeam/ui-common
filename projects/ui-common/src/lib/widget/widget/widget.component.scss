@@ -2,13 +2,9 @@
 
 :host {
   display: block;
-  font-size: $seam-widget-body-font-size;
 }
 
 .widget-header {
-  background-color: #F4F4F4;
-  border-bottom: 1px solid $border-color;
-  font-size: $seam-widget-header-title-font-size;
   display: flex;
   flex-direction: row;
 
@@ -66,25 +62,14 @@
     }
   }
 
-  .widget-header-title {
-    font-size: $seam-widget-header-title-font-size;
-  }
+
 }
 
 .widget-header-icon {
-  max-height: $seam-widget-header-icon-height;
-  max-width: $seam-widget-header-icon-width;
-  height: $seam-widget-header-icon-height;
-  width: $seam-widget-header-icon-width;
   display: inline-block;
   vertical-align: top;
 
   .widget-header-icon--fa {
-    max-height: $seam-widget-header-icon-height;
-    max-width: $seam-widget-header-icon-width;
-    height: $seam-widget-header-icon-height;
-    width: $seam-widget-header-icon-width;
-
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -99,7 +84,5 @@
 
   .widget-header-icon--img {
     height: 100%;
-    max-height: $seam-widget-header-icon-height;
-    max-width: $seam-widget-header-icon-width;
   }
 }

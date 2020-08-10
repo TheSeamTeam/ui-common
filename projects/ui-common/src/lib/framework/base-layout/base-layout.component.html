@@ -20,9 +20,9 @@
         <div class="flex-grow-1">
           <ng-template [cdkPortalOutlet]="_contentHeaderPortal"></ng-template>
         </div>
-        <div class="pt-1 pb-1 pr-1">
+        <div>
           <ng-container *ngFor="let action of registeredActions$ | async; first as isFirst">
-            <div [class.ml-1]="!isFirst">
+            <div>
               <ng-container [ngTemplateOutlet]="action.template"></ng-container>
             </div>
           </ng-container>

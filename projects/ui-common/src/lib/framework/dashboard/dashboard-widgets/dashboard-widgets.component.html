@@ -10,14 +10,13 @@
   <ng-template [seamDashboardWidgetPortalOutlet]="item.portal"></ng-template>
 </seam-dashboard-widget-container>
 
-<div class="d-flex flex-row justify-content-around"
-  style="max-width: 1410px; flex: 1410px;"
+<div class="dashboard-widgets-base d-flex flex-row justify-content-around"
+  style="flex: 1410px;"
   [style.padding.px]="_gapStyleSize$ | async"
   (seamElemResized)="_resized($event)"
   cdkDropListGroup>
   <div *ngFor="let col of widgetColumns$ | async; trackBy: _columnsTrackByFn"
     class="d-flex flex-column flex-grow-1 dashboard-widgets-list"
-    style="max-width: 500px;"
     cdkDropList
     [cdkDropListData]="col.items"
     (cdkDropListDropped)="drop($event)">
@@ -35,6 +34,6 @@
 
 <ng-template #toggleBtnTpl>
   <button seamButton theme="baselayout-action" title="{{ widgetsDraggable ? 'Lock the Dashboard' : 'Modify Dashboard' }}" (click)="toggleDragging()">
-    <seam-icon [icon]="widgetsDraggable ? faUnlock : faLock" iconClass="text-secondary"></seam-icon>
+    <seam-icon [icon]="widgetsDraggable ? faUnlock : faLock"></seam-icon>
   </button>
 </ng-template>

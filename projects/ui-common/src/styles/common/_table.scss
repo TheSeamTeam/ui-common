@@ -117,3 +117,8 @@ table:not(.table-sm) {
     max-height: 24px;
   }
 }
+
+.datatable-action-button:hover {
+  color: $primary;
+  background-color: $table-border-color;
+}
