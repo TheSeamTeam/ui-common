@@ -153,6 +153,11 @@
                 "glob": "**/*.png",
                 "input": "../../node_modules/intl-tel-input/build/img",
                 "output": "assets/vendor/intl-tel-input/img"
+              },
+              {
+                "glob": "**/utils.js",
+                "input": "../../node_modules/intl-tel-input/build/js",
+                "output": "assets/vendor/intl-tel-input/js"
               }
             ]
           },
