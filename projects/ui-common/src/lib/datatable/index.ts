@@ -10,6 +10,7 @@ export * from './datatable-menu-bar-column-center/datatable-menu-bar-column-cent
 export * from './datatable-menu-bar-column-left/datatable-menu-bar-column-left.component'
 export * from './datatable-menu-bar-column-right/datatable-menu-bar-column-right.component'
 export * from './datatable-menu-bar-row/datatable-menu-bar-row.component'
+export * from './datatable-menu-bar-text/datatable-menu-bar-text.component'
 export * from './datatable-row-detail/datatable-row-detail-tpl.directive'
 export * from './datatable-row-detail/datatable-row-detail.directive'
 

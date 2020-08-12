@@ -146,7 +146,9 @@ function getUtils(): Promise<any> {
       .then(() => window.intlTelInputUtils)
   }
 
-  return window.intlTelInputGlobals.loadUtils(TEL_INPUT_UTILS_PATH) as unknown as Promise<any>
+  return (window.intlTelInputGlobals.loadUtils(TEL_INPUT_UTILS_PATH) as unknown as Promise<any>)
+    .then(() => waitOnConditionAsync(() => notNullOrUndefined(window.intlTelInputUtils), 5000))
+    .then(() => window.intlTelInputUtils)
 }
 
 export const TEL_VALIDATOR_KEY = 'telInput'

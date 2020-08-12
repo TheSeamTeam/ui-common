@@ -1,7 +1,7 @@
 import { moduleMetadata } from '@storybook/angular'
 import type { Meta, Story } from '@storybook/angular/types-6-0'
 
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms'
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { merge } from 'rxjs'
@@ -84,6 +84,36 @@ export const Validator: Story = (args) => {
           </seam-tel-input>
           <ng-template seamFormFieldError="telInput">Invalid number.</ng-template>
         </seam-form-field>
+      </div>
+    `
+  }
+}
+
+export const Form: Story = (args) => {
+  const control = new FormControl('9016067687', [ ], [ telInputValidator ])
+
+  control.valueChanges.subscribe(v => console.log('%c[Story] value', 'color:red', v))
+
+  const group = new FormGroup({
+    phoneNumber: control
+  })
+
+  return {
+    props: {
+      control,
+      group,
+      disabled: args.disabled
+    },
+    template: `
+      <div style="max-width: 300px;">
+        <form [formGroup]="group">
+          <seam-form-field>
+            <seam-tel-input seamInput formControlName="phoneNumber"
+              [seamDisableControl]="disabled">
+            </seam-tel-input>
+            <ng-template seamFormFieldError="telInput">Invalid number.</ng-template>
+          </seam-form-field>
+        </form>
       </div>
     `
   }
