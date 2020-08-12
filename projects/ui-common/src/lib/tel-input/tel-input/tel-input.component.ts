@@ -1,4 +1,4 @@
-import { coerceBooleanProperty } from '@angular/cdk/coercion'
+import { coerceBooleanProperty, coerceNumberProperty } from '@angular/cdk/coercion'
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -6,6 +6,8 @@ import {
   ElementRef,
   EventEmitter,
   forwardRef,
+  HostBinding,
+  HostListener,
   InjectFlags,
   Injector,
   Input,
@@ -15,11 +17,15 @@ import {
   ViewChild
 } from '@angular/core'
 import { ControlValueAccessor, FormControl, NgControl, NG_VALUE_ACCESSOR } from '@angular/forms'
-import { defer, Observable, of, Subject } from 'rxjs'
-import { map, switchMap, takeUntil } from 'rxjs/operators'
+import { defer, fromEvent, merge, Observable, of, Subject } from 'rxjs'
+import { auditTime, map, switchMap, takeUntil, tap } from 'rxjs/operators'
 
-import { observeControlValid } from '../../utils/index'
+import { FocusMonitor, FocusOrigin } from '@angular/cdk/a11y'
+import { InputDirective } from '../../form-field/input.directive'
 import { TheSeamTelInputDirective } from '../tel-input.directive'
+
+// TODO: Fix focus
+// TODO: Fix disabled
 
 @Component({
   selector: 'seam-tel-input',
@@ -39,6 +45,8 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
 
   /** @ignore */
   readonly _control = new FormControl()
+
+  private _focusOrigin: FocusOrigin = null
 
   _hasInvalidCss$: Observable<boolean>
 
@@ -61,6 +69,22 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
   /** @ignore */
   private _disabled = false
 
+  /**
+   * Set the tab index to `-1` to allow the root element of the
+   * component to receive `focus` event from javascript, but not get focused by
+   * keyboard navigation.
+   */
+  @Input()
+  set tabIndex(value: number) { this._tabIndex = coerceNumberProperty(value) }
+  get tabIndex(): number { return this._tabIndex }
+  private _tabIndex = -1
+
+  @HostBinding('attr.disabled')
+  get _attrDisabled() { return this.disabled || null }
+
+  @HostBinding('attr.tabindex')
+  get _attrTabIndex() { return this.disabled ? -1 : (this.tabIndex || 0) }
+
   /** Name value will be applied to the input element if present */
   @Input() name: string | null = null
 
@@ -77,10 +101,21 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
   @ViewChild(TheSeamTelInputDirective, { static: true }) _telInputDirective: TheSeamTelInputDirective
 
   /**
+   * The telInput directive
+   * @ignore
+   */
+  @ViewChild(InputDirective, { static: true }) _inputDirective: InputDirective
+
+  /**
    * The native `<input type="tel">` element
    * @ignore
    */
   @ViewChild('input', { static: true }) _inputElementRef: ElementRef<HTMLInputElement>
+
+  @HostListener('focus', [ '$event' ])
+  _onFocus(event) {
+    this._telInputDirective.focus()
+  }
 
   /**
    * Called when the checkbox is blurred. Needed to properly implement ControlValueAccessor.
@@ -93,13 +128,23 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
 
   constructor(
     private readonly _changeDetectorRef: ChangeDetectorRef,
-    private readonly _injector: Injector
+    private readonly _injector: Injector,
+    private readonly _elementRef: ElementRef,
+    private readonly _focusMonitor: FocusMonitor
   ) {
     this._hasInvalidCss$ = defer(() => of((this._injector.get(NgControl, null, InjectFlags.Self)?.control) || undefined)).pipe(
       switchMap(control => {
         if (control) {
-          return observeControlValid(control).pipe(
-            map(() => control.invalid && (control.dirty || control.touched))
+          return merge(
+            control.valueChanges,
+            control.statusChanges,
+            fromEvent(this._telInputDirective.getHostElement(), 'blur')
+          ).pipe(
+            auditTime(0),
+            map(() => {
+              const inputControl = this._inputDirective.ngControl
+              return control.invalid && (inputControl.dirty as boolean || inputControl.touched as boolean)
+            })
           )
         }
         return of(false)
@@ -109,6 +154,10 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
 
   /** @ignore */
   ngOnInit(): void {
+    this._focusMonitor.monitor(this._elementRef, true).pipe(
+      takeUntil(this._ngUnsubscribe)
+    ).subscribe(origin => this._focusOrigin = origin)
+
     this._control.valueChanges.pipe(
       takeUntil(this._ngUnsubscribe)
     ).subscribe(v => {
@@ -124,6 +173,8 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
 
   /** @ignore */
   ngOnDestroy(): void {
+    this._focusMonitor.stopMonitoring(this._elementRef)
+
     this._ngUnsubscribe.next()
     this._ngUnsubscribe.complete()
   }
@@ -155,6 +206,20 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
   /** @ignore */
   setDisabledState(isDisabled: boolean) {
     this.disabled = isDisabled
+  }
+
+  /** Focuses the input. */
+  public focus(): void {
+    this._telInputDirective.focus()
+  }
+
+  /** Unfocuses the input. */
+  public blur(): void {
+    this._telInputDirective.blur()
+  }
+
+  public hasFocus(): boolean {
+    return this._focusOrigin !== null && this._focusOrigin !== undefined
   }
 
 }

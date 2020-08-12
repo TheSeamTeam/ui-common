@@ -1,6 +1,7 @@
-import { Directive, ElementRef, HostBinding, Input, OnDestroy, OnInit } from '@angular/core'
+import { DOCUMENT } from '@angular/common'
+import { Directive, ElementRef, HostBinding, Inject, Input, NgZone, OnDestroy, OnInit, Optional } from '@angular/core'
 import { from, fromEvent, merge, Subject } from 'rxjs'
-import { last, switchMap, takeUntil, tap } from 'rxjs/operators'
+import { auditTime, last, switchMap, takeUntil, tap } from 'rxjs/operators'
 
 import intlTelInput from 'intl-tel-input'
 
@@ -39,10 +40,10 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy {
 
   constructor(
     private readonly _elementRef: ElementRef<HTMLInputElement>,
-    private readonly _assetLoader: AssetLoaderService
-  ) {
-    // console.log('TheSeamTelInputDirective', this._elementRef)
-  }
+    private readonly _assetLoader: AssetLoaderService,
+    private readonly _ngZone: NgZone,
+    @Optional() @Inject(DOCUMENT) private readonly _document?: any
+  ) { }
 
   ngOnInit(): void {
     merge(
@@ -69,6 +70,7 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy {
         return this._instance.promise
       }),
       // tap(() => console.log('%c_instance ready', 'color:green', this._instance, this._elementRef.nativeElement.value)),
+      tap(() => this._initDropdownListener()),
       tap(() => this.value = this._value),
       tap(this._formatIntlTelInput),
       switchMap(() => merge(
@@ -129,4 +131,69 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy {
     return this.value
   }
 
+  private _initDropdownListener() {
+    const doc = this._document
+    if (!doc) {
+        return
+    }
+
+    this._ngZone.runOutsideAngular(() => {
+      const openDropdown$ = fromEvent(this._elementRef.nativeElement, 'open:countrydropdown')
+      const closeDropdown$ = fromEvent(this._elementRef.nativeElement, 'close:countrydropdown')
+      const instance = this._instance as any
+      openDropdown$.pipe(
+        switchMap(() => {
+          const pressDown$ = merge(
+            fromEvent(doc, 'touchstart', { capture: true }),
+            fromEvent(doc, 'mousedown', { capture: true })
+          ).pipe(
+            auditTime(0),
+            tap((event: any) => {
+              if (instance.countryList.contains(event.target) || instance.selectedFlag.contains(event.target)) {
+                return
+              }
+              instance._closeDropdown()
+            })
+          )
+
+          const flagBtnClick$ = fromEvent(instance.selectedFlag, 'click').pipe(
+            tap((event: MouseEvent) => {
+              if (!this.isDropdownVisible()) {
+                return
+              }
+
+              event.preventDefault()
+              instance._closeDropdown()
+            })
+          )
+
+          return merge(pressDown$, flagBtnClick$).pipe(takeUntil(closeDropdown$))
+        }),
+        takeUntil(this._ngUnsubscribe)
+      ).subscribe()
+    })
+  }
+
+  public isDropdownVisible() {
+    if (!this._instance) {
+      return false
+    }
+
+    const instance = this._instance as any
+    return !instance.countryList.classList.contains('iti__hide')
+  }
+
+  /** Focuses the input. */
+  public focus(): void {
+    this._elementRef.nativeElement.focus()
+  }
+
+  /** Unfocuses the input. */
+  public blur(): void {
+    this._elementRef.nativeElement.blur()
+  }
+
+  public getHostElement(): HTMLInputElement {
+    return this._elementRef.nativeElement
+  }
 }
