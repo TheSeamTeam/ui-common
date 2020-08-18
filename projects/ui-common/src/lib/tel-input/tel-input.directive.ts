@@ -1,13 +1,22 @@
 import { DOCUMENT } from '@angular/common'
 import { Directive, ElementRef, HostBinding, Inject, Input, NgZone, OnDestroy, OnInit, Optional } from '@angular/core'
-import { from, fromEvent, merge, Subject } from 'rxjs'
+import { fromEvent, merge, Subject } from 'rxjs'
 import { auditTime, last, switchMap, takeUntil, tap } from 'rxjs/operators'
 
-import intlTelInput from 'intl-tel-input'
+// import intlTelInput from 'intl-tel-input'
+import { IntlTelInput, IntlTelInputFn, intlTelInputUtils } from './intl-tel-input'
 
 import { AssetLoaderService, LoadedAssetRef } from '../services/index'
 import { notNullOrUndefined } from '../utils/index'
 import { TEL_INPUT_STYLES, TEL_INPUT_STYLESHEET_PATH, TEL_INPUT_UTILS_PATH } from './tel-input-constants'
+
+function globalIntlTelInputUtils(): typeof intlTelInputUtils {
+  return (window as any).intlTelInputUtils
+}
+
+function globalIntlTelInputGlobals(): IntlTelInput.Static {
+  return (window as any).intlTelInputGlobals
+}
 
 @Directive({
   selector: 'input[seamTelInput]',
@@ -16,7 +25,7 @@ import { TEL_INPUT_STYLES, TEL_INPUT_STYLESHEET_PATH, TEL_INPUT_UTILS_PATH } fro
 export class TheSeamTelInputDirective implements OnInit, OnDestroy {
   private readonly _ngUnsubscribe = new Subject()
 
-  private _instance: intlTelInput.Plugin | undefined
+  private _instance: IntlTelInput.Plugin | undefined
   private _loadedAssetRefs: LoadedAssetRef<HTMLLinkElement |  HTMLStyleElement>[] = []
 
   @HostBinding('attr.type') _attrType = 'tel'
@@ -55,7 +64,7 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy {
       last(),
       // tap(v => console.log('StyleLoadingDone', v)),
       switchMap(() => {
-        this._instance = intlTelInput(this._elementRef.nativeElement, {
+        this._instance = IntlTelInputFn(this._elementRef.nativeElement, {
           utilsScript: TEL_INPUT_UTILS_PATH,
           preferredCountries: [ 'US' ],
           nationalMode: false,
@@ -107,7 +116,7 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy {
 
   public updateValue(): void {
     // console.log('%cupdateValue START', 'color:cyan', typeof intlTelInputUtils !== 'undefined')
-    if (typeof intlTelInputUtils !== 'undefined') {
+    if (typeof globalIntlTelInputUtils() !== 'undefined') {
       const currentText = this._instance?.getNumber(intlTelInputUtils.numberFormat.E164)
       // console.log('currentText', currentText, this._instance?.getSelectedCountryData())
       // console.log('fullNumber', (this._instance as any)._getFullNumber())
@@ -124,7 +133,7 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy {
   }
 
   public getFullNumber(): string {
-    if (typeof intlTelInputUtils !== 'undefined' && this._instance) {
+    if (typeof globalIntlTelInputUtils() !== 'undefined' && this._instance) {
       // return (this._instance as any)._getFullNumber()
       return this._instance.getNumber(intlTelInputUtils.numberFormat.E164)
     }

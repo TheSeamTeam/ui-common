@@ -12,8 +12,8 @@
     "importHelpers": true,
     "target": "es2015",
     "typeRoots": [
-      "node_modules/@types",
-      "custom_types"
+      "custom_types",
+      "node_modules/@types"
     ],
     "lib": [
       "es2018",
