@@ -69,7 +69,12 @@ export default {
         }
       ]
     })
-  ]
+  ],
+  parameters: {
+    docs: {
+      iframeHeight: '450px',
+    }
+  }
 }
 
 export const Basic = () => ({
@@ -102,9 +107,9 @@ export const Basic = () => ({
       { ginCode: '12346', name: 'Gin 2', icon: faEnvelope },
       { ginCode: '12347', name: 'Gin 3', icon: faEnvelope },
       { ginCode: '12348', name: 'Gin 4', icon: faEnvelope },
-      { ginCode: '12349', name: 'Gin 5', icon: faEnvelope },
-      { ginCode: '12350', name: 'Gin 6', icon: faEnvelope },
-      { ginCode: '12351', name: 'Gin 7', icon: faEnvelope }
+      { ginCode: '12349', name: 'Gin 5', icon: 'assets/images/theseam_logo_notext.svg' },
+      { ginCode: '12350', name: 'Gin 6', icon: 'https://ipfs.theseam.com/ipfs/QmenVkw7UcU6SLYfdLp6qWioQJQ2Tur8qrWj5SoV5AdF1k' },
+      { ginCode: '12351', name: 'Gin 7', icon: 'assets/images/ginner-med.svg' }
     ]
   },
   template: `<seam-table [columns]="displayedColumns" [rows]="dataSource"></seam-table>`
@@ -129,9 +134,9 @@ export const Medium = () => ({
       { ginCode: '12346', name: 'Gin 2', icon: faEnvelope },
       { ginCode: '12347', name: 'Gin 3', icon: faEnvelope },
       { ginCode: '12348', name: 'Gin 4', icon: faEnvelope },
-      { ginCode: '12349', name: 'Gin 5', icon: faEnvelope },
-      { ginCode: '12350', name: 'Gin 6', icon: faEnvelope },
-      { ginCode: '12351', name: 'Gin 7', icon: faEnvelope }
+      { ginCode: '12349', name: 'Gin 5', icon: 'assets/images/theseam_logo_notext.svg' },
+      { ginCode: '12350', name: 'Gin 6', icon: 'https://ipfs.theseam.com/ipfs/QmenVkw7UcU6SLYfdLp6qWioQJQ2Tur8qrWj5SoV5AdF1k' },
+      { ginCode: '12351', name: 'Gin 7', icon: 'assets/images/ginner-med.svg' }
     ]
   },
   template: `<seam-table [columns]="displayedColumns" [rows]="dataSource" size="md"></seam-table>`
@@ -166,9 +171,9 @@ export const Small = () => ({
       { ginCode: '12346', name: 'Gin 2', icon: faEnvelope },
       { ginCode: '12347', name: 'Gin 3', icon: faEnvelope },
       { ginCode: '12348', name: 'Gin 4', icon: faEnvelope },
-      { ginCode: '12349', name: 'Gin 5', icon: faEnvelope },
-      { ginCode: '12350', name: 'Gin 6', icon: faEnvelope },
-      { ginCode: '12351', name: 'Gin 7', icon: faEnvelope }
+      { ginCode: '12349', name: 'Gin 5', icon: 'assets/images/theseam_logo_notext.svg' },
+      { ginCode: '12350', name: 'Gin 6', icon: 'https://ipfs.theseam.com/ipfs/QmenVkw7UcU6SLYfdLp6qWioQJQ2Tur8qrWj5SoV5AdF1k' },
+      { ginCode: '12351', name: 'Gin 7', icon: 'assets/images/ginner-med.svg' }
     ]
   },
   template: `<seam-table [columns]="displayedColumns" [rows]="dataSource" size="sm"></seam-table>`
