@@ -16,12 +16,12 @@ import {
   DataTableColumnHeaderDirective,
   DatatableComponent as NgxDatatableComponent,
   DatatableRowDetailDirective,
-  SelectionType,
   setColumnDefaults,
   SortType,
   translateTemplates,
   TreeStatus
 } from '@marklb/ngx-datatable'
+import type { SelectionType } from '@marklb/ngx-datatable'
 
 import { composeDataFilters, IDataFilter } from '../../data-filters/index'
 import { IElementResizedEvent } from '../../shared/index'
