@@ -1,17 +1,17 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { Inject, Injectable, isDevMode, Optional } from '@angular/core'
-import { defer, from, Observable, of } from 'rxjs'
-import { delay, map, switchMap, take, tap } from 'rxjs/operators'
+import { from } from 'rxjs'
+import { switchMap } from 'rxjs/operators'
 
 import { isAbsoluteUrl } from '../../../utils/index'
 
 import { DynamicValueHelperService } from '../../dynamic-value-helper.service'
-import { IDynamicActionUiButtonDef } from '../../models/dynamic-action-ui-button-def'
+import { DynamicActionUiButtonDef } from '../../models/dynamic-action-ui-button-def'
 import { DynamicValue } from '../../models/dynamic-value'
 import { IApiConfig, THESEAM_API_CONFIG } from '../../tokens/api-config'
 
-import { IDynamicActionApi } from './dynamic-action-api'
-import { IDynamicActionApiDef } from './dynamic-action-api-def'
+import { DynamicActionApi } from './dynamic-action-api'
+import { DynamicActionApiDef } from './dynamic-action-api-def'
 import { dynamicActionApiNotSupportedError } from './dynamic-action-api-errors'
 
 /**
@@ -21,7 +21,7 @@ import { dynamicActionApiNotSupportedError } from './dynamic-action-api-errors'
  * work with any url endpoint, but will be biased towards our api where needed.
  */
 @Injectable()
-export class DynamicActionApiService implements IDynamicActionApi {
+export class DynamicActionApiService implements DynamicActionApi {
 
   readonly type = 'api'
 
@@ -33,7 +33,7 @@ export class DynamicActionApiService implements IDynamicActionApi {
     @Optional() @Inject(THESEAM_API_CONFIG) private _configs: IApiConfig[]
   ) { }
 
-  public exec(args: IDynamicActionApiDef, context: any): Promise<any> {
+  public exec(args: DynamicActionApiDef, context: any): Promise<any> {
     if (!this._isSupported()) {
       throw dynamicActionApiNotSupportedError()
     }
@@ -43,14 +43,14 @@ export class DynamicActionApiService implements IDynamicActionApi {
     ).toPromise()
   }
 
-  public async getUiProps(args: IDynamicActionApiDef, context: any): Promise<IDynamicActionUiButtonDef> {
+  public async getUiProps(args: DynamicActionApiDef, context: any): Promise<DynamicActionUiButtonDef> {
     return {
       _actionDef: args,
       triggerType: 'click'
     }
   }
 
-  private async _getExecInfo(args: IDynamicActionApiDef, context?: any) {
+  private async _getExecInfo(args: DynamicActionApiDef, context?: any) {
     const method = args.method || 'GET'
 
     const url = await this._getUrl(args, context)
@@ -72,7 +72,7 @@ export class DynamicActionApiService implements IDynamicActionApi {
     return result
   }
 
-  private async _getUrl(args: IDynamicActionApiDef, context?: any): Promise<string | null> {
+  private async _getUrl(args: DynamicActionApiDef, context?: any): Promise<string | null> {
     const config = this._getApiConfig(args)
 
     let endpoint = ''
@@ -96,7 +96,7 @@ export class DynamicActionApiService implements IDynamicActionApi {
     return null
   }
 
-  private _getApiConfig(args: IDynamicActionApiDef): IApiConfig | null {
+  private _getApiConfig(args: DynamicActionApiDef): IApiConfig | null {
     const configs = this._configs || []
 
     if (args.id === undefined || args.id === null) {
@@ -112,7 +112,7 @@ export class DynamicActionApiService implements IDynamicActionApi {
     return null
   }
 
-  private async _getBody(args: IDynamicActionApiDef, context?: any) {
+  private async _getBody(args: DynamicActionApiDef, context?: any) {
     if (args.body !== undefined && args.body !== null) {
       return await this._valueHelper.eval(args.body, context)
     }
@@ -120,7 +120,7 @@ export class DynamicActionApiService implements IDynamicActionApi {
     return undefined
   }
 
-  private async _getParams(args: IDynamicActionApiDef, context?: any) {
+  private async _getParams(args: DynamicActionApiDef, context?: any) {
     if (args.params !== undefined && args.params !== null) {
       return await this._valueHelper.eval(args.params, context)
     }
@@ -128,7 +128,7 @@ export class DynamicActionApiService implements IDynamicActionApi {
     return undefined
   }
 
-  private async _getHeaders(args: IDynamicActionApiDef, context?: any): Promise<HttpHeaders> {
+  private async _getHeaders(args: DynamicActionApiDef, context?: any): Promise<HttpHeaders> {
     let headers: string | { [name: string]: string | string[] } = {}
 
     const config = this._getApiConfig(args)
@@ -154,7 +154,7 @@ export class DynamicActionApiService implements IDynamicActionApi {
       if (typeof argHeaders === 'string') {
         headers = argHeaders
       } else {
-        const _val = this._valueHelper.eval(argHeaders, context)
+        const _val = this._valueHelper.eval(argHeaders as any, context) // TODO: Fix argHeaders type
         if (typeof _val === 'string') {
           headers = _val
         } else {
@@ -186,7 +186,7 @@ export class DynamicActionApiService implements IDynamicActionApi {
     if (typeof headers === 'string') {
       res = headers
     } else {
-      const _val = this._valueHelper.eval(headers, context)
+      const _val = this._valueHelper.eval(headers as any, context) // TODO: Fix argHeaders type
       if (typeof _val === 'string') {
         res = _val
       } else {

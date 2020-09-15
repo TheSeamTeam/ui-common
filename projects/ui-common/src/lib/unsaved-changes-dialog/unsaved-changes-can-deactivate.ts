@@ -1,5 +1,6 @@
-import { HostListener, isDevMode } from '@angular/core'
+import { HostListener, isDevMode, Directive } from '@angular/core'
 
+@Directive()
 export abstract class UnsavedChangesCanDeactivate {
 
   abstract unsavedChangesCanDeactivate(): boolean

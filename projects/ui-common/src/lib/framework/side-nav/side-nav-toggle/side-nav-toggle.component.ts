@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Host, Input, OnInit, Optional, Output, SkipSelf } from '@angular/core'
+import { ChangeDetectionStrategy, Component, EventEmitter, Host, Input, OnInit, Optional, Output, SkipSelf, ViewEncapsulation } from '@angular/core'
 
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 
@@ -9,7 +9,8 @@ import { faBars } from '@fortawesome/free-solid-svg-icons'
   host: {
     '[class.side-nav-toggle--compact]': '!expanded'
   },
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None
 })
 export class SideNavToggleComponent implements OnInit {
 

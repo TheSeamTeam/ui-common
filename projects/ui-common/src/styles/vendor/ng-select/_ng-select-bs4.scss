@@ -395,25 +395,51 @@ $color-selected: #f5faff;
 
 
 
-// TODO: Consider adding a max-width or something to keep the options from going
-// off the screen if they are long enough, before this is added. This will be
-// toggleable, because this shouldn't be the default behavior.
+// NOTE: The following classes are experiment and may be changed or removed.
+.ng-select {
+  &.ng-select-single {
+    &.ng-select-fit {
+      .ng-select-container {
+        min-width: 150px;
 
-// .ng-select {
-//   .ng-select-container {
-//       min-width: 150px;
-//   }
+        .ng-value-container {
+          .ng-value {
+            white-space: normal;
+          }
+        }
+      }
+    }
 
-//   ng-dropdown-panel {
-//     display: table;
+    &.ng-select-value-grow-h:not(.ng-select-filtered) {
+      .ng-select-container {
+        .ng-value-container,
+        .ng-value {
+          min-height: 24px;
+          height: auto;
+        }
+      }
+    }
 
-//     .ng-dropdown-panel-items {
-//           display: table-row;
+    &.ng-select-option-grow-h {
+      .ng-dropdown-panel {
+        .ng-dropdown-panel-items {
+          .ng-option {
+            white-space: normal;
+          }
+        }
+      }
+    }
+  }
+}
 
-//           span.ng-option-label {
-//               padding: 0 4px;
-//               display: table-cell;
-//           }
-//       }
-//   }
-// }
+.ng-dropdown-panel.ng-select-fit {
+  max-width: 800px;
+  width: auto !important;
+
+  .ng-dropdown-panel-items {
+
+    .ng-option {
+      white-space: normal;
+    }
+  }
+}

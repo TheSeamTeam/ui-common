@@ -1,3 +1,5 @@
 export * from './loading.module'
 export * from './loading-overlay.service'
 export * from './loading/loading.component'
+export * from './loading-themes'
+export * from './loading.models'

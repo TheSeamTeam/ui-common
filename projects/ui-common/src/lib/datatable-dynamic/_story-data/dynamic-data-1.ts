@@ -1,36 +1,142 @@
-import { IDatatableDynamicDef } from '../datatable-dynamic-def'
+import { TableCellTypeConfigDate } from '../../table-cell-types/table-cell-type-date/table-cell-type-date-config'
+import { TableCellTypeConfigIcon } from '../../table-cell-types/table-cell-type-icon/table-cell-type-icon-config'
+import { TableCellTypeConfigString } from '../../table-cell-types/table-cell-type-string/table-cell-type-string-config'
 
-export const exampleData1: IDatatableDynamicDef = {
-  filterMenu: {
-    state: 'always-visible',
-    filters: [
-      { name: 'search', type: 'full-search' },
-      { name: 'text', type: 'common' },
-      { name: 'search', type: 'common' },
-      {
-        name: 'toggle-buttons',
-        type: 'common',
-        options: {
-          buttons: [
-            { name: '30', value: '30' },
-            { name: '32', value: '32' }
-          ]
+import { DatatableDynamicDef, DynamicDatatableColumn } from '../datatable-dynamic-def'
+
+type ColumnDefType =
+  DynamicDatatableColumn<'string', TableCellTypeConfigString> |
+  DynamicDatatableColumn<'date', TableCellTypeConfigDate> |
+  DynamicDatatableColumn<'icon', TableCellTypeConfigIcon>
+
+const _columnDefs: ColumnDefType[] = [
+  // { prop: 'icn', name: 'Icon', cellType: 'icon' },
+  {
+    prop: 'icn', name: 'Icon',
+    width: 60,
+    resizeable: false,
+    canAutoResize: false,
+    cellType: 'icon',
+    cellTypeConfig: {
+      type: 'icon',
+      iconClass: { type: 'jexl', expr: 'row.read ? "" : "text-danger"' },
+      action: {
+        type: 'modal',
+        component: 'story-modal-1',
+        data: { type: 'jexl', expr: '{ message: row.item }' },
+        confirmDef: {
+          message: 'Are you sure you want to view message?'
+        },
+        resultActions: {
+          'next-modal': {
+            type: 'modal',
+            component: 'story-modal-2',
+            data: { type: 'jexl', expr: '{ message: row.item, isReply: true }' }
+          }
         }
       }
-    ],
-    exporters: [
-      'exporter:csv',
-      'exporter:xlsx'
-    ],
+    },
+    exportHeader: 'Read Status',
+    exportValue: { type: 'jexl', expr: 'row.read ? "Read" : "Unread"' },
   },
-  columns: [
-    { prop: 'icn', name: 'Icon', cellType: 'icon' },
-    { prop: 'firstName', name: 'First Name' },
-    { prop: 'lastName', name: 'Last Name' },
-    { prop: 'age', name: 'Age' },
-    { prop: 'sentDate', name: 'Sent Date', cellType: 'date' },
-    { prop: 'error', name: 'Error' }
-  ],
+  { prop: 'firstName', name: 'First Name' },
+  { prop: 'lastName', name: 'Last Name' },
+  { prop: 'age', name: 'Age' },
+  { prop: 'sentDate', name: 'Sent Date', cellType: 'date' },
+  { prop: 'error', name: 'Error' }
+]
+
+export const exampleData1: DatatableDynamicDef = {
+  // filterMenu: {
+  //   state: 'always-visible',
+  //   filters: [
+  //     { name: 'search', type: 'full-search' },
+  //     { name: 'text', type: 'common' },
+  //     { name: 'search', type: 'common' },
+  //     {
+  //       name: 'toggle-buttons',
+  //       type: 'common',
+  //       options: {
+  //         buttons: [
+  //           { name: 'All', value: '' },
+  //           { name: '30', value: '30' },
+  //           { name: '32', value: '32' }
+  //         ],
+  //         multiple: false,
+  //         selectionToggleable: false,
+  //         initialValue: '',
+  //         properties: ['age']
+  //       }
+  //     }
+  //   ],
+  //   exporters: [
+  //     'exporter:csv',
+  //     'exporter:xlsx'
+  //   ],
+  // },
+  menuBar: {
+    rows: [
+      {
+        layout: {
+          type: 'tri-column',
+          columnLeft: {
+            items: [
+              { component: 'text', data: { value: 'Test value for text component' } }
+            ]
+          },
+          columnCenter: {
+            items: []
+          },
+          columnRight: {
+            items: [
+              { component: 'filter-search' }
+            ]
+          }
+        }
+      },
+      {
+        layout: {
+          type: 'tri-column',
+          columnLeft: {
+            items: []
+          },
+          columnCenter: {
+            items: [
+              {
+                component: 'filter-buttons',
+                data: {
+                  buttons: [
+                    { name: 'All', value: '' },
+                    { name: '30', value: '30' },
+                    { name: '32', value: '32' }
+                  ],
+                  multiple: false,
+                  selectionToggleable: false,
+                  initialValue: '',
+                  properties: ['age']
+                }
+              }
+            ]
+          },
+          columnRight: {
+            items: [
+              {
+                component: 'export-button',
+                data: {
+                  type: 'exporters-data',
+                  exporters: [
+                    'exporter:csv',
+                    'exporter:xlsx'
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  columns: _columnDefs,
   rows: [
     { icn: 'faEnvelope', firstName: 'User1', lastName: 'Last1', age: 28, sentDate: '2019-07-22T16:25:58.0266996+00:00' },
     { icn: 'faEnvelope', firstName: 'User2', lastName: 'Last2', age: 30, sentDate: '2019-08-22T19:23:58.0266996+00:00' },
@@ -83,8 +189,9 @@ export const exampleData1: IDatatableDynamicDef = {
     // },
     {
       label: 'Modal',
-      // action: { type: 'modal', modal: 'story-ex-modal' }
-      action: { type: 'modal', modal: { type: 'jexl', expr: 'row.age > 30 ? "story-ex-modal" : "story-ex-modal2"' } }
+      // action: { type: 'modal', component: 'story-ex-modal' }
+      // action: { type: 'modal', component: { type: 'jexl', expr: 'row.age > 30 ? "story-ex-modal" : "story-ex-modal2"' } }
+      action: { type: 'modal', component: { type: 'jexl', expr: 'row.age > 30 ? "story-modal-1" : "story-modal-2"' } }
     }
   ],
   options: {

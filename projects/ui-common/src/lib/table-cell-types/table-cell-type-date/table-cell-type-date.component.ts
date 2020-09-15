@@ -1,9 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core'
-
-import { untilDestroyed } from 'ngx-take-until-destroy'
+import { Subject } from 'rxjs'
+import { takeUntil } from 'rxjs/operators'
 
 import { TABLE_CELL_DATA } from '../../table/table-cell-tokens'
-import { ITableCellData } from '../../table/table-cell.models'
+import { TableCellData } from '../../table/table-cell.models'
+
+import { TableCellTypeConfigDate } from './table-cell-type-date-config'
 
 @Component({
   selector: 'seam-table-cell-type-date',
@@ -13,21 +15,23 @@ import { ITableCellData } from '../../table/table-cell.models'
 })
 export class TableCellTypeDateComponent implements OnInit, OnDestroy {
 
+  private readonly _ngUnsubscribe = new Subject()
+
   @Input() value?: string | null
   @Input() format?: string
 
   constructor(
     private _cdf: ChangeDetectorRef,
-    @Optional() @Inject(TABLE_CELL_DATA) _tableData?: ITableCellData<any, string>
+    @Optional() @Inject(TABLE_CELL_DATA) _tableData?: TableCellData<'date', TableCellTypeConfigDate>
   ) {
     const _data = _tableData
 
     this.value = _data && _data.value
-    this.format = _data && _data.colData && _data.colData.cellProps
+    this.format = _data && _data.colData && _data.colData.cellTypeConfig && _data.colData.cellTypeConfig.format
 
     if (_data) {
       _data.changed
-        .pipe(untilDestroyed(this))
+        .pipe(takeUntil(this._ngUnsubscribe))
         .subscribe(v => {
           if (v.changes.hasOwnProperty('value')) {
             this.value = v.changes.value.currentValue
@@ -49,6 +53,9 @@ export class TableCellTypeDateComponent implements OnInit, OnDestroy {
 
   ngOnInit() { }
 
-  ngOnDestroy() { }
+  ngOnDestroy() {
+    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.complete()
+  }
 
 }

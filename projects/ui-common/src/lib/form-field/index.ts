@@ -1,4 +1,6 @@
-export * from './form-field.module'
 export * from './form-field-error.directive'
+export * from './form-field-label-tpl.directive'
 export * from './form-field-required-indicator.component'
+export * from './form-field.component'
+export * from './form-field.module'
 export * from './input.directive'

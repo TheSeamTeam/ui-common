@@ -12,6 +12,7 @@ import { faPuzzlePiece, faWrench } from '@fortawesome/free-solid-svg-icons'
 import { TheSeamButtonsModule } from '../../../../buttons/index'
 import { TheSeamIconModule } from '../../../../icon/index'
 import { ThemeNames } from '../../../../models/theme-names'
+import { _knobUndefinedNullHACK } from '../../../../utils/storybook-knobs-hack'
 
 import { TheSeamWidgetModule } from '../../../widget.module'
 
@@ -155,6 +156,51 @@ storiesOf('Components/Widget/Content/List Group/Item/Content', module)
         <seam-widget [icon]="icon" [titleText]="title" [loading]="loading">
           <seam-widget-list-group>
             <seam-widget-list-group-item [icon]="itemIcon" [label]="label"></seam-widget-list-group-item>
+          </seam-widget-list-group>
+        </seam-widget>
+      </div>`
+  }))
+
+  .add('Secondary Icon', () => ({
+    moduleMetadata: {
+      imports: [
+        BrowserAnimationsModule,
+        RouterModule.forRoot([], { useHash: true }),
+        TheSeamWidgetModule,
+        TheSeamButtonsModule,
+        TheSeamIconModule
+      ]
+    },
+    props: {
+      icon: faWrench,
+      title: text('Header Title', 'Example Widget'),
+      loading: boolean('Loading', false),
+      faEnvelope: faEnvelope,
+      label: text('Label', 'Example Label'),
+      itemIcon: select('Icon', {
+        'undefined': '__undefined__',
+        'fa-icon': faPuzzlePiece as any,
+        'img': 'assets/images/icons8-cotton-filled-48.png',
+        'wide-img': 'assets/images/landdb-14d6a0.PNG'
+      }, faPuzzlePiece),
+      secondaryIcon: select('Secondary Icon', {
+        'undefined': '__undefined__',
+        'fa-icon': faPuzzlePiece as any,
+        'img': 'assets/images/icons8-cotton-filled-48.png',
+        'wide-img': 'assets/images/landdb-14d6a0.PNG'
+      }, faPuzzlePiece),
+
+      _knobHack: _knobUndefinedNullHACK
+    },
+    template: `
+      <div class="p-1" style="max-height: 400px; width: 500px;">
+        <seam-widget [icon]="icon" [titleText]="title" [loading]="loading">
+          <seam-widget-list-group>
+            <seam-widget-list-group-item
+              [icon]="itemIcon"
+              [label]="label"
+              [secondaryIcon]="_knobHack(secondaryIcon)"
+            ></seam-widget-list-group-item>
           </seam-widget-list-group>
         </seam-widget>
       </div>`

@@ -11,3 +11,10 @@
 //   transition: 250ms ease-in-out;
 //   transform: translateY(100%);
 // }
+
+
+:host {
+  &[tabindex="-1"]:focus:not(:focus-visible) {
+    outline: 0 !important;
+  }
+}

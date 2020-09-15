@@ -9,25 +9,19 @@ import {
   OnInit,
   Optional
 } from '@angular/core'
-
-import { untilDestroyed } from 'ngx-take-until-destroy'
-
-import jexl from 'jexl'
-
-import {
-  DynamicDatatableCellActionModal,
-  DynamicDatatableCellTypeConfigIcon,
-  DynamicDatatableCellTypeConfigIconAction
-} from '../../datatable-dynamic/index'
-import { getKnownIcon, SeamIcon, TheSeamIconType } from '../../icon/index'
-
-import { TABLE_CELL_DATA } from '../../table/table-cell-tokens'
-import { ITableCellData } from '../../table/table-cell.models'
-import { ITheSeamTableColumn } from '../../table/table-column'
-import { TableComponent } from '../../table/table/table.component'
+import { Subject } from 'rxjs'
+import { takeUntil } from 'rxjs/operators'
 
 import { DatatableComponent, THESEAM_DATATABLE } from '../../datatable/datatable/datatable.component'
+import { getKnownIcon, SeamIcon, TheSeamIconType } from '../../icon/index'
+import { TABLE_CELL_DATA } from '../../table/table-cell-tokens'
+import { TableCellData } from '../../table/table-cell.models'
+import { TheSeamTableColumn } from '../../table/table-column'
+import { TableComponent } from '../../table/table/table.component'
+
 import { TableCellTypesHelpersService } from '../services/table-cell-types-helpers.service'
+
+import { TableCellTypeConfigIcon, TableCellTypeIconConfigAction } from './table-cell-type-icon-config'
 
 export type IconTemplateType = 'default' | 'link' | 'link-external' | 'link-encrypted' | 'button'
 
@@ -39,6 +33,8 @@ export type IconTemplateType = 'default' | 'link' | 'link-external' | 'link-encr
 })
 export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnDestroy {
 
+  private readonly _ngUnsubscribe = new Subject()
+
   @Input()
   get value() { return this._value }
   set value(value: string | undefined | null) {
@@ -49,16 +45,26 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
 
   @Input()
   get config() { return this._config }
-  set config(value: DynamicDatatableCellTypeConfigIcon | undefined | null) {
+  set config(value: TableCellTypeConfigIcon | undefined | null) {
     this._config = value
     if (value) {
       this.setAction(value.action)
       this._linkClass = this._parseConfigValue(value.linkClass)
       this._iconClass = this._parseConfigValue(value.iconClass)
       this._iconType = value.iconType
+      this._title = this._parseConfigValue(value.titleAttr)
+      this._tooltip = this._parseConfigValue(value.tooltip)
+      if (this._tooltip) {
+        this._tooltipClass = this._parseConfigValue(value.tooltipClass)
+        this._tooltipPlacement = this._parseConfigValue(value.tooltipPlacement) || 'auto'
+        this._tooltipContainer = this._parseConfigValue(value.tooltipContainer)
+        this._tooltipDisabled = false
+      } else {
+        this._tooltipDisabled = true
+      }
     }
   }
-  private _config: DynamicDatatableCellTypeConfigIcon | undefined | null
+  private _config: TableCellTypeConfigIcon | undefined | null
 
   _icon: SeamIcon | undefined | null
   _link?: string
@@ -68,13 +74,19 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
   _linkClass?: string
   _iconClass?: string
   _iconType?: TheSeamIconType
+  _target?: string
+  _tooltip: string
+  _tooltipClass: string
+  _tooltipPlacement: string
+  _tooltipContainer: string
+  _tooltipDisabled: boolean = true
 
-  _buttonAction?: DynamicDatatableCellTypeConfigIconAction
+  _buttonAction?: TableCellTypeIconConfigAction
 
-  _tableCellData?: ITableCellData<any, string>
+  _tableCellData?: TableCellData<'icon', TableCellTypeConfigIcon>
   _row?: any
   _rowIndex?: number
-  _colData?: ITheSeamTableColumn<R>
+  _colData?: TheSeamTableColumn<'icon', TableCellTypeConfigIcon>
 
   _download: boolean
   _detectMimeContent: boolean
@@ -86,7 +98,7 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
     private _tableCellTypeHelpers: TableCellTypesHelpersService,
     @Optional() private _datatable?: DatatableComponent,
     @Optional() private _table?: TableComponent,
-    @Optional() @Inject(TABLE_CELL_DATA) _tableData?: ITableCellData<any, string>
+    @Optional() @Inject(TABLE_CELL_DATA) _tableData?: TableCellData<'icon', TableCellTypeConfigIcon>
   ) {
     if (_datatable) {
       this._isDatatable = true
@@ -110,7 +122,7 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
 
     if (_data) {
       _data.changed
-        .pipe(untilDestroyed(this))
+        .pipe(takeUntil(this._ngUnsubscribe))
         .subscribe(v => {
           if (v.changes.hasOwnProperty('value')) {
             this.value = v.changes.value.currentValue
@@ -132,21 +144,28 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
 
   ngOnInit() { }
 
-  ngOnDestroy() { }
+  ngOnDestroy() {
+    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.complete()
+  }
 
-  public setAction(configAction?: DynamicDatatableCellTypeConfigIconAction) {
+  public setAction(configAction?: TableCellTypeIconConfigAction) {
     let newTplType: IconTemplateType = 'default'
     let link: string | undefined
     let download: boolean = false
     let detectMimeContent = false
+    let target: string | undefined
 
     if (configAction) {
       if (configAction.type === 'link') {
         link = this._parseConfigValue(configAction.link)
         if (link !== undefined && link !== null) {
-          newTplType = configAction.encrypted ? 'link-encrypted' : 'link'
-          download = configAction.download ? true : false
-          detectMimeContent = configAction.detectMimeContent ? true : false
+          newTplType = this._parseConfigValue(configAction.asset)
+            ? 'link-encrypted'
+            : this._parseConfigValue(configAction.external) ? 'link-external' : 'link'
+          download = !!this._parseConfigValue(configAction.download)
+          detectMimeContent = !!this._parseConfigValue(configAction.detectMimeContent)
+          target = this._parseConfigValue(configAction.target)
         }
       } else if (configAction.type === 'modal') {
         newTplType = 'button'
@@ -158,6 +177,7 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
     this._link = link
     this._download = download
     this._detectMimeContent = detectMimeContent
+    this._target = target
   }
 
   private _parseConfigValue(val) {

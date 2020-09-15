@@ -1,9 +1,8 @@
 import { coerceArray } from '@angular/cdk/coercion'
 import { AfterViewInit, ContentChildren, Directive, EventEmitter, forwardRef, Input, OnDestroy, Output, QueryList } from '@angular/core'
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
-import { untilDestroyed } from 'ngx-take-until-destroy'
-import { combineLatest, from, Observable, of } from 'rxjs'
-import { filter, map, startWith, switchMap, tap } from 'rxjs/operators'
+import { combineLatest, from, Observable, of, Subject } from 'rxjs'
+import { filter, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators'
 
 import { ToggleGroupOptionDirective } from './toggle-group-option.directive'
 
@@ -20,6 +19,8 @@ export const TOGGLE_GROUP_VALUE_ACCESSOR: any = {
   providers: [ TOGGLE_GROUP_VALUE_ACCESSOR ]
 })
 export class ToggleGroupDirective implements OnDestroy, AfterViewInit, ControlValueAccessor {
+
+  private readonly _ngUnsubscribe = new Subject()
 
   // tslint:disable-next-line:no-input-rename
   @Input('value') val: string | string[] | undefined
@@ -40,14 +41,17 @@ export class ToggleGroupDirective implements OnDestroy, AfterViewInit, ControlVa
 
   constructor() { }
 
-  ngOnDestroy() { }
+  ngOnDestroy() {
+    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.complete()
+  }
 
   ngAfterViewInit() {
     setTimeout(() => {
       this._updateDirectiveStates()
 
       this.options = this.optionDirectives.changes
-        .pipe(untilDestroyed(this))
+        .pipe(takeUntil(this._ngUnsubscribe))
         .pipe(startWith(this.optionDirectives))
         .pipe(map(v => v.toArray() as ToggleGroupOptionDirective[]))
 

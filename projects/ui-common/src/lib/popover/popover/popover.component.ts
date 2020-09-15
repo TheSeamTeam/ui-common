@@ -13,9 +13,7 @@ import {
   TemplateRef
 } from '@angular/core'
 import { BehaviorSubject, fromEvent, Observable, of, Subject } from 'rxjs'
-import { distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators'
-
-import { untilDestroyed } from 'ngx-take-until-destroy'
+import { distinctUntilChanged, map, startWith, switchMap, takeUntil } from 'rxjs/operators'
 
 import { popoverExpandIn, popoverExpandOut, popoverSlideIn, popoverSlideOut } from '../popover-animations'
 
@@ -45,6 +43,8 @@ import { popoverExpandIn, popoverExpandOut, popoverSlideIn, popoverSlideOut } fr
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PopoverComponent implements OnInit, OnDestroy {
+
+  private readonly _ngUnsubscribe = new Subject()
 
   /** Duration of the enter animation. Has to be a valid CSS value (e.g. 100ms). */
   enterAnimationDuration?: string = '225ms'
@@ -132,7 +132,7 @@ export class PopoverComponent implements OnInit, OnDestroy {
         }
         return of(undefined)
       }),
-      untilDestroyed(this)
+      takeUntil(this._ngUnsubscribe)
     ).subscribe(w => {
       this._popoverWidth = w
       this._changeDetectorRef.markForCheck()
@@ -142,6 +142,9 @@ export class PopoverComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     // this.closed.complete()
     this._animationDone.complete()
+
+    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.complete()
   }
 
   /** Starts the dialog exit animation. */

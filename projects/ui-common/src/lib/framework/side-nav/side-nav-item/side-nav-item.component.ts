@@ -21,13 +21,13 @@ import {
   OnInit,
   Optional,
   Renderer2,
-  SkipSelf
+  SkipSelf,
+  ViewEncapsulation
 } from '@angular/core'
-import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs'
-import { auditTime, distinctUntilChanged, map, switchMap, take, tap } from 'rxjs/operators'
+import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs'
+import { auditTime, distinctUntilChanged, map, switchMap, take, takeUntil, tap } from 'rxjs/operators'
 
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons'
-import { untilDestroyed } from 'ngx-take-until-destroy'
 
 import { SeamIcon } from '../../../icon/index'
 import { RouterHelpersService } from '../../../services/router-helpers.service'
@@ -80,9 +80,12 @@ const COMPACT_STATE = 'compact'
 
     ])
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None
 })
 export class SideNavItemComponent implements OnInit, OnDestroy {
+
+  private readonly _ngUnsubscribe = new Subject()
 
   faAngleLeft = faAngleLeft
 
@@ -162,7 +165,7 @@ export class SideNavItemComponent implements OnInit, OnDestroy {
   ngOnInit() {
     if (this._parent) { this._parent._registerChild(this) }
 
-    const isActive2 = combineLatest(this.hasActiveChild$, this.expanded$, this.isActive$).pipe(
+    const isActive2 = combineLatest([ this.hasActiveChild$, this.expanded$, this.isActive$ ]).pipe(
       map(([ hasActiveChild, expanded, isActive]) => {
         if (!expanded && hasActiveChild) {
           return true
@@ -172,7 +175,7 @@ export class SideNavItemComponent implements OnInit, OnDestroy {
     )
 
     isActive2
-      .pipe(untilDestroyed(this))
+      .pipe(takeUntil(this._ngUnsubscribe))
       .subscribe(isActive => {
         const c = 'seam-side-nav-item--active'
         if (isActive) {
@@ -205,6 +208,8 @@ export class SideNavItemComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.complete()
     if (this._parent) { this._parent._unregisterChild(this) }
   }
 

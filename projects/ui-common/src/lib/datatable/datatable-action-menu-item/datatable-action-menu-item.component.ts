@@ -1,4 +1,5 @@
 // import { QueryParamsHandling } from '@angular/router/src/config'
+import { coerceBooleanProperty } from '@angular/cdk/coercion'
 import { ComponentType } from '@angular/cdk/portal'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import {
@@ -13,13 +14,12 @@ import {
   Optional,
   Output
 } from '@angular/core'
-import { Subscription } from 'rxjs'
+import { Subject, Subscription } from 'rxjs'
 
 import jexl from 'jexl'
-import { untilDestroyed } from 'ngx-take-until-destroy'
 
-import { IDynamicDatatableRow } from '../../datatable-dynamic/datatable-dynamic-def'
-import { IDynamicDatatableRowAction } from '../../datatable-dynamic/index'
+import { takeUntil } from 'rxjs/operators'
+import { DynamicDatatableRow } from '../../datatable-dynamic/datatable-dynamic-def'
 import { TheSeamDynamicComponentLoader } from '../../dynamic-component-loader/dynamic-component-loader.service'
 import { Modal } from '../../modal/index'
 
@@ -55,6 +55,8 @@ export interface IActionMenuItemModalConfig {
 })
 export class DatatableActionMenuItemComponent implements OnInit, OnDestroy {
 
+  private readonly _ngUnsubscribe = new Subject()
+
   @HostBinding('class.list-group-item') _listGroupItem = true
   @HostBinding('class.list-group-item-action') _listGroupItemAction = true
 
@@ -83,9 +85,7 @@ export class DatatableActionMenuItemComponent implements OnInit, OnDestroy {
     this._endpointConfig = value
     if (value) {
       // TODO: Handle this in a way that can be canceled.
-      this._endpointConfigSub = this.click
-        .pipe(untilDestroyed(this))
-        .subscribe(e => this._handleEndpointAction())
+      this._endpointConfigSub = this.click.subscribe(e => this._handleEndpointAction())
     } else {
       if (this._endpointConfigSub) {
         this._endpointConfigSub.unsubscribe()
@@ -93,7 +93,7 @@ export class DatatableActionMenuItemComponent implements OnInit, OnDestroy {
     }
   }
   private _endpointConfig: IActionMenuItemEndpointConfig
-  private _endpointConfigSub: Subscription
+  private _endpointConfigSub: Subscription = Subscription.EMPTY
 
   @Input()
   get modalConfig(): IActionMenuItemModalConfig { return this._modalConfig }
@@ -102,7 +102,7 @@ export class DatatableActionMenuItemComponent implements OnInit, OnDestroy {
     if (value) {
       // TODO: Handle this in a way that can be canceled.
       this._modalConfigSub = this.click
-        .pipe(untilDestroyed(this))
+        .pipe(takeUntil(this._ngUnsubscribe))
         .subscribe(e => this._handleModalAction())
     } else {
       if (this._modalConfigSub) {
@@ -113,7 +113,12 @@ export class DatatableActionMenuItemComponent implements OnInit, OnDestroy {
   private _modalConfig: IActionMenuItemModalConfig
   private _modalConfigSub: Subscription
 
-  @Input() row: IDynamicDatatableRow
+  @Input() row: DynamicDatatableRow
+
+  @Input()
+  set disabled(value: boolean) { this._disabled = coerceBooleanProperty(value) }
+  get disabled(): boolean { return this._disabled }
+  private _disabled: boolean
 
   @Output() click = new EventEmitter<any>()
 
@@ -125,7 +130,11 @@ export class DatatableActionMenuItemComponent implements OnInit, OnDestroy {
 
   ngOnInit() { }
 
-  ngOnDestroy() { }
+  ngOnDestroy() {
+    this._endpointConfigSub.unsubscribe()
+    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.complete()
+  }
 
   private _handleEndpointAction() {
     if (!this._http) {

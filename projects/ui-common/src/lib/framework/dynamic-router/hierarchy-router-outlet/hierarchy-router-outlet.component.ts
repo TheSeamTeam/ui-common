@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } from '@angular/core'
 import { ActivatedRoute, NavigationEnd, NavigationStart, Router, RouterOutlet } from '@angular/router'
-import { combineLatest } from 'rxjs'
-import { distinctUntilChanged, filter, map, startWith, switchMap, tap } from 'rxjs/operators'
+import { combineLatest, Subject } from 'rxjs'
+import { distinctUntilChanged, filter, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators'
 
-import { untilDestroyed } from 'ngx-take-until-destroy'
 import { fader, sideToSide, slider, stepper, transformer } from './hierarchy-route-animations'
 
 export function routeChanges(router: Router)  {
@@ -43,6 +42,8 @@ export class HierarchyRouterOutletComponent implements OnInit, OnDestroy {
 
   private _uid = _uid++
 
+  private readonly _ngUnsubscribe = new Subject()
+
   animState = 'isRight'
   // animState = ''
 
@@ -55,9 +56,9 @@ export class HierarchyRouterOutletComponent implements OnInit, OnDestroy {
     private _router: Router
   ) {
     this._router.events.pipe(
-      untilDestroyed(this),
       filter(event => event instanceof NavigationEnd),
-      // tap(v => console.log(`_hasChildren()[${this._uid}]`, this._hasChildren()))
+      // tap(v => console.log(`_hasChildren()[${this._uid}]`, this._hasChildren())),
+      takeUntil(this._ngUnsubscribe)
     )
     .subscribe()
 
@@ -77,7 +78,10 @@ export class HierarchyRouterOutletComponent implements OnInit, OnDestroy {
 
   ngOnInit() { }
 
-  ngOnDestroy() { }
+  ngOnDestroy() {
+    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.complete()
+  }
 
   private _hasChildren() {
     const count = this._route.pathFromRoot.length - 1

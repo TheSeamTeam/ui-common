@@ -109,4 +109,8 @@ export class TableComponent<T = any> implements OnInit {
     this.actionRefreshRequest.emit(undefined)
   }
 
+  _trackByRecords(r) {
+    return r.prop + r.name
+  }
+
 }

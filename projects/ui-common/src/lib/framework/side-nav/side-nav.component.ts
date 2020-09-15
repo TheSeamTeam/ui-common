@@ -12,12 +12,10 @@ import {
   useAnimation,
 } from '@angular/animations'
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
-import { ChangeDetectionStrategy, Component, HostBinding, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core'
+import { ChangeDetectionStrategy, Component, HostBinding, Inject, Input, OnDestroy, OnInit, Optional, ViewEncapsulation } from '@angular/core'
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router'
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs'
-import { distinctUntilChanged, filter, map, mapTo, pairwise, startWith, tap } from 'rxjs/operators'
-
-import { untilDestroyed } from 'ngx-take-until-destroy'
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs'
+import { distinctUntilChanged, filter, map, mapTo, pairwise, startWith, takeUntil, tap } from 'rxjs/operators'
 
 import { TheSeamLayoutService } from '../../layout/index'
 import { ITheSeamBaseLayoutNav, ITheSeamBaseLayoutRef, THESEAM_BASE_LAYOUT_REF } from '../base-layout/index'
@@ -135,9 +133,12 @@ export function sideNavExpandStateChangeFn(fromState: string, toState: string) {
       // ]),
     ])
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None
 })
 export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNav {
+
+  private readonly _ngUnsubscribe = new Subject()
 
   // @HostBinding('@sideNavExpand') _sideNavExpand = EXPANDED_STATE
   // _sideNavExpand = EXPANDED_STATE
@@ -188,7 +189,7 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
         mapTo(undefined)
       )
 
-    combineLatest(this.items$, routed$.pipe(startWith(undefined)))
+    combineLatest([ this.items$, routed$.pipe(startWith(undefined)) ])
       .pipe(
         map(v => v[0]),
         map(items => {
@@ -203,12 +204,13 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
           for (const _n of items) {
             checkNode(_n)
           }
-        })
+        }),
+        takeUntil(this._ngUnsubscribe)
       )
       .subscribe()
 
     this.isMobile$
-      .pipe(untilDestroyed(this))
+      .pipe(takeUntil(this._ngUnsubscribe))
       .subscribe(b => this.overlay = b)
 
     this.sideNavExpandedState$ = combineLatest([ this.expanded$, this.overlay$ ])
@@ -221,11 +223,13 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
       )
 
     this.sideNavExpandedState$
-      .pipe(untilDestroyed(this))
+      .pipe(takeUntil(this._ngUnsubscribe))
       .subscribe(v => this._sideNavExpand = v)
   }
 
   ngOnDestroy() {
+    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.complete()
     if (this._baseLayoutRef) { this._baseLayoutRef.unregisterNav(this) }
   }
 

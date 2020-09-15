@@ -13,10 +13,6 @@ export interface IDatatablePreferencesMapRecord {
   refresh: Subject<void>
 }
 
-/**
- * NOTE: This will integrate with the ui-common implementation or may go away
- * when the ui-common implementation is done.
- */
 @Injectable({
   providedIn: 'root'
 })

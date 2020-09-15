@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
-import { Observable } from 'rxjs'
+import { Observable, Subscription } from 'rxjs'
 import { map } from 'rxjs/operators'
-
-import { untilDestroyed } from 'ngx-take-until-destroy'
 
 @Component({
   selector: 'seam-dynamic-datatable-page',
@@ -12,6 +10,8 @@ import { untilDestroyed } from 'ngx-take-until-destroy'
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DynamicDatatablePageComponent implements OnInit, OnDestroy {
+
+  private _tableDefSubscription = Subscription.EMPTY
 
   tableDef$: Observable<any>
 
@@ -25,11 +25,9 @@ export class DynamicDatatablePageComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // console.log(this._route)
     // console.log(this._router)
-    this.tableDef$
-      .pipe(untilDestroyed(this))
-      .subscribe(v => console.log('tableDef$', v))
+    this.tableDef$.subscribe(v => console.log('tableDef$', v))
   }
 
-  ngOnDestroy() { }
+  ngOnDestroy() { this._tableDefSubscription.unsubscribe() }
 
 }

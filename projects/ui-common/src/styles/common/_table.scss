@@ -110,3 +110,10 @@
     overflow: hidden;
   }
 }
+
+table:not(.table-sm) {
+  .td-text-truncate[title],
+  .td-text-truncate[td-text] {
+    max-height: 24px;
+  }
+}

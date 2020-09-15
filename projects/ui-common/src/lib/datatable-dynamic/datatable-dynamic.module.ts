@@ -13,16 +13,17 @@ import { TheSeamSharedModule } from '../shared/index'
 
 import { DatatableDynamicActionMenuComponent } from './datatable-dynamic-action-menu/datatable-dynamic-action-menu.component'
 import { DatatableDynamicFilterContainerComponent } from './datatable-dynamic-filter-container/datatable-dynamic-filter-container.component'
+import { DatatableDynamicMenuBarContentComponent } from './datatable-dynamic-menu-bar-content/datatable-dynamic-menu-bar-content.component'
 import { DatatableDynamicComponent } from './datatable-dynamic.component'
 import { DatatableDynamicActionMenuItemDirective } from './directives/datatable-dynamic-action-menu-item.directive'
-
 
 @NgModule({
   declarations: [
     DatatableDynamicComponent,
     DatatableDynamicFilterContainerComponent,
     DatatableDynamicActionMenuComponent,
-    DatatableDynamicActionMenuItemDirective
+    DatatableDynamicActionMenuItemDirective,
+    DatatableDynamicMenuBarContentComponent,
   ],
   imports: [
     CommonModule,
@@ -38,9 +39,7 @@ import { DatatableDynamicActionMenuItemDirective } from './directives/datatable-
   ],
   exports: [
     DatatableDynamicComponent,
-
     TheSeamDatatableModule,
-
     DatatableDynamicActionMenuItemDirective
   ]
 })

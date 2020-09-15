@@ -5,7 +5,7 @@ import {
   KeyValueDiffers, OnDestroy, OnInit, Output, QueryList, TemplateRef, ViewChild
 } from '@angular/core'
 import { BehaviorSubject, combineLatest, Observable, of, Subscription } from 'rxjs'
-import { auditTime, distinctUntilChanged, map, shareReplay, skip, startWith, switchMap, tap } from 'rxjs/operators'
+import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators'
 
 import { faChevronDown, faChevronRight, faEllipsisH, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import {
@@ -16,13 +16,12 @@ import {
   DataTableColumnHeaderDirective,
   DatatableComponent as NgxDatatableComponent,
   DatatableRowDetailDirective,
-  SelectionType,
   setColumnDefaults,
   SortType,
   translateTemplates,
   TreeStatus
 } from '@marklb/ngx-datatable'
-import { untilDestroyed } from 'ngx-take-until-destroy'
+import type { SelectionType } from '@marklb/ngx-datatable'
 
 import { composeDataFilters, IDataFilter } from '../../data-filters/index'
 import { IElementResizedEvent } from '../../shared/index'
@@ -33,11 +32,11 @@ import { DatatableColumnComponent } from '../datatable-column/datatable-column.c
 import { DatatableMenuBarComponent } from '../datatable-menu-bar/datatable-menu-bar.component'
 import { TheSeamDatatableRowDetailDirective } from '../datatable-row-detail/datatable-row-detail.directive'
 import { DatatableRowActionItemDirective } from '../directives/datatable-row-action-item.directive'
-import { ITheSeamDatatableColumn } from '../models/table-column'
+import { TheSeamDatatableColumn } from '../models/table-column'
 import { DatatableColumnChangesService } from '../services/datatable-column-changes.service'
 import { DatatablePreferencesService } from '../services/datatable-preferences.service'
 
-export function _setColumnDefaults(columns: ITheSeamDatatableColumn[]): void {
+export function _setColumnDefaults(columns: TheSeamDatatableColumn[]): void {
   for (const column of columns) {
     if (!column.hasOwnProperty('hidden')) {
       column.hidden = false
@@ -65,7 +64,7 @@ export interface ICellContext {
   row?: any
   group?: any
   value?: any
-  column?: ITheSeamDatatableColumn
+  column?: TheSeamDatatableColumn
   rowHeight?: number
   isSelected?: boolean
   rowIndex?: number
@@ -74,7 +73,7 @@ export interface ICellContext {
 }
 
 export interface IDatatableAccessor {
-  columns: ITheSeamDatatableColumn[]
+  columns: TheSeamDatatableColumn[]
   rows$: Observable<any[]>
 }
 
@@ -125,12 +124,12 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
   @Input() targetMarkerTemplate: any
 
   @Input()
-  get columns(): ITheSeamDatatableColumn[] { return this._columns.value }
-  set columns(value: ITheSeamDatatableColumn[]) {
+  get columns(): TheSeamDatatableColumn[] { return this._columns.value }
+  set columns(value: TheSeamDatatableColumn[]) {
     // console.log('columns input', value)
     this._columns.next(value)
   }
-  private _columns = new BehaviorSubject<ITheSeamDatatableColumn[]>([])
+  private _columns = new BehaviorSubject<TheSeamDatatableColumn[]>([])
 
   @Input()
   get rows(): any[] { return this._rows.value }
@@ -230,7 +229,7 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
   @ContentChild(DatatableRowActionItemDirective, { static: true }) rowActionItem: DatatableRowActionItemDirective
   @ContentChild(TheSeamDatatableRowDetailDirective, { static: true }) rowDetail: TheSeamDatatableRowDetailDirective
 
-  @ContentChild(DatatableMenuBarComponent, { static: false })
+  @ContentChild(DatatableMenuBarComponent)
   get menuBarComponent(): DatatableMenuBarComponent { return this._menuBarComponent }
   set menuBarComponent(value: DatatableMenuBarComponent) {
     this._menuBarComponent = value
@@ -247,9 +246,9 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
   private _menuBarComponent: DatatableMenuBarComponent
   private _menuBarSub: Subscription
 
-  @ViewChild(NgxDatatableComponent, { static: false }) ngxDatatable: NgxDatatableComponent
-  @ViewChild(NgxDatatableComponent, { read: ElementRef, static: false }) ngxDatatableElement: ElementRef
-  @ViewChild(DatatableRowDetailDirective, { static: false }) ngxRowDetail: DatatableRowDetailDirective
+  @ViewChild(NgxDatatableComponent) ngxDatatable: NgxDatatableComponent
+  @ViewChild(NgxDatatableComponent, { read: ElementRef }) ngxDatatableElement: ElementRef
+  @ViewChild(DatatableRowDetailDirective) ngxRowDetail: DatatableRowDetailDirective
 
   @ViewChild('actionMenuCellTpl', { static: true }) actionMenuCellTpl: TemplateRef<DataTableColumnDirective>
   @ViewChild('treeToggleTpl', { static: true }) treeToggleTpl: TemplateRef<DataTableColumnCellTreeToggle>
@@ -258,8 +257,8 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
   @ViewChild('cellTypeSelectorTpl', { static: true }) cellTypeSelectorTpl: TemplateRef<DataTableColumnDirective>
 
   public columnComponents$: Observable<DatatableColumnComponent[]>
-  public columns$: Observable<ITheSeamDatatableColumn[]>
-  public displayColumns$: Observable<ITheSeamDatatableColumn[]>
+  public columns$: Observable<TheSeamDatatableColumn[]>
+  public displayColumns$: Observable<TheSeamDatatableColumn[]>
   private _colDiffersInp: { [propName: string]: KeyValueDiffer<any, any> } = {}
   private _colDiffersTpl: { [propName: string]: KeyValueDiffer<any, any> } = {}
 
@@ -290,6 +289,8 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
   //     overlayY: 'bottom',
   //   },
   // ]
+
+  private _rowDetailToggleSubscription = Subscription.EMPTY
 
   constructor(
     private _columnChangesService: DatatableColumnChangesService,
@@ -322,9 +323,7 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
 
   ngOnInit() {
     if (this.rowDetail) {
-      this.rowDetail._toggle.pipe(
-        untilDestroyed(this)
-      ).subscribe(event => {
+      this._rowDetailToggleSubscription = this.rowDetail._toggle.subscribe(event => {
         if (this.ngxRowDetail) {
           this.ngxRowDetail.toggle.emit(event)
         }
@@ -332,7 +331,9 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
     }
   }
 
-  ngOnDestroy() { }
+  ngOnDestroy() {
+    this._rowDetailToggleSubscription.unsubscribe()
+  }
 
   ngAfterContentInit() {
     this.columnComponents$ = this._columnChangesService.columnInputChanges$.pipe(
@@ -355,7 +356,7 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
     //   switchMap(hiddenColumns => this.columns$.pipe(map(cols => cols.filter(c => hiddenColumns.findIndex(hc => hc === c.prop) === -1))))
     // )
 
-    const applyPrefs = (cols: ITheSeamDatatableColumn[]) => this._preferencesKey.pipe(
+    const applyPrefs = (cols: TheSeamDatatableColumn[]) => this._preferencesKey.pipe(
       switchMap(name => !!name
         // NOTE: This pending check is temporary to avoid table using previously
         // retrieved preference while the new one is being updated on the
@@ -376,12 +377,12 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
 
   private _getMergedTplAndInpColumns(
     tplCols: DatatableColumnComponent[],
-    inpCols: ITheSeamDatatableColumn[]
-  ): ITheSeamDatatableColumn[] {
-    const cols: ITheSeamDatatableColumn[] = []
+    inpCols: TheSeamDatatableColumn[]
+  ): TheSeamDatatableColumn[] {
+    const cols: TheSeamDatatableColumn[] = []
 
     if (this.selectionType === 'checkbox') {
-      const checkBoxCol: ITheSeamDatatableColumn = {
+      const checkBoxCol: TheSeamDatatableColumn = {
         prop: '$$__checkbox__',
         name: '',
         width: 30,
@@ -416,7 +417,7 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
         inpColDiff.forEachChangedItem(r => _inpCol[r.key] = r.currentValue)
       }
 
-      let _tplCol: ITheSeamDatatableColumn = {}
+      let _tplCol: TheSeamDatatableColumn = {}
       if (tplCol) {
         const tplColDiff = tplCol ? this._getColDiff(tplCol, true) : undefined
         _tplCol = tplColDiff ? {} : this._hasPrevColDiff(col, true) ? {} : tplCol
@@ -431,7 +432,7 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
         }
       }
 
-      const _col: ITheSeamDatatableColumn = {
+      const _col: TheSeamDatatableColumn = {
         ...(prev || {}),
         ..._inpCol,
         ..._tplCol
@@ -441,7 +442,7 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     if (this.rowActionItem) {
-      const actionMenuColumn: ITheSeamDatatableColumn = {
+      const actionMenuColumn: TheSeamDatatableColumn = {
         prop: '$$__actionMenu__',
         name: '',
         width: 50,
@@ -481,7 +482,7 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
     return cols
   }
 
-  private _hasPrevColDiff(col: ITheSeamDatatableColumn, isTpl: boolean = false): boolean {
+  private _hasPrevColDiff(col: TheSeamDatatableColumn, isTpl: boolean = false): boolean {
     if (!col || !col.prop) {
       return false
     }
@@ -491,7 +492,7 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
     return !!differsMap
   }
 
-  private _getColDiff(col: ITheSeamDatatableColumn, isTpl: boolean = false) {
+  private _getColDiff(col: TheSeamDatatableColumn, isTpl: boolean = false) {
     if (!col || !col.prop) {
       return
     }
@@ -508,7 +509,7 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
     return diff
   }
 
-  private _removeUnusedDiffs(cols: ITheSeamDatatableColumn[]) {
+  private _removeUnusedDiffs(cols: TheSeamDatatableColumn[]) {
     const inpKeys = Object.keys(this._colDiffersInp)
     inpKeys.filter(k => cols.findIndex(c => c.prop === k) === -1)
       .forEach(k => { delete this._colDiffersInp[k] })

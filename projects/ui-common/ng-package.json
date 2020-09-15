@@ -19,6 +19,7 @@
     "@marklb/file-type",
     "@marklb/ngx-datatable",
     "@ng-select/ng-select",
+    "@ng-bootstrap/ng-bootstrap",
     "overlayscrollbars",
     "@types/overlayscrollbars",
     "bootstrap",
@@ -28,13 +29,13 @@
     "localstorage-memory",
     "lodash-es",
     "ngx-loading",
-    "ngx-take-until-destroy",
     "ngx-toastr",
     "pdfjs-dist",
     "rxjs",
     "xlsx",
     "jexl",
     "webfontloader",
-    "@types/webfontloader"
+    "@types/webfontloader",
+    "intl-tel-input"
   ]
 }

@@ -1,6 +1,6 @@
 import { ComponentType } from '@angular/cdk/portal'
 
-import { ITableCellData } from '../table/index'
+import { TableCellData } from '../table/index'
 
 export interface ITableCellTypeManifest {
   /**
@@ -20,7 +20,7 @@ export interface ITableCellTypeManifest {
 export interface ICalucatedValueContext<R = any, V = any>
   // TODO: When context usage is better known the Partial should be removed and
   // to clearly define expected values in context.
-  extends Partial<ITableCellData<R, V>> {
+  extends Partial<TableCellData<any, any, R, V>> {
   [key: string]: any
 }
 

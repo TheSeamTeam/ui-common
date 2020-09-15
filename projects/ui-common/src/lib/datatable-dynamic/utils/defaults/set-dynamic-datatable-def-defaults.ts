@@ -1,11 +1,11 @@
-import { IDatatableDynamicDef } from '../../datatable-dynamic-def'
+import { DatatableDynamicDef } from '../../datatable-dynamic-def'
 
 import { setDynamicDatatableColumnsDefaults } from './set-dynamic-datatable-columns-defaults'
 import { setDynamicDatatableFilterMenuDefaults } from './set-dynamic-datatable-filter-menu-defaults'
 import { setDynamicDatatableOptionsDefaults } from './set-dynamic-datatable-options-defaults'
 
 export function setDynamicDatatableDefDefaults(
-  def: IDatatableDynamicDef
+  def: DatatableDynamicDef
 ) {
   setDynamicDatatableColumnsDefaults(def.columns)
 

@@ -1,5 +1,5 @@
 import { FocusMonitor } from '@angular/cdk/a11y'
-import { ChangeDetectionStrategy, Component, ElementRef, Input, OnDestroy, Renderer2 } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Directive, ElementRef, Input, OnDestroy, Renderer2 } from '@angular/core'
 
 import {
   CanDisableCtor,
@@ -10,6 +10,8 @@ import {
   mixinTheme
 } from '../../core/common-behaviors'
 
+@Component({ template: '' })
+// tslint:disable-next-line: component-class-suffix
 class TheSeamButtonBase implements OnDestroy {
   constructor(
     public _elementRef: ElementRef,

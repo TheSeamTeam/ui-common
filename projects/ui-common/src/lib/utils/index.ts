@@ -9,14 +9,16 @@ export * from './form/wait-on-non-pending-status'
 export * from './form/has-required-control'
 
 export * from './operators/index'
-export * from './operators/tap-first'
 
 export * from './router/index'
 
+export * from './calc-percentage'
 export * from './toggle-attribute'
 export * from './get-attribute'
 export * from './input-masks'
 export * from './is-null-or-undefined'
+export * from './load-style'
+export * from './load-style-sheet'
 export * from './obj-utils'
 export * from './file-utils'
 export * from './not-null-or-undefined'

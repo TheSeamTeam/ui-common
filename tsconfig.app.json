@@ -5,13 +5,16 @@
     "types": []
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "projects/ui-common/src/lib/**/*.ts"
   ],
   "exclude": [
     "src/test.ts",
-    "src/**/*.spec.ts",
-    "**/*.stories.ts",
-    "**/stories/**/*",
-    "**/_story-data/**/*"
+    "src/**/.spec.ts",
+    "projects/ui-common/**/*.spec.ts",
+    "projects/ui-common/**/*.stories.ts",
+    "projects/ui-common/**/stories/**/*",
+    "projects/ui-common/**/_story-data/**/*",
+    "projects/ui-common/**/schematics/**/*"
   ]
 }

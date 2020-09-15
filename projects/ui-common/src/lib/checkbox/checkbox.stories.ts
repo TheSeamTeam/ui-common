@@ -25,34 +25,18 @@ export default {
   }
 }
 
-export const Checkbox = () => ({
+export const Basic = ({ ...args }) => ({
   template: `<seam-checkbox>Checkbox</seam-checkbox>`
 })
 
-Checkbox.story = {
-  name: 'Checkbox'
-}
-
-export const InitiallyChecked = () => ({
+export const Checked = ({ ...args }) => ({
   template: `<seam-checkbox [checked]="true">Initially checked.</seam-checkbox>`
 })
 
-InitiallyChecked.story = {
-  name: 'Checked'
-}
-
-export const InitiallyUnchecked = () => ({
+export const Unchecked = ({ ...args }) => ({
   template: `<seam-checkbox [checked]="false">Initially unchecked.</seam-checkbox>`
 })
 
-InitiallyUnchecked.story = {
-  name: 'Unchecked'
-}
-
-export const InitiallyIndeterminate = () => ({
+export const Indeterminate = ({ ...args }) => ({
   template: `<seam-checkbox [indeterminate]="true">Initially indeterminate.</seam-checkbox>`
 })
-
-InitiallyIndeterminate.story = {
-  name: 'Indeterminate'
-}

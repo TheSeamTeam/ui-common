@@ -7,7 +7,7 @@
       [class.pt-0]="hasHeader$ | async"
       [class.pb-0]="hasFooter$ | async"
       (keydown)="_handleKeydown($event)"
-      (click)="closed.emit('click')"
+      (click)="_dropdownMenuClick($event)"
       tabindex="-1"
       role="menu"
       >

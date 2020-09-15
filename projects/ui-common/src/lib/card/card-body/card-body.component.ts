@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ContentChildren, HostBinding, OnDestroy, OnInit, QueryList } from '@angular/core'
-import { untilDestroyed } from 'ngx-take-until-destroy'
+import { Subscription } from 'rxjs'
 import { filter, map, startWith, tap } from 'rxjs/operators'
 
 import { CardActionComponent } from './../card-action/card-action.component'
@@ -16,16 +16,19 @@ export class CardBodyComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ContentChildren(CardActionComponent) cardActionComponents: QueryList<CardActionComponent>
 
+  private _changesSubscription = Subscription.EMPTY
+
   constructor() { }
 
   ngOnInit() { }
 
-  ngOnDestroy() { }
+  ngOnDestroy() {
+    this._changesSubscription.unsubscribe()
+  }
 
   ngAfterViewInit() {
-    this.cardActionComponents.changes
+    this._changesSubscription = this.cardActionComponents.changes
       .pipe(
-        untilDestroyed(this),
         startWith(this.cardActionComponents),
         filter(v => !!v),
         map(v => v.toArray() as CardActionComponent[]),

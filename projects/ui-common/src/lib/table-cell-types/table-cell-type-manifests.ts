@@ -3,6 +3,9 @@ import { TABLE_CELL_TYPE_MANIFEST } from './table-cell-types-tokens'
 
 import { TableCellTypeDateComponent } from './table-cell-type-date/table-cell-type-date.component'
 import { TableCellTypeIconComponent } from './table-cell-type-icon/table-cell-type-icon.component'
+// tslint:disable-next-line: max-line-length
+import { TableCellTypeProgressCircleIconComponent } from './table-cell-type-progress-circle-icon/table-cell-type-progress-circle-icon.component'
+import { TableCellTypeProgressCircleComponent } from './table-cell-type-progress-circle/table-cell-type-progress-circle.component'
 import { TableCellTypeStringComponent } from './table-cell-type-string/table-cell-type-string.component'
 
 export const TABLE_CELL_TYPE_MANIFEST_STRING: ITableCellTypeManifestProvider = {
@@ -55,6 +58,24 @@ export const TABLE_CELL_TYPE_MANIFEST_IMAGE: ITableCellTypeManifestProvider = {
   useValue: {
     name: 'image',
     component: TableCellTypeIconComponent
+  },
+  multi: true
+}
+
+export const TABLE_CELL_TYPE_MANIFEST_PROGRESS_CIRCLE: ITableCellTypeManifestProvider = {
+  provide: TABLE_CELL_TYPE_MANIFEST,
+  useValue: {
+    name: 'progress-circle',
+    component: TableCellTypeProgressCircleComponent
+  },
+  multi: true
+}
+
+export const TABLE_CELL_TYPE_MANIFEST_PROGRESS_CIRCLE_ICON: ITableCellTypeManifestProvider = {
+  provide: TABLE_CELL_TYPE_MANIFEST,
+  useValue: {
+    name: 'progress-circle-icon',
+    component: TableCellTypeProgressCircleIconComponent
   },
   multi: true
 }

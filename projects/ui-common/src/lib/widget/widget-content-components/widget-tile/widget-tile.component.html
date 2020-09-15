@@ -1,12 +1,19 @@
 <div class="d-flex flex-row">
   <div style="position: relative">
-    <seam-icon [icon]="icon" iconType="styled-square" [iconClass]="iconClass"></seam-icon>
+    <seam-icon
+      [icon]="icon"
+      iconType="styled-square"
+      [iconClass]="iconClass"
+      [disabled]="disabled">
+    </seam-icon>
 
     <seam-icon *ngIf="notificationIcon"
       class="widget-tile--notification-icon"
       [icon]="notificationIcon"
       iconType="image-fill"
-      [iconClass]="notificationIconClass"></seam-icon>
+      [iconClass]="notificationIconClass"
+      [disabled]="disabled">
+    </seam-icon>
   </div>
   <div class="flex-grow-1 text-left pl-2" style="margin: auto 0;">
     <ng-content></ng-content>

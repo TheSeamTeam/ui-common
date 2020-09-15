@@ -1,7 +1,8 @@
 import { AfterViewInit, Component, ElementRef, HostBinding, Input, OnDestroy, OnInit, ViewChild } from '@angular/core'
-import { untilDestroyed } from 'ngx-take-until-destroy'
 import { from, Observable, Subject } from 'rxjs'
-import { auditTime, switchMap } from 'rxjs/operators'
+import { auditTime, switchMap, takeUntil } from 'rxjs/operators'
+
+import {  } from 'pdfjs-dist'
 
 import { waitOnConditionAsync } from '../../../utils/index'
 
@@ -19,6 +20,8 @@ import { waitOnConditionAsync } from '../../../utils/index'
   `]
 })
 export class TheSeamPdfPageComponent implements OnInit, OnDestroy, AfterViewInit {
+
+  private readonly _ngUnsubscribe = new Subject()
 
   @Input()
   public get page() { return this._page }
@@ -63,14 +66,17 @@ export class TheSeamPdfPageComponent implements OnInit, OnDestroy, AfterViewInit
 
   ngOnInit() {
     this._render$ = this._renderRequestSubject.pipe(
-      untilDestroyed(this),
+      takeUntil(this._ngUnsubscribe),
       auditTime(500),
       switchMap(_ => from(waitOnConditionAsync(() => this.rendering === false, 30 * 1000))),
       switchMap(_ => from(this._render()))
     )
   }
 
-  ngOnDestroy() { }
+  ngOnDestroy() {
+    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.complete()
+  }
 
   ngAfterViewInit() {
     this._render$.subscribe()
@@ -85,9 +91,9 @@ export class TheSeamPdfPageComponent implements OnInit, OnDestroy, AfterViewInit
     try {
       const w = this.pdfContainer.nativeElement.clientWidth
       const desiredWidth = w
-      const viewport = this.page.getViewport(1)
+      const viewport = this.page.getViewport({ scale: 1 })
       const scale = desiredWidth / viewport.width
-      const scaledViewport = this.page.getViewport(scale)
+      const scaledViewport = this.page.getViewport({ scale })
 
       // Prepare canvas using PDF page dimensions
       const canvas: HTMLCanvasElement = this.pdfCanvas.nativeElement
@@ -103,7 +109,7 @@ export class TheSeamPdfPageComponent implements OnInit, OnDestroy, AfterViewInit
         viewport: scaledViewport
       }
 
-      const renderTask = await this.page.render(renderContext)
+      const renderTask = await this.page.render(renderContext).promise
 
       // TODO: Allow canceling instead of only waiting
       // await renderTask.cancel()

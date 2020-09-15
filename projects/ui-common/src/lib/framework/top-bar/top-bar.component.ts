@@ -9,14 +9,13 @@ import {
   OnInit,
   QueryList
 } from '@angular/core'
-import { Observable } from 'rxjs'
+import { Observable, Subject } from 'rxjs'
 
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 
 import { TheSeamLayoutService } from '../../layout/index'
 
-import { untilDestroyed } from 'ngx-take-until-destroy'
-import { map, shareReplay, startWith, tap } from 'rxjs/operators'
+import { map, shareReplay, startWith, takeUntil } from 'rxjs/operators'
 import { TopBarItemDirective } from './top-bar-item.directive'
 import { TopBarMenuBtnDetailDirective } from './top-bar-menu-btn-detail.directive'
 import { TopBarMenuDirective } from './top-bar-menu.directive'
@@ -44,6 +43,8 @@ import { TopBarMenuDirective } from './top-bar-menu.directive'
 })
 export class TheSeamTopBarComponent implements OnInit, OnDestroy, AfterContentInit {
 
+  private readonly _ngUnsubscribe = new Subject()
+
   /** @ignore */
   faBars = faBars
 
@@ -52,7 +53,7 @@ export class TheSeamTopBarComponent implements OnInit, OnDestroy, AfterContentIn
   /** @ignore */
   @ContentChildren(TopBarItemDirective) _topBarItems: QueryList<TopBarItemDirective>
   /** @ignore */
-  @ContentChild(TopBarMenuBtnDetailDirective, { static: false }) _topBarMenuBtnDetailTpl?: TopBarMenuBtnDetailDirective | null
+  @ContentChild(TopBarMenuBtnDetailDirective) _topBarMenuBtnDetailTpl?: TopBarMenuBtnDetailDirective | null
 
   /** Logo displayed on the top bar. */
   @Input() logo: string
@@ -84,13 +85,16 @@ export class TheSeamTopBarComponent implements OnInit, OnDestroy, AfterContentIn
   ngOnInit() { }
 
   /** @ignore */
-  ngOnDestroy() { }
+  ngOnDestroy() {
+    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.complete()
+  }
 
   /** @ignore */
   ngAfterContentInit() {
     this._items$ = this._topBarItems.changes.pipe(
       startWith(undefined),
-      untilDestroyed(this),
+      takeUntil(this._ngUnsubscribe),
       map(() => this._topBarItems.toArray()),
       shareReplay({ bufferSize: 1, refCount: true })
     )

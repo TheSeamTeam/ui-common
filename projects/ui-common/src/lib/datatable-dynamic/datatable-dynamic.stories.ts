@@ -1,6 +1,5 @@
 import { select, text, withKnobs } from '@storybook/addon-knobs'
 import { moduleMetadata, storiesOf } from '@storybook/angular'
-import { DatatableDynamicComponent } from './datatable-dynamic.component'
 
 import { CommonModule } from '@angular/common'
 import { HttpClientModule } from '@angular/common/http'
@@ -11,19 +10,34 @@ import { ActivatedRoute, RouterModule } from '@angular/router'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-import { TheSeamDynamicComponentLoaderModule } from '../dynamic-component-loader/dynamic-component-loader.module'
+import {
+  DataFilterSearchComponent,
+  DataFilterTextComponent,
+  DataFilterToggleButtonsComponent,
+  THESEAM_DATA_FILTER_DEF,
+  THESEAM_DATA_FILTER_OPTIONS
+} from '../data-filters/index'
+import { DatatableExportButtonComponent } from '../datatable/datatable-export-button/datatable-export-button.component'
+import { DatatableMenuBarTextComponent } from '../datatable/datatable-menu-bar-text/datatable-menu-bar-text.component'
+import { THESEAM_MENUBAR_ITEM_DATA } from '../datatable/tokens/menubar-item-data'
+import { IDynamicComponentManifest, TheSeamDynamicComponentLoaderModule } from '../dynamic-component-loader/dynamic-component-loader.module'
 import {
   DynamicActionApiService,
   DynamicActionLinkService,
   DynamicActionModalService,
+  ExportersDataEvaluator,
   JexlEvaluator,
   THESEAM_DYNAMIC_ACTION,
+  THESEAM_DYNAMIC_DATA,
   THESEAM_DYNAMIC_VALUE_EVALUATOR
 } from '../dynamic/index'
 import { TheSeamModalModule } from '../modal/index'
 
-import { exampleData1 } from './_story-data/dynamic-data-1'
+import { THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM } from './datatable-dynamic-menu-bar-token'
+import { DatatableDynamicComponent } from './datatable-dynamic.component'
 import { TheSeamDatatableDynamicModule } from './datatable-dynamic.module'
+import { StoryModalOneModule, StoryModalTwoModule } from './_story-data/datatable-modals'
+import { exampleData1 } from './_story-data/dynamic-data-1'
 
 
 @Component({
@@ -166,6 +180,19 @@ const routes = [
 //   }))
 
 
+const manifests: IDynamicComponentManifest[] = [
+  {
+    componentId: 'story-modal-1',
+    path: 'story-modal-1',
+    loadChildren: () => StoryModalOneModule
+  },
+  {
+    componentId: 'story-modal-2',
+    path: 'story-modal-2',
+    loadChildren: () => StoryModalTwoModule
+  }
+]
+
 export default {
   title: 'Components/Datatable/Dynamic',
   component: DatatableDynamicComponent,
@@ -179,6 +206,7 @@ export default {
         TheSeamDatatableDynamicModule,
         // ExampleModalModule
         TheSeamDynamicComponentLoaderModule.forRoot([
+          ...manifests,
           {
             componentId: 'story-ex-modal',
             path: 'story-ex-modal',
@@ -194,10 +222,37 @@ export default {
       ],
       providers: [
         { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
+        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: ExportersDataEvaluator, multi: true },
 
         { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionApiService, multi: true },
         { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionLinkService, multi: true },
-        { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionModalService, multi: true }
+        { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionModalService, multi: true },
+
+        {
+          provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
+          useValue: { name: 'filter-search', component: DataFilterSearchComponent, dataToken: THESEAM_DATA_FILTER_OPTIONS },
+          multi: true
+        },
+        {
+          provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
+          useValue: { name: 'filter-text', component: DataFilterTextComponent, dataToken: THESEAM_DATA_FILTER_OPTIONS },
+          multi: true
+        },
+        {
+          provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
+          useValue: { name: 'filter-buttons', component: DataFilterToggleButtonsComponent, dataToken: THESEAM_DATA_FILTER_OPTIONS },
+          multi: true
+        },
+        {
+          provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
+          useValue: { name: 'export-button', component: DatatableExportButtonComponent, dataToken: THESEAM_DYNAMIC_DATA },
+          multi: true
+        },
+        {
+          provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
+          useValue: { name: 'text', component: DatatableMenuBarTextComponent, dataToken: THESEAM_MENUBAR_ITEM_DATA },
+          multi: true
+        }
       ]
     })
   ],
@@ -210,11 +265,11 @@ export const Dynamic = () => ({
   },
   template: `
     <div style="width: 100vw; height: 100vh;" class="p-1 d-flex flex-column">
-      <div class="alert alert-danger">
+      <!--<div class="alert alert-danger">
         This component is still being worked on. Not all features are guaranteed
         to work yet, but eventually we plan to start building the datatables in
         our app from json with this component when all necessary features are stable.
-      </div>
+      </div>-->
       <div class="d-flex flex-column h-100">
         <seam-datatable-dynamic class="w-100 h-100" [def]="data"></seam-datatable-dynamic>
       </div>

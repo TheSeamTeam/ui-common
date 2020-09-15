@@ -1,0 +1,18 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/app",
+    "types": []
+  },
+  "include": [
+    "projects/ui-common/src/lib/**/*.ts"
+  ],
+  "exclude": [
+    "projects/ui-common/**/*.spec.ts",
+    "projects/ui-common/**/*.stories.ts",
+    "projects/ui-common/**/stories/**/*",
+    "projects/ui-common/**/_story-data/**/*",
+    "projects/ui-common/**/schematics/**/*"
+  ]
+}

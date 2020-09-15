@@ -1,6 +1,5 @@
 import { Component, ContentChildren, DoCheck, HostBinding, Input, OnDestroy, OnInit, QueryList, TemplateRef } from '@angular/core'
 import { AbstractControl, AbstractControlDirective, ValidationErrors } from '@angular/forms'
-import { untilDestroyed } from 'ngx-take-until-destroy'
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, startWith } from 'rxjs/operators'
 
@@ -166,9 +165,12 @@ export class FormFieldErrorListComponent implements OnInit, OnDestroy, DoCheck {
   // private _listItemTpls: QueryList<FormFieldErrorListItemTplDirective>
   // private listItemTplsObj = {}
 
+  @ContentChildren(FormFieldErrorListItemTplDirective)
+  set _listItemTpls(val: QueryList<FormFieldErrorListItemTplDirective>) {
+    this._initErrorTemplates(val)
+  }
 
   @Input()
-  @ContentChildren(FormFieldErrorListItemTplDirective)
   set listItemTpls(val: QueryList<FormFieldErrorListItemTplDirective>) {
     this._initErrorTemplates(val)
 
@@ -288,7 +290,10 @@ export class FormFieldErrorListComponent implements OnInit, OnDestroy, DoCheck {
 
   ngOnInit() { }
 
-  ngOnDestroy() { }
+  ngOnDestroy() {
+    this._valueChangeSub.unsubscribe()
+    this._errorTplsChangeSub.unsubscribe()
+  }
 
   ngDoCheck() {
     this._showControlErrorsSubject.next(this.showControlErrors)
@@ -302,10 +307,7 @@ export class FormFieldErrorListComponent implements OnInit, OnDestroy, DoCheck {
 
     if (control.valueChanges !== null) {
       this._valueChangeSub = combineLatest([this.showControlErrors$, control.valueChanges.pipe(startWith(undefined))])
-        .pipe(
-          untilDestroyed(this),
-          startWith(undefined)
-        )
+        .pipe(startWith(undefined))
         .subscribe(_ => this._updateControlErrors(control.errors))
     } else {
       this._setControlErrors([])
@@ -346,10 +348,7 @@ export class FormFieldErrorListComponent implements OnInit, OnDestroy, DoCheck {
 
     if (tplsQueryList) {
       this._errorTplsChangeSub = tplsQueryList.changes
-        .pipe(
-          untilDestroyed(this),
-          startWith(undefined)
-        )
+        .pipe(startWith(undefined))
         .subscribe(_ => this._updateErrorTemplates(tplsQueryList.toArray()))
     } else {
       this._setErrorTemplates([])

@@ -1,10 +1,11 @@
-import { AfterViewChecked, Directive, ElementRef, HostBinding, HostListener,
-  NgZone, OnDestroy, OnInit, Optional, Self } from '@angular/core'
+import { AfterViewChecked, Directive, ElementRef, EventEmitter, HostBinding,
+  HostListener, NgZone, OnDestroy, OnInit, Optional, Self } from '@angular/core'
 import { NgControl } from '@angular/forms'
 import { NgOption, NgSelectComponent } from '@ng-select/ng-select'
-import { untilDestroyed } from 'ngx-take-until-destroy'
-import { Subscription } from 'rxjs'
-import { filter } from 'rxjs/operators'
+import { ResizeSensor } from 'css-element-queries'
+import { Subject, Subscription } from 'rxjs'
+import { auditTime, filter, takeUntil } from 'rxjs/operators'
+import { IElementResizedEvent } from './elem-resized.directive'
 
 @Directive({
   // tslint:disable-next-line:directive-selector
@@ -12,11 +13,14 @@ import { filter } from 'rxjs/operators'
 })
 export class NgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestroy {
 
-  private _labelForId: string
+  private readonly _ngUnsubscribe = new Subject()
 
   private _markedItem: NgOption | null = null
   private _checkMarked = false
   private _keyPressWorkaroundSub: Subscription | null = null
+
+  private _resizedEvent = new EventEmitter<IElementResizedEvent>()
+  private _resizeSensor: ResizeSensor
 
   /**
    * Set the tab index to `-1` to allow the root element of the ng-select
@@ -36,19 +40,13 @@ export class NgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestr
       this.ngSelect.focus()
     }
 
-    // Disables the labelForId on focus to avoid the browser autofill popup.
-    this._labelForId = this.ngSelect.labelForId
-    this.ngSelect.labelForId = null
-  }
-
-  @HostListener('blur', ['$event']) onBlur($event: any) {
-    // Timeout to avoid `ExpressionChangedAfterItHasBeenCheckedError`
-    setTimeout(() => {
-      // Re-enable the labelForId on blur to enable autofill to work if triggered
-      // outside the ng-select component and allow the label to focus input on
-      // click again.
-      this.ngSelect.labelForId = this._labelForId
-    })
+    // ng-select has an input `labelForId` that sets the autocomplete attribute
+    // in ngOnInit. I am not positive that it is wrong by doing that, but this
+    // hack makes it set the attributes again on focus, because that gives the
+    // result I was expecting, since we don't manually set the `labelForId`
+    // input.
+    const _ngSelect = this.ngSelect as any
+    _ngSelect._setInputAttributes()
   }
 
   @HostBinding('class.is-invalid') get _isInvalid() {
@@ -73,62 +71,86 @@ export class NgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestr
     this.ngSelect.blurEvent
       .subscribe(v => this._disableKeyPressWorkaround())
 
-    this._patch_ngSelect_open()
+    // When the input is allowed to change its height the position doesn't update itself.
+    // this._resizedEvent.pipe(
+    //   auditTime(30)
+    // ).subscribe(event => {
+    //   if (this.elementRef && this.elementRef.nativeElement) {
+    //     if (this.elementRef.nativeElement.classList.contains('ng-select-value-grow-h')) {
+    //       if (this.ngSelect.isOpen && this.ngSelect.dropdownPanel) {
+    //         this.ngSelect.dropdownPanel.updateDropdownPosition()
+    //       }
+    //     } else {
+    //       this.elementRef.nativeElement.classList.remove('ng-select-value-grow-h')
+    //     }
+    //   }
+    // })
+
+    // this._patch_ngSelect_open()
   }
 
-  ngOnDestroy() { }
+  ngOnDestroy() {
+    this._resizeSensor.detach()
+
+    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.complete()
+  }
 
   ngAfterViewChecked() {
     if (this.ngSelect.dropdownPanel) {
       if (this._checkMarked) {
         if (this.ngSelect.dropdownPanel && this._markedItem !== null) {
           if (this._markedItem.index !== this.ngSelect.dropdownPanel.markedItem.index) {
-            this.ngSelect.dropdownPanel.scrollInto(this.ngSelect.dropdownPanel.markedItem)
+            this.ngSelect.dropdownPanel.scrollTo(this.ngSelect.dropdownPanel.markedItem)
           }
         }
       }
     }
     this._checkMarked = false
+
+    this._resizeSensor = new ResizeSensor(this.elementRef.nativeElement, (event) => {
+      this._resizedEvent.emit({ element: this.elementRef.nativeElement, size: event })
+    })
   }
 
   /**
    * Temp fix for: https://github.com/ng-select/ng-select/issues/1122
    */
-  private _patch_ngSelect_open() {
-    const original = this.ngSelect.open
-    const _self = this
-    this.ngSelect.open = function() {
-      original.apply(this, arguments)
-      _self._patch_ngSelectDropdownPanel_updateDropdownPosition()
-    }
-  }
+  // private _patch_ngSelect_open() {
+  //   const original = this.ngSelect.open
+  //   const _self = this
+  //   this.ngSelect.open = function() {
+  //     original.apply(this, arguments)
+  //     _self._patch_ngSelectDropdownPanel_updateDropdownPosition()
+  //   }
+  // }
 
   /** Should ONLY be called by `_patch_ngSelect_open`. */
-  private _patch_ngSelectDropdownPanel_updateDropdownPosition() {
-    if (!this.ngSelect.dropdownPanel) { return }
-    const drop: any = this.ngSelect.dropdownPanel
-    // Only needed once, to update the position before the timeout in
-    // `updateDropdownPosition()`. So, using this variable to check if I already called
-    // `_updateAppendedDropdownPosition()`.
-    if (!drop.__libPatched) {
-      drop.__libPatched = 'patched'
-      const original = drop.updateDropdownPosition
-      const _self = this
-      drop.updateDropdownPosition = function() {
-        original.apply(this, arguments)
-        if (!!_self.ngSelect.appendTo) {
-          drop._updateAppendedDropdownPosition()
-        }
-      }
-    }
-  }
+  // private _patch_ngSelectDropdownPanel_updateDropdownPosition() {
+  //   if (!this.ngSelect.dropdownPanel) { return }
+  //   const drop: any = this.ngSelect.dropdownPanel
+  //   // Only needed once, to update the position before the timeout in
+  //   // `updateDropdownPosition()`. So, using this variable to check if I already called
+  //   // `_updateAppendedDropdownPosition()`.
+  //   if (!drop.__libPatched) {
+  //     drop.__libPatched = 'patched'
+  //     const original = drop.updateDropdownPosition
+  //     const _self = this
+  //     drop.updateDropdownPosition = function() {
+  //       original.apply(this, arguments)
+  //       if (!!_self.ngSelect.appendTo) {
+  //         drop._updateAppendedDropdownPosition()
+  //       }
+  //     }
+  //   }
+  // }
 
   private _enableKeyPressWorkaround() {
     if (this._keyPressWorkaroundSub) { return }
     const _ngSelect = <any>this.ngSelect
 
     this._keyPressWorkaroundSub = _ngSelect._keyPress$
-      .pipe(untilDestroyed(this))
+      .pipe(takeUntil(this._ngUnsubscribe))
       .pipe(filter(v => !this.ngSelect.searchable))
       .subscribe(v => {
         this._ngZone.runOutsideAngular(() => {

@@ -1,9 +1,8 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
-import { CdkDrag, CdkDragHandle, ɵb as CDK_DRAG_PARENT } from '@angular/cdk/drag-drop'
+import { CdkDrag, CdkDragHandle, ɵangular_material_src_cdk_drag_drop_drag_drop_b as CDK_DRAG_PARENT } from '@angular/cdk/drag-drop'
 import { AfterViewInit, Directive, DoCheck, ElementRef, Inject, Input, NgZone, OnDestroy, OnInit, Optional } from '@angular/core'
-import { untilDestroyed } from 'ngx-take-until-destroy'
 import { BehaviorSubject, Subject } from 'rxjs'
-import { auditTime, filter, switchMap, take } from 'rxjs/operators'
+import { auditTime, filter, switchMap, take, takeUntil } from 'rxjs/operators'
 
 import { getClosestWidgetCdkDrag } from '../../framework/dashboard/dashboard-widgets/dashboard-widgets-utils'
 import { DashboardWidgetsComponent } from '../../framework/dashboard/dashboard-widgets/dashboard-widgets.component'
@@ -36,6 +35,9 @@ type Writeable<T> = { -readonly [P in keyof T]-?: T[P] }
 interface DragCSSStyleDeclaration extends CSSStyleDeclaration {
   webkitUserDrag: string
   MozUserSelect: string // For some reason the Firefox property is in PascalCase.
+  msScrollSnapType: string
+  scrollSnapType: string
+  msUserSelect: string
 }
 
 export function extendStyles(
@@ -44,7 +46,8 @@ export function extendStyles(
 ) {
   for (const key in source) {
     if (source.hasOwnProperty(key)) {
-      dest[key as keyof CSSStyleDeclaration] = source[key as keyof CSSStyleDeclaration]
+      // tslint:disable-next-line: no-non-null-assertion
+      dest[key] = source[key]!
     }
   }
 
@@ -72,6 +75,8 @@ export function toggleNativeDragInteractions(element: HTMLElement, enable: boole
   }
 })
 export class WidgetDragHandleDirective implements OnInit, OnDestroy, AfterViewInit, DoCheck {
+
+  private readonly _ngUnsubscribe = new Subject()
 
   private _attachedToDom = new BehaviorSubject<boolean>(false)
   private _doneCheckingAttached = false
@@ -105,7 +110,7 @@ export class WidgetDragHandleDirective implements OnInit, OnDestroy, AfterViewIn
     if (this._dashboardWidgets) {
       this._dashboardWidgets.widgetsChange.pipe(
         auditTime(0),
-        untilDestroyed(this)
+        takeUntil(this._ngUnsubscribe)
       ).subscribe(() => {
         if (this._knownParentDrag) {
           const isAttached = this.isAttachedToDom()
@@ -137,7 +142,7 @@ export class WidgetDragHandleDirective implements OnInit, OnDestroy, AfterViewIn
           // With the weird trick being done to keep widgets initialized when switching columns
           switchMap(() => this._attachedToDom.pipe(filter(v => v === true))),
           // take(1)
-          untilDestroyed(this)
+          takeUntil(this._ngUnsubscribe)
         )
         .subscribe(() => {
           const parent = <any>this.getParentCdkDrag()
@@ -160,6 +165,9 @@ export class WidgetDragHandleDirective implements OnInit, OnDestroy, AfterViewIn
   ngOnDestroy() {
     this._stateChanges.complete()
     this._attachedToDom.complete()
+
+    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.complete()
   }
 
   ngDoCheck() {

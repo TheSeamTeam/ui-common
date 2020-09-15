@@ -18,9 +18,8 @@ import {
   ViewChildren,
   ViewContainerRef
 } from '@angular/core'
-import { untilDestroyed } from 'ngx-take-until-destroy'
 import { BehaviorSubject, Observable, Subject } from 'rxjs'
-import { auditTime, debounceTime, distinctUntilChanged, finalize, map, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators'
+import { auditTime, debounceTime, distinctUntilChanged, finalize, map, shareReplay, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators'
 
 import { faLock, faUnlock } from '@fortawesome/free-solid-svg-icons'
 
@@ -44,6 +43,8 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
   faUnlock = faUnlock
 
   public readonly _actionWidgetDragToggleName = 'widget-drag-toggle'
+
+  private readonly _ngUnsubscribe = new Subject()
 
   @Input()
   get gapSize(): number { return this._gapSize.value }
@@ -117,7 +118,7 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
           this.numColumns = 1
         }
       }),
-      untilDestroyed(this)
+      takeUntil(this._ngUnsubscribe)
     ).subscribe()
   }
 
@@ -137,13 +138,15 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
         // tap(v => console.log('serializable', v)),
         switchMap(() => this._dashboardWidgets.savePreferences())
       )),
-      untilDestroyed(this)
+      takeUntil(this._ngUnsubscribe)
     ).subscribe()
   }
 
   ngOnDestroy() {
     // console.log('[DashboardWidgetsComponent] ngOnDestroy')
     this._unregisterToggleAction()
+    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.complete()
   }
 
   ngAfterViewInit() {
@@ -158,14 +161,14 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
             this._unregisterToggleAction()
           }
         }),
-        untilDestroyed(this)
+        takeUntil(this._ngUnsubscribe)
       ).subscribe()
     }
 
     this.containers.changes.pipe(
       startWith(undefined),
       map(() => this.containers.toArray()),
-      untilDestroyed(this),
+      takeUntil(this._ngUnsubscribe),
       finalize(() => this._containers.next([]))
     ).subscribe(v => this._containers.next(v))
   }

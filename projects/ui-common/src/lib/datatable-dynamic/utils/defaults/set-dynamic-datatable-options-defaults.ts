@@ -1,7 +1,7 @@
-import { IDynamicDatatableOptions } from '../../datatable-dynamic-def'
+import { DynamicDatatableOptions } from '../../datatable-dynamic-def'
 
 export function setDynamicDatatableOptionsDefaults(
-  options: IDynamicDatatableOptions
+  options: DynamicDatatableOptions
 ) {
   if (options.virtualization === undefined || options.virtualization === null) {
     options.virtualization = true

@@ -1,12 +1,11 @@
 import { coerceArray } from '@angular/cdk/coercion'
 import { Component, forwardRef, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core'
 import { FormControl } from '@angular/forms'
-import { untilDestroyed } from 'ngx-take-until-destroy'
 import { Observable } from 'rxjs'
 import { map, startWith } from 'rxjs/operators'
 
 import { DatatableMenuBarComponent } from '../../../datatable/datatable-menu-bar/datatable-menu-bar.component'
-import { isNullOrUndefined } from '../../../utils/index'
+import { hasProperty, isNullOrUndefined } from '../../../utils/index'
 import { IDataFilter, THESEAM_DATA_FILTER, THESEAM_DATA_FILTER_OPTIONS } from '../../data-filter'
 
 import { textDataFilter } from '../data-filter-text/data-filter-text.component'
@@ -23,13 +22,14 @@ export const DATA_FILTER_TOGGLE_BUTTON: any = {
 export interface IToggleButton {
   name: string
   value: string
-  comparator: (value, row, index) => -1 | 0 | 1
+  comparator?: (value, row, index) => -1 | 0 | 1
 }
 
 export interface IToggleButtonsFilterOptions extends ITextFilterOptions {
   selectionToggleable: boolean
   multiple: boolean
   buttons: IToggleButton[]
+  initialValue?: any
 }
 
 export const DefaultToggleButtonsFilterOptions: IToggleButtonsFilterOptions = {
@@ -110,17 +110,23 @@ export class DataFilterToggleButtonsComponent implements OnInit, OnDestroy, IDat
   @Input()
   set value(value: string | string[]) {
     const _value = !isNullOrUndefined(value) ? coerceArray(value) : undefined
+    console.log('_value', _value, this._control.value)
     if (this._control.value !== _value) {
       this._control.setValue(_value)
     }
   }
-
+4
   constructor(
     private _menuBar: DatatableMenuBarComponent,
     @Optional() @Inject(THESEAM_DATA_FILTER_OPTIONS) private _filterOptions: IToggleButtonsFilterOptions | null
   ) { }
 
-  ngOnInit() { this._menuBar.addFilter(this) }
+  ngOnInit() {
+    this._menuBar.addFilter(this)
+    if (this._filterOptions && hasProperty(this._filterOptions, 'initialValue')) {
+      this.value = this._optDefault('initialValue')
+    }
+  }
 
   ngOnDestroy() { this._menuBar.removeFilter(this) }
 
@@ -146,7 +152,6 @@ export class DataFilterToggleButtonsComponent implements OnInit, OnDestroy, IDat
   public filter<T>(data: T[]): Observable<T[]> {
     return this._control.valueChanges
       .pipe(
-        untilDestroyed(this),
         map(v => toggleButtonsFilter(data, coerceArray(v), this.options)),
         startWith(toggleButtonsFilter(data, coerceArray(this._control.value), this.options)),
       )

@@ -34,7 +34,7 @@
 </div>
 
 <ng-template #toggleBtnTpl>
-  <button seamButton theme="baselayout-action" title="Toggle Widget Dragging" (click)="toggleDragging()">
+  <button seamButton theme="baselayout-action" title="{{ widgetsDraggable ? 'Lock the Dashboard' : 'Modify Dashboard' }}" (click)="toggleDragging()">
     <seam-icon [icon]="widgetsDraggable ? faUnlock : faLock" iconClass="text-secondary"></seam-icon>
   </button>
 </ng-template>

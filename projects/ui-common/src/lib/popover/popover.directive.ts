@@ -5,10 +5,9 @@ import { ConnectionPositionPair, Overlay, OverlayRef, PositionStrategy } from '@
 import { normalizePassiveListenerOptions } from '@angular/cdk/platform'
 import { ComponentPortal, TemplatePortal } from '@angular/cdk/portal'
 import { ComponentRef, Directive, ElementRef, HostListener, Input, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from '@angular/core'
-import { BehaviorSubject, fromEvent, merge, of, Subscription } from 'rxjs'
-import { switchMap } from 'rxjs/operators'
+import { BehaviorSubject, fromEvent, merge, of, Subject, Subscription } from 'rxjs'
+import { switchMap, takeUntil } from 'rxjs/operators'
 
-import { untilDestroyed } from 'ngx-take-until-destroy'
 import { PopoverComponent } from './popover/popover.component'
 
 /** Options for binding a passive event listener. */
@@ -24,6 +23,8 @@ const passiveEventListenerOptions = normalizePassiveListenerOptions({passive: tr
   exportAs: 'seamPopover'
 })
 export class TheSeamPopoverDirective implements OnDestroy {
+
+  private readonly _ngUnsubscribe = new Subject()
 
   @Input() seamPopover?: TemplateRef<any> | null
 
@@ -109,7 +110,7 @@ export class TheSeamPopoverDirective implements OnDestroy {
         passiveEventListenerOptions)
 
     this._seamPopoverBaseWidth
-      .pipe(untilDestroyed(this))
+      .pipe(takeUntil(this._ngUnsubscribe))
       .subscribe(w => {
         if (this._compRef && this._compRef.instance) {
           this._compRef.instance.baseWidth = w
@@ -126,6 +127,9 @@ export class TheSeamPopoverDirective implements OnDestroy {
 
     this._popoverClosedSubscription.unsubscribe()
     this._closingActionsSubscription.unsubscribe()
+
+    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.complete()
   }
 
   /**

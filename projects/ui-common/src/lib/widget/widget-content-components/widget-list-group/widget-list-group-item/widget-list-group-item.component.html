@@ -14,7 +14,16 @@
     </span>
   </ng-template>
 
-  <div class="d-flex flex-column justify-content-center">
+  <div class="d-flex flex-column justify-content-center flex-grow-1">
     {{ label }}
   </div>
+
+  <seam-icon *ngIf="secondaryIcon"
+    iconType="borderless-styled-square"
+    class="secondary-icon align-self-center ml-1"
+    [icon]="secondaryIcon"
+    [iconClass]="secondaryIconClass"
+    [title]="secondaryIconTitle"
+    size="lg">
+  </seam-icon>
 </div>

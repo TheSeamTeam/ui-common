@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "../../out-tsc/lib",
-    "target": "es2015",
+    "target": "es2018",
     "module": "esNext",
     "moduleResolution": "node",
     "declaration": true,
@@ -22,18 +22,20 @@
     ]
   },
   "angularCompilerOptions": {
-    "annotateForClosureCompiler": true,
     "skipTemplateCodegen": true,
     "strictMetadataEmit": true,
-    "fullTemplateTypeCheck": true,
-    "strictInjectionParameters": true,
-    "enableResourceInlining": true
+    "enableResourceInlining": true,
+    "enableIvy": true // Disable if using Storybook in linked project
   },
+  "include": [
+    "src/lib/**/*.ts"
+  ],
   "exclude": [
     "src/test.ts",
     "**/*.spec.ts",
     "**/*.stories.ts",
     "**/stories/**/*",
-    "**/_story-data/**/*"
+    "**/_story-data/**/*",
+    "**/schematics/**/*"
   ]
 }

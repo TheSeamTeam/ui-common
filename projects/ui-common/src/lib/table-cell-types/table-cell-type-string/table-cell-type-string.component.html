@@ -3,16 +3,54 @@
 </ng-template>
 
 <ng-template #noPopover>
-  <div class="text-truncate" #truncatedElem>
+  <div class="text-truncate">
     {{ value }}
   </div>
 </ng-template>
 
-<ng-container>
+<ng-container *ngIf="!_tplType || _tplType === 'default'">
   <div *ngIf="canPopover; else noPopover" [seamPopover]="popoverTpl">
-    <!-- <div class="text-truncate">
-      {{ value }}
-    </div> -->
     <ng-template [ngTemplateOutlet]="noPopover"></ng-template>
   </div>
 </ng-container>
+
+
+
+<ng-container *ngIf="_tplType === 'link'">
+  <a class="d-block text-body text-decoration-none"
+    [routerLink]="_link"
+    [attr.title]="_title">
+    <ng-template [ngTemplateOutlet]="noPopover"></ng-template>
+  </a>
+</ng-container>
+
+<ng-container *ngIf="_tplType === 'link-external'">
+  <a class="d-block text-body text-decoration-none"
+    [attr.href]="_link"
+    [attr.title]="_title">
+    <ng-template [ngTemplateOutlet]="noPopover"></ng-template>
+  </a>
+</ng-container>
+
+<ng-container *ngIf="_tplType === 'link-encrypted'">
+  <button
+    class="btn btn-link p-0 d-block text-body text-decoration-none"
+    type="button"
+    [seamEncryptedAssetLink]="_link"
+    [seamDetectMimeFromContent]="_detectMimeContent"
+    [seamDownloadAsset]="_download"
+    [attr.title]="_title">
+    <ng-template [ngTemplateOutlet]="noPopover"></ng-template>
+  </button>
+</ng-container>
+
+<ng-container *ngIf="_tplType === 'button'">
+  <button
+    class="btn btn-link p-0 d-block text-body text-decoration-none"
+    type="button"
+    [attr.title]="_title"
+    (click)="_doButtonAction()">
+    <ng-template [ngTemplateOutlet]="noPopover"></ng-template>
+  </button>
+</ng-container>
+

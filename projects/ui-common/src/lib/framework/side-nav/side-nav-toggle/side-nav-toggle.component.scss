@@ -1,6 +1,6 @@
 @import '../styles/utilities';
 
-:host {
+seam-side-nav-toggle {
   display: flex;
   flex-direction: row;
   flex-shrink: 0;
@@ -11,21 +11,22 @@
   position: relative;
   height: 45px;
   width: 100%;
-}
 
-.side-nav-toggle--content {
-  flex: 1 1 0;
-}
+  //
+  .side-nav-toggle--content {
+    flex: 1 1 0;
+  }
 
-.side-nav-toggle--btn {
-  // flex: 0 0 auto;
-  // align-self: flex-end;
-  position: absolute;
-  top: 0;
-  right: 5px;
-  color: $seam-side-nav-toggle-btn-color;
+  .side-nav-toggle--btn {
+    // flex: 0 0 auto;
+    // align-self: flex-end;
+    position: absolute;
+    top: 0;
+    right: 5px;
+    color: $seam-side-nav-toggle-btn-color;
 
-  ::ng-deep seam-icon {
+    seam-icon {
       padding: 5px;
+    }
   }
 }
