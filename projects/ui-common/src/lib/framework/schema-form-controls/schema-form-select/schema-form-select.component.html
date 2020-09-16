@@ -1,0 +1,48 @@
+<seam-form-field *ngIf="boundControl">
+  <ng-template seamFormFieldLabelTpl let-required="required">
+    <ng-container *ngIf="!options?.notitle">
+      {{ options?.title }}<seam-form-field-required-indicator class="pl-1"></seam-form-field-required-indicator>
+    </ng-container>
+  </ng-template>
+  <ng-select seamInput
+    [formControl]="formControl"
+    [ngClass]="options?.fieldHtmlClass"
+    [id]="'control' + layoutNode?._id"
+    [required]="options?.required"
+    [items]="selectList"
+    bindLabel="name"
+    bindValue="value"
+    [clearable]="false"
+    appendTo="body"
+
+    [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
+    [attr.placeholder]="options?.placeholder"
+    [attr.required]="options?.required"
+    [readonly]="options?.readonly ? 'readonly' : null">
+  </ng-select>
+</seam-form-field>
+
+<seam-form-field *ngIf="!boundControl">
+  <ng-template seamFormFieldLabelTpl let-required="required">
+    <ng-container *ngIf="!options?.notitle">
+      {{ options?.title }}<seam-form-field-required-indicator class="pl-1"></seam-form-field-required-indicator>
+    </ng-container>
+  </ng-template>
+  <ng-select seamInput
+    [ngClass]="options?.fieldHtmlClass"
+    [id]="'control' + layoutNode?._id"
+    [required]="options?.required"
+    [items]="selectList"
+    bindLabel="name"
+    bindValue="value"
+    [clearable]="false"
+    (change)="updateValue($event)"
+    appendTo="body"
+
+    [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
+    [attr.placeholder]="options?.placeholder"
+    [attr.required]="options?.required"
+    [readonly]="options?.readonly ? 'readonly' : null"
+    [disabled]="controlDisabled">
+  </ng-select>
+</seam-form-field>
