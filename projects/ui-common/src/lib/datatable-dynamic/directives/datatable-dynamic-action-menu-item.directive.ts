@@ -63,7 +63,7 @@ export class DatatableDynamicActionMenuItemRouterLink {
       this._rLinkClickEventListener = this.el.nativeElement.addEventListener('click', event => {
         // console.log('this._rLinkWithHref', this._rLinkWithHref, this._rLinkWithHref && this._rLinkWithHref.href)
         if (this._rLinkWithHref) {
-          return this._rLinkWithHref.onClick(event.button, event.ctrlKey, event.metaKey, event.shiftKey)
+          return this._rLinkWithHref.onClick(event.button, event.ctrlKey, event.shiftKey, event.altKey, event.metaKey)
         }
       })
     } else {
