@@ -3,7 +3,7 @@ import { combineLatest, Observable, of, ReplaySubject, Subject } from 'rxjs'
 import { auditTime, map, startWith, takeUntil } from 'rxjs/operators'
 
 import { ModalConfig, ModalRef, MODAL_DATA } from '../modal/index'
-import { ComponentType } from '../models/index'
+import type { ComponentType } from '../models/index'
 
 class FakeModalRef<T, R = any> implements Partial<ModalRef<T, R>> {
 

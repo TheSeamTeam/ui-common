@@ -1,6 +1,6 @@
 import { Directive, HostBinding, HostListener, Inject, Input, Optional } from '@angular/core'
 
-import { ITheSeamBaseLayoutRef } from '../base-layout-ref'
+import type { ITheSeamBaseLayoutRef } from '../base-layout-ref'
 import { THESEAM_BASE_LAYOUT_REF } from '../base-layout-tokens'
 
 /**

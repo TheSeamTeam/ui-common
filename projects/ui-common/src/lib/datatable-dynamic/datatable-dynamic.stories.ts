@@ -20,7 +20,8 @@ import {
 import { DatatableExportButtonComponent } from '../datatable/datatable-export-button/datatable-export-button.component'
 import { DatatableMenuBarTextComponent } from '../datatable/datatable-menu-bar-text/datatable-menu-bar-text.component'
 import { THESEAM_MENUBAR_ITEM_DATA } from '../datatable/tokens/menubar-item-data'
-import { IDynamicComponentManifest, TheSeamDynamicComponentLoaderModule } from '../dynamic-component-loader/dynamic-component-loader.module'
+import { TheSeamDynamicComponentLoaderModule } from '../dynamic-component-loader'
+import type { IDynamicComponentManifest } from '../dynamic-component-loader'
 import {
   DynamicActionApiService,
   DynamicActionLinkService,

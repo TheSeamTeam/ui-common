@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit, Optional } from '@angular/core'
 
 import { MenuItemComponent } from '../menu-item.component'
-import { ITheSeamMenuPanel } from '../menu-panel'
+import type { ITheSeamMenuPanel } from '../menu-panel'
 import { THESEAM_MENU_PANEL } from '../menu-panel-token'
 
 @Component({

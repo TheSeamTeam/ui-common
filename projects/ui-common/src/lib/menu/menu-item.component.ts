@@ -6,7 +6,7 @@ import { Subject } from 'rxjs'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 
 import { CanDisableCtor, mixinDisabled } from '../core/common-behaviors/disabled'
-import { ITheSeamMenuPanel } from './menu-panel'
+import type { ITheSeamMenuPanel } from './menu-panel'
 import { THESEAM_MENU_PANEL } from './menu-panel-token'
 
 class TheSeamMenuItemBase {}

@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core'
 
-import { ThemeTypes } from '../models/index'
+import type { ThemeTypes } from '../models/index'
 
 @Component({
   selector: 'seam-confirm-dialog',
