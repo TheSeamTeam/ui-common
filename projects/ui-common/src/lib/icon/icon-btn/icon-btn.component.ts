@@ -1,9 +1,7 @@
 import { Component, DoCheck, ElementRef, HostBinding, Input, OnInit, Renderer2 } from '@angular/core'
 
-import { IconProp } from '@fortawesome/fontawesome-svg-core'
-
-import { ThemeTypes } from '../../models/index'
-import { SeamIcon } from '../icon'
+import type { ThemeTypes } from '../../models/index'
+import type { SeamIcon } from '../icon'
 
 @Component({
   // tslint:disable-next-line:component-selector

@@ -18,7 +18,8 @@ import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mapTo, pairwise, startWith, takeUntil, tap } from 'rxjs/operators'
 
 import { TheSeamLayoutService } from '../../layout/index'
-import { ITheSeamBaseLayoutNav, ITheSeamBaseLayoutRef, THESEAM_BASE_LAYOUT_REF } from '../base-layout/index'
+import { THESEAM_BASE_LAYOUT_REF } from '../base-layout/index'
+import type { ITheSeamBaseLayoutNav, ITheSeamBaseLayoutRef } from '../base-layout/index'
 
 import { ISideNavItem } from './side-nav.models'
 

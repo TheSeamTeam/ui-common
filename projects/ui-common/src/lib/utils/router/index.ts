@@ -1,5 +1,5 @@
-export * from './operators/activatedRoutesWithDataProperty'
+export * from './operators/activated-routes-with-data-property'
 
-export * from './leafChildRoute'
+export * from './leaf-child-route'
 export * from './route-snapshot-path-relative'
 export * from './route-snapshot-path-full'

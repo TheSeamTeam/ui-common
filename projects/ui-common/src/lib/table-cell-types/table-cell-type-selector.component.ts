@@ -18,7 +18,7 @@ import { Subject } from 'rxjs'
 
 import { TABLE_CELL_DATA } from '../table/table-cell-tokens'
 import { TableCellData, TableCellDataChange } from '../table/table-cell.models'
-import { TheSeamTableColumn } from '../table/table-column'
+import type { TheSeamTableColumn } from '../table/table-column'
 
 import { ITableCellTypeManifest } from '../table-cell-types/table-cell-types-models'
 import { TABLE_CELL_TYPE_MANIFEST } from '../table-cell-types/table-cell-types-tokens'

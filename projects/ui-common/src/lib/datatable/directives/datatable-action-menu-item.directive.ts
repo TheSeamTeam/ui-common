@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs'
 
 // import jexl from 'jexl'
 
-import { DynamicDatatableRow } from '../../datatable-dynamic/datatable-dynamic-def'
+import type { DynamicDatatableRow } from '../../datatable-dynamic/datatable-dynamic-def'
 import { TheSeamDynamicComponentLoader } from '../../dynamic-component-loader/dynamic-component-loader.service'
 import { Modal } from '../../modal/index'
 

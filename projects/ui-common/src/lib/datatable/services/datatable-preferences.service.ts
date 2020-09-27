@@ -4,7 +4,7 @@ import { map, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operator
 
 import { hasProperty } from '../../utils/has-property'
 import { ITheSeamDatatablePreferences, ITheSeamDatatablePreferencesColumn } from '../models/preferences'
-import { ITheSeamDatatablePreferencesAccessor } from '../models/preferences-accessor'
+import type { ITheSeamDatatablePreferencesAccessor } from '../models/preferences-accessor'
 import { THESEAM_DATATABLE_PREFERENCES_ACCESSOR } from '../tokens/datatable-preferences-accessor'
 import { withStoredColumnInfo } from '../utils/with-stored-column-info'
 

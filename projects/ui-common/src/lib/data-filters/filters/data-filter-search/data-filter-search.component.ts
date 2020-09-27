@@ -6,7 +6,7 @@ import { map, startWith } from 'rxjs/operators'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
 
 import { DatatableMenuBarComponent } from '../../../datatable/datatable-menu-bar/datatable-menu-bar.component'
-import { SeamIcon } from '../../../icon/index'
+import type { SeamIcon } from '../../../icon/index'
 import { isNullOrUndefined } from '../../../utils/index'
 
 import { IDataFilter, THESEAM_DATA_FILTER, THESEAM_DATA_FILTER_OPTIONS } from '../../data-filter'

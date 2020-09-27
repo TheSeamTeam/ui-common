@@ -2,7 +2,7 @@ import { ActivatedRoute, Data } from '@angular/router'
 import { combineLatest, Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
-import { leafChildRoute } from '../leafChildRoute'
+import { leafChildRoute } from '../leaf-child-route'
 
 export interface IActivatedRouteWithData {
   route: ActivatedRoute

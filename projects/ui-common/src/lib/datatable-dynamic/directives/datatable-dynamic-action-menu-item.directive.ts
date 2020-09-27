@@ -28,7 +28,7 @@ import { AssetReaderHelperService } from '../../services/index'
 import { getAttribute, hasProperty, toggleAttribute } from '../../utils/index'
 
 import { DynamicDatatableRow } from '../datatable-dynamic-def'
-import { DynamicDatatableActionMenuRecord } from '../models/dynamic-datatable-action-menu-record'
+import type { DynamicDatatableActionMenuRecord } from '../models/dynamic-datatable-action-menu-record'
 import { DynamicDatatableRowAction } from '../models/dynamic-datatable-row-action'
 import { DynamicDatatableRowActionContext } from '../models/dynamic-datatable-row-action-context'
 
@@ -63,7 +63,7 @@ export class DatatableDynamicActionMenuItemRouterLink {
       this._rLinkClickEventListener = this.el.nativeElement.addEventListener('click', event => {
         // console.log('this._rLinkWithHref', this._rLinkWithHref, this._rLinkWithHref && this._rLinkWithHref.href)
         if (this._rLinkWithHref) {
-          return this._rLinkWithHref.onClick(event.button, event.ctrlKey, event.metaKey, event.shiftKey)
+          return this._rLinkWithHref.onClick(event.button, event.ctrlKey, event.shiftKey, event.altKey, event.metaKey)
         }
       })
     } else {
