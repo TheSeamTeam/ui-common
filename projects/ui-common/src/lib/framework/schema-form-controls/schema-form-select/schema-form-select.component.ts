@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core'
 import { AbstractControl } from '@angular/forms'
 
-import { buildTitleMap, getControl, isArray, JsonSchemaFormService } from '@ajsf/core'
+import { buildTitleMap, isArray, JsonSchemaFormService } from '@ajsf/core'
 
 @Component({
   selector: 'seam-schema-form-select',
@@ -33,8 +33,6 @@ export class TheSeamSchemaFormSelectComponent implements OnInit {
       this.options.titleMap || this.options.enumNames,
       this.options.enum, !!this.options.required, !!this.options.flatList
     )
-    // console.log('options', this.options)
-    // console.log('selectList', this.selectList)
 
     this.jsf.initializeControl(this)
   }

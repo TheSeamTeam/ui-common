@@ -19,6 +19,12 @@
     [attr.placeholder]="options?.placeholder"
     [attr.required]="options?.required"
     [readonly]="options?.readonly ? 'readonly' : null">
+    <ng-template ng-label-tmp let-item="item">
+      <span [innerHTML]="item.name"></span>
+    </ng-template>
+    <ng-template ng-option-tmp let-item="item" let-index="index">
+      <span [innerHTML]="item.name"></span>
+    </ng-template>
   </ng-select>
 </seam-form-field>
 
@@ -44,5 +50,8 @@
     [attr.required]="options?.required"
     [readonly]="options?.readonly ? 'readonly' : null"
     [disabled]="controlDisabled">
+    <ng-template ng-option-tmp let-item="item" let-index="index">
+      <span [innerHTML]="item.name"></span>
+    </ng-template>
   </ng-select>
 </seam-form-field>
