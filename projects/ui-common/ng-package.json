@@ -36,6 +36,7 @@
     "jexl",
     "webfontloader",
     "@types/webfontloader",
-    "intl-tel-input"
+    "intl-tel-input",
+    "@ajsf/core"
   ]
 }
