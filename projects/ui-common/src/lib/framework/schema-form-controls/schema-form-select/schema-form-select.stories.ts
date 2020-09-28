@@ -7,7 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { TheSeamSchemaFormModule } from '../../schema-form/schema-form.module'
 
 export default {
-  title: 'Framework/SchemaFormControls/Select',
+  title: 'Framework/SchemaForm/Controls/Select',
   decorators: [
     moduleMetadata({
       imports: [
@@ -36,8 +36,37 @@ export const Basic = () => ({
       }
     },
     layout: [
-      { 'dataPointer': '/Colors' },
-      { 'type': 'submit', 'title': 'Submit' }
+      { 'dataPointer': '/Colors' }
+    ]
+  },
+  template: `
+    <json-schema-form
+      framework="seam-framework"
+      [schema]="schema"
+      [layout]="layout">
+    </json-schema-form>`
+})
+
+export const Required = () => ({
+  props: {
+    schema: {
+      '$id': 'http://example.com/example.json',
+      'type': 'object',
+      'definitions': {},
+      '$schema': 'http://json-schema.org/draft-07/schema#',
+      'properties': {
+        'Colors': {
+          '$id': '/properties/Colors',
+          'type': 'string',
+          'enum': [ 'Red', 'Green', 'Blue' ]
+        }
+      },
+      'required': [
+        'Available'
+      ]
+    },
+    layout: [
+      { 'dataPointer': '/Colors' }
     ]
   },
   template: `

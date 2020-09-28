@@ -5,11 +5,10 @@ import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { TheSeamSchemaFormModule } from '../../schema-form/schema-form.module'
-import { TheSeamSchemaFormControlsModule } from '../schema-form-controls.module'
 import { TheSeamSchemaFormCheckboxComponent } from './schema-form-checkbox.component'
 
 export default {
-  title: 'Framework/SchemaFormControls/Checkbox',
+  title: 'Framework/SchemaForm/Controls/Checkbox',
   component: TheSeamSchemaFormCheckboxComponent,
   decorators: [
     moduleMetadata({
