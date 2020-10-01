@@ -42,6 +42,8 @@ export interface TableCellTypeConfigProgressCircleIcon extends TableCellTypeConf
   /**
    * Icon inputs
    */
+  displayIcon?: DynamicValue<boolean>
+
   icon?: DynamicValue<SeamIcon>
 
   action?: TableCellTypeIconConfigAction

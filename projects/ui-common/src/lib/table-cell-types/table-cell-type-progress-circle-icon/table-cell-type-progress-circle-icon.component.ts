@@ -63,15 +63,14 @@ export class TableCellTypeProgressCircleIconComponent implements OnInit, OnDestr
 
   private _setIcon(tableData?: TableCellData<'progress-circle-icon', TableCellTypeConfigProgressCircleIcon>) {
     if (tableData &&
-      tableData.value >= 100 &&
       tableData.colData &&
       tableData.colData.cellTypeConfig &&
+      tableData.colData.cellTypeConfig.displayIcon &&
+      tableData.colData.cellTypeConfig.icon &&
+      this._parseConfigValue(tableData.colData.cellTypeConfig.displayIcon, tableData) &&
       this._parseConfigValue(tableData.colData.cellTypeConfig.icon, tableData)) {
-        const icon = this._parseConfigValue(tableData.colData.cellTypeConfig.icon, tableData)
-        this.icon = icon
-        this.displayIcon = true
-      } else {
-        this.displayIcon = false
+        this.icon = this._parseConfigValue(tableData.colData.cellTypeConfig.icon, tableData)
+        this.displayIcon = this._parseConfigValue(tableData.colData.cellTypeConfig.displayIcon, tableData)
       }
   }
 
