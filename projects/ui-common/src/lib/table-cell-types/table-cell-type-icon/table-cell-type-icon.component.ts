@@ -12,10 +12,10 @@ import {
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
 
-import { DatatableComponent, THESEAM_DATATABLE } from '../../datatable/datatable/datatable.component'
+import { DatatableComponent } from '../../datatable/datatable/datatable.component'
 import { getKnownIcon, SeamIcon, TheSeamIconType } from '../../icon/index'
 import { TABLE_CELL_DATA } from '../../table/table-cell-tokens'
-import { TableCellData } from '../../table/table-cell.models'
+import type { TableCellData } from '../../table/table-cell.models'
 import { TheSeamTableColumn } from '../../table/table-column'
 import { TableComponent } from '../../table/table/table.component'
 

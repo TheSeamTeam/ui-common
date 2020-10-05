@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, TemplateRef, ViewChild } from '@angular/core'
 
-import { IDashboardWidgetsItemDef } from '../dashboard-widgets/dashboard-widgets-item'
+import type { IDashboardWidgetsItemDef } from '../dashboard-widgets/dashboard-widgets-item'
 
 @Component({
   selector: 'seam-dashboard-widget-container',

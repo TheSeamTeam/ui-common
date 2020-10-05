@@ -27,9 +27,21 @@
   "tslint.exclude": [
     "**/src/assets/**/*.js"
   ],
-  // Makes sure we use the dependent typescript version, instead of potentially
-  // old or newer user machine version.
-  "typescript.tsdk": "node_modules\\typescript\\lib",
+
+  // Makes sure we use the dependent typescript version.
+  // --------------------------------------------------------------------------
+  // NOTE: In the workspace settings this doesn't actually do anything other
+  //  than indicate which Typescript you are using. It is a security issue for
+  //  VSCode to execute arbitrary code without the user confirming it. I
+  //  understand the reason, but still find it wrong that VSCode doesn't tell me,
+  //  because I usually spend way to long trying to fix problems, that make no
+  //  sense, every time I open a project for the first time.
+  //
+  //  Example of reason: User clones git repo, with `{ "typescript.tsdk":
+  //  "./delete-system32.js" }` in the `.vscode/settings.json`. Once they open
+  //  VSCode, they would be in trouble.
+  "typescript.tsdk": "node_modules/typescript/lib",
+
   // Our custom schematics.
   // "ngschematics.schematics": [
   //   // '@theseam/ui-common' schematics.

@@ -9,15 +9,15 @@
     "postbuild": "npm run copy:schemas && npm run copy:files && npm run copy:collection"
   },
   "peerDependencies": {
-    "@angular/common": "^10.0.1",
-    "@angular/core": "^10.0.1",
-    "@angular/forms": "^10.0.1",
-    "@angular/animations": "^10.0.1",
-    "@angular/router": "^10.0.1",
+    "@angular/common": "^10.1.2",
+    "@angular/core": "^10.1.2",
+    "@angular/forms": "^10.1.2",
+    "@angular/animations": "^10.1.2",
+    "@angular/router": "^10.1.2",
     "rxjs": "^6.5.5"
   },
   "dependencies": {
-    "@angular/cdk": "^10.0.1",
+    "@angular/cdk": "^10.2.2",
     "@angular/flex-layout": "^10.0.0-beta.32",
     "@fortawesome/angular-fontawesome": "~0.5.0",
     "@fortawesome/fontawesome-svg-core": "~1.2.21",
@@ -25,7 +25,8 @@
     "@fortawesome/free-regular-svg-icons": "~5.10.1",
     "@fortawesome/free-solid-svg-icons": "~5.10.1",
     "@marklb/file-type": "~10.6.5",
-    "@marklb/ngx-datatable": "~16.0.3",
+    "@marklb/ngx-datatable": "~18.0.0",
+    "@marklb/ngx-loading": "^10.0.0",
     "@ng-select/ng-select": "~4.0.0",
     "@ng-bootstrap/ng-bootstrap": "~6.1.0",
     "overlayscrollbars": "~1.7.3",
@@ -36,17 +37,16 @@
     "file-saver": "~2.0.2",
     "localstorage-memory": "~1.0.3",
     "lodash-es": "~4.17.11",
-    "ngx-loading": "~3.0.1",
     "ngx-toastr": "~12.1.0",
     "pdfjs-dist": "^2.0.943",
     "tslib": "^2.0.0",
     "xlsx": "^0.14.4",
-    "jexl": "^2.2.2",
+    "jexl": "^2.3.0",
     "@types/file-saver": "^2.0.1",
     "webfontloader": "^1.6.28",
     "@types/webfontloader": "^1.6.29",
-    "intl-tel-input": "^17.0.3",
-    "@types/intl-tel-input": "^14.0.1"
+    "intl-tel-input": "^17.0.5",
+    "@ajsf/core": "^0.1.5"
   },
   "repository": {
     "type": "git",

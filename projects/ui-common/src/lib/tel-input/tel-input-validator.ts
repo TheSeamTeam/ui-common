@@ -1,3 +1,5 @@
+import { IntlTelInput, intlTelInputUtils } from './intl-tel-input'
+
 import { FormControl } from '@angular/forms'
 
 import { notNullOrUndefined, waitOnConditionAsync } from '../utils/index'
@@ -15,6 +17,14 @@ interface TelInputValidatorCountryData {
   dialCodes: { [dialCode: string]: boolean }
   countryCodes: { [dialCode: string]: string[] }
   countryCodeMaxLen: number
+}
+
+function globalIntlTelInputUtils(): typeof intlTelInputUtils {
+  return (window as any).intlTelInputUtils
+}
+
+function globalIntlTelInputGlobals(): IntlTelInput.Static {
+  return (window as any).intlTelInputGlobals
 }
 
 function getNumeric(s: string): string {
@@ -99,7 +109,7 @@ function processCountryCodes(countries: TelInputCountryData[]): TelInputValidato
  */
 function getDialCode(data: TelInputValidatorCountryData, number: string, includeAreaCode: boolean = false): string {
   // console.log('getDialCode', number, includeAreaCode)
-  // const data = processCountryCodes(window.intlTelInputGlobals.getCountryData() as TelInputCountryData[])
+  // const data = processCountryCodes(globalIntlTelInputGlobals().getCountryData() as TelInputCountryData[])
 
   let dialCode = ''
   // only interested in international numbers (starting with a plus)
@@ -137,18 +147,18 @@ function getDialCode(data: TelInputValidatorCountryData, number: string, include
 }
 
 function getUtils(): Promise<any> {
-  if (window.intlTelInputUtils) {
-    return Promise.resolve(window.intlTelInputUtils)
+  if (globalIntlTelInputUtils()) {
+    return Promise.resolve(globalIntlTelInputUtils())
   }
 
-  if ((window.intlTelInputGlobals as any).startedLoadingUtilsScript) {
-    return waitOnConditionAsync(() => notNullOrUndefined(window.intlTelInputUtils), 5000)
-      .then(() => window.intlTelInputUtils)
+  if ((globalIntlTelInputGlobals() as any).startedLoadingUtilsScript) {
+    return waitOnConditionAsync(() => notNullOrUndefined(globalIntlTelInputUtils()), 5000)
+      .then(() => globalIntlTelInputUtils())
   }
 
-  return (window.intlTelInputGlobals.loadUtils(TEL_INPUT_UTILS_PATH) as unknown as Promise<any>)
-    .then(() => waitOnConditionAsync(() => notNullOrUndefined(window.intlTelInputUtils), 5000))
-    .then(() => window.intlTelInputUtils)
+  return (globalIntlTelInputGlobals().loadUtils(TEL_INPUT_UTILS_PATH) as unknown as Promise<any>)
+    .then(() => waitOnConditionAsync(() => notNullOrUndefined(globalIntlTelInputUtils()), 5000))
+    .then(() => globalIntlTelInputUtils())
 }
 
 export const TEL_VALIDATOR_KEY = 'telInput'
@@ -164,12 +174,12 @@ export function telInputValidator(control: FormControl) {
 
   return getUtils().then(utils => {
     // console.log('[telInputValidator] utils', utils)
-    // console.log('[telInputValidator] window.intlTelInputGlobals', window.intlTelInputGlobals)
+    // console.log('[telInputValidator] globalIntlTelInputGlobals()', globalIntlTelInputGlobals())
 
-    // const countryData = window.intlTelInputGlobals.getCountryData()
+    // const countryData = globalIntlTelInputGlobals().getCountryData()
     // console.log('[telInputValidator] countryData', countryData)
 
-    const data = processCountryCodes(window.intlTelInputGlobals.getCountryData() as TelInputCountryData[])
+    const data = processCountryCodes(globalIntlTelInputGlobals().getCountryData() as TelInputCountryData[])
 
     const dialCode = getDialCode(data, value)
     // console.log('[telInputValidator] dialCode', dialCode)

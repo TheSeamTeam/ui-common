@@ -1,7 +1,7 @@
 import { animate, animation, query, stagger, style, transition, trigger, useAnimation } from '@angular/animations'
 import { coerceArray } from '@angular/cdk/coercion'
 import { Platform } from '@angular/cdk/platform'
-import { Component, ContentChildren, EventEmitter, forwardRef, Input, OnInit, Output, QueryList } from '@angular/core'
+import { ChangeDetectorRef, Component, ContentChildren, EventEmitter, forwardRef, Input, OnInit, Output, QueryList } from '@angular/core'
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
 
 import { TiledSelectTileOverlayDirective } from './../../directives/tiled-select-tile-overlay.directive'
@@ -87,7 +87,8 @@ export class TiledSelectComponent implements OnInit, ControlValueAccessor {
   public overlayTpls: QueryList<TiledSelectTileOverlayDirective>
 
   constructor(
-    private _platform: Platform
+    private readonly _platform: Platform,
+    private readonly _cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit() { }
@@ -101,6 +102,7 @@ export class TiledSelectComponent implements OnInit, ControlValueAccessor {
     if (this.onChange) {
       this.onChange(this.val)
       this.change.emit(this.val)
+      this._cdr.markForCheck()
     }
     if (this.onTouched) { this.onTouched() }
   }

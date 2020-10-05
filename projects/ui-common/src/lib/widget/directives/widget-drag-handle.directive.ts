@@ -1,6 +1,6 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
-import { CdkDrag, CdkDragHandle, ɵangular_material_src_cdk_drag_drop_drag_drop_b as CDK_DRAG_PARENT } from '@angular/cdk/drag-drop'
-import { AfterViewInit, Directive, DoCheck, ElementRef, Inject, Input, NgZone, OnDestroy, OnInit, Optional } from '@angular/core'
+import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop'
+import { AfterViewInit, Directive, DoCheck, ElementRef, Input, NgZone, OnDestroy, OnInit, Optional } from '@angular/core'
 import { BehaviorSubject, Subject } from 'rxjs'
 import { auditTime, filter, switchMap, take, takeUntil } from 'rxjs/operators'
 
@@ -101,7 +101,7 @@ export class WidgetDragHandleDirective implements OnInit, OnDestroy, AfterViewIn
     public element: ElementRef<HTMLElement>,
     private _ngZone: NgZone,
     @Optional() private _dashboardWidgets?: DashboardWidgetsComponent,
-    @Inject(CDK_DRAG_PARENT) @Optional() private __parentDrag?: CdkDrag
+    @Optional() private __parentDrag?: CdkDrag
   ) {
     toggleNativeDragInteractions(element.nativeElement, false)
   }

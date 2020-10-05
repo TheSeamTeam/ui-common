@@ -9,7 +9,7 @@ import {
 import { ROUTES } from '@angular/router'
 
 import { TheSeamDynamicComponentLoader } from './dynamic-component-loader.service'
-import { IDynamicComponentManifest } from './dynamic-component-manifest'
+import type { IDynamicComponentManifest } from './dynamic-component-manifest'
 import {
   DYNAMIC_COMPONENT,
   DYNAMIC_COMPONENT_MANIFESTS,
@@ -55,5 +55,3 @@ export class TheSeamDynamicComponentLoaderModule {
     }
   }
 }
-
-export { IDynamicComponentManifest } from './dynamic-component-manifest'

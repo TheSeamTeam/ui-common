@@ -1,7 +1,7 @@
 import { FocusMonitor } from '@angular/cdk/a11y'
 import { Component, ElementRef, HostBinding, Input, OnDestroy, Renderer2 } from '@angular/core'
 
-import { ThemeTypes } from '../../models/index'
+import type { ThemeTypes } from '../../models/index'
 import { AnchorButtonComponent, ButtonComponent } from '../button/button.component'
 
 @Component({

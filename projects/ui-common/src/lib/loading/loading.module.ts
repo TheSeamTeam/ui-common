@@ -3,7 +3,7 @@ import { PortalModule } from '@angular/cdk/portal'
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 
-import { NgxLoadingModule } from 'ngx-loading'
+import { NgxLoadingModule } from '@marklb/ngx-loading'
 
 import { TheSeamLoadingOverlayService } from './loading-overlay.service'
 import { defaultThemeConfig } from './loading-themes'

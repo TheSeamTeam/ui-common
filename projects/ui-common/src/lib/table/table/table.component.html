@@ -2,7 +2,7 @@
   [class.table-striped]="rows?.length > 0"
   [class.table-sm]="size === 'sm'"
   [class.table-no-header]="!hasHeader">
-  <ng-container *ngFor="let r of displayedRecords; first as isFirst">
+  <ng-container *ngFor="let r of displayedRecords; first as isFirst; trackBy:_trackByRecords">
     <ng-container [cdkColumnDef]="r.prop">
       <th cdk-header-cell *cdkHeaderCellDef>
         <ng-container *ngIf="hasHeader">

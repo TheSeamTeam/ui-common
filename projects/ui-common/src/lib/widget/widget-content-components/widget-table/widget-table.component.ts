@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 
-import { ITableColumn, TrackByFunction } from '../../../table/index'
+import type { ITableColumn, TrackByFunction } from '../../../table/index'
 
 @Component({
   selector: 'seam-widget-table',

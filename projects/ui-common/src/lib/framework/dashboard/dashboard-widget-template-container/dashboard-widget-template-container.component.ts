@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, OnInit, TemplateRef } from '
 import { Observable } from 'rxjs'
 
 import { map, tap } from 'rxjs/operators'
-import { IDashboardWidgetsItem } from '../dashboard-widgets/dashboard-widgets-item'
+import type { IDashboardWidgetsItem } from '../dashboard-widgets/dashboard-widgets-item'
 import { DashboardWidgetsComponent } from '../dashboard-widgets/dashboard-widgets.component'
 
 @Component({

@@ -1,0 +1,106 @@
+import { moduleMetadata } from '@storybook/angular'
+import { Story, Meta, Canvas } from '@storybook/addon-docs/blocks'
+
+import { RouterModule } from '@angular/router'
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { FormControl, ReactiveFormsModule } from '@angular/forms'
+
+import { DatatablePreferencesAccessorLocalService } from './preferences-accessor-local'
+import { TheSeamDatatableModule } from '../datatable.module'
+import { THESEAM_DATATABLE_PREFERENCES_ACCESSOR } from '../tokens/datatable-preferences-accessor'
+
+# Datatable Preferences Storage
+
+<Meta
+  title="Docs/Datatable/Preferences/Storage"
+  decorators={[
+    moduleMetadata({
+      imports: [
+        TheSeamDatatableModule,
+        RouterModule.forRoot([], { useHash: true }),
+        BrowserAnimationsModule
+      ],
+      providers: [
+        {
+          provide: THESEAM_DATATABLE_PREFERENCES_ACCESSOR,
+          useClass: DatatablePreferencesAccessorLocalService
+        }
+      ]
+    })
+  ]}
+  parameters={{
+    layout: 'fullscreen',
+    docs: {
+      iframeHeight: '400px',
+    }
+  }}
+/>
+
+## Preferences Accessor
+
+To store preferences, an accessor must be provided with the injection token `THESEAM_DATATABLE_PREFERENCES_ACCESSOR`.
+
+```ts
+@NgModule({
+  imports: [ ... ],
+  declarations: [ ... ],
+  providers: [
+    {
+      provide: THESEAM_DATATABLE_PREFERENCES_ACCESSOR,
+      useClass: DashboardWidgetsPreferencesAccessorService
+    }
+  ],
+  bootstrap: [ ... ]
+})
+export class AppModule { }
+```
+
+> Currently the accessor needs to be provided in the root app module, but a change to remove that limitation is planned.
+
+<!-- > TODO: Consider making the interface match the browser `Storage`, so that existing storage implementations can be plugged in directly. -->
+
+Accessor interface of the class to provide:
+
+```ts
+export interface ITheSeamDatatablePreferencesAccessor {
+
+  /**
+   * Gets a preference.
+   */
+  get(name: string): Observable<string>
+
+  /**
+   * Update a preference.
+   */
+  update(name: string, value: string): Observable<string>
+
+  /**
+   * Delete a preference.
+   */
+  delete(name: string): Observable<boolean>
+
+}
+```
+
+<Canvas>
+  <Story name="Basic">
+    {{
+      template: `
+        <div class="vw-100 vh-100 d-flex flex-column">
+          <seam-datatable preferencesKey="story--basic" [columns]="columns" [rows]="rows"></seam-datatable>
+        </div>`,
+      props: {
+        columns: [
+          { prop: 'name', name: 'Name' },
+          { prop: 'amount', name: 'Amount' },
+          { prop: 'active', name: 'Active' }
+        ],
+        rows: [
+          { name: 'Thing', amount: 5, active: true },
+          { name: 'Another Item', amount: 10, active: false },
+          { name: 'Other', amount: 2, active: true }
+        ]
+      },
+    }}
+  </Story>
+</Canvas>

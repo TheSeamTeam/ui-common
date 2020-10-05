@@ -23,12 +23,12 @@ import { auditTime, debounceTime, distinctUntilChanged, finalize, map, shareRepl
 
 import { faLock, faUnlock } from '@fortawesome/free-solid-svg-icons'
 
-import { IElementResizedEvent } from '../../../shared/directives/elem-resized.directive'
-import { ITheSeamBaseLayoutRef } from '../../base-layout/base-layout-ref'
+import type { IElementResizedEvent } from '../../../shared/directives/elem-resized.directive'
+import type { ITheSeamBaseLayoutRef } from '../../base-layout/base-layout-ref'
 import { THESEAM_BASE_LAYOUT_REF } from '../../base-layout/base-layout-tokens'
 import { DashboardWidgetContainerComponent } from '../dashboard-widget-container/dashboard-widget-container.component'
 
-import { IDashboardWidgetsColumnRecord, IDashboardWidgetsItem, IDashboardWidgetsItemDef } from './dashboard-widgets-item'
+import type { IDashboardWidgetsColumnRecord, IDashboardWidgetsItem, IDashboardWidgetsItemDef } from './dashboard-widgets-item'
 import { DashboardWidgetsService } from './dashboard-widgets.service'
 
 @Component({

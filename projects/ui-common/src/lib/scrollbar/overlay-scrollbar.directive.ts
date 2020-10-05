@@ -5,7 +5,7 @@ import OverlayScrollbars from 'overlayscrollbars'
 
 import { OverlayScrollbarsService } from './overlay-scrollbars.service'
 
-import { IOverlayScrollbarsConfig } from './overlay-scrollbars-config-model'
+import type { IOverlayScrollbarsConfig } from './overlay-scrollbars-config-model'
 
 @Directive({
   selector: '[seamOverlayScrollbar]',

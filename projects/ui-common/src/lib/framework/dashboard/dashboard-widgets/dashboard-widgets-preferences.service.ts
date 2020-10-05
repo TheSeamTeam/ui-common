@@ -12,7 +12,7 @@ import {
   IDashboardWidgetsItemSerialized,
   IDashboardWidgetsPreferences
 } from './dashboard-widgets-item'
-import { ITheSeamDashboardWidgetsPreferencesAccessor } from './dashboard-widgets-preferences-accessor'
+import type { ITheSeamDashboardWidgetsPreferencesAccessor } from './dashboard-widgets-preferences-accessor'
 import { THESEAM_DASHBOARD_WIDGETS_PREFERENCES_ACCESSOR } from './dashboard-widgets-preferences-accessor-token'
 
 export interface IDashboardWidgetsPreferencesMapRecord {

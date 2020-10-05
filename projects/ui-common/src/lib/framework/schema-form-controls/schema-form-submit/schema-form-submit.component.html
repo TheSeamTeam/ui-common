@@ -1,0 +1,14 @@
+<div
+  [class]="options?.htmlClass || ''">
+  <input
+    [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
+    [attr.readonly]="options?.readonly ? 'readonly' : null"
+    [attr.required]="options?.required"
+    [class]="'btn btn-primary ' + (options?.fieldHtmlClass || '')"
+    [disabled]="controlDisabled"
+    [id]="'control' + layoutNode?._id"
+    [name]="controlName"
+    [type]="layoutNode?.type"
+    [value]="controlValue"
+    (click)="updateValue($event)">
+</div>
