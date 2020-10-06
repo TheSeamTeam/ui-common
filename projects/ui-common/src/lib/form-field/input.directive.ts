@@ -14,7 +14,7 @@ let nextUniqueId = 0
 @Directive({
   // TODO: Consider removing restriction and instead adding a dev warning. A few
   // inputs in the app need to be changed for this first.
-  selector: 'input[seamInput], textarea[seamInput], ng-select[seamInput], seam-checkbox[seamInput] [ngbRadioGroup], seam-tel-input[seamInput]',
+  selector: 'input[seamInput], textarea[seamInput], ng-select[seamInput], seam-checkbox[seamInput] [ngbRadioGroup], seam-tel-input[seamInput], quill-editor[seamInput]',
   exportAs: 'seamInput',
 })
 export class InputDirective implements DoCheck {
@@ -143,7 +143,11 @@ export class InputDirective implements DoCheck {
 
   /** Should only be textual inputs, but initially our app added to all form controls. */
   protected _shouldHaveFormControlCssClass() {
-    return !this._isSeamCheckbox() && !this._isRadioInput() && !this._isNgbRadioGroup() && !this._isTelInput()
+    return !this._isSeamCheckbox()
+      && !this._isRadioInput()
+      && !this._isNgbRadioGroup()
+      && !this._isTelInput()
+      && !this._isQuillEditor()
   }
 
   /** Determines if the component host is a textarea. */
@@ -173,6 +177,10 @@ export class InputDirective implements DoCheck {
 
   protected _isTelInput() {
     return this._elementRef.nativeElement.nodeName.toLowerCase() === 'seam-tel-input'
+  }
+
+  protected _isQuillEditor() {
+    return this._elementRef.nativeElement.nodeName.toLowerCase() === 'quill-editor'
   }
 
   /** Make sure the input is a supported type. */

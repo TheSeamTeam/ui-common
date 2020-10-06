@@ -15,6 +15,7 @@ import { EncryptedAssetLinkDirective } from './directives/encrypted-asset-link.d
 import { HoverClassToggleDirective } from './directives/hover-class-toggle.directive'
 import { HoverClassDirective } from './directives/hover-class.directive'
 import { NgSelectExtraDirective } from './directives/ng-select-extra.directive'
+import { NgxQuillExtraDirective } from './directives/ngx-quill-extra.directive'
 
 import { MaskCharsPipe } from './pipes/mask-chars.pipe'
 import { TruncatePipe } from './pipes/truncate.pipe'
@@ -39,7 +40,8 @@ import { PasswordInputRevealComponent } from './components/password-input-reveal
     DisableControlDirective,
     MaskCharsPipe,
     EncryptedAssetLinkDirective,
-    TruncatePipe
+    TruncatePipe,
+    NgxQuillExtraDirective
   ],
   exports: [
     AutoFocusDirective,
@@ -53,6 +55,7 @@ import { PasswordInputRevealComponent } from './components/password-input-reveal
     MaskCharsPipe,
     EncryptedAssetLinkDirective,
     TruncatePipe,
+    NgxQuillExtraDirective,
 
     // Exporting scrollbars here for backwards compatibility for now.
     TheSeamScrollbarModule

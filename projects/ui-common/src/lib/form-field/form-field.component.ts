@@ -2,6 +2,7 @@ import {
   Component,
   ContentChild,
   ContentChildren,
+  ElementRef,
   HostBinding,
   Input,
   OnDestroy,
@@ -139,7 +140,9 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
   }
 
   /** @ignore */
-  constructor() { }
+  constructor(
+    private readonly _elementRef: ElementRef
+  ) { }
 
   /** @ignore */
   ngOnInit() { }
@@ -168,6 +171,10 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
     } else {
       this._errorPadding = '0px'
     }
+  }
+
+  public getElement(): HTMLElement {
+    return this._elementRef.nativeElement
   }
 
 }
