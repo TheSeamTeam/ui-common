@@ -1,0 +1,108 @@
+@import '~@marklb/ngx-datatable/index';
+@import '~@marklb/ngx-datatable/themes/bootstrap';
+// @import '~@marklb/ngx-datatable/assets/icons';
+
+.ngx-datatable.bootstrap {
+  font-size: 16px;
+
+  .datatable-header .datatable-header-cell {
+    border-right: 0;
+
+    .datatable-checkbox {
+      margin-bottom: 0;
+    }
+  }
+
+  .datatable-body {
+    margin-top: -1px;
+  }
+
+  .datatable-footer {
+    background: transparent;
+    overflow: hidden;
+
+    .datatable-footer-inner {
+      background: $light;
+      border: $border-width $border-color solid;
+      border-radius: $border-radius;
+      color: $body-color;
+
+      > .page-count {
+        line-height: 40px;
+        height: 40px;
+      }
+
+      .datatable-pager {
+        ul {
+          li {
+            &:not(.disabled) {
+              &.active,
+              &:hover {
+                a {
+                  background-color: darken($light, 5%);
+                }
+              }
+            }
+          }
+        }
+        a {
+          color: $body-color;
+        }
+      }
+    }
+  }
+}
+
+// .progress-linear {
+//   display: block;
+//   position: relative;
+//   width: 100%;
+//   height: 5px;
+//   padding: 0;
+//   margin: 0;
+//   position: absolute;
+
+//   .container {
+//     max-width: 100%;
+//     display: block;
+//     position: relative;
+//     overflow: hidden;
+//     width: 100%;
+//     height: 5px;
+//     -webkit-transform: translate(0, 0) scale(1, 1);
+//     transform: translate(0, 0) scale(1, 1);
+//     background-color: rgb(170, 209, 249);
+
+//     .bar {
+//       transition: all 0.2s linear;
+//       -webkit-animation: query 0.8s infinite cubic-bezier(0.39, 0.575, 0.565, 1);
+//       animation: query 0.8s infinite cubic-bezier(0.39, 0.575, 0.565, 1);
+
+//       transition: -webkit-transform 0.2s linear;
+//       transition: transform 0.2s linear;
+//       background-color: rgb(16, 108, 200);
+
+//       position: absolute;
+//       left: 0;
+//       top: 0;
+//       bottom: 0;
+//       width: 100%;
+//       height: 5px;
+//     }
+//   }
+// }
+
+// /**
+//  * Progress bar animations
+//  */
+//  @keyframes query {
+//   0% {
+//     opacity: 1;
+//     transform: translateX(35%) scale(0.3, 1);
+//   }
+
+//   100% {
+//     opacity: 0;
+//     transform: translateX(-50%) scale(0, 1);
+//   }
+// }

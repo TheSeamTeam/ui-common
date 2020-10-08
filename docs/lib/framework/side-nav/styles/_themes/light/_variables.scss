@@ -1,0 +1,29 @@
+$seam-side-nav-bg-color: $gray-200;
+
+$seam-side-nav-background-bg-color: rgba($dark, 0.6);
+
+// Group
+$seam-side-nav-group-bg-variation-amount: 3%;
+
+// Item
+$seam-side-nav-item-bg-color-active: $white;
+$seam-side-nav-item-bg-color-hover: rgba($primary, 0.4);
+
+$seam-side-nav-item-color: $black;
+$seam-side-nav-item-color-active: $black;
+
+$seam-side-nav-item-disabled-color: $text-muted;
+
+// Divider
+$seam-side-nav-divider-color: $gray-500;
+$seam-side-nav-divider-size: 1px;
+
+// Title
+$seam-side-nav-title-color: $black;
+
+$seam-side-nav-title-font-size: 24px;
+
+$seam-side-nav-title-padding-left: 10px;
+
+// Toggle
+$seam-side-nav-toggle-btn-color: $seam-side-nav-item-color;

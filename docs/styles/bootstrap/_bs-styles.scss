@@ -1,0 +1,105 @@
+// Alerts
+//
+// Custom alert rules.
+
+.alert-slim {
+  padding-top: $alert-padding-y-slim;
+  padding-bottom: $alert-padding-y-slim;
+
+  &.alert-dismissible {
+
+    .close {
+      padding-top: $alert-padding-y-slim;
+      padding-bottom: $alert-padding-y-slim;
+    }
+  }
+}
+
+// Table
+//
+//
+
+.table.table-header-divider-indented {
+  th {
+    border-top: 0;
+    position: relative;
+
+    &:not(:last-child):after {
+      content: '';
+      position: absolute;
+      top: 12px;
+      bottom: 12px;
+      right: 0;
+      width: 2px;
+      background-color: #e1e3e6;
+    }
+  }
+
+  &.table-sm {
+    th {
+      &:not(:last-child):after {
+        top: 7px;
+        bottom: 7px;
+      }
+    }
+  }
+}
+
+
+.table {
+  thead th {
+    border-bottom: $table-border-width solid $table-border-color;
+  }
+}
+
+// Breadcrumbs
+//
+//
+.breadcrumb-item {
+
+  &::before {
+    display: inline-block; // Suppress underlining of the separator in modern browsers
+    font-weight: $font-weight-base;
+  }
+
+  &.active {
+    color: $breadcrumb-active-color;
+    font-weight: $font-weight-bold;
+  }
+}
+
+
+// Popovers
+//
+//
+
+// Allow Popover arrow border to get border color if it has a theme border.
+@each $color, $value in $theme-colors {
+  .border-#{$color} {
+    // border-color: $value !important;
+    // &.bs-popover-bottom > .arrow::before,
+    // &.bs-popover-auto[x-placement^=bottom] > .arrow::before {
+    //   border-bottom-color: $value !important;
+    // }
+
+    &.bs-popover-top > .arrow::before,
+    &.bs-popover-auto[x-placement^=top] > .arrow::before {
+      border-top-color: $value !important;
+    }
+
+    &.bs-popover-right > .arrow::before,
+    &.bs-popover-auto[x-placement^=right] > .arrow::before {
+      border-right-color: $value !important;
+    }
+
+    &.bs-popover-bottom > .arrow::before,
+    &.bs-popover-auto[x-placement^=bottom] > .arrow::before {
+      border-bottom-color: $value !important;
+    }
+
+    &.bs-popover-left > .arrow::before,
+    &.bs-popover-auto[x-placement^=left] > .arrow::before {
+      border-left-color: $value !important;
+    }
+  }
+}

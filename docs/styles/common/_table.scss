@@ -1,0 +1,119 @@
+// We use bootstrap for our table styles, so if you are changing/fixing on
+// bootstrap tables are styled then you should put the code in the correct
+// location in 'ui-common/src/styles/bootstrap'.
+//
+//
+
+
+// # Text ellipsis in `td`
+//
+// For this to work the text needs to be wrapped in a block element, such as a
+// div. With the attribute `title` or `td-text` matching the elements content.
+//
+// > You should use the `title` attribute, since it will also help accessability,
+// > unless there is a reason not to have a title. A an example of a situation
+// > where you would want to use `td-text` would be a cell where the text has an
+// > icon in the text, because this trick renders the attribute text in the
+// > `::after` rule and hides the elements content.
+//
+// ## Examples:
+//
+// ```html
+// <td>
+//  <div title="This is the td cell content">
+//   This is the td cell content
+//  </div>
+// </td>
+// ```
+//
+// ```html
+// <td>
+//  <div td-text="This is the td cell content">
+//   This is the td cell content
+//  </div>
+// </td>
+// ```
+//
+// ----------------------------------------------------------------------------
+//
+// Uses a css trick to make text overflow ellipsis to work in `<td>` elements
+// without using `max-width`, or percentage column widths, or `table-layout:
+// fixed` etc.
+//
+// Solution source:
+// - Description: https://stackoverflow.com/a/44452722
+// - Example: https://jsfiddle.net/tturadqq/
+//
+// ----------------------------------------------------------------------------
+// ## Solution summary incase comment gets removed from stackoverflow
+//
+// ### Step 1: Just let the table auto-layout do its thing.
+//
+// > When there's one or more columns with a lot of text, it will shrink the
+// > other columns as much as possible, then wrap the text of the long columns:
+//
+// ### Step 2: Wrap cell contents in a div, then set that div to max-height: 1.1em
+//
+// > (the extra 0.1em is for characters which render a bit below the text base,
+// > like the tail of 'g' and 'y')
+//
+// ### Step 3: Set title on the divs
+//
+// > This is good for accessibility, and is necessary for the little trick we'll
+// > use in a moment.
+//
+// ### Step 4: Add a CSS ::after on the div
+//
+// > This is the tricky bit. We set a CSS ::after, with content: attr(title),
+// > then position that on top of the div and set text-overflow: ellipsis
+//
+// ### Step 5: Set the colour of the div text to transparent
+//
+.td-text-truncate[title],
+.td-text-truncate[td-text] {
+  /*
+    Using 22px, because 1.1em wasn't large enough for our font size and the ways
+    I tried to calculate the height caused it to be slightly larger/smaller. If
+    the hard-coded max-height is an issue we can change it to a dynamic
+    calculation, which should be close, but may cause a slight height jump when
+    overflow happens.
+
+    TODO: Find our if there is an accurate way to calculate the correct
+      max-height dynamically without using js.
+  */
+  max-height: 22px;
+
+  overflow: hidden;
+  position: relative;
+  color: transparent;
+
+  &[title] {
+    // This allows a title to still be used that doesn't match the content if
+    // the `td-text` attribute is also set.
+    &:not([td-text])::after {
+      content: attr(title);
+    }
+  }
+
+  &[td-text]::after {
+    content: attr(td-text);
+  }
+
+  &::after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    color: $body-color;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+}
+
+table:not(.table-sm) {
+  .td-text-truncate[title],
+  .td-text-truncate[td-text] {
+    max-height: 24px;
+  }
+}

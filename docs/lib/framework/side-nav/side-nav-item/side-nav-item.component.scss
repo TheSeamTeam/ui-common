@@ -1,0 +1,158 @@
+@import '../styles/utilities';
+
+seam-side-nav-item {
+  display: block;
+
+  transition: 250ms ease-in-out background-color;
+  &.seam-side-nav-item--active {
+    background-color: $seam-side-nav-item-bg-color-active;
+
+    .active,
+    &:active {
+      background-color: $seam-side-nav-item-bg-color-active;
+    }
+
+    .side-nav-item {
+      &:hover {
+        background-color: $seam-side-nav-item-bg-color-hover;
+      }
+    }
+
+    .nav-link {
+      color: $seam-side-nav-item-color-active;
+    }
+  }
+
+  &:not(.side-nav-item--icon) {
+    .side-nav-item--badge {
+      top: -10px;
+      position: relative;
+      margin-left: 5px;
+    }
+  }
+
+  //
+  .side-nav-item--icon {
+    width: 24px;
+    max-width: 24px;
+    min-width: 24px;
+    height: 24px;
+    max-height: 24px;
+    min-height: 24px;
+    text-align: center;
+
+    .side-nav-item--badge {
+      top: -35px;
+      right: -12px;
+      position: relative;
+
+      &.side-nav-item--badge-no-icon {
+        top: -13px;
+      }
+    }
+  }
+
+  .side-nav-item {
+    min-height: 45px;
+    transition: 250ms ease-in-out background-color;
+
+    &:hover {
+      background-color: $seam-side-nav-item-bg-color-hover;
+    }
+
+    &.active {
+      pointer-events: none;
+      cursor: default;
+    }
+  }
+
+  a.side-nav-item:not([href]):not([tabindex]) {
+    color: $seam-side-nav-item-disabled-color;
+
+    &:hover {
+      background-color: transparent;
+    }
+  }
+
+  .nav-link {
+    color: $seam-side-nav-item-color;
+  }
+
+  .side-nav-btn {
+    font-weight: $font-weight-normal;
+    color: $seam-side-nav-item-color;
+    text-decoration: $link-decoration;
+
+    @include hover {
+      color: $seam-side-nav-item-bg-color-hover;
+      text-decoration: $link-hover-decoration;
+    }
+
+    &:focus,
+    &.focus {
+      text-decoration: $link-hover-decoration;
+      box-shadow: none;
+    }
+
+    &:disabled,
+    &.disabled {
+      color: $seam-side-nav-item-disabled-color;
+      pointer-events: none;
+    }
+  }
+
+  // Add the button focus like a link when navigating with keyboard.
+  .cdk-keyboard-focused {
+    // outline: -webkit-focus-ring-color auto 1px;
+    outline: 1px dotted;
+    outline: 5px auto -webkit-focus-ring-color;
+  }
+
+  .side-nav-item--toggle-btn-container {
+    transition: 250ms ease-in-out background-color;
+    padding: 0.5rem 1rem;
+  }
+  button.side-nav-item--toggle-btn-container {
+    &:hover {
+      background-color: $seam-side-nav-item-bg-color-hover;
+    }
+  }
+
+  .side-nav-item--toggle-btn {
+    color: $seam-side-nav-item-color-active;
+
+    .svg-inline--fa {
+      transition: 100ms ease-in-out transform;
+    }
+
+    &.side-nav-item--toggle-btn-expanded {
+      .svg-inline--fa {
+        transform: rotate(-90deg);
+      }
+    }
+  }
+
+  .side-nav--group {
+    will-change: height;
+    overflow: hidden;
+  }
+
+  @for $i from 1 through 9 {
+    .side-nav--group--level-#{$i} {
+      background-color: darken($seam-side-nav-bg-color, ($i * $seam-side-nav-group-bg-variation-amount));
+    }
+  }
+
+  .side-nav-item--divider {
+    display: block;
+    border-top: $seam-side-nav-divider-size solid $seam-side-nav-divider-color;
+    width: 100%;
+  }
+
+  .side-nav-item--title {
+    color: $seam-side-nav-title-color;
+    font-size: $seam-side-nav-title-font-size;
+    padding-left: $seam-side-nav-title-padding-left;
+  }
+}
+
