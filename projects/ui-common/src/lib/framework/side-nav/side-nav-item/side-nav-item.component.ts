@@ -30,6 +30,7 @@ import { auditTime, distinctUntilChanged, map, switchMap, take, takeUntil, tap }
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons'
 
 import type { SeamIcon } from '../../../icon/index'
+import type { ThemeTypes } from '../../../models'
 import { RouterHelpersService } from '../../../services/router-helpers.service'
 
 import { SideNavComponent } from '../side-nav.component'
@@ -125,6 +126,9 @@ export class SideNavItemComponent implements OnInit, OnDestroy {
   get compact() { return this._compact.value }
   private _compact = new BehaviorSubject<boolean>(false)
   public compact$ = this._compact.asObservable()
+
+  @Input() badgeText: string | undefined
+  @Input() badgeTheme: ThemeTypes = 'danger'
 
   public isActive$: Observable<boolean>
   public childGroupAnimState$: Observable<string>

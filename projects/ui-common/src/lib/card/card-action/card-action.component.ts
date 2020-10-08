@@ -1,6 +1,6 @@
 import { Component, HostBinding, Input, OnInit } from '@angular/core'
 
-import { ThemeTypes } from './../../models/theme-types'
+import type { ThemeTypes } from './../../models/theme-types'
 
 @Component({
   selector: 'seam-card-action',

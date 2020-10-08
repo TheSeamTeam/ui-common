@@ -80,6 +80,10 @@ storiesOf('Framework/SideNav', module)
           label: 'Example 2',
           icon: faBuilding,
           link: 'example2',
+          badge: {
+            text: '5',
+            theme: 'primary'
+          },
           children: [
             {
               itemType: 'link',
@@ -109,6 +113,9 @@ storiesOf('Framework/SideNav', module)
           itemType: 'basic',
           label: 'Example 3',
           icon: faCompass,
+          badge: {
+            text: '5'
+          },
           children: [
             {
               itemType: 'link',

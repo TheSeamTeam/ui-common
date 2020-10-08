@@ -23,6 +23,8 @@
       [icon]="child.icon"
       [label]="child.label"
       [link]="child.link"
+      [badgeText]="child.badge?.text"
+      [badgeTheme]="child.badge?.theme || 'danger'"
       [queryParams]="child.queryParams"
       routerLinkActive="active"
       [routerLinkActiveOptions]="{ exact: true }"
@@ -40,6 +42,9 @@
       <div [style.padding-left.px]="hierLevel * indentSize"></div>
       <div class="side-nav-item--icon">
         <seam-icon *ngIf="icon" [icon]="icon"></seam-icon>
+        <ng-container *ngIf="compact">
+          <ng-template [ngTemplateOutlet]="itemBadge"></ng-template>
+        </ng-container>
       </div>
       <!-- NOTE: This is temporarily formatted oddly while fixing animation. -->
       <span style="margin-left: 11px;" [@compactAnim]="compactAnimState$ | async">
@@ -48,6 +53,9 @@
         </span>
       </span>
       <span *ngIf="compact" class="sr-only">{{ label }}</span>
+      <ng-container *ngIf="!compact">
+        <ng-template [ngTemplateOutlet]="itemBadge"></ng-template>
+      </ng-container>
     </div>
 
     <div *ngIf="hasChildren && !compact"
@@ -73,11 +81,17 @@
     <div [style.padding-left.px]="hierLevel * indentSize"></div>
     <div class="side-nav-item--icon">
       <seam-icon *ngIf="icon" [icon]="icon"></seam-icon>
+      <ng-container *ngIf="compact">
+        <ng-template [ngTemplateOutlet]="itemBadge"></ng-template>
+      </ng-container>
     </div>
     <span *ngIf="!compact" style="margin-left: 11px;">
       {{ label }}
     </span>
     <span *ngIf="compact" class="sr-only">{{ label }}</span>
+    <ng-container *ngIf="!compact">
+      <ng-template [ngTemplateOutlet]="itemBadge"></ng-template>
+    </ng-container>
   </a>
 
   <ng-template #noLink>
@@ -119,4 +133,13 @@
   <ng-container *ngIf="!compact">
     <span class="side-nav-item--title pt-1">{{ label }}</span>
   </ng-container>
+</ng-template>
+
+<ng-template #itemBadge>
+  <div *ngIf="badgeText"
+    class="side-nav-item--badge"
+    [class.side-nav-item--badge-no-icon]="!icon">
+    <span class="badge badge-{{ badgeTheme }}">{{ badgeText }}</span>
+    <!-- <span class="badge badge-danger">5</span> -->
+  </div>
 </ng-template>

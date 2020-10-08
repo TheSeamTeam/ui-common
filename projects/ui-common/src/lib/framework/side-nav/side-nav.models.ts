@@ -1,4 +1,5 @@
 import { SeamIcon } from '../../icon/index'
+import type { ThemeTypes } from '../../models'
 
 export interface ISideNavItemStatus {
   active: boolean
@@ -22,9 +23,16 @@ export interface ISideNavDivider extends ISideNavItemBase<'divider'> {
   label?: string
 }
 
+export interface ISideNavBadge {
+  text?: string
+  theme?: ThemeTypes
+}
+
 export interface ISideNavBasic extends ISideNavItemBase<'basic'> {
   icon?: SeamIcon
   label: string
+
+  badge?: ISideNavBadge
 
   children?: ISideNavItem[]
 }
@@ -32,6 +40,8 @@ export interface ISideNavBasic extends ISideNavItemBase<'basic'> {
 export interface ISideNavLink extends ISideNavItemBase<'link'> {
   icon?: SeamIcon
   label: string
+
+  badge?: ISideNavBadge
 
   link?: any[]|string
   queryParams?: { [k: string]: any }

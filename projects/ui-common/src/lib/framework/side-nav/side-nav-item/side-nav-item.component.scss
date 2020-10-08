@@ -23,6 +23,14 @@ seam-side-nav-item {
     }
   }
 
+  &:not(.side-nav-item--icon) {
+    .side-nav-item--badge {
+      top: -10px;
+      position: relative;
+      margin-left: 5px;
+    }
+  }
+
   //
   .side-nav-item--icon {
     width: 24px;
@@ -32,6 +40,16 @@ seam-side-nav-item {
     max-height: 24px;
     min-height: 24px;
     text-align: center;
+
+    .side-nav-item--badge {
+      top: -35px;
+      right: -12px;
+      position: relative;
+
+      &.side-nav-item--badge-no-icon {
+        top: -13px;
+      }
+    }
   }
 
   .side-nav-item {
