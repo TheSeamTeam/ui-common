@@ -1,5 +1,5 @@
 import { boolean, select, text, withKnobs } from '@storybook/addon-knobs'
-import { moduleMetadata } from '@storybook/angular'
+import { Meta, moduleMetadata } from '@storybook/angular'
 import { TheSeamBaseLayoutComponent } from './base-layout.component'
 
 import { APP_BASE_HREF } from '@angular/common'
@@ -264,8 +264,11 @@ export default {
         StoryExWidget4Component
       ]
     }),
-  ]
-}
+  ],
+  parameters: {
+    layout: 'fullscreen'
+  }
+} as Meta
 
 export const Basic = () => ({
   props: {
