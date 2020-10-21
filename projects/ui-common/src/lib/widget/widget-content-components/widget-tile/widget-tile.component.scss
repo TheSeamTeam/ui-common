@@ -1,20 +1,20 @@
 @import '../../styles/utilities';
 
-:host {
+seam-widget-tile,
+a[seam-widget-tile],
+button[seam-widget-tile] {
   display: block;
+  width: 100%;
+  padding: 4px 4px 4px 4px;
+  text-decoration: none;
+
   color: $seam-widget-tile-color;
   font-size: $seam-widget-tile-font-size;
   font-weight: $font-weight-normal;
   line-height: $seam-widget-tile-line-height;
   border: 1px solid $seam-widget-tile-border-color;
-  width: 100%;
   border-radius: $seam-widget-tile-border-radius;
-  padding: 4px 4px 4px 4px;
   margin-bottom: $seam-widget-tile-margin-bottom;
-
-  &a {
-    text-decoration: none;
-  }
 
   @include transition($btn-transition);
 
@@ -26,8 +26,8 @@
 
   &:focus,
   &.focus {
-    outline: 0;
     box-shadow: $btn-focus-box-shadow;
+    outline: 0;
   }
 
   // Disabled comes first so active can properly restyle
@@ -41,7 +41,7 @@
     filter: grayscale(1);
   }
 
-  &:not(:disabled):not(.disabled):active,
+  &:not(:diabled):not(.disabled):active,
   &:not(:disabled):not(.disabled).active {
     @include box-shadow($btn-active-box-shadow);
 
@@ -53,17 +53,18 @@
   &:last-child {
     margin-bottom: 0;
   }
-}
 
-.widget-tile--notification-icon {
-  position: absolute;
-  bottom: -3px;
-  right: -3px;
-  width: 15px !important;
-  height: 15px !important;
+  .widget-tile--notification-icon {
+    position: absolute;
+    bottom: -3px;
+    right: -3px;
+    width: 15px !important;
+    height: 15px !important;
 
-}
+  }
 
-seam-icon ::ng-deep img[src$=".svg"] {
-  height: 100%; // Needed for IE
+  seam-icon img[src$=".svg"] {
+    height: 100%; // Needed for IE
+  }
+
 }

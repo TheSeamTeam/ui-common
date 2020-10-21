@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, Input, OnInit, Renderer2 } from '@angular/core'
+import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, Input, OnInit, Renderer2, ViewEncapsulation } from '@angular/core'
 
 import {
   CanThemeCtor,
@@ -26,6 +26,7 @@ const _WidgetHeaderBadgeMixinBase:  CanThemeCtor &
   host: {
     'class': 'badge float-right'
   },
+  encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WidgetHeaderBadgeComponent extends _WidgetHeaderBadgeMixinBase implements OnInit {

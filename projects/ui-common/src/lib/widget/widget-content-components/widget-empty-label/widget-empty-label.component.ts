@@ -1,9 +1,10 @@
-import { Component, ElementRef, HostBinding, Input, OnInit } from '@angular/core'
+import { Component, ElementRef, HostBinding, Input, OnInit, ViewEncapsulation } from '@angular/core'
 
 @Component({
   selector: 'seam-widget-empty-label,a[seam-widget-empty-label],button[seam-widget-empty-label]',
   templateUrl: './widget-empty-label.component.html',
-  styleUrls: ['./widget-empty-label.component.scss']
+  styleUrls: ['./widget-empty-label.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class WidgetEmptyLabelComponent implements OnInit {
 

@@ -1,108 +1,105 @@
-@import '../../../styles/utilities';
+@import './styles/utilities';
 
-:host {
+seam-progress-circle {
   display: block;
-}
 
-.seam-progress-circle--absolute-fill {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
-
-.seam-progress-circle {
-  @extend .seam-progress-circle--absolute-fill;
-  padding: 5px;
-
-  .seam-progress-circle-inner {
-    position: relative;
-    height: 100%;
-    width: 100%;
+  .seam-progress-circle--absolute-fill {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
   }
 
-  .seam-progress-circle--icon-check {
-    padding-top: 4px;
-    font-size: 1.3rem;
-    line-height: 1.3rem;
-    color: $green;
-  }
-
-  .seam-progress-circle--icon-text {
+  .seam-progress-circle {
     @extend .seam-progress-circle--absolute-fill;
-    text-align: center;
-    align-items: center;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    color: $green;
-    font-size: 19px;
-    font-weight: 700;
-    transform: translateZ(0); // Move text up to transition layers
-  }
+    padding: 5px;
 
-  .seam-progress-circle--icon-center {
-    @extend .seam-progress-circle--absolute-fill;
-    transform-origin: center center;
-    text-align: center;
-    align-items: center;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-  }
-
-  .seam-progress-circle--icon-spinner {
-    @extend .seam-progress-circle--absolute-fill;
-    margin: auto;
-
-    .seam-progress-circle--icon-spinner-path {
-      stroke-linecap: round;
-      stroke: $green;
-
-      transition: 500ms;
-      &:not(path) {
-        stroke-dasharray: 0;
-      }
+    .seam-progress-circle-inner {
+      position: relative;
+      height: 100%;
+      width: 100%;
     }
 
-    .seam-progress-circle--icon-hourglass {
-      fill: $green;
-      transition: 500ms;
+    .seam-progress-circle--icon-check {
+      padding-top: 4px;
+      font-size: 1.3rem;
+      line-height: 1.3rem;
+      color: $seam-progress-complete;
     }
 
-    .seam-progress-circle--icon-spinner-path-bg {
-      stroke-linecap: round;
-      stroke: lighten($green, 40%);
-      // fill: $white;
-    }
-  }
-}
-
-.seam-progress-circle--in-complete {
-  .seam-progress-circle--icon-spinner {
-    .seam-progress-circle--icon-spinner-path {
-      stroke: $orange;
-    }
-
-    .seam-progress-circle--icon-spinner-path-bg {
-      stroke: lighten($orange, 40%);
+    .seam-progress-circle--icon-text {
+      @extend .seam-progress-circle--absolute-fill;
+      text-align: center;
+      align-items: center;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      color: $seam-progress-complete;
+      font-size: 19px;
+      font-weight: 700;
+      transform: translateZ(0); // Move text up to transition layers
     }
 
-    &[data-percent='0'] {
+    .seam-progress-circle--icon-center {
+      @extend .seam-progress-circle--absolute-fill;
+      transform-origin: center center;
+      text-align: center;
+      align-items: center;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+    }
+
+    .seam-progress-circle--icon-spinner {
+      @extend .seam-progress-circle--absolute-fill;
+      margin: auto;
+
       .seam-progress-circle--icon-spinner-path {
-        stroke: $gray-600;
+        stroke-linecap: round;
+        stroke: $seam-progress-complete;
+
+        transition: 500ms;
+        &:not(path) {
+          stroke-dasharray: 0;
+        }
+      }
+
+      .seam-progress-circle--icon-hourglass {
+        fill: $seam-progress-complete;
+        transition: 500ms;
       }
 
       .seam-progress-circle--icon-spinner-path-bg {
-        stroke: lighten($gray-600, 40%);
+        stroke-linecap: round;
+        stroke: $seam-progress-complete-bg;
+        // fill: $white;
       }
     }
   }
-}
 
-.seam-progress-circle--fill-bg {
-  .seam-progress-circle--icon-spinner-path-bg {
-    fill: $white;
+  .seam-progress-circle--in-complete {
+    .seam-progress-circle--icon-spinner {
+      .seam-progress-circle--icon-spinner-path {
+        stroke: $seam-progress-incomplete;
+      }
+      .seam-progress-circle--icon-spinner-path-bg {
+        stroke: $seam-progress-incomplete-bg;
+      }
+      &[data-percent='0'] {
+        .seam-progress-circle--icon-spinner-path {
+          stroke: $seam-progress-new;
+        }
+        .seam-progress-circle--icon-spinner-path-bg {
+          stroke: $seam-progress-new-bg;
+        }
+      }
+    }
+  }
+
+  .seam-progress-circle--fill-bg {
+    .seam-progress-circle--icon-spinner-path-bg {
+      fill: $white;
+    }
   }
 }

@@ -16,7 +16,8 @@ import {
   TemplateRef,
   ViewChild,
   ViewChildren,
-  ViewContainerRef
+  ViewContainerRef,
+  ViewEncapsulation
 } from '@angular/core'
 import { BehaviorSubject, Observable, Subject } from 'rxjs'
 import { auditTime, debounceTime, distinctUntilChanged, finalize, map, shareReplay, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators'
@@ -35,7 +36,8 @@ import { DashboardWidgetsService } from './dashboard-widgets.service'
   selector: 'seam-dashboard-widgets',
   templateUrl: './dashboard-widgets.component.html',
   styleUrls: ['./dashboard-widgets.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None
 })
 export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewInit {
 

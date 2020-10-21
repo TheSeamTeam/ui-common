@@ -5,7 +5,7 @@
 <div class="base-layout-top-bar-container border-bottom bordered">
   <ng-template [cdkPortalOutlet]="_topBarPortal"></ng-template>
 </div>
-<div class="base-layout-main-container bg-white">
+<div class="base-layout-main-container">
   <div *ngIf="hasSideBar$ | async"
     class="base-layout-side-bar-container border-right bordered">
     <div class="base-layout-side-bar-nav-content" *ngIf="!(isMobile$ | async)">
@@ -20,9 +20,9 @@
         <div class="flex-grow-1">
           <ng-template [cdkPortalOutlet]="_contentHeaderPortal"></ng-template>
         </div>
-        <div class="pt-1 pb-1 pr-1">
+        <div>
           <ng-container *ngFor="let action of registeredActions$ | async; first as isFirst">
-            <div [class.ml-1]="!isFirst">
+            <div>
               <ng-container [ngTemplateOutlet]="action.template"></ng-container>
             </div>
           </ng-container>

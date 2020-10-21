@@ -9,12 +9,12 @@ seam-side-nav {
   z-index: 2;
 
   .side-nav-inner-wrapper {
-    background-color: $seam-side-nav-bg-color;
+    background: $seam-side-nav-bg;
     height: 100%;
   }
 
   .side-nav-backdrop {
-    background-color: $seam-side-nav-background-bg-color;
+    background: $seam-side-nav-background-bg-color;
     width: 100vw;
     height: 100vh;
 

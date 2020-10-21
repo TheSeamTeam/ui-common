@@ -1,0 +1,8 @@
+$seam-progress-complete: $green !default;
+$seam-progress-complete-bg: lighten($green, 40%) !default;
+
+$seam-progress-incomplete: $orange !default;
+$seam-progress-incomplete-bg: lighten($orange, 40%) !default;
+
+$seam-progress-new: $gray-600 !default;
+$seam-progress-new-bg: lighten($gray-600, 40%) !default;

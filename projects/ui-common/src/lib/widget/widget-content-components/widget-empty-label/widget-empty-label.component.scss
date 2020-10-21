@@ -1,9 +1,9 @@
 @import '../../styles/utilities';
 
-:host {
+seam-widget-empty-label {
   display: block;
-  font-size: $seam-widget-body-font-size;
-  padding: $seam-widget-empty-label-padding;
   width: 100%;
   text-align: left;
+  font-size: $seam-widget-body-font-size;
+  padding: $seam-widget-empty-label-padding;
 }

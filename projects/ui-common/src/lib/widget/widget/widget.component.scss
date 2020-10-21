@@ -1,33 +1,35 @@
 @import '../styles/utilities';
 
-:host {
+seam-widget {
   display: block;
   font-size: $seam-widget-body-font-size;
-}
 
-.widget-header {
-  background-color: #F4F4F4;
-  border-bottom: 1px solid $border-color;
-  font-size: $seam-widget-header-title-font-size;
-  display: flex;
-  flex-direction: row;
-
-  .widget-header-content {
-    flex: 1 1 100%;
+  .seam-widget {
+    background: $seam-widget-body-background;
   }
 
-  .widget-header-btns-container {
+  .widget-header {
     display: flex;
     flex-direction: row;
+    border-bottom: 1px solid $border-color;
+    background: $seam-widget-header-background;
+    font-size: $seam-widget-header-title-font-size;
 
-    > div {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 4px;
+    .widget-header-content {
+      flex: 1 1 100%;
     }
 
-    ::ng-deep {
+    .widget-header-btns-container {
+      display: flex;
+      flex-direction: row;
+
+      > div {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 4px;
+      }
+
       .widget-header-btn-config {
 
         .seam-icon--fa {
@@ -38,7 +40,7 @@
           height: 25px;
           width: 30px;
 
-          ::ng-deep .svg-inline--fa {
+          .svg-inline--fa {
             max-width: 100%;
             height: 100%;
             width: 100%;
@@ -56,7 +58,7 @@
           height: 15px;
           width: 30px;
 
-          ::ng-deep .svg-inline--fa {
+          .svg-inline--fa {
             max-width: 100%;
             height: 100%;
             width: 100%;
@@ -64,42 +66,42 @@
         }
       }
     }
+
+    .widget-header-title {
+      font-size: $seam-widget-header-title-font-size;
+    }
   }
 
-  .widget-header-title {
-    font-size: $seam-widget-header-title-font-size;
-  }
-}
-
-.widget-header-icon {
-  max-height: $seam-widget-header-icon-height;
-  max-width: $seam-widget-header-icon-width;
-  height: $seam-widget-header-icon-height;
-  width: $seam-widget-header-icon-width;
-  display: inline-block;
-  vertical-align: top;
-
-  .widget-header-icon--fa {
+  .widget-header-icon {
+    display: inline-block;
+    vertical-align: top;
     max-height: $seam-widget-header-icon-height;
     max-width: $seam-widget-header-icon-width;
     height: $seam-widget-header-icon-height;
     width: $seam-widget-header-icon-width;
 
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    text-align: center;
+    .widget-header-icon--fa {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      text-align: center;
 
-    ::ng-deep .svg-inline--fa {
-      max-width: 100%;
-      height: 100%;
-      width: 100%;
+      max-height: $seam-widget-header-icon-height;
+      max-width: $seam-widget-header-icon-width;
+      height: $seam-widget-header-icon-height;
+      width: $seam-widget-header-icon-width;
+
+      .svg-inline--fa {
+        max-width: 100%;
+        height: 100%;
+        width: 100%;
+      }
     }
-  }
 
-  .widget-header-icon--img {
-    height: 100%;
-    max-height: $seam-widget-header-icon-height;
-    max-width: $seam-widget-header-icon-width;
+    .widget-header-icon--img {
+      height: 100%;
+      max-height: $seam-widget-header-icon-height;
+      max-width: $seam-widget-header-icon-width;
+    }
   }
 }

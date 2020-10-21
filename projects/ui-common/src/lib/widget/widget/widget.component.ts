@@ -1,5 +1,5 @@
 import { animate, style, transition, trigger } from '@angular/animations'
-import { Component, ContentChild, Input, OnInit } from '@angular/core'
+import { Component, ContentChild, Input, OnInit, ViewEncapsulation } from '@angular/core'
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { faAngleDown, faCog } from '@fortawesome/free-solid-svg-icons'
@@ -24,6 +24,7 @@ import { WidgetTitleTplDirective } from '../directives/widget-title-tpl.directiv
   selector: 'seam-widget',
   templateUrl: './widget.component.html',
   styleUrls: ['./widget.component.scss'],
+  encapsulation: ViewEncapsulation.None,
   animations: [
     trigger('loadingAnim', [
       transition(':enter', [

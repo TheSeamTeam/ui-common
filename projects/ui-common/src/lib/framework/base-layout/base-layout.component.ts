@@ -8,7 +8,8 @@ import {
   isDevMode,
   OnInit,
   TemplateRef,
-  ViewContainerRef
+  ViewContainerRef,
+  ViewEncapsulation
 } from '@angular/core'
 import { BehaviorSubject, from, isObservable, Observable } from 'rxjs'
 
@@ -38,7 +39,8 @@ export const THE_SEAM_BASE_LAYOUT: any = {
   templateUrl: './base-layout.component.html',
   styleUrls: ['./base-layout.component.scss'],
   providers: [ THE_SEAM_BASE_LAYOUT ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None
 })
 export class TheSeamBaseLayoutComponent implements OnInit, ITheSeamBaseLayoutRef {
 
