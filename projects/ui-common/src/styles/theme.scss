@@ -6,13 +6,11 @@
 
 @import './bootstrap/bootstrap';
 
-@import './common/theme-resets';
 @import './common/forms';
 @import './common/global';
 @import './common/hacks';
 @import './common/text';
 @import './common/table';
-@import './common/widgets';
 
 @import '~ngx-toastr/toastr-bs4-alert';
 
