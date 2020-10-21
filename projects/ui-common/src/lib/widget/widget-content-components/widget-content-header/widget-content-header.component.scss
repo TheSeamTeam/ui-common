@@ -1,5 +1,6 @@
 @import '../../styles/utilities';
 
-:host {
+seam-widget-content-header {
   display: block;
+  padding: $seam-widget-content-header-padding;
 }

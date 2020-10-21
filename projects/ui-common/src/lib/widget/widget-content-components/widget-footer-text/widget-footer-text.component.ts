@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, ViewEncapsulation } from '@angular/core'
 
 @Component({
   selector: 'seam-widget-footer-text',
   templateUrl: './widget-footer-text.component.html',
   styleUrls: ['./widget-footer-text.component.scss'],
-  host: {class: 'seam-widget-footer-text'}
+  encapsulation: ViewEncapsulation.None
 })
 export class WidgetFooterTextComponent implements OnInit {
 

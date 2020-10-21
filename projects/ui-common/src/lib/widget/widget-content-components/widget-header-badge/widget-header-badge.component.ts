@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, Input, OnInit, Renderer2 } from '@angular/core'
+import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, Input, OnInit, Renderer2, ViewEncapsulation } from '@angular/core'
 
 import {
   CanThemeCtor,
@@ -24,8 +24,9 @@ const _WidgetHeaderBadgeMixinBase:  CanThemeCtor &
   inputs: [ 'theme' ],
   // tslint:disable-next-line:use-host-property-decorator
   host: {
-    'class': 'seam-widget-header-badge badge float-right'
+    'class': 'badge float-right'
   },
+  encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WidgetHeaderBadgeComponent extends _WidgetHeaderBadgeMixinBase implements OnInit {

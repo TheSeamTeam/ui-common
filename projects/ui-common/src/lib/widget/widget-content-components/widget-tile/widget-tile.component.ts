@@ -1,5 +1,5 @@
 import { FocusMonitor } from '@angular/cdk/a11y'
-import { Component, ContentChild, ElementRef, HostBinding, Input, OnDestroy, OnInit, Renderer2 } from '@angular/core'
+import { Component, ContentChild, ElementRef, HostBinding, Input, OnDestroy, OnInit, Renderer2, ViewEncapsulation } from '@angular/core'
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 
@@ -49,7 +49,7 @@ const _TheSeamWidgetTileMixinBase: CanDisableCtor & HasTabIndexCtor &
   styleUrls: ['./widget-tile.component.scss'],
   inputs: [ 'disabled' ],
   exportAs: 'seamWidgetTile',
-  host: {class: 'seam-widget-tile'}
+  encapsulation: ViewEncapsulation.None
 })
 export class WidgetTileComponent extends _TheSeamWidgetTileMixinBase implements OnInit, OnDestroy {
 

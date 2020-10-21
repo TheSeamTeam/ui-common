@@ -1,57 +1,81 @@
-@import '../../../styles/utilities';
+@import 'styles/utilities';
 
-:host {
+seam-base-layout {
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 100%;
 
-}
-
-.base-layout-side-bar-nav-content-mobile {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  float: left;
-  z-index: 9999;
-}
-
-.base-layout-side-bar-container {
-  flex: 0 0 auto;
-  display: flex;
-  flex-direction: column;
-
-  .base-layout-side-bar-nav-content {
-    flex: 1 1 0;
+  .base-layout-side-bar-nav-content-mobile {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    float: left;
+    z-index: 9999;
   }
-}
 
-.base-layout-main-container {
-  flex: 1 1 100%;
-  display: flex;
-  flex-direction: row;
-  transform: translateZ(0);
-}
+  .base-layout-side-bar-container {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
 
-.base-layout-top-bar-container {
-  flex: 0 0 auto;
-}
+    .base-layout-side-bar-nav-content {
+      flex: 1 1 0;
+    }
+  }
 
-.base-layout-content-container {
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
+  .base-layout-main-container {
+    flex: 1 1 100%;
+    display: flex;
+    flex-direction: row;
+    transform: translateZ(0);
+  }
+
+  .base-layout-top-bar-container {
+    flex: 0 0 auto;
+  }
+
+  .base-layout-content-container {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+
+    .base-layout-content-container-header {
+      flex: 0 0 auto;
+    }
+
+    .base-layout-content-container-inner {
+      flex: 1 1 auto;
+    }
+
+    .base-layout-content-container-footer {
+      flex: 0 0 auto;
+    }
+  }
 
   .base-layout-content-container-header {
-    flex: 0 0 auto;
+    margin: $base-header-margin;
   }
 
-  .base-layout-content-container-inner {
-    flex: 1 1 auto;
+  .btn-baselayout-action {
+    margin: $base-action-margin;
+    @include button-variant(
+      $background: $base-action-bg,
+      $border: $base-action-bg,
+      $hover-background: $base-action-hover-bg,
+      $active-background: $base-action-hover-bg,);
+    @include button-size($base-action-padding-y, $base-action-padding-x, $font-size-base, $line-height-base, $base-action-border-radius);
+    border: none;
+    color: $base-action-color;
+    @include hover() {
+      color: $base-action-hover-color;
+    }
+    &:focus,
+    &.focus {
+      color: $base-action-hover-color;
+    }
   }
 
-  .base-layout-content-container-footer {
-    flex: 0 0 auto;
-  }
 }
+

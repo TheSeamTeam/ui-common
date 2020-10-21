@@ -1,5 +1,5 @@
 import { coerceBooleanProperty, coerceNumberProperty } from '@angular/cdk/coercion'
-import { Component, Input } from '@angular/core'
+import { Component, Input, ViewEncapsulation } from '@angular/core'
 
 interface IProgressInfo {
   dashoffset: number
@@ -16,7 +16,8 @@ export function calcDashoffset(value: number, circumference: number) {
 @Component({
   selector: 'seam-progress-circle',
   templateUrl: './progress-circle.component.html',
-  styleUrls: [ './progress-circle.component.scss' ]
+  styleUrls: [ './progress-circle.component.scss' ],
+  encapsulation: ViewEncapsulation.None
 })
 export class ProgressCircleComponent {
 

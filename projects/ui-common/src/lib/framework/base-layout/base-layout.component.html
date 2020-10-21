@@ -5,7 +5,7 @@
 <div class="base-layout-top-bar-container border-bottom bordered">
   <ng-template [cdkPortalOutlet]="_topBarPortal"></ng-template>
 </div>
-<div class="base-layout-main-container bg-white">
+<div class="base-layout-main-container">
   <div *ngIf="hasSideBar$ | async"
     class="base-layout-side-bar-container border-right bordered">
     <div class="base-layout-side-bar-nav-content" *ngIf="!(isMobile$ | async)">

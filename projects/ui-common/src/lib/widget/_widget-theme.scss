@@ -1,0 +1,15 @@
+@import './styles/utilities';
+
+@import './widget/widget.component';
+
+@import './widget-content-components/widget-content-header/widget-content-header.component';
+@import './widget-content-components/widget-empty-label/widget-empty-label.component';
+@import './widget-content-components/widget-footer-link/widget-footer-link.component';
+@import './widget-content-components/widget-footer-text/widget-footer-text.component';
+@import './widget-content-components/widget-header-badge/widget-header-badge.component';
+@import './widget-content-components/widget-tile/widget-tile.component';
+@import './widget-content-components/widget-tile/widget-tile.component';
+@import './widget-content-components/widget-tile/widget-tile-footer-item/widget-tile-footer-item.component';
+@import './widget-content-components/widget-tile/widget-tile-group/widget-tile-group.component';
+
+@import './widget-footer/widget-footer.component'
