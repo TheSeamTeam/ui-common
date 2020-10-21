@@ -296,7 +296,7 @@ export const Basic = () => ({
           *seamBaseLayoutSideBar
           [items]="navItems">
         </seam-side-nav>
-        <div class="p-1" *seamBaseLayoutContentHeader>
+        <div *seamBaseLayoutContentHeader>
           <seam-breadcrumbs class="flex-grow-1"></seam-breadcrumbs>
         </div>
         <seam-top-bar
