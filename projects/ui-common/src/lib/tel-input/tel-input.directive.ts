@@ -3,20 +3,14 @@ import { Directive, ElementRef, HostBinding, Inject, Input, NgZone, OnDestroy, O
 import { fromEvent, merge, Subject } from 'rxjs'
 import { auditTime, last, switchMap, takeUntil, tap } from 'rxjs/operators'
 
-// import intlTelInput from 'intl-tel-input'
-import { IntlTelInput, IntlTelInputFn, intlTelInputUtils } from './intl-tel-input'
-
 import { AssetLoaderService, LoadedAssetRef } from '../services/index'
 import { notNullOrUndefined } from '../utils/index'
+
+
+import { IntlTelInputFn, intlTelInputUtils } from './intl-tel-input'
+import type { IntlTelInput } from './intl-tel-input'
 import { TEL_INPUT_STYLES, TEL_INPUT_STYLESHEET_PATH, TEL_INPUT_UTILS_PATH } from './tel-input-constants'
-
-function globalIntlTelInputUtils(): typeof intlTelInputUtils {
-  return (window as any).intlTelInputUtils
-}
-
-function globalIntlTelInputGlobals(): IntlTelInput.Static {
-  return (window as any).intlTelInputGlobals
-}
+import { globalIntlTelInputUtils } from './utils/index'
 
 @Directive({
   selector: 'input[seamTelInput]',

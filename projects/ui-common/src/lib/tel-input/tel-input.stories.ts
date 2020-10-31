@@ -61,60 +61,60 @@ export const FormField: Story = ({ ...args }) => {
   }
 }
 
-export const Validator: Story = (args) => {
-  // const control = new FormControl('+17024181234', [], [ telInputValidator ])
-  const control = new FormControl('9016067687', [ ], [ telInputValidator ])
-  // const control = new FormControl('90160676', [ Validators.required ], [ telInputValidator ])
-  // const control = new FormControl('+213 901-606-7687', [], [ telInputValidator ])
-  // const control = new FormControl('19016067687', [], [ telInputValidator ])
-  // const control = new FormControl('', [], [ telInputValidator ])
+// export const Validator: Story = (args) => {
+//   // const control = new FormControl('+17024181234', [], [ telInputValidator ])
+//   const control = new FormControl('9016067687', [ ], [ telInputValidator ])
+//   // const control = new FormControl('90160676', [ Validators.required ], [ telInputValidator ])
+//   // const control = new FormControl('+213 901-606-7687', [], [ telInputValidator ])
+//   // const control = new FormControl('19016067687', [], [ telInputValidator ])
+//   // const control = new FormControl('', [], [ telInputValidator ])
 
-  // control.valueChanges.subscribe(v => console.log('%c[Story] value', 'color:red', v))
+//   // control.valueChanges.subscribe(v => console.log('%c[Story] value', 'color:red', v))
 
-  return {
-    props: {
-      control,
-      disabled: args.disabled
-    },
-    template: `
-      <div style="max-width: 300px;">
-        <seam-form-field>
-          <seam-tel-input seamInput [formControl]="control"
-            [seamDisableControl]="disabled">
-          </seam-tel-input>
-          <ng-template seamFormFieldError="telInput">Invalid number.</ng-template>
-        </seam-form-field>
-      </div>
-    `
-  }
-}
+//   return {
+//     props: {
+//       control,
+//       disabled: args.disabled
+//     },
+//     template: `
+//       <div style="max-width: 300px;">
+//         <seam-form-field>
+//           <seam-tel-input seamInput [formControl]="control"
+//             [seamDisableControl]="disabled">
+//           </seam-tel-input>
+//           <ng-template seamFormFieldError="telInput">Invalid number.</ng-template>
+//         </seam-form-field>
+//       </div>
+//     `
+//   }
+// }
 
-export const Form: Story = (args) => {
-  const control = new FormControl('9016067687', [ ], [ telInputValidator ])
+// export const Form: Story = (args) => {
+//   const control = new FormControl('9016067687', [ ], [ telInputValidator ])
 
-  control.valueChanges.subscribe(v => console.log('%c[Story] value', 'color:red', v))
+//   control.valueChanges.subscribe(v => console.log('%c[Story] value', 'color:red', v))
 
-  const group = new FormGroup({
-    phoneNumber: control
-  })
+//   const group = new FormGroup({
+//     phoneNumber: control
+//   })
 
-  return {
-    props: {
-      control,
-      group,
-      disabled: args.disabled
-    },
-    template: `
-      <div style="max-width: 300px;">
-        <form [formGroup]="group">
-          <seam-form-field>
-            <seam-tel-input seamInput formControlName="phoneNumber"
-              [seamDisableControl]="disabled">
-            </seam-tel-input>
-            <ng-template seamFormFieldError="telInput">Invalid number.</ng-template>
-          </seam-form-field>
-        </form>
-      </div>
-    `
-  }
-}
+//   return {
+//     props: {
+//       control,
+//       group,
+//       disabled: args.disabled
+//     },
+//     template: `
+//       <div style="max-width: 300px;">
+//         <form [formGroup]="group">
+//           <seam-form-field>
+//             <seam-tel-input seamInput formControlName="phoneNumber"
+//               [seamDisableControl]="disabled">
+//             </seam-tel-input>
+//             <ng-template seamFormFieldError="telInput">Invalid number.</ng-template>
+//           </seam-form-field>
+//         </form>
+//       </div>
+//     `
+//   }
+// }

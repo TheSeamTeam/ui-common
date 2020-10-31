@@ -1,5 +1,5 @@
-import { intlTelInputUtils } from '../intl-tel-input'
-import { TelInputCountryData } from '../models'
+import type { intlTelInputUtils } from '../intl-tel-input'
+import type { TelInputCountryData } from '../models/index'
 import { addCountryCode } from './add-country-code'
 
 /**

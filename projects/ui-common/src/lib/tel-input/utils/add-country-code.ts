@@ -1,4 +1,4 @@
-import { TelInputCountryData } from '../models'
+import type { TelInputCountryData } from '../models/index'
 
 /**
  * Add a country code to this.countryCodes.

@@ -1,4 +1,4 @@
-import { TelInputCountryData } from '../models'
+import type { TelInputCountryData } from '../models/index'
 
 /**
  * Try and extract a valid international dial code from a full telephone number.

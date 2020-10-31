@@ -1,3 +1,4 @@
+import { FocusMonitor, FocusOrigin } from '@angular/cdk/a11y'
 import { coerceBooleanProperty, coerceNumberProperty } from '@angular/cdk/coercion'
 import {
   ChangeDetectionStrategy,
@@ -18,10 +19,10 @@ import {
 } from '@angular/core'
 import { ControlValueAccessor, FormControl, NgControl, NG_VALUE_ACCESSOR } from '@angular/forms'
 import { defer, fromEvent, merge, Observable, of, Subject } from 'rxjs'
-import { auditTime, map, switchMap, takeUntil, tap } from 'rxjs/operators'
+import { auditTime, map, switchMap, takeUntil } from 'rxjs/operators'
 
-import { FocusMonitor, FocusOrigin } from '@angular/cdk/a11y'
 import { InputDirective } from '../../form-field/input.directive'
+
 import { TheSeamTelInputDirective } from '../tel-input.directive'
 
 // TODO: Fix focus
@@ -161,9 +162,7 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
     this._control.valueChanges.pipe(
       takeUntil(this._ngUnsubscribe)
     ).subscribe(v => {
-      // console.log('%cv', 'color:violet', v, this._telInputDirective.value)
       const value = this._telInputDirective.getFullNumber()
-      // console.log('~=~', value)
       this.value = value
       if (this._controlValueAccessorChangeFn) {
         this._controlValueAccessorChangeFn(value)
@@ -182,10 +181,7 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
   // Implemented as part of ControlValueAccessor.
   /** @ignore */
   writeValue(value: any) {
-    // console.log('writeValue', value)
-    // this._control.setValue(value)
     this.value = value
-    // console.log('this._telInputDirective', this._telInputDirective)
     this._telInputDirective.value = value
     this._telInputDirective.updateValue()
   }

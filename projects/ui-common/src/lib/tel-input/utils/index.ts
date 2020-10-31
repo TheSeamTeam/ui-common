@@ -1,4 +1,5 @@
 export * from './add-country-code'
+export * from './coerce-phone-number-format'
 export * from './get-country-code'
 export * from './get-dial-code'
 export * from './get-global-intl-tel-input-globals'

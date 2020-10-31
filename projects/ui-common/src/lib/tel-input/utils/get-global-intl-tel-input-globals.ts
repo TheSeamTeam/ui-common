@@ -1,4 +1,4 @@
-import { IntlTelInput } from '../intl-tel-input'
+import type { IntlTelInput } from '../intl-tel-input'
 
 export function globalIntlTelInputGlobals(): IntlTelInput.Static {
   return (window as any).intlTelInputGlobals

@@ -1,5 +1,5 @@
-import { intlTelInputUtils } from '../intl-tel-input'
+import type { IntlTelInputUtilsScript } from '../intl-tel-input'
 
-export function globalIntlTelInputUtils(): typeof intlTelInputUtils {
+export function globalIntlTelInputUtils(): IntlTelInputUtilsScript {
   return (window as any).intlTelInputUtils
 }

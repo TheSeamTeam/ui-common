@@ -67,41 +67,47 @@ export namespace intlTelInputUtils {
     | 'VOICEMAIL'
     | 'VOIP'
 
+}
 
-  // NOTE: If one of the functions return -99, then it is most likely from a
-  // problem in 'google-libphonenumber' that 'intl-tel-input' swallowed in int
-  // wrapper.
-
+// NOTE: If one of the functions return -99, then it is most likely from a
+// problem in 'google-libphonenumber' that 'intl-tel-input' swallowed in int
+// wrapper.
+//
+// NOTE: The following functions do not exist until util script has loaded.
+export interface IntlTelInputUtilsScript {
+  numberFormat: intlTelInputUtils.numberFormat
+  numberType: intlTelInputUtils.numberType
+  validationError: intlTelInputUtils.validationError
 
   /**
    * Format the given number to the given format.
    */
-  export declare function formatNumber(number: string, countryCode: string, format: numberFormat): string
+  formatNumber(number: string, countryCode: string, format: intlTelInputUtils.numberFormat): string
 
   /**
    * Get an example number for the given country code.
    */
-  export declare function getExampleNumber(countryCode: string, national: boolean, numberType: numberType): string
+  getExampleNumber(countryCode: string, national: boolean, numberType: intlTelInputUtils.numberType): string
 
   /**
    * Get the extension from the given number.
    */
-  export declare function getExtension(number: string, countryCode: string): string
+  getExtension(number: string, countryCode: string): string
 
   /**
    * Get the type of the given number e.g. fixed-line/mobile.
    */
-  export declare function getNumberType(number: string, countryCode: string): numberType
+  getNumberType(number: string, countryCode: string): intlTelInputUtils.numberType
 
   /**
    * Get more info if the validation has failed e.g. too long/too short.
    */
-  export declare function getValidationError(number: string, countryCode: string): validationError
+  getValidationError(number: string, countryCode: string): intlTelInputUtils.validationError
 
   /**
    * Check if given number is valid.
    */
-  export declare function isValidNumber(number: string, countryCode: string): boolean
+  isValidNumber(number: string, countryCode: string): boolean
 }
 
 /**

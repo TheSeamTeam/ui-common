@@ -1,4 +1,4 @@
-import { TelInputCountryData } from '../models'
+import type { TelInputCountryData } from '../models/index'
 
 function getNumeric(s: string): string {
   return s.replace(/\D/g, '')

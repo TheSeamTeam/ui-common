@@ -3,13 +3,16 @@ import { NgModule } from '@angular/core'
 import { ReactiveFormsModule } from '@angular/forms'
 
 import { TheSeamFormFieldModule } from '../form-field/form-field.module'
+
+import { TheSeamPhoneNumberPipe } from './phone-number.pipe'
 import { TheSeamTelInputDirective } from './tel-input.directive'
 import { TheSeamTelInputComponent } from './tel-input/tel-input.component'
 
 @NgModule({
   declarations: [
     TheSeamTelInputDirective,
-    TheSeamTelInputComponent
+    TheSeamTelInputComponent,
+    TheSeamPhoneNumberPipe
   ],
   imports: [
     CommonModule,
@@ -18,7 +21,8 @@ import { TheSeamTelInputComponent } from './tel-input/tel-input.component'
   ],
   exports: [
     TheSeamTelInputDirective,
-    TheSeamTelInputComponent
+    TheSeamTelInputComponent,
+    TheSeamPhoneNumberPipe
   ]
 })
 export class TheSeamTelInputModule { }
