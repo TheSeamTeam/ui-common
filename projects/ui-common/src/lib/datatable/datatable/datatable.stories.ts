@@ -9,6 +9,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { TheSeamDatatableModule } from '../datatable.module'
 import { DatatableComponent } from './datatable.component'
 
+import { TheSeamPhoneNumberPipe } from './../../tel-input/phone-number.pipe'
+
 export default {
   title: 'Components/Datatable',
   component: DatatableComponent,

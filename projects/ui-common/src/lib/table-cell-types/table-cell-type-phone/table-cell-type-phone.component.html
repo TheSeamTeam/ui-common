@@ -1,0 +1,8 @@
+<ng-container *ngIf="(value | phoneNumber: _format) as num">
+  <div class="td-text-truncate" [title]="num">
+    {{ num }}
+  </div>
+</ng-container>
+<!-- <div class="td-text-truncate" [title]="value | phoneNumber: _format">
+  {{ value | date: format || 'MM-dd-yyyy h:mm aaa' }}
+</div> -->

@@ -52,7 +52,6 @@ export class TheSeamPhoneNumberPipe implements PipeTransform {
     // console.log('n', n)
     this._latestValue = n
     // this._cdr.markForCheck()
-    // console.log(NgZone.isInAngularZone())
     this._cdr.detectChanges()
   }
 
