@@ -1,4 +1,4 @@
-<ng-container *ngIf="(value | phoneNumber: _format) as num">
+<ng-container *ngIf="((value || '') | phoneNumber: _format) as num">
   <div class="td-text-truncate" [title]="num">
     {{ num }}
   </div>
