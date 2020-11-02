@@ -205,4 +205,57 @@ export const Example3 = () => {
   }
 }
 
+export const Example5 = () => {
+  const schema = {
+    '$id': 'http://example.com/example.json',
+    'type': 'object',
+    'definitions': {},
+    '$schema': 'http://json-schema.org/draft-07/schema#',
+    'properties': {
+      'ApprovalStatus': {
+        '$id': '/properties/ApprovalStatus',
+        'type': 'string',
+        'title': 'Approval Status',
+        'default': 'All',
+        'enum': [
+          'All',
+          'Approved',
+          'Unapproved'
+        ]
+      }
+    },
+    'required': [
+      'ApprovalStatus'
+    ]
+  }
 
+  const layout = [
+    { 'dataPointer': '/ApprovalStatus' },
+    { 'widget': 'submit', 'title': 'View' },
+  ]
+
+  win.__schema = schema
+  win.__layout = layout
+
+  return {
+    props: {
+      jsonFormObject: {},
+      jsonFormOptions: {
+        addSubmit: true, // Add a submit button if layout does not have one
+        debug: false, // Don't show inline debugging information
+      },
+      schema,
+      layout,
+      submitAction: action('submit')
+    },
+    template: `
+      <json-schema-form
+        framework="seam-framework"
+        [form]="jsonFormObject"
+        [options]="jsonFormOptions"
+        [schema]="schema"
+        [layout]="layout"
+        (onSubmit)="submitAction($event)">
+      </json-schema-form>`
+  }
+}
