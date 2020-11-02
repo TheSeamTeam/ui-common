@@ -2,8 +2,6 @@ import { Meta, moduleMetadata, Story } from '@storybook/angular'
 
 import { TheSeamPhoneNumberPipe } from './phone-number.pipe'
 
-console.log('TheSeamPhoneNumberPipe', TheSeamPhoneNumberPipe)
-
 export default {
   title: 'Pipes/PhoneNumber',
   decorators: [
