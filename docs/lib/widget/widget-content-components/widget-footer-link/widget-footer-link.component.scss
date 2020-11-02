@@ -1,0 +1,8 @@
+@import '../../styles/utilities';
+
+a[seam-widget-footer-link] {
+  display: block;
+  text-align: center;
+
+  margin-top: $seam-widget-footer-link-margin-top;
+}
