@@ -53,6 +53,7 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
       this._iconClass = this._parseConfigValue(value.iconClass)
       this._iconType = value.iconType
       this._title = this._parseConfigValue(value.titleAttr)
+      this._srOnly = this._parseConfigValue(value.srOnly)
       this._tooltip = this._parseConfigValue(value.tooltip)
       if (this._tooltip) {
         this._tooltipClass = this._parseConfigValue(value.tooltipClass)

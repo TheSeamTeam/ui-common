@@ -1,14 +1,68 @@
-<div class="progress-circle-wrapper">
-  <seam-progress-circle
-    class="progress-circle"
-    [fillBackground]="fillBackground"
-    [showText]="showText"
-    [hiddenOnEmpty]="hiddenOnEmpty"
-    [percentage]="value"
-    [pending]="pending"
-    [ngbTooltip]="tooltip"
-    [tooltipClass]="tooltipClass"
-    [placement]="tooltipPlacement"
-    [container]="tooltipContainer">
-  </seam-progress-circle>
-</div>
+<ng-container *ngIf="!_tplType || _tplType === 'default'">
+  <ng-template [ngTemplateOutlet]="progressCircleTpl"></ng-template>
+</ng-container>
+
+<ng-container *ngIf="_tplType === 'link'">
+  <a class="d-block m-auto{{ _linkClass ? ' ' + _linkClass : '' }}"
+    [routerLink]="_link"
+    [attr.title]="_tooltipDisabled ? _title : undefined"
+    [attr.target]="_target">
+    <ng-template [ngTemplateOutlet]="progressCircleTpl"></ng-template>
+
+  </a>
+</ng-container>
+
+<ng-container *ngIf="_tplType === 'link-external'"
+  class="d-flex align-items-center justify-center"
+  [class.datatable-icon-fix]="_isDatatable">
+  <a class="d-block m-auto{{ _linkClass ? ' ' + _linkClass : '' }}"
+    [attr.href]="_link"
+    [attr.title]="_tooltipDisabled ? _title : undefined"
+    [attr.target]="_target">
+    <ng-template [ngTemplateOutlet]="progressCircleTpl"></ng-template>
+  </a>
+</ng-container>
+
+<ng-container *ngIf="_tplType === 'link-encrypted'"
+  class="d-flex align-items-center justify-center"
+  [class.datatable-icon-fix]="_isDatatable">
+  <button
+    class="btn btn-link p-0 m-auto{{ _linkClass ? ' ' + _linkClass : '' }}"
+    type="button"
+    [seamEncryptedAssetLink]="_link"
+    [seamDetectMimeFromContent]="_detectMimeContent"
+    [seamDownloadAsset]="_download"
+    [attr.title]="_tooltipDisabled ? _title : undefined">
+    <ng-template [ngTemplateOutlet]="progressCircleTpl"></ng-template>
+  </button>
+</ng-container>
+
+<ng-container *ngIf="_tplType === 'button'"
+  class="d-flex align-items-center justify-center"
+  [class.datatable-icon-fix]="_isDatatable"
+  (click)="_doButtonAction()">
+  <button
+    class="btn btn-link p-0 m-auto{{ _linkClass ? ' ' + _linkClass : '' }}"
+    type="button"
+    [attr.title]="_tooltipDisabled ? _title : undefined">
+    <ng-template [ngTemplateOutlet]="progressCircleTpl"></ng-template>
+  </button>
+</ng-container>
+
+<ng-template #progressCircleTpl>
+  <div class="progress-circle-wrapper">
+    <seam-progress-circle
+      class="progress-circle"
+      [fillBackground]="fillBackground"
+      [showText]="showText"
+      [hiddenOnEmpty]="hiddenOnEmpty"
+      [percentage]="value"
+      [pending]="pending"
+      [ngbTooltip]="tooltip"
+      [tooltipClass]="tooltipClass"
+      [placement]="tooltipPlacement"
+      [container]="tooltipContainer">
+    </seam-progress-circle>
+    <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
+  </div>
+</ng-template>

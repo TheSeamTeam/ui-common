@@ -10,6 +10,7 @@ import {
   OnInit,
   Optional
 } from '@angular/core'
+import { IconTemplateType } from './../table-cell-type-icon/table-cell-type-icon.component'
 
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
@@ -19,7 +20,7 @@ import type { TableCellData } from '../../table/table-cell.models'
 import { TheSeamTableColumn } from '../../table/table-column'
 import { TableComponent } from '../../table/table/table.component'
 import { TableCellTypesHelpersService } from '../services/table-cell-types-helpers.service'
-import { TableCellTypeConfigProgressCircle } from './table-cell-type-progress-circle-config'
+import { TableCellTypeConfigProgressCircle, TableCellTypeProgressCircleConfigAction } from './table-cell-type-progress-circle-config'
 
 @Component({
   selector: 'seam-table-cell-type-progress-circle',
@@ -33,6 +34,7 @@ export class TableCellTypeProgressCircleComponent implements OnInit, OnDestroy {
 
   @Input() value: number | null | undefined
 
+  _tableCellData?: TableCellData<'progress-circle', TableCellTypeConfigProgressCircle>
   colData?: TheSeamTableColumn<'progress-circle', TableCellTypeConfigProgressCircle>
 
   fillBackground: boolean = false
@@ -43,6 +45,20 @@ export class TableCellTypeProgressCircleComponent implements OnInit, OnDestroy {
   tooltipClass: string
   tooltipPlacement: string
   tooltipContainer: string
+  _tooltipDisabled: boolean = false
+
+  _title?: string
+  _srOnly?: string
+
+  _link?: string
+  _linkClass = '' // TODO: Decide if this makes sense
+  _tplType: IconTemplateType = 'default'
+  _target?: string
+
+  _buttonAction?: TableCellTypeProgressCircleConfigAction
+
+  _download: boolean
+  _detectMimeContent: boolean
 
   @HostBinding('class.datatable-cell-type') _isDatatable = false
 
@@ -58,12 +74,13 @@ export class TableCellTypeProgressCircleComponent implements OnInit, OnDestroy {
     }
 
     const tableData = _tableData
+    this._tableCellData = _tableData
 
     this.value = tableData && coerceNumberProperty(tableData.value)
     this.colData = tableData && tableData.colData
 
     if (this.colData && this.colData.cellTypeConfig) {
-      this._setCellTypeConfigProps(this.colData.cellTypeConfig, tableData)
+      this._setCellTypeConfigProps(this.colData.cellTypeConfig)
     }
 
     if (tableData) {
@@ -78,17 +95,12 @@ export class TableCellTypeProgressCircleComponent implements OnInit, OnDestroy {
           if (v.changes.hasOwnProperty('colData')) {
             this.colData = v.changes.colData.currentValue
             if (this.colData && this.colData.cellTypeConfig) {
-              this._setCellTypeConfigProps(this.colData.cellTypeConfig, tableData)
+              this._setCellTypeConfigProps(this.colData.cellTypeConfig)
             }
             this._cdf.markForCheck()
           }
         })
     }
-  }
-
-  private _parseConfigValue(val, tableData) {
-    const contextFn = () => this._tableCellTypeHelpers.getValueContext(val, tableData)
-    return this._tableCellTypeHelpers.parseValueProp(val, contextFn)
   }
 
   ngOnInit() { }
@@ -98,15 +110,82 @@ export class TableCellTypeProgressCircleComponent implements OnInit, OnDestroy {
     this._ngUnsubscribe.complete()
   }
 
-  private _setCellTypeConfigProps(config: TableCellTypeConfigProgressCircle, tableData): void {
-    this.fillBackground = coerceBooleanProperty(this._parseConfigValue(config.fillBackground, tableData))
-    this.showText = coerceBooleanProperty(this._parseConfigValue(config.showText, tableData))
-    this.hiddenOnEmpty = coerceBooleanProperty(this._parseConfigValue(config.hiddenOnEmpty, tableData))
-    this.pending = coerceBooleanProperty(this._parseConfigValue(config.pending, tableData))
-    this.tooltip = this._parseConfigValue(config.tooltip, tableData)
-    this.tooltipClass = this._parseConfigValue(config.tooltipClass, tableData)
-    this.tooltipPlacement = this._parseConfigValue(config.tooltipPlacement, tableData) || 'auto'
-    this.tooltipContainer = this._parseConfigValue(config.tooltipContainer, tableData)
+  private _parseConfigValue(val) {
+    const contextFn = () => this._tableCellTypeHelpers.getValueContext(val, this._tableCellData)
+    return this._tableCellTypeHelpers.parseValueProp(val, contextFn)
+  }
+
+  public setAction(configAction?: TableCellTypeProgressCircleConfigAction) {
+    let newTplType: IconTemplateType = 'default'
+    let link: string | undefined
+    let download: boolean = false
+    let detectMimeContent = false
+    let target: string | undefined
+
+    if (configAction) {
+      if (configAction.type === 'link') {
+        link = this._parseConfigValue(configAction.link)
+        if (link !== undefined && link !== null) {
+          newTplType = this._parseConfigValue(configAction.asset)
+            ? 'link-encrypted'
+            : this._parseConfigValue(configAction.external) ? 'link-external' : 'link'
+          download = !!this._parseConfigValue(configAction.download)
+          detectMimeContent = !!this._parseConfigValue(configAction.detectMimeContent)
+          target = this._parseConfigValue(configAction.target)
+        }
+      } else if (configAction.type === 'modal') {
+        newTplType = 'button'
+        this._buttonAction = configAction
+      }
+    }
+
+    this._tplType = newTplType
+    this._link = link
+    this._download = download
+    this._detectMimeContent = detectMimeContent
+    this._target = target
+  }
+
+  private _setCellTypeConfigProps(config: TableCellTypeConfigProgressCircle): void {
+    this.setAction(config.action)
+    this.fillBackground = coerceBooleanProperty(this._parseConfigValue(config.fillBackground))
+    this.showText = coerceBooleanProperty(this._parseConfigValue(config.showText))
+    this.hiddenOnEmpty = coerceBooleanProperty(this._parseConfigValue(config.hiddenOnEmpty))
+    this.pending = coerceBooleanProperty(this._parseConfigValue(config.pending))
+    this.tooltip = this._parseConfigValue(config.tooltip)
+
+    this.tooltip = this._parseConfigValue(config.tooltip)
+    if (this.tooltip) {
+      this.tooltipClass = this._parseConfigValue(config.tooltipClass)
+      this.tooltipPlacement = this._parseConfigValue(config.tooltipPlacement) || 'auto'
+      this.tooltipContainer = this._parseConfigValue(config.tooltipContainer)
+      this._tooltipDisabled = false
+    } else {
+      this._tooltipDisabled = true
+    }
+
+    this._title = this._parseConfigValue(config.titleAttr)
+    this._srOnly = this._parseConfigValue(config.srOnly)
+  }
+
+  _doButtonAction() {
+    if (this._buttonAction && this._buttonAction.type === 'modal') {
+      const contextFn = () => this._tableCellTypeHelpers.getValueContext(this.value, this._tableCellData)
+      this._tableCellTypeHelpers.handleModalAction(this._buttonAction, contextFn)
+        .subscribe(
+          r => {},
+          err => console.error(err),
+          () => this._actionRefreshRequest()
+        )
+    }
+  }
+
+  private _actionRefreshRequest() {
+    if (this._datatable) {
+      this._datatable.triggerActionRefreshRequest()
+    } else if (this._table) {
+      this._table.triggerActionRefreshRequest()
+    }
   }
 
 }
