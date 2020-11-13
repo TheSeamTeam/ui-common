@@ -62,6 +62,7 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
   _tplType: StringTemplateType = 'default'
   _link?: string
   _title?: string
+  _queryParams?: { [k: string]: any }
 
   _buttonAction?: TableCellTypeStringConfigAction
 
@@ -135,6 +136,7 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
     let link: string | undefined
     let download: boolean = false
     let detectMimeContent = false
+    let queryParams: { [k: string]: any } | undefined
 
     if (configAction) {
       if (configAction.type === 'link') {
@@ -143,6 +145,7 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
           newTplType = this._parseConfigValue(configAction.asset) ? 'link-encrypted' : 'link'
           download = !!this._parseConfigValue(configAction.download)
           detectMimeContent = !!this._parseConfigValue(configAction.detectMimeContent)
+          queryParams = this._parseConfigValue(configAction.queryParams)
         }
       } else if (configAction.type === 'modal') {
         newTplType = 'button'
@@ -154,6 +157,7 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
     this._link = link
     this._download = download
     this._detectMimeContent = detectMimeContent
+    this._queryParams = queryParams
   }
 
   private _parseConfigValue(val) {

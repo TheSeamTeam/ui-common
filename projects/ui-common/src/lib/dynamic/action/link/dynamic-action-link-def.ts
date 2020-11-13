@@ -58,4 +58,12 @@ export interface DynamicActionLinkDef extends DynamicActionDef<'link'> {
    */
   detectMimeContent?: DynamicValue<boolean>
 
+  /**
+   * QueryParams
+   *
+   * NOTE: May not work with all features that support link actions.
+   * TODO: Ensure this works with all features that support link actions.
+   */
+  queryParams?: { [k: string]: any }
+
 }

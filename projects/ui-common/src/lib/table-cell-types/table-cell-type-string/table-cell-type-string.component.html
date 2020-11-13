@@ -19,6 +19,7 @@
 <ng-container *ngIf="_tplType === 'link'">
   <a class="d-block text-body text-decoration-none"
     [routerLink]="_link"
+    [queryParams]="_queryParams"
     [attr.title]="_title">
     <ng-template [ngTemplateOutlet]="noPopover"></ng-template>
   </a>

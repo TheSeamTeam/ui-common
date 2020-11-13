@@ -20,6 +20,7 @@
     [class.datatable-icon-fix]="_isDatatable">
     <a class="d-block m-auto{{ _linkClass ? ' ' + _linkClass : '' }}"
       [routerLink]="_link"
+      [queryParams]="_queryParams"
       [attr.title]="_tooltipDisabled ? _title : undefined"
       [attr.target]="_target"
       [ngbTooltip]="_tooltip"

@@ -54,6 +54,7 @@ export class TableCellTypeProgressCircleComponent implements OnInit, OnDestroy {
   _linkClass = '' // TODO: Decide if this makes sense
   _tplType: IconTemplateType = 'default'
   _target?: string
+  _queryParams?: { [k: string]: any }
 
   _buttonAction?: TableCellTypeProgressCircleConfigAction
 
@@ -121,6 +122,7 @@ export class TableCellTypeProgressCircleComponent implements OnInit, OnDestroy {
     let download: boolean = false
     let detectMimeContent = false
     let target: string | undefined
+    let queryParams: { [k: string]: any } | undefined
 
     if (configAction) {
       if (configAction.type === 'link') {
@@ -132,6 +134,7 @@ export class TableCellTypeProgressCircleComponent implements OnInit, OnDestroy {
           download = !!this._parseConfigValue(configAction.download)
           detectMimeContent = !!this._parseConfigValue(configAction.detectMimeContent)
           target = this._parseConfigValue(configAction.target)
+          queryParams = this._parseConfigValue(configAction.queryParams)
         }
       } else if (configAction.type === 'modal') {
         newTplType = 'button'
@@ -144,6 +147,7 @@ export class TableCellTypeProgressCircleComponent implements OnInit, OnDestroy {
     this._download = download
     this._detectMimeContent = detectMimeContent
     this._target = target
+    this._queryParams = queryParams
   }
 
   private _setCellTypeConfigProps(config: TableCellTypeConfigProgressCircle): void {

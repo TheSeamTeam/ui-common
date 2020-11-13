@@ -5,6 +5,7 @@
 <ng-container *ngIf="_tplType === 'link'">
   <a class="d-block m-auto{{ _linkClass ? ' ' + _linkClass : '' }}"
     [routerLink]="_link"
+    [queryParams]="_queryParams"
     [attr.title]="_tooltipDisabled ? _title : undefined"
     [attr.target]="_target">
     <ng-template [ngTemplateOutlet]="progressCircleTpl"></ng-template>

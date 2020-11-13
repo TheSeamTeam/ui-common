@@ -69,6 +69,7 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
 
   _icon: SeamIcon | undefined | null
   _link?: string
+  _queryParams?: { [k: string]: any }
   _tplType: IconTemplateType = 'default'
   _title?: string
   _srOnly?: string
@@ -156,6 +157,7 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
     let download: boolean = false
     let detectMimeContent = false
     let target: string | undefined
+    let queryParams: { [l: string]: any } | undefined
 
     if (configAction) {
       if (configAction.type === 'link') {
@@ -167,6 +169,7 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
           download = !!this._parseConfigValue(configAction.download)
           detectMimeContent = !!this._parseConfigValue(configAction.detectMimeContent)
           target = this._parseConfigValue(configAction.target)
+          queryParams = this._parseConfigValue(configAction.queryParams)
         }
       } else if (configAction.type === 'modal') {
         newTplType = 'button'
@@ -179,6 +182,7 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
     this._download = download
     this._detectMimeContent = detectMimeContent
     this._target = target
+    this._queryParams = queryParams
   }
 
   private _parseConfigValue(val) {

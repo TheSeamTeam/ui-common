@@ -86,7 +86,8 @@ export const WithConfig: Story = (args) => {
           external: false,
           // target: '_blank',
           // asset: { type: 'jexl', expr: 'row.primaryIconActionAsset' },
-          detectMimeContent: true
+          detectMimeContent: true,
+          queryParams: { test: 'thing' }
         }
       }
     }

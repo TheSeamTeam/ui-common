@@ -28,6 +28,7 @@ export class DynamicActionLinkService implements DynamicActionLink {
     const external: boolean = !!(await this._valueHandler.eval(args.external))
     const asset: boolean = !!(await this._valueHandler.eval(args.asset))
     const target: string | undefined = await this._valueHandler.eval(args.target)
+    const queryParams: { [k: string]: any } | undefined = await this._valueHandler.eval(args.queryParams)
 
     const def: DynamicActionUiAnchorDef = {
       _actionDef: args,
@@ -39,6 +40,11 @@ export class DynamicActionLinkService implements DynamicActionLink {
     if (target) {
       if (!def.linkExtras) { def.linkExtras = {} }
       def.linkExtras.target = target
+    }
+
+    if (queryParams) {
+      if (!def.linkExtras) { def.linkExtras = {} }
+      def.linkExtras.queryParams = queryParams
     }
 
     return def
