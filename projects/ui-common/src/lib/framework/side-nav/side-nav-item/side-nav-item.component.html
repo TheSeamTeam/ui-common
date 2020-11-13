@@ -138,7 +138,12 @@
 <ng-template #itemBadge>
   <div *ngIf="badgeText"
     class="side-nav-item--badge"
-    [class.side-nav-item--badge-no-icon]="!icon">
+    [class.side-nav-item--badge-no-icon]="!icon"
+    [ngbTooltip]="_badgeTooltip?.tooltip"
+    [tooltipClass]="_badgeTooltip?.class"
+    [placement]="_badgeTooltip?.placement"
+    [container]="_badgeTooltip?.container"
+    [disableTooltip]="!_badgeTooltip || !!_badgeTooltip?.disabled">
     <span class="badge badge-{{ badgeTheme }}">{{ badgeText }}</span>
     <!-- <span class="badge badge-danger">5</span> -->
   </div>

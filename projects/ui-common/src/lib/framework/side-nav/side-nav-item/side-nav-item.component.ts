@@ -36,6 +36,14 @@ import { RouterHelpersService } from '../../../services/router-helpers.service'
 import { SideNavComponent } from '../side-nav.component'
 import { ISideNavItem } from '../side-nav.models'
 
+export interface SideNavItemBadgeTooltip {
+  tooltip?: string
+  class?: string
+  placement?: string
+  container?: string
+  disabled?: boolean
+}
+
 const EXPANDED_STATE = 'expanded'
 const COLLAPSED_STATE = 'collapsed'
 
@@ -129,6 +137,31 @@ export class SideNavItemComponent implements OnInit, OnDestroy {
 
   @Input() badgeText: string | undefined
   @Input() badgeTheme: ThemeTypes = 'danger'
+
+  @Input()
+  get badgeTooltip() { return this._badgeTooltip }
+  set badgeTooltip(value: string | SideNavItemBadgeTooltip | undefined) {
+    if (value !== null && value !== undefined) {
+      if (typeof value === 'string') {
+        this._badgeTooltip = {
+          tooltip: value,
+          placement: 'auto',
+          disabled: false
+        }
+      } else {
+        this._badgeTooltip = {
+          ...value,
+          placement: value.placement || 'auto',
+          disabled: typeof value?.disabled === 'boolean'
+            ? value.disabled
+            : typeof value.tooltip === 'string' ? false : true
+        }
+      }
+    } else {
+      this._badgeTooltip = undefined
+    }
+  }
+  _badgeTooltip: SideNavItemBadgeTooltip | undefined
 
   public isActive$: Observable<boolean>
   public childGroupAnimState$: Observable<string>

@@ -1,6 +1,8 @@
 import { SeamIcon } from '../../icon/index'
 import type { ThemeTypes } from '../../models'
 
+import { SideNavItemBadgeTooltip } from './side-nav-item/side-nav-item.component'
+
 export interface ISideNavItemStatus {
   active: boolean
 }
@@ -26,6 +28,7 @@ export interface ISideNavDivider extends ISideNavItemBase<'divider'> {
 export interface ISideNavBadge {
   text?: string
   theme?: ThemeTypes
+  tooltip?: string | SideNavItemBadgeTooltip
 }
 
 export interface ISideNavBasic extends ISideNavItemBase<'basic'> {

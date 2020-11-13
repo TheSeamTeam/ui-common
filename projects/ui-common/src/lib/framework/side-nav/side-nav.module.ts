@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { RouterModule } from '@angular/router'
 
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap'
+
 import { TheSeamIconModule } from '../../icon/index'
 import { TheSeamLayoutModule } from '../../layout/index'
 import { TheSeamScrollbarModule } from '../../scrollbar/index'
@@ -23,7 +25,8 @@ import { SideNavComponent } from './side-nav.component'
     TheSeamIconModule,
     A11yModule,
     TheSeamScrollbarModule,
-    TheSeamLayoutModule
+    TheSeamLayoutModule,
+    NgbTooltipModule
   ],
   exports: [
     SideNavItemComponent,

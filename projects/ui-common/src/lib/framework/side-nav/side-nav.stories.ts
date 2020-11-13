@@ -82,7 +82,8 @@ storiesOf('Framework/SideNav', module)
           link: 'example2',
           badge: {
             text: '5',
-            theme: 'primary'
+            theme: 'primary',
+            tooltip: 'ExampleToolTip'
           },
           children: [
             {
