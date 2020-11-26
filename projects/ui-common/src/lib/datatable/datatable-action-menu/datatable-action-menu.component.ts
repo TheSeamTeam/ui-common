@@ -1,4 +1,4 @@
-import { Component, ContentChildren, Input, QueryList, Renderer2 } from '@angular/core'
+import { Component, ContentChildren, QueryList } from '@angular/core'
 import { NavigationExtras, Router } from '@angular/router'
 
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons'
@@ -15,8 +15,6 @@ import { DatatableActionMenuItemComponent } from '../datatable-action-menu-item/
 export class DatatableActionMenuComponent {
 
   faEllipsisH = faEllipsisH
-
-  @Input() row
 
   @ContentChildren(DatatableActionMenuItemComponent) items: QueryList<DatatableActionMenuItemComponent>
 
@@ -49,7 +47,6 @@ export class DatatableActionMenuComponent {
   ]
 
   constructor(
-    private _renderer: Renderer2,
     private _confirmDialog: SeamConfirmDialogService,
     private _router: Router
   ) { }
@@ -85,13 +82,6 @@ export class DatatableActionMenuComponent {
     } else {
       item.click.emit(event)
     }
-
-
-    // HACK: This is only here until the action events are emitting to a place
-    // the toggler can listen for them.
-    // this._renderer.setAttribute(event.view.document.body, 'tabindex', '-1')
-    // event.view.document.body.focus()
-    // this._renderer.removeAttribute(event.view.document.body, 'tabindex')
   }
 
 }
