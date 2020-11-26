@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { SchemaFormInputComponent } from './schema-form-input.component'
+import { TheSeamSchemaFormInputComponent } from './schema-form-input.component'
 
-describe('SchemaFormInputComponent', () => {
-  let component: SchemaFormInputComponent
-  let fixture: ComponentFixture<SchemaFormInputComponent>
+describe('TheSeamSchemaFormInputComponent', () => {
+  let component: TheSeamSchemaFormInputComponent
+  let fixture: ComponentFixture<TheSeamSchemaFormInputComponent>
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SchemaFormInputComponent ]
+      declarations: [ TheSeamSchemaFormInputComponent ]
     })
     .compileComponents()
   }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SchemaFormInputComponent)
+    fixture = TestBed.createComponent(TheSeamSchemaFormInputComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
   })

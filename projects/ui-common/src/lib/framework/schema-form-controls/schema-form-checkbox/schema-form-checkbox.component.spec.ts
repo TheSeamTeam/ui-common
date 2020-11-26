@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { SchemaFormCheckboxComponent } from './schema-form-checkbox.component'
+import { TheSeamSchemaFormCheckboxComponent } from './schema-form-checkbox.component'
 
-describe('SchemaFormCheckboxComponent', () => {
-  let component: SchemaFormCheckboxComponent
-  let fixture: ComponentFixture<SchemaFormCheckboxComponent>
+describe('TheSeamSchemaFormCheckboxComponent', () => {
+  let component: TheSeamSchemaFormCheckboxComponent
+  let fixture: ComponentFixture<TheSeamSchemaFormCheckboxComponent>
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SchemaFormCheckboxComponent ]
+      declarations: [ TheSeamSchemaFormCheckboxComponent ]
     })
     .compileComponents()
   }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SchemaFormCheckboxComponent)
+    fixture = TestBed.createComponent(TheSeamSchemaFormCheckboxComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
   })

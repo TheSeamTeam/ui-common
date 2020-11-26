@@ -1,8 +1,8 @@
-import { DatatableRowDetailDirective } from './datatable-row-detail.directive'
+import { TheSeamDatatableRowDetailDirective } from './datatable-row-detail.directive'
 
-describe('DatatableRowDetailDirective', () => {
+describe('TheSeamDatatableRowDetailDirective', () => {
   it('should create an instance', () => {
-    const directive = new DatatableRowDetailDirective()
+    const directive = new TheSeamDatatableRowDetailDirective()
     expect(directive).toBeTruthy()
   })
 })

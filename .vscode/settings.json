@@ -28,6 +28,8 @@
     "**/src/assets/**/*.js"
   ],
 
+  "angularKarmaTestExplorer.defaultAngularProjectName": "ui-common",
+
   // Makes sure we use the dependent typescript version.
   // --------------------------------------------------------------------------
   // NOTE: In the workspace settings this doesn't actually do anything other

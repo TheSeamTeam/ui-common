@@ -8,10 +8,10 @@ import { tap } from 'rxjs/operators'
 import { JexlEvaluator } from '../../evaluators'
 import { THESEAM_API_CONFIG_DEFAULT } from '../../tokens/api-config'
 import { THESEAM_DYNAMIC_VALUE_EVALUATOR } from '../../tokens/dynamic-value-evaluator'
-import { IDynamicActionApiDef } from './dynamic-action-api-def'
+import { DynamicActionApiDef } from './dynamic-action-api-def'
 import { DynamicActionApiService } from './dynamic-action-api.service'
 
-function isRequestMatchArgs(req: HttpRequest<any>, args: IDynamicActionApiDef, url?: string): boolean {
+function isRequestMatchArgs(req: HttpRequest<any>, args: DynamicActionApiDef, url?: string): boolean {
   // TODO: Handle case where endpoint isn't absolute url.
   if (args.endpoint && req.url !== args.endpoint) {
     return false
@@ -61,7 +61,7 @@ fdescribe('DynamicActionApiService', () => {
     const service: DynamicActionApiService = TestBed.get(DynamicActionApiService)
     const http: HttpTestingController = TestBed.get(HttpTestingController)
 
-    const args: IDynamicActionApiDef = {
+    const args: DynamicActionApiDef = {
       type: 'api',
       method: 'GET',
       endpoint: 'http://example.com/profile'
@@ -70,7 +70,7 @@ fdescribe('DynamicActionApiService', () => {
     const profileInfo = { name: 'Bob', age: 24 }
 
     let profileResponse
-    service.exec(args).subscribe(response => profileResponse = response)
+    service.exec(args, {}).then(response => profileResponse = response)
 
     tick()
 
@@ -89,7 +89,7 @@ fdescribe('DynamicActionApiService', () => {
     const service: DynamicActionApiService = TestBed.get(DynamicActionApiService)
     const http: HttpTestingController = TestBed.get(HttpTestingController)
 
-    const args: IDynamicActionApiDef = {
+    const args: DynamicActionApiDef = {
       type: 'api',
       method: 'POST',
       endpoint: 'http://example.com/profile',
@@ -101,7 +101,7 @@ fdescribe('DynamicActionApiService', () => {
     const profileInfo = { name: 'Bob', age: 24 }
 
     let profileResponse
-    service.exec(args).subscribe(response => profileResponse = response)
+    service.exec(args, {}).then(response => profileResponse = response)
 
     tick()
 
@@ -121,12 +121,12 @@ fdescribe('DynamicActionApiService', () => {
     const service: DynamicActionApiService = TestBed.get(DynamicActionApiService)
     const http: HttpTestingController = TestBed.get(HttpTestingController)
 
-    const args: IDynamicActionApiDef = { type: 'api' }
+    const args: DynamicActionApiDef = { type: 'api' }
 
     const profileInfo = { name: 'Bob', age: 24 }
 
     let profileResponse
-    service.exec(args).subscribe(response => profileResponse = response)
+    service.exec(args, {}).then(response => profileResponse = response)
 
     tick()
 
@@ -160,7 +160,7 @@ fdescribe('DynamicActionApiService', () => {
     const service: DynamicActionApiService = TestBed.get(DynamicActionApiService)
     const http: HttpTestingController = TestBed.get(HttpTestingController)
 
-    const args: IDynamicActionApiDef = {
+    const args: DynamicActionApiDef = {
       type: 'api',
       endpoint: 'user/Bob/profile'
     }
@@ -168,7 +168,7 @@ fdescribe('DynamicActionApiService', () => {
     const profileInfo = { name: 'Bob', age: 24 }
 
     let profileResponse
-    service.exec(args).subscribe(response => profileResponse = response)
+    service.exec(args, {}).then(response => profileResponse = response)
 
     tick()
 

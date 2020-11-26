@@ -51,7 +51,7 @@ describe('DynamicValueHelperService', () => {
       const inValue: ITestValueSync = { type: 'test-sync', propOnContext: 'a' }
       const context = { a: 'thing' }
       const outValue = service.evalSync(inValue, context)
-      expect(outValue).toBe(context.a)
+      expect(outValue).toBe(context.a as any)
     })
   })
 
@@ -75,7 +75,7 @@ describe('DynamicValueHelperService', () => {
       const inValue: ITestValueAsync = { type: 'test-async', propOnContext: 'a' }
       const context = { a: 'thing' }
       const outValue = await service.eval(inValue, context)
-      expect(outValue).toBe(context.a)
+      expect(outValue).toBe(context.a as any)
     })
   })
 

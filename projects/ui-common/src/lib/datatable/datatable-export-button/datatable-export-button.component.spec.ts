@@ -12,7 +12,7 @@ import { TheSeamLoadingOverlayService } from '../../loading/loading-overlay.serv
 import { TheSeamMenuModule } from '../../menu/menu.module'
 
 import { THESEAM_DATATABLE } from '../datatable/datatable.component'
-import { ITheSeamDatatableColumn } from '../models/table-column'
+import { TheSeamDatatableColumn } from '../models/table-column'
 import { DatatableExportButtonComponent } from './datatable-export-button.component'
 
 describe('DatatableExportButtonComponent', () => {
@@ -56,7 +56,7 @@ describe('DatatableExportButtonComponent', () => {
 //
 
 export class FakeDatatableComponent {
-  columns: ITheSeamDatatableColumn[]
+  columns: TheSeamDatatableColumn[]
 
   get rows(): any[] { return this._rows.value }
   set rows(value: any[]) { this._rows.next(value || []) }

@@ -89,11 +89,61 @@
             "karmaConfig": "karma.conf.js",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "projects/ui-common/src/assets",
+                "output": "assets"
+              },
+              {
+                "glob": "**/*",
+                "input": "projects/ui-common/src/styles",
+                "output": "styles"
+              },
+              {
+                "glob": "**/*.scss",
+                "input": "projects/ui-common/src/lib/framework/base-layout",
+                "output": "lib/framework/base-layout"
+              },
+              {
+                "glob": "**/*.scss",
+                "input": "projects/ui-common/src/lib/framework/dashboard",
+                "output": "lib/framework/dashboard"
+              },
+              {
+                "glob": "**/*.scss",
+                "input": "projects/ui-common/src/lib/widget/side-nav",
+                "output": "lib/framework/side-nav"
+              },
+              {
+                "glob": "**/*.scss",
+                "input": "projects/ui-common/src/lib/progress/progress-circle",
+                "output": "lib/progress/progress-circle"
+              },
+              {
+                "glob": "**/*.scss",
+                "input": "projects/ui-common/src/lib/widget",
+                "output": "lib/widget"
+              },
+              {
+                "glob": "**/*.min.css",
+                "input": "node_modules/intl-tel-input/build/css",
+                "output": "assets/vendor/intl-tel-input/css"
+              },
+              {
+                "glob": "**/*.png",
+                "input": "node_modules/intl-tel-input/build/img",
+                "output": "assets/vendor/intl-tel-input/img"
+              },
+              {
+                "glob": "**/utils.js",
+                "input": "node_modules/intl-tel-input/build/js",
+                "output": "assets/vendor/intl-tel-input/js"
+              }
             ],
             "styles": [
               "src/styles.scss",
-              "node_modules/@marklb/ngx-datatable/release/assets/icons.css"
+              "node_modules/@marklb/ngx-datatable/assets/icons.css"
             ],
             "scripts": []
           }
@@ -349,7 +399,7 @@
             ],
             "styles": [
               "src/styles.scss",
-              "node_modules/@marklb/ngx-datatable/release/assets/icons.css"
+              "node_modules/@marklb/ngx-datatable/assets/icons.css"
             ],
             "scripts": []
           }

@@ -1,12 +1,12 @@
-import { TestBed } from '@angular/core/testing'
+// import { TestBed } from '@angular/core/testing'
 
-import { FontLoaderService } from './font-loader.service'
+// import { TheSeamFontLoaderService } from './font-loader.service'
 
-describe('FontLoaderService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}))
+// describe('TheSeamFontLoaderService', () => {
+//   beforeEach(() => TestBed.configureTestingModule({}))
 
-  it('should be created', () => {
-    const service: FontLoaderService = TestBed.get(FontLoaderService)
-    expect(service).toBeTruthy()
-  })
-})
+//   it('should be created', () => {
+//     const service: TheSeamFontLoaderService = TestBed.get(TheSeamFontLoaderService)
+//     expect(service).toBeTruthy()
+//   })
+// })

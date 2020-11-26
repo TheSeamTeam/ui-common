@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { SchemaFormNumberComponent } from './schema-form-number.component'
+import { TheSeamSchemaFormNumberComponent } from './schema-form-number.component'
 
-describe('SchemaFormNumberComponent', () => {
-  let component: SchemaFormNumberComponent
-  let fixture: ComponentFixture<SchemaFormNumberComponent>
+describe('TheSeamSchemaFormNumberComponent', () => {
+  let component: TheSeamSchemaFormNumberComponent
+  let fixture: ComponentFixture<TheSeamSchemaFormNumberComponent>
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SchemaFormNumberComponent ]
+      declarations: [ TheSeamSchemaFormNumberComponent ]
     })
     .compileComponents()
   }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SchemaFormNumberComponent)
+    fixture = TestBed.createComponent(TheSeamSchemaFormNumberComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
   })
