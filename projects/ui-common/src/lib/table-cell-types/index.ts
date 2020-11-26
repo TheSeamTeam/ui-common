@@ -24,6 +24,9 @@ export * from './table-cell-type-progress-circle-icon/table-cell-type-progress-c
 
 export * from './table-cell-type-integer/table-cell-type-integer-config'
 
+export * from './table-cell-type-phone/table-cell-type-phone-config'
+export * from './table-cell-type-phone/table-cell-type-phone.component'
+
 export * from './table-cell-type-string/table-cell-type-string-config'
 export * from './table-cell-type-string/table-cell-type-string.component'
 
