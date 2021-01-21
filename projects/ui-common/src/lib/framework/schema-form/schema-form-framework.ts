@@ -6,6 +6,7 @@ import { TheSeamSchemaFormCheckboxComponent } from '../schema-form-controls/sche
 import { TheSeamSchemaFormInputComponent } from '../schema-form-controls/schema-form-input/schema-form-input.component'
 import { TheSeamSchemaFormNumberComponent } from '../schema-form-controls/schema-form-number/schema-form-number.component'
 import { TheSeamSchemaFormSelectComponent } from '../schema-form-controls/schema-form-select/schema-form-select.component'
+import { TheSeamSchemaFormSubmitSplitComponent } from '../schema-form-controls/schema-form-submit-split/schema-form-submit-split.component'
 import { TheSeamSchemaFormSubmitComponent } from '../schema-form-controls/schema-form-submit/schema-form-submit.component'
 
 import { TheSeamSchemaFormFrameworkComponent } from './schema-form-framework.component'
@@ -18,7 +19,8 @@ export class TheSeamFramework extends Framework {
 
   widgets = {
     'checkbox': TheSeamSchemaFormCheckboxComponent,
-    'submit': TheSeamSchemaFormSubmitComponent,
+    // 'submit': TheSeamSchemaFormSubmitComponent,
+    'submit': TheSeamSchemaFormSubmitSplitComponent,
     'text': TheSeamSchemaFormInputComponent,
     'number': TheSeamSchemaFormNumberComponent,
     'select': TheSeamSchemaFormSelectComponent

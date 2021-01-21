@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { ReactiveFormsModule } from '@angular/forms'
+import { TheSeamButtonsModule } from './../../buttons/buttons.module'
+import { TheSeamMenuModule } from './../../menu/menu.module'
 
 import { JsonSchemaFormModule } from '@ajsf/core'
 import { NgSelectModule } from '@ng-select/ng-select'
@@ -12,6 +14,7 @@ import { TheSeamSchemaFormCheckboxComponent } from './schema-form-checkbox/schem
 import { TheSeamSchemaFormInputComponent } from './schema-form-input/schema-form-input.component'
 import { TheSeamSchemaFormNumberComponent } from './schema-form-number/schema-form-number.component'
 import { TheSeamSchemaFormSelectComponent } from './schema-form-select/schema-form-select.component'
+import { TheSeamSchemaFormSubmitSplitComponent } from './schema-form-submit-split/schema-form-submit-split.component'
 import { TheSeamSchemaFormSubmitComponent } from './schema-form-submit/schema-form-submit.component'
 
 const controls = [
@@ -19,7 +22,8 @@ const controls = [
   TheSeamSchemaFormSubmitComponent,
   TheSeamSchemaFormSelectComponent,
   TheSeamSchemaFormInputComponent,
-  TheSeamSchemaFormNumberComponent
+  TheSeamSchemaFormNumberComponent,
+  TheSeamSchemaFormSubmitSplitComponent
 ]
 
 @NgModule({
@@ -32,6 +36,8 @@ const controls = [
     JsonSchemaFormModule,
     TheSeamFormFieldModule,
     TheSeamCheckboxModule,
+    TheSeamMenuModule,
+    TheSeamButtonsModule,
     NgSelectModule
   ],
   exports: [
