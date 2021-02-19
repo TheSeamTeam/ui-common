@@ -21,6 +21,7 @@ export * from './directives/datatable-filter.directive'
 export * from './directives/datatable-row-action-item.directive'
 
 export * from './models/menubar-item-data'
+export * from './models/page-info'
 export * from './models/preferences-accessor'
 export * from './models/preferences'
 export * from './models/table-column'
