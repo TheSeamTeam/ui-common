@@ -91,7 +91,7 @@
 
 <ng-template #cellTypeSelectorTpl ngx-datatable-cell-template
   let-value="value" let-rowIndex="rowIndex" let-row="row" let-column="column">
-  <seam-table-cell-type-selector
+  <seam-table-cell-type-selector *ngIf="row"
     [type]="column.cellType"
     [value]="value"
     [rowIndex]="rowIndex"
@@ -103,10 +103,12 @@
 <ng-template #actionMenuCellTpl ngx-datatable-cell-template
   let-value="value" let-rowIndex="rowIndex" let-row="row">
 
-  <ng-template
-    [ngTemplateOutlet]="rowActionItem.template"
-    [ngTemplateOutletContext]="{ $implicit: row, row: row, rowIndex: rowIndex }">
-  </ng-template>
+  <ng-container *ngIf="row">
+    <ng-template
+      [ngTemplateOutlet]="rowActionItem.template"
+      [ngTemplateOutletContext]="{ $implicit: row, row: row, rowIndex: rowIndex }">
+    </ng-template>
+  </ng-container>
 
 </ng-template>
 
