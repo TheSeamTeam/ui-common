@@ -1,8 +1,26 @@
 import { InjectionToken } from '@angular/core'
-import { Observable } from 'rxjs'
-import { switchMap } from 'rxjs/operators'
+import { combineLatest, Observable } from 'rxjs'
+import { map, startWith, switchMap } from 'rxjs/operators'
 
 export type IDataFilterFunction = <T>(data: T[]) => Observable<T[]>
+
+/**
+ * State of the filter that would allow an external operation to apply the
+ * filtering.
+ *
+ * This is primarily for server-side filtering.
+ */
+export interface DataFilterState {
+  /**
+   * DataFilter's name.
+   */
+  name: string
+
+  /**
+   * Anything necessary for an external implementation to apply this filter.
+   */
+  state: { [key: string]: any }
+}
 
 // TODO: Consider adding something, such as a priority or order, to allow the
 // order the filter functions are called in to be declared/influenced
@@ -13,15 +31,27 @@ export interface IDataFilter {
    * Name used when referencing filter by string.
    */
   name: string
+
   /**
    * Unique value to prevent a filter being used more than once if it ends up
    * being registered more than once.
    */
   uid: string
+
+  /**
+   *
+   */
+  filterStateChanges: Observable<DataFilterState>
+
   /**
    * Filters the data based on the conditions of the filter.
    */
   filter<T>(data: T[]): Observable<T[]>
+
+  /**
+   *
+   */
+  filterState(): DataFilterState
 }
 
 export const THESEAM_DATA_FILTER = new InjectionToken<IDataFilter>('TheSeamDataFilter')
@@ -41,4 +71,11 @@ export function composeDataFilters(filters: IDataFilter[]) {
     }
     return src$
   }
+}
+
+export function composeDataFilterStates(filters: IDataFilter[]): Observable<DataFilterState[]> {
+  return combineLatest(filters.map(f => f.filterStateChanges.pipe(
+    startWith(undefined),
+    map(() => f.filterState())
+  )))
 }

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, forwardRef, Inject, Input, OnDestroy, OnInit, Optional, TemplateRef } from '@angular/core'
 import { FormControl } from '@angular/forms'
-import { Observable } from 'rxjs'
-import { map, startWith } from 'rxjs/operators'
+import { Observable, of } from 'rxjs'
+import { map, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
 
@@ -9,7 +9,7 @@ import { DatatableMenuBarComponent } from '../../../datatable/datatable-menu-bar
 import type { SeamIcon } from '../../../icon/index'
 import { isNullOrUndefined } from '../../../utils/index'
 
-import { IDataFilter, THESEAM_DATA_FILTER, THESEAM_DATA_FILTER_OPTIONS } from '../../data-filter'
+import { DataFilterState, IDataFilter, THESEAM_DATA_FILTER, THESEAM_DATA_FILTER_OPTIONS } from '../../data-filter'
 import { textDataFilter } from '../data-filter-text/data-filter-text.component'
 import { ITextFilterOptions } from '../data-filter-text/text-filter-options'
 
@@ -67,10 +67,17 @@ export class DataFilterSearchComponent implements OnInit, OnDestroy, IDataFilter
     }
   }
 
+  public readonly filterStateChanges: Observable<DataFilterState>
+
   constructor(
     private _menuBar: DatatableMenuBarComponent,
     @Optional() @Inject(THESEAM_DATA_FILTER_OPTIONS) private _filterOptions: ISearchFilterOptions | null
-  ) { }
+  ) {
+    this.filterStateChanges = this._control.valueChanges.pipe(
+      switchMap(() => of(this.filterState())),
+      shareReplay({ bufferSize: 1, refCount: true })
+    )
+  }
 
   ngOnInit() { this._menuBar.addFilter(this) }
 
@@ -98,6 +105,17 @@ export class DataFilterSearchComponent implements OnInit, OnDestroy, IDataFilter
         map(v => searchDataFilter(data, v, this.options)),
         startWith(searchDataFilter(data, this._control.value, this.options)),
       )
+  }
+
+  public filterState(): DataFilterState {
+    return {
+      // id:
+      name: this.name,
+      state: {
+        value: this._control.value,
+        options: this.options
+      }
+    }
   }
 
 }

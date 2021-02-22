@@ -1,12 +1,12 @@
 import { coerceArray } from '@angular/cdk/coercion'
 import { Component, forwardRef, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core'
 import { FormControl } from '@angular/forms'
-import { Observable } from 'rxjs'
-import { map, startWith } from 'rxjs/operators'
+import { Observable, of } from 'rxjs'
+import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators'
 
 import { DatatableMenuBarComponent } from '../../../datatable/datatable-menu-bar/datatable-menu-bar.component'
 import { hasProperty, isNullOrUndefined } from '../../../utils/index'
-import { IDataFilter, THESEAM_DATA_FILTER, THESEAM_DATA_FILTER_OPTIONS } from '../../data-filter'
+import { DataFilterState, IDataFilter, THESEAM_DATA_FILTER, THESEAM_DATA_FILTER_OPTIONS } from '../../data-filter'
 
 import { textDataFilter } from '../data-filter-text/data-filter-text.component'
 import { ITextFilterOptions } from '../data-filter-text/text-filter-options'
@@ -110,16 +110,25 @@ export class DataFilterToggleButtonsComponent implements OnInit, OnDestroy, IDat
   @Input()
   set value(value: string | string[]) {
     const _value = !isNullOrUndefined(value) ? coerceArray(value) : undefined
-    console.log('_value', _value, this._control.value)
+    // console.log('_value', _value, this._control.value)
     if (this._control.value !== _value) {
       this._control.setValue(_value)
     }
   }
-4
+
+  public readonly filterStateChanges: Observable<DataFilterState>
+
   constructor(
     private _menuBar: DatatableMenuBarComponent,
     @Optional() @Inject(THESEAM_DATA_FILTER_OPTIONS) private _filterOptions: IToggleButtonsFilterOptions | null
-  ) { }
+  ) {
+    this.filterStateChanges = this._control.valueChanges.pipe(
+      tap(v => console.log('v', v)),
+      switchMap(() => of(this.filterState())),
+      tap(v => console.log('v2', v)),
+      shareReplay({ bufferSize: 1, refCount: true })
+    )
+  }
 
   ngOnInit() {
     this._menuBar.addFilter(this)
@@ -155,6 +164,17 @@ export class DataFilterToggleButtonsComponent implements OnInit, OnDestroy, IDat
         map(v => toggleButtonsFilter(data, coerceArray(v), this.options)),
         startWith(toggleButtonsFilter(data, coerceArray(this._control.value), this.options)),
       )
+  }
+
+  public filterState(): DataFilterState {
+    return {
+      // id:
+      name: this.name,
+      state: {
+        value: this._control.value,
+        options: this.options
+      }
+    }
   }
 
 }
