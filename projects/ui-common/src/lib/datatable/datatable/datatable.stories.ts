@@ -1,15 +1,20 @@
-import { FormControl, ReactiveFormsModule } from '@angular/forms'
-import { RouterModule } from '@angular/router'
 import { action } from '@storybook/addon-actions'
 import { boolean, number, text, withKnobs } from '@storybook/addon-knobs'
 import { Meta, moduleMetadata, Story } from '@storybook/angular'
 
+import { Component, Input, ViewChild } from '@angular/core'
+import { FormControl, ReactiveFormsModule } from '@angular/forms'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { RouterModule } from '@angular/router'
+
+import { TheSeamDataFiltersModule } from './../../data-filters/data-filters.module'
+import { ExportersDataEvaluator } from './../../dynamic/evaluators/exporters-data-evaluator/exporters-data-evaluator'
+import { JexlEvaluator } from './../../dynamic/evaluators/jexl-evaluator/jexl-evaluator'
+import { THESEAM_DYNAMIC_VALUE_EVALUATOR } from './../../dynamic/tokens/dynamic-value-evaluator'
 
 import { TheSeamDatatableModule } from '../datatable.module'
 import { DatatableComponent } from './datatable.component'
 
-import { TheSeamPhoneNumberPipe } from './../../tel-input/phone-number.pipe'
 
 export default {
   title: 'Components/Datatable',
@@ -352,3 +357,140 @@ export const Detail = (args) => ({
 //         </seam-datatable>
 //       </div>`
 //   }))
+
+
+
+@Component({
+  selector: 'dt-filter-wrapper',
+  template: `
+    <div class="vh-100 vw-100">
+      <seam-datatable
+        class="w-100 h-100"
+        [columns]="columns"
+        [rows]="rows">
+        <seam-datatable-menu-bar>
+          <seam-datatable-menu-bar-row class="pb-2">
+            <seam-datatable-menu-bar-column-left>
+
+            </seam-datatable-menu-bar-column-left>
+            <seam-datatable-menu-bar-column-center></seam-datatable-menu-bar-column-center>
+            <seam-datatable-menu-bar-column-right>
+              <seam-data-filter-search seamDatatableFilter></seam-data-filter-search>
+            </seam-datatable-menu-bar-column-right>
+          </seam-datatable-menu-bar-row>
+
+          <seam-datatable-menu-bar-row>
+            <seam-datatable-menu-bar-column-left></seam-datatable-menu-bar-column-left>
+            <seam-datatable-menu-bar-column-center>
+              <seam-data-filter-toggle-buttons seamDatatableFilter
+                [buttons]="filterButtons"
+                [multiple]="false"
+                [selectionToggleable]="false"
+                [value]="defaultFilter"
+                [properties]="['status']">
+              </seam-data-filter-toggle-buttons>
+            </seam-datatable-menu-bar-column-center>
+            <seam-datatable-menu-bar-column-right>
+              <seam-datatable-export-button [exporters]="exporters"></seam-datatable-export-button>
+            </seam-datatable-menu-bar-column-right>
+          </seam-datatable-menu-bar-row>
+        </seam-datatable-menu-bar>
+      </seam-datatable>
+    </div>
+  `
+})
+class DTFilterWrapper {
+
+  @ViewChild(DatatableComponent) _datatable: DatatableComponent
+
+  @Input() columns
+  @Input() rows
+  @Input() filterButtons
+
+  defaultFilter = ''
+
+  ngOnInit() {
+    console.log('this._datatable', this._datatable)
+  }
+
+  ngAfterViewInit() {
+    console.log('this._datatable2', this._datatable)
+    this._datatable.filterStates.subscribe(fs => console.log('filterStates', fs))
+  }
+}
+
+export const Filter: Story = (args) => ({
+  moduleMetadata: {
+    declarations: [ DTFilterWrapper ],
+    imports: [ TheSeamDataFiltersModule ],
+    providers: [
+      { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
+      { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: ExportersDataEvaluator, multi: true },
+
+      // { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionApiService, multi: true },
+      // { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionLinkService, multi: true },
+      // { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionModalService, multi: true },
+
+      // {
+      //   provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
+      //   useValue: { name: 'filter-search', component: DataFilterSearchComponent, dataToken: THESEAM_DATA_FILTER_OPTIONS },
+      //   multi: true
+      // },
+      // {
+      //   provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
+      //   useValue: { name: 'filter-text', component: DataFilterTextComponent, dataToken: THESEAM_DATA_FILTER_OPTIONS },
+      //   multi: true
+      // },
+      // {
+      //   provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
+      //   useValue: { name: 'filter-buttons', component: DataFilterToggleButtonsComponent, dataToken: THESEAM_DATA_FILTER_OPTIONS },
+      //   multi: true
+      // },
+      // {
+      //   provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
+      //   useValue: { name: 'export-button', component: DatatableExportButtonComponent, dataToken: THESEAM_DYNAMIC_DATA },
+      //   multi: true
+      // },
+      // {
+      //   provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
+      //   useValue: { name: 'text', component: DatatableMenuBarTextComponent, dataToken: THESEAM_MENUBAR_ITEM_DATA },
+      //   multi: true
+      // }
+    ]
+  },
+  props: {
+    ...args,
+    columns: [
+      { prop: 'name', name: 'Name' },
+      { prop: 'age', name: 'Age' },
+      { prop: 'color', name: 'Color' },
+      { prop: 'registered', name: 'Registered' }
+    ],
+    rows: [
+      { name: 'Mark', age: 27, color: 'blue', registered: true },
+      { name: 'Joe', age: 33, color: 'green', registered: false },
+      { name: 'Alice', age: 30, color: 'red', registered: false },
+      { name: 'Bill', age: 40, color: 'orange', registered: false },
+      { name: 'Sally', age: 35, color: 'purple', registered: false }
+    ],
+    filterButtons: [
+      { name: 'Registered', value: '',
+        comparator: (value, row) => {
+          return row.registered ? -1 : 1
+        }
+      },
+      { name: 'Over 30', value: 'over-30',
+        comparator: (value, row) => {
+          return row.age > 30 ? 1 : -1
+        }
+      }
+    ]
+  },
+  template: `
+    <dt-filter-wrapper
+      [columns]="columns"
+      [rows]="rows"
+      [filterButtons]="filterButtons">
+    </dt-filter-wrapper>
+  `
+})

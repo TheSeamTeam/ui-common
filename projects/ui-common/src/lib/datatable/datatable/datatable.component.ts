@@ -23,7 +23,7 @@ import {
 } from '@marklb/ngx-datatable'
 import type { SelectionType } from '@marklb/ngx-datatable'
 
-import { composeDataFilters, IDataFilter } from '../../data-filters/index'
+import { composeDataFilters, composeDataFilterStates, DataFilterState, IDataFilter } from '../../data-filters/index'
 import { IElementResizedEvent } from '../../shared/index'
 import { hasProperty } from '../../utils/index'
 
@@ -114,7 +114,9 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
   faChevronRight = faChevronRight
   faSpinner = faSpinner
 
-  private _filtersSubject = new BehaviorSubject<IDataFilter[]>([])
+  private readonly _filtersSubject = new BehaviorSubject<IDataFilter[]>([])
+
+  public readonly filterStates: Observable<DataFilterState[]>
 
   @Input()
   get preferencesKey(): string | undefined { return this._preferencesKey.value }
@@ -297,6 +299,10 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
     private _differs: KeyValueDiffers,
     private _preferences: DatatablePreferencesService
   ) {
+    this.filterStates = this._filtersSubject.asObservable().pipe(
+      switchMap(filters => composeDataFilterStates(filters))
+    )
+
     this.rows$ = this._filtersSubject.asObservable()
       .pipe(
         switchMap(filters => this._rows.asObservable()
