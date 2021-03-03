@@ -44,7 +44,7 @@ import { TheSeamBaseLayoutModule } from './base-layout.module'
     <button *ngFor="let item of items" seam-widget-tile [icon]="faBell">{{ item }}</button>
   </seam-widget-tile-list>
 
-  <seam-widget-footer-text *ngIf="p?.length">Submitted: {{ Date.now() | date: 'MM-dd-yyyy h:mm aaa' }}</seam-widget-footer-text>
+  <seam-widget-footer-text *ngIf="p?.length">Submitted: {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text>
 </seam-widget>`
 })
 class StoryExWidget1Component {
@@ -64,7 +64,7 @@ class StoryExWidget1Component {
     <button *ngFor="let item of items" seam-widget-tile [icon]="faBell">{{ item }}</button>
   </seam-widget-tile-list>
 
-  <seam-widget-footer-text *ngIf="p?.length">Submitted: {{ Date.now() | date: 'MM-dd-yyyy h:mm aaa' }}</seam-widget-footer-text>
+  <seam-widget-footer-text *ngIf="p?.length">Submitted: {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text>
 </seam-widget>`
 })
 class StoryExWidget2Component {
@@ -104,7 +104,7 @@ class StoryExWidget3Component {
     <button *ngFor="let item of items" seam-widget-tile [icon]="faBell">{{ item }}</button>
   </seam-widget-tile-list>
 
-  <seam-widget-footer-text *ngIf="p?.length">Submitted: {{ Date.now() | date: 'MM-dd-yyyy h:mm aaa' }}</seam-widget-footer-text>
+  <seam-widget-footer-text *ngIf="p?.length">Submitted: {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text>
 </seam-widget>`
 })
 class StoryExWidget4Component {
