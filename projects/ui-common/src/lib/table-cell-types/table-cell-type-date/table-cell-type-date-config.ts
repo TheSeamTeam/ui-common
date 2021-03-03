@@ -5,7 +5,7 @@ export interface TableCellTypeConfigDate extends TableCellTypeConfig<'date'> {
   /**
    * Date format.
    *
-   * Default: 'MM-dd-yyyy h:mm aaa'
+   * Default: 'yyyy-MM-dd h:mm aaa'
    */
   format?: string
 
