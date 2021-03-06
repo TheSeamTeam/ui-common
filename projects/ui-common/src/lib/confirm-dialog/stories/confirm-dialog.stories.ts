@@ -7,8 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { ThemeNames } from '../../models/index'
 import type { ThemeTypes } from '../../models/index'
 
-import { TheSeamConfirmDialogModule } from '../confirm-dialog.module'
-import { SeamConfirmDialogService } from '../confirm-dialog.service'
+import { SeamConfirmDialogService, TheSeamConfirmDialogModule } from '@lib/ui-common/confirm-dialog'
 
 storiesOf('Components/ConfirmDialog/Directive', module)
   .addDecorator(withKnobs)

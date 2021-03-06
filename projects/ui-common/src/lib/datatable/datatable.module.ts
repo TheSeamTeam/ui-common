@@ -12,7 +12,7 @@ import { ToastrModule } from 'ngx-toastr'
 
 import { TheSeamButtonsModule } from '@lib/ui-common/buttons'
 import { TheSeamCheckboxModule } from '@lib/ui-common/checkbox'
-import { TheSeamConfirmDialogModule } from '../confirm-dialog/confirm-dialog.module'
+import { TheSeamConfirmDialogModule } from '@lib/ui-common/confirm-dialog'
 import { TheSeamFormFieldModule } from '../form-field/form-field.module'
 import { TheSeamIconModule } from '../icon/icon.module'
 import { TheSeamLoadingModule } from '../loading/loading.module'
