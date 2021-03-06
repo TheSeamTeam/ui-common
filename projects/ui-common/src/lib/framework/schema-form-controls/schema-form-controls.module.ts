@@ -6,7 +6,7 @@ import { JsonSchemaFormModule } from '@ajsf/core'
 import { NgSelectModule } from '@ng-select/ng-select'
 
 import { TheSeamButtonsModule } from '@lib/ui-common/buttons'
-import { TheSeamCheckboxModule } from '../../checkbox/index'
+import { TheSeamCheckboxModule } from '@lib/ui-common/checkbox'
 import { TheSeamFormFieldModule } from '../../form-field/index'
 import { TheSeamMenuModule } from './../../menu/menu.module'
 
