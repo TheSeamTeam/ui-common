@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, Input, OnI
 import {
   CanThemeCtor,
   mixinTheme
-} from '../../../core/common-behaviors'
+} from '@lib/ui-common/core'
 
 class WidgetHeaderBadgeBase {
 

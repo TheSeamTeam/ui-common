@@ -18,7 +18,7 @@ import {
 } from '@angular/core'
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
 
-import { CanDisable, CanDisableCtor, HasTabIndex, HasTabIndexCtor, mixinDisabled, mixinTabIndex } from '../core/common-behaviors/index'
+import { CanDisable, CanDisableCtor, HasTabIndex, HasTabIndexCtor, mixinDisabled, mixinTabIndex } from '@lib/ui-common/core'
 
 // NOTE: Partially based on mat-checkbox: https://github.com/angular/components/blob/master/src/material/checkbox/checkbox.ts
 

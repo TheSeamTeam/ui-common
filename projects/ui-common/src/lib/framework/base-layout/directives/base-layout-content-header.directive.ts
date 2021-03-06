@@ -1,6 +1,6 @@
 import { Directive, ElementRef } from '@angular/core'
 
-import { HasElementRef } from '../../../core/common-behaviors'
+import { HasElementRef } from '@lib/ui-common/core'
 
 @Directive({
   selector: '[seamBaseLayoutContentHeader]'

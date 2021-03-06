@@ -1,5 +1,5 @@
 import { FocusMonitor } from '@angular/cdk/a11y'
-import { ChangeDetectionStrategy, Component, ContentChild, ElementRef, Input, OnDestroy, OnInit, Renderer2, Directive } from '@angular/core'
+import { ChangeDetectionStrategy, Component, ContentChild, Directive, ElementRef, Input, OnDestroy, OnInit, Renderer2 } from '@angular/core'
 
 import {
   CanBeActive,
@@ -12,7 +12,7 @@ import {
   mixinActive,
   mixinDisabled,
   mixinTheme
-} from '../../../../core/common-behaviors/index'
+} from '@lib/ui-common/core'
 import { SeamIcon } from '../../../../icon/index'
 
 import { WidgetListGroupItemIconTplDirective } from './widget-list-group-item-icon-tpl.directive'

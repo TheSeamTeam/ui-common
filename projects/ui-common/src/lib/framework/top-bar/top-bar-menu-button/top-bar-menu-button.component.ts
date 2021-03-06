@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, HostBinding, Input, OnDestroy, OnIn
 import { faUserCircle } from '@fortawesome/free-regular-svg-icons'
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons'
 
-import { CanDisableCtor, mixinDisabled } from '../../../core/common-behaviors/index'
+import { CanDisableCtor, mixinDisabled } from '@lib/ui-common/core'
 
 class TopBarMenuButtonBase {}
 

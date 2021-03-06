@@ -8,7 +8,7 @@ import {
   mixinDisabled,
   mixinSize,
   mixinTheme
-} from '../../core/common-behaviors'
+} from '@lib/ui-common/core'
 
 @Component({ template: '' })
 // tslint:disable-next-line: component-class-suffix
