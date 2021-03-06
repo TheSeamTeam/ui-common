@@ -2,10 +2,10 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, O
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
 
+import { hasProperty } from '@lib/ui-common/utils'
 import { TABLE_CELL_DATA } from '../../table/table-cell-tokens'
 import type { TableCellData } from '../../table/table-cell.models'
 import { coercePhoneNumberFormat, intlTelInputUtils, THESEAM_DEFAULT_PHONE_NUMBER_FORMAT } from '../../tel-input'
-import { hasProperty } from '../../utils'
 
 import { TableCellTypeConfigPhone } from './table-cell-type-phone-config'
 

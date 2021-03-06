@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core'
 import { from, Observable, of } from 'rxjs'
 import { map, switchMap, toArray } from 'rxjs/operators'
 
+import { notNullOrUndefined } from '@lib/ui-common/utils'
 import { DynamicValueHelperService } from '../dynamic/dynamic-value-helper.service'
-import { notNullOrUndefined } from '../utils/index'
 
 import { DynamicDatatableRow } from './datatable-dynamic-def'
 import { DynamicDatatableDefService } from './dynamic-datatable-def.service'

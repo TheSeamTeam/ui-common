@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-import { observeControlValue } from '../../utils/index'
+import { observeControlValue } from '@lib/ui-common/utils'
 
 import { DatatableComponent, THESEAM_DATATABLE } from '../datatable/datatable.component'
 import { TheSeamDatatableColumn } from '../models/table-column'

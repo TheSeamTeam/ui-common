@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject, Input, OnInit, Optional } from '@angular/core'
 
-import { hasProperty, notNullOrUndefined } from '../../utils'
+import { hasProperty, notNullOrUndefined } from '@lib/ui-common/utils'
 import { DatatableMenuBarComponent } from './../datatable-menu-bar/datatable-menu-bar.component'
 import { MenubarItemData } from './../models/menubar-item-data'
 import { THESEAM_MENUBAR_ITEM_DATA } from './../tokens/menubar-item-data'

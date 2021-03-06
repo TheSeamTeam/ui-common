@@ -1,13 +1,13 @@
-import { from, Observable, of } from 'rxjs'
+import { Injectable } from '@angular/core'
+import { from, Observable } from 'rxjs'
 import { mapTo, switchMap, tap } from 'rxjs/operators'
 
 import { faFileExcel } from '@fortawesome/free-solid-svg-icons'
 import { Buffer } from 'buffer/'
 import FileSaver from 'file-saver'
 
-import { fileDataFromBuffer, wrapIntoObservable } from '../../utils/index'
+import { fileDataFromBuffer, wrapIntoObservable } from '@lib/ui-common/utils'
 import { IDataExporter } from '../data-exporter'
-import { Injectable } from "@angular/core";
 
 @Injectable()
 export class XLSXDataExporter implements IDataExporter {

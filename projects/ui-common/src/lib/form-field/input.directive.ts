@@ -5,7 +5,7 @@ import { Subject } from 'rxjs'
 
 import { NgSelectComponent } from '@ng-select/ng-select'
 
-import { toggleAttribute } from '../utils/index'
+import { toggleAttribute } from '@lib/ui-common/utils'
 
 // NOTE: Partially based on mat-input: https://github.com/angular/material2/blob/master/src/lib/input/input.ts
 

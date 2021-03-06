@@ -5,11 +5,11 @@ import { catchError, concatMap, map, take, tap } from 'rxjs/operators'
 import { faFileDownload } from '@fortawesome/free-solid-svg-icons'
 import { ToastrService } from 'ngx-toastr'
 
+import { hasProperty } from '@lib/ui-common/utils'
 import { IDataExporter } from '../../data-exporter/data-exporter'
 import { DynamicValueHelperService } from '../../dynamic/dynamic-value-helper.service'
 import { THESEAM_DYNAMIC_DATA } from '../../dynamic/index'
 import { TheSeamLoadingOverlayService } from '../../loading/index'
-import { hasProperty } from '../../utils/index'
 
 import { DatatableComponent, THESEAM_DATATABLE } from '../datatable/datatable.component'
 import { TheSeamDatatableColumn } from '../models/table-column'

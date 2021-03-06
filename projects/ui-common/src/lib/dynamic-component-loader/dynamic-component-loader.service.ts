@@ -11,7 +11,7 @@ import {
   DYNAMIC_MODULE
 } from './dynamic-component-tokens'
 
-import { wrapIntoObservable } from '../utils/index'
+import { wrapIntoObservable } from '@lib/ui-common/utils'
 
 @Injectable({
   providedIn: 'root'

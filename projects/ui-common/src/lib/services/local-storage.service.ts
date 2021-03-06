@@ -4,7 +4,7 @@ import { filter, map, tap } from 'rxjs/operators'
 
 import * as localStorageMemory from 'localstorage-memory'
 
-import { notNullOrUndefined } from '../utils/index'
+import { notNullOrUndefined } from '@lib/ui-common/utils'
 
 // NOTE: Temporary localStorage polyfill just to get the app running without localStorage for now.
 const localStorage: Storage = 'localStorage' in window && window.localStorage != null ? window.localStorage : localStorageMemory

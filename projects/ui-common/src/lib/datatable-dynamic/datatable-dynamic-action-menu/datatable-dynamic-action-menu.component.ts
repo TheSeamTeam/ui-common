@@ -1,12 +1,10 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core'
 import { BehaviorSubject, from, Observable, of } from 'rxjs'
-import { concatMap, filter, switchMap, tap, toArray } from 'rxjs/operators'
+import { concatMap, filter, switchMap, toArray } from 'rxjs/operators'
 
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons'
 
-import { DynamicActionUiDef } from '../../dynamic/models/dynamic-action-ui-def'
-import { isActionType } from '../../dynamic/utils/index'
-import { hasProperty, notNullOrUndefined } from '../../utils/index'
+import { hasProperty, notNullOrUndefined } from '@lib/ui-common/utils'
 
 import { DynamicValueHelperService } from '../../dynamic/dynamic-value-helper.service'
 import { DynamicDatatableRow } from '../datatable-dynamic-def'

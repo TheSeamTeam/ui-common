@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core'
 import { defer, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-import { loadStyle, loadStyleSheet } from '../utils/index'
+import { loadStyle, loadStyleSheet } from '@lib/ui-common/utils'
 
 export class LoadedAssetRef<T extends HTMLLinkElement | HTMLScriptElement | HTMLStyleElement> {
 

@@ -3,7 +3,7 @@ import { Component, Input, OnInit } from '@angular/core'
 import { BehaviorSubject, from, Observable, of, ReplaySubject } from 'rxjs'
 import { map, shareReplay, switchMap, tap } from 'rxjs/operators'
 
-import { wrapIntoObservable } from '../../utils/index'
+import { wrapIntoObservable } from '@lib/ui-common/utils'
 
 @Component({
   selector: 'seam-pdf-viewer',

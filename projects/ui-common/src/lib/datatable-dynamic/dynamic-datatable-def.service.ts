@@ -1,13 +1,13 @@
 import { ComponentType } from '@angular/cdk/portal'
 import { Inject, Injectable } from '@angular/core'
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs'
-import { map, shareReplay, switchMap, tap } from 'rxjs/operators'
+import { map, shareReplay, switchMap } from 'rxjs/operators'
 
+import { hasProperty, notNullOrUndefined } from '@lib/ui-common/utils'
 import { IDataExporter, THESEAM_DATA_EXPORTER } from '../data-exporter/index'
 import { THESEAM_DATA_FILTER_DEF } from '../data-filters/index'
 import { IDataFilter } from '../data-filters/index'
 import { DynamicValueHelperService } from '../dynamic/index'
-import { hasProperty, notNullOrUndefined } from '../utils/index'
 
 import { DynamicDatatableOptions } from './datatable-dynamic-def'
 import { DatatableDynamicDef } from './datatable-dynamic-def'

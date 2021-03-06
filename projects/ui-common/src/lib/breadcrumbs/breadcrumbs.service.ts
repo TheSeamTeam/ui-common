@@ -3,7 +3,7 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router'
 import { combineLatest, Observable, of } from 'rxjs'
 import { filter, map, startWith, switchMap } from 'rxjs/operators'
 
-import { activatedRoutesWithDataProperty, IActivatedRouteWithData, routeSnapshotPathFull } from '../utils/index'
+import { activatedRoutesWithDataProperty, IActivatedRouteWithData, routeSnapshotPathFull } from '@lib/ui-common/utils'
 
 import { ITheSeamBreadcrumb } from './breadcrumb'
 

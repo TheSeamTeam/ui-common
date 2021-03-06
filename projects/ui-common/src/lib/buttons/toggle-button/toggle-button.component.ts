@@ -6,7 +6,6 @@ import {
 } from '@angular/core'
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
 
-import { toggleAttribute } from '../../utils/index'
 import { ButtonComponent } from '../button/button.component'
 
 

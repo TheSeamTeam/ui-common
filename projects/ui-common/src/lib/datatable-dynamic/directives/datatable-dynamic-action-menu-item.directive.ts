@@ -1,7 +1,6 @@
 import { LocationStrategy } from '@angular/common'
 import {
   Attribute,
-  ChangeDetectorRef,
   Directive,
   ElementRef,
   Input,
@@ -9,23 +8,21 @@ import {
   OnChanges,
   OnDestroy,
   OnInit,
-  Optional,
   Renderer2
 } from '@angular/core'
 import { ActivatedRoute, QueryParamsHandling, Router, RouterLink, RouterLinkWithHref } from '@angular/router'
 import { from, fromEvent, Observable, of, ReplaySubject, Subscription } from 'rxjs'
 import { catchError, mapTo, switchMap, tap } from 'rxjs/operators'
 
+import { getAttribute, hasProperty, toggleAttribute } from '@lib/ui-common/utils'
 import {
   DynamicActionHelperService,
   DynamicActionUiAnchorDef,
   DynamicActionUiButtonDef,
   DynamicActionUiDef,
-  DynamicValue,
   DynamicValueHelperService
 } from '../../dynamic/index'
 import { AssetReaderHelperService } from '../../services/index'
-import { getAttribute, hasProperty, toggleAttribute } from '../../utils/index'
 
 import { DynamicDatatableRow } from '../datatable-dynamic-def'
 import type { DynamicDatatableActionMenuRecord } from '../models/dynamic-datatable-action-menu-record'

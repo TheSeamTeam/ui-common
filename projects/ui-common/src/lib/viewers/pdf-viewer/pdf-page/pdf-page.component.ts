@@ -4,7 +4,7 @@ import { auditTime, switchMap, takeUntil } from 'rxjs/operators'
 
 import {  } from 'pdfjs-dist'
 
-import { waitOnConditionAsync } from '../../../utils/index'
+import { waitOnConditionAsync } from '@lib/ui-common/utils'
 
 @Component({
   selector: 'seam-pdf-page',

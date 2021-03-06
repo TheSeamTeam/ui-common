@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, Input, isDevMode, OnDestroy, OnInit } from '@angular/core'
+import { Component, Input, isDevMode, OnDestroy, OnInit } from '@angular/core'
 import { AbstractControl, FormControl } from '@angular/forms'
 import { Subject } from 'rxjs'
 
 import { buildTitleMap, hasOwn, JsonSchemaFormService, TitleMapItem } from '@ajsf/core'
 
+import { observeControlStatus, observeControlValue } from '@lib/ui-common/utils'
 import { takeUntil } from 'rxjs/operators'
-import { observeControlStatus, observeControlValue } from '../../../utils'
 
 // NOTE: This is aliasing TitleMapItem, because we may want to extend it's
 // options. For simplicity, I am letting this work similar to a 'select' widget.

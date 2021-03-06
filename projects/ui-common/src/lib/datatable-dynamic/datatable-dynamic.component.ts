@@ -1,24 +1,17 @@
-import { ComponentType } from '@angular/cdk/portal'
-import { ChangeDetectionStrategy, Component, Inject, Input, OnInit } from '@angular/core'
-import { from, Observable, of } from 'rxjs'
-import { map, switchMap, tap, toArray } from 'rxjs/operators'
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core'
+import { Observable } from 'rxjs'
+import { map } from 'rxjs/operators'
 
-import { IDataExporter, THESEAM_DATA_EXPORTER } from '../data-exporter/index'
-import { THESEAM_DATA_FILTER_DEF } from '../data-filters/data-filter-def'
-import { IDataFilter } from '../data-filters/index'
-import { DynamicValueHelperService } from '../dynamic/index'
-import { notNullOrUndefined } from '../utils/index'
+import { IDataExporter } from '../data-exporter/index'
 
 import {
   DatatableDynamicDef,
-  DynamicDatatableOptions,
-  DynamicDatatableRow
+  DynamicDatatableOptions
 } from './datatable-dynamic-def'
 import { DynamicDatatableDefService } from './dynamic-datatable-def.service'
 import { DynamicDatatableRowActionsService } from './dynamic-datatable-row-actions.service'
 import { DynamicDatatableFilterMenuItem } from './models/dynamic-datatable-filter-menu-item'
 import { DynamicDatatableMenuBar } from './models/dynamic-datatable-menu-bar'
-import { DynamicDatatableRowAction } from './models/dynamic-datatable-row-action'
 
 /**
  * # EXPERIMENTAL

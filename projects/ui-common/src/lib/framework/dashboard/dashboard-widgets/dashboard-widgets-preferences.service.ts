@@ -2,7 +2,7 @@ import { Inject, Injectable, isDevMode, Optional } from '@angular/core'
 import { Observable, of, Subject } from 'rxjs'
 import { auditTime, map, mapTo, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators'
 
-import { hasProperty } from '../../../utils/index'
+import { hasProperty } from '@lib/ui-common/utils'
 
 import {
   IDashboardWidgetItemLayout,

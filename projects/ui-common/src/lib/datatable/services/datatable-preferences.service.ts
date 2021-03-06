@@ -2,7 +2,7 @@ import { Inject, Injectable, isDevMode, Optional } from '@angular/core'
 import { Observable, of, Subject } from 'rxjs'
 import { map, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators'
 
-import { hasProperty } from '../../utils/has-property'
+import { hasProperty } from '@lib/ui-common/utils'
 import { ITheSeamDatatablePreferences, ITheSeamDatatablePreferencesColumn } from '../models/preferences'
 import type { ITheSeamDatatablePreferencesAccessor } from '../models/preferences-accessor'
 import { THESEAM_DATATABLE_PREFERENCES_ACCESSOR } from '../tokens/datatable-preferences-accessor'

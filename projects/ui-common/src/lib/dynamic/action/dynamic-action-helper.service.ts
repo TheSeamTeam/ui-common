@@ -1,9 +1,9 @@
 import { Inject, Injectable, isDevMode, Optional } from '@angular/core'
 import { map } from 'rxjs/operators'
 
+import { hasProperty } from '@lib/ui-common/utils'
 import { SeamConfirmDialogService } from '../../confirm-dialog/confirm-dialog.service'
 import { ThemeTypes } from '../../models/theme-types'
-import { hasProperty } from '../../utils/index'
 
 import { DynamicValueHelperService } from '../dynamic-value-helper.service'
 import { DynamicAction } from '../models/dynamic-action'

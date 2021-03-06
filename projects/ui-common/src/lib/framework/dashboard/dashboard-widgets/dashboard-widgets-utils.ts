@@ -1,7 +1,7 @@
 import { CdkDrag } from '@angular/cdk/drag-drop'
 import { ElementRef } from '@angular/core'
 
-import { getAttribute, hasAttribute } from '../../../utils/index'
+import { getAttribute, hasAttribute } from '@lib/ui-common/utils'
 
 /**
  * Finds the closest CdkDrag to an element by looking at the DOM.
