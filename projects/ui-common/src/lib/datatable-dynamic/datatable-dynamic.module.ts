@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core'
 import { RouterModule } from '@angular/router'
 
 import { TheSeamButtonsModule } from '@lib/ui-common/buttons'
-import { TheSeamDataExporterModule } from '../data-exporter/index'
+import { TheSeamDataExporterModule } from '@lib/ui-common/data-exporter'
 import { TheSeamDataFiltersModule } from '../data-filters/index'
 import { TheSeamDatatableModule } from '../datatable/index'
 import { TheSeamIconModule } from '../icon/index'

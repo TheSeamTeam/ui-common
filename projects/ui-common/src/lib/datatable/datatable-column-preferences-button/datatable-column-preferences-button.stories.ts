@@ -5,7 +5,7 @@ import { storiesOf } from '@storybook/angular'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { BehaviorSubject, of } from 'rxjs'
 
-import { CSVDataExporter, XLSXDataExporter } from '../../data-exporter/index'
+import { CSVDataExporter, XLSXDataExporter } from '@lib/ui-common/data-exporter'
 
 import { TheSeamDatatableModule } from '../datatable.module'
 import { THESEAM_DATATABLE } from '../datatable/datatable.component'

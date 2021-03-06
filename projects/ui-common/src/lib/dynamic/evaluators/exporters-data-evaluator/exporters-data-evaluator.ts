@@ -1,7 +1,7 @@
 import { Injectable, Injector } from '@angular/core'
 
+import { IDataExporter, THESEAM_DATA_EXPORTER } from '@lib/ui-common/data-exporter'
 import { notNullOrUndefined } from '@lib/ui-common/utils'
-import { IDataExporter, THESEAM_DATA_EXPORTER } from '../../../data-exporter/data-exporter'
 import { IDynamicValueEvaluator } from '../../models/dynamic-value-evaluator'
 
 import { IExportersDataValue } from './exporters-data-value'

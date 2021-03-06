@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-import { IDataExporter } from '../data-exporter/index'
+import { IDataExporter } from '@lib/ui-common/data-exporter'
 
 import {
   DatatableDynamicDef,
