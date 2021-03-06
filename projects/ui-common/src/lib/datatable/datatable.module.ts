@@ -10,7 +10,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 import { NgxDatatableModule, ScrollbarHelper } from '@marklb/ngx-datatable'
 import { ToastrModule } from 'ngx-toastr'
 
-import { TheSeamButtonsModule } from '../buttons/buttons.module'
+import { TheSeamButtonsModule } from '@lib/ui-common/buttons'
 import { TheSeamCheckboxModule } from '../checkbox/checkbox.module'
 import { TheSeamConfirmDialogModule } from '../confirm-dialog/confirm-dialog.module'
 import { TheSeamFormFieldModule } from '../form-field/form-field.module'

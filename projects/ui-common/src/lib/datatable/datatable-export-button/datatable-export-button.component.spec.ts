@@ -4,8 +4,8 @@ import { BehaviorSubject, Observable } from 'rxjs'
 
 import { ToastrService } from 'ngx-toastr'
 
+import { TheSeamButtonsModule } from '@lib/ui-common/buttons'
 import { FakeToastrService } from '../../../testing/fake-toastr'
-import { TheSeamButtonsModule } from '../../buttons/index'
 import { TheSeamIconModule } from '../../icon/index'
 import { FakeTheSeamLoadingOverlayService } from '../../loading/fake-loading-overlay'
 import { TheSeamLoadingOverlayService } from '../../loading/loading-overlay.service'

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { RouterModule } from '@angular/router'
 
-import { TheSeamButtonsModule } from '../buttons/index'
+import { TheSeamButtonsModule } from '@lib/ui-common/buttons'
 import { TheSeamDataExporterModule } from '../data-exporter/index'
 import { TheSeamDataFiltersModule } from '../data-filters/index'
 import { TheSeamDatatableModule } from '../datatable/index'

@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { ReactiveFormsModule } from '@angular/forms'
-import { TheSeamButtonsModule } from './../../buttons/buttons.module'
-import { TheSeamMenuModule } from './../../menu/menu.module'
 
 import { JsonSchemaFormModule } from '@ajsf/core'
 import { NgSelectModule } from '@ng-select/ng-select'
 
+import { TheSeamButtonsModule } from '@lib/ui-common/buttons'
 import { TheSeamCheckboxModule } from '../../checkbox/index'
 import { TheSeamFormFieldModule } from '../../form-field/index'
+import { TheSeamMenuModule } from './../../menu/menu.module'
 
 import { TheSeamSchemaFormCheckboxComponent } from './schema-form-checkbox/schema-form-checkbox.component'
 import { TheSeamSchemaFormInputComponent } from './schema-form-input/schema-form-input.component'

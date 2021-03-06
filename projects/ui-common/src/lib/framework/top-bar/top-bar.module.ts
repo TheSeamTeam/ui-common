@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { RouterModule } from '@angular/router'
 
-import { TheSeamButtonsModule } from '../../buttons/index'
+import { TheSeamButtonsModule } from '@lib/ui-common/buttons'
 import { TheSeamIconModule } from '../../icon/index'
 import { TheSeamLayoutModule } from '../../layout/index'
 import { TheSeamMenuModule } from '../../menu/index'
