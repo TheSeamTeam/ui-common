@@ -3,8 +3,8 @@ import { Directive, ElementRef, HostBinding, Inject, Input, NgZone, OnDestroy, O
 import { fromEvent, merge, Subject } from 'rxjs'
 import { auditTime, last, switchMap, takeUntil, tap } from 'rxjs/operators'
 
+import { AssetLoaderService, LoadedAssetRef } from '@lib/ui-common/services'
 import { notNullOrUndefined } from '@lib/ui-common/utils'
-import { AssetLoaderService, LoadedAssetRef } from '../services/index'
 
 
 import { IntlTelInputFn, intlTelInputUtils } from './intl-tel-input'

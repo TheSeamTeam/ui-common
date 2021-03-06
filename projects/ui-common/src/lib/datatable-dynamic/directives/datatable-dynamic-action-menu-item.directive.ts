@@ -14,6 +14,7 @@ import { ActivatedRoute, QueryParamsHandling, Router, RouterLink, RouterLinkWith
 import { from, fromEvent, Observable, of, ReplaySubject, Subscription } from 'rxjs'
 import { catchError, mapTo, switchMap, tap } from 'rxjs/operators'
 
+import { AssetReaderHelperService } from '@lib/ui-common/services'
 import { getAttribute, hasProperty, toggleAttribute } from '@lib/ui-common/utils'
 import {
   DynamicActionHelperService,
@@ -22,7 +23,6 @@ import {
   DynamicActionUiDef,
   DynamicValueHelperService
 } from '../../dynamic/index'
-import { AssetReaderHelperService } from '../../services/index'
 
 import { DynamicDatatableRow } from '../datatable-dynamic-def'
 import type { DynamicDatatableActionMenuRecord } from '../models/dynamic-datatable-action-menu-record'
