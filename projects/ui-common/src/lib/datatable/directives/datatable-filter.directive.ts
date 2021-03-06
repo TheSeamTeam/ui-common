@@ -1,6 +1,6 @@
 import { Directive, Inject, Self } from '@angular/core'
 
-import { IDataFilter, THESEAM_DATA_FILTER } from '../../data-filters/data-filter'
+import { IDataFilter, THESEAM_DATA_FILTER } from '@lib/ui-common/data-filters'
 
 @Directive({
   selector: '[seamDatatableFilter]'

@@ -1,7 +1,7 @@
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal'
-import { ChangeDetectionStrategy, Component, Injector, Input, OnInit, ViewContainerRef } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Injector, Input, OnInit } from '@angular/core'
 
-import { THESEAM_DATA_FILTER_OPTIONS } from '../../data-filters/data-filter'
+import { THESEAM_DATA_FILTER_OPTIONS } from '@lib/ui-common/data-filters'
 import type { ComponentType } from '../../models/index'
 
 @Component({

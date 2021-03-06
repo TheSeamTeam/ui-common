@@ -1,6 +1,6 @@
 import { ComponentType } from '@angular/cdk/portal'
 
-import { IDataFilter } from '../../data-filters/index'
+import { IDataFilter } from '@lib/ui-common/data-filters'
 
 import { DynamicDatatableFilterMenuItemDef } from '../datatable-dynamic-def'
 

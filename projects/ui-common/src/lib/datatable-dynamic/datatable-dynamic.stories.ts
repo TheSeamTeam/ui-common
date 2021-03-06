@@ -16,7 +16,7 @@ import {
   DataFilterToggleButtonsComponent,
   THESEAM_DATA_FILTER_DEF,
   THESEAM_DATA_FILTER_OPTIONS
-} from '../data-filters/index'
+} from '@lib/ui-common/data-filters'
 import { DatatableExportButtonComponent } from '../datatable/datatable-export-button/datatable-export-button.component'
 import { DatatableMenuBarTextComponent } from '../datatable/datatable-menu-bar-text/datatable-menu-bar-text.component'
 import { THESEAM_MENUBAR_ITEM_DATA } from '../datatable/tokens/menubar-item-data'

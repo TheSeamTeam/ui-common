@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ContentChildren, EventEmitter, OnInit, QueryList } from '@angular/core'
 
-import { IDataFilter } from '../../data-filters/index'
+import { IDataFilter } from '@lib/ui-common/data-filters'
 
 import { DatatableFilterDirective } from '../directives/datatable-filter.directive'
 

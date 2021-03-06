@@ -1,5 +1,4 @@
 import { action } from '@storybook/addon-actions'
-import { boolean, number, text, withKnobs } from '@storybook/addon-knobs'
 import { Meta, moduleMetadata, Story } from '@storybook/angular'
 
 import { Component, Input, ViewChild } from '@angular/core'
@@ -7,7 +6,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { RouterModule } from '@angular/router'
 
-import { TheSeamDataFiltersModule } from './../../data-filters/data-filters.module'
+import { TheSeamDataFiltersModule } from '@lib/ui-common/data-filters'
 import { ExportersDataEvaluator } from './../../dynamic/evaluators/exporters-data-evaluator/exporters-data-evaluator'
 import { JexlEvaluator } from './../../dynamic/evaluators/jexl-evaluator/jexl-evaluator'
 import { THESEAM_DYNAMIC_VALUE_EVALUATOR } from './../../dynamic/tokens/dynamic-value-evaluator'

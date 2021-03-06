@@ -23,8 +23,8 @@ import {
 } from '@marklb/ngx-datatable'
 import type { SelectionType } from '@marklb/ngx-datatable'
 
+import { composeDataFilters, composeDataFilterStates, DataFilterState, IDataFilter } from '@lib/ui-common/data-filters'
 import { hasProperty } from '@lib/ui-common/utils'
-import { composeDataFilters, composeDataFilterStates, DataFilterState, IDataFilter } from '../../data-filters/index'
 import { IElementResizedEvent } from '../../shared/index'
 
 import { DatatableActionMenuComponent } from '../datatable-action-menu/datatable-action-menu.component'

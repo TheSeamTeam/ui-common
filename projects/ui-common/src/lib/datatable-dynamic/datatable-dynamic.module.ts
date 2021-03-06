@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router'
 
 import { TheSeamButtonsModule } from '@lib/ui-common/buttons'
 import { TheSeamDataExporterModule } from '@lib/ui-common/data-exporter'
-import { TheSeamDataFiltersModule } from '../data-filters/index'
+import { TheSeamDataFiltersModule } from '@lib/ui-common/data-filters'
 import { TheSeamDatatableModule } from '../datatable/index'
 import { TheSeamIconModule } from '../icon/index'
 import { TheSeamMenuModule } from '../menu/index'

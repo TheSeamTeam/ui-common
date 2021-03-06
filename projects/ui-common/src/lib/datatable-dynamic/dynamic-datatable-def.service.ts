@@ -4,9 +4,8 @@ import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'
 
 import { IDataExporter, THESEAM_DATA_EXPORTER } from '@lib/ui-common/data-exporter'
+import { IDataFilter, THESEAM_DATA_FILTER_DEF } from '@lib/ui-common/data-filters'
 import { hasProperty, notNullOrUndefined } from '@lib/ui-common/utils'
-import { THESEAM_DATA_FILTER_DEF } from '../data-filters/index'
-import { IDataFilter } from '../data-filters/index'
 import { DynamicValueHelperService } from '../dynamic/index'
 
 import { DynamicDatatableOptions } from './datatable-dynamic-def'
