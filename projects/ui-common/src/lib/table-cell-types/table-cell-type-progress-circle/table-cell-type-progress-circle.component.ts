@@ -10,16 +10,17 @@ import {
   OnInit,
   Optional
 } from '@angular/core'
-import { IconTemplateType } from './../table-cell-type-icon/table-cell-type-icon.component'
-
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
-import { DatatableComponent } from '../../datatable/datatable/datatable.component'
+
+import { DatatableComponent } from '@lib/ui-common/datatable'
+
 import { TABLE_CELL_DATA } from '../../table/table-cell-tokens'
 import type { TableCellData } from '../../table/table-cell.models'
 import { TheSeamTableColumn } from '../../table/table-column'
 import { TableComponent } from '../../table/table/table.component'
 import { TableCellTypesHelpersService } from '../services/table-cell-types-helpers.service'
+import { IconTemplateType } from './../table-cell-type-icon/table-cell-type-icon.component'
 import { TableCellTypeConfigProgressCircle, TableCellTypeProgressCircleConfigAction } from './table-cell-type-progress-circle-config'
 
 @Component({

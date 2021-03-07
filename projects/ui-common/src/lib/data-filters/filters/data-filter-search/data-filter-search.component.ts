@@ -5,8 +5,8 @@ import { map, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
 
+import { DatatableMenuBarComponent } from '@lib/ui-common/datatable'
 import { isNullOrUndefined } from '@lib/ui-common/utils'
-import { DatatableMenuBarComponent } from '../../../datatable/datatable-menu-bar/datatable-menu-bar.component'
 import type { SeamIcon } from '../../../icon/index'
 
 import { DataFilterState, IDataFilter, THESEAM_DATA_FILTER, THESEAM_DATA_FILTER_OPTIONS } from '../../data-filter'

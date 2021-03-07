@@ -1,6 +1,3 @@
-import { action } from '@storybook/addon-actions'
-import { boolean, select, text, withKnobs } from '@storybook/addon-knobs'
-import { linkTo } from '@storybook/addon-links'
 import { moduleMetadata } from '@storybook/angular'
 
 import { BrowserModule } from '@angular/platform-browser'
@@ -15,8 +12,8 @@ import {
   DataFilterToggleButtonsComponent,
   THESEAM_DATA_FILTER_OPTIONS
 } from '@lib/ui-common/data-filters'
+import { DatatableExportButtonComponent } from '@lib/ui-common/datatable'
 import { THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM } from '../../datatable-dynamic/index'
-import { DatatableExportButtonComponent } from '../../datatable/datatable-export-button/datatable-export-button.component'
 import {
   DynamicActionApiService,
   DynamicActionLinkService,
@@ -27,6 +24,7 @@ import {
   THESEAM_DYNAMIC_VALUE_EVALUATOR
 } from '../../dynamic/index'
 import { TheSeamTableModule } from '../table.module'
+
 import { TableComponent } from './table.component'
 
 export default {

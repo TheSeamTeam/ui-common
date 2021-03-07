@@ -12,7 +12,8 @@ import {
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
 
-import { DatatableComponent } from '../../datatable/datatable/datatable.component'
+import { DatatableComponent } from '@lib/ui-common/datatable'
+
 import { TABLE_CELL_DATA } from '../../table/table-cell-tokens'
 import type { TableCellData } from '../../table/table-cell.models'
 import { TheSeamTableColumn } from '../../table/table-column'

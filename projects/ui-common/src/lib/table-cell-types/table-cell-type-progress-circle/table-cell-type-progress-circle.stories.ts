@@ -3,7 +3,8 @@ import { Meta, moduleMetadata, Story } from '@storybook/angular'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { RouterModule } from '@angular/router'
 
-import { TheSeamDatatableModule } from '../../datatable'
+import { TheSeamDatatableModule } from '@lib/ui-common/datatable'
+
 import { DynamicActionApiService } from './../../dynamic/action/api/dynamic-action-api.service'
 import { DynamicActionLinkService } from './../../dynamic/action/link/dynamic-action-link.service'
 import { DynamicActionModalService } from './../../dynamic/action/modal/dynamic-action-modal.service'

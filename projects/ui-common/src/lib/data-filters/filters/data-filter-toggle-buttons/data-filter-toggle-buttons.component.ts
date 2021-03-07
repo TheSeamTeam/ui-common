@@ -4,10 +4,10 @@ import { FormControl } from '@angular/forms'
 import { Observable, of } from 'rxjs'
 import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators'
 
+import { DatatableMenuBarComponent } from '@lib/ui-common/datatable'
 import { hasProperty, isNullOrUndefined } from '@lib/ui-common/utils'
-import { DatatableMenuBarComponent } from '../../../datatable/datatable-menu-bar/datatable-menu-bar.component'
-import { DataFilterState, IDataFilter, THESEAM_DATA_FILTER, THESEAM_DATA_FILTER_OPTIONS } from '../../data-filter'
 
+import { DataFilterState, IDataFilter, THESEAM_DATA_FILTER, THESEAM_DATA_FILTER_OPTIONS } from '../../data-filter'
 import { textDataFilter } from '../data-filter-text/data-filter-text.component'
 import { ITextFilterOptions } from '../data-filter-text/text-filter-options'
 

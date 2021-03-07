@@ -1,10 +1,11 @@
 import { PipeTransform } from '@angular/core'
 import { TableColumnProp } from '@marklb/ngx-datatable'
 
+import { TheSeamDatatableColumn } from '@lib/ui-common/datatable'
+
 import { DynamicValue } from '../dynamic/index'
 import { ThemeTypes } from '../models/index'
 
-import { TheSeamDatatableColumn } from '../datatable/models/table-column'
 import { TableCellTypeConfig } from '../table-cell-types/table-cell-type-config'
 import { TableCellTypeName } from '../table-cell-types/table-cell-type-name'
 import { TheSeamTableColumn } from '../table/table-column'

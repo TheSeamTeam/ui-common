@@ -1,25 +1,19 @@
-import { select, text, withKnobs } from '@storybook/addon-knobs'
-import { moduleMetadata, storiesOf } from '@storybook/angular'
+import { moduleMetadata } from '@storybook/angular'
 
 import { CommonModule } from '@angular/common'
 import { HttpClientModule } from '@angular/common/http'
 import { Component, NgModule } from '@angular/core'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
-import { ActivatedRoute, RouterModule } from '@angular/router'
-import { Observable } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { RouterModule } from '@angular/router'
 
 import {
   DataFilterSearchComponent,
   DataFilterTextComponent,
   DataFilterToggleButtonsComponent,
-  THESEAM_DATA_FILTER_DEF,
   THESEAM_DATA_FILTER_OPTIONS
 } from '@lib/ui-common/data-filters'
-import { DatatableExportButtonComponent } from '../datatable/datatable-export-button/datatable-export-button.component'
-import { DatatableMenuBarTextComponent } from '../datatable/datatable-menu-bar-text/datatable-menu-bar-text.component'
-import { THESEAM_MENUBAR_ITEM_DATA } from '../datatable/tokens/menubar-item-data'
+import { DatatableExportButtonComponent, DatatableMenuBarTextComponent, THESEAM_MENUBAR_ITEM_DATA } from '@lib/ui-common/datatable'
 import { TheSeamDynamicComponentLoaderModule } from '../dynamic-component-loader'
 import type { IDynamicComponentManifest } from '../dynamic-component-loader'
 import {
