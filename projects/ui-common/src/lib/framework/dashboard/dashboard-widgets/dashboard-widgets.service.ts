@@ -3,8 +3,8 @@ import { Injectable, isDevMode, ViewContainerRef } from '@angular/core'
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs'
 import { auditTime, map, mapTo, shareReplay, switchMap, take, tap } from 'rxjs/operators'
 
+import { TheSeamDynamicComponentLoader } from '@lib/ui-common/dynamic-component-loader'
 import { notNullOrUndefined } from '@lib/ui-common/utils'
-import { TheSeamDynamicComponentLoader } from '../../../dynamic-component-loader/dynamic-component-loader.service'
 
 import {
   IDashboardWidgetItemLayoutPreference,

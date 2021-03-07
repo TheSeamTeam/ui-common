@@ -24,8 +24,7 @@ import {
   THESEAM_DYNAMIC_DATA,
   THESEAM_DYNAMIC_VALUE_EVALUATOR
 } from '@lib/ui-common/dynamic'
-import { TheSeamDynamicComponentLoaderModule } from '../dynamic-component-loader'
-import type { IDynamicComponentManifest } from '../dynamic-component-loader'
+import { IDynamicComponentManifest, TheSeamDynamicComponentLoaderModule } from '@lib/ui-common/dynamic-component-loader'
 import { TheSeamModalModule } from '../modal/index'
 
 import { THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM } from './datatable-dynamic-menu-bar-token'

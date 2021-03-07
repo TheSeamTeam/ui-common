@@ -4,8 +4,8 @@ import { BehaviorSubject, Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
 import { DynamicValueHelperService } from '@lib/ui-common/dynamic'
+import { TheSeamDynamicComponentLoader } from '@lib/ui-common/dynamic-component-loader'
 import { hasProperty } from '@lib/ui-common/utils'
-import { TheSeamDynamicComponentLoader } from '../../dynamic-component-loader/index'
 
 import { IDatatableDynamicMenuBarItemManifest } from '../datatable-dynamic-menu-bar-item-manifest'
 import { THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM } from '../datatable-dynamic-menu-bar-token'
