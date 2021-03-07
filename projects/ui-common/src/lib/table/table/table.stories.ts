@@ -13,7 +13,7 @@ import {
   THESEAM_DATA_FILTER_OPTIONS
 } from '@lib/ui-common/data-filters'
 import { DatatableExportButtonComponent } from '@lib/ui-common/datatable'
-import { THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM } from '../../datatable-dynamic/index'
+import { THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM } from '@lib/ui-common/datatable-dynamic'
 import {
   DynamicActionApiService,
   DynamicActionLinkService,
