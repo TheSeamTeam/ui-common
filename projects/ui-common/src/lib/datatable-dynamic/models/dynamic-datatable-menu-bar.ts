@@ -1,4 +1,4 @@
-import { DynamicValue } from '../../dynamic/models/dynamic-value'
+import { DynamicValue } from '@lib/ui-common/dynamic'
 
 export interface DynamicDatatableMenuBarItem<C = any> {
   /**

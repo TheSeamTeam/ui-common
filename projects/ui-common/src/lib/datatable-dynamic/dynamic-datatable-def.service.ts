@@ -5,8 +5,8 @@ import { map, shareReplay, switchMap } from 'rxjs/operators'
 
 import { IDataExporter, THESEAM_DATA_EXPORTER } from '@lib/ui-common/data-exporter'
 import { IDataFilter, THESEAM_DATA_FILTER_DEF } from '@lib/ui-common/data-filters'
+import { DynamicValueHelperService } from '@lib/ui-common/dynamic'
 import { hasProperty, notNullOrUndefined } from '@lib/ui-common/utils'
-import { DynamicValueHelperService } from '../dynamic/index'
 
 import { DynamicDatatableOptions } from './datatable-dynamic-def'
 import { DatatableDynamicDef } from './datatable-dynamic-def'

@@ -2,9 +2,7 @@ import { Injectable } from '@angular/core'
 import { from, Observable, Subject, Subscriber } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
 
-import { DynamicActionHelperService } from '../../dynamic/action/dynamic-action-helper.service'
-import { DynamicActionModalDef } from '../../dynamic/action/modal/dynamic-action-modal-def'
-import { DynamicValueHelperService } from '../../dynamic/dynamic-value-helper.service'
+import { DynamicActionHelperService, DynamicActionModalDef, DynamicValueHelperService } from '@lib/ui-common/dynamic'
 import { TableCellData } from '../../table/table-cell.models'
 
 import { TableCellTypeConfig } from '../table-cell-type-config'

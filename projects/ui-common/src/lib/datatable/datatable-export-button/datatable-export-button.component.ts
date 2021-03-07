@@ -6,9 +6,8 @@ import { faFileDownload } from '@fortawesome/free-solid-svg-icons'
 import { ToastrService } from 'ngx-toastr'
 
 import { IDataExporter } from '@lib/ui-common/data-exporter'
+import { DynamicValueHelperService, THESEAM_DYNAMIC_DATA } from '@lib/ui-common/dynamic'
 import { hasProperty } from '@lib/ui-common/utils'
-import { DynamicValueHelperService } from '../../dynamic/dynamic-value-helper.service'
-import { THESEAM_DYNAMIC_DATA } from '../../dynamic/index'
 import { TheSeamLoadingOverlayService } from '../../loading/index'
 
 import { DatatableComponent, THESEAM_DATATABLE } from '../datatable/datatable.component'

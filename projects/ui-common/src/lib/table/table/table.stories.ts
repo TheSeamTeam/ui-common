@@ -22,7 +22,7 @@ import {
   THESEAM_DYNAMIC_ACTION,
   THESEAM_DYNAMIC_DATA,
   THESEAM_DYNAMIC_VALUE_EVALUATOR
-} from '../../dynamic/index'
+} from '@lib/ui-common/dynamic'
 import { TheSeamTableModule } from '../table.module'
 
 import { TableComponent } from './table.component'

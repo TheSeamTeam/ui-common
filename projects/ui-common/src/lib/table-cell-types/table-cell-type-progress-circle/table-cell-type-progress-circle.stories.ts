@@ -4,14 +4,16 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { RouterModule } from '@angular/router'
 
 import { TheSeamDatatableModule } from '@lib/ui-common/datatable'
+import {
+  DynamicActionApiService,
+  DynamicActionLinkService,
+  DynamicActionModalService,
+  ExportersDataEvaluator,
+  JexlEvaluator,
+  THESEAM_DYNAMIC_ACTION,
+  THESEAM_DYNAMIC_VALUE_EVALUATOR
+} from '@lib/ui-common/dynamic'
 
-import { DynamicActionApiService } from './../../dynamic/action/api/dynamic-action-api.service'
-import { DynamicActionLinkService } from './../../dynamic/action/link/dynamic-action-link.service'
-import { DynamicActionModalService } from './../../dynamic/action/modal/dynamic-action-modal.service'
-import { ExportersDataEvaluator } from './../../dynamic/evaluators/exporters-data-evaluator/exporters-data-evaluator'
-import { JexlEvaluator } from './../../dynamic/evaluators/jexl-evaluator/jexl-evaluator'
-import { THESEAM_DYNAMIC_ACTION } from './../../dynamic/tokens/dynamic-action'
-import { THESEAM_DYNAMIC_VALUE_EVALUATOR } from './../../dynamic/tokens/dynamic-value-evaluator'
 import { TableCellTypeProgressCircleComponent } from './table-cell-type-progress-circle.component'
 
 export default {

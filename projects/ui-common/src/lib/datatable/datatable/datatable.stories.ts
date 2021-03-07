@@ -7,9 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { RouterModule } from '@angular/router'
 
 import { TheSeamDataFiltersModule } from '@lib/ui-common/data-filters'
-import { ExportersDataEvaluator } from './../../dynamic/evaluators/exporters-data-evaluator/exporters-data-evaluator'
-import { JexlEvaluator } from './../../dynamic/evaluators/jexl-evaluator/jexl-evaluator'
-import { THESEAM_DYNAMIC_VALUE_EVALUATOR } from './../../dynamic/tokens/dynamic-value-evaluator'
+import { ExportersDataEvaluator, JexlEvaluator, THESEAM_DYNAMIC_VALUE_EVALUATOR } from '@lib/ui-common/dynamic'
 
 import { TheSeamDatatableModule } from '../datatable.module'
 import { DatatableComponent } from './datatable.component'

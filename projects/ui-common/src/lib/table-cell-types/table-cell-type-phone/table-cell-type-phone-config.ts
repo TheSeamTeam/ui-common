@@ -1,4 +1,4 @@
-import { DynamicValue } from '../../dynamic/index'
+import { DynamicValue } from '@lib/ui-common/dynamic'
 import { TableCellTypeConfig } from '../../table-cell-types/table-cell-type-config'
 import type { TheSeamNumberFormatsInput } from '../../tel-input'
 

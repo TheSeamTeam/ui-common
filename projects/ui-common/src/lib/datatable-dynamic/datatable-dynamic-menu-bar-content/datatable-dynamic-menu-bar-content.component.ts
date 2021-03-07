@@ -1,12 +1,12 @@
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal'
 import { ChangeDetectionStrategy, Component, Inject, Injector, Input, OnInit, Optional } from '@angular/core'
 import { BehaviorSubject, Observable } from 'rxjs'
+import { map, switchMap } from 'rxjs/operators'
 
+import { DynamicValueHelperService } from '@lib/ui-common/dynamic'
 import { hasProperty } from '@lib/ui-common/utils'
 import { TheSeamDynamicComponentLoader } from '../../dynamic-component-loader/index'
-import { DynamicValueHelperService } from '../../dynamic/index'
 
-import { map, switchMap } from 'rxjs/operators'
 import { IDatatableDynamicMenuBarItemManifest } from '../datatable-dynamic-menu-bar-item-manifest'
 import { THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM } from '../datatable-dynamic-menu-bar-token'
 import {

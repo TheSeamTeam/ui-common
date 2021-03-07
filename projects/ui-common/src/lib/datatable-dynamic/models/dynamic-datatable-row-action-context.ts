@@ -1,4 +1,4 @@
-import { DynamicActionContext } from '../../dynamic/index'
+import { DynamicActionContext } from '@lib/ui-common/dynamic'
 
 import { DynamicDatatableRow } from '../datatable-dynamic-def'
 

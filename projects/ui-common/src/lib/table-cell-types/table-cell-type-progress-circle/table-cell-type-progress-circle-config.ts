@@ -1,6 +1,4 @@
-import { DynamicActionLinkDef } from '../../dynamic/action/link/dynamic-action-link-def'
-import { DynamicActionModalDef } from '../../dynamic/action/modal/dynamic-action-modal-def'
-import { DynamicValue } from '../../dynamic/models/dynamic-value'
+import { DynamicActionLinkDef, DynamicActionModalDef, DynamicValue } from '@lib/ui-common/dynamic'
 import { TableCellTypeConfig } from '../table-cell-type-config'
 
 export type TableCellTypeProgressCircleConfigAction =

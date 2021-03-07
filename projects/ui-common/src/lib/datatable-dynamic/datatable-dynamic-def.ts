@@ -3,7 +3,7 @@ import { TableColumnProp } from '@marklb/ngx-datatable'
 
 import { TheSeamDatatableColumn } from '@lib/ui-common/datatable'
 
-import { DynamicValue } from '../dynamic/index'
+import { DynamicValue } from '@lib/ui-common/dynamic'
 import { ThemeTypes } from '../models/index'
 
 import { TableCellTypeConfig } from '../table-cell-types/table-cell-type-config'

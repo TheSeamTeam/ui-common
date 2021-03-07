@@ -1,4 +1,4 @@
-import { DynamicActionDef, DynamicValue } from '../../dynamic/index'
+import { DynamicActionDef, DynamicValue } from '@lib/ui-common/dynamic'
 
 export interface DynamicDatatableRowAction {
 
