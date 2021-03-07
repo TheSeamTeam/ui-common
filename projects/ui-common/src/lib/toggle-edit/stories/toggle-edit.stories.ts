@@ -1,11 +1,9 @@
-import { action } from '@storybook/addon-actions'
-import { linkTo } from '@storybook/addon-links'
 import { storiesOf } from '@storybook/angular'
 
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
-import { TheSeamFormFieldModule } from '../../form-field/form-field.module'
+import { TheSeamFormFieldModule } from '@lib/ui-common/form-field'
 import { TheSeamToggleEditModule } from '../toggle-edit.module'
 
 storiesOf('Components/Toggle Edit', module)

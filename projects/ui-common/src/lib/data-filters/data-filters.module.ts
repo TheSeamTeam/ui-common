@@ -4,7 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms'
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 
-import { TheSeamFormFieldModule } from '../form-field/form-field.module'
+import { TheSeamFormFieldModule } from '@lib/ui-common/form-field'
 import { TheSeamIconModule } from '../icon/index'
 import { TheSeamToggleGroupModule } from '../toggle-group/toggle-group.module'
 

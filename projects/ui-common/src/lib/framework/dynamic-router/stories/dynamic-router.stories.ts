@@ -9,7 +9,7 @@ import { ActivatedRoute, Route, Router, RouterModule } from '@angular/router'
 import { Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-import { TheSeamFormFieldModule } from '../../../form-field/index'
+import { TheSeamFormFieldModule } from '@lib/ui-common/form-field'
 import { TheSeamDynamicRouterModule } from '../dynamic-router.module'
 import { HierarchyLevelResolver } from '../resolvers/hierarchy-level.resolver'
 

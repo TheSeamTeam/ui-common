@@ -7,7 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { merge } from 'rxjs'
 import { map, startWith } from 'rxjs/operators'
 
-import { TheSeamFormFieldModule } from '../form-field/form-field.module'
+import { TheSeamFormFieldModule } from '@lib/ui-common/form-field'
 import { TheSeamSharedModule } from './../shared/shared.module'
 import { telInputValidator } from './tel-input-validator'
 import { TheSeamTelInputModule } from './tel-input.module'

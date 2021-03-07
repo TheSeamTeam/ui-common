@@ -15,7 +15,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
 
-import { TheSeamFormFieldModule } from '../../form-field/index'
+import { TheSeamFormFieldModule } from '@lib/ui-common/form-field'
 import { TheSeamIconModule } from '../../icon/index'
 import { TheSeamWidgetModule } from '../../widget/index'
 import { TheSeamBaseLayoutModule } from '../base-layout/index'

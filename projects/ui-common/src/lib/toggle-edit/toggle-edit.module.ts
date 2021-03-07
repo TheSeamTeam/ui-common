@@ -7,7 +7,7 @@ import { ReactiveFormsModule } from '@angular/forms'
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 
-import { TheSeamFormFieldModule } from '../form-field/form-field.module'
+import { TheSeamFormFieldModule } from '@lib/ui-common/form-field'
 import { TheSeamLoadingModule } from '../loading/loading.module'
 import { TheSeamSharedModule } from '../shared/shared.module'
 
