@@ -2,7 +2,7 @@ import { Component, ContentChild, HostBinding, Input, OnInit } from '@angular/co
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 
-import { SeamIcon } from '../../../icon/index'
+import { SeamIcon } from '@lib/ui-common/icon'
 
 import { TiledSelectTileIconTplDirective } from '../../directives/tiled-select-tile-icon-tpl.directive'
 

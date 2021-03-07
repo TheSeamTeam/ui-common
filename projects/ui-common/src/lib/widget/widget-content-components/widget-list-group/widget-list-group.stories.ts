@@ -1,6 +1,4 @@
-import { action } from '@storybook/addon-actions'
-import { boolean, select, text, withKnobs } from '@storybook/addon-knobs'
-import { linkTo } from '@storybook/addon-links'
+import { boolean, text, withKnobs } from '@storybook/addon-knobs'
 import { storiesOf } from '@storybook/angular'
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
@@ -10,8 +8,7 @@ import { faEnvelope } from '@fortawesome/free-regular-svg-icons'
 import { faWrench } from '@fortawesome/free-solid-svg-icons'
 
 import { TheSeamButtonsModule } from '@lib/ui-common/buttons'
-import { TheSeamIconModule } from '../../../icon/index'
-import { ThemeNames } from '../../../models/theme-names'
+import { TheSeamIconModule } from '@lib/ui-common/icon'
 
 import { TheSeamWidgetModule } from '../../widget.module'
 

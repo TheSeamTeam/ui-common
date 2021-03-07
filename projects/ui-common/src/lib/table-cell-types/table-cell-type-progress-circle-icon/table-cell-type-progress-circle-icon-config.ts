@@ -1,8 +1,6 @@
 import { DynamicActionLinkDef, DynamicActionModalDef, DynamicValue } from '@lib/ui-common/dynamic'
-import { TheSeamIconType } from '../../icon/icon/icon.component'
+import { SeamIcon, TheSeamIconType } from '@lib/ui-common/icon'
 import { TableCellTypeConfig } from '../table-cell-type-config'
-
-import { SeamIcon } from '../../icon/index'
 
 export type TableCellTypeIconConfigAction =
   DynamicActionLinkDef |

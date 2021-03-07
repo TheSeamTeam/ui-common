@@ -13,7 +13,7 @@ import {
   mixinDisabled,
   mixinTheme
 } from '@lib/ui-common/core'
-import { SeamIcon } from '../../../../icon/index'
+import { SeamIcon } from '@lib/ui-common/icon'
 
 import { WidgetListGroupItemIconTplDirective } from './widget-list-group-item-icon-tpl.directive'
 

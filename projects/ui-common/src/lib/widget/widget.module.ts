@@ -7,7 +7,7 @@ import { RouterModule } from '@angular/router'
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 
 import { TheSeamButtonsModule } from '@lib/ui-common/buttons'
-import { TheSeamIconModule } from '../icon/icon.module'
+import { TheSeamIconModule } from '@lib/ui-common/icon'
 import { TheSeamLoadingModule } from '../loading/index'
 
 import { WidgetDragHandleDirective } from './directives/widget-drag-handle.directive'

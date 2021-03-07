@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 
 import { TheSeamButtonsModule } from '@lib/ui-common/buttons'
-import { TheSeamIconModule } from '../../icon/index'
+import { TheSeamIconModule } from '@lib/ui-common/icon'
 import { TheSeamScrollbarModule } from '../../scrollbar/index'
 
 import { TheSeamBaseLayoutComponent } from './base-layout.component'

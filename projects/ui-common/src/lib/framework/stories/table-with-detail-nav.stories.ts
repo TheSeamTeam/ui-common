@@ -1,13 +1,13 @@
-import { boolean, select, text, withKnobs } from '@storybook/addon-knobs'
+import { boolean, text, withKnobs } from '@storybook/addon-knobs'
 import { storiesOf } from '@storybook/angular'
 
-import { APP_BASE_HREF, CommonModule } from '@angular/common'
-import { Component, Inject, NgModule } from '@angular/core'
-import { FormControl, ReactiveFormsModule } from '@angular/forms'
+import { APP_BASE_HREF } from '@angular/common'
+import { Component } from '@angular/core'
+import { ReactiveFormsModule } from '@angular/forms'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { ActivatedRoute, Route, Router, RouterModule } from '@angular/router'
 import { Observable, of } from 'rxjs'
-import { delay, map } from 'rxjs/operators'
+import { map } from 'rxjs/operators'
 
 import {
   faBell, faBuilding, faChartLine, faCompass, faFilePdf, faSignature,
@@ -16,7 +16,7 @@ import {
 import { faClock } from '@fortawesome/free-solid-svg-icons'
 
 import { TheSeamFormFieldModule } from '@lib/ui-common/form-field'
-import { TheSeamIconModule } from '../../icon/index'
+import { TheSeamIconModule } from '@lib/ui-common/icon'
 import { TheSeamWidgetModule } from '../../widget/index'
 import { TheSeamBaseLayoutModule } from '../base-layout/index'
 import { TheSeamDashboardModule } from '../dashboard/index'

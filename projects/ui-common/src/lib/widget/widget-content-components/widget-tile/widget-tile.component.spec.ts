@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { TheSeamIconModule } from '../../../icon/index'
+import { TheSeamIconModule } from '@lib/ui-common/icon'
 
 import { WidgetTileSecondaryIconDirective } from './widget-tile-secondary-icon.directive'
 import { WidgetTileComponent } from './widget-tile.component'

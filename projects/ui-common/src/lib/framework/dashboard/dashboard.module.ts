@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 
 import { TheSeamButtonsModule } from '@lib/ui-common/buttons'
-import { TheSeamIconModule } from '../../icon/index'
+import { TheSeamIconModule } from '@lib/ui-common/icon'
 import { TheSeamSharedModule } from '../../shared/index'
 
 import { DashboardWidgetContainerComponent } from './dashboard-widget-container/dashboard-widget-container.component'

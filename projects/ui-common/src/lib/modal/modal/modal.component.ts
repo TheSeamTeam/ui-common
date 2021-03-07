@@ -11,7 +11,7 @@ import { filter } from 'rxjs/operators'
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 
-import { SeamIcon } from '../../icon/index'
+import { SeamIcon } from '@lib/ui-common/icon'
 
 import { ModalFooterTplDirective } from '../directives/modal-footer-tpl.directive'
 import { ModalHeaderIconTplDirective } from '../directives/modal-header-icon-tpl.directive'

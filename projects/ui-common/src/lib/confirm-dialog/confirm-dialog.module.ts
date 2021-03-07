@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 
-import { TheSeamIconModule } from '../icon/icon.module'
+import { TheSeamIconModule } from '@lib/ui-common/icon'
 import { TheSeamModalModule } from '../modal/modal.module'
 import { TheSeamSharedModule } from '../shared/shared.module'
 

@@ -6,12 +6,11 @@ import { map, shareReplay, startWith, switchMap } from 'rxjs/operators'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
 
 import { DatatableMenuBarComponent } from '@lib/ui-common/datatable'
+import type { SeamIcon } from '@lib/ui-common/icon'
 import { isNullOrUndefined } from '@lib/ui-common/utils'
-import type { SeamIcon } from '../../../icon/index'
 
 import { DataFilterState, IDataFilter, THESEAM_DATA_FILTER, THESEAM_DATA_FILTER_OPTIONS } from '../../data-filter'
 import { textDataFilter } from '../data-filter-text/data-filter-text.component'
-import { ITextFilterOptions } from '../data-filter-text/text-filter-options'
 
 import { ISearchFilterOptions } from './search-filter-options'
 

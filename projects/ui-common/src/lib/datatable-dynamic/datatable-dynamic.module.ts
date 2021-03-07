@@ -7,7 +7,7 @@ import { TheSeamButtonsModule } from '@lib/ui-common/buttons'
 import { TheSeamDataExporterModule } from '@lib/ui-common/data-exporter'
 import { TheSeamDataFiltersModule } from '@lib/ui-common/data-filters'
 import { TheSeamDatatableModule } from '@lib/ui-common/datatable'
-import { TheSeamIconModule } from '../icon/index'
+import { TheSeamIconModule } from '@lib/ui-common/icon'
 import { TheSeamMenuModule } from '../menu/index'
 import { TheSeamSharedModule } from '../shared/index'
 

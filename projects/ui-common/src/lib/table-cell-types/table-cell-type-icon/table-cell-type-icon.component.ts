@@ -13,8 +13,8 @@ import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
 
 import { DatatableComponent } from '@lib/ui-common/datatable'
+import { getKnownIcon, SeamIcon, TheSeamIconType } from '@lib/ui-common/icon'
 
-import { getKnownIcon, SeamIcon, TheSeamIconType } from '../../icon/index'
 import { TABLE_CELL_DATA } from '../../table/table-cell-tokens'
 import type { TableCellData } from '../../table/table-cell.models'
 import { TheSeamTableColumn } from '../../table/table-column'

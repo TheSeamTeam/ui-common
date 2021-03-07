@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router'
 
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap'
 
-import { TheSeamIconModule } from '../../icon/index'
+import { TheSeamIconModule } from '@lib/ui-common/icon'
 import { TheSeamLayoutModule } from '../../layout/index'
 import { TheSeamScrollbarModule } from '../../scrollbar/index'
 
