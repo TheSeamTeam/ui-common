@@ -12,7 +12,7 @@ import {
 import { Observable, ReplaySubject, Subscription } from 'rxjs'
 import { map, startWith, tap } from 'rxjs/operators'
 
-import { IErrorRecord } from '../form-field-error/form-field-error-list/form-field-error-list.component'
+import { IErrorRecord } from '@lib/ui-common/form-field-error'
 
 import { FormFieldErrorDirective } from './form-field-error.directive'
 import { FormFieldLabelTplDirective } from './form-field-label-tpl.directive'
