@@ -7,8 +7,8 @@ import { ToastrService } from 'ngx-toastr'
 
 import { IDataExporter } from '@lib/ui-common/data-exporter'
 import { DynamicValueHelperService, THESEAM_DYNAMIC_DATA } from '@lib/ui-common/dynamic'
+import { TheSeamLoadingOverlayService } from '@lib/ui-common/loading'
 import { hasProperty } from '@lib/ui-common/utils'
-import { TheSeamLoadingOverlayService } from '../../loading/index'
 
 import { DatatableComponent, THESEAM_DATATABLE } from '../datatable/datatable.component'
 import { TheSeamDatatableColumn } from '../models/table-column'

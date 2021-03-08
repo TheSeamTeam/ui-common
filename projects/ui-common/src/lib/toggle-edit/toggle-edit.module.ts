@@ -8,7 +8,7 @@ import { ReactiveFormsModule } from '@angular/forms'
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 
 import { TheSeamFormFieldModule } from '@lib/ui-common/form-field'
-import { TheSeamLoadingModule } from '../loading/loading.module'
+import { TheSeamLoadingModule } from '@lib/ui-common/loading'
 import { TheSeamSharedModule } from '../shared/shared.module'
 
 import { ToggleEditActionsContainerComponent } from './toggle-edit-actions-container/toggle-edit-actions-container.component'

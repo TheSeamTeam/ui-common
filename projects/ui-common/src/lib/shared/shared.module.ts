@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core'
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 
-import { TheSeamLoadingModule } from '../loading/index'
+import { TheSeamLoadingModule } from '@lib/ui-common/loading'
 import { TheSeamModalModule } from '../modal/index'
 import { TheSeamScrollbarModule } from '../scrollbar/index'
 

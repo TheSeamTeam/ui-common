@@ -8,7 +8,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 
 import { TheSeamButtonsModule } from '@lib/ui-common/buttons'
 import { TheSeamIconModule } from '@lib/ui-common/icon'
-import { TheSeamLoadingModule } from '../loading/index'
+import { TheSeamLoadingModule } from '@lib/ui-common/loading'
 
 import { WidgetDragHandleDirective } from './directives/widget-drag-handle.directive'
 import { WidgetIconTplDirective } from './directives/widget-icon-tpl.directive'

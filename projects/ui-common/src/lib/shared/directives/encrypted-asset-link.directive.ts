@@ -1,7 +1,7 @@
 import { Directive, ElementRef, HostBinding, HostListener, Input } from '@angular/core'
 
+import { TheSeamLoadingOverlayService } from '@lib/ui-common/loading'
 import { AssetReaderHelperService } from '@lib/ui-common/services'
-import { TheSeamLoadingOverlayService } from '../../loading/index'
 
 // TODO: Add a dev warning or handle both `seamEncryptedAssetLink` and `attr.href` being set on a single element.
 
