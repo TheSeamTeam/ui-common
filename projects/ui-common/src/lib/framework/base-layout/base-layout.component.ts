@@ -15,7 +15,7 @@ import { BehaviorSubject, from, isObservable, Observable } from 'rxjs'
 
 import { faAngleDoubleLeft, faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons'
 
-import { TheSeamLayoutService } from '../../layout/index'
+import { TheSeamLayoutService } from '@lib/ui-common/layout'
 
 import { BaseLayoutAction, IBaseLayoutActionButton } from './base-layout-action'
 import { ITheSeamBaseLayoutNav } from './base-layout-nav'

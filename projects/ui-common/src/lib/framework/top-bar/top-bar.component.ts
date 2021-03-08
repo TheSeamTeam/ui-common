@@ -10,12 +10,12 @@ import {
   QueryList
 } from '@angular/core'
 import { Observable, Subject } from 'rxjs'
+import { map, shareReplay, startWith, takeUntil } from 'rxjs/operators'
 
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 
-import { TheSeamLayoutService } from '../../layout/index'
+import { TheSeamLayoutService } from '@lib/ui-common/layout'
 
-import { map, shareReplay, startWith, takeUntil } from 'rxjs/operators'
 import { TopBarItemDirective } from './top-bar-item.directive'
 import { TopBarMenuBtnDetailDirective } from './top-bar-menu-btn-detail.directive'
 import { TopBarMenuDirective } from './top-bar-menu.directive'

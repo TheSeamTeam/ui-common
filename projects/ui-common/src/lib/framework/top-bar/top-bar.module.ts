@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router'
 
 import { TheSeamButtonsModule } from '@lib/ui-common/buttons'
 import { TheSeamIconModule } from '@lib/ui-common/icon'
-import { TheSeamLayoutModule } from '../../layout/index'
+import { TheSeamLayoutModule } from '@lib/ui-common/layout'
 import { TheSeamMenuModule } from '../../menu/index'
 import { TheSeamBaseLayoutModule } from '../base-layout/index'
 

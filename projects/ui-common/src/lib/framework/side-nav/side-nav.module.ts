@@ -6,7 +6,7 @@ import { RouterModule } from '@angular/router'
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap'
 
 import { TheSeamIconModule } from '@lib/ui-common/icon'
-import { TheSeamLayoutModule } from '../../layout/index'
+import { TheSeamLayoutModule } from '@lib/ui-common/layout'
 import { TheSeamScrollbarModule } from '../../scrollbar/index'
 
 import { SideNavItemComponent } from './side-nav-item/side-nav-item.component'
