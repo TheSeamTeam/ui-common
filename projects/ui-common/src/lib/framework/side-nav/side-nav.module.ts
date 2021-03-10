@@ -7,7 +7,7 @@ import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap'
 
 import { TheSeamIconModule } from '@lib/ui-common/icon'
 import { TheSeamLayoutModule } from '@lib/ui-common/layout'
-import { TheSeamScrollbarModule } from '../../scrollbar/index'
+import { TheSeamScrollbarModule } from '@lib/ui-common/scrollbar'
 
 import { SideNavItemComponent } from './side-nav-item/side-nav-item.component'
 import { SideNavToggleComponent } from './side-nav-toggle/side-nav-toggle.component'

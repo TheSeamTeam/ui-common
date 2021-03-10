@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core'
 
 import { TheSeamButtonsModule } from '@lib/ui-common/buttons'
 import { TheSeamIconModule } from '@lib/ui-common/icon'
-import { TheSeamScrollbarModule } from '../../scrollbar/index'
+import { TheSeamScrollbarModule } from '@lib/ui-common/scrollbar'
 
 import { TheSeamBaseLayoutComponent } from './base-layout.component'
 import { BaseLayoutContentFooterDirective } from './directives/base-layout-content-footer.directive'

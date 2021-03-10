@@ -5,7 +5,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 
 import { TheSeamLoadingModule } from '@lib/ui-common/loading'
 import { TheSeamModalModule } from '@lib/ui-common/modal'
-import { TheSeamScrollbarModule } from '../scrollbar/index'
+import { TheSeamScrollbarModule } from '@lib/ui-common/scrollbar'
 
 import { AutoFocusDirective } from './directives/auto-focus.directive'
 import { ClickOutsideDirective } from './directives/click-outside.directive'
