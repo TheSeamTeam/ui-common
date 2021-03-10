@@ -8,7 +8,7 @@ import { NgSelectModule } from '@ng-select/ng-select'
 import { TheSeamButtonsModule } from '@lib/ui-common/buttons'
 import { TheSeamCheckboxModule } from '@lib/ui-common/checkbox'
 import { TheSeamFormFieldModule } from '@lib/ui-common/form-field'
-import { TheSeamMenuModule } from './../../menu/menu.module'
+import { TheSeamMenuModule } from '@lib/ui-common/menu'
 
 import { TheSeamSchemaFormCheckboxComponent } from './schema-form-checkbox/schema-form-checkbox.component'
 import { TheSeamSchemaFormInputComponent } from './schema-form-input/schema-form-input.component'

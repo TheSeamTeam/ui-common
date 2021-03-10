@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router'
 import { TheSeamButtonsModule } from '@lib/ui-common/buttons'
 import { TheSeamIconModule } from '@lib/ui-common/icon'
 import { TheSeamLayoutModule } from '@lib/ui-common/layout'
-import { TheSeamMenuModule } from '../../menu/index'
+import { TheSeamMenuModule } from '@lib/ui-common/menu'
 import { TheSeamBaseLayoutModule } from '../base-layout/index'
 
 import { TopBarItemDirective } from './top-bar-item.directive'

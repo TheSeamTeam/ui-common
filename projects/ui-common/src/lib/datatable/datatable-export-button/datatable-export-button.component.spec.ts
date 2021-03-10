@@ -7,9 +7,10 @@ import { ToastrService } from 'ngx-toastr'
 import { TheSeamButtonsModule } from '@lib/ui-common/buttons'
 import { TheSeamIconModule } from '@lib/ui-common/icon'
 import { TheSeamLoadingOverlayService } from '@lib/ui-common/loading'
+import { TheSeamMenuModule } from '@lib/ui-common/menu'
+
 import { FakeToastrService } from '../../../testing/fake-toastr'
 import { FakeTheSeamLoadingOverlayService } from '../../loading/fake-loading-overlay'
-import { TheSeamMenuModule } from '../../menu/menu.module'
 
 import { THESEAM_DATATABLE } from '../datatable/datatable.component'
 import { TheSeamDatatableColumn } from '../models/table-column'
