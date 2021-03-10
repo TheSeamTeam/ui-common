@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core'
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 
 import { TheSeamLoadingModule } from '@lib/ui-common/loading'
-import { TheSeamModalModule } from '../modal/index'
+import { TheSeamModalModule } from '@lib/ui-common/modal'
 import { TheSeamScrollbarModule } from '../scrollbar/index'
 
 import { AutoFocusDirective } from './directives/auto-focus.directive'

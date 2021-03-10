@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common'
 import { Component, Inject, NgModule, Optional } from '@angular/core'
 
 import { TheSeamDynamicComponentLoaderModule } from '@lib/ui-common/dynamic-component-loader'
-import { MODAL_DATA, TheSeamModalModule } from '../../modal/index'
+import { MODAL_DATA, TheSeamModalModule } from '@lib/ui-common/modal'
 
 //
 //

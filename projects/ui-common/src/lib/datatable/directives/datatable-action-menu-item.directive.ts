@@ -8,8 +8,7 @@ import { Subscription } from 'rxjs'
 
 import type { DynamicDatatableRow } from '@lib/ui-common/datatable-dynamic'
 import { TheSeamDynamicComponentLoader } from '@lib/ui-common/dynamic-component-loader'
-
-import { Modal } from '../../modal/index'
+import { Modal } from '@lib/ui-common/modal'
 
 //
 // TODO: Move the dynamic datatable logic out of this component when refactoring.

@@ -1,8 +1,6 @@
 import { Directive, ElementRef, Input, OnInit, Optional } from '@angular/core'
 
-import { ModalRef } from '../../modal/modal-ref'
-import { getClosestModal } from '../../modal/modal-utils'
-import { Modal } from '../../modal/modal.service'
+import { getClosestModal, Modal, ModalRef } from '@lib/ui-common/modal'
 
 @Directive({
     selector: '[seamAutoFocus]',

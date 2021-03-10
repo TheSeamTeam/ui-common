@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 
 import { TheSeamIconModule } from '@lib/ui-common/icon'
-import { TheSeamModalModule } from '../modal/modal.module'
+import { TheSeamModalModule } from '@lib/ui-common/modal'
 import { TheSeamSharedModule } from '../shared/shared.module'
 
 import { ConfirmClickDirective } from './confirm-click.directive'

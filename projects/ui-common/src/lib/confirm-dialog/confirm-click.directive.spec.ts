@@ -1,7 +1,7 @@
 import { fakeAsync, flush, flushMicrotasks, tick } from '@angular/core/testing'
 import { createHostComponentFactory, SpectatorElement, SpectatorWithHost } from '@netbasal/spectator'
 
-import { TheSeamModalModule } from '../modal/index'
+import { TheSeamModalModule } from '@lib/ui-common/modal'
 import { TheSeamScrollbarModule } from '../scrollbar/index'
 
 import { ConfirmClickDirective } from './confirm-click.directive'

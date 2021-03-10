@@ -3,9 +3,7 @@ import { Injectable, Injector } from '@angular/core'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
-import { ModalConfig } from '../../../modal/modal-config'
-import { ModalRef } from '../../../modal/modal-ref'
-import { Modal } from '../../../modal/modal.service'
+import { Modal, ModalConfig, ModalRef } from '@lib/ui-common/modal'
 
 import { DynamicValueHelperService } from '../../dynamic-value-helper.service'
 import { DynamicActionUiButtonDef } from '../../models/dynamic-action-ui-button-def'

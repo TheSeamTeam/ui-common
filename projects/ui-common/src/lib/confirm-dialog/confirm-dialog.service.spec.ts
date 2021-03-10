@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing'
 
-import { TheSeamModalModule } from '../modal/modal.module'
+import { TheSeamModalModule } from '@lib/ui-common/modal'
 
 import { SeamConfirmDialogService } from './confirm-dialog.service'
 
