@@ -7,7 +7,7 @@ import { TheSeamTelInputModule } from './../tel-input/tel-input.module'
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap'
 
 import { TheSeamIconModule } from '@lib/ui-common/icon'
-import { TheSeamPopoverModule } from '../popover/index'
+import { TheSeamPopoverModule } from '@lib/ui-common/popover'
 import { TheSeamProgressModule } from '../progress/index'
 import { TheSeamSharedModule } from '../shared/index'
 

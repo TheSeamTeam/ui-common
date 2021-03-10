@@ -17,7 +17,7 @@ import { TheSeamFormFieldModule } from '@lib/ui-common/form-field'
 import { TheSeamIconModule } from '@lib/ui-common/icon'
 import { TheSeamLoadingModule } from '@lib/ui-common/loading'
 import { TheSeamMenuModule } from '@lib/ui-common/menu'
-import { TheSeamPopoverModule } from '../popover/popover.module'
+import { TheSeamPopoverModule } from '@lib/ui-common/popover'
 import { TheSeamSharedModule } from '../shared/shared.module'
 import { TheSeamTableCellTypesModule } from '../table-cell-types/table-cell-types.module'
 
