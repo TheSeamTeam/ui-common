@@ -8,7 +8,7 @@ import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap'
 
 import { TheSeamIconModule } from '@lib/ui-common/icon'
 import { TheSeamPopoverModule } from '@lib/ui-common/popover'
-import { TheSeamProgressModule } from '../progress/index'
+import { TheSeamProgressModule } from '@lib/ui-common/progress'
 import { TheSeamSharedModule } from '../shared/index'
 
 import { TableCellTypeDateComponent } from './table-cell-type-date/table-cell-type-date.component'

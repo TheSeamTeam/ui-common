@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 
-import { TheSeamProgressModule } from '../progress/index'
+import { TheSeamProgressModule } from '@lib/ui-common/progress'
 
 import { AnchorBadgeButtonComponent, BadgeButtonComponent } from './badge-button/badge-button.component'
 import { AnchorButtonComponent, ButtonComponent } from './button/button.component'

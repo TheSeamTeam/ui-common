@@ -5,7 +5,7 @@ import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { ThemeNames } from '@lib/ui-common/models'
-import { TheSeamProgressModule } from '../../progress/index'
+import { TheSeamProgressModule } from '@lib/ui-common/progress'
 
 import { _knobUndefinedNullHACK } from '../../utils/storybook-knobs-hack'
 import { ProgressCircleButtonComponent } from './progress-circle-button.component'
