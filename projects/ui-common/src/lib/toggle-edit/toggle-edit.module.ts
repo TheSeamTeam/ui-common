@@ -9,7 +9,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 
 import { TheSeamFormFieldModule } from '@lib/ui-common/form-field'
 import { TheSeamLoadingModule } from '@lib/ui-common/loading'
-import { TheSeamSharedModule } from '../shared/shared.module'
+import { TheSeamSharedModule } from '@lib/ui-common/shared'
 
 import { ToggleEditActionsContainerComponent } from './toggle-edit-actions-container/toggle-edit-actions-container.component'
 import { ToggleEditDisplayTplDirective } from './toggle-edit-display-tpl.directive'

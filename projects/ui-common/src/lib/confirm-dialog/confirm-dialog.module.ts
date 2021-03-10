@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core'
 
 import { TheSeamIconModule } from '@lib/ui-common/icon'
 import { TheSeamModalModule } from '@lib/ui-common/modal'
-import { TheSeamSharedModule } from '../shared/shared.module'
+import { TheSeamSharedModule } from '@lib/ui-common/shared'
 
 import { ConfirmClickDirective } from './confirm-click.directive'
 import { ConfirmDialogComponent } from './confirm-dialog.component'

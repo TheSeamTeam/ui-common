@@ -6,7 +6,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { QuillModule } from 'ngx-quill'
 
-import { TheSeamSharedModule } from './../../shared/shared.module'
+import { TheSeamSharedModule } from '@lib/ui-common/shared'
+
 import { TheSeamFormFieldComponent } from './../form-field.component'
 import { TheSeamFormFieldModule } from './../form-field.module'
 

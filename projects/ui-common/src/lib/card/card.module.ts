@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 
-import { TheSeamSharedModule } from './../shared/shared.module'
+import { TheSeamSharedModule } from '@lib/ui-common/shared'
 
 import { CardActionComponent } from './card-action/card-action.component'
 import { CardBodyComponent } from './card-body/card-body.component'

@@ -4,8 +4,8 @@ import { catchError, map, mapTo, switchMap, tap } from 'rxjs/operators'
 
 import FileSaver from 'file-saver'
 
+import { EncryptedAssetReader } from '@lib/ui-common/shared'
 import { fileDataFromBuffer, openBlob, readFileAsync } from '@lib/ui-common/utils'
-import { EncryptedAssetReader } from '../shared/models/encrypted-asset-reader'
 
 @Injectable({
   providedIn: 'root'

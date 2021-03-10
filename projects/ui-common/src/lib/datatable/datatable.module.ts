@@ -18,7 +18,7 @@ import { TheSeamIconModule } from '@lib/ui-common/icon'
 import { TheSeamLoadingModule } from '@lib/ui-common/loading'
 import { TheSeamMenuModule } from '@lib/ui-common/menu'
 import { TheSeamPopoverModule } from '@lib/ui-common/popover'
-import { TheSeamSharedModule } from '../shared/shared.module'
+import { TheSeamSharedModule } from '@lib/ui-common/shared'
 import { TheSeamTableCellTypesModule } from '../table-cell-types/table-cell-types.module'
 
 import { DatatableActionMenuItemComponent } from './datatable-action-menu-item/datatable-action-menu-item.component'

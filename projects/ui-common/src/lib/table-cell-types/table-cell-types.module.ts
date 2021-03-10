@@ -9,7 +9,7 @@ import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap'
 import { TheSeamIconModule } from '@lib/ui-common/icon'
 import { TheSeamPopoverModule } from '@lib/ui-common/popover'
 import { TheSeamProgressModule } from '@lib/ui-common/progress'
-import { TheSeamSharedModule } from '../shared/index'
+import { TheSeamSharedModule } from '@lib/ui-common/shared'
 
 import { TableCellTypeDateComponent } from './table-cell-type-date/table-cell-type-date.component'
 import { TableCellTypeIconComponent } from './table-cell-type-icon/table-cell-type-icon.component'

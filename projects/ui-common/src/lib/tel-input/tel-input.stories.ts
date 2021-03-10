@@ -8,7 +8,7 @@ import { merge } from 'rxjs'
 import { map, startWith } from 'rxjs/operators'
 
 import { TheSeamFormFieldModule } from '@lib/ui-common/form-field'
-import { TheSeamSharedModule } from './../shared/shared.module'
+import { TheSeamSharedModule } from '@lib/ui-common/shared'
 import { telInputValidator } from './tel-input-validator'
 import { TheSeamTelInputModule } from './tel-input.module'
 import { TheSeamTelInputComponent } from './tel-input/tel-input.component'

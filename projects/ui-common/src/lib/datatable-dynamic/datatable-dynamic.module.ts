@@ -9,7 +9,7 @@ import { TheSeamDataFiltersModule } from '@lib/ui-common/data-filters'
 import { TheSeamDatatableModule } from '@lib/ui-common/datatable'
 import { TheSeamIconModule } from '@lib/ui-common/icon'
 import { TheSeamMenuModule } from '@lib/ui-common/menu'
-import { TheSeamSharedModule } from '../shared/index'
+import { TheSeamSharedModule } from '@lib/ui-common/shared'
 
 import { DatatableDynamicActionMenuComponent } from './datatable-dynamic-action-menu/datatable-dynamic-action-menu.component'
 import { DatatableDynamicFilterContainerComponent } from './datatable-dynamic-filter-container/datatable-dynamic-filter-container.component'
