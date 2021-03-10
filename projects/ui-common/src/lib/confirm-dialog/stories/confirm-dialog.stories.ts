@@ -4,8 +4,8 @@ import { storiesOf } from '@storybook/angular'
 import { Component, Input } from '@angular/core'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
-import { ThemeNames } from '../../models/index'
-import type { ThemeTypes } from '../../models/index'
+import { ThemeNames } from '@lib/ui-common/models'
+import type { ThemeTypes } from '@lib/ui-common/models'
 
 import { SeamConfirmDialogService, TheSeamConfirmDialogModule } from '@lib/ui-common/confirm-dialog'
 

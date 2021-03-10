@@ -8,7 +8,6 @@ import { RouterModule } from '@angular/router'
 
 import { faWrench } from '@fortawesome/free-solid-svg-icons'
 
-import { ThemeNames } from '../../../models/theme-names'
 import { TheSeamWidgetModule } from '../../widget.module'
 
 storiesOf('Components/Widget/Content', module)

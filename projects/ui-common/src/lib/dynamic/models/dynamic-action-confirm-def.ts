@@ -1,4 +1,4 @@
-import { ThemeTypes } from '../../models/theme-types'
+import { ThemeTypes } from '@lib/ui-common/models'
 
 import { DynamicValue } from './dynamic-value'
 

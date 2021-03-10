@@ -1,7 +1,7 @@
 import { Directive, EventEmitter, HostBinding, HostListener, Input, OnDestroy, Output } from '@angular/core'
 
 import { ModalRef } from '@lib/ui-common/modal'
-import { ThemeTypes } from '../models/index'
+import { ThemeTypes } from '@lib/ui-common/models'
 
 import { ConfirmDialogComponent } from './confirm-dialog.component'
 import { SeamConfirmDialogService } from './confirm-dialog.service'

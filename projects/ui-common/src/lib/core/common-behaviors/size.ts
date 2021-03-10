@@ -1,5 +1,5 @@
-import { SizePrefixes } from '../../models/size-prefixes'
-import { SizeTypes } from '../../models/size-types'
+import { SizePrefixes, SizeTypes } from '@lib/ui-common/models'
+
 import { Constructor } from './constructor'
 import { HasElementRef } from './element-ref'
 

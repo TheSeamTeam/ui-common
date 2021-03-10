@@ -1,6 +1,6 @@
 import { Component, DoCheck, ElementRef, HostBinding, Input, OnInit, Renderer2 } from '@angular/core'
 
-import type { ThemeTypes } from '../../models/index'
+import type { ThemeTypes } from '@lib/ui-common/models'
 import type { SeamIcon } from '../icon'
 
 @Component({

@@ -1,5 +1,5 @@
-import { ThemePrefixes } from '../../models/theme-prefixes'
-import { ThemeTypes } from '../../models/theme-types'
+import { ThemePrefixes, ThemeTypes } from '@lib/ui-common/models'
+
 import { Constructor } from './constructor'
 import { HasElementRef } from './element-ref'
 

@@ -7,7 +7,7 @@ import {
   Output
 } from '@angular/core'
 
-import { ThemeTypes } from '../../models/theme-types'
+import { ThemeTypes } from '@lib/ui-common/models'
 
 @Component({
   selector: 'seam-datatable-action-menu-item',

@@ -4,7 +4,7 @@ import { storiesOf } from '@storybook/angular'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
-import { ThemeNames } from '../../models/index'
+import { ThemeNames } from '@lib/ui-common/models'
 import { _knobUndefinedNullHACK } from '../../utils/storybook-knobs-hack'
 
 import { ButtonComponent } from './button.component'

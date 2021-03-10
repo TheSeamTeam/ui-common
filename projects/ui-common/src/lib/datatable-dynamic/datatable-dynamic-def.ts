@@ -4,7 +4,7 @@ import { TableColumnProp } from '@marklb/ngx-datatable'
 import { TheSeamDatatableColumn } from '@lib/ui-common/datatable'
 
 import { DynamicValue } from '@lib/ui-common/dynamic'
-import { ThemeTypes } from '../models/index'
+import { ThemeTypes } from '@lib/ui-common/models'
 
 import { TableCellTypeConfig } from '../table-cell-types/table-cell-type-config'
 import { TableCellTypeName } from '../table-cell-types/table-cell-type-name'

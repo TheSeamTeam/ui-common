@@ -1,13 +1,12 @@
-import { action } from '@storybook/addon-actions'
 import { boolean, select, text, withKnobs } from '@storybook/addon-knobs'
-import { linkTo } from '@storybook/addon-links'
 import { storiesOf } from '@storybook/angular'
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { faWrench } from '@fortawesome/free-solid-svg-icons'
 
-import { ThemeNames } from '../../../models/theme-names'
+import { ThemeNames } from '@lib/ui-common/models'
+
 import { TheSeamWidgetModule } from '../../widget.module'
 
 storiesOf('Components/Widget/Content', module)
