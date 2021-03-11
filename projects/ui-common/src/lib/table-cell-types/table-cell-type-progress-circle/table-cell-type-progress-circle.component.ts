@@ -14,11 +14,9 @@ import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
 
 import { DatatableComponent } from '@lib/ui-common/datatable'
+import type { TableCellData } from '@lib/ui-common/table'
+import { TableComponent, TABLE_CELL_DATA, TheSeamTableColumn } from '@lib/ui-common/table'
 
-import { TABLE_CELL_DATA } from '../../table/table-cell-tokens'
-import type { TableCellData } from '../../table/table-cell.models'
-import { TheSeamTableColumn } from '../../table/table-column'
-import { TableComponent } from '../../table/table/table.component'
 import { TableCellTypesHelpersService } from '../services/table-cell-types-helpers.service'
 import { IconTemplateType } from './../table-cell-type-icon/table-cell-type-icon.component'
 import { TableCellTypeConfigProgressCircle, TableCellTypeProgressCircleConfigAction } from './table-cell-type-progress-circle-config'

@@ -3,7 +3,7 @@ import { from, Observable, Subject, Subscriber } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
 
 import { DynamicActionHelperService, DynamicActionModalDef, DynamicValueHelperService } from '@lib/ui-common/dynamic'
-import { TableCellData } from '../../table/table-cell.models'
+import { TableCellData } from '@lib/ui-common/table'
 
 import { TableCellTypeConfig } from '../table-cell-type-config'
 import { TableCellTypeName } from '../table-cell-type-name'

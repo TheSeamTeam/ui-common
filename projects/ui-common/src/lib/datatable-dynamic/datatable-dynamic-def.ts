@@ -5,10 +5,10 @@ import { TheSeamDatatableColumn } from '@lib/ui-common/datatable'
 
 import { DynamicValue } from '@lib/ui-common/dynamic'
 import { ThemeTypes } from '@lib/ui-common/models'
+import { TheSeamTableColumn } from '@lib/ui-common/table'
 
 import { TableCellTypeConfig } from '../table-cell-types/table-cell-type-config'
 import { TableCellTypeName } from '../table-cell-types/table-cell-type-name'
-import { TheSeamTableColumn } from '../table/table-column'
 
 import { DynamicDatatableMenuBar } from './models/dynamic-datatable-menu-bar'
 import { DynamicDatatableRowAction } from './models/dynamic-datatable-row-action'

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 
-import { TheSeamTableModule } from '../../../table/index'
+import { TheSeamTableModule } from '@lib/ui-common/table'
 
 import { WidgetTableComponent } from './widget-table.component'
 

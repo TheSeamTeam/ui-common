@@ -16,9 +16,8 @@ import {
 } from '@angular/core'
 import { Subject } from 'rxjs'
 
-import { TABLE_CELL_DATA } from '../table/table-cell-tokens'
-import { TableCellData, TableCellDataChange } from '../table/table-cell.models'
-import type { TheSeamTableColumn } from '../table/table-column'
+import { TableCellData, TableCellDataChange, TABLE_CELL_DATA } from '@lib/ui-common/table'
+import type { TheSeamTableColumn } from '@lib/ui-common/table'
 
 import { ITableCellTypeManifest } from '../table-cell-types/table-cell-types-models'
 import { TABLE_CELL_TYPE_MANIFEST } from '../table-cell-types/table-cell-types-tokens'

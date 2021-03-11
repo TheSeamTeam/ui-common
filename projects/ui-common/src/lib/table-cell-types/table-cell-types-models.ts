@@ -1,6 +1,6 @@
 import { ComponentType } from '@angular/cdk/portal'
 
-import { TableCellData } from '../table/index'
+import { TableCellData } from '@lib/ui-common/table'
 
 export interface ITableCellTypeManifest {
   /**

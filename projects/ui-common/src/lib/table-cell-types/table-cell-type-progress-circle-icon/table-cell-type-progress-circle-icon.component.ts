@@ -3,10 +3,8 @@ import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
 
 import { SeamIcon } from '@lib/ui-common/icon'
-
-import { TABLE_CELL_DATA } from '../../table/table-cell-tokens'
-import type { TableCellData } from '../../table/table-cell.models'
-import { TheSeamTableColumn } from '../../table/table-column'
+import type { TableCellData } from '@lib/ui-common/table'
+import { TABLE_CELL_DATA, TheSeamTableColumn } from '@lib/ui-common/table'
 
 import { TableCellTypesHelpersService } from '../services/table-cell-types-helpers.service'
 import { TableCellTypeConfigProgressCircleIcon } from './table-cell-type-progress-circle-icon-config'
