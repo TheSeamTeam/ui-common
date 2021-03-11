@@ -1,4 +1,3 @@
-import { TableCellTypeConfig, TableCellTypeName } from '../../../table-cell-types/index'
 import { DynamicDatatableColumn } from '../../datatable-dynamic-def'
 
 export function setDynamicDatatableColumnsDefaults(

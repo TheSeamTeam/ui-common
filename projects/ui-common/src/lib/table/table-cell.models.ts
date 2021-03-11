@@ -1,8 +1,7 @@
 import { SimpleChanges } from '@angular/core'
 import { Observable } from 'rxjs'
 
-import { TableCellTypeConfig } from '../table-cell-types/table-cell-type-config'
-import { TableCellTypeName } from '../table-cell-types/table-cell-type-name'
+import { TableCellTypeConfig, TableCellTypeName } from '@lib/ui-common/table-cell-types'
 
 import { TheSeamTableColumn } from './table-column'
 

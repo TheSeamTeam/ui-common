@@ -1,4 +1,4 @@
-import { TableCellTypeName } from '../../table-cell-types/table-cell-type-name'
+import { TableCellTypeName } from '@lib/ui-common/table-cell-types'
 
 import { DynamicActionConfirmDef } from './dynamic-action-confirm-def'
 

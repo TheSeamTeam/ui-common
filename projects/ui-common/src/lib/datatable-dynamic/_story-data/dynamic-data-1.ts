@@ -1,6 +1,4 @@
-import { TableCellTypeConfigDate } from '../../table-cell-types/table-cell-type-date/table-cell-type-date-config'
-import { TableCellTypeConfigIcon } from '../../table-cell-types/table-cell-type-icon/table-cell-type-icon-config'
-import { TableCellTypeConfigString } from '../../table-cell-types/table-cell-type-string/table-cell-type-string-config'
+import { TableCellTypeConfigDate, TableCellTypeConfigIcon, TableCellTypeConfigString } from '@lib/ui-common/table-cell-types'
 
 import { DatatableDynamicDef, DynamicDatatableColumn } from '../datatable-dynamic-def'
 

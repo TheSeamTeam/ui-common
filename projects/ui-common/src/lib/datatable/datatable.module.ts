@@ -19,7 +19,7 @@ import { TheSeamLoadingModule } from '@lib/ui-common/loading'
 import { TheSeamMenuModule } from '@lib/ui-common/menu'
 import { TheSeamPopoverModule } from '@lib/ui-common/popover'
 import { TheSeamSharedModule } from '@lib/ui-common/shared'
-import { TheSeamTableCellTypesModule } from '../table-cell-types/table-cell-types.module'
+import { TheSeamTableCellTypesModule } from '@lib/ui-common/table-cell-types'
 
 import { DatatableActionMenuItemComponent } from './datatable-action-menu-item/datatable-action-menu-item.component'
 import { DatatableActionMenuComponent } from './datatable-action-menu/datatable-action-menu.component'
