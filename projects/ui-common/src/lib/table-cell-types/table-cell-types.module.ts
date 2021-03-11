@@ -2,7 +2,6 @@ import { PortalModule } from '@angular/cdk/portal'
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { RouterModule } from '@angular/router'
-import { TheSeamTelInputModule } from './../tel-input/tel-input.module'
 
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap'
 
@@ -10,6 +9,7 @@ import { TheSeamIconModule } from '@lib/ui-common/icon'
 import { TheSeamPopoverModule } from '@lib/ui-common/popover'
 import { TheSeamProgressModule } from '@lib/ui-common/progress'
 import { TheSeamSharedModule } from '@lib/ui-common/shared'
+import { TheSeamTelInputModule } from '@lib/ui-common/tel-input'
 
 import { TableCellTypeDateComponent } from './table-cell-type-date/table-cell-type-date.component'
 import { TableCellTypeIconComponent } from './table-cell-type-icon/table-cell-type-icon.component'

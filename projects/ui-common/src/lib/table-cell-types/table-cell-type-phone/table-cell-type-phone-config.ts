@@ -1,6 +1,7 @@
 import { DynamicValue } from '@lib/ui-common/dynamic'
+import type { TheSeamNumberFormatsInput } from '@lib/ui-common/tel-input'
+
 import { TableCellTypeConfig } from '../../table-cell-types/table-cell-type-config'
-import type { TheSeamNumberFormatsInput } from '../../tel-input'
 
 export interface TableCellTypeConfigPhone extends TableCellTypeConfig<'phone'> {
 
