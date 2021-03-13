@@ -17,7 +17,8 @@ import { faClock } from '@fortawesome/free-solid-svg-icons'
 
 import { TheSeamFormFieldModule } from '@lib/ui-common/form-field'
 import { TheSeamIconModule } from '@lib/ui-common/icon'
-import { TheSeamWidgetModule } from '../../widget/index'
+import { TheSeamWidgetModule } from '@lib/ui-common/widget'
+
 import { TheSeamBaseLayoutModule } from '../base-layout/index'
 import { TheSeamDashboardModule } from '../dashboard/index'
 import { DynamicDatatablePageComponent } from '../dynamic-pages/dynamic-datatable-page/dynamic-datatable-page.component'
