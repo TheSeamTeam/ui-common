@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 
 import { DatatableMenuBarTextComponent } from './datatable-menu-bar-text.component'
 
@@ -6,7 +6,7 @@ describe('DatatableMenuBarTextComponent', () => {
   let component: DatatableMenuBarTextComponent
   let fixture: ComponentFixture<DatatableMenuBarTextComponent>
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ DatatableMenuBarTextComponent ]
     })

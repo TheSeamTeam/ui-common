@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 
 import { TheSeamSchemaFormNumberComponent } from './schema-form-number.component'
 
@@ -6,7 +6,7 @@ describe('TheSeamSchemaFormNumberComponent', () => {
   let component: TheSeamSchemaFormNumberComponent
   let fixture: ComponentFixture<TheSeamSchemaFormNumberComponent>
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ TheSeamSchemaFormNumberComponent ]
     })

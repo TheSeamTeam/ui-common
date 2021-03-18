@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 
 import { DatatableDynamicActionMenuComponent } from './datatable-dynamic-action-menu.component'
 
@@ -6,7 +6,7 @@ describe('DatatableDynamicActionMenuComponent', () => {
   let component: DatatableDynamicActionMenuComponent
   let fixture: ComponentFixture<DatatableDynamicActionMenuComponent>
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ DatatableDynamicActionMenuComponent ]
     })

@@ -1,6 +1,6 @@
 /* tslint:disable:no-unused-variable */
 import { DebugElement } from '@angular/core'
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { By } from '@angular/platform-browser'
 
 import { TabbedItemComponent } from './tabbed-item.component'
@@ -9,7 +9,7 @@ describe('TabbedItemComponent', () => {
   let component: TabbedItemComponent
   let fixture: ComponentFixture<TabbedItemComponent>
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ TabbedItemComponent ]
     })

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 
 import { WidgetButtonGroupComponent } from './widget-button-group.component'
 
@@ -6,7 +6,7 @@ describe('WidgetButtonGroupComponent', () => {
   let component: WidgetButtonGroupComponent
   let fixture: ComponentFixture<WidgetButtonGroupComponent>
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ WidgetButtonGroupComponent ]
     })

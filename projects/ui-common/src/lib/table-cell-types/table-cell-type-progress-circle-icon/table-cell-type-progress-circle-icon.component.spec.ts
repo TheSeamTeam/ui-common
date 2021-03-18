@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 
 import { TableCellTypeProgressCircleIconComponent } from './table-cell-type-progress-circle-icon.component'
 
@@ -6,7 +6,7 @@ describe('TableCellTypeProgressCircleIconComponent', () => {
   let component: TableCellTypeProgressCircleIconComponent
   let fixture: ComponentFixture<TableCellTypeProgressCircleIconComponent>
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ TableCellTypeProgressCircleIconComponent ]
     })

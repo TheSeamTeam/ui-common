@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 
 import { WidgetTileFooterComponent } from './widget-tile-footer.component'
 
@@ -6,7 +6,7 @@ describe('WidgetTileFooterComponent', () => {
   let component: WidgetTileFooterComponent
   let fixture: ComponentFixture<WidgetTileFooterComponent>
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ WidgetTileFooterComponent ]
     })

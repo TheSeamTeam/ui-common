@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 
 import { MenuFooterActionComponent } from './menu-footer-action.component'
 
@@ -6,7 +6,7 @@ describe('MenuFooterActionComponent', () => {
   let component: MenuFooterActionComponent
   let fixture: ComponentFixture<MenuFooterActionComponent>
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ MenuFooterActionComponent ]
     })

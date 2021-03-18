@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 
@@ -8,7 +8,7 @@ describe('PasswordInputRevealComponent', () => {
   let component: PasswordInputRevealComponent
   let fixture: ComponentFixture<PasswordInputRevealComponent>
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         PasswordInputRevealComponent

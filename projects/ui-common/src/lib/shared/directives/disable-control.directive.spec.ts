@@ -1,5 +1,5 @@
 import { Component, DebugElement } from '@angular/core'
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { By } from '@angular/platform-browser'
 import { DisableControlDirective } from './disable-control.directive'
@@ -22,7 +22,7 @@ describe('DisableControlDirective', () => {
   let fixture: ComponentFixture<TestDisableControlComponent>
   let controlInput: DebugElement
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         ReactiveFormsModule

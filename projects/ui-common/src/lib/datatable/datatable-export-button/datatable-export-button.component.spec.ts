@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 
 import { BehaviorSubject, Observable } from 'rxjs'
 
@@ -20,7 +20,7 @@ describe('DatatableExportButtonComponent', () => {
   let component: DatatableExportButtonComponent
   let fixture: ComponentFixture<DatatableExportButtonComponent>
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     // tslint:disable:no-use-before-declare
     TestBed.configureTestingModule({
       declarations: [

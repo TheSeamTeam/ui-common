@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 
 import { FormFieldRequiredIndicatorComponent } from './form-field-required-indicator.component'
 
@@ -6,7 +6,7 @@ describe('FormFieldRequiredIndicatorComponent', () => {
   let component: FormFieldRequiredIndicatorComponent
   let fixture: ComponentFixture<FormFieldRequiredIndicatorComponent>
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ FormFieldRequiredIndicatorComponent ]
     })

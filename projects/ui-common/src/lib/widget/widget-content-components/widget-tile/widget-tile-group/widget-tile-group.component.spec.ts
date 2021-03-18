@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 
 import { WidgetTileGroupComponent } from './widget-tile-group.component'
 
@@ -6,7 +6,7 @@ describe('WidgetTileGroupComponent', () => {
   let component: WidgetTileGroupComponent
   let fixture: ComponentFixture<WidgetTileGroupComponent>
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ WidgetTileGroupComponent ]
     })

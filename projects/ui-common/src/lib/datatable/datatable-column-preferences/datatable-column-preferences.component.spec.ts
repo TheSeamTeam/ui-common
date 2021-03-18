@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 
 import { DatatableColumnPreferencesComponent } from './datatable-column-preferences.component'
 
@@ -6,7 +6,7 @@ describe('DatatableColumnPreferencesComponent', () => {
   let component: DatatableColumnPreferencesComponent
   let fixture: ComponentFixture<DatatableColumnPreferencesComponent>
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ DatatableColumnPreferencesComponent ]
     })

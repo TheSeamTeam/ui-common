@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 
 import { TableCellTypeDateComponent } from './table-cell-type-date.component'
 
@@ -6,7 +6,7 @@ describe('TableCellTypeDateComponent', () => {
   let component: TableCellTypeDateComponent
   let fixture: ComponentFixture<TableCellTypeDateComponent>
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ TableCellTypeDateComponent ]
     })

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 
 import { TheSeamCheckboxComponent } from './checkbox.component'
 
@@ -6,7 +6,7 @@ describe('TheSeamCheckboxComponent', () => {
   let component: TheSeamCheckboxComponent
   let fixture: ComponentFixture<TheSeamCheckboxComponent>
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ TheSeamCheckboxComponent ]
     })
