@@ -53,7 +53,7 @@
     "jexl": "^2.3.0",
     "localstorage-memory": "~1.0.3",
     "lodash-es": "~4.17.11",
-    "ngx-quill": "^12.0.1",
+    "ngx-quill": "^13.2.0",
     "ngx-toastr": "~12.1.0",
     "overlayscrollbars": "~1.7.3",
     "pdfjs-dist": "~2.0.943",
