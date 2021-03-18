@@ -6,6 +6,7 @@ import { TheSeamFormFieldErrorModule } from '../form-field-error/form-field-erro
 import { TheSeamSharedModule } from '../shared/shared.module'
 
 import { FormFieldErrorDirective } from './form-field-error.directive'
+import { FormFieldHelpTextDirective } from './form-field-help-text.directive'
 import { FormFieldLabelTplDirective } from './form-field-label-tpl.directive'
 import { FormFieldRequiredIndicatorComponent } from './form-field-required-indicator.component'
 import { TheSeamFormFieldComponent } from './form-field.component'
@@ -17,7 +18,8 @@ import { InputDirective } from './input.directive'
     InputDirective,
     FormFieldErrorDirective,
     FormFieldLabelTplDirective,
-    FormFieldRequiredIndicatorComponent
+    FormFieldRequiredIndicatorComponent,
+    FormFieldHelpTextDirective
   ],
   imports: [
     CommonModule,
@@ -30,7 +32,8 @@ import { InputDirective } from './input.directive'
     InputDirective,
     FormFieldErrorDirective,
     FormFieldLabelTplDirective,
-    FormFieldRequiredIndicatorComponent
+    FormFieldRequiredIndicatorComponent,
+    FormFieldHelpTextDirective
   ]
 })
 export class TheSeamFormFieldModule { }

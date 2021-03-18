@@ -244,3 +244,47 @@ export const RequiredIndicatorLabelTemplateCustom = () => ({
     </div>
   `
 })
+
+export const Password = () => ({
+  props: {
+    control: new FormControl('')
+  },
+  template: `
+    <div class="p-1" style="min-height: 100px; width: 500px;">
+      <seam-form-field>
+        <input seamInput [formControl]="control" type="password">
+      </seam-form-field>
+    </div>
+  `
+})
+
+export const HelpText = () => ({
+  props: {
+    control: new FormControl('')
+  },
+  template: `
+    <div class="p-1" style="min-height: 100px; width: 500px;">
+      <seam-form-field helpText="Anim elit fugiat consectetur qui ullamco nulla sunt veniam reprehenderit dolor non sint adipisicing laborum.">
+        <input seamInput [formControl]="control" required>
+        <ng-template seamFormFieldError="required">Valid is required.</ng-template>
+      </seam-form-field>
+    </div>
+  `
+})
+
+export const HelpTemplate = () => ({
+  props: {
+    control: new FormControl('')
+  },
+  template: `
+    <div class="p-1" style="min-height: 100px; width: 500px;">
+      <seam-form-field>
+        <input seamInput [formControl]="control" required>
+        <ng-template seamFormFieldHelpText>
+          Et esse fugiat officia nostrud eu non excepteur ullamco magna esse aliqua fugiat fugiat.
+        </ng-template>
+        <ng-template seamFormFieldError="required">Valid is required.</ng-template>
+      </seam-form-field>
+    </div>
+  `
+})

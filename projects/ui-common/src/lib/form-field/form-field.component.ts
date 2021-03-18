@@ -9,12 +9,13 @@ import {
   OnInit,
   QueryList
 } from '@angular/core'
-import { Observable, ReplaySubject, Subscription } from 'rxjs'
-import { map, startWith, tap } from 'rxjs/operators'
+import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subscription } from 'rxjs'
+import { distinctUntilChanged, filter, map, startWith, switchMap, tap } from 'rxjs/operators'
 
 import { IErrorRecord } from '../form-field-error/form-field-error-list/form-field-error-list.component'
 
 import { FormFieldErrorDirective } from './form-field-error.directive'
+import { FormFieldHelpTextDirective } from './form-field-help-text.directive'
 import { FormFieldLabelTplDirective } from './form-field-label-tpl.directive'
 import { InputDirective } from './input.directive'
 
@@ -30,8 +31,15 @@ let nextLabelUniqueId = 0
 })
 export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
 
+  private readonly _helpTextStrSubject = new BehaviorSubject<string | undefined>(undefined)
+  private readonly _helpTextTplSubject = new BehaviorSubject<FormFieldHelpTextDirective | undefined>(undefined)
+  private readonly _contentInputSubject = new BehaviorSubject<InputDirective | undefined>(undefined)
+
   /** @ignore */
-  protected _labelUid = `lib-label-${nextLabelUniqueId++}`
+  protected _labelUid = `seam-label-${nextLabelUniqueId++}`
+
+  /** @ignore */
+  protected _helpTextUid = `seam-help-text-${nextLabelUniqueId++}`
 
   /** @ignore */
   public _errorPadding = '0px'
@@ -85,11 +93,40 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
   /** @ignore */
   protected _labelId: string
 
+  /**
+   * Help text added below the control.
+   */
+  @Input()
+  // helpText: string
+  get helpText(): string | undefined { return this._helpTextStrSubject.value }
+  set helpText(value: string | undefined) {
+    this._helpTextStrSubject.next(value || undefined)
+  }
+
+  /**
+   * `id` attribute to add to the label element. This should not be needed in
+   * most situations, because a unique id will be generated if not provided.
+   */
+  @Input()
+  get helpTextId(): string { return this._helpTextId }
+  set helpTextId(value: string) { this._helpTextId = value || this._helpTextUid }
+  /** @ignore */
+  protected _helpTextId: string
+
+  /** @ignore */
+  @ContentChild(FormFieldHelpTextDirective, { static: true })
+  get helpTextTpl(): FormFieldLabelTplDirective | undefined { return this._helpTextTplSubject.value }
+  set helpTextTpl(value: FormFieldLabelTplDirective | undefined) {
+    this._helpTextTplSubject.next(value || undefined)
+  }
+
   /** @ignore */
   @ContentChild(FormFieldLabelTplDirective, { static: true }) labelTpl: FormFieldLabelTplDirective
 
   /** @ignore */
-  @ContentChild(InputDirective, { static: true }) contentInput: InputDirective
+  @ContentChild(InputDirective, { static: true })
+  get contentInput(): InputDirective | undefined { return this._contentInputSubject.value }
+  set contentInput(value: InputDirective | undefined) { this._contentInputSubject.next(value || undefined) }
 
   /** @ignore */
   @ContentChildren(FormFieldErrorDirective)
@@ -139,16 +176,40 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
     return this.contentInput && this.contentInput._elementRef && this.contentInput._elementRef.nativeElement
   }
 
+  get hasHelpText() { return !!this._helpTextStrSubject.value || !!this._helpTextTplSubject.value }
+  // get hasHelpText() { return !!this.helpText || !!this._helpTextTpl }
+
+  private _helpTextSub = Subscription.EMPTY
+
   /** @ignore */
   constructor(
     private readonly _elementRef: ElementRef
   ) { }
 
   /** @ignore */
-  ngOnInit() { }
+  ngOnInit() {
+    this._helpTextSub = this._contentInputSubject.pipe(
+      filter(contentInput => !!contentInput),
+      switchMap(contentInput => combineLatest([
+        this._helpTextStrSubject,
+        this._helpTextTplSubject
+      ]).pipe(
+        map(() => this.hasHelpText),
+        distinctUntilChanged(),
+        tap(() => {
+          if (!!contentInput) {
+            contentInput.ariaDescribedBy = this._helpTextId
+          }
+        })
+      ))
+    ).subscribe()
+  }
 
   /** @ignore */
-  ngOnDestroy() { this._sub.unsubscribe() }
+  ngOnDestroy() {
+    this._sub.unsubscribe()
+    this._helpTextSub.unsubscribe()
+  }
 
   /** @ignore */
   public isValidatorMatch(validatorName: string, tplValidatorName: string, errors: any): boolean {
