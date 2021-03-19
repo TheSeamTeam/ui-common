@@ -1,1 +1,2 @@
-export * from './index'
+export * from './checkbox.component'
+export * from './checkbox.module'

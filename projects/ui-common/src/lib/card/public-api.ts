@@ -1,1 +1,6 @@
-export * from './index'
+export * from './card-action/card-action.component'
+export * from './card-body/card-body.component'
+export * from './card-footer/card-footer.component'
+export * from './card-header/card-header.component'
+export * from './card.component'
+export * from './card.module'

@@ -1,6 +1,0 @@
-export * from './toggle-edit.component'
-export * from './toggle-edit.module'
-export * from './toggle-edit-display-tpl.directive'
-export * from './toggle-edit-keyboard-listener.service'
-export * from './models/index'
-export * from './toggle-edit-actions-container/toggle-edit-actions-container.component'

@@ -1,5 +1,0 @@
-export * from './overlay-scrollbar.directive'
-export * from './overlay-scrollbars.service'
-export { TheSeamScrollbarModule } from './scrollbar.module'
-export * from './overlay-scrollbars-config-model'
-export * from './overlay-scrollbars-config'
