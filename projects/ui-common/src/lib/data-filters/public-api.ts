@@ -1,6 +1,7 @@
 export * from './data-filter'
 export { TheSeamDataFiltersModule } from './data-filters.module'
 export * from './data-filter-def'
+export * from './data-filter-container'
 
 export * from './filters/data-filter-search/data-filter-search.component'
 export * from './filters/data-filter-search/search-filter-options'

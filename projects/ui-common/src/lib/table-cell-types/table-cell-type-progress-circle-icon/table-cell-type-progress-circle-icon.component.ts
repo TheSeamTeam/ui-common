@@ -3,10 +3,10 @@ import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
 
 import { SeamIcon } from '@lib/ui-common/icon'
-import type { TableCellData } from '@lib/ui-common/table'
-import { TABLE_CELL_DATA, TheSeamTableColumn } from '@lib/ui-common/table'
+import { TheSeamTableColumn } from '@lib/ui-common/table'
+import { TableCellTypesHelpersService, TABLE_CELL_DATA } from '@lib/ui-common/table-cell-type'
+import type { TableCellData } from '@lib/ui-common/table-cell-type'
 
-import { TableCellTypesHelpersService } from '../services/table-cell-types-helpers.service'
 import { TableCellTypeConfigProgressCircleIcon } from './table-cell-type-progress-circle-icon-config'
 
 @Component({

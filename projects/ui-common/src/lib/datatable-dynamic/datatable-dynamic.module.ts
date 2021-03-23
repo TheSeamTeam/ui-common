@@ -10,6 +10,7 @@ import { TheSeamDatatableModule } from '@lib/ui-common/datatable'
 import { TheSeamIconModule } from '@lib/ui-common/icon'
 import { TheSeamMenuModule } from '@lib/ui-common/menu'
 import { TheSeamSharedModule } from '@lib/ui-common/shared'
+import { TheSeamTableCellTypesModule } from '@lib/ui-common/table-cell-types'
 
 import { DatatableDynamicActionMenuComponent } from './datatable-dynamic-action-menu/datatable-dynamic-action-menu.component'
 import { DatatableDynamicFilterContainerComponent } from './datatable-dynamic-filter-container/datatable-dynamic-filter-container.component'
@@ -29,6 +30,7 @@ import { DatatableDynamicActionMenuItemDirective } from './directives/datatable-
     CommonModule,
     TheSeamSharedModule,
     TheSeamDatatableModule,
+    TheSeamTableCellTypesModule,
     TheSeamDataExporterModule,
     TheSeamDataFiltersModule,
     TheSeamIconModule,

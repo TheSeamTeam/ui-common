@@ -14,10 +14,10 @@ import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
 
 import { DatatableComponent } from '@lib/ui-common/datatable'
-import type { TableCellData } from '@lib/ui-common/table'
-import { TableComponent, TABLE_CELL_DATA, TheSeamTableColumn } from '@lib/ui-common/table'
+import { TableComponent, TheSeamTableColumn } from '@lib/ui-common/table'
+import { TableCellTypesHelpersService, TABLE_CELL_DATA } from '@lib/ui-common/table-cell-type'
+import type { TableCellData } from '@lib/ui-common/table-cell-type'
 
-import { TableCellTypesHelpersService } from '../services/table-cell-types-helpers.service'
 import { IconTemplateType } from './../table-cell-type-icon/table-cell-type-icon.component'
 import { TableCellTypeConfigProgressCircle, TableCellTypeProgressCircleConfigAction } from './table-cell-type-progress-circle-config'
 

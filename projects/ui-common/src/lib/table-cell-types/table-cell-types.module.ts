@@ -5,10 +5,12 @@ import { RouterModule } from '@angular/router'
 
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap'
 
+import { TheSeamAssetReaderModule } from '@lib/ui-common/asset-reader'
 import { TheSeamIconModule } from '@lib/ui-common/icon'
 import { TheSeamPopoverModule } from '@lib/ui-common/popover'
 import { TheSeamProgressModule } from '@lib/ui-common/progress'
 import { TheSeamSharedModule } from '@lib/ui-common/shared'
+import { TheSeamTableCellTypeModule } from '@lib/ui-common/table-cell-type'
 import { TheSeamTelInputModule } from '@lib/ui-common/tel-input'
 
 import { TableCellTypeDateComponent } from './table-cell-type-date/table-cell-type-date.component'
@@ -17,7 +19,6 @@ import { TableCellTypePhoneComponent } from './table-cell-type-phone/table-cell-
 // tslint:disable-next-line: max-line-length
 import { TableCellTypeProgressCircleIconComponent } from './table-cell-type-progress-circle-icon/table-cell-type-progress-circle-icon.component'
 import { TableCellTypeProgressCircleComponent } from './table-cell-type-progress-circle/table-cell-type-progress-circle.component'
-import { TableCellTypeSelectorComponent } from './table-cell-type-selector.component'
 import { TableCellTypeStringComponent } from './table-cell-type-string/table-cell-type-string.component'
 
 import {
@@ -55,8 +56,7 @@ const cellTypeProviders = [
 
 @NgModule({
   declarations: [
-    ...cellTypeComponents,
-    TableCellTypeSelectorComponent
+    ...cellTypeComponents
   ],
   imports: [
     CommonModule,
@@ -67,15 +67,15 @@ const cellTypeProviders = [
     PortalModule,
     TheSeamPopoverModule,
     TheSeamProgressModule,
-    TheSeamTelInputModule
+    TheSeamTelInputModule,
+    TheSeamAssetReaderModule,
+    TheSeamTableCellTypeModule
   ],
   providers: [
     ...cellTypeProviders
   ],
   exports: [
-    ...cellTypeComponents,
-    TableCellTypeSelectorComponent,
-    PortalModule
+    ...cellTypeComponents
   ],
   entryComponents: [
     ...cellTypeComponents

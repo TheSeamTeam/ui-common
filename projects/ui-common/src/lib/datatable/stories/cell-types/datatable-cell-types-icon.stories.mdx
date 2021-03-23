@@ -4,17 +4,20 @@ import { Story, Meta, Preview, Source } from '@storybook/addon-docs/blocks'
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { RouterModule } from '@angular/router'
-
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
+
+import { TheSeamTableCellTypesModule } from '@lib/ui-common/table-cell-types'
+
 import { TheSeamDatatableModule } from '../../datatable.module'
 
 # Datatable Cell Types
 
 <Meta title="Docs/Datatable/CellTypes/Icon" decorators={[moduleMetadata({
   imports: [
-    TheSeamDatatableModule,
+    BrowserAnimationsModule,
     RouterModule.forRoot([], { useHash: true }),
-    BrowserAnimationsModule
+    TheSeamDatatableModule,
+    TheSeamTableCellTypesModule
   ]
 })]} />
 

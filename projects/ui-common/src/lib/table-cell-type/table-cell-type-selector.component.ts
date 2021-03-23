@@ -16,13 +16,11 @@ import {
 } from '@angular/core'
 import { Subject } from 'rxjs'
 
-import { TableCellData, TableCellDataChange, TABLE_CELL_DATA } from '@lib/ui-common/table'
 import type { TheSeamTableColumn } from '@lib/ui-common/table'
 
-import { ITableCellTypeManifest } from '../table-cell-types/table-cell-types-models'
-import { TABLE_CELL_TYPE_MANIFEST } from '../table-cell-types/table-cell-types-tokens'
-
 import { TableCellTypeConfig } from './table-cell-type-config'
+import { ITableCellTypeManifest, TableCellData, TableCellDataChange } from './table-cell-type-models'
+import { TABLE_CELL_DATA, TABLE_CELL_TYPE_MANIFEST } from './table-cell-type-tokens'
 
 @Component({
   selector: 'seam-table-cell-type-selector',

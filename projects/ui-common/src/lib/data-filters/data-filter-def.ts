@@ -1,4 +1,5 @@
 import { InjectionToken } from '@angular/core'
+
 import { IDataFilter } from './data-filter'
 
 export interface IDataFilterDef<T = any> {

@@ -5,6 +5,7 @@ import { storiesOf } from '@storybook/angular'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { CSVDataExporter, XLSXDataExporter } from '@lib/ui-common/data-exporter'
+import { TheSeamTableCellTypesModule } from '@lib/ui-common/table-cell-types'
 
 import { TheSeamDatatableModule } from '../datatable.module'
 
@@ -13,8 +14,9 @@ storiesOf('Components/Datatable', module)
   .add('Exports', () => ({
     moduleMetadata: {
       imports: [
+        BrowserAnimationsModule,
         TheSeamDatatableModule,
-        BrowserAnimationsModule
+        TheSeamTableCellTypesModule
       ]
     },
     props: {

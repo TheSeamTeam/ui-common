@@ -2,7 +2,7 @@ import { CdkTableModule } from '@angular/cdk/table'
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 
-import { TheSeamTableCellTypesModule } from '@lib/ui-common/table-cell-types'
+import { TheSeamTableCellTypeModule } from '@lib/ui-common/table-cell-type'
 
 import { TableComponent } from './table/table.component'
 
@@ -12,12 +12,11 @@ import { TableComponent } from './table/table.component'
   ],
   imports: [
     CommonModule,
-    TheSeamTableCellTypesModule,
-    CdkTableModule
+    CdkTableModule,
+    TheSeamTableCellTypeModule
   ],
   exports: [
-    TableComponent,
-    TheSeamTableCellTypesModule
+    TableComponent
   ]
 })
 export class TheSeamTableModule { }

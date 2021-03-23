@@ -1,6 +1,6 @@
 import { TableColumn } from '@marklb/ngx-datatable'
 
-import { TableCellTypeColumn, TableCellTypeConfig, TableCellTypeExportProps, TableCellTypeName } from '@lib/ui-common/table-cell-types'
+import { TableCellTypeColumn, TableCellTypeConfig, TableCellTypeExportProps, TableCellTypeName } from '@lib/ui-common/table-cell-type'
 
 export interface TheSeamDatatableColumnHidable {
 

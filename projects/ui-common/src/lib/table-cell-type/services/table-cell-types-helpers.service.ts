@@ -3,11 +3,10 @@ import { from, Observable, Subject, Subscriber } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
 
 import { DynamicActionHelperService, DynamicActionModalDef, DynamicValueHelperService } from '@lib/ui-common/dynamic'
-import { TableCellData } from '@lib/ui-common/table'
 
 import { TableCellTypeConfig } from '../table-cell-type-config'
+import { CaluclatedValueContextType, ICalucatedValueContext, TableCellData } from '../table-cell-type-models'
 import { TableCellTypeName } from '../table-cell-type-name'
-import { CaluclatedValueContextType, ICalucatedValueContext } from '../table-cell-types-models'
 
 @Injectable({
   providedIn: 'root'

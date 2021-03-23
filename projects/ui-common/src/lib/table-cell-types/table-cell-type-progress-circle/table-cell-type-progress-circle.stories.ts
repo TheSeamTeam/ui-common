@@ -13,6 +13,7 @@ import {
   THESEAM_DYNAMIC_ACTION,
   THESEAM_DYNAMIC_VALUE_EVALUATOR
 } from '@lib/ui-common/dynamic'
+import { TheSeamTableCellTypesModule } from '@lib/ui-common/table-cell-types'
 
 import { TableCellTypeProgressCircleComponent } from './table-cell-type-progress-circle.component'
 
@@ -22,9 +23,10 @@ export default {
   decorators: [
     moduleMetadata({
       imports: [
-        TheSeamDatatableModule,
         RouterModule.forRoot([], { useHash: true }),
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        TheSeamDatatableModule,
+        TheSeamTableCellTypesModule
       ],
       providers: [
         { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },

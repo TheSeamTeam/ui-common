@@ -24,9 +24,9 @@ import {
   faWrench
 } from '@fortawesome/free-solid-svg-icons'
 
+import { TheSeamBreadcrumbsModule } from '@lib/ui-common/breadcrumbs'
 import { TheSeamWidgetModule } from '@lib/ui-common/widget'
 
-import { TheSeamBreadcrumbsModule } from '../../breadcrumbs/index'
 import { TheSeamDashboardModule } from '../dashboard/dashboard.module'
 import { ISideNavItem } from '../side-nav/side-nav.models'
 import { TheSeamSideNavModule } from '../side-nav/side-nav.module'

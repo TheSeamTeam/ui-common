@@ -14,10 +14,9 @@ import { takeUntil } from 'rxjs/operators'
 
 import { DatatableComponent } from '@lib/ui-common/datatable'
 import { getKnownIcon, SeamIcon, TheSeamIconType } from '@lib/ui-common/icon'
-import type { TableCellData } from '@lib/ui-common/table'
-import { TableComponent, TABLE_CELL_DATA, TheSeamTableColumn } from '@lib/ui-common/table'
-
-import { TableCellTypesHelpersService } from '../services/table-cell-types-helpers.service'
+import { TableComponent, TheSeamTableColumn } from '@lib/ui-common/table'
+import { TableCellTypesHelpersService, TABLE_CELL_DATA } from '@lib/ui-common/table-cell-type'
+import type { TableCellData } from '@lib/ui-common/table-cell-type'
 
 import { TableCellTypeConfigIcon, TableCellTypeIconConfigAction } from './table-cell-type-icon-config'
 

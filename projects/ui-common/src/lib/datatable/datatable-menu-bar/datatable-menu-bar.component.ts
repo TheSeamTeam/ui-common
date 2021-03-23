@@ -1,13 +1,20 @@
-import { AfterViewInit, Component, ContentChildren, EventEmitter, OnInit, QueryList } from '@angular/core'
+import { AfterViewInit, Component, ContentChildren, EventEmitter, forwardRef, OnInit, QueryList } from '@angular/core'
 
-import { IDataFilter } from '@lib/ui-common/data-filters'
+import { IDataFilter, THESEAM_DATA_FILTER_CONTAINER } from '@lib/ui-common/data-filters'
 
 import { DatatableFilterDirective } from '../directives/datatable-filter.directive'
+
+export const _THESEAM_DATA_FILTER_CONTAINER: any = {
+  provide: THESEAM_DATA_FILTER_CONTAINER,
+  // tslint:disable-next-line:no-use-before-declare
+  useExisting: forwardRef(() => DatatableMenuBarComponent)
+}
 
 @Component({
   selector: 'seam-datatable-menu-bar',
   templateUrl: './datatable-menu-bar.component.html',
-  styleUrls: ['./datatable-menu-bar.component.scss']
+  styleUrls: ['./datatable-menu-bar.component.scss'],
+  providers: [ _THESEAM_DATA_FILTER_CONTAINER ]
 })
 export class DatatableMenuBarComponent implements OnInit, AfterViewInit {
 

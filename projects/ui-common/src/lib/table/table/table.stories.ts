@@ -23,8 +23,9 @@ import {
   THESEAM_DYNAMIC_DATA,
   THESEAM_DYNAMIC_VALUE_EVALUATOR
 } from '@lib/ui-common/dynamic'
-import { TheSeamTableModule } from '../table.module'
+import { TheSeamTableCellTypesModule } from '@lib/ui-common/table-cell-types'
 
+import { TheSeamTableModule } from '../table.module'
 import { TableComponent } from './table.component'
 
 export default {
@@ -37,6 +38,7 @@ export default {
         BrowserModule,
         RouterModule.forRoot([], { useHash: true }),
         TheSeamTableModule,
+        TheSeamTableCellTypesModule
       ],
       providers: [
         { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },

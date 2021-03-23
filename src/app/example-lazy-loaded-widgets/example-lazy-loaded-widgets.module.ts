@@ -1,9 +1,8 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 
-import { TheSeamDynamicComponentLoaderModule } from 'projects/ui-common/src/lib/dynamic-component-loader/dynamic-component-loader.module'
-import { IDynamicComponentManifest } from 'projects/ui-common/src/lib/dynamic-component-loader/dynamic-component-manifest'
-// import { TheSeamWidgetsGridModule } from 'projects/ui-common/src/lib/widgets-grid/widgets-grid.module'
+import { IDynamicComponentManifest, TheSeamDynamicComponentLoaderModule } from '@lib/ui-common/dynamic-component-loader'
+
 import { ExampleLazyLoadedWidgetsComponent } from './example-lazy-loaded-widgets.component'
 
 // This array defines which "componentId" maps to which lazy-loaded module.
@@ -21,7 +20,6 @@ const manifests: IDynamicComponentManifest[] = [
   ],
   imports: [
     CommonModule,
-    // TheSeamWidgetsGridModule,
 
     TheSeamDynamicComponentLoaderModule.forModule(manifests[0]),
   ],

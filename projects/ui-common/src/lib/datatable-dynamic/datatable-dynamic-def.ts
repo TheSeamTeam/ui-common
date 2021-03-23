@@ -6,7 +6,7 @@ import { TheSeamDatatableColumn } from '@lib/ui-common/datatable'
 import { DynamicValue } from '@lib/ui-common/dynamic'
 import { ThemeTypes } from '@lib/ui-common/models'
 import { TheSeamTableColumn } from '@lib/ui-common/table'
-import { TableCellTypeConfig, TableCellTypeName } from '@lib/ui-common/table-cell-types'
+import { TableCellTypeConfig, TableCellTypeName } from '@lib/ui-common/table-cell-type'
 
 import { DynamicDatatableMenuBar } from './models/dynamic-datatable-menu-bar'
 import { DynamicDatatableRowAction } from './models/dynamic-datatable-row-action'

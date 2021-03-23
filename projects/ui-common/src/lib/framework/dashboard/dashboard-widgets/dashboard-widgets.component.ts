@@ -25,6 +25,7 @@ import { auditTime, debounceTime, distinctUntilChanged, finalize, map, shareRepl
 import { faLock, faUnlock } from '@fortawesome/free-solid-svg-icons'
 
 import type { IElementResizedEvent } from '@lib/ui-common/shared'
+
 import type { ITheSeamBaseLayoutRef } from '../../base-layout/base-layout-ref'
 import { THESEAM_BASE_LAYOUT_REF } from '../../base-layout/base-layout-tokens'
 import { DashboardWidgetContainerComponent } from '../dashboard-widget-container/dashboard-widget-container.component'

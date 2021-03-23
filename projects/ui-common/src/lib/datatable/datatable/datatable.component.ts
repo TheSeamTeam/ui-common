@@ -35,6 +35,7 @@ import { DatatableRowActionItemDirective } from '../directives/datatable-row-act
 import { TheSeamDatatableColumn } from '../models/table-column'
 import { DatatableColumnChangesService } from '../services/datatable-column-changes.service'
 import { DatatablePreferencesService } from '../services/datatable-preferences.service'
+import { THESEAM_DATATABLE_ACCESSOR } from '../tokens/datatable-accessor'
 
 export function _setColumnDefaults(columns: TheSeamDatatableColumn[]): void {
   for (const column of columns) {
@@ -72,11 +73,6 @@ export interface ICellContext {
   onTreeAction?: any
 }
 
-export interface IDatatableAccessor {
-  columns: TheSeamDatatableColumn[]
-  rows$: Observable<any[]>
-}
-
 /**
  * Intended for internal classes declared by the `TheSeamDatatableModule`.
  */
@@ -84,6 +80,12 @@ export const THESEAM_DATATABLE = new InjectionToken<IDataFilter>('LibDatatable')
 
 export const _THESEAM_DATATABLE: any = {
   provide: THESEAM_DATATABLE,
+  // tslint:disable-next-line:no-use-before-declare
+  useExisting: forwardRef(() => DatatableComponent)
+}
+
+export const _THESEAM_DATATABLE_ACCESSOR: any = {
+  provide: THESEAM_DATATABLE_ACCESSOR,
   // tslint:disable-next-line:no-use-before-declare
   useExisting: forwardRef(() => DatatableComponent)
 }
@@ -105,7 +107,7 @@ export const _THESEAM_DATATABLE: any = {
       ])
     ])
   ],
-  providers: [ _THESEAM_DATATABLE, DatatableColumnChangesService ]
+  providers: [ _THESEAM_DATATABLE, DatatableColumnChangesService, _THESEAM_DATATABLE_ACCESSOR ]
 })
 export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
 
@@ -466,11 +468,11 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
     }
 
     for (const col of cols) {
-      if (col.isTreeColumn && !hasProperty(col, 'treeToggleTemplate')) {
+      if (col.isTreeColumn && hasProperty(col, 'treeToggleTemplate')) {
         col.treeToggleTemplate = this.treeToggleTpl
       }
 
-      if (!hasProperty(col, 'headerTemplate')) {
+      if (hasProperty(col, 'headerTemplate')) {
         col.headerTemplate = this.headerTpl
       }
 

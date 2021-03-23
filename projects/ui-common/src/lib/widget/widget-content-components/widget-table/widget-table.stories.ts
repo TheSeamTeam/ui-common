@@ -7,8 +7,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { faWrench } from '@fortawesome/free-solid-svg-icons'
 
-import { TheSeamDatatableModule } from '@lib/ui-common/datatable'
-
 import { TheSeamWidgetModule } from '../../widget.module'
 
 // tslint:disable:quotemark

@@ -5,11 +5,12 @@ import { map, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
 
-import { DatatableMenuBarComponent } from '@lib/ui-common/datatable'
 import type { SeamIcon } from '@lib/ui-common/icon'
 import { isNullOrUndefined } from '@lib/ui-common/utils'
 
 import { DataFilterState, IDataFilter, THESEAM_DATA_FILTER, THESEAM_DATA_FILTER_OPTIONS } from '../../data-filter'
+import { THESEAM_DATA_FILTER_CONTAINER } from '../../data-filter-container'
+import type { DataFilterContainer } from '../../data-filter-container'
 import { textDataFilter } from '../data-filter-text/data-filter-text.component'
 
 import { ISearchFilterOptions } from './search-filter-options'
@@ -69,7 +70,7 @@ export class DataFilterSearchComponent implements OnInit, OnDestroy, IDataFilter
   public readonly filterStateChanges: Observable<DataFilterState>
 
   constructor(
-    private _menuBar: DatatableMenuBarComponent,
+    @Inject(THESEAM_DATA_FILTER_CONTAINER) private _filterContainer: DataFilterContainer,
     @Optional() @Inject(THESEAM_DATA_FILTER_OPTIONS) private _filterOptions: ISearchFilterOptions | null
   ) {
     this.filterStateChanges = this._control.valueChanges.pipe(
@@ -78,9 +79,9 @@ export class DataFilterSearchComponent implements OnInit, OnDestroy, IDataFilter
     )
   }
 
-  ngOnInit() { this._menuBar.addFilter(this) }
+  ngOnInit() { this._filterContainer.addFilter(this) }
 
-  ngOnDestroy() { this._menuBar.removeFilter(this) }
+  ngOnDestroy() { this._filterContainer.removeFilter(this) }
 
   private _optDefault<K extends keyof ISearchFilterOptions>(prop: K) {
     if (this._filterOptions && this._filterOptions.hasOwnProperty(prop)) {

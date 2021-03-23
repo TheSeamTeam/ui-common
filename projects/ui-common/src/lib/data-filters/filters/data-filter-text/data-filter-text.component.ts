@@ -3,10 +3,11 @@ import { FormControl } from '@angular/forms'
 import { Observable, of } from 'rxjs'
 import { map, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
-import { DatatableMenuBarComponent } from '@lib/ui-common/datatable'
 import { isNullOrUndefined } from '@lib/ui-common/utils'
 
 import { DataFilterState, IDataFilter, THESEAM_DATA_FILTER, THESEAM_DATA_FILTER_OPTIONS } from '../../data-filter'
+import { THESEAM_DATA_FILTER_CONTAINER } from '../../data-filter-container'
+import type { DataFilterContainer } from '../../data-filter-container'
 import { ITextFilterOptions } from './text-filter-options'
 
 export const DATA_FILTER_TEXT: any = {
@@ -102,7 +103,7 @@ export class DataFilterTextComponent implements OnInit, OnDestroy, IDataFilter {
   public readonly filterStateChanges: Observable<DataFilterState>
 
   constructor(
-    private _menuBar: DatatableMenuBarComponent,
+    @Inject(THESEAM_DATA_FILTER_CONTAINER) private _filterContainer: DataFilterContainer,
     @Optional() @Inject(THESEAM_DATA_FILTER_OPTIONS) private _filterOptions: ITextFilterOptions | null
   ) {
     this.filterStateChanges = this._control.valueChanges.pipe(
@@ -111,9 +112,9 @@ export class DataFilterTextComponent implements OnInit, OnDestroy, IDataFilter {
     )
   }
 
-  ngOnInit() { this._menuBar.addFilter(this) }
+  ngOnInit() { this._filterContainer.addFilter(this) }
 
-  ngOnDestroy() { this._menuBar.removeFilter(this) }
+  ngOnDestroy() { this._filterContainer.removeFilter(this) }
 
   private _optDefault<K extends keyof ITextFilterOptions>(prop: K) {
     if (this._filterOptions && this._filterOptions.hasOwnProperty(prop)) {

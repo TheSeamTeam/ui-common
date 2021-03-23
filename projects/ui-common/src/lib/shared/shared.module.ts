@@ -11,7 +11,6 @@ import { AutoFocusDirective } from './directives/auto-focus.directive'
 import { ClickOutsideDirective } from './directives/click-outside.directive'
 import { DisableControlDirective } from './directives/disable-control.directive'
 import { ElemResizedDirective } from './directives/elem-resized.directive'
-import { EncryptedAssetLinkDirective } from './directives/encrypted-asset-link.directive'
 import { HoverClassToggleDirective } from './directives/hover-class-toggle.directive'
 import { HoverClassDirective } from './directives/hover-class.directive'
 import { NgSelectExtraDirective } from './directives/ng-select-extra.directive'
@@ -39,7 +38,6 @@ import { PasswordInputRevealComponent } from './components/password-input-reveal
     ClickOutsideDirective,
     DisableControlDirective,
     MaskCharsPipe,
-    EncryptedAssetLinkDirective,
     TruncatePipe,
     NgxQuillExtraDirective
   ],
@@ -53,7 +51,6 @@ import { PasswordInputRevealComponent } from './components/password-input-reveal
     ClickOutsideDirective,
     DisableControlDirective,
     MaskCharsPipe,
-    EncryptedAssetLinkDirective,
     TruncatePipe,
     NgxQuillExtraDirective,
 

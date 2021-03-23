@@ -4,10 +4,11 @@ import { FormControl } from '@angular/forms'
 import { Observable, of } from 'rxjs'
 import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators'
 
-import { DatatableMenuBarComponent } from '@lib/ui-common/datatable'
 import { hasProperty, isNullOrUndefined } from '@lib/ui-common/utils'
 
 import { DataFilterState, IDataFilter, THESEAM_DATA_FILTER, THESEAM_DATA_FILTER_OPTIONS } from '../../data-filter'
+import { THESEAM_DATA_FILTER_CONTAINER } from '../../data-filter-container'
+import type { DataFilterContainer } from '../../data-filter-container'
 import { textDataFilter } from '../data-filter-text/data-filter-text.component'
 import { ITextFilterOptions } from '../data-filter-text/text-filter-options'
 
@@ -119,7 +120,7 @@ export class DataFilterToggleButtonsComponent implements OnInit, OnDestroy, IDat
   public readonly filterStateChanges: Observable<DataFilterState>
 
   constructor(
-    private _menuBar: DatatableMenuBarComponent,
+    @Inject(THESEAM_DATA_FILTER_CONTAINER) private _filterContainer: DataFilterContainer,
     @Optional() @Inject(THESEAM_DATA_FILTER_OPTIONS) private _filterOptions: IToggleButtonsFilterOptions | null
   ) {
     this.filterStateChanges = this._control.valueChanges.pipe(
@@ -131,13 +132,13 @@ export class DataFilterToggleButtonsComponent implements OnInit, OnDestroy, IDat
   }
 
   ngOnInit() {
-    this._menuBar.addFilter(this)
+    this._filterContainer.addFilter(this)
     if (this._filterOptions && hasProperty(this._filterOptions, 'initialValue')) {
       this.value = this._optDefault('initialValue')
     }
   }
 
-  ngOnDestroy() { this._menuBar.removeFilter(this) }
+  ngOnDestroy() { this._filterContainer.removeFilter(this) }
 
   private _optDefault<K extends keyof IToggleButtonsFilterOptions>(prop: K) {
     if (this._filterOptions && this._filterOptions.hasOwnProperty(prop)) {

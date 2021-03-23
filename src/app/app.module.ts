@@ -7,7 +7,7 @@ import { ExampleLazyLoadedWidgetsModule } from './example-lazy-loaded-widgets/ex
 import {
   IDynamicComponentManifest,
   TheSeamDynamicComponentLoaderModule
-} from 'projects/ui-common/src/lib/dynamic-component-loader/dynamic-component-loader.module'
+} from '@lib/ui-common/dynamic-component-loader'
 import { AppComponent } from './app.component'
 
 const manifests: IDynamicComponentManifest[] = [

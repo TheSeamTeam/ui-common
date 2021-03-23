@@ -3,16 +3,19 @@ import { Story, Meta, Preview } from '@storybook/addon-docs/blocks'
 // import { linkTo } from '@storybook/addon-links'
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
-
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
+
+import { TheSeamTableCellTypesModule } from '@lib/ui-common/table-cell-types'
+
 import { TheSeamDatatableModule } from '../../datatable.module'
 
 # Datatable Cell Types
 
 <Meta title="Docs/Datatable/CellTypes/Decimal" decorators={[moduleMetadata({
   imports: [
+    BrowserAnimationsModule,
     TheSeamDatatableModule,
-    BrowserAnimationsModule
+    TheSeamTableCellTypesModule
   ]
 })]} />
 

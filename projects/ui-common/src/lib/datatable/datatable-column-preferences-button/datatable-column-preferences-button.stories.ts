@@ -6,6 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { BehaviorSubject, of } from 'rxjs'
 
 import { CSVDataExporter, XLSXDataExporter } from '@lib/ui-common/data-exporter'
+import { TheSeamTableCellTypesModule } from '@lib/ui-common/table-cell-types'
 
 import { TheSeamDatatableModule } from '../datatable.module'
 import { THESEAM_DATATABLE } from '../datatable/datatable.component'
@@ -41,8 +42,9 @@ storiesOf('Components/Datatable/Column Preferences', module)
   .add('Example', () => ({
     moduleMetadata: {
       imports: [
+        BrowserAnimationsModule,
         TheSeamDatatableModule,
-        BrowserAnimationsModule
+        TheSeamTableCellTypesModule
       ]
     },
     props: {
@@ -79,8 +81,9 @@ storiesOf('Components/Datatable/Column Preferences', module)
   .add('Popover', () => ({
     moduleMetadata: {
       imports: [
+        BrowserAnimationsModule,
         TheSeamDatatableModule,
-        BrowserAnimationsModule
+        TheSeamTableCellTypesModule
       ],
       providers: [
         { provide: THESEAM_DATATABLE, useClass: MockDatatable }

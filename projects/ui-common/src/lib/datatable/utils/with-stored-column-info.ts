@@ -1,7 +1,7 @@
 import { hasProperty } from '@lib/ui-common/utils'
-import { TheSeamDatatableColumn } from '../../datatable/index'
 
 import { ITheSeamDatatablePreferencesColumn } from '../models/preferences'
+import { TheSeamDatatableColumn } from '../models/table-column'
 
 export function withStoredColumnInfo(
   columns: TheSeamDatatableColumn[],

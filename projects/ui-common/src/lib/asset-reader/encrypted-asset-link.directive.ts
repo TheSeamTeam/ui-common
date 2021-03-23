@@ -1,9 +1,13 @@
 import { Directive, ElementRef, HostBinding, HostListener, Input } from '@angular/core'
 
 import { TheSeamLoadingOverlayService } from '@lib/ui-common/loading'
-import { AssetReaderHelperService } from '@lib/ui-common/services'
+
+import { AssetReaderHelperService } from './asset-reader-helper.service'
 
 // TODO: Add a dev warning or handle both `seamEncryptedAssetLink` and `attr.href` being set on a single element.
+
+// TODO: This can easily be used for non-encrypted assets, because the provided
+// reader can do whatever it wants. So, consider renaming to 'seamAssetLink'.
 
 @Directive({
   selector: '[seamEncryptedAssetLink]'
