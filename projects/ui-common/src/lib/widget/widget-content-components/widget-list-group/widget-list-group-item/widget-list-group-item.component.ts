@@ -12,8 +12,8 @@ import {
   mixinActive,
   mixinDisabled,
   mixinTheme
-} from '@lib/ui-common/core'
-import { SeamIcon } from '@lib/ui-common/icon'
+} from '@theseam/ui-common/core'
+import { SeamIcon } from '@theseam/ui-common/icon'
 
 import { WidgetListGroupItemIconTplDirective } from './widget-list-group-item-icon-tpl.directive'
 

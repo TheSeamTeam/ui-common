@@ -3,7 +3,7 @@ import { ComponentFactoryResolver, Inject, Injectable, Injector, ViewContainerRe
 import { Observable, of, throwError } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-import { TheSeamDynamicComponentLoader } from '@lib/ui-common/dynamic-component-loader'
+import { TheSeamDynamicComponentLoader } from '@theseam/ui-common/dynamic-component-loader'
 
 import { IWidgetRegistryRecord } from './widget-registry.models'
 import { THESEAM_WIDGETS } from './widget-token'

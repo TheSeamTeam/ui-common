@@ -12,7 +12,7 @@ import {
   HasTabIndexCtor,
   mixinDisabled,
   mixinTabIndex,
-} from '@lib/ui-common/core'
+} from '@theseam/ui-common/core'
 
 @Component({ template: '' })
 // tslint:disable-next-line: component-class-suffix

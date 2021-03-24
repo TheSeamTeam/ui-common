@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { ReactiveFormsModule } from '@angular/forms'
 
-import { TheSeamFormFieldModule } from '@lib/ui-common/form-field'
+import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 
 import { TheSeamPhoneNumberPipe } from './phone-number.pipe'
 import { TheSeamTelInputDirective } from './tel-input.directive'

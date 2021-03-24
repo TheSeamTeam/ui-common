@@ -3,7 +3,7 @@ import { Meta, moduleMetadata, Story } from '@storybook/angular'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { RouterModule } from '@angular/router'
 
-import { TheSeamDatatableModule } from '@lib/ui-common/datatable'
+import { TheSeamDatatableModule } from '@theseam/ui-common/datatable'
 import {
   DynamicActionApiService,
   DynamicActionLinkService,
@@ -12,8 +12,8 @@ import {
   JexlEvaluator,
   THESEAM_DYNAMIC_ACTION,
   THESEAM_DYNAMIC_VALUE_EVALUATOR
-} from '@lib/ui-common/dynamic'
-import { TheSeamTableCellTypesModule } from '@lib/ui-common/table-cell-types'
+} from '@theseam/ui-common/dynamic'
+import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
 
 import { TableCellTypeProgressCircleComponent } from './table-cell-type-progress-circle.component'
 

@@ -1,4 +1,4 @@
-import { SizePrefixes, SizeTypes } from '@lib/ui-common/models'
+import { SizePrefixes, SizeTypes } from '@theseam/ui-common/models'
 
 import { Constructor } from './constructor'
 import { HasElementRef } from './element-ref'

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core'
 import { Observable, Subscriber } from 'rxjs'
 import WebFont from 'webfontloader'
 
-import { hasProperty } from '@lib/ui-common/utils'
+import { hasProperty } from '@theseam/ui-common/utils'
 
 export type TheSeamFontEvents =
   { type: 'loading' } |

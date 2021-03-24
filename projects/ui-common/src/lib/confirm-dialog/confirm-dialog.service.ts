@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
 
-import { Modal, ModalRef } from '@lib/ui-common/modal'
-import { ThemeTypes } from '@lib/ui-common/models'
+import { Modal, ModalRef } from '@theseam/ui-common/modal'
+import { ThemeTypes } from '@theseam/ui-common/models'
 
 import { ConfirmDialogComponent } from './confirm-dialog.component'
 

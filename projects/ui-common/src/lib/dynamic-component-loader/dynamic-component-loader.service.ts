@@ -11,7 +11,7 @@ import {
   DYNAMIC_MODULE
 } from './dynamic-component-tokens'
 
-import { wrapIntoObservable } from '@lib/ui-common/utils'
+import { wrapIntoObservable } from '@theseam/ui-common/utils'
 
 @Injectable({
   providedIn: 'root'

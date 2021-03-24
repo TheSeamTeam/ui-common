@@ -1,4 +1,4 @@
-import { DynamicValue } from '@lib/ui-common/dynamic'
+import { DynamicValue } from '@theseam/ui-common/dynamic'
 
 export interface DynamicDatatableMenuBarItem<C = any> {
   /**

@@ -2,8 +2,8 @@ import { Component, Injector, Input, OnDestroy } from '@angular/core'
 import { combineLatest, Observable, of, ReplaySubject, Subject } from 'rxjs'
 import { auditTime, map, startWith, takeUntil } from 'rxjs/operators'
 
-import { ModalConfig, ModalRef, MODAL_DATA } from '@lib/ui-common/modal'
-import type { ComponentType } from '@lib/ui-common/models'
+import { ModalConfig, ModalRef, MODAL_DATA } from '@theseam/ui-common/modal'
+import type { ComponentType } from '@theseam/ui-common/models'
 
 class FakeModalRef<T, R = any> implements Partial<ModalRef<T, R>> {
 

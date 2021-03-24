@@ -28,7 +28,7 @@ import { AbstractControl, ControlContainer, FormControl, FormGroup } from '@angu
 
 import { faCheck, faPen, faTimes } from '@fortawesome/free-solid-svg-icons'
 
-import { TheSeamFormFieldComponent } from '@lib/ui-common/form-field'
+import { TheSeamFormFieldComponent } from '@theseam/ui-common/form-field'
 import { ICanToggleEdit } from './models/can-toggle-edit'
 import { IToggleEditRef } from './models/toggle-edit-ref'
 import { ToggleEditDisplayTplDirective } from './toggle-edit-display-tpl.directive'

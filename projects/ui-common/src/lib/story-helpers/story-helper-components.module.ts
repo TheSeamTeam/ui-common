@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { RouterModule } from '@angular/router'
 
-import { TheSeamScrollbarModule } from '@lib/ui-common/scrollbar'
+import { TheSeamScrollbarModule } from '@theseam/ui-common/scrollbar'
 
 import { StoryEmptyWithRouteComponent } from './story-empty-with-route.component'
 import { StoryEmptyComponent } from './story-empty.component'

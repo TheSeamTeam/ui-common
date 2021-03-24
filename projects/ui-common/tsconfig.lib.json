@@ -2,6 +2,8 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "../../out-tsc/lib",
+    "baseUrl": ".",
+    "rootDir": ".",
     "target": "es2018",
     "module": "esNext",
     "moduleResolution": "node",
@@ -9,17 +11,23 @@
     "jsx": "react",
     "sourceMap": true,
     "inlineSources": true,
-    "emitDecoratorMetadata": true,
+    "emitDecoratorMetadata": false,
     "experimentalDecorators": true,
     "strictNullChecks": true,
     "importHelpers": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
     "types": [],
     "lib": [
       "dom",
       "es2018"
-    ]
+    ],
+    "paths": {
+      "@theseam/ui-common/*": [
+        "projects/ui-common/src/lib/*/public-api"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "skipTemplateCodegen": true,
@@ -27,15 +35,7 @@
     "enableResourceInlining": true,
     "enableIvy": true // Disable if using Storybook in linked project
   },
-  "include": [
-    "src/lib/**/*.ts"
-  ],
-  "exclude": [
-    "src/test.ts",
-    "**/*.spec.ts",
-    "**/*.stories.ts",
-    "**/stories/**/*",
-    "**/_story-data/**/*",
-    "**/schematics/**/*"
+  "files": [
+    "./src/lib/public_api.ts"
   ]
 }

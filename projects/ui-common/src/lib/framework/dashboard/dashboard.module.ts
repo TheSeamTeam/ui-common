@@ -3,9 +3,9 @@ import { PortalModule } from '@angular/cdk/portal'
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 
-import { TheSeamButtonsModule } from '@lib/ui-common/buttons'
-import { TheSeamIconModule } from '@lib/ui-common/icon'
-import { TheSeamSharedModule } from '@lib/ui-common/shared'
+import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
+import { TheSeamIconModule } from '@theseam/ui-common/icon'
+import { TheSeamSharedModule } from '@theseam/ui-common/shared'
 
 import { DashboardWidgetContainerComponent } from './dashboard-widget-container/dashboard-widget-container.component'
 import {

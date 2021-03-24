@@ -1,4 +1,4 @@
-import { hasProperty } from '@lib/ui-common/utils'
+import { hasProperty } from '@theseam/ui-common/utils'
 
 import { ITheSeamDatatablePreferencesColumn } from '../models/preferences'
 import { TheSeamDatatableColumn } from '../models/table-column'

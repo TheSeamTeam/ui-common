@@ -12,8 +12,8 @@ import {
   DataFilterTextComponent,
   DataFilterToggleButtonsComponent,
   THESEAM_DATA_FILTER_OPTIONS
-} from '@lib/ui-common/data-filters'
-import { DatatableExportButtonComponent, DatatableMenuBarTextComponent, THESEAM_MENUBAR_ITEM_DATA } from '@lib/ui-common/datatable'
+} from '@theseam/ui-common/data-filters'
+import { DatatableExportButtonComponent, DatatableMenuBarTextComponent, THESEAM_MENUBAR_ITEM_DATA } from '@theseam/ui-common/datatable'
 import {
   DynamicActionApiService,
   DynamicActionLinkService,
@@ -23,9 +23,9 @@ import {
   THESEAM_DYNAMIC_ACTION,
   THESEAM_DYNAMIC_DATA,
   THESEAM_DYNAMIC_VALUE_EVALUATOR
-} from '@lib/ui-common/dynamic'
-import { IDynamicComponentManifest, TheSeamDynamicComponentLoaderModule } from '@lib/ui-common/dynamic-component-loader'
-import { TheSeamModalModule } from '@lib/ui-common/modal'
+} from '@theseam/ui-common/dynamic'
+import { IDynamicComponentManifest, TheSeamDynamicComponentLoaderModule } from '@theseam/ui-common/dynamic-component-loader'
+import { TheSeamModalModule } from '@theseam/ui-common/modal'
 
 import { THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM } from './datatable-dynamic-menu-bar-token'
 import { DatatableDynamicComponent } from './datatable-dynamic.component'

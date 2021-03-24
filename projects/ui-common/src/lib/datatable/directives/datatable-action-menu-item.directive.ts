@@ -6,9 +6,9 @@ import { Subscription } from 'rxjs'
 
 // import jexl from 'jexl'
 
-import type { DynamicDatatableRow } from '@lib/ui-common/datatable-dynamic'
-import { TheSeamDynamicComponentLoader } from '@lib/ui-common/dynamic-component-loader'
-import { Modal } from '@lib/ui-common/modal'
+import type { DynamicDatatableRow } from '@theseam/ui-common/datatable-dynamic'
+import { TheSeamDynamicComponentLoader } from '@theseam/ui-common/dynamic-component-loader'
+import { Modal } from '@theseam/ui-common/modal'
 
 //
 // TODO: Move the dynamic datatable logic out of this component when refactoring.

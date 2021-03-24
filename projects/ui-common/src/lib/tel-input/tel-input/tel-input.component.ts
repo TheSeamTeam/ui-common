@@ -21,7 +21,7 @@ import { ControlValueAccessor, FormControl, NgControl, NG_VALUE_ACCESSOR } from 
 import { defer, fromEvent, merge, Observable, of, Subject } from 'rxjs'
 import { auditTime, map, switchMap, takeUntil } from 'rxjs/operators'
 
-import { InputDirective } from '@lib/ui-common/form-field'
+import { InputDirective } from '@theseam/ui-common/form-field'
 
 import { TheSeamTelInputDirective } from '../tel-input.directive'
 

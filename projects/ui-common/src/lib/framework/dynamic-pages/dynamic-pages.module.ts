@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { RouterModule } from '@angular/router'
 
-import { TheSeamDatatableDynamicModule } from '@lib/ui-common/datatable-dynamic'
-import { TheSeamTableCellTypesModule } from '@lib/ui-common/table-cell-types'
+import { TheSeamDatatableDynamicModule } from '@theseam/ui-common/datatable-dynamic'
+import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
 
 import { TheSeamDynamicRouterModule } from '../dynamic-router/dynamic-router.module'
 

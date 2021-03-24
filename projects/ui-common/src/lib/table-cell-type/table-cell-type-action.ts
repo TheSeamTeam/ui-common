@@ -1,4 +1,4 @@
-import { DynamicActionConfirmDef } from '@lib/ui-common/dynamic'
+import { DynamicActionConfirmDef } from '@theseam/ui-common/dynamic'
 
 import { TableCellTypeName } from './table-cell-type-name'
 

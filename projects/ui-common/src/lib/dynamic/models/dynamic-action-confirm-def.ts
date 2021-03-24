@@ -1,4 +1,4 @@
-import { ThemeTypes } from '@lib/ui-common/models'
+import { ThemeTypes } from '@theseam/ui-common/models'
 
 import { DynamicValue } from './dynamic-value'
 

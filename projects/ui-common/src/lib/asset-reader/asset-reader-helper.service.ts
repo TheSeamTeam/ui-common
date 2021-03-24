@@ -4,7 +4,7 @@ import { catchError, map, mapTo, switchMap, tap } from 'rxjs/operators'
 
 import FileSaver from 'file-saver'
 
-import { fileDataFromBuffer, openBlob, readFileAsync } from '@lib/ui-common/utils'
+import { fileDataFromBuffer, openBlob, readFileAsync } from '@theseam/ui-common/utils'
 
 import { EncryptedAssetReader } from './encrypted-asset-reader'
 

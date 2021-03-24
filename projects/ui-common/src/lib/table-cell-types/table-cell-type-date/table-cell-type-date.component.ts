@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, O
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
 
-import { TABLE_CELL_DATA } from '@lib/ui-common/table-cell-type'
-import type { TableCellData } from '@lib/ui-common/table-cell-type'
+import { TABLE_CELL_DATA } from '@theseam/ui-common/table-cell-type'
+import type { TableCellData } from '@theseam/ui-common/table-cell-type'
 
 import { TableCellTypeConfigDate } from './table-cell-type-date-config'
 

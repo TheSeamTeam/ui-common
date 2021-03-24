@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 
-import { TheSeamIconModule } from '@lib/ui-common/icon'
+import { TheSeamIconModule } from '@theseam/ui-common/icon'
 
 import { WidgetListGroupItemIconTplDirective } from './widget-list-group-item/widget-list-group-item-icon-tpl.directive'
 import {

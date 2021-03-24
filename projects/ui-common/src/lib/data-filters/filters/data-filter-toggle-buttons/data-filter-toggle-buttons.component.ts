@@ -4,7 +4,7 @@ import { FormControl } from '@angular/forms'
 import { Observable, of } from 'rxjs'
 import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators'
 
-import { hasProperty, isNullOrUndefined } from '@lib/ui-common/utils'
+import { hasProperty, isNullOrUndefined } from '@theseam/ui-common/utils'
 
 import { DataFilterState, IDataFilter, THESEAM_DATA_FILTER, THESEAM_DATA_FILTER_OPTIONS } from '../../data-filter'
 import { THESEAM_DATA_FILTER_CONTAINER } from '../../data-filter-container'

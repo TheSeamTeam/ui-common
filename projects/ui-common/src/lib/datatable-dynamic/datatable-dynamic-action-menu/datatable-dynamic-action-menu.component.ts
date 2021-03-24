@@ -4,8 +4,8 @@ import { concatMap, filter, switchMap, toArray } from 'rxjs/operators'
 
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons'
 
-import { DynamicValueHelperService } from '@lib/ui-common/dynamic'
-import { hasProperty, notNullOrUndefined } from '@lib/ui-common/utils'
+import { DynamicValueHelperService } from '@theseam/ui-common/dynamic'
+import { hasProperty, notNullOrUndefined } from '@theseam/ui-common/utils'
 
 import { DynamicDatatableRow } from '../datatable-dynamic-def'
 import { DynamicDatatableRowActionsService } from '../dynamic-datatable-row-actions.service'

@@ -1,4 +1,4 @@
-import { TheSeamTableColumn } from '@lib/ui-common/table'
+import { TheSeamTableColumn } from '@theseam/ui-common/table'
 
 import { TableCellTypeConfigDate } from './table-cell-type-date-config'
 

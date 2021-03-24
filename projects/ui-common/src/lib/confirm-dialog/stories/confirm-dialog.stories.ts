@@ -4,10 +4,10 @@ import { storiesOf } from '@storybook/angular'
 import { Component, Input } from '@angular/core'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
-import { ThemeNames } from '@lib/ui-common/models'
-import type { ThemeTypes } from '@lib/ui-common/models'
+import { ThemeNames } from '@theseam/ui-common/models'
+import type { ThemeTypes } from '@theseam/ui-common/models'
 
-import { SeamConfirmDialogService, TheSeamConfirmDialogModule } from '@lib/ui-common/confirm-dialog'
+import { SeamConfirmDialogService, TheSeamConfirmDialogModule } from '@theseam/ui-common/confirm-dialog'
 
 storiesOf('Components/ConfirmDialog/Directive', module)
   .addDecorator(withKnobs)

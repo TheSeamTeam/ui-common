@@ -24,13 +24,7 @@
     "allowSyntheticDefaultImports": true,
     "jsx": "react",
     "paths": {
-      "@theseam/ui-common": [
-        "dist/ui-common"
-      ],
       "@theseam/ui-common/*": [
-        "dist/ui-common/*"
-      ],
-      "@lib/ui-common/*": [
         "projects/ui-common/src/lib/*/public-api"
       ]
     }

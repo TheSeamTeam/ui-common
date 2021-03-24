@@ -3,7 +3,7 @@ import { Inject, Injectable, isDevMode, Optional } from '@angular/core'
 import { from } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
-import { isAbsoluteUrl } from '@lib/ui-common/utils'
+import { isAbsoluteUrl } from '@theseam/ui-common/utils'
 
 import { DynamicValueHelperService } from '../../dynamic-value-helper.service'
 import { DynamicActionUiButtonDef } from '../../models/dynamic-action-ui-button-def'

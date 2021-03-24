@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { ReactiveFormsModule } from '@angular/forms'
 
-import { TheSeamFormFieldErrorModule } from '@lib/ui-common/form-field-error'
-import { TheSeamSharedModule } from '@lib/ui-common/shared'
+import { TheSeamFormFieldErrorModule } from '@theseam/ui-common/form-field-error'
+import { TheSeamSharedModule } from '@theseam/ui-common/shared'
 
 import { FormFieldErrorDirective } from './form-field-error.directive'
 import { FormFieldLabelTplDirective } from './form-field-label-tpl.directive'

@@ -2,8 +2,8 @@ import { ComponentType } from '@angular/cdk/portal'
 import { SimpleChanges } from '@angular/core'
 import { Observable } from 'rxjs'
 
-import { TheSeamTableColumn } from '@lib/ui-common/table'
-import { TableCellTypeConfig, TableCellTypeName } from '@lib/ui-common/table-cell-type'
+import { TheSeamTableColumn } from '@theseam/ui-common/table'
+import { TableCellTypeConfig, TableCellTypeName } from '@theseam/ui-common/table-cell-type'
 
 export interface ITableCellTypeManifest {
   /**

@@ -1,5 +1,5 @@
-import { DynamicActionLinkDef, DynamicActionModalDef, DynamicValue } from '@lib/ui-common/dynamic'
-import { TableCellTypeConfig } from '@lib/ui-common/table-cell-type'
+import { DynamicActionLinkDef, DynamicActionModalDef, DynamicValue } from '@theseam/ui-common/dynamic'
+import { TableCellTypeConfig } from '@theseam/ui-common/table-cell-type'
 
 export type TableCellTypeStringConfigAction =
   DynamicActionLinkDef |

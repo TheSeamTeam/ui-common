@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 
-import { TheSeamButtonsModule } from '@lib/ui-common/buttons'
+import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
 
 import { WidgetButtonGroupComponent } from './widget-button-group.component'
 

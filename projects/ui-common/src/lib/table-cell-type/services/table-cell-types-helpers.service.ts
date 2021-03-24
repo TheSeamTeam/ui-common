@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core'
 import { from, Observable, Subject, Subscriber } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
 
-import { DynamicActionHelperService, DynamicActionModalDef, DynamicValueHelperService } from '@lib/ui-common/dynamic'
+import { DynamicActionHelperService, DynamicActionModalDef, DynamicValueHelperService } from '@theseam/ui-common/dynamic'
 
 import { TableCellTypeConfig } from '../table-cell-type-config'
 import { CaluclatedValueContextType, ICalucatedValueContext, TableCellData } from '../table-cell-type-models'

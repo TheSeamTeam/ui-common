@@ -1,4 +1,4 @@
-import { ITableCellTypeManifestProvider, TABLE_CELL_TYPE_MANIFEST } from '@lib/ui-common/table-cell-type'
+import { ITableCellTypeManifestProvider, TABLE_CELL_TYPE_MANIFEST } from '@theseam/ui-common/table-cell-type'
 
 import { TableCellTypeDateComponent } from './table-cell-type-date/table-cell-type-date.component'
 import { TableCellTypeIconComponent } from './table-cell-type-icon/table-cell-type-icon.component'

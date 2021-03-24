@@ -16,7 +16,7 @@ import {
 } from '@angular/core'
 import { Subject } from 'rxjs'
 
-import type { TheSeamTableColumn } from '@lib/ui-common/table'
+import type { TheSeamTableColumn } from '@theseam/ui-common/table'
 
 import { TableCellTypeConfig } from './table-cell-type-config'
 import { ITableCellTypeManifest, TableCellData, TableCellDataChange } from './table-cell-type-models'

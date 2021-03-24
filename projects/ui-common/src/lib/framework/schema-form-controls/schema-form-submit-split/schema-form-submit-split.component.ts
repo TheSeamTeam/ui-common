@@ -4,7 +4,7 @@ import { Subject } from 'rxjs'
 
 import { buildTitleMap, hasOwn, JsonSchemaFormService, TitleMapItem } from '@ajsf/core'
 
-import { observeControlStatus, observeControlValue } from '@lib/ui-common/utils'
+import { observeControlStatus, observeControlValue } from '@theseam/ui-common/utils'
 import { takeUntil } from 'rxjs/operators'
 
 // NOTE: This is aliasing TitleMapItem, because we may want to extend it's

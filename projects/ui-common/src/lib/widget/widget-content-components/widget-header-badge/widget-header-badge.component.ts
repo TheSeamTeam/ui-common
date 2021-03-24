@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, Input, OnI
 import {
   CanThemeCtor,
   mixinTheme
-} from '@lib/ui-common/core'
+} from '@theseam/ui-common/core'
 
 class WidgetHeaderBadgeBase {
 

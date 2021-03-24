@@ -8,7 +8,7 @@ import { delay } from 'rxjs/operators'
 
 import { faBell, faWrench } from '@fortawesome/free-solid-svg-icons'
 
-import { TheSeamWidgetModule } from '@lib/ui-common/widget'
+import { TheSeamWidgetModule } from '@theseam/ui-common/widget'
 
 import { TheSeamDashboardModule } from '../dashboard.module'
 

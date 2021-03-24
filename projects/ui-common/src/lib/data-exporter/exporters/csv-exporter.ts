@@ -5,7 +5,7 @@ import { mapTo, switchMap, tap } from 'rxjs/operators'
 import { faFileCsv } from '@fortawesome/free-solid-svg-icons'
 import FileSaver from 'file-saver'
 
-import { fileDataFromBuffer, wrapIntoObservable } from '@lib/ui-common/utils'
+import { fileDataFromBuffer, wrapIntoObservable } from '@theseam/ui-common/utils'
 
 import { IDataExporter } from '../data-exporter'
 

@@ -2,9 +2,9 @@ import { PortalModule } from '@angular/cdk/portal'
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 
-import { TheSeamButtonsModule } from '@lib/ui-common/buttons'
-import { TheSeamIconModule } from '@lib/ui-common/icon'
-import { TheSeamScrollbarModule } from '@lib/ui-common/scrollbar'
+import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
+import { TheSeamIconModule } from '@theseam/ui-common/icon'
+import { TheSeamScrollbarModule } from '@theseam/ui-common/scrollbar'
 
 import { TheSeamBaseLayoutComponent } from './base-layout.component'
 import { BaseLayoutContentFooterDirective } from './directives/base-layout-content-footer.directive'

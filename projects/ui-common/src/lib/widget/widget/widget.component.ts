@@ -4,7 +4,7 @@ import { Component, ContentChild, Input, OnInit, ViewEncapsulation } from '@angu
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { faAngleDown, faCog } from '@fortawesome/free-solid-svg-icons'
 
-import { SeamIcon } from '@lib/ui-common/icon'
+import { SeamIcon } from '@theseam/ui-common/icon'
 
 import { WidgetIconTplDirective } from '../directives/widget-icon-tpl.directive'
 import { WidgetTitleTplDirective } from '../directives/widget-title-tpl.directive'

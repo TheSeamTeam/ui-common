@@ -2,10 +2,10 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, O
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
 
-import { SeamIcon } from '@lib/ui-common/icon'
-import { TheSeamTableColumn } from '@lib/ui-common/table'
-import { TableCellTypesHelpersService, TABLE_CELL_DATA } from '@lib/ui-common/table-cell-type'
-import type { TableCellData } from '@lib/ui-common/table-cell-type'
+import { SeamIcon } from '@theseam/ui-common/icon'
+import { TheSeamTableColumn } from '@theseam/ui-common/table'
+import { TableCellTypesHelpersService, TABLE_CELL_DATA } from '@theseam/ui-common/table-cell-type'
+import type { TableCellData } from '@theseam/ui-common/table-cell-type'
 
 import { TableCellTypeConfigProgressCircleIcon } from './table-cell-type-progress-circle-icon-config'
 

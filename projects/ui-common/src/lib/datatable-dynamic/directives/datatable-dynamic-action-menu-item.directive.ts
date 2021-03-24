@@ -14,15 +14,15 @@ import { ActivatedRoute, QueryParamsHandling, Router, RouterLink, RouterLinkWith
 import { from, fromEvent, Observable, of, ReplaySubject, Subscription } from 'rxjs'
 import { catchError, mapTo, switchMap, tap } from 'rxjs/operators'
 
-import { AssetReaderHelperService } from '@lib/ui-common/asset-reader'
+import { AssetReaderHelperService } from '@theseam/ui-common/asset-reader'
 import {
   DynamicActionHelperService,
   DynamicActionUiAnchorDef,
   DynamicActionUiButtonDef,
   DynamicActionUiDef,
   DynamicValueHelperService
-} from '@lib/ui-common/dynamic'
-import { getAttribute, hasProperty, toggleAttribute } from '@lib/ui-common/utils'
+} from '@theseam/ui-common/dynamic'
+import { getAttribute, hasProperty, toggleAttribute } from '@theseam/ui-common/utils'
 
 import { DynamicDatatableRow } from '../datatable-dynamic-def'
 import type { DynamicDatatableActionMenuRecord } from '../models/dynamic-datatable-action-menu-record'

@@ -7,8 +7,8 @@ import { RouterModule } from '@angular/router'
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons'
 import { faWrench } from '@fortawesome/free-solid-svg-icons'
 
-import { TheSeamButtonsModule } from '@lib/ui-common/buttons'
-import { TheSeamIconModule } from '@lib/ui-common/icon'
+import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
+import { TheSeamIconModule } from '@theseam/ui-common/icon'
 
 import { TheSeamWidgetModule } from '../../widget.module'
 

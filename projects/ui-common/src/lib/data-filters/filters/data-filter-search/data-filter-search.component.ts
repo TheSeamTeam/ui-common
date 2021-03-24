@@ -5,8 +5,8 @@ import { map, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
 
-import type { SeamIcon } from '@lib/ui-common/icon'
-import { isNullOrUndefined } from '@lib/ui-common/utils'
+import type { SeamIcon } from '@theseam/ui-common/icon'
+import { isNullOrUndefined } from '@theseam/ui-common/utils'
 
 import { DataFilterState, IDataFilter, THESEAM_DATA_FILTER, THESEAM_DATA_FILTER_OPTIONS } from '../../data-filter'
 import { THESEAM_DATA_FILTER_CONTAINER } from '../../data-filter-container'

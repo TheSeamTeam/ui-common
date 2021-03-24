@@ -1,4 +1,4 @@
-import { notNullOrUndefined, waitOnConditionAsync } from '@lib/ui-common/utils'
+import { notNullOrUndefined, waitOnConditionAsync } from '@theseam/ui-common/utils'
 
 import type { IntlTelInputUtilsScript } from '../intl-tel-input'
 import { TEL_INPUT_UTILS_PATH } from '../tel-input-constants'

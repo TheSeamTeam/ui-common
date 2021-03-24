@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ContentChildren, EventEmitter, forwardRef, OnInit, QueryList } from '@angular/core'
 
-import { IDataFilter, THESEAM_DATA_FILTER_CONTAINER } from '@lib/ui-common/data-filters'
+import { IDataFilter, THESEAM_DATA_FILTER_CONTAINER } from '@theseam/ui-common/data-filters'
 
 import { DatatableFilterDirective } from '../directives/datatable-filter.directive'
 

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 
-import { TheSeamIconModule } from '@lib/ui-common/icon'
+import { TheSeamIconModule } from '@theseam/ui-common/icon'
 
 import { WidgetTileFooterItemComponent } from './widget-tile-footer-item/widget-tile-footer-item.component'
 import { WidgetTileFooterComponent } from './widget-tile-footer/widget-tile-footer.component'

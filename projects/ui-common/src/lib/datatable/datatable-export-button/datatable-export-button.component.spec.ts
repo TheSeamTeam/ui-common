@@ -4,10 +4,10 @@ import { BehaviorSubject, Observable } from 'rxjs'
 
 import { ToastrService } from 'ngx-toastr'
 
-import { TheSeamButtonsModule } from '@lib/ui-common/buttons'
-import { TheSeamIconModule } from '@lib/ui-common/icon'
-import { TheSeamLoadingOverlayService } from '@lib/ui-common/loading'
-import { TheSeamMenuModule } from '@lib/ui-common/menu'
+import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
+import { TheSeamIconModule } from '@theseam/ui-common/icon'
+import { TheSeamLoadingOverlayService } from '@theseam/ui-common/loading'
+import { TheSeamMenuModule } from '@theseam/ui-common/menu'
 
 import { FakeToastrService } from '../../../testing/fake-toastr'
 import { FakeTheSeamLoadingOverlayService } from '../../loading/fake-loading-overlay'

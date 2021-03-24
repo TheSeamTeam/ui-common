@@ -1,5 +1,5 @@
-import { SeamIcon } from '@lib/ui-common/icon'
-import type { ThemeTypes } from '@lib/ui-common/models'
+import { SeamIcon } from '@theseam/ui-common/icon'
+import type { ThemeTypes } from '@theseam/ui-common/models'
 
 import { SideNavItemBadgeTooltip } from './side-nav-item/side-nav-item.component'
 

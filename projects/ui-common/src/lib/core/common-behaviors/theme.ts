@@ -1,4 +1,4 @@
-import { ThemePrefixes, ThemeTypes } from '@lib/ui-common/models'
+import { ThemePrefixes, ThemeTypes } from '@theseam/ui-common/models'
 
 import { Constructor } from './constructor'
 import { HasElementRef } from './element-ref'

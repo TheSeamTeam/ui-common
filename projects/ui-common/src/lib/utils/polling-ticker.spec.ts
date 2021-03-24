@@ -3,7 +3,7 @@ import { fakeAsync, tick } from '@angular/core/testing'
 import { BehaviorSubject, interval, Observable, of, Subject, Subscriber, Subscription } from 'rxjs'
 import { delay, repeatWhen, tap } from 'rxjs/operators'
 
-import { TickHelper } from '@lib/ui-common/test-helpers'
+import { TickHelper } from '@theseam/ui-common/test-helpers'
 import { pollingTicker } from './polling-ticker'
 
 describe('pollingTicker', () => {

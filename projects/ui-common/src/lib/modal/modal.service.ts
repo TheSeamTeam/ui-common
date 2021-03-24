@@ -23,8 +23,8 @@ import {
 import { defer, Observable, of, of as observableOf, Subject } from 'rxjs'
 import { startWith, switchMap } from 'rxjs/operators'
 
-import { TheSeamDynamicComponentLoader } from '@lib/ui-common/dynamic-component-loader'
-import { OverlayScrollbarsService } from '@lib/ui-common/scrollbar'
+import { TheSeamDynamicComponentLoader } from '@theseam/ui-common/dynamic-component-loader'
+import { OverlayScrollbarsService } from '@theseam/ui-common/scrollbar'
 
 import { ModalConfig } from './modal-config'
 import { ModalContainerComponent } from './modal-container/modal-container.component'

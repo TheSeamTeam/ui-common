@@ -1,4 +1,4 @@
-import { TableCellTypeConfigDate, TableCellTypeConfigIcon, TableCellTypeConfigString } from '@lib/ui-common/table-cell-types'
+import { TableCellTypeConfigDate, TableCellTypeConfigIcon, TableCellTypeConfigString } from '@theseam/ui-common/table-cell-types'
 
 import { DatatableDynamicDef, DynamicDatatableColumn } from '../datatable-dynamic-def'
 

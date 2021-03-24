@@ -1,4 +1,4 @@
-import { DynamicActionDef, DynamicValue } from '@lib/ui-common/dynamic'
+import { DynamicActionDef, DynamicValue } from '@theseam/ui-common/dynamic'
 
 export interface DynamicDatatableRowAction {
 

@@ -4,9 +4,9 @@ import { ReactiveFormsModule } from '@angular/forms'
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 
-import { TheSeamFormFieldModule } from '@lib/ui-common/form-field'
-import { TheSeamIconModule } from '@lib/ui-common/icon'
-import { TheSeamToggleGroupModule } from '@lib/ui-common/toggle-group'
+import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
+import { TheSeamIconModule } from '@theseam/ui-common/icon'
+import { TheSeamToggleGroupModule } from '@theseam/ui-common/toggle-group'
 
 import { THESEAM_DATA_FILTER_DEF } from './data-filter-def'
 import { DataFilterSearchComponent } from './filters/data-filter-search/data-filter-search.component'

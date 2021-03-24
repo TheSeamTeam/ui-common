@@ -6,9 +6,9 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { RouterModule } from '@angular/router'
 
-import { TheSeamDataFiltersModule } from '@lib/ui-common/data-filters'
-import { ExportersDataEvaluator, JexlEvaluator, THESEAM_DYNAMIC_VALUE_EVALUATOR } from '@lib/ui-common/dynamic'
-import { TheSeamTableCellTypesModule } from '@lib/ui-common/table-cell-types'
+import { TheSeamDataFiltersModule } from '@theseam/ui-common/data-filters'
+import { ExportersDataEvaluator, JexlEvaluator, THESEAM_DYNAMIC_VALUE_EVALUATOR } from '@theseam/ui-common/dynamic'
+import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
 
 import { TheSeamDatatableModule } from '../datatable.module'
 import { DatatableComponent } from './datatable.component'

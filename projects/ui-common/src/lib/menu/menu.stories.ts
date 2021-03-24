@@ -4,7 +4,7 @@ import { storiesOf } from '@storybook/angular'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
-import { TheSeamButtonsModule } from '@lib/ui-common/buttons'
+import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
 
 import { TheSeamMenuModule } from './menu.module'
 

@@ -1,6 +1,6 @@
 import { Directive, ElementRef, HostBinding, HostListener, Input } from '@angular/core'
 
-import { TheSeamLoadingOverlayService } from '@lib/ui-common/loading'
+import { TheSeamLoadingOverlayService } from '@theseam/ui-common/loading'
 
 import { AssetReaderHelperService } from './asset-reader-helper.service'
 

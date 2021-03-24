@@ -2,11 +2,11 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, O
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
 
-import { TABLE_CELL_DATA } from '@lib/ui-common/table-cell-type'
-import type { TableCellData } from '@lib/ui-common/table-cell-type'
-import { coercePhoneNumberFormat, THESEAM_DEFAULT_PHONE_NUMBER_FORMAT } from '@lib/ui-common/tel-input'
-import type { intlTelInputUtils } from '@lib/ui-common/tel-input'
-import { hasProperty } from '@lib/ui-common/utils'
+import { TABLE_CELL_DATA } from '@theseam/ui-common/table-cell-type'
+import type { TableCellData } from '@theseam/ui-common/table-cell-type'
+import { coercePhoneNumberFormat, THESEAM_DEFAULT_PHONE_NUMBER_FORMAT } from '@theseam/ui-common/tel-input'
+import type { intlTelInputUtils } from '@theseam/ui-common/tel-input'
+import { hasProperty } from '@theseam/ui-common/utils'
 
 import { TableCellTypeConfigPhone } from './table-cell-type-phone-config'
 

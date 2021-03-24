@@ -14,7 +14,7 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router'
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mapTo, pairwise, startWith, takeUntil, tap } from 'rxjs/operators'
 
-import { TheSeamLayoutService } from '@lib/ui-common/layout'
+import { TheSeamLayoutService } from '@theseam/ui-common/layout'
 import { THESEAM_BASE_LAYOUT_REF } from '../base-layout/index'
 import type { ITheSeamBaseLayoutNav, ITheSeamBaseLayoutRef } from '../base-layout/index'
 

@@ -5,7 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { faWrench } from '@fortawesome/free-solid-svg-icons'
 
-import { ThemeNames } from '@lib/ui-common/models'
+import { ThemeNames } from '@theseam/ui-common/models'
 
 import { TheSeamWidgetModule } from '../../widget.module'
 

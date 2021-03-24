@@ -2,8 +2,8 @@ import { Meta, moduleMetadata, Story } from '@storybook/angular'
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
-import { TheSeamDatatableModule } from '@lib/ui-common/datatable'
-import { TheSeamTableCellTypesModule } from '@lib/ui-common/table-cell-types'
+import { TheSeamDatatableModule } from '@theseam/ui-common/datatable'
+import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
 
 import { TableCellTypePhoneComponent } from './table-cell-type-phone.component'
 

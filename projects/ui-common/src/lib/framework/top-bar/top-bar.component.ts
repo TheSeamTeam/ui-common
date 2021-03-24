@@ -14,7 +14,7 @@ import { map, shareReplay, startWith, takeUntil } from 'rxjs/operators'
 
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 
-import { TheSeamLayoutService } from '@lib/ui-common/layout'
+import { TheSeamLayoutService } from '@theseam/ui-common/layout'
 
 import { TopBarItemDirective } from './top-bar-item.directive'
 import { TopBarMenuBtnDetailDirective } from './top-bar-menu-btn-detail.directive'

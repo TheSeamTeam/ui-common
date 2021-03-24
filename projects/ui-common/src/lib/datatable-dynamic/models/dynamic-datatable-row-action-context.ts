@@ -1,4 +1,4 @@
-import { DynamicActionContext } from '@lib/ui-common/dynamic'
+import { DynamicActionContext } from '@theseam/ui-common/dynamic'
 
 import { DynamicDatatableRow } from '../datatable-dynamic-def'
 

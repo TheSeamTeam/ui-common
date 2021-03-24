@@ -29,9 +29,9 @@ import { auditTime, distinctUntilChanged, map, switchMap, take, takeUntil, tap }
 
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons'
 
-import type { SeamIcon } from '@lib/ui-common/icon'
-import type { ThemeTypes } from '@lib/ui-common/models'
-import { RouterHelpersService } from '@lib/ui-common/services'
+import type { SeamIcon } from '@theseam/ui-common/icon'
+import type { ThemeTypes } from '@theseam/ui-common/models'
+import { RouterHelpersService } from '@theseam/ui-common/services'
 
 import { SideNavComponent } from '../side-nav.component'
 import { ISideNavItem } from '../side-nav.models'

@@ -7,9 +7,9 @@ import { ReactiveFormsModule } from '@angular/forms'
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 
-import { TheSeamFormFieldModule } from '@lib/ui-common/form-field'
-import { TheSeamLoadingModule } from '@lib/ui-common/loading'
-import { TheSeamSharedModule } from '@lib/ui-common/shared'
+import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
+import { TheSeamLoadingModule } from '@theseam/ui-common/loading'
+import { TheSeamSharedModule } from '@theseam/ui-common/shared'
 
 import { ToggleEditActionsContainerComponent } from './toggle-edit-actions-container/toggle-edit-actions-container.component'
 import { ToggleEditDisplayTplDirective } from './toggle-edit-display-tpl.directive'

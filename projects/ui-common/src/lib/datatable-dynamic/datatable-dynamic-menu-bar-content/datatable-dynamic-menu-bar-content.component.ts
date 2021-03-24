@@ -3,9 +3,9 @@ import { ChangeDetectionStrategy, Component, Inject, Injector, Input, OnInit, Op
 import { BehaviorSubject, Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
-import { DynamicValueHelperService } from '@lib/ui-common/dynamic'
-import { TheSeamDynamicComponentLoader } from '@lib/ui-common/dynamic-component-loader'
-import { hasProperty } from '@lib/ui-common/utils'
+import { DynamicValueHelperService } from '@theseam/ui-common/dynamic'
+import { TheSeamDynamicComponentLoader } from '@theseam/ui-common/dynamic-component-loader'
+import { hasProperty } from '@theseam/ui-common/utils'
 
 import { IDatatableDynamicMenuBarItemManifest } from '../datatable-dynamic-menu-bar-item-manifest'
 import { THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM } from '../datatable-dynamic-menu-bar-token'

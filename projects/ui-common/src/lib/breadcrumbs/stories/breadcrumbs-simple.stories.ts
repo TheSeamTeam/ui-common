@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { RouterModule } from '@angular/router'
 
-import { StoryEmptyComponent, StoryInitialRouteModule } from '@lib/ui-common/story-helpers'
+import { StoryEmptyComponent, StoryInitialRouteModule } from '@theseam/ui-common/story-helpers'
 
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component'
 

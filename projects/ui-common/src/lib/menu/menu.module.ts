@@ -2,7 +2,7 @@ import { OverlayModule } from '@angular/cdk/overlay'
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 
-import { TheSeamIconModule } from '@lib/ui-common/icon'
+import { TheSeamIconModule } from '@theseam/ui-common/icon'
 
 import { MenuDividerComponent } from './menu-divider.component'
 import { MenuFooterActionComponent } from './menu-footer-action/menu-footer-action.component'

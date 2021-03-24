@@ -1,8 +1,8 @@
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal'
 import { ChangeDetectionStrategy, Component, Injector, Input, OnInit } from '@angular/core'
 
-import { THESEAM_DATA_FILTER_OPTIONS } from '@lib/ui-common/data-filters'
-import type { ComponentType } from '@lib/ui-common/models'
+import { THESEAM_DATA_FILTER_OPTIONS } from '@theseam/ui-common/data-filters'
+import type { ComponentType } from '@theseam/ui-common/models'
 
 @Component({
   selector: 'seam-datatable-dynamic-filter-container',
