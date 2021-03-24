@@ -1,3 +1,5 @@
+export * from './cdk/get-closest-widget-cdk-drag'
+
 export * from './form/get-control-name'
 export * from './form/get-control-path'
 export * from './form/observe-control-is-different'

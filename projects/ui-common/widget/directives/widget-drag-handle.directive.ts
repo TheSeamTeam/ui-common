@@ -1,12 +1,24 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
 import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop'
-import { AfterViewInit, Directive, DoCheck, ElementRef, Input, NgZone, OnDestroy, OnInit, Optional } from '@angular/core'
+import {
+  AfterViewInit,
+  Directive,
+  DoCheck,
+  ElementRef,
+  EventEmitter,
+  Inject,
+  InjectionToken,
+  Input,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  Optional,
+  QueryList
+} from '@angular/core'
 import { BehaviorSubject, Subject } from 'rxjs'
 import { auditTime, filter, switchMap, take, takeUntil } from 'rxjs/operators'
 
-import { getClosestWidgetCdkDrag } from '../../framework/dashboard/dashboard-widgets/dashboard-widgets-utils'
-import { DashboardWidgetsComponent } from '../../framework/dashboard/dashboard-widgets/dashboard-widgets.component'
-
+import { getClosestWidgetCdkDrag } from '@theseam/ui-common/utils'
 
 //
 // NOTE: This will probably NOT be used long term, unless more of the
@@ -68,6 +80,15 @@ export function toggleNativeDragInteractions(element: HTMLElement, enable: boole
   })
 }
 
+export interface TheSeamWidgetAccessor<TItem> {
+  widgetsChange: EventEmitter<TItem[]>
+  cdkDragDirectives: QueryList<CdkDrag>
+}
+
+export const THESEAM_WIDGET_ACCESSOR = new InjectionToken<TheSeamWidgetAccessor<any>>(
+  'TheSeamWidgetAccessor'
+)
+
 @Directive({
   selector: '[seamWidgetDragHandle]',
   host: {
@@ -100,7 +121,7 @@ export class WidgetDragHandleDirective implements OnInit, OnDestroy, AfterViewIn
   constructor(
     public element: ElementRef<HTMLElement>,
     private _ngZone: NgZone,
-    @Optional() private _dashboardWidgets?: DashboardWidgetsComponent,
+    @Optional() @Inject(THESEAM_WIDGET_ACCESSOR) private _dashboardWidgets?: TheSeamWidgetAccessor<any>,
     @Optional() private __parentDrag?: CdkDrag
   ) {
     toggleNativeDragInteractions(element.nativeElement, false)

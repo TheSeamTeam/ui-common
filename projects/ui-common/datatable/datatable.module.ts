@@ -77,7 +77,7 @@ import { TheSeamDatatableScrollbarHelperService } from './services/datatable-scr
     TheSeamMenuModule,
     TheSeamButtonsModule,
     TheSeamIconModule,
-    ToastrModule.forRoot(),
+    ToastrModule,
     TheSeamLoadingModule,
     PortalModule,
     TheSeamConfirmDialogModule,

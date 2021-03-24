@@ -6,6 +6,7 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  forwardRef,
   Inject,
   Input,
   OnDestroy,
@@ -25,6 +26,7 @@ import { auditTime, debounceTime, distinctUntilChanged, finalize, map, shareRepl
 import { faLock, faUnlock } from '@fortawesome/free-solid-svg-icons'
 
 import type { IElementResizedEvent } from '@theseam/ui-common/shared'
+import { THESEAM_WIDGET_ACCESSOR } from '@theseam/ui-common/widget'
 
 import type { ITheSeamBaseLayoutRef } from '../../base-layout/base-layout-ref'
 import { THESEAM_BASE_LAYOUT_REF } from '../../base-layout/base-layout-tokens'
@@ -37,6 +39,14 @@ import { DashboardWidgetsService } from './dashboard-widgets.service'
   selector: 'seam-dashboard-widgets',
   templateUrl: './dashboard-widgets.component.html',
   styleUrls: ['./dashboard-widgets.component.scss'],
+  providers: [
+    {
+      provide: THESEAM_WIDGET_ACCESSOR,
+      // tslint:disable-next-line:no-use-before-declare
+      useExisting: forwardRef(() => DashboardWidgetsComponent),
+      multi: true,
+    }
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 })

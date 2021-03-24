@@ -1,7 +1,8 @@
 import { CdkDrag } from '@angular/cdk/drag-drop'
 import { ElementRef } from '@angular/core'
 
-import { getAttribute, hasAttribute } from '@theseam/ui-common/utils'
+import { getAttribute } from '../get-attribute'
+import { hasAttribute } from '../has-attribute'
 
 /**
  * Finds the closest CdkDrag to an element by looking at the DOM.
