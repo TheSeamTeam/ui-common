@@ -4,7 +4,8 @@ import { takeUntil } from 'rxjs/operators'
 
 import { TABLE_CELL_DATA } from '@lib/ui-common/table-cell-type'
 import type { TableCellData } from '@lib/ui-common/table-cell-type'
-import { coercePhoneNumberFormat, intlTelInputUtils, THESEAM_DEFAULT_PHONE_NUMBER_FORMAT } from '@lib/ui-common/tel-input'
+import { coercePhoneNumberFormat, THESEAM_DEFAULT_PHONE_NUMBER_FORMAT } from '@lib/ui-common/tel-input'
+import type { intlTelInputUtils } from '@lib/ui-common/tel-input'
 import { hasProperty } from '@lib/ui-common/utils'
 
 import { TableCellTypeConfigPhone } from './table-cell-type-phone-config'
