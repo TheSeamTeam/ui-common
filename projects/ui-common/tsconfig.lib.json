@@ -25,7 +25,7 @@
     ],
     "paths": {
       "@theseam/ui-common/*": [
-        "projects/ui-common/src/lib/*/public-api"
+        "projects/ui-common/*/public-api"
       ]
     }
   },
@@ -36,6 +36,6 @@
     "enableIvy": true // Disable if using Storybook in linked project
   },
   "files": [
-    "./src/lib/public_api.ts"
+    "./public_api.ts"
   ]
 }

@@ -25,7 +25,7 @@
     "jsx": "react",
     "paths": {
       "@theseam/ui-common/*": [
-        "projects/ui-common/src/lib/*/public-api"
+        "projects/ui-common/*/public-api"
       ]
     }
   },

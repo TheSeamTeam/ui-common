@@ -177,7 +177,7 @@
     "ui-common": {
       "projectType": "library",
       "root": "projects/ui-common",
-      "sourceRoot": "projects/ui-common/src",
+      "sourceRoot": "projects/ui-common",
       "prefix": "seam",
       "architect": {
         "build": {
@@ -190,28 +190,28 @@
               "src/styles",
               {
                 "glob": "**/*.scss",
-                "input": "src/lib/framework/base-layout",
-                "output": "lib/framework/base-layout"
+                "input": "framework/base-layout",
+                "output": "framework/base-layout"
               },
               {
                 "glob": "**/*.scss",
-                "input": "src/lib/framework/dashboard",
-                "output": "lib/framework/dashboard"
+                "input": "framework/dashboard",
+                "output": "framework/dashboard"
               },
               {
                 "glob": "**/*.scss",
-                "input": "src/lib/framework/side-nav",
-                "output": "lib/framework/side-nav"
+                "input": "framework/side-nav",
+                "output": "framework/side-nav"
               },
               {
                 "glob": "**/*.scss",
-                "input": "src/lib/progress/progress-circle",
-                "output": "lib/progress/progress-circle"
+                "input": "progress/progress-circle",
+                "output": "progress/progress-circle"
               },
               {
                 "glob": "**/*.scss",
-                "input": "src/lib/widget",
-                "output": "lib/widget"
+                "input": "widget",
+                "output": "widget"
               },
               {
                 "glob": "**/*.min.css",

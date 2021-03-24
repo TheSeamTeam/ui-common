@@ -43,4 +43,4 @@
 
 // export * from './lib/story-helpers/public-api'
 
-export {}
+export default {}
