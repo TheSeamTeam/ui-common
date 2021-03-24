@@ -14,9 +14,9 @@ import { takeUntil } from 'rxjs/operators'
 
 import { DatatableComponent } from '@theseam/ui-common/datatable'
 import { getKnownIcon, SeamIcon, TheSeamIconType } from '@theseam/ui-common/icon'
-import { TableComponent, TheSeamTableColumn } from '@theseam/ui-common/table'
+import { TableComponent } from '@theseam/ui-common/table'
 import { TableCellTypesHelpersService, TABLE_CELL_DATA } from '@theseam/ui-common/table-cell-type'
-import type { TableCellData } from '@theseam/ui-common/table-cell-type'
+import type { TableCellData, TheSeamTableColumn } from '@theseam/ui-common/table-cell-type'
 
 import { TableCellTypeConfigIcon, TableCellTypeIconConfigAction } from './table-cell-type-icon-config'
 

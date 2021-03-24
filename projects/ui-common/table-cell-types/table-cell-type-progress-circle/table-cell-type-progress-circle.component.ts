@@ -14,9 +14,9 @@ import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
 
 import { DatatableComponent } from '@theseam/ui-common/datatable'
-import { TableComponent, TheSeamTableColumn } from '@theseam/ui-common/table'
+import { TableComponent } from '@theseam/ui-common/table'
 import { TableCellTypesHelpersService, TABLE_CELL_DATA } from '@theseam/ui-common/table-cell-type'
-import type { TableCellData } from '@theseam/ui-common/table-cell-type'
+import type { TableCellData, TheSeamTableColumn } from '@theseam/ui-common/table-cell-type'
 
 import { IconTemplateType } from './../table-cell-type-icon/table-cell-type-icon.component'
 import { TableCellTypeConfigProgressCircle, TableCellTypeProgressCircleConfigAction } from './table-cell-type-progress-circle-config'

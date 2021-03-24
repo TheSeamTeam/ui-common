@@ -3,9 +3,8 @@ import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
 
 import { SeamIcon } from '@theseam/ui-common/icon'
-import { TheSeamTableColumn } from '@theseam/ui-common/table'
 import { TableCellTypesHelpersService, TABLE_CELL_DATA } from '@theseam/ui-common/table-cell-type'
-import type { TableCellData } from '@theseam/ui-common/table-cell-type'
+import type { TableCellData, TheSeamTableColumn } from '@theseam/ui-common/table-cell-type'
 
 import { TableCellTypeConfigProgressCircleIcon } from './table-cell-type-progress-circle-icon-config'
 
