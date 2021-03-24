@@ -1,9 +1,10 @@
-import { TableCellTypeName } from '@theseam/ui-common/table-cell-type'
+// import { TableCellTypeName } from '@theseam/ui-common/table-cell-type'
 
 import { DynamicActionConfirmDef } from './dynamic-action-confirm-def'
 
 // TODO: Add something to the model that clarifies what is supported from JSON or javascript only.
-export interface DynamicActionDef<T extends TableCellTypeName> {
+// export interface DynamicActionDef<T extends TableCellTypeName> {
+export interface DynamicActionDef<T> {
 
   readonly type: T
 

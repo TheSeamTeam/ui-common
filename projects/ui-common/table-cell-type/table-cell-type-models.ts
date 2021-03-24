@@ -2,8 +2,12 @@ import { ComponentType } from '@angular/cdk/portal'
 import { SimpleChanges } from '@angular/core'
 import { Observable } from 'rxjs'
 
-import { TheSeamTableColumn } from '@theseam/ui-common/table'
-import { TableCellTypeConfig, TableCellTypeName } from '@theseam/ui-common/table-cell-type'
+import { TableColumn } from '@marklb/ngx-datatable'
+
+import { TableCellTypeColumn } from './table-cell-type-column'
+import { TableCellTypeConfig } from './table-cell-type-config'
+import { TableCellTypeExportProps } from './table-cell-type-export-props'
+import { TableCellTypeName } from './table-cell-type-name'
 
 export interface ITableCellTypeManifest {
   /**
@@ -31,6 +35,10 @@ export type CalculatedValueContextFn = () => ICalucatedValueContext
 
 export type CaluclatedValueContextType = ICalucatedValueContext | CalculatedValueContextFn
 
+export type TheSeamTableColumn<T extends TableCellTypeName, C extends TableCellTypeConfig<T> = any> =
+  TableColumn &
+  TableCellTypeColumn<T, C> &
+  TableCellTypeExportProps
 
 export interface TableCellDataChange<T extends TableCellTypeName, C extends TableCellTypeConfig<T>> {
   data: TableCellData<T, C>

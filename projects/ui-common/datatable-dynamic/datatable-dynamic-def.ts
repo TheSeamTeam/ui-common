@@ -1,7 +1,7 @@
 import { PipeTransform } from '@angular/core'
 import { TableColumnProp } from '@marklb/ngx-datatable'
 
-import { TheSeamDatatableColumn } from '@theseam/ui-common/datatable'
+import { TheSeamDatatableColumn, TheSeamDatatableRow } from '@theseam/ui-common/datatable'
 
 import { DynamicValue } from '@theseam/ui-common/dynamic'
 import { ThemeTypes } from '@theseam/ui-common/models'
@@ -174,9 +174,7 @@ export type DynamicDatatableColumn<T extends TableCellTypeName = any, C extends 
 // //   DynamicDatatableColumn<'date', DynamicDatatableCellTypeConfigDate> |
 // //   DynamicDatatableColumn<'icon', DynamicDatatableCellTypeConfigIcon>
 
-export interface DynamicDatatableRow {
-  [prop: string]: any
-}
+export type DynamicDatatableRow = TheSeamDatatableRow
 
 export interface DynamicDatatableFilterMenuItemDef<O = any> {
 

@@ -6,7 +6,6 @@ import { Subscription } from 'rxjs'
 
 // import jexl from 'jexl'
 
-import type { DynamicDatatableRow } from '@theseam/ui-common/datatable-dynamic'
 import { TheSeamDynamicComponentLoader } from '@theseam/ui-common/dynamic-component-loader'
 import { Modal } from '@theseam/ui-common/modal'
 
@@ -32,6 +31,10 @@ import { Modal } from '@theseam/ui-common/modal'
 // export interface IActionMenuItemModalConfig {
 //   component: ComponentType<{}> |  string
 // }
+
+export interface TheSeamDatatableRow {
+  [prop: string]: any
+}
 
 @Directive({
   selector: '[seamDatatableActionMenuItem]'
@@ -96,7 +99,7 @@ export class DatatableActionMenuItemDirective implements OnInit, OnDestroy {
   // private _modalConfig: IActionMenuItemModalConfig
   // private _modalConfigSub: Subscription
 
-  @Input() row: DynamicDatatableRow
+  @Input() row: TheSeamDatatableRow
 
   @Output() click = new EventEmitter<any>()
 
