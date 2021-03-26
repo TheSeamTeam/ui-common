@@ -4,10 +4,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { ExampleLazyLoadedWidgetsModule } from './example-lazy-loaded-widgets/example-lazy-loaded-widgets.module'
 
+import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
 import {
   IDynamicComponentManifest,
   TheSeamDynamicComponentLoaderModule
-} from '@lib/ui-common/dynamic-component-loader'
+} from '@theseam/ui-common/dynamic-component-loader'
 import { AppComponent } from './app.component'
 
 const manifests: IDynamicComponentManifest[] = [
@@ -25,8 +26,9 @@ const manifests: IDynamicComponentManifest[] = [
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    TheSeamDynamicComponentLoaderModule.forRoot(manifests),
-    ExampleLazyLoadedWidgetsModule
+    // TheSeamDynamicComponentLoaderModule.forRoot(manifests),
+    ExampleLazyLoadedWidgetsModule,
+    TheSeamButtonsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

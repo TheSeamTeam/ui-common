@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core'
 
-import { TheSeamDynamicComponentLoader } from '@lib/ui-common/dynamic-component-loader'
+import { TheSeamDynamicComponentLoader } from '@theseam/ui-common/dynamic-component-loader'
 
 import { LazyWidgetOneComponent } from 'src/app/example-lazy-loaded-widgets/lazy-widget-one/lazy-widget-one.component'
 
