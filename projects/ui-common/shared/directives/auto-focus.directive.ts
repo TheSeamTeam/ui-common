@@ -1,5 +1,7 @@
+import { coerceBooleanProperty } from '@angular/cdk/coercion'
 import { Directive, ElementRef, Input, OnInit, Optional } from '@angular/core'
 
+import { BooleanInput } from '@theseam/ui-common/core'
 import { getClosestModal, Modal, ModalRef } from '@theseam/ui-common/modal'
 
 @Directive({
@@ -7,6 +9,8 @@ import { getClosestModal, Modal, ModalRef } from '@theseam/ui-common/modal'
     exportAs: 'seamAutoFocus'
 })
 export class AutoFocusDirective implements OnInit {
+  static ngAcceptInputType_seamAutoFocus: BooleanInput
+
   private _focus = true
 
   public modalRef: ModalRef<any> | undefined | null
@@ -42,7 +46,7 @@ export class AutoFocusDirective implements OnInit {
 
   @Input()
   set seamAutoFocus(condition: boolean) {
-    this._focus = condition !== false
+    this._focus = coerceBooleanProperty(condition) !== false
   }
 
   public focus() {

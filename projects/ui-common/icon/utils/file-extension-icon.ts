@@ -11,7 +11,7 @@ import {
 
 import { SeamIcon } from '../icon'
 
-const FILE_EXTENSION_ICONS = {
+const FILE_EXTENSION_ICONS: { [type: string]: SeamIcon } = {
   'pdf': faFilePdf,
   'doc': faFileWord,
   'docx': faFileWord,
@@ -28,7 +28,7 @@ const FILE_EXTENSION_ICONS = {
   'json': faFileAlt
 }
 
-export const DEFAULT_FILE_EXTENSION_ICON = faFile
+export const DEFAULT_FILE_EXTENSION_ICON: SeamIcon = faFile
 
 export function fileExtensionIcon(extension: string | null | undefined, defaultIfNotFound: boolean = true): SeamIcon | undefined {
   if (!extension) {

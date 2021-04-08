@@ -17,7 +17,7 @@ export class TabbedComponent implements OnInit, AfterContentInit, OnDestroy {
   private _direction: TabsDirection = 'vertical'
   private _hideTabs = false
 
-  @ContentChildren(TabbedItemComponent) tabbedItems: QueryList<TabbedItemComponent>
+  @ContentChildren(TabbedItemComponent) tabbedItems?: QueryList<TabbedItemComponent>
 
   @Output() tabChanged = new EventEmitter<TabbedItemComponent>()
 
@@ -31,7 +31,7 @@ export class TabbedComponent implements OnInit, AfterContentInit, OnDestroy {
 
   @Input()
   set hideTabs(val: boolean) {
-    setTimeout(_ => {
+    setTimeout(() => {
       this._hideTabs = val
     })
   }
@@ -47,7 +47,7 @@ export class TabbedComponent implements OnInit, AfterContentInit, OnDestroy {
       if (this.route.snapshot.children.length > 0) {
         const config = this.route.snapshot.children[0].routeConfig
         const childPath = config && config.path
-        return this.tabbedItems.find(t => t.name === childPath)
+        return this.tabbedItems?.find(t => t.name === childPath)
       }
     } else {
       return this._selectedTab
@@ -84,7 +84,7 @@ export class TabbedComponent implements OnInit, AfterContentInit, OnDestroy {
   }
 
   ngAfterContentInit() {
-    if (this.tabbedItems.length > 0) {
+    if (this.tabbedItems && this.tabbedItems.length > 0) {
       this.selectedTab = this.tabbedItems.first
     }
   }
@@ -105,7 +105,7 @@ export class TabbedComponent implements OnInit, AfterContentInit, OnDestroy {
    *  to select a tab
    */
   public selectTab(name: string) {
-    const tab = this.tabbedItems.find(t => t.name === name)
+    const tab = this.tabbedItems?.find(t => t.name === name)
     if (tab) {
       this.selectedTab = tab
     } else {

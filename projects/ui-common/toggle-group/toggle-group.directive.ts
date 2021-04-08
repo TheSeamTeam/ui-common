@@ -1,8 +1,10 @@
-import { coerceArray } from '@angular/cdk/coercion'
+import { BooleanInput, coerceArray } from '@angular/cdk/coercion'
 import { AfterViewInit, ContentChildren, Directive, EventEmitter, forwardRef, Input, OnDestroy, Output, QueryList } from '@angular/core'
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
 import { combineLatest, from, Observable, of, Subject } from 'rxjs'
 import { filter, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators'
+
+import { InputBoolean } from '@theseam/ui-common/core'
 
 import { ToggleGroupOptionDirective } from './toggle-group-option.directive'
 
@@ -19,22 +21,26 @@ export const TOGGLE_GROUP_VALUE_ACCESSOR: any = {
   providers: [ TOGGLE_GROUP_VALUE_ACCESSOR ]
 })
 export class ToggleGroupDirective implements OnDestroy, AfterViewInit, ControlValueAccessor {
+  static ngAcceptInputType_disabled: BooleanInput
+  static ngAcceptInputType_multiple: BooleanInput
+  static ngAcceptInputType_selectionToggleable: BooleanInput
 
   private readonly _ngUnsubscribe = new Subject()
 
   // tslint:disable-next-line:no-input-rename
-  @Input('value') val: string | string[] | undefined
-  @Input() disabled: boolean
-  @Input() multiple = false
-  @Input() selectionToggleable = true
+  @Input('value') val: string | string[] | undefined | null
+
+  @Input() @InputBoolean() disabled: boolean = false
+  @Input() @InputBoolean() multiple: boolean = false
+  @Input() @InputBoolean() selectionToggleable: boolean = true
 
   // TODO: Add min/max selected inputs to make toggling better for multi select
 
-  @Output() readonly change = new EventEmitter<string | string[] | undefined>()
+  @Output() readonly change = new EventEmitter<string | string[] | undefined | null>()
 
-  @ContentChildren(ToggleGroupOptionDirective) optionDirectives: QueryList<ToggleGroupOptionDirective>
+  @ContentChildren(ToggleGroupOptionDirective) optionDirectives?: QueryList<ToggleGroupOptionDirective>
 
-  public options: Observable<ToggleGroupOptionDirective[]>
+  public options?: Observable<ToggleGroupOptionDirective[]>
 
   onChange: any
   onTouched: any
@@ -50,13 +56,13 @@ export class ToggleGroupDirective implements OnDestroy, AfterViewInit, ControlVa
     setTimeout(() => {
       this._updateDirectiveStates()
 
-      this.options = this.optionDirectives.changes
-        .pipe(takeUntil(this._ngUnsubscribe))
-        .pipe(startWith(this.optionDirectives))
-        .pipe(map(v => v.toArray() as ToggleGroupOptionDirective[]))
+      if (this.optionDirectives) {
+        this.options = this.optionDirectives.changes
+          .pipe(takeUntil(this._ngUnsubscribe))
+          .pipe(startWith(this.optionDirectives))
+          .pipe(map(v => v.toArray() as ToggleGroupOptionDirective[]))
 
-      this.options
-        .pipe(switchMap(opts => {
+        this.options.pipe(switchMap(opts => {
           const _tmp = of(undefined)
           if (opts) {
             const _v: Observable<boolean>[] = []
@@ -75,22 +81,22 @@ export class ToggleGroupDirective implements OnDestroy, AfterViewInit, ControlVa
             return combineLatest(_v)
           }
           return _tmp
-        }))
-        .subscribe()
+        })).subscribe()
+      }
 
       this.change
-        .pipe(switchMap(_ => from(this.optionDirectives.toArray())
+        .pipe(switchMap(_ => from(this.optionDirectives?.toArray() || [])
           .pipe(tap(opt => { this._updateDirectiveState(opt) }))
         ))
         .subscribe()
     })
   }
 
-  get value(): string | string[] | undefined {
+  get value(): string | string[] | undefined | null {
     return this.val
   }
 
-  set value(value: string | string[] | undefined) {
+  set value(value: string | string[] | undefined | null) {
     const _value = this.multiple
       ? value !== null && value !== undefined
         ? coerceArray(value)
@@ -119,7 +125,7 @@ export class ToggleGroupDirective implements OnDestroy, AfterViewInit, ControlVa
     this.disabled = isDisabled
   }
 
-  isSelected(value: string | undefined) {
+  isSelected(value: string | undefined | null) {
     if (this.multiple) {
       const idx = (<string[]>this.value || []).findIndex(v => v === value)
       return idx !== -1
@@ -132,7 +138,7 @@ export class ToggleGroupDirective implements OnDestroy, AfterViewInit, ControlVa
     }
   }
 
-  unselectValue(value: string | undefined) {
+  unselectValue(value: string | undefined | null) {
     if (this.multiple) {
       this.value = (<string[]>this.value || []).filter(v => v !== value)
     } else {
@@ -140,7 +146,7 @@ export class ToggleGroupDirective implements OnDestroy, AfterViewInit, ControlVa
     }
   }
 
-  selectValue(value: string | undefined) {
+  selectValue(value: string | undefined | null) {
     if (this.multiple) {
       const _value = [ ...(<string[]>this.value || []) ]
       this.value = value ? [ ..._value, value ] : _value

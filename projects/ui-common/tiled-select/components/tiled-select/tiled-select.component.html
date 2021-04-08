@@ -4,10 +4,10 @@
   [@tiles]="tilesAnimationState"
   [@.disabled]="animationsDisabled">
   <ng-container *ngFor="let tile of tiles">
-    <div class="tile-wrapper" [ngClass]="tile.customClass">
+    <div class="tile-wrapper" [ngClass]="tile.customClass || ''">
       <seam-tiled-select-tile
         class="tiled-select-tile"
-        [ngClass]="tile.customClass"
+        [ngClass]="tile.customClass || ''"
         [name]="tile.name"
         [label]="tile.label"
         [icon]="tile.icon"

@@ -27,8 +27,8 @@ export class TiledSelectTileIconComponent implements OnInit {
   @Input() iconClass: string
 
   @Input()
-  get icon(): SeamIcon | undefined { return this._iconUrl || this._iconObj }
-  set icon(value: SeamIcon | undefined) {
+  get icon(): SeamIcon | undefined | null { return this._iconUrl || this._iconObj }
+  set icon(value: SeamIcon | undefined | null) {
     if (typeof value === 'string') {
       this._iconUrl = value
       this._iconObj = undefined
@@ -38,8 +38,8 @@ export class TiledSelectTileIconComponent implements OnInit {
     }
   }
 
-  public _iconUrl: string | undefined
-  public _iconObj: IconProp | undefined
+  public _iconUrl: string | undefined | null
+  public _iconObj: IconProp | undefined | null
 
   @ContentChild(TiledSelectTileIconTplDirective, { static: true }) iconTpl: TiledSelectTileIconTplDirective
 

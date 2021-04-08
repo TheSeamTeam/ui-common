@@ -1,0 +1,36 @@
+storage: .verdaccio-cache
+
+auth:
+  auth-memory:
+    users:
+      foo:
+        name: foo
+        password: s3cret
+      bar:
+        name: bar
+        password: s3cret
+
+uplinks:
+  npmjs:
+    url: https://registry.npmjs.org/
+    cache: true
+
+packages:
+  # theseam packages are NOT proxied to global registry
+  # allowing us to republish any version during tests
+  '@theseam/*':
+    access: $all
+    publish: $all
+
+  '@*/*':
+    access: $all
+    publish: $all
+    proxy: npmjs
+
+  '**':
+    access: $all
+    publish: $all
+    proxy: npmjs
+
+logs:
+  - { type: stdout, format: pretty, level: warn }

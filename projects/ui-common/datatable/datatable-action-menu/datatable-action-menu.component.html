@@ -45,7 +45,7 @@
 
 <button type="button" class="datatable-action-button btn"
   [seamMenuToggle]="menu"
-  [positions]="_actionMenuPositions"
+  [positions]="_actionMenuPositions || []"
   title="Row Actions">
   <seam-icon [icon]="faEllipsisH"></seam-icon>
 </button>

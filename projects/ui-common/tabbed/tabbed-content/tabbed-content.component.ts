@@ -9,7 +9,7 @@ import { TabbedItemComponent } from '../tabbed-item/tabbed-item.component'
 })
 export class TabbedContentComponent implements OnInit {
 
-  @Input() tabbedItem: TabbedItemComponent
+  @Input() tabbedItem?: TabbedItemComponent
 
   constructor() { }
 

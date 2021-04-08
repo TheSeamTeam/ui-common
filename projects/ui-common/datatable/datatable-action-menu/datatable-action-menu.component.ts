@@ -1,3 +1,4 @@
+import { ConnectionPositionPair } from '@angular/cdk/overlay'
 import { Component, ContentChildren, QueryList } from '@angular/core'
 import { NavigationExtras, Router } from '@angular/router'
 
@@ -19,7 +20,7 @@ export class DatatableActionMenuComponent {
   @ContentChildren(DatatableActionMenuItemComponent) items: QueryList<DatatableActionMenuItemComponent>
 
   /** @ignore */
-  _actionMenuPositions = [
+  _actionMenuPositions: ConnectionPositionPair[] = [
     {
       originX: 'start',
       originY: 'bottom',

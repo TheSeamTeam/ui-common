@@ -51,7 +51,7 @@
         <ng-content></ng-content>
       </div>
       <div *ngIf="_queryFooterTpl" class="modal-footer p-2">
-        <ng-container *ngComponentOutlet="_queryFooterTpl.template"></ng-container>
+        <ng-container *ngComponentOutlet="$any(_queryFooterTpl.template)"></ng-container>
       </div>
     </div>
   </ng-template>

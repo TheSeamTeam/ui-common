@@ -3,9 +3,9 @@ import { DOCUMENT } from '@angular/common'
 import { ChangeDetectionStrategy, Component, ElementRef, HostListener, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core'
 import { Subject } from 'rxjs'
 
-import { IconProp } from '@fortawesome/fontawesome-svg-core'
-
 import { CanDisableCtor, mixinDisabled } from '@theseam/ui-common/core'
+import { SeamIcon } from '@theseam/ui-common/icon'
+
 import type { ITheSeamMenuPanel } from './menu-panel'
 import { THESEAM_MENU_PANEL } from './menu-panel-token'
 
@@ -37,7 +37,7 @@ export class MenuItemComponent extends _seamMenuItemMixinBase implements OnInit,
   /** ARIA role for the menu item. */
   @Input() role: 'menuitem' | 'menuitemradio' | 'menuitemcheckbox' = 'menuitem'
 
-  @Input() icon: IconProp | string
+  @Input() icon: SeamIcon | string | undefined | null
   @Input() iconClass: string
 
   @Input() badgeText: string

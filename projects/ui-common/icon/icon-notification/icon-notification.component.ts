@@ -1,9 +1,14 @@
 import { animate, animation, keyframes, style, transition, trigger, useAnimation } from '@angular/animations'
-import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, Input, OnInit } from '@angular/core'
+import { BooleanInput } from '@angular/cdk/coercion'
+import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit } from '@angular/core'
 
+import { SizeProp } from '@fortawesome/fontawesome-svg-core'
 import { faCircle } from '@fortawesome/free-solid-svg-icons'
 
+import { InputBoolean } from '@theseam/ui-common/core'
+
 import { SeamIcon } from '../icon'
+import type { TheSeamIconType } from '../icon/icon.component'
 
 export const pulseAnimation = animation([
   style({ transform: 'scale(1)' }),
@@ -71,21 +76,25 @@ export const pulseAnimation = animation([
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IconNotificationComponent implements OnInit {
+  static ngAcceptInputType_hidden: BooleanInput
+  static ngAcceptInputType_grayscaleOnDisable: BooleanInput
+  static ngAcceptInputType_disabled: BooleanInput
+  static ngAcceptInputType_showDefaultOnError: BooleanInput
 
-  @Input() count: number | undefined
+  @Input() count: number | undefined | null
 
-  @Input() hidden = false
+  @Input() @InputBoolean() hidden = false
 
   /** Toggles whether the img/icon will attempt to be grayscale when disabled is true. */
-  @Input() grayscaleOnDisable = true
+  @Input() @InputBoolean() grayscaleOnDisable = true
 
   /** Toggles the img/icon to grayscale if `grayscaleOnDisable` is true. */
-  @Input() disabled = false
+  @Input() @InputBoolean() disabled = false
 
   /**
    * Placed on the `.seam-icon--fa` and `seam-icon--img` elements.
    */
-  @Input() iconClass: string
+  @Input() iconClass: string | undefined | null
 
   /**
    * The icon to display.
@@ -93,13 +102,13 @@ export class IconNotificationComponent implements OnInit {
    * If the input icon is a string an `img` element will be used with icon as `src`.
    * If the input is not a string it will be assumed to be a font-awesome IconProp object.
    */
-  @Input() icon: SeamIcon | undefined = faCircle
+  @Input() icon: SeamIcon | undefined | null = faCircle
 
   /**
    * Toggles whether an image that has thrown the `onerror` event should show
    * the `defaultIcon` instead.
    */
-  @Input() showDefaultOnError = false
+   @Input() @InputBoolean() showDefaultOnError = false
 
   /**
    * Shown if icon is not set or if showDefaultOnError is true and img has thrown an error.
@@ -111,9 +120,9 @@ export class IconNotificationComponent implements OnInit {
   /**
    * NOTE: Only works for fa-icon for now.
    */
-  @Input() size: string
+  @Input() size: SizeProp | undefined | null
 
-  @Input() iconType: '' | 'borderless-styled-square' | 'styled-square' | 'image-fill' = 'image-fill'
+  @Input() iconType: TheSeamIconType | undefined | null = 'image-fill'
 
   constructor(
     private _elementRef: ElementRef<HTMLElement>

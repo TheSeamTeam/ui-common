@@ -10,7 +10,7 @@
       [placement]="_tooltipPlacement"
       [container]="_tooltipContainer"
       [disableTooltip]="_tooltipDisabled">
-      <seam-icon [icon]="_icon" size="lg" [iconType]="_iconType" [iconClass]="_iconClass"></seam-icon>
+      <seam-icon [icon]="_icon" size="lg" [iconType]="_iconType" [iconClass]="_iconClass || ''"></seam-icon>
       <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
     </a>
   </div>

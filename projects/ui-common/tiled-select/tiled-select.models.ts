@@ -1,10 +1,10 @@
-import { IconProp } from '@fortawesome/fontawesome-svg-core'
+import { SeamIcon } from '@theseam/ui-common/icon'
 
 export interface ITiledSelectItem {
   name?: string
   value: string
   label: string
-  icon?: string | IconProp
+  icon?: SeamIcon
   disabled?: boolean
   hidden?: boolean
   customClass?: string

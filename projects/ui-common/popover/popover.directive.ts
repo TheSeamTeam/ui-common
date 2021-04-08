@@ -3,7 +3,7 @@ import { coerceBooleanProperty, coerceNumberProperty } from '@angular/cdk/coerci
 import { ESCAPE } from '@angular/cdk/keycodes'
 import { ConnectionPositionPair, Overlay, OverlayRef, PositionStrategy } from '@angular/cdk/overlay'
 import { normalizePassiveListenerOptions } from '@angular/cdk/platform'
-import { ComponentPortal, TemplatePortal } from '@angular/cdk/portal'
+import { ComponentPortal } from '@angular/cdk/portal'
 import { ComponentRef, Directive, ElementRef, HostListener, Input, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from '@angular/core'
 import { BehaviorSubject, fromEvent, merge, of, Subject, Subscription } from 'rxjs'
 import { switchMap, takeUntil } from 'rxjs/operators'
@@ -68,8 +68,8 @@ export class TheSeamPopoverDirective implements OnDestroy {
 
   private _active = false
   private _closing = false
-  private _overlayRef: OverlayRef
-  private _compRef: ComponentRef<PopoverComponent>
+  private _overlayRef: OverlayRef | undefined | null
+  private _compRef: ComponentRef<PopoverComponent> | undefined | null
   private _popoverClosedSubscription = Subscription.EMPTY
   private _closingActionsSubscription = Subscription.EMPTY
 
@@ -166,7 +166,7 @@ export class TheSeamPopoverDirective implements OnDestroy {
 
     this._popoverClosedSubscription = this._compRef.instance._afterExit.subscribe(v => {
       // console.log('closed', v)
-      if (this._overlayRef.hasAttached()) {
+      if (this._overlayRef?.hasAttached()) {
         this._overlayRef.detach()
       }
 
@@ -192,7 +192,7 @@ export class TheSeamPopoverDirective implements OnDestroy {
   }
 
   public popoverOpen(): boolean {
-    return this._overlayRef && this._overlayRef.hasAttached()
+    return this._overlayRef?.hasAttached() ?? false
   }
 
   private getOverlayPosition(origin: HTMLElement): PositionStrategy {
@@ -279,8 +279,8 @@ export class TheSeamPopoverDirective implements OnDestroy {
 
   /** Returns a stream that emits whenever an action that should close the popover occurs. */
   private _popoverClosingActions() {
-    const backdrop = this._overlayRef.backdropClick()
-    const detachments = this._overlayRef.detachments()
+    const backdrop = this._overlayRef?.backdropClick() ?? of()
+    const detachments = this._overlayRef?.detachments() ?? of()
     const hover = of()
 
     return merge(backdrop, hover, detachments)

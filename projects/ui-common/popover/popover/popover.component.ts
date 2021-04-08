@@ -75,11 +75,11 @@ export class PopoverComponent implements OnInit, OnDestroy {
 
   @HostBinding('attr.tabindex') get _tabindex() { return -1 }
 
-  @Input() template: TemplateRef<any>
+  @Input() template: TemplateRef<any> | undefined | null
 
   // @Output() readonly closed = new EventEmitter<void | 'click' | 'keydown'>()
 
-  @Input() popoverClass: string
+  @Input() popoverClass: string | undefined | null
 
   /**
    * Defines a width for a popover that will scale down if the window innerWidth is

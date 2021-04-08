@@ -1,8 +1,10 @@
+import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion'
 import { Component, HostBinding, Input } from '@angular/core'
 
-import { IconProp } from '@fortawesome/fontawesome-svg-core'
+import { IconProp, SizeProp } from '@fortawesome/fontawesome-svg-core'
 
-import { coerceBooleanProperty } from '@angular/cdk/coercion'
+import { InputBoolean } from '@theseam/ui-common/core'
+
 import { SeamIcon } from '../icon'
 
 //
@@ -21,25 +23,22 @@ export type TheSeamIconType = 'borderless-styled-square' | 'styled-square' | 'im
   styleUrls: ['./icon.component.scss']
 })
 export class IconComponent {
+  static ngAcceptInputType_grayscaleOnDisable: BooleanInput
+  static ngAcceptInputType_disabled: BooleanInput
+  static ngAcceptInputType_showDefaultOnError: BooleanInput
 
   needToFix = needToFix
 
   /** Toggles whether the img/icon will attempt to be grayscale when disabled is true. */
-  @Input()
-  set grayscaleOnDisable(value: boolean) { this._grayscaleOnDisable = coerceBooleanProperty(value) }
-  get grayscaleOnDisable(): boolean { return this._grayscaleOnDisable }
-  private _grayscaleOnDisable: boolean = true
+  @Input() @InputBoolean() grayscaleOnDisable: boolean = true
 
   /** Toggles the img/icon to grayscale if `grayscaleOnDisable` is true. */
-  @Input()
-  set disabled(value: boolean) { this._disabled = coerceBooleanProperty(value) }
-  get disabled(): boolean { return this._disabled }
-  private _disabled: boolean = false
+  @Input() @InputBoolean() disabled: boolean = false
 
   /**
    * Placed on the `.seam-icon--fa` and `seam-icon--img` elements.
    */
-  @Input() iconClass: string
+  @Input() iconClass: string | undefined | null
 
   /**
    * The icon to display.
@@ -48,8 +47,8 @@ export class IconComponent {
    * If the input is not a string it will be assumed to be a font-awesome IconProp object.
    */
   @Input()
-  get icon(): SeamIcon | undefined { return this._iconUrl || this._iconObj }
-  set icon(value: SeamIcon | undefined) {
+  get icon(): SeamIcon | undefined | null { return this._iconUrl || this._iconObj }
+  set icon(value: SeamIcon | undefined | null) {
     if (typeof value === 'string') {
       this._iconUrl = value
       this._iconObj = undefined
@@ -67,16 +66,16 @@ export class IconComponent {
     }
   }
 
-  public _iconUrl: string | undefined
-  public _iconObj: IconProp | undefined
+  public _iconUrl: string | undefined | null
+  public _iconObj: IconProp | undefined | null
 
-  private _iconUrlBeforeError: string | undefined
-  private _iconObjBeforeError: IconProp | undefined
+  private _iconUrlBeforeError: string | undefined | null
+  private _iconObjBeforeError: IconProp | undefined | null
 
   /**
    * NOTE: Only works for fa-icon for now.
    */
-  @Input() size: string
+  @Input() size: SizeProp | undefined | null
 
   /**
    * Toggles whether an image that has thrown the `onerror` event should show
@@ -85,7 +84,7 @@ export class IconComponent {
   @Input()
   get showDefaultOnError(): boolean { return this._showDefaultOnError }
   set showDefaultOnError(value: boolean) {
-    this._showDefaultOnError = value
+    this._showDefaultOnError = coerceBooleanProperty(value)
     if (this._hasError) {
       if (this._iconUrlBeforeError || this._iconObjBeforeError) {
         this._iconUrl = this._iconUrlBeforeError
@@ -104,8 +103,8 @@ export class IconComponent {
    * Shown if icon is not set or if showDefaultOnError is true and img has thrown an error.
    */
   @Input()
-  get defaultIcon(): SeamIcon | undefined { return this._defaultIconUrl || this._defaultIconObj }
-  set defaultIcon(value: SeamIcon | undefined) {
+  get defaultIcon(): SeamIcon | undefined | null { return this._defaultIconUrl || this._defaultIconObj }
+  set defaultIcon(value: SeamIcon | undefined | null) {
     if (typeof value === 'string') {
       this._defaultIconUrl = value
       this._defaultIconObj = undefined
@@ -125,8 +124,8 @@ export class IconComponent {
     }
   }
 
-  public _defaultIconUrl: string | undefined
-  public _defaultIconObj: IconProp | undefined
+  public _defaultIconUrl: string | undefined | null
+  public _defaultIconObj: IconProp | undefined | null
 
   @Input() iconType: TheSeamIconType
 
@@ -135,7 +134,7 @@ export class IconComponent {
 
   private _hasError = false
 
-  public _imgError(event: UIEvent): void {
+  public _imgError(event: ErrorEvent): void {
     this._hasError = true
     if (this._showDefaultOnError && (this._defaultIconUrl || this._defaultIconObj)) {
       this._iconUrlBeforeError = this._iconUrl

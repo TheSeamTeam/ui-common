@@ -4,7 +4,7 @@ import { distinctUntilChanged, map, shareReplay, startWith, tap } from 'rxjs/ope
 
 import { MediaQueryAliases } from './breakpoint-aliases'
 
-const mediaQueriesMap = {
+const mediaQueriesMap: { [breakpoint: string]: string } = {
   'xs'   : 'screen and (max-width: 599px)',
   'sm'   : 'screen and (min-width: 600px) and (max-width: 959px)',
   'md'   : 'screen and (min-width: 960px) and (max-width: 1279px)',

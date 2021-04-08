@@ -1,5 +1,5 @@
 <table cdk-table [dataSource]="displayedRows" class="table table-header-divider-indented mb-0"
-  [class.table-striped]="rows?.length > 0"
+  [class.table-striped]="rows && rows.length > 0"
   [class.table-sm]="size === 'sm'"
   [class.table-no-header]="!hasHeader">
   <ng-container *ngFor="let r of displayedRecords; first as isFirst; trackBy:_trackByRecords">
@@ -13,17 +13,17 @@
         [attr.colspan]="element?._emptyDisplay && isFirst ? 2 : undefined"
         [class.border-top-0]="element?._emptyDisplay && isFirst"
         [class.d-none]="element?._emptyDisplay && !isFirst"
-        [style]="r?.cellTypeConfig?.styles">
+        [style]="$any(r)?.cellTypeConfig?.styles">
 
-        <span [style]="r?.cellTypeConfig?.styles"></span>
+        <span [style]="$any(r)?.cellTypeConfig?.styles"></span>
 
         <ng-container *ngIf="element?._emptyDisplay && isFirst; else hasDataTpl">
           No records found
         </ng-container>
 
         <ng-template #hasDataTpl>
-          <seam-table-cell-type-selector *ngIf="r?.cellType; else noCellType"
-            [type]="r?.cellType"
+          <seam-table-cell-type-selector *ngIf="$any(r)?.cellType; else noCellType"
+            [type]="$any(r)?.cellType"
             [value]="element[r.prop]"
             [rowIndex]="rowIndex"
             [row]="element"

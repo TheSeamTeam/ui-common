@@ -43,6 +43,7 @@ testem.log
 /typings
 documentation.json
 build-storybook.log
+.verdaccio-cache
 
 # System Files
 .DS_Store

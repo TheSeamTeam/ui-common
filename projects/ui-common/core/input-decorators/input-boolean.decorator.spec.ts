@@ -1,7 +1,7 @@
-import { BooleanInput } from './boolean-input.decorator'
+import { InputBoolean } from './input-boolean.decorator'
 
 class Fixture {
-  @BooleanInput() b
+  @InputBoolean() b
 }
 
 function shouldCoerce(value: any, expected: boolean) {
@@ -11,7 +11,7 @@ function shouldCoerce(value: any, expected: boolean) {
   expect(f.b).toBe(expected)
 }
 
-fdescribe('Decorator BooleanInput', () => {
+fdescribe('Decorator InputBoolean', () => {
   it('should coerce boolean to boolean', () => {
     shouldCoerce(true, true)
   })

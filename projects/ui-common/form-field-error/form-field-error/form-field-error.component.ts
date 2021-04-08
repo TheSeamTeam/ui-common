@@ -8,7 +8,7 @@ import { Component, Input, OnInit } from '@angular/core'
 export class FormFieldErrorComponent implements OnInit {
 
   @Input() validatorName: string
-  @Input() message: string
+  @Input() message: string | undefined | null
 
   @Input() showValidatorName = false
 

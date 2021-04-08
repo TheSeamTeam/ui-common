@@ -1,5 +1,7 @@
+import { BooleanInput } from '@angular/cdk/coercion'
 import { Directive, ElementRef, HostBinding, HostListener, Input } from '@angular/core'
 
+import { InputBoolean } from '@theseam/ui-common/core'
 import { TheSeamLoadingOverlayService } from '@theseam/ui-common/loading'
 
 import { AssetReaderHelperService } from './asset-reader-helper.service'
@@ -13,17 +15,22 @@ import { AssetReaderHelperService } from './asset-reader-helper.service'
   selector: '[seamEncryptedAssetLink]'
 })
 export class EncryptedAssetLinkDirective {
+  static ngAcceptInputType_seamShowLoadingOverlay: BooleanInput
+  static ngAcceptInputType_seamDetectMimeFromContent: BooleanInput
+  static ngAcceptInputType_seamDownloadAsset: BooleanInput
 
-  @Input() seamEncryptedAssetLink: string
-  @Input() seamShowLoadingOverlay = true
-  @Input() seamDetectMimeFromContent = true
-  @Input() seamDownloadAsset = false
+  @Input() seamEncryptedAssetLink: string | undefined | null
+  @Input() @InputBoolean() seamShowLoadingOverlay = true
+  @Input() @InputBoolean() seamDetectMimeFromContent = true
+  @Input() @InputBoolean() seamDownloadAsset = false
 
   // TODO: Find out why I need this for buttons.
   @HostBinding('attr.href') get _attrHref() { return this.seamEncryptedAssetLink }
 
   @HostListener('click', [ '$event' ])
-  _onClick(event) {
+  _onClick(event: MouseEvent) {
+    if (!this.seamEncryptedAssetLink) { return }
+
     let open$ = this._assetReaderHelper.openLink(
       this.seamEncryptedAssetLink,
       this.seamDetectMimeFromContent,

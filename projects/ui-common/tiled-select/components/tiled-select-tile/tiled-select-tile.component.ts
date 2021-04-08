@@ -1,8 +1,10 @@
 import { animate, animation, keyframes, style, transition, trigger, useAnimation } from '@angular/animations'
 import { ChangeDetectorRef, Component, ContentChild, EventEmitter, HostBinding, Input, Output } from '@angular/core'
 
-import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { faCheckCircle } from '@fortawesome/free-regular-svg-icons'
+
+import { BooleanInput, InputBoolean } from '@theseam/ui-common/core'
+import { SeamIcon } from '@theseam/ui-common/icon'
 
 import { TiledSelectTileLabelTplDirective } from '../../directives/tiled-select-tile-label-tpl.directive'
 import { TiledSelectTileOverlayDirective } from '../../directives/tiled-select-tile-overlay.directive'
@@ -63,6 +65,13 @@ export const tileScaleDown = animation(
   // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TiledSelectTileComponent {
+  static ngAcceptInputType_disabled: BooleanInput
+  static ngAcceptInputType_selected: BooleanInput
+  static ngAcceptInputType_tileBackdrop: BooleanInput
+  static ngAcceptInputType_selectable: BooleanInput
+  static ngAcceptInputType_grayscaleOnDisable: BooleanInput
+  static ngAcceptInputType_showLabel: BooleanInput
+  static ngAcceptInputType_showSelectedIcon: BooleanInput
 
   faCheckCircle = faCheckCircle
 
@@ -70,21 +79,21 @@ export class TiledSelectTileComponent {
 
   @Input() layout: TiledSelectLayout = 'grid'
 
-  @Input() name: string
+  @Input() name: string | undefined
   @Input() label: string
-  @Input() icon: string | IconProp
-  @Input() disabled = false
-  @Input() selected = false
+  @Input() icon: SeamIcon | undefined | null
+  @Input() @InputBoolean() disabled = false
+  @Input() @InputBoolean() selected = false
 
-  @Input() tileBackdrop = false
-  @Input() selectable = false
-  @Input() grayscaleOnDisable = true
-  @Input() showLabel = true
-  @Input() showSelectedIcon = true
+  @Input() @InputBoolean() tileBackdrop = false
+  @Input() @InputBoolean() selectable = false
+  @Input() @InputBoolean() grayscaleOnDisable = true
+  @Input() @InputBoolean() showLabel = true
+  @Input() @InputBoolean() showSelectedIcon = true
 
   @Input() iconClass: string
 
-  @Input() overlayTpl: TiledSelectTileOverlayDirective
+  @Input() overlayTpl: TiledSelectTileOverlayDirective | undefined | null
 
   @Output() activated = new EventEmitter<any>()
 

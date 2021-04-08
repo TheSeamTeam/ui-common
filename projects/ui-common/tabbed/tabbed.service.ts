@@ -7,7 +7,7 @@ export declare type TabsDirection = 'horizontal' | 'vertical'
 @Injectable()
 export class TabbedService {
 
-  private _tabGroups = {}
+  private _tabGroups: { [groupName: string]: TabbedComponent[] } = {}
 
   constructor() { }
 

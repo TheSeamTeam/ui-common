@@ -39,7 +39,7 @@
         [summaryHeight]="summaryHeight"
         [summaryPosition]="summaryPosition"
         [rows]="rows$ | async"
-        [columns]="displayColumns$ | async"
+        [columns]="$any(displayColumns$ | async)"
         [headerHeight]="headerHeight"
         [rowHeight]="rowHeight"
         [footerHeight]="footerHeight"

@@ -21,7 +21,10 @@ import { AbstractControl } from '@angular/forms'
  * ```
  */
 export function getControlName(c: AbstractControl): string | null {
-  if (!c.parent!) { return null }
-  const controls = c.parent!.controls
+  if (!c.parent) { return null }
+  // NOTE: Typed as 'any' because using string for array index is not valid for
+  // array index type, but it works and we actually want the index as a string
+  // anyway.
+  const controls: any = c.parent.controls
   return Object.keys(controls).find(name => c === controls[name]) || null
 }

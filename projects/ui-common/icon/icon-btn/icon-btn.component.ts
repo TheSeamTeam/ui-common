@@ -1,7 +1,13 @@
+import { BooleanInput } from '@angular/cdk/coercion'
 import { Component, DoCheck, ElementRef, HostBinding, Input, OnInit, Renderer2 } from '@angular/core'
 
+import { SizeProp } from '@fortawesome/fontawesome-svg-core'
+
+import { InputBoolean } from '@theseam/ui-common/core'
 import type { ThemeTypes } from '@theseam/ui-common/models'
+
 import type { SeamIcon } from '../icon'
+import type { TheSeamIconType } from '../icon/icon.component'
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -26,17 +32,20 @@ import type { SeamIcon } from '../icon'
   },
 })
 export class IconBtnComponent implements OnInit, DoCheck {
+  static ngAcceptInputType_grayscaleOnDisable: BooleanInput
+  static ngAcceptInputType_disabled: BooleanInput
+  static ngAcceptInputType_showDefaultOnError: BooleanInput
 
   /** Toggles whether the img/icon will attempt to be grayscale when disabled is true. */
-  @Input() grayscaleOnDisable = true
+  @Input() @InputBoolean() grayscaleOnDisable: boolean = true
 
   /** Toggles the img/icon to grayscale if `grayscaleOnDisable` is true. */
-  @Input() disabled = false
+  @Input() @InputBoolean() disabled: boolean = false
 
   /**
    * Placed on the `.seam-icon--fa` and `seam-icon--img` elements.
    */
-  @Input() iconClass: string
+  @Input() iconClass: string | undefined | null
 
   /**
    * The icon to display.
@@ -44,18 +53,18 @@ export class IconBtnComponent implements OnInit, DoCheck {
    * If the input icon is a string an `img` element will be used with icon as `src`.
    * If the input is not a string it will be assumed to be a font-awesome IconProp object.
    */
-  @Input() icon: SeamIcon
+  @Input() icon: SeamIcon | undefined | null
 
   /**
    * NOTE: Only works for fa-icon for now.
    */
-  @Input() size: string
+  @Input() size: SizeProp | undefined | null
 
   /**
    * Toggles whether an image that has thrown the `onerror` event should show
    * the `defaultIcon` instead.
    */
-  @Input() showDefaultOnError = false
+   @Input() @InputBoolean() showDefaultOnError: boolean = false
 
   /**
    * Shown if icon is not set or if showDefaultOnError is true and img has thrown an error.
@@ -64,7 +73,7 @@ export class IconBtnComponent implements OnInit, DoCheck {
    */
   // @Input() defaultIcon: SeamIcon
 
-  @Input() iconType: '' | 'borderless-styled-square' | 'styled-square' | 'image-fill' = 'image-fill'
+  @Input() iconType: TheSeamIconType | undefined | null = 'image-fill'
 
   @HostBinding('class.p-0') _cssPadding0 = true
 
@@ -85,25 +94,25 @@ export class IconBtnComponent implements OnInit, DoCheck {
   @HostBinding('class.btn-sm') get _btnSizeSm() { return this.btnSize === 'sm' }
   @HostBinding('class.btn-lg') get _btnSizeLg() { return this.btnSize === 'lg' }
 
-  @Input() btnTheme: ThemeTypes = 'default'
-  @Input() badgeTheme: ThemeTypes = 'light'
-  @Input() badgeText = ''
+  @Input() btnTheme: ThemeTypes | undefined | null = 'default'
+  @Input() badgeTheme: ThemeTypes | undefined | null = 'light'
+  @Input() badgeText: string | undefined | null = ''
 
-  @Input() btnSize: 'sm' | 'lg' | undefined = undefined
+  @Input() btnSize: 'sm' | 'lg' | undefined | null
 
   @Input()
-  get type() { return this._type }
-  set type(value: string) {
+  get type(): string | undefined | null { return this._type }
+  set type(value: string | undefined | null) {
     this._type = value
   }
-  private _type: string
+  private _type: string | undefined | null
 
   @Input()
-  get role() { return this._role }
-  set role(value: string) {
+  get role(): string | undefined | null { return this._role }
+  set role(value: string | undefined | null) {
     this._role = value
   }
-  private _role: string
+  private _role: string | undefined | null
 
   constructor(
     private _elementRef: ElementRef<HTMLButtonElement | HTMLAnchorElement>,

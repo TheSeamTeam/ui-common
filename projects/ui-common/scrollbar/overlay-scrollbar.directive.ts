@@ -12,11 +12,12 @@ import type { IOverlayScrollbarsConfig } from './overlay-scrollbars-config-model
   exportAs: 'seamOverlayScrollbar'
 })
 export class OverlayScrollbarDirective implements OnInit, AfterViewInit, OnDestroy {
+  static ngAcceptInputType_seamOverlayScrollbar: IOverlayScrollbarsConfig | undefined | null | ''
 
   private _disabled = false
 
   @Input()
-  set seamOverlayScrollbar(value: IOverlayScrollbarsConfig) { this.options = value }
+  set seamOverlayScrollbar(value: IOverlayScrollbarsConfig | undefined | null) { this.options = value }
 
   @Input()
   get overlayScrollbarEnabled(): boolean {
@@ -31,7 +32,7 @@ export class OverlayScrollbarDirective implements OnInit, AfterViewInit, OnDestr
     }
   }
 
-  set options(value: IOverlayScrollbarsConfig) {
+  set options(value: IOverlayScrollbarsConfig | undefined | null) {
     this._options = value || {}
     this._scrollbars.setOptions(this._ref.nativeElement, this._options)
   }

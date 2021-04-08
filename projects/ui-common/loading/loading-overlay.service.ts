@@ -11,7 +11,7 @@ export class TheSeamLoadingOverlayService {
 
   private _enabled = false
 
-  private _overlayRef: OverlayRef
+  private _overlayRef?: OverlayRef
 
   constructor(
     private _overlay: Overlay
@@ -46,7 +46,7 @@ export class TheSeamLoadingOverlayService {
   public disable() {
     if (!this.enabled) { return }
 
-    this._overlayRef.dispose()
+    this._overlayRef?.dispose()
 
     this._enabled = false
   }

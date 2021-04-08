@@ -1,5 +1,7 @@
 import { AbstractControl } from '@angular/forms'
 
+import { hasProperty } from '../has-property'
+
 /**
  * Check if control has a required control.
  *
@@ -36,14 +38,17 @@ export function hasRequiredControl(abstractControl: AbstractControl): boolean {
         return true
     }
   }
-  if (abstractControl['controls']) {
-      for (const controlName in abstractControl['controls']) {
-          if (abstractControl['controls'][controlName]) {
-              if (hasRequiredControl(abstractControl['controls'][controlName])) {
+
+  const _abstractControl: any = abstractControl
+  if (hasProperty(_abstractControl, 'controls')) {
+      for (const controlName in _abstractControl.controls) {
+          if (_abstractControl.controls[controlName]) {
+              if (hasRequiredControl(_abstractControl.controls[controlName])) {
                   return true
               }
           }
       }
   }
+
   return false
 }

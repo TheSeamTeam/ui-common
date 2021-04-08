@@ -1,6 +1,6 @@
 {
   "name": "@theseam/ui-common",
-  "version": "0.2.14",
+  "version": "0.2.14-beta.4",
   "scripts": {
     "build": "../../node_modules/.bin/tsc -p tsconfig.schematics.json",
     "copy:schemas": "cp --parents schematics/*/schema.json ../../dist/ui-common/",
@@ -48,7 +48,8 @@
     "intl-tel-input": "^17.0.5",
     "@ajsf/core": "^0.1.5",
     "quill": "^1.3.7",
-    "ngx-quill": "^13.2.0"
+    "ngx-quill": "^13.2.0",
+    "@types/quill": "^1.3.10"
   },
   "repository": {
     "type": "git",

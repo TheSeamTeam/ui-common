@@ -7,7 +7,7 @@ import { ChangeDetectorRef, Directive, ElementRef, EventEmitter, HostBinding, In
 })
 export class ToggleGroupOptionDirective {
 
-  @Input() seamToggleGroupOption: string
+  @Input() seamToggleGroupOption: string | undefined | null
 
   @Input()
   get selected(): boolean { return this._selected }
@@ -33,7 +33,7 @@ export class ToggleGroupOptionDirective {
     private readonly _cdr: ChangeDetectorRef
   ) { }
 
-  get value(): string {
+  get value(): string | undefined | null {
     return this.seamToggleGroupOption
   }
 

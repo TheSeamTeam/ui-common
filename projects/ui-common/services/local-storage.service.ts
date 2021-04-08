@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core'
 import { BehaviorSubject, fromEvent, Observable } from 'rxjs'
 import { filter, map, tap } from 'rxjs/operators'
 
-import * as localStorageMemory from 'localstorage-memory'
+import localStorageMemory from 'localstorage-memory'
 
 import { notNullOrUndefined } from '@theseam/ui-common/utils'
 

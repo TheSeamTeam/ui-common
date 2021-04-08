@@ -5,7 +5,7 @@ export async function waitOnConditionAsync(
 ): Promise<any> {
   const timeStart: any = new Date()
 
-  const _waitFunc = (callback: (boolean) => any) => {
+  const _waitFunc = (callback: (boolean: boolean) => any) => {
     let conditionSuccess = false
 
     if (condition()) {

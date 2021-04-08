@@ -5,7 +5,7 @@ import { Directive, Input, TemplateRef } from '@angular/core'
 })
 export class FormFieldErrorListItemDirective {
 
-  @Input() validatorName: string
+  @Input() validatorName: string | undefined | null
 
   constructor(public template: TemplateRef<any>) {}
 

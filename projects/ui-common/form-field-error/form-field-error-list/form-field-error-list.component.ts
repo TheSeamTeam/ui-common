@@ -33,26 +33,26 @@ export class FormFieldErrorListComponent implements OnInit, OnDestroy, DoCheck {
     return this.showErrors ? 'block' : 'none'
   }
 
-  private static readonly defaultMessages = {
+  private static readonly defaultMessages: { [name: string]: ((params: any) => string) | (() => string) } = {
     // required: () => 'Required',
     // minlength: (params) => 'The min number of characters is ' + params.requiredLength,
     // maxlength: (params) => 'The max allowed number of characters is ' + params.requiredLength,
     // pattern: (params) => 'The required pattern is: ' + params.requiredPattern
   }
 
-  private readonly _defaultMessages = {
+  private readonly _defaultMessages: { [name: string]: ((params: any) => string) | (() => string) } = {
     // required: () => 'Required',
     // minlength: (params) => 'The min number of characters is ' + params.requiredLength,
     // maxlength: (params) => 'The max allowed number of characters is ' + params.requiredLength,
     // pattern: (params) => 'The required pattern is: ' + params.requiredPattern
   }
 
-  private _errors: any[]
+  private _errors: any[] = []
 
   public _paddingErrors = []
 
   @Input()
-  set errors(records: IErrorRecord[]) {
+  set errors(records: IErrorRecord[] | undefined | null) {
     // if (val instanceof Array) {
     //   this._errors = val
     // } else {
@@ -90,7 +90,7 @@ export class FormFieldErrorListComponent implements OnInit, OnDestroy, DoCheck {
     //   this._errors = errs
     // }
 
-    this._initErrorInput(records)
+    this._initErrorInput(records || [])
   }
 
   // get errors() {
@@ -195,12 +195,14 @@ export class FormFieldErrorListComponent implements OnInit, OnDestroy, DoCheck {
   @Input() maxErrors = -1
 
   @Input()
-  get control(): AbstractControlDirective | AbstractControl { return this._control }
-  set control(value: AbstractControlDirective | AbstractControl) {
+  get control(): AbstractControlDirective | AbstractControl | undefined | null { return this._control }
+  set control(value: AbstractControlDirective | AbstractControl | undefined | null) {
     this._control = value
-    this._initControlListeners(value)
+    if (value) {
+      this._initControlListeners(value)
+    }
   }
-  private _control: AbstractControlDirective | AbstractControl
+  private _control: AbstractControlDirective | AbstractControl | undefined | null
 
   private _valueChangeSub = Subscription.EMPTY
   private _errorTplsChangeSub = Subscription.EMPTY
@@ -358,7 +360,7 @@ export class FormFieldErrorListComponent implements OnInit, OnDestroy, DoCheck {
   private _updateErrorTemplates(tplsList: FormFieldErrorListItemTplDirective[]): void {
     const errs: IErrorRecord[] = []
     for (const tpl of tplsList) {
-      if (tpl.validatorName !== undefined) {
+      if (tpl.validatorName !== undefined && tpl.validatorName !== null) {
         errs.push({
           validatorName: tpl.validatorName,
           error: null,
@@ -395,7 +397,7 @@ export class FormFieldErrorListComponent implements OnInit, OnDestroy, DoCheck {
   ): IErrorRecord[] {
     const errs: IErrorRecord[] = []
 
-    const errsMap = {}
+    const errsMap: { [name: string]: IErrorRecord } = {}
 
     for (const err of controlErrors) {
       if (err.message || err.template) {
@@ -421,13 +423,18 @@ export class FormFieldErrorListComponent implements OnInit, OnDestroy, DoCheck {
       }
     }
 
+    const control = this.control
+    if (!control) {
+      return []
+    }
+
     return errs
-      .filter(err => this._isErrorValidator(this.control.errors, err.validatorName))
+      .filter(err => this._isErrorValidator(control.errors, err.validatorName))
       .filter(err => !err.external)
       .map(err => ({
         ...err,
-        error: this.control.errors ? this.control.errors[err.validatorName] : null,
-        _errors: this.control.errors
+        error: control.errors ? control.errors[err.validatorName] : null,
+        _errors: control.errors
       } as IErrorRecord))
   }
 

@@ -19,7 +19,7 @@
     <ng-container *ngIf="isPasswordInput">
       <div class="position-relative">
         <ng-container *ngTemplateOutlet="content"></ng-container>
-        <seam-password-input-reveal [inputRef]="passwordInputElement"></seam-password-input-reveal>
+        <seam-password-input-reveal [inputRef]="$any(passwordInputElement)"></seam-password-input-reveal>
       </div>
     </ng-container>
   </div>

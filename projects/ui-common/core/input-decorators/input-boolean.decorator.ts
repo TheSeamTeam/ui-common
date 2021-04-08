@@ -1,17 +1,17 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
 
 /**
- * Use with `@Input()` to coerse the input to a boolean.1
+ * Use with `@Input()` to coerse the input to a boolean.
  *
  * Example:
  * ```ts
  * @Component({ template: '' })
  * class {
- *     @BooleanInput() @Input() b: boolean
+ *     @Input() @InputBoolean() b: boolean
  * }
  * ```
  */
-export function BooleanInput() {
+export function InputBoolean() {
   const cachedValueKey = Symbol()
   // tslint:disable-next-line: only-arrow-functions
   return function(

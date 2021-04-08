@@ -110,7 +110,7 @@ export function pollingTicker<R>(
       }
 
       if (ticker) {
-        tickerSub = ticker.subscribe((newPollingInterval?: number) => {
+        tickerSub = ticker.subscribe(newPollingInterval => {
           if (newPollingInterval && timer) {
             timer.stop()
             if (newPollingInterval) {
