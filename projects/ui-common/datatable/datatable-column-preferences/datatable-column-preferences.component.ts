@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core'
 import { FormControl } from '@angular/forms'
-import { combineLatest, Observable } from 'rxjs'
+import { combineLatest, Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 import { observeControlValue } from '@theseam/ui-common/utils'
@@ -24,7 +24,7 @@ export class DatatableColumnPreferencesComponent implements OnInit {
     @Inject(THESEAM_DATATABLE) private _datatable: DatatableComponent,
   ) {
     this._columns$ = combineLatest([
-      this._datatable.columns$,
+      this._datatable.columns$ ?? of([]),
       observeControlValue<string>(this._filterControl)
     ]).pipe(
       map(([ columns, filter ]) => {
@@ -40,7 +40,7 @@ export class DatatableColumnPreferencesComponent implements OnInit {
   _onChange(event: any, col: TheSeamDatatableColumn) {
     // TODO: Figure out the right way to update this value. If it is set by
     // column component input this may not work right.
-    const columns = this._datatable.columns
+    const columns = this._datatable.columns || []
     const column = columns.find(c => c.prop === col.prop)
     if (column) {
       column.hidden = !event.checked

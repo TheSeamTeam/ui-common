@@ -26,7 +26,7 @@ const passiveEventListenerOptions = normalizePassiveListenerOptions({passive: tr
 export class MenuToggleDirective implements OnDestroy {
 
   private _active = false
-  private _overlayRef: OverlayRef
+  private _overlayRef?: OverlayRef
   private _menuClosedSubscription = Subscription.EMPTY
   private _closingActionsSubscription = Subscription.EMPTY
 
@@ -36,13 +36,13 @@ export class MenuToggleDirective implements OnDestroy {
   // the first item of the list when the menu is opened via the keyboard
   _openedBy: 'mouse' | 'touch' | null = null
 
-  @Input() seamMenuToggle: MenuComponent
+  @Input() seamMenuToggle: MenuComponent | undefined | null
 
   @Input()
   set positions(val: ConnectionPositionPair[]) {
     this._positions = val
     if (this.menuOpen()) {
-      this._overlayRef.updatePositionStrategy(this.getOverlayPosition(this._elementRef.nativeElement))
+      this._overlayRef?.updatePositionStrategy(this.getOverlayPosition(this._elementRef.nativeElement))
     }
   }
   get positions() { return this._positions }
@@ -98,7 +98,7 @@ export class MenuToggleDirective implements OnDestroy {
 
     if (keyCode === UP_ARROW || keyCode === DOWN_ARROW) {
       if (this.menuOpen()) {
-        this.seamMenuToggle.focusFirstItem(this._openedBy || 'program')
+        this.seamMenuToggle?.focusFirstItem(this._openedBy || 'program')
       }
     }
   }
@@ -165,7 +165,12 @@ export class MenuToggleDirective implements OnDestroy {
       positionStrategy: this.getOverlayPosition(this._elementRef.nativeElement),
     })
 
-    this._overlayRef.attach(new TemplatePortal(this.seamMenuToggle.templateRef, this._viewContainerRef))
+    const tpl = this.seamMenuToggle.templateRef
+    if (!tpl) {
+      throw Error(`Menu template not found.`)
+    }
+
+    this._overlayRef.attach(new TemplatePortal(tpl, this._viewContainerRef))
 
     this._closingActionsSubscription = this._menuClosingActions().subscribe(() => this.closeMenu())
     this._initMenu()
@@ -183,8 +188,8 @@ export class MenuToggleDirective implements OnDestroy {
   public closeMenu(): void {
     if (!this._active) { return }
 
-    if (this._overlayRef.hasAttached()) {
-      this._overlayRef.detach()
+    if (this._overlayRef?.hasAttached()) {
+      this._overlayRef?.detach()
     }
 
     this._resetMenu()
@@ -196,7 +201,7 @@ export class MenuToggleDirective implements OnDestroy {
   }
 
   public menuOpen(): boolean {
-    return this._overlayRef && this._overlayRef.hasAttached()
+    return (this._overlayRef && this._overlayRef.hasAttached()) ?? false
   }
 
   private getOverlayPosition(origin: HTMLElement): PositionStrategy {
@@ -259,8 +264,8 @@ export class MenuToggleDirective implements OnDestroy {
 
   /** Returns a stream that emits whenever an action that should close the menu occurs. */
   private _menuClosingActions() {
-    const backdrop = this._overlayRef.backdropClick()
-    const detachments = this._overlayRef.detachments()
+    const backdrop = this._overlayRef?.backdropClick() ?? of()
+    const detachments = this._overlayRef?.detachments() ?? of()
     // const parentClose = this._parentMenu ? this._parentMenu.closed : of()
     const parentClose = of()
     // const hover = this._parentMenu ? this._parentMenu._hovered().pipe(

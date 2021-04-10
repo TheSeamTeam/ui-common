@@ -15,7 +15,7 @@ export class TabbedItemComponent implements OnInit {
   static ngAcceptInputType_contentFromRoute: BooleanInput
 
   @ContentChild(TabbedTabDirective, { read: TemplateRef, static: true })
-  public tabbedTabTp?: TemplateRef<TabbedTabDirective>
+  public tabbedTabTpl?: TemplateRef<TabbedTabDirective>
 
   @ContentChild(TabbedTabContentDirective, { read: TemplateRef, static: true })
   public tabbedContentTpl?: TemplateRef<TabbedTabContentDirective>

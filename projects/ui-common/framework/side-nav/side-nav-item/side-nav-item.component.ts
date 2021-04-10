@@ -9,7 +9,7 @@ import {
   transition,
   trigger,
 } from '@angular/animations'
-import { coerceBooleanProperty, coerceNumberProperty } from '@angular/cdk/coercion'
+import { BooleanInput, coerceBooleanProperty, coerceNumberProperty, NumberInput } from '@angular/cdk/coercion'
 import {
   ChangeDetectionStrategy,
   Component,
@@ -29,6 +29,7 @@ import { auditTime, distinctUntilChanged, map, switchMap, take, takeUntil, tap }
 
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons'
 
+import { InputNumber } from '@theseam/ui-common/core'
 import type { SeamIcon } from '@theseam/ui-common/icon'
 import type { ThemeTypes } from '@theseam/ui-common/models'
 import { RouterHelpersService } from '@theseam/ui-common/services'
@@ -93,6 +94,10 @@ const COMPACT_STATE = 'compact'
   encapsulation: ViewEncapsulation.None
 })
 export class SideNavItemComponent implements OnInit, OnDestroy {
+  static ngAcceptInputType_hierLevel: NumberInput
+  static ngAcceptInputType_indentSize: NumberInput
+  static ngAcceptInputType_expanded: BooleanInput
+  static ngAcceptInputType_compact: BooleanInput
 
   private readonly _ngUnsubscribe = new Subject()
 
@@ -100,47 +105,44 @@ export class SideNavItemComponent implements OnInit, OnDestroy {
 
   private _initializad = false
 
-  @Input() itemType: 'divider' | 'basic' | 'link' | 'button' | 'title'
+  @Input() itemType: 'divider' | 'basic' | 'link' | 'button' | 'title' | undefined | null
 
-  @Input() icon?: SeamIcon
+  @Input() icon: SeamIcon | undefined | null
 
-  @Input() label: string
+  @Input() label: string | undefined | null
 
   @Input()
-  set link(value: string | undefined) { this._link.next(value) }
+  set link(value: string | undefined | null) { this._link.next(value) }
   get link() { return this._link.value }
-  private _link = new BehaviorSubject<string | undefined>(undefined)
+  private _link = new BehaviorSubject<string | undefined | null>(undefined)
   public link$ = this._link.asObservable()
 
-  @Input() queryParams?: { [k: string]: any }
+  @Input() queryParams: { [k: string]: any } | undefined | null
 
-  @Input() children?: ISideNavItem[]
+  @Input() children: ISideNavItem[] | undefined | null
 
-  @Input()
-  set hierLevel(value: number) { this._hierLevel = coerceNumberProperty(value, 0) }
-  get hierLevel(): number { return this._hierLevel }
-  private _hierLevel = 0
+  @Input() @InputNumber(0) hierLevel: number = 0
 
-  @Input() indentSize = 10
+  @Input() @InputNumber(10) indentSize: number = 10
 
   @Input()
-  set expanded(value: boolean | undefined) { this._expanded.next(coerceBooleanProperty(value)) }
+  set expanded(value: boolean) { this._expanded.next(coerceBooleanProperty(value)) }
   get expanded() { return this._expanded.value }
   private _expanded = new BehaviorSubject<boolean>(false)
   public expanded$ = this._expanded.asObservable()
 
   @Input()
-  set compact(value: boolean | undefined) { this._compact.next(coerceBooleanProperty(value)) }
+  set compact(value: boolean) { this._compact.next(coerceBooleanProperty(value)) }
   get compact() { return this._compact.value }
   private _compact = new BehaviorSubject<boolean>(false)
   public compact$ = this._compact.asObservable()
 
-  @Input() badgeText: string | undefined
-  @Input() badgeTheme: ThemeTypes = 'danger'
+  @Input() badgeText: string | undefined | null
+  @Input() badgeTheme: ThemeTypes | undefined | null = 'danger'
 
   @Input()
   get badgeTooltip() { return this._badgeTooltip }
-  set badgeTooltip(value: string | SideNavItemBadgeTooltip | undefined) {
+  set badgeTooltip(value: string | SideNavItemBadgeTooltip | undefined | null) {
     if (value !== null && value !== undefined) {
       if (typeof value === 'string') {
         this._badgeTooltip = {
@@ -161,7 +163,7 @@ export class SideNavItemComponent implements OnInit, OnDestroy {
       this._badgeTooltip = undefined
     }
   }
-  _badgeTooltip: SideNavItemBadgeTooltip | undefined
+  private _badgeTooltip: SideNavItemBadgeTooltip | undefined | null
 
   public isActive$: Observable<boolean>
   public childGroupAnimState$: Observable<string>

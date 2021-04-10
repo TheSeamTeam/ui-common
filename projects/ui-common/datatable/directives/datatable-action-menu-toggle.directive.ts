@@ -9,10 +9,10 @@ import { Directive, ElementRef, HostListener, Input, TemplateRef, ViewContainerR
 })
 export class DatatableActionMenuToggleDirective {
 
-  @Input() seamDatatableActionMenuToggle: TemplateRef<HTMLElement>
+  @Input() seamDatatableActionMenuToggle: TemplateRef<HTMLElement> | undefined | null
 
   private _active = false
-  private _overlayRef: OverlayRef
+  private _overlayRef?: OverlayRef
   private _actionDown = false
 
   @HostListener('document:keydown', [ '$event' ])
@@ -51,6 +51,7 @@ export class DatatableActionMenuToggleDirective {
 
   public enable() {
     if (this.active) { return }
+    if (!this.seamDatatableActionMenuToggle) { return }
 
     this._overlayRef = this._overlay.create({
       hasBackdrop: false,
@@ -65,7 +66,7 @@ export class DatatableActionMenuToggleDirective {
   public disable() {
     if (!this.active) { return }
 
-    if (this._overlayRef.hasAttached()) {
+    if (this._overlayRef?.hasAttached()) {
       this._overlayRef.detach()
     }
 

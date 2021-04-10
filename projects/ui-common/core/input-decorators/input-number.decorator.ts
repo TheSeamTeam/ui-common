@@ -11,7 +11,7 @@ import { coerceNumberProperty } from '@angular/cdk/coercion'
  * }
  * ```
  */
-export function InputNumber() {
+export function InputNumber<TFallback>(fallback?: TFallback) {
   const cachedValueKey = Symbol()
   // tslint:disable-next-line: only-arrow-functions
   return function(
@@ -21,7 +21,7 @@ export function InputNumber() {
   ) {
     Object.defineProperty(target, propertyKey, {
       set: function(value: number) {
-        this[cachedValueKey] = coerceNumberProperty(value)
+        this[cachedValueKey] = coerceNumberProperty(value, fallback)
       },
       get: function() {
         return this[cachedValueKey]

@@ -8,7 +8,7 @@ import { Component, Input } from '@angular/core'
 export class TheSeamSchemaFormFrameworkComponent {
 
   @Input() layoutNode: any
-  @Input() layoutIndex: number[]
-  @Input() dataIndex: number[]
+  @Input() layoutIndex: number[] | undefined | null
+  @Input() dataIndex: number[] | undefined | null
 
 }

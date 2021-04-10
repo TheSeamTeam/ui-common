@@ -10,16 +10,16 @@ import { hasOwn, JsonSchemaFormService } from '@ajsf/core'
 })
 export class TheSeamSchemaFormSubmitComponent implements OnInit {
 
-  formControl: AbstractControl
-  controlName: string
+  formControl?: AbstractControl
+  controlName?: string
   controlValue: any
   controlDisabled = false
   boundControl = false
   options: any
 
   @Input() layoutNode: any
-  @Input() layoutIndex: number[]
-  @Input() dataIndex: number[]
+  @Input() layoutIndex: number[] | undefined | null
+  @Input() dataIndex: number[] | undefined | null
 
   constructor(
     private jsf: JsonSchemaFormService
@@ -39,7 +39,7 @@ export class TheSeamSchemaFormSubmitComponent implements OnInit {
     }
   }
 
-  updateValue(event) {
+  updateValue(event: any) {
     if (typeof this.options.onClick === 'function') {
       this.options.onClick(event)
     } else {

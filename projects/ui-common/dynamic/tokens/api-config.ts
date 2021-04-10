@@ -2,6 +2,28 @@ import { InjectionToken } from '@angular/core'
 
 import { DynamicValue } from '../models/dynamic-value'
 
+export type ApiRequestMethodHeader = string | { [name: string]: string | string[] }
+
+export interface ApiRequestMethodHeaders {
+  'GET'?: ApiRequestMethodHeader
+  'POST'?: ApiRequestMethodHeader
+  'PUT'?: ApiRequestMethodHeader
+  'PATCH'?: ApiRequestMethodHeader
+  'DELETE'?: ApiRequestMethodHeader
+}
+
+export const VALID_REQUEST_METHODS: (keyof ApiRequestMethodHeaders)[] = [
+  'GET',
+  'POST',
+  'PUT',
+  'PATCH',
+  'DELETE'
+]
+
+export function isValidRequestMethod(method: string): method is keyof ApiRequestMethodHeaders {
+  return VALID_REQUEST_METHODS.indexOf(method as any) !== -1
+}
+
 export interface IApiConfig {
   /**
    * Used to identify this config if multiple are provided.
@@ -16,13 +38,7 @@ export interface IApiConfig {
   /**
    * Default headers to add to requests.
    */
-  methodHeaders?: {
-    'GET'?: string | { [name: string]: string | string[] }
-    'POST'?: string | { [name: string]: string | string[] }
-    'PUT'?: string | { [name: string]: string | string[] }
-    'PATCH'?: string | { [name: string]: string | string[] }
-    'DELETE'?: string | { [name: string]: string | string[] }
-  }
+  methodHeaders?: ApiRequestMethodHeaders
 }
 
 export const THESEAM_API_CONFIG_DEFAULT: IApiConfig = {

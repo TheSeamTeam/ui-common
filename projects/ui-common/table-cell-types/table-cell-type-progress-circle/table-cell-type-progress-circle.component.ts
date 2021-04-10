@@ -40,10 +40,10 @@ export class TableCellTypeProgressCircleComponent implements OnInit, OnDestroy {
   showText: boolean = false
   hiddenOnEmpty: boolean = true
   pending: boolean = false
-  tooltip: string
-  tooltipClass: string
-  tooltipPlacement: string
-  tooltipContainer: string
+  tooltip?: string
+  tooltipClass?: string
+  tooltipPlacement?: string
+  tooltipContainer?: string
   _tooltipDisabled: boolean = false
 
   _title?: string
@@ -57,8 +57,8 @@ export class TableCellTypeProgressCircleComponent implements OnInit, OnDestroy {
 
   _buttonAction?: TableCellTypeProgressCircleConfigAction
 
-  _download: boolean
-  _detectMimeContent: boolean
+  _download?: boolean
+  _detectMimeContent?: boolean
 
   @HostBinding('class.datatable-cell-type') _isDatatable = false
 
@@ -110,7 +110,7 @@ export class TableCellTypeProgressCircleComponent implements OnInit, OnDestroy {
     this._ngUnsubscribe.complete()
   }
 
-  private _parseConfigValue(val) {
+  private _parseConfigValue(val: any) {
     const contextFn = () => this._tableCellTypeHelpers.getValueContext(val, this._tableCellData)
     return this._tableCellTypeHelpers.parseValueProp(val, contextFn)
   }

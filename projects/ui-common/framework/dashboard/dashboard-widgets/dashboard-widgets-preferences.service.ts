@@ -145,7 +145,7 @@ export class DashboardWidgetsPreferencesService {
         // Making the preferences immutable may not be necessary, but for now
         // this obj->str->obj will work as a naive clone.
         const layouts = JSON.parse(JSON.stringify(prefs.layouts || []))
-        const _layoutPref = layouts.find(c => c.name === _layout.name)
+        const _layoutPref = layouts.find((c: any) => c.name === _layout.name)
         // console.log('has', _layoutPref)
         if (_layoutPref) {
           if (hasProperty(_layout, 'name')) { _layoutPref.name = _layout.name }

@@ -1,9 +1,12 @@
-import { coerceArray, coerceNumberProperty } from '@angular/cdk/coercion'
-import { Component, Input, OnInit } from '@angular/core'
+import { BooleanInput, coerceArray, coerceNumberProperty } from '@angular/cdk/coercion'
+import { Component, Input } from '@angular/core'
 import { BehaviorSubject, from, Observable, of, ReplaySubject } from 'rxjs'
 import { map, shareReplay, switchMap, tap } from 'rxjs/operators'
 
+import { InputBoolean } from '@theseam/ui-common/core'
 import { wrapIntoObservable } from '@theseam/ui-common/utils'
+
+import { PdfRendererService } from './pdf-renderer.service'
 
 @Component({
   selector: 'seam-pdf-viewer',
@@ -20,23 +23,25 @@ import { wrapIntoObservable } from '@theseam/ui-common/utils'
   `,
   styles: [`:host { display: block; }`]
 })
-export class TheSeamPdfViewerComponent implements OnInit {
+export class TheSeamPdfViewerComponent {
+  static ngAcceptInputType_shadow: BooleanInput
+  static ngAcceptInputType_responsive: BooleanInput
 
   @Input()
-  get pdfUrl(): string { return this._pdfUrl }
-  set pdfUrl(value: string) {
+  get pdfUrl(): string | undefined | null { return this._pdfUrl }
+  set pdfUrl(value: string | undefined | null) {
     this._pdfUrl = value
     this._documentSubject.next(value)
   }
-  private _pdfUrl: string
+  private _pdfUrl: string | undefined | null
 
-  @Input() shadow = false
+  @Input() @InputBoolean() shadow = false
 
   /**
    * Canvas will responsively scale and rerender if scaled more than
    * `renderUpdateThreshold` pixels.
    */
-  @Input() responsive = false
+  @Input() @InputBoolean() responsive = false
 
   /**
    * The canvas will be rerendered if the canvas size changes by this many
@@ -88,7 +93,7 @@ export class TheSeamPdfViewerComponent implements OnInit {
       this._pageNumbersSubject.next([])
     }
   }
-  private _pageRange: number[]
+  private _pageRange: number[] = []
 
   /**
    * Render a specific page.
@@ -114,62 +119,44 @@ export class TheSeamPdfViewerComponent implements OnInit {
       this._pageNumbersSubject.next(undefined)
     }
   }
-  private _pageNumbers: number[]
+  private _pageNumbers: number[] = []
 
   private _documentSubject = new ReplaySubject<any>(1)
   public document$: Observable<any>
   public pages$: Observable<any[]>
-
-  public pdfJs$: Observable<any>
 
   /**
    * Undefined means all a pages
    */
   private _pageNumbersSubject = new BehaviorSubject<number[] | undefined>(undefined)
 
-  constructor() {
-    this.pdfJs$ = wrapIntoObservable(import('pdfjs-dist/build/pdf')).pipe(
-      tap(pdfJs => {
-        if (!pdfJs.GlobalWorkerOptions.workerSrc) {
-          // tslint:disable-next-line:max-line-length
-          pdfJs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${ (pdfJs as any).version }/pdf.worker.min.js`
+  constructor(
+    private readonly _pdfRenderer: PdfRendererService
+  ) {
+    this.document$ = this._documentSubject.asObservable().pipe(
+      switchMap(url => {
+        if (!url) {
+          return of()
         }
-      }),
-      shareReplay({ bufferSize: 1, refCount: true })
+        return this._pdfRenderer.getDocument(url)
+      })
     )
-  }
-
-  ngOnInit() {
-    this.document$ = this._documentSubject.asObservable()
-      .pipe(
-        switchMap(url => {
-          if (!url) {
-            return of()
-          }
-          return from(fetch(url)).pipe(
-            switchMap(v => this.pdfJs$.pipe(
-              switchMap(pdfJs => pdfJs.getDocument(v).promise)
-            ))
-          )
-        })
-      )
 
     const pageNumbers$ = this._pageNumbersSubject.asObservable()
 
-    this.pages$ = this.document$
-      .pipe(
-        switchMap(doc => pageNumbers$.pipe(
-          map(pageNumbers => {
-            const pages: any[] = []
-            for (let i = 0; i < doc.numPages; i++) {
-              if (!pageNumbers || pageNumbers.indexOf(i + 1) !== -1) {
-                pages.push(from(doc.getPage(i + 1)))
-              }
+    this.pages$ = this.document$.pipe(
+      switchMap(doc => pageNumbers$.pipe(
+        map(pageNumbers => {
+          const pages: any[] = []
+          for (let i = 0; i < doc.numPages; i++) {
+            if (!pageNumbers || pageNumbers.indexOf(i + 1) !== -1) {
+              pages.push(from(doc.getPage(i + 1)))
             }
-            return pages
-          })
-        ))
-      )
+          }
+          return pages
+        })
+      ))
+    )
   }
 
 }

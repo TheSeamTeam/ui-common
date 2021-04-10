@@ -1,3 +1,10 @@
+// NOTE: ng-packagr ignores the "types" and "typeRoots" settings in tsconfig.
+// Unless there is a way to make it stop ignoring those settings, tripple slash
+// reference to a `.d.ts` file was the only way I could stop the missing types
+// error.
+// tslint:disable-next-line: no-reference
+/// <reference path="./lodash-es.d.ts" />
+
 import { Pipe, PipeTransform } from '@angular/core'
 
 import { padEnd, padStart } from 'lodash-es'

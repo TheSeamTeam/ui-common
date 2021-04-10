@@ -5,44 +5,44 @@
       <!-- [loadingIndicator]="true" -->
       <ngx-datatable
         class="bootstrap"
-        [columnMode]="columnMode"
+        [columnMode]="$any(columnMode)"
         [scrollbarV]="scrollbarV"
         [scrollbarH]="scrollbarH"
         [virtualization]="virtualization"
         [targetMarkerTemplate]="targetMarkerTemplate"
-        [groupRowsBy]="groupRowsBy"
-        [groupedRows]="groupedRows"
-        [selected]="selected"
+        [groupRowsBy]="$any(groupRowsBy)"
+        [groupedRows]="$any(groupedRows)"
+        [selected]="$any(selected)"
         [externalPaging]="externalPaging"
         [externalSorting]="externalSorting"
-        [limit]="limit"
-        [count]="count"
-        [offset]="offset"
+        [limit]="$any(limit)"
+        [count]="$any(count)"
+        [offset]="$any(offset)"
         [loadingIndicator]="loadingIndicator"
-        [selectionType]="selectionType"
+        [selectionType]="$any(selectionType)"
         [reorderable]="reorderable"
         [swapColumns]="swapColumns"
-        [sortType]="sortType"
-        [sorts]="sorts"
+        [sortType]="$any(sortType)"
+        [sorts]="$any(sorts)"
         [cssClasses]="cssClasses"
         [messages]="messages"
-        [rowIdentity]="rowIdentity"
+        [rowIdentity]="$any(rowIdentity)"
         [rowClass]="rowClass"
         [selectCheck]="selectCheck"
-        [displayCheck]="displayCheck"
+        [displayCheck]="$any(displayCheck)"
         [groupExpansionDefault]="groupExpansionDefault"
-        [trackByProp]="trackByProp"
+        [trackByProp]="$any(trackByProp)"
         [selectAllRowsOnPage]="selectAllRowsOnPage"
-        [treeFromRelation]="treeFromRelation"
-        [treeToRelation]="treeToRelation"
+        [treeFromRelation]="$any(treeFromRelation)"
+        [treeToRelation]="$any(treeToRelation)"
         [summaryRow]="summaryRow"
-        [summaryHeight]="summaryHeight"
-        [summaryPosition]="summaryPosition"
+        [summaryHeight]="$any(summaryHeight)"
+        [summaryPosition]="$any(summaryPosition)"
         [rows]="rows$ | async"
         [columns]="$any(displayColumns$ | async)"
-        [headerHeight]="headerHeight"
-        [rowHeight]="rowHeight"
-        [footerHeight]="footerHeight"
+        [headerHeight]="$any(headerHeight)"
+        [rowHeight]="$any(rowHeight)"
+        [footerHeight]="$any(footerHeight)"
         (scroll)="scroll.emit($event)"
         (activate)="activate.emit($event)"
         (select)="select.emit($event)"
@@ -63,15 +63,15 @@
               [class.datatable-icon-right]="!expanded"
               [class.datatable-icon-down]="expanded"
               title="Expand/Collapse Group"
-              (click)="ngxDatatable.groupHeader.toggleExpandGroup(group)">
+              (click)="ngxDatatable?.groupHeader?.toggleExpandGroup(group)">
               <b>Age: {{ group.age }}</b>
             </div>
           </ng-template>
         </ngx-datatable-group-header>
 
-        <ngx-datatable-row-detail *ngIf="rowDetail"
-          [rowHeight]="rowDetail.rowHeight"
-          [template]="rowDetail.template"
+        <ngx-datatable-row-detail *ngIf="rowDetail && rowDetail.template"
+          [rowHeight]="rowDetail.rowHeight || 0"
+          [template]="$any(rowDetail.template)"
           (toggle)="rowDetail.toggle.emit($event)">
         </ngx-datatable-row-detail>
 
@@ -103,9 +103,9 @@
 <ng-template #actionMenuCellTpl ngx-datatable-cell-template
   let-value="value" let-rowIndex="rowIndex" let-row="row">
 
-  <ng-container *ngIf="row">
+  <ng-container *ngIf="row && rowActionItem?.template">
     <ng-template
-      [ngTemplateOutlet]="rowActionItem.template"
+      [ngTemplateOutlet]="$any(rowActionItem?.template)"
       [ngTemplateOutletContext]="{ $implicit: row, row: row, rowIndex: rowIndex }">
     </ng-template>
   </ng-container>

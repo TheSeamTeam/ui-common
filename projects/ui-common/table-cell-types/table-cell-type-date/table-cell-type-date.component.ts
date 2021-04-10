@@ -17,8 +17,8 @@ export class TableCellTypeDateComponent implements OnInit, OnDestroy {
 
   private readonly _ngUnsubscribe = new Subject()
 
-  @Input() value?: string | null
-  @Input() format?: string
+  @Input() value: string | undefined | null
+  @Input() format: string | undefined | null
 
   constructor(
     private _cdf: ChangeDetectorRef,

@@ -18,14 +18,14 @@
           class="list-group-item list-group-item-action py-1"
           [disabled]="item.disabled"
           [queryParams]="item.queryParams"
-          [fragment]="item.fragment"
+          [fragment]="$any(item.fragment)"
           [queryParamsHandling]="item.queryParamsHandling"
-          [preserveFragment]="item.preserveFragment"
-          [skipLocationChange]="item.skipLocationChange"
-          [replaceUrl]="item.replaceUrl"
-          [state]="item.state"
+          [preserveFragment]="$any(item.preserveFragment)"
+          [skipLocationChange]="$any(item.skipLocationChange)"
+          [replaceUrl]="$any(item.replaceUrl)"
+          [state]="$any(item.state)"
           [routerLink]="item.routerLink"
-          [target]="item.target"
+          [target]="$any(item.target)"
           (click)="activateItem($event, item)">
           {{ item.label }}
         </a>

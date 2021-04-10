@@ -127,7 +127,7 @@ export class IconComponent {
   public _defaultIconUrl: string | undefined | null
   public _defaultIconObj: IconProp | undefined | null
 
-  @Input() iconType: TheSeamIconType
+  @Input() iconType: TheSeamIconType | undefined | null
 
   @HostBinding('attr.icon-type')
   get _iconTypeAttr() { return this.iconType }

@@ -1,3 +1,4 @@
+import { BooleanInput } from '@angular/cdk/coercion'
 import {
   AfterContentInit,
   ChangeDetectionStrategy,
@@ -14,6 +15,7 @@ import { map, shareReplay, startWith, takeUntil } from 'rxjs/operators'
 
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 
+import { InputBoolean } from '@theseam/ui-common/core'
 import { TheSeamLayoutService } from '@theseam/ui-common/layout'
 
 import { TopBarItemDirective } from './top-bar-item.directive'
@@ -42,7 +44,9 @@ import { TopBarMenuDirective } from './top-bar-menu.directive'
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TheSeamTopBarComponent implements OnInit, OnDestroy, AfterContentInit {
+  static ngAcceptInputType_hasTitle: BooleanInput
 
+  /** @ignore */
   private readonly _ngUnsubscribe = new Subject()
 
   /** @ignore */
@@ -51,26 +55,26 @@ export class TheSeamTopBarComponent implements OnInit, OnDestroy, AfterContentIn
   /** @ignore */
   @ContentChild(TopBarMenuDirective, { static: true }) _topBarMenu?: TopBarMenuDirective | null
   /** @ignore */
-  @ContentChildren(TopBarItemDirective) _topBarItems: QueryList<TopBarItemDirective>
+  @ContentChildren(TopBarItemDirective) _topBarItems?: QueryList<TopBarItemDirective>
   /** @ignore */
   @ContentChild(TopBarMenuBtnDetailDirective) _topBarMenuBtnDetailTpl?: TopBarMenuBtnDetailDirective | null
 
   /** Logo displayed on the top bar. */
-  @Input() logo: string
+  @Input() logo: string | undefined | null
   /** Logo displayed on the top bar when a smaller logo is needed. */
-  @Input() logoSm?: string | null
+  @Input() logoSm: string | undefined | null
 
   /** Determines if the title should be displayed. */
-  @Input() hasTitle: boolean = false
+  @Input() @InputBoolean() hasTitle: boolean = false
 
   /** Title text displayed when `hasTitle` is true. */
-  @Input() titleText: string
+  @Input() titleText: string | undefined | null
 
   /** Sub Title text displayed when `hasTitle` is true. The sub title will be less prominent. */
-  @Input() subTitleText?: string | null
+  @Input() subTitleText: string | undefined | null
 
   /** @ignore */
-  _items$: Observable<TopBarItemDirective[]>
+  _items$?: Observable<TopBarItemDirective[]>
 
   /** @ignore */
   isMobile$: Observable<boolean>
@@ -92,12 +96,14 @@ export class TheSeamTopBarComponent implements OnInit, OnDestroy, AfterContentIn
 
   /** @ignore */
   ngAfterContentInit() {
-    this._items$ = this._topBarItems.changes.pipe(
-      startWith(undefined),
-      takeUntil(this._ngUnsubscribe),
-      map(() => this._topBarItems.toArray()),
-      shareReplay({ bufferSize: 1, refCount: true })
-    )
+    if (this._topBarItems) {
+      this._items$ = this._topBarItems.changes.pipe(
+        startWith(undefined),
+        takeUntil(this._ngUnsubscribe),
+        map(() => this._topBarItems?.toArray() || []),
+        shareReplay({ bufferSize: 1, refCount: true })
+      )
+    }
   }
 
 }

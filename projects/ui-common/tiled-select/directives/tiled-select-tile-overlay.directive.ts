@@ -8,7 +8,7 @@ import { ITiledSelectItem } from '../tiled-select.models'
 })
 export class TiledSelectTileOverlayDirective {
 
-  @Input() record: ITiledSelectItem
+  @Input() record: ITiledSelectItem | undefined | null
 
   constructor(public template: TemplateRef<any>) { }
 

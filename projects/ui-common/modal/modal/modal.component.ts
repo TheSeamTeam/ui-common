@@ -1,3 +1,4 @@
+import { BooleanInput } from '@angular/cdk/coercion'
 import { ESCAPE } from '@angular/cdk/keycodes'
 import { Overlay, OverlayRef } from '@angular/cdk/overlay'
 import { ComponentPortal, TemplatePortal } from '@angular/cdk/portal'
@@ -11,6 +12,7 @@ import { filter } from 'rxjs/operators'
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 
+import { InputBoolean } from '@theseam/ui-common/core'
 import { SeamIcon } from '@theseam/ui-common/icon'
 
 import { ModalFooterTplDirective } from '../directives/modal-footer-tpl.directive'
@@ -32,12 +34,16 @@ export const LIB_MODAL: any = {
   providers: [ LIB_MODAL ]
 })
 export class ModalComponent implements OnInit, OnDestroy, AfterViewInit, IModalContainer {
+  static ngAcceptInputType_showCloseBtn: BooleanInput
 
-  @Input() closeOnKeyPressed = [ ESCAPE ]
+  @Input()
+  set closeOnKeyPressed(value: number[]) { this._closeOnKeyPressed = Array.isArray(value) ? value : [] }
+  get closeOnKeyPressed(): number[] { return this._closeOnKeyPressed }
+  private _closeOnKeyPressed: number[] = [ ESCAPE ]
 
-  @Input() showCloseBtn = true
+  @Input() @InputBoolean() showCloseBtn: boolean = true
 
-  @Input() titleText: string
+  @Input() titleText: string | undefined | null
 
   @Input()
   get icon(): SeamIcon | undefined { return this._iconUrl || this._iconObj }
@@ -55,46 +61,46 @@ export class ModalComponent implements OnInit, OnDestroy, AfterViewInit, IModalC
   public _iconObj: IconProp | undefined
 
   @Input()
-  get iconTpl(): TemplateRef<HTMLElement> {
+  get iconTpl(): TemplateRef<HTMLElement> | undefined {
     return this._iconTpl || (this._queryIconTpl && this._queryIconTpl.template)
   }
-  set iconTpl(value: TemplateRef<HTMLElement>) {
+  set iconTpl(value: TemplateRef<HTMLElement> | undefined) {
     this._iconTpl = value
   }
-  private _iconTpl: TemplateRef<HTMLElement>
+  private _iconTpl?: TemplateRef<HTMLElement>
 
   @Input()
-  get titleTpl(): TemplateRef<HTMLElement> {
+  get titleTpl(): TemplateRef<HTMLElement> | undefined {
     return this._titleTpl || (this._queryTitleTpl && this._queryTitleTpl.template)
   }
-  set titleTpl(value: TemplateRef<HTMLElement>) {
+  set titleTpl(value: TemplateRef<HTMLElement> | undefined) {
     this._titleTpl = value
   }
-  private _titleTpl: TemplateRef<HTMLElement>
+  private _titleTpl?: TemplateRef<HTMLElement>
 
   @Input()
-  get footerTpl(): TemplateRef<HTMLElement> {
+  get footerTpl(): TemplateRef<HTMLElement> | undefined {
     return this._footerTpl || (this._queryFooterTpl && this._queryFooterTpl.template)
   }
-  set footerTpl(value: TemplateRef<HTMLElement>) {
+  set footerTpl(value: TemplateRef<HTMLElement> | undefined) {
     this._footerTpl = value
   }
-  private _footerTpl: TemplateRef<HTMLElement>
+  private _footerTpl?: TemplateRef<HTMLElement>
 
   @Output() modalClosed = new EventEmitter<void>()
 
-  _overlayRef: OverlayRef
+  _overlayRef?: OverlayRef
 
   @Output() overlayDetached = new EventEmitter<void>()
 
-  @ContentChild(ModalHeaderIconTplDirective, { static: true })  _queryIconTpl: ModalHeaderIconTplDirective
-  @ContentChild(ModalHeaderTitleTplDirective, { static: true })  _queryTitleTpl: ModalHeaderTitleTplDirective
-  @ContentChild(ModalFooterTplDirective, { static: true })  _queryFooterTpl: ModalFooterTplDirective
+  @ContentChild(ModalHeaderIconTplDirective, { static: true })  _queryIconTpl?: ModalHeaderIconTplDirective
+  @ContentChild(ModalHeaderTitleTplDirective, { static: true })  _queryTitleTpl?: ModalHeaderTitleTplDirective
+  @ContentChild(ModalFooterTplDirective, { static: true })  _queryFooterTpl?: ModalFooterTplDirective
 
-  @ViewChild('modalTpl', { static: true }) _modalTpl: TemplateRef<HTMLElement>
+  @ViewChild('modalTpl', { static: true }) _modalTpl?: TemplateRef<HTMLElement>
 
   /** Makes the modal container a form with this formGroup. */
-  @Input() form: FormGroup
+  @Input() form: FormGroup | undefined | null
 
   /** Emit the `(ngSubmit)` event. NOTE: Only if `form` is defined. */
   @Output() formSubmit = new EventEmitter<void>()
@@ -144,7 +150,15 @@ export class ModalComponent implements OnInit, OnDestroy, AfterViewInit, IModalC
       .pipe(filter(e => e.keyCode === ESCAPE))
       .subscribe(_ => this.close())
 
-    this._overlayRef.attach(portal || new TemplatePortal(this._modalTpl, this._viewContainerRef))
+    let portalToAttach = portal
+    if (!portalToAttach) {
+      if (!this._modalTpl) {
+        throw new Error(`_modalTpl not found.`)
+      }
+      portalToAttach = new TemplatePortal(this._modalTpl, this._viewContainerRef)
+    }
+
+    this._overlayRef.attach(portalToAttach)
   }
 
   public close() {

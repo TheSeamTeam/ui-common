@@ -1,8 +1,10 @@
+import { BooleanInput } from '@angular/cdk/coercion'
 import { Component, forwardRef, Inject, Input, OnDestroy, OnInit, Optional, TemplateRef } from '@angular/core'
 import { FormControl } from '@angular/forms'
 import { Observable, of } from 'rxjs'
 import { map, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
+import { InputBoolean } from '@theseam/ui-common/core'
 import { isNullOrUndefined } from '@theseam/ui-common/utils'
 
 import { DataFilterState, IDataFilter, THESEAM_DATA_FILTER, THESEAM_DATA_FILTER_OPTIONS } from '../../data-filter'
@@ -78,19 +80,21 @@ let _uid = 0
   providers: [ DATA_FILTER_TEXT ]
 })
 export class DataFilterTextComponent implements OnInit, OnDestroy, IDataFilter {
+  static ngAcceptInputType_exact: BooleanInput
+  static ngAcceptInputType_caseSensitive: BooleanInput
 
   public readonly name = 'text'
   public readonly uid = `text__${_uid++}`
 
   _control = new FormControl()
 
-  @Input() properties = this._optDefault('properties')
-  @Input() omitProperties = this._optDefault('omitProperties')
-  @Input() exact = this._optDefault('exact')
-  @Input() caseSensitive = this._optDefault('caseSensitive')
+  @Input() properties: string[] | undefined | null = this._optDefault('properties')
+  @Input() omitProperties: string[] | undefined | null = this._optDefault('omitProperties')
+  @Input() @InputBoolean() exact: boolean = this._optDefault('exact')
+  @Input() @InputBoolean() caseSensitive: boolean = this._optDefault('caseSensitive')
 
-  @Input() placeholder: string
-  @Input() iconTpl: TemplateRef<HTMLElement>
+  @Input() placeholder: string | undefined | null
+  @Input() iconTpl: TemplateRef<HTMLElement> | undefined | null
 
   @Input()
   set value(value: string | string[]) {
@@ -125,8 +129,8 @@ export class DataFilterTextComponent implements OnInit, OnDestroy, IDataFilter {
 
   get options(): ITextFilterOptions {
     return {
-      properties: this.properties,
-      omitProperties: this.omitProperties,
+      properties: this.properties ?? undefined,
+      omitProperties: this.omitProperties ?? undefined,
       exact: this.exact,
       caseSensitive: this.caseSensitive
     }

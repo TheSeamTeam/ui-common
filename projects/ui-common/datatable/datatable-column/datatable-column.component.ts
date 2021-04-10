@@ -18,55 +18,55 @@ type _PipeTransform = PipeTransform | PipeTransform
 })
 export class DatatableColumnComponent implements OnInit, OnChanges {
 
-  @Input() name: string
-  @Input() prop: string | number
+  @Input() name: string | undefined | null
+  @Input() prop: string | number | undefined | null
 
-  @Input() flexGrow: number
-  @Input() minWidth: number
-  @Input() maxWidth: number
-  @Input() width: number
+  @Input() flexGrow: number | undefined | null
+  @Input() minWidth: number | undefined | null
+  @Input() maxWidth: number | undefined | null
+  @Input() width: number | undefined | null
 
-  @Input() resizeable: boolean
-  @Input() sortable: boolean
-  @Input() draggable: boolean
+  @Input() resizeable: boolean | undefined | null
+  @Input() sortable: boolean | undefined | null
+  @Input() draggable: boolean | undefined | null
 
-  @Input() canAutoResize: boolean
+  @Input() canAutoResize: boolean | undefined | null
 
-  @Input() comparator: (valueA, valueB, rowA?, rowB?, sortDirection?: 'asc' | 'desc') => -1 | 0 | 1
+  @Input() comparator: ((valueA: any, valueB: any, rowA?: any, rowB?: any, sortDirection?: 'asc' | 'desc') => -1 | 0 | 1) | undefined | null
 
-  @Input() headerTemplate: TemplateRef<any>
+  @Input() headerTemplate: TemplateRef<any> | undefined | null
 
-  @Input() checkboxable: boolean
-  @Input() headerCheckboxable: boolean
+  @Input() checkboxable: boolean | undefined | null
+  @Input() headerCheckboxable: boolean | undefined | null
 
-  @Input() headerClass: string | ((data: any) => string|any)
-  @Input() cellClass: string | ((data: any) => string|any)
+  @Input() headerClass: string | ((data: any) => string|any) | undefined | null
+  @Input() cellClass: string | ((data: any) => string|any) | undefined | null
 
-  @Input() frozenLeft: boolean
-  @Input() frozenRight: boolean
+  @Input() frozenLeft: boolean | undefined | null
+  @Input() frozenRight: boolean | undefined | null
 
-  @Input() pipe: _PipeTransform
+  @Input() pipe: _PipeTransform | undefined | null
 
-  @Input() isTreeColumn: boolean
-  @Input() treeLevelIndent: number
+  @Input() isTreeColumn: boolean | undefined | null
+  @Input() treeLevelIndent: number | undefined | null
 
-  @Input() summaryFunc: (cells: any[]) => any
-  @Input() summaryTemplate: TemplateRef<any>
+  @Input() summaryFunc: ((cells: any[]) => any) | undefined | null
+  @Input() summaryTemplate: TemplateRef<any> | undefined | null
 
-  @Input() hidden: boolean
+  @Input() hidden: boolean | undefined | null
 
   private _isFirstChange = true
 
-  @ContentChild(DatatableCellTplDirective, { static: true }) cellTplDirective: DatatableCellTplDirective
+  @ContentChild(DatatableCellTplDirective, { static: true }) cellTplDirective?: DatatableCellTplDirective
 
   // tslint:disable-next-line: no-input-rename
   @Input('cellTemplate')
-  _cellTemplateInput: TemplateRef<any>
+  _cellTemplateInput: TemplateRef<any> | undefined | null
 
   @ContentChild(DatatableCellTplDirective, { read: TemplateRef, static: true })
-  _cellTemplateQuery: TemplateRef<any>
+  _cellTemplateQuery?: TemplateRef<any>
 
-  get cellTemplate(): TemplateRef<any> {
+  get cellTemplate(): TemplateRef<any> | undefined | null {
     return this._cellTemplateInput || this._cellTemplateQuery
   }
 

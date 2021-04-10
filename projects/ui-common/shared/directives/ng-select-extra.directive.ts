@@ -20,7 +20,7 @@ export class NgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestr
   private _keyPressWorkaroundSub: Subscription | null = null
 
   private _resizedEvent = new EventEmitter<IElementResizedEvent>()
-  private _resizeSensor: ResizeSensor
+  private _resizeSensor?: ResizeSensor
 
   /**
    * Set the tab index to `-1` to allow the root element of the ng-select
@@ -58,10 +58,10 @@ export class NgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestr
   }
 
   constructor(
-    private elementRef: ElementRef,
-    private _ngZone: NgZone,
-    private ngSelect: NgSelectComponent,
-    @Optional() @Self() public ngControl: NgControl
+    private readonly elementRef: ElementRef,
+    private readonly _ngZone: NgZone,
+    private readonly ngSelect: NgSelectComponent,
+    @Optional() @Self() public readonly ngControl: NgControl
   ) { }
 
   ngOnInit() {
@@ -90,7 +90,7 @@ export class NgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestr
   }
 
   ngOnDestroy() {
-    this._resizeSensor.detach()
+    this._resizeSensor?.detach()
 
     this._ngUnsubscribe.next()
     this._ngUnsubscribe.complete()
@@ -151,8 +151,8 @@ export class NgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestr
 
     this._keyPressWorkaroundSub = _ngSelect._keyPress$
       .pipe(takeUntil(this._ngUnsubscribe))
-      .pipe(filter(v => !this.ngSelect.searchable))
-      .subscribe(v => {
+      .pipe(filter(() => !this.ngSelect.searchable))
+      .subscribe(() => {
         this._ngZone.runOutsideAngular(() => {
           window.requestAnimationFrame(() => {
             if (this.ngSelect.dropdownPanel) {

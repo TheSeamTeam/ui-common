@@ -1,6 +1,8 @@
-import { coerceArray } from '@angular/cdk/coercion'
+import { BooleanInput, coerceArray } from '@angular/cdk/coercion'
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 import { DomSanitizer } from '@angular/platform-browser'
+
+import { InputBoolean } from '@theseam/ui-common/core'
 
 /**
  * An optional function passed into the `NgForOf` directive that defines how to track
@@ -26,18 +28,19 @@ export interface ITableColumn {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TableComponent<T = any> implements OnInit {
+  static ngAcceptInputType_hasHeader: BooleanInput
 
   @Input()
   get columns() { return this._columns }
-  set columns(value: (string | ITableColumn)[]) {
+  set columns(value: (string | ITableColumn)[] | undefined | null) {
     this._columns = value
-    this._setColumns(value)
+    this._setColumns(value || [])
   }
-  private _columns: (string | ITableColumn)[]
+  private _columns: (string | ITableColumn)[] | undefined | null
 
   @Input()
-  get rows(): T[] { return this._rows }
-  set rows(value: T[]) {
+  get rows(): T[] | undefined | null { return this._rows }
+  set rows(value: T[] | undefined | null) {
     this._rows = !!value ? coerceArray(value) : []
 
     if (this._rows.length < 1) {
@@ -48,19 +51,19 @@ export class TableComponent<T = any> implements OnInit {
       this._displayedRows = this._rows
     }
   }
-  private _rows: T[] = []
+  private _rows: T[] | undefined | null = []
 
   get displayedRows() { return this._displayedRows }
   private _displayedRows: T[] & { _colSpan?: number } = []
 
-  @Input() trackBy: TrackByFunction<T>
+  @Input() trackBy: TrackByFunction<T> | undefined | null
 
   @Input() size: 'sm' | 'md' | undefined | null
 
-  @Input() hasHeader = true
+  @Input() @InputBoolean() hasHeader: boolean = true
 
-  public displayedRecords: ITableColumn[]
-  public displayedColumns: string[]
+  public displayedRecords?: ITableColumn[]
+  public displayedColumns?: string[]
 
   @Output() readonly actionRefreshRequest = new EventEmitter<void>()
 
@@ -109,7 +112,7 @@ export class TableComponent<T = any> implements OnInit {
     this.actionRefreshRequest.emit(undefined)
   }
 
-  _trackByRecords(r) {
+  _trackByRecords(r: any) {
     return r.prop + r.name
   }
 

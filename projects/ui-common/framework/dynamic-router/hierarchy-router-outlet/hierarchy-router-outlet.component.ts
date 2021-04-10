@@ -7,8 +7,8 @@ import { fader, sideToSide, slider, stepper, transformer } from './hierarchy-rou
 
 export function routeChanges(router: Router)  {
   return router.events.pipe(
-    filter<NavigationStart | NavigationEnd>(event => event instanceof NavigationStart || event instanceof NavigationEnd),
-    distinctUntilChanged((x, y) => x.id === y.id),
+    filter(event => event instanceof NavigationStart || event instanceof NavigationEnd),
+    distinctUntilChanged((x: any, y: any) => x.id === y.id),
     map(event => ({ url: event.url }))
   )
 }
@@ -113,22 +113,22 @@ export class HierarchyRouterOutletComponent implements OnInit, OnDestroy {
     // return this.animState
   }
 
-  outletActivate(event) {
+  outletActivate(event: any) {
     // console.log(`outletActivate[${this._uid}]`, event)
     this.outletActive = true
   }
 
-  outletDeactivate(event) {
+  outletDeactivate(event: any) {
     // console.log(`outletDeactivate[${this._uid}]`, event)
     this.outletActive = false
   }
 
-  routeAnimationsStart(event) {
+  routeAnimationsStart(event: any) {
     // console.log('routeAnimationsStart', event)
     this.ngContentVisible = true
   }
 
-  routeAnimationsDone(event) {
+  routeAnimationsDone(event: any) {
     // console.log('routeAnimationsDone', event)
     this.ngContentVisible = !this.outletActive
   }

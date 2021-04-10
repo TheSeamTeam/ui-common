@@ -14,7 +14,7 @@ let uniqueId = 0
  */
 export class ModalRef<T, R = any> {
   /** The instance of the component in the dialog. */
-  componentInstance: T | null
+  componentInstance: T | null = null
 
   /** Whether the user is allowed to close the dialog. */
   disableClose: boolean | undefined
@@ -29,7 +29,7 @@ export class ModalRef<T, R = any> {
     // Pass the id along to the container.
     _containerInstance._id = id
 
-    const _bootstrapBackdropClickListener = (e) => {
+    const _bootstrapBackdropClickListener = () => {
       if (!this.disableClose) {
         this.close()
       }

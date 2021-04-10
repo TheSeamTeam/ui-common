@@ -8,7 +8,7 @@ import { Component, ElementRef, HostBinding, Input, OnInit, ViewEncapsulation } 
 })
 export class WidgetEmptyLabelComponent implements OnInit {
 
-  private _type: string
+  private _type: string | undefined | null
 
   @HostBinding('class.btn')
   get _btnCss() { return this._isButton() ? true : false }
@@ -22,7 +22,7 @@ export class WidgetEmptyLabelComponent implements OnInit {
   }
 
   @Input()
-  get type(): string { return this._type }
+  get type(): string | undefined | null { return this._type }
 
   constructor(
     public _elementRef: ElementRef<HTMLElement | HTMLAnchorElement | HTMLButtonElement>

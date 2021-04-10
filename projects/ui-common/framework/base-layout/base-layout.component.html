@@ -23,7 +23,7 @@
         <div>
           <ng-container *ngFor="let action of registeredActions$ | async; first as isFirst">
             <div>
-              <ng-container [ngTemplateOutlet]="action.template"></ng-container>
+              <ng-container [ngTemplateOutlet]="$any(action)?.template"></ng-container>
             </div>
           </ng-container>
         </div>

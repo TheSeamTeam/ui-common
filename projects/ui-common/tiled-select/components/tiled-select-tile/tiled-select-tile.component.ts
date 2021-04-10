@@ -1,9 +1,10 @@
 import { animate, animation, keyframes, style, transition, trigger, useAnimation } from '@angular/animations'
+import { BooleanInput } from '@angular/cdk/coercion'
 import { ChangeDetectorRef, Component, ContentChild, EventEmitter, HostBinding, Input, Output } from '@angular/core'
 
 import { faCheckCircle } from '@fortawesome/free-regular-svg-icons'
 
-import { BooleanInput, InputBoolean } from '@theseam/ui-common/core'
+import { InputBoolean } from '@theseam/ui-common/core'
 import { SeamIcon } from '@theseam/ui-common/icon'
 
 import { TiledSelectTileLabelTplDirective } from '../../directives/tiled-select-tile-label-tpl.directive'
@@ -79,25 +80,25 @@ export class TiledSelectTileComponent {
 
   @Input() layout: TiledSelectLayout = 'grid'
 
-  @Input() name: string | undefined
-  @Input() label: string
+  @Input() name: string | undefined | null
+  @Input() label: string | undefined | null
   @Input() icon: SeamIcon | undefined | null
-  @Input() @InputBoolean() disabled = false
-  @Input() @InputBoolean() selected = false
+  @Input() @InputBoolean() disabled: boolean = false
+  @Input() @InputBoolean() selected: boolean = false
 
-  @Input() @InputBoolean() tileBackdrop = false
-  @Input() @InputBoolean() selectable = false
-  @Input() @InputBoolean() grayscaleOnDisable = true
-  @Input() @InputBoolean() showLabel = true
-  @Input() @InputBoolean() showSelectedIcon = true
+  @Input() @InputBoolean() tileBackdrop: boolean = false
+  @Input() @InputBoolean() selectable: boolean = false
+  @Input() @InputBoolean() grayscaleOnDisable: boolean = true
+  @Input() @InputBoolean() showLabel: boolean = true
+  @Input() @InputBoolean() showSelectedIcon: boolean = true
 
-  @Input() iconClass: string
+  @Input() iconClass: string | undefined | null
 
   @Input() overlayTpl: TiledSelectTileOverlayDirective | undefined | null
 
   @Output() activated = new EventEmitter<any>()
 
-  @ContentChild(TiledSelectTileLabelTplDirective, { static: true }) labelTpl: TiledSelectTileLabelTplDirective
+  @ContentChild(TiledSelectTileLabelTplDirective, { static: true }) labelTpl?: TiledSelectTileLabelTplDirective
 
   pulsing = false
   pulsingTimeout: number | undefined

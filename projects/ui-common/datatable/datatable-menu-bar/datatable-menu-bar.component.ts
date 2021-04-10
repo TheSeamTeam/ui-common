@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ContentChildren, EventEmitter, forwardRef, OnInit, QueryList } from '@angular/core'
 
 import { IDataFilter, THESEAM_DATA_FILTER_CONTAINER } from '@theseam/ui-common/data-filters'
+import { notNullOrUndefined } from '@theseam/ui-common/utils'
 
 import { DatatableFilterDirective } from '../directives/datatable-filter.directive'
 
@@ -19,14 +20,14 @@ export const _THESEAM_DATA_FILTER_CONTAINER: any = {
 export class DatatableMenuBarComponent implements OnInit, AfterViewInit {
 
   @ContentChildren(DatatableFilterDirective)
-  get filterDirectives(): QueryList<DatatableFilterDirective> {
+  get filterDirectives(): QueryList<DatatableFilterDirective> | undefined {
     return this._filterDirectives
   }
-  set filterDirectives(value: QueryList<DatatableFilterDirective>) {
+  set filterDirectives(value: QueryList<DatatableFilterDirective> | undefined) {
     this._filterDirectives = value
     this.filtersChanged.emit(this.filters())
   }
-  private _filterDirectives: QueryList<DatatableFilterDirective>
+  private _filterDirectives: QueryList<DatatableFilterDirective> | undefined
 
   private _filtersArr: IDataFilter[] = []
 
@@ -42,10 +43,11 @@ export class DatatableMenuBarComponent implements OnInit, AfterViewInit {
 
   public filters(): IDataFilter[] {
     const fDirectives = this._filterDirectives
-      ? this._filterDirectives.map(f => f.filter).filter(f => f !== undefined)
+      ? this._filterDirectives.map(f => f.filter).filter(notNullOrUndefined)
       : []
 
-    const fArr = this._filtersArr.filter(f => fDirectives.findIndex(fd => fd.uid === f.uid) === -1)
+    const fArr = this._filtersArr
+    .filter(f => fDirectives.findIndex(fd => fd.uid === f.uid) === -1)
     return [ ...fArr, ...fDirectives ]
   }
 

@@ -13,14 +13,14 @@ import type { ComponentType } from '@theseam/ui-common/models'
 export class DatatableDynamicFilterContainerComponent<C> implements OnInit {
 
   @Input()
-  set filterComponent(value: ComponentType<C>) {
+  set filterComponent(value: ComponentType<C> | undefined | null) {
     this._filterComponent = value
     // if (this._filterComponent !== value) {
     //   this._setPortal(value)
     // }
   }
   get filterComponent() { return this._filterComponent }
-  private _filterComponent: ComponentType<C>
+  private _filterComponent: ComponentType<C> | undefined | null
 
   @Input() options: any
 
@@ -31,7 +31,9 @@ export class DatatableDynamicFilterContainerComponent<C> implements OnInit {
   ) { }
 
   ngOnInit() {
-    this._setPortal(this.filterComponent)
+    if (this.filterComponent) {
+      this._setPortal(this.filterComponent)
+    }
   }
 
   private _setPortal(component: ComponentType<C>) {

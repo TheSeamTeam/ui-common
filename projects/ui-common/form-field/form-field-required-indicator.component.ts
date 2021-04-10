@@ -1,4 +1,7 @@
+import { BooleanInput } from '@angular/cdk/coercion'
 import { ChangeDetectionStrategy, Component, Input, Optional } from '@angular/core'
+
+import { InputBoolean } from '@theseam/ui-common/core'
 
 import { TheSeamFormFieldComponent } from './form-field.component'
 
@@ -19,12 +22,13 @@ import { TheSeamFormFieldComponent } from './form-field.component'
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FormFieldRequiredIndicatorComponent {
+  static ngAcceptInputType_required: BooleanInput
 
   /** Used if a form control is not found. */
-  @Input() required: boolean
+  @Input() @InputBoolean() required: boolean = false
 
   constructor(
-    @Optional() public _formField: TheSeamFormFieldComponent
+    @Optional() public readonly _formField: TheSeamFormFieldComponent
   ) { }
 
 }

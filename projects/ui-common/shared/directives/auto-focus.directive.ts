@@ -1,7 +1,6 @@
-import { coerceBooleanProperty } from '@angular/cdk/coercion'
+import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion'
 import { Directive, ElementRef, Input, OnInit, Optional } from '@angular/core'
 
-import { BooleanInput } from '@theseam/ui-common/core'
 import { getClosestModal, Modal, ModalRef } from '@theseam/ui-common/modal'
 
 @Directive({

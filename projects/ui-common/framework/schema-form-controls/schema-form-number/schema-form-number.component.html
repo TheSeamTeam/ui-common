@@ -5,7 +5,7 @@
     </ng-container>
   </ng-template>
   <input seamInput
-    [formControl]="formControl"
+    [formControl]="$any(formControl)"
     [ngClass]="options?.fieldHtmlClass"
     [id]="'control' + layoutNode?._id"
     [name]="controlName"

@@ -27,7 +27,7 @@ export class DatatableExportButtonComponent implements OnInit {
 
   icon = faFileDownload
 
-  @Input() exporters: IDataExporter[]
+  @Input() exporters: IDataExporter[] | undefined | null
 
   get disabled() {
     return !(this.exporters && this.exporters.length > 0)
@@ -58,7 +58,7 @@ export class DatatableExportButtonComponent implements OnInit {
     const export$ = this._datatable.rows$
       .pipe(
         take(1),
-        map(rows => this._mapExportData(this._datatable.columns, rows)),
+        map(rows => this._mapExportData(this._datatable.columns || [], rows)),
         concatMap(data => exporter.export(data)),
         catchError(err => {
           console.error(err)

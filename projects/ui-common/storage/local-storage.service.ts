@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core'
 import { BehaviorSubject, fromEvent, Observable } from 'rxjs'
 import { filter, map, tap } from 'rxjs/operators'
 
-import localStorageMemory from 'localstorage-memory'
-
 import { notNullOrUndefined } from '@theseam/ui-common/utils'
 
+import { LocalStorageMemory } from './localstorage-memory'
+
 // NOTE: Temporary localStorage polyfill just to get the app running without localStorage for now.
-const localStorage: Storage = 'localStorage' in window && window.localStorage != null ? window.localStorage : localStorageMemory
+const localStorage: Storage = 'localStorage' in window && window.localStorage != null ? window.localStorage : new LocalStorageMemory()
 
 export interface ILocalStorageService {
   select(key: string, defaultValue: string | null): Observable<string | null>
@@ -20,29 +20,28 @@ export interface ILocalStorageService {
   providedIn: 'root'
 })
 export class LocalStorageService implements ILocalStorageService {
-  protected subjects: { [key: string]: BehaviorSubject<string | null> } = {}
+  protected readonly subjects: { [key: string]: BehaviorSubject<string | null> } = {}
 
   /** This is only here for testing/debugging. */
-  private _localStorage = localStorage
+  private readonly _localStorage = localStorage
 
   constructor() {
-    fromEvent<StorageEvent>(window, 'storage')
-      .pipe(
-        map(e => e.key),
-        filter(notNullOrUndefined),
-        tap(key => {
-          const subjectValue = this.get(key)
-          const storedValue = this._localStorage.getItem(key)
-          if (subjectValue !== storedValue) {
-            if (storedValue) {
-              this.set(key, storedValue)
-            } else {
-              this.remove(key)
-            }
+    fromEvent<StorageEvent>(window, 'storage').pipe(
+      map(e => e.key),
+      filter(notNullOrUndefined),
+      tap(key => {
+        const subjectValue = this.get(key)
+        const storedValue = this._localStorage.getItem(key)
+        if (subjectValue !== storedValue) {
+          if (storedValue) {
+            this.set(key, storedValue)
+          } else {
+            this.remove(key)
           }
-        }),
-      )
-      .subscribe()
+        }
+      }),
+    )
+    .subscribe()
   }
 
   /**
@@ -51,7 +50,7 @@ export class LocalStorageService implements ILocalStorageService {
    * NOTE: Only emits changes if the item is changed with the set method of this
    * class instance.
    */
-  select(key: string, defaultValue: string | null = null): Observable<string | null> {
+  public select(key: string, defaultValue: string | null = null): Observable<string | null> {
     if (this.subjects.hasOwnProperty(key)) {
       return this.subjects[key]
     }
@@ -66,7 +65,7 @@ export class LocalStorageService implements ILocalStorageService {
   }
 
   /** Get a localStorage item. */
-  get(key: string, defaultValue: string | null = null): string | null {
+  public get(key: string, defaultValue: string | null = null): string | null {
     if (this.subjects.hasOwnProperty(key)) {
       return this.subjects[key].value
     }
@@ -81,7 +80,7 @@ export class LocalStorageService implements ILocalStorageService {
   }
 
   /** Set a localStorage item. */
-  set(key: string, value: string): void {
+  public set(key: string, value: string): void {
     this._localStorage.setItem(key, value)
 
     if (this.subjects.hasOwnProperty(key)) {
@@ -90,7 +89,7 @@ export class LocalStorageService implements ILocalStorageService {
   }
 
   /** Remove a localStorage item. */
-  remove(key: string): void {
+  public remove(key: string): void {
     this._localStorage.removeItem(key)
 
     if (this.subjects.hasOwnProperty(key)) {

@@ -25,7 +25,7 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy {
   @HostBinding('attr.type') _attrType = 'tel'
 
   @Input()
-  set value(v: string) {
+  set value(v: string | undefined | null) {
     // console.log('set value', v, this._instance)
     this._value = v
     if (this._instance) {
@@ -33,13 +33,13 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy {
       this.updateValue()
     }
   }
-  get value(): string {
+  get value(): string | undefined | null {
     if (this._instance) {
       return this._instance?.getNumber()
     }
     return this._value
   }
-  private _value: string
+  private _value: string | undefined | null
 
   constructor(
     private readonly _elementRef: ElementRef<HTMLInputElement>,
@@ -95,7 +95,7 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy {
     this._ngUnsubscribe.complete()
   }
 
-  private _formatIntlTelInput = (e) => {
+  private _formatIntlTelInput = () => {
     // if (typeof intlTelInputUtils !== 'undefined') {
     //   const currentText = this._instance?.getNumber(intlTelInputUtils.numberFormat.INTERNATIONAL)
     //   console.log('currentText', currentText, this._instance?.getSelectedCountryData())
@@ -126,7 +126,7 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy {
     // console.log('%cupdateValue END', 'color:cyan')
   }
 
-  public getFullNumber(): string {
+  public getFullNumber(): string | undefined | null {
     if (typeof globalIntlTelInputUtils() !== 'undefined' && this._instance) {
       // return (this._instance as any)._getFullNumber()
       return this._instance.getNumber(intlTelInputUtils.numberFormat.E164)
@@ -159,7 +159,7 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy {
             })
           )
 
-          const flagBtnClick$ = fromEvent(instance.selectedFlag, 'click').pipe(
+          const flagBtnClick$ = fromEvent<MouseEvent>(instance.selectedFlag, 'click').pipe(
             tap((event: MouseEvent) => {
               if (!this.isDropdownVisible()) {
                 return

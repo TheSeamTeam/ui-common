@@ -59,10 +59,10 @@ export class HoverClassToggleDirective {
   }
 
   constructor(
-    private _element: ElementRef
+    private readonly _element: ElementRef
   ) { }
 
-  private _update() {
+  private _update(): void {
     for (const c of this._defaultClasses) {
       this._hovered ?  this._removeClass(c) : this._addClass(c)
     }
@@ -71,7 +71,7 @@ export class HoverClassToggleDirective {
     }
   }
 
-  private _setHovered(hovered) {
+  private _setHovered(hovered: boolean) {
     const doUpdate = this._hovered !== hovered
     this._hovered = hovered
     if (doUpdate) {
@@ -79,11 +79,11 @@ export class HoverClassToggleDirective {
     }
   }
 
-  private _addClass(c: string) {
+  private _addClass(c: string): void {
     this._element.nativeElement.classList.add(c)
   }
 
-  public _removeClass(c: string) {
+  public _removeClass(c: string): void {
     this._element.nativeElement.classList.remove(c)
   }
 

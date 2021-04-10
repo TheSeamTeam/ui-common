@@ -1,4 +1,4 @@
-import { coerceBooleanProperty } from '@angular/cdk/coercion'
+import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion'
 import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop'
 import {
   AfterViewInit,
@@ -96,6 +96,7 @@ export const THESEAM_WIDGET_ACCESSOR = new InjectionToken<TheSeamWidgetAccessor<
   }
 })
 export class WidgetDragHandleDirective implements OnInit, OnDestroy, AfterViewInit, DoCheck {
+  static ngAcceptInputType_disabled: BooleanInput
 
   private readonly _ngUnsubscribe = new Subject()
 

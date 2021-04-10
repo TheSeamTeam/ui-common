@@ -6,9 +6,9 @@
       [attr.title]="_tooltipDisabled ? _title : undefined"
       [attr.target]="_target"
       [ngbTooltip]="_tooltip"
-      [tooltipClass]="_tooltipClass"
-      [placement]="_tooltipPlacement"
-      [container]="_tooltipContainer"
+      [tooltipClass]="$any(_tooltipClass)"
+      [placement]="$any(_tooltipPlacement)"
+      [container]="$any(_tooltipContainer)"
       [disableTooltip]="_tooltipDisabled">
       <seam-icon [icon]="_icon" size="lg" [iconType]="_iconType" [iconClass]="_iconClass || ''"></seam-icon>
       <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
@@ -24,9 +24,9 @@
       [attr.title]="_tooltipDisabled ? _title : undefined"
       [attr.target]="_target"
       [ngbTooltip]="_tooltip"
-      [tooltipClass]="_tooltipClass"
-      [placement]="_tooltipPlacement"
-      [container]="_tooltipContainer"
+      [tooltipClass]="$any(_tooltipClass)"
+      [placement]="$any(_tooltipPlacement)"
+      [container]="$any(_tooltipContainer)"
       [disableTooltip]="_tooltipDisabled">
       <seam-icon *ngIf="_icon" [icon]="_icon" size="lg" [iconType]="_iconType" [iconClass]="_iconClass"></seam-icon>
       <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
@@ -41,9 +41,9 @@
       [attr.title]="_tooltipDisabled ? _title : undefined"
       [attr.target]="_target"
       [ngbTooltip]="_tooltip"
-      [tooltipClass]="_tooltipClass"
-      [placement]="_tooltipPlacement"
-      [container]="_tooltipContainer"
+      [tooltipClass]="$any(_tooltipClass)"
+      [placement]="$any(_tooltipPlacement)"
+      [container]="$any(_tooltipContainer)"
       [disableTooltip]="_tooltipDisabled">
       <seam-icon *ngIf="_icon" [icon]="_icon" size="lg" [iconType]="_iconType" [iconClass]="_iconClass"></seam-icon>
       <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
@@ -61,9 +61,9 @@
       [seamDownloadAsset]="_download"
       [attr.title]="_tooltipDisabled ? _title : undefined"
       [ngbTooltip]="_tooltip"
-      [tooltipClass]="_tooltipClass"
-      [placement]="_tooltipPlacement"
-      [container]="_tooltipContainer"
+      [tooltipClass]="$any(_tooltipClass)"
+      [placement]="$any(_tooltipPlacement)"
+      [container]="$any(_tooltipContainer)"
       [disableTooltip]="_tooltipDisabled">
       <seam-icon *ngIf="_icon" iconType="styled-square" [icon]="_icon" size="lg" [iconType]="_iconType" [iconClass]="_iconClass"></seam-icon>
       <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
@@ -79,9 +79,9 @@
       type="button"
       [attr.title]="_tooltipDisabled ? _title : undefined"
       [ngbTooltip]="_tooltip"
-      [tooltipClass]="_tooltipClass"
-      [placement]="_tooltipPlacement"
-      [container]="_tooltipContainer"
+      [tooltipClass]="$any(_tooltipClass)"
+      [placement]="$any(_tooltipPlacement)"
+      [container]="$any(_tooltipContainer)"
       [disableTooltip]="_tooltipDisabled">
       <seam-icon *ngIf="_icon" iconType="styled-square" [icon]="_icon" size="lg" [iconType]="_iconType" [iconClass]="_iconClass"></seam-icon>
       <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>

@@ -1,9 +1,11 @@
 import { animate, style, transition, trigger } from '@angular/animations'
+import { BooleanInput } from '@angular/cdk/coercion'
 import { Component, ContentChild, Input, OnInit, ViewEncapsulation } from '@angular/core'
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { faAngleDown, faCog } from '@fortawesome/free-solid-svg-icons'
 
+import { InputBoolean } from '@theseam/ui-common/core'
 import { SeamIcon } from '@theseam/ui-common/icon'
 
 import { WidgetIconTplDirective } from '../directives/widget-icon-tpl.directive'
@@ -39,6 +41,10 @@ import { WidgetTitleTplDirective } from '../directives/widget-title-tpl.directiv
   ]
 })
 export class WidgetComponent implements OnInit {
+  static ngAcceptInputType_hasHeader: BooleanInput
+  static ngAcceptInputType_loading: BooleanInput
+  static ngAcceptInputType_hasConfig: BooleanInput
+  static ngAcceptInputType_canCollapse: BooleanInput
 
   /** @ignore */
   configIcon = faCog
@@ -52,7 +58,7 @@ export class WidgetComponent implements OnInit {
    * Toggles the top header bar of a widget. This should be true for most
    * widgets.
    */
-  @Input() hasHeader: boolean = true
+  @Input() @InputBoolean() hasHeader: boolean = true
 
   /**
    * Title displayed in the top header.
@@ -62,7 +68,7 @@ export class WidgetComponent implements OnInit {
    * can lead to inconsitency quickly as different developers keep making
    * tweaks.
    */
-  @Input() titleText: string
+  @Input() titleText: string | undefined | null
 
   /**
    * Icon displayed in the top header.
@@ -90,20 +96,20 @@ export class WidgetComponent implements OnInit {
   public _iconObj: IconProp | undefined
 
   /** Add a css class to the header icon. */
-  @Input() iconClass: string
+  @Input() iconClass: string | undefined | null
 
   /** Shows widget loading instead of content. */
-  @Input() loading = false
+  @Input() @InputBoolean() loading = false
 
   /** @ignore */
   // NOTE: Config is still being worked on.
-  @Input() hasConfig = false
+  @Input() @InputBoolean() hasConfig = false
   /** @ignore */
   // NOTE: Collapse is still being worked on.
-  @Input() canCollapse = false
+  @Input() @InputBoolean() canCollapse = false
 
-  @ContentChild(WidgetIconTplDirective, { static: true }) iconTpl: WidgetIconTplDirective
-  @ContentChild(WidgetTitleTplDirective, { static: true }) titleTpl: WidgetTitleTplDirective
+  @ContentChild(WidgetIconTplDirective, { static: true }) iconTpl?: WidgetIconTplDirective
+  @ContentChild(WidgetTitleTplDirective, { static: true }) titleTpl?: WidgetTitleTplDirective
 
   /** @ignore */
   constructor() { }

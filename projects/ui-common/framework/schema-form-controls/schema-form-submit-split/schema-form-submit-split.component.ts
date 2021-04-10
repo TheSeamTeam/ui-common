@@ -28,16 +28,16 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy 
   /** @ignore */
   private readonly _ngUnsubscribe = new Subject()
 
-  formControl: AbstractControl
-  controlName: string
+  formControl?: AbstractControl
+  controlName?: string
   controlValue: any
   controlDisabled = false
   boundControl = false
   options: any
 
   @Input() layoutNode: any
-  @Input() layoutIndex: number[]
-  @Input() dataIndex: number[]
+  @Input() layoutIndex: number[] | undefined | null
+  @Input() dataIndex: number[] | undefined | null
 
   _buttonLabel = ''
 
@@ -94,7 +94,7 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy 
     this._ngUnsubscribe.complete()
   }
 
-  updateValue(event) {
+  updateValue(event: any) {
     if (typeof this.options.onClick === 'function') {
       this.options.onClick(event)
     } else {
@@ -162,7 +162,7 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy 
     return this._dropdownObj.formControl as FormControl
   }
 
-  private _setSelectListCheckedProp(value) {
+  private _setSelectListCheckedProp(value: any) {
     const items = this._selectList
     for (const item of items) {
       if (item.value === value) {
@@ -178,7 +178,7 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy 
     return (this._selectList || []).find(x => x.checked === true)
   }
 
-  _setDropdownValue(value) {
+  _setDropdownValue(value: any) {
     const formControl = this._getDropdownControl()
     formControl?.setValue(value)
   }

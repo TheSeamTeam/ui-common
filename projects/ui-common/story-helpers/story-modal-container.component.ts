@@ -48,7 +48,7 @@ export class StoryModalContainerComponent<T, D = any> implements OnDestroy {
   @Input() set component(c: ComponentType<T>) { this._component.next(c) }
   @Input() set data(d: D) { this._data.next(d) }
 
-  @Input() modalConfig: ModalConfig<D>
+  @Input() modalConfig?: ModalConfig<D>
 
   _component = new ReplaySubject<ComponentType<T>>(1)
   _data = new ReplaySubject<D>(1)

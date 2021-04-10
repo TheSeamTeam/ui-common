@@ -8,13 +8,15 @@ import {
   transition,
   trigger
 } from '@angular/animations'
-import { coerceBooleanProperty } from '@angular/cdk/coercion'
+import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion'
 import { ChangeDetectionStrategy, Component, HostBinding, Inject, Input, OnDestroy, OnInit, Optional, ViewEncapsulation } from '@angular/core'
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router'
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mapTo, pairwise, startWith, takeUntil, tap } from 'rxjs/operators'
 
+import { InputBoolean } from '@theseam/ui-common/core'
 import { TheSeamLayoutService } from '@theseam/ui-common/layout'
+
 import { THESEAM_BASE_LAYOUT_REF } from '../base-layout/index'
 import type { ITheSeamBaseLayoutNav, ITheSeamBaseLayoutRef } from '../base-layout/index'
 
@@ -135,6 +137,7 @@ export function sideNavExpandStateChangeFn(fromState: string, toState: string) {
   encapsulation: ViewEncapsulation.None
 })
 export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNav {
+  static ngAcceptInputType_hasHeaderToggle: BooleanInput
 
   private readonly _ngUnsubscribe = new Subject()
 
@@ -144,7 +147,7 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
   // @HostBinding('@sideNavAnim') _sideNavExpand = EXPANDED_STATE
   @HostBinding('@sideNavAnim') _sideNavExpand = 'initial'
 
-  @Input() hasHeaderToggle = true
+  @Input() @InputBoolean() hasHeaderToggle = true
 
   @Input()
   get items(): ISideNavItem[] { return this._items.value }
@@ -164,8 +167,8 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
   private _overlay = new BehaviorSubject<boolean>(false)
   public overlay$ = this._overlay.asObservable()
 
-  public isMobile$: Observable<boolean>
-  public sideNavExpandedState$: Observable<string>
+  public isMobile$?: Observable<boolean>
+  public sideNavExpandedState$?: Observable<string>
   public _backdropHidden = new BehaviorSubject<boolean>(true)
 
   constructor(
@@ -191,7 +194,7 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
       .pipe(
         map(v => v[0]),
         map(items => {
-          const checkNode = node => {
+          const checkNode = (node: any) => {
             if (node.children) {
               for (const _n of node.children) {
                 checkNode(_n)

@@ -1,4 +1,3 @@
-import { coerceBooleanProperty } from '@angular/cdk/coercion'
 import {
   ChangeDetectionStrategy,
   Component,
@@ -16,28 +15,25 @@ import { ThemeTypes } from '@theseam/ui-common/models'
 })
 export class DatatableActionMenuItemComponent {
 
-  @Input() label: string
+  @Input() label: string | undefined | null
 
   // tslint:disable-next-line:no-input-rename
-  @Input('attr.href') href: string
-  @Input() target: string
+  @Input('attr.href') href: string | undefined | null
+  @Input() target: string | undefined | null
 
   // Allow routerLink inputs on menu item
-  @Input() queryParams: {[k: string]: any}
-  @Input() fragment: string
+  @Input() queryParams: {[k: string]: any} | undefined | null
+  @Input() fragment: string | undefined | null
   @Input() queryParamsHandling: any
-  @Input() preserveFragment: boolean
-  @Input() skipLocationChange: boolean
-  @Input() replaceUrl: boolean
-  @Input() state: {[k: string]: any}
-  @Input() routerLink: string | any[]
+  @Input() preserveFragment: boolean| undefined | null
+  @Input() skipLocationChange: boolean| undefined | null
+  @Input() replaceUrl: boolean| undefined | null
+  @Input() state: {[k: string]: any} | undefined | null
+  @Input() routerLink: string | any[] | undefined | null
 
-  @Input() confirmDialog: { message?: string, alert?: string | { message: string, type: ThemeTypes } }
+  @Input() confirmDialog: { message?: string, alert?: string | { message: string, type: ThemeTypes } } | undefined | null
 
-  @Input()
-  set disabled(value: boolean) { this._disabled = coerceBooleanProperty(value) }
-  get disabled(): boolean { return this._disabled }
-  private _disabled: boolean
+  @Input() disabled: boolean | undefined | null
 
   @Output() readonly click = new EventEmitter<any>()
 

@@ -91,37 +91,37 @@
               "src/assets",
               {
                 "glob": "**/*",
-                "input": "projects/ui-common/src/assets",
+                "input": "projects/ui-common/assets",
                 "output": "assets"
               },
               {
                 "glob": "**/*",
-                "input": "projects/ui-common/src/styles",
+                "input": "projects/ui-common/styles",
                 "output": "styles"
               },
               {
                 "glob": "**/*.scss",
-                "input": "projects/ui-common/src/lib/framework/base-layout",
+                "input": "projects/ui-common/framework/base-layout",
                 "output": "lib/framework/base-layout"
               },
               {
                 "glob": "**/*.scss",
-                "input": "projects/ui-common/src/lib/framework/dashboard",
+                "input": "projects/ui-common/framework/dashboard",
                 "output": "lib/framework/dashboard"
               },
               {
                 "glob": "**/*.scss",
-                "input": "projects/ui-common/src/lib/widget/side-nav",
+                "input": "projects/ui-common/widget/side-nav",
                 "output": "lib/framework/side-nav"
               },
               {
                 "glob": "**/*.scss",
-                "input": "projects/ui-common/src/lib/progress/progress-circle",
+                "input": "projects/ui-common/progress/progress-circle",
                 "output": "lib/progress/progress-circle"
               },
               {
                 "glob": "**/*.scss",
-                "input": "projects/ui-common/src/lib/widget",
+                "input": "projects/ui-common/widget",
                 "output": "lib/widget"
               },
               {
@@ -247,7 +247,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/ui-common/src/test.ts",
+            "main": "projects/ui-common/test.ts",
             "tsConfig": "projects/ui-common/tsconfig.spec.json",
             "karmaConfig": "projects/ui-common/karma.conf.js"
           }
@@ -291,37 +291,37 @@
               "src/assets",
               {
                 "glob": "**/*",
-                "input": "projects/ui-common/src/assets",
+                "input": "projects/ui-common/assets",
                 "output": "assets"
               },
               {
                 "glob": "**/*",
-                "input": "projects/ui-common/src/styles",
+                "input": "projects/ui-common/styles",
                 "output": "styles"
               },
               {
                 "glob": "**/*.scss",
-                "input": "projects/ui-common/src/lib/framework/base-layout",
+                "input": "projects/ui-common/framework/base-layout",
                 "output": "lib/framework/base-layout"
               },
               {
                 "glob": "**/*.scss",
-                "input": "projects/ui-common/src/lib/framework/dashboard",
+                "input": "projects/ui-common/framework/dashboard",
                 "output": "lib/framework/dashboard"
               },
               {
                 "glob": "**/*.scss",
-                "input": "projects/ui-common/src/lib/widget/side-nav",
+                "input": "projects/ui-common/widget/side-nav",
                 "output": "lib/framework/side-nav"
               },
               {
                 "glob": "**/*.scss",
-                "input": "projects/ui-common/src/lib/progress/progress-circle",
+                "input": "projects/ui-common/progress/progress-circle",
                 "output": "lib/progress/progress-circle"
               },
               {
                 "glob": "**/*.scss",
-                "input": "projects/ui-common/src/lib/widget",
+                "input": "projects/ui-common/widget",
                 "output": "lib/widget"
               },
               {

@@ -8,8 +8,8 @@ import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core
 })
 export class TopBarTitleComponent implements OnInit {
 
-  @Input() titleText: string
-  @Input() subTitleText?: string | null
+  @Input() titleText: string | undefined | null
+  @Input() subTitleText: string | undefined | null
 
   constructor() { }
 

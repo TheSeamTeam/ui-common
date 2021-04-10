@@ -17,7 +17,7 @@ export class DatatableActionMenuComponent {
 
   faEllipsisH = faEllipsisH
 
-  @ContentChildren(DatatableActionMenuItemComponent) items: QueryList<DatatableActionMenuItemComponent>
+  @ContentChildren(DatatableActionMenuItemComponent) items?: QueryList<DatatableActionMenuItemComponent>
 
   /** @ignore */
   _actionMenuPositions: ConnectionPositionPair[] = [
@@ -60,7 +60,7 @@ export class DatatableActionMenuComponent {
           if (v === 'confirm') {
             item.click.emit(event)
             if (item.href) {
-              const win = window.open(item.href, item.target)
+              const win = window.open(item.href, item.target || undefined)
               // TODO: Consider if always setting opener to null is to restrictive
               // if (win && item.target && item.target.toLowerCase() === '_blank') {
               //   win.opener = null

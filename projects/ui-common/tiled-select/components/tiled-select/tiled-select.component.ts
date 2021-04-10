@@ -1,8 +1,10 @@
 import { animate, animation, query, stagger, style, transition, trigger, useAnimation } from '@angular/animations'
-import { coerceArray } from '@angular/cdk/coercion'
+import { BooleanInput, coerceArray } from '@angular/cdk/coercion'
 import { Platform } from '@angular/cdk/platform'
 import { ChangeDetectorRef, Component, ContentChildren, EventEmitter, forwardRef, Input, OnInit, Output, QueryList } from '@angular/core'
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
+
+import { InputBoolean } from '@theseam/ui-common/core'
 
 import { TiledSelectTileOverlayDirective } from './../../directives/tiled-select-tile-overlay.directive'
 
@@ -36,6 +38,13 @@ export const TILED_SELECT_VALUE_ACCESSOR: any = {
   ],
 })
 export class TiledSelectComponent implements OnInit, ControlValueAccessor {
+  static ngAcceptInputType_val: BooleanInput
+  static ngAcceptInputType_disabled: BooleanInput
+  static ngAcceptInputType_multiple: BooleanInput
+  static ngAcceptInputType_selectionToggleable: BooleanInput
+  static ngAcceptInputType_tileBackdrop: BooleanInput
+  static ngAcceptInputType_showSelectedIcon: BooleanInput
+  static ngAcceptInputType_animationsDisabled: BooleanInput
 
   @Input() layout: TiledSelectLayout = 'grid'
   @Input()
@@ -69,12 +78,13 @@ export class TiledSelectComponent implements OnInit, ControlValueAccessor {
 
   // tslint:disable-next-line:no-input-rename
   @Input('value') val: string | string[] | undefined
-  @Input() disabled: boolean
-  @Input() multiple = false
-  @Input() selectionToggleable = true
-  @Input() tileBackdrop = false
-  @Input() showSelectedIcon = true
-  @Input() animationsDisabled = this._platform.IOS
+
+  @Input() @InputBoolean() disabled: boolean = false
+  @Input() @InputBoolean() multiple: boolean = false
+  @Input() @InputBoolean() selectionToggleable: boolean = true
+  @Input() @InputBoolean() tileBackdrop: boolean = false
+  @Input() @InputBoolean() showSelectedIcon: boolean = true
+  @Input() @InputBoolean() animationsDisabled: boolean = this._platform.IOS
 
   @Output() readonly change = new EventEmitter<string | string[] | undefined>()
 
@@ -84,7 +94,7 @@ export class TiledSelectComponent implements OnInit, ControlValueAccessor {
   onTouched: any
 
   @ContentChildren(TiledSelectTileOverlayDirective)
-  public overlayTpls: QueryList<TiledSelectTileOverlayDirective>
+  public overlayTpls?: QueryList<TiledSelectTileOverlayDirective>
 
   constructor(
     private readonly _platform: Platform,
@@ -181,9 +191,9 @@ export class TiledSelectComponent implements OnInit, ControlValueAccessor {
     return this.tiles.filter(t => this.isSelected(t))
   }
 
-  getOverlayTpl(tile: ITiledSelectItem) {
+  getOverlayTpl(tile: ITiledSelectItem): TiledSelectTileOverlayDirective | undefined {
     // console.log('overlayTpls', this.overlayTpls)
-    return this.overlayTpls.find(t => t.record.name === tile.name)
+    return (this.overlayTpls || []).find(t => t.record?.name === tile.name)
   }
 
 }

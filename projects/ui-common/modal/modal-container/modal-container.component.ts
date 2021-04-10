@@ -73,7 +73,7 @@ export class ModalContainerComponent extends BasePortalOutlet implements OnDestr
 
   @HostBinding('class.seam-modal-container') _seamModalContainer = true
 
-  _id: string
+  _id: string | undefined | null
 
   constructor(
     private _elementRef: ElementRef<HTMLElement>,
@@ -123,7 +123,7 @@ export class ModalContainerComponent extends BasePortalOutlet implements OnDestr
   @HostBinding('class.modal-xl') get _modalDialogXl() { return this._config.modalSize === 'xl' }
 
   /** The portal host inside of this container into which the dialog content will be loaded. */
-  @ViewChild(CdkPortalOutlet /*, { static: true }*/, { static: true }) _portalHost: CdkPortalOutlet
+  @ViewChild(CdkPortalOutlet /*, { static: true }*/, { static: true }) _portalHost?: CdkPortalOutlet
 
   /** A subject emitting before the dialog enters the view. */
   _beforeEnter: Subject<void> = new Subject()
@@ -142,7 +142,7 @@ export class ModalContainerComponent extends BasePortalOutlet implements OnDestr
 
   // NOTE: For current bootstrap style modal
   @HostListener('click', [ '$event' ])
-  _onClick(event) {
+  _onClick(event: UIEvent) {
     event.stopPropagation()
   }
 
@@ -157,6 +157,10 @@ export class ModalContainerComponent extends BasePortalOutlet implements OnDestr
    * @param portal Portal to be attached as the dialog content.
    */
   attachComponentPortal<T>(portal: ComponentPortal<T>): ComponentRef<T> {
+    if (!this._portalHost) {
+      throw Error(`_portalHost not found.`)
+    }
+
     if (this._portalHost.hasAttached()) {
       throwDialogContentAlreadyAttachedError()
     }
@@ -170,6 +174,10 @@ export class ModalContainerComponent extends BasePortalOutlet implements OnDestr
    * @param portal Portal to be attached as the dialog content.
    */
   attachTemplatePortal<C>(portal: TemplatePortal<C>): EmbeddedViewRef<C> {
+    if (!this._portalHost) {
+      throw Error(`_portalHost not found.`)
+    }
+
     if (this._portalHost.hasAttached()) {
       throwDialogContentAlreadyAttachedError()
     }

@@ -19,7 +19,7 @@
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "stripInternal": true,
-    "types": [],
+    "types": [], // I am setting this as a reminder that ng-packagr ignores "types" and "typeRoots"
     "lib": [
       "dom",
       "es2018"

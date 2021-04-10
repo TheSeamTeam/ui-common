@@ -25,7 +25,7 @@ export class TableCellTypeProgressCircleIconComponent implements OnInit, OnDestr
   colData?: TheSeamTableColumn<'progress-circle-icon', TableCellTypeConfigProgressCircleIcon>
 
   displayIcon: boolean = false
-  icon: SeamIcon
+  icon?: SeamIcon
 
   constructor(
     private _cdf: ChangeDetectorRef,
@@ -72,7 +72,7 @@ export class TableCellTypeProgressCircleIconComponent implements OnInit, OnDestr
       }
   }
 
-  private _parseConfigValue(val, tableData?: TableCellData<'progress-circle-icon', TableCellTypeConfigProgressCircleIcon>) {
+  private _parseConfigValue(val: any, tableData?: TableCellData<'progress-circle-icon', TableCellTypeConfigProgressCircleIcon>) {
     const contextFn = () => this._tableCellTypeHelpers.getValueContext(val, tableData)
     return this._tableCellTypeHelpers.parseValueProp(val, contextFn)
   }

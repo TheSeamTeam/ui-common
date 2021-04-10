@@ -1,4 +1,5 @@
 import { animate, style, transition, trigger } from '@angular/animations'
+import { BooleanInput } from '@angular/cdk/coercion'
 import {
   AfterContentInit, ChangeDetectionStrategy, Component, ContentChild, ContentChildren,
   ElementRef, EventEmitter, forwardRef, InjectionToken, Input, KeyValueDiffer,
@@ -18,11 +19,13 @@ import {
   DatatableRowDetailDirective,
   setColumnDefaults,
   SortType,
+  TableColumn,
   translateTemplates,
   TreeStatus
 } from '@marklb/ngx-datatable'
 import type { SelectionType } from '@marklb/ngx-datatable'
 
+import { InputBoolean } from '@theseam/ui-common/core'
 import { composeDataFilters, composeDataFilterStates, DataFilterState, IDataFilter } from '@theseam/ui-common/data-filters'
 import { IElementResizedEvent } from '@theseam/ui-common/shared'
 import { hasProperty } from '@theseam/ui-common/utils'
@@ -110,6 +113,17 @@ export const _THESEAM_DATATABLE_ACCESSOR: any = {
   providers: [ _THESEAM_DATATABLE, DatatableColumnChangesService, _THESEAM_DATATABLE_ACCESSOR ]
 })
 export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
+  static ngAcceptInputType_externalPaging: BooleanInput
+  static ngAcceptInputType_externalSorting: BooleanInput
+  static ngAcceptInputType_loadingIndicator: BooleanInput
+  static ngAcceptInputType_reorderable: BooleanInput
+  static ngAcceptInputType_swapColumns: BooleanInput
+  static ngAcceptInputType_groupExpansionDefault: BooleanInput
+  static ngAcceptInputType_selectAllRowsOnPage: BooleanInput
+  static ngAcceptInputType_summaryRow: BooleanInput
+  static ngAcceptInputType_virtualization: BooleanInput
+  static ngAcceptInputType_scrollbarV: BooleanInput
+  static ngAcceptInputType_scrollbarH: BooleanInput
 
   faEllipsisH = faEllipsisH
   faChevronDown = faChevronDown
@@ -121,19 +135,19 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
   public readonly filterStates: Observable<DataFilterState[]>
 
   @Input()
-  get preferencesKey(): string | undefined { return this._preferencesKey.value }
-  set preferencesKey(value: string | undefined) { this._preferencesKey.next(value || undefined) }
-  private _preferencesKey = new BehaviorSubject<string | undefined>(undefined)
+  get preferencesKey(): string | undefined | null { return this._preferencesKey.value }
+  set preferencesKey(value: string | undefined | null) { this._preferencesKey.next(value || undefined) }
+  private _preferencesKey = new BehaviorSubject<string | undefined | null>(undefined)
 
   @Input() targetMarkerTemplate: any
 
   @Input()
-  get columns(): TheSeamDatatableColumn[] { return this._columns.value }
-  set columns(value: TheSeamDatatableColumn[]) {
+  get columns(): TheSeamDatatableColumn[] | undefined | null { return this._columns.value }
+  set columns(value: TheSeamDatatableColumn[] | undefined | null) {
     // console.log('columns input', value)
     this._columns.next(value)
   }
-  private _columns = new BehaviorSubject<TheSeamDatatableColumn[]>([])
+  private _columns = new BehaviorSubject<TheSeamDatatableColumn[] | undefined | null>([])
 
   @Input()
   get rows(): any[] { return this._rows.value }
@@ -142,30 +156,30 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
 
   public rows$: Observable<any[]>
 
-  @Input() columnMode: ColumnMode = ColumnMode.force
+  @Input() columnMode: ColumnMode | undefined | null = ColumnMode.force
 
-  @Input() groupRowsBy: string
-  @Input() groupedRows: any[]
+  @Input() groupRowsBy: string | undefined | null
+  @Input() groupedRows: any[] | undefined | null
 
-  @Input() selected: any[] = []
+  @Input() selected: any[] | undefined | null = []
 
-  @Input() externalPaging = false
-  @Input() externalSorting = false
+  @Input() @InputBoolean() externalPaging = false
+  @Input() @InputBoolean() externalSorting = false
 
-  @Input() limit: number | undefined
-  @Input() count = 0
-  @Input() offset = 0
+  @Input() limit: number | undefined | null
+  @Input() count: number | undefined | null = 0
+  @Input() offset: number | undefined | null = 0
 
-  @Input() loadingIndicator = false
+  @Input() @InputBoolean() loadingIndicator = false
 
-  @Input() selectionType: SelectionType
+  @Input() selectionType: SelectionType | undefined | null
 
-  @Input() reorderable = true
-  @Input() swapColumns = false
-  @Input() sortType: SortType = SortType.single
-  @Input() sorts: any[] = []
+  @Input() @InputBoolean() reorderable = true
+  @Input() @InputBoolean() swapColumns = false
+  @Input() sortType: SortType | undefined | null = SortType.single
+  @Input() sorts: any[] | undefined | null = []
 
-  @Input() cssClasses: any = {
+  @Input() cssClasses: any | undefined | null = {
     sortAscending: 'datatable-icon-up',
     sortDescending: 'datatable-icon-down',
     pagerLeftArrow: 'datatable-icon-left',
@@ -174,7 +188,7 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
     pagerNext: 'datatable-icon-skip'
   }
 
-  @Input() messages: any = {
+  @Input() messages: any | undefined | null = {
     // Message to show when array is presented
     // but contains no values
     emptyMessage: 'No records found',
@@ -186,33 +200,33 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
     selectedMessage: 'selected'
   }
 
-  @Input() rowIdentity: (x: any) => any = ((x: any) => x)
+  @Input() rowIdentity: ((x: any) => any) | undefined | null = ((x: any) => x)
 
-  @Input() rowClass: any
+  @Input() rowClass: any | undefined | null
 
-  @Input() selectCheck: any
-  @Input() displayCheck: (row: any, column?: any, value?: any) => boolean
+  @Input() selectCheck: any | undefined | null
+  @Input() displayCheck: ((row: any, column?: any, value?: any) => boolean) | undefined | null
 
-  @Input() groupExpansionDefault = false
+  @Input() @InputBoolean() groupExpansionDefault = false
 
-  @Input() trackByProp: string
+  @Input() trackByProp: string | undefined | null
 
-  @Input() selectAllRowsOnPage = false
+  @Input() @InputBoolean() selectAllRowsOnPage = false
 
-  @Input() treeFromRelation: string
-  @Input() treeToRelation: string
-  @Input() summaryRow = false
-  @Input() summaryHeight = 30
-  @Input() summaryPosition = 'top'
+  @Input() treeFromRelation: string | undefined | null
+  @Input() treeToRelation: string | undefined | null
+  @Input() @InputBoolean() summaryRow = false
+  @Input() summaryHeight: number | undefined | null = 30
+  @Input() summaryPosition: string | undefined | null = 'top'
 
-  @Input() virtualization = true
+  @Input() @InputBoolean() virtualization = true
 
-  @Input() headerHeight = 50
-  @Input() rowHeight = 50
-  @Input() footerHeight = 40
+  @Input() headerHeight: number | undefined | null = 50
+  @Input() rowHeight: number | undefined | null = 50
+  @Input() footerHeight: number | undefined | null = 40
 
-  @Input() scrollbarV = true
-  @Input() scrollbarH = true
+  @Input() @InputBoolean() scrollbarV = true
+  @Input() @InputBoolean() scrollbarH = true
 
   @Output() scroll = new EventEmitter<any>()
   @Output() activate = new EventEmitter<any>()
@@ -227,15 +241,15 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
   @Output() readonly actionRefreshRequest = new EventEmitter<void>()
   @Output() readonly hiddenColumnsChange = new EventEmitter<string[]>()
 
-  @ContentChildren(DatatableColumnComponent) columnComponents: QueryList<DatatableColumnComponent>
+  @ContentChildren(DatatableColumnComponent) columnComponents?: QueryList<DatatableColumnComponent>
 
-  @ContentChild(DatatableActionMenuComponent, { static: true }) actionMenu: DatatableActionMenuComponent
-  @ContentChild(DatatableRowActionItemDirective, { static: true }) rowActionItem: DatatableRowActionItemDirective
-  @ContentChild(TheSeamDatatableRowDetailDirective, { static: true }) rowDetail: TheSeamDatatableRowDetailDirective
+  @ContentChild(DatatableActionMenuComponent, { static: true }) actionMenu?: DatatableActionMenuComponent
+  @ContentChild(DatatableRowActionItemDirective, { static: true }) rowActionItem?: DatatableRowActionItemDirective
+  @ContentChild(TheSeamDatatableRowDetailDirective, { static: true }) rowDetail?: TheSeamDatatableRowDetailDirective
 
   @ContentChild(DatatableMenuBarComponent)
-  get menuBarComponent(): DatatableMenuBarComponent { return this._menuBarComponent }
-  set menuBarComponent(value: DatatableMenuBarComponent) {
+  get menuBarComponent(): DatatableMenuBarComponent | undefined { return this._menuBarComponent }
+  set menuBarComponent(value: DatatableMenuBarComponent | undefined) {
     this._menuBarComponent = value
 
     if (this._menuBarSub) { this._menuBarSub.unsubscribe() }
@@ -243,26 +257,26 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
     if (value) {
       this._setMenuBarFilters(value.filters())
 
-      this._menuBarSub = this._menuBarComponent.filtersChanged
+      this._menuBarSub = this._menuBarComponent?.filtersChanged
         .subscribe(v => { this._setMenuBarFilters(value.filters()) })
     }
   }
-  private _menuBarComponent: DatatableMenuBarComponent
-  private _menuBarSub: Subscription
+  private _menuBarComponent: DatatableMenuBarComponent | undefined
+  private _menuBarSub: Subscription | undefined
 
-  @ViewChild(NgxDatatableComponent) ngxDatatable: NgxDatatableComponent
-  @ViewChild(NgxDatatableComponent, { read: ElementRef }) ngxDatatableElement: ElementRef
-  @ViewChild(DatatableRowDetailDirective) ngxRowDetail: DatatableRowDetailDirective
+  @ViewChild(NgxDatatableComponent) ngxDatatable?: NgxDatatableComponent
+  @ViewChild(NgxDatatableComponent, { read: ElementRef }) ngxDatatableElement?: ElementRef
+  @ViewChild(DatatableRowDetailDirective) ngxRowDetail?: DatatableRowDetailDirective
 
-  @ViewChild('actionMenuCellTpl', { static: true }) actionMenuCellTpl: TemplateRef<DataTableColumnDirective>
-  @ViewChild('treeToggleTpl', { static: true }) treeToggleTpl: TemplateRef<DataTableColumnCellTreeToggle>
-  @ViewChild('headerTpl', { static: true }) headerTpl: TemplateRef<DataTableColumnHeaderDirective>
-  @ViewChild('blankHeaderTpl', { static: true }) blankHeaderTpl: TemplateRef<DataTableColumnHeaderDirective>
-  @ViewChild('cellTypeSelectorTpl', { static: true }) cellTypeSelectorTpl: TemplateRef<DataTableColumnDirective>
+  @ViewChild('actionMenuCellTpl', { static: true }) actionMenuCellTpl?: TemplateRef<DataTableColumnDirective>
+  @ViewChild('treeToggleTpl', { static: true }) treeToggleTpl?: TemplateRef<DataTableColumnCellTreeToggle>
+  @ViewChild('headerTpl', { static: true }) headerTpl?: TemplateRef<DataTableColumnHeaderDirective>
+  @ViewChild('blankHeaderTpl', { static: true }) blankHeaderTpl?: TemplateRef<DataTableColumnHeaderDirective>
+  @ViewChild('cellTypeSelectorTpl', { static: true }) cellTypeSelectorTpl?: TemplateRef<DataTableColumnDirective>
 
-  public columnComponents$: Observable<DatatableColumnComponent[]>
-  public columns$: Observable<TheSeamDatatableColumn[]>
-  public displayColumns$: Observable<TheSeamDatatableColumn[]>
+  public columnComponents$?: Observable<DatatableColumnComponent[]>
+  public columns$?: Observable<TheSeamDatatableColumn[]>
+  public displayColumns$?: Observable<TheSeamDatatableColumn[]>
   private _colDiffersInp: { [propName: string]: KeyValueDiffer<any, any> } = {}
   private _colDiffersTpl: { [propName: string]: KeyValueDiffer<any, any> } = {}
 
@@ -345,8 +359,8 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
 
   ngAfterContentInit() {
     this.columnComponents$ = this._columnChangesService.columnInputChanges$.pipe(
-      map(() => this.columnComponents.toArray()),
-      startWith(this.columnComponents.toArray()),
+      map(() => this.columnComponents?.toArray() ?? []),
+      startWith(this.columnComponents?.toArray() ?? []),
       shareReplay({ bufferSize: 1, refCount: true })
     )
 
@@ -355,7 +369,7 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
         this.columnComponents$,
         this._columns
       ]).pipe(
-        map(v => this._getMergedTplAndInpColumns(v[0], v[1])),
+        map(v => this._getMergedTplAndInpColumns(v[0], v[1] ?? [])),
         // tap(v => console.log('cols', v)),
         shareReplay({ bufferSize: 1, refCount: true }),
       )
@@ -418,11 +432,12 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
       if (inpColDiff) {
         inpColDiff.forEachRemovedItem(r => {
           if (prev && prev.hasOwnProperty(r.key)) {
-            delete prev[r.key]
+            const k = r.key as keyof TableColumn
+            delete prev[k]
           }
         })
-        inpColDiff.forEachAddedItem(r => _inpCol[r.key] = r.currentValue)
-        inpColDiff.forEachChangedItem(r => _inpCol[r.key] = r.currentValue)
+        inpColDiff.forEachAddedItem(r => (_inpCol as any)[r.key] = r.currentValue)
+        inpColDiff.forEachChangedItem(r => (_inpCol as any)[r.key] = r.currentValue)
       }
 
       let _tplCol: TheSeamDatatableColumn = {}
@@ -432,11 +447,12 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
         if (tplColDiff) {
           tplColDiff.forEachRemovedItem(r => {
             if (prev && prev.hasOwnProperty(r.key)) {
-              delete prev[r.key]
+              const k = r.key as keyof TableColumn
+              delete prev[k]
             }
           })
-          tplColDiff.forEachAddedItem(r => _tplCol[r.key] = r.currentValue)
-          tplColDiff.forEachChangedItem(r => _tplCol[r.key] = r.currentValue)
+          tplColDiff.forEachAddedItem(r => (_tplCol as any)[r.key] = r.currentValue)
+          tplColDiff.forEachChangedItem(r => (_tplCol as any)[r.key] = r.currentValue)
         }
       }
 
@@ -549,14 +565,14 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
     return { col, comp }
   }
 
-  _getRowExpanded(row) {
+  _getRowExpanded(row: any) {
     if (this.ngxDatatable && this.ngxDatatable.bodyComponent) {
       return this.ngxDatatable.bodyComponent.getRowExpanded(row)
     }
     return false
   }
 
-  public trackByFnColumn(index, item) {
+  public trackByFnColumn(index: number, item: any) {
     return item.prop
   }
 
@@ -568,11 +584,11 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
     }
   }
 
-  _onResize(event) {
+  _onResize(event: any) {
     // console.log('resize', event, event.column.prop)
     this.resize.emit(event)
 
-    if (event.isDone) {
+    if (event.isDone && this.columns) {
       const columns = this.columns
       const col = columns.find(c => c.prop === event.column.prop)
       if (col) {

@@ -1,6 +1,6 @@
 <div class="d-flex flex-row" *ngIf="!compact; else compactTpl">
   <div class="text-left flex-grow-1 text-truncate">
-    <ng-template [ngTemplateOutlet]="detailTpl"></ng-template>
+    <ng-template [ngTemplateOutlet]="$any(detailTpl)"></ng-template>
   </div>
   <!-- Arrow Button -->
   <div class="pl-2 d-flex flex-column">

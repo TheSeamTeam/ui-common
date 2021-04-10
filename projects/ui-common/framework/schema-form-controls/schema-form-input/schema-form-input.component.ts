@@ -11,16 +11,16 @@ import { JsonSchemaFormService } from '@ajsf/core'
 })
 export class TheSeamSchemaFormInputComponent implements OnInit {
 
-  formControl: AbstractControl
-  controlName: string
-  controlValue: string
+  formControl?: AbstractControl
+  controlName?: string
+  controlValue?: string
   controlDisabled = false
   boundControl = false
   options: any
   autoCompleteList: string[] = []
   @Input() layoutNode: any
-  @Input() layoutIndex: number[]
-  @Input() dataIndex: number[]
+  @Input() layoutIndex: number[] | undefined | null
+  @Input() dataIndex: number[] | undefined | null
 
   constructor(
     private jsf: JsonSchemaFormService
@@ -31,7 +31,7 @@ export class TheSeamSchemaFormInputComponent implements OnInit {
     this.jsf.initializeControl(this)
   }
 
-  updateValue(event) {
+  updateValue(event: any) {
     this.jsf.updateValue(this, event.target.value)
   }
 

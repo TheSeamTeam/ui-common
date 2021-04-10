@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, NgZone, Pipe, PipeTransform } from '@angular/core'
+import { ChangeDetectorRef, Pipe, PipeTransform } from '@angular/core'
 
 import { intlTelInputUtils } from './intl-tel-input'
 import { getCountryCode, getDialCode, getIntlTelInputUtils, globalIntlTelInputGlobals, processCountryCodes, TheSeamNumberFormatsInput } from './utils'
@@ -10,9 +10,9 @@ import { coercePhoneNumberFormat } from './utils'
 })
 export class TheSeamPhoneNumberPipe implements PipeTransform {
 
-  private _latestPhoneNumber: string
-  private _latestNumberFormat: TheSeamNumberFormatsInput
-  private _latestValue: string
+  private _latestPhoneNumber: string | undefined | null
+  private _latestNumberFormat: TheSeamNumberFormatsInput | undefined | null
+  private _latestValue: string | undefined | null
 
   constructor(private _cdr: ChangeDetectorRef) { }
 

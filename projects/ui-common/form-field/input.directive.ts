@@ -1,10 +1,11 @@
-import { coerceBooleanProperty } from '@angular/cdk/coercion'
+import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion'
 import { Directive, DoCheck, ElementRef, HostBinding, Input, Optional, Self } from '@angular/core'
 import { FormGroupDirective, NgControl, NgForm } from '@angular/forms'
 import { Subject } from 'rxjs'
 
 import { NgSelectComponent } from '@ng-select/ng-select'
 
+import { InputBoolean } from '@theseam/ui-common/core'
 import { toggleAttribute } from '@theseam/ui-common/utils'
 
 // NOTE: Partially based on mat-input: https://github.com/angular/material2/blob/master/src/lib/input/input.ts
@@ -18,6 +19,9 @@ let nextUniqueId = 0
   exportAs: 'seamInput',
 })
 export class InputDirective implements DoCheck {
+  static ngAcceptInputType_required: BooleanInput
+  static ngAcceptInputType_disabled: BooleanInput
+  static ngAcceptInputType_readonly: BooleanInput
 
   protected _uid = `lib-input-${nextUniqueId++}`
 
@@ -38,14 +42,14 @@ export class InputDirective implements DoCheck {
   @Input() seamInputSize: 'sm' | 'normal' = 'normal'
 
   @Input()
-  get id(): string { return this._id }
-  set id(value: string) { this._id = value || this._uid }
-  protected _id: string
+  get id(): string | undefined | null { return this._id }
+  set id(value: string | undefined | null) { this._id = value || this._uid }
+  protected _id: string | undefined | null
 
   /** Input type of the element. */
   @Input()
-  get type(): string { return this._type }
-  set type(value: string) {
+  get type(): string | undefined | null { return this._type }
+  set type(value: string | undefined | null) {
     this._type = value || 'text'
     // this._validateType()
 
@@ -56,22 +60,19 @@ export class InputDirective implements DoCheck {
       (this._elementRef.nativeElement as HTMLInputElement).type = this._type
     }
   }
-  protected _type = 'text'
+  protected _type: string | undefined | null = 'text'
 
   /**
    * Implemented as part of MatFormFieldControl.
    * @docs-private
    */
-  @Input() placeholder: string
+  @Input() placeholder: string | undefined | null
 
   /**
    * Implemented as part of MatFormFieldControl.
    * @docs-private
    */
-  @Input()
-  get required(): boolean { return this._required }
-  set required(value: boolean) { this._required = coerceBooleanProperty(value) }
-  protected _required = false
+  @Input() @InputBoolean() required: boolean = false
 
   /**
    * Implemented as part of MatFormFieldControl.
@@ -110,10 +111,7 @@ export class InputDirective implements DoCheck {
   // }
 
   /** Whether the element is readonly. */
-  @Input()
-  get readonly(): boolean { return this._readonly }
-  set readonly(value: boolean) { this._readonly = coerceBooleanProperty(value) }
-  private _readonly = false
+  @Input() @InputBoolean() readonly: boolean = false
 
   constructor(
     public _elementRef: ElementRef<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,

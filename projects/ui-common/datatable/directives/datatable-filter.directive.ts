@@ -7,7 +7,7 @@ import { IDataFilter, THESEAM_DATA_FILTER } from '@theseam/ui-common/data-filter
 })
 export class DatatableFilterDirective {
 
-  private _filter: IDataFilter
+  private _filter?: IDataFilter
 
   constructor(
     @Self() @Inject(THESEAM_DATA_FILTER) dataFilters: IDataFilter[]

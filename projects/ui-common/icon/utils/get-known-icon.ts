@@ -72,13 +72,14 @@ import {
   faUsers,
   faUserTimes
 } from '@fortawesome/free-solid-svg-icons'
+
 import { SeamIcon } from '../icon'
 
 // TODO: Decide a good way to do this, so that we don't have to import full icon
 // libraries, but still provide icon choices to use from a string. One way could
 // be to define a dictionary of app icons that we can use that map a unique
 // string to an icon definition.
-const knownIcons = {
+const knownIcons: { [key: string]: SeamIcon } = {
   'faAddressCard': faAddressCard,
   'faBan': faBan,
   'faBell': faBell,

@@ -1,5 +1,5 @@
 import { FocusMonitor, FocusOrigin } from '@angular/cdk/a11y'
-import { coerceBooleanProperty } from '@angular/cdk/coercion'
+import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion'
 import {
   AfterViewInit,
   Attribute,
@@ -18,16 +18,24 @@ import {
 } from '@angular/core'
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
 
-import { CanDisable, CanDisableCtor, HasTabIndex, HasTabIndexCtor, mixinDisabled, mixinTabIndex } from '@theseam/ui-common/core'
+import { CanDisable, CanDisableCtor, HasTabIndex, HasTabIndexCtor, InputBoolean, mixinDisabled, mixinTabIndex } from '@theseam/ui-common/core'
 
 // NOTE: Partially based on mat-checkbox: https://github.com/angular/components/blob/master/src/material/checkbox/checkbox.ts
 
 /** Change event object emitted by TheSeamCheckboxComponent. */
 export class TheSeamCheckboxChange {
   /** The source TheSeamCheckboxComponent of the event. */
-  source: TheSeamCheckboxComponent
+  public readonly source: TheSeamCheckboxComponent
   /** The new `checked` value of the checkbox. */
-  checked: boolean
+  public readonly checked: boolean
+
+  constructor(
+    private readonly _source: TheSeamCheckboxComponent,
+    private readonly _checked: boolean
+  ) {
+    this.source = _source
+    this.checked = _checked
+  }
 }
 
 export const THESEAM_CHECKBOX_CONTROL_VALUE_ACCESSOR: any = {
@@ -65,6 +73,9 @@ let _uid = 0
 })
 export class TheSeamCheckboxComponent extends _TheSeamCheckboxMixinBase
   implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor, CanDisable, HasTabIndex {
+  static ngAcceptInputType_checked: BooleanInput
+  static ngAcceptInputType_disabled: BooleanInput
+  static ngAcceptInputType_indeterminate: BooleanInput
 
   /** @ignore */
   private _uid = `seam-chk-${_uid++}`
@@ -87,25 +98,21 @@ export class TheSeamCheckboxComponent extends _TheSeamCheckboxMixinBase
   @Input('aria-labelledby') ariaLabelledby?: string | null = null
 
   /** Whether the checkbox is required. */
-  @Input()
-  get required(): boolean { return this._required }
-  set required(value: boolean) { this._required = coerceBooleanProperty(value) }
-  /** @ignore */
-  private _required: boolean
+  @Input() @InputBoolean() required: boolean = false
 
-  /**
-   * Whether the checkbox is checked.
-   */
+  /** Whether the checkbox is checked. */
   @Input()
   get checked(): boolean { return this._checked }
   set checked(value: boolean) {
-    if (value !== this.checked) {
-      this._checked = value
+    const newValue = coerceBooleanProperty(value)
+
+    if (newValue !== this.checked) {
+      this._checked = newValue
       this._changeDetectorRef.markForCheck()
     }
   }
   /** @ignore */
-  private _checked = false
+  private _checked: boolean = false
 
   /**
    * Whether the checkbox is disabled.
@@ -147,7 +154,7 @@ export class TheSeamCheckboxComponent extends _TheSeamCheckboxMixinBase
   private _indeterminate = false
 
   /** Name value will be applied to the input element if present */
-  @Input() name: string | null = null
+  @Input() name: string | undefined | null = null
 
   /** Event emitted when the checkbox's `checked` value changes. */
   @Output() readonly change = new EventEmitter<TheSeamCheckboxChange>()
@@ -156,13 +163,13 @@ export class TheSeamCheckboxComponent extends _TheSeamCheckboxMixinBase
   @Output() readonly indeterminateChange: EventEmitter<boolean> = new EventEmitter<boolean>()
 
   /** The value attribute of the native input element */
-  @Input() value: string
+  @Input() value: string | undefined | null
 
   /**
    * The native `<input type="checkbox">` element
    * @ignore
    */
-  @ViewChild('input', { static: true }) _inputElement: ElementRef<HTMLInputElement>
+  @ViewChild('input', { static: true }) _inputElement: ElementRef<HTMLInputElement> | undefined | null
 
   /**
    * Called when the checkbox is blurred. Needed to properly implement ControlValueAccessor.
@@ -256,9 +263,7 @@ export class TheSeamCheckboxComponent extends _TheSeamCheckboxMixinBase
 
   /** @ignore */
   private _emitChangeEvent() {
-    const event = new TheSeamCheckboxChange()
-    event.source = this
-    event.checked = this.checked
+    const event = new TheSeamCheckboxChange(this, this.checked)
 
     this._controlValueAccessorChangeFn(this.checked)
     this.change.emit(event)
@@ -299,6 +304,7 @@ export class TheSeamCheckboxComponent extends _TheSeamCheckboxMixinBase
 
   /** Focuses the checkbox. */
   focus(origin: FocusOrigin = 'keyboard', options?: FocusOptions): void {
+    if (!this._inputElement) { return }
     this._focusMonitor.focusVia(this._inputElement, origin, options)
   }
 

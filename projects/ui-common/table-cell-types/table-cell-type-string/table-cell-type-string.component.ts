@@ -69,8 +69,8 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
   _rowIndex?: number
   _colData?: TheSeamTableColumn<'string', TableCellTypeConfigString>
 
-  _download: boolean
-  _detectMimeContent: boolean
+  _download?: boolean
+  _detectMimeContent?: boolean
 
   @Input()
   set title(value: string | undefined) { this.title = value }
@@ -158,7 +158,7 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
     this._queryParams = queryParams
   }
 
-  private _parseConfigValue(val) {
+  private _parseConfigValue(val: any) {
     const contextFn = () => this._tableCellTypeHelpers.getValueContext(val, this._tableCellData)
     return this._tableCellTypeHelpers.parseValueProp(val, contextFn)
   }

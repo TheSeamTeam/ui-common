@@ -10,8 +10,8 @@ import { JsonSchemaFormService } from '@ajsf/core'
 })
 export class TheSeamSchemaFormCheckboxComponent implements OnInit {
 
-  formControl: AbstractControl
-  controlName: string
+  formControl?: AbstractControl
+  controlName?: string
   controlValue: any
   controlDisabled = false
   boundControl = false
@@ -19,8 +19,8 @@ export class TheSeamSchemaFormCheckboxComponent implements OnInit {
   trueValue: any = true
   falseValue: any = false
   @Input() layoutNode: any
-  @Input() layoutIndex: number[]
-  @Input() dataIndex: number[]
+  @Input() layoutIndex: number[] | undefined | null
+  @Input() dataIndex: number[] | undefined | null
 
   constructor(
     private jsf: JsonSchemaFormService
@@ -34,7 +34,7 @@ export class TheSeamSchemaFormCheckboxComponent implements OnInit {
     }
   }
 
-  updateValue(event) {
+  updateValue(event: any) {
     event.preventDefault()
     this.jsf.updateValue(this, event.target.checked ? this.trueValue : this.falseValue)
   }

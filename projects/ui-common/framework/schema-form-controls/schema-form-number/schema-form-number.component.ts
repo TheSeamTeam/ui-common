@@ -11,8 +11,8 @@ import { JsonSchemaFormService } from '@ajsf/core'
 })
 export class TheSeamSchemaFormNumberComponent implements OnInit {
 
-  formControl: AbstractControl
-  controlName: string
+  formControl?: AbstractControl
+  controlName?: string
   controlValue: any
   controlDisabled = false
   boundControl = false
@@ -22,8 +22,8 @@ export class TheSeamSchemaFormNumberComponent implements OnInit {
   allowExponents = false
   lastValidNumber = ''
   @Input() layoutNode: any
-  @Input() layoutIndex: number[]
-  @Input() dataIndex: number[]
+  @Input() layoutIndex: number[] | undefined | null
+  @Input() dataIndex: number[] | undefined | null
 
   constructor(
     private jsf: JsonSchemaFormService
@@ -35,7 +35,7 @@ export class TheSeamSchemaFormNumberComponent implements OnInit {
     if (this.layoutNode.dataType === 'integer') { this.allowDecimal = false }
   }
 
-  updateValue(event) {
+  updateValue(event: any) {
     this.jsf.updateValue(this, event.target.value)
   }
 

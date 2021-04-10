@@ -100,7 +100,7 @@ export class DatatablePreferencesService {
         // Making the preferences immutable may not be necessary, but for now
         // this obj->str->obj will work as a naive clone.
         const columns = JSON.parse(JSON.stringify(prefs.columns || []))
-        const _colPref = columns.find(c => c.prop === column.prop)
+        const _colPref = columns.find((c: any) => c.prop === column.prop)
         // console.log('has', _colPref)
         if (_colPref) {
           // console.log('hasProperty(column, "width"))', hasProperty(column, 'width'))

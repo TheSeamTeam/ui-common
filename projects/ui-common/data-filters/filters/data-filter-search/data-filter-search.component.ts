@@ -1,3 +1,4 @@
+import { BooleanInput } from '@angular/cdk/coercion'
 import { ChangeDetectionStrategy, Component, forwardRef, Inject, Input, OnDestroy, OnInit, Optional, TemplateRef } from '@angular/core'
 import { FormControl } from '@angular/forms'
 import { Observable, of } from 'rxjs'
@@ -5,6 +6,7 @@ import { map, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
 
+import { InputBoolean } from '@theseam/ui-common/core'
 import type { SeamIcon } from '@theseam/ui-common/icon'
 import { isNullOrUndefined } from '@theseam/ui-common/utils'
 
@@ -44,20 +46,22 @@ let _uid = 0
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DataFilterSearchComponent implements OnInit, OnDestroy, IDataFilter {
+  static ngAcceptInputType_exact: BooleanInput
+  static ngAcceptInputType_caseSensitive: BooleanInput
 
   public readonly name = 'search'
   public readonly uid = `search__${_uid++}`
 
   _control = new FormControl()
 
-  @Input() properties = this._optDefault('properties')
-  @Input() omitProperties = this._optDefault('omitProperties')
-  @Input() exact = this._optDefault('exact')
-  @Input() caseSensitive = this._optDefault('caseSensitive')
+  @Input() properties: string[] | undefined | null = this._optDefault('properties')
+  @Input() omitProperties: string[] | undefined | null = this._optDefault('omitProperties')
+  @Input() @InputBoolean() exact: boolean = this._optDefault('exact')
+  @Input() @InputBoolean() caseSensitive: boolean = this._optDefault('caseSensitive')
 
-  @Input() placeholder = 'Search...'
-  @Input() icon: SeamIcon = faSearch
-  @Input() iconTpl: TemplateRef<HTMLElement>
+  @Input() placeholder: string | undefined | null = 'Search...'
+  @Input() icon: SeamIcon | undefined | null = faSearch
+  @Input() iconTpl?: TemplateRef<HTMLElement>
 
   @Input()
   set value(value: string | string[]) {
@@ -92,8 +96,8 @@ export class DataFilterSearchComponent implements OnInit, OnDestroy, IDataFilter
 
   get options(): ISearchFilterOptions {
     return {
-      properties: this.properties,
-      omitProperties: this.omitProperties,
+      properties: this.properties ?? undefined,
+      omitProperties: this.omitProperties ?? undefined,
       exact: this.exact,
       caseSensitive: this.caseSensitive
     }

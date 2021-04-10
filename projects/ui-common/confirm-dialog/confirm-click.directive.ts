@@ -1,5 +1,7 @@
+import { BooleanInput } from '@angular/cdk/coercion'
 import { Directive, EventEmitter, HostBinding, HostListener, Input, OnDestroy, Output } from '@angular/core'
 
+import { InputBoolean } from '@theseam/ui-common/core'
 import { ModalRef } from '@theseam/ui-common/modal'
 import { ThemeTypes } from '@theseam/ui-common/models'
 
@@ -11,12 +13,13 @@ import { SeamConfirmDialogService } from './confirm-dialog.service'
   exportAs: 'seamConfirmClick'
 })
 export class ConfirmClickDirective implements OnDestroy {
+  static ngAcceptInputType_seamConfirmDisabled: BooleanInput
 
   private _modalRef: ModalRef<ConfirmDialogComponent, 'confirm' | undefined> | undefined
 
-  @Input() seamConfirmMsg: string
-  @Input() seamConfirmAlert: string | { message: string, type: ThemeTypes }
-  @Input() seamConfirmDisabled = false
+  @Input() seamConfirmMsg: string | undefined | null
+  @Input() seamConfirmAlert: string | { message: string, type: ThemeTypes } | undefined | null
+  @Input() @InputBoolean() seamConfirmDisabled: boolean = false
 
   @Output() seamConfirmClick = new EventEmitter<'confirm'>()
 
@@ -34,7 +37,7 @@ export class ConfirmClickDirective implements OnDestroy {
 
     if (!!this._modalRef) { return }
 
-    this._modalRef = this._confirmService.open(this.seamConfirmMsg, this.seamConfirmAlert)
+    this._modalRef = this._confirmService.open(this.seamConfirmMsg || '', this.seamConfirmAlert || undefined)
 
     this._modalRef.afterClosed().subscribe(result => {
       if (result === 'confirm') {

@@ -1,3 +1,4 @@
+import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion'
 import { Component, Input } from '@angular/core'
 
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons'
@@ -37,31 +38,34 @@ import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons'
   ]
 })
 export class PasswordInputRevealComponent {
+  static ngAcceptInputType_passwordVisible: BooleanInput
 
   faEye = faEye
   faEyeSlash = faEyeSlash
 
   @Input()
-  get inputRef() { return this._loginPasswordInput }
-  set inputRef(value: HTMLInputElement) {
-    this._loginPasswordInput = value
+  get inputRef(): HTMLInputElement | undefined | null { return this._passwordInput }
+  set inputRef(value: HTMLInputElement | undefined | null) {
+    this._passwordInput = value
     this.updateRevealState()
-    this._loginPasswordInput.style.paddingRight = '40px'
-    this._loginPasswordInput.classList.add('no-native-eye')
+    if (this._passwordInput) {
+      this._passwordInput.style.paddingRight = '40px'
+      this._passwordInput.classList.add('no-native-eye')
+    }
   }
-  private _loginPasswordInput: HTMLInputElement
+  private _passwordInput: HTMLInputElement | undefined | null
 
   @Input()
   get passwordVisible() { return this._passwordVisible }
   set passwordVisible(value: boolean) {
-    this._passwordVisible = value
+    this._passwordVisible = coerceBooleanProperty(value)
     this.updateRevealState()
   }
   public _passwordVisible = false
 
   public updateRevealState(): void {
-    if (this._loginPasswordInput) {
-      this._loginPasswordInput.type = this.passwordVisible ? 'text' : 'password'
+    if (this._passwordInput) {
+      this._passwordInput.type = this.passwordVisible ? 'text' : 'password'
     }
   }
 

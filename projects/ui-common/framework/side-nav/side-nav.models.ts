@@ -53,7 +53,7 @@ export interface ISideNavLink extends ISideNavItemBase<'link'> {
 }
 
 export interface ISideNavButton extends ISideNavItemBase<'button'> {
-  onClick: (event) => void
+  onClick: (event: MouseEvent) => void
 }
 
 export type ISideNavItem = ISideNavTitle | ISideNavDivider | ISideNavBasic | ISideNavLink | ISideNavButton

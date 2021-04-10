@@ -1,18 +1,20 @@
 import { FocusMonitor } from '@angular/cdk/a11y'
+import { BooleanInput } from '@angular/cdk/coercion'
 import { Component, ContentChild, ElementRef, HostBinding, Input, OnDestroy, OnInit, Renderer2, ViewEncapsulation } from '@angular/core'
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
-
-import { WidgetTileSecondaryIconDirective } from './widget-tile-secondary-icon.directive'
 
 import {
   CanDisableCtor,
   HasElementRef,
   HasRenderer2,
   HasTabIndexCtor,
+  InputBoolean,
   mixinDisabled,
   mixinTabIndex,
 } from '@theseam/ui-common/core'
+
+import { WidgetTileSecondaryIconDirective } from './widget-tile-secondary-icon.directive'
 
 @Component({ template: '' })
 // tslint:disable-next-line: component-class-suffix
@@ -52,10 +54,11 @@ const _TheSeamWidgetTileMixinBase: CanDisableCtor & HasTabIndexCtor &
   encapsulation: ViewEncapsulation.None
 })
 export class WidgetTileComponent extends _TheSeamWidgetTileMixinBase implements OnInit, OnDestroy {
+  static ngAcceptInputType_grayscaleOnDisable: BooleanInput
 
-  private _clickUnListen: () => void | undefined | null
+  private _clickUnListen: (() => void | undefined | null) | undefined | null
 
-  private _type: string
+  private _type: string | undefined | null
 
   @HostBinding('attr.type')
   get _attrType() {
@@ -78,18 +81,18 @@ export class WidgetTileComponent extends _TheSeamWidgetTileMixinBase implements 
   get _attrTabIndex() { return this.disabled ? -1 : (this.tabIndex || 0) }
 
   @Input()
-  get type(): string { return this._type }
+  get type(): string | undefined | null { return this._type }
 
-  @Input() icon: string | IconProp
+  @Input() icon: string | IconProp | undefined | null
 
-  @Input() grayscaleOnDisable = true
+  @Input() @InputBoolean() grayscaleOnDisable: boolean = true
 
-  @Input() iconClass: string
+  @Input() iconClass: string | undefined | null
 
-  @Input() notificationIcon: string | IconProp
-  @Input() notificationIconClass: string
+  @Input() notificationIcon: string | IconProp | undefined | null
+  @Input() notificationIconClass: string | undefined | null
 
-  @ContentChild(WidgetTileSecondaryIconDirective, { static: true }) secondaryIcon: WidgetTileSecondaryIconDirective
+  @ContentChild(WidgetTileSecondaryIconDirective, { static: true }) secondaryIcon?: WidgetTileSecondaryIconDirective
 
   constructor(
     _elementRef: ElementRef<HTMLElement | HTMLAnchorElement | HTMLButtonElement>,

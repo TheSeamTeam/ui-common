@@ -51,7 +51,7 @@ export class NgxQuillExtraDirective implements OnDestroy, AfterViewInit {
   }
 
   private _getParentElementForLabelFocusIssue(): HTMLElement | undefined {
-    const findElem = (elem: HTMLElement) => {
+    const findElem = (elem: HTMLElement): any => {
       if (elem.nodeName.toLowerCase() === 'seam-form-field') {
         return elem
       }

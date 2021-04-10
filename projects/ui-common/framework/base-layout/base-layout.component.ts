@@ -58,11 +58,11 @@ export class TheSeamBaseLayoutComponent implements OnInit, ITheSeamBaseLayoutRef
   @ContentChild(BaseLayoutContentHeaderDirective, { static: true, read: TemplateRef }) _contentHeaderTpl?: TemplateRef<any> | null
   @ContentChild(BaseLayoutContentFooterDirective, { static: true, read: TemplateRef }) _contentFooterTpl?: TemplateRef<any> | null
 
-  _topBarPortal: TemplatePortal
-  _sideBarPortal: TemplatePortal
-  _contentPortal: TemplatePortal
-  _contentHeaderPortal: TemplatePortal
-  _contentFooterPortal: TemplatePortal
+  _topBarPortal?: TemplatePortal
+  _sideBarPortal?: TemplatePortal
+  _contentPortal?: TemplatePortal
+  _contentHeaderPortal?: TemplatePortal
+  _contentFooterPortal?: TemplatePortal
 
   private _hasSideBar = new BehaviorSubject<boolean>(false)
 
@@ -82,11 +82,12 @@ export class TheSeamBaseLayoutComponent implements OnInit, ITheSeamBaseLayoutRef
     private _layout: TheSeamLayoutService
   ) {
     this.registeredActions$ = this._registeredActions.asObservable()
+
+    this.isMobile$ = this._layout.isMobile$
+    this.hasSideBar$ = this._hasSideBar.asObservable()
   }
 
   ngOnInit() {
-    this.isMobile$ = this._layout.isMobile$
-
     if (this._topBarTpl) {
       this._topBarPortal = new TemplatePortal(this._topBarTpl, this._viewContainerRef)
     }
@@ -107,8 +108,6 @@ export class TheSeamBaseLayoutComponent implements OnInit, ITheSeamBaseLayoutRef
     if (this._contentFooterTpl) {
       this._contentFooterPortal = new TemplatePortal(this._contentFooterTpl, this._viewContainerRef)
     }
-
-    this.hasSideBar$ = this._hasSideBar.asObservable()
   }
 
   public registerNav(nav: ITheSeamBaseLayoutNav): void {

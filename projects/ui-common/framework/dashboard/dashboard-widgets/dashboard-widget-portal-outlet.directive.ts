@@ -35,12 +35,12 @@ export class DashboardWidgetPortalOutletDirective extends BasePortalOutlet imple
   private _isInitialized = false
 
   /** Reference to the currently-attached component/view ref. */
-  private _attachedRef: CdkPortalOutletAttachedRef
+  private _attachedRef?: CdkPortalOutletAttachedRef
 
   constructor(
-      private _componentFactoryResolver: ComponentFactoryResolver,
-      private _viewContainerRef: ViewContainerRef,
-      private _elementRef: ElementRef
+    private readonly _componentFactoryResolver: ComponentFactoryResolver,
+    private readonly _viewContainerRef: ViewContainerRef,
+    private readonly _elementRef: ElementRef
   ) {
     super()
   }
@@ -76,7 +76,7 @@ export class DashboardWidgetPortalOutletDirective extends BasePortalOutlet imple
       new EventEmitter<CdkPortalOutletAttachedRef>()
 
   /** Component or view reference that is attached to the portal. */
-  get attachedRef(): CdkPortalOutletAttachedRef {
+  get attachedRef(): CdkPortalOutletAttachedRef | undefined {
     return this._attachedRef
   }
 

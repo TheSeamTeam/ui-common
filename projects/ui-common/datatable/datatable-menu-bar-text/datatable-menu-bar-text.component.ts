@@ -15,7 +15,7 @@ import { THESEAM_MENUBAR_ITEM_DATA } from './../tokens/menubar-item-data'
 export class DatatableMenuBarTextComponent implements OnInit {
 
   @Input()
-  public value: string
+  public value: string | undefined | null
 
   constructor(
     private _menuBar: DatatableMenuBarComponent,

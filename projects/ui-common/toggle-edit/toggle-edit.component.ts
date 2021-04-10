@@ -1,5 +1,5 @@
 import { FocusMonitor } from '@angular/cdk/a11y'
-import { coerceBooleanProperty } from '@angular/cdk/coercion'
+import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion'
 import { ENTER, ESCAPE } from '@angular/cdk/keycodes'
 import { ConnectionPositionPair, Overlay, OverlayRef, PositionStrategy } from '@angular/cdk/overlay'
 import { TemplatePortal } from '@angular/cdk/portal'
@@ -28,7 +28,9 @@ import { AbstractControl, ControlContainer, FormControl, FormGroup } from '@angu
 
 import { faCheck, faPen, faTimes } from '@fortawesome/free-solid-svg-icons'
 
+import { InputBoolean } from '@theseam/ui-common/core'
 import { TheSeamFormFieldComponent } from '@theseam/ui-common/form-field'
+
 import { ICanToggleEdit } from './models/can-toggle-edit'
 import { IToggleEditRef } from './models/toggle-edit-ref'
 import { ToggleEditDisplayTplDirective } from './toggle-edit-display-tpl.directive'
@@ -41,6 +43,8 @@ import { ToggleEditKeyboardListenerService } from './toggle-edit-keyboard-listen
   styleUrls: ['./toggle-edit.component.scss']
 })
 export class ToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, DoCheck, ICanToggleEdit, IToggleEditRef {
+  static ngAcceptInputType_cancelOnBlur: BooleanInput
+  static ngAcceptInputType_waitOnSubmit: BooleanInput
 
   faPen = faPen
   faTimes = faTimes
@@ -50,7 +54,7 @@ export class ToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, Do
 
   /** Use `hasFocus()` to check for focus. This is only for monitoring focus lost. */
   private _focused = false
-  private _focusObserver: MutationObserver
+  private _focusObserver?: MutationObserver
   private _actionsFocused = false
   private _submitting = false
 
@@ -64,8 +68,8 @@ export class ToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, Do
 
   @HostBinding('class.toggle-edit-active') get _toggleEditActiveClass() { return this.editing }
 
-  @Input() cancelOnBlur = true
-  @Input() waitOnSubmit = false
+  @Input() @InputBoolean() cancelOnBlur = true
+  @Input() @InputBoolean() waitOnSubmit = false
 
   @Input() placeholder = ''
 
@@ -86,11 +90,12 @@ export class ToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, Do
   @Output() changeDeclined = new EventEmitter<IToggleEditRef>()
   @Output() editingChange = new EventEmitter<boolean>()
 
-  @ViewChild('templatePortalContent', { static: true }) templatePortalContent: TemplateRef<any>
-  public templatePortal: TemplatePortal<any>
-  public modalRef: OverlayRef
+  @ViewChild('templatePortalContent', { static: true }) templatePortalContent?: TemplateRef<any>
+  public templatePortal?: TemplatePortal<any>
 
-  @ContentChild(ToggleEditDisplayTplDirective, { static: true }) displayTpl: ToggleEditDisplayTplDirective
+  public modalRef?: OverlayRef
+
+  @ContentChild(ToggleEditDisplayTplDirective, { static: true }) displayTpl?: ToggleEditDisplayTplDirective
 
   constructor(
     private _elementRef: ElementRef<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
@@ -136,7 +141,9 @@ export class ToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, Do
       })
     }
     setTimeout(() => {
-      this.templatePortal = new TemplatePortal(this.templatePortalContent, this._viewContainerRef)
+      if (this.templatePortalContent) {
+        this.templatePortal = new TemplatePortal(this.templatePortalContent, this._viewContainerRef)
+      }
     })
     this._checkDisabledChange()
   }
@@ -149,7 +156,7 @@ export class ToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, Do
     this._kbListener.add(this)
 
     this._focusMonitor.monitor(this._elementRef.nativeElement, true)
-    this._focusObserver.observe(this._elementRef.nativeElement, {
+    this._focusObserver?.observe(this._elementRef.nativeElement, {
       attributes: true,
       attributeFilter: ['class'],
       childList: false,
@@ -160,7 +167,7 @@ export class ToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, Do
   private _destroyMonitors() {
     this._kbListener.remove(this)
 
-    this._focusObserver.disconnect()
+    this._focusObserver?.disconnect()
     this._focused = false
     this._focusMonitor.stopMonitoring(this._elementRef.nativeElement)
     this._renderer.removeAttribute(this._elementRef.nativeElement, 'tabindex')
@@ -372,7 +379,7 @@ export class ToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, Do
       return
     }
 
-    if (this.modalRef.hasAttached()) {
+    if (this.modalRef?.hasAttached()) {
       this.modalRef.detach()
     }
 

@@ -1,3 +1,4 @@
+import { BooleanInput } from '@angular/cdk/coercion'
 import {
   Component,
   ContentChild,
@@ -12,6 +13,7 @@ import {
 import { Observable, ReplaySubject, Subscription } from 'rxjs'
 import { map, startWith, tap } from 'rxjs/operators'
 
+import { InputBoolean } from '@theseam/ui-common/core'
 import { IErrorRecord } from '@theseam/ui-common/form-field-error'
 
 import { FormFieldErrorDirective } from './form-field-error.directive'
@@ -29,6 +31,7 @@ let nextLabelUniqueId = 0
   styleUrls: ['./form-field.component.scss']
 })
 export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
+  static ngAcceptInputType_inline: BooleanInput
 
   /** @ignore */
   protected _labelUid = `lib-label-${nextLabelUniqueId++}`
@@ -45,10 +48,10 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
    * NOTE: Not well tested or supported, so it may have some issues currently
    * and could change.
    */
-  @Input() inline = false
+  @Input() @InputBoolean() inline: boolean = false
 
   /** Add a text label for the form control. */
-  @Input() label: string
+  @Input() label: string | undefined | null
 
   /**
    * The label can be on top or inline.
@@ -64,7 +67,7 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
    * Accepts a single space separated string of classes, like the html class
    * attribute.
    */
-  @Input() labelClass: string
+  @Input() labelClass: string | undefined | null
 
   /** Max errors to display. */
   @Input() maxErrors = -1
@@ -80,21 +83,21 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
    * most situations, because a unique id will be generated if not provided.
    */
   @Input()
-  get labelId(): string { return this._labelId }
-  set labelId(value: string) { this._labelId = value || this._labelUid }
+  get labelId(): string | undefined | null { return this._labelId }
+  set labelId(value: string | undefined | null) { this._labelId = value || this._labelUid }
   /** @ignore */
-  protected _labelId: string
+  protected _labelId: string | undefined | null
 
   /** @ignore */
-  @ContentChild(FormFieldLabelTplDirective, { static: true }) labelTpl: FormFieldLabelTplDirective
+  @ContentChild(FormFieldLabelTplDirective, { static: true }) labelTpl?: FormFieldLabelTplDirective
 
   /** @ignore */
-  @ContentChild(InputDirective, { static: true }) contentInput: InputDirective
+  @ContentChild(InputDirective, { static: true }) contentInput?: InputDirective
 
   /** @ignore */
   @ContentChildren(FormFieldErrorDirective)
   get fieldErrors() { return this._fieldErrors }
-  set fieldErrors(value: QueryList<FormFieldErrorDirective[]>) {
+  set fieldErrors(value: QueryList<FormFieldErrorDirective[]> | undefined | null) {
     this._fieldErrors = value
 
     if (this._sub) { this._sub.unsubscribe() }
@@ -105,12 +108,14 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
         .pipe(tap(v => {
           const records: IErrorRecord[] = []
           for (const item of v) {
-            records.push({
-              validatorName: item.validatorName,
-              error: null,
-              template: item.template,
-              external: item.external
-            })
+            if (item.validatorName) {
+              records.push({
+                validatorName: item.validatorName,
+                error: null,
+                template: item.template,
+                external: item.external
+              })
+            }
           }
           this._fieldErrorsSubject2.next(records)
         }))
@@ -118,9 +123,9 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
     }
   }
   /** @ignore */
-  private _fieldErrors: QueryList<FormFieldErrorDirective[]>
+  private _fieldErrors: QueryList<FormFieldErrorDirective[]> | undefined | null
   /** @ignore */
-  private _sub: Subscription
+  private _sub?: Subscription
 
   /** @ignore */
   private readonly _fieldErrorsSubject = new ReplaySubject<FormFieldErrorDirective[]>(1)
@@ -148,7 +153,7 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
   ngOnInit() { }
 
   /** @ignore */
-  ngOnDestroy() { this._sub.unsubscribe() }
+  ngOnDestroy() { this._sub?.unsubscribe() }
 
   /** @ignore */
   public isValidatorMatch(validatorName: string, tplValidatorName: string, errors: any): boolean {

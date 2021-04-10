@@ -28,7 +28,7 @@
     </ng-container>
     <ng-template #notOnlyRouteContent>
       <ng-container *ngIf="!selectedTab; else findContentTpl">
-        <seam-tabbed-content fxFlexFill [tabbedItem]="tabbedItems.first"></seam-tabbed-content>
+        <seam-tabbed-content fxFlexFill [tabbedItem]="tabbedItems?.first"></seam-tabbed-content>
       </ng-container>
       <ng-template #findContentTpl>
         <ng-container *ngFor="let tabbedItem of tabbedItems">

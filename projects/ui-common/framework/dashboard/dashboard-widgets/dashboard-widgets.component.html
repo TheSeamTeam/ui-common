@@ -5,7 +5,7 @@
   columns. When I remember how I programatically did this I will remove this
   weirdness.
  -->
- <seam-dashboard-widget-container *ngFor="let item of widgetItems$ | async; trackBy: _containerTrackByFn" [def]="item">
+ <seam-dashboard-widget-container *ngFor="let item of widgetItems$ | async; trackBy: _containerTrackByFn" [def]="$any(item)">
   <!-- <ng-template [cdkPortalOutlet]="item.portal"></ng-template> -->
   <ng-template [seamDashboardWidgetPortalOutlet]="item.portal"></ng-template>
 </seam-dashboard-widget-container>
@@ -19,7 +19,7 @@
     class="d-flex flex-column flex-grow-1 dashboard-widgets-list"
     cdkDropList
     [cdkDropListData]="col.items"
-    (cdkDropListDropped)="drop($event)">
+    (cdkDropListDropped)="drop($any($event))">
     <div *ngFor="let item of col.items; trackBy: _containerTrackByFn"
       class="dashboard-widgets-list-item"
       [attr.data-widget-id]="item.widgetId"

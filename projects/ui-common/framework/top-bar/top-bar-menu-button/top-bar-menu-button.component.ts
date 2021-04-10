@@ -1,9 +1,10 @@
+import { BooleanInput } from '@angular/cdk/coercion'
 import { ChangeDetectionStrategy, Component, HostBinding, Input, OnDestroy, OnInit, TemplateRef } from '@angular/core'
 
 import { faUserCircle } from '@fortawesome/free-regular-svg-icons'
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons'
 
-import { CanDisableCtor, mixinDisabled } from '@theseam/ui-common/core'
+import { CanDisableCtor, InputBoolean, mixinDisabled } from '@theseam/ui-common/core'
 
 class TopBarMenuButtonBase {}
 
@@ -28,13 +29,14 @@ const _TopBarMenuButtonMixinBase: CanDisableCtor & typeof TopBarMenuButtonBase =
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TopBarMenuButtonComponent extends _TopBarMenuButtonMixinBase implements OnInit, OnDestroy {
+  static ngAcceptInputType_compact: BooleanInput
 
   faAngleDown = faAngleDown
   profileIcon = faUserCircle
 
-  @Input() detailTpl: TemplateRef<{}> | null
+  @Input() detailTpl: TemplateRef<{}> | undefined | null
 
-  @Input() compact: boolean = false
+  @Input() @InputBoolean() compact: boolean = false
 
   @HostBinding('class.top-bar-menu-button--compact') get _hasCompactClass() { return this.compact }
   @HostBinding('class.p-0') get _hasPadding0Class() { return this.compact }

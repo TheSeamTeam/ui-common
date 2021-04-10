@@ -42,7 +42,7 @@ export function onStoryBootstrappedExec<T = any>(callback: (component: T) => voi
 
       let c = null
       for (let i = 0; i < componentRef.instance.target.length; i++) {
-        const tmp = componentRef.instance.target._embeddedViews[i].nodes?.find(f => f?.instance instanceof story.component)
+        const tmp = componentRef.instance.target._embeddedViews[i].nodes?.find((f: any) => f?.instance instanceof story.component)
         const comp = tmp?.instance
         if (comp) {
           c = comp

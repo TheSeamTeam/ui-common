@@ -8,7 +8,7 @@ import { isAbsoluteUrl } from '@theseam/ui-common/utils'
 import { DynamicValueHelperService } from '../../dynamic-value-helper.service'
 import { DynamicActionUiButtonDef } from '../../models/dynamic-action-ui-button-def'
 import { DynamicValue } from '../../models/dynamic-value'
-import { IApiConfig, THESEAM_API_CONFIG } from '../../tokens/api-config'
+import { ApiRequestMethodHeader, ApiRequestMethodHeaders, IApiConfig, isValidRequestMethod, THESEAM_API_CONFIG, VALID_REQUEST_METHODS } from '../../tokens/api-config'
 
 import { DynamicActionApi } from './dynamic-action-api'
 import { DynamicActionApiDef } from './dynamic-action-api-def'
@@ -129,7 +129,7 @@ export class DynamicActionApiService implements DynamicActionApi {
   }
 
   private async _getHeaders(args: DynamicActionApiDef, context?: any): Promise<HttpHeaders> {
-    let headers: string | { [name: string]: string | string[] } = {}
+    let headers: ApiRequestMethodHeaders = {}
 
     const config = this._getApiConfig(args)
 
@@ -142,9 +142,13 @@ export class DynamicActionApiService implements DynamicActionApi {
         ? args.method.trim().toUpperCase()
         : 'GET' // Default method type
 
+      if (!isValidRequestMethod(method)) {
+        throw Error(`API request method must be one of ${VALID_REQUEST_METHODS}`)
+      }
+
       const h = method && config.methodHeaders[method]
       if (h !== undefined && h !== null) {
-        headers = await this._evalHeaders(h, context)
+        headers = await this._evalHeaders(h, context) as any
       }
     }
 
@@ -152,7 +156,7 @@ export class DynamicActionApiService implements DynamicActionApi {
     const argHeaders = args.headers
     if (argHeaders !== undefined && argHeaders !== null) {
       if (typeof argHeaders === 'string') {
-        headers = argHeaders
+        headers = argHeaders as any
       } else {
         const _val = this._valueHelper.eval(argHeaders as any, context) // TODO: Fix argHeaders type
         if (typeof _val === 'string') {
@@ -160,11 +164,16 @@ export class DynamicActionApiService implements DynamicActionApi {
         } else {
           const keys = Object.keys(argHeaders)
           for (const key of keys) {
-            const value = argHeaders[key]
+            if (!isValidRequestMethod(key)) {
+              throw Error(`API request method must be one of ${VALID_REQUEST_METHODS}`)
+            }
+
+            // TODO: Fix types
+            const value = (argHeaders as any)[key]
             if (typeof value === 'string') {
               headers[key] = value
             } else if (Array.isArray(value)) {
-              headers[key] = await Promise.all(value.map(async v => await this._valueHelper.eval(v, context)))
+              headers[key] = await Promise.all(value.map(async v => await this._valueHelper.eval(v, context))) as any
             } else {
               headers[key] = await this._valueHelper.eval(value, context)
             }
@@ -173,7 +182,7 @@ export class DynamicActionApiService implements DynamicActionApi {
       }
     }
 
-    return new HttpHeaders(headers)
+    return new HttpHeaders(headers as any)
   }
 
   private async _evalHeaders(
@@ -192,7 +201,7 @@ export class DynamicActionApiService implements DynamicActionApi {
       } else {
         const keys = Object.keys(headers)
         for (const key of keys) {
-          const value = headers[key]
+          const value = (headers as any)[key]
           if (typeof value === 'string') {
             res[key] = value
           } else if (Array.isArray(value)) {

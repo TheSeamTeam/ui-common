@@ -35,13 +35,13 @@ const _seamMenuItemMixinBase: CanDisableCtor & typeof TheSeamMenuItemBase =
 export class MenuItemComponent extends _seamMenuItemMixinBase implements OnInit, OnDestroy, FocusableOption {
 
   /** ARIA role for the menu item. */
-  @Input() role: 'menuitem' | 'menuitemradio' | 'menuitemcheckbox' = 'menuitem'
+  @Input() role: 'menuitem' | 'menuitemradio' | 'menuitemcheckbox' | undefined | null = 'menuitem'
 
   @Input() icon: SeamIcon | string | undefined | null
-  @Input() iconClass: string
+  @Input() iconClass: string | undefined | null
 
-  @Input() badgeText: string
-  @Input() badgeTheme: string = 'danger'
+  @Input() badgeText: string | undefined | null
+  @Input() badgeTheme: string | undefined | null = 'danger'
 
   /** Stream that emits when the menu item is hovered. */
   readonly _hovered: Subject<MenuItemComponent> = new Subject<MenuItemComponent>()

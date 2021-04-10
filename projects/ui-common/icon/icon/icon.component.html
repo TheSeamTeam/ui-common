@@ -1,7 +1,7 @@
 <fa-icon *ngIf="_iconObj"
   class="seam-icon--fa {{ iconClass }}"
   [icon]="_iconObj"
-  [size]="size">
+  [size]="size || undefined">
 </fa-icon>
 
 <ng-container *ngIf="_iconUrl">

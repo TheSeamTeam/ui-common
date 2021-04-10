@@ -32,16 +32,16 @@ import { TABLE_CELL_DATA, TABLE_CELL_TYPE_MANIFEST } from './table-cell-type-tok
 })
 export class TableCellTypeSelectorComponent<T extends string = any, D = any, V = any> implements OnInit, AfterViewInit, OnChanges {
 
-  @Input() type: T
-  @Input() value: V
-  @Input() rowIndex: number
-  @Input() row: D
-  @Input() colData: TheSeamTableColumn<T, TableCellTypeConfig<T>>
+  @Input() type: T | undefined | null
+  @Input() value: V | undefined | null
+  @Input() rowIndex: number | undefined | null
+  @Input() row: D | undefined | null
+  @Input() colData: TheSeamTableColumn<T, TableCellTypeConfig<T>> | undefined | null
 
-  public componentPortal: ComponentPortal<{}>
+  public componentPortal?: ComponentPortal<{}>
 
   private _data: TableCellData<T, TableCellTypeConfig<T>> | undefined
-  private _dataChangeSubject: Subject<TableCellDataChange<T, TableCellTypeConfig<T>>>
+  private _dataChangeSubject?: Subject<TableCellDataChange<T, TableCellTypeConfig<T>>>
   private _manifests: ITableCellTypeManifest[]
 
   constructor(
@@ -53,14 +53,18 @@ export class TableCellTypeSelectorComponent<T extends string = any, D = any, V =
   ngOnInit() { }
 
   ngAfterViewInit() {
+    if (!this.type) {
+      return
+    }
+
     const comp = this._getComponent(this.type)
     if (comp) {
       this._dataChangeSubject = new Subject<TableCellDataChange<T, TableCellTypeConfig<T>>>()
 
       this._data = {
         row: this.row,
-        rowIndex: this.rowIndex,
-        colData: this.colData,
+        rowIndex: this.rowIndex ?? -1,
+        colData: this.colData ?? {},
         value: this.value,
         changed: this._dataChangeSubject.asObservable()
       }

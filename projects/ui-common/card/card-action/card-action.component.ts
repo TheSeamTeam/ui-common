@@ -1,5 +1,7 @@
-import { Component, HostBinding, Input, OnInit } from '@angular/core'
+import { BooleanInput } from '@angular/cdk/coercion'
+import { Component, HostBinding, Input } from '@angular/core'
 
+import { InputBoolean } from '@theseam/ui-common/core'
 import type { ThemeTypes } from '@theseam/ui-common/models'
 
 @Component({
@@ -7,19 +9,15 @@ import type { ThemeTypes } from '@theseam/ui-common/models'
   templateUrl: './card-action.component.html',
   styleUrls: ['./card-action.component.scss']
 })
-export class CardActionComponent implements OnInit {
+export class CardActionComponent {
+  static ngAcceptInputType_isLastAction: BooleanInput
 
   @HostBinding('class.border-left') _cssClassBorderLeft = true
 
-  @Input() theme: ThemeTypes = 'lightgray'
+  @Input() theme: ThemeTypes | undefined | null = 'lightgray'
 
-  @Input() title: string
+  @Input() title: string | undefined | null
 
-  @Input() isLastAction = false
-
-  constructor() { }
-
-  ngOnInit() {
-  }
+  @Input() @InputBoolean() isLastAction: boolean = false
 
 }

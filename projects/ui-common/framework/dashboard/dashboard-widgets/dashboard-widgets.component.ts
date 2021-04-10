@@ -1,4 +1,4 @@
-import { coerceBooleanProperty, coerceNumberProperty } from '@angular/cdk/coercion'
+import { BooleanInput, coerceBooleanProperty, coerceNumberProperty, NumberInput } from '@angular/cdk/coercion'
 import { CdkDrag, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop'
 import {
   AfterViewInit,
@@ -25,6 +25,7 @@ import { auditTime, debounceTime, distinctUntilChanged, finalize, map, shareRepl
 
 import { faLock, faUnlock } from '@fortawesome/free-solid-svg-icons'
 
+import { InputBoolean } from '@theseam/ui-common/core'
 import type { IElementResizedEvent } from '@theseam/ui-common/shared'
 import { THESEAM_WIDGET_ACCESSOR } from '@theseam/ui-common/widget'
 
@@ -51,6 +52,11 @@ import { DashboardWidgetsService } from './dashboard-widgets.service'
   encapsulation: ViewEncapsulation.None
 })
 export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewInit {
+  static ngAcceptInputType_gapSize: NumberInput
+  static ngAcceptInputType_numColumns: NumberInput
+  static ngAcceptInputType_widgetsDraggable: BooleanInput
+  static ngAcceptInputType_dragToggleVisible: BooleanInput
+  static ngAcceptInputType_widgets: IDashboardWidgetsItemDef[] | undefined | null
 
   faLock = faLock
   faUnlock = faUnlock
@@ -66,10 +72,7 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
   }
   private readonly _gapSize = new BehaviorSubject<number>(30)
 
-  @Input()
-  get widgetsDraggable(): boolean { return this._widgetsDraggable }
-  set widgetsDraggable(val: boolean) { this._widgetsDraggable = coerceBooleanProperty(val) }
-  _widgetsDraggable: boolean = false
+  @Input() @InputBoolean() widgetsDraggable: boolean = false
 
   @Input()
   get dragToggleVisible(): boolean { return this._dragToggleVisible.value }
@@ -85,7 +88,7 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   @Input()
-  set widgets(value: IDashboardWidgetsItemDef[]) { this._dashboardWidgets.widgets = value }
+  set widgets(value: IDashboardWidgetsItemDef[]) { this._dashboardWidgets.widgets = value || [] }
   get widgets(): IDashboardWidgetsItemDef[] { return this._dashboardWidgets.widgets }
 
   public widgetItems$: Observable<IDashboardWidgetsItem[]>
@@ -94,10 +97,10 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
 
   readonly _gapStyleSize$: Observable<number>
 
-  @ViewChildren(DashboardWidgetContainerComponent) containers: QueryList<DashboardWidgetContainerComponent>
-  @ViewChildren(CdkDrag) cdkDragDirectives: QueryList<CdkDrag>
+  @ViewChildren(DashboardWidgetContainerComponent) containers?: QueryList<DashboardWidgetContainerComponent>
+  @ViewChildren(CdkDrag) cdkDragDirectives?: QueryList<CdkDrag>
 
-  @ViewChild('toggleBtnTpl', { static: true }) _toggleBtnTpl: TemplateRef<any>
+  @ViewChild('toggleBtnTpl', { static: true }) _toggleBtnTpl?: TemplateRef<any>
 
   private _containers = new BehaviorSubject<DashboardWidgetContainerComponent[]>([])
   private _layoutChange = new Subject<void>()
@@ -133,15 +136,13 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
       }),
       takeUntil(this._ngUnsubscribe)
     ).subscribe()
+
+    this.widgetItems$ = this._dashboardWidgets.widgetItems$
+    this.widgetColumns$ = this._dashboardWidgets.widgetColumns$
   }
 
   ngOnInit() {
     // this._dashboardWidgets.setViewContainerRef(this._viewContainerRef)
-
-    this.widgetItems$ = this._dashboardWidgets.widgetItems$
-    this.widgetColumns$ = this._dashboardWidgets.widgetColumns$
-
-    // this.widgetItems$.subscribe()
 
     this._layoutChange.pipe(
       switchMap(() => this.widgetItems$.pipe(
@@ -156,7 +157,6 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   ngOnDestroy() {
-    // console.log('[DashboardWidgetsComponent] ngOnDestroy')
     this._unregisterToggleAction()
     this._ngUnsubscribe.next()
     this._ngUnsubscribe.complete()
@@ -178,9 +178,9 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
       ).subscribe()
     }
 
-    this.containers.changes.pipe(
+    this.containers?.changes.pipe(
       startWith(undefined),
-      map(() => this.containers.toArray()),
+      map(() => this.containers?.toArray() || []),
       takeUntil(this._ngUnsubscribe),
       finalize(() => this._containers.next([]))
     ).subscribe(v => this._containers.next(v))
@@ -190,16 +190,18 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
     if (this._baseLayoutRef) {
       // This should probably use a component dynamically created from the
       // config and return a ref to it, instead of using a template.
-      this._baseLayoutRef.registerAction({
-        // type: 'button',
-        type: 'template',
-        name: this._actionWidgetDragToggleName,
-        label: 'Toggle Widget Dragging',
-        // exec: () => {
-        //   console.log('toggle')
-        // },
-        template: this._toggleBtnTpl
-      })
+      if (this._toggleBtnTpl) {
+        this._baseLayoutRef.registerAction({
+          // type: 'button',
+          type: 'template',
+          name: this._actionWidgetDragToggleName,
+          label: 'Toggle Widget Dragging',
+          // exec: () => {
+          //   console.log('toggle')
+          // },
+          template: this._toggleBtnTpl
+        })
+      }
     }
   }
 

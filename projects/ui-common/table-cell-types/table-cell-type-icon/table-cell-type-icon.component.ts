@@ -74,10 +74,10 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
   _iconClass?: string
   _iconType?: TheSeamIconType
   _target?: string
-  _tooltip: string
-  _tooltipClass: string
-  _tooltipPlacement: string
-  _tooltipContainer: string
+  _tooltip?: string
+  _tooltipClass?: string
+  _tooltipPlacement?: string
+  _tooltipContainer?: string
   _tooltipDisabled: boolean = true
 
   _buttonAction?: TableCellTypeIconConfigAction
@@ -87,8 +87,8 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
   _rowIndex?: number
   _colData?: TheSeamTableColumn<'icon', TableCellTypeConfigIcon>
 
-  _download: boolean
-  _detectMimeContent: boolean
+  _download?: boolean
+  _detectMimeContent?: boolean
 
   @HostBinding('class.datatable-cell-type') _isDatatable = false
 
@@ -182,7 +182,7 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
     this._queryParams = queryParams
   }
 
-  private _parseConfigValue(val) {
+  private _parseConfigValue(val: any) {
     const contextFn = () => this._tableCellTypeHelpers.getValueContext(val, this._tableCellData)
     return this._tableCellTypeHelpers.parseValueProp(val, contextFn)
   }

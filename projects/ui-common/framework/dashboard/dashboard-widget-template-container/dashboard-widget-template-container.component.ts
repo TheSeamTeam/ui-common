@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, TemplateRef } from '@angular/core'
 import { Observable } from 'rxjs'
+import { map } from 'rxjs/operators'
 
-import { map, tap } from 'rxjs/operators'
 import type { IDashboardWidgetsItem } from '../dashboard-widgets/dashboard-widgets-item'
 import { DashboardWidgetsComponent } from '../dashboard-widgets/dashboard-widgets.component'
 
@@ -13,7 +13,7 @@ import { DashboardWidgetsComponent } from '../dashboard-widgets/dashboard-widget
 })
 export class DashboardWidgetTemplateContainerComponent implements OnInit {
 
-  @Input() item: IDashboardWidgetsItem
+  @Input() item: IDashboardWidgetsItem | undefined | null
 
   public template$: Observable<TemplateRef<any> | undefined>
 
@@ -21,7 +21,7 @@ export class DashboardWidgetTemplateContainerComponent implements OnInit {
     private _dashboardWidgetsComponent: DashboardWidgetsComponent
   ) {
     this.template$ = this._dashboardWidgetsComponent.containers$.pipe(
-      map(containers => containers.find(c => c.def.widgetId === this.item.widgetId)),
+      map(containers => containers.find((c: any) => c.def.widgetId === this.item?.widgetId)),
       map(container => container && container.templateRef)
     )
   }

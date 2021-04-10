@@ -14,8 +14,8 @@ export class ModalHeaderComponent implements OnInit {
 
   @Input() hasCloseBtn = true
 
-  @ContentChild(ModalTitleDirective, { static: true }) _titleDirective: ModalTitleDirective
-  @ContentChild(ModalCloseDirective, { static: true }) _closeDirective: ModalCloseDirective
+  @ContentChild(ModalTitleDirective, { static: true }) _titleDirective?: ModalTitleDirective
+  @ContentChild(ModalCloseDirective, { static: true }) _closeDirective?: ModalCloseDirective
 
   constructor() { }
 

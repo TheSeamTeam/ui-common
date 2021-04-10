@@ -23,7 +23,7 @@ export class ModalCloseDirective implements OnInit {
   get _attrAriaLabel() { return this.ariaLabel || null }
 
   /** Screenreader label for the button. */
-  @Input('aria-label') ariaLabel: string
+  @Input('aria-label') ariaLabel: string | undefined | null
 
   @Input() seamModalClose: any
 

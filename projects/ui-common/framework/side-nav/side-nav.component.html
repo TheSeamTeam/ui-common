@@ -13,15 +13,15 @@
     <div class="side-nav-items-container" seamOverlayScrollbar>
       <seam-side-nav-item *ngFor="let item of items$ | async"
         [compact]="!(expanded$ | async)"
-        [itemType]="item.itemType"
-        [icon]="item.icon"
-        [label]="item.label"
-        [link]="item.link"
-        [badgeText]="item.badge?.text"
-        [badgeTheme]="item.badge?.theme || 'danger'"
-        [badgeTooltip]="item.badge?.tooltip"
-        [queryParams]="item.queryParams"
-        [children]="item.children">
+        [itemType]="$any(item)?.itemType"
+        [icon]="$any(item)?.icon"
+        [label]="$any(item)?.label"
+        [link]="$any(item)?.link"
+        [badgeText]="$any(item)?.badge?.text"
+        [badgeTheme]="$any(item)?.badge?.theme || 'danger'"
+        [badgeTooltip]="$any(item)?.badge?.tooltip"
+        [queryParams]="$any(item)?.queryParams"
+        [children]="$any(item)?.children">
       </seam-side-nav-item>
     </div>
   </nav>

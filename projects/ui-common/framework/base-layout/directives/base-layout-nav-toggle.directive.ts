@@ -17,13 +17,13 @@ export class BaseLayoutNavToggleDirective {
   @HostBinding('attr.type')
   get _attrType() { return this.type }
 
-  @Input() type = 'button'
+  @Input() type: string | undefined | null = 'button'
 
   @HostBinding('attr.aria-label')
   get _attrAriaLabel() { return this.ariaLabel || null }
 
   /** Screenreader label for the button. */
-  @Input('aria-label') ariaLabel = 'Navigation toggle'
+  @Input('aria-label') ariaLabel: string | undefined | null = 'Navigation toggle'
 
   @HostListener('click')
   _onClick() {

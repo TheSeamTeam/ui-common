@@ -11,7 +11,6 @@ import {
   forwardRef,
   Input,
   OnDestroy,
-  OnInit,
   Output,
   TemplateRef,
   ViewChild
@@ -47,7 +46,7 @@ export const LIB_MENU: any = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   exportAs: 'seamMenu'
 })
-export class MenuComponent implements OnInit, OnDestroy, AfterContentInit, ITheSeamMenuPanel {
+export class MenuComponent implements OnDestroy, AfterContentInit, ITheSeamMenuPanel {
 
   private readonly _ngUnsubscribe = new Subject()
 
@@ -57,7 +56,7 @@ export class MenuComponent implements OnInit, OnDestroy, AfterContentInit, ITheS
   private _header = new BehaviorSubject<MenuHeaderComponent | undefined | null>(undefined)
   public hasHeader$ = this._header.pipe(map(v => v !== null && v !== undefined))
 
-  private _keyManager: FocusKeyManager<MenuItemComponent>
+  private _keyManager?: FocusKeyManager<MenuItemComponent>
 
   /** Menu items inside the current menu. */
   private _items: MenuItemComponent[] = []
@@ -71,11 +70,11 @@ export class MenuComponent implements OnInit, OnDestroy, AfterContentInit, ITheS
   /** Parent menu of the current menu panel. */
   parentMenu: ITheSeamMenuPanel | undefined
 
-  @ViewChild(TemplateRef) templateRef: TemplateRef<any>
+  @ViewChild(TemplateRef) templateRef?: TemplateRef<any>
 
   @Output() readonly closed = new EventEmitter<void | 'click' | 'keydown' | 'tab'>()
 
-  @Input() menuClass: string
+  @Input() menuClass: string  | undefined | null
 
   /**
    * Defines a width for a menu that will scale down if the window innerWidth is
@@ -94,9 +93,7 @@ export class MenuComponent implements OnInit, OnDestroy, AfterContentInit, ITheS
 
   @Input() animationType: 'slide' | 'fade' = 'slide'
 
-  constructor() { }
-
-  ngOnInit() {
+  constructor() {
     this._menuWidth$ = this._baseWidth.pipe(
       switchMap(baseWidth => {
         if (baseWidth) {
@@ -159,16 +156,16 @@ export class MenuComponent implements OnInit, OnDestroy, AfterContentInit, ITheS
       case HOME:
       case END:
         if (!hasModifierKey(event)) {
-          keyCode === HOME ? manager.setFirstItemActive() : manager.setLastItemActive()
+          keyCode === HOME ? manager?.setFirstItemActive() : manager?.setLastItemActive()
           event.preventDefault()
         }
         break
       default:
         if (keyCode === UP_ARROW || keyCode === DOWN_ARROW) {
-          manager.setFocusOrigin('keyboard')
+          manager?.setFocusOrigin('keyboard')
         }
 
-        manager.onKeydown(event)
+        manager?.onKeydown(event)
     }
   }
 
@@ -177,7 +174,7 @@ export class MenuComponent implements OnInit, OnDestroy, AfterContentInit, ITheS
    * @param origin Action from which the focus originated. Used to set the correct styling.
    */
   focusFirstItem(origin: FocusOrigin = 'program'): void {
-    this._keyManager.setFocusOrigin(origin).setFirstItemActive()
+    this._keyManager?.setFocusOrigin(origin).setFirstItemActive()
   }
 
   /**
@@ -185,7 +182,7 @@ export class MenuComponent implements OnInit, OnDestroy, AfterContentInit, ITheS
    * the user to start from the first option when pressing the down arrow.
    */
   resetActiveItem() {
-    this._keyManager.setActiveItem(-1)
+    this._keyManager?.setActiveItem(-1)
   }
 
   /** Registers a menu item with the menu. */

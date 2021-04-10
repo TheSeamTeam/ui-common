@@ -9,8 +9,8 @@ import type { ThemeTypes } from '@theseam/ui-common/models'
 })
 export class ConfirmDialogComponent {
 
-  @Input() message = 'Are you sure you want to continue?'
-  @Input() alertMessage: string
-  @Input() alertType: ThemeTypes = 'warning'
+  @Input() message: string | undefined | null = 'Are you sure you want to continue?'
+  @Input() alertMessage: string | undefined | null
+  @Input() alertType: ThemeTypes | undefined | null = 'warning'
 
 }

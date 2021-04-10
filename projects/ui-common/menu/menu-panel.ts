@@ -9,7 +9,7 @@ import { MenuHeaderComponent } from './menu-header/menu-header.component'
  * Interface for a custom menu panel that can be used with `seamMenuToggle`.
  */
 export interface ITheSeamMenuPanel<T = any> {
-  templateRef: TemplateRef<any>
+  templateRef?: TemplateRef<any>
   closed: EventEmitter<void | 'click' | 'keydown' | 'tab'>
   parentMenu?: ITheSeamMenuPanel | undefined
   direction?: Direction

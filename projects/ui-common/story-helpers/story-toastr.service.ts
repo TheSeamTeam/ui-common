@@ -4,10 +4,10 @@ import { ActiveToast, GlobalConfig, IndividualConfig, ToastContainerDirective } 
 
 @Injectable()
 export class StoryToastrService {
-  toastrConfig: GlobalConfig
+  toastrConfig?: GlobalConfig
   currentlyActive = 0
   toasts: ActiveToast<any>[] = []
-  overlayContainer: ToastContainerDirective
+  overlayContainer?: ToastContainerDirective
   previousToastMessage: string | undefined
 
   /** show toast */

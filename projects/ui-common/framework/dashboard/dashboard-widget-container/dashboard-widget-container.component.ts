@@ -10,9 +10,9 @@ import type { IDashboardWidgetsItemDef } from '../dashboard-widgets/dashboard-wi
 })
 export class DashboardWidgetContainerComponent implements OnInit {
 
-  @Input() def: IDashboardWidgetsItemDef
+  @Input() def: IDashboardWidgetsItemDef | undefined | null
 
-  @ViewChild(TemplateRef) templateRef: TemplateRef<any>
+  @ViewChild(TemplateRef) templateRef?: TemplateRef<any>
 
   constructor() { }
 

@@ -15,10 +15,10 @@ export interface IModalContainer {
   modalClosed: EventEmitter<void>
 
   /** Reference to the cdk OverlayRef. */
-  _overlayRef: OverlayRef
+  _overlayRef?: OverlayRef
 
   /** Makes the modal container a form with this formGroup. */
-  form: FormGroup
+  form: FormGroup | undefined | null
 
   /** Emit the `(ngSubmit)` event. NOTE: Only if `form` is defined. */
   formSubmit: EventEmitter<void>

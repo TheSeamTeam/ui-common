@@ -1,7 +1,7 @@
 <div class="mb-3">
   <seam-form-field *ngIf="boundControl">
     <seam-checkbox seamInput
-      [formControl]="formControl"
+      [formControl]="$any(formControl)"
       [ngClass]="options?.fieldHtmlClass"
       [id]="'control' + layoutNode?._id"
       [name]="controlName"

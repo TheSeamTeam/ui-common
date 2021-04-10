@@ -21,6 +21,7 @@ import { WidgetListGroupItemIconTplDirective } from './widget-list-group-item-ic
 const WIDGET_LIST_GROUP_ITEM_INPUTS = [ 'disabled', 'theme', 'active', 'icon', 'iconClass', 'label', 'secondaryIcon', 'secondaryIconClass', 'secondaryIconTitle' ]
 
 @Directive()
+// tslint:disable-next-line: directive-class-suffix
 class WidgetListGroupItemBase {
 
   @ContentChild(WidgetListGroupItemIconTplDirective, { static: true }) iconTpl?: WidgetListGroupItemIconTplDirective
@@ -49,6 +50,7 @@ class WidgetListGroupItemBase {
 }
 
 @Directive()
+// tslint:disable-next-line: directive-class-suffix
 class WidgetListGroupItemActionableBase extends WidgetListGroupItemBase implements OnDestroy {
   constructor(
     public _elementRef: ElementRef,
@@ -119,7 +121,7 @@ export class WidgetListGroupItemButtonComponent extends _WidgetListGroupItemActi
   implements OnInit, HasElementRef, CanTheme, CanDisable, CanBeActive, OnDestroy {
 
   /** ARIA type for the button. */
-  @Input() type: 'button' | 'submit' | 'reset' = 'button'
+  @Input() type: 'button' | 'submit' | 'reset' | undefined | null = 'button'
 
   constructor(
     public _elementRef: ElementRef<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
@@ -156,7 +158,7 @@ export class WidgetListGroupItemAnchorComponent extends _WidgetListGroupItemActi
   implements OnInit, HasElementRef, CanTheme, CanDisable, CanBeActive, OnDestroy {
 
   /** Tabindex of the button. */
-  @Input() tabIndex: number
+  @Input() tabIndex: number | undefined | null
 
   constructor(
     public _elementRef: ElementRef<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,

@@ -212,10 +212,10 @@ export class Modal implements OnDestroy {
 
   // TODO: Cleanup. This was rushed together fast and became an unefficient mess.
   private _registerDialogRefScrollEvents(dialogRef: ModalRef<any>): () => void {
-    const _scrollbarMouseDownListener = (event) => {
+    const _scrollbarMouseDownListener = () => {
       if (dialogRef) { dialogRef.disableClose = true }
     }
-    const _scrollbarMouseUpListener = (event) => {
+    const _scrollbarMouseUpListener = () => {
       setTimeout(() => { if (dialogRef) { dialogRef.disableClose = false } })
     }
 

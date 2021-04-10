@@ -11,8 +11,8 @@ import { buildTitleMap, isArray, JsonSchemaFormService } from '@ajsf/core'
 })
 export class TheSeamSchemaFormSelectComponent implements OnInit {
 
-  formControl: AbstractControl
-  controlName: string
+  formControl?: AbstractControl
+  controlName?: string
   controlValue: any
   controlDisabled = false
   boundControl = false
@@ -20,8 +20,8 @@ export class TheSeamSchemaFormSelectComponent implements OnInit {
   selectList: any[] = []
   isArray = isArray
   @Input() layoutNode: any
-  @Input() layoutIndex: number[]
-  @Input() dataIndex: number[]
+  @Input() layoutIndex: number[] | undefined | null
+  @Input() dataIndex: number[] | undefined | null
 
   constructor(
     private jsf: JsonSchemaFormService
@@ -37,7 +37,7 @@ export class TheSeamSchemaFormSelectComponent implements OnInit {
     this.jsf.initializeControl(this)
   }
 
-  updateValue(event) {
+  updateValue(event: any) {
     this.jsf.updateValue(this, event.value)
   }
 

@@ -44,24 +44,24 @@ export class DatatableActionMenuItemDirective implements OnInit, OnDestroy {
   @HostBinding('class.list-group-item') _listGroupItem = true
   @HostBinding('class.list-group-item-action') _listGroupItemAction = true
 
-  @Input() label: string
+  @Input() label: string | undefined | null
 
   // tslint:disable-next-line:no-input-rename
-  @Input('attr.href') href: string
-  @Input() target: string
+  @Input('attr.href') href: string | undefined | null
+  @Input() target: string | undefined | null
 
   // Allow routerLink inputs on menu item
-  @Input() queryParams: {[k: string]: any}
-  @Input() fragment: string
+  @Input() queryParams: { [k: string]: any } | undefined | null
+  @Input() fragment: string | undefined | null
   // @Input() queryParamsHandling: QueryParamsHandling
-  @Input() queryParamsHandling: any
-  @Input() preserveFragment: boolean
-  @Input() skipLocationChange: boolean
-  @Input() replaceUrl: boolean
-  @Input() state: {[k: string]: any}
-  @Input() routerLink: string | any[]
+  @Input() queryParamsHandling: any | undefined | null
+  @Input() preserveFragment: boolean | undefined | null
+  @Input() skipLocationChange: boolean | undefined | null
+  @Input() replaceUrl: boolean | undefined | null
+  @Input() state: {[k: string]: any} | undefined | null
+  @Input() routerLink: string | any[] | undefined | null
 
-  @Input() confirmDialog
+  @Input() confirmDialog: any
 
   // @Input()
   // get endpointConfig(): IActionMenuItemEndpointConfig { return this._endpointConfig }
@@ -99,14 +99,14 @@ export class DatatableActionMenuItemDirective implements OnInit, OnDestroy {
   // private _modalConfig: IActionMenuItemModalConfig
   // private _modalConfigSub: Subscription
 
-  @Input() row: TheSeamDatatableRow
+  @Input() row: TheSeamDatatableRow | undefined | null
 
   @Output() click = new EventEmitter<any>()
 
   constructor(
-    private _modal: Modal,
-    private _dynamicComponentLoader: TheSeamDynamicComponentLoader,
-    @Optional() private _http: HttpClient,
+    private readonly _modal: Modal,
+    private readonly _dynamicComponentLoader: TheSeamDynamicComponentLoader,
+    @Optional() private readonly _http: HttpClient,
   ) { }
 
   ngOnInit() { }

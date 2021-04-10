@@ -19,16 +19,16 @@
     <seam-side-nav-item *ngFor="let child of children"
       [hierLevel]="compact ? 0 : (hierLevel + 1)"
       [compact]="compact"
-      [itemType]="child.itemType"
-      [icon]="child.icon"
-      [label]="child.label"
-      [link]="child.link"
-      [badgeText]="child.badge?.text"
-      [badgeTheme]="child.badge?.theme || 'danger'"
-      [queryParams]="child.queryParams"
+      [itemType]="$any(child).itemType"
+      [icon]="$any(child).icon"
+      [label]="$any(child).label"
+      [link]="$any(child).link"
+      [badgeText]="$any(child).badge?.text"
+      [badgeTheme]="$any(child).badge?.theme || 'danger'"
+      [queryParams]="$any(child).queryParams"
       routerLinkActive="active"
       [routerLinkActiveOptions]="{ exact: true }"
-      [children]="child.children">
+      [children]="$any(child)?.children">
     </seam-side-nav-item>
   </div>
 </ng-container>
@@ -139,11 +139,11 @@
   <div *ngIf="badgeText"
     class="side-nav-item--badge"
     [class.side-nav-item--badge-no-icon]="!icon"
-    [ngbTooltip]="_badgeTooltip?.tooltip"
-    [tooltipClass]="_badgeTooltip?.class"
-    [placement]="_badgeTooltip?.placement"
-    [container]="_badgeTooltip?.container"
-    [disableTooltip]="!_badgeTooltip || !!_badgeTooltip?.disabled">
+    [ngbTooltip]="$any(badgeTooltip)?.tooltip"
+    [tooltipClass]="$any(badgeTooltip)?.class"
+    [placement]="$any(badgeTooltip)?.placement"
+    [container]="$any(badgeTooltip)?.container"
+    [disableTooltip]="!badgeTooltip || !!$any(badgeTooltip)?.disabled">
     <span class="badge badge-{{ badgeTheme }}">{{ badgeText }}</span>
     <!-- <span class="badge badge-danger">5</span> -->
   </div>

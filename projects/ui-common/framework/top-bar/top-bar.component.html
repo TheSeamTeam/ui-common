@@ -7,7 +7,7 @@
 <div class="top-bar--logo d-flex flex-column justify-content-center" routerLink="/"
   [class.top-bar--logo-mobile]="isMobile$ | async">
   <div>
-    <img [src]="logo" [src.lt-md]="hasTitle ? logoSm : logo" alt="Logo">
+    <img [src]="$any(logo)" [src.lt-md]="hasTitle ? logoSm : logo" alt="Logo">
   </div>
 </div>
 

@@ -93,7 +93,7 @@ export class ButtonComponent extends _TheSeamButtonMixinBase implements OnDestro
 export class AnchorButtonComponent extends _TheSeamButtonMixinBase implements OnDestroy {
 
   /** Tabindex of the button. */
-  @Input() tabIndex: number
+  @Input() tabIndex: number | undefined | null
 
   // TODO: Consider adding dev warning for `window.opener` exploit. Could maybe
   // add `rel` it if the href isn't on the current domain or not specified in an

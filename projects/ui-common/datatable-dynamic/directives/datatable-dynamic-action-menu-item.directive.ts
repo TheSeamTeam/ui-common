@@ -57,7 +57,7 @@ export class DatatableDynamicActionMenuItemRouterLink {
       )
       // console.log('rLinkWithHref', this.rLinkWithHref)
 
-      this._rLinkClickEventListener = this.el.nativeElement.addEventListener('click', event => {
+      this._rLinkClickEventListener = this.el.nativeElement.addEventListener('click', (event: MouseEvent) => {
         // console.log('this._rLinkWithHref', this._rLinkWithHref, this._rLinkWithHref && this._rLinkWithHref.href)
         if (this._rLinkWithHref) {
           return this._rLinkWithHref.onClick(event.button, event.ctrlKey, event.shiftKey, event.altKey, event.metaKey)
@@ -201,7 +201,7 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
   }
   private _record = new ReplaySubject<DynamicDatatableActionMenuRecord>(1)
 
-  private _clickSubscription: Subscription
+  private _clickSubscription?: Subscription
   private _menuRouterLink?: DatatableDynamicActionMenuItemRouterLink
 
   private _recordSubscription = Subscription.EMPTY
