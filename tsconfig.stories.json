@@ -3,10 +3,15 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": []
+    "types": [],
+    "paths": {
+      "@theseam/ui-common/*": [
+        "projects/ui-common/*/public-api"
+      ]
+    }
   },
   "include": [
-    "projects/ui-common/src/lib/**/*.ts"
+    "projects/ui-common/**/*.ts"
   ],
   "exclude": [
     "projects/ui-common/**/*.spec.ts",

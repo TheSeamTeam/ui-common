@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 
-import { BehaviorSubject, Observable } from 'rxjs'
+import { BehaviorSubject, Observable, of } from 'rxjs'
 
 import { ToastrService } from 'ngx-toastr'
 
@@ -9,8 +9,8 @@ import { TheSeamIconModule } from '@theseam/ui-common/icon'
 import { TheSeamLoadingOverlayService } from '@theseam/ui-common/loading'
 import { TheSeamMenuModule } from '@theseam/ui-common/menu'
 
-import { FakeToastrService } from '../../../testing/fake-toastr'
 import { FakeTheSeamLoadingOverlayService } from '../../loading/fake-loading-overlay'
+import { FakeToastrService } from '../../testing/fake-toastr'
 
 import { THESEAM_DATATABLE } from '../datatable/datatable.component'
 import { TheSeamDatatableColumn } from '../models/table-column'
@@ -57,11 +57,11 @@ describe('DatatableExportButtonComponent', () => {
 //
 
 export class FakeDatatableComponent {
-  columns: TheSeamDatatableColumn[]
+  columns: TheSeamDatatableColumn[] = []
 
   get rows(): any[] { return this._rows.value }
   set rows(value: any[]) { this._rows.next(value || []) }
   private _rows = new BehaviorSubject<any[]>([])
 
-  public rows$: Observable<any[]>
+  public rows$: Observable<any[]> = of([])
 }

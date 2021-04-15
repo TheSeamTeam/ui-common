@@ -1,7 +1,9 @@
+import { BooleanInput } from '@angular/cdk/coercion'
+
 import { InputBoolean } from './input-boolean.decorator'
 
 class Fixture {
-  @InputBoolean() b
+  @InputBoolean() b: BooleanInput
 }
 
 function shouldCoerce(value: any, expected: boolean) {

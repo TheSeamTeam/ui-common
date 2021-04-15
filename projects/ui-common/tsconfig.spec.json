@@ -1,18 +1,47 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../out-tsc/spec",
+    "outDir": "../../out-tsc/lib",
+    "baseUrl": ".",
+    "rootDir": ".",
+    "target": "es2015",
+    "module": "es2020",
+    "moduleResolution": "node",
+    "declaration": true,
+    "jsx": "react",
+    "sourceMap": true,
+    "inlineSources": true,
+    "emitDecoratorMetadata": false,
+    "experimentalDecorators": true,
+    "strictNullChecks": true,
+    "importHelpers": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "stripInternal": true,
     "types": [
       "jasmine",
       "node"
-    ]
+    ],
+    "lib": [
+      "dom",
+      "es2018"
+    ],
+    "paths": {
+      "@theseam/ui-common/*": [
+        "./*/public-api"
+      ]
+    }
   },
   "files": [
-    "src/test.ts"
+    "./test.ts"
   ],
   "include": [
-    "**/schematics/**/*",
     "**/*.spec.ts",
-    "**/*.d.ts"
+    "**/*.d.ts",
+    "../../custom_types/**/*.d.ts"
+  ],
+  "exclude": [
+    "**/schematics/**/*"
   ]
 }

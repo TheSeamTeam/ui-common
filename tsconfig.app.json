@@ -2,15 +2,15 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": [],
-    "paths": {
-      "@theseam/ui-common": [
-        "dist/ui-common"
-      ],
-      "@theseam/ui-common/*": [
-        "dist/ui-common/*"
-      ],
-    }
+    "types": []
+    // "paths": {
+    //   // "@theseam/ui-common": [
+    //   //   "dist/ui-common"
+    //   // ],
+    //   // "@theseam/ui-common/*": [
+    //   //   "dist/ui-common/*"
+    //   // ]
+    // }
   },
   "files": [
     "src/main.ts",

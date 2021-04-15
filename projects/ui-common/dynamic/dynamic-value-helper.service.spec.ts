@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing'
 
 import { DynamicValueHelperService } from './dynamic-value-helper.service'
+import { DynamicValue } from './models/dynamic-value'
 import { IDynamicValueEvaluator } from './models/dynamic-value-evaluator'
 import { IDynamicValueType } from './models/dynamic-value-type'
 import { THESEAM_DYNAMIC_VALUE_EVALUATOR } from './tokens/dynamic-value-evaluator'
@@ -13,7 +14,7 @@ class TestEvaluatorSync implements IDynamicValueEvaluator<'test-sync'> {
 
   readonly type = 'test-sync'
 
-  evalSync(value, context) { return context[value.propOnContext] }
+  evalSync<R>(value: DynamicValue<R>, context?: any) { return context[(value as any).propOnContext] }
 
 }
 
@@ -25,7 +26,7 @@ class TestEvaluatorAsync implements IDynamicValueEvaluator<'test-async'> {
 
   readonly type = 'test-async'
 
-  eval(value, context) { return Promise.resolve(context[value.propOnContext]) }
+  eval<R>(value: DynamicValue<R>, context?: any) { return Promise.resolve(context[(value as any).propOnContext]) }
 
 }
 

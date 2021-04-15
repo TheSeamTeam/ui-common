@@ -33,7 +33,7 @@ describe('pollingTicker', () => {
     }))
 
     it('should emit at polling interval', fakeAsync(() => {
-      let result
+      let result: any
       const pt$ = pollingTicker(() => 'test', 100, undefined, { emitOnInit: false }).subscribe((v) => { result = v })
       tick(100)
       expect(result).toBe('test')
@@ -76,7 +76,7 @@ describe('pollingTicker', () => {
       }))
 
       it('should emit at polling interval', fakeAsync(() => {
-        let result
+        let result: any
         const pt$ = pollingTicker(() => of('api result'), 100, undefined, { emitOnInit: false }).subscribe((v) => { result = v })
         tick(100)
         expect(result).toBe('api result')

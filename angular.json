@@ -102,27 +102,27 @@
               {
                 "glob": "**/*.scss",
                 "input": "projects/ui-common/framework/base-layout",
-                "output": "lib/framework/base-layout"
+                "output": "framework/base-layout"
               },
               {
                 "glob": "**/*.scss",
                 "input": "projects/ui-common/framework/dashboard",
-                "output": "lib/framework/dashboard"
+                "output": "framework/dashboard"
               },
               {
                 "glob": "**/*.scss",
                 "input": "projects/ui-common/widget/side-nav",
-                "output": "lib/framework/side-nav"
+                "output": "framework/side-nav"
               },
               {
                 "glob": "**/*.scss",
                 "input": "projects/ui-common/progress/progress-circle",
-                "output": "lib/progress/progress-circle"
+                "output": "progress/progress-circle"
               },
               {
                 "glob": "**/*.scss",
                 "input": "projects/ui-common/widget",
-                "output": "lib/widget"
+                "output": "widget"
               },
               {
                 "glob": "**/*.min.css",
@@ -302,27 +302,27 @@
               {
                 "glob": "**/*.scss",
                 "input": "projects/ui-common/framework/base-layout",
-                "output": "lib/framework/base-layout"
+                "output": "framework/base-layout"
               },
               {
                 "glob": "**/*.scss",
                 "input": "projects/ui-common/framework/dashboard",
-                "output": "lib/framework/dashboard"
+                "output": "framework/dashboard"
               },
               {
                 "glob": "**/*.scss",
                 "input": "projects/ui-common/widget/side-nav",
-                "output": "lib/framework/side-nav"
+                "output": "framework/side-nav"
               },
               {
                 "glob": "**/*.scss",
                 "input": "projects/ui-common/progress/progress-circle",
-                "output": "lib/progress/progress-circle"
+                "output": "progress/progress-circle"
               },
               {
                 "glob": "**/*.scss",
                 "input": "projects/ui-common/widget",
-                "output": "lib/widget"
+                "output": "widget"
               },
               {
                 "glob": "**/*.min.css",
