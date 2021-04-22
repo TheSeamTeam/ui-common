@@ -61,6 +61,8 @@ export class TableCellTypeProgressCircleComponent implements OnInit, OnDestroy {
   _download: boolean
   _detectMimeContent: boolean
 
+  private _config: TableCellTypeConfigProgressCircle | undefined | null
+
   @HostBinding('class.datatable-cell-type') _isDatatable = false
 
   constructor(
@@ -90,6 +92,9 @@ export class TableCellTypeProgressCircleComponent implements OnInit, OnDestroy {
         .subscribe(v => {
           if (v.changes.hasOwnProperty('value')) {
             this.value = coerceNumberProperty(v.changes.value.currentValue)
+            if (this._config) {
+              this._setCellTypeConfigProps(this._config)
+            }
             this._cdf.markForCheck()
           }
 
@@ -151,6 +156,7 @@ export class TableCellTypeProgressCircleComponent implements OnInit, OnDestroy {
   }
 
   private _setCellTypeConfigProps(config: TableCellTypeConfigProgressCircle): void {
+    this._config = config
     this.setAction(config.action)
     this.fillBackground = coerceBooleanProperty(this._parseConfigValue(config.fillBackground))
     this.showText = coerceBooleanProperty(this._parseConfigValue(config.showText))
