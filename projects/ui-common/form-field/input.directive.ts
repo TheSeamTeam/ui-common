@@ -38,6 +38,7 @@ export class InputDirective implements DoCheck {
 
   @HostBinding('attr.id') get _attrId() { return this._isNgSelect() ? undefined : this.id }
   @HostBinding('attr.placeholder') get _attrPlaceholder() { return this.placeholder }
+  @HostBinding('attr.aria-describedby') ariaDescribedBy: string | undefined
 
   @Input() seamInputSize: 'sm' | 'normal' = 'normal'
 
