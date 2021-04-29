@@ -28,7 +28,6 @@
     "buffer",
     "css-element-queries",
     "file-saver",
-    "localstorage-memory",
     "lodash-es",
     "ngx-toastr",
     "pdfjs-dist",

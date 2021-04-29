@@ -12,6 +12,7 @@ import pLimit from 'p-limit'
 import startVerdaccioServer from 'verdaccio'
 
 import { maxConcurrentTasks } from './utils/concurrency'
+import { isYarnInstalled } from './utils/is-yarn-installed'
 
 const program = new Command()
 
@@ -23,6 +24,8 @@ program
 program.parse(process.argv)
 
 const logger = console
+
+const yarnInstalled = isYarnInstalled()
 
 const freePort = (port?: number) => port || detectFreePort(port)
 
@@ -59,6 +62,12 @@ const startVerdaccio = (port: number) => {
 }
 const registryUrl = (command: string, url?: string) =>
   new Promise<string>((res, rej) => {
+    // TODO: Implement a better way to omit yarn.
+    if (command === 'yarn' && !yarnInstalled) {
+      res('')
+      return
+    }
+
     const args = url ? ['config', 'set', 'registry', url] : ['config', 'get', 'registry']
     const cmd = `${command} ${args.join(' ')}`
     logger.log(`exec: ${cmd}`)
@@ -149,6 +158,8 @@ const run = async () => {
     originalYarnRegistryUrl = 'https://registry.npmjs.org/'
     originalNpmRegistryUrl = 'https://registry.npmjs.org/'
   }
+
+  console.log({ originalYarnRegistryUrl, originalNpmRegistryUrl })
 
   logger.log(`🎬 starting verdaccio (this takes ±5 seconds, so be patient)`)
 
