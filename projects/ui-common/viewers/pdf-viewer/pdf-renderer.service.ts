@@ -1,10 +1,3 @@
-// NOTE: ng-packagr ignores the "types" and "typeRoots" settings in tsconfig.
-// Unless there is a way to make it stop ignoring those settings, tripple slash
-// reference to a `.d.ts` file was the only way I could stop the missing types
-// error.
-// tslint:disable-next-line: no-reference
-/// <reference path="./pdfjs-dist-pdf.d.ts" />
-
 import { Injectable } from '@angular/core'
 import { from, Observable } from 'rxjs'
 import { shareReplay, switchMap, tap } from 'rxjs/operators'
@@ -19,7 +12,7 @@ export class PdfRendererService {
   private readonly _pdfjs$: Observable<any>
 
   constructor() {
-    const pdfjsImport = wrapIntoObservable(import('pdfjs-dist/build/pdf'))
+    const pdfjsImport = wrapIntoObservable(import('pdfjs-dist/es5/build/pdf'))
     this._pdfjs$ = pdfjsImport.pipe(
       tap((pdfJs: any) => {
         if (!pdfJs.GlobalWorkerOptions.workerSrc) {

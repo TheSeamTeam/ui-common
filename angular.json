@@ -235,6 +235,11 @@
                 "glob": "**/utils.js",
                 "input": "../../node_modules/intl-tel-input/build/js",
                 "output": "assets/vendor/intl-tel-input/js"
+              },
+              {
+                "glob": "**/*.d.ts",
+                "input": "dynamic/evaluators/jexl-evaluator",
+                "output": "dynamic/evaluators/jexl-evaluator"
               }
             ]
           },

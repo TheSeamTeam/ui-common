@@ -1,9 +1,3 @@
-// NOTE: ng-packagr ignores the "types" and "typeRoots" settings in tsconfig.
-// Unless there is a way to make it stop ignoring those settings, tripple slash
-// reference to a `.d.ts` file was the only way I could stop the missing types
-// error.
-// tslint:disable-next-line: no-reference
-/// <reference path="./intl-tel-input.d.ts" />
 import intlTelInput from 'intl-tel-input'
 
 //
@@ -378,7 +372,7 @@ export namespace IntlTelInput {
  * @param options options that can be provided during initialization.
  */
 export function IntlTelInputFn(node: Element, options?: IntlTelInput.Options): IntlTelInput.Plugin {
-  return intlTelInput(node, options)
+  return (intlTelInput as any)(node, options)
 }
 
 export default IntlTelInputFn
