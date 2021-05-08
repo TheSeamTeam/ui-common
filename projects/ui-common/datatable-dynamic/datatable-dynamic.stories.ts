@@ -5,7 +5,7 @@ import { HttpClientModule } from '@angular/common/http'
 import { Component, NgModule } from '@angular/core'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
-import { RouterModule } from '@angular/router'
+import { Route, RouterModule } from '@angular/router'
 
 import {
   DataFilterSearchComponent,
@@ -122,7 +122,7 @@ export class StoryExModalLazyModule { }
 // })
 // class ExampleModalModule { }
 
-const routes = [
+const routes: Route[] = [
   // {
   //   path: 'story-ex-modal',
   //   loadChildren: () => ExampleModalModule,

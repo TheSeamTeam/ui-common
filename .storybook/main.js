@@ -1,6 +1,5 @@
 module.exports = {
-  // stories: ['../projects/ui-common/**/*.stories.@(ts|mdx)'],
-  stories: ['../projects/ui-common/buttons/**/*.stories.@(ts|mdx)'],
+  stories: ['../projects/ui-common/**/*.stories.@(ts|mdx)'],
   logLevel: 'debug',
   addons: [
     '@storybook/addon-docs',

@@ -48,7 +48,7 @@ export const Basic = () => ({
       { 'dataPointer': '/Colors' },
       { 'type': 'submit', 'title': 'Generate' }
     ],
-    _onSubmit: (e) => {
+    _onSubmit: (e: any) => {
       console.log('_onSubmit', e)
       action('onSubmit')(e)
     }
@@ -94,7 +94,7 @@ export const SplitButton = () => ({
         ]
       }
     ],
-    _onSubmit: (e) => {
+    _onSubmit: (e: any) => {
       console.log('_onSubmit', e)
       action('onSubmit')(e)
     }

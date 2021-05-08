@@ -3,6 +3,6 @@
  *
  * NOTE: This feature is being worked on, so this hack shouldn't be needed long.
  */
-export function _knobUndefinedNullHACK(v) {
+export function _knobUndefinedNullHACK(v: any) {
   return v === '__undefined__' ? undefined : v === '__null__' ? null : v
 }

@@ -85,7 +85,7 @@ storiesOf('Components/ConfirmDialog/Directive', module)
 })
 export class StoryLibConfirmDialogBasicServiceComponent {
 
-  @Input() msgText: string
+  @Input() msgText: string | undefined
 
   constructor(
     private _confirmDialog: SeamConfirmDialogService
@@ -118,9 +118,9 @@ export class StoryLibConfirmDialogBasicServiceComponent {
 })
 export class StoryLibConfirmDialogAlertServiceComponent {
 
-  @Input() msgText: string
-  @Input() alertMsgText: string
-  @Input() theme: ThemeTypes
+  @Input() msgText: string | undefined
+  @Input() alertMsgText: string | undefined
+  @Input() theme: ThemeTypes | undefined
 
   constructor(
     private _confirmDialog: SeamConfirmDialogService
@@ -130,7 +130,7 @@ export class StoryLibConfirmDialogAlertServiceComponent {
     if (this.theme) {
       this._confirmDialog.open(
         this.msgText,
-        { message: this.alertMsgText, type: this.theme }
+        { message: this.alertMsgText || '', type: this.theme }
       ).afterClosed().subscribe(result => {
         if (result === 'confirm') {
           console.log('confirmed')

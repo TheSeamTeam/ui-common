@@ -59,7 +59,7 @@ export const Simple: Story = (args) => ({
   `
 })
 
-export const ColumnTemplate = (args) => ({
+export const ColumnTemplate = (args: any) => ({
   props: {
     ...args,
     columns: [
@@ -88,7 +88,7 @@ export const ColumnTemplate = (args) => ({
     </div>`
 })
 
-export const ActionMenu = (args) => ({
+export const ActionMenu = (args: any) => ({
   props: {
     ...args,
     columns: [
@@ -117,7 +117,7 @@ export const ActionMenu = (args) => ({
     </div>`
 })
 
-export const InlineEdit = (args) => ({
+export const InlineEdit = (args: any) => ({
   moduleMetadata: {
     imports: [
       ReactiveFormsModule
@@ -156,7 +156,7 @@ export const InlineEdit = (args) => ({
     </div>`
 })
 
-export const CheckboxSelection = (args) => ({
+export const CheckboxSelection = (args: any) => ({
   props: {
     ...args,
     columns: [
@@ -171,7 +171,7 @@ export const CheckboxSelection = (args) => ({
 
     selected: [],
     selectAllRowsOnPage: false,
-    onSelect({ selected }) {
+    onSelect({ selected }: { selected: any }) {
       action('select')(selected)
 
       this.selected.splice(0, this.selected.length)
@@ -192,7 +192,7 @@ export const CheckboxSelection = (args) => ({
     </div>`
 })
 
-export const ToggleDisplay = (args) => ({
+export const ToggleDisplay = (args: any) => ({
   props: {
     ...args,
     columns: [
@@ -208,10 +208,10 @@ export const ToggleDisplay = (args) => ({
 
     selected: [],
     selectAllRowsOnPage: false,
-    displayCheck(row) {
+    displayCheck(row: any) {
       return row.name !== 'Adam'
     },
-    onSelect({ selected }) {
+    onSelect({ selected }: { selected: any }) {
       action('select')(selected)
 
       this.selected.splice(0, this.selected.length)
@@ -234,7 +234,7 @@ export const ToggleDisplay = (args) => ({
 })
 
 // NOTE: Still being worked on, but is usable.
-export const Tree = (args) => ({
+export const Tree = (args: any) => ({
   props: {
     ...args,
     columns: [
@@ -264,7 +264,7 @@ export const Tree = (args) => ({
     </div>`
 })
 
-export const Detail = (args) => ({
+export const Detail = (args: any) => ({
   props: {
     ...args,
     columns: [
@@ -401,11 +401,11 @@ export const Detail = (args) => ({
 })
 class DTFilterWrapper {
 
-  @ViewChild(DatatableComponent) _datatable: DatatableComponent
+  @ViewChild(DatatableComponent) _datatable: DatatableComponent | undefined
 
-  @Input() columns
-  @Input() rows
-  @Input() filterButtons
+  @Input() columns: any
+  @Input() rows: any
+  @Input() filterButtons: any
 
   defaultFilter = ''
 
@@ -415,7 +415,7 @@ class DTFilterWrapper {
 
   ngAfterViewInit() {
     console.log('this._datatable2', this._datatable)
-    this._datatable.filterStates.subscribe(fs => console.log('filterStates', fs))
+    this._datatable?.filterStates.subscribe(fs => console.log('filterStates', fs))
   }
 }
 
@@ -475,12 +475,12 @@ export const Filter: Story = (args) => ({
     ],
     filterButtons: [
       { name: 'Registered', value: '',
-        comparator: (value, row) => {
+        comparator: (value: any, row: any) => {
           return row.registered ? -1 : 1
         }
       },
       { name: 'Over 30', value: 'over-30',
-        comparator: (value, row) => {
+        comparator: (value: any, row: any) => {
           return row.age > 30 ? 1 : -1
         }
       }

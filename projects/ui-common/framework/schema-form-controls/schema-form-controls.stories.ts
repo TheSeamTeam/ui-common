@@ -83,7 +83,7 @@ export const Example = () => ({
     </json-schema-form>`
 })
 
-function toCopyableStr(json) {
+function toCopyableStr(json: any) {
   return (JSON.stringify(json).toString() as any).replaceAll('"', '\\"')
 }
 const win = window as any

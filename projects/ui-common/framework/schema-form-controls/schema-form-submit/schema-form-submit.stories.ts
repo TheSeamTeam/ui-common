@@ -78,7 +78,7 @@ export const Required = () => ({
       { 'dataPointer': '/Colors' },
       { 'dataPointer': '/Exporter' }
     ],
-    _onSubmit: (e) => {
+    _onSubmit: (e: any) => {
       console.log('_onSubmit', e)
       action('onSubmit')(e)
     }
