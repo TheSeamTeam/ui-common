@@ -1,5 +1,5 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
-import { Directive, DoCheck, ElementRef, HostBinding, Input, Optional, Self } from '@angular/core'
+import { Directive, DoCheck, ElementRef, Host, HostBinding, Input, Optional, Self } from '@angular/core'
 import { FormGroupDirective, NgControl, NgForm } from '@angular/forms'
 import { Subject } from 'rxjs'
 
@@ -34,6 +34,7 @@ export class InputDirective implements DoCheck {
 
   @HostBinding('attr.id') get _attrId() { return this._isNgSelect() ? undefined : this.id }
   @HostBinding('attr.placeholder') get _attrPlaceholder() { return this.placeholder }
+  @HostBinding('attr.aria-describedby') ariaDescribedBy: string | undefined
 
   @Input() seamInputSize: 'sm' | 'normal' = 'normal'
 

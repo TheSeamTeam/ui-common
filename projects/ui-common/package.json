@@ -1,6 +1,6 @@
 {
   "name": "@theseam/ui-common",
-  "version": "0.1.14",
+  "version": "0.1.18",
   "scripts": {
     "build": "../../node_modules/.bin/tsc -p tsconfig.schematics.json",
     "copy:schemas": "cp --parents schematics/*/schema.json ../../dist/ui-common/",
@@ -38,7 +38,7 @@
     "localstorage-memory": "~1.0.3",
     "lodash-es": "~4.17.11",
     "ngx-toastr": "~12.1.0",
-    "pdfjs-dist": "^2.0.943",
+    "pdfjs-dist": "2.0.943",
     "tslib": "^2.0.0",
     "xlsx": "^0.14.4",
     "jexl": "^2.3.0",

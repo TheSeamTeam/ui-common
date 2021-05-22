@@ -149,6 +149,7 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
 
   @Input() externalPaging = false
   @Input() externalSorting = false
+  @Input() externalFiltering = false
 
   @Input() limit: number | undefined
   @Input() count = 0
@@ -305,9 +306,12 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
 
     this.rows$ = this._filtersSubject.asObservable()
       .pipe(
-        switchMap(filters => this._rows.asObservable()
-        .pipe(composeDataFilters(filters))
-        )
+        switchMap(filters => {
+          if (this.externalFiltering) {
+            return this._rows.asObservable()
+          }
+          return this._rows.asObservable().pipe(composeDataFilters(filters))
+        })
       )
 
     // this.hiddenColumns$ = this._hiddenColumns.asObservable()

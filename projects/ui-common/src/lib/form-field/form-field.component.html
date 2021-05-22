@@ -23,6 +23,16 @@
       </div>
     </ng-container>
   </div>
+
+  <ng-container *ngIf="hasHelpText">
+    <small [id]="helpTextId" class="form-text text-muted">
+      <ng-container *ngIf="helpTextTpl; else helpTextInpTpl">
+        <ng-template [ngTemplateOutlet]="helpTextTpl.template"></ng-template>
+      </ng-container>
+      <ng-template #helpTextInpTpl>{{ helpText }}</ng-template>
+    </small>
+  </ng-container>
+
   <!-- Need `.d-block` to make errors show without input sibling selector -->
   <ng-container *ngIf="contentInput">
     <seam-form-field-error-list *ngIf="fieldErrors$ | async as fieldErrors"

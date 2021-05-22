@@ -108,6 +108,7 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
         .subscribe(v => {
           if (v.changes.hasOwnProperty('value')) {
             this.value = v.changes.value.currentValue
+            this.config = this._config
             this._cdf.markForCheck()
           }
 
