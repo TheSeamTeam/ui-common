@@ -1,3 +1,4 @@
+export * from './arg-type-helpers'
 export * from './args-to-tpl'
 export * from './story-empty.component'
 export * from './story-initial-route'

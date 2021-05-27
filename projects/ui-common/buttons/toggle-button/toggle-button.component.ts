@@ -51,9 +51,9 @@ export class ToggleButtonComponent extends ButtonComponent implements OnDestroy,
   get _activeCssClass() { return this.value ? coerceBooleanProperty(this.value) : false}
 
   constructor(
-    _elementRef: ElementRef,
-    _focusMonitor: FocusMonitor,
-    _renderer: Renderer2
+    readonly _elementRef: ElementRef,
+    readonly _focusMonitor: FocusMonitor,
+    readonly _renderer: Renderer2
   ) { super(_elementRef, _focusMonitor, _renderer) }
 
   ngOnDestroy() { super.ngOnDestroy() }

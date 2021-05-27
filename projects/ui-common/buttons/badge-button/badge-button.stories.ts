@@ -1,11 +1,11 @@
-import { moduleMetadata, Story } from '@storybook/angular'
-import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
+import { Meta, moduleMetadata, Story } from '@storybook/angular'
 
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
-import { ThemeNames } from '@theseam/ui-common/models'
+import { buttonTypeArgType, sizeArgType, themeWithOutlineArgType } from '@theseam/ui-common/story-helpers'
 
+import { TheSeamButtonsModule } from '../buttons.module'
 import { BadgeButtonComponent } from './badge-button.component'
 
 export default {
@@ -20,7 +20,7 @@ export default {
       ]
     })
   ]
-}
+} as Meta
 
 export const Basic: Story = (args) => ({
   props: { ...args },
@@ -29,7 +29,8 @@ export const Basic: Story = (args) => ({
       [theme]="theme"
       [badgeTheme]="badgeTheme"
       [badgeText]="badgeText"
-      [size]="size">
+      [size]="size"
+      [type]="type">
       {{ btnText }}
     </button>
   `
@@ -43,25 +44,8 @@ Basic.argTypes = {
     defaultValue: 'Badge Text',
     control: { type: 'text' }
   },
-  theme: {
-    defaultValue: 'primary',
-    control: {
-      type: 'select',
-      options: ThemeNames
-    }
-  },
-  badgeTheme: {
-    defaultValue: 'danger',
-    control: {
-      type: 'select',
-      options: ThemeNames
-    }
-  },
-  size: {
-    defaultValue: undefined,
-    control: {
-      type: 'select',
-      options: [ undefined, 'sm', 'lg' ]
-    }
-  }
+  theme: themeWithOutlineArgType,
+  badgeTheme: themeWithOutlineArgType,
+  size: sizeArgType,
+  type: buttonTypeArgType
 }

@@ -1,5 +1,5 @@
 import { button, withKnobs } from '@storybook/addon-knobs'
-import { storiesOf } from '@storybook/angular'
+import { Meta, Story } from '@storybook/angular'
 
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
@@ -12,52 +12,56 @@ import { StoryUserIdToNameResolver } from './story-userid-to-name.resolver'
 
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component'
 
-storiesOf('Components/Breadcrumbs', module)
-  .addDecorator(withKnobs)
+export default {
+  title: 'Components/Breadcrumbs/Resolver',
+  component: BreadcrumbsComponent,
+  decorators: [
+    withKnobs
+  ]
+} as Meta
 
-  .add('Resolver', () => ({
-    moduleMetadata: {
-      declarations: [
-        BreadcrumbsComponent,
-        StoryEmptyComponent
-      ],
-      providers: [
-        StoryUsersDataService,
-        StoryUserIdToNameResolver
-      ],
-      imports: [
-        BrowserAnimationsModule,
-        BrowserModule,
-        RouterModule.forRoot([
-          {
-            path: 'users',
-            component: StoryEmptyComponent,
-            data: {
-              breadcrumb: 'Users'
-            },
-            children: [
-              {
-                path: ':userId',
-                component: StoryEmptyComponent,
-                data: { },
-                resolve: {
-                  breadcrumb: StoryUserIdToNameResolver
-                }
+export const Example: Story = () => ({
+  moduleMetadata: {
+    declarations: [
+      StoryEmptyComponent
+    ],
+    providers: [
+      StoryUsersDataService,
+      StoryUserIdToNameResolver
+    ],
+    imports: [
+      BrowserAnimationsModule,
+      BrowserModule,
+      RouterModule.forRoot([
+        {
+          path: 'users',
+          component: StoryEmptyComponent,
+          data: {
+            breadcrumb: 'Users'
+          },
+          children: [
+            {
+              path: ':userId',
+              component: StoryEmptyComponent,
+              data: { },
+              resolve: {
+                breadcrumb: StoryUserIdToNameResolver
               }
-            ]
-          }
-        ], { useHash: true }),
-        StoryInitialRouteModule.forRoot('/users/123')
-      ]
-    },
-    props: {
-      btn1: routeButton(button, '/users'),
-      btn2: routeButton(button, '/users/123'),
-      btn3: routeButton(button, '/users/987'),
-      btn4: routeButton(button, '/users/999'),
-    },
-    template: `
-      <seam-breadcrumbs></seam-breadcrumbs>
-      <router-outlet></router-outlet>
-    `
-  }))
+            }
+          ]
+        }
+      ], { useHash: true }),
+      StoryInitialRouteModule.forRoot('/users/123')
+    ]
+  },
+  props: {
+    btn1: routeButton(button, '/users'),
+    btn2: routeButton(button, '/users/123'),
+    btn3: routeButton(button, '/users/987'),
+    btn4: routeButton(button, '/users/999'),
+  },
+  template: `
+    <seam-breadcrumbs></seam-breadcrumbs>
+    <router-outlet></router-outlet>
+  `
+})

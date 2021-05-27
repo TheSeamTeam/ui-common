@@ -1,4 +1,4 @@
-import { storiesOf } from '@storybook/angular'
+import { Meta, Story } from '@storybook/angular'
 
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
@@ -6,35 +6,41 @@ import { RouterModule } from '@angular/router'
 
 import { StoryEmptyComponent, StoryInitialRouteModule } from '@theseam/ui-common/story-helpers'
 
+import { withKnobs } from '@storybook/addon-knobs'
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component'
 
-storiesOf('Components/Breadcrumbs', module)
+export default {
+  title: 'Components/Breadcrumbs/Simple',
+  component: BreadcrumbsComponent,
+  decorators: [
+    withKnobs
+  ]
+} as Meta
 
-  .add('Simple', () => ({
-    moduleMetadata: {
-      declarations: [
-        BreadcrumbsComponent,
-        StoryEmptyComponent
-      ],
-      providers: [ ],
-      imports: [
-        BrowserAnimationsModule,
-        BrowserModule,
-        RouterModule.forRoot([
-          {
-            path: 'home',
-            component: StoryEmptyComponent,
-            data: {
-              breadcrumb: 'Home'
-            }
+export const Example: Story = () => ({
+  moduleMetadata: {
+    declarations: [
+      StoryEmptyComponent
+    ],
+    providers: [ ],
+    imports: [
+      BrowserAnimationsModule,
+      BrowserModule,
+      RouterModule.forRoot([
+        {
+          path: 'home',
+          component: StoryEmptyComponent,
+          data: {
+            breadcrumb: 'Home'
           }
-        ], { useHash: true }),
-        StoryInitialRouteModule.forRoot('/home')
-      ]
-    },
-    props: { },
-    template: `
-      <seam-breadcrumbs></seam-breadcrumbs>
-      <router-outlet></router-outlet>
-    `
-  }))
+        }
+      ], { useHash: true }),
+      StoryInitialRouteModule.forRoot('/home')
+    ]
+  },
+  props: { },
+  template: `
+    <seam-breadcrumbs></seam-breadcrumbs>
+    <router-outlet></router-outlet>
+  `
+})

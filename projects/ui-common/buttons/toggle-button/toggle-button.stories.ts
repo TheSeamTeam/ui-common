@@ -1,43 +1,47 @@
-import { select, text, withKnobs } from '@storybook/addon-knobs'
-import { storiesOf } from '@storybook/angular'
+import { Meta, moduleMetadata, Story } from '@storybook/angular'
 
-import { FormControl, ReactiveFormsModule } from '@angular/forms'
+import { ReactiveFormsModule } from '@angular/forms'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
-import { ThemeNames } from '@theseam/ui-common/models'
+import { buttonTypeArgType, sizeArgType, themeWithOutlineArgType } from '@theseam/ui-common/story-helpers'
 
+import { TheSeamButtonsModule } from '../buttons.module'
 import { ToggleButtonComponent } from './toggle-button.component'
 
-storiesOf('Components/Buttons/ToggleButton', module)
-  .addDecorator(withKnobs)
-
-  .add('Basic', () => ({
-    moduleMetadata: {
-      declarations: [
-        ToggleButtonComponent
-      ],
+export default {
+  title: 'Components/Buttons/ToggleButton',
+  component: ToggleButtonComponent,
+  decorators: [
+    moduleMetadata({
       imports: [
-        BrowserAnimationsModule,
         BrowserModule,
-        ReactiveFormsModule
+        BrowserAnimationsModule,
+        ReactiveFormsModule,
+        TheSeamButtonsModule
       ]
-    },
-    props: {
-      btnText: text('Button Text', 'Toggle Button'),
-      theme: select('Theme', ThemeNames, 'primary'),
-      size: select('Size', { 'undefined': '', sm: 'btn-sm', lg: 'btn-lg' }, ''),
-      control: new FormControl(false)
-    },
-    template: `
-      <div class="p-5">
-        <button class="btn btn-outline-{{ theme }} {{ size }}"
-          seamToggleButton
-          [formControl]="control">
-          {{ btnText }}
-        </button>
+    })
+  ]
+} as Meta
 
-        <div class="bg-light border p-2 mt-4">Value: {{ control.value }}</div>
-      </div>
-    `
-  }))
+export const Basic: Story = (args) => ({
+  props: { ...args },
+  template: `
+    <button seamToggleButton
+      [theme]="theme"
+      [size]="size"
+      [type]="type">
+      {{ btnText }}
+    </button>
+  `
+})
+Basic.argTypes = {
+  btnText: {
+    defaultValue: 'Example Text',
+    control: { type: 'text' }
+  },
+  theme: themeWithOutlineArgType,
+  badgeTheme: themeWithOutlineArgType,
+  size: sizeArgType,
+  type: buttonTypeArgType
+}
