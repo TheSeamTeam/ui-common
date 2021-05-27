@@ -10,6 +10,8 @@ module.exports = {
     '@storybook/addon-knobs',
     // '@storybook/addon-backgrounds',
     '@storybook/addon-a11y',
-    '@storybook/addon-viewport'
+    '@storybook/addon-viewport',
+    '@storybook/addon-toolbars',
+    'storybook-addon-angular-ivy'
   ],
 }

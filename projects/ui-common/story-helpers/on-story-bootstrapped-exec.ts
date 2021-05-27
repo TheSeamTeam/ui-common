@@ -1,6 +1,6 @@
 import { APP_BOOTSTRAP_LISTENER, ComponentRef } from '@angular/core'
-import { STORY } from '@storybook/angular/dist/client/preview/angular/app.token'
-import { StoryFnAngularReturnType } from '@storybook/angular/dist/client/preview/types'
+import { STORY } from '@storybook/angular/dist/ts3.9/client/preview/angular/app.token'
+import { StoryFnAngularReturnType } from '@storybook/angular/dist/ts3.9/client/preview/types'
 import { Observable } from 'rxjs'
 import { first } from 'rxjs/operators'
 
