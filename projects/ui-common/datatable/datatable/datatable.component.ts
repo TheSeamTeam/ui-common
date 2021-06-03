@@ -1,5 +1,5 @@
 import { animate, style, transition, trigger } from '@angular/animations'
-import { BooleanInput } from '@angular/cdk/coercion'
+import { BooleanInput, NumberInput } from '@angular/cdk/coercion'
 import {
   AfterContentInit, ChangeDetectionStrategy, Component, ContentChild, ContentChildren,
   ElementRef, EventEmitter, forwardRef, InjectionToken, Input, KeyValueDiffer,
@@ -8,7 +8,7 @@ import {
 import { BehaviorSubject, combineLatest, Observable, of, Subscription } from 'rxjs'
 import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators'
 
-import { faChevronDown, faChevronRight, faEllipsisH, faSpinner } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faChevronRight, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import {
   ColumnMode,
   ContextmenuType,
@@ -25,7 +25,7 @@ import {
 } from '@marklb/ngx-datatable'
 import type { SelectionType } from '@marklb/ngx-datatable'
 
-import { InputBoolean } from '@theseam/ui-common/core'
+import { InputBoolean, InputNumber } from '@theseam/ui-common/core'
 import { composeDataFilters, composeDataFilterStates, DataFilterState, IDataFilter } from '@theseam/ui-common/data-filters'
 import { IElementResizedEvent } from '@theseam/ui-common/shared'
 import { hasProperty } from '@theseam/ui-common/utils'
@@ -125,8 +125,14 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
   static ngAcceptInputType_virtualization: BooleanInput
   static ngAcceptInputType_scrollbarV: BooleanInput
   static ngAcceptInputType_scrollbarH: BooleanInput
+  static ngAcceptInputType_limit: NumberInput
+  static ngAcceptInputType_count: NumberInput
+  static ngAcceptInputType_offset: NumberInput
+  static ngAcceptInputType_headerHeight: NumberInput
+  static ngAcceptInputType_rowHeight: NumberInput
+  static ngAcceptInputType_footerHeight: NumberInput
+  static ngAcceptInputType_summaryHeight: NumberInput
 
-  faEllipsisH = faEllipsisH
   faChevronDown = faChevronDown
   faChevronRight = faChevronRight
   faSpinner = faSpinner
@@ -164,20 +170,20 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
 
   @Input() selected: any[] | undefined | null = []
 
-  @Input() @InputBoolean() externalPaging = false
-  @Input() @InputBoolean() externalSorting = false
-  @Input() @InputBoolean() externalFiltering = false
+  @Input() @InputBoolean() externalPaging: boolean = false
+  @Input() @InputBoolean() externalSorting: boolean = false
+  @Input() @InputBoolean() externalFiltering: boolean = false
 
-  @Input() limit: number | undefined | null
-  @Input() count: number | undefined | null = 0
-  @Input() offset: number | undefined | null = 0
+  @Input() @InputNumber() limit: number | undefined
+  @Input() @InputNumber(0) count: number = 0
+  @Input() @InputNumber(0) offset: number = 0
 
-  @Input() @InputBoolean() loadingIndicator = false
+  @Input() @InputBoolean() loadingIndicator: boolean = false
 
   @Input() selectionType: SelectionType | undefined | null
 
-  @Input() @InputBoolean() reorderable = true
-  @Input() @InputBoolean() swapColumns = false
+  @Input() @InputBoolean() reorderable: boolean = true
+  @Input() @InputBoolean() swapColumns: boolean = false
   @Input() sortType: SortType | undefined | null = SortType.single
   @Input() sorts: any[] | undefined | null = []
 
@@ -209,36 +215,36 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
   @Input() selectCheck: any | undefined | null
   @Input() displayCheck: ((row: any, column?: any, value?: any) => boolean) | undefined | null
 
-  @Input() @InputBoolean() groupExpansionDefault = false
+  @Input() @InputBoolean() groupExpansionDefault: boolean = false
 
   @Input() trackByProp: string | undefined | null
 
-  @Input() @InputBoolean() selectAllRowsOnPage = false
+  @Input() @InputBoolean() selectAllRowsOnPage: boolean = false
 
   @Input() treeFromRelation: string | undefined | null
   @Input() treeToRelation: string | undefined | null
-  @Input() @InputBoolean() summaryRow = false
-  @Input() summaryHeight: number | undefined | null = 30
+  @Input() @InputBoolean() summaryRow: boolean = false
+  @Input() @InputNumber() summaryHeight: number = 30
   @Input() summaryPosition: string | undefined | null = 'top'
 
-  @Input() @InputBoolean() virtualization = true
+  @Input() @InputBoolean() virtualization: boolean = true
 
-  @Input() headerHeight: number | undefined | null = 50
-  @Input() rowHeight: number | undefined | null = 50
-  @Input() footerHeight: number | undefined | null = 40
+  @Input() @InputNumber() headerHeight: number = 50
+  @Input() @InputNumber() rowHeight: number = 50
+  @Input() @InputNumber() footerHeight: number = 40
 
-  @Input() @InputBoolean() scrollbarV = true
-  @Input() @InputBoolean() scrollbarH = true
+  @Input() @InputBoolean() scrollbarV: boolean = true
+  @Input() @InputBoolean() scrollbarH: boolean = true
 
-  @Output() scroll = new EventEmitter<any>()
-  @Output() activate = new EventEmitter<any>()
-  @Output() select = new EventEmitter<any>()
-  @Output() sort = new EventEmitter<any>()
-  @Output() page = new EventEmitter<any>()
-  @Output() reorder = new EventEmitter<any>()
-  @Output() resize = new EventEmitter<any>()
-  @Output() tableContextmenu = new EventEmitter<{ event: MouseEvent, type: ContextmenuType, content: any }>(false)
-  @Output() treeAction = new EventEmitter<any>()
+  @Output() readonly scroll = new EventEmitter<any>()
+  @Output() readonly activate = new EventEmitter<any>()
+  @Output() readonly select = new EventEmitter<any>()
+  @Output() readonly sort = new EventEmitter<any>()
+  @Output() readonly page = new EventEmitter<any>()
+  @Output() readonly reorder = new EventEmitter<any>()
+  @Output() readonly resize = new EventEmitter<any>()
+  @Output() readonly tableContextmenu = new EventEmitter<{ event: MouseEvent, type: ContextmenuType, content: any }>(false)
+  @Output() readonly treeAction = new EventEmitter<any>()
 
   @Output() readonly actionRefreshRequest = new EventEmitter<void>()
   @Output() readonly hiddenColumnsChange = new EventEmitter<string[]>()
@@ -282,40 +288,12 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
   private _colDiffersInp: { [propName: string]: KeyValueDiffer<any, any> } = {}
   private _colDiffersTpl: { [propName: string]: KeyValueDiffer<any, any> } = {}
 
-  // /** @ignore */
-  // _actionMenuPositions = [
-  //   {
-  //     originX: 'start',
-  //     originY: 'bottom',
-  //     overlayX: 'end',
-  //     overlayY: 'top',
-  //   },
-  //   {
-  //     originX: 'start',
-  //     originY: 'top',
-  //     overlayX: 'end',
-  //     overlayY: 'bottom',
-  //   },
-  //   {
-  //     originX: 'end',
-  //     originY: 'bottom',
-  //     overlayX: 'start',
-  //     overlayY: 'top',
-  //   },
-  //   {
-  //     originX: 'end',
-  //     originY: 'top',
-  //     overlayX: 'start',
-  //     overlayY: 'bottom',
-  //   },
-  // ]
-
   private _rowDetailToggleSubscription = Subscription.EMPTY
 
   constructor(
-    private _columnChangesService: DatatableColumnChangesService,
-    private _differs: KeyValueDiffers,
-    private _preferences: DatatablePreferencesService
+    private readonly _columnChangesService: DatatableColumnChangesService,
+    private readonly _differs: KeyValueDiffers,
+    private readonly _preferences: DatatablePreferencesService
   ) {
     this.filterStates = this._filtersSubject.asObservable().pipe(
       switchMap(filters => composeDataFilterStates(filters))
