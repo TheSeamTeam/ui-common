@@ -115,6 +115,7 @@ export const _THESEAM_DATATABLE_ACCESSOR: any = {
 export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
   static ngAcceptInputType_externalPaging: BooleanInput
   static ngAcceptInputType_externalSorting: BooleanInput
+  static ngAcceptInputType_externalFiltering: BooleanInput
   static ngAcceptInputType_loadingIndicator: BooleanInput
   static ngAcceptInputType_reorderable: BooleanInput
   static ngAcceptInputType_swapColumns: BooleanInput
@@ -165,6 +166,7 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
 
   @Input() @InputBoolean() externalPaging = false
   @Input() @InputBoolean() externalSorting = false
+  @Input() @InputBoolean() externalFiltering = false
 
   @Input() limit: number | undefined | null
   @Input() count: number | undefined | null = 0
@@ -321,9 +323,12 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
 
     this.rows$ = this._filtersSubject.asObservable()
       .pipe(
-        switchMap(filters => this._rows.asObservable()
-        .pipe(composeDataFilters(filters))
-        )
+        switchMap(filters => {
+          if (this.externalFiltering) {
+            return this._rows.asObservable()
+          }
+          return this._rows.asObservable().pipe(composeDataFilters(filters))
+        })
       )
 
     // this.hiddenColumns$ = this._hiddenColumns.asObservable()
