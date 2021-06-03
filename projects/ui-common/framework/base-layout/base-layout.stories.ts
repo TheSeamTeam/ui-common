@@ -1,4 +1,4 @@
-import { boolean, text } from '@storybook/addon-knobs'
+// import { boolean, text } from '@storybook/addon-knobs'
 import { Meta, moduleMetadata } from '@storybook/angular'
 import { TheSeamBaseLayoutComponent } from './base-layout.component'
 
@@ -273,11 +273,11 @@ export default {
 
 export const Basic = () => ({
   props: {
-    logo: text('logo', 'assets/images/theseam_logo.svg'),
-    logoSm: text('logoSm', 'assets/images/theseam_logo_notext.svg'),
-    hasTitle: boolean('hasTitle', false),
-    titleText: text('titleText', 'Dashboard'),
-    subTitleText: text('subTitleText', 'Example'),
+    // logo: text('logo', 'assets/images/theseam_logo.svg'),
+    // logoSm: text('logoSm', 'assets/images/theseam_logo_notext.svg'),
+    // hasTitle: boolean('hasTitle', false),
+    // titleText: text('titleText', 'Dashboard'),
+    // subTitleText: text('subTitleText', 'Example'),
     navItems,
     widgets: [
       { widgetId: 'widget-1', col: 0, order: 0, component: StoryExWidget1Component },
@@ -291,7 +291,7 @@ export const Basic = () => ({
     faBell,
     faExclamationTriangle,
     faComment,
-    widgetsDraggable: boolean('widgetsDraggable', true),
+    // widgetsDraggable: boolean('widgetsDraggable', true),
   },
   template: `
     <div style="height: 100vh; width: 100vw;">

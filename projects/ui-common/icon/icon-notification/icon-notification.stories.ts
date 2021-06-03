@@ -1,4 +1,4 @@
-import { boolean, select, text, withKnobs } from '@storybook/addon-knobs'
+// import { boolean, select, text, withKnobs } from '@storybook/addon-knobs'
 import { storiesOf } from '@storybook/angular'
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
@@ -10,7 +10,7 @@ import { IconComponent } from '../icon/icon.component'
 import { IconNotificationComponent } from './icon-notification.component'
 
 storiesOf('Components/Icon/Notification', module)
-  .addDecorator(withKnobs)
+  // .addDecorator(withKnobs)
 
   .add('Url', () => ({
     moduleMetadata: {
@@ -27,7 +27,7 @@ storiesOf('Components/Icon/Notification', module)
       icon: 'assets/images/icons8-cotton-filled-48.png',
       icon2: 'assets/images/landdb-14d6a0.PNG',
       notificationIconClass: 'text-danger',
-      hasNotif: boolean('Has Notification', true)
+      // hasNotif: boolean('Has Notification', true)
     },
     template: `
       <div class="p-5">
@@ -57,7 +57,7 @@ storiesOf('Components/Icon/Notification', module)
       icon: 'assets/images/icons8-cotton-filled-48.png',
       icon2: 'assets/images/landdb-14d6a0.PNG',
       notificationIconClass: 'text-danger',
-      hasNotif: boolean('Has Notification', true)
+      // hasNotif: boolean('Has Notification', true)
     },
     template: `
       <div class="p-5">
@@ -87,7 +87,7 @@ storiesOf('Components/Icon/Notification', module)
       icon: 'assets/images/icons8-cotton-filled-48.png',
       icon2: 'assets/images/landdb-14d6a0.PNG',
       notificationIconClass: 'text-danger',
-      hasNotif: boolean('Has Notification', true)
+      // hasNotif: boolean('Has Notification', true)
     },
     template: `
       <div class="p-5">
@@ -121,7 +121,7 @@ storiesOf('Components/Icon/Notification', module)
     props: {
       icon: faShare,
       notificationIconClass: 'text-danger',
-      hasNotif: boolean('Has Notification', true)
+      // hasNotif: boolean('Has Notification', true)
     },
     template: `
       <div class="p-5">
@@ -145,7 +145,7 @@ storiesOf('Components/Icon/Notification', module)
     props: {
       icon: faShare,
       notificationIconClass: 'text-danger',
-      hasNotif: boolean('Has Notification', true)
+      // hasNotif: boolean('Has Notification', true)
     },
     template: `
       <div class="p-5">
@@ -169,7 +169,7 @@ storiesOf('Components/Icon/Notification', module)
     props: {
       icon: faShare,
       notificationIconClass: 'text-danger',
-      hasNotif: boolean('Has Notification', true)
+      // hasNotif: boolean('Has Notification', true)
     },
     template: `
       <div class="p-5">

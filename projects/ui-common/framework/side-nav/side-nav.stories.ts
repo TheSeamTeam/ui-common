@@ -1,4 +1,4 @@
-import { select, text, withKnobs } from '@storybook/addon-knobs'
+// import { select, text, withKnobs } from '@storybook/addon-knobs'
 import { storiesOf } from '@storybook/angular'
 
 import { APP_BASE_HREF } from '@angular/common'
@@ -17,7 +17,7 @@ class StoryRoutePlacholderComponent {
 }
 
 storiesOf('Framework/SideNav', module)
-  .addDecorator(withKnobs)
+  // .addDecorator(withKnobs)
 
   .add('Basic', () => ({
     moduleMetadata: {

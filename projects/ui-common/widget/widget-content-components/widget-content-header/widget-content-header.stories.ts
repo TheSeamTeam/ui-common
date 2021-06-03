@@ -1,5 +1,5 @@
 import { action } from '@storybook/addon-actions'
-import { boolean, select, text, withKnobs } from '@storybook/addon-knobs'
+// import { boolean, select, text, withKnobs } from '@storybook/addon-knobs'
 import { linkTo } from '@storybook/addon-links'
 import { storiesOf } from '@storybook/angular'
 
@@ -10,7 +10,7 @@ import { faWrench } from '@fortawesome/free-solid-svg-icons'
 import { TheSeamWidgetModule } from '../../widget.module'
 
 storiesOf('Components/Widget/Content', module)
-  .addDecorator(withKnobs)
+  // .addDecorator(withKnobs)
 
   .add('Content Header', () => ({
     moduleMetadata: {
@@ -21,9 +21,9 @@ storiesOf('Components/Widget/Content', module)
     },
     props: {
       icon: faWrench,
-      title: text('Header Title', 'Example Widget'),
-      loading: boolean('Loading', false),
-      contentHeaderText: text('Content Header Text', 'Content Header Text'),
+      // title: text('Header Title', 'Example Widget'),
+      // loading: boolean('Loading', false),
+      // contentHeaderText: text('Content Header Text', 'Content Header Text'),
     },
     template: `
       <div class="p-1" style="max-height: 400px; width: 500px;">

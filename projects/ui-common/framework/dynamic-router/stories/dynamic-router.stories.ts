@@ -1,5 +1,5 @@
-import { select, text, withKnobs } from '@storybook/addon-knobs'
-import { storiesOf } from '@storybook/angular'
+// import { select, text, withKnobs } from '@storybook/addon-knobs'
+import { Meta, moduleMetadata, Story } from '@storybook/angular'
 
 import { CommonModule } from '@angular/common'
 import { Component, Inject, NgModule } from '@angular/core'
@@ -333,7 +333,95 @@ class StoryEx3Component {
 
 
 
+export default {
+  title: 'Framework/DynamicRouter',
+  // component: BreadcrumbsComponent,
+  decorators: [
+    // withKnobs
+    // moduleMetadata({
 
+    // })
+  ]
+} as Meta
+
+export const Recursive: Story = (args) => ({
+  moduleMetadata: {
+    declarations: [
+      StoryNameExComponent,
+      StoryExBaseComponent
+    ],
+    imports: [
+      BrowserAnimationsModule,
+      ReactiveFormsModule,
+      TheSeamFormFieldModule,
+      TheSeamDynamicRouterModule,
+      RouterModule.forRoot([
+        {
+          path: 'name-ex',
+          component: StoryNameExComponent,
+          data: {
+            name: 'Mark'
+          },
+          // loadChildren: () => Promise.resolve(LevelTwoModule)
+          loadChildren: () => of(LevelTwoModule)
+        }
+      ], { useHash: true })
+    ],
+    entryComponents: [
+      StoryNameExComponent
+    ]
+  },
+  props: { },
+  template: `
+    <story-ex-base></story-ex-base>
+  `
+})
+
+export const Example: Story = (args) => ({
+  moduleMetadata: {
+    declarations: [
+      StoryEx1Component,
+      StoryEx2Component,
+      StoryEx3Component
+    ],
+    imports: [
+      BrowserAnimationsModule,
+      ReactiveFormsModule,
+      TheSeamFormFieldModule,
+      TheSeamDynamicRouterModule,
+      RouterModule.forRoot([
+        {
+          path: '',
+          pathMatch: 'full',
+          redirectTo: '/ex-1',
+        },
+        {
+          path: 'ex-1',
+          component: StoryEx1Component,
+          children: [
+            {
+              path: 'ex-2',
+              component: StoryEx2Component,
+              children: [
+                {
+                  path: 'ex-3',
+                  component: StoryEx3Component
+                }
+              ]
+            }
+          ]
+        }
+      ], { useHash: true })
+    ],
+    entryComponents: [
+
+    ]
+  },
+  props: { },
+  template: `
+    <router-outlet></router-outlet>
+  `
+})
 
 
 // storiesOf('Framework/DynamicRouter', module)

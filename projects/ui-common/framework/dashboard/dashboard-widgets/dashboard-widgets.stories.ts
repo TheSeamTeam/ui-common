@@ -1,5 +1,5 @@
-import { select, text, withKnobs } from '@storybook/addon-knobs'
-import { storiesOf } from '@storybook/angular'
+// import { select, text, withKnobs } from '@storybook/addon-knobs'
+import { Meta, moduleMetadata, Story } from '@storybook/angular'
 
 import { Component } from '@angular/core'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
@@ -10,6 +10,7 @@ import { faBell, faWrench } from '@fortawesome/free-solid-svg-icons'
 
 import { TheSeamWidgetModule } from '@theseam/ui-common/widget'
 
+import { DashboardComponent } from '../dashboard.component'
 import { TheSeamDashboardModule } from '../dashboard.module'
 
 @Component({
@@ -92,11 +93,12 @@ class StoryExWidget4Component {
   items = [ 'one', 'two', 'three', 'four' ]
 }
 
-storiesOf('Framework/Dashboard', module)
-  .addDecorator(withKnobs)
-
-  .add('Widgets', () => ({
-    moduleMetadata: {
+export default {
+  title: 'Framework/Dashboard',
+  component: DashboardComponent,
+  decorators: [
+    // withKnobs
+    moduleMetadata({
       declarations: [
         StoryExWidget1Component,
         StoryExWidget2Component,
@@ -114,18 +116,60 @@ storiesOf('Framework/Dashboard', module)
         StoryExWidget3Component,
         StoryExWidget4Component
       ]
-    },
-    props: {
-      widgets: [
-        { widgetId: 'widget-1', col: 0, order: 0, component: StoryExWidget1Component },
-        { widgetId: 'widget-2', col: 1, order: 0, component: StoryExWidget2Component },
-        { widgetId: 'widget-3', col: 2, order: 0, component: StoryExWidget3Component },
-        { widgetId: 'widget-4', col: 1, order: 1, component: StoryExWidget4Component }
-      ]
-    },
-    template: `
-      <div style="height: 100vh;">
-        <seam-dashboard-widgets [widgets]="widgets"></seam-dashboard-widgets>
-      </div>
-    `
-  }))
+    })
+  ]
+} as Meta
+
+export const Widgets: Story = (args) => ({
+  props: {
+    widgets: [
+      { widgetId: 'widget-1', col: 0, order: 0, component: StoryExWidget1Component },
+      { widgetId: 'widget-2', col: 1, order: 0, component: StoryExWidget2Component },
+      { widgetId: 'widget-3', col: 2, order: 0, component: StoryExWidget3Component },
+      { widgetId: 'widget-4', col: 1, order: 1, component: StoryExWidget4Component }
+    ]
+  },
+  template: `
+    <div style="height: 100vh;">
+      <seam-dashboard-widgets [widgets]="widgets"></seam-dashboard-widgets>
+    </div>
+  `
+})
+
+// storiesOf('Framework/Dashboard', module)
+//   // .addDecorator(withKnobs)
+
+//   .add('Widgets', () => ({
+//     moduleMetadata: {
+//       declarations: [
+//         StoryExWidget1Component,
+//         StoryExWidget2Component,
+//         StoryExWidget3Component,
+//         StoryExWidget4Component
+//       ],
+//       imports: [
+//         BrowserAnimationsModule,
+//         TheSeamWidgetModule,
+//         TheSeamDashboardModule
+//       ],
+//       entryComponents: [
+//         StoryExWidget1Component,
+//         StoryExWidget2Component,
+//         StoryExWidget3Component,
+//         StoryExWidget4Component
+//       ]
+//     },
+//     props: {
+//       widgets: [
+//         { widgetId: 'widget-1', col: 0, order: 0, component: StoryExWidget1Component },
+//         { widgetId: 'widget-2', col: 1, order: 0, component: StoryExWidget2Component },
+//         { widgetId: 'widget-3', col: 2, order: 0, component: StoryExWidget3Component },
+//         { widgetId: 'widget-4', col: 1, order: 1, component: StoryExWidget4Component }
+//       ]
+//     },
+//     template: `
+//       <div style="height: 100vh;">
+//         <seam-dashboard-widgets [widgets]="widgets"></seam-dashboard-widgets>
+//       </div>
+//     `
+//   }))

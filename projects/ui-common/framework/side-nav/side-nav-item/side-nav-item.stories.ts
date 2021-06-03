@@ -1,4 +1,4 @@
-import { select, text, withKnobs } from '@storybook/addon-knobs'
+// import { select, text, withKnobs } from '@storybook/addon-knobs'
 import { storiesOf } from '@storybook/angular'
 
 import { APP_BASE_HREF } from '@angular/common'
@@ -24,7 +24,7 @@ class StoryNavToggleDirective {
 }
 
 storiesOf('Framework/SideNav/Item/Basic', module)
-  .addDecorator(withKnobs)
+  // .addDecorator(withKnobs)
 
   .add('No Children', () => ({
     moduleMetadata: {
@@ -159,7 +159,7 @@ storiesOf('Framework/SideNav/Item/Basic', module)
 
 
 storiesOf('Framework/SideNav/Item/Link', module)
-  .addDecorator(withKnobs)
+  // .addDecorator(withKnobs)
 
   .add('No Children', () => ({
     moduleMetadata: {

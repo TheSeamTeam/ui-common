@@ -1,4 +1,4 @@
-import { boolean, select, text, withKnobs } from '@storybook/addon-knobs'
+// import { boolean, select, text, withKnobs } from '@storybook/addon-knobs'
 import { storiesOf } from '@storybook/angular'
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
@@ -14,7 +14,7 @@ import { _knobUndefinedNullHACK } from '../../../../utils/storybook-knobs-hack'
 import { TheSeamWidgetModule } from '../../../widget.module'
 
 storiesOf('Components/Widget/Content/List Group/Item', module)
-  .addDecorator(withKnobs)
+  // .addDecorator(withKnobs)
 
   .add('Basic', () => ({
     moduleMetadata: {
@@ -28,8 +28,8 @@ storiesOf('Components/Widget/Content/List Group/Item', module)
     },
     props: {
       icon: faWrench,
-      title: text('Header Title', 'Example Widget'),
-      loading: boolean('Loading', false),
+      // title: text('Header Title', 'Example Widget'),
+      // loading: boolean('Loading', false),
       faEnvelope: faEnvelope
     },
     template: `
@@ -56,8 +56,8 @@ storiesOf('Components/Widget/Content/List Group/Item', module)
     },
     props: {
       icon: faWrench,
-      title: text('Header Title', 'Example Widget'),
-      loading: boolean('Loading', false),
+      // title: text('Header Title', 'Example Widget'),
+      // loading: boolean('Loading', false),
       faEnvelope: faEnvelope
     },
     template: `
@@ -84,8 +84,8 @@ storiesOf('Components/Widget/Content/List Group/Item', module)
     },
     props: {
       icon: faWrench,
-      title: text('Header Title', 'Example Widget'),
-      loading: boolean('Loading', false),
+      // title: text('Header Title', 'Example Widget'),
+      // loading: boolean('Loading', false),
       faEnvelope: faEnvelope
     },
     template: `
@@ -101,7 +101,7 @@ storiesOf('Components/Widget/Content/List Group/Item', module)
   }))
 
 storiesOf('Components/Widget/Content/List Group/Item/Content', module)
-  .addDecorator(withKnobs)
+  // .addDecorator(withKnobs)
 
   .add('Label Only', () => ({
     moduleMetadata: {
@@ -115,8 +115,8 @@ storiesOf('Components/Widget/Content/List Group/Item/Content', module)
     },
     props: {
       icon: faWrench,
-      title: text('Header Title', 'Example Widget'),
-      loading: boolean('Loading', false),
+      // title: text('Header Title', 'Example Widget'),
+      // loading: boolean('Loading', false),
       faEnvelope: faEnvelope,
       label: 'Example Label'
     },
@@ -142,8 +142,8 @@ storiesOf('Components/Widget/Content/List Group/Item/Content', module)
     },
     props: {
       icon: faWrench,
-      title: text('Header Title', 'Example Widget'),
-      loading: boolean('Loading', false),
+      // title: text('Header Title', 'Example Widget'),
+      // loading: boolean('Loading', false),
       faEnvelope: faEnvelope,
       label: 'Example Label',
       itemIcon: faPuzzlePiece
@@ -170,24 +170,24 @@ storiesOf('Components/Widget/Content/List Group/Item/Content', module)
     },
     props: {
       icon: faWrench,
-      title: text('Header Title', 'Example Widget'),
-      loading: boolean('Loading', false),
+      // title: text('Header Title', 'Example Widget'),
+      // loading: boolean('Loading', false),
       faEnvelope: faEnvelope,
-      label: text('Label', 'Example Label'),
-      itemIcon: select('Icon', {
-        'undefined': '__undefined__',
-        'fa-icon': faPuzzlePiece as any,
-        'img': 'assets/images/icons8-cotton-filled-48.png',
-        'wide-img': 'assets/images/landdb-14d6a0.PNG'
-      }, faPuzzlePiece),
-      secondaryIcon: select('Secondary Icon', {
-        'undefined': '__undefined__',
-        'fa-icon': faPuzzlePiece as any,
-        'img': 'assets/images/icons8-cotton-filled-48.png',
-        'wide-img': 'assets/images/landdb-14d6a0.PNG'
-      }, faPuzzlePiece),
+      // label: text('Label', 'Example Label'),
+      // itemIcon: select('Icon', {
+      //   'undefined': '__undefined__',
+      //   'fa-icon': faPuzzlePiece as any,
+      //   'img': 'assets/images/icons8-cotton-filled-48.png',
+      //   'wide-img': 'assets/images/landdb-14d6a0.PNG'
+      // }, faPuzzlePiece),
+      // secondaryIcon: select('Secondary Icon', {
+      //   'undefined': '__undefined__',
+      //   'fa-icon': faPuzzlePiece as any,
+      //   'img': 'assets/images/icons8-cotton-filled-48.png',
+      //   'wide-img': 'assets/images/landdb-14d6a0.PNG'
+      // }, faPuzzlePiece),
 
-      _knobHack: _knobUndefinedNullHACK
+      // _knobHack: _knobUndefinedNullHACK
     },
     template: `
       <div class="p-1" style="max-height: 400px; width: 500px;">

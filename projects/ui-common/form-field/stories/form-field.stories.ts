@@ -1,14 +1,14 @@
-import { BrowserModule } from '@angular/platform-browser'
 import { action } from '@storybook/addon-actions'
-import { number, withKnobs } from '@storybook/addon-knobs'
+// import { number, withKnobs } from '@storybook/addon-knobs'
 import { linkTo } from '@storybook/addon-links'
 import { moduleMetadata, storiesOf } from '@storybook/angular'
 
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms'
+import { BrowserModule } from '@angular/platform-browser'
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+
 import { NgSelectModule } from '@ng-select/ng-select'
 import dedent from 'ts-dedent'
-
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { TheSeamFormFieldComponent } from '../form-field.component'
 import { TheSeamFormFieldModule } from '../form-field.module'
@@ -25,7 +25,7 @@ export default {
         ReactiveFormsModule
       ]
     }),
-    withKnobs
+    // withKnobs
   ],
   parameters: {
     docs: {
@@ -91,7 +91,7 @@ export const ValidatorPaddingMessages = () => ({
     control: new FormControl('', [ Validators.required ]),
     control2: new FormControl('', [ Validators.required ]),
     control3: new FormControl('', [ Validators.required, Validators.email, Validators.minLength(6) ]),
-    n: number('numPaddingErrors', 3)
+    // n: number('numPaddingErrors', 3)
   },
   template: `
     <div class="p-1" style="min-height: 100px; width: 500px;">

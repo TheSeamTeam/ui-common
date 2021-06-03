@@ -1,4 +1,4 @@
-import { select, text, withKnobs } from '@storybook/addon-knobs'
+// import { select, text, withKnobs } from '@storybook/addon-knobs'
 import { storiesOf } from '@storybook/angular'
 
 import { BrowserModule } from '@angular/platform-browser'
@@ -9,7 +9,7 @@ import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
 import { TheSeamMenuModule } from './menu.module'
 
 storiesOf('Components/Menu', module)
-  .addDecorator(withKnobs)
+  // .addDecorator(withKnobs)
 
   .add('Menu', () => ({
     moduleMetadata: {

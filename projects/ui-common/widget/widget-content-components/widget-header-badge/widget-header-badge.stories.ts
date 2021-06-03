@@ -1,4 +1,4 @@
-import { boolean, select, text, withKnobs } from '@storybook/addon-knobs'
+// import { boolean, select, text, withKnobs } from '@storybook/addon-knobs'
 import { storiesOf } from '@storybook/angular'
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
@@ -10,7 +10,7 @@ import { ThemeNames } from '@theseam/ui-common/models'
 import { TheSeamWidgetModule } from '../../widget.module'
 
 storiesOf('Components/Widget/Content', module)
-  .addDecorator(withKnobs)
+  // .addDecorator(withKnobs)
 
   .add('Header Badge', () => ({
     moduleMetadata: {
@@ -21,10 +21,10 @@ storiesOf('Components/Widget/Content', module)
     },
     props: {
       icon: faWrench,
-      title: text('Header Title', 'Example Widget'),
-      loading: boolean('Loading', false),
-      headerBadgeText: text('Header Badge Text', 'Badge'),
-      badgeTheme: select('Badge Theme', ThemeNames, 'primary')
+      // title: text('Header Title', 'Example Widget'),
+      // loading: boolean('Loading', false),
+      // headerBadgeText: text('Header Badge Text', 'Badge'),
+      // badgeTheme: select('Badge Theme', ThemeNames, 'primary')
     },
     template: `
       <div class="p-1" style="max-height: 400px; width: 500px;">

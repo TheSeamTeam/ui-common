@@ -1,4 +1,4 @@
-import { boolean, text, withKnobs } from '@storybook/addon-knobs'
+// import { boolean, text, withKnobs } from '@storybook/addon-knobs'
 import { storiesOf } from '@storybook/angular'
 
 import { APP_BASE_HREF } from '@angular/common'
@@ -294,7 +294,7 @@ class UserDetailsExComponent {
 
 
 storiesOf('Framework/Examples', module)
-  .addDecorator(withKnobs)
+  // .addDecorator(withKnobs)
 
   .add('Table With Detail Nav', () => ({
     moduleMetadata: {
@@ -455,11 +455,11 @@ storiesOf('Framework/Examples', module)
         { col: 2, order: 0, type: StoryExWidget7Component },
         { col: 2, order: 1, type: StoryExWidget8Component }
       ],
-      logo: text('logo', 'assets/images/theseam_logo.svg'),
-      logoSm: text('logoSm', 'assets/images/theseam_logo_notext.svg'),
-      titleText: text('titleText', 'Dashboard'),
-      subTitleText: text('subTitleText', 'Example'),
-      dashboardBreadcrubs: boolean('Breadcrumbs on Dashboard', true),
+      // logo: text('logo', 'assets/images/theseam_logo.svg'),
+      // logoSm: text('logoSm', 'assets/images/theseam_logo_notext.svg'),
+      // titleText: text('titleText', 'Dashboard'),
+      // subTitleText: text('subTitleText', 'Example'),
+      // dashboardBreadcrubs: boolean('Breadcrumbs on Dashboard', true),
     },
     template: `
       <div style="height: 100vh; width: 100vw;">

@@ -7,5 +7,5 @@ import docJson from '../documentation.json'
 setCompodocJson(docJson)
 
 export const parameters = {
-  actions: { argTypesRegex: '^on.*' },
+  actions: { argTypesRegex: '^on.*' }
 }

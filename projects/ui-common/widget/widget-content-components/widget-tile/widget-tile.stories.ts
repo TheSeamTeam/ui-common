@@ -1,5 +1,5 @@
 import { action } from '@storybook/addon-actions'
-import { boolean, select, text, withKnobs } from '@storybook/addon-knobs'
+// import { boolean, select, text, withKnobs } from '@storybook/addon-knobs'
 import { linkTo } from '@storybook/addon-links'
 import { storiesOf } from '@storybook/angular'
 
@@ -11,7 +11,7 @@ import { faPersonBooth, faWrench } from '@fortawesome/free-solid-svg-icons'
 import { TheSeamWidgetModule } from '../../widget.module'
 
 storiesOf('Components/Widget/Content/Tile', module)
-  .addDecorator(withKnobs)
+  // .addDecorator(withKnobs)
 
   .add('Link', () => ({
     moduleMetadata: {
@@ -23,10 +23,10 @@ storiesOf('Components/Widget/Content/Tile', module)
     },
     props: {
       icon: faWrench,
-      title: text('Header Title', 'Example Widget'),
-      loading: boolean('Loading', false),
+      // title: text('Header Title', 'Example Widget'),
+      // loading: boolean('Loading', false),
       tileIcon: faPersonBooth,
-      tileText: text('Tile Text', 'Tile Text'),
+      // tileText: text('Tile Text', 'Tile Text'),
     },
     template: `
       <div class="p-1" style="max-height: 400px; width: 500px;">
@@ -51,10 +51,10 @@ storiesOf('Components/Widget/Content/Tile', module)
     },
     props: {
       icon: faWrench,
-      title: text('Header Title', 'Example Widget'),
-      loading: boolean('Loading', false),
+      // title: text('Header Title', 'Example Widget'),
+      // loading: boolean('Loading', false),
       tileIcon: faPersonBooth,
-      tileText: text('Tile Text', 'Tile Text'),
+      // tileText: text('Tile Text', 'Tile Text'),
     },
     template: `
       <div class="p-1" style="max-height: 400px; width: 500px;">
@@ -75,10 +75,10 @@ storiesOf('Components/Widget/Content/Tile', module)
     },
     props: {
       icon: faWrench,
-      title: text('Header Title', 'Example Widget'),
-      loading: boolean('Loading', false),
+      // title: text('Header Title', 'Example Widget'),
+      // loading: boolean('Loading', false),
       tileIcon: faPersonBooth,
-      tileText: text('Tile Text', 'Tile Text'),
+      // tileText: text('Tile Text', 'Tile Text'),
     },
     template: `
       <div class="p-1" style="max-height: 400px; width: 500px;">

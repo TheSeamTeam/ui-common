@@ -1,4 +1,4 @@
-import { boolean, text, withKnobs } from '@storybook/addon-knobs'
+// import { boolean, text, withKnobs } from '@storybook/addon-knobs'
 import { storiesOf } from '@storybook/angular'
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
@@ -13,7 +13,7 @@ import { TheSeamIconModule } from '@theseam/ui-common/icon'
 import { TheSeamWidgetModule } from '../../widget.module'
 
 storiesOf('Components/Widget/Content/List Group', module)
-  .addDecorator(withKnobs)
+  // .addDecorator(withKnobs)
 
   .add('Basic', () => ({
     moduleMetadata: {
@@ -27,8 +27,8 @@ storiesOf('Components/Widget/Content/List Group', module)
     },
     props: {
       icon: faWrench,
-      title: text('Header Title', 'Example Widget'),
-      loading: boolean('Loading', false),
+      // title: text('Header Title', 'Example Widget'),
+      // loading: boolean('Loading', false),
       faEnvelope: faEnvelope
     },
     template: `

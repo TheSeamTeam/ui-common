@@ -6,14 +6,14 @@ import { RouterModule } from '@angular/router'
 
 import { StoryEmptyComponent, StoryEmptyWithRouteComponent, StoryInitialRouteModule } from '@theseam/ui-common/story-helpers'
 
-import { withKnobs } from '@storybook/addon-knobs'
+// import { withKnobs } from '@storybook/addon-knobs'
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component'
 
 export default {
   title: 'Components/Breadcrumbs/Parent Defined',
   component: BreadcrumbsComponent,
   decorators: [
-    withKnobs
+    // withKnobs
   ]
 } as Meta
 

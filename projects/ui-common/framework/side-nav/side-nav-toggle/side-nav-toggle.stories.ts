@@ -1,4 +1,4 @@
-import { select, text, withKnobs } from '@storybook/addon-knobs'
+// import { select, text, withKnobs } from '@storybook/addon-knobs'
 import { storiesOf } from '@storybook/angular'
 
 import { APP_BASE_HREF } from '@angular/common'
@@ -12,7 +12,7 @@ import { faSignature } from '@fortawesome/free-solid-svg-icons'
 import { TheSeamSideNavModule } from '../side-nav.module'
 
 storiesOf('Framework/SideNav/Toggle', module)
-  .addDecorator(withKnobs)
+  // .addDecorator(withKnobs)
 
   .add('Basic', () => ({
     moduleMetadata: {

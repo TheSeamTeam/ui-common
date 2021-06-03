@@ -1,4 +1,4 @@
-import { button, withKnobs } from '@storybook/addon-knobs'
+// import { button, withKnobs } from '@storybook/addon-knobs'
 import { Meta, Story } from '@storybook/angular'
 
 import { BrowserModule } from '@angular/platform-browser'
@@ -16,7 +16,7 @@ export default {
   title: 'Components/Breadcrumbs/Resolver',
   component: BreadcrumbsComponent,
   decorators: [
-    withKnobs
+    // withKnobs
   ]
 } as Meta
 
@@ -55,10 +55,10 @@ export const Example: Story = () => ({
     ]
   },
   props: {
-    btn1: routeButton(button, '/users'),
-    btn2: routeButton(button, '/users/123'),
-    btn3: routeButton(button, '/users/987'),
-    btn4: routeButton(button, '/users/999'),
+    // btn1: routeButton(button, '/users'),
+    // btn2: routeButton(button, '/users/123'),
+    // btn3: routeButton(button, '/users/987'),
+    // btn4: routeButton(button, '/users/999'),
   },
   template: `
     <seam-breadcrumbs></seam-breadcrumbs>

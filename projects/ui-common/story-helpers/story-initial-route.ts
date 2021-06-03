@@ -1,7 +1,7 @@
 import { APP_INITIALIZER, ModuleWithProviders, NgModule } from '@angular/core'
 
 import { storyInitialRouteFactory } from './initial-route-factory'
-import { STORY_INITIAL_ROUTE_URL, StoryInitialRouteService } from './initial-route.service'
+import { StoryInitialRouteService, STORY_INITIAL_ROUTE_URL } from './initial-route.service'
 
 @NgModule()
 export class StoryInitialRouteModule {

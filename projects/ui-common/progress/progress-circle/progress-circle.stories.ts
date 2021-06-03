@@ -1,6 +1,6 @@
-import { action } from '@storybook/addon-actions'
-import { boolean, number, select, text, withKnobs } from '@storybook/addon-knobs'
-import { moduleMetadata } from '@storybook/angular'
+// import { action } from '@storybook/addon-actions'
+// import { boolean, number, select, text, withKnobs } from '@storybook/addon-knobs'
+import { Meta, moduleMetadata, Story } from '@storybook/angular'
 
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
@@ -19,22 +19,17 @@ export default {
         TheSeamProgressModule
       ]
     }),
-    withKnobs
   ],
   parameters: {
     docs: {
       iframeHeight: '300px',
     }
   }
-}
+} as Meta
 
-export const Basic = () => ({
+export const Basic: Story = (args) => ({
   props: {
-    fillBackground: boolean('fillBackground', false),
-    showText: boolean('showText', false),
-    hiddenOnEmpty: boolean('hiddenOnEmpty', false),
-    percentage: number('percentage', 35),
-    pending: boolean('pending', false)
+    ...args
   },
   template: `
     <seam-progress-circle style="position: relative; width: 100px; height: 100px"
@@ -45,3 +40,12 @@ export const Basic = () => ({
       [pending]="pending">
     </seam-progress-circle>`
 })
+Basic.args = {
+  hiddenOnEmpty: false,
+  percentage: 35
+}
+Basic.argTypes = {
+  percentage: {
+    control: { type: 'range', min: 0, max: 100, step: 1 },
+  },
+}

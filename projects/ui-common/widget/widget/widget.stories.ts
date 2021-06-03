@@ -1,5 +1,5 @@
 import { action } from '@storybook/addon-actions'
-import { boolean, select, text, withKnobs } from '@storybook/addon-knobs'
+// import { boolean, select, text, withKnobs } from '@storybook/addon-knobs'
 import { linkTo } from '@storybook/addon-links'
 import { moduleMetadata, storiesOf } from '@storybook/angular'
 
@@ -22,7 +22,7 @@ export default {
         TheSeamWidgetModule
       ]
     }),
-    withKnobs
+    // withKnobs
   ],
   parameters: {
     docs: {
@@ -34,8 +34,8 @@ export default {
 export const Simple = () => ({
   props: {
     icon: faWrench,
-    title: text('Header Title', 'Example Widget'),
-    loading: boolean('Loading', false)
+    // title: text('Header Title', 'Example Widget'),
+    // loading: boolean('Loading', false)
   },
   template: `
     <div class="p-4" style="height: 270px; width: 500px;">
@@ -125,8 +125,8 @@ IconTemplate.story = {
 export const Loading = () => ({
   props: {
     icon: faWrench,
-    title: text('Header Title', 'Example Widget'),
-    loading: boolean('Loading', true)
+    // title: text('Header Title', 'Example Widget'),
+    // loading: boolean('Loading', true)
   },
   template: `
     <div class="p-4" style="height: 270px; width: 500px;">
@@ -142,7 +142,7 @@ Loading.story = {
 
 export const NoHeader = () => ({
   props: {
-    loading: boolean('Loading', false)
+    // loading: boolean('Loading', false)
   },
   template: `
     <div class="p-4" style="height: 270px; width: 500px;">

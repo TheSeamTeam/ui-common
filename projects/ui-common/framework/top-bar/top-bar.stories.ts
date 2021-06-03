@@ -1,4 +1,4 @@
-import { boolean, text, withKnobs } from '@storybook/addon-knobs'
+// import { boolean, text, withKnobs } from '@storybook/addon-knobs'
 import { moduleMetadata } from '@storybook/angular'
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
@@ -23,7 +23,7 @@ export default {
         RouterModule.forRoot([], { useHash: true })
       ]
     }),
-    withKnobs
+    // withKnobs
   ],
   parameters: {
     docs: {
@@ -34,11 +34,11 @@ export default {
 
 export const Basic = () => ({
   props: {
-    logo: text('logo', 'assets/images/theseam_logo.svg'),
-    logoSm: text('logoSm', 'assets/images/theseam_logo_notext.svg'),
-    hasTitle: boolean('hasTitle', false),
-    titleText: text('titleText', 'Dashboard'),
-    subTitleText: text('subTitleText', 'Example'),
+    // logo: text('logo', 'assets/images/theseam_logo.svg'),
+    // logoSm: text('logoSm', 'assets/images/theseam_logo_notext.svg'),
+    // hasTitle: boolean('hasTitle', false),
+    // titleText: text('titleText', 'Dashboard'),
+    // subTitleText: text('subTitleText', 'Example'),
     faUserAlt,
     faQuestionCircle,
     faSignOutAlt,

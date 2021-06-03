@@ -1,5 +1,5 @@
 import { action } from '@storybook/addon-actions'
-import { boolean, select, text, withKnobs } from '@storybook/addon-knobs'
+// import { boolean, select, text, withKnobs } from '@storybook/addon-knobs'
 import { linkTo } from '@storybook/addon-links'
 import { storiesOf } from '@storybook/angular'
 
@@ -85,7 +85,7 @@ const GIN_DATA = [
 // tslint:enable:quotemark
 
 storiesOf('Components/Widget/Content/Table', module)
-  .addDecorator(withKnobs)
+  // .addDecorator(withKnobs)
 
   .add('Basic', () => ({
     moduleMetadata: {
@@ -96,8 +96,8 @@ storiesOf('Components/Widget/Content/Table', module)
     },
     props: {
       icon: faWrench,
-      title: text('Header Title', 'Example Widget'),
-      loading: boolean('Loading', false),
+      // title: text('Header Title', 'Example Widget'),
+      // loading: boolean('Loading', false),
 
       displayedColumns: [
         { prop: 'ginCode', name: 'Gin Code' },
@@ -122,8 +122,8 @@ storiesOf('Components/Widget/Content/Table', module)
     },
     props: {
       icon: faWrench,
-      title: text('Header Title', 'Example Widget'),
-      loading: boolean('Loading', false),
+      // title: text('Header Title', 'Example Widget'),
+      // loading: boolean('Loading', false),
 
       displayedColumns: [
         { prop: 'ginCode', name: 'Gin Code' },
@@ -148,8 +148,8 @@ storiesOf('Components/Widget/Content/Table', module)
     },
     props: {
       icon: faWrench,
-      title: text('Header Title', 'Example Widget'),
-      loading: boolean('Loading', false),
+      // title: text('Header Title', 'Example Widget'),
+      // loading: boolean('Loading', false),
 
       displayedColumns: [
         { prop: 'ginCode', name: 'Gin Code' },
