@@ -1,12 +1,12 @@
 import { animate, style, transition, trigger } from '@angular/animations'
-import { BooleanInput, NumberInput } from '@angular/cdk/coercion'
+import { BooleanInput, coerceArray, NumberInput } from '@angular/cdk/coercion'
 import {
   AfterContentInit, ChangeDetectionStrategy, Component, ContentChild, ContentChildren,
   ElementRef, EventEmitter, forwardRef, InjectionToken, Input, KeyValueDiffer,
   KeyValueDiffers, OnDestroy, OnInit, Output, QueryList, TemplateRef, ViewChild
 } from '@angular/core'
-import { BehaviorSubject, combineLatest, Observable, of, Subscription } from 'rxjs'
-import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators'
+import { BehaviorSubject, combineLatest, Observable, of, Subject, Subscription } from 'rxjs'
+import { map, shareReplay, startWith, switchMap, takeUntil, tap } from 'rxjs/operators'
 
 import { faChevronDown, faChevronRight, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import {
@@ -28,13 +28,19 @@ import type { SelectionType } from '@marklb/ngx-datatable'
 import { InputBoolean, InputNumber } from '@theseam/ui-common/core'
 import { composeDataFilters, composeDataFilterStates, DataFilterState, IDataFilter } from '@theseam/ui-common/data-filters'
 import { IElementResizedEvent } from '@theseam/ui-common/shared'
-import { hasProperty } from '@theseam/ui-common/utils'
+import { hasProperty, notNullOrUndefined } from '@theseam/ui-common/utils'
 
+import { CollectionViewer, DataSource, isDataSource, ListRange } from '@angular/cdk/collections'
+import { isObservable } from 'rxjs'
 import { DatatableActionMenuComponent } from '../datatable-action-menu/datatable-action-menu.component'
 import { DatatableColumnComponent } from '../datatable-column/datatable-column.component'
 import { DatatableMenuBarComponent } from '../datatable-menu-bar/datatable-menu-bar.component'
 import { TheSeamDatatableRowDetailDirective } from '../datatable-row-detail/datatable-row-detail.directive'
 import { DatatableRowActionItemDirective } from '../directives/datatable-row-action-item.directive'
+import { TheSeamDatatableAccessor } from '../models/datatable-accessor'
+import { TheSeamPageInfo } from '../models/page-info'
+import { SortEvent } from '../models/sort-event'
+import { SortItem } from '../models/sort-item'
 import { TheSeamDatatableColumn } from '../models/table-column'
 import { DatatableColumnChangesService } from '../services/datatable-column-changes.service'
 import { DatatablePreferencesService } from '../services/datatable-preferences.service'
@@ -93,6 +99,8 @@ export const _THESEAM_DATATABLE_ACCESSOR: any = {
   useExisting: forwardRef(() => DatatableComponent)
 }
 
+// TODO: Reduce reliance on BehaviorSubject based observables, because it should
+// be easier to avoit over emitting observables.
 @Component({
   selector: 'seam-datatable',
   templateUrl: './datatable.component.html',
@@ -112,7 +120,7 @@ export const _THESEAM_DATATABLE_ACCESSOR: any = {
   ],
   providers: [ _THESEAM_DATATABLE, DatatableColumnChangesService, _THESEAM_DATATABLE_ACCESSOR ]
 })
-export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
+export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit, TheSeamDatatableAccessor, CollectionViewer {
   static ngAcceptInputType_externalPaging: BooleanInput
   static ngAcceptInputType_externalSorting: BooleanInput
   static ngAcceptInputType_externalFiltering: BooleanInput
@@ -132,14 +140,23 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
   static ngAcceptInputType_rowHeight: NumberInput
   static ngAcceptInputType_footerHeight: NumberInput
   static ngAcceptInputType_summaryHeight: NumberInput
+  static ngAcceptInputType_columns: TheSeamDatatableColumn[] | undefined | null
+  static ngAcceptInputType_sorts: SortItem[] | undefined | null
 
   faChevronDown = faChevronDown
   faChevronRight = faChevronRight
   faSpinner = faSpinner
 
+  private readonly _ngUnsubscribe = new Subject()
   private readonly _filtersSubject = new BehaviorSubject<IDataFilter[]>([])
+  private readonly _columnsObservable = new BehaviorSubject<Observable<TheSeamDatatableColumn[]> | undefined>(undefined)
+  private readonly _dataSourceSubject = new BehaviorSubject<DataSource<any> | any[] | undefined>(undefined)
 
   public readonly filterStates: Observable<DataFilterState[]>
+
+  get filters(): IDataFilter[] { return this._filtersSubject.value }
+
+  public readonly filters$: Observable<IDataFilter[]>
 
   @Input()
   get preferencesKey(): string | undefined | null { return this._preferencesKey.value }
@@ -149,12 +166,12 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
   @Input() targetMarkerTemplate: any
 
   @Input()
-  get columns(): TheSeamDatatableColumn[] | undefined | null { return this._columns.value }
-  set columns(value: TheSeamDatatableColumn[] | undefined | null) {
+  get columns(): TheSeamDatatableColumn[] { return this._columns.value }
+  set columns(value: TheSeamDatatableColumn[]) {
     // console.log('columns input', value)
-    this._columns.next(value)
+    this._columns.next(Array.isArray(value) ? value : [])
   }
-  private _columns = new BehaviorSubject<TheSeamDatatableColumn[] | undefined | null>([])
+  private _columns = new BehaviorSubject<TheSeamDatatableColumn[]>([])
 
   @Input()
   get rows(): any[] { return this._rows.value }
@@ -184,8 +201,15 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
 
   @Input() @InputBoolean() reorderable: boolean = true
   @Input() @InputBoolean() swapColumns: boolean = false
+
   @Input() sortType: SortType | undefined | null = SortType.single
-  @Input() sorts: any[] | undefined | null = []
+
+  @Input()
+  get sorts(): SortItem[] { return this.ngxDatatable ? this.ngxDatatable.sorts : this._sorts }
+  set sorts(value: SortItem[]) {
+    this._sorts = notNullOrUndefined(value) ? coerceArray(value) : []
+  }
+  _sorts: SortItem[] = []
 
   @Input() cssClasses: any | undefined | null = {
     sortAscending: 'datatable-icon-up',
@@ -236,11 +260,16 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
   @Input() @InputBoolean() scrollbarV: boolean = true
   @Input() @InputBoolean() scrollbarH: boolean = true
 
+  @Input()
+  set dataSource(value: DataSource<any> | any[] | undefined | null) {
+    this._dataSourceSubject.next(value || undefined)
+  }
+
   @Output() readonly scroll = new EventEmitter<any>()
   @Output() readonly activate = new EventEmitter<any>()
   @Output() readonly select = new EventEmitter<any>()
-  @Output() readonly sort = new EventEmitter<any>()
-  @Output() readonly page = new EventEmitter<any>()
+  @Output() readonly sort = new EventEmitter<SortEvent>()
+  @Output() readonly page = new EventEmitter<TheSeamPageInfo>()
   @Output() readonly reorder = new EventEmitter<any>()
   @Output() readonly resize = new EventEmitter<any>()
   @Output() readonly tableContextmenu = new EventEmitter<{ event: MouseEvent, type: ContextmenuType, content: any }>(false)
@@ -283,10 +312,13 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
   @ViewChild('cellTypeSelectorTpl', { static: true }) cellTypeSelectorTpl?: TemplateRef<DataTableColumnDirective>
 
   public columnComponents$?: Observable<DatatableColumnComponent[]>
-  public columns$?: Observable<TheSeamDatatableColumn[]>
-  public displayColumns$?: Observable<TheSeamDatatableColumn[]>
   private _colDiffersInp: { [propName: string]: KeyValueDiffer<any, any> } = {}
   private _colDiffersTpl: { [propName: string]: KeyValueDiffer<any, any> } = {}
+
+  public readonly columns$: Observable<TheSeamDatatableColumn[]>
+  public readonly displayColumns$: Observable<TheSeamDatatableColumn[]>
+
+  viewChange: Observable<ListRange>
 
   private _rowDetailToggleSubscription = Subscription.EMPTY
 
@@ -295,6 +327,32 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
     private readonly _differs: KeyValueDiffers,
     private readonly _preferences: DatatablePreferencesService
   ) {
+    // this.displayColumns$ = this.hiddenColumns$.pipe(
+    //   switchMap(hiddenColumns => this.columns$.pipe(map(cols => cols.filter(c => hiddenColumns.findIndex(hc => hc === c.prop) === -1))))
+    // )
+
+    const applyPrefs = (cols: TheSeamDatatableColumn[]) => this._preferencesKey.pipe(
+      switchMap(name => !!name
+        // NOTE: This pending check is temporary to avoid table using previously
+        // retrieved preference while the new one is being updated on the
+        // server.
+        ? !this._preferences.pending
+          ? this._preferences.withColumnPreferences(name, cols)
+          : of(cols)
+        : of(cols)
+      )
+    )
+
+    this.columns$ = this._columnsObservable.pipe(switchMap(colsObs => colsObs ?? of([])))
+
+    this.displayColumns$ = this.columns$.pipe(
+      map(cols => cols.filter(c => !c.hidden)),
+      tap(v => this._removeUnusedDiffs(v)),
+      switchMap(cols => applyPrefs(cols)),
+    )
+
+    this.filters$ = this._filtersSubject.asObservable()
+
     this.filterStates = this._filtersSubject.asObservable().pipe(
       switchMap(filters => composeDataFilterStates(filters))
     )
@@ -308,6 +366,32 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
           return this._rows.asObservable().pipe(composeDataFilters(filters))
         })
       )
+
+    // this.rows$ = this._dataSourceSubject.pipe(
+    //   switchMap(dataSource => {
+    //     let dataStream: Observable<any[]>
+
+    //     if (isDataSource(dataSource)) {
+    //       dataStream = dataSource.connect(this) as any
+    //     } else if (isObservable(dataSource)) {
+    //       dataStream = dataSource as any
+    //     } else if (Array.isArray(dataSource)) {
+    //       dataStream = of(dataSource)
+    //     } else {
+    //       dataStream = this._rows.asObservable()
+    //     }
+
+    //     if (!this.externalFiltering) {
+    //       dataStream = this._filtersSubject.pipe(
+    //         switchMap(filters => dataStream.pipe(composeDataFilters(filters)))
+    //       )
+    //     }
+
+    //     return dataStream.pipe(
+    //       takeUntil(this._ngUnsubscribe)
+    //     )
+    //   })
+    // )
 
     // this.hiddenColumns$ = this._hiddenColumns.asObservable()
 
@@ -324,6 +408,9 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
     //   tap(v => this.hiddenColumnsChange.emit(v)),
     //   untilDestroyed(this)
     // ).subscribe(v => console.log('hiddenColumnsChange', v))
+
+    // TODO: Implement viewChange for CollectionViewer.
+    this.viewChange = this.page.pipe(map(p => ({ start: 0, end: p.count })))
   }
 
   ngOnInit() {
@@ -347,37 +434,15 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
       shareReplay({ bufferSize: 1, refCount: true })
     )
 
-    this.columns$ =
-      combineLatest([
-        this.columnComponents$,
-        this._columns
-      ]).pipe(
-        map(v => this._getMergedTplAndInpColumns(v[0], v[1] ?? [])),
-        // tap(v => console.log('cols', v)),
-        shareReplay({ bufferSize: 1, refCount: true }),
-      )
-
-    // this.displayColumns$ = this.hiddenColumns$.pipe(
-    //   switchMap(hiddenColumns => this.columns$.pipe(map(cols => cols.filter(c => hiddenColumns.findIndex(hc => hc === c.prop) === -1))))
-    // )
-
-    const applyPrefs = (cols: TheSeamDatatableColumn[]) => this._preferencesKey.pipe(
-      switchMap(name => !!name
-        // NOTE: This pending check is temporary to avoid table using previously
-        // retrieved preference while the new one is being updated on the
-        // server.
-        ? !this._preferences.pending
-          ? this._preferences.withColumnPreferences(name, cols)
-          : of(cols)
-        : of(cols)
-      )
+    const _columns = combineLatest([
+      this.columnComponents$,
+      this._columns
+    ]).pipe(
+      map(v => this._getMergedTplAndInpColumns(v[0], v[1] ?? [])),
+      // tap(v => console.log('cols', v)),
+      shareReplay({ bufferSize: 1, refCount: true }),
     )
-
-    this.displayColumns$ = this.columns$.pipe(
-      map(cols => cols.filter(c => !c.hidden)),
-      tap(v => this._removeUnusedDiffs(v)),
-      switchMap(cols => applyPrefs(cols)),
-    )
+    this._columnsObservable.next(_columns)
   }
 
   private _getMergedTplAndInpColumns(
@@ -600,6 +665,15 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit {
 
   public triggerActionRefreshRequest() {
     this.actionRefreshRequest.emit(undefined)
+  }
+
+  public get pageInfo(): TheSeamPageInfo {
+    return {
+      offset: this.ngxDatatable?.offset ?? 0,
+      pageSize: this.ngxDatatable?.pageSize ?? 0,
+      limit: this.ngxDatatable?.limit,
+      count: this.ngxDatatable?.count ?? 0
+    }
   }
 
 }
