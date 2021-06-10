@@ -10,7 +10,9 @@ import { TheSeamDataFiltersModule } from '@theseam/ui-common/data-filters'
 import { ExportersDataEvaluator, JexlEvaluator, THESEAM_DYNAMIC_VALUE_EVALUATOR } from '@theseam/ui-common/dynamic'
 import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
 
+import { DatatableGqlDataSource } from 'projects/ui-common/datatable/models/datatable-gql-data-source'
 import { TheSeamDatatableModule } from '../datatable.module'
+import { DatatableDataSource } from '../models/datatable-data-source'
 import { DatatableComponent } from './datatable.component'
 
 
@@ -492,5 +494,63 @@ export const Filter: Story = (args) => ({
       [rows]="rows"
       [filterButtons]="filterButtons">
     </dt-filter-wrapper>
+  `
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class StoryDataSource extends DatatableGqlDataSource<any> {
+
+}
+
+const dSource = new StoryDataSource()
+
+export const DataSource: Story = (args) => ({
+  props: {
+    ...args,
+    dataSource: dSource,
+    columns: [
+      { prop: 'name', name: 'Name' },
+      { prop: 'age', name: 'Age' },
+      { prop: 'color', name: 'Color' }
+    ],
+    rows: [
+      { name: 'Mark', age: 27, color: 'blue' },
+      { name: 'Joe', age: 33, color: 'green' }
+    ]
+  },
+  template: `
+    <div class="vh-100 vw-100">
+      <seam-datatable
+        class="w-100 h-100"
+        [columns]="columns"
+        [dataSource]="dataSource"
+        externalPaging="true"
+        externalSorting="true"
+        externalFiltering="true">
+      </seam-datatable>
+    </div>
   `
 })

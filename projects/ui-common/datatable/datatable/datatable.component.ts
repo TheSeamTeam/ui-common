@@ -6,7 +6,8 @@ import {
   KeyValueDiffers, OnDestroy, OnInit, Output, QueryList, TemplateRef, ViewChild
 } from '@angular/core'
 import { BehaviorSubject, combineLatest, Observable, of, Subject, Subscription } from 'rxjs'
-import { map, shareReplay, startWith, switchMap, takeUntil, tap } from 'rxjs/operators'
+import { concatMap, map, shareReplay, startWith, switchMap, takeUntil, tap } from 'rxjs/operators'
+import { DatatableDataSource } from './../models/datatable-data-source'
 
 import { faChevronDown, faChevronRight, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import {
@@ -262,6 +263,9 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit, 
 
   @Input()
   set dataSource(value: DataSource<any> | any[] | undefined | null) {
+    if (value instanceof DatatableDataSource) {
+      value.setDatatableAccessor(this)
+    }
     this._dataSourceSubject.next(value || undefined)
   }
 
@@ -357,41 +361,59 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit, 
       switchMap(filters => composeDataFilterStates(filters))
     )
 
-    this.rows$ = this._filtersSubject.asObservable()
-      .pipe(
-        switchMap(filters => {
-          if (this.externalFiltering) {
-            return this._rows.asObservable()
-          }
-          return this._rows.asObservable().pipe(composeDataFilters(filters))
-        })
-      )
+    // this.rows$ = this._filtersSubject.asObservable()
+    //   .pipe(
+    //     switchMap(filters => {
+    //       if (this.externalFiltering) {
+    //         return this._rows.asObservable()
+    //       }
+    //       return this._rows.asObservable().pipe(composeDataFilters(filters))
+    //     })
+    //   )
 
-    // this.rows$ = this._dataSourceSubject.pipe(
-    //   switchMap(dataSource => {
-    //     let dataStream: Observable<any[]>
+    this.rows$ = this._dataSourceSubject.pipe(
+      switchMap(dataSource => {
+        console.log('dataSource', dataSource)
+        let dataStream: Observable<any[]>
 
-    //     if (isDataSource(dataSource)) {
-    //       dataStream = dataSource.connect(this) as any
-    //     } else if (isObservable(dataSource)) {
-    //       dataStream = dataSource as any
-    //     } else if (Array.isArray(dataSource)) {
-    //       dataStream = of(dataSource)
-    //     } else {
-    //       dataStream = this._rows.asObservable()
-    //     }
+        if (isDataSource(dataSource)) {
+          console.log('~datasource')
+          dataStream = dataSource.connect(this) as any
+        } else if (isObservable(dataSource)) {
+          console.log('~observable')
+          dataStream = dataSource as any
+        } else if (Array.isArray(dataSource)) {
+          console.log('~array')
+          dataStream = of(dataSource)
+        } else {
+          console.log('~rows fallback')
+          dataStream = this._rows.asObservable()
+            .pipe(tap(v => console.log('rows~', v)))
+        }
 
-    //     if (!this.externalFiltering) {
-    //       dataStream = this._filtersSubject.pipe(
-    //         switchMap(filters => dataStream.pipe(composeDataFilters(filters)))
-    //       )
-    //     }
+        if (!this.externalFiltering) {
+          console.log('not using externalFiltering')
+          dataStream = dataStream.pipe(
+            switchMap(rows => this._filtersSubject.pipe(
+              tap(v => console.log('filters', v)),
+              concatMap(filters => of(rows).pipe(composeDataFilters(filters))),
+              tap(v => console.log('composed filters', v)),
+            ))
+          )
 
-    //     return dataStream.pipe(
-    //       takeUntil(this._ngUnsubscribe)
-    //     )
-    //   })
-    // )
+          // dataStream = this._filtersSubject.pipe(
+          //   tap(v => console.log('filters', v)),
+          //   concatMap(filters => dataStream.pipe(composeDataFilters(filters))),
+          //   tap(v => console.log('composed filters', v)),
+          // )
+        }
+
+        return dataStream.pipe(
+          tap(v => console.log('stream', v)),
+          takeUntil(this._ngUnsubscribe)
+        )
+      })
+    )
 
     // this.hiddenColumns$ = this._hiddenColumns.asObservable()
 
@@ -592,6 +614,7 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit, 
   }
 
   private _setMenuBarFilters(filters: IDataFilter[]) {
+    console.log('_setMenuBarFilters', filters)
     this._filtersSubject.next(filters || [])
   }
 
