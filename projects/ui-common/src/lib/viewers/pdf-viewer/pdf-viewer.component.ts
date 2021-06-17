@@ -128,7 +128,7 @@ export class TheSeamPdfViewerComponent implements OnInit {
   private _pageNumbersSubject = new BehaviorSubject<number[] | undefined>(undefined)
 
   constructor() {
-    this.pdfJs$ = wrapIntoObservable(import('pdfjs-dist/build/pdf')).pipe(
+    this.pdfJs$ = wrapIntoObservable(import('pdfjs-dist/es5/build/pdf')).pipe(
       tap(pdfJs => {
         if (!pdfJs.GlobalWorkerOptions.workerSrc) {
           // tslint:disable-next-line:max-line-length
