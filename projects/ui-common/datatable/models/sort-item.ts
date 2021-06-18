@@ -1,3 +1,1 @@
-import { TheSeamDatatableColumn } from './table-column'
-
-export type SortItem = Partial<TheSeamDatatableColumn> & Required<Pick<TheSeamDatatableColumn, 'prop'>>
+export interface SortItem { prop: string,  dir: 'asc' | 'desc' }
