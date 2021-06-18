@@ -44,8 +44,7 @@ import { DashboardWidgetsService } from './dashboard-widgets.service'
     {
       provide: THESEAM_WIDGET_ACCESSOR,
       // tslint:disable-next-line:no-use-before-declare
-      useExisting: forwardRef(() => DashboardWidgetsComponent),
-      multi: true,
+      useExisting: forwardRef(() => DashboardWidgetsComponent)
     }
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
