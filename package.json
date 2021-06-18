@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "build:ui-common": "ng build ui-common --prod",
+    "build:ui-common": "ng build ui-common --configuration=\"production\"",
     "build-w:ui-common": "ng build ui-common --watch",
     "schematics:build": "./node_modules/.bin/tsc -p ./projects/ui-common/tsconfig.schematics.json && npm run schematics:postbuild",
     "schematics:copy:schemas": "cp --parents ./projects/ui-common/schematics/*/schema.json ./dist/ui-common/",
@@ -19,7 +19,7 @@
     "storybook": "npm run docs:json && start-storybook -p 6006 --ci",
     "docs:storybook": "npm run docs:json && npm run storybook",
     "build-storybook": "npm run docs:json && build-storybook -o docs",
-    "local-registry": "ts-node --project=./scripts/tsconfig.json ./scripts/run-registry.ts"
+    "local-registry": "ts-node --project=./scripts/tsconfig.json ./scripts/run-registry.ts --open --publish"
   },
   "private": true,
   "dependencies": {
