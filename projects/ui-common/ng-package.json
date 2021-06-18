@@ -39,6 +39,8 @@
     "intl-tel-input",
     "@ajsf/core",
     "quill",
-    "ngx-quill"
+    "ngx-quill",
+    "apollo-angular",
+    "graphql"
   ]
 }

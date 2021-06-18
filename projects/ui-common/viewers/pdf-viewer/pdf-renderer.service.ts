@@ -12,7 +12,7 @@ export class PdfRendererService {
   private readonly _pdfjs$: Observable<any>
 
   constructor() {
-    const pdfjsImport = wrapIntoObservable(import('pdfjs-dist/es5/build/pdf'))
+    const pdfjsImport = wrapIntoObservable(import('pdfjs-dist/legacy/build/pdf'))
     this._pdfjs$ = pdfjsImport.pipe(
       tap((pdfJs: any) => {
         if (!pdfJs.GlobalWorkerOptions.workerSrc) {
