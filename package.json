@@ -43,7 +43,6 @@
     "@marklb/file-type": "~10.6.5",
     "@marklb/ngx-datatable": "~18.0.0",
     "@marklb/ngx-loading": "^10.0.0",
-    "@netbasal/spectator": "^3.12.0",
     "@ng-bootstrap/ng-bootstrap": "~9.1.1",
     "@ng-select/ng-select": "6.1.0",
     "apollo-angular": "^2.6.0",
