@@ -13,6 +13,9 @@ module.exports = {
     '@storybook/addon-a11y',
     '@storybook/addon-viewport',
     '@storybook/addon-toolbars',
+    '@storybook/addon-measure',
+    'storybook-addon-outline',
+    'storybook-dark-mode',
     'storybook-addon-angular-ivy'
   ],
   core: {
