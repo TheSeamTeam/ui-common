@@ -7,10 +7,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { RouterModule } from '@angular/router'
 
 import { TheSeamDataFiltersModule } from '@theseam/ui-common/data-filters'
+import { DatatableGqlDataSource } from '@theseam/ui-common/datatable'
 import { ExportersDataEvaluator, JexlEvaluator, THESEAM_DYNAMIC_VALUE_EVALUATOR } from '@theseam/ui-common/dynamic'
 import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
 
-import { DatatableGqlDataSource } from 'projects/ui-common/datatable/models/datatable-gql-data-source'
 import { TheSeamDatatableModule } from '../datatable.module'
 import { DatatableDataSource } from '../models/datatable-data-source'
 import { DatatableComponent } from './datatable.component'
