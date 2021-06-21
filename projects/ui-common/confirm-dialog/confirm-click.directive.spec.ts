@@ -1,5 +1,5 @@
 import { fakeAsync, flush, flushMicrotasks, tick } from '@angular/core/testing'
-import { createHostComponentFactory, SpectatorElement, SpectatorWithHost } from '@ngneat/spectator'
+import { createHostFactory, SpectatorElement, SpectatorHost } from '@ngneat/spectator'
 
 import { TheSeamModalModule } from '@theseam/ui-common/modal'
 import { TheSeamScrollbarModule } from '@theseam/ui-common/scrollbar'
@@ -11,9 +11,9 @@ import { SeamConfirmDialogService } from './confirm-dialog.service'
 // tslint:disable:no-non-null-assertion
 
 describe('ConfirmClickDirective', () => {
-  let host: SpectatorWithHost<ConfirmClickDirective>
+  let host: SpectatorHost<ConfirmClickDirective>
 
-  const createHost = createHostComponentFactory({
+  const createHost = createHostFactory({
     component: ConfirmClickDirective,
     providers: [
       SeamConfirmDialogService
@@ -33,7 +33,7 @@ describe('ConfirmClickDirective', () => {
   it('should get the instance', () => {
     host = createHost(`<div seamConfirmClick>Testing ConfirmClickDirective</div>`)
 
-    const instance = host.getDirectiveInstance<ConfirmClickDirective>(
+    const instance = host.queryHost<ConfirmClickDirective>(
       ConfirmClickDirective
     )
 
@@ -43,7 +43,7 @@ describe('ConfirmClickDirective', () => {
   it('should open dialog on click', fakeAsync(() => {
     host = createHost(`<div seamConfirmClick class="test-btn">Testing ConfirmClickDirective</div>`)
 
-    const instance = host.getDirectiveInstance<ConfirmClickDirective>(
+    const instance = host.queryHost<ConfirmClickDirective>(
       ConfirmClickDirective
     )
 
@@ -51,10 +51,10 @@ describe('ConfirmClickDirective', () => {
 
     tick(500)
 
-    expect(instance.modalRef).toBeDefined()
-    expect(instance.modalRef!.componentInstance).toBeDefined()
+    expect(instance?.modalRef).toBeDefined()
+    expect(instance?.modalRef!.componentInstance).toBeDefined()
 
-    const id = instance.modalRef!.id
+    const id = instance!.modalRef!.id
 
     expect(document.getElementById(id)).not.toBeNull()
   }))
@@ -62,7 +62,7 @@ describe('ConfirmClickDirective', () => {
   it('should stay open on dialog content click', fakeAsync(() => {
     host = createHost(`<div seamConfirmClick class="test-btn">Testing ConfirmClickDirective</div>`)
 
-    const instance = host.getDirectiveInstance<ConfirmClickDirective>(
+    const instance = host.queryHost<ConfirmClickDirective>(
       ConfirmClickDirective
     )
 
@@ -70,10 +70,10 @@ describe('ConfirmClickDirective', () => {
 
     tick()
 
-    expect(instance.modalRef).toBeDefined()
-    expect(instance.modalRef!.componentInstance).toBeDefined()
+    expect(instance?.modalRef).toBeDefined()
+    expect(instance?.modalRef!.componentInstance).toBeDefined()
 
-    const id = instance.modalRef!.id
+    const id = instance!.modalRef!.id
 
     expect(document.getElementById(id)).not.toBeNull()
 
@@ -87,7 +87,7 @@ describe('ConfirmClickDirective', () => {
   it('should close on click outside dialog content', fakeAsync(() => {
     host = createHost(`<div seamConfirmClick class="test-btn">Testing ConfirmClickDirective</div>`)
 
-    const instance = host.getDirectiveInstance<ConfirmClickDirective>(
+    const instance = host.queryHost<ConfirmClickDirective>(
       ConfirmClickDirective
     )
 
@@ -95,10 +95,10 @@ describe('ConfirmClickDirective', () => {
 
     tick()
 
-    expect(instance.modalRef).toBeDefined()
-    expect(instance.modalRef!.componentInstance).toBeDefined()
+    expect(instance?.modalRef).toBeDefined()
+    expect(instance?.modalRef!.componentInstance).toBeDefined()
 
-    const id = instance.modalRef!.id
+    const id = instance!.modalRef!.id
 
     expect(document.getElementById(id)).not.toBeNull()
 
