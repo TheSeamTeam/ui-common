@@ -44,7 +44,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -92,38 +91,38 @@
               "src/assets",
               {
                 "glob": "**/*",
-                "input": "projects/ui-common/src/assets",
+                "input": "projects/ui-common/assets",
                 "output": "assets"
               },
               {
                 "glob": "**/*",
-                "input": "projects/ui-common/src/styles",
+                "input": "projects/ui-common/styles",
                 "output": "styles"
               },
               {
                 "glob": "**/*.scss",
-                "input": "projects/ui-common/src/lib/framework/base-layout",
-                "output": "lib/framework/base-layout"
+                "input": "projects/ui-common/framework/base-layout",
+                "output": "framework/base-layout"
               },
               {
                 "glob": "**/*.scss",
-                "input": "projects/ui-common/src/lib/framework/dashboard",
-                "output": "lib/framework/dashboard"
+                "input": "projects/ui-common/framework/dashboard",
+                "output": "framework/dashboard"
               },
               {
                 "glob": "**/*.scss",
-                "input": "projects/ui-common/src/lib/widget/side-nav",
-                "output": "lib/framework/side-nav"
+                "input": "projects/ui-common/widget/side-nav",
+                "output": "framework/side-nav"
               },
               {
                 "glob": "**/*.scss",
-                "input": "projects/ui-common/src/lib/progress/progress-circle",
-                "output": "lib/progress/progress-circle"
+                "input": "projects/ui-common/progress/progress-circle",
+                "output": "progress/progress-circle"
               },
               {
                 "glob": "**/*.scss",
-                "input": "projects/ui-common/src/lib/widget",
-                "output": "lib/widget"
+                "input": "projects/ui-common/widget",
+                "output": "widget"
               },
               {
                 "glob": "**/*.min.css",
@@ -178,7 +177,7 @@
     "ui-common": {
       "projectType": "library",
       "root": "projects/ui-common",
-      "sourceRoot": "projects/ui-common/src",
+      "sourceRoot": "projects/ui-common",
       "prefix": "seam",
       "architect": {
         "build": {
@@ -187,32 +186,40 @@
             "tsConfig": "projects/ui-common/tsconfig.lib.json",
             "project": "projects/ui-common/ng-package.json",
             "assets": [
-              "src/assets",
-              "src/styles",
               {
-                "glob": "**/*.scss",
-                "input": "src/lib/framework/base-layout",
-                "output": "lib/framework/base-layout"
+                "glob": "**/*",
+                "input": "assets",
+                "output": "assets"
+              },
+              {
+                "glob": "**/*",
+                "input": "styles",
+                "output": "styles"
               },
               {
                 "glob": "**/*.scss",
-                "input": "src/lib/framework/dashboard",
-                "output": "lib/framework/dashboard"
+                "input": "framework/base-layout",
+                "output": "framework/base-layout"
               },
               {
                 "glob": "**/*.scss",
-                "input": "src/lib/framework/side-nav",
-                "output": "lib/framework/side-nav"
+                "input": "framework/dashboard",
+                "output": "framework/dashboard"
               },
               {
                 "glob": "**/*.scss",
-                "input": "src/lib/progress/progress-circle",
-                "output": "lib/progress/progress-circle"
+                "input": "framework/side-nav",
+                "output": "framework/side-nav"
               },
               {
                 "glob": "**/*.scss",
-                "input": "src/lib/widget",
-                "output": "lib/widget"
+                "input": "progress/progress-circle",
+                "output": "progress/progress-circle"
+              },
+              {
+                "glob": "**/*.scss",
+                "input": "widget",
+                "output": "widget"
               },
               {
                 "glob": "**/*.min.css",
@@ -228,6 +235,11 @@
                 "glob": "**/utils.js",
                 "input": "../../node_modules/intl-tel-input/build/js",
                 "output": "assets/vendor/intl-tel-input/js"
+              },
+              {
+                "glob": "**/*.d.ts",
+                "input": "dynamic/evaluators/jexl-evaluator",
+                "output": "dynamic/evaluators/jexl-evaluator"
               }
             ]
           },
@@ -240,7 +252,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/ui-common/src/test.ts",
+            "main": "projects/ui-common/test.ts",
             "tsConfig": "projects/ui-common/tsconfig.spec.json",
             "karmaConfig": "projects/ui-common/karma.conf.js"
           }
@@ -284,38 +296,38 @@
               "src/assets",
               {
                 "glob": "**/*",
-                "input": "projects/ui-common/src/assets",
+                "input": "projects/ui-common/assets",
                 "output": "assets"
               },
               {
                 "glob": "**/*",
-                "input": "projects/ui-common/src/styles",
+                "input": "projects/ui-common/styles",
                 "output": "styles"
               },
               {
                 "glob": "**/*.scss",
-                "input": "projects/ui-common/src/lib/framework/base-layout",
-                "output": "lib/framework/base-layout"
+                "input": "projects/ui-common/framework/base-layout",
+                "output": "framework/base-layout"
               },
               {
                 "glob": "**/*.scss",
-                "input": "projects/ui-common/src/lib/framework/dashboard",
-                "output": "lib/framework/dashboard"
+                "input": "projects/ui-common/framework/dashboard",
+                "output": "framework/dashboard"
               },
               {
                 "glob": "**/*.scss",
-                "input": "projects/ui-common/src/lib/widget/side-nav",
-                "output": "lib/framework/side-nav"
+                "input": "projects/ui-common/widget/side-nav",
+                "output": "framework/side-nav"
               },
               {
                 "glob": "**/*.scss",
-                "input": "projects/ui-common/src/lib/progress/progress-circle",
-                "output": "lib/progress/progress-circle"
+                "input": "projects/ui-common/progress/progress-circle",
+                "output": "progress/progress-circle"
               },
               {
                 "glob": "**/*.scss",
-                "input": "projects/ui-common/src/lib/widget",
-                "output": "lib/widget"
+                "input": "projects/ui-common/widget",
+                "output": "widget"
               },
               {
                 "glob": "**/*.min.css",
@@ -350,7 +362,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,

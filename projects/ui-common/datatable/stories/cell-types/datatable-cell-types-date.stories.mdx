@@ -1,0 +1,92 @@
+import { moduleMetadata } from '@storybook/angular'
+import { Story, Meta, Preview } from '@storybook/addon-docs/blocks'
+// import { linkTo } from '@storybook/addon-links'
+
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { FormControl, ReactiveFormsModule } from '@angular/forms'
+
+import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
+
+import { TheSeamDatatableModule } from '../../datatable.module'
+
+# Datatable Cell Types
+
+<Meta title="Docs/Datatable/CellTypes/Date" decorators={[moduleMetadata({
+  imports: [
+    BrowserAnimationsModule,
+    TheSeamDatatableModule,
+    TheSeamTableCellTypesModule
+  ]
+})]} />
+
+## Date
+
+### Config Model
+
+```js
+{
+  type = 'date',
+
+  /**
+   * Styles added to the root cell elements `style` attribute.
+   */
+  styles?: string | string[]
+
+  /**
+   * Classes added to the root cell elements `class` attribute.
+   */
+  cssClass?: string | string[]
+}
+```
+
+### Definition
+
+#### No Config
+
+```js
+{
+  ...,
+  cellype = 'date'
+}
+```
+
+#### Basic Config
+
+```js
+{
+  ...,
+  cellType = {
+    type = 'date'
+  }
+}
+```
+
+#### Config with styles
+
+```js
+{
+  ...,
+  cellType = {
+    type = 'date',
+    styles = 'color: red; background-color: blue'
+  }
+}
+```
+
+### Example
+
+<Preview>
+  <Story name="Basic" height="150px">
+    {{
+      template: `<seam-datatable class="vw-100 vh-100" [columns]="columns" [rows]="rows"></seam-datatable>`,
+      props: {
+        columns: [
+          { prop: 'lastUpdate', name: 'Last Update', cellType: 'date' }
+        ],
+        rows: [
+          { lastUpdate: '2019-07-22T16:25:58.0266996+00:00' }
+        ]
+      },
+    }}
+  </Story>
+</Preview>

@@ -1,0 +1,29 @@
+<div class="d-flex flex-row">
+  <ng-container *ngIf="iconTpl; else noIconTpl">
+    <span class="pr-2">
+      <ng-container *ngTemplateOutlet="$any(iconTpl)"></ng-container>
+    </span>
+  </ng-container>
+  <ng-template #noIconTpl>
+    <span class="pr-2">
+      <seam-icon *ngIf="icon"
+        [icon]="icon"
+        [iconClass]="iconClass"
+        iconType="borderless-styled-square">
+      </seam-icon>
+    </span>
+  </ng-template>
+
+  <div class="d-flex flex-column justify-content-center flex-grow-1">
+    {{ label }}
+  </div>
+
+  <seam-icon *ngIf="secondaryIcon"
+    iconType="borderless-styled-square"
+    class="secondary-icon align-self-center ml-1"
+    [icon]="secondaryIcon"
+    [iconClass]="secondaryIconClass"
+    [title]="secondaryIconTitle"
+    size="lg">
+  </seam-icon>
+</div>

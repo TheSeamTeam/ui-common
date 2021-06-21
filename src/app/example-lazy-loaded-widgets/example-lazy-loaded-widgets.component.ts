@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core'
-import { TheSeamDynamicComponentLoader } from 'projects/ui-common/src/lib/dynamic-component-loader/dynamic-component-loader.service'
-// import { IWidgetsGridItemDef } from 'projects/ui-common/src/lib/widgets-grid/widgets-grid-item'
+
+import { TheSeamDynamicComponentLoader } from '@theseam/ui-common/dynamic-component-loader'
+
 import { LazyWidgetOneComponent } from 'src/app/example-lazy-loaded-widgets/lazy-widget-one/lazy-widget-one.component'
 
 @Component({
@@ -12,7 +13,6 @@ export class ExampleLazyLoadedWidgetsComponent implements OnInit {
 
   @ViewChild('testOutlet', { static: true, read: ViewContainerRef }) testOutlet: ViewContainerRef
 
-  // widgets: IWidgetsGridItemDef[] = []
   widgets: any[] = []
 
   constructor(
@@ -26,12 +26,6 @@ export class ExampleLazyLoadedWidgetsComponent implements OnInit {
       .getComponentFactory<LazyWidgetOneComponent>('widget-one')
       .subscribe(componentFactory => {
         console.log('componentFactory', componentFactory)
-        // const ref = this.testOutlet.createComponent(componentFactory)
-        // ref.changeDetectorRef.detectChanges()
-
-        // if ((<any>componentFactory).ngModule) {
-        //   const factory: any /* ComponentFactoryBoundToModule */
-        // }
 
         this.widgets = [ {
           type: componentFactory.componentType,

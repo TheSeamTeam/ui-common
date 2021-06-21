@@ -2,24 +2,33 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "../../out-tsc/lib",
-    "target": "es2018",
-    "module": "esNext",
+    "baseUrl": ".",
+    "rootDir": ".",
+    "target": "es2015",
+    "module": "es2020",
     "moduleResolution": "node",
     "declaration": true,
     "jsx": "react",
     "sourceMap": true,
     "inlineSources": true,
-    "emitDecoratorMetadata": true,
+    "emitDecoratorMetadata": false,
     "experimentalDecorators": true,
     "strictNullChecks": true,
     "importHelpers": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "types": [],
+    "skipLibCheck": true,
+    "stripInternal": true,
+    "types": [], // I am setting this as a reminder that ng-packagr ignores "types" and "typeRoots"
     "lib": [
       "dom",
       "es2018"
-    ]
+    ],
+    "paths": {
+      "@theseam/ui-common/*": [
+        "./*/public-api"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "skipTemplateCodegen": true,
@@ -27,15 +36,7 @@
     "enableResourceInlining": true,
     "enableIvy": true // Disable if using Storybook in linked project
   },
-  "include": [
-    "src/lib/**/*.ts"
-  ],
-  "exclude": [
-    "src/test.ts",
-    "**/*.spec.ts",
-    "**/*.stories.ts",
-    "**/stories/**/*",
-    "**/_story-data/**/*",
-    "**/schematics/**/*"
+  "files": [
+    "./public_api.ts"
   ]
 }

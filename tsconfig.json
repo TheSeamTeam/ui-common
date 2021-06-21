@@ -3,6 +3,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
+    "strict": true,
     "sourceMap": true,
     "declaration": false,
     "downlevelIteration": true,
@@ -24,20 +25,16 @@
     "allowSyntheticDefaultImports": true,
     "jsx": "react",
     "paths": {
-      "@theseam/ui-common": [
-        "dist/ui-common"
-      ],
       "@theseam/ui-common/*": [
-        "dist/ui-common/*"
-      ],
-      "@lib/ui-common/*": [
-        "projects/ui-common/src/lib/*/public-api"
+        "projects/ui-common/*/public-api"
       ]
     }
   },
   "angularCompilerOptions": {
-    "fullTemplateTypeCheck": true,
-    "strictInjectionParameters": true
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
   },
   "exclude": [
     "projects/ui-common/schematics/**/*"

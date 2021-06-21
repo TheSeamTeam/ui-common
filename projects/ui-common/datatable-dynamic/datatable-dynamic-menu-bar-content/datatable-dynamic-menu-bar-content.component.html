@@ -1,0 +1,34 @@
+<seam-datatable-menu-bar-row *ngFor="let row of _rows$ | async; last as isLast"
+  [class.mb-2]="!isLast"
+  [ngClass]="$any(row.cssClass)"
+  [ngStyle]="$any(row.styles)">
+  <ng-container *ngIf="row.layoutType === 'tri-column'">
+    <seam-datatable-menu-bar-column-left *ngIf="row.layout?.columnLeft"
+      [ngClass]="$any(row.layout).cssClass"
+      [ngStyle]="$any(row.layout).styles">
+      <ng-container *ngIf="row.layout?.columnLeft?.items">
+        <ng-container *ngFor="let item of row.layout?.columnLeft?.items">
+          <ng-template [cdkPortalOutlet]="item.portal"></ng-template>
+        </ng-container>
+      </ng-container>
+    </seam-datatable-menu-bar-column-left>
+    <seam-datatable-menu-bar-column-center *ngIf="row.layout?.columnCenter"
+      [ngClass]="$any(row.layout).cssClass"
+      [ngStyle]="$any(row.layout).styles">
+      <ng-container *ngIf="row.layout?.columnCenter?.items">
+        <ng-container *ngFor="let item of row.layout?.columnCenter?.items">
+          <ng-template [cdkPortalOutlet]="item.portal"></ng-template>
+        </ng-container>
+      </ng-container>
+    </seam-datatable-menu-bar-column-center>
+    <seam-datatable-menu-bar-column-right *ngIf="row.layout?.columnRight"
+      [ngClass]="$any(row.layout).cssClass"
+      [ngStyle]="$any(row.layout).styles">
+      <ng-container *ngIf="row.layout?.columnRight?.items">
+        <ng-container *ngFor="let item of row.layout?.columnRight?.items">
+          <ng-template [cdkPortalOutlet]="item.portal"></ng-template>
+        </ng-container>
+      </ng-container>
+    </seam-datatable-menu-bar-column-right>
+  </ng-container>
+</seam-datatable-menu-bar-row>

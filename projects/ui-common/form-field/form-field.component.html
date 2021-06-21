@@ -1,0 +1,39 @@
+<div>
+  <div [class.seam-form-field-inline]="inline">
+    <label *ngIf="label || labelTpl"
+      #labelElem
+      [attr.id]="labelId"
+      [attr.for]="contentInput?.id"
+      class="control-label {{ labelClass }}"
+      (seamElemResized)="_labelElemResized(labelElem)">
+      <ng-container *ngIf="labelTpl; else noLabelTpl">
+        <ng-template [ngTemplateOutlet]="labelTpl.template" [ngTemplateOutletContext]="{ $implicit: label, label: label, required: contentInput?.required || false }"></ng-template>
+      </ng-container>
+      <ng-template #noLabelTpl>
+        {{ label }}<seam-form-field-required-indicator class="pl-1"></seam-form-field-required-indicator>
+      </ng-template>
+    </label>
+    <ng-container *ngIf="!isPasswordInput">
+      <ng-container *ngTemplateOutlet="content"></ng-container>
+    </ng-container>
+    <ng-container *ngIf="isPasswordInput">
+      <div class="position-relative">
+        <ng-container *ngTemplateOutlet="content"></ng-container>
+        <seam-password-input-reveal [inputRef]="$any(passwordInputElement)"></seam-password-input-reveal>
+      </div>
+    </ng-container>
+  </div>
+  <!-- Need `.d-block` to make errors show without input sibling selector -->
+  <ng-container *ngIf="contentInput">
+    <seam-form-field-error-list *ngIf="fieldErrors$ | async as fieldErrors"
+      [style.paddingLeft]="(label || labelTpl) && inline ? _errorPadding : undefined"
+      [control]="contentInput.ngControl"
+      [errors]="fieldErrors2$ | async"
+      [maxErrors]="maxErrors"
+      [numPaddingErrors]="numPaddingErrors"
+      class="invalid-feedback">
+    </seam-form-field-error-list>
+  </ng-container>
+</div>
+
+<ng-template #content><ng-content></ng-content></ng-template>

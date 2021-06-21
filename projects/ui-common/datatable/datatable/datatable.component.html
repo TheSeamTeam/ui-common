@@ -1,0 +1,132 @@
+<div class="datatable-wrapper">
+  <ng-content select="seam-datatable-menu-bar"></ng-content>
+  <div class="datatable-table-wrapper">
+    <ng-container>
+      <ngx-datatable
+        class="bootstrap"
+        [columnMode]="$any(columnMode)"
+        [scrollbarV]="scrollbarV"
+        [scrollbarH]="scrollbarH"
+        [virtualization]="virtualization"
+        [targetMarkerTemplate]="targetMarkerTemplate"
+        [groupRowsBy]="$any(groupRowsBy)"
+        [groupedRows]="$any(groupedRows)"
+        [selected]="$any(selected)"
+        [externalPaging]="externalPaging"
+        [externalSorting]="externalSorting"
+        [limit]="$any(limit)"
+        [count]="$any(count)"
+        [offset]="$any(offset)"
+        [loadingIndicator]="loadingIndicator"
+        [selectionType]="$any(selectionType)"
+        [reorderable]="reorderable"
+        [swapColumns]="swapColumns"
+        [sortType]="$any(sortType)"
+        [sorts]="$any(_sorts)"
+        [cssClasses]="cssClasses"
+        [messages]="messages"
+        [rowIdentity]="$any(rowIdentity)"
+        [rowClass]="rowClass"
+        [selectCheck]="selectCheck"
+        [displayCheck]="$any(displayCheck)"
+        [groupExpansionDefault]="groupExpansionDefault"
+        [trackByProp]="$any(trackByProp)"
+        [selectAllRowsOnPage]="selectAllRowsOnPage"
+        [treeFromRelation]="$any(treeFromRelation)"
+        [treeToRelation]="$any(treeToRelation)"
+        [summaryRow]="summaryRow"
+        [summaryHeight]="$any(summaryHeight)"
+        [summaryPosition]="$any(summaryPosition)"
+        [rows]="rows$ | async"
+        [columns]="$any(displayColumns$ | async)"
+        [headerHeight]="$any(headerHeight)"
+        [rowHeight]="$any(rowHeight)"
+        [footerHeight]="$any(footerHeight)"
+        (scroll)="scroll.emit($event)"
+        (activate)="activate.emit($event)"
+        (select)="select.emit($event)"
+        (sort)="sort.emit($event)"
+        (page)="page.emit($event)"
+        (reorder)="reorder.emit($event)"
+        (resize)="_onResize($event)"
+        (tableContextmenu)="tableContextmenu.emit($event)"
+        (treeAction)="treeAction.emit($event)"
+        (seamElemResized)="onDatatableResize($event)"
+        (treeAction)="_onTreeAction($event)">
+
+        <ngx-datatable-group-header [rowHeight]="50" #myGroupHeader *ngIf="groupRowsBy">
+          <ng-template let-group="group" let-expanded="expanded" ngx-datatable-group-header-template>
+            <div
+              class="w-100 bg-light p-1"
+              [class.border-bottom]="!expanded"
+              [class.datatable-icon-right]="!expanded"
+              [class.datatable-icon-down]="expanded"
+              title="Expand/Collapse Group"
+              (click)="ngxDatatable?.groupHeader?.toggleExpandGroup(group)">
+              <b>Age: {{ group.age }}</b>
+            </div>
+          </ng-template>
+        </ngx-datatable-group-header>
+
+        <ngx-datatable-row-detail *ngIf="rowDetail && rowDetail.template"
+          [rowHeight]="rowDetail.rowHeight || 0"
+          [template]="$any(rowDetail.template)"
+          (toggle)="rowDetail.toggle.emit($event)">
+        </ngx-datatable-row-detail>
+
+      </ngx-datatable>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #blankHeaderTpl ngx-datatable-header-template></ng-template>
+
+<ng-template #headerTpl ngx-datatable-header-template
+  let-column="column" let-sortFn="sortFn">
+  <strong *ngIf="!column.sortable" class="draggable">{{column.name}}</strong>
+  <strong *ngIf="column.sortable" class="datatable-sort-target draggable" (click)="sortFn()">{{column.name}}</strong>
+  <div class="datatable-column-header-separator"></div>
+</ng-template>
+
+<ng-template #cellTypeSelectorTpl ngx-datatable-cell-template
+  let-value="value" let-rowIndex="rowIndex" let-row="row" let-column="column">
+  <seam-table-cell-type-selector *ngIf="row"
+    [type]="column.cellType"
+    [value]="value"
+    [rowIndex]="rowIndex"
+    [row]="row"
+    [colData]="column">
+  </seam-table-cell-type-selector>
+</ng-template>
+
+<ng-template #actionMenuCellTpl ngx-datatable-cell-template
+  let-value="value" let-rowIndex="rowIndex" let-row="row">
+
+  <ng-container *ngIf="row && rowActionItem?.template">
+    <ng-template
+      [ngTemplateOutlet]="$any(rowActionItem?.template)"
+      [ngTemplateOutletContext]="{ $implicit: row, row: row, rowIndex: rowIndex }">
+    </ng-template>
+  </ng-container>
+
+</ng-template>
+
+<ng-template #treeToggleTpl ngx-datatable-tree-toggle let-tree="cellContext">
+  <button
+    class="p-0 bg-transparent border-0 btn"
+    [disabled]="tree.treeStatus==='disabled'"
+    (click)="tree.onTreeAction()">
+    <span *ngIf="tree.treeStatus==='loading'">
+      <fa-icon [icon]="faSpinner"></fa-icon>
+    </span>
+    <span *ngIf="tree.treeStatus==='collapsed'">
+      <fa-icon [icon]="faChevronRight"></fa-icon>
+    </span>
+    <span *ngIf="tree.treeStatus==='expanded'">
+      <fa-icon [icon]="faChevronDown"></fa-icon>
+    </span>
+    <span *ngIf="tree.treeStatus==='disabled'">
+      <fa-icon [icon]="faChevronRight"></fa-icon>
+    </span>
+  </button>
+</ng-template>

@@ -1,0 +1,150 @@
+<div class="d-flex flex-row">
+  <ng-container *ngIf="itemType === 'basic'">
+    <ng-template [ngTemplateOutlet]="itemTypeBasic"></ng-template>
+  </ng-container>
+  <ng-container *ngIf="itemType === 'link'">
+    <ng-template [ngTemplateOutlet]="itemTypeLink"></ng-template>
+  </ng-container>
+  <ng-container *ngIf="itemType === 'divider'">
+    <ng-template [ngTemplateOutlet]="itemTypeDivider"></ng-template>
+  </ng-container>
+  <ng-container *ngIf="itemType === 'title'">
+    <ng-template [ngTemplateOutlet]="itemTypeTitle"></ng-template>
+  </ng-container>
+</div>
+
+<ng-container *ngIf="hasChildren">
+  <div class="side-nav--group side-nav--group--level-{{ hierLevel + 1 }}"
+    [@childGroupAnim]="childGroupAnimState$ | async">
+    <seam-side-nav-item *ngFor="let child of children"
+      [hierLevel]="compact ? 0 : (hierLevel + 1)"
+      [compact]="compact"
+      [itemType]="$any(child).itemType"
+      [icon]="$any(child).icon"
+      [label]="$any(child).label"
+      [link]="$any(child).link"
+      [badgeText]="$any(child).badge?.text"
+      [badgeTheme]="$any(child).badge?.theme || 'danger'"
+      [queryParams]="$any(child).queryParams"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      [children]="$any(child)?.children">
+    </seam-side-nav-item>
+  </div>
+</ng-container>
+
+<ng-template #itemTypeBasic>
+  <button class="side-nav-item btn side-nav-btn p-0 d-flex flex-row rounded-0 text-decoration-none text-nowrap w-100"
+    cdkMonitorElementFocus
+    (click)="toggleChildren()"
+    [attr.aria-expanded]="expanded">
+    <div class="nav-link d-flex flex-row w-100" [class.pr-0]="compact">
+      <div [style.padding-left.px]="hierLevel * indentSize"></div>
+      <div class="side-nav-item--icon">
+        <seam-icon *ngIf="icon" [icon]="icon"></seam-icon>
+        <ng-container *ngIf="compact">
+          <ng-template [ngTemplateOutlet]="itemBadge"></ng-template>
+        </ng-container>
+      </div>
+      <!-- NOTE: This is temporarily formatted oddly while fixing animation. -->
+      <span style="margin-left: 11px;" [@compactAnim]="compactAnimState$ | async">
+        <span *ngIf="!compact">
+          {{ label }}
+        </span>
+      </span>
+      <span *ngIf="compact" class="sr-only">{{ label }}</span>
+      <ng-container *ngIf="!compact">
+        <ng-template [ngTemplateOutlet]="itemBadge"></ng-template>
+      </ng-container>
+    </div>
+
+    <div *ngIf="hasChildren && !compact"
+      class="btn side-nav-btn side-nav-item--toggle-btn-container rounded-0">
+      <seam-icon
+        class="side-nav-item--toggle-btn"
+        [class.side-nav-item--toggle-btn-expanded]="expanded"
+        [icon]="faAngleLeft"
+        type>
+      </seam-icon>
+    </div>
+  </button>
+</ng-template>
+
+<ng-template #itemTypeLink>
+  <a *ngIf="link; else noLink" class="side-nav-item nav-link d-flex flex-row text-nowrap w-100 align-items-center"
+    [class.pr-0]="compact"
+    [routerLink]="link"
+    [queryParams]="queryParams"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: true }"
+    (click)="_linkClicked()">
+    <div [style.padding-left.px]="hierLevel * indentSize"></div>
+    <div class="side-nav-item--icon">
+      <seam-icon *ngIf="icon" [icon]="icon"></seam-icon>
+      <ng-container *ngIf="compact">
+        <ng-template [ngTemplateOutlet]="itemBadge"></ng-template>
+      </ng-container>
+    </div>
+    <span *ngIf="!compact" style="margin-left: 11px;">
+      {{ label }}
+    </span>
+    <span *ngIf="compact" class="sr-only">{{ label }}</span>
+    <ng-container *ngIf="!compact">
+      <ng-template [ngTemplateOutlet]="itemBadge"></ng-template>
+    </ng-container>
+  </a>
+
+  <ng-template #noLink>
+    <a class="side-nav-item nav-link d-flex flex-row text-nowrap w-100 align-items-center" [class.pr-0]="compact">
+      <div [style.padding-left.px]="hierLevel * indentSize"></div>
+      <div class="side-nav-item--icon">
+        <seam-icon *ngIf="icon" [icon]="icon"></seam-icon>
+      </div>
+      <span *ngIf="!compact" style="margin-left: 11px;">
+        {{ label }}
+      </span>
+      <span *ngIf="compact" class="sr-only">{{ label }}</span>
+    </a>
+  </ng-template>
+
+  <button *ngIf="hasChildren && !compact"
+    type="button"
+    class="btn side-nav-btn side-nav-item--toggle-btn-container rounded-0"
+    (click)="toggleChildren()"
+    [attr.aria-expanded]="expanded"
+    cdkMonitorElementFocus>
+    <seam-icon
+      class="side-nav-item--toggle-btn"
+      [class.side-nav-item--toggle-btn-expanded]="expanded"
+      [icon]="faAngleLeft"
+      type>
+    </seam-icon>
+    <span class="sr-only">Group Toggle</span>
+  </button>
+</ng-template>
+
+<ng-template #itemTypeDivider>
+  <div class="px-2 w-100">
+    <hr class="side-nav-item--divider" />
+  </div>
+</ng-template>
+
+<ng-template #itemTypeTitle>
+  <ng-container *ngIf="!compact">
+    <span class="side-nav-item--title pt-1">{{ label }}</span>
+  </ng-container>
+</ng-template>
+
+<ng-template #itemBadge>
+  <div *ngIf="badgeText"
+    class="side-nav-item--badge"
+    [class.side-nav-item--badge-no-icon]="!icon"
+    [ngbTooltip]="$any(badgeTooltip)?.tooltip"
+    [tooltipClass]="$any(badgeTooltip)?.class"
+    [placement]="$any(badgeTooltip)?.placement"
+    [container]="$any(badgeTooltip)?.container"
+    [disableTooltip]="!badgeTooltip || !!$any(badgeTooltip)?.disabled">
+    <span class="badge badge-{{ badgeTheme }}">{{ badgeText }}</span>
+    <!-- <span class="badge badge-danger">5</span> -->
+  </div>
+</ng-template>

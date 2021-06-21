@@ -1,0 +1,41 @@
+<div class="base-layout-side-bar-nav-content-mobile" *ngIf="isMobile$ | async">
+  <ng-template [cdkPortalOutlet]="_sideBarPortal"></ng-template>
+</div>
+
+<div class="base-layout-top-bar-container border-bottom bordered">
+  <ng-template [cdkPortalOutlet]="_topBarPortal"></ng-template>
+</div>
+<div class="base-layout-main-container">
+  <div *ngIf="hasSideBar$ | async"
+    class="base-layout-side-bar-container border-right bordered">
+    <div class="base-layout-side-bar-nav-content" *ngIf="!(isMobile$ | async)">
+      <ng-template [cdkPortalOutlet]="_sideBarPortal"></ng-template>
+    </div>
+  </div>
+  <div class="base-layout-content-container">
+    <div class="base-layout-content-container-header">
+      <!-- <ng-template [cdkPortalOutlet]="_contentHeaderPortal"></ng-template> -->
+
+      <div class="d-flex d-flex-row">
+        <div class="flex-grow-1">
+          <ng-template [cdkPortalOutlet]="_contentHeaderPortal"></ng-template>
+        </div>
+        <div>
+          <ng-container *ngFor="let action of registeredActions$ | async; first as isFirst">
+            <div>
+              <ng-container [ngTemplateOutlet]="$any(action)?.template"></ng-container>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+
+    </div>
+    <div class="base-layout-content-container-inner" seamOverlayScrollbar>
+      <ng-template [cdkPortalOutlet]="_contentPortal"></ng-template>
+    </div>
+    <div class="base-layout-content-container-footer">
+      <ng-template [cdkPortalOutlet]="_contentFooterPortal"></ng-template>
+    </div>
+  </div>
+</div>

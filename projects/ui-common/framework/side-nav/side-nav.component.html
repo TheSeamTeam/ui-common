@@ -1,0 +1,28 @@
+<div class="side-nav-backdrop" *ngIf="isMobile$ | async"
+  [@sideNavBackdrop]="_sideNavExpand"
+  [class.side-nav-backdrop-hidden]="_backdropHidden | async"></div>
+
+<div class="side-nav-inner-wrapper" [@sideNavExpand]="_sideNavExpand"
+  (@sideNavExpand.start)="animateStart()"
+  (@sideNavExpand.done)="animateEnd()">
+  <nav class="nav side-nav-content">
+    <seam-side-nav-toggle *ngIf="hasHeaderToggle"
+      [expanded]="expanded$ | async"
+      (toggleExpand)="toggle()">
+    </seam-side-nav-toggle>
+    <div class="side-nav-items-container" seamOverlayScrollbar>
+      <seam-side-nav-item *ngFor="let item of items$ | async"
+        [compact]="!(expanded$ | async)"
+        [itemType]="$any(item)?.itemType"
+        [icon]="$any(item)?.icon"
+        [label]="$any(item)?.label"
+        [link]="$any(item)?.link"
+        [badgeText]="$any(item)?.badge?.text"
+        [badgeTheme]="$any(item)?.badge?.theme || 'danger'"
+        [badgeTooltip]="$any(item)?.badge?.tooltip"
+        [queryParams]="$any(item)?.queryParams"
+        [children]="$any(item)?.children">
+      </seam-side-nav-item>
+    </div>
+  </nav>
+</div>

@@ -1,0 +1,94 @@
+import { moduleMetadata } from '@storybook/angular'
+import { Story, Meta, Preview } from '@storybook/addon-docs/blocks'
+// import { linkTo } from '@storybook/addon-links'
+
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { FormControl, ReactiveFormsModule } from '@angular/forms'
+
+import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
+
+import { TheSeamDatatableModule } from '../../datatable.module'
+
+# Datatable Cell Types
+
+<Meta title="Docs/Datatable/CellTypes/String" decorators={[moduleMetadata({
+  imports: [
+    BrowserAnimationsModule,
+    TheSeamDatatableModule,
+    TheSeamTableCellTypesModule
+  ]
+})]} />
+
+## String
+
+> 'string' is the default cell type, so you can leave the cell type undefined unless config is needed.
+
+### Config Model
+
+```js
+{
+  type = 'string',
+
+  /**
+   * Styles added to the root cell elements `style` attribute.
+   */
+  styles?: string | string[]
+
+  /**
+   * Classes added to the root cell elements `class` attribute.
+   */
+  cssClass?: string | string[]
+}
+```
+
+### Definition
+
+#### No Config
+
+```js
+{
+  ...,
+  cellype = 'string'
+}
+```
+
+#### Basic Config
+
+```js
+{
+  ...,
+  cellType = {
+    type = 'string'
+  }
+}
+```
+
+#### Config with styles
+
+```js
+{
+  ...,
+  cellType = {
+    type = 'string',
+    styles = 'color: red; background-color: blue'
+  }
+}
+```
+
+### Example
+
+<Preview>
+  <Story name="Basic" height="150px">
+    {{
+      template: `<seam-datatable class="vw-100 vh-100" [columns]="columns" [rows]="rows"></seam-datatable>`,
+      props: {
+        columns: [
+          { prop: 'name', name: 'Name', cellType: 'string' }
+        ],
+        rows: [
+          { name: 'Some Value' }
+        ]
+      },
+    }}
+  </Story>
+</Preview>

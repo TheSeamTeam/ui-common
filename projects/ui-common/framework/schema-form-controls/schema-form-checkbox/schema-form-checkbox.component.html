@@ -1,0 +1,24 @@
+<div class="mb-3">
+  <seam-form-field *ngIf="boundControl">
+    <seam-checkbox seamInput
+      [formControl]="$any(formControl)"
+      [ngClass]="options?.fieldHtmlClass"
+      [id]="'control' + layoutNode?._id"
+      [name]="controlName"
+      [required]="options?.required">
+      {{ options?.title }}<seam-form-field-required-indicator class="pl-1" [required]="options?.required"></seam-form-field-required-indicator>
+    </seam-checkbox>
+  </seam-form-field>
+
+  <seam-form-field *ngIf="!boundControl">
+    <seam-checkbox seamInput
+      [ngClass]="options?.fieldHtmlClass"
+      [id]="'control' + layoutNode?._id"
+      [name]="controlName"
+      [required]="options?.required"
+      [value]="controlValue"
+      (change)="updateValue($event)">
+      {{ options?.title }}<seam-form-field-required-indicator class="pl-1" [required]="options?.required"></seam-form-field-required-indicator>
+    </seam-checkbox>
+  </seam-form-field>
+</div>

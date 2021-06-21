@@ -1,0 +1,58 @@
+@import '../styles/utilities';
+
+:host {
+  display: block;
+  position: relative;
+}
+
+.toggle-edit-not-editing {
+  transition: 250ms ease-in-out background-color;
+
+  .toggle-edit-content-container {
+    display: flex;
+    flex-direction: row;
+
+    .toggle-edit-content {
+      flex: 1 1 auto;
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  &:not(.is-disabled) {
+    &:hover,
+    &.toggle-edit-editing {
+      background-color: $light;
+
+      .toggle-edit-edit-btn {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+  }
+
+  .toggle-edit-edit-btn {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .toggle-edit-edit-btn,
+  .toggle-edit-submit-btn,
+  .toggle-edit-cancel-btn {
+    transition: 250ms ease-in-out;
+  }
+
+  .toggle-edit-edit-btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  .toggle-edit-submit-btn {
+    border-radius: 0;
+  }
+
+  .toggle-edit-cancel-btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}

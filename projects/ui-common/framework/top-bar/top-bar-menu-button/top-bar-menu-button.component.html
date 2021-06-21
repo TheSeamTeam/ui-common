@@ -1,0 +1,14 @@
+<div class="d-flex flex-row" *ngIf="!compact; else compactTpl">
+  <div class="text-left flex-grow-1 text-truncate">
+    <ng-template [ngTemplateOutlet]="$any(detailTpl)"></ng-template>
+  </div>
+  <!-- Arrow Button -->
+  <div class="pl-2 d-flex flex-column">
+    <div class="flex-grow-1"></div>
+    <seam-icon class="d-block" [icon]="faAngleDown"></seam-icon>
+    <div class="flex-grow-1"></div>
+  </div>
+</div>
+<ng-template #compactTpl>
+  <seam-icon [icon]="profileIcon" iconType="borderless-styled-square"></seam-icon>
+</ng-template>

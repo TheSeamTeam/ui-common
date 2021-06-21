@@ -1,0 +1,57 @@
+<seam-form-field *ngIf="boundControl">
+  <ng-template seamFormFieldLabelTpl let-required="required">
+    <ng-container *ngIf="!options?.notitle">
+      {{ options?.title }}<seam-form-field-required-indicator class="pl-1"></seam-form-field-required-indicator>
+    </ng-container>
+  </ng-template>
+  <ng-select seamInput
+    [formControl]="$any(formControl)"
+    [ngClass]="options?.fieldHtmlClass"
+    [id]="'control' + layoutNode?._id"
+    [required]="options?.required"
+    [items]="selectList"
+    bindLabel="name"
+    bindValue="value"
+    [clearable]="false"
+    appendTo="body"
+
+    [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
+    [attr.placeholder]="options?.placeholder"
+    [attr.required]="options?.required"
+    [readonly]="options?.readonly ? true : false">
+    <ng-template ng-label-tmp let-item="item">
+      <span [innerHTML]="item.name"></span>
+    </ng-template>
+    <ng-template ng-option-tmp let-item="item" let-index="index">
+      <span [innerHTML]="item.name"></span>
+    </ng-template>
+  </ng-select>
+</seam-form-field>
+
+<seam-form-field *ngIf="!boundControl">
+  <ng-template seamFormFieldLabelTpl let-required="required">
+    <ng-container *ngIf="!options?.notitle">
+      {{ options?.title }}<seam-form-field-required-indicator class="pl-1"></seam-form-field-required-indicator>
+    </ng-container>
+  </ng-template>
+  <ng-select seamInput
+    [ngClass]="options?.fieldHtmlClass"
+    [id]="'control' + layoutNode?._id"
+    [required]="options?.required"
+    [items]="selectList"
+    bindLabel="name"
+    bindValue="value"
+    [clearable]="false"
+    (change)="updateValue($event)"
+    appendTo="body"
+
+    [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
+    [attr.placeholder]="options?.placeholder"
+    [attr.required]="options?.required"
+    [readonly]="options?.readonly ? true : false"
+    [disabled]="controlDisabled">
+    <ng-template ng-option-tmp let-item="item" let-index="index">
+      <span [innerHTML]="item.name"></span>
+    </ng-template>
+  </ng-select>
+</seam-form-field>

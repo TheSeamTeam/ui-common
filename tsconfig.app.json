@@ -3,18 +3,20 @@
   "compilerOptions": {
     "outDir": "./out-tsc/app",
     "types": []
+    // "paths": {
+    //   // "@theseam/ui-common": [
+    //   //   "dist/ui-common"
+    //   // ],
+    //   // "@theseam/ui-common/*": [
+    //   //   "dist/ui-common/*"
+    //   // ]
+    // }
   },
-  "include": [
-    "src/**/*.ts",
-    "projects/ui-common/src/lib/**/*.ts"
+  "files": [
+    "src/main.ts",
+    "src/polyfills.ts"
   ],
-  "exclude": [
-    "src/test.ts",
-    "src/**/.spec.ts",
-    "projects/ui-common/**/*.spec.ts",
-    "projects/ui-common/**/*.stories.ts",
-    "projects/ui-common/**/stories/**/*",
-    "projects/ui-common/**/_story-data/**/*",
-    "projects/ui-common/**/schematics/**/*"
+  "include": [
+    "src/**/*.d.ts"
   ]
 }

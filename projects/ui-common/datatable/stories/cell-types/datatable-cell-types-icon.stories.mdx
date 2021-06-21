@@ -1,0 +1,221 @@
+import { moduleMetadata } from '@storybook/angular'
+import { Story, Meta, Preview, Source } from '@storybook/addon-docs/blocks'
+// import { linkTo } from '@storybook/addon-links'
+
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { RouterModule } from '@angular/router'
+import { FormControl, ReactiveFormsModule } from '@angular/forms'
+
+import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
+
+import { TheSeamDatatableModule } from '../../datatable.module'
+
+# Datatable Cell Types
+
+<Meta title="Docs/Datatable/CellTypes/Icon" decorators={[moduleMetadata({
+  imports: [
+    BrowserAnimationsModule,
+    RouterModule.forRoot([], { useHash: true }),
+    TheSeamDatatableModule,
+    TheSeamTableCellTypesModule
+  ]
+})]} />
+
+## Icon
+
+### Config Model
+
+```js
+{
+  type = 'icon',
+
+  /**
+   * Styles added to the root cell elements `style` attribute.
+   */
+  styles?: string | string[]
+
+  /**
+   * Classes added to the root cell elements `class` attribute.
+   */
+  cssClass?: string | string[]
+
+  /**
+   *
+   */
+  action?: DynamicDatatableCellTypeConfigIconAction
+
+  /**
+   * Element title attribute.
+   */
+  titleAttr?: string
+
+  /**
+   * Screen-reader text.
+   */
+  srOnly?: string
+
+  /**
+   * Css class added to the link element.
+   */
+  linkClass?: string
+
+  /**
+   * seam-icon `iconClass` input.
+   */
+  iconClass?: string
+
+  /**
+   * Can apply pre-defined icon styles.
+   */
+  iconType?: TheSeamIconType
+}
+```
+
+### Definition
+
+#### No Config
+
+```js
+{
+  ...,
+  cellype = 'icon'
+}
+```
+
+#### Basic Config
+
+```js
+{
+  ...,
+  cellType = {
+    type = 'icon'
+  }
+}
+```
+
+#### Config with styles
+
+```js
+{
+  ...,
+  cellType = {
+    type = 'icon',
+    styles = 'color: red; background-color: blue'
+  }
+}
+```
+
+### Examples
+
+#### Basic
+
+<Preview>
+  <Story name="Basic" height="150px">
+    {{
+      template: `<seam-datatable class="vw-100 vh-100" [columns]="columns" [rows]="rows"></seam-datatable>`,
+      props: {
+        columns: [
+          { prop: 'icn', name: 'Icon', cellType: 'icon', cellTypeConfig: { type: 'icon' } }
+        ],
+        rows: [
+          { icn: 'faEnvelope' }
+        ]
+      },
+    }}
+  </Story>
+</Preview>
+
+#### Link
+
+<Preview>
+  <Story name="Link" height="150px">
+    {{
+      template: `<seam-datatable class="vw-100 vh-100" [columns]="columns" [rows]="rows"></seam-datatable>`,
+      props: {
+        columns: [
+          {
+            prop: 'icn', name: 'Icon', cellType: 'icon',
+            cellTypeConfig: { type: 'icon', action: { type: 'link', link: 'example-1' } }
+          }
+        ],
+        rows: [
+          { icn: 'faEnvelope' }
+        ]
+      },
+    }}
+  </Story>
+</Preview>
+
+#### Link Encrypted
+
+<Preview>
+  <Story name="Link Encrypted" height="150px">
+    {{
+      template: `<seam-datatable class="vw-100 vh-100" [columns]="columns" [rows]="rows"></seam-datatable>`,
+      props: {
+        columns: [
+          {
+            prop: 'icn', name: 'Icon', cellType: 'icon',
+            cellTypeConfig: {
+              type: 'icon',
+              action: { type: 'link', link: 'example-1', encrypted: true }
+            }
+          }
+        ],
+        rows: [
+          { icn: 'faEnvelope' }
+        ]
+      },
+    }}
+  </Story>
+</Preview>
+
+#### Link With Class
+
+<Preview>
+  <Story name="Link With Class" height="150px">
+    {{
+      template: `<seam-datatable class="vw-100 vh-100" [columns]="columns" [rows]="rows"></seam-datatable>`,
+      props: {
+        columns: [
+          {
+            prop: 'icn', name: 'Icon', cellType: 'icon',
+            cellTypeConfig: {
+              type: 'icon',
+              linkClass: 'text-danger',
+              action: { type: 'link', link: 'example-1' }
+            }
+          }
+        ],
+        rows: [
+          { icn: 'faEnvelope' }
+        ]
+      },
+    }}
+  </Story>
+</Preview>
+
+#### Link With IconType
+
+<Preview>
+  <Story name="Link With IconType" height="150px">
+    {{
+      template: `<seam-datatable class="vw-100 vh-100" [columns]="columns" [rows]="rows"></seam-datatable>`,
+      props: {
+        columns: [
+          {
+            prop: 'icn', name: 'Icon', cellType: 'icon',
+            cellTypeConfig: {
+              type: 'icon',
+              iconType: 'styled-square',
+              action: { type: 'link', link: 'example-1' }
+            }
+          }
+        ],
+        rows: [
+          { icn: 'faEnvelope' }
+        ]
+      },
+    }}
+  </Story>
+</Preview>
