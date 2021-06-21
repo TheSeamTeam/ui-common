@@ -477,7 +477,7 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit, 
       const checkBoxCol: TheSeamDatatableColumn = {
         prop: '$$__checkbox__',
         name: '',
-        width: 30,
+        width: 40,
         sortable: false,
         canAutoResize: false,
         draggable: false,
