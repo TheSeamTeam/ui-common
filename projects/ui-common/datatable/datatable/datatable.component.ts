@@ -373,31 +373,31 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit, 
 
     this.rows$ = this._dataSourceSubject.pipe(
       switchMap(dataSource => {
-        console.log('dataSource', dataSource)
+        // console.log('dataSource', dataSource)
         let dataStream: Observable<any[]>
 
         if (isDataSource(dataSource)) {
-          console.log('~datasource')
+          // console.log('~datasource')
           dataStream = dataSource.connect(this) as any
         } else if (isObservable(dataSource)) {
-          console.log('~observable')
+          // console.log('~observable')
           dataStream = dataSource as any
         } else if (Array.isArray(dataSource)) {
-          console.log('~array')
+          // console.log('~array')
           dataStream = of(dataSource)
         } else {
-          console.log('~rows fallback')
+          // console.log('~rows fallback')
           dataStream = this._rows.asObservable()
-            .pipe(tap(v => console.log('rows~', v)))
+            // .pipe(tap(v => console.log('rows~', v)))
         }
 
         if (!this.externalFiltering) {
-          console.log('not using externalFiltering')
+          // console.log('not using externalFiltering')
           dataStream = dataStream.pipe(
             switchMap(rows => this._filtersSubject.pipe(
-              tap(v => console.log('filters', v)),
+              // tap(v => console.log('filters', v)),
               concatMap(filters => of(rows).pipe(composeDataFilters(filters))),
-              tap(v => console.log('composed filters', v)),
+              // tap(v => console.log('composed filters', v)),
             ))
           )
 
@@ -409,7 +409,7 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit, 
         }
 
         return dataStream.pipe(
-          tap(v => console.log('stream', v)),
+          // tap(v => console.log('stream', v)),
           takeUntil(this._ngUnsubscribe)
         )
       })
@@ -558,7 +558,7 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit, 
         col.treeToggleTemplate = this.treeToggleTpl
       }
 
-      if (hasProperty(col, 'headerTemplate')) {
+      if (!hasProperty(col, 'headerTemplate')) {
         col.headerTemplate = this.headerTpl
       }
 
@@ -614,7 +614,7 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit, 
   }
 
   private _setMenuBarFilters(filters: IDataFilter[]) {
-    console.log('_setMenuBarFilters', filters)
+    // console.log('_setMenuBarFilters', filters)
     this._filtersSubject.next(filters || [])
   }
 
