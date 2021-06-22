@@ -64,6 +64,15 @@ export class TheSeamTopBarComponent implements OnInit, OnDestroy, AfterContentIn
   /** Logo displayed on the top bar when a smaller logo is needed. */
   @Input() logoSm: string | undefined | null
 
+  /** External url to link to when `logo` is clicked. */
+  @Input() logoHref?: string | null
+
+  /** Link target used when `logoHref` is specified. Defaults to `"_blank"` */
+  @Input() logoHrefTarget: string = '_blank'
+
+  /** Route to link to when `logo` is clicked. Defaults to `/`. */
+  @Input() logoRoute: string = '/'
+
   /** Determines if the title should be displayed. */
   @Input() @InputBoolean() hasTitle: boolean = false
 
