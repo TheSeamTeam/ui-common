@@ -7,74 +7,47 @@ import { HttpLink } from 'apollo-angular/http'
 import { parse, parseValue, print } from 'graphql/language'
 
 import { QueryProcessingConfig } from '../models'
-import { containsVariable, inlineVariable, removeVariable, removeVariableDefinition, toGQL } from '../utils'
+import { GQL_RULE_REMOVE_IF_NOT_USED } from '../rules'
+import { containsVariable, inlineVariable, parseRules, removeVariable, removeVariableDefinition, toGQL } from '../utils'
 
-
-
-const queryProcessingLink = new ApolloLink((operation, forward) => {
-  // console.log('~link operation', operation)
-
-  // console.log('comments', parseComments(operation.query))
-
-  // TODO: Consider adding configuration to the queries with comments.
-  // if (operation.query.loc) {
-  //   const ast = parse(operation.query.loc.source, {
-  //     allowLegacySDLImplementsInterfaces: false,
-  //     experimentalFragmentVariables: true,
-  //   })
-  //   console.log('comments', parseComments(ast), ast)
-  // }
+export const queryProcessingLink = new ApolloLink((operation, forward) => {
+  console.log('~link operation', operation)
 
   const context = operation.getContext()
   const queryProcessingConfig: QueryProcessingConfig = context.queryProcessingConfig || {}
 
   // console.log(operation.query)
 
-  const _operation = operation
-  // console.log(
-  //   `%c~~~BEFORE\n${print(_operation.query)}\n${JSON.stringify(_operation.variables, null, 2)}`,
-  //   'color: cyan'
-  // )
+  const rules = parseRules(operation.query)
+  console.log('rules', rules)
 
-  const removeIdNotDefined = (queryProcessingConfig?.variables?.removeIfNotDefined || [])
-  for (const varName of removeIdNotDefined) {
-    if (isNullOrUndefined(operation.variables[varName])) {
-      _operation.query = removeVariable(_operation.query, varName)
-    }
-  }
+  const removeIfNotDefined = rules.filter(r => r.rules.indexOf(GQL_RULE_REMOVE_IF_NOT_USED) !== -1)
+  console.log('removeIfNotDefined', removeIfNotDefined)
 
-  const removeIfNotUsed = (queryProcessingConfig?.variables?.removeIfNotUsed || [])
-  for (const varName of removeIfNotUsed) {
-    if (!containsVariable(_operation.query, varName)) {
-      _operation.query = removeVariable(_operation.query, varName)
-    }
-  }
 
-  const inlineVariables = (queryProcessingConfig?.variables?.inline || [])
-  for (const varName of inlineVariables) {
-    const varValue = _operation.variables[varName]
-    _operation.variables = withoutProperty(_operation.variables, varName)
-    _operation.query = removeVariableDefinition(_operation.query, varName)
-    _operation.query = inlineVariable(_operation.query, varName, parseValue(toGQL(varValue)))
-  }
+  // const _operation = operation
 
-  // console.log(
-  //   `%c~~~AFTER\n${print(_operation.query)}\n${JSON.stringify(_operation.variables, null, 2)}`,
-  //   'color: limegreen'
-  // )
+  // const removeIdNotDefined = (queryProcessingConfig?.variables?.removeIfNotDefined || [])
+  // for (const varName of removeIdNotDefined) {
+  //   if (isNullOrUndefined(operation.variables[varName])) {
+  //     _operation.query = removeVariable(_operation.query, varName)
+  //   }
+  // }
+
+  // const removeIfNotUsed = (queryProcessingConfig?.variables?.removeIfNotUsed || [])
+  // for (const varName of removeIfNotUsed) {
+  //   if (!containsVariable(_operation.query, varName)) {
+  //     _operation.query = removeVariable(_operation.query, varName)
+  //   }
+  // }
+
+  // const inlineVariables = (queryProcessingConfig?.variables?.inline || [])
+  // for (const varName of inlineVariables) {
+  //   const varValue = _operation.variables[varName]
+  //   _operation.variables = withoutProperty(_operation.variables, varName)
+  //   _operation.query = removeVariableDefinition(_operation.query, varName)
+  //   _operation.query = inlineVariable(_operation.query, varName, parseValue(toGQL(varValue)))
+  // }
+
   return forward(operation)
 })
-
-// export const ApolloOptionsProvider: Provider = {
-//   provide: APOLLO_OPTIONS,
-//   useFactory: (httpLink: HttpLink) => {
-//     return {
-//       cache: new InMemoryCache(),
-//       link: concat(queryProcessingLink, httpLink.create({
-//         uri: environment.graphqlUrl,
-//       })),
-//       connectToDevtools: true
-//     }
-//   },
-//   deps: [HttpLink],
-// }
