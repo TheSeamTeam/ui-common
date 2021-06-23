@@ -1,7 +1,19 @@
-import { ArgumentNode, BREAK, DocumentNode, FieldNode, parse, Token, VariableDefinitionNode, VariableNode, visit } from 'graphql'
+import {
+  ArgumentNode,
+  BREAK,
+  DocumentNode,
+  FieldNode,
+  OperationDefinitionNode,
+  parse,
+  Token,
+  VariableDefinitionNode,
+  VariableNode,
+  visit
+} from 'graphql'
 
 import { notNullOrUndefined } from '@theseam/ui-common/utils'
 
+import { RulesKind, RulesToken } from '../models'
 import { parseComments } from './parse-comments'
 
 export const RULE_PREFIX_REGEX = /^\s*@gql-rule:.+/
@@ -61,19 +73,6 @@ export function getTokenAppliesTo(token: Token): Token | null {
   return t
 }
 
-export enum RulesKind {
-  Field = 'Field',
-  VariableDefinition = 'VariableDefinition',
-  Variable = 'Variable',
-  Argument = 'Argument'
-}
-
-export interface RulesToken {
-  node: VariableDefinitionNode | VariableNode | ArgumentNode | FieldNode
-  rules: string[]
-  kind: RulesKind
-}
-
 export function createRulesToken(token: Token, node: RulesToken['node'], kind: RulesKind): RulesToken {
   return {
     node,
@@ -83,6 +82,7 @@ export function createRulesToken(token: Token, node: RulesToken['node'], kind: R
 }
 
 export function getRulesToken(token: Token, ast: DocumentNode): RulesToken | null {
+  console.log('getRulesToken', token)
   const appliesTo = getTokenAppliesTo(token)
   if (appliesTo === null) {
     return null
@@ -90,6 +90,12 @@ export function getRulesToken(token: Token, ast: DocumentNode): RulesToken | nul
 
   let appliesToNode: RulesToken | null = null
   visit(ast, {
+    OperationDefinition(node: OperationDefinitionNode) {
+      if (node.loc?.start === appliesTo.start) {
+        appliesToNode = createRulesToken(token, node, RulesKind.OperationDefinition)
+        return BREAK
+      }
+    },
     VariableDefinition(node: VariableDefinitionNode) {
       if (node.variable.name.loc?.start === appliesTo.start) {
         appliesToNode = createRulesToken(token, node, RulesKind.VariableDefinition)
@@ -120,7 +126,7 @@ export function getRulesToken(token: Token, ast: DocumentNode): RulesToken | nul
 
 export function parseRules(ast: DocumentNode): RulesToken[] {
   const _ast = parseAst(ast)
-
+  console.log('_ast', _ast)
   return parseComments(_ast)
     .filter(isRuleToken)
     .map(r => getRulesToken(r, _ast))

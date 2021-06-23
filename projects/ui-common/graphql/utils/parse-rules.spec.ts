@@ -1,10 +1,12 @@
 import { gql } from 'apollo-angular'
 
-import { parseRules, RulesKind } from './parse-rules'
+import { RulesKind } from '../models'
+import { parseRules } from './parse-rules'
 
 describe('GraphQL Utils parseRules', () => {
   it('should return rule tokens', () => {
     const query = gql`
+      # @gql-rule: remove-not-defined
       query TestQuery (
         # General solo comment
         $skip: Int
@@ -38,25 +40,28 @@ describe('GraphQL Utils parseRules', () => {
 
     const rules = parseRules(query)
 
-    expect(rules.length).toBe(6)
+    expect(rules.length).toBe(7)
 
-    expect(rules[0].kind).toBe(RulesKind.VariableDefinition)
-    expect(rules[0].rules).toEqual([ 'remove-if-var-not-provided' ])
+    expect(rules[0].kind).toBe(RulesKind.OperationDefinition)
+    expect(rules[0].rules).toEqual([ 'remove-not-defined' ])
 
-    expect(rules[1].kind).toBe(RulesKind.Argument)
-    expect(rules[1].rules).toEqual([ 'remove-if-undefined' ])
+    expect(rules[1].kind).toBe(RulesKind.VariableDefinition)
+    expect(rules[1].rules).toEqual([ 'remove-if-var-not-provided' ])
 
-    expect(rules[2].kind).toBe(RulesKind.Variable)
-    expect(rules[2].rules).toEqual([ 'remove-if-undefined', 'var-1' ])
+    expect(rules[2].kind).toBe(RulesKind.Argument)
+    expect(rules[2].rules).toEqual([ 'remove-if-undefined' ])
 
     expect(rules[3].kind).toBe(RulesKind.Variable)
-    expect(rules[3].rules).toEqual([ 'remove-if-undefined', 'var-2' ])
+    expect(rules[3].rules).toEqual([ 'remove-if-undefined', 'var-1' ])
 
-    expect(rules[4].kind).toBe(RulesKind.Field)
-    expect(rules[4].rules).toEqual([ 'remove-if-undefined', 'second-rule' ])
+    expect(rules[4].kind).toBe(RulesKind.Variable)
+    expect(rules[4].rules).toEqual([ 'remove-if-undefined', 'var-2' ])
 
     expect(rules[5].kind).toBe(RulesKind.Field)
-    expect(rules[5].rules).toEqual([ 'remove-if-undefined', 'second-rule', 'third-rule' ])
+    expect(rules[5].rules).toEqual([ 'remove-if-undefined', 'second-rule' ])
+
+    expect(rules[6].kind).toBe(RulesKind.Field)
+    expect(rules[6].rules).toEqual([ 'remove-if-undefined', 'second-rule', 'third-rule' ])
 
     expect(true).toBe(true)
   })

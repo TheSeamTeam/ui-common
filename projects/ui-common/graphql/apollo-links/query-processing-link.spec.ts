@@ -43,10 +43,8 @@ export const testResultLink = new ApolloLink(operation => {
 describe('GraphQL apollo-links queryProcessingLink', () => {
   it('should execute link', () => {
     const query = gql`
-      query TestQuery (
-        # @gql-rule: remove-if-not-used
-        $search: String
-      ) {
+      # @gql-rule: remove-not-defined
+      query TestQuery ($search: String) {
         example {
           totalCount
           items {
@@ -57,39 +55,31 @@ describe('GraphQL apollo-links queryProcessingLink', () => {
       }
     `
 
-    const link = printOperationLink({ tag: 'Before', styles: 'color:cyan' })
-      .concat(queryProcessingLink)
-      .concat(printOperationLink({ tag: 'After', styles: 'color:limegreen' }))
+    const link =
+      // printOperationLink({ tag: 'Before', styles: 'color:cyan' })
+      // .concat(queryProcessingLink)
+      queryProcessingLink
+      // .concat(printOperationLink({ tag: 'After', styles: 'color:limegreen' }))
       .concat(testResultLink)
 
     ApolloLink.execute(link, {
       query,
       // variables: { search: 'test' },
-      variables: { search: undefined },
-      // extensions: { cache: true },
+      variables: { search: undefined }
     }).subscribe(v => {
-      console.log('v', v)
-      expect(print(v.data?.operation)).toBe(
-        'query TestQuery ($search: String) {' +
-        '  example() {' +
-        '    totalCount' +
-        '    items {' +
-        '      thing1' +
-        '      thing2' +
-        '    }' +
-        '  }' +
-        '}'
-      )
+      const expectedQuery = gql`
+        query TestQuery {
+          example {
+            totalCount
+            items {
+              thing1
+              thing2
+            }
+          }
+        }
+      `
+
+      expect(print(v.data?.operation.query)).toBe(print(expectedQuery))
     })
-
-    // ApolloLink.execute(link, {
-    //   query,
-    //   variables: { id: 1 },
-    //   // extensions: { cache: true },
-    // }).subscribe(v => {
-    //   console.log('v', v)
-    // })
-
-    expect(true).toBe(true)
   })
 })

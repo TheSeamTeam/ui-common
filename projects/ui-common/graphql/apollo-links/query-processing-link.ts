@@ -4,11 +4,21 @@ import { ApolloLink, concat, InMemoryCache } from '@apollo/client/core'
 import { isNullOrUndefined, withoutProperty } from '@theseam/ui-common/utils'
 import { APOLLO_OPTIONS } from 'apollo-angular'
 import { HttpLink } from 'apollo-angular/http'
-import { parse, parseValue, print } from 'graphql/language'
+import { OperationDefinitionNode, parse, parseValue, print } from 'graphql'
 
 import { QueryProcessingConfig } from '../models'
-import { GQL_RULE_REMOVE_IF_NOT_USED } from '../rules'
-import { containsVariable, inlineVariable, parseRules, removeVariable, removeVariableDefinition, toGQL } from '../utils'
+import { GQL_RULE_REMOVE_IF_NOT_USED, GQL_RULE_REMOVE_NOT_DEFINED } from '../rules'
+import {
+  containsVariable,
+  inlineVariable,
+  parseAst,
+  parseRules,
+  removeVariable,
+  removeVariableDefinition,
+  removeVariableDefinitionsNotDefined,
+  rulesTokensContainingRule,
+  toGQL
+} from '../utils'
 
 export const queryProcessingLink = new ApolloLink((operation, forward) => {
   console.log('~link operation', operation)
@@ -18,11 +28,24 @@ export const queryProcessingLink = new ApolloLink((operation, forward) => {
 
   // console.log(operation.query)
 
-  const rules = parseRules(operation.query)
+  // const rules = parseRules(operation.query)
+  let _ast = parseAst(operation.query)
+  const rules = parseRules(_ast)
   console.log('rules', rules)
 
-  const removeIfNotDefined = rules.filter(r => r.rules.indexOf(GQL_RULE_REMOVE_IF_NOT_USED) !== -1)
-  console.log('removeIfNotDefined', removeIfNotDefined)
+
+  const removeNotDefined = rulesTokensContainingRule(rules, GQL_RULE_REMOVE_NOT_DEFINED)
+  console.log('removeNotDefined', removeNotDefined)
+  for (const rulesToken of removeNotDefined) {
+    _ast = removeVariableDefinitionsNotDefined(_ast, rulesToken.node as OperationDefinitionNode, operation.variables)
+  }
+
+
+  // const removeIfNotDefined = rulesTokensContainingRule(rules, GQL_RULE_REMOVE_IF_NOT_USED)
+  // console.log('removeIfNotDefined', removeIfNotDefined)
+
+
+
 
 
   // const _operation = operation
@@ -48,6 +71,8 @@ export const queryProcessingLink = new ApolloLink((operation, forward) => {
   //   _operation.query = removeVariableDefinition(_operation.query, varName)
   //   _operation.query = inlineVariable(_operation.query, varName, parseValue(toGQL(varValue)))
   // }
+
+  operation.query = _ast
 
   return forward(operation)
 })
