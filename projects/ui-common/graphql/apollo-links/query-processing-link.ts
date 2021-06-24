@@ -1,13 +1,17 @@
 import { Provider } from '@angular/core'
 
 import { ApolloLink, concat, InMemoryCache } from '@apollo/client/core'
-import { isNullOrUndefined, withoutProperty } from '@theseam/ui-common/utils'
+import { isNullOrUndefined, notNullOrUndefined, withoutProperty } from '@theseam/ui-common/utils'
 import { APOLLO_OPTIONS } from 'apollo-angular'
 import { HttpLink } from 'apollo-angular/http'
-import { OperationDefinitionNode, parse, parseValue, print } from 'graphql'
+import { OperationDefinitionNode, parse, parseValue, print, ValueNode, VariableDefinitionNode, VariableNode } from 'graphql'
 
-import { QueryProcessingConfig } from '../models'
-import { GQL_RULE_REMOVE_IF_NOT_USED, GQL_RULE_REMOVE_NOT_DEFINED } from '../rules'
+import { QueryProcessingConfig, RulesKind } from '../models'
+import {
+  GQL_RULE_INLINE_VARIABLE,
+  // GQL_RULE_REMOVE_IF_NOT_USED,
+  GQL_RULE_REMOVE_NOT_DEFINED
+} from '../rules'
 import {
   containsVariable,
   inlineVariable,
@@ -39,6 +43,34 @@ export const queryProcessingLink = new ApolloLink((operation, forward) => {
   for (const rulesToken of removeNotDefined) {
     _ast = removeVariableDefinitionsNotDefined(_ast, rulesToken.node as OperationDefinitionNode, operation.variables)
   }
+
+  const inlineVariableRulesTokens = rulesTokensContainingRule(rules, GQL_RULE_INLINE_VARIABLE)
+  console.log('inlineVariableRulesTokens', inlineVariableRulesTokens)
+  for (const rulesToken of inlineVariableRulesTokens) {
+    let varName: string | null = null
+    let varDefaultValue: ValueNode | undefined
+    if (rulesToken.kind === RulesKind.VariableDefinition) {
+      varName = (rulesToken.node as VariableDefinitionNode).variable.name.value
+      varDefaultValue = (rulesToken.node as VariableDefinitionNode).defaultValue
+    } else if (rulesToken.kind === RulesKind.Variable) {
+      varName = (rulesToken.node as VariableNode).name.value
+    }
+
+    if (varName === null) {
+      // TODO: Throw error here?
+      continue
+    }
+
+    const varValue = operation.variables[varName]
+
+
+    operation.variables = withoutProperty(operation.variables, varName)
+    _ast = removeVariableDefinition(_ast, varName)
+
+    const varValueNode =
+    _ast = inlineVariable(_ast, varName, parseValue(toGQL(varValue)))
+  }
+
 
 
   // const removeIfNotDefined = rulesTokensContainingRule(rules, GQL_RULE_REMOVE_IF_NOT_USED)

@@ -14,9 +14,7 @@ export function removeVariableDefinitionsNotDefined(
         return visit(opDef, {
           VariableDefinition(varDef) {
             const name = varDef.variable.name.value
-            console.log('check', name)
             if (isNullOrUndefined(variables[name])) {
-              console.log('\tremove', name)
               return null
             }
           }
