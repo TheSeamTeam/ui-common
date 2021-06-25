@@ -6,21 +6,24 @@ import { APOLLO_OPTIONS } from 'apollo-angular'
 import { HttpLink } from 'apollo-angular/http'
 import { OperationDefinitionNode, parse, parseValue, print, ValueNode, VariableDefinitionNode, VariableNode } from 'graphql'
 
-import { QueryProcessingConfig, RulesKind } from '../models'
 import {
-  GQL_RULE_INLINE_VARIABLE,
-  // GQL_RULE_REMOVE_IF_NOT_USED,
-  GQL_RULE_REMOVE_NOT_DEFINED
-} from '../rules'
+  // GQL_HINT_INLINE_VARIABLE,
+  // GQL_HINT_REMOVE_IF_NOT_USED,
+  // GQL_HINT_REMOVE_NOT_DEFINED
+
+  inlineVariableHintDef,
+  removeNotDefinedHintDef
+} from '../hints'
+import { HintsKind, QueryProcessingConfig } from '../models'
 import {
   containsVariable,
+  hintsTokensContainingHint,
   inlineVariable,
   parseAst,
-  parseRules,
+  parseHints,
   removeVariable,
   removeVariableDefinition,
   removeVariableDefinitionsNotDefined,
-  rulesTokensContainingRule,
   toGQL
 } from '../utils'
 
@@ -32,27 +35,27 @@ export const queryProcessingLink = new ApolloLink((operation, forward) => {
 
   // console.log(operation.query)
 
-  // const rules = parseRules(operation.query)
+  // const rules = parseHints(operation.query)
   let _ast = parseAst(operation.query)
-  const rules = parseRules(_ast)
+  const rules = parseHints(_ast)
   console.log('rules', rules)
 
 
-  const removeNotDefined = rulesTokensContainingRule(rules, GQL_RULE_REMOVE_NOT_DEFINED)
+  const removeNotDefined = hintsTokensContainingHint(rules, removeNotDefinedHintDef.name)
   console.log('removeNotDefined', removeNotDefined)
   for (const rulesToken of removeNotDefined) {
     _ast = removeVariableDefinitionsNotDefined(_ast, rulesToken.node as OperationDefinitionNode, operation.variables)
   }
 
-  const inlineVariableRulesTokens = rulesTokensContainingRule(rules, GQL_RULE_INLINE_VARIABLE)
+  const inlineVariableRulesTokens = hintsTokensContainingHint(rules, inlineVariableHintDef.name)
   console.log('inlineVariableRulesTokens', inlineVariableRulesTokens)
   for (const rulesToken of inlineVariableRulesTokens) {
     let varName: string | null = null
     let varDefaultValue: ValueNode | undefined
-    if (rulesToken.kind === RulesKind.VariableDefinition) {
+    if (rulesToken.kind === HintsKind.VariableDefinition) {
       varName = (rulesToken.node as VariableDefinitionNode).variable.name.value
       varDefaultValue = (rulesToken.node as VariableDefinitionNode).defaultValue
-    } else if (rulesToken.kind === RulesKind.Variable) {
+    } else if (rulesToken.kind === HintsKind.Variable) {
       varName = (rulesToken.node as VariableNode).name.value
     }
 
@@ -73,7 +76,7 @@ export const queryProcessingLink = new ApolloLink((operation, forward) => {
 
 
 
-  // const removeIfNotDefined = rulesTokensContainingRule(rules, GQL_RULE_REMOVE_IF_NOT_USED)
+  // const removeIfNotDefined = hintsTokensContainingHint(rules, GQL_HINT_REMOVE_IF_NOT_USED)
   // console.log('removeIfNotDefined', removeIfNotDefined)
 
 

@@ -1,9 +1,9 @@
 import { ArgumentNode, FieldNode, OperationDefinitionNode, VariableDefinitionNode, VariableNode } from 'graphql'
 
-import { RulesKind } from './rules-kind'
+import { HintsKind } from './hints-kind'
 
-export interface RulesToken {
+export interface HintsToken {
   node: OperationDefinitionNode | VariableDefinitionNode | VariableNode | ArgumentNode | FieldNode
-  rules: string[]
-  kind: RulesKind
+  hints: string[]
+  kind: HintsKind
 }
