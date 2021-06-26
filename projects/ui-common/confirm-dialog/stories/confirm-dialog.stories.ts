@@ -12,7 +12,7 @@ import { TheSeamConfirmDialogModule } from '../confirm-dialog.module'
 import { SeamConfirmDialogService } from '../confirm-dialog.service'
 
 export default {
-  title: 'Components/ConfirmDialog/Directive',
+  title: 'ConfirmDialog/Components/Directive',
   component: ConfirmDialogComponent,
   decorators: [
     moduleMetadata({
@@ -66,7 +66,7 @@ export const WithAlert: Story = (args) => ({
 
 
 
-
+// TODO: Convert all of the following to CSF
 
 // storiesOf('Components/ConfirmDialog/Directive', module)
 //   // .addDecorator(withKnobs)

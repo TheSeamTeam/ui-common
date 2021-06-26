@@ -1,6 +1,4 @@
-import { action } from '@storybook/addon-actions'
-import { linkTo } from '@storybook/addon-links'
-import { storiesOf } from '@storybook/angular'
+import { Meta, moduleMetadata, Story } from '@storybook/angular'
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { BehaviorSubject, of } from 'rxjs'
@@ -10,6 +8,7 @@ import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types
 
 import { TheSeamDatatableModule } from '../datatable.module'
 import { THESEAM_DATATABLE } from '../datatable/datatable.component'
+import { DatatableColumnPreferencesButtonComponent } from './datatable-column-preferences-button.component'
 
 class MockDatatable {
 
@@ -37,63 +36,69 @@ class MockDatatable {
 
 }
 
-storiesOf('Components/Datatable/Column Preferences', module)
-
-  .add('Example', () => ({
-    moduleMetadata: {
+export default {
+  title: 'Datatable/Components/Column Preferences',
+  component: DatatableColumnPreferencesButtonComponent,
+  decorators: [
+    moduleMetadata({
       imports: [
         BrowserAnimationsModule,
         TheSeamDatatableModule,
         TheSeamTableCellTypesModule
       ]
-    },
-    props: {
-      columns: [
-        { prop: 'name', name: 'Name' },
-        { prop: 'age', name: 'Age' },
-        { prop: 'color', name: 'Color' }
-      ],
-      rows: [
-        { name: 'Mark', age: 27, color: 'blue' },
-        { name: 'Joe', age: 33, color: 'green' },
-      ],
-      exporters: [
-        new CSVDataExporter(),
-        new XLSXDataExporter()
-      ]
-    },
-    template: `
-      <div class="vh-100 d-flex flex-column p-2">
-        <seam-datatable
-          [columns]="columns"
-          [rows]="rows">
+    })
+  ],
+  parameters: {
+    layout: 'fullscreen',
+    docs: {
+      iframeHeight: '400px',
+    }
+  }
+} as Meta
 
-          <seam-datatable-menu-bar>
-            <div class="d-flex flex-row justify-content-end">
-              <seam-datatable-column-preferences-button></seam-datatable-column-preferences-button>
-            </div>
-          </seam-datatable-menu-bar>
+export const Example: Story = (args) => ({
+  props: {
+    columns: [
+      { prop: 'name', name: 'Name' },
+      { prop: 'age', name: 'Age' },
+      { prop: 'color', name: 'Color' }
+    ],
+    rows: [
+      { name: 'Mark', age: 27, color: 'blue' },
+      { name: 'Joe', age: 33, color: 'green' },
+    ],
+    exporters: [
+      new CSVDataExporter(),
+      new XLSXDataExporter()
+    ]
+  },
+  template: `
+    <div class="vh-100 d-flex flex-column p-2">
+      <seam-datatable
+        [columns]="columns"
+        [rows]="rows">
 
-        </seam-datatable>
-      </div>`
-  }))
+        <seam-datatable-menu-bar>
+          <div class="d-flex flex-row justify-content-end">
+            <seam-datatable-column-preferences-button></seam-datatable-column-preferences-button>
+          </div>
+        </seam-datatable-menu-bar>
 
-  .add('Popover', () => ({
-    moduleMetadata: {
-      imports: [
-        BrowserAnimationsModule,
-        TheSeamDatatableModule,
-        TheSeamTableCellTypesModule
-      ],
-      providers: [
-        { provide: THESEAM_DATATABLE, useClass: MockDatatable }
-      ]
-    },
-    props: { },
-    template: `
-      <div class="popover m-2">
-        <div class="popover-body">
-          <seam-datatable-column-preferences></seam-datatable-column-preferences>
-        </div>
-      </div>`
-  }))
+      </seam-datatable>
+    </div>`
+})
+
+export const Popover: Story = (args) => ({
+  moduleMetadata: {
+    providers: [
+      { provide: THESEAM_DATATABLE, useClass: MockDatatable }
+    ]
+  },
+  props: { },
+  template: `
+    <div class="popover m-2">
+      <div class="popover-body">
+        <seam-datatable-column-preferences></seam-datatable-column-preferences>
+      </div>
+    </div>`
+})

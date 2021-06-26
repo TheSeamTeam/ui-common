@@ -9,7 +9,7 @@ import { TheSeamButtonsModule } from '../buttons.module'
 import { BadgeButtonComponent } from './badge-button.component'
 
 export default {
-  title: 'Components/Buttons/BadgeButton',
+  title: 'Buttons/Components/BadgeButton',
   component: BadgeButtonComponent,
   decorators: [
     moduleMetadata({

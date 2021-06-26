@@ -10,7 +10,7 @@ import { routesArgType, StoryEmptyComponent, StoryInitialRouteModule } from '@th
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component'
 
 export default {
-  title: 'Components/Breadcrumbs/Simple',
+  title: 'Breadcrumbs/Components/Simple',
   component: BreadcrumbsComponent,
   decorators: [
     // withKnobs

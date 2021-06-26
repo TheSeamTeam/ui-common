@@ -9,7 +9,7 @@ import { TheSeamButtonsModule } from '../buttons.module'
 import { ButtonComponent } from './button.component'
 
 export default {
-  title: 'Components/Buttons/Button',
+  title: 'Buttons/Components/Button',
   component: ButtonComponent,
   decorators: [
     moduleMetadata({

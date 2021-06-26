@@ -20,9 +20,10 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "docs:json": "compodoc -p ./tsconfig.stories.json -e json -d . --disableLifeCycleHooks",
-    "storybook": "npm run docs:json && start-storybook -p 6006 --ci",
-    "docs:storybook": "npm run docs:json && npm run storybook",
-    "build-storybook": "npm run docs:json && build-storybook -o docs",
+    "storybook": "npm run storybook-prebuild && start-storybook -p 6006 --ci",
+    "docs:storybook": "npm run storybook-prebuild && npm run storybook",
+    "build-storybook": "npm run storybook-prebuild && build-storybook -o docs",
+    "storybook-prebuild": "npm run test:generate-output && npm run docs:json",
     "local-registry": "ts-node --project=./scripts/tsconfig.json ./scripts/run-registry.ts --open --publish"
   },
   "private": true,

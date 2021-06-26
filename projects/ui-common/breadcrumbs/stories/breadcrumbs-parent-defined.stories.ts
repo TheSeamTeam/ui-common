@@ -10,7 +10,7 @@ import { StoryEmptyComponent, StoryEmptyWithRouteComponent, StoryInitialRouteMod
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component'
 
 export default {
-  title: 'Components/Breadcrumbs/Parent Defined',
+  title: 'Breadcrumbs/Components/Parent Defined',
   component: BreadcrumbsComponent,
   decorators: [
     // withKnobs

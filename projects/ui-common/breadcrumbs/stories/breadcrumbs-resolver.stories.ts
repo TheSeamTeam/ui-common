@@ -13,7 +13,7 @@ import { StoryUserIdToNameResolver } from './story-userid-to-name.resolver'
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component'
 
 export default {
-  title: 'Components/Breadcrumbs/Resolver',
+  title: 'Breadcrumbs/Components/Resolver',
   component: BreadcrumbsComponent,
   decorators: [
     // withKnobs
