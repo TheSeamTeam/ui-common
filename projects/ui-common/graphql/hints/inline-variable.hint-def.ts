@@ -5,7 +5,7 @@ import { inlineVariableTransformer } from './transformers/inline-variable.transf
  * Maps variable value to gql and inlines it into the query.
  */
 export const inlineVariableHintDef: HintDefinition = {
-  name: 'remove-not-defined',
+  name: 'inline-variable',
   appliesTo: [ HintsKind.Variable, HintsKind.VariableDefinition ],
   transformer: inlineVariableTransformer
 }
