@@ -1,3 +1,5 @@
+test.skip('Workaround2', () => 1)
+
 // import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
 // import { ToggleButtonComponent } from './toggle-button.component'

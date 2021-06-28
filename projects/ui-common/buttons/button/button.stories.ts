@@ -19,6 +19,9 @@ export default {
         TheSeamButtonsModule
       ]
     })
+  ],
+  parameters: [
+
   ]
 } as Meta
 

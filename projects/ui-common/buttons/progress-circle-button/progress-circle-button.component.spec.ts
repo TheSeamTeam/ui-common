@@ -1,3 +1,5 @@
+test.skip('Workaround3', () => 1)
+
 // import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
 // import { ProgressCircleButtonComponent } from './progress-circle-button.component'

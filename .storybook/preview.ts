@@ -1,4 +1,16 @@
 import { setCompodocJson } from '@storybook/addon-docs/angular'
+// import { addDecorator } from '@storybook/angular'
+
+// import { withTests } from '@storybook/addon-jest'
+
+// import results from '../addon-jest.testresults.json'
+// console.log('results', results)
+
+// addDecorator(
+//   withTests({
+//     results,
+//   })
+// );
 
 // @ts-ignore
 // eslint-disable-next-line import/extensions, import/no-unresolved
@@ -14,3 +26,15 @@ export const parameters = {
     }
   }
 }
+
+// export const decorators = [
+//   withTests({
+//     results,
+//     filesExt: '((\\.specs?)|(\\.tests?))?(\\.ts)?$',
+//   })
+// ]
+
+// addDecorator(withTests({
+//   results,
+//   filesExt: '((\\.specs?)|(\\.tests?))?(\\.ts)?$',
+// }))

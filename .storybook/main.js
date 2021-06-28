@@ -15,7 +15,8 @@ module.exports = {
     '@storybook/addon-toolbars',
     '@storybook/addon-measure',
     'storybook-addon-outline',
-    'storybook-dark-mode'
+    'storybook-dark-mode',
+    '@storybook/addon-jest'
   ],
   core: {
     builder: 'webpack5',

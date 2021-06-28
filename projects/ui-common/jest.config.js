@@ -11,7 +11,9 @@ module.exports = {
   preset: 'jest-preset-angular',
   setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
   testMatch: [
-    "**/graphql/**/*.spec.ts"
+    // TODO: Remove the specific folders when the projects tests are more stable.
+    "**/graphql/**/*.spec.ts",
+    "**/buttons/**/*.spec.ts"
   ],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/' }),
 };
