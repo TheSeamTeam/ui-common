@@ -4,28 +4,9 @@
     "outDir": "../../out-tsc/lib",
     "baseUrl": ".",
     "rootDir": ".",
-    "target": "es2015",
-    "module": "es2020",
-    "moduleResolution": "node",
-    "declaration": true,
-    "jsx": "react",
-    "sourceMap": true,
-    "inlineSources": true,
-    "emitDecoratorMetadata": false,
-    "experimentalDecorators": true,
-    "strictNullChecks": true,
-    "importHelpers": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true,
-    "stripInternal": true,
     "types": [
-      "jasmine",
-      "node"
-    ],
-    "lib": [
-      "dom",
-      "es2018"
+      "jest"
     ],
     "paths": {
       "@theseam/ui-common/*": [
@@ -34,7 +15,7 @@
     }
   },
   "files": [
-    "./test.ts"
+    "./setup-jest.ts"
   ],
   "include": [
     "**/*.spec.ts",

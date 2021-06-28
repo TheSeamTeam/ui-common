@@ -10,7 +10,7 @@ import { TheSeamButtonsModule } from '../buttons.module'
 import { ToggleButtonComponent } from './toggle-button.component'
 
 export default {
-  title: 'Components/Buttons/ToggleButton',
+  title: 'Buttons/Components/ToggleButton',
   component: ToggleButtonComponent,
   decorators: [
     moduleMetadata({

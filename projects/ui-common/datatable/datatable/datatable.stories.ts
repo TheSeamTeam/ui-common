@@ -17,7 +17,7 @@ import { DatatableComponent } from './datatable.component'
 
 
 export default {
-  title: 'Components/Datatable',
+  title: 'Datatable/Components',
   component: DatatableComponent,
   decorators: [
     moduleMetadata({
@@ -29,7 +29,7 @@ export default {
       ]
     })
   ],
-parameters: {
+  parameters: {
     layout: 'fullscreen',
     docs: {
       iframeHeight: '400px',

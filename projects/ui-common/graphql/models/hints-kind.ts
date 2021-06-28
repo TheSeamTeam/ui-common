@@ -1,4 +1,4 @@
-export enum RulesKind {
+export enum HintsKind {
   OperationDefinition = 'OperationDefinition',
   Field = 'Field',
   VariableDefinition = 'VariableDefinition',
