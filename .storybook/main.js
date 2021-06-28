@@ -15,8 +15,7 @@ module.exports = {
     '@storybook/addon-toolbars',
     '@storybook/addon-measure',
     'storybook-addon-outline',
-    'storybook-dark-mode',
-    'storybook-addon-angular-ivy'
+    'storybook-dark-mode'
   ],
   core: {
     builder: 'webpack5',
