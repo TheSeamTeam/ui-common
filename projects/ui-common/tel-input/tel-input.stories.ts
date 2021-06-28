@@ -14,7 +14,7 @@ import { TheSeamTelInputModule } from './tel-input.module'
 import { TheSeamTelInputComponent } from './tel-input/tel-input.component'
 
 export default {
-  title: 'Components/TelInput',
+  title: 'TelInput/Components',
   component: TheSeamTelInputComponent,
   decorators: [
     moduleMetadata({

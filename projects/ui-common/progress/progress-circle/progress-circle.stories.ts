@@ -9,7 +9,7 @@ import { TheSeamProgressModule } from '../progress.module'
 import { ProgressCircleComponent } from './progress-circle.component'
 
 export default {
-  title: 'Components/Progress/ProgressCircle',
+  title: 'Progress/Components/ProgressCircle',
   component: ProgressCircleComponent,
   decorators: [
     moduleMetadata({

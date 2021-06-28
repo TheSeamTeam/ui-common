@@ -334,7 +334,7 @@ class StoryEx3Component {
 
 
 export default {
-  title: 'Framework/DynamicRouter',
+  title: 'Framework/Dynamic Router',
   // component: BreadcrumbsComponent,
   decorators: [
     // withKnobs

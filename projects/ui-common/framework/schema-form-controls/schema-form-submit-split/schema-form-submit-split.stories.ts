@@ -8,7 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { TheSeamSchemaFormModule } from '../../schema-form/schema-form.module'
 
 export default {
-  title: 'Framework/SchemaForm/Controls/SubmitSplit',
+  title: 'Framework/Schema Form Controls/Submit Split',
   decorators: [
     moduleMetadata({
       imports: [

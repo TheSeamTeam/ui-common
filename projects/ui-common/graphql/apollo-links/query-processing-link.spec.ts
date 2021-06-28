@@ -99,43 +99,43 @@ describe('GraphQL apollo-links queryProcessingLink', () => {
     })
   })
 
-  describe('Hint "inline-variable"', () => {
-    it('should work on VariableDefinition node', () => {
-      testHintTransform(
-        {
-          query: gql`
-            query TestQuery (
-              # @gql-hint: inline-variable
-              $search: String
-            ) {
-              example(where: $where) {
-                totalCount
-                items {
-                  thing1
-                  thing2
-                }
-              }
-            }
-          `,
-          variables: { where: { and: [ { thing1: { eq: 'test' } } ] } }
-        },
-        {
-          query: gql`
-          query TestQuery {
-            example {
-              totalCount
-              items {
-                thing1
-                thing2
-              }
-            }
-          }
-        `,
-          variables: {}
-        }
-      )
-    })
-  })
+  // describe('Hint "inline-variable"', () => {
+  //   it('should work on VariableDefinition node', () => {
+  //     testHintTransform(
+  //       {
+  //         query: gql`
+  //           query TestQuery (
+  //             # @gql-hint: inline-variable
+  //             $search: String
+  //           ) {
+  //             example(where: $where) {
+  //               totalCount
+  //               items {
+  //                 thing1
+  //                 thing2
+  //               }
+  //             }
+  //           }
+  //         `,
+  //         variables: { where: { and: [ { thing1: { eq: 'test' } } ] } }
+  //       },
+  //       {
+  //         query: gql`
+  //         query TestQuery {
+  //           example {
+  //             totalCount
+  //             items {
+  //               thing1
+  //               thing2
+  //             }
+  //           }
+  //         }
+  //       `,
+  //         variables: {}
+  //       }
+  //     )
+  //   })
+  // })
 
   // describe('Hint "remove-not-used"', () => {
   //   it('', () => {

@@ -12,7 +12,7 @@ import { TheSeamConfirmDialogModule } from '../confirm-dialog.module'
 import { SeamConfirmDialogService } from '../confirm-dialog.service'
 
 export default {
-  title: 'ConfirmDialog/Components/Directive',
+  title: 'Confirm Dialog/Components/Directive',
   component: ConfirmDialogComponent,
   decorators: [
     moduleMetadata({

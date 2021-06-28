@@ -1,7 +1,4 @@
-import { action } from '@storybook/addon-actions'
-// import { number, withKnobs } from '@storybook/addon-knobs'
-import { linkTo } from '@storybook/addon-links'
-import { moduleMetadata, storiesOf } from '@storybook/angular'
+import { moduleMetadata } from '@storybook/angular'
 
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms'
 import { BrowserModule } from '@angular/platform-browser'
@@ -14,7 +11,7 @@ import { TheSeamFormFieldComponent } from '../form-field.component'
 import { TheSeamFormFieldModule } from '../form-field.module'
 
 export default {
-  title: 'Components/Form Field',
+  title: 'Form Field/Components',
   component: TheSeamFormFieldComponent,
   decorators: [
     moduleMetadata({

@@ -1,11 +1,10 @@
-import { storiesOf } from '@storybook/angular'
+import { Meta, moduleMetadata, Story } from '@storybook/angular'
 
 import { Component } from '@angular/core'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { TheSeamScrollbarModule } from '@theseam/ui-common/scrollbar'
 
-import { ModalConfig } from '../modal-config'
 import { TheSeamModalModule } from '../modal.module'
 import { Modal } from '../modal.service'
 
@@ -16,7 +15,7 @@ import { Modal } from '../modal.service'
   styles: [],
   template: `<span>Example</span>`
 })
-export class StoryseamModalBasicComponent { }
+class StoryseamModalBasicComponent { }
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -38,7 +37,7 @@ export class StoryseamModalBasicComponent { }
     </seam-modal-footer>
   `
 })
-export class StoryseamModalSimpleComponent { }
+class StoryseamModalSimpleComponent { }
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -50,7 +49,7 @@ export class StoryseamModalSimpleComponent { }
     </div>
   `
 })
-export class StoryseamModalBasicExampleComponent {
+class StoryseamModalBasicExampleComponent {
 
   constructor(
     private modal: Modal
@@ -73,7 +72,7 @@ export class StoryseamModalBasicExampleComponent {
     </div>
   `
 })
-export class StoryseamModalSimpleExampleComponent {
+class StoryseamModalSimpleExampleComponent {
 
   constructor(
     private modal: Modal
@@ -86,102 +85,43 @@ export class StoryseamModalSimpleExampleComponent {
   }
 }
 
-
-storiesOf('Components/Modal/Service/Component', module)
-
-  .add('Basic', () => ({
-    moduleMetadata: {
-      declarations: [
-        StoryseamModalBasicComponent,
-        StoryseamModalBasicExampleComponent
-      ],
+export default {
+  title: 'Modal/Service',
+  decorators: [
+    moduleMetadata({
       imports: [
         TheSeamModalModule,
         BrowserAnimationsModule,
         TheSeamScrollbarModule
       ],
-      entryComponents: [
-        StoryseamModalBasicComponent
-      ],
-    },
-    props: { },
-    template: `<story-seam-modal-basic-example></story-seam-modal-basic-example>`
-  }))
+    })
+  ]
+} as Meta
 
-  .add('Simple', () => ({
-    moduleMetadata: {
-      declarations: [
-        StoryseamModalSimpleComponent,
-        StoryseamModalSimpleExampleComponent
-      ],
-      imports: [
-        TheSeamModalModule,
-        BrowserAnimationsModule,
-        TheSeamScrollbarModule
-      ],
-      entryComponents: [
-        StoryseamModalSimpleComponent
-      ],
-    },
-    props: { },
-    template: `<story-seam-modal-simple-example></story-seam-modal-simple-example>`
-  }))
+export const Basic: Story = () => ({
+  moduleMetadata: {
+    declarations: [
+      StoryseamModalBasicComponent,
+      StoryseamModalBasicExampleComponent
+    ],
+    entryComponents: [
+      StoryseamModalBasicComponent
+    ],
+  },
+  props: { },
+  template: `<story-seam-modal-basic-example></story-seam-modal-basic-example>`
+})
 
-
-
-
-storiesOf('Components/Modal/Directive/Template', module)
-
-  .add('Basic', () => ({
-    moduleMetadata: {
-      imports: [
-        TheSeamModalModule,
-        BrowserAnimationsModule,
-        TheSeamScrollbarModule
-      ]
-    },
-    props: { },
-    template: `
-      <div class="p-4">
-        <button type="button" class="btn btn-lightgray"
-          (click)="modal.open()">Open Modal</button>
-      </div>
-
-      <ng-template seamModal #modal="seamModal">
-        Example
-      </ng-template>
-      `
-  }))
-
-  .add('Simple', () => ({
-    moduleMetadata: {
-      imports: [
-        TheSeamModalModule,
-        BrowserAnimationsModule,
-        TheSeamScrollbarModule
-      ]
-    },
-    props: { },
-    template: `
-      <div class="p-4">
-        <button type="button" class="btn btn-lightgray"
-          (click)="modal.open()">Open Modal</button>
-      </div>
-
-      <ng-template seamModal #modal="seamModal">
-        <seam-modal-header>
-          <h4 seamModalTitle>Title</h4>
-          <button seamModalClose="cancel" class="close" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </seam-modal-header>
-        <seam-modal-body>
-          Example
-        </seam-modal-body>
-        <seam-modal-footer>
-          <button class="btn btn-primary" seamModalClose="Yes">Yes</button>
-          <button class="btn btn-lightgray" seamModalClose="No">No</button>
-        </seam-modal-footer>
-      </ng-template>
-      `
-  }))
+export const Simple: Story = () => ({
+  moduleMetadata: {
+    declarations: [
+      StoryseamModalSimpleComponent,
+      StoryseamModalSimpleExampleComponent
+    ],
+    entryComponents: [
+      StoryseamModalSimpleComponent
+    ],
+  },
+  props: { },
+  template: `<story-seam-modal-simple-example></story-seam-modal-simple-example>`
+})
