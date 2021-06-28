@@ -28,7 +28,7 @@ import {
 } from '../utils'
 
 export const queryProcessingLink = new ApolloLink((operation, forward) => {
-  console.log('~link operation', operation)
+  // console.log('~link operation', operation)
 
   const context = operation.getContext()
   const queryProcessingConfig: QueryProcessingConfig = context.queryProcessingConfig || {}
@@ -38,17 +38,28 @@ export const queryProcessingLink = new ApolloLink((operation, forward) => {
   // const rules = parseHints(operation.query)
   let _ast = parseAst(operation.query)
   const rules = parseHints(_ast)
-  console.log('rules', rules)
+  // console.log('rules', rules)
+
+  operation.query = _ast
 
 
   const removeNotDefined = hintsTokensContainingHint(rules, removeNotDefinedHintDef.name)
-  console.log('removeNotDefined', removeNotDefined)
+  // console.log('removeNotDefined', removeNotDefined)
   for (const rulesToken of removeNotDefined) {
-    _ast = removeVariableDefinitionsNotDefined(_ast, rulesToken.node as OperationDefinitionNode, operation.variables)
+    // _ast = removeVariableDefinitionsNotDefined(_ast, rulesToken.node as OperationDefinitionNode, operation.variables)
+    if (!removeNotDefinedHintDef.transformer) { continue }
+
+    const result = removeNotDefinedHintDef.transformer({
+      query: operation.query,
+      variables: operation.variables
+    }, rulesToken)
+
+    operation.query = result.query
+    operation.variables = result.variables
   }
 
   const inlineVariableRulesTokens = hintsTokensContainingHint(rules, inlineVariableHintDef.name)
-  console.log('inlineVariableRulesTokens', inlineVariableRulesTokens)
+  // console.log('inlineVariableRulesTokens', inlineVariableRulesTokens)
   for (const rulesToken of inlineVariableRulesTokens) {
     let varName: string | null = null
     let varDefaultValue: ValueNode | undefined

@@ -100,7 +100,7 @@ describe('GraphQL apollo-links queryProcessingLink', () => {
   })
 
   describe('Hint "inline-variable"', () => {
-    fit('should work on VariableDefinition node', () => {
+    it('should work on VariableDefinition node', () => {
       testHintTransform(
         {
           query: gql`
