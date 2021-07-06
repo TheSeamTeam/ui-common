@@ -19,9 +19,6 @@ export default {
         TheSeamButtonsModule
       ]
     })
-  ],
-  parameters: [
-
   ]
 } as Meta
 
@@ -36,10 +33,12 @@ export const Basic: Story = (args) => ({
     </button>
   `
 })
+Basic.args = {
+  btnText: 'Example Text'
+}
 Basic.argTypes = {
   btnText: {
-    defaultValue: 'Example Text',
-    control: { type: 'text' }
+    control: { type: 'text' },
   },
   theme: themeWithOutlineArgType,
   size: sizeArgType,
