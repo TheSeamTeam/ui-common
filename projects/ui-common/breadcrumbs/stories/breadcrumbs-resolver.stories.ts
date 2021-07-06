@@ -1,4 +1,3 @@
-// import { button, withKnobs } from '@storybook/addon-knobs'
 import { Meta, Story } from '@storybook/angular'
 
 import { BrowserModule } from '@angular/platform-browser'
@@ -40,40 +39,26 @@ export const Example: Story = (args) => ({
           children: [
             {
               path: ':userId',
+              component: StoryEmptyComponent,
               data: { },
               resolve: {
                 breadcrumb: StoryUserIdToNameResolver
-              },
-              children: [
-                {
-                  path: '',
-                  component: StoryEmptyComponent,
-
-                }
-              ]
+              }
             }
-            // {
-            //   path: ':userId',
-            //   component: StoryEmptyComponent,
-            //   data: { },
-            //   resolve: {
-            //     breadcrumb: StoryUserIdToNameResolver
-            //   }
-            // }
           ]
         }
       ], { useHash: true }),
       StoryInitialRouteModule.forRoot('/users/123')
     ]
   },
-  props: args,
+  props: { ...args },
   template: `
     <seam-breadcrumbs></seam-breadcrumbs>
     <router-outlet></router-outlet>
   `
 })
 Example.argTypes = {
-  routes: routesArgType([
+  route: routesArgType([
     '/users',
     '/users/123',
     '/users/987',

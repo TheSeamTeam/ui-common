@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { RouterModule } from '@angular/router'
 
-import { routesArgType, StoryEmptyComponent, StoryInitialRouteModule } from '@theseam/ui-common/story-helpers'
+import { StoryEmptyComponent, StoryInitialRouteModule } from '@theseam/ui-common/story-helpers'
 
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component'
 
@@ -14,38 +14,33 @@ export default {
   decorators: [ ]
 } as Meta
 
-export const Example: Story = (args) => ({
-  moduleMetadata: {
-    declarations: [
-      StoryEmptyComponent
-    ],
-    providers: [ ],
-    imports: [
-      BrowserAnimationsModule,
-      BrowserModule,
-      RouterModule.forRoot([
-        {
-          path: 'home',
-          component: StoryEmptyComponent,
-          data: {
-            breadcrumb: 'Home'
+export const Example: Story = (args) => {
+  console.log('Example simple')
+  return {
+    moduleMetadata: {
+      declarations: [
+        StoryEmptyComponent
+      ],
+      providers: [ ],
+      imports: [
+        BrowserAnimationsModule,
+        BrowserModule,
+        RouterModule.forRoot([
+          {
+            path: 'home',
+            component: StoryEmptyComponent,
+            data: {
+              breadcrumb: 'Home'
+            }
           }
-        }
-      ], { useHash: true }),
-      StoryInitialRouteModule.forRoot('/home')
-    ]
-  },
-  props: { ...args },
-  template: `
-    <seam-breadcrumbs></seam-breadcrumbs>
-    <router-outlet></router-outlet>
-  `
-})
-Example.argTypes = {
-  route: routesArgType([
-    '/users',
-    '/users/123',
-    '/users/987',
-    '/users/999'
-  ])
+        ], { useHash: true }),
+        StoryInitialRouteModule.forRoot('/home')
+      ]
+    },
+    props: { ...args },
+    template: `
+      <seam-breadcrumbs></seam-breadcrumbs>
+      <router-outlet></router-outlet>
+    `
+  }
 }
