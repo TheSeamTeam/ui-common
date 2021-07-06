@@ -6,15 +6,12 @@ import { RouterModule } from '@angular/router'
 
 import { routesArgType, StoryEmptyComponent, StoryInitialRouteModule } from '@theseam/ui-common/story-helpers'
 
-// import { withKnobs } from '@storybook/addon-knobs'
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component'
 
 export default {
   title: 'Breadcrumbs/Components/Simple',
   component: BreadcrumbsComponent,
-  decorators: [
-    // withKnobs
-  ]
+  decorators: [ ]
 } as Meta
 
 export const Example: Story = (args) => ({
