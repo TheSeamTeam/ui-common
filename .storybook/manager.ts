@@ -1,6 +1,6 @@
 import { addons } from '@storybook/addons'
-import { seamThemeLight } from './theme'
+// import { seamThemeLight } from './theme'
 
-addons.setConfig({
-  theme: seamThemeLight
-})
+// addons.setConfig({
+//   theme: seamThemeLight
+// })

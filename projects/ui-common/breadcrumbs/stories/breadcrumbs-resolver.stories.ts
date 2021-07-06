@@ -5,7 +5,7 @@ import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { RouterModule } from '@angular/router'
 
-import { routeButton, StoryEmptyComponent, StoryInitialRouteModule } from '@theseam/ui-common/story-helpers'
+import { routesArgType, StoryEmptyComponent, StoryInitialRouteModule } from '@theseam/ui-common/story-helpers'
 
 import { StoryUsersDataService } from './story-user-data.service'
 import { StoryUserIdToNameResolver } from './story-userid-to-name.resolver'
@@ -13,14 +13,12 @@ import { StoryUserIdToNameResolver } from './story-userid-to-name.resolver'
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component'
 
 export default {
-  title: 'Components/Breadcrumbs/Resolver',
+  title: 'Breadcrumbs/Components/Resolver',
   component: BreadcrumbsComponent,
-  decorators: [
-    // withKnobs
-  ]
+  decorators: [ ]
 } as Meta
 
-export const Example: Story = () => ({
+export const Example: Story = (args) => ({
   moduleMetadata: {
     declarations: [
       StoryEmptyComponent
@@ -42,26 +40,43 @@ export const Example: Story = () => ({
           children: [
             {
               path: ':userId',
-              component: StoryEmptyComponent,
               data: { },
               resolve: {
                 breadcrumb: StoryUserIdToNameResolver
-              }
+              },
+              children: [
+                {
+                  path: '',
+                  component: StoryEmptyComponent,
+
+                }
+              ]
             }
+            // {
+            //   path: ':userId',
+            //   component: StoryEmptyComponent,
+            //   data: { },
+            //   resolve: {
+            //     breadcrumb: StoryUserIdToNameResolver
+            //   }
+            // }
           ]
         }
       ], { useHash: true }),
       StoryInitialRouteModule.forRoot('/users/123')
     ]
   },
-  props: {
-    // btn1: routeButton(button, '/users'),
-    // btn2: routeButton(button, '/users/123'),
-    // btn3: routeButton(button, '/users/987'),
-    // btn4: routeButton(button, '/users/999'),
-  },
+  props: args,
   template: `
     <seam-breadcrumbs></seam-breadcrumbs>
     <router-outlet></router-outlet>
   `
 })
+Example.argTypes = {
+  routes: routesArgType([
+    '/users',
+    '/users/123',
+    '/users/987',
+    '/users/999'
+  ])
+}

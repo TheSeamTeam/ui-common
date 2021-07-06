@@ -1,40 +1,44 @@
-// import { boolean, select, text, withKnobs } from '@storybook/addon-knobs'
-import { storiesOf } from '@storybook/angular'
+import { Meta, moduleMetadata, Story } from '@storybook/angular'
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { faWrench } from '@fortawesome/free-solid-svg-icons'
 
-import { ThemeNames } from '@theseam/ui-common/models'
-
 import { TheSeamWidgetModule } from '../../widget.module'
+import { WidgetHeaderBadgeComponent } from './widget-header-badge.component'
 
-storiesOf('Components/Widget/Content', module)
-  // .addDecorator(withKnobs)
-
-  .add('Header Badge', () => ({
-    moduleMetadata: {
+export default {
+  title: 'Widget/Components/Content/Header Badge',
+  component: WidgetHeaderBadgeComponent,
+  decorators: [
+    moduleMetadata({
       imports: [
         TheSeamWidgetModule,
         BrowserAnimationsModule
       ]
-    },
-    props: {
-      icon: faWrench,
-      // title: text('Header Title', 'Example Widget'),
-      // loading: boolean('Loading', false),
-      // headerBadgeText: text('Header Badge Text', 'Badge'),
-      // badgeTheme: select('Badge Theme', ThemeNames, 'primary')
-    },
-    template: `
-      <div class="p-1" style="max-height: 400px; width: 500px;">
-        <seam-widget [icon]="icon" [loading]="loading">
-          <ng-template seamWidgetTitleTpl>
-            {{ title }}
-            <seam-widget-header-badge [theme]="badgeTheme">
-              {{ headerBadgeText }}
-            </seam-widget-header-badge>
-          </ng-template>
-        </seam-widget>
-      </div>`
-  }))
+    })
+  ]
+} as Meta
+
+export const Basic: Story = (args) => ({
+  props: {
+    ...args,
+    icon: faWrench
+  },
+  template: `
+    <div class="p-1" style="max-height: 400px; width: 500px;">
+      <seam-widget [icon]="icon" loading="false">
+        <ng-template seamWidgetTitleTpl>
+          {{ title }}
+          <seam-widget-header-badge [theme]="badgeTheme">
+            {{ headerBadgeText }}
+          </seam-widget-header-badge>
+        </ng-template>
+      </seam-widget>
+    </div>`
+})
+Basic.args = {
+  title: 'Example Widget',
+  headerBadgeText: 'Badge',
+  badgeTheme: 'primary'
+}

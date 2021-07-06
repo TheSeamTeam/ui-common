@@ -1,13 +1,11 @@
-import { action } from '@storybook/addon-actions'
-// import { boolean, select, text, withKnobs } from '@storybook/addon-knobs'
-import { linkTo } from '@storybook/addon-links'
-import { storiesOf } from '@storybook/angular'
+import { Meta, moduleMetadata, Story } from '@storybook/angular'
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { faWrench } from '@fortawesome/free-solid-svg-icons'
 
 import { TheSeamWidgetModule } from '../../widget.module'
+import { WidgetTableComponent } from './widget-table.component'
 
 // tslint:disable:quotemark
 const GIN_DATA = [
@@ -84,83 +82,70 @@ const GIN_DATA = [
 ]
 // tslint:enable:quotemark
 
-storiesOf('Components/Widget/Content/Table', module)
-  // .addDecorator(withKnobs)
 
-  .add('Basic', () => ({
-    moduleMetadata: {
+export default {
+  title: 'Widget/Components/Content/Table',
+  component: WidgetTableComponent,
+  decorators: [
+    moduleMetadata({
       imports: [
         TheSeamWidgetModule,
         BrowserAnimationsModule
       ]
-    },
-    props: {
-      icon: faWrench,
-      // title: text('Header Title', 'Example Widget'),
-      // loading: boolean('Loading', false),
+    })
+  ]
+} as Meta
 
-      displayedColumns: [
-        { prop: 'ginCode', name: 'Gin Code' },
-        { prop: 'name', name: 'Name' }
-      ],
-      dataSource: GIN_DATA
-    },
-    template: `
-      <div class="p-1" style="max-height: 400px; width: 500px;">
-        <seam-widget [icon]="icon" [titleText]="title" [loading]="loading">
-          <seam-widget-table [columns]="displayedColumns" [rows]="dataSource"></seam-widget-table>
-        </seam-widget>
-      </div>`
-  }))
+export const Basic: Story = (args) => ({
+  props: {
+    ...args,
+    icon: faWrench,
+    displayedColumns: [
+      { prop: 'ginCode', name: 'Gin Code' },
+      { prop: 'name', name: 'Name' }
+    ],
+    dataSource: GIN_DATA
+  },
+  template: `
+    <div class="p-1" style="max-height: 400px; width: 500px;">
+      <seam-widget [icon]="icon" titleText="Example Widget" loading="false">
+        <seam-widget-table [columns]="displayedColumns" [rows]="dataSource"></seam-widget-table>
+      </seam-widget>
+    </div>`
+})
 
-  .add('Medium', () => ({
-    moduleMetadata: {
-      imports: [
-        TheSeamWidgetModule,
-        BrowserAnimationsModule
-      ]
-    },
-    props: {
-      icon: faWrench,
-      // title: text('Header Title', 'Example Widget'),
-      // loading: boolean('Loading', false),
+export const Medium: Story = (args) => ({
+  props: {
+    ...args,
+    icon: faWrench,
+    displayedColumns: [
+      { prop: 'ginCode', name: 'Gin Code' },
+      { prop: 'name', name: 'Name' }
+    ],
+    dataSource: GIN_DATA
+  },
+  template: `
+    <div class="p-1" style="max-height: 400px; width: 500px;">
+      <seam-widget [icon]="icon" titleText="Example Widget" loading="false">
+        <seam-widget-table [columns]="displayedColumns" [rows]="dataSource" size="md"></seam-widget-table>
+      </seam-widget>
+    </div>`
+})
 
-      displayedColumns: [
-        { prop: 'ginCode', name: 'Gin Code' },
-        { prop: 'name', name: 'Name' }
-      ],
-      dataSource: GIN_DATA
-    },
-    template: `
-      <div class="p-1" style="max-height: 400px; width: 500px;">
-        <seam-widget [icon]="icon" [titleText]="title" [loading]="loading">
-          <seam-widget-table [columns]="displayedColumns" [rows]="dataSource" size="md"></seam-widget-table>
-        </seam-widget>
-      </div>`
-  }))
-
-  .add('Small', () => ({
-    moduleMetadata: {
-      imports: [
-        TheSeamWidgetModule,
-        BrowserAnimationsModule
-      ]
-    },
-    props: {
-      icon: faWrench,
-      // title: text('Header Title', 'Example Widget'),
-      // loading: boolean('Loading', false),
-
-      displayedColumns: [
-        { prop: 'ginCode', name: 'Gin Code' },
-        { prop: 'name', name: 'Name' }
-      ],
-      dataSource: GIN_DATA
-    },
-    template: `
-      <div class="p-1" style="max-height: 400px; width: 500px;">
-        <seam-widget [icon]="icon" [titleText]="title" [loading]="loading">
-          <seam-widget-table [columns]="displayedColumns" [rows]="dataSource" size="sm"></seam-widget-table>
-        </seam-widget>
-      </div>`
-  }))
+export const Small: Story = (args) => ({
+  props: {
+    ...args,
+    icon: faWrench,
+    displayedColumns: [
+      { prop: 'ginCode', name: 'Gin Code' },
+      { prop: 'name', name: 'Name' }
+    ],
+    dataSource: GIN_DATA
+  },
+  template: `
+    <div class="p-1" style="max-height: 400px; width: 500px;">
+      <seam-widget [icon]="icon" titleText="Example Widget" loading="false">
+        <seam-widget-table [columns]="displayedColumns" [rows]="dataSource" size="sm"></seam-widget-table>
+      </seam-widget>
+    </div>`
+})

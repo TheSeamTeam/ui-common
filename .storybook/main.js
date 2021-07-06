@@ -16,7 +16,7 @@ module.exports = {
     '@storybook/addon-measure',
     'storybook-addon-outline',
     'storybook-dark-mode',
-    'storybook-addon-angular-ivy'
+    '@storybook/addon-jest'
   ],
   core: {
     builder: 'webpack5',

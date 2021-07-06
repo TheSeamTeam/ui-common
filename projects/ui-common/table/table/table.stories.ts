@@ -29,7 +29,7 @@ import { TheSeamTableModule } from '../table.module'
 import { TableComponent } from './table.component'
 
 export default {
-  title: 'Components/Table',
+  title: 'Table/Components',
   component: TableComponent,
   decorators: [
     moduleMetadata({

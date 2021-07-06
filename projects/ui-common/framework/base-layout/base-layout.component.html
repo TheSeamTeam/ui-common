@@ -20,7 +20,7 @@
         <div class="flex-grow-1">
           <ng-template [cdkPortalOutlet]="_contentHeaderPortal"></ng-template>
         </div>
-        <div>
+        <div class="d-flex">
           <ng-container *ngFor="let action of registeredActions$ | async; first as isFirst">
             <div>
               <ng-container [ngTemplateOutlet]="$any(action)?.template"></ng-container>

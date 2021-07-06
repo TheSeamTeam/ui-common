@@ -94,7 +94,7 @@ class StoryExWidget4Component {
 }
 
 export default {
-  title: 'Framework/Dashboard',
+  title: 'Framework/Dashboard/Widgets',
   component: DashboardComponent,
   decorators: [
     // withKnobs
@@ -120,7 +120,7 @@ export default {
   ]
 } as Meta
 
-export const Widgets: Story = (args) => ({
+export const Basic: Story = (args) => ({
   props: {
     widgets: [
       { widgetId: 'widget-1', col: 0, order: 0, component: StoryExWidget1Component },

@@ -234,7 +234,7 @@ const navItems: ISideNavItem[] = [
 ]
 
 export default {
-  title: 'Framework/BaseLayout',
+  title: 'Framework/Base Layout',
   component: TheSeamBaseLayoutComponent,
   decorators: [
     moduleMetadata({

@@ -7,7 +7,7 @@ import { TheSeamPopoverDirective } from './popover.directive'
 import { TheSeamPopoverModule } from './popover.module'
 
 export default {
-  title: 'Components/Popover',
+  title: 'Popover/Components',
   component: TheSeamPopoverDirective,
   decorators: [
     moduleMetadata({

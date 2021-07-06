@@ -9,7 +9,7 @@ import { TheSeamButtonsModule } from '../buttons.module'
 import { ButtonComponent } from './button.component'
 
 export default {
-  title: 'Components/Buttons/Button',
+  title: 'Buttons/Components/Button',
   component: ButtonComponent,
   decorators: [
     moduleMetadata({
@@ -33,10 +33,12 @@ export const Basic: Story = (args) => ({
     </button>
   `
 })
+Basic.args = {
+  btnText: 'Example Text'
+}
 Basic.argTypes = {
   btnText: {
-    defaultValue: 'Example Text',
-    control: { type: 'text' }
+    control: { type: 'text' },
   },
   theme: themeWithOutlineArgType,
   size: sizeArgType,

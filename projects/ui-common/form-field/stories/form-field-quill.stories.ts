@@ -12,7 +12,7 @@ import { TheSeamFormFieldComponent } from './../form-field.component'
 import { TheSeamFormFieldModule } from './../form-field.module'
 
 export default {
-  title: 'Components/Form Field/Quill',
+  title: 'Form Field/Components/Quill',
   component: TheSeamFormFieldComponent,
   decorators: [
     moduleMetadata({

@@ -7,7 +7,7 @@ import { TheSeamPdfViewerComponent } from './pdf-viewer.component'
 import { TheSeamPdfViewerModule } from './pdf-viewer.module'
 
 export default {
-  title: 'Components/Viewers/Pdf',
+  title: 'Viewers/Components/Pdf',
   component: TheSeamPdfViewerComponent,
   decorators: [
     moduleMetadata({

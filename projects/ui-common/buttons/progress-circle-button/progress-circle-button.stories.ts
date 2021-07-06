@@ -9,7 +9,7 @@ import { TheSeamButtonsModule } from '../buttons.module'
 import { ProgressCircleButtonComponent } from './progress-circle-button.component'
 
 export default {
-  title: 'Components/Buttons/ProgressCircleButton',
+  title: 'Buttons/Components/ProgressCircleButton',
   component: ProgressCircleButtonComponent,
   decorators: [
     moduleMetadata({

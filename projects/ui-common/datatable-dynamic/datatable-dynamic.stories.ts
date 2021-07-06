@@ -57,7 +57,7 @@ import { exampleData1 } from './_story-data/dynamic-data-1'
     </seam-modal-footer>
   `
 })
-export class StoryExModalLazyComponent { }
+class StoryExModalLazyComponent { }
 
 @NgModule({
   declarations: [
@@ -72,7 +72,7 @@ export class StoryExModalLazyComponent { }
     StoryExModalLazyComponent
   ]
 })
-export class StoryExModalLazyModule { }
+class StoryExModalLazyModule { }
 
 // This array defines which "componentId" maps to which lazy-loaded module.
 // const manifest: IDynamicComponentManifest[] = [
@@ -188,7 +188,7 @@ const manifests: IDynamicComponentManifest[] = [
 ]
 
 export default {
-  title: 'Components/Datatable/Dynamic',
+  title: 'Datatable Dynamic/Components',
   component: DatatableDynamicComponent,
   decorators: [
     moduleMetadata({

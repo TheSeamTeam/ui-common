@@ -1,143 +1,84 @@
-import { storiesOf } from '@storybook/angular'
+import { Meta, moduleMetadata, Story } from '@storybook/angular'
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 import { faShare } from '@fortawesome/free-solid-svg-icons'
 
+import { TheSeamIconModule } from '../icon.module'
 import { IconComponent } from './icon.component'
 
-storiesOf('Components/Icon/Image', module)
-
-  .add('Url', () => ({
-    moduleMetadata: {
-      declarations: [
-        IconComponent
-      ],
+export default {
+  title: 'Icon/Components/Basic',
+  component: IconComponent,
+  decorators: [
+    moduleMetadata({
       imports: [
         BrowserAnimationsModule,
-        FontAwesomeModule
+        TheSeamIconModule
       ]
-    },
-    props: {
-      icon: 'assets/images/icons8-cotton-filled-48.png',
-      icon2: 'assets/images/landdb-14d6a0.PNG'
-    },
-    template: `
-      <div class="p-5">
-        <seam-icon [icon]="icon"></seam-icon>
+    })
+  ]
+} as Meta
+
+export const Url: Story = (args) => ({ props: { ...args } })
+Url.args = {
+  icon: 'assets/images/icons8-cotton-filled-48.png'
+}
+
+export const UrlStyledSquare: Story = (args) => ({ props: { ...args } })
+UrlStyledSquare.storyName = 'Url(styled-square)'
+UrlStyledSquare.args = {
+  icon: 'assets/images/icons8-cotton-filled-48.png',
+  iconType: 'styled-square'
+}
+
+export const UrlImageFill: Story = (args) => ({
+  props: { ...args },
+  template: `
+    <div class="p-5">
+      <div class="alert alert-warning">Only partially implemented so far for images. The image will shrink but not grow currently.</div>
+
+      <div class="border mb-2" style="height: 200px; width: 200px;">
+        <seam-icon [icon]="icon" iconType="image-fill"></seam-icon>
       </div>
-      <div class="p-5">
-        <seam-icon [icon]="icon2"></seam-icon>
-      </div>`
-  }))
 
-  .add('Url(styled-square)', () => ({
-    moduleMetadata: {
-      declarations: [
-        IconComponent
-      ],
-      imports: [
-        BrowserAnimationsModule,
-        FontAwesomeModule
-      ]
-    },
-    props: {
-      icon: 'assets/images/icons8-cotton-filled-48.png',
-      icon2: 'assets/images/landdb-14d6a0.PNG'
-    },
-    template: `
-      <div class="p-5">
-        <seam-icon [icon]="icon" iconType="styled-square"></seam-icon>
+      <div class="border" style="height: 200px; width: 200px;">
+        <seam-icon [icon]="icon2" iconType="image-fill"></seam-icon>
       </div>
-      <div class="p-5">
-        <seam-icon [icon]="icon2" iconType="styled-square"></seam-icon>
-      </div>`
-  }))
+    </div>`
+})
+UrlImageFill.storyName = 'Url(image-fill)'
+UrlImageFill.args = {
+  icon: 'assets/images/icons8-cotton-filled-48.png',
+  iconType: 'image-fill'
+}
 
-  .add('Url(image-fill)', () => ({
-    moduleMetadata: {
-      declarations: [
-        IconComponent
-      ],
-      imports: [
-        BrowserAnimationsModule,
-        FontAwesomeModule
-      ]
-    },
-    props: {
-      icon: 'assets/images/icons8-cotton-filled-48.png',
-      icon2: 'assets/images/landdb-14d6a0.PNG'
-    },
-    template: `
-      <div class="p-5">
-        <div class="alert alert-warning">Only partially implemented so far for images. The image will shrink but not grow currently.</div>
+export const FontAwesome: Story = (args) => ({
+  props: {
+    ...args,
+    icon: faShare
+  }
+})
+FontAwesome.storyName = 'FontAwesome'
 
-        <div class="border mb-2" style="height: 200px; width: 200px;">
-          <seam-icon [icon]="icon" iconType="image-fill"></seam-icon>
-        </div>
+export const FontAwesomeStyledSquare: Story = (args) => ({
+  props: {
+    ...args,
+    icon: faShare
+  }
+})
+FontAwesomeStyledSquare.storyName = 'FontAwesome(styled-square)'
+FontAwesomeStyledSquare.args = {
+  iconType: 'styled-square'
+}
 
-        <div class="border" style="height: 200px; width: 200px;">
-          <seam-icon [icon]="icon2" iconType="image-fill"></seam-icon>
-        </div>
-      </div>`
-  }))
-
-  .add('FontAwesome', () => ({
-    moduleMetadata: {
-      declarations: [
-        IconComponent
-      ],
-      imports: [
-        BrowserAnimationsModule,
-        FontAwesomeModule
-      ]
-    },
-    props: {
-      icon: faShare
-    },
-    template: `
-      <div class="p-5">
-        <seam-icon [icon]="icon"></seam-icon>
-      </div>`
-  }))
-
-  .add('FontAwesome(styled-square)', () => ({
-    moduleMetadata: {
-      declarations: [
-        IconComponent
-      ],
-      imports: [
-        BrowserAnimationsModule,
-        FontAwesomeModule
-      ]
-    },
-    props: {
-      icon: faShare
-    },
-    template: `
-      <div class="p-5">
-        <seam-icon [icon]="icon" iconType="styled-square"></seam-icon>
-      </div>`
-  }))
-
-  .add('FontAwesome(image-fill)', () => ({
-    moduleMetadata: {
-      declarations: [
-        IconComponent
-      ],
-      imports: [
-        BrowserAnimationsModule,
-        FontAwesomeModule
-      ]
-    },
-    props: {
-      icon: faShare
-    },
-    template: `
-      <div class="p-5">
-        <div class="border" style="height: 200px; width: 200px;">
-          <seam-icon [icon]="icon" iconType="image-fill"></seam-icon>
-        </div>
-      </div>`
-  }))
+export const FontAwesomeImageFill: Story = (args) => ({
+  props: {
+    ...args,
+    icon: faShare
+  }
+})
+FontAwesomeImageFill.storyName = 'FontAwesome(image-fill)'
+FontAwesomeImageFill.args = {
+  iconType: 'image-fill'
+}

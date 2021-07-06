@@ -8,7 +8,7 @@ import { TheSeamSchemaFormModule } from '../../schema-form/schema-form.module'
 import { TheSeamSchemaFormCheckboxComponent } from './schema-form-checkbox.component'
 
 export default {
-  title: 'Framework/SchemaForm/Controls/Checkbox',
+  title: 'Framework/Schema Form Controls/Checkbox',
   component: TheSeamSchemaFormCheckboxComponent,
   decorators: [
     moduleMetadata({

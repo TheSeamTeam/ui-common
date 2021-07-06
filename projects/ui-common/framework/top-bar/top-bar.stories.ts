@@ -12,7 +12,7 @@ import { TheSeamTopBarComponent } from './top-bar.component'
 import { TheSeamTopBarModule } from './top-bar.module'
 
 export default {
-  title: 'Framework/TopBar',
+  title: 'Framework/Top Bar',
   component: TheSeamTopBarComponent,
   decorators: [
     moduleMetadata({

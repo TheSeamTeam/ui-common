@@ -7,7 +7,7 @@ import { TheSeamCheckboxComponent } from './checkbox.component'
 import { TheSeamCheckboxModule } from './checkbox.module'
 
 export default {
-  title: 'Components/Checkbox',
+  title: 'Checkbox/Components',
   component: TheSeamCheckboxComponent,
   decorators: [
     moduleMetadata({

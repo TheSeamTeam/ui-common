@@ -11,7 +11,7 @@ import { CardComponent } from './card.component'
 import { TheSeamCardModule } from './card.module'
 
 export default {
-  title: 'Components/Card',
+  title: 'Card/Components',
   component: CardComponent,
   subcomponents: [
     CardActionComponent,

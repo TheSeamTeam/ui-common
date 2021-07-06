@@ -1,7 +1,4 @@
-import { action } from '@storybook/addon-actions'
-// import { boolean, select, text, withKnobs } from '@storybook/addon-knobs'
-import { linkTo } from '@storybook/addon-links'
-import { moduleMetadata, storiesOf } from '@storybook/angular'
+import { moduleMetadata } from '@storybook/angular'
 
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
@@ -12,7 +9,7 @@ import { TheSeamWidgetModule } from '../widget.module'
 import { WidgetComponent } from './widget.component'
 
 export default {
-  title: 'Components/Widget',
+  title: 'Widget/Components',
   component: WidgetComponent,
   decorators: [
     moduleMetadata({
