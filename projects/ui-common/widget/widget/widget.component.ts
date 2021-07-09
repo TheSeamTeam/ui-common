@@ -51,8 +51,7 @@ export class WidgetComponent implements OnInit {
   /** @ignore */
   collapseIcon = faAngleDown
 
-  /** @ignore */
-  collapsed = false
+  @Input() @InputBoolean() collapsed: boolean = false
 
   /**
    * Toggles the top header bar of a widget. This should be true for most
@@ -118,9 +117,10 @@ export class WidgetComponent implements OnInit {
   ngOnInit() { }
 
   /**
-   * Collapses a widget
+   * Toggles a widget's collapsed state.
    *
    * NOTE: Collapse is still being worked on.
+   * @depracated
    * @ignore
    */
   collapse() {

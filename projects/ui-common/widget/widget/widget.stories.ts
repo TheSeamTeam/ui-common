@@ -1,4 +1,4 @@
-import { moduleMetadata } from '@storybook/angular'
+import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular'
 
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
@@ -19,136 +19,102 @@ export default {
         TheSeamWidgetModule
       ]
     }),
-    // withKnobs
+    componentWrapperDecorator(story => `<div class="p-4" style="height: 270px; width: 500px;">${story}</div>`)
   ],
   parameters: {
     docs: {
       iframeHeight: '300px',
     }
   }
-}
+} as Meta
 
-export const Simple = () => ({
+export const Simple: Story = (args) => ({
   props: {
-    icon: faWrench,
-    // title: text('Header Title', 'Example Widget'),
-    // loading: boolean('Loading', false)
-  },
-  template: `
-    <div class="p-4" style="height: 270px; width: 500px;">
-      <seam-widget [icon]="icon" [titleText]="title" [loading]="loading">
-        Widget Body
-      </seam-widget>
-    </div>`
-})
-
-Simple.story = {
-  name: 'Simple'
-}
-
-export const FAIcon = () => ({
-  props: {
+    ...args,
     icon: faWrench,
   },
-  template: `
-    <div class="p-4" style="height: 270px; width: 500px;">
-      <seam-widget [icon]="icon" titleText="Example Widget">
-        Widget Body
-      </seam-widget>
-    </div>`
+  template: `<seam-widget>Widget Body</seam-widget>`
 })
-
-FAIcon.story = {
-  name: 'FontAwesome Icon'
+Simple.args = {
+  titleText: 'Example Widget'
 }
 
-export const ImageIcon = () => ({
+export const FAIcon: Story = (args) => ({
   props: {
+    ...args,
+    icon: faWrench,
+  },
+  template: `<seam-widget>Widget Body</seam-widget>`
+})
+FAIcon.args = {
+  titleText: 'Example Widget'
+}
+
+export const ImageIcon: Story = (args) => ({
+  props: {
+    ...args,
     icon: 'assets/images/icons8-pass-fail-32.png'
   },
-  template: `
-    <div class="p-4" style="height: 270px; width: 500px;">
-      <seam-widget [icon]="icon" titleText="Example Widget">
-        Widget Body
-      </seam-widget>
-    </div>`
+  template: `<seam-widget>Widget Body</seam-widget>`
 })
-
-ImageIcon.story = {
-  name: 'Image Icon'
+ImageIcon.args = {
+  titleText: 'Example Widget'
 }
 
-export const TitleTemplate = () => ({
+export const TitleTemplate: Story = (args) => ({
   props: {
+    ...args,
     icon: faWrench,
   },
   template: `
-    <div class="p-4" style="height: 270px; width: 500px;">
-      <seam-widget [icon]="icon">
-        <ng-template seamWidgetTitleTpl>
-          Example Widget
-          <span class="badge float-right text-light badge-success">
-            complete
-          </span>
-        </ng-template>
-        Widget Body
-      </seam-widget>
-    </div>`
+    <seam-widget>
+      <ng-template seamWidgetTitleTpl>
+        {{ titleText }}
+        <span class="badge float-right text-light badge-success">
+          complete
+        </span>
+      </ng-template>
+      Widget Body
+    </seam-widget>`
 })
-
-TitleTemplate.story = {
-  name: 'Title Template'
+TitleTemplate.args = {
+  titleText: 'Example Widget'
 }
 
-export const IconTemplate = () => ({
-  props: { },
+export const IconTemplate: Story = (args) => ({
+  props: { ...args },
   template: `
-    <div class="p-4" style="height: 270px; width: 500px;">
-      <seam-widget titleText="Example Widget">
-        <ng-template seamWidgetIconTpl>
-          <span class="border border-danger">
-            <img src="assets/images/icons8-pass-fail-32.png">
-          </span>
-        </ng-template>
-        Widget Body
-      </seam-widget>
-    </div>`
+    <seam-widget>
+      <ng-template seamWidgetIconTpl>
+        <span class="border border-danger">
+          <img src="assets/images/icons8-pass-fail-32.png">
+        </span>
+      </ng-template>
+      Widget Body
+    </seam-widget>`
 })
-
-IconTemplate.story = {
-  name: 'Icon Template'
+IconTemplate.args = {
+  titleText: 'Example Widget'
 }
 
-export const Loading = () => ({
+export const Loading: Story = (args) => ({
   props: {
-    icon: faWrench,
-    // title: text('Header Title', 'Example Widget'),
-    // loading: boolean('Loading', true)
+    ...args,
+    icon: faWrench
   },
   template: `
-    <div class="p-4" style="height: 270px; width: 500px;">
-      <seam-widget [icon]="icon" [titleText]="title" [loading]="loading">
-        Widget Body
-      </seam-widget>
-    </div>`
+    <seam-widget [icon]="icon" [titleText]="title" [loading]="loading">
+      Widget Body
+    </seam-widget>`
 })
-
-Loading.story = {
-  name: 'Loading'
+Loading.args = {
+  loading: true
 }
 
-export const NoHeader = () => ({
-  props: {
-    // loading: boolean('Loading', false)
-  },
-  template: `
-    <div class="p-4" style="height: 270px; width: 500px;">
-      <seam-widget [hasHeader]="false" [loading]="loading">
-        Widget Body
-      </seam-widget>
-    </div>`
+export const NoHeader: Story = (args) => ({
+  props: { ...args },
+  template: `<seam-widget>Widget Body</seam-widget>`
 })
-
-NoHeader.story = {
-  name: 'No Header'
+NoHeader.args = {
+  hasHeader: false
 }
