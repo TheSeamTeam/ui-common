@@ -90,6 +90,7 @@
     "@storybook/addon-jest": "6.4.0-alpha.16",
     "@storybook/addon-links": "6.4.0-alpha.16",
     "@storybook/addon-measure": "6.4.0-alpha.16",
+    "@storybook/addon-outline": "6.4.0-alpha.16",
     "@storybook/addon-storyshots": "6.4.0-alpha.16",
     "@storybook/addon-storysource": "6.4.0-alpha.16",
     "@storybook/addon-toolbars": "6.4.0-alpha.16",
