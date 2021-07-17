@@ -8,19 +8,21 @@ import { TheSeamDatatableModule } from '@theseam/ui-common/datatable'
 
 # Cell Type Date
 
-<Meta title="TableCellTypes/Date" decorators={[moduleMetadata({
-  imports: [
-    BrowserAnimationsModule,
-    TheSeamDatatableModule,
-    TheSeamTableCellTypesModule
-  ]
-})]}
-parameters={{
+<Meta title="TableCellTypes/Date"
+  decorators={[moduleMetadata({
+    imports: [
+      BrowserAnimationsModule,
+      TheSeamDatatableModule,
+      TheSeamTableCellTypesModule
+    ]
+  })]}
+  parameters={{
     layout: 'fullscreen',
     docs: {
       iframeHeight: '400px',
     }
-  }}/>
+  }}
+/>
 
 ## Date
 
@@ -53,6 +55,21 @@ parameters={{
 }
 ```
 
+#### Config with styles
+
+```js
+{
+  ...,
+  cellype: 'date'
+  cellTypeConfig: {
+    type: 'date',
+    styles: 'color: red; background-color: blue'
+  }
+}
+```
+
+#### Examples
+
 <Preview>
   <Story name="Basic" height="150px">
     {{
@@ -68,19 +85,6 @@ parameters={{
     }}
   </Story>
 </Preview>
-
-#### Config with styles
-
-```js
-{
-  ...,
-  cellype: 'date'
-  cellTypeConfig: {
-    type: 'date',
-    styles: 'color: red; background-color: blue'
-  }
-}
-```
 
 <Preview>
   <Story name="WithConfig" height="150px">
