@@ -1,25 +1,46 @@
 import { moduleMetadata } from '@storybook/angular'
-import { Story, Meta, Preview, Source } from '@storybook/addon-docs/blocks'
-// import { linkTo } from '@storybook/addon-links'
+import { Story, Meta, Preview } from '@storybook/addon-docs'
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { RouterModule } from '@angular/router'
-import { FormControl, ReactiveFormsModule } from '@angular/forms'
 
 import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
+import { TheSeamDatatableModule } from '@theseam/ui-common/datatable'
+import {
+  DynamicActionApiService,
+  DynamicActionLinkService,
+  DynamicActionModalService,
+  ExportersDataEvaluator,
+  JexlEvaluator,
+  THESEAM_DYNAMIC_ACTION,
+  THESEAM_DYNAMIC_VALUE_EVALUATOR
+} from '@theseam/ui-common/dynamic'
 
-import { TheSeamDatatableModule } from '../../datatable.module'
+# Cell Type Icon
 
-# Datatable Cell Types
-
-<Meta title="Datatable/Docs/CellTypes/Icon" decorators={[moduleMetadata({
-  imports: [
-    BrowserAnimationsModule,
-    RouterModule.forRoot([], { useHash: true }),
-    TheSeamDatatableModule,
-    TheSeamTableCellTypesModule
-  ]
-})]} />
+<Meta title="TableCellTypes/Icon"
+  decorators={[moduleMetadata({
+    imports: [
+      BrowserAnimationsModule,
+      RouterModule.forRoot([], { useHash: true }),
+      TheSeamDatatableModule,
+      TheSeamTableCellTypesModule,
+    ],
+    providers: [
+      { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
+      { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: ExportersDataEvaluator, multi: true },
+      { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionApiService, multi: true },
+      { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionLinkService, multi: true },
+      { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionModalService, multi: true },
+    ]
+  })]}
+  parameters={{
+    layout: 'fullscreen',
+    docs: {
+      iframeHeight: '400px',
+    }
+  }}
+/>
 
 ## Icon
 
@@ -27,7 +48,7 @@ import { TheSeamDatatableModule } from '../../datatable.module'
 
 ```js
 {
-  type = 'icon',
+  type: 'icon',
 
   /**
    * Styles added to the root cell elements `style` attribute.
@@ -78,7 +99,7 @@ import { TheSeamDatatableModule } from '../../datatable.module'
 ```js
 {
   ...,
-  cellype = 'icon'
+  cellype: 'icon'
 }
 ```
 
@@ -87,8 +108,8 @@ import { TheSeamDatatableModule } from '../../datatable.module'
 ```js
 {
   ...,
-  cellType = {
-    type = 'icon'
+  cellType: {
+    type: 'icon'
   }
 }
 ```
@@ -98,9 +119,9 @@ import { TheSeamDatatableModule } from '../../datatable.module'
 ```js
 {
   ...,
-  cellType = {
-    type = 'icon',
-    styles = 'color: red; background-color: blue'
+  cellType: {
+    type: 'icon',
+    styles: 'color: red; background-color: blue'
   }
 }
 ```
