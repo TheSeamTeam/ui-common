@@ -8,12 +8,17 @@ import { Router, RouterModule } from '@angular/router'
 import { faBuilding } from '@fortawesome/free-regular-svg-icons'
 import { faSignature } from '@fortawesome/free-solid-svg-icons'
 
+import { SideNavComponent } from '../side-nav.component'
 import { TheSeamSideNavModule } from '../side-nav.module'
 import { SideNavItemComponent } from './side-nav-item.component'
 
 @Component({ template: `Url: {{ router.url }}` })
 class StoryRoutePlacholderComponent {
   constructor(public router: Router) { }
+}
+
+class MockSideNavComponent implements Partial<SideNavComponent> {
+  overlay = false
 }
 
 // tslint:disable-next-line:directive-selector
@@ -37,9 +42,13 @@ export default {
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
+        { provide: SideNavComponent, useClass: MockSideNavComponent }
       ]
     })
-  ]
+  ],
+  parameters: {
+    layout: 'fullscreen',
+  }
 } as Meta
 
 export const NoChildren: Story = (args) => ({
@@ -66,7 +75,7 @@ export const NoChildren: Story = (args) => ({
   },
   template: `
     <div class="d-flex flex-row vh-100" [storyNavToggle]="currentUrl">
-      <div style="width: 260px; background-color: #e9ecef;" class="h-100">
+      <div style="width: 260px;" class="h-100 bg-primary">
         <seam-side-nav-item
           [itemType]="itemType"
           [icon]="icon"
@@ -76,7 +85,6 @@ export const NoChildren: Story = (args) => ({
           [children]="children">
         </seam-side-nav-item>
       </div>
-
 
       <div class="p-4">
         <router-outlet></router-outlet>
@@ -133,7 +141,7 @@ export const WithChildren: Story = (args) => ({
   },
   template: `
     <div class="d-flex flex-row vh-100" [storyNavToggle]="currentUrl">
-      <div style="width: 260px; background-color: #e9ecef;" class="h-100">
+      <div style="width: 260px;" class="h-100 bg-primary">
         <seam-side-nav-item
           [itemType]="itemType"
           [icon]="icon"
@@ -142,7 +150,6 @@ export const WithChildren: Story = (args) => ({
           [children]="children">
         </seam-side-nav-item>
       </div>
-
 
       <div class="p-4">
         <router-outlet></router-outlet>
