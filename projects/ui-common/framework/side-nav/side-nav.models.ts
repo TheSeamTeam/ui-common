@@ -26,8 +26,16 @@ export interface ISideNavDivider extends ISideNavItemBase<'divider'> {
 }
 
 export interface ISideNavBadge {
+
   text?: string
+
   theme?: ThemeTypes
+
+  /**
+   * Content to provide to assistive technology, such as screen readers.
+   */
+  srContent?: string
+
   tooltip?: string | SideNavItemBadgeTooltip
 }
 
