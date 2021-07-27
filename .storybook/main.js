@@ -8,15 +8,14 @@ module.exports = {
     '@storybook/addon-storysource',
     '@storybook/addon-actions',
     '@storybook/addon-links',
-    // '@storybook/addon-knobs',
     // '@storybook/addon-backgrounds',
     '@storybook/addon-a11y',
     '@storybook/addon-viewport',
     '@storybook/addon-toolbars',
     '@storybook/addon-measure',
-    'storybook-addon-outline',
+    '@storybook/addon-outline',
+    '@storybook/addon-jest',
     'storybook-dark-mode',
-    '@storybook/addon-jest'
   ],
   core: {
     builder: 'webpack5',
