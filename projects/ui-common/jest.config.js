@@ -13,7 +13,8 @@ module.exports = {
   testMatch: [
     // TODO: Remove the specific folders when the projects tests are more stable.
     "**/graphql/**/*.spec.ts",
-    "**/buttons/**/*.spec.ts"
+    "**/buttons/**/*.spec.ts",
+    "**/framework/side-nav/**/*.spec.ts"
   ],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/' }),
 };

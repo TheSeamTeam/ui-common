@@ -65,3 +65,9 @@ export interface ISideNavButton extends ISideNavItemBase<'button'> {
 }
 
 export type ISideNavItem = ISideNavTitle | ISideNavDivider | ISideNavBasic | ISideNavLink | ISideNavButton
+
+export interface SideNavItemState {
+  active: boolean
+}
+
+export type SideNavItemWithState = ISideNavItem & { __state: SideNavItemState }

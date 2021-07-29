@@ -101,9 +101,7 @@ export class SideNavItemComponent implements OnInit, OnDestroy {
 
   private readonly _ngUnsubscribe = new Subject()
 
-  faAngleLeft = faAngleLeft
-
-  private _initializad = false
+  readonly faAngleLeft = faAngleLeft
 
   @Input() itemType: 'divider' | 'basic' | 'link' | 'button' | 'title' | undefined | null
 
@@ -114,8 +112,8 @@ export class SideNavItemComponent implements OnInit, OnDestroy {
   @Input()
   set link(value: string | undefined | null) { this._link.next(value) }
   get link() { return this._link.value }
-  private _link = new BehaviorSubject<string | undefined | null>(undefined)
-  public link$ = this._link.asObservable()
+  private readonly _link = new BehaviorSubject<string | undefined | null>(undefined)
+  public readonly link$ = this._link.asObservable()
 
   @Input() queryParams: { [k: string]: any } | undefined | null
 
@@ -170,21 +168,20 @@ export class SideNavItemComponent implements OnInit, OnDestroy {
   }
   private _badgeTooltip: SideNavItemBadgeTooltip | undefined | null
 
-  public isActive$: Observable<boolean>
-  public childGroupAnimState$: Observable<string>
-  public compactAnimState$: Observable<string>
-  public hasActiveChild$: Observable<boolean>
+  public readonly isActive$: Observable<boolean>
+  public readonly childGroupAnimState$: Observable<string>
+  public readonly compactAnimState$: Observable<string>
+  public readonly hasActiveChild$: Observable<boolean>
 
-  private _registeredChildren = new BehaviorSubject<SideNavItemComponent[]>([])
+  private readonly _registeredChildren = new BehaviorSubject<SideNavItemComponent[]>([])
 
   constructor(
-    private _routerHelpers: RouterHelpersService,
-    private _renderer: Renderer2,
-    private _element: ElementRef,
-    private _sideNav: SideNavComponent,
-    @Optional() @SkipSelf() @Host() private _parent?: SideNavItemComponent
+    private readonly _routerHelpers: RouterHelpersService,
+    private readonly _renderer: Renderer2,
+    private readonly _element: ElementRef,
+    private readonly _sideNav: SideNavComponent,
+    @Optional() @SkipSelf() @Host() private readonly _parent?: SideNavItemComponent
   ) {
-
     this.hasActiveChild$ = this._registeredChildren.pipe(
       switchMap(children => Array.isArray(children) && children.length > 0
         ? combineLatest(children.map(c => c.isActive$)) : of([])
