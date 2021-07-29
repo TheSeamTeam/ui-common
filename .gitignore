@@ -44,6 +44,7 @@ testem.log
 documentation.json
 build-storybook.log
 .verdaccio-cache
+addon-jest.testresults.json
 
 # System Files
 .DS_Store
