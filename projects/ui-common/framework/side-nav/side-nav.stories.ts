@@ -66,13 +66,16 @@ export default {
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
       ]
-    })
-  ]
+    }),
+  ],
+  parameters: {
+    layout: 'fullscreen',
+  }
 } as Meta
 
 export const Basic: Story = (args) => ({
   props: {
-    navItems: [
+    items: [
       {
         itemType: 'link',
         label: 'Example 1',
@@ -211,9 +214,8 @@ export const Basic: Story = (args) => ({
   template: `
     <div class="d-flex flex-row vh-100">
       <div style="width: 260px;" class="h-100">
-        <seam-side-nav [items]="navItems"></seam-side-nav>
+        <seam-side-nav [items]="items"></seam-side-nav>
       </div>
-
 
       <div class="p-4">
         <router-outlet></router-outlet>

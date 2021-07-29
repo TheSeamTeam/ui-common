@@ -25,6 +25,7 @@
       [link]="$any(child).link"
       [badgeText]="$any(child).badge?.text"
       [badgeTheme]="$any(child).badge?.theme || 'danger'"
+      [badgeSrContent]="$any(child).badge?.srContent"
       [queryParams]="$any(child).queryParams"
       routerLinkActive="active"
       [routerLinkActiveOptions]="{ exact: true }"
@@ -144,7 +145,10 @@
     [placement]="$any(badgeTooltip)?.placement"
     [container]="$any(badgeTooltip)?.container"
     [disableTooltip]="!badgeTooltip || !!$any(badgeTooltip)?.disabled">
-    <span class="badge badge-{{ badgeTheme }}">{{ badgeText }}</span>
+    <span class="badge badge-pill badge-{{ badgeTheme }}">
+      {{ badgeText }}
+      <span *ngIf="badgeSrContent">{{ badgeSrContent }}</span>
+    </span>
     <!-- <span class="badge badge-danger">5</span> -->
   </div>
 </ng-template>

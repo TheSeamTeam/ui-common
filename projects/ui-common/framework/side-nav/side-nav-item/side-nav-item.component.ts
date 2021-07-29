@@ -140,6 +140,11 @@ export class SideNavItemComponent implements OnInit, OnDestroy {
   @Input() badgeText: string | undefined | null
   @Input() badgeTheme: ThemeTypes | undefined | null = 'danger'
 
+  /**
+   * Content to provide to assistive technology, such as screen readers.
+   */
+  @Input() badgeSrContent: string | undefined | null
+
   @Input()
   get badgeTooltip() { return this._badgeTooltip }
   set badgeTooltip(value: string | SideNavItemBadgeTooltip | undefined | null) {
