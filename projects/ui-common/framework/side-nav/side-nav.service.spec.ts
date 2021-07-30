@@ -11,8 +11,10 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic'
 import { platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing'
 import { Router } from '@angular/router'
 import { RouterTestingModule } from '@angular/router/testing'
+
 import { createRoutingFactory, SpectatorRouting } from '@ngneat/spectator/jest'
 
+import { ISideNavItem } from './side-nav.models'
 import { TheSeamSideNavService } from './side-nav.service'
 
 @Component({ template: `<router-outlet></router-outlet>` })
@@ -51,7 +53,6 @@ describe('TheSeamSideNavService', () => {
   //   ɵresetJitOptions()
   // })
 
-
   let spectator: SpectatorRouting<TestPlacholderComponent>
   const createComponent = createRoutingFactory({
     component: TestPlacholderComponent,
@@ -69,14 +70,24 @@ describe('TheSeamSideNavService', () => {
     expect(service).toBeTruthy()
   })
 
-  it('should be active', () => {
+  it('should be active', async () => {
     const service = spectator.inject(TheSeamSideNavService)
-    const items = service.getItemsState([
+    const router = spectator.inject(Router)
+
+    await spectator.fixture.whenStable()
+
+    router.navigateByUrl('/foo')
+
+    await spectator.fixture.whenStable()
+
+    const items: ISideNavItem[] = [
       {
+        label: '',
         itemType: 'link',
         link: '/foo'
       }
-    ])
+    ]
+    service.updateItemsStates(items)
     const item = items[0]
 
     expect(item.__state).toBe(true)
