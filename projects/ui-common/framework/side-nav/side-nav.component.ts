@@ -12,7 +12,7 @@ import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion'
 import { ChangeDetectionStrategy, Component, HostBinding, Inject, Input, OnDestroy, OnInit, Optional, ViewEncapsulation } from '@angular/core'
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router'
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs'
-import { distinctUntilChanged, filter, map, mapTo, pairwise, startWith, takeUntil, tap } from 'rxjs/operators'
+import { distinctUntilChanged, filter, map, mapTo, pairwise, shareReplay, startWith, switchMap, takeUntil, tap } from 'rxjs/operators'
 
 import { InputBoolean } from '@theseam/ui-common/core'
 import { TheSeamLayoutService } from '@theseam/ui-common/layout'
@@ -21,6 +21,7 @@ import { THESEAM_BASE_LAYOUT_REF } from '../base-layout/index'
 import type { ITheSeamBaseLayoutNav, ITheSeamBaseLayoutRef } from '../base-layout/index'
 
 import { ISideNavItem } from './side-nav.models'
+import { TheSeamSideNavService } from './side-nav.service'
 
 const EXPANDED_STATE = 'expanded'
 const COLLAPSED_STATE = 'collapsed'
@@ -60,6 +61,9 @@ export function sideNavExpandStateChangeFn(fromState: string, toState: string) {
   selector: 'seam-side-nav',
   templateUrl: './side-nav.component.html',
   styleUrls: ['./side-nav.component.scss'],
+  providers: [
+    TheSeamSideNavService
+  ],
   animations: [
 
     //
@@ -153,75 +157,82 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
   get items(): ISideNavItem[] { return this._items.value }
   set items(value: ISideNavItem[]) { this._items.next(value) }
   private _items = new BehaviorSubject<ISideNavItem[]>([])
-  public items$ = this._items.asObservable()
+  public readonly items$: Observable<ISideNavItem[]>
 
   @Input()
   get expanded(): boolean { return this._expanded.value }
   set expanded(value: boolean) { this._expanded.next(coerceBooleanProperty(value)) }
   private _expanded = new BehaviorSubject<boolean>(true)
-  public expanded$ = this._expanded.asObservable()
+  public readonly expanded$ = this._expanded.asObservable()
 
   @Input()
   get overlay(): boolean { return this._overlay.value }
   set overlay(value: boolean) { this._overlay.next(coerceBooleanProperty(value)) }
   private _overlay = new BehaviorSubject<boolean>(false)
-  public overlay$ = this._overlay.asObservable()
+  public readonly overlay$ = this._overlay.asObservable()
 
-  public isMobile$?: Observable<boolean>
-  public sideNavExpandedState$?: Observable<string>
+  public readonly isMobile$: Observable<boolean>
+  public readonly sideNavExpandedState$: Observable<string>
   public _backdropHidden = new BehaviorSubject<boolean>(true)
 
   constructor(
-    private _router: Router,
-    private activatedRoute: ActivatedRoute,
-    private _layout: TheSeamLayoutService,
-    @Optional() @Inject(THESEAM_BASE_LAYOUT_REF) private _baseLayoutRef: ITheSeamBaseLayoutRef
-  ) { }
+    private readonly _router: Router,
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly _layout: TheSeamLayoutService,
+    private readonly _sideNav: TheSeamSideNavService,
+    @Optional() @Inject(THESEAM_BASE_LAYOUT_REF) private readonly _baseLayoutRef: ITheSeamBaseLayoutRef
+  ) {
+    this.items$ = this._items.asObservable().pipe(
+      switchMap(items => this._sideNav.createItemsObservable(items)),
+      shareReplay({ bufferSize: 1, refCount: true }),
+      tap(items => console.log('items', items))
+    )
+
+    this.isMobile$ = this._layout.isMobile$.pipe(
+      tap(isMobile => isMobile && this.collapse())
+    )
+
+    this.sideNavExpandedState$ = combineLatest([ this.expanded$, this.overlay$ ]).pipe(
+      map(([ expanded, overlay ]) => expanded
+        ? overlay ? EXPANDED_OVERLAY_STATE : EXPANDED_STATE
+        : overlay ? COLLAPSED_OVERLAY_STATE : COLLAPSED_STATE
+      ),
+      distinctUntilChanged()
+    )
+  }
 
   ngOnInit() {
     if (this._baseLayoutRef) { this._baseLayoutRef.registerNav(this) }
 
-    this.isMobile$ = this._layout.isMobile$
-      .pipe(tap(isMobile => isMobile && this.collapse()))
+    // const routed$ = this._router.events
+    //   .pipe(
+    //     filter(e => e instanceof NavigationEnd),
+    //     mapTo(undefined)
+    //   )
 
-    const routed$ = this._router.events
-      .pipe(
-        filter(e => e instanceof NavigationEnd),
-        mapTo(undefined)
-      )
+    // combineLatest([ this.items$, routed$.pipe(startWith(undefined)) ])
+    //   .pipe(
+    //     map(v => v[0]),
+    //     map(items => {
+    //       const checkNode = (node: any) => {
+    //         if (node.children) {
+    //           for (const _n of node.children) {
+    //             checkNode(_n)
+    //           }
+    //         }
+    //       }
 
-    combineLatest([ this.items$, routed$.pipe(startWith(undefined)) ])
-      .pipe(
-        map(v => v[0]),
-        map(items => {
-          const checkNode = (node: any) => {
-            if (node.children) {
-              for (const _n of node.children) {
-                checkNode(_n)
-              }
-            }
-          }
-
-          for (const _n of items) {
-            checkNode(_n)
-          }
-        }),
-        takeUntil(this._ngUnsubscribe)
-      )
-      .subscribe()
+    //       for (const _n of items) {
+    //         checkNode(_n)
+    //       }
+    //     }),
+    //     takeUntil(this._ngUnsubscribe)
+    //   )
+    //   .subscribe()
 
     this.isMobile$
       .pipe(takeUntil(this._ngUnsubscribe))
       .subscribe(b => this.overlay = b)
-
-    this.sideNavExpandedState$ = combineLatest([ this.expanded$, this.overlay$ ])
-      .pipe(
-        map(([ expanded, overlay ]) => expanded
-          ? overlay ? EXPANDED_OVERLAY_STATE : EXPANDED_STATE
-          : overlay ? COLLAPSED_OVERLAY_STATE : COLLAPSED_STATE
-        ),
-        distinctUntilChanged()
-      )
 
     this.sideNavExpandedState$
       .pipe(takeUntil(this._ngUnsubscribe))

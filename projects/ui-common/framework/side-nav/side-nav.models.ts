@@ -5,25 +5,31 @@ import type { ThemeTypes } from '@theseam/ui-common/models'
 import { SideNavItemBadgeTooltip } from './side-nav-item/side-nav-item.component'
 
 export interface ISideNavItemState {
+  // parent?: ISideNavItem
   active: boolean
+  expanded: boolean
 }
 
-export interface ISideNavItemBase<T extends string> {
-  /**
-   * default: 'route'
-   */
-  itemType?: T
-
+export interface SideNavItemCanHaveState {
   /**
    * This prop is managed by the SideNav. If manually set it will be overwritten.
    *
    * @ignore
    */
-  __state?: ISideNavItemState
+   __state?: ISideNavItemState
 }
 
-export interface SideNavItemWithChildren {
+export interface SideNavItemCanHaveChildren {
   children?: ISideNavItem[]
+}
+
+export interface ISideNavItemBase<T extends string> extends SideNavItemCanHaveState {
+  /**
+   * default: 'route'
+   */
+  itemType?: T
+
+  badge?: ISideNavBadge
 }
 
 export interface ISideNavTitle extends ISideNavItemBase<'title'> {
@@ -48,20 +54,16 @@ export interface ISideNavBadge {
   tooltip?: string | SideNavItemBadgeTooltip
 }
 
-export interface ISideNavBasic extends ISideNavItemBase<'basic'> {
+export interface ISideNavBasic extends ISideNavItemBase<'basic'>, SideNavItemCanHaveChildren {
   icon?: SeamIcon
   label: string
-
-  badge?: ISideNavBadge
-
-  children?: ISideNavItem[]
 }
 
-export interface ISideNavLink extends ISideNavItemBase<'link'>, Partial<Pick<UrlCreationOptions, 'queryParams' | 'fragment' | 'queryParamsHandling' | 'preserveFragment'>> {
+export interface ISideNavLink extends ISideNavItemBase<'link'>,
+  Partial<Pick<UrlCreationOptions, 'queryParams' | 'fragment' | 'queryParamsHandling' | 'preserveFragment'>>,
+  SideNavItemCanHaveChildren {
   icon?: SeamIcon
   label: string
-
-  badge?: ISideNavBadge
 
   link?: any[] | string
 
@@ -69,8 +71,6 @@ export interface ISideNavLink extends ISideNavItemBase<'link'>, Partial<Pick<Url
    * Default: { paths: 'subset', queryParams: 'subset', fragment: 'ignored', matrixParams: 'ignored' }
    */
   matchOptions?: Partial<IsActiveMatchOptions>
-
-  children?: ISideNavItem[]
 }
 
 export interface ISideNavButton extends ISideNavItemBase<'button'> {
@@ -78,3 +78,10 @@ export interface ISideNavButton extends ISideNavItemBase<'button'> {
 }
 
 export type ISideNavItem = ISideNavTitle | ISideNavDivider | ISideNavBasic | ISideNavLink | ISideNavButton
+
+export interface SideNavItemStateChanged {
+  item: ISideNavItem
+  prop: string
+  prevValue: any
+  newValue: any
+}
