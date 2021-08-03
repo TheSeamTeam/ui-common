@@ -68,8 +68,8 @@ export function toggleButtonsFilter(data: any[], values: string[], options = Def
     if (cmp) {
       const filtered: any[] = []
       for (let i = 0; i < _data.length; i++) {
-        if (cmp(val, data[i], i) !== -1) {
-          filtered.push(data[i])
+        if (cmp(val, _data[i], i) !== -1) {
+          filtered.push(_data[i])
         }
       }
       _data = filtered

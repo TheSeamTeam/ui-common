@@ -9,7 +9,9 @@ import { RouterModule } from '@angular/router'
 import { TheSeamDataFiltersModule } from '@theseam/ui-common/data-filters'
 import { DatatableGqlDataSource } from '@theseam/ui-common/datatable'
 import { ExportersDataEvaluator, JexlEvaluator, THESEAM_DYNAMIC_VALUE_EVALUATOR } from '@theseam/ui-common/dynamic'
+import { StoryToastrService } from '@theseam/ui-common/story-helpers'
 import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
+import { ToastrModule, ToastrService } from 'ngx-toastr'
 
 import { TheSeamDatatableModule } from '../datatable.module'
 import { DatatableDataSource } from '../models/datatable-data-source'
@@ -417,7 +419,10 @@ class DTFilterWrapper {
 export const Filter: Story = (args) => ({
   moduleMetadata: {
     declarations: [ DTFilterWrapper ],
-    imports: [ TheSeamDataFiltersModule ],
+    imports: [
+      TheSeamDataFiltersModule,
+      ToastrModule.forRoot()
+    ],
     providers: [
       { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
       { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: ExportersDataEvaluator, multi: true },
@@ -451,6 +456,8 @@ export const Filter: Story = (args) => ({
       //   useValue: { name: 'text', component: DatatableMenuBarTextComponent, dataToken: THESEAM_MENUBAR_ITEM_DATA },
       //   multi: true
       // }
+
+      { provide: ToastrService, useClass: StoryToastrService }
     ]
   },
   props: {
