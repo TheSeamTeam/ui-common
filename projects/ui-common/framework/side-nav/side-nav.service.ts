@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { ActivatedRoute, IsActiveMatchOptions, NavigationEnd, Router, UrlCreationOptions } from '@angular/router'
-import { BehaviorSubject, combineLatest, Observable, of, Subject, Subscriber } from 'rxjs'
+import { BehaviorSubject, combineLatest, defer, Observable, of, Subject, Subscriber } from 'rxjs'
 import { distinctUntilChanged, filter, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators'
 
 import { hasProperty, notNullOrUndefined } from '@theseam/ui-common/utils'
@@ -38,34 +38,39 @@ export class TheSeamSideNavService {
   }
 
   public createItemsObservable(items: ISideNavItem[]): Observable<ISideNavItem[]> {
-    return new Observable((subscriber: Subscriber<ISideNavItem[]>) => {
-      const stateChangeSub = this.itemChanged.pipe(
-        switchMap(() => this.loading$.pipe(filter(loading => !loading)))
-      ).subscribe(() => subscriber.next(items))
+    return defer(() => {
+      this.updateItemsStates(items)
+      return new Observable((subscriber: Subscriber<ISideNavItem[]>) => {
+        const stateChangeSub = this.itemChanged.pipe(
+          switchMap(() => this.loading$.pipe(filter(loading => !loading)))
+        ).subscribe(() => {
+          subscriber.next(items)
+        })
 
-      try {
-        this.updateItemsStates(items)
-      } catch (err) {
-        subscriber.error(err)
-      }
-
-      // const linkItems = findLinkItems(items)
-
-      const routeChangeSub = this._router.events.pipe(
-        filter(event => event instanceof NavigationEnd),
-      // ).subscribe(() => linkItems.forEach(itm => this.updateItemState(itm)))
-      ).subscribe(() => {
         try {
           this.updateItemsStates(items)
         } catch (err) {
           subscriber.error(err)
         }
-      })
 
-      return () => {
-        stateChangeSub.unsubscribe()
-        routeChangeSub.unsubscribe()
-      }
+        // const linkItems = findLinkItems(items)
+
+        const routeChangeSub = this._router.events.pipe(
+          filter(event => event instanceof NavigationEnd),
+        // ).subscribe(() => linkItems.forEach(itm => this.updateItemState(itm)))
+        ).subscribe(() => {
+          try {
+            this.updateItemsStates(items)
+          } catch (err) {
+            subscriber.error(err)
+          }
+        })
+
+        return () => {
+          stateChangeSub.unsubscribe()
+          routeChangeSub.unsubscribe()
+        }
+      }).pipe(startWith(items))
     })
   }
 

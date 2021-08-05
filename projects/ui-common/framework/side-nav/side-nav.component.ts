@@ -17,8 +17,7 @@ import { distinctUntilChanged, filter, map, mapTo, pairwise, shareReplay, startW
 import { InputBoolean } from '@theseam/ui-common/core'
 import { TheSeamLayoutService } from '@theseam/ui-common/layout'
 
-import { THESEAM_BASE_LAYOUT_REF } from '../base-layout/index'
-import type { ITheSeamBaseLayoutNav, ITheSeamBaseLayoutRef } from '../base-layout/index'
+import { ITheSeamBaseLayoutNav, ITheSeamBaseLayoutRef, THESEAM_BASE_LAYOUT_REF } from '../base-layout/index'
 
 import { ISideNavItem } from './side-nav.models'
 import { TheSeamSideNavService } from './side-nav.service'
@@ -176,8 +175,6 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
   public _backdropHidden = new BehaviorSubject<boolean>(true)
 
   constructor(
-    private readonly _router: Router,
-    private readonly activatedRoute: ActivatedRoute,
     private readonly _layout: TheSeamLayoutService,
     private readonly _sideNav: TheSeamSideNavService,
     @Optional() @Inject(THESEAM_BASE_LAYOUT_REF) private readonly _baseLayoutRef: ITheSeamBaseLayoutRef
@@ -185,7 +182,6 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
     this.items$ = this._items.asObservable().pipe(
       switchMap(items => this._sideNav.createItemsObservable(items)),
       shareReplay({ bufferSize: 1, refCount: true }),
-      tap(items => console.log('items', items))
     )
 
     this.isMobile$ = this._layout.isMobile$.pipe(
@@ -203,32 +199,6 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
 
   ngOnInit() {
     if (this._baseLayoutRef) { this._baseLayoutRef.registerNav(this) }
-
-    // const routed$ = this._router.events
-    //   .pipe(
-    //     filter(e => e instanceof NavigationEnd),
-    //     mapTo(undefined)
-    //   )
-
-    // combineLatest([ this.items$, routed$.pipe(startWith(undefined)) ])
-    //   .pipe(
-    //     map(v => v[0]),
-    //     map(items => {
-    //       const checkNode = (node: any) => {
-    //         if (node.children) {
-    //           for (const _n of node.children) {
-    //             checkNode(_n)
-    //           }
-    //         }
-    //       }
-
-    //       for (const _n of items) {
-    //         checkNode(_n)
-    //       }
-    //     }),
-    //     takeUntil(this._ngUnsubscribe)
-    //   )
-    //   .subscribe()
 
     this.isMobile$
       .pipe(takeUntil(this._ngUnsubscribe))

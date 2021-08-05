@@ -29,7 +29,9 @@
       [queryParams]="$any(child).queryParams"
       routerLinkActive="active"
       [routerLinkActiveOptions]="{ exact: true }"
-      [children]="$any(child)?.children">
+      [children]="$any(child)?.children"
+      [active]="$any(child).__state.active"
+      [expanded]="$any(child).__state.expanded">
     </seam-side-nav-item>
   </div>
 </ng-container>
@@ -149,6 +151,5 @@
       {{ badgeText }}
       <span *ngIf="badgeSrContent">{{ badgeSrContent }}</span>
     </span>
-    <!-- <span class="badge badge-danger">5</span> -->
   </div>
 </ng-template>

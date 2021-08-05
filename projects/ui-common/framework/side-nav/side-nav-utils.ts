@@ -107,7 +107,6 @@ export function setDefaultState(item: ISideNavItem): ISideNavItem & Required<Sid
   }
 
   item.__state = {
-    // parent: undefined,
     active: false,
     expanded: false
   }

@@ -1,38 +1,31 @@
 import {
   animate,
-  animateChild,
-  group,
-  keyframes,
   query,
   state,
   style,
   transition,
   trigger,
 } from '@angular/animations'
-import { BooleanInput, coerceBooleanProperty, coerceNumberProperty, NumberInput } from '@angular/cdk/coercion'
+import { BooleanInput, coerceBooleanProperty, NumberInput } from '@angular/cdk/coercion'
 import {
   ChangeDetectionStrategy,
   Component,
-  ElementRef,
   Host,
+  HostBinding,
   Input,
-  isDevMode,
   OnDestroy,
-  OnInit,
   Optional,
-  Renderer2,
   SkipSelf,
   ViewEncapsulation
 } from '@angular/core'
-import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs'
-import { auditTime, distinctUntilChanged, map, switchMap, take, takeUntil, tap } from 'rxjs/operators'
+import { BehaviorSubject, Observable, Subject } from 'rxjs'
+import { map } from 'rxjs/operators'
 
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons'
 
-import { InputNumber } from '@theseam/ui-common/core'
+import { InputBoolean, InputNumber } from '@theseam/ui-common/core'
 import type { SeamIcon } from '@theseam/ui-common/icon'
 import type { ThemeTypes } from '@theseam/ui-common/models'
-import { RouterHelpersService } from '@theseam/ui-common/services'
 
 import { SideNavComponent } from '../side-nav.component'
 import { ISideNavItem } from '../side-nav.models'
@@ -93,11 +86,12 @@ const COMPACT_STATE = 'compact'
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 })
-export class SideNavItemComponent implements OnInit, OnDestroy {
+export class SideNavItemComponent implements OnDestroy {
   static ngAcceptInputType_hierLevel: NumberInput
   static ngAcceptInputType_indentSize: NumberInput
   static ngAcceptInputType_expanded: BooleanInput
   static ngAcceptInputType_compact: BooleanInput
+  static ngAcceptInputType_active: BooleanInput
 
   private readonly _ngUnsubscribe = new Subject()
 
@@ -108,6 +102,8 @@ export class SideNavItemComponent implements OnInit, OnDestroy {
   @Input() icon: SeamIcon | undefined | null
 
   @Input() label: string | undefined | null
+
+  @Input() @InputBoolean() active: boolean = false
 
   @Input()
   set link(value: string | undefined | null) { this._link.next(value) }
@@ -126,14 +122,14 @@ export class SideNavItemComponent implements OnInit, OnDestroy {
   @Input()
   set expanded(value: boolean) { this._expanded.next(coerceBooleanProperty(value)) }
   get expanded() { return this._expanded.value }
-  private _expanded = new BehaviorSubject<boolean>(false)
-  public expanded$ = this._expanded.asObservable()
+  private readonly _expanded = new BehaviorSubject<boolean>(false)
+  public readonly expanded$ = this._expanded.asObservable()
 
   @Input()
   set compact(value: boolean) { this._compact.next(coerceBooleanProperty(value)) }
   get compact() { return this._compact.value }
-  private _compact = new BehaviorSubject<boolean>(false)
-  public compact$ = this._compact.asObservable()
+  private readonly _compact = new BehaviorSubject<boolean>(false)
+  public readonly compact$ = this._compact.asObservable()
 
   @Input() badgeText: string | undefined | null
   @Input() badgeTheme: ThemeTypes | undefined | null = 'danger'
@@ -168,90 +164,28 @@ export class SideNavItemComponent implements OnInit, OnDestroy {
   }
   private _badgeTooltip: SideNavItemBadgeTooltip | undefined | null
 
-  public readonly isActive$: Observable<boolean>
+  @HostBinding('class.seam-side-nav-item--active') get _isActiveCssClass() { return this.active }
+
+  // @HostBinding('attr.data-index') get _attrDataIndex() { return this.hierLevel }
+  @HostBinding('attr.data-hier-level') get _attrDataHierLevel() { return this.hierLevel }
+
   public readonly childGroupAnimState$: Observable<string>
   public readonly compactAnimState$: Observable<string>
-  public readonly hasActiveChild$: Observable<boolean>
-
-  private readonly _registeredChildren = new BehaviorSubject<SideNavItemComponent[]>([])
 
   constructor(
-    private readonly _routerHelpers: RouterHelpersService,
-    private readonly _renderer: Renderer2,
-    private readonly _element: ElementRef,
     private readonly _sideNav: SideNavComponent,
     @Optional() @SkipSelf() @Host() private readonly _parent?: SideNavItemComponent
   ) {
-    this.hasActiveChild$ = this._registeredChildren.pipe(
-      switchMap(children => Array.isArray(children) && children.length > 0
-        ? combineLatest(children.map(c => c.isActive$)) : of([])
-      ),
-      auditTime(0),
-      map(v => v.findIndex(b => !!b) !== -1),
-      distinctUntilChanged()
-    )
-
-    this.isActive$ = this.link$.pipe(
-      switchMap(link => link ? this._routerHelpers.isActive(link, true) : of(false)),
-    )
-
     this.childGroupAnimState$ = this.expanded$
       .pipe(map(expanded => expanded ? EXPANDED_STATE : COLLAPSED_STATE))
 
     this.compactAnimState$ = this.compact$
       .pipe(map(compact => compact ? COMPACT_STATE : FULL_STATE))
-      // .pipe(tap(compact => console.log('compactState', compact)))
-  }
-
-  ngOnInit() {
-    if (this._parent) { this._parent._registerChild(this) }
-
-    const isActive2 = combineLatest([ this.hasActiveChild$, this.expanded$, this.isActive$ ]).pipe(
-      map(([ hasActiveChild, expanded, isActive]) => {
-        if (!expanded && hasActiveChild) {
-          return true
-        }
-        return isActive
-      })
-    )
-
-    isActive2
-      .pipe(takeUntil(this._ngUnsubscribe))
-      .subscribe(isActive => {
-        const c = 'seam-side-nav-item--active'
-        if (isActive) {
-          this._renderer.addClass(this._element.nativeElement, c)
-        } else {
-          this._renderer.removeClass(this._element.nativeElement, c)
-        }
-      })
-
-    // TODO: Make parent nodes of active child expanded on initialization.
-    //
-    // This worked for children of root nodes only. This will probably not work
-    // in a clean way from the node components only, because the child
-    // components are rendered as needed and register with the parent component
-    // when it initializes.
-    this.hasActiveChild$.pipe(
-      take(1),
-      // tap(hasChildren => console.log('hasChildren', hasChildren)),
-      tap(() => {
-        if (isDevMode() && this.hierLevel > 1) {
-          console.warn(
-            '[SideNavItem] SideNav has a bug expanding nodes to the active node ' +
-            'when it initializes. Initial side nav state may be incorrect until ' +
-            'fixed.'
-          )
-        }
-      }),
-      tap(hasChildren => hasChildren ? this.expanded = true : false)
-    ).subscribe()
   }
 
   ngOnDestroy() {
     this._ngUnsubscribe.next()
     this._ngUnsubscribe.complete()
-    if (this._parent) { this._parent._unregisterChild(this) }
   }
 
   get hasChildren() {
@@ -260,16 +194,6 @@ export class SideNavItemComponent implements OnInit, OnDestroy {
 
   public toggleChildren(): void {
     this.expanded = !this.expanded
-  }
-
-  _registerChild(child: SideNavItemComponent) {
-    const children = this._registeredChildren.value
-    this._registeredChildren.next([ ...children, child ])
-  }
-
-  _unregisterChild(child: SideNavItemComponent) {
-    const children = this._registeredChildren.value.filter(c => c !== child)
-    this._registeredChildren.next([ ...children ])
   }
 
   _linkClicked() {
