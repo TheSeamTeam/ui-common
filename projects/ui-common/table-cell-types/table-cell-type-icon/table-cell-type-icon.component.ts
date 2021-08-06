@@ -137,6 +137,11 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
               this.config = undefined
             }
             this._cdf.markForCheck()
+          } else {
+            if (v.changes.hasOwnProperty('row')) {
+              this.config = this.config
+              this._cdf.markForCheck()
+            }
           }
         })
     }

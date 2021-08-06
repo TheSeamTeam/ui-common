@@ -54,6 +54,11 @@ export class TableCellTypeProgressCircleIconComponent implements OnInit, OnDestr
             this.colData = v.changes.colData.currentValue
             this._setIcon(tableData)
             this._cdf.markForCheck()
+          } else {
+            if (v.changes.hasOwnProperty('row')) {
+              this._setIcon(tableData)
+              this._cdf.markForCheck()
+            }
           }
         })
     }

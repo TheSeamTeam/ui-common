@@ -103,6 +103,13 @@ export class TableCellTypeProgressCircleComponent implements OnInit, OnDestroy {
               this._setCellTypeConfigProps(this.colData.cellTypeConfig)
             }
             this._cdf.markForCheck()
+          } else {
+            if (v.changes.hasOwnProperty('row')) {
+              if (this.colData?.cellTypeConfig) {
+                this._setCellTypeConfigProps(this.colData.cellTypeConfig)
+                this._cdf.markForCheck()
+              }
+            }
           }
         })
     }
