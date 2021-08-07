@@ -166,7 +166,6 @@ export class SideNavItemComponent implements OnDestroy {
 
   @HostBinding('class.seam-side-nav-item--active') get _isActiveCssClass() { return this.active }
 
-  // @HostBinding('attr.data-index') get _attrDataIndex() { return this.hierLevel }
   @HostBinding('attr.data-hier-level') get _attrDataHierLevel() { return this.hierLevel }
 
   public readonly childGroupAnimState$: Observable<string>

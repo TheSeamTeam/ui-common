@@ -51,11 +51,11 @@
       </div>
       <!-- NOTE: This is temporarily formatted oddly while fixing animation. -->
       <span style="margin-left: 11px;" [@compactAnim]="compactAnimState$ | async">
-        <span *ngIf="!compact">
+        <span *ngIf="!compact" side-nav-item-label>
           {{ label }}
         </span>
       </span>
-      <span *ngIf="compact" class="sr-only">{{ label }}</span>
+      <span *ngIf="compact" class="sr-only" side-nav-item-label>{{ label }}</span>
       <ng-container *ngIf="!compact">
         <ng-template [ngTemplateOutlet]="itemBadge"></ng-template>
       </ng-container>
@@ -88,10 +88,10 @@
         <ng-template [ngTemplateOutlet]="itemBadge"></ng-template>
       </ng-container>
     </div>
-    <span *ngIf="!compact" style="margin-left: 11px;">
+    <span *ngIf="!compact" style="margin-left: 11px;" side-nav-item-label>
       {{ label }}
     </span>
-    <span *ngIf="compact" class="sr-only">{{ label }}</span>
+    <span *ngIf="compact" class="sr-only" side-nav-item-label>{{ label }}</span>
     <ng-container *ngIf="!compact">
       <ng-template [ngTemplateOutlet]="itemBadge"></ng-template>
     </ng-container>
@@ -103,10 +103,10 @@
       <div class="side-nav-item--icon">
         <seam-icon *ngIf="icon" [icon]="icon"></seam-icon>
       </div>
-      <span *ngIf="!compact" style="margin-left: 11px;">
+      <span *ngIf="!compact" style="margin-left: 11px;" side-nav-item-label>
         {{ label }}
       </span>
-      <span *ngIf="compact" class="sr-only">{{ label }}</span>
+      <span *ngIf="compact" class="sr-only" side-nav-item-label>{{ label }}</span>
     </a>
   </ng-template>
 
@@ -134,7 +134,7 @@
 
 <ng-template #itemTypeTitle>
   <ng-container *ngIf="!compact">
-    <span class="side-nav-item--title pt-1">{{ label }}</span>
+    <span class="side-nav-item--title pt-1" side-nav-item-label>{{ label }}</span>
   </ng-container>
 </ng-template>
 

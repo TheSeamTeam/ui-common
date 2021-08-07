@@ -57,22 +57,31 @@ export const NoChildren: Story = (args) => ({
       RouterModule.forRoot([], { useHash: true }),
     ]
   },
-  props: {
-    itemType: 'basic',
-    label: 'Example 1',
-    icon: faBuilding
-  },
+  props: { ...args },
   template: `
     <div class="d-flex flex-row vh-100">
       <div style="width: 260px;" class="h-100 bg-primary">
         <seam-side-nav-item
           [itemType]="itemType"
           [icon]="icon"
-          [label]="label">
+          [label]="label"
+          [expanded]="expanded"
+          [active]="active"
+          [hierLevel]="hierLevel"
+          [compact]="compact">
         </seam-side-nav-item>
       </div>
     </div>`
 })
+NoChildren.args = {
+  itemType: 'basic',
+  icon: faBuilding,
+  label: 'Example 1',
+  expanded: false,
+  active: false,
+  hierLevel: 0,
+  compact: false,
+}
 
 export const WithChildren: Story = (args) => ({
   moduleMetadata: {
