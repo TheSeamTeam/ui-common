@@ -22,7 +22,9 @@
         [badgeSrContent]="$any(item)?.badge?.srContent"
         [badgeTooltip]="$any(item)?.badge?.tooltip"
         [queryParams]="$any(item)?.queryParams"
-        [children]="$any(item)?.children">
+        [children]="$any(item)?.children"
+        [active]="$any(item).__state.active"
+        [expanded]="$any(item).__state.expanded">
       </seam-side-nav-item>
     </div>
   </nav>

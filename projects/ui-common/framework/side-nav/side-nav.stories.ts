@@ -7,6 +7,7 @@ import { Router, RouterModule } from '@angular/router'
 
 import { faBuilding, faCompass } from '@fortawesome/free-regular-svg-icons'
 import { faSignature } from '@fortawesome/free-solid-svg-icons'
+import { StoryInitialRouteModule } from '@theseam/ui-common/story-helpers'
 
 import { SideNavComponent } from './side-nav.component'
 import { TheSeamSideNavModule } from './side-nav.module'
@@ -74,6 +75,11 @@ export default {
 } as Meta
 
 export const Basic: Story = (args) => ({
+  moduleMetadata: {
+    imports: [
+      StoryInitialRouteModule.forRoot('/example3/ex2/example1.3')
+    ]
+  },
   props: {
     items: [
       {
