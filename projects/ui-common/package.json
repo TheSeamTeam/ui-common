@@ -1,6 +1,6 @@
 {
   "name": "@theseam/ui-common",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "scripts": {
     "build": "../../node_modules/.bin/tsc -p tsconfig.schematics.json",
     "copy:schemas": "cp --parents schematics/*/schema.json ../../dist/ui-common/",
