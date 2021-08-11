@@ -1,9 +1,9 @@
 import { fakeAsync, tick } from '@angular/core/testing'
 
-import { BehaviorSubject, interval, Observable, of, Subject, Subscriber, Subscription } from 'rxjs'
-import { delay, repeatWhen, tap } from 'rxjs/operators'
+import { BehaviorSubject, of, Subject } from 'rxjs'
 
 import { TickHelper } from '@theseam/ui-common/test-helpers'
+
 import { pollingTicker } from './polling-ticker'
 
 describe('pollingTicker', () => {
@@ -103,7 +103,8 @@ describe('pollingTicker', () => {
 
         let count = 0
         const t = new TickHelper()
-        const pt$ = pollingTicker(() => data$, 100).subscribe(v => { count++; console.log('emit', t.ticksElapsed, v) })
+        // const pt$ = pollingTicker(() => data$, 100).subscribe(v => { count++; console.log('emit', t.ticksElapsed, v) })
+        const pt$ = pollingTicker(() => data$, 100).subscribe(v => { count++ })
 
         expect(count).toBe(1)
 

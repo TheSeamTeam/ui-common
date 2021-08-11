@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core'
 
-import { padEnd, padStart } from 'lodash-es'
+import { padEnd, padStart } from '@theseam/ui-common/utils'
 
 @Pipe({
   name: 'maskChars'
