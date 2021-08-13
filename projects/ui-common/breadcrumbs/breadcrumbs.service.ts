@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core'
+import { Injectable, isDevMode } from '@angular/core'
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router'
 import { combineLatest, Observable, of } from 'rxjs'
 import { filter, map, startWith, switchMap } from 'rxjs/operators'
@@ -13,6 +13,8 @@ import { ITheSeamBreadcrumb } from './breadcrumb'
 export class TheSeamBreadcrumbsService {
 
   public readonly breadcrumbDataKey = 'breadcrumb'
+  public readonly breadcrumbAppendNextDataKey = 'breadcrumbAppendNext'
+  public readonly breadcrumbAppendPrevDataKey = 'breadcrumbAppendPrev'
 
   public crumbs$: Observable<ITheSeamBreadcrumb[]>
 
@@ -38,10 +40,12 @@ export class TheSeamBreadcrumbsService {
     if (typeof crumbValue === 'string') {
       value = crumbValue
     } else {
-      console.warn(
-        '[TheSeamBreadcrumbsService] Only string breadcrumbs are supported currently. '
-        + 'Use a resolver if the value needs to be dynamically calculated.'
-      )
+      if (isDevMode()) {
+        console.warn(
+          '[TheSeamBreadcrumbsService] Only string breadcrumbs are supported currently. '
+          + 'Use a resolver if the value needs to be dynamically calculated.'
+        )
+      }
     }
 
     return of({ value, path, route })

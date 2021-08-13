@@ -12,6 +12,7 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
   testMatch: [
     // TODO: Remove the specific folders when the projects tests are more stable.
+    "**/breadcrumbs/**/*.spec.ts",
     "**/graphql/**/*.spec.ts",
     "**/buttons/**/*.spec.ts",
     "**/framework/side-nav/**/*.spec.ts"
