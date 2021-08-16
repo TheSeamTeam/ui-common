@@ -5,10 +5,10 @@ import { map, take } from 'rxjs/operators'
 
 import { StoryUsersDataService } from './story-user-data.service'
 
-import { ITheSeamBreadcrumbsResolver } from '../breadcrumbs-resolver'
+import { TheSeamBreadcrumbsResolver } from '../breadcrumbs-resolver'
 
 @Injectable()
-export class StoryUserIdToNameResolver implements ITheSeamBreadcrumbsResolver {
+export class StoryUserIdToNameResolver implements TheSeamBreadcrumbsResolver {
 
   constructor(
     private _users: StoryUsersDataService
