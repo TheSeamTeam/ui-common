@@ -3,18 +3,11 @@ import { combineLatest, Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
 import { leafChildRoute } from '../leaf-child-route'
+import { willHaveDataProp } from '../will-have-data-prop'
 
 export interface IActivatedRouteWithData {
   route: ActivatedRoute
   data: Data
-}
-
-function hasRouteConfigDataProp(route: ActivatedRoute, prop: string) {
-  return !!(route && route.routeConfig && route.routeConfig.data && route.routeConfig.data.hasOwnProperty(prop))
-}
-
-function hasRouteConfigResolveProp(route: ActivatedRoute, prop: string) {
-  return !!(route && route.routeConfig && route.routeConfig.resolve && route.routeConfig.resolve.hasOwnProperty(prop))
 }
 
 export function activatedRoutesWithDataProperty(prop: string, mustHaveDefined: boolean = false) {
@@ -26,7 +19,7 @@ export function activatedRoutesWithDataProperty(prop: string, mustHaveDefined: b
       switchMap(routes => combineLatest(routes.map(r => _data(r)))),
       map(v => v.filter(_v => _v.data.hasOwnProperty(prop))),
       map(v => mustHaveDefined
-        ? v.filter(_v => hasRouteConfigDataProp(_v.route, prop) || hasRouteConfigResolveProp(_v.route, prop))
+        ? v.filter(_v => willHaveDataProp(_v.route, prop))
         : v
       )
     )

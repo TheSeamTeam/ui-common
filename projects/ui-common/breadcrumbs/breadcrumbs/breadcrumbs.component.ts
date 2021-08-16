@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 import { Observable } from 'rxjs'
 
-import { ITheSeamBreadcrumb } from '../breadcrumb'
+import { TheSeamBreadcrumb } from '../breadcrumb'
 import { TheSeamBreadcrumbsService } from '../breadcrumbs.service'
 
 @Component({
@@ -12,7 +12,7 @@ import { TheSeamBreadcrumbsService } from '../breadcrumbs.service'
 })
 export class BreadcrumbsComponent implements OnInit {
 
-  public crumbs$: Observable<ITheSeamBreadcrumb[]>
+  public crumbs$: Observable<TheSeamBreadcrumb[]>
 
   constructor(
     private _breadcrumbs: TheSeamBreadcrumbsService
