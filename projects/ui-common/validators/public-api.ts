@@ -1,3 +1,5 @@
 export * from './tax-id.validator'
 export * from './email-exists.validator'
 export * from './phone-length.validator'
+export * from './decimal.validator'
+export * from './integer.validator'

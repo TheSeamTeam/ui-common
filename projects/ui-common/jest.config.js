@@ -17,6 +17,7 @@ module.exports = {
     "**/buttons/**/*.spec.ts",
     "**/framework/side-nav/**/*.spec.ts",
     "**/utils/**/*.spec.ts",
+    "**/validators/**/*.spec.ts",
   ],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/' }),
 };
