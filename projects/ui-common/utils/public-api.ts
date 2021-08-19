@@ -9,6 +9,7 @@ export * from './form/observe-control-value-change'
 export * from './form/observe-control-value'
 export * from './form/wait-on-non-pending-status'
 export * from './form/has-required-control'
+export * from './form/is-empty-input-value'
 
 export * from './operators/index'
 
@@ -36,3 +37,5 @@ export * from './observe-query-list'
 export * from './pad-end'
 export * from './pad-start'
 export * from './create-padding'
+export * from './is-numeric'
+export * from './fractional-digits-count'
