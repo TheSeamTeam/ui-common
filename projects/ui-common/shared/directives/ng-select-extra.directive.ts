@@ -1,10 +1,12 @@
 import { AfterViewChecked, Directive, ElementRef, EventEmitter, HostBinding,
   HostListener, NgZone, OnDestroy, OnInit, Optional, Self } from '@angular/core'
 import { NgControl } from '@angular/forms'
+import { Subject, Subscription } from 'rxjs'
+import { filter, takeUntil } from 'rxjs/operators'
+
 import { NgOption, NgSelectComponent } from '@ng-select/ng-select'
 import { ResizeSensor } from 'css-element-queries'
-import { Subject, Subscription } from 'rxjs'
-import { auditTime, filter, takeUntil } from 'rxjs/operators'
+
 import { IElementResizedEvent } from './elem-resized.directive'
 
 @Directive({
@@ -71,6 +73,8 @@ export class NgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestr
     this.ngSelect.blurEvent
       .subscribe(v => this._disableKeyPressWorkaround())
 
+    window.addEventListener('scroll', this._onScroll, true)
+
     // When the input is allowed to change its height the position doesn't update itself.
     // this._resizedEvent.pipe(
     //   auditTime(30)
@@ -92,6 +96,8 @@ export class NgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestr
   ngOnDestroy() {
     this._resizeSensor?.detach()
 
+    window.removeEventListener('scroll', this._onScroll, true)
+
     this._ngUnsubscribe.next()
     this._ngUnsubscribe.complete()
   }
@@ -112,6 +118,16 @@ export class NgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestr
       this._resizedEvent.emit({ element: this.elementRef.nativeElement, size: event })
     })
   }
+
+  private _onScroll = (event: any) => {
+    if (this.ngSelect && this.ngSelect.isOpen) {
+      const isScrollingInScrollHost = (event.target.className as string).indexOf('ng-dropdown-panel-items') !== -1
+      const isInSensor = (event.target.className as string).indexOf('resize-sensor-shrink') !== -1 ||
+        (event.target.className as string).indexOf('os-resize-observer-host') !== -1
+      if (isScrollingInScrollHost || isInSensor) { return }
+      this.ngSelect.close()
+    }
+}
 
   /**
    * Temp fix for: https://github.com/ng-select/ng-select/issues/1122
