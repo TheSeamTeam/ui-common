@@ -1,22 +1,38 @@
-import { AbstractControl, ValidatorFn, Validators } from '@angular/forms'
+import { AbstractControl, ValidatorFn } from '@angular/forms'
 
-import { isEmptyInputValue, isNumeric } from '@theseam/ui-common/utils'
+import { fractionalDigitsCount, isEmptyInputValue, isNumeric } from '@theseam/ui-common/utils'
 
-export const DECIMAL_REGEX = /^([-+]{1})?\d*(\.\d*)?$/
-
-export function maxFractionalDigitsValidator(maxFactionalDigits: number): ValidatorFn {
+/**
+ * Validates a number does not have more than X fractional digits.
+ *
+ * NOTE: If a value is not a number then the value will be valid. To ensure the
+ * value is also a number then also use a number validator, such as
+ * `decimalValidator`.
+ */
+export function maxFractionalDigitsValidator(maxFractionalDigits: number): ValidatorFn {
   return (control: AbstractControl) => {
     if (isEmptyInputValue(control.value)) {
       return null // don't validate empty values to allow optional controls
     }
 
-    const isDecimal =
-      !Array.isArray(control.value) &&
-      isNumeric(control.value) &&
-      (Validators.pattern(DECIMAL_REGEX)(control) === null)
+    if (Array.isArray(control.value) || !isNumeric(control.value)) {
+      return null // can't validate that a non-number has more than the max
+    }
 
-    if (!isDecimal) {
-      return { 'decimal': { 'reason': 'Must be valid decimal number.' } }
+    const count = fractionalDigitsCount(`${control.value}`)
+
+    if (count === null) {
+      return null // should not happen, because we already checked for a numeric
+    }
+
+    if (count > maxFractionalDigits) {
+      return {
+        'maxFractionalDigits': {
+          'reason': `Must not be greater than ${maxFractionalDigits} fractional digits.`,
+          'max': maxFractionalDigits,
+          'actual': count
+        }
+      }
     }
 
     return null

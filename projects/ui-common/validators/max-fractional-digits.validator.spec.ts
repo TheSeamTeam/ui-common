@@ -1,90 +1,77 @@
 import { FormControl } from '@angular/forms'
 
-import { decimalValidator } from './decimal.validator'
+import { maxFractionalDigitsValidator } from './max-fractional-digits.validator'
 
-describe('decimalValidator', () => {
+describe('maxFractionalDigitsValidator', () => {
   it('should return null for empty control', () => {
-    expect(decimalValidator(new FormControl())).toBeNull()
-    expect(decimalValidator(new FormControl(null))).toBeNull()
-    expect(decimalValidator(new FormControl(undefined))).toBeNull()
-    expect(decimalValidator(new FormControl([]))).toBeNull()
-    expect(decimalValidator(new FormControl(''))).toBeNull()
+    expect(maxFractionalDigitsValidator(0)(new FormControl())).toBeNull()
+    expect(maxFractionalDigitsValidator(0)(new FormControl(null))).toBeNull()
+    expect(maxFractionalDigitsValidator(0)(new FormControl(undefined))).toBeNull()
+    expect(maxFractionalDigitsValidator(0)(new FormControl([]))).toBeNull()
+    expect(maxFractionalDigitsValidator(0)(new FormControl(''))).toBeNull()
   })
 
-  it('should succeed for valid decimal control values', () => {
-    expect(decimalValidator(new FormControl(0))).toBeNull()
-    expect(decimalValidator(new FormControl(1))).toBeNull()
-    expect(decimalValidator(new FormControl(-1))).toBeNull()
-    expect(decimalValidator(new FormControl(.1))).toBeNull()
-    expect(decimalValidator(new FormControl(1.))).toBeNull()
-    expect(decimalValidator(new FormControl(0.1))).toBeNull()
-    expect(decimalValidator(new FormControl(1.0))).toBeNull()
-    expect(decimalValidator(new FormControl(1.1))).toBeNull()
-    expect(decimalValidator(new FormControl(-.1))).toBeNull()
-    expect(decimalValidator(new FormControl(-1.))).toBeNull()
-    expect(decimalValidator(new FormControl(-0.1))).toBeNull()
-    expect(decimalValidator(new FormControl(-1.0))).toBeNull()
-    expect(decimalValidator(new FormControl(-1.1))).toBeNull()
-    expect(decimalValidator(new FormControl(1234567.012345))).toBeNull()
-    expect(decimalValidator(new FormControl(-1234567.012345))).toBeNull()
-    expect(decimalValidator(new FormControl('0'))).toBeNull()
-    expect(decimalValidator(new FormControl('1'))).toBeNull()
-    expect(decimalValidator(new FormControl('-1'))).toBeNull()
-    expect(decimalValidator(new FormControl('.1'))).toBeNull()
-    expect(decimalValidator(new FormControl('1.'))).toBeNull()
-    expect(decimalValidator(new FormControl('0.1'))).toBeNull()
-    expect(decimalValidator(new FormControl('1.0'))).toBeNull()
-    expect(decimalValidator(new FormControl('1.1'))).toBeNull()
-    expect(decimalValidator(new FormControl('-.1'))).toBeNull()
-    expect(decimalValidator(new FormControl('-1.'))).toBeNull()
-    expect(decimalValidator(new FormControl('-0.1'))).toBeNull()
-    expect(decimalValidator(new FormControl('-1.0'))).toBeNull()
-    expect(decimalValidator(new FormControl('-1.1'))).toBeNull()
-    expect(decimalValidator(new FormControl('-1234567.012345'))).toBeNull()
-    expect(decimalValidator(new FormControl('-1234567.012345'))).toBeNull()
+  it('should return null for non-number control values', () => {
+    expect(maxFractionalDigitsValidator(0)(new FormControl('a'))).toBeNull()
+    expect(maxFractionalDigitsValidator(0)(new FormControl({}))).toBeNull()
+    expect(maxFractionalDigitsValidator(0)(new FormControl(NaN))).toBeNull()
+    expect(maxFractionalDigitsValidator(0)(new FormControl(Infinity))).toBeNull()
+    expect(maxFractionalDigitsValidator(0)(new FormControl(new Date()))).toBeNull()
+    expect(maxFractionalDigitsValidator(0)(new FormControl(new Object()))).toBeNull()
+    expect(maxFractionalDigitsValidator(0)(new FormControl(true))).toBeNull()
+    expect(maxFractionalDigitsValidator(0)(new FormControl(false))).toBeNull()
+    expect(maxFractionalDigitsValidator(0)(new FormControl([1]))).toBeNull()
+    expect(maxFractionalDigitsValidator(0)(new FormControl(['1']))).toBeNull()
   })
 
-  it('should fail for non-valid decimal control values', () => {
-    expect(decimalValidator(new FormControl('a'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('a-'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('a1'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('a1-'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('1a'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('1a-'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('a.1'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('a.1-'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('1.a'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('1.a-'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('--a'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('a--'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('-a1'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('-1a'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('-a.1'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('-1.a'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('-'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('+'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('--1'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('-+1'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('+-1'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('++1'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('1--'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('1-+'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('1+-'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('1++'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('1..1'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('-1..1'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('..1'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('1..'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('.'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl('..'))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl({}))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl(NaN))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl(Infinity))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl(new Date()))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl(new Object()))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl(true))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl(false))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl([1]))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new FormControl(['1']))).toStrictEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
+  it('should succeed for valid control values', () => {
+    expect(maxFractionalDigitsValidator(0)(new FormControl(0))).toBeNull()
+    expect(maxFractionalDigitsValidator(0)(new FormControl(123))).toBeNull()
+    expect(maxFractionalDigitsValidator(1)(new FormControl(1.0))).toBeNull()
+    expect(maxFractionalDigitsValidator(1)(new FormControl(-1.0))).toBeNull()
+    expect(maxFractionalDigitsValidator(2)(new FormControl(.12))).toBeNull()
+    expect(maxFractionalDigitsValidator(2)(new FormControl(-1.12))).toBeNull()
+    expect(maxFractionalDigitsValidator(2)(new FormControl(0))).toBeNull()
+    expect(maxFractionalDigitsValidator(2)(new FormControl(.1))).toBeNull()
+
+    expect(maxFractionalDigitsValidator(0)(new FormControl('0'))).toBeNull()
+    expect(maxFractionalDigitsValidator(0)(new FormControl('123'))).toBeNull()
+    expect(maxFractionalDigitsValidator(1)(new FormControl('1.0'))).toBeNull()
+    expect(maxFractionalDigitsValidator(1)(new FormControl('-1.0'))).toBeNull()
+    expect(maxFractionalDigitsValidator(2)(new FormControl('.12'))).toBeNull()
+    expect(maxFractionalDigitsValidator(2)(new FormControl('-1.12'))).toBeNull()
+    expect(maxFractionalDigitsValidator(2)(new FormControl('0'))).toBeNull()
+    expect(maxFractionalDigitsValidator(2)(new FormControl('.1'))).toBeNull()
+  })
+
+  it('should fail for non-valid control values', () => {
+    expect(maxFractionalDigitsValidator(0)(new FormControl('.1'))).toStrictEqual({
+      'maxFractionalDigits': {
+        'reason': `Must not be greater than 0 fractional digits.`,
+        'max': 0,
+        'actual': 1
+      }
+    })
+    expect(maxFractionalDigitsValidator(0)(new FormControl('.12'))).toStrictEqual({
+      'maxFractionalDigits': {
+        'reason': `Must not be greater than 0 fractional digits.`,
+        'max': 0,
+        'actual': 2
+      }
+    })
+    expect(maxFractionalDigitsValidator(0)(new FormControl('0.1'))).toStrictEqual({
+      'maxFractionalDigits': {
+        'reason': `Must not be greater than 0 fractional digits.`,
+        'max': 0,
+        'actual': 1
+      }
+    })
+    expect(maxFractionalDigitsValidator(1)(new FormControl('.12'))).toStrictEqual({
+      'maxFractionalDigits': {
+        'reason': `Must not be greater than 1 fractional digits.`,
+        'max': 1,
+        'actual': 2
+      }
+    })
   })
 })
