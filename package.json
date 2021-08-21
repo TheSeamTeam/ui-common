@@ -24,7 +24,9 @@
     "docs:storybook": "npm run storybook-prebuild && npm run storybook",
     "build-storybook": "npm run storybook-prebuild && build-storybook -o docs",
     "storybook-prebuild": "npm run test:generate-output && npm run docs:json",
-    "local-registry": "ts-node --project=./scripts/tsconfig.json ./scripts/run-registry.ts --open --publish"
+    "local-registry": "ts-node --project=./scripts/tsconfig.json ./scripts/run-registry.ts --open --publish",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "private": true,
   "dependencies": {
@@ -79,6 +81,7 @@
     "@angular/language-service": "~12.0.5",
     "@babel/core": "^7.11.6",
     "@compodoc/compodoc": "^1.1.14",
+    "@cypress/schematic": "^1.5.0",
     "@linnenschmidt/build-ng-packagr": "^9.0.0",
     "@ngneat/spectator": "^7.2.0",
     "@storybook/addon-a11y": "6.4.0-alpha.21",
@@ -126,7 +129,8 @@
     "storybook-dark-mode": "^1.0.8",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
-    "typescript": "~4.2.4"
+    "typescript": "~4.2.4",
+    "cypress": "8.3.0"
   },
   "optionalDependencies": {
     "verdaccio": "^4.12.0",
