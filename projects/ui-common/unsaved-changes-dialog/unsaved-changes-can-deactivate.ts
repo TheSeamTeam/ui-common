@@ -1,6 +1,7 @@
-import { HostListener, isDevMode, Directive } from '@angular/core'
+import { Directive, HostListener, isDevMode } from '@angular/core'
 
 @Directive()
+// tslint:disable-next-line: directive-class-suffix
 export abstract class UnsavedChangesCanDeactivate {
 
   abstract unsavedChangesCanDeactivate(): boolean
