@@ -7,6 +7,7 @@ import {
   activatedRoutesWithDataProperty,
   hasProperty,
   IActivatedRouteWithData,
+  isEmptyUrlRoute,
   leafChildRoute,
   notNullOrUndefined,
   routeSnapshotPathFull,
@@ -27,8 +28,6 @@ interface ExtrasPropRef {
 interface BreadcrumbData {
   breadcrumb?: string
   breadcrumbExtras?: BreadcrumbDataExtras
-  // breadcrumbAppendPrev?: string
-  // breadcrumbAppendNext?: string
 
   activatedRoute: ActivatedRoute
   extrasPropRefs: ExtrasPropRef[]
@@ -42,14 +41,10 @@ interface BreadcrumbData {
 export class TheSeamBreadcrumbsService {
 
   // public readonly breadcrumbDataKey = 'breadcrumb'
-  // public readonly breadcrumbAppendPrevDataKey = 'breadcrumbAppendPrev'
-  // public readonly breadcrumbAppendNextDataKey = 'breadcrumbAppendNext'
 
   private readonly dataProps: (keyof Omit<BreadcrumbData, 'activatedRoute'>)[] = [
     'breadcrumb',
     'breadcrumbExtras',
-    // 'breadcrumbAppendPrev',
-    // 'breadcrumbAppendNext',
   ]
 
   public readonly crumbs$: Observable<TheSeamBreadcrumb[]>
@@ -102,34 +97,26 @@ export class TheSeamBreadcrumbsService {
 
         let found = false
         for (const prop of this.dataProps) {
+          if (prop === 'breadcrumb' && !willHaveDataProp(activatedRoute, prop)) {
+            // Need to skip if the 'breadcrumb' data prop is not in the config,
+            // because we will get duplicates if the data 'breadcrumb' prop is
+            // inheritted from a parent route.
+            continue
+          }
+
           if (hasProperty(data, prop)) {
             bcData[prop] = data[prop]
             found = true
           }
         }
 
-        // if (hasProperty(data, 'breadcrumb')) {
-        //   bcData.breadcrumb = data['breadcrumb']
-        //   found = true
-        // }
-
-        // if (hasProperty(data, 'breadcrumbExtras')) {
-        //   const extras: BreadcrumbDataExtras = data['breadcrumbExtras']
-        //   bcData.breadcrumbExtras = extras
-        //   if (hasProperty(extras, 'dataProps')) {
-        //     const s = extras.dataProps.map(p => `(${data[p]})`).join(' ')
-        //     if (hasProperty(bcData, 'breadcrumb')) {
-        //       bcData.breadcrumb += ' ' + s
-        //     } else {
-        //       bcData.breadcrumb = s
-        //     }
-        //   }
-        //   found = true
-        // }
+        if (!found) {
+          return null
+        }
 
         bcData.extrasPropRefs = this._getBreadcrumbExtrasDataProps(bcData)
 
-        return found ? bcData : null
+        return bcData
       })
     )
   }
@@ -145,17 +132,6 @@ export class TheSeamBreadcrumbsService {
       }
 
       newDatas.push(data)
-
-      // if (hasProperty(data, 'breadcrumbExtras')) {
-      //   const extras: BreadcrumbDataExtras = data['breadcrumbExtras']
-      //   data.breadcrumbExtras = extras
-      //   if (hasProperty(extras, 'dataProps')) {
-      //     const s = extras.dataProps.map(p => `(${data[p]})`).join(' ')
-      //     if (hasProperty(data, 'breadcrumb')) {
-      //       data.breadcrumb += ' ' + s
-      //     }
-      //   }
-      // }
 
       pending = []
     }

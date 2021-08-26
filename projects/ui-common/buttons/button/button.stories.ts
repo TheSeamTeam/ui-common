@@ -8,9 +8,14 @@ import { buttonTypeArgType, sizeArgType, themeWithOutlineArgType } from '@thesea
 import { TheSeamButtonsModule } from '../buttons.module'
 import { ButtonComponent } from './button.component'
 
+import { ToggleButtonComponent } from '../toggle-button/toggle-button.component'
+
 export default {
   title: 'Buttons/Components/Button',
   component: ButtonComponent,
+  subcomponents: {
+    ToggleButtonComponent
+  },
   decorators: [
     moduleMetadata({
       imports: [
@@ -26,6 +31,12 @@ export const Basic: Story = (args) => ({
   props: { ...args },
   template: `
     <button seamButton
+      [theme]="theme"
+      [size]="size"
+      [type]="type">
+      {{ btnText }}
+    </button>
+    <button seamToggleButton
       [theme]="theme"
       [size]="size"
       [type]="type">
