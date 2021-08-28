@@ -14,10 +14,6 @@ class TestPlacholderComponent { }
 
 describe('TheSeamBreadcrumbsService', () => {
 
-  // describe('', () => {
-
-  // })
-
   const createService = createServiceFactory({
     service: TheSeamBreadcrumbsService,
     declarations: [ TestPlacholderComponent ],
@@ -255,6 +251,34 @@ describe('TheSeamBreadcrumbsService', () => {
     expect(crumbs[1].value).toBe('Bar')
     expect(crumbs[1].path).toBe('/foo/bar')
     expect(crumbs[1].route.snapshot.toString()).toBe(`Route(url:'bar', path:'bar')`)
+  })
+
+  it('should not duplicate crumbs when last route has empty path', async () => {
+    router.resetConfig([
+      {
+        path: 'foo',
+        data: { breadcrumb: 'Foo' },
+        children: [
+          {
+            path: '',
+            component: TestPlacholderComponent,
+          }
+        ]
+      }
+    ])
+
+    zone.run(() => router.initialNavigation())
+
+    await navigate([ '/foo' ])
+
+    let crumbs: TheSeamBreadcrumb[] = []
+    spectator.service.crumbs$.subscribe(v => crumbs = v)
+
+    expect(crumbs).toBeDefined()
+    expect(crumbs.length).toBe(1)
+    expect(crumbs[0].value).toBe('Foo')
+    expect(crumbs[0].path).toBe('/foo')
+    expect(crumbs[0].route.snapshot.toString()).toBe(`Route(url:'foo', path:'foo')`)
   })
 
   it('should add breadcrumbExtras to same if has breadcrumb prop', async () => {
