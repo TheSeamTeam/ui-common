@@ -26,6 +26,7 @@
       [badgeText]="$any(child).badge?.text"
       [badgeTheme]="$any(child).badge?.theme || 'danger'"
       [badgeSrContent]="$any(child).badge?.srContent"
+      [badgeTooltip]="$any(child)?.badge?.tooltip"
       [queryParams]="$any(child).queryParams"
       routerLinkActive="active"
       [routerLinkActiveOptions]="{ exact: true }"
@@ -41,7 +42,7 @@
     cdkMonitorElementFocus
     (click)="toggleChildren()"
     [attr.aria-expanded]="expanded">
-    <div class="nav-link d-flex flex-row w-100" [class.pr-0]="compact">
+    <div class="nav-link d-flex flex-row w-100" [class.nav-link__compact]="compact">
       <div [style.padding-left.px]="hierLevel * indentSize"></div>
       <div class="side-nav-item--icon">
         <seam-icon *ngIf="icon" [icon]="icon"></seam-icon>
@@ -49,11 +50,8 @@
           <ng-template [ngTemplateOutlet]="itemBadge"></ng-template>
         </ng-container>
       </div>
-      <!-- NOTE: This is temporarily formatted oddly while fixing animation. -->
-      <span style="margin-left: 11px;" [@compactAnim]="compactAnimState$ | async">
-        <span *ngIf="!compact" side-nav-item-label>
-          {{ label }}
-        </span>
+      <span *ngIf="!compact" side-nav-item-label style="margin-left: 11px;">
+        {{ label }}
       </span>
       <span *ngIf="compact" class="sr-only" side-nav-item-label>{{ label }}</span>
       <ng-container *ngIf="!compact">
@@ -75,7 +73,7 @@
 
 <ng-template #itemTypeLink>
   <a *ngIf="link; else noLink" class="side-nav-item nav-link d-flex flex-row text-nowrap w-100 align-items-center"
-    [class.pr-0]="compact"
+    [class.nav-link__compact]="compact"
     [routerLink]="link"
     [queryParams]="queryParams"
     routerLinkActive="active"
@@ -98,7 +96,7 @@
   </a>
 
   <ng-template #noLink>
-    <a class="side-nav-item nav-link d-flex flex-row text-nowrap w-100 align-items-center" [class.pr-0]="compact">
+    <a class="side-nav-item nav-link d-flex flex-row text-nowrap w-100 align-items-center" [class.nav-link__compact]="compact">
       <div [style.padding-left.px]="hierLevel * indentSize"></div>
       <div class="side-nav-item--icon">
         <seam-icon *ngIf="icon" [icon]="icon"></seam-icon>
@@ -139,17 +137,21 @@
 </ng-template>
 
 <ng-template #itemBadge>
-  <div *ngIf="badgeText"
-    class="side-nav-item--badge"
-    [class.side-nav-item--badge-no-icon]="!icon"
-    [ngbTooltip]="$any(badgeTooltip)?.tooltip"
-    [tooltipClass]="$any(badgeTooltip)?.class"
-    [placement]="$any(badgeTooltip)?.placement"
-    [container]="$any(badgeTooltip)?.container"
-    [disableTooltip]="!badgeTooltip || !!$any(badgeTooltip)?.disabled">
-    <span class="badge badge-pill badge-{{ badgeTheme }}">
-      {{ badgeText }}
-      <span *ngIf="badgeSrContent">{{ badgeSrContent }}</span>
-    </span>
-  </div>
+  <ng-container *ngIf="badgeText">
+    <div class="badge-spacer flex-grow-1" *ngIf="!compact"></div>
+    <div class="side-nav-item--badge"
+      [class.side-nav-item--badge-no-icon]="!icon"
+      [ngbTooltip]="$any(badgeTooltip)?.tooltip"
+      [tooltipClass]="$any(badgeTooltip)?.class"
+      [placement]="$any(badgeTooltip)?.placement"
+      [container]="$any(badgeTooltip)?.container"
+      [disableTooltip]="!badgeTooltip || !!$any(badgeTooltip)?.disabled">
+      <span class="badge badge-pill badge-{{ badgeTheme }}">
+        <ng-container *ngIf="!compact || !icon">
+          {{ badgeText }}
+        </ng-container>
+        <span *ngIf="badgeSrContent">{{ badgeSrContent }}</span>
+      </span>
+    </div>
+  </ng-container>
 </ng-template>
