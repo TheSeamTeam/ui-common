@@ -14,7 +14,7 @@
     "schematics:postbuild": "npm run schematics:copy:schemas && npm run schematics:copy:files && npm run schematics:copy:collection",
     "test": "jest",
     "test-esm": "node --experimental-vm-modules node_modules/jest/bin/jest.js -c=jest-esm.config.js",
-    "test:generate-output": "jest --json --config=jest.config.js --outputFile=addon-jest.testresults.json --passWithNoTests",
+    "test:generate-output": "exitzero jest --json --config=jest.config.js --outputFile=addon-jest.testresults.json --passWithNoTests",
     "test:watch": "jest --watch",
     "test:ci": "jest -ci --runInBand",
     "lint": "ng lint",
@@ -103,6 +103,7 @@
     "@storybook/manager-webpack5": "6.4.0-alpha.21",
     "@storybook/source-loader": "6.4.0-alpha.21",
     "@storybook/theming": "6.4.0-alpha.21",
+    "@testing-library/angular": "^10.11.0",
     "@types/file-saver": "^2.0.1",
     "@types/intl-tel-input": "^17.0.1",
     "@types/node": "^12.11.1",
@@ -116,8 +117,10 @@
     "chalk": "^4.1.0",
     "codelyzer": "^6.0.0",
     "commander": "^7.2.0",
+    "cypress": "8.3.0",
     "detect-port": "^1.3.0",
     "eslint": "^5.10.0",
+    "exitzero": "^1.0.1",
     "jest": "^27.0.5",
     "jest-preset-angular": "^9.0.4",
     "js-yaml": "^4.0.0",
@@ -129,8 +132,7 @@
     "storybook-dark-mode": "^1.0.8",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
-    "typescript": "~4.2.4",
-    "cypress": "8.3.0"
+    "typescript": "~4.2.4"
   },
   "optionalDependencies": {
     "verdaccio": "^4.12.0",
