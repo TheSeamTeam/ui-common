@@ -1,46 +1,53 @@
-import { enableProdMode, NgModule, PlatformRef } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { AfterViewInit, Component, ElementRef, enableProdMode, Inject, Injector, NgModule, NgZone, OnDestroy, OnInit, PlatformRef, Provider, Type } from '@angular/core'
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic'
+// import { RendererFactory } from '@storybook/angular/dist/ts3.9/client/preview/angular-beta/RendererFactory'
 
-import { BehaviorSubject, Subject } from 'rxjs';
-import { stringify } from 'telejson';
-import { ICollection, StoryFnAngularReturnType } from '@storybook/angular/dist/ts3.9/client/preview/types';
-import { Parameters } from '@storybook/angular/types-6-0';
-import { createStorybookModule, getStorybookModuleMetadata } from '@storybook/angular/dist/ts3.9/client/preview/angular-beta/StorybookModule';
+import { createStorybookModule, getStorybookModuleMetadata } from '@storybook/angular/dist/ts3.9/client/preview/angular-beta/StorybookModule'
+import { storyPropsProvider, STORY_PROPS } from '@storybook/angular/dist/ts3.9/client/preview/angular-beta/StorybookProvider'
+import { ICollection, StoryFnAngularReturnType } from '@storybook/angular/dist/ts3.9/client/preview/types'
+import { Parameters, Story } from '@storybook/angular/types-6-0'
+import { BehaviorSubject, Observable, Subject, Subscriber } from 'rxjs'
+import { stringify } from 'telejson'
 
-type StoryRenderInfo = {
-  storyFnAngular: StoryFnAngularReturnType;
-  moduleMetadataSnapshot: string;
-};
-
-// platform must be init only if render is called at least once
-let platformRef: PlatformRef;
-function getPlatform(newPlatform?: boolean): PlatformRef {
-  if (!platformRef || newPlatform) {
-    platformRef = platformBrowserDynamic();
-  }
-  return platformRef;
+interface StoryRenderInfo {
+  storyFnAngular: StoryFnAngularReturnType
+  moduleMetadataSnapshot: string
 }
 
-export abstract class AbstractRenderer {
+interface RenderableStoryAndModule {
+  component: any
+  module: Type<any>
+}
+
+// platform must be init only if render is called at least once
+// let platformRef: PlatformRef
+// function getPlatform(newPlatform?: boolean): PlatformRef {
+//   if (!platformRef || newPlatform) {
+//     platformRef = platformBrowserDynamic()
+//   }
+//   return platformRef
+// }
+
+export class SbTestingRenderer {
   /**
    * Wait and destroy the platform
    */
-  public static resetPlatformBrowserDynamic() {
-    return new Promise<void>((resolve) => {
-      if (platformRef && !platformRef.destroyed) {
-        platformRef.onDestroy(async () => {
-          resolve();
-        });
-        // Destroys the current Angular platform and all Angular applications on the page.
-        // So call each angular ngOnDestroy and avoid memory leaks
-        platformRef.destroy();
-        return;
-      }
-      resolve();
-    }).then(() => {
-      getPlatform(true);
-    });
-  }
+  // public static resetPlatformBrowserDynamic() {
+  //   return new Promise<void>((resolve) => {
+  //     if (platformRef && !platformRef.destroyed) {
+  //       platformRef.onDestroy(async () => {
+  //         resolve();
+  //       });
+  //       // Destroys the current Angular platform and all Angular applications on the page.
+  //       // So call each angular ngOnDestroy and avoid memory leaks
+  //       platformRef.destroy();
+  //       return;
+  //     }
+  //     resolve();
+  //   }).then(() => {
+  //     getPlatform(true);
+  //   });
+  // }
 
   /**
    * Reset compiled components because we often want to compile the same component with
@@ -63,10 +70,12 @@ export abstract class AbstractRenderer {
   //   }
   // };
 
-  protected previousStoryRenderInfo: StoryRenderInfo;
+  protected previousStoryRenderInfo?: StoryRenderInfo
 
   // Observable to change the properties dynamically without reloading angular module&component
-  protected storyProps$: Subject<ICollection | undefined>;
+  public storyProps$: Subject<ICollection> = new Subject<ICollection>()
+
+  protected isFirstRender: boolean = true
 
   constructor(public storyId: string) {
     // if (typeof NODE_ENV === 'string' && NODE_ENV !== 'development') {
@@ -93,24 +102,100 @@ export abstract class AbstractRenderer {
    * - false fully recharges or initializes angular module & component
    * @param parameters {Parameters}
    */
-  public async render({
+  // public async render({
+  //   storyFnAngular,
+  //   forced,
+  //   parameters,
+  //   targetDOMNode,
+  // }: {
+  //   storyFnAngular: StoryFnAngularReturnType;
+  //   forced: boolean;
+  //   parameters: Parameters;
+  //   targetDOMNode: HTMLElement;
+  // }) {
+  //   const targetSelector = `${this.storyId}`;
+
+  //   const newStoryProps$ = new BehaviorSubject<ICollection>(storyFnAngular.props);
+  //   const moduleMetadata = getStorybookModuleMetadata(
+  //     { storyFnAngular, parameters, targetSelector },
+  //     newStoryProps$
+  //   );
+
+  //   if (
+  //     !this.fullRendererRequired({
+  //       storyFnAngular,
+  //       moduleMetadata,
+  //       forced,
+  //     })
+  //   ) {
+  //     this.storyProps$.next(storyFnAngular.props);
+
+  //     return;
+  //   }
+  //   // await this.beforeFullRender();
+
+  //   // Complete last BehaviorSubject and set a new one for the current module
+  //   if (this.storyProps$) {
+  //     this.storyProps$.complete();
+  //   }
+  //   this.storyProps$ = newStoryProps$;
+
+  //   // this.initAngularRootElement(targetDOMNode, targetSelector);
+
+  //   // await getPlatform().bootstrapModule(
+  //   //   createStorybookModule(moduleMetadata),
+  //   //   parameters.bootstrapModuleOptions ?? undefined
+  //   // );
+  //   // await this.afterFullRender();
+  // }
+
+  public getRenderableComponent({
     storyFnAngular,
     forced,
     parameters,
-    targetDOMNode,
+    // targetDOMNode,
   }: {
     storyFnAngular: StoryFnAngularReturnType;
     forced: boolean;
     parameters: Parameters;
-    targetDOMNode: HTMLElement;
-  }) {
-    const targetSelector = `${this.storyId}`;
+    // targetDOMNode: HTMLElement;
+  }): Type<any> | null {
+    const targetSelector = `${this.storyId}`
 
-    const newStoryProps$ = new BehaviorSubject<ICollection>(storyFnAngular.props);
-    const moduleMetadata = getStorybookModuleMetadata(
+    const newStoryProps$ = new BehaviorSubject<ICollection>(storyFnAngular.props ?? {})
+    const _moduleMetadata = getStorybookModuleMetadata(
       { storyFnAngular, parameters, targetSelector },
       newStoryProps$
-    );
+    )
+    const moduleMetadata = {
+      declarations: [
+        // ...(requiresComponentDeclaration ? [component] : []),
+        // ComponentToInject,
+        // ...(moduleMetadata.declarations ?? []),
+        ...(_moduleMetadata.declarations ?? [])
+      ],
+      imports: [
+        // BrowserModule, ...(moduleMetadata.imports ?? [])
+        ...(_moduleMetadata.imports ?? [])
+      ],
+      providers: [
+        // storyPropsProvider(storyProps$), ...(moduleMetadata.providers ?? [])
+        ...(_moduleMetadata.providers ?? [])
+      ],
+      entryComponents: [
+        // ...(moduleMetadata.entryComponents ?? [])
+        ...(_moduleMetadata.entryComponents ?? [])
+      ],
+      schemas: [
+        // ...(moduleMetadata.schemas ?? [])
+        ...(_moduleMetadata.schemas ?? [])
+      ],
+      exports: [
+        // ComponentToInject
+        ...((storyFnAngular.moduleMetadata as any).exports ?? []),
+        // ...(_moduleMetadata.bootstrap ?? [])
+      ],
+    }
 
     if (
       !this.fullRendererRequired({
@@ -119,33 +204,47 @@ export abstract class AbstractRenderer {
         forced,
       })
     ) {
-      this.storyProps$.next(storyFnAngular.props);
+      this.storyProps$.next(storyFnAngular.props)
 
-      return;
+      return null
     }
-    await this.beforeFullRender();
+
+    if (!this.isFirstRender) {
+      return null
+    }
+
+    // await this.beforeFullRender();
 
     // Complete last BehaviorSubject and set a new one for the current module
+    // if (this.storyProps$) {
+    //   this.storyProps$.complete();
+    // }
+    this.storyProps$ = newStoryProps$
+
+    // this.initAngularRootElement(targetDOMNode, targetSelector);
+
+    // await getPlatform().bootstrapModule(
+    //   createStorybookModule(moduleMetadata),
+    //   parameters.bootstrapModuleOptions ?? undefined
+    // );
+    // await this.afterFullRender();
+
+    return createStorybookModule(moduleMetadata)
+  }
+
+  public completeStory(): void {
+    // Complete last BehaviorSubject and set a new one for the current module
     if (this.storyProps$) {
-      this.storyProps$.complete();
+      this.storyProps$.complete()
     }
-    this.storyProps$ = newStoryProps$;
-
-    this.initAngularRootElement(targetDOMNode, targetSelector);
-
-    await getPlatform().bootstrapModule(
-      createStorybookModule(moduleMetadata),
-      parameters.bootstrapModuleOptions ?? undefined
-    );
-    await this.afterFullRender();
   }
 
-  protected initAngularRootElement(targetDOMNode: HTMLElement, targetSelector: string) {
-    // Adds DOM element that angular will use as bootstrap component
-    // eslint-disable-next-line no-param-reassign
-    targetDOMNode.innerHTML = '';
-    targetDOMNode.appendChild(document.createElement(targetSelector));
-  }
+  // protected initAngularRootElement(targetDOMNode: HTMLElement, targetSelector: string) {
+  //   // Adds DOM element that angular will use as bootstrap component
+  //   // eslint-disable-next-line no-param-reassign
+  //   targetDOMNode.innerHTML = '';
+  //   targetDOMNode.appendChild(document.createElement(targetSelector));
+  // }
 
   private fullRendererRequired({
     storyFnAngular,
@@ -156,14 +255,14 @@ export abstract class AbstractRenderer {
     moduleMetadata: NgModule;
     forced: boolean;
   }) {
-    const { previousStoryRenderInfo } = this;
+    const { previousStoryRenderInfo } = this
 
     const currentStoryRender = {
       storyFnAngular,
       moduleMetadataSnapshot: stringify(moduleMetadata),
-    };
+    }
 
-    this.previousStoryRenderInfo = currentStoryRender;
+    this.previousStoryRenderInfo = currentStoryRender
 
     if (
       // check `forceRender` of story RenderContext
@@ -171,21 +270,164 @@ export abstract class AbstractRenderer {
       // if it's the first rendering and storyProps$ is not init
       !this.storyProps$
     ) {
-      return true;
+      return true
     }
 
     // force the rendering if the template has changed
     const hasChangedTemplate =
       !!storyFnAngular?.template &&
-      previousStoryRenderInfo?.storyFnAngular?.template !== storyFnAngular.template;
+      previousStoryRenderInfo?.storyFnAngular?.template !== storyFnAngular.template
     if (hasChangedTemplate) {
-      return true;
+      return true
     }
 
     // force the rendering if the metadata structure has changed
     const hasChangedModuleMetadata =
-      currentStoryRender.moduleMetadataSnapshot !== previousStoryRenderInfo?.moduleMetadataSnapshot;
+      currentStoryRender.moduleMetadataSnapshot !== previousStoryRenderInfo?.moduleMetadataSnapshot
 
-    return hasChangedModuleMetadata;
+    return hasChangedModuleMetadata
+  }
+}
+
+
+
+
+
+const _storyPropsProvider = (storyProps$: () => Subject<ICollection | undefined>): Provider => ({
+  provide: STORY_PROPS,
+  // useFactory: storyDataFactory(storyProps$.asObservable()),
+  useFactory: storyDataFactory(storyProps$),
+  deps: [NgZone],
+})
+
+function storyDataFactory<T>(data: () => Observable<T>) {
+  return (ngZone: NgZone) =>
+    new Observable((subscriber: Subscriber<T>) => {
+      const sub = data().subscribe(
+        (v: T) => {
+          ngZone.run(() => subscriber.next(v))
+        },
+        (err) => {
+          ngZone.run(() => subscriber.error(err))
+        },
+        () => {
+          ngZone.run(() => subscriber.complete())
+        }
+      )
+
+      return () => {
+        sub.unsubscribe()
+      }
+    })
+}
+
+
+
+// export function createMountableStoryComponent(story: Story, rendererFactory: RendererFactory): any {
+export function createMountableStoryComponent(story: Story): RenderableStoryAndModule {
+
+  const storyId = 'testing-story'
+  const renderer = new SbTestingRenderer(storyId)
+
+  const tpl = `<${storyId}></${storyId}>`
+
+  // template: `<${storyId}></${storyId}>`,
+  @Component({
+    selector: 'sb-testing-mount',
+    template: tpl,
+    providers: [
+      // storyPropsProvider(renderer.storyProps$ as any)
+      _storyPropsProvider(() => renderer.storyProps$ as any)
+    ],
+
+    // Get story components inputs/outputs to watch for ngChanges on or try to proxy.
+    inputs: [],
+    outputs: []
+  })
+  class SbTestingMount implements OnInit, OnDestroy, AfterViewInit {
+
+    constructor(
+      private readonly _elementRef: ElementRef,
+      // @Inject(STORY_PROPS) private readonly _props: Observable<ICollection>
+      private readonly _injector: Injector
+    ) {
+      // console.log('injector', _injector.get(STORY_PROPS))
+    }
+
+    ngOnInit(): void {
+
+    }
+
+    ngOnDestroy(): void {
+      renderer.completeStory()
+    }
+
+    ngAfterViewInit(): void {
+      // const _render = await rendererFactory.getRendererInstance('my-story', rootTargetDOMNode)
+      // const storyId = 'testing-story'
+      // const _render = new SbTestingRenderer(storyId)
+      // await _render.render({
+      //   storyFnAngular: (Basic as any)(),
+      //   forced: false,
+      //   parameters: {} as any,
+      //   targetDOMNode: rootTargetDOMNode,
+      // })
+
+
+      renderer.getRenderableComponent({
+        storyFnAngular: story as any,
+        forced: false,
+        parameters: {} as any,
+        // targetDOMNode: rootTargetDOMNode,
+      })
+
+    }
+
+  }
+
+  const _storyTmp: any = story
+  // _story.moduleMetadata.declarations.push(SbTestingMount)
+  // _story.moduleMetadata.exports.push(SbTestingMount)
+
+  const _story: any = {
+    ..._storyTmp,
+    moduleMetadata: {
+      declarations: [
+        ...(_storyTmp.moduleMetadata?.declarations ?? []),
+        SbTestingMount
+      ],
+      imports: [
+        ...(_storyTmp.moduleMetadata?.imports ?? [])
+      ],
+      providers: [
+        ...(_storyTmp.moduleMetadata?.providers ?? [])
+      ],
+      entryComponents: [
+        ...(_storyTmp.moduleMetadata?.entryComponents ?? [])
+      ],
+      schemas: [
+        ...(_storyTmp.moduleMetadata?.schemas ?? [])
+      ],
+      exports: [
+        ...(_storyTmp.moduleMetadata?.exports ?? []),
+        SbTestingMount
+      ],
+    }
+  }
+
+  const _module = renderer.getRenderableComponent({
+    storyFnAngular: _story as any,
+    forced: false,
+    parameters: {} as any,
+    // targetDOMNode: rootTargetDOMNode,
+  })
+
+  if (_module === null) {
+    throw Error(`Must initially have module`)
+  }
+
+  return {
+    component: SbTestingMount,
+    module: _module
   }
 }

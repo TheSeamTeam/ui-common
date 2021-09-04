@@ -199,41 +199,7 @@ export function composeStories<
 
 
 
-export function createMountableStoryComponent(story: Story, rendererFactory: RendererFactory): any {
 
-  @Component({
-    selector: 'sb-testing-mount',
-    template: ''
-  })
-  class SbTestingMount implements OnInit, OnDestroy, AfterViewInit {
-    
-    constructor(
-      private readonly _elementRef: ElementRef
-    ) { }
-  
-    ngOnInit(): void {
-  
-    }
-  
-    ngOnDestroy(): void {
-  
-    }
-  
-    ngAfterViewInit(): void {
-      // const _render = await rendererFactory.getRendererInstance('my-story', rootTargetDOMNode)
-      const storyId = 'testing-story'
-      const _render = new CanvasRenderer(storyId)
-      await _render.render({
-        storyFnAngular: (Basic as any)(),
-        forced: false,
-        parameters: {} as any,
-        targetDOMNode: rootTargetDOMNode,
-      })
-    }
-  
-  }
-
-}
 
 
 

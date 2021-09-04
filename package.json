@@ -25,8 +25,8 @@
     "build-storybook": "npm run storybook-prebuild && build-storybook -o docs",
     "storybook-prebuild": "npm run test:generate-output && npm run docs:json",
     "local-registry": "ts-node --project=./scripts/tsconfig.json ./scripts/run-registry.ts --open --publish",
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+    "cypress:open": "cypress open-ct --project projects/ui-common",
+    "cypress:run": "cypress run-ct --project projects/ui-common"
   },
   "private": true,
   "dependencies": {

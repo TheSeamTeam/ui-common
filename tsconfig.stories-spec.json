@@ -1,8 +1,7 @@
 {
-  "extends": "../tsconfig.stories-spec.json",
+  "extends": "./tsconfig.json",
   "include": [
-    "**/*.ts",
-    "**/*.stories-spec.ts",
+    "src/**/*.stories-spec.ts",
   ],
   "compilerOptions": {
     "sourceMap": false,

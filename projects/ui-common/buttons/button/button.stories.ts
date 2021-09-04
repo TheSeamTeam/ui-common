@@ -1,4 +1,4 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular'
+import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular'
 
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
@@ -18,7 +18,8 @@ export default {
         BrowserAnimationsModule,
         TheSeamButtonsModule
       ]
-    })
+    }),
+    componentWrapperDecorator(story => `<div class="vh-100 vw-100">${story}</div>`)
   ]
 } as Meta
 

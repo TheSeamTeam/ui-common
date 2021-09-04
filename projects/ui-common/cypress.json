@@ -1,9 +1,9 @@
 {
-  "integrationFolder": "projects/ui-common/cypress/integration",
   "supportFile": "projects/ui-common/cypress/support/index.ts",
   "videosFolder": "projects/ui-common/cypress/videos",
   "screenshotsFolder": "projects/ui-common/cypress/screenshots",
   "pluginsFile": "projects/ui-common/cypress/plugins/index.ts",
   "fixturesFolder": "projects/ui-common/cypress/fixtures",
-  "baseUrl": "http://localhost:4200"
+  "testFiles": "projects/ui-common/**/*.stories-spec.ts",
+  "componentFolder": "src/components"
 }
