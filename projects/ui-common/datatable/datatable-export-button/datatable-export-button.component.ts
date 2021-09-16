@@ -58,7 +58,12 @@ export class DatatableExportButtonComponent implements OnInit {
     const export$ = this._datatable.rows$
       .pipe(
         take(1),
-        map(rows => this._mapExportData(this._datatable.columns || [], rows)),
+        map(rows => {
+          if (exporter.skipDataMapping) {
+            return rows
+          }
+          return this._mapExportData(this._datatable.columns || [], rows)
+        }),
         concatMap(data => exporter.export(data)),
         catchError(err => {
           console.error(err)
@@ -68,7 +73,7 @@ export class DatatableExportButtonComponent implements OnInit {
           if (success) {
             this._toastr.success(`${exporter.label} export complete.`, 'Data Export')
           } else {
-            this._toastr.success(`${exporter.label} export failed.`, 'Data Export')
+            this._toastr.error(`${exporter.label} export failed.`, 'Data Export')
           }
         })
       )

@@ -25,6 +25,11 @@ export interface IDataExporter {
   icon?: string | IconProp
 
   /**
+   * Pass the rows directly to the export function without any mapping.
+   */
+  skipDataMapping?: boolean
+
+  /**
    * Export the data based on the data to some format.
    */
   export<T>(data: T[]): Observable<boolean>
