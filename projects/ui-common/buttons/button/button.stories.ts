@@ -23,7 +23,7 @@ export default {
   ]
 } as Meta
 
-export const Basic: Story = (args) => ({
+export const Basic: Story<Partial<ButtonComponent> & { [key: string]: any }> = (args) => ({
   props: { ...args },
   template: `
     <button seamButton

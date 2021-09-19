@@ -83,6 +83,7 @@
     "@compodoc/compodoc": "^1.1.14",
     "@cypress/schematic": "^1.5.0",
     "@linnenschmidt/build-ng-packagr": "^9.0.0",
+    "@marklb/storybook-testing-angular": "0.0.6",
     "@ngneat/spectator": "^7.2.0",
     "@storybook/addon-a11y": "6.4.0-alpha.21",
     "@storybook/addon-actions": "6.4.0-alpha.21",

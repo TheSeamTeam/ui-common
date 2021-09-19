@@ -4,20 +4,19 @@ import { ButtonComponent } from './button.component'
 
 
 import { render, screen } from '@testing-library/angular'
-import { composeStories } from '../../../../.storybook/testing/sb-testing'
-import { createMountableStoryComponent } from '../../../../.storybook/testing/sb-testing-renderer'
 import * as stories from './Button.stories' // import all stories from the stories file
 
 import { ɵresetJitOptions } from '@angular/core'
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic'
 import { platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing'
-import { StoryContext } from '@storybook/addons'
 import { RendererFactory } from '@storybook/angular/dist/ts3.9/client/preview/angular-beta/RendererFactory'
+
+import { composeStories, createMountableStoryComponent } from '@marklb/storybook-testing-angular'
 
 jest.mock('@angular/platform-browser-dynamic')
 
 // Every component that is returned maps 1:1 with the stories, but they already contain all decorators from story level, meta level and global level.
-const { Basic } = composeStories(stories)
+const { Basic } = composeStories(stories as any)
 
 describe('ButtonComponent', () => {
 
@@ -73,7 +72,7 @@ describe('ButtonComponent', () => {
         targetDOMNode: rootTargetDOMNode,
       })
 
-      expect(document.body.getElementsByTagName('button')[0].innerHTML).toBe(Basic.args?.btnText)
+      expect(document.body.getElementsByTagName('button')[0].innerHTML).toBe((Basic as any).args?.btnText)
 
 
       // render(Basic);
@@ -135,7 +134,7 @@ describe('ButtonComponent', () => {
     const tmp = createMountableStoryComponent((Basic as any)())
     const createComponent = createComponentFactory({
       component: tmp.component,
-      imports: [ tmp.module ]
+      imports: [ tmp.ngModule ]
     })
 
     beforeEach(async () => {
@@ -164,12 +163,12 @@ describe('ButtonComponent', () => {
 
 
     it('renders mounable component', () => {
-      expect(document.body.getElementsByTagName('button')[0].innerHTML).toBe(Basic.args?.btnText)
+      expect(document.body.getElementsByTagName('button')[0].innerHTML).toBe((Basic as any).args?.btnText)
     })
   })
 
   describe('Stories3', () => {
-    const tmp = createMountableStoryComponent((Basic as any)())
+    const { component, ngModule } = createMountableStoryComponent((Basic as any)())
 
     beforeEach(async () => {
       // tslint:enable: no-non-null-assertion
@@ -186,12 +185,12 @@ describe('ButtonComponent', () => {
     })
 
     it('renders mounable component', async () => {
-      const { navigate } = await render(tmp.component, {
-        imports: [ tmp.module ]
+      const { navigate } = await render(component, {
+        imports: [ ngModule ]
       })
 
       // expect(screen.queryByText(/Detail one/i)).not.toBeInTheDocument();
-      expect(document.body.getElementsByTagName('button')[0].innerHTML).toBe(Basic.args?.btnText)
+      expect(document.body.getElementsByTagName('button')[0].innerHTML).toBe((Basic as any).args?.btnText)
     })
   })
 
