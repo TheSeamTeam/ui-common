@@ -1,9 +1,11 @@
 {
-  "supportFile": "projects/ui-common/cypress/support/index.ts",
-  "videosFolder": "projects/ui-common/cypress/videos",
-  "screenshotsFolder": "projects/ui-common/cypress/screenshots",
-  "pluginsFile": "projects/ui-common/cypress/plugins/index.ts",
-  "fixturesFolder": "projects/ui-common/cypress/fixtures",
-  "testFiles": "projects/ui-common/**/*.stories-spec.ts",
-  "componentFolder": "src/components"
+  "supportFile": "cypress/support/index.ts",
+  "videosFolder": "cypress/videos",
+  "screenshotsFolder": "cypress/screenshots",
+  "pluginsFile": "cypress/plugins/index.ts",
+  "fixturesFolder": "cypress/fixtures",
+  "component": {
+    "testFiles": "**/*.cy-spec.{js,ts,jsx,tsx}",
+    "componentFolder": "./"
+  }
 }

@@ -1,7 +1,8 @@
 {
   "extends": "./tsconfig.json",
   "include": [
-    "src/**/*.stories-spec.ts",
+    "projects/ui-common/cypress/**/*.ts",
+    "src/**/*.cy-spec.ts",
   ],
   "compilerOptions": {
     "sourceMap": false,

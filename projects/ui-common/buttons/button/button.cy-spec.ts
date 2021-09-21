@@ -5,7 +5,7 @@ import { composeStories, createMountableStoryComponent } from '@marklb/storybook
 
 
 // Every component that is returned maps 1:1 with the stories, but they already contain all decorators from story level, meta level and global level.
-const { Basic } = composeStories(stories)
+const { Basic } = composeStories(stories as any)
 
 describe('ButtonComponent', () => {
 
@@ -20,7 +20,9 @@ describe('ButtonComponent', () => {
       cy.visit('')
 
       // expect(screen.queryByText(/Detail one/i)).not.toBeInTheDocument();
-      expect(document.body.getElementsByTagName('button')[0].innerHTML).toBe(Basic.args?.btnText)
+      // expect(document.body.getElementsByTagName('button')[0].innerHTML).toBe((Basic as any).args?.btnText)
+      // expect(document.body.getElementsByTagName('button')[0].innerHTML).toBeInTheDocument()
+      cy.get('button').should('contain', (Basic as any).args?.btnText)
     })
   })
 

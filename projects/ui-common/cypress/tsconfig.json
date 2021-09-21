@@ -1,8 +1,8 @@
 {
-  "extends": "../tsconfig.stories-spec.json",
+  "extends": "../tsconfig.cypress.json",
   "include": [
     "**/*.ts",
-    "**/*.stories-spec.ts",
+    "**/*.cy-spec.ts",
   ],
   "compilerOptions": {
     "sourceMap": false,
