@@ -8,4 +8,9 @@ export interface QueryProcessingVariablesConfig {
 
 export interface QueryProcessingConfig {
   variables: QueryProcessingVariablesConfig
+
+  /**
+   * If skip and take are found, they will be removed
+   */
+   disablePaging?: boolean
 }
