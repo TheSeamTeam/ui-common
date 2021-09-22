@@ -5,8 +5,11 @@
     "**/*.cy-spec.ts",
   ],
   "compilerOptions": {
-    "sourceMap": false,
+    "sourceMap": true,
     "types": ["cypress"],
-    "strict": false,
+    "strict": true,
+    "inlineSources": true,
+    "emitDecoratorMetadata": false,
+    "experimentalDecorators": true,
   }
 }

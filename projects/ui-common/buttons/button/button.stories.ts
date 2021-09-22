@@ -5,8 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { buttonTypeArgType, sizeArgType, themeWithOutlineArgType } from '@theseam/ui-common/story-helpers'
 
-import { TheSeamButtonsModule } from '../buttons.module'
-import { ButtonComponent } from './button.component'
+import { ButtonComponent, TheSeamButtonsModule } from '@theseam/ui-common/buttons'
 
 export default {
   title: 'Buttons/Components/Button',
