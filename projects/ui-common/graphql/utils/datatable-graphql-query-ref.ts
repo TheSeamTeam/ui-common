@@ -2,9 +2,12 @@ import { BehaviorSubject, defer, from, isObservable, Observable, of, Subscriber 
 import { auditTime, finalize, map, share, shareReplay, skip, startWith, switchMap, take, tap } from 'rxjs/operators'
 
 import { ApolloQueryResult, DocumentNode, NetworkStatus, TypedDocumentNode } from '@apollo/client/core'
+import { hasProperty, isNullOrUndefined, notNullOrUndefined } from '@theseam/ui-common/utils'
 import { QueryRef } from 'apollo-angular'
 import { EmptyObject, WatchQueryOptions } from 'apollo-angular/types'
+
 import { QueryProcessingConfig } from '../models'
+import { DEFAULT_PAGE_SIZE } from './datatable-helpers'
 
 export interface DatatableGraphQLDataMapperResult<TRow = EmptyObject> {
   rows: TRow[]
@@ -34,6 +37,11 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
 
   private readonly _variablesSubject = new BehaviorSubject<TVariables>({} as TVariables)
   private readonly _observingChangesSubject = new BehaviorSubject<boolean>(false)
+
+  /**
+   * Temporary way of tracking total count when paging is disabled.
+   */
+  private _totalCount: number = DEFAULT_PAGE_SIZE
 
   private get _observingChanges(): boolean { return this._observingChangesSubject.value }
   private set _observingChanges(value: boolean) { this._observingChangesSubject.next(value) }
@@ -132,6 +140,15 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
 
           return this._resolveRowMapper(mapper(result.data)).pipe(
             tap(mapperResult => {
+              if (this._needsToRequeryWithAllRecords(mapperResult)) {
+                this.patchVariables({ take: mapperResult.totalCount } as any)
+              }
+
+              if (hasProperty(mapperResult, 'totalCount')) {
+                this._totalCount = mapperResult.totalCount
+              }
+
+
               let rows = rowsBufferSubject.value || []
 
               const hasTotalCount = mapperResult.totalCount !== undefined && mapperResult.totalCount !== null
@@ -146,7 +163,10 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
                   rows = new Array<TRow>(mapperResult.totalCount || 0)
                 }
 
-                const startIndex = this.getVariables().skip ?? 0
+                let startIndex = this.getVariables().skip ?? 0
+                if (this.getQueryProcessingConfig()?.disablePaging) {
+                  startIndex = 0
+                }
 
                 // Insert rows into buffer location.
                 rows.splice(startIndex, mapperResult.rows.length, ...mapperResult.rows)
@@ -174,6 +194,18 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
     })
   }
 
+  private _needsToRequeryWithAllRecords(data: DatatableGraphQLDataMapperResult<TRow>): boolean {
+    if (!(this.getQueryProcessingConfig()?.disablePaging)) {
+      return false
+    }
+
+    return hasProperty(data, 'totalCount') &&
+      hasProperty(data, 'rows') &&
+      Array.isArray(data.rows) &&
+      data.totalCount > data.rows.length &&
+      this._totalCount !== data.totalCount
+  }
+
   private _resolveRowMapper(
     mapperReturn: ReturnType<DatatableGraphQLDataMapper<TData, TRow>>
   ): Observable<DatatableGraphQLDataMapperResult<TRow>> {
@@ -193,7 +225,8 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
   }
 
   private _setVariablesImmediate(variables: TVariables): Promise<void | ApolloQueryResult<TData>> {
-    return this._queryRef.setVariables(variables)
+    const _vars = this._withVariableOverrides(variables)
+    return this._queryRef.setVariables(_vars || {} as TVariables)
   }
 
   private _patchVariablesImmediate(variables: Partial<TVariables>): Promise<void | ApolloQueryResult<TData>> {
@@ -201,7 +234,9 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
       ...this.getVariables(),
       ...variables
     }
-    return this._queryRef.setVariables(_variables)
+
+    const _vars = this._withVariableOverrides(_variables)
+    return this._queryRef.setVariables(_vars || {} as TVariables)
   }
 
   public setVariables(variables: TVariables): void {
@@ -224,7 +259,8 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
   }
 
   public refetch(variables?: TVariables): Promise<ApolloQueryResult<TData>> {
-    return this._queryRef.refetch(variables)
+    const _vars = this._withVariableOverrides(variables)
+    return this._queryRef.refetch(_vars)
   }
 
   public setQuery(query: DocumentNode | TypedDocumentNode<TData, TVariables>, triggerRefetch: boolean = false): void {
@@ -246,6 +282,18 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
 
   public getQueryProcessingConfig(): QueryProcessingConfig | undefined {
     return this.getOptions()?.context?.queryProcessingConfig
+  }
+
+  private _withVariableOverrides(variables?: TVariables): TVariables | undefined {
+    if (!notNullOrUndefined(variables) && !(this.getQueryProcessingConfig()?.disablePaging)) {
+      return undefined
+    }
+
+    const _vars = { ...(variables || {}) } as TVariables
+    if (this.getQueryProcessingConfig()?.disablePaging) {
+      _vars.take = this._totalCount
+    }
+    return _vars
   }
 
 }
