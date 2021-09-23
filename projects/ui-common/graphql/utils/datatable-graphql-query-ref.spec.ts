@@ -1,59 +1,121 @@
+import { EventEmitter } from '@angular/core'
 import { fakeAsync, TestBed, tick } from '@angular/core/testing'
-import { gql } from 'apollo-angular'
+import { BehaviorSubject, Observable, of } from 'rxjs'
+import { shareReplay, switchMap } from 'rxjs/operators'
+
+import { ApolloLink, concat, InMemoryCache } from '@apollo/client/core'
+import { DataFilterState } from '@theseam/ui-common/data-filters'
+import { DatatableComponent, SortEvent, SortItem, TheSeamPageInfo } from '@theseam/ui-common/datatable'
+import { hasProperty } from '@theseam/ui-common/utils'
+import { APOLLO_OPTIONS, gql } from 'apollo-angular'
 import {
   ApolloTestingController,
   ApolloTestingModule,
 } from 'apollo-angular/testing'
-import { BehaviorSubject, Observable, of } from 'rxjs'
-import { shareReplay, switchMap } from 'rxjs/operators'
 
-import { DataFilterState } from '@theseam/ui-common/data-filters'
-import { DatatableComponent, SortEvent, SortItem, TheSeamPageInfo } from '@theseam/ui-common/datatable'
-
-import { EventEmitter } from '@angular/core'
 import { GqlDatatableAccessor } from '../models'
 import { DatatableGraphqlService } from '../services'
 import { DEFAULT_PAGE_SIZE, FilterStateMapperResult, MapperContext, observeRowsWithGqlInputsHandling, SortsMapperResult } from './datatable-helpers'
 import { gqlVar } from './gql-var'
 
-const QUERY = gql`
-  query ExampleQuery (
-    $skip: Int
-    $take: Int
-    $order: [ExampleModelSortInput!]
-    $where: ExampleModelFilterInput
-    $search: String!
-    $memberIdExpr: Any!
-  ) {
+import { buildSchema, graphql, print } from 'graphql'
+import { isSource } from 'graphql/language/source'
+import { queryProcessingLink } from '../apollo-links'
+import { graphQLLink } from '../apollo-links/graphql-link'
+import { baseSchemaFragment, filterWhere, skipAndTake, WhereArg } from '../testing'
+
+function _createClaim(num: number): { claimId: number, name: string } {
+  return { claimId: num, name: `Name${num}` }
+}
+
+const schema = buildSchema(print(gql`
+  ${baseSchemaFragment}
+
+  type ClaimCollectionSegment {
+    items: [Claim!]
+
+    """Information to aid in pagination."""
+    pageInfo: CollectionSegmentInfo!
+    totalCount: Int!
+  }
+
+  input ClaimFilterInput {
+    and: [ClaimFilterInput!]
+    or: [ClaimFilterInput!]
+    claimId: ComparableInt32OperationFilterInput
+    name: StringOperationFilterInput
+    objectContains: String
+  }
+
+  type Claim {
+    claimId: Int
+    name: String
+  }
+
+  type Query {
     claims(
-      skip: $skip
-      take: $take
-      order: $order
-      where: {
-        and: [
-          $memberIdExpr
-          $where
-        ]
-      }
-    ) {
-      totalCount
+      skip: Int
+      take: Int
+      where: ClaimFilterInput
+    ): ClaimCollectionSegment
+  }
+`))
+
+const _claims: { claimId: number, name: string }[] = []
+for (let i = 0; i < 30; i++) { _claims.push(_createClaim(i)) }
+
+const root = {
+  claims: (args?: any) => {
+    let result: any = [ ..._claims ]
+
+    const where: WhereArg = args?.where
+    if (where !== undefined) {
+      result = filterWhere(result, where)
+    }
+
+    const totalCount = result.length
+
+    const skip = args?.skip ?? 0
+    const take = args?.take ?? result.length
+    if (args?.skip !== undefined || args?.take !== undefined) {
+      result = skipAndTake(result, skip, take)
+    }
+
+    const pageInfo: { hasNextPage: boolean, hasPreviousPage: boolean } = {
+      hasNextPage: (skip + take) < totalCount,
+      hasPreviousPage: skip > 0,
+    }
+
+    return {
+      items: result,
+      pageInfo,
+      totalCount,
+    }
+  }
+}
+
+
+const QUERY = gql`
+  query ExampleQuery(
+    $where: ClaimFilterInput
+  ) {
+    claims(where: $where) {
       items {
         claimId
-        memberId
         name
       }
+      totalCount
     }
   }
 `
 
 interface GqlData {
   claimId: number
-  memberId: number
   name: string
 }
 
 interface GqlExtraVariables {
-  memberIdExpr?: { memberId: { eq: number } }
+
 }
 
 interface GqlVariables extends GqlExtraVariables {
@@ -61,29 +123,63 @@ interface GqlVariables extends GqlExtraVariables {
   take?: number
   order?: any
   where?: any
-  search?: string
+  // search?: string
 }
 
 type RowData = GqlData
 
 describe('DatatableGraphQLQueryRef', () => {
-  let controller: ApolloTestingController
+  // let controller: ApolloTestingController
   let datatableGql: DatatableGraphqlService
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ApolloTestingModule],
+      // imports: [ApolloTestingModule],
+      providers: [
+        {
+          provide: APOLLO_OPTIONS,
+          useFactory: () => {
+            return {
+              cache: new InMemoryCache(),
+              // link: concat(queryProcessingLink, httpLink.create({
+              //   uri: environment.graphqlUrl,
+              // })),
+              // connectToDevtools: true
+
+              link: concat(queryProcessingLink, graphQLLink({
+                schema,
+                rootValue: root,
+              })),
+            }
+          },
+          // deps: [],
+        }
+      ]
     })
 
-    controller = TestBed.inject(ApolloTestingController)
+    // controller = TestBed.inject(ApolloTestingController)
     datatableGql = TestBed.inject(DatatableGraphqlService)
   })
 
-  afterEach(() => {
-    controller.verify()
-  })
+  // afterEach(() => {
+  //   controller.verify()
+  // })
 
-  it('should', fakeAsync(() => {
+  it('should', fakeAsync(async () => {
+    // const where: WhereArg = {
+    //   claimId: { eq: 2 }
+    // }
+    // // const res = _parseWhereItems(where)
+
+    // // const resp = await graphql(schema, '{ hello }', root)
+    // // const resp2 = await graphql(schema, `{
+    // //   claims(where: { claimId: { eq: 2 } }) {
+    // //     name
+    // //   }
+    // // }`, root, {}, { where })
+    // const resp2 = await graphql(schema, print(QUERY_2), root, {}, { where })
+
+
     const queryRef = datatableGql.watchQuery<GqlData, GqlVariables, RowData>(
       {
         query: QUERY,
@@ -94,12 +190,12 @@ describe('DatatableGraphQLQueryRef', () => {
       },
       {
         variables: {
-          removeIfNotDefined: [ 'order', 'search', 'memberIdExpr' ],
-          removeIfNotUsed: [ 'search' ],
-          inline: [ 'where', 'memberIdExpr' ]
+          // removeIfNotDefined: [ 'order', 'search' ],
+          // removeIfNotUsed: [ 'search' ],
+          inline: [ 'where' ]
         },
         // Disabling paging until a solution for select all, when partially loaded datatset, is decided.
-        disablePaging: true
+        // disablePaging: true
       }
     )
 
@@ -110,8 +206,8 @@ describe('DatatableGraphQLQueryRef', () => {
     const _rows$ = queryRef.rows((data: any) => {
       return {
         // rows: data.claims.items.map(this._mapRow),
-        rows: data.example.items,
-        totalCount: data.example.totalCount
+        rows: data.claims.items,
+        totalCount: data.claims.totalCount
       }
     }).pipe(
       shareReplay({ bufferSize: 1, refCount: true }),
@@ -123,7 +219,6 @@ describe('DatatableGraphQLQueryRef', () => {
 
         switch (s?.prop) {
           case 'claimId': return ({ claimId: _dir })
-          case 'memberId': return ({ memberId: _dir })
           case 'name': return ({ name: _dir })
         }
 
@@ -190,7 +285,7 @@ describe('DatatableGraphQLQueryRef', () => {
         expect(data.length).toEqual(0)
       } else if (emittedDataCount === 1) {
         expect(data.length).toEqual(6)
-        expect(data[0].name).toEqual('Name1')
+        expect(data[0].name).toEqual('Name2')
       } else {
         // throw Error(`Should not emit 3 times.`)
       }
@@ -207,97 +302,98 @@ describe('DatatableGraphQLQueryRef', () => {
     // The following `expectOne()` will match the operation's document.
     // If no requests or multiple requests matched that document
     // `expectOne()` would throw.
-    const op = controller.expectOne(QUERY)
+    // const op = controller.expectOne(QUERY)
 
     // Assert that one of variables is Mr Apollo.
     // expect(op.operation.variables.name).toEqual('Mr Apollo');
 
     // Respond with mock data, causing Observable to resolve.
-    op.flush({
-      data: {
-        example: {
-          items: [
-            {
-              claimId: 1,
-              memberId: 101,
-              name: 'Name1',
-            },
-            {
-              claimId: 2,
-              memberId: 102,
-              name: 'Name2',
-            },
-            {
-              claimId: 3,
-              memberId: 103,
-              name: 'Name3',
-            },
-            {
-              claimId: 4,
-              memberId: 104,
-              name: 'Name4',
-            },
-            {
-              claimId: 5,
-              memberId: 105,
-              name: 'Name5',
-            },
-            {
-              claimId: 6,
-              memberId: 106,
-              name: 'Name6',
-            }
-          ],
-          totalCount: 6
-        },
-      },
-    })
-
-    tick(1)
+    // op.flush({
+    //   data: {
+    //     example: {
+    //       items: [
+    //         {
+    //           claimId: 1,
+    //           memberId: 101,
+    //           name: 'Name1',
+    //         },
+    //         {
+    //           claimId: 2,
+    //           memberId: 102,
+    //           name: 'Name2',
+    //         },
+    //         {
+    //           claimId: 3,
+    //           memberId: 103,
+    //           name: 'Name3',
+    //         },
+    //         {
+    //           claimId: 4,
+    //           memberId: 104,
+    //           name: 'Name4',
+    //         },
+    //         {
+    //           claimId: 5,
+    //           memberId: 105,
+    //           name: 'Name5',
+    //         },
+    //         {
+    //           claimId: 6,
+    //           memberId: 106,
+    //           name: 'Name6',
+    //         }
+    //       ],
+    //       totalCount: 6
+    //     },
+    //   },
+    // })
 
     gqlDtAccessor.setPage({ pageSize: DEFAULT_PAGE_SIZE, offset: 4, count: 6 })
 
     tick(1)
 
-    op.flush({
-      data: {
-        example: {
-          items: [
-            {
-              claimId: 1,
-              memberId: 101,
-              name: 'Name1',
-            },
-            {
-              claimId: 2,
-              memberId: 102,
-              name: 'Name2',
-            },
-            {
-              claimId: 3,
-              memberId: 103,
-              name: 'Name3',
-            },
-            {
-              claimId: 4,
-              memberId: 104,
-              name: 'Name4',
-            },
-            {
-              claimId: 5,
-              memberId: 105,
-              name: 'Name5',
-            },
-            {
-              claimId: 6,
-              memberId: 106,
-              name: 'Name6',
-            }
-          ],
-          totalCount: 6
-        },
-      },
-    })
+
+    tick(1)
+
+    // op.flush({
+    //   data: {
+    //     example: {
+    //       items: [
+    //         {
+    //           claimId: 1,
+    //           memberId: 101,
+    //           name: 'Name1',
+    //         },
+    //         {
+    //           claimId: 2,
+    //           memberId: 102,
+    //           name: 'Name2',
+    //         },
+    //         {
+    //           claimId: 3,
+    //           memberId: 103,
+    //           name: 'Name3',
+    //         },
+    //         {
+    //           claimId: 4,
+    //           memberId: 104,
+    //           name: 'Name4',
+    //         },
+    //         {
+    //           claimId: 5,
+    //           memberId: 105,
+    //           name: 'Name5',
+    //         },
+    //         {
+    //           claimId: 6,
+    //           memberId: 106,
+    //           name: 'Name6',
+    //         }
+    //       ],
+    //       totalCount: 6
+    //     },
+    //   },
+    // })
 
     tick(1)
 
