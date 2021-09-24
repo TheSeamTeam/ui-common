@@ -1,6 +1,6 @@
 import { EventEmitter } from '@angular/core'
 import { fakeAsync, TestBed, tick } from '@angular/core/testing'
-import { BehaviorSubject, Observable, of } from 'rxjs'
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs'
 import { shareReplay, switchMap } from 'rxjs/operators'
 
 import { ApolloLink, concat, InMemoryCache } from '@apollo/client/core'
@@ -19,10 +19,9 @@ import { DEFAULT_PAGE_SIZE, FilterStateMapperResult, MapperContext, observeRowsW
 import { gqlVar } from './gql-var'
 
 import { buildSchema, graphql, print } from 'graphql'
-import { isSource } from 'graphql/language/source'
 import { queryProcessingLink } from '../apollo-links'
 import { graphQLLink } from '../apollo-links/graphql-link'
-import { baseSchemaFragment, filterWhere, skipAndTake, WhereArg } from '../testing'
+import { baseSchemaFragment, filteredResults } from '../testing'
 
 function _createClaim(num: number): { claimId: number, name: string } {
   return { claimId: num, name: `Name${num}` }
@@ -65,33 +64,7 @@ const _claims: { claimId: number, name: string }[] = []
 for (let i = 0; i < 30; i++) { _claims.push(_createClaim(i)) }
 
 const root = {
-  claims: (args?: any) => {
-    let result: any = [ ..._claims ]
-
-    const where: WhereArg = args?.where
-    if (where !== undefined) {
-      result = filterWhere(result, where)
-    }
-
-    const totalCount = result.length
-
-    const skip = args?.skip ?? 0
-    const take = args?.take ?? result.length
-    if (args?.skip !== undefined || args?.take !== undefined) {
-      result = skipAndTake(result, skip, take)
-    }
-
-    const pageInfo: { hasNextPage: boolean, hasPreviousPage: boolean } = {
-      hasNextPage: (skip + take) < totalCount,
-      hasPreviousPage: skip > 0,
-    }
-
-    return {
-      items: result,
-      pageInfo,
-      totalCount,
-    }
-  }
+  claims: (args?: any) => filteredResults([ ..._claims ], args)
 }
 
 
@@ -141,11 +114,6 @@ describe('DatatableGraphQLQueryRef', () => {
           useFactory: () => {
             return {
               cache: new InMemoryCache(),
-              // link: concat(queryProcessingLink, httpLink.create({
-              //   uri: environment.graphqlUrl,
-              // })),
-              // connectToDevtools: true
-
               link: concat(queryProcessingLink, graphQLLink({
                 schema,
                 rootValue: root,
@@ -165,21 +133,7 @@ describe('DatatableGraphQLQueryRef', () => {
   //   controller.verify()
   // })
 
-  it('should', fakeAsync(async () => {
-    // const where: WhereArg = {
-    //   claimId: { eq: 2 }
-    // }
-    // // const res = _parseWhereItems(where)
-
-    // // const resp = await graphql(schema, '{ hello }', root)
-    // // const resp2 = await graphql(schema, `{
-    // //   claims(where: { claimId: { eq: 2 } }) {
-    // //     name
-    // //   }
-    // // }`, root, {}, { where })
-    // const resp2 = await graphql(schema, print(QUERY_2), root, {}, { where })
-
-
+  it('should', fakeAsync(() => {
     const queryRef = datatableGql.watchQuery<GqlData, GqlVariables, RowData>(
       {
         query: QUERY,
@@ -205,7 +159,6 @@ describe('DatatableGraphQLQueryRef', () => {
 
     const _rows$ = queryRef.rows((data: any) => {
       return {
-        // rows: data.claims.items.map(this._mapRow),
         rows: data.claims.items,
         totalCount: data.claims.totalCount
       }
@@ -276,126 +229,45 @@ describe('DatatableGraphQLQueryRef', () => {
       }
     )
 
-    let emittedDataCount = 0
+    const gqlDtAccessor = new GqlDatatableAccessorFixture()
+
+    let emittedDataCount: number = 0
+    let emittedData: any = null
     // Call the relevant method
     const rowsSub = rows$.subscribe((data) => {
       // Make some assertion about the result;
+      gqlDtAccessor?.setRows(data)
 
-      if (emittedDataCount === 0) {
-        expect(data.length).toEqual(0)
-      } else if (emittedDataCount === 1) {
-        expect(data.length).toEqual(6)
-        expect(data[0].name).toEqual('Name2')
-      } else {
-        // throw Error(`Should not emit 3 times.`)
-      }
+      // if (emittedDataCount === 0) {
+      //   expect(data.length).toEqual(0)
+      // } else if (emittedDataCount === 1) {
+      //   expect(data.length).toEqual(30)
+      //   expect(data[0].name).toEqual('Name0')
+      // } else {
+      //   // throw Error(`Should not emit 3 times.`)
+      // }
 
+      emittedData = data
       emittedDataCount++
     })
 
-
-    const gqlDtAccessor = new GqlDatatableAccessorFixture()
     datatableSubject.next(gqlDtAccessor)
 
-    tick(1)
-
-    // The following `expectOne()` will match the operation's document.
-    // If no requests or multiple requests matched that document
-    // `expectOne()` would throw.
-    // const op = controller.expectOne(QUERY)
-
-    // Assert that one of variables is Mr Apollo.
-    // expect(op.operation.variables.name).toEqual('Mr Apollo');
-
-    // Respond with mock data, causing Observable to resolve.
-    // op.flush({
-    //   data: {
-    //     example: {
-    //       items: [
-    //         {
-    //           claimId: 1,
-    //           memberId: 101,
-    //           name: 'Name1',
-    //         },
-    //         {
-    //           claimId: 2,
-    //           memberId: 102,
-    //           name: 'Name2',
-    //         },
-    //         {
-    //           claimId: 3,
-    //           memberId: 103,
-    //           name: 'Name3',
-    //         },
-    //         {
-    //           claimId: 4,
-    //           memberId: 104,
-    //           name: 'Name4',
-    //         },
-    //         {
-    //           claimId: 5,
-    //           memberId: 105,
-    //           name: 'Name5',
-    //         },
-    //         {
-    //           claimId: 6,
-    //           memberId: 106,
-    //           name: 'Name6',
-    //         }
-    //       ],
-    //       totalCount: 6
-    //     },
-    //   },
-    // })
-
-    gqlDtAccessor.setPage({ pageSize: DEFAULT_PAGE_SIZE, offset: 4, count: 6 })
+    expect(emittedDataCount).toEqual(0)
 
     tick(1)
 
+    // NOTE: This jumps to 2 instead of 1, because it initially emits an empty array.
+    expect(emittedDataCount).toEqual(2)
+    expect(emittedData?.length).toEqual(30)
 
-    tick(1)
+    // gqlDtAccessor.setPage({ pageSize: DEFAULT_PAGE_SIZE, offset: 4, count: 6 })
+    gqlDtAccessor.setOffset(4)
 
-    // op.flush({
-    //   data: {
-    //     example: {
-    //       items: [
-    //         {
-    //           claimId: 1,
-    //           memberId: 101,
-    //           name: 'Name1',
-    //         },
-    //         {
-    //           claimId: 2,
-    //           memberId: 102,
-    //           name: 'Name2',
-    //         },
-    //         {
-    //           claimId: 3,
-    //           memberId: 103,
-    //           name: 'Name3',
-    //         },
-    //         {
-    //           claimId: 4,
-    //           memberId: 104,
-    //           name: 'Name4',
-    //         },
-    //         {
-    //           claimId: 5,
-    //           memberId: 105,
-    //           name: 'Name5',
-    //         },
-    //         {
-    //           claimId: 6,
-    //           memberId: 106,
-    //           name: 'Name6',
-    //         }
-    //       ],
-    //       totalCount: 6
-    //     },
-    //   },
-    // })
+    tick(queryRef.updatesPollDelay + 1000)
 
-    tick(1)
+    expect(emittedDataCount).toEqual(3)
+    expect(emittedData?.length).toEqual(30)
 
     rowsSub.unsubscribe()
   }))
@@ -404,16 +276,28 @@ describe('DatatableGraphQLQueryRef', () => {
 class GqlDatatableAccessorFixture implements GqlDatatableAccessor {
   private _sorts: SortItem[] = []
   private _filterStatesSubject = new BehaviorSubject<DataFilterState[]>([])
+  private _rows: any[] = []
+  private _offset: number = 0
+
+  /**
+   * This is the number of rows per page if limit is undefined. When the number
+   * of rows depend on the body height then this would be the number of rows
+   * that fit in the visible body.
+   */
+  private _virtualLimit: number = 10
 
   page: EventEmitter<TheSeamPageInfo> = new EventEmitter()
   sort: EventEmitter<SortEvent> = new EventEmitter<SortEvent>()
   get sorts(): SortItem[] { return this._sorts }
   set sorts(value: SortItem[]) { this._sorts = value }
   public filterStates: Observable<DataFilterState[]> = this._filterStatesSubject.asObservable()
-  ngxDatatable: { offset: number; pageSize: number; limit?: number; count: number } = {
-    offset: 0,
-    pageSize: DEFAULT_PAGE_SIZE,
-    count: 0
+
+  get ngxDatatable(): { offset: number; pageSize: number; limit?: number; count: number } {
+    return {
+      offset: this._offset,
+      pageSize: this.getPageSize(),
+      count: this._rows.length
+    }
   }
 
   //
@@ -427,9 +311,45 @@ class GqlDatatableAccessorFixture implements GqlDatatableAccessor {
     this._filterStatesSubject.next(v)
   }
 
-  setPage(v: TheSeamPageInfo): void {
-    this.ngxDatatable = v
-    this.page.emit(v)
+  getNumPages(): number {
+    return Math.ceil(this._rows.length / this._virtualLimit)
   }
 
+  getPage(): number {
+    let t = this._offset - (this._virtualLimit * this.getNumPages())
+    if (t < 0) { t = 0 }
+    return t
+  }
+
+  setPage(v: number): void {
+    // this.ngxDatatable = v
+    // this.page.emit(v)
+    if (v === this.getPage()) {
+      return
+    }
+    this._offset = this.getPageSize() * v
+    this.page.emit(this.ngxDatatable)
+  }
+
+  getPageSize(): number {
+    let t = Math.floor(this._rows.length / this._virtualLimit)
+    if (t === 0) { t = this._virtualLimit }
+    return t
+  }
+
+  setVirtualLimit(v: number): void {
+    this._virtualLimit = v
+  }
+
+  setRows(v: any[]): void {
+    this._rows = v
+  }
+
+  setOffset(v: number): void {
+    const pageBefore = this.getPage()
+    this._offset = v
+    if (this.getPage() !== pageBefore) {
+      this.page.emit(this.ngxDatatable)
+    }
+  }
 }

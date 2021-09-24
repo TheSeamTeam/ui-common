@@ -52,6 +52,9 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
 
   public readonly loading$: Observable<boolean>
 
+  public get updatesPollDelay(): number { return this._updatesPollDelay }
+  public get variablesUpdatePending(): boolean { return this._variablesUpdatePending }
+
   constructor(
     /** Original ApolloClient's QueryRef. */
     private readonly _queryRef: QueryRef<TData, TVariables>,

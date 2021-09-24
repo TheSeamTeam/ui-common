@@ -4,7 +4,7 @@ import { catchError, concatMap, distinctUntilChanged, filter, finalize, map, sha
 
 import { DataFilterState } from '@theseam/ui-common/data-filters'
 import { TheSeamPageInfo } from '@theseam/ui-common/datatable'
-import { notNullOrUndefined, wrapIntoObservable } from '@theseam/ui-common/utils'
+import { notNullOrUndefined, subscriberCount, wrapIntoObservable } from '@theseam/ui-common/utils'
 import { EmptyObject } from 'apollo-angular/types'
 
 import { GqlDatatableAccessor } from '../models'
@@ -45,14 +45,16 @@ export function observeRowsWithGqlInputsHandling<TData, TRow, GqlVariables exten
   sortsMapper: SortsMapper,
   filterStateMappers: FilterStateMappers
 ): Observable<TRow[]> {
-  const datatable$ = _resolveDatatable(datatable)
-  const extraVariables$ = _resolveGqlVariables<Partial<GqlVariables>>(extraVariables)
+  const datatable$ = wrapIntoObservable(datatable)
+  const extraVariables$ = wrapIntoObservable<Partial<GqlVariables>>(extraVariables)
 
   const pageInfo$ = defer(() => {
     let firstEmit = true
     return _createPageInfoObservable(datatable$).pipe(
       switchMap(pageInfo => {
-        if (!firstEmit && _isPagingDisabled(queryRef)) { return EMPTY }
+        if (!firstEmit && _isPagingDisabled(queryRef)) {
+          return EMPTY
+        }
         firstEmit = false
         return of(pageInfo)
       }),
@@ -98,6 +100,9 @@ export function observeRowsWithGqlInputsHandling<TData, TRow, GqlVariables exten
       finalize(() => handlerSub.unsubscribe())
     )
   }).pipe(
+    tap(v => {
+      console.log('rows', v)
+    }),
     catchError(err => {
       console.error(err)
       return of([] as TRow[])
@@ -106,34 +111,42 @@ export function observeRowsWithGqlInputsHandling<TData, TRow, GqlVariables exten
   )
 }
 
-function _resolveDatatable(
-  datatable: Observable<GqlDatatableAccessor | undefined> | Promise<GqlDatatableAccessor | undefined> | GqlDatatableAccessor
-): Observable<GqlDatatableAccessor | undefined> {
-  if (isObservable(datatable)) {
-    return datatable.pipe(take(1))
-  }
+// function _resolveDatatable(
+//   datatable: Observable<GqlDatatableAccessor | undefined> | Promise<GqlDatatableAccessor | undefined> | GqlDatatableAccessor
+// ): Observable<GqlDatatableAccessor | undefined> {
+//   if (isObservable(datatable)) {
+//     return datatable // .pipe(take(1))
+//   }
 
-  return from(Promise.resolve(datatable))
-}
+//   return from(Promise.resolve(datatable))
+// }
 
-function _resolveGqlVariables<GqlVariables>(
-  gqlVariables: Observable<GqlVariables> | Promise<GqlVariables> | GqlVariables
-): Observable<GqlVariables> {
-  if (isObservable(gqlVariables)) {
-    return gqlVariables.pipe(take(1))
-  }
+// function _resolveGqlVariables<GqlVariables>(
+//   gqlVariables: Observable<GqlVariables> | Promise<GqlVariables> | GqlVariables
+// ): Observable<GqlVariables> {
+//   if (isObservable(gqlVariables)) {
+//     return gqlVariables.pipe(take(1))
+//   }
 
-  return from(Promise.resolve(gqlVariables))
-}
+//   return from(Promise.resolve(gqlVariables))
+// }
 
 function _createPageInfoObservable(datatable$: Observable<GqlDatatableAccessor | undefined>) {
-  return datatable$.pipe(
+  const t = datatable$.pipe(
     switchMap(dt => {
       if (!dt) { return of(pageDefaults({})) }
-      return dt.page.pipe(startWith(pageDefaults(dt)))
+      return dt.page.pipe(
+        tap(v => {
+          console.log('page', v)
+        }),
+        startWith(pageDefaults(dt))
+      )
     }),
     shareReplay({ bufferSize: 1, refCount: true })
   )
+
+
+  return subscriberCount(t, '_createPageInfoObservable')
 }
 
 function _createSortsObservable(datatable$: Observable<GqlDatatableAccessor | undefined>) {
