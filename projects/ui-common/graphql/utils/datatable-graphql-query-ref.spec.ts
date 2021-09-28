@@ -262,7 +262,8 @@ describe('DatatableGraphQLQueryRef', () => {
     expect(emittedData?.length).toEqual(30)
 
     // gqlDtAccessor.setPage({ pageSize: DEFAULT_PAGE_SIZE, offset: 4, count: 6 })
-    gqlDtAccessor.setOffset(4)
+    // gqlDtAccessor.setOffset(4)
+    gqlDtAccessor.setPage(1)
 
     tick(queryRef.updatesPollDelay + 1000)
 
@@ -278,13 +279,16 @@ class GqlDatatableAccessorFixture implements GqlDatatableAccessor {
   private _filterStatesSubject = new BehaviorSubject<DataFilterState[]>([])
   private _rows: any[] = []
   private _offset: number = 0
+  private _rowHeight: number = 50
+  private _bodyHeight: number = 500
+  private _scrolledPosV: number = 0
 
   /**
    * This is the number of rows per page if limit is undefined. When the number
    * of rows depend on the body height then this would be the number of rows
    * that fit in the visible body.
    */
-  private _virtualLimit: number = 10
+  // private _virtualLimit: number = 10
 
   page: EventEmitter<TheSeamPageInfo> = new EventEmitter()
   sort: EventEmitter<SortEvent> = new EventEmitter<SortEvent>()
@@ -294,7 +298,8 @@ class GqlDatatableAccessorFixture implements GqlDatatableAccessor {
 
   get ngxDatatable(): { offset: number; pageSize: number; limit?: number; count: number } {
     return {
-      offset: this._offset,
+      // offset: this._offset,
+      offset: this.getPage(),
       pageSize: this.getPageSize(),
       count: this._rows.length
     }
@@ -312,13 +317,26 @@ class GqlDatatableAccessorFixture implements GqlDatatableAccessor {
   }
 
   getNumPages(): number {
-    return Math.ceil(this._rows.length / this._virtualLimit)
+    // return Math.ceil(this._rows.length / this._virtualLimit)
+    if (this._rows.length === 0) { return 1 }
+    const t = this._rows.length / this.getPageSize()
+    if (t <= 0) { return 1 }
+    return t
+  }
+
+  _calcPage(): number {
+    return Math.floor((this._scrolledPosV / this._rowHeight) / this.getPageSize())
+  }
+
+  _calcScrolledPosV(): number {
+    return this._offset * this._rowHeight
   }
 
   getPage(): number {
-    let t = this._offset - (this._virtualLimit * this.getNumPages())
-    if (t < 0) { t = 0 }
-    return t
+    // let t = this._offset - (this._virtualLimit * this.getNumPages())
+    // if (t < 0) { t = 0 }
+    // return t
+    return this._offset
   }
 
   setPage(v: number): void {
@@ -327,27 +345,39 @@ class GqlDatatableAccessorFixture implements GqlDatatableAccessor {
     if (v === this.getPage()) {
       return
     }
-    this._offset = this.getPageSize() * v
+    // this._offset = this.getPageSize() * v
+    this._offset = v
+    this._scrolledPosV = this._calcScrolledPosV()
     this.page.emit(this.ngxDatatable)
   }
 
   getPageSize(): number {
-    let t = Math.floor(this._rows.length / this._virtualLimit)
-    if (t === 0) { t = this._virtualLimit }
-    return t
+    // let t = Math.floor(this._rows.length / this._virtualLimit)
+    // if (t === 0) { t = this._virtualLimit }
+    return Math.floor(this._bodyHeight / this._rowHeight)
   }
 
-  setVirtualLimit(v: number): void {
-    this._virtualLimit = v
-  }
+  // setVirtualLimit(v: number): void {
+  //   this._virtualLimit = v
+  // }
 
   setRows(v: any[]): void {
     this._rows = v
   }
 
-  setOffset(v: number): void {
+  // setOffset(v: number): void {
+  //   const pageBefore = this.getPage()
+  //   this._offset = v
+  //   if (this.getPage() !== pageBefore) {
+  //     this.page.emit(this.ngxDatatable)
+  //   }
+  // }
+
+  setScrolledPosV(v: number): void {
+    if (this._scrolledPosV === v) { return }
     const pageBefore = this.getPage()
-    this._offset = v
+    this._scrolledPosV = v
+    this._offset = this._calcPage()
     if (this.getPage() !== pageBefore) {
       this.page.emit(this.ngxDatatable)
     }

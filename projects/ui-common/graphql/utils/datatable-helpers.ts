@@ -75,7 +75,10 @@ export function observeRowsWithGqlInputsHandling<TData, TRow, GqlVariables exten
         distinctUntilChanged((x, y) => JSON.stringify(x) === JSON.stringify(y))
       )
       return combineLatest([ sorts$, filterInfo$ ]).pipe(
-        map(([ sorts, filterInfo ]) => ({ extraVariables: _extraVariables, pageInfo, sorts, filterInfo }))
+        // map(([ sorts, filterInfo ]) => ({ extraVariables: _extraVariables, pageInfo, sorts, filterInfo }))
+        map(([ sorts, filterInfo ]) => {
+          return { extraVariables: _extraVariables, pageInfo, sorts, filterInfo }
+        })
       )
     }),
     tap(v => {
@@ -93,10 +96,19 @@ export function observeRowsWithGqlInputsHandling<TData, TRow, GqlVariables exten
     const _emitted = new Subject<boolean>()
     const handlerSub = handleQueryInputs.pipe(
       // skip(1)
-    ).subscribe(() => _emitted.next(true))
+    // ).subscribe(() => _emitted.next(true))
+    ).subscribe(() => {
+      _emitted.next(true)
+    })
     return _emitted.pipe(
+      tap(v => {
+        console.log('emitted', v)
+      }),
       distinctUntilChanged(),
-      switchMap(() => rows),
+      switchMap(() => subscriberCount(rows, 'rows')),
+      tap(v => {
+        console.log('emitting rows', v)
+      }),
       finalize(() => handlerSub.unsubscribe())
     )
   }).pipe(
