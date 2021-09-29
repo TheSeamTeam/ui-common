@@ -93,12 +93,12 @@ export function observeRowsWithGqlInputsHandling<TData, TRow, GqlVariables exten
   )
 
   return defer(() => {
-    const _emitted = new Subject<boolean>()
+    const _emitted = new Subject<void>()
     const handlerSub = handleQueryInputs.pipe(
       // skip(1)
-    // ).subscribe(() => _emitted.next(true))
+    // ).subscribe(() => _emitted.next())
     ).subscribe(() => {
-      _emitted.next(true)
+      _emitted.next()
     })
     return _emitted.pipe(
       tap(v => {
@@ -122,26 +122,6 @@ export function observeRowsWithGqlInputsHandling<TData, TRow, GqlVariables exten
     shareReplay({ bufferSize: 1, refCount: true })
   )
 }
-
-// function _resolveDatatable(
-//   datatable: Observable<GqlDatatableAccessor | undefined> | Promise<GqlDatatableAccessor | undefined> | GqlDatatableAccessor
-// ): Observable<GqlDatatableAccessor | undefined> {
-//   if (isObservable(datatable)) {
-//     return datatable // .pipe(take(1))
-//   }
-
-//   return from(Promise.resolve(datatable))
-// }
-
-// function _resolveGqlVariables<GqlVariables>(
-//   gqlVariables: Observable<GqlVariables> | Promise<GqlVariables> | GqlVariables
-// ): Observable<GqlVariables> {
-//   if (isObservable(gqlVariables)) {
-//     return gqlVariables.pipe(take(1))
-//   }
-
-//   return from(Promise.resolve(gqlVariables))
-// }
 
 function _createPageInfoObservable(datatable$: Observable<GqlDatatableAccessor | undefined>) {
   const t = datatable$.pipe(

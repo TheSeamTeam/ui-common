@@ -2,4 +2,4 @@ export * from './base-schema-fragment'
 export * from './filter-where'
 export * from './skip-and-take'
 export * from './filtered-results'
-
+export * from './gql-datatable-fixture'

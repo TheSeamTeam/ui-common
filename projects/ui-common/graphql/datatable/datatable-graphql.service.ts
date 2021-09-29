@@ -5,7 +5,7 @@ import { Apollo } from 'apollo-angular'
 import { EmptyObject, WatchQueryOptions } from 'apollo-angular/types'
 
 import { QueryProcessingConfig } from '../models'
-import { DatatableGraphQLQueryRef, DatatableGraphQLVariables } from '../utils'
+import { DatatableGraphQLQueryRef, DatatableGraphQLVariables } from './datatable-graphql-query-ref'
 
 /**
  * NOTE: Any of ApolloClient's WatchQueryOptions properties can be set, but I

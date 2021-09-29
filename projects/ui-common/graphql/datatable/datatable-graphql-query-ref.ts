@@ -88,6 +88,9 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
       this._observingChanges = true
 
       return this._queryRef.valueChanges.pipe(
+        tap(v => {
+          console.log('v', v)
+        }),
         finalize(() => {
           // console.log('Done observing value changes')
           varChangesSub.unsubscribe()
@@ -95,7 +98,8 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
         })
       )
     }).pipe(
-      share()
+      // share()
+      shareReplay({ bufferSize: 1, refCount: true })
     )
 
     this.loading$ = this._observingChangesSubject.pipe(
@@ -138,7 +142,7 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
       const querySub = this._valueChanges.pipe(
         switchMap(result => {
           if (result.data === undefined) {
-            return of()
+            return of([])
           }
 
           return this._resolveRowMapper(mapper(result.data)).pipe(
