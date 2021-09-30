@@ -9,15 +9,9 @@ import { EmptyObject } from 'apollo-angular/types'
 
 import { GqlDatatableAccessor } from '../models'
 import { DatatableGraphQLQueryRef } from './datatable-graphql-query-ref'
+import { FilterStateMapperResult, FilterStateMappers, mapFilterStates } from './map-filter-states'
+import { MapperContext } from './mapper-context'
 
-export interface MapperContext<TExtraVariables = EmptyObject> {
-  extraVariables: TExtraVariables
-}
-
-export type FilterStateMapperResult = { filter: { [name: string]: any }, variables: { [name: string]: any } } | null
-export type FilterStateMapper = (filterState: DataFilterState, context: MapperContext)
-  => (FilterStateMapperResult | Promise<FilterStateMapperResult> | Observable<FilterStateMapperResult>)
-export interface FilterStateMappers { [filterName: string]: FilterStateMapper }
 
 export type SortsMapperResult = { [name: string]: any }[]
 export type SortsMapper = (sorts: { dir: 'desc' | 'asc', prop: string }[], context: MapperContext)
@@ -70,7 +64,7 @@ export function observeRowsWithGqlInputsHandling<TData, TRow, GqlVariables exten
 
       const sorts$ = _createSortsObservable(datatable$).pipe(switchMap(m => wrapIntoObservable(sortsMapper(m, context))))
       const filterInfo$ = _createFilterStatesObservable(datatable$).pipe(
-        switchMap(x => _mapFilterStates(x, filterStateMappers, context)),
+        switchMap(x => mapFilterStates(x, filterStateMappers, context)),
         // TODO: Remove when the datatable fixes the bug causing it to emit more than it should.
         distinctUntilChanged((x, y) => JSON.stringify(x) === JSON.stringify(y))
       )
@@ -154,57 +148,6 @@ function _createFilterStatesObservable(datatable$: Observable<GqlDatatableAccess
   )
 }
 
-async function _mapFilterStates(
-  filterStates: DataFilterState[],
-  filterStateMappers: FilterStateMappers,
-  context: MapperContext
-): Promise<FilterStateMapperResult> {
-  const results = await from(filterStates).pipe(
-    concatMap(filterState => {
-      if (filterStateMappers[filterState.name]) {
-        return wrapIntoObservable(filterStateMappers[filterState.name](filterState, context)).pipe(take(1))
-      }
-      return of(null)
-    }),
-    filter(notNullOrUndefined),
-    toArray()
-  ).toPromise()
-
-  const filters = results
-    .map(r => r.filter)
-    .filter(notNullOrUndefined)
-
-  const variableObjs = results
-    .map(r => r.variables)
-    .filter(notNullOrUndefined)
-
-  const variables: { [name: string]: any } = {}
-  for (const v of variableObjs) {
-    const props = Object.keys(v)
-
-    if (isDevMode()) {
-      for (const p of props) {
-        if (notNullOrUndefined(variables[p]) && variables[p] !== v[p]) {
-          console.warn(`Multiple filters adding the same variable with a different result. This could cause unexpected results.`)
-          break
-        }
-      }
-    }
-
-    for (const p of props) {
-      variables[p] = v[p]
-    }
-  }
-
-  if (results.length > 0) {
-    return {
-      filter: { or: filters },
-      variables
-    }
-  }
-
-  return null
-}
 
 function _mapPageInfo(pageInfo: TheSeamPageInfo): PageInfoMapperResult {
   const _skip = pageInfo.offset * pageInfo.pageSize
