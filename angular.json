@@ -325,6 +325,24 @@
               "devServerTarget": "ui-common:serve:production"
             }
           }
+        },
+        "ct": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "projects/ui-common/cypress.json",
+            "tsConfig": "projects/ui-common/tsconfig.cypress.json",
+            "testingType": "component"
+          }
+        },
+        "ct-open": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "projects/ui-common/cypress.json",
+            "tsConfig": "projects/ui-common/tsconfig.cypress.json",
+            "testingType": "component",
+            "watch": true,
+            "headed": true
+          }
         }
       }
     },
@@ -514,6 +532,24 @@
           "options": {
             "watch": true,
             "headless": false
+          }
+        },
+        "ct": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "projects/ui-common/cypress.json",
+            "tsConfig": "projects/ui-common/tsconfig.cypress.json",
+            "testingType": "component"
+          }
+        },
+        "ct-open": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "projects/ui-common/cypress.json",
+            "tsConfig": "projects/ui-common/tsconfig.cypress.json",
+            "testingType": "component",
+            "watch": true,
+            "headed": true
           }
         }
       }

@@ -33,7 +33,8 @@ export const Basic: Story<Partial<ButtonComponent> & { [key: string]: any }> = (
   `
 })
 Basic.args = {
-  btnText: 'Example Text'
+  btnText: 'Example Text',
+  theme: 'primary'
 }
 Basic.argTypes = {
   btnText: {
