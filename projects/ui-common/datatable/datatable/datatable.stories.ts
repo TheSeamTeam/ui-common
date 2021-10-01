@@ -499,29 +499,6 @@ Filter.args = {
   ],
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class StoryDataSource extends DatatableGqlDataSource<any> {
 
 }
@@ -555,5 +532,49 @@ DataSource.args = {
   rows: [
     { name: 'Mark', age: 27, color: 'blue' },
     { name: 'Joe', age: 33, color: 'green' }
+  ]
+}
+
+export const FooterTemplate: Story = (args) => ({
+  props: { ...args },
+  template: `<seam-datatable class="w-100 h-100" [columns]="columns" [rows]="rows">
+      <seam-datatable-footer>
+        <ng-template seamDatatableFooterTpl
+          let-rowCount="rowCount"
+          let-pageSize="pageSize"
+          let-selectedCount="selectedCount"
+          let-curPage="curPage"
+          let-offset="offset">
+          <div class="flex-grow-1 text-center mx-2" style="flex-basis: 50%;">
+            Total Members: {{ rowCount }} | Total Age: {{ totalAge }} | Oldest Member: {{ oldestMember }}
+          </div>
+        </ng-template>
+      </seam-datatable-footer>
+    </seam-datatable>`
+})
+FooterTemplate.args = {
+  totalAge: 87,
+  oldestMember: 'Joe',
+  columns: [
+    { prop: 'name', name: 'Name' },
+    { prop: 'age', name: 'Age' },
+    { prop: 'color', name: 'Color' }
+  ],
+  rows: [
+    { name: 'Mark', age: 27, color: 'blue' },
+    { name: 'Joe', age: 33, color: 'green' },
+    { name: 'Shelby', age: 27, color: 'grey' },
+    { name: 'Mark', age: 27, color: 'blue' },
+    { name: 'Joe', age: 33, color: 'green' },
+    { name: 'Shelby', age: 27, color: 'grey' },
+    { name: 'Mark', age: 27, color: 'blue' },
+    { name: 'Joe', age: 33, color: 'green' },
+    { name: 'Shelby', age: 27, color: 'grey' },
+    { name: 'Mark', age: 27, color: 'blue' },
+    { name: 'Joe', age: 33, color: 'green' },
+    { name: 'Shelby', age: 27, color: 'grey' },
+    { name: 'Mark', age: 27, color: 'blue' },
+    { name: 'Joe', age: 33, color: 'green' },
+    { name: 'Shelby', age: 27, color: 'grey' },
   ]
 }

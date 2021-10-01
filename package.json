@@ -46,7 +46,7 @@
     "@fortawesome/free-regular-svg-icons": "^5.15.3",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@marklb/file-type": "~10.6.5",
-    "@marklb/ngx-datatable": "~18.0.2",
+    "@marklb/ngx-datatable": "~18.0.3",
     "@marklb/ngx-loading": "^10.0.0",
     "@ng-bootstrap/ng-bootstrap": "~9.1.1",
     "@ng-select/ng-select": "6.1.0",

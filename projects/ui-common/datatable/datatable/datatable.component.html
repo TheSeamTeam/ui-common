@@ -3,7 +3,6 @@
   <div class="datatable-table-wrapper">
     <ng-container>
       <ngx-datatable
-        class="bootstrap"
         [columnMode]="$any(columnMode)"
         [scrollbarV]="scrollbarV"
         [scrollbarH]="scrollbarH"
@@ -74,6 +73,9 @@
           (toggle)="rowDetail.toggle.emit($event)">
         </ngx-datatable-row-detail>
 
+        <ngx-datatable-footer *ngIf="footer && footer.template"
+          [template]="$any(footer.template)">
+        </ngx-datatable-footer>
       </ngx-datatable>
     </ng-container>
   </div>
