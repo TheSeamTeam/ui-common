@@ -165,3 +165,9 @@ $datatable-pager-icon-padding: 0 3px !default;
 $datatable-summary-row-background: #ddd !default;
 $datatable-summary-row-background-hover: #ddd !default;
 $datatable-summary-row-font-weight: bold !default;
+
+$datatable-action-button-color: $body-color !default;
+$datatable-action-button-background: transparent !default;
+$datatable-action-button-box-shadow: none !default;
+$datatable-action-button-hover-color: $primary !default;
+$datatable-action-button-hover-background: $gray-300 !default;

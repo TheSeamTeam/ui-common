@@ -470,6 +470,16 @@
   }
 }
 
+.datatable-action-button {
+  color: $datatable-action-button-color;
+  background-color: $datatable-action-button-background;
+  box-shadow: $datatable-action-button-box-shadow;
+  &:hover {
+    color: $datatable-action-button-hover-color;
+    background-color: $datatable-action-button-hover-background;
+  }
+}
+
 /**
  * Progress bar animations
  */
