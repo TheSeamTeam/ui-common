@@ -2,7 +2,7 @@ import { InjectionToken } from '@angular/core'
 import { combineLatest, Observable } from 'rxjs'
 import { map, startWith, switchMap } from 'rxjs/operators'
 
-export type IDataFilterFunction = <T>(data: T[]) => Observable<T[]>
+export type DataFilterFunction = <T>(data: T[]) => Observable<T[]>
 
 /**
  * State of the filter that would allow an external operation to apply the
@@ -26,7 +26,7 @@ export interface DataFilterState {
 // order the filter functions are called in to be declared/influenced
 // externally. This would allow the filters that will most likely filter out
 // many records quickly to be run before the heavy processing filters.
-export interface IDataFilter {
+export interface DataFilter {
   /**
    * Name used when referencing filter by string.
    */
@@ -54,15 +54,15 @@ export interface IDataFilter {
   filterState(): DataFilterState
 }
 
-export const THESEAM_DATA_FILTER = new InjectionToken<IDataFilter>('TheSeamDataFilter')
+export const THESEAM_DATA_FILTER = new InjectionToken<DataFilter>('TheSeamDataFilter')
 export const THESEAM_DATA_FILTER_OPTIONS = new InjectionToken<{}>('TheSeamDataFilterOptions')
 
-export function filterOperator<T>(filterFn: IDataFilterFunction) {
+export function filterOperator<T>(filterFn: DataFilterFunction) {
   return (source$: Observable<T[]>) =>
     source$.pipe(switchMap(filterFn))
 }
 
-export function composeDataFilters(filters: IDataFilter[]) {
+export function composeDataFilters(filters: DataFilter[]) {
   const filterFunctions = filters.map(f => filterOperator(f.filter.bind(f)))
   return (source$: Observable<any>) => {
     let src$ = source$
@@ -73,9 +73,16 @@ export function composeDataFilters(filters: IDataFilter[]) {
   }
 }
 
-export function composeDataFilterStates(filters: IDataFilter[]): Observable<DataFilterState[]> {
+export function composeDataFilterStates(filters: DataFilter[]): Observable<DataFilterState[]> {
   return combineLatest(filters.map(f => f.filterStateChanges.pipe(
     startWith(undefined),
     map(() => f.filterState())
   )))
 }
+
+
+/** @deprecated Use `DataFilter` instead. */
+export type IDataFilter = DataFilter
+
+/** @deprecated Use `IDataFilterFunction` instead. */
+export type IDataFilterFunction = DataFilterFunction

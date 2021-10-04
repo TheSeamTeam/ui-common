@@ -8,6 +8,7 @@ import { notNullOrUndefined, subscriberCount, wrapIntoObservable } from '@thesea
 import { EmptyObject } from 'apollo-angular/types'
 
 import { GqlDatatableAccessor } from '../models'
+import { GqlDatatableFixture } from '../testing/gql-datatable-fixture'
 import { DatatableGraphQLQueryRef } from './datatable-graphql-query-ref'
 import { FilterStateMapperResult, FilterStateMappers, mapFilterStates } from './map-filter-states'
 import { MapperContext } from './mapper-context'
@@ -19,17 +20,6 @@ export type SortsMapper = (sorts: { dir: 'desc' | 'asc', prop: string }[], conte
 
 export interface PageInfoMapperResult { skip: number, take: number }
 export type PageInfoMapper = (pageInfo: TheSeamPageInfo) => PageInfoMapperResult
-
-export const DEFAULT_PAGE_SIZE = 20
-
-export function pageDefaults(dt: any): TheSeamPageInfo {
-  return {
-    offset: (dt as any).ngxDatatable?.offset ?? 0,
-    pageSize: (dt as any).ngxDatatable?.pageSize ?? DEFAULT_PAGE_SIZE,
-    limit: (dt as any).ngxDatatable?.limit,
-    count: (dt as any).ngxDatatable?.count ?? 0
-  }
-}
 
 export function observeRowsWithGqlInputsHandling<TData, TRow, GqlVariables extends EmptyObject>(
   queryRef: DatatableGraphQLQueryRef<TData, GqlVariables, TRow>,
@@ -120,12 +110,12 @@ export function observeRowsWithGqlInputsHandling<TData, TRow, GqlVariables exten
 function _createPageInfoObservable(datatable$: Observable<GqlDatatableAccessor | undefined>) {
   const t = datatable$.pipe(
     switchMap(dt => {
-      if (!dt) { return of(pageDefaults({})) }
+      if (!dt) { return of(GqlDatatableFixture.pageDefaults({})) }
       return dt.page.pipe(
         tap(v => {
           console.log('page', v)
         }),
-        startWith(pageDefaults(dt))
+        startWith(GqlDatatableFixture.pageDefaults(dt))
       )
     }),
     shareReplay({ bufferSize: 1, refCount: true })

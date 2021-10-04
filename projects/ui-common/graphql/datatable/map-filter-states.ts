@@ -35,7 +35,7 @@ function resolveMapper(
   }
 
   return wrapIntoObservable(mapper(filterState, context)).pipe(
-    // Require reach mapper to complete.
+    // Require each mapper to complete.
     take(1)
   )
 }
