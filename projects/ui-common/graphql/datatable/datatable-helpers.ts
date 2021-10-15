@@ -13,6 +13,7 @@ import { DatatableGraphQLQueryRef } from './datatable-graphql-query-ref'
 import { FilterStateMapperResult, FilterStateMappers, mapFilterStates } from './map-filter-states'
 import { MapperContext } from './mapper-context'
 
+export const DEFAULT_PAGE_SIZE = 20
 
 export type SortsMapperResult = { [name: string]: any }[]
 export type SortsMapper = (sorts: { dir: 'desc' | 'asc', prop: string }[], context: MapperContext)

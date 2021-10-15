@@ -20,7 +20,7 @@ export const slideEnterAnimation = animation([
 export const TILED_SELECT_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
   // tslint:disable-next-line:no-use-before-declare
-  useExisting: forwardRef(() => TiledSelectComponent),
+  useExisting: forwardRef(() => TheSeamTiledSelectComponent),
   multi: true,
 }
 
@@ -37,7 +37,7 @@ export const TILED_SELECT_VALUE_ACCESSOR: any = {
     ])
   ],
 })
-export class TiledSelectComponent implements OnInit, ControlValueAccessor {
+export class TheSeamTiledSelectComponent implements OnInit, ControlValueAccessor {
   static ngAcceptInputType_val: BooleanInput
   static ngAcceptInputType_disabled: BooleanInput
   static ngAcceptInputType_multiple: BooleanInput
@@ -197,3 +197,6 @@ export class TiledSelectComponent implements OnInit, ControlValueAccessor {
   }
 
 }
+
+/** @deprecated Use `TheSeamTiledSelectComponent`. */
+export type TiledSelectComponent = TheSeamTiledSelectComponent

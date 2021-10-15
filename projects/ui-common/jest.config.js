@@ -19,6 +19,7 @@ module.exports = {
     "**/utils/**/*.spec.ts",
     "**/validators/**/*.spec.ts",
     "**/data-filters/**/*.spec.ts",
+    "**/tiled-select/**/*.spec.ts",
   ],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/' }),
 };
