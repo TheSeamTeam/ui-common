@@ -3,7 +3,9 @@ import * as stories from './button.stories' // import all stories from the stori
 
 import { composeStories, createMountableStoryComponent } from '@marklb/storybook-testing-angular'
 
-console.log('Hello')
+import { cypressGlobalSetup } from '@theseam/ui-common/test-helpers'
+
+cypressGlobalSetup()
 
 // Every component that is returned maps 1:1 with the stories, but they already
 // contain all decorators from story level, meta level and global level.
