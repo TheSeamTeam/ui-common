@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.cypress.json",
+  "include": [
+    "**/cypress/**/*.ts",
+    "**/*.cy-spec.ts",
+  ],
+  "compilerOptions": {
+    "sourceMap": true,
+    "types": ["cypress"],
+    "strict": true,
+    "inlineSources": true,
+    "emitDecoratorMetadata": false,
+    "experimentalDecorators": true,
+  }
+}
