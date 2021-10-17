@@ -11,7 +11,7 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic'
 import { platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing'
 import { RendererFactory } from '@storybook/angular/dist/ts3.9/client/preview/angular-beta/RendererFactory'
 
-import { composeStories, createMountableStoryComponent } from '@marklb/storybook-testing-angular'
+import { composeStories, createMountableStoryComponent } from '@storybook/testing-angular'
 
 jest.mock('@angular/platform-browser-dynamic')
 

@@ -39,7 +39,7 @@ import { ɵresetJitOptions } from '@angular/core'
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic'
 import { platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing'
 
-import { composeStories, createMountableStoryComponent } from '@marklb/storybook-testing-angular'
+import { composeStories, createMountableStoryComponent } from '@storybook/testing-angular'
 
 import * as stories from './toggle-button.stories' // import all stories from the stories file
 

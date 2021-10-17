@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/angular'
 import * as stories from './button.stories' // import all stories from the stories file
 
-import { composeStories, createMountableStoryComponent } from '@marklb/storybook-testing-angular'
+import { composeStories, createMountableStoryComponent } from '@storybook/testing-angular'
 
 import { cypressGlobalSetup } from '@theseam/ui-common/test-helpers'
 
