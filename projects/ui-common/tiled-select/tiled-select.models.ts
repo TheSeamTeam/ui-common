@@ -1,6 +1,6 @@
 import { SeamIcon } from '@theseam/ui-common/icon'
 
-export interface ITiledSelectItem {
+export interface TiledSelectItem {
   name?: string
   value: string
   label: string
@@ -11,3 +11,6 @@ export interface ITiledSelectItem {
 }
 
 export type TiledSelectLayout = 'grid' | 'list'
+
+/** @deprecated Use `TiledSelectItem`. */
+export type ITiledSelectItem = TiledSelectItem

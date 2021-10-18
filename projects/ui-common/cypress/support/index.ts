@@ -17,3 +17,7 @@
 // import './commands';
 
 import '@jscutlery/cypress-angular/support'
+
+import { cypressGlobalSetup } from '@theseam/ui-common/test-helpers'
+
+cypressGlobalSetup()

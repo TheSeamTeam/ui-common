@@ -3,6 +3,7 @@ import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybo
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
+import { FormControl } from '@angular/forms'
 import { TheSeamTiledSelectModule } from '../../tiled-select.module'
 import { TheSeamTiledSelectComponent } from './tiled-select.component'
 
@@ -25,9 +26,72 @@ export const Default: Story<TheSeamTiledSelectComponent & { [key: string]: any }
   // props: { ...args },
   props: {
     tiles: args.tiles
-  }
+  },
+  template: `<seam-tiled-select [tiles]="tiles"></seam-tiled-select>`
 })
 Default.args = {
+  tiles: [
+    {
+      name: 'cotton',
+      value: 'cotton',
+      label: 'Cotton',
+      icon: 'assets/images/icons8-cotton-filled-48.png',
+      disabled: false
+    },
+    {
+      name: 'peanuts',
+      value: 'peanuts',
+      label: 'Peanuts',
+      icon: 'assets/images/icons8-cotton-filled-48.png',
+      disabled: false
+    },
+    {
+      name: 'soybeans',
+      value: 'soybeans',
+      label: 'Soybeans',
+      icon: 'assets/images/icons8-cotton-filled-48.png',
+      disabled: false
+    },
+    {
+      name: 'wheat',
+      value: 'wheat',
+      label: 'Wheat',
+      icon: 'assets/images/icons8-cotton-filled-48.png',
+      disabled: false
+    },
+    {
+      name: 'corn',
+      value: 'corn',
+      label: 'Corn',
+      icon: 'assets/images/icons8-cotton-filled-48.png',
+      disabled: false
+    },
+    {
+      name: 'sorghum',
+      value: 'sorghum',
+      label: 'Sorghum',
+      icon: 'assets/images/icons8-cotton-filled-48.png',
+      disabled: false
+    },
+    {
+      name: 'other',
+      value: 'other',
+      label: 'Other, unlisted',
+      icon: 'assets/images/icons8-cotton-filled-48.png',
+      disabled: false
+    }
+  ]
+}
+
+export const WithControl: Story<TheSeamTiledSelectComponent & { [key: string]: any }> = (args) => ({
+  // props: { ...args },
+  props: {
+    tiles: args.tiles,
+    control: new FormControl()
+  },
+  template: `<seam-tiled-select [tiles]="tiles" [formControl]="control"></seam-tiled-select>`
+})
+WithControl.args = {
   tiles: [
     {
       name: 'cotton',

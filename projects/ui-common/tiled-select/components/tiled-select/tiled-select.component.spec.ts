@@ -33,6 +33,8 @@ import { composeStories } from '@storybook/testing-angular'
 
 import { renderStory } from '@theseam/ui-common/testing'
 
+import { TheSeamTiledSelectHarness } from '../../testing/tiled-select-harness'
+
 import * as stories from './tiled-select.stories' // import all stories from the stories file
 
 const { Default } = composeStories(stories as any)
@@ -46,7 +48,7 @@ describe('TiledSelectComponent', () => {
       let loader: HarnessLoader
       let rootLoader: HarnessLoader
 
-      let tiledSelectHarness: TheSeamTiledSelectComponentHarness
+      let tiledSelectHarness: TheSeamTiledSelectHarness
 
       beforeEach(async () => {
         const res = await renderStory(Default)
@@ -57,9 +59,9 @@ describe('TiledSelectComponent', () => {
 
       it('should render all tiles', fakeAsync(async () => {
         tick(1000)
-        tiledSelectHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, TheSeamTiledSelectComponentHarness)
-        const tileElements = await tiledSelectHarness.getTileElements()
-        expect(tileElements.length).toBe(7)
+        tiledSelectHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, TheSeamTiledSelectHarness)
+        const tileElements = await tiledSelectHarness.getTiles()
+        expect((await tileElements()).length).toBe(7)
       }))
 
       // it('should have PDF link on "Print" button', async () => {
@@ -71,23 +73,3 @@ describe('TiledSelectComponent', () => {
 
   })
 })
-
-
-// class TheSeamTiledSelectComponentHarness extends ComponentHarness {
-//   static hostSelector = 'app-register-commodity-selection'
-
-//   getIrrPercentageInputElement = this.locatorFor('input[data-testid="irr-percentage"]')
-//   getPrintButtonElement = this.locatorFor('a[data-testid="print"]')
-// }
-
-class TheSeamTiledSelectComponentHarness extends ComponentHarness {
-  static hostSelector = 'seam-tiled-select'
-
-  public async getTileElements() {
-    return this.locatorForAll(TheSeamTiledSelectItemComponentHarness)
-  }
-}
-
-class TheSeamTiledSelectItemComponentHarness extends ComponentHarness {
-  static hostSelector = 'seam-tiled-select-item'
-}

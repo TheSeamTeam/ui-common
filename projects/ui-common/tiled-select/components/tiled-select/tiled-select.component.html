@@ -3,7 +3,7 @@
   [class.list]="layout === 'list'"
   [@tiles]="tilesAnimationState"
   [@.disabled]="animationsDisabled">
-  <ng-container *ngFor="let tile of tiles">
+  <ng-container *ngFor="let tile of tiles; let index = index">
     <div class="tile-wrapper" [ngClass]="tile.customClass || ''">
       <seam-tiled-select-tile
         class="tiled-select-tile"
@@ -19,7 +19,8 @@
         [tileBackdrop]="tileBackdrop"
         [showSelectedIcon]="showSelectedIcon"
         [overlayTpl]="getOverlayTpl(tile)"
-        (activated)="onTileSelected($event, tile)">
+        (activated)="onTileSelected($event, tile)"
+        [attr.data-tile-index]="index">
       </seam-tiled-select-tile>
     </div>
   </ng-container>

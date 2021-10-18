@@ -15,6 +15,7 @@
   ],
   "exclude": [
     "projects/ui-common/**/*.spec.ts",
+    "projects/ui-common/**/*.cy-spec.ts",
     "projects/ui-common/**/*.stories.ts",
     "projects/ui-common/**/stories/**/*",
     "projects/ui-common/**/_story-data/**/*",

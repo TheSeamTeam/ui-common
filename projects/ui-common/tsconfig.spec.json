@@ -20,7 +20,8 @@
   "include": [
     "**/*.spec.ts",
     "**/*.d.ts",
-    "../../custom_types/**/*.d.ts"
+    "../../custom_types/**/*.d.ts",
+    "../../.storybook/**/*.d.ts"
   ],
   "exclude": [
     "**/schematics/**/*"

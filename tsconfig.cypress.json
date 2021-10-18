@@ -1,9 +1,5 @@
 {
   "extends": "./tsconfig.json",
-  "include": [
-    "projects/ui-common/cypress/**/*.ts",
-    "src/**/*.cy-spec.ts",
-  ],
   "compilerOptions": {
     "sourceMap": false,
     "types": ["cypress"]
