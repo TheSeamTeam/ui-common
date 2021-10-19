@@ -58,17 +58,19 @@ describe('TiledSelectComponent', () => {
       })
 
       it('should render all tiles', fakeAsync(async () => {
-        tick(1000)
         tiledSelectHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, TheSeamTiledSelectHarness)
         const tileElements = await tiledSelectHarness.getTiles()
         expect((await tileElements()).length).toBe(7)
       }))
 
-      // it('should have PDF link on "Print" button', async () => {
-      //   registerAggAgreeHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, TheSeamTiledSelectComponentHarness)
-      //   const printButton = await registerAggAgreeHarness.getPrintButtonElement()
-      //   expect(await printButton.getAttribute('href')).toBe('https://agg-agreement.pdf')
-      // })
+      it('should select "cotton" tile', fakeAsync(async () => {
+        tiledSelectHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, TheSeamTiledSelectHarness)
+        const tile = await tiledSelectHarness.getTileAtIndex(0)
+        const tileElement = await tile.host()
+        tileElement.click()
+        expect(await (await tiledSelectHarness.host()).getProperty('value')).toBe('cotton')
+      }))
+
     })
 
   })

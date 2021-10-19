@@ -23,7 +23,7 @@ describe('TiledSelectComponent', () => {
       for (let i = 0; i < tileItems.length; i++) {
         const tile = tileItems[i]
         cy.get('seam-tiled-select-tile').eq(i).should('have.attr', 'data-tile-name', tile.name)
-        const t = tiledSelect.getTiles()
+        // const t = tiledSelect.getTiles()
         // tiles.g
         // tiledSelect.getTileAtIndex(i) .should('equal', tileItems.)
         // tiledSelect.getTiles().eq(i).should('have.attr', 'data-tile-name', tile.name)

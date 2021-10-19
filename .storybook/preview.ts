@@ -1,5 +1,5 @@
 // @ts-ignore
-import { setCompodocJson } from '@storybook/addon-docs/angular'
+// import { setCompodocJson } from '@storybook/addon-docs/angular'
 
 // import { addDecorator } from '@storybook/angular'
 
@@ -18,7 +18,9 @@ import { setCompodocJson } from '@storybook/addon-docs/angular'
 // eslint-disable-next-line import/extensions, import/no-unresolved
 import docJson from '../documentation.json'
 
-setCompodocJson(docJson)
+// setCompodocJson(docJson)
+// @ts-ignore
+window.__STORYBOOK_COMPODOC_JSON__ = docJson
 
 export const parameters = {
   docs: {

@@ -24,6 +24,7 @@
     "../../.storybook/**/*.d.ts"
   ],
   "exclude": [
-    "**/schematics/**/*"
+    "**/schematics/**/*",
+    "**/*.cy-spec.ts"
   ]
 }
