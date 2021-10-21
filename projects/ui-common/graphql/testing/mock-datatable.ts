@@ -53,7 +53,7 @@ export class MockDatatable implements GqlDatatableAccessor {
 
   getNumPages(): number {
     if (this._rows.length === 0) { return 1 }
-    const t = this._rows.length / this.getPageSize()
+    const t = Math.ceil(this._rows.length / this.getPageSize())
     if (t <= 0) { return 1 }
     return t
   }
@@ -74,6 +74,12 @@ export class MockDatatable implements GqlDatatableAccessor {
     if (v === this.getPage()) {
       return
     }
+
+    if (v > this.getNumPages() - 1) {
+      // Should this throw an error instead?
+      v = this.getNumPages() - 1
+    }
+
     this._offset = v
     this._scrolledPosV = this._calcScrolledPosV()
     this.page.emit(this.ngxDatatable)

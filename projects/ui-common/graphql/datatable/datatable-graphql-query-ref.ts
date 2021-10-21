@@ -1,5 +1,5 @@
-import { BehaviorSubject, defer, from, isObservable, Observable, of, ReplaySubject, Subscriber } from 'rxjs'
-import { auditTime, finalize, map, share, shareReplay, skip, startWith, switchMap, take, tap } from 'rxjs/operators'
+import { BehaviorSubject, defer, from, isObservable, Observable, of, ReplaySubject, Subject, Subscriber } from 'rxjs'
+import { auditTime, filter, finalize, map, share, shareReplay, skip, startWith, switchMap, take, tap } from 'rxjs/operators'
 
 import { ApolloQueryResult, DocumentNode, NetworkStatus, TypedDocumentNode } from '@apollo/client/core'
 import { hasProperty, isNullOrUndefined, notNullOrUndefined } from '@theseam/ui-common/utils'
@@ -82,7 +82,7 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
         })
       ).subscribe(variables => {
         this._setVariablesImmediate(variables)
-        this.refetch()
+        // this.refetch()
         this._variablesUpdatePending = false
       })
       this._observingChanges = true
@@ -91,6 +91,7 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
         tap(v => {
           console.log('v', v)
         }),
+        filter(v => v.networkStatus === NetworkStatus.ready),
         finalize(() => {
           // console.log('Done observing value changes')
           varChangesSub.unsubscribe()
@@ -140,7 +141,8 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
       // const rowsBufferSubject = new BehaviorSubject<TRow[]>([])
 
       let rowsBuffer: TRow[] = []
-      const rowsBufferSubject = new ReplaySubject<TRow[]>()
+      // const rowsBufferSubject = new ReplaySubject<TRow[]>()
+      const rowsBufferSubject = new Subject<TRow[]>()
 
       const querySub = this._valueChanges.pipe(
         switchMap(result => {

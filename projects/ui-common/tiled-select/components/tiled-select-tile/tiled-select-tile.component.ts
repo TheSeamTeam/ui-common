@@ -109,6 +109,7 @@ export class TiledSelectTileComponent {
   ) { }
 
   onTileClick(event: any) {
+    console.log('event', event)
     if (!this.selectable) { return }
     this.activated.emit(event)
 

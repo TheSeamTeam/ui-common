@@ -17,7 +17,7 @@ describe('GqlDatatableFixture', () => {
   describe('no data', () => {
     it('should have valid initial state', () => {
       const fixture = new MockDatatable()
-      expect(fixture.ngxDatatable).toEqual({ offset: 0, pageSize: 11, count: 0 })
+      expect(fixture.ngxDatatable).toEqual({ offset: 0, pageSize: 10, count: 0 })
       expect(fixture.sorts.length).toBe(0)
       expect(fixture.getNumPages()).toBe(1)
       expect(fixture.getPage()).toBe(0)
@@ -25,17 +25,68 @@ describe('GqlDatatableFixture', () => {
     })
   })
 
-  // describe('0 items', () => {
-  //   let fixture: MockDatatable
+  describe('0 items', () => {
+    let fixture: MockDatatable
 
-  //   beforeEach(() => {
-  //     fixture = new MockDatatable()
+    beforeEach(() => {
+      fixture = new MockDatatable()
+      fixture.setRows([])
+    })
 
-  //   })
+    it('should have valid initial state', () => {
+      expect(fixture.ngxDatatable).toEqual({ offset: 0, pageSize: 10, count: 0 })
+      expect(fixture.getNumPages()).toBe(1)
+      expect(fixture.getPage()).toBe(0)
+      expect(fixture.getPageSize()).toBe(10)
+    })
+  })
 
-  //   it('should have valid initial state', () => {
+  describe('5 items', () => {
+    let fixture: MockDatatable
 
-  //   })
-  // })
+    beforeEach(() => {
+      fixture = new MockDatatable()
+      fixture.setRows(generateData(5))
+    })
+
+    it('should have valid initial state', () => {
+      expect(fixture.ngxDatatable).toEqual({ offset: 0, pageSize: 10, count: 5 })
+      expect(fixture.getNumPages()).toBe(1)
+      expect(fixture.getPage()).toBe(0)
+      expect(fixture.getPageSize()).toBe(10)
+    })
+
+    it('should not allow trying to go past last page', () => {
+      fixture.setPage(1)
+      expect(fixture.ngxDatatable).toEqual({ offset: 0, pageSize: 10, count: 5 })
+      expect(fixture.getNumPages()).toBe(1)
+      expect(fixture.getPage()).toBe(0)
+      expect(fixture.getPageSize()).toBe(10)
+    })
+  })
+
+  describe('10 items', () => {
+    let fixture: MockDatatable
+
+    beforeEach(() => {
+      fixture = new MockDatatable()
+      fixture.setRows(generateData(10))
+    })
+
+    it('should have valid initial state', () => {
+      expect(fixture.ngxDatatable).toEqual({ offset: 0, pageSize: 10, count: 10 })
+      expect(fixture.getNumPages()).toBe(1)
+      expect(fixture.getPage()).toBe(0)
+      expect(fixture.getPageSize()).toBe(10)
+    })
+
+    it('should not allow trying to go past last page', () => {
+      fixture.setPage(1)
+      expect(fixture.ngxDatatable).toEqual({ offset: 0, pageSize: 10, count: 10 })
+      expect(fixture.getNumPages()).toBe(1)
+      expect(fixture.getPage()).toBe(0)
+      expect(fixture.getPageSize()).toBe(10)
+    })
+  })
 
 })
