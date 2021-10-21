@@ -29,6 +29,9 @@ export const TILED_SELECT_VALUE_ACCESSOR: any = {
   templateUrl: './tiled-select.component.html',
   styleUrls: ['./tiled-select.component.scss'],
   providers: [ TILED_SELECT_VALUE_ACCESSOR ],
+  host: {
+    '[attr.data-testid]': '"tiled-select"'
+  },
   animations: [
     trigger('tiles', [
       transition('* => *', [

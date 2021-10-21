@@ -20,7 +20,8 @@
         [showSelectedIcon]="showSelectedIcon"
         [overlayTpl]="getOverlayTpl(tile)"
         (activated)="onTileSelected($event, tile)"
-        [attr.data-tile-index]="index">
+        [attr.data-tile-index]="index"
+        [attr.data-testid]="tile.name">
       </seam-tiled-select-tile>
     </div>
   </ng-container>

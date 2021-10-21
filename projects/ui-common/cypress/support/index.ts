@@ -18,6 +18,48 @@
 
 import '@jscutlery/cypress-angular/support'
 
-import { cypressGlobalSetup } from '@theseam/ui-common/test-helpers'
+// import { cypressGlobalSetup } from '@theseam/ui-common/test-helpers'
 
-cypressGlobalSetup()
+// cypressGlobalSetup()
+
+
+import { setGlobalConfig } from '@storybook/testing-angular'
+import * as globalStorybookConfig from '../../../../.storybook/preview' // path of your preview.js file
+
+// import { cypressGlobalStyles } from './cypress-global-styles'
+
+import { Component, ViewEncapsulation } from '@angular/core'
+import { componentWrapperDecorator, moduleMetadata } from '@storybook/angular'
+
+@Component({
+  // tslint:disable-next-line: component-selector
+  selector: 'global-styles-wrapper',
+  template: `<ng-content></ng-content>`,
+  styleUrls: [
+    '../../styles/theme.scss',
+    '../../../../node_modules/@marklb/ngx-datatable/assets/icons.css'
+  ],
+  encapsulation: ViewEncapsulation.None
+})
+class GlobalStylesWrapperComponent { }
+
+/**
+ * Work around to load global styles in Cypress Component Testing.
+ */
+export const cypressGlobalStyles = (storyFn: any, storyContext: any) => {
+  const meta = moduleMetadata({ declarations: [ GlobalStylesWrapperComponent ] })
+  return componentWrapperDecorator(GlobalStylesWrapperComponent)(
+    () => meta(storyFn, storyContext),
+    storyContext
+  )
+}
+
+export function cypressGlobalSetup(): void {
+  setGlobalConfig({
+    ...globalStorybookConfig,
+    decorators: [
+      ...((globalStorybookConfig as any)?.decorators || []),
+      cypressGlobalStyles
+    ]
+  })
+}
