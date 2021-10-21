@@ -79,9 +79,15 @@ const root = {
 
 const QUERY = gql`
   query ExampleQuery(
+    $skip: Int
+    $take: Int
     $where: ClaimFilterInput
   ) {
-    claims(where: $where) {
+    claims(
+      skip: $skip
+      take: $take
+      where: $where
+    ) {
       items {
         claimId
         name
@@ -270,25 +276,16 @@ describe('DatatableGraphQLQueryRef', () => {
     expect(emittedDataCount).toEqual(1)
     expect(emittedData?.length).toEqual(30)
 
-    // gqlDtAccessor.setPage({ pageSize: DEFAULT_PAGE_SIZE, offset: 4, count: 6 })
-    // gqlDtAccessor.setOffset(4)
     gqlDtAccessor.setPage(1)
 
     // tick(queryRef.updatesPollDelay + 1000)
-    tick(498)
-    expect(emittedDataCount).toEqual(1)
-    expect(emittedData?.length).toEqual(30)
-
-    tick(1)
+    tick(499)
     expect(emittedDataCount).toEqual(1)
     expect(emittedData?.length).toEqual(30)
 
     tick(1)
     expect(emittedDataCount).toEqual(2)
     expect(emittedData?.length).toEqual(30)
-
-    // expect(emittedDataCount).toEqual(3)
-    // expect(emittedData?.length).toEqual(30)
 
     rowsSub.unsubscribe()
   }))
