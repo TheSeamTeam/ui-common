@@ -1,14 +1,14 @@
 export function skipAndTake<T>(data: T[], skip: number, take: number): T[] {
   if (skip < 0) {
-    throw Error(`Invalid 'skip' value: ${skip}`, )
+    throw Error(`Invalid 'skip' value: ${skip}`)
   }
 
-  if (take > data.length) {
-    throw Error(`Invalid 'take' value: ${take}`, )
-  }
+  // if (take > data.length) {
+  //   throw Error(`Invalid 'take' value: ${take}`)
+  // }
 
   const tmp: T[] = []
-  for (let i = skip; i < take; i++) {
+  for (let i = skip; i < take + skip && i < data.length - 1; i++) {
     tmp.push(data[i])
   }
 
