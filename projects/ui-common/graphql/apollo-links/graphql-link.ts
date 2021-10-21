@@ -1,6 +1,5 @@
-import { ApolloLink, Observable, OperationVariables, TypedDocumentNode } from '@apollo/client/core'
-import { DocumentNode, GraphQLSchema, graphqlSync, print } from 'graphql'
-import { defer, of } from 'rxjs'
+import { ApolloLink, Observable, OperationVariables } from '@apollo/client/core'
+import { GraphQLSchema, graphqlSync, print } from 'graphql'
 
 export interface GraphQLLinkOptions<TVariables = OperationVariables, TData = any> {
   schema: GraphQLSchema
@@ -15,7 +14,7 @@ export function graphQLLink(options: GraphQLLinkOptions) {
         schema: options.schema,
         source: print(operation.query),
         rootValue: options.rootValue,
-        // contextValue?: any;
+        contextValue: operation.getContext(),
         variableValues: operation.variables,
         operationName: operation.operationName,
         // fieldResolver?: Maybe<GraphQLFieldResolver<any, any>>;
@@ -29,21 +28,5 @@ export function graphQLLink(options: GraphQLLinkOptions) {
 
       return () => { }
     })
-
-    // return defer(() => {
-    //   const result = graphqlSync({
-    //     schema: options.schema,
-    //     source: print(operation.query),
-    //     rootValue: options.rootValue,
-    //     // contextValue?: any;
-    //     variableValues: operation.variables,
-    //     operationName: operation.operationName,
-    //     // fieldResolver?: Maybe<GraphQLFieldResolver<any, any>>;
-    //     // typeResolver?: Maybe<GraphQLTypeResolver<any, any>>;
-    //   })
-
-    //   return of(result)
-    // })
-
   })
 }
