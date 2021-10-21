@@ -1,4 +1,4 @@
-import { BehaviorSubject, defer, from, isObservable, Observable, of, Subscriber } from 'rxjs'
+import { BehaviorSubject, defer, from, isObservable, Observable, of, ReplaySubject, Subscriber } from 'rxjs'
 import { auditTime, finalize, map, share, shareReplay, skip, startWith, switchMap, take, tap } from 'rxjs/operators'
 
 import { ApolloQueryResult, DocumentNode, NetworkStatus, TypedDocumentNode } from '@apollo/client/core'
@@ -137,7 +137,10 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
 
   private _rowsObservable(mapper: DatatableGraphQLDataMapper<TData, TRow>): Observable<TRow[]> {
     return new Observable<TRow[]>((subscriber: Subscriber<TRow[]>) => {
-      const rowsBufferSubject = new BehaviorSubject<TRow[]>([])
+      // const rowsBufferSubject = new BehaviorSubject<TRow[]>([])
+
+      let rowsBuffer: TRow[] = []
+      const rowsBufferSubject = new ReplaySubject<TRow[]>()
 
       const querySub = this._valueChanges.pipe(
         switchMap(result => {
@@ -156,7 +159,8 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
               }
 
 
-              let rows = rowsBufferSubject.value || []
+              // let rows = rowsBufferSubject.value || []
+              let rows = rowsBuffer || []
 
               const hasTotalCount = mapperResult.totalCount !== undefined && mapperResult.totalCount !== null
 
@@ -183,6 +187,7 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
                 rows = [ ...mapperResult.rows ]
               }
 
+              rowsBuffer = rows
               rowsBufferSubject.next(rows)
             })
           )

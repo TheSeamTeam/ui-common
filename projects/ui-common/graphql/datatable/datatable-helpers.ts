@@ -8,7 +8,7 @@ import { notNullOrUndefined, subscriberCount, wrapIntoObservable } from '@thesea
 import { EmptyObject } from 'apollo-angular/types'
 
 import { GqlDatatableAccessor } from '../models'
-import { GqlDatatableFixture } from '../testing/gql-datatable-fixture'
+import { MockDatatable } from '../testing/mock-datatable'
 import { DatatableGraphQLQueryRef } from './datatable-graphql-query-ref'
 import { FilterStateMapperResult, FilterStateMappers, mapFilterStates } from './map-filter-states'
 import { MapperContext } from './mapper-context'
@@ -111,12 +111,12 @@ export function observeRowsWithGqlInputsHandling<TData, TRow, GqlVariables exten
 function _createPageInfoObservable(datatable$: Observable<GqlDatatableAccessor | undefined>) {
   const t = datatable$.pipe(
     switchMap(dt => {
-      if (!dt) { return of(GqlDatatableFixture.pageDefaults({})) }
+      if (!dt) { return of(MockDatatable.pageDefaults({})) }
       return dt.page.pipe(
         tap(v => {
           console.log('page', v)
         }),
-        startWith(GqlDatatableFixture.pageDefaults(dt))
+        startWith(MockDatatable.pageDefaults(dt))
       )
     }),
     shareReplay({ bufferSize: 1, refCount: true })

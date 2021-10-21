@@ -26,7 +26,11 @@ import { MapperContext } from './mapper-context'
 import { buildSchema, graphql, print } from 'graphql'
 import { queryProcessingLink } from '../apollo-links'
 import { graphQLLink } from '../apollo-links/graphql-link'
-import { baseSchemaFragment, filteredResults, GqlDatatableFixture } from '../testing'
+import { baseSchemaFragment, filteredResults, MockDatatable } from '../testing'
+
+const currentTickTime = () => (window as any).Zone.current._properties.FakeAsyncTestZoneSpec._scheduler._currentTickTime
+const _w = window as any
+_w.__currentTickTime = currentTickTime
 
 function _createClaim(num: number): { claimId: number, name: string } {
   return { claimId: num, name: `Name${num}` }
@@ -123,6 +127,16 @@ describe('DatatableGraphQLQueryRef', () => {
                 schema,
                 rootValue: root,
               })),
+              defaultOptions: {
+                watchQuery: {
+                  fetchPolicy: 'cache-and-network',
+                  errorPolicy: 'ignore',
+                },
+                query: {
+                  fetchPolicy: 'network-only',
+                  errorPolicy: 'all',
+                },
+              }
             }
           },
           // deps: [],
@@ -234,7 +248,7 @@ describe('DatatableGraphQLQueryRef', () => {
       }
     )
 
-    const gqlDtAccessor = new GqlDatatableFixture()
+    const gqlDtAccessor = new MockDatatable()
 
     let emittedDataCount: number = 0
     let emittedData: any = null
@@ -242,15 +256,6 @@ describe('DatatableGraphQLQueryRef', () => {
     const rowsSub = rows$.subscribe((data) => {
       // Make some assertion about the result;
       gqlDtAccessor?.setRows(data)
-
-      // if (emittedDataCount === 0) {
-      //   expect(data.length).toEqual(0)
-      // } else if (emittedDataCount === 1) {
-      //   expect(data.length).toEqual(30)
-      //   expect(data[0].name).toEqual('Name0')
-      // } else {
-      //   // throw Error(`Should not emit 3 times.`)
-      // }
 
       emittedData = data
       emittedDataCount++
@@ -262,15 +267,25 @@ describe('DatatableGraphQLQueryRef', () => {
 
     tick(1)
 
-    // NOTE: This jumps to 2 instead of 1, because it initially emits an empty array.
-    expect(emittedDataCount).toEqual(2)
+    expect(emittedDataCount).toEqual(1)
     expect(emittedData?.length).toEqual(30)
 
     // gqlDtAccessor.setPage({ pageSize: DEFAULT_PAGE_SIZE, offset: 4, count: 6 })
     // gqlDtAccessor.setOffset(4)
     gqlDtAccessor.setPage(1)
 
-    tick(queryRef.updatesPollDelay + 1000)
+    // tick(queryRef.updatesPollDelay + 1000)
+    tick(498)
+    expect(emittedDataCount).toEqual(1)
+    expect(emittedData?.length).toEqual(30)
+
+    tick(1)
+    expect(emittedDataCount).toEqual(1)
+    expect(emittedData?.length).toEqual(30)
+
+    tick(1)
+    expect(emittedDataCount).toEqual(2)
+    expect(emittedData?.length).toEqual(30)
 
     // expect(emittedDataCount).toEqual(3)
     // expect(emittedData?.length).toEqual(30)

@@ -6,10 +6,11 @@ import { SortEvent, SortItem, TheSeamPageInfo } from '@theseam/ui-common/datatab
 
 import { GqlDatatableAccessor } from '../models'
 
-export class GqlDatatableFixture implements GqlDatatableAccessor {
+export class MockDatatable implements GqlDatatableAccessor {
+
+  private readonly _filterStatesSubject = new BehaviorSubject<DataFilterState[]>([])
 
   private _sorts: SortItem[] = []
-  private readonly _filterStatesSubject = new BehaviorSubject<DataFilterState[]>([])
   private _rows: any[] = []
   private _offset: number = 0
   private _rowHeight: number = 50
@@ -17,9 +18,11 @@ export class GqlDatatableFixture implements GqlDatatableAccessor {
   private _scrolledPosV: number = 0
 
   page: EventEmitter<TheSeamPageInfo> = new EventEmitter()
+
   sort: EventEmitter<SortEvent> = new EventEmitter<SortEvent>()
   get sorts(): SortItem[] { return this._sorts }
   set sorts(value: SortItem[]) { this._sorts = value }
+
   public readonly filterStates: Observable<DataFilterState[]> = this._filterStatesSubject.asObservable()
 
   static pageDefaults(dt: any, defaultPageSize: number = 20): TheSeamPageInfo {
