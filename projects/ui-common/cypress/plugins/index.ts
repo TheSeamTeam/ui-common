@@ -209,7 +209,16 @@ module.exports = (on: any, config: any) => {
   //   )
   // })
 
+  // on('before:browser:launch', (browser: any = {}, args: any) => {
 
+  //   if (browser.name === 'chrome') {
+  //     // args.push('--remote-debugging-port=9222')
+
+  //     // whatever you return here becomes the new args
+  //     return args
+  //   }
+
+  // })
 
   on('dev-server:start', (options: any) =>
     startAngularDevServer({

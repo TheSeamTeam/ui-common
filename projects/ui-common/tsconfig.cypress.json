@@ -6,10 +6,9 @@
   ],
   "compilerOptions": {
     "sourceMap": true,
-    "types": ["cypress"],
-    "strict": true,
-    "inlineSources": true,
-    "emitDecoratorMetadata": false,
-    "experimentalDecorators": true,
+    "types": [
+      "../../node_modules/@types/cypress"
+    ],
+    "inlineSources": true
   }
 }

@@ -19,7 +19,7 @@ describe('TiledSelectComponent', () => {
     it('renders mounable component', () => {
 
       const tileItems = (Default as any).args.tiles
-      // const tiles = tiledSelect.getTiles()
+      const tiles = tiledSelect.getTiles()
       for (let i = 0; i < tileItems.length; i++) {
         const tile = tileItems[i]
         cy.get('seam-tiled-select-tile').eq(i).should('have.attr', 'data-tile-name', tile.name)

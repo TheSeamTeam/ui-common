@@ -1,0 +1,27 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../out-tsc/spec",
+    "types": [
+      "../../node_modules/@types/jasmine",
+      "../../node_modules/@types/node"
+    ]
+  },
+  "files": [
+    "setup-karma.ts"
+  ],
+  "include": [
+    "./**/*.ka-spec.ts",
+    "./**/*.d.ts"
+  ],
+  "exclude": [
+    "../../src/test.ts",
+    "../../src/**/*.spec.ts",
+    "../../src/**/*.cy-spec.ts",
+    "../../projects/**/*.spec.ts",
+    "../../projects/**/schematics/**/*",
+    "../../projects/**/cypress/**/*",
+    "../../projects/**/jest-global-mock.ts",
+    "../../projects/**/setup-jest.ts"
+  ],
+}

@@ -4,9 +4,8 @@
     "outDir": "../../out-tsc/lib",
     "baseUrl": ".",
     "rootDir": ".",
-    "esModuleInterop": true,
     "types": [
-      "jest"
+      "../../node_modules/@types/jest"
     ],
     "paths": {
       "@theseam/ui-common/*": [

@@ -275,8 +275,8 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/ui-common/test.ts",
-            "tsConfig": "projects/ui-common/tsconfig.spec.json",
+            "main": "projects/ui-common/setup-karma.ts",
+            "tsConfig": "projects/ui-common/tsconfig.karma.json",
             "karmaConfig": "projects/ui-common/karma.conf.js"
           }
         },
