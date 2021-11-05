@@ -59,7 +59,13 @@ export class MockDatatable implements GqlDatatableAccessor {
   }
 
   _calcPage(): number {
-    return Math.floor((this._scrolledPosV / this._rowHeight) / this.getPageSize())
+    // This page calculation could most likely be simplified.
+    const bodyHeight = this._rowHeight * this.getPageSize()
+    const visibleHeight = this._bodyHeight + this._scrolledPosV
+    const pages = Math.floor(visibleHeight / bodyHeight)
+    const overflow = visibleHeight - (pages * bodyHeight)
+    const page = overflow > 1 ? pages + 1 : pages
+    return page - 1
   }
 
   _calcScrolledPosV(): number {

@@ -89,4 +89,27 @@ describe('GqlDatatableFixture', () => {
     })
   })
 
+  describe('scrolling', () => {
+    let fixture: MockDatatable
+
+    beforeEach(() => {
+      fixture = new MockDatatable()
+      fixture.setRows(generateData(30))
+    })
+
+    it('should increase page when scrolled', () => {
+      expect(fixture.ngxDatatable).toEqual({ offset: 0, pageSize: 10, count: 30 })
+      expect(fixture.getNumPages()).toBe(3)
+      expect(fixture.getPage()).toBe(0)
+      expect(fixture.getPageSize()).toBe(10)
+
+      fixture.setScrolledPosV(60)
+
+      expect(fixture.ngxDatatable).toEqual({ offset: 1, pageSize: 10, count: 30 })
+      expect(fixture.getNumPages()).toBe(3)
+      expect(fixture.getPage()).toBe(1)
+      expect(fixture.getPageSize()).toBe(10)
+    })
+  })
+
 })
