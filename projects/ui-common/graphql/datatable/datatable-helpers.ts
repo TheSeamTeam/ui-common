@@ -144,20 +144,14 @@ function _createFilterStatesObservable(datatable$: Observable<GqlDatatableAccess
  * page, and the page after the current page.
  */
 function _mapPageInfo(pageInfo: TheSeamPageInfo): PageInfoMapperResult {
-  const skip = pageInfo.offset * pageInfo.pageSize
+  const _skip = pageInfo.offset * pageInfo.pageSize
 
-  const skipWithWindowOffset = skip - pageInfo.pageSize
-
-  // TODO: Fix implementation to not depend on `takeOffsetHack`.
-  //
-  // Reason for hack: We want the datatable to query a segment of the total
-  // records and apply a padding before and after the segment window. When
-  // moving from
-  const takeOffsetHack = skipWithWindowOffset < 0 ? 1 : 0
+  const skipWithWindowOffset = _skip - pageInfo.pageSize
+  const takeOffset = skipWithWindowOffset < 0 ? skipWithWindowOffset : 0
 
   return {
     skip: Math.max(skipWithWindowOffset, 0),
-    take: Math.max((pageInfo.pageSize * 2) - takeOffsetHack, 0)
+    take: Math.max((pageInfo.pageSize * 3) + takeOffset, 0)
   }
 }
 
