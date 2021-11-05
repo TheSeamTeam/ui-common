@@ -33,8 +33,8 @@ describe('mapFilterStates', () => {
       'd': (filterState: DataFilterState, context: MapperContext) => ({ filter: { eq: 'b' }, variables: null })
     }
     const result = await mapFilterStates(state, mappers, { extraVariables: {} })
-    expect(result?.filter).toStrictEqual({ or: [ { eq: 'a' }, { eq: 'b' }, { eq: 'b' } ] })
-    expect(result?.variables).toStrictEqual({ a: 'b', c: 'd', e: 'f' })
+    expect(result?.filter).toEqual({ or: [ { eq: 'a' }, { eq: 'b' }, { eq: 'b' } ] })
+    expect(result?.variables).toEqual({ a: 'b', c: 'd', e: 'f' })
   })
 
 })

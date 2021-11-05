@@ -15,7 +15,6 @@ module.exports = {
     '@storybook/addon-toolbars',
     '@storybook/addon-measure',
     '@storybook/addon-outline',
-    '@storybook/addon-jest',
     '@storybook/addon-interactions',
     'storybook-dark-mode',
   ],

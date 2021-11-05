@@ -13,7 +13,7 @@ function shouldCoerce(value: any, expected: boolean) {
   expect(f.b).toBe(expected)
 }
 
-fdescribe('Decorator InputBoolean', () => {
+describe('Decorator InputBoolean', () => {
   it('should coerce boolean to boolean', () => {
     shouldCoerce(true, true)
   })

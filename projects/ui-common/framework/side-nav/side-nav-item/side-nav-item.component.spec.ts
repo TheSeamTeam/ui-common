@@ -2,7 +2,7 @@ import { Component } from '@angular/core'
 import { fakeAsync } from '@angular/core/testing'
 import { SideNavComponent } from './../side-nav.component'
 
-import { createRoutingFactory, mockProvider, SpectatorRouting } from '@ngneat/spectator/jest'
+import { createRoutingFactory, mockProvider, SpectatorRouting } from '@ngneat/spectator'
 
 import { faAlignLeft } from '@fortawesome/free-solid-svg-icons'
 

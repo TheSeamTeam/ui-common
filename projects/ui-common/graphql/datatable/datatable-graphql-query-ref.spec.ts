@@ -113,7 +113,7 @@ interface GqlVariables extends GqlExtraVariables {
 
 type RowData = GqlData
 
-describe('DatatableGraphQLQueryRef', () => {
+fdescribe('DatatableGraphQLQueryRef', () => {
   let datatableGql: DatatableGraphqlService
   let pageFixture: BasicDatatablePageFixture
 

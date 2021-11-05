@@ -30,6 +30,8 @@
 
   "angularKarmaTestExplorer.defaultAngularProjectName": "ui-common",
 
+  // "karmaTestExplorer.karmaConfFilePath"
+
   // Makes sure we use the dependent typescript version.
   // --------------------------------------------------------------------------
   // NOTE: In the workspace settings this doesn't actually do anything other

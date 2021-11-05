@@ -1,44 +1,44 @@
-export interface Schema {
-  // The name of the table cell type.
-  name: string
+// export interface Schema {
+//   // The name of the table cell type.
+//   name: string
 
-  // The path to create the table cell type.
-  path?: string
+//   // The path to create the table cell type.
+//   path?: string
 
-  // The name of the project.
-  project?: string
+//   // The name of the project.
+//   project?: string
 
-  displayBlock?: boolean
+//   displayBlock?: boolean
 
-  inlineStyle?: boolean
+//   inlineStyle?: boolean
 
-  inlineTemplate?: boolean
+//   inlineTemplate?: boolean
 
-  viewEncapsulation?: string
+//   viewEncapsulation?: string
 
-  changeDetection?: string
+//   changeDetection?: string
 
-  prefix?: string
+//   prefix?: string
 
-  style?: string
+//   style?: string
 
-  type?: string
+//   type?: string
 
-  skipTests?: boolean
+//   skipTests?: boolean
 
-  flat?: boolean
+//   flat?: boolean
 
-  skipImport?: boolean
+//   skipImport?: boolean
 
-  selector?: string
+//   selector?: string
 
-  skipSelector?: boolean
+//   skipSelector?: boolean
 
-  module?: string
+//   module?: string
 
-  export?: boolean
+//   export?: boolean
 
-  entryComponent?: boolean
+//   entryComponent?: boolean
 
-  lintFix?: boolean
-}
+//   lintFix?: boolean
+// }

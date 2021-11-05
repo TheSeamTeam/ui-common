@@ -8,12 +8,8 @@
   "exclude": [
     "../src/test.ts",
     "../src/**/*.spec.ts",
-    "../src/**/*.cy-spec.ts",
     "../projects/**/*.spec.ts",
-    "../projects/**/schematics/**/*",
-    "../projects/**/cypress/**/*",
-    "../projects/**/jest-global-mock.ts",
-    "../projects/**/setup-jest.ts"
+    "../projects/**/schematics/**/*"
   ],
   "include": [
     "../projects/**/*"

@@ -7,11 +7,11 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms'
 import { TheSeamTiledSelectModule } from '../../tiled-select.module'
 import { TheSeamTiledSelectComponent } from './tiled-select.component'
 
-import { expect } from '@storybook/jest'
-import {
-  userEvent,
-  within
-} from '@storybook/testing-library'
+// import { expect } from '@storybook/jest'
+// import {
+//   userEvent,
+//   within
+// } from '@storybook/testing-library'
 
 // import userEvent from '@testing-library/user-event'
 
@@ -105,14 +105,14 @@ Default.args = {
 }
 // @ts-ignore
 // tslint:disable-next-line: no-shadowed-variable
-Default.play = async ({ args, canvasElement }) => {
-  const canvas = within(canvasElement)
-  const tile = canvas.getByTestId('cotton')
-  console.log('tile', tile)
-  await userEvent.click(tile)
-  // await expect(args.onClick).toHaveBeenCalled()
-  // await expect(canvasElement.value).toBe('cotton')
-}
+// Default.play = async ({ args, canvasElement }) => {
+//   const canvas = within(canvasElement)
+//   const tile = canvas.getByTestId('cotton')
+//   console.log('tile', tile)
+//   await userEvent.click(tile)
+//   // await expect(args.onClick).toHaveBeenCalled()
+//   // await expect(canvasElement.value).toBe('cotton')
+// }
 
 export const WithControl: Story<TheSeamTiledSelectComponent & { [key: string]: any }> = (args) => ({
   moduleMetadata: {
@@ -180,15 +180,15 @@ WithControl.args = {
 }
 // @ts-ignore
 // tslint:disable-next-line: no-shadowed-variable
-WithControl.play = async ({ args, canvasElement }) => {
-  console.log('canvasElement', canvasElement)
-  const canvas = within(canvasElement)
-  // console.log('item', canvas.getByTestId('cotton'))
-  // await userEvent.click(canvas.getByTestId('cotton'))
-  const tile = canvas.getByTestId('cotton')
-  console.log('tile', tile)
-  await userEvent.tab()
-  await userEvent.click(tile, { button: 0 })
-  // await expect(args.onClick).toHaveBeenCalled()
-  await expect((canvas.getByTestId('tiled-select') as any).value).toBe('cotton')
-}
+// WithControl.play = async ({ args, canvasElement }) => {
+//   console.log('canvasElement', canvasElement)
+//   const canvas = within(canvasElement)
+//   // console.log('item', canvas.getByTestId('cotton'))
+//   // await userEvent.click(canvas.getByTestId('cotton'))
+//   const tile = canvas.getByTestId('cotton')
+//   console.log('tile', tile)
+//   await userEvent.tab()
+//   await userEvent.click(tile, { button: 0 })
+//   // await expect(args.onClick).toHaveBeenCalled()
+//   await expect((canvas.getByTestId('tiled-select') as any).value).toBe('cotton')
+// }
