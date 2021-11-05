@@ -108,4 +108,14 @@ export class MockDatatable implements GqlDatatableAccessor {
       this.page.emit(this.ngxDatatable)
     }
   }
+
+  /**
+   * Returns the height of a row.
+   *
+   * NOTE: This will not be accurate if your rows do not use a single fixed
+   * height for each row.
+   */
+  getRowHeight() {
+    return this._rowHeight
+  }
 }

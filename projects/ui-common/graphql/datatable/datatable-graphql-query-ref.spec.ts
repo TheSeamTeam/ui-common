@@ -1,16 +1,25 @@
-import { EventEmitter } from '@angular/core'
 import { fakeAsync, TestBed, tick } from '@angular/core/testing'
-import { BehaviorSubject, Observable, of, Subject, Subscription } from 'rxjs'
-import { shareReplay, switchMap } from 'rxjs/operators'
+import { BehaviorSubject, Observable, of, Subscription } from 'rxjs'
+import { shareReplay } from 'rxjs/operators'
 
-import { ApolloLink, concat, InMemoryCache } from '@apollo/client/core'
 import { DataFilterState } from '@theseam/ui-common/data-filters'
-import { DatatableComponent, SortEvent, SortItem, TheSeamPageInfo } from '@theseam/ui-common/datatable'
-import { hasProperty } from '@theseam/ui-common/utils'
-import { APOLLO_OPTIONS, gql } from 'apollo-angular'
+import { currentTickTime } from '@theseam/ui-common/testing'
 
+import { EmptyObject } from 'apollo-angular/types'
 import { GqlDatatableAccessor } from '../models'
+import {
+  checkRecordsHaveValue,
+  createSimpleGqlTestRoot,
+  MockDatatable,
+  SimpleGqlTestExtraVariables,
+  SimpleGqlTestRecord,
+  simpleGqlTestSchema,
+  SimpleGqlTestVariables,
+  SIMPLE_GQL_TEST_QUERY
+} from '../testing'
+import { createApolloTestingProvider } from '../testing/create-apollo-testing-provider'
 import { gqlVar } from '../utils/gql-var'
+import { DatatableGraphQLQueryRef, DatatableGraphQLVariables } from './datatable-graphql-query-ref'
 import { DatatableGraphqlService } from './datatable-graphql.service'
 import {
   DEFAULT_PAGE_SIZE,
@@ -19,132 +28,19 @@ import {
 import { FilterStateMapperResult } from './map-filter-states'
 import { MapperContext } from './mapper-context'
 
-import { buildSchema, print } from 'graphql'
-import { queryProcessingLink } from '../apollo-links'
-import { graphQLLink } from '../apollo-links/graphql-link'
-import { baseSchemaFragment, filteredResults, MockDatatable } from '../testing'
-import { DatatableGraphQLQueryRef } from './datatable-graphql-query-ref'
-
-const currentTickTime = () => (window as any).Zone.current._properties.FakeAsyncTestZoneSpec._scheduler._currentTickTime
 const _w = window as any
 _w.__currentTickTime = currentTickTime
 
-function _createClaim(num: number): { claimId: number, name: string } {
-  return { claimId: num, name: `Name${num}` }
-}
-
-const schema = buildSchema(print(gql`
-  ${baseSchemaFragment}
-
-  type ClaimCollectionSegment {
-    items: [Claim!]
-
-    """Information to aid in pagination."""
-    pageInfo: CollectionSegmentInfo!
-    totalCount: Int!
-  }
-
-  input ClaimFilterInput {
-    and: [ClaimFilterInput!]
-    or: [ClaimFilterInput!]
-    claimId: ComparableInt32OperationFilterInput
-    name: StringOperationFilterInput
-    objectContains: String
-  }
-
-  type Claim {
-    claimId: Int
-    name: String
-  }
-
-  type Query {
-    claims(
-      skip: Int
-      take: Int
-      where: ClaimFilterInput
-    ): ClaimCollectionSegment
-  }
-`))
-
-const _claims: { claimId: number, name: string }[] = []
-for (let i = 0; i < 30; i++) { _claims.push(_createClaim(i)) }
-
-const root = {
-  claims: (args?: any) => filteredResults([ ..._claims ], args)
-}
-
-
-const QUERY = gql`
-  query ExampleQuery(
-    $skip: Int
-    $take: Int
-    $where: ClaimFilterInput
-  ) {
-    claims(
-      skip: $skip
-      take: $take
-      where: $where
-    ) {
-      items {
-        claimId
-        name
-      }
-      totalCount
-    }
-  }
-`
-
-interface GqlData {
-  claimId: number
-  name: string
-}
-
-interface GqlExtraVariables {
-
-}
-
-interface GqlVariables extends GqlExtraVariables {
-  skip?: number
-  take?: number
-  order?: any
-  where?: any
-  // search?: string
-}
-
-type RowData = GqlData
-
 fdescribe('DatatableGraphQLQueryRef', () => {
   let datatableGql: DatatableGraphqlService
-  let pageFixture: BasicDatatablePageFixture
+  let pageFixture: BasicDatatablePageFixture<SimpleGqlTestRecord>
+
+  const numRecords = 60
+  const root = createSimpleGqlTestRoot(numRecords)
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        // ApolloTestingModule is very limited. We need to emit more than once,
-        // so I made an ApolloLink to use in place of HttpLink.
-        {
-          provide: APOLLO_OPTIONS,
-          useFactory: () => {
-            return {
-              cache: new InMemoryCache(),
-              link: concat(queryProcessingLink, graphQLLink({
-                schema,
-                rootValue: root,
-              })),
-              defaultOptions: {
-                watchQuery: {
-                  fetchPolicy: 'cache-and-network',
-                  errorPolicy: 'ignore',
-                },
-                query: {
-                  fetchPolicy: 'network-only',
-                  errorPolicy: 'all',
-                },
-              }
-            }
-          }
-        }
-      ]
+      providers: [ createApolloTestingProvider(simpleGqlTestSchema, root) ]
     })
 
     datatableGql = TestBed.inject(DatatableGraphqlService)
@@ -152,26 +48,28 @@ fdescribe('DatatableGraphQLQueryRef', () => {
   })
 
 
-  it('should query new page is set', fakeAsync(() => {
+  it('should query when new page is set', fakeAsync(() => {
     pageFixture.init()
 
     expect(pageFixture.emittedDataCount).toEqual(0)
+    expect(() => checkRecordsHaveValue(pageFixture.emittedData, [])).not.toThrow()
 
     tick(1)
 
     expect(pageFixture.emittedDataCount).toEqual(1)
-    expect(pageFixture.emittedData?.length).toEqual(30)
+    expect(pageFixture.emittedData?.length).toEqual(numRecords)
+    expect(() => checkRecordsHaveValue(pageFixture.emittedData, [ [ 0, (pageFixture.datatable.getPageSize() * 2) - 1 ] ])).not.toThrow()
 
     pageFixture.datatable.setPage(1)
 
-    // tick(queryRef.updatesPollDelay + 1000)
-    tick(499)
+    tick(pageFixture.updatesPollDelay - 1)
     expect(pageFixture.emittedDataCount).toEqual(1)
-    expect(pageFixture.emittedData?.length).toEqual(30)
+    expect(pageFixture.emittedData?.length).toEqual(numRecords)
 
     tick(1)
     expect(pageFixture.emittedDataCount).toEqual(2)
-    expect(pageFixture.emittedData?.length).toEqual(30)
+    expect(pageFixture.emittedData?.length).toEqual(numRecords)
+    expect(() => checkRecordsHaveValue(pageFixture.emittedData, [ [ 0, (pageFixture.datatable.getPageSize() * 3) - 1 ] ])).not.toThrow()
 
     pageFixture.destroy()
   }))
@@ -184,18 +82,17 @@ fdescribe('DatatableGraphQLQueryRef', () => {
     tick(1)
 
     expect(pageFixture.emittedDataCount).toEqual(1)
-    expect(pageFixture.emittedData?.length).toEqual(30)
+    expect(pageFixture.emittedData?.length).toEqual(numRecords)
 
-    pageFixture.datatable.setScrolledPosV(60)
+    pageFixture.datatable.setScrolledPosV(pageFixture.datatable.getRowHeight() + 1)
 
-    // tick(queryRef.updatesPollDelay + 1000)
-    tick(499)
+    tick(pageFixture.updatesPollDelay - 1)
     expect(pageFixture.emittedDataCount).toEqual(1)
-    expect(pageFixture.emittedData?.length).toEqual(30)
+    expect(pageFixture.emittedData?.length).toEqual(numRecords)
 
     tick(2)
     expect(pageFixture.emittedDataCount).toEqual(2)
-    expect(pageFixture.emittedData?.length).toEqual(30)
+    expect(pageFixture.emittedData?.length).toEqual(numRecords)
 
     pageFixture.destroy()
   }))
@@ -208,24 +105,23 @@ fdescribe('DatatableGraphQLQueryRef', () => {
     tick(1)
 
     expect(pageFixture.emittedDataCount).toEqual(1)
-    expect(pageFixture.emittedData?.length).toEqual(30)
+    expect(pageFixture.emittedData?.length).toEqual(numRecords)
 
-    pageFixture.datatable.setScrolledPosV(60)
+    pageFixture.datatable.setScrolledPosV(pageFixture.datatable.getRowHeight() + 1)
 
-    // tick(queryRef.updatesPollDelay + 1000)
-    tick(499)
+    tick(pageFixture.updatesPollDelay - 1)
     expect(pageFixture.emittedDataCount).toEqual(1)
-    expect(pageFixture.emittedData?.length).toEqual(30)
+    expect(pageFixture.emittedData?.length).toEqual(numRecords)
 
     tick(2)
     expect(pageFixture.emittedDataCount).toEqual(2)
-    expect(pageFixture.emittedData?.length).toEqual(30)
+    expect(pageFixture.emittedData?.length).toEqual(numRecords)
 
-    pageFixture.datatable.setScrolledPosV(65)
+    pageFixture.datatable.setScrolledPosV(pageFixture.datatable.getRowHeight() + 2)
 
-    tick(500)
+    tick(pageFixture.updatesPollDelay)
     expect(pageFixture.emittedDataCount).toEqual(2)
-    expect(pageFixture.emittedData?.length).toEqual(30)
+    expect(pageFixture.emittedData?.length).toEqual(numRecords)
 
     pageFixture.destroy()
   }))
@@ -238,22 +134,22 @@ fdescribe('DatatableGraphQLQueryRef', () => {
 //
 //
 //
-class BasicDatatablePageFixture {
+class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
 
   private readonly _datatableSubject = new BehaviorSubject<GqlDatatableAccessor | undefined>(undefined)
-  private readonly _rows$: Observable<GqlData[]>
+  private readonly _rows$: Observable<TRow[]>
   private readonly _gqlDtAccessor: MockDatatable = new MockDatatable()
-  private readonly _queryRef: DatatableGraphQLQueryRef<GqlData, GqlVariables, GqlData>
+  private readonly _queryRef: DatatableGraphQLQueryRef<TData, SimpleGqlTestVariables, TRow>
 
   private _rowsSub: Subscription = Subscription.EMPTY
-  private _emittedData: GqlData[] | null = []
+  private _emittedData: TRow[] | null = []
   private _emittedDataCount: number = 0
   private _datatableEmitted: boolean = false
 
   constructor(datatableGql: DatatableGraphqlService) {
-    this._queryRef = datatableGql.watchQuery<GqlData, GqlVariables, RowData>(
+    this._queryRef = datatableGql.watchQuery<TData, SimpleGqlTestVariables, TRow>(
       {
-        query: QUERY,
+        query: SIMPLE_GQL_TEST_QUERY,
         variables: {
           skip: 0,
           take: DEFAULT_PAGE_SIZE
@@ -295,7 +191,7 @@ class BasicDatatablePageFixture {
     }
 
     const _mapSearchFilterState = async (
-      filterState: DataFilterState, context: MapperContext<GqlExtraVariables>
+      filterState: DataFilterState, context: MapperContext<SimpleGqlTestExtraVariables>
     ): Promise<FilterStateMapperResult> => {
       const value = filterState.state?.value?.trim()
       if (typeof value !== 'string' || value.length === 0) {
@@ -319,7 +215,7 @@ class BasicDatatablePageFixture {
 
     const _mapToggleButtonsState = (
       filterState: DataFilterState,
-      context: MapperContext<GqlExtraVariables>
+      context: MapperContext<SimpleGqlTestExtraVariables>
     ): FilterStateMapperResult => {
       const value = Array.isArray(filterState.state?.value) ? filterState.state?.value[0]?.trim() : filterState.state?.value?.trim()
       if (typeof value !== 'string' || value.length === 0) {
@@ -401,10 +297,12 @@ class BasicDatatablePageFixture {
   /**
    * Returns the most recently emitted data.
    */
-  public get emittedData(): GqlData[] | null { return this._emittedData }
+  public get emittedData(): TRow[] | null { return this._emittedData }
 
   /**
    * Returns how many times the data has been emitted.
    */
   public get emittedDataCount(): number { return this._emittedDataCount }
+
+  public get updatesPollDelay(): number { return this._queryRef.updatesPollDelay }
 }

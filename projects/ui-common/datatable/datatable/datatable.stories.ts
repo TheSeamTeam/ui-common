@@ -6,13 +6,20 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { RouterModule } from '@angular/router'
 
-import { TheSeamDataFiltersModule } from '@theseam/ui-common/data-filters'
+import { DataFilterState, TheSeamDataFiltersModule } from '@theseam/ui-common/data-filters'
 import { DatatableGqlDataSource } from '@theseam/ui-common/datatable'
 import { ExportersDataEvaluator, JexlEvaluator, THESEAM_DYNAMIC_VALUE_EVALUATOR } from '@theseam/ui-common/dynamic'
 import { StoryToastrService } from '@theseam/ui-common/story-helpers'
 import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
 import { ToastrModule, ToastrService } from 'ngx-toastr'
 
+import { createApolloTestingProvider, createSimpleGqlTestRoot, SimpleGqlTestExtraVariables, simpleGqlTestSchema, SIMPLE_GQL_TEST_QUERY } from '../../graphql/testing'
+
+import { DatatableGraphQLQueryRef, DatatableGraphqlService, DEFAULT_PAGE_SIZE, gqlVar, observeRowsWithGqlInputsHandling, SortsMapperResult } from '@theseam/ui-common/graphql'
+import { FilterStateMapperResult } from 'projects/ui-common/graphql/datatable/map-filter-states'
+import { MapperContext } from 'projects/ui-common/graphql/datatable/mapper-context'
+import { BehaviorSubject, Observable, of, Subscription } from 'rxjs'
+import { shareReplay, tap } from 'rxjs/operators'
 import { TheSeamDatatableModule } from '../datatable.module'
 import { DatatableDataSource } from '../models/datatable-data-source'
 import { DatatableComponent } from './datatable.component'
@@ -586,4 +593,168 @@ DataSource.args = {
     { name: 'Mark', age: 27, color: 'blue' },
     { name: 'Joe', age: 33, color: 'green' }
   ]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+@Component({
+  selector: 'dt-wrap',
+  template: `
+    <seam-datatable #dt
+      class="w-100 h-100"
+      [columns]="columns"
+      [rows]="_rows$ | async"
+      externalPaging="true"
+      externalSorting="true"
+      externalFiltering="true">
+    </seam-datatable>
+  `
+})
+class StoryDataSourceTwo  {
+  private readonly _datatableSubject = new BehaviorSubject<any | undefined>(undefined)
+
+  @ViewChild(DatatableComponent, { static: true })
+  set _datatableQuery(dt: DatatableComponent) { this._datatableSubject.next(dt) }
+
+  @Input() columns: any
+
+  // private readonly _datatableSubject = new BehaviorSubject<any | undefined>(undefined)
+  public readonly _rows$: Observable<any[]>
+  private readonly _queryRef: DatatableGraphQLQueryRef<any, any, any>
+
+  constructor(
+    private readonly _datatableGql: DatatableGraphqlService
+  ) {
+    this._queryRef = this._datatableGql.watchQuery<any, any, any>(
+      {
+        query: SIMPLE_GQL_TEST_QUERY,
+        variables: {
+          skip: 0,
+          take: DEFAULT_PAGE_SIZE
+        }
+      },
+      {
+        variables: {
+          // removeIfNotDefined: [ 'order', 'search' ],
+          // removeIfNotUsed: [ 'search' ],
+          inline: [ 'where' ]
+        },
+        // Disabling paging until a solution for select all, when partially loaded datatset, is decided.
+        // disablePaging: true
+      }
+    )
+
+    const extraVariables$ = of({})
+
+    const _rows$ = this._queryRef.rows((data: any) => {
+      return {
+        rows: data.claims.items,
+        totalCount: data.claims.totalCount
+      }
+    }).pipe(
+      shareReplay({ bufferSize: 1, refCount: true }),
+      tap(v => console.log('rows', v)),
+    )
+
+    const _mapSorts = (sorts: { dir: 'desc' | 'asc', prop: string }[], context: MapperContext): SortsMapperResult => {
+      return sorts.map(s => {
+        const _dir = s?.dir.toUpperCase()
+
+        switch (s?.prop) {
+          case 'claimId': return ({ claimId: _dir })
+          case 'name': return ({ name: _dir })
+        }
+
+        return ({ name: _dir })
+      })
+    }
+
+    const _mapSearchFilterState = async (
+      filterState: DataFilterState, context: MapperContext<SimpleGqlTestExtraVariables>
+    ): Promise<FilterStateMapperResult> => {
+      const value = filterState.state?.value?.trim()
+      if (typeof value !== 'string' || value.length === 0) {
+        return null
+      }
+
+      const searchVar = gqlVar('search')
+      const conditions: any[] = [
+        { claimId: { objectContains: searchVar } },
+        { memberId: { objectContains: searchVar } },
+        { name: { contains: searchVar } },
+      ]
+
+      return {
+        filter: {
+          or: conditions
+        },
+        variables: { search: value }
+      }
+    }
+
+    const _mapToggleButtonsState = (
+      filterState: DataFilterState,
+      context: MapperContext<SimpleGqlTestExtraVariables>
+    ): FilterStateMapperResult => {
+      const value = Array.isArray(filterState.state?.value) ? filterState.state?.value[0]?.trim() : filterState.state?.value?.trim()
+      if (typeof value !== 'string' || value.length === 0) {
+        return null
+      }
+
+      return {
+        filter: { status: { eq: value } },
+        variables: { }
+      }
+    }
+
+    this._rows$ = observeRowsWithGqlInputsHandling(
+      this._queryRef,
+      _rows$,
+      this._datatableSubject.asObservable(),
+      extraVariables$,
+      _mapSorts,
+      {
+        'search': _mapSearchFilterState,
+        'toggle-buttons': _mapToggleButtonsState
+      }
+    )
+  }
+
+}
+export const GraphQLQueryRef: Story = (args) => ({
+  moduleMetadata: {
+    declarations: [
+      StoryDataSourceTwo
+    ],
+    providers: [
+      createApolloTestingProvider(
+        simpleGqlTestSchema, createSimpleGqlTestRoot(60)
+      )
+    ]
+  },
+  props: {
+    ...args
+  },
+  template: `
+    <div class="vh-100 vw-100">
+      <dt-wrap [columns]="columns"></dt-wrap>
+    </div>
+  `
+})
+GraphQLQueryRef.args = {
+  columns: [
+    { prop: 'id', name: 'Id' },
+    { prop: 'name', name: 'Name' }
+  ],
+  numberOfRows: 60
 }
