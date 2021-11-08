@@ -1,18 +1,16 @@
 import { isDevMode } from '@angular/core'
-import { combineLatest, defer, EMPTY, from, isObservable, Observable, of, Subject } from 'rxjs'
-import { catchError, concatMap, distinctUntilChanged, filter, finalize, map, shareReplay, startWith, switchMap, take, tap, toArray } from 'rxjs/operators'
+import { combineLatest, defer, Observable, of, Subject } from 'rxjs'
+import { catchError, distinctUntilChanged, finalize, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators'
 
 import { notNullOrUndefined, subscriberCount, wrapIntoObservable } from '@theseam/ui-common/utils'
 import { EmptyObject } from 'apollo-angular/types'
 
 import { GqlDatatableAccessor } from '../models'
-import { MockDatatable } from '../testing/mock-datatable'
+import { createPageInfoObservable } from './create-page-info-observable'
 import { DatatableGraphQLQueryRef } from './datatable-graphql-query-ref'
 import { FilterStateMapperResult, FilterStateMappers, mapFilterStates } from './map-filter-states'
 import { mapPageInfo } from './map-page-info'
 import { MapperContext } from './mapper-context'
-
-export const DEFAULT_PAGE_SIZE = 20
 
 export type SortsMapperResult = { [name: string]: any }[]
 export type SortsMapper = (sorts: { dir: 'desc' | 'asc', prop: string }[], context: MapperContext)
@@ -29,22 +27,13 @@ export function observeRowsWithGqlInputsHandling<TData, TRow, GqlVariables exten
   const datatable$ = wrapIntoObservable(datatable)
   const extraVariables$ = wrapIntoObservable<Partial<GqlVariables>>(extraVariables)
 
-  const pageInfo$ = defer(() => {
-    let firstEmit = true
-    return _createPageInfoObservable(datatable$).pipe(
-      switchMap(pageInfo => {
-        if (!firstEmit && _isPagingDisabled(queryRef)) {
-          return EMPTY
-        }
-        firstEmit = false
-        return of(pageInfo)
-      }),
-      map(mapPageInfo)
-    )
-  })
+  // TODO: Decide if the disabled paging feature will be reimplemented in a way
+  // that it should be considered here. `_isPagingDisabled(queryRef)`
+  const pageInfo$ = createPageInfoObservable(datatable$).pipe(map(mapPageInfo))
 
   const handleQueryInputs =  combineLatest([ extraVariables$, pageInfo$ ]).pipe(
     switchMap(([ _extraVariables, pageInfo ]) => {
+      // console.log('_extraVariables, pageInfo', _extraVariables, pageInfo)
       const context: MapperContext = {
         extraVariables: _extraVariables
       }
@@ -58,12 +47,13 @@ export function observeRowsWithGqlInputsHandling<TData, TRow, GqlVariables exten
       return combineLatest([ sorts$, filterInfo$ ]).pipe(
         // map(([ sorts, filterInfo ]) => ({ extraVariables: _extraVariables, pageInfo, sorts, filterInfo }))
         map(([ sorts, filterInfo ]) => {
+          // console.log('sorts, filterInfo', sorts, filterInfo)
           return { extraVariables: _extraVariables, pageInfo, sorts, filterInfo }
         })
       )
     }),
     tap(v => {
-      console.log('~~~', v)
+      // console.log('~~~', v)
       queryRef.setVariables({
         ...(v.extraVariables || {}),
         ...v.pageInfo,
@@ -83,20 +73,20 @@ export function observeRowsWithGqlInputsHandling<TData, TRow, GqlVariables exten
       _emitted.next()
     })
     return _emitted.pipe(
-      tap(v => {
-        console.log('emitted', v)
-      }),
+      // tap(v => {
+      //   console.log('emitted', v)
+      // }),
       distinctUntilChanged(),
       switchMap(() => subscriberCount(rows, 'rows')),
-      tap(v => {
-        console.log('emitting rows', v)
-      }),
+      // tap(v => {
+      //   console.log('emitting rows', v)
+      // }),
       finalize(() => handlerSub.unsubscribe())
     )
   }).pipe(
-    tap(v => {
-      console.log('rows', v)
-    }),
+    // tap(v => {
+    //   console.log('rows', v)
+    // }),
     catchError(err => {
       console.error(err)
       return of([] as TRow[])
@@ -105,37 +95,27 @@ export function observeRowsWithGqlInputsHandling<TData, TRow, GqlVariables exten
   )
 }
 
-function _createPageInfoObservable(datatable$: Observable<GqlDatatableAccessor | undefined>) {
-  const t = datatable$.pipe(
-    switchMap(dt => {
-      if (!dt) { return of(MockDatatable.pageDefaults({})) }
-      return dt.page.pipe(
-        tap(v => {
-          console.log('page', v)
-        }),
-        startWith(MockDatatable.pageDefaults(dt))
-      )
-    }),
-    shareReplay({ bufferSize: 1, refCount: true })
-  )
-
-
-  return subscriberCount(t, '_createPageInfoObservable')
-}
-
 function _createSortsObservable(datatable$: Observable<GqlDatatableAccessor | undefined>) {
   return datatable$.pipe(
-    switchMap(dt => dt ? dt.sort.pipe(map(v => v.sorts), startWith(dt.sorts)) : of([])),
+    // tap(v => console.log('sorts got dt', v)),
+    switchMap(dt => dt
+      ? dt.sort.pipe(map(v => v.sorts), startWith(dt.sorts)) // .pipe(tap(v => console.log('sorts 1', v)))
+      : of([]) // .pipe(tap(v => console.log('sorts 2', v)))
+    ),
     shareReplay({ bufferSize: 1, refCount: true })
   )
 }
 
 function _createFilterStatesObservable(datatable$: Observable<GqlDatatableAccessor | undefined>) {
   return datatable$.pipe(
-    switchMap(dt => dt ? dt.filterStates : of([]))
+    // tap(v => console.log('filters got dt', v)),
+    switchMap(dt => dt
+      ? dt.filterStates // .pipe(tap(v => console.log('filterStates 1', v)))
+      : of([]) // .pipe(tap(v => console.log('filterStates 2', v)))
+    )
   )
 }
 
-function _isPagingDisabled<TData, TVariables, TRow>(queryRef: DatatableGraphQLQueryRef<TData, TVariables, TRow>): boolean {
-  return queryRef.getQueryProcessingConfig()?.disablePaging ?? false
-}
+// function _isPagingDisabled<TData, TVariables, TRow>(queryRef: DatatableGraphQLQueryRef<TData, TVariables, TRow>): boolean {
+//   return queryRef.getQueryProcessingConfig()?.disablePaging ?? false
+// }

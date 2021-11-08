@@ -22,9 +22,9 @@ import { gqlVar } from '../utils/gql-var'
 import { DatatableGraphQLQueryRef, DatatableGraphQLVariables } from './datatable-graphql-query-ref'
 import { DatatableGraphqlService } from './datatable-graphql.service'
 import {
-  DEFAULT_PAGE_SIZE,
   observeRowsWithGqlInputsHandling, SortsMapperResult
 } from './datatable-helpers'
+import { DEFAULT_PAGE_SIZE } from './get-page-info'
 import { FilterStateMapperResult } from './map-filter-states'
 import { MapperContext } from './mapper-context'
 
@@ -170,8 +170,8 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
 
     const _rows$ = this._queryRef.rows((data: any) => {
       return {
-        rows: data.claims.items,
-        totalCount: data.claims.totalCount
+        rows: data.simpleGqlTestRecords.items,
+        totalCount: data.simpleGqlTestRecords.totalCount
       }
     }).pipe(
       shareReplay({ bufferSize: 1, refCount: true }),
@@ -182,7 +182,7 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
         const _dir = s?.dir.toUpperCase()
 
         switch (s?.prop) {
-          case 'claimId': return ({ claimId: _dir })
+          case 'id': return ({ id: _dir })
           case 'name': return ({ name: _dir })
         }
 
@@ -200,8 +200,7 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
 
       const searchVar = gqlVar('search')
       const conditions: any[] = [
-        { claimId: { objectContains: searchVar } },
-        { memberId: { objectContains: searchVar } },
+        { id: { objectContains: searchVar } },
         { name: { contains: searchVar } },
       ]
 

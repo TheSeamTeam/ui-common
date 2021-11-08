@@ -10,7 +10,7 @@ export interface GraphQLLinkOptions<TVariables = OperationVariables, TData = any
 export function graphQLLink(options: GraphQLLinkOptions) {
   return new ApolloLink((operation, forward) => {
     return new Observable(subscriber => {
-      console.log('graphQLLink', operation.variables)
+      // console.log('graphQLLink', operation.variables)
       const response = graphqlSync({
         schema: options.schema,
         source: print(operation.query),
@@ -22,6 +22,7 @@ export function graphQLLink(options: GraphQLLinkOptions) {
         // typeResolver?: Maybe<GraphQLTypeResolver<any, any>>;
       })
 
+      // console.log('graphQLLink response', response)
       operation.setContext({ response })
 
       subscriber.next(response)

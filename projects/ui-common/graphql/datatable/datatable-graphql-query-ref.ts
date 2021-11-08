@@ -7,7 +7,7 @@ import { QueryRef } from 'apollo-angular'
 import { EmptyObject, WatchQueryOptions } from 'apollo-angular/types'
 
 import { QueryProcessingConfig } from '../models'
-import { DEFAULT_PAGE_SIZE } from './datatable-helpers'
+import { DEFAULT_PAGE_SIZE } from './get-page-info'
 
 export interface DatatableGraphQLDataMapperResult<TRow = EmptyObject> {
   rows: TRow[]
@@ -67,7 +67,7 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
     // this._getValueChanges().subscribe(v => this._logNetworkStatus(v.networkStatus))
 
     this._valueChanges = defer(() => {
-      console.log('Observing value changes')
+      // console.log('Observing value changes')
       const varChangesSub = this._variablesSubject.pipe(
         skip(1),
         tap(() => this._variablesUpdatePending = true),
@@ -81,7 +81,7 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
           }
         })
       ).subscribe(variables => {
-        console.log('set vars', variables)
+        // console.log('set vars', variables)
         this._setVariablesImmediate(variables)
         // this.refetch()
         this._variablesUpdatePending = false
@@ -89,9 +89,9 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
       this._observingChanges = true
 
       return this._queryRef.valueChanges.pipe(
-        tap(v => {
-          console.log('v', v)
-        }),
+        // tap(v => {
+        //   console.log('v', v)
+        // }),
         filter(v => v.networkStatus === NetworkStatus.ready),
         finalize(() => {
           // console.log('Done observing value changes')
@@ -141,7 +141,7 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
     return new Observable<TRow[]>((subscriber: Subscriber<TRow[]>) => {
       // const rowsBufferSubject = new BehaviorSubject<TRow[]>([])
 
-      console.log('obs _rowsObservable')
+      // console.log('obs _rowsObservable')
 
       let rowsBuffer: TRow[] = []
       // const rowsBufferSubject = new ReplaySubject<TRow[]>()
@@ -155,6 +155,7 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
 
           return this._resolveRowMapper(mapper(result.data)).pipe(
             tap(mapperResult => {
+              // console.log('mapperResult', mapperResult)
               if (this._needsToRequeryWithAllRecords(mapperResult)) {
                 this.patchVariables({ take: mapperResult.totalCount } as any)
               }
@@ -202,7 +203,7 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
       const rowsSub = rowsBufferSubject.subscribe(subscriber)
 
       return () => {
-        console.log('unsub')
+        // console.log('unsub')
         querySub.unsubscribe()
         rowsSub.unsubscribe()
 

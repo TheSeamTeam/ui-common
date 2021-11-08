@@ -82,7 +82,7 @@ export function createHintsToken(token: Token, node: HintsToken['node'], kind: H
 }
 
 export function getHintsToken(token: Token, ast: DocumentNode): HintsToken | null {
-  console.log('getHintsToken', token)
+  // console.log('getHintsToken', token)
   const appliesTo = getTokenAppliesTo(token)
   if (appliesTo === null) {
     return null
@@ -126,7 +126,7 @@ export function getHintsToken(token: Token, ast: DocumentNode): HintsToken | nul
 
 export function parseHints(ast: DocumentNode): HintsToken[] {
   const _ast = parseAst(ast)
-  console.log('_ast', _ast)
+  // console.log('_ast', _ast)
   return parseComments(_ast)
     .filter(isHintToken)
     .map(r => getHintsToken(r, _ast))

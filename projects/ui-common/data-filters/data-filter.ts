@@ -1,5 +1,5 @@
 import { InjectionToken } from '@angular/core'
-import { combineLatest, Observable } from 'rxjs'
+import { combineLatest, Observable, of } from 'rxjs'
 import { map, startWith, switchMap } from 'rxjs/operators'
 
 export type DataFilterFunction = <T>(data: T[]) => Observable<T[]>
@@ -74,6 +74,10 @@ export function composeDataFilters(filters: DataFilter[]) {
 }
 
 export function composeDataFilterStates(filters: DataFilter[]): Observable<DataFilterState[]> {
+  if (filters.length === 0) {
+    return of([])
+  }
+
   return combineLatest(filters.map(f => f.filterStateChanges.pipe(
     startWith(undefined),
     map(() => f.filterState())

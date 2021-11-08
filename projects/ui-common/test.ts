@@ -11,7 +11,7 @@ import {
   platformBrowserDynamicTesting
 } from '@angular/platform-browser-dynamic/testing'
 
-// import { setGlobalConfig } from '@storybook/testing-angular'
+import { setGlobalConfig } from '@storybook/testing-angular'
 // import * as globalStorybookConfig from '../../.storybook/preview' // path of your preview.js file
 
 declare const require: {
@@ -22,6 +22,41 @@ declare const require: {
 }
 
 // setGlobalConfig(globalStorybookConfig as any) // Error looks like a Typescript inference issue.
+
+// @ts-ignore
+// import { setCompodocJson } from '@storybook/addon-docs/angular'
+
+// @ts-ignore
+// eslint-disable-next-line import/extensions, import/no-unresolved
+import docJson from '../../documentation.json'
+
+// setCompodocJson(docJson)
+// @ts-ignore
+window.__STORYBOOK_COMPODOC_JSON__ = docJson
+
+// export const parameters = {
+//   docs: {
+//     inlineStories: false,
+//     source: {
+//       type: 'dynamic'
+//     }
+//   }
+// }
+
+// export const decorators = []
+
+setGlobalConfig({
+  parameters: {
+    docs: {
+      inlineStories: false,
+      source: {
+        type: 'dynamic'
+      }
+    }
+  }
+})
+
+
 
 // First, initialize the Angular testing environment.
 getTestBed().initTestEnvironment(
