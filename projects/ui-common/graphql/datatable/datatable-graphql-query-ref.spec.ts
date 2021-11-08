@@ -31,7 +31,7 @@ import { MapperContext } from './mapper-context'
 const _w = window as any
 _w.__currentTickTime = currentTickTime
 
-fdescribe('DatatableGraphQLQueryRef', () => {
+describe('DatatableGraphQLQueryRef', () => {
   let datatableGql: DatatableGraphqlService
   let pageFixture: BasicDatatablePageFixture<SimpleGqlTestRecord>
 

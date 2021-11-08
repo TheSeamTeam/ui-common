@@ -13,11 +13,24 @@ import { StoryToastrService } from '@theseam/ui-common/story-helpers'
 import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
 import { ToastrModule, ToastrService } from 'ngx-toastr'
 
-import { createApolloTestingProvider, createSimpleGqlTestRoot, SimpleGqlTestExtraVariables, simpleGqlTestSchema, SIMPLE_GQL_TEST_QUERY } from '../../graphql/testing'
+import {
+  createApolloTestingProvider,
+  createSimpleGqlTestRoot,
+  SimpleGqlTestExtraVariables,
+  simpleGqlTestSchema,
+  SIMPLE_GQL_TEST_QUERY
+} from '../../graphql/testing'
 
-import { DatatableGraphQLQueryRef, DatatableGraphqlService, DEFAULT_PAGE_SIZE, gqlVar, observeRowsWithGqlInputsHandling, SortsMapperResult } from '@theseam/ui-common/graphql'
-import { FilterStateMapperResult } from 'projects/ui-common/graphql/datatable/map-filter-states'
-import { MapperContext } from 'projects/ui-common/graphql/datatable/mapper-context'
+import {
+  DatatableGraphQLQueryRef,
+  DatatableGraphqlService,
+  DEFAULT_PAGE_SIZE,
+  FilterStateMapperResult,
+  gqlVar,
+  MapperContext,
+  observeRowsWithGqlInputsHandling,
+  SortsMapperResult
+} from '@theseam/ui-common/graphql'
 import { BehaviorSubject, Observable, of, Subscription } from 'rxjs'
 import { shareReplay, tap } from 'rxjs/operators'
 import { TheSeamDatatableModule } from '../datatable.module'
@@ -620,7 +633,7 @@ DataSource.args = {
     </seam-datatable>
   `
 })
-class StoryDataSourceTwo  {
+class StoryDataSourceTwo {
   private readonly _datatableSubject = new BehaviorSubject<any | undefined>(undefined)
 
   @ViewChild(DatatableComponent, { static: true })
@@ -628,7 +641,6 @@ class StoryDataSourceTwo  {
 
   @Input() columns: any
 
-  // private readonly _datatableSubject = new BehaviorSubject<any | undefined>(undefined)
   public readonly _rows$: Observable<any[]>
   private readonly _queryRef: DatatableGraphQLQueryRef<any, any, any>
 
@@ -658,8 +670,8 @@ class StoryDataSourceTwo  {
 
     const _rows$ = this._queryRef.rows((data: any) => {
       return {
-        rows: data.claims.items,
-        totalCount: data.claims.totalCount
+        rows: data.simpleGqlTestRecords.items,
+        totalCount: data.simpleGqlTestRecords.totalCount
       }
     }).pipe(
       shareReplay({ bufferSize: 1, refCount: true }),
@@ -671,7 +683,7 @@ class StoryDataSourceTwo  {
         const _dir = s?.dir.toUpperCase()
 
         switch (s?.prop) {
-          case 'claimId': return ({ claimId: _dir })
+          case 'id': return ({ id: _dir })
           case 'name': return ({ name: _dir })
         }
 
@@ -689,8 +701,7 @@ class StoryDataSourceTwo  {
 
       const searchVar = gqlVar('search')
       const conditions: any[] = [
-        { claimId: { objectContains: searchVar } },
-        { memberId: { objectContains: searchVar } },
+        { id: { objectContains: searchVar } },
         { name: { contains: searchVar } },
       ]
 
@@ -728,9 +739,14 @@ class StoryDataSourceTwo  {
         'toggle-buttons': _mapToggleButtonsState
       }
     )
+
+    this._rows$.subscribe(v => console.log('r', v))
+
+    console.log('~~~')
   }
 
 }
+
 export const GraphQLQueryRef: Story = (args) => ({
   moduleMetadata: {
     declarations: [

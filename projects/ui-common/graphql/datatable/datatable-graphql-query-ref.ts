@@ -67,7 +67,7 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
     // this._getValueChanges().subscribe(v => this._logNetworkStatus(v.networkStatus))
 
     this._valueChanges = defer(() => {
-      // console.log('Observing value changes')
+      console.log('Observing value changes')
       const varChangesSub = this._variablesSubject.pipe(
         skip(1),
         tap(() => this._variablesUpdatePending = true),
@@ -81,6 +81,7 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
           }
         })
       ).subscribe(variables => {
+        console.log('set vars', variables)
         this._setVariablesImmediate(variables)
         // this.refetch()
         this._variablesUpdatePending = false
@@ -139,6 +140,8 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
   private _rowsObservable(mapper: DatatableGraphQLDataMapper<TData, TRow>): Observable<TRow[]> {
     return new Observable<TRow[]>((subscriber: Subscriber<TRow[]>) => {
       // const rowsBufferSubject = new BehaviorSubject<TRow[]>([])
+
+      console.log('obs _rowsObservable')
 
       let rowsBuffer: TRow[] = []
       // const rowsBufferSubject = new ReplaySubject<TRow[]>()
@@ -199,6 +202,7 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
       const rowsSub = rowsBufferSubject.subscribe(subscriber)
 
       return () => {
+        console.log('unsub')
         querySub.unsubscribe()
         rowsSub.unsubscribe()
 

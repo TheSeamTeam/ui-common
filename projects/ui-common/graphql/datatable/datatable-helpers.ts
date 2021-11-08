@@ -2,8 +2,6 @@ import { isDevMode } from '@angular/core'
 import { combineLatest, defer, EMPTY, from, isObservable, Observable, of, Subject } from 'rxjs'
 import { catchError, concatMap, distinctUntilChanged, filter, finalize, map, shareReplay, startWith, switchMap, take, tap, toArray } from 'rxjs/operators'
 
-import { DataFilterState } from '@theseam/ui-common/data-filters'
-import { TheSeamPageInfo } from '@theseam/ui-common/datatable'
 import { notNullOrUndefined, subscriberCount, wrapIntoObservable } from '@theseam/ui-common/utils'
 import { EmptyObject } from 'apollo-angular/types'
 
@@ -11,6 +9,7 @@ import { GqlDatatableAccessor } from '../models'
 import { MockDatatable } from '../testing/mock-datatable'
 import { DatatableGraphQLQueryRef } from './datatable-graphql-query-ref'
 import { FilterStateMapperResult, FilterStateMappers, mapFilterStates } from './map-filter-states'
+import { mapPageInfo } from './map-page-info'
 import { MapperContext } from './mapper-context'
 
 export const DEFAULT_PAGE_SIZE = 20
@@ -18,9 +17,6 @@ export const DEFAULT_PAGE_SIZE = 20
 export type SortsMapperResult = { [name: string]: any }[]
 export type SortsMapper = (sorts: { dir: 'desc' | 'asc', prop: string }[], context: MapperContext)
   => (SortsMapperResult | Promise<SortsMapperResult> | Observable<SortsMapperResult>)
-
-export interface PageInfoMapperResult { skip: number, take: number }
-export type PageInfoMapper = (pageInfo: TheSeamPageInfo) => PageInfoMapperResult
 
 export function observeRowsWithGqlInputsHandling<TData, TRow, GqlVariables extends EmptyObject>(
   queryRef: DatatableGraphQLQueryRef<TData, GqlVariables, TRow>,
@@ -43,7 +39,7 @@ export function observeRowsWithGqlInputsHandling<TData, TRow, GqlVariables exten
         firstEmit = false
         return of(pageInfo)
       }),
-      map(_mapPageInfo)
+      map(mapPageInfo)
     )
   })
 
@@ -67,6 +63,7 @@ export function observeRowsWithGqlInputsHandling<TData, TRow, GqlVariables exten
       )
     }),
     tap(v => {
+      console.log('~~~', v)
       queryRef.setVariables({
         ...(v.extraVariables || {}),
         ...v.pageInfo,
@@ -137,22 +134,6 @@ function _createFilterStatesObservable(datatable$: Observable<GqlDatatableAccess
   return datatable$.pipe(
     switchMap(dt => dt ? dt.filterStates : of([]))
   )
-}
-
-/**
- * Maps to a range that fetches the page before the current page, the current
- * page, and the page after the current page.
- */
-function _mapPageInfo(pageInfo: TheSeamPageInfo): PageInfoMapperResult {
-  const _skip = pageInfo.offset * pageInfo.pageSize
-
-  const skipWithWindowOffset = _skip - pageInfo.pageSize
-  const takeOffset = skipWithWindowOffset < 0 ? skipWithWindowOffset : 0
-
-  return {
-    skip: Math.max(skipWithWindowOffset, 0),
-    take: Math.max((pageInfo.pageSize * 3) + takeOffset, 0)
-  }
 }
 
 function _isPagingDisabled<TData, TVariables, TRow>(queryRef: DatatableGraphQLQueryRef<TData, TVariables, TRow>): boolean {
