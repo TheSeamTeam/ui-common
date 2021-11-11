@@ -26,6 +26,11 @@ module.exports = function (config) {
       },
       clearContext: false // leave Jasmine Spec Runner output visible in browser
     },
+    // jasmineNodeOpts: {
+    //   // showColors: true,
+    //   // includeStackTrace: true,
+    //   defaultTimeoutInterval: 1440000
+    // },
     jasmineHtmlReporter: {
       suppressAll: true // removes the duplicated traces
     },
@@ -39,6 +44,10 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
+    // browserNoActivityTimeout: 60 * 60 * 60 * 1000,
+    browserDisconnectTimeout: 100000,
+    browserNoActivityTimeout: 100000,
+    browserDisconnectTolerance: 10,
     customLaunchers: {
       ChromeDebugging: {
         base: 'Chrome',

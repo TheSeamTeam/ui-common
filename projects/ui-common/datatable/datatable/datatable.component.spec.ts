@@ -40,7 +40,7 @@ import * as stories from './datatable.stories' // import all stories from the st
 // contain all decorators from story level, meta level and global level.
 const { GraphQLQueryRef } = composeStories(stories as any)
 
-fdescribe('DatatableComponent', () => {
+describe('DatatableComponent', () => {
 
   describe('Story', () => {
 

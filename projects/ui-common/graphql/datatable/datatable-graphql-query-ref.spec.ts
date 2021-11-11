@@ -48,13 +48,14 @@ describe('DatatableGraphQLQueryRef', () => {
   })
 
 
-  it('should query when new page is set', fakeAsync(() => {
+  it('should query when new page is set', fakeAsync(async () => {
     pageFixture.init()
 
     expect(pageFixture.emittedDataCount).toEqual(0)
     expect(() => checkRecordsHaveValue(pageFixture.emittedData, [])).not.toThrow()
 
     tick(1)
+    currentTickTime()
 
     expect(pageFixture.emittedDataCount).toEqual(1)
     expect(pageFixture.emittedData?.length).toEqual(numRecords)
@@ -241,10 +242,12 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
   }
 
   public init(emitDatatable: boolean = true): void {
+    console.log('time', currentTickTime())
     this._emittedData = null
     this._emittedDataCount = 0
 
     this._rowsSub = this._rows$.subscribe((data) => {
+      console.log('time', currentTickTime())
       this._gqlDtAccessor?.setRows(data)
       this._emittedData = data
       this._emittedDataCount++
