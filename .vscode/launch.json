@@ -19,20 +19,36 @@
       "internalConsoleOptions": "neverOpen",
       "port": 9229
     },
+    // {
+    //   "name": "Debug tests",
+    //   "type": "pwa-chrome",
+    //   "request": "attach",
+    //   "port": 9333,
+    //   "sourceMaps": true,
+    //   "webRoot": "${workspaceRoot}",
+    //   "sourceMapPathOverrides": {
+    //     "webpack:/*": "${webRoot}/*",
+    //     "/./*": "${webRoot}/*",
+    //     "/src/*": "${webRoot}/*",
+    //     "/*": "*",
+    //     "/./~/*": "${webRoot}/node_modules/*"
+    //   }
+    // },
     {
       "name": "Debug tests",
-      "type": "pwa-chrome",
-      "request": "attach",
-      "port": 9333,
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:9876/debug.html",
+      "webRoot": "${workspaceFolder}",
       "sourceMaps": true,
-      "webRoot": "${workspaceRoot}",
       "sourceMapPathOverrides": {
         "webpack:/*": "${webRoot}/*",
         "/./*": "${webRoot}/*",
         "/src/*": "${webRoot}/*",
+        "/projects/ui-common/*": "${webRoot}/projects/ui-common/*",
         "/*": "*",
         "/./~/*": "${webRoot}/node_modules/*"
       }
-    }
+    },
   ]
 }
