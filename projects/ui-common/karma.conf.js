@@ -45,9 +45,9 @@ module.exports = function (config) {
     logLevel: config.LOG_INFO,
     autoWatch: true,
     // browserNoActivityTimeout: 60 * 60 * 60 * 1000,
-    browserDisconnectTimeout: 100000,
-    browserNoActivityTimeout: 100000,
-    browserDisconnectTolerance: 10,
+    // browserDisconnectTimeout: 100000,
+    // browserNoActivityTimeout: 100000,
+    // browserDisconnectTolerance: 10,
     customLaunchers: {
       ChromeDebugging: {
         base: 'Chrome',

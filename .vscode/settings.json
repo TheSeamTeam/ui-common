@@ -28,8 +28,8 @@
     "**/src/assets/**/*.js"
   ],
 
-  "angularKarmaTestExplorer.defaultAngularProjectName": "ui-common",
-  "angularKarmaTestExplorer.defaultSocketConnectionPort": 9333,
+  // "angularKarmaTestExplorer.defaultAngularProjectName": "ui-common",
+  // "angularKarmaTestExplorer.defaultSocketConnectionPort": 9333,
 
   "karmaTestExplorer.defaultAngularProjectName": "ui-common",
   "karmaTestExplorer.karmaConfFilePath": "projects/ui-common/karma.conf.js",
