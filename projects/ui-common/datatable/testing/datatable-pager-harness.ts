@@ -1,4 +1,6 @@
-import { ComponentHarness } from '@angular/cdk/testing'
+import { ComponentHarness, TestElement } from '@angular/cdk/testing'
+
+import { TheSeamDatatablePagerButtonHarness } from './datatable-pager-button-harness'
 
 export class TheSeamDatatablePagerHarness extends ComponentHarness {
   static hostSelector = 'datatable-pager'
@@ -9,11 +11,11 @@ export class TheSeamDatatablePagerHarness extends ComponentHarness {
   //   return this.locatorForAll(TheSeamTiledSelectTileHarness)
   // }
 
-  // public getTileAtIndex(index: number) {
-  //   const getTileAtIndex = this.locatorFor(TheSeamTiledSelectTileHarness.with({ tileIndex: index }))
-  //   return getTileAtIndex()
-  //   // return this.locatorFor(TheSeamTiledSelectTileHarness.with({ tileIndex: index }))
-  // }
+  public async getPageButtonHarness(pageNumber: number): Promise<TheSeamDatatablePagerButtonHarness> {
+    const getTileAtIndex = this.locatorFor(TheSeamDatatablePagerButtonHarness.with({ pageNumber: pageNumber }))
+    return (await getTileAtIndex())
+    // return this.locatorFor(TheSeamTiledSelectTileHarness.with({ tileIndex: index }))
+  }
 
   // public async getTileByName(name: string) {
 

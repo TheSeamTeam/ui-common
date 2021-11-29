@@ -70,7 +70,9 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
       // console.log('Observing value changes')
       const varChangesSub = this._variablesSubject.pipe(
         skip(1),
-        tap(() => this._variablesUpdatePending = true),
+        tap(() => {
+          this._variablesUpdatePending = true
+        }),
         auditTime(this._updatesPollDelay),
         finalize(() => {
           // If the query stopped being observed before setting the pending

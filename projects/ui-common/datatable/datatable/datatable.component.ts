@@ -176,7 +176,9 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit, 
 
   @Input()
   get rows(): any[] { return this._rows.value }
-  set rows(value: any[]) { this._rows.next(value || []) }
+  set rows(value: any[]) {
+    this._rows.next(value || [])
+  }
   private _rows = new BehaviorSubject<any[]>([])
 
   public rows$: Observable<any[]>

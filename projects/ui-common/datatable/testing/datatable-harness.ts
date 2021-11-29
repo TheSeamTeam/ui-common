@@ -11,9 +11,9 @@ export class TheSeamDatatableHarness extends ComponentHarness {
     return (await this._pager()).getCurrentPageNumber()
   }
 
-  // public async getPager() {
-  //   return this._pager()
-  // }
+  public async getPager() {
+    return this._pager()
+  }
 
   // public getTileAtIndex(index: number) {
   //   const getTileAtIndex = this.locatorFor(TheSeamTiledSelectTileHarness.with({ tileIndex: index }))

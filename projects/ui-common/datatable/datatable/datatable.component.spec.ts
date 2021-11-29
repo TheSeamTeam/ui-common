@@ -32,7 +32,7 @@ import { composeStories } from '@storybook/testing-angular'
 
 import { renderStory } from '@theseam/ui-common/testing'
 
-import { TheSeamDatatableHarness } from '../testing/datatable-harness'
+import { TheSeamDatatableHarness } from '../testing'
 
 import * as stories from './datatable.stories' // import all stories from the stories file
 
@@ -40,16 +40,26 @@ import * as stories from './datatable.stories' // import all stories from the st
 // contain all decorators from story level, meta level and global level.
 const { GraphQLQueryRef } = composeStories(stories as any)
 
-describe('DatatableComponent', () => {
+fdescribe('DatatableComponent', () => {
 
   describe('Story', () => {
+
+    fdescribe('GraphQLQueryRefOne', () => {
+
+      it('should use play', async () => {
+        const res = await renderStory(GraphQLQueryRef)
+        // @ts-ignore
+        await stories.GraphQLQueryRef.play({ canvasElement: res.container as any, fixture: res.fixture })
+      })
+
+    })
 
     describe('GraphQLQueryRef', () => {
       let fixture: ComponentFixture<any>
       let loader: HarnessLoader
       let rootLoader: HarnessLoader
 
-      let datatableHarness: TheSeamDatatableHarness
+      let datatableHarness: any // TheSeamDatatableHarness
 
       beforeEach(async () => {
         const res = await renderStory(GraphQLQueryRef)
@@ -71,6 +81,14 @@ describe('DatatableComponent', () => {
         datatableHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, TheSeamDatatableHarness)
         const currentPageNumber = await datatableHarness.getCurrentPage()
         expect(currentPageNumber).toBe(1)
+      })
+
+      it('should switch to page 2', async () => {
+        datatableHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, TheSeamDatatableHarness)
+        expect(await datatableHarness.getCurrentPage()).toBe(1)
+        const page2BtnHarness = await (await datatableHarness.getPager()).getPageButtonHarness(2)
+        await (await page2BtnHarness.getAnchor()).click()
+        expect(await datatableHarness.getCurrentPage()).toBe(2)
       })
 
       // it('should select "cotton" tile', fakeAsync(async () => {

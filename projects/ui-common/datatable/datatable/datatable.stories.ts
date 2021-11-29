@@ -1,3 +1,4 @@
+import { ComponentFixture } from '@angular/core/testing'
 import { action } from '@storybook/addon-actions'
 import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular'
 
@@ -14,6 +15,9 @@ import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types
 import { ToastrModule, ToastrService } from 'ngx-toastr'
 import { BehaviorSubject, Observable, of, Subscription } from 'rxjs'
 import { shareReplay, startWith, take, tap } from 'rxjs/operators'
+
+import { userEvent, waitFor, within } from '@storybook/testing-library'
+import { expectFn, StoryBrowserHarnessEnvironment } from '@theseam/ui-common/testing'
 
 import {
   DatatableGraphQLQueryRef,
@@ -35,10 +39,21 @@ import {
   SIMPLE_GQL_TEST_QUERY
 } from '../../graphql/testing'
 
+// import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed'
 import { TheSeamDatatableModule } from '../datatable.module'
 import { DatatableDataSource } from '../models/datatable-data-source'
+import { TheSeamDatatableHarness } from '../testing'
 import { DatatableComponent } from './datatable.component'
 
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed'
+import { instrument } from '@storybook/instrumenter'
+
+// const { StoryBrowserHarnessEnvironment } = instrument(
+//   { StoryBrowserHarnessEnvironment: _sEnv },
+//   {
+//     intercept: true
+//   }
+// )
 
 export default {
   title: 'Datatable/Components',
@@ -712,7 +727,7 @@ class StoryDataSourceTwo {
         totalCount: data.simpleGqlTestRecords.totalCount
       }
     }).pipe(
-      // shareReplay({ bufferSize: 1, refCount: true }),
+      shareReplay({ bufferSize: 1, refCount: true }),
       // tap(v => console.log('~! rows', v)),
     )
 
@@ -780,7 +795,13 @@ class StoryDataSourceTwo {
         'search': _mapSearchFilterState,
         'toggle-buttons': _mapToggleButtonsState
       }
+    ).pipe(
+      // tap(v => {
+      //   console.log('v')
+      // })
     )
+
+    // this._rows$ = of(this._rowsTmp)
 
     // this._sub = subscriberCount(this._rows$, 'this._rows$').pipe(
     //   // take(1)
@@ -792,14 +813,14 @@ class StoryDataSourceTwo {
     // console.log('~~~!')
   }
 
-  ngOnInit() {
-    console.log('dt-wrap ngOnInit')
-  }
+  // ngOnInit() {
+  //   console.log('dt-wrap ngOnInit')
+  // }
 
-  ngOnDestroy() {
-    console.log('dt-wrap ngOnDestroy')
-    // this._sub.unsubscribe()
-  }
+  // ngOnDestroy() {
+  //   console.log('dt-wrap ngOnDestroy')
+  //   // this._sub.unsubscribe()
+  // }
 
 }
 
@@ -830,4 +851,26 @@ GraphQLQueryRef.args = {
     { prop: 'name', name: 'Name' }
   ],
   numberOfRows: 60
+}
+GraphQLQueryRef.play = async ({ canvasElement, fixture }) => {
+  const _fixture: ComponentFixture<DatatableComponent> | undefined = fixture
+  // const canvas = within(canvasElement)
+
+  // const page2Btn = canvas.getByRole('button', { name: /page 2/i })
+  // const page2Anchor = page2Btn.getElementsByTagName('a')[0]
+  // await userEvent.click(page2Anchor)
+
+  // await expectFn(page2Btn.classList.contains('active')).toBe(true)
+
+
+
+  const datatableHarness = _fixture !== undefined
+    ? await TestbedHarnessEnvironment.harnessForFixture(_fixture, TheSeamDatatableHarness)
+    : await (new StoryBrowserHarnessEnvironment(document.body, { documentRoot: document.body }))
+      .getHarness(TheSeamDatatableHarness)
+
+  await expectFn(await datatableHarness.getCurrentPage()).toBe(1)
+  const page2BtnHarness = await (await datatableHarness.getPager()).getPageButtonHarness(2)
+  await (await page2BtnHarness.getAnchor()).click()
+  await expectFn(await datatableHarness.getCurrentPage()).toBe(2)
 }

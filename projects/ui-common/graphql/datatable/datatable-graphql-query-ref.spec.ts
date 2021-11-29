@@ -63,7 +63,7 @@ describe('DatatableGraphQLQueryRef', () => {
 
     pageFixture.datatable.setPage(1)
 
-    tick(pageFixture.updatesPollDelay - 1)
+    tick(pageFixture.updatesPollDelay - 2)
     expect(pageFixture.emittedDataCount).toEqual(1)
     expect(pageFixture.emittedData?.length).toEqual(numRecords)
 
@@ -87,7 +87,7 @@ describe('DatatableGraphQLQueryRef', () => {
 
     pageFixture.datatable.setScrolledPosV(pageFixture.datatable.getRowHeight() + 1)
 
-    tick(pageFixture.updatesPollDelay - 1)
+    tick(pageFixture.updatesPollDelay - 2)
     expect(pageFixture.emittedDataCount).toEqual(1)
     expect(pageFixture.emittedData?.length).toEqual(numRecords)
 
@@ -110,7 +110,7 @@ describe('DatatableGraphQLQueryRef', () => {
 
     pageFixture.datatable.setScrolledPosV(pageFixture.datatable.getRowHeight() + 1)
 
-    tick(pageFixture.updatesPollDelay - 1)
+    tick(pageFixture.updatesPollDelay - 2)
     expect(pageFixture.emittedDataCount).toEqual(1)
     expect(pageFixture.emittedData?.length).toEqual(numRecords)
 
@@ -242,12 +242,12 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
   }
 
   public init(emitDatatable: boolean = true): void {
-    console.log('time', currentTickTime())
+    // console.log('time', currentTickTime())
     this._emittedData = null
     this._emittedDataCount = 0
 
     this._rowsSub = this._rows$.subscribe((data) => {
-      console.log('time', currentTickTime())
+      // console.log('time', currentTickTime())
       this._gqlDtAccessor?.setRows(data)
       this._emittedData = data
       this._emittedDataCount++

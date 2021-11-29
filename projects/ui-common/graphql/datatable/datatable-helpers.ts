@@ -76,12 +76,18 @@ export function observeRowsWithGqlInputsHandling<TData, TRow, GqlVariables exten
       })
     )
 
-    const queryVarsChangedSub = queryVariablesChanged$.pipe(
-      switchMap(() => subscriberCount(rows.pipe(take(1)), 'rows'))
-    ).subscribe(subscriber)
+    // const _emitSubject = new Subject<void>()
+
+    // const queryVarsChangedSub = queryVariablesChanged$.pipe(
+    //   switchMap(() => subscriberCount(rows, 'rows'))
+    // ).subscribe(subscriber)
+    const queryVarsChangedSub = queryVariablesChanged$.subscribe()
+
+    const _sub = subscriberCount(rows, 'rows').subscribe(subscriber)
 
     return () => {
       queryVarsChangedSub.unsubscribe()
+      _sub.unsubscribe()
     }
   })
 
