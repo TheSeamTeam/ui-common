@@ -9,13 +9,13 @@ const expectJestFn = expectPatched
 const isInJasmine = expectJasmineFn !== undefined && expectJasmineFn !== null
 // const expectFn = expectJasmineFn || exp
 
-console.log('isInJasmine', isInJasmine)
+// console.log('isInJasmine', isInJasmine)
 
 const { expect } = instrument(
   { expect: expectJasmineFn || expectJestFn },
   // { intercept: (method, path) => path[0] !== 'expect' }
   { intercept: (method, path) => {
-    console.log('intercept', method, path)
+    // console.log('intercept', method, path)
     return path[0] !== 'expect'
   } }
 )

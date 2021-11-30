@@ -1,19 +1,15 @@
 import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular'
+import { TheSeamTiledSelectHarness } from './../../testing/tiled-select-harness'
 
+import { FormControl, ReactiveFormsModule } from '@angular/forms'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
-import { FormControl, ReactiveFormsModule } from '@angular/forms'
+import { userEvent, waitFor, within } from '@storybook/testing-library'
+import { expectFn, getHarness } from '@theseam/ui-common/testing'
+
 import { TheSeamTiledSelectModule } from '../../tiled-select.module'
 import { TheSeamTiledSelectComponent } from './tiled-select.component'
-
-// import { expect } from '@storybook/jest'
-// import {
-//   userEvent,
-//   within
-// } from '@storybook/testing-library'
-
-// import userEvent from '@testing-library/user-event'
 
 export default {
   title: 'Tiled Select/Components/Tiled Select',
@@ -36,19 +32,6 @@ export const Default: Story<TheSeamTiledSelectComponent & { [key: string]: any }
     tiles: args.tiles
   },
   template: `<seam-tiled-select [tiles]="tiles"></seam-tiled-select>`,
-  // play: async () => {
-  //   const input = await screen.getByAltText('sb-input');
-  //   await userEvent.type(input, `Typing from CSF3`);
-  // }
-
-  // // @ts-ignore
-  // // tslint:disable-next-line: no-shadowed-variable
-  // play: async ({ args, canvasElement }) => {
-  //   const canvas = within(canvasElement)
-  //   await userEvent.click(canvas.getByTitle('Cotton'))
-  //   // await expect(args.onClick).toHaveBeenCalled()
-  //   await expect(canvasElement.value).toBe('cotton')
-  // }
 })
 Default.args = {
   tiles: [
@@ -103,16 +86,15 @@ Default.args = {
     }
   ]
 }
-// @ts-ignore
-// tslint:disable-next-line: no-shadowed-variable
-// Default.play = async ({ args, canvasElement }) => {
-//   const canvas = within(canvasElement)
-//   const tile = canvas.getByTestId('cotton')
-//   console.log('tile', tile)
-//   await userEvent.click(tile)
-//   // await expect(args.onClick).toHaveBeenCalled()
-//   // await expect(canvasElement.value).toBe('cotton')
-// }
+Default.play = async ({ canvasElement, fixture }) => {
+  const tiledSelectHarness = await getHarness(TheSeamTiledSelectHarness, { canvasElement, fixture })
+  const cottonBtnElem = await (await tiledSelectHarness.getTileByName('cotton')).getButtonElement()
+  await cottonBtnElem.click()
+  await expectFn(await tiledSelectHarness.getValue()).toBe('cotton')
+  const cornBtnElem = await (await tiledSelectHarness.getTileByName('corn')).getButtonElement()
+  await cornBtnElem.click()
+  await expectFn(await tiledSelectHarness.getValue()).toBe('corn')
+}
 
 export const WithControl: Story<TheSeamTiledSelectComponent & { [key: string]: any }> = (args) => ({
   moduleMetadata: {
@@ -178,17 +160,12 @@ WithControl.args = {
     }
   ]
 }
-// @ts-ignore
-// tslint:disable-next-line: no-shadowed-variable
-// WithControl.play = async ({ args, canvasElement }) => {
-//   console.log('canvasElement', canvasElement)
-//   const canvas = within(canvasElement)
-//   // console.log('item', canvas.getByTestId('cotton'))
-//   // await userEvent.click(canvas.getByTestId('cotton'))
-//   const tile = canvas.getByTestId('cotton')
-//   console.log('tile', tile)
-//   await userEvent.tab()
-//   await userEvent.click(tile, { button: 0 })
-//   // await expect(args.onClick).toHaveBeenCalled()
-//   await expect((canvas.getByTestId('tiled-select') as any).value).toBe('cotton')
-// }
+WithControl.play = async ({ canvasElement, fixture }) => {
+  const tiledSelectHarness = await getHarness(TheSeamTiledSelectHarness, { canvasElement, fixture })
+  const cottonBtnElem = await (await tiledSelectHarness.getTileByName('cotton')).getButtonElement()
+  await cottonBtnElem.click()
+  await expectFn(await tiledSelectHarness.getValue()).toBe('cotton')
+  const cornBtnElem = await (await tiledSelectHarness.getTileByName('corn')).getButtonElement()
+  await cornBtnElem.click()
+  await expectFn(await tiledSelectHarness.getValue()).toBe('corn')
+}

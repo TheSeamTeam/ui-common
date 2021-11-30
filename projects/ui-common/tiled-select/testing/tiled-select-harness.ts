@@ -15,7 +15,12 @@ export class TheSeamTiledSelectHarness extends ComponentHarness {
     // return this.locatorFor(TheSeamTiledSelectTileHarness.with({ tileIndex: index }))
   }
 
-  // public async getTileByName(name: string) {
+  public async getTileByName(name: string) {
+    const getTileByName = this.locatorFor(TheSeamTiledSelectTileHarness.with({ tileName: name }))
+    return getTileByName()
+  }
 
-  // }
+  public async getValue() {
+    return (await this.host()).getProperty('value')
+  }
 }
