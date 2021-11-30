@@ -1,4 +1,3 @@
-import { ComponentFixture } from '@angular/core/testing'
 import { action } from '@storybook/addon-actions'
 import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular'
 
@@ -17,7 +16,7 @@ import { BehaviorSubject, Observable, of, Subscription } from 'rxjs'
 import { shareReplay, startWith, take, tap } from 'rxjs/operators'
 
 import { userEvent, waitFor, within } from '@storybook/testing-library'
-import { expectFn, StoryBrowserHarnessEnvironment } from '@theseam/ui-common/testing'
+import { expectFn, getHarness, StoryBrowserHarnessEnvironment } from '@theseam/ui-common/testing'
 
 import {
   DatatableGraphQLQueryRef,
@@ -853,7 +852,6 @@ GraphQLQueryRef.args = {
   numberOfRows: 60
 }
 GraphQLQueryRef.play = async ({ canvasElement, fixture }) => {
-  const _fixture: ComponentFixture<DatatableComponent> | undefined = fixture
   // const canvas = within(canvasElement)
 
   // const page2Btn = canvas.getByRole('button', { name: /page 2/i })
@@ -863,11 +861,7 @@ GraphQLQueryRef.play = async ({ canvasElement, fixture }) => {
   // await expectFn(page2Btn.classList.contains('active')).toBe(true)
 
 
-
-  const datatableHarness = _fixture !== undefined
-    ? await TestbedHarnessEnvironment.harnessForFixture(_fixture, TheSeamDatatableHarness)
-    : await (new StoryBrowserHarnessEnvironment(document.body, { documentRoot: document.body }))
-      .getHarness(TheSeamDatatableHarness)
+  const datatableHarness = await getHarness(TheSeamDatatableHarness, { canvasElement, fixture })
 
   await expectFn(await datatableHarness.getCurrentPage()).toBe(1)
   const page2BtnHarness = await (await datatableHarness.getPager()).getPageButtonHarness(2)
