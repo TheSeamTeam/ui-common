@@ -7,68 +7,55 @@ import { instrument } from '@storybook/instrumenter'
 //   The instrumenter doesn't have much documentation, so I am still learning
 //   how it works. The following is probably a lot of unnecessary code.
 
-async function _harnessFn(element: any, ...args: any): Promise<any> {
-  return Promise.resolve()
-}
-
-const functionsToInstrument: string[] = [
-  'blur',
-  'clear',
-  'click',
-  'rightClick',
-  'focus',
-  // 'getCssValue',
-  'hover',
-  'mouseAway',
-  'sendKeys',
-  'text',
-  // 'getAttribute',
-  // 'hasClass',
-  // 'getDimensions',
-  // 'getProperty',
-  // 'matchesSelector',
-  // 'isFocused',
-  'setInputValue',
-  'selectOptions',
-  'dispatchEvent',
-]
-
-const toInstrumentObj: any = {}
-for (const x of functionsToInstrument) {
-  toInstrumentObj[x] = _harnessFn
-}
-
-const instrumentedFns = instrument(
-  toInstrumentObj,
-  { intercept: true }
-)
-
-
-function decorateHarnessFn(fn: ((...args: any) => Promise<any>), fnName: string) {
-  return async function(this: any, ...args: any[]) {
-    return await instrumentedFns[fnName](this.element, args).then(async () => {
+function decorateHarnessFn(fn: ((...args: any) => Promise<any>), instrumentedFn: any) {
+  return function(this: any, ...args: any[]) {
+    return instrumentedFn(this.element, ...args).then(async () => {
       return await fn.apply(this, args)
     })
   }
 }
 
-function decorateUnitTestElement(type: any, fnName: string): void {
-  type.prototype[fnName] = decorateHarnessFn(type.prototype[fnName], fnName)
-}
+export function UnitTestElementInstrumented(fnNames: string[]): ClassDecorator {
+  // Make a function to instrument for each function that would be instrumented.
+  // These functions will be a simple function that returns nothing but a
+  // Promise. It will be instrumented and called before the original function,
+  // because the original function doesn't take the HTMLElement as an argument
+  // and I want it to be shown in the Interactions Panel.
+  const toInstrumentObj: { [fnName: string]: any } = { }
+  for (const x of fnNames) {
+    toInstrumentObj[x] = (element: any, ...args: any) => Promise.resolve()
+  }
 
-export function UnitTestElementInstrumented(): ClassDecorator {
+  // Instrument the functions.
+  const instrumentedFns = instrument(
+    toInstrumentObj,
+    { intercept: true }
+  )
+
   // tslint:disable-next-line: only-arrow-functions
   return function(
     type: any
   ) {
-    // decorateUnitTestElement(type, 'click')
-    for (const x of functionsToInstrument) {
-      decorateUnitTestElement(type, x)
+    for (const x of fnNames) {
+      type.prototype[x] = decorateHarnessFn(type.prototype[x], instrumentedFns[x])
     }
   }
 }
 
-@UnitTestElementInstrumented()
+@UnitTestElementInstrumented([
+  'blur',
+  'clear',
+  'click',
+  'rightClick',
+  'focus',
+  'hover',
+  'mouseAway',
+  'sendKeys',
+  'text',
+  'setInputValue',
+  'selectOptions',
+  'dispatchEvent',
+])
 export class StoryBrowserUnitTestElement extends UnitTestElement { }
 
 
