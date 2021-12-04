@@ -2,7 +2,7 @@ import { ComponentHarness, ComponentHarnessConstructor } from '@angular/cdk/test
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed'
 import { ComponentFixture } from '@angular/core/testing'
 
-import { StoryBrowserHarnessEnvironment } from './story-browser-harness-environment'
+import { StorybookHarnessEnvironment } from '@marklb/storybook-harness'
 
 export interface GetHarnessOptions<TComponent = any> {
   canvasElement?: HTMLElement
@@ -18,7 +18,7 @@ export async function getHarness<T extends ComponentHarness>(
   }
 
   if (options.canvasElement !== undefined) {
-    return (new StoryBrowserHarnessEnvironment(options.canvasElement, { documentRoot: document.body }))
+    return (new StorybookHarnessEnvironment(options.canvasElement))
       .getHarness(harnessType)
   }
 
