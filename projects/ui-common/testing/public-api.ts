@@ -4,5 +4,4 @@ export * from './tick-helper'
 export * from './current-tick-time'
 
 export * from './story-expect'
-export * from './story-browser-harness-environment'
 export * from './get-harness'
