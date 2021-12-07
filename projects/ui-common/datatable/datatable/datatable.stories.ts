@@ -16,7 +16,7 @@ import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types
 import { ToastrModule, ToastrService } from 'ngx-toastr'
 
 import { userEvent, waitFor, within } from '@storybook/testing-library'
-import { expectFn, getHarness, StoryBrowserHarnessEnvironment } from '@theseam/ui-common/testing'
+import { expectFn, getHarness } from '@theseam/ui-common/testing'
 
 import {
   DatatableGraphQLQueryRef,
@@ -38,21 +38,11 @@ import {
   SIMPLE_GQL_TEST_QUERY
 } from '../../graphql/testing'
 
-// import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed'
 import { TheSeamDatatableModule } from '../datatable.module'
 import { DatatableDataSource } from '../models/datatable-data-source'
 import { TheSeamDatatableHarness } from '../testing'
 import { DatatableComponent } from './datatable.component'
 
-import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed'
-import { instrument } from '@storybook/instrumenter'
-
-// const { StoryBrowserHarnessEnvironment } = instrument(
-//   { StoryBrowserHarnessEnvironment: _sEnv },
-//   {
-//     intercept: true
-//   }
-// )
 
 export default {
   title: 'Datatable/Components',
