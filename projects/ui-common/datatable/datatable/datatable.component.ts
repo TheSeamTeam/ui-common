@@ -47,14 +47,7 @@ import { DatatableColumnChangesService } from '../services/datatable-column-chan
 import { DatatablePreferencesService } from '../services/datatable-preferences.service'
 import { THESEAM_DATATABLE_ACCESSOR } from '../tokens/datatable-accessor'
 
-export function _setColumnDefaults(columns: TheSeamDatatableColumn[]): void {
-  for (const column of columns) {
-    if (!column.hasOwnProperty('hidden')) {
-      column.hidden = false
-    }
-  }
-  setColumnDefaults(columns)
-}
+import { mergeTplAndInpColumns } from '../utils/merge-tpl-and-input-columns'
 
 /**
  * NOTE: This is still being worked on. I am trying to figure out this model
@@ -462,147 +455,26 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit, 
       this.columnComponents$,
       this._columns
     ]).pipe(
-      map(v => this._getMergedTplAndInpColumns(v[0], v[1] ?? [])),
+      // map(v => this._getMergedTplAndInpColumns(v[0], v[1] ?? [])),
+      map(v => mergeTplAndInpColumns(
+        v[0],
+        v[1] ?? [],
+        (this.ngxDatatable && this.ngxDatatable._internalColumns) || [],
+        this.selectionType,
+        this._colDiffersInp,
+        this._colDiffersTpl,
+        this.rowActionItem,
+        this.actionMenuCellTpl,
+        this.blankHeaderTpl,
+        this.treeToggleTpl,
+        this.headerTpl,
+        this.cellTypeSelectorTpl,
+        this._differs,
+      )),
       // tap(v => console.log('cols', v)),
       shareReplay({ bufferSize: 1, refCount: true }),
     )
     this._columnsObservable.next(_columns)
-  }
-
-  private _getMergedTplAndInpColumns(
-    tplCols: DatatableColumnComponent[],
-    inpCols: TheSeamDatatableColumn[]
-  ): TheSeamDatatableColumn[] {
-    const cols: TheSeamDatatableColumn[] = []
-
-    if (this.selectionType === 'checkbox') {
-      const checkBoxCol: TheSeamDatatableColumn = {
-        prop: '$$__checkbox__',
-        name: '',
-        width: 40,
-        sortable: false,
-        canAutoResize: false,
-        draggable: false,
-        resizeable: false,
-        headerCheckboxable: true,
-        checkboxable: true
-      }
-
-      cols.push(checkBoxCol)
-    }
-
-    const _tplCols = translateTemplates(<any>(tplCols || []))
-    for (const col of inpCols) {
-      const tplCol = _tplCols.find(t => t.prop === col.prop)
-      // console.log({ col: { ...(col || {}) }, tplCol: { ...(tplCol || {}) } })
-
-      const dtColumns = (this.ngxDatatable && this.ngxDatatable._internalColumns) || []
-      const prev = dtColumns.find(c => c.prop === col.prop)
-
-      const inpColDiff = this._getColDiff(col)
-      const _inpCol = inpColDiff ? {} : this._hasPrevColDiff(col) ? {} : col
-      if (inpColDiff) {
-        inpColDiff.forEachRemovedItem(r => {
-          if (prev && prev.hasOwnProperty(r.key)) {
-            const k = r.key as keyof TableColumn
-            delete prev[k]
-          }
-        })
-        inpColDiff.forEachAddedItem(r => (_inpCol as any)[r.key] = r.currentValue)
-        inpColDiff.forEachChangedItem(r => (_inpCol as any)[r.key] = r.currentValue)
-      }
-
-      let _tplCol: TheSeamDatatableColumn = {}
-      if (tplCol) {
-        const tplColDiff = tplCol ? this._getColDiff(tplCol, true) : undefined
-        _tplCol = tplColDiff ? {} : this._hasPrevColDiff(col, true) ? {} : tplCol
-        if (tplColDiff) {
-          tplColDiff.forEachRemovedItem(r => {
-            if (prev && prev.hasOwnProperty(r.key)) {
-              const k = r.key as keyof TableColumn
-              delete prev[k]
-            }
-          })
-          tplColDiff.forEachAddedItem(r => (_tplCol as any)[r.key] = r.currentValue)
-          tplColDiff.forEachChangedItem(r => (_tplCol as any)[r.key] = r.currentValue)
-        }
-      }
-
-      const _col: TheSeamDatatableColumn = {
-        ...(prev || {}),
-        ..._inpCol,
-        ..._tplCol
-      }
-
-      cols.push(_col)
-    }
-
-    if (this.rowActionItem) {
-      const actionMenuColumn: TheSeamDatatableColumn = {
-        prop: '$$__actionMenu__',
-        name: '',
-        width: 50,
-        minWidth: 50,
-        maxWidth: 50,
-        resizeable: false,
-        sortable: false,
-        draggable: false,
-        // TODO: Fix column auto sizing with fixed column and cell overlay before enabling.
-        // frozenRight: true,
-        cellTemplate: this.actionMenuCellTpl,
-        headerTemplate: this.blankHeaderTpl
-      }
-      cols.push(actionMenuColumn)
-    }
-
-    for (const col of cols) {
-      if (col.isTreeColumn && hasProperty(col, 'treeToggleTemplate')) {
-        col.treeToggleTemplate = this.treeToggleTpl
-      }
-
-      if (!hasProperty(col, 'headerTemplate')) {
-        col.headerTemplate = this.headerTpl
-      }
-
-      if (hasProperty(col, 'cellType')) {
-        col.cellTemplate = this.cellTypeSelectorTpl
-      }
-    }
-
-    // setColumnDefaults(cols)
-    _setColumnDefaults(cols)
-
-
-    // console.log(cols.map(c => ({ prop: c.prop, canAutoResize: c.canAutoResize })))
-
-    return cols
-  }
-
-  private _hasPrevColDiff(col: TheSeamDatatableColumn, isTpl: boolean = false): boolean {
-    if (!col || !col.prop) {
-      return false
-    }
-
-    const differsMap = isTpl ? this._colDiffersTpl : this._colDiffersInp
-
-    return !!differsMap
-  }
-
-  private _getColDiff(col: TheSeamDatatableColumn, isTpl: boolean = false) {
-    if (!col || !col.prop) {
-      return
-    }
-
-    const differsMap = isTpl ? this._colDiffersTpl : this._colDiffersInp
-
-    if (!differsMap[col.prop]) {
-      differsMap[col.prop] = this._differs.find({}).create()
-    }
-
-    const differ = differsMap[col.prop]
-
-    const diff = differ.diff(col)
-    return diff
   }
 
   private _removeUnusedDiffs(cols: TheSeamDatatableColumn[]) {
