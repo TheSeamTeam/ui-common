@@ -1,3 +1,5 @@
+import { setColumnDefaults as _scd } from '@marklb/ngx-datatable'
+
 import { TheSeamDatatableColumn } from '../models/table-column'
 
 export function setColumnDefaults(columns: TheSeamDatatableColumn[]): void {
@@ -6,5 +8,5 @@ export function setColumnDefaults(columns: TheSeamDatatableColumn[]): void {
       column.hidden = false
     }
   }
-  setColumnDefaults(columns)
+  _scd(columns)
 }

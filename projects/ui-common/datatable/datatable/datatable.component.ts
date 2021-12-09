@@ -27,7 +27,7 @@ import {
 import type { SelectionType } from '@marklb/ngx-datatable'
 
 import { InputBoolean, InputNumber } from '@theseam/ui-common/core'
-import { composeDataFilters, composeDataFilterStates, DataFilterState, IDataFilter } from '@theseam/ui-common/data-filters'
+import { composeDataFilters, composeDataFilterStates, DataFilter, DataFilterState } from '@theseam/ui-common/data-filters'
 import { IElementResizedEvent } from '@theseam/ui-common/shared'
 import { hasProperty, notNullOrUndefined } from '@theseam/ui-common/utils'
 
@@ -48,6 +48,7 @@ import { DatatablePreferencesService } from '../services/datatable-preferences.s
 import { THESEAM_DATATABLE_ACCESSOR } from '../tokens/datatable-accessor'
 
 import { mergeTplAndInpColumns } from '../utils/merge-tpl-and-input-columns'
+import { removeUnusedDiffs } from '../utils/remove-unused-diffs'
 
 /**
  * NOTE: This is still being worked on. I am trying to figure out this model
@@ -79,7 +80,7 @@ export interface ICellContext {
 /**
  * Intended for internal classes declared by the `TheSeamDatatableModule`.
  */
-export const THESEAM_DATATABLE = new InjectionToken<IDataFilter>('LibDatatable')
+export const THESEAM_DATATABLE = new InjectionToken<DataFilter>('LibDatatable')
 
 export const _THESEAM_DATATABLE: any = {
   provide: THESEAM_DATATABLE,
@@ -142,15 +143,15 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit, 
   faSpinner = faSpinner
 
   private readonly _ngUnsubscribe = new Subject()
-  private readonly _filtersSubject = new BehaviorSubject<IDataFilter[]>([])
+  private readonly _filtersSubject = new BehaviorSubject<DataFilter[]>([])
   private readonly _columnsObservable = new BehaviorSubject<Observable<TheSeamDatatableColumn[]> | undefined>(undefined)
   private readonly _dataSourceSubject = new BehaviorSubject<DataSource<any> | any[] | undefined>(undefined)
 
   public readonly filterStates: Observable<DataFilterState[]>
 
-  get filters(): IDataFilter[] { return this._filtersSubject.value }
+  get filters(): DataFilter[] { return this._filtersSubject.value }
 
-  public readonly filters$: Observable<IDataFilter[]>
+  public readonly filters$: Observable<DataFilter[]>
 
   @Input()
   get preferencesKey(): string | undefined | null { return this._preferencesKey.value }
@@ -346,7 +347,7 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit, 
 
     this.displayColumns$ = this.columns$.pipe(
       map(cols => cols.filter(c => !c.hidden)),
-      tap(v => this._removeUnusedDiffs(v)),
+      tap(v => removeUnusedDiffs(v, this._colDiffersInp, this._colDiffersTpl)),
       switchMap(cols => applyPrefs(cols)),
     )
 
@@ -456,38 +457,33 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit, 
       this._columns
     ]).pipe(
       // map(v => this._getMergedTplAndInpColumns(v[0], v[1] ?? [])),
-      map(v => mergeTplAndInpColumns(
-        v[0],
-        v[1] ?? [],
-        (this.ngxDatatable && this.ngxDatatable._internalColumns) || [],
-        this.selectionType,
-        this._colDiffersInp,
-        this._colDiffersTpl,
-        this.rowActionItem,
-        this.actionMenuCellTpl,
-        this.blankHeaderTpl,
-        this.treeToggleTpl,
-        this.headerTpl,
-        this.cellTypeSelectorTpl,
-        this._differs,
-      )),
+      map(v => {
+        debugger
+        return mergeTplAndInpColumns(
+          v[0],
+          v[1] ?? [],
+          (this.ngxDatatable && this.ngxDatatable._internalColumns) || [],
+          this.selectionType,
+          this._colDiffersInp,
+          this._colDiffersTpl,
+          this.rowActionItem,
+          this.actionMenuCellTpl,
+          this.blankHeaderTpl,
+          this.treeToggleTpl,
+          this.headerTpl,
+          this.cellTypeSelectorTpl,
+          this._differs,
+        )
+      }),
       // tap(v => console.log('cols', v)),
       shareReplay({ bufferSize: 1, refCount: true }),
     )
     this._columnsObservable.next(_columns)
   }
 
-  private _removeUnusedDiffs(cols: TheSeamDatatableColumn[]) {
-    const inpKeys = Object.keys(this._colDiffersInp)
-    inpKeys.filter(k => cols.findIndex(c => c.prop === k) === -1)
-      .forEach(k => { delete this._colDiffersInp[k] })
 
-    const tplKeys = Object.keys(this._colDiffersTpl)
-    tplKeys.filter(k => cols.findIndex(c => c.prop === k) === -1)
-      .forEach(k => { delete this._colDiffersTpl[k] })
-  }
 
-  private _setMenuBarFilters(filters: IDataFilter[]) {
+  private _setMenuBarFilters(filters: DataFilter[]) {
     // console.log('_setMenuBarFilters', filters)
     this._filtersSubject.next(filters || [])
   }

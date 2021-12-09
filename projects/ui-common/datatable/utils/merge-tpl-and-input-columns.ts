@@ -1,4 +1,4 @@
-import { KeyValueDiffer, KeyValueDiffers, TemplateRef } from '@angular/core'
+import { KeyValueChanges, KeyValueDiffer, KeyValueDiffers, TemplateRef } from '@angular/core'
 import {
   DataTableColumnCellTreeToggle,
   DataTableColumnDirective,
@@ -32,20 +32,9 @@ export function mergeTplAndInpColumns(
 ): TheSeamDatatableColumn[] {
   const cols: TheSeamDatatableColumn[] = []
 
+  // Add the first column checkbox if checkbox selection is enabled.
   if (selectionType === 'checkbox') {
-    const checkBoxCol: TheSeamDatatableColumn = {
-      prop: '$$__checkbox__',
-      name: '',
-      width: 40,
-      sortable: false,
-      canAutoResize: false,
-      draggable: false,
-      resizeable: false,
-      headerCheckboxable: true,
-      checkboxable: true
-    }
-
-    cols.push(checkBoxCol)
+    cols.push(_createCheckBoxColumn())
   }
 
   const _tplCols = translateTemplates(<any>(tplCols || []))
@@ -59,14 +48,7 @@ export function mergeTplAndInpColumns(
     const inpColDiff = _getColDiff(col, colDiffersInp, differs)
     const _inpCol = inpColDiff ? {} : _hasPrevColDiff(col, colDiffersInp) ? {} : col
     if (inpColDiff) {
-      inpColDiff.forEachRemovedItem(r => {
-        if (prev && prev.hasOwnProperty(r.key)) {
-          const k = r.key as keyof TableColumn
-          delete prev[k]
-        }
-      })
-      inpColDiff.forEachAddedItem(r => (_inpCol as any)[r.key] = r.currentValue)
-      inpColDiff.forEachChangedItem(r => (_inpCol as any)[r.key] = r.currentValue)
+      _updateColDiff(inpColDiff, prev, _inpCol)
     }
 
     let _tplCol: TheSeamDatatableColumn = {}
@@ -74,14 +56,7 @@ export function mergeTplAndInpColumns(
       const tplColDiff = tplCol ? _getColDiff(tplCol, colDiffersTpl, differs) : undefined
       _tplCol = tplColDiff ? {} : _hasPrevColDiff(col, colDiffersTpl) ? {} : tplCol
       if (tplColDiff) {
-        tplColDiff.forEachRemovedItem(r => {
-          if (prev && prev.hasOwnProperty(r.key)) {
-            const k = r.key as keyof TableColumn
-            delete prev[k]
-          }
-        })
-        tplColDiff.forEachAddedItem(r => (_tplCol as any)[r.key] = r.currentValue)
-        tplColDiff.forEachChangedItem(r => (_tplCol as any)[r.key] = r.currentValue)
+        _updateColDiff(tplColDiff, prev, _tplCol)
       }
     }
 
@@ -95,21 +70,7 @@ export function mergeTplAndInpColumns(
   }
 
   if (rowActionItem) {
-    const actionMenuColumn: TheSeamDatatableColumn = {
-      prop: '$$__actionMenu__',
-      name: '',
-      width: 50,
-      minWidth: 50,
-      maxWidth: 50,
-      resizeable: false,
-      sortable: false,
-      draggable: false,
-      // TODO: Fix column auto sizing with fixed column and cell overlay before enabling.
-      // frozenRight: true,
-      cellTemplate: actionMenuCellTpl,
-      headerTemplate: blankHeaderTpl
-    }
-    cols.push(actionMenuColumn)
+    cols.push(_createActionMenuColumn(actionMenuCellTpl, blankHeaderTpl))
   }
 
   for (const col of cols) {
@@ -128,10 +89,24 @@ export function mergeTplAndInpColumns(
 
   setColumnDefaults(cols)
 
-
   // console.log(cols.map(c => ({ prop: c.prop, canAutoResize: c.canAutoResize })))
 
   return cols
+}
+
+function _updateColDiff(
+  colDiff: KeyValueChanges<string, any>,
+  prev: TableColumn | undefined,
+  inpCol: TheSeamDatatableColumn<any, any>
+): void {
+  colDiff.forEachRemovedItem(r => {
+    if (prev && prev.hasOwnProperty(r.key)) {
+      const k = r.key as keyof TableColumn
+      delete prev[k]
+    }
+  })
+  colDiff.forEachAddedItem(r => (inpCol as any)[r.key] = r.currentValue)
+  colDiff.forEachChangedItem(r => (inpCol as any)[r.key] = r.currentValue)
 }
 
 function _getColDiff(
@@ -166,4 +141,38 @@ function _hasPrevColDiff(
   const differsMap = colDiffers
 
   return !!differsMap
+}
+
+function _createCheckBoxColumn(): TheSeamDatatableColumn {
+  return {
+    prop: '$$__checkbox__',
+    name: '',
+    width: 40,
+    sortable: false,
+    canAutoResize: false,
+    draggable: false,
+    resizeable: false,
+    headerCheckboxable: true,
+    checkboxable: true,
+  }
+}
+
+function _createActionMenuColumn(
+  cellTemplate: any,
+  headerTemplate: any
+): TheSeamDatatableColumn {
+  return {
+    prop: '$$__actionMenu__',
+    name: '',
+    width: 50,
+    minWidth: 50,
+    maxWidth: 50,
+    resizeable: false,
+    sortable: false,
+    draggable: false,
+    // TODO: Fix column auto sizing with fixed column and cell overlay before enabling.
+    // frozenRight: true,
+    cellTemplate,
+    headerTemplate,
+  }
 }
