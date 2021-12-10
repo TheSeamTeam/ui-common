@@ -5,7 +5,9 @@ import { TheSeamDatatableColumn } from './../models/table-column'
 import { KeyValueDiffer, KeyValueDiffers, TemplateRef } from '@angular/core'
 import { TestBed, waitForAsync } from '@angular/core/testing'
 import { DataTableColumnCellTreeToggle, DataTableColumnDirective, DataTableColumnHeaderDirective, SelectionType, TableColumn } from '@marklb/ngx-datatable'
+import { deleteProperties } from '@theseam/ui-common/utils/'
 import { mergeTplAndInpColumns } from './merge-tpl-and-input-columns'
+import { setColumnDefaults } from './set-column-defaults'
 
 fdescribe('mergeTplAndInpColumns', () => {
   // let component: DatatableComponent
@@ -62,10 +64,23 @@ fdescribe('mergeTplAndInpColumns', () => {
       differs
     )
 
-    expect(result).toEqual([
-      { prop: 'name', name: 'Name' },
-      { prop: 'age', name: 'Age' },
-      { prop: 'color', name: 'Color' }
-    ])
+    expect(result).toEqual(jasmine.arrayContaining([
+      ...defaultColumnWithoutId([
+        { prop: 'name', name: 'Name' },
+        { prop: 'age', name: 'Age' },
+        { prop: 'color', name: 'Color' }
+      ]).map(v => jasmine.objectContaining(v))
+    ]))
   })
 })
+
+function defaultColumnWithoutId(o: TheSeamDatatableColumn[]): TheSeamDatatableColumn[] {
+  setColumnDefaults(o)
+  for (const col of o) {
+    const _o: any = col
+    _o.$$id = jasmine.any(String)
+    _o.$$valueGetter = jasmine.any(Function)
+    // deleteProperties(col, [ '$$id', '$$valueGetter' ])
+  }
+  return o
+}
