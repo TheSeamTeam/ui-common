@@ -284,41 +284,44 @@
       }
     }
 
-    .progress-linear {
-      display: block;
-      position: absolute;
-      width: 100%;
-      height: 5px;
-      padding: 0;
-      margin: 0;
-      top: 0;
-
-      .container {
+    @if $datatable-progress-effect {
+      .progress-linear {
         display: block;
-        position: relative;
-        overflow: hidden;
+        position: absolute;
         width: 100%;
-        max-width: 100%;
         height: 5px;
-        -webkit-transform: translate(0, 0) scale(1, 1);
-        transform: translate(0, 0) scale(1, 1);
-        background-color: $datatable-progress-linear-background-color;
+        padding: 0;
+        margin: 0;
+        top: 0;
 
-        .bar {
-          transition: all 0.2s linear;
-          -webkit-animation: query 0.8s infinite cubic-bezier(0.39, 0.575, 0.565, 1);
-          animation: query 0.8s infinite cubic-bezier(0.39, 0.575, 0.565, 1);
-
-          transition: -webkit-transform 0.2s linear;
-          transition: transform 0.2s linear;
-          background-color: $datatable-progress-linear-accent-color;
-
-          position: absolute;
-          left: 0;
-          top: 0;
-          bottom: 0;
+        .container {
+          display: block;
+          position: relative;
+          overflow: hidden;
           width: 100%;
+          max-width: 100%;
           height: 5px;
+          -webkit-transform: translate(0, 0) scale(1, 1);
+          transform: translate(0, 0) scale(1, 1);
+          background-color: $datatable-progress-linear-background-color;
+
+          .bar {
+            transition: all 0.2s linear;
+            -webkit-animation: query 0.8s infinite cubic-bezier(0.39, 0.575, 0.565, 1);
+            animation: query 0.8s infinite cubic-bezier(0.39, 0.575, 0.565, 1);
+
+            transition: -webkit-transform 0.2s linear;
+            transition: transform 0.2s linear;
+            background-color: $datatable-progress-linear-accent-color;
+            color: $datatable-progress-linear-accent-color;
+
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+            height: 5px;
+          }
         }
       }
     }

@@ -59,6 +59,7 @@ $datatable-header-resize-handle-bottom: 12px !default;
 $datatable-header-resize-handle-left: 0 !default;
 $datatable-header-resize-handle-width: 02px !default;
 
+$datatable-progress-effect: false !default;
 $datatable-progress-linear-background-color: rgb(170, 209, 249) !default;
 $datatable-progress-linear-accent-color: rgb(16, 108, 200) !default;
 
@@ -75,7 +76,7 @@ $datatable-row-border-color: #d1d4d7 !default;
 $datatable-body-margin: -1px 0 0 0 !default;
 
 $datatable-body-cell-color: $body-color !default;
-$datatable-body-cell-font-size: 16px !default;
+$datatable-body-cell-font-size: $datatable-font-size !default;
 $datatable-body-cell-font-weight: 400 !default;
 $datatable-body-cell-text-align: left !default;
 $datatable-body-cell-padding: 12px !default;
@@ -127,7 +128,7 @@ $datatable-footer-border-right-width: $datatable-default-border-width !default;
 $datatable-footer-border-bottom-width: $datatable-default-border-width !default;
 $datatable-footer-border-left-width: $datatable-default-border-width !default;
 $datatable-footer-border-color: #dee2e6 !default;
-$datatable-footer-font-size: 16px !default;
+$datatable-footer-font-size: $datatable-font-size !default;
 $datatable-footer-font-weight: 400 !default;
 $datatable-footer-color: $body-color !default;
 $datatable-footer-margin: 0 !default;
