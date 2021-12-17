@@ -458,7 +458,6 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit, 
     ]).pipe(
       // map(v => this._getMergedTplAndInpColumns(v[0], v[1] ?? [])),
       map(v => {
-        debugger
         return mergeTplAndInpColumns(
           v[0],
           v[1] ?? [],

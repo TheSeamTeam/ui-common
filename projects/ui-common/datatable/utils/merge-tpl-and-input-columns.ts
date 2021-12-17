@@ -13,6 +13,8 @@ import { hasProperty } from '@theseam/ui-common/utils'
 import { DatatableColumnComponent } from '../datatable-column/datatable-column.component'
 import { DatatableRowActionItemDirective } from '../directives/datatable-row-action-item.directive'
 import { TheSeamDatatableColumn } from '../models/table-column'
+import { createActionMenuColumn } from '../utils/create-action-menu-column'
+import { createCheckboxColumn } from '../utils/create-checkbox-column'
 import { setColumnDefaults } from '../utils/set-column-defaults'
 
 export function mergeTplAndInpColumns(
@@ -34,7 +36,7 @@ export function mergeTplAndInpColumns(
 
   // Add the first column checkbox if checkbox selection is enabled.
   if (selectionType === 'checkbox') {
-    cols.push(_createCheckBoxColumn())
+    cols.push(createCheckboxColumn())
   }
 
   const _tplCols = translateTemplates(<any>(tplCols || []))
@@ -70,7 +72,7 @@ export function mergeTplAndInpColumns(
   }
 
   if (rowActionItem) {
-    cols.push(_createActionMenuColumn(actionMenuCellTpl, blankHeaderTpl))
+    cols.push(createActionMenuColumn(actionMenuCellTpl, blankHeaderTpl))
   }
 
   for (const col of cols) {
@@ -143,36 +145,3 @@ function _hasPrevColDiff(
   return !!differsMap
 }
 
-function _createCheckBoxColumn(): TheSeamDatatableColumn {
-  return {
-    prop: '$$__checkbox__',
-    name: '',
-    width: 40,
-    sortable: false,
-    canAutoResize: false,
-    draggable: false,
-    resizeable: false,
-    headerCheckboxable: true,
-    checkboxable: true,
-  }
-}
-
-function _createActionMenuColumn(
-  cellTemplate: any,
-  headerTemplate: any
-): TheSeamDatatableColumn {
-  return {
-    prop: '$$__actionMenu__',
-    name: '',
-    width: 50,
-    minWidth: 50,
-    maxWidth: 50,
-    resizeable: false,
-    sortable: false,
-    draggable: false,
-    // TODO: Fix column auto sizing with fixed column and cell overlay before enabling.
-    // frozenRight: true,
-    cellTemplate,
-    headerTemplate,
-  }
-}
