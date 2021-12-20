@@ -1,6 +1,6 @@
 import { Component, ContentChild, Input, OnChanges, OnInit, PipeTransform, SimpleChanges, TemplateRef } from '@angular/core'
 
-import { ColumnChangesService } from '@marklb/ngx-datatable'
+import { ColumnChangesService, TableColumnProp } from '@marklb/ngx-datatable'
 
 import { DatatableCellTplDirective } from '../directives/datatable-cell-tpl.directive'
 import { DatatableColumnChangesService } from '../services/datatable-column-changes.service'
@@ -19,7 +19,7 @@ type _PipeTransform = PipeTransform | PipeTransform
 export class DatatableColumnComponent implements OnInit, OnChanges {
 
   @Input() name?: string | null
-  @Input() prop?: string | number | null
+  @Input() prop?: TableColumnProp | null
 
   @Input() flexGrow?: number | null
   @Input() minWidth?: number | null

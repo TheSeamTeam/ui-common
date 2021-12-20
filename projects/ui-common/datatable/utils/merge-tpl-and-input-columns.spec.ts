@@ -38,38 +38,38 @@ describe('mergeTplAndInpColumns', () => {
     differs = TestBed.inject(KeyValueDiffers)
   })
 
-  it('should return Input columns with defaults', () => {
-    const tplCols: DatatableColumnComponent[] = []
-    const inpCols: TheSeamDatatableColumn[] = [
-      { prop: 'name', name: 'Name' },
-      { prop: 'age', name: 'Age' },
-      { prop: 'color', name: 'Color' }
-    ]
+  // it('should return Input columns with defaults', () => {
+  //   const tplCols: DatatableColumnComponent[] = []
+  //   const inpCols: TheSeamDatatableColumn[] = [
+  //     { prop: 'name', name: 'Name' },
+  //     { prop: 'age', name: 'Age' },
+  //     { prop: 'color', name: 'Color' }
+  //   ]
 
-    const result = mergeTplAndInpColumns(
-      tplCols,
-      inpCols,
-      ngxDatatableInternalColumns,
-      selectionType,
-      colDiffersInp,
-      colDiffersTpl,
-      rowActionItem,
-      actionMenuCellTpl,
-      blankHeaderTpl,
-      treeToggleTpl,
-      headerTpl,
-      cellTypeSelectorTpl,
-      differs
-    )
+  //   const result = mergeTplAndInpColumns(
+  //     tplCols,
+  //     inpCols,
+  //     ngxDatatableInternalColumns,
+  //     selectionType,
+  //     colDiffersInp,
+  //     colDiffersTpl,
+  //     rowActionItem,
+  //     actionMenuCellTpl,
+  //     blankHeaderTpl,
+  //     treeToggleTpl,
+  //     headerTpl,
+  //     cellTypeSelectorTpl,
+  //     differs
+  //   )
 
-    expect(result).toEqual(jasmine.arrayContaining([
-      ...defaultColumnWithIdentMatchers([
-        { prop: 'name', name: 'Name' },
-        { prop: 'age', name: 'Age' },
-        { prop: 'color', name: 'Color' }
-      ]).map(v => jasmine.objectContaining(v))
-    ]))
-  })
+  //   expect(result).toEqual(jasmine.arrayContaining([
+  //     ...defaultColumnWithIdentMatchers([
+  //       { prop: 'name', name: 'Name' },
+  //       { prop: 'age', name: 'Age' },
+  //       { prop: 'color', name: 'Color' }
+  //     ]).map(v => jasmine.objectContaining(v))
+  //   ]))
+  // })
 
   // TODO: Should this pass? I think it is intentional that template can only
   // overwrite props of input columns.
@@ -106,42 +106,42 @@ describe('mergeTplAndInpColumns', () => {
   //   ]))
   // })
 
-  it('should prioritize Template props', () => {
-    const tplCols: DatatableColumnComponent[] = initTemplateColumnComponents([
-      { prop: 'name', name: 'Name' },
-      { prop: 'age', name: 'Age', cellClass: 'tpl-class' },
-      { prop: 'color', name: 'Color' }
-    ])
-    const inpCols: TheSeamDatatableColumn[] = [
-      { prop: 'name', name: 'Name' },
-      { prop: 'age', name: 'Age', cellClass: 'inp-class' },
-      { prop: 'color', name: 'Color' }
-    ]
+  // it('should prioritize Template props', () => {
+  //   const tplCols: DatatableColumnComponent[] = initTemplateColumnComponents([
+  //     { prop: 'name', name: 'Name' },
+  //     { prop: 'age', name: 'Age', cellClass: 'tpl-class' },
+  //     { prop: 'color', name: 'Color' }
+  //   ])
+  //   const inpCols: TheSeamDatatableColumn[] = [
+  //     { prop: 'name', name: 'Name' },
+  //     { prop: 'age', name: 'Age', cellClass: 'inp-class' },
+  //     { prop: 'color', name: 'Color' }
+  //   ]
 
-    const result = mergeTplAndInpColumns(
-      tplCols,
-      inpCols,
-      ngxDatatableInternalColumns,
-      selectionType,
-      colDiffersInp,
-      colDiffersTpl,
-      rowActionItem,
-      actionMenuCellTpl,
-      blankHeaderTpl,
-      treeToggleTpl,
-      headerTpl,
-      cellTypeSelectorTpl,
-      differs
-    )
+  //   const result = mergeTplAndInpColumns(
+  //     tplCols,
+  //     inpCols,
+  //     ngxDatatableInternalColumns,
+  //     selectionType,
+  //     colDiffersInp,
+  //     colDiffersTpl,
+  //     rowActionItem,
+  //     actionMenuCellTpl,
+  //     blankHeaderTpl,
+  //     treeToggleTpl,
+  //     headerTpl,
+  //     cellTypeSelectorTpl,
+  //     differs
+  //   )
 
-    expect(result).toEqual(jasmine.arrayContaining([
-      ...defaultColumnWithIdentMatchers([
-        { prop: 'name', name: 'Name' },
-        { prop: 'age', name: 'Age', cellClass: 'tpl-class' },
-        { prop: 'color', name: 'Color' }
-      ]).map(v => jasmine.objectContaining(v))
-    ]))
-  })
+  //   expect(result).toEqual(jasmine.arrayContaining([
+  //     ...defaultColumnWithIdentMatchers([
+  //       { prop: 'name', name: 'Name' },
+  //       { prop: 'age', name: 'Age', cellClass: 'tpl-class' },
+  //       { prop: 'color', name: 'Color' }
+  //     ]).map(v => jasmine.objectContaining(v))
+  //   ]))
+  // })
 
   // it('should detect change in Input props', () => {
   //   const tplCols: DatatableColumnComponent[] = initTemplateColumnComponents([

@@ -1,13 +1,13 @@
 import { animate, style, transition, trigger } from '@angular/animations'
 import { BooleanInput, coerceArray, NumberInput } from '@angular/cdk/coercion'
+import { CollectionViewer, DataSource, isDataSource, ListRange } from '@angular/cdk/collections'
 import {
   AfterContentInit, ChangeDetectionStrategy, Component, ContentChild, ContentChildren,
   ElementRef, EventEmitter, forwardRef, InjectionToken, Input, KeyValueDiffer,
   KeyValueDiffers, OnDestroy, OnInit, Output, QueryList, TemplateRef, ViewChild
 } from '@angular/core'
-import { BehaviorSubject, combineLatest, Observable, of, Subject, Subscription } from 'rxjs'
+import { BehaviorSubject, combineLatest, isObservable, Observable, of, Subject, Subscription } from 'rxjs'
 import { concatMap, map, shareReplay, startWith, switchMap, takeUntil, tap } from 'rxjs/operators'
-import { DatatableDataSource } from './../models/datatable-data-source'
 
 import { faChevronDown, faChevronRight, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import {
@@ -31,22 +31,21 @@ import { composeDataFilters, composeDataFilterStates, DataFilter, DataFilterStat
 import { IElementResizedEvent } from '@theseam/ui-common/shared'
 import { hasProperty, notNullOrUndefined } from '@theseam/ui-common/utils'
 
-import { CollectionViewer, DataSource, isDataSource, ListRange } from '@angular/cdk/collections'
-import { isObservable } from 'rxjs'
 import { DatatableActionMenuComponent } from '../datatable-action-menu/datatable-action-menu.component'
 import { DatatableColumnComponent } from '../datatable-column/datatable-column.component'
 import { DatatableMenuBarComponent } from '../datatable-menu-bar/datatable-menu-bar.component'
 import { TheSeamDatatableRowDetailDirective } from '../datatable-row-detail/datatable-row-detail.directive'
 import { DatatableRowActionItemDirective } from '../directives/datatable-row-action-item.directive'
 import { TheSeamDatatableAccessor } from '../models/datatable-accessor'
+import { DatatableDataSource } from '../models/datatable-data-source'
 import { TheSeamPageInfo } from '../models/page-info'
 import { SortEvent } from '../models/sort-event'
 import { SortItem } from '../models/sort-item'
 import { TheSeamDatatableColumn } from '../models/table-column'
+import { ColumnAlteringProps, ColumnsManagerService } from '../services/columns-manager.service'
 import { DatatableColumnChangesService } from '../services/datatable-column-changes.service'
 import { DatatablePreferencesService } from '../services/datatable-preferences.service'
 import { THESEAM_DATATABLE_ACCESSOR } from '../tokens/datatable-accessor'
-
 import { mergeTplAndInpColumns } from '../utils/merge-tpl-and-input-columns'
 import { removeUnusedDiffs } from '../utils/remove-unused-diffs'
 
@@ -113,9 +112,15 @@ export const _THESEAM_DATATABLE_ACCESSOR: any = {
       ])
     ])
   ],
-  providers: [ _THESEAM_DATATABLE, DatatableColumnChangesService, _THESEAM_DATATABLE_ACCESSOR ]
+  providers: [
+    _THESEAM_DATATABLE,
+    DatatableColumnChangesService,
+    _THESEAM_DATATABLE_ACCESSOR,
+    ColumnsManagerService,
+  ]
 })
-export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit, TheSeamDatatableAccessor, CollectionViewer {
+export class DatatableComponent
+  implements OnInit, OnDestroy, AfterContentInit, TheSeamDatatableAccessor, CollectionViewer, ColumnAlteringProps {
   static ngAcceptInputType_externalPaging: BooleanInput
   static ngAcceptInputType_externalSorting: BooleanInput
   static ngAcceptInputType_externalFiltering: BooleanInput
@@ -281,7 +286,7 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit, 
   @ContentChildren(DatatableColumnComponent) columnComponents?: QueryList<DatatableColumnComponent>
 
   @ContentChild(DatatableActionMenuComponent, { static: true }) actionMenu?: DatatableActionMenuComponent
-  @ContentChild(DatatableRowActionItemDirective, { static: true }) rowActionItem?: DatatableRowActionItemDirective
+  @ContentChild(DatatableRowActionItemDirective, { static: true }) rowActionItem: DatatableRowActionItemDirective | undefined
   @ContentChild(TheSeamDatatableRowDetailDirective, { static: true }) rowDetail?: TheSeamDatatableRowDetailDirective
 
   @ContentChild(DatatableMenuBarComponent)
@@ -305,11 +310,11 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit, 
   @ViewChild(NgxDatatableComponent, { read: ElementRef }) ngxDatatableElement?: ElementRef
   @ViewChild(DatatableRowDetailDirective) ngxRowDetail?: DatatableRowDetailDirective
 
-  @ViewChild('actionMenuCellTpl', { static: true }) actionMenuCellTpl?: TemplateRef<DataTableColumnDirective>
-  @ViewChild('treeToggleTpl', { static: true }) treeToggleTpl?: TemplateRef<DataTableColumnCellTreeToggle>
-  @ViewChild('headerTpl', { static: true }) headerTpl?: TemplateRef<DataTableColumnHeaderDirective>
-  @ViewChild('blankHeaderTpl', { static: true }) blankHeaderTpl?: TemplateRef<DataTableColumnHeaderDirective>
-  @ViewChild('cellTypeSelectorTpl', { static: true }) cellTypeSelectorTpl?: TemplateRef<DataTableColumnDirective>
+  @ViewChild('actionMenuCellTpl', { static: true }) actionMenuCellTpl: TemplateRef<DataTableColumnDirective> | undefined
+  @ViewChild('treeToggleTpl', { static: true }) treeToggleTpl: TemplateRef<DataTableColumnCellTreeToggle> | undefined
+  @ViewChild('headerTpl', { static: true }) headerTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined
+  @ViewChild('blankHeaderTpl', { static: true }) blankHeaderTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined
+  @ViewChild('cellTypeSelectorTpl', { static: true }) cellTypeSelectorTpl: TemplateRef<DataTableColumnDirective> | undefined
 
   public columnComponents$?: Observable<DatatableColumnComponent[]>
   private _colDiffersInp: { [propName: string]: KeyValueDiffer<any, any> } = {}
@@ -325,7 +330,8 @@ export class DatatableComponent implements OnInit, OnDestroy, AfterContentInit, 
   constructor(
     private readonly _columnChangesService: DatatableColumnChangesService,
     private readonly _differs: KeyValueDiffers,
-    private readonly _preferences: DatatablePreferencesService
+    private readonly _preferences: DatatablePreferencesService,
+    private readonly _columnsManager: ColumnsManagerService,
   ) {
     // this.displayColumns$ = this.hiddenColumns$.pipe(
     //   switchMap(hiddenColumns => this.columns$.pipe(map(cols => cols.filter(c => hiddenColumns.findIndex(hc => hc === c.prop) === -1))))

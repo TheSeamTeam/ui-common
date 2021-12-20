@@ -1,4 +1,7 @@
 import { fakeAsync, TestBed, waitForAsync } from '@angular/core/testing'
+import { adjustColumnWidths, ColumnMode, forceFillColumnWidths, TableColumn } from '@marklb/ngx-datatable'
+import { Subscription } from 'rxjs'
+import { take } from 'rxjs/operators'
 
 import { DatatableColumnComponent } from '../datatable-column/datatable-column.component'
 import { TheSeamDatatableColumn } from '../models/table-column'
@@ -9,7 +12,9 @@ import { DatatableColumnChangesService } from './datatable-column-changes.servic
 
 fdescribe('ColumnsManagerService', () => {
   let service: ColumnsManagerService
-  let _colChangesService: DatatableColumnChangesService
+  let colChangesService: DatatableColumnChangesService
+  let datatable: MockDatatable
+  let columnsSubscription: Subscription
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -19,8 +24,15 @@ fdescribe('ColumnsManagerService', () => {
   }))
 
   beforeEach(() => {
-    _colChangesService = new DatatableColumnChangesService()
+    colChangesService = new DatatableColumnChangesService()
     service = TestBed.inject(ColumnsManagerService)
+    datatable = new MockDatatable()
+    columnsSubscription = service.columns$.subscribe(c => datatable.columns = c)
+    service.setInternalColumnsGetter(() => datatable._internalColumns || [])
+  })
+
+  afterEach(() => {
+    columnsSubscription.unsubscribe()
   })
 
   it('returns 0 columns by default', fakeAsync(() => {
@@ -45,6 +57,7 @@ fdescribe('ColumnsManagerService', () => {
     expect(spy).toHaveBeenCalledOnceWith([])
   }))
 
+  // TODO: Should this work? I think it may be limitting some situations.
   it('returns once if same input columns set twice', fakeAsync(() => {
     service.setInputColumns([ { prop: 'name', name: 'Name' } ])
     const spy = jasmine.createSpy()
@@ -55,6 +68,40 @@ fdescribe('ColumnsManagerService', () => {
     ].map(v => jasmine.objectContaining(v)))
   }))
 
+  it('should return Input columns with defaults', async () => {
+    service.setInputColumns([
+      { prop: 'name', name: 'Name' },
+      { prop: 'age', name: 'Age' },
+      { prop: 'color', name: 'Color' }
+    ])
+    expect(await service.columns$.pipe(take(1)).toPromise()).toEqual(jasmine.arrayContaining([
+      ...defaultColumnWithIdentMatchers([
+        { prop: 'name', name: 'Name' },
+        { prop: 'age', name: 'Age' },
+        { prop: 'color', name: 'Color' }
+      ]).map(v => jasmine.objectContaining(v))
+    ]))
+  })
+
+  it('should prioritize Template props', async () => {
+    service.setInputColumns([
+      { prop: 'name', name: 'Name' },
+      { prop: 'age', name: 'Age', cellClass: 'inp-class' },
+      { prop: 'color', name: 'Color' }
+    ])
+    service.setTemplateColumns(initTemplateColumnComponents([
+      { prop: 'name', name: 'Name' },
+      { prop: 'age', name: 'Age', cellClass: 'tpl-class' },
+      { prop: 'color', name: 'Color' }
+    ]))
+    expect(await service.columns$.pipe(take(1)).toPromise()).toEqual(jasmine.arrayContaining([
+      ...defaultColumnWithIdentMatchers([
+        { prop: 'name', name: 'Name' },
+        { prop: 'age', name: 'Age', cellClass: 'tpl-class' },
+        { prop: 'color', name: 'Color' }
+      ]).map(v => jasmine.objectContaining(v))
+    ]))
+  })
 
   /**
    * Mainly just need to test `TheSeamDatatableColumn` objects, so this just
@@ -66,7 +113,7 @@ fdescribe('ColumnsManagerService', () => {
   function initTemplateColumnComponents(o: TheSeamDatatableColumn[]): DatatableColumnComponent[] {
     const comps: DatatableColumnComponent[] = []
     for (const col of o) {
-      const comp: any = new DatatableColumnComponent(_colChangesService)
+      const comp: any = new DatatableColumnComponent(colChangesService)
       for (const key of Object.keys(col)) {
         comp[key] = (col as any)[key]
       }
@@ -95,4 +142,61 @@ function defaultColumnWithIdentMatchers(o: TheSeamDatatableColumn[], includesTpl
     // deleteProperties(col, [ '$$id', '$$valueGetter' ])
   }
   return o
+}
+
+class MockDatatable {
+
+  _internalColumns?: TableColumn[]
+  private _columns: TableColumn[] = []
+  private _innerWidth: number = 500
+
+  scrollbarH: boolean = false
+  scrollbarV: boolean = false
+  scrollbarHelper = { width: 10 }
+  columnMode: ColumnMode | keyof typeof ColumnMode = ColumnMode.standard
+
+  /**
+   * Columns to be displayed.
+   */
+  set columns(val: TableColumn[]) {
+    if (val) {
+      this._internalColumns = [...val]
+      setColumnDefaults(this._internalColumns)
+      this.recalculateColumns()
+    }
+
+    this._columns = val
+  }
+
+  /**
+   * Get the columns.
+   */
+  get columns(): TableColumn[] {
+    return this._columns
+  }
+
+  /**
+   * Recalulcates the column widths based on column width
+   * distribution mode and scrollbar offsets.
+   */
+  recalculateColumns(
+    columns: any[] = this._internalColumns as any,
+    forceIdx: number = -1,
+    allowBleed: boolean = this.scrollbarH
+  ): any[] | undefined {
+    if (!columns) { return undefined }
+
+    let width = this._innerWidth
+    if (this.scrollbarV) {
+      width = width - this.scrollbarHelper.width
+    }
+
+    if (this.columnMode === ColumnMode.force) {
+      forceFillColumnWidths(columns, width, forceIdx, allowBleed)
+    } else if (this.columnMode === ColumnMode.flex) {
+      adjustColumnWidths(columns, width)
+    }
+
+    return columns
+  }
 }
