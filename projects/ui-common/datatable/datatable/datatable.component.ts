@@ -42,7 +42,7 @@ import { TheSeamPageInfo } from '../models/page-info'
 import { SortEvent } from '../models/sort-event'
 import { SortItem } from '../models/sort-item'
 import { TheSeamDatatableColumn } from '../models/table-column'
-import { ColumnAlteringProps, ColumnsManagerService } from '../services/columns-manager.service'
+import { ColumnsManagerService } from '../services/columns-manager.service'
 import { DatatableColumnChangesService } from '../services/datatable-column-changes.service'
 import { DatatablePreferencesService } from '../services/datatable-preferences.service'
 import { THESEAM_DATATABLE_ACCESSOR } from '../tokens/datatable-accessor'
@@ -120,7 +120,7 @@ export const _THESEAM_DATATABLE_ACCESSOR: any = {
   ]
 })
 export class DatatableComponent
-  implements OnInit, OnDestroy, AfterContentInit, TheSeamDatatableAccessor, CollectionViewer, ColumnAlteringProps {
+  implements OnInit, OnDestroy, AfterContentInit, TheSeamDatatableAccessor, CollectionViewer {
   static ngAcceptInputType_externalPaging: BooleanInput
   static ngAcceptInputType_externalSorting: BooleanInput
   static ngAcceptInputType_externalFiltering: BooleanInput
@@ -199,7 +199,15 @@ export class DatatableComponent
 
   @Input() @InputBoolean() loadingIndicator: boolean = false
 
-  @Input() selectionType: SelectionType | undefined | null
+  // @Input() selectionType: SelectionType | undefined | null
+
+  @Input()
+  get selectionType(): SelectionType | undefined | null { return this._selectionType }
+  set selectionType(value: SelectionType | undefined | null) {
+    this._selectionType = value
+    this._columnsManager.setSelectionType(notNullOrUndefined(value) ? value : undefined)
+  }
+  private _selectionType: SelectionType | undefined | null
 
   @Input() @InputBoolean() reorderable: boolean = true
   @Input() @InputBoolean() swapColumns: boolean = false
@@ -286,7 +294,14 @@ export class DatatableComponent
   @ContentChildren(DatatableColumnComponent) columnComponents?: QueryList<DatatableColumnComponent>
 
   @ContentChild(DatatableActionMenuComponent, { static: true }) actionMenu?: DatatableActionMenuComponent
-  @ContentChild(DatatableRowActionItemDirective, { static: true }) rowActionItem: DatatableRowActionItemDirective | undefined
+  @ContentChild(DatatableRowActionItemDirective, { static: true })
+  get rowActionItem(): DatatableRowActionItemDirective | undefined { return this._rowActionItem }
+  set rowActionItem(value: DatatableRowActionItemDirective | undefined) {
+    this._rowActionItem = value
+    this._columnsManager.setRowActionItem(notNullOrUndefined(value) ? value : undefined)
+  }
+  private _rowActionItem: DatatableRowActionItemDirective | undefined
+
   @ContentChild(TheSeamDatatableRowDetailDirective, { static: true }) rowDetail?: TheSeamDatatableRowDetailDirective
 
   @ContentChild(DatatableMenuBarComponent)
@@ -310,11 +325,45 @@ export class DatatableComponent
   @ViewChild(NgxDatatableComponent, { read: ElementRef }) ngxDatatableElement?: ElementRef
   @ViewChild(DatatableRowDetailDirective) ngxRowDetail?: DatatableRowDetailDirective
 
-  @ViewChild('actionMenuCellTpl', { static: true }) actionMenuCellTpl: TemplateRef<DataTableColumnDirective> | undefined
-  @ViewChild('treeToggleTpl', { static: true }) treeToggleTpl: TemplateRef<DataTableColumnCellTreeToggle> | undefined
-  @ViewChild('headerTpl', { static: true }) headerTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined
-  @ViewChild('blankHeaderTpl', { static: true }) blankHeaderTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined
-  @ViewChild('cellTypeSelectorTpl', { static: true }) cellTypeSelectorTpl: TemplateRef<DataTableColumnDirective> | undefined
+  @ViewChild('actionMenuCellTpl', { static: true })
+  get actionMenuCellTpl(): TemplateRef<DataTableColumnDirective> | undefined { return this._actionMenuCellTpl }
+  set actionMenuCellTpl(value: TemplateRef<DataTableColumnDirective> | undefined) {
+    this._actionMenuCellTpl = value
+    this._columnsManager.setActionMenuCellTpl(notNullOrUndefined(value) ? value : undefined)
+  }
+  private _actionMenuCellTpl: TemplateRef<DataTableColumnDirective> | undefined
+
+  @ViewChild('treeToggleTpl', { static: true })
+  get treeToggleTpl(): TemplateRef<DataTableColumnCellTreeToggle> | undefined { return this._treeToggleTpl }
+  set treeToggleTpl(value: TemplateRef<DataTableColumnCellTreeToggle> | undefined) {
+    this._treeToggleTpl = value
+    this._columnsManager.setTreeToggleTpl(notNullOrUndefined(value) ? value : undefined)
+  }
+  private _treeToggleTpl: TemplateRef<DataTableColumnCellTreeToggle> | undefined
+
+  @ViewChild('headerTpl', { static: true })
+  get headerTpl(): TemplateRef<DataTableColumnHeaderDirective> | undefined { return this._headerTpl }
+  set headerTpl(value: TemplateRef<DataTableColumnHeaderDirective> | undefined) {
+    this._headerTpl = value
+    this._columnsManager.setHeaderTpl(notNullOrUndefined(value) ? value : undefined)
+  }
+  private _headerTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined
+
+  @ViewChild('blankHeaderTpl', { static: true })
+  get blankHeaderTpl(): TemplateRef<DataTableColumnHeaderDirective> | undefined { return this._blankHeaderTpl }
+  set blankHeaderTpl(value: TemplateRef<DataTableColumnHeaderDirective> | undefined) {
+    this._blankHeaderTpl = value
+    this._columnsManager.setBlankHeaderTpl(notNullOrUndefined(value) ? value : undefined)
+  }
+  private _blankHeaderTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined
+
+  @ViewChild('cellTypeSelectorTpl', { static: true })
+  get cellTypeSelectorTpl(): TemplateRef<DataTableColumnDirective> | undefined { return this._cellTypeSelectorTpl }
+  set cellTypeSelectorTpl(value: TemplateRef<DataTableColumnDirective> | undefined) {
+    this._cellTypeSelectorTpl = value
+    this._columnsManager.setCellTypeSelectorTpl(notNullOrUndefined(value) ? value : undefined)
+  }
+  private _cellTypeSelectorTpl: TemplateRef<DataTableColumnDirective> | undefined
 
   public columnComponents$?: Observable<DatatableColumnComponent[]>
   private _colDiffersInp: { [propName: string]: KeyValueDiffer<any, any> } = {}

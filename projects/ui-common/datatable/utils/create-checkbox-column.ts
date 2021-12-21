@@ -1,8 +1,10 @@
 import { TheSeamDatatableColumn } from '../models/table-column'
 
+export const CHECKBOX_COLUMN_PROP = '$$__checkbox__'
+
 export function createCheckboxColumn(): TheSeamDatatableColumn {
   return {
-    prop: '$$__checkbox__',
+    prop: CHECKBOX_COLUMN_PROP,
     name: '',
     width: 40,
     sortable: false,
@@ -13,4 +15,3 @@ export function createCheckboxColumn(): TheSeamDatatableColumn {
     checkboxable: true,
   }
 }
-

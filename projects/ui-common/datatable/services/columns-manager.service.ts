@@ -1,6 +1,6 @@
 import { Injectable, KeyValueChanges, KeyValueDiffer, KeyValueDiffers, TemplateRef } from '@angular/core'
 import { BehaviorSubject, combineLatest, defer, EMPTY, Observable, of, Subject } from 'rxjs'
-import { filter, map, shareReplay, switchMap } from 'rxjs/operators'
+import { auditTime, filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
 import {
   camelCase,
@@ -29,21 +29,11 @@ enum ColumnsTypes {
   Result,
 }
 
-export interface ColumnAlteringProps {
-  selectionType: SelectionType | undefined | null
-  rowActionItem: DatatableRowActionItemDirective | undefined
-  actionMenuCellTpl: TemplateRef<DataTableColumnDirective> | undefined
-  blankHeaderTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined
-  treeToggleTpl: TemplateRef<DataTableColumnCellTreeToggle> | undefined
-  headerTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined
-  cellTypeSelectorTpl: TemplateRef<DataTableColumnDirective> | undefined
-}
-
 export type InternalColumnsGetter = () => TableColumn[]
-export type ColumnAlteringPropsGetter = () => ColumnAlteringProps
 
 @Injectable()
 export class ColumnsManagerService {
+  private readonly _updateColumns = new Subject<void>()
 
   private readonly _inputColumns = new BehaviorSubject<TheSeamDatatableColumn[]>([])
   private readonly _templateColumns = new BehaviorSubject<DatatableColumnComponent[]>([])
@@ -54,7 +44,14 @@ export class ColumnsManagerService {
   private _colPropsDiffer?: KeyValueDiffer<any, any>
 
   private _internalColumnsGetter?: InternalColumnsGetter
-  private _columnAlteringPropsGetter?: ColumnAlteringPropsGetter
+
+  private _selectionType: SelectionType | undefined
+  private _rowActionItem: DatatableRowActionItemDirective | undefined
+  private _actionMenuCellTpl: TemplateRef<DataTableColumnDirective> | undefined
+  private _blankHeaderTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined
+  private _treeToggleTpl: TemplateRef<DataTableColumnCellTreeToggle> | undefined
+  private _headerTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined
+  private _cellTypeSelectorTpl: TemplateRef<DataTableColumnDirective> | undefined
 
   // TODO: Consider making this a columns changed obervable, to make changes more predictable.
   public readonly columns$: Observable<TheSeamDatatableColumn[]>
@@ -67,6 +64,7 @@ export class ColumnsManagerService {
       return combineLatest([
         this._inputColumns.asObservable(),
         this._templateColumns.asObservable().pipe(map(translateTemplateColumns)),
+        this._updateColumns.asObservable().pipe(auditTime(0), startWith(undefined))
       ]).pipe(
         switchMap(([ inputColumns, templateColumns ]) => {
           const cols = this._mergeColumns(inputColumns, templateColumns)
@@ -102,10 +100,63 @@ export class ColumnsManagerService {
 
   public setInternalColumnsGetter(getter: InternalColumnsGetter | null): void {
     this._internalColumnsGetter = getter || undefined
+    this._updateColumns.next(undefined)
   }
 
-  public setColumnAlteringPropsGetter(getter: ColumnAlteringPropsGetter | null): void {
-    this._columnAlteringPropsGetter = getter || undefined
+  public setSelectionType(selectionType: SelectionType | undefined): void {
+    const changed = this._selectionType !== selectionType
+    this._selectionType = selectionType
+    if (changed) {
+      this._updateColumns.next(undefined)
+    }
+  }
+
+  public setRowActionItem(rowActionItem: DatatableRowActionItemDirective | undefined): void {
+    const changed = this._rowActionItem !== rowActionItem
+    this._rowActionItem = rowActionItem
+    if (changed) {
+      this._updateColumns.next(undefined)
+    }
+  }
+
+  public setActionMenuCellTpl(actionMenuCellTpl: TemplateRef<DataTableColumnDirective> | undefined): void {
+    const changed = this._actionMenuCellTpl !== actionMenuCellTpl
+    this._actionMenuCellTpl = actionMenuCellTpl
+    if (changed) {
+      this._updateColumns.next(undefined)
+    }
+  }
+
+  public setBlankHeaderTpl(blankHeaderTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined): void {
+    const changed = this._blankHeaderTpl !== blankHeaderTpl
+    this._blankHeaderTpl = blankHeaderTpl
+    if (changed) {
+      this._updateColumns.next(undefined)
+    }
+  }
+
+  public setTreeToggleTpl(treeToggleTpl: TemplateRef<DataTableColumnCellTreeToggle> | undefined): void {
+    const changed = this._treeToggleTpl !== treeToggleTpl
+    this._treeToggleTpl = treeToggleTpl
+    if (changed) {
+      this._updateColumns.next(undefined)
+    }
+  }
+
+  public setHeaderTpl(headerTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined): void {
+    const changed = this._headerTpl !== headerTpl
+    this._headerTpl = headerTpl
+    if (changed) {
+      this._updateColumns.next(undefined)
+    }
+  }
+
+  public setCellTypeSelectorTpl(cellTypeSelectorTpl: TemplateRef<DataTableColumnDirective> | undefined): void {
+    const changed = this._cellTypeSelectorTpl !== cellTypeSelectorTpl
+    this._cellTypeSelectorTpl = cellTypeSelectorTpl
+    if (changed) {
+      this._updateColumns.next(undefined)
+    }
   }
 
   private _mergeColumns(
@@ -259,22 +310,8 @@ export class ColumnsManagerService {
     return colChanged
   }
 
-  private _getSelectionType(): SelectionType | undefined {
-    if (this._columnAlteringPropsGetter === undefined) {
-      return undefined
-    }
-
-    const selType = this._columnAlteringPropsGetter().selectionType
-    if (selType === undefined || selType === null) {
-      return undefined
-    }
-
-    return selType
-  }
-
   private _shouldAddCheckboxColumn(): boolean {
-    const selectionType = this._getSelectionType()
-    return selectionType === 'checkbox'
+    return this._selectionType === SelectionType.checkbox
   }
 
 }
