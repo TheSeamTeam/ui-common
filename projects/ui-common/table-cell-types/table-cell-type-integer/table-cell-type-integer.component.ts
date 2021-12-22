@@ -5,9 +5,9 @@ import { takeUntil } from 'rxjs/operators'
 
 import { TableCellTypesHelpersService, TABLE_CELL_DATA, TheSeamTableColumn } from '@theseam/ui-common/table-cell-type'
 import type { TableCellData } from '@theseam/ui-common/table-cell-type'
+import { notNullOrUndefined } from '@theseam/ui-common/utils'
 
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
-import { notNullOrUndefined } from 'projects/ui-common/utils/not-null-or-undefined'
 import { TableCellTypeConfigInteger } from './table-cell-type-integer-config'
 
 @Component({
