@@ -4,6 +4,15 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { faWrench } from '@fortawesome/free-solid-svg-icons'
 
+import {
+  DynamicActionApiService,
+  DynamicActionLinkService,
+  DynamicActionModalService,
+  ExportersDataEvaluator,
+  JexlEvaluator,
+  THESEAM_DYNAMIC_ACTION,
+  THESEAM_DYNAMIC_VALUE_EVALUATOR
+} from '@theseam/ui-common/dynamic'
 import { TheSeamWidgetModule } from '../../widget.module'
 import { WidgetTableComponent } from './widget-table.component'
 
@@ -17,7 +26,8 @@ const GIN_DATA = [
     "stateCode": 1,
     "countyCode": 1,
     "zipCode": "00000",
-    "isRegistered": false
+    "isRegistered": false,
+    "ginned": 43897
   },
   {
     "ginCode": "12346",
@@ -27,7 +37,8 @@ const GIN_DATA = [
     "stateCode": 48,
     "countyCode": 115,
     "zipCode": "00000",
-    "isRegistered": false
+    "isRegistered": false,
+    "ginned": 786542
   },
   {
     "ginCode": "12347",
@@ -37,7 +48,8 @@ const GIN_DATA = [
     "stateCode": 48,
     "countyCode": 115,
     "zipCode": "00000",
-    "isRegistered": false
+    "isRegistered": false,
+    "ginned": 9846
   },
   {
     "ginCode": "12348",
@@ -47,7 +59,8 @@ const GIN_DATA = [
     "stateCode": 48,
     "countyCode": 115,
     "zipCode": "00000",
-    "isRegistered": false
+    "isRegistered": false,
+    "ginned": 3548
   },
   {
     "ginCode": "12349",
@@ -57,7 +70,8 @@ const GIN_DATA = [
     "stateCode": 48,
     "countyCode": 61,
     "zipCode": "00000",
-    "isRegistered": false
+    "isRegistered": false,
+    "ginned": 7561
   },
   {
     "ginCode": "12350",
@@ -67,7 +81,8 @@ const GIN_DATA = [
     "stateCode": 48,
     "countyCode": 61,
     "zipCode": "00000",
-    "isRegistered": false
+    "isRegistered": false,
+    "ginned": 684615
   },
   {
     "ginCode": "12351",
@@ -77,7 +92,8 @@ const GIN_DATA = [
     "stateCode": 48,
     "countyCode": 115,
     "zipCode": "00000",
-    "isRegistered": false
+    "isRegistered": false,
+    "ginned": 65165
   }
 ]
 // tslint:enable:quotemark
@@ -91,6 +107,13 @@ export default {
       imports: [
         TheSeamWidgetModule,
         BrowserAnimationsModule
+      ],
+      providers: [
+        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
+        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: ExportersDataEvaluator, multi: true },
+        { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionApiService, multi: true },
+        { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionLinkService, multi: true },
+        { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionModalService, multi: true },
       ]
     })
   ]
@@ -101,8 +124,9 @@ export const Basic: Story = (args) => ({
     ...args,
     icon: faWrench,
     displayedColumns: [
-      { prop: 'ginCode', name: 'Gin Code' },
-      { prop: 'name', name: 'Name' }
+      { prop: 'ginCode', name: 'Gin Code', cellType: 'integer', cellTypeConfig: { cellType: 'integer', formatNumber: false } },
+      { prop: 'name', name: 'Name' },
+      { prop: 'ginned', name: 'Lbs Ginned', cellType: 'integer' }
     ],
     dataSource: GIN_DATA
   },
@@ -119,8 +143,9 @@ export const Medium: Story = (args) => ({
     ...args,
     icon: faWrench,
     displayedColumns: [
-      { prop: 'ginCode', name: 'Gin Code' },
-      { prop: 'name', name: 'Name' }
+      { prop: 'ginCode', name: 'Gin Code', cellType: 'integer', cellTypeConfig: { cellType: 'integer', formatNumber: false } },
+      { prop: 'name', name: 'Name' },
+      { prop: 'ginned', name: 'Lbs Ginned', cellType: 'integer' }
     ],
     dataSource: GIN_DATA
   },
@@ -137,8 +162,9 @@ export const Small: Story = (args) => ({
     ...args,
     icon: faWrench,
     displayedColumns: [
-      { prop: 'ginCode', name: 'Gin Code' },
-      { prop: 'name', name: 'Name' }
+      { prop: 'ginCode', name: 'Gin Code', cellType: 'integer', cellTypeConfig: { cellType: 'integer', formatNumber: false } },
+      { prop: 'name', name: 'Name' },
+      { prop: 'ginned', name: 'Lbs Ginned', cellType: 'integer' }
     ],
     dataSource: GIN_DATA
   },
