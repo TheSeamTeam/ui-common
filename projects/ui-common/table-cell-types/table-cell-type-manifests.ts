@@ -1,7 +1,10 @@
 import { ITableCellTypeManifestProvider, TABLE_CELL_TYPE_MANIFEST } from '@theseam/ui-common/table-cell-type'
 
+import { TableCellTypeCurrencyComponent } from './table-cell-type-currency/table-cell-type-currency.component'
 import { TableCellTypeDateComponent } from './table-cell-type-date/table-cell-type-date.component'
+import { TableCellTypeDecimalComponent } from './table-cell-type-decimal/table-cell-type-decimal.component'
 import { TableCellTypeIconComponent } from './table-cell-type-icon/table-cell-type-icon.component'
+import { TableCellTypeIntegerComponent } from './table-cell-type-integer/table-cell-type-integer.component'
 import { TableCellTypePhoneComponent } from './table-cell-type-phone/table-cell-type-phone.component'
 // tslint:disable-next-line: max-line-length
 import { TableCellTypeProgressCircleIconComponent } from './table-cell-type-progress-circle-icon/table-cell-type-progress-circle-icon.component'
@@ -17,11 +20,11 @@ export const TABLE_CELL_TYPE_MANIFEST_STRING: ITableCellTypeManifestProvider = {
   multi: true
 }
 
-export const TABLE_CELL_TYPE_MANIFEST_INTEGER: ITableCellTypeManifestProvider = {
+export const TABLE_CELL_TYPE_MANIFEST_CURRENCY: ITableCellTypeManifestProvider = {
   provide: TABLE_CELL_TYPE_MANIFEST,
   useValue: {
-    name: 'integer',
-    component: TableCellTypeStringComponent
+    name: 'currency',
+    component: TableCellTypeCurrencyComponent
   },
   multi: true
 }
@@ -30,7 +33,16 @@ export const TABLE_CELL_TYPE_MANIFEST_DECIMAL: ITableCellTypeManifestProvider = 
   provide: TABLE_CELL_TYPE_MANIFEST,
   useValue: {
     name: 'decimal',
-    component: TableCellTypeStringComponent
+    component: TableCellTypeDecimalComponent
+  },
+  multi: true
+}
+
+export const TABLE_CELL_TYPE_MANIFEST_INTEGER: ITableCellTypeManifestProvider = {
+  provide: TABLE_CELL_TYPE_MANIFEST,
+  useValue: {
+    name: 'integer',
+    component: TableCellTypeIntegerComponent
   },
   multi: true
 }

@@ -13,8 +13,11 @@ import { TheSeamSharedModule } from '@theseam/ui-common/shared'
 import { TheSeamTableCellTypeModule } from '@theseam/ui-common/table-cell-type'
 import { TheSeamTelInputModule } from '@theseam/ui-common/tel-input'
 
+import { TableCellTypeCurrencyComponent } from './table-cell-type-currency/table-cell-type-currency.component'
 import { TableCellTypeDateComponent } from './table-cell-type-date/table-cell-type-date.component'
+import { TableCellTypeDecimalComponent } from './table-cell-type-decimal/table-cell-type-decimal.component'
 import { TableCellTypeIconComponent } from './table-cell-type-icon/table-cell-type-icon.component'
+import { TableCellTypeIntegerComponent } from './table-cell-type-integer/table-cell-type-integer.component'
 import { TableCellTypePhoneComponent } from './table-cell-type-phone/table-cell-type-phone.component'
 // tslint:disable-next-line: max-line-length
 import { TableCellTypeProgressCircleIconComponent } from './table-cell-type-progress-circle-icon/table-cell-type-progress-circle-icon.component'
@@ -22,6 +25,7 @@ import { TableCellTypeProgressCircleComponent } from './table-cell-type-progress
 import { TableCellTypeStringComponent } from './table-cell-type-string/table-cell-type-string.component'
 
 import {
+  TABLE_CELL_TYPE_MANIFEST_CURRENCY,
   TABLE_CELL_TYPE_MANIFEST_DATE,
   TABLE_CELL_TYPE_MANIFEST_DECIMAL,
   TABLE_CELL_TYPE_MANIFEST_ICON,
@@ -35,8 +39,11 @@ import {
 
 const cellTypeComponents = [
   TableCellTypeStringComponent,
+  TableCellTypeCurrencyComponent,
   TableCellTypeDateComponent,
+  TableCellTypeDecimalComponent,
   TableCellTypeIconComponent,
+  TableCellTypeIntegerComponent,
   TableCellTypeProgressCircleComponent,
   TableCellTypeProgressCircleIconComponent,
   TableCellTypePhoneComponent
@@ -45,6 +52,7 @@ const cellTypeComponents = [
 const cellTypeProviders = [
   TABLE_CELL_TYPE_MANIFEST_STRING,
   TABLE_CELL_TYPE_MANIFEST_INTEGER,
+  TABLE_CELL_TYPE_MANIFEST_CURRENCY,
   TABLE_CELL_TYPE_MANIFEST_DECIMAL,
   TABLE_CELL_TYPE_MANIFEST_DATE,
   TABLE_CELL_TYPE_MANIFEST_ICON,
