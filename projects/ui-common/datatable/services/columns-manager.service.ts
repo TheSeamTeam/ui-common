@@ -13,11 +13,12 @@ import {
   translateTemplates
 } from '@marklb/ngx-datatable'
 
-import { notNullOrUndefined } from '@theseam/ui-common/utils'
+import { hasProperty, notNullOrUndefined } from '@theseam/ui-common/utils'
 
 import { DatatableColumnComponent } from '../datatable-column/datatable-column.component'
 import { DatatableRowActionItemDirective } from '../directives/datatable-row-action-item.directive'
 import { TheSeamDatatableColumn } from '../models/table-column'
+import { createActionMenuColumn } from '../utils/create-action-menu-column'
 import { createCheckboxColumn } from '../utils/create-checkbox-column'
 import { getColumnProp } from '../utils/get-column-prop'
 import { setColumnDefaults } from '../utils/set-column-defaults'
@@ -200,7 +201,23 @@ export class ColumnsManagerService {
         ...(tplCol as any || {})
       }
 
+      if (this._shouldAddTreeToggleColumn(_col)) {
+        _col.treeToggleTemplate = this._treeToggleTpl
+      }
+
+      if (this._shouldAddHeaderTemplate(_col)) {
+        _col.headerTemplate = this._headerTpl
+      }
+
+      if (this._shouldAddCellTypeSelectorTpl(_col)) {
+        _col.cellTemplate = this._cellTypeSelectorTpl
+      }
+
       cols.push(_col)
+    }
+
+    if (this._shouldAddRowActionColumn()) {
+      cols.push(createActionMenuColumn(this._actionMenuCellTpl, this._blankHeaderTpl))
     }
 
     // Make sure the default for any missing props are set.
@@ -312,6 +329,23 @@ export class ColumnsManagerService {
 
   private _shouldAddCheckboxColumn(): boolean {
     return this._selectionType === SelectionType.checkbox
+  }
+
+  private _shouldAddRowActionColumn(): boolean {
+    return this._rowActionItem !== undefined
+  }
+
+  private _shouldAddTreeToggleColumn(column: TheSeamDatatableColumn): boolean {
+    return column.isTreeColumn !== undefined && column.isTreeColumn &&
+      (!hasProperty(column, 'treeToggleTemplate') || !notNullOrUndefined(column.treeToggleTemplate))
+  }
+
+  private _shouldAddHeaderTemplate(column: TheSeamDatatableColumn): boolean {
+    return !hasProperty(column, 'headerTemplate')
+  }
+
+  private _shouldAddCellTypeSelectorTpl(column: TheSeamDatatableColumn): boolean {
+    return hasProperty(column, 'cellType')
   }
 
 }

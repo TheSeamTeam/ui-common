@@ -1,11 +1,13 @@
 import { TheSeamDatatableColumn } from '../models/table-column'
 
+export const ACTION_MENU_COLUMN_PROP = '$$__actionMenu__'
+
 export function createActionMenuColumn(
   cellTemplate: any,
   headerTemplate: any
 ): TheSeamDatatableColumn {
   return {
-    prop: '$$__actionMenu__',
+    prop: ACTION_MENU_COLUMN_PROP,
     name: '',
     width: 50,
     minWidth: 50,

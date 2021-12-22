@@ -1,22 +1,17 @@
-import { TemplateRef } from '@angular/core'
 import { fakeAsync, TestBed, waitForAsync } from '@angular/core/testing'
-import { Subscription } from 'rxjs'
 import { take } from 'rxjs/operators'
 
 import {
   adjustColumnWidths,
   ColumnMode,
-  DataTableColumnCellTreeToggle,
-  DataTableColumnDirective,
-  DataTableColumnHeaderDirective,
   forceFillColumnWidths,
   SelectionType,
   TableColumn
 } from '@marklb/ngx-datatable'
 
 import { DatatableColumnComponent } from '../datatable-column/datatable-column.component'
-import { DatatableRowActionItemDirective } from '../directives/datatable-row-action-item.directive'
 import { TheSeamDatatableColumn } from '../models/table-column'
+import { ACTION_MENU_COLUMN_PROP } from '../utils/create-action-menu-column'
 import { CHECKBOX_COLUMN_PROP } from '../utils/create-checkbox-column'
 import { setColumnDefaults } from '../utils/set-column-defaults'
 
@@ -113,15 +108,170 @@ fdescribe('ColumnsManagerService', () => {
     ]))
   })
 
-  it('should not have checkbox column by default', async () => {
-    expect((await service.columns$.pipe(take(1)).toPromise()).length).toEqual(0)
+  describe('checkbox column', () => {
+    it('should not have checkbox column by default', async () => {
+      expect((await service.columns$.pipe(take(1)).toPromise()).length).toEqual(0)
+    })
+
+    it('should have checkbox column when selectionType is "checkbox"', async () => {
+      service.setSelectionType(SelectionType.checkbox)
+      expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
+        jasmine.objectContaining({ prop: CHECKBOX_COLUMN_PROP })
+      )
+    })
   })
 
-  it('should have checkbox column when selectionType is "checkbox"', async () => {
-    service.setSelectionType(SelectionType.checkbox)
-    expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
-      jasmine.objectContaining({ prop: CHECKBOX_COLUMN_PROP })
-    )
+  describe('rowActionItem', () => {
+    it('should not have row action menu column if not set', async () => {
+      expect((await service.columns$.pipe(take(1)).toPromise()).length).toEqual(0)
+    })
+
+    it('should have row action menu column when actionMenuCellTpl set', async () => {
+      service.setRowActionItem({} as any)
+      expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
+        jasmine.objectContaining({
+          prop: ACTION_MENU_COLUMN_PROP,
+          cellTemplate: undefined,
+          headerTemplate: undefined
+        })
+      )
+    })
+
+    it('should have row action menu column with cellTemplate', async () => {
+      const cellTemplate = {} as any
+      service.setRowActionItem({} as any)
+      service.setActionMenuCellTpl(cellTemplate)
+      expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
+        jasmine.objectContaining({
+          prop: ACTION_MENU_COLUMN_PROP,
+          cellTemplate: cellTemplate,
+          headerTemplate: undefined
+        })
+      )
+    })
+
+    it('should have row action menu column with headerTemplate', async () => {
+      const headerTemplate = {} as any
+      service.setRowActionItem({} as any)
+      service.setBlankHeaderTpl(headerTemplate)
+      expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
+        jasmine.objectContaining({
+          prop: ACTION_MENU_COLUMN_PROP,
+          cellTemplate: undefined,
+          headerTemplate: headerTemplate
+        })
+      )
+    })
+
+    it('should have row action menu column with cellTemplate and headerTemplate', async () => {
+      const cellTemplate = {} as any
+      const headerTemplate = {} as any
+      service.setRowActionItem({} as any)
+      service.setActionMenuCellTpl(cellTemplate)
+      service.setBlankHeaderTpl(headerTemplate)
+      expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
+        jasmine.objectContaining({
+          prop: ACTION_MENU_COLUMN_PROP,
+          cellTemplate: cellTemplate,
+          headerTemplate: headerTemplate
+        })
+      )
+    })
+  })
+
+  describe('treeToggleTpl', () => {
+    it('should not have treeToggleTemplate', async () => {
+      service.setInputColumns([ { prop: 'name' } ])
+      expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
+        jasmine.objectContaining({
+          prop: 'name',
+          // isTreeColumn: undefined
+        })
+      )
+    })
+
+    it('should not have treeToggleTemplate if only isTreeColumn set', async () => {
+      service.setInputColumns([ { prop: 'name', isTreeColumn: true } ])
+      expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
+        jasmine.objectContaining({
+          prop: 'name',
+          isTreeColumn: true
+        })
+      )
+    })
+
+    it('should have treeToggleTemplate if isTreeColumn and treeToggleTemplate set', async () => {
+      const tpl = {} as any
+      service.setInputColumns([ { prop: 'name', isTreeColumn: true, treeToggleTemplate: tpl } ])
+      expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
+        jasmine.objectContaining({
+          prop: 'name',
+          isTreeColumn: true,
+          treeToggleTemplate: tpl
+        })
+      )
+    })
+  })
+
+  describe('headerTemplate', () => {
+    it('should not have headerTemplate', async () => {
+      service.setInputColumns([ { prop: 'name' } ])
+      expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
+        jasmine.objectContaining({
+          prop: 'name'
+        })
+      )
+    })
+
+    it('should have headerTemplate from column input', async () => {
+      const tpl1 = { a: 'a' } as any
+      const tpl2 = { b: 'b' } as any
+      service.setInputColumns([ { prop: 'name', headerTemplate: tpl1 } ])
+      service.setHeaderTpl(tpl2)
+      expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
+        jasmine.objectContaining({
+          prop: 'name',
+          headerTemplate: tpl1
+        })
+      )
+    })
+
+    it('should have headerTemplate from setHeaderTpl', async () => {
+      const tpl1 = { a: 'a' } as any
+      const tpl2 = { b: 'b' } as any
+      service.setInputColumns([ { prop: 'name' } ])
+      service.setHeaderTpl(tpl2)
+      expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
+        jasmine.objectContaining({
+          prop: 'name',
+          headerTemplate: tpl2
+        })
+      )
+    })
+  })
+
+  describe('cellTypeSelectorTpl', () => {
+    it('should not have cellTypeSelectorTpl', async () => {
+      service.setInputColumns([ { prop: 'name' } ])
+      expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
+        jasmine.objectContaining({
+          prop: 'name',
+        })
+      )
+    })
+
+    it('should have cellTemplate if cellType set', async () => {
+      const tpl = { a: 'a' } as any
+      service.setInputColumns([ { prop: 'name', cellType: 'a' } ])
+      service.setCellTypeSelectorTpl(tpl)
+      expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
+        jasmine.objectContaining({
+          prop: 'name',
+          cellType: 'a',
+          cellTemplate: tpl
+        })
+      )
+    })
   })
 
   /**
