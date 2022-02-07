@@ -1,6 +1,6 @@
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing'
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms'
-import { createComponentFactory, Spectator } from '@ngneat/spectator'
+import { createComponentFactory, Spectator } from '@ngneat/spectator/jest'
 
 import { FormFieldErrorComponent } from '../form-field-error/form-field-error.component'
 import { FormFieldErrorListComponent, IErrorRecord } from './form-field-error-list.component'

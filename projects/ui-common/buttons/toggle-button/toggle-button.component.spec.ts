@@ -28,7 +28,7 @@
 
 
 
-import { createComponentFactory, createHostFactory, Spectator } from '@ngneat/spectator'
+import { createComponentFactory, createHostFactory, Spectator } from '@ngneat/spectator/jest'
 
 // import { ButtonComponent } from './button.component'
 

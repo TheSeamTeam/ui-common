@@ -4,8 +4,9 @@
     "outDir": "../../out-tsc/lib",
     "baseUrl": ".",
     "rootDir": ".",
+    "esModuleInterop": true,
     "types": [
-      "jasmine"
+      "jest"
     ],
     "paths": {
       "@theseam/ui-common/*": [
@@ -14,7 +15,7 @@
     }
   },
   "files": [
-    "./test.ts"
+    "./setup-jest.ts"
   ],
   "include": [
     "**/*.spec.ts",
@@ -23,6 +24,6 @@
     "../../.storybook/**/*.d.ts"
   ],
   "exclude": [
-    // "**/schematics/**/*"
+    "**/schematics/**/*"
   ]
 }

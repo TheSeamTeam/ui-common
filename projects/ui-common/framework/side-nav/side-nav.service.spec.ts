@@ -2,8 +2,8 @@ import { Component, NgZone, } from '@angular/core'
 import { Router } from '@angular/router'
 import { RouterTestingModule } from '@angular/router/testing'
 
-import { SpectatorService } from '@ngneat/spectator'
-import { createServiceFactory } from '@ngneat/spectator'
+import { SpectatorService } from '@ngneat/spectator/jest'
+import { createServiceFactory } from '@ngneat/spectator/jest'
 
 import { isExpanded, isNavItemActive } from './side-nav-utils'
 import { ISideNavItem } from './side-nav.models'

@@ -1,5 +1,6 @@
 import { fakeAsync, flush, flushMicrotasks, tick } from '@angular/core/testing'
-import { createHostFactory, SpectatorElement, SpectatorHost } from '@ngneat/spectator'
+import { SpectatorElement } from '@ngneat/spectator'
+import { createHostFactory, SpectatorHost } from '@ngneat/spectator/jest'
 
 import { TheSeamModalModule } from '@theseam/ui-common/modal'
 import { TheSeamScrollbarModule } from '@theseam/ui-common/scrollbar'

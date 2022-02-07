@@ -2,7 +2,7 @@ import { Component } from '@angular/core'
 import { fakeAsync } from '@angular/core/testing'
 import { of } from 'rxjs'
 
-import { createRoutingFactory, mockProvider, SpectatorRouting } from '@ngneat/spectator'
+import { createRoutingFactory, mockProvider, SpectatorRouting } from '@ngneat/spectator/jest'
 
 import { TheSeamLayoutService } from '@theseam/ui-common/layout'
 

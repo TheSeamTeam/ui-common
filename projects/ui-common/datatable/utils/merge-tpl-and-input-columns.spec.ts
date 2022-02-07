@@ -38,6 +38,8 @@ describe('mergeTplAndInpColumns', () => {
     differs = TestBed.inject(KeyValueDiffers)
   })
 
+  test.todo('fix tests')
+
   // it('should return Input columns with defaults', () => {
   //   const tplCols: DatatableColumnComponent[] = []
   //   const inpCols: TheSeamDatatableColumn[] = [
@@ -230,12 +232,12 @@ function defaultColumnWithIdentMatchers(o: TheSeamDatatableColumn[], includesTpl
   setColumnDefaults(o)
   for (const col of o) {
     const _o: any = col
-    _o.$$id = jasmine.any(String)
-    _o.$$valueGetter = jasmine.any(Function)
+    _o.$$id = expect.any(String)
+    _o.$$valueGetter = expect.any(Function)
 
     if (includesTplCols) {
-      _o._columnChangesService = jasmine.anything()
-      _o._isFirstChange = jasmine.any(Boolean)
+      _o._columnChangesService = expect.anything()
+      _o._isFirstChange = expect.any(Boolean)
     }
 
     // deleteProperties(col, [ '$$id', '$$valueGetter' ])

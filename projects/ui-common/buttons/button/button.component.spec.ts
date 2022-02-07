@@ -1,4 +1,4 @@
-import { createComponentFactory, createHostFactory, Spectator } from '@ngneat/spectator'
+import { createComponentFactory, createHostFactory, Spectator } from '@ngneat/spectator/jest'
 
 import { ButtonComponent } from './button.component'
 
@@ -35,86 +35,86 @@ describe('ButtonComponent', () => {
     })
   })
 
-  describe('Stories', () => {
+  // describe('Stories', () => {
 
-    let rendererFactory: RendererFactory
-    let rootTargetDOMNode: HTMLElement
-    let rootDocstargetDOMNode: HTMLElement
+  //   let rendererFactory: RendererFactory
+  //   let rootTargetDOMNode: HTMLElement
+  //   let rootDocstargetDOMNode: HTMLElement
 
-    beforeEach(async () => {
-      rendererFactory = new RendererFactory()
-      document.body.innerHTML =
-        '<div id="root"></div><div id="root-docs"><div id="story-in-docs"></div></div>'
-      // tslint:disable: no-non-null-assertion
-      rootTargetDOMNode = global.document.getElementById('root')!
-      rootDocstargetDOMNode = global.document.getElementById('root-docs')!
-      // tslint:enable: no-non-null-assertion
-    })
+  //   beforeEach(async () => {
+  //     rendererFactory = new RendererFactory()
+  //     document.body.innerHTML =
+  //       '<div id="root"></div><div id="root-docs"><div id="story-in-docs"></div></div>'
+  //     // tslint:disable: no-non-null-assertion
+  //     rootTargetDOMNode = global.document.getElementById('root')!
+  //     rootDocstargetDOMNode = global.document.getElementById('root-docs')!
+  //     // tslint:enable: no-non-null-assertion
+  //   })
 
-    it('renders primary button with default args', async () => {
-      const _render = await rendererFactory.getRendererInstance('my-story', rootTargetDOMNode)
-      await _render?.render({
-        storyFnAngular: (Basic as any)(),
-        forced: false,
-        parameters: {} as any,
-        targetDOMNode: rootTargetDOMNode,
-      })
+  //   it('renders primary button with default args', async () => {
+  //     const _render = await rendererFactory.getRendererInstance('my-story', rootTargetDOMNode)
+  //     await _render?.render({
+  //       storyFnAngular: (Basic as any)(),
+  //       forced: false,
+  //       parameters: {} as any,
+  //       targetDOMNode: rootTargetDOMNode,
+  //     })
 
-      expect(document.body.getElementsByTagName('button')[0].innerHTML).toBe((Basic as any).args?.btnText)
-
-
-      // render(Basic);
-      // const buttonElement = screen.getByText(
-      //   /Text coming from args in stories file!/i
-      // );
-      // expect(buttonElement).not.toBeNull();
-    })
-
-    // it('renders mounable component', async () => {
-    //   // const _render = await rendererFactory.getRendererInstance('my-story', rootTargetDOMNode)
-    //   // await _render.render({
-    //   //   storyFnAngular: (Basic as any)(),
-    //   //   forced: false,
-    //   //   parameters: {} as any,
-    //   //   targetDOMNode: rootTargetDOMNode,
-    //   // })
+  //     expect(document.body.getElementsByTagName('button')[0].innerHTML).toBe((Basic as any).args?.btnText)
 
 
+  //     // render(Basic);
+  //     // const buttonElement = screen.getByText(
+  //     //   /Text coming from args in stories file!/i
+  //     // );
+  //     // expect(buttonElement).not.toBeNull();
+  //   })
+
+  //   // it('renders mounable component', async () => {
+  //   //   // const _render = await rendererFactory.getRendererInstance('my-story', rootTargetDOMNode)
+  //   //   // await _render.render({
+  //   //   //   storyFnAngular: (Basic as any)(),
+  //   //   //   forced: false,
+  //   //   //   parameters: {} as any,
+  //   //   //   targetDOMNode: rootTargetDOMNode,
+  //   //   // })
 
 
-    //   const tmp = createMountableStoryComponent((Basic as any)())
-
-    //   // let spectator: Spectator<any>
-    //   // const createHost = createHostFactory({
-    //   //   component: tmp.component,
-    //   //   imports: [ tmp.module ]
-    //   // })
-    //   // spectator = createHost(`<sb-testing-mount></sb-testing-mount>`)
-    //   // expect(spectator.query('button[seamButton][type="button"]', { root: true })).toBeTruthy()
-
-    //   let spectator: Spectator<any>
-    //   const createComponent = createComponentFactory({
-    //     component: tmp.component,
-    //     imports: [ tmp.module ]
-    //   })
-    //   spectator = createComponent()
-
-    //   expect(document.body.getElementsByTagName('button')[0].innerHTML).toBe(Basic.args?.btnText)
 
 
-    //   // render(Basic);
-    //   // const buttonElement = screen.getByText(
-    //   //   /Text coming from args in stories file!/i
-    //   // );
-    //   // expect(buttonElement).not.toBeNull();
-    // })
+  //   //   const tmp = createMountableStoryComponent((Basic as any)())
 
-    // it('renders primary button with overriden props', () => {
-    //   render(<Primary>Hello world</Primary>); // you can override props and they will get merged with values from the Story's args
-    //   const buttonElement = screen.getByText(/Hello world/i);
-    //   expect(buttonElement).not.toBeNull();
-    // });
-  })
+  //   //   // let spectator: Spectator<any>
+  //   //   // const createHost = createHostFactory({
+  //   //   //   component: tmp.component,
+  //   //   //   imports: [ tmp.module ]
+  //   //   // })
+  //   //   // spectator = createHost(`<sb-testing-mount></sb-testing-mount>`)
+  //   //   // expect(spectator.query('button[seamButton][type="button"]', { root: true })).toBeTruthy()
+
+  //   //   let spectator: Spectator<any>
+  //   //   const createComponent = createComponentFactory({
+  //   //     component: tmp.component,
+  //   //     imports: [ tmp.module ]
+  //   //   })
+  //   //   spectator = createComponent()
+
+  //   //   expect(document.body.getElementsByTagName('button')[0].innerHTML).toBe(Basic.args?.btnText)
+
+
+  //   //   // render(Basic);
+  //   //   // const buttonElement = screen.getByText(
+  //   //   //   /Text coming from args in stories file!/i
+  //   //   // );
+  //   //   // expect(buttonElement).not.toBeNull();
+  //   // })
+
+  //   // it('renders primary button with overriden props', () => {
+  //   //   render(<Primary>Hello world</Primary>); // you can override props and they will get merged with values from the Story's args
+  //   //   const buttonElement = screen.getByText(/Hello world/i);
+  //   //   expect(buttonElement).not.toBeNull();
+  //   // });
+  // })
 
   describe('Stories2', () => {
     let spectator: Spectator<any>

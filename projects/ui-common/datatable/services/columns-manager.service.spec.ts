@@ -38,31 +38,34 @@ describe('ColumnsManagerService', () => {
   })
 
   it('returns 0 columns by default', fakeAsync(() => {
-    const spy = jasmine.createSpy()
+    const spy = jest.fn()
     service.columns$.subscribe(spy)
-    expect(spy).toHaveBeenCalledOnceWith([])
+    expect(spy).toHaveBeenCalledWith([])
+    expect(spy).toHaveBeenCalledTimes(1)
   }))
 
   it('returns input columns set before observed', fakeAsync(() => {
     service.setInputColumns([ { prop: 'name', name: 'Name' } ])
-    const spy = jasmine.createSpy()
+    const spy = jest.fn()
     service.columns$.subscribe(spy)
-    expect(spy).toHaveBeenCalledOnceWith([
+    expect(spy).toHaveBeenCalledWith([
       ...defaultColumnWithIdentMatchers([ { prop: 'name', name: 'Name' } ])
-    ].map(v => jasmine.objectContaining(v)))
+    ].map(v => expect.objectContaining(v)))
+    expect(spy).toHaveBeenCalledTimes(1)
   }))
 
   it('returns 0 columns if only templateColumns', fakeAsync(() => {
     service.setTemplateColumns(initTemplateColumnComponents([ { prop: 'name', name: 'Name' } ]))
-    const spy = jasmine.createSpy()
+    const spy = jest.fn()
     service.columns$.subscribe(spy)
-    expect(spy).toHaveBeenCalledOnceWith([])
+    expect(spy).toHaveBeenCalledWith([])
+    expect(spy).toHaveBeenCalledTimes(1)
   }))
 
   // TODO: Should this work? I think it may be limitting some situations and
   // maybe shouldn't be changed to make this pass.
   // it('returns once if same input columns set twice', fakeAsync(() => {
-  //   const spy = jasmine.createSpy()
+  //   const spy = jest.fn()
   //   service.columns$.subscribe(spy)
   //   service.setInputColumns([ { prop: 'name', name: 'Name' } ])
   //   service.setInputColumns([ { prop: 'name', name: 'Name' } ])
@@ -70,7 +73,7 @@ describe('ColumnsManagerService', () => {
   //   expect(spy).toHaveBeenCalledTimes(2)
   //   expect(spy).toHaveBeenCalledOnceWith([
   //     ...defaultColumnWithIdentMatchers([ { prop: 'name', name: 'Name' } ])
-  //   ].map(v => jasmine.objectContaining(v)))
+  //   ].map(v => expect.objectContaining(v)))
   // }))
 
   it('should return Input columns with defaults', async () => {
@@ -79,12 +82,12 @@ describe('ColumnsManagerService', () => {
       { prop: 'age', name: 'Age' },
       { prop: 'color', name: 'Color' }
     ])
-    expect(await service.columns$.pipe(take(1)).toPromise()).toEqual(jasmine.arrayContaining([
+    expect(await service.columns$.pipe(take(1)).toPromise()).toEqual(expect.arrayContaining([
       ...defaultColumnWithIdentMatchers([
         { prop: 'name', name: 'Name' },
         { prop: 'age', name: 'Age' },
         { prop: 'color', name: 'Color' }
-      ]).map(v => jasmine.objectContaining(v))
+      ]).map(v => expect.objectContaining(v))
     ]))
   })
 
@@ -99,12 +102,12 @@ describe('ColumnsManagerService', () => {
       { prop: 'age', name: 'Age', cellClass: 'tpl-class' },
       { prop: 'color', name: 'Color' }
     ]))
-    expect(await service.columns$.pipe(take(1)).toPromise()).toEqual(jasmine.arrayContaining([
+    expect(await service.columns$.pipe(take(1)).toPromise()).toEqual(expect.arrayContaining([
       ...defaultColumnWithIdentMatchers([
         { prop: 'name', name: 'Name' },
         { prop: 'age', name: 'Age', cellClass: 'tpl-class' },
         { prop: 'color', name: 'Color' }
-      ]).map(v => jasmine.objectContaining(v))
+      ]).map(v => expect.objectContaining(v))
     ]))
   })
 
@@ -116,7 +119,7 @@ describe('ColumnsManagerService', () => {
     it('should have checkbox column when selectionType is "checkbox"', async () => {
       service.setSelectionType(SelectionType.checkbox)
       expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
-        jasmine.objectContaining({ prop: CHECKBOX_COLUMN_PROP })
+        expect.objectContaining({ prop: CHECKBOX_COLUMN_PROP })
       )
     })
   })
@@ -129,7 +132,7 @@ describe('ColumnsManagerService', () => {
     it('should have row action menu column when actionMenuCellTpl set', async () => {
       service.setRowActionItem({} as any)
       expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
-        jasmine.objectContaining({
+        expect.objectContaining({
           prop: ACTION_MENU_COLUMN_PROP,
           cellTemplate: undefined,
           headerTemplate: undefined
@@ -142,7 +145,7 @@ describe('ColumnsManagerService', () => {
       service.setRowActionItem({} as any)
       service.setActionMenuCellTpl(cellTemplate)
       expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
-        jasmine.objectContaining({
+        expect.objectContaining({
           prop: ACTION_MENU_COLUMN_PROP,
           cellTemplate: cellTemplate,
           headerTemplate: undefined
@@ -155,7 +158,7 @@ describe('ColumnsManagerService', () => {
       service.setRowActionItem({} as any)
       service.setBlankHeaderTpl(headerTemplate)
       expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
-        jasmine.objectContaining({
+        expect.objectContaining({
           prop: ACTION_MENU_COLUMN_PROP,
           cellTemplate: undefined,
           headerTemplate: headerTemplate
@@ -170,7 +173,7 @@ describe('ColumnsManagerService', () => {
       service.setActionMenuCellTpl(cellTemplate)
       service.setBlankHeaderTpl(headerTemplate)
       expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
-        jasmine.objectContaining({
+        expect.objectContaining({
           prop: ACTION_MENU_COLUMN_PROP,
           cellTemplate: cellTemplate,
           headerTemplate: headerTemplate
@@ -183,7 +186,7 @@ describe('ColumnsManagerService', () => {
     it('should not have treeToggleTemplate', async () => {
       service.setInputColumns([ { prop: 'name' } ])
       expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
-        jasmine.objectContaining({
+        expect.objectContaining({
           prop: 'name',
           // isTreeColumn: undefined
         })
@@ -193,7 +196,7 @@ describe('ColumnsManagerService', () => {
     it('should not have treeToggleTemplate if only isTreeColumn set', async () => {
       service.setInputColumns([ { prop: 'name', isTreeColumn: true } ])
       expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
-        jasmine.objectContaining({
+        expect.objectContaining({
           prop: 'name',
           isTreeColumn: true
         })
@@ -204,7 +207,7 @@ describe('ColumnsManagerService', () => {
       const tpl = {} as any
       service.setInputColumns([ { prop: 'name', isTreeColumn: true, treeToggleTemplate: tpl } ])
       expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
-        jasmine.objectContaining({
+        expect.objectContaining({
           prop: 'name',
           isTreeColumn: true,
           treeToggleTemplate: tpl
@@ -217,7 +220,7 @@ describe('ColumnsManagerService', () => {
     it('should not have headerTemplate', async () => {
       service.setInputColumns([ { prop: 'name' } ])
       expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
-        jasmine.objectContaining({
+        expect.objectContaining({
           prop: 'name'
         })
       )
@@ -229,7 +232,7 @@ describe('ColumnsManagerService', () => {
       service.setInputColumns([ { prop: 'name', headerTemplate: tpl1 } ])
       service.setHeaderTpl(tpl2)
       expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
-        jasmine.objectContaining({
+        expect.objectContaining({
           prop: 'name',
           headerTemplate: tpl1
         })
@@ -242,7 +245,7 @@ describe('ColumnsManagerService', () => {
       service.setInputColumns([ { prop: 'name' } ])
       service.setHeaderTpl(tpl2)
       expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
-        jasmine.objectContaining({
+        expect.objectContaining({
           prop: 'name',
           headerTemplate: tpl2
         })
@@ -254,7 +257,7 @@ describe('ColumnsManagerService', () => {
     it('should not have cellTypeSelectorTpl', async () => {
       service.setInputColumns([ { prop: 'name' } ])
       expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
-        jasmine.objectContaining({
+        expect.objectContaining({
           prop: 'name',
         })
       )
@@ -265,7 +268,7 @@ describe('ColumnsManagerService', () => {
       service.setInputColumns([ { prop: 'name', cellType: 'a' } ])
       service.setCellTypeSelectorTpl(tpl)
       expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
-        jasmine.objectContaining({
+        expect.objectContaining({
           prop: 'name',
           cellType: 'a',
           cellTemplate: tpl
@@ -302,12 +305,12 @@ function defaultColumnWithIdentMatchers(o: TheSeamDatatableColumn[], includesTpl
   setColumnDefaults(o)
   for (const col of o) {
     const _o: any = col
-    _o.$$id = jasmine.any(String)
-    _o.$$valueGetter = jasmine.any(Function)
+    _o.$$id = expect.any(String)
+    _o.$$valueGetter = expect.any(Function)
 
     if (includesTplCols) {
-      _o._columnChangesService = jasmine.anything()
-      _o._isFirstChange = jasmine.any(Boolean)
+      _o._columnChangesService = expect.anything()
+      _o._isFirstChange = expect.any(Boolean)
     }
 
     // deleteProperties(col, [ '$$id', '$$valueGetter' ])
