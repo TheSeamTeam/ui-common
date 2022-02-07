@@ -21,7 +21,6 @@ import {
   setColumnDefaults,
   SortType,
   TableColumn,
-  translateTemplates,
   TreeStatus
 } from '@marklb/ngx-datatable'
 import type { SelectionType } from '@marklb/ngx-datatable'
@@ -48,6 +47,7 @@ import { DatatablePreferencesService } from '../services/datatable-preferences.s
 import { THESEAM_DATATABLE_ACCESSOR } from '../tokens/datatable-accessor'
 import { mergeTplAndInpColumns } from '../utils/merge-tpl-and-input-columns'
 import { removeUnusedDiffs } from '../utils/remove-unused-diffs'
+import { translateTemplateColumns } from '../utils/translate-templates'
 
 /**
  * NOTE: This is still being worked on. I am trying to figure out this model
@@ -143,13 +143,13 @@ export class DatatableComponent
   static ngAcceptInputType_columns: TheSeamDatatableColumn[] | undefined | null
   static ngAcceptInputType_sorts: SortItem[] | undefined | null
 
-  faChevronDown = faChevronDown
-  faChevronRight = faChevronRight
-  faSpinner = faSpinner
+  readonly _faChevronDown = faChevronDown
+  readonly _faChevronRight = faChevronRight
+  readonly _faSpinner = faSpinner
 
   private readonly _ngUnsubscribe = new Subject()
   private readonly _filtersSubject = new BehaviorSubject<DataFilter[]>([])
-  private readonly _columnsObservable = new BehaviorSubject<Observable<TheSeamDatatableColumn[]> | undefined>(undefined)
+  // private readonly _columnsObservable = new BehaviorSubject<Observable<TheSeamDatatableColumn[]> | undefined>(undefined)
   private readonly _dataSourceSubject = new BehaviorSubject<DataSource<any> | any[] | undefined>(undefined)
 
   public readonly filterStates: Observable<DataFilterState[]>
@@ -166,12 +166,13 @@ export class DatatableComponent
   @Input() targetMarkerTemplate: any
 
   @Input()
-  get columns(): TheSeamDatatableColumn[] { return this._columns.value }
+  // get columns(): TheSeamDatatableColumn[] { return this._columns.value }
   set columns(value: TheSeamDatatableColumn[]) {
     // console.log('columns input', value)
-    this._columns.next(Array.isArray(value) ? value : [])
+    // this._columns.next(Array.isArray(value) ? value : [])
+    this._columnsManager.setInputColumns(Array.isArray(value) ? value : [])
   }
-  private _columns = new BehaviorSubject<TheSeamDatatableColumn[]>([])
+  // private _columns = new BehaviorSubject<TheSeamDatatableColumn[]>([])
 
   @Input()
   get rows(): any[] { return this._rows.value }
@@ -199,15 +200,14 @@ export class DatatableComponent
 
   @Input() @InputBoolean() loadingIndicator: boolean = false
 
-  // @Input() selectionType: SelectionType | undefined | null
-
   @Input()
-  get selectionType(): SelectionType | undefined | null { return this._selectionType }
+  // get selectionType(): SelectionType | undefined | null { return this._selectionType }
+  get selectionType(): SelectionType | undefined | null { return this._columnsManager.getSelectionType() }
   set selectionType(value: SelectionType | undefined | null) {
-    this._selectionType = value
+    // this._selectionType = value
     this._columnsManager.setSelectionType(notNullOrUndefined(value) ? value : undefined)
   }
-  private _selectionType: SelectionType | undefined | null
+  // private _selectionType: SelectionType | undefined | null
 
   @Input() @InputBoolean() reorderable: boolean = true
   @Input() @InputBoolean() swapColumns: boolean = false
@@ -215,7 +215,10 @@ export class DatatableComponent
   @Input() sortType: SortType | undefined | null = SortType.single
 
   @Input()
-  get sorts(): SortItem[] { return this.ngxDatatable ? this.ngxDatatable.sorts : this._sorts }
+  get sorts(): SortItem[] {
+    console.log('sorts', this.ngxDatatable, this._sorts)
+    return this.ngxDatatable ? this.ngxDatatable.sorts : this._sorts
+  }
   set sorts(value: SortItem[]) {
     this._sorts = notNullOrUndefined(value) ? coerceArray(value) : []
   }
@@ -291,7 +294,16 @@ export class DatatableComponent
   @Output() readonly actionRefreshRequest = new EventEmitter<void>()
   @Output() readonly hiddenColumnsChange = new EventEmitter<string[]>()
 
-  @ContentChildren(DatatableColumnComponent) columnComponents?: QueryList<DatatableColumnComponent>
+  // @ContentChildren(DatatableColumnComponent) columnComponents?: QueryList<DatatableColumnComponent>
+  @ContentChildren(DatatableColumnComponent)
+  // get columnComponents(): QueryList<DatatableColumnComponent> | undefined {
+  //   return this._columnComponents
+  // }
+  set columnComponents(value: QueryList<DatatableColumnComponent> | undefined) {
+    // this._columnComponents = value
+    this._columnsManager.setTemplateColumns(translateTemplateColumns(value?.toArray() ?? []))
+  }
+  // private _columnComponents: QueryList<DatatableColumnComponent> | undefined
 
   @ContentChild(DatatableActionMenuComponent, { static: true }) actionMenu?: DatatableActionMenuComponent
   @ContentChild(DatatableRowActionItemDirective, { static: true })
@@ -398,7 +410,8 @@ export class DatatableComponent
       )
     )
 
-    this.columns$ = this._columnsObservable.pipe(switchMap(colsObs => colsObs ?? of([])))
+    // this.columns$ = this._columnsObservable.pipe(switchMap(colsObs => colsObs ?? of([])))
+    this.columns$ = this._columnsManager.columns$
 
     this.displayColumns$ = this.columns$.pipe(
       map(cols => cols.filter(c => !c.hidden)),
@@ -501,38 +514,38 @@ export class DatatableComponent
   }
 
   ngAfterContentInit() {
-    this.columnComponents$ = this._columnChangesService.columnInputChanges$.pipe(
-      map(() => this.columnComponents?.toArray() ?? []),
-      startWith(this.columnComponents?.toArray() ?? []),
-      shareReplay({ bufferSize: 1, refCount: true })
-    )
+    // this.columnComponents$ = this._columnChangesService.columnInputChanges$.pipe(
+    //   map(() => this.columnComponents?.toArray() ?? []),
+    //   startWith(this.columnComponents?.toArray() ?? []),
+    //   shareReplay({ bufferSize: 1, refCount: true })
+    // )
 
-    const _columns = combineLatest([
-      this.columnComponents$,
-      this._columns
-    ]).pipe(
-      // map(v => this._getMergedTplAndInpColumns(v[0], v[1] ?? [])),
-      map(v => {
-        return mergeTplAndInpColumns(
-          v[0],
-          v[1] ?? [],
-          (this.ngxDatatable && this.ngxDatatable._internalColumns) || [],
-          this.selectionType,
-          this._colDiffersInp,
-          this._colDiffersTpl,
-          this.rowActionItem,
-          this.actionMenuCellTpl,
-          this.blankHeaderTpl,
-          this.treeToggleTpl,
-          this.headerTpl,
-          this.cellTypeSelectorTpl,
-          this._differs,
-        )
-      }),
-      // tap(v => console.log('cols', v)),
-      shareReplay({ bufferSize: 1, refCount: true }),
-    )
-    this._columnsObservable.next(_columns)
+    // const _columns = combineLatest([
+    //   this.columnComponents$,
+    //   this._columns
+    // ]).pipe(
+    //   // map(v => this._getMergedTplAndInpColumns(v[0], v[1] ?? [])),
+    //   map(v => {
+    //     return mergeTplAndInpColumns(
+    //       v[0],
+    //       v[1] ?? [],
+    //       (this.ngxDatatable && this.ngxDatatable._internalColumns) || [],
+    //       this.selectionType,
+    //       this._colDiffersInp,
+    //       this._colDiffersTpl,
+    //       this.rowActionItem,
+    //       this.actionMenuCellTpl,
+    //       this.blankHeaderTpl,
+    //       this.treeToggleTpl,
+    //       this.headerTpl,
+    //       this.cellTypeSelectorTpl,
+    //       this._differs,
+    //     )
+    //   }),
+    //   // tap(v => console.log('cols', v)),
+    //   shareReplay({ bufferSize: 1, refCount: true }),
+    // )
+    // this._columnsObservable.next(_columns)
   }
 
 
@@ -583,20 +596,21 @@ export class DatatableComponent
     // console.log('resize', event, event.column.prop)
     this.resize.emit(event)
 
-    if (event.isDone && this.columns) {
-      const columns = this.columns
-      const col = columns.find(c => c.prop === event.column.prop)
-      if (col) {
-        col.canAutoResize = false
-      }
+    // TODO: Fix.
+    // if (event.isDone && this.columns) {
+    //   const columns = this.columns
+    //   const col = columns.find(c => c.prop === event.column.prop)
+    //   if (col) {
+    //     col.canAutoResize = false
+    //   }
 
-      if (this.preferencesKey) {
-        const pref = { prop: event.column.prop, width: event.column.width, canAutoResize: false }
-        this._preferences.setColumnPreference(this.preferencesKey, pref)
-      }
+    //   if (this.preferencesKey) {
+    //     const pref = { prop: event.column.prop, width: event.column.width, canAutoResize: false }
+    //     this._preferences.setColumnPreference(this.preferencesKey, pref)
+    //   }
 
-      this.columns = [ ...this.columns ]
-    }
+    //   this.columns = [ ...this.columns ]
+    // }
   }
 
   _onTreeAction(event: any) {
@@ -614,6 +628,9 @@ export class DatatableComponent
     this.actionRefreshRequest.emit(undefined)
   }
 
+  /**
+   * Returns the page info from the wrapped NgxDatatable instance or defaults.
+   */
   public get pageInfo(): TheSeamPageInfo {
     return {
       offset: this.ngxDatatable?.offset ?? 0,

@@ -1,16 +1,14 @@
 import { Injectable, KeyValueChanges, KeyValueDiffer, KeyValueDiffers, TemplateRef } from '@angular/core'
 import { BehaviorSubject, combineLatest, defer, EMPTY, Observable, of, Subject } from 'rxjs'
-import { auditTime, filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators'
+import { auditTime, map, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
 import {
-  camelCase,
   DataTableColumnCellTreeToggle,
   DataTableColumnDirective,
   DataTableColumnHeaderDirective,
   SelectionType,
   TableColumn,
   TableColumnProp,
-  translateTemplates
 } from '@marklb/ngx-datatable'
 
 import { hasProperty, notNullOrUndefined } from '@theseam/ui-common/utils'
@@ -110,6 +108,10 @@ export class ColumnsManagerService {
     if (changed) {
       this._updateColumns.next(undefined)
     }
+  }
+
+  public getSelectionType(): SelectionType | undefined {
+    return this._selectionType
   }
 
   public setRowActionItem(rowActionItem: DatatableRowActionItemDirective | undefined): void {

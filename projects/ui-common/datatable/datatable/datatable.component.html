@@ -117,16 +117,16 @@
     [disabled]="tree.treeStatus==='disabled'"
     (click)="tree.onTreeAction()">
     <span *ngIf="tree.treeStatus==='loading'">
-      <fa-icon [icon]="faSpinner"></fa-icon>
+      <fa-icon [icon]="_faSpinner"></fa-icon>
     </span>
     <span *ngIf="tree.treeStatus==='collapsed'">
-      <fa-icon [icon]="faChevronRight"></fa-icon>
+      <fa-icon [icon]="_faChevronRight"></fa-icon>
     </span>
     <span *ngIf="tree.treeStatus==='expanded'">
-      <fa-icon [icon]="faChevronDown"></fa-icon>
+      <fa-icon [icon]="_faChevronDown"></fa-icon>
     </span>
     <span *ngIf="tree.treeStatus==='disabled'">
-      <fa-icon [icon]="faChevronRight"></fa-icon>
+      <fa-icon [icon]="_faChevronRight"></fa-icon>
     </span>
   </button>
 </ng-template>

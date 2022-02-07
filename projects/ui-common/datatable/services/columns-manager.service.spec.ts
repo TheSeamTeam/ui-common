@@ -18,7 +18,7 @@ import { setColumnDefaults } from '../utils/set-column-defaults'
 import { ColumnsManagerService } from './columns-manager.service'
 import { DatatableColumnChangesService } from './datatable-column-changes.service'
 
-fdescribe('ColumnsManagerService', () => {
+describe('ColumnsManagerService', () => {
   let service: ColumnsManagerService
   let colChangesService: DatatableColumnChangesService
   let datatable: MockDatatable
