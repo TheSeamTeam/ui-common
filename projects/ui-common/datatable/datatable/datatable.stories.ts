@@ -67,8 +67,11 @@ export default {
 } as Meta
 
 export const Simple: Story = (args) => ({
-  props: { ...args },
-  template: `<seam-datatable class="w-100 h-100" [columns]="columns" [rows]="rows"></seam-datatable>`
+  // props: { ...args },
+  props: {
+    __hack: { ...args }
+  },
+  template: `<seam-datatable class="w-100 h-100" [columns]="__hack.columns" [rows]="__hack.rows"></seam-datatable>`
 })
 Simple.args = {
   columns: [
@@ -113,12 +116,15 @@ Simple.args = {
 }
 
 export const ColumnTemplate = (args: any) => ({
-  props: { ...args },
+  // props: { ...args },
+  props: {
+    __hack: { ...args }
+  },
   template: `
     <seam-datatable
       class="w-100 h-100"
-      [columns]="columns"
-      [rows]="rows">
+      [columns]="__hack.columns"
+      [rows]="__hack.rows">
       <seam-datatable-column name="Color" prop="color">
         <ng-template seamDatatableCellTpl let-value="value">
           <span *ngIf="value === 'blue'; else notBlue" style="color: blue;">{{ value }}</span>
@@ -141,22 +147,24 @@ ColumnTemplate.args = {
 
 export const ActionMenu = (args: any) => ({
   props: {
-    ...args,
-    columns: [
-      { prop: 'name', name: 'Name' },
-      { prop: 'age', name: 'Age' },
-      { prop: 'color', name: 'Color' }
-    ],
-    rows: [
-      { name: 'Mark', age: 27, color: 'blue' },
-      { name: 'Joe', age: 33, color: 'green' },
-    ]
+    __hack: {
+      ...args,
+      columns: [
+        { prop: 'name', name: 'Name' },
+        { prop: 'age', name: 'Age' },
+        { prop: 'color', name: 'Color' }
+      ],
+      rows: [
+        { name: 'Mark', age: 27, color: 'blue' },
+        { name: 'Joe', age: 33, color: 'green' },
+      ]
+    }
   },
   template: `
     <seam-datatable
       class="w-100 h-100"
-      [columns]="columns"
-      [rows]="rows">
+      [columns]="__hack.columns"
+      [rows]="__hack.rows">
       <ng-template seamDatatableRowActionItem let-row>
         <seam-datatable-action-menu>
           <seam-datatable-action-menu-item label="Action One"></seam-datatable-action-menu-item>
@@ -184,23 +192,25 @@ export const InlineEdit = (args: any) => ({
     ]
   },
   props: {
-    ...args,
-    columns: [
-      { prop: 'name', name: 'Name' },
-      { prop: 'age', name: 'Age' },
-      { prop: 'active', name: 'Active' }
-    ],
-    rows: [
-      { name: 'Mark', age: 27, active: true, control: new FormControl(true) },
-      { name: 'Joe', age: 33, active: false, control: new FormControl(false) },
-    ],
-    toggled: action('toggled')
+    __hack: {
+      ...args,
+      columns: [
+        { prop: 'name', name: 'Name' },
+        { prop: 'age', name: 'Age' },
+        { prop: 'active', name: 'Active' }
+      ],
+      rows: [
+        { name: 'Mark', age: 27, active: true, control: new FormControl(true) },
+        { name: 'Joe', age: 33, active: false, control: new FormControl(false) },
+      ],
+      toggled: action('toggled')
+    }
   },
   template: `
     <seam-datatable
       class="w-100 h-100"
-      [columns]="columns"
-      [rows]="rows">
+      [columns]="__hack.columns"
+      [rows]="__hack.rows">
       <seam-datatable-column name="Active" prop="active">
         <ng-template seamDatatableCellTpl let-value="value" let-row="row" let-rowIndex="rowIndex">
           <div class="custom-control custom-switch">
@@ -216,22 +226,24 @@ export const InlineEdit = (args: any) => ({
 
 export const CheckboxSelection = (args: any) => ({
   props: {
-    ...args,
-    selected: [
-      { name: 'Mark', age: 27, color: 'blue' }
-    ],
-    rowIdentity: (x: any) => `${x.name}${x.age}${x.color}`,
-    selectAllRowsOnPage: false
+    __hack: {
+      ...args,
+      selected: [
+        { name: 'Mark', age: 27, color: 'blue' }
+      ],
+      rowIdentity: (x: any) => `${x.name}${x.age}${x.color}`,
+      selectAllRowsOnPage: false
+    }
   },
   template: `
     <seam-datatable
       class="w-100 h-100"
-      [columns]="columns"
-      [rows]="rows"
+      [columns]="__hack.columns"
+      [rows]="__hack.rows"
       selectionType="checkbox"
-      [rowIdentity]="rowIdentity"
-      [selectAllRowsOnPage]="selectAllRowsOnPage"
-      [selected]="selected">
+      [rowIdentity]="__hack.rowIdentity"
+      [selectAllRowsOnPage]="__hack.selectAllRowsOnPage"
+      [selected]="__hack.selected">
     </seam-datatable>`
 })
 CheckboxSelection.args = {
@@ -256,29 +268,31 @@ CheckboxSelection.args = {
 
 export const ToggleDisplay = (args: any) => ({
   props: {
-    ...args,
-    selected: [],
-    selectAllRowsOnPage: false,
-    displayCheck(row: any) {
-      return row.name !== 'Adam'
-    },
-    onSelect({ selected }: { selected: any }) {
-      action('select')(selected)
+    __hack: {
+      ...args,
+      selected: [],
+      selectAllRowsOnPage: false,
+      displayCheck(row: any) {
+        return row.name !== 'Adam'
+      },
+      onSelect({ selected }: { selected: any }) {
+        action('select')(selected)
 
-      this.selected.splice(0, this.selected.length)
-      this.selected.push(...selected)
+        this.selected.splice(0, this.selected.length)
+        this.selected.push(...selected)
+      }
     }
   },
   template: `
     <seam-datatable
       class="w-100 h-100"
-      [columns]="columns"
-      [rows]="rows"
-      [selected]="selected"
+      [columns]="__hack.columns"
+      [rows]="__hack.rows"
+      [selected]="__hack.selected"
       [selectionType]="'checkbox'"
-      [selectAllRowsOnPage]="selectAllRowsOnPage"
-      [displayCheck]="displayCheck"
-      (select)="onSelect($event)">
+      [selectAllRowsOnPage]="__hack.selectAllRowsOnPage"
+      [displayCheck]="__hack.displayCheck"
+      (select)="__hack.onSelect($event)">
     </seam-datatable>`
 })
 ToggleDisplay.args = {
@@ -296,12 +310,12 @@ ToggleDisplay.args = {
 
 // NOTE: Still being worked on, but is usable.
 export const Tree = (args: any) => ({
-  props: { ...args },
+  props: { __hack: { ...args } },
   template: `
     <seam-datatable
       class="w-100 h-100"
-      [columns]="columns"
-      [rows]="rows"
+      [columns]="__hack.columns"
+      [rows]="__hack.rows"
       [treeFromRelation]="'parentCompany'"
       [treeToRelation]="'company'">
     </seam-datatable>`
@@ -324,12 +338,12 @@ Tree.args = {
 }
 
 export const Detail = (args: any) => ({
-  props: { ...args },
+  props: { __hack: { ...args } },
   template: `
     <seam-datatable #table
       class="w-100 h-100"
-      [columns]="columns"
-      [rows]="rows">
+      [columns]="__hack.columns"
+      [rows]="__hack.rows">
 
       <seam-datatable-row-detail rowHeight="100">
         <ng-template let-row="row" let-expanded="expanded" seamDatatableRowDetailTpl>
@@ -517,25 +531,27 @@ export const Filter: Story = (args) => ({
     ]
   },
   props: {
-    ...args,
-    filterButtons: [
-      { name: 'Registered', value: '',
-        comparator: (value: any, row: any) => {
-          return row.registered ? -1 : 1
+    __hack: {
+      ...args,
+      filterButtons: [
+        { name: 'Registered', value: '',
+          comparator: (value: any, row: any) => {
+            return row.registered ? -1 : 1
+          }
+        },
+        { name: 'Over 30', value: 'over-30',
+          comparator: (value: any, row: any) => {
+            return row.age > 30 ? 1 : -1
+          }
         }
-      },
-      { name: 'Over 30', value: 'over-30',
-        comparator: (value: any, row: any) => {
-          return row.age > 30 ? 1 : -1
-        }
-      }
-    ]
+      ]
+    }
   },
   template: `
     <dt-filter-wrapper
-      [columns]="columns"
-      [rows]="rows"
-      [filterButtons]="filterButtons">
+      [columns]="__hack.columns"
+      [rows]="__hack.rows"
+      [filterButtons]="__hack.filterButtons">
     </dt-filter-wrapper>
   `
 })
@@ -586,15 +602,17 @@ const dSource = new StoryDataSource()
 
 export const DataSource: Story = (args) => ({
   props: {
-    ...args,
-    dataSource: dSource,
+    __hack: {
+      ...args,
+      dataSource: dSource,
+    }
   },
   template: `
     <div class="vh-100 vw-100">
       <seam-datatable
         class="w-100 h-100"
-        [columns]="columns"
-        [dataSource]="dataSource"
+        [columns]="__hack.columns"
+        [dataSource]="__hack.dataSource"
         externalPaging="true"
         externalSorting="true"
         externalFiltering="true">
@@ -825,12 +843,14 @@ export const GraphQLQueryRef: Story = (args) => ({
     ]
   },
   props: {
-    // ...args
-    columns: args.columns
+    __hack: {
+      // ...args
+      columns: args.columns
+    }
   },
   template: `
     <div style="height: 500px; width: 600px; display: block; position: relative;">
-      <dt-wrap style="height: 100%; width: 100%; display: block;" [columns]="columns"></dt-wrap>
+      <dt-wrap style="height: 100%; width: 100%; display: block;" [columns]="__hack.columns"></dt-wrap>
     </div>
   `
 })
