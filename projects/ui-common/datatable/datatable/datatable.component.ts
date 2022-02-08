@@ -48,6 +48,7 @@ import { THESEAM_DATATABLE_ACCESSOR } from '../tokens/datatable-accessor'
 import { mergeTplAndInpColumns } from '../utils/merge-tpl-and-input-columns'
 import { removeUnusedDiffs } from '../utils/remove-unused-diffs'
 import { translateTemplateColumns } from '../utils/translate-templates'
+import { ColumnsAlterationsManagerService } from '../services/columns-alterations-manager.service'
 
 /**
  * NOTE: This is still being worked on. I am trying to figure out this model
@@ -117,6 +118,7 @@ export const _THESEAM_DATATABLE_ACCESSOR: any = {
     DatatableColumnChangesService,
     _THESEAM_DATATABLE_ACCESSOR,
     ColumnsManagerService,
+    ColumnsAlterationsManagerService,
   ]
 })
 export class DatatableComponent
@@ -393,6 +395,7 @@ export class DatatableComponent
     private readonly _differs: KeyValueDiffers,
     private readonly _preferences: DatatablePreferencesService,
     private readonly _columnsManager: ColumnsManagerService,
+    private readonly _columnsAlterationsManager: ColumnsAlterationsManagerService,
   ) {
     // this.displayColumns$ = this.hiddenColumns$.pipe(
     //   switchMap(hiddenColumns => this.columns$.pipe(map(cols => cols.filter(c => hiddenColumns.findIndex(hc => hc === c.prop) === -1))))

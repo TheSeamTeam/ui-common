@@ -3,10 +3,13 @@ import { FormControl } from '@angular/forms'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-import { observeControlValue } from '@theseam/ui-common/utils'
+import { notNullOrUndefined, observeControlValue } from '@theseam/ui-common/utils'
 
 import { DatatableComponent, THESEAM_DATATABLE } from '../datatable/datatable.component'
 import { TheSeamDatatableColumn } from '../models/table-column'
+import { HideColumnColumnsAlteration } from '../models/columns-alterations/hide-column.columns-alteration'
+import { getColumnProp } from '../utils/get-column-prop'
+import { ColumnsAlterationsManagerService } from '../services/columns-alterations-manager.service'
 
 @Component({
   selector: 'seam-datatable-column-preferences',
@@ -22,6 +25,7 @@ export class DatatableColumnPreferencesComponent implements OnInit {
 
   constructor(
     @Inject(THESEAM_DATATABLE) private _datatable: DatatableComponent,
+    private readonly _columnsAlterationsManager: ColumnsAlterationsManagerService,
   ) {
     this._columns$ = combineLatest([
       this._datatable.columns$ ?? of([]),
@@ -40,12 +44,29 @@ export class DatatableColumnPreferencesComponent implements OnInit {
   _onChange(event: any, col: TheSeamDatatableColumn) {
     // TODO: Figure out the right way to update this value. If it is set by
     // column component input this may not work right.
-    const columns = this._datatable.columns || []
-    const column = columns.find(c => c.prop === col.prop)
-    if (column) {
-      column.hidden = !event.checked
-      this._datatable.columns = [ ...columns ]
+    // const columns = this._datatable.columns || []
+    // const column = columns.find(c => c.prop === col.prop)
+    // if (column) {
+    //   column.hidden = !event.checked
+    //   this._datatable.columns = [ ...columns ]
+    // }
+
+    const columnProp = getColumnProp(col)
+    const hidden = !event.checked
+
+    if (!notNullOrUndefined(columnProp)) {
+      throw Error(`Unable to get column prop.`)
     }
+
+    const alteration = new HideColumnColumnsAlteration(
+      {
+        columnProp,
+        hidden
+      },
+      hidden
+    )
+
+    this._columnsAlterationsManager.addAlterations([ alteration ])
   }
 
   _onCloseClick() {
