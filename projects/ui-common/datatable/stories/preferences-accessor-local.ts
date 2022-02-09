@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core'
 import { Observable, of } from 'rxjs'
 import { switchMap, take } from 'rxjs/operators'
 
-import { ITheSeamDatatablePreferencesAccessor } from '../models/preferences-accessor'
+import { TheSeamDatatablePreferencesAccessor } from '../models/preferences-accessor'
 
 const ACCESSOR_PREFIX = 'story-pref'
 
 @Injectable()
-export class DatatablePreferencesAccessorLocalService implements ITheSeamDatatablePreferencesAccessor {
+export class DatatablePreferencesAccessorLocalService implements TheSeamDatatablePreferencesAccessor {
 
   constructor() { }
 

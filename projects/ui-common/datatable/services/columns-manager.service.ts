@@ -21,6 +21,7 @@ import { createCheckboxColumn } from '../utils/create-checkbox-column'
 import { getColumnProp } from '../utils/get-column-prop'
 import { setColumnDefaults } from '../utils/set-column-defaults'
 import { translateTemplateColumns } from '../utils/translate-templates'
+import { DatatableColumnChangesService } from './datatable-column-changes.service'
 
 enum ColumnsTypes {
   Input,
@@ -57,12 +58,20 @@ export class ColumnsManagerService {
 
   constructor(
     private readonly _differs: KeyValueDiffers,
+    private readonly _columnChangesService: DatatableColumnChangesService,
   ) {
+    const templateColumns$ = this._columnChangesService.columnInputChanges$.pipe(
+      startWith(undefined),
+      switchMap(() => {
+        return this._templateColumns.asObservable().pipe(map(translateTemplateColumns))
+      })
+    )
+
     this.columns$ = defer(() => {
       let isFirst = true
       return combineLatest([
         this._inputColumns.asObservable(),
-        this._templateColumns.asObservable().pipe(map(translateTemplateColumns)),
+        templateColumns$,
         this._updateColumns.asObservable().pipe(auditTime(0), startWith(undefined))
       ]).pipe(
         switchMap(([ inputColumns, templateColumns ]) => {

@@ -25,13 +25,13 @@ describe('ColumnsManagerService', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      providers: [ ColumnsManagerService ]
+      providers: [ ColumnsManagerService, DatatableColumnChangesService ]
     })
     .compileComponents()
   }))
 
   beforeEach(() => {
-    colChangesService = new DatatableColumnChangesService()
+    colChangesService = TestBed.inject(DatatableColumnChangesService)
     service = TestBed.inject(ColumnsManagerService)
     datatable = new MockDatatable()
     service.setInternalColumnsGetter(() => datatable._internalColumns || [])

@@ -5,18 +5,19 @@ import { getColumnProp } from '../../utils/get-column-prop'
 import { ColumnsAlteration } from '../columns-alteration'
 import { TheSeamDatatableColumn } from '../table-column'
 
-export interface HideColumnColumnsAlterationState {
+export interface WidthColumnsAlterationState {
   columnProp: TableColumnProp
-  hidden: boolean
+  width?: number
+  canAutoResize: boolean
 }
 
-export class HideColumnColumnsAlteration extends ColumnsAlteration<HideColumnColumnsAlterationState> {
+export class WidthColumnsAlteration extends ColumnsAlteration<WidthColumnsAlterationState> {
   public readonly id: string
 
-  public readonly type: string = 'hide-column'
+  public readonly type: string = 'width'
 
   constructor(
-    state: HideColumnColumnsAlterationState,
+    state: WidthColumnsAlterationState,
     persistent: boolean
   ) {
     super(state, persistent)
@@ -25,7 +26,7 @@ export class HideColumnColumnsAlteration extends ColumnsAlteration<HideColumnCol
       throw Error(`Invalid state: ${JSON.stringify(state)}`)
     }
 
-    this.id = `${this.type}--${state.columnProp}` // --${state.hidden}`
+    this.id = `${this.type}--${state.columnProp}`
   }
 
   public apply(columns: TheSeamDatatableColumn<any, any>[]): void {
@@ -33,12 +34,15 @@ export class HideColumnColumnsAlteration extends ColumnsAlteration<HideColumnCol
     for (const col of columns) {
       const prop = getColumnProp(col)
       if (prop === this.state.columnProp) {
-        col.hidden = this.state.hidden
+        col.canAutoResize = this.state.canAutoResize
+        if (notNullOrUndefined(this.state.width)) {
+          col.width = this.state.width
+        }
       }
     }
   }
 
-  private _isValidState(state: HideColumnColumnsAlterationState): boolean {
+  private _isValidState(state: WidthColumnsAlterationState): boolean {
     // NOTE: Checking null or undefined, even though the type doesn't allow,
     // because the state may have been loaded from an invalid persistant
     // storage.
@@ -51,7 +55,7 @@ export class HideColumnColumnsAlteration extends ColumnsAlteration<HideColumnCol
 
     // TODO: Remove when state validation/migration is implemented to happen
     // when retrieved from storage.
-    if (!notNullOrUndefined(state.hidden)) {
+    if (!notNullOrUndefined(state.canAutoResize)) {
       return false
     }
 

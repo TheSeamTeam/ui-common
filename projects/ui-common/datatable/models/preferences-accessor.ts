@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs'
 
-export interface ITheSeamDatatablePreferencesAccessor {
+export interface TheSeamDatatablePreferencesAccessor {
 
   /**
    * Gets a preference.

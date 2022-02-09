@@ -13,10 +13,14 @@ export interface ColumnsAlterationState<TState = any> {
  * This allows us to store a list of replayable alterations on columns. By
  * having a defined way to implement alterations, the datatable should be easier
  * to support external features that want to provide an alteration.
+ *
+ * NOTE: Current, to unapply an alteration you can create an alteration with
+ * `persistent` set to false and the alteration will be removed after `apply()`
+ * is called.
  */
 export abstract class ColumnsAlteration<TState = any> {
   /**
-   * This should be unique to the alteraction, but determinable. When an app is
+   * This should be unique to the alteration, but determinable. When an app is
    * reloaded and alterations are restored from a persistable storage this
    * should still be recognizable.
    */

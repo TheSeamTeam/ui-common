@@ -33,9 +33,13 @@ export class DatatableColumnPreferencesComponent implements OnInit {
     ]).pipe(
       map(([ columns, filter ]) => {
         const _filter = (filter || '').trim().toLowerCase()
-        return columns.filter(c => `${(c.name || c.prop || '')}`.toLowerCase().indexOf(_filter) !== -1)
+        return columns.filter(c => `${(getColumnProp(c) || '')}`.toLowerCase().indexOf(_filter) !== -1)
       }),
-      map(cols => cols.sort((a, b) => a.prop === b.prop ? 0 : (<string>a.prop) > (<string>b.prop) ? 1 : -1))
+      map(cols => cols.sort((a, b) => {
+        const aProp = getColumnProp(a)
+        const bProp = getColumnProp(b)
+        return aProp === bProp ? 0 : (<string>aProp) > (<string>bProp) ? 1 : -1
+      }))
     )
   }
 
@@ -66,7 +70,7 @@ export class DatatableColumnPreferencesComponent implements OnInit {
       hidden
     )
 
-    this._columnsAlterationsManager.addAlterations([ alteration ])
+    this._columnsAlterationsManager.add([ alteration ])
   }
 
   _onCloseClick() {
