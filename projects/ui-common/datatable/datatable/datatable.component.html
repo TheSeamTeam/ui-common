@@ -47,7 +47,7 @@
         (select)="select.emit($event)"
         (sort)="sort.emit($event)"
         (page)="page.emit($event)"
-        (reorder)="reorder.emit($event)"
+        (reorder)="_onReorder($event)"
         (resize)="_onResize($event)"
         (tableContextmenu)="tableContextmenu.emit($event)"
         (treeAction)="treeAction.emit($event)"

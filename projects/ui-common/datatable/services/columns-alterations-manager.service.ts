@@ -41,7 +41,7 @@ export class ColumnsAlterationsManagerService {
    * instead of updated, to maintain the order alterations are applied.
    */
   public add(alterations: ColumnsAlteration[], options?: { emitEvent?: boolean }): ColumnsAlterationsChangedRecord[] {
-    console.log('add', alterations)
+    // console.log('add', alterations)
     const removed: ColumnsAlterationsChangedRecord[] = this.remove(alterations, { emitEvent: false })
     this._alterations = [ ...this._alterations, ...alterations ]
 

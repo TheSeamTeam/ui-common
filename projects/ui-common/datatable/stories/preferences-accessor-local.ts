@@ -15,7 +15,7 @@ export class DatatablePreferencesAccessorLocalService implements TheSeamDatatabl
    * Gets a preference.
    */
   public get(name: string): Observable<string> {
-    console.log('get', name)
+    // console.log('get', name)
     return of(localStorage.getItem(`${ACCESSOR_PREFIX}-${name}`) || '{}')
   }
 
@@ -23,7 +23,7 @@ export class DatatablePreferencesAccessorLocalService implements TheSeamDatatabl
    * Update a preference.
    */
   public update(name: string, value: string): Observable<string> {
-    console.log('update', name)
+    // console.log('update', name)
     localStorage.setItem(`${ACCESSOR_PREFIX}-${name}`, value)
     return this.get(name)
   }

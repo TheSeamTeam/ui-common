@@ -14,6 +14,8 @@ export interface IDatatablePreferencesMapRecord {
   refresh: Subject<void>
 }
 
+// TODO: Add per key status
+
 @Injectable({
   providedIn: 'root'
 })
@@ -71,7 +73,7 @@ export class DatatablePreferencesService {
           }
         }),
         map(v => notNullOrUndefined(v) ? v : EMPTY_DATATABLE_PREFERENCES),
-        tap(v => console.log('preferences$', v)),
+        // tap(v => console.log('preferences$', v)),
         tap(() => {
           this._pending = false
           this._loaded = true

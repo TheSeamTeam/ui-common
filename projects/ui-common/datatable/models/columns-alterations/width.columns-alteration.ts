@@ -30,7 +30,6 @@ export class WidthColumnsAlteration extends ColumnsAlteration<WidthColumnsAltera
   }
 
   public apply(columns: TheSeamDatatableColumn<any, any>[]): void {
-    // console.log('[HideColumnColumnsAlteration] apply', columns, this)
     for (const col of columns) {
       const prop = getColumnProp(col)
       if (prop === this.state.columnProp) {

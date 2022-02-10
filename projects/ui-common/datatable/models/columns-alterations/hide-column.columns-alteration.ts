@@ -25,11 +25,10 @@ export class HideColumnColumnsAlteration extends ColumnsAlteration<HideColumnCol
       throw Error(`Invalid state: ${JSON.stringify(state)}`)
     }
 
-    this.id = `${this.type}--${state.columnProp}` // --${state.hidden}`
+    this.id = `${this.type}--${state.columnProp}`
   }
 
   public apply(columns: TheSeamDatatableColumn<any, any>[]): void {
-    // console.log('[HideColumnColumnsAlteration] apply', columns, this)
     for (const col of columns) {
       const prop = getColumnProp(col)
       if (prop === this.state.columnProp) {

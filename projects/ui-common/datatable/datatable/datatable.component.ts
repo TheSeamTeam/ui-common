@@ -2,12 +2,27 @@ import { animate, style, transition, trigger } from '@angular/animations'
 import { BooleanInput, coerceArray, NumberInput } from '@angular/cdk/coercion'
 import { CollectionViewer, DataSource, isDataSource, ListRange } from '@angular/cdk/collections'
 import {
-  AfterContentInit, ChangeDetectionStrategy, Component, ContentChild, ContentChildren,
-  ElementRef, EventEmitter, forwardRef, InjectionToken, Input, isDevMode, KeyValueDiffer,
-  KeyValueDiffers, OnDestroy, OnInit, Output, QueryList, TemplateRef, ViewChild
+  ChangeDetectionStrategy,
+  Component,
+  ContentChild,
+  ContentChildren,
+  ElementRef,
+  EventEmitter,
+  forwardRef,
+  InjectionToken,
+  Input,
+  isDevMode,
+  KeyValueDiffer,
+  KeyValueDiffers,
+  OnDestroy,
+  OnInit,
+  Output,
+  QueryList,
+  TemplateRef,
+  ViewChild
 } from '@angular/core'
-import { BehaviorSubject, combineLatest, from, isObservable, Observable, of, Subject, Subscription } from 'rxjs'
-import { concatMap, distinctUntilChanged, map, shareReplay, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators'
+import { BehaviorSubject, from, isObservable, Observable, of, Subject, Subscription } from 'rxjs'
+import { concatMap, distinctUntilChanged, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators'
 
 import { faChevronDown, faChevronRight, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import {
@@ -18,9 +33,7 @@ import {
   DataTableColumnHeaderDirective,
   DatatableComponent as NgxDatatableComponent,
   DatatableRowDetailDirective,
-  setColumnDefaults,
   SortType,
-  TableColumn,
   TreeStatus
 } from '@marklb/ngx-datatable'
 import type { SelectionType } from '@marklb/ngx-datatable'
@@ -28,7 +41,7 @@ import type { SelectionType } from '@marklb/ngx-datatable'
 import { InputBoolean, InputNumber } from '@theseam/ui-common/core'
 import { composeDataFilters, composeDataFilterStates, DataFilter, DataFilterState } from '@theseam/ui-common/data-filters'
 import { IElementResizedEvent } from '@theseam/ui-common/shared'
-import { hasProperty, notNullOrUndefined, waitOnConditionAsync } from '@theseam/ui-common/utils'
+import { notNullOrUndefined, waitOnConditionAsync } from '@theseam/ui-common/utils'
 
 import { DatatableActionMenuComponent } from '../datatable-action-menu/datatable-action-menu.component'
 import { DatatableColumnComponent } from '../datatable-column/datatable-column.component'
@@ -45,7 +58,6 @@ import { ColumnsManagerService } from '../services/columns-manager.service'
 import { DatatableColumnChangesService } from '../services/datatable-column-changes.service'
 import { DatatablePreferencesService } from '../services/datatable-preferences.service'
 import { THESEAM_DATATABLE_ACCESSOR } from '../tokens/datatable-accessor'
-import { mergeTplAndInpColumns } from '../utils/merge-tpl-and-input-columns'
 import { removeUnusedDiffs } from '../utils/remove-unused-diffs'
 import { translateTemplateColumns } from '../utils/translate-templates'
 import { ColumnsAlterationsManagerService } from '../services/columns-alterations-manager.service'
@@ -53,6 +65,7 @@ import { ColumnsAlteration } from '../models/columns-alteration'
 import { mapColumnsAlterationsStates } from '../utils/map-columns-alterations-states'
 import { WidthColumnsAlteration } from '../models/columns-alterations/width.columns-alteration'
 import { getColumnProp } from '../utils/get-column-prop'
+import { OrderColumnsAlteration, OrderColumnsAlterationState } from '../models/columns-alterations/order.columns-alteration'
 
 /**
  * NOTE: This is still being worked on. I am trying to figure out this model
@@ -98,8 +111,6 @@ export const _THESEAM_DATATABLE_ACCESSOR: any = {
   useExisting: forwardRef(() => DatatableComponent)
 }
 
-// TODO: Reduce reliance on BehaviorSubject based observables, because it should
-// be easier to avoit over emitting observables.
 @Component({
   selector: 'seam-datatable',
   templateUrl: './datatable.component.html',
@@ -126,7 +137,7 @@ export const _THESEAM_DATATABLE_ACCESSOR: any = {
   ]
 })
 export class DatatableComponent
-  implements OnInit, OnDestroy, AfterContentInit, TheSeamDatatableAccessor, CollectionViewer {
+  implements OnInit, OnDestroy, TheSeamDatatableAccessor, CollectionViewer {
   static ngAcceptInputType_externalPaging: BooleanInput
   static ngAcceptInputType_externalSorting: BooleanInput
   static ngAcceptInputType_externalFiltering: BooleanInput
@@ -155,7 +166,6 @@ export class DatatableComponent
 
   private readonly _ngUnsubscribe = new Subject()
   private readonly _filtersSubject = new BehaviorSubject<DataFilter[]>([])
-  // private readonly _columnsObservable = new BehaviorSubject<Observable<TheSeamDatatableColumn[]> | undefined>(undefined)
   private readonly _dataSourceSubject = new BehaviorSubject<DataSource<any> | any[] | undefined>(undefined)
 
   private _resizing: { [prop: string]: boolean } = {}
@@ -174,13 +184,9 @@ export class DatatableComponent
   @Input() targetMarkerTemplate: any
 
   @Input()
-  // get columns(): TheSeamDatatableColumn[] { return this._columns.value }
   set columns(value: TheSeamDatatableColumn[]) {
-    // console.log('columns input', value)
-    // this._columns.next(Array.isArray(value) ? value : [])
     this._columnsManager.setInputColumns(Array.isArray(value) ? value : [])
   }
-  // private _columns = new BehaviorSubject<TheSeamDatatableColumn[]>([])
 
   @Input()
   get rows(): any[] { return this._rows.value }
@@ -209,13 +215,10 @@ export class DatatableComponent
   @Input() @InputBoolean() loadingIndicator: boolean = false
 
   @Input()
-  // get selectionType(): SelectionType | undefined | null { return this._selectionType }
   get selectionType(): SelectionType | undefined | null { return this._columnsManager.getSelectionType() }
   set selectionType(value: SelectionType | undefined | null) {
-    // this._selectionType = value
     this._columnsManager.setSelectionType(notNullOrUndefined(value) ? value : undefined)
   }
-  // private _selectionType: SelectionType | undefined | null
 
   @Input() @InputBoolean() reorderable: boolean = true
   @Input() @InputBoolean() swapColumns: boolean = false
@@ -224,7 +227,6 @@ export class DatatableComponent
 
   @Input()
   get sorts(): SortItem[] {
-    console.log('sorts', this.ngxDatatable, this._sorts)
     return this.ngxDatatable ? this.ngxDatatable.sorts : this._sorts
   }
   set sorts(value: SortItem[]) {
@@ -302,16 +304,10 @@ export class DatatableComponent
   @Output() readonly actionRefreshRequest = new EventEmitter<void>()
   @Output() readonly hiddenColumnsChange = new EventEmitter<string[]>()
 
-  // @ContentChildren(DatatableColumnComponent) columnComponents?: QueryList<DatatableColumnComponent>
   @ContentChildren(DatatableColumnComponent)
-  // get columnComponents(): QueryList<DatatableColumnComponent> | undefined {
-  //   return this._columnComponents
-  // }
   set columnComponents(value: QueryList<DatatableColumnComponent> | undefined) {
-    // this._columnComponents = value
     this._columnsManager.setTemplateColumns(translateTemplateColumns(value?.toArray() ?? []))
   }
-  // private _columnComponents: QueryList<DatatableColumnComponent> | undefined
 
   @ContentChild(DatatableActionMenuComponent, { static: true }) actionMenu?: DatatableActionMenuComponent
   @ContentChild(DatatableRowActionItemDirective, { static: true })
@@ -403,31 +399,9 @@ export class DatatableComponent
     private readonly _columnsManager: ColumnsManagerService,
     private readonly _columnsAlterationsManager: ColumnsAlterationsManagerService,
   ) {
-    // this.displayColumns$ = this.hiddenColumns$.pipe(
-    //   switchMap(hiddenColumns => this.columns$.pipe(map(cols => cols.filter(c => hiddenColumns.findIndex(hc => hc === c.prop) === -1))))
-    // )
-
-    // const applyPrefs = (cols: TheSeamDatatableColumn[]) => this._preferencesKey.pipe(
-    //   switchMap(name => !!name
-    //     // NOTE: This pending check is temporary to avoid table using previously
-    //     // retrieved preference while the new one is being updated on the
-    //     // server.
-    //     ? !this._preferences.pending
-    //       // ? this._preferences.withColumnPreferences(name, cols)
-    //       ? this._preferences.preferences(name).pipe(
-    //         map(prefs => {
-
-    //         })
-    //       )
-    //       : of(cols)
-    //     : of(cols)
-    //   )
-    // )
-
     this._preferencesKey.pipe(
       distinctUntilChanged(),
       switchMap(key => {
-        console.log('~~~key', key, this._preferences.pending)
         if (!notNullOrUndefined(key) || key.length === 0) {
           return of(undefined)
         }
@@ -436,7 +410,6 @@ export class DatatableComponent
           switchMap(() => this._columnsAlterationsManager.changes.pipe(
             startWith(undefined),
             tap(() => {
-              console.log('setAlterations', this._columnsAlterationsManager.get().length)
               this._preferences.setAlterations(key, this._columnsAlterationsManager.get())
             }),
           ))
@@ -448,7 +421,6 @@ export class DatatableComponent
     const applyPrefs = (cols: TheSeamDatatableColumn[]) => this._columnsAlterationsManager.changes.pipe(
       startWith(undefined),
       map(() => {
-        console.log('Apply alterations', cols)
         this._columnsAlterationsManager.apply(cols)
         return cols
       }),
@@ -461,16 +433,12 @@ export class DatatableComponent
           return of(undefined)
         }
         return this._preferences.preferences(prefsKey).pipe(
+          switchMap(async (preferences) => {
+            await waitOnConditionAsync(() => this._preferences.loaded)
+            return preferences
+          }),
           take(1),
           map(preferences => {
-            console.log('~~~~prefs', preferences, this._preferences.pending)
-            // NOTE: This pending check is temporary to avoid table using previously
-            // retrieved preference while the new one is being updated on the
-            // server.
-            if (!this._preferences.pending) {
-              return
-            }
-
             let alterations: ColumnsAlteration[] = []
             try {
               alterations = mapColumnsAlterationsStates(preferences.alterations)
@@ -480,7 +448,7 @@ export class DatatableComponent
                 console.warn(e)
               }
             }
-            console.log('adding initial alterations')
+
             this._columnsAlterationsManager.add(alterations)
           })
         )
@@ -488,11 +456,9 @@ export class DatatableComponent
       takeUntil(this._ngUnsubscribe)
     ).subscribe()
 
-    // this.columns$ = this._columnsObservable.pipe(switchMap(colsObs => colsObs ?? of([])))
     this.columns$ = this._columnsManager.columns$
 
     this.displayColumns$ = this.columns$.pipe(
-      tap(cols => console.log('cols', cols)),
       switchMap(cols => applyPrefs(cols)),
       map(cols => cols.filter(c => !c.hidden)),
       tap(v => removeUnusedDiffs(v, this._colDiffersInp, this._colDiffersTpl)),
@@ -503,16 +469,6 @@ export class DatatableComponent
     this.filterStates = this._filtersSubject.asObservable().pipe(
       switchMap(filters => composeDataFilterStates(filters))
     )
-
-    // this.rows$ = this._filtersSubject.asObservable()
-    //   .pipe(
-    //     switchMap(filters => {
-    //       if (this.externalFiltering) {
-    //         return this._rows.asObservable()
-    //       }
-    //       return this._rows.asObservable().pipe(composeDataFilters(filters))
-    //     })
-    //   )
 
     this.rows$ = this._dataSourceSubject.pipe(
       switchMap(dataSource => {
@@ -558,22 +514,6 @@ export class DatatableComponent
       })
     )
 
-    // this.hiddenColumns$ = this._hiddenColumns.asObservable()
-
-    // this._hiddenColumns.pipe(
-    //   skip(1),
-    //   distinctUntilChanged((a, b) => {
-    //     const _a = Array.isArray(a) ? a : []
-    //     const _b = Array.isArray(b) ? b : []
-    //     if (_a.length !== _b.length) { return false }
-    //     const _as = _a.sort()
-    //     const _bs = _b.sort()
-    //     return !_as.sort().every((value: string, index: number) => _bs[index] === value)
-    //   }),
-    //   tap(v => this.hiddenColumnsChange.emit(v)),
-    //   untilDestroyed(this)
-    // ).subscribe(v => console.log('hiddenColumnsChange', v))
-
     // TODO: Implement viewChange for CollectionViewer.
     this.viewChange = this.page.pipe(map(p => ({ start: 0, end: p.count })))
   }
@@ -592,45 +532,7 @@ export class DatatableComponent
     this._rowDetailToggleSubscription.unsubscribe()
   }
 
-  ngAfterContentInit() {
-    // this.columnComponents$ = this._columnChangesService.columnInputChanges$.pipe(
-    //   map(() => this.columnComponents?.toArray() ?? []),
-    //   startWith(this.columnComponents?.toArray() ?? []),
-    //   shareReplay({ bufferSize: 1, refCount: true })
-    // )
-
-    // const _columns = combineLatest([
-    //   this.columnComponents$,
-    //   this._columns
-    // ]).pipe(
-    //   // map(v => this._getMergedTplAndInpColumns(v[0], v[1] ?? [])),
-    //   map(v => {
-    //     return mergeTplAndInpColumns(
-    //       v[0],
-    //       v[1] ?? [],
-    //       (this.ngxDatatable && this.ngxDatatable._internalColumns) || [],
-    //       this.selectionType,
-    //       this._colDiffersInp,
-    //       this._colDiffersTpl,
-    //       this.rowActionItem,
-    //       this.actionMenuCellTpl,
-    //       this.blankHeaderTpl,
-    //       this.treeToggleTpl,
-    //       this.headerTpl,
-    //       this.cellTypeSelectorTpl,
-    //       this._differs,
-    //     )
-    //   }),
-    //   // tap(v => console.log('cols', v)),
-    //   shareReplay({ bufferSize: 1, refCount: true }),
-    // )
-    // this._columnsObservable.next(_columns)
-  }
-
-
-
   private _setMenuBarFilters(filters: DataFilter[]) {
-    // console.log('_setMenuBarFilters', filters)
     this._filtersSubject.next(filters || [])
   }
 
@@ -688,21 +590,7 @@ export class DatatableComponent
         addAlteration = true
       }
 
-      // TODO: Fix.
       if (event.isDone) {
-        // const columns = this.columns
-        // const col = columns.find(c => c.prop === event.column.prop)
-        // if (col) {
-        //   col.canAutoResize = false
-        // }
-
-        // if (this.preferencesKey) {
-        //   const pref = { prop: event.column.prop, width: event.column.width, canAutoResize: false }
-        //   this._preferences.setColumnPreference(this.preferencesKey, pref)
-        // }
-
-        // this.columns = [ ...this.columns ]
-
         this._resizing[columnProp] = false
         addAlteration = true
       }
@@ -717,6 +605,23 @@ export class DatatableComponent
       }
     }
 
+  }
+
+  _onReorder(event: any): void {
+    this.reorder.emit(event)
+
+    const columnProp = getColumnProp(event.column)
+    if (columnProp) {
+      const currentOrderAlteration = this._columnsAlterationsManager.get().find(x => x.type === 'order')
+      const state: OrderColumnsAlterationState = {
+        columns: [
+          ...(currentOrderAlteration?.state.columns || []),
+          { columnProp, index: event.newValue }
+        ]
+      }
+      const alteration = new OrderColumnsAlteration(state, true)
+      this._columnsAlterationsManager.add([ alteration ])
+    }
   }
 
   _onTreeAction(event: any) {
