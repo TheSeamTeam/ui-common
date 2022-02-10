@@ -3,6 +3,7 @@ import { notNullOrUndefined } from '@theseam/ui-common/utils'
 
 import { getColumnProp } from '../../utils/get-column-prop'
 import { ColumnsAlteration } from '../columns-alteration'
+import { TheSeamDatatableAccessor } from '../datatable-accessor'
 import { TheSeamDatatableColumn } from '../table-column'
 
 export interface WidthColumnsAlterationState {
@@ -29,7 +30,7 @@ export class WidthColumnsAlteration extends ColumnsAlteration<WidthColumnsAltera
     this.id = `${this.type}--${state.columnProp}`
   }
 
-  public apply(columns: TheSeamDatatableColumn<any, any>[]): void {
+  public apply(columns: TheSeamDatatableColumn<any, any>[], datatable: TheSeamDatatableAccessor): void {
     for (const col of columns) {
       const prop = getColumnProp(col)
       if (prop === this.state.columnProp) {

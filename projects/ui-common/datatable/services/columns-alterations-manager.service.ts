@@ -5,6 +5,7 @@ import { notNullOrUndefined } from '@theseam/ui-common/utils'
 
 import { ColumnsAlteration } from '../models/columns-alteration'
 import { TheSeamDatatableColumn } from '../models/table-column'
+import { TheSeamDatatableAccessor } from '../models/datatable-accessor'
 
 export interface ColumnsAlterationsChangedRecord {
   type: 'added' | 'removed'
@@ -91,9 +92,9 @@ export class ColumnsAlterationsManagerService {
     return removed
   }
 
-  public apply(columns: TheSeamDatatableColumn[]): void {
+  public apply(columns: TheSeamDatatableColumn[], datatable: TheSeamDatatableAccessor): void {
     for (const a of this._alterations) {
-      a.apply(columns)
+      a.apply(columns, datatable)
     }
 
     this._removeNonPersistant()

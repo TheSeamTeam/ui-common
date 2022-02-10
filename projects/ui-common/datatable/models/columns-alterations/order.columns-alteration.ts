@@ -5,6 +5,7 @@ import { arrayMoveMutable, notNullOrUndefined } from '@theseam/ui-common/utils'
 
 import { getColumnProp } from '../../utils/get-column-prop'
 import { ColumnsAlteration } from '../columns-alteration'
+import { TheSeamDatatableAccessor } from '../datatable-accessor'
 import { TheSeamDatatableColumn } from '../table-column'
 
 export interface ColumnOrderRecord {
@@ -38,7 +39,7 @@ export class OrderColumnsAlteration extends ColumnsAlteration<OrderColumnsAltera
     this.id = `${this.type}`
   }
 
-  public apply(columns: TheSeamDatatableColumn<any, any>[]): void {
+  public apply(columns: TheSeamDatatableColumn<any, any>[], datatable: TheSeamDatatableAccessor): void {
     if (this.state.columns.length === 0) {
       return
     }

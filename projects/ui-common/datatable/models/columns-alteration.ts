@@ -1,3 +1,4 @@
+import { TheSeamDatatableAccessor } from './datatable-accessor';
 import { TheSeamDatatableColumn } from './table-column';
 
 export interface ColumnsAlterationState<TState = any> {
@@ -52,7 +53,7 @@ export abstract class ColumnsAlteration<TState = any> {
   /**
    * Apply alteration to column.
    */
-  public abstract apply(columns: TheSeamDatatableColumn[]): void
+  public abstract apply(columns: TheSeamDatatableColumn[], datatable: TheSeamDatatableAccessor): void
 
   public toJSON(): ColumnsAlterationState<TState> {
     return {

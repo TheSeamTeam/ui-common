@@ -89,7 +89,8 @@ export const Example: Story = (args) => ({
       <seam-datatable
         preferencesKey="test-prefs-1"
         [columns]="__hack.columns"
-        [rows]="__hack.rows">
+        [rows]="__hack.rows"
+        sortType="multi">
 
         <seam-datatable-menu-bar>
           <div class="d-flex flex-row justify-content-end">

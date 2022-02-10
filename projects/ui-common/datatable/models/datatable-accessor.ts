@@ -1,11 +1,12 @@
 import { Observable } from 'rxjs'
 
-import { DataFilterState, IDataFilter } from '@theseam/ui-common/data-filters'
+import { DataFilterState, DataFilter } from '@theseam/ui-common/data-filters'
 
 import { TheSeamPageInfo } from './page-info'
 import { SortEvent } from './sort-event'
 import { SortItem } from './sort-item'
 import { TheSeamDatatableColumn } from './table-column'
+import { SortType } from '@marklb/ngx-datatable'
 
 // TODO: Replace BehaviorSubject based observables with change only emitting
 // observables.
@@ -19,9 +20,11 @@ export interface TheSeamDatatableAccessor {
 
   readonly rows$: Observable<any[]>
 
-  filters: IDataFilter[]
+  filters: DataFilter[]
 
-  readonly filters$: Observable<IDataFilter[]>
+  readonly filters$: Observable<DataFilter[]>
+
+  sortType: SortType
 
   sorts: SortItem[]
 

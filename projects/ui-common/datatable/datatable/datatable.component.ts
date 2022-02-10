@@ -12,8 +12,7 @@ import {
   InjectionToken,
   Input,
   isDevMode,
-  KeyValueDiffer,
-  KeyValueDiffers,
+  KeyValueDiffer,,
   OnDestroy,
   OnInit,
   Output,
@@ -66,6 +65,7 @@ import { mapColumnsAlterationsStates } from '../utils/map-columns-alterations-st
 import { WidthColumnsAlteration } from '../models/columns-alterations/width.columns-alteration'
 import { getColumnProp } from '../utils/get-column-prop'
 import { OrderColumnsAlteration, OrderColumnsAlterationState } from '../models/columns-alterations/order.columns-alteration'
+import { SortColumnsAlteration } from '../models/columns-alterations/sort.columns-alteration'
 
 /**
  * NOTE: This is still being worked on. I am trying to figure out this model
@@ -223,7 +223,16 @@ export class DatatableComponent
   @Input() @InputBoolean() reorderable: boolean = true
   @Input() @InputBoolean() swapColumns: boolean = false
 
-  @Input() sortType: SortType | undefined | null = SortType.single
+  @Input()
+  get sortType(): SortType { return this._sortType }
+  set sortType(value: SortType) {
+    if (notNullOrUndefined(value) && (value === SortType.single || value == SortType.multi)) {
+      this._sortType = value
+    } else {
+      this._sortType = SortType.single
+    }
+  }
+  _sortType: SortType = SortType.single
 
   @Input()
   get sorts(): SortItem[] {
@@ -393,8 +402,6 @@ export class DatatableComponent
   private _rowDetailToggleSubscription = Subscription.EMPTY
 
   constructor(
-    private readonly _columnChangesService: DatatableColumnChangesService,
-    private readonly _differs: KeyValueDiffers,
     private readonly _preferences: DatatablePreferencesService,
     private readonly _columnsManager: ColumnsManagerService,
     private readonly _columnsAlterationsManager: ColumnsAlterationsManagerService,
@@ -421,7 +428,7 @@ export class DatatableComponent
     const applyPrefs = (cols: TheSeamDatatableColumn[]) => this._columnsAlterationsManager.changes.pipe(
       startWith(undefined),
       map(() => {
-        this._columnsAlterationsManager.apply(cols)
+        this._columnsAlterationsManager.apply(cols, this)
         return cols
       }),
     )
@@ -622,6 +629,14 @@ export class DatatableComponent
       const alteration = new OrderColumnsAlteration(state, true)
       this._columnsAlterationsManager.add([ alteration ])
     }
+  }
+
+  _onSort(event: any): void {
+    console.log('_onSort', event)
+    this.sort.emit(event)
+
+    const alteration = new SortColumnsAlteration({ sorts: event.sorts }, true)
+    this._columnsAlterationsManager.add([ alteration ])
   }
 
   _onTreeAction(event: any) {

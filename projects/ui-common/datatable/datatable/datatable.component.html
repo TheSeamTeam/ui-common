@@ -45,7 +45,7 @@
         (scroll)="scroll.emit($event)"
         (activate)="activate.emit($event)"
         (select)="select.emit($event)"
-        (sort)="sort.emit($event)"
+        (sort)="_onSort($event)"
         (page)="page.emit($event)"
         (reorder)="_onReorder($event)"
         (resize)="_onResize($event)"

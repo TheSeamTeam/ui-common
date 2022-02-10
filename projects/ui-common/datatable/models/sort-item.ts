@@ -1,1 +1,3 @@
-export interface SortItem { prop: string,  dir: 'asc' | 'desc' }
+import { TableColumnProp } from '@marklb/ngx-datatable'
+
+export interface SortItem { prop: TableColumnProp,  dir: 'asc' | 'desc' }
