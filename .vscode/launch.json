@@ -5,17 +5,50 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug Jest Tests",
+      "name": "Debug Storybook",
       "type": "node",
       "request": "launch",
       "runtimeArgs": [
         "--inspect-brk",
-        "${workspaceRoot}/node_modules/jest/bin/jest.js",
-        "--runInBand"
+        "${workspaceRoot}/node_modules/@storybook/angular/bin/index.js",
+        "-p",
+        "6006",
+        "--ci"
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
       "port": 9229
-    }
+    },
+    // {
+    //   "name": "Debug tests",
+    //   "type": "pwa-chrome",
+    //   "request": "attach",
+    //   "port": 9333,
+    //   "sourceMaps": true,
+    //   "webRoot": "${workspaceRoot}",
+    //   "sourceMapPathOverrides": {
+    //     "webpack:/*": "${webRoot}/*",
+    //     "/./*": "${webRoot}/*",
+    //     "/src/*": "${webRoot}/*",
+    //     "/*": "*",
+    //     "/./~/*": "${webRoot}/node_modules/*"
+    //   }
+    // },
+    {
+      "name": "Debug tests",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:9876/debug.html",
+      "webRoot": "${workspaceFolder}",
+      "sourceMaps": true,
+      "sourceMapPathOverrides": {
+        "webpack:/*": "${webRoot}/*",
+        "/./*": "${webRoot}/*",
+        "/src/*": "${webRoot}/*",
+        "/projects/ui-common/*": "${webRoot}/projects/ui-common/*",
+        "/*": "*",
+        "/./~/*": "${webRoot}/node_modules/*"
+      }
+    },
   ]
 }

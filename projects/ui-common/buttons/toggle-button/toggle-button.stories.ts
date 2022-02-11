@@ -35,9 +35,11 @@ export const Basic: Story = (args) => ({
     </button>
   `
 })
+Basic.args = {
+  btnText: 'Example Text'
+}
 Basic.argTypes = {
   btnText: {
-    defaultValue: 'Example Text',
     control: { type: 'text' }
   },
   theme: themeWithOutlineArgType,

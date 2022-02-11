@@ -45,28 +45,28 @@ describe('maxFractionalDigitsValidator', () => {
   })
 
   it('should fail for non-valid control values', () => {
-    expect(maxFractionalDigitsValidator(0)(new FormControl('.1'))).toStrictEqual({
+    expect(maxFractionalDigitsValidator(0)(new FormControl('.1'))).toEqual({
       'maxFractionalDigits': {
         'reason': `Must not be greater than 0 fractional digits.`,
         'max': 0,
         'actual': 1
       }
     })
-    expect(maxFractionalDigitsValidator(0)(new FormControl('.12'))).toStrictEqual({
+    expect(maxFractionalDigitsValidator(0)(new FormControl('.12'))).toEqual({
       'maxFractionalDigits': {
         'reason': `Must not be greater than 0 fractional digits.`,
         'max': 0,
         'actual': 2
       }
     })
-    expect(maxFractionalDigitsValidator(0)(new FormControl('0.1'))).toStrictEqual({
+    expect(maxFractionalDigitsValidator(0)(new FormControl('0.1'))).toEqual({
       'maxFractionalDigits': {
         'reason': `Must not be greater than 0 fractional digits.`,
         'max': 0,
         'actual': 1
       }
     })
-    expect(maxFractionalDigitsValidator(1)(new FormControl('.12'))).toStrictEqual({
+    expect(maxFractionalDigitsValidator(1)(new FormControl('.12'))).toEqual({
       'maxFractionalDigits': {
         'reason': `Must not be greater than 1 fractional digits.`,
         'max': 1,

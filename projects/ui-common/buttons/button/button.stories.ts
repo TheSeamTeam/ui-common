@@ -1,21 +1,15 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular'
+import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular'
 
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { buttonTypeArgType, sizeArgType, themeWithOutlineArgType } from '@theseam/ui-common/story-helpers'
 
-import { TheSeamButtonsModule } from '../buttons.module'
-import { ButtonComponent } from './button.component'
-
-import { ToggleButtonComponent } from '../toggle-button/toggle-button.component'
+import { ButtonComponent, TheSeamButtonsModule } from '@theseam/ui-common/buttons'
 
 export default {
   title: 'Buttons/Components/Button',
   component: ButtonComponent,
-  subcomponents: {
-    ToggleButtonComponent
-  },
   decorators: [
     moduleMetadata({
       imports: [
@@ -23,29 +17,24 @@ export default {
         BrowserAnimationsModule,
         TheSeamButtonsModule
       ]
-    })
+    }),
+    componentWrapperDecorator(story => `<div class="vh-100 vw-100">${story}</div>`)
   ]
 } as Meta
 
-export const Basic: Story = (args) => ({
+export const Basic: Story<Partial<ButtonComponent> & { [key: string]: any }> = (args) => ({
   props: { ...args },
   template: `
     <button seamButton
       [theme]="theme"
       [size]="size"
-      [type]="type">
-      {{ btnText }}
-    </button>
-    <button seamToggleButton
-      [theme]="theme"
-      [size]="size"
-      [type]="type">
-      {{ btnText }}
-    </button>
+      [type]="type"
+    >{{ btnText }}</button>
   `
 })
 Basic.args = {
-  btnText: 'Example Text'
+  btnText: 'Example Text',
+  theme: 'primary'
 }
 Basic.argTypes = {
   btnText: {

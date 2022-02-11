@@ -2,7 +2,7 @@ import { fakeAsync, tick } from '@angular/core/testing'
 
 import { BehaviorSubject, of, Subject } from 'rxjs'
 
-import { TickHelper } from '@theseam/ui-common/test-helpers'
+import { TickHelper } from '@theseam/ui-common/testing'
 
 import { pollingTicker } from './polling-ticker'
 

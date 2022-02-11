@@ -28,7 +28,15 @@
     "**/src/assets/**/*.js"
   ],
 
-  "angularKarmaTestExplorer.defaultAngularProjectName": "ui-common",
+  // "angularKarmaTestExplorer.defaultAngularProjectName": "ui-common",
+  // "angularKarmaTestExplorer.defaultSocketConnectionPort": 9333,
+
+  "karmaTestExplorer.defaultAngularProjectName": "ui-common",
+  "karmaTestExplorer.karmaConfFilePath": "projects/ui-common/karma.conf.js",
+  // "karmaTestExplorer.karmaPort": 9333,
+  // "karmaTestExplorer.defaultSocketConnectionPort": 9333,
+
+  // "karmaTestExplorer.karmaConfFilePath"
 
   // Makes sure we use the dependent typescript version.
   // --------------------------------------------------------------------------

@@ -77,6 +77,7 @@ export class TiledSelectTileComponent {
   faCheckCircle = faCheckCircle
 
   @HostBinding('@pulse') pulseAnimationState = true
+  @HostBinding('attr.data-tile-name') get _tileNameAttr() { return this.name }
 
   @Input() layout: TiledSelectLayout = 'grid'
 
@@ -108,6 +109,7 @@ export class TiledSelectTileComponent {
   ) { }
 
   onTileClick(event: any) {
+    console.log('event', event)
     if (!this.selectable) { return }
     this.activated.emit(event)
 

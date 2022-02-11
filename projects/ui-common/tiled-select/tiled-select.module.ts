@@ -5,7 +5,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 
 import { TiledSelectTileIconComponent } from './components/tiled-select-tile-icon/tiled-select-tile-icon.component'
 import { TiledSelectTileComponent } from './components/tiled-select-tile/tiled-select-tile.component'
-import { TiledSelectComponent } from './components/tiled-select/tiled-select.component'
+import { TheSeamTiledSelectComponent } from './components/tiled-select/tiled-select.component'
 import { TiledSelectTileIconTplDirective } from './directives/tiled-select-tile-icon-tpl.directive'
 import { TiledSelectTileLabelTplDirective } from './directives/tiled-select-tile-label-tpl.directive'
 import { TiledSelectTileOverlayDirective } from './directives/tiled-select-tile-overlay.directive'
@@ -16,7 +16,7 @@ import { TiledSelectTileOverlayDirective } from './directives/tiled-select-tile-
     FontAwesomeModule
   ],
   declarations: [
-    TiledSelectComponent,
+    TheSeamTiledSelectComponent,
     TiledSelectTileComponent,
     TiledSelectTileOverlayDirective,
     TiledSelectTileIconComponent,
@@ -24,7 +24,7 @@ import { TiledSelectTileOverlayDirective } from './directives/tiled-select-tile-
     TiledSelectTileLabelTplDirective
   ],
   exports: [
-    TiledSelectComponent,
+    TheSeamTiledSelectComponent,
     TiledSelectTileComponent,
     TiledSelectTileOverlayDirective,
     TiledSelectTileIconTplDirective,

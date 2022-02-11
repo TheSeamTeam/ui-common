@@ -1,7 +1,7 @@
 import { animate, animation, query, stagger, style, transition, trigger, useAnimation } from '@angular/animations'
 import { BooleanInput, coerceArray } from '@angular/cdk/coercion'
 import { Platform } from '@angular/cdk/platform'
-import { ChangeDetectorRef, Component, ContentChildren, EventEmitter, forwardRef, Input, OnInit, Output, QueryList } from '@angular/core'
+import { ChangeDetectorRef, Component, ContentChildren, ElementRef, EventEmitter, forwardRef, Input, OnInit, Output, QueryList, Renderer2 } from '@angular/core'
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
 
 import { InputBoolean } from '@theseam/ui-common/core'
@@ -20,7 +20,7 @@ export const slideEnterAnimation = animation([
 export const TILED_SELECT_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
   // tslint:disable-next-line:no-use-before-declare
-  useExisting: forwardRef(() => TiledSelectComponent),
+  useExisting: forwardRef(() => TheSeamTiledSelectComponent),
   multi: true,
 }
 
@@ -29,6 +29,9 @@ export const TILED_SELECT_VALUE_ACCESSOR: any = {
   templateUrl: './tiled-select.component.html',
   styleUrls: ['./tiled-select.component.scss'],
   providers: [ TILED_SELECT_VALUE_ACCESSOR ],
+  host: {
+    '[attr.data-testid]': '"tiled-select"'
+  },
   animations: [
     trigger('tiles', [
       transition('* => *', [
@@ -37,7 +40,7 @@ export const TILED_SELECT_VALUE_ACCESSOR: any = {
     ])
   ],
 })
-export class TiledSelectComponent implements OnInit, ControlValueAccessor {
+export class TheSeamTiledSelectComponent implements OnInit, ControlValueAccessor {
   static ngAcceptInputType_val: BooleanInput
   static ngAcceptInputType_disabled: BooleanInput
   static ngAcceptInputType_multiple: BooleanInput
@@ -98,7 +101,9 @@ export class TiledSelectComponent implements OnInit, ControlValueAccessor {
 
   constructor(
     private readonly _platform: Platform,
-    private readonly _cdr: ChangeDetectorRef
+    private readonly _cdr: ChangeDetectorRef,
+    private readonly _renderer: Renderer2,
+    private readonly _elementRef: ElementRef
   ) { }
 
   ngOnInit() { }
@@ -109,6 +114,9 @@ export class TiledSelectComponent implements OnInit, ControlValueAccessor {
 
   set value(value: string | string[] | undefined) {
     this.val = (this.multiple) ? [ ...(<string[]>value || []) ] : value || ''
+
+    this._renderer.setProperty(this._elementRef.nativeElement, 'value', this.val)
+
     if (this.onChange) {
       this.onChange(this.val)
       this.change.emit(this.val)
@@ -197,3 +205,6 @@ export class TiledSelectComponent implements OnInit, ControlValueAccessor {
   }
 
 }
+
+/** @deprecated Use `TheSeamTiledSelectComponent`. */
+export type TiledSelectComponent = TheSeamTiledSelectComponent

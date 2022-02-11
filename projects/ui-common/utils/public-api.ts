@@ -15,6 +15,7 @@ export * from './operators/index'
 
 export * from './router/index'
 
+export * from './array-move'
 export * from './calc-percentage'
 export * from './toggle-attribute'
 export * from './get-attribute'

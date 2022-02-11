@@ -1,6 +1,6 @@
 import { Component, ContentChild, Input, OnChanges, OnInit, PipeTransform, SimpleChanges, TemplateRef } from '@angular/core'
 
-import { ColumnChangesService } from '@marklb/ngx-datatable'
+import { ColumnChangesService, TableColumnProp } from '@marklb/ngx-datatable'
 
 import { DatatableCellTplDirective } from '../directives/datatable-cell-tpl.directive'
 import { DatatableColumnChangesService } from '../services/datatable-column-changes.service'
@@ -18,42 +18,42 @@ type _PipeTransform = PipeTransform | PipeTransform
 })
 export class DatatableColumnComponent implements OnInit, OnChanges {
 
-  @Input() name: string | undefined | null
-  @Input() prop: string | number | undefined | null
+  @Input() name?: string | null
+  @Input() prop?: TableColumnProp | null
 
-  @Input() flexGrow: number | undefined | null
-  @Input() minWidth: number | undefined | null
-  @Input() maxWidth: number | undefined | null
-  @Input() width: number | undefined | null
+  @Input() flexGrow?: number | null
+  @Input() minWidth?: number | null
+  @Input() maxWidth?: number | null
+  @Input() width?: number | null
 
-  @Input() resizeable: boolean | undefined | null
-  @Input() sortable: boolean | undefined | null
-  @Input() draggable: boolean | undefined | null
+  @Input() resizeable?: boolean | null
+  @Input() sortable?: boolean | null
+  @Input() draggable?: boolean | null
 
-  @Input() canAutoResize: boolean | undefined | null
+  @Input() canAutoResize?: boolean | null
 
-  @Input() comparator: ((valueA: any, valueB: any, rowA?: any, rowB?: any, sortDirection?: 'asc' | 'desc') => -1 | 0 | 1) | undefined | null
+  @Input() comparator?: ((valueA: any, valueB: any, rowA?: any, rowB?: any, sortDirection?: 'asc' | 'desc') => -1 | 0 | 1) | null
 
-  @Input() headerTemplate: TemplateRef<any> | undefined | null
+  @Input() headerTemplate?: TemplateRef<any> | null
 
-  @Input() checkboxable: boolean | undefined | null
-  @Input() headerCheckboxable: boolean | undefined | null
+  @Input() checkboxable?: boolean | null
+  @Input() headerCheckboxable?: boolean | null
 
-  @Input() headerClass: string | ((data: any) => string|any) | undefined | null
-  @Input() cellClass: string | ((data: any) => string|any) | undefined | null
+  @Input() headerClass?: string | ((data: any) => string|any) | null
+  @Input() cellClass?: string | ((data: any) => string|any) | null
 
-  @Input() frozenLeft: boolean | undefined | null
-  @Input() frozenRight: boolean | undefined | null
+  @Input() frozenLeft?: boolean | null
+  @Input() frozenRight?: boolean | null
 
-  @Input() pipe: _PipeTransform | undefined | null
+  @Input() pipe?: _PipeTransform | null
 
-  @Input() isTreeColumn: boolean | undefined | null
-  @Input() treeLevelIndent: number | undefined | null
+  @Input() isTreeColumn?: boolean | null
+  @Input() treeLevelIndent?: number | null
 
-  @Input() summaryFunc: ((cells: any[]) => any) | undefined | null
-  @Input() summaryTemplate: TemplateRef<any> | undefined | null
+  @Input() summaryFunc?: ((cells: any[]) => any) | null
+  @Input() summaryTemplate?: TemplateRef<any> | null
 
-  @Input() hidden: boolean | undefined | null
+  @Input() hidden?: boolean | null
 
   private _isFirstChange = true
 
@@ -61,7 +61,7 @@ export class DatatableColumnComponent implements OnInit, OnChanges {
 
   // tslint:disable-next-line: no-input-rename
   @Input('cellTemplate')
-  _cellTemplateInput: TemplateRef<any> | undefined | null
+  _cellTemplateInput?: TemplateRef<any> | null
 
   @ContentChild(DatatableCellTplDirective, { read: TemplateRef, static: true })
   _cellTemplateQuery?: TemplateRef<any>

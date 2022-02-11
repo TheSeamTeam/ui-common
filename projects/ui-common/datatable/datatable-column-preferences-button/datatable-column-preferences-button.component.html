@@ -2,15 +2,30 @@
   <seam-datatable-column-preferences></seam-datatable-column-preferences>
 </ng-template>
 
+<seam-menu #menu
+  menuClass="list-group py-0 border-0 seam-datatable-action-menu"
+  animationType="fade">
+  <button seamMenuItem
+    type="button"
+    class="list-group-item list-group-item-action py-1"
+    [seamPopover]="colPrefsTpl">
+    Show/Hide Columns
+  </button>
 
-<button
-  seamButton
-  [seamPopover]="colPrefsTpl"
-  theme="lightgray"
-  size="sm"
+  <button seamMenuItem
+    type="button"
+    class="list-group-item list-group-item-action py-1"
+    (click)="_resetColumns($event)">
+    Reset Columns
+  </button>
+</seam-menu>
+
+<button type="button" class="btn btn-lightgray btn-sm"
+  [seamMenuToggle]="menu"
+  [positions]="_actionMenuPositions || []"
   style="padding-left: 10px; padding-right: 10px;"
-  title="Column Preferences"
-  >
+  title="Column Preferences">
   <seam-icon [icon]="icon"></seam-icon>
   <span class="sr-only">Column Preferences</span>
 </button>
+

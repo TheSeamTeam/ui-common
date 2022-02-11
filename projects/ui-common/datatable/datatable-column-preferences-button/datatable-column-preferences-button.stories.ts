@@ -5,10 +5,14 @@ import { BehaviorSubject, of } from 'rxjs'
 
 import { CSVDataExporter, XLSXDataExporter } from '@theseam/ui-common/data-exporter'
 import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
+import { expectFn, getHarness } from '@theseam/ui-common/testing'
 
 import { TheSeamDatatableModule } from '../datatable.module'
 import { THESEAM_DATATABLE } from '../datatable/datatable.component'
 import { DatatableColumnPreferencesButtonComponent } from './datatable-column-preferences-button.component'
+import { TheSeamDatatableHarness } from '../testing'
+import { THESEAM_DATATABLE_PREFERENCES_ACCESSOR } from '../tokens/datatable-preferences-accessor'
+import { DatatablePreferencesAccessorLocalService } from '../stories/preferences-accessor-local'
 
 class MockDatatable {
 
@@ -45,6 +49,12 @@ export default {
         BrowserAnimationsModule,
         TheSeamDatatableModule,
         TheSeamTableCellTypesModule
+      ],
+      providers: [
+        {
+          provide: THESEAM_DATATABLE_PREFERENCES_ACCESSOR,
+          useClass: DatatablePreferencesAccessorLocalService
+        }
       ]
     })
   ],
@@ -58,25 +68,30 @@ export default {
 
 export const Example: Story = (args) => ({
   props: {
-    columns: [
-      { prop: 'name', name: 'Name' },
-      { prop: 'age', name: 'Age' },
-      { prop: 'color', name: 'Color' }
-    ],
-    rows: [
-      { name: 'Mark', age: 27, color: 'blue' },
-      { name: 'Joe', age: 33, color: 'green' },
-    ],
-    exporters: [
-      new CSVDataExporter(),
-      new XLSXDataExporter()
-    ]
+    __hack: {
+      columns: [
+        { prop: 'name', name: 'Name' },
+        { prop: 'age', name: 'Age' },
+        { prop: 'color', name: 'Color' }
+      ],
+      rows: [
+        { name: 'Mark', age: 27, color: 'blue' },
+        { name: 'Joe', age: 33, color: 'green' },
+      ],
+      exporters: [
+        new CSVDataExporter(),
+        new XLSXDataExporter()
+      ]
+    }
   },
   template: `
     <div class="vh-100 d-flex flex-column p-2">
       <seam-datatable
-        [columns]="columns"
-        [rows]="rows">
+        preferencesKey="test-prefs-1"
+        [columns]="__hack.columns"
+        [rows]="__hack.rows"
+        selectionType="checkbox"
+        sortType="multi">
 
         <seam-datatable-menu-bar>
           <div class="d-flex flex-row justify-content-end">
@@ -87,6 +102,14 @@ export const Example: Story = (args) => ({
       </seam-datatable>
     </div>`
 })
+Example.play = async ({ canvasElement, fixture }) => {
+  const datatableHarness = await getHarness(TheSeamDatatableHarness, { canvasElement, fixture })
+
+  await expectFn(await datatableHarness.getCurrentPage()).toBe(1)
+  // const page2BtnHarness = await (await datatableHarness.getPager()).getPageButtonHarness(2)
+  // await (await page2BtnHarness.getAnchor()).click()
+  // await expectFn(await datatableHarness.getCurrentPage()).toBe(2)
+}
 
 export const Popover: Story = (args) => ({
   moduleMetadata: {

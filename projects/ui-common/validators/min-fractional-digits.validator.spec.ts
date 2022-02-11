@@ -45,14 +45,14 @@ describe('minFractionalDigitsValidator', () => {
   })
 
   it('should fail for non-valid control values', () => {
-    expect(minFractionalDigitsValidator(2)(new FormControl('.1'))).toStrictEqual({
+    expect(minFractionalDigitsValidator(2)(new FormControl('.1'))).toEqual({
       'minFractionalDigits': {
         'reason': `Must not be less than 2 fractional digits.`,
         'min': 2,
         'actual': 1
       }
     })
-    expect(minFractionalDigitsValidator(1)(new FormControl('0.'))).toStrictEqual({
+    expect(minFractionalDigitsValidator(1)(new FormControl('0.'))).toEqual({
       'minFractionalDigits': {
         'reason': `Must not be less than 1 fractional digits.`,
         'min': 1,

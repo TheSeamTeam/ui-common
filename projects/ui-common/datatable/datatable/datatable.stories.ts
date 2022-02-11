@@ -5,16 +5,43 @@ import { Component, Input, ViewChild } from '@angular/core'
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { RouterModule } from '@angular/router'
+import { BehaviorSubject, Observable, of, Subscription } from 'rxjs'
+import { shareReplay, startWith, take, tap } from 'rxjs/operators'
 
-import { TheSeamDataFiltersModule } from '@theseam/ui-common/data-filters'
+import { DataFilterState, TheSeamDataFiltersModule } from '@theseam/ui-common/data-filters'
 import { DatatableGqlDataSource } from '@theseam/ui-common/datatable'
 import { ExportersDataEvaluator, JexlEvaluator, THESEAM_DYNAMIC_VALUE_EVALUATOR } from '@theseam/ui-common/dynamic'
 import { StoryToastrService } from '@theseam/ui-common/story-helpers'
 import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
 import { ToastrModule, ToastrService } from 'ngx-toastr'
 
+import { userEvent, waitFor, within } from '@storybook/testing-library'
+import { expectFn, getHarness } from '@theseam/ui-common/testing'
+
+import {
+  DatatableGraphQLQueryRef,
+  DatatableGraphqlService,
+  DEFAULT_PAGE_SIZE,
+  FilterStateMapperResult,
+  gqlVar,
+  MapperContext,
+  observeRowsWithGqlInputsHandling,
+  SortsMapperResult
+} from '@theseam/ui-common/graphql'
+import { subscriberCount } from '@theseam/ui-common/utils'
+import { SortItem } from '@theseam/ui-common/datatable'
+
+import {
+  createApolloTestingProvider,
+  createSimpleGqlTestRoot,
+  SimpleGqlTestExtraVariables,
+  simpleGqlTestSchema,
+  SIMPLE_GQL_TEST_QUERY
+} from '../../graphql/testing'
+
 import { TheSeamDatatableModule } from '../datatable.module'
 import { DatatableDataSource } from '../models/datatable-data-source'
+import { TheSeamDatatableHarness } from '../testing'
 import { DatatableComponent } from './datatable.component'
 
 
@@ -41,8 +68,11 @@ export default {
 } as Meta
 
 export const Simple: Story = (args) => ({
-  props: { ...args },
-  template: `<seam-datatable class="w-100 h-100" [columns]="columns" [rows]="rows"></seam-datatable>`
+  // props: { ...args },
+  props: {
+    __hack: { ...args }
+  },
+  template: `<seam-datatable class="w-100 h-100" [columns]="__hack.columns" [rows]="__hack.rows"></seam-datatable>`
 })
 Simple.args = {
   columns: [
@@ -52,17 +82,50 @@ Simple.args = {
   ],
   rows: [
     { name: 'Mark', age: 27, color: 'blue' },
-    { name: 'Joe', age: 33, color: 'green' }
+    { name: 'Joe', age: 33, color: 'green' },
+    { name: 'Mark', age: 27, color: 'blue' },
+    { name: 'Joe', age: 33, color: 'green' },
+    { name: 'Mark', age: 27, color: 'blue' },
+    { name: 'Joe', age: 33, color: 'green' },
+    { name: 'Mark', age: 27, color: 'blue' },
+    { name: 'Joe', age: 33, color: 'green' },
+    { name: 'Mark', age: 27, color: 'blue' },
+    { name: 'Joe', age: 33, color: 'green' },
+    { name: 'Mark', age: 27, color: 'blue' },
+    { name: 'Joe', age: 33, color: 'green' },
+    { name: 'Mark', age: 27, color: 'blue' },
+    { name: 'Joe', age: 33, color: 'green' },
+    { name: 'Mark', age: 27, color: 'blue' },
+    { name: 'Joe', age: 33, color: 'green' },
+    { name: 'Mark', age: 27, color: 'blue' },
+    { name: 'Joe', age: 33, color: 'green' },
+    { name: 'Mark', age: 27, color: 'blue' },
+    { name: 'Joe', age: 33, color: 'green' },
+    { name: 'Mark', age: 27, color: 'blue' },
+    { name: 'Joe', age: 33, color: 'green' },
+    { name: 'Mark', age: 27, color: 'blue' },
+    { name: 'Joe', age: 33, color: 'green' },
+    { name: 'Mark', age: 27, color: 'blue' },
+    { name: 'Joe', age: 33, color: 'green' },
+    { name: 'Mark', age: 27, color: 'blue' },
+    { name: 'Joe', age: 33, color: 'green' },
+    { name: 'Mark', age: 27, color: 'blue' },
+    { name: 'Joe', age: 33, color: 'green' },
+    { name: 'Mark', age: 27, color: 'blue' },
+    { name: 'Joe', age: 33, color: 'green' },
   ]
 }
 
 export const ColumnTemplate = (args: any) => ({
-  props: { ...args },
+  // props: { ...args },
+  props: {
+    __hack: { ...args }
+  },
   template: `
     <seam-datatable
       class="w-100 h-100"
-      [columns]="columns"
-      [rows]="rows">
+      [columns]="__hack.columns"
+      [rows]="__hack.rows">
       <seam-datatable-column name="Color" prop="color">
         <ng-template seamDatatableCellTpl let-value="value">
           <span *ngIf="value === 'blue'; else notBlue" style="color: blue;">{{ value }}</span>
@@ -85,22 +148,24 @@ ColumnTemplate.args = {
 
 export const ActionMenu = (args: any) => ({
   props: {
-    ...args,
-    columns: [
-      { prop: 'name', name: 'Name' },
-      { prop: 'age', name: 'Age' },
-      { prop: 'color', name: 'Color' }
-    ],
-    rows: [
-      { name: 'Mark', age: 27, color: 'blue' },
-      { name: 'Joe', age: 33, color: 'green' },
-    ]
+    __hack: {
+      ...args,
+      columns: [
+        { prop: 'name', name: 'Name' },
+        { prop: 'age', name: 'Age' },
+        { prop: 'color', name: 'Color' }
+      ],
+      rows: [
+        { name: 'Mark', age: 27, color: 'blue' },
+        { name: 'Joe', age: 33, color: 'green' },
+      ]
+    }
   },
   template: `
     <seam-datatable
       class="w-100 h-100"
-      [columns]="columns"
-      [rows]="rows">
+      [columns]="__hack.columns"
+      [rows]="__hack.rows">
       <ng-template seamDatatableRowActionItem let-row>
         <seam-datatable-action-menu>
           <seam-datatable-action-menu-item label="Action One"></seam-datatable-action-menu-item>
@@ -128,23 +193,25 @@ export const InlineEdit = (args: any) => ({
     ]
   },
   props: {
-    ...args,
-    columns: [
-      { prop: 'name', name: 'Name' },
-      { prop: 'age', name: 'Age' },
-      { prop: 'active', name: 'Active' }
-    ],
-    rows: [
-      { name: 'Mark', age: 27, active: true, control: new FormControl(true) },
-      { name: 'Joe', age: 33, active: false, control: new FormControl(false) },
-    ],
-    toggled: action('toggled')
+    __hack: {
+      ...args,
+      columns: [
+        { prop: 'name', name: 'Name' },
+        { prop: 'age', name: 'Age' },
+        { prop: 'active', name: 'Active' }
+      ],
+      rows: [
+        { name: 'Mark', age: 27, active: true, control: new FormControl(true) },
+        { name: 'Joe', age: 33, active: false, control: new FormControl(false) },
+      ],
+      toggled: action('toggled')
+    }
   },
   template: `
     <seam-datatable
       class="w-100 h-100"
-      [columns]="columns"
-      [rows]="rows">
+      [columns]="__hack.columns"
+      [rows]="__hack.rows">
       <seam-datatable-column name="Active" prop="active">
         <ng-template seamDatatableCellTpl let-value="value" let-row="row" let-rowIndex="rowIndex">
           <div class="custom-control custom-switch">
@@ -160,22 +227,24 @@ export const InlineEdit = (args: any) => ({
 
 export const CheckboxSelection = (args: any) => ({
   props: {
-    ...args,
-    selected: [
-      { name: 'Mark', age: 27, color: 'blue' }
-    ],
-    rowIdentity: (x: any) => `${x.name}${x.age}${x.color}`,
-    selectAllRowsOnPage: false
+    __hack: {
+      ...args,
+      selected: [
+        { name: 'Mark', age: 27, color: 'blue' }
+      ],
+      rowIdentity: (x: any) => `${x.name}${x.age}${x.color}`,
+      selectAllRowsOnPage: false
+    }
   },
   template: `
     <seam-datatable
       class="w-100 h-100"
-      [columns]="columns"
-      [rows]="rows"
+      [columns]="__hack.columns"
+      [rows]="__hack.rows"
       selectionType="checkbox"
-      [rowIdentity]="rowIdentity"
-      [selectAllRowsOnPage]="selectAllRowsOnPage"
-      [selected]="selected">
+      [rowIdentity]="__hack.rowIdentity"
+      [selectAllRowsOnPage]="__hack.selectAllRowsOnPage"
+      [selected]="__hack.selected">
     </seam-datatable>`
 })
 CheckboxSelection.args = {
@@ -200,29 +269,31 @@ CheckboxSelection.args = {
 
 export const ToggleDisplay = (args: any) => ({
   props: {
-    ...args,
-    selected: [],
-    selectAllRowsOnPage: false,
-    displayCheck(row: any) {
-      return row.name !== 'Adam'
-    },
-    onSelect({ selected }: { selected: any }) {
-      action('select')(selected)
+    __hack: {
+      ...args,
+      selected: [],
+      selectAllRowsOnPage: false,
+      displayCheck(row: any) {
+        return row.name !== 'Adam'
+      },
+      onSelect({ selected }: { selected: any }) {
+        action('select')(selected)
 
-      this.selected.splice(0, this.selected.length)
-      this.selected.push(...selected)
+        this.selected.splice(0, this.selected.length)
+        this.selected.push(...selected)
+      }
     }
   },
   template: `
     <seam-datatable
       class="w-100 h-100"
-      [columns]="columns"
-      [rows]="rows"
-      [selected]="selected"
+      [columns]="__hack.columns"
+      [rows]="__hack.rows"
+      [selected]="__hack.selected"
       [selectionType]="'checkbox'"
-      [selectAllRowsOnPage]="selectAllRowsOnPage"
-      [displayCheck]="displayCheck"
-      (select)="onSelect($event)">
+      [selectAllRowsOnPage]="__hack.selectAllRowsOnPage"
+      [displayCheck]="__hack.displayCheck"
+      (select)="__hack.onSelect($event)">
     </seam-datatable>`
 })
 ToggleDisplay.args = {
@@ -240,12 +311,12 @@ ToggleDisplay.args = {
 
 // NOTE: Still being worked on, but is usable.
 export const Tree = (args: any) => ({
-  props: { ...args },
+  props: { __hack: { ...args } },
   template: `
     <seam-datatable
       class="w-100 h-100"
-      [columns]="columns"
-      [rows]="rows"
+      [columns]="__hack.columns"
+      [rows]="__hack.rows"
       [treeFromRelation]="'parentCompany'"
       [treeToRelation]="'company'">
     </seam-datatable>`
@@ -268,12 +339,12 @@ Tree.args = {
 }
 
 export const Detail = (args: any) => ({
-  props: { ...args },
+  props: { __hack: { ...args } },
   template: `
     <seam-datatable #table
       class="w-100 h-100"
-      [columns]="columns"
-      [rows]="rows">
+      [columns]="__hack.columns"
+      [rows]="__hack.rows">
 
       <seam-datatable-row-detail rowHeight="100">
         <ng-template let-row="row" let-expanded="expanded" seamDatatableRowDetailTpl>
@@ -461,25 +532,27 @@ export const Filter: Story = (args) => ({
     ]
   },
   props: {
-    ...args,
-    filterButtons: [
-      { name: 'Registered', value: '',
-        comparator: (value: any, row: any) => {
-          return row.registered ? -1 : 1
+    __hack: {
+      ...args,
+      filterButtons: [
+        { name: 'Registered', value: '',
+          comparator: (value: any, row: any) => {
+            return row.registered ? -1 : 1
+          }
+        },
+        { name: 'Over 30', value: 'over-30',
+          comparator: (value: any, row: any) => {
+            return row.age > 30 ? 1 : -1
+          }
         }
-      },
-      { name: 'Over 30', value: 'over-30',
-        comparator: (value: any, row: any) => {
-          return row.age > 30 ? 1 : -1
-        }
-      }
-    ]
+      ]
+    }
   },
   template: `
     <dt-filter-wrapper
-      [columns]="columns"
-      [rows]="rows"
-      [filterButtons]="filterButtons">
+      [columns]="__hack.columns"
+      [rows]="__hack.rows"
+      [filterButtons]="__hack.filterButtons">
     </dt-filter-wrapper>
   `
 })
@@ -507,15 +580,17 @@ const dSource = new StoryDataSource()
 
 export const DataSource: Story = (args) => ({
   props: {
-    ...args,
-    dataSource: dSource,
+    __hack: {
+      ...args,
+      dataSource: dSource,
+    }
   },
   template: `
     <div class="vh-100 vw-100">
       <seam-datatable
         class="w-100 h-100"
-        [columns]="columns"
-        [dataSource]="dataSource"
+        [columns]="__hack.columns"
+        [dataSource]="__hack.dataSource"
         externalPaging="true"
         externalSorting="true"
         externalFiltering="true">
@@ -577,4 +652,251 @@ FooterTemplate.args = {
     { name: 'Joe', age: 33, color: 'green' },
     { name: 'Shelby', age: 27, color: 'grey' },
   ]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+// externalPaging="true"
+
+@Component({
+  selector: 'dt-wrap',
+  template: `
+    <seam-datatable #dt
+      class="w-100 h-100"
+      [columns]="columns"
+      [rows]="_rows$ | async"
+      externalSorting="true"
+      externalFiltering="true">
+    </seam-datatable>
+  `
+})
+class StoryDataSourceTwo {
+  private readonly _datatableSubject = new BehaviorSubject<any | undefined>(undefined)
+
+  @ViewChild(DatatableComponent, { static: true })
+  set _datatableQuery(dt: DatatableComponent) { this._datatableSubject.next(dt) }
+
+  @Input() columns: any
+
+  public readonly _rows$: Observable<any[]>
+  private readonly _queryRef: DatatableGraphQLQueryRef<any, any, any>
+
+  private _sub: any
+  _rowsTmp: any = [
+    { id: 0, name: 'thing' },
+    { id: 0, name: 'thing' },
+    { id: 0, name: 'thing' },
+    { id: 0, name: 'thing' },
+    { id: 0, name: 'thing' },
+    { id: 0, name: 'thing' },
+    { id: 0, name: 'thing' },
+    { id: 0, name: 'thing' },
+    { id: 0, name: 'thing' },
+    { id: 0, name: 'thing' },
+    { id: 0, name: 'thing' },
+    { id: 0, name: 'thing' },
+    { id: 0, name: 'thing' },
+    { id: 0, name: 'thing' },
+    { id: 0, name: 'thing' },
+    { id: 0, name: 'thing' },
+    { id: 0, name: 'thing' },
+    { id: 0, name: 'thing' },
+    { id: 0, name: 'thing' },
+    { id: 0, name: 'thing' },
+    { id: 0, name: 'thing' },
+    { id: 0, name: 'thing' },
+    { id: 0, name: 'thing' },
+    { id: 0, name: 'thing' },
+    { id: 0, name: 'thing' },
+    { id: 0, name: 'thing' },
+    { id: 0, name: 'thing' },
+    { id: 0, name: 'thing' },
+    { id: 0, name: 'thing' },
+    { id: 0, name: 'thing' },
+  ]
+
+  constructor(
+    private readonly _datatableGql: DatatableGraphqlService
+  ) {
+    this._queryRef = this._datatableGql.watchQuery<any, any, any>(
+      {
+        query: SIMPLE_GQL_TEST_QUERY,
+        variables: {
+          skip: 0,
+          take: DEFAULT_PAGE_SIZE
+        }
+      },
+      {
+        variables: {
+          // removeIfNotDefined: [ 'order', 'search' ],
+          // removeIfNotUsed: [ 'search' ],
+          inline: [ 'where' ]
+        },
+        // Disabling paging until a solution for select all, when partially loaded datatset, is decided.
+        // disablePaging: true
+      }
+    )
+
+    const extraVariables$ = of({})
+
+    const _rows$ = this._queryRef.rows((data: any) => {
+      // console.log('~!~!~!~!~', data)
+      return {
+        rows: data.simpleGqlTestRecords.items,
+        totalCount: data.simpleGqlTestRecords.totalCount
+      }
+    }).pipe(
+      shareReplay({ bufferSize: 1, refCount: true }),
+      // tap(v => console.log('~! rows', v)),
+    )
+
+    const _mapSorts = (sorts: SortItem[], context: MapperContext): SortsMapperResult => {
+      return sorts.map(s => {
+        const _dir = s?.dir.toUpperCase()
+
+        switch (s?.prop) {
+          case 'id': return ({ id: _dir })
+          case 'name': return ({ name: _dir })
+        }
+        console.log('mapSorts', sorts)
+        return ({ name: _dir })
+      })
+    }
+
+    // const _mapSearchFilterState = async (
+    const _mapSearchFilterState = (
+      filterState: DataFilterState, context: MapperContext<SimpleGqlTestExtraVariables>
+    // ): Promise<FilterStateMapperResult> => {
+    ): FilterStateMapperResult => {
+      const value = filterState.state?.value?.trim()
+      if (typeof value !== 'string' || value.length === 0) {
+        return null
+      }
+
+      const searchVar = gqlVar('search')
+      const conditions: any[] = [
+        { id: { objectContains: searchVar } },
+        { name: { contains: searchVar } },
+      ]
+
+      console.log('_mapSearchFilterState', filterState, conditions)
+      return {
+        filter: {
+          or: conditions
+        },
+        variables: { search: value }
+      }
+    }
+
+    const _mapToggleButtonsState = (
+      filterState: DataFilterState,
+      context: MapperContext<SimpleGqlTestExtraVariables>
+    ): FilterStateMapperResult => {
+      console.log('_mapToggleButtonsState', filterState)
+      const value = Array.isArray(filterState.state?.value) ? filterState.state?.value[0]?.trim() : filterState.state?.value?.trim()
+      if (typeof value !== 'string' || value.length === 0) {
+        return null
+      }
+
+      return {
+        filter: { status: { eq: value } },
+        variables: { }
+      }
+    }
+
+    this._rows$ = observeRowsWithGqlInputsHandling(
+      this._queryRef,
+      _rows$,
+      this._datatableSubject.asObservable(),
+      extraVariables$,
+      _mapSorts,
+      {
+        'search': _mapSearchFilterState,
+        'toggle-buttons': _mapToggleButtonsState
+      }
+    ).pipe(
+      // tap(v => {
+      //   console.log('v')
+      // })
+    )
+
+    // this._rows$ = of(this._rowsTmp)
+
+    // this._sub = subscriberCount(this._rows$, 'this._rows$').pipe(
+    //   // take(1)
+    // ).subscribe(v => {
+    //   console.log('r', v)
+    //   this._rowsTmp = v
+    // })
+
+    // console.log('~~~!')
+  }
+
+  // ngOnInit() {
+  //   console.log('dt-wrap ngOnInit')
+  // }
+
+  // ngOnDestroy() {
+  //   console.log('dt-wrap ngOnDestroy')
+  //   // this._sub.unsubscribe()
+  // }
+
+}
+
+export const GraphQLQueryRef: Story = (args) => ({
+  moduleMetadata: {
+    declarations: [
+      StoryDataSourceTwo
+    ],
+    providers: [
+      createApolloTestingProvider(
+        simpleGqlTestSchema, createSimpleGqlTestRoot(60)
+      )
+    ]
+  },
+  props: {
+    __hack: {
+      // ...args
+      columns: args.columns
+    }
+  },
+  template: `
+    <div style="height: 500px; width: 600px; display: block; position: relative;">
+      <dt-wrap style="height: 100%; width: 100%; display: block;" [columns]="__hack.columns"></dt-wrap>
+    </div>
+  `
+})
+GraphQLQueryRef.args = {
+  columns: [
+    { prop: 'id', name: 'Id' },
+    { prop: 'name', name: 'Name' }
+  ],
+  numberOfRows: 60
+}
+GraphQLQueryRef.play = async ({ canvasElement, fixture }) => {
+  // const canvas = within(canvasElement)
+
+  // const page2Btn = canvas.getByRole('button', { name: /page 2/i })
+  // const page2Anchor = page2Btn.getElementsByTagName('a')[0]
+  // await userEvent.click(page2Anchor)
+
+  // await expectFn(page2Btn.classList.contains('active')).toBe(true)
+
+
+  const datatableHarness = await getHarness(TheSeamDatatableHarness, { canvasElement, fixture })
+
+  await expectFn(await datatableHarness.getCurrentPage()).toBe(1)
+  const page2BtnHarness = await (await datatableHarness.getPager()).getPageButtonHarness(2)
+  await (await page2BtnHarness.getAnchor()).click()
+  await expectFn(await datatableHarness.getCurrentPage()).toBe(2)
 }

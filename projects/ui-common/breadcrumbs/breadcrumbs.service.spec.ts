@@ -3,7 +3,7 @@ import { fakeAsync, tick } from '@angular/core/testing'
 import { Router } from '@angular/router'
 import { RouterTestingModule } from '@angular/router/testing'
 
-import { SpectatorService } from '@ngneat/spectator'
+import { SpectatorService } from '@ngneat/spectator/jest'
 import { createServiceFactory } from '@ngneat/spectator/jest'
 import { TheSeamBreadcrumb } from './breadcrumb'
 

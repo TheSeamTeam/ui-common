@@ -4,22 +4,15 @@
     "outDir": "../../out-tsc/lib",
     "baseUrl": ".",
     "rootDir": ".",
-    "target": "es2015",
-    "module": "es2020",
-    "moduleResolution": "node",
     "declaration": true,
-    "jsx": "react",
-    "sourceMap": true,
     "inlineSources": true,
-    "emitDecoratorMetadata": false,
-    "experimentalDecorators": true,
-    "strictNullChecks": true,
     "importHelpers": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "stripInternal": true,
     "types": [], // I am setting this as a reminder that ng-packagr ignores "types" and "typeRoots"
+    "typeRoots": [
+      // "../../node_modules/@types"
+    ],
     "lib": [
       "dom",
       "es2018"
@@ -34,7 +27,7 @@
     "skipTemplateCodegen": true,
     "strictMetadataEmit": true,
     "enableResourceInlining": true,
-    "enableIvy": true // Disable if using Storybook in linked project
+    "enableIvy": true
   },
   "files": [
     "./public_api.ts"

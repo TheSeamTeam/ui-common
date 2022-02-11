@@ -4,6 +4,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { CSVDataExporter, XLSXDataExporter } from '@theseam/ui-common/data-exporter'
 import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
+import { StoryToastrService } from '@theseam/ui-common/story-helpers'
+import { ToastrService } from 'ngx-toastr'
 
 import { TheSeamDatatableModule } from '../datatable.module'
 import { DatatableExportButtonComponent } from './datatable-export-button.component'
@@ -17,6 +19,9 @@ export default {
         BrowserAnimationsModule,
         TheSeamDatatableModule,
         TheSeamTableCellTypesModule
+      ],
+      providers: [
+        { provide: ToastrService, useClass: StoryToastrService },
       ]
     })
   ],
