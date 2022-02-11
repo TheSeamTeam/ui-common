@@ -9,6 +9,7 @@ import {
   ElementRef,
   EventEmitter,
   forwardRef,
+  HostListener,
   InjectionToken,
   Input,
   isDevMode,
@@ -400,6 +401,34 @@ export class DatatableComponent
   viewChange: Observable<ListRange>
 
   private _rowDetailToggleSubscription = Subscription.EMPTY
+
+  // TODO: Remove this DOM-dependent code when a way to property listen for
+  // dblclick on the header reasize handles.
+  @HostListener('dblclick', [ '$event' ])
+  _dblClick(event: any) {
+    const isHandle = (<HTMLElement>event.target).classList.contains('resize-handle')
+    if (isHandle) {
+      const isResizeable = (<HTMLElement>event.target).parentElement?.classList.contains('resizeable')
+      if (isResizeable) {
+        event.stopPropagation()
+        const id = (<HTMLElement>event.target).parentElement
+          ?.querySelector('.datatable-column-header-separator')
+          ?.getAttribute('data-column-id')
+        this._columnsManager.columns$.pipe(
+          take(1),
+        ).subscribe(columns => {
+          const column = columns.find(c => c.$$id === id)
+          if (column) {
+            const columnProp = getColumnProp(column)
+            if (columnProp)  {
+              const alteration = new WidthColumnsAlteration({ columnProp, canAutoResize: true }, false)
+              this._columnsAlterationsManager.add([ alteration ])
+            }
+          }
+        })
+      }
+    }
+  }
 
   constructor(
     private readonly _preferences: DatatablePreferencesService,
