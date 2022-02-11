@@ -90,6 +90,7 @@ export const Example: Story = (args) => ({
         preferencesKey="test-prefs-1"
         [columns]="__hack.columns"
         [rows]="__hack.rows"
+        selectionType="checkbox"
         sortType="multi">
 
         <seam-datatable-menu-bar>
