@@ -1,0 +1,166 @@
+// Not implemented
+
+// $datatable-font-size: 16px !default;
+// $datatable-default-border-width: 1px !default;
+
+// $datatable-border-top-width: 0px !default;
+// $datatable-border-right-width: 0px !default;
+// $datatable-border-bottom-width: 0px !default;
+// $datatable-border-left-width: 0px !default;
+// $datatable-border-color: #fff !default;
+// $datatable-color: $body-color !default;
+
+// // common datatable colors
+// $datatable-background: #fff !default;
+// $datatable-box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+//   0 3px 14px 2px rgba(0, 0, 0, 0.12) !default;
+// $datatable-row-even-background: #eee !default;
+
+// // default row and cell background colors
+// $datatable-default-background: $white !default;
+// $datatable-hover-effect: false !default;
+// $datatable-row-group-background-hover: #eee !default;
+// $datatable-row-group-even-background-hover: #eee !default;
+// $datatable-focus-effect: false !default;
+// $datatable-row-group-background-focus: #ddd !default;
+// $datatable-row-group-even-background-focus: #ddd !default;
+
+// // default background colors for cell selection style
+// $datatable-cellselection-background-hover: #eee !default;
+// $datatable-cellselection-background-focus: #ddd !default;
+
+// // background and text colors for selected cell / row
+// $datatable-selected-active-background: #304ffe !default;
+// $datatable-selected-active-color: #fff !default;
+// $datatable-selected-active-background-hover: #193ae4 !default;
+// $datatable-selected-active-color-hover: #fff !default;
+// $datatable-selected-active-background-focus: #2041ef !default;
+// $datatable-selected-active-color-focus: #fff !default;
+
+// // colors for header elements
+// $datatable-header-background: #fff !default;
+// $datatable-header-color: $body-color !default;
+// $datatable-header-border-top-width: 0 !default;
+// $datatable-header-border-right-width: 0 !default;
+// $datatable-header-border-bottom-width: $datatable-default-border-width !default;
+// $datatable-header-border-left-width: 0 !default;
+// $datatable-header-border-color: $light !default;
+
+// $datatable-header-cell-text-align: left !default;
+// $datatable-header-cell-padding: .75rem !default;
+// $datatable-header-cell-font-size: 16px !default;
+// $datatable-header-cell-font-weight: 500 !default;
+// $datatable-header-cell-label-line-height: 24px !default;
+
+// $datatable-header-draggable-background: #eee !default;
+// $datatable-header-resize-handle-color: #eee !default;
+// $datatable-header-resize-handle-border-top-width: 0 !default;
+// $datatable-header-resize-handle-border-right-width: $datatable-default-border-width !default;
+// $datatable-header-resize-handle-border-bottom-width: 0 !default;
+// $datatable-header-resize-handle-border-left-width: 0 !default;
+
+// $datatable-progress-linear-background-color: rgb(170, 209, 249) !default;
+// $datatable-progress-linear-accent-color: rgb(16, 108, 200) !default;
+
+// // colors for table body elements
+// $datatable-row-detail-background: #f8f9fa !default;
+// $datatable-row-detail-padding: 10px !default;
+
+// $datatable-row-border-top-width: 1px !default;
+// $datatable-row-border-right-width: 0px !default;
+// $datatable-row-border-bottom-width: 0px !default;
+// $datatable-row-border-left-width: 0px !default;
+// $datatable-row-border-color: #d1d4d7 !default;
+
+// $datatable-body-margin: -1px 0 0 0 !default;
+
+// $datatable-body-cell-color: rgba(0, 0, 0, 0.87) !default;
+// $datatable-body-cell-font-size: 14px !default;
+// $datatable-body-cell-font-weight: 400 !default;
+// $datatable-body-cell-text-align: left !default;
+// $datatable-body-cell-padding: 0.9rem 1.2rem !default;
+// $datatable-body-cell-border-top-width: 0 !default;
+// $datatable-body-cell-border-right-width: 0 !default;
+// $datatable-body-cell-border-bottom-width: 0 !default;
+// $datatable-body-cell-border-left-width: 0 !default;
+
+// $datatable-body-group-cell-text-align: left !default;
+// $datatable-body-group-cell-padding: 0.9rem 1.2rem !default;
+// $datatable-body-group-cell-border-top-width: $datatable-default-border-width !default;
+// $datatable-body-group-cell-border-right-width: 0 !default;
+// $datatable-body-group-cell-border-bottom-width: 0 !default;
+// $datatable-body-group-cell-border-left-width: 0 !default;
+// $datatable-body-group-cell-color: $datatable-body-cell-color !default;
+// $datatable-body-group-cell-font-size: 14px !default;
+// $datatable-body-group-cell-font-weight: 400 !default;
+
+// $datatable-group-header-background: #f8f9fa !default;
+// $datatable-group-header-border-color: #d9d8d9 !default;
+// $datatable-group-header-border-top-width: $datatable-default-border-width !default;
+// $datatable-group-header-border-right-width: 0 !default;
+// $datatable-group-header-border-bottom-width: $datatable-default-border-width !default;
+// $datatable-group-header-border-left-width: 0 !default;
+
+// $datatable-empty-row-height: 50px !default;
+// $datatable-empty-row-padding: 0.5rem 1.2rem !default;
+// $datatable-empty-row-border-top-width: 0px !default;
+// $datatable-empty-row-border-right-width: 0px !default;
+// $datatable-empty-row-border-bottom-width: 0px !default;
+// $datatable-empty-row-border-left-width: 0px !default;
+// $datatable-empty-row-border-color: #d9d8d9;
+// $datatable-empty-row-margin: 0px !default;
+// $datatable-empty-row-text-align: left !default;
+
+// $datatable-loading-row-border-top-width: 0px !default;
+// $datatable-loading-row-border-right-width: 0px !default;
+// $datatable-loading-row-border-bottom-width: 0px !default;
+// $datatable-loading-row-border-left-width: 0px !default;
+// $datatable-loading-row-border-color: #d9d8d9 !default;
+// $datatable-loading-row-padding: 0.5rem 1.2rem !default;
+// $datatable-loading-row-text-align: left !default;
+
+// // colors for footer elements
+// $datatable-footer-background: $gray-100 !default;
+// $datatable-footer-border-radius: $border-radius !default;
+// $datatable-footer-border-top-width: $datatable-default-border-width !default;
+// $datatable-footer-border-right-width: $datatable-default-border-width !default;
+// $datatable-footer-border-bottom-width: $datatable-default-border-width !default;
+// $datatable-footer-border-left-width: $datatable-default-border-width !default;
+// $datatable-footer-border-color: $gray-300 !default;
+// $datatable-footer-font-size: 16px !default;
+// $datatable-footer-font-weight: 400 !default;
+// $datatable-footer-color: $body-colo !default;
+// $datatable-footer-margin: -1px 0 0 0 !default;
+
+// $datatable-page-count-line-height: 50px !default;
+// $datatable-page-count-height: 50px !default;
+// $datatable-page-count-padding: 0 1.2rem !default;
+
+// $datatable-pager-margin: 0 10px !default;
+
+// $datatable-pager-item-height: 22px !default;
+// $datatable-pager-item-min-width: 24px !default;
+// $datatable-pager-item-line-height: 22px !default;
+// $datatable-pager-item-padding: 0 6px !default;
+// $datatable-pager-item-border-radius: 3px !default;
+// $datatable-pager-item-margin: 6px 3px !default;
+// $datatable-pager-item-text-align: center !default;
+// $datatable-pager-item-color: rgba(0, 0, 0, 0.54) !default;
+
+// $datatable-pager-item-hover-color: rgba(0, 0, 0, 0.75) !default;
+// $datatable-pager-item-hover-background: rgba(158, 158, 158, 0.2) !default;
+
+// $datatable-pager-item-disabled-color: rgba(0, 0, 0, 0.26) !default;
+// $datatable-pager-item-disabled-background: transparent !default;
+
+// $datatable-pager-item-active-background: rgba(158, 158, 158, 0.2) !default;
+// $datatable-pager-item-active-font-weight: bold !default;
+
+// $datatable-pager-icon-font-size: 20px !default;
+// $datatable-pager-icon-line-height: 20px !default;
+// $datatable-pager-icon-padding: 0 3px !default;
+
+// // colors for summary row elements
+// $datatable-summary-row-background: #ddd !default;
+// $datatable-summary-row-background-hover: #ddd !default;
+// $datatable-summary-row-font-weight: bold !default;

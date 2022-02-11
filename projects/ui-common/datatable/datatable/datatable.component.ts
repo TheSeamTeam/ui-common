@@ -45,6 +45,7 @@ import { notNullOrUndefined, waitOnConditionAsync } from '@theseam/ui-common/uti
 
 import { DatatableActionMenuComponent } from '../datatable-action-menu/datatable-action-menu.component'
 import { DatatableColumnComponent } from '../datatable-column/datatable-column.component'
+import { TheSeamDatatableFooterDirective } from '../datatable-footer/datatable-footer.directive'
 import { DatatableMenuBarComponent } from '../datatable-menu-bar/datatable-menu-bar.component'
 import { TheSeamDatatableRowDetailDirective } from '../datatable-row-detail/datatable-row-detail.directive'
 import { DatatableRowActionItemDirective } from '../directives/datatable-row-action-item.directive'
@@ -329,6 +330,7 @@ export class DatatableComponent
   private _rowActionItem: DatatableRowActionItemDirective | undefined
 
   @ContentChild(TheSeamDatatableRowDetailDirective, { static: true }) rowDetail?: TheSeamDatatableRowDetailDirective
+  @ContentChild(TheSeamDatatableFooterDirective, { static: true }) footer?: TheSeamDatatableFooterDirective
 
   @ContentChild(DatatableMenuBarComponent)
   get menuBarComponent(): DatatableMenuBarComponent | undefined { return this._menuBarComponent }

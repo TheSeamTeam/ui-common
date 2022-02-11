@@ -1,10 +1,16 @@
 export * from './table-cell-type-manifests'
 
+export * from './table-cell-type-currency/table-cell-type-currency-config'
+export * from './table-cell-type-currency/table-cell-type-currency.component'
+export * from './table-cell-type-currency/table-cell-type-currency'
+
 export * from './table-cell-type-date/table-cell-type-date-config'
 export * from './table-cell-type-date/table-cell-type-date.component'
 export * from './table-cell-type-date/table-cell-type-date'
 
 export * from './table-cell-type-decimal/table-cell-type-decimal-config'
+export * from './table-cell-type-decimal/table-cell-type-decimal.component'
+export * from './table-cell-type-decimal/table-cell-type-decimal'
 
 export * from './table-cell-type-icon/table-cell-type-icon-config'
 export * from './table-cell-type-icon/table-cell-type-icon.component'
@@ -12,6 +18,8 @@ export * from './table-cell-type-progress-circle/table-cell-type-progress-circle
 export * from './table-cell-type-progress-circle-icon/table-cell-type-progress-circle-icon.component'
 
 export * from './table-cell-type-integer/table-cell-type-integer-config'
+export * from './table-cell-type-integer/table-cell-type-integer.component'
+export * from './table-cell-type-integer/table-cell-type-integer'
 
 export * from './table-cell-type-phone/table-cell-type-phone-config'
 export * from './table-cell-type-phone/table-cell-type-phone.component'

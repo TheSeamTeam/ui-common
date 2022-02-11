@@ -2,13 +2,14 @@
 
 seam-side-nav-item {
   display: block;
-
   transition: 250ms ease-in-out background-color;
+
   &.seam-side-nav-item--active {
     background-color: $seam-side-nav-item-bg-color-active;
 
     .active,
-    &:active {
+    &:active,
+    .side-nav-item.active:hover {
       background-color: $seam-side-nav-item-bg-color-active;
     }
 
@@ -23,16 +24,20 @@ seam-side-nav-item {
     }
   }
 
+  .badge {
+    vertical-align: middle;
+  }
+
   &:not(.side-nav-item--icon) {
     .side-nav-item--badge {
-      top: -10px;
-      position: relative;
+      pointer-events: all;
       margin-left: 5px;
+      margin-right: 3px;
     }
   }
 
-  //
   .side-nav-item--icon {
+    position: relative;
     width: 24px;
     max-width: 24px;
     min-width: 24px;
@@ -42,12 +47,20 @@ seam-side-nav-item {
     text-align: center;
 
     .side-nav-item--badge {
-      top: -35px;
-      right: -12px;
-      position: relative;
+      top: -4px;
+      right: -4px;
+      position: absolute;
+
+      .badge:empty {
+        display: block;
+        width: 8px;
+        height: 8px;
+        padding: 0;
+      }
 
       &.side-nav-item--badge-no-icon {
-        top: -13px;
+        top: 0px;
+        right: 0px;
       }
     }
   }
@@ -76,6 +89,14 @@ seam-side-nav-item {
 
   .nav-link {
     color: $seam-side-nav-item-color;
+    padding-right: 2px;
+    &__compact {
+      padding-right: 0;
+      padding-left: 12px;
+    }
+    &:last-child {
+      padding-right: 8px;
+    }
   }
 
   .side-nav-btn {
@@ -153,6 +174,12 @@ seam-side-nav-item {
     color: $seam-side-nav-title-color;
     font-size: $seam-side-nav-title-font-size;
     padding-left: $seam-side-nav-title-padding-left;
+  }
+
+  // without a set position, these labels can cause unnecessary scrollbars
+  .sr-only {
+    top: 0;
+    left: 0;
   }
 }
 

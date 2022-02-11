@@ -1,0 +1,135 @@
+import { moduleMetadata } from '@storybook/angular'
+import { Story, Meta, Preview } from '@storybook/addon-docs'
+
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { RouterModule } from '@angular/router'
+
+import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
+import { TheSeamDatatableModule } from '@theseam/ui-common/datatable'
+import {
+  DynamicActionApiService,
+  DynamicActionLinkService,
+  DynamicActionModalService,
+  ExportersDataEvaluator,
+  JexlEvaluator,
+  THESEAM_DYNAMIC_ACTION,
+  THESEAM_DYNAMIC_VALUE_EVALUATOR
+} from '@theseam/ui-common/dynamic'
+
+# Cell Type Integer
+
+<Meta title="TableCellTypes/Integer"
+  decorators={[moduleMetadata({
+    imports: [
+      BrowserAnimationsModule,
+      RouterModule.forRoot([], { useHash: true }),
+      TheSeamDatatableModule,
+      TheSeamTableCellTypesModule
+    ],
+    providers: [
+      { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
+      { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: ExportersDataEvaluator, multi: true },
+      { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionApiService, multi: true },
+      { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionLinkService, multi: true },
+      { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionModalService, multi: true },
+    ]
+  })]}
+  parameters={{
+    layout: 'fullscreen',
+    docs: {
+      iframeHeight: '400px',
+    }
+  }}
+/>
+
+## Integer
+
+### Config Model
+
+```js
+{
+  type: 'integer',
+
+  /**
+   * Styles added to the root cell elements `style` attribute.
+   */
+  styles?: string | string[]
+
+  /**
+   * Classes added to the root cell elements `class` attribute.
+   */
+  cssClass?: string | string[]
+}
+```
+
+### Definition
+
+#### No Config
+
+```js
+{
+  ...,
+  cellype: 'integer'
+}
+```
+
+#### Config with styles
+
+```js
+{
+  ...,
+  cellype: 'integer'
+  cellTypeConfig: {
+    type: 'integer',
+    styles: 'color: red; background-color: blue'
+  }
+}
+```
+
+#### Examples
+
+<Preview>
+  <Story name="Basic" height="150px">
+    {{
+      template: `<seam-datatable class="vw-100 vh-100" [columns]="columns" [rows]="rows"></seam-datatable>`,
+      props: {
+        columns: [
+          { prop: 'integer', name: 'Integer', cellType: 'integer' },
+        ],
+        rows: [
+          { integer: .41235489 },
+          { integer: 152.89463 },
+          { integer: 2.000254 }
+        ]
+      },
+    }}
+  </Story>
+</Preview>
+
+<Preview>
+  <Story name="WithConfig" height="150px">
+    {{
+      template: `<seam-datatable class="vw-100 vh-100" [columns]="columns" [rows]="rows"></seam-datatable>`,
+      props: {
+        columns: [
+          {
+            prop: 'integer',
+            name: 'Integer',
+            cellType: 'integer',
+            cellTypeConfig: {
+              type: 'integer',
+              minIntegerDigits: 3,
+              textAlign: 'left'
+            }
+          },
+        ],
+        rows: [
+          { integer: .41235489 },
+          { integer: 1552.89463 },
+          { integer: 2.000254 }
+        ]
+      },
+    }}
+  </Story>
+</Preview>
+
