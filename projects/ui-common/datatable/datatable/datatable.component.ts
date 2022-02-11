@@ -12,7 +12,7 @@ import {
   InjectionToken,
   Input,
   isDevMode,
-  KeyValueDiffer,,
+  KeyValueDiffer,
   OnDestroy,
   OnInit,
   Output,

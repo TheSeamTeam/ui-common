@@ -4,6 +4,7 @@ import { catchError, distinctUntilChanged, finalize, map, shareReplay, startWith
 
 import { notNullOrUndefined, subscriberCount, wrapIntoObservable } from '@theseam/ui-common/utils'
 import { EmptyObject } from 'apollo-angular/types'
+import { SortItem } from '@theseam/ui-common/datatable'
 
 import { GqlDatatableAccessor } from '../models'
 import { createPageInfoObservable } from './create-page-info-observable'
@@ -13,7 +14,7 @@ import { mapPageInfo, PageInfoMapper, PageInfoMapperResult } from './map-page-in
 import { MapperContext } from './mapper-context'
 
 export type SortsMapperResult = { [name: string]: any }[]
-export type SortsMapper = (sorts: { dir: 'desc' | 'asc', prop: string }[], context: MapperContext)
+export type SortsMapper = (sorts: SortItem[], context: MapperContext)
   => (SortsMapperResult | Promise<SortsMapperResult> | Observable<SortsMapperResult>)
 
 interface DatatableResults {

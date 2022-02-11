@@ -29,6 +29,7 @@ import {
   SortsMapperResult
 } from '@theseam/ui-common/graphql'
 import { subscriberCount } from '@theseam/ui-common/utils'
+import { SortItem } from '@theseam/ui-common/datatable'
 
 import {
   createApolloTestingProvider,
@@ -738,7 +739,7 @@ class StoryDataSourceTwo {
       // tap(v => console.log('~! rows', v)),
     )
 
-    const _mapSorts = (sorts: { dir: 'desc' | 'asc', prop: string }[], context: MapperContext): SortsMapperResult => {
+    const _mapSorts = (sorts: SortItem[], context: MapperContext): SortsMapperResult => {
       return sorts.map(s => {
         const _dir = s?.dir.toUpperCase()
 
