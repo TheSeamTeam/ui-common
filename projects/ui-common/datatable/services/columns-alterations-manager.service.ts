@@ -100,6 +100,14 @@ export class ColumnsAlterationsManagerService {
     this._removeNonPersistant()
   }
 
+  public clear(): void {
+    // TODO: Implement
+
+    // NOTE: Just removing does not work, because some have need an alteration
+    // to be undone. I am not sure if there is a generic way to do this.
+    // this.remove(this.get())
+  }
+
   private _removeNonPersistant(): void {
     const nonPersistent = this._alterations.filter(x => !x.persistent)
     this.remove(nonPersistent, { emitEvent: false })

@@ -1,6 +1,8 @@
+import { ConnectionPositionPair } from '@angular/cdk/overlay'
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 
 import { faColumns } from '@fortawesome/free-solid-svg-icons'
+import { ColumnsAlterationsManagerService } from '../services/columns-alterations-manager.service'
 
 @Component({
   selector: 'seam-datatable-column-preferences-button',
@@ -12,8 +14,42 @@ export class DatatableColumnPreferencesButtonComponent implements OnInit {
 
   icon = faColumns
 
-  constructor() { }
+  /** @ignore */
+  _actionMenuPositions: ConnectionPositionPair[] = [
+    {
+      originX: 'start',
+      originY: 'bottom',
+      overlayX: 'end',
+      overlayY: 'top',
+    },
+    {
+      originX: 'start',
+      originY: 'top',
+      overlayX: 'end',
+      overlayY: 'bottom',
+    },
+    {
+      originX: 'end',
+      originY: 'bottom',
+      overlayX: 'start',
+      overlayY: 'top',
+    },
+    {
+      originX: 'end',
+      originY: 'top',
+      overlayX: 'start',
+      overlayY: 'bottom',
+    },
+  ]
+
+  constructor(
+    private readonly _columnsAlterationsManager: ColumnsAlterationsManagerService,
+  ) { }
 
   ngOnInit() { }
+
+  _resetColumns(event: any) {
+    this._columnsAlterationsManager.clear()
+  }
 
 }
