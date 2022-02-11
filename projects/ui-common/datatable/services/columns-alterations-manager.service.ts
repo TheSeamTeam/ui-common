@@ -6,6 +6,9 @@ import { notNullOrUndefined } from '@theseam/ui-common/utils'
 import { ColumnsAlteration } from '../models/columns-alteration'
 import { TheSeamDatatableColumn } from '../models/table-column'
 import { TheSeamDatatableAccessor } from '../models/datatable-accessor'
+import { HideColumnColumnsAlteration } from '../models/columns-alterations/hide-column.columns-alteration'
+import { SortColumnsAlteration } from '../models/columns-alterations/sort.columns-alteration'
+import { WidthColumnsAlteration } from '../models/columns-alterations/width.columns-alteration'
 
 export interface ColumnsAlterationsChangedRecord {
   type: 'added' | 'removed'
@@ -100,12 +103,52 @@ export class ColumnsAlterationsManagerService {
     this._removeNonPersistant()
   }
 
-  public clear(): void {
-    // TODO: Implement
+  // TODO: Make aware of original column order and properties. This is tricky,
+  // because the datatable does not deal with immutable column/row records and
+  // it is hard to know where changes happened. Just serializing the columns
+  // input is not enough, because the columns input is called anytime the user
+  // makes a column change. We can probably come up with a mostly accurate
+  // implementation, such as "reset original columns cache when preferencesKey
+  // changes" or "number of columns change". There are issues with those rules,
+  // but with some testing/experimenting I think there should be a "good enough"
+  // solution.
+  //
+  // TODO: Find a generic way to clear alterations. I would like to add an
+  // `unapply` method to `ColumnsAlteration`, but since the alterations
+  // themselves are not too generic it may be tricky.
+  public clear(options?: { emitEvent?: boolean }): ColumnsAlterationsChangedRecord[] {
+    const changes: ColumnsAlterationsChangedRecord[] = []
+    for (const colAlt of this._alterations) {
+      switch (colAlt.type) {
+        case 'hide-column': {
+          const alteration = new HideColumnColumnsAlteration({ columnProp: colAlt.state.columnProp, hidden: false }, false)
+          changes.push(...this.add([ alteration ]))
+          break;
+        }
+        case 'order': {
+          changes.push(...this.remove([ colAlt ]))
+          break;
+        }
+        case 'sort': {
+          const alteration = new SortColumnsAlteration({ sorts: [] }, false)
+          changes.push(...this.add([ alteration ]))
+          break;
+        }
+        case 'width': {
+          const alteration = new WidthColumnsAlteration({ columnProp: colAlt.state.columnProp, canAutoResize: true }, false)
+          changes.push(...this.add([ alteration ]))
+          break;
+        }
+      }
+    }
 
-    // NOTE: Just removing does not work, because some have need an alteration
-    // to be undone. I am not sure if there is a generic way to do this.
-    // this.remove(this.get())
+    if (notNullOrUndefined(options?.emitEvent) && !options?.emitEvent) {
+      return changes
+    }
+
+    this._emitChanges(changes)
+
+    return changes
   }
 
   private _removeNonPersistant(): void {
@@ -114,6 +157,10 @@ export class ColumnsAlterationsManagerService {
   }
 
   private _emitChanges(changes: ColumnsAlterationsChangedRecord[]): void {
+    if (changes.length === 0) {
+      return
+    }
+
     const event: ColumnsAlterationsChangedEvent = {
       changes
     }

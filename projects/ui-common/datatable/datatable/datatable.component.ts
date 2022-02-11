@@ -610,7 +610,6 @@ export class DatatableComponent
   }
 
   _onResize(event: any) {
-    // console.log('resize', event, event.column.prop)
     this.resize.emit(event)
 
     if (!notNullOrUndefined(event.column)) {
@@ -661,7 +660,6 @@ export class DatatableComponent
   }
 
   _onSort(event: any): void {
-    console.log('_onSort', event)
     this.sort.emit(event)
 
     const alteration = new SortColumnsAlteration({ sorts: event.sorts }, true)
