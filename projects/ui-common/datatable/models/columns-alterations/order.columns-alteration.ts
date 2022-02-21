@@ -2,12 +2,11 @@ import { isDevMode } from '@angular/core'
 
 import { TableColumnProp } from '@marklb/ngx-datatable'
 import { arrayMoveMutable, notNullOrUndefined } from '@theseam/ui-common/utils'
-import { CHECKBOX_COLUMN_PROP } from '../../utils/create-checkbox-column'
 
 import { getColumnProp } from '../../utils/get-column-prop'
 import { ColumnsAlteration } from '../columns-alteration'
 import { TheSeamDatatableAccessor } from '../datatable-accessor'
-import { INTERNAL_COLUMN_PROPS, isInternalColumn } from '../internal-column-props'
+import { isInternalColumn } from '../internal-column-props'
 import { TheSeamDatatableColumn } from '../table-column'
 
 export interface ColumnOrderRecord {
@@ -56,8 +55,8 @@ export class OrderColumnsAlteration extends ColumnsAlteration<OrderColumnsAltera
     // NOTE: If we add an internal column that can be moved then this will need
     // to be changed.
     const internalColumns = columns
-      .filter(c => isInternalColumn(c))
       .map((column, index) => ({ column, index }))
+      .filter(x => isInternalColumn(x.column))
 
     for (const c of stateColumns) {
       const currentIndex = columns.findIndex(x => getColumnProp(x) === c.columnProp)

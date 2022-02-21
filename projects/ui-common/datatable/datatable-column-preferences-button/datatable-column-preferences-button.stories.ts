@@ -7,12 +7,13 @@ import { CSVDataExporter, XLSXDataExporter } from '@theseam/ui-common/data-expor
 import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
 import { expectFn, getHarness } from '@theseam/ui-common/testing'
 
+import { RouterModule } from '@angular/router'
 import { TheSeamDatatableModule } from '../datatable.module'
 import { THESEAM_DATATABLE } from '../datatable/datatable.component'
-import { DatatableColumnPreferencesButtonComponent } from './datatable-column-preferences-button.component'
+import { DatatablePreferencesAccessorLocalService } from '../stories/preferences-accessor-local'
 import { TheSeamDatatableHarness } from '../testing'
 import { THESEAM_DATATABLE_PREFERENCES_ACCESSOR } from '../tokens/datatable-preferences-accessor'
-import { DatatablePreferencesAccessorLocalService } from '../stories/preferences-accessor-local'
+import { DatatableColumnPreferencesButtonComponent } from './datatable-column-preferences-button.component'
 
 class MockDatatable {
 
@@ -47,6 +48,7 @@ export default {
     moduleMetadata({
       imports: [
         BrowserAnimationsModule,
+        RouterModule.forRoot([], { useHash: true }),
         TheSeamDatatableModule,
         TheSeamTableCellTypesModule
       ],
@@ -98,6 +100,12 @@ export const Example: Story = (args) => ({
             <seam-datatable-column-preferences-button></seam-datatable-column-preferences-button>
           </div>
         </seam-datatable-menu-bar>
+
+        <ng-template seamDatatableRowActionItem>
+          <seam-datatable-action-menu>
+            <seam-datatable-action-menu-item label="Action Item"></seam-datatable-action-menu-item>
+          </seam-datatable-action-menu>
+        </ng-template>
 
       </seam-datatable>
     </div>`
