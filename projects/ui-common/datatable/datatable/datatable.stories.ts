@@ -8,6 +8,7 @@ import { RouterModule } from '@angular/router'
 import { BehaviorSubject, Observable, of, Subscription } from 'rxjs'
 import { shareReplay, startWith, take, tap } from 'rxjs/operators'
 
+import { CSVDataExporter } from '@theseam/ui-common/data-exporter'
 import { DataFilterState, TheSeamDataFiltersModule } from '@theseam/ui-common/data-filters'
 import { DatatableGqlDataSource } from '@theseam/ui-common/datatable'
 import { ExportersDataEvaluator, JexlEvaluator, THESEAM_DYNAMIC_VALUE_EVALUATOR } from '@theseam/ui-common/dynamic'
@@ -18,6 +19,7 @@ import { ToastrModule, ToastrService } from 'ngx-toastr'
 import { userEvent, waitFor, within } from '@storybook/testing-library'
 import { expectFn, getHarness } from '@theseam/ui-common/testing'
 
+import { SortItem } from '@theseam/ui-common/datatable'
 import {
   DatatableGraphQLQueryRef,
   DatatableGraphqlService,
@@ -29,7 +31,6 @@ import {
   SortsMapperResult
 } from '@theseam/ui-common/graphql'
 import { subscriberCount } from '@theseam/ui-common/utils'
-import { SortItem } from '@theseam/ui-common/datatable'
 
 import {
   createApolloTestingProvider,
@@ -474,6 +475,10 @@ class DTFilterWrapper {
   @Input() columns: any
   @Input() rows: any
   @Input() filterButtons: any
+
+  exporters = [
+    new CSVDataExporter()
+  ]
 
   defaultFilter = ''
 

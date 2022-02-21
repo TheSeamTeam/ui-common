@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, Input, isDevMode, OnInit, Optional } from '@angular/core'
-import { of } from 'rxjs'
+import { combineLatest, of } from 'rxjs'
 import { catchError, concatMap, map, take, tap } from 'rxjs/operators'
 
 import { faFileDownload } from '@fortawesome/free-solid-svg-icons'
@@ -55,28 +55,29 @@ export class DatatableExportButtonComponent implements OnInit {
       this._toastr.error(msg, 'Data Export')
     }
 
-    const export$ = this._datatable.rows$
-      .pipe(
-        take(1),
-        map(rows => {
-          if (exporter.skipDataMapping) {
-            return rows
-          }
-          return this._mapExportData(this._datatable.columns || [], rows)
-        }),
-        concatMap(data => exporter.export(data)),
-        catchError(err => {
-          console.error(err)
-          return of(false)
-        }),
-        tap(success => {
-          if (success) {
-            this._toastr.success(`${exporter.label} export complete.`, 'Data Export')
-          } else {
-            this._toastr.error(`${exporter.label} export failed.`, 'Data Export')
-          }
-        })
-      )
+    const export$ = combineLatest([
+      this._datatable.rows$, this._datatable.columns$
+    ]).pipe(
+      take(1),
+      map(([ rows, columns ]) => {
+        if (exporter.skipDataMapping) {
+          return rows
+        }
+        return this._mapExportData(columns || [], rows)
+      }),
+      concatMap(data => exporter.export(data)),
+      catchError(err => {
+        console.error(err)
+        return of(false)
+      }),
+      tap(success => {
+        if (success) {
+          this._toastr.success(`${exporter.label} export complete.`, 'Data Export')
+        } else {
+          this._toastr.error(`${exporter.label} export failed.`, 'Data Export')
+        }
+      })
+    )
 
     this._loading.while(export$).subscribe()
   }
