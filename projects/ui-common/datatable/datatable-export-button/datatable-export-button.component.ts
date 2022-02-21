@@ -11,6 +11,7 @@ import { TheSeamLoadingOverlayService } from '@theseam/ui-common/loading'
 import { hasProperty } from '@theseam/ui-common/utils'
 
 import { DatatableComponent, THESEAM_DATATABLE } from '../datatable/datatable.component'
+import { isInternalColumn } from '../models/internal-column-props'
 import { TheSeamDatatableColumn } from '../models/table-column'
 
 export interface IDatatableExportButtonData {
@@ -56,7 +57,8 @@ export class DatatableExportButtonComponent implements OnInit {
     }
 
     const export$ = combineLatest([
-      this._datatable.rows$, this._datatable.columns$
+      this._datatable.rows$,
+      this._datatable.columns$.pipe(map(cols => cols.filter(c => !isInternalColumn(c))))
     ]).pipe(
       take(1),
       map(([ rows, columns ]) => {
