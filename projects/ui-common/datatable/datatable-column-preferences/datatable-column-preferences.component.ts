@@ -1,18 +1,16 @@
-import { ChangeDetectionStrategy, Component, Inject, Input } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core'
 import { FormControl } from '@angular/forms'
-import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs'
+import { combineLatest, Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
-import { BooleanInput } from '@angular/cdk/coercion'
 
-import { InputBoolean } from '@theseam/ui-common/core'
 import { notNullOrUndefined, observeControlValue } from '@theseam/ui-common/utils'
 
 import { DatatableComponent, THESEAM_DATATABLE } from '../datatable/datatable.component'
-import { TheSeamDatatableColumn } from '../models/table-column'
 import { HideColumnColumnsAlteration } from '../models/columns-alterations/hide-column.columns-alteration'
-import { getColumnProp } from '../utils/get-column-prop'
-import { ColumnsAlterationsManagerService } from '../services/columns-alterations-manager.service'
 import { isInternalColumn } from '../models/internal-column-props'
+import { TheSeamDatatableColumn } from '../models/table-column'
+import { ColumnsAlterationsManagerService } from '../services/columns-alterations-manager.service'
+import { getColumnProp } from '../utils/get-column-prop'
 
 @Component({
   selector: 'seam-datatable-column-preferences',
@@ -37,7 +35,6 @@ export class DatatableColumnPreferencesComponent {
         const _filter = (filter || '').trim().toLowerCase()
         return columns
           .filter(c => this._canToggleColumn(c, _filter))
-          .sort(this._alphabeticalColumnCompareFn)
       }),
     )
   }
@@ -54,12 +51,6 @@ export class DatatableColumnPreferencesComponent {
     if (filter.length === 0) { return true }
 
     return `${(getColumnProp(column) || '')}`.toLowerCase().indexOf(filter) !== -1
-  }
-
-  private _alphabeticalColumnCompareFn = (a: TheSeamDatatableColumn, b: TheSeamDatatableColumn) => {
-    const aProp = getColumnProp(a)
-    const bProp = getColumnProp(b)
-    return aProp === bProp ? 0 : (<string>aProp) > (<string>bProp) ? 1 : -1
   }
 
   _onChange(event: any, col: TheSeamDatatableColumn) {
