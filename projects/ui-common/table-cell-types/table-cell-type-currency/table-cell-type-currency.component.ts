@@ -5,6 +5,9 @@ import { takeUntil } from 'rxjs/operators'
 
 import { TableCellTypesHelpersService, TABLE_CELL_DATA, TheSeamTableColumn } from '@theseam/ui-common/table-cell-type'
 import type { TableCellData } from '@theseam/ui-common/table-cell-type'
+import { isNumeric, notNullOrUndefined } from '@theseam/ui-common/utils'
+
+import { coerceBooleanProperty } from '@angular/cdk/coercion'
 
 import { TableCellTypeConfigCurrency } from './table-cell-type-currency-config'
 
@@ -66,11 +69,26 @@ export class TableCellTypeCurrencyComponent implements OnInit, OnDestroy {
 
   private _formatCurrency(currentValue?: any, tableData?: TableCellData<'currency', TableCellTypeConfigCurrency>): string {
       const config = tableData?.colData?.cellTypeConfig
+      const defaultToEmpty = notNullOrUndefined(config?.defaultToEmpty) ?
+        this._parseConfigValue(coerceBooleanProperty(config?.defaultToEmpty), tableData) : true
+      const valueIsNumeric = isNumeric(currentValue)
+
+      if (!valueIsNumeric) {
+        if (defaultToEmpty) {
+          // return empty string instead of $0 when currentValue is empty or unparseable
+          return ''
+        } else {
+          // set non-numeric value to 0 so it can be formatted the same as other numbers
+          currentValue = 0
+        }
+      }
+
       const locale = this._parseConfigValue(config?.locale, tableData) || 'en-US'
       const currency = this._parseConfigValue(config?.currency, tableData) || '$'
       const currencyCode = this._parseConfigValue(config?.currencyCode, tableData) || 'USD'
+
       const minIntegerDigits = this._parseConfigValue(config?.minIntegerDigits, tableData) || 1
-      const minFractionDigits = this._parseConfigValue(config?.minFractionDigits, tableData) || 0
+      const minFractionDigits = this._parseConfigValue(config?.minFractionDigits, tableData) || 2
       const maxFractionDigits = this._parseConfigValue(config?.maxFractionDigits, tableData) || 2
       const format = `${ minIntegerDigits }.${ minFractionDigits }-${ maxFractionDigits }`
 

@@ -99,7 +99,12 @@ import {
         rows: [
           { integer: .41235489 },
           { integer: 152.89463 },
-          { integer: 2.000254 }
+          { integer: 2.000254 },
+          { integer: 0 },
+          { integer: null },
+          { integer: undefined },
+          { integer: '' },
+          { integer: '123abcdef' },
         ]
       },
     }}
@@ -119,14 +124,27 @@ import {
             cellTypeConfig: {
               type: 'integer',
               minIntegerDigits: 3,
-              textAlign: 'left'
+              textAlign: 'left',
+              formatNumber: 'true',
+              titleAttr: { type: 'jexl', expr: 'row.integer + " is a big number!"' },
+              styleAttr: { type: 'jexl', expr: '!row.integer || row.integer < 1 ? "color: red;" : ""'},
+              classAttr: 'custom-class',
+              action: {
+                type: 'link',
+                link: '#'
+              }
             }
           },
         ],
         rows: [
           { integer: .41235489 },
           { integer: 1552.89463 },
-          { integer: 2.000254 }
+          { integer: 2.000254 },
+          { integer: 0 },
+          { integer: null },
+          { integer: undefined },
+          { integer: '' },
+          { integer: '123abcdef' },
         ]
       },
     }}

@@ -99,7 +99,12 @@ import {
         rows: [
           { decimal: .51235489 },
           { decimal: 1552.89463 },
-          { decimal: 2.000254 }
+          { decimal: 2.000254 },
+          { decimal: null },
+          { decimal: undefined },
+          { decimal: '' },
+          { decimal: '123abcdef' },
+          { decimal: '10001, 10002, 10003' },
         ]
       },
     }}
@@ -121,14 +126,22 @@ import {
               minIntegerDigits: 2,
               minFractionDigits: 2,
               maxFractionDigits: 2,
-              textAlign: 'left'
+              defaultToEmpty: 'false',
+              textAlign: 'left',
+              formatNumber: 'false',
+              titleAttr: { type: 'jexl', expr: 'row.decimal + " is a big number!"' }
             }
           },
         ],
         rows: [
           { decimal: .51235489 },
           { decimal: 1552.89463 },
-          { decimal: 2.000254 }
+          { decimal: 2.000254 },
+          { decimal: null },
+          { decimal: undefined },
+          { decimal: '' },
+          { decimal: '123abcdef' },
+          { decimal: '10001, 10002, 10003' },
         ]
       },
     }}

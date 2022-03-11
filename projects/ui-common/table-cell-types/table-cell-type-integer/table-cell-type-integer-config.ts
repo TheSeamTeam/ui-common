@@ -11,7 +11,7 @@ export interface TableCellTypeConfigInteger extends TableCellTypeConfig<'integer
   /**
    * Element title attribute.
    */
-  // titleAttr?: DynamicValue<string>
+  titleAttr?: DynamicValue<string>
 
   /**
    * A locale code for the locale format rules to use. Defaults to `en-US`.
@@ -22,6 +22,11 @@ export interface TableCellTypeConfigInteger extends TableCellTypeConfig<'integer
    * When true, pipe input through Angular `number` pipe. Default is `true`.
    */
   formatNumber?: DynamicValue<boolean>
+
+  /**
+   * When true, an empty or unparseable value defaults to an empty string, otherwise defaults to 0. Default is `true`.
+   */
+  defaultToEmpty?: DynamicValue<boolean>
 
   /**
    * If `formatNumber === true`, the minimum number of integer digits before the decimal point. Default is 1.

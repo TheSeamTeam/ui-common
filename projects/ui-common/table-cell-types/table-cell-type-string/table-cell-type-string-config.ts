@@ -12,4 +12,17 @@ export interface TableCellTypeConfigString extends TableCellTypeConfig<'string'>
    * Element title attribute.
    */
   titleAttr?: DynamicValue<string>
+
+  /**
+   * Styles added to the root cell elements `style` attribute.
+   */
+  // TODO: refactor TableCellTypeConfig styles obj to be dynamic?
+  styleAttr?: DynamicValue<string | string[]>
+
+  /**
+   * Classes added to the root cell elements `class` attribute.
+   */
+  // TODO: refactor TableCellTypeConfig cssClass obj to be dynamic?
+  classAttr?: DynamicValue<string | string[]>
+
 }

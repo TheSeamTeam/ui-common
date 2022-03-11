@@ -99,7 +99,11 @@ import {
         rows: [
           { currency: .51235489 },
           { currency: 152.89463 },
-          { currency: 2.000254 }
+          { currency: 2.000254 },
+          { currency: null },
+          { currency: undefined },
+          { currency: '' },
+          { currency: '123abcdef' },
         ]
       },
     }}
@@ -125,6 +129,8 @@ import {
               minFractionDigits: 2,
               maxFractionDigits: 2,
               textAlign: 'left',
+              defaultToEmpty: 'false',
+              titleAttr: { type: 'jexl', expr: 'row.currency + " is a big number!"' },
               action: {
                 type: 'link',
                 link: '#',
@@ -137,7 +143,11 @@ import {
         rows: [
           { currency: .51235489 },
           { currency: 152.89463 },
-          { currency: 2.000254 }
+          { currency: 2.000254 },
+          { currency: null },
+          { currency: undefined },
+          { currency: '' },
+          { currency: '123abcdef' },
         ]
       },
     }}

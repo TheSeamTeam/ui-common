@@ -52,7 +52,7 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
   set config(value: TableCellTypeConfigString | undefined | null) {
     this._config = value
     if (value) {
-      this.setAction(value.action)
+      this.setConfig(value)
     }
   }
   private _config: TableCellTypeConfigString | undefined | null
@@ -61,6 +61,9 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
   _link?: string
   _title?: string
   _queryParams?: { [k: string]: any }
+
+  _style?: string
+  _class?: string
 
   _buttonAction?: TableCellTypeStringConfigAction
 
@@ -73,10 +76,22 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
   _detectMimeContent?: boolean
 
   @Input()
-  set title(value: string | undefined) { this.title = value }
+  set title(value: string | undefined) { this._title = value }
   get title(): string | undefined { return this._title }
 
   @HostBinding('attr.title') get _titleAttr() { return this.title || this.value }
+
+  @Input()
+  set style(value: string | undefined) { this._style = value }
+  get style(): string | undefined { return this._style }
+
+  @HostBinding('attr.style') get _styleAttr() { return this.style }
+
+  @Input()
+  set classAttr(value: string | undefined) { this._class = value }
+  get classAttr(): string | undefined { return this._class }
+
+  @HostBinding('class') get _classAttr() { return this.classAttr }
 
   canPopover = false
 
@@ -161,6 +176,27 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
     this._download = download
     this._detectMimeContent = detectMimeContent
     this._queryParams = queryParams
+  }
+
+  public setConfig(config?: TableCellTypeConfigString): void {
+    if (!config) { return }
+
+    const title = this._parseConfigValue(config.titleAttr)
+    if (title) {
+      this.title = title
+    }
+
+    const style = this._parseConfigValue(config.styleAttr)
+    if (style) {
+      this.style = style
+    }
+
+    const classAttr = this._parseConfigValue(config.classAttr)
+    if (classAttr) {
+      this.classAttr = classAttr
+    }
+
+    this.setAction(config.action)
   }
 
   private _parseConfigValue(val: any) {

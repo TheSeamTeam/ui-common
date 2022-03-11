@@ -11,8 +11,7 @@ export interface TableCellTypeConfigCurrency extends TableCellTypeConfig<'curren
   /**
    * Element title attribute.
    */
-  // TODO: Implement passing title into `table-cell-type-selector` or `table-cell-type-string`
-  // titleAttr?: DynamicValue<string>
+  titleAttr?: DynamicValue<string>
 
   /**
    * A locale code for the locale format rules to use. Defaults to `en-US`.
@@ -30,6 +29,11 @@ export interface TableCellTypeConfigCurrency extends TableCellTypeConfig<'curren
    * The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code. Defaults to `USD`.
    */
   currencyCode?: DynamicValue<string>
+
+  /**
+   * When true, an empty or unparseable value defaults to an empty string, otherwise defaults to 0. Default is `true`.
+   */
+  defaultToEmpty?: DynamicValue<boolean>
 
   /**
    * The minimum number of integer digits before the decimal point. Default is 1.

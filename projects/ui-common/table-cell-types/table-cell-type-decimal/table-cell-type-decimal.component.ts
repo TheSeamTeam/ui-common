@@ -5,7 +5,7 @@ import { takeUntil } from 'rxjs/operators'
 
 import { TableCellTypesHelpersService, TABLE_CELL_DATA, TheSeamTableColumn } from '@theseam/ui-common/table-cell-type'
 import type { TableCellData } from '@theseam/ui-common/table-cell-type'
-import { notNullOrUndefined } from '@theseam/ui-common/utils'
+import { isNumeric, notNullOrUndefined } from '@theseam/ui-common/utils'
 
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
 import { TableCellTypeConfigDecimal } from './table-cell-type-decimal-config'
@@ -65,8 +65,23 @@ export class TableCellTypeDecimalComponent implements OnInit, OnDestroy {
 
   private _formatDecimal(currentValue?: any, tableData?: TableCellData<'decimal', TableCellTypeConfigDecimal> | undefined): string {
     const config = tableData?.colData?.cellTypeConfig
+    const defaultToEmpty = notNullOrUndefined(config?.defaultToEmpty) ?
+      this._parseConfigValue(coerceBooleanProperty(config?.defaultToEmpty), tableData) : true
     const formatDecimal = notNullOrUndefined(config?.formatNumber) ?
       this._parseConfigValue(coerceBooleanProperty(config?.formatNumber), tableData) : true
+    const valueIsNumeric = isNumeric(currentValue)
+
+    // unparseable values are OK to return as long as we're not trying to format them
+    if (!valueIsNumeric && formatDecimal) {
+      if (defaultToEmpty) {
+        // return empty string instead of 0 when currentValue is empty or unparseable
+        return ''
+      } else {
+        // set non-numeric value to 0 so it can be formatted the same as other numbers
+        currentValue = 0
+      }
+    }
+
     const locale = this._parseConfigValue(config?.locale, tableData) || 'en-US'
     const minIntegerDigits = this._parseConfigValue(config?.minIntegerDigits, tableData) || 1
     const minFractionDigits = this._parseConfigValue(config?.minFractionDigits, tableData) || 0
