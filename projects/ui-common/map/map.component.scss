@@ -1,0 +1,18 @@
+@import '../styles/utilities';
+
+:host {
+  display: block;
+
+  &.show-focus-border {
+    &.cdk-focused {
+      outline: 0;
+      box-shadow: $btn-focus-box-shadow;
+    }
+
+    &[disabled] {
+      opacity: $btn-disabled-opacity;
+      @include box-shadow(none);
+      // pointer-events: none;
+    }
+  }
+}
