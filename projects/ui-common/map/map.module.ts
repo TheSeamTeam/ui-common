@@ -6,13 +6,17 @@ import { AgmCoreModule } from '@agm/core'
 import { TheSeamIconModule } from '@theseam/ui-common/icon'
 import { TheSeamSharedModule } from '@theseam/ui-common/shared'
 
+import { TheSeamEditControlsWrapperComponent } from './edit-controls-wrapper/edit-controls-wrapper.component'
+import { TheSeamEditControlsComponent } from './edit-controls/edit-controls.component'
 import { TheSeamGoogleMapsWrapperComponent } from './google-maps/google-maps-wrapper.component'
 import { TheSeamMapComponent } from './map.component'
 
 @NgModule({
   declarations: [
     TheSeamMapComponent,
-    TheSeamGoogleMapsWrapperComponent
+    TheSeamGoogleMapsWrapperComponent,
+    TheSeamEditControlsComponent,
+    TheSeamEditControlsWrapperComponent,
   ],
   imports: [
     CommonModule,

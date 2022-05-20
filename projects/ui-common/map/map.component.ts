@@ -29,6 +29,8 @@ import {
   mixinTabIndex,
 } from '@theseam/ui-common/core'
 
+import { MapManagerService } from './map-manager.service'
+
 class TheSeamMapComponentBase {
   constructor(public _elementRef: ElementRef) {}
 }
@@ -48,7 +50,9 @@ const _TheSeamMapMixinBase: HasTabIndexCtor & CanDisableCtor &
   host: {
     '[attr.tabindex]': 'null',
   },
-  providers: [ ],
+  providers: [
+    MapManagerService
+  ],
   inputs: [ 'tabIndex' ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -60,6 +64,7 @@ export class TheSeamMapComponent extends _TheSeamMapMixinBase
     private _changeDetectorRef: ChangeDetectorRef,
     private _focusMonitor: FocusMonitor,
     private _ngZone: NgZone,
+    private readonly _mapManager: MapManagerService,
     @Attribute('tabindex') tabIndex: string
   ) {
     super(elementRef)
