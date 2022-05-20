@@ -62,6 +62,14 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
   set disabled(value: boolean) {
     const newValue = coerceBooleanProperty(value)
 
+    if (this._control.disabled !== newValue) {
+      if (newValue) {
+        this._control.disable()
+      } else {
+        this._control.enable()
+      }
+    }
+
     if (newValue !== this.disabled) {
       this._disabled = newValue
       this._changeDetectorRef.markForCheck()

@@ -1,3 +1,32 @@
 :host {
   display: block;
+
+  // disable hover state when input is disabled
+  // NOTE: This is needed, because intl-tel-input is adding the flag
+  // container before the input and styling it to be after. The flag container
+  // could be moved right after initialization, but that would change the
+  // tab order. Also, the flag container could be moved when disabled, but
+  // that seems like more trouble than it is worth unless there is a
+  // benefit I don't see.
+  &[disabled] {
+    ::ng-deep {
+      .iti {
+        &--allow-dropdown {
+          .iti__flag-container:hover,
+          .iti__flag-container:hover {
+            cursor: default;
+
+            .iti__selected-flag {
+              background-color: transparent;
+            }
+
+          }
+
+          .iti__arrow {
+            display: none;
+          }
+        }
+      }
+    }
+  }
 }

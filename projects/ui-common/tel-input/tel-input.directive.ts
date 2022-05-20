@@ -1,12 +1,13 @@
 import { DOCUMENT } from '@angular/common'
-import { Directive, ElementRef, HostBinding, Inject, Input, NgZone, OnDestroy, OnInit, Optional } from '@angular/core'
+import { Directive, DoCheck, ElementRef, Host, HostBinding, Inject, Input, NgZone, OnDestroy, OnInit, Optional, Self } from '@angular/core'
 import { fromEvent, merge, Subject } from 'rxjs'
 import { auditTime, last, switchMap, takeUntil, tap } from 'rxjs/operators'
 
 import { AssetLoaderService, LoadedAssetRef } from '@theseam/ui-common/services'
-import { notNullOrUndefined } from '@theseam/ui-common/utils'
+import { getAttribute, hasAttribute, notNullOrUndefined, toggleAttribute } from '@theseam/ui-common/utils'
 
 
+import { NgControl } from '@angular/forms'
 import { IntlTelInputFn, intlTelInputUtils } from './intl-tel-input'
 import type { IntlTelInput } from './intl-tel-input'
 import { TEL_INPUT_STYLES, TEL_INPUT_STYLESHEET_PATH, TEL_INPUT_UTILS_PATH } from './tel-input-constants'
@@ -16,7 +17,7 @@ import { globalIntlTelInputUtils } from './utils/index'
   selector: 'input[seamTelInput]',
   exportAs: 'seamTelInput'
 })
-export class TheSeamTelInputDirective implements OnInit, OnDestroy {
+export class TheSeamTelInputDirective implements OnInit, OnDestroy, DoCheck {
   private readonly _ngUnsubscribe = new Subject()
 
   private _instance: IntlTelInput.Plugin | undefined
@@ -45,7 +46,8 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy {
     private readonly _elementRef: ElementRef<HTMLInputElement>,
     private readonly _assetLoader: AssetLoaderService,
     private readonly _ngZone: NgZone,
-    @Optional() @Inject(DOCUMENT) private readonly _document?: any
+    @Optional() @Inject(DOCUMENT) private readonly _document?: any,
+    @Optional() @Self() private readonly _ngControl?: NgControl,
   ) { }
 
   ngOnInit(): void {
@@ -70,6 +72,8 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy {
           // initialCountry: 'auto'
         })
 
+        this._tryUpdateDropdownAttributes()
+
         return this._instance.promise
       }),
       // tap(() => console.log('%c_instance ready', 'color:green', this._instance, this._elementRef.nativeElement.value)),
@@ -93,6 +97,31 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy {
 
     this._ngUnsubscribe.next()
     this._ngUnsubscribe.complete()
+  }
+
+  ngDoCheck() {
+    this._tryUpdateDropdownAttributes()
+  }
+
+  private _tryUpdateDropdownAttributes() {
+    const control = this._ngControl
+    if (control) {
+      const flagsContainer: HTMLElement | null | undefined = (this._instance as any)?.selectedFlag
+      if (flagsContainer) {
+        toggleAttribute(flagsContainer, 'aria-disabled', control.disabled ?? false)
+
+        const disabled = control.disabled ?? false
+        if (!disabled) {
+          if (getAttribute(flagsContainer, 'tabindex') !== '0') {
+            flagsContainer.setAttribute('tabindex', '0')
+          }
+        } else {
+          if (hasAttribute(flagsContainer, 'tabindex')) {
+            flagsContainer.removeAttribute('tabindex')
+          }
+        }
+      }
+    }
   }
 
   private _formatIntlTelInput = () => {
@@ -174,6 +203,25 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy {
         }),
         takeUntil(this._ngUnsubscribe)
       ).subscribe()
+
+      const flagsContainer: HTMLElement | null | undefined = (this._instance as any)?.selectedFlag
+      if (flagsContainer) {
+        fromEvent(flagsContainer, 'keydown', { capture: true }).pipe(
+          tap((e: any) => {
+            const control = this._ngControl
+            if (control) {
+              const disabled = control.disabled ?? false
+              if (disabled && ['ArrowUp', 'Up', 'ArrowDown', 'Down', ' ', 'Enter'].indexOf(e.key) !== -1) {
+                // prevent form from being submitted if "ENTER" was pressed
+                e.preventDefault()
+                // prevent event from being handled again by document
+                e.stopPropagation()
+              }
+            }
+          }),
+          takeUntil(this._ngUnsubscribe)
+        ).subscribe()
+      }
     })
   }
 
