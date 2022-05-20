@@ -8,7 +8,7 @@
   [class.top-bar--logo-mobile]="isMobile$ | async">
   <a [href]="logoHref" [target]="logoHrefTarget">
     <div>
-      <img [src]="logo" [src.lt-md]="hasTitle ? logoSm : logo" alt="Logo">
+      <img *ngIf="logo" [src]="logo" [src.lt-md]="hasTitle ? logoSm : logo" alt="Logo">
     </div>
   </a>
 </div>
@@ -17,7 +17,7 @@
   <div class="top-bar--logo d-flex flex-column justify-content-center" [routerLink]="logoRoute"
     [class.top-bar--logo-mobile]="isMobile$ | async">
     <div>
-      <img [src]="logo" [src.lt-md]="hasTitle ? logoSm : logo" alt="Logo">
+      <img *ngIf="logo" [src]="logo" [src.lt-md]="hasTitle ? logoSm : logo" alt="Logo">
     </div>
   </div>
 </ng-template>
