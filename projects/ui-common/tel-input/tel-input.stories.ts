@@ -42,8 +42,30 @@ export const Control: Story = ({ ...args }) => ({
 
 export const FormField: Story = ({ ...args }) => {
   // const control = new FormControl('+17024181234', [], [])
-  // const control = new FormControl('9016067687', [], [])
-  const control = new FormControl('+213 901-606-7687', [], [])
+  // const control = new FormControl('9015555555', [], [])
+  const control = new FormControl('+213 901-555-5555', [], [])
+
+  // control.valueChanges.subscribe(v => console.log('%c[Story] value', 'color:red', v))
+
+  return {
+    props: {
+      control
+    },
+    template: `
+      <div style="max-width: 300px;">
+        <seam-form-field>
+          <seam-tel-input seamInput [formControl]="control"></seam-tel-input>
+        </seam-form-field>
+      </div>
+    `
+  }
+}
+
+export const FormFieldDisabled: Story = ({ ...args }) => {
+  // const control = new FormControl('+17024181234', [], [])
+  // const control = new FormControl('9015555555', [], [])
+  const control = new FormControl('+213 901-555-5555', [], [])
+  control.disable()
 
   // control.valueChanges.subscribe(v => console.log('%c[Story] value', 'color:red', v))
 
@@ -63,10 +85,10 @@ export const FormField: Story = ({ ...args }) => {
 
 // export const Validator: Story = (args) => {
 //   // const control = new FormControl('+17024181234', [], [ telInputValidator ])
-//   const control = new FormControl('9016067687', [ ], [ telInputValidator ])
-//   // const control = new FormControl('90160676', [ Validators.required ], [ telInputValidator ])
-//   // const control = new FormControl('+213 901-606-7687', [], [ telInputValidator ])
-//   // const control = new FormControl('19016067687', [], [ telInputValidator ])
+//   const control = new FormControl('9015555555', [ ], [ telInputValidator ])
+//   // const control = new FormControl('90155555', [ Validators.required ], [ telInputValidator ])
+//   // const control = new FormControl('+213 901-555-5555', [], [ telInputValidator ])
+//   // const control = new FormControl('19015555555', [], [ telInputValidator ])
 //   // const control = new FormControl('', [], [ telInputValidator ])
 
 //   // control.valueChanges.subscribe(v => console.log('%c[Story] value', 'color:red', v))
@@ -90,7 +112,7 @@ export const FormField: Story = ({ ...args }) => {
 // }
 
 // export const Form: Story = (args) => {
-//   const control = new FormControl('9016067687', [ ], [ telInputValidator ])
+//   const control = new FormControl('9015555555', [ ], [ telInputValidator ])
 
 //   control.valueChanges.subscribe(v => console.log('%c[Story] value', 'color:red', v))
 
