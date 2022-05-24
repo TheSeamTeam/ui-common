@@ -26,7 +26,7 @@ export class OverlayScrollbarDirective implements OnInit, AfterViewInit, OnDestr
   set overlayScrollbarEnabled(value: boolean) {
     this._disabled = !coerceBooleanProperty(value)
     if (!this._disabled) {
-      this._scrollbars.initializeInstance(this._ref.nativeElement)
+      this._scrollbars.initializeInstance(this._ref.nativeElement, this._options)
     } else {
       this._scrollbars.destroyInstance(this._ref.nativeElement)
     }
