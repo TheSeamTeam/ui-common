@@ -1,0 +1,12 @@
+<div (seamElemResized)="_onResized($any($event))">
+  <div class="embed-responsive embed-responsive-4by3"
+    [seamOverlayScrollbar]="_scrollbarOptions"
+    [overlayScrollbarEnabled]="_scrollable">
+    <iframe #iframeElement class="embed-responsive-item" allowfullscreen></iframe>
+    <div *ngIf="_mouseBlockActive"
+      class="iframe-mouse-block"
+      [style.width]="_mouseBlockWidth"
+      [style.height]="_mouseBlockHeight">
+    </div>
+  </div>
+</div>
