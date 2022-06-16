@@ -1,9 +1,9 @@
 import { Injectable, Self } from '@angular/core'
 
+import { MapControlsService } from '@theseam/ui-common/map'
 import { isNullOrUndefined, notNullOrUndefined } from '@theseam/ui-common/utils'
 
-import { GoogleMapsService } from './googlemaps.service'
-import { MapControlsService } from './map-controls-service'
+import { GoogleMapsService } from './google-maps.service'
 
 @Injectable()
 export class GoogleMapsControlsService implements MapControlsService {

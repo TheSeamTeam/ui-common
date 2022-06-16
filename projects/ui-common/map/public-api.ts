@@ -1,2 +1,7 @@
 export * from './map.component'
 export * from './map.module'
+export * from './map-controls-service'
+export * from './map-manager.service'
+export * from './map-manager'
+export * from './map-controls-menu/map-controls-menu.component'
+export * from './map-controls-menu/map-controls-menu.module'

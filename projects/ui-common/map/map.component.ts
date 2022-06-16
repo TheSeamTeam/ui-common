@@ -7,16 +7,24 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ComponentFactoryResolver,
+  ContentChild,
+  ContentChildren,
   ElementRef,
   EventEmitter,
   forwardRef,
+  Inject,
   Input,
   NgZone,
   OnDestroy,
   OnInit,
   Output,
+  QueryList,
   ViewChild,
+  ViewContainerRef,
 } from '@angular/core'
+import { TheSeamMapControlDirective } from './map-control/map-control.directive'
+import { MapControlsService, MAP_CONTROLS_SERVICE } from './map-controls-service'
 
 import {
   CanDisable,
@@ -59,12 +67,35 @@ const _TheSeamMapMixinBase: HasTabIndexCtor & CanDisableCtor &
 export class TheSeamMapComponent extends _TheSeamMapMixinBase
   implements OnInit, AfterViewInit, OnDestroy, CanDisable, HasTabIndex {
 
+    // @ContentChild(TheSeamMapControlDirective, { static: true })
+    @ContentChildren(TheSeamMapControlDirective)
+  set _controlsTpls(value: QueryList<TheSeamMapControlDirective>) {
+    console.log('_controlsTpls', value)
+    // if (value) {
+    //   // const componentFactory = this._componentFactoryResolver.resolveComponentFactory(portal.component)
+    //   // let viewRef = this._vcr.createEmbeddedView(value.templateRef, value.context)
+    //   const viewRef = this._vcr.createEmbeddedView(value.template, {})
+    //   // viewRef.rootNodes.forEach(rootNode => this.outletElement.appendChild(rootNode));
+    //   viewRef.rootNodes[0].parentElement.removeChild(viewRef.rootNodes[0])
+    //   this._mapsControls.addPolygonEditorControls(viewRef.rootNodes[0])
+
+    //   // Note that we want to detect changes after the nodes have been moved so that
+    //   // any directives inside the portal that are looking at the DOM inside a lifecycle
+    //   // hook won't be invoked too early.
+    //   viewRef.detectChanges()
+    // }
+    this._mapManager.setRegisteredControlDirectives(value.toArray())
+  }
+
   constructor(
     elementRef: ElementRef,
     private _changeDetectorRef: ChangeDetectorRef,
     private _focusMonitor: FocusMonitor,
     private _ngZone: NgZone,
+    private readonly _vcr: ViewContainerRef,
+    private readonly _componentFactoryResolver: ComponentFactoryResolver,
     private readonly _mapManager: MapManagerService,
+    // @Inject(MAP_CONTROLS_SERVICE) private readonly _mapsControls: MapControlsService,
     @Attribute('tabindex') tabIndex: string
   ) {
     super(elementRef)

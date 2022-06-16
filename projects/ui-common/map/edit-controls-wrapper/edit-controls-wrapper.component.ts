@@ -18,7 +18,8 @@ import { MapManagerService } from '../map-manager.service'
  */
 @Component({
   selector: 'seam-edit-controls-wrapper',
-  template: `<ng-template><seam-edit-controls></seam-edit-controls></ng-template>`,
+  template: ``,
+  // template: `<ng-template><seam-edit-controls></seam-edit-controls></ng-template>`,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TheSeamEditControlsWrapperComponent implements OnInit, OnDestroy {

@@ -20,8 +20,6 @@ import {
 
 import { CanDisable, CanDisableCtor, InputBoolean, mixinDisabled } from '@theseam/ui-common/core'
 
-import { GoogleMapsService } from '../googlemaps.service'
-
 class TheSeamEditControlsComponentBase {
   constructor(public _elementRef: ElementRef) {}
 }
@@ -47,7 +45,6 @@ export class TheSeamEditControlsComponent extends _TheSeamEditControlsMixinBase
     private readonly _changeDetectorRef: ChangeDetectorRef,
     private readonly _focusMonitor: FocusMonitor,
     private readonly _ngZone: NgZone,
-    private readonly _googleMaps: GoogleMapsService
   ) {
     super(elementRef)
   }

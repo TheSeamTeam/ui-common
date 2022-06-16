@@ -1,0 +1,14 @@
+<div>
+  <button seamButton class="map-control-layers-group-btn-collapse p-0"
+    [attr.data-collapsed]="collapsed"
+    (click)="_collapse()">
+    <seam-icon class="d-block" [icon]="_collapseIcon" iconClass="text-secondary"></seam-icon>
+    <span class="sr-only">Layer group collapse</span>
+  </button>
+  <div>
+
+  </div>
+</div>
+<div>
+  <ng-content select="seam-map-control-layers-layer"></ng-content>
+</div>

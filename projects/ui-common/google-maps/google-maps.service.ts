@@ -1,7 +1,7 @@
 import { Injectable, ViewContainerRef } from '@angular/core'
 
+import { MapManagerService } from '@theseam/ui-common/map'
 import { isNullOrUndefined, notNullOrUndefined } from '@theseam/ui-common/utils'
-import { MapManagerService } from './map-manager.service'
 
 const DEFAULT_POLYGON_OPTIONS: google.maps.PolygonOptions = {
   clickable: true,
@@ -59,6 +59,7 @@ export class GoogleMapsService {
   }
 
   public addPolygonEditorControls(element: HTMLElement): void {
+    console.log('addPolygonEditorControls', element)
     const map = this._map
     if (isNullOrUndefined(map)) {
       throw Error(`Map must be ready before adding polygon editor controls.`)
