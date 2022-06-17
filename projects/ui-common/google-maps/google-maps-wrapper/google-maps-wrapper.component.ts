@@ -56,12 +56,25 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
   implements OnInit, AfterViewInit, OnDestroy, CanDisable {
   static ngAcceptInputType_disabled: BooleanInput
 
+  private _data: any
+
   // google maps zoom level
   public zoom = 14
 
   // initial center position for the map
   public lat = 37.633814
   public lng = -98.570209
+
+  @Input()
+  set data(value: any) {
+    console.log('data', value)
+    this._data = value
+    if (this._mapManager.mapReady) {
+      this._googleMaps.setData(value)
+    }
+  }
+
+  @Output() mapReady = new EventEmitter<void>()
 
   @ViewChild(AgmMap, { static: true }) public agmMap!: AgmMap
 

@@ -16,7 +16,7 @@ import { notNullOrUndefined } from '@theseam/ui-common/utils'
 
 import { TheSeamMapControlMenuControlInput } from '../map-controls-menu/map-controls-menu-control'
 import { MapControlsMenuService } from '../map-controls-menu/map-controls-menu.service'
-import { MapControlLayersService } from './map-control-layers.service'
+import { MapControlLayersTilesService } from './map-control-layers-tiles.service'
 
 // import { TheSeamMapControlMenuControlManifest, THESEAM_MAP_CONTROL_MENU_CONTROL_MANIFEST } from '../map-controls-menu/map-controls-menu-control'
 
@@ -38,7 +38,7 @@ const _TheSeamMapControlLayersMixinBase: CanDisableCtor &
   templateUrl: './map-control-layers.component.html',
   styleUrls: ['./map-control-layers.component.scss'],
   providers: [
-    MapControlLayersService,
+    MapControlLayersTilesService,
     // {
     //   provide: THESEAM_MAP_CONTROL_MENU_CONTROL_MANIFEST,
     //   useValue: manifest,
