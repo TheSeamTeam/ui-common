@@ -23,8 +23,8 @@ import {
 
 import { CanDisable, CanDisableCtor, InputBoolean, mixinDisabled } from '@theseam/ui-common/core'
 import { MapManagerService, MAP_CONTROLS_SERVICE } from '@theseam/ui-common/map'
-import { of } from 'rxjs'
-import { switchMap, tap } from 'rxjs/operators'
+import { fromEvent, of, Subject } from 'rxjs'
+import { switchMap, takeUntil, tap } from 'rxjs/operators'
 
 import { GoogleMapsControlsService } from '../google-maps-controls.service'
 import { GoogleMapsService } from '../google-maps.service'
@@ -55,6 +55,8 @@ const _TheSeamGoogleMapsWrapperMixinBase: CanDisableCtor &
 export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapperMixinBase
   implements OnInit, AfterViewInit, OnDestroy, CanDisable {
   static ngAcceptInputType_disabled: BooleanInput
+
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   private _data: any
 
@@ -94,6 +96,18 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
 
   /** @ignore */
   ngOnInit() {
+    fromEvent<KeyboardEvent>(window, 'keydown').pipe(
+      tap((event: KeyboardEvent) => {
+        // console.log('code', event.code)
+        if (event.code === 'Delete') {
+          this._googleMaps.deleteSelection()
+        } else if (event.code === 'Escape') {
+          this._googleMaps.stopDrawing()
+        }
+      }),
+      takeUntil(this._ngUnsubscribe)
+    ).subscribe()
+
     of(this._mapManager.registeredControlDirectives).pipe(
       switchMap(directives => {
         console.log('directives', directives)
