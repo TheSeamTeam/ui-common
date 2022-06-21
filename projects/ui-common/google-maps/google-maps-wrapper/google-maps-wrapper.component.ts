@@ -1,6 +1,6 @@
 import { AgmMap } from '@agm/core'
 import { FocusMonitor, FocusOrigin } from '@angular/cdk/a11y'
-import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion'
+import { BooleanInput, coerceBooleanProperty, coerceNumberProperty } from '@angular/cdk/coercion'
 import {
   AfterViewInit,
   Attribute,
@@ -11,6 +11,7 @@ import {
   ElementRef,
   EventEmitter,
   forwardRef,
+  HostBinding,
   Inject,
   Input,
   NgZone,
@@ -20,9 +21,10 @@ import {
   ViewChild,
   ViewContainerRef
 } from '@angular/core'
+import { ControlValueAccessor } from '@angular/forms'
 
 import { CanDisable, CanDisableCtor, InputBoolean, mixinDisabled } from '@theseam/ui-common/core'
-import { MapManagerService, MAP_CONTROLS_SERVICE } from '@theseam/ui-common/map'
+import { MapManagerService, MapValueManagerService, MAP_CONTROLS_SERVICE } from '@theseam/ui-common/map'
 import { fromEvent, of, Subject } from 'rxjs'
 import { switchMap, takeUntil, tap } from 'rxjs/operators'
 
@@ -44,6 +46,9 @@ const _TheSeamGoogleMapsWrapperMixinBase: CanDisableCtor &
   selector: 'seam-google-maps-wrapper',
   templateUrl: './google-maps-wrapper.component.html',
   styleUrls: ['./google-maps-wrapper.component.scss'],
+  inputs: [
+    'disabled'
+  ],
   providers: [
     MapManagerService,
     GoogleMapsService,
@@ -53,10 +58,34 @@ const _TheSeamGoogleMapsWrapperMixinBase: CanDisableCtor &
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapperMixinBase
-  implements OnInit, AfterViewInit, OnDestroy, CanDisable {
+  implements OnInit, AfterViewInit, OnDestroy, CanDisable, ControlValueAccessor {
   static ngAcceptInputType_disabled: BooleanInput
 
   private readonly _ngUnsubscribe = new Subject<void>()
+
+  private _focusOrigin: FocusOrigin = null
+
+  // tslint:disable-next-line:no-input-rename
+  @Input('value') val: string | undefined | null
+
+  @Input()
+  set tabIndex(value: number) { this._tabIndex = coerceNumberProperty(value) }
+  get tabIndex(): number { return this._tabIndex }
+  /**
+   * Set the tab index to `-1` to allow the root element of the
+   * component to receive `focus` event from javascript, but not get focused by
+   * keyboard navigation.
+   */
+  private _tabIndex = -1
+
+  @HostBinding('attr.disabled')
+  get _attrDisabled() { return this.disabled || null }
+
+  @HostBinding('attr.tabindex')
+  get _attrTabIndex() { return this.disabled ? -1 : (this.tabIndex || 0) }
+
+  onChange: any
+  onTouched: any
 
   private _data: any
 
@@ -88,10 +117,15 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
     private readonly _googleMaps: GoogleMapsService,
     @Inject(MAP_CONTROLS_SERVICE) private readonly _googleMapsControls: GoogleMapsControlsService,
     private readonly _mapManager: MapManagerService,
+    private readonly _mapValueManager: MapValueManagerService,
     private readonly _vcr: ViewContainerRef,
     private readonly _componentFactoryResolver: ComponentFactoryResolver,
   ) {
     super(elementRef)
+
+    this._focusMonitor.monitor(this._elementRef, true).pipe(
+      takeUntil(this._ngUnsubscribe)
+    ).subscribe(origin => this._focusOrigin = origin)
   }
 
   /** @ignore */
@@ -148,10 +182,65 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
   }
 
   /** @ignore */
-  ngOnDestroy() { }
+  ngOnDestroy() {
+    this._focusMonitor.stopMonitoring(this._elementRef)
+  }
 
   /** @ignore */
   ngAfterViewInit() { }
+
+  get value(): string | undefined | null {
+    return this.val
+  }
+
+  set value(value: string | undefined | null) {
+    this.val = value
+    this._updatePolygonPath()
+
+    if (this.onChange) { this.onChange(value) }
+    if (this.onTouched) { this.onTouched() }
+
+    // Assuming the user made this change if the control has focus. This should
+    // hopefully prevent the value being updated from the server from reseting
+    // the acres answer.
+    if (this.hasFocus()) {
+      // NOTE: This has to be called after the `onChange` call, because this
+      // components FormControl needs to detect this components change before
+      // the acres validator will calculate correctly.
+      this._updateAcresAnswer()
+    } else {
+      this._centerPolygon()
+    }
+  }
+
+  writeValue(value: string | undefined): void {
+    this.value = value
+  }
+
+  registerOnChange(fn: any): void {
+    this.onChange = fn
+  }
+
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn
+  }
+
+  setDisabledState?(isDisabled: boolean): void {
+    this.disabled = isDisabled
+  }
+
+  public hasFocus(): boolean {
+    return this._focusOrigin !== null && this._focusOrigin !== undefined
+  }
+
+  /** Focuses the button. */
+  public focus(): void {
+    this._getHostElement().focus()
+  }
+
+  private _getHostElement() {
+    return this._elementRef.nativeElement
+  }
 
   _onMapReady(theMap: google.maps.Map) {
     this._googleMaps.setMap(theMap)

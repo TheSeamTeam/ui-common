@@ -2,6 +2,7 @@ import { Injectable, NgZone, ViewContainerRef } from '@angular/core'
 
 import { MapManagerService } from '@theseam/ui-common/map'
 import { isNullOrUndefined, notNullOrUndefined } from '@theseam/ui-common/utils'
+import { Observable, Subject } from 'rxjs'
 import {
   addInnerFeatureCutoutToExteriorFeature,
   createDataFeatureFromPolygon,
@@ -73,7 +74,7 @@ export class GoogleMapsService {
   ) { }
 
   public setMap(map: google.maps.Map): void {
-    console.log('setMap', map)
+    // console.log('setMap', map)
     this.googleMap = map
     this._mapManager.setMapReadyStatus(true)
     this._initDrawingManager()
@@ -164,13 +165,13 @@ export class GoogleMapsService {
 
   public addPolygonEditorControls(element: HTMLElement): void {
     this._assertInitialized()
-    console.log('addPolygonEditorControls', element)
+    // console.log('addPolygonEditorControls', element)
     this.googleMap.controls[google.maps.ControlPosition.LEFT_CENTER].push(element)
   }
 
   public async setData(data: any): Promise<void> {
     this._assertInitialized()
-    console.log('setData', data)
+    // console.log('setData', data)
     this.googleMap.data.addGeoJson(data)
     this.googleMap.fitBounds(this._getBoundWithAllFeatures())
   }
@@ -250,17 +251,17 @@ export class GoogleMapsService {
     this._assertInitialized()
 
     this.googleMap.data.addListener('addfeature', (event: google.maps.Data.AddFeatureEvent) => {
-      console.log('%cadded feature', 'color:limegreen', event.feature)
+      // console.log('%cadded feature', 'color:limegreen', event.feature)
     })
 
     this.googleMap.data.addListener('removefeature', (event: google.maps.Data.RemoveFeatureEvent) => {
-      console.log('%cremoved feature', 'color:limegreen', event.feature)
+      // console.log('%cremoved feature', 'color:limegreen', event.feature)
     })
 
     if (notNullOrUndefined(this._drawingManager)) {
       // google.maps.event.addListener(this._drawingManager, 'overlaycomplete', (event: google.maps.drawing.OverlayCompleteEvent) => {
       google.maps.event.addListener(this._drawingManager, 'polygoncomplete', (polygon: google.maps.Polygon) => {
-        console.log('%cpolygon complete', 'color:limegreen', polygon)
+        // console.log('%cpolygon complete', 'color:limegreen', polygon)
 
         // The DrawingManager doesn't seem to have a way to access the overlays,
         // so if the map is not set then it shouldn'y be considered a successful
