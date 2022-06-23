@@ -1,13 +1,27 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
+import { NgZone } from '@angular/core'
 
 import booleanContains from '@turf/boolean-contains'
 import {
   multiPolygon as turfjsMultiPolygon,
   polygon as turfjsPolygon,
 } from '@turf/helpers'
+import { Observable } from 'rxjs'
 
 const APP_FEATURE_PROPERTY_PREFIX = '__app__'
 const APP_FEATURE_SELECTED_PROPERTY = 'isSelected'
+
+// enum AppFeaturePropertyName {
+//   IsSelected = `${APP_FEATURE_PROPERTY_PREFIX}isSelected`// getSeamFeaturePropertyName('isSelected')
+// }
+
+const APP_FEATURE_PROPERTIES: string[] = [
+  getSeamFeaturePropertyName('isSelected')
+]
+
+export function isAppFeatureProperty(propertyName: string): boolean {
+  return APP_FEATURE_PROPERTIES.indexOf(propertyName) !== -1
+}
 
 export function getSeamFeaturePropertyName(name: string): string {
   return `${APP_FEATURE_PROPERTY_PREFIX}${name}`
@@ -124,5 +138,57 @@ export function createDataFeatureFromPolygon(polygon: google.maps.Polygon): goog
   const arr = polygon.getPath().getArray()
   return new google.maps.Data.Feature({
     geometry: new google.maps.Data.Polygon([ arr ])
+  })
+}
+
+export function getBoundsWithAllFeatures(data: google.maps.Data): google.maps.LatLngBounds {
+  const bounds = new google.maps.LatLngBounds()
+
+  data.forEach(feature => {
+    const geometry = feature.getGeometry()
+    geometry.forEachLatLng(latLng => {
+      bounds.extend(latLng)
+    })
+  })
+
+  return bounds
+}
+
+/**
+ * NOTE: Original events are not emitted, because filtering may omit events.
+ */
+export function createFeatureChangeObservable(data: google.maps.Data, ngZone: NgZone): Observable<void> {
+  return new Observable<void>(subscriber => {
+    const listeners: google.maps.MapsEventListener[] = []
+
+    ngZone.runOutsideAngular(() => {
+      listeners.push(data.addListener('setgeometry', (event: google.maps.Data.SetGeometryEvent) => {
+        ngZone.run(() => { subscriber.next(undefined) })
+      }))
+
+      listeners.push(data.addListener('addfeature', (event: google.maps.Data.AddFeatureEvent) => {
+        ngZone.run(() => { subscriber.next(undefined) })
+      }))
+
+      listeners.push(data.addListener('removefeature', (event: google.maps.Data.RemoveFeatureEvent) => {
+        ngZone.run(() => { subscriber.next(undefined) })
+      }))
+
+      listeners.push(data.addListener('setproperty', (event: google.maps.Data.SetPropertyEvent) => {
+        if (!isAppFeatureProperty(event.name)) {
+          ngZone.run(() => { subscriber.next(undefined) })
+        }
+      }))
+
+      listeners.push(data.addListener('removeproperty', (event: google.maps.Data.RemovePropertyEvent) => {
+        if (!isAppFeatureProperty(event.name)) {
+          ngZone.run(() => { subscriber.next(undefined) })
+        }
+      }))
+    })
+
+    return () => {
+      listeners.forEach(google.maps.event.removeListener)
+    }
   })
 }

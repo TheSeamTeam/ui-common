@@ -1,43 +1,61 @@
 import { Injectable } from '@angular/core'
-import { BehaviorSubject, Observable, Subject } from 'rxjs'
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs'
 
 import { MapManagerService } from './map-manager.service'
 
-export interface MapValue {
-  geoJson: any
-  acres: number
+export enum MapValueSource {
+  Input = 'input'
 }
 
-export interface MapValueChanged {
+export type MapValue = object | undefined | null
+
+export interface MapValueChange {
   value: MapValue
+  source: MapValueSource
 }
 
 @Injectable()
 export class MapValueManagerService {
 
-  // private readonly _valueChangedSubject = new Subject<MapValueChanged>()
+  private readonly _valueChangedSubject = new Subject<MapValueChange>()
 
-  private _value: any
+  private _value: MapValue
 
-  // public readonly value$: Observable<boolean>
-
-  public readonly valueChanged: Observable<MapValueChanged>
+  public readonly valueChanged: Observable<MapValueChange>
 
   constructor(
     private readonly _mapManager: MapManagerService
   ) {
-    // this.value$ = this._mapManager.mapReady$
-
-    // this.valueChanged = this._valueChangedSubject.asObservable()
-    this.valueChanged = this._createValueChangedObservable()
+    this.valueChanged = this._valueChangedSubject.asObservable()
   }
 
-  // private _createValueObservable(): Observable<MapValue | null> {
+  public setValue(value: MapValue, source: MapValueSource): boolean {
+    if (value === this._value) {
+      return false
+    }
 
-  // }
+    if (value === null || value === undefined) {
+      this._value = value
+      const _change: MapValueChange = {
+        source,
+        value: this._value,
+      }
+      this._valueChangedSubject.next(_change)
+      return true
+    }
 
-  private _createValueChangedObservable(): Observable<MapValueChanged> {
+    // TODO: Validate object is valid geojson.
+    this._value = value
+    const change: MapValueChange = {
+      source,
+      value: this._value,
+    }
+    this._valueChangedSubject.next(change)
+    return true
+  }
 
+  public get value(): MapValue {
+    return this._value
   }
 
 }

@@ -23,7 +23,7 @@ const geoData$ = new Observable(subscriber => {
 
 export default {
   title: 'GoogleMaps/Controls/Layers',
-  component: TheSeamGoogleMapsWrapperComponent,
+  // component: TheSeamGoogleMapsWrapperComponent,
   decorators: [
     moduleMetadata({
       imports: [
@@ -37,7 +37,17 @@ export default {
 }
 
 export const Basic = ({ ...args }) => ({
-  template: `<seam-google-maps-wrapper [data]="geoData$ | async"></seam-google-maps-wrapper>`,
+  template: `<seam-google-maps-wrapper [value]="geoData$ | async"></seam-google-maps-wrapper>`,
+  props: {
+    geoData$: geoData$
+  }
+})
+
+export const Control = ({ ...args }) => ({
+  template: `
+  <input type="text" />
+  <seam-google-maps-wrapper [value]="geoData$ | async"></seam-google-maps-wrapper>
+  <input type="text" />`,
   props: {
     geoData$: geoData$
   }

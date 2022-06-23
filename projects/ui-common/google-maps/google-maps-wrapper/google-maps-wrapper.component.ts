@@ -1,6 +1,6 @@
 import { AgmMap } from '@agm/core'
 import { FocusMonitor, FocusOrigin } from '@angular/cdk/a11y'
-import { BooleanInput, coerceBooleanProperty, coerceNumberProperty } from '@angular/cdk/coercion'
+import { BooleanInput, coerceBooleanProperty, coerceNumberProperty, NumberInput } from '@angular/cdk/coercion'
 import {
   AfterViewInit,
   Attribute,
@@ -12,6 +12,7 @@ import {
   EventEmitter,
   forwardRef,
   HostBinding,
+  HostListener,
   Inject,
   Input,
   NgZone,
@@ -23,8 +24,8 @@ import {
 } from '@angular/core'
 import { ControlValueAccessor } from '@angular/forms'
 
-import { CanDisable, CanDisableCtor, InputBoolean, mixinDisabled } from '@theseam/ui-common/core'
-import { MapManagerService, MapValueManagerService, MAP_CONTROLS_SERVICE } from '@theseam/ui-common/map'
+import { CanDisable, CanDisableCtor, InputBoolean, InputNumber, mixinDisabled } from '@theseam/ui-common/core'
+import { MapManagerService, MapValue, MapValueManagerService, MapValueSource, MAP_CONTROLS_SERVICE } from '@theseam/ui-common/map'
 import { fromEvent, of, Subject } from 'rxjs'
 import { switchMap, takeUntil, tap } from 'rxjs/operators'
 
@@ -51,6 +52,7 @@ const _TheSeamGoogleMapsWrapperMixinBase: CanDisableCtor &
   ],
   providers: [
     MapManagerService,
+    MapValueManagerService,
     GoogleMapsService,
     // GoogleMapsControlsService,
     { provide: MAP_CONTROLS_SERVICE, useClass: GoogleMapsControlsService }
@@ -60,13 +62,23 @@ const _TheSeamGoogleMapsWrapperMixinBase: CanDisableCtor &
 export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapperMixinBase
   implements OnInit, AfterViewInit, OnDestroy, CanDisable, ControlValueAccessor {
   static ngAcceptInputType_disabled: BooleanInput
+  static ngAcceptInputType_zoom: NumberInput
 
   private readonly _ngUnsubscribe = new Subject<void>()
 
   private _focusOrigin: FocusOrigin = null
 
-  // tslint:disable-next-line:no-input-rename
-  @Input('value') val: string | undefined | null
+  @Input()
+  set value(value: MapValue) {
+    const changed = this._mapValueManager.setValue(value, MapValueSource.Input)
+    if (changed) {
+      if (this.onChange) { this.onChange(value) }
+      if (this.onTouched) { this.onTouched() }
+    }
+  }
+  get value(): MapValue {
+    return this._mapValueManager.value
+  }
 
   @Input()
   set tabIndex(value: number) { this._tabIndex = coerceNumberProperty(value) }
@@ -87,23 +99,9 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
   onChange: any
   onTouched: any
 
-  private _data: any
-
-  // google maps zoom level
-  public zoom = 14
-
-  // initial center position for the map
-  public lat = 37.633814
-  public lng = -98.570209
-
-  @Input()
-  set data(value: any) {
-    console.log('data', value)
-    this._data = value
-    if (this._mapManager.mapReady) {
-      this._googleMaps.setData(value)
-    }
-  }
+  @Input() @InputNumber() zoom: number = 14
+  @Input() @InputNumber() longitude: number = -98.570209
+  @Input() @InputNumber() latitude: number = 37.633814
 
   @Output() mapReady = new EventEmitter<void>()
 
@@ -124,8 +122,18 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
     super(elementRef)
 
     this._focusMonitor.monitor(this._elementRef, true).pipe(
-      takeUntil(this._ngUnsubscribe)
-    ).subscribe(origin => this._focusOrigin = origin)
+      tap(origin => this._focusOrigin = origin),
+      takeUntil(this._ngUnsubscribe),
+    ).subscribe()
+
+    this._mapValueManager.valueChanged.pipe(
+      tap(changed => {
+        if (this._mapManager.mapReady) {
+          this._googleMaps.setData(changed.value)
+        }
+      }),
+      takeUntil(this._ngUnsubscribe),
+    ).subscribe()
   }
 
   /** @ignore */
@@ -189,31 +197,7 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
   /** @ignore */
   ngAfterViewInit() { }
 
-  get value(): string | undefined | null {
-    return this.val
-  }
-
-  set value(value: string | undefined | null) {
-    this.val = value
-    this._updatePolygonPath()
-
-    if (this.onChange) { this.onChange(value) }
-    if (this.onTouched) { this.onTouched() }
-
-    // Assuming the user made this change if the control has focus. This should
-    // hopefully prevent the value being updated from the server from reseting
-    // the acres answer.
-    if (this.hasFocus()) {
-      // NOTE: This has to be called after the `onChange` call, because this
-      // components FormControl needs to detect this components change before
-      // the acres validator will calculate correctly.
-      this._updateAcresAnswer()
-    } else {
-      this._centerPolygon()
-    }
-  }
-
-  writeValue(value: string | undefined): void {
+  writeValue(value: MapValue): void {
     this.value = value
   }
 
@@ -244,5 +228,6 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
 
   _onMapReady(theMap: google.maps.Map) {
     this._googleMaps.setMap(theMap)
+    this._googleMaps.setData(this._mapValueManager.value)
   }
 }

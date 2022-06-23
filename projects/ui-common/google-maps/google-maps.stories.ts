@@ -8,23 +8,18 @@ import { TheSeamGoogleMapsModule } from './google-maps.module'
 
 export default {
   title: 'GoogleMaps/Components',
-  component: TheSeamGoogleMapsWrapperComponent,
+  // component: TheSeamGoogleMapsWrapperComponent,
   decorators: [
     moduleMetadata({
       imports: [
         BrowserAnimationsModule,
         BrowserModule,
-        TheSeamGoogleMapsModule
+        TheSeamGoogleMapsModule,
       ]
     })
   ],
-  parameters: {
-    docs: {
-      iframeHeight: '40px',
-    }
-  }
 }
 
 export const Basic = ({ ...args }) => ({
-  template: `<seam-google-maps-wrapper></seam-google-maps-wrapper>`
+  template: `<seam-google-maps-wrapper seamHoverClass="border border-warning"></seam-google-maps-wrapper>`
 })

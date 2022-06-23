@@ -6,6 +6,7 @@ import { Observable, Subject } from 'rxjs'
 import {
   addInnerFeatureCutoutToExteriorFeature,
   createDataFeatureFromPolygon,
+  getBoundsWithAllFeatures,
   getPossibleExteriorFeature,
   isFeatureSelected,
   setFeatureSelected,
@@ -74,7 +75,6 @@ export class GoogleMapsService {
   ) { }
 
   public setMap(map: google.maps.Map): void {
-    // console.log('setMap', map)
     this.googleMap = map
     this._mapManager.setMapReadyStatus(true)
     this._initDrawingManager()
@@ -173,22 +173,7 @@ export class GoogleMapsService {
     this._assertInitialized()
     // console.log('setData', data)
     this.googleMap.data.addGeoJson(data)
-    this.googleMap.fitBounds(this._getBoundWithAllFeatures())
-  }
-
-  private _getBoundWithAllFeatures(): google.maps.LatLngBounds {
-    this._assertInitialized()
-
-    const bounds = new google.maps.LatLngBounds()
-
-    this.googleMap.data.forEach(feature => {
-      const geometry = feature.getGeometry()
-      geometry.forEachLatLng(latLng => {
-        bounds.extend(latLng)
-      })
-    })
-
-    return bounds
+    this.googleMap.fitBounds(getBoundsWithAllFeatures(this.googleMap.data))
   }
 
   private _initFeatureStyling(): void {
@@ -250,12 +235,17 @@ export class GoogleMapsService {
   private _initFeatureChangeListeners(): void {
     this._assertInitialized()
 
+
+    this.googleMap.data.addListener('setgeometry', (event: google.maps.Data.SetGeometryEvent) => {
+      console.log('%csetgeometry feature', 'color:limegreen', event.feature)
+    })
+
     this.googleMap.data.addListener('addfeature', (event: google.maps.Data.AddFeatureEvent) => {
-      // console.log('%cadded feature', 'color:limegreen', event.feature)
+      console.log('%cadded feature', 'color:limegreen', event.feature)
     })
 
     this.googleMap.data.addListener('removefeature', (event: google.maps.Data.RemoveFeatureEvent) => {
-      // console.log('%cremoved feature', 'color:limegreen', event.feature)
+      console.log('%cremoved feature', 'color:limegreen', event.feature)
     })
 
     if (notNullOrUndefined(this._drawingManager)) {
