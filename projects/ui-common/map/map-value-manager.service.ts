@@ -4,7 +4,8 @@ import { BehaviorSubject, Observable, of, Subject } from 'rxjs'
 import { MapManagerService } from './map-manager.service'
 
 export enum MapValueSource {
-  Input = 'input'
+  Input = 'input',
+  FeatureChange = 'featurechange'
 }
 
 export type MapValue = object | undefined | null

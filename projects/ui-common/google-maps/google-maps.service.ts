@@ -1,11 +1,13 @@
-import { Injectable, NgZone, ViewContainerRef } from '@angular/core'
+import { Injectable, NgZone, OnDestroy, ViewContainerRef } from '@angular/core'
 
-import { MapManagerService } from '@theseam/ui-common/map'
+import { MapManagerService, MapValueManagerService, MapValueSource } from '@theseam/ui-common/map'
 import { isNullOrUndefined, notNullOrUndefined } from '@theseam/ui-common/utils'
-import { Observable, Subject } from 'rxjs'
+import { from, Observable, Subject } from 'rxjs'
+import { switchMap, takeUntil, tap } from 'rxjs/operators'
 import {
   addInnerFeatureCutoutToExteriorFeature,
   createDataFeatureFromPolygon,
+  createFeatureChangeObservable,
   getBoundsWithAllFeatures,
   getPossibleExteriorFeature,
   isFeatureSelected,
@@ -62,7 +64,8 @@ const FEATURE_STYLE_OPTIONS_SELECTED: google.maps.Data.StyleOptions = {
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 
 @Injectable()
-export class GoogleMapsService {
+export class GoogleMapsService implements OnDestroy {
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   private _drawingManager?: google.maps.drawing.DrawingManager
 
@@ -70,9 +73,15 @@ export class GoogleMapsService {
 
   constructor(
     private readonly _mapManager: MapManagerService,
+    private readonly _mapValueManager: MapValueManagerService,
     private readonly _ngZone: NgZone,
     private readonly _vcr: ViewContainerRef,
   ) { }
+
+  ngOnDestroy(): void {
+    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.complete()
+  }
 
   public setMap(map: google.maps.Map): void {
     this.googleMap = map
@@ -171,7 +180,7 @@ export class GoogleMapsService {
 
   public async setData(data: any): Promise<void> {
     this._assertInitialized()
-    // console.log('setData', data)
+    console.log('setData', data)
     this.googleMap.data.addGeoJson(data)
     this.googleMap.fitBounds(getBoundsWithAllFeatures(this.googleMap.data))
   }
@@ -235,18 +244,26 @@ export class GoogleMapsService {
   private _initFeatureChangeListeners(): void {
     this._assertInitialized()
 
+    createFeatureChangeObservable(this.googleMap.data, this._ngZone).pipe(
+      switchMap(() => from(this.getGeoJson()).pipe(
+        tap(geoJson => {
+          // this._mapValueManager.setValue(geoJson, MapValueSource.FeatureChange)
+        }),
+      )),
+      takeUntil(this._ngUnsubscribe),
+    ).subscribe()
 
-    this.googleMap.data.addListener('setgeometry', (event: google.maps.Data.SetGeometryEvent) => {
-      console.log('%csetgeometry feature', 'color:limegreen', event.feature)
-    })
+    // this.googleMap.data.addListener('setgeometry', (event: google.maps.Data.SetGeometryEvent) => {
+    //   console.log('%csetgeometry feature', 'color:limegreen', event.feature)
+    // })
 
-    this.googleMap.data.addListener('addfeature', (event: google.maps.Data.AddFeatureEvent) => {
-      console.log('%cadded feature', 'color:limegreen', event.feature)
-    })
+    // this.googleMap.data.addListener('addfeature', (event: google.maps.Data.AddFeatureEvent) => {
+    //   console.log('%cadded feature', 'color:limegreen', event.feature)
+    // })
 
-    this.googleMap.data.addListener('removefeature', (event: google.maps.Data.RemoveFeatureEvent) => {
-      console.log('%cremoved feature', 'color:limegreen', event.feature)
-    })
+    // this.googleMap.data.addListener('removefeature', (event: google.maps.Data.RemoveFeatureEvent) => {
+    //   console.log('%cremoved feature', 'color:limegreen', event.feature)
+    // })
 
     if (notNullOrUndefined(this._drawingManager)) {
       // google.maps.event.addListener(this._drawingManager, 'overlaycomplete', (event: google.maps.drawing.OverlayCompleteEvent) => {
@@ -283,7 +300,8 @@ export class GoogleMapsService {
           setFeatureSelected(feature, true)
         }
 
-        this.googleMap.data.toGeoJson(f => console.log('geoJson', f))
+        // this.googleMap.data.toGeoJson(f => console.log('geoJson', f))
+        this.getGeoJson().then(json => console.log('geojson', json))
       })
     }
   }
@@ -294,6 +312,13 @@ export class GoogleMapsService {
     }
 
     return this._drawingManager.getDrawingMode() !== null
+  }
+
+  public getGeoJson(): Promise<object> {
+    return new Promise((resolve, reject) => {
+      this._assertInitialized()
+      this.googleMap.data.toGeoJson(f => resolve(f))
+    })
   }
 
   /** Asserts that the map has been initialized. */

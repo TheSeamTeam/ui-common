@@ -192,6 +192,9 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
   /** @ignore */
   ngOnDestroy() {
     this._focusMonitor.stopMonitoring(this._elementRef)
+
+    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.complete()
   }
 
   /** @ignore */

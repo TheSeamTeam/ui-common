@@ -8,40 +8,22 @@ import {
 } from '@turf/helpers'
 import { Observable } from 'rxjs'
 
-const APP_FEATURE_PROPERTY_PREFIX = '__app__'
-const APP_FEATURE_SELECTED_PROPERTY = 'isSelected'
-
-// enum AppFeaturePropertyName {
-//   IsSelected = `${APP_FEATURE_PROPERTY_PREFIX}isSelected`// getSeamFeaturePropertyName('isSelected')
-// }
-
-const APP_FEATURE_PROPERTIES: string[] = [
-  getSeamFeaturePropertyName('isSelected')
-]
-
-export function isAppFeatureProperty(propertyName: string): boolean {
-  return APP_FEATURE_PROPERTIES.indexOf(propertyName) !== -1
+export enum AppFeaturePropertyName {
+  IsSelected = `__app__isSelected`
 }
 
-export function getSeamFeaturePropertyName(name: string): string {
-  return `${APP_FEATURE_PROPERTY_PREFIX}${name}`
-}
-
-export function getSeamFeatureProperty(feature: google.maps.Data.Feature, name: string): any {
-  return feature.getProperty(getSeamFeaturePropertyName(name))
-}
-
-export function setSeamFeatureProperty(feature: google.maps.Data.Feature, name: string, value: any): void {
-  feature.setProperty(getSeamFeaturePropertyName(name), value)
+export function isAppFeatureProperty(propertyName: string): propertyName is AppFeaturePropertyName {
+  return Object.values(AppFeaturePropertyName)
+    .findIndex(value => value === propertyName) !== -1
 }
 
 export function isFeatureSelected(feature: google.maps.Data.Feature): boolean {
-  const isSelected = getSeamFeatureProperty(feature, APP_FEATURE_SELECTED_PROPERTY)
+  const isSelected = feature.getProperty(AppFeaturePropertyName.IsSelected)
   return coerceBooleanProperty(isSelected)
 }
 
 export function setFeatureSelected(feature: google.maps.Data.Feature, isSelected: boolean): void {
-  setSeamFeatureProperty(feature, APP_FEATURE_SELECTED_PROPERTY, isSelected)
+  feature.setProperty(AppFeaturePropertyName.IsSelected, isSelected)
 }
 
 /**
