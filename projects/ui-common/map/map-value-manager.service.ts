@@ -45,6 +45,10 @@ export class MapValueManagerService {
       return true
     }
 
+    if (JSON.stringify(value) === JSON.stringify(this._value)) {
+      return true
+    }
+
     // TODO: Validate object is valid geojson.
     this._value = value
     const change: MapValueChange = {

@@ -1,9 +1,13 @@
-import { Injectable, NgZone, OnDestroy, ViewContainerRef } from '@angular/core'
+import { ElementRef, Injectable, NgZone, OnDestroy, ViewContainerRef } from '@angular/core'
 
 import { MapManagerService, MapValueManagerService, MapValueSource } from '@theseam/ui-common/map'
+import { MenuComponent } from '@theseam/ui-common/menu'
 import { isNullOrUndefined, notNullOrUndefined } from '@theseam/ui-common/utils'
 import { from, Observable, Subject } from 'rxjs'
 import { switchMap, takeUntil, tap } from 'rxjs/operators'
+
+import { FocusMonitor } from '@angular/cdk/a11y'
+import { Overlay } from '@angular/cdk/overlay'
 import {
   addInnerFeatureCutoutToExteriorFeature,
   createDataFeatureFromPolygon,
@@ -12,6 +16,7 @@ import {
   getPossibleExteriorFeature,
   isFeatureSelected,
   setFeatureSelected,
+  stripAppFeaturePropertiesFromJson,
 } from './google-maps-feature-helpers'
 
 declare const ngDevMode: boolean | undefined
@@ -67,7 +72,10 @@ type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 export class GoogleMapsService implements OnDestroy {
   private readonly _ngUnsubscribe = new Subject<void>()
 
+  _mapContextMenuListener: google.maps.MapsEventListener | null = null
+
   private _drawingManager?: google.maps.drawing.DrawingManager
+  private _featureContextMenu: MenuComponent | null = null
 
   public googleMap?: google.maps.Map
 
@@ -76,19 +84,43 @@ export class GoogleMapsService implements OnDestroy {
     private readonly _mapValueManager: MapValueManagerService,
     private readonly _ngZone: NgZone,
     private readonly _vcr: ViewContainerRef,
+    private readonly _overlay: Overlay,
+    private readonly _focusMonitor: FocusMonitor,
   ) { }
 
   ngOnDestroy(): void {
+    if (this._mapContextMenuListener) {
+      this._mapContextMenuListener.remove()
+      this._mapContextMenuListener = null
+    }
     this._ngUnsubscribe.next()
     this._ngUnsubscribe.complete()
   }
 
   public setMap(map: google.maps.Map): void {
+    if (this.googleMap !== map && this._mapContextMenuListener) {
+      this._mapContextMenuListener.remove()
+      this._mapContextMenuListener = null
+    }
+
     this.googleMap = map
     this._mapManager.setMapReadyStatus(true)
     this._initDrawingManager()
     this._initFeatureStyling()
     this._initFeatureChangeListeners()
+
+    if (this.googleMap) {
+      // this._mapContextMenuListener = this.googleMap.addListener('contextmenu', this._contextMenuHandler)
+    }
+  }
+
+  public setFeatureContextMenu(menu: MenuComponent | null): void {
+    this._featureContextMenu = menu
+  }
+
+  private readonly _contextMenuHandler = (event: any) => {
+    console.log('contextmenu', event)
+    // MenuRef
   }
 
   /**
@@ -247,6 +279,7 @@ export class GoogleMapsService implements OnDestroy {
     createFeatureChangeObservable(this.googleMap.data, this._ngZone).pipe(
       switchMap(() => from(this.getGeoJson()).pipe(
         tap(geoJson => {
+          console.log('geoJson', geoJson)
           // this._mapValueManager.setValue(geoJson, MapValueSource.FeatureChange)
         }),
       )),
@@ -257,9 +290,96 @@ export class GoogleMapsService implements OnDestroy {
     //   console.log('%csetgeometry feature', 'color:limegreen', event.feature)
     // })
 
-    // this.googleMap.data.addListener('addfeature', (event: google.maps.Data.AddFeatureEvent) => {
-    //   console.log('%cadded feature', 'color:limegreen', event.feature)
-    // })
+    this.googleMap.data.addListener('addfeature', (event: google.maps.Data.AddFeatureEvent) => {
+      console.log('%cadded feature', 'color:limegreen', event.feature)
+      // google.maps.event.addListener(event.feature, 'contextmenu', this._contextMenuHandler)
+      // event.feature.getGeometry()
+      // this.googleMap.addListener('contextmenu', this._contextMenuHandler)
+    })
+
+    this.googleMap.data.addListener('contextmenu', (event: google.maps.Data.MouseEvent) => {
+      console.log('%cadded feature contextmenu', 'color:cyan', event)
+      console.log(event.domEvent)
+
+      if (!isFeatureSelected(event.feature)) {
+        return
+      }
+
+      const tplRef = this._featureContextMenu?.templateRef
+      if (tplRef) {
+        const ref = this._vcr.createEmbeddedView(tplRef)
+        console.log('ref.rootNodes', ref.rootNodes)
+        ref.detectChanges()
+
+        // const menuClosedSubscription = this._featureContextMenu!.closed.subscribe(v => {
+        //   console.log('closed', v)
+        //   // this.close()
+        // })
+
+        class Popup extends google.maps.OverlayView {
+          position: google.maps.LatLng
+          containerDiv: HTMLDivElement
+
+          constructor(position: google.maps.LatLng, content: HTMLElement) {
+            super()
+            this.position = position
+
+            this.containerDiv = document.createElement('div')
+            this.containerDiv.style.cursor = 'auto'
+            this.containerDiv.style.height = '0',
+            this.containerDiv.style.position = 'absolute'
+            this.containerDiv.appendChild(content)
+
+            // Optionally stop clicks, etc., from bubbling up to the map.
+            Popup.preventMapHitsAndGesturesFrom(this.containerDiv)
+          }
+
+          /** Called when the popup is added to the map. */
+          onAdd() {
+            this.getPanes()!.floatPane.appendChild(this.containerDiv)
+          }
+
+          /** Called when the popup is removed from the map. */
+          onRemove() {
+            if (this.containerDiv.parentElement) {
+              this.containerDiv.parentElement.removeChild(this.containerDiv)
+            }
+          }
+
+          /** Called each frame when the popup needs to draw itself. */
+          draw() {
+            console.log('postion', this.position, this.position.toString())
+            const divPosition = this.getProjection().fromLatLngToDivPixel(this.position)!
+
+            // Hide the popup when it is far out of view.
+            const display =
+              Math.abs(divPosition.x) < 4000 && Math.abs(divPosition.y) < 4000
+                ? 'block'
+                : 'none'
+
+            if (display === 'block') {
+              this.containerDiv.style.left = divPosition.x + 'px'
+              this.containerDiv.style.top = divPosition.y + 'px'
+            }
+
+            if (this.containerDiv.style.display !== display) {
+              this.containerDiv.style.display = display
+            }
+          }
+        }
+
+        const popup = new Popup(
+          event.latLng,
+          ref.rootNodes[0]
+        )
+        popup.setMap(this.googleMap!)
+
+        this._featureContextMenu?.focusFirstItem('program')
+
+        // this._featureContextMenu.
+      }
+
+    })
 
     // this.googleMap.data.addListener('removefeature', (event: google.maps.Data.RemoveFeatureEvent) => {
     //   console.log('%cremoved feature', 'color:limegreen', event.feature)
@@ -300,8 +420,8 @@ export class GoogleMapsService implements OnDestroy {
           setFeatureSelected(feature, true)
         }
 
-        // this.googleMap.data.toGeoJson(f => console.log('geoJson', f))
-        this.getGeoJson().then(json => console.log('geojson', json))
+        this.googleMap.data.toGeoJson(f => console.log('geoJson', f))
+        // this.getGeoJson().then(json => console.log('geojson', json))
       })
     }
   }
@@ -314,10 +434,15 @@ export class GoogleMapsService implements OnDestroy {
     return this._drawingManager.getDrawingMode() !== null
   }
 
-  public getGeoJson(): Promise<object> {
+  public getGeoJson(removeAppProperties: boolean = true): Promise<object> {
     return new Promise((resolve, reject) => {
       this._assertInitialized()
-      this.googleMap.data.toGeoJson(f => resolve(f))
+      this.googleMap.data.toGeoJson(f => {
+        if (removeAppProperties) {
+          stripAppFeaturePropertiesFromJson(f)
+        }
+        resolve(f)
+      })
     })
   }
 

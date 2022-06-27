@@ -194,6 +194,9 @@ export class MenuToggleDirective implements OnDestroy {
 
     this._resetMenu()
 
+    this._elementRef.nativeElement.removeEventListener('touchstart', this._handleTouchStart,
+        passiveEventListenerOptions)
+
     this._menuClosedSubscription.unsubscribe()
     this._closingActionsSubscription.unsubscribe()
 

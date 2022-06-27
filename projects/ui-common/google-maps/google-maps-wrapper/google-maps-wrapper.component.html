@@ -9,3 +9,8 @@
   (mapReady)="_onMapReady($event)"
   [fullscreenControl]="true">
 </agm-map>
+<seam-menu #featureContextMenu>
+  <button seamMenuItem (click)="_onClickDeleteFeature()">Delete</button>
+  <!-- <button seamMenuItem>Item 2</button>
+  <button seamMenuItem>Item 3</button> -->
+</seam-menu>

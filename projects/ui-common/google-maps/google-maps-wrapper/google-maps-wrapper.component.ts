@@ -19,6 +19,7 @@ import {
   OnDestroy,
   OnInit,
   Output,
+  TemplateRef,
   ViewChild,
   ViewContainerRef
 } from '@angular/core'
@@ -28,6 +29,8 @@ import { CanDisable, CanDisableCtor, InputBoolean, InputNumber, mixinDisabled } 
 import { MapManagerService, MapValue, MapValueManagerService, MapValueSource, MAP_CONTROLS_SERVICE } from '@theseam/ui-common/map'
 import { fromEvent, of, Subject } from 'rxjs'
 import { switchMap, takeUntil, tap } from 'rxjs/operators'
+
+import { MenuComponent } from '@theseam/ui-common/menu'
 
 import { GoogleMapsControlsService } from '../google-maps-controls.service'
 import { GoogleMapsService } from '../google-maps.service'
@@ -106,6 +109,9 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
   @Output() mapReady = new EventEmitter<void>()
 
   @ViewChild(AgmMap, { static: true }) public agmMap!: AgmMap
+  @ViewChild('featureContextMenu', { static: true, read: MenuComponent }) public featureContextMenu!: MenuComponent
+
+  @ViewChild(AgmMap, { static: true, read: ElementRef }) public agmMapTpl!: ElementRef<HTMLElement>
 
   constructor(
     elementRef: ElementRef,
@@ -138,6 +144,9 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
 
   /** @ignore */
   ngOnInit() {
+    console.log('this.featureContextMenu', this.featureContextMenu)
+    this._googleMaps.setFeatureContextMenu(this.featureContextMenu)
+
     fromEvent<KeyboardEvent>(window, 'keydown').pipe(
       tap((event: KeyboardEvent) => {
         // console.log('code', event.code)
@@ -187,6 +196,14 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
         )
       })
     ).subscribe()
+
+    // const tmpElem = document.createElement('input')
+    // tmpElem.
+
+    // console.log('this.agmMapTpl', this.agmMapTpl)
+    // this.agmMapTpl.nativeElement.addEventListener('contextmenu', (event: any) => {
+    //   console.log('map contextmenu', event)
+    // })
   }
 
   /** @ignore */
@@ -232,5 +249,9 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
   _onMapReady(theMap: google.maps.Map) {
     this._googleMaps.setMap(theMap)
     this._googleMaps.setData(this._mapValueManager.value)
+  }
+
+  _onClickDeleteFeature() {
+    this._googleMaps.deleteSelection()
   }
 }

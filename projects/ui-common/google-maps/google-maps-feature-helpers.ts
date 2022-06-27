@@ -7,6 +7,7 @@ import {
   polygon as turfjsPolygon,
 } from '@turf/helpers'
 import { Observable } from 'rxjs'
+import { notNullOrUndefined } from '../utils/not-null-or-undefined'
 
 export enum AppFeaturePropertyName {
   IsSelected = `__app__isSelected`
@@ -24,6 +25,24 @@ export function isFeatureSelected(feature: google.maps.Data.Feature): boolean {
 
 export function setFeatureSelected(feature: google.maps.Data.Feature, isSelected: boolean): void {
   feature.setProperty(AppFeaturePropertyName.IsSelected, isSelected)
+}
+
+// TODO: Check performance of cloning a google.maps.Data instance, so the
+// properties can be removed with the google maps api, instead of on the
+// resulting json.
+export function stripAppFeaturePropertiesFromJson(json: any) {
+  if (notNullOrUndefined(json) && Array.isArray(json?.features)) {
+    for (const feature of json.features) {
+      if (notNullOrUndefined(feature?.properties)) {
+        for (const k of Object.keys(feature.properties)) {
+          if (isAppFeatureProperty(k)) {
+            feature.properties[k] = undefined
+            delete feature.properties[k]
+          }
+        }
+      }
+    }
+  }
 }
 
 /**
