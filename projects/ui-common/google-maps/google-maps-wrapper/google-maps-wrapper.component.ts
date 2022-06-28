@@ -149,11 +149,17 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
 
     fromEvent<KeyboardEvent>(window, 'keydown').pipe(
       tap((event: KeyboardEvent) => {
-        // console.log('code', event.code)
+        console.log('code', event.code)
         if (event.code === 'Delete') {
           this._googleMaps.deleteSelection()
         } else if (event.code === 'Escape') {
           this._googleMaps.stopDrawing()
+        } else if (event.code === 'ContextMenu') {
+          if (this._googleMaps.hasSelectedFeature()) {
+            this._googleMaps.openContextMenu()
+            event.preventDefault()
+            event.stopPropagation()
+          }
         }
       }),
       takeUntil(this._ngUnsubscribe)

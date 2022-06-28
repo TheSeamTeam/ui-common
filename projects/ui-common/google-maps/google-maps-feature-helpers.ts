@@ -155,6 +155,21 @@ export function getBoundsWithAllFeatures(data: google.maps.Data): google.maps.La
   return bounds
 }
 
+export function getFeatureBounds(feature: google.maps.Data.Feature): google.maps.LatLngBounds {
+  const bounds = new google.maps.LatLngBounds()
+
+  const geometry = feature.getGeometry()
+  geometry.forEachLatLng(latLng => {
+    bounds.extend(latLng)
+  })
+
+  return bounds
+}
+
+export function getFeatureCenter(feature: google.maps.Data.Feature): google.maps.LatLng {
+  return getFeatureBounds(feature).getCenter()
+}
+
 /**
  * NOTE: Original events are not emitted, because filtering may omit events.
  */

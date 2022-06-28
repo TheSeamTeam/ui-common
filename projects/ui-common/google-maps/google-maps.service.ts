@@ -1,18 +1,20 @@
-import { ElementRef, Injectable, NgZone, OnDestroy, ViewContainerRef } from '@angular/core'
-
-import { MapManagerService, MapValueManagerService, MapValueSource } from '@theseam/ui-common/map'
-import { MenuComponent } from '@theseam/ui-common/menu'
-import { isNullOrUndefined, notNullOrUndefined } from '@theseam/ui-common/utils'
-import { from, Observable, Subject } from 'rxjs'
-import { switchMap, takeUntil, tap } from 'rxjs/operators'
-
 import { FocusMonitor } from '@angular/cdk/a11y'
 import { Overlay } from '@angular/cdk/overlay'
+import { Injectable, NgZone, OnDestroy, ViewContainerRef } from '@angular/core'
+import { from, Subject } from 'rxjs'
+import { switchMap, takeUntil, tap } from 'rxjs/operators'
+
+import { MapManagerService, MapValueManagerService } from '@theseam/ui-common/map'
+import { MenuComponent } from '@theseam/ui-common/menu'
+import { isNullOrUndefined, notNullOrUndefined } from '@theseam/ui-common/utils'
+
+import { GoogleMapsContextMenu } from './google-maps-contextmenu'
 import {
   addInnerFeatureCutoutToExteriorFeature,
   createDataFeatureFromPolygon,
   createFeatureChangeObservable,
   getBoundsWithAllFeatures,
+  getFeatureCenter,
   getPossibleExteriorFeature,
   isFeatureSelected,
   setFeatureSelected,
@@ -76,6 +78,7 @@ export class GoogleMapsService implements OnDestroy {
 
   private _drawingManager?: google.maps.drawing.DrawingManager
   private _featureContextMenu: MenuComponent | null = null
+  private _activeContextMenu: GoogleMapsContextMenu | null = null
 
   public googleMap?: google.maps.Map
 
@@ -84,7 +87,6 @@ export class GoogleMapsService implements OnDestroy {
     private readonly _mapValueManager: MapValueManagerService,
     private readonly _ngZone: NgZone,
     private readonly _vcr: ViewContainerRef,
-    private readonly _overlay: Overlay,
     private readonly _focusMonitor: FocusMonitor,
   ) { }
 
@@ -305,80 +307,7 @@ export class GoogleMapsService implements OnDestroy {
         return
       }
 
-      const tplRef = this._featureContextMenu?.templateRef
-      if (tplRef) {
-        const ref = this._vcr.createEmbeddedView(tplRef)
-        console.log('ref.rootNodes', ref.rootNodes)
-        ref.detectChanges()
-
-        // const menuClosedSubscription = this._featureContextMenu!.closed.subscribe(v => {
-        //   console.log('closed', v)
-        //   // this.close()
-        // })
-
-        class Popup extends google.maps.OverlayView {
-          position: google.maps.LatLng
-          containerDiv: HTMLDivElement
-
-          constructor(position: google.maps.LatLng, content: HTMLElement) {
-            super()
-            this.position = position
-
-            this.containerDiv = document.createElement('div')
-            this.containerDiv.style.cursor = 'auto'
-            this.containerDiv.style.height = '0',
-            this.containerDiv.style.position = 'absolute'
-            this.containerDiv.appendChild(content)
-
-            // Optionally stop clicks, etc., from bubbling up to the map.
-            Popup.preventMapHitsAndGesturesFrom(this.containerDiv)
-          }
-
-          /** Called when the popup is added to the map. */
-          onAdd() {
-            this.getPanes()!.floatPane.appendChild(this.containerDiv)
-          }
-
-          /** Called when the popup is removed from the map. */
-          onRemove() {
-            if (this.containerDiv.parentElement) {
-              this.containerDiv.parentElement.removeChild(this.containerDiv)
-            }
-          }
-
-          /** Called each frame when the popup needs to draw itself. */
-          draw() {
-            console.log('postion', this.position, this.position.toString())
-            const divPosition = this.getProjection().fromLatLngToDivPixel(this.position)!
-
-            // Hide the popup when it is far out of view.
-            const display =
-              Math.abs(divPosition.x) < 4000 && Math.abs(divPosition.y) < 4000
-                ? 'block'
-                : 'none'
-
-            if (display === 'block') {
-              this.containerDiv.style.left = divPosition.x + 'px'
-              this.containerDiv.style.top = divPosition.y + 'px'
-            }
-
-            if (this.containerDiv.style.display !== display) {
-              this.containerDiv.style.display = display
-            }
-          }
-        }
-
-        const popup = new Popup(
-          event.latLng,
-          ref.rootNodes[0]
-        )
-        popup.setMap(this.googleMap!)
-
-        this._featureContextMenu?.focusFirstItem('program')
-
-        // this._featureContextMenu.
-      }
-
+      this._openContextMenuForFeature(event.feature, event.latLng)
     })
 
     // this.googleMap.data.addListener('removefeature', (event: google.maps.Data.RemoveFeatureEvent) => {
@@ -432,6 +361,60 @@ export class GoogleMapsService implements OnDestroy {
     }
 
     return this._drawingManager.getDrawingMode() !== null
+  }
+
+  public hasSelectedFeature(): boolean {
+    this._assertInitialized()
+    let isSelected = false
+    this.googleMap.data.forEach(f => {
+      if (isFeatureSelected(f)) {
+        isSelected = true
+      }
+    })
+    return isSelected
+  }
+
+  public getSelectedFeature(): google.maps.Data.Feature | null {
+    this._assertInitialized()
+    let feature: google.maps.Data.Feature | null = null
+    this.googleMap.data.forEach(f => {
+      if (isFeatureSelected(f)) {
+        feature = f
+      }
+    })
+    return feature
+  }
+
+  public openContextMenu(): void {
+    const feature = this.getSelectedFeature()
+    if (feature) {
+      this._openContextMenuForFeature(feature)
+    }
+  }
+
+  private _openContextMenuForFeature(feature: google.maps.Data.Feature, position?: google.maps.LatLng) {
+    if (this._activeContextMenu) {
+      this._activeContextMenu.close()
+      this._activeContextMenu = null
+    }
+
+    this._assertInitialized()
+
+    let _position = position
+    if (!_position) {
+      _position = getFeatureCenter(feature)
+    }
+    if (this._featureContextMenu) {
+      this._activeContextMenu = new GoogleMapsContextMenu(
+        this.googleMap,
+        this._featureContextMenu,
+        _position,
+        this._vcr,
+        this._ngZone,
+        this.googleMap.data,
+        feature,
+      )
+    }
   }
 
   public getGeoJson(removeAppProperties: boolean = true): Promise<object> {
