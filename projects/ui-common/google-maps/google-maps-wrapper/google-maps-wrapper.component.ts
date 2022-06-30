@@ -157,8 +157,6 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
         } else if (event.code === 'ContextMenu') {
           if (this._googleMaps.hasSelectedFeature()) {
             this._googleMaps.openContextMenu()
-            event.preventDefault()
-            event.stopPropagation()
           }
         }
       }),
