@@ -74,8 +74,6 @@ type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 export class GoogleMapsService implements OnDestroy {
   private readonly _ngUnsubscribe = new Subject<void>()
 
-  _mapContextMenuListener: google.maps.MapsEventListener | null = null
-
   private _drawingManager?: google.maps.drawing.DrawingManager
   private _featureContextMenu: MenuComponent | null = null
   private _activeContextMenu: GoogleMapsContextMenu | null = null
@@ -91,38 +89,42 @@ export class GoogleMapsService implements OnDestroy {
   ) { }
 
   ngOnDestroy(): void {
-    if (this._mapContextMenuListener) {
-      this._mapContextMenuListener.remove()
-      this._mapContextMenuListener = null
-    }
     this._ngUnsubscribe.next()
     this._ngUnsubscribe.complete()
   }
 
   public setMap(map: google.maps.Map): void {
-    if (this.googleMap !== map && this._mapContextMenuListener) {
-      this._mapContextMenuListener.remove()
-      this._mapContextMenuListener = null
-    }
-
     this.googleMap = map
     this._mapManager.setMapReadyStatus(true)
     this._initDrawingManager()
     this._initFeatureStyling()
     this._initFeatureChangeListeners()
 
-    if (this.googleMap) {
-      // this._mapContextMenuListener = this.googleMap.addListener('contextmenu', this._contextMenuHandler)
-    }
+    const fileUploadControlElement = document.createElement('div')
+    fileUploadControlElement.innerHTML = 'Upload'
+    fileUploadControlElement.style.background = 'cyan'
+
+    // fileUploadControlElement.style.width = '100%'
+    // fileUploadControlElement.style.height = '100%'
+    // fileUploadControlElement.style.zIndex = '9999'
+    // fileUploadControlElement.classList.add('upload-fill')
+
+    const fileInputElement = document.createElement('input')
+    fileInputElement.type = 'file'
+    fileInputElement.setAttribute('hidden', '')
+    fileUploadControlElement.appendChild(fileInputElement)
+
+    fileUploadControlElement.addEventListener('click', (event) => {
+      fileInputElement.click()
+    })
+
+    console.log('div', this.googleMap.getDiv())
+
+    this.googleMap.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(fileUploadControlElement)
   }
 
   public setFeatureContextMenu(menu: MenuComponent | null): void {
     this._featureContextMenu = menu
-  }
-
-  private readonly _contextMenuHandler = (event: any) => {
-    console.log('contextmenu', event)
-    // MenuRef
   }
 
   /**

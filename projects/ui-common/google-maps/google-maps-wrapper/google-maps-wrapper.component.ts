@@ -113,6 +113,19 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
 
   @ViewChild(AgmMap, { static: true, read: ElementRef }) public agmMapTpl!: ElementRef<HTMLElement>
 
+  @HostListener('drop', [ '$event' ])
+  _onDrop(event: Event) {
+    event.preventDefault()
+    event.stopPropagation()
+    console.log('onDrop', event)
+  }
+
+  @HostListener('dragover', [ '$event' ])
+  _onDragOver(event: any) {
+    event.preventDefault()
+    event.dataTransfer.dropEffect = 'copy'
+  }
+
   constructor(
     elementRef: ElementRef,
     private readonly _changeDetectorRef: ChangeDetectorRef,
