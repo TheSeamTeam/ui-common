@@ -127,6 +127,11 @@ export class GoogleMapsService implements OnDestroy {
     this._featureContextMenu = menu
   }
 
+  public getDiv(): HTMLDivElement {
+    this._assertInitialized()
+    return this.googleMap.getDiv() as HTMLDivElement
+  }
+
   /**
    * Iterates the map's features and removes any that are selected.
    */

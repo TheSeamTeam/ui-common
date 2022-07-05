@@ -7,10 +7,12 @@ import { TheSeamMenuModule } from '@theseam/ui-common/menu'
 import { TheSeamSharedModule } from '@theseam/ui-common/shared'
 
 import { TheSeamGoogleMapsWrapperComponent } from './google-maps-wrapper/google-maps-wrapper.component'
+import { TheSeamMapFileDropComponent } from './map-file-drop/map-file-drop.component'
 
 @NgModule({
   declarations: [
     TheSeamGoogleMapsWrapperComponent,
+    TheSeamMapFileDropComponent,
   ],
   imports: [
     CommonModule,
