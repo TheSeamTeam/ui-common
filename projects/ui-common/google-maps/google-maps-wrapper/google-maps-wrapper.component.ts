@@ -134,7 +134,8 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
 
     this._mapValueManager.valueChanged.pipe(
       tap(changed => {
-        if (this._mapManager.mapReady) {
+        console.log('valueChanged', changed.source, changed.value)
+        if (this._mapManager.mapReady && changed.source !== MapValueSource.FeatureChange) {
           this._googleMaps.setData(changed.value)
         }
       }),

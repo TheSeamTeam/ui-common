@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs'
+import { Observable, Subject } from 'rxjs'
 
 import { MapManagerService } from './map-manager.service'
 

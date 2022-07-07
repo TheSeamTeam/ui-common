@@ -287,10 +287,7 @@ export class GoogleMapsService implements OnDestroy {
 
     createFeatureChangeObservable(this.googleMap.data, this._ngZone).pipe(
       switchMap(() => from(this.getGeoJson()).pipe(
-        tap(geoJson => {
-          console.log('geoJson', geoJson)
-          // this._mapValueManager.setValue(geoJson, MapValueSource.FeatureChange)
-        }),
+        tap(geoJson => this._mapValueManager.setValue(geoJson, MapValueSource.FeatureChange)),
       )),
       takeUntil(this._ngUnsubscribe),
     ).subscribe()
