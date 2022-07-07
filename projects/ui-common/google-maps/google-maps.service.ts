@@ -97,26 +97,6 @@ export class GoogleMapsService implements OnDestroy {
     this._initDrawingManager()
     this._initFeatureStyling()
     this._initFeatureChangeListeners()
-
-    const fileUploadControlElement = document.createElement('div')
-    fileUploadControlElement.innerHTML = 'Upload'
-    fileUploadControlElement.style.background = 'cyan'
-
-    // fileUploadControlElement.style.width = '100%'
-    // fileUploadControlElement.style.height = '100%'
-    // fileUploadControlElement.style.zIndex = '9999'
-    // fileUploadControlElement.classList.add('upload-fill')
-
-    const fileInputElement = document.createElement('input')
-    fileInputElement.type = 'file'
-    fileInputElement.setAttribute('hidden', '')
-    fileUploadControlElement.appendChild(fileInputElement)
-
-    fileUploadControlElement.addEventListener('click', (event) => {
-      fileInputElement.click()
-    })
-
-    this.googleMap.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(fileUploadControlElement)
   }
 
   public setFeatureContextMenu(menu: MenuComponent | null): void {
@@ -212,6 +192,11 @@ export class GoogleMapsService implements OnDestroy {
     this._assertInitialized()
     // console.log('addPolygonEditorControls', element)
     this.googleMap.controls[google.maps.ControlPosition.LEFT_CENTER].push(element)
+  }
+
+  public addControl(element: HTMLElement, position: google.maps.ControlPosition): void {
+    this._assertInitialized()
+    this.googleMap.controls[position].push(element)
   }
 
   public async setData(data: any): Promise<void> {

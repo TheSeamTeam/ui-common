@@ -14,11 +14,13 @@ import {
   HostBinding,
   HostListener,
   Inject,
+  Injector,
   Input,
   NgZone,
   OnDestroy,
   OnInit,
   Output,
+  Self,
   TemplateRef,
   ViewChild,
   ViewContainerRef
@@ -30,8 +32,10 @@ import { MapManagerService, MapValue, MapValueManagerService, MapValueSource, MA
 import { fromEvent, of, Subject } from 'rxjs'
 import { switchMap, takeUntil, tap } from 'rxjs/operators'
 
+import { faFileImport } from '@fortawesome/free-solid-svg-icons'
 import { MenuComponent } from '@theseam/ui-common/menu'
 
+import { TheSeamGoogleMapsButtonControlComponent } from '../google-maps-button-control/google-maps-button-control.component'
 import { GoogleMapsControlsService } from '../google-maps-controls.service'
 import { GoogleMapsService } from '../google-maps.service'
 
@@ -127,6 +131,7 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
     private readonly _mapValueManager: MapValueManagerService,
     private readonly _vcr: ViewContainerRef,
     private readonly _componentFactoryResolver: ComponentFactoryResolver,
+    private readonly _injector: Injector,
   ) {
     super(elementRef)
 
@@ -249,6 +254,8 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
   _onMapReady(theMap: google.maps.Map) {
     this._googleMaps.setMap(theMap)
     this._googleMaps.setData(this._mapValueManager.value)
+
+    this._googleMapsControls.add({ control: 'button', data: { label: 'Import Geo File', icon: faFileImport } })
   }
 
   _onClickDeleteFeature() {

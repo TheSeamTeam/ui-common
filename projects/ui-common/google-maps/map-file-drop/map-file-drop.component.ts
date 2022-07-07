@@ -1,23 +1,19 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   ElementRef,
-  Inject,
   NgZone,
   OnDestroy,
   OnInit,
   Renderer2,
-  ViewContainerRef
 } from '@angular/core'
 
 import { Subject } from 'rxjs'
 import { takeUntil, tap } from 'rxjs/operators'
 
-import { MapManagerService, MapValue, MapValueManagerService, MapValueSource, MAP_CONTROLS_SERVICE } from '@theseam/ui-common/map'
+import { MapManagerService, MapValueManagerService, MapValueSource } from '@theseam/ui-common/map'
 import { readGeoFile } from '@theseam/ui-common/utils'
 
-import { GoogleMapsControlsService } from '../google-maps-controls.service'
 import { GoogleMapsService } from '../google-maps.service'
 
 /**
@@ -44,13 +40,10 @@ export class TheSeamMapFileDropComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly _elementRef: ElementRef,
-    private readonly _changeDetectorRef: ChangeDetectorRef,
     private readonly _ngZone: NgZone,
     private readonly _googleMaps: GoogleMapsService,
-    @Inject(MAP_CONTROLS_SERVICE) private readonly _googleMapsControls: GoogleMapsControlsService,
     private readonly _mapManager: MapManagerService,
     private readonly _mapValueManager: MapValueManagerService,
-    private readonly _vcr: ViewContainerRef,
     private readonly _renderer: Renderer2
   ) { }
 
@@ -121,23 +114,14 @@ export class TheSeamMapFileDropComponent implements OnInit, OnDestroy {
       return
     }
 
-    // console.log('dragover', event)
-    // console.log(event.dataTransfer.files.length)
-    // console.log(event.dataTransfer.types)
-    // console.log(this._isSupportedDataTransferTypes(event.dataTransfer))
-
-
     event.preventDefault()
     event.dataTransfer.dropEffect = 'copy'
-
   }
 
   private readonly _handleDropEvent = (event: any) => {
     if (!this._dropAllowed()) {
       return
     }
-
-    // console.log('drop', event)
 
     event.preventDefault()
     event.stopPropagation()
@@ -147,16 +131,10 @@ export class TheSeamMapFileDropComponent implements OnInit, OnDestroy {
     if (!this._isSupportedDataTransfer(event.dataTransfer)) {
       return
     }
-    // console.log(event.dataTransfer.files.length)
-    // console.log(event.dataTransfer.items.length)
-    // console.log(event.dataTransfer.files)
-    const item = event.dataTransfer.items[0]
-    // console.log('item', item)
-    const file = item.getAsFile()
-    // console.log('file', file)
 
+    const item = event.dataTransfer.items[0]
+    const file = item.getAsFile()
     readGeoFile(file).then(json => {
-      // console.log('json', json)
       this._mapValueManager.setValue(json, MapValueSource.Input)
     })
   }
@@ -170,7 +148,6 @@ export class TheSeamMapFileDropComponent implements OnInit, OnDestroy {
       return
     }
 
-    // console.log('dragenter', event)
     this._renderer.setStyle(this._elementRef.nativeElement, 'display', 'block')
   }
 
@@ -178,7 +155,7 @@ export class TheSeamMapFileDropComponent implements OnInit, OnDestroy {
     if (!this._dropAllowed()) {
       return
     }
-    // console.log('dragleave', event)
+
     this._renderer.setStyle(this._elementRef.nativeElement, 'display', 'none')
   }
 
