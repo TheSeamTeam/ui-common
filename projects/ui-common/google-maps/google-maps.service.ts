@@ -1,10 +1,8 @@
-import { FocusMonitor } from '@angular/cdk/a11y'
-import { Overlay } from '@angular/cdk/overlay'
 import { Injectable, NgZone, OnDestroy, ViewContainerRef } from '@angular/core'
 import { from, Subject } from 'rxjs'
 import { switchMap, takeUntil, tap } from 'rxjs/operators'
 
-import { MapManagerService, MapValueManagerService } from '@theseam/ui-common/map'
+import { MapManagerService, MapValueManagerService, MapValueSource } from '@theseam/ui-common/map'
 import { MenuComponent } from '@theseam/ui-common/menu'
 import { isNullOrUndefined, notNullOrUndefined } from '@theseam/ui-common/utils'
 
@@ -17,6 +15,7 @@ import {
   getFeatureCenter,
   getPossibleExteriorFeature,
   isFeatureSelected,
+  removeAllFeatures,
   setFeatureSelected,
   stripAppFeaturePropertiesFromJson,
 } from './google-maps-feature-helpers'
@@ -85,7 +84,6 @@ export class GoogleMapsService implements OnDestroy {
     private readonly _mapValueManager: MapValueManagerService,
     private readonly _ngZone: NgZone,
     private readonly _vcr: ViewContainerRef,
-    private readonly _focusMonitor: FocusMonitor,
   ) { }
 
   ngOnDestroy(): void {
@@ -117,8 +115,6 @@ export class GoogleMapsService implements OnDestroy {
     fileUploadControlElement.addEventListener('click', (event) => {
       fileInputElement.click()
     })
-
-    console.log('div', this.googleMap.getDiv())
 
     this.googleMap.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(fileUploadControlElement)
   }
@@ -201,7 +197,6 @@ export class GoogleMapsService implements OnDestroy {
     this._drawingManager = drawingManager
 
     this._drawingManager.addListener('drawingmode_changed', event => {
-      // console.log('drawingmode change', event, this._drawingManager?.getDrawingMode())
       if (this._drawingManager?.getDrawingMode() !== null) {
         this._assertInitialized()
         this.googleMap.data.forEach(f => {
@@ -221,7 +216,7 @@ export class GoogleMapsService implements OnDestroy {
 
   public async setData(data: any): Promise<void> {
     this._assertInitialized()
-    console.log('setData', data)
+    removeAllFeatures(this.googleMap.data)
     this.googleMap.data.addGeoJson(data)
     this.googleMap.fitBounds(getBoundsWithAllFeatures(this.googleMap.data))
   }
@@ -292,21 +287,7 @@ export class GoogleMapsService implements OnDestroy {
       takeUntil(this._ngUnsubscribe),
     ).subscribe()
 
-    // this.googleMap.data.addListener('setgeometry', (event: google.maps.Data.SetGeometryEvent) => {
-    //   console.log('%csetgeometry feature', 'color:limegreen', event.feature)
-    // })
-
-    this.googleMap.data.addListener('addfeature', (event: google.maps.Data.AddFeatureEvent) => {
-      console.log('%cadded feature', 'color:limegreen', event.feature)
-      // google.maps.event.addListener(event.feature, 'contextmenu', this._contextMenuHandler)
-      // event.feature.getGeometry()
-      // this.googleMap.addListener('contextmenu', this._contextMenuHandler)
-    })
-
     this.googleMap.data.addListener('contextmenu', (event: google.maps.Data.MouseEvent) => {
-      console.log('%cadded feature contextmenu', 'color:cyan', event)
-      console.log(event.domEvent)
-
       if (!isFeatureSelected(event.feature)) {
         return
       }
@@ -314,15 +295,8 @@ export class GoogleMapsService implements OnDestroy {
       this._openContextMenuForFeature(event.feature, event.latLng)
     })
 
-    // this.googleMap.data.addListener('removefeature', (event: google.maps.Data.RemoveFeatureEvent) => {
-    //   console.log('%cremoved feature', 'color:limegreen', event.feature)
-    // })
-
     if (notNullOrUndefined(this._drawingManager)) {
-      // google.maps.event.addListener(this._drawingManager, 'overlaycomplete', (event: google.maps.drawing.OverlayCompleteEvent) => {
       google.maps.event.addListener(this._drawingManager, 'polygoncomplete', (polygon: google.maps.Polygon) => {
-        // console.log('%cpolygon complete', 'color:limegreen', polygon)
-
         // The DrawingManager doesn't seem to have a way to access the overlays,
         // so if the map is not set then it shouldn'y be considered a successful
         // completion. I am canceling the active drawing by disabling drawing
@@ -352,9 +326,6 @@ export class GoogleMapsService implements OnDestroy {
           this.googleMap.data.add(feature)
           setFeatureSelected(feature, true)
         }
-
-        this.googleMap.data.toGeoJson(f => console.log('geoJson', f))
-        // this.getGeoJson().then(json => console.log('geojson', json))
       })
     }
   }
@@ -442,102 +413,4 @@ export class GoogleMapsService implements OnDestroy {
       )
     }
   }
-
-
-
-
-  // private async getFeature(map: google.maps.Map): Promise<google.maps.Data.Feature> {
-  //   return new Promise((resolve, reject) => {
-  //     map.data.toGeoJson(feat => {
-  //       // feature = feat as google.maps.Data.Feature
-  //       console.log('feat', feat)
-  //       resolve(feat as google.maps.Data.Feature)
-  //     })
-  //   })
-  // }
-
-  // private async loadJson(url: string, map: google.maps.Map): Promise<google.maps.Data.Feature[]> {
-  //   return new Promise((resolve, reject) => {
-  //     map.data.loadGeoJson(url, undefined, (feats: google.maps.Data.Feature[] | FeatureCollection) => {
-  //       // feature = feat as google.maps.Data.Feature
-  //       console.log('feats', feats)
-  //       if (!Array.isArray(feats) && feats.type === 'FeatureCollection') {
-  //         resolve(feats.features)
-  //       } else if (Array.isArray(feats)) {
-  //         resolve(feats)
-  //       } else {
-  //         reject('Unexpected JSON.')
-  //       }
-  //     })
-  //   })
-  // }
-
-
-
-  // this._polygon = this._createPolygon()
-  // this._setPolygonChangeListener(this._polygon)
-
-  // this.autocomplete = new google.maps.places.Autocomplete(this.searchElement.nativeElement, {
-  //   componentRestrictions: { country: 'US' }
-  // })
-
-  // this.autocomplete.addListener('place_changed', () => {
-  //   if (typeof this.value === 'string' && this.value.length > 0) {
-  //     return
-  //   }
-
-  //   this._ngZone.run( () => {
-  //     const place = this.autocomplete.getPlace()
-  //     if  (place.geometry !== undefined || place.geometry != null) {
-  //       this.map.fitBounds(place.geometry.viewport)
-  //     }
-  //   })
-  // })
-
-
-
-
-
-
-
-
-
-
-
-
-  // this._centerPolygon()
-  // this._updatePolygonPath()
-
-  // if (this._polygon && !this.disabled && this._polygon.getPath().getLength() === 0) {
-  //   this.drawingManager.setOptions({
-  //     drawingMode: google.maps.drawing.OverlayType.POLYGON
-  //   })
-  // }
-
-  // this.defaultRegion$.subscribe(data => {
-  //   if (!this.value || this.value.length === 0) {
-  //     this.map.setCenter({ lat: Number(data.latitude), lng: Number(data.longitude) })
-  //   }
-  //   this.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(this.clearBtn.nativeElement)
-
-  //   if (this._overlayCompleteListener) {
-  //     google.maps.event.removeListener(this._overlayCompleteListener)
-  //     this._overlayCompleteListener = undefined
-  //   }
-
-  //   this._overlayCompleteListener = google.maps.event.addListener(this.drawingManager, 'overlaycomplete', (event) => {
-  //     if (event.type === google.maps.drawing.OverlayType.POLYGON) {
-  //       if (this._polygon) {
-  //         this._polygon.setMap(null)
-  //         this._setPolygonChangeListener(this._polygon)
-  //       }
-  //       this._polygon = event.overlay
-  //       this.drawingManager.setOptions({ drawingMode: null })
-
-  //       this.value = event.overlay.getPath().getArray().toString()
-  //     }
-  //   })
-
-  //   this.agmMap.triggerResize(true)
-  // })
 }

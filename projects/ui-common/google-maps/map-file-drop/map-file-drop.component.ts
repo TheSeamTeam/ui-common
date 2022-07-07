@@ -124,7 +124,7 @@ export class TheSeamMapFileDropComponent implements OnInit, OnDestroy {
     // console.log('dragover', event)
     // console.log(event.dataTransfer.files.length)
     // console.log(event.dataTransfer.types)
-    console.log(this._isSupportedDataTransferTypes(event.dataTransfer))
+    // console.log(this._isSupportedDataTransferTypes(event.dataTransfer))
 
 
     event.preventDefault()
@@ -137,28 +137,28 @@ export class TheSeamMapFileDropComponent implements OnInit, OnDestroy {
       return
     }
 
-    console.log('drop', event)
+    // console.log('drop', event)
 
     event.preventDefault()
     event.stopPropagation()
     this._renderer.setStyle(this._elementRef.nativeElement, 'display', 'none')
 
     // TODO: Show error if multiple files?
-    // if (!this._isSupportedDataTransfer(event.dataTransfer)) {
-    //   return
-    // }
-    console.log(event.dataTransfer.files.length)
-    console.log(event.dataTransfer.items.length)
-    console.log(event.dataTransfer.files)
-    for (const item of event.dataTransfer.items) {
-      console.log('item', item)
-      const file = item.getAsFile()
-      console.log('file', file)
-
-      readGeoFile(file).then(json => {
-        console.log('json', json)
-      })
+    if (!this._isSupportedDataTransfer(event.dataTransfer)) {
+      return
     }
+    // console.log(event.dataTransfer.files.length)
+    // console.log(event.dataTransfer.items.length)
+    // console.log(event.dataTransfer.files)
+    const item = event.dataTransfer.items[0]
+    // console.log('item', item)
+    const file = item.getAsFile()
+    // console.log('file', file)
+
+    readGeoFile(file).then(json => {
+      // console.log('json', json)
+      this._mapValueManager.setValue(json, MapValueSource.Input)
+    })
   }
 
   private readonly _handleDragEnterEvent = (event: any) => {

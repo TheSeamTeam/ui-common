@@ -170,6 +170,10 @@ export function getFeatureCenter(feature: google.maps.Data.Feature): google.maps
   return getFeatureBounds(feature).getCenter()
 }
 
+export function removeAllFeatures(data: google.maps.Data): void {
+  data.forEach(f => data.remove(f))
+}
+
 /**
  * NOTE: Original events are not emitted, because filtering may omit events.
  */
