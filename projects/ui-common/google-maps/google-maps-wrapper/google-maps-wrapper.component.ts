@@ -66,6 +66,7 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
   implements OnInit, AfterViewInit, OnDestroy, CanDisable, ControlValueAccessor {
   static ngAcceptInputType_disabled: BooleanInput
   static ngAcceptInputType_zoom: NumberInput
+  static ngAcceptInputType_fileDropEnabled: BooleanInput
 
   private readonly _ngUnsubscribe = new Subject<void>()
 
@@ -92,6 +93,8 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
    * keyboard navigation.
    */
   private _tabIndex = -1
+
+  @Input() @InputBoolean() fileDropEnabled: BooleanInput = true
 
   @HostBinding('attr.disabled')
   get _attrDisabled() { return this.disabled || null }
