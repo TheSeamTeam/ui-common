@@ -13,9 +13,9 @@ import { Subject } from 'rxjs'
 
 import { SeamIcon } from '@theseam/ui-common/icon'
 import { MapValueManagerService, MapValueSource, MAP_CONTROL_DATA } from '@theseam/ui-common/map'
-import { hasProperty, readGeoFile } from '@theseam/ui-common/utils'
+import { readGeoFile } from '@theseam/ui-common/utils'
 
-export interface GoogleMapsButtonControlData {
+export interface GoogleMapsUploadButtonControlData {
   label?: string | undefined | null
   icon?: SeamIcon | undefined | null
 }
@@ -25,9 +25,9 @@ export interface GoogleMapsButtonControlData {
  */
 @Component({
   // tslint:disable-next-line: component-selector
-  selector: 'button[seam-google-maps-button-control]',
-  templateUrl: './google-maps-button-control.component.html',
-  styleUrls: ['./google-maps-button-control.component.scss'],
+  selector: 'button[seam-google-maps-upload-button-control]',
+  templateUrl: './google-maps-upload-button-control.component.html',
+  styleUrls: ['./google-maps-upload-button-control.component.scss'],
   host: {
     '[attr.draggable]': 'false',
     '[attr.aria]-label': 'label',
@@ -37,7 +37,7 @@ export interface GoogleMapsButtonControlData {
   },
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TheSeamGoogleMapsButtonControlComponent implements OnDestroy {
+export class TheSeamGoogleMapsUploadButtonControlComponent implements OnDestroy {
 
   private readonly _ngUnsubscribe = new Subject<void>()
 
@@ -58,7 +58,7 @@ export class TheSeamGoogleMapsButtonControlComponent implements OnDestroy {
     private readonly _elementRef: ElementRef,
     private readonly _mapValueManager: MapValueManagerService,
     private readonly _renderer: Renderer2,
-    @Optional() @Inject(MAP_CONTROL_DATA) _data?: GoogleMapsButtonControlData
+    @Optional() @Inject(MAP_CONTROL_DATA) _data?: GoogleMapsUploadButtonControlData
   ) {
     if (_data) {
       if (_data.hasOwnProperty('label')) {

@@ -13,6 +13,7 @@ import {
   createFeatureChangeObservable,
   getBoundsWithAllFeatures,
   getFeatureCenter,
+  getFeaturesCount,
   getPossibleExteriorFeature,
   isFeatureSelected,
   removeAllFeatures,
@@ -203,6 +204,14 @@ export class GoogleMapsService implements OnDestroy {
     this._assertInitialized()
     removeAllFeatures(this.googleMap.data)
     this.googleMap.data.addGeoJson(data)
+    this.googleMap.fitBounds(getBoundsWithAllFeatures(this.googleMap.data))
+  }
+
+  public reCenterOnFeatures(): void {
+    this._assertInitialized()
+    if (getFeaturesCount(this.googleMap.data) === 0) {
+      return
+    }
     this.googleMap.fitBounds(getBoundsWithAllFeatures(this.googleMap.data))
   }
 

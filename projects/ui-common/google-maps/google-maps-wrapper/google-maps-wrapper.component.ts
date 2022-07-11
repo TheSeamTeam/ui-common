@@ -32,11 +32,12 @@ import { MapManagerService, MapValue, MapValueManagerService, MapValueSource, MA
 import { fromEvent, of, Subject } from 'rxjs'
 import { switchMap, takeUntil, tap } from 'rxjs/operators'
 
-import { faFileImport } from '@fortawesome/free-solid-svg-icons'
+import { faCrosshairs, faFileImport } from '@fortawesome/free-solid-svg-icons'
 import { MenuComponent } from '@theseam/ui-common/menu'
 
-import { TheSeamGoogleMapsButtonControlComponent } from '../google-maps-button-control/google-maps-button-control.component'
 import { GoogleMapsControlsService } from '../google-maps-controls.service'
+import { TheSeamGoogleMapsRecenterButtonControlComponent } from '../google-maps-recenter-button-control/google-maps-recenter-button-control.component'
+import { TheSeamGoogleMapsUploadButtonControlComponent } from '../google-maps-upload-button-control/google-maps-upload-button-control.component'
 import { GoogleMapsService } from '../google-maps.service'
 
 class TheSeamGoogleMapsWrapperComponentBase {
@@ -255,7 +256,17 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
     this._googleMaps.setMap(theMap)
     this._googleMaps.setData(this._mapValueManager.value)
 
-    this._googleMapsControls.add({ control: 'button', data: { label: 'Import Geo File', icon: faFileImport } })
+    this._googleMapsControls.add({
+      component: TheSeamGoogleMapsUploadButtonControlComponent,
+      data: { label: 'Import Geo File', icon: faFileImport },
+      position: google.maps.ControlPosition.LEFT_BOTTOM,
+    })
+
+    this._googleMapsControls.add({
+      component: TheSeamGoogleMapsRecenterButtonControlComponent,
+      data: { label: 'Center on Field', icon: faCrosshairs },
+      position: google.maps.ControlPosition.RIGHT_BOTTOM,
+    })
   }
 
   _onClickDeleteFeature() {

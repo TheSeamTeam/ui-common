@@ -174,6 +174,12 @@ export function removeAllFeatures(data: google.maps.Data): void {
   data.forEach(f => data.remove(f))
 }
 
+export function getFeaturesCount(data: google.maps.Data): number {
+  let count = 0
+  data.forEach(() => count++)
+  return count
+}
+
 /**
  * NOTE: Original events are not emitted, because filtering may omit events.
  */

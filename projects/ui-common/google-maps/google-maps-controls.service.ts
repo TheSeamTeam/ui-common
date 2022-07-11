@@ -1,7 +1,7 @@
 import { ComponentFactoryResolver, Injectable, Injector, StaticProvider } from '@angular/core'
 
 import { MapControl, MapControlsService, MAP_CONTROL_DATA } from '@theseam/ui-common/map'
-import { TheSeamGoogleMapsButtonControlComponent } from './google-maps-button-control/google-maps-button-control.component'
+// import { TheSeamGoogleMapsButtonControlComponent } from './google-maps-button-control/google-maps-button-control.component'
 
 import { GoogleMapsService } from './google-maps.service'
 
@@ -23,11 +23,8 @@ export class GoogleMapsControlsService implements MapControlsService {
   }
 
   public add(control: MapControl): void {
-    let _control: any = control.control
-    if (control.control === 'button') {
-      _control = TheSeamGoogleMapsButtonControlComponent
-    }
-    const factory = this._componentFactoryResolver.resolveComponentFactory(_control)
+    const component: any = control.component
+    const factory = this._componentFactoryResolver.resolveComponentFactory(component)
 
     const providers: StaticProvider[] = []
     if (control.data) {
@@ -44,7 +41,10 @@ export class GoogleMapsControlsService implements MapControlsService {
     const componentRef = factory.create(injector)
     componentRef.changeDetectorRef.detectChanges()
 
-    this._googleMaps.addControl(componentRef.location.nativeElement, google.maps.ControlPosition.LEFT_BOTTOM)
+    this._googleMaps.addControl(
+      componentRef.location.nativeElement,
+      control.position ?? google.maps.ControlPosition.LEFT_BOTTOM
+    )
   }
 
   public remove(control: MapControl): void {

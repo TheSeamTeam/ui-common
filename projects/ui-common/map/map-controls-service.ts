@@ -1,8 +1,10 @@
-import { ComponentRef, InjectionToken } from '@angular/core'
+import { InjectionToken } from '@angular/core'
+import { ComponentType } from '../models/component-type'
 
 export interface MapControl<TData = any> {
-  control: 'button' | ComponentRef<any> | HTMLElement
+  component: ComponentType<any>
   data?: TData
+  position?: google.maps.ControlPosition
 }
 
 export interface MapControlsService {
