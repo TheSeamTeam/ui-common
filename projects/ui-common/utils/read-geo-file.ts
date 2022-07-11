@@ -13,7 +13,6 @@ import { withoutProperty } from './obj-utils'
  */
 export async function readGeoFile(fileOrBuffer: File | ArrayBuffer | Buffer): Promise<FeatureCollection> {
   const buffer = await coerceFileOrBufferToBuffer(fileOrBuffer)
-  console.log('buffer', buffer)
 
   if (isShpFile(buffer)) {
     return await parseShpFile(buffer)

@@ -226,7 +226,6 @@ export class GoogleMapsService implements OnDestroy {
     // selection when the map looses focus.
     this.googleMap.addListener('click', (even: google.maps.MapMouseEvent | google.maps.IconMouseEvent) => {
       this._assertInitialized()
-      // console.log('%cMap click', 'color:cyan')
       this.googleMap.data.forEach(f => setFeatureSelected(f, false))
     })
 
@@ -241,9 +240,6 @@ export class GoogleMapsService implements OnDestroy {
 
     // Select a feature when clicked.
     this.googleMap.data.addListener('click', (event: google.maps.Data.MouseEvent) => {
-      // console.log('click', event)
-      // console.log('type', event.feature.getGeometry().getType())
-
       this._assertInitialized()
 
       setFeatureSelected(event.feature, true)
@@ -256,7 +252,6 @@ export class GoogleMapsService implements OnDestroy {
 
     // Set a style on hovered features that can be selected.
     this.googleMap.data.addListener('mouseover', (event: google.maps.Data.MouseEvent) => {
-      // console.log('mouseover', event)
       this._assertInitialized()
       this.googleMap.data.revertStyle()
       if (!this.isDrawing() && !isFeatureSelected(event.feature)) {
@@ -266,7 +261,6 @@ export class GoogleMapsService implements OnDestroy {
 
     // Remove any hover styles when mouse moves away.
     this.googleMap.data.addListener('mouseout', (event: google.maps.Data.MouseEvent) => {
-      // console.log('mouseout', event)
       this._assertInitialized()
       this.googleMap.data.revertStyle()
     })
