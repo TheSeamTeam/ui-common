@@ -7,14 +7,13 @@ import {
   OnInit,
   Renderer2,
 } from '@angular/core'
-
 import { Subject } from 'rxjs'
 import { takeUntil, tap } from 'rxjs/operators'
 
-import { MapManagerService, MapValueManagerService, MapValueSource } from '@theseam/ui-common/map'
 import { readGeoFile } from '@theseam/ui-common/utils'
 
 import { GoogleMapsService } from '../google-maps.service'
+import { MapValueManagerService, MapValueSource } from '../map-value-manager.service'
 
 /**
  *
@@ -42,14 +41,13 @@ export class TheSeamMapFileDropComponent implements OnInit, OnDestroy {
     private readonly _elementRef: ElementRef,
     private readonly _ngZone: NgZone,
     private readonly _googleMaps: GoogleMapsService,
-    private readonly _mapManager: MapManagerService,
     private readonly _mapValueManager: MapValueManagerService,
     private readonly _renderer: Renderer2
   ) { }
 
   /** @ignore */
   ngOnInit() {
-    this._mapManager.mapReady$.pipe(
+    this._googleMaps.mapReady$.pipe(
       tap(ready => {
         if (ready) {
           this._enableFileDrop()

@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core'
 import { Observable, Subject } from 'rxjs'
 
-import { MapManagerService } from './map-manager.service'
-
 export enum MapValueSource {
   Input = 'input',
   FeatureChange = 'featurechange'
@@ -24,9 +22,7 @@ export class MapValueManagerService {
 
   public readonly valueChanged: Observable<MapValueChange>
 
-  constructor(
-    private readonly _mapManager: MapManagerService
-  ) {
+  constructor() {
     this.valueChanged = this._valueChangedSubject.asObservable()
   }
 

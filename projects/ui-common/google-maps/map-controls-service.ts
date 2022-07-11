@@ -8,9 +8,6 @@ export interface MapControl<TData = any> {
 }
 
 export interface MapControlsService {
-  addPolygonEditorControls(element: HTMLElement): void
-  removePolygonEditorControls(): void
-
   add(control: MapControl): void
   remove(control: MapControl): void
 }

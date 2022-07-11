@@ -1,8 +1,7 @@
 import { Injectable, NgZone, OnDestroy, ViewContainerRef } from '@angular/core'
-import { from, Subject } from 'rxjs'
+import { BehaviorSubject, from, Observable, Subject } from 'rxjs'
 import { switchMap, takeUntil, tap } from 'rxjs/operators'
 
-import { MapManagerService, MapValueManagerService, MapValueSource } from '@theseam/ui-common/map'
 import { MenuComponent } from '@theseam/ui-common/menu'
 import { isNullOrUndefined, notNullOrUndefined } from '@theseam/ui-common/utils'
 
@@ -20,6 +19,7 @@ import {
   setFeatureSelected,
   stripAppFeaturePropertiesFromJson,
 } from './google-maps-feature-helpers'
+import { MapValueManagerService, MapValueSource } from './map-value-manager.service'
 
 declare const ngDevMode: boolean | undefined
 
@@ -74,18 +74,25 @@ type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 export class GoogleMapsService implements OnDestroy {
   private readonly _ngUnsubscribe = new Subject<void>()
 
+  private readonly _mapReadySubject = new BehaviorSubject<boolean>(false)
+
   private _drawingManager?: google.maps.drawing.DrawingManager
   private _featureContextMenu: MenuComponent | null = null
   private _activeContextMenu: GoogleMapsContextMenu | null = null
 
   public googleMap?: google.maps.Map
 
+  public readonly mapReady$: Observable<boolean>
+
+  public get mapReady(): boolean { return this._mapReadySubject.value }
+
   constructor(
-    private readonly _mapManager: MapManagerService,
     private readonly _mapValueManager: MapValueManagerService,
     private readonly _ngZone: NgZone,
     private readonly _vcr: ViewContainerRef,
-  ) { }
+  ) {
+    this.mapReady$ = this._mapReadySubject.asObservable()
+  }
 
   ngOnDestroy(): void {
     this._ngUnsubscribe.next()
@@ -94,7 +101,7 @@ export class GoogleMapsService implements OnDestroy {
 
   public setMap(map: google.maps.Map): void {
     this.googleMap = map
-    this._mapManager.setMapReadyStatus(true)
+    this._mapReadySubject.next(true)
     this._initDrawingManager()
     this._initFeatureStyling()
     this._initFeatureChangeListeners()
@@ -187,12 +194,6 @@ export class GoogleMapsService implements OnDestroy {
         })
       }
     })
-  }
-
-  public addPolygonEditorControls(element: HTMLElement): void {
-    this._assertInitialized()
-    // console.log('addPolygonEditorControls', element)
-    this.googleMap.controls[google.maps.ControlPosition.LEFT_CENTER].push(element)
   }
 
   public addControl(element: HTMLElement, position: google.maps.ControlPosition): void {

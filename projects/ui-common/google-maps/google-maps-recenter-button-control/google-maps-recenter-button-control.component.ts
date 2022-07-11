@@ -10,8 +10,9 @@ import {
 import { Subject } from 'rxjs'
 
 import { SeamIcon } from '@theseam/ui-common/icon'
-import { MapManagerService, MAP_CONTROL_DATA } from '@theseam/ui-common/map'
+
 import { GoogleMapsService } from '../google-maps.service'
+import { MAP_CONTROL_DATA } from '../map-controls-service'
 
 export interface GoogleMapsRecenterButtonControlData {
   label?: string | undefined | null

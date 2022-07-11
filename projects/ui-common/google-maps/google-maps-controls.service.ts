@@ -1,9 +1,7 @@
 import { ComponentFactoryResolver, Injectable, Injector, StaticProvider } from '@angular/core'
 
-import { MapControl, MapControlsService, MAP_CONTROL_DATA } from '@theseam/ui-common/map'
-// import { TheSeamGoogleMapsButtonControlComponent } from './google-maps-button-control/google-maps-button-control.component'
-
 import { GoogleMapsService } from './google-maps.service'
+import { MapControl, MapControlsService, MAP_CONTROL_DATA } from './map-controls-service'
 
 @Injectable()
 export class GoogleMapsControlsService implements MapControlsService {
@@ -13,14 +11,6 @@ export class GoogleMapsControlsService implements MapControlsService {
     private readonly _componentFactoryResolver: ComponentFactoryResolver,
     private readonly _injector: Injector,
   ) { }
-
-  public addPolygonEditorControls(element: HTMLElement): void {
-    this._googleMaps.addPolygonEditorControls(element)
-  }
-
-  public removePolygonEditorControls(): void {
-    throw Error(`Not implemented.`)
-  }
 
   public add(control: MapControl): void {
     const component: any = control.component

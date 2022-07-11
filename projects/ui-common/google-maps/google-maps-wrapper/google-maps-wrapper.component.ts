@@ -1,36 +1,25 @@
 import { AgmMap } from '@agm/core'
 import { FocusMonitor, FocusOrigin } from '@angular/cdk/a11y'
-import { BooleanInput, coerceBooleanProperty, coerceNumberProperty, NumberInput } from '@angular/cdk/coercion'
+import { BooleanInput, coerceNumberProperty, NumberInput } from '@angular/cdk/coercion'
 import {
   AfterViewInit,
-  Attribute,
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
-  ComponentFactoryResolver,
   ElementRef,
   EventEmitter,
-  forwardRef,
   HostBinding,
-  HostListener,
   Inject,
-  Injector,
   Input,
-  NgZone,
   OnDestroy,
   OnInit,
   Output,
-  Self,
-  TemplateRef,
   ViewChild,
-  ViewContainerRef
 } from '@angular/core'
 import { ControlValueAccessor } from '@angular/forms'
+import { fromEvent, Subject } from 'rxjs'
+import { takeUntil, tap } from 'rxjs/operators'
 
 import { CanDisable, CanDisableCtor, InputBoolean, InputNumber, mixinDisabled } from '@theseam/ui-common/core'
-import { MapManagerService, MapValue, MapValueManagerService, MapValueSource, MAP_CONTROLS_SERVICE } from '@theseam/ui-common/map'
-import { fromEvent, of, Subject } from 'rxjs'
-import { switchMap, takeUntil, tap } from 'rxjs/operators'
 
 import { faCrosshairs, faFileImport } from '@fortawesome/free-solid-svg-icons'
 import { MenuComponent } from '@theseam/ui-common/menu'
@@ -39,6 +28,8 @@ import { GoogleMapsControlsService } from '../google-maps-controls.service'
 import { TheSeamGoogleMapsRecenterButtonControlComponent } from '../google-maps-recenter-button-control/google-maps-recenter-button-control.component'
 import { TheSeamGoogleMapsUploadButtonControlComponent } from '../google-maps-upload-button-control/google-maps-upload-button-control.component'
 import { GoogleMapsService } from '../google-maps.service'
+import { MAP_CONTROLS_SERVICE } from '../map-controls-service'
+import { MapValue, MapValueManagerService, MapValueSource } from '../map-value-manager.service'
 
 class TheSeamGoogleMapsWrapperComponentBase {
   constructor(public _elementRef: ElementRef) {}
@@ -59,10 +50,8 @@ const _TheSeamGoogleMapsWrapperMixinBase: CanDisableCtor &
     'disabled'
   ],
   providers: [
-    MapManagerService,
     MapValueManagerService,
     GoogleMapsService,
-    // GoogleMapsControlsService,
     { provide: MAP_CONTROLS_SERVICE, useClass: GoogleMapsControlsService }
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -123,16 +112,10 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
 
   constructor(
     elementRef: ElementRef,
-    private readonly _changeDetectorRef: ChangeDetectorRef,
     private readonly _focusMonitor: FocusMonitor,
-    private readonly _ngZone: NgZone,
     private readonly _googleMaps: GoogleMapsService,
     @Inject(MAP_CONTROLS_SERVICE) private readonly _googleMapsControls: GoogleMapsControlsService,
-    private readonly _mapManager: MapManagerService,
     private readonly _mapValueManager: MapValueManagerService,
-    private readonly _vcr: ViewContainerRef,
-    private readonly _componentFactoryResolver: ComponentFactoryResolver,
-    private readonly _injector: Injector,
   ) {
     super(elementRef)
 
@@ -144,7 +127,7 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
     this._mapValueManager.valueChanged.pipe(
       tap(changed => {
         console.log('valueChanged', changed.source, changed.value)
-        if (this._mapManager.mapReady && changed.source !== MapValueSource.FeatureChange) {
+        if (this._googleMaps.mapReady && changed.source !== MapValueSource.FeatureChange) {
           this._googleMaps.setData(changed.value)
         }
       }),
@@ -154,7 +137,6 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
 
   /** @ignore */
   ngOnInit() {
-    console.log('this.featureContextMenu', this.featureContextMenu)
     this._googleMaps.setFeatureContextMenu(this.featureContextMenu)
 
     fromEvent<KeyboardEvent>(window, 'keydown').pipe(
@@ -171,44 +153,6 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
         }
       }),
       takeUntil(this._ngUnsubscribe)
-    ).subscribe()
-
-    of(this._mapManager.registeredControlDirectives).pipe(
-      switchMap(directives => {
-        console.log('directives', directives)
-        for (const dir of directives) {
-          // const componentFactory = this._componentFactoryResolver.resolveComponentFactory(portal.component)
-          // let viewRef = this._vcr.createEmbeddedView(value.templateRef, value.context)
-          const viewRef = this._vcr.createEmbeddedView(dir.template, {})
-          // viewRef.rootNodes.forEach(rootNode => this.outletElement.appendChild(rootNode));
-          viewRef.rootNodes[0].parentElement.removeChild(viewRef.rootNodes[0])
-          this._googleMapsControls.addPolygonEditorControls(viewRef.rootNodes[0])
-
-          // Note that we want to detect changes after the nodes have been moved so that
-          // any directives inside the portal that are looking at the DOM inside a lifecycle
-          // hook won't be invoked too early.
-          viewRef.detectChanges()
-        }
-        return this._mapManager.registeredControlDirectivesChanged.pipe(
-          tap(() => {
-            const directives2 = this._mapManager.registeredControlDirectives
-            console.log('directives2', directives2)
-            for (const dir of directives2) {
-              // const componentFactory = this._componentFactoryResolver.resolveComponentFactory(portal.component)
-              // let viewRef = this._vcr.createEmbeddedView(value.templateRef, value.context)
-              const viewRef = this._vcr.createEmbeddedView(dir.template, {})
-              // viewRef.rootNodes.forEach(rootNode => this.outletElement.appendChild(rootNode));
-              viewRef.rootNodes[0].parentElement.removeChild(viewRef.rootNodes[0])
-              this._googleMapsControls.addPolygonEditorControls(viewRef.rootNodes[0])
-
-              // Note that we want to detect changes after the nodes have been moved so that
-              // any directives inside the portal that are looking at the DOM inside a lifecycle
-              // hook won't be invoked too early.
-              viewRef.detectChanges()
-            }
-          })
-        )
-      })
     ).subscribe()
   }
 

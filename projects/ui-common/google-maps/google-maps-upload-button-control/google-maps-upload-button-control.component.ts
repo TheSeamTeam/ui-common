@@ -12,8 +12,10 @@ import {
 import { Subject } from 'rxjs'
 
 import { SeamIcon } from '@theseam/ui-common/icon'
-import { MapValueManagerService, MapValueSource, MAP_CONTROL_DATA } from '@theseam/ui-common/map'
 import { readGeoFile } from '@theseam/ui-common/utils'
+
+import { MAP_CONTROL_DATA } from '../map-controls-service'
+import { MapValueManagerService, MapValueSource } from '../map-value-manager.service'
 
 export interface GoogleMapsUploadButtonControlData {
   label?: string | undefined | null
