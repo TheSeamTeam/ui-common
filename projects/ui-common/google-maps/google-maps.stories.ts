@@ -4,9 +4,9 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
+import { AgmCoreModule } from '@agm/core'
 import { TheSeamGoogleMapsWrapperComponent } from './google-maps-wrapper/google-maps-wrapper.component'
 import { TheSeamGoogleMapsModule } from './google-maps.module'
-import { AgmCoreModule } from '@agm/core'
 
 export default {
   title: 'GoogleMaps/Components',
@@ -46,4 +46,16 @@ export const Control = ({ ...args }) => ({
   props: {
     control: new FormControl()
   }
+})
+
+export const Example = ({ ...args }) => ({
+  template: `
+    <seam-google-maps-wrapper
+      fileDropEnabled="true"
+      fileUploadControlEnabled="true"
+      fullscreenControlEnabled="true"
+      reCenterControlEnabled="true">
+    </seam-google-maps-wrapper>
+  `,
+  props: {}
 })

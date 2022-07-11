@@ -79,6 +79,7 @@ export class GoogleMapsService implements OnDestroy {
   private _drawingManager?: google.maps.drawing.DrawingManager
   private _featureContextMenu: MenuComponent | null = null
   private _activeContextMenu: GoogleMapsContextMenu | null = null
+  private _baseLatLng?: google.maps.LatLngLiteral
 
   public googleMap?: google.maps.Map
 
@@ -107,6 +108,11 @@ export class GoogleMapsService implements OnDestroy {
     this._initFeatureChangeListeners()
   }
 
+  public setBaseLatLng(lat: number, lng: number): void {
+    this._baseLatLng = { lat, lng }
+  }
+
+  // TODO: Refactor out of the service meant to just wrap the google maps api.
   public setFeatureContextMenu(menu: MenuComponent | null): void {
     this._featureContextMenu = menu
   }
@@ -208,12 +214,21 @@ export class GoogleMapsService implements OnDestroy {
     this.googleMap.fitBounds(getBoundsWithAllFeatures(this.googleMap.data))
   }
 
+  // TODO: Refactor out of the service meant to just wrap the google maps api.
   public reCenterOnFeatures(): void {
     this._assertInitialized()
     if (getFeaturesCount(this.googleMap.data) === 0) {
-      return
+      if (!this._baseLatLng) {
+        return
+      }
+
+      this.googleMap.panTo(this._baseLatLng)
     }
     this.googleMap.fitBounds(getBoundsWithAllFeatures(this.googleMap.data))
+
+    // TODO: Fix to pan to center. Currently fitBounds results in the expected
+    // result, but pantToBounds animates.
+    // this.googleMap.panToBounds(getBoundsWithAllFeatures(this.googleMap.data))
   }
 
   private _initFeatureStyling(): void {
@@ -327,6 +342,7 @@ export class GoogleMapsService implements OnDestroy {
     return this._drawingManager.getDrawingMode() !== null
   }
 
+  // TODO: Refactor out of the service meant to just wrap the google maps api.
   public hasSelectedFeature(): boolean {
     this._assertInitialized()
     let isSelected = false
@@ -338,6 +354,7 @@ export class GoogleMapsService implements OnDestroy {
     return isSelected
   }
 
+  // TODO: Refactor out of the service meant to just wrap the google maps api.
   public getSelectedFeature(): google.maps.Data.Feature | null {
     this._assertInitialized()
     let feature: google.maps.Data.Feature | null = null
@@ -349,6 +366,7 @@ export class GoogleMapsService implements OnDestroy {
     return feature
   }
 
+  // TODO: Refactor out of the service meant to just wrap the google maps api.
   public openContextMenu(): void {
     const feature = this.getSelectedFeature()
     if (feature) {
@@ -356,6 +374,7 @@ export class GoogleMapsService implements OnDestroy {
     }
   }
 
+  // TODO: Refactor out of the service meant to just wrap the google maps api.
   private _openContextMenuForFeature(feature: google.maps.Data.Feature, position?: google.maps.LatLng) {
     if (this._activeContextMenu) {
       this._activeContextMenu.close()

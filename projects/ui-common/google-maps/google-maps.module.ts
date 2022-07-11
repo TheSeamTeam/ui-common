@@ -10,6 +10,7 @@ import { TheSeamSharedModule } from '@theseam/ui-common/shared'
 import { TheSeamGoogleMapsRecenterButtonControlComponent } from './google-maps-recenter-button-control/google-maps-recenter-button-control.component'
 import { TheSeamGoogleMapsUploadButtonControlComponent } from './google-maps-upload-button-control/google-maps-upload-button-control.component'
 import { TheSeamGoogleMapsWrapperComponent } from './google-maps-wrapper/google-maps-wrapper.component'
+import { TheSeamMapsControlComponent } from './map-control.component'
 import { TheSeamMapFileDropComponent } from './map-file-drop/map-file-drop.component'
 
 @NgModule({
@@ -18,6 +19,7 @@ import { TheSeamMapFileDropComponent } from './map-file-drop/map-file-drop.compo
     TheSeamMapFileDropComponent,
     TheSeamGoogleMapsUploadButtonControlComponent,
     TheSeamGoogleMapsRecenterButtonControlComponent,
+    TheSeamMapsControlComponent,
   ],
   imports: [
     CommonModule,
@@ -26,11 +28,6 @@ import { TheSeamMapFileDropComponent } from './map-file-drop/map-file-drop.compo
     TheSeamMenuModule,
     TheSeamIconModule,
     AgmCoreModule,
-    // AgmCoreModule.forRoot({
-    //   // TODO: Add a way to set the api key.
-    //   // apiKey: ,
-    //   libraries: ['drawing', 'places'],
-    // }),
   ],
   exports: [
     TheSeamGoogleMapsWrapperComponent,

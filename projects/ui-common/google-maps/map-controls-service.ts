@@ -9,7 +9,6 @@ export interface MapControl<TData = any> {
 
 export interface MapControlsService {
   add(control: MapControl): void
-  remove(control: MapControl): void
 }
 
 export const MAP_CONTROLS_SERVICE = new InjectionToken<MapControlsService>('MAP_CONTROLS_SERVICE')

@@ -48,11 +48,11 @@ export class TheSeamGoogleMapsRecenterButtonControlComponent implements OnDestro
 
   @HostListener('click', [ 'event' ])
   _onClick(event: MouseEvent) {
-    this._mapManager.reCenterOnFeatures()
+    this._googleMaps.reCenterOnFeatures()
   }
 
   constructor(
-    private readonly _mapManager: GoogleMapsService,
+    private readonly _googleMaps: GoogleMapsService,
     @Optional() @Inject(MAP_CONTROL_DATA) _data?: GoogleMapsRecenterButtonControlData
   ) {
     if (_data) {

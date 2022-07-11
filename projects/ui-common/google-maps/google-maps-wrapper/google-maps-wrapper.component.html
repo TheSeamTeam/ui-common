@@ -6,9 +6,12 @@
   mapTypeId="hybrid"
   [streetViewControl]="false"
   (mapReady)="_onMapReady($event)"
-  [fullscreenControl]="true">
+  [fullscreenControl]="$any(fullscreenControlEnabled)">
 </agm-map>
 <seam-menu #featureContextMenu>
   <button seamMenuItem (click)="_onClickDeleteFeature()">Delete</button>
 </seam-menu>
 <seam-map-file-drop *ngIf="fileDropEnabled"></seam-map-file-drop>
+
+<seam-map-control *ngIf="fileUploadControlEnabled" [def]="_fileUploadControlDef"></seam-map-control>
+<seam-map-control *ngIf="reCenterControlEnabled" [def]="_reCenterControlDef"></seam-map-control>

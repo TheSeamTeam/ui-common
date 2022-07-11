@@ -25,11 +25,11 @@ import { CanDisable, CanDisableCtor, InputBoolean, InputNumber, mixinDisabled } 
 import { faCrosshairs, faFileImport } from '@fortawesome/free-solid-svg-icons'
 import { MenuComponent } from '@theseam/ui-common/menu'
 
-import { GoogleMapsControlsService } from '../google-maps-controls.service'
+import { GoogleMapsControlsService, MapControlRef } from '../google-maps-controls.service'
 import { TheSeamGoogleMapsRecenterButtonControlComponent } from '../google-maps-recenter-button-control/google-maps-recenter-button-control.component'
 import { TheSeamGoogleMapsUploadButtonControlComponent } from '../google-maps-upload-button-control/google-maps-upload-button-control.component'
 import { GoogleMapsService } from '../google-maps.service'
-import { MAP_CONTROLS_SERVICE } from '../map-controls-service'
+import { MapControl, MAP_CONTROLS_SERVICE } from '../map-controls-service'
 import { MapValue, MapValueManagerService, MapValueSource } from '../map-value-manager.service'
 
 class TheSeamGoogleMapsWrapperComponentBase {
@@ -68,10 +68,27 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
   static ngAcceptInputType_disabled: BooleanInput
   static ngAcceptInputType_zoom: NumberInput
   static ngAcceptInputType_fileDropEnabled: BooleanInput
+  static ngAcceptInputType_fileUploadControlEnabled: BooleanInput
+  static ngAcceptInputType_fullscreenControlEnabled: BooleanInput
+  static ngAcceptInputType_ReCenterControlEnabled: BooleanInput
 
   private readonly _ngUnsubscribe = new Subject<void>()
 
+  readonly _fileUploadControlDef: MapControl = {
+    component: TheSeamGoogleMapsUploadButtonControlComponent,
+    data: { label: 'Import Geo File', icon: faFileImport },
+    position: 6 /* google.maps.ControlPosition.LEFT_BOTTOM */,
+  }
+
+  readonly _reCenterControlDef: MapControl = {
+    component: TheSeamGoogleMapsRecenterButtonControlComponent,
+    data: { label: 'Center on Field', icon: faCrosshairs },
+    position: 9 /* google.maps.ControlPosition.RIGHT_BOTTOM */,
+  }
+
   private _focusOrigin: FocusOrigin = null
+  private _fileUploadControlRef?: MapControlRef
+  private _reCenterControlRef?: MapControlRef
 
   @Input()
   set value(value: MapValue) {
@@ -92,6 +109,10 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
   private _tabIndex = -1
 
   @Input() @InputBoolean() fileDropEnabled: BooleanInput = true
+
+  @Input() @InputBoolean() fileUploadControlEnabled: BooleanInput = true
+  @Input() @InputBoolean() fullscreenControlEnabled: BooleanInput = true
+  @Input() @InputBoolean() reCenterControlEnabled: BooleanInput = true
 
   @HostBinding('attr.disabled')
   get _attrDisabled() { return this.disabled || null }
@@ -117,7 +138,6 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
     elementRef: ElementRef,
     private readonly _focusMonitor: FocusMonitor,
     private readonly _googleMaps: GoogleMapsService,
-    @Inject(MAP_CONTROLS_SERVICE) private readonly _googleMapsControls: GoogleMapsControlsService,
     private readonly _mapValueManager: MapValueManagerService,
   ) {
     super(elementRef)
@@ -133,7 +153,6 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
         if (this.onTouched) { this.onTouched() }
       }),
       tap(changed => {
-        console.log('valueChanged', changed.source, changed.value)
         if (this._googleMaps.mapReady && changed.source !== MapValueSource.FeatureChange) {
           this._googleMaps.setData(changed.value)
         }
@@ -148,15 +167,10 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
 
     fromEvent<KeyboardEvent>(window, 'keydown').pipe(
       tap((event: KeyboardEvent) => {
-        console.log('code', event.code)
-        if (event.code === 'Delete') {
-          this._googleMaps.deleteSelection()
-        } else if (event.code === 'Escape') {
-          this._googleMaps.stopDrawing()
-        } else if (event.code === 'ContextMenu') {
-          if (this._googleMaps.hasSelectedFeature()) {
-            this._googleMaps.openContextMenu()
-          }
+        switch (event.code) {
+          case 'Delete': this._googleMaps.deleteSelection()
+          case 'Escape': this._googleMaps.stopDrawing()
+          case 'ContextMenu': this._googleMaps.openContextMenu()
         }
       }),
       takeUntil(this._ngUnsubscribe)
@@ -206,18 +220,6 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
   _onMapReady(theMap: google.maps.Map) {
     this._googleMaps.setMap(theMap)
     this._googleMaps.setData(this._mapValueManager.value)
-
-    this._googleMapsControls.add({
-      component: TheSeamGoogleMapsUploadButtonControlComponent,
-      data: { label: 'Import Geo File', icon: faFileImport },
-      position: google.maps.ControlPosition.LEFT_BOTTOM,
-    })
-
-    this._googleMapsControls.add({
-      component: TheSeamGoogleMapsRecenterButtonControlComponent,
-      data: { label: 'Center on Field', icon: faCrosshairs },
-      position: google.maps.ControlPosition.RIGHT_BOTTOM,
-    })
   }
 
   _onClickDeleteFeature() {
