@@ -25,11 +25,12 @@ import { TheSeamMapFileDropComponent } from './map-file-drop/map-file-drop.compo
     TheSeamSharedModule,
     TheSeamMenuModule,
     TheSeamIconModule,
-    AgmCoreModule.forRoot({
-      // TODO: Add a way to set the api key.
-      // apiKey: ,
-      libraries: ['drawing', 'places'],
-    }),
+    AgmCoreModule,
+    // AgmCoreModule.forRoot({
+    //   // TODO: Add a way to set the api key.
+    //   // apiKey: ,
+    //   libraries: ['drawing', 'places'],
+    // }),
   ],
   exports: [
     TheSeamGoogleMapsWrapperComponent,

@@ -7,6 +7,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  forwardRef,
   HostBinding,
   Inject,
   Input,
@@ -15,7 +16,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core'
-import { ControlValueAccessor } from '@angular/forms'
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
 import { fromEvent, Subject } from 'rxjs'
 import { takeUntil, tap } from 'rxjs/operators'
 
@@ -52,7 +53,13 @@ const _TheSeamGoogleMapsWrapperMixinBase: CanDisableCtor &
   providers: [
     MapValueManagerService,
     GoogleMapsService,
-    { provide: MAP_CONTROLS_SERVICE, useClass: GoogleMapsControlsService }
+    { provide: MAP_CONTROLS_SERVICE, useClass: GoogleMapsControlsService },
+    {
+      provide: NG_VALUE_ACCESSOR,
+      // tslint:disable-next-line: no-use-before-declare
+      useExisting: forwardRef(() => TheSeamGoogleMapsWrapperComponent),
+      multi: true
+    }
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -68,11 +75,7 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
 
   @Input()
   set value(value: MapValue) {
-    const changed = this._mapValueManager.setValue(value, MapValueSource.Input)
-    if (changed) {
-      if (this.onChange) { this.onChange(value) }
-      if (this.onTouched) { this.onTouched() }
-    }
+    this._mapValueManager.setValue(value, MapValueSource.Input)
   }
   get value(): MapValue {
     return this._mapValueManager.value
@@ -125,6 +128,10 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
     ).subscribe()
 
     this._mapValueManager.valueChanged.pipe(
+      tap(change => {
+        if (this.onChange) { this.onChange(change.value) }
+        if (this.onTouched) { this.onTouched() }
+      }),
       tap(changed => {
         console.log('valueChanged', changed.source, changed.value)
         if (this._googleMaps.mapReady && changed.source !== MapValueSource.FeatureChange) {
