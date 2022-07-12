@@ -47,15 +47,3 @@ export const Control = ({ ...args }) => ({
     control: new FormControl()
   }
 })
-
-export const Example = ({ ...args }) => ({
-  template: `
-    <seam-google-maps-wrapper
-      fileDropEnabled="true"
-      fileUploadControlEnabled="true"
-      fullscreenControlEnabled="true"
-      reCenterControlEnabled="true">
-    </seam-google-maps-wrapper>
-  `,
-  props: {}
-})

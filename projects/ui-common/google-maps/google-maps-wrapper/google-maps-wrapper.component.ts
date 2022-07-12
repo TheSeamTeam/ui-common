@@ -70,7 +70,7 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
   static ngAcceptInputType_fileDropEnabled: BooleanInput
   static ngAcceptInputType_fileUploadControlEnabled: BooleanInput
   static ngAcceptInputType_fullscreenControlEnabled: BooleanInput
-  static ngAcceptInputType_ReCenterControlEnabled: BooleanInput
+  static ngAcceptInputType_reCenterControlEnabled: BooleanInput
 
   private readonly _ngUnsubscribe = new Subject<void>()
 
@@ -87,8 +87,6 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
   }
 
   private _focusOrigin: FocusOrigin = null
-  private _fileUploadControlRef?: MapControlRef
-  private _reCenterControlRef?: MapControlRef
 
   @Input()
   set value(value: MapValue) {

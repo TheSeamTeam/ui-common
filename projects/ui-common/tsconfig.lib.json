@@ -13,6 +13,9 @@
       "dom",
       "es2018"
     ],
+    "types": [
+      "googlemaps"
+    ],
     "paths": {
       "@theseam/ui-common/*": [
         "./*/public-api"

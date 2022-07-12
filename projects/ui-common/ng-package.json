@@ -41,6 +41,9 @@
     "quill",
     "ngx-quill",
     "apollo-angular",
-    "graphql"
+    "graphql",
+    "@turf/boolean-contains",
+    "@turf/helpers",
+    "shpjs"
   ]
 }
