@@ -33,6 +33,7 @@
     "graphql",
     "@turf/boolean-contains",
     "@turf/helpers",
-    "shpjs"
+    "shpjs",
+    "@types/geojson"
   ]
 }
