@@ -2,7 +2,8 @@
   "extends": "../projects/ui-common/tsconfig.lib.json",
   "compilerOptions": {
     "types": [
-      "../node_modules/@types/node"
+      "../node_modules/@types/node",
+      "googlemaps",
     ]
   },
   "exclude": [

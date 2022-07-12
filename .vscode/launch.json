@@ -50,5 +50,13 @@
         "/./~/*": "${webRoot}/node_modules/*"
       }
     },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Launch Chrome against localhost",
+      "url": "http://localhost:6006/?path=/story/googlemaps-controls-layers--basic",
+      "webRoot": "${workspaceFolder}",
+      "userDataDir": "${workspaceFolder}/.vscode/.chrome-user-dir",
+    },
   ]
 }
