@@ -9,22 +9,23 @@
     "postbuild": "npm run copy:schemas && npm run copy:files && npm run copy:collection"
   },
   "peerDependencies": {
+    "@angular/cdk": "^12.0.2",
     "@angular/common": "^12.0.2",
     "@angular/core": "^12.0.2",
     "@angular/forms": "^12.0.2",
     "@angular/animations": "^12.0.2",
     "@angular/router": "^12.0.2",
+    "@angular/flex-layout": "^12.0.0-beta.34",
     "rxjs": "^6.5.5",
-    "@agm/core": "^1.1.0"
+    "@agm/core": "^1.1.0",
+    "tslib": "^2.0.0",
+    "@fortawesome/fontawesome-svg-core": ">=1.2.35",
+    "@fortawesome/free-brands-svg-icons": ">=5.15.3",
+    "@fortawesome/free-regular-svg-icons": ">=5.15.3",
+    "@fortawesome/free-solid-svg-icons": ">=5.15.3"
   },
   "dependencies": {
-    "@angular/cdk": "^12.0.2",
-    "@angular/flex-layout": "^12.0.0-beta.34",
     "@fortawesome/angular-fontawesome": "~0.9.0",
-    "@fortawesome/fontawesome-svg-core": "~1.2.35",
-    "@fortawesome/free-brands-svg-icons": "~5.15.3",
-    "@fortawesome/free-regular-svg-icons": "~5.15.3",
-    "@fortawesome/free-solid-svg-icons": "~5.15.3",
     "@marklb/file-type": "~10.6.5",
     "@marklb/ngx-datatable": "~18.0.1",
     "@marklb/ngx-loading": "^10.0.0",
@@ -41,7 +42,6 @@
     "lodash-es": "~4.17.11",
     "ngx-toastr": "~14.0.0",
     "pdfjs-dist": "2.8.335",
-    "tslib": "^2.0.0",
     "xlsx": "^0.14.4",
     "jexl": "^2.3.0",
     "@types/file-saver": "^2.0.1",

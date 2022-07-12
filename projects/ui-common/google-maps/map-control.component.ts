@@ -8,9 +8,9 @@ import {
 } from '@angular/core'
 import { Subject } from 'rxjs'
 import { takeUntil, tap } from 'rxjs/operators'
+
 import { GoogleMapsControlsService, MapControlRef } from './google-maps-controls.service'
 import { GoogleMapsService } from './google-maps.service'
-
 import { MapControl, MAP_CONTROLS_SERVICE } from './map-controls-service'
 
 @Component({

@@ -1,13 +1,13 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
 import { NgZone } from '@angular/core'
+import { Observable } from 'rxjs'
 
+import { notNullOrUndefined } from '@theseam/ui-common/utils'
 import booleanContains from '@turf/boolean-contains'
 import {
   multiPolygon as turfjsMultiPolygon,
   polygon as turfjsPolygon,
 } from '@turf/helpers'
-import { Observable } from 'rxjs'
-import { notNullOrUndefined } from '../utils/not-null-or-undefined'
 
 export enum AppFeaturePropertyName {
   IsSelected = `__app__isSelected`

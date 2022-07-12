@@ -1,9 +1,9 @@
 import { ESCAPE } from '@angular/cdk/keycodes'
 import { NgZone, ViewContainerRef } from '@angular/core'
-
-import { MenuComponent } from '@theseam/ui-common/menu'
 import { fromEvent, Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
+
+import { MenuComponent } from '@theseam/ui-common/menu'
 
 import { isFeatureSelected } from './google-maps-feature-helpers'
 

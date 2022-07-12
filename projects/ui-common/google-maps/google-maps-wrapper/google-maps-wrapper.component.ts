@@ -1,4 +1,3 @@
-import { AgmMap } from '@agm/core'
 import { FocusMonitor, FocusOrigin } from '@angular/cdk/a11y'
 import { BooleanInput, coerceNumberProperty, NumberInput } from '@angular/cdk/coercion'
 import {
@@ -9,7 +8,6 @@ import {
   EventEmitter,
   forwardRef,
   HostBinding,
-  Inject,
   Input,
   OnDestroy,
   OnInit,
@@ -20,12 +18,12 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
 import { fromEvent, Subject } from 'rxjs'
 import { takeUntil, tap } from 'rxjs/operators'
 
-import { CanDisable, CanDisableCtor, InputBoolean, InputNumber, mixinDisabled } from '@theseam/ui-common/core'
-
+import { AgmMap } from '@agm/core'
 import { faCrosshairs, faFileImport } from '@fortawesome/free-solid-svg-icons'
+import { CanDisable, CanDisableCtor, InputBoolean, InputNumber, mixinDisabled } from '@theseam/ui-common/core'
 import { MenuComponent } from '@theseam/ui-common/menu'
 
-import { GoogleMapsControlsService, MapControlRef } from '../google-maps-controls.service'
+import { GoogleMapsControlsService } from '../google-maps-controls.service'
 import { TheSeamGoogleMapsRecenterButtonControlComponent } from '../google-maps-recenter-button-control/google-maps-recenter-button-control.component'
 import { TheSeamGoogleMapsUploadButtonControlComponent } from '../google-maps-upload-button-control/google-maps-upload-button-control.component'
 import { GoogleMapsService } from '../google-maps.service'

@@ -1,5 +1,6 @@
 export * from './google-maps-wrapper/google-maps-wrapper.component'
 export * from './google-maps.module'
+
 export * from './map-value-manager.service'
 export * from './map-control.component'
 export * from './google-maps.service'

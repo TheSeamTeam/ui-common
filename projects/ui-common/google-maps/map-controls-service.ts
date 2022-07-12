@@ -1,5 +1,6 @@
 import { InjectionToken } from '@angular/core'
-import { ComponentType } from '../models/component-type'
+
+import { ComponentType } from '@theseam/ui-common/models'
 
 export interface MapControl<TData = any> {
   component: ComponentType<any>
