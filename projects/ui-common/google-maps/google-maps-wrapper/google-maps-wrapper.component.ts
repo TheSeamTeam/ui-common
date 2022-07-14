@@ -71,6 +71,8 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
   static ngAcceptInputType_fileUploadControlEnabled: BooleanInput
   static ngAcceptInputType_fullscreenControlEnabled: BooleanInput
   static ngAcceptInputType_reCenterControlEnabled: BooleanInput
+  static ngAcceptInputType_mapTypeControlEnabled: BooleanInput
+  static ngAcceptInputType_streetViewControlEnabled: BooleanInput
 
   private readonly _ngUnsubscribe = new Subject<void>()
 
@@ -111,6 +113,8 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
   @Input() @InputBoolean() fileUploadControlEnabled: BooleanInput = true
   @Input() @InputBoolean() fullscreenControlEnabled: BooleanInput = true
   @Input() @InputBoolean() reCenterControlEnabled: BooleanInput = true
+  @Input() @InputBoolean() mapTypeControlEnabled: BooleanInput = true
+  @Input() @InputBoolean() streetViewControlEnabled: BooleanInput = false
 
   @HostBinding('attr.disabled')
   get _attrDisabled() { return this.disabled || null }
