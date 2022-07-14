@@ -9,9 +9,11 @@ import {
   forwardRef,
   HostBinding,
   Input,
+  OnChanges,
   OnDestroy,
   OnInit,
   Output,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core'
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
@@ -62,7 +64,7 @@ const _TheSeamGoogleMapsWrapperMixinBase: CanDisableCtor &
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapperMixinBase
-  implements OnInit, AfterViewInit, OnDestroy, CanDisable, ControlValueAccessor {
+  implements OnInit, AfterViewInit, OnDestroy, OnChanges, CanDisable, ControlValueAccessor {
   static ngAcceptInputType_disabled: BooleanInput
   static ngAcceptInputType_zoom: NumberInput
   static ngAcceptInputType_fileDropEnabled: BooleanInput
@@ -155,6 +157,8 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
       }),
       takeUntil(this._ngUnsubscribe),
     ).subscribe()
+
+    this._googleMaps.setBaseLatLng(this.latitude, this.longitude)
   }
 
   /** @ignore */
@@ -183,6 +187,21 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
 
   /** @ignore */
   ngAfterViewInit() { }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    let updateBase = false
+    if (changes.hasOwnProperty('latitude')) {
+      this.latitude = changes['latitude'].currentValue
+      updateBase = true
+    }
+    if (changes.hasOwnProperty('longitude')) {
+      this.latitude = changes['longitude'].currentValue
+      updateBase = true
+    }
+    if (updateBase) {
+      this._googleMaps.setBaseLatLng(this.latitude, this.longitude)
+    }
+  }
 
   writeValue(value: MapValue): void {
     this.value = value
