@@ -42,3 +42,4 @@ export * from './is-numeric'
 export * from './fractional-digits-count'
 
 export * from './read-geo-file'
+export * from './geo-json-to-area'
