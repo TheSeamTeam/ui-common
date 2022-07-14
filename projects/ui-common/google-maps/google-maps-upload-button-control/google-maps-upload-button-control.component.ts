@@ -32,9 +32,9 @@ export interface GoogleMapsUploadButtonControlData {
   styleUrls: ['./google-maps-upload-button-control.component.scss'],
   host: {
     '[attr.draggable]': 'false',
-    '[attr.aria]-label': 'label',
+    '[attr.aria-label]': 'label',
     '[attr.title]': 'label',
-    '[attr.type]': 'button',
+    'type': 'button',
     'class': 'gmnoprint gm-control-active'
   },
   changeDetection: ChangeDetectionStrategy.OnPush
