@@ -28,7 +28,7 @@ export default {
 }
 
 export const Basic = ({ ...args }) => ({
-  template: `<seam-google-maps-wrapper seamHoverClass="border border-warning"></seam-google-maps-wrapper>`
+  template: `<seam-google-maps seamHoverClass="border border-warning"></seam-google-maps>`
 })
 
 export const Control = ({ ...args }) => ({
@@ -39,11 +39,29 @@ export const Control = ({ ...args }) => ({
   },
   template: `
     <input type="text" />
-    <seam-google-maps-wrapper [formControl]="control"></seam-google-maps-wrapper>
+    <seam-google-maps [formControl]="control"></seam-google-maps>
     <input type="text" />
     [{{ control.value | json }}]
   `,
   props: {
     control: new FormControl()
   }
+})
+
+export const Places = ({ ...args }) => ({
+  template: `<input seamGoogleMapsPlacesAutocomplete />`,
+  props: { }
+})
+
+export const PlacesComponent = ({ ...args }) => ({
+  template: `<seam-google-maps-places-autocomplete></seam-google-maps-places-autocomplete>`,
+  props: { }
+})
+
+export const PlacesMapBind = ({ ...args }) => ({
+  template: `
+    <seam-google-maps-places-autocomplete></seam-google-maps-places-autocomplete>
+    <seam-google-maps></seam-google-maps>
+  `,
+  props: { }
 })

@@ -44,7 +44,7 @@ const _TheSeamGoogleMapsWrapperMixinBase: CanDisableCtor &
  * A wrapper for googlemap.
  */
 @Component({
-  selector: 'seam-google-maps-wrapper',
+  selector: 'seam-google-maps',
   templateUrl: './google-maps-wrapper.component.html',
   styleUrls: ['./google-maps-wrapper.component.scss'],
   inputs: [
