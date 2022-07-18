@@ -1,11 +1,15 @@
 @import './styles/utilities';
 
-:host {
-  flex: 1 1 100%;
+seam-top-bar {
   display: flex;
+  flex: 1 1 100%;
   flex-direction: row;
 
-  padding: 8px;
+  background: $seam-top-bar-bg;
+  margin: $seam-top-bar-margin;
+  padding: $seam-top-bar-padding;
+  border-radius: $seam-top-bar-border-radius;
+  box-shadow: $seam-top-bar-box-shadow;
 }
 
 .top-bar--logo {
@@ -14,23 +18,18 @@
   cursor: pointer;
 
   img {
-    max-height: 60px;
-    max-width: 200px;
+    height: $seam-top-bar-logo-height;
+    max-height: $seam-top-bar-logo-max-height;
+    width: $seam-top-bar-logo-width;
+    max-width: $seam-top-bar-logo-max-width;
   }
 
   &.top-bar--logo-mobile {
-    max-height: 40px;
-    max-width: 150px;
-
-    > div {
-      max-height: 100%;
-      max-width: 100%;
-
-      img {
-        // Specific max-height needed, because iOS does not scale to parent height as expected.
-        max-height: 40px;
-        max-width: 100%;
-      }
+    img {
+      height: $seam-top-bar-logo-mobile-height;
+      max-height: $seam-top-bar-logo-mobile-max-height;
+      width: $seam-top-bar-logo-mobile-width;
+      max-width: $seam-top-bar-logo-mobile-max-width;
     }
   }
 }

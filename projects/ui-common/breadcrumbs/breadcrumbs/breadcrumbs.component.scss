@@ -1,0 +1,10 @@
+@import '../styles/utilities';
+
+seam-breadcrumbs {
+  li {
+    color: $breadcrumb-color;
+    a {
+      color: inherit;
+    }
+  }
+}

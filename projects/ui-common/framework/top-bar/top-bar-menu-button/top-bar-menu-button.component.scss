@@ -1,6 +1,6 @@
 @import '../styles/utilities';
 
-:host {
+button[seamTopBarMenuButton] {
   min-width: $seam-top-bar-menu-button-min-width;
 
   border-radius: 0;
@@ -9,7 +9,7 @@
   border-right: 0 !important;
 
   &.top-bar-menu-button--compact {
-    min-width: 40px;
+    min-width: $seam-top-bar-menu-button-mobile-min-width;
     border-left: 0 !important;
   }
 }

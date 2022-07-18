@@ -8,7 +8,8 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  QueryList
+  QueryList,
+  ViewEncapsulation
 } from '@angular/core'
 import { Observable, Subject } from 'rxjs'
 import { map, shareReplay, startWith, takeUntil } from 'rxjs/operators'
@@ -21,6 +22,8 @@ import { TheSeamLayoutService } from '@theseam/ui-common/layout'
 import { TopBarItemDirective } from './top-bar-item.directive'
 import { TopBarMenuBtnDetailDirective } from './top-bar-menu-btn-detail.directive'
 import { TopBarMenuDirective } from './top-bar-menu.directive'
+import { SeamIcon } from '@theseam/ui-common/icon'
+import { faUserCircle } from '@fortawesome/free-regular-svg-icons'
 
 /**
  * Top bar of an app.
@@ -37,10 +40,8 @@ import { TopBarMenuDirective } from './top-bar-menu.directive'
   selector: 'seam-top-bar',
   templateUrl: './top-bar.component.html',
   styleUrls: ['./top-bar.component.scss'],
+  encapsulation: ViewEncapsulation.None,
   exportAs: 'seamTopBar',
-  host: {
-    'class': 'bg-white'
-  },
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TheSeamTopBarComponent implements OnInit, OnDestroy, AfterContentInit {
@@ -81,6 +82,9 @@ export class TheSeamTopBarComponent implements OnInit, OnDestroy, AfterContentIn
 
   /** Sub Title text displayed when `hasTitle` is true. The sub title will be less prominent. */
   @Input() subTitleText: string | undefined | null
+
+  /** Icon to display on mobile to activate profile dropdown. Defaults to faUserCircle. */
+  @Input() profileIcon: SeamIcon | undefined | null = faUserCircle
 
   /** @ignore */
   _items$?: Observable<TopBarItemDirective[]>
