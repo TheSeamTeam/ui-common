@@ -5,12 +5,12 @@ import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { AgmCoreModule } from '@agm/core'
-import { TheSeamGoogleMapsWrapperComponent } from './google-maps-wrapper/google-maps-wrapper.component'
 import { TheSeamGoogleMapsModule } from './google-maps.module'
+import { TheSeamGoogleMapsComponent } from './google-maps/google-maps.component'
 
 export default {
   title: 'GoogleMaps/Components',
-  // component: TheSeamGoogleMapsWrapperComponent,
+  // component: TheSeamGoogleMapsComponent,
   decorators: [
     moduleMetadata({
       imports: [

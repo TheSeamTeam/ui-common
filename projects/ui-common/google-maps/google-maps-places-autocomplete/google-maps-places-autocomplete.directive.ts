@@ -1,6 +1,6 @@
 import { Directive, ElementRef, HostBinding, Input, NgZone, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core'
-import { Observable, Subject, Subscriber } from 'rxjs'
-import { startWith, switchMap } from 'rxjs/operators'
+import { interval, Observable, Subject, Subscriber } from 'rxjs'
+import { filter, mapTo, startWith, switchMap, take, takeUntil } from 'rxjs/operators'
 
 declare const ngDevMode: boolean | undefined
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
@@ -15,6 +15,7 @@ export const SEAM_GOOGLE_PLACES_AUTOCOMPLETE_DEFAULT_OPTIONS: google.maps.places
 })
 export class TheSeamGoogleMapsPlacesAutocompleteDirective implements OnInit, OnDestroy, OnChanges {
   private readonly _autoCompleteReadySubject = new Subject()
+  private readonly _ngUnsubscribe = new Subject()
 
   private _placeChangedPending: { observable: Observable<any>, subscriber: Subscriber<any> }[] = []
   private _listeners: google.maps.MapsEventListener[] = []
@@ -52,25 +53,36 @@ export class TheSeamGoogleMapsPlacesAutocompleteDirective implements OnInit, OnD
 
   ngOnInit(): void {
     this._ngZone.runOutsideAngular(() => {
-      this.autoComplete = new google.maps.places.Autocomplete(this.getHostElement(), {
-        componentRestrictions: { country: 'US' }
+      this._untilGoogleMapsApiLoaded().pipe(takeUntil(this._ngUnsubscribe)).subscribe(() => {
+        this.autoComplete = new google.maps.places.Autocomplete(this.getHostElement(), this._options)
+
+        this._placeChangedPending.forEach(pending => pending.observable.subscribe(pending.subscriber))
+
+        this._autoCompleteReadySubject.next()
       })
-
-      this._placeChangedPending.forEach(pending => pending.observable.subscribe(pending.subscriber))
-
-      this._autoCompleteReadySubject.next()
     })
   }
 
   ngOnDestroy(): void {
     this._listeners.forEach(l => l.remove())
     this._listeners = []
+
+    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.complete()
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (this.autoComplete && changes['options']) {
       this.autoComplete.setOptions(this._options)
     }
+  }
+
+  private _untilGoogleMapsApiLoaded(): Observable<void> {
+    return interval(500).pipe(
+      filter(() => !!(window.google && window.google.maps && window.google.maps.version)),
+      take(1),
+      mapTo(undefined),
+    )
   }
 
   /**
@@ -89,6 +101,16 @@ export class TheSeamGoogleMapsPlacesAutocompleteDirective implements OnInit, OnD
   public getFields(): string[] | undefined {
     this._assertInitialized()
     return (this.autoComplete as any).getFields()
+  }
+
+  /**
+   * Returns the details of the Place selected by user if the details were
+   * successfully retrieved. Otherwise returns a stub Place object, with the
+   * name property set to the current value of the input field.
+   */
+  public getPlace(): google.maps.places.PlaceResult {
+    this._assertInitialized()
+    return this.autoComplete.getPlace()
   }
 
   /**
@@ -161,7 +183,6 @@ export class TheSeamGoogleMapsPlacesAutocompleteDirective implements OnInit, OnD
         this._placeChangedPending.push({ observable, subscriber })
         return undefined
       }
-
       const listener = this.autoComplete.addListener('place_changed', (event: T) => {
         this._ngZone.run(() => subscriber.next(event))
       })
@@ -182,19 +203,3 @@ export class TheSeamGoogleMapsPlacesAutocompleteDirective implements OnInit, OnD
     }
   }
 }
-    // this.autocomplete = new google.maps.places.Autocomplete(this.searchElement.nativeElement, {
-    //   componentRestrictions: { country: 'US' }
-    // })
-
-    // this.autocomplete.addListener('place_changed', () => {
-    //   if (typeof this.value === 'string' && this.value.length > 0) {
-    //     return
-    //   }
-
-    //   this._ngZone.run( () => {
-    //     const place = this.autocomplete.getPlace()
-    //     if  (place.geometry !== undefined || place.geometry != null) {
-    //       this.map.fitBounds(place.geometry.viewport)
-    //     }
-    //   })
-    // })

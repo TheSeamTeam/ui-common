@@ -122,6 +122,11 @@ export class GoogleMapsService implements OnDestroy {
     return this.googleMap.getDiv() as HTMLDivElement
   }
 
+  public fitBounds(bounds: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral, padding?: number | google.maps.Padding): void {
+    this._assertInitialized()
+    this.googleMap.fitBounds(bounds, padding)
+  }
+
   /**
    * Iterates the map's features and removes any that are selected.
    */

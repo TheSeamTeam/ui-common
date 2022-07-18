@@ -1,4 +1,4 @@
-export * from './google-maps-wrapper/google-maps-wrapper.component'
+export * from './google-maps/google-maps.component'
 export * from './google-maps.module'
 
 export * from './map-value-manager.service'

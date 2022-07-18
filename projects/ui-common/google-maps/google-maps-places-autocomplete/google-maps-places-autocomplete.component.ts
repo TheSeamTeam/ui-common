@@ -11,8 +11,8 @@ import {
   Output,
   ViewChild,
 } from '@angular/core'
-import { Observable, of, Subject, Subscriber } from 'rxjs'
-import { startWith, switchMap } from 'rxjs/operators'
+import { interval, Observable, of, Subject, Subscriber } from 'rxjs'
+import { filter, mapTo, startWith, switchMap, take, takeUntil } from 'rxjs/operators'
 
 import { faSearchLocation } from '@fortawesome/free-solid-svg-icons'
 import { InputBoolean } from '@theseam/ui-common/core'
@@ -31,7 +31,8 @@ type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
   selector: 'seam-google-maps-places-autocomplete',
   templateUrl: './google-maps-places-autocomplete.component.html',
   styleUrls: ['./google-maps-places-autocomplete.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  exportAs: 'seamGoogleMapsPlacesAutoComplete'
 })
 export class TheSeamGoogleMapsPlacesAutoCompleteComponent implements OnInit, OnDestroy {
   static ngAcceptInputType_disabled: BooleanInput
@@ -87,9 +88,11 @@ export class TheSeamGoogleMapsPlacesAutoCompleteComponent implements OnInit, OnD
   @ViewChild(TheSeamGoogleMapsPlacesAutocompleteDirective, { static: true })
   set __autocompleteDirective(value: TheSeamGoogleMapsPlacesAutocompleteDirective) {
     this._autoCompleteDirective = value
-    this.autoComplete = this._autoCompleteDirective.autoComplete
-    this._placeChangedPending.forEach(pending => pending.observable.subscribe(pending.subscriber))
-    this._placeChangedPending = []
+    this._untilAutoCompleteReady().pipe(takeUntil(this._ngUnsubscribe)).subscribe(() => {
+      this.autoComplete = this._autoCompleteDirective.autoComplete
+      this._placeChangedPending.forEach(pending => pending.observable.subscribe(pending.subscriber))
+      this._placeChangedPending = []
+    })
   }
   _autoCompleteDirective!: TheSeamGoogleMapsPlacesAutocompleteDirective
 
@@ -109,25 +112,26 @@ export class TheSeamGoogleMapsPlacesAutoCompleteComponent implements OnInit, OnD
   constructor(
     private readonly _elementRef: ElementRef,
   ) {
-    // this.placeChanged = this._autoCompleteDirective.placeChanged
-    this.placeChanged = of()
-
     this.placeChanged = this._autoCompleteReadySubject.pipe(
       startWith(undefined),
       switchMap(() => this._createPlaceChangedObservable<any>())
     )
-
-    console.log('constructor', this._autoCompleteDirective, this.autoComplete)
   }
 
-  ngOnInit() {
-    console.log('ngOnInit', this._autoCompleteDirective, this.autoComplete)
-  }
+  ngOnInit() { }
 
   /** @ignore */
   ngOnDestroy() {
     this._ngUnsubscribe.next()
     this._ngUnsubscribe.complete()
+  }
+
+  private _untilAutoCompleteReady(): Observable<void> {
+    return interval(500).pipe(
+      filter(() => !!this._autoCompleteDirective.autoComplete),
+      take(1),
+      mapTo(undefined),
+    )
   }
 
   /**
@@ -146,6 +150,16 @@ export class TheSeamGoogleMapsPlacesAutoCompleteComponent implements OnInit, OnD
   public getFields(): string[] | undefined {
     this._assertInitialized()
     return (this.autoComplete as any).getFields()
+  }
+
+  /**
+   * Returns the details of the Place selected by user if the details were
+   * successfully retrieved. Otherwise returns a stub Place object, with the
+   * name property set to the current value of the input field.
+   */
+   public getPlace(): google.maps.places.PlaceResult {
+    this._assertInitialized()
+    return this.autoComplete.getPlace()
   }
 
   /**

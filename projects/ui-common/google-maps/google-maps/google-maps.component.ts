@@ -32,21 +32,21 @@ import { GoogleMapsService } from '../google-maps.service'
 import { MapControl, MAP_CONTROLS_SERVICE } from '../map-controls-service'
 import { MapValue, MapValueManagerService, MapValueSource } from '../map-value-manager.service'
 
-class TheSeamGoogleMapsWrapperComponentBase {
+class TheSeamGoogleMapsComponentBase {
   constructor(public _elementRef: ElementRef) {}
 }
 
-const _TheSeamGoogleMapsWrapperMixinBase: CanDisableCtor &
-  typeof TheSeamGoogleMapsWrapperComponentBase =
-    mixinDisabled(TheSeamGoogleMapsWrapperComponentBase)
+const _TheSeamGoogleMapsMixinBase: CanDisableCtor &
+  typeof TheSeamGoogleMapsComponentBase =
+    mixinDisabled(TheSeamGoogleMapsComponentBase)
 
 /**
  * A wrapper for googlemap.
  */
 @Component({
   selector: 'seam-google-maps',
-  templateUrl: './google-maps-wrapper.component.html',
-  styleUrls: ['./google-maps-wrapper.component.scss'],
+  templateUrl: './google-maps.component.html',
+  styleUrls: ['./google-maps.component.scss'],
   inputs: [
     'disabled'
   ],
@@ -57,13 +57,14 @@ const _TheSeamGoogleMapsWrapperMixinBase: CanDisableCtor &
     {
       provide: NG_VALUE_ACCESSOR,
       // tslint:disable-next-line: no-use-before-declare
-      useExisting: forwardRef(() => TheSeamGoogleMapsWrapperComponent),
+      useExisting: forwardRef(() => TheSeamGoogleMapsComponent),
       multi: true
     }
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  exportAs: 'seamGoogleMaps'
 })
-export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapperMixinBase
+export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
   implements OnInit, AfterViewInit, OnDestroy, OnChanges, CanDisable, ControlValueAccessor {
   static ngAcceptInputType_disabled: BooleanInput
   static ngAcceptInputType_zoom: NumberInput
@@ -221,6 +222,10 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
 
   setDisabledState?(isDisabled: boolean): void {
     this.disabled = isDisabled
+  }
+
+  public fitBounds(bounds: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral, padding?: number | google.maps.Padding): void {
+    this._googleMaps.fitBounds(bounds, padding)
   }
 
   public hasFocus(): boolean {
