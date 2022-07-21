@@ -68,6 +68,8 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
   implements OnInit, AfterViewInit, OnDestroy, OnChanges, CanDisable, ControlValueAccessor {
   static ngAcceptInputType_disabled: BooleanInput
   static ngAcceptInputType_zoom: NumberInput
+  static ngAcceptInputType_longitude: NumberInput
+  static ngAcceptInputType_latitude: NumberInput
   static ngAcceptInputType_fileDropEnabled: BooleanInput
   static ngAcceptInputType_fileUploadControlEnabled: BooleanInput
   static ngAcceptInputType_fullscreenControlEnabled: BooleanInput
@@ -109,13 +111,13 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
    */
   private _tabIndex = -1
 
-  @Input() @InputBoolean() fileDropEnabled: BooleanInput = true
+  @Input() @InputBoolean() fileDropEnabled: boolean = true
 
-  @Input() @InputBoolean() fileUploadControlEnabled: BooleanInput = true
-  @Input() @InputBoolean() fullscreenControlEnabled: BooleanInput = true
-  @Input() @InputBoolean() reCenterControlEnabled: BooleanInput = true
-  @Input() @InputBoolean() mapTypeControlEnabled: BooleanInput = true
-  @Input() @InputBoolean() streetViewControlEnabled: BooleanInput = false
+  @Input() @InputBoolean() fileUploadControlEnabled: boolean = true
+  @Input() @InputBoolean() fullscreenControlEnabled: boolean = true
+  @Input() @InputBoolean() reCenterControlEnabled: boolean = true
+  @Input() @InputBoolean() mapTypeControlEnabled: boolean = true
+  @Input() @InputBoolean() streetViewControlEnabled: boolean = false
 
   @HostBinding('attr.disabled')
   get _attrDisabled() { return this.disabled || null }
@@ -173,9 +175,9 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
     fromEvent<KeyboardEvent>(window, 'keydown').pipe(
       tap((event: KeyboardEvent) => {
         switch (event.code) {
-          case 'Delete': this._googleMaps.deleteSelection()
-          case 'Escape': this._googleMaps.stopDrawing()
-          case 'ContextMenu': this._googleMaps.openContextMenu()
+          case 'Delete': this._googleMaps.deleteSelection(); event.preventDefault(); event.stopPropagation(); break
+          case 'Escape': this._googleMaps.stopDrawing(); event.preventDefault(); event.stopPropagation();  break
+          case 'ContextMenu': this._googleMaps.openContextMenu(); event.preventDefault(); event.stopPropagation();  break
         }
       }),
       takeUntil(this._ngUnsubscribe)
@@ -200,7 +202,7 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
       updateBase = true
     }
     if (changes.hasOwnProperty('longitude')) {
-      this.latitude = changes['longitude'].currentValue
+      this.longitude = changes['longitude'].currentValue
       updateBase = true
     }
     if (updateBase) {
@@ -244,6 +246,12 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
   _onMapReady(theMap: google.maps.Map) {
     this._googleMaps.setMap(theMap)
     this._googleMaps.setData(this._mapValueManager.value)
+    // NOTE: AgmMap has a race condition problem that causes the input latitude,
+    // longitude, and zoom to get ignored, before googlemaps emits
+    // 'center_changed'. This should avoid the issue, until we stop using AgmMap
+    // or upgrade to a more recent version that may not have the issue anymore.
+    this._googleMaps.reCenterOnFeatures()
+    this._googleMaps.googleMap?.setZoom(this.zoom)
   }
 
   _onClickDeleteFeature() {

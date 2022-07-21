@@ -50,9 +50,9 @@ const FEATURE_STYLE_OPTIONS_DEFAULT: google.maps.Data.StyleOptions = {
   // cursor?: string;
   draggable: false,
   editable: false,
-  fillColor: 'gray',
+  fillColor: 'teal',
   fillOpacity: 0.3,
-  strokeColor: 'gray',
+  strokeColor: 'blue',
   strokeOpacity: 1,
   strokeWeight: 2,
 }
@@ -228,6 +228,7 @@ export class GoogleMapsService implements OnDestroy {
       }
 
       this.googleMap.panTo(this._baseLatLng)
+      return
     }
     this.googleMap.fitBounds(getBoundsWithAllFeatures(this.googleMap.data))
 
