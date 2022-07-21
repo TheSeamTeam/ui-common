@@ -81,6 +81,8 @@ export class GoogleMapsService implements OnDestroy {
   private _activeContextMenu: GoogleMapsContextMenu | null = null
   private _baseLatLng?: google.maps.LatLngLiteral
 
+  private _allowDrawingHoleInPolygon: boolean = false
+
   public googleMap?: google.maps.Map
 
   public readonly mapReady$: Observable<boolean>
@@ -237,6 +239,10 @@ export class GoogleMapsService implements OnDestroy {
     // this.googleMap.panToBounds(getBoundsWithAllFeatures(this.googleMap.data))
   }
 
+  public allowDrawingHoleInPolygon(allow: boolean): void {
+    this._allowDrawingHoleInPolygon = allow
+  }
+
   private _initFeatureStyling(): void {
     this._assertInitialized()
 
@@ -328,7 +334,9 @@ export class GoogleMapsService implements OnDestroy {
 
         // Check if the feature should be used as a cutout to an existing
         // feature or added as it's own feature.
-        const exteriorPolygonFeature = getPossibleExteriorFeature(this.googleMap.data, feature)
+        const exteriorPolygonFeature = this._allowDrawingHoleInPolygon
+          ? getPossibleExteriorFeature(this.googleMap.data, feature)
+          : undefined
         if (exteriorPolygonFeature) {
           addInnerFeatureCutoutToExteriorFeature(exteriorPolygonFeature, feature)
           setFeatureSelected(exteriorPolygonFeature, true)

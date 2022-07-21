@@ -76,6 +76,7 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
   static ngAcceptInputType_reCenterControlEnabled: BooleanInput
   static ngAcceptInputType_mapTypeControlEnabled: BooleanInput
   static ngAcceptInputType_streetViewControlEnabled: BooleanInput
+  static ngAcceptInputType_allowDrawingHoleInPolygon: BooleanInput
 
   private readonly _ngUnsubscribe = new Subject<void>()
 
@@ -118,6 +119,8 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
   @Input() @InputBoolean() reCenterControlEnabled: boolean = true
   @Input() @InputBoolean() mapTypeControlEnabled: boolean = true
   @Input() @InputBoolean() streetViewControlEnabled: boolean = false
+
+  @Input() @InputBoolean() allowDrawingHoleInPolygon: boolean = false
 
   @HostBinding('attr.disabled')
   get _attrDisabled() { return this.disabled || null }
@@ -207,6 +210,10 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
     }
     if (updateBase) {
       this._googleMaps.setBaseLatLng(this.latitude, this.longitude)
+    }
+
+    if (changes.hasOwnProperty('allowDrawingHoleInPolygon')) {
+      this._googleMaps.allowDrawingHoleInPolygon(this.allowDrawingHoleInPolygon)
     }
   }
 
