@@ -23,11 +23,9 @@ describe('isOnlyGeometryTypesValidator', () => {
     expect(control.valid).toBe(true)
   })
 
-  it('should not be valid if value is a string that is not a FeatureCollection', () => {
+  it('should be valid if value is a value that is not a FeatureCollection', () => {
     const control = new FormControl('a', [ isOnlyGeometryTypesValidator([]) ])
-    expect(control.valid).toBe(false)
-    expect(control.errors).not.toBeNull()
-    expect(control.errors![IS_ONLY_GEOMETRY_TYPES_VALIDATOR_NAME].reason).toBe(`Must be a FeatureCollection.`)
+    expect(control.valid).toBe(true)
   })
 
   describe('object value', () => {
