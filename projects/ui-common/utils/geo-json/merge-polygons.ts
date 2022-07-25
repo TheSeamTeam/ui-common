@@ -5,8 +5,11 @@ import {
 } from 'geojson'
 
 /**
+ * Merge Polygon and MultiPolygon geometries into a single MultiPolygon. Any
+ * properties, other than 'coordinates', of the Polygons and MultiPolygons will
+ * be lost.
  *
- * NOTE: Polygons in a GeometryCollection will not be merged.
+ * NOTE: Polygons and MultPolygons in a GeometryCollection will not be merged.
  */
 export function mergePolygons(featureCollection: FeatureCollection): void {
   const multiPolygon: MultiPolygon = {

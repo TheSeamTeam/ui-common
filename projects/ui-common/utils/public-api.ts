@@ -16,6 +16,8 @@ export * from './operators/index'
 export * from './router/index'
 
 export * from './geo-json/geo-json-to-area'
+export * from './geo-json/is-only-geometry-types'
+export * from './geo-json/is-only-geometry-types.validator'
 export * from './geo-json/merge-polygons'
 export * from './geo-json/read-geo-file'
 export * from './geo-json/split-multi-polygons'

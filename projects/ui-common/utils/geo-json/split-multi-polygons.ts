@@ -6,6 +6,8 @@ import {
 } from 'geojson'
 
 /**
+ * Split all MultiPolygon into Polygon. Any properties, other than
+ * 'coordinates', of the MultiPolygons will be lost.
  *
  * NOTE: MultiPolygons in a GeometryCollection will not be split.
  */
