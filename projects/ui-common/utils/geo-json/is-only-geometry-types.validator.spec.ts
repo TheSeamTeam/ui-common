@@ -55,6 +55,7 @@ describe('isOnlyGeometryTypesValidator', () => {
       const control = new FormControl(featureCollection, [ isOnlyGeometryTypesValidator([ 'Polygon' ]) ])
       expect(control.valid).toBe(false)
       expect(control.errors).not.toBeNull()
+      // tslint:disable-next-line: no-non-null-assertion
       expect(control.errors![IS_ONLY_GEOMETRY_TYPES_VALIDATOR_NAME].reason).toBe(`Only geometry type Polygon allowed.`)
     })
 
@@ -109,7 +110,9 @@ describe('isOnlyGeometryTypesValidator', () => {
       const control = new FormControl(featureCollection, [ isOnlyGeometryTypesValidator([ 'Point' ]) ])
       expect(control.valid).toBe(false)
       expect(control.errors).not.toBeNull()
+      // tslint:disable-next-line: no-non-null-assertion
       expect(control.errors![IS_ONLY_GEOMETRY_TYPES_VALIDATOR_NAME].reason).toBe(`Only geometry type Point allowed.`)
+      // tslint:disable-next-line: no-non-null-assertion
       expect(control.errors![IS_ONLY_GEOMETRY_TYPES_VALIDATOR_NAME].notAllowedGeometryTypesFound).toStrictEqual([ 'Polygon' ])
     })
   })
@@ -143,6 +146,7 @@ describe('isOnlyGeometryTypesValidator', () => {
       const control = new FormControl(value, [ isOnlyGeometryTypesValidator([ 'Polygon' ]) ])
       expect(control.valid).toBe(false)
       expect(control.errors).not.toBeNull()
+      // tslint:disable-next-line: no-non-null-assertion
       expect(control.errors![IS_ONLY_GEOMETRY_TYPES_VALIDATOR_NAME].reason).toBe(`Only geometry type Polygon allowed.`)
     })
 
@@ -200,7 +204,9 @@ describe('isOnlyGeometryTypesValidator', () => {
     const control = new FormControl(value, [ isOnlyGeometryTypesValidator([ 'Point' ]) ])
     expect(control.valid).toBe(false)
     expect(control.errors).not.toBeNull()
+    // tslint:disable-next-line: no-non-null-assertion
     expect(control.errors![IS_ONLY_GEOMETRY_TYPES_VALIDATOR_NAME].reason).toBe(`Only geometry type Point allowed.`)
+    // tslint:disable-next-line: no-non-null-assertion
     expect(control.errors![IS_ONLY_GEOMETRY_TYPES_VALIDATOR_NAME].notAllowedGeometryTypesFound).toStrictEqual([ 'Polygon' ])
   })
 })

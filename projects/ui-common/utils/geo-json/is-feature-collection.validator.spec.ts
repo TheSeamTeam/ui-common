@@ -1,4 +1,5 @@
 import { FormControl } from '@angular/forms'
+
 import {
   FeatureCollection,
 } from 'geojson'
@@ -25,6 +26,7 @@ describe('isOnlyGeometryTypesValidator', () => {
     const control = new FormControl('a', [ isFeatureCollectionValidator() ])
     expect(control.valid).toBe(false)
     expect(control.errors).not.toBeNull()
+    // tslint:disable-next-line: no-non-null-assertion
     expect(control.errors![IS_FEATURE_COLLECTION_VALIDATOR_NAME].reason).toBe(`Must be a FeatureCollection.`)
   })
 

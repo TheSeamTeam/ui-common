@@ -25,6 +25,7 @@ import { faCrosshairs, faFileImport } from '@fortawesome/free-solid-svg-icons'
 import { CanDisable, CanDisableCtor, InputBoolean, InputNumber, mixinDisabled } from '@theseam/ui-common/core'
 import { MenuComponent } from '@theseam/ui-common/menu'
 
+import { FeatureCollection } from 'geojson'
 import { GoogleMapsControlsService } from '../google-maps-controls.service'
 import { TheSeamGoogleMapsRecenterButtonControlComponent } from '../google-maps-recenter-button-control/google-maps-recenter-button-control.component'
 import { TheSeamGoogleMapsUploadButtonControlComponent } from '../google-maps-upload-button-control/google-maps-upload-button-control.component'
@@ -114,13 +115,18 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
 
   @Input() @InputBoolean() fileDropEnabled: boolean = true
 
-  @Input() @InputBoolean() fileUploadControlEnabled: boolean = true
+  @Input() @InputBoolean() fileUploadControlEnabled: boolean = false
   @Input() @InputBoolean() fullscreenControlEnabled: boolean = true
   @Input() @InputBoolean() reCenterControlEnabled: boolean = true
   @Input() @InputBoolean() mapTypeControlEnabled: boolean = true
   @Input() @InputBoolean() streetViewControlEnabled: boolean = false
 
   @Input() @InputBoolean() allowDrawingHoleInPolygon: boolean = false
+
+  @Input()
+  set fileImportHandler(value: ((file: File) => void) | undefined | null) {
+    this._googleMaps.setFileInputHandler(value)
+  }
 
   @HostBinding('attr.disabled')
   get _attrDisabled() { return this.disabled || null }
@@ -235,6 +241,10 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
 
   public fitBounds(bounds: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral, padding?: number | google.maps.Padding): void {
     this._googleMaps.fitBounds(bounds, padding)
+  }
+
+  public getGeoJson(): Promise<object> {
+    return this._googleMaps.getGeoJson()
   }
 
   public hasFocus(): boolean {

@@ -83,6 +83,9 @@ export class GoogleMapsService implements OnDestroy {
 
   private _allowDrawingHoleInPolygon: boolean = false
 
+  // TODO: Move to a better place than the map wrapper service.
+  private _fileInputHandler: ((file: File) => void) | undefined | null
+
   public googleMap?: google.maps.Map
 
   public readonly mapReady$: Observable<boolean>
@@ -241,6 +244,14 @@ export class GoogleMapsService implements OnDestroy {
 
   public allowDrawingHoleInPolygon(allow: boolean): void {
     this._allowDrawingHoleInPolygon = allow
+  }
+
+  public setFileInputHandler(handler: ((file: File) => void) | undefined | null): void {
+    this._fileInputHandler
+  }
+
+  public getFileInputHandler(): ((file: File) => void) | undefined | null {
+    return this._fileInputHandler
   }
 
   private _initFeatureStyling(): void {
