@@ -103,7 +103,7 @@ describe('isOnlyGeometryTypesValidator', () => {
               ],
             },
             properties: { },
-          }
+          },
         ],
       }
       const control = new FormControl(featureCollection, [ isOnlyGeometryTypesValidator([ 'Point' ]) ])
@@ -193,7 +193,7 @@ describe('isOnlyGeometryTypesValidator', () => {
             ],
           },
           properties: { },
-        }
+        },
       ],
     }
     const value = JSON.stringify(featureCollection)

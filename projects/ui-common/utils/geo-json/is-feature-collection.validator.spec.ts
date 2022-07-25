@@ -1,8 +1,6 @@
 import { FormControl } from '@angular/forms'
 import {
   FeatureCollection,
-  MultiPolygon,
-  Polygon,
 } from 'geojson'
 
 import { isFeatureCollectionValidator, IS_FEATURE_COLLECTION_VALIDATOR_NAME } from './is-feature-collection.validator'

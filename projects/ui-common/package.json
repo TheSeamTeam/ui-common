@@ -55,6 +55,7 @@
     "@turf/boolean-contains": "^6.5.0",
     "@turf/helpers": "^6.5.0",
     "@turf/area": "^6.5.0",
+    "@turf/kinks": "^6.5.0",
     "shpjs": "^4.0.2",
     "@types/geojson": "^7946.0.8"
   },
