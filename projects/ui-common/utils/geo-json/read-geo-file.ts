@@ -4,8 +4,8 @@ import { FeatureCollection } from 'geojson'
 const Buffer = require('buffer/').Buffer
 import shp from 'shpjs'
 
-import { readFileAsync } from './file-utils'
-import { withoutProperty } from './obj-utils'
+import { readFileAsync } from '../file-utils'
+import { withoutProperty } from '../obj-utils'
 
 /**
  * Reads a File, or buffer of file content, in GeoJSON or ESRI Shapefile format

@@ -15,6 +15,11 @@ export * from './operators/index'
 
 export * from './router/index'
 
+export * from './geo-json/geo-json-to-area'
+export * from './geo-json/merge-polygons'
+export * from './geo-json/read-geo-file'
+export * from './geo-json/split-multi-polygons'
+
 export * from './array-move'
 export * from './calc-percentage'
 export * from './toggle-attribute'
@@ -40,6 +45,3 @@ export * from './pad-start'
 export * from './create-padding'
 export * from './is-numeric'
 export * from './fractional-digits-count'
-
-export * from './read-geo-file'
-export * from './geo-json-to-area'
