@@ -1,10 +1,10 @@
 import { BooleanInput } from '@angular/cdk/coercion'
-import { ChangeDetectionStrategy, Component, HostBinding, Input, OnDestroy, OnInit, TemplateRef } from '@angular/core'
+import { ChangeDetectionStrategy, Component, HostBinding, Input, OnDestroy, OnInit, TemplateRef, ViewEncapsulation } from '@angular/core'
 
-import { faUserCircle } from '@fortawesome/free-regular-svg-icons'
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons'
 
 import { CanDisableCtor, InputBoolean, mixinDisabled } from '@theseam/ui-common/core'
+import { SeamIcon } from '@theseam/ui-common/icon'
 
 class TopBarMenuButtonBase {}
 
@@ -16,6 +16,7 @@ const _TopBarMenuButtonMixinBase: CanDisableCtor & typeof TopBarMenuButtonBase =
   selector: 'button[seamTopBarMenuButton]',
   templateUrl: './top-bar-menu-button.component.html',
   styleUrls: ['./top-bar-menu-button.component.scss'],
+  encapsulation: ViewEncapsulation.None,
   exportAs: 'seamButton',
   // tslint:disable-next-line:use-input-property-decorator
   inputs: [ 'disabled' ],
@@ -32,11 +33,13 @@ export class TopBarMenuButtonComponent extends _TopBarMenuButtonMixinBase implem
   static ngAcceptInputType_compact: BooleanInput
 
   faAngleDown = faAngleDown
-  profileIcon = faUserCircle
 
   @Input() detailTpl: TemplateRef<{}> | undefined | null
 
   @Input() @InputBoolean() compact: boolean = false
+
+  /** Icon to display on mobile to activate profile dropdown. Defaults to faUserCircle. */
+  @Input() profileIcon: SeamIcon | undefined | null
 
   @HostBinding('class.top-bar-menu-button--compact') get _hasCompactClass() { return this.compact }
   @HostBinding('class.p-0') get _hasPadding0Class() { return this.compact }

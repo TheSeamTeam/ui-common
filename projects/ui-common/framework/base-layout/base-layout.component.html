@@ -2,12 +2,12 @@
   <ng-template [cdkPortalOutlet]="_sideBarPortal"></ng-template>
 </div>
 
-<div class="base-layout-top-bar-container border-bottom bordered">
+<div class="base-layout-top-bar-container">
   <ng-template [cdkPortalOutlet]="_topBarPortal"></ng-template>
 </div>
 <div class="base-layout-main-container">
   <div *ngIf="hasSideBar$ | async"
-    class="base-layout-side-bar-container border-right bordered">
+    class="base-layout-side-bar-container">
     <div class="base-layout-side-bar-nav-content" *ngIf="!(isMobile$ | async)">
       <ng-template [cdkPortalOutlet]="_sideBarPortal"></ng-template>
     </div>

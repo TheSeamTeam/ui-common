@@ -105,6 +105,11 @@
               },
               {
                 "glob": "**/*.scss",
+                "input": "breadcrumbs",
+                "output": "breadcrumbs"
+              },
+              {
+                "glob": "**/*.scss",
                 "input": "projects/ui-common/framework/base-layout",
                 "output": "framework/base-layout"
               },
@@ -112,6 +117,11 @@
                 "glob": "**/*.scss",
                 "input": "projects/ui-common/framework/dashboard",
                 "output": "framework/dashboard"
+              },
+              {
+                "glob": "**/*.scss",
+                "input": "projects/ui-common/framework/top-bar",
+                "output": "framework/top-bar"
               },
               {
                 "glob": "**/*.scss",
@@ -190,6 +200,11 @@
               },
               {
                 "glob": "**/*.scss",
+                "input": "breadcrumbs",
+                "output": "breadcrumbs"
+              },
+              {
+                "glob": "**/*.scss",
                 "input": "framework/base-layout",
                 "output": "framework/base-layout"
               },
@@ -202,6 +217,11 @@
                 "glob": "**/*.scss",
                 "input": "framework/side-nav",
                 "output": "framework/side-nav"
+              },
+              {
+                "glob": "**/*.scss",
+                "input": "framework/top-bar",
+                "output": "framework/top-bar"
               },
               {
                 "glob": "**/*.scss",
@@ -268,6 +288,11 @@
               },
               {
                 "glob": "**/*.scss",
+                "input": "breadcrumbs",
+                "output": "breadcrumbs"
+              },
+              {
+                "glob": "**/*.scss",
                 "input": "projects/ui-common/framework/base-layout",
                 "output": "framework/base-layout"
               },
@@ -275,6 +300,11 @@
                 "glob": "**/*.scss",
                 "input": "projects/ui-common/framework/dashboard",
                 "output": "framework/dashboard"
+              },
+              {
+                "glob": "**/*.scss",
+                "input": "projects/ui-common/framework/top-bar",
+                "output": "framework/top-bar"
               },
               {
                 "glob": "**/*.scss",
@@ -362,6 +392,11 @@
               },
               {
                 "glob": "**/*.scss",
+                "input": "breadcrumbs",
+                "output": "breadcrumbs"
+              },
+              {
+                "glob": "**/*.scss",
                 "input": "projects/ui-common/framework/base-layout",
                 "output": "framework/base-layout"
               },
@@ -369,6 +404,11 @@
                 "glob": "**/*.scss",
                 "input": "projects/ui-common/framework/dashboard",
                 "output": "framework/dashboard"
+              },
+              {
+                "glob": "**/*.scss",
+                "input": "projects/ui-common/framework/top-bar",
+                "output": "framework/top-bar"
               },
               {
                 "glob": "**/*.scss",

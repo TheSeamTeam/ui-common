@@ -6,6 +6,7 @@ seam-widget {
 
   .seam-widget {
     background: $seam-widget-body-background;
+    box-shadow: $seam-widget-box-shadow;
   }
 
   .widget-header {
@@ -79,6 +80,7 @@ seam-widget {
     max-width: $seam-widget-header-icon-width;
     height: $seam-widget-header-icon-height;
     width: $seam-widget-header-icon-width;
+    color: $seam-widget-header-icon-color;
 
     .widget-header-icon--fa {
       display: flex;

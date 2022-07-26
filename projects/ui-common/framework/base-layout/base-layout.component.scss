@@ -20,6 +20,11 @@ seam-base-layout {
     display: flex;
     flex-direction: column;
 
+    border-top: $base-layout-side-bar-container-border-top;
+    border-right: $base-layout-side-bar-container-border-right;
+    border-bottom: $base-layout-side-bar-container-border-bottom;
+    border-left: $base-layout-side-bar-container-border-left;
+
     .base-layout-side-bar-nav-content {
       flex: 1 1 0;
     }
@@ -34,6 +39,11 @@ seam-base-layout {
 
   .base-layout-top-bar-container {
     flex: 0 0 auto;
+
+    border-top: $base-layout-top-bar-container-border-top;
+    border-right: $base-layout-top-bar-container-border-right;
+    border-bottom: $base-layout-top-bar-container-border-bottom;
+    border-left: $base-layout-top-bar-container-border-left;
   }
 
   .base-layout-content-container {
@@ -56,6 +66,10 @@ seam-base-layout {
 
   .base-layout-content-container-header {
     margin: $base-header-margin;
+    padding: $base-header-padding;
+    background: $base-header-background;
+    border-radius: $base-header-border-radius;
+    overflow: hidden;
   }
 
   .btn-baselayout-action {
