@@ -15,7 +15,7 @@ let nextUniqueId = 0
 @Directive({
   // TODO: Consider removing restriction and instead adding a dev warning. A few
   // inputs in the app need to be changed for this first.
-  selector: 'input[seamInput], textarea[seamInput], ng-select[seamInput], seam-checkbox[seamInput] [ngbRadioGroup], seam-tel-input[seamInput], quill-editor[seamInput]',
+  selector: 'input[seamInput], textarea[seamInput], ng-select[seamInput], seam-checkbox[seamInput] [ngbRadioGroup], seam-tel-input[seamInput], quill-editor[seamInput], seam-google-maps[seamInput]',
   exportAs: 'seamInput',
 })
 export class InputDirective implements DoCheck {

@@ -50,9 +50,9 @@ const FEATURE_STYLE_OPTIONS_DEFAULT: google.maps.Data.StyleOptions = {
   // cursor?: string;
   draggable: false,
   editable: false,
-  fillColor: 'gray',
+  fillColor: 'teal',
   fillOpacity: 0.3,
-  strokeColor: 'gray',
+  strokeColor: 'blue',
   strokeOpacity: 1,
   strokeWeight: 2,
 }
@@ -80,6 +80,11 @@ export class GoogleMapsService implements OnDestroy {
   private _featureContextMenu: MenuComponent | null = null
   private _activeContextMenu: GoogleMapsContextMenu | null = null
   private _baseLatLng?: google.maps.LatLngLiteral
+
+  private _allowDrawingHoleInPolygon: boolean = false
+
+  // TODO: Move to a better place than the map wrapper service.
+  private _fileInputHandler: ((file: File) => void) | undefined | null
 
   public googleMap?: google.maps.Map
 
@@ -120,6 +125,11 @@ export class GoogleMapsService implements OnDestroy {
   public getDiv(): HTMLDivElement {
     this._assertInitialized()
     return this.googleMap.getDiv() as HTMLDivElement
+  }
+
+  public fitBounds(bounds: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral, padding?: number | google.maps.Padding): void {
+    this._assertInitialized()
+    this.googleMap.fitBounds(bounds, padding)
   }
 
   /**
@@ -223,12 +233,25 @@ export class GoogleMapsService implements OnDestroy {
       }
 
       this.googleMap.panTo(this._baseLatLng)
+      return
     }
     this.googleMap.fitBounds(getBoundsWithAllFeatures(this.googleMap.data))
 
     // TODO: Fix to pan to center. Currently fitBounds results in the expected
     // result, but pantToBounds animates.
     // this.googleMap.panToBounds(getBoundsWithAllFeatures(this.googleMap.data))
+  }
+
+  public allowDrawingHoleInPolygon(allow: boolean): void {
+    this._allowDrawingHoleInPolygon = allow
+  }
+
+  public setFileInputHandler(handler: ((file: File) => void) | undefined | null): void {
+    this._fileInputHandler
+  }
+
+  public getFileInputHandler(): ((file: File) => void) | undefined | null {
+    return this._fileInputHandler
   }
 
   private _initFeatureStyling(): void {
@@ -322,7 +345,9 @@ export class GoogleMapsService implements OnDestroy {
 
         // Check if the feature should be used as a cutout to an existing
         // feature or added as it's own feature.
-        const exteriorPolygonFeature = getPossibleExteriorFeature(this.googleMap.data, feature)
+        const exteriorPolygonFeature = this._allowDrawingHoleInPolygon
+          ? getPossibleExteriorFeature(this.googleMap.data, feature)
+          : undefined
         if (exteriorPolygonFeature) {
           addInnerFeatureCutoutToExteriorFeature(exteriorPolygonFeature, feature)
           setFeatureSelected(exteriorPolygonFeature, true)

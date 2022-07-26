@@ -9,9 +9,11 @@ import {
   forwardRef,
   HostBinding,
   Input,
+  OnChanges,
   OnDestroy,
   OnInit,
   Output,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core'
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
@@ -23,6 +25,7 @@ import { faCrosshairs, faFileImport } from '@fortawesome/free-solid-svg-icons'
 import { CanDisable, CanDisableCtor, InputBoolean, InputNumber, mixinDisabled } from '@theseam/ui-common/core'
 import { MenuComponent } from '@theseam/ui-common/menu'
 
+import { FeatureCollection } from 'geojson'
 import { GoogleMapsControlsService } from '../google-maps-controls.service'
 import { TheSeamGoogleMapsRecenterButtonControlComponent } from '../google-maps-recenter-button-control/google-maps-recenter-button-control.component'
 import { TheSeamGoogleMapsUploadButtonControlComponent } from '../google-maps-upload-button-control/google-maps-upload-button-control.component'
@@ -30,21 +33,21 @@ import { GoogleMapsService } from '../google-maps.service'
 import { MapControl, MAP_CONTROLS_SERVICE } from '../map-controls-service'
 import { MapValue, MapValueManagerService, MapValueSource } from '../map-value-manager.service'
 
-class TheSeamGoogleMapsWrapperComponentBase {
+class TheSeamGoogleMapsComponentBase {
   constructor(public _elementRef: ElementRef) {}
 }
 
-const _TheSeamGoogleMapsWrapperMixinBase: CanDisableCtor &
-  typeof TheSeamGoogleMapsWrapperComponentBase =
-    mixinDisabled(TheSeamGoogleMapsWrapperComponentBase)
+const _TheSeamGoogleMapsMixinBase: CanDisableCtor &
+  typeof TheSeamGoogleMapsComponentBase =
+    mixinDisabled(TheSeamGoogleMapsComponentBase)
 
 /**
  * A wrapper for googlemap.
  */
 @Component({
-  selector: 'seam-google-maps-wrapper',
-  templateUrl: './google-maps-wrapper.component.html',
-  styleUrls: ['./google-maps-wrapper.component.scss'],
+  selector: 'seam-google-maps',
+  templateUrl: './google-maps.component.html',
+  styleUrls: ['./google-maps.component.scss'],
   inputs: [
     'disabled'
   ],
@@ -55,20 +58,26 @@ const _TheSeamGoogleMapsWrapperMixinBase: CanDisableCtor &
     {
       provide: NG_VALUE_ACCESSOR,
       // tslint:disable-next-line: no-use-before-declare
-      useExisting: forwardRef(() => TheSeamGoogleMapsWrapperComponent),
+      useExisting: forwardRef(() => TheSeamGoogleMapsComponent),
       multi: true
     }
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  exportAs: 'seamGoogleMaps'
 })
-export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapperMixinBase
-  implements OnInit, AfterViewInit, OnDestroy, CanDisable, ControlValueAccessor {
+export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
+  implements OnInit, AfterViewInit, OnDestroy, OnChanges, CanDisable, ControlValueAccessor {
   static ngAcceptInputType_disabled: BooleanInput
   static ngAcceptInputType_zoom: NumberInput
+  static ngAcceptInputType_longitude: NumberInput
+  static ngAcceptInputType_latitude: NumberInput
   static ngAcceptInputType_fileDropEnabled: BooleanInput
   static ngAcceptInputType_fileUploadControlEnabled: BooleanInput
   static ngAcceptInputType_fullscreenControlEnabled: BooleanInput
   static ngAcceptInputType_reCenterControlEnabled: BooleanInput
+  static ngAcceptInputType_mapTypeControlEnabled: BooleanInput
+  static ngAcceptInputType_streetViewControlEnabled: BooleanInput
+  static ngAcceptInputType_allowDrawingHoleInPolygon: BooleanInput
 
   private readonly _ngUnsubscribe = new Subject<void>()
 
@@ -104,11 +113,20 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
    */
   private _tabIndex = -1
 
-  @Input() @InputBoolean() fileDropEnabled: BooleanInput = true
+  @Input() @InputBoolean() fileDropEnabled: boolean = true
 
-  @Input() @InputBoolean() fileUploadControlEnabled: BooleanInput = true
-  @Input() @InputBoolean() fullscreenControlEnabled: BooleanInput = true
-  @Input() @InputBoolean() reCenterControlEnabled: BooleanInput = true
+  @Input() @InputBoolean() fileUploadControlEnabled: boolean = false
+  @Input() @InputBoolean() fullscreenControlEnabled: boolean = true
+  @Input() @InputBoolean() reCenterControlEnabled: boolean = true
+  @Input() @InputBoolean() mapTypeControlEnabled: boolean = true
+  @Input() @InputBoolean() streetViewControlEnabled: boolean = false
+
+  @Input() @InputBoolean() allowDrawingHoleInPolygon: boolean = false
+
+  @Input()
+  set fileImportHandler(value: ((file: File) => void) | undefined | null) {
+    this._googleMaps.setFileInputHandler(value)
+  }
 
   @HostBinding('attr.disabled')
   get _attrDisabled() { return this.disabled || null }
@@ -155,6 +173,8 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
       }),
       takeUntil(this._ngUnsubscribe),
     ).subscribe()
+
+    this._googleMaps.setBaseLatLng(this.latitude, this.longitude)
   }
 
   /** @ignore */
@@ -164,9 +184,9 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
     fromEvent<KeyboardEvent>(window, 'keydown').pipe(
       tap((event: KeyboardEvent) => {
         switch (event.code) {
-          case 'Delete': this._googleMaps.deleteSelection()
-          case 'Escape': this._googleMaps.stopDrawing()
-          case 'ContextMenu': this._googleMaps.openContextMenu()
+          case 'Delete': this._googleMaps.deleteSelection(); event.preventDefault(); event.stopPropagation(); break
+          case 'Escape': this._googleMaps.stopDrawing(); event.preventDefault(); event.stopPropagation();  break
+          case 'ContextMenu': this._googleMaps.openContextMenu(); event.preventDefault(); event.stopPropagation();  break
         }
       }),
       takeUntil(this._ngUnsubscribe)
@@ -184,6 +204,25 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
   /** @ignore */
   ngAfterViewInit() { }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    let updateBase = false
+    if (changes.hasOwnProperty('latitude')) {
+      this.latitude = changes['latitude'].currentValue
+      updateBase = true
+    }
+    if (changes.hasOwnProperty('longitude')) {
+      this.longitude = changes['longitude'].currentValue
+      updateBase = true
+    }
+    if (updateBase) {
+      this._googleMaps.setBaseLatLng(this.latitude, this.longitude)
+    }
+
+    if (changes.hasOwnProperty('allowDrawingHoleInPolygon')) {
+      this._googleMaps.allowDrawingHoleInPolygon(this.allowDrawingHoleInPolygon)
+    }
+  }
+
   writeValue(value: MapValue): void {
     this.value = value
   }
@@ -198,6 +237,14 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
 
   setDisabledState?(isDisabled: boolean): void {
     this.disabled = isDisabled
+  }
+
+  public fitBounds(bounds: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral, padding?: number | google.maps.Padding): void {
+    this._googleMaps.fitBounds(bounds, padding)
+  }
+
+  public getGeoJson(): Promise<object> {
+    return this._googleMaps.getGeoJson()
   }
 
   public hasFocus(): boolean {
@@ -216,6 +263,12 @@ export class TheSeamGoogleMapsWrapperComponent extends _TheSeamGoogleMapsWrapper
   _onMapReady(theMap: google.maps.Map) {
     this._googleMaps.setMap(theMap)
     this._googleMaps.setData(this._mapValueManager.value)
+    // NOTE: AgmMap has a race condition problem that causes the input latitude,
+    // longitude, and zoom to get ignored, before googlemaps emits
+    // 'center_changed'. This should avoid the issue, until we stop using AgmMap
+    // or upgrade to a more recent version that may not have the issue anymore.
+    this._googleMaps.reCenterOnFeatures()
+    this._googleMaps.googleMap?.setZoom(this.zoom)
   }
 
   _onClickDeleteFeature() {

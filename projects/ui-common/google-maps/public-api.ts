@@ -1,4 +1,4 @@
-export * from './google-maps-wrapper/google-maps-wrapper.component'
+export * from './google-maps/google-maps.component'
 export * from './google-maps.module'
 
 export * from './map-value-manager.service'
@@ -10,3 +10,5 @@ export * from './google-maps-contextmenu'
 export * from './map-file-drop/map-file-drop.component'
 export * from './google-maps-upload-button-control/google-maps-upload-button-control.component'
 export * from './google-maps-recenter-button-control/google-maps-recenter-button-control.component'
+export * from './google-maps-places-autocomplete/google-maps-places-autocomplete.directive'
+export * from './google-maps-places-autocomplete/google-maps-places-autocomplete.component'

@@ -1,0 +1,27 @@
+@import '../../styles/utilities';
+
+:host {
+  display: block;
+  position: relative;
+
+  height: 400px;
+  width: 100%;
+
+  &.show-focus-border {
+    &.cdk-focused {
+      outline: 0;
+      box-shadow: $btn-focus-box-shadow;
+    }
+
+    &[disabled] {
+      opacity: $btn-disabled-opacity;
+      @include box-shadow(none);
+      // pointer-events: none;
+    }
+  }
+}
+
+agm-map {
+  height: inherit;
+  width: inherit;
+}

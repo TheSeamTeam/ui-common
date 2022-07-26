@@ -1,0 +1,13 @@
+<div *ngIf="icon" class="search-container--icon-wrapper">
+  <seam-icon [icon]="icon" class="text-muted" size="lg"></seam-icon>
+</div>
+<label *ngIf="label || placeholder" [attr.for]="inp.id" class="sr-only">{{ label || placeholder }}</label>
+<input #inp="seamInput"
+  seamInput
+  seamGoogleMapsPlacesAutocomplete
+  [disabled]="disabled"
+  [attr.placeholder]="placeholder"
+  [attr.autocorrect]="autocorrect"
+  [attr.autocapitalize]="autocapitalize"
+  [options]="_options"
+/>

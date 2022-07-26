@@ -1,0 +1,22 @@
+:host {
+  position: relative;
+
+  width: 100%;
+
+  > input {
+    padding-left: 40px;
+  }
+
+  .search-container--icon-wrapper {
+    position: absolute;
+    top: 6px;
+    left: 10px;
+    bottom: 0px;
+
+    ::ng-deep {
+      .svg-inline--fa {
+        vertical-align: middle;
+      }
+    }
+  }
+}

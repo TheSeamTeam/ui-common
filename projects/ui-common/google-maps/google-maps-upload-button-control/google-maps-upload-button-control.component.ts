@@ -14,6 +14,7 @@ import { Subject } from 'rxjs'
 import { SeamIcon } from '@theseam/ui-common/icon'
 import { readGeoFile } from '@theseam/ui-common/utils'
 
+import { GoogleMapsService } from '../google-maps.service'
 import { MAP_CONTROL_DATA } from '../map-controls-service'
 import { MapValueManagerService, MapValueSource } from '../map-value-manager.service'
 
@@ -32,9 +33,9 @@ export interface GoogleMapsUploadButtonControlData {
   styleUrls: ['./google-maps-upload-button-control.component.scss'],
   host: {
     '[attr.draggable]': 'false',
-    '[attr.aria]-label': 'label',
+    '[attr.aria-label]': 'label',
     '[attr.title]': 'label',
-    '[attr.type]': 'button',
+    'type': 'button',
     'class': 'gmnoprint gm-control-active'
   },
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -60,6 +61,7 @@ export class TheSeamGoogleMapsUploadButtonControlComponent implements OnDestroy 
     private readonly _elementRef: ElementRef,
     private readonly _mapValueManager: MapValueManagerService,
     private readonly _renderer: Renderer2,
+    private readonly _googleMaps: GoogleMapsService,
     @Optional() @Inject(MAP_CONTROL_DATA) _data?: GoogleMapsUploadButtonControlData
   ) {
     if (_data) {
@@ -113,7 +115,12 @@ export class TheSeamGoogleMapsUploadButtonControlComponent implements OnDestroy 
     this._listeners.push(this._renderer.listen(fileInputElement, 'change', (event: Event) => {
       const file = this._getFile()
       if (file === null) { return }
-      this._importFile(file)
+      const fileImportHandler = this._googleMaps.getFileInputHandler()
+      if (fileImportHandler) {
+        fileImportHandler(file)
+      } else {
+        this._importFile(file)
+      }
     }))
 
     return fileInputElement
