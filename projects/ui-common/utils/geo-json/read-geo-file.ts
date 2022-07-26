@@ -89,7 +89,6 @@ async function parseShpZip(buffer: Buffer): Promise<FeatureCollection> {
     }
     featCollection = featCollection[0]
   }
-  console.log('featCollection', featCollection)
   return withoutProperty(featCollection, 'fileName')
 }
 

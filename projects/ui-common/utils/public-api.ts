@@ -15,6 +15,7 @@ export * from './operators/index'
 
 export * from './router/index'
 
+export * from './geo-json/coerce-feature-collection'
 export * from './geo-json/geo-json-to-area'
 export * from './geo-json/is-feature-collection.validator'
 export * from './geo-json/is-only-geometry-types'
