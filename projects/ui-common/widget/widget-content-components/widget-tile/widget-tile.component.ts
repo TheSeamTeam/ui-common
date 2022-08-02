@@ -13,6 +13,7 @@ import {
   mixinDisabled,
   mixinTabIndex,
 } from '@theseam/ui-common/core'
+import { TheSeamIconType } from '@theseam/ui-common/icon'
 
 import { WidgetTileSecondaryIconDirective } from './widget-tile-secondary-icon.directive'
 
@@ -88,6 +89,8 @@ export class WidgetTileComponent extends _TheSeamWidgetTileMixinBase implements 
   @Input() @InputBoolean() grayscaleOnDisable: boolean = true
 
   @Input() iconClass: string | undefined | null
+
+  @Input() iconType: TheSeamIconType | undefined | null = 'styled-square'
 
   @Input() notificationIcon: string | IconProp | undefined | null
   @Input() notificationIconClass: string | undefined | null

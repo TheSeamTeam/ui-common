@@ -5,7 +5,7 @@ a[seam-widget-tile],
 button[seam-widget-tile] {
   display: block;
   width: 100%;
-  padding: 4px 4px 4px 4px;
+  padding: $seam-widget-tile-padding;
   text-decoration: none;
 
   color: $seam-widget-tile-color;

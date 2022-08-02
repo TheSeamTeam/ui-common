@@ -44,7 +44,24 @@ export class ModalRef<T, R = any> {
       })
 
       // NOTE: For current bootstrap style modal
-      _overlayRef.overlayElement.addEventListener('click', _bootstrapBackdropClickListener)
+      // Replaced click event because it was easy to accidentally close
+      // the dialog by mousing down inside the modal and mousing up outside
+      // (like when dragging a map, selecting text, etc)
+      let clickStarted = false;
+      _overlayRef.overlayElement.addEventListener('mousedown', (event) => {
+        // @ts-ignore
+        if (!this._isModalMouseEvent(event.path)) {
+          clickStarted = true
+        }
+      })
+
+      _overlayRef.overlayElement.addEventListener('mouseup', (event) => {
+        // @ts-ignore
+        if (clickStarted && !this._isModalMouseEvent(event.path)) {
+          clickStarted = false
+          _bootstrapBackdropClickListener()
+        }
+      }, { })
     }
 
     this.beforeClosed().subscribe(() => {
@@ -153,5 +170,10 @@ export class ModalRef<T, R = any> {
   /** Gets an observable that emits when dialog is finished closing. */
   afterClosed(): Observable<R | undefined> {
     return this._containerInstance._afterExit.pipe(map(() => this._result))
+  }
+
+  // TODO: pull container name in from element, to protect against changes
+  private _isModalMouseEvent(path: HTMLElement[]): boolean {
+    return path.findIndex(p => p.localName === 'seam-modal-container') !== -1
   }
 }
