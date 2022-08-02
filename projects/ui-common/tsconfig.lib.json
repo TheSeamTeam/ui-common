@@ -9,10 +9,6 @@
     "importHelpers": true,
     "skipLibCheck": true,
     "stripInternal": true,
-    "types": [], // I am setting this as a reminder that ng-packagr ignores "types" and "typeRoots"
-    "typeRoots": [
-      // "../../node_modules/@types"
-    ],
     "lib": [
       "dom",
       "es2018"

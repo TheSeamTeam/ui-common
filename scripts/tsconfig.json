@@ -5,7 +5,10 @@
     "strict": false,
     "resolveJsonModule": true,
     "target": "es5",
-    "module": "commonjs"
+    "module": "commonjs",
+    "types": [
+      "node"
+    ]
   },
   "include": ["./**/*"]
 }
