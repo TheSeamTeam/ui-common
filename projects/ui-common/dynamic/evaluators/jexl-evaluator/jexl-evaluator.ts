@@ -25,7 +25,7 @@ export class JexlEvaluator implements IDynamicValueEvaluator<'jexl'> {
 
   constructor() {
     this._jexl.addTransform('date', (val: any, row: any) => new DatePipe('en-US').transform(val, 'yyyy-MM-dd h:mm aaa'))
-    this._jexl.addTransform('length', (val: any) => val.length)
+    this._jexl.addTransform('length', (val: any) => val !== null && val !== undefined ? val.length : 0)
   }
 
   public eval<R>(value: IJexlValue<R>, context?: any): Promise<R> {
