@@ -6,6 +6,8 @@ import { filter, map } from 'rxjs/operators'
 import { IModalPosition } from './modal-config'
 import { ModalContainerComponent } from './modal-container/modal-container.component'
 
+const DRAG_CLOSE_THRESHOLD = 5
+
 /** Unique id for the created dialog. */
 let uniqueId = 0
 
@@ -22,18 +24,14 @@ export class ModalRef<T, R = any> {
   /** Result to be passed to afterClosed. */
   private _result: R | undefined
 
+  private _clickOutsideCleanup: (() => void) | null = null
+
   constructor(
     public _overlayRef: OverlayRef,
     protected _containerInstance: ModalContainerComponent,
     readonly id: string = `seam-modal-${uniqueId++}`) {
     // Pass the id along to the container.
     _containerInstance._id = id
-
-    const _bootstrapBackdropClickListener = () => {
-      if (!this.disableClose) {
-        this.close()
-      }
-    }
 
     // If the dialog has a backdrop, handle clicks from the backdrop.
     if (_containerInstance._config.hasBackdrop) {
@@ -43,25 +41,7 @@ export class ModalRef<T, R = any> {
         }
       })
 
-      // NOTE: For current bootstrap style modal
-      // Replaced click event because it was easy to accidentally close
-      // the dialog by mousing down inside the modal and mousing up outside
-      // (like when dragging a map, selecting text, etc)
-      let clickStarted = false;
-      _overlayRef.overlayElement.addEventListener('mousedown', (event) => {
-        // @ts-ignore
-        if (!this._isModalMouseEvent(event.path)) {
-          clickStarted = true
-        }
-      })
-
-      _overlayRef.overlayElement.addEventListener('mouseup', (event) => {
-        // @ts-ignore
-        if (clickStarted && !this._isModalMouseEvent(event.path)) {
-          clickStarted = false
-          _bootstrapBackdropClickListener()
-        }
-      }, { })
+      this._clickOutsideCleanup =  this._initCloseOnClickOutside()
     }
 
     this.beforeClosed().subscribe(() => {
@@ -69,9 +49,6 @@ export class ModalRef<T, R = any> {
     })
 
     this.afterClosed().subscribe(() => {
-      if (this._containerInstance._config.hasBackdrop) {
-        this._overlayRef.overlayElement.removeEventListener('click', _bootstrapBackdropClickListener)
-      }
       this._overlayRef.detach()
       this._overlayRef.dispose()
       this.componentInstance = null
@@ -82,6 +59,65 @@ export class ModalRef<T, R = any> {
       // tslint:disable-next-line:deprecation
       .pipe(filter(event => event.keyCode === ESCAPE && !this.disableClose))
       .subscribe(() => this.close())
+  }
+
+  private _initCloseOnClickOutside(): () => void {
+    const close = () => {
+      if (!this.disableClose) {
+        this.close()
+      }
+    }
+
+    const isInContainer = (target: HTMLElement | null) => {
+      return this._containerInstance.getNativeElement().contains(target)
+    }
+
+    const getPosition = (event: MouseEvent | PointerEvent): { x: number, y: number } => {
+      return { x: event.clientX, y: event.clientY }
+    }
+
+    const dist = (x1: number, y1: number, x2: number, y2: number): number => {
+      return Math.sqrt( Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2) )
+    }
+
+    let pressed = false
+    let pressedPosition: { x: number, y: number } | null = null
+    const _handlePressDown = (event: MouseEvent | PointerEvent) => {
+      pressed = true
+      pressedPosition = getPosition(event)
+    }
+
+    const _handlePressUp = (event: MouseEvent | PointerEvent) => {
+      if (pressedPosition) {
+        const target = event.target as HTMLElement | null
+        if (target && !isInContainer(target)) {
+          const currentPosition = getPosition(event)
+          const d = dist(currentPosition.x, currentPosition.y, pressedPosition.x, pressedPosition.y)
+          if (d < DRAG_CLOSE_THRESHOLD) {
+            close()
+          }
+        }
+
+        pressedPosition = null
+      } else if (pressed) {
+        close()
+      }
+      pressed = false
+    }
+
+    this._overlayRef.overlayElement.addEventListener('mousedown', _handlePressDown)
+    this._overlayRef.overlayElement.addEventListener('pointerdown', _handlePressDown)
+
+    this._overlayRef.overlayElement.addEventListener('mouseup', _handlePressUp)
+    this._overlayRef.overlayElement.addEventListener('pointerup', _handlePressUp)
+
+    return () => {
+      this._overlayRef.overlayElement.removeEventListener('mousedown', _handlePressDown)
+      this._overlayRef.overlayElement.removeEventListener('pointerdown', _handlePressDown)
+
+      this._overlayRef.overlayElement.removeEventListener('mouseup', _handlePressUp)
+      this._overlayRef.overlayElement.removeEventListener('pointerup', _handlePressUp)
+    }
   }
 
   /** Gets an observable that emits when the overlay's backdrop has been clicked. */
@@ -96,6 +132,7 @@ export class ModalRef<T, R = any> {
   close(dialogResult?: R): void {
     this._result = dialogResult
     this._containerInstance._startExiting()
+    if (this._clickOutsideCleanup) {this._clickOutsideCleanup()}
   }
 
   /**
@@ -170,10 +207,5 @@ export class ModalRef<T, R = any> {
   /** Gets an observable that emits when dialog is finished closing. */
   afterClosed(): Observable<R | undefined> {
     return this._containerInstance._afterExit.pipe(map(() => this._result))
-  }
-
-  // TODO: pull container name in from element, to protect against changes
-  private _isModalMouseEvent(path: HTMLElement[]): boolean {
-    return path.findIndex(p => p.localName === 'seam-modal-container') !== -1
   }
 }

@@ -247,4 +247,8 @@ export class ModalContainerComponent extends BasePortalOutlet implements OnDestr
     }
   }
 
+  public getNativeElement(): HTMLElement {
+    return this._elementRef.nativeElement
+  }
+
 }
