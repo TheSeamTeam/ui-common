@@ -99,6 +99,16 @@ export function fixPathDifferentStartingAndEndingPoint(coordinates: number[][]):
   coordinates.push(coordinates[0])
 }
 
+export function polygonHasValidPathsLengths(polygon: google.maps.Polygon, minPointsInValidPath: number = 3): boolean {
+  const paths = polygon.getPaths().getArray()
+  for (const path of paths) {
+    if (path.getLength() < minPointsInValidPath) {
+      return false
+    }
+  }
+  return true
+}
+
 export function polygonCoordinates(polygon: google.maps.Data.Polygon): number[][][] {
   return polygon.getArray().map(linRing => {
     const coords = linRing.getArray().map(x => [ x.lng(), x.lat() ])
@@ -136,9 +146,9 @@ export function featureContains(featureA: google.maps.Data.Feature, featureB: go
 }
 
 export function createDataFeatureFromPolygon(polygon: google.maps.Polygon): google.maps.Data.Feature {
-  const arr = polygon.getPath().getArray()
+  const arr = polygon.getPaths().getArray().map(x => x.getArray())
   return new google.maps.Data.Feature({
-    geometry: new google.maps.Data.Polygon([ arr ])
+    geometry: new google.maps.Data.Polygon(arr)
   })
 }
 

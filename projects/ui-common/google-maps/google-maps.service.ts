@@ -15,6 +15,7 @@ import {
   getFeaturesCount,
   getPossibleExteriorFeature,
   isFeatureSelected,
+  polygonHasValidPathsLengths,
   removeAllFeatures,
   setFeatureSelected,
   stripAppFeaturePropertiesFromJson,
@@ -247,7 +248,7 @@ export class GoogleMapsService implements OnDestroy {
   }
 
   public setFileInputHandler(handler: ((file: File) => void) | undefined | null): void {
-    this._fileInputHandler
+    this._fileInputHandler = handler
   }
 
   public getFileInputHandler(): ((file: File) => void) | undefined | null {
@@ -334,6 +335,17 @@ export class GoogleMapsService implements OnDestroy {
         }
 
         this._assertInitialized()
+
+        // TODO: See if there is a way to prevent the polygon from completing
+        // without enough points. This is very low priority, because starting
+        // over after adding a single point isn't a major inconvenience.
+        if (!polygonHasValidPathsLengths(polygon)) {
+          // Remove the drawn polygon.
+          polygon.setMap(null)
+          // Stop drawing.
+          this._drawingManager?.setDrawingMode(null)
+          return
+        }
 
         // Create a map feature of the drawn polygon.
         const feature = createDataFeatureFromPolygon(polygon)
