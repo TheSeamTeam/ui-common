@@ -39,7 +39,7 @@ export function noKinksValidator(): ValidatorFn {
     if (kinksFound.length > 0) {
       return {
         [NO_KINKS_VALIDATOR_NAME]: {
-          reason: 'Paths should not intersect themself.',
+          reason: 'Paths should not intersect themselves.',
           featuresWithKink: kinksFound,
         }
       }
