@@ -19,6 +19,7 @@ module.exports = {
     "**/utils/**/*.spec.ts",
     "**/validators/**/*.spec.ts",
     "**/datatable/**/*.spec.ts",
+    "**/dynamic-component-loader/**/*.spec.ts",
   ],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/' }),
 };
