@@ -1,3 +1,4 @@
+import { PortalModule } from '@angular/cdk/portal'
 import { A11yModule } from '@angular/cdk/a11y'
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
@@ -26,7 +27,8 @@ import { SideNavComponent } from './side-nav.component'
     A11yModule,
     TheSeamScrollbarModule,
     TheSeamLayoutModule,
-    NgbTooltipModule
+    NgbTooltipModule,
+    PortalModule
   ],
   exports: [
     SideNavItemComponent,

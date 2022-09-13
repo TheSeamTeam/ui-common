@@ -11,6 +11,7 @@ import { BaseLayoutContentFooterDirective } from './directives/base-layout-conte
 import { BaseLayoutContentHeaderDirective } from './directives/base-layout-content-header.directive'
 import { BaseLayoutContentDirective } from './directives/base-layout-content.directive'
 import { BaseLayoutNavToggleDirective } from './directives/base-layout-nav-toggle.directive'
+import { BaseLayoutSideBarFooterDirective } from './directives/base-layout-side-bar-footer.directive'
 import { BaseLayoutSideBarDirective } from './directives/base-layout-side-bar.directive'
 import { BaseLayoutTopBarDirective } from './directives/base-layout-top-bar.directive'
 
@@ -21,6 +22,7 @@ import { BaseLayoutTopBarDirective } from './directives/base-layout-top-bar.dire
     TheSeamBaseLayoutComponent,
     BaseLayoutContentDirective,
     BaseLayoutSideBarDirective,
+    BaseLayoutSideBarFooterDirective,
     BaseLayoutTopBarDirective,
     BaseLayoutNavToggleDirective,
     BaseLayoutContentHeaderDirective,
@@ -37,6 +39,7 @@ import { BaseLayoutTopBarDirective } from './directives/base-layout-top-bar.dire
     TheSeamBaseLayoutComponent,
     BaseLayoutContentDirective,
     BaseLayoutSideBarDirective,
+    BaseLayoutSideBarFooterDirective,
     BaseLayoutTopBarDirective,
     BaseLayoutNavToggleDirective,
     BaseLayoutContentHeaderDirective,
