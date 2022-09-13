@@ -9,7 +9,7 @@ import {
   trigger
 } from '@angular/animations'
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion'
-import { ChangeDetectionStrategy, Component, HostBinding, Inject, Input, OnDestroy, OnInit, Optional, ViewEncapsulation } from '@angular/core'
+import { ChangeDetectionStrategy, Component, ContentChild, EventEmitter, HostBinding, Inject, Input, OnDestroy, OnInit, Optional, Output, TemplateRef, ViewContainerRef, ViewEncapsulation } from '@angular/core'
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router'
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mapTo, pairwise, shareReplay, startWith, switchMap, takeUntil, tap } from 'rxjs/operators'
@@ -21,6 +21,8 @@ import { ITheSeamBaseLayoutNav, ITheSeamBaseLayoutRef, THESEAM_BASE_LAYOUT_REF }
 
 import { ISideNavItem } from './side-nav.models'
 import { TheSeamSideNavService } from './side-nav.service'
+import { BaseLayoutSideBarFooterDirective } from '../base-layout/directives/base-layout-side-bar-footer.directive'
+import { TemplatePortal } from '@angular/cdk/portal'
 
 const EXPANDED_STATE = 'expanded'
 const COLLAPSED_STATE = 'collapsed'
@@ -162,7 +164,9 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
   get expanded(): boolean { return this._expanded.value }
   set expanded(value: boolean) { this._expanded.next(coerceBooleanProperty(value)) }
   private _expanded = new BehaviorSubject<boolean>(true)
-  public readonly expanded$ = this._expanded.asObservable()
+  public readonly expanded$ = this._expanded.asObservable().pipe(
+    tap(expanded => this.toggleExpand.emit(expanded))
+  )
 
   @Input()
   get overlay(): boolean { return this._overlay.value }
@@ -170,11 +174,17 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
   private _overlay = new BehaviorSubject<boolean>(false)
   public readonly overlay$ = this._overlay.asObservable()
 
+  @Output() toggleExpand = new EventEmitter<boolean>()
+
   public readonly isMobile$: Observable<boolean>
   public readonly sideNavExpandedState$: Observable<string>
   public _backdropHidden = new BehaviorSubject<boolean>(true)
 
+  @ContentChild(BaseLayoutSideBarFooterDirective, { static: true, read: TemplateRef }) _sideBarFooterTpl?: TemplateRef<any> | null
+  _sideBarFooterPortal?: TemplatePortal
+
   constructor(
+    private readonly _viewContainerRef: ViewContainerRef,
     private readonly _layout: TheSeamLayoutService,
     private readonly _sideNav: TheSeamSideNavService,
     @Optional() @Inject(THESEAM_BASE_LAYOUT_REF) private readonly _baseLayoutRef: ITheSeamBaseLayoutRef
@@ -207,6 +217,10 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
     this.sideNavExpandedState$
       .pipe(takeUntil(this._ngUnsubscribe))
       .subscribe(v => this._sideNavExpand = v)
+
+    if (this._sideBarFooterTpl) {
+      this._sideBarFooterPortal = new TemplatePortal(this._sideBarFooterTpl, this._viewContainerRef)
+    }
   }
 
   ngOnDestroy() {
