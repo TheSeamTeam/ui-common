@@ -162,11 +162,17 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
 
   @Input()
   get expanded(): boolean { return this._expanded.value }
-  set expanded(value: boolean) { this._expanded.next(coerceBooleanProperty(value)) }
+  set expanded(value: boolean) {
+    const expanded = coerceBooleanProperty(value)
+    let emit = expanded !== this.expanded
+    this._expanded.next(expanded)
+
+    if (emit) {
+      this.toggleExpand.emit(coerceBooleanProperty(value))
+    }
+  }
   private _expanded = new BehaviorSubject<boolean>(true)
-  public readonly expanded$ = this._expanded.asObservable().pipe(
-    tap(expanded => this.toggleExpand.emit(expanded))
-  )
+  public readonly expanded$ = this._expanded.asObservable()
 
   @Input()
   get overlay(): boolean { return this._overlay.value }
@@ -195,7 +201,7 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
     )
 
     this.isMobile$ = this._layout.isMobile$.pipe(
-      tap(isMobile => isMobile && this.collapse())
+      tap(isMobile => isMobile ? this.collapse() : this.expand())
     )
 
     this.sideNavExpandedState$ = combineLatest([ this.expanded$, this.overlay$ ]).pipe(
