@@ -40,10 +40,8 @@ export class TableCellTypeDateComponent implements OnInit, OnDestroy {
 
           if (v.changes.hasOwnProperty('colData')) {
             const colData = v.changes.colData.currentValue
-            if (colData && colData.format !== this.format) {
-              this.format = colData.format
-            } else {
-              this.format = undefined
+            if (colData && colData.cellTypeConfig && colData.cellTypeConfig.format !== this.format) {
+              this.format = colData.cellTypeConfig.format
             }
             this._cdf.markForCheck()
           }
