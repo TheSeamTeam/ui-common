@@ -1,5 +1,5 @@
 import { FocusMonitor, FocusOrigin } from '@angular/cdk/a11y'
-import { BooleanInput, coerceNumberProperty, NumberInput } from '@angular/cdk/coercion'
+import { BooleanInput, coerceBooleanProperty, coerceNumberProperty, NumberInput } from '@angular/cdk/coercion'
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -17,15 +17,16 @@ import {
   ViewChild,
 } from '@angular/core'
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
-import { fromEvent, Subject } from 'rxjs'
-import { takeUntil, tap } from 'rxjs/operators'
+import { fromEvent, Observable, of, Subject } from 'rxjs'
+import { catchError, map, takeUntil, tap } from 'rxjs/operators'
 
-import { AgmMap } from '@agm/core'
+// import { AgmMap } from '@agm/core'
 import { faCrosshairs, faFileImport } from '@fortawesome/free-solid-svg-icons'
 import { CanDisable, CanDisableCtor, InputBoolean, InputNumber, mixinDisabled } from '@theseam/ui-common/core'
 import { MenuComponent } from '@theseam/ui-common/menu'
 
 import { FeatureCollection } from 'geojson'
+import { TheSeamGoogleMapsApiLoader } from '../google-maps-api-loader/google-maps-api-loader'
 import { GoogleMapsControlsService } from '../google-maps-controls.service'
 import { TheSeamGoogleMapsRecenterButtonControlComponent } from '../google-maps-recenter-button-control/google-maps-recenter-button-control.component'
 import { TheSeamGoogleMapsUploadButtonControlComponent } from '../google-maps-upload-button-control/google-maps-upload-button-control.component'
@@ -80,6 +81,8 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
   static ngAcceptInputType_allowDrawingHoleInPolygon: BooleanInput
 
   private readonly _ngUnsubscribe = new Subject<void>()
+
+  readonly _gmApiLoaded: Observable<boolean>
 
   readonly _fileUploadControlDef: MapControl = {
     component: TheSeamGoogleMapsUploadButtonControlComponent,
@@ -143,16 +146,24 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
 
   @Output() mapReady = new EventEmitter<void>()
 
-  @ViewChild(AgmMap, { static: true }) public agmMap!: AgmMap
+  // @ViewChild(AgmMap, { static: true }) public agmMap!: AgmMap
   @ViewChild('featureContextMenu', { static: true, read: MenuComponent }) public featureContextMenu!: MenuComponent
 
-  @ViewChild(AgmMap, { static: true, read: ElementRef }) public agmMapTpl!: ElementRef<HTMLElement>
+  // @ViewChild(AgmMap, { static: true, read: ElementRef }) public agmMapTpl!: ElementRef<HTMLElement>
+
+  _options = {
+    mapTypeControl: true,
+    mapTypeId: 'hybrid',
+    streetViewControl: false,
+    fullscreenControl: this.fullscreenControlEnabled
+  }
 
   constructor(
     elementRef: ElementRef,
     private readonly _focusMonitor: FocusMonitor,
     private readonly _googleMaps: GoogleMapsService,
     private readonly _mapValueManager: MapValueManagerService,
+    private readonly _googleMapsApiLoader: TheSeamGoogleMapsApiLoader,
   ) {
     super(elementRef)
 
@@ -175,6 +186,11 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
     ).subscribe()
 
     this._googleMaps.setBaseLatLng(this.latitude, this.longitude)
+
+    this._gmApiLoaded = this._googleMapsApiLoader.load().pipe(
+      map(() => true),
+      catchError(() => of(false)),
+    )
   }
 
   /** @ignore */
@@ -220,6 +236,16 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
 
     if (changes.hasOwnProperty('allowDrawingHoleInPolygon')) {
       this._googleMaps.allowDrawingHoleInPolygon(this.allowDrawingHoleInPolygon)
+    }
+
+    if (changes.hasOwnProperty('fullscreenControlEnabled')) {
+      const fullscreenControl = coerceBooleanProperty(changes['fullscreenControlEnabled'].currentValue)
+      if (fullscreenControl !== this._options.fullscreenControl) {
+        this._options = {
+          ...this._options,
+          fullscreenControl,
+        }
+      }
     }
   }
 

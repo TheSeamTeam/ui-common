@@ -2,7 +2,8 @@ import { ObserversModule } from '@angular/cdk/observers'
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 
-import { AgmCoreModule } from '@agm/core'
+// import { AgmCoreModule } from '@agm/core'
+import { GoogleMapsModule } from '@angular/google-maps'
 import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 import { TheSeamIconModule } from '@theseam/ui-common/icon'
 import { TheSeamMenuModule } from '@theseam/ui-common/menu'
@@ -33,7 +34,8 @@ import { TheSeamMapFileDropComponent } from './map-file-drop/map-file-drop.compo
     TheSeamMenuModule,
     TheSeamIconModule,
     TheSeamFormFieldModule,
-    AgmCoreModule,
+    // AgmCoreModule,
+    GoogleMapsModule
   ],
   exports: [
     TheSeamGoogleMapsComponent,
