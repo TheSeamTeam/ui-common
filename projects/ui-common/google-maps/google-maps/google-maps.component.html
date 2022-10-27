@@ -1,13 +1,14 @@
-<agm-map
-  [latitude]="latitude"
-  [longitude]="longitude"
-  [zoom]="zoom"
-  [mapTypeControl]="true"
-  mapTypeId="hybrid"
-  [streetViewControl]="false"
-  (mapReady)="_onMapReady($event)"
-  [fullscreenControl]="$any(fullscreenControlEnabled)">
-</agm-map>
+<ng-container *ngIf="_gmApiLoaded | async">
+  <google-map
+    height="100%"
+    width="100%"
+    [center]="{ lat: latitude, lng: longitude }"
+    [zoom]="zoom"
+    [options]="_options"
+    (mapInitialized)="_onMapReady($any($event))"
+    >
+  </google-map>
+</ng-container>
 <seam-menu #featureContextMenu>
   <button seamMenuItem (click)="_onClickDeleteFeature()">Delete</button>
 </seam-menu>
