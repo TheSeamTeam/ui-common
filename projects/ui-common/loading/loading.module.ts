@@ -13,17 +13,16 @@ import { LoadingComponent } from './loading/loading.component'
 export const loadingForRoot = NgxLoadingModule.forRoot(defaultThemeConfig)
 
 @NgModule({
-  declarations: [LoadingComponent],
-  imports: [
-    CommonModule,
-    OverlayModule,
-    PortalModule,
-    loadingForRoot
-  ],
-  providers: [
-    TheSeamLoadingOverlayService
-  ],
-  exports: [LoadingComponent],
-  entryComponents: [LoadingComponent]
+    declarations: [LoadingComponent],
+    imports: [
+        CommonModule,
+        OverlayModule,
+        PortalModule,
+        loadingForRoot
+    ],
+    providers: [
+        TheSeamLoadingOverlayService
+    ],
+    exports: [LoadingComponent]
 })
 export class TheSeamLoadingModule { }

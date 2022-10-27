@@ -8,8 +8,9 @@ describe('WidgetTileListComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ WidgetTileListComponent ]
-    })
+    declarations: [WidgetTileListComponent],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents()
   }))
 

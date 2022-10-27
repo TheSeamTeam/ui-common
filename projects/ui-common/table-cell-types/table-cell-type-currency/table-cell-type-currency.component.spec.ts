@@ -8,8 +8,9 @@ describe('TableCellTypeCurrencyComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ TableCellTypeCurrencyComponent ]
-    })
+    declarations: [TableCellTypeCurrencyComponent],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents()
   }))
 

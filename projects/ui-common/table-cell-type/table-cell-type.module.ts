@@ -5,17 +5,16 @@ import { NgModule } from '@angular/core'
 import { TableCellTypeSelectorComponent } from './table-cell-type-selector.component'
 
 @NgModule({
-  declarations: [
-    TableCellTypeSelectorComponent
-  ],
-  imports: [
-    CommonModule,
-    PortalModule
-  ],
-  providers: [ ],
-  exports: [
-    TableCellTypeSelectorComponent
-  ],
-  entryComponents: [ ]
+    declarations: [
+        TableCellTypeSelectorComponent
+    ],
+    imports: [
+        CommonModule,
+        PortalModule
+    ],
+    providers: [],
+    exports: [
+        TableCellTypeSelectorComponent
+    ]
 })
 export class TheSeamTableCellTypeModule { }

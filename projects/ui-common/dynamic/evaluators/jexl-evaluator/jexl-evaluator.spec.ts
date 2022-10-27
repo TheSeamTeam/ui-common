@@ -10,9 +10,10 @@ describe('JexlEvaluator', () => {
 
   beforeEach(() => TestBed.configureTestingModule({
     providers: [
-      { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true }
-    ]
-  }))
+        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true }
+    ],
+    teardown: { destroyAfterEach: false }
+}))
 
   it('should return transformed value if input type is evaluatable', () => {
     const service: DynamicValueHelperService = TestBed.get(DynamicValueHelperService)

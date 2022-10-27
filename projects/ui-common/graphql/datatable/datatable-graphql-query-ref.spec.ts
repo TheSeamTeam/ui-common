@@ -40,8 +40,9 @@ describe('DatatableGraphQLQueryRef', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ createApolloTestingProvider(simpleGqlTestSchema, root) ]
-    })
+    providers: [createApolloTestingProvider(simpleGqlTestSchema, root)],
+    teardown: { destroyAfterEach: false }
+})
 
     datatableGql = TestBed.inject(DatatableGraphqlService)
     pageFixture = new BasicDatatablePageFixture(datatableGql)

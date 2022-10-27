@@ -8,8 +8,9 @@ describe('TableCellTypeProgressCircleIconComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ TableCellTypeProgressCircleIconComponent ]
-    })
+    declarations: [TableCellTypeProgressCircleIconComponent],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents()
   }))
 

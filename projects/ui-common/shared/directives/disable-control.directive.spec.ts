@@ -24,14 +24,15 @@ describe('DisableControlDirective', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
+    imports: [
         ReactiveFormsModule
-      ],
-      declarations: [
+    ],
+    declarations: [
         TestDisableControlComponent,
         DisableControlDirective
-      ]
-    })
+    ],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents()
 
   }))

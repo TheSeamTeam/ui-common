@@ -8,8 +8,9 @@ describe('TableCellTypeIntegerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ TableCellTypeIntegerComponent ]
-    })
+    declarations: [TableCellTypeIntegerComponent],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents()
   }))
 

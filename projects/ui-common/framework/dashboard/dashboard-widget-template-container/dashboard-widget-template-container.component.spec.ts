@@ -8,8 +8,9 @@ describe('DashboardWidgetTemplateContainerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ DashboardWidgetTemplateContainerComponent ]
-    })
+    declarations: [DashboardWidgetTemplateContainerComponent],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents()
   }))
 

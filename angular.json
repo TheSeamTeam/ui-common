@@ -160,19 +160,6 @@
             ],
             "scripts": []
           }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "tsconfig.app.json",
-              "tsconfig.spec.json",
-              "cypress/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
         }
       }
     },
@@ -340,18 +327,6 @@
             "styles": [
               "src/styles.scss",
               "node_modules/@marklb/ngx-datatable/assets/icons.css"
-            ]
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "projects/ui-common/tsconfig.lib.json",
-              "projects/ui-common/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
             ]
           }
         }

@@ -8,8 +8,9 @@ describe('TheSeamTelInputComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ TheSeamTelInputComponent ]
-    })
+    declarations: [TheSeamTelInputComponent],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents()
   }))
 

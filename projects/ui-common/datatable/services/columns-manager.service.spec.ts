@@ -25,8 +25,9 @@ describe('ColumnsManagerService', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      providers: [ ColumnsManagerService, DatatableColumnChangesService ]
-    })
+    providers: [ColumnsManagerService, DatatableColumnChangesService],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents()
   }))
 

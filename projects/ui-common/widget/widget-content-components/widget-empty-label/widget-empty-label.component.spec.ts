@@ -8,8 +8,9 @@ describe('WidgetEmptyLabelComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ WidgetEmptyLabelComponent ]
-    })
+    declarations: [WidgetEmptyLabelComponent],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents()
   }))
 
