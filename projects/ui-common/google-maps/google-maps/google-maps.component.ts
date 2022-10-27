@@ -20,12 +20,10 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
 import { fromEvent, Observable, of, Subject } from 'rxjs'
 import { catchError, map, takeUntil, tap } from 'rxjs/operators'
 
-// import { AgmMap } from '@agm/core'
 import { faCrosshairs, faFileImport } from '@fortawesome/free-solid-svg-icons'
 import { CanDisable, CanDisableCtor, InputBoolean, InputNumber, mixinDisabled } from '@theseam/ui-common/core'
 import { MenuComponent } from '@theseam/ui-common/menu'
 
-import { FeatureCollection } from 'geojson'
 import { TheSeamGoogleMapsApiLoader } from '../google-maps-api-loader/google-maps-api-loader'
 import { GoogleMapsControlsService } from '../google-maps-controls.service'
 import { TheSeamGoogleMapsRecenterButtonControlComponent } from '../google-maps-recenter-button-control/google-maps-recenter-button-control.component'
@@ -146,10 +144,7 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
 
   @Output() mapReady = new EventEmitter<void>()
 
-  // @ViewChild(AgmMap, { static: true }) public agmMap!: AgmMap
   @ViewChild('featureContextMenu', { static: true, read: MenuComponent }) public featureContextMenu!: MenuComponent
-
-  // @ViewChild(AgmMap, { static: true, read: ElementRef }) public agmMapTpl!: ElementRef<HTMLElement>
 
   _options = {
     mapTypeControl: true,
@@ -293,6 +288,7 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
     // longitude, and zoom to get ignored, before googlemaps emits
     // 'center_changed'. This should avoid the issue, until we stop using AgmMap
     // or upgrade to a more recent version that may not have the issue anymore.
+    // TODO: Check if the switch to '@angular/google-maps' fixed this problem.
     this._googleMaps.reCenterOnFeatures()
     this._googleMaps.googleMap?.setZoom(this.zoom)
   }

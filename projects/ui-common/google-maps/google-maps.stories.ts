@@ -4,7 +4,6 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
-// import { AgmCoreModule } from '@agm/core'
 import { TheSeamGoogleMapsApiLoader } from './google-maps-api-loader/google-maps-api-loader'
 import { TheSeamLazyMapsApiLoader, THESEAM_LAZY_MAPS_API_CONFIG } from './google-maps-api-loader/lazy-google-maps-api-loader'
 import { TheSeamGoogleMapsModule } from './google-maps.module'
@@ -19,11 +18,6 @@ export default {
         BrowserAnimationsModule,
         BrowserModule,
         TheSeamGoogleMapsModule,
-        // AgmCoreModule.forRoot({
-        //   // TODO: Add a way to set the api key.
-        //   // apiKey: ,
-        //   libraries: ['drawing', 'places'],
-        // }),
       ],
       providers: [
         {
