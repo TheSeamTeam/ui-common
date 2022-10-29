@@ -2,14 +2,12 @@ import {
   ANALYZE_FOR_ENTRY_COMPONENTS,
   ModuleWithProviders,
   NgModule,
-  NgModuleFactoryLoader,
-  SystemJsNgModuleLoader,
   Type,
 } from '@angular/core'
 import { ROUTES } from '@angular/router'
 
 import { TheSeamDynamicComponentLoader } from './dynamic-component-loader.service'
-import type { IDynamicComponentManifest } from './dynamic-component-manifest'
+import type { DynamicComponentManifest } from './dynamic-component-manifest'
 import {
   DYNAMIC_COMPONENT,
   DYNAMIC_COMPONENT_MANIFESTS,
@@ -18,12 +16,11 @@ import {
 
 @NgModule()
 export class TheSeamDynamicComponentLoaderModule {
-  static forRoot(manifests: IDynamicComponentManifest[]): ModuleWithProviders<TheSeamDynamicComponentLoaderModule> {
+  static forRoot(manifests: DynamicComponentManifest[]): ModuleWithProviders<TheSeamDynamicComponentLoaderModule> {
     return {
       ngModule: TheSeamDynamicComponentLoaderModule,
       providers: [
         TheSeamDynamicComponentLoader,
-        { provide: NgModuleFactoryLoader, useClass: SystemJsNgModuleLoader },
         // provider for Angular CLI to analyze
         { provide: ROUTES, useValue: manifests, multi: true },
         // provider for TheSeamDynamicComponentLoader to analyze
@@ -31,7 +28,7 @@ export class TheSeamDynamicComponentLoaderModule {
       ],
     }
   }
-  static forModule(manifest: IDynamicComponentManifest): ModuleWithProviders<TheSeamDynamicComponentLoaderModule> {
+  static forModule(manifest: DynamicComponentManifest): ModuleWithProviders<TheSeamDynamicComponentLoaderModule> {
     return {
       ngModule: TheSeamDynamicComponentLoaderModule,
       providers: [

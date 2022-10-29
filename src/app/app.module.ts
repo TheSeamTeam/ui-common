@@ -6,12 +6,12 @@ import { ExampleLazyLoadedWidgetsModule } from './example-lazy-loaded-widgets/ex
 
 import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
 import {
-  IDynamicComponentManifest,
+  DynamicComponentManifest,
   TheSeamDynamicComponentLoaderModule
 } from '@theseam/ui-common/dynamic-component-loader'
 import { AppComponent } from './app.component'
 
-const manifests: IDynamicComponentManifest[] = [
+const manifests: DynamicComponentManifest[] = [
   {
     componentId: 'widget-one',
     path: 'widget-one',

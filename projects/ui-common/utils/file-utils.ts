@@ -61,19 +61,10 @@ export async function fileDataFromBuffer(
 }
 
 export function openBlob(blob: Blob, target?: string, filename?: string) {
-  // NOTE: IE and MSEdge do not allow Blob resources as a source for
-  // tabs or iframes. msSaveOrOpenBlob is used as a workaround. I
-  // haven't been able to find a way to just open the Blob file in
-  // another tab yet for IE or MSEdge.
-  if (window.navigator.msSaveOrOpenBlob) {
-    window.navigator.msSaveOrOpenBlob(blob, filename)
-  } else {
-    const url = URL.createObjectURL(blob)
-    const win = window.open(url, target)
-    // TODO: Consider if always setting opener to null is to restrictive
-    // if (win && target && target.toLowerCase() === '_blank') {
-    //   win.opener = null
-    // }
-
-  }
+  const url = URL.createObjectURL(blob)
+  const win = window.open(url, target)
+  // TODO: Consider if always setting opener to null is to restrictive
+  // if (win && target && target.toLowerCase() === '_blank') {
+  //   win.opener = null
+  // }
 }

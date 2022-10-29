@@ -72,7 +72,6 @@ export function toggleNativeDragInteractions(element: HTMLElement, enable: boole
   extendStyles(element.style, {
     touchAction: enable ? '' : 'none',
     webkitUserDrag: enable ? '' : 'none',
-    webkitTapHighlightColor: enable ? '' : 'transparent',
     userSelect: userSelect,
     msUserSelect: userSelect,
     webkitUserSelect: userSelect,

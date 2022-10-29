@@ -24,7 +24,7 @@ import {
   THESEAM_DYNAMIC_DATA,
   THESEAM_DYNAMIC_VALUE_EVALUATOR
 } from '@theseam/ui-common/dynamic'
-import { IDynamicComponentManifest, TheSeamDynamicComponentLoaderModule } from '@theseam/ui-common/dynamic-component-loader'
+import { DynamicComponentManifest, TheSeamDynamicComponentLoaderModule } from '@theseam/ui-common/dynamic-component-loader'
 import { TheSeamModalModule } from '@theseam/ui-common/modal'
 
 import { THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM } from './datatable-dynamic-menu-bar-token'
@@ -75,7 +75,7 @@ class StoryExModalLazyComponent { }
 class StoryExModalLazyModule { }
 
 // This array defines which "componentId" maps to which lazy-loaded module.
-// const manifest: IDynamicComponentManifest[] = [
+// const manifest: DynamicComponentManifest[] = [
 //   {
 //     componentId: 'widget-one',
 //     path: 'widget-one',
@@ -174,7 +174,7 @@ const routes: Route[] = [
 //   }))
 
 
-const manifests: IDynamicComponentManifest[] = [
+const manifests: DynamicComponentManifest[] = [
   {
     componentId: 'story-modal-1',
     path: 'story-modal-1',

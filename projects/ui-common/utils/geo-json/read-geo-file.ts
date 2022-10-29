@@ -19,7 +19,7 @@ export async function readGeoFile(fileOrBuffer: File | ArrayBuffer | Buffer): Pr
   } else if (fileType(buffer)?.mime === 'application/zip') {
     try {
       return await parseShpZip(buffer)
-    } catch (e) {
+    } catch (e: any) {
       // NOTE: If 'shpjs' updates or we switch to a fork, where it doesn't use
       // node buffers, then we can remove this rethrow.
       if (isDevMode()) {

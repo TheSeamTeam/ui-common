@@ -1,10 +1,10 @@
-import { Compiler, ComponentFactory, Inject, Injectable, Injector, NgModuleFactory, NgModuleFactoryLoader, Optional } from '@angular/core'
+import { Compiler, ComponentFactory, Inject, Injectable, Injector, NgModuleFactory, Optional } from '@angular/core'
 import { Observable, of } from 'rxjs'
 import { from, throwError } from 'rxjs'
 import { mergeMap, switchMap } from 'rxjs/operators'
 
 import { LoadChildren } from '@angular/router'
-import { IDynamicComponentManifest } from './dynamic-component-manifest'
+import { DynamicComponentManifest } from './dynamic-component-manifest'
 import {
   DYNAMIC_COMPONENT,
   DYNAMIC_COMPONENT_MANIFESTS,
@@ -18,18 +18,15 @@ import { wrapIntoObservable } from '@theseam/ui-common/utils'
 })
 export class TheSeamDynamicComponentLoader {
 
-  private _manifests: IDynamicComponentManifest[]
+  private _manifests: DynamicComponentManifest[]
 
   constructor(
     private compiler: Compiler,
     private injector: Injector,
-    @Optional() @Inject(DYNAMIC_COMPONENT_MANIFESTS) manifests: IDynamicComponentManifest[],
-    // TODO: Remove the loader now that all our code should have updated from
-    // the string `loadChildren` by now.
-    @Optional() private _loader: NgModuleFactoryLoader
+    @Optional() @Inject(DYNAMIC_COMPONENT_MANIFESTS) manifests: DynamicComponentManifest[],
   ) { this._manifests = manifests || [] }
 
-  /** Retrieve a ComponentFactory, based on the specified componentId (defined in the IDynamicComponentManifest array). */
+  /** Retrieve a ComponentFactory, based on the specified componentId (defined in the DynamicComponentManifest array). */
   getComponentFactory<T>(componentId: string, injector?: Injector): Observable<ComponentFactory<T>> {
     const manifest = this._manifests
       .find(m => m.componentId === componentId)
@@ -48,30 +45,21 @@ export class TheSeamDynamicComponentLoader {
       .pipe(switchMap(m => from(this.loadFactory<any>(m, componentId, injector))))
   }
 
-  load<T>(path: string, componentId: string, injector?: Injector): Promise<ComponentFactory<T>> {
-    return this._loader.load(path)
-      .then((ngModuleFactory) => this.loadFactory<T>(ngModuleFactory, componentId, injector))
-  }
-
   private loadModuleFactory(loadChildren: LoadChildren): Observable<NgModuleFactory<any>> {
-    if (typeof loadChildren === 'string') {
-      return from(this._loader.load(loadChildren))
-    } else {
-      return wrapIntoObservable(loadChildren()).pipe(mergeMap((t: any) => {
-        if (t instanceof NgModuleFactory) {
-          return of(t)
-        } else {
-          return from(this.compiler.compileModuleAsync(t))
-        }
-      }))
-    }
+    return wrapIntoObservable(loadChildren()).pipe(mergeMap((t: any) => {
+      if (t instanceof NgModuleFactory) {
+        return of(t)
+      } else {
+        return from(this.compiler.compileModuleAsync(t))
+      }
+    }))
   }
 
   private loadFactory<T>(ngModuleFactory: NgModuleFactory<any>, componentId: string, injector?: Injector): Promise<ComponentFactory<T>> {
     const moduleRef = ngModuleFactory.create(injector || this.injector)
     const dynamicComponentType = moduleRef.injector.get(DYNAMIC_COMPONENT, null)
     if (!dynamicComponentType) {
-      const dynamicModule: IDynamicComponentManifest = moduleRef.injector.get(DYNAMIC_MODULE, null)
+      const dynamicModule: DynamicComponentManifest = moduleRef.injector.get(DYNAMIC_MODULE, null)
 
       if (!dynamicModule) {
         throw new Error(

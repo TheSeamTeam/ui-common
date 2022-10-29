@@ -3,13 +3,13 @@ import { TestBed, waitForAsync } from '@angular/core/testing'
 import { TheSeamDynamicComponentLoaderModule } from './dynamic-component-loader.module'
 
 import { TheSeamDynamicComponentLoader } from './dynamic-component-loader.service'
-import { IDynamicComponentManifest } from './dynamic-component-manifest'
+import { DynamicComponentManifest } from './dynamic-component-manifest'
 
 @Component({ selector: 'testing-root', template: `` })
 class TestingRootComponent {}
 
 describe('TheSeamDynamicComponentLoader', () => {
-  const manifests: IDynamicComponentManifest[] = [
+  const manifests: DynamicComponentManifest[] = [
     {
       componentId: 'lazy-comp',
       path: 'lazy-comp',

@@ -1,4 +1,4 @@
-import { defer, Observable, Subject } from 'rxjs'
+import { defer, Observable, of, Subject } from 'rxjs'
 import { repeatWhen } from 'rxjs/operators'
 
 import { composeDataFilters, DataFilter } from './data-filter'
@@ -48,7 +48,7 @@ export class DataFiltersManager {
   }
 
   public filter<T>(data: T[]): Observable<T[]> {
-    return defer(() => composeDataFilters(this.filters)).pipe(
+    return defer(() => of().pipe(composeDataFilters(this.filters))).pipe(
       repeatWhen<any>(() => this.filtersChanged)
     )
   }
