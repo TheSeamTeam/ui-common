@@ -1,4 +1,4 @@
-import { FormControl } from '@angular/forms'
+import { UntypedFormControl } from '@angular/forms'
 import {
   FeatureCollection,
 } from 'geojson'
@@ -7,22 +7,22 @@ import { minMaxPointsValidator } from './min-max-points.validator'
 
 describe('minMaxPointsValidator', () => {
   it('should be valid if value is null', () => {
-    const control = new FormControl(null, [ minMaxPointsValidator() ])
+    const control = new UntypedFormControl(null, [ minMaxPointsValidator() ])
     expect(control.valid).toBe(true)
   })
 
   it('should be valid if value is undefined', () => {
-    const control = new FormControl(undefined, [ minMaxPointsValidator() ])
+    const control = new UntypedFormControl(undefined, [ minMaxPointsValidator() ])
     expect(control.valid).toBe(true)
   })
 
   it('should be valid if value is empty string', () => {
-    const control = new FormControl('', [ minMaxPointsValidator() ])
+    const control = new UntypedFormControl('', [ minMaxPointsValidator() ])
     expect(control.valid).toBe(true)
   })
 
   it('should be valid if value is a value that is not a FeatureCollection', () => {
-    const control = new FormControl('a', [ minMaxPointsValidator() ])
+    const control = new UntypedFormControl('a', [ minMaxPointsValidator() ])
     expect(control.valid).toBe(true)
   })
 
@@ -49,7 +49,7 @@ describe('minMaxPointsValidator', () => {
           },
         ],
       }
-      const control = new FormControl(featureCollection, [ minMaxPointsValidator() ])
+      const control = new UntypedFormControl(featureCollection, [ minMaxPointsValidator() ])
       expect(control.valid).toBe(true)
     })
 
@@ -85,7 +85,7 @@ describe('minMaxPointsValidator', () => {
           },
         ],
       }
-      const control = new FormControl(featureCollection, [ minMaxPointsValidator() ])
+      const control = new UntypedFormControl(featureCollection, [ minMaxPointsValidator() ])
       expect(control.valid).toBe(true)
     })
 
@@ -108,7 +108,7 @@ describe('minMaxPointsValidator', () => {
           },
         ],
       }
-      const control = new FormControl(featureCollection, [ minMaxPointsValidator(2, 3) ])
+      const control = new UntypedFormControl(featureCollection, [ minMaxPointsValidator(2, 3) ])
       expect(control.valid).toBe(true)
     })
 
@@ -140,7 +140,7 @@ describe('minMaxPointsValidator', () => {
           },
         ],
       }
-      const control = new FormControl(featureCollection, [ minMaxPointsValidator(2, 3) ])
+      const control = new UntypedFormControl(featureCollection, [ minMaxPointsValidator(2, 3) ])
       expect(control.valid).toBe(true)
     })
 
@@ -163,7 +163,7 @@ describe('minMaxPointsValidator', () => {
           },
         ],
       }
-      const control = new FormControl(featureCollection, [ minMaxPointsValidator() ])
+      const control = new UntypedFormControl(featureCollection, [ minMaxPointsValidator() ])
       expect(control.valid).toBe(false)
     })
 
@@ -197,7 +197,7 @@ describe('minMaxPointsValidator', () => {
           },
         ],
       }
-      const control = new FormControl(featureCollection, [ minMaxPointsValidator() ])
+      const control = new UntypedFormControl(featureCollection, [ minMaxPointsValidator() ])
       expect(control.valid).toBe(false)
     })
 
@@ -223,7 +223,7 @@ describe('minMaxPointsValidator', () => {
           },
         ],
       }
-      const control = new FormControl(featureCollection, [ minMaxPointsValidator(6) ])
+      const control = new UntypedFormControl(featureCollection, [ minMaxPointsValidator(6) ])
       expect(control.valid).toBe(false)
     })
 
@@ -251,7 +251,7 @@ describe('minMaxPointsValidator', () => {
           },
         ],
       }
-      const control = new FormControl(featureCollection, [ minMaxPointsValidator(6) ])
+      const control = new UntypedFormControl(featureCollection, [ minMaxPointsValidator(6) ])
       expect(control.valid).toBe(false)
     })
 
@@ -277,7 +277,7 @@ describe('minMaxPointsValidator', () => {
           },
         ],
       }
-      const control = new FormControl(featureCollection, [ minMaxPointsValidator(2, 3) ])
+      const control = new UntypedFormControl(featureCollection, [ minMaxPointsValidator(2, 3) ])
       expect(control.valid).toBe(false)
     })
 
@@ -305,7 +305,7 @@ describe('minMaxPointsValidator', () => {
           },
         ],
       }
-      const control = new FormControl(featureCollection, [ minMaxPointsValidator(2, 3) ])
+      const control = new UntypedFormControl(featureCollection, [ minMaxPointsValidator(2, 3) ])
       expect(control.valid).toBe(false)
     })
   })
@@ -334,7 +334,7 @@ describe('minMaxPointsValidator', () => {
         ],
       }
       const value = JSON.stringify(featureCollection)
-      const control = new FormControl(value, [ minMaxPointsValidator() ])
+      const control = new UntypedFormControl(value, [ minMaxPointsValidator() ])
       expect(control.valid).toBe(true)
     })
 
@@ -371,7 +371,7 @@ describe('minMaxPointsValidator', () => {
         ],
       }
       const value = JSON.stringify(featureCollection)
-      const control = new FormControl(value, [ minMaxPointsValidator() ])
+      const control = new UntypedFormControl(value, [ minMaxPointsValidator() ])
       expect(control.valid).toBe(true)
     })
 
@@ -395,7 +395,7 @@ describe('minMaxPointsValidator', () => {
         ],
       }
       const value = JSON.stringify(featureCollection)
-      const control = new FormControl(value, [ minMaxPointsValidator(2, 3) ])
+      const control = new UntypedFormControl(value, [ minMaxPointsValidator(2, 3) ])
       expect(control.valid).toBe(true)
     })
 
@@ -428,7 +428,7 @@ describe('minMaxPointsValidator', () => {
         ],
       }
       const value = JSON.stringify(featureCollection)
-      const control = new FormControl(value, [ minMaxPointsValidator(2, 3) ])
+      const control = new UntypedFormControl(value, [ minMaxPointsValidator(2, 3) ])
       expect(control.valid).toBe(true)
     })
 
@@ -452,7 +452,7 @@ describe('minMaxPointsValidator', () => {
         ],
       }
       const value = JSON.stringify(featureCollection)
-      const control = new FormControl(value, [ minMaxPointsValidator() ])
+      const control = new UntypedFormControl(value, [ minMaxPointsValidator() ])
       expect(control.valid).toBe(false)
     })
 
@@ -487,7 +487,7 @@ describe('minMaxPointsValidator', () => {
         ],
       }
       const value = JSON.stringify(featureCollection)
-      const control = new FormControl(value, [ minMaxPointsValidator() ])
+      const control = new UntypedFormControl(value, [ minMaxPointsValidator() ])
       expect(control.valid).toBe(false)
     })
 
@@ -514,7 +514,7 @@ describe('minMaxPointsValidator', () => {
         ],
       }
       const value = JSON.stringify(featureCollection)
-      const control = new FormControl(value, [ minMaxPointsValidator(6) ])
+      const control = new UntypedFormControl(value, [ minMaxPointsValidator(6) ])
       expect(control.valid).toBe(false)
     })
 
@@ -543,7 +543,7 @@ describe('minMaxPointsValidator', () => {
         ],
       }
       const value = JSON.stringify(featureCollection)
-      const control = new FormControl(value, [ minMaxPointsValidator(6) ])
+      const control = new UntypedFormControl(value, [ minMaxPointsValidator(6) ])
       expect(control.valid).toBe(false)
     })
 
@@ -570,7 +570,7 @@ describe('minMaxPointsValidator', () => {
         ],
       }
       const value = JSON.stringify(featureCollection)
-      const control = new FormControl(value, [ minMaxPointsValidator(2, 3) ])
+      const control = new UntypedFormControl(value, [ minMaxPointsValidator(2, 3) ])
       expect(control.valid).toBe(false)
     })
 
@@ -599,7 +599,7 @@ describe('minMaxPointsValidator', () => {
         ],
       }
       const value = JSON.stringify(featureCollection)
-      const control = new FormControl(value, [ minMaxPointsValidator(2, 3) ])
+      const control = new UntypedFormControl(value, [ minMaxPointsValidator(2, 3) ])
       expect(control.valid).toBe(false)
     })
   })

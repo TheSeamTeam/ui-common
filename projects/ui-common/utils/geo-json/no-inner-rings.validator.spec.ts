@@ -1,4 +1,4 @@
-import { FormControl } from '@angular/forms'
+import { UntypedFormControl } from '@angular/forms'
 
 import {
   FeatureCollection,
@@ -8,22 +8,22 @@ import { noInnerRingsValidator } from './no-inner-rings.validator'
 
 describe('noInnerRingsValidator', () => {
   it('should be valid if value is null', () => {
-    const control = new FormControl(null, [ noInnerRingsValidator() ])
+    const control = new UntypedFormControl(null, [ noInnerRingsValidator() ])
     expect(control.valid).toBe(true)
   })
 
   it('should be valid if value is undefined', () => {
-    const control = new FormControl(undefined, [ noInnerRingsValidator() ])
+    const control = new UntypedFormControl(undefined, [ noInnerRingsValidator() ])
     expect(control.valid).toBe(true)
   })
 
   it('should be valid if value is empty string', () => {
-    const control = new FormControl('', [ noInnerRingsValidator() ])
+    const control = new UntypedFormControl('', [ noInnerRingsValidator() ])
     expect(control.valid).toBe(true)
   })
 
   it('should be valid if value is a value that is not a FeatureCollection', () => {
-    const control = new FormControl('a', [ noInnerRingsValidator() ])
+    const control = new UntypedFormControl('a', [ noInnerRingsValidator() ])
     expect(control.valid).toBe(true)
   })
 
@@ -65,7 +65,7 @@ describe('noInnerRingsValidator', () => {
           },
         ],
       }
-      const control = new FormControl(featureCollection, [ noInnerRingsValidator() ])
+      const control = new UntypedFormControl(featureCollection, [ noInnerRingsValidator() ])
       expect(control.valid).toBe(true)
     })
 
@@ -128,7 +128,7 @@ describe('noInnerRingsValidator', () => {
           }
         ]
       }
-      const control = new FormControl(featureCollection, [ noInnerRingsValidator() ])
+      const control = new UntypedFormControl(featureCollection, [ noInnerRingsValidator() ])
       expect(control.valid).toBe(false)
     })
   })
@@ -172,7 +172,7 @@ describe('noInnerRingsValidator', () => {
         ],
       }
       const value = JSON.stringify(featureCollection)
-      const control = new FormControl(value, [ noInnerRingsValidator() ])
+      const control = new UntypedFormControl(value, [ noInnerRingsValidator() ])
       expect(control.valid).toBe(true)
     })
 
@@ -236,7 +236,7 @@ describe('noInnerRingsValidator', () => {
         ]
       }
       const value = JSON.stringify(featureCollection)
-      const control = new FormControl(value, [ noInnerRingsValidator() ])
+      const control = new UntypedFormControl(value, [ noInnerRingsValidator() ])
       expect(control.valid).toBe(false)
     })
   })

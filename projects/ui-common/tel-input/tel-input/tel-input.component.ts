@@ -17,7 +17,7 @@ import {
   Output,
   ViewChild
 } from '@angular/core'
-import { ControlValueAccessor, FormControl, NgControl, NG_VALUE_ACCESSOR } from '@angular/forms'
+import { ControlValueAccessor, UntypedFormControl, NgControl, NG_VALUE_ACCESSOR } from '@angular/forms'
 import { defer, fromEvent, merge, Observable, of, Subject } from 'rxjs'
 import { auditTime, map, switchMap, takeUntil } from 'rxjs/operators'
 
@@ -49,7 +49,7 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
   private readonly _ngUnsubscribe = new Subject()
 
   /** @ignore */
-  readonly _control = new FormControl()
+  readonly _control = new UntypedFormControl()
 
   private _focusOrigin: FocusOrigin = null
 

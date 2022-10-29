@@ -1,7 +1,7 @@
 import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular'
 import { TheSeamTiledSelectHarness } from './../../testing/tiled-select-harness'
 
-import { FormControl, ReactiveFormsModule } from '@angular/forms'
+import { UntypedFormControl, ReactiveFormsModule } from '@angular/forms'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
@@ -103,7 +103,7 @@ export const WithControl: Story<TheSeamTiledSelectComponent & { [key: string]: a
   // props: { ...args },
   props: {
     tiles: args.tiles,
-    control: new FormControl()
+    control: new UntypedFormControl()
   },
   template: `<seam-tiled-select [tiles]="tiles" [formControl]="control"></seam-tiled-select>`
 })

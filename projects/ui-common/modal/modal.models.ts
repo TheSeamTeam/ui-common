@@ -1,6 +1,6 @@
 import { OverlayRef } from '@angular/cdk/overlay'
 import { EventEmitter, InjectionToken } from '@angular/core'
-import { FormGroup } from '@angular/forms'
+import { UntypedFormGroup } from '@angular/forms'
 
 export interface IModalContainer {
 
@@ -18,7 +18,7 @@ export interface IModalContainer {
   _overlayRef?: OverlayRef
 
   /** Makes the modal container a form with this formGroup. */
-  form: FormGroup | undefined | null
+  form: UntypedFormGroup | undefined | null
 
   /** Emit the `(ngSubmit)` event. NOTE: Only if `form` is defined. */
   formSubmit: EventEmitter<void>

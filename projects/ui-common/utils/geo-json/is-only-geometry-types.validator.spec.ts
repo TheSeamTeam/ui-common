@@ -1,4 +1,4 @@
-import { FormControl } from '@angular/forms'
+import { UntypedFormControl } from '@angular/forms'
 import {
   FeatureCollection,
   MultiPolygon,
@@ -9,22 +9,22 @@ import { isOnlyGeometryTypesValidator, IS_ONLY_GEOMETRY_TYPES_VALIDATOR_NAME } f
 
 describe('isOnlyGeometryTypesValidator', () => {
   it('should be valid if value is null', () => {
-    const control = new FormControl(null, [ isOnlyGeometryTypesValidator([]) ])
+    const control = new UntypedFormControl(null, [ isOnlyGeometryTypesValidator([]) ])
     expect(control.valid).toBe(true)
   })
 
   it('should be valid if value is undefined', () => {
-    const control = new FormControl(undefined, [ isOnlyGeometryTypesValidator([]) ])
+    const control = new UntypedFormControl(undefined, [ isOnlyGeometryTypesValidator([]) ])
     expect(control.valid).toBe(true)
   })
 
   it('should be valid if value is empty string', () => {
-    const control = new FormControl('', [ isOnlyGeometryTypesValidator([]) ])
+    const control = new UntypedFormControl('', [ isOnlyGeometryTypesValidator([]) ])
     expect(control.valid).toBe(true)
   })
 
   it('should be valid if value is a value that is not a FeatureCollection', () => {
-    const control = new FormControl('a', [ isOnlyGeometryTypesValidator([]) ])
+    const control = new UntypedFormControl('a', [ isOnlyGeometryTypesValidator([]) ])
     expect(control.valid).toBe(true)
   })
 
@@ -34,7 +34,7 @@ describe('isOnlyGeometryTypesValidator', () => {
         type: 'FeatureCollection',
         features: [],
       }
-      const control = new FormControl(featureCollection, [ isOnlyGeometryTypesValidator([]) ])
+      const control = new UntypedFormControl(featureCollection, [ isOnlyGeometryTypesValidator([]) ])
       expect(control.valid).toBe(true)
     })
 
@@ -52,7 +52,7 @@ describe('isOnlyGeometryTypesValidator', () => {
           },
         ],
       }
-      const control = new FormControl(featureCollection, [ isOnlyGeometryTypesValidator([ 'Polygon' ]) ])
+      const control = new UntypedFormControl(featureCollection, [ isOnlyGeometryTypesValidator([ 'Polygon' ]) ])
       expect(control.valid).toBe(false)
       expect(control.errors).not.toBeNull()
       // tslint:disable-next-line: no-non-null-assertion
@@ -73,7 +73,7 @@ describe('isOnlyGeometryTypesValidator', () => {
           },
         ],
       }
-      const control = new FormControl(featureCollection, [ isOnlyGeometryTypesValidator([ 'Point' ]) ])
+      const control = new UntypedFormControl(featureCollection, [ isOnlyGeometryTypesValidator([ 'Point' ]) ])
       expect(control.valid).toBe(true)
     })
 
@@ -107,7 +107,7 @@ describe('isOnlyGeometryTypesValidator', () => {
           },
         ],
       }
-      const control = new FormControl(featureCollection, [ isOnlyGeometryTypesValidator([ 'Point' ]) ])
+      const control = new UntypedFormControl(featureCollection, [ isOnlyGeometryTypesValidator([ 'Point' ]) ])
       expect(control.valid).toBe(false)
       expect(control.errors).not.toBeNull()
       // tslint:disable-next-line: no-non-null-assertion
@@ -124,7 +124,7 @@ describe('isOnlyGeometryTypesValidator', () => {
         features: [],
       }
       const value = JSON.stringify(featureCollection)
-      const control = new FormControl(value, [ isOnlyGeometryTypesValidator([]) ])
+      const control = new UntypedFormControl(value, [ isOnlyGeometryTypesValidator([]) ])
       expect(control.valid).toBe(true)
     })
 
@@ -143,7 +143,7 @@ describe('isOnlyGeometryTypesValidator', () => {
         ],
       }
       const value = JSON.stringify(featureCollection)
-      const control = new FormControl(value, [ isOnlyGeometryTypesValidator([ 'Polygon' ]) ])
+      const control = new UntypedFormControl(value, [ isOnlyGeometryTypesValidator([ 'Polygon' ]) ])
       expect(control.valid).toBe(false)
       expect(control.errors).not.toBeNull()
       // tslint:disable-next-line: no-non-null-assertion
@@ -165,7 +165,7 @@ describe('isOnlyGeometryTypesValidator', () => {
         ],
       }
       const value = JSON.stringify(featureCollection)
-      const control = new FormControl(value, [ isOnlyGeometryTypesValidator([ 'Point' ]) ])
+      const control = new UntypedFormControl(value, [ isOnlyGeometryTypesValidator([ 'Point' ]) ])
       expect(control.valid).toBe(true)
     })
   })
@@ -201,7 +201,7 @@ describe('isOnlyGeometryTypesValidator', () => {
       ],
     }
     const value = JSON.stringify(featureCollection)
-    const control = new FormControl(value, [ isOnlyGeometryTypesValidator([ 'Point' ]) ])
+    const control = new UntypedFormControl(value, [ isOnlyGeometryTypesValidator([ 'Point' ]) ])
     expect(control.valid).toBe(false)
     expect(control.errors).not.toBeNull()
     // tslint:disable-next-line: no-non-null-assertion

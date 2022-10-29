@@ -6,7 +6,7 @@ import {
   AfterViewInit, Component, ContentChild, EventEmitter, forwardRef, Input,
   isDevMode, OnDestroy, OnInit, Output, TemplateRef, ViewChild, ViewContainerRef
 } from '@angular/core'
-import { FormGroup } from '@angular/forms'
+import { UntypedFormGroup } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router'
 import { filter } from 'rxjs/operators'
 
@@ -100,7 +100,7 @@ export class ModalComponent implements OnInit, OnDestroy, AfterViewInit, IModalC
   @ViewChild('modalTpl', { static: true }) _modalTpl?: TemplateRef<HTMLElement>
 
   /** Makes the modal container a form with this formGroup. */
-  @Input() form: FormGroup | undefined | null
+  @Input() form: UntypedFormGroup | undefined | null
 
   /** Emit the `(ngSubmit)` event. NOTE: Only if `form` is defined. */
   @Output() formSubmit = new EventEmitter<void>()

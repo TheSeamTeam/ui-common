@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core'
-import { FormControl } from '@angular/forms'
+import { UntypedFormControl } from '@angular/forms'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
 
@@ -21,7 +21,7 @@ import { getColumnProp } from '../utils/get-column-prop'
 export class DatatableColumnPreferencesComponent {
   _columns$: Observable<TheSeamDatatableColumn[]>
 
-  _filterControl = new FormControl()
+  _filterControl = new UntypedFormControl()
 
   constructor(
     @Inject(THESEAM_DATATABLE) private _datatable: DatatableComponent,

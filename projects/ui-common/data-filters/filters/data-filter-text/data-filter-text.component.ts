@@ -1,6 +1,6 @@
 import { BooleanInput } from '@angular/cdk/coercion'
 import { Component, forwardRef, Inject, Input, OnDestroy, OnInit, Optional, TemplateRef } from '@angular/core'
-import { FormControl } from '@angular/forms'
+import { UntypedFormControl } from '@angular/forms'
 import { Observable, of } from 'rxjs'
 import { map, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
@@ -86,7 +86,7 @@ export class DataFilterTextComponent implements OnInit, OnDestroy, IDataFilter {
   public readonly name = 'text'
   public readonly uid = `text__${_uid++}`
 
-  _control = new FormControl()
+  _control = new UntypedFormControl()
 
   @Input() properties: string[] | undefined | null = this._optDefault('properties')
   @Input() omitProperties: string[] | undefined | null = this._optDefault('omitProperties')

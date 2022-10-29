@@ -1,6 +1,6 @@
 import { coerceArray } from '@angular/cdk/coercion'
 import { Component, forwardRef, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core'
-import { FormControl } from '@angular/forms'
+import { UntypedFormControl } from '@angular/forms'
 import { Observable, of } from 'rxjs'
 import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators'
 
@@ -98,7 +98,7 @@ export class DataFilterToggleButtonsComponent implements OnInit, OnDestroy, IDat
   public readonly name = 'toggle-buttons'
   public readonly uid = `toggle-buttons__${_uid++}`
 
-  _control = new FormControl()
+  _control = new UntypedFormControl()
 
   @Input() properties = this._optDefault('properties')
   @Input() omitProperties = this._optDefault('omitProperties')

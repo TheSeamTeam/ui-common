@@ -1,6 +1,6 @@
 import { Component, DebugElement } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
+import { UntypedFormControl, UntypedFormGroup, ReactiveFormsModule } from '@angular/forms'
 import { By } from '@angular/platform-browser'
 import { DisableControlDirective } from './disable-control.directive'
 
@@ -10,8 +10,8 @@ import { DisableControlDirective } from './disable-control.directive'
   </form>`
 })
 class TestDisableControlComponent {
-  testGroup = new FormGroup({
-    testControl: new FormControl([''])
+  testGroup = new UntypedFormGroup({
+    testControl: new UntypedFormControl([''])
   })
   mode = true
 }

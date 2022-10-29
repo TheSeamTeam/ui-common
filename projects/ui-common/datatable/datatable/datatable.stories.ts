@@ -2,7 +2,7 @@ import { action } from '@storybook/addon-actions'
 import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular'
 
 import { Component, Input, ViewChild } from '@angular/core'
-import { FormControl, ReactiveFormsModule } from '@angular/forms'
+import { UntypedFormControl, ReactiveFormsModule } from '@angular/forms'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { RouterModule } from '@angular/router'
 import { BehaviorSubject, Observable, of, Subscription } from 'rxjs'
@@ -202,8 +202,8 @@ export const InlineEdit = (args: any) => ({
         { prop: 'active', name: 'Active' }
       ],
       rows: [
-        { name: 'Mark', age: 27, active: true, control: new FormControl(true) },
-        { name: 'Joe', age: 33, active: false, control: new FormControl(false) },
+        { name: 'Mark', age: 27, active: true, control: new UntypedFormControl(true) },
+        { name: 'Joe', age: 33, active: false, control: new UntypedFormControl(false) },
       ],
       toggled: action('toggled')
     }

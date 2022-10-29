@@ -1,5 +1,5 @@
 import { Component, Input, isDevMode, OnDestroy, OnInit } from '@angular/core'
-import { AbstractControl, FormControl } from '@angular/forms'
+import { AbstractControl, UntypedFormControl } from '@angular/forms'
 import { Subject } from 'rxjs'
 
 import { buildTitleMap, hasOwn, JsonSchemaFormService, TitleMapItem } from '@ajsf/core'
@@ -158,8 +158,8 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy 
     })
   }
 
-  private _getDropdownControl(): FormControl | undefined {
-    return this._dropdownObj.formControl as FormControl
+  private _getDropdownControl(): UntypedFormControl | undefined {
+    return this._dropdownObj.formControl as UntypedFormControl
   }
 
   private _setSelectListCheckedProp(value: any) {

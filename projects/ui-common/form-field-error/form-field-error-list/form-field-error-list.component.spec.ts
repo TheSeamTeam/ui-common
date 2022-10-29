@@ -1,5 +1,5 @@
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing'
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms'
+import { UntypedFormControl, ReactiveFormsModule, Validators } from '@angular/forms'
 import { createComponentFactory, Spectator } from '@ngneat/spectator/jest'
 
 import { FormFieldErrorComponent } from '../form-field-error/form-field-error.component'
@@ -29,13 +29,13 @@ describe('FormFieldErrorListComponent', () => {
   })
 
   it('should create with control', () => {
-    const control = new FormControl()
+    const control = new UntypedFormControl()
     spectator = createComponent({ props: { control } })
     expect(spectator.component).toBeTruthy()
   })
 
   it('should show placeholder when control is not dirty', fakeAsync(() => {
-    const control = new FormControl()
+    const control = new UntypedFormControl()
     spectator = createComponent({ props: { control } })
     let count = 0
     spectator.component.displayRecords$.subscribe(v => count = countRecordsByValidator('__padding__', v))
@@ -44,7 +44,7 @@ describe('FormFieldErrorListComponent', () => {
   }))
 
   it('should show placeholder when control is dirty without a validator', fakeAsync(() => {
-    const control = new FormControl()
+    const control = new UntypedFormControl()
     spectator = createComponent({ props: { control } })
     let count = 0
     spectator.component.displayRecords$.subscribe(v => count = countRecordsByValidator('__padding__', v))
@@ -54,7 +54,7 @@ describe('FormFieldErrorListComponent', () => {
   }))
 
   it('should show placeholder when control is dirty with a validator without a message', fakeAsync(() => {
-    const control = new FormControl(undefined, [ Validators.required ])
+    const control = new UntypedFormControl(undefined, [ Validators.required ])
     spectator = createComponent({ props: { control } })
     let count = 0
     spectator.component.displayRecords$.subscribe(v => count = countRecordsByValidator('__padding__', v))
@@ -65,7 +65,7 @@ describe('FormFieldErrorListComponent', () => {
   }))
 
   it('should not show placeholder when control is dirty with a validator with a message', fakeAsync(() => {
-    const control = new FormControl(undefined, [ Validators.required ])
+    const control = new UntypedFormControl(undefined, [ Validators.required ])
     const errors: IErrorRecord[] = [
       { validatorName: 'required', error: null, message: 'Required' }
     ]
