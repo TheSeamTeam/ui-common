@@ -84,7 +84,7 @@ class StoryExBaseComponent {
   }
 
   public go() {
-    this._router.navigateByUrl(this._control.value)
+    this._router.navigateByUrl(this._control.value!)
   }
 }
 
