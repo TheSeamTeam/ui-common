@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core'
 
-import { TabbedItemComponent } from '../tabbed-item/tabbed-item.component'
+import { TabbedItemAccessor } from '../tabbed-models'
 
 @Component({
   selector: 'seam-tabbed-content',
@@ -9,7 +9,7 @@ import { TabbedItemComponent } from '../tabbed-item/tabbed-item.component'
 })
 export class TabbedContentComponent implements OnInit {
 
-  @Input() tabbedItem?: TabbedItemComponent
+  @Input() tabbedItem?: TabbedItemAccessor
 
   constructor() { }
 

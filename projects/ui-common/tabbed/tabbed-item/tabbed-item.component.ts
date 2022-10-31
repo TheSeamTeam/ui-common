@@ -5,13 +5,14 @@ import { InputBoolean } from '@theseam/ui-common/core'
 
 import { TabbedTabContentDirective } from '../directives/tabbed-tab-content.directive'
 import { TabbedTabDirective } from '../directives/tabbed-tab.directive'
+import { TabbedItemAccessor } from '../tabbed-models'
 
 @Component({
   selector: 'seam-tabbed-item',
   templateUrl: './tabbed-item.component.html',
   styleUrls: ['./tabbed-item.component.scss']
 })
-export class TabbedItemComponent implements OnInit {
+export class TabbedItemComponent implements OnInit, TabbedItemAccessor {
   static ngAcceptInputType_contentFromRoute: BooleanInput
 
   @ContentChild(TabbedTabDirective, { read: TemplateRef, static: true })

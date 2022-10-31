@@ -29,10 +29,8 @@ import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons'
       cursor: pointer;
     }
 
-    :host fa-icon ::ng-deep {
-      .svg-inline--fa {
-        vertical-align: middle;
-      }
+    :host fa-icon ::ng-deep .svg-inline--fa {
+      vertical-align: middle;
     }
     `
   ]

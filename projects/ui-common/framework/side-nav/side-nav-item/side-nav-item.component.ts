@@ -12,6 +12,7 @@ import {
   Component,
   Host,
   HostBinding,
+  Inject,
   Input,
   OnDestroy,
   Optional,
@@ -27,7 +28,7 @@ import { InputBoolean, InputNumber } from '@theseam/ui-common/core'
 import type { SeamIcon } from '@theseam/ui-common/icon'
 import type { ThemeTypes } from '@theseam/ui-common/models'
 
-import { SideNavComponent } from '../side-nav.component'
+import { SideNavAccessor, THESEAM_SIDE_NAV_ACCESSOR } from '../side-nav-tokens'
 import { ISideNavItem } from '../side-nav.models'
 
 export interface SideNavItemBadgeTooltip {
@@ -172,7 +173,7 @@ export class SideNavItemComponent implements OnDestroy {
   public readonly compactAnimState$: Observable<string>
 
   constructor(
-    private readonly _sideNav: SideNavComponent,
+    @Inject(THESEAM_SIDE_NAV_ACCESSOR) private readonly _sideNav: SideNavAccessor,
     @Optional() @SkipSelf() @Host() private readonly _parent?: SideNavItemComponent
   ) {
     this.childGroupAnimState$ = this.expanded$

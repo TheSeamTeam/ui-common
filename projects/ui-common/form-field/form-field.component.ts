@@ -4,6 +4,7 @@ import {
   ContentChild,
   ContentChildren,
   ElementRef,
+  forwardRef,
   HostBinding,
   Input,
   OnDestroy,
@@ -19,6 +20,7 @@ import { IErrorRecord } from '@theseam/ui-common/form-field-error'
 import { FormFieldErrorDirective } from './form-field-error.directive'
 import { FormFieldHelpTextDirective } from './form-field-help-text.directive'
 import { FormFieldLabelTplDirective } from './form-field-label-tpl.directive'
+import { FORM_FIELD_COMPONENT } from './form-field-tokens'
 import { InputDirective } from './input.directive'
 
 let nextLabelUniqueId = 0
@@ -29,7 +31,13 @@ let nextLabelUniqueId = 0
 @Component({
   selector: 'seam-form-field',
   templateUrl: './form-field.component.html',
-  styleUrls: ['./form-field.component.scss']
+  styleUrls: ['./form-field.component.scss'],
+  providers: [
+    {
+      provide: FORM_FIELD_COMPONENT,
+      useClass: forwardRef(() => TheSeamFormFieldComponent),
+    }
+  ],
 })
 export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
   static ngAcceptInputType_inline: BooleanInput

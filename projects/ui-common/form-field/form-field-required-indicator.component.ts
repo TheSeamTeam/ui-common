@@ -1,9 +1,8 @@
 import { BooleanInput } from '@angular/cdk/coercion'
-import { ChangeDetectionStrategy, Component, Input, Optional } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Inject, Input, Optional } from '@angular/core'
 
 import { InputBoolean } from '@theseam/ui-common/core'
-
-import { TheSeamFormFieldComponent } from './form-field.component'
+import { FORM_FIELD_COMPONENT } from './form-field-tokens'
 
 @Component({
   selector: 'seam-form-field-required-indicator',
@@ -28,7 +27,7 @@ export class FormFieldRequiredIndicatorComponent {
   @Input() @InputBoolean() required: boolean = false
 
   constructor(
-    @Optional() public readonly _formField: TheSeamFormFieldComponent
+    @Optional() @Inject(FORM_FIELD_COMPONENT) public readonly _formField: any
   ) { }
 
 }

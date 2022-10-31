@@ -19,12 +19,6 @@
       ]
     }
   },
-  "angularCompilerOptions": {
-    "skipTemplateCodegen": true,
-    "strictMetadataEmit": true,
-    "enableResourceInlining": true,
-    "enableIvy": true
-  },
   "files": [
     "./public_api.ts"
   ]
