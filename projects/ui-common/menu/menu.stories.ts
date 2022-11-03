@@ -10,7 +10,7 @@ import { TheSeamMenuModule } from './menu.module'
 
 export default {
   title: 'Menu/Components',
-  component: MenuComponent,
+  // component: MenuComponent,
   decorators: [
     moduleMetadata({
       imports: [

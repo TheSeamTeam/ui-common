@@ -46,6 +46,7 @@ export const WithAlert: Story = (args) => ({
     // msgText: text('Message', 'Do you confirm?'),
     // alertMsgText: text('Alert Message', 'This is an alert'),
     // theme: select('Theme', ThemeNames, 'warning'),
+    ...args,
     confirmed() {
       console.log('Confirmed')
     }
@@ -54,12 +55,20 @@ export const WithAlert: Story = (args) => ({
     <button type="button"
       class="btn m-2"
       [seamConfirmMsg]="msgText"
-      [seamConfirmAlert]="{ message: alertMsgText, type: theme }"
+      [seamConfirmAlert]="{ message: alertMsgText, type: alertTheme }"
       (seamConfirmClick)="confirmed()">
       Open Dialog
     </button>
   `
 })
+WithAlert.args = {
+  msgText: 'Do you confirm?',
+  alertMsgText: 'This is an alert',
+  alertTheme: 'warning',
+}
+WithAlert.argTypes = {
+  alertTheme: { control: 'select', options: ThemeNames },
+}
 
 
 
