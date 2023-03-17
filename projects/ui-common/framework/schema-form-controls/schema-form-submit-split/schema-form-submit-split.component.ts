@@ -26,7 +26,7 @@ export type TheSeamSchemaFormSubmitSplitItem = TitleMapItem
 export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy {
 
   /** @ignore */
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   formControl?: AbstractControl
   controlName?: string
@@ -90,7 +90,7 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy 
 
   /** @ignore */
   ngOnDestroy(): void {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

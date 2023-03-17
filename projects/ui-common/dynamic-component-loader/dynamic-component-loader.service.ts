@@ -86,7 +86,7 @@ export class TheSeamDynamicComponentLoader {
 
       return moduleFactory$
         .pipe(switchMap(m => from(this.loadFactory<any>(m, componentId, injector))))
-        .toPromise()
+        .toPromise() as Promise<ComponentFactory<T>>
     }
 
     return Promise.resolve(moduleRef.componentFactoryResolver.resolveComponentFactory<T>(dynamicComponentType))

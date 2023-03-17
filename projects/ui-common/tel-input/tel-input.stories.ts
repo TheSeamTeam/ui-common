@@ -1,5 +1,5 @@
 import { moduleMetadata } from '@storybook/angular'
-import type { Meta, Story } from '@storybook/angular/types-6-0'
+import type { Meta, Story } from '@storybook/angular'
 
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
 import { BrowserModule } from '@angular/platform-browser'

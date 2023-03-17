@@ -53,6 +53,9 @@ export class DatatableDynamicActionMenuItemRouterLink {
       this._rLinkWithHref = new RouterLinkWithHref(
         router,
         route,
+        '0', // TODO: Fix type.
+        renderer,
+        el.nativeElement,
         locationStrategy
       )
       // console.log('rLinkWithHref', this.rLinkWithHref)
@@ -75,7 +78,7 @@ export class DatatableDynamicActionMenuItemRouterLink {
 
       this._rLinkClickEventListener = this.el.nativeElement.addEventListener('click', () => {
         // console.log('this._rLink', this._rLink && this._rLink.urlTree)
-        if (this._rLink) { return this._rLink.onClick() }
+        if (this._rLink) { return (this._rLink as any).onClick() }
       })
 
       // this._clickSubscription = fromEvent(el.nativeElement, 'click')

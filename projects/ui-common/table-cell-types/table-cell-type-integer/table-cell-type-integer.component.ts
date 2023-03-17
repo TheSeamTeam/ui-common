@@ -18,7 +18,7 @@ import { TableCellTypeConfigInteger } from './table-cell-type-integer-config'
 })
 export class TableCellTypeIntegerComponent implements OnInit, OnDestroy {
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   @Input() value: string | null | undefined
 
@@ -59,7 +59,7 @@ export class TableCellTypeIntegerComponent implements OnInit, OnDestroy {
   ngOnInit() {}
 
   ngOnDestroy() {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

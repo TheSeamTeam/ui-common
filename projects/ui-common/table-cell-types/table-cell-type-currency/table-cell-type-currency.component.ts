@@ -19,7 +19,7 @@ import { TableCellTypeConfigCurrency } from './table-cell-type-currency-config'
 })
 export class TableCellTypeCurrencyComponent implements OnInit, OnDestroy {
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   @Input() value: string | null | undefined
 
@@ -63,7 +63,7 @@ export class TableCellTypeCurrencyComponent implements OnInit, OnDestroy {
   ngOnInit() {}
 
   ngOnDestroy() {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

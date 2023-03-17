@@ -13,7 +13,7 @@ import { Modal } from '../modal.service'
 })
 export class RouteModalComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   // @ViewChild(ModalComponent, { static: true }) _modal: ModalComponent
 
@@ -49,7 +49,7 @@ export class RouteModalComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy() {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

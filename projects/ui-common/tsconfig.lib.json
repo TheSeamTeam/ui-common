@@ -11,7 +11,7 @@
     "stripInternal": true,
     "lib": [
       "dom",
-      "es2018"
+      "ES2022"
     ],
     "paths": {
       "@theseam/ui-common/*": [

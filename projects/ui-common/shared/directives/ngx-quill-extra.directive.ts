@@ -11,7 +11,7 @@ import { QuillEditorComponent } from 'ngx-quill'
 })
 export class NgxQuillExtraDirective implements OnDestroy, AfterViewInit {
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   private _tabIndex = -1
 
@@ -33,7 +33,7 @@ export class NgxQuillExtraDirective implements OnDestroy, AfterViewInit {
   ) { }
 
   ngOnDestroy() {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

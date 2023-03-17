@@ -18,7 +18,7 @@ import { TableCellTypeConfigDecimal } from './table-cell-type-decimal-config'
 })
 export class TableCellTypeDecimalComponent implements OnInit, OnDestroy {
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   @Input() value: string | undefined | null
 
@@ -59,7 +59,7 @@ export class TableCellTypeDecimalComponent implements OnInit, OnDestroy {
   ngOnInit() {}
 
   ngOnDestroy() {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

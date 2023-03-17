@@ -42,7 +42,7 @@ export class HierarchyRouterOutletComponent implements OnInit, OnDestroy {
 
   private _uid = _uid++
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   animState = 'isRight'
   // animState = ''
@@ -79,7 +79,7 @@ export class HierarchyRouterOutletComponent implements OnInit, OnDestroy {
   ngOnInit() { }
 
   ngOnDestroy() {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

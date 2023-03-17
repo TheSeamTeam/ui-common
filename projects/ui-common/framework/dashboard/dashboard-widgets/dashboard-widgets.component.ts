@@ -68,7 +68,7 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
 
   public readonly _actionWidgetDragToggleName = 'widget-drag-toggle'
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   @Input()
   get gapSize(): number { return this._gapSize.value }
@@ -163,7 +163,7 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
 
   ngOnDestroy() {
     this._unregisterToggleAction()
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

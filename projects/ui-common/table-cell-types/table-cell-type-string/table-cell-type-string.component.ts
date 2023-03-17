@@ -31,7 +31,7 @@ export type StringTemplateType = 'default' | 'link' | 'link-external' | 'link-en
 })
 export class TableCellTypeStringComponent implements OnInit, OnDestroy {
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   @Input()
   get value() { return this._value }
@@ -145,7 +145,7 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

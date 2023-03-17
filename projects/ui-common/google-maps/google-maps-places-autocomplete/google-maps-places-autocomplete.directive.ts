@@ -14,8 +14,8 @@ export const SEAM_GOOGLE_PLACES_AUTOCOMPLETE_DEFAULT_OPTIONS: google.maps.places
   exportAs: 'seamGoogleMapsPlacesAutocomplete'
 })
 export class TheSeamGoogleMapsPlacesAutocompleteDirective implements OnInit, OnDestroy, OnChanges {
-  private readonly _autoCompleteReadySubject = new Subject()
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _autoCompleteReadySubject = new Subject<void>()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   private _placeChangedPending: { observable: Observable<any>, subscriber: Subscriber<any> }[] = []
   private _listeners: google.maps.MapsEventListener[] = []
@@ -58,7 +58,7 @@ export class TheSeamGoogleMapsPlacesAutocompleteDirective implements OnInit, OnD
 
         this._placeChangedPending.forEach(pending => pending.observable.subscribe(pending.subscriber))
 
-        this._autoCompleteReadySubject.next()
+        this._autoCompleteReadySubject.next(undefined)
       })
     })
   }
@@ -67,7 +67,7 @@ export class TheSeamGoogleMapsPlacesAutocompleteDirective implements OnInit, OnD
     this._listeners.forEach(l => l.remove())
     this._listeners = []
 
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

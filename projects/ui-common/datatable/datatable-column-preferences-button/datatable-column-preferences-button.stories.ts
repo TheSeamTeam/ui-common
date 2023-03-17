@@ -4,6 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { BehaviorSubject, of } from 'rxjs'
 
 import { CSVDataExporter, XLSXDataExporter } from '@theseam/ui-common/data-exporter'
+import { TheSeamDataFiltersModule } from '@theseam/ui-common/data-filters'
 import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
 import { expectFn, getHarness } from '@theseam/ui-common/testing'
 
@@ -49,6 +50,7 @@ export default {
       imports: [
         BrowserAnimationsModule,
         RouterModule.forRoot([], { useHash: true }),
+        TheSeamDataFiltersModule,
         TheSeamDatatableModule,
         TheSeamTableCellTypesModule
       ],
@@ -72,19 +74,25 @@ export const Example: Story = (args) => ({
   props: {
     __hack: {
       columns: [
-        { prop: 'name', name: 'Name' },
+        { prop: 'name', name: 'Name', width: 300, },
         { prop: 'age', name: 'Age' },
-        { prop: 'color', name: 'Color' }
+        { prop: 'color', name: 'Color', width: 700 },
+        { prop: 'color1', name: 'Color1', width: 700 },
+        { prop: 'color2', name: 'Color2', width: 700 },
       ],
       rows: [
-        { name: 'Mark', age: 27, color: 'blue' },
-        { name: 'Joe', age: 33, color: 'green' },
+        { name: 'Mark', age: 27, color: 'blue', color1: 'blue', color2: 'blue' },
+        { name: 'Mark', color: 'blue', color1: 'blue', color2: 'blue' },
+        { name: 'Joe', age: 33, color: 'green', color1: 'blue', color2: 'blue' },
       ],
       exporters: [
         new CSVDataExporter(),
         new XLSXDataExporter()
       ]
-    }
+    },
+    // moduleMetadata: {
+    //   imports: [ TheSeamDataFiltersModule ]
+    // },
   },
   template: `
     <div class="vh-100 d-flex flex-column p-2">
@@ -96,6 +104,7 @@ export const Example: Story = (args) => ({
         sortType="multi">
 
         <seam-datatable-menu-bar>
+          <seam-data-filter-search seamDatatableFilter></seam-data-filter-search>
           <div class="d-flex flex-row justify-content-end">
             <seam-datatable-column-preferences-button></seam-datatable-column-preferences-button>
           </div>

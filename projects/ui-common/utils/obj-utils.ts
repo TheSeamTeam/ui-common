@@ -21,7 +21,7 @@ export function deleteProperty<T extends {}, K extends keyof T>(obj: T, propName
 }
 
 /** Delete properties of object */
-export function deleteProperties<T, K extends keyof T>(obj: T, propNames: K[]): void {
+export function deleteProperties<T extends {}, K extends keyof T>(obj: T, propNames: K[]): void {
   for (const propName of propNames) {
     deleteProperty(obj, propName)
   }

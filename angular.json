@@ -267,77 +267,14 @@
           "builder": "@storybook/angular:start-storybook",
           "options": {
             "browserTarget": "ui-common:build",
-            "port": 6006
-          },
-          "tsConfig": "tsconfig.app.json",
-          "assets": [
-            "src/favicon.ico",
-            "src/assets",
-            {
-              "glob": "**/*",
-              "input": "projects/ui-common/assets",
-              "output": "assets"
-            },
-            {
-              "glob": "**/*",
-              "input": "projects/ui-common/styles",
-              "output": "styles"
-            },
-            {
-              "glob": "**/*.scss",
-              "input": "breadcrumbs",
-              "output": "breadcrumbs"
-            },
-            {
-              "glob": "**/*.scss",
-              "input": "projects/ui-common/framework/base-layout",
-              "output": "framework/base-layout"
-            },
-            {
-              "glob": "**/*.scss",
-              "input": "projects/ui-common/framework/dashboard",
-              "output": "framework/dashboard"
-            },
-            {
-              "glob": "**/*.scss",
-              "input": "projects/ui-common/framework/top-bar",
-              "output": "framework/top-bar"
-            },
-            {
-              "glob": "**/*.scss",
-              "input": "projects/ui-common/widget/side-nav",
-              "output": "framework/side-nav"
-            },
-            {
-              "glob": "**/*.scss",
-              "input": "projects/ui-common/progress/progress-circle",
-              "output": "progress/progress-circle"
-            },
-            {
-              "glob": "**/*.scss",
-              "input": "projects/ui-common/widget",
-              "output": "widget"
-            },
-            {
-              "glob": "**/*.min.css",
-              "input": "node_modules/intl-tel-input/build/css",
-              "output": "assets/vendor/intl-tel-input/css"
-            },
-            {
-              "glob": "**/*.png",
-              "input": "node_modules/intl-tel-input/build/img",
-              "output": "assets/vendor/intl-tel-input/img"
-            },
-            {
-              "glob": "**/utils.js",
-              "input": "node_modules/intl-tel-input/build/js",
-              "output": "assets/vendor/intl-tel-input/js"
-            }
-          ],
-          "styles": [
-            "src/styles.scss",
-            "node_modules/@marklb/ngx-datatable/assets/icons.css"
-          ]
+            "port": 6006,
+            "tsConfig": "projects/ui-common/tsconfig.sb.json",
+            "compodoc": false,
+            "styles": [
+              "projects/ui-common/styles/theme.scss",
+              "node_modules/@marklb/ngx-datatable/assets/icons.css"
+            ]
+          }
         },
         "build-storybook": {
           "builder": "@storybook/angular:build-storybook",

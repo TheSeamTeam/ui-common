@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { ColorItem } from '@storybook/addon-docs/blocks'
+import { ColorItem } from '@storybook/addon-docs'
 import { styled } from '@storybook/theming'
 
 interface ColorDispProps {

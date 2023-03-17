@@ -1,5 +1,5 @@
 import { action, HandlerFunction } from '@storybook/addon-actions'
-import { ArgTypes } from '@storybook/addons'
+import { ArgTypes } from '@storybook/angular'
 
 export interface ArgsTplParts {
   actions: { [prop: string]: HandlerFunction }

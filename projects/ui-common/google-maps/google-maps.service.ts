@@ -163,7 +163,7 @@ export class GoogleMapsService implements OnDestroy {
         this._drawingManager,
         'overlaycomplete',
         (event: google.maps.drawing.OverlayCompleteEvent) => {
-          event.overlay.setMap(null)
+          event.overlay?.setMap(null)
           listener.remove()
         }
       )
@@ -201,7 +201,7 @@ export class GoogleMapsService implements OnDestroy {
 
     this._drawingManager = drawingManager
 
-    this._drawingManager.addListener('drawingmode_changed', event => {
+    this._drawingManager.addListener('drawingmode_changed', (event: any) => {
       if (this._drawingManager?.getDrawingMode() !== null) {
         this._assertInitialized()
         this.googleMap.data.forEach(f => {
@@ -320,7 +320,7 @@ export class GoogleMapsService implements OnDestroy {
         return
       }
 
-      this._openContextMenuForFeature(event.feature, event.latLng)
+      this._openContextMenuForFeature(event.feature, event.latLng ?? undefined)
     })
 
     if (notNullOrUndefined(this._drawingManager)) {

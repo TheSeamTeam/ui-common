@@ -10,10 +10,10 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": false,
     "forceConsistentCasingInFileNames": true,
-    "module": "esnext",
+    "module": "ES2022",
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es2015",
+    "target": "ES2022",
     "typeRoots": [
       "custom_types",
       "node_modules/@types"
@@ -22,7 +22,7 @@
       "googlemaps"
     ],
     "lib": [
-      "es2018",
+      "ES2022",
       "dom"
     ],
     "strictNullChecks": true,

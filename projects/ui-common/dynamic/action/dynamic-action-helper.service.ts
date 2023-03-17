@@ -179,7 +179,7 @@ export class DynamicActionHelperService {
     const modalDef = this._confirmDialog.open(message, alert)
     return modalDef.afterClosed().pipe(
       map(v => v === 'confirm')
-    ).toPromise()
+    ).toPromise().then(x => x ?? false)
   }
 
 }

@@ -24,7 +24,7 @@ const passiveEventListenerOptions = normalizePassiveListenerOptions({passive: tr
 })
 export class TheSeamPopoverDirective implements OnDestroy {
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   @Input() seamPopover?: TemplateRef<any> | null
 
@@ -128,7 +128,7 @@ export class TheSeamPopoverDirective implements OnDestroy {
     this._popoverClosedSubscription.unsubscribe()
     this._closingActionsSubscription.unsubscribe()
 
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

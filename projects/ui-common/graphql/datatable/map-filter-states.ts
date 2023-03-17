@@ -91,18 +91,19 @@ export async function mapFilterStates(
   filterStateMappers: FilterStateMappers,
   context: MapperContext
 ): Promise<FilterStateMapperResult> {
-  const results = await resolveMappers(filterStates, filterStateMappers, context).toPromise()
+  // TODO: Fix types
+  const results: any = await resolveMappers(filterStates, filterStateMappers, context).toPromise()
 
   if (results.length === 0) {
     return null
   }
 
   const filters = results
-    .map(r => r.filter)
+    .map((r: any) => r.filter)
     .filter(notNullOrUndefined)
 
   const variableObjs = results
-    .map(r => r.variables)
+    .map((r: any) => r.variables)
     .filter(notNullOrUndefined)
 
   return {

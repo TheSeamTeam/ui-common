@@ -19,7 +19,7 @@ import { TableCellTypeConfigPhone } from './table-cell-type-phone-config'
 export class TableCellTypePhoneComponent implements OnInit, OnDestroy {
 
   /** @ignore */
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   /** @ignore */
   _format: intlTelInputUtils.numberFormat = THESEAM_DEFAULT_PHONE_NUMBER_FORMAT
@@ -68,7 +68,7 @@ export class TableCellTypePhoneComponent implements OnInit, OnDestroy {
   ngOnInit() { }
 
   ngOnDestroy() {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

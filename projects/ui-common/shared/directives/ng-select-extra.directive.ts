@@ -15,7 +15,7 @@ import { IElementResizedEvent } from './elem-resized.directive'
 })
 export class NgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestroy {
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   private _markedItem: NgOption | null = null
   private _checkMarked = false
@@ -98,7 +98,7 @@ export class NgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestr
 
     window.removeEventListener('scroll', this._onScroll, true)
 
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

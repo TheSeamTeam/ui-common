@@ -94,7 +94,7 @@ export class SideNavItemComponent implements OnDestroy {
   static ngAcceptInputType_compact: BooleanInput
   static ngAcceptInputType_active: BooleanInput
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   readonly faAngleLeft = faAngleLeft
 
@@ -184,7 +184,7 @@ export class SideNavItemComponent implements OnDestroy {
   }
 
   ngOnDestroy() {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

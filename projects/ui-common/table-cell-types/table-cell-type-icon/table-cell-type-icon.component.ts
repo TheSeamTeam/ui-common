@@ -30,7 +30,7 @@ export type IconTemplateType = 'default' | 'link' | 'link-external' | 'link-encr
 })
 export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnDestroy {
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   @Input()
   get value() { return this._value }
@@ -150,7 +150,7 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
   ngOnInit() { }
 
   ngOnDestroy() {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

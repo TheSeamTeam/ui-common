@@ -166,7 +166,7 @@ export function sideNavExpandStateChangeFn(fromState: string, toState: string) {
 export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNav {
   static ngAcceptInputType_hasHeaderToggle: BooleanInput
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   // @HostBinding('@sideNavExpand') _sideNavExpand = EXPANDED_STATE
   // _sideNavExpand = EXPANDED_STATE
@@ -252,7 +252,7 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
   }
 
   ngOnDestroy() {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
     if (this._baseLayoutRef) { this._baseLayoutRef.unregisterNav(this) }
   }

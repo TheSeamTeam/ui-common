@@ -1,4 +1,6 @@
-import { ArgType } from '@storybook/addons'
+// import { ArgType } from '@storybook/addons'
+
+declare type ArgType = any
 
 import { OutlineThemeNames, ThemeNames } from '@theseam/ui-common/models'
 

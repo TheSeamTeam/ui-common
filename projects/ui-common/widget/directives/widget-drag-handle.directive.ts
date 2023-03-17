@@ -97,7 +97,7 @@ export const THESEAM_WIDGET_ACCESSOR = new InjectionToken<TheSeamWidgetAccessor<
 export class WidgetDragHandleDirective implements OnInit, OnDestroy, AfterViewInit, DoCheck {
   static ngAcceptInputType_disabled: BooleanInput
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   private _attachedToDom = new BehaviorSubject<boolean>(false)
   private _doneCheckingAttached = false
@@ -187,7 +187,7 @@ export class WidgetDragHandleDirective implements OnInit, OnDestroy, AfterViewIn
     this._stateChanges.complete()
     this._attachedToDom.complete()
 
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

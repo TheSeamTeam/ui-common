@@ -3,11 +3,15 @@ module.exports = {
   // stories: ['../projects/ui-common/breadcrumbs/stories/breadcrumbs-simple.stories.@(ts|mdx)'],
   logLevel: 'debug',
   // framework: '@storybook/angular',
+  "framework": {
+    "name": "@storybook/angular",
+    "options": {}
+  },
   addons: [
     // '@storybook/addon-docs',
     // '@storybook/addon-controls',
     '@storybook/addon-essentials',
-    '@storybook/addon-storysource',
+    // '@storybook/addon-storysource',
     // '@storybook/addon-actions',
     '@storybook/addon-links',
     // '@storybook/addon-backgrounds',
@@ -19,11 +23,11 @@ module.exports = {
     '@storybook/addon-interactions',
     'storybook-dark-mode',
   ],
-  core: {
-    builder: 'webpack5',
-  },
-  features: {
-    // storyStoreV7: true,
-    interactionsDebugger: true,
-  },
+  // core: {
+  //   builder: 'webpack5',
+  // },
+  // features: {
+  //   // storyStoreV7: true,
+  //   interactionsDebugger: true,
+  // },
 }

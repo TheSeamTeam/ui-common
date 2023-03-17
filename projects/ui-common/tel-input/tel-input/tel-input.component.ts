@@ -46,7 +46,7 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
   static ngAcceptInputType_disabled: BooleanInput
 
   /** @ignore */
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   /** @ignore */
   readonly _control = new UntypedFormControl()
@@ -186,7 +186,7 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
   ngOnDestroy(): void {
     this._focusMonitor.stopMonitoring(this._elementRef)
 
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

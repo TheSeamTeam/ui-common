@@ -43,7 +43,7 @@ class FakeModalRef<T, R = any> implements Partial<ModalRef<T, R>> {
 })
 export class StoryModalContainerComponent<T, D = any> implements OnDestroy {
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   @Input() set component(c: ComponentType<T>) { this._component.next(c) }
   @Input() set data(d: D) { this._data.next(d) }
@@ -72,7 +72,7 @@ export class StoryModalContainerComponent<T, D = any> implements OnDestroy {
   }
 
   ngOnDestroy() {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

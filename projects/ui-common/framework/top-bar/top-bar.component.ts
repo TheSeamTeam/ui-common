@@ -19,11 +19,11 @@ import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { InputBoolean } from '@theseam/ui-common/core'
 import { TheSeamLayoutService } from '@theseam/ui-common/layout'
 
+import { faUserCircle } from '@fortawesome/free-regular-svg-icons'
+import { SeamIcon } from '@theseam/ui-common/icon'
 import { TopBarItemDirective } from './top-bar-item.directive'
 import { TopBarMenuBtnDetailDirective } from './top-bar-menu-btn-detail.directive'
 import { TopBarMenuDirective } from './top-bar-menu.directive'
-import { SeamIcon } from '@theseam/ui-common/icon'
-import { faUserCircle } from '@fortawesome/free-regular-svg-icons'
 
 /**
  * Top bar of an app.
@@ -48,7 +48,7 @@ export class TheSeamTopBarComponent implements OnInit, OnDestroy, AfterContentIn
   static ngAcceptInputType_hasTitle: BooleanInput
 
   /** @ignore */
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   /** @ignore */
   faBars = faBars
@@ -103,7 +103,7 @@ export class TheSeamTopBarComponent implements OnInit, OnDestroy, AfterContentIn
 
   /** @ignore */
   ngOnDestroy() {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

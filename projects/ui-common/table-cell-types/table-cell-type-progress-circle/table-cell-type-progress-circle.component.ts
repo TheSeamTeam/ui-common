@@ -29,7 +29,7 @@ import { TableCellTypeConfigProgressCircle, TableCellTypeProgressCircleConfigAct
 })
 export class TableCellTypeProgressCircleComponent implements OnInit, OnDestroy {
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   @Input() value: number | null | undefined
 
@@ -118,7 +118,7 @@ export class TableCellTypeProgressCircleComponent implements OnInit, OnDestroy {
   ngOnInit() { }
 
   ngOnDestroy() {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

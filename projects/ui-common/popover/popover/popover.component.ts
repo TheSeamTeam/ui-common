@@ -44,7 +44,7 @@ import { popoverExpandIn, popoverExpandOut, popoverSlideIn, popoverSlideOut } fr
 })
 export class PopoverComponent implements OnInit, OnDestroy {
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   /** Duration of the enter animation. Has to be a valid CSS value (e.g. 100ms). */
   enterAnimationDuration?: string = '225ms'
@@ -143,7 +143,7 @@ export class PopoverComponent implements OnInit, OnDestroy {
     // this.closed.complete()
     this._animationDone.complete()
 
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

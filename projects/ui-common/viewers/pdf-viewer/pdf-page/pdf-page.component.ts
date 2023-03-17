@@ -23,7 +23,7 @@ export class TheSeamPdfPageComponent implements OnDestroy, AfterViewInit {
   static ngAcceptInputType_shadow: BooleanInput
   static ngAcceptInputType_responsive: BooleanInput
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   @Input()
   public get page() { return this._page }
@@ -74,7 +74,7 @@ export class TheSeamPdfPageComponent implements OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy() {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

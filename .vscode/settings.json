@@ -52,6 +52,8 @@
   //  VSCode, they would be in trouble.
   "typescript.tsdk": "node_modules/typescript/lib",
 
+  "jest.autoRun": "off",
+
   // Our custom schematics.
   // "ngschematics.schematics": [
   //   // '@theseam/ui-common' schematics.

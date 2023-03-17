@@ -13,17 +13,24 @@ import type { IntlTelInput } from './intl-tel-input'
 import { TEL_INPUT_STYLES, TEL_INPUT_STYLESHEET_PATH, TEL_INPUT_UTILS_PATH } from './tel-input-constants'
 import { globalIntlTelInputUtils } from './utils/index'
 
+export enum ThingEnum {
+  A = 123,
+  B = 124,
+}
+
 @Directive({
   selector: 'input[seamTelInput]',
   exportAs: 'seamTelInput'
 })
 export class TheSeamTelInputDirective implements OnInit, OnDestroy, DoCheck {
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   private _instance: IntlTelInput.Plugin | undefined
   private _loadedAssetRefs: LoadedAssetRef<HTMLLinkElement |  HTMLStyleElement>[] = []
 
   @HostBinding('attr.type') _attrType = 'tel'
+
+  @Input() telInpEnum: ThingEnum = ThingEnum.A
 
   @Input()
   set value(v: string | undefined | null) {
@@ -95,7 +102,7 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy, DoCheck {
       ref.destroy()
     }
 
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

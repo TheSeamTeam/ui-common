@@ -25,7 +25,7 @@ export class ToggleGroupDirective implements OnDestroy, AfterViewInit, ControlVa
   static ngAcceptInputType_multiple: BooleanInput
   static ngAcceptInputType_selectionToggleable: BooleanInput
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   // tslint:disable-next-line:no-input-rename
   @Input('value') val: string | string[] | undefined | null

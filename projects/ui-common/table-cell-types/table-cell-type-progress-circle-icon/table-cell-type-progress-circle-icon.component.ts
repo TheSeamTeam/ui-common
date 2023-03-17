@@ -16,7 +16,7 @@ import { TableCellTypeConfigProgressCircleIcon } from './table-cell-type-progres
 })
 export class TableCellTypeProgressCircleIconComponent implements OnInit, OnDestroy {
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   @Input() value: number | null | undefined
 
@@ -85,7 +85,7 @@ export class TableCellTypeProgressCircleIconComponent implements OnInit, OnDestr
   ngOnInit() { }
 
   ngOnDestroy() {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

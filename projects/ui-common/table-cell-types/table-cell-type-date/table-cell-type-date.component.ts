@@ -15,7 +15,7 @@ import { TableCellTypeConfigDate } from './table-cell-type-date-config'
 })
 export class TableCellTypeDateComponent implements OnInit, OnDestroy {
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   @Input() value: string | undefined | null
   @Input() format: string | undefined | null
@@ -54,7 +54,7 @@ export class TableCellTypeDateComponent implements OnInit, OnDestroy {
   ngOnInit() { }
 
   ngOnDestroy() {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 
