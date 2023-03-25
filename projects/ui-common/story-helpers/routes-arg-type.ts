@@ -4,14 +4,14 @@ declare const __STORYBOOK_ADDONS: any
 
 function goToHashUrl(url: string): void { location.hash = `#${url}` }
 
-__STORYBOOK_ADDONS.getChannel().on('custom/go-to-hash', (data: { hash: string }) => {
+// __STORYBOOK_ADDONS.getChannel().on('custom/go-to-hash', (data: { hash: string }) => {
 
-  goToHashUrl(data.hash)
-})
+//   goToHashUrl(data.hash)
+// })
 
-__STORYBOOK_ADDONS.getChannel().on('storyArgsUpdated', (data: { hash: string }) => {
-  console.log('storyArgsUpdated')
-})
+// __STORYBOOK_ADDONS.getChannel().on('storyArgsUpdated', (data: { hash: string }) => {
+//   console.log('storyArgsUpdated')
+// })
 
 export function routesArgType(routes: string[])/*: ArgType*/ {
   return {

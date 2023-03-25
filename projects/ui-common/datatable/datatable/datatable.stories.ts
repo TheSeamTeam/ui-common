@@ -2,7 +2,7 @@ import { action } from '@storybook/addon-actions'
 import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular'
 
 import { Component, Input, ViewChild } from '@angular/core'
-import { UntypedFormControl, ReactiveFormsModule } from '@angular/forms'
+import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { RouterModule } from '@angular/router'
 import { BehaviorSubject, Observable, of, Subscription } from 'rxjs'
@@ -53,7 +53,7 @@ export default {
     moduleMetadata({
       imports: [
         BrowserAnimationsModule,
-        RouterModule.forRoot([], { useHash: true }),
+        // RouterModule.forRoot([], { useHash: true }),
         TheSeamDatatableModule,
         TheSeamTableCellTypesModule
       ]

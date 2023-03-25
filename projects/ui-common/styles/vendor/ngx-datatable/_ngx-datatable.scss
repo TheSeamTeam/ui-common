@@ -1,5 +1,5 @@
 @import './variables';
-@import '~@marklb/ngx-datatable/index';
+@import 'node_modules/@marklb/ngx-datatable/index';
 
 .ngx-datatable {
   background: $datatable-background;

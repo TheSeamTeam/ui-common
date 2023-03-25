@@ -1,3 +1,5 @@
+export * from './testing'
+
 export * from './form-field-error.directive'
 export * from './form-field-help-text.directive'
 export * from './form-field-label-tpl.directive'
