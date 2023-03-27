@@ -18,7 +18,6 @@
     "buffer",
     "css-element-queries",
     "file-saver",
-    "lodash-es",
     "ngx-toastr",
     "pdfjs-dist",
     "xlsx",
