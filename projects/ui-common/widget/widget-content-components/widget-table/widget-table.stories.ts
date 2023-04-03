@@ -1,18 +1,10 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular'
+import { applicationConfig } from '@storybook/angular/dist/client/decorators'
 
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { provideAnimations } from '@angular/platform-browser/animations'
 
 import { faWrench } from '@fortawesome/free-solid-svg-icons'
 
-import {
-  DynamicActionApiService,
-  DynamicActionLinkService,
-  DynamicActionModalService,
-  ExportersDataEvaluator,
-  JexlEvaluator,
-  THESEAM_DYNAMIC_ACTION,
-  THESEAM_DYNAMIC_VALUE_EVALUATOR
-} from '@theseam/ui-common/dynamic'
 import { TheSeamWidgetModule } from '../../widget.module'
 import { WidgetTableComponent } from './widget-table.component'
 
@@ -103,20 +95,17 @@ export default {
   title: 'Widget/Components/Content/Table',
   component: WidgetTableComponent,
   decorators: [
+    applicationConfig({
+      providers: [
+        provideAnimations(),
+      ],
+    }),
     moduleMetadata({
       imports: [
         TheSeamWidgetModule,
-        BrowserAnimationsModule
       ],
-      providers: [
-        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
-        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: ExportersDataEvaluator, multi: true },
-        { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionApiService, multi: true },
-        { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionLinkService, multi: true },
-        { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionModalService, multi: true },
-      ]
-    })
-  ]
+    }),
+  ],
 } as Meta
 
 export const Basic: Story = (args) => ({
@@ -126,16 +115,16 @@ export const Basic: Story = (args) => ({
     displayedColumns: [
       { prop: 'ginCode', name: 'Gin Code', cellType: 'integer', cellTypeConfig: { cellType: 'integer', formatNumber: false } },
       { prop: 'name', name: 'Name' },
-      { prop: 'ginned', name: 'Lbs Ginned', cellType: 'integer' }
+      { prop: 'ginned', name: 'Lbs Ginned', cellType: 'integer' },
     ],
-    dataSource: GIN_DATA
+    dataSource: GIN_DATA,
   },
   template: `
     <div class="p-1" style="max-height: 400px; width: 500px;">
       <seam-widget [icon]="icon" titleText="Example Widget" loading="false">
         <seam-widget-table [columns]="displayedColumns" [rows]="dataSource"></seam-widget-table>
       </seam-widget>
-    </div>`
+    </div>`,
 })
 
 export const Medium: Story = (args) => ({
@@ -145,16 +134,16 @@ export const Medium: Story = (args) => ({
     displayedColumns: [
       { prop: 'ginCode', name: 'Gin Code', cellType: 'integer', cellTypeConfig: { cellType: 'integer', formatNumber: false } },
       { prop: 'name', name: 'Name' },
-      { prop: 'ginned', name: 'Lbs Ginned', cellType: 'integer' }
+      { prop: 'ginned', name: 'Lbs Ginned', cellType: 'integer' },
     ],
-    dataSource: GIN_DATA
+    dataSource: GIN_DATA,
   },
   template: `
     <div class="p-1" style="max-height: 400px; width: 500px;">
       <seam-widget [icon]="icon" titleText="Example Widget" loading="false">
         <seam-widget-table [columns]="displayedColumns" [rows]="dataSource" size="md"></seam-widget-table>
       </seam-widget>
-    </div>`
+    </div>`,
 })
 
 export const Small: Story = (args) => ({
@@ -164,14 +153,14 @@ export const Small: Story = (args) => ({
     displayedColumns: [
       { prop: 'ginCode', name: 'Gin Code', cellType: 'integer', cellTypeConfig: { cellType: 'integer', formatNumber: false } },
       { prop: 'name', name: 'Name' },
-      { prop: 'ginned', name: 'Lbs Ginned', cellType: 'integer' }
+      { prop: 'ginned', name: 'Lbs Ginned', cellType: 'integer' },
     ],
-    dataSource: GIN_DATA
+    dataSource: GIN_DATA,
   },
   template: `
     <div class="p-1" style="max-height: 400px; width: 500px;">
       <seam-widget [icon]="icon" titleText="Example Widget" loading="false">
         <seam-widget-table [columns]="displayedColumns" [rows]="dataSource" size="sm"></seam-widget-table>
       </seam-widget>
-    </div>`
+    </div>`,
 })

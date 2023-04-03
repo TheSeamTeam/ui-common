@@ -68,7 +68,7 @@ export class TableComponent<T = any> implements OnInit {
   @Output() readonly actionRefreshRequest = new EventEmitter<void>()
 
   constructor(
-    private _sanitizer: DomSanitizer
+    private readonly _sanitizer: DomSanitizer
   ) { }
 
   ngOnInit() { }

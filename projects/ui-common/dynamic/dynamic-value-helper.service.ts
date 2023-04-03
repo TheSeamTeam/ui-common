@@ -1,10 +1,9 @@
-import { Inject, Injectable, isDevMode } from '@angular/core'
+import { Inject, Injectable, isDevMode, Optional } from '@angular/core'
 
 import { DynamicValue } from './models/dynamic-value'
 import { DynamicValueBaseType } from './models/dynamic-value-base-type'
 import { DynamicValueEvaluatableType } from './models/dynamic-value-evaluatable-type'
 import { IDynamicValueEvaluator } from './models/dynamic-value-evaluator'
-import { IDynamicValueType } from './models/dynamic-value-type'
 import { THESEAM_DYNAMIC_VALUE_EVALUATOR } from './tokens/dynamic-value-evaluator'
 
 /**
@@ -18,10 +17,10 @@ export class DynamicValueHelperService {
   private _evaluatorMap = new Map<string, IDynamicValueEvaluator>()
 
   constructor(
-    @Inject(THESEAM_DYNAMIC_VALUE_EVALUATOR) evaluators: IDynamicValueEvaluator[]
+    @Optional() @Inject(THESEAM_DYNAMIC_VALUE_EVALUATOR) evaluators?: IDynamicValueEvaluator[]
   ) {
     // Only one evaluator should exist for a type, so map them for faster lookup.
-    for (const e of evaluators) {
+    for (const e of evaluators || []) {
       if (isDevMode()) {
         if (this._evaluatorMap.has(e.type)) {
           console.warn(`[DynamicValueHelperService] Multiple evaluators found for type '${e.type}'`)

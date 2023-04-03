@@ -1,9 +1,10 @@
 import { action } from '@storybook/addon-actions'
 import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular'
+import { applicationConfig } from '@storybook/angular/dist/client/decorators'
 
-import { Component, Input, ViewChild } from '@angular/core'
+import { AfterViewInit, Component, importProvidersFrom, Input, OnInit, ViewChild } from '@angular/core'
 import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations'
 import { RouterModule } from '@angular/router'
 import { BehaviorSubject, Observable, of, Subscription } from 'rxjs'
 import { shareReplay, startWith, take, tap } from 'rxjs/operators'
@@ -11,7 +12,15 @@ import { shareReplay, startWith, take, tap } from 'rxjs/operators'
 import { CSVDataExporter } from '@theseam/ui-common/data-exporter'
 import { DataFilterState, TheSeamDataFiltersModule } from '@theseam/ui-common/data-filters'
 import { DatatableGqlDataSource } from '@theseam/ui-common/datatable'
-import { ExportersDataEvaluator, JexlEvaluator, THESEAM_DYNAMIC_VALUE_EVALUATOR } from '@theseam/ui-common/dynamic'
+import {
+  DynamicActionApiService,
+  DynamicActionLinkService,
+  DynamicActionModalService,
+  ExportersDataEvaluator,
+  JexlEvaluator,
+  THESEAM_DYNAMIC_ACTION,
+  THESEAM_DYNAMIC_VALUE_EVALUATOR
+} from '@theseam/ui-common/dynamic'
 import { StoryToastrService } from '@theseam/ui-common/story-helpers'
 import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
 import { ToastrModule, ToastrService } from 'ngx-toastr'
@@ -50,9 +59,14 @@ export default {
   title: 'Datatable/Components',
   component: DatatableComponent,
   decorators: [
+    applicationConfig({
+      providers: [
+        provideAnimations(),
+      ],
+    }),
     moduleMetadata({
       imports: [
-        BrowserAnimationsModule,
+        // BrowserAnimationsModule,
         // RouterModule.forRoot([], { useHash: true }),
         TheSeamDatatableModule,
         TheSeamTableCellTypesModule
@@ -468,7 +482,7 @@ Detail.args = {
       </seam-datatable-menu-bar>
     </seam-datatable>`
 })
-class DTFilterWrapper {
+class DTFilterWrapper implements OnInit, AfterViewInit {
 
   @ViewChild(DatatableComponent) _datatable: DatatableComponent | undefined
 
@@ -493,47 +507,26 @@ class DTFilterWrapper {
 }
 
 export const Filter: Story = (args) => ({
+  applicationConfig: {
+    providers: [
+      importProvidersFrom(
+        ToastrModule.forRoot(),
+      ),
+      { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
+      { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: ExportersDataEvaluator, multi: true },
+
+      { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionApiService, multi: true },
+      { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionLinkService, multi: true },
+      { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionModalService, multi: true },
+    ],
+  },
   moduleMetadata: {
     declarations: [ DTFilterWrapper ],
     imports: [
       TheSeamDataFiltersModule,
-      ToastrModule.forRoot()
     ],
     providers: [
-      { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
-      { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: ExportersDataEvaluator, multi: true },
-
-      // { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionApiService, multi: true },
-      // { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionLinkService, multi: true },
-      // { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionModalService, multi: true },
-
-      // {
-      //   provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
-      //   useValue: { name: 'filter-search', component: DataFilterSearchComponent, dataToken: THESEAM_DATA_FILTER_OPTIONS },
-      //   multi: true
-      // },
-      // {
-      //   provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
-      //   useValue: { name: 'filter-text', component: DataFilterTextComponent, dataToken: THESEAM_DATA_FILTER_OPTIONS },
-      //   multi: true
-      // },
-      // {
-      //   provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
-      //   useValue: { name: 'filter-buttons', component: DataFilterToggleButtonsComponent, dataToken: THESEAM_DATA_FILTER_OPTIONS },
-      //   multi: true
-      // },
-      // {
-      //   provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
-      //   useValue: { name: 'export-button', component: DatatableExportButtonComponent, dataToken: THESEAM_DYNAMIC_DATA },
-      //   multi: true
-      // },
-      // {
-      //   provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
-      //   useValue: { name: 'text', component: DatatableMenuBarTextComponent, dataToken: THESEAM_MENUBAR_ITEM_DATA },
-      //   multi: true
-      // }
-
-      { provide: ToastrService, useClass: StoryToastrService }
+      { provide: ToastrService, useClass: StoryToastrService },
     ]
   },
   props: {
@@ -577,43 +570,43 @@ Filter.args = {
   ],
 }
 
-class StoryDataSource extends DatatableGqlDataSource<any> {
+// class StoryDataSource extends DatatableGqlDataSource<any> {
 
-}
+// }
 
-const dSource = new StoryDataSource()
+// const dSource = new StoryDataSource()
 
-export const DataSource: Story = (args) => ({
-  props: {
-    __hack: {
-      ...args,
-      dataSource: dSource,
-    }
-  },
-  template: `
-    <div class="vh-100 vw-100">
-      <seam-datatable
-        class="w-100 h-100"
-        [columns]="__hack.columns"
-        [dataSource]="__hack.dataSource"
-        externalPaging="true"
-        externalSorting="true"
-        externalFiltering="true">
-      </seam-datatable>
-    </div>
-  `
-})
-DataSource.args = {
-  columns: [
-    { prop: 'name', name: 'Name' },
-    { prop: 'age', name: 'Age' },
-    { prop: 'color', name: 'Color' }
-  ],
-  rows: [
-    { name: 'Mark', age: 27, color: 'blue' },
-    { name: 'Joe', age: 33, color: 'green' }
-  ]
-}
+// export const DataSource: Story = (args) => ({
+//   props: {
+//     __hack: {
+//       ...args,
+//       dataSource: dSource,
+//     }
+//   },
+//   template: `
+//     <div class="vh-100 vw-100">
+//       <seam-datatable
+//         class="w-100 h-100"
+//         [columns]="__hack.columns"
+//         [dataSource]="__hack.dataSource"
+//         externalPaging="true"
+//         externalSorting="true"
+//         externalFiltering="true">
+//       </seam-datatable>
+//     </div>
+//   `
+// })
+// DataSource.args = {
+//   columns: [
+//     { prop: 'name', name: 'Name' },
+//     { prop: 'age', name: 'Age' },
+//     { prop: 'color', name: 'Color' }
+//   ],
+//   rows: [
+//     { name: 'Mark', age: 27, color: 'blue' },
+//     { name: 'Joe', age: 33, color: 'green' }
+//   ]
+// }
 
 export const FooterTemplate: Story = (args) => ({
   props: { ...args },
@@ -859,34 +852,36 @@ class StoryDataSourceTwo {
 }
 
 export const GraphQLQueryRef: Story = (args) => ({
-  moduleMetadata: {
-    declarations: [
-      StoryDataSourceTwo
-    ],
+  applicationConfig: {
     providers: [
       createApolloTestingProvider(
         simpleGqlTestSchema, createSimpleGqlTestRoot(60)
-      )
-    ]
+      ),
+    ],
+  },
+  moduleMetadata: {
+    declarations: [
+      StoryDataSourceTwo,
+    ],
   },
   props: {
     __hack: {
       // ...args
-      columns: args.columns
-    }
+      columns: args.columns,
+    },
   },
   template: `
     <div style="height: 500px; width: 600px; display: block; position: relative;">
       <dt-wrap style="height: 100%; width: 100%; display: block;" [columns]="__hack.columns"></dt-wrap>
     </div>
-  `
+  `,
 })
 GraphQLQueryRef.args = {
   columns: [
     { prop: 'id', name: 'Id' },
-    { prop: 'name', name: 'Name' }
+    { prop: 'name', name: 'Name' },
   ],
-  numberOfRows: 60
+  numberOfRows: 60,
 }
 GraphQLQueryRef.play = async ({ canvasElement, fixture }) => {
   // const canvas = within(canvasElement)

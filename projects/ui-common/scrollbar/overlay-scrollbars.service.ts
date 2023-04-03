@@ -4,7 +4,7 @@ import { fromEvent, Subscription } from 'rxjs'
 
 import OverlayScrollbars from 'overlayscrollbars'
 
-import { LIB_OVERLAY_SCROLLBARS_CONFIG } from './overlay-scrollbars-config'
+import { LIB_OVERLAY_SCROLLBARS_CONFIG, _OverlayScrollbarDefaults } from './overlay-scrollbars-config'
 import { IOverlayScrollbarsConfig } from './overlay-scrollbars-config-model'
 
 @Injectable({
@@ -81,7 +81,7 @@ export class OverlayScrollbarsService {
   }
 
   private _applyConfigDefaults(config?: IOverlayScrollbarsConfig): IOverlayScrollbarsConfig {
-    const _config: IOverlayScrollbarsConfig = this.injector.get(LIB_OVERLAY_SCROLLBARS_CONFIG)
+    const _config: IOverlayScrollbarsConfig = this.injector.get(LIB_OVERLAY_SCROLLBARS_CONFIG, _OverlayScrollbarDefaults)
     return {..._config, ...config}
   }
 

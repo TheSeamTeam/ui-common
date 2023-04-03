@@ -2,9 +2,9 @@
 import { Meta, moduleMetadata, storiesOf, Story } from '@storybook/angular'
 
 import { APP_BASE_HREF } from '@angular/common'
-import { Component } from '@angular/core'
+import { Component, importProvidersFrom } from '@angular/core'
 import { ReactiveFormsModule } from '@angular/forms'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations'
 import { ActivatedRoute, Route, Router, RouterModule } from '@angular/router'
 import { Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
@@ -306,6 +306,74 @@ export default {
 } as Meta
 
 export const TableWithDetailNav: Story = (args) => ({
+  applicationConfig: {
+    providers: [
+      provideAnimations(),
+      importProvidersFrom(
+        RouterModule.forRoot([
+          {
+            path: 'users',
+            component: DynamicDatatablePageComponent,
+            data: {
+              name: 'Users',
+              tableDef: exampleData2
+            },
+            resolve: {
+              hierLevel: HierarchyLevelResolver
+            },
+            // loadChildren: () => Promise.resolve(LevelTwoModule)
+            // loadChildren: () => of(LevelTwoModule)
+            children: [
+              {
+                path: 'details',
+                component: UserDetailsExComponent,
+                data: { },
+                resolve: {
+                  hierLevel: HierarchyLevelResolver
+                }
+              },
+            ]
+          },
+          {
+            path: 'documents',
+            component: StoryNameExComponent,
+            data: {
+              name: 'Documents'
+            },
+            resolve: {
+              hierLevel: HierarchyLevelResolver
+            },
+            // loadChildren: () => Promise.resolve(LevelTwoModule)
+            // loadChildren: () => of(LevelTwoModule)
+          },
+          {
+            path: 'settings',
+            component: StoryNameExComponent,
+            data: {
+              name: 'Settings'
+            },
+            resolve: {
+              hierLevel: HierarchyLevelResolver
+            },
+            // loadChildren: () => Promise.resolve(LevelTwoModule)
+            // loadChildren: () => of(LevelTwoModule)
+          },
+          {
+            path: 'status',
+            component: StoryNameExComponent,
+            data: {
+              name: 'Status'
+            },
+            resolve: {
+              hierLevel: HierarchyLevelResolver
+            },
+            // loadChildren: () => Promise.resolve(LevelTwoModule)
+            // loadChildren: () => of(LevelTwoModule)
+          }
+        ], { useHash: true }),
+      ),
+    ],
+  },
   moduleMetadata: {
     declarations: [
       StoryExWidget1Component,
@@ -321,71 +389,9 @@ export const TableWithDetailNav: Story = (args) => ({
       UserDetailsExComponent
     ],
     imports: [
-      BrowserAnimationsModule,
       ReactiveFormsModule,
       TheSeamFormFieldModule,
       TheSeamDynamicRouterModule,
-      RouterModule.forRoot([
-        {
-          path: 'users',
-          component: DynamicDatatablePageComponent,
-          data: {
-            name: 'Users',
-            tableDef: exampleData2
-          },
-          resolve: {
-            hierLevel: HierarchyLevelResolver
-          },
-          // loadChildren: () => Promise.resolve(LevelTwoModule)
-          // loadChildren: () => of(LevelTwoModule)
-          children: [
-            {
-              path: 'details',
-              component: UserDetailsExComponent,
-              data: { },
-              resolve: {
-                hierLevel: HierarchyLevelResolver
-              }
-            },
-          ]
-        },
-        {
-          path: 'documents',
-          component: StoryNameExComponent,
-          data: {
-            name: 'Documents'
-          },
-          resolve: {
-            hierLevel: HierarchyLevelResolver
-          },
-          // loadChildren: () => Promise.resolve(LevelTwoModule)
-          // loadChildren: () => of(LevelTwoModule)
-        },
-        {
-          path: 'settings',
-          component: StoryNameExComponent,
-          data: {
-            name: 'Settings'
-          },
-          resolve: {
-            hierLevel: HierarchyLevelResolver
-          },
-          // loadChildren: () => Promise.resolve(LevelTwoModule)
-          // loadChildren: () => of(LevelTwoModule)
-        },
-        {
-          path: 'status',
-          component: StoryNameExComponent,
-          data: {
-            name: 'Status'
-          },
-          resolve: {
-            hierLevel: HierarchyLevelResolver
-          },
-          // loadChildren: () => Promise.resolve(LevelTwoModule)
-          // loadChildren: () => of(LevelTwoModule)
-        }
-      ], { useHash: true }),
       TheSeamBaseLayoutModule,
       TheSeamDashboardModule,
       TheSeamSideNavModule,

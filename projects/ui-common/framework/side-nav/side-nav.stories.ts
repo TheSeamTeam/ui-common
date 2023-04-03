@@ -1,8 +1,9 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular'
+import { applicationConfig } from '@storybook/angular/dist/client/decorators'
 
 import { APP_BASE_HREF } from '@angular/common'
-import { Component } from '@angular/core'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { Component, importProvidersFrom } from '@angular/core'
+import { provideAnimations } from '@angular/platform-browser/animations'
 import { Router, RouterModule } from '@angular/router'
 
 import { faBuilding, faCompass } from '@fortawesome/free-regular-svg-icons'
@@ -21,64 +22,69 @@ export default {
   title: 'Framework/SideNav',
   component: SideNavComponent,
   decorators: [
+    applicationConfig({
+      providers: [
+        provideAnimations(),
+        importProvidersFrom(
+          RouterModule.forRoot([
+            { path: 'example1', component: StoryRoutePlacholderComponent },
+            {
+              path: 'example2',
+              component: StoryRoutePlacholderComponent,
+              children: [
+                { path: 'example1.1', component: StoryRoutePlacholderComponent },
+                { path: 'example1.2', component: StoryRoutePlacholderComponent },
+                { path: 'example1.3', component: StoryRoutePlacholderComponent },
+                { path: 'example1.4', component: StoryRoutePlacholderComponent }
+              ]
+            },
+            {
+              path: 'example3',
+              component: StoryRoutePlacholderComponent,
+              children: [
+                { path: 'example1.1', component: StoryRoutePlacholderComponent },
+                { path: 'example1.2', component: StoryRoutePlacholderComponent },
+                { path: 'example1.3', component: StoryRoutePlacholderComponent },
+                { path: 'example1.4', component: StoryRoutePlacholderComponent },
+                {
+                  path: 'ex2',
+                  component: StoryRoutePlacholderComponent,
+                  children: [
+                    { path: 'example1.1', component: StoryRoutePlacholderComponent },
+                    { path: 'example1.2', component: StoryRoutePlacholderComponent },
+                    { path: 'example1.3', component: StoryRoutePlacholderComponent },
+                    { path: 'example1.4', component: StoryRoutePlacholderComponent }
+                  ]
+                }
+              ]
+            },
+            { path: 'example4', component: StoryRoutePlacholderComponent },
+            { path: 'example5', component: StoryRoutePlacholderComponent }
+          ], { useHash: true }),
+        ),
+        { provide: APP_BASE_HREF, useValue: '/' },
+      ],
+    }),
     moduleMetadata({
       declarations: [
         StoryRoutePlacholderComponent
       ],
       imports: [
-        BrowserAnimationsModule,
-        RouterModule.forRoot([
-          { path: 'example1', component: StoryRoutePlacholderComponent },
-          {
-            path: 'example2',
-            component: StoryRoutePlacholderComponent,
-            children: [
-              { path: 'example1.1', component: StoryRoutePlacholderComponent },
-              { path: 'example1.2', component: StoryRoutePlacholderComponent },
-              { path: 'example1.3', component: StoryRoutePlacholderComponent },
-              { path: 'example1.4', component: StoryRoutePlacholderComponent }
-            ]
-          },
-          {
-            path: 'example3',
-            component: StoryRoutePlacholderComponent,
-            children: [
-              { path: 'example1.1', component: StoryRoutePlacholderComponent },
-              { path: 'example1.2', component: StoryRoutePlacholderComponent },
-              { path: 'example1.3', component: StoryRoutePlacholderComponent },
-              { path: 'example1.4', component: StoryRoutePlacholderComponent },
-              {
-                path: 'ex2',
-                component: StoryRoutePlacholderComponent,
-                children: [
-                  { path: 'example1.1', component: StoryRoutePlacholderComponent },
-                  { path: 'example1.2', component: StoryRoutePlacholderComponent },
-                  { path: 'example1.3', component: StoryRoutePlacholderComponent },
-                  { path: 'example1.4', component: StoryRoutePlacholderComponent }
-                ]
-              }
-            ]
-          },
-          { path: 'example4', component: StoryRoutePlacholderComponent },
-          { path: 'example5', component: StoryRoutePlacholderComponent }
-        ], { useHash: true }),
+        RouterModule,
         TheSeamSideNavModule
       ],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: '/' },
-      ]
     }),
   ],
   parameters: {
     layout: 'fullscreen',
-  }
+  },
 } as Meta
 
 export const Basic: Story = (args) => ({
-  moduleMetadata: {
-    imports: [
-      StoryInitialRouteModule.forRoot('/example3/ex2/example1.3')
-    ]
+  applicationConfig: {
+    providers: [
+      importProvidersFrom(StoryInitialRouteModule.forRoot('/example3/ex2/example1.3')),
+    ],
   },
   props: {
     items: [
@@ -227,14 +233,14 @@ export const Basic: Story = (args) => ({
         <router-outlet></router-outlet>
       </div>
     </div>
-  `
+  `,
 })
 
 export const Collapsed: Story = (args) => ({
-  moduleMetadata: {
-    imports: [
-      StoryInitialRouteModule.forRoot('/example2')
-    ]
+  applicationConfig: {
+    providers: [
+      importProvidersFrom(StoryInitialRouteModule.forRoot('/example2')),
+    ],
   },
   props: {
     items: [
@@ -401,5 +407,5 @@ export const Collapsed: Story = (args) => ({
         <router-outlet></router-outlet>
       </div>
     </div>
-  `
+  `,
 })

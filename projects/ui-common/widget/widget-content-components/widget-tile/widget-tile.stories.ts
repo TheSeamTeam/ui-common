@@ -1,6 +1,8 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular'
+import { applicationConfig } from '@storybook/angular/dist/client/decorators'
 
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { importProvidersFrom } from '@angular/core'
+import { provideAnimations } from '@angular/platform-browser/animations'
 import { RouterModule } from '@angular/router'
 
 import { faPersonBooth, faWrench } from '@fortawesome/free-solid-svg-icons'
@@ -12,21 +14,27 @@ export default {
   title: 'Widget/Components/Content/Tile',
   component: WidgetTileComponent,
   decorators: [
+    applicationConfig({
+      providers: [
+        provideAnimations(),
+        importProvidersFrom(
+          RouterModule.forRoot([], { useHash: true }),
+        ),
+      ],
+    }),
     moduleMetadata({
       imports: [
         TheSeamWidgetModule,
-        BrowserAnimationsModule,
-        RouterModule.forRoot([], { useHash: true })
-      ]
-    })
-  ]
+      ],
+    }),
+  ],
 } as Meta
 
 export const Link: Story = (args) => ({
   props: {
     ...args,
     icon: faWrench,
-    tileIcon: faPersonBooth
+    tileIcon: faPersonBooth,
   },
   template: `
     <div class="p-1" style="max-height: 400px; width: 500px;">
@@ -38,17 +46,17 @@ export const Link: Story = (args) => ({
           {{ tileText }} [disabled]
         </a>
       </seam-widget>
-    </div>`
+    </div>`,
 })
 Link.args = {
-  tileText: 'Tile Text'
+  tileText: 'Tile Text',
 }
 
 export const Button: Story = (args) => ({
   props: {
     ...args,
     icon: faWrench,
-    tileIcon: faPersonBooth
+    tileIcon: faPersonBooth,
   },
   template: `
     <div class="p-1" style="max-height: 400px; width: 500px;">
@@ -56,17 +64,17 @@ export const Button: Story = (args) => ({
         <button seam-widget-tile [icon]="tileIcon">{{ tileText }}</button>
         <button seam-widget-tile [icon]="tileIcon" disabled>{{ tileText }} [disabled]</button>
       </seam-widget>
-    </div>`
+    </div>`,
 })
 Button.args = {
-  tileText: 'Tile Text'
+  tileText: 'Tile Text',
 }
 
 export const ButtonWithFooter: Story = (args) => ({
   props: {
     ...args,
     icon: faWrench,
-    tileIcon: faPersonBooth
+    tileIcon: faPersonBooth,
   },
   template: `
     <div class="p-1" style="max-height: 400px; width: 500px;">
@@ -81,8 +89,8 @@ export const ButtonWithFooter: Story = (args) => ({
           </seam-widget-tile-footer>
         </seam-widget-tile-group>
       </seam-widget>
-    </div>`
+    </div>`,
 })
 ButtonWithFooter.args = {
-  tileText: 'Tile Text'
+  tileText: 'Tile Text',
 }

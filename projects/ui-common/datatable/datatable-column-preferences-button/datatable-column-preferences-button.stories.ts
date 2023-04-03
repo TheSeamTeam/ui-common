@@ -1,6 +1,9 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular'
+import { applicationConfig } from '@storybook/angular/dist/client/decorators'
 
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { importProvidersFrom } from '@angular/core'
+import { provideAnimations } from '@angular/platform-browser/animations'
+import { RouterModule } from '@angular/router'
 import { BehaviorSubject, of } from 'rxjs'
 
 import { CSVDataExporter, XLSXDataExporter } from '@theseam/ui-common/data-exporter'
@@ -8,9 +11,10 @@ import { TheSeamDataFiltersModule } from '@theseam/ui-common/data-filters'
 import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
 import { expectFn, getHarness } from '@theseam/ui-common/testing'
 
-import { RouterModule } from '@angular/router'
 import { TheSeamDatatableModule } from '../datatable.module'
 import { THESEAM_DATATABLE } from '../datatable/datatable.component'
+import { ColumnsAlteration } from '../models/columns-alteration'
+import { ColumnsAlterationsChangedRecord, ColumnsAlterationsManagerService } from '../services/columns-alterations-manager.service'
 import { DatatablePreferencesAccessorLocalService } from '../stories/preferences-accessor-local'
 import { TheSeamDatatableHarness } from '../testing'
 import { THESEAM_DATATABLE_PREFERENCES_ACCESSOR } from '../tokens/datatable-preferences-accessor'
@@ -42,32 +46,47 @@ class MockDatatable {
 
 }
 
+class MockColumnsAlterationsManagerService implements Partial<ColumnsAlterationsManagerService> {
+  public add(alterations: ColumnsAlteration[], options?: { emitEvent?: boolean }): ColumnsAlterationsChangedRecord[] {
+    return []
+  }
+  public clear(options?: { emitEvent?: boolean }): ColumnsAlterationsChangedRecord[] {
+    return []
+  }
+}
+
 export default {
   title: 'Datatable/Components/Column Preferences',
   component: DatatableColumnPreferencesButtonComponent,
   decorators: [
+    applicationConfig({
+      providers: [
+        provideAnimations(),
+        importProvidersFrom(
+          RouterModule.forRoot([], { useHash: true }),
+        ),
+      ],
+    }),
     moduleMetadata({
       imports: [
-        BrowserAnimationsModule,
-        RouterModule.forRoot([], { useHash: true }),
         TheSeamDataFiltersModule,
         TheSeamDatatableModule,
-        TheSeamTableCellTypesModule
+        TheSeamTableCellTypesModule,
       ],
       providers: [
         {
           provide: THESEAM_DATATABLE_PREFERENCES_ACCESSOR,
-          useClass: DatatablePreferencesAccessorLocalService
-        }
-      ]
-    })
+          useClass: DatatablePreferencesAccessorLocalService,
+        },
+      ],
+    }),
   ],
   parameters: {
     layout: 'fullscreen',
     docs: {
       iframeHeight: '400px',
-    }
-  }
+    },
+  },
 } as Meta
 
 export const Example: Story = (args) => ({
@@ -90,9 +109,6 @@ export const Example: Story = (args) => ({
         new XLSXDataExporter()
       ]
     },
-    // moduleMetadata: {
-    //   imports: [ TheSeamDataFiltersModule ]
-    // },
   },
   template: `
     <div class="vh-100 d-flex flex-column p-2">
@@ -131,8 +147,9 @@ Example.play = async ({ canvasElement, fixture }) => {
 export const Popover: Story = (args) => ({
   moduleMetadata: {
     providers: [
-      { provide: THESEAM_DATATABLE, useClass: MockDatatable }
-    ]
+      { provide: THESEAM_DATATABLE, useClass: MockDatatable },
+      { provide: ColumnsAlterationsManagerService, useClass: MockColumnsAlterationsManagerService },
+    ],
   },
   props: { },
   template: `
@@ -140,5 +157,5 @@ export const Popover: Story = (args) => ({
       <div class="popover-body">
         <seam-datatable-column-preferences></seam-datatable-column-preferences>
       </div>
-    </div>`
+    </div>`,
 })

@@ -1,6 +1,8 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular'
+import { applicationConfig } from '@storybook/angular/dist/client/decorators'
 
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { importProvidersFrom } from '@angular/core'
+import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations'
 import { RouterModule } from '@angular/router'
 
 import { TheSeamDatatableModule } from '@theseam/ui-common/datatable'
@@ -21,12 +23,19 @@ export default {
   title: 'Components/TableCellTypes/ProgressCircle',
   component: TableCellTypeProgressCircleComponent,
   decorators: [
+    applicationConfig({
+      providers: [
+        provideAnimations(),
+        importProvidersFrom(
+          RouterModule.forRoot([], { useHash: true }),
+        ),
+      ],
+    }),
     moduleMetadata({
       imports: [
-        RouterModule.forRoot([], { useHash: true }),
-        BrowserAnimationsModule,
+        RouterModule,
         TheSeamDatatableModule,
-        TheSeamTableCellTypesModule
+        TheSeamTableCellTypesModule,
       ],
       providers: [
         { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
@@ -35,15 +44,15 @@ export default {
         { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionApiService, multi: true },
         { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionLinkService, multi: true },
         { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionModalService, multi: true },
-      ]
-    })
+      ],
+    }),
   ],
   parameters: {
     layout: 'fullscreen',
     docs: {
       iframeHeight: '150px',
-    }
-  }
+    },
+  },
 } as Meta
 
 export const NoConfig: Story = (args) => {
@@ -57,15 +66,15 @@ export const NoConfig: Story = (args) => {
         {
           prop: 'completionPercent',
           name: 'Completion',
-          cellType: 'progress-circle-icon'
-        }
+          cellType: 'progress-circle-icon',
+        },
       ],
-      rows
+      rows,
     },
   }
 }
 NoConfig.args = {
-  value: 75
+  value: 75,
 }
 
 export const WithConfig: Story = (args) => {
@@ -92,22 +101,22 @@ export const WithConfig: Story = (args) => {
           // target: '_blank',
           // asset: { type: 'jexl', expr: 'row.primaryIconActionAsset' },
           detectMimeContent: true,
-          queryParams: { test: 'thing' }
-        }
-      }
-    }
+          queryParams: { test: 'thing' },
+        },
+      },
+    },
   ]
   const rows = [
-    { completionPercent: args.value }
+    { completionPercent: args.value },
   ]
   return {
     template: `<seam-datatable class="vw-100 vh-100" [columns]="columns" [rows]="rows"></seam-datatable>`,
     props: {
       columns,
-      rows
+      rows,
     },
   }
 }
 WithConfig.args = {
-  value: 75
+  value: 75,
 }

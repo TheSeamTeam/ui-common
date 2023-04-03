@@ -1,10 +1,11 @@
 import { moduleMetadata } from '@storybook/angular'
+import { applicationConfig } from '@storybook/angular/dist/client/decorators'
 
 import { CommonModule } from '@angular/common'
 import { HttpClientModule } from '@angular/common/http'
-import { Component, NgModule } from '@angular/core'
+import { Component, importProvidersFrom, NgModule } from '@angular/core'
 import { BrowserModule } from '@angular/platform-browser'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations'
 import { Route, RouterModule } from '@angular/router'
 
 import {
@@ -27,6 +28,8 @@ import {
 import { DynamicComponentManifest, TheSeamDynamicComponentLoaderModule } from '@theseam/ui-common/dynamic-component-loader'
 import { TheSeamModalModule } from '@theseam/ui-common/modal'
 
+import { CSVDataExporter, THESEAM_DATA_EXPORTER, XLSXDataExporter } from '@theseam/ui-common/data-exporter'
+import { TheSeamDataExporterModule } from '../data-exporter/data-exporter.module'
 import { THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM } from './datatable-dynamic-menu-bar-token'
 import { DatatableDynamicComponent } from './datatable-dynamic.component'
 import { TheSeamDatatableDynamicModule } from './datatable-dynamic.module'
@@ -191,30 +194,26 @@ export default {
   title: 'Datatable Dynamic/Components',
   component: DatatableDynamicComponent,
   decorators: [
-    moduleMetadata({
-      imports: [
-        BrowserAnimationsModule,
-        BrowserModule,
-        HttpClientModule,
-        RouterModule.forRoot(routes, { useHash: true }),
-        TheSeamDatatableDynamicModule,
-        // ExampleModalModule
-        TheSeamDynamicComponentLoaderModule.forRoot([
-          ...manifests,
-          {
-            componentId: 'story-ex-modal',
-            path: 'story-ex-modal',
-
-            // Lazy Load. Lazy load if you can to avoid us accidentally making the
-            // inital app bundle to large as we keep adding modals.
-            // loadChildren: () => import('./story-ex-modal-lazy/story-ex-modal-lazy.module').then(m => m.StoryExModalLazyModule)
-
-            // Non-lazy Load
-            loadChildren: () => StoryExModalLazyModule
-          }
-        ])
-      ],
+    applicationConfig({
       providers: [
+        provideAnimations(),
+        importProvidersFrom(
+          RouterModule.forRoot(routes, { useHash: true }),
+          TheSeamDynamicComponentLoaderModule.forRoot([
+            ...manifests,
+            {
+              componentId: 'story-ex-modal',
+              path: 'story-ex-modal',
+
+              // Lazy Load. Lazy load if you can to avoid us accidentally making the
+              // inital app bundle to large as we keep adding modals.
+              // loadChildren: () => import('./story-ex-modal-lazy/story-ex-modal-lazy.module').then(m => m.StoryExModalLazyModule)
+
+              // Non-lazy Load
+              loadChildren: () => StoryExModalLazyModule,
+            },
+          ]),
+        ),
         { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
         { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: ExportersDataEvaluator, multi: true },
 
@@ -246,10 +245,28 @@ export default {
           provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
           useValue: { name: 'text', component: DatatableMenuBarTextComponent, dataToken: THESEAM_MENUBAR_ITEM_DATA },
           multi: true
-        }
+        },
+
+        // { provide: THESEAM_DATA_EXPORTER, useClass: CSVDataExporter, multi: true },
+        // { provide: THESEAM_DATA_EXPORTER, useClass: XLSXDataExporter, multi: true }
+      ],
+    }),
+    moduleMetadata({
+      imports: [
+        HttpClientModule,
+        TheSeamDatatableDynamicModule,
+        // ExampleModalModule
+        TheSeamModalModule,
+        // TheSeamDataExporterModule,
       ]
     })
   ],
+  parameters: {
+    layout: 'fullscreen',
+    docs: {
+      iframeHeight: '600px',
+    }
+  },
   excludeStories: [ 'StoryExModalLazyComponent', 'StoryExModalLazyModule' ]
 }
 

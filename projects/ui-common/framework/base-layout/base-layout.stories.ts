@@ -1,10 +1,9 @@
-// import { boolean, text } from '@storybook/addon-knobs'
 import { Meta, moduleMetadata } from '@storybook/angular'
-import { TheSeamBaseLayoutComponent } from './base-layout.component'
+import { applicationConfig } from '@storybook/angular/dist/client/decorators'
 
 import { APP_BASE_HREF } from '@angular/common'
-import { Component } from '@angular/core'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { Component, importProvidersFrom } from '@angular/core'
+import { provideAnimations } from '@angular/platform-browser/animations'
 import { Route, Router, RouterModule } from '@angular/router'
 import { of } from 'rxjs'
 import { delay } from 'rxjs/operators'
@@ -32,6 +31,7 @@ import { ISideNavItem } from '../side-nav/side-nav.models'
 import { TheSeamSideNavModule } from '../side-nav/side-nav.module'
 import { TheSeamTopBarModule } from '../top-bar/top-bar.module'
 
+import { TheSeamBaseLayoutComponent } from './base-layout.component'
 import { TheSeamBaseLayoutModule } from './base-layout.module'
 
 
@@ -46,7 +46,7 @@ import { TheSeamBaseLayoutModule } from './base-layout.module'
   </seam-widget-tile-list>
 
   <seam-widget-footer-text *ngIf="p?.length">Submitted: {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text>
-</seam-widget>`
+</seam-widget>`,
 })
 class StoryExWidget1Component {
   faWrench = faWrench
@@ -66,7 +66,7 @@ class StoryExWidget1Component {
   </seam-widget-tile-list>
 
   <seam-widget-footer-text *ngIf="p?.length">Submitted: {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text>
-</seam-widget>`
+</seam-widget>`,
 })
 class StoryExWidget2Component {
   faWrench = faWrench
@@ -86,7 +86,7 @@ class StoryExWidget2Component {
   </seam-widget-tile-list>
 
   <a seam-widget-footer-link routerLink="/example1">See All</a>
-</seam-widget>`
+</seam-widget>`,
 })
 class StoryExWidget3Component {
   faWrench = faWrench
@@ -106,7 +106,7 @@ class StoryExWidget3Component {
   </seam-widget-tile-list>
 
   <seam-widget-footer-text *ngIf="p?.length">Submitted: {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text>
-</seam-widget>`
+</seam-widget>`,
 })
 class StoryExWidget4Component {
   faWrench = faWrench
@@ -237,38 +237,42 @@ export default {
   title: 'Framework/Base Layout',
   component: TheSeamBaseLayoutComponent,
   decorators: [
+    applicationConfig({
+      providers: [
+        provideAnimations(),
+        importProvidersFrom(
+          RouterModule.forRoot([], { useHash: true }),
+        ),
+        { provide: APP_BASE_HREF, useValue: '/' },
+      ],
+    }),
     moduleMetadata({
       declarations: [
         StoryExWidget1Component,
         StoryExWidget2Component,
         StoryExWidget3Component,
         StoryExWidget4Component,
-        StoryRoutePlacholderComponent
+        StoryRoutePlacholderComponent,
       ],
       imports: [
-        BrowserAnimationsModule,
-        RouterModule.forRoot(routes, { useHash: true }),
         TheSeamBaseLayoutModule,
         TheSeamDashboardModule,
         TheSeamSideNavModule,
         TheSeamTopBarModule,
         TheSeamWidgetModule,
-        TheSeamBreadcrumbsModule
-      ],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: '/' },
+        TheSeamBreadcrumbsModule,
       ],
       entryComponents: [
         StoryExWidget1Component,
         StoryExWidget2Component,
         StoryExWidget3Component,
-        StoryExWidget4Component
+        StoryExWidget4Component,
       ]
     }),
   ],
   parameters: {
-    layout: 'fullscreen'
-  }
+    layout: 'fullscreen',
+  },
 } as Meta
 
 export const Basic = () => ({
@@ -283,7 +287,7 @@ export const Basic = () => ({
       { widgetId: 'widget-1', col: 0, order: 0, component: StoryExWidget1Component },
       { widgetId: 'widget-2', col: 1, order: 0, component: StoryExWidget2Component },
       { widgetId: 'widget-3', col: 2, order: 0, component: StoryExWidget3Component },
-      { widgetId: 'widget-4', col: 1, order: 1, component: StoryExWidget4Component }
+      { widgetId: 'widget-4', col: 1, order: 1, component: StoryExWidget4Component },
     ],
     faUserAlt,
     faQuestionCircle,
@@ -348,5 +352,5 @@ export const Basic = () => ({
         </seam-dashboard>
       </seam-base-layout>
     </div>
-  `
+  `,
 })

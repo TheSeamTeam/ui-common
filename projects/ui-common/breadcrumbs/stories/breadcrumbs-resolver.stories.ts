@@ -1,7 +1,7 @@
 import { Meta, Story } from '@storybook/angular'
 
-import { BrowserModule } from '@angular/platform-browser'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { importProvidersFrom } from '@angular/core'
+import { provideAnimations } from '@angular/platform-browser/animations'
 import { RouterModule } from '@angular/router'
 
 import { routesArgType, StoryEmptyComponent, StoryInitialRouteModule } from '@theseam/ui-common/story-helpers'
@@ -18,37 +18,41 @@ export default {
 } as Meta
 
 export const Example: Story = (args) => ({
+  applicationConfig: {
+    providers: [
+      provideAnimations(),
+      importProvidersFrom(
+        RouterModule.forRoot([
+          {
+            path: 'users',
+            component: StoryEmptyComponent,
+            data: {
+              breadcrumb: 'Users'
+            },
+            children: [
+              {
+                path: ':userId',
+                component: StoryEmptyComponent,
+                data: { },
+                resolve: {
+                  breadcrumb: StoryUserIdToNameResolver
+                }
+              }
+            ]
+          }
+        ], { useHash: true }),
+        StoryInitialRouteModule.forRoot('/users/123'),
+      ),
+      StoryUsersDataService,
+      StoryUserIdToNameResolver,
+    ],
+  },
   moduleMetadata: {
     declarations: [
       StoryEmptyComponent
     ],
-    providers: [
-      StoryUsersDataService,
-      StoryUserIdToNameResolver
-    ],
     imports: [
-      BrowserAnimationsModule,
-      BrowserModule,
-      RouterModule.forRoot([
-        {
-          path: 'users',
-          component: StoryEmptyComponent,
-          data: {
-            breadcrumb: 'Users'
-          },
-          children: [
-            {
-              path: ':userId',
-              component: StoryEmptyComponent,
-              data: { },
-              resolve: {
-                breadcrumb: StoryUserIdToNameResolver
-              }
-            }
-          ]
-        }
-      ], { useHash: true }),
-      StoryInitialRouteModule.forRoot('/users/123')
+      RouterModule,
     ]
   },
   props: { ...args },

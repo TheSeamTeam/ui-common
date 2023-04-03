@@ -1,7 +1,7 @@
 import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular'
+import { applicationConfig } from '@storybook/angular/dist/client/decorators'
 
-import { BrowserModule } from '@angular/platform-browser'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { provideAnimations } from '@angular/platform-browser/animations'
 
 import { faWrench } from '@fortawesome/free-solid-svg-icons'
 
@@ -12,20 +12,23 @@ export default {
   title: 'Widget/Components',
   component: WidgetComponent,
   decorators: [
+    applicationConfig({
+      providers: [
+        provideAnimations(),
+      ],
+    }),
     moduleMetadata({
       imports: [
-        BrowserAnimationsModule,
-        BrowserModule,
-        TheSeamWidgetModule
-      ]
+        TheSeamWidgetModule,
+      ],
     }),
-    componentWrapperDecorator(story => `<div class="p-4" style="height: 270px; width: 500px;">${story}</div>`)
+    componentWrapperDecorator(story => `<div class="p-4" style="height: 270px; width: 500px;">${story}</div>`),
   ],
   parameters: {
     docs: {
       iframeHeight: '300px',
-    }
-  }
+    },
+  },
 } as Meta
 
 export const Simple: Story = (args) => ({
@@ -33,10 +36,10 @@ export const Simple: Story = (args) => ({
     ...args,
     icon: faWrench,
   },
-  template: `<seam-widget>Widget Body</seam-widget>`
+  template: `<seam-widget>Widget Body</seam-widget>`,
 })
 Simple.args = {
-  titleText: 'Example Widget'
+  titleText: 'Example Widget',
 }
 
 export const FAIcon: Story = (args) => ({
@@ -44,21 +47,21 @@ export const FAIcon: Story = (args) => ({
     ...args,
     icon: faWrench,
   },
-  template: `<seam-widget>Widget Body</seam-widget>`
+  template: `<seam-widget>Widget Body</seam-widget>`,
 })
 FAIcon.args = {
-  titleText: 'Example Widget'
+  titleText: 'Example Widget',
 }
 
 export const ImageIcon: Story = (args) => ({
   props: {
     ...args,
-    icon: 'assets/images/icons8-pass-fail-32.png'
+    icon: 'assets/images/icons8-pass-fail-32.png',
   },
-  template: `<seam-widget>Widget Body</seam-widget>`
+  template: `<seam-widget>Widget Body</seam-widget>`,
 })
 ImageIcon.args = {
-  titleText: 'Example Widget'
+  titleText: 'Example Widget',
 }
 
 export const TitleTemplate: Story = (args) => ({
@@ -75,10 +78,10 @@ export const TitleTemplate: Story = (args) => ({
         </span>
       </ng-template>
       Widget Body
-    </seam-widget>`
+    </seam-widget>`,
 })
 TitleTemplate.args = {
-  titleText: 'Example Widget'
+  titleText: 'Example Widget',
 }
 
 export const IconTemplate: Story = (args) => ({
@@ -94,27 +97,27 @@ export const IconTemplate: Story = (args) => ({
     </seam-widget>`
 })
 IconTemplate.args = {
-  titleText: 'Example Widget'
+  titleText: 'Example Widget',
 }
 
 export const Loading: Story = (args) => ({
   props: {
     ...args,
-    icon: faWrench
+    icon: faWrench,
   },
   template: `
     <seam-widget [icon]="icon" [titleText]="title" [loading]="loading">
       Widget Body
-    </seam-widget>`
+    </seam-widget>`,
 })
 Loading.args = {
-  loading: true
+  loading: true,
 }
 
 export const NoHeader: Story = (args) => ({
   props: { ...args },
-  template: `<seam-widget>Widget Body</seam-widget>`
+  template: `<seam-widget>Widget Body</seam-widget>`,
 })
 NoHeader.args = {
-  hasHeader: false
+  hasHeader: false,
 }
