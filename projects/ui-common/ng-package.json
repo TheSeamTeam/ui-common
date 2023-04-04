@@ -71,7 +71,7 @@
     },
     {
       "glob": "**/*.scss",
-      "input": "widget/side-nav",
+      "input": "framework/side-nav",
       "output": "framework/side-nav"
     },
     {
