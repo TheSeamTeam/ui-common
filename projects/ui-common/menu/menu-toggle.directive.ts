@@ -3,12 +3,9 @@ import { DOWN_ARROW, ESCAPE, UP_ARROW } from '@angular/cdk/keycodes'
 import { ConnectionPositionPair, Overlay, OverlayRef, PositionStrategy } from '@angular/cdk/overlay'
 import { normalizePassiveListenerOptions } from '@angular/cdk/platform'
 import { TemplatePortal } from '@angular/cdk/portal'
-import { Directive, ElementRef, HostListener, Inject, Input, OnDestroy, Optional, ViewContainerRef } from '@angular/core'
+import { Directive, ElementRef, EventEmitter, HostListener, Input, OnDestroy, Output, ViewContainerRef } from '@angular/core'
 import { merge, of, Subscription } from 'rxjs'
 
-import { MenuItemComponent } from './menu-item.component'
-import { ITheSeamMenuPanel } from './menu-panel'
-import { THESEAM_MENU_PANEL } from './menu-panel-token'
 import { MenuComponent } from './menu.component'
 
 /** Options for binding a passive event listener. */
@@ -72,6 +69,8 @@ export class MenuToggleDirective implements OnDestroy {
       overlayY: 'bottom',
     },
   ]
+
+  @Output() readonly menuToggle = new EventEmitter<boolean>()
 
   @HostListener('mousedown', [ '$event' ])
   _onMouseDown(event: MouseEvent) {
@@ -183,6 +182,8 @@ export class MenuToggleDirective implements OnDestroy {
     // this._overlayRef.backdropClick().subscribe(v => {
     //   console.log('backdropClick', v)
     // })
+
+    this.menuToggle.emit(true)
   }
 
   public closeMenu(): void {
@@ -201,6 +202,8 @@ export class MenuToggleDirective implements OnDestroy {
     this._closingActionsSubscription.unsubscribe()
 
     this._active = false
+
+    this.menuToggle.emit(false)
   }
 
   public menuOpen(): boolean {

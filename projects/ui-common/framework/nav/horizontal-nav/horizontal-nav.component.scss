@@ -1,0 +1,50 @@
+@import '../styles/utilities';
+
+seam-horizontal-nav,
+.seam-horizontal-nav {
+  display: block;
+  height: 100%;
+
+  // Prevent main page content layer overlapping the nav while animating.
+  position: relative;
+  z-index: 2;
+
+  .nav-inner-wrapper {
+    background: $seam-nav-bg;
+    height: 100%;
+  }
+
+  .nav-backdrop {
+    background: $seam-nav-background-bg-color;
+    width: 100vw;
+    height: 100vh;
+
+    &.nav-backdrop-hidden {
+      display: none;
+      width: 0;
+      height: 0;
+      padding: 0;
+      margin: 0;
+    }
+  }
+
+  .nav-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    flex-wrap: nowrap;
+  }
+
+  .nav-items-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex: 1 1 100%;
+  }
+
+  .nav-items-row {
+    height: 100%;
+    display: flex;
+    padding: $seam-nav-row-padding;
+  }
+}

@@ -10,5 +10,10 @@
   </div>
 </div>
 <ng-template #compactTpl>
-  <seam-icon [icon]="profileIcon" iconType="borderless-styled-square"></seam-icon>
+  <ng-container *ngIf="compactDetailTpl; else iconTpl">
+    <ng-template [ngTemplateOutlet]="$any(compactDetailTpl)"></ng-template>
+  </ng-container>
+  <ng-template #iconTpl>
+    <seam-icon [icon]="profileIcon" iconType="borderless-styled-square"></seam-icon>
+  </ng-template>
 </ng-template>

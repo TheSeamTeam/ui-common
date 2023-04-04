@@ -23,7 +23,7 @@ const _TopBarMenuButtonMixinBase: CanDisableCtor & typeof TopBarMenuButtonBase =
   // tslint:disable-next-line:use-host-property-decorator
   host: {
     'attr.type': 'button',
-    'class': 'btn border text-decoration-none py-0',
+    'class': 'btn border text-decoration-none py-0 top-bar-menu-button',
     '[attr.aria-disabled]': 'disabled.toString()',
     '[attr.disabled]': 'disabled || null',
   },
@@ -34,7 +34,11 @@ export class TopBarMenuButtonComponent extends _TopBarMenuButtonMixinBase implem
 
   faAngleDown = faAngleDown
 
-  @Input() detailTpl: TemplateRef<{}> | undefined | null
+  /** Custom template to show in desktop mode. No default. */
+  @Input() detailTpl: TemplateRef<any> | undefined | null
+
+  /** Custom template to show in mobile mode. Defaults to icon. */
+  @Input() compactDetailTpl: TemplateRef<any> | undefined | null
 
   @Input() @InputBoolean() compact: boolean = false
 

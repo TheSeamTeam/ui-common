@@ -1,31 +1,48 @@
 <div class="side-nav-backdrop" *ngIf="isMobile$ | async"
   [@sideNavBackdrop]="_sideNavExpand"
-  [class.side-nav-backdrop-hidden]="_backdropHidden | async"></div>
+  [class.side-nav-backdrop-hidden]="_backdropHidden | async"
+  (click)="collapse()"></div>
 
-<div class="side-nav-inner-wrapper" [@sideNavExpand]="_sideNavExpand"
+<div
+  class="side-nav-inner-wrapper"
+  [@sideNavExpand]="{
+    value: _sideNavExpand,
+    params: {
+      origin: expandOriginTransform,
+      height: expandHeight,
+      width: expandWidth
+    }
+  }"
   (@sideNavExpand.start)="animateStart()"
   (@sideNavExpand.done)="animateEnd()">
   <nav class="nav side-nav-content">
     <seam-side-nav-toggle *ngIf="hasHeaderToggle"
+      [toggleIcon]="toggleIcon"
+      [toggleTpl]="toggleTpl"
       [expanded]="expanded$ | async"
       (toggleExpand)="toggle()">
+      <ng-template [cdkPortalOutlet]="_sideBarHeaderPortal"></ng-template>
     </seam-side-nav-toggle>
     <div class="side-nav-items-container" seamOverlayScrollbar>
-      <seam-side-nav-item *ngFor="let item of items$ | async"
-        [compact]="!(expanded$ | async)"
-        [itemType]="$any(item)?.itemType"
-        [icon]="$any(item)?.icon"
-        [label]="$any(item)?.label"
-        [link]="$any(item)?.link"
-        [badgeText]="$any(item)?.badge?.text"
-        [badgeTheme]="$any(item)?.badge?.theme || 'danger'"
-        [badgeSrContent]="$any(item)?.badge?.srContent"
-        [badgeTooltip]="$any(item)?.badge?.tooltip"
-        [queryParams]="$any(item)?.queryParams"
-        [children]="$any(item)?.children"
-        [active]="$any(item).__state.active"
-        [expanded]="$any(item).__state.expanded">
+      <div class="side-nav--group side-nav--group--level-0">
+        <seam-side-nav-item *ngFor="let item of items$ | async"
+          [compact]="!(expanded$ | async)"
+          [itemType]="$any(item)?.itemType"
+          [icon]="$any(item)?.icon"
+          [label]="$any(item)?.label"
+          [link]="$any(item)?.link"
+          [badgeText]="$any(item)?.badge?.text"
+          [badgeTheme]="$any(item)?.badge?.theme || 'danger'"
+          [badgeSrContent]="$any(item)?.badge?.srContent"
+          [badgeTooltip]="$any(item)?.badge?.tooltip"
+          [queryParams]="$any(item)?.queryParams"
+          [children]="$any(item)?.children"
+          [active]="$any(item).__state?.active"
+          [expanded]="$any(item).__state?.expanded"
+          [hideEmptyIcon]="hideEmptyIcon"
+          [indentSize]="indentSize">
       </seam-side-nav-item>
+      </div>
     </div>
     <ng-template [cdkPortalOutlet]="_sideBarFooterPortal"></ng-template>
   </nav>

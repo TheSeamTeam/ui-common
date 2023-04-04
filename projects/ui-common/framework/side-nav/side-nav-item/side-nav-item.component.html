@@ -1,4 +1,4 @@
-<div class="d-flex flex-row">
+<div class="d-flex flex-row side-nav-item-wrapper">
   <ng-container *ngIf="itemType === 'basic'">
     <ng-template [ngTemplateOutlet]="itemTypeBasic"></ng-template>
   </ng-container>
@@ -31,20 +31,22 @@
       routerLinkActive="active"
       [routerLinkActiveOptions]="{ exact: true }"
       [children]="$any(child)?.children"
-      [active]="$any(child).__state.active"
-      [expanded]="$any(child).__state.expanded">
+      [active]="$any(child).__state?.active"
+      [expanded]="$any(child).__state?.expanded"
+      [hideEmptyIcon]="hideEmptyIcon"
+      [indentSize]="indentSize">
     </seam-side-nav-item>
   </div>
 </ng-container>
 
 <ng-template #itemTypeBasic>
-  <button class="side-nav-item btn side-nav-btn p-0 d-flex flex-row rounded-0 text-decoration-none text-nowrap w-100"
+  <button class="side-nav-item btn side-nav-btn p-0 d-flex flex-row align-items-stretch rounded-0 text-decoration-none text-nowrap w-100"
     cdkMonitorElementFocus
     (click)="toggleChildren()"
     [attr.aria-expanded]="expanded">
-    <div class="nav-link d-flex flex-row w-100" [class.nav-link__compact]="compact">
+    <div class="nav-link d-flex flex-row align-items-center w-100" [class.nav-link__compact]="compact">
       <div [style.padding-left.px]="hierLevel * indentSize"></div>
-      <div class="side-nav-item--icon">
+      <div class="side-nav-item--icon" *ngIf="showIconBlock">
         <seam-icon *ngIf="icon" [icon]="icon"></seam-icon>
         <ng-container *ngIf="compact">
           <ng-template [ngTemplateOutlet]="itemBadge"></ng-template>
@@ -80,7 +82,7 @@
     [routerLinkActiveOptions]="{ exact: true }"
     (click)="_linkClicked()">
     <div [style.padding-left.px]="hierLevel * indentSize"></div>
-    <div class="side-nav-item--icon">
+    <div class="side-nav-item--icon" *ngIf="showIconBlock">
       <seam-icon *ngIf="icon" [icon]="icon"></seam-icon>
       <ng-container *ngIf="compact">
         <ng-template [ngTemplateOutlet]="itemBadge"></ng-template>
@@ -98,7 +100,7 @@
   <ng-template #noLink>
     <a class="side-nav-item nav-link d-flex flex-row text-nowrap w-100 align-items-center" [class.nav-link__compact]="compact">
       <div [style.padding-left.px]="hierLevel * indentSize"></div>
-      <div class="side-nav-item--icon">
+      <div class="side-nav-item--icon" *ngIf="showIconBlock">
         <seam-icon *ngIf="icon" [icon]="icon"></seam-icon>
       </div>
       <span *ngIf="!compact" style="margin-left: 11px;" side-nav-item-label>

@@ -1,30 +1,30 @@
 import { Injectable } from '@angular/core'
-import { ActivatedRoute, IsActiveMatchOptions, NavigationEnd, Router, UrlCreationOptions } from '@angular/router'
-import { BehaviorSubject, combineLatest, defer, Observable, of, Subject, Subscriber } from 'rxjs'
-import { distinctUntilChanged, filter, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators'
+import { IsActiveMatchOptions, NavigationEnd, Router, UrlCreationOptions } from '@angular/router'
+import { BehaviorSubject, defer, Observable, Subject, Subscriber } from 'rxjs'
+import { distinctUntilChanged, filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
 import { hasProperty, notNullOrUndefined } from '@theseam/ui-common/utils'
 
 import {
-  canExpand,
-  getItemStateProp,
-  hasActiveChild,
-  hasChildren,
-  hasExpandedChild,
-  isNavItemType,
-  setDefaultState,
-  setItemStateProp
-} from './side-nav-utils'
-import { ISideNavItem, ISideNavItemState, ISideNavLink, SideNavItemStateChanged } from './side-nav.models'
+  horizontalNavItemCanExpand,
+  getHorizontalNavItemStateProp,
+  horizontalNavItemHasActiveChild,
+  horizontalNavItemHasChildren,
+  horizontalNavItemHasExpandedChild,
+  isHorizontalNavItemType,
+  setDefaultHorizontalNavItemState,
+  setHorizontalNavItemStateProp
+} from './nav-utils'
+import { INavItem, INavItemState, INavLink, NavItemStateChanged } from './nav.models'
 
 @Injectable()
-export class TheSeamSideNavService {
+export class TheSeamNavService {
 
   private readonly _updatingCount = new BehaviorSubject<number>(0)
 
   public readonly loading$: Observable<boolean>
 
-  public readonly itemChanged = new Subject<SideNavItemStateChanged>()
+  public readonly itemChanged = new Subject<NavItemStateChanged>()
 
   constructor(
     private readonly _router: Router
@@ -36,12 +36,14 @@ export class TheSeamSideNavService {
     )
   }
 
-  public createItemsObservable(items: ISideNavItem[]): Observable<ISideNavItem[]> {
+  public createItemsObservable(items: INavItem[]): Observable<INavItem[]> {
     return defer(() => {
       this.updateItemsStates(items)
-      return new Observable((subscriber: Subscriber<ISideNavItem[]>) => {
+      return new Observable((subscriber: Subscriber<INavItem[]>) => {
         const stateChangeSub = this.itemChanged.pipe(
-          switchMap(() => this.loading$.pipe(filter(loading => !loading)))
+          switchMap(change => {
+            return this.loading$.pipe(filter(loading => !loading))
+          })
         ).subscribe(() => {
           subscriber.next(items)
         })
@@ -52,11 +54,8 @@ export class TheSeamSideNavService {
           subscriber.error(err)
         }
 
-        // const linkItems = findLinkItems(items)
-
         const routeChangeSub = this._router.events.pipe(
           filter(event => event instanceof NavigationEnd),
-        // ).subscribe(() => linkItems.forEach(itm => this.updateItemState(itm)))
         ).subscribe(() => {
           try {
             this.updateItemsStates(items)
@@ -81,12 +80,12 @@ export class TheSeamSideNavService {
     this._updatingCount.next(this._updatingCount.value - 1)
   }
 
-  public updateItemsStates(items: ISideNavItem[]): void {
+  public updateItemsStates(items: INavItem[]): void {
     this._incUpdatingCount()
 
     try {
       for (const item of items) {
-        if (hasChildren(item)) {
+        if (horizontalNavItemHasChildren(item)) {
           this.updateItemsStates(item.children)
         }
 
@@ -100,13 +99,13 @@ export class TheSeamSideNavService {
     }
   }
 
-  public updateItemState(item: ISideNavItem): void {
+  public updateItemState(item: INavItem): void {
     this._incUpdatingCount()
 
     try {
-      setDefaultState(item)
+      setDefaultHorizontalNavItemState(item)
 
-      if (isNavItemType(item, 'link')) {
+      if (isHorizontalNavItemType(item, 'link')) {
         const url = this._getUrl(item)
         if (notNullOrUndefined(url)) {
           const opts = this._getMatchOptions(item)
@@ -115,7 +114,7 @@ export class TheSeamSideNavService {
       }
 
       // TODO: Implement this in a more optimized way. Unless our apps start
-      // having large side-navs constantly updating their state, this shouldn't
+      // having large navs constantly updating their state, this shouldn't
       // have much impact on performance.
       this._updateItemExpandedState(item)
 
@@ -126,39 +125,39 @@ export class TheSeamSideNavService {
     }
   }
 
-  private _updateItemsExpandedState(items: ISideNavItem[]): void {
+  private _updateItemsExpandedState(items: INavItem[]): void {
     for (const item of items) {
-      if (hasChildren(item)) {
+      if (horizontalNavItemHasChildren(item)) {
         this._updateItemsExpandedState(item.children)
       }
       this._updateItemExpandedState(item)
     }
   }
 
-  private _updateItemExpandedState(item: ISideNavItem): void {
-    if (!canExpand(item)) {
-      if (getItemStateProp(item, 'expanded')) {
+  private _updateItemExpandedState(item: INavItem): void {
+    if (!horizontalNavItemCanExpand(item)) {
+      if (getHorizontalNavItemStateProp(item, 'expanded')) {
         this.setItemStateProp(item, 'expanded', false)
       }
       return
     }
 
-    if (hasChildren(item)) {
+    if (horizontalNavItemHasChildren(item)) {
       this._updateItemsExpandedState(item.children)
     }
 
-    if (hasActiveChild(item) || hasExpandedChild(item)) {
-      if (!getItemStateProp(item, 'expanded')) {
+    if (horizontalNavItemHasActiveChild(item) || horizontalNavItemHasExpandedChild(item)) {
+      if (!getHorizontalNavItemStateProp(item, 'expanded')) {
         this.setItemStateProp(item, 'expanded', true)
       }
     } else {
-      if (getItemStateProp(item, 'expanded')) {
+      if (getHorizontalNavItemStateProp(item, 'expanded')) {
         this.setItemStateProp(item, 'expanded', false)
       }
     }
   }
 
-  private _getNavExtras(item: ISideNavLink): UrlCreationOptions {
+  private _getNavExtras(item: INavLink): UrlCreationOptions {
     const navigationExtras: UrlCreationOptions = { }
     if (hasProperty(item, 'queryParams')) {
       navigationExtras.queryParams = item.queryParams
@@ -175,7 +174,7 @@ export class TheSeamSideNavService {
     return navigationExtras
   }
 
-  private _getUrl(item: ISideNavLink): string | null {
+  private _getUrl(item: INavLink): string | null {
     const link = item.link
 
     if (typeof link === 'string') {
@@ -187,7 +186,7 @@ export class TheSeamSideNavService {
     return null
   }
 
-  private _getMatchOptions(item: ISideNavLink): IsActiveMatchOptions {
+  private _getMatchOptions(item: INavLink): IsActiveMatchOptions {
     const defaultMatchOpts: IsActiveMatchOptions = {
       paths: 'subset',
       queryParams: 'subset',
@@ -205,12 +204,12 @@ export class TheSeamSideNavService {
     return defaultMatchOpts
   }
 
-  public setItemStateProp<K extends keyof ISideNavItemState>(item: ISideNavItem, prop: K, value: ISideNavItemState[K]): void {
-    const currentValue = getItemStateProp(item, prop)
+  public setItemStateProp<K extends keyof INavItemState>(item: INavItem, prop: K, value: INavItemState[K]): void {
+    const currentValue = getHorizontalNavItemStateProp(item, prop)
     if (currentValue !== value) {
-      setItemStateProp(item, prop, value)
+      setHorizontalNavItemStateProp(item, prop, value)
 
-      const changed: SideNavItemStateChanged = {
+      const changed: NavItemStateChanged = {
         item,
         prop,
         prevValue: currentValue,

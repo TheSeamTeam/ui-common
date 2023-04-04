@@ -13,23 +13,17 @@
     </div>
   </div>
   <div class="base-layout-content-container">
-    <div class="base-layout-content-container-header">
-      <!-- <ng-template [cdkPortalOutlet]="_contentHeaderPortal"></ng-template> -->
-
-      <div class="d-flex d-flex-row">
-        <div class="flex-grow-1">
-          <ng-template [cdkPortalOutlet]="_contentHeaderPortal"></ng-template>
-        </div>
-        <div class="d-flex">
-          <ng-container *ngFor="let action of registeredActions$ | async; first as isFirst">
-            <div>
-              <ng-container [ngTemplateOutlet]="$any(action)?.template"></ng-container>
-            </div>
-          </ng-container>
-        </div>
+    <div class="base-layout-content-container-header d-flex flex-row">
+      <div class="base-layout-content-container-header-left flex-grow-1">
+        <ng-template [cdkPortalOutlet]="_contentHeaderPortal"></ng-template>
       </div>
-
-
+      <div class="base-layout-content-container-header-right d-flex">
+        <ng-container *ngFor="let action of registeredActions$ | async; first as isFirst">
+          <div class="base-layout-registered-action">
+            <ng-container [ngTemplateOutlet]="$any(action)?.template"></ng-container>
+          </div>
+        </ng-container>
+      </div>
     </div>
     <div class="base-layout-content-container-inner" seamOverlayScrollbar>
       <ng-template [cdkPortalOutlet]="_contentPortal"></ng-template>

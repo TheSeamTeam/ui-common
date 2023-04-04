@@ -1,7 +1,5 @@
 import {
   animate,
-  query,
-  state,
   style,
   transition,
   trigger,
@@ -10,16 +8,16 @@ import { BooleanInput, coerceBooleanProperty, NumberInput } from '@angular/cdk/c
 import {
   ChangeDetectionStrategy,
   Component,
-  Host,
+  EventEmitter,
   HostBinding,
   Input,
   OnDestroy,
-  Optional,
-  SkipSelf,
+  Output,
+  ViewChild,
+  ViewChildren,
   ViewEncapsulation
 } from '@angular/core'
-import { BehaviorSubject, Observable, Subject } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { BehaviorSubject, Subject } from 'rxjs'
 
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons'
 
@@ -27,67 +25,32 @@ import { InputBoolean, InputNumber } from '@theseam/ui-common/core'
 import type { SeamIcon } from '@theseam/ui-common/icon'
 import type { ThemeTypes } from '@theseam/ui-common/models'
 
+import { MenuComponent } from '@theseam/ui-common/menu'
 import { notNullOrUndefined } from '@theseam/ui-common/utils'
-import { SideNavComponent } from '../side-nav.component'
-import { ISideNavItem } from '../side-nav.models'
-
-export interface SideNavItemBadgeTooltip {
-  tooltip?: string
-  class?: string
-  placement?: string
-  container?: string
-  disabled?: boolean
-}
-
-const EXPANDED_STATE = 'expanded'
-const COLLAPSED_STATE = 'collapsed'
-
-const FULL_STATE = 'full'
-const COMPACT_STATE = 'compact'
+import { horizontalNavItemHasActiveChild } from '../nav-utils'
+import { INavItem, NavItemBadgeTooltip, NavItemChildAction, NavItemExpandAction } from '../nav.models'
 
 @Component({
-  selector: 'seam-side-nav-item',
-  templateUrl: './side-nav-item.component.html',
-  styleUrls: ['./side-nav-item.component.scss'],
-  exportAs: 'seamSideNavItem',
+  selector: 'seam-nav-item',
+  templateUrl: './nav-item.component.html',
+  styleUrls: ['./nav-item.component.scss'],
+  exportAs: 'seamNavItem',
   animations: [
     trigger('childGroupAnim', [
-      state(EXPANDED_STATE, style({ height: '*' })),
-      state(COLLAPSED_STATE, style({ height: 0, 'overflow-y': 'hidden', visibility: 'hidden' })),
-      transition(`${EXPANDED_STATE} <=> ${COLLAPSED_STATE}`, animate('0.2s ease-in-out')),
-    ]),
-
-
-    trigger('compactAnim', [
-      // transition('* <=> *', [
-      //   query(':enter', [
-      //     style({ opacity: '0' }),
-      //     animate('5.2s ease-in-out', style({ opacity: '1' }))
-      //   ], { optional: true }),
-      //   query(':leave', [
-      //     style({ opacity: '1' }),
-      //     animate('5.2s ease-in-out', style({ opacity: '0' }))
-      //   ], { optional: true })
-      // ])
-
-      // state(FULL_STATE, style({ opacity: '1' })),
-      // state(COMPACT_STATE, style({ opacity: '0' })),
-      // transition(`${FULL_STATE} <=> ${COMPACT_STATE}`, animate('5.2s ease-in-out')),
-      // transition(`${FULL_STATE} <=> ${COMPACT_STATE}`, [
-      // transition('* <=> *', [
-      //   query(':leave', [
-      //     style({ opacity: '1' }),
-      //     animate('5.2s ease-in-out', style({ opacity: '0' }))
-      //   ], { optional: true })
-      // ]),
-
-
+      transition(':enter', [
+        style({ height: 0 }),
+        animate('0.2s ease-in-out', style({ height: '*' }))
+      ]),
+      transition(':leave', [
+        style({ height: '*' }),
+        animate('0.2s ease-in-out', style({ height: 0 }))
+      ])
     ])
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 })
-export class SideNavItemComponent implements OnDestroy {
+export class NavItemComponent implements OnDestroy {
   static ngAcceptInputType_hierLevel: NumberInput
   static ngAcceptInputType_indentSize: NumberInput
   static ngAcceptInputType_expanded: BooleanInput
@@ -97,6 +60,8 @@ export class SideNavItemComponent implements OnDestroy {
   private readonly _ngUnsubscribe = new Subject()
 
   readonly faAngleLeft = faAngleLeft
+
+  @Input() item: INavItem | undefined | null
 
   @Input() itemType: 'divider' | 'basic' | 'link' | 'button' | 'title' | undefined | null
 
@@ -116,14 +81,16 @@ export class SideNavItemComponent implements OnDestroy {
 
   @Input() queryParams: { [k: string]: any } | undefined | null
 
-  @Input() children: ISideNavItem[] | undefined | null
+  @Input() children: INavItem[] | undefined | null
 
   @Input() @InputNumber(0) hierLevel: number = 0
 
   @Input() @InputNumber(10) indentSize: number = 10
 
   @Input()
-  set expanded(value: boolean) { this._expanded.next(coerceBooleanProperty(value)) }
+  set expanded(value: boolean) {
+    this._expanded.next(coerceBooleanProperty(value))
+  }
   get expanded() { return this._expanded.value }
   private readonly _expanded = new BehaviorSubject<boolean>(false)
   public readonly expanded$ = this._expanded.asObservable()
@@ -144,14 +111,13 @@ export class SideNavItemComponent implements OnDestroy {
 
   @Input()
   get badgeTooltip() { return this._badgeTooltip }
-  set badgeTooltip(value: string | SideNavItemBadgeTooltip | undefined | null) {
+  set badgeTooltip(value: string | NavItemBadgeTooltip | undefined | null) {
     if (value !== null && value !== undefined) {
       if (typeof value === 'string') {
         this._badgeTooltip = {
           tooltip: value,
           placement: 'auto',
-          disabled: false,
-          container: 'body'
+          disabled: false
         }
       } else {
         this._badgeTooltip = {
@@ -159,33 +125,34 @@ export class SideNavItemComponent implements OnDestroy {
           placement: value.placement || 'auto',
           disabled: typeof value?.disabled === 'boolean'
             ? value.disabled
-            : typeof value.tooltip === 'string' ? false : true,
-          container: value.container || 'body'
+            : typeof value.tooltip === 'string' ? false : true
         }
       }
     } else {
       this._badgeTooltip = undefined
     }
   }
-  private _badgeTooltip: SideNavItemBadgeTooltip | undefined | null
+  private _badgeTooltip: NavItemBadgeTooltip | undefined | null
 
-  @HostBinding('class.seam-side-nav-item--active') get _isActiveCssClass() { return this.active }
+  @Input() childAction: NavItemChildAction = 'menu'
+
+  @Input() expandAction: NavItemExpandAction = 'toggle'
+
+  @Output() navItemExpanded = new EventEmitter<boolean>()
+
+  @HostBinding('class.seam-nav-item--active') get _isActiveCssClass() { return this.active }
+
+  @HostBinding('class.seam-nav-item--child-active') get _isChildActiveCssClass() { return this.hasActiveChild }
+
+  @HostBinding('class.seam-nav-item--expanded') get _isExpandedCssClass() { return this.expanded }
 
   @HostBinding('attr.data-hier-level') get _attrDataHierLevel() { return this.hierLevel }
 
-  public readonly childGroupAnimState$: Observable<string>
-  public readonly compactAnimState$: Observable<string>
+  @ViewChild(MenuComponent) _menu?: MenuComponent
 
-  constructor(
-    private readonly _sideNav: SideNavComponent,
-    @Optional() @SkipSelf() @Host() private readonly _parent?: SideNavItemComponent
-  ) {
-    this.childGroupAnimState$ = this.expanded$
-      .pipe(map(expanded => expanded ? EXPANDED_STATE : COLLAPSED_STATE))
+  @ViewChildren(NavItemComponent) _navItems?: NavItemComponent[]
 
-    this.compactAnimState$ = this.compact$
-      .pipe(map(compact => compact ? COMPACT_STATE : FULL_STATE))
-  }
+  constructor() { }
 
   ngOnDestroy() {
     this._ngUnsubscribe.next()
@@ -196,19 +163,55 @@ export class SideNavItemComponent implements OnDestroy {
     return Array.isArray(this.children) && this.children.length > 0
   }
 
-  public toggleChildren(): void {
-    this.expanded = !this.expanded
+  get hasActiveChild() {
+    if (notNullOrUndefined(this.item)) {
+      return horizontalNavItemHasActiveChild(this.item)
+    }
+    return false
   }
 
-  _linkClicked() {
-    // Close nav when link is clicked while in overlay state
-    if (this._sideNav.overlay) {
-      this._sideNav.collapse()
+  get hasMenuToggle() {
+    return this.hasChildren && this.childAction === 'menu'
+  }
+
+  get menuTpl(): MenuComponent | undefined {
+    return this.hasMenuToggle ? this._menu : undefined
+  }
+
+  get hasExpandingChildren() {
+    return this.hasChildren && this.childAction === 'expand'
+  }
+
+  public _toggleChildren(event: Event): void {
+    let ex = !this.expanded
+    if (this.expandAction === 'expandOnly') {
+      ex = true
+    }
+
+    this.expanded = ex
+    this.navItemExpanded.emit(this.expanded)
+
+    // Prevents seam-menu from closing out when toggling child expand
+    event.stopPropagation()
+  }
+
+  // Updates expanded state when user exits seam-menu
+  _menuEvent(menuExpanded: any) {
+    if (menuExpanded === false) {
+      this.expanded = false
+
+      // TODO: figure out why closing seam-menu with expanded submenu messes up animation
+      if (this._navItems && this._navItems.length) {
+        this._navItems.forEach(navItem => {
+          navItem.expanded = false
+        })
+      }
     }
   }
 
   get showIconBlock(): boolean {
     return notNullOrUndefined(this.icon) || this.hideEmptyIcon !== true
   }
+
 
 }

@@ -1,47 +1,90 @@
-<!-- Nav Toggle -->
-<div class="d-flex flex-column justify-content-center pr-2" *ngIf="isMobile$ | async">
-  <button seamBaseLayoutNavToggle seamIconBtn [icon]="faBars" iconType="borderless-styled-square"></button>
-</div>
+<div class="top-bar--left d-flex">
+  <!-- Nav Toggle -->
+  <ng-container *ngIf="navToggleAlign === 'left'">
+    <ng-container *ngTemplateOutlet="navToggle"></ng-container>
+  </ng-container>
 
-<!-- Logo -->
-<div class="top-bar--logo d-flex flex-column justify-content-center" *ngIf="logoHref; else useLogoRoute"
-  [class.top-bar--logo-mobile]="isMobile$ | async">
-  <a [href]="logoHref" [target]="logoHrefTarget">
-    <div>
-      <img *ngIf="logo" [src]="logo" [src.lt-md]="hasTitle ? logoSm : logo" alt="Logo">
-    </div>
-  </a>
-</div>
-
-<ng-template #useLogoRoute>
-  <div class="top-bar--logo d-flex flex-column justify-content-center" [routerLink]="logoRoute"
+  <!-- Logo -->
+  <div class="top-bar--logo d-flex flex-column justify-content-center" *ngIf="logoHref; else useLogoRoute"
     [class.top-bar--logo-mobile]="isMobile$ | async">
-    <div>
-      <img *ngIf="logo" [src]="logo" [src.lt-md]="hasTitle ? logoSm : logo" alt="Logo">
-    </div>
+    <a [href]="logoHref" [target]="logoHrefTarget">
+      <ng-container *ngTemplateOutlet="logoTpl"></ng-container>
+    </a>
   </div>
-</ng-template>
 
-<!-- Title -->
-<div class="d-flex flex-column flex-grow-1">
-  <seam-top-bar-title *ngIf="hasTitle"
-    [titleText]="titleText"
-    [subTitleText]="subTitleText"
-    [class.ml-2]="isMobile$ | async">
-  </seam-top-bar-title>
+  <ng-template #useLogoRoute>
+    <div class="top-bar--logo d-flex flex-column justify-content-center" [routerLink]="logoRoute"
+      [class.top-bar--logo-mobile]="isMobile$ | async">
+      <ng-container *ngTemplateOutlet="logoTpl"></ng-container>
+    </div>
+  </ng-template>
+
+  <ng-template #logoTpl>
+    <div>
+      <img *ngIf="logo" [src]="logo" [src.lt-md]="logoSm ? logoSm : logo" alt="Logo">
+    </div>
+  </ng-template>
+
+  <!-- Title -->
+  <div class="d-flex flex-column" *ngIf="hasTitle">
+    <seam-top-bar-title
+      [titleText]="titleText"
+      [subTitleText]="subTitleText"
+      [class.ml-2]="isMobile$ | async">
+    </seam-top-bar-title>
+  </div>
+
+  <!-- Items -->
+  <div class="top-bar-items top-bar-items--left mr-2">
+    <ng-container *ngFor="let item of leftItems$ | async">
+      <ng-template [ngTemplateOutlet]="item.template"></ng-template>
+    </ng-container>
+  </div>
 </div>
 
-<!-- Items -->
-<div class="top-bar-icon-container mr-2">
-  <ng-container *ngFor="let item of _items$ | async">
-    <ng-template [ngTemplateOutlet]="item.template"></ng-template>
+<div class="top-bar--center">
+  <!-- Items -->
+  <div class="top-bar-items top-bar-items--center mr-2">
+    <ng-container *ngFor="let item of centerItems$ | async">
+      <ng-template [ngTemplateOutlet]="item.template"></ng-template>
+    </ng-container>
+  </div>
+</div>
+
+<div class="top-bar--right d-flex">
+  <!-- Items -->
+  <div class="top-bar-items top-bar-items--right mr-2">
+    <ng-container *ngFor="let item of rightItems$ | async">
+      <ng-template [ngTemplateOutlet]="item.template"></ng-template>
+    </ng-container>
+  </div>
+
+  <!-- Menu -->
+  <button
+    *ngIf="hasTopBarMenuButton"
+    seamTopBarMenuButton
+    [seamMenuToggle]="_topBarMenu?.menu"
+    [detailTpl]="_topBarMenuBtnDetailTpl?.template"
+    [compactDetailTpl]="_topBarCompactMenuBtnDetailTpl?.template"
+    [compact]="isMobile$ | async"
+    [profileIcon]="profileIcon">
+  </button>
+
+  <ng-container *ngIf="navToggleAlign === 'right'">
+    <ng-container *ngTemplateOutlet="navToggle"></ng-container>
   </ng-container>
 </div>
 
-<!-- Menu -->
-<button seamTopBarMenuButton
-  [seamMenuToggle]="_topBarMenu?.menu"
-  [detailTpl]="_topBarMenuBtnDetailTpl?.template"
-  [compact]="isMobile$ | async"
-  [profileIcon]="profileIcon">
-</button>
+<ng-template #navToggle>
+  <div class="d-flex flex-column justify-content-center pr-2" *ngIf="isMobile$ | async">
+    <ng-container *ngIf="_topBarNavToggleBtnDetailTpl; else iconBtn">
+      <button seamButton seamBaseLayoutNavToggle>
+        <ng-template [ngTemplateOutlet]="_topBarNavToggleBtnDetailTpl?.template"></ng-template>
+      </button>
+    </ng-container>
+    <ng-template #iconBtn>
+      <button seamBaseLayoutNavToggle seamIconBtn [icon]="toggleIcon" iconType="borderless-styled-square"></button>
+    </ng-template>
+  </div>
+</ng-template>
+

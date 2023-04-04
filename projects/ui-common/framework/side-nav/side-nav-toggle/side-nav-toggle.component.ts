@@ -1,9 +1,8 @@
 import { BooleanInput } from '@angular/cdk/coercion'
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core'
-
-import { faBars } from '@fortawesome/free-solid-svg-icons'
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewEncapsulation } from '@angular/core'
 
 import { InputBoolean } from '@theseam/ui-common/core'
+import { SeamIcon } from '@theseam/ui-common/icon'
 
 @Component({
   selector: 'seam-side-nav-toggle',
@@ -18,9 +17,11 @@ import { InputBoolean } from '@theseam/ui-common/core'
 export class SideNavToggleComponent implements OnInit {
   static ngAcceptInputType_expanded: BooleanInput
 
-  faBars = faBars
-
   @Input() @InputBoolean() expanded = false
+
+  @Input() toggleIcon: SeamIcon | undefined | null
+
+  @Input() toggleTpl: TemplateRef<any> | undefined | null
 
   @Output() toggleExpand = new EventEmitter<void>()
 
