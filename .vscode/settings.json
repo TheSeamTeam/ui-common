@@ -15,18 +15,10 @@
   "[typescript]": {
     "editor.formatOnSave": false
   },
-  // Remove when everyone has moved on from deprecated tslint extension.
-  "tslint.autoFixOnSave": [
-    "ordered-imports",
-    "semicolon"
-  ],
+
   "editor.codeActionsOnSave": {
-    "source.fixAll.tslint": true
+    "source.fixAll.eslint": true
   },
-  // "tslint.trace.server": "verbose",
-  "tslint.exclude": [
-    "**/src/assets/**/*.js"
-  ],
 
   // "angularKarmaTestExplorer.defaultAngularProjectName": "ui-common",
   // "angularKarmaTestExplorer.defaultSocketConnectionPort": 9333,

@@ -19,7 +19,7 @@
       "node_modules/@types"
     ],
     "types": [
-      "googlemaps"
+      "google.maps"
     ],
     "lib": [
       "ES2020",

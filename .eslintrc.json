@@ -29,6 +29,15 @@
     "window": false
   },
 
+  "overrides": [
+    {
+      "files": ["*.ts", "*.mts", "*.cts", "*.tsx"],
+      "rules": {
+        "no-undef": "off"
+      }
+    }
+  ],
+
   "rules": {
     "accessor-pairs": "error",
     "arrow-body-style": ["error", "as-needed"],
@@ -49,7 +58,7 @@
     "eqeqeq": ["error", "always", { "null": "ignore" }],
     "func-call-spacing": ["error", "never"],
     "generator-star-spacing": ["error", { "before": true, "after": true }],
-    "handle-callback-err": ["error", "^(err|error)$" ],
+    "handle-callback-err": [ "error", "^(err|error)$" ],
     "indent": ["error", 2, {
       "SwitchCase": 1,
       "VariableDeclarator": 1,
@@ -67,10 +76,10 @@
     "key-spacing": ["error", { "beforeColon": false, "afterColon": true }],
     "keyword-spacing": ["error", { "before": true, "after": true }],
     "guard-for-in": "error",
-    "id-blacklist": ["error", "any", "Number", "number", "String", "string", "Boolean", "boolean", "Undefined", "undefined"],
+    "id-blacklist": [ "error", "any", "Number", "number", "String", "string", "Boolean", "boolean", "Undefined", "undefined" ],
     "id-match": "error",
     "max-classes-per-file": ["error", 1],
-    "max-len": ["error", {"code": 120, "ignoreComments": true}],
+    "max-len": ["error", {"code": 140, "ignoreComments": true}],
     "new-cap": ["error", { "newIsCap": true, "capIsNew": false }],
     "new-parens": "error",
     "no-bitwise": "error",
@@ -188,14 +197,14 @@
     "object-property-newline": ["error", { "allowMultiplePropertiesPerLine": true }],
     "one-var": ["error", { "initialized": "never" }],
     "operator-linebreak": ["error", "after", { "overrides": { "?": "before", ":": "before" } }],
-    "padded-blocks": ["error", { "blocks": "never", "switches": "never", "classes": "never" }],
+    "padded-blocks": ["error", { "blocks": "never", "switches": "never", "classes": "always" }],
     "prefer-promise-reject-errors": "error",
     "quotes": ["error", "single", { "avoidEscape": true, "allowTemplateLiterals": true }],
     "rest-spread-spacing": ["error", "never"],
     "semi": ["error", "never"],
     "semi-spacing": ["error", { "before": false, "after": true }],
     "space-before-blocks": ["error", "always"],
-    "space-before-function-paren": ["error", "always"],
+    "space-before-function-paren": ["error", { "anonymous": "never", "named": "never", "asyncArrow": "always" }],
     "space-in-parens": ["error", "never"],
     "space-infix-ops": "error",
     "space-unary-ops": ["error", { "words": true, "nonwords": false }],
@@ -212,7 +221,7 @@
     "wrap-iife": ["error", "any", { "functionPrototypeMethods": true }],
     "yield-star-spacing": ["error", "both"],
     "yoda": ["error", "never"],
-    "sort-import": ["error", { "allowSeparatedGroups": true }],
+    "sort-imports": ["error", { "allowSeparatedGroups": true }],
 
     "import/export": "error",
     "import/first": "error",
@@ -230,10 +239,10 @@
     "standard/no-callback-literal": "error",
     "standard/object-curly-even-spacing": ["error", "either"],
 
-    "@typescript-eslint/align": ["error", {"parameters": "always", "statements": "never"}],
     "@typescript-eslint/consistent-type-assertions": ["error", {"assertionStyle": "as"}],
     "@typescript-eslint/explicit-function-return-type": "off",
-    "@typescript-eslint/explicit-member-accessibility": ["error", {"accessibility": "no-public"}],
+    "@typescript-eslint/explicit-member-accessibility": "off",
+    // "@typescript-eslint/explicit-member-accessibility": ["error", {"accessibility": "no-public"}],
     "@typescript-eslint/interface-name-prefix": ["off", {"prefixWithI": "always"}],
     "@typescript-eslint/member-ordering": ["error", {
       "default": [

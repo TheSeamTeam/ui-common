@@ -13,14 +13,14 @@ module.exports = {
   globalSetup: 'jest-preset-angular/global-setup',
   testMatch: [
     // TODO: Remove the specific folders when the projects tests are more stable.
-    "**/breadcrumbs/**/*.spec.ts",
-    "**/graphql/**/*.spec.ts",
-    "**/buttons/**/*.spec.ts",
-    "**/framework/side-nav/**/*.spec.ts",
-    "**/utils/**/*.spec.ts",
-    "**/validators/**/*.spec.ts",
-    "**/datatable/**/*.spec.ts",
-    "**/dynamic-component-loader/**/*.spec.ts",
+    '**/breadcrumbs/**/*.spec.ts',
+    '**/graphql/**/*.spec.ts',
+    '**/buttons/**/*.spec.ts',
+    '**/framework/side-nav/**/*.spec.ts',
+    '**/utils/**/*.spec.ts',
+    '**/validators/**/*.spec.ts',
+    '**/datatable/**/*.spec.ts',
+    '**/dynamic-component-loader/**/*.spec.ts',
   ],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/' }),
-};
+}
