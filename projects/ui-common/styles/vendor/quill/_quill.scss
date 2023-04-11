@@ -1,6 +1,6 @@
-@import 'node_modules/quill/dist/quill.core';
-@import 'node_modules/quill/dist/quill.bubble';
-@import 'node_modules/quill/dist/quill.snow';
+@import 'quill/dist/quill.core';
+@import 'quill/dist/quill.bubble';
+@import 'quill/dist/quill.snow';
 
 quill-editor {
   display: block;

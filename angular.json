@@ -263,9 +263,9 @@
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
-                  "./"
+                "./"
               ]
-            },
+            }
           }
         },
         "storybook": {
@@ -281,7 +281,7 @@
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
-                  "./"
+                "./"
               ]
             },
             "assets": [
@@ -357,6 +357,15 @@
           "builder": "@storybook/angular:build-storybook",
           "options": {
             "browserTarget": "ui-common:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/ui-common/**/*.ts",
+              "projects/ui-common/**/*.html"
+            ]
           }
         }
       }
@@ -483,7 +492,6 @@
       }
     }
   },
-  "defaultProject": "theseam-ui-common",
   "cli": {
     "analytics": false
   }
