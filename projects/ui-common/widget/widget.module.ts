@@ -39,7 +39,7 @@ const contentModules = [
   TheSeamWidgetListGroupModule,
   TheSeamWidgetTableModule,
   TheSeamWidgetTileListModule,
-  TheSeamWidgetTileModule
+  TheSeamWidgetTileModule,
 ]
 
 @NgModule({
@@ -48,7 +48,7 @@ const contentModules = [
     WidgetIconTplDirective,
     WidgetTitleTplDirective,
     WidgetDragHandleDirective,
-    WidgetFooterComponent
+    WidgetFooterComponent,
   ],
   imports: [
     CommonModule,
@@ -59,7 +59,7 @@ const contentModules = [
     TheSeamButtonsModule,
     CdkTableModule,
 
-    ...contentModules
+    ...contentModules,
   ],
   exports: [
     RouterModule,
@@ -69,7 +69,7 @@ const contentModules = [
     WidgetTitleTplDirective,
     WidgetFooterComponent,
 
-    ...contentModules
-  ]
+    ...contentModules,
+  ],
 })
 export class TheSeamWidgetModule { }

@@ -1,14 +1,14 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular'
+import { Meta, Story } from '@storybook/angular'
 
-import { TheSeamWizarProgressListComponent } from './wizard-progress-list.component'
+import { TheSeamWizardProgressListComponent } from './wizard-progress-list.component'
 
 export default {
   title: 'Wizard/ProgressList',
-  component: TheSeamWizarProgressListComponent,
+  component: TheSeamWizardProgressListComponent,
 } as Meta
 
-export const Basic: Story = (args) => ({
-  props: args
+export const Basic: Story = args => ({
+  props: args,
 })
 // Basic.args = {
 //   phone: '9015555555'

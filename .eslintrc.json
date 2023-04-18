@@ -1,5 +1,10 @@
 {
-  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:storybook/recommended"
+    // "plugin:template-quotes-custom/all"
+  ],
 
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -20,7 +25,8 @@
     "node",
     "promise",
     "standard",
-    "@typescript-eslint"
+    "@typescript-eslint",
+    "template-quotes-custom"
   ],
 
   "globals": {
@@ -36,10 +42,23 @@
         "no-undef": "off"
       }
     }
+    // {
+    //   "files": ["*.ts", "*.tsx"],
+    //   "rules": {
+    //     "@typescript-eslint/quotes": "off",
+    //     // "template-quotes-custom/custom-quotes": ["error", "single"]
+    //     "template-quotes-custom/custom-quotes": ["error", {
+    //       "avoidEscape": false,
+    //       "allowTemplateLiterals": true,
+    //       "enforceConsistentQuotes": true,
+    //       "stringLiterals": true
+    //     }]
+    //   }
+    // }
   ],
 
   "rules": {
-    "accessor-pairs": "error",
+    "accessor-pairs": "off",
     "arrow-body-style": ["error", "as-needed"],
     "arrow-parens": ["error", "as-needed"],
     "arrow-spacing": ["error", { "before": true, "after": true }],
@@ -78,7 +97,7 @@
     "guard-for-in": "error",
     "id-blacklist": [ "error", "any", "Number", "number", "String", "string", "Boolean", "boolean", "Undefined", "undefined" ],
     "id-match": "error",
-    "max-classes-per-file": ["error", 1],
+    // "max-classes-per-file": ["error", 1],
     "max-len": ["error", {"code": 140, "ignoreComments": true}],
     "new-cap": ["error", { "newIsCap": true, "capIsNew": false }],
     "new-parens": "error",
@@ -221,13 +240,43 @@
     "wrap-iife": ["error", "any", { "functionPrototypeMethods": true }],
     "yield-star-spacing": ["error", "both"],
     "yoda": ["error", "never"],
-    "sort-imports": ["error", { "allowSeparatedGroups": true }],
+    // "sort-imports": ["error", { "allowSeparatedGroups": true }],
+    "sort-imports": "off",
 
     "import/export": "error",
     "import/first": "error",
     "import/no-duplicates": "error",
     "import/no-named-default": "error",
     "import/no-webpack-loader-syntax": "error",
+    "import/order": ["error", {
+      "alphabetize": {
+        "order": "asc",
+        "caseInsensitive": true
+      },
+      "pathGroups": [
+        {
+          "pattern": "@storybook/**",
+          "group": "external",
+          "position": "before"
+        },
+        {
+          "pattern": "@angular/**",
+          "group": "external",
+          "position": "before"
+        },
+        {
+          "pattern": "rxjs",
+          "group": "external",
+          "position": "before"
+        },
+        {
+          "pattern": "rxjs/**",
+          "group": "external",
+          "position": "before"
+        }
+      ],
+      "pathGroupsExcludedImportTypes": ["builtin"]
+    }],
 
     "node/no-deprecated-api": "error",
     "node/process-exit-as-throw": "error",
@@ -272,7 +321,18 @@
     "@typescript-eslint/no-var-requires": "off",
     "@typescript-eslint/prefer-for-of": "error",
     "@typescript-eslint/prefer-function-type": "error",
-    "@typescript-eslint/quotes": ["error", "single"],
+    // "@typescript-eslint/quotes": ["error", "single"],
+    "@typescript-eslint/quotes": ["error", "single", { "allowTemplateLiterals": true }],
+    // "template-quotes-custom/custom-quotes": [
+    //   "error",
+    //   // "single",
+    //   {
+    //     "avoidEscape": false,
+    //     "allowTemplateLiterals": true,
+    //     "enforceConsistentQuotes": true,
+    //     "stringLiterals": true
+    //   }
+    // ],
     "@typescript-eslint/semi": ["error", "never"],
     "@typescript-eslint/triple-slash-reference": ["error", {"path": "always", "types": "prefer-import"}],
     "@typescript-eslint/unified-signatures": "error"

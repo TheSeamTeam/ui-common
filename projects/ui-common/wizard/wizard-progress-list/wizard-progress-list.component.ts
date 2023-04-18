@@ -1,13 +1,4 @@
-import { animate, style, transition, trigger } from '@angular/animations'
-import { BooleanInput } from '@angular/cdk/coercion'
-import { ChangeDetectionStrategy, Component, ContentChild, Input, OnInit, ViewEncapsulation } from '@angular/core'
-
-// import { IconProp } from '@fortawesome/fontawesome-svg-core'
-// import { faAngleDown, faCog } from '@fortawesome/free-solid-svg-icons'
-
-// import { InputBoolean } from '@theseam/ui-common/core'
-// import { SeamIcon } from '@theseam/ui-common/icon'
-
+import { ChangeDetectionStrategy, Component } from '@angular/core'
 
 /**
  * Widget
@@ -22,17 +13,14 @@ import { ChangeDetectionStrategy, Component, ContentChild, Input, OnInit, ViewEn
  */
 @Component({
   selector: 'seam-wizard-progress-list',
-  templateUrl: './wizard-progress-list.component.html',
+  // templateUrl: './wizard-progress-list.component.html',
+  template: `<div></div>`,
   styleUrls: ['./wizard-progress-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [],
 
 })
-export class TheSeamWizarProgressListComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() { }
+export class TheSeamWizardProgressListComponent {
 
 }
