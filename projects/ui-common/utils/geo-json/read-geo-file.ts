@@ -1,7 +1,7 @@
 import { isDevMode } from '@angular/core'
 import fileType from '@marklb/file-type'
 import { FeatureCollection } from 'geojson'
-const Buffer = require('buffer/').Buffer
+import { Buffer } from 'buffer/'
 import shp from 'shpjs'
 
 import { readFileAsync } from '../file-utils'
@@ -41,6 +41,9 @@ export async function readGeoFile(fileOrBuffer: File | ArrayBuffer | Buffer): Pr
 async function coerceFileOrBufferToBuffer(fileOrBuffer: File | ArrayBuffer | Buffer): Promise<Buffer> {
   if (fileOrBuffer instanceof File) {
     const arrBuf = await readFileAsync(fileOrBuffer)
+    if (arrBuf === null) {
+      throw new Error('Could not read file.')
+    }
     return Buffer.from(arrBuf)
   }
 

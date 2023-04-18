@@ -1,6 +1,5 @@
 import fileType from '@marklb/file-type'
-// import { Buffer } from 'buffer/'
-const Buffer = require('buffer/').Buffer
+import { Buffer } from 'buffer/'
 
 export function readFileAsync(file: any): Promise<ArrayBuffer | null> {
   return new Promise<ArrayBuffer | null>((resolve, reject) => {
