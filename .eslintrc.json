@@ -3,7 +3,6 @@
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:storybook/recommended"
-    // "plugin:template-quotes-custom/all"
   ],
 
   "parser": "@typescript-eslint/parser",
@@ -25,8 +24,7 @@
     "node",
     "promise",
     "standard",
-    "@typescript-eslint",
-    "template-quotes-custom"
+    "@typescript-eslint"
   ],
 
   "globals": {
@@ -42,19 +40,6 @@
         "no-undef": "off"
       }
     }
-    // {
-    //   "files": ["*.ts", "*.tsx"],
-    //   "rules": {
-    //     "@typescript-eslint/quotes": "off",
-    //     // "template-quotes-custom/custom-quotes": ["error", "single"]
-    //     "template-quotes-custom/custom-quotes": ["error", {
-    //       "avoidEscape": false,
-    //       "allowTemplateLiterals": true,
-    //       "enforceConsistentQuotes": true,
-    //       "stringLiterals": true
-    //     }]
-    //   }
-    // }
   ],
 
   "rules": {
@@ -291,7 +276,6 @@
     "@typescript-eslint/consistent-type-assertions": ["error", {"assertionStyle": "as"}],
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/explicit-member-accessibility": "off",
-    // "@typescript-eslint/explicit-member-accessibility": ["error", {"accessibility": "no-public"}],
     "@typescript-eslint/interface-name-prefix": ["off", {"prefixWithI": "always"}],
     "@typescript-eslint/member-ordering": ["error", {
       "default": [
@@ -321,18 +305,7 @@
     "@typescript-eslint/no-var-requires": "off",
     "@typescript-eslint/prefer-for-of": "error",
     "@typescript-eslint/prefer-function-type": "error",
-    // "@typescript-eslint/quotes": ["error", "single"],
     "@typescript-eslint/quotes": ["error", "single", { "allowTemplateLiterals": true }],
-    // "template-quotes-custom/custom-quotes": [
-    //   "error",
-    //   // "single",
-    //   {
-    //     "avoidEscape": false,
-    //     "allowTemplateLiterals": true,
-    //     "enforceConsistentQuotes": true,
-    //     "stringLiterals": true
-    //   }
-    // ],
     "@typescript-eslint/semi": ["error", "never"],
     "@typescript-eslint/triple-slash-reference": ["error", {"path": "always", "types": "prefer-import"}],
     "@typescript-eslint/unified-signatures": "error"
