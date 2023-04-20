@@ -160,7 +160,7 @@
     "no-self-assign": "error",
     "no-self-compare": "error",
     "no-sequences": "error",
-    "no-shadow": ["error", {"hoist": "all"}],
+    "no-shadow": "off",
     "no-shadow-restricted-names": "error",
     "no-sparse-arrays": "error",
     "no-tabs": "error",
@@ -183,7 +183,7 @@
     "no-useless-call": "error",
     "no-useless-computed-key": "error",
     "no-useless-concat": "error",
-    "no-useless-constructor": "error",
+    "no-useless-constructor": "off",
     "no-useless-escape": "error",
     "no-useless-rename": "error",
     "no-useless-return": "error",
@@ -238,6 +238,14 @@
         "order": "asc",
         "caseInsensitive": true
       },
+      "groups": [
+        "builtin",
+        "external",
+        "internal",
+        "parent",
+        "sibling",
+        "index"
+      ],
       "pathGroups": [
         {
           "pattern": "@storybook/**",
@@ -277,37 +285,37 @@
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/explicit-member-accessibility": "off",
     "@typescript-eslint/interface-name-prefix": ["off", {"prefixWithI": "always"}],
-    "@typescript-eslint/member-ordering": ["error", {
-      "default": [
-        "public-static-field",
-        "public-static-method",
-        "protected-static-field",
-        "protected-static-method",
-        "private-static-field",
-        "private-static-method",
-        "public-instance-field",
-        "protected-instance-field",
-        "private-instance-field",
-        "constructor",
-        "public-instance-method",
-        "protected-instance-method",
-        "private-instance-method"
-      ]
-    }],
+    // "@typescript-eslint/member-ordering": ["error", {
+    //   "default": [
+    //     "public-static-field",
+    //     "public-static-method",
+    //     "protected-static-field",
+    //     "protected-static-method",
+    //     "private-static-field",
+    //     "private-static-method",
+    //     "public-instance-field",
+    //     "protected-instance-field",
+    //     "private-instance-field",
+    //     "constructor",
+    //     "public-instance-method",
+    //     "protected-instance-method",
+    //     "private-instance-method"
+    //   ]
+    // }],
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-empty-interface": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-inferrable-types": ["error", {"ignoreParameters": true}],
     "@typescript-eslint/no-misused-new": "error",
     "@typescript-eslint/no-parameter-properties": "off",
-
-
+    "@typescript-eslint/no-shadow": "warn",
     "@typescript-eslint/no-var-requires": "off",
     "@typescript-eslint/prefer-for-of": "error",
     "@typescript-eslint/prefer-function-type": "error",
     "@typescript-eslint/quotes": ["error", "single", { "allowTemplateLiterals": true }],
     "@typescript-eslint/semi": ["error", "never"],
     "@typescript-eslint/triple-slash-reference": ["error", {"path": "always", "types": "prefer-import"}],
-    "@typescript-eslint/unified-signatures": "error"
+    "@typescript-eslint/unified-signatures": "error",
+    "@typescript-eslint/no-useless-constructor": "error"
   }
 }
