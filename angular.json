@@ -272,7 +272,7 @@
           "builder": "@storybook/angular:start-storybook",
           "options": {
             "browserTarget": "ui-common:build",
-            "port": 6006,
+            "port": 6007,
             "tsConfig": "projects/ui-common/tsconfig.sb.json",
             "compodoc": true,
             "styles": [

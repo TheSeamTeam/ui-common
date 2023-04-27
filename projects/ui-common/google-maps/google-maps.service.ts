@@ -36,11 +36,11 @@ const DEFAULT_DRAWING_MANAGER_OPTIONS: (() => google.maps.drawing.DrawingManager
   drawingControl: true,
   drawingControlOptions: {
     drawingModes: [
-      google.maps.drawing.OverlayType.POLYGON
-    ]
+      google.maps.drawing.OverlayType.POLYGON,
+    ],
   },
   polygonOptions: DEFAULT_POLYGON_OPTIONS,
-  drawingMode: null
+  drawingMode: null,
 })
 
 const FEATURE_STYLE_OPTIONS_DEFAULT: google.maps.Data.StyleOptions = {
@@ -73,6 +73,7 @@ type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 
 @Injectable()
 export class GoogleMapsService implements OnDestroy {
+
   private readonly _ngUnsubscribe = new Subject<void>()
 
   private readonly _mapReadySubject = new BehaviorSubject<boolean>(false)
@@ -82,7 +83,7 @@ export class GoogleMapsService implements OnDestroy {
   private _activeContextMenu: GoogleMapsContextMenu | null = null
   private _baseLatLng?: google.maps.LatLngLiteral
 
-  private _allowDrawingHoleInPolygon: boolean = false
+  private _allowDrawingHoleInPolygon = false
 
   // TODO: Move to a better place than the map wrapper service.
   private _fileInputHandler: ((file: File) => void) | undefined | null
@@ -165,7 +166,7 @@ export class GoogleMapsService implements OnDestroy {
         (event: google.maps.drawing.OverlayCompleteEvent) => {
           event.overlay?.setMap(null)
           listener.remove()
-        }
+        },
       )
 
       // To fake canceling the current drawing, without disabling the drawing
@@ -183,7 +184,6 @@ export class GoogleMapsService implements OnDestroy {
       setTimeout(() => {
         listener.remove()
       })
-
     })
   }
 
@@ -269,7 +269,7 @@ export class GoogleMapsService implements OnDestroy {
     })
 
     // Determine what the style of the features are.
-    this.googleMap.data.setStyle((feature) => {
+    this.googleMap.data.setStyle(feature => {
       if (isFeatureSelected(feature)) {
         return FEATURE_STYLE_OPTIONS_SELECTED
       }
@@ -458,4 +458,5 @@ export class GoogleMapsService implements OnDestroy {
       )
     }
   }
+
 }
