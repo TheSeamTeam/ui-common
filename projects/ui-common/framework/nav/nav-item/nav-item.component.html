@@ -162,6 +162,7 @@
     [children]="$any(child)?.children"
     [active]="$any(child).__state?.active"
     [expanded]="$any(child).__state?.expanded"
+    [focused]="$any(child).__state?.focused"
     childAction="expand"
     [hideEmptyIcon]="hideEmptyIcon">
   </seam-nav-item>

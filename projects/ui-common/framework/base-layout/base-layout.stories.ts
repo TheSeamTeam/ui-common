@@ -40,7 +40,13 @@ import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
 import { TheSeamIconModule } from '@theseam/ui-common/icon'
 import { TheSeamLayoutService } from '@theseam/ui-common/layout'
 import { TheSeamScrollbarModule } from '@theseam/ui-common/scrollbar'
-import { horizontalNavItemHasChildren, INavItem, NavItemExpandedEvent, TheSeamNavModule } from '../nav'
+import { notNullOrUndefined } from '@theseam/ui-common/utils'
+import {
+  horizontalNavItemHasChildren,
+  INavItem,
+  NavItemExpandedEvent,
+  TheSeamNavModule
+} from '../nav'
 import { TheSeamNavService } from '../nav/nav.service'
 import type { ITheSeamBaseLayoutRef } from './base-layout-ref'
 import { THESEAM_BASE_LAYOUT_REF } from './base-layout-tokens'
@@ -467,53 +473,12 @@ const horizontalNavItems: INavItem[] = [
   {
     itemType: 'link',
     label: 'Example 4',
-    link: 'example4',
-    children: [
-      {
-        itemType: 'link',
-        label: 'Example 4.1',
-        link: 'example3/example3.1',
-      },
-      {
-        itemType: 'link',
-        label: 'Example 4.2',
-        link: 'example3/example3.2',
-      },
-      {
-        itemType: 'link',
-        label: 'Example 4.3',
-        link: 'example3/example3.3',
-      },
-      {
-        itemType: 'link',
-        label: 'Example 4.4',
-      }
-    ]
+    link: 'example4'
   },
   {
     itemType: 'link',
     label: 'Example 5',
-    children: [
-      {
-        itemType: 'link',
-        label: 'Example 5.1',
-        link: 'example3/example3.1',
-      },
-      {
-        itemType: 'link',
-        label: 'Example 5.2',
-        link: 'example3/example3.2',
-      },
-      {
-        itemType: 'link',
-        label: 'Example 5.3',
-        link: 'example3/example3.3',
-      },
-      {
-        itemType: 'link',
-        label: 'Example 5.4',
-      }
-    ]
+    link: 'example5'
   }
 ]
 
@@ -545,6 +510,10 @@ const horizontalNavItems: INavItem[] = [
       border: 2px solid #357ebd;
       padding: 0;
 
+    }
+
+    :host::ng-deep .seam-nav-item--focused {
+      border-bottom: 1px solid #357ebd;
     }
 
     :host::ng-deep .base-layout-content-container-footer .profile-button {
@@ -627,9 +596,8 @@ const horizontalNavItems: INavItem[] = [
             *seamTopBarItem="'left'"
             [seamOverlayScrollbar]="{ overflowBehavior: { x: 'scroll', y: 'hidden' } }">
             <seam-horizontal-nav
-              [items]="items$ | async"
+              [items]="horizontalNavItems"
               [hierLevel]="1"
-              [focusedNavItem]="focusedItem$ | async"
               childAction="none"
               expandAction="expandOnly"
               class="ml-2"
@@ -713,7 +681,7 @@ const horizontalNavItems: INavItem[] = [
       </div>
       <seam-side-nav
         *seamBaseLayoutSideBar
-        [items]="items$ | async"
+        [items]="horizontalNavItems"
         [hasHeaderToggle]="false"
         [hideEmptyIcon]="true"
         [expandOrigin]="expandOrigin$ | async"
@@ -817,6 +785,8 @@ class StoryExBaseLayoutComponent {
   faCalendar = faCalendar
   faTimes = faTimes
 
+  horizontalNavItems = horizontalNavItems
+
   logo = 'assets/images/theseam_logo.svg'
   logoSm = 'assets/images/theseam_logo_notext.svg'
 
@@ -826,8 +796,6 @@ class StoryExBaseLayoutComponent {
     { widgetId: 'widget-3', col: 2, order: 0, component: StoryExWidget3Component },
     { widgetId: 'widget-4', col: 1, order: 1, component: StoryExWidget4Component }
   ]
-
-  public items$: Observable<INavItem[]>
 
   public levelTwoItems$: Observable<INavItem[]>
 
@@ -841,19 +809,20 @@ class StoryExBaseLayoutComponent {
   public expandWidth$: Observable<string>
   public navToggleAlign$: Observable<string>
 
-  public _focusedItem = new BehaviorSubject<INavItem | null>(null)
+  public _focusedItem = new BehaviorSubject<INavItem | null | undefined>(undefined)
   public focusedItem$ = this._focusedItem.asObservable()
 
   constructor(
-    private readonly _nav: TheSeamNavService,
     private readonly _layout: TheSeamLayoutService,
     private readonly _router: Router,
+    private readonly _nav: TheSeamNavService,
     @Optional() @Inject(THESEAM_BASE_LAYOUT_REF) _baseLayout: ITheSeamBaseLayoutRef
   ) {
     this._router.events.pipe(
       filter(event => event instanceof NavigationEnd),
-    ).subscribe(() => {
+    ).subscribe(event => {
       _baseLayout?.registeredNav?.collapse()
+      this._focusActiveItem()
     })
 
     this.isMobile$ = this._layout.isMobile$
@@ -870,33 +839,32 @@ class StoryExBaseLayoutComponent {
       map(isMobileNav => isMobileNav ? 'right' : 'left')
     )
 
-    this.items$ = this._nav.createItemsObservable(horizontalNavItems).pipe(
-      // spread operator to force change detection
-      map(items => [ ...items ]),
-      tap(_ => this._focusedItem.next(null)),
-      tap(items => {
-          const activeItem = items.find(i => i.__state?.active)
-          if (activeItem !== undefined) {
-            this._focusedItem.next(activeItem)
-          } else {
-            const childActiveItem = items.find(i => i.__state?.expanded)
-            if (childActiveItem !== undefined) {
-              this._focusedItem.next(childActiveItem)
-            }
-          }
-      }),
-      shareReplay({ bufferSize: 1, refCount: true })
-    )
-
+    this._focusActiveItem()
     this.levelTwoItems$ = this.focusedItem$.pipe(
       map(focusedItem => {
-        if (focusedItem !== null && horizontalNavItemHasChildren(focusedItem)) {
+        if (notNullOrUndefined(focusedItem) && horizontalNavItemHasChildren(focusedItem)) {
           return focusedItem.children
         }
 
         return []
       })
     )
+  }
+
+  _focusActiveItem() {
+    const activeItem = this._findActiveItem(this.horizontalNavItems)
+    this._focusedItem.next(activeItem)
+  }
+
+  _findActiveItem(items: INavItem[]): INavItem | undefined {
+    const activeItem = items.find(i => this._nav.horizontalNavLinkActive(i))
+
+    if (activeItem !== undefined) {
+      return activeItem
+    }
+
+    return items.find(i => horizontalNavItemHasChildren(i) &&
+      this._findActiveItem(i.children) !== undefined)
   }
 
   _navItemExpanded(event: NavItemExpandedEvent) {

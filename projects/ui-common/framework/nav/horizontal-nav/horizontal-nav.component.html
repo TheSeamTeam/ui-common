@@ -15,11 +15,11 @@
       [children]="$any(item)?.children"
       [active]="$any(item).__state?.active"
       [expanded]="$any(item).__state?.expanded"
+      [focused]="$any(item).__state?.focused"
       [hierLevel]="hierLevel"
       [childAction]="childAction"
       [expandAction]="expandAction"
       (navItemExpanded)="_navItemExpanded(item, $event)"
-      [class.seam-nav-item--focused]="_navItemIsFocused(item) | async"
       [hideEmptyIcon]="hideEmptyIcon">
     </seam-nav-item>
   </div>

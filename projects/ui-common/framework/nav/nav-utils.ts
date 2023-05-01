@@ -29,6 +29,10 @@ export function isHorizontalNavItemExpanded(item: INavItem): boolean {
   return item.__state?.expanded ?? false
 }
 
+export function isHorizontalNavItemFocused(item: INavItem): boolean {
+  return item.__state?.focused ?? false
+}
+
 export function horizontalNavItemHasChildren(item: INavItem): item is (INavBasic | INavLink) & Required<NavItemCanHaveChildren> {
   return horizontalNavItemCanHaveChildren(item) && hasProperty(item, 'children') && item.children.length > 0
 }
@@ -108,8 +112,9 @@ export function setDefaultHorizontalNavItemState(item: INavItem): INavItem & Req
 
   item.__state = {
     active: false,
-    expanded: false
-  }
+    expanded: false,
+    focused: false
+  } as INavItemState
 
   // TODO: See if there is a nice way to fix the typing for this.
   return item as any

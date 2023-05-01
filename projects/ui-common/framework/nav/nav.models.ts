@@ -6,6 +6,7 @@ export interface INavItemState {
   // parent?: INavItem
   active: boolean
   expanded: boolean
+  focused: boolean
 }
 
 export interface NavItemCanHaveState {
@@ -79,7 +80,7 @@ export type INavItem = INavTitle | INavDivider | INavBasic | INavLink | INavButt
 
 export interface NavItemStateChanged {
   item: INavItem
-  prop: string
+  prop: keyof INavItemState
   prevValue: any
   newValue: any
 }

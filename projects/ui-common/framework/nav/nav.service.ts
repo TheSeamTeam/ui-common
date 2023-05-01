@@ -6,11 +6,12 @@ import { distinctUntilChanged, filter, map, shareReplay, startWith, switchMap } 
 import { hasProperty, notNullOrUndefined } from '@theseam/ui-common/utils'
 
 import {
-  horizontalNavItemCanExpand,
   getHorizontalNavItemStateProp,
+  horizontalNavItemCanExpand,
   horizontalNavItemHasActiveChild,
   horizontalNavItemHasChildren,
   horizontalNavItemHasExpandedChild,
+  isHorizontalNavItemActive,
   isHorizontalNavItemType,
   setDefaultHorizontalNavItemState,
   setHorizontalNavItemStateProp
@@ -42,6 +43,9 @@ export class TheSeamNavService {
       return new Observable((subscriber: Subscriber<INavItem[]>) => {
         const stateChangeSub = this.itemChanged.pipe(
           switchMap(change => {
+            if (change.prop === 'focused' && change.newValue) {
+              this.updateFocusedItem(items, change.item)
+            }
             return this.loading$.pipe(filter(loading => !loading))
           })
         ).subscribe(() => {
@@ -56,7 +60,7 @@ export class TheSeamNavService {
 
         const routeChangeSub = this._router.events.pipe(
           filter(event => event instanceof NavigationEnd),
-        ).subscribe(() => {
+        ).subscribe(event => {
           try {
             this.updateItemsStates(items)
           } catch (err) {
@@ -82,6 +86,7 @@ export class TheSeamNavService {
 
   public updateItemsStates(items: INavItem[]): void {
     this._incUpdatingCount()
+    this.updateRouterFocusedItem(items)
 
     try {
       for (const item of items) {
@@ -105,13 +110,7 @@ export class TheSeamNavService {
     try {
       setDefaultHorizontalNavItemState(item)
 
-      if (isHorizontalNavItemType(item, 'link')) {
-        const url = this._getUrl(item)
-        if (notNullOrUndefined(url)) {
-          const opts = this._getMatchOptions(item)
-          this.setItemStateProp(item, 'active', this._router.isActive(url, opts))
-        }
-      }
+      this.setItemStateProp(item, 'active', this.horizontalNavLinkActive(item))
 
       // TODO: Implement this in a more optimized way. Unless our apps start
       // having large navs constantly updating their state, this shouldn't
@@ -123,6 +122,17 @@ export class TheSeamNavService {
       this._decrUpdatingCount()
       throw err
     }
+  }
+
+  public horizontalNavLinkActive(item: INavItem): boolean {
+    if (isHorizontalNavItemType(item, 'link')) {
+      const url = this._getUrl(item)
+      if (notNullOrUndefined(url)) {
+        const opts = this._getMatchOptions(item)
+        return this._router.isActive(url, opts)
+      }
+    }
+    return false
   }
 
   private _updateItemsExpandedState(items: INavItem[]): void {
@@ -153,6 +163,21 @@ export class TheSeamNavService {
     } else {
       if (getHorizontalNavItemStateProp(item, 'expanded')) {
         this.setItemStateProp(item, 'expanded', false)
+      }
+    }
+  }
+
+  public updateRouterFocusedItem(items: INavItem[]) {
+    const focusedItem = items.find(i => isHorizontalNavItemActive(i)) || items.find(i => horizontalNavItemHasActiveChild(i))
+    this.updateFocusedItem(items, focusedItem)
+  }
+
+  public updateFocusedItem(items: INavItem[], focusedItem: INavItem | undefined): void {
+    for (const item of items) {
+      if (item === focusedItem) {
+        setHorizontalNavItemStateProp(item, 'focused', true)
+      } else {
+        setHorizontalNavItemStateProp(item, 'focused', false)
       }
     }
   }

@@ -29,6 +29,7 @@ import { MenuComponent } from '@theseam/ui-common/menu'
 import { notNullOrUndefined } from '@theseam/ui-common/utils'
 import { horizontalNavItemHasActiveChild } from '../nav-utils'
 import { INavItem, NavItemBadgeTooltip, NavItemChildAction, NavItemExpandAction } from '../nav.models'
+import { TheSeamNavService } from '../nav.service'
 
 @Component({
   selector: 'seam-nav-item',
@@ -101,6 +102,8 @@ export class NavItemComponent implements OnDestroy {
   private readonly _compact = new BehaviorSubject<boolean>(false)
   public readonly compact$ = this._compact.asObservable()
 
+  @Input() focused: boolean = false
+
   @Input() badgeText: string | undefined | null
   @Input() badgeTheme: ThemeTypes | undefined | null = 'danger'
 
@@ -146,13 +149,17 @@ export class NavItemComponent implements OnDestroy {
 
   @HostBinding('class.seam-nav-item--expanded') get _isExpandedCssClass() { return this.expanded }
 
+  @HostBinding('class.seam-nav-item--focused') get _isFocusedCssClass() { return this.focused }
+
   @HostBinding('attr.data-hier-level') get _attrDataHierLevel() { return this.hierLevel }
 
   @ViewChild(MenuComponent) _menu?: MenuComponent
 
   @ViewChildren(NavItemComponent) _navItems?: NavItemComponent[]
 
-  constructor() { }
+  constructor(
+    private readonly _nav: TheSeamNavService
+  ) { }
 
   ngOnDestroy() {
     this._ngUnsubscribe.next()
@@ -190,6 +197,9 @@ export class NavItemComponent implements OnDestroy {
 
     this.expanded = ex
     this.navItemExpanded.emit(this.expanded)
+    if (this.item && this.expanded) {
+      this._nav.setItemStateProp(this.item, 'focused', this.expanded)
+    }
 
     // Prevents seam-menu from closing out when toggling child expand
     event.stopPropagation()
