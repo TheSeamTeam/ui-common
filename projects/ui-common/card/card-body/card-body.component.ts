@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ContentChildren, HostBinding, OnDestroy, OnInit, QueryList } from '@angular/core'
+import { AfterViewInit, Component, ContentChildren, HostBinding, OnDestroy, QueryList } from '@angular/core'
 import { Subscription } from 'rxjs'
 import { filter, map, startWith, tap } from 'rxjs/operators'
 
@@ -9,7 +9,7 @@ import { CardActionComponent } from './../card-action/card-action.component'
   templateUrl: './card-body.component.html',
   styleUrls: ['./card-body.component.scss']
 })
-export class CardBodyComponent implements OnInit, OnDestroy, AfterViewInit {
+export class CardBodyComponent implements OnDestroy, AfterViewInit {
 
   @HostBinding('class.card-body') _cssClassCardBody = true
   @HostBinding('class.p-0') _cssClassP0 = true
@@ -17,10 +17,6 @@ export class CardBodyComponent implements OnInit, OnDestroy, AfterViewInit {
   @ContentChildren(CardActionComponent) cardActionComponents?: QueryList<CardActionComponent>
 
   private _changesSubscription: Subscription | undefined
-
-  constructor() { }
-
-  ngOnInit() { }
 
   ngOnDestroy() {
     this._changesSubscription?.unsubscribe()

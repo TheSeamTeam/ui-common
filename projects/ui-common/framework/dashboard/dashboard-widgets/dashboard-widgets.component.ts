@@ -77,7 +77,7 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
   }
   private readonly _gapSize = new BehaviorSubject<number>(30)
 
-  @Input() @InputBoolean() widgetsDraggable: boolean = false
+  @Input() @InputBoolean() widgetsDraggable = false
 
   @Input()
   get dragToggleVisible(): boolean { return this._dragToggleVisible.value }

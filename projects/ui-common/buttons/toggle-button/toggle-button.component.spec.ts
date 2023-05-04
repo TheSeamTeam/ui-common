@@ -26,12 +26,9 @@
 //   })
 // })
 
-
-
 import { createComponentFactory, createHostFactory, Spectator } from '@ngneat/spectator/jest'
 
 // import { ButtonComponent } from './button.component'
-
 
 import { fireEvent, render, screen } from '@testing-library/angular'
 
@@ -44,7 +41,6 @@ import * as stories from './toggle-button.stories' // import all stories from th
 
 // Every component that is returned maps 1:1 with the stories, but they already contain all decorators from story level, meta level and global level.
 // const { Basic } = composeStories(stories as any)
-
 
 describe('ToggleButtonComponent Stories', () => {
   it('should', () => {

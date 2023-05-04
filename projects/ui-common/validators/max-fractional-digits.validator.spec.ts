@@ -17,6 +17,7 @@ describe('maxFractionalDigitsValidator', () => {
     expect(maxFractionalDigitsValidator(0)(new UntypedFormControl(NaN))).toBeNull()
     expect(maxFractionalDigitsValidator(0)(new UntypedFormControl(Infinity))).toBeNull()
     expect(maxFractionalDigitsValidator(0)(new UntypedFormControl(new Date()))).toBeNull()
+    // eslint-disable-next-line no-new-object
     expect(maxFractionalDigitsValidator(0)(new UntypedFormControl(new Object()))).toBeNull()
     expect(maxFractionalDigitsValidator(0)(new UntypedFormControl(true))).toBeNull()
     expect(maxFractionalDigitsValidator(0)(new UntypedFormControl(false))).toBeNull()
@@ -29,10 +30,10 @@ describe('maxFractionalDigitsValidator', () => {
     expect(maxFractionalDigitsValidator(0)(new UntypedFormControl(123))).toBeNull()
     expect(maxFractionalDigitsValidator(1)(new UntypedFormControl(1.0))).toBeNull()
     expect(maxFractionalDigitsValidator(1)(new UntypedFormControl(-1.0))).toBeNull()
-    expect(maxFractionalDigitsValidator(2)(new UntypedFormControl(.12))).toBeNull()
+    expect(maxFractionalDigitsValidator(2)(new UntypedFormControl(0.12))).toBeNull()
     expect(maxFractionalDigitsValidator(2)(new UntypedFormControl(-1.12))).toBeNull()
     expect(maxFractionalDigitsValidator(2)(new UntypedFormControl(0))).toBeNull()
-    expect(maxFractionalDigitsValidator(2)(new UntypedFormControl(.1))).toBeNull()
+    expect(maxFractionalDigitsValidator(2)(new UntypedFormControl(0.1))).toBeNull()
 
     expect(maxFractionalDigitsValidator(0)(new UntypedFormControl('0'))).toBeNull()
     expect(maxFractionalDigitsValidator(0)(new UntypedFormControl('123'))).toBeNull()

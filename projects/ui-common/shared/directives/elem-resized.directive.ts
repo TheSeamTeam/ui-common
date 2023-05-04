@@ -19,7 +19,7 @@ export class ElemResizedDirective implements OnDestroy, AfterViewInit {
   constructor(private elementRef: ElementRef) { }
 
   ngAfterViewInit() {
-    this.sensor = new ResizeSensor(this.elementRef.nativeElement, (event) => {
+    this.sensor = new ResizeSensor(this.elementRef.nativeElement, event => {
       this.seamElemResized.emit({ element: this.elementRef.nativeElement, size: event })
     })
   }

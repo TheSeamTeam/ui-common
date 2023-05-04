@@ -55,7 +55,7 @@ export interface DataFilter {
 }
 
 export const THESEAM_DATA_FILTER = new InjectionToken<DataFilter>('TheSeamDataFilter')
-export const THESEAM_DATA_FILTER_OPTIONS = new InjectionToken<{}>('TheSeamDataFilterOptions')
+export const THESEAM_DATA_FILTER_OPTIONS = new InjectionToken<object>('TheSeamDataFilterOptions')
 
 export function filterOperator<T>(filterFn: DataFilterFunction) {
   return (source$: Observable<T[]>) =>
@@ -83,7 +83,6 @@ export function composeDataFilterStates(filters: DataFilter[]): Observable<DataF
     map(() => f.filterState())
   )))
 }
-
 
 /** @deprecated Use `DataFilter` instead. */
 export type IDataFilter = DataFilter

@@ -28,12 +28,12 @@ export class ProgressCircleComponent {
   static ngAcceptInputType_percentage: NumberInput
   static ngAcceptInputType_pending: BooleanInput
 
-  private _percentage: number = 0
+  private _percentage = 0
 
-  @Input() @InputBoolean() fillBackground: boolean = false
-  @Input() @InputBoolean() showText: boolean = false
-  @Input() @InputBoolean() hiddenOnEmpty: boolean = true
-  @Input() @InputBoolean() pending: boolean = false
+  @Input() @InputBoolean() fillBackground = false
+  @Input() @InputBoolean() showText = false
+  @Input() @InputBoolean() hiddenOnEmpty = true
+  @Input() @InputBoolean() pending = false
 
   @Input() @InputNumber()
   set percentage(value: number) {
@@ -46,8 +46,6 @@ export class ProgressCircleComponent {
   public readonly circumference = 2 * Math.PI * this.radius
 
   _progressInfo?: IProgressInfo | null
-
-  constructor() { }
 
   private _getProgress(): IProgressInfo {
     return {

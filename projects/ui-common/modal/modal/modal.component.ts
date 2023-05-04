@@ -4,7 +4,7 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay'
 import { ComponentPortal, TemplatePortal } from '@angular/cdk/portal'
 import {
   AfterViewInit, Component, ContentChild, EventEmitter, forwardRef, Input,
-  isDevMode, OnDestroy, OnInit, Output, TemplateRef, ViewChild, ViewContainerRef
+  isDevMode, OnDestroy, Output, TemplateRef, ViewChild, ViewContainerRef
 } from '@angular/core'
 import { UntypedFormGroup } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router'
@@ -33,7 +33,7 @@ export const LIB_MODAL: any = {
   styleUrls: ['./modal.component.scss'],
   providers: [ LIB_MODAL ]
 })
-export class ModalComponent implements OnInit, OnDestroy, AfterViewInit, IModalContainer {
+export class ModalComponent implements OnDestroy, AfterViewInit, IModalContainer {
   static ngAcceptInputType_showCloseBtn: BooleanInput
 
   @Input()
@@ -41,7 +41,7 @@ export class ModalComponent implements OnInit, OnDestroy, AfterViewInit, IModalC
   get closeOnKeyPressed(): number[] { return this._closeOnKeyPressed }
   private _closeOnKeyPressed: number[] = [ ESCAPE ]
 
-  @Input() @InputBoolean() showCloseBtn: boolean = true
+  @Input() @InputBoolean() showCloseBtn = true
 
   @Input() titleText: string | undefined | null
 
@@ -93,9 +93,9 @@ export class ModalComponent implements OnInit, OnDestroy, AfterViewInit, IModalC
 
   @Output() overlayDetached = new EventEmitter<void>()
 
-  @ContentChild(ModalHeaderIconTplDirective, { static: true })  _queryIconTpl?: ModalHeaderIconTplDirective
-  @ContentChild(ModalHeaderTitleTplDirective, { static: true })  _queryTitleTpl?: ModalHeaderTitleTplDirective
-  @ContentChild(ModalFooterTplDirective, { static: true })  _queryFooterTpl?: ModalFooterTplDirective
+  @ContentChild(ModalHeaderIconTplDirective, { static: true }) _queryIconTpl?: ModalHeaderIconTplDirective
+  @ContentChild(ModalHeaderTitleTplDirective, { static: true }) _queryTitleTpl?: ModalHeaderTitleTplDirective
+  @ContentChild(ModalFooterTplDirective, { static: true }) _queryFooterTpl?: ModalFooterTplDirective
 
   @ViewChild('modalTpl', { static: true }) _modalTpl?: TemplateRef<HTMLElement>
 
@@ -111,12 +111,10 @@ export class ModalComponent implements OnInit, OnDestroy, AfterViewInit, IModalC
     private _route: ActivatedRoute
   ) {
     if (isDevMode()) {
-      // tslint:disable-next-line:max-line-length
+      // eslint-disable-next-line no-console
       console.warn('seamModal has some issues with its design. Use the Modal service for now, because seamModal will have breaking changes or be removed soon.')
     }
   }
-
-  ngOnInit() { }
 
   ngOnDestroy() {
     this.close()
@@ -128,7 +126,7 @@ export class ModalComponent implements OnInit, OnDestroy, AfterViewInit, IModalC
     }
   }
 
-  public open(portal?: TemplatePortal | ComponentPortal<{}>) {
+  public open(portal?: TemplatePortal | ComponentPortal<object>) {
     if (this._overlayRef && this._overlayRef.hasAttached()) { return }
 
     const positionStrategy = this._overlay.position()
@@ -138,7 +136,7 @@ export class ModalComponent implements OnInit, OnDestroy, AfterViewInit, IModalC
 
     this._overlayRef = this._overlay.create({
       hasBackdrop: true,
-      positionStrategy: positionStrategy
+      positionStrategy
     })
 
     this._overlayRef.detachments().subscribe(_ => this.overlayDetached.emit())

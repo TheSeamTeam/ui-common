@@ -21,6 +21,7 @@ export class TabbedTabDirective implements OnInit, TabbedTabAccessor {
     public tabbedService: TabbedService
   ) { }
 
+  // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
   ngOnInit() {
     // this.tabbedService.selectedTab.subscribe(tab => {
     //   console.log('tab: ', tab)

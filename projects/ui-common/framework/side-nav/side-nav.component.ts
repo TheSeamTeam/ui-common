@@ -68,8 +68,7 @@ export function sideNavExpandStateChangeFn(fromState: string, toState: string) {
       // )
       // ||
       (
-        (EXPANDED_STATES.indexOf(fromState) !== -1 && COLLAPSED_STATES.indexOf(toState) !== -1)
-        ||
+        (EXPANDED_STATES.indexOf(fromState) !== -1 && COLLAPSED_STATES.indexOf(toState) !== -1) ||
         (EXPANDED_STATES.indexOf(toState) !== -1 && COLLAPSED_STATES.indexOf(fromState) !== -1)
       )
     )

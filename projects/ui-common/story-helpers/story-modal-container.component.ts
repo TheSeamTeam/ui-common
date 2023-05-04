@@ -14,7 +14,7 @@ class FakeModalRef<T, R = any> implements Partial<ModalRef<T, R>> {
 }
 
 @Component({
-  // tslint:disable-next-line: component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'story-modal-container-component',
   template: `
     <div class="cdk-overlay-container">

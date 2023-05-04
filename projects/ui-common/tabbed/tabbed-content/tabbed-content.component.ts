@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core'
+import { Component, Input } from '@angular/core'
 
 import { TabbedItemAccessor } from '../tabbed-models'
 
@@ -7,12 +7,8 @@ import { TabbedItemAccessor } from '../tabbed-models'
   templateUrl: './tabbed-content.component.html',
   styleUrls: ['./tabbed-content.component.scss']
 })
-export class TabbedContentComponent implements OnInit {
+export class TabbedContentComponent {
 
   @Input() tabbedItem?: TabbedItemAccessor
-
-  constructor() { }
-
-  ngOnInit() { }
 
 }

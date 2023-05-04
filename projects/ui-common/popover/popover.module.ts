@@ -6,8 +6,6 @@ import { NgModule } from '@angular/core'
 import { TheSeamPopoverDirective } from './popover.directive'
 import { PopoverComponent } from './popover/popover.component'
 
-
-
 @NgModule({
     declarations: [
         PopoverComponent,

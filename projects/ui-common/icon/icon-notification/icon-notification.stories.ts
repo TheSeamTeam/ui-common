@@ -19,7 +19,7 @@ export default {
   ]
 } as Meta
 
-export const Basic: Story = (args) => ({
+export const Basic: Story = args => ({
   props: { ...args }
 })
 Basic.args = {

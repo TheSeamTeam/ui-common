@@ -55,8 +55,7 @@ describe('isOnlyGeometryTypesValidator', () => {
       const control = new UntypedFormControl(featureCollection, [ isOnlyGeometryTypesValidator([ 'Polygon' ]) ])
       expect(control.valid).toBe(false)
       expect(control.errors).not.toBeNull()
-      // tslint:disable-next-line: no-non-null-assertion
-      expect(control.errors![IS_ONLY_GEOMETRY_TYPES_VALIDATOR_NAME].reason).toBe(`Only geometry type Polygon allowed.`)
+      expect(control.errors[IS_ONLY_GEOMETRY_TYPES_VALIDATOR_NAME].reason).toBe(`Only geometry type Polygon allowed.`)
     })
 
     it('should be valid if value is a FeatureCollection containing type that is specified', () => {
@@ -110,10 +109,8 @@ describe('isOnlyGeometryTypesValidator', () => {
       const control = new UntypedFormControl(featureCollection, [ isOnlyGeometryTypesValidator([ 'Point' ]) ])
       expect(control.valid).toBe(false)
       expect(control.errors).not.toBeNull()
-      // tslint:disable-next-line: no-non-null-assertion
-      expect(control.errors![IS_ONLY_GEOMETRY_TYPES_VALIDATOR_NAME].reason).toBe(`Only geometry type Point allowed.`)
-      // tslint:disable-next-line: no-non-null-assertion
-      expect(control.errors![IS_ONLY_GEOMETRY_TYPES_VALIDATOR_NAME].notAllowedGeometryTypesFound).toStrictEqual([ 'Polygon' ])
+      expect(control.errors[IS_ONLY_GEOMETRY_TYPES_VALIDATOR_NAME].reason).toBe(`Only geometry type Point allowed.`)
+      expect(control.errors[IS_ONLY_GEOMETRY_TYPES_VALIDATOR_NAME].notAllowedGeometryTypesFound).toStrictEqual([ 'Polygon' ])
     })
   })
 
@@ -146,8 +143,7 @@ describe('isOnlyGeometryTypesValidator', () => {
       const control = new UntypedFormControl(value, [ isOnlyGeometryTypesValidator([ 'Polygon' ]) ])
       expect(control.valid).toBe(false)
       expect(control.errors).not.toBeNull()
-      // tslint:disable-next-line: no-non-null-assertion
-      expect(control.errors![IS_ONLY_GEOMETRY_TYPES_VALIDATOR_NAME].reason).toBe(`Only geometry type Polygon allowed.`)
+      expect(control.errors[IS_ONLY_GEOMETRY_TYPES_VALIDATOR_NAME].reason).toBe(`Only geometry type Polygon allowed.`)
     })
 
     it('should be valid if value is a FeatureCollection containing type that is specified', () => {
@@ -204,9 +200,7 @@ describe('isOnlyGeometryTypesValidator', () => {
     const control = new UntypedFormControl(value, [ isOnlyGeometryTypesValidator([ 'Point' ]) ])
     expect(control.valid).toBe(false)
     expect(control.errors).not.toBeNull()
-    // tslint:disable-next-line: no-non-null-assertion
-    expect(control.errors![IS_ONLY_GEOMETRY_TYPES_VALIDATOR_NAME].reason).toBe(`Only geometry type Point allowed.`)
-    // tslint:disable-next-line: no-non-null-assertion
-    expect(control.errors![IS_ONLY_GEOMETRY_TYPES_VALIDATOR_NAME].notAllowedGeometryTypesFound).toStrictEqual([ 'Polygon' ])
+    expect(control.errors[IS_ONLY_GEOMETRY_TYPES_VALIDATOR_NAME].reason).toBe(`Only geometry type Point allowed.`)
+    expect(control.errors[IS_ONLY_GEOMETRY_TYPES_VALIDATOR_NAME].notAllowedGeometryTypesFound).toStrictEqual([ 'Polygon' ])
   })
 })

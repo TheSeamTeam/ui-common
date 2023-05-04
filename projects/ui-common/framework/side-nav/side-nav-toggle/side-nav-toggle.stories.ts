@@ -38,7 +38,7 @@ export default {
   },
 } as Meta
 
-export const Basic: Story = (args) => ({
+export const Basic: Story = args => ({
   props: {
     itemType: 'basic',
     label: 'Example 1',

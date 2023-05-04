@@ -64,7 +64,7 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
    * NOTE: Not well tested or supported, so it may have some issues currently
    * and could change.
    */
-  @Input() @InputBoolean() inline: boolean = false
+  @Input() @InputBoolean() inline = false
 
   /** Add a text label for the form control. */
   @Input() label: string | undefined | null
@@ -138,7 +138,6 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
   get contentInput(): InputDirective | undefined { return this._contentInputSubject.value }
   set contentInput(value: InputDirective | undefined) { this._contentInputSubject.next(value || undefined) }
 
-
   /** @ignore */
   @ContentChildren(FormFieldErrorDirective)
   get fieldErrors() { return this._fieldErrors }
@@ -210,7 +209,7 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
         map(() => this.hasHelpText),
         distinctUntilChanged(),
         tap(() => {
-          if (!!contentInput) {
+          if (contentInput) {
             contentInput.ariaDescribedBy = this._helpTextId || undefined
           }
         })

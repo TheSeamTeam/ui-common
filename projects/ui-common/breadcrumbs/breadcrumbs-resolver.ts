@@ -2,8 +2,6 @@ import { Resolve } from '@angular/router'
 
 export interface TheSeamBreadcrumbsResolver extends Resolve<string> { }
 
-
-
 //
 // NOTE: The following types are only for backward compatability.
 //

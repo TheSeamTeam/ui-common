@@ -11,7 +11,7 @@ export interface IDatatableDynamicMenuBarItemManifest<T = any> {
   /**
    * Component to render for this item.
    */
-  component: ComponentType<{}> | string
+  component: ComponentType<object> | string
 
   /**
    * InjectionToken to inject data as.

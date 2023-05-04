@@ -484,12 +484,12 @@ class DTFilterWrapperComponent implements OnInit, AfterViewInit {
   defaultFilter = ''
 
   ngOnInit() {
-    console.log('this._datatable', this._datatable)
+    // console.log('this._datatable', this._datatable)
   }
 
   ngAfterViewInit() {
-    console.log('this._datatable2', this._datatable)
-    this._datatable?.filterStates.subscribe(fs => console.log('filterStates', fs))
+    // console.log('this._datatable2', this._datatable)
+    // this._datatable?.filterStates.subscribe(fs => console.log('filterStates', fs))
   }
 
 }
@@ -742,7 +742,7 @@ class StoryDataSourceTwoComponent {
         case 'id': return ({ id: _dir })
         case 'name': return ({ name: _dir })
       }
-      console.log('mapSorts', sorts)
+      // console.log('mapSorts', sorts)
       return ({ name: _dir })
     })
 
@@ -762,7 +762,7 @@ class StoryDataSourceTwoComponent {
         { name: { contains: searchVar } },
       ]
 
-      console.log('_mapSearchFilterState', filterState, conditions)
+      // console.log('_mapSearchFilterState', filterState, conditions)
       return {
         filter: {
           or: conditions,
@@ -775,7 +775,7 @@ class StoryDataSourceTwoComponent {
       filterState: DataFilterState,
       context: MapperContext<SimpleGqlTestExtraVariables>,
     ): FilterStateMapperResult => {
-      console.log('_mapToggleButtonsState', filterState)
+      // console.log('_mapToggleButtonsState', filterState)
       const value = Array.isArray(filterState.state?.value) ? filterState.state?.value[0]?.trim() : filterState.state?.value?.trim()
       if (typeof value !== 'string' || value.length === 0) {
         return null

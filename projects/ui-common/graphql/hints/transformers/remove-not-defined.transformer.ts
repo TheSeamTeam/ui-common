@@ -8,7 +8,7 @@ export const removeNotDefinedTransformer: HintTransformer = (
   const variables = operation.variables
 
   return {
-    query ,
+    query,
     variables
   }
 }

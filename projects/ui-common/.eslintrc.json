@@ -10,11 +10,12 @@
       ],
       "excludedFiles": [
         "*.spec.ts",
-        "*.stories.ts"
+        "*.stories.ts",
+        "**/schematics/**/files/*"
       ],
       "extends": [
         // "eslint:recommended",
-        "plugin:@typescript-eslint/recommended",
+        // "plugin:@typescript-eslint/recommended",
         "plugin:@angular-eslint/recommended",
         // This is required if you use inline templates in Components
         "plugin:@angular-eslint/template/process-inline-templates"
@@ -39,7 +40,9 @@
             "prefix": "seam",
             "style": "kebab-case"
           }
-        ]
+        ],
+        "@angular-eslint/no-inputs-metadata-property": "off",
+        "@angular-eslint/no-host-metadata-property": "off"
       }
     }
     // {

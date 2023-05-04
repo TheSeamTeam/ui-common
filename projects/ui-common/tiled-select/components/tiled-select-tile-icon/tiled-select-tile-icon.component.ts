@@ -1,22 +1,21 @@
 import { BooleanInput } from '@angular/cdk/coercion'
-import { Component, ContentChild, HostBinding, Input, OnInit } from '@angular/core'
+import { Component, ContentChild, HostBinding, Input } from '@angular/core'
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
-
 import { InputBoolean } from '@theseam/ui-common/core'
 import { SeamIcon } from '@theseam/ui-common/icon'
 
 import { TiledSelectTileIconTplDirective } from '../../directives/tiled-select-tile-icon-tpl.directive'
 import { TiledSelectLayout } from '../../tiled-select.models'
 
-const needToFix = /(MSIE 10)|(Trident.*rv:11\.0)|( Edge\/[\d\.]+$)/.test(navigator.userAgent)
+const needToFix = /(MSIE 10)|(Trident.*rv:11\.0)|( Edge\/[\d.]+$)/.test(navigator.userAgent)
 
 @Component({
   selector: 'seam-tiled-select-tile-icon',
   templateUrl: './tiled-select-tile-icon.component.html',
   styleUrls: ['./tiled-select-tile-icon.component.scss']
 })
-export class TiledSelectTileIconComponent implements OnInit {
+export class TiledSelectTileIconComponent {
   static ngAcceptInputType_grayscaleOnDisable: BooleanInput
   static ngAcceptInputType_disabled: BooleanInput
 
@@ -30,8 +29,8 @@ export class TiledSelectTileIconComponent implements OnInit {
   get layout(): TiledSelectLayout { return this._layout }
   private _layout: TiledSelectLayout = 'grid'
 
-  @Input() @InputBoolean() grayscaleOnDisable: boolean = false
-  @Input() @InputBoolean() disabled: boolean = false
+  @Input() @InputBoolean() grayscaleOnDisable = false
+  @Input() @InputBoolean() disabled = false
 
   @Input() iconClass: string | undefined | null
 
@@ -51,9 +50,5 @@ export class TiledSelectTileIconComponent implements OnInit {
   public _iconObj: IconProp | undefined | null
 
   @ContentChild(TiledSelectTileIconTplDirective, { static: true }) iconTpl?: TiledSelectTileIconTplDirective
-
-  constructor() { }
-
-  ngOnInit() { }
 
 }

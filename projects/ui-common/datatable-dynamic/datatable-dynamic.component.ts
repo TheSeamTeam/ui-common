@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
@@ -53,7 +53,7 @@ import { DynamicDatatableMenuBar } from './models/dynamic-datatable-menu-bar'
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DatatableDynamicComponent implements OnInit {
+export class DatatableDynamicComponent {
 
   /** The `DatatableDynamicDef` that defines the datatable. */
   @Input() set def(value: DatatableDynamicDef | undefined | null) {
@@ -69,7 +69,7 @@ export class DatatableDynamicComponent implements OnInit {
   /**
    * Observes whether the datatable has a menu bar.
    */
-  menuBar$: Observable<DynamicDatatableMenuBar  | undefined>
+  menuBar$: Observable<DynamicDatatableMenuBar | undefined>
 
   /**
    * The available exporters.
@@ -141,8 +141,5 @@ export class DatatableDynamicComponent implements OnInit {
       // tap(v => console.log('_tmp_rows$', v))
     )
   }
-
-  /** @ignore */
-  ngOnInit() { }
 
 }

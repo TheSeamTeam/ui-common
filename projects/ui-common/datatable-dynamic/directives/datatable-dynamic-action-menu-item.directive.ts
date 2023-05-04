@@ -7,8 +7,8 @@ import {
   isDevMode,
   OnChanges,
   OnDestroy,
-  OnInit,
-  Renderer2
+  Renderer2,
+  SimpleChanges,
 } from '@angular/core'
 import { ActivatedRoute, QueryParamsHandling, Router, RouterLink, RouterLinkWithHref } from '@angular/router'
 import { from, fromEvent, Observable, of, ReplaySubject, Subscription } from 'rxjs'
@@ -195,7 +195,7 @@ export class DatatableDynamicActionMenuItemRouterLink {
   selector: '[seamDatatableDynamicActionMenuItem]',
   exportAs: 'seamDatatableDynamicActionMenuItem'
 })
-export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestroy, OnChanges {
+export class DatatableDynamicActionMenuItemDirective implements OnDestroy, OnChanges {
 
   @Input()
   // get seamDatatableDynamicActionMenuItem(): DynamicDatatableActionMenuRecord { return this._record }
@@ -224,6 +224,7 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
       switchMap(record => this._update(record)),
       tap(() => { this._setInvalidActionState(false) }),
       catchError(error => {
+        // eslint-disable-next-line no-console
         if (isDevMode()) { console.error(error) }
         this._setInvalidActionState(true)
         return of(undefined)
@@ -231,8 +232,6 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
       // tap(v => console.log('record DONE', v))
     ).subscribe()
   }
-
-  ngOnInit() { }
 
   ngOnDestroy() {
     this._recordSubscription.unsubscribe()
@@ -242,7 +241,7 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
     }
   }
 
-  ngOnChanges(changes: {}) {
+  ngOnChanges(changes: SimpleChanges) {
     // console.log('ngOnChanges', changes, this, this._menuRouterLink)
     if (this._menuRouterLink && this._menuRouterLink.routerLinkWithHref) {
       this._menuRouterLink.routerLinkWithHref.ngOnChanges({})
@@ -502,7 +501,7 @@ export class DatatableDynamicActionMenuItemDirective implements OnInit, OnDestro
   }
 
   /** @ignore */
-  private _getContext(row: DynamicDatatableRow,  rowActionDef: DynamicDatatableRowAction): DynamicDatatableRowActionContext {
+  private _getContext(row: DynamicDatatableRow, rowActionDef: DynamicDatatableRowAction): DynamicDatatableRowActionContext {
     return {
       row
     }

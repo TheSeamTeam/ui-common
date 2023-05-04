@@ -24,7 +24,6 @@
 //   })
 // })
 
-
 import { ComponentHarness, HarnessLoader } from '@angular/cdk/testing'
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed'
 import { ComponentFixture, fakeAsync, tick } from '@angular/core/testing'
@@ -40,10 +39,9 @@ import * as stories from './tiled-select.stories' // import all stories from the
 // const { Default } = composeStories(stories as any)
 
 describe('TiledSelectComponent', () => {
-
   describe('Story', () => {
     it('should', () => {
-      expect(true).toBe(true);
+      expect(true).toBe(true)
     })
 
     // describe('Default', () => {
@@ -75,6 +73,5 @@ describe('TiledSelectComponent', () => {
     //   }))
 
     // })
-
   })
 })

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core'
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router'
 
 // import { ModalComponent } from '../modal/modal.component'
@@ -11,7 +11,7 @@ import { Modal } from '../modal.service'
   templateUrl: './route-modal.component.html',
   styleUrls: ['./route-modal.component.scss']
 })
-export class RouteModalComponent implements OnInit, OnDestroy, AfterViewInit {
+export class RouteModalComponent implements OnInit, OnDestroy {
 
   private readonly _ngUnsubscribe = new Subject<void>()
 
@@ -52,8 +52,6 @@ export class RouteModalComponent implements OnInit, OnDestroy, AfterViewInit {
     this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
-
-  ngAfterViewInit() { }
 
   getOutletParent() {
     let route: ActivatedRoute | null = this._route

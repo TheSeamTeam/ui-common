@@ -122,19 +122,6 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
     )
   }
 
-  private _logNetworkStatus(status: NetworkStatus) {
-    switch (status) {
-      case NetworkStatus.loading: console.log('%cNetworkStatus: ', 'color:limegreen', 'Loading'); break
-      case NetworkStatus.setVariables: console.log('%cNetworkStatus: ', 'color:limegreen', 'SetVariables'); break
-      case NetworkStatus.fetchMore: console.log('%cNetworkStatus: ', 'color:limegreen', 'FetchMore'); break
-      case NetworkStatus.refetch: console.log('%cNetworkStatus: ', 'color:limegreen', 'Refetch'); break
-      case NetworkStatus.poll: console.log('%cNetworkStatus: ', 'color:limegreen', 'Poll'); break
-      case NetworkStatus.ready: console.log('%cNetworkStatus: ', 'color:limegreen', 'Ready'); break
-      case NetworkStatus.error: console.log('%cNetworkStatus: ', 'color:limegreen', 'Error'); break
-      default: console.log('%cNetworkStatus: ', 'color:red', 'Unknown')
-    }
-  }
-
   public rows(mapper: DatatableGraphQLDataMapper<TData, TRow>): Observable<TRow[]> {
     return this._rowsObservable(mapper)
   }
@@ -165,7 +152,6 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
               if (hasProperty(mapperResult, 'totalCount')) {
                 this._totalCount = mapperResult.totalCount
               }
-
 
               // let rows = rowsBufferSubject.value || []
               let rows = rowsBuffer || []

@@ -5,15 +5,8 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
   templateUrl: './widget-tile-footer.component.html',
   styleUrls: ['./widget-tile-footer.component.scss'],
   host: {
-    class: 'd-flex flex-row justify-content-end'
+    class: 'd-flex flex-row justify-content-end',
   },
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WidgetTileFooterComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
-}
+export class WidgetTileFooterComponent { }

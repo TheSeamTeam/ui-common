@@ -21,12 +21,12 @@ export function inlineVariable(query: DocumentNode, variableName: string, variab
   //   }
   // })
 
-
   // console.log('~inlineVariable', variableName, variableValue)
 
   // TODO: Decide if this is a good solution.
   if (hasProperty(variableValue as any, 'value') && (variableValue as any).value === 'undefined') {
     if (isDevMode()) {
+      // eslint-disable-next-line no-console
       console.warn(`Ignoring attempt to inline '${variableName}', because it is undefined.`)
     }
     return visit(query, {
@@ -41,7 +41,6 @@ export function inlineVariable(query: DocumentNode, variableName: string, variab
       }
     })
   }
-
 
   return visit(query, {
     SelectionSet(selectionSetNode) {

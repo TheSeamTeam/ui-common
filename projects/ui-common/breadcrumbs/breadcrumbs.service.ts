@@ -33,8 +33,6 @@ interface BreadcrumbData {
   extrasPropRefs: ExtrasPropRef[]
 }
 
-
-
 @Injectable({
   providedIn: 'root'
 })
@@ -91,7 +89,7 @@ export class TheSeamBreadcrumbsService {
     return activatedRoute.data.pipe(
       map(data => {
         const bcData: BreadcrumbData = {
-          activatedRoute: activatedRoute,
+          activatedRoute,
           extrasPropRefs: []
         }
 
@@ -155,7 +153,7 @@ export class TheSeamBreadcrumbsService {
 
       return this._observeExtrasPropRefs(data.extrasPropRefs).pipe(
         map(extrasStr => {
-          data.breadcrumb = data.breadcrumb + ' ' + extrasStr
+          data.breadcrumb = `${data.breadcrumb} ${extrasStr}`
           return data
         })
       )
@@ -178,7 +176,7 @@ export class TheSeamBreadcrumbsService {
     }
 
     const propRefs = data.breadcrumbExtras.dataProps.map(prop => {
-      return { prop: prop, value: this._getDataProp(data.activatedRoute, prop) }
+      return { prop, value: this._getDataProp(data.activatedRoute, prop) }
     })
 
     return this._filterExtrasPropRefs(propRefs)

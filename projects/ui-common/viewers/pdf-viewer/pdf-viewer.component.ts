@@ -56,7 +56,7 @@ export class TheSeamPdfViewerComponent {
   @Input()
   set renderUpdateThreshold(value: number) { this._renderUpdateThreshold = coerceNumberProperty(value) }
   get renderUpdateThreshold(): number { return this._renderUpdateThreshold }
-  private _renderUpdateThreshold: number = 100
+  private _renderUpdateThreshold = 100
 
   /**
    * Range of pages to render.
@@ -89,6 +89,7 @@ export class TheSeamPdfViewerComponent {
       this._pageNumbersSubject.next(nums)
     } catch (err) {
       // TODO: Decide how to conveniently display these errors.
+      // eslint-disable-next-line no-console
       console.error(err)
       this._pageNumbersSubject.next([])
     }

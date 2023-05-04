@@ -35,7 +35,6 @@ import { TheSeamTelInputDirective } from '../tel-input.directive'
   styleUrls: ['./tel-input.component.scss'],
   providers: [{
     provide: NG_VALUE_ACCESSOR,
-    // tslint:disable-next-line: no-use-before-declare
     useExisting: forwardRef(() => TheSeamTelInputComponent),
     multi: true
   }],
@@ -55,7 +54,7 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
 
   _hasInvalidCss$: Observable<boolean>
 
-  @Input() @InputBoolean() required: boolean = false
+  @Input() @InputBoolean() required = false
 
   @Input()
   get disabled(): boolean { return this._disabled }
@@ -101,6 +100,7 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
   @Input() value: string | undefined | null
 
   /** Event emitted when the "tel" input value changes. */
+  // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() readonly change = new EventEmitter<string>()
 
   /**

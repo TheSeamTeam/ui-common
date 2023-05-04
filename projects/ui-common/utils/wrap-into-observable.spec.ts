@@ -4,7 +4,6 @@ import { Observable } from 'rxjs'
 import { wrapIntoObservable } from './wrap-into-observable'
 
 describe('wrapIntoObservable', () => {
-
   describe('Value', () => {
     it('completes with value', fakeAsync(() => {
       const value = 123
@@ -59,5 +58,4 @@ describe('wrapIntoObservable', () => {
       expect(result).toBe(123)
     }))
   })
-
 })

@@ -39,7 +39,7 @@ export default {
 export const Basic: Story = () => ({
   props: {
     icon: faWrench,
-    faEnvelope: faEnvelope,
+    faEnvelope,
   },
   template: `
     <div class="p-1" style="max-height: 400px; width: 500px;">

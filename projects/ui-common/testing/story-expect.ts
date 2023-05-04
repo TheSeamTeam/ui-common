@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-named-default
 import { default as expectPatched } from '@storybook/expect'
 import { instrument } from '@storybook/instrumenter'
 import * as mock from 'jest-mock'
@@ -21,10 +22,6 @@ const { expect } = instrument(
     return path[0] !== 'expect'
   } }
 )
-
-
-
-
 
 function toBeFn(matcher: any): (value: any) => Promise<void> {
   // if (isInJasmine) {

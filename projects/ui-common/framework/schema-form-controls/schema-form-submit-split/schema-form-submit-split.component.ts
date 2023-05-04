@@ -109,6 +109,7 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy 
 
     if (isDevMode()) {
       if (this.layoutNode.items.length > 1) {
+        // eslint-disable-next-line no-console
         console.warn(
           `TheSeamSchemaFormSubmitSplitComponent only supports one item.` +
           ` items after index 0 will be ignored.`
@@ -127,7 +128,6 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy 
     }
 
     this.jsf.initializeControl(this._dropdownObj)
-
 
     const items = buildTitleMap(
       this._dropdownObj.options.titleMap || this._dropdownObj.options.enumNames,

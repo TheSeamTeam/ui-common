@@ -13,7 +13,7 @@ import { SeamIcon } from '../icon'
 //
 
 // Browsers that do not support css grayscale filter.
-const needToFix = /(MSIE 10)|(Trident.*rv:11\.0)|( Edge\/[\d\.]+$)/.test(navigator.userAgent)
+const needToFix = /(MSIE 10)|(Trident.*rv:11\.0)|( Edge\/[\d.]+$)/.test(navigator.userAgent)
 
 export type TheSeamIconType = 'borderless-styled-square' | 'styled-square' | 'image-fill' | undefined
 
@@ -30,10 +30,10 @@ export class IconComponent {
   needToFix = needToFix
 
   /** Toggles whether the img/icon will attempt to be grayscale when disabled is true. */
-  @Input() @InputBoolean() grayscaleOnDisable: boolean = true
+  @Input() @InputBoolean() grayscaleOnDisable = true
 
   /** Toggles the img/icon to grayscale if `grayscaleOnDisable` is true. */
-  @Input() @InputBoolean() disabled: boolean = false
+  @Input() @InputBoolean() disabled = false
 
   /**
    * Placed on the `.seam-icon--fa` and `seam-icon--img` elements.

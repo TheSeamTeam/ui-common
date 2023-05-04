@@ -1,7 +1,7 @@
 // import { QueryParamsHandling } from '@angular/router/src/config'
 import { ComponentType } from '@angular/cdk/portal'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { Component, Directive, EventEmitter, HostBinding, Input, isDevMode, OnDestroy, OnInit, Optional, Output } from '@angular/core'
+import { Component, Directive, EventEmitter, HostBinding, Input, isDevMode, Optional, Output } from '@angular/core'
 import { Subscription } from 'rxjs'
 
 // import jexl from 'jexl'
@@ -39,14 +39,14 @@ export interface TheSeamDatatableRow {
 @Directive({
   selector: '[seamDatatableActionMenuItem]'
 })
-export class DatatableActionMenuItemDirective implements OnInit, OnDestroy {
+export class DatatableActionMenuItemDirective {
 
   @HostBinding('class.list-group-item') _listGroupItem = true
   @HostBinding('class.list-group-item-action') _listGroupItemAction = true
 
   @Input() label: string | undefined | null
 
-  // tslint:disable-next-line:no-input-rename
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('attr.href') href: string | undefined | null
   @Input() target: string | undefined | null
 
@@ -101,6 +101,7 @@ export class DatatableActionMenuItemDirective implements OnInit, OnDestroy {
 
   @Input() row: TheSeamDatatableRow | undefined | null
 
+  // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() click = new EventEmitter<any>()
 
   constructor(
@@ -108,10 +109,6 @@ export class DatatableActionMenuItemDirective implements OnInit, OnDestroy {
     private readonly _dynamicComponentLoader: TheSeamDynamicComponentLoader,
     @Optional() private readonly _http: HttpClient,
   ) { }
-
-  ngOnInit() { }
-
-  ngOnDestroy() { }
 
   // private _handleEndpointAction() {
   //   if (!this._http) {

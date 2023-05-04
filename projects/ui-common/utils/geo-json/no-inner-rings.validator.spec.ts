@@ -240,5 +240,4 @@ describe('noInnerRingsValidator', () => {
       expect(control.valid).toBe(false)
     })
   })
-
 })

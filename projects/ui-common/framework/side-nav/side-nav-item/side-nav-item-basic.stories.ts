@@ -57,7 +57,7 @@ export default {
   },
 } as Meta
 
-export const NoChildren: Story = (args) => ({
+export const NoChildren: Story = args => ({
   applicationConfig: {
     providers: [
       importProvidersFrom(RouterModule.forRoot([], { useHash: true })),
@@ -89,7 +89,7 @@ NoChildren.args = {
   compact: false,
 }
 
-export const WithChildren: Story = (args) => ({
+export const WithChildren: Story = args => ({
   applicationConfig: {
     providers: [
       importProvidersFrom(RouterModule.forRoot([

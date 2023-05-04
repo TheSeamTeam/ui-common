@@ -5,14 +5,12 @@ import type { ThemeTypes } from '@theseam/ui-common/models'
 import { AnchorButtonComponent, ButtonComponent } from '../button/button.component'
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'button[seamBadgeButton]',
   templateUrl: './badge-button.component.html',
   styleUrls: ['./badge-button.component.scss'],
   exportAs: 'seamBadgeButton',
-  // tslint:disable-next-line:use-input-property-decorator
   inputs: [ 'disabled', 'theme', 'size' ],
-  // tslint:disable-next-line:use-host-property-decorator
   host: {
     '[attr.type]': 'type',
     'class': 'btn',
@@ -27,6 +25,7 @@ export class BadgeButtonComponent extends ButtonComponent implements OnDestroy {
   @Input() badgeTheme: ThemeTypes = 'light'
   @Input() badgeText = ''
 
+  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(
     _elementRef: ElementRef,
     _focusMonitor: FocusMonitor,
@@ -37,16 +36,13 @@ export class BadgeButtonComponent extends ButtonComponent implements OnDestroy {
 
 }
 
-
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'a[seamBadgeButton]',
   templateUrl: './badge-button.component.html',
   styleUrls: ['./badge-button.component.scss'],
   exportAs: 'seamBadgeButton,seamBadgeButtonAnchor',
-  // tslint:disable-next-line:use-input-property-decorator
   inputs: [ 'disabled', 'theme', 'size' ],
-  // tslint:disable-next-line:use-host-property-decorator
   host: {
     'class': 'btn',
     '[attr.tabindex]': 'disabled ? -1 : (tabIndex || 0)',
@@ -62,6 +58,7 @@ export class AnchorBadgeButtonComponent extends AnchorButtonComponent implements
   @Input() badgeTheme: ThemeTypes = 'light'
   @Input() badgeText = ''
 
+  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(
     _elementRef: ElementRef,
     _focusMonitor: FocusMonitor,

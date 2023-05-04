@@ -14,7 +14,7 @@ export default {
   decorators: [ ]
 } as Meta
 
-export const Example: Story = (args) => {
+export const Example: Story = args => {
   return {
     applicationConfig: {
       providers: [

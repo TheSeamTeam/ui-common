@@ -5,11 +5,11 @@ export async function waitOnConditionAsync(
 ): Promise<any> {
   const timeStart: any = new Date()
 
-  const _waitFunc = (callback: (boolean: boolean) => any) => {
+  const _waitFunc = (callbackFn: (boolean: boolean) => any) => {
     let conditionSuccess = false
 
     if (condition()) {
-      callback(true)
+      callbackFn(true)
       conditionSuccess = true
     }
 
@@ -20,7 +20,7 @@ export async function waitOnConditionAsync(
         if (throwOnTimeout) {
           throw new Error('Timed out waiting on condition.')
         } else {
-          callback(false)
+          callbackFn(false)
         }
       }
 

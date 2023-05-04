@@ -24,10 +24,11 @@ export default {
   ]
 } as Meta
 
-export const Basic: Story = (args) => ({
+export const Basic: Story = args => ({
   props: {
     // msgText: text('Message', 'Do you confirm?'),
     confirmed() {
+      // eslint-disable-next-line no-console
       console.log('Confirmed')
     }
   },
@@ -41,13 +42,14 @@ export const Basic: Story = (args) => ({
   `
 })
 
-export const WithAlert: Story = (args) => ({
+export const WithAlert: Story = args => ({
   props: {
     // msgText: text('Message', 'Do you confirm?'),
     // alertMsgText: text('Alert Message', 'This is an alert'),
     // theme: select('Theme', ThemeNames, 'warning'),
     ...args,
     confirmed() {
+      // eslint-disable-next-line no-console
       console.log('Confirmed')
     }
   },
@@ -69,11 +71,6 @@ WithAlert.args = {
 WithAlert.argTypes = {
   alertTheme: { control: 'select', options: ThemeNames },
 }
-
-
-
-
-
 
 // TODO: Convert all of the following to CSF
 
@@ -132,11 +129,6 @@ WithAlert.argTypes = {
 //       </div>
 //       `
 //   }))
-
-
-
-
-
 
 // @Component({
 //   // tslint:disable-next-line:component-selector
@@ -220,7 +212,6 @@ WithAlert.argTypes = {
 
 // }
 
-
 // export default {
 //   title: 'Components/ConfirmDialog/Service',
 //   component: ConfirmDialogComponent,
@@ -249,12 +240,6 @@ WithAlert.argTypes = {
 //   },
 //   component: StoryLibConfirmDialogAlertServiceComponent
 // })
-
-
-
-
-
-
 
 // storiesOf('Components/ConfirmDialog/Service', module)
 //   // .addDecorator(withKnobs)

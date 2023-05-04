@@ -17,7 +17,7 @@ export class DatatableActionMenuItemComponent {
 
   @Input() label: string | undefined | null
 
-  // tslint:disable-next-line:no-input-rename
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('attr.href') href: string | undefined | null
   @Input() target: string | undefined | null
 
@@ -35,6 +35,7 @@ export class DatatableActionMenuItemComponent {
 
   @Input() disabled: boolean | undefined | null
 
+  // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() readonly click = new EventEmitter<any>()
 
 }

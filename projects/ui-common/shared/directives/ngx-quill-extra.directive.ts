@@ -6,7 +6,7 @@ import { filter, takeUntil, tap } from 'rxjs/operators'
 import { QuillEditorComponent } from 'ngx-quill'
 
 @Directive({
-  // tslint:disable-next-line:directive-selector
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: 'quill-editor'
 })
 export class NgxQuillExtraDirective implements OnDestroy, AfterViewInit {
@@ -65,6 +65,5 @@ export class NgxQuillExtraDirective implements OnDestroy, AfterViewInit {
 
     return findElem(this._elementRef.nativeElement)
   }
-
 
 }

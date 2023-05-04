@@ -6,7 +6,6 @@ import { auditTime, last, switchMap, takeUntil, tap } from 'rxjs/operators'
 import { AssetLoaderService, LoadedAssetRef } from '@theseam/ui-common/services'
 import { getAttribute, hasAttribute, notNullOrUndefined, toggleAttribute } from '@theseam/ui-common/utils'
 
-
 import { NgControl } from '@angular/forms'
 import { IntlTelInputFn, intlTelInputUtils } from './intl-tel-input'
 import type { IntlTelInput } from './intl-tel-input'
@@ -21,7 +20,7 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy, DoCheck {
   private readonly _ngUnsubscribe = new Subject<void>()
 
   private _instance: IntlTelInput.Plugin | undefined
-  private _loadedAssetRefs: LoadedAssetRef<HTMLLinkElement |  HTMLStyleElement>[] = []
+  private _loadedAssetRefs: LoadedAssetRef<HTMLLinkElement | HTMLStyleElement>[] = []
 
   @HostBinding('attr.type') _attrType = 'tel'
 

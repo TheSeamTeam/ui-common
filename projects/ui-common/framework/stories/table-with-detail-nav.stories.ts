@@ -31,7 +31,6 @@ import { TheSeamTopBarModule } from '../top-bar/index'
 import { exampleData2 } from '../../datatable-dynamic/_story-data/dynamic-data-2'
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'story-ex-widget-1',
   template: `<seam-widget [icon]="faWrench" titleText="Example Widget 1"
     [hasConfig]="true" [canCollapse]="true" [loading]="!(initialized$ | async)">
@@ -52,7 +51,6 @@ class StoryExWidget1Component {
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'story-ex-widget-2',
   template: `<seam-widget [icon]="faWrench" titleText="Example Widget 2"
     [hasConfig]="true" [canCollapse]="true" [loading]="!(initialized$ | async)">
@@ -73,7 +71,6 @@ class StoryExWidget2Component {
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'story-ex-widget-3',
   template: `<seam-widget [icon]="faWrench" titleText="Example Widget 3"
     [hasConfig]="true" [canCollapse]="true" [loading]="!(initialized$ | async)">
@@ -94,7 +91,6 @@ class StoryExWidget3Component {
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'story-ex-widget-4',
   template: `<seam-widget [icon]="faWrench" titleText="Example Widget 4"
     [hasConfig]="true" [canCollapse]="true" [loading]="!(initialized$ | async)">
@@ -115,7 +111,6 @@ class StoryExWidget4Component {
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'story-ex-widget-5',
   template: `<seam-widget [icon]="faUsers" titleText="2019 Member Enrollments"
     [hasConfig]="true" [canCollapse]="true" [loading]="!(initialized$ | async)">
@@ -136,7 +131,6 @@ class StoryExWidget5Component {
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'story-ex-widget-6',
   template: `<seam-widget [icon]="faSignature" titleText="Bill of Ladings"
     [hasConfig]="true" [canCollapse]="true" [loading]="!(initialized$ | async)">
@@ -197,7 +191,6 @@ class StoryExWidget6Component {
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'story-ex-widget-7',
   template: `<seam-widget [icon]="faChartLine" titleText="Product Trends By Month"
     [hasConfig]="true" [canCollapse]="true" [loading]="!(initialized$ | async)">
@@ -213,7 +206,6 @@ class StoryExWidget7Component {
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'story-ex-widget-8',
   template: `<seam-widget [icon]="faClock" titleText="Example Text"
     [hasConfig]="true" [canCollapse]="true" [loading]="!(initialized$ | async)">
@@ -233,10 +225,7 @@ class StoryExWidget8Component {
   initialized$ = of(true)
 }
 
-
-
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'name-ex',
   template: `
     <div>Name: {{ name$ | async }}</div>
@@ -250,17 +239,19 @@ class StoryNameExComponent {
     private _route: ActivatedRoute,
     private _router: Router
   ) {
+    // eslint-disable-next-line no-console
     console.log('name-ex', this)
     this.name$ = this._route.data.pipe(map(v => v['name'] || undefined))
 
+    // eslint-disable-next-line no-console
     console.log('config', this._router.config)
+    // eslint-disable-next-line no-console
     console.log('config2', this._route.routeConfig)
     // this._router.config.unshift(this._routes)
   }
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'user-details-ex',
   template: `
     <nav aria-label="breadcrumb">
@@ -282,6 +273,7 @@ class UserDetailsExComponent {
     private _route: ActivatedRoute,
     private _router: Router
   ) {
+    // eslint-disable-next-line no-console
     console.log('user-details-ex', this)
     this.name$ = this._route.data.pipe(map(v => v['name'] || undefined))
 
@@ -305,7 +297,7 @@ export default {
   }
 } as Meta
 
-export const TableWithDetailNav: Story = (args) => ({
+export const TableWithDetailNav: Story = args => ({
   applicationConfig: {
     providers: [
       provideAnimations(),
@@ -503,7 +495,6 @@ export const TableWithDetailNav: Story = (args) => ({
     </div>
   `
 })
-
 
 // storiesOf('Framework/Examples', module)
 //   // .addDecorator(withKnobs)

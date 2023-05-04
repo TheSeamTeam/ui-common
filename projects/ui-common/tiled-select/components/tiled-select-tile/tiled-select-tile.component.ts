@@ -84,14 +84,14 @@ export class TiledSelectTileComponent {
   @Input() name: string | undefined | null
   @Input() label: string | undefined | null
   @Input() icon: SeamIcon | undefined | null
-  @Input() @InputBoolean() disabled: boolean = false
-  @Input() @InputBoolean() selected: boolean = false
+  @Input() @InputBoolean() disabled = false
+  @Input() @InputBoolean() selected = false
 
-  @Input() @InputBoolean() tileBackdrop: boolean = false
-  @Input() @InputBoolean() selectable: boolean = false
-  @Input() @InputBoolean() grayscaleOnDisable: boolean = true
-  @Input() @InputBoolean() showLabel: boolean = true
-  @Input() @InputBoolean() showSelectedIcon: boolean = true
+  @Input() @InputBoolean() tileBackdrop = false
+  @Input() @InputBoolean() selectable = false
+  @Input() @InputBoolean() grayscaleOnDisable = true
+  @Input() @InputBoolean() showLabel = true
+  @Input() @InputBoolean() showSelectedIcon = true
 
   @Input() iconClass: string | undefined | null
 
@@ -109,7 +109,6 @@ export class TiledSelectTileComponent {
   ) { }
 
   onTileClick(event: any) {
-    console.log('event', event)
     if (!this.selectable) { return }
     this.activated.emit(event)
 

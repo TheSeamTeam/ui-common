@@ -55,7 +55,7 @@ export default {
   },
 } as Meta
 
-export const NoConfig: Story = (args) => {
+export const NoConfig: Story = args => {
   const rows = [
     { completionPercent: args.value }
   ]
@@ -77,7 +77,7 @@ NoConfig.args = {
   value: 75,
 }
 
-export const WithConfig: Story = (args) => {
+export const WithConfig: Story = args => {
   const columns = [
     {
       prop: 'completionPercent',

@@ -16,7 +16,7 @@ import { TableCellTypeConfigInteger } from './table-cell-type-integer-config'
   styleUrls: ['./table-cell-type-integer.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TableCellTypeIntegerComponent implements OnInit, OnDestroy {
+export class TableCellTypeIntegerComponent implements OnDestroy {
 
   private readonly _ngUnsubscribe = new Subject<void>()
 
@@ -43,20 +43,18 @@ export class TableCellTypeIntegerComponent implements OnInit, OnDestroy {
       tableData.changed
         .pipe(takeUntil(this._ngUnsubscribe))
         .subscribe(v => {
-          if (v.changes.hasOwnProperty('value')) {
+          if (Object.prototype.hasOwnProperty.call(v.changes, 'value')) {
             this.value = this._formatInteger(v.changes.value.currentValue, tableData)
             this._cdf.markForCheck()
           }
 
-          if (v.changes.hasOwnProperty('colData')) {
+          if (Object.prototype.hasOwnProperty.call(v.changes, 'colData')) {
             this.colData = v.changes.colData.currentValue
             this._cdf.markForCheck()
           }
         })
     }
   }
-
-  ngOnInit() {}
 
   ngOnDestroy() {
     this._ngUnsubscribe.next(undefined)
@@ -65,11 +63,12 @@ export class TableCellTypeIntegerComponent implements OnInit, OnDestroy {
 
   private _formatInteger(currentValue?: any, tableData?: TableCellData<'integer', TableCellTypeConfigInteger> | undefined): string {
     const config = tableData?.colData?.cellTypeConfig
-    const defaultToEmpty = notNullOrUndefined(config?.defaultToEmpty) ?
-      this._parseConfigValue(coerceBooleanProperty(config?.defaultToEmpty), tableData) : true
-    const formatInteger = notNullOrUndefined(config?.formatNumber) ?
-      this._parseConfigValue(coerceBooleanProperty(config?.formatNumber), tableData) : true
-    const valueIsNumeric = isNumeric(currentValue)
+    const defaultToEmpty = notNullOrUndefined(config?.defaultToEmpty)
+      ? this._parseConfigValue(coerceBooleanProperty(config?.defaultToEmpty), tableData) : true
+    const formatInteger = notNullOrUndefined(config?.formatNumber)
+      ? this._parseConfigValue(coerceBooleanProperty(config?.formatNumber), tableData) : true
+    let _currentValue = currentValue
+    const valueIsNumeric = isNumeric(_currentValue)
 
     // unparseable values are OK to return as long as we're not trying to format them
     if (!valueIsNumeric && formatInteger) {
@@ -78,15 +77,15 @@ export class TableCellTypeIntegerComponent implements OnInit, OnDestroy {
         return ''
       } else {
         // set non-numeric value to 0 so it can be formatted the same as other numbers
-        currentValue = 0
+        _currentValue = 0
       }
     }
 
     const locale = this._parseConfigValue(config?.locale, tableData) || 'en-US'
     const minIntegerDigits = this._parseConfigValue(config?.minIntegerDigits, tableData) || 1
-    const format = `${ minIntegerDigits }.0-0`
+    const format = `${minIntegerDigits}.0-0`
 
-    return formatInteger ? formatNumber(currentValue, locale, format ) : currentValue
+    return formatInteger ? formatNumber(_currentValue, locale, format) : _currentValue
   }
 
   private _parseConfigValue(val?: any, tableData?: TableCellData<'integer', TableCellTypeConfigInteger>) {

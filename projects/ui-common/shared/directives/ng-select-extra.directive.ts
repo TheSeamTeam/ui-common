@@ -10,7 +10,7 @@ import { ResizeSensor } from 'css-element-queries'
 import { IElementResizedEvent } from './elem-resized.directive'
 
 @Directive({
-  // tslint:disable-next-line:directive-selector
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: 'ng-select'
 })
 export class NgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestroy {
@@ -56,7 +56,7 @@ export class NgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestr
   }
 
   @HostBinding('class.ng-empty-string-value') get _isEmptyStringValue() {
-    return this.ngControl ? this.ngControl.value === '' ? true : false : false
+    return this.ngControl ? this.ngControl.value === '' : false
   }
 
   constructor(
@@ -114,7 +114,7 @@ export class NgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestr
     }
     this._checkMarked = false
 
-    this._resizeSensor = new ResizeSensor(this.elementRef.nativeElement, (event) => {
+    this._resizeSensor = new ResizeSensor(this.elementRef.nativeElement, event => {
       this._resizedEvent.emit({ element: this.elementRef.nativeElement, size: event })
     })
   }
@@ -163,7 +163,7 @@ export class NgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestr
 
   private _enableKeyPressWorkaround() {
     if (this._keyPressWorkaroundSub) { return }
-    const _ngSelect = <any>this.ngSelect
+    const _ngSelect = this.ngSelect as any
 
     this._keyPressWorkaroundSub = _ngSelect._keyPress$
       .pipe(takeUntil(this._ngUnsubscribe))

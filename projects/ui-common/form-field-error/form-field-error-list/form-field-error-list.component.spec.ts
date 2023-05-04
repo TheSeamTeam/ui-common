@@ -5,8 +5,6 @@ import { createComponentFactory, Spectator } from '@ngneat/spectator/jest'
 import { FormFieldErrorComponent } from '../form-field-error/form-field-error.component'
 import { FormFieldErrorListComponent, IErrorRecord } from './form-field-error-list.component'
 
-// tslint:disable:no-non-null-assertion
-
 function countRecordsByValidator(validatorName: string, records: IErrorRecord[]): number {
   return (records || []).filter(v => v.validatorName === validatorName).length
 }
@@ -60,7 +58,7 @@ describe('FormFieldErrorListComponent', () => {
     spectator.component.displayRecords$.subscribe(v => count = countRecordsByValidator('__padding__', v))
     control.markAsDirty()
     tick()
-    expect(control.errors!.required).toBeDefined()
+    expect(control?.errors?.required).toBeDefined()
     expect(count).toBe(1)
   }))
 
@@ -75,13 +73,11 @@ describe('FormFieldErrorListComponent', () => {
     control.markAsDirty()
     tick()
 
-
     // TODO: Fix bug making the error messages not update correctly initially
     spectator.component.errors = errors
     tick()
 
-
-    expect(control.errors!.required).toBeDefined()
+    expect(control?.errors?.required).toBeDefined()
     // console.log(control.errors)
     // console.log(records)
     expect(countRecordsByValidator('__padding__', records)).toBe(0)

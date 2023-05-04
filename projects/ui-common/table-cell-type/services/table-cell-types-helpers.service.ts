@@ -28,7 +28,7 @@ export class TableCellTypesHelpersService {
       row: data && data.row,
       rowIndex: data && data.rowIndex,
       colData: data && data.colData,
-      value: value
+      value
     }
   }
 

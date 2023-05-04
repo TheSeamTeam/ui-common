@@ -10,7 +10,7 @@ import { TheSeamToggleEditModule } from '../toggle-edit.module'
 
 export default {
   title: 'Toggle Edit/Components',
-  component: ToggleEditComponent ,
+  component: ToggleEditComponent,
   decorators: [
     moduleMetadata({
       imports: [
@@ -23,7 +23,7 @@ export default {
   ]
 } as Meta
 
-export const Simple: Story = (args) => ({
+export const Simple: Story = args => ({
   props: {
     ...args,
     control: new FormControl('abc')
@@ -38,7 +38,7 @@ export const Simple: Story = (args) => ({
     </div>`
 })
 
-export const LabelTemplate: Story = (args) => ({
+export const LabelTemplate: Story = args => ({
   props: {
     ...args,
     control: new FormControl('abc')
@@ -54,7 +54,7 @@ export const LabelTemplate: Story = (args) => ({
     </div>`
 })
 
-export const ValidatorMessage: Story = (args) => ({
+export const ValidatorMessage: Story = args => ({
   props: {
     ...args,
     control: new FormControl('abc', [ Validators.maxLength(3) ])

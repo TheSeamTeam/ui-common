@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
 import { BehaviorSubject, from, Observable, of } from 'rxjs'
 import { concatMap, filter, switchMap, toArray } from 'rxjs/operators'
 
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons'
-
 import { DynamicValueHelperService } from '@theseam/ui-common/dynamic'
 import { hasProperty, notNullOrUndefined } from '@theseam/ui-common/utils'
 
@@ -75,7 +74,7 @@ export class DatatableDynamicActionMenuComponent implements OnInit {
     //   switchMap(([ row, actionDefs ]) => !!row ? this._mapRecords(row, actionDefs) : of([]))
     // )
     this._menuRecords$ = this._row.pipe(
-      switchMap(row => !!row
+      switchMap(row => row
         ? this._dynamicRowActions.rowActions(row).pipe(
             switchMap(actionDefs => this._mapRecords(row, actionDefs))
           )
@@ -86,8 +85,6 @@ export class DatatableDynamicActionMenuComponent implements OnInit {
 
     // this._menuRecords$.subscribe()
   }
-
-  ngOnInit() { }
 
   // TODO: Consider moving this to `DynamicDatatableRowActionsService`.
   private _mapRecords<A extends DynamicDatatableRowAction>(
@@ -145,7 +142,7 @@ export class DatatableDynamicActionMenuComponent implements OnInit {
     const action = def.action
 
     if (action.type === 'link') {
-      if (hasProperty(<any>action, 'asset')) {
+      if (hasProperty(action as any, 'asset')) {
         return 'button'
       }
       return 'a'

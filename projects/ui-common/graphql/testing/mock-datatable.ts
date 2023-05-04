@@ -12,10 +12,10 @@ export class MockDatatable implements GqlDatatableAccessor {
 
   private _sorts: SortItem[] = []
   private _rows: any[] = []
-  private _offset: number = 0
-  private _rowHeight: number = 50
-  private _bodyHeight: number = 500
-  private _scrolledPosV: number = 0
+  private _offset = 0
+  private _rowHeight = 50
+  private _bodyHeight = 500
+  private _scrolledPosV = 0
 
   page: EventEmitter<TheSeamPageInfo> = new EventEmitter()
 
@@ -77,16 +77,17 @@ export class MockDatatable implements GqlDatatableAccessor {
   }
 
   setPage(v: number): void {
-    if (v === this.getPage()) {
+    let _v = v
+    if (_v === this.getPage()) {
       return
     }
 
-    if (v > this.getNumPages() - 1) {
+    if (_v > this.getNumPages() - 1) {
       // Should this throw an error instead?
-      v = this.getNumPages() - 1
+      _v = this.getNumPages() - 1
     }
 
-    this._offset = v
+    this._offset = _v
     this._scrolledPosV = this._calcScrolledPosV()
     this.page.emit(this.ngxDatatable)
   }

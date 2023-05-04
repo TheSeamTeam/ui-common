@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, Input, OnInit, TemplateRef } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Inject, Input, TemplateRef } from '@angular/core'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
@@ -11,7 +11,7 @@ import type { IDashboardWidgetsItem } from '../dashboard-widgets/dashboard-widge
   styleUrls: ['./dashboard-widget-template-container.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DashboardWidgetTemplateContainerComponent implements OnInit {
+export class DashboardWidgetTemplateContainerComponent {
 
   @Input() item: IDashboardWidgetsItem | undefined | null
 
@@ -25,7 +25,5 @@ export class DashboardWidgetTemplateContainerComponent implements OnInit {
       map(container => container && container.templateRef)
     )
   }
-
-  ngOnInit() { }
 
 }

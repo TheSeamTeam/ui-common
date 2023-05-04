@@ -149,7 +149,7 @@ describe('ColumnsManagerService', () => {
       expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
         expect.objectContaining({
           prop: ACTION_MENU_COLUMN_PROP,
-          cellTemplate: cellTemplate,
+          cellTemplate,
           headerTemplate: undefined
         })
       )
@@ -163,7 +163,7 @@ describe('ColumnsManagerService', () => {
         expect.objectContaining({
           prop: ACTION_MENU_COLUMN_PROP,
           cellTemplate: undefined,
-          headerTemplate: headerTemplate
+          headerTemplate
         })
       )
     })
@@ -177,8 +177,8 @@ describe('ColumnsManagerService', () => {
       expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
         expect.objectContaining({
           prop: ACTION_MENU_COLUMN_PROP,
-          cellTemplate: cellTemplate,
-          headerTemplate: headerTemplate
+          cellTemplate,
+          headerTemplate
         })
       )
     })
@@ -324,10 +324,10 @@ class MockDatatable {
 
   _internalColumns?: TableColumn[]
   private _columns: TableColumn[] = []
-  private _innerWidth: number = 500
+  private _innerWidth = 500
 
-  scrollbarH: boolean = false
-  scrollbarV: boolean = false
+  scrollbarH = false
+  scrollbarV = false
   scrollbarHelper = { width: 10 }
   columnMode: ColumnMode | keyof typeof ColumnMode = ColumnMode.standard
 

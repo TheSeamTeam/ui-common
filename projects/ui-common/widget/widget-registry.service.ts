@@ -42,7 +42,8 @@ export class WidgetRegistryService {
           map(componentFactory => {
             let resolver: ComponentFactoryResolver | null | undefined = componentFactoryResolver
             if (!resolver) {
-              const m = (<any /* ComponentFactoryBoundToModule */>componentFactory).ngModule
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const m = (componentFactory as any /* ComponentFactoryBoundToModule */).ngModule
               if (m && m.componentFactoryResolver) {
                 resolver = m.componentFactoryResolver
               }

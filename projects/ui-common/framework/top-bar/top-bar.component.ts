@@ -7,7 +7,6 @@ import {
   ContentChildren,
   Input,
   OnDestroy,
-  OnInit,
   QueryList,
   ViewEncapsulation
 } from '@angular/core'
@@ -44,7 +43,7 @@ import { TopBarMenuDirective } from './top-bar-menu.directive'
   exportAs: 'seamTopBar',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TheSeamTopBarComponent implements OnInit, OnDestroy, AfterContentInit {
+export class TheSeamTopBarComponent implements OnDestroy, AfterContentInit {
   static ngAcceptInputType_hasTitle: BooleanInput
 
   /** @ignore */
@@ -69,13 +68,13 @@ export class TheSeamTopBarComponent implements OnInit, OnDestroy, AfterContentIn
   @Input() logoHref?: string | null
 
   /** Link target used when `logoHref` is specified. Defaults to `"_blank"` */
-  @Input() logoHrefTarget: string = '_blank'
+  @Input() logoHrefTarget = '_blank'
 
   /** Route to link to when `logo` is clicked. Defaults to `/`. */
-  @Input() logoRoute: string = '/'
+  @Input() logoRoute = '/'
 
   /** Determines if the title should be displayed. */
-  @Input() @InputBoolean() hasTitle: boolean = false
+  @Input() @InputBoolean() hasTitle = false
 
   /** Title text displayed when `hasTitle` is true. */
   @Input() titleText: string | undefined | null
@@ -97,9 +96,6 @@ export class TheSeamTopBarComponent implements OnInit, OnDestroy, AfterContentIn
   ) {
     this.isMobile$ = this._layout.isMobile$
   }
-
-  /** @ignore */
-  ngOnInit() { }
 
   /** @ignore */
   ngOnDestroy() {

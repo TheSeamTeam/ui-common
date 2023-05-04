@@ -2,7 +2,6 @@ import { createComponentFactory, createHostFactory, Spectator } from '@ngneat/sp
 
 import { ButtonComponent } from './button.component'
 
-
 import { render, screen } from '@testing-library/angular'
 import * as stories from './button.stories' // import all stories from the stories file
 
@@ -17,11 +16,9 @@ import { platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic
 // const { Basic } = composeStories(stories as any)
 
 describe('ButtonComponent', () => {
-
   describe('Normal', () => {
     let spectator: Spectator<ButtonComponent>
     const createHost = createHostFactory(ButtonComponent)
-
 
     it('should have "button" type by default', () => {
       spectator = createHost(`<button seamButton>Example</button>`)
@@ -62,7 +59,6 @@ describe('ButtonComponent', () => {
 
   //     expect(document.body.getElementsByTagName('button')[0].innerHTML).toBe((Basic as any).args?.btnText)
 
-
   //     // render(Basic);
   //     // const buttonElement = screen.getByText(
   //     //   /Text coming from args in stories file!/i
@@ -78,9 +74,6 @@ describe('ButtonComponent', () => {
   //   //   //   parameters: {} as any,
   //   //   //   targetDOMNode: rootTargetDOMNode,
   //   //   // })
-
-
-
 
   //   //   const tmp = createMountableStoryComponent((Basic as any)())
 
@@ -100,7 +93,6 @@ describe('ButtonComponent', () => {
   //   //   spectator = createComponent()
 
   //   //   expect(document.body.getElementsByTagName('button')[0].innerHTML).toBe(Basic.args?.btnText)
-
 
   //   //   // render(Basic);
   //   //   // const buttonElement = screen.getByText(
@@ -136,7 +128,6 @@ describe('ButtonComponent', () => {
   //     spectator = createComponent()
   //   })
 
-
   //   it('renders mounable component', () => {
   //     expect(document.body.getElementsByTagName('button')[0].innerHTML).toBe((Basic as any).args?.btnText)
   //   })
@@ -154,5 +145,4 @@ describe('ButtonComponent', () => {
   //     expect(document.body.getElementsByTagName('button')[0].innerHTML).toBe((Basic as any).args?.btnText)
   //   })
   // })
-
 })

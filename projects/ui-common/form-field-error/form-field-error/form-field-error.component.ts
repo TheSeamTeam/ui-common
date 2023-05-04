@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core'
+import { Component, Input } from '@angular/core'
 
 import { InputBoolean } from '@theseam/ui-common/core'
 
@@ -7,16 +7,11 @@ import { InputBoolean } from '@theseam/ui-common/core'
   templateUrl: './form-field-error.component.html',
   styleUrls: ['./form-field-error.component.scss']
 })
-export class FormFieldErrorComponent implements OnInit {
+export class FormFieldErrorComponent {
 
   @Input() validatorName: string | undefined | null
   @Input() message: string | undefined | null
 
-  @Input() @InputBoolean() showValidatorName: boolean = false
-
-  constructor() { }
-
-  ngOnInit() {
-  }
+  @Input() @InputBoolean() showValidatorName = false
 
 }

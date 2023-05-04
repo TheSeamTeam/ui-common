@@ -9,12 +9,12 @@ export function addCountryCode(data: TelInputCountryData, iso2: string, countryC
   if (countryCode.length > data.countryCodeMaxLen) {
     data.countryCodeMaxLen = countryCode.length
   }
-  if (!data.countryCodes.hasOwnProperty(countryCode)) {
+  if (!Object.prototype.hasOwnProperty.call(data.countryCodes, countryCode)) {
     data.countryCodes[countryCode] = []
   }
   // bail if we already have this country for this countryCode
-  for (let i = 0; i < data.countryCodes[countryCode].length; i++) {
-    if (data.countryCodes[countryCode][i] === iso2) { return }
+  for (const code of data.countryCodes[countryCode]) {
+    if (code === iso2) { return }
   }
   // check for undefined as 0 is falsy
   const index = (priority !== undefined) ? priority : data.countryCodes[countryCode].length

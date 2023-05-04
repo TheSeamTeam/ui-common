@@ -2,14 +2,13 @@
 // Unless there is a way to make it stop ignoring those settings, tripple slash
 // reference to a `.d.ts` file was the only way I could stop the missing types
 // error.
-// tslint:disable-next-line: no-reference
 // /// <reference path="./jexl.d.ts" />
 // /// <reference path="../../../../../custom_types/jexl/index.d.ts" />
 
 import { DatePipe } from '@angular/common'
 import { Injectable } from '@angular/core'
 
-// @ts-ignore: Missing types
+// // @ts-ignore: Missing types
 import jexl from 'jexl'
 
 import { DynamicValueBaseType } from '../../models/dynamic-value-base-type'

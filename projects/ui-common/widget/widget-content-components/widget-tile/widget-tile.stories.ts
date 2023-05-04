@@ -30,7 +30,7 @@ export default {
   ],
 } as Meta
 
-export const Link: Story = (args) => ({
+export const Link: Story = args => ({
   props: {
     ...args,
     icon: faWrench,
@@ -52,7 +52,7 @@ Link.args = {
   tileText: 'Tile Text',
 }
 
-export const Button: Story = (args) => ({
+export const Button: Story = args => ({
   props: {
     ...args,
     icon: faWrench,
@@ -70,7 +70,7 @@ Button.args = {
   tileText: 'Tile Text',
 }
 
-export const ButtonWithFooter: Story = (args) => ({
+export const ButtonWithFooter: Story = args => ({
   props: {
     ...args,
     icon: faWrench,

@@ -21,13 +21,12 @@ export default {
   ]
 } as Meta
 
-export const Example: Story = (args) => ({
+export const Example: Story = args => ({
   props: { },
   template: `
     <seam-dashboard></seam-dashboard>
   `
 })
-
 
 // storiesOf('Framework/Dashboard', module)
 //   // .addDecorator(withKnobs)

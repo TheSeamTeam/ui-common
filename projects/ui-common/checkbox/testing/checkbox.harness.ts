@@ -1,6 +1,5 @@
 import { BaseHarnessFilters, ComponentHarness, HarnessPredicate } from '@angular/cdk/testing'
 
-
 interface TheSeamCheckboxHarnessFilters extends BaseHarnessFilters {
   /** Filters based on the id of the checkbox. */
   id?: number | string | RegExp

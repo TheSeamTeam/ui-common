@@ -111,9 +111,9 @@ export class DashboardWidgetPortalOutletDirective extends BasePortalOutlet imple
 
     // If the portal specifies an origin, use that as the logical location of the component
     // in the application tree. Otherwise use the location of this PortalOutlet.
-    const viewContainerRef = portal.viewContainerRef != null ?
-        portal.viewContainerRef :
-        this._viewContainerRef
+    const viewContainerRef = portal.viewContainerRef != null
+        ? portal.viewContainerRef
+        : this._viewContainerRef
 
     const resolver = portal.componentFactoryResolver || this._componentFactoryResolver
     const componentFactory = resolver.resolveComponentFactory(portal.component)

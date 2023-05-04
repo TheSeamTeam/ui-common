@@ -12,10 +12,8 @@ import type { DataFilterContainer } from '../../data-filter-container'
 import { textDataFilter } from '../data-filter-text/data-filter-text.component'
 import { ITextFilterOptions } from '../data-filter-text/text-filter-options'
 
-
 export const DATA_FILTER_TOGGLE_BUTTON: any = {
   provide: THESEAM_DATA_FILTER,
-  // tslint:disable-next-line:no-use-before-declare
   useExisting: forwardRef(() => DataFilterToggleButtonsComponent),
   multi: true,
 }
@@ -124,9 +122,9 @@ export class DataFilterToggleButtonsComponent implements OnInit, OnDestroy, IDat
     @Optional() @Inject(THESEAM_DATA_FILTER_OPTIONS) private _filterOptions: IToggleButtonsFilterOptions | null
   ) {
     this.filterStateChanges = this._control.valueChanges.pipe(
-      tap(v => console.log('v', v)),
+      // tap(v => console.log('v', v)),
       switchMap(() => of(this.filterState())),
-      tap(v => console.log('v2', v)),
+      // tap(v => console.log('v2', v)),
       shareReplay({ bufferSize: 1, refCount: true })
     )
   }
@@ -141,7 +139,7 @@ export class DataFilterToggleButtonsComponent implements OnInit, OnDestroy, IDat
   ngOnDestroy() { this._filterContainer.removeFilter(this) }
 
   private _optDefault<K extends keyof IToggleButtonsFilterOptions>(prop: K) {
-    if (this._filterOptions && this._filterOptions.hasOwnProperty(prop)) {
+    if (this._filterOptions && Object.prototype.hasOwnProperty.call(this._filterOptions, prop)) {
       return this._filterOptions[prop]
     }
     return DefaultToggleButtonsFilterOptions[prop]

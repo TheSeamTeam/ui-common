@@ -97,6 +97,5 @@ export function mergeModalConfigs(a: ModalConfig, b: ModalConfig) {
   return { ...a, ...b }
 }
 
-
 /** Injection token that can be used to specify modal options. */
 export const LIB_MODAL_CONFIG = new InjectionToken<ModalConfig>('seamModalConfig')

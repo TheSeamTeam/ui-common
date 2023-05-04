@@ -41,7 +41,7 @@ export default {
   },
 } as Meta
 
-export const Exports: Story = (args) => ({
+export const Exports: Story = args => ({
   props: {
     columns: [
       { prop: 'name', name: 'Name' },

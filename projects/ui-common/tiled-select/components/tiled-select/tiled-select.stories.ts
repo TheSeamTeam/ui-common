@@ -26,7 +26,7 @@ export default {
   ]
 } as Meta
 
-export const Default: Story<TheSeamTiledSelectComponent & { [key: string]: any }> = (args) => ({
+export const Default: Story<TheSeamTiledSelectComponent & { [key: string]: any }> = args => ({
   // props: { ...args },
   props: {
     tiles: args.tiles
@@ -96,7 +96,7 @@ Default.play = async ({ canvasElement, fixture }) => {
   await expectFn(await tiledSelectHarness.getValue()).toBe('corn')
 }
 
-export const WithControl: Story<TheSeamTiledSelectComponent & { [key: string]: any }> = (args) => ({
+export const WithControl: Story<TheSeamTiledSelectComponent & { [key: string]: any }> = args => ({
   moduleMetadata: {
     imports: [ ReactiveFormsModule ]
   },

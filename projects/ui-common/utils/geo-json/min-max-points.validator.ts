@@ -22,12 +22,12 @@ export function minMaxPointsValidator(min: number | undefined = 3, max?: number 
     }
 
     if (collectionViolatesMinMax(value, min, max)) {
-      const reason = notNullOrUndefined(max) ?
-        `A polygon must have between ${min} and ${max} points.` :
-        `A polygon must have at least ${min} points.`
+      const reason = notNullOrUndefined(max)
+        ? `A polygon must have between ${min} and ${max} points.`
+        : `A polygon must have at least ${min} points.`
       return {
         [MIN_MAX_POINTS_VALIDATOR_NAME]: {
-          reason: reason
+          reason
         }
       }
     }

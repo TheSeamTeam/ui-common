@@ -74,7 +74,7 @@ export class MenuComponent implements OnDestroy, AfterContentInit, ITheSeamMenuP
 
   @Output() readonly closed = new EventEmitter<void | 'click' | 'keydown' | 'tab'>()
 
-  @Input() menuClass: string  | undefined | null
+  @Input() menuClass: string | undefined | null
 
   /**
    * Defines a width for a menu that will scale down if the window innerWidth is

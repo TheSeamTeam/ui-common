@@ -1,5 +1,5 @@
 import { BooleanInput } from '@angular/cdk/coercion'
-import { Component, ContentChild, Input, OnInit, TemplateRef } from '@angular/core'
+import { Component, ContentChild, Input, TemplateRef } from '@angular/core'
 
 import { InputBoolean } from '@theseam/ui-common/core'
 
@@ -12,7 +12,7 @@ import { TabbedItemAccessor } from '../tabbed-models'
   templateUrl: './tabbed-item.component.html',
   styleUrls: ['./tabbed-item.component.scss']
 })
-export class TabbedItemComponent implements OnInit, TabbedItemAccessor {
+export class TabbedItemComponent implements TabbedItemAccessor {
   static ngAcceptInputType_contentFromRoute: BooleanInput
 
   @ContentChild(TabbedTabDirective, { read: TemplateRef, static: true })
@@ -24,9 +24,4 @@ export class TabbedItemComponent implements OnInit, TabbedItemAccessor {
   @Input() name: string | undefined | null
   @Input() label: string | undefined | null
   @Input() @InputBoolean() contentFromRoute = false
-
-  constructor() { }
-
-  ngOnInit() { }
-
 }

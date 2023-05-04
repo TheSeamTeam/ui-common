@@ -29,7 +29,9 @@ import { MODAL_DATA, TheSeamModalModule } from '@theseam/ui-common/modal'
 export class StoryModalOneComponent {
   constructor(
     @Optional() @Inject(MODAL_DATA) public data?: any
-  ) { console.log('[StoryModalOneComponent] data', data) }
+  ) {
+    // console.log('[StoryModalOneComponent] data', data)
+  }
 }
 
 @NgModule({
@@ -72,7 +74,9 @@ export class StoryModalOneModule { }
 export class StoryModalTwoComponent {
   constructor(
     @Optional() @Inject(MODAL_DATA) public data?: any
-  ) { console.log('[StoryModalTwoComponent] data', data) }
+  ) {
+    // console.log('[StoryModalTwoComponent] data', data)
+  }
 }
 
 @NgModule({
@@ -89,4 +93,3 @@ export class StoryModalTwoComponent {
   ]
 })
 export class StoryModalTwoModule { }
-

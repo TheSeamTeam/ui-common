@@ -31,9 +31,7 @@ class TestEvaluatorAsync implements IDynamicValueEvaluator<'test-async'> {
 }
 
 describe('DynamicValueHelperService', () => {
-
   describe('Syncronous evaluator', () => {
-
     beforeEach(() => TestBed.configureTestingModule({
     providers: [
         { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: TestEvaluatorSync, multi: true }
@@ -58,7 +56,6 @@ describe('DynamicValueHelperService', () => {
   })
 
   describe('Asyncronous evaluator', () => {
-
     beforeEach(() => TestBed.configureTestingModule({
     providers: [
         { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: TestEvaluatorAsync, multi: true }
@@ -81,5 +78,4 @@ describe('DynamicValueHelperService', () => {
       expect(outValue).toBe(context.a as any)
     })
   })
-
 })

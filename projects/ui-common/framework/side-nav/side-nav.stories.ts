@@ -80,7 +80,7 @@ export default {
   },
 } as Meta
 
-export const Basic: Story = (args) => ({
+export const Basic: Story = args => ({
   applicationConfig: {
     providers: [
       importProvidersFrom(StoryInitialRouteModule.forRoot('/example3/ex2/example1.3')),
@@ -236,7 +236,7 @@ export const Basic: Story = (args) => ({
   `,
 })
 
-export const Collapsed: Story = (args) => ({
+export const Collapsed: Story = args => ({
   applicationConfig: {
     providers: [
       importProvidersFrom(StoryInitialRouteModule.forRoot('/example2')),

@@ -72,6 +72,7 @@ function mergeVariables(variableObjects: FilterStateMapperVariables[]): FilterSt
     if (isDevMode()) {
       for (const p of props) {
         if (notNullOrUndefined(variables[p]) && variables[p] !== v[p]) {
+          // eslint-disable-next-line no-console
           console.warn(`Multiple filters adding the same variable with a different result. This could cause unexpected results.`)
           break
         }

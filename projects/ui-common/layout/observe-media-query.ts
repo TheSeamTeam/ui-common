@@ -5,11 +5,11 @@ import { distinctUntilChanged, map, shareReplay, startWith, tap } from 'rxjs/ope
 import { MediaQueryAliases } from './breakpoint-aliases'
 
 const mediaQueriesMap: { [breakpoint: string]: string } = {
-  'xs'   : 'screen and (max-width: 599px)',
-  'sm'   : 'screen and (min-width: 600px) and (max-width: 959px)',
-  'md'   : 'screen and (min-width: 960px) and (max-width: 1279px)',
-  'lg'   : 'screen and (min-width: 1280px) and (max-width: 1919px)',
-  'xl'   : 'screen and (min-width: 1920px) and (max-width: 5000px)',
+  'xs': 'screen and (max-width: 599px)',
+  'sm': 'screen and (min-width: 600px) and (max-width: 959px)',
+  'md': 'screen and (min-width: 960px) and (max-width: 1279px)',
+  'lg': 'screen and (min-width: 1280px) and (max-width: 1919px)',
+  'xl': 'screen and (min-width: 1920px) and (max-width: 5000px)',
   'lt-sm': 'screen and (max-width: 599px)',
   'lt-md': 'screen and (max-width: 959px)',
   'lt-lg': 'screen and (max-width: 1279px)',

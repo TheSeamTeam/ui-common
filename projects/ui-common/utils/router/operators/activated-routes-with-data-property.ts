@@ -17,7 +17,7 @@ export function activatedRoutesWithDataProperty(prop: string, mustHaveDefined: b
       map(route => leafChildRoute(route)),
       map(route => route.pathFromRoot),
       switchMap(routes => combineLatest(routes.map(r => _data(r)))),
-      map(v => v.filter(_v => _v.data.hasOwnProperty(prop))),
+      map(v => v.filter(_v => Object.prototype.hasOwnProperty.call(_v.data, prop))),
       map(v => mustHaveDefined
         ? v.filter(_v => willHaveDataProp(_v.route, prop))
         : v

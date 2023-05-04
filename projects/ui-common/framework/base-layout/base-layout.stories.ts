@@ -34,7 +34,6 @@ import { TheSeamTopBarModule } from '../top-bar/top-bar.module'
 import { TheSeamBaseLayoutComponent } from './base-layout.component'
 import { TheSeamBaseLayoutModule } from './base-layout.module'
 
-
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'story-ex-widget-1',
@@ -119,7 +118,6 @@ class StoryExWidget4Component {
 class StoryRoutePlacholderComponent {
   constructor(public router: Router) { }
 }
-
 
 const routes: Route[] = [
   {

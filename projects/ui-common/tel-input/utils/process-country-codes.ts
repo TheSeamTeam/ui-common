@@ -17,8 +17,7 @@ export function processCountryCodes(countries: intlTelInputUtils.CountryData[]):
   }
 
   // first: add dial codes
-  for (let i = 0; i < countries.length; i++) {
-    const c = countries[i]
+  for (const c of countries) {
     if (!data.dialCodes[c.dialCode]) { data.dialCodes[c.dialCode] = true }
     addCountryCode(data, c.iso2, c.dialCode, c.priority)
   }
@@ -27,14 +26,12 @@ export function processCountryCodes(countries: intlTelInputUtils.CountryData[]):
   // this is a second loop over countries, to make sure we have all of the "root" countries
   // already in the map, so that we can access them, as each time we add an area code substring
   // to the map, we also need to include the "root" country's code, as that also matches
-  for (let i = 0; i < countries.length; i++) {
-    const c = countries[i]
+  for (const c of countries) {
     // area codes
     if (c.areaCodes) {
       const rootCountryCode = data.countryCodes[c.dialCode][0]
       // for each area code
-      for (let j = 0; j < c.areaCodes.length; j++) {
-        const areaCode = c.areaCodes[j]
+      for (const areaCode of c.areaCodes) {
         // for each digit in the area code to add all partial matches as well
         for (let k = 1; k < areaCode.length; k++) {
           const partialDialCode = c.dialCode + areaCode.substr(0, k)

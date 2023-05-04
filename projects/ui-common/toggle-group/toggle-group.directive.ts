@@ -10,7 +10,6 @@ import { ToggleGroupOptionDirective } from './toggle-group-option.directive'
 
 export const TOGGLE_GROUP_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
-  // tslint:disable-next-line:no-use-before-declare
   useExisting: forwardRef(() => ToggleGroupDirective),
   multi: true,
 }
@@ -27,15 +26,16 @@ export class ToggleGroupDirective implements OnDestroy, AfterViewInit, ControlVa
 
   private readonly _ngUnsubscribe = new Subject<void>()
 
-  // tslint:disable-next-line:no-input-rename
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('value') val: string | string[] | undefined | null
 
-  @Input() @InputBoolean() disabled: boolean = false
-  @Input() @InputBoolean() multiple: boolean = false
-  @Input() @InputBoolean() selectionToggleable: boolean = true
+  @Input() @InputBoolean() disabled = false
+  @Input() @InputBoolean() multiple = false
+  @Input() @InputBoolean() selectionToggleable = true
 
   // TODO: Add min/max selected inputs to make toggling better for multi select
 
+  // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() readonly change = new EventEmitter<string | string[] | undefined | null>()
 
   @ContentChildren(ToggleGroupOptionDirective) optionDirectives?: QueryList<ToggleGroupOptionDirective>
@@ -44,8 +44,6 @@ export class ToggleGroupDirective implements OnDestroy, AfterViewInit, ControlVa
 
   onChange: any
   onTouched: any
-
-  constructor() { }
 
   ngOnDestroy() {
     this._ngUnsubscribe.next()
@@ -103,7 +101,7 @@ export class ToggleGroupDirective implements OnDestroy, AfterViewInit, ControlVa
         : value
       : value
 
-    this.val = (this.multiple) ? [ ...(<string[]>_value || []) ] : _value || ''
+    this.val = (this.multiple) ? [ ...(_value as string[] || []) ] : _value || ''
     this.change.emit(this.val)
     if (this.onChange) { this.onChange(_value) }
     if (this.onTouched) { this.onTouched() }
@@ -127,7 +125,7 @@ export class ToggleGroupDirective implements OnDestroy, AfterViewInit, ControlVa
 
   isSelected(value: string | undefined | null) {
     if (this.multiple) {
-      const idx = (<string[]>this.value || []).findIndex(v => v === value)
+      const idx = (this.value as string[] || []).findIndex(v => v === value)
       return idx !== -1
     } else {
       // TODO: Clean this up when the directive no longer allows array value type when multiple is false
@@ -140,7 +138,7 @@ export class ToggleGroupDirective implements OnDestroy, AfterViewInit, ControlVa
 
   unselectValue(value: string | undefined | null) {
     if (this.multiple) {
-      this.value = (<string[]>this.value || []).filter(v => v !== value)
+      this.value = (this.value as string[] || []).filter(v => v !== value)
     } else {
       this.value = undefined
     }
@@ -148,7 +146,7 @@ export class ToggleGroupDirective implements OnDestroy, AfterViewInit, ControlVa
 
   selectValue(value: string | undefined | null) {
     if (this.multiple) {
-      const _value = [ ...(<string[]>this.value || []) ]
+      const _value = [ ...(this.value as string[] || []) ]
       this.value = value ? [ ..._value, value ] : _value
     } else {
       this.value = value

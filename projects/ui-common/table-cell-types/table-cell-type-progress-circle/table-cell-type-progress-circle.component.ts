@@ -7,8 +7,7 @@ import {
   Inject,
   Input,
   OnDestroy,
-  OnInit,
-  Optional
+  Optional,
 } from '@angular/core'
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
@@ -27,7 +26,7 @@ import { TableCellTypeConfigProgressCircle, TableCellTypeProgressCircleConfigAct
   styleUrls: ['./table-cell-type-progress-circle.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TableCellTypeProgressCircleComponent implements OnInit, OnDestroy {
+export class TableCellTypeProgressCircleComponent implements OnDestroy {
 
   private readonly _ngUnsubscribe = new Subject<void>()
 
@@ -36,15 +35,15 @@ export class TableCellTypeProgressCircleComponent implements OnInit, OnDestroy {
   _tableCellData?: TableCellData<'progress-circle', TableCellTypeConfigProgressCircle>
   colData?: TheSeamTableColumn<'progress-circle', TableCellTypeConfigProgressCircle>
 
-  fillBackground: boolean = false
-  showText: boolean = false
-  hiddenOnEmpty: boolean = true
-  pending: boolean = false
+  fillBackground = false
+  showText = false
+  hiddenOnEmpty = true
+  pending = false
   tooltip?: string
   tooltipClass?: string
   tooltipPlacement?: string
   tooltipContainer?: string
-  _tooltipDisabled: boolean = false
+  _tooltipDisabled = false
 
   _title?: string
   _srOnly?: string
@@ -89,7 +88,7 @@ export class TableCellTypeProgressCircleComponent implements OnInit, OnDestroy {
       tableData.changed
         .pipe(takeUntil(this._ngUnsubscribe))
         .subscribe(v => {
-          if (v.changes.hasOwnProperty('value')) {
+          if (Object.prototype.hasOwnProperty.call(v.changes, 'value')) {
             this.value = coerceNumberProperty(v.changes.value.currentValue)
             if (this._config) {
               this._setCellTypeConfigProps(this._config)
@@ -97,14 +96,14 @@ export class TableCellTypeProgressCircleComponent implements OnInit, OnDestroy {
             this._cdf.markForCheck()
           }
 
-          if (v.changes.hasOwnProperty('colData')) {
+          if (Object.prototype.hasOwnProperty.call(v.changes, 'colData')) {
             this.colData = v.changes.colData.currentValue
             if (this.colData && this.colData.cellTypeConfig) {
               this._setCellTypeConfigProps(this.colData.cellTypeConfig)
             }
             this._cdf.markForCheck()
           } else {
-            if (v.changes.hasOwnProperty('row')) {
+            if (Object.prototype.hasOwnProperty.call(v.changes, 'row')) {
               if (this.colData?.cellTypeConfig) {
                 this._setCellTypeConfigProps(this.colData.cellTypeConfig)
                 this._cdf.markForCheck()
@@ -114,8 +113,6 @@ export class TableCellTypeProgressCircleComponent implements OnInit, OnDestroy {
         })
     }
   }
-
-  ngOnInit() { }
 
   ngOnDestroy() {
     this._ngUnsubscribe.next(undefined)
@@ -130,7 +127,7 @@ export class TableCellTypeProgressCircleComponent implements OnInit, OnDestroy {
   public setAction(configAction?: TableCellTypeProgressCircleConfigAction) {
     let newTplType: IconTemplateType = 'default'
     let link: string | undefined
-    let download: boolean = false
+    let download = false
     let detectMimeContent = false
     let target: string | undefined
     let queryParams: { [k: string]: any } | undefined
@@ -190,6 +187,7 @@ export class TableCellTypeProgressCircleComponent implements OnInit, OnDestroy {
       this._tableCellTypeHelpers.handleModalAction(this._buttonAction, contextFn)
         .subscribe(
           r => {},
+          // eslint-disable-next-line no-console
           err => console.error(err),
           () => this._actionRefreshRequest()
         )

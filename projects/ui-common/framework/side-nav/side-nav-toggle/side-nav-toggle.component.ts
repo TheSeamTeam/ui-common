@@ -1,5 +1,5 @@
 import { BooleanInput } from '@angular/cdk/coercion'
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core'
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core'
 
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 
@@ -15,7 +15,7 @@ import { InputBoolean } from '@theseam/ui-common/core'
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 })
-export class SideNavToggleComponent implements OnInit {
+export class SideNavToggleComponent {
   static ngAcceptInputType_expanded: BooleanInput
 
   faBars = faBars
@@ -23,10 +23,6 @@ export class SideNavToggleComponent implements OnInit {
   @Input() @InputBoolean() expanded = false
 
   @Output() toggleExpand = new EventEmitter<void>()
-
-  constructor() { }
-
-  ngOnInit() { }
 
   toggle() {
     this.toggleExpand.emit()

@@ -17,7 +17,6 @@ import { textDataFilter } from '../data-filter-text/data-filter-text.component'
 
 import { ISearchFilterOptions } from './search-filter-options'
 
-
 export const DATA_FILTER_SEARCH: any = {
   provide: THESEAM_DATA_FILTER,
   // tslint:disable-next-line:no-use-before-declare
@@ -88,7 +87,7 @@ export class DataFilterSearchComponent implements OnInit, OnDestroy, IDataFilter
   ngOnDestroy() { this._filterContainer.removeFilter(this) }
 
   private _optDefault<K extends keyof ISearchFilterOptions>(prop: K) {
-    if (this._filterOptions && this._filterOptions.hasOwnProperty(prop)) {
+    if (this._filterOptions && Object.prototype.hasOwnProperty.call(this._filterOptions, prop)) {
       return this._filterOptions[prop]
     }
     return DefaultSearchFilterOptions[prop]

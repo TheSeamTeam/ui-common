@@ -1,5 +1,5 @@
 import { BooleanInput } from '@angular/cdk/coercion'
-import { Component, DoCheck, ElementRef, HostBinding, Input, OnInit, Renderer2 } from '@angular/core'
+import { Component, DoCheck, ElementRef, HostBinding, Input, Renderer2 } from '@angular/core'
 
 import { SizeProp } from '@fortawesome/fontawesome-svg-core'
 
@@ -10,7 +10,7 @@ import type { SeamIcon } from '../icon'
 import type { TheSeamIconType } from '../icon/icon.component'
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'button[seamIconBtn]',
   template: `
     <seam-icon *ngIf="icon"
@@ -25,22 +25,21 @@ import type { TheSeamIconType } from '../icon/icon.component'
     <ng-content select=".sr-only,seam-icon-notification"></ng-content>
   `,
   styles: [],
-  // tslint:disable-next-line:use-host-property-decorator
   host: {
     '[attr.aria-disabled]': 'disabled.toString()',
     '[attr.disabled]': 'disabled || null',
   },
 })
-export class IconBtnComponent implements OnInit, DoCheck {
+export class IconBtnComponent implements DoCheck {
   static ngAcceptInputType_grayscaleOnDisable: BooleanInput
   static ngAcceptInputType_disabled: BooleanInput
   static ngAcceptInputType_showDefaultOnError: BooleanInput
 
   /** Toggles whether the img/icon will attempt to be grayscale when disabled is true. */
-  @Input() @InputBoolean() grayscaleOnDisable: boolean = true
+  @Input() @InputBoolean() grayscaleOnDisable = true
 
   /** Toggles the img/icon to grayscale if `grayscaleOnDisable` is true. */
-  @Input() @InputBoolean() disabled: boolean = false
+  @Input() @InputBoolean() disabled = false
 
   /**
    * Placed on the `.seam-icon--fa` and `seam-icon--img` elements.
@@ -64,7 +63,7 @@ export class IconBtnComponent implements OnInit, DoCheck {
    * Toggles whether an image that has thrown the `onerror` event should show
    * the `defaultIcon` instead.
    */
-   @Input() @InputBoolean() showDefaultOnError: boolean = false
+   @Input() @InputBoolean() showDefaultOnError = false
 
   /**
    * Shown if icon is not set or if showDefaultOnError is true and img has thrown an error.
@@ -118,8 +117,6 @@ export class IconBtnComponent implements OnInit, DoCheck {
     private _elementRef: ElementRef<HTMLButtonElement | HTMLAnchorElement>,
     private _renderer: Renderer2
   ) { }
-
-  ngOnInit() { }
 
   ngDoCheck() {
     if (this._isButton()) {

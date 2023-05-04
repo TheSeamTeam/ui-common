@@ -24,7 +24,7 @@ export class FormFieldRequiredIndicatorComponent {
   static ngAcceptInputType_required: BooleanInput
 
   /** Used if a form control is not found. */
-  @Input() @InputBoolean() required: boolean = false
+  @Input() @InputBoolean() required = false
 
   constructor(
     @Optional() @Inject(FORM_FIELD_COMPONENT) public readonly _formField: any

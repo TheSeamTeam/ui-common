@@ -6,8 +6,6 @@ import { map, take } from 'rxjs/operators'
 @Injectable({ providedIn: 'root' })
 export class HierarchyLevelResolver implements Resolve<number> {
 
-  constructor() {}
-
   resolve(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot

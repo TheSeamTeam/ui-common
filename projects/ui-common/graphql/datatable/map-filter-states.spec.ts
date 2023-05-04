@@ -4,7 +4,6 @@ import { mapFilterStates } from './map-filter-states'
 import { MapperContext } from './mapper-context'
 
 describe('mapFilterStates', () => {
-
   it('should return null if no filterStates', async () => {
     const result = await mapFilterStates([], {}, { extraVariables: {} })
     expect(result).toBeNull()
@@ -36,5 +35,4 @@ describe('mapFilterStates', () => {
     expect(result?.filter).toEqual({ or: [ { eq: 'a' }, { eq: 'b' }, { eq: 'b' } ] })
     expect(result?.variables).toEqual({ a: 'b', c: 'd', e: 'f' })
   })
-
 })

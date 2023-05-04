@@ -13,7 +13,6 @@ import { TheSeamLoadingModule } from '@theseam/ui-common/loading'
 import { WidgetDragHandleDirective } from './directives/widget-drag-handle.directive'
 import { WidgetIconTplDirective } from './directives/widget-icon-tpl.directive'
 import { WidgetTitleTplDirective } from './directives/widget-title-tpl.directive'
-import { WidgetFooterComponent } from './widget-footer/widget-footer.component'
 import { WidgetComponent } from './widget/widget.component'
 
 import { TheSeamWidgetButtonGroupModule } from './widget-content-components/widget-button-group/widget-button-group.module'
@@ -25,8 +24,9 @@ import { TheSeamWidgetFooterTextModule } from './widget-content-components/widge
 import { TheSeamWidgetHeaderBadgeModule } from './widget-content-components/widget-header-badge/widget-header-badge.module'
 import { TheSeamWidgetListGroupModule } from './widget-content-components/widget-list-group/widget-list-group.module'
 import { TheSeamWidgetTableModule } from './widget-content-components/widget-table/widget-table.module'
-import { TheSeamWidgetTileListModule } from './widget-content-components/widget-tile-list/widget-tile-list.module'
 import { TheSeamWidgetTileModule } from './widget-content-components/widget-tile/widget-tile.module'
+import { TheSeamWidgetTileListModule } from './widget-content-components/widget-tile-list/widget-tile-list.module'
+import { WidgetFooterComponent } from './widget-footer/widget-footer.component'
 
 const contentModules = [
   TheSeamWidgetButtonGroupModule,

@@ -33,7 +33,7 @@ export class TheSeamPdfPageComponent implements OnDestroy, AfterViewInit {
   }
   private _page: any
 
-  @Input() @InputBoolean() shadow: boolean = false
+  @Input() @InputBoolean() shadow = false
 
   @HostBinding('class.shadow') get _shadow() { return this.shadow }
 
@@ -124,6 +124,7 @@ export class TheSeamPdfPageComponent implements OnDestroy, AfterViewInit {
       }
     } catch (err) {
       // PDF loading error
+      // eslint-disable-next-line no-console
       console.error(err)
     }
   }
@@ -143,7 +144,6 @@ export class TheSeamPdfPageComponent implements OnDestroy, AfterViewInit {
     if (wDiff > this.renderUpdateThreshold || hDiff > this.renderUpdateThreshold) {
       this.render()
     }
-
   }
 
 }

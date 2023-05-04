@@ -43,11 +43,11 @@ export default {
   ],
 } as Meta
 
-export const Basic: Story = (args) => ({
+export const Basic: Story = args => ({
   props: {
     ...args,
     icon: faWrench,
-    faEnvelope: faEnvelope,
+    faEnvelope,
   },
   template: `
     <div class="p-1" style="max-height: 400px; width: 500px;">
@@ -61,11 +61,11 @@ export const Basic: Story = (args) => ({
     </div>`,
 })
 
-export const Link: Story = (args) => ({
+export const Link: Story = args => ({
   props: {
     ...args,
     icon: faWrench,
-    faEnvelope: faEnvelope,
+    faEnvelope,
   },
   template: `
     <div class="p-1" style="max-height: 400px; width: 500px;">
@@ -79,11 +79,11 @@ export const Link: Story = (args) => ({
     </div>`,
 })
 
-export const Button: Story = (args) => ({
+export const Button: Story = args => ({
   props: {
     ...args,
     icon: faWrench,
-    faEnvelope: faEnvelope,
+    faEnvelope,
   },
   template: `
     <div class="p-1" style="max-height: 400px; width: 500px;">
@@ -97,11 +97,11 @@ export const Button: Story = (args) => ({
     </div>`,
 })
 
-export const LabelOnly: Story = (args) => ({
+export const LabelOnly: Story = args => ({
   props: {
     ...args,
     icon: faWrench,
-    faEnvelope: faEnvelope,
+    faEnvelope,
   },
   template: `
     <div class="p-1" style="max-height: 400px; width: 500px;">
@@ -116,11 +116,11 @@ LabelOnly.args = {
   label: 'Example Label',
 }
 
-export const IconWithLabel: Story = (args) => ({
+export const IconWithLabel: Story = args => ({
   props: {
     ...args,
     icon: faWrench,
-    faEnvelope: faEnvelope,
+    faEnvelope,
   },
   template: `
     <div class="p-1" style="max-height: 400px; width: 500px;">
@@ -143,11 +143,11 @@ LabelOnly.argTypes = {
   },
 }
 
-export const SecondaryIcon: Story = (args) => ({
+export const SecondaryIcon: Story = args => ({
   props: {
     ...args,
     icon: faWrench,
-    faEnvelope: faEnvelope,
+    faEnvelope,
   },
   template: `
     <div class="p-1" style="max-height: 400px; width: 500px;">

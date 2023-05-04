@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ContentChild, HostBinding, Input, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component } from '@angular/core'
 
 // TODO: Make `ListGroup` a root component and wrap it with `WidgetListGroup`.
 
@@ -11,10 +11,4 @@ import { ChangeDetectionStrategy, Component, ContentChild, HostBinding, Input, O
   },
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WidgetListGroupComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() { }
-
-}
+export class WidgetListGroupComponent { }

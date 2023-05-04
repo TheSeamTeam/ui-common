@@ -12,7 +12,7 @@ import { THESEAM_MENU_PANEL } from './menu-panel-token'
 import { MenuComponent } from './menu.component'
 
 /** Options for binding a passive event listener. */
-const passiveEventListenerOptions = normalizePassiveListenerOptions({passive: true})
+const passiveEventListenerOptions = normalizePassiveListenerOptions({ passive: true })
 
 @Directive({
   selector: '[seamMenuToggle]',

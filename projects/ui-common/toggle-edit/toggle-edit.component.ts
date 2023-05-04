@@ -36,7 +36,6 @@ import { IToggleEditRef } from './models/toggle-edit-ref'
 import { ToggleEditDisplayTplDirective } from './toggle-edit-display-tpl.directive'
 import { ToggleEditKeyboardListenerService } from './toggle-edit-keyboard-listener.service'
 
-
 @Component({
   selector: 'seam-toggle-edit',
   templateUrl: './toggle-edit.component.html',
@@ -176,10 +175,10 @@ export class ToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, Do
   // Make this disabled checking implementation better. It gets called to much
   // trying to be accurate.
   private _checkDisabledChange() {
-    const isDisabled = this.disabled
-    if (isDisabled !== this._previousDisabled) {
+    // const isDisabled = this.disabled
+    // if (isDisabled !== this._previousDisabled) {
 
-    }
+    // }
   }
 
   public get disabled() {
@@ -246,17 +245,17 @@ export class ToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, Do
 
   public getFormGroup(): FormGroup | null {
     if (!this.isFormGroup()) { return null }
-    return <FormGroup>this.controlContainer.control
+    return this.controlContainer.control as FormGroup
   }
 
   public isInFormField(): boolean {
     return !!this.formFieldComponent
   }
 
-  public getFormControl(): FormControl |  null {
+  public getFormControl(): FormControl | null {
     if (!this.isInFormField()) { return null }
     if (!this.formFieldComponent.contentInput) { return null }
-    return <FormControl>this.formFieldComponent.contentInput.ngControl.control
+    return this.formFieldComponent.contentInput.ngControl.control as FormControl
   }
 
   public hasControl(): boolean {
@@ -287,7 +286,7 @@ export class ToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, Do
 
     this.stopEditing()
 
-    this.changeAccepted.emit(<IToggleEditRef>this)
+    this.changeAccepted.emit(this as IToggleEditRef)
   }
 
   public cancelEdit(): void {
@@ -296,7 +295,7 @@ export class ToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, Do
     this.resetValue()
     this.stopEditing()
 
-    this.changeDeclined.emit(<IToggleEditRef>this)
+    this.changeDeclined.emit(this as IToggleEditRef)
   }
 
   private _onFocus(): void {

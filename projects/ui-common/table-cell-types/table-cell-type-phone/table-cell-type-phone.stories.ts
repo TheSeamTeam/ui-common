@@ -32,7 +32,7 @@ export default {
   },
 } as Meta
 
-export const NoConfig: Story = (args) => {
+export const NoConfig: Story = args => {
   const rows = [
     { phoneNumber: args.value },
   ]
@@ -50,7 +50,7 @@ NoConfig.args = {
   value: '9015555555',
 }
 
-export const WithConfig: Story = (args) => {
+export const WithConfig: Story = args => {
   const columns = [
     {
       prop: 'phoneNumber', phoneNumber: 'Phone Number',

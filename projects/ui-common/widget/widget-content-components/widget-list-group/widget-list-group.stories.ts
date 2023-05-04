@@ -36,10 +36,10 @@ export default {
   ],
 } as Meta
 
-export const Basic: Story = (args) => ({
+export const Basic: Story = args => ({
   props: {
     icon: faWrench,
-    faEnvelope: faEnvelope,
+    faEnvelope,
   },
   template: `
     <div class="p-1" style="max-height: 400px; width: 500px;">

@@ -92,9 +92,6 @@ export function observeRowsWithGqlInputsHandling<TData, TRow, GqlVariables exten
     }
   })
 
-
-
-
   // const context$ = extraVariables$.pipe(
   //   map(_extraVariables => {
   //     const context: MapperContext = {
@@ -129,15 +126,12 @@ export function observeRowsWithGqlInputsHandling<TData, TRow, GqlVariables exten
   //   })
   // )
 
-
-
   // const handleQueryInputs =  combineLatest([ extraVariables$, pageInfo$ ]).pipe(
   //   switchMap(([ _extraVariables, pageInfo ]) => {
   //     // console.log('_extraVariables, pageInfo', _extraVariables, pageInfo)
   //     const context: MapperContext = {
   //       extraVariables: _extraVariables
   //     }
-
 
   //     return combineLatest([ sorts$, filterInfo$ ]).pipe(
   //       // map(([ sorts, filterInfo ]) => ({ extraVariables: _extraVariables, pageInfo, sorts, filterInfo }))
@@ -229,7 +223,6 @@ function _createDatatableResultsObservable(
 
     const ctxSub = context$.pipe(
       switchMap(context => {
-
         // TODO: Decide if the disabled paging feature will be reimplemented in a way
         // that it should be considered here. `_isPagingDisabled(queryRef)`
         const pageInfo$ = createPageInfoObservable(datatable$).pipe(
@@ -253,10 +246,9 @@ function _createDatatableResultsObservable(
             pageInfo,
             sorts,
             filter: filterInfo,
-            context: context
+            context
           }))
         )
-
       })
     ).subscribe(subscriber)
 

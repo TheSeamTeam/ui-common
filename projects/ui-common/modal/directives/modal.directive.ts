@@ -19,7 +19,7 @@ export class ModalDirective {
   open(): void {
     // console.log('[ModalDirective] open')
     const ref = this.modal.openFromTemplate(this.template)
-    ref.backdropClick().subscribe(e => console.log('backdropClick', e))
+    // ref.backdropClick().subscribe(e => console.log('backdropClick', e))
   }
 
 }

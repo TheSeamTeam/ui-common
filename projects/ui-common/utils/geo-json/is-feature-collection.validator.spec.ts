@@ -26,8 +26,7 @@ describe('isOnlyGeometryTypesValidator', () => {
     const control = new UntypedFormControl('a', [ isFeatureCollectionValidator() ])
     expect(control.valid).toBe(false)
     expect(control.errors).not.toBeNull()
-    // tslint:disable-next-line: no-non-null-assertion
-    expect(control.errors![IS_FEATURE_COLLECTION_VALIDATOR_NAME].reason).toBe(`Must be a FeatureCollection.`)
+    expect(control.errors[IS_FEATURE_COLLECTION_VALIDATOR_NAME].reason).toBe(`Must be a FeatureCollection.`)
   })
 
   describe('object value', () => {
@@ -52,5 +51,4 @@ describe('isOnlyGeometryTypesValidator', () => {
       expect(control.valid).toBe(true)
     })
   })
-
 })

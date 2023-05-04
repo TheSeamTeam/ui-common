@@ -23,6 +23,7 @@ export class DynamicValueHelperService {
     for (const e of evaluators || []) {
       if (isDevMode()) {
         if (this._evaluatorMap.has(e.type)) {
+          // eslint-disable-next-line no-console
           console.warn(`[DynamicValueHelperService] Multiple evaluators found for type '${e.type}'`)
         }
       }
@@ -73,11 +74,11 @@ export class DynamicValueHelperService {
       return false
     }
 
-    if (!(<DynamicValueEvaluatableType<R>>value).type) {
+    if (!(value as DynamicValueEvaluatableType<R>).type) {
       return false
     }
 
-    if (this._evaluatorMap.has((<DynamicValueEvaluatableType<R>>value).type)) {
+    if (this._evaluatorMap.has((value as DynamicValueEvaluatableType<R>).type)) {
       return true
     }
 

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, Input, isDevMode, OnInit, Optional } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Inject, Input, isDevMode, Optional } from '@angular/core'
 import { combineLatest, of } from 'rxjs'
 import { catchError, concatMap, map, take, tap } from 'rxjs/operators'
 
@@ -24,7 +24,7 @@ export interface IDatatableExportButtonData {
   styleUrls: ['./datatable-export-button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DatatableExportButtonComponent implements OnInit {
+export class DatatableExportButtonComponent {
 
   icon = faFileDownload
 
@@ -45,8 +45,6 @@ export class DatatableExportButtonComponent implements OnInit {
       this.exporters = this._data.exporters
     }
   }
-
-  ngOnInit() { }
 
   _onExporterClicked(exporter: IDataExporter) {
     if (!exporter.export) {
@@ -69,6 +67,7 @@ export class DatatableExportButtonComponent implements OnInit {
       }),
       concatMap(data => exporter.export(data)),
       catchError(err => {
+        // eslint-disable-next-line no-console
         console.error(err)
         return of(false)
       }),

@@ -1,5 +1,5 @@
 import { BooleanInput, coerceArray } from '@angular/cdk/coercion'
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core'
 import { DomSanitizer } from '@angular/platform-browser'
 
 import { InputBoolean } from '@theseam/ui-common/core'
@@ -27,7 +27,7 @@ export interface ITableColumn {
   styleUrls: ['./table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TableComponent<T = any> implements OnInit {
+export class TableComponent<T = any> {
   static ngAcceptInputType_hasHeader: BooleanInput
 
   @Input()
@@ -41,7 +41,7 @@ export class TableComponent<T = any> implements OnInit {
   @Input()
   get rows(): T[] | undefined | null { return this._rows }
   set rows(value: T[] | undefined | null) {
-    this._rows = !!value ? coerceArray(value) : []
+    this._rows = value ? coerceArray(value) : []
 
     if (this._rows.length < 1) {
       this._displayedRows = [
@@ -60,7 +60,7 @@ export class TableComponent<T = any> implements OnInit {
 
   @Input() size: 'sm' | 'md' | undefined | null
 
-  @Input() @InputBoolean() hasHeader: boolean = true
+  @Input() @InputBoolean() hasHeader = true
 
   public displayedRecords?: ITableColumn[]
   public displayedColumns?: string[]
@@ -70,8 +70,6 @@ export class TableComponent<T = any> implements OnInit {
   constructor(
     private readonly _sanitizer: DomSanitizer
   ) { }
-
-  ngOnInit() { }
 
   private _setColumns(cols: (string | ITableColumn)[]) {
     const newCols: ITableColumn[] = []

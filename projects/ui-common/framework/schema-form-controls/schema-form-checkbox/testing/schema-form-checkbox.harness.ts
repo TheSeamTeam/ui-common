@@ -3,7 +3,6 @@ import { BaseHarnessFilters, ComponentHarness, HarnessPredicate } from '@angular
 import { TheSeamCheckboxHarness } from '@theseam/ui-common/checkbox'
 import { TheSeamFormFieldRequiredIndicatorHarness } from '@theseam/ui-common/form-field'
 
-
 interface TheSeamSchemaFormCheckboxHarnessFilters extends BaseHarnessFilters {
   /** Filters based on the name of the field. */
   name?: string | RegExp
@@ -39,7 +38,7 @@ export class TheSeamSchemaFormCheckboxHarness extends ComponentHarness {
   }
 
   public async hasRequiredIndicator(): Promise<boolean> {
-    return (await (await this._requiredIndicator()).isIndicatorVisible())
+    return (await this._requiredIndicator()).isIndicatorVisible()
   }
 
   public async click(): Promise<void> {

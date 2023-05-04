@@ -5,7 +5,7 @@ import { DynamicValue } from '../../models/dynamic-value'
 
 export interface DynamicActionModalDef extends DynamicActionDef<'modal'> {
 
-  component?: DynamicValue<string | ComponentType<{}>>
+  component?: DynamicValue<string | ComponentType<object>>
 
   // TODO: Replace with a JSON valid `ModalConfig`
   data?: any

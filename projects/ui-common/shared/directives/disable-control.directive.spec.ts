@@ -17,7 +17,6 @@ class TestDisableControlComponent {
 }
 
 describe('DisableControlDirective', () => {
-
   let component: TestDisableControlComponent
   let fixture: ComponentFixture<TestDisableControlComponent>
   let controlInput: DebugElement
@@ -34,7 +33,6 @@ describe('DisableControlDirective', () => {
     teardown: { destroyAfterEach: false }
 })
     .compileComponents()
-
   }))
 
   beforeEach(() => {
@@ -47,5 +45,4 @@ describe('DisableControlDirective', () => {
   it('input should be disabled', () => {
     expect(controlInput.nativeElement.disabled).toBe(true)
   })
-
 })

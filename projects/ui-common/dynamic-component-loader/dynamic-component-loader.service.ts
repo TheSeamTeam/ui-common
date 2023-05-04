@@ -63,15 +63,15 @@ export class TheSeamDynamicComponentLoader {
 
       if (!dynamicModule) {
         throw new Error(
-          'TheSeamDynamicComponentLoader: Dynamic module for'
-          + ` componentId "${componentId}" does not contain`
-          + ' DYNAMIC_COMPONENT or DYNAMIC_MODULE as a provider.',
+          'TheSeamDynamicComponentLoader: Dynamic module for' +
+          ` componentId "${componentId}" does not contain` +
+          ' DYNAMIC_COMPONENT or DYNAMIC_MODULE as a provider.',
         )
       }
       if (dynamicModule.componentId !== componentId) {
         throw new Error(
-          'TheSeamDynamicComponentLoader: Dynamic module for'
-          + `${componentId} does not match manifest.`,
+          'TheSeamDynamicComponentLoader: Dynamic module for' +
+          `${componentId} does not match manifest.`,
         )
       }
 

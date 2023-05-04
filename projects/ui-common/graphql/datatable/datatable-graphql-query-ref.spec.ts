@@ -48,7 +48,6 @@ describe('DatatableGraphQLQueryRef', () => {
     pageFixture = new BasicDatatablePageFixture(datatableGql)
   })
 
-
   it('should query when new page is set', fakeAsync(async () => {
     pageFixture.init()
 
@@ -127,11 +126,7 @@ describe('DatatableGraphQLQueryRef', () => {
 
     pageFixture.destroy()
   }))
-
-
-
 })
-
 
 //
 //
@@ -145,8 +140,8 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
 
   private _rowsSub: Subscription = Subscription.EMPTY
   private _emittedData: TRow[] | null = []
-  private _emittedDataCount: number = 0
-  private _datatableEmitted: boolean = false
+  private _emittedDataCount = 0
+  private _datatableEmitted = false
 
   constructor(datatableGql: DatatableGraphqlService) {
     this._queryRef = datatableGql.watchQuery<TData, SimpleGqlTestVariables, TRow>(
@@ -247,7 +242,7 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
     this._emittedData = null
     this._emittedDataCount = 0
 
-    this._rowsSub = this._rows$.subscribe((data) => {
+    this._rowsSub = this._rows$.subscribe(data => {
       // console.log('time', currentTickTime())
       this._gqlDtAccessor?.setRows(data)
       this._emittedData = data

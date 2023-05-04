@@ -14,14 +14,14 @@ export function withoutProperties<T, K extends keyof T>(obj: T, propNames: K[]):
 }
 
 /** Delete property of object */
-export function deleteProperty<T extends {}, K extends keyof T>(obj: T, propName: K): void {
-  if (obj.hasOwnProperty(propName)) {
+export function deleteProperty<T extends object, K extends keyof T>(obj: T, propName: K): void {
+  if (Object.prototype.hasOwnProperty.call(obj, propName)) {
     delete obj[propName]
   }
 }
 
 /** Delete properties of object */
-export function deleteProperties<T extends {}, K extends keyof T>(obj: T, propNames: K[]): void {
+export function deleteProperties<T extends object, K extends keyof T>(obj: T, propNames: K[]): void {
   for (const propName of propNames) {
     deleteProperty(obj, propName)
   }

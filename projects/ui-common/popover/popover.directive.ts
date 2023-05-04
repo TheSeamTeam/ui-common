@@ -11,7 +11,7 @@ import { switchMap, takeUntil } from 'rxjs/operators'
 import { PopoverComponent } from './popover/popover.component'
 
 /** Options for binding a passive event listener. */
-const passiveEventListenerOptions = normalizePassiveListenerOptions({passive: true})
+const passiveEventListenerOptions = normalizePassiveListenerOptions({ passive: true })
 
 @Directive({
   selector: '[seamPopover]',
@@ -47,7 +47,6 @@ export class TheSeamPopoverDirective implements OnDestroy {
   set seamPopoverDisabled(val: boolean) { this._seamPopoverDisabled.next(coerceBooleanProperty(val)) }
   private _seamPopoverDisabled = new BehaviorSubject<boolean>(false)
 
-
   // ngOnInit() {
   //   this._seamPopoverDisabled.pipe(
   //     switchMap(disabled => {
@@ -64,7 +63,6 @@ export class TheSeamPopoverDirective implements OnDestroy {
   //     })
   //   ).subscribe()
   // }
-
 
   private _active = false
   private _closing = false

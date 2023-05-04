@@ -36,7 +36,6 @@ import { TheSeamDatatableDynamicModule } from './datatable-dynamic.module'
 import { StoryModalOneModule, StoryModalTwoModule } from './_story-data/datatable-modals'
 import { exampleData1 } from './_story-data/dynamic-data-1'
 
-
 @Component({
   // tslint:disable-next-line: component-selector
   selector: 'story-ex-modal-lazy',
@@ -175,7 +174,6 @@ const routes: Route[] = [
 //       </div>
 //     `
 //   }))
-
 
 const manifests: DynamicComponentManifest[] = [
   {

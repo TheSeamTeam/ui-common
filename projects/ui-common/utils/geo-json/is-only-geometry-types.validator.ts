@@ -39,5 +39,3 @@ export function isOnlyGeometryTypesValidator(types: Geometry['type'][]): Validat
     return null
   }
 }
-
-

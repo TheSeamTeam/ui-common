@@ -33,9 +33,9 @@ export class TheSeamMapFileDropComponent implements OnInit, OnDestroy {
    */
   private _mapDiv: HTMLDivElement | undefined
 
-  private _listeners: (() => void)[]  = []
+  private _listeners: (() => void)[] = []
 
-  private _globalDragInProgress: boolean = false
+  private _globalDragInProgress = false
 
   constructor(
     private readonly _elementRef: ElementRef,

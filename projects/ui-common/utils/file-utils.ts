@@ -52,7 +52,7 @@ export async function fileDataFromBuffer(
 ): Promise<IFileData> {
   const _fileBuffer = Buffer.from(fileBuffer)
   const fType = fileType(_fileBuffer as any)
-  const ext = fType && fType.ext || undefined
+  const ext = (fType && fType.ext) || undefined
   const mime = fType ? fType.mime : defaultMime
   const blob = new Blob([_fileBuffer as any], { type: mime })
   const fileData: IFileData = { ext, mime, blob }

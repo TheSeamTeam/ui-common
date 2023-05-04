@@ -66,7 +66,7 @@ export class GoogleMapsContextMenu {
 
         this.containerDiv = document.createElement('div')
         this.containerDiv.style.cursor = 'auto'
-        this.containerDiv.style.height = '0',
+        this.containerDiv.style.height = '0'
         this.containerDiv.style.position = 'absolute'
         this.containerDiv.appendChild(content)
 
@@ -76,8 +76,7 @@ export class GoogleMapsContextMenu {
 
       /** Called when the view is added to the map. */
       onAdd() {
-        // tslint:disable-next-line: no-non-null-assertion
-        this.getPanes()!.floatPane.appendChild(this.containerDiv)
+        this.getPanes()?.floatPane.appendChild(this.containerDiv)
       }
 
       /** Called when the view is removed from the map. */
@@ -90,8 +89,10 @@ export class GoogleMapsContextMenu {
 
       /** Called each frame when the view needs to draw itself. */
       draw() {
-        // tslint:disable-next-line: no-non-null-assertion
-        const divPosition = this.getProjection().fromLatLngToDivPixel(this.position)!
+        const divPosition = this.getProjection().fromLatLngToDivPixel(this.position)
+        if (!divPosition) {
+          return
+        }
 
         // Hide the popup when it is far out of view.
         const display =
@@ -100,8 +101,8 @@ export class GoogleMapsContextMenu {
             : 'none'
 
         if (display === 'block') {
-          this.containerDiv.style.left = divPosition.x + 'px'
-          this.containerDiv.style.top = divPosition.y + 'px'
+          this.containerDiv.style.left = `${divPosition.x}px`
+          this.containerDiv.style.top = `${divPosition.y}px`
         }
 
         if (this.containerDiv.style.display !== display) {

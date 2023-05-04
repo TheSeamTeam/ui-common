@@ -119,7 +119,7 @@ export class TheSeamGoogleMapsPlacesAutocompleteDirective implements OnInit, OnD
    */
   public setBounds(bounds?: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral): void {
     this._assertInitialized()
-    // tslint:disable-next-line: no-non-null-assertion
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return this.autoComplete.setBounds(bounds!)
   }
 
@@ -130,7 +130,7 @@ export class TheSeamGoogleMapsPlacesAutocompleteDirective implements OnInit, OnD
    */
   public setComponentRestrictions(restrictions?: google.maps.places.ComponentRestrictions): void {
     this._assertInitialized()
-    // tslint:disable-next-line: no-non-null-assertion
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return this.autoComplete.setComponentRestrictions(restrictions!)
   }
 
@@ -141,14 +141,14 @@ export class TheSeamGoogleMapsPlacesAutocompleteDirective implements OnInit, OnD
    */
   public setFields(fields?: string[]): void {
     this._assertInitialized()
-    // tslint:disable-next-line: no-non-null-assertion
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return this.autoComplete.setFields(fields!)
   }
 
   /** */
   public setOptions(options?: google.maps.places.AutocompleteOptions): void {
     this._assertInitialized()
-    // tslint:disable-next-line: no-non-null-assertion
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return this.autoComplete.setOptions(options!)
   }
 
@@ -159,7 +159,7 @@ export class TheSeamGoogleMapsPlacesAutocompleteDirective implements OnInit, OnD
    */
   public setTypes(types?: string[]): void {
     this._assertInitialized()
-    // tslint:disable-next-line: no-non-null-assertion
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return this.autoComplete.setTypes(types!)
   }
 

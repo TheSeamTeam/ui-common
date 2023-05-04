@@ -57,7 +57,6 @@ const COMPACT_STATE = 'compact'
       transition(`${EXPANDED_STATE} <=> ${COLLAPSED_STATE}`, animate('0.2s ease-in-out')),
     ]),
 
-
     trigger('compactAnim', [
       // transition('* <=> *', [
       //   query(':enter', [
@@ -81,7 +80,6 @@ const COMPACT_STATE = 'compact'
       //   ], { optional: true })
       // ]),
 
-
     ])
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -104,7 +102,7 @@ export class SideNavItemComponent implements OnDestroy {
 
   @Input() label: string | undefined | null
 
-  @Input() @InputBoolean() active: boolean = false
+  @Input() @InputBoolean() active = false
 
   @Input()
   set link(value: string | undefined | null) { this._link.next(value) }
@@ -116,9 +114,9 @@ export class SideNavItemComponent implements OnDestroy {
 
   @Input() children: ISideNavItem[] | undefined | null
 
-  @Input() @InputNumber(0) hierLevel: number = 0
+  @Input() @InputNumber(0) hierLevel = 0
 
-  @Input() @InputNumber(10) indentSize: number = 10
+  @Input() @InputNumber(10) indentSize = 10
 
   @Input()
   set expanded(value: boolean) { this._expanded.next(coerceBooleanProperty(value)) }
@@ -156,7 +154,7 @@ export class SideNavItemComponent implements OnDestroy {
           placement: value.placement || 'auto',
           disabled: typeof value?.disabled === 'boolean'
             ? value.disabled
-            : typeof value.tooltip === 'string' ? false : true
+            : typeof value.tooltip !== 'string'
         }
       }
     } else {

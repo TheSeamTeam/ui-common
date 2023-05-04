@@ -3,7 +3,6 @@ import { TheSeamPageInfo } from '@theseam/ui-common/datatable'
 import { mapPageInfo } from './map-page-info'
 
 describe('mapPageInfo', () => {
-
   describe('pageSize=10', () => {
     const pageSize = 10
 

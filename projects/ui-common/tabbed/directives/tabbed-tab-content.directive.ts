@@ -10,6 +10,4 @@ export class TabbedTabContentDirective implements TabbedTabContentAccessor {
 
   public isActive = false
 
-  constructor() { }
-
 }

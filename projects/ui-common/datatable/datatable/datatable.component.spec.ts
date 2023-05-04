@@ -41,9 +41,7 @@ import * as stories from './datatable.stories' // import all stories from the st
 const { GraphQLQueryRef } = composeStories(stories as any)
 
 describe('DatatableComponent', () => {
-
   describe('Story', () => {
-
     it('should', () => {
       expect(true).toBe(true)
     })
@@ -102,8 +100,6 @@ describe('DatatableComponent', () => {
       //   tileElement.click()
       //   expect(await (await tiledSelectHarness.host()).getProperty('value')).toBe('cotton')
       // }))
-
     })
-
   })
 })

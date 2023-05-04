@@ -33,9 +33,7 @@ import { queryProcessingLink } from './query-processing-link'
 //   }
 // `
 
-
 const testResultLink = new ApolloLink(operation => {
-
   return Observable.of({
     data: { operation }
   })
@@ -62,7 +60,6 @@ function testHintTransform(
 }
 
 describe('GraphQL apollo-links queryProcessingLink', () => {
-
   describe('Hint "remove-not-defined"', () => {
     it('should work on OperationDefinition node', () => {
       testHintTransform(

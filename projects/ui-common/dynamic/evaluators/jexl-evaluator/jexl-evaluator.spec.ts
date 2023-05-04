@@ -7,7 +7,6 @@ import { JexlEvaluator } from './jexl-evaluator'
 import { IJexlValue } from './jexl-value'
 
 describe('JexlEvaluator', () => {
-
   beforeEach(() => TestBed.configureTestingModule({
     providers: [
         { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true }
@@ -30,5 +29,4 @@ describe('JexlEvaluator', () => {
     const outValue = await service.eval(inValue, context)
     expect(outValue).toBe(context.a.b)
   })
-
 })

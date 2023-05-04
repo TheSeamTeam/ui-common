@@ -82,7 +82,7 @@ export class OverlayScrollbarsService {
 
   private _applyConfigDefaults(config?: IOverlayScrollbarsConfig): IOverlayScrollbarsConfig {
     const _config: IOverlayScrollbarsConfig = this.injector.get(LIB_OVERLAY_SCROLLBARS_CONFIG, _OverlayScrollbarDefaults)
-    return {..._config, ...config}
+    return { ..._config, ...config }
   }
 
   /** Determines if the component host is a textarea. */
