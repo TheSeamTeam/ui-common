@@ -18,7 +18,7 @@ import { DynamicDatatableRowActionContext } from '../models/dynamic-datatable-ro
   styleUrls: ['./datatable-dynamic-action-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DatatableDynamicActionMenuComponent implements OnInit {
+export class DatatableDynamicActionMenuComponent {
 
   faEllipsisH = faEllipsisH
 

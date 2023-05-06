@@ -87,7 +87,7 @@ const _WidgetListGroupItemActionableBase: CanDisableCtor & CanThemeCtor & CanBeA
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WidgetListGroupItemComponent extends _WidgetListGroupItemBase
-  implements OnInit, HasElementRef, CanTheme, CanDisable, CanBeActive {
+  implements HasElementRef, CanTheme, CanDisable, CanBeActive {
 
   constructor(
     public _elementRef: ElementRef<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,

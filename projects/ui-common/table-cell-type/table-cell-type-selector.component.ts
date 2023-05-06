@@ -10,7 +10,6 @@ import {
   Input,
   isDevMode,
   OnChanges,
-  OnInit,
   Optional,
   SimpleChanges
 } from '@angular/core'
@@ -30,7 +29,7 @@ import { TABLE_CELL_DATA, TABLE_CELL_TYPE_MANIFEST } from './table-cell-type-tok
   styles: [],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TableCellTypeSelectorComponent<T extends string = any, D = any, V = any> implements OnInit, AfterViewInit, OnChanges {
+export class TableCellTypeSelectorComponent<T extends string = any, D = any, V = any> implements AfterViewInit, OnChanges {
 
   @Input() type: T | undefined | null
   @Input() value: V | undefined | null

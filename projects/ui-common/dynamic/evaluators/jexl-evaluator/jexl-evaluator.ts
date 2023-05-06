@@ -8,7 +8,8 @@
 import { DatePipe } from '@angular/common'
 import { Injectable } from '@angular/core'
 
-// // @ts-ignore: Missing types
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore: Missing types
 import jexl from 'jexl'
 
 import { DynamicValueBaseType } from '../../models/dynamic-value-base-type'

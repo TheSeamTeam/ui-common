@@ -3,7 +3,6 @@
     /** Important */
     "editorconfig.editorconfig",
     "eamodio.gitlens",
-    "ms-vscode.vscode-typescript-tslint-plugin",
     "codezombiech.gitignore",
     "esbenp.prettier-vscode",
     "hookyqr.beautify",
