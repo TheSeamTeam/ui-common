@@ -1,0 +1,36 @@
+.alphabet-list-filter--list {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-content: center;
+}
+
+.alphabet-list-filter--icon {
+  cursor: pointer;
+}
+
+.alphabet-list-filter--item {
+  cursor: pointer;
+  padding-left: 3px;
+  padding-right: 3px;
+  border: 2px solid transparent;
+
+  &.is-selected {
+    border-color: var(--primary);
+  }
+}
+
+.alphabet-list-filter--clear {
+  cursor: pointer;
+  padding-top: 3px;
+  border: 2px solid transparent;
+}
+
+.alphabet-list-filter--clear-icon {
+  width: 0.875em;
+  display: inline-block;
+  font-size: inherit;
+  height: 1.5em;
+  overflow: visible;
+  vertical-align: -0.125em;
+}
