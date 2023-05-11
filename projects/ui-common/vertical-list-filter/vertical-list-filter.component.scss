@@ -1,15 +1,15 @@
-.alphabet-list-filter--list {
+.vertical-list-filter--list {
   display: flex;
   flex-direction: column;
   text-align: center;
   align-content: center;
 }
 
-.alphabet-list-filter--icon {
+.vertical-list-filter--icon {
   cursor: pointer;
 }
 
-.alphabet-list-filter--item {
+.vertical-list-filter--item {
   cursor: pointer;
   padding-left: 3px;
   padding-right: 3px;
@@ -20,13 +20,13 @@
   }
 }
 
-.alphabet-list-filter--clear {
+.vertical-list-filter--clear {
   cursor: pointer;
   padding-top: 3px;
   border: 2px solid transparent;
 }
 
-.alphabet-list-filter--clear-icon {
+.vertical-list-filter--clear-icon {
   width: 0.875em;
   display: inline-block;
   font-size: inherit;

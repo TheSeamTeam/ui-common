@@ -1,12 +1,12 @@
 import { ComponentHarness } from '@angular/cdk/testing'
 
-export class TheSeamAlphabetListFilterHarness extends ComponentHarness {
-  static hostSelector = 'seam-alphabet-list-filter'
+export class TheSeamVerticalListFilterHarness extends ComponentHarness {
+  static hostSelector = 'seam-vertical-list-filter'
 
-  _clearOptionElement = this.locatorForOptional(`.alphabet-list-filter--clear`)
+  _clearOptionElement = this.locatorForOptional(`.vertical-list-filter--clear`)
 
   public async clickValue(value: string) {
-    const element = await this.locatorFor(`.alphabet-list-filter--item[data-value="${value}"]`)()
+    const element = await this.locatorFor(`.vertical-list-filter--item[data-value="${value}"]`)()
     return element.click()
   }
 

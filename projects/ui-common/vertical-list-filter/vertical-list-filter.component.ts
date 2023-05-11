@@ -2,7 +2,7 @@ import { Component, Input, HostBinding } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { BehaviorSubject, Observable } from 'rxjs'
 
-export const FILTER_ALPHABET: string[] = [
+export const FILTER_VALUES: string[] = [
   'A', 'B', 'C', 'D',
   'E', 'F', 'G', 'H',
   'I', 'J', 'K', 'L',
@@ -13,17 +13,17 @@ export const FILTER_ALPHABET: string[] = [
 ]
 
 @Component({
-  selector: 'seam-alphabet-list-filter',
-  templateUrl: './alphabet-list-filter.component.html',
-  styleUrls: ['./alphabet-list-filter.component.scss'],
+  selector: 'seam-vertical-list-filter',
+  templateUrl: './vertical-list-filter.component.html',
+  styleUrls: ['./vertical-list-filter.component.scss'],
   standalone: true,
   imports: [
     CommonModule,
   ]
 })
-export class TheSeamAlphabetListFilterComponent {
+export class TheSeamVerticalListFilterComponent {
 
-  readonly _alphabet = FILTER_ALPHABET
+  readonly _values = FILTER_VALUES
 
   @Input() showClearOption = true
 

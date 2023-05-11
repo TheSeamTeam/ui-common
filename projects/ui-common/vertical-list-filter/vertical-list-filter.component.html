@@ -1,9 +1,9 @@
-<div class="alphabet-list-filter--list">
+<div class="vertical-list-filter--list">
   <ng-container *ngIf="showClearOption">
-    <span class="text-primary alphabet-list-filter--clear"
+    <span class="text-primary vertical-list-filter--clear"
       [class.border-primary]="!filterValue || filterValue === ''"
       (click)="clearFilter()">
-      <svg class="alphabet-list-filter--clear-icon" viewBox="0 0 110 301" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg class="vertical-list-filter--clear-icon" viewBox="0 0 110 301" fill="none" xmlns="http://www.w3.org/2000/svg">
         <circle cx="54.5" cy="118.5" r="7.5" fill="currentColor"/>
         <circle cx="54.5" cy="148.5" r="7.5" fill="currentColor"/>
         <circle cx="54.5" cy="178.5" r="7.5" fill="currentColor"/>
@@ -14,8 +14,8 @@
       </svg>
     </span>
   </ng-container>
-  <span *ngFor="let c of _alphabet"
-    class="alphabet-list-filter--item text-primary"
+  <span *ngFor="let c of _values"
+    class="vertical-list-filter--item text-primary"
     [class.border-primary]="c === filterValue"
     [attr.data-value]="c"
     [attr.data-selected]="c === filterValue"
