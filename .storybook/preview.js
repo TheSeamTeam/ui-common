@@ -1,10 +1,11 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 // import { setCompodocJson } from '@storybook/addon-docs/angular'
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 // eslint-disable-next-line import/extensions, import/no-unresolved
 import docJson from '../documentation.json'
-
 
 if (docJson) {
   // const arrStringDefaultValue = (arr) => {
@@ -38,16 +39,17 @@ if (docJson) {
 
   // objStripDefaultValue(docJson)
 
+  // eslint-disable-next-line no-inner-declarations
   function filterObject(obj, key) {
-    for (var i in obj) {
-        if (!obj.hasOwnProperty(i)) continue;
-        if (i == key) {
-            delete obj[key];
-        } else if (typeof obj[i] == 'object') {
-            filterObject(obj[i], key);
+    for (const i in obj) {
+        if (!Object.prototype.hasOwnProperty.call(obj, i)) continue
+        if (i === key) {
+            delete obj[key]
+        } else if (typeof obj[i] === 'object') {
+            filterObject(obj[i], key)
         }
     }
-    return obj;
+    return obj
   }
   filterObject(docJson, 'defaultValue')
 
@@ -175,6 +177,7 @@ if (docJson) {
 }
 
 // setCompodocJson(docJson)
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 window.__STORYBOOK_COMPODOC_JSON__ = docJson
 
