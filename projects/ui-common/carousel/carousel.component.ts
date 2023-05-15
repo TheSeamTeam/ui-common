@@ -1,11 +1,12 @@
+import { animate, style, transition, trigger } from '@angular/animations'
 import { Component, ContentChildren, Input, OnDestroy, OnInit, QueryList } from '@angular/core'
+import { faAngleLeft, faAngleRight, faPause, faPlay } from '@fortawesome/free-solid-svg-icons'
 import { BehaviorSubject, combineLatest, interval, Observable, Subject } from 'rxjs'
 import { filter, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators'
 
-import { animate, style, transition, trigger } from '@angular/animations'
-import { faAngleLeft, faAngleRight, faPause, faPlay } from '@fortawesome/free-solid-svg-icons'
-import { notNullOrUndefined } from '../utils/not-null-or-undefined'
-import { CarouselSlideDirective } from './carousel-slide.directive'
+import { notNullOrUndefined } from '@theseam/ui-common/utils'
+
+import { TheSeamCarouselSlideDirective } from './carousel-slide.directive'
 
 @Component({
   selector: 'seam-carousel',
@@ -74,14 +75,14 @@ export class TheSeamCarouselComponent implements OnInit, OnDestroy {
    */
   @Input() showPauseButton: boolean = true
 
-  @ContentChildren(CarouselSlideDirective)
-  get slides(): QueryList<CarouselSlideDirective> | undefined {
+  @ContentChildren(TheSeamCarouselSlideDirective)
+  get slides(): QueryList<TheSeamCarouselSlideDirective> | undefined {
     return this._slides.value
   }
-  set slides(value: QueryList<CarouselSlideDirective> | undefined) {
+  set slides(value: QueryList<TheSeamCarouselSlideDirective> | undefined) {
     this._slides.next(value)
   }
-  private _slides = new BehaviorSubject<QueryList<CarouselSlideDirective> | undefined>(undefined)
+  private _slides = new BehaviorSubject<QueryList<TheSeamCarouselSlideDirective> | undefined>(undefined)
   public slides$ = this._slides.asObservable()
 
   public activeSlide$: Observable<any | undefined>
