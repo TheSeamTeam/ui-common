@@ -246,7 +246,7 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
     @Optional() @Inject(THESEAM_BASE_LAYOUT_REF) private readonly _baseLayoutRef: ITheSeamBaseLayoutRef
   ) {
     this.items$ = this._items.asObservable().pipe(
-      switchMap(items => this._sideNav.createItemsObservable(items)),
+      switchMap(items => items ? this._sideNav.createItemsObservable(items) : []),
       shareReplay({ bufferSize: 1, refCount: true }),
     )
 

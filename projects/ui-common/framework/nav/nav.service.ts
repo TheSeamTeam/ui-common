@@ -6,6 +6,7 @@ import { distinctUntilChanged, filter, map, shareReplay, startWith, switchMap } 
 import { hasProperty, notNullOrUndefined } from '@theseam/ui-common/utils'
 
 import {
+  areSameHorizontalNavItem,
   getHorizontalNavItemStateProp,
   horizontalNavItemCanExpand,
   horizontalNavItemHasActiveChild,
@@ -40,6 +41,7 @@ export class TheSeamNavService {
   public createItemsObservable(items: INavItem[]): Observable<INavItem[]> {
     return defer(() => {
       this.updateItemsStates(items)
+      this.updateRouterFocusedItem(items)
       return new Observable((subscriber: Subscriber<INavItem[]>) => {
         const stateChangeSub = this.itemChanged.pipe(
           switchMap(change => {
@@ -63,6 +65,7 @@ export class TheSeamNavService {
         ).subscribe(event => {
           try {
             this.updateItemsStates(items)
+            this.updateRouterFocusedItem(items)
           } catch (err) {
             subscriber.error(err)
           }
@@ -86,7 +89,6 @@ export class TheSeamNavService {
 
   public updateItemsStates(items: INavItem[]): void {
     this._incUpdatingCount()
-    this.updateRouterFocusedItem(items)
 
     try {
       for (const item of items) {
@@ -169,12 +171,14 @@ export class TheSeamNavService {
 
   public updateRouterFocusedItem(items: INavItem[]) {
     const focusedItem = items.find(i => isHorizontalNavItemActive(i)) || items.find(i => horizontalNavItemHasActiveChild(i))
-    this.updateFocusedItem(items, focusedItem)
+    if (notNullOrUndefined(focusedItem)) {
+      this.updateFocusedItem(items, focusedItem)
+    }
   }
 
   public updateFocusedItem(items: INavItem[], focusedItem: INavItem | undefined): void {
     for (const item of items) {
-      if (item === focusedItem) {
+      if (areSameHorizontalNavItem(item, focusedItem)) {
         setHorizontalNavItemStateProp(item, 'focused', true)
       } else {
         setHorizontalNavItemStateProp(item, 'focused', false)
