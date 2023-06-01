@@ -17,7 +17,7 @@
       </button>
 
       <div *ngIf="activeSlide$ | async as slide" [@fadeInOut]="slide.template" class="flex-grow-1 d-flex align-items-center">
-        <div class="carousel-content w-100 py-1 px-2">
+        <div class="carousel-content w-100 py-1 px-2" [attr.data-slide-index]="activeIndex$ | async">
           <ng-template [ngTemplateOutlet]="$any(slide.template)"></ng-template>
         </div>
       </div>
@@ -43,7 +43,7 @@
         [title]="'Go to slide ' + (i + 1)"></button>
     </div>
 
-    <div class="carousel-controls" *ngIf="showPauseButton">
+    <div class="carousel-controls" *ngIf="showPauseButton && autoPlay">
       <button
         *ngIf="slides.length > 1"
         seamButton
