@@ -1,10 +1,10 @@
 import { Directive, TemplateRef } from '@angular/core'
 
 @Directive({
-  selector: '[seamCarouselSlide]'
+  selector: '[seamCarouselSlide]',
 })
 export class TheSeamCarouselSlideDirective {
 
-  constructor(public template: TemplateRef<any>) { }
+  constructor(public readonly template: TemplateRef<any>) { }
 
 }

@@ -9,7 +9,6 @@
     <div class="d-flex" style="min-height: 150px;">
       <button
         *ngIf="showNavButtons && slides.length > 1"
-        type="text"
         seamButton
         class="carousel-arrow px-2"
         (click)="pageCarousel(-1)"
@@ -25,7 +24,6 @@
 
       <button
         *ngIf="showNavButtons && slides.length > 1"
-        type="text"
         seamButton
         class="carousel-arrow px-2"
         (click)="pageCarousel(1)"
@@ -37,7 +35,6 @@
     <div class="carousel-pages d-flex flex-wrap justify-content-center mt-3 mx-auto" *ngIf="showPager && slides.length > 1">
       <button
         *ngFor="let q of slides; let i = index"
-        type="text"
         seamButton
         theme="light"
         class="carousel-page"
@@ -49,7 +46,6 @@
     <div class="carousel-controls" *ngIf="showPauseButton">
       <button
         *ngIf="slides.length > 1"
-        type="text"
         seamButton
         (click)="toggleCarouselStop()"
         [title]="(carouselStopped$ | async) ? 'Play' : 'Pause'">
