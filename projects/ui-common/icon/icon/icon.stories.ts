@@ -20,19 +20,19 @@ export default {
   ]
 } as Meta
 
-export const Url: Story = (args) => ({ props: { ...args } })
+export const Url: Story = args => ({ props: { ...args } })
 Url.args = {
   icon: 'assets/images/icons8-cotton-filled-48.png'
 }
 
-export const UrlStyledSquare: Story = (args) => ({ props: { ...args } })
+export const UrlStyledSquare: Story = args => ({ props: { ...args } })
 UrlStyledSquare.storyName = 'Url(styled-square)'
 UrlStyledSquare.args = {
   icon: 'assets/images/icons8-cotton-filled-48.png',
   iconType: 'styled-square'
 }
 
-export const UrlImageFill: Story = (args) => ({
+export const UrlImageFill: Story = args => ({
   props: { ...args },
   template: `
     <div class="p-5">
@@ -53,7 +53,7 @@ UrlImageFill.args = {
   iconType: 'image-fill'
 }
 
-export const FontAwesome: Story = (args) => ({
+export const FontAwesome: Story = args => ({
   props: {
     ...args,
     icon: faShare
@@ -61,7 +61,7 @@ export const FontAwesome: Story = (args) => ({
 })
 FontAwesome.storyName = 'FontAwesome'
 
-export const FontAwesomeStyledSquare: Story = (args) => ({
+export const FontAwesomeStyledSquare: Story = args => ({
   props: {
     ...args,
     icon: faShare
@@ -72,7 +72,7 @@ FontAwesomeStyledSquare.args = {
   iconType: 'styled-square'
 }
 
-export const FontAwesomeImageFill: Story = (args) => ({
+export const FontAwesomeImageFill: Story = args => ({
   props: {
     ...args,
     icon: faShare

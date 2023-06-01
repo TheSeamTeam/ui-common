@@ -18,12 +18,12 @@ import { TheSeamIconType } from '@theseam/ui-common/icon'
 import { WidgetTileSecondaryIconDirective } from './widget-tile-secondary-icon.directive'
 
 @Component({ template: '' })
-// tslint:disable-next-line: component-class-suffix
+// eslint-disable-next-line @angular-eslint/component-class-suffix
 class TheSeamWidgetTileBase implements OnDestroy, HasRenderer2, HasElementRef {
   constructor(
     public _elementRef: ElementRef,
     public _focusMonitor: FocusMonitor,
-    public _renderer: Renderer2
+    public _renderer: Renderer2,
   ) {
     this._focusMonitor.monitor(this._elementRef, true)
   }
@@ -52,7 +52,7 @@ const _TheSeamWidgetTileMixinBase: CanDisableCtor & HasTabIndexCtor &
   styleUrls: ['./widget-tile.component.scss'],
   inputs: [ 'disabled' ],
   exportAs: 'seamWidgetTile',
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class WidgetTileComponent extends _TheSeamWidgetTileMixinBase implements OnInit, OnDestroy {
   static ngAcceptInputType_grayscaleOnDisable: BooleanInput
@@ -67,7 +67,7 @@ export class WidgetTileComponent extends _TheSeamWidgetTileMixinBase implements 
   }
 
   @HostBinding('class.btn')
-  get _btnCss() { return this._isButton() ? true : false }
+  get _btnCss() { return !!this._isButton() }
 
   @HostBinding('class.disabled')
   get _disabledCss() { return this.disabled }
@@ -86,7 +86,7 @@ export class WidgetTileComponent extends _TheSeamWidgetTileMixinBase implements 
 
   @Input() icon: string | IconProp | undefined | null
 
-  @Input() @InputBoolean() grayscaleOnDisable: boolean = true
+  @Input() @InputBoolean() grayscaleOnDisable = true
 
   @Input() iconClass: string | undefined | null
 
@@ -97,10 +97,11 @@ export class WidgetTileComponent extends _TheSeamWidgetTileMixinBase implements 
 
   @ContentChild(WidgetTileSecondaryIconDirective, { static: true }) secondaryIcon?: WidgetTileSecondaryIconDirective
 
+  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(
     _elementRef: ElementRef<HTMLElement | HTMLAnchorElement | HTMLButtonElement>,
     _focusMonitor: FocusMonitor,
-    _renderer: Renderer2
+    _renderer: Renderer2,
   ) { super(_elementRef, _focusMonitor, _renderer) }
 
   ngOnInit() {

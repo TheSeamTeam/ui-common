@@ -15,8 +15,6 @@ export class DashboardComponent {
   static ngAcceptInputType_val: BooleanInput
 
   @Input() widgets: IDashboardWidgetsItemDef[] | undefined | null
-  @Input() @InputBoolean() widgetsDraggable: boolean = true
-
-  constructor() { }
+  @Input() @InputBoolean() widgetsDraggable = true
 
 }

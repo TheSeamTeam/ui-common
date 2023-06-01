@@ -9,7 +9,7 @@ export default {
   ]
 } as Meta
 
-export const Basic: Story = (args) => ({
+export const Basic: Story = args => ({
   template: `[{{ phone }}]  {{ phone | phoneNumber }}`,
   props: args
 })

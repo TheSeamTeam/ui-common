@@ -41,7 +41,7 @@ export class ModalRef<T, R = any> {
         }
       })
 
-      this._clickOutsideCleanup =  this._initCloseOnClickOutside()
+      this._clickOutsideCleanup = this._initCloseOnClickOutside()
     }
 
     this.beforeClosed().subscribe(() => {
@@ -77,7 +77,7 @@ export class ModalRef<T, R = any> {
     }
 
     const dist = (x1: number, y1: number, x2: number, y2: number): number => {
-      return Math.sqrt( Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2) )
+      return Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2))
     }
 
     let pressed = false
@@ -132,7 +132,7 @@ export class ModalRef<T, R = any> {
   close(dialogResult?: R): void {
     this._result = dialogResult
     this._containerInstance._startExiting()
-    if (this._clickOutsideCleanup) {this._clickOutsideCleanup()}
+    if (this._clickOutsideCleanup) { this._clickOutsideCleanup() }
   }
 
   /**

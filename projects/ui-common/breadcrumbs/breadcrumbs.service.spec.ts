@@ -1,4 +1,4 @@
-import { Component, NgZone, } from '@angular/core'
+import { Component, NgZone } from '@angular/core'
 import { fakeAsync, tick } from '@angular/core/testing'
 import { Router } from '@angular/router'
 import { RouterTestingModule } from '@angular/router/testing'
@@ -13,7 +13,6 @@ import { TheSeamBreadcrumbsService } from './breadcrumbs.service'
 class TestPlacholderComponent { }
 
 describe('TheSeamBreadcrumbsService', () => {
-
   const createService = createServiceFactory({
     service: TheSeamBreadcrumbsService,
     declarations: [ TestPlacholderComponent ],

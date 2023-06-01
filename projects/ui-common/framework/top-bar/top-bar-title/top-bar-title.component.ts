@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, ViewEncapsulation } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Input, ViewEncapsulation } from '@angular/core'
 
 @Component({
   selector: 'seam-top-bar-title',
@@ -7,13 +7,9 @@ import { ChangeDetectionStrategy, Component, Input, OnInit, ViewEncapsulation } 
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TopBarTitleComponent implements OnInit {
+export class TopBarTitleComponent {
 
   @Input() titleText: string | undefined | null
   @Input() subTitleText: string | undefined | null
-
-  constructor() { }
-
-  ngOnInit() { }
 
 }

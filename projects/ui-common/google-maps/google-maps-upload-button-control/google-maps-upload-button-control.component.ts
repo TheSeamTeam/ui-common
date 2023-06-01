@@ -27,7 +27,7 @@ export interface GoogleMapsUploadButtonControlData {
  *
  */
 @Component({
-  // tslint:disable-next-line: component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'button[seam-google-maps-upload-button-control]',
   templateUrl: './google-maps-upload-button-control.component.html',
   styleUrls: ['./google-maps-upload-button-control.component.scss'],
@@ -46,7 +46,7 @@ export class TheSeamGoogleMapsUploadButtonControlComponent implements OnDestroy 
 
   private readonly _fileInputElement: HTMLInputElement
 
-  private _listeners: (() => void)[]  = []
+  private _listeners: (() => void)[] = []
 
   @Input() label: string | undefined | null
 
@@ -65,10 +65,10 @@ export class TheSeamGoogleMapsUploadButtonControlComponent implements OnDestroy 
     @Optional() @Inject(MAP_CONTROL_DATA) _data?: GoogleMapsUploadButtonControlData
   ) {
     if (_data) {
-      if (_data.hasOwnProperty('label')) {
+      if (Object.prototype.hasOwnProperty.call(_data, 'label')) {
         this.label = _data.label
       }
-      if (_data.hasOwnProperty('icon')) {
+      if (Object.prototype.hasOwnProperty.call(_data, 'icon')) {
         this.icon = _data.icon
       }
     }

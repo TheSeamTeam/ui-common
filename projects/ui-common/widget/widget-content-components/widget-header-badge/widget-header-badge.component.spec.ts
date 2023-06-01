@@ -8,8 +8,9 @@ describe('WidgetHeaderBadgeComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ WidgetHeaderBadgeComponent ]
-    })
+    declarations: [WidgetHeaderBadgeComponent],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents()
   }))
 

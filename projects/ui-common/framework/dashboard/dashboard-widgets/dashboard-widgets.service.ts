@@ -94,6 +94,7 @@ export class DashboardWidgetsService {
         if (isDevMode()) {
           const ids: string[] = items.map(v => v.widgetId)
           if ((new Set(ids)).size !== ids.length) {
+            // eslint-disable-next-line no-console
             console.warn(`[DashboardWidgetsService] Duplicate widget's with the same 'widgetId' found.`)
           }
         }
@@ -104,6 +105,7 @@ export class DashboardWidgetsService {
   public createWidgetItem(def: IDashboardWidgetsItemDef, vcr?: ViewContainerRef): Observable<IDashboardWidgetsItem | undefined> {
     if (!def.widgetId || typeof def.widgetId !== 'string' || def.widgetId.length < 1) {
       if (isDevMode()) {
+        // eslint-disable-next-line no-console
         console.warn(`[DashboardWidgetsService] Widget ignored. All widgets must have a 'widgetId'.`, def)
       }
       return of(undefined)
@@ -130,7 +132,7 @@ export class DashboardWidgetsService {
               componentFactory.componentType,
               vcr,
               undefined,
-              (<any /* ComponentFactoryBoundToModule */>componentFactory).ngModule.componentFactoryResolver
+              (componentFactory as any /* ComponentFactoryBoundToModule */).ngModule.componentFactoryResolver
             )
           }),
           take(1)

@@ -12,13 +12,13 @@ export function toGQL(json: any): string {
     const value = json[prop]
     let resultValue: string | undefined
     if (typeof value === 'string') {
-      resultValue = `\"${value}\"`
+      resultValue = `"${value}"`
     } else if (value instanceof GQLDirection) {
       resultValue = `${value.direction}`
     } else if (Array.isArray(value)) {
       resultValue = `[${value.map(v => toGQL(v)).join(',')}]`
     } else if (typeof value === 'object') {
-      if (value.hasOwnProperty('gqlVar')) {
+      if (Object.prototype.hasOwnProperty.call(value, 'gqlVar')) {
         resultValue = `${value.gqlVar}`
       } else {
         resultValue = toGQL(value)

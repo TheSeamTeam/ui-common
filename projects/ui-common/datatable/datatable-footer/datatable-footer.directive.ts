@@ -3,12 +3,12 @@ import { ContentChild, Directive, Input, TemplateRef } from '@angular/core'
 import { DatatableFooterTplDirective } from './datatable-footer-tpl.directive'
 
 @Directive({
-  // tslint:disable-next-line: directive-selector
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: 'seam-datatable-footer'
 })
 export class TheSeamDatatableFooterDirective {
 
-  // tslint:disable-next-line: no-input-rename
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('template')
   _templateInput: TemplateRef<any> | undefined | null
 

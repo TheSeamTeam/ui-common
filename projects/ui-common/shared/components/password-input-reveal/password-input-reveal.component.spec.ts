@@ -10,13 +10,14 @@ describe('PasswordInputRevealComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [
+    declarations: [
         PasswordInputRevealComponent
-      ],
-      imports: [
+    ],
+    imports: [
         FontAwesomeModule
-      ]
-    })
+    ],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents()
   }))
 

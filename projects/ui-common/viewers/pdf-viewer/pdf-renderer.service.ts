@@ -17,7 +17,7 @@ export class PdfRendererService {
       tap((pdfJs: any) => {
         if (!pdfJs.GlobalWorkerOptions.workerSrc) {
           // tslint:disable-next-line:max-line-length
-          pdfJs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${ (pdfJs as any).version }/pdf.worker.min.js`
+          pdfJs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${(pdfJs as any).version}/pdf.worker.min.js`
         }
       }),
       shareReplay({ bufferSize: 1, refCount: true })

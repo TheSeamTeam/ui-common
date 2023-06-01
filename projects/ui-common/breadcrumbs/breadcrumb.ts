@@ -9,8 +9,6 @@ export interface TheSeamBreadcrumb {
   route: ActivatedRoute
 }
 
-
-
 //
 // NOTE: The following types are only for backward compatability.
 //

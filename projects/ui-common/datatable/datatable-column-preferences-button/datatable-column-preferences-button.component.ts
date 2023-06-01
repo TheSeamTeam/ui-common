@@ -1,7 +1,8 @@
 import { ConnectionPositionPair } from '@angular/cdk/overlay'
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component } from '@angular/core'
 
 import { faColumns } from '@fortawesome/free-solid-svg-icons'
+
 import { ColumnsAlterationsManagerService } from '../services/columns-alterations-manager.service'
 
 @Component({
@@ -10,7 +11,7 @@ import { ColumnsAlterationsManagerService } from '../services/columns-alteration
   styleUrls: ['./datatable-column-preferences-button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DatatableColumnPreferencesButtonComponent implements OnInit {
+export class DatatableColumnPreferencesButtonComponent {
 
   icon = faColumns
 
@@ -45,8 +46,6 @@ export class DatatableColumnPreferencesButtonComponent implements OnInit {
   constructor(
     private readonly _columnsAlterationsManager: ColumnsAlterationsManagerService,
   ) { }
-
-  ngOnInit() { }
 
   _resetColumns(event: any) {
     this._columnsAlterationsManager.clear()

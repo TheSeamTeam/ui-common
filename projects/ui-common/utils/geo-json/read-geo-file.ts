@@ -1,7 +1,8 @@
 import { isDevMode } from '@angular/core'
+
 import fileType from '@marklb/file-type'
 import { FeatureCollection } from 'geojson'
-const Buffer = require('buffer/').Buffer
+import { Buffer } from 'buffer/'
 import shp from 'shpjs'
 
 import { readFileAsync } from '../file-utils'
@@ -15,15 +16,16 @@ export async function readGeoFile(fileOrBuffer: File | ArrayBuffer | Buffer): Pr
   const buffer = await coerceFileOrBufferToBuffer(fileOrBuffer)
 
   if (isShpFile(buffer)) {
-    return await parseShpFile(buffer)
+    return parseShpFile(buffer)
   } else if (fileType(buffer)?.mime === 'application/zip') {
     try {
       return await parseShpZip(buffer)
-    } catch (e) {
+    } catch (e: any) {
       // NOTE: If 'shpjs' updates or we switch to a fork, where it doesn't use
       // node buffers, then we can remove this rethrow.
       if (isDevMode()) {
         if (e.message === 'nodebuffer is not supported by this platform') {
+          // eslint-disable-next-line no-console
           console.warn(
             'Try adding Buffer polyfill.\n' +
             'Install: npm install buffer\n' +
@@ -41,6 +43,9 @@ export async function readGeoFile(fileOrBuffer: File | ArrayBuffer | Buffer): Pr
 async function coerceFileOrBufferToBuffer(fileOrBuffer: File | ArrayBuffer | Buffer): Promise<Buffer> {
   if (fileOrBuffer instanceof File) {
     const arrBuf = await readFileAsync(fileOrBuffer)
+    if (arrBuf === null) {
+      throw new Error('Could not read file.')
+    }
     return Buffer.from(arrBuf)
   }
 

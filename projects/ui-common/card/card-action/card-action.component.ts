@@ -18,6 +18,6 @@ export class CardActionComponent {
 
   @Input() title: string | undefined | null
 
-  @Input() @InputBoolean() isLastAction: boolean = false
+  @Input() @InputBoolean() isLastAction = false
 
 }

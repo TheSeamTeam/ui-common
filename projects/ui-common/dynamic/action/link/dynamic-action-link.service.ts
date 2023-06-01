@@ -25,8 +25,8 @@ export class DynamicActionLinkService implements DynamicActionLink {
 
   public async getUiProps(args: DynamicActionLinkDef, context: any): Promise<DynamicActionUiAnchorDef> {
     const link: string = await this._valueHandler.eval(args.link)
-    const external: boolean = !!(await this._valueHandler.eval(args.external))
-    const asset: boolean = !!(await this._valueHandler.eval(args.asset))
+    const external = !!(await this._valueHandler.eval(args.external))
+    const asset = !!(await this._valueHandler.eval(args.asset))
     const target: string | undefined = await this._valueHandler.eval(args.target)
     const queryParams: { [k: string]: any } | undefined = await this._valueHandler.eval(args.queryParams)
 

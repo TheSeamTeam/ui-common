@@ -39,7 +39,7 @@ export function mergeTplAndInpColumns(
     cols.push(createCheckboxColumn())
   }
 
-  const _tplCols = translateTemplates(<any>(tplCols || []))
+  const _tplCols = translateTemplates((tplCols || []) as any)
   for (const col of inpCols) {
     const tplCol = _tplCols.find(t => t.prop === col.prop)
     // console.log({ col: { ...(col || {}) }, tplCol: { ...(tplCol || {}) } })
@@ -102,7 +102,7 @@ function _updateColDiff(
   inpCol: TheSeamDatatableColumn<any, any>
 ): void {
   colDiff.forEachRemovedItem(r => {
-    if (prev && prev.hasOwnProperty(r.key)) {
+    if (prev && Object.prototype.hasOwnProperty.call(prev, r.key)) {
       const k = r.key as keyof TableColumn
       delete prev[k]
     }
@@ -144,4 +144,3 @@ function _hasPrevColDiff(
 
   return !!differsMap
 }
-

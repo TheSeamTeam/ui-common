@@ -8,8 +8,9 @@ describe('TheSeamCheckboxComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ TheSeamCheckboxComponent ]
-    })
+    declarations: [TheSeamCheckboxComponent],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents()
   }))
 

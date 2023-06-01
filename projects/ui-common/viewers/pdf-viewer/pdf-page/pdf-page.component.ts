@@ -23,7 +23,7 @@ export class TheSeamPdfPageComponent implements OnDestroy, AfterViewInit {
   static ngAcceptInputType_shadow: BooleanInput
   static ngAcceptInputType_responsive: BooleanInput
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   @Input()
   public get page() { return this._page }
@@ -33,7 +33,7 @@ export class TheSeamPdfPageComponent implements OnDestroy, AfterViewInit {
   }
   private _page: any
 
-  @Input() @InputBoolean() shadow: boolean = false
+  @Input() @InputBoolean() shadow = false
 
   @HostBinding('class.shadow') get _shadow() { return this.shadow }
 
@@ -74,7 +74,7 @@ export class TheSeamPdfPageComponent implements OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy() {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 
@@ -124,6 +124,7 @@ export class TheSeamPdfPageComponent implements OnDestroy, AfterViewInit {
       }
     } catch (err) {
       // PDF loading error
+      // eslint-disable-next-line no-console
       console.error(err)
     }
   }
@@ -143,7 +144,6 @@ export class TheSeamPdfPageComponent implements OnDestroy, AfterViewInit {
     if (wDiff > this.renderUpdateThreshold || hDiff > this.renderUpdateThreshold) {
       this.render()
     }
-
   }
 
 }

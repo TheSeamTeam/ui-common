@@ -28,12 +28,13 @@ import { getControlName } from './get-control-name'
  *
  */
 export function getControlPath(c: AbstractControl, path: string = ''): string | null {
-  path = getControlName(c) + path
+  let _path = path
+  _path = getControlName(c) + _path
 
   if (c.parent && getControlName(c.parent)) {
-    path = '.' + path
-    return getControlPath(c.parent, path)
+    _path = `.${_path}`
+    return getControlPath(c.parent, _path)
   } else {
-    return path
+    return _path
   }
 }

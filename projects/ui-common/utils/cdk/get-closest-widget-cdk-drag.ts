@@ -17,7 +17,7 @@ export function getClosestWidgetCdkDrag(element: ElementRef<HTMLElement>, dragDi
   }
 
   const parentId = parent ? getAttribute(parent, 'data-widget-id') : null
-  return parentId ?
-    dragDirectives.find(drag => getAttribute(drag.getRootElement(), 'data-widget-id') === parentId)
+  return parentId
+    ? dragDirectives.find(drag => getAttribute(drag.getRootElement(), 'data-widget-id') === parentId)
     : null
 }

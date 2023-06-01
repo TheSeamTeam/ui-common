@@ -1,6 +1,6 @@
 import { FocusableOption, FocusMonitor, FocusOrigin } from '@angular/cdk/a11y'
 import { DOCUMENT } from '@angular/common'
-import { ChangeDetectionStrategy, Component, ElementRef, HostListener, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core'
+import { ChangeDetectionStrategy, Component, ElementRef, HostListener, Inject, Input, OnDestroy, Optional } from '@angular/core'
 import { Subject } from 'rxjs'
 
 import { CanDisableCtor, mixinDisabled } from '@theseam/ui-common/core'
@@ -15,14 +15,12 @@ const _seamMenuItemMixinBase: CanDisableCtor & typeof TheSeamMenuItemBase =
     mixinDisabled(TheSeamMenuItemBase)
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: '[seamMenuItem]',
   templateUrl: './menu-item.component.html',
   styleUrls: ['./menu-item.component.scss'],
   exportAs: 'seamMenuItem',
-  // tslint:disable-next-line:use-input-property-decorator
   inputs: [ 'disabled' ],
-  // tslint:disable-next-line:use-host-property-decorator
   host: {
     '[attr.role]': 'role',
     'class': 'dropdown-item',
@@ -32,7 +30,7 @@ const _seamMenuItemMixinBase: CanDisableCtor & typeof TheSeamMenuItemBase =
   },
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MenuItemComponent extends _seamMenuItemMixinBase implements OnInit, OnDestroy, FocusableOption {
+export class MenuItemComponent extends _seamMenuItemMixinBase implements OnDestroy, FocusableOption {
 
   /** ARIA role for the menu item. */
   @Input() role: 'menuitem' | 'menuitemradio' | 'menuitemcheckbox' | undefined | null = 'menuitem'
@@ -69,8 +67,6 @@ export class MenuItemComponent extends _seamMenuItemMixinBase implements OnInit,
       _parentMenu.addItem(this)
     }
   }
-
-  ngOnInit() { }
 
   ngOnDestroy() {
     if (this._focusMonitor) {

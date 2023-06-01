@@ -3,7 +3,7 @@ import { ContentChild, Directive, EventEmitter, Input, Output, TemplateRef } fro
 import { DatatableRowDetailTplDirective } from './datatable-row-detail-tpl.directive'
 
 @Directive({
-  // tslint:disable-next-line: directive-selector
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: 'seam-datatable-row-detail'
 })
 export class TheSeamDatatableRowDetailDirective {
@@ -14,7 +14,7 @@ export class TheSeamDatatableRowDetailDirective {
    */
   @Input() rowHeight: number | ((row?: any, index?: number) => number) | undefined | null = 0
 
-  // tslint:disable-next-line: no-input-rename
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('template')
   _templateInput: TemplateRef<any> | undefined | null
 

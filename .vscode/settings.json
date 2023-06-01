@@ -15,24 +15,17 @@
   "[typescript]": {
     "editor.formatOnSave": false
   },
-  // Remove when everyone has moved on from deprecated tslint extension.
-  "tslint.autoFixOnSave": [
-    "ordered-imports",
-    "semicolon"
-  ],
+
   "editor.codeActionsOnSave": {
-    "source.fixAll.tslint": true
+    "source.fixAll.eslint": true
   },
-  // "tslint.trace.server": "verbose",
-  "tslint.exclude": [
-    "**/src/assets/**/*.js"
-  ],
 
   // "angularKarmaTestExplorer.defaultAngularProjectName": "ui-common",
   // "angularKarmaTestExplorer.defaultSocketConnectionPort": 9333,
 
-  "karmaTestExplorer.defaultAngularProjectName": "ui-common",
-  "karmaTestExplorer.karmaConfFilePath": "projects/ui-common/karma.conf.js",
+  // "karmaTestExplorer.defaultAngularProjectName": "ui-common",
+  // "karmaTestExplorer.karmaConfFilePath": "projects/ui-common/karma.conf.js",
+  
   // "karmaTestExplorer.karmaPort": 9333,
   // "karmaTestExplorer.defaultSocketConnectionPort": 9333,
 
@@ -51,6 +44,8 @@
   //  "./delete-system32.js" }` in the `.vscode/settings.json`. Once they open
   //  VSCode, they would be in trouble.
   "typescript.tsdk": "node_modules/typescript/lib",
+
+  "jest.autoRun": "off",
 
   // Our custom schematics.
   // "ngschematics.schematics": [

@@ -12,7 +12,6 @@ import {
   Input,
   NgZone,
   OnDestroy,
-  OnInit,
   Output,
   ViewChild
 } from '@angular/core'
@@ -72,7 +71,7 @@ let _uid = 0
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TheSeamCheckboxComponent extends _TheSeamCheckboxMixinBase
-  implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor, CanDisable, HasTabIndex {
+  implements AfterViewInit, OnDestroy, ControlValueAccessor, CanDisable, HasTabIndex {
   static ngAcceptInputType_checked: BooleanInput
   static ngAcceptInputType_disabled: BooleanInput
   static ngAcceptInputType_indeterminate: BooleanInput
@@ -98,7 +97,7 @@ export class TheSeamCheckboxComponent extends _TheSeamCheckboxMixinBase
   @Input('aria-labelledby') ariaLabelledby?: string | null = null
 
   /** Whether the checkbox is required. */
-  @Input() @InputBoolean() required: boolean = false
+  @Input() @InputBoolean() required = false
 
   /** Whether the checkbox is checked. */
   @Input()
@@ -112,7 +111,7 @@ export class TheSeamCheckboxComponent extends _TheSeamCheckboxMixinBase
     }
   }
   /** @ignore */
-  private _checked: boolean = false
+  private _checked = false
 
   /**
    * Whether the checkbox is disabled.
@@ -157,6 +156,7 @@ export class TheSeamCheckboxComponent extends _TheSeamCheckboxMixinBase
   @Input() name: string | undefined | null = null
 
   /** Event emitted when the checkbox's `checked` value changes. */
+  // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() readonly change = new EventEmitter<TheSeamCheckboxChange>()
 
   /** Event emitted when the checkbox's `indeterminate` value changes. */
@@ -205,9 +205,6 @@ export class TheSeamCheckboxComponent extends _TheSeamCheckboxMixinBase
       }
     })
   }
-
-  /** @ignore */
-  ngOnInit() { }
 
   /** @ignore */
   ngOnDestroy() {
@@ -286,7 +283,6 @@ export class TheSeamCheckboxComponent extends _TheSeamCheckboxMixinBase
     if (!this.disabled) {
       // When user manually click on the checkbox, `indeterminate` is set to false.
       if (this.indeterminate) {
-
         Promise.resolve().then(() => {
           this._indeterminate = false
           this.indeterminateChange.emit(this._indeterminate)

@@ -42,7 +42,6 @@ export const queryProcessingLink = new ApolloLink((operation, forward) => {
 
   operation.query = _ast
 
-
   const removeNotDefined = hintsTokensContainingHint(rules, removeNotDefinedHintDef.name)
   // console.log('removeNotDefined', removeNotDefined)
   for (const rulesToken of removeNotDefined) {
@@ -77,7 +76,6 @@ export const queryProcessingLink = new ApolloLink((operation, forward) => {
 
     const varValue = operation.variables[varName]
 
-
     operation.variables = withoutProperty(operation.variables, varName)
     _ast = removeVariableDefinition(_ast, varName)
 
@@ -85,14 +83,8 @@ export const queryProcessingLink = new ApolloLink((operation, forward) => {
     _ast = inlineVariable(_ast, varName, parseValue(toGQL(varValue)))
   }
 
-
-
   // const removeIfNotDefined = hintsTokensContainingHint(rules, GQL_HINT_REMOVE_IF_NOT_USED)
   // console.log('removeIfNotDefined', removeIfNotDefined)
-
-
-
-
 
   // const _operation = operation
 

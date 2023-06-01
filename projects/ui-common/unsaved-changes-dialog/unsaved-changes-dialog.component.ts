@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component } from '@angular/core'
 
 // TODO: Decide if this component should be implemented or just use the native
 //  browser dialog for in-app routing also.
@@ -12,11 +12,4 @@ import { Component, OnInit } from '@angular/core'
   `,
   styles: []
 })
-export class UnsavedChangesDialogComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
-}
+export class UnsavedChangesDialogComponent { }

@@ -70,7 +70,7 @@ function _parseWhereItems(where: WhereArg): WhereConditionFn[] {
 
   const keys = Object.keys(where)
   if (keys.find(k => _whereItemCollectionKinds.find(k2 => k === k2) !== undefined) !== undefined) {
-
+    // TODO: Implement
   } else {
     for (const k of keys as (keyof WhereItemField)[]) {
       const c = _getWhereCondition((where as any)[k])
@@ -91,7 +91,7 @@ export function filterWhere<T>(data: T[], where: WhereArg): T[] {
     // const idx = items.indexOf(itm => itm(c))
     // return idx !== -1
 
-    let found: boolean = false
+    let found = false
     for (const itm of items) {
       const b = itm(c)
       if (b) {

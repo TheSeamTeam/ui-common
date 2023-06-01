@@ -67,6 +67,7 @@ export class DatatablePreferencesService {
             return this._descerializePreferences(v)
           } catch (error) {
             if (isDevMode()) {
+              // eslint-disable-next-line no-console
               console.error(error)
             }
             return null

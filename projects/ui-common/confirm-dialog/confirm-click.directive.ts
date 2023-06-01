@@ -19,7 +19,7 @@ export class ConfirmClickDirective implements OnDestroy {
 
   @Input() seamConfirmMsg: string | undefined | null
   @Input() seamConfirmAlert: string | { message: string, type: ThemeTypes } | undefined | null
-  @Input() @InputBoolean() seamConfirmDisabled: boolean = false
+  @Input() @InputBoolean() seamConfirmDisabled = false
 
   @Output() seamConfirmClick = new EventEmitter<'confirm'>()
 
@@ -29,13 +29,13 @@ export class ConfirmClickDirective implements OnDestroy {
   @HostListener('click', [ '$event' ])
   _onClick(event: any) {
     if (this.seamConfirmDisabled) {
-      if (!!this._modalRef) {
+      if (this._modalRef) {
         this._modalRef.close()
         this._modalRef = undefined
       }
     }
 
-    if (!!this._modalRef) { return }
+    if (this._modalRef) { return }
 
     this._modalRef = this._confirmService.open(this.seamConfirmMsg || '', this.seamConfirmAlert || undefined)
 

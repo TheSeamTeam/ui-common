@@ -4,6 +4,7 @@ import {
   ContentChild,
   ContentChildren,
   ElementRef,
+  forwardRef,
   HostBinding,
   Input,
   OnDestroy,
@@ -19,6 +20,7 @@ import { IErrorRecord } from '@theseam/ui-common/form-field-error'
 import { FormFieldErrorDirective } from './form-field-error.directive'
 import { FormFieldHelpTextDirective } from './form-field-help-text.directive'
 import { FormFieldLabelTplDirective } from './form-field-label-tpl.directive'
+import { FORM_FIELD_COMPONENT } from './form-field-tokens'
 import { InputDirective } from './input.directive'
 
 let nextLabelUniqueId = 0
@@ -29,7 +31,13 @@ let nextLabelUniqueId = 0
 @Component({
   selector: 'seam-form-field',
   templateUrl: './form-field.component.html',
-  styleUrls: ['./form-field.component.scss']
+  styleUrls: ['./form-field.component.scss'],
+  providers: [
+    {
+      provide: FORM_FIELD_COMPONENT,
+      useClass: forwardRef(() => TheSeamFormFieldComponent),
+    }
+  ],
 })
 export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
   static ngAcceptInputType_inline: BooleanInput
@@ -56,7 +64,7 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
    * NOTE: Not well tested or supported, so it may have some issues currently
    * and could change.
    */
-  @Input() @InputBoolean() inline: boolean = false
+  @Input() @InputBoolean() inline = false
 
   /** Add a text label for the form control. */
   @Input() label: string | undefined | null
@@ -130,7 +138,6 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
   get contentInput(): InputDirective | undefined { return this._contentInputSubject.value }
   set contentInput(value: InputDirective | undefined) { this._contentInputSubject.next(value || undefined) }
 
-
   /** @ignore */
   @ContentChildren(FormFieldErrorDirective)
   get fieldErrors() { return this._fieldErrors }
@@ -202,7 +209,7 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
         map(() => this.hasHelpText),
         distinctUntilChanged(),
         tap(() => {
-          if (!!contentInput) {
+          if (contentInput) {
             contentInput.ariaDescribedBy = this._helpTextId || undefined
           }
         })

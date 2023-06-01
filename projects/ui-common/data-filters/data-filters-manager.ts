@@ -1,4 +1,4 @@
-import { defer, Observable, Subject } from 'rxjs'
+import { defer, Observable, of, Subject } from 'rxjs'
 import { repeatWhen } from 'rxjs/operators'
 
 import { composeDataFilters, DataFilter } from './data-filter'
@@ -34,8 +34,7 @@ export class DataFiltersManager {
       return
     }
 
-    for (let i = 0; i < filters.length; i++) {
-      const filter = filters[i]
+    for (const filter of filters) {
       const idx = this._filters.findIndex(f => this._isSameFilter(f, filter))
       if (idx === -1) {
         throw Error(`Filter '${filter.name}' not found.`)
@@ -48,7 +47,7 @@ export class DataFiltersManager {
   }
 
   public filter<T>(data: T[]): Observable<T[]> {
-    return defer(() => composeDataFilters(this.filters)).pipe(
+    return defer(() => of().pipe(composeDataFilters(this.filters))).pipe(
       repeatWhen<any>(() => this.filtersChanged)
     )
   }

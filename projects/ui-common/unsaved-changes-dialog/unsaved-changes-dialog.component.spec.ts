@@ -8,8 +8,9 @@ describe('UnsavedChangesDialogComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ UnsavedChangesDialogComponent ]
-    })
+    declarations: [UnsavedChangesDialogComponent],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents()
   }))
 

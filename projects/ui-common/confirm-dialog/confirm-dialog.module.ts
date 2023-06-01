@@ -10,25 +10,22 @@ import { ConfirmDialogComponent } from './confirm-dialog.component'
 import { SeamConfirmDialogService } from './confirm-dialog.service'
 
 @NgModule({
-  declarations: [
-    ConfirmDialogComponent,
-    ConfirmClickDirective
-  ],
-  imports: [
-    CommonModule,
-    TheSeamSharedModule,
-    TheSeamModalModule,
-    TheSeamIconModule
-  ],
-  exports: [
-    ConfirmDialogComponent,
-    ConfirmClickDirective
-  ],
-  entryComponents: [
-    ConfirmDialogComponent
-  ],
-  providers: [
-    SeamConfirmDialogService
-  ]
+    declarations: [
+        ConfirmDialogComponent,
+        ConfirmClickDirective
+    ],
+    imports: [
+        CommonModule,
+        TheSeamSharedModule,
+        TheSeamModalModule,
+        TheSeamIconModule
+    ],
+    exports: [
+        ConfirmDialogComponent,
+        ConfirmClickDirective
+    ],
+    providers: [
+        SeamConfirmDialogService
+    ]
 })
 export class TheSeamConfirmDialogModule { }

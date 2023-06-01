@@ -49,7 +49,7 @@ export class DatatableDynamicFilterContainerComponent<C> implements OnInit {
   }
 
   private _createInjector(): PortalInjector {
-    return new PortalInjector(this._injector, new WeakMap <any, any> ([
+    return new PortalInjector(this._injector, new WeakMap <any, any>([
       [ THESEAM_DATA_FILTER_OPTIONS, this.options ]
     ]))
   }

@@ -31,7 +31,6 @@ export interface IDashboardWidgetsPreferencesMapRecord {
 // emissions to get held up too long, there could be a threshold time that the
 // new data can be held up.
 
-
 /**
  * Manages anything dealing with retrieving and updating dashboard widget
  * preference data from the provided accessor.
@@ -85,12 +84,13 @@ export class DashboardWidgetsPreferencesService {
             return JSON.parse(v) as IDashboardWidgetsPreferences
           } catch (error) {
             if (isDevMode()) {
+              // eslint-disable-next-line no-console
               console.error(error)
             }
             return null
           }
         }),
-        map(v => !!v ? v : {}),
+        map(v => v || {}),
         // tap(v => console.log('preferences$', v))
         // tap(v => this._pending = false)
       )),

@@ -1,4 +1,4 @@
-import { FormControl } from '@angular/forms'
+import { UntypedFormControl } from '@angular/forms'
 
 import {
   getCountryCode,
@@ -9,7 +9,7 @@ import {
   processCountryCodes
 } from './utils'
 
-export function telInputValidator(control: FormControl) {
+export function telInputValidator(control: UntypedFormControl) {
   const value = control.value
 
   // This validator doesn't need to do anything if there isn't a value.

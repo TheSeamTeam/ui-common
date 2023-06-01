@@ -1,6 +1,6 @@
 import { Component, DebugElement } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
+import { UntypedFormControl, UntypedFormGroup, ReactiveFormsModule } from '@angular/forms'
 import { By } from '@angular/platform-browser'
 import { DisableControlDirective } from './disable-control.directive'
 
@@ -10,30 +10,29 @@ import { DisableControlDirective } from './disable-control.directive'
   </form>`
 })
 class TestDisableControlComponent {
-  testGroup = new FormGroup({
-    testControl: new FormControl([''])
+  testGroup = new UntypedFormGroup({
+    testControl: new UntypedFormControl([''])
   })
   mode = true
 }
 
 describe('DisableControlDirective', () => {
-
   let component: TestDisableControlComponent
   let fixture: ComponentFixture<TestDisableControlComponent>
   let controlInput: DebugElement
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
+    imports: [
         ReactiveFormsModule
-      ],
-      declarations: [
+    ],
+    declarations: [
         TestDisableControlComponent,
         DisableControlDirective
-      ]
-    })
+    ],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents()
-
   }))
 
   beforeEach(() => {
@@ -46,5 +45,4 @@ describe('DisableControlDirective', () => {
   it('input should be disabled', () => {
     expect(controlInput.nativeElement.disabled).toBe(true)
   })
-
 })

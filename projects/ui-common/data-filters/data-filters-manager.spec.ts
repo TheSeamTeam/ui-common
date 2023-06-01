@@ -74,10 +74,10 @@ describe('DataFiltersManager', () => {
 })
 
 //
-let _uid: number = 0
+let _uid = 0
 
 class MockFilter implements DataFilter {
-  name: string = 'mock'
+  name = 'mock'
   uid = `mock${_uid++}`
 
   filterStateChanges = new Subject<DataFilterState>()

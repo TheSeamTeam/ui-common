@@ -26,7 +26,7 @@ export class ExportersDataEvaluator implements IDynamicValueEvaluator<'exporters
   }
 
   private _exporters(exporters: string[]) {
-    const dataExporters: IDataExporter[] = (<any>this._injector.get(THESEAM_DATA_EXPORTER) || []) as IDataExporter[]
+    const dataExporters: IDataExporter[] = (this._injector.get(THESEAM_DATA_EXPORTER) as any || []) as IDataExporter[]
     return exporters
       .map(e => dataExporters.find(de => de.name === e))
       .filter(notNullOrUndefined)

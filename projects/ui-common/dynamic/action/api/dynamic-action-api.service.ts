@@ -114,7 +114,7 @@ export class DynamicActionApiService implements DynamicActionApi {
 
   private async _getBody(args: DynamicActionApiDef, context?: any) {
     if (args.body !== undefined && args.body !== null) {
-      return await this._valueHelper.eval(args.body, context)
+      return this._valueHelper.eval(args.body, context)
     }
 
     return undefined
@@ -122,7 +122,7 @@ export class DynamicActionApiService implements DynamicActionApi {
 
   private async _getParams(args: DynamicActionApiDef, context?: any) {
     if (args.params !== undefined && args.params !== null) {
-      return await this._valueHelper.eval(args.params, context)
+      return this._valueHelper.eval(args.params, context)
     }
 
     return undefined
@@ -173,7 +173,7 @@ export class DynamicActionApiService implements DynamicActionApi {
             if (typeof value === 'string') {
               headers[key] = value
             } else if (Array.isArray(value)) {
-              headers[key] = await Promise.all(value.map(async v => await this._valueHelper.eval(v, context))) as any
+              headers[key] = await Promise.all(value.map(async v => this._valueHelper.eval(v, context))) as any
             } else {
               headers[key] = await this._valueHelper.eval(value, context)
             }
@@ -205,7 +205,7 @@ export class DynamicActionApiService implements DynamicActionApi {
           if (typeof value === 'string') {
             res[key] = value
           } else if (Array.isArray(value)) {
-            res[key] = await Promise.all(value.map(async v => await this._valueHelper.eval(v, context)))
+            res[key] = await Promise.all(value.map(async v => this._valueHelper.eval(v, context)))
           } else {
             res[key] = await this._valueHelper.eval(value, context)
           }
@@ -217,14 +217,17 @@ export class DynamicActionApiService implements DynamicActionApi {
 
   private _isSupported(): boolean {
     if (isDevMode()) {
+      // eslint-disable-next-line no-console
       console.warn(`[DynamicActionApiService] Action is not ready for production yet.`)
     } else {
       // I don't expect this to be attempted in prod before completed, so I am just adding a console warning.
+      // eslint-disable-next-line no-console
       console.warn(`Unable to complete request. Contact support for assistance.`)
     }
 
     if (!this._http) {
       if (isDevMode()) {
+        // eslint-disable-next-line no-console
         console.warn(`[DynamicActionApiService] Endpoint actions require \`HttpClientModule\` to be imported.`)
       }
       return false

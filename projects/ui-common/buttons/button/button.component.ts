@@ -11,7 +11,7 @@ import {
 } from '@theseam/ui-common/core'
 
 @Component({ template: '' })
-// tslint:disable-next-line: component-class-suffix
+// eslint-disable-next-line @angular-eslint/component-class-suffix
 class TheSeamButtonBase implements OnDestroy {
   constructor(
     public _elementRef: ElementRef,
@@ -38,16 +38,13 @@ class TheSeamButtonBase implements OnDestroy {
 const _TheSeamButtonMixinBase: CanDisableCtor & CanThemeCtor & CanSizeCtor &
     typeof TheSeamButtonBase = mixinSize(mixinTheme(mixinDisabled(TheSeamButtonBase), 'btn'), 'btn')
 
-
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'button[seamButton]',
   templateUrl: './button.component.html',
   styleUrls: ['./button.component.scss'],
   exportAs: 'seamButton',
-  // tslint:disable-next-line:use-input-property-decorator
   inputs: [ 'disabled', 'theme', 'size' ],
-  // tslint:disable-next-line:use-host-property-decorator
   host: {
     '[attr.type]': 'type',
     'class': 'btn',
@@ -61,6 +58,7 @@ export class ButtonComponent extends _TheSeamButtonMixinBase implements OnDestro
   /** ARIA type for the button. */
   @Input() type: 'button' | 'submit' | 'reset' = 'button'
 
+  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(
     _elementRef: ElementRef,
     _focusMonitor: FocusMonitor,
@@ -71,16 +69,13 @@ export class ButtonComponent extends _TheSeamButtonMixinBase implements OnDestro
 
 }
 
-
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'a[seamButton]',
   templateUrl: './button.component.html',
   styleUrls: ['./button.component.scss'],
   exportAs: 'seamButton,seamButtonBaseAnchor',
-  // tslint:disable-next-line:use-input-property-decorator
   inputs: [ 'disabled', 'theme', 'size' ],
-  // tslint:disable-next-line:use-host-property-decorator
   host: {
     'class': 'btn',
     '[attr.tabindex]': 'disabled ? -1 : (tabIndex || 0)',
@@ -102,6 +97,7 @@ export class AnchorButtonComponent extends _TheSeamButtonMixinBase implements On
   //
   // rel="noopener noreferrer"
 
+  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(
     _elementRef: ElementRef,
     _focusMonitor: FocusMonitor,

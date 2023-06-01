@@ -26,25 +26,22 @@ const filterDefProviders = [
 ]
 
 @NgModule({
-  declarations: [
-    ...filterComponents
-  ],
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    TheSeamFormFieldModule,
-    FontAwesomeModule,
-    TheSeamToggleGroupModule,
-    TheSeamIconModule
-  ],
-  providers: [
-    ...filterDefProviders
-  ],
-  exports: [
-    ...filterComponents
-  ],
-  entryComponents: [
-    ...filterComponents
-  ]
+    declarations: [
+        ...filterComponents
+    ],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        TheSeamFormFieldModule,
+        FontAwesomeModule,
+        TheSeamToggleGroupModule,
+        TheSeamIconModule
+    ],
+    providers: [
+        ...filterDefProviders
+    ],
+    exports: [
+        ...filterComponents
+    ]
 })
 export class TheSeamDataFiltersModule { }

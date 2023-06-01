@@ -1,5 +1,6 @@
 import { Directive, ElementRef, HostBinding, OnInit } from '@angular/core'
 
+import { TabbedTabAccessor } from '../tabbed-models'
 import { TabbedComponent } from '../tabbed.component'
 import { TabbedService } from '../tabbed.service'
 
@@ -7,7 +8,7 @@ import { TabbedService } from '../tabbed.service'
   selector: '[seamTabbedTab]',
   exportAs: 'seamTabbedTab'
 })
-export class TabbedTabDirective implements OnInit {
+export class TabbedTabDirective implements OnInit, TabbedTabAccessor {
 
   // @HostBinding('class.custom-invalid')
   // get customInvalid() { return this.control.invalid }
@@ -20,6 +21,7 @@ export class TabbedTabDirective implements OnInit {
     public tabbedService: TabbedService
   ) { }
 
+  // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
   ngOnInit() {
     // this.tabbedService.selectedTab.subscribe(tab => {
     //   console.log('tab: ', tab)

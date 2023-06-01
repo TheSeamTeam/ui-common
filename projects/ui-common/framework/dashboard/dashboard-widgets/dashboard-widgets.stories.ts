@@ -120,7 +120,7 @@ export default {
   ]
 } as Meta
 
-export const Basic: Story = (args) => ({
+export const Basic: Story = args => ({
   props: {
     widgets: [
       { widgetId: 'widget-1', col: 0, order: 0, component: StoryExWidget1Component },

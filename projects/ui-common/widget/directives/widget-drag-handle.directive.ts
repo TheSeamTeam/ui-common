@@ -33,8 +33,6 @@ import { getClosestWidgetCdkDrag } from '@theseam/ui-common/utils'
 // will be broken.
 //
 
-
-
 // Helper type that ignores `readonly` properties. This is used in
 // `extendStyles` to ignore the readonly properties on CSSStyleDeclaration
 // since we won't be touching those anyway.
@@ -57,8 +55,8 @@ export function extendStyles(
   source: Partial<DragCSSStyleDeclaration>
 ) {
   for (const key in source) {
-    if (source.hasOwnProperty(key)) {
-      // tslint:disable-next-line: no-non-null-assertion
+    if (Object.prototype.hasOwnProperty.call(source, key)) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       dest[key] = source[key]!
     }
   }
@@ -72,8 +70,7 @@ export function toggleNativeDragInteractions(element: HTMLElement, enable: boole
   extendStyles(element.style, {
     touchAction: enable ? '' : 'none',
     webkitUserDrag: enable ? '' : 'none',
-    webkitTapHighlightColor: enable ? '' : 'transparent',
-    userSelect: userSelect,
+    userSelect,
     msUserSelect: userSelect,
     webkitUserSelect: userSelect,
     MozUserSelect: userSelect
@@ -98,7 +95,7 @@ export const THESEAM_WIDGET_ACCESSOR = new InjectionToken<TheSeamWidgetAccessor<
 export class WidgetDragHandleDirective implements OnInit, OnDestroy, AfterViewInit, DoCheck {
   static ngAcceptInputType_disabled: BooleanInput
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   private _attachedToDom = new BehaviorSubject<boolean>(false)
   private _doneCheckingAttached = false
@@ -115,7 +112,7 @@ export class WidgetDragHandleDirective implements OnInit, OnDestroy, AfterViewIn
   get disabled(): boolean { return this._disabled }
   set disabled(value: boolean) {
     this._disabled = coerceBooleanProperty(value)
-    this._stateChanges.next(<any>this)
+    this._stateChanges.next(this as any)
   }
   private _disabled = false
 
@@ -137,12 +134,11 @@ export class WidgetDragHandleDirective implements OnInit, OnDestroy, AfterViewIn
         if (this._knownParentDrag) {
           const isAttached = this.isAttachedToDom()
           if (isAttached) {
-            const parent = <any>this.getParentCdkDrag()
+            const parent = this.getParentCdkDrag() as any
             if (this._knownParentDrag !== parent) {
               this._attachedToDom.next(isAttached)
             }
           }
-
         }
       })
     }
@@ -167,7 +163,7 @@ export class WidgetDragHandleDirective implements OnInit, OnDestroy, AfterViewIn
           takeUntil(this._ngUnsubscribe)
         )
         .subscribe(() => {
-          const parent = <any>this.getParentCdkDrag()
+          const parent = this.getParentCdkDrag() as any
 
           if (this._knownParentDrag && this._knownParentDrag !== parent) {
             this._knownParentDrag._dragRef.disableHandle(this.element.nativeElement)
@@ -188,7 +184,7 @@ export class WidgetDragHandleDirective implements OnInit, OnDestroy, AfterViewIn
     this._stateChanges.complete()
     this._attachedToDom.complete()
 
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

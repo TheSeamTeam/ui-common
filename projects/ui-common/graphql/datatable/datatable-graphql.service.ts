@@ -18,7 +18,6 @@ export type DatatableQueryOptions<TVariables = OperationVariables, TData = any> 
   & Pick<WatchQueryOptions<TVariables, TData>, 'variables'>
   & Pick<WatchQueryOptions<TVariables, TData>, 'context'>
 
-
 export interface DatatableGraphqlServiceConfig {
   /**
    * Polling interval time in milliseconds.

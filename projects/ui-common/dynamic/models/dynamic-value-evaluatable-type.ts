@@ -1,3 +1,5 @@
 import { IJexlValue } from '../evaluators/jexl-evaluator/jexl-value'
 
-export type DynamicValueEvaluatableType<R> = IJexlValue<R>
+import { DynamicValueBaseType } from './dynamic-value-base-type'
+
+export type DynamicValueEvaluatableType<R extends DynamicValueBaseType> = IJexlValue<R>

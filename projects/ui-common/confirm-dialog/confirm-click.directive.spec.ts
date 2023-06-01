@@ -53,8 +53,9 @@ describe('ConfirmClickDirective', () => {
     tick(500)
 
     expect(instance?.modalRef).toBeDefined()
-    expect(instance?.modalRef!.componentInstance).toBeDefined()
+    expect(instance?.modalRef?.componentInstance).toBeDefined()
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const id = instance!.modalRef!.id
 
     expect(document.getElementById(id)).not.toBeNull()
@@ -72,8 +73,9 @@ describe('ConfirmClickDirective', () => {
     tick()
 
     expect(instance?.modalRef).toBeDefined()
-    expect(instance?.modalRef!.componentInstance).toBeDefined()
+    expect(instance?.modalRef?.componentInstance).toBeDefined()
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const id = instance!.modalRef!.id
 
     expect(document.getElementById(id)).not.toBeNull()
@@ -97,13 +99,14 @@ describe('ConfirmClickDirective', () => {
     tick()
 
     expect(instance?.modalRef).toBeDefined()
-    expect(instance?.modalRef!.componentInstance).toBeDefined()
+    expect(instance?.modalRef?.componentInstance).toBeDefined()
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const id = instance!.modalRef!.id
 
     expect(document.getElementById(id)).not.toBeNull()
 
-    host.dispatchMouseEvent(document.getElementById(id)!.parentElement as SpectatorElement, 'click')
+    host.dispatchMouseEvent(document.getElementById(id)?.parentElement as SpectatorElement, 'click')
     tick(500)
 
     expect(document.getElementById(id)).toBeNull()

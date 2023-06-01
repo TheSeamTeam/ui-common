@@ -8,8 +8,9 @@ describe('FooterBarComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ FooterBarComponent ]
-    })
+    declarations: [FooterBarComponent],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents()
   }))
 

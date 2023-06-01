@@ -7,7 +7,7 @@ export class LocalStorageMemory implements Storage {
   /**
    * Number of stored items.
    */
-  public length: number = 0
+  public length = 0
 
   /**
    * Removes all stored items and sets length to 0.
@@ -45,7 +45,7 @@ export class LocalStorageMemory implements Storage {
    * @param key name of item to be removed.
    */
   public removeItem(key: string): void {
-    if (this._cache.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(this._cache, key)) {
       delete this._cache[key]
       this.length--
     }
@@ -61,11 +61,11 @@ export class LocalStorageMemory implements Storage {
     if (typeof value === 'undefined') {
       this.removeItem(key)
     } else {
-      if (!this._cache.hasOwnProperty(key)) {
+      if (!Object.prototype.hasOwnProperty.call(this._cache, key)) {
         this.length++
       }
 
-      this._cache[key] = '' + value
+      this._cache[key] = `${value}`
     }
   }
 

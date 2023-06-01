@@ -24,10 +24,10 @@ export class DynamicDatatableRowActionsService {
   public rowActions(row: DynamicDatatableRow): Observable<DynamicDatatableRowAction[]> {
     return this._dynamicDef.def$.pipe(
       map(def => (def && def.rowActions) ? def.rowActions || [] : []),
-      switchMap(rowActions => !!rowActions
+      switchMap(rowActions => rowActions
         ? from(rowActions).pipe(
           map(rowAction => {
-            if (rowAction.hasOwnProperty('hidden')) {
+            if (Object.prototype.hasOwnProperty.call(rowAction, 'hidden')) {
               if (typeof rowAction.hidden === 'boolean') {
                 return rowAction.hidden ? undefined : rowAction
               } else {
@@ -48,7 +48,7 @@ export class DynamicDatatableRowActionsService {
   }
 
   /** @ignore */
-  private _getRowActionContext(row: DynamicDatatableRow,  rowActionDef: DynamicDatatableRowAction): DynamicDatatableRowActionContext {
+  private _getRowActionContext(row: DynamicDatatableRow, rowActionDef: DynamicDatatableRowAction): DynamicDatatableRowActionContext {
     return {
       row
     }

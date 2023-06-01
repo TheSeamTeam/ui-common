@@ -9,8 +9,6 @@ const ACCESSOR_PREFIX = 'story-pref'
 @Injectable()
 export class DatatablePreferencesAccessorLocalService implements TheSeamDatatablePreferencesAccessor {
 
-  constructor() { }
-
   /**
    * Gets a preference.
    */

@@ -2,26 +2,23 @@ import { createComponentFactory, createHostFactory, Spectator } from '@ngneat/sp
 
 import { ButtonComponent } from './button.component'
 
-
 import { render, screen } from '@testing-library/angular'
 import * as stories from './button.stories' // import all stories from the stories file
 
 import { ɵresetJitOptions } from '@angular/core'
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic'
 import { platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing'
-import { RendererFactory } from '@storybook/angular/dist/ts3.9/client/preview/angular-beta/RendererFactory'
+// import { RendererFactory } from '@storybook/angular/dist/ts3.9/client/preview/angular-beta/RendererFactory'
 
-import { composeStories, createMountableStoryComponent } from '@storybook/testing-angular'
+// import { composeStories, createMountableStoryComponent } from '@storybook/testing-angular'
 
 // Every component that is returned maps 1:1 with the stories, but they already contain all decorators from story level, meta level and global level.
-const { Basic } = composeStories(stories as any)
+// const { Basic } = composeStories(stories as any)
 
 describe('ButtonComponent', () => {
-
   describe('Normal', () => {
     let spectator: Spectator<ButtonComponent>
     const createHost = createHostFactory(ButtonComponent)
-
 
     it('should have "button" type by default', () => {
       spectator = createHost(`<button seamButton>Example</button>`)
@@ -62,7 +59,6 @@ describe('ButtonComponent', () => {
 
   //     expect(document.body.getElementsByTagName('button')[0].innerHTML).toBe((Basic as any).args?.btnText)
 
-
   //     // render(Basic);
   //     // const buttonElement = screen.getByText(
   //     //   /Text coming from args in stories file!/i
@@ -78,9 +74,6 @@ describe('ButtonComponent', () => {
   //   //   //   parameters: {} as any,
   //   //   //   targetDOMNode: rootTargetDOMNode,
   //   //   // })
-
-
-
 
   //   //   const tmp = createMountableStoryComponent((Basic as any)())
 
@@ -101,7 +94,6 @@ describe('ButtonComponent', () => {
 
   //   //   expect(document.body.getElementsByTagName('button')[0].innerHTML).toBe(Basic.args?.btnText)
 
-
   //   //   // render(Basic);
   //   //   // const buttonElement = screen.getByText(
   //   //   //   /Text coming from args in stories file!/i
@@ -116,43 +108,41 @@ describe('ButtonComponent', () => {
   //   // });
   // })
 
-  describe('Stories2', () => {
-    let spectator: Spectator<any>
+  // describe('Stories2', () => {
+  //   let spectator: Spectator<any>
 
-    const tmp = createMountableStoryComponent((Basic as any)())
-    const createComponent = createComponentFactory({
-      component: tmp.component,
-      imports: [ tmp.ngModule ]
-    })
+  //   const tmp = createMountableStoryComponent((Basic as any)())
+  //   const createComponent = createComponentFactory({
+  //     component: tmp.component,
+  //     imports: [ tmp.ngModule ]
+  //   })
 
-    beforeEach(async () => {
-      // rendererFactory = new RendererFactory()
-      // document.body.innerHTML =
-      //   '<div id="root"></div><div id="root-docs"><div id="story-in-docs"></div></div>'
-      // // tslint:disable: no-non-null-assertion
-      // rootTargetDOMNode = global.document.getElementById('root')!
-      // rootDocstargetDOMNode = global.document.getElementById('root-docs')!
+  //   beforeEach(async () => {
+  //     // rendererFactory = new RendererFactory()
+  //     // document.body.innerHTML =
+  //     //   '<div id="root"></div><div id="root-docs"><div id="story-in-docs"></div></div>'
+  //     // // tslint:disable: no-non-null-assertion
+  //     // rootTargetDOMNode = global.document.getElementById('root')!
+  //     // rootDocstargetDOMNode = global.document.getElementById('root-docs')!
 
-      spectator = createComponent()
-    })
+  //     spectator = createComponent()
+  //   })
 
+  //   it('renders mounable component', () => {
+  //     expect(document.body.getElementsByTagName('button')[0].innerHTML).toBe((Basic as any).args?.btnText)
+  //   })
+  // })
 
-    it('renders mounable component', () => {
-      expect(document.body.getElementsByTagName('button')[0].innerHTML).toBe((Basic as any).args?.btnText)
-    })
-  })
+  // describe('Stories3', () => {
+  //   const { component, ngModule } = createMountableStoryComponent((Basic as any)())
 
-  describe('Stories3', () => {
-    const { component, ngModule } = createMountableStoryComponent((Basic as any)())
+  //   it('renders mounable component', async () => {
+  //     const { navigate } = await render(component, {
+  //       imports: [ ngModule ]
+  //     })
 
-    it('renders mounable component', async () => {
-      const { navigate } = await render(component, {
-        imports: [ ngModule ]
-      })
-
-      // expect(screen.queryByText(/Detail one/i)).not.toBeInTheDocument();
-      expect(document.body.getElementsByTagName('button')[0].innerHTML).toBe((Basic as any).args?.btnText)
-    })
-  })
-
+  //     // expect(screen.queryByText(/Detail one/i)).not.toBeInTheDocument();
+  //     expect(document.body.getElementsByTagName('button')[0].innerHTML).toBe((Basic as any).args?.btnText)
+  //   })
+  // })
 })

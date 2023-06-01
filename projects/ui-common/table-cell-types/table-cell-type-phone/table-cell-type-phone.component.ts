@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core'
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnDestroy, Optional } from '@angular/core'
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
 
@@ -16,10 +16,10 @@ import { TableCellTypeConfigPhone } from './table-cell-type-phone-config'
   styleUrls: ['./table-cell-type-phone.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TableCellTypePhoneComponent implements OnInit, OnDestroy {
+export class TableCellTypePhoneComponent implements OnDestroy {
 
   /** @ignore */
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   /** @ignore */
   _format: intlTelInputUtils.numberFormat = THESEAM_DEFAULT_PHONE_NUMBER_FORMAT
@@ -44,12 +44,12 @@ export class TableCellTypePhoneComponent implements OnInit, OnDestroy {
       _data.changed
         .pipe(takeUntil(this._ngUnsubscribe))
         .subscribe(v => {
-          if (v.changes.hasOwnProperty('value')) {
+          if (Object.prototype.hasOwnProperty.call(v.changes, 'value')) {
             this.value = v.changes.value.currentValue
             this._cdf.markForCheck()
           }
 
-          if (v.changes.hasOwnProperty('colData')) {
+          if (Object.prototype.hasOwnProperty.call(v.changes, 'colData')) {
             const colData = v.changes.colData.currentValue
             if (colData && hasProperty(colData, 'cellTypeConfig') &&
               hasProperty(colData.cellTypeConfig, 'format') &&
@@ -65,10 +65,8 @@ export class TableCellTypePhoneComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit() { }
-
   ngOnDestroy() {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

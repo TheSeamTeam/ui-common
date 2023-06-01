@@ -13,6 +13,7 @@ export function printOperationLink(options?: PrintOperationLinkOptions) {
     const tagLine = `[Operation]: ${options?.tag ?? ''}`
     const queryStr = print(operation.query)
     const variablesStr = JSON.stringify(operation.variables, null, 2)
+    // eslint-disable-next-line no-console
     console.log(`${stylePrefix}${tagLine}\n${queryStr}\n${variablesStr}`, styles)
     return forward(operation)
   })

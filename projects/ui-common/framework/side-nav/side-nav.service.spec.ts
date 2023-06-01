@@ -1,4 +1,4 @@
-import { Component, NgZone, } from '@angular/core'
+import { Component, NgZone } from '@angular/core'
 import { Router } from '@angular/router'
 import { RouterTestingModule } from '@angular/router/testing'
 

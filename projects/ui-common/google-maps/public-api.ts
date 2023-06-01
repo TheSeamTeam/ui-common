@@ -12,3 +12,7 @@ export * from './google-maps-upload-button-control/google-maps-upload-button-con
 export * from './google-maps-recenter-button-control/google-maps-recenter-button-control.component'
 export * from './google-maps-places-autocomplete/google-maps-places-autocomplete.directive'
 export * from './google-maps-places-autocomplete/google-maps-places-autocomplete.component'
+
+export * from './google-maps-api-loader/google-maps-api-loader'
+export * from './google-maps-api-loader/lazy-google-maps-api-loader'
+export * from './google-maps-api-loader/noop-google-maps-api-loader'

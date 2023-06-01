@@ -64,7 +64,7 @@ export class HoverClassToggleDirective {
 
   private _update(): void {
     for (const c of this._defaultClasses) {
-      this._hovered ?  this._removeClass(c) : this._addClass(c)
+      this._hovered ? this._removeClass(c) : this._addClass(c)
     }
     for (const c of this._hoverClasses) {
       this._hovered ? this._addClass(c) : this._removeClass(c)

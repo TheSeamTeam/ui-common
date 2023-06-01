@@ -43,8 +43,8 @@ export function isCommentToken(token: Token): boolean {
 }
 
 export function isHintToken(token: Token): boolean {
-  return isCommentToken(token) &&
-    (token.value?.match(HINT_PREFIX_REGEX)?.length || 0) > 0 || false
+  return (isCommentToken(token) &&
+    (token.value?.match(HINT_PREFIX_REGEX)?.length || 0) > 0) || false
 }
 
 export function isInlineComment(token: Token): boolean {

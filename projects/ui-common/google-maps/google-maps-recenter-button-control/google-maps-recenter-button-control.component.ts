@@ -23,7 +23,7 @@ export interface GoogleMapsRecenterButtonControlData {
  *
  */
 @Component({
-  // tslint:disable-next-line: component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'button[seam-google-maps-recenter-button-control]',
   templateUrl: './google-maps-recenter-button-control.component.html',
   styleUrls: ['./google-maps-recenter-button-control.component.scss'],
@@ -40,7 +40,7 @@ export class TheSeamGoogleMapsRecenterButtonControlComponent implements OnDestro
 
   private readonly _ngUnsubscribe = new Subject<void>()
 
-  private _listeners: (() => void)[]  = []
+  private _listeners: (() => void)[] = []
 
   @Input() label: string | undefined | null
 
@@ -56,10 +56,10 @@ export class TheSeamGoogleMapsRecenterButtonControlComponent implements OnDestro
     @Optional() @Inject(MAP_CONTROL_DATA) _data?: GoogleMapsRecenterButtonControlData
   ) {
     if (_data) {
-      if (_data.hasOwnProperty('label')) {
+      if (Object.prototype.hasOwnProperty.call(_data, 'label')) {
         this.label = _data.label
       }
-      if (_data.hasOwnProperty('icon')) {
+      if (Object.prototype.hasOwnProperty.call(_data, 'icon')) {
         this.icon = _data.icon
       }
     }

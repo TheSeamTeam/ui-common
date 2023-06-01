@@ -123,21 +123,21 @@ export class ColumnsAlterationsManagerService {
         case 'hide-column': {
           const alteration = new HideColumnColumnsAlteration({ columnProp: colAlt.state.columnProp, hidden: false }, false)
           changes.push(...this.add([ alteration ]))
-          break;
+          break
         }
         case 'order': {
           changes.push(...this.remove([ colAlt ]))
-          break;
+          break
         }
         case 'sort': {
           const alteration = new SortColumnsAlteration({ sorts: [] }, false)
           changes.push(...this.add([ alteration ]))
-          break;
+          break
         }
         case 'width': {
           const alteration = new WidthColumnsAlteration({ columnProp: colAlt.state.columnProp, canAutoResize: true }, false)
           changes.push(...this.add([ alteration ]))
-          break;
+          break
         }
       }
     }

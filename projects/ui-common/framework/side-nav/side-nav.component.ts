@@ -9,7 +9,24 @@ import {
   trigger
 } from '@angular/animations'
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion'
-import { ChangeDetectionStrategy, Component, ContentChild, EventEmitter, HostBinding, Inject, Input, OnDestroy, OnInit, Optional, Output, TemplateRef, ViewContainerRef, ViewEncapsulation } from '@angular/core'
+import { TemplatePortal } from '@angular/cdk/portal'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ContentChild,
+  EventEmitter,
+  forwardRef,
+  HostBinding,
+  Inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  Optional,
+  Output,
+  TemplateRef,
+  ViewContainerRef,
+  ViewEncapsulation,
+} from '@angular/core'
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router'
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mapTo, pairwise, shareReplay, startWith, switchMap, takeUntil, tap } from 'rxjs/operators'
@@ -19,10 +36,10 @@ import { TheSeamLayoutService } from '@theseam/ui-common/layout'
 
 import { ITheSeamBaseLayoutNav, ITheSeamBaseLayoutRef, THESEAM_BASE_LAYOUT_REF } from '../base-layout/index'
 
+import { BaseLayoutSideBarFooterDirective } from '../base-layout/directives/base-layout-side-bar-footer.directive'
+import { THESEAM_SIDE_NAV_ACCESSOR } from './side-nav-tokens'
 import { ISideNavItem } from './side-nav.models'
 import { TheSeamSideNavService } from './side-nav.service'
-import { BaseLayoutSideBarFooterDirective } from '../base-layout/directives/base-layout-side-bar-footer.directive'
-import { TemplatePortal } from '@angular/cdk/portal'
 
 const EXPANDED_STATE = 'expanded'
 const COLLAPSED_STATE = 'collapsed'
@@ -51,8 +68,7 @@ export function sideNavExpandStateChangeFn(fromState: string, toState: string) {
       // )
       // ||
       (
-        (EXPANDED_STATES.indexOf(fromState) !== -1 && COLLAPSED_STATES.indexOf(toState) !== -1)
-        ||
+        (EXPANDED_STATES.indexOf(fromState) !== -1 && COLLAPSED_STATES.indexOf(toState) !== -1) ||
         (EXPANDED_STATES.indexOf(toState) !== -1 && COLLAPSED_STATES.indexOf(fromState) !== -1)
       )
     )
@@ -63,7 +79,12 @@ export function sideNavExpandStateChangeFn(fromState: string, toState: string) {
   templateUrl: './side-nav.component.html',
   styleUrls: ['./side-nav.component.scss'],
   providers: [
-    TheSeamSideNavService
+    TheSeamSideNavService,
+    {
+      provide: THESEAM_SIDE_NAV_ACCESSOR,
+      // tslint:disable-next-line:no-use-before-declare
+      useExisting: forwardRef(() => SideNavComponent)
+    },
   ],
   animations: [
 
@@ -144,7 +165,7 @@ export function sideNavExpandStateChangeFn(fromState: string, toState: string) {
 export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNav {
   static ngAcceptInputType_hasHeaderToggle: BooleanInput
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   // @HostBinding('@sideNavExpand') _sideNavExpand = EXPANDED_STATE
   // _sideNavExpand = EXPANDED_STATE
@@ -164,7 +185,7 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
   get expanded(): boolean { return this._expanded.value }
   set expanded(value: boolean) {
     const expanded = coerceBooleanProperty(value)
-    let emit = expanded !== this.expanded
+    const emit = expanded !== this.expanded
     this._expanded.next(expanded)
 
     if (emit) {
@@ -230,7 +251,7 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
   }
 
   ngOnDestroy() {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
     if (this._baseLayoutRef) { this._baseLayoutRef.unregisterNav(this) }
   }

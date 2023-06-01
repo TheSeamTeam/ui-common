@@ -6,12 +6,12 @@ import { filter, takeUntil, tap } from 'rxjs/operators'
 import { QuillEditorComponent } from 'ngx-quill'
 
 @Directive({
-  // tslint:disable-next-line:directive-selector
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: 'quill-editor'
 })
 export class NgxQuillExtraDirective implements OnDestroy, AfterViewInit {
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   private _tabIndex = -1
 
@@ -33,7 +33,7 @@ export class NgxQuillExtraDirective implements OnDestroy, AfterViewInit {
   ) { }
 
   ngOnDestroy() {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 
@@ -65,6 +65,5 @@ export class NgxQuillExtraDirective implements OnDestroy, AfterViewInit {
 
     return findElem(this._elementRef.nativeElement)
   }
-
 
 }

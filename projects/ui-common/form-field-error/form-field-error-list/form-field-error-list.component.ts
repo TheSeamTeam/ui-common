@@ -1,4 +1,4 @@
-import { Component, ContentChildren, DoCheck, HostBinding, Input, OnDestroy, OnInit, QueryList, TemplateRef } from '@angular/core'
+import { Component, ContentChildren, DoCheck, HostBinding, Input, OnDestroy, QueryList, TemplateRef } from '@angular/core'
 import { AbstractControl, AbstractControlDirective, ValidationErrors } from '@angular/forms'
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, startWith } from 'rxjs/operators'
@@ -27,7 +27,7 @@ export interface IErrorRecord {
   templateUrl: './form-field-error-list.component.html',
   styleUrls: ['./form-field-error-list.component.scss']
 })
-export class FormFieldErrorListComponent implements OnInit, OnDestroy, DoCheck {
+export class FormFieldErrorListComponent implements OnDestroy, DoCheck {
 
   @HostBinding('style.display') get _display() {
     return this.showErrors ? 'block' : 'none'
@@ -262,7 +262,7 @@ export class FormFieldErrorListComponent implements OnInit, OnDestroy, DoCheck {
         let resultRecords: IErrorRecord[] = []
 
         if (!this.showErrors) {
-
+          // TODO: Implement
         } else {
           let errs = [ ...records ]
 
@@ -289,8 +289,6 @@ export class FormFieldErrorListComponent implements OnInit, OnDestroy, DoCheck {
       }))
       .pipe(shareReplay(1))
   }
-
-  ngOnInit() { }
 
   ngOnDestroy() {
     this._valueChangeSub.unsubscribe()
@@ -319,7 +317,7 @@ export class FormFieldErrorListComponent implements OnInit, OnDestroy, DoCheck {
   private _updateControlErrors(errors: ValidationErrors | null): void {
     const errs: IErrorRecord[] = []
     for (const validatorName in errors) {
-      if (errors.hasOwnProperty(validatorName)) {
+      if (Object.prototype.hasOwnProperty.call(errors, validatorName)) {
         const error = errors[validatorName]
         const message = this._parseMessage(this._defaultMessages[validatorName], error)
         const external = false
@@ -418,7 +416,7 @@ export class FormFieldErrorListComponent implements OnInit, OnDestroy, DoCheck {
     }
 
     for (const validatorName in errsMap) {
-      if (errsMap.hasOwnProperty(validatorName)) {
+      if (Object.prototype.hasOwnProperty.call(errsMap, validatorName)) {
         errs.push(errsMap[validatorName])
       }
     }
@@ -444,7 +442,7 @@ export class FormFieldErrorListComponent implements OnInit, OnDestroy, DoCheck {
     }
     const arr = validatorName.split(' ').filter(v => v.trim().length > 0)
     for (const item of arr) {
-      if (errors.hasOwnProperty(item)) {
+      if (Object.prototype.hasOwnProperty.call(errors, item)) {
         return true
       }
     }

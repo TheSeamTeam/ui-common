@@ -1,0 +1,36 @@
+.vertical-list-filter--list {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-content: center;
+}
+
+.vertical-list-filter--icon {
+  cursor: pointer;
+}
+
+.vertical-list-filter--item {
+  cursor: pointer;
+  padding-left: 3px;
+  padding-right: 3px;
+  border: 2px solid transparent;
+
+  &.is-selected {
+    border-color: var(--primary);
+  }
+}
+
+.vertical-list-filter--clear {
+  cursor: pointer;
+  padding-top: 3px;
+  border: 2px solid transparent;
+}
+
+.vertical-list-filter--clear-icon {
+  width: 0.875em;
+  display: inline-block;
+  font-size: inherit;
+  height: 1.5em;
+  overflow: visible;
+  vertical-align: -0.125em;
+}

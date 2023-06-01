@@ -4,6 +4,7 @@ import { Component, NgModule } from '@angular/core'
 import { TheSeamDynamicComponentLoaderModule } from '../dynamic-component-loader.module'
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'lazy-comp',
   template: `Lazy Component Works.`,
 })

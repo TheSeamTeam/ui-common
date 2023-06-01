@@ -6,7 +6,7 @@ describe('PdfRendererService', () => {
   let service: PdfRendererService
 
   beforeEach(() => {
-    TestBed.configureTestingModule({})
+    TestBed.configureTestingModule({ teardown: { destroyAfterEach: false } })
     service = TestBed.inject(PdfRendererService)
   })
 

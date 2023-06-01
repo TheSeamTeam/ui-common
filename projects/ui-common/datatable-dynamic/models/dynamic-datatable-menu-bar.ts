@@ -1,6 +1,6 @@
-import { DynamicValue } from '@theseam/ui-common/dynamic'
+import { DynamicValue, DynamicValueBaseType } from '@theseam/ui-common/dynamic'
 
-export interface DynamicDatatableMenuBarItem<C = any> {
+export interface DynamicDatatableMenuBarItem<C extends DynamicValueBaseType = any> {
   /**
    * Styles added to the root cell elements `style` attribute.
    */

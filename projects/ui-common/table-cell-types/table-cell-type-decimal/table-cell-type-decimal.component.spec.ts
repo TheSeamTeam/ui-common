@@ -8,8 +8,9 @@ describe('TableCellTypeDecimalComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ TableCellTypeDecimalComponent ]
-    })
+    declarations: [TableCellTypeDecimalComponent],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents()
   }))
 

@@ -7,7 +7,6 @@ import { TickHelper } from '@theseam/ui-common/testing'
 import { pollingTicker } from './polling-ticker'
 
 describe('pollingTicker', () => {
-
   describe('sync action', () => {
     it('should skip first emit if emitOnInit = false', fakeAsync(() => {
       let count = 0
@@ -26,7 +25,7 @@ describe('pollingTicker', () => {
 
     it('should not emit before polling interval', fakeAsync(() => {
       let result
-      const pt$ = pollingTicker(() => 'test', 100, undefined, { emitOnInit: false }).subscribe((v) => { result = v })
+      const pt$ = pollingTicker(() => 'test', 100, undefined, { emitOnInit: false }).subscribe(v => { result = v })
       tick(99)
       expect(result).toBeUndefined()
       pt$.unsubscribe()
@@ -34,7 +33,7 @@ describe('pollingTicker', () => {
 
     it('should emit at polling interval', fakeAsync(() => {
       let result: any
-      const pt$ = pollingTicker(() => 'test', 100, undefined, { emitOnInit: false }).subscribe((v) => { result = v })
+      const pt$ = pollingTicker(() => 'test', 100, undefined, { emitOnInit: false }).subscribe(v => { result = v })
       tick(100)
       expect(result).toBe('test')
       pt$.unsubscribe()
@@ -50,7 +49,6 @@ describe('pollingTicker', () => {
   })
 
   describe('observable action', () => {
-
     describe('action completes immediately', () => {
       it('should skip first emit if emitOnInit = false', fakeAsync(() => {
         let count = 0
@@ -69,7 +67,7 @@ describe('pollingTicker', () => {
 
       it('should not emit before polling interval', fakeAsync(() => {
         let result
-        const pt$ = pollingTicker(() => of('api result'), 100, undefined, { emitOnInit: false }).subscribe((v) => { result = v })
+        const pt$ = pollingTicker(() => of('api result'), 100, undefined, { emitOnInit: false }).subscribe(v => { result = v })
         tick(99)
         expect(result).toBeUndefined()
         pt$.unsubscribe()
@@ -77,7 +75,7 @@ describe('pollingTicker', () => {
 
       it('should emit at polling interval', fakeAsync(() => {
         let result: any
-        const pt$ = pollingTicker(() => of('api result'), 100, undefined, { emitOnInit: false }).subscribe((v) => { result = v })
+        const pt$ = pollingTicker(() => of('api result'), 100, undefined, { emitOnInit: false }).subscribe(v => { result = v })
         tick(100)
         expect(result).toBe('api result')
         pt$.unsubscribe()
@@ -129,10 +127,9 @@ describe('pollingTicker', () => {
         pt$.unsubscribe()
       }))
     })
-
   })
 
-  describe('ticker only', ()  => {
+  describe('ticker only', () => {
     it('should emit on ticker emit', fakeAsync(() => {
       let count = 0
       const ticker = new Subject<void>()
@@ -164,5 +161,4 @@ describe('pollingTicker', () => {
       pt$.unsubscribe()
     }))
   })
-
 })

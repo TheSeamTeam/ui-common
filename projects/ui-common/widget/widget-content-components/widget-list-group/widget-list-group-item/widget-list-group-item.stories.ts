@@ -1,6 +1,8 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular'
+import { applicationConfig } from '@storybook/angular/dist/client/decorators'
 
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { importProvidersFrom } from '@angular/core'
+import { provideAnimations } from '@angular/platform-browser/animations'
 import { RouterModule } from '@angular/router'
 
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons'
@@ -23,23 +25,29 @@ export default {
   title: 'Widget/Components/Content/List Group/Item',
   component: WidgetListGroupItemComponent,
   decorators: [
+    applicationConfig({
+      providers: [
+        provideAnimations(),
+        importProvidersFrom(
+          RouterModule.forRoot([], { useHash: true }),
+        ),
+      ],
+    }),
     moduleMetadata({
       imports: [
-        BrowserAnimationsModule,
-        RouterModule.forRoot([], { useHash: true }),
         TheSeamWidgetModule,
         TheSeamButtonsModule,
-        TheSeamIconModule
-      ]
-    })
-  ]
+        TheSeamIconModule,
+      ],
+    }),
+  ],
 } as Meta
 
-export const Basic: Story = (args) => ({
+export const Basic: Story = args => ({
   props: {
     ...args,
     icon: faWrench,
-    faEnvelope: faEnvelope,
+    faEnvelope,
   },
   template: `
     <div class="p-1" style="max-height: 400px; width: 500px;">
@@ -50,14 +58,14 @@ export const Basic: Story = (args) => ({
           <seam-widget-list-group-item label="Item 3"></seam-widget-list-group-item>
         </seam-widget-list-group>
       </seam-widget>
-    </div>`
+    </div>`,
 })
 
-export const Link: Story = (args) => ({
+export const Link: Story = args => ({
   props: {
     ...args,
     icon: faWrench,
-    faEnvelope: faEnvelope,
+    faEnvelope,
   },
   template: `
     <div class="p-1" style="max-height: 400px; width: 500px;">
@@ -68,14 +76,14 @@ export const Link: Story = (args) => ({
           <a seamWidgetListGroupItem label="Item 3">Item 3</a>
         </seam-widget-list-group>
       </seam-widget>
-    </div>`
+    </div>`,
 })
 
-export const Button: Story = (args) => ({
+export const Button: Story = args => ({
   props: {
     ...args,
     icon: faWrench,
-    faEnvelope: faEnvelope,
+    faEnvelope,
   },
   template: `
     <div class="p-1" style="max-height: 400px; width: 500px;">
@@ -86,14 +94,14 @@ export const Button: Story = (args) => ({
           <button seamWidgetListGroupItem label="Item 3">Item 3</button>
         </seam-widget-list-group>
       </seam-widget>
-    </div>`
+    </div>`,
 })
 
-export const LabelOnly: Story = (args) => ({
+export const LabelOnly: Story = args => ({
   props: {
     ...args,
     icon: faWrench,
-    faEnvelope: faEnvelope,
+    faEnvelope,
   },
   template: `
     <div class="p-1" style="max-height: 400px; width: 500px;">
@@ -102,17 +110,17 @@ export const LabelOnly: Story = (args) => ({
           <seam-widget-list-group-item [label]="label"></seam-widget-list-group-item>
         </seam-widget-list-group>
       </seam-widget>
-    </div>`
+    </div>`,
 })
 LabelOnly.args = {
-  label: 'Example Label'
+  label: 'Example Label',
 }
 
-export const IconWithLabel: Story = (args) => ({
+export const IconWithLabel: Story = args => ({
   props: {
     ...args,
     icon: faWrench,
-    faEnvelope: faEnvelope,
+    faEnvelope,
   },
   template: `
     <div class="p-1" style="max-height: 400px; width: 500px;">
@@ -121,25 +129,25 @@ export const IconWithLabel: Story = (args) => ({
           <seam-widget-list-group-item [icon]="itemIcon" [label]="label"></seam-widget-list-group-item>
         </seam-widget-list-group>
       </seam-widget>
-    </div>`
+    </div>`,
 })
 LabelOnly.args = {
   label: 'Example Label',
-  itemIcon: 'fa-icon'
+  itemIcon: 'fa-icon',
 }
 LabelOnly.argTypes = {
   itemIcon: {
     options: Object.keys(iconLookup),
     mapping: iconLookup,
-    control: { type: 'select' }
+    control: { type: 'select' },
   },
 }
 
-export const SecondaryIcon: Story = (args) => ({
+export const SecondaryIcon: Story = args => ({
   props: {
     ...args,
     icon: faWrench,
-    faEnvelope: faEnvelope,
+    faEnvelope,
   },
   template: `
     <div class="p-1" style="max-height: 400px; width: 500px;">
@@ -152,21 +160,21 @@ export const SecondaryIcon: Story = (args) => ({
           ></seam-widget-list-group-item>
         </seam-widget-list-group>
       </seam-widget>
-    </div>`
+    </div>`,
 })
 SecondaryIcon.args = {
   itemIcon: 'fa-icon',
-  secondaryIcon: 'img'
+  secondaryIcon: 'img',
 }
 SecondaryIcon.argTypes = {
   itemIcon: {
     options: Object.keys(iconLookup),
     mapping: iconLookup,
-    control: { type: 'select' }
+    control: { type: 'select' },
   },
   secondaryIcon: {
     options: Object.keys(iconLookup),
     mapping: iconLookup,
-    control: { type: 'select' }
+    control: { type: 'select' },
   },
 }

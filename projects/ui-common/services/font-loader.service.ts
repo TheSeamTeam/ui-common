@@ -25,8 +25,6 @@ export type TheSeamFontEvents =
 })
 export class TheSeamFontLoaderService {
 
-  constructor() { }
-
   /**
    * Since this method is just a wrapper for webfontloader right now it accepts
    * anything webfontloader's config accepts, so the event callbacks can still

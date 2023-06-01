@@ -1,10 +1,12 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular'
+import { applicationConfig } from '@storybook/angular/dist/client/decorators'
 
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { provideAnimations } from '@angular/platform-browser/animations'
 
 import { CSVDataExporter, XLSXDataExporter } from '@theseam/ui-common/data-exporter'
-import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
+import { ExportersDataEvaluator, JexlEvaluator, THESEAM_DYNAMIC_VALUE_EVALUATOR } from '@theseam/ui-common/dynamic'
 import { StoryToastrService } from '@theseam/ui-common/story-helpers'
+import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
 import { ToastrService } from 'ngx-toastr'
 
 import { TheSeamDatatableModule } from '../datatable.module'
@@ -14,31 +16,37 @@ export default {
   title: 'Datatable/Components',
   component: DatatableExportButtonComponent,
   decorators: [
+    applicationConfig({
+      providers: [
+        provideAnimations(),
+        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
+        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: ExportersDataEvaluator, multi: true },
+      ],
+    }),
     moduleMetadata({
       imports: [
-        BrowserAnimationsModule,
         TheSeamDatatableModule,
-        TheSeamTableCellTypesModule
+        TheSeamTableCellTypesModule,
       ],
       providers: [
         { provide: ToastrService, useClass: StoryToastrService },
-      ]
-    })
+      ],
+    }),
   ],
   parameters: {
     layout: 'fullscreen',
     docs: {
       iframeHeight: '400px',
-    }
-  }
+    },
+  },
 } as Meta
 
-export const Exports: Story = (args) => ({
+export const Exports: Story = args => ({
   props: {
     columns: [
       { prop: 'name', name: 'Name' },
       { prop: 'age', name: 'Age' },
-      { prop: 'color', name: 'Color' }
+      { prop: 'color', name: 'Color' },
     ],
     rows: [
       { name: 'Mark', age: 27, color: 'blue' },
@@ -46,8 +54,8 @@ export const Exports: Story = (args) => ({
     ],
     exporters: [
       new CSVDataExporter(),
-      new XLSXDataExporter()
-    ]
+      new XLSXDataExporter(),
+    ],
   },
   template: `
     <div class="vh-100 d-flex flex-column p-2">
@@ -62,5 +70,5 @@ export const Exports: Story = (args) => ({
         </seam-datatable-menu-bar>
 
       </seam-datatable>
-    </div>`
+    </div>`,
 })

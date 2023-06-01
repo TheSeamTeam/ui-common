@@ -1,5 +1,5 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
-import { AfterViewInit, Directive, ElementRef, Input, OnDestroy, OnInit } from '@angular/core'
+import { AfterViewInit, Directive, ElementRef, Input, OnDestroy } from '@angular/core'
 
 import OverlayScrollbars from 'overlayscrollbars'
 
@@ -11,7 +11,7 @@ import type { IOverlayScrollbarsConfig } from './overlay-scrollbars-config-model
   selector: '[seamOverlayScrollbar]',
   exportAs: 'seamOverlayScrollbar'
 })
-export class OverlayScrollbarDirective implements OnInit, AfterViewInit, OnDestroy {
+export class OverlayScrollbarDirective implements AfterViewInit, OnDestroy {
   static ngAcceptInputType_seamOverlayScrollbar: IOverlayScrollbarsConfig | undefined | null | ''
 
   private _disabled = false
@@ -48,8 +48,6 @@ export class OverlayScrollbarDirective implements OnInit, AfterViewInit, OnDestr
     private _ref: ElementRef,
     private _scrollbars: OverlayScrollbarsService
   ) { }
-
-  ngOnInit() { }
 
   ngAfterViewInit() {
     if (!this._disabled) {

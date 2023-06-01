@@ -31,8 +31,8 @@
       routerLinkActive="active"
       [routerLinkActiveOptions]="{ exact: true }"
       [children]="$any(child)?.children"
-      [active]="$any(child).__state.active"
-      [expanded]="$any(child).__state.expanded">
+      [active]="$any(child).__state?.active"
+      [expanded]="$any(child).__state?.expanded">
     </seam-side-nav-item>
   </div>
 </ng-container>

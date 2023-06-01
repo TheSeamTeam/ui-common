@@ -60,7 +60,6 @@ describe('subscriberCount', () => {
     sub.unsubscribe()
     expect(win.__subscriberCounts['abc']).toBe(0)
   }))
-
 })
 
 /**

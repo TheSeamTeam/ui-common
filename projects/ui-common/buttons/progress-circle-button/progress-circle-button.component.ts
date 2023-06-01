@@ -7,14 +7,12 @@ import { InputBoolean, InputNumber } from '@theseam/ui-common/core'
 import { ButtonComponent } from '../button/button.component'
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'button[seamProgressCircleButton]',
   templateUrl: './progress-circle-button.component.html',
   styleUrls: ['./progress-circle-button.component.scss'],
   exportAs: 'seamProgressCircleButton',
-  // tslint:disable-next-line:use-input-property-decorator
   inputs: [ 'disabled', 'theme', 'size' ],
-  // tslint:disable-next-line:use-host-property-decorator
   host: {
     '[attr.type]': 'type',
     'class': 'btn',
@@ -28,9 +26,9 @@ export class ProgressCircleButtonComponent extends ButtonComponent implements On
   static ngAcceptInputType_hiddenOnEmpty: BooleanInput
   static ngAcceptInputType_percentage: NumberInput
 
-  @Input() @InputBoolean() fillBackground: boolean = false
-  @Input() @InputBoolean() showText: boolean = false
-  @Input() @InputBoolean() hiddenOnEmpty: boolean = true
+  @Input() @InputBoolean() fillBackground = false
+  @Input() @InputBoolean() showText = false
+  @Input() @InputBoolean() hiddenOnEmpty = true
 
   @Input() @InputNumber(0) percentage = 100
 

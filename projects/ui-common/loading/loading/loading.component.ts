@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core'
+import { Component, Input } from '@angular/core'
 
 import { NgxLoadingConfig } from '@marklb/ngx-loading'
 
@@ -10,7 +10,7 @@ import type { TheSeamLoadingTheme } from '../loading.models'
   templateUrl: './loading.component.html',
   styleUrls: ['./loading.component.scss']
 })
-export class LoadingComponent implements OnInit {
+export class LoadingComponent {
 
   @Input()
   set theme(value: TheSeamLoadingTheme) {
@@ -21,9 +21,5 @@ export class LoadingComponent implements OnInit {
     }
   }
   _theme: NgxLoadingConfig = defaultThemeConfig
-
-  constructor() { }
-
-  ngOnInit() { }
 
 }

@@ -6,8 +6,9 @@ import { TabbedService } from './tabbed.service'
 describe('Service: Tabbed', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [TabbedService]
-    })
+    providers: [TabbedService],
+    teardown: { destroyAfterEach: false }
+})
   })
 
   it('should ...', inject([TabbedService], (service: TabbedService) => {

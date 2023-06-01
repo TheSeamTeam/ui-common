@@ -5,8 +5,6 @@ export class FakeTheSeamLoadingOverlayService {
 
   private _enabled = false
 
-  constructor() { }
-
   get enabled(): boolean {
     return this._enabled
   }

@@ -1,4 +1,4 @@
-import { FormControl } from '@angular/forms'
+import { UntypedFormControl } from '@angular/forms'
 import {
   FeatureCollection,
 } from 'geojson'
@@ -7,22 +7,22 @@ import { noKinksValidator } from './no-kinks.validator'
 
 describe('noKinksValidator', () => {
   it('should be valid if value is null', () => {
-    const control = new FormControl(null, [ noKinksValidator() ])
+    const control = new UntypedFormControl(null, [ noKinksValidator() ])
     expect(control.valid).toBe(true)
   })
 
   it('should be valid if value is undefined', () => {
-    const control = new FormControl(undefined, [ noKinksValidator() ])
+    const control = new UntypedFormControl(undefined, [ noKinksValidator() ])
     expect(control.valid).toBe(true)
   })
 
   it('should be valid if value is empty string', () => {
-    const control = new FormControl('', [ noKinksValidator() ])
+    const control = new UntypedFormControl('', [ noKinksValidator() ])
     expect(control.valid).toBe(true)
   })
 
   it('should be valid if value is a value that is not a FeatureCollection', () => {
-    const control = new FormControl('a', [ noKinksValidator() ])
+    const control = new UntypedFormControl('a', [ noKinksValidator() ])
     expect(control.valid).toBe(true)
   })
 
@@ -49,7 +49,7 @@ describe('noKinksValidator', () => {
           },
         ],
       }
-      const control = new FormControl(featureCollection, [ noKinksValidator() ])
+      const control = new UntypedFormControl(featureCollection, [ noKinksValidator() ])
       expect(control.valid).toBe(true)
     })
 
@@ -76,7 +76,7 @@ describe('noKinksValidator', () => {
           },
         ],
       }
-      const control = new FormControl(featureCollection, [ noKinksValidator() ])
+      const control = new UntypedFormControl(featureCollection, [ noKinksValidator() ])
       expect(control.valid).toBe(false)
     })
   })
@@ -105,7 +105,7 @@ describe('noKinksValidator', () => {
         ],
       }
       const value = JSON.stringify(featureCollection)
-      const control = new FormControl(value, [ noKinksValidator() ])
+      const control = new UntypedFormControl(value, [ noKinksValidator() ])
       expect(control.valid).toBe(true)
     })
   })
@@ -134,7 +134,7 @@ describe('noKinksValidator', () => {
       ],
     }
     const value = JSON.stringify(featureCollection)
-    const control = new FormControl(value, [ noKinksValidator() ])
+    const control = new UntypedFormControl(value, [ noKinksValidator() ])
     expect(control.valid).toBe(false)
   })
 })

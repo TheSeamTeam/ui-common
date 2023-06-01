@@ -2,6 +2,7 @@ export * from './directives/base-layout-content-footer.directive'
 export * from './directives/base-layout-content-header.directive'
 export * from './directives/base-layout-content.directive'
 export * from './directives/base-layout-nav-toggle.directive'
+export * from './directives/base-layout-side-bar-footer.directive'
 export * from './directives/base-layout-side-bar.directive'
 export * from './directives/base-layout-top-bar.directive'
 

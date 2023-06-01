@@ -27,8 +27,9 @@ describe('mergeTplAndInpColumns', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ]
-    })
+    declarations: [],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents()
   }))
 

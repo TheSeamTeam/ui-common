@@ -10,23 +10,19 @@ import { InputBoolean } from '@theseam/ui-common/core'
 
 import { ButtonComponent } from '../button/button.component'
 
-
 export const TOGGLE_BUTTON_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
-  // tslint:disable-next-line:no-use-before-declare
   useExisting: forwardRef(() => ToggleButtonComponent),
   multi: true,
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'button[seamToggleButton]',
   templateUrl: './toggle-button.component.html',
   styleUrls: ['./toggle-button.component.scss'],
   exportAs: 'seamToggleButton',
-  // tslint:disable-next-line:use-input-property-decorator
   inputs: [ 'disabled', 'theme', 'size' ],
-  // tslint:disable-next-line:use-host-property-decorator
   host: {
     '[attr.type]': 'type',
     'class': 'btn',
@@ -39,16 +35,17 @@ export const TOGGLE_BUTTON_VALUE_ACCESSOR: any = {
 export class ToggleButtonComponent extends ButtonComponent implements OnDestroy, ControlValueAccessor {
   static ngAcceptInputType_val: BooleanInput
 
-  // tslint:disable-next-line:no-input-rename
-  @Input('value') @InputBoolean() val: boolean = false
+  // eslint-disable-next-line @angular-eslint/no-input-rename
+  @Input('value') @InputBoolean() val = false
 
+  // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() readonly change = new EventEmitter<boolean>()
 
   onChange: any
   onTouched: any
 
   @HostBinding('class.active')
-  get _activeCssClass() { return this.value ? coerceBooleanProperty(this.value) : false}
+  get _activeCssClass() { return this.value ? coerceBooleanProperty(this.value) : false }
 
   constructor(
     readonly _elementRef: ElementRef,

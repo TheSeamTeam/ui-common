@@ -87,7 +87,7 @@ export function pollingTicker<R>(
           }
           actionSub = actionResult.subscribe(
             (v: R) => { subscriber.next(v); if (timer) { timer.reset() } },
-            (err) => { subscriber.error(err) },
+            err => { subscriber.error(err) },
             () => {
               actionSub = null
               if (timer) { timer.start() }

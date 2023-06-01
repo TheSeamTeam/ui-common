@@ -1,9 +1,11 @@
 import { animate, style, transition, trigger } from '@angular/animations'
 import { Component, ContentChildren, Input, OnDestroy, OnInit, QueryList } from '@angular/core'
-import { faAngleLeft, faAngleRight, faPause, faPlay } from '@fortawesome/free-solid-svg-icons'
+import { BooleanInput, NumberInput } from '@angular/cdk/coercion'
 import { BehaviorSubject, combineLatest, interval, Observable, Subject } from 'rxjs'
 import { filter, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators'
 
+import { faAngleLeft, faAngleRight, faPause, faPlay } from '@fortawesome/free-solid-svg-icons'
+import { InputBoolean, InputNumber } from '@theseam/ui-common/core'
 import { notNullOrUndefined } from '@theseam/ui-common/utils'
 
 import { TheSeamCarouselSlideDirective } from './carousel-slide.directive'
@@ -19,27 +21,34 @@ import { TheSeamCarouselSlideDirective } from './carousel-slide.directive'
         animate(250, style({ opacity: '1', height: '*' })),
       ]),
     ])
-  ]
+  ],
 })
 export class TheSeamCarouselComponent implements OnInit, OnDestroy {
+  static ngAcceptInputType_slideInterval: NumberInput
+  static ngAcceptInputType_autoPlay: BooleanInput
+  static ngAcceptInputType_pauseOnHover: BooleanInput
+  static ngAcceptInputType_pauseOnFocus: BooleanInput
+  static ngAcceptInputType_showPager: BooleanInput
+  static ngAcceptInputType_showNavButtons: BooleanInput
+  static ngAcceptInputType_showPauseButton: BooleanInput
 
-  faAngleRight = faAngleRight
-  faAngleLeft = faAngleLeft
-  faPause = faPause
-  faPlay = faPlay
+  readonly faAngleRight = faAngleRight
+  readonly faAngleLeft = faAngleLeft
+  readonly faPause = faPause
+  readonly faPlay = faPlay
 
   /**
    * Duration in ms that slide is displayed before paging.
    * Only applicable when `autoPlay === true`.
    * Defaults to 10000ms.
    */
-  @Input() slideInterval: number = 10000
+  @Input() @InputNumber(10000) slideInterval = 10000
 
   /**
    * When `true`, carousel will page automatically.
    * Defaults to `true`.
    */
-  @Input() autoPlay: boolean = true
+  @Input() @InputBoolean() autoPlay = true
 
   /**
    * When `true`, will pause automatic paging when user mouses over carousel.
@@ -47,7 +56,7 @@ export class TheSeamCarouselComponent implements OnInit, OnDestroy {
    * Only applicable when `autoPlay === true`.
    * Defaults to `true`.
    */
-  @Input() pauseOnHover: boolean = true
+  @Input() @InputBoolean() pauseOnHover = true
 
   /**
    * When `true`, will pause automatic paging when user focuses in on item in carousel.
@@ -55,25 +64,25 @@ export class TheSeamCarouselComponent implements OnInit, OnDestroy {
    * Only applicable when `autoPlay === true`.
    * Defaults to `true`.
    */
-  @Input() pauseOnFocus: boolean = true
+  @Input() @InputBoolean() pauseOnFocus = true
 
   /**
    * When `true`, will show pager row at the bottom of the carousel with clickable buttons to navigate directly to a page.
    * Defaults to `true`.
    */
-  @Input() showPager: boolean = true
+  @Input() @InputBoolean() showPager = true
 
   /**
    * When `true`, will show left and right nav button on either side of the carousel to navigate through pages.
    * Defaults to `true`.
    */
-  @Input() showNavButtons: boolean = true
+  @Input() @InputBoolean() showNavButtons = true
 
   /**
    * When `true`, will show pause/play button to stop/restart automatic paging.
    * Defaults to `true`.
    */
-  @Input() showPauseButton: boolean = true
+  @Input() @InputBoolean() showPauseButton = true
 
   @ContentChildren(TheSeamCarouselSlideDirective)
   get slides(): QueryList<TheSeamCarouselSlideDirective> | undefined {
@@ -82,21 +91,21 @@ export class TheSeamCarouselComponent implements OnInit, OnDestroy {
   set slides(value: QueryList<TheSeamCarouselSlideDirective> | undefined) {
     this._slides.next(value)
   }
-  private _slides = new BehaviorSubject<QueryList<TheSeamCarouselSlideDirective> | undefined>(undefined)
-  public slides$ = this._slides.asObservable()
+  private readonly _slides = new BehaviorSubject<QueryList<TheSeamCarouselSlideDirective> | undefined>(undefined)
+  public readonly slides$ = this._slides.asObservable()
 
-  public activeSlide$: Observable<any | undefined>
+  public readonly activeSlide$: Observable<any | undefined>
 
-  private _pollActiveIndex = new BehaviorSubject<number>(0)
-  public activeIndex$ = this._pollActiveIndex.asObservable()
+  private readonly _pollActiveIndex = new BehaviorSubject<number>(0)
+  public readonly activeIndex$ = this._pollActiveIndex.asObservable()
 
-  private _carouselPaused = new BehaviorSubject<boolean>(false)
-  public carouselPaused$ = this._carouselPaused.asObservable()
+  private readonly _carouselPaused = new BehaviorSubject<boolean>(false)
+  public readonly carouselPaused$ = this._carouselPaused.asObservable()
 
-  private _carouselStopped = new BehaviorSubject<boolean>(false)
-  public carouselStopped$ = this._carouselStopped.asObservable()
+  private readonly _carouselStopped = new BehaviorSubject<boolean>(false)
+  public readonly carouselStopped$ = this._carouselStopped.asObservable()
 
-  private _resetInterval = new Subject()
+  private readonly _resetInterval = new Subject<void>()
 
   constructor() {
     this.activeSlide$ = this._pollActiveIndex.pipe(
@@ -111,7 +120,7 @@ export class TheSeamCarouselComponent implements OnInit, OnDestroy {
     combineLatest([this.carouselPaused$, this.carouselStopped$]).pipe(
       tap(([paused, stopped]) => {
         if (paused || stopped) {
-          this._resetInterval.next()
+          this._resetInterval.next(undefined)
         } else {
           this._startInterval()
         }
@@ -120,14 +129,14 @@ export class TheSeamCarouselComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this._resetInterval.next()
+    this._resetInterval.next(undefined)
   }
 
   private _startInterval() {
     if (this.autoPlay) {
       interval(this.slideInterval).pipe(
         takeUntil(this._resetInterval),
-        tap(int => {
+        tap(() => {
           this.pageCarousel(1)
         })
       ).subscribe()

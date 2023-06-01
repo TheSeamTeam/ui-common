@@ -2,9 +2,9 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular'
 
 import { CommonModule } from '@angular/common'
-import { Component, Inject, NgModule } from '@angular/core'
+import { Component, importProvidersFrom, Inject, NgModule } from '@angular/core'
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations'
 import { ActivatedRoute, Route, Router, RouterModule } from '@angular/router'
 import { Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
@@ -14,7 +14,6 @@ import { TheSeamDynamicRouterModule } from '../dynamic-router.module'
 import { HierarchyLevelResolver } from '../resolvers/hierarchy-level.resolver'
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'sub-name-ex',
   template: `<div>Sub Name: {{ name$ | async }}</div><router-outlet></router-outlet>`,
 })
@@ -25,13 +24,12 @@ class StorySubNameExComponent {
   constructor(
     private _route: ActivatedRoute
   ) {
-    console.log('sub-name-ex', this)
+    // console.log('sub-name-ex', this)
     this.name$ = this._route.data.pipe(map(v => v['name'] || undefined))
   }
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'name-ex',
   template: `
     <div>Name: {{ name$ | async }}</div>
@@ -46,17 +44,16 @@ class StoryNameExComponent {
     private _route: ActivatedRoute,
     private _router: Router
   ) {
-    console.log('name-ex', this)
+    // console.log('name-ex', this)
     this.name$ = this._route.data.pipe(map(v => v['name'] || undefined))
 
-    console.log('config', this._router.config)
-    console.log('config2', this._route.routeConfig)
+    // console.log('config', this._router.config)
+    // console.log('config2', this._route.routeConfig)
     // this._router.config.unshift(this._routes)
   }
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'story-ex-base',
   template: `
     URL: {{ _router.url }}
@@ -79,22 +76,21 @@ class StoryExBaseComponent {
     private _route: ActivatedRoute,
     public _router: Router
   ) {
-    console.log('this._route', this._route)
-    console.log('this._router', this._router)
+    // console.log('this._route', this._route)
+    // console.log('this._router', this._router)
   }
 
   public go() {
-    this._router.navigateByUrl(this._control.value)
+    if (this._control.value) {
+      this._router.navigateByUrl(this._control.value)
+    }
   }
 }
-
-
 
 // ////////////////////////////////////////////////////////////////////////////
 // Recursive Id Start
 // ////////////////////////////////////////////////////////////////////////////
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'recursive-id-start-1',
   template: `
     <div>
@@ -125,7 +121,6 @@ class RecursiveIdOneComponent {
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'recursive-id-start-2',
   template: `
     <div>
@@ -157,7 +152,6 @@ class RecursiveIdTwoComponent {
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'recursive-id-start-3',
   template: `
     <seam-hierarchy-router-outlet>
@@ -256,8 +250,6 @@ class RecursiveIdModule { }
 // Recursive Id End
 // ////////////////////////////////////////////////////////////////////////////
 
-
-
 @NgModule({
   declarations: [
     StorySubNameExComponent
@@ -278,15 +270,11 @@ class RecursiveIdModule { }
 })
 class LevelTwoModule { }
 
-
-
-
 //
 // Example
 //
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'ex-1',
   template: `
     <seam-hierarchy-router-outlet>
@@ -295,13 +283,12 @@ class LevelTwoModule { }
   `
 })
 class StoryEx1Component {
-  constructor() {
-    console.log('[StoryEx1Component]')
-  }
+  // constructor() {
+  //   console.log('[StoryEx1Component]')
+  // }
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'ex-2',
   template: `
     <seam-hierarchy-router-outlet>
@@ -311,13 +298,12 @@ class StoryEx1Component {
   `
 })
 class StoryEx2Component {
-  constructor() {
-    console.log('[StoryEx2Component]')
-  }
+  // constructor() {
+  //   console.log('[StoryEx2Component]')
+  // }
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'ex-2',
   template: `
     <seam-hierarchy-router-outlet>
@@ -326,12 +312,10 @@ class StoryEx2Component {
   `
 })
 class StoryEx3Component {
-  constructor() {
-    console.log('[StoryEx3Component]')
-  }
+  // constructor() {
+  //   console.log('[StoryEx3Component]')
+  // }
 }
-
-
 
 export default {
   title: 'Framework/Dynamic Router',
@@ -344,85 +328,98 @@ export default {
   ]
 } as Meta
 
-export const Recursive: Story = (args) => ({
+export const Recursive: Story = args => ({
+  applicationConfig: {
+    providers: [
+      provideAnimations(),
+      importProvidersFrom(
+        RouterModule.forRoot([
+          {
+            path: 'name-ex',
+            component: StoryNameExComponent,
+            data: {
+              name: 'Mark',
+            },
+            // loadChildren: () => Promise.resolve(LevelTwoModule)
+            loadChildren: () => of(LevelTwoModule),
+          }
+        ], { useHash: true }),
+      ),
+    ],
+  },
   moduleMetadata: {
     declarations: [
       StoryNameExComponent,
-      StoryExBaseComponent
+      StoryExBaseComponent,
     ],
     imports: [
-      BrowserAnimationsModule,
+      RouterModule,
       ReactiveFormsModule,
       TheSeamFormFieldModule,
       TheSeamDynamicRouterModule,
-      RouterModule.forRoot([
-        {
-          path: 'name-ex',
-          component: StoryNameExComponent,
-          data: {
-            name: 'Mark'
-          },
-          // loadChildren: () => Promise.resolve(LevelTwoModule)
-          loadChildren: () => of(LevelTwoModule)
-        }
-      ], { useHash: true })
     ],
     entryComponents: [
-      StoryNameExComponent
-    ]
+      StoryNameExComponent,
+    ],
   },
   props: { },
   template: `
     <story-ex-base></story-ex-base>
-  `
+  `,
 })
 
-export const Example: Story = (args) => ({
+export const Example: Story = args => ({
+  applicationConfig: {
+    providers: [
+      provideAnimations(),
+      importProvidersFrom(
+        RouterModule.forRoot([
+          {
+            path: '',
+            pathMatch: 'full',
+            redirectTo: '/ex-1',
+          },
+          {
+            path: 'ex-1',
+            component: StoryEx1Component,
+            children: [
+              {
+                path: 'ex-2',
+                component: StoryEx2Component,
+                children: [
+                  {
+                    path: 'ex-3',
+                    component: StoryEx3Component,
+                  },
+                ],
+              },
+            ],
+          }
+        ], { useHash: true }),
+      ),
+    ],
+  },
   moduleMetadata: {
     declarations: [
       StoryEx1Component,
       StoryEx2Component,
-      StoryEx3Component
+      StoryEx3Component,
     ],
     imports: [
-      BrowserAnimationsModule,
+      RouterModule,
       ReactiveFormsModule,
       TheSeamFormFieldModule,
       TheSeamDynamicRouterModule,
-      RouterModule.forRoot([
-        {
-          path: '',
-          pathMatch: 'full',
-          redirectTo: '/ex-1',
-        },
-        {
-          path: 'ex-1',
-          component: StoryEx1Component,
-          children: [
-            {
-              path: 'ex-2',
-              component: StoryEx2Component,
-              children: [
-                {
-                  path: 'ex-3',
-                  component: StoryEx3Component
-                }
-              ]
-            }
-          ]
-        }
-      ], { useHash: true })
     ],
     entryComponents: [
 
-    ]
+    ],
   },
   props: { },
   template: `
     <router-outlet></router-outlet>
-  `
+  `,
 })
-
 
 // storiesOf('Framework/DynamicRouter', module)
 //   .addDecorator(withKnobs)
@@ -459,7 +456,6 @@ export const Example: Story = (args) => ({
 //       <story-ex-base></story-ex-base>
 //     `
 //   }))
-
 
 //   .add('Example', () => ({
 //     moduleMetadata: {

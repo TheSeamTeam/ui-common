@@ -9,8 +9,6 @@ export class TabbedService {
 
   private _tabGroups: { [groupName: string]: TabbedComponent[] } = {}
 
-  constructor() { }
-
   public registerTab(tab: TabbedComponent, groupName: string) {
     if (!this._tabGroups[groupName]) {
       this._tabGroups[groupName] = []

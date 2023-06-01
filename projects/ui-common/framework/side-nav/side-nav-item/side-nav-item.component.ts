@@ -12,6 +12,7 @@ import {
   Component,
   Host,
   HostBinding,
+  Inject,
   Input,
   OnDestroy,
   Optional,
@@ -27,7 +28,7 @@ import { InputBoolean, InputNumber } from '@theseam/ui-common/core'
 import type { SeamIcon } from '@theseam/ui-common/icon'
 import type { ThemeTypes } from '@theseam/ui-common/models'
 
-import { SideNavComponent } from '../side-nav.component'
+import { SideNavAccessor, THESEAM_SIDE_NAV_ACCESSOR } from '../side-nav-tokens'
 import { ISideNavItem } from '../side-nav.models'
 
 export interface SideNavItemBadgeTooltip {
@@ -56,7 +57,6 @@ const COMPACT_STATE = 'compact'
       transition(`${EXPANDED_STATE} <=> ${COLLAPSED_STATE}`, animate('0.2s ease-in-out')),
     ]),
 
-
     trigger('compactAnim', [
       // transition('* <=> *', [
       //   query(':enter', [
@@ -80,7 +80,6 @@ const COMPACT_STATE = 'compact'
       //   ], { optional: true })
       // ]),
 
-
     ])
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -93,7 +92,7 @@ export class SideNavItemComponent implements OnDestroy {
   static ngAcceptInputType_compact: BooleanInput
   static ngAcceptInputType_active: BooleanInput
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   readonly faAngleLeft = faAngleLeft
 
@@ -103,7 +102,7 @@ export class SideNavItemComponent implements OnDestroy {
 
   @Input() label: string | undefined | null
 
-  @Input() @InputBoolean() active: boolean = false
+  @Input() @InputBoolean() active = false
 
   @Input()
   set link(value: string | undefined | null) { this._link.next(value) }
@@ -115,9 +114,9 @@ export class SideNavItemComponent implements OnDestroy {
 
   @Input() children: ISideNavItem[] | undefined | null
 
-  @Input() @InputNumber(0) hierLevel: number = 0
+  @Input() @InputNumber(0) hierLevel = 0
 
-  @Input() @InputNumber(10) indentSize: number = 10
+  @Input() @InputNumber(10) indentSize = 10
 
   @Input()
   set expanded(value: boolean) { this._expanded.next(coerceBooleanProperty(value)) }
@@ -155,7 +154,7 @@ export class SideNavItemComponent implements OnDestroy {
           placement: value.placement || 'auto',
           disabled: typeof value?.disabled === 'boolean'
             ? value.disabled
-            : typeof value.tooltip === 'string' ? false : true
+            : typeof value.tooltip !== 'string'
         }
       }
     } else {
@@ -172,7 +171,7 @@ export class SideNavItemComponent implements OnDestroy {
   public readonly compactAnimState$: Observable<string>
 
   constructor(
-    private readonly _sideNav: SideNavComponent,
+    @Inject(THESEAM_SIDE_NAV_ACCESSOR) private readonly _sideNav: SideNavAccessor,
     @Optional() @SkipSelf() @Host() private readonly _parent?: SideNavItemComponent
   ) {
     this.childGroupAnimState$ = this.expanded$
@@ -183,7 +182,7 @@ export class SideNavItemComponent implements OnDestroy {
   }
 
   ngOnDestroy() {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

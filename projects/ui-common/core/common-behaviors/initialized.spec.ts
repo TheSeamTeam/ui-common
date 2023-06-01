@@ -6,6 +6,7 @@ describe('MixinHasInitialized', () => {
 
   beforeEach(() => {
     const classWithHasInitialized = mixinInitialized(EmptyClass)
+    // eslint-disable-next-line new-cap
     instance = new classWithHasInitialized()
   })
 
@@ -38,12 +39,12 @@ describe('MixinHasInitialized', () => {
       }
     }
 
-    instance.initialized.subscribe(onNotified)  // Subscription 1
-    instance.initialized.subscribe(onNotified)  // Subscription 2
+    instance.initialized.subscribe(onNotified) // Subscription 1
+    instance.initialized.subscribe(onNotified) // Subscription 2
 
     instance._markInitialized()
 
-    instance.initialized.subscribe(onNotified)  // Subscription 3
-    instance.initialized.subscribe(onNotified)  // Subscription 4
+    instance.initialized.subscribe(onNotified) // Subscription 3
+    instance.initialized.subscribe(onNotified) // Subscription 4
   })
 })

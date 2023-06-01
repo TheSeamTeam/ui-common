@@ -17,6 +17,7 @@ export class AssetReaderHelperService {
     @Optional() private _assetReader?: EncryptedAssetReader
   ) {
     if (isDevMode() && !this._assetReader) {
+      // eslint-disable-next-line no-console
       console.warn(`[EncryptedAssetLinkDirective] Unable to get encrypted files unless an EncryptedAssetReader is provided.`)
     }
   }
@@ -45,7 +46,7 @@ export class AssetReaderHelperService {
             const blob: Blob = v instanceof Blob ? v : v.blob
             return from(readFileAsync(blob))
               .pipe(
-                switchMap(_buf => !!_buf
+                switchMap(_buf => _buf
                   ? from(fileDataFromBuffer(_buf))
                   : throwError('Unable to read file.')
                 ),
@@ -66,6 +67,7 @@ export class AssetReaderHelperService {
             }
           }),
           catchError(err => {
+            // eslint-disable-next-line no-console
             if (isDevMode()) { console.error('err', err) }
             return of(false)
           }),

@@ -11,19 +11,13 @@
     "stripInternal": true,
     "lib": [
       "dom",
-      "es2018"
+      "ES2020"
     ],
     "paths": {
       "@theseam/ui-common/*": [
         "./*/public-api"
       ]
     }
-  },
-  "angularCompilerOptions": {
-    "skipTemplateCodegen": true,
-    "strictMetadataEmit": true,
-    "enableResourceInlining": true,
-    "enableIvy": true
   },
   "files": [
     "./public_api.ts"

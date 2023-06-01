@@ -17,11 +17,9 @@ export class WidgetTableComponent<T> {
   @Input() rows: T[] | undefined | null = []
   @Input() trackBy: TrackByFunction<T> | undefined | null
   @Input() size: 'sm' | 'md' | undefined | null = 'sm'
-  @Input() @InputBoolean() hasHeader: boolean = true
+  @Input() @InputBoolean() hasHeader = true
 
   @Output() readonly actionRefreshRequest = new EventEmitter<any>()
-
-  constructor() { }
 
   _actionRefreshRequest() {
     this.actionRefreshRequest.emit()

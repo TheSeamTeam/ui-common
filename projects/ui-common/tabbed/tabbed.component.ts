@@ -113,6 +113,4 @@ export class TabbedComponent implements OnInit, AfterContentInit, OnDestroy {
     }
   }
 
-
-
 }

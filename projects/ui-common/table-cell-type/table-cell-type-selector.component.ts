@@ -10,7 +10,6 @@ import {
   Input,
   isDevMode,
   OnChanges,
-  OnInit,
   Optional,
   SimpleChanges
 } from '@angular/core'
@@ -30,7 +29,7 @@ import { TABLE_CELL_DATA, TABLE_CELL_TYPE_MANIFEST } from './table-cell-type-tok
   styles: [],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TableCellTypeSelectorComponent<T extends string = any, D = any, V = any> implements OnInit, AfterViewInit, OnChanges {
+export class TableCellTypeSelectorComponent<T extends string = any, D = any, V = any> implements AfterViewInit, OnChanges {
 
   @Input() type: T | undefined | null
   @Input() value: V | undefined | null
@@ -38,7 +37,7 @@ export class TableCellTypeSelectorComponent<T extends string = any, D = any, V =
   @Input() row: D | undefined | null
   @Input() colData: TheSeamTableColumn<T, TableCellTypeConfig<T>> | undefined | null
 
-  public componentPortal?: ComponentPortal<{}>
+  public componentPortal?: ComponentPortal<unknown>
 
   private _data: TableCellData<T, TableCellTypeConfig<T>> | undefined
   private _dataChangeSubject?: Subject<TableCellDataChange<T, TableCellTypeConfig<T>>>
@@ -49,8 +48,6 @@ export class TableCellTypeSelectorComponent<T extends string = any, D = any, V =
     private _ref: ChangeDetectorRef,
     @Optional() @Inject(TABLE_CELL_TYPE_MANIFEST) manifests?: ITableCellTypeManifest[]
   ) { this._manifests = manifests || [] }
-
-  ngOnInit() { }
 
   ngAfterViewInit() {
     if (!this.type) {
@@ -80,7 +77,7 @@ export class TableCellTypeSelectorComponent<T extends string = any, D = any, V =
     }
   }
 
-  private _getComponent(name: string): ComponentType<{}> | undefined {
+  private _getComponent(name: string): ComponentType<unknown> | undefined {
     const manifest = this._manifests.find(m => m.name === name)
     return manifest ? manifest.component : undefined
   }
@@ -110,7 +107,7 @@ export class TableCellTypeSelectorComponent<T extends string = any, D = any, V =
   }
 
   private _tryUpdateDataProp(changes: SimpleChanges, prop: keyof Omit<TableCellData<T, TableCellTypeConfig<T>>, 'changed'>): boolean {
-    if (this._data && changes.hasOwnProperty(prop)) {
+    if (this._data && Object.prototype.hasOwnProperty.call(changes, prop)) {
       this._data[prop] = changes[prop].currentValue
       return true
     }

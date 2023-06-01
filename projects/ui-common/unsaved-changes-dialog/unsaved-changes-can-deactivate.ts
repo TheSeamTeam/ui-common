@@ -1,7 +1,6 @@
 import { Directive, HostListener, isDevMode } from '@angular/core'
 
 @Directive()
-// tslint:disable-next-line: directive-class-suffix
 export abstract class UnsavedChangesCanDeactivate {
 
   abstract unsavedChangesCanDeactivate(): boolean
@@ -10,6 +9,7 @@ export abstract class UnsavedChangesCanDeactivate {
     __unloadNotification($event: any) {
       if (isDevMode()) {
         if (!this.unsavedChangesCanDeactivate) {
+          // eslint-disable-next-line no-console
           console.warn('Route Component with [UnsavedChangesDialogGuard] guard must extend [UnsavedChangesCanDeactivate] class.')
         }
 

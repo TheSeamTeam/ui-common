@@ -1,9 +1,9 @@
-import { Inject, Injectable, isDevMode } from '@angular/core'
+import { Inject, Injectable, isDevMode, Optional } from '@angular/core'
 
 import { DynamicValue } from './models/dynamic-value'
+import { DynamicValueBaseType } from './models/dynamic-value-base-type'
 import { DynamicValueEvaluatableType } from './models/dynamic-value-evaluatable-type'
 import { IDynamicValueEvaluator } from './models/dynamic-value-evaluator'
-import { IDynamicValueType } from './models/dynamic-value-type'
 import { THESEAM_DYNAMIC_VALUE_EVALUATOR } from './tokens/dynamic-value-evaluator'
 
 /**
@@ -17,12 +17,13 @@ export class DynamicValueHelperService {
   private _evaluatorMap = new Map<string, IDynamicValueEvaluator>()
 
   constructor(
-    @Inject(THESEAM_DYNAMIC_VALUE_EVALUATOR) evaluators: IDynamicValueEvaluator[]
+    @Optional() @Inject(THESEAM_DYNAMIC_VALUE_EVALUATOR) evaluators?: IDynamicValueEvaluator[]
   ) {
     // Only one evaluator should exist for a type, so map them for faster lookup.
-    for (const e of evaluators) {
+    for (const e of evaluators || []) {
       if (isDevMode()) {
         if (this._evaluatorMap.has(e.type)) {
+          // eslint-disable-next-line no-console
           console.warn(`[DynamicValueHelperService] Multiple evaluators found for type '${e.type}'`)
         }
       }
@@ -35,7 +36,7 @@ export class DynamicValueHelperService {
    *
    * TODO: Improve context and return typing.
    */
-  public eval<R>(value: DynamicValue<R>, context?: any): Promise<R> {
+  public eval<R extends DynamicValueBaseType>(value: DynamicValue<R>, context?: any): Promise<R> {
     if (this.isEvaluatableType(value, true)) {
       return this._evalEvaluatable(value, context)
     }
@@ -53,7 +54,7 @@ export class DynamicValueHelperService {
    *
    * TODO: Improve context and return typing.
    */
-  public evalSync<R>(value: DynamicValue<R>, context?: any): R {
+  public evalSync<R extends DynamicValueBaseType>(value: DynamicValue<R>, context?: any): R {
     if (this.isEvaluatableType(value, false)) {
       return this._evalEvaluatableSync(value, context)
     }
@@ -64,7 +65,7 @@ export class DynamicValueHelperService {
   /**
    * Checks if a DynamicValue is a type that can be evaluated.
    */
-  public isEvaluatableType<R>(value: DynamicValue<R>, isAsync: boolean): value is DynamicValueEvaluatableType<R> {
+  public isEvaluatableType<R extends DynamicValueBaseType>(value: DynamicValue<R>, isAsync: boolean): value is DynamicValueEvaluatableType<R> {
     if (value === undefined || value === null) {
       return false
     }
@@ -73,11 +74,11 @@ export class DynamicValueHelperService {
       return false
     }
 
-    if (!(<DynamicValueEvaluatableType<R>>value).type) {
+    if (!(value as DynamicValueEvaluatableType<R>).type) {
       return false
     }
 
-    if (this._evaluatorMap.has((<DynamicValueEvaluatableType<R>>value).type)) {
+    if (this._evaluatorMap.has((value as DynamicValueEvaluatableType<R>).type)) {
       return true
     }
 
@@ -87,7 +88,7 @@ export class DynamicValueHelperService {
   /**
    *
    */
-  private _evalEvaluatable<R>(value: DynamicValueEvaluatableType<R>, context?: any): Promise<R> {
+  private _evalEvaluatable<R extends DynamicValueBaseType>(value: DynamicValueEvaluatableType<R>, context?: any): Promise<R> {
     const evaluator = this._evaluatorMap.get(value.type)
     if (!evaluator) {
       throw Error(`[DynamicValueHelperService] Evaluator '${value ? value.type : undefined}' not found.`)
@@ -101,7 +102,7 @@ export class DynamicValueHelperService {
   /**
    *
    */
-  private _evalEvaluatableSync<R>(value: DynamicValueEvaluatableType<R>, context?: any): R {
+  private _evalEvaluatableSync<R extends DynamicValueBaseType>(value: DynamicValueEvaluatableType<R>, context?: any): R {
     const evaluator = this._evaluatorMap.get(value.type)
     if (!evaluator) {
       throw Error(`[DynamicValueHelperService] Evaluator '${value ? value.type : undefined}' not found.`)

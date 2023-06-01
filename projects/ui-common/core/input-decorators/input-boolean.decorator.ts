@@ -12,18 +12,17 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion'
  * ```
  */
 export function InputBoolean() {
-  const cachedValueKey = Symbol()
-  // tslint:disable-next-line: only-arrow-functions
+  const cachedValueKey = Symbol('Cached boolean input value')
   return function(
     target: any,
     propertyKey: string,
     descriptor?: PropertyDescriptor
   ) {
     Object.defineProperty(target, propertyKey, {
-      set: function(value: boolean) {
+      set(value: boolean) {
         this[cachedValueKey] = coerceBooleanProperty(value)
       },
-      get: function() {
+      get() {
         return this[cachedValueKey]
       },
     })

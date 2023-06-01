@@ -9,7 +9,6 @@
     <div class="d-flex" style="min-height: 150px;">
       <button
         *ngIf="showNavButtons && slides.length > 1"
-        type="text"
         seamButton
         class="carousel-arrow px-2"
         (click)="pageCarousel(-1)"
@@ -18,14 +17,13 @@
       </button>
 
       <div *ngIf="activeSlide$ | async as slide" [@fadeInOut]="slide.template" class="flex-grow-1 d-flex align-items-center">
-        <div class="carousel-content w-100 py-1 px-2">
+        <div class="carousel-content w-100 py-1 px-2" [attr.data-slide-index]="activeIndex$ | async">
           <ng-template [ngTemplateOutlet]="$any(slide.template)"></ng-template>
         </div>
       </div>
 
       <button
         *ngIf="showNavButtons && slides.length > 1"
-        type="text"
         seamButton
         class="carousel-arrow px-2"
         (click)="pageCarousel(1)"
@@ -37,7 +35,6 @@
     <div class="carousel-pages d-flex flex-wrap justify-content-center mt-3 mx-auto" *ngIf="showPager && slides.length > 1">
       <button
         *ngFor="let q of slides; let i = index"
-        type="text"
         seamButton
         theme="light"
         class="carousel-page"
@@ -46,10 +43,9 @@
         [title]="'Go to slide ' + (i + 1)"></button>
     </div>
 
-    <div class="carousel-controls" *ngIf="showPauseButton">
+    <div class="carousel-controls" *ngIf="showPauseButton && autoPlay">
       <button
         *ngIf="slides.length > 1"
-        type="text"
         seamButton
         (click)="toggleCarouselStop()"
         [title]="(carouselStopped$ | async) ? 'Play' : 'Pause'">

@@ -76,6 +76,7 @@ export class OrderColumnsAlteration extends ColumnsAlteration<OrderColumnsAltera
         arrayMoveMutable(columns, currentIndex, c.index)
       } else {
         if (isDevMode()) {
+          // eslint-disable-next-line no-console
           console.warn(`Internal column could not be found after sorting. Was it lost during the sorting?`)
         }
       }
@@ -108,6 +109,7 @@ export class OrderColumnsAlteration extends ColumnsAlteration<OrderColumnsAltera
     return this.state.columns.filter(c => {
       if (!this._isColumnOrderRecordValid(c)) {
         if (isDevMode()) {
+          // eslint-disable-next-line no-console
           console.warn('Invalid column order record', c)
         }
         return false

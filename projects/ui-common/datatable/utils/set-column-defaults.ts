@@ -4,7 +4,7 @@ import { TheSeamDatatableColumn } from '../models/table-column'
 
 export function setColumnDefaults(columns: TheSeamDatatableColumn[]): void {
   for (const column of columns) {
-    if (!column.hasOwnProperty('hidden')) {
+    if (!Object.prototype.hasOwnProperty.call(column, 'hidden')) {
       column.hidden = false
     }
   }

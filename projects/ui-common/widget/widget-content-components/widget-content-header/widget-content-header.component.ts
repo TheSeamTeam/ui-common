@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core'
+import { Component, ViewEncapsulation } from '@angular/core'
 
 @Component({
   selector: 'seam-widget-content-header',
@@ -6,11 +6,4 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core'
   styleUrls: ['./widget-content-header.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class WidgetContentHeaderComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
-}
+export class WidgetContentHeaderComponent { }

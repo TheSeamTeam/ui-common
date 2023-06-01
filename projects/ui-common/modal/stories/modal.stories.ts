@@ -8,9 +8,7 @@ import { TheSeamScrollbarModule } from '@theseam/ui-common/scrollbar'
 import { TheSeamModalModule } from '../modal.module'
 import { Modal } from '../modal.service'
 
-
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'story-seam-modal-basic',
   styles: [],
   template: `<span>Example</span>`
@@ -18,7 +16,6 @@ import { Modal } from '../modal.service'
 class StoryseamModalBasicComponent { }
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'story-seam-modal-simple',
   styles: [],
   template: `
@@ -40,7 +37,6 @@ class StoryseamModalBasicComponent { }
 class StoryseamModalSimpleComponent { }
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'story-seam-modal-basic-example',
   styles: [],
   template: `
@@ -58,12 +54,12 @@ class StoryseamModalBasicExampleComponent {
   open() {
     const modalRef = this.modal.openFromComponent(StoryseamModalBasicComponent)
 
+    // eslint-disable-next-line no-console
     modalRef.afterClosed().subscribe(v => console.log('result', v))
   }
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'story-seam-modal-simple-example',
   styles: [],
   template: `
@@ -81,6 +77,7 @@ class StoryseamModalSimpleExampleComponent {
   open() {
     const modalRef = this.modal.openFromComponent(StoryseamModalSimpleComponent)
 
+    // eslint-disable-next-line no-console
     modalRef.afterClosed().subscribe(v => console.log('result', v))
   }
 }

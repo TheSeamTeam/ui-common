@@ -48,7 +48,7 @@ export const LIB_MENU: any = {
 })
 export class MenuComponent implements OnDestroy, AfterContentInit, ITheSeamMenuPanel {
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   private _footer = new BehaviorSubject<MenuFooterComponent | undefined | null>(undefined)
   public hasFooter$ = this._footer.pipe(map(v => v !== null && v !== undefined))
@@ -74,7 +74,7 @@ export class MenuComponent implements OnDestroy, AfterContentInit, ITheSeamMenuP
 
   @Output() readonly closed = new EventEmitter<void | 'click' | 'keydown' | 'tab'>()
 
-  @Input() menuClass: string  | undefined | null
+  @Input() menuClass: string | undefined | null
 
   /**
    * Defines a width for a menu that will scale down if the window innerWidth is
@@ -113,7 +113,7 @@ export class MenuComponent implements OnDestroy, AfterContentInit, ITheSeamMenuP
     this._tabSubscription.unsubscribe()
     this.closed.complete()
 
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 
