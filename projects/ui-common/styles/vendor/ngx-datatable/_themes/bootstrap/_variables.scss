@@ -10,8 +10,18 @@ $datatable-color: $body-color !default;
 
 // common datatable colors
 $datatable-background: $white !default;
+$datatable-left-background: $datatable-background !default;
+$datatable-left-background-position: 100% 0 !default;
+$datatable-left-background-repeat: repeat-y !default;
+$datatable-left-background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABCAYAAAD5PA/NAAAAFklEQVQIHWPSkNeSBmJhTQVtbiDNCgASagIIuJX8OgAAAABJRU5ErkJggg==) !default;
+$datatable-right-background: $datatable-background !default;
+$datatable-right-background-position: 0 0 !default;
+$datatable-right-background-repeat: repeat-y !default;
+$datatable-right-background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABCAYAAAD5PA/NAAAAFklEQVQI12PQkNdi1VTQ5gbSwkAsDQARLAIGtOSFUAAAAABJRU5ErkJggg==) !default;
 $datatable-box-shadow: none !default;
 $datatable-row-even-background: rgba(0, 0, 0, 0.05) !default;
+$datatable-left-row-even-background: $datatable-row-even-background !default;
+$datatable-right-row-even-background: $datatable-row-even-background !default;
 
 // default row and cell background colors
 $datatable-default-background: $white !default;
@@ -172,3 +182,11 @@ $datatable-action-button-background: transparent !default;
 $datatable-action-button-box-shadow: none !default;
 $datatable-action-button-hover-color: $primary !default;
 $datatable-action-button-hover-background: $gray-300 !default;
+$datatable-action-button-font-size: 20px !default;
+$datatable-action-button-line-height: 1 !default;
+$datatable-action-button-size: 30px !default;
+$datatable-action-button-width: $datatable-action-button-size !default;
+$datatable-action-button-height: $datatable-action-button-size !default;
+$datatable-action-button-padding: 0 !default;
+$datatable-action-button-border-radius: 100% !default;
+$datatable-action-button-text-align: center !default;

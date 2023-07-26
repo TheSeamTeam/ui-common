@@ -4,7 +4,9 @@ export const ACTION_MENU_COLUMN_PROP = '$$__actionMenu__'
 
 export function createActionMenuColumn(
   cellTemplate: any,
-  headerTemplate: any
+  headerTemplate: any,
+  frozenLeft?: boolean,
+  frozenRight?: boolean
 ): TheSeamDatatableColumn {
   return {
     prop: ACTION_MENU_COLUMN_PROP,
@@ -16,7 +18,8 @@ export function createActionMenuColumn(
     sortable: false,
     draggable: false,
     // TODO: Fix column auto sizing with fixed column and cell overlay before enabling.
-    // frozenRight: true,
+    frozenLeft: frozenLeft,
+    frozenRight: frozenRight,
     cellTemplate,
     headerTemplate,
   }

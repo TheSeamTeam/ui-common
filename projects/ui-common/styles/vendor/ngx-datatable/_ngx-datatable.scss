@@ -142,17 +142,25 @@
   .datatable-header,
   .datatable-body {
     .datatable-row-left {
-      background-color: $datatable-background;
-      background-position: 100% 0;
-      background-repeat: repeat-y;
-      background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABCAYAAAD5PA/NAAAAFklEQVQIHWPSkNeSBmJhTQVtbiDNCgASagIIuJX8OgAAAABJRU5ErkJggg==);
+      background-color: $datatable-left-background;
+      background-image: $datatable-left-background-image;
+      background-position: $datatable-left-background-position;
+      background-repeat: $datatable-left-background-repeat;
+    }
+
+    .datatable-row-even .datatable-row-left {
+      background-color: $datatable-left-row-even-background;
     }
 
     .datatable-row-right {
-      background-position: 0 0;
-      background-color: $datatable-background;
-      background-repeat: repeat-y;
-      background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABCAYAAAD5PA/NAAAAFklEQVQI12PQkNdi1VTQ5gbSwkAsDQARLAIGtOSFUAAAAABJRU5ErkJggg==);
+      background-color: $datatable-right-background;
+      background-image: $datatable-right-background-image;
+      background-position: $datatable-right-background-position;
+      background-repeat: $datatable-right-background-repeat;
+    }
+
+    .datatable-row-even .datatable-row-right {
+      background-color: $datatable-right-row-even-background;
     }
   }
 
@@ -479,6 +487,15 @@
   color: $datatable-action-button-color;
   background-color: $datatable-action-button-background;
   box-shadow: $datatable-action-button-box-shadow;
+  font-size: $datatable-action-button-font-size;
+  line-height: $datatable-action-button-line-height;
+
+  width: $datatable-action-button-width;
+  height: $datatable-action-button-height;
+
+  padding: $datatable-action-button-padding;
+  border-radius: $datatable-action-button-border-radius;
+  text-align: $datatable-action-button-text-align;
   &:hover {
     color: $datatable-action-button-hover-color;
     background-color: $datatable-action-button-hover-background;
