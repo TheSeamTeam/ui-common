@@ -68,7 +68,7 @@ import { WidthColumnsAlteration } from '../models/columns-alterations/width.colu
 import { getColumnProp } from '../utils/get-column-prop'
 import { OrderColumnsAlteration, OrderColumnsAlterationState } from '../models/columns-alterations/order.columns-alteration'
 import { SortColumnsAlteration } from '../models/columns-alterations/sort.columns-alteration'
-import { ActionItemColumnPosition } from '../models/action-item-column-position'
+import { ActionItemColumnPosition, isActionItemColumnPosition } from '../models/action-item-column-position'
 
 /**
  * NOTE: This is still being worked on. I am trying to figure out this model
@@ -303,13 +303,20 @@ export class DatatableComponent
     this._dataSourceSubject.next(value || undefined)
   }
 
+  /**
+   * Sets position behavior for optional Action Menu Button column.
+   *
+   * Defaults to `frozenRight`.
+   */
   @Input()
   get actionItemColumnPosition(): ActionItemColumnPosition | undefined { return this._actionItemColumnPosition }
   set actionItemColumnPosition(value: ActionItemColumnPosition | undefined) {
-    this._actionItemColumnPosition = value
+    if (value && isActionItemColumnPosition(value)) {
+      this._actionItemColumnPosition = value
+    }
     this._columnsManager.setActionItemColumnPosition(this._actionItemColumnPosition)
   }
-  private _actionItemColumnPosition: ActionItemColumnPosition | undefined
+  private _actionItemColumnPosition: ActionItemColumnPosition | undefined = 'frozenRight'
 
   @Output() readonly scroll = new EventEmitter<any>()
   @Output() readonly activate = new EventEmitter<any>()

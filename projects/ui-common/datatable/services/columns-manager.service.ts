@@ -238,7 +238,13 @@ export class ColumnsManagerService {
     }
 
     if (this._shouldAddRowActionColumn()) {
-      cols.push(createActionMenuColumn(this._actionMenuCellTpl, this._blankHeaderTpl, this._rowActionColumnIsFrozenLeft(), this._rowActionColumnIsFrozenRight()))
+      const actionMenuColumn = createActionMenuColumn(this._actionMenuCellTpl, this._blankHeaderTpl, this._rowActionColumnIsFrozenLeft(), this._rowActionColumnIsFrozenRight())
+
+      if (this._rowActionColumnIsStaticLeft()) {
+        cols.unshift(actionMenuColumn)
+      } else {
+        cols.push(actionMenuColumn)
+      }
     }
 
     // Make sure the default for any missing props are set.
@@ -362,6 +368,14 @@ export class ColumnsManagerService {
 
   private _rowActionColumnIsFrozenRight(): boolean {
     return this._actionItemColumnPosition === 'frozenRight'
+  }
+
+  private _rowActionColumnIsStaticLeft(): boolean {
+    return this._actionItemColumnPosition === 'staticLeft'
+  }
+
+  private _rowActionColumnIsStaticRight(): boolean {
+    return this._actionItemColumnPosition === 'staticRight'
   }
 
   private _shouldAddTreeToggleColumn(column: TheSeamDatatableColumn): boolean {

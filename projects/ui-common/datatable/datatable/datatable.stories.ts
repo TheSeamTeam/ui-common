@@ -220,8 +220,7 @@ ActionMenu.args = {
   rows: [
     { name: 'Mark', age: 27, color: 'blue' },
     { name: 'Joe', age: 33, color: 'green' }
-  ],
-  actionItemColumnPosition: 'frozenRight'
+  ]
 }
 
 export const InlineEdit = (args: any) => ({
