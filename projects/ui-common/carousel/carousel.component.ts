@@ -22,6 +22,7 @@ import { TheSeamCarouselSlideDirective } from './carousel-slide.directive'
       ]),
     ])
   ],
+  exportAs: 'seamCarousel',
 })
 export class TheSeamCarouselComponent implements OnInit, OnDestroy {
   static ngAcceptInputType_slideInterval: NumberInput
@@ -89,6 +90,16 @@ export class TheSeamCarouselComponent implements OnInit, OnDestroy {
     return this._slides.value
   }
   set slides(value: QueryList<TheSeamCarouselSlideDirective> | undefined) {
+    // Check if slides were added or removed that would make the active index not exist.
+    const count = value?.length || 0
+    const maxIdx = count >= 0 ? count - 1 : 0
+    const activeIdx = this._pollActiveIndex.value
+    if (activeIdx > maxIdx) {
+      this._pollActiveIndex.next(maxIdx)
+    } else if (count > 0 && activeIdx < 0) {
+      this._pollActiveIndex.next(0)
+    }
+
     this._slides.next(value)
   }
   private readonly _slides = new BehaviorSubject<QueryList<TheSeamCarouselSlideDirective> | undefined>(undefined)
@@ -130,6 +141,7 @@ export class TheSeamCarouselComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this._resetInterval.next(undefined)
+    this._resetInterval.complete()
   }
 
   private _startInterval() {
