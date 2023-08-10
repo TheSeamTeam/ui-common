@@ -2,6 +2,7 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing'
 import { BehaviorSubject, Observable, of, Subscription } from 'rxjs'
 import { shareReplay } from 'rxjs/operators'
 
+import { SortItem } from '@theseam/ui-common/datatable'
 import { DataFilterState } from '@theseam/ui-common/data-filters'
 import { currentTickTime } from '@theseam/ui-common/testing'
 
@@ -22,7 +23,7 @@ import { gqlVar } from '../utils/gql-var'
 import { DatatableGraphQLQueryRef, DatatableGraphQLVariables } from './datatable-graphql-query-ref'
 import { DatatableGraphqlService } from './datatable-graphql.service'
 import {
-  observeRowsWithGqlInputsHandling, SortsMapperResult
+  observeRowsWithGqlInputsHandling, SortsMapper, SortsMapperResult
 } from './datatable-helpers'
 import { DEFAULT_PAGE_SIZE } from './get-page-info'
 import { FilterStateMapperResult } from './map-filter-states'
@@ -40,9 +41,9 @@ describe('DatatableGraphQLQueryRef', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    providers: [createApolloTestingProvider(simpleGqlTestSchema, root)],
-    teardown: { destroyAfterEach: false }
-})
+      providers: [createApolloTestingProvider(simpleGqlTestSchema, root)],
+      teardown: { destroyAfterEach: false }
+    })
 
     datatableGql = TestBed.inject(DatatableGraphqlService)
     pageFixture = new BasicDatatablePageFixture(datatableGql)
@@ -174,7 +175,7 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
       shareReplay({ bufferSize: 1, refCount: true }),
     )
 
-    const _mapSorts = (sorts: { dir: 'desc' | 'asc', prop: string }[], context: MapperContext): SortsMapperResult => {
+    const _mapSorts = (sorts: SortItem[], context: MapperContext): SortsMapperResult => {
       return sorts.map(s => {
         const _dir = s?.dir.toUpperCase()
 

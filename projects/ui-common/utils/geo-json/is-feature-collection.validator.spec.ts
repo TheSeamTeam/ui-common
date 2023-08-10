@@ -26,7 +26,7 @@ describe('isOnlyGeometryTypesValidator', () => {
     const control = new UntypedFormControl('a', [ isFeatureCollectionValidator() ])
     expect(control.valid).toBe(false)
     expect(control.errors).not.toBeNull()
-    expect(control.errors[IS_FEATURE_COLLECTION_VALIDATOR_NAME].reason).toBe(`Must be a FeatureCollection.`)
+    expect(control.errors !== null && control.errors[IS_FEATURE_COLLECTION_VALIDATOR_NAME].reason).toBe(`Must be a FeatureCollection.`)
   })
 
   describe('object value', () => {

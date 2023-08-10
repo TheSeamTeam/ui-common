@@ -25,7 +25,7 @@
 
   // "karmaTestExplorer.defaultAngularProjectName": "ui-common",
   // "karmaTestExplorer.karmaConfFilePath": "projects/ui-common/karma.conf.js",
-  
+
   // "karmaTestExplorer.karmaPort": 9333,
   // "karmaTestExplorer.defaultSocketConnectionPort": 9333,
 
@@ -46,6 +46,8 @@
   "typescript.tsdk": "node_modules/typescript/lib",
 
   "jest.autoRun": "off",
+  "jest.jestCommandLine": "npm run test -- --no-cache"
+
 
   // Our custom schematics.
   // "ngschematics.schematics": [
