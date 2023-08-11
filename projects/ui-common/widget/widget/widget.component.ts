@@ -1,6 +1,6 @@
 import { animate, style, transition, trigger } from '@angular/animations'
 import { BooleanInput } from '@angular/cdk/coercion'
-import { Component, ContentChild, Input, ViewEncapsulation } from '@angular/core'
+import { Component, ContentChild, Input, isDevMode, ViewEncapsulation } from '@angular/core'
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { faAngleDown, faCog } from '@fortawesome/free-solid-svg-icons'
@@ -46,11 +46,12 @@ export class WidgetComponent {
   static ngAcceptInputType_hasConfig: BooleanInput
   static ngAcceptInputType_canCollapse: BooleanInput
 
-  /** @ignore */
-  configIcon = faCog
-  /** @ignore */
-  collapseIcon = faAngleDown
+  readonly configIcon = faCog
+  readonly collapseIcon = faAngleDown
 
+  /**
+   * Toggles the collapsed state of a widget.
+   */
   @Input() @InputBoolean() collapsed = false
 
   /**
@@ -89,10 +90,8 @@ export class WidgetComponent {
     }
   }
 
-  /** @ignore */
-  public _iconUrl: string | undefined
-  /** @ignore */
-  public _iconObj: IconProp | undefined
+  _iconUrl: string | undefined
+  _iconObj: IconProp | undefined
 
   /** Add a css class to the header icon. */
   @Input() iconClass: string | undefined | null
@@ -103,8 +102,11 @@ export class WidgetComponent {
   /** @ignore */
   // NOTE: Config is still being worked on.
   @Input() @InputBoolean() hasConfig = false
-  /** @ignore */
-  // NOTE: Collapse is still being worked on.
+
+  /**
+   * Toggles the ability to collapse a widget. An icon will be displayed in the
+   * header to toggle the collapsed state.
+   */
   @Input() @InputBoolean() canCollapse = false
 
   @ContentChild(WidgetIconTplDirective, { static: true }) iconTpl?: WidgetIconTplDirective
@@ -112,12 +114,15 @@ export class WidgetComponent {
 
   /**
    * Toggles a widget's collapsed state.
-   *
-   * NOTE: Collapse is still being worked on.
-   * @depracated
-   * @ignore
    */
-  collapse() {
+  public collapse() {
+    if (!this.canCollapse) {
+      if (isDevMode()) {
+        console.warn('WidgetComponent: collapse() called when canCollapse is false.')
+      }
+      return
+    }
+
     this.collapsed = !this.collapsed
   }
 
