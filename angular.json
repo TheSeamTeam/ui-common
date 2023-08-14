@@ -20,7 +20,7 @@
             "outputPath": "dist/theseam-ui-common",
             "index": "src/index.html",
             "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
+            "polyfills": "projects/ui-common/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "aot": true,
             "assets": [
@@ -87,7 +87,7 @@
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
+            "polyfills": "projects/ui-common/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "assets": [
@@ -165,19 +165,6 @@
             ],
             "scripts": []
           }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "tsconfig.app.json",
-              "tsconfig.spec.json",
-              "cypress/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
         }
       }
     },
@@ -188,82 +175,10 @@
       "prefix": "seam",
       "architect": {
         "build": {
-          "builder": "@linnenschmidt/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/ui-common/tsconfig.lib.json",
-            "project": "projects/ui-common/ng-package.json",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "assets",
-                "output": "assets"
-              },
-              {
-                "glob": "**/*",
-                "input": "styles",
-                "output": "styles"
-              },
-              {
-                "glob": "**/*.scss",
-                "input": "breadcrumbs",
-                "output": "breadcrumbs"
-              },
-              {
-                "glob": "**/*.scss",
-                "input": "framework/base-layout",
-                "output": "framework/base-layout"
-              },
-              {
-                "glob": "**/*.scss",
-                "input": "framework/dashboard",
-                "output": "framework/dashboard"
-              },
-              {
-                "glob": "**/*.scss",
-                "input": "framework/nav",
-                "output": "framework/nav"
-              },
-              {
-                "glob": "**/*.scss",
-                "input": "framework/side-nav",
-                "output": "framework/side-nav"
-              },
-              {
-                "glob": "**/*.scss",
-                "input": "framework/top-bar",
-                "output": "framework/top-bar"
-              },
-              {
-                "glob": "**/*.scss",
-                "input": "progress/progress-circle",
-                "output": "progress/progress-circle"
-              },
-              {
-                "glob": "**/*.scss",
-                "input": "widget",
-                "output": "widget"
-              },
-              {
-                "glob": "**/*.min.css",
-                "input": "../../node_modules/intl-tel-input/build/css",
-                "output": "assets/vendor/intl-tel-input/css"
-              },
-              {
-                "glob": "**/*.png",
-                "input": "../../node_modules/intl-tel-input/build/img",
-                "output": "assets/vendor/intl-tel-input/img"
-              },
-              {
-                "glob": "**/utils.js",
-                "input": "../../node_modules/intl-tel-input/build/js",
-                "output": "assets/vendor/intl-tel-input/js"
-              },
-              {
-                "glob": "**/*.d.ts",
-                "input": "dynamic/evaluators/jexl-evaluator",
-                "output": "dynamic/evaluators/jexl-evaluator"
-              }
-            ]
+            "project": "projects/ui-common/ng-package.json"
           },
           "configurations": {
             "production": {
@@ -280,6 +195,100 @@
             "main": "projects/ui-common/test.ts",
             "tsConfig": "projects/ui-common/tsconfig.spec.json",
             "karmaConfig": "projects/ui-common/karma.conf.js",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "assets"
+              },
+              {
+                "glob": "**/*",
+                "input": "projects/ui-common/assets",
+                "output": "assets"
+              },
+              {
+                "glob": "**/*",
+                "input": "projects/ui-common/styles",
+                "output": "styles"
+              },
+              {
+                "glob": "**/*.scss",
+                "input": "breadcrumbs",
+                "output": "breadcrumbs"
+              },
+              {
+                "glob": "**/*.scss",
+                "input": "projects/ui-common/framework/base-layout",
+                "output": "framework/base-layout"
+              },
+              {
+                "glob": "**/*.scss",
+                "input": "projects/ui-common/framework/dashboard",
+                "output": "framework/dashboard"
+              },
+              {
+                "glob": "**/*.scss",
+                "input": "projects/ui-common/framework/top-bar",
+                "output": "framework/top-bar"
+              },
+              {
+                "glob": "**/*.scss",
+                "input": "projects/ui-common/widget/side-nav",
+                "output": "framework/side-nav"
+              },
+              {
+                "glob": "**/*.scss",
+                "input": "projects/ui-common/progress/progress-circle",
+                "output": "progress/progress-circle"
+              },
+              {
+                "glob": "**/*.scss",
+                "input": "projects/ui-common/widget",
+                "output": "widget"
+              },
+              {
+                "glob": "**/*.min.css",
+                "input": "node_modules/intl-tel-input/build/css",
+                "output": "assets/vendor/intl-tel-input/css"
+              },
+              {
+                "glob": "**/*.png",
+                "input": "node_modules/intl-tel-input/build/img",
+                "output": "assets/vendor/intl-tel-input/img"
+              },
+              {
+                "glob": "**/utils.js",
+                "input": "node_modules/intl-tel-input/build/js",
+                "output": "assets/vendor/intl-tel-input/js"
+              }
+            ],
+            "styles": [
+              "src/styles.scss",
+              "node_modules/@marklb/ngx-datatable/assets/icons.css"
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "./"
+              ]
+            }
+          }
+        },
+        "storybook": {
+          "builder": "@storybook/angular:start-storybook",
+          "options": {
+            "browserTarget": "ui-common:build",
+            "port": 6007,
+            "tsConfig": "projects/ui-common/tsconfig.sb.json",
+            "compodoc": true,
+            "styles": [
+              "projects/ui-common/styles/theme.scss",
+              "node_modules/@marklb/ngx-datatable/assets/icons.css"
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "./"
+              ]
+            },
             "assets": [
               {
                 "glob": "**/*",
@@ -351,22 +360,21 @@
                 "input": "node_modules/intl-tel-input/build/js",
                 "output": "assets/vendor/intl-tel-input/js"
               }
-            ],
-            "styles": [
-              "src/styles.scss",
-              "node_modules/@marklb/ngx-datatable/assets/icons.css"
             ]
           }
         },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+        "build-storybook": {
+          "builder": "@storybook/angular:build-storybook",
           "options": {
-            "tsConfig": [
-              "projects/ui-common/tsconfig.lib.json",
-              "projects/ui-common/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "browserTarget": "ui-common:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/ui-common/**/*.ts",
+              "projects/ui-common/**/*.html"
             ]
           }
         }
@@ -389,7 +397,7 @@
             "outputPath": "dist/theseam-ui-common",
             "index": "src/index.html",
             "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
+            "polyfills": "projects/ui-common/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "aot": true,
             "assets": [
@@ -499,7 +507,6 @@
       }
     }
   },
-  "defaultProject": "theseam-ui-common",
   "cli": {
     "analytics": false
   }

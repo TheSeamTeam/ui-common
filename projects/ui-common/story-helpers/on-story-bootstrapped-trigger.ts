@@ -25,6 +25,7 @@ export function onStoryBootstrappedTrigger(targetSelector: string, eventName: st
     const elementRef = componentRef.injector.get(ElementRef, null)
     const target = elementRef?.nativeElement.querySelector(targetSelector)
     if (!target) {
+      // eslint-disable-next-line no-console
       console.warn(`Unable to trigger event '${eventName}'. Target '${targetSelector}' not found.`)
     }
 

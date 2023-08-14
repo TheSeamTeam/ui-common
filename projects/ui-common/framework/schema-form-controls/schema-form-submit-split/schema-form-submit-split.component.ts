@@ -1,5 +1,5 @@
 import { Component, Input, isDevMode, OnDestroy, OnInit } from '@angular/core'
-import { AbstractControl, FormControl } from '@angular/forms'
+import { AbstractControl, UntypedFormControl } from '@angular/forms'
 import { Subject } from 'rxjs'
 
 import { buildTitleMap, hasOwn, JsonSchemaFormService, TitleMapItem } from '@ajsf/core'
@@ -26,7 +26,7 @@ export type TheSeamSchemaFormSubmitSplitItem = TitleMapItem
 export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy {
 
   /** @ignore */
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   formControl?: AbstractControl
   controlName?: string
@@ -90,7 +90,7 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy 
 
   /** @ignore */
   ngOnDestroy(): void {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 
@@ -109,6 +109,7 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy 
 
     if (isDevMode()) {
       if (this.layoutNode.items.length > 1) {
+        // eslint-disable-next-line no-console
         console.warn(
           `TheSeamSchemaFormSubmitSplitComponent only supports one item.` +
           ` items after index 0 will be ignored.`
@@ -127,7 +128,6 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy 
     }
 
     this.jsf.initializeControl(this._dropdownObj)
-
 
     const items = buildTitleMap(
       this._dropdownObj.options.titleMap || this._dropdownObj.options.enumNames,
@@ -158,8 +158,8 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy 
     })
   }
 
-  private _getDropdownControl(): FormControl | undefined {
-    return this._dropdownObj.formControl as FormControl
+  private _getDropdownControl(): UntypedFormControl | undefined {
+    return this._dropdownObj.formControl as UntypedFormControl
   }
 
   private _setSelectListCheckedProp(value: any) {

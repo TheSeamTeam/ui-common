@@ -4,7 +4,6 @@ import { GQLDirection } from './../models/direction'
 
 import { toGQL } from './to-gql'
 
-
 describe('GraphQL Utils toGql', () => {
   it('should handle single string prop', () => {
     const input = { prop: 'thing' }

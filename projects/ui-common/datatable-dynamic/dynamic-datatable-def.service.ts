@@ -74,12 +74,12 @@ export class DynamicDatatableDefService {
     this.def$ = this._defSubject.asObservable()
 
     this.exporters$ = this.def$.pipe(
-      map(def => !!def ? this._mapExporters(def) : []),
+      map(def => def ? this._mapExporters(def) : []),
       shareReplay({ bufferSize: 1, refCount: true })
     )
 
     this.filterMenuItems$ = this.def$.pipe(
-      map(def => !!def ? this._mapFilterMenuItems(def) : []),
+      map(def => def ? this._mapFilterMenuItems(def) : []),
       shareReplay({ bufferSize: 1, refCount: true })
     )
 
@@ -105,7 +105,7 @@ export class DynamicDatatableDefService {
     )
 
     this.options$ = this.def$.pipe(
-      map(def => !!def ? def.options : undefined),
+      map(def => def ? def.options : undefined),
       shareReplay({ bufferSize: 1, refCount: true })
     )
 

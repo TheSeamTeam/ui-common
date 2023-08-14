@@ -2,7 +2,7 @@
 import { Meta, Story } from '@storybook/angular'
 
 import { BrowserModule } from '@angular/platform-browser'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations'
 import { RouterModule } from '@angular/router'
 
 import { routeButton, StoryEmptyComponent, StoryInitialRouteModule } from '@theseam/ui-common/story-helpers'
@@ -10,6 +10,7 @@ import { routeButton, StoryEmptyComponent, StoryInitialRouteModule } from '@thes
 import { StoryUsersDataService } from './story-user-data.service'
 import { StoryUserIdToNameResolver } from './story-userid-to-name.resolver'
 
+import { importProvidersFrom } from '@angular/core'
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component'
 
 export default {
@@ -21,59 +22,63 @@ export default {
 } as Meta
 
 export const Example: Story = () => ({
+  applicationConfig: {
+    providers: [
+      provideAnimations(),
+      importProvidersFrom(
+        RouterModule.forRoot([
+          {
+            path: '',
+            pathMatch: 'full',
+            redirectTo: '/home',
+          },
+          {
+            path: 'home',
+            component: StoryEmptyComponent,
+            data: {
+              breadcrumb: 'Home'
+            }
+          },
+          {
+            path: 'dashboard',
+            component: StoryEmptyComponent,
+            data: {
+              breadcrumb: 'Dashboard'
+            },
+            children: [
+              {
+                path: 'users',
+                component: StoryEmptyComponent,
+                data: {
+                  breadcrumb: 'Users'
+                },
+                children: [
+                  {
+                    path: ':userId',
+                    component: StoryEmptyComponent,
+                    data: { },
+                    resolve: {
+                      breadcrumb: StoryUserIdToNameResolver
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ], { useHash: true }),
+        StoryInitialRouteModule.forRoot('/dashboard/users/123'),
+      ),
+      StoryUsersDataService,
+      StoryUserIdToNameResolver
+    ],
+  },
   moduleMetadata: {
     declarations: [
       StoryEmptyComponent
     ],
-    providers: [
-      StoryUsersDataService,
-      StoryUserIdToNameResolver
-    ],
     imports: [
-      BrowserAnimationsModule,
-      BrowserModule,
-      RouterModule.forRoot([
-        {
-          path: '',
-          pathMatch: 'full',
-          redirectTo: '/home',
-        },
-        {
-          path: 'home',
-          component: StoryEmptyComponent,
-          data: {
-            breadcrumb: 'Home'
-          }
-        },
-        {
-          path: 'dashboard',
-          component: StoryEmptyComponent,
-          data: {
-            breadcrumb: 'Dashboard'
-          },
-          children: [
-            {
-              path: 'users',
-              component: StoryEmptyComponent,
-              data: {
-                breadcrumb: 'Users'
-              },
-              children: [
-                {
-                  path: ':userId',
-                  component: StoryEmptyComponent,
-                  data: { },
-                  resolve: {
-                    breadcrumb: StoryUserIdToNameResolver
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      ], { useHash: true }),
-      StoryInitialRouteModule.forRoot('/dashboard/users/123')
-    ]
+      RouterModule,
+    ],
   },
   props: {
     // btn1: routeButton(button, '/'),

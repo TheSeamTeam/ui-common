@@ -12,7 +12,6 @@ export const INTERNAL_COLUMN_PROPS: string[] = [
   CHECKBOX_COLUMN_PROP
 ]
 
-
 export function isInternalColumn(column: TheSeamDatatableColumn): boolean {
   return INTERNAL_COLUMN_PROPS.findIndex(p => getColumnProp(column) === p) !== -1
 }

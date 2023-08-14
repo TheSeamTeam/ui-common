@@ -1,5 +1,5 @@
 import { animate, AnimationEvent, state, style, transition, trigger } from '@angular/animations'
-import { FocusTrapFactory } from '@angular/cdk/a11y'
+import { ConfigurableFocusTrap, ConfigurableFocusTrapConfig, ConfigurableFocusTrapFactory } from '@angular/cdk/a11y'
 import { BasePortalOutlet, CdkPortalOutlet, ComponentPortal, TemplatePortal } from '@angular/cdk/portal'
 import { DOCUMENT } from '@angular/common'
 import {
@@ -34,8 +34,8 @@ export function throwDialogContentAlreadyAttachedError() {
   styleUrls: ['./modal-container.component.scss'],
   animations: [
     trigger('dialog', [
-      state('enter', style({opacity: 1})),
-      state('exit, void', style({opacity: 0})),
+      state('enter', style({ opacity: 1 })),
+      state('exit, void', style({ opacity: 0 })),
       transition('* => enter', animate('{{enterAnimationDuration}}')),
       transition('* => exit, * => void', animate('{{exitAnimationDuration}}')),
     ])
@@ -77,12 +77,16 @@ export class ModalContainerComponent extends BasePortalOutlet implements OnDestr
 
   constructor(
     private _elementRef: ElementRef<HTMLElement>,
-    private _focusTrapFactory: FocusTrapFactory,
+    private _focusTrapFactory: ConfigurableFocusTrapFactory,
     private _changeDetectorRef: ChangeDetectorRef,
     @Optional() @Inject(DOCUMENT) private _document: any,
     /** The dialog configuration. */
     public _config: ModalConfig) {
     super()
+
+    this._focusTrap = this._focusTrapFactory.create(this._elementRef.nativeElement, {
+      defer: true,
+    } as ConfigurableFocusTrapConfig)
 
     // We use a Subject with a distinctUntilChanged, rather than a callback attached to .done,
     // because some browsers fire the done event twice and we don't want to emit duplicate events.
@@ -112,8 +116,7 @@ export class ModalContainerComponent extends BasePortalOutlet implements OnDestr
   private _elementFocusedBeforeDialogWasOpened: HTMLElement | null = null
 
    /** The class that traps and manages focus within the dialog. */
-  private _focusTrap = this._focusTrapFactory.create(this._elementRef.nativeElement, false)
-  // tslint:disable:no-host-decorator-in-concrete
+  private _focusTrap: ConfigurableFocusTrap
 
   @HostBinding('class.modal-dialog') _modalDialog = true
   @HostBinding('class.modal-dialog-centered') _modalDialogCentered = true

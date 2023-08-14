@@ -1,6 +1,7 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular'
+import { applicationConfig } from '@storybook/angular/dist/client/decorators'
 
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { provideAnimations } from '@angular/platform-browser/animations'
 
 import { TheSeamDatatableModule } from '@theseam/ui-common/datatable'
 import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
@@ -11,68 +12,72 @@ export default {
   title: 'Components/TableCellTypes/Phone',
   component: TableCellTypePhoneComponent,
   decorators: [
+    applicationConfig({
+      providers: [
+        provideAnimations(),
+      ],
+    }),
     moduleMetadata({
       imports: [
-        BrowserAnimationsModule,
         TheSeamDatatableModule,
-        TheSeamTableCellTypesModule
-      ]
-    })
+        TheSeamTableCellTypesModule,
+      ],
+    }),
   ],
   parameters: {
     layout: 'fullscreen',
     docs: {
       iframeHeight: '150px',
-    }
-  }
+    },
+  },
 } as Meta
 
-export const NoConfig: Story = (args) => {
+export const NoConfig: Story = args => {
   const rows = [
-    { phoneNumber: args.value }
+    { phoneNumber: args.value },
   ]
   return {
     template: `<seam-datatable class="vw-100 vh-100" [columns]="columns" [rows]="rows"></seam-datatable>`,
     props: {
       columns: [
-        { prop: 'phoneNumber', phoneNumber: 'Phone Number', cellType: 'phone' }
+        { prop: 'phoneNumber', phoneNumber: 'Phone Number', cellType: 'phone' },
       ],
-      rows
+      rows,
     },
   }
 }
 NoConfig.args = {
-  value: '9015555555'
+  value: '9015555555',
 }
 
-export const WithConfig: Story = (args) => {
+export const WithConfig: Story = args => {
   const columns = [
     {
       prop: 'phoneNumber', phoneNumber: 'Phone Number',
       cellType: 'phone',
-      cellTypeConfig: { type: 'phone', format: args.format }
-    }
+      cellTypeConfig: { type: 'phone', format: args.format },
+    },
   ]
   const rows = [
-    { phoneNumber: args.value }
+    { phoneNumber: args.value },
   ]
   return {
     template: `<seam-datatable class="vw-100 vh-100" [columns]="columns" [rows]="rows"></seam-datatable>`,
     props: {
       columns,
-      rows
+      rows,
     },
   }
 }
 WithConfig.args = {
-  value: '9015555555'
+  value: '9015555555',
 }
 WithConfig.argTypes = {
   format: {
     defaultValue: 'INTERNATIONAL',
     control: {
       type: 'select',
-      options: [ 'E164', 'INTERNATIONAL', 'NATIONAL', 'RFC3966' ]
-    }
-  }
+      options: [ 'E164', 'INTERNATIONAL', 'NATIONAL', 'RFC3966' ],
+    },
+  },
 }

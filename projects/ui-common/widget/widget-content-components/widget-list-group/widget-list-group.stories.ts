@@ -1,6 +1,8 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular'
+import { applicationConfig } from '@storybook/angular/dist/client/decorators'
 
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { importProvidersFrom } from '@angular/core'
+import { provideAnimations } from '@angular/platform-browser/animations'
 import { RouterModule } from '@angular/router'
 
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons'
@@ -16,22 +18,28 @@ export default {
   title: 'Widget/Components/Content/List Group',
   component: WidgetListGroupItemComponent,
   decorators: [
+    applicationConfig({
+      providers: [
+        provideAnimations(),
+        importProvidersFrom(
+          RouterModule.forRoot([], { useHash: true }),
+        ),
+      ],
+    }),
     moduleMetadata({
       imports: [
-        BrowserAnimationsModule,
-        RouterModule.forRoot([], { useHash: true }),
         TheSeamWidgetModule,
         TheSeamButtonsModule,
-        TheSeamIconModule
-      ]
-    })
-  ]
+        TheSeamIconModule,
+      ],
+    }),
+  ],
 } as Meta
 
-export const Basic: Story = (args) => ({
+export const Basic: Story = args => ({
   props: {
     icon: faWrench,
-    faEnvelope: faEnvelope
+    faEnvelope,
   },
   template: `
     <div class="p-1" style="max-height: 400px; width: 500px;">
@@ -42,5 +50,5 @@ export const Basic: Story = (args) => ({
           <seam-widget-list-group-item>Item 3</seam-widget-list-group-item>
         </seam-widget-list-group>
       </seam-widget>
-    </div>`
+    </div>`,
 })

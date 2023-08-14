@@ -1,5 +1,5 @@
 import { BooleanInput } from '@angular/cdk/coercion'
-import { ChangeDetectionStrategy, Component, HostBinding, Input, OnDestroy, OnInit, TemplateRef, ViewEncapsulation } from '@angular/core'
+import { ChangeDetectionStrategy, Component, HostBinding, Input, TemplateRef, ViewEncapsulation } from '@angular/core'
 
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons'
 
@@ -12,15 +12,13 @@ const _TopBarMenuButtonMixinBase: CanDisableCtor & typeof TopBarMenuButtonBase =
   mixinDisabled(TopBarMenuButtonBase)
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'button[seamTopBarMenuButton]',
   templateUrl: './top-bar-menu-button.component.html',
   styleUrls: ['./top-bar-menu-button.component.scss'],
   encapsulation: ViewEncapsulation.None,
   exportAs: 'seamButton',
-  // tslint:disable-next-line:use-input-property-decorator
   inputs: [ 'disabled' ],
-  // tslint:disable-next-line:use-host-property-decorator
   host: {
     'attr.type': 'button',
     'class': 'btn border text-decoration-none py-0 top-bar-menu-button',
@@ -29,7 +27,7 @@ const _TopBarMenuButtonMixinBase: CanDisableCtor & typeof TopBarMenuButtonBase =
   },
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TopBarMenuButtonComponent extends _TopBarMenuButtonMixinBase implements OnInit, OnDestroy {
+export class TopBarMenuButtonComponent extends _TopBarMenuButtonMixinBase {
   static ngAcceptInputType_compact: BooleanInput
 
   faAngleDown = faAngleDown
@@ -49,9 +47,5 @@ export class TopBarMenuButtonComponent extends _TopBarMenuButtonMixinBase implem
   @HostBinding('class.p-0') get _hasPadding0Class() { return this.compact }
   @HostBinding('class.rounded') get _hasRoundedClass() { return this.compact }
   @HostBinding('class.btn-link') get _hasBtnLinkClass() { return !this.compact }
-
-  ngOnInit() { }
-
-  ngOnDestroy() { }
 
 }

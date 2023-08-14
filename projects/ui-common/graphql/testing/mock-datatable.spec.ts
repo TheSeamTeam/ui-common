@@ -13,7 +13,6 @@ function generateData(n: number): TestItem[] {
 }
 
 describe('GqlDatatableFixture', () => {
-
   describe('no data', () => {
     it('should have valid initial state', () => {
       const fixture = new MockDatatable()
@@ -111,5 +110,4 @@ describe('GqlDatatableFixture', () => {
       expect(fixture.getPageSize()).toBe(10)
     })
   })
-
 })

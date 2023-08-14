@@ -1,13 +1,15 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular'
+import { applicationConfig } from '@storybook/angular/dist/client/decorators'
 
 import { APP_BASE_HREF } from '@angular/common'
-import { Component, Directive, Input } from '@angular/core'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { Component, Directive, importProvidersFrom, Input } from '@angular/core'
+import { provideAnimations } from '@angular/platform-browser/animations'
 import { Router, RouterModule } from '@angular/router'
 
 import { faBuilding } from '@fortawesome/free-regular-svg-icons'
 import { faSignature } from '@fortawesome/free-solid-svg-icons'
 
+import { THESEAM_SIDE_NAV_ACCESSOR } from '../side-nav-tokens'
 import { SideNavComponent } from '../side-nav.component'
 import { TheSeamSideNavModule } from '../side-nav.module'
 import { SideNavItemComponent } from './side-nav-item.component'
@@ -32,30 +34,34 @@ export default {
   title: 'Framework/SideNav/Item/Basic',
   component: SideNavItemComponent,
   decorators: [
+    applicationConfig({
+      providers: [
+        provideAnimations(),
+        { provide: APP_BASE_HREF, useValue: '/' },
+      ],
+    }),
     moduleMetadata({
       declarations: [
-        StoryRoutePlacholderComponent
+        StoryRoutePlacholderComponent,
       ],
       imports: [
-        BrowserAnimationsModule,
-        TheSeamSideNavModule
+        TheSeamSideNavModule,
       ],
       providers: [
-        { provide: APP_BASE_HREF, useValue: '/' },
-        { provide: SideNavComponent, useClass: MockSideNavComponent }
-      ]
-    })
+        { provide: THESEAM_SIDE_NAV_ACCESSOR, useClass: MockSideNavComponent },
+      ],
+    }),
   ],
   parameters: {
     layout: 'fullscreen',
-  }
+  },
 } as Meta
 
-export const NoChildren: Story = (args) => ({
-  moduleMetadata: {
-    imports: [
-      RouterModule.forRoot([], { useHash: true }),
-    ]
+export const NoChildren: Story = args => ({
+  applicationConfig: {
+    providers: [
+      importProvidersFrom(RouterModule.forRoot([], { useHash: true })),
+    ],
   },
   props: { ...args },
   template: `
@@ -71,7 +77,7 @@ export const NoChildren: Story = (args) => ({
           [compact]="compact">
         </seam-side-nav-item>
       </div>
-    </div>`
+    </div>`,
 })
 NoChildren.args = {
   itemType: 'basic',
@@ -83,13 +89,10 @@ NoChildren.args = {
   compact: false,
 }
 
-export const WithChildren: Story = (args) => ({
-  moduleMetadata: {
-    declarations: [
-      StoryNavToggleDirective
-    ],
-    imports: [
-      RouterModule.forRoot([
+export const WithChildren: Story = args => ({
+  applicationConfig: {
+    providers: [
+      importProvidersFrom(RouterModule.forRoot([
         { path: 'example1', component: StoryRoutePlacholderComponent },
         { path: 'example1/example1.1', component: StoryRoutePlacholderComponent },
         { path: 'example1/example1.2', component: StoryRoutePlacholderComponent },
@@ -97,9 +100,17 @@ export const WithChildren: Story = (args) => ({
         { path: 'example1/example1.2.1', component: StoryRoutePlacholderComponent },
         { path: 'example1/example1.2.2', component: StoryRoutePlacholderComponent },
         { path: 'example1/example1.2.3', component: StoryRoutePlacholderComponent },
-        { path: 'example2', component: StoryRoutePlacholderComponent }
-      ], { useHash: true })
-    ]
+        { path: 'example2', component: StoryRoutePlacholderComponent },
+      ], { useHash: true })),
+    ],
+  },
+  moduleMetadata: {
+    declarations: [
+      StoryNavToggleDirective,
+    ],
+    imports: [
+      RouterModule,
+    ],
   },
   props: {
     currentUrl: 'example1',
@@ -171,5 +182,5 @@ export const WithChildren: Story = (args) => ({
           <a routerLink="/example1/example1.3">Set Route: '/example1/example1.3'</a><br>
         </div>
       </div>
-    </div>`
+    </div>`,
 })

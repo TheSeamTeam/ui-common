@@ -1,15 +1,12 @@
 import { moduleMetadata } from '@storybook/angular'
-import type { Meta, Story } from '@storybook/angular/types-6-0'
+import type { Meta, Story } from '@storybook/angular'
+import { applicationConfig } from '@storybook/angular/dist/client/decorators'
 
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
-import { BrowserModule } from '@angular/platform-browser'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
-import { merge } from 'rxjs'
-import { map, startWith } from 'rxjs/operators'
+import { FormControl, ReactiveFormsModule } from '@angular/forms'
+import { provideAnimations } from '@angular/platform-browser/animations'
 
 import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 import { TheSeamSharedModule } from '@theseam/ui-common/shared'
-import { telInputValidator } from './tel-input-validator'
 import { TheSeamTelInputModule } from './tel-input.module'
 import { TheSeamTelInputComponent } from './tel-input/tel-input.component'
 
@@ -17,23 +14,26 @@ export default {
   title: 'TelInput/Components',
   component: TheSeamTelInputComponent,
   decorators: [
+    applicationConfig({
+      providers: [
+        provideAnimations(),
+      ],
+    }),
     moduleMetadata({
       imports: [
-        BrowserAnimationsModule,
-        BrowserModule,
         TheSeamTelInputModule,
         ReactiveFormsModule,
         TheSeamFormFieldModule,
-        TheSeamSharedModule
-      ]
-    })
+        TheSeamSharedModule,
+      ],
+    }),
   ],
 } as Meta
 
 export const Basic: Story = ({ ...args }) => ({
   // template: `<seam-tel-input></seam-tel-input>`
   component: TheSeamTelInputComponent,
-  props: args
+  props: args,
 })
 
 export const Control: Story = ({ ...args }) => ({
@@ -49,7 +49,7 @@ export const FormField: Story = ({ ...args }) => {
 
   return {
     props: {
-      control
+      control,
     },
     template: `
       <div style="max-width: 300px;">
@@ -57,7 +57,7 @@ export const FormField: Story = ({ ...args }) => {
           <seam-tel-input seamInput [formControl]="control"></seam-tel-input>
         </seam-form-field>
       </div>
-    `
+    `,
   }
 }
 
@@ -71,7 +71,7 @@ export const FormFieldDisabled: Story = ({ ...args }) => {
 
   return {
     props: {
-      control
+      control,
     },
     template: `
       <div style="max-width: 300px;">
@@ -79,7 +79,7 @@ export const FormFieldDisabled: Story = ({ ...args }) => {
           <seam-tel-input seamInput [formControl]="control"></seam-tel-input>
         </seam-form-field>
       </div>
-    `
+    `,
   }
 }
 

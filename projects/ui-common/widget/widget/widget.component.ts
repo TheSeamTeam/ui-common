@@ -1,10 +1,9 @@
 import { animate, style, transition, trigger } from '@angular/animations'
 import { BooleanInput } from '@angular/cdk/coercion'
-import { Component, ContentChild, Input, OnInit, ViewEncapsulation } from '@angular/core'
+import { Component, ContentChild, Input, ViewEncapsulation } from '@angular/core'
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { faAngleDown, faCog } from '@fortawesome/free-solid-svg-icons'
-
 import { InputBoolean } from '@theseam/ui-common/core'
 import { SeamIcon } from '@theseam/ui-common/icon'
 
@@ -31,16 +30,17 @@ import { WidgetTitleTplDirective } from '../directives/widget-title-tpl.directiv
     trigger('loadingAnim', [
       transition(':enter', [
         style({ opacity: 0 }),
-        animate('250ms ease-in-out', style({ opacity: 1 }))
+        animate('250ms ease-in-out', style({ opacity: 1 })),
       ]),
       transition(':leave', [
         style({ opacity: 1 }),
-        animate('250ms ease-in-out', style({ opacity: 0 }))
-      ])
-    ])
-  ]
+        animate('250ms ease-in-out', style({ opacity: 0 })),
+      ]),
+    ]),
+  ],
 })
-export class WidgetComponent implements OnInit {
+export class WidgetComponent {
+
   static ngAcceptInputType_hasHeader: BooleanInput
   static ngAcceptInputType_loading: BooleanInput
   static ngAcceptInputType_hasConfig: BooleanInput
@@ -51,13 +51,13 @@ export class WidgetComponent implements OnInit {
   /** @ignore */
   collapseIcon = faAngleDown
 
-  @Input() @InputBoolean() collapsed: boolean = false
+  @Input() @InputBoolean() collapsed = false
 
   /**
    * Toggles the top header bar of a widget. This should be true for most
    * widgets.
    */
-  @Input() @InputBoolean() hasHeader: boolean = true
+  @Input() @InputBoolean() hasHeader = true
 
   /**
    * Title displayed in the top header.
@@ -109,12 +109,6 @@ export class WidgetComponent implements OnInit {
 
   @ContentChild(WidgetIconTplDirective, { static: true }) iconTpl?: WidgetIconTplDirective
   @ContentChild(WidgetTitleTplDirective, { static: true }) titleTpl?: WidgetTitleTplDirective
-
-  /** @ignore */
-  constructor() { }
-
-  /** @ignore */
-  ngOnInit() { }
 
   /**
    * Toggles a widget's collapsed state.

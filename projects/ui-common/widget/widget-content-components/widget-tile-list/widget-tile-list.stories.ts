@@ -1,6 +1,8 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular'
+import { applicationConfig } from '@storybook/angular/dist/client/decorators'
 
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { importProvidersFrom } from '@angular/core'
+import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations'
 import { RouterModule } from '@angular/router'
 
 import { faPersonBooth, faPlusCircle, faWrench } from '@fortawesome/free-solid-svg-icons'
@@ -12,21 +14,27 @@ export default {
   title: 'Widget/Components/Content/TileList',
   component: WidgetTileListComponent,
   decorators: [
+    applicationConfig({
+      providers: [
+        provideAnimations(),
+        importProvidersFrom(
+          RouterModule.forRoot([], { useHash: true }),
+        ),
+      ],
+    }),
     moduleMetadata({
       imports: [
         TheSeamWidgetModule,
-        BrowserAnimationsModule,
-        RouterModule.forRoot([], { useHash: true })
-      ]
-    })
-  ]
+      ],
+    }),
+  ],
 } as Meta
 
-export const Basic: Story = (args) => ({
+export const Basic: Story = args => ({
   props: {
     ...args,
     icon: faWrench,
-    icons: [ faPersonBooth, faWrench, faPersonBooth, faPlusCircle ]
+    icons: [ faPersonBooth, faWrench, faPersonBooth, faPlusCircle ],
   },
   template: `
     <div class="p-1" style="max-height: 400px; width: 500px;">
@@ -40,5 +48,5 @@ export const Basic: Story = (args) => ({
           </seam-widget-tile-group>
         </seam-widget-tile-list>
       </seam-widget>
-    </div>`
+    </div>`,
 })

@@ -1,6 +1,8 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular'
+import { applicationConfig } from '@storybook/angular/dist/client/decorators'
 
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { importProvidersFrom } from '@angular/core'
+import { provideAnimations } from '@angular/platform-browser/animations'
 import { RouterModule } from '@angular/router'
 
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons'
@@ -16,22 +18,28 @@ export default {
   title: 'Widget/Components/Content/Button Group',
   component: WidgetButtonGroupComponent,
   decorators: [
+    applicationConfig({
+      providers: [
+        provideAnimations(),
+        importProvidersFrom(
+          RouterModule.forRoot([], { useHash: true }),
+        ),
+      ],
+    }),
     moduleMetadata({
       imports: [
-        BrowserAnimationsModule,
-        RouterModule.forRoot([], { useHash: true }),
         TheSeamWidgetModule,
         TheSeamButtonsModule,
-        TheSeamIconModule
-      ]
-    })
-  ]
+        TheSeamIconModule,
+      ],
+    }),
+  ],
 } as Meta
 
 export const Basic: Story = () => ({
   props: {
     icon: faWrench,
-    faEnvelope: faEnvelope
+    faEnvelope,
   },
   template: `
     <div class="p-1" style="max-height: 400px; width: 500px;">
@@ -42,5 +50,5 @@ export const Basic: Story = () => ({
           </button>
         </seam-widget-button-group>
       </seam-widget>
-    </div>`
+    </div>`,
 })

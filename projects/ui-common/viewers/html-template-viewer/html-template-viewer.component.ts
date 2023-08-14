@@ -29,7 +29,7 @@ export class TheSeamHtmlTemplateViewerComponent implements OnInit, OnDestroy {
   private readonly _templateMessageHandlers: { [key in TemplateMessageType]: (payload: any) => void }
 
   private _message: string | undefined | null
-  private _dataVersion: number = 0
+  private _dataVersion = 0
   private _scrollHandleObserver: MutationObserver | null = null
 
   @Input()
@@ -65,7 +65,7 @@ export class TheSeamHtmlTemplateViewerComponent implements OnInit, OnDestroy {
     }
   }
 
-  _scrollable: boolean = false
+  _scrollable = false
 
   @ViewChild('iframeElement', { static: true })
   set iframeElementRef(val: ElementRef<HTMLIFrameElement>) {
@@ -88,9 +88,9 @@ export class TheSeamHtmlTemplateViewerComponent implements OnInit, OnDestroy {
     }
   }
 
-  _mouseBlockActive: boolean = false
-  _mouseBlockWidth: string = '100%'
-  _mouseBlockHeight: string = '100%'
+  _mouseBlockActive = false
+  _mouseBlockWidth = '100%'
+  _mouseBlockHeight = '100%'
 
   constructor(
     private readonly _ngZone: NgZone,

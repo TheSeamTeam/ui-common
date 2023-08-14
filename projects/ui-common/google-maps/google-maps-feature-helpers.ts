@@ -55,7 +55,15 @@ export function getPossibleExteriorFeature(
 ): google.maps.Data.Feature | undefined {
   let exteriorPolygonFeature: google.maps.Data.Feature | undefined
   data.forEach(f => {
-    if (f !== feature && (f.getGeometry().getType() === 'Polygon' && featureContains(f, feature))) {
+    if (f === feature) {
+      return
+    }
+
+    const geometry = f.getGeometry()
+    if (geometry === null) {
+      throw Error(`Geometry not found.`)
+    }
+    if (geometry.getType() === 'Polygon' && featureContains(f, feature)) {
       exteriorPolygonFeature = f
     }
   })
@@ -66,15 +74,23 @@ export function addInnerFeatureCutoutToExteriorFeature(
   exteriorFeature: google.maps.Data.Feature,
   innerFeature: google.maps.Data.Feature
 ): void {
+  const exteriorGeometry = exteriorFeature.getGeometry()
+  if (exteriorGeometry === null) {
+    throw Error(`Geometry not found.`)
+  }
+  const innerGeometry = innerFeature.getGeometry()
+  if (innerGeometry === null) {
+    throw Error(`Geometry not found.`)
+  }
   // NOTE: Other geometries may support cutouts, but our map shapes editor only
   // supports polygons currently, so we will need to handle other geometry types
   // here if we start allowing users to draw shapes other than polygon.
-  if (exteriorFeature.getGeometry().getType() !== 'Polygon' || innerFeature.getGeometry().getType() !== 'Polygon') {
+  if (exteriorGeometry.getType() !== 'Polygon' || innerGeometry.getType() !== 'Polygon') {
     throw Error(`Inner cutout is only supported by Polygon gemoetry.`)
   }
 
-  const featurePolygon = innerFeature.getGeometry() as google.maps.Data.Polygon
-  const exteriorPolygon = exteriorFeature.getGeometry() as google.maps.Data.Polygon
+  const featurePolygon = innerGeometry as google.maps.Data.Polygon
+  const exteriorPolygon = exteriorGeometry as google.maps.Data.Polygon
   exteriorFeature.setGeometry(new google.maps.Data.Polygon([
     ...exteriorPolygon.getArray(),
     featurePolygon.getAt(0).getArray().reverse()
@@ -130,10 +146,14 @@ export function toTurfJsMultiPolygon(multiPolygon: google.maps.Data.MultiPolygon
 }
 
 export function toTurfJsFeature(googleFeature: google.maps.Data.Feature) {
-  if (googleFeature.getGeometry().getType() === 'Polygon') {
-    return toTurfJsPolygon(googleFeature.getGeometry() as google.maps.Data.Polygon)
-  } else if (googleFeature.getGeometry().getType() === 'MultiPolygon') {
-    return toTurfJsMultiPolygon(googleFeature.getGeometry() as google.maps.Data.MultiPolygon)
+  const geometry = googleFeature.getGeometry()
+  if (geometry === null) {
+    throw Error(`Geometry not found.`)
+  }
+  if (geometry.getType() === 'Polygon') {
+    return toTurfJsPolygon(geometry as google.maps.Data.Polygon)
+  } else if (geometry.getType() === 'MultiPolygon') {
+    return toTurfJsMultiPolygon(geometry as google.maps.Data.MultiPolygon)
   }
 
   throw Error(`Unexpected geometry.`)
@@ -157,6 +177,9 @@ export function getBoundsWithAllFeatures(data: google.maps.Data): google.maps.La
 
   data.forEach(feature => {
     const geometry = feature.getGeometry()
+    if (geometry === null) {
+      throw Error(`Geometry not found.`)
+    }
     geometry.forEachLatLng(latLng => {
       bounds.extend(latLng)
     })
@@ -169,6 +192,9 @@ export function getFeatureBounds(feature: google.maps.Data.Feature): google.maps
   const bounds = new google.maps.LatLngBounds()
 
   const geometry = feature.getGeometry()
+  if (geometry === null) {
+    throw Error(`Geometry not found.`)
+  }
   geometry.forEachLatLng(latLng => {
     bounds.extend(latLng)
   })

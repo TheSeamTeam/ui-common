@@ -1,7 +1,7 @@
 import { animate, animation, query, stagger, style, transition, trigger, useAnimation } from '@angular/animations'
 import { BooleanInput, coerceArray } from '@angular/cdk/coercion'
 import { Platform } from '@angular/cdk/platform'
-import { ChangeDetectorRef, Component, ContentChildren, ElementRef, EventEmitter, forwardRef, Input, OnInit, Output, QueryList, Renderer2 } from '@angular/core'
+import { ChangeDetectorRef, Component, ContentChildren, ElementRef, EventEmitter, forwardRef, Input, Output, QueryList, Renderer2 } from '@angular/core'
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
 
 import { InputBoolean } from '@theseam/ui-common/core'
@@ -19,7 +19,6 @@ export const slideEnterAnimation = animation([
 
 export const TILED_SELECT_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
-  // tslint:disable-next-line:no-use-before-declare
   useExisting: forwardRef(() => TheSeamTiledSelectComponent),
   multi: true,
 }
@@ -40,7 +39,7 @@ export const TILED_SELECT_VALUE_ACCESSOR: any = {
     ])
   ],
 })
-export class TheSeamTiledSelectComponent implements OnInit, ControlValueAccessor {
+export class TheSeamTiledSelectComponent implements ControlValueAccessor {
   static ngAcceptInputType_val: BooleanInput
   static ngAcceptInputType_disabled: BooleanInput
   static ngAcceptInputType_multiple: BooleanInput
@@ -79,16 +78,17 @@ export class TheSeamTiledSelectComponent implements OnInit, ControlValueAccessor
   }
   private _tiles: ITiledSelectItem[] = []
 
-  // tslint:disable-next-line:no-input-rename
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('value') val: string | string[] | undefined
 
-  @Input() @InputBoolean() disabled: boolean = false
-  @Input() @InputBoolean() multiple: boolean = false
-  @Input() @InputBoolean() selectionToggleable: boolean = true
-  @Input() @InputBoolean() tileBackdrop: boolean = false
-  @Input() @InputBoolean() showSelectedIcon: boolean = true
+  @Input() @InputBoolean() disabled = false
+  @Input() @InputBoolean() multiple = false
+  @Input() @InputBoolean() selectionToggleable = true
+  @Input() @InputBoolean() tileBackdrop = false
+  @Input() @InputBoolean() showSelectedIcon = true
   @Input() @InputBoolean() animationsDisabled: boolean = this._platform.IOS
 
+  // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() readonly change = new EventEmitter<string | string[] | undefined>()
 
   tilesAnimationState = false
@@ -106,14 +106,12 @@ export class TheSeamTiledSelectComponent implements OnInit, ControlValueAccessor
     private readonly _elementRef: ElementRef
   ) { }
 
-  ngOnInit() { }
-
   get value(): string | string[] | undefined {
     return this.val
   }
 
   set value(value: string | string[] | undefined) {
-    this.val = (this.multiple) ? [ ...(<string[]>value || []) ] : value || ''
+    this.val = (this.multiple) ? [ ...(value as string[] || []) ] : value || ''
 
     this._renderer.setProperty(this._elementRef.nativeElement, 'value', this.val)
 
@@ -178,7 +176,7 @@ export class TheSeamTiledSelectComponent implements OnInit, ControlValueAccessor
   public selectTile(tile: ITiledSelectItem): void {
     if (this.multiple) {
       if (!this.isSelected(tile)) {
-        const value: string[] = <string[]>this.value || []
+        const value: string[] = this.value as string[] || []
         this.value = [ ...coerceArray(value), tile.value ]
       }
     } else {
@@ -188,7 +186,7 @@ export class TheSeamTiledSelectComponent implements OnInit, ControlValueAccessor
 
   public unselectTile(tile: ITiledSelectItem): void {
     if (this.multiple) {
-      const value: string[] = <string[]>this.value || []
+      const value: string[] = this.value as string[] || []
       this.value = value.filter(v => v !== tile.value)
     } else {
       this.value = undefined

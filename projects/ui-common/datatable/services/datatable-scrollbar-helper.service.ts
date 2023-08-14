@@ -24,7 +24,7 @@ export class TheSeamDatatableScrollbarHelperService {
   onInitScroller(scroller: any): void {
     this._scrollbars.initializeInstance(scroller.parentElement, {
       callbacks: {
-        onScroll: (e) => {
+        onScroll: e => {
           this._ngZone.run(() => {
             scroller.onScrolled(e)
           })

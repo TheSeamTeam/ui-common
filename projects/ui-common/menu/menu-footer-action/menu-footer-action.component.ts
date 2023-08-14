@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, Input } fr
 // TODO: Split up the button and anchor classes.
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'button[seamMenuFooterAction],a[seamMenuFooterAction]',
   templateUrl: './menu-footer-action.component.html',
   styleUrls: ['./menu-footer-action.component.scss'],

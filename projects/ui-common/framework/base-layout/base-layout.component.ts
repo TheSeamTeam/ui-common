@@ -139,6 +139,7 @@ export class TheSeamBaseLayoutComponent implements OnInit, ITheSeamBaseLayoutRef
     const actions = this._registeredActions.value
     if (actions.findIndex(a => a.name === action.name) !== -1) {
       if (isDevMode()) {
+        // eslint-disable-next-line no-console
         console.warn(
           `[TheSeamBaseLayoutComponent] registerAction(): Action ${action.name} not ` +
           'registered, because another action by that name is already registered.'

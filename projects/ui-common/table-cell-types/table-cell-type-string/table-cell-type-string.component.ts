@@ -17,7 +17,6 @@ import { TableComponent } from '@theseam/ui-common/table'
 import { TableCellTypesHelpersService, TABLE_CELL_DATA } from '@theseam/ui-common/table-cell-type'
 import type { TableCellData, TheSeamTableColumn } from '@theseam/ui-common/table-cell-type'
 
-
 import { TableCellTypeConfigString, TableCellTypeStringConfigAction } from './table-cell-type-string-config'
 
 export type StringTemplateType = 'default' | 'link' | 'link-external' | 'link-encrypted' | 'button'
@@ -31,7 +30,7 @@ export type StringTemplateType = 'default' | 'link' | 'link-external' | 'link-en
 })
 export class TableCellTypeStringComponent implements OnInit, OnDestroy {
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   @Input()
   get value() { return this._value }
@@ -110,8 +109,8 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
 
     this.value = _data && _data.value
     this._colData = _data && _data.colData
-    if (_data && _data.colData && (<any>_data.colData).cellTypeConfig) {
-      this.config = (<any>_data.colData).cellTypeConfig
+    if (_data && _data.colData && (_data.colData as any).cellTypeConfig) {
+      this.config = (_data.colData as any).cellTypeConfig
     }
   }
 
@@ -121,12 +120,12 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
       _data.changed
         .pipe(takeUntil(this._ngUnsubscribe))
         .subscribe(v => {
-          if (v.changes.hasOwnProperty('value')) {
+          if (Object.prototype.hasOwnProperty.call(v.changes, 'value')) {
             this.value = v.changes.value.currentValue
             this._cdf.markForCheck()
           }
 
-          if (v.changes.hasOwnProperty('colData')) {
+          if (Object.prototype.hasOwnProperty.call(v.changes, 'colData')) {
             const colData = v.changes.colData.currentValue
             if (colData && colData.cellTypeConfig !== this.config) {
               this.config = colData.cellTypeConfig
@@ -135,7 +134,8 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
             }
             this._cdf.markForCheck()
           } else {
-            if (v.changes.hasOwnProperty('row')) {
+            if (Object.prototype.hasOwnProperty.call(v.changes, 'row')) {
+              // eslint-disable-next-line no-self-assign
               this.config = this.config
               this._cdf.markForCheck()
             }
@@ -145,14 +145,14 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 
   public setAction(configAction?: TableCellTypeStringConfigAction) {
     let newTplType: StringTemplateType = 'default'
     let link: string | undefined
-    let download: boolean = false
+    let download = false
     let detectMimeContent = false
     let queryParams: { [k: string]: any } | undefined
 
@@ -212,6 +212,7 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
       this._tableCellTypeHelpers.handleModalAction(this._buttonAction, contextFn)
         .subscribe(
           r => {},
+          // eslint-disable-next-line no-console
           err => console.error(err),
           () => this._actionRefreshRequest()
         )

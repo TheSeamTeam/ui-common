@@ -8,8 +8,9 @@ describe('TableCellTypeDateComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ TableCellTypeDateComponent ]
-    })
+    declarations: [TableCellTypeDateComponent],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents()
   }))
 

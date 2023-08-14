@@ -1,13 +1,16 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular'
 
 import { APP_BASE_HREF } from '@angular/common'
-import { Component, Directive, Input } from '@angular/core'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { Component, Directive, importProvidersFrom, Input } from '@angular/core'
+import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations'
 import { Router, RouterModule } from '@angular/router'
+import { applicationConfig } from '@storybook/angular/dist/client/decorators'
 
 import { faBuilding } from '@fortawesome/free-regular-svg-icons'
 import { faSignature } from '@fortawesome/free-solid-svg-icons'
 
+import { StoryInitialRouteModule } from '@theseam/ui-common/story-helpers'
+import { THESEAM_SIDE_NAV_ACCESSOR } from '../side-nav-tokens'
 import { SideNavComponent } from '../side-nav.component'
 import { TheSeamSideNavModule } from '../side-nav.module'
 import { SideNavItemComponent } from './side-nav-item.component'
@@ -32,36 +35,49 @@ export default {
   title: 'Framework/SideNav/Item/Link',
   component: SideNavItemComponent,
   decorators: [
+    applicationConfig({
+      providers: [
+        provideAnimations(),
+        { provide: APP_BASE_HREF, useValue: '/' },
+      ],
+    }),
     moduleMetadata({
       declarations: [
         StoryRoutePlacholderComponent
       ],
       imports: [
-        BrowserAnimationsModule,
         TheSeamSideNavModule
       ],
       providers: [
-        { provide: APP_BASE_HREF, useValue: '/' },
-        { provide: SideNavComponent, useClass: MockSideNavComponent }
-      ]
-    })
+        { provide: THESEAM_SIDE_NAV_ACCESSOR, useClass: MockSideNavComponent },
+      ],
+    }),
   ],
   parameters: {
     layout: 'fullscreen',
-  }
+  },
 } as Meta
 
-export const NoChildren: Story = (args) => ({
+export const NoChildren: Story = args => ({
+  applicationConfig: {
+    providers: [
+      provideAnimations(),
+      importProvidersFrom(
+        RouterModule.forRoot([
+          { path: 'example1', component: StoryRoutePlacholderComponent },
+          { path: 'example2', component: StoryRoutePlacholderComponent },
+        ], { useHash: true }),
+        StoryInitialRouteModule.forRoot('/example1'),
+      ),
+    ],
+  },
   moduleMetadata: {
     declarations: [
-      StoryNavToggleDirective
+      StoryNavToggleDirective,
     ],
     imports: [
-      RouterModule.forRoot([
-        { path: 'example1', component: StoryRoutePlacholderComponent },
-        { path: 'example2', component: StoryRoutePlacholderComponent }
-      ], { useHash: true })
-    ]
+      RouterModule,
+    ],
   },
   props: {
     currentUrl: 'example2',
@@ -97,20 +113,29 @@ export const NoChildren: Story = (args) => ({
   `
 })
 
-export const WithChildren: Story = (args) => ({
+export const WithChildren: Story = args => ({
+  applicationConfig: {
+    providers: [
+      provideAnimations(),
+      importProvidersFrom(
+        RouterModule.forRoot([
+          { path: 'example1', component: StoryRoutePlacholderComponent },
+          { path: 'example1/example1.1', component: StoryRoutePlacholderComponent },
+          { path: 'example1/example1.2', component: StoryRoutePlacholderComponent },
+          { path: 'example1/example1.3', component: StoryRoutePlacholderComponent },
+          { path: 'example2', component: StoryRoutePlacholderComponent },
+        ], { useHash: true }),
+        StoryInitialRouteModule.forRoot('/example1'),
+      ),
+    ],
+  },
   moduleMetadata: {
     declarations: [
       StoryNavToggleDirective
     ],
     imports: [
-      RouterModule.forRoot([
-        { path: 'example1', component: StoryRoutePlacholderComponent },
-        { path: 'example1/example1.1', component: StoryRoutePlacholderComponent },
-        { path: 'example1/example1.2', component: StoryRoutePlacholderComponent },
-        { path: 'example1/example1.3', component: StoryRoutePlacholderComponent },
-        { path: 'example2', component: StoryRoutePlacholderComponent },
-      ], { useHash: true })
-    ]
+      RouterModule,
+    ],
   },
   props: {
     currentUrl: 'example1',
@@ -137,7 +162,7 @@ export const WithChildren: Story = (args) => ({
         label: 'Example 1.3',
         link: 'example1/example1.3'
       },
-    ]
+    ],
   },
   template: `
     <div class="d-flex flex-row vh-100" [storyNavToggle]="currentUrl">
@@ -161,5 +186,5 @@ export const WithChildren: Story = (args) => ({
           <a routerLink="/example2">Set Route: '/example2'</a><br>
         </div>
       </div>
-    </div>`
+    </div>`,
 })

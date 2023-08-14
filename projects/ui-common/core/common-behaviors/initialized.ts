@@ -9,7 +9,6 @@
 import { Observable, Subscriber } from 'rxjs'
 import { Constructor } from './constructor'
 
-
 /**
  * Mixin that adds an initialized property to a directive which, when subscribed to, will emit a
  * value once markInitialized has been called, which should be done during the ngOnInit function.
@@ -33,7 +32,7 @@ export interface HasInitialized {
 export type HasInitializedCtor = Constructor<HasInitialized>
 
 /** Mixin to augment a directive with an initialized property that will emits when ngOnInit ends. */
-export function mixinInitialized<T extends Constructor<{}>>(base: T):
+export function mixinInitialized<T extends Constructor<object>>(base: T):
     HasInitializedCtor & T {
   return class extends base {
     /** Whether this directive has been marked as initialized. */
@@ -62,6 +61,7 @@ export function mixinInitialized<T extends Constructor<{}>>(base: T):
       }
     })
 
+    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor(...args: any[]) { super(...args) }
 
     /**

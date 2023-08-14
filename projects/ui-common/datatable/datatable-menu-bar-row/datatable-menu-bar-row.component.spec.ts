@@ -8,8 +8,9 @@ describe('DatatableMenuBarRowComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ DatatableMenuBarRowComponent ]
-    })
+    declarations: [DatatableMenuBarRowComponent],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents()
   }))
 

@@ -8,8 +8,9 @@ describe('WidgetFooterComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ WidgetFooterComponent ]
-    })
+    declarations: [WidgetFooterComponent],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents()
   }))
 

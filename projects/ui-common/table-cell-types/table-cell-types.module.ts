@@ -63,30 +63,27 @@ const cellTypeProviders = [
 ]
 
 @NgModule({
-  declarations: [
-    ...cellTypeComponents
-  ],
-  imports: [
-    CommonModule,
-    NgbTooltipModule,
-    RouterModule,
-    TheSeamSharedModule,
-    TheSeamIconModule,
-    PortalModule,
-    TheSeamPopoverModule,
-    TheSeamProgressModule,
-    TheSeamTelInputModule,
-    TheSeamAssetReaderModule,
-    TheSeamTableCellTypeModule
-  ],
-  providers: [
-    ...cellTypeProviders
-  ],
-  exports: [
-    ...cellTypeComponents
-  ],
-  entryComponents: [
-    ...cellTypeComponents
-  ]
+    declarations: [
+        ...cellTypeComponents
+    ],
+    imports: [
+        CommonModule,
+        NgbTooltipModule,
+        RouterModule,
+        TheSeamSharedModule,
+        TheSeamIconModule,
+        PortalModule,
+        TheSeamPopoverModule,
+        TheSeamProgressModule,
+        TheSeamTelInputModule,
+        TheSeamAssetReaderModule,
+        TheSeamTableCellTypeModule
+    ],
+    providers: [
+        ...cellTypeProviders
+    ],
+    exports: [
+        ...cellTypeComponents
+    ]
 })
 export class TheSeamTableCellTypesModule { }

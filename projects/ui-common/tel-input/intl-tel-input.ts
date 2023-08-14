@@ -12,7 +12,7 @@ import intlTelInput from 'intl-tel-input'
 /**
  * Partial types for intl-tel-input-utils
  */
-// tslint:disable-next-line: no-namespace
+// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace intlTelInputUtils {
 
   export interface CountryData {
@@ -113,7 +113,7 @@ export interface IntlTelInputUtilsScript {
 /**
  * Partial types for intl-tel-input
  */
-// tslint:disable-next-line: no-namespace
+// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace IntlTelInput {
   export interface Static {
     /**

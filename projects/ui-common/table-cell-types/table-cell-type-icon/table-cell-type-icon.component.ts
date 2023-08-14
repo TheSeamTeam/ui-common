@@ -6,7 +6,6 @@ import {
   Inject,
   Input,
   OnDestroy,
-  OnInit,
   Optional
 } from '@angular/core'
 import { Subject } from 'rxjs'
@@ -28,9 +27,9 @@ export type IconTemplateType = 'default' | 'link' | 'link-external' | 'link-encr
   styleUrls: ['./table-cell-type-icon.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnDestroy {
+export class TableCellTypeIconComponent<R = any, V = any> implements OnDestroy {
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   @Input()
   get value() { return this._value }
@@ -78,7 +77,7 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
   _tooltipClass?: string
   _tooltipPlacement?: string
   _tooltipContainer?: string
-  _tooltipDisabled: boolean = true
+  _tooltipDisabled = true
 
   _buttonAction?: TableCellTypeIconConfigAction
 
@@ -115,21 +114,21 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
 
     this.value = _data && _data.value
     this._colData = _data && _data.colData
-    if (_data && _data.colData && (<any>_data.colData).cellTypeConfig) {
-      this.config = (<any>_data.colData).cellTypeConfig
+    if (_data && _data.colData && (_data.colData as any).cellTypeConfig) {
+      this.config = (_data.colData as any).cellTypeConfig
     }
 
     if (_data) {
       _data.changed
         .pipe(takeUntil(this._ngUnsubscribe))
         .subscribe(v => {
-          if (v.changes.hasOwnProperty('value')) {
+          if (Object.prototype.hasOwnProperty.call(v.changes, 'value')) {
             this.value = v.changes.value.currentValue
             this.config = this._config
             this._cdf.markForCheck()
           }
 
-          if (v.changes.hasOwnProperty('colData')) {
+          if (Object.prototype.hasOwnProperty.call(v.changes, 'colData')) {
             const colData = v.changes.colData.currentValue
             if (colData && colData.cellTypeConfig !== this.config) {
               this.config = colData.cellTypeConfig
@@ -138,8 +137,7 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
             }
             this._cdf.markForCheck()
           } else {
-            if (v.changes.hasOwnProperty('row')) {
-              this.config = this.config
+            if (Object.prototype.hasOwnProperty.call(v.changes, 'row')) {
               this._cdf.markForCheck()
             }
           }
@@ -147,17 +145,15 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
     }
   }
 
-  ngOnInit() { }
-
   ngOnDestroy() {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 
   public setAction(configAction?: TableCellTypeIconConfigAction) {
     let newTplType: IconTemplateType = 'default'
     let link: string | undefined
-    let download: boolean = false
+    let download = false
     let detectMimeContent = false
     let target: string | undefined
     let queryParams: { [l: string]: any } | undefined
@@ -199,6 +195,7 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnInit, OnD
       this._tableCellTypeHelpers.handleModalAction(this._buttonAction, contextFn)
         .subscribe(
           r => {},
+          // eslint-disable-next-line no-console
           err => console.error(err),
           () => this._actionRefreshRequest()
         )

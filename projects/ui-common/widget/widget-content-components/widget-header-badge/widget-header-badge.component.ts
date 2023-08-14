@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, Input, OnInit, Renderer2, ViewEncapsulation } from '@angular/core'
+import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, Input, Renderer2, ViewEncapsulation } from '@angular/core'
 
 import {
   CanThemeCtor,
@@ -13,7 +13,7 @@ class WidgetHeaderBadgeBase {
 
 }
 
-const _WidgetHeaderBadgeMixinBase:  CanThemeCtor &
+const _WidgetHeaderBadgeMixinBase: CanThemeCtor &
     typeof WidgetHeaderBadgeBase = mixinTheme(WidgetHeaderBadgeBase, 'badge')
 
 @Component({
@@ -29,12 +29,11 @@ const _WidgetHeaderBadgeMixinBase:  CanThemeCtor &
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WidgetHeaderBadgeComponent extends _WidgetHeaderBadgeMixinBase implements OnInit {
+export class WidgetHeaderBadgeComponent extends _WidgetHeaderBadgeMixinBase {
 
+  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(
     _elementRef: ElementRef
   ) { super(_elementRef) }
-
-  ngOnInit() { }
 
 }

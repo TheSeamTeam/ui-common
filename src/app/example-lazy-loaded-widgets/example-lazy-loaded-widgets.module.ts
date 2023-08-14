@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 
-import { IDynamicComponentManifest, TheSeamDynamicComponentLoaderModule } from '@theseam/ui-common/dynamic-component-loader'
+import { DynamicComponentManifest, TheSeamDynamicComponentLoaderModule } from '@theseam/ui-common/dynamic-component-loader'
 
 import { ExampleLazyLoadedWidgetsComponent } from './example-lazy-loaded-widgets.component'
 
 // This array defines which "componentId" maps to which lazy-loaded module.
-const manifests: IDynamicComponentManifest[] = [
+const manifests: DynamicComponentManifest[] = [
   {
     componentId: 'widget-one',
     path: 'widget-one',

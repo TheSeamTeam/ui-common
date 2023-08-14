@@ -1,5 +1,5 @@
 import { formatNumber } from '@angular/common'
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core'
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnDestroy, Optional } from '@angular/core'
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
 
@@ -16,9 +16,9 @@ import { TableCellTypeConfigDecimal } from './table-cell-type-decimal-config'
   styleUrls: ['./table-cell-type-decimal.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TableCellTypeDecimalComponent implements OnInit, OnDestroy {
+export class TableCellTypeDecimalComponent implements OnDestroy {
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   @Input() value: string | undefined | null
 
@@ -43,12 +43,12 @@ export class TableCellTypeDecimalComponent implements OnInit, OnDestroy {
       tableData.changed
         .pipe(takeUntil(this._ngUnsubscribe))
         .subscribe(v => {
-          if (v.changes.hasOwnProperty('value')) {
+          if (Object.prototype.hasOwnProperty.call(v.changes, 'value')) {
             this.value = this._formatDecimal(v.changes.value.currentValue, tableData)
             this._cdf.markForCheck()
           }
 
-          if (v.changes.hasOwnProperty('colData')) {
+          if (Object.prototype.hasOwnProperty.call(v.changes, 'colData')) {
             this.colData = v.changes.colData.currentValue
             this._cdf.markForCheck()
           }
@@ -56,20 +56,19 @@ export class TableCellTypeDecimalComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit() {}
-
   ngOnDestroy() {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 
   private _formatDecimal(currentValue?: any, tableData?: TableCellData<'decimal', TableCellTypeConfigDecimal> | undefined): string {
     const config = tableData?.colData?.cellTypeConfig
-    const defaultToEmpty = notNullOrUndefined(config?.defaultToEmpty) ?
-      this._parseConfigValue(coerceBooleanProperty(config?.defaultToEmpty), tableData) : true
-    const formatDecimal = notNullOrUndefined(config?.formatNumber) ?
-      this._parseConfigValue(coerceBooleanProperty(config?.formatNumber), tableData) : true
-    const valueIsNumeric = isNumeric(currentValue)
+    const defaultToEmpty = notNullOrUndefined(config?.defaultToEmpty)
+      ? this._parseConfigValue(coerceBooleanProperty(config?.defaultToEmpty), tableData) : true
+    const formatDecimal = notNullOrUndefined(config?.formatNumber)
+      ? this._parseConfigValue(coerceBooleanProperty(config?.formatNumber), tableData) : true
+    let _currentValue = currentValue
+    const valueIsNumeric = isNumeric(_currentValue)
 
     // unparseable values are OK to return as long as we're not trying to format them
     if (!valueIsNumeric && formatDecimal) {
@@ -78,7 +77,7 @@ export class TableCellTypeDecimalComponent implements OnInit, OnDestroy {
         return ''
       } else {
         // set non-numeric value to 0 so it can be formatted the same as other numbers
-        currentValue = 0
+        _currentValue = 0
       }
     }
 
@@ -86,9 +85,9 @@ export class TableCellTypeDecimalComponent implements OnInit, OnDestroy {
     const minIntegerDigits = this._parseConfigValue(config?.minIntegerDigits, tableData) || 1
     const minFractionDigits = this._parseConfigValue(config?.minFractionDigits, tableData) || 0
     const maxFractionDigits = this._parseConfigValue(config?.maxFractionDigits, tableData) || 3
-    const format = `${ minIntegerDigits }.${ minFractionDigits }-${ maxFractionDigits }`
+    const format = `${minIntegerDigits}.${minFractionDigits}-${maxFractionDigits}`
 
-    return formatDecimal ? formatNumber(currentValue, locale, format) : currentValue
+    return formatDecimal ? formatNumber(_currentValue, locale, format) : _currentValue
   }
 
   private _parseConfigValue(val?: any, tableData?: TableCellData<'decimal', TableCellTypeConfigDecimal>) {

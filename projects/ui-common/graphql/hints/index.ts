@@ -31,4 +31,3 @@ export * from './transformers/remove-not-defined.transformer'
 
 export * from './inline-variable.hint-def'
 export * from './remove-not-defined.hint-def'
-

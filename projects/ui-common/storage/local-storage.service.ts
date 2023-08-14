@@ -51,7 +51,7 @@ export class LocalStorageService implements ILocalStorageService {
    * class instance.
    */
   public select(key: string, defaultValue: string | null = null): Observable<string | null> {
-    if (this.subjects.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(this.subjects, key)) {
       return this.subjects[key]
     }
 
@@ -66,7 +66,7 @@ export class LocalStorageService implements ILocalStorageService {
 
   /** Get a localStorage item. */
   public get(key: string, defaultValue: string | null = null): string | null {
-    if (this.subjects.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(this.subjects, key)) {
       return this.subjects[key].value
     }
 
@@ -83,7 +83,7 @@ export class LocalStorageService implements ILocalStorageService {
   public set(key: string, value: string): void {
     this._localStorage.setItem(key, value)
 
-    if (this.subjects.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(this.subjects, key)) {
       this.subjects[key].next(value)
     }
   }
@@ -92,7 +92,7 @@ export class LocalStorageService implements ILocalStorageService {
   public remove(key: string): void {
     this._localStorage.removeItem(key)
 
-    if (this.subjects.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(this.subjects, key)) {
       this.subjects[key].next(null)
     }
   }

@@ -4,8 +4,6 @@ import { RouterModule } from '@angular/router'
 
 import { HierarchyRouterOutletComponent } from './hierarchy-router-outlet/hierarchy-router-outlet.component'
 
-
-
 @NgModule({
   declarations: [
     HierarchyRouterOutletComponent

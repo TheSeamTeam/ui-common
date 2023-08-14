@@ -280,7 +280,7 @@ export class ColumnsManagerService {
     return columns.find(c => getColumnProp(c) === prop)
   }
 
-  private _getDifMapForColumnsType(columnsType: ColumnsTypes): Map<TableColumnProp, KeyValueDiffer<any, any>>  {
+  private _getDifMapForColumnsType(columnsType: ColumnsTypes): Map<TableColumnProp, KeyValueDiffer<any, any>> {
     switch (columnsType) {
       case ColumnsTypes.Input: return this._inpColDiffersMap
       case ColumnsTypes.Template: return this._tplColDiffersMap
@@ -324,7 +324,7 @@ export class ColumnsManagerService {
     col: TheSeamDatatableColumn | DatatableColumnComponent
   ): void {
     colDif.forEachRemovedItem(r => {
-      if (internalColumn && internalColumn.hasOwnProperty(r.key)) {
+      if (internalColumn && Object.prototype.hasOwnProperty.call(internalColumn, r.key)) {
         const k = r.key as keyof TableColumn
         delete internalColumn[k]
       }

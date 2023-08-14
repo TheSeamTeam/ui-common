@@ -16,7 +16,7 @@ export class FormFieldErrorDirective {
 
   @Input() seamFormFieldError: string | undefined | null
 
-  @Input() @InputBoolean() external: boolean = false
+  @Input() @InputBoolean() external = false
 
   constructor(public template: TemplateRef<any>) {}
 

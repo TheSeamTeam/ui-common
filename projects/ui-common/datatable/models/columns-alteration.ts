@@ -1,5 +1,5 @@
-import { TheSeamDatatableAccessor } from './datatable-accessor';
-import { TheSeamDatatableColumn } from './table-column';
+import { TheSeamDatatableAccessor } from './datatable-accessor'
+import { TheSeamDatatableColumn } from './table-column'
 
 export interface ColumnsAlterationState<TState = any> {
   readonly id: string

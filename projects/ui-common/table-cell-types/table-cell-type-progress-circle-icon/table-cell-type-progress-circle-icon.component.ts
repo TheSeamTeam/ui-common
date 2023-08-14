@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core'
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnDestroy, Optional } from '@angular/core'
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
 
@@ -14,9 +14,9 @@ import { TableCellTypeConfigProgressCircleIcon } from './table-cell-type-progres
   styleUrls: ['./table-cell-type-progress-circle-icon.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TableCellTypeProgressCircleIconComponent implements OnInit, OnDestroy {
+export class TableCellTypeProgressCircleIconComponent implements OnDestroy {
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   @Input() value: number | null | undefined
 
@@ -24,7 +24,7 @@ export class TableCellTypeProgressCircleIconComponent implements OnInit, OnDestr
   rowIndex?: number
   colData?: TheSeamTableColumn<'progress-circle-icon', TableCellTypeConfigProgressCircleIcon>
 
-  displayIcon: boolean = false
+  displayIcon = false
   icon?: SeamIcon
 
   constructor(
@@ -44,18 +44,18 @@ export class TableCellTypeProgressCircleIconComponent implements OnInit, OnDestr
       tableData.changed
         .pipe(takeUntil(this._ngUnsubscribe))
         .subscribe(v => {
-          if (v.changes.hasOwnProperty('value')) {
+          if (Object.prototype.hasOwnProperty.call(v.changes, 'value')) {
             this.value = v.changes.value.currentValue
             this._setIcon(tableData)
             this._cdf.markForCheck()
           }
 
-          if (v.changes.hasOwnProperty('colData')) {
+          if (Object.prototype.hasOwnProperty.call(v.changes, 'colData')) {
             this.colData = v.changes.colData.currentValue
             this._setIcon(tableData)
             this._cdf.markForCheck()
           } else {
-            if (v.changes.hasOwnProperty('row')) {
+            if (Object.prototype.hasOwnProperty.call(v.changes, 'row')) {
               this._setIcon(tableData)
               this._cdf.markForCheck()
             }
@@ -82,10 +82,8 @@ export class TableCellTypeProgressCircleIconComponent implements OnInit, OnDestr
     return this._tableCellTypeHelpers.parseValueProp(val, contextFn)
   }
 
-  ngOnInit() { }
-
   ngOnDestroy() {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

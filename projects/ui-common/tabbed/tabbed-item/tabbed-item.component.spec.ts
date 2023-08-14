@@ -11,8 +11,9 @@ describe('TabbedItemComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ TabbedItemComponent ]
-    })
+    declarations: [TabbedItemComponent],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents()
   }))
 

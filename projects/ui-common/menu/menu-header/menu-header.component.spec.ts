@@ -8,8 +8,9 @@ describe('MenuHeaderComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ MenuHeaderComponent ]
-    })
+    declarations: [MenuHeaderComponent],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents()
   }))
 

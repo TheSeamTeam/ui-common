@@ -13,10 +13,15 @@ import {
 } from './side-nav.models'
 
 export function isNavItemType(item: ISideNavItem, type: 'title'): item is ISideNavTitle
+// eslint-disable-next-line no-redeclare
 export function isNavItemType(item: ISideNavItem, type: 'divider'): item is ISideNavDivider
+// eslint-disable-next-line no-redeclare
 export function isNavItemType(item: ISideNavItem, type: 'basic'): item is ISideNavBasic
+// eslint-disable-next-line no-redeclare
 export function isNavItemType(item: ISideNavItem, type: 'link'): item is ISideNavLink
+// eslint-disable-next-line no-redeclare
 export function isNavItemType(item: ISideNavItem, type: 'button'): item is ISideNavButton
+// eslint-disable-next-line no-redeclare
 export function isNavItemType(item: ISideNavItem, type: string): item is ISideNavItem {
   return item.itemType === type
 }

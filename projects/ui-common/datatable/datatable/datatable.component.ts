@@ -207,15 +207,15 @@ export class DatatableComponent
 
   @Input() selected: any[] | undefined | null = []
 
-  @Input() @InputBoolean() externalPaging: boolean = false
-  @Input() @InputBoolean() externalSorting: boolean = false
-  @Input() @InputBoolean() externalFiltering: boolean = false
+  @Input() @InputBoolean() externalPaging = false
+  @Input() @InputBoolean() externalSorting = false
+  @Input() @InputBoolean() externalFiltering = false
 
   @Input() @InputNumber() limit: number | undefined
-  @Input() @InputNumber(0) count: number = 0
-  @Input() @InputNumber(0) offset: number = 0
+  @Input() @InputNumber(0) count = 0
+  @Input() @InputNumber(0) offset = 0
 
-  @Input() @InputBoolean() loadingIndicator: boolean = false
+  @Input() @InputBoolean() loadingIndicator = false
 
   @Input()
   get selectionType(): SelectionType | undefined | null { return this._columnsManager.getSelectionType() }
@@ -223,13 +223,13 @@ export class DatatableComponent
     this._columnsManager.setSelectionType(notNullOrUndefined(value) ? value : undefined)
   }
 
-  @Input() @InputBoolean() reorderable: boolean = true
-  @Input() @InputBoolean() swapColumns: boolean = false
+  @Input() @InputBoolean() reorderable = true
+  @Input() @InputBoolean() swapColumns = false
 
   @Input()
   get sortType(): SortType { return this._sortType }
   set sortType(value: SortType) {
-    if (notNullOrUndefined(value) && (value === SortType.single || value == SortType.multi)) {
+    if (notNullOrUndefined(value) && (value === SortType.single || value === SortType.multi)) {
       this._sortType = value
     } else {
       this._sortType = SortType.single
@@ -267,33 +267,33 @@ export class DatatableComponent
     selectedMessage: 'selected'
   }
 
-  @Input() rowIdentity: ((x: any) => any) | undefined | null = ((x: any) => x)
+  @Input() rowIdentity: ((x: any) => any) | undefined | null = (x: any) => x
 
   @Input() rowClass: any | undefined | null
 
   @Input() selectCheck: any | undefined | null
   @Input() displayCheck: ((row: any, column?: any, value?: any) => boolean) | undefined | null
 
-  @Input() @InputBoolean() groupExpansionDefault: boolean = false
+  @Input() @InputBoolean() groupExpansionDefault = false
 
   @Input() trackByProp: string | undefined | null
 
-  @Input() @InputBoolean() selectAllRowsOnPage: boolean = false
+  @Input() @InputBoolean() selectAllRowsOnPage = false
 
   @Input() treeFromRelation: string | undefined | null
   @Input() treeToRelation: string | undefined | null
-  @Input() @InputBoolean() summaryRow: boolean = false
-  @Input() @InputNumber() summaryHeight: number = 30
+  @Input() @InputBoolean() summaryRow = false
+  @Input() @InputNumber() summaryHeight = 30
   @Input() summaryPosition: string | undefined | null = 'top'
 
-  @Input() @InputBoolean() virtualization: boolean = true
+  @Input() @InputBoolean() virtualization = true
 
-  @Input() @InputNumber() headerHeight: number = 50
-  @Input() @InputNumber() rowHeight: number = 50
-  @Input() @InputNumber() footerHeight: number = 40
+  @Input() @InputNumber() headerHeight = 50
+  @Input() @InputNumber() rowHeight = 50
+  @Input() @InputNumber() footerHeight = 40
 
-  @Input() @InputBoolean() scrollbarV: boolean = true
-  @Input() @InputBoolean() scrollbarH: boolean = true
+  @Input() @InputBoolean() scrollbarV = true
+  @Input() @InputBoolean() scrollbarH = true
 
   @Input()
   set dataSource(value: DataSource<any> | any[] | undefined | null) {
@@ -318,12 +318,15 @@ export class DatatableComponent
   }
   private _actionItemColumnPosition: ActionItemColumnPosition | undefined = 'frozenRight'
 
+  // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() readonly scroll = new EventEmitter<any>()
   @Output() readonly activate = new EventEmitter<any>()
+  // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() readonly select = new EventEmitter<any>()
   @Output() readonly sort = new EventEmitter<SortEvent>()
   @Output() readonly page = new EventEmitter<TheSeamPageInfo>()
   @Output() readonly reorder = new EventEmitter<any>()
+  // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() readonly resize = new EventEmitter<any>()
   @Output() readonly tableContextmenu = new EventEmitter<{ event: MouseEvent, type: ContextmenuType, content: any }>(false)
   @Output() readonly treeAction = new EventEmitter<any>()
@@ -424,12 +427,12 @@ export class DatatableComponent
   // dblclick on the header reasize handles.
   @HostListener('dblclick', [ '$event' ])
   _dblClick(event: any) {
-    const isHandle = (<HTMLElement>event.target).classList.contains('resize-handle')
+    const isHandle = (event.target as HTMLElement).classList.contains('resize-handle')
     if (isHandle) {
-      const isResizeable = (<HTMLElement>event.target).parentElement?.classList.contains('resizeable')
+      const isResizeable = (event.target as HTMLElement).parentElement?.classList.contains('resizeable')
       if (isResizeable) {
         event.stopPropagation()
-        const id = (<HTMLElement>event.target).parentElement
+        const id = (event.target as HTMLElement).parentElement
           ?.querySelector('.datatable-column-header-separator')
           ?.getAttribute('data-column-id')
         this._columnsManager.columns$.pipe(
@@ -438,7 +441,7 @@ export class DatatableComponent
           const column = columns.find(c => c.$$id === id)
           if (column) {
             const columnProp = getColumnProp(column)
-            if (columnProp)  {
+            if (columnProp) {
               const alteration = new WidthColumnsAlteration({ columnProp, canAutoResize: true }, false)
               this._columnsAlterationsManager.add([ alteration ])
             }
@@ -487,7 +490,7 @@ export class DatatableComponent
           return of(undefined)
         }
         return this._preferences.preferences(prefsKey).pipe(
-          switchMap(async (preferences) => {
+          switchMap(async preferences => {
             await waitOnConditionAsync(() => this._preferences.loaded)
             return preferences
           }),
@@ -498,7 +501,9 @@ export class DatatableComponent
               alterations = mapColumnsAlterationsStates(preferences.alterations)
             } catch (e) {
               if (isDevMode()) {
+                // eslint-disable-next-line no-console
                 console.warn('Unable to map columns alterations states')
+                // eslint-disable-next-line no-console
                 console.warn(e)
               }
             }
@@ -657,7 +662,6 @@ export class DatatableComponent
         this._columnsAlterationsManager.add([ alteration ])
       }
     }
-
   }
 
   _onReorder(event: any): void {

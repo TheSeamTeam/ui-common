@@ -9,7 +9,6 @@
 import { Constructor } from './constructor'
 import { CanDisable } from './disabled'
 
-
 /** @docs-private */
 export interface HasTabIndex {
   /** Tabindex of the component. */
@@ -31,6 +30,7 @@ export function mixinTabIndex<T extends Constructor<CanDisable>>(base: T, defaul
       this._tabIndex = value != null ? value : defaultTabIndex
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor(...args: any[]) {
       super(...args)
     }

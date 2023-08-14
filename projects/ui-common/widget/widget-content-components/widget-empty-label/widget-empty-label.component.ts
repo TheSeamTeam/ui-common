@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostBinding, Input, OnInit, ViewEncapsulation } from '@angular/core'
+import { Component, ElementRef, HostBinding, Input, ViewEncapsulation } from '@angular/core'
 
 @Component({
   selector: 'seam-widget-empty-label,a[seam-widget-empty-label],button[seam-widget-empty-label]',
@@ -6,15 +6,15 @@ import { Component, ElementRef, HostBinding, Input, OnInit, ViewEncapsulation } 
   styleUrls: ['./widget-empty-label.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class WidgetEmptyLabelComponent implements OnInit {
+export class WidgetEmptyLabelComponent {
 
   private _type: string | undefined | null
 
   @HostBinding('class.btn')
-  get _btnCss() { return this._isButton() ? true : false }
+  get _btnCss() { return !!this._isButton() }
 
   @HostBinding('class.btn-link')
-  get _btnLinkCss() { return this._isButton() ? true : false }
+  get _btnLinkCss() { return !!this._isButton() }
 
   @HostBinding('attr.type')
   get _attrType() {
@@ -27,8 +27,6 @@ export class WidgetEmptyLabelComponent implements OnInit {
   constructor(
     public _elementRef: ElementRef<HTMLElement | HTMLAnchorElement | HTMLButtonElement>
   ) { }
-
-  ngOnInit() { }
 
   /** Determines if the component host is a button. */
   private _isButton(): boolean {

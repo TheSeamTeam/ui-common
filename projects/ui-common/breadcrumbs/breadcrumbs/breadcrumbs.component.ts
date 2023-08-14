@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core'
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core'
 import { Observable } from 'rxjs'
 
 import { TheSeamBreadcrumb } from '../breadcrumb'
@@ -11,7 +11,7 @@ import { TheSeamBreadcrumbsService } from '../breadcrumbs.service'
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BreadcrumbsComponent implements OnInit {
+export class BreadcrumbsComponent {
 
   public crumbs$: Observable<TheSeamBreadcrumb[]>
 
@@ -20,7 +20,5 @@ export class BreadcrumbsComponent implements OnInit {
   ) {
     this.crumbs$ = this._breadcrumbs.crumbs$
   }
-
-  ngOnInit() { }
 
 }

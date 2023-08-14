@@ -8,8 +8,9 @@ describe('TableCellTypeSelectorComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ TableCellTypeSelectorComponent ]
-    })
+    declarations: [TableCellTypeSelectorComponent],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents()
   }))
 

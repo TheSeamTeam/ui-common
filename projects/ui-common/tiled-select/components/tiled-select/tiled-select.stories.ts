@@ -1,7 +1,7 @@
 import { componentWrapperDecorator, Meta, moduleMetadata, Story } from '@storybook/angular'
 import { TheSeamTiledSelectHarness } from './../../testing/tiled-select-harness'
 
-import { FormControl, ReactiveFormsModule } from '@angular/forms'
+import { UntypedFormControl, ReactiveFormsModule } from '@angular/forms'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
@@ -26,7 +26,7 @@ export default {
   ]
 } as Meta
 
-export const Default: Story<TheSeamTiledSelectComponent & { [key: string]: any }> = (args) => ({
+export const Default: Story<TheSeamTiledSelectComponent & { [key: string]: any }> = args => ({
   // props: { ...args },
   props: {
     tiles: args.tiles
@@ -96,14 +96,14 @@ Default.play = async ({ canvasElement, fixture }) => {
   await expectFn(await tiledSelectHarness.getValue()).toBe('corn')
 }
 
-export const WithControl: Story<TheSeamTiledSelectComponent & { [key: string]: any }> = (args) => ({
+export const WithControl: Story<TheSeamTiledSelectComponent & { [key: string]: any }> = args => ({
   moduleMetadata: {
     imports: [ ReactiveFormsModule ]
   },
   // props: { ...args },
   props: {
     tiles: args.tiles,
-    control: new FormControl()
+    control: new UntypedFormControl()
   },
   template: `<seam-tiled-select [tiles]="tiles" [formControl]="control"></seam-tiled-select>`
 })

@@ -4,7 +4,6 @@ import { RouterModule } from '@angular/router'
 
 import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component'
 
-
 @NgModule({
   declarations: [
     BreadcrumbsComponent

@@ -2,6 +2,7 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing'
 import { BehaviorSubject, Observable, of, Subscription } from 'rxjs'
 import { shareReplay } from 'rxjs/operators'
 
+import { SortItem } from '@theseam/ui-common/datatable'
 import { DataFilterState } from '@theseam/ui-common/data-filters'
 import { currentTickTime } from '@theseam/ui-common/testing'
 
@@ -22,7 +23,7 @@ import { gqlVar } from '../utils/gql-var'
 import { DatatableGraphQLQueryRef, DatatableGraphQLVariables } from './datatable-graphql-query-ref'
 import { DatatableGraphqlService } from './datatable-graphql.service'
 import {
-  observeRowsWithGqlInputsHandling, SortsMapperResult
+  observeRowsWithGqlInputsHandling, SortsMapper, SortsMapperResult
 } from './datatable-helpers'
 import { DEFAULT_PAGE_SIZE } from './get-page-info'
 import { FilterStateMapperResult } from './map-filter-states'
@@ -40,13 +41,13 @@ describe('DatatableGraphQLQueryRef', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ createApolloTestingProvider(simpleGqlTestSchema, root) ]
+      providers: [createApolloTestingProvider(simpleGqlTestSchema, root)],
+      teardown: { destroyAfterEach: false }
     })
 
     datatableGql = TestBed.inject(DatatableGraphqlService)
     pageFixture = new BasicDatatablePageFixture(datatableGql)
   })
-
 
   it('should query when new page is set', fakeAsync(async () => {
     pageFixture.init()
@@ -126,11 +127,7 @@ describe('DatatableGraphQLQueryRef', () => {
 
     pageFixture.destroy()
   }))
-
-
-
 })
-
 
 //
 //
@@ -144,8 +141,8 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
 
   private _rowsSub: Subscription = Subscription.EMPTY
   private _emittedData: TRow[] | null = []
-  private _emittedDataCount: number = 0
-  private _datatableEmitted: boolean = false
+  private _emittedDataCount = 0
+  private _datatableEmitted = false
 
   constructor(datatableGql: DatatableGraphqlService) {
     this._queryRef = datatableGql.watchQuery<TData, SimpleGqlTestVariables, TRow>(
@@ -178,7 +175,7 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
       shareReplay({ bufferSize: 1, refCount: true }),
     )
 
-    const _mapSorts = (sorts: { dir: 'desc' | 'asc', prop: string }[], context: MapperContext): SortsMapperResult => {
+    const _mapSorts = (sorts: SortItem[], context: MapperContext): SortsMapperResult => {
       return sorts.map(s => {
         const _dir = s?.dir.toUpperCase()
 
@@ -246,7 +243,7 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
     this._emittedData = null
     this._emittedDataCount = 0
 
-    this._rowsSub = this._rows$.subscribe((data) => {
+    this._rowsSub = this._rows$.subscribe(data => {
       // console.log('time', currentTickTime())
       this._gqlDtAccessor?.setRows(data)
       this._emittedData = data

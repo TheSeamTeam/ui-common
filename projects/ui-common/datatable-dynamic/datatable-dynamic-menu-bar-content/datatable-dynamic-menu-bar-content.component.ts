@@ -1,5 +1,5 @@
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal'
-import { ChangeDetectionStrategy, Component, Inject, Injector, Input, OnInit, Optional } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Inject, Injector, Input, Optional } from '@angular/core'
 import { BehaviorSubject, Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
@@ -20,7 +20,7 @@ import {
 export interface IDatatableDynamicMenuBarContentItem {
   // styles?: string | string[]
   // cssClass?: string | string[]
-  portal?: ComponentPortal<{}>
+  portal?: ComponentPortal<object>
   // component?: string | ComponentType<{}>
   // config?: any
 }
@@ -66,7 +66,7 @@ export interface IDatatableDynamicMenuBarContentItemContext {
   styleUrls: ['./datatable-dynamic-menu-bar-content.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DatatableDynamicMenuBarContentComponent implements OnInit {
+export class DatatableDynamicMenuBarContentComponent {
 
   private readonly _def = new BehaviorSubject<DynamicDatatableMenuBar | undefined>(undefined)
 
@@ -88,11 +88,9 @@ export class DatatableDynamicMenuBarContentComponent implements OnInit {
     this.def$ = this._def.asObservable()
       // .pipe(tap(v => console.log('def$', v)))
 
-    this._rows$ = this.def$.pipe(switchMap(def => this._mapRows(def && def.rows || [])))
+    this._rows$ = this.def$.pipe(switchMap(def => this._mapRows((def && def.rows) || [])))
       // .pipe(tap(v => console.log('_rows$', v)))
   }
-
-  ngOnInit() { }
 
   private _mapRows(rows: DynamicDatatableMenuBarRow[]): Promise<IDatatableDynamicMenuBarContentRow[]> {
     return Promise.all(rows.map(r => this._mapRow(r)))
@@ -223,7 +221,7 @@ export class DatatableDynamicMenuBarContentComponent implements OnInit {
     }
   }
 
-  private async _getComponentPortal(component: string, data?: any): Promise<ComponentPortal<{}> | undefined> {
+  private async _getComponentPortal(component: string, data?: any): Promise<ComponentPortal<object> | undefined> {
     const manifest = (this._menuBarItemManifests || []).find(m => m.name === component)
 
     if (!manifest) {
@@ -240,13 +238,13 @@ export class DatatableDynamicMenuBarContentComponent implements OnInit {
     }
 
     if (typeof manifest.component === 'string') {
-      this._dynamicComponentLoader.getComponentFactory<{}>(manifest.component).pipe(
+      this._dynamicComponentLoader.getComponentFactory<object>(manifest.component).pipe(
         map(componentFactory => {
           return new ComponentPortal(
             componentFactory.componentType,
             null,
             injector,
-            (<any /* ComponentFactoryBoundToModule */>componentFactory).ngModule.componentFactoryResolver
+            (componentFactory as any /* ComponentFactoryBoundToModule */).ngModule.componentFactoryResolver
           )
         })
       ).toPromise()

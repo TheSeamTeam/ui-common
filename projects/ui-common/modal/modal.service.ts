@@ -37,7 +37,6 @@ import {
 } from './modal-injectors'
 import { ModalRef } from './modal-ref'
 
-
 /**
  * Service to open modal dialogs.
  */
@@ -51,8 +50,8 @@ export class Modal implements OnDestroy {
   }
   _afterAllClosedBase = new Subject<void>()
 
-  afterAllClosed: Observable<void> = defer(() => this.openDialogs.length ?
-      this._afterAllClosed : this._afterAllClosed.pipe(startWith(undefined)))
+  afterAllClosed: Observable<void> = defer(() => this.openDialogs.length
+      ? this._afterAllClosed : this._afterAllClosed.pipe(startWith(undefined)))
 
   /** Stream that emits when a dialog is opened. */
   get afterOpened(): Subject<ModalRef<any>> {
@@ -76,7 +75,6 @@ export class Modal implements OnDestroy {
     private _scrollbars: OverlayScrollbarsService,
     private _dynamicComponentLoaderModule: TheSeamDynamicComponentLoader
   ) {
-
     // Close all of the dialogs when the user goes forwards/backwards in history or when the
     // location hash changes. Note that this usually doesn't include clicking on links (unless
     // the user is using the `HashLocationStrategy`).
@@ -89,7 +87,7 @@ export class Modal implements OnDestroy {
 
   /** Gets an open dialog by id. */
   getById(id: string): ModalRef<any> | undefined {
-    return this._openDialogs.find(ref  => ref.id === id)
+    return this._openDialogs.find(ref => ref.id === id)
   }
 
   /** Closes all open dialogs. */
@@ -104,16 +102,16 @@ export class Modal implements OnDestroy {
     // NOTE: Should only be needed with the current implementation of `TheSeamDynamicComponentLoader`.
     componentFactoryResolver?: ComponentFactoryResolver | null | undefined
   ): ModalRef<T, D> {
-    config = this._applyConfigDefaults(config)
+    const _config = this._applyConfigDefaults(config)
 
-    if (config.id && this.getById(config.id)) {
-      throw Error(`Modal with id "${config.id}" exists already. The modal id must be unique.`)
+    if (_config.id && this.getById(_config.id)) {
+      throw Error(`Modal with id "${_config.id}" exists already. The modal id must be unique.`)
     }
 
-    const overlayRef = this._createOverlay(config)
-    const dialogContainer = this._attachDialogContainer(overlayRef, config)
+    const overlayRef = this._createOverlay(_config)
+    const dialogContainer = this._attachDialogContainer(overlayRef, _config)
     const dialogRef = this._attachDialogContentForComponent(component, dialogContainer,
-      overlayRef, config, componentFactoryResolver)
+      overlayRef, _config, componentFactoryResolver)
 
     this.registerDialogRef(dialogRef)
     return dialogRef
@@ -121,16 +119,16 @@ export class Modal implements OnDestroy {
 
   /** Opens a dialog from a template. */
   openFromTemplate<T>(template: TemplateRef<T>, config?: ModalConfig): ModalRef<any> {
-    config = this._applyConfigDefaults(config)
+    const _config = this._applyConfigDefaults(config)
 
-    if (config.id && this.getById(config.id)) {
-      throw Error(`Modal with id "${config.id}" exists already. The modal id must be unique.`)
+    if (_config.id && this.getById(_config.id)) {
+      throw Error(`Modal with id "${_config.id}" exists already. The modal id must be unique.`)
     }
 
-    const overlayRef = this._createOverlay(config)
-    const dialogContainer = this._attachDialogContainer(overlayRef, config)
+    const overlayRef = this._createOverlay(_config)
+    const dialogContainer = this._attachDialogContainer(overlayRef, _config)
     const dialogRef = this._attachDialogContentForTemplate(template, dialogContainer,
-      overlayRef, config)
+      overlayRef, _config)
 
     this.registerDialogRef(dialogRef)
     return dialogRef
@@ -141,20 +139,20 @@ export class Modal implements OnDestroy {
     componentId: string,
     config?: ModalConfig<D>
   ): Observable<ModalRef<T, D>> {
-    config = this._applyConfigDefaults(config)
+    const _config = this._applyConfigDefaults(config)
 
-    if (config.id && this.getById(config.id)) {
-      throw Error(`Modal with id "${config.id}" exists already. The modal id must be unique.`)
+    if (_config.id && this.getById(_config.id)) {
+      throw Error(`Modal with id "${_config.id}" exists already. The modal id must be unique.`)
     }
 
     return this._dynamicComponentLoaderModule
-      .getComponentFactory<{}>(componentId)
+      .getComponentFactory<unknown>(componentId)
       .pipe(
         switchMap(componentFactory => {
           const modalRef = this.openFromComponent(
             componentFactory.componentType,
-            config,
-            (<any /* ComponentFactoryBoundToModule */>componentFactory).ngModule.componentFactoryResolver
+            _config,
+            (componentFactory as any /* ComponentFactoryBoundToModule */).ngModule.componentFactoryResolver
           )
           return of(modalRef)
         })
@@ -298,12 +296,12 @@ export class Modal implements OnDestroy {
     if (typeof panelClass === 'string') {
       panelClass = [ panelClass ]
     }
-    panelClass = [ ...panelClass, 'modal',  'd-block', 'overflow-auto' ]
+    panelClass = [ ...panelClass, 'modal', 'd-block', 'overflow-auto' ]
 
     const overlayConfig = new OverlayConfig({
       positionStrategy: this.overlay.position().global(),
       scrollStrategy: this._scrollStrategy(),
-      panelClass: panelClass,
+      panelClass,
       hasBackdrop: config.hasBackdrop,
       direction: config.direction,
       minWidth: config.minWidth,
@@ -331,12 +329,11 @@ export class Modal implements OnDestroy {
       [ModalConfig, config]
     ]))
     const containerPortal = new ComponentPortal(container, config.viewContainerRef, injector)
-    const containerRef = <ComponentRef<ModalContainerComponent>>overlay.attach(containerPortal)
+    const containerRef = overlay.attach(containerPortal) as ComponentRef<ModalContainerComponent>
     containerRef.instance._config = config
 
     return containerRef.instance
   }
-
 
   /**
    * Attaches the user-provided component to the already-created MatDialogContainer.
@@ -353,9 +350,9 @@ export class Modal implements OnDestroy {
       overlayRef: OverlayRef,
       config: ModalConfig,
       componentFactoryResolver?: ComponentFactoryResolver | null | undefined): ModalRef<any> {
-
     // Create a reference to the dialog we're creating in order to give the user a handle
     // to modify and close it.
+    // eslint-disable-next-line new-cap
     const dialogRef = new this.dialogRefConstructor(overlayRef, dialogContainer, config.id)
     const injector = this._createInjector<T>(config, dialogRef, dialogContainer)
     const contentRef = dialogContainer.attachComponentPortal(
@@ -364,7 +361,7 @@ export class Modal implements OnDestroy {
     dialogRef.componentInstance = contentRef.instance
     dialogRef.disableClose = config.disableClose
 
-    dialogRef.updateSize({width: config.width, height: config.height})
+    dialogRef.updateSize({ width: config.width, height: config.height })
              .updatePosition(config.position)
 
     return dialogRef
@@ -384,20 +381,19 @@ export class Modal implements OnDestroy {
       dialogContainer: ModalContainerComponent,
       overlayRef: OverlayRef,
       config: ModalConfig): ModalRef<any> {
-
     // Create a reference to the dialog we're creating in order to give the user a handle
     // to modify and close it.
+    // eslint-disable-next-line new-cap
     const dialogRef = new this.dialogRefConstructor(overlayRef, dialogContainer, config.id)
 
     dialogContainer.attachTemplatePortal(
-      new TemplatePortal<T>(componentOrTemplateRef, <any>null,
-        <any>{$implicit: config.data, dialogRef}))
-    dialogRef.updateSize({width: config.width, height: config.height})
+      new TemplatePortal<T>(componentOrTemplateRef, null as any,
+        { $implicit: config.data, dialogRef } as any))
+    dialogRef.updateSize({ width: config.width, height: config.height })
              .updatePosition(config.position)
 
     return dialogRef
   }
-
 
   /**
    * Creates a custom injector to be used inside the dialog. This allows a component loaded inside
@@ -411,7 +407,6 @@ export class Modal implements OnDestroy {
       config: ModalConfig,
       dialogRef: ModalRef<T>,
       dialogContainer: ModalContainerComponent): PortalInjector {
-
     const userInjector = config && config.viewContainerRef && config.viewContainerRef.injector
     const injectionTokens = new WeakMap<any, any>([
       [this.injector.get(MODAL_REF), dialogRef],
@@ -435,7 +430,8 @@ export class Modal implements OnDestroy {
    * are undefined.
    */
   private _applyConfigDefaults(config?: ModalConfig): ModalConfig {
-    const dialogConfig = (<unknown>this.injector.get(MODAL_CONFIG)) as typeof ModalConfig
-    return {...new dialogConfig(), ...config}
+    const dialogConfig = (this.injector.get(MODAL_CONFIG) as unknown) as typeof ModalConfig
+    // eslint-disable-next-line new-cap
+    return { ...new dialogConfig(), ...config }
   }
 }

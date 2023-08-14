@@ -17,7 +17,7 @@ import {
   Output,
   ViewChild
 } from '@angular/core'
-import { ControlValueAccessor, FormControl, NgControl, NG_VALUE_ACCESSOR } from '@angular/forms'
+import { ControlValueAccessor, UntypedFormControl, NgControl, NG_VALUE_ACCESSOR } from '@angular/forms'
 import { defer, fromEvent, merge, Observable, of, Subject } from 'rxjs'
 import { auditTime, map, switchMap, takeUntil } from 'rxjs/operators'
 
@@ -35,7 +35,6 @@ import { TheSeamTelInputDirective } from '../tel-input.directive'
   styleUrls: ['./tel-input.component.scss'],
   providers: [{
     provide: NG_VALUE_ACCESSOR,
-    // tslint:disable-next-line: no-use-before-declare
     useExisting: forwardRef(() => TheSeamTelInputComponent),
     multi: true
   }],
@@ -46,16 +45,16 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
   static ngAcceptInputType_disabled: BooleanInput
 
   /** @ignore */
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   /** @ignore */
-  readonly _control = new FormControl()
+  readonly _control = new UntypedFormControl()
 
   private _focusOrigin: FocusOrigin = null
 
   _hasInvalidCss$: Observable<boolean>
 
-  @Input() @InputBoolean() required: boolean = false
+  @Input() @InputBoolean() required = false
 
   @Input()
   get disabled(): boolean { return this._disabled }
@@ -101,6 +100,7 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
   @Input() value: string | undefined | null
 
   /** Event emitted when the "tel" input value changes. */
+  // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() readonly change = new EventEmitter<string>()
 
   /**
@@ -186,7 +186,7 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
   ngOnDestroy(): void {
     this._focusMonitor.stopMonitoring(this._elementRef)
 
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

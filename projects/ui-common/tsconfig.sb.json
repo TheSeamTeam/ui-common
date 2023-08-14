@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.lib.json",
+  "include": [
+    "**/*.stories.ts",
+    "**/*.tsx",
+    "**/*.ts"
+  ],
+  "exclude": [
+    "**/*.spec.ts",
+    "**/schematics/**/*"
+  ],
+}

@@ -9,7 +9,7 @@ import { merge, of, Subscription } from 'rxjs'
 import { MenuComponent } from './menu.component'
 
 /** Options for binding a passive event listener. */
-const passiveEventListenerOptions = normalizePassiveListenerOptions({passive: true})
+const passiveEventListenerOptions = normalizePassiveListenerOptions({ passive: true })
 
 @Directive({
   selector: '[seamMenuToggle]',

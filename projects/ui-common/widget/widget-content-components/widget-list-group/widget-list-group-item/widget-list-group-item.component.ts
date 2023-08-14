@@ -1,5 +1,5 @@
 import { FocusMonitor } from '@angular/cdk/a11y'
-import { ChangeDetectionStrategy, Component, ContentChild, Directive, ElementRef, Input, OnDestroy, OnInit, Renderer2 } from '@angular/core'
+import { ChangeDetectionStrategy, Component, ContentChild, Directive, ElementRef, Input, OnDestroy, Renderer2 } from '@angular/core'
 
 import {
   CanBeActive,
@@ -66,7 +66,6 @@ class WidgetListGroupItemActionableBase extends WidgetListGroupItemBase implemen
   }
 }
 
-
 const _WidgetListGroupItemBase: CanDisableCtor & CanThemeCtor & CanBeActiveCtor &
   typeof WidgetListGroupItemBase = mixinActive(mixinTheme(mixinDisabled(WidgetListGroupItemBase), 'list-group-item'))
 
@@ -88,7 +87,7 @@ const _WidgetListGroupItemActionableBase: CanDisableCtor & CanThemeCtor & CanBeA
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WidgetListGroupItemComponent extends _WidgetListGroupItemBase
-  implements OnInit, HasElementRef, CanTheme, CanDisable, CanBeActive {
+  implements HasElementRef, CanTheme, CanDisable, CanBeActive {
 
   constructor(
     public _elementRef: ElementRef<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
@@ -96,13 +95,10 @@ export class WidgetListGroupItemComponent extends _WidgetListGroupItemBase
   ) {
     super(_elementRef, _renderer)
   }
-
-  ngOnInit() { }
-
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'button[seam-widget-list-group-item],button[seamWidgetListGroupItem]',
   templateUrl: './widget-list-group-item.component.html',
   styleUrls: ['./widget-list-group-item.component.scss'],
@@ -118,7 +114,7 @@ export class WidgetListGroupItemComponent extends _WidgetListGroupItemBase
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WidgetListGroupItemButtonComponent extends _WidgetListGroupItemActionableBase
-  implements OnInit, HasElementRef, CanTheme, CanDisable, CanBeActive, OnDestroy {
+  implements HasElementRef, CanTheme, CanDisable, CanBeActive, OnDestroy {
 
   /** ARIA type for the button. */
   @Input() type: 'button' | 'submit' | 'reset' | undefined | null = 'button'
@@ -131,14 +127,12 @@ export class WidgetListGroupItemButtonComponent extends _WidgetListGroupItemActi
     super(_elementRef, _focusMonitor, _renderer)
   }
 
-  ngOnInit() { }
-
   ngOnDestroy() { super.ngOnDestroy() }
 
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'a[seam-widget-list-group-item],a[seamWidgetListGroupItem]',
   templateUrl: './widget-list-group-item.component.html',
   styleUrls: ['./widget-list-group-item.component.scss'],
@@ -155,7 +149,7 @@ export class WidgetListGroupItemButtonComponent extends _WidgetListGroupItemActi
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WidgetListGroupItemAnchorComponent extends _WidgetListGroupItemActionableBase
-  implements OnInit, HasElementRef, CanTheme, CanDisable, CanBeActive, OnDestroy {
+  implements HasElementRef, CanTheme, CanDisable, CanBeActive, OnDestroy {
 
   /** Tabindex of the button. */
   @Input() tabIndex: number | undefined | null
@@ -167,8 +161,6 @@ export class WidgetListGroupItemAnchorComponent extends _WidgetListGroupItemActi
   ) {
     super(_elementRef, _focusMonitor, _renderer)
   }
-
-  ngOnInit() { }
 
   ngOnDestroy() { super.ngOnDestroy() }
 

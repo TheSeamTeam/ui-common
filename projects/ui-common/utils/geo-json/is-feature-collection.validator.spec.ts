@@ -1,4 +1,4 @@
-import { FormControl } from '@angular/forms'
+import { UntypedFormControl } from '@angular/forms'
 
 import {
   FeatureCollection,
@@ -8,26 +8,25 @@ import { isFeatureCollectionValidator, IS_FEATURE_COLLECTION_VALIDATOR_NAME } fr
 
 describe('isOnlyGeometryTypesValidator', () => {
   it('should be valid if value is null', () => {
-    const control = new FormControl(null, [ isFeatureCollectionValidator() ])
+    const control = new UntypedFormControl(null, [ isFeatureCollectionValidator() ])
     expect(control.valid).toBe(true)
   })
 
   it('should be valid if value is undefined', () => {
-    const control = new FormControl(undefined, [ isFeatureCollectionValidator() ])
+    const control = new UntypedFormControl(undefined, [ isFeatureCollectionValidator() ])
     expect(control.valid).toBe(true)
   })
 
   it('should be valid if value is empty string', () => {
-    const control = new FormControl('', [ isFeatureCollectionValidator() ])
+    const control = new UntypedFormControl('', [ isFeatureCollectionValidator() ])
     expect(control.valid).toBe(true)
   })
 
   it('should not be valid if value is a value that is not a FeatureCollection', () => {
-    const control = new FormControl('a', [ isFeatureCollectionValidator() ])
+    const control = new UntypedFormControl('a', [ isFeatureCollectionValidator() ])
     expect(control.valid).toBe(false)
     expect(control.errors).not.toBeNull()
-    // tslint:disable-next-line: no-non-null-assertion
-    expect(control.errors![IS_FEATURE_COLLECTION_VALIDATOR_NAME].reason).toBe(`Must be a FeatureCollection.`)
+    expect(control.errors !== null && control.errors[IS_FEATURE_COLLECTION_VALIDATOR_NAME].reason).toBe(`Must be a FeatureCollection.`)
   })
 
   describe('object value', () => {
@@ -36,7 +35,7 @@ describe('isOnlyGeometryTypesValidator', () => {
         type: 'FeatureCollection',
         features: [],
       }
-      const control = new FormControl(featureCollection, [ isFeatureCollectionValidator() ])
+      const control = new UntypedFormControl(featureCollection, [ isFeatureCollectionValidator() ])
       expect(control.valid).toBe(true)
     })
   })
@@ -48,9 +47,8 @@ describe('isOnlyGeometryTypesValidator', () => {
         features: [],
       }
       const value = JSON.stringify(featureCollection)
-      const control = new FormControl(value, [ isFeatureCollectionValidator() ])
+      const control = new UntypedFormControl(value, [ isFeatureCollectionValidator() ])
       expect(control.valid).toBe(true)
     })
   })
-
 })

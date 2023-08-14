@@ -3,7 +3,6 @@ import { combineLatest, Observable } from 'rxjs'
 
 import { DatatableDataSource } from './datatable-data-source'
 
-
 export class DatatableGqlDataSource<TRow> extends DatatableDataSource<TRow> {
 
   connect(collectionViewer: CollectionViewer): Observable<readonly TRow[]> {
@@ -19,6 +18,5 @@ export class DatatableGqlDataSource<TRow> extends DatatableDataSource<TRow> {
   disconnect(collectionViewer: CollectionViewer): void {
     throw new Error('Method not implemented.')
   }
-
 
 }

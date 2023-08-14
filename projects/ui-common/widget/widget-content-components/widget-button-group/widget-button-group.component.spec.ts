@@ -8,8 +8,9 @@ describe('WidgetButtonGroupComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ WidgetButtonGroupComponent ]
-    })
+    declarations: [WidgetButtonGroupComponent],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents()
   }))
 

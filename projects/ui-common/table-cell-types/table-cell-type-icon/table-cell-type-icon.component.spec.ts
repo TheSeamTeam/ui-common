@@ -8,8 +8,9 @@ describe('TableCellTypeIconComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ TableCellTypeIconComponent ]
-    })
+    declarations: [TableCellTypeIconComponent],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents()
   }))
 

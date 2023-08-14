@@ -1,6 +1,6 @@
 import { BooleanInput } from '@angular/cdk/coercion'
 import { Component, forwardRef, Inject, Input, OnDestroy, OnInit, Optional, TemplateRef } from '@angular/core'
-import { FormControl } from '@angular/forms'
+import { UntypedFormControl } from '@angular/forms'
 import { Observable, of } from 'rxjs'
 import { map, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
@@ -43,7 +43,7 @@ export function textDataFilter(data: any[], text: string, options = DefaultTextF
       keys = keys.filter(key => !(options.omitProperties || []).find(p => p === key))
     }
     for (const key of keys) {
-      if (data[0].hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(data[0], key)) {
         props.push(key)
       }
     }
@@ -86,7 +86,7 @@ export class DataFilterTextComponent implements OnInit, OnDestroy, IDataFilter {
   public readonly name = 'text'
   public readonly uid = `text__${_uid++}`
 
-  _control = new FormControl()
+  _control = new UntypedFormControl()
 
   @Input() properties: string[] | undefined | null = this._optDefault('properties')
   @Input() omitProperties: string[] | undefined | null = this._optDefault('omitProperties')
@@ -121,7 +121,7 @@ export class DataFilterTextComponent implements OnInit, OnDestroy, IDataFilter {
   ngOnDestroy() { this._filterContainer.removeFilter(this) }
 
   private _optDefault<K extends keyof ITextFilterOptions>(prop: K) {
-    if (this._filterOptions && this._filterOptions.hasOwnProperty(prop)) {
+    if (this._filterOptions && Object.prototype.hasOwnProperty.call(this._filterOptions, prop)) {
       return this._filterOptions[prop]
     }
     return DefaultTextFilterOptions[prop]

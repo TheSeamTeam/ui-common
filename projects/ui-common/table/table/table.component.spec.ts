@@ -8,8 +8,9 @@ describe('TableComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ TableComponent ]
-    })
+    declarations: [TableComponent],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents()
   }))
 

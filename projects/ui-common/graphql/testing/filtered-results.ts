@@ -13,17 +13,18 @@ export interface FilteredResults<T> {
 }
 
 export function filteredResults<T>(items: T[], args: any): FilteredResults<T> {
+  let _items = items
   const where: WhereArg = args?.where
   if (where !== undefined) {
-    items = filterWhere(items, where)
+    _items = filterWhere(_items, where)
   }
 
-  const totalCount = items.length
+  const totalCount = _items.length
 
   const skip = args?.skip ?? 0
-  const take = args?.take ?? items.length
+  const take = args?.take ?? _items.length
   if (args?.skip !== undefined || args?.take !== undefined) {
-    items = skipAndTake(items, skip, take)
+    _items = skipAndTake(_items, skip, take)
   }
 
   const pageInfo: FilteredResultsPageInfo = {
@@ -32,7 +33,7 @@ export function filteredResults<T>(items: T[], args: any): FilteredResults<T> {
   }
 
   return {
-    items,
+    items: _items,
     pageInfo,
     totalCount,
   }

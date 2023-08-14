@@ -9,11 +9,13 @@ import {
   trigger
 } from '@angular/animations'
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion'
+import { TemplatePortal } from '@angular/cdk/portal'
 import {
   ChangeDetectionStrategy,
   Component,
   ContentChild,
   EventEmitter,
+  forwardRef,
   HostBinding,
   Inject,
   Input,
@@ -23,8 +25,9 @@ import {
   Output,
   TemplateRef,
   ViewContainerRef,
-  ViewEncapsulation
+  ViewEncapsulation,
 } from '@angular/core'
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router'
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators'
 
@@ -33,11 +36,11 @@ import { TheSeamLayoutService } from '@theseam/ui-common/layout'
 
 import { ITheSeamBaseLayoutNav, ITheSeamBaseLayoutRef, THESEAM_BASE_LAYOUT_REF } from '../base-layout/index'
 
-import { TemplatePortal } from '@angular/cdk/portal'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { SeamIcon } from '@theseam/ui-common/icon'
 import { BaseLayoutSideBarFooterDirective } from '../base-layout/directives/base-layout-side-bar-footer.directive'
 import { BaseLayoutSideBarHeaderDirective } from '../base-layout/directives/base-layout-side-bar-header.directive'
+import { THESEAM_SIDE_NAV_ACCESSOR } from './side-nav-tokens'
 import { ISideNavItem } from './side-nav.models'
 import { TheSeamSideNavService } from './side-nav.service'
 
@@ -68,8 +71,7 @@ export function sideNavExpandStateChangeFn(fromState: string, toState: string) {
       // )
       // ||
       (
-        (EXPANDED_STATES.indexOf(fromState) !== -1 && COLLAPSED_STATES.indexOf(toState) !== -1)
-        ||
+        (EXPANDED_STATES.indexOf(fromState) !== -1 && COLLAPSED_STATES.indexOf(toState) !== -1) ||
         (EXPANDED_STATES.indexOf(toState) !== -1 && COLLAPSED_STATES.indexOf(fromState) !== -1)
       )
     )
@@ -80,7 +82,12 @@ export function sideNavExpandStateChangeFn(fromState: string, toState: string) {
   templateUrl: './side-nav.component.html',
   styleUrls: ['./side-nav.component.scss'],
   providers: [
-    TheSeamSideNavService
+    TheSeamSideNavService,
+    {
+      provide: THESEAM_SIDE_NAV_ACCESSOR,
+      // tslint:disable-next-line:no-use-before-declare
+      useExisting: forwardRef(() => SideNavComponent)
+    },
   ],
   animations: [
 
@@ -175,7 +182,7 @@ export function sideNavExpandStateChangeFn(fromState: string, toState: string) {
 export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNav {
   static ngAcceptInputType_hasHeaderToggle: BooleanInput
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   faBars = faBars
 
@@ -284,7 +291,7 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
   }
 
   ngOnDestroy() {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
     if (this._baseLayoutRef) { this._baseLayoutRef.unregisterNav(this) }
   }

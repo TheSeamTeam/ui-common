@@ -72,6 +72,7 @@ function mergeVariables(variableObjects: FilterStateMapperVariables[]): FilterSt
     if (isDevMode()) {
       for (const p of props) {
         if (notNullOrUndefined(variables[p]) && variables[p] !== v[p]) {
+          // eslint-disable-next-line no-console
           console.warn(`Multiple filters adding the same variable with a different result. This could cause unexpected results.`)
           break
         }
@@ -91,18 +92,19 @@ export async function mapFilterStates(
   filterStateMappers: FilterStateMappers,
   context: MapperContext
 ): Promise<FilterStateMapperResult> {
-  const results = await resolveMappers(filterStates, filterStateMappers, context).toPromise()
+  // TODO: Fix types
+  const results: any = await resolveMappers(filterStates, filterStateMappers, context).toPromise()
 
   if (results.length === 0) {
     return null
   }
 
   const filters = results
-    .map(r => r.filter)
+    .map((r: any) => r.filter)
     .filter(notNullOrUndefined)
 
   const variableObjs = results
-    .map(r => r.variables)
+    .map((r: any) => r.variables)
     .filter(notNullOrUndefined)
 
   return {

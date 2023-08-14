@@ -4,7 +4,6 @@ import { buildSchema, print } from 'graphql'
 import { baseSchemaFragment } from '../base-schema-fragment'
 import { filteredResults } from '../filtered-results'
 
-
 export interface SimpleGqlTestRecord {
   id: number
   name: string

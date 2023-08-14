@@ -1,6 +1,7 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular'
+import { applicationConfig } from '@storybook/angular/dist/client/decorators'
 
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { provideAnimations } from '@angular/platform-browser/animations'
 
 import { faWrench } from '@fortawesome/free-solid-svg-icons'
 
@@ -11,19 +12,23 @@ export default {
   title: 'Widget/Components/Content/Header Badge',
   component: WidgetHeaderBadgeComponent,
   decorators: [
+    applicationConfig({
+      providers: [
+        provideAnimations(),
+      ],
+    }),
     moduleMetadata({
       imports: [
         TheSeamWidgetModule,
-        BrowserAnimationsModule
-      ]
-    })
-  ]
+      ],
+    }),
+  ],
 } as Meta
 
-export const Basic: Story = (args) => ({
+export const Basic: Story = args => ({
   props: {
     ...args,
-    icon: faWrench
+    icon: faWrench,
   },
   template: `
     <div class="p-1" style="max-height: 400px; width: 500px;">
@@ -35,10 +40,10 @@ export const Basic: Story = (args) => ({
           </seam-widget-header-badge>
         </ng-template>
       </seam-widget>
-    </div>`
+    </div>`,
 })
 Basic.args = {
   title: 'Example Widget',
   headerBadgeText: 'Badge',
-  badgeTheme: 'primary'
+  badgeTheme: 'primary',
 }

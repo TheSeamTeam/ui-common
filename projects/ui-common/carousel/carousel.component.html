@@ -1,0 +1,60 @@
+<ng-container *ngIf="slides$ | async as slides">
+  <div class="position-relative"
+    *ngIf="slides.length"
+    (focusin)="focusIn()"
+    (mouseenter)="mouseEnter()"
+    (focusout)="focusOut()"
+    (mouseleave)="mouseLeave()">
+
+    <div class="d-flex" style="min-height: 150px;">
+      <button
+        *ngIf="showNavButtons && slides.length > 1"
+        seamButton
+        class="carousel-arrow px-2"
+        (click)="pageCarousel(-1)"
+        title="Go to previous slide">
+        <seam-icon [icon]="faAngleLeft"></seam-icon>
+      </button>
+
+      <div *ngIf="activeSlide$ | async as slide" [@fadeInOut]="slide.template" class="flex-grow-1 d-flex align-items-center">
+        <div class="carousel-content w-100 py-1 px-2" [attr.data-slide-index]="activeIndex$ | async">
+          <ng-template [ngTemplateOutlet]="$any(slide.template)"></ng-template>
+        </div>
+      </div>
+
+      <button
+        *ngIf="showNavButtons && slides.length > 1"
+        seamButton
+        class="carousel-arrow px-2"
+        (click)="pageCarousel(1)"
+        title="Go to next slide">
+        <seam-icon [icon]="faAngleRight"></seam-icon>
+      </button>
+    </div>
+
+    <div class="carousel-pages d-flex flex-wrap justify-content-center mt-3 mx-auto" *ngIf="showPager && slides.length > 1">
+      <button
+        *ngFor="let q of slides; let i = index"
+        seamButton
+        theme="light"
+        class="carousel-page"
+        [class.active]="(activeIndex$ | async) == i"
+        (click)="setCarousel(i)"
+        [title]="'Go to slide ' + (i + 1)"></button>
+    </div>
+
+    <div class="carousel-controls" *ngIf="showPauseButton && autoPlay">
+      <button
+        *ngIf="slides.length > 1"
+        seamButton
+        (click)="toggleCarouselStop()"
+        [title]="(carouselStopped$ | async) ? 'Play' : 'Pause'">
+        <seam-icon [icon]="faPlay" *ngIf="carouselStopped$ | async; else pauseButton"></seam-icon>
+        <ng-template #pauseButton>
+          <seam-icon [icon]="faPause"></seam-icon>
+        </ng-template>
+      </button>
+    </div>
+
+  </div>
+</ng-container>

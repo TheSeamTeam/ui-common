@@ -1,6 +1,6 @@
 import { BooleanInput } from '@angular/cdk/coercion'
 import { ChangeDetectionStrategy, Component, forwardRef, Inject, Input, OnDestroy, OnInit, Optional, TemplateRef } from '@angular/core'
-import { FormControl } from '@angular/forms'
+import { UntypedFormControl } from '@angular/forms'
 import { Observable, of } from 'rxjs'
 import { map, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
@@ -16,7 +16,6 @@ import type { DataFilterContainer } from '../../data-filter-container'
 import { textDataFilter } from '../data-filter-text/data-filter-text.component'
 
 import { ISearchFilterOptions } from './search-filter-options'
-
 
 export const DATA_FILTER_SEARCH: any = {
   provide: THESEAM_DATA_FILTER,
@@ -52,7 +51,7 @@ export class DataFilterSearchComponent implements OnInit, OnDestroy, IDataFilter
   public readonly name = 'search'
   public readonly uid = `search__${_uid++}`
 
-  _control = new FormControl()
+  _control = new UntypedFormControl()
 
   @Input() properties: string[] | undefined | null = this._optDefault('properties')
   @Input() omitProperties: string[] | undefined | null = this._optDefault('omitProperties')
@@ -88,7 +87,7 @@ export class DataFilterSearchComponent implements OnInit, OnDestroy, IDataFilter
   ngOnDestroy() { this._filterContainer.removeFilter(this) }
 
   private _optDefault<K extends keyof ISearchFilterOptions>(prop: K) {
-    if (this._filterOptions && this._filterOptions.hasOwnProperty(prop)) {
+    if (this._filterOptions && Object.prototype.hasOwnProperty.call(this._filterOptions, prop)) {
       return this._filterOptions[prop]
     }
     return DefaultSearchFilterOptions[prop]

@@ -1,18 +1,14 @@
-import { Component, Input, OnInit } from '@angular/core'
+import { Component, Input } from '@angular/core'
 
-import { TabbedItemComponent } from '../tabbed-item/tabbed-item.component'
+import { TabbedItemAccessor } from '../tabbed-models'
 
 @Component({
   selector: 'seam-tabbed-content',
   templateUrl: './tabbed-content.component.html',
   styleUrls: ['./tabbed-content.component.scss']
 })
-export class TabbedContentComponent implements OnInit {
+export class TabbedContentComponent {
 
-  @Input() tabbedItem?: TabbedItemComponent
-
-  constructor() { }
-
-  ngOnInit() { }
+  @Input() tabbedItem?: TabbedItemAccessor
 
 }

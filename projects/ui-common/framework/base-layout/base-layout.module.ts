@@ -16,8 +16,6 @@ import { BaseLayoutSideBarHeaderDirective } from './directives/base-layout-side-
 import { BaseLayoutSideBarDirective } from './directives/base-layout-side-bar.directive'
 import { BaseLayoutTopBarDirective } from './directives/base-layout-top-bar.directive'
 
-
-
 @NgModule({
   declarations: [
     TheSeamBaseLayoutComponent,

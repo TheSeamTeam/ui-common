@@ -1,5 +1,4 @@
 import { moduleMetadata } from '@storybook/angular'
-import { TheSeamScrollbarModule } from './../../scrollbar/scrollbar.module'
 
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
 import { BrowserModule } from '@angular/platform-browser'
@@ -7,6 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { NgSelectModule } from '@ng-select/ng-select'
 
+import { TheSeamScrollbarModule } from './../../scrollbar/scrollbar.module'
 import { TheSeamSharedModule } from './../shared.module'
 
 export default {

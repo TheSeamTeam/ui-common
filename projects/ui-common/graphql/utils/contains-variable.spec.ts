@@ -3,10 +3,8 @@ import { parseValue, print } from 'graphql/language'
 
 import { toGQL } from './to-gql'
 
-
 describe('GraphQL Utils containsVariable', () => {
   it('should determine if variable exists', () => {
-
     // const where = {
     //   and: [
     //     // { sender: { contains: 'request' } }
@@ -38,12 +36,6 @@ describe('GraphQL Utils containsVariable', () => {
     // console.log(parseValue(toGQL(where)))
 
     // console.log(print(QUERY))
-
-
-
-
-
-
 
     // console.log('~1')
     // const WHERE_QUERY = gql`

@@ -49,7 +49,7 @@ export const Basic = () => ({
       { 'type': 'submit', 'title': 'Generate' }
     ],
     _onSubmit: (e: any) => {
-      console.log('_onSubmit', e)
+      // console.log('_onSubmit', e)
       action('onSubmit')(e)
     }
   },
@@ -95,7 +95,7 @@ export const SplitButton = () => ({
       }
     ],
     _onSubmit: (e: any) => {
-      console.log('_onSubmit', e)
+      // console.log('_onSubmit', e)
       action('onSubmit')(e)
     }
   },

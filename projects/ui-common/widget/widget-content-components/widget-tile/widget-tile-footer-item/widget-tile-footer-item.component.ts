@@ -1,5 +1,5 @@
 import { BooleanInput } from '@angular/cdk/coercion'
-import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, Input, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, Input } from '@angular/core'
 
 import { InputBoolean } from '@theseam/ui-common/core'
 
@@ -8,11 +8,11 @@ import { InputBoolean } from '@theseam/ui-common/core'
   templateUrl: './widget-tile-footer-item.component.html',
   styleUrls: ['./widget-tile-footer-item.component.scss'],
   host: {
-    class: 'btn btn-link py-0 px-1'
+    class: 'btn btn-link py-0 px-1',
   },
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WidgetTileFooterItemComponent implements OnInit {
+export class WidgetTileFooterItemComponent {
   static ngAcceptInputType_disabled: BooleanInput
 
   private _type: string | undefined | null
@@ -31,10 +31,8 @@ export class WidgetTileFooterItemComponent implements OnInit {
   @Input() @InputBoolean() disabled = false
 
   constructor(
-    public _elementRef: ElementRef<HTMLElement | HTMLAnchorElement | HTMLButtonElement>
+    public _elementRef: ElementRef<HTMLElement | HTMLAnchorElement | HTMLButtonElement>,
   ) { }
-
-  ngOnInit() { }
 
   /** Determines if the component host is a button. */
   private _isButton(): boolean {

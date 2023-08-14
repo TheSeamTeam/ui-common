@@ -73,7 +73,7 @@ export class InputDirective implements DoCheck {
    * Implemented as part of MatFormFieldControl.
    * @docs-private
    */
-  @Input() @InputBoolean() required: boolean = false
+  @Input() @InputBoolean() required = false
 
   /**
    * Implemented as part of MatFormFieldControl.
@@ -112,7 +112,7 @@ export class InputDirective implements DoCheck {
   // }
 
   /** Whether the element is readonly. */
-  @Input() @InputBoolean() readonly: boolean = false
+  @Input() @InputBoolean() readonly = false
 
   constructor(
     public _elementRef: ElementRef<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
@@ -123,6 +123,7 @@ export class InputDirective implements DoCheck {
     @Optional() private _ngSelect: NgSelectComponent
   ) {
     // Force setter to be called in case id was not specified.
+    // eslint-disable-next-line no-self-assign
     this.id = this.id
 
     if (!this._shouldHaveFormControlCssClass()) {
@@ -142,11 +143,11 @@ export class InputDirective implements DoCheck {
 
   /** Should only be textual inputs, but initially our app added to all form controls. */
   protected _shouldHaveFormControlCssClass() {
-    return !this._isSeamCheckbox()
-      && !this._isRadioInput()
-      && !this._isNgbRadioGroup()
-      && !this._isTelInput()
-      && !this._isQuillEditor()
+    return !this._isSeamCheckbox() &&
+      !this._isRadioInput() &&
+      !this._isNgbRadioGroup() &&
+      !this._isTelInput() &&
+      !this._isQuillEditor()
   }
 
   /** Determines if the component host is a textarea. */

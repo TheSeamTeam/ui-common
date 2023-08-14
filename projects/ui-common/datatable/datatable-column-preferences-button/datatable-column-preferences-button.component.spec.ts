@@ -8,8 +8,9 @@ describe('DatatableColumnPreferencesButtonComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ DatatableColumnPreferencesButtonComponent ]
-    })
+    declarations: [DatatableColumnPreferencesButtonComponent],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents()
   }))
 

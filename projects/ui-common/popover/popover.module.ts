@@ -6,26 +6,20 @@ import { NgModule } from '@angular/core'
 import { TheSeamPopoverDirective } from './popover.directive'
 import { PopoverComponent } from './popover/popover.component'
 
-
-
 @NgModule({
-  declarations: [
-    PopoverComponent,
-    TheSeamPopoverDirective
-  ],
-  imports: [
-    CommonModule,
-    OverlayModule,
-    PortalModule
-  ],
-  entryComponents: [
-    PopoverComponent
-  ],
-  exports: [
-    TheSeamPopoverDirective,
-
-    OverlayModule,
-    PortalModule
-  ]
+    declarations: [
+        PopoverComponent,
+        TheSeamPopoverDirective
+    ],
+    imports: [
+        CommonModule,
+        OverlayModule,
+        PortalModule
+    ],
+    exports: [
+        TheSeamPopoverDirective,
+        OverlayModule,
+        PortalModule
+    ]
 })
 export class TheSeamPopoverModule { }

@@ -38,6 +38,7 @@ export function subscriberCount<T>(
 }
 
 const logOnChange: SubscriberCountChangedFn = (description: string, count: number, reason: 'subscribed' | 'unsubscribed') => {
+  // eslint-disable-next-line no-console
   console.log(`${description} subscriptions: ${count}  [${reason}]`)
 }
 

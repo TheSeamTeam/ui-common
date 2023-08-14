@@ -17,6 +17,7 @@ import { setColumnDefaults } from '../utils/set-column-defaults'
 
 import { ColumnsManagerService } from './columns-manager.service'
 import { DatatableColumnChangesService } from './datatable-column-changes.service'
+import { firstValueFrom } from 'rxjs'
 
 describe('ColumnsManagerService', () => {
   let service: ColumnsManagerService
@@ -25,8 +26,9 @@ describe('ColumnsManagerService', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      providers: [ ColumnsManagerService, DatatableColumnChangesService ]
-    })
+    providers: [ColumnsManagerService, DatatableColumnChangesService],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents()
   }))
 
@@ -113,12 +115,12 @@ describe('ColumnsManagerService', () => {
 
   describe('checkbox column', () => {
     it('should not have checkbox column by default', async () => {
-      expect((await service.columns$.pipe(take(1)).toPromise()).length).toEqual(0)
+      expect((await firstValueFrom(service.columns$.pipe(take(1)))).length).toEqual(0)
     })
 
     it('should have checkbox column when selectionType is "checkbox"', async () => {
       service.setSelectionType(SelectionType.checkbox)
-      expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
+      expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
         expect.objectContaining({ prop: CHECKBOX_COLUMN_PROP })
       )
     })
@@ -126,12 +128,12 @@ describe('ColumnsManagerService', () => {
 
   describe('rowActionItem', () => {
     it('should not have row action menu column if not set', async () => {
-      expect((await service.columns$.pipe(take(1)).toPromise()).length).toEqual(0)
+      expect((await firstValueFrom(service.columns$.pipe(take(1)))).length).toEqual(0)
     })
 
     it('should have row action menu column when actionMenuCellTpl set', async () => {
       service.setRowActionItem({} as any)
-      expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
+      expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
         expect.objectContaining({
           prop: ACTION_MENU_COLUMN_PROP,
           cellTemplate: undefined,
@@ -144,10 +146,10 @@ describe('ColumnsManagerService', () => {
       const cellTemplate = {} as any
       service.setRowActionItem({} as any)
       service.setActionMenuCellTpl(cellTemplate)
-      expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
+      expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
         expect.objectContaining({
           prop: ACTION_MENU_COLUMN_PROP,
-          cellTemplate: cellTemplate,
+          cellTemplate,
           headerTemplate: undefined
         })
       )
@@ -157,11 +159,11 @@ describe('ColumnsManagerService', () => {
       const headerTemplate = {} as any
       service.setRowActionItem({} as any)
       service.setBlankHeaderTpl(headerTemplate)
-      expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
+      expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
         expect.objectContaining({
           prop: ACTION_MENU_COLUMN_PROP,
           cellTemplate: undefined,
-          headerTemplate: headerTemplate
+          headerTemplate
         })
       )
     })
@@ -172,11 +174,11 @@ describe('ColumnsManagerService', () => {
       service.setRowActionItem({} as any)
       service.setActionMenuCellTpl(cellTemplate)
       service.setBlankHeaderTpl(headerTemplate)
-      expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
+      expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
         expect.objectContaining({
           prop: ACTION_MENU_COLUMN_PROP,
-          cellTemplate: cellTemplate,
-          headerTemplate: headerTemplate
+          cellTemplate,
+          headerTemplate
         })
       )
     })
@@ -185,7 +187,7 @@ describe('ColumnsManagerService', () => {
   describe('treeToggleTpl', () => {
     it('should not have treeToggleTemplate', async () => {
       service.setInputColumns([ { prop: 'name' } ])
-      expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
+      expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
         expect.objectContaining({
           prop: 'name',
           // isTreeColumn: undefined
@@ -195,7 +197,7 @@ describe('ColumnsManagerService', () => {
 
     it('should not have treeToggleTemplate if only isTreeColumn set', async () => {
       service.setInputColumns([ { prop: 'name', isTreeColumn: true } ])
-      expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
+      expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
         expect.objectContaining({
           prop: 'name',
           isTreeColumn: true
@@ -206,7 +208,7 @@ describe('ColumnsManagerService', () => {
     it('should have treeToggleTemplate if isTreeColumn and treeToggleTemplate set', async () => {
       const tpl = {} as any
       service.setInputColumns([ { prop: 'name', isTreeColumn: true, treeToggleTemplate: tpl } ])
-      expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
+      expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
         expect.objectContaining({
           prop: 'name',
           isTreeColumn: true,
@@ -219,7 +221,7 @@ describe('ColumnsManagerService', () => {
   describe('headerTemplate', () => {
     it('should not have headerTemplate', async () => {
       service.setInputColumns([ { prop: 'name' } ])
-      expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
+      expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
         expect.objectContaining({
           prop: 'name'
         })
@@ -231,7 +233,7 @@ describe('ColumnsManagerService', () => {
       const tpl2 = { b: 'b' } as any
       service.setInputColumns([ { prop: 'name', headerTemplate: tpl1 } ])
       service.setHeaderTpl(tpl2)
-      expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
+      expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
         expect.objectContaining({
           prop: 'name',
           headerTemplate: tpl1
@@ -244,7 +246,7 @@ describe('ColumnsManagerService', () => {
       const tpl2 = { b: 'b' } as any
       service.setInputColumns([ { prop: 'name' } ])
       service.setHeaderTpl(tpl2)
-      expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
+      expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
         expect.objectContaining({
           prop: 'name',
           headerTemplate: tpl2
@@ -256,7 +258,7 @@ describe('ColumnsManagerService', () => {
   describe('cellTypeSelectorTpl', () => {
     it('should not have cellTypeSelectorTpl', async () => {
       service.setInputColumns([ { prop: 'name' } ])
-      expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
+      expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
         expect.objectContaining({
           prop: 'name',
         })
@@ -267,7 +269,7 @@ describe('ColumnsManagerService', () => {
       const tpl = { a: 'a' } as any
       service.setInputColumns([ { prop: 'name', cellType: 'a' } ])
       service.setCellTypeSelectorTpl(tpl)
-      expect((await service.columns$.pipe(take(1)).toPromise())[0]).toEqual(
+      expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
         expect.objectContaining({
           prop: 'name',
           cellType: 'a',
@@ -322,10 +324,10 @@ class MockDatatable {
 
   _internalColumns?: TableColumn[]
   private _columns: TableColumn[] = []
-  private _innerWidth: number = 500
+  private _innerWidth = 500
 
-  scrollbarH: boolean = false
-  scrollbarV: boolean = false
+  scrollbarH = false
+  scrollbarV = false
   scrollbarHelper = { width: 10 }
   columnMode: ColumnMode | keyof typeof ColumnMode = ColumnMode.standard
 

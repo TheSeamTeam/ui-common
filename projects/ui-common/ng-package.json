@@ -18,7 +18,6 @@
     "buffer",
     "css-element-queries",
     "file-saver",
-    "lodash-es",
     "ngx-toastr",
     "pdfjs-dist",
     "xlsx",
@@ -37,5 +36,53 @@
     "@turf/kinks",
     "shpjs",
     "@types/geojson"
+  ],
+  "inlineStyleLanguage": "scss",
+  "assets": [
+    {
+      "glob": "**/*",
+      "input": "assets",
+      "output": "assets"
+    },
+    {
+      "glob": "**/*",
+      "input": "styles",
+      "output": "styles"
+    },
+    {
+      "glob": "**/*.scss",
+      "input": "breadcrumbs",
+      "output": "breadcrumbs"
+    },
+    {
+      "glob": "**/*.scss",
+      "input": "framework/base-layout",
+      "output": "framework/base-layout"
+    },
+    {
+      "glob": "**/*.scss",
+      "input": "framework/dashboard",
+      "output": "framework/dashboard"
+    },
+    {
+      "glob": "**/*.scss",
+      "input": "framework/top-bar",
+      "output": "framework/top-bar"
+    },
+    {
+      "glob": "**/*.scss",
+      "input": "framework/side-nav",
+      "output": "framework/side-nav"
+    },
+    {
+      "glob": "**/*.scss",
+      "input": "progress/progress-circle",
+      "output": "progress/progress-circle"
+    },
+    {
+      "glob": "**/*.scss",
+      "input": "widget",
+      "output": "widget"
+    }
   ]
 }

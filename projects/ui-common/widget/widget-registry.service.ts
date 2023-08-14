@@ -14,20 +14,20 @@ import { THESEAM_WIDGETS } from './widget-token'
  * the component is lazy-loaded, or referenced by an id stored in the database.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class WidgetRegistryService {
 
   constructor(
     @Inject(THESEAM_WIDGETS) private _widgets: IWidgetRegistryRecord[],
-    private _dynamicComponentLoader: TheSeamDynamicComponentLoader
+    private _dynamicComponentLoader: TheSeamDynamicComponentLoader,
   ) { }
 
   public createWidgetPortal<T>(
     widgetId: string,
     viewContainerRef?: ViewContainerRef | null,
     injector?: Injector | null,
-    componentFactoryResolver?: ComponentFactoryResolver | null | undefined
+    componentFactoryResolver?: ComponentFactoryResolver | null | undefined,
   ): Observable<ComponentPortal<T>> {
     const widgetDef = (this._widgets || []).find(w => w.widgetId === widgetId)
 
@@ -42,7 +42,8 @@ export class WidgetRegistryService {
           map(componentFactory => {
             let resolver: ComponentFactoryResolver | null | undefined = componentFactoryResolver
             if (!resolver) {
-              const m = (<any /* ComponentFactoryBoundToModule */>componentFactory).ngModule
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const m = (componentFactory as any /* ComponentFactoryBoundToModule */).ngModule
               if (m && m.componentFactoryResolver) {
                 resolver = m.componentFactoryResolver
               }
@@ -52,22 +53,22 @@ export class WidgetRegistryService {
               componentFactory.componentType,
               viewContainerRef,
               injector,
-              resolver
+              resolver,
             )
 
             return portal
-          }
+          }),
         )
-      )
     } else {
       const portal = new ComponentPortal(
         widgetDef.componentOrComponentId,
         viewContainerRef,
         injector,
-        componentFactoryResolver
+        componentFactoryResolver,
       )
 
       return of(portal)
     }
   }
+
 }

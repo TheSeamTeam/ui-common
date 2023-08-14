@@ -1,4 +1,4 @@
-import { Component, ContentChild, Input, OnChanges, OnInit, PipeTransform, SimpleChanges, TemplateRef } from '@angular/core'
+import { Component, ContentChild, Input, OnChanges, PipeTransform, SimpleChanges, TemplateRef } from '@angular/core'
 
 import { ColumnChangesService, TableColumnProp } from '@marklb/ngx-datatable'
 
@@ -16,7 +16,7 @@ type _PipeTransform = PipeTransform | PipeTransform
   templateUrl: './datatable-column.component.html',
   styleUrls: ['./datatable-column.component.scss']
 })
-export class DatatableColumnComponent implements OnInit, OnChanges {
+export class DatatableColumnComponent implements OnChanges {
 
   @Input() name?: string | null
   @Input() prop?: TableColumnProp | null
@@ -59,7 +59,7 @@ export class DatatableColumnComponent implements OnInit, OnChanges {
 
   @ContentChild(DatatableCellTplDirective, { static: true }) cellTplDirective?: DatatableCellTplDirective
 
-  // tslint:disable-next-line: no-input-rename
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('cellTemplate')
   _cellTemplateInput?: TemplateRef<any> | null
 
@@ -93,8 +93,6 @@ export class DatatableColumnComponent implements OnInit, OnChanges {
   constructor(
     private _columnChangesService: DatatableColumnChangesService
   ) {}
-
-  ngOnInit() { }
 
   ngOnChanges(changes: SimpleChanges) {
     if (this._isFirstChange) {

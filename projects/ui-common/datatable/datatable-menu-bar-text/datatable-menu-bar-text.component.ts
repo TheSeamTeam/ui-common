@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, Inject, Input, OnInit, Optional } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Inject, Input, Optional } from '@angular/core'
 
 import { hasProperty, notNullOrUndefined } from '@theseam/ui-common/utils'
 import { DatatableMenuBarComponent } from './../datatable-menu-bar/datatable-menu-bar.component'
 import { MenubarItemData } from './../models/menubar-item-data'
 import { THESEAM_MENUBAR_ITEM_DATA } from './../tokens/menubar-item-data'
-
 
 @Component({
   selector: 'seam-datatable-menu-bar-text',
@@ -12,7 +11,7 @@ import { THESEAM_MENUBAR_ITEM_DATA } from './../tokens/menubar-item-data'
   styleUrls: ['./datatable-menu-bar-text.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DatatableMenuBarTextComponent implements OnInit {
+export class DatatableMenuBarTextComponent {
 
   @Input()
   public value: string | undefined | null
@@ -27,7 +26,5 @@ export class DatatableMenuBarTextComponent implements OnInit {
       }
     }
   }
-
-  ngOnInit(): void { }
 
 }

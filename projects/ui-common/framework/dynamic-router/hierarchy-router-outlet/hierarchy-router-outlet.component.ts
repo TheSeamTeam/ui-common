@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy } from '@angular/core'
 import { ActivatedRoute, NavigationEnd, NavigationStart, Router, RouterOutlet } from '@angular/router'
 import { combineLatest, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators'
 
 import { fader, sideToSide, slider, stepper, transformer } from './hierarchy-route-animations'
 
-export function routeChanges(router: Router)  {
+export function routeChanges(router: Router) {
   return router.events.pipe(
     filter(event => event instanceof NavigationStart || event instanceof NavigationEnd),
     distinctUntilChanged((x: any, y: any) => x.id === y.id),
@@ -13,14 +13,12 @@ export function routeChanges(router: Router)  {
   )
 }
 
-
 //
 // TODO: Animation improvement: Try adding a full component animation that
 // queries the <ng-content> and <router-outlet> blocks. When the outlet
 // activates, set the animation state to a transition that moves both blocks
 // together.
 //
-
 
 let _uid = 0
 
@@ -38,11 +36,11 @@ let _uid = 0
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HierarchyRouterOutletComponent implements OnInit, OnDestroy {
+export class HierarchyRouterOutletComponent implements OnDestroy {
 
   private _uid = _uid++
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   animState = 'isRight'
   // animState = ''
@@ -76,10 +74,8 @@ export class HierarchyRouterOutletComponent implements OnInit, OnDestroy {
     //   .subscribe(v => console.log(`routeChanges[${this._uid}]`, v))
   }
 
-  ngOnInit() { }
-
   ngOnDestroy() {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 
@@ -98,7 +94,7 @@ export class HierarchyRouterOutletComponent implements OnInit, OnDestroy {
     if (outlet.isActivated) {
       // console.log(outlet.isActivated)
       // console.log(outlet.component)
-      console.log(this.animState)
+      // console.log(this.animState)
       return this.animState
     } else {
       return undefined

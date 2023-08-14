@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component } from '@angular/core'
 
 @Component({
   selector: 'seam-datatable-menu-bar-column-left',
@@ -6,11 +6,4 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
   styleUrls: ['./datatable-menu-bar-column-left.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DatatableMenuBarColumnLeftComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
-}
+export class DatatableMenuBarColumnLeftComponent { }

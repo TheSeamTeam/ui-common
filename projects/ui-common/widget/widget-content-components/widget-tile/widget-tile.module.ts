@@ -3,8 +3,8 @@ import { NgModule } from '@angular/core'
 
 import { TheSeamIconModule } from '@theseam/ui-common/icon'
 
-import { WidgetTileFooterItemComponent } from './widget-tile-footer-item/widget-tile-footer-item.component'
 import { WidgetTileFooterComponent } from './widget-tile-footer/widget-tile-footer.component'
+import { WidgetTileFooterItemComponent } from './widget-tile-footer-item/widget-tile-footer-item.component'
 import { WidgetTileGroupComponent } from './widget-tile-group/widget-tile-group.component'
 import { WidgetTileSecondaryIconDirective } from './widget-tile-secondary-icon.directive'
 import { WidgetTileComponent } from './widget-tile.component'
@@ -15,18 +15,18 @@ import { WidgetTileComponent } from './widget-tile.component'
     WidgetTileSecondaryIconDirective,
     WidgetTileFooterComponent,
     WidgetTileGroupComponent,
-    WidgetTileFooterItemComponent
+    WidgetTileFooterItemComponent,
   ],
   imports: [
     CommonModule,
-    TheSeamIconModule
+    TheSeamIconModule,
   ],
   exports: [
     WidgetTileComponent,
     WidgetTileSecondaryIconDirective,
     WidgetTileFooterComponent,
     WidgetTileGroupComponent,
-    WidgetTileFooterItemComponent
-  ]
+    WidgetTileFooterItemComponent,
+  ],
 })
 export class TheSeamWidgetTileModule { }

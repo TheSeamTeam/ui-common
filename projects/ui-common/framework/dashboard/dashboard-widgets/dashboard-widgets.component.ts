@@ -33,6 +33,7 @@ import type { ITheSeamBaseLayoutRef } from '../../base-layout/base-layout-ref'
 import { THESEAM_BASE_LAYOUT_REF } from '../../base-layout/base-layout-tokens'
 import { DashboardWidgetContainerComponent } from '../dashboard-widget-container/dashboard-widget-container.component'
 
+import { DashboardWidgetsAccessor, THESEAM_DASHBOARD_WIDGETS_ACCESSOR } from '../dashboard-widgets-tokens'
 import type { IDashboardWidgetsColumnRecord, IDashboardWidgetsItem, IDashboardWidgetsItemDef } from './dashboard-widgets-item'
 import { DashboardWidgetsService } from './dashboard-widgets.service'
 
@@ -45,12 +46,17 @@ import { DashboardWidgetsService } from './dashboard-widgets.service'
       provide: THESEAM_WIDGET_ACCESSOR,
       // tslint:disable-next-line:no-use-before-declare
       useExisting: forwardRef(() => DashboardWidgetsComponent)
-    }
+    },
+    {
+      provide: THESEAM_DASHBOARD_WIDGETS_ACCESSOR,
+      // tslint:disable-next-line:no-use-before-declare
+      useExisting: forwardRef(() => DashboardWidgetsComponent)
+    },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 })
-export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewInit {
+export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewInit, DashboardWidgetsAccessor {
   static ngAcceptInputType_gapSize: NumberInput
   static ngAcceptInputType_numColumns: NumberInput
   static ngAcceptInputType_widgetsDraggable: BooleanInput
@@ -62,7 +68,7 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
 
   public readonly _actionWidgetDragToggleName = 'widget-drag-toggle'
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   @Input()
   get gapSize(): number { return this._gapSize.value }
@@ -71,7 +77,7 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
   }
   private readonly _gapSize = new BehaviorSubject<number>(30)
 
-  @Input() @InputBoolean() widgetsDraggable: boolean = false
+  @Input() @InputBoolean() widgetsDraggable = false
 
   @Input()
   get dragToggleVisible(): boolean { return this._dragToggleVisible.value }
@@ -157,7 +163,7 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
 
   ngOnDestroy() {
     this._unregisterToggleAction()
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

@@ -13,15 +13,16 @@ describe('IconBtnComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [
+    declarations: [
         IconComponent,
         IconBtnComponent
-      ],
-      imports: [
+    ],
+    imports: [
         CommonModule,
         FontAwesomeModule
-      ]
-    })
+    ],
+    teardown: { destroyAfterEach: false }
+})
     .compileComponents()
   }))
 

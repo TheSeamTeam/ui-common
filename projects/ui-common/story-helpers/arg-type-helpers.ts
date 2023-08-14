@@ -1,6 +1,8 @@
-import { ArgType } from '@storybook/addons'
+// import { ArgType } from '@storybook/addons'
 
 import { OutlineThemeNames, ThemeNames } from '@theseam/ui-common/models'
+
+declare type ArgType = any
 
 export const themeArgType: ArgType = {
   defaultValue: 'primary',

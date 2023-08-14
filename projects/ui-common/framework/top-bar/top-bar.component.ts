@@ -7,7 +7,6 @@ import {
   ContentChildren,
   Input,
   OnDestroy,
-  OnInit,
   QueryList,
   ViewEncapsulation
 } from '@angular/core'
@@ -46,11 +45,11 @@ import { TopBarNavToggleBtnDetailDirective } from './top-bar-nav-toggle-btn-deta
   exportAs: 'seamTopBar',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TheSeamTopBarComponent implements OnInit, OnDestroy, AfterContentInit {
+export class TheSeamTopBarComponent implements OnDestroy, AfterContentInit {
   static ngAcceptInputType_hasTitle: BooleanInput
 
   /** @ignore */
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   /** @ignore */
   faBars = faBars
@@ -75,13 +74,13 @@ export class TheSeamTopBarComponent implements OnInit, OnDestroy, AfterContentIn
   @Input() logoHref?: string | null
 
   /** Link target used when `logoHref` is specified. Defaults to `"_blank"` */
-  @Input() logoHrefTarget: string = '_blank'
+  @Input() logoHrefTarget = '_blank'
 
   /** Route to link to when `logo` is clicked. Defaults to `/`. */
-  @Input() logoRoute: string = '/'
+  @Input() logoRoute = '/'
 
   /** Determines if the title should be displayed. */
-  @Input() @InputBoolean() hasTitle: boolean = false
+  @Input() @InputBoolean() hasTitle = false
 
   /** Title text displayed when `hasTitle` is true. */
   @Input() titleText: string | undefined | null
@@ -126,11 +125,8 @@ export class TheSeamTopBarComponent implements OnInit, OnDestroy, AfterContentIn
   }
 
   /** @ignore */
-  ngOnInit() { }
-
-  /** @ignore */
   ngOnDestroy() {
-    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()
   }
 

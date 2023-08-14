@@ -31,14 +31,13 @@ class TestEvaluatorAsync implements IDynamicValueEvaluator<'test-async'> {
 }
 
 describe('DynamicValueHelperService', () => {
-
   describe('Syncronous evaluator', () => {
-
     beforeEach(() => TestBed.configureTestingModule({
-      providers: [
+    providers: [
         { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: TestEvaluatorSync, multi: true }
-      ]
-    }))
+    ],
+    teardown: { destroyAfterEach: false }
+}))
 
     it('should return input value if input type is not an evaluatable.', () => {
       const service: DynamicValueHelperService = TestBed.get(DynamicValueHelperService)
@@ -57,12 +56,12 @@ describe('DynamicValueHelperService', () => {
   })
 
   describe('Asyncronous evaluator', () => {
-
     beforeEach(() => TestBed.configureTestingModule({
-      providers: [
+    providers: [
         { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: TestEvaluatorAsync, multi: true }
-      ]
-    }))
+    ],
+    teardown: { destroyAfterEach: false }
+}))
 
     it('should return input value if input type is not an evaluatable.', async () => {
       const service: DynamicValueHelperService = TestBed.get(DynamicValueHelperService)
@@ -79,5 +78,4 @@ describe('DynamicValueHelperService', () => {
       expect(outValue).toBe(context.a as any)
     })
   })
-
 })

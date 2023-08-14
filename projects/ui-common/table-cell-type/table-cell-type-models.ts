@@ -21,7 +21,7 @@ export interface ITableCellTypeManifest {
    * later on we may have many unused cell types or a large cell type that isn't
    * used often.
    */
-  component: ComponentType<{}> /* | string */ // TODO: Add string for lazy loaded cell support.
+  component: ComponentType<unknown> /* | string */ // TODO: Add string for lazy loaded cell support.
 }
 
 export interface ICalucatedValueContext<R = any, V = any>

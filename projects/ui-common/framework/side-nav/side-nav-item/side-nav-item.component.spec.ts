@@ -44,7 +44,6 @@ describe('SideNavItemComponent', () => {
   })
 
   describe('Basic', () => {
-
     describe('not compact', () => {
       it('should render with basic inputs', fakeAsync(() => {
         spectator = createComponent({

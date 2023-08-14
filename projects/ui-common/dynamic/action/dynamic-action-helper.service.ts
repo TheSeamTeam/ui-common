@@ -28,6 +28,7 @@ export class DynamicActionHelperService {
     for (const e of (actions || [])) {
       if (isDevMode()) {
         if (this._actionMap.has(e.type)) {
+          // eslint-disable-next-line no-console
           console.warn(`[DynamicActionHelperService] Multiple actions found for type '${e.type}'`)
         }
       }
@@ -57,7 +58,7 @@ export class DynamicActionHelperService {
       }
     }
 
-    return await action.exec(actionDef, context)
+    return action.exec(actionDef, context)
   }
 
   /**
@@ -102,7 +103,7 @@ export class DynamicActionHelperService {
       return false
     }
 
-    const action  = this._actionMap.get(value.type)
+    const action = this._actionMap.get(value.type)
     if (!action) {
       return false
     }
@@ -179,7 +180,7 @@ export class DynamicActionHelperService {
     const modalDef = this._confirmDialog.open(message, alert)
     return modalDef.afterClosed().pipe(
       map(v => v === 'confirm')
-    ).toPromise()
+    ).toPromise().then(x => x ?? false)
   }
 
 }

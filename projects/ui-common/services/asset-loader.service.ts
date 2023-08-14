@@ -25,8 +25,6 @@ export class LoadedAssetRef<T extends HTMLLinkElement | HTMLScriptElement | HTML
 })
 export class AssetLoaderService {
 
-  constructor() { }
-
   public loadStyleSheet(path: string): Observable<LoadedAssetRef<HTMLLinkElement>> {
     return defer(() => loadStyleSheet(path)).pipe(map(v => new LoadedAssetRef(v, path)))
   }

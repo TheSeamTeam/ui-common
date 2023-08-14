@@ -3,7 +3,6 @@
     /** Important */
     "editorconfig.editorconfig",
     "eamodio.gitlens",
-    "ms-vscode.vscode-typescript-tslint-plugin",
     "codezombiech.gitignore",
     "esbenp.prettier-vscode",
     "hookyqr.beautify",
@@ -18,7 +17,6 @@
     "tyriar.lorem-ipsum",
     "ryu1kn.partial-diff",
     "ionutvmi.path-autocomplete",
-    "cssho.vscode-svgviewer",
     "wayou.vscode-todo-highlight",
     "tomoki1207.pdf",
     "cyrilletuzi.angular-schematics",
@@ -31,14 +29,5 @@
 
     // I sometimes use this, but it is sometimes a little too strict.
     // "kisstkondoros.vscode-codemetrics",
-
-    // I don't use this often, but it works well.
-    "ms-vsliveshare.vsliveshare",
-
-    // Sometimes nice to have enabled, but our project uses mostly external
-    // templates, so it doesn't help much. Depending on how we decide to
-    // organize the storybook files I may move to 'Optional, but recomended'.
-    "natewallace.angular2-inline"
-
   ]
 }

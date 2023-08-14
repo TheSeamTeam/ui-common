@@ -65,7 +65,7 @@ export class DynamicActionModalService implements DynamicActionModal {
     return this._injector.get(DynamicActionHelperService)
   }
 
-  private _getComponent(args: DynamicActionModalDef, context: any): string | ComponentType<{}> | undefined {
+  private _getComponent(args: DynamicActionModalDef, context: any): string | ComponentType<object> | undefined {
     let component = args && args.component
     if (component) {
       component = this._valueHelper.evalSync(component, context)
