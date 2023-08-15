@@ -1,38 +1,125 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular'
+import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 
-import { BrowserModule } from '@angular/platform-browser'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { provideAnimations } from '@angular/platform-browser/animations'
 
 import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
+import { expectFn, getHarness } from '@theseam/ui-common/testing'
 
 import { MenuComponent } from './menu.component'
 import { TheSeamMenuModule } from './menu.module'
+import { TheSeamMenuHarness } from './testing/menu.harness'
 
-export default {
+// interface ExtraArgs {
+//   position: 'top' | 'bottom' | 'left' | 'right'
+// }
+// type StoryArgsType = MenuComponent & ExtraArgs
+
+const meta: Meta<MenuComponent> = {
   title: 'Menu/Components',
-  // component: MenuComponent,
+  component: MenuComponent,
   decorators: [
+    applicationConfig({
+      providers: [
+        provideAnimations(),
+      ],
+    }),
     moduleMetadata({
       imports: [
-        BrowserAnimationsModule,
-        BrowserModule,
         TheSeamButtonsModule,
         TheSeamMenuModule
       ]
     })
-  ]
+  ],
+  // argTypes: {
+  //   position: {
+  //     options: [ 'top', 'bottom', 'left', 'right' ],
+  //   },
+  // }
+  parameters: {
+    layout: 'fullscreen',
+    docs: {
+      iframeHeight: '400px',
+    },
+  },
 } as Meta
 
-export const Basic: Story = args => ({
-  props: { ...args },
-  template: `
-    <div class="p-5">
+export default meta
+type Story = StoryObj<MenuComponent>
+
+export const Basic: Story = {
+  render: args => ({
+    props: args,
+    template: `
       <seam-menu #menu>
         <button seamMenuItem>Item 1</button>
         <button seamMenuItem>Item 2</button>
         <button seamMenuItem>Item 3</button>
       </seam-menu>
-      <button [seamMenuToggle]="menu" seamButton theme="primary" style="margin-left: 200px;">Toggle</button>
-    </div>
-  `
-})
+      <button [seamMenuToggle]="menu" seamButton theme="primary">Toggle</button>
+    `,
+  }),
+  play: async ({ canvasElement, fixture }) => {
+    const menuHarness = await getHarness(TheSeamMenuHarness, { canvasElement, fixture })
+    await expectFn(await menuHarness.isOpen()).toBe(false)
+    await menuHarness.open()
+    await expectFn(await menuHarness.isOpen()).toBe(true)
+    await menuHarness.close()
+    await expectFn(await menuHarness.isOpen()).toBe(false)
+  },
+}
+
+export const TopLeft: Story = {
+  render: args => ({
+    props: args,
+    template: `
+      <seam-menu #menu>
+        <button seamMenuItem>Item 1</button>
+        <button seamMenuItem>Item 2</button>
+        <button seamMenuItem>Item 3</button>
+      </seam-menu>
+      <button [seamMenuToggle]="menu" seamButton theme="primary" style="position: absolute; top: 0;">Toggle</button>
+    `,
+  }),
+}
+
+export const TopRight: Story = {
+  render: args => ({
+    props: args,
+    template: `
+      <seam-menu #menu>
+        <button seamMenuItem>Item 1</button>
+        <button seamMenuItem>Item 2</button>
+        <button seamMenuItem>Item 3</button>
+      </seam-menu>
+      <button [seamMenuToggle]="menu" seamButton theme="primary" style="position: absolute; top: 0; right: 0;">Toggle</button>
+    `,
+  }),
+}
+
+export const BottomLeft: Story = {
+  render: args => ({
+    props: args,
+    template: `
+      <seam-menu #menu>
+        <button seamMenuItem>Item 1</button>
+        <button seamMenuItem>Item 2</button>
+        <button seamMenuItem>Item 3</button>
+      </seam-menu>
+      <button [seamMenuToggle]="menu" seamButton theme="primary" style="position: absolute; bottom: 0;">Toggle</button>
+    `,
+  }),
+}
+
+export const BottomRight: Story = {
+  render: args => ({
+    props: args,
+    template: `
+      <seam-menu #menu>
+        <button seamMenuItem>Item 1</button>
+        <button seamMenuItem>Item 2</button>
+        <button seamMenuItem>Item 3</button>
+      </seam-menu>
+      <button [seamMenuToggle]="menu" seamButton theme="primary" style="position: absolute; bottom: 0; right: 0;">Toggle</button>
+    `,
+  }),
+}

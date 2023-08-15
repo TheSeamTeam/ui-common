@@ -26,6 +26,8 @@ import { THESEAM_MENU_PANEL } from './menu-panel-token'
 import { MenuFooterComponent } from './menu-footer/menu-footer.component'
 import { MenuHeaderComponent } from './menu-header/menu-header.component'
 
+let menuPanelUid = 0
+
 export const LIB_MENU: any = {
   provide: THESEAM_MENU_PANEL,
   // tslint:disable-next-line:no-use-before-declare
@@ -49,6 +51,8 @@ export const LIB_MENU: any = {
 export class MenuComponent implements OnDestroy, AfterContentInit, ITheSeamMenuPanel {
 
   private readonly _ngUnsubscribe = new Subject<void>()
+
+  readonly panelId = `menu-panel-${menuPanelUid++}`
 
   private _footer = new BehaviorSubject<MenuFooterComponent | undefined | null>(undefined)
   public hasFooter$ = this._footer.pipe(map(v => v !== null && v !== undefined))

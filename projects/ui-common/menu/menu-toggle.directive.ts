@@ -18,8 +18,10 @@ const passiveEventListenerOptions = normalizePassiveListenerOptions({ passive: t
   selector: '[seamMenuToggle]',
   // tslint:disable-next-line:use-host-property-decorator
   host: {
+    'class': 'seam-menu-toggle',
     'aria-haspopup': 'true',
-    '[attr.aria-expanded]': 'menuOpen() || null'
+    '[attr.aria-expanded]': 'menuOpen() || null',
+    '[attr.aria-controls]': 'menuOpen() ? seamMenuToggle.panelId : null',
   },
   exportAs: 'seamMenuToggle'
 })
@@ -92,6 +94,7 @@ export class MenuToggleDirective implements OnDestroy {
   @HostListener('keydown', [ '$event' ])
   _onKeydown(event: any) {
     this._openedBy = null
+    console.log('keydown', event)
 
     // tslint:disable-next-line:deprecation
     const keyCode = event.keyCode
@@ -100,6 +103,8 @@ export class MenuToggleDirective implements OnDestroy {
       if (this.menuOpen()) {
         this.seamMenuToggle?.focusFirstItem(this._openedBy || 'program')
       }
+    } else if (keyCode === ESCAPE) {
+      this.closeMenu()
     }
   }
 
