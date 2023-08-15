@@ -1,6 +1,6 @@
 import { FocusableOption, FocusMonitor, FocusOrigin } from '@angular/cdk/a11y'
 import { DOCUMENT } from '@angular/common'
-import { ChangeDetectionStrategy, Component, ElementRef, HostListener, Inject, Input, OnDestroy, Optional } from '@angular/core'
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Inject, Input, OnDestroy, Optional } from '@angular/core'
 import { Subject } from 'rxjs'
 
 import { CanDisableCtor, mixinDisabled } from '@theseam/ui-common/core'
@@ -23,14 +23,16 @@ const _seamMenuItemMixinBase: CanDisableCtor & typeof TheSeamMenuItemBase =
   inputs: [ 'disabled' ],
   host: {
     '[attr.role]': 'role',
-    'class': 'dropdown-item',
+    'class': 'seam-menu-item dropdown-item',
+    '[class.seam-menu-item-highlighted]': '_highlighted',
+    '[class.seam-menu-item-submenu-trigger]': '_triggersSubmenu',
     '[attr.tabindex]': '_getTabIndex()',
     '[attr.aria-disabled]': 'disabled.toString()',
     '[attr.disabled]': 'disabled || null',
   },
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MenuItemComponent extends _seamMenuItemMixinBase implements OnDestroy, FocusableOption {
+export class MenuItemComponent extends _seamMenuItemMixinBase implements OnDestroy, AfterViewInit, FocusableOption {
 
   /** ARIA role for the menu item. */
   @Input() role: 'menuitem' | 'menuitemradio' | 'menuitemcheckbox' | undefined | null = 'menuitem'
@@ -42,25 +44,25 @@ export class MenuItemComponent extends _seamMenuItemMixinBase implements OnDestr
   @Input() badgeTheme: string | undefined | null = 'danger'
 
   /** Stream that emits when the menu item is hovered. */
-  readonly _hovered: Subject<MenuItemComponent> = new Subject<MenuItemComponent>()
+  readonly _hovered = new Subject<MenuItemComponent>()
+
+  /** Stream that emits when the menu item is focused. */
+  readonly _focused = new Subject<MenuItemComponent>()
 
   /** Whether the menu item is highlighted. */
   _highlighted = false
 
+  /** Whether the menu item acts as a trigger for a sub-menu. */
+  _triggersSubmenu = false
+
   constructor(
-    private _elementRef: ElementRef<HTMLElement>,
-    @Inject(DOCUMENT) public document: any,
-    private _focusMonitor: FocusMonitor,
-    @Inject(THESEAM_MENU_PANEL) @Optional() private _parentMenu?: ITheSeamMenuPanel<MenuItemComponent>
+    private readonly _elementRef: ElementRef<HTMLElement>,
+    @Inject(DOCUMENT) public readonly _document: any,
+    private readonly _focusMonitor: FocusMonitor,
+    private readonly _changeDetectorRef: ChangeDetectorRef,
+    @Inject(THESEAM_MENU_PANEL) @Optional() private readonly _parentMenu?: ITheSeamMenuPanel<MenuItemComponent>
   ) {
     super()
-
-    if (_focusMonitor) {
-      // Start monitoring the element so it gets the appropriate focused classes. We want
-      // to show the focus style for menu items only when the focus was not caused by a
-      // mouse or touch interaction.
-      _focusMonitor.monitor(this._elementRef, false)
-    }
 
     // console.log(this._parentMenu)
     if (_parentMenu && _parentMenu.addItem) {
@@ -78,6 +80,16 @@ export class MenuItemComponent extends _seamMenuItemMixinBase implements OnDestr
     }
 
     this._hovered.complete()
+    this._focused.complete()
+  }
+
+  ngAfterViewInit() {
+    if (this._focusMonitor) {
+      // Start monitoring the element, so it gets the appropriate focused classes. We want
+      // to show the focus style for menu items only when the focus was not caused by a
+      // mouse or touch interaction.
+      this._focusMonitor.monitor(this._elementRef, false)
+    }
   }
 
   /** Focuses the menu item. */
@@ -87,6 +99,7 @@ export class MenuItemComponent extends _seamMenuItemMixinBase implements OnDestr
     } else {
       this._getHostElement().focus()
     }
+    this._focused.next(this)
   }
 
   /** Used to set the `tabindex`. */
@@ -117,7 +130,7 @@ export class MenuItemComponent extends _seamMenuItemMixinBase implements OnDestr
   /** Gets the label to be used when determining whether the option should be focused. */
   getLabel(): string {
     const element: HTMLElement = this._elementRef.nativeElement
-    const textNodeType = this.document ? this.document.TEXT_NODE : 3
+    const textNodeType = this._document ? this._document.TEXT_NODE : 3
     let output = ''
 
     if (element.childNodes) {
@@ -136,4 +149,17 @@ export class MenuItemComponent extends _seamMenuItemMixinBase implements OnDestr
     return output.trim()
   }
 
+  _setHighlighted(isHighlighted: boolean) {
+    this._highlighted = isHighlighted
+    this._changeDetectorRef?.markForCheck()
+  }
+
+  _setTriggersSubmenu(triggersSubmenu: boolean) {
+    this._triggersSubmenu = triggersSubmenu
+    this._changeDetectorRef?.markForCheck()
+  }
+
+  _hasFocus(): boolean {
+    return this._document && this._document.activeElement === this._getHostElement()
+  }
 }

@@ -9,20 +9,13 @@ import {
   TestKey,
   BaseHarnessFilters,
 } from '@angular/cdk/testing'
+import { TheSeamMenuItemHarness, TheSeamMenuItemHarnessFilters } from './menu-item.harness'
 
 /** A set of criteria that can be used to filter a list of `TheSeamMenuHarness` instances. */
 export interface TheSeamMenuHarnessFilters extends BaseHarnessFilters {
   /** Only find instances whose trigger text matches the given value. */
   triggerText?: string | RegExp;
 }
-
-/** A set of criteria that can be used to filter a list of `TheSeamMenuItemHarness` instances. */
-// export interface TheSeamMenuItemHarnessFilters extends BaseHarnessFilters {
-//   /** Only find instances whose text matches the given value. */
-//   text?: string | RegExp;
-//   /** Only find instances that have a sub-menu. */
-//   hasSubmenu?: boolean;
-// }
 
 export class TheSeamMenuHarness extends ContentContainerComponentHarness<string> {
   private _documentRootLocator = this.documentRootLocatorFactory()
@@ -93,23 +86,23 @@ export class TheSeamMenuHarness extends ContentContainerComponentHarness<string>
   }
 
   /**
-   * Gets a list of `MatMenuItemHarness` representing the items in the menu.
+   * Gets a list of `TheSeamMenuItemHarness` representing the items in the menu.
    * @param filters Optionally filters which menu items are included.
    */
-  // async getItems(
-  //   filters?: Omit<MenuItemHarnessFilters, 'ancestor'>,
-  // ): Promise<MatMenuItemHarness[]> {
-  //   const panelId = await this._getPanelId();
-  //   if (panelId) {
-  //     return this._documentRootLocator.locatorForAll(
-  //       MatMenuItemHarness.with({
-  //         ...(filters || {}),
-  //         ancestor: `#${panelId}`,
-  //       } as MenuItemHarnessFilters),
-  //     )();
-  //   }
-  //   return [];
-  // }
+  async getItems(
+    filters?: Omit<TheSeamMenuItemHarnessFilters, 'ancestor'>,
+  ): Promise<TheSeamMenuItemHarness[]> {
+    const panelId = await this._getPanelId()
+    if (panelId) {
+      return this._documentRootLocator.locatorForAll(
+        TheSeamMenuItemHarness.with({
+          ...(filters || {}),
+          ancestor: `#${panelId}`,
+        } as TheSeamMenuItemHarnessFilters),
+      )()
+    }
+    return []
+  }
 
   /**
    * Clicks an item in the menu, and optionally continues clicking items in subsequent sub-menus.
@@ -119,26 +112,26 @@ export class TheSeamMenuHarness extends ContentContainerComponentHarness<string>
    *     sub-menus. The first item in the sub-menu matching the corresponding filter in
    *     `subItemFilters` will be clicked.
    */
-  // async clickItem(
-  //   itemFilter: Omit<MenuItemHarnessFilters, 'ancestor'>,
-  //   ...subItemFilters: Omit<MenuItemHarnessFilters, 'ancestor'>[]
-  // ): Promise<void> {
-  //   await this.open();
-  //   const items = await this.getItems(itemFilter);
-  //   if (!items.length) {
-  //     throw Error(`Could not find item matching ${JSON.stringify(itemFilter)}`);
-  //   }
+  async clickItem(
+    itemFilter: Omit<TheSeamMenuItemHarnessFilters, 'ancestor'>,
+    ...subItemFilters: Omit<TheSeamMenuItemHarnessFilters, 'ancestor'>[]
+  ): Promise<void> {
+    await this.open()
+    const items = await this.getItems(itemFilter)
+    if (!items.length) {
+      throw Error(`Could not find item matching ${JSON.stringify(itemFilter)}`)
+    }
 
-  //   if (!subItemFilters.length) {
-  //     return await items[0].click();
-  //   }
+    if (!subItemFilters.length) {
+      return items[0].click()
+    }
 
-  //   const menu = await items[0].getSubmenu();
-  //   if (!menu) {
-  //     throw Error(`Item matching ${JSON.stringify(itemFilter)} does not have a submenu`);
-  //   }
-  //   return menu.clickItem(...(subItemFilters as [Omit<MenuItemHarnessFilters, 'ancestor'>]));
-  // }
+    const menu = await items[0].getSubmenu()
+    if (!menu) {
+      throw Error(`Item matching ${JSON.stringify(itemFilter)} does not have a submenu`)
+    }
+    return menu.clickItem(...(subItemFilters as [Omit<TheSeamMenuItemHarnessFilters, 'ancestor'>]))
+  }
 
   protected override async getRootHarnessLoader(): Promise<HarnessLoader> {
     const panelId = await this._getPanelId()

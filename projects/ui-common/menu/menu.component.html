@@ -1,5 +1,8 @@
 <ng-template>
-  <div class="seam-menu-container" @slideDown
+  <div class="seam-menu-container"
+    @slideDown
+    (@slideDown.start)="_onAnimationStart($event)"
+    (@slideDown.done)="_onAnimationDone($event)"
     [class.seam-menu-anim--slide]="animationType==='slide'"
     [class.seam-menu-anim--fade]="animationType==='fade'"
     [id]="panelId">
