@@ -1,6 +1,15 @@
+@import '../styles/utilities';
+
 // :host {
 //   // Avoid the outline
 //   &.cdk-mouse-focused {
 //     outline: 0;
 //   }
 // }
+:host {
+  &[aria-expanded] {
+    color: $dropdown-link-hover-color;
+    text-decoration: none;
+    @include gradient-bg($dropdown-link-hover-bg);
+  }
+}

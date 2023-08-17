@@ -8,7 +8,6 @@ import { expectFn, getHarness } from '@theseam/ui-common/testing'
 import { MenuComponent } from './menu.component'
 import { TheSeamMenuModule } from './menu.module'
 import { TheSeamMenuHarness } from './testing/menu.harness'
-import { lastValueFrom, timer } from 'rxjs'
 
 // interface ExtraArgs {
 //   position: 'top' | 'bottom' | 'left' | 'right'
@@ -127,7 +126,7 @@ export const BottomRight: Story = {
   }),
 }
 
-export const SecondLevel: Story = {
+export const Submenu: Story = {
   render: args => ({
     props: args,
     template: `
@@ -155,10 +154,54 @@ export const SecondLevel: Story = {
     const submenuItem = (await menuHarness.getItems({ hasSubmenu: true }))[0]
     const submenu = await submenuItem.getSubmenu()
     await expectFn(await submenu?.isOpen()).toBe(false)
-    // Avoid position being incorrect by opening during animation, since it
-    // doesn't currently correct itself.
-    await lastValueFrom(timer(1000))
     await submenu?.open()
     await expectFn(await submenu?.isOpen()).toBe(true)
+  },
+}
+
+export const Hover: Story = {
+  render: args => ({
+    props: args,
+    template: `
+      <seam-menu #menu>
+        <button seamMenuItem>Item 1</button>
+        <button seamMenuItem [seamMenuToggle]="menu_2">Item 2</button>
+        <button seamMenuItem [seamMenuToggle]="menu_3">Item 3</button>
+        <button seamMenuItem>Item 4</button>
+        <button seamMenuItem>Item 5</button>
+      </seam-menu>
+
+      <seam-menu #menu_2>
+        <button seamMenuItem>Item 2.1</button>
+        <button seamMenuItem>Item 2.2</button>
+        <button seamMenuItem>Item 2.3</button>
+      </seam-menu>
+
+      <seam-menu #menu_3>
+        <button seamMenuItem [seamMenuToggle]="menu_3_1">Item 3.1</button>
+        <button seamMenuItem>Item 3.2</button>
+        <button seamMenuItem>Item 3.3</button>
+      </seam-menu>
+
+      <seam-menu #menu_3_1>
+        <button seamMenuItem>Item 3.1.1</button>
+        <button seamMenuItem>Item 3.1.2</button>
+        <button seamMenuItem>Item 3.1.3</button>
+      </seam-menu>
+
+      <button [seamMenuToggle]="menu" seamButton theme="primary">Toggle</button>
+    `,
+  }),
+  play: async ({ canvasElement, fixture }) => {
+    const menuHarness = await getHarness(TheSeamMenuHarness, { canvasElement, fixture })
+    await expectFn(await menuHarness.isOpen()).toBe(false)
+    await menuHarness.open()
+    await expectFn(await menuHarness.isOpen()).toBe(true)
+    await expectFn((await menuHarness.getItems()).length).toBe(5)
+    await menuHarness.hoverItem({ text: 'Item 3' }, { text: 'Item 3.1' })
+    const submenu1 = (await (await menuHarness.getItems({ text: 'Item 3' }))[0].getSubmenu())
+    await expectFn(await submenu1?.isOpen()).toBe(true)
+    const submenu2 = await (await submenu1?.getItems({ text: 'Item 3.1' }))?.[0].getSubmenu()
+    await expectFn(await submenu2?.isOpen()).toBe(true)
   },
 }

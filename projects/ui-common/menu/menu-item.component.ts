@@ -3,6 +3,7 @@ import { DOCUMENT } from '@angular/common'
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Inject, Input, OnDestroy, Optional } from '@angular/core'
 import { Subject } from 'rxjs'
 
+import { faCaretRight } from '@fortawesome/free-solid-svg-icons'
 import { CanDisableCtor, mixinDisabled } from '@theseam/ui-common/core'
 import { SeamIcon } from '@theseam/ui-common/icon'
 
@@ -39,6 +40,9 @@ export class MenuItemComponent extends _seamMenuItemMixinBase implements OnDestr
 
   @Input() icon: SeamIcon | string | undefined | null
   @Input() iconClass: string | undefined | null
+
+  @Input() sublevelIcon: SeamIcon | string | undefined | null = faCaretRight
+  @Input() subLevelIconClass: string | undefined | null
 
   @Input() badgeText: string | undefined | null
   @Input() badgeTheme: string | undefined | null = 'danger'

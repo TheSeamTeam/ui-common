@@ -6,16 +6,22 @@
     [iconClass]="iconClass"
     iconType="image-fill">
   </seam-icon>
-  <!-- <span class="text-nowrap">
-    <ng-content></ng-content>
-  </span> -->
-  <div class="text-truncate">
-    <ng-content></ng-content>
-  </div>
+  <div class="flex-fill">
+    <div class="text-truncate">
+      <ng-content></ng-content>
+    </div>
 
-  <div *ngIf="badgeText">
-    <span class="badge badge-pill{{ badgeTheme ? ' badge-' + badgeTheme : '' }} position-relative"
-      style="top: -8px"
-      >{{ badgeText }}</span>
+    <div *ngIf="badgeText">
+      <span class="badge badge-pill{{ badgeTheme ? ' badge-' + badgeTheme : '' }} position-relative"
+        style="top: -8px"
+        >{{ badgeText }}</span>
+    </div>
   </div>
+  <seam-icon *ngIf="_triggersSubmenu"
+    style="width: 30px; height: 20px; flex: 0 0 auto;"
+    class="pl-2"
+    [icon]="sublevelIcon"
+    [iconClass]="subLevelIconClass"
+    iconType="image-fill">
+  </seam-icon>
 </div>

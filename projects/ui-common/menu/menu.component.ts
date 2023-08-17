@@ -127,7 +127,6 @@ export class MenuComponent implements OnDestroy, AfterContentInit, ITheSeamMenuP
   }
 
   ngOnDestroy() {
-    console.log('ngDestroy', this.panelId, 'MenuComponent')
     this._tabSubscription.unsubscribe()
     this.closed.complete()
 

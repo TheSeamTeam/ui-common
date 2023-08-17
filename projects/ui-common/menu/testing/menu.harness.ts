@@ -1,6 +1,5 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
 import {
-  ComponentHarness,
   ComponentHarnessConstructor,
   ContentContainerComponentHarness,
   HarnessLoader,
@@ -9,7 +8,22 @@ import {
   TestKey,
   BaseHarnessFilters,
 } from '@angular/cdk/testing'
+
+import { waitOnConditionAsync } from '@theseam/ui-common/utils'
+
 import { TheSeamMenuItemHarness, TheSeamMenuItemHarnessFilters } from './menu-item.harness'
+
+/**
+ * Workaround to wait on the animation to finish in browser, until a generic
+ * broswer-based solution is added, for Storybook interactions.
+ */
+async function animatingWait() {
+  const selectAnimating = () => document.querySelectorAll('.seam-menu-container .ng-animating')
+  if (selectAnimating().length === 0) {
+    return
+  }
+  await waitOnConditionAsync(() => selectAnimating().length === 0, 1000)
+}
 
 /** A set of criteria that can be used to filter a list of `TheSeamMenuHarness` instances. */
 export interface TheSeamMenuHarnessFilters extends BaseHarnessFilters {
@@ -57,12 +71,12 @@ export class TheSeamMenuHarness extends ContentContainerComponentHarness<string>
 
   /** Focuses the menu. */
   async focus(): Promise<void> {
-    return (await this.host()).focus()
+    return (await this.host()).focus().then(() => animatingWait())
   }
 
   /** Blurs the menu. */
   async blur(): Promise<void> {
-    return (await this.host()).blur()
+    return (await this.host()).blur().then(() => animatingWait())
   }
 
   /** Whether the menu is focused. */
@@ -73,7 +87,7 @@ export class TheSeamMenuHarness extends ContentContainerComponentHarness<string>
   /** Opens the menu. */
   async open(): Promise<void> {
     if (!(await this.isOpen())) {
-      return (await this.host()).click()
+      return (await this.host()).click().then(() => animatingWait())
     }
   }
 
@@ -81,7 +95,7 @@ export class TheSeamMenuHarness extends ContentContainerComponentHarness<string>
   async close(): Promise<void> {
     const panel = await this._getMenuPanel()
     if (panel) {
-      return panel.sendKeys(TestKey.ESCAPE)
+      return panel.sendKeys(TestKey.ESCAPE).then(() => animatingWait())
     }
   }
 
@@ -131,6 +145,35 @@ export class TheSeamMenuHarness extends ContentContainerComponentHarness<string>
       throw Error(`Item matching ${JSON.stringify(itemFilter)} does not have a submenu`)
     }
     return menu.clickItem(...(subItemFilters as [Omit<TheSeamMenuItemHarnessFilters, 'ancestor'>]))
+  }
+
+  /**
+   * Hovers an item in the menu, and optionally continues hovering items in subsequent sub-menus.
+   * @param itemFilter A filter used to represent which item in the menu should be hovered. The
+   *     first matching menu item will be hovered.
+   * @param subItemFilters A list of filters representing the items to hover in any subsequent
+   *     sub-menus. The first item in the sub-menu matching the corresponding filter in
+   *     `subItemFilters` will be hovered.
+   */
+  async hoverItem(
+    itemFilter: Omit<TheSeamMenuItemHarnessFilters, 'ancestor'>,
+    ...subItemFilters: Omit<TheSeamMenuItemHarnessFilters, 'ancestor'>[]
+  ): Promise<void> {
+    await this.open()
+    const items = await this.getItems(itemFilter)
+    if (!items.length) {
+      throw Error(`Could not find item matching ${JSON.stringify(itemFilter)}`)
+    }
+
+    if (!subItemFilters.length) {
+      return items[0].hover()
+    }
+
+    const menu = await items[0].getSubmenu()
+    if (!menu) {
+      throw Error(`Item matching ${JSON.stringify(itemFilter)} does not have a submenu`)
+    }
+    return menu.hoverItem(...(subItemFilters as [Omit<TheSeamMenuItemHarnessFilters, 'ancestor'>]))
   }
 
   protected override async getRootHarnessLoader(): Promise<HarnessLoader> {

@@ -1,7 +1,21 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
 import { BaseHarnessFilters, ComponentHarnessConstructor, ContentContainerComponentHarness, HarnessPredicate } from '@angular/cdk/testing'
 
+import { waitOnConditionAsync } from '@theseam/ui-common/utils'
+
 import { TheSeamMenuHarness } from './menu.harness'
+
+/**
+ * Workaround to wait on the animation to finish in browser, until a generic
+ * broswer-based solution is added, for Storybook interactions.
+ */
+async function animatingWait() {
+  const selectAnimating = () => document.querySelectorAll('.seam-menu-container .ng-animating')
+  if (selectAnimating().length === 0) {
+    return
+  }
+  await waitOnConditionAsync(() => selectAnimating().length === 0, 1000)
+}
 
 /** A set of criteria that can be used to filter a list of `TheSeamMenuItemHarness` instances. */
 export interface TheSeamMenuItemHarnessFilters extends BaseHarnessFilters {
@@ -48,12 +62,12 @@ export class TheSeamMenuItemHarness extends ContentContainerComponentHarness<str
 
   /** Focuses the menu item. */
   async focus(): Promise<void> {
-    return (await this.host()).focus()
+    return (await this.host()).focus().then(() => animatingWait())
   }
 
   /** Blurs the menu item. */
   async blur(): Promise<void> {
-    return (await this.host()).blur()
+    return (await this.host()).blur().then(() => animatingWait())
   }
 
   /** Whether the menu item is focused. */
@@ -63,7 +77,12 @@ export class TheSeamMenuItemHarness extends ContentContainerComponentHarness<str
 
   /** Clicks the menu item. */
   async click(): Promise<void> {
-    return (await this.host()).click()
+    return (await this.host()).click().then(() => animatingWait())
+  }
+
+  /** Hovers the menu item. */
+  async hover(): Promise<void> {
+    return (await this.host()).hover().then(() => animatingWait())
   }
 
   /** Whether this item has a submenu. */
