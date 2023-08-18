@@ -1,5 +1,5 @@
 import { BooleanInput } from '@angular/cdk/coercion'
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core'
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, Output, ViewEncapsulation } from '@angular/core'
 import { BehaviorSubject, Observable, Subject } from 'rxjs'
 import { shareReplay, switchMap } from 'rxjs/operators'
 
@@ -16,10 +16,10 @@ import { TheSeamNavService } from '../nav.service'
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 })
-export class HorizontalNavComponent implements OnInit, OnDestroy {
+export class HorizontalNavComponent implements OnDestroy {
   static ngAcceptInputType_hasHeaderToggle: BooleanInput
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   @Input()
   get items(): INavItem[] { return this._items.value }
@@ -31,7 +31,7 @@ export class HorizontalNavComponent implements OnInit, OnDestroy {
 
   @Input() hideEmptyIcon: boolean | undefined | null = true
 
-  @Input() hierLevel: number = 0
+  @Input() hierLevel = 0
 
   @Input() childAction: NavItemChildAction = 'menu'
 
@@ -47,8 +47,6 @@ export class HorizontalNavComponent implements OnInit, OnDestroy {
       shareReplay({ bufferSize: 1, refCount: true }),
     )
   }
-
-  ngOnInit() { }
 
   ngOnDestroy() {
     this._ngUnsubscribe.next()

@@ -58,7 +58,7 @@ export class NavItemComponent implements OnDestroy {
   static ngAcceptInputType_compact: BooleanInput
   static ngAcceptInputType_active: BooleanInput
 
-  private readonly _ngUnsubscribe = new Subject()
+  private readonly _ngUnsubscribe = new Subject<void>()
 
   readonly faAngleLeft = faAngleLeft
 
@@ -72,7 +72,7 @@ export class NavItemComponent implements OnDestroy {
 
   @Input() label: string | undefined | null
 
-  @Input() @InputBoolean() active: boolean = false
+  @Input() @InputBoolean() active = false
 
   @Input()
   set link(value: string | undefined | null) { this._link.next(value) }
@@ -84,9 +84,9 @@ export class NavItemComponent implements OnDestroy {
 
   @Input() children: INavItem[] | undefined | null
 
-  @Input() @InputNumber(0) hierLevel: number = 0
+  @Input() @InputNumber(0) hierLevel = 0
 
-  @Input() @InputNumber(10) indentSize: number = 10
+  @Input() @InputNumber(10) indentSize = 10
 
   @Input()
   set expanded(value: boolean) {
@@ -102,7 +102,7 @@ export class NavItemComponent implements OnDestroy {
   private readonly _compact = new BehaviorSubject<boolean>(false)
   public readonly compact$ = this._compact.asObservable()
 
-  @Input() focused: boolean = false
+  @Input() focused = false
 
   @Input() badgeText: string | undefined | null
   @Input() badgeTheme: ThemeTypes | undefined | null = 'danger'
@@ -128,7 +128,7 @@ export class NavItemComponent implements OnDestroy {
           placement: value.placement || 'auto',
           disabled: typeof value?.disabled === 'boolean'
             ? value.disabled
-            : typeof value.tooltip === 'string' ? false : true
+            : typeof value.tooltip !== 'string'
         }
       }
     } else {
@@ -222,6 +222,5 @@ export class NavItemComponent implements OnDestroy {
   get showIconBlock(): boolean {
     return notNullOrUndefined(this.icon) || this.hideEmptyIcon !== true
   }
-
 
 }

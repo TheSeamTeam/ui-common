@@ -206,7 +206,7 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
 
   @Input() hideEmptyIcon: boolean | null | undefined
 
-  @Input() @InputNumber(10) indentSize: number = 10
+  @Input() @InputNumber(10) indentSize = 10
 
   @Input()
   get expanded(): boolean { return this._expanded.value }
@@ -224,9 +224,9 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
 
   @Input() expandOrigin: 'left' | 'right' | 'top' | 'bottom' = 'left'
 
-  @Input() expandHeight: string = '100%'
+  @Input() expandHeight = '100%'
 
-  @Input() expandWidth: string = 'calc(100vw - 50px)'
+  @Input() expandWidth = 'calc(100vw - 50px)'
 
   @Input()
   get overlay(): boolean { return this._overlay.value }
@@ -323,18 +323,18 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
   get expandOriginTransform(): string | null {
     switch (this.expandOrigin) {
       case 'right':
-        return this._sideNavExpand === EXPANDED_OVERLAY_STATE ? 'translateX(100vw) translateX(-100%)' :
-            this._sideNavExpand === COLLAPSED_OVERLAY_STATE ? 'translateX(100vw)' : null
+        return this._sideNavExpand === EXPANDED_OVERLAY_STATE ? 'translateX(100vw) translateX(-100%)'
+            : this._sideNavExpand === COLLAPSED_OVERLAY_STATE ? 'translateX(100vw)' : null
       case 'top':
-        return this._sideNavExpand === EXPANDED_OVERLAY_STATE ? 'translateY(0)' :
-            this._sideNavExpand === COLLAPSED_OVERLAY_STATE ? 'translateY(-100%)' : null
+        return this._sideNavExpand === EXPANDED_OVERLAY_STATE ? 'translateY(0)'
+            : this._sideNavExpand === COLLAPSED_OVERLAY_STATE ? 'translateY(-100%)' : null
       case 'bottom':
-        return this._sideNavExpand === EXPANDED_OVERLAY_STATE ? 'translateY(100vh) translateY(-100%)' :
-            this._sideNavExpand === COLLAPSED_OVERLAY_STATE ? 'translateY(100vh)' : null
+        return this._sideNavExpand === EXPANDED_OVERLAY_STATE ? 'translateY(100vh) translateY(-100%)'
+            : this._sideNavExpand === COLLAPSED_OVERLAY_STATE ? 'translateY(100vh)' : null
       case 'left':
       default:
-        return this._sideNavExpand === EXPANDED_OVERLAY_STATE ? 'translateX(0)' :
-            this._sideNavExpand === COLLAPSED_OVERLAY_STATE ? 'translateX(-100%)' : null
+        return this._sideNavExpand === EXPANDED_OVERLAY_STATE ? 'translateX(0)'
+            : this._sideNavExpand === COLLAPSED_OVERLAY_STATE ? 'translateX(-100%)' : null
     }
   }
 

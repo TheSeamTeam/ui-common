@@ -79,7 +79,7 @@
   <div class="d-flex flex-column justify-content-center pr-2" *ngIf="isMobile$ | async">
     <ng-container *ngIf="_topBarNavToggleBtnDetailTpl; else iconBtn">
       <button seamButton seamBaseLayoutNavToggle>
-        <ng-template [ngTemplateOutlet]="_topBarNavToggleBtnDetailTpl?.template"></ng-template>
+        <ng-template [ngTemplateOutlet]="_topBarNavToggleBtnDetailTpl?.template || null"></ng-template>
       </button>
     </ng-container>
     <ng-template #iconBtn>
