@@ -9,13 +9,12 @@ import {
   trigger
 } from '@angular/animations'
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion'
-import { TemplatePortal } from '@angular/cdk/portal'
+import { PortalModule, TemplatePortal } from '@angular/cdk/portal'
 import {
   ChangeDetectionStrategy,
   Component,
   ContentChild,
   EventEmitter,
-  forwardRef,
   HostBinding,
   Inject,
   Input,
@@ -27,22 +26,25 @@ import {
   ViewContainerRef,
   ViewEncapsulation,
 } from '@angular/core'
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router'
+import { CommonModule } from '@angular/common'
+import { A11yModule } from '@angular/cdk/a11y'
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators'
 
+import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { InputBoolean, InputNumber } from '@theseam/ui-common/core'
-import { TheSeamLayoutService } from '@theseam/ui-common/layout'
+import { TheSeamLayoutModule, TheSeamLayoutService } from '@theseam/ui-common/layout'
+import { SeamIcon } from '@theseam/ui-common/icon'
+import { TheSeamScrollbarModule } from '@theseam/ui-common/scrollbar'
 
 import { ITheSeamBaseLayoutNav, ITheSeamBaseLayoutRef, THESEAM_BASE_LAYOUT_REF } from '../base-layout/index'
 
-import { faBars } from '@fortawesome/free-solid-svg-icons'
-import { SeamIcon } from '@theseam/ui-common/icon'
 import { BaseLayoutSideBarFooterDirective } from '../base-layout/directives/base-layout-side-bar-footer.directive'
 import { BaseLayoutSideBarHeaderDirective } from '../base-layout/directives/base-layout-side-bar-header.directive'
 import { THESEAM_SIDE_NAV_ACCESSOR } from './side-nav-tokens'
 import { ISideNavItem } from './side-nav.models'
 import { TheSeamSideNavService } from './side-nav.service'
+import { SideNavToggleComponent } from './side-nav-toggle/side-nav-toggle.component'
 
 const EXPANDED_STATE = 'expanded'
 const COLLAPSED_STATE = 'collapsed'
@@ -85,8 +87,7 @@ export function sideNavExpandStateChangeFn(fromState: string, toState: string) {
     TheSeamSideNavService,
     {
       provide: THESEAM_SIDE_NAV_ACCESSOR,
-      // tslint:disable-next-line:no-use-before-declare
-      useExisting: forwardRef(() => SideNavComponent)
+      useExisting: SideNavComponent
     },
   ],
   animations: [
@@ -176,8 +177,17 @@ export function sideNavExpandStateChangeFn(fromState: string, toState: string) {
       // ]),
     ])
   ],
+  imports: [
+    CommonModule,
+    A11yModule,
+    TheSeamScrollbarModule,
+    TheSeamLayoutModule,
+    PortalModule,
+    SideNavToggleComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  standalone: true,
 })
 export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNav {
   static ngAcceptInputType_hasHeaderToggle: BooleanInput
