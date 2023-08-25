@@ -45,6 +45,7 @@ import { THESEAM_SIDE_NAV_ACCESSOR } from './side-nav-tokens'
 import { ISideNavItem } from './side-nav.models'
 import { TheSeamSideNavService } from './side-nav.service'
 import { SideNavToggleComponent } from './side-nav-toggle/side-nav-toggle.component'
+import { SideNavItemComponent } from './side-nav-item/side-nav-item.component'
 
 const EXPANDED_STATE = 'expanded'
 const COLLAPSED_STATE = 'collapsed'
@@ -183,6 +184,7 @@ export function sideNavExpandStateChangeFn(fromState: string, toState: string) {
     TheSeamScrollbarModule,
     TheSeamLayoutModule,
     PortalModule,
+    SideNavItemComponent,
     SideNavToggleComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,

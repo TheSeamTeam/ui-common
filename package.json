@@ -57,7 +57,7 @@
     "@turf/boolean-contains": "^6.5.0",
     "@turf/helpers": "^6.5.0",
     "@turf/kinks": "^6.5.0",
-    "apollo-angular": "^2.6.0",
+    "apollo-angular": "^4.2.1",
     "bootstrap": "~4.6.0",
     "buffer": "^5.2.1",
     "cross-env": "^7.0.3",

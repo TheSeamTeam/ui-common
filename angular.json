@@ -307,7 +307,7 @@
               },
               {
                 "glob": "**/*.scss",
-                "input": "breadcrumbs",
+                "input": "projects/ui-common/breadcrumbs",
                 "output": "breadcrumbs"
               },
               {
