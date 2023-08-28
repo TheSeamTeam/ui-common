@@ -205,3 +205,53 @@ export const Hover: Story = {
     await expectFn(await submenu2?.isOpen()).toBe(true)
   },
 }
+
+export const Header: Story = {
+  render: args => ({
+    props: args,
+    template: `
+      <seam-menu #menu>
+        <seam-menu-header>
+          <h5 class="mb-0">Menu Header</h5>
+        </seam-menu-header>
+
+        <button seamMenuItem>Item 1</button>
+        <button seamMenuItem>Item 2</button>
+        <button seamMenuItem>Item 3</button>
+      </seam-menu>
+      <button [seamMenuToggle]="menu" seamButton theme="primary">Toggle</button>
+    `,
+  }),
+  play: async ({ canvasElement, fixture }) => {
+    const menuHarness = await getHarness(TheSeamMenuHarness, { canvasElement, fixture })
+    await expectFn(await menuHarness.isOpen()).toBe(false)
+    await menuHarness.open()
+    await expectFn(await menuHarness.isOpen()).toBe(true)
+    await expectFn((await menuHarness.getHeader()) !== null).toBe(true)
+  },
+}
+
+export const Footer: Story = {
+  render: args => ({
+    props: args,
+    template: `
+      <seam-menu #menu>
+        <button seamMenuItem>Item 1</button>
+        <button seamMenuItem>Item 2</button>
+        <button seamMenuItem>Item 3</button>
+
+        <seam-menu-footer>
+          <button seamMenuFooterAction>Action</button>
+        </seam-menu-footer>
+      </seam-menu>
+      <button [seamMenuToggle]="menu" seamButton theme="primary">Toggle</button>
+    `,
+  }),
+  play: async ({ canvasElement, fixture }) => {
+    const menuHarness = await getHarness(TheSeamMenuHarness, { canvasElement, fixture })
+    await expectFn(await menuHarness.isOpen()).toBe(false)
+    await menuHarness.open()
+    await expectFn(await menuHarness.isOpen()).toBe(true)
+    await expectFn((await menuHarness.getFooter()) !== null).toBe(true)
+  },
+}

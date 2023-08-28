@@ -9,21 +9,10 @@ import {
   BaseHarnessFilters,
 } from '@angular/cdk/testing'
 
-import { waitOnConditionAsync } from '@theseam/ui-common/utils'
-
 import { TheSeamMenuItemHarness, TheSeamMenuItemHarnessFilters } from './menu-item.harness'
-
-/**
- * Workaround to wait on the animation to finish in browser, until a generic
- * broswer-based solution is added, for Storybook interactions.
- */
-async function animatingWait() {
-  const selectAnimating = () => document.querySelectorAll('.seam-menu-container .ng-animating')
-  if (selectAnimating().length === 0) {
-    return
-  }
-  await waitOnConditionAsync(() => selectAnimating().length === 0, 1000)
-}
+import { TheSeamMenuFooterHarness, TheSeamMenuFooterHarnessFilters } from './menu-footer.harness'
+import { TheSeamMenuHeaderHarness, TheSeamMenuHeaderHarnessFilters } from './menu-header.harness'
+import { animatingWait } from './utils'
 
 /** A set of criteria that can be used to filter a list of `TheSeamMenuHarness` instances. */
 export interface TheSeamMenuHarnessFilters extends BaseHarnessFilters {
@@ -34,7 +23,7 @@ export interface TheSeamMenuHarnessFilters extends BaseHarnessFilters {
 export class TheSeamMenuHarness extends ContentContainerComponentHarness<string> {
   private _documentRootLocator = this.documentRootLocatorFactory()
 
-  /** The selector for the host element of a `MatMenu` instance. */
+  /** The selector for the host element of a `MenuComponent` instance. */
   static hostSelector = '.seam-menu-toggle'
 
   /**
@@ -112,7 +101,7 @@ export class TheSeamMenuHarness extends ContentContainerComponentHarness<string>
         TheSeamMenuItemHarness.with({
           ...(filters || {}),
           ancestor: `#${panelId}`,
-        } as TheSeamMenuItemHarnessFilters),
+        } satisfies TheSeamMenuItemHarnessFilters),
       )()
     }
     return []
@@ -174,6 +163,44 @@ export class TheSeamMenuHarness extends ContentContainerComponentHarness<string>
       throw Error(`Item matching ${JSON.stringify(itemFilter)} does not have a submenu`)
     }
     return menu.hoverItem(...(subItemFilters as [Omit<TheSeamMenuItemHarnessFilters, 'ancestor'>]))
+  }
+
+  /**
+   * Gets a `TheSeamMenuHeaderHarness` representing the header in the menu.
+   * @param filters Optionally filters which menu items are included.
+   */
+  async getHeader(
+    filters?: Omit<TheSeamMenuHeaderHarnessFilters, 'ancestor'>,
+  ): Promise<TheSeamMenuHeaderHarness | null> {
+    const panelId = await this._getPanelId()
+    if (panelId) {
+      return this._documentRootLocator.locatorForOptional(
+        TheSeamMenuHeaderHarness.with({
+          ...(filters || {}),
+          ancestor: `#${panelId}`,
+        } satisfies TheSeamMenuHeaderHarnessFilters),
+      )()
+    }
+    return null
+  }
+
+  /**
+   * Gets a `TheSeamMenuFooterHarness` representing the footer in the menu.
+   * @param filters Optionally filters which menu items are included.
+   */
+  async getFooter(
+    filters?: Omit<TheSeamMenuFooterHarnessFilters, 'ancestor'>,
+  ): Promise<TheSeamMenuFooterHarness | null> {
+    const panelId = await this._getPanelId()
+    if (panelId) {
+      return this._documentRootLocator.locatorForOptional(
+        TheSeamMenuFooterHarness.with({
+          ...(filters || {}),
+          ancestor: `#${panelId}`,
+        } satisfies TheSeamMenuFooterHarnessFilters),
+      )()
+    }
+    return null
   }
 
   protected override async getRootHarnessLoader(): Promise<HarnessLoader> {

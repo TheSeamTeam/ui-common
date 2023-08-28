@@ -1,21 +1,8 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
 import { BaseHarnessFilters, ComponentHarnessConstructor, ContentContainerComponentHarness, HarnessPredicate } from '@angular/cdk/testing'
 
-import { waitOnConditionAsync } from '@theseam/ui-common/utils'
-
 import { TheSeamMenuHarness } from './menu.harness'
-
-/**
- * Workaround to wait on the animation to finish in browser, until a generic
- * broswer-based solution is added, for Storybook interactions.
- */
-async function animatingWait() {
-  const selectAnimating = () => document.querySelectorAll('.seam-menu-container .ng-animating')
-  if (selectAnimating().length === 0) {
-    return
-  }
-  await waitOnConditionAsync(() => selectAnimating().length === 0, 1000)
-}
+import { animatingWait } from './utils'
 
 /** A set of criteria that can be used to filter a list of `TheSeamMenuItemHarness` instances. */
 export interface TheSeamMenuItemHarnessFilters extends BaseHarnessFilters {
@@ -26,7 +13,7 @@ export interface TheSeamMenuItemHarnessFilters extends BaseHarnessFilters {
 }
 
 export class TheSeamMenuItemHarness extends ContentContainerComponentHarness<string> {
-  /** The selector for the host element of a `MatMenuItem` instance. */
+  /** The selector for the host element of a `MenuItemComponent` instance. */
   static hostSelector = '.seam-menu-item'
 
   /**

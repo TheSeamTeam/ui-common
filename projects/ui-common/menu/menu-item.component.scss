@@ -1,12 +1,11 @@
 @import '../styles/utilities';
 
-// :host {
-//   // Avoid the outline
-//   &.cdk-mouse-focused {
-//     outline: 0;
-//   }
-// }
 :host {
+  // When using a mouse, the first item doesn't need to display as focused, if it isn't hovered by the mouse.
+  &.cdk-mouse-focused:not(:hover){
+    background: transparent;
+  }
+
   &[aria-expanded] {
     color: $dropdown-link-hover-color;
     text-decoration: none;
