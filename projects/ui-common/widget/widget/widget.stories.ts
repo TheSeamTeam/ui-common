@@ -139,9 +139,9 @@ export const NoHeader: Story = {
   },
 }
 
-export const CanCollapse: Story = {
+export const Collapse: Story = {
   render: args => ({
-    props: { ...args },
+    props: args,
     template: `<seam-widget [canCollapse]="canCollapse">Widget Body</seam-widget>`,
   }),
   args: {

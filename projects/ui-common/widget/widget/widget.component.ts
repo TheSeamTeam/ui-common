@@ -1,4 +1,4 @@
-import { animate, style, transition, trigger } from '@angular/animations'
+import { animate, state, style, transition, trigger } from '@angular/animations'
 import { BooleanInput } from '@angular/cdk/coercion'
 import { Component, ContentChild, Input, isDevMode, ViewEncapsulation } from '@angular/core'
 
@@ -9,6 +9,40 @@ import { SeamIcon } from '@theseam/ui-common/icon'
 
 import { WidgetIconTplDirective } from '../directives/widget-icon-tpl.directive'
 import { WidgetTitleTplDirective } from '../directives/widget-title-tpl.directive'
+
+const EXPANDED_STATE = 'expanded'
+const COLLAPSED_STATE = 'collapsed'
+
+const EXPAND_TRANSITION = `${EXPANDED_STATE} <=> ${COLLAPSED_STATE}`
+
+const loadingAnimation = trigger('loadingAnim', [
+  transition(':enter', [
+    style({ opacity: 0 }),
+    animate('250ms ease-in-out', style({ opacity: 1 })),
+  ]),
+  transition(':leave', [
+    style({ opacity: 1 }),
+    animate('250ms ease-in-out', style({ opacity: 0 })),
+  ]),
+])
+
+/**
+ * I was having an issue getting the content to not be removed from the DOM,
+ * before the animation was complete. This animation is a hack to keep the
+ * content in the DOM until the animation is complete.
+ */
+const keepContentAnimation = trigger('keepContentAnim', [
+  transition(':leave', [
+    style({ opacity: 1 }),
+    animate('0ms', style({ opacity: 0 })),
+  ]),
+])
+
+const collapseAnimation = trigger('collapseAnim', [
+  state(EXPANDED_STATE, style({ height: '*' })),
+  state(COLLAPSED_STATE, style({ height: '0' })),
+  transition(EXPAND_TRANSITION, animate('0.3s ease-in-out')),
+])
 
 /**
  * Widget
@@ -27,16 +61,9 @@ import { WidgetTitleTplDirective } from '../directives/widget-title-tpl.directiv
   styleUrls: ['./widget.component.scss'],
   encapsulation: ViewEncapsulation.None,
   animations: [
-    trigger('loadingAnim', [
-      transition(':enter', [
-        style({ opacity: 0 }),
-        animate('250ms ease-in-out', style({ opacity: 1 })),
-      ]),
-      transition(':leave', [
-        style({ opacity: 1 }),
-        animate('250ms ease-in-out', style({ opacity: 0 })),
-      ]),
-    ]),
+    loadingAnimation,
+    collapseAnimation,
+    keepContentAnimation,
   ],
 })
 export class WidgetComponent {
@@ -125,5 +152,7 @@ export class WidgetComponent {
 
     this.collapsed = !this.collapsed
   }
+
+  get collapseState(): string { return this.collapsed ? COLLAPSED_STATE : EXPANDED_STATE }
 
 }
