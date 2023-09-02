@@ -16,7 +16,7 @@ import { TheSeamDashboardModule } from '../dashboard.module'
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'story-ex-widget-1',
-  template: `<seam-widget [icon]="faWrench" titleText="Example Widget 1" [loading]="!(initialized$ | async)">
+  template: `<seam-widget [icon]="faWrench" titleText="Example Widget 1" [loading]="!(initialized$ | async)" [canCollapse]="true">
   <seam-widget-content-header>Widget example 1</seam-widget-content-header>
 
   <seam-widget-tile-list>
@@ -36,7 +36,7 @@ class StoryExWidget1Component {
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'story-ex-widget-2',
-  template: `<seam-widget [icon]="faWrench" titleText="Lazy Widget 2" [loading]="!(initialized$ | async)">
+  template: `<seam-widget [icon]="faWrench" titleText="Lazy Widget 2" [loading]="!(initialized$ | async)" [canCollapse]="true">
   <seam-widget-content-header>Widget example 2</seam-widget-content-header>
 
   <seam-widget-tile-list>
@@ -56,7 +56,7 @@ class StoryExWidget2Component {
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'story-ex-widget-3',
-  template: `<seam-widget [icon]="faWrench" titleText="Lazy Widget 3" [loading]="!(initialized$ | async)">
+  template: `<seam-widget [icon]="faWrench" titleText="Lazy Widget 3" [loading]="!(initialized$ | async)" [canCollapse]="true">
   <seam-widget-content-header>Widget example 3</seam-widget-content-header>
 
   <seam-widget-tile-list>
@@ -76,7 +76,7 @@ class StoryExWidget3Component {
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'story-ex-widget-4',
-  template: `<seam-widget [icon]="faWrench" titleText="Lazy Widget 4" [loading]="!(initialized$ | async)">
+  template: `<seam-widget [icon]="faWrench" titleText="Lazy Widget 4" [loading]="!(initialized$ | async)" [canCollapse]="true">
   <seam-widget-content-header>Widget example 4</seam-widget-content-header>
 
   <seam-widget-tile-list>

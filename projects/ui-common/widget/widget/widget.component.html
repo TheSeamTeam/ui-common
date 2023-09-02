@@ -28,29 +28,50 @@
       </span>
     </div>
     <div class="widget-header-btns-container" *ngIf="hasConfig || canCollapse">
-      <div *ngIf="hasConfig">
-        <!-- <button seamIconBtn [icon]="configIcon"
+      <!-- <div *ngIf="hasConfig">
+        <button seamIconBtn [icon]="configIcon"
           class="widget-header-btn-config"
-          iconType="">
+          [iconType]="null">
           <span class="sr-only">Widget configuration menu</span>
-        </button> -->
+        </button>
         <button seamButton class="widget-header-btn-config p-0">
           <seam-icon class="d-block" [icon]="configIcon" iconClass="text-secondary"></seam-icon>
           <span class="sr-only">Widget configuration menu</span>
         </button>
-      </div>
+      </div> -->
 
       <div *ngIf="canCollapse" class="px-0">
-        <button seamButton class="widget-header-btn-collapse p-0" (click)="collapse()">
-          <seam-icon class="d-block" [icon]="collapseIcon" iconClass="text-secondary" style="margin-left: -10px; margin-right: -5px;"></seam-icon>
+
+        <button seamButton class="widget-header-btn-collapse p-0 mr-1 h-100" (click)="collapse()" [class.widget-header-btn-collapse--active]="collapsed">
+          <seam-icon class="d-block"
+            [icon]="collapseIcon"
+            iconClass="text-secondary">
+          </seam-icon>
           <span class="sr-only">Widget collapse</span>
         </button>
+        <!-- iconType="borderless-styled-square" -->
+        <!-- style="margin-left: -10px; margin-right: -5px;" -->
+
+        <!-- <button seamIconBtn class="widget-header-btn-collapse" (click)="collapse()" [class.widget-header-btn-collapse--active]="collapsed"
+          btnTheme="secondary"
+          [icon]="collapseIcon"
+          iconType="borderless-styled-square"
+          size="xs"
+          btnSize="sm"
+          >
+          <seam-icon class="d-block"
+            [icon]="collapseIcon"
+            iconClass="text-secondary"
+            style="margin-left: -10px; margin-right: -5px;"
+            iconType="borderless-styled-square"></seam-icon>
+          <span class="sr-only">Widget collapse</span>
+        </button> -->
       </div>
     </div>
   </div>
-  <div class="position-relative" [style.height.px]="loading ? 150 : undefined">
+  <div class="position-relative overflow-hidden" [style.height.px]="loading ? 150 : undefined" [@collapseAnim]="collapseState">
     <ng-container *ngIf="!collapsed">
-      <div class="p-2" *ngIf="!loading else loadingTpl">
+      <div class="p-2" *ngIf="!loading else loadingTpl" @keepContentAnim>
         <ng-content></ng-content>
       </div>
       <ng-content select="seam-widget-footer"></ng-content>

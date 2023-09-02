@@ -132,9 +132,19 @@ export const Loading: Story = {
 export const NoHeader: Story = {
   render: args => ({
     props: { ...args },
-    template: `<seam-widget>Widget Body</seam-widget>`,
+    template: `<seam-widget [hasHeader]="hasHeader">Widget Body</seam-widget>`,
   }),
   args: {
     hasHeader: false,
+  },
+}
+
+export const Collapse: Story = {
+  render: args => ({
+    props: args,
+    template: `<seam-widget [canCollapse]="canCollapse">Widget Body</seam-widget>`,
+  }),
+  args: {
+    canCollapse: true,
   },
 }

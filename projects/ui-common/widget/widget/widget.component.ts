@@ -1,6 +1,6 @@
-import { animate, style, transition, trigger } from '@angular/animations'
+import { animate, state, style, transition, trigger } from '@angular/animations'
 import { BooleanInput } from '@angular/cdk/coercion'
-import { Component, ContentChild, Input, ViewEncapsulation } from '@angular/core'
+import { Component, ContentChild, Input, isDevMode, ViewEncapsulation } from '@angular/core'
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { faAngleDown, faCog } from '@fortawesome/free-solid-svg-icons'
@@ -9,6 +9,40 @@ import { SeamIcon } from '@theseam/ui-common/icon'
 
 import { WidgetIconTplDirective } from '../directives/widget-icon-tpl.directive'
 import { WidgetTitleTplDirective } from '../directives/widget-title-tpl.directive'
+
+const EXPANDED_STATE = 'expanded'
+const COLLAPSED_STATE = 'collapsed'
+
+const EXPAND_TRANSITION = `${EXPANDED_STATE} <=> ${COLLAPSED_STATE}`
+
+const loadingAnimation = trigger('loadingAnim', [
+  transition(':enter', [
+    style({ opacity: 0 }),
+    animate('250ms ease-in-out', style({ opacity: 1 })),
+  ]),
+  transition(':leave', [
+    style({ opacity: 1 }),
+    animate('250ms ease-in-out', style({ opacity: 0 })),
+  ]),
+])
+
+/**
+ * I was having an issue getting the content to not be removed from the DOM,
+ * before the animation was complete. This animation is a hack to keep the
+ * content in the DOM until the animation is complete.
+ */
+const keepContentAnimation = trigger('keepContentAnim', [
+  transition(':leave', [
+    style({ opacity: 1 }),
+    animate('0ms', style({ opacity: 0 })),
+  ]),
+])
+
+const collapseAnimation = trigger('collapseAnim', [
+  state(EXPANDED_STATE, style({ height: '*' })),
+  state(COLLAPSED_STATE, style({ height: '0' })),
+  transition(EXPAND_TRANSITION, animate('0.3s ease-in-out')),
+])
 
 /**
  * Widget
@@ -27,16 +61,9 @@ import { WidgetTitleTplDirective } from '../directives/widget-title-tpl.directiv
   styleUrls: ['./widget.component.scss'],
   encapsulation: ViewEncapsulation.None,
   animations: [
-    trigger('loadingAnim', [
-      transition(':enter', [
-        style({ opacity: 0 }),
-        animate('250ms ease-in-out', style({ opacity: 1 })),
-      ]),
-      transition(':leave', [
-        style({ opacity: 1 }),
-        animate('250ms ease-in-out', style({ opacity: 0 })),
-      ]),
-    ]),
+    loadingAnimation,
+    collapseAnimation,
+    keepContentAnimation,
   ],
 })
 export class WidgetComponent {
@@ -46,11 +73,12 @@ export class WidgetComponent {
   static ngAcceptInputType_hasConfig: BooleanInput
   static ngAcceptInputType_canCollapse: BooleanInput
 
-  /** @ignore */
-  configIcon = faCog
-  /** @ignore */
-  collapseIcon = faAngleDown
+  readonly configIcon = faCog
+  readonly collapseIcon = faAngleDown
 
+  /**
+   * Toggles the collapsed state of a widget.
+   */
   @Input() @InputBoolean() collapsed = false
 
   /**
@@ -89,10 +117,8 @@ export class WidgetComponent {
     }
   }
 
-  /** @ignore */
-  public _iconUrl: string | undefined
-  /** @ignore */
-  public _iconObj: IconProp | undefined
+  _iconUrl: string | undefined
+  _iconObj: IconProp | undefined
 
   /** Add a css class to the header icon. */
   @Input() iconClass: string | undefined | null
@@ -103,8 +129,11 @@ export class WidgetComponent {
   /** @ignore */
   // NOTE: Config is still being worked on.
   @Input() @InputBoolean() hasConfig = false
-  /** @ignore */
-  // NOTE: Collapse is still being worked on.
+
+  /**
+   * Toggles the ability to collapse a widget. An icon will be displayed in the
+   * header to toggle the collapsed state.
+   */
   @Input() @InputBoolean() canCollapse = false
 
   @ContentChild(WidgetIconTplDirective, { static: true }) iconTpl?: WidgetIconTplDirective
@@ -112,13 +141,18 @@ export class WidgetComponent {
 
   /**
    * Toggles a widget's collapsed state.
-   *
-   * NOTE: Collapse is still being worked on.
-   * @depracated
-   * @ignore
    */
-  collapse() {
+  public collapse() {
+    if (!this.canCollapse) {
+      if (isDevMode()) {
+        console.warn('WidgetComponent: collapse() called when canCollapse is false.')
+      }
+      return
+    }
+
     this.collapsed = !this.collapsed
   }
+
+  get collapseState(): string { return this.collapsed ? COLLAPSED_STATE : EXPANDED_STATE }
 
 }
