@@ -4,9 +4,11 @@ import { applicationConfig } from '@storybook/angular/dist/client/decorators'
 import { provideAnimations } from '@angular/platform-browser/animations'
 
 import { faWrench } from '@fortawesome/free-solid-svg-icons'
+import { expectFn, getHarness } from '@theseam/ui-common/testing'
 
 import { TheSeamWidgetModule } from '../widget.module'
 import { WidgetComponent } from './widget.component'
+import { TheSeamWidgetHarness } from '../testing/widget.harness'
 
 const meta: Meta<WidgetComponent> = {
   title: 'Widget/Components',
@@ -22,13 +24,16 @@ const meta: Meta<WidgetComponent> = {
         TheSeamWidgetModule,
       ],
     }),
-    componentWrapperDecorator(story => `<div class="p-4" style="height: 270px; width: 500px;">${story}</div>`),
+    componentWrapperDecorator(story => `<div style="height: 270px; width: 400px;">${story}</div>`),
   ],
-  parameters: {
-    docs: {
-      iframeHeight: '300px',
-    },
-  },
+  // parameters: {
+  //   docs: {
+  //     story: {
+  //       iframeHeight: '200px',
+  //     },
+  //   },
+  // },
+  tags: ['autodocs'],
 }
 
 export default meta
@@ -40,10 +45,14 @@ export const Simple: Story = {
       ...args,
       icon: faWrench,
     },
-    template: `<seam-widget>Widget Body</seam-widget>`,
+    template: `<seam-widget [icon]="icon" [titleText]="titleText">Widget Body</seam-widget>`,
   }),
   args: {
     titleText: 'Example Widget',
+  },
+  play: async ({ canvasElement, fixture }) => {
+    const harness = await getHarness(TheSeamWidgetHarness, { canvasElement, fixture })
+    await expectFn(harness !== null).toBe(true)
   },
 }
 
@@ -53,10 +62,14 @@ export const FAIcon: Story = {
       ...args,
       icon: faWrench,
     },
-    template: `<seam-widget>Widget Body</seam-widget>`,
+    template: `<seam-widget [icon]="icon" [titleText]="titleText">Widget Body</seam-widget>`,
   }),
   args: {
     titleText: 'Example Widget',
+  },
+  play: async ({ canvasElement, fixture }) => {
+    const harness = await getHarness(TheSeamWidgetHarness, { canvasElement, fixture })
+    await expectFn(harness !== null).toBe(true)
   },
 }
 
@@ -66,7 +79,7 @@ export const ImageIcon: Story = {
       ...args,
       icon: 'assets/images/icons8-pass-fail-32.png',
     },
-    template: `<seam-widget>Widget Body</seam-widget>`,
+    template: `<seam-widget [icon]="icon" [titleText]="titleText">Widget Body</seam-widget>`,
   }),
   args: {
     titleText: 'Example Widget',
@@ -80,7 +93,7 @@ export const TitleTemplate: Story = {
       icon: faWrench,
     },
     template: `
-      <seam-widget>
+      <seam-widget [icon]="icon" [titleText]="titleText">
         <ng-template seamWidgetTitleTpl>
           {{ titleText }}
           <span class="badge float-right text-light badge-success">
@@ -97,9 +110,9 @@ export const TitleTemplate: Story = {
 
 export const IconTemplate: Story = {
   render: args => ({
-    props: { ...args },
+    props: args,
     template: `
-      <seam-widget>
+      <seam-widget [titleText]="titleText">
         <ng-template seamWidgetIconTpl>
           <span class="border border-danger">
             <img src="assets/images/icons8-pass-fail-32.png">
@@ -131,7 +144,7 @@ export const Loading: Story = {
 
 export const NoHeader: Story = {
   render: args => ({
-    props: { ...args },
+    props: args,
     template: `<seam-widget [hasHeader]="hasHeader">Widget Body</seam-widget>`,
   }),
   args: {

@@ -41,7 +41,6 @@
       </div> -->
 
       <div *ngIf="canCollapse" class="px-0">
-
         <button seamButton class="widget-header-btn-collapse p-0 mr-1 h-100" (click)="collapse()" [class.widget-header-btn-collapse--active]="collapsed">
           <seam-icon class="d-block"
             [icon]="collapseIcon"
@@ -49,23 +48,6 @@
           </seam-icon>
           <span class="sr-only">Widget collapse</span>
         </button>
-        <!-- iconType="borderless-styled-square" -->
-        <!-- style="margin-left: -10px; margin-right: -5px;" -->
-
-        <!-- <button seamIconBtn class="widget-header-btn-collapse" (click)="collapse()" [class.widget-header-btn-collapse--active]="collapsed"
-          btnTheme="secondary"
-          [icon]="collapseIcon"
-          iconType="borderless-styled-square"
-          size="xs"
-          btnSize="sm"
-          >
-          <seam-icon class="d-block"
-            [icon]="collapseIcon"
-            iconClass="text-secondary"
-            style="margin-left: -10px; margin-right: -5px;"
-            iconType="borderless-styled-square"></seam-icon>
-          <span class="sr-only">Widget collapse</span>
-        </button> -->
       </div>
     </div>
   </div>

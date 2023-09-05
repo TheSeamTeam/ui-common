@@ -8,11 +8,11 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
 
 import { InputBoolean } from '@theseam/ui-common/core'
 
-import { ButtonComponent } from '../button/button.component'
+import { TheSeamButtonComponent } from '../button/button.component'
 
 export const TOGGLE_BUTTON_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
-  useExisting: forwardRef(() => ToggleButtonComponent),
+  useExisting: forwardRef(() => TheSeamToggleButtonComponent),
   multi: true,
 }
 
@@ -32,7 +32,7 @@ export const TOGGLE_BUTTON_VALUE_ACCESSOR: any = {
   },
   providers: [ TOGGLE_BUTTON_VALUE_ACCESSOR ]
 })
-export class ToggleButtonComponent extends ButtonComponent implements OnDestroy, ControlValueAccessor {
+export class TheSeamToggleButtonComponent extends TheSeamButtonComponent implements OnDestroy, ControlValueAccessor {
   static ngAcceptInputType_val: BooleanInput
 
   // eslint-disable-next-line @angular-eslint/no-input-rename

@@ -5,37 +5,33 @@ import { OutlineThemeNames, ThemeNames } from '@theseam/ui-common/models'
 declare type ArgType = any
 
 export const themeArgType: ArgType = {
-  defaultValue: 'primary',
+  options: ThemeNames,
   control: {
     type: 'select',
-    options: ThemeNames
   },
   description: `Theme style.`
 }
 
 export const themeWithOutlineArgType: ArgType = {
-  defaultValue: 'primary',
+  options: [ ...ThemeNames, ...OutlineThemeNames ],
   control: {
     type: 'select',
-    options: [ ...ThemeNames, ...OutlineThemeNames ]
   },
   description: `Theme style.`
 }
 
 export const sizeArgType: ArgType = {
-  defaultValue: undefined,
+  options: [ undefined, 'sm', 'lg' ],
   control: {
     type: 'select',
-    options: [ undefined, 'sm', 'lg' ]
   },
   description: `Size.`
 }
 
 export const buttonTypeArgType: ArgType = {
-  defaultValue: 'button',
+  options: [ 'button', 'submit' ],
   control: {
     type: 'select',
-    options: [ 'button', 'submit' ]
   },
   description: `Button type.`
 }

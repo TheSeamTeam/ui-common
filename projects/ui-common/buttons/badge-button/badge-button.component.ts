@@ -2,7 +2,7 @@ import { FocusMonitor } from '@angular/cdk/a11y'
 import { Component, ElementRef, HostBinding, Input, OnDestroy, Renderer2 } from '@angular/core'
 
 import type { ThemeTypes } from '@theseam/ui-common/models'
-import { AnchorButtonComponent, ButtonComponent } from '../button/button.component'
+import { TheSeamAnchorButtonComponent, TheSeamButtonComponent } from '../button/button.component'
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -18,7 +18,7 @@ import { AnchorButtonComponent, ButtonComponent } from '../button/button.compone
     '[attr.disabled]': 'disabled || null'
   },
 })
-export class BadgeButtonComponent extends ButtonComponent implements OnDestroy {
+export class TheSeamBadgeButtonComponent extends TheSeamButtonComponent implements OnDestroy {
 
   @HostBinding('class.text-nowrap') _textNoWrap = true
 
@@ -51,7 +51,7 @@ export class BadgeButtonComponent extends ButtonComponent implements OnDestroy {
     '(click)': '_haltDisabledEvents($event)',
   },
 })
-export class AnchorBadgeButtonComponent extends AnchorButtonComponent implements OnDestroy {
+export class TheSeamAnchorBadgeButtonComponent extends TheSeamAnchorButtonComponent implements OnDestroy {
 
   @HostBinding('class.text-nowrap') _textNoWrap = true
 

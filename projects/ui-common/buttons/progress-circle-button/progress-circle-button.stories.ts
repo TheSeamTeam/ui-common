@@ -6,11 +6,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { buttonTypeArgType, sizeArgType, themeWithOutlineArgType } from '@theseam/ui-common/story-helpers'
 
 import { TheSeamButtonsModule } from '../buttons.module'
-import { ProgressCircleButtonComponent } from './progress-circle-button.component'
+import { TheSeamProgressCircleButtonComponent } from './progress-circle-button.component'
 
 export default {
   title: 'Buttons/Components/ProgressCircleButton',
-  component: ProgressCircleButtonComponent,
+  component: TheSeamProgressCircleButtonComponent,
   decorators: [
     moduleMetadata({
       imports: [

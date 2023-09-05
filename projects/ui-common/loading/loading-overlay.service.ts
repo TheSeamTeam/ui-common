@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core'
 import { Observable, throwError } from 'rxjs'
 import { catchError, finalize, tap } from 'rxjs/operators'
 
-import { LoadingComponent } from './loading/loading.component'
+import { TheSeamLoadingComponent } from './loading/loading.component'
 
 @Injectable()
 export class TheSeamLoadingOverlayService {
@@ -38,7 +38,7 @@ export class TheSeamLoadingOverlayService {
       width: '100%',
       height: '100%'
     })
-    this._overlayRef.attach(new ComponentPortal(LoadingComponent))
+    this._overlayRef.attach(new ComponentPortal(TheSeamLoadingComponent))
 
     this._enabled = true
   }

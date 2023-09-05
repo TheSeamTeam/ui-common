@@ -10,7 +10,7 @@ import type { TheSeamLoadingTheme } from '../loading.models'
   templateUrl: './loading.component.html',
   styleUrls: ['./loading.component.scss']
 })
-export class LoadingComponent {
+export class TheSeamLoadingComponent {
 
   @Input()
   set theme(value: TheSeamLoadingTheme) {

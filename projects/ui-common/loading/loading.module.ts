@@ -7,13 +7,13 @@ import { NgxLoadingModule } from '@marklb/ngx-loading'
 
 import { TheSeamLoadingOverlayService } from './loading-overlay.service'
 import { defaultThemeConfig } from './loading-themes'
-import { LoadingComponent } from './loading/loading.component'
+import { TheSeamLoadingComponent } from './loading/loading.component'
 
 // NOTE: Named export used for this because of a function calling bug in the builder.
 export const loadingForRoot = NgxLoadingModule.forRoot(defaultThemeConfig)
 
 @NgModule({
-    declarations: [LoadingComponent],
+    declarations: [TheSeamLoadingComponent],
     imports: [
         CommonModule,
         OverlayModule,
@@ -23,6 +23,6 @@ export const loadingForRoot = NgxLoadingModule.forRoot(defaultThemeConfig)
     providers: [
         TheSeamLoadingOverlayService
     ],
-    exports: [LoadingComponent]
+    exports: [TheSeamLoadingComponent]
 })
 export class TheSeamLoadingModule { }

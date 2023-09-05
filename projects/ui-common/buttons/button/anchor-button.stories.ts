@@ -4,18 +4,18 @@ import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { expectFn, getHarness } from '@theseam/ui-common/testing'
-import { buttonTypeArgType, sizeArgType, themeWithOutlineArgType } from '@theseam/ui-common/story-helpers'
+import { sizeArgType, themeWithOutlineArgType } from '@theseam/ui-common/story-helpers'
 
-import { TheSeamButtonComponent, TheSeamButtonsModule } from '@theseam/ui-common/buttons'
-import { TheSeamButtonComponentHarness } from '../testing/button.harness'
+import { TheSeamAnchorButtonComponent, TheSeamButtonsModule } from '@theseam/ui-common/buttons'
+import { TheSeamAnchorButtonComponentHarness } from '../testing/anchor-button.harness'
 
 interface StoryExtraProps {
   btnText: string
 }
 
-const meta: Meta<TheSeamButtonComponent & StoryExtraProps> = {
-  title: 'Buttons/Components/Button',
-  component: TheSeamButtonComponent,
+const meta: Meta<TheSeamAnchorButtonComponent & StoryExtraProps> = {
+  title: 'Buttons/Components/AnchorButton',
+  component: TheSeamAnchorButtonComponent,
   decorators: [
     moduleMetadata({
       imports: [
@@ -25,12 +25,12 @@ const meta: Meta<TheSeamButtonComponent & StoryExtraProps> = {
       ],
     }),
     componentWrapperDecorator(story => `
-      <button seamButton
+      <a seamButton
         [theme]="theme"
         [size]="size"
-        [type]="type"
+        [tabIndex]="tabIndex"
         [disabled]="disabled"
-      >${story}</button>
+      >${story}</a>
     `),
   ],
   tags: ['autodocs'],
@@ -40,12 +40,11 @@ const meta: Meta<TheSeamButtonComponent & StoryExtraProps> = {
     },
     theme: themeWithOutlineArgType,
     size: sizeArgType,
-    type: buttonTypeArgType
   },
 }
 
 export default meta
-type Story = StoryObj<TheSeamButtonComponent & StoryExtraProps>
+type Story = StoryObj<TheSeamAnchorButtonComponent & StoryExtraProps>
 
 export const Basic: Story = {
   render: args => ({
@@ -57,11 +56,12 @@ export const Basic: Story = {
     theme: 'primary'
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(TheSeamButtonComponentHarness, { canvasElement, fixture })
+    const harness = await getHarness(TheSeamAnchorButtonComponentHarness, { canvasElement, fixture })
     await expectFn(await harness.getText()).toBe('Example Text')
     await expectFn(await harness.getTheme()).toBe('primary')
     await expectFn(await harness.isDisabled()).toBe(false)
     await expectFn(await harness.hasDisabledAria()).toBe(false)
+    await expectFn(await harness.getTabIndex()).toBe(0)
   },
 }
 
@@ -75,9 +75,10 @@ export const Disabled: Story = {
     disabled: true,
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(TheSeamButtonComponentHarness, { canvasElement, fixture })
+    const harness = await getHarness(TheSeamAnchorButtonComponentHarness, { canvasElement, fixture })
     await expectFn(await harness.getText()).toBe('Example Text')
     await expectFn(await harness.isDisabled()).toBe(true)
     await expectFn(await harness.hasDisabledAria()).toBe(true)
+    await expectFn(await harness.getTabIndex()).toBe(-1)
   },
 }

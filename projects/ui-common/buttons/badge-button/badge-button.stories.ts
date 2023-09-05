@@ -6,11 +6,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { buttonTypeArgType, sizeArgType, themeWithOutlineArgType } from '@theseam/ui-common/story-helpers'
 
 import { TheSeamButtonsModule } from '../buttons.module'
-import { BadgeButtonComponent } from './badge-button.component'
+import { TheSeamBadgeButtonComponent } from './badge-button.component'
 
 export default {
   title: 'Buttons/Components/BadgeButton',
-  component: BadgeButtonComponent,
+  component: TheSeamBadgeButtonComponent,
   decorators: [
     moduleMetadata({
       imports: [

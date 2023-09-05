@@ -7,11 +7,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { buttonTypeArgType, sizeArgType, themeWithOutlineArgType } from '@theseam/ui-common/story-helpers'
 
 import { TheSeamButtonsModule } from '../buttons.module'
-import { ToggleButtonComponent } from './toggle-button.component'
+import { TheSeamToggleButtonComponent } from './toggle-button.component'
 
 export default {
   title: 'Buttons/Components/ToggleButton',
-  component: ToggleButtonComponent,
+  component: TheSeamToggleButtonComponent,
   decorators: [
     moduleMetadata({
       imports: [
