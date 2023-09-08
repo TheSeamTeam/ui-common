@@ -10,7 +10,7 @@
   </google-map>
 </ng-container>
 <seam-menu #featureContextMenu>
-  <button seamMenuItem (click)="_onClickDeleteFeature()">Delete</button>
+  <button seamMenuItem *ngFor="let item of _contextMenuItems$ | async" (click)="item.action(item)">{{ item.label }}</button>
 </seam-menu>
 <seam-map-file-drop *ngIf="fileDropEnabled"></seam-map-file-drop>
 
