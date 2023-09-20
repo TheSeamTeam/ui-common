@@ -7,7 +7,7 @@
  -->
  <seam-dashboard-widget-container *ngFor="let item of widgetItems$ | async; trackBy: _containerTrackByFn" [def]="$any(item)">
   <!-- <ng-template [cdkPortalOutlet]="item.portal"></ng-template> -->
-  <ng-template [seamDashboardWidgetPortalOutlet]="item.portal"></ng-template>
+  <ng-template [seamDashboardWidgetPortalOutlet]="item.portal" [widgetId]="widgetId"></ng-template>
 </seam-dashboard-widget-container>
 
 <div class="dashboard-widgets-base d-flex flex-row justify-content-around"

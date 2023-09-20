@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations'
 import { BooleanInput } from '@angular/cdk/coercion'
-import { Component, ContentChild, Input, isDevMode, ViewEncapsulation } from '@angular/core'
+import { Component, ContentChild, Inject, Input, isDevMode, Optional, ViewEncapsulation } from '@angular/core'
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { faAngleDown, faCog } from '@fortawesome/free-solid-svg-icons'
@@ -9,6 +9,8 @@ import { SeamIcon } from '@theseam/ui-common/icon'
 
 import { WidgetIconTplDirective } from '../directives/widget-icon-tpl.directive'
 import { WidgetTitleTplDirective } from '../directives/widget-title-tpl.directive'
+import { WidgetPreferencesService } from '../preferences/widget-preferences.service'
+import { THESEAM_WIDGET_DATA } from '../widget-token'
 
 const EXPANDED_STATE = 'expanded'
 const COLLAPSED_STATE = 'collapsed'
@@ -138,6 +140,17 @@ export class WidgetComponent {
 
   @ContentChild(WidgetIconTplDirective, { static: true }) iconTpl?: WidgetIconTplDirective
   @ContentChild(WidgetTitleTplDirective, { static: true }) titleTpl?: WidgetTitleTplDirective
+
+  constructor(
+    private readonly _widgetPreferences: WidgetPreferencesService,
+    @Optional() @Inject(THESEAM_WIDGET_DATA) private readonly _data: any
+  ) {
+    if (this._data && this._data.widgetId) {
+      this._widgetPreferences.preferences(this._data.widgetId).pipe(
+        // TODO: Unsubscribe
+      ).subscribe()
+    }
+  }
 
   /**
    * Toggles a widget's collapsed state.

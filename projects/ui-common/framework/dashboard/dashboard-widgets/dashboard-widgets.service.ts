@@ -1,5 +1,5 @@
 import { ComponentPortal } from '@angular/cdk/portal'
-import { Injectable, isDevMode, ViewContainerRef } from '@angular/core'
+import { Injectable, Injector, isDevMode, ViewContainerRef } from '@angular/core'
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs'
 import { auditTime, map, mapTo, shareReplay, switchMap, take, tap } from 'rxjs/operators'
 
@@ -13,6 +13,7 @@ import {
   IDashboardWidgetsItemDef
 } from './dashboard-widgets-item'
 import { DashboardWidgetsPreferencesService } from './dashboard-widgets-preferences.service'
+import { THESEAM_WIDGET_DATA } from '@theseam/ui-common/widget'
 
 @Injectable({
   providedIn: 'root'
@@ -124,6 +125,9 @@ export class DashboardWidgetsService {
 
   public createWidgetPortal(def: IDashboardWidgetsItemDef, vcr?: ViewContainerRef): Observable<ComponentPortal<any>> {
     if (typeof def.component === 'string') {
+      const injector = Injector.create({ providers: [
+        { provide: THESEAM_WIDGET_DATA, useValue: { widgetId: def.widgetId } }
+      ], parent: this._viewContainerRefSubject.value?.injector })
       return this._dynamicComponentLoaderModule
         .getComponentFactory(def.component)
         .pipe(
@@ -131,7 +135,8 @@ export class DashboardWidgetsService {
             return new ComponentPortal(
               componentFactory.componentType,
               vcr,
-              undefined,
+              // undefined,
+              injector,
               (componentFactory as any /* ComponentFactoryBoundToModule */).ngModule.componentFactoryResolver
             )
           }),
