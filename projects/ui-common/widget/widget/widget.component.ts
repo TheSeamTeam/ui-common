@@ -1,11 +1,13 @@
 import { animate, state, style, transition, trigger } from '@angular/animations'
 import { BooleanInput } from '@angular/cdk/coercion'
-import { Component, ContentChild, Inject, Input, isDevMode, Optional, ViewEncapsulation } from '@angular/core'
+import { Component, ContentChild, Inject, Input, isDevMode, OnDestroy, Optional, ViewEncapsulation } from '@angular/core'
+import { Subject, takeUntil, tap } from 'rxjs'
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { faAngleDown, faCog } from '@fortawesome/free-solid-svg-icons'
 import { InputBoolean } from '@theseam/ui-common/core'
 import { SeamIcon } from '@theseam/ui-common/icon'
+import { hasProperty } from '@theseam/ui-common/utils'
 
 import { WidgetIconTplDirective } from '../directives/widget-icon-tpl.directive'
 import { WidgetTitleTplDirective } from '../directives/widget-title-tpl.directive'
@@ -61,6 +63,9 @@ const collapseAnimation = trigger('collapseAnim', [
   selector: 'seam-widget',
   templateUrl: './widget.component.html',
   styleUrls: ['./widget.component.scss'],
+  providers: [
+    WidgetPreferencesService,
+  ],
   encapsulation: ViewEncapsulation.None,
   animations: [
     loadingAnimation,
@@ -68,7 +73,7 @@ const collapseAnimation = trigger('collapseAnim', [
     keepContentAnimation,
   ],
 })
-export class WidgetComponent {
+export class WidgetComponent implements OnDestroy {
 
   static ngAcceptInputType_hasHeader: BooleanInput
   static ngAcceptInputType_loading: BooleanInput
@@ -77,6 +82,10 @@ export class WidgetComponent {
 
   readonly configIcon = faCog
   readonly collapseIcon = faAngleDown
+
+  private readonly _ngUnsubscribe = new Subject<void>()
+
+  private _preferencesKey?: string
 
   /**
    * Toggles the collapsed state of a widget.
@@ -146,10 +155,21 @@ export class WidgetComponent {
     @Optional() @Inject(THESEAM_WIDGET_DATA) private readonly _data: any
   ) {
     if (this._data && this._data.widgetId) {
-      this._widgetPreferences.preferences(this._data.widgetId).pipe(
-        // TODO: Unsubscribe
+      this._preferencesKey = `widget:${this._data.widgetId}`
+      this._widgetPreferences.preferences(this._preferencesKey).pipe(
+        tap(prefs => {
+          if (hasProperty(prefs, 'collapsed')) {
+            this.collapsed = prefs.collapsed
+          }
+        }),
+        takeUntil(this._ngUnsubscribe)
       ).subscribe()
     }
+  }
+
+  ngOnDestroy() {
+    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.complete()
   }
 
   /**
@@ -164,6 +184,15 @@ export class WidgetComponent {
     }
 
     this.collapsed = !this.collapsed
+
+    // Only update the preference, if collapse method is called, because it is
+    // assumed that the user is collapsing the widget. If the collapsed state is
+    // changed by other means, such using the widget's `collapsed` input, then
+    // the preference should not be updated, because that is assumed to be an
+    // app controlled change that should not be persisted.
+    if (this._preferencesKey) {
+      this._widgetPreferences.patchPreferences(this._preferencesKey, { collapsed: this.collapsed })
+    }
   }
 
   get collapseState(): string { return this.collapsed ? COLLAPSED_STATE : EXPANDED_STATE }

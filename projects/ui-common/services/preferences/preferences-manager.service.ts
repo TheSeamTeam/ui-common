@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { Observable } from 'rxjs'
+import { map, Observable } from 'rxjs'
 
 import { TheSeamPreferencesBase } from './preferences.models'
 import { TheSeamPreferencesAccessor } from './preferences-accessor'
@@ -31,7 +31,35 @@ export class TheSeamPreferencesManagerService {
       prefs = new TheSeamPreferencesMapRecord(preferenceKey, accessor, emptyPrefs)
       this._tablePrefsMap.set(preferenceKey, prefs)
     }
-    return prefs.observable
+    return prefs.observable.pipe(
+      map(v => {
+        // This is for assuming the accessor returned an empty object, as a
+        // default for a missing preference. Instead of throwing an error, we
+        // return a valid empty preferences.
+        //
+        // NOTE: May remove this, when a more generic preferences implementation
+        // is finished.
+        if (Object.keys(v).length === 0) {
+          return emptyPrefs
+        }
+
+        return v
+      }),
+    )
+  }
+
+  public update(preferenceKey: string, value: TheSeamPreferencesBase): void {
+    const prefs = this._tablePrefsMap.get(preferenceKey)
+    if (prefs) {
+      prefs.update(value)
+    }
+  }
+
+  public delete(preferenceKey: string): void {
+    const prefs = this._tablePrefsMap.get(preferenceKey)
+    if (prefs) {
+      prefs.delete()
+    }
   }
 
   public refresh(preferenceKey: string): void {

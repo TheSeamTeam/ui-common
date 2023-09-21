@@ -7,6 +7,9 @@ import { faWrench } from '@fortawesome/free-solid-svg-icons'
 
 import { TheSeamWidgetModule } from '../widget.module'
 import { WidgetComponent } from './widget.component'
+import { THESEAM_WIDGET_PREFERENCES_ACCESSOR } from '../preferences/widget-preferences.token'
+import { StoryPreferencesAccessorService } from '@theseam/ui-common/story-helpers'
+import { THESEAM_WIDGET_DATA } from '../widget-token'
 
 const meta: Meta<WidgetComponent> = {
   title: 'Widget/Components',
@@ -141,6 +144,30 @@ export const NoHeader: Story = {
 
 export const Collapse: Story = {
   render: args => ({
+    props: args,
+    template: `<seam-widget [canCollapse]="canCollapse">Widget Body</seam-widget>`,
+  }),
+  args: {
+    canCollapse: true,
+  },
+}
+
+export const Preferences: Story = {
+  render: args => ({
+    moduleMetadata: {
+      providers: [
+        {
+          provide: THESEAM_WIDGET_PREFERENCES_ACCESSOR,
+          useClass: StoryPreferencesAccessorService,
+        },
+        {
+          provide: THESEAM_WIDGET_DATA,
+          useValue: {
+            widgetId: 'story-widget-preferences'
+          }
+        },
+      ],
+    },
     props: args,
     template: `<seam-widget [canCollapse]="canCollapse">Widget Body</seam-widget>`,
   }),

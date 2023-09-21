@@ -11,5 +11,4 @@ export const CURRENT_WIDGET_PREFERENCES_VERSION = 1
 
 export const EMPTY_WIDGET_PREFERENCES: TheSeamWidgetPreferences = {
   version: 1,
-  collapsed: false,
 }

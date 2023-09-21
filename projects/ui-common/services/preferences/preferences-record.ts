@@ -69,6 +69,14 @@ export class TheSeamPreferencesMapRecord {
     )
   }
 
+  public update(value: TheSeamPreferencesBase): void {
+    this._accessor.update(this._key, JSON.stringify(value))
+  }
+
+  public delete(): void {
+    this._accessor.delete(this._key)
+  }
+
   public refresh(): void {
     this._setStatus('pending')
     this._refreshSubject.next()
