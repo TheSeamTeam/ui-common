@@ -12,7 +12,8 @@ import { hasProperty } from '@theseam/ui-common/utils'
 import { WidgetIconTplDirective } from '../directives/widget-icon-tpl.directive'
 import { WidgetTitleTplDirective } from '../directives/widget-title-tpl.directive'
 import { WidgetPreferencesService } from '../preferences/widget-preferences.service'
-import { THESEAM_WIDGET_DATA } from '../widget-token'
+import { THESEAM_WIDGET_DATA, THESEAM_WIDGET_DEFAULTS } from '../widget-token'
+import { TheSeamWidgetData, TheSeamWidgetDefaults } from '../widget.models'
 
 const EXPANDED_STATE = 'expanded'
 const COLLAPSED_STATE = 'collapsed'
@@ -152,8 +153,18 @@ export class WidgetComponent implements OnDestroy {
 
   constructor(
     private readonly _widgetPreferences: WidgetPreferencesService,
-    @Optional() @Inject(THESEAM_WIDGET_DATA) private readonly _data: any
+    @Optional() @Inject(THESEAM_WIDGET_DEFAULTS) private readonly _defaults?: TheSeamWidgetDefaults,
+    @Optional() @Inject(THESEAM_WIDGET_DATA) private readonly _data?: TheSeamWidgetData,
   ) {
+    if (this._defaults) {
+      if (hasProperty(this._defaults, 'canCollapse')) {
+        this.canCollapse = this._defaults.canCollapse
+      }
+      if (hasProperty(this._defaults, 'collapsed')) {
+        this.collapsed = this._defaults.collapsed
+      }
+    }
+
     if (this._data && this._data.widgetId) {
       this._preferencesKey = `widget:${this._data.widgetId}`
       this._widgetPreferences.preferences(this._preferencesKey).pipe(
