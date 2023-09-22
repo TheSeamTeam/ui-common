@@ -124,10 +124,11 @@ export class DashboardWidgetsService {
   }
 
   public createWidgetPortal(def: IDashboardWidgetsItemDef, vcr?: ViewContainerRef): Observable<ComponentPortal<any>> {
+    const injector = Injector.create({ providers: [
+      { provide: THESEAM_WIDGET_DATA, useValue: { widgetId: def.widgetId } }
+    ], parent: this._viewContainerRefSubject.value?.injector })
+
     if (typeof def.component === 'string') {
-      const injector = Injector.create({ providers: [
-        { provide: THESEAM_WIDGET_DATA, useValue: { widgetId: def.widgetId } }
-      ], parent: this._viewContainerRefSubject.value?.injector })
       return this._dynamicComponentLoaderModule
         .getComponentFactory(def.component)
         .pipe(
@@ -145,8 +146,8 @@ export class DashboardWidgetsService {
     }
 
     return def.componentFactoryResolver
-      ? of(new ComponentPortal(def.component, vcr, undefined, def.componentFactoryResolver))
-      : of(new ComponentPortal(def.component, vcr))
+      ? of(new ComponentPortal(def.component, vcr, injector, def.componentFactoryResolver))
+      : of(new ComponentPortal(def.component, vcr, injector))
   }
 
   public updateOrder(): Observable<void> {
