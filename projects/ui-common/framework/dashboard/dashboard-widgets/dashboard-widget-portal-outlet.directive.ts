@@ -6,7 +6,6 @@ import {
   ElementRef,
   EmbeddedViewRef,
   EventEmitter,
-  Input,
   OnDestroy,
   OnInit,
   Output,
@@ -37,8 +36,6 @@ export class DashboardWidgetPortalOutletDirective extends BasePortalOutlet imple
 
   /** Reference to the currently-attached component/view ref. */
   private _attachedRef?: CdkPortalOutletAttachedRef
-
-  @Input() widgetId: string | undefined | null
 
   constructor(
     private readonly _componentFactoryResolver: ComponentFactoryResolver,
