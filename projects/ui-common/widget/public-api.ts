@@ -2,6 +2,10 @@ export * from './directives/widget-drag-handle.directive'
 export * from './directives/widget-icon-tpl.directive'
 export * from './directives/widget-title-tpl.directive'
 
+export * from './preferences/widget-preferences.models'
+export * from './preferences/widget-preferences.service'
+export * from './preferences/widget-preferences.token'
+
 export * from './widget-content-components/widget-button-group/widget-button-group.component'
 export * from './widget-content-components/widget-button-group/widget-button-group.module'
 
