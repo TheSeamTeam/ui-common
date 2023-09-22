@@ -1,5 +1,5 @@
 import { isDevMode } from '@angular/core'
-import { map, Observable, of, shareReplay, startWith, Subject, switchMap, tap } from 'rxjs'
+import { map, Observable, of, shareReplay, startWith, Subject, switchMap, take, tap } from 'rxjs'
 
 import { notNullOrUndefined } from '@theseam/ui-common/utils'
 
@@ -60,7 +60,6 @@ export class TheSeamPreferencesMapRecord {
           }
         }),
         map(v => notNullOrUndefined(v) ? v : this._emptyPrefs),
-        // tap(v => console.log('preferences$', v)),
         tap(() => {
           this._setStatus('loaded')
         })
@@ -70,11 +69,11 @@ export class TheSeamPreferencesMapRecord {
   }
 
   public update(value: TheSeamPreferencesBase): void {
-    this._accessor.update(this._key, JSON.stringify(value))
+    this._accessor.update(this._key, JSON.stringify(value)).pipe(take(1)).subscribe()
   }
 
   public delete(): void {
-    this._accessor.delete(this._key)
+    this._accessor.delete(this._key).pipe(take(1)).subscribe()
   }
 
   public refresh(): void {

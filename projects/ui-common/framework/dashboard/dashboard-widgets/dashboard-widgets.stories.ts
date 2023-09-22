@@ -8,10 +8,11 @@ import { delay } from 'rxjs/operators'
 
 import { faBell, faWrench } from '@fortawesome/free-solid-svg-icons'
 
-import { TheSeamWidgetModule } from '@theseam/ui-common/widget'
+import { TheSeamWidgetModule, THESEAM_WIDGET_PREFERENCES_ACCESSOR } from '@theseam/ui-common/widget'
 
 import { DashboardComponent } from '../dashboard.component'
 import { TheSeamDashboardModule } from '../dashboard.module'
+import { StoryPreferencesAccessorService } from '@theseam/ui-common/story-helpers'
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -121,6 +122,14 @@ export default {
 } as Meta
 
 export const Basic: Story = args => ({
+  moduleMetadata: {
+    providers: [
+      {
+        provide: THESEAM_WIDGET_PREFERENCES_ACCESSOR,
+        useClass: StoryPreferencesAccessorService,
+      },
+    ],
+  },
   props: {
     widgets: [
       { widgetId: 'widget-1', col: 0, order: 0, component: StoryExWidget1Component },

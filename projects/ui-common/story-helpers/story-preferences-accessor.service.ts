@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core'
-import { TheSeamPreferencesAccessor } from '@theseam/ui-common/services'
 import { Observable, of } from 'rxjs'
+
+import { TheSeamPreferencesAccessor } from '@theseam/ui-common/services'
 
 const ACCESSOR_PREFIX = 'story-pref'
 
@@ -11,7 +12,7 @@ export class StoryPreferencesAccessorService implements TheSeamPreferencesAccess
    * Gets a preference.
    */
   public get(name: string): Observable<string> {
-    // console.log('get', name)
+    console.log('get', name)
     return of(localStorage.getItem(`${ACCESSOR_PREFIX}-${name}`) || '{}')
   }
 

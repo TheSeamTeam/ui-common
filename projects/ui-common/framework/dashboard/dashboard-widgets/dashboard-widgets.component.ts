@@ -120,6 +120,8 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
     private _cdr: ChangeDetectorRef,
     @Optional() @Inject(THESEAM_BASE_LAYOUT_REF) private _baseLayoutRef?: ITheSeamBaseLayoutRef
   ) {
+    this._dashboardWidgets.setViewContainerRef(this._viewContainerRef)
+
     this.containers$ = this._containers.asObservable()
 
     this._gapStyleSize$ = this._gapSize.pipe(
