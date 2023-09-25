@@ -176,6 +176,14 @@ export const ActionMenu = (args: any) => ({
         <seam-datatable-action-menu>
           <seam-datatable-action-menu-item label="Action One"></seam-datatable-action-menu-item>
           <seam-datatable-action-menu-item label="Action Two"></seam-datatable-action-menu-item>
+          <seam-datatable-action-menu-item label="Action Three" [subMenu]="subMenuOne"></seam-datatable-action-menu-item>
+          <seam-datatable-action-menu-item label="Action Four"></seam-datatable-action-menu-item>
+        </seam-datatable-action-menu>
+
+        <seam-datatable-action-menu isSubMenu="true" #subMenuOne>
+          <seam-datatable-action-menu-item label="Action One"></seam-datatable-action-menu-item>
+          <seam-datatable-action-menu-item label="Action Two"></seam-datatable-action-menu-item>
+          <seam-datatable-action-menu-item label="Action Three"></seam-datatable-action-menu-item>
         </seam-datatable-action-menu>
       </ng-template>
     </seam-datatable>`,
