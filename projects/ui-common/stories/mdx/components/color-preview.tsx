@@ -1,7 +1,7 @@
 import * as React from 'react'
 
-import { ColorItem } from '@storybook/addon-docs'
-import { styled } from '@storybook/theming'
+// import { ColorItem } from '@storybook/addon-docs'
+// import { styled } from '@storybook/theming'
 
 interface ColorDispProps {
   title: string
@@ -19,11 +19,12 @@ export class ColorDisp extends React.Component<ColorDispProps> {
       colors.push(getComputedStyle(document.documentElement).getPropertyValue(c))
     }
     return (
-      <ColorItem
-        title={title}
-        subtitle={subtitle}
-        colors={colors}
-      />
+      // <ColorItem
+      //   title={title}
+      //   subtitle={subtitle}
+      //   colors={colors}
+      // />
+      <></>
     )
   }
 }
