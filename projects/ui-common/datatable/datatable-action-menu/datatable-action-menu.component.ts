@@ -1,21 +1,27 @@
+import { BooleanInput } from '@angular/cdk/coercion'
 import { ConnectionPositionPair } from '@angular/cdk/overlay'
-import { Component, ContentChildren, QueryList } from '@angular/core'
+import { Component, ContentChildren, Input, QueryList, ViewChild } from '@angular/core'
 import { NavigationExtras, Router } from '@angular/router'
 
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons'
-
 import { SeamConfirmDialogService } from '@theseam/ui-common/confirm-dialog'
+import { InputBoolean } from '@theseam/ui-common/core'
+import { MenuComponent } from '@theseam/ui-common/menu'
 
 import { DatatableActionMenuItemComponent } from '../datatable-action-menu-item/datatable-action-menu-item.component'
 
 @Component({
   selector: 'seam-datatable-action-menu',
   templateUrl: './datatable-action-menu.component.html',
-  styleUrls: ['./datatable-action-menu.component.scss']
+  styleUrls: ['./datatable-action-menu.component.scss'],
+  exportAs: 'seamDatatableActionMenu'
 })
 export class DatatableActionMenuComponent {
+  static ngAcceptInputType_isSubMenu: BooleanInput
 
-  faEllipsisH = faEllipsisH
+  readonly faEllipsisH = faEllipsisH
+
+  @ViewChild(MenuComponent, { static: true }) menu?: MenuComponent
 
   @ContentChildren(DatatableActionMenuItemComponent) items?: QueryList<DatatableActionMenuItemComponent>
 
@@ -46,6 +52,8 @@ export class DatatableActionMenuComponent {
       overlayY: 'bottom',
     },
   ]
+
+  @Input() @InputBoolean() isSubMenu = false
 
   constructor(
     private _confirmDialog: SeamConfirmDialogService,

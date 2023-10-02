@@ -26,6 +26,7 @@ export * from './geo-json/no-inner-rings.validator'
 export * from './geo-json/no-kinks.validator'
 export * from './geo-json/read-geo-file'
 export * from './geo-json/split-multi-polygons'
+export * from './geo-json/close-polygons'
 
 export * from './array-move'
 export * from './calc-percentage'

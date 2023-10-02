@@ -8,7 +8,10 @@ import { expectFn, getHarness } from '@theseam/ui-common/testing'
 
 import { TheSeamWidgetModule } from '../widget.module'
 import { WidgetComponent } from './widget.component'
-import { TheSeamWidgetHarness } from '../testing/widget.harness'
+import { THESEAM_WIDGET_PREFERENCES_ACCESSOR } from '../preferences/widget-preferences.token'
+import { StoryPreferencesAccessorService } from '@theseam/ui-common/story-helpers'
+import { THESEAM_WIDGET_DATA, THESEAM_WIDGET_DEFAULTS } from '../widget-token'
+import { TheSeamWidgetData, TheSeamWidgetDefaults } from '../widget.models'
 
 const meta: Meta<WidgetComponent> = {
   title: 'Widget/Components',
@@ -154,6 +157,68 @@ export const NoHeader: Story = {
 
 export const Collapse: Story = {
   render: args => ({
+    props: args,
+    template: `<seam-widget [canCollapse]="canCollapse">Widget Body</seam-widget>`,
+  }),
+  args: {
+    canCollapse: true,
+  },
+}
+
+export const Preferences: Story = {
+  render: args => ({
+    moduleMetadata: {
+      providers: [
+        {
+          provide: THESEAM_WIDGET_PREFERENCES_ACCESSOR,
+          useClass: StoryPreferencesAccessorService,
+        },
+        {
+          provide: THESEAM_WIDGET_DATA,
+          useValue: {
+            widgetId: 'story-widget-preferences'
+          } satisfies TheSeamWidgetData,
+        },
+      ],
+    },
+    props: args,
+    template: `<seam-widget [canCollapse]="canCollapse">Widget Body</seam-widget>`,
+  }),
+  args: {
+    canCollapse: true,
+  },
+}
+
+export const DefaultsProvider: Story = {
+  render: args => ({
+    moduleMetadata: {
+      providers: [
+        {
+          provide: THESEAM_WIDGET_DEFAULTS,
+          useValue: {
+            canCollapse: true,
+            collapsed: true,
+          } satisfies TheSeamWidgetDefaults,
+        },
+      ],
+    },
+    props: args,
+    template: `<seam-widget>Widget Body</seam-widget>`,
+  }),
+}
+
+export const DefaultsProviderWithInput: Story = {
+  render: args => ({
+    moduleMetadata: {
+      providers: [
+        {
+          provide: THESEAM_WIDGET_DEFAULTS,
+          useValue: {
+            canCollapse: false,
+          } satisfies TheSeamWidgetDefaults,
+        },
+      ],
+    },
     props: args,
     template: `<seam-widget [canCollapse]="canCollapse">Widget Body</seam-widget>`,
   }),

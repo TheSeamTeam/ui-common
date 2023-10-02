@@ -1,11 +1,14 @@
 import { FocusMonitor, FocusOrigin, isFakeMousedownFromScreenReader } from '@angular/cdk/a11y'
 import { Direction, Directionality } from '@angular/cdk/bidi'
+import { NumberInput } from '@angular/cdk/coercion'
 import { DOWN_ARROW, ENTER, ESCAPE, LEFT_ARROW, RIGHT_ARROW, SPACE, UP_ARROW } from '@angular/cdk/keycodes'
 import { ConnectionPositionPair, Overlay, OverlayRef, PositionStrategy } from '@angular/cdk/overlay'
 import { normalizePassiveListenerOptions } from '@angular/cdk/platform'
 import { TemplatePortal } from '@angular/cdk/portal'
 import { AfterContentInit, ChangeDetectorRef, Directive, ElementRef, EventEmitter, HostListener, inject, Inject, Input, OnDestroy, Optional, Output, Self, ViewContainerRef } from '@angular/core'
 import { asapScheduler, delay, filter, merge, Observable, of, Subscription, take, takeUntil } from 'rxjs'
+
+import { InputNumber } from '@theseam/ui-common/core'
 
 import { MenuItemComponent } from './menu-item.component'
 import { ITheSeamMenuPanel } from './menu-panel'
@@ -29,6 +32,8 @@ const passiveEventListenerOptions = normalizePassiveListenerOptions({ passive: t
   exportAs: 'seamMenuToggle'
 })
 export class MenuToggleDirective implements OnDestroy, AfterContentInit {
+
+  static ngAcceptInputType_seamMenuTogglePositionsOffsetY: NumberInput
 
   private _active = false
   private _overlayRef?: OverlayRef
@@ -93,14 +98,14 @@ export class MenuToggleDirective implements OnDestroy, AfterContentInit {
           originY: 'top',
           overlayX: 'end',
           overlayY: 'top',
-          offsetY: -11,
+          offsetY: this.seamMenuTogglePositionsOffsetY,
         },
         {
           originX: 'end',
           originY: 'top',
           overlayX: 'start',
           overlayY: 'top',
-          offsetY: -11,
+          offsetY: this.seamMenuTogglePositionsOffsetY,
         },
         {
           originX: 'start',
@@ -145,6 +150,12 @@ export class MenuToggleDirective implements OnDestroy, AfterContentInit {
       overlayY: 'bottom',
     },
   ]
+
+  // TODO: Figure out how to automatically handle this. I think the offset can
+  // be calculated using the first item's offsetTop and borderTop. The problem
+  // is that I was only able to calculate it after the animation had started, so
+  // the initial transition was slightly off.
+  @Input() @InputNumber(0) seamMenuTogglePositionsOffsetY = -11
 
   /** Event emitted when the associated menu is opened. */
   @Output() readonly menuOpened = new EventEmitter<void>()

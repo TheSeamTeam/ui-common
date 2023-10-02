@@ -10,7 +10,7 @@ import {
 } from '@turf/helpers'
 
 export enum AppFeaturePropertyName {
-  IsSelected = `__app__isSelected`
+  IsSelected = `__app__isSelected`,
 }
 
 export function isAppFeatureProperty(propertyName: string): propertyName is AppFeaturePropertyName {
@@ -25,6 +25,22 @@ export function isFeatureSelected(feature: google.maps.Data.Feature): boolean {
 
 export function setFeatureSelected(feature: google.maps.Data.Feature, isSelected: boolean): void {
   feature.setProperty(AppFeaturePropertyName.IsSelected, isSelected)
+}
+
+const EXTERNAL_FEATURE_DEFINED_STYLE_OPTIONS_PROPERTY_NAME = 'styleOptions'
+const EXTERNAL_FEATURE_DEFINED_STYLE_OPTIONS_HOVERED_PROPERTY_NAME = 'styleOptionsHovered'
+const EXTERNAL_FEATURE_DEFINED_STYLE_OPTIONS_SELECTED_PROPERTY_NAME = 'styleOptionsSelected'
+
+export function getStyleOptionsDefinedByFeature(feature: google.maps.Data.Feature): google.maps.Data.StyleOptions | undefined {
+  return feature.getProperty(EXTERNAL_FEATURE_DEFINED_STYLE_OPTIONS_PROPERTY_NAME) as google.maps.Data.StyleOptions || undefined
+}
+
+export function getHoveredStyleOptionsDefinedByFeature(feature: google.maps.Data.Feature): google.maps.Data.StyleOptions | undefined {
+  return feature.getProperty(EXTERNAL_FEATURE_DEFINED_STYLE_OPTIONS_HOVERED_PROPERTY_NAME) as google.maps.Data.StyleOptions || undefined
+}
+
+export function getSelectedStyleOptionsDefinedByFeature(feature: google.maps.Data.Feature): google.maps.Data.StyleOptions | undefined {
+  return feature.getProperty(EXTERNAL_FEATURE_DEFINED_STYLE_OPTIONS_SELECTED_PROPERTY_NAME) as google.maps.Data.StyleOptions || undefined
 }
 
 // TODO: Check performance of cloning a google.maps.Data instance, so the

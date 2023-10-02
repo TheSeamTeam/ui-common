@@ -447,7 +447,7 @@ export class DatatableComponent
           return of(undefined)
         }
 
-        return from(waitOnConditionAsync(() => this._preferences.loaded)).pipe(
+        return from(waitOnConditionAsync(() => this._preferences.isLoaded(key))).pipe(
           switchMap(() => this._columnsAlterationsManager.changes.pipe(
             startWith(undefined),
             tap(() => {
@@ -475,7 +475,7 @@ export class DatatableComponent
         }
         return this._preferences.preferences(prefsKey).pipe(
           switchMap(async preferences => {
-            await waitOnConditionAsync(() => this._preferences.loaded)
+            await waitOnConditionAsync(() => this._preferences.isLoaded(prefsKey))
             return preferences
           }),
           take(1),
