@@ -13,6 +13,7 @@
     <div class="side-nav-items-container" seamOverlayScrollbar>
       <seam-side-nav-item *ngFor="let item of items$ | async"
         [compact]="!(expanded$ | async)"
+        [isMobile]="isMobile$ | async"
         [itemType]="$any(item)?.itemType"
         [icon]="$any(item)?.icon"
         [label]="$any(item)?.label"
@@ -24,7 +25,9 @@
         [queryParams]="$any(item)?.queryParams"
         [children]="$any(item)?.children"
         [active]="$any(item).__state.active"
-        [expanded]="$any(item).__state.expanded">
+        [expanded]="$any(item).__state.expanded"
+        [menuItemTooltipConfig]="menuItemTooltipConfig"
+        [menuItemTooltipDisabled]="menuItemTooltipDisabled$ | async">
       </seam-side-nav-item>
     </div>
     <ng-template [cdkPortalOutlet]="_sideBarFooterPortal"></ng-template>

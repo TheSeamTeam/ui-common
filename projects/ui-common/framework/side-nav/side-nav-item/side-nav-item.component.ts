@@ -29,7 +29,7 @@ import type { SeamIcon } from '@theseam/ui-common/icon'
 import type { ThemeTypes } from '@theseam/ui-common/models'
 
 import { SideNavAccessor, THESEAM_SIDE_NAV_ACCESSOR } from '../side-nav-tokens'
-import { ISideNavItem } from '../side-nav.models'
+import { ISideNavItem, SideNavItemMenuItemTooltipConfig } from '../side-nav.models'
 
 export interface SideNavItemBadgeTooltip {
   tooltip?: string
@@ -130,6 +130,8 @@ export class SideNavItemComponent implements OnDestroy {
   private readonly _compact = new BehaviorSubject<boolean>(false)
   public readonly compact$ = this._compact.asObservable()
 
+  @Input() isMobile: boolean | undefined | null
+
   @Input() badgeText: string | undefined | null
   @Input() badgeTheme: ThemeTypes | undefined | null = 'danger'
 
@@ -146,12 +148,14 @@ export class SideNavItemComponent implements OnDestroy {
         this._badgeTooltip = {
           tooltip: value,
           placement: 'auto',
+          container: 'body',
           disabled: false
         }
       } else {
         this._badgeTooltip = {
           ...value,
           placement: value.placement || 'auto',
+          container: value.container || 'body',
           disabled: typeof value?.disabled === 'boolean'
             ? value.disabled
             : typeof value.tooltip !== 'string'
@@ -162,6 +166,10 @@ export class SideNavItemComponent implements OnDestroy {
     }
   }
   private _badgeTooltip: SideNavItemBadgeTooltip | undefined | null
+
+  @Input() menuItemTooltipConfig: SideNavItemMenuItemTooltipConfig | undefined | null
+
+  @Input() menuItemTooltipDisabled: boolean | undefined | null
 
   @HostBinding('class.seam-side-nav-item--active') get _isActiveCssClass() { return this.active }
 

@@ -12,6 +12,7 @@ import { THESEAM_WIDGET_PREFERENCES_ACCESSOR } from '../preferences/widget-prefe
 import { StoryPreferencesAccessorService } from '@theseam/ui-common/story-helpers'
 import { THESEAM_WIDGET_DATA, THESEAM_WIDGET_DEFAULTS } from '../widget-token'
 import { TheSeamWidgetData, TheSeamWidgetDefaults } from '../widget.models'
+import { TheSeamWidgetHarness } from '../testing/widget.harness'
 
 const meta: Meta<WidgetComponent> = {
   title: 'Widget/Components',

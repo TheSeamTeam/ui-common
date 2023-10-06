@@ -21,7 +21,7 @@
     "lint:log-timing": "cross-env TIMING=all eslint -c=./projects/ui-common/.eslintrc.json ./projects/ui-common/**/* --ext .ts .html > eslint-out.log",
     "e2e": "ng e2e",
     "docs:json": "compodoc -p ./tsconfig.stories.json -e json -d . --disableLifeCycleHooks",
-    "storybook": "npm run storybook-prebuild && storybook dev -p 6006 --ci",
+    "storybook": "ng run ui-common:storybook",
     "storybook-no-prebuild": "start-storybook -p 6006 --ci",
     "docs:storybook": "npm run storybook-prebuild && npm run storybook",
     "build-storybook": "npm run storybook-prebuild && build-storybook -o docs",

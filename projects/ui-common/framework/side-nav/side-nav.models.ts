@@ -85,3 +85,17 @@ export interface SideNavItemStateChanged {
   prevValue: any
   newValue: any
 }
+
+/**
+ * When `never`, menu item tooltip is always disabled.
+ * When `always`, menu item tooltip is always enabled.
+ * When `collapseOnly`, menu item tooltip is enabled only when the sidenav is collapsed.
+ */
+export type SideNavItemMenuItemTooltipBehavior = 'never' | 'always' | 'collapseOnly'
+
+export interface SideNavItemMenuItemTooltipConfig {
+  class?: string
+  placement?: string
+  container?: string
+  behavior?: SideNavItemMenuItemTooltipBehavior
+}

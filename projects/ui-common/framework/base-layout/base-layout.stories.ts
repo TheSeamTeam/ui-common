@@ -159,6 +159,14 @@ const navItems: ISideNavItem[] = [
     label: 'Example 1',
     icon: faSignature,
     link: 'example1',
+    badge: {
+      text: '5',
+      theme: 'warning',
+      tooltip: {
+        tooltip: 'Example Tooltip',
+        container: 'body'
+      }
+    },
   },
   {
     itemType: 'link',

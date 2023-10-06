@@ -226,7 +226,7 @@ export const Basic: Story = args => ({
   template: `
     <div class="d-flex flex-row vh-100">
       <div style="width: 260px;" class="h-100">
-        <seam-side-nav [items]="items"></seam-side-nav>
+        <seam-side-nav [items]="items" [menuItemTooltipConfig]="{ behavior: 'collapseOnly', class: 'bg-danger' }"></seam-side-nav>
       </div>
 
       <div class="p-4">
