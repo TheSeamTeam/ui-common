@@ -1,4 +1,6 @@
 import { componentWrapperDecorator, applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import { userEvent, within } from '@storybook/testing-library'
+import { expect } from '@storybook/jest'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { Component, inject } from '@angular/core'
@@ -12,6 +14,7 @@ import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
 import { TheSeamLoadingComponent } from './loading/loading.component'
 import { TheSeamLoadingModule } from './loading.module'
 import { TheSeamLoadingComponentHarness } from './testing/loading.harness'
+import { waitOnConditionAsync } from '@theseam/ui-common/utils'
 
 @Component({
   selector: 'story-loading-service-toggle',
@@ -55,22 +58,19 @@ export default meta
 type Story = StoryObj<TheSeamLoadingComponent>
 
 export const Basic: Story = {
-  // render: args => ({
-  //   props: {
-  //     ...args,
-  //     icon: faWrench,
-  //   },
-  //   template: `<seam-widget [icon]="icon" [titleText]="titleText">Widget Body</seam-widget>`,
-  // }),
-  // decorators: [
-  //   componentWrapperDecorator(story => `<div class="position-absolute" style="height: 270px; width: 400px;">${story}</div>`),
-  // ],
-  // args: {
-  //   // titleText: 'Example Widget',
-  // },
   play: async ({ canvasElement, fixture }) => {
     const harness = await getHarness(TheSeamLoadingComponentHarness, { canvasElement, fixture })
-    await expectFn(harness !== null).toBe(true)
+    await expect(await harness.getTheme()).toBe('default')
+  },
+}
+
+export const Primary: Story = {
+  play: async ({ canvasElement, fixture }) => {
+    const harness = await getHarness(TheSeamLoadingComponentHarness, { canvasElement, fixture })
+    await expect(await harness.getTheme()).toBe('primary')
+  },
+  args: {
+    theme: 'primary',
   },
 }
 
@@ -82,23 +82,19 @@ export const Service: Story = {
   decorators: [
     moduleMetadata({
       imports: [
-        StoryLoadingServiceToggleComponent
+        StoryLoadingServiceToggleComponent,
       ],
     }),
-    // componentWrapperDecorator(story => `<div class="position-relative" style="height: 270px; width: 400px;">${story}</div>`),
   ],
   parameters: {
     docs: {
-      // iframeHeight: '300px',
-      story: { inline: false, iframeHeight: '300px' }
+      story: { inline: false, iframeHeight: '300px' },
     },
   },
-  // args: {
-  //   // titleText: 'Example Widget',
-  // },
-  // play: async ({ canvasElement, fixture }) => {
-  //   // TODO: Button harness
-  //   const harness = await getHarness(TheSeamWidgetHarness, { canvasElement, fixture })
-  //   await expectFn(harness !== null).toBe(true)
-  // },
+  play: async ({ canvasElement, fixture }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByText('Show Loading'))
+    const harness = await getHarness(TheSeamLoadingComponentHarness, { canvasElement: canvasElement.getRootNode() as HTMLElement, fixture })
+    await expect(await harness.getTheme()).toBe('default')
+  },
 }
