@@ -145,6 +145,7 @@ export class TheSeamCarouselComponent implements OnInit, OnDestroy {
   }
 
   private _startInterval() {
+    this._resetInterval.next(undefined)
     if (this.autoPlay) {
       interval(this.slideInterval).pipe(
         takeUntil(this._resetInterval),
