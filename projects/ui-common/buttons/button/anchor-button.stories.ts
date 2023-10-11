@@ -1,8 +1,5 @@
 import { componentWrapperDecorator, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 
-import { BrowserModule } from '@angular/platform-browser'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
-
 import { expectFn, getHarness } from '@theseam/ui-common/testing'
 import { sizeArgType, themeWithOutlineArgType } from '@theseam/ui-common/story-helpers'
 
@@ -19,8 +16,6 @@ const meta: Meta<TheSeamAnchorButtonComponent & StoryExtraProps> = {
   decorators: [
     moduleMetadata({
       imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
         TheSeamButtonsModule,
       ],
     }),
@@ -49,7 +44,7 @@ type Story = StoryObj<TheSeamAnchorButtonComponent & StoryExtraProps>
 export const Basic: Story = {
   render: args => ({
     props: args,
-    template: `{{ btnText }}`
+    template: `{{ btnText }}`,
   }),
   args: {
     btnText: 'Example Text',
@@ -68,7 +63,7 @@ export const Basic: Story = {
 export const Disabled: Story = {
   render: args => ({
     props: args,
-    template: `{{ btnText }}`
+    template: `{{ btnText }}`,
   }),
   args: {
     btnText: 'Example Text',

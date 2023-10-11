@@ -1,6 +1,4 @@
-import { applicationConfig, componentWrapperDecorator, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
-
-import { provideAnimations } from '@angular/platform-browser/animations'
+import { componentWrapperDecorator, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 
 import { expectFn, getHarness } from '@theseam/ui-common/testing'
 import { buttonTypeArgType, sizeArgType, themeWithOutlineArgType } from '@theseam/ui-common/story-helpers'
@@ -16,11 +14,6 @@ const meta: Meta<TheSeamButtonComponent & StoryExtraProps> = {
   title: 'Buttons/Components/Button',
   component: TheSeamButtonComponent,
   decorators: [
-    applicationConfig({
-      providers: [
-        provideAnimations(),
-      ],
-    }),
     moduleMetadata({
       imports: [
         TheSeamButtonsModule,

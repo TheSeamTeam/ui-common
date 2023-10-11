@@ -29,7 +29,7 @@ export function createBaseButtonComponentHarnessPredicate<T extends TheSeamBaseB
     )
 }
 
-export class TheSeamBaseButtonComponentHarness extends ContentContainerComponentHarness<string> {/** The selector for the host element of a `TheSeamAnchorButtonComponent` instance. */
+export class TheSeamBaseButtonComponentHarness extends ContentContainerComponentHarness<string> {
 
   /** Whether the button is disabled. */
   async isDisabled(): Promise<boolean> {
@@ -51,42 +51,4 @@ export class TheSeamBaseButtonComponentHarness extends ContentContainerComponent
   async getTheme(): Promise<string | null> {
     return (await this.host()).getAttribute('class').then(c => getButtonThemeClass(c)?.replace('btn-', '') || null)
   }
-
-  /** Focuses the button item. */
-  // async focus(): Promise<void> {
-  //   return (await this.host()).focus().then(() => animatingWait())
-  // }
-
-  /** Blurs the button item. */
-  // async blur(): Promise<void> {
-  //   return (await this.host()).blur().then(() => animatingWait())
-  // }
-
-  /** Whether the button item is focused. */
-  // async isFocused(): Promise<boolean> {
-  //   return (await this.host()).isFocused()
-  // }
-
-  /** Clicks the button item. */
-  // async click(): Promise<void> {
-  //   return (await this.host()).click().then(() => animatingWait())
-  // }
-
-  /** Hovers the button item. */
-  // async hover(): Promise<void> {
-  //   return (await this.host()).hover().then(() => animatingWait())
-  // }
-
-  /** Whether this item has a submenu. */
-  // async hasSubmenu(): Promise<boolean> {
-  //   return (await this.host()).matchesSelector(TheSeamMenuHarness.hostSelector)
-  // }
-
-  /** Gets the submenu associated with this button item, or null if none. */
-  // async getSubmenu(): Promise<TheSeamMenuHarness | null> {
-  //   if (await this.hasSubmenu()) {
-  //     return new TheSeamMenuHarness(this.locatorFactory)
-  //   }
-  //   return null
-  // }
 }
