@@ -3,31 +3,31 @@ import { NgModule } from '@angular/core'
 
 import { TheSeamProgressModule } from '@theseam/ui-common/progress'
 
-import { AnchorBadgeButtonComponent, BadgeButtonComponent } from './badge-button/badge-button.component'
-import { AnchorButtonComponent, ButtonComponent } from './button/button.component'
-import { ProgressCircleButtonComponent } from './progress-circle-button/progress-circle-button.component'
-import { ToggleButtonComponent } from './toggle-button/toggle-button.component'
+import { TheSeamAnchorBadgeButtonComponent, TheSeamBadgeButtonComponent } from './badge-button/badge-button.component'
+import { TheSeamAnchorButtonComponent, TheSeamButtonComponent } from './button/button.component'
+import { TheSeamProgressCircleButtonComponent } from './progress-circle-button/progress-circle-button.component'
+import { TheSeamToggleButtonComponent } from './toggle-button/toggle-button.component'
 
 @NgModule({
   declarations: [
-    BadgeButtonComponent,
-    ProgressCircleButtonComponent,
-    ToggleButtonComponent,
-    ButtonComponent,
-    AnchorButtonComponent,
-    AnchorBadgeButtonComponent
+    TheSeamBadgeButtonComponent,
+    TheSeamProgressCircleButtonComponent,
+    TheSeamToggleButtonComponent,
+    TheSeamButtonComponent,
+    TheSeamAnchorButtonComponent,
+    TheSeamAnchorBadgeButtonComponent,
   ],
   imports: [
     CommonModule,
     TheSeamProgressModule
   ],
   exports: [
-    BadgeButtonComponent,
-    ProgressCircleButtonComponent,
-    ToggleButtonComponent,
-    ButtonComponent,
-    AnchorButtonComponent,
-    AnchorBadgeButtonComponent
+    TheSeamBadgeButtonComponent,
+    TheSeamProgressCircleButtonComponent,
+    TheSeamToggleButtonComponent,
+    TheSeamButtonComponent,
+    TheSeamAnchorButtonComponent,
+    TheSeamAnchorBadgeButtonComponent,
   ]
 })
 export class TheSeamButtonsModule { }

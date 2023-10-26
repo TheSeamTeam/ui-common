@@ -278,6 +278,7 @@
           "options": {
             "browserTarget": "ui-common:build",
             "port": 6007,
+            "open": false,
             "tsConfig": "projects/ui-common/tsconfig.sb.json",
             "compodoc": true,
             "styles": [

@@ -4,9 +4,9 @@ module.exports = {
   ],
   // stories: ['../projects/ui-common/breadcrumbs/stories/breadcrumbs-simple.stories.@(ts|mdx)'],
   logLevel: 'debug',
-  "framework": {
-    "name": "@storybook/angular",
-    "options": {},
+  'framework': {
+    'name': '@storybook/angular',
+    'options': {},
   },
   addons: [
     '@storybook/addon-essentials',

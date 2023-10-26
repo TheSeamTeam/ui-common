@@ -1,7 +1,7 @@
 import { InjectionToken } from '@angular/core'
 
-import { TheSeamDatatablePreferencesAccessor } from '../models/preferences-accessor'
+import { TheSeamPreferencesAccessor } from '@theseam/ui-common/services'
 
-export const THESEAM_DATATABLE_PREFERENCES_ACCESSOR = new InjectionToken<TheSeamDatatablePreferencesAccessor>(
+export const THESEAM_DATATABLE_PREFERENCES_ACCESSOR = new InjectionToken<TheSeamPreferencesAccessor>(
   'TheSeamDatatablePreferencesAccessor'
 )

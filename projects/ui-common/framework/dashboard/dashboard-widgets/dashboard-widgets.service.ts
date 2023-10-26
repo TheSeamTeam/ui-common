@@ -1,10 +1,11 @@
 import { ComponentPortal } from '@angular/cdk/portal'
-import { Injectable, isDevMode, ViewContainerRef } from '@angular/core'
+import { Injectable, Injector, isDevMode, ViewContainerRef } from '@angular/core'
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs'
 import { auditTime, map, mapTo, shareReplay, switchMap, take, tap } from 'rxjs/operators'
 
 import { TheSeamDynamicComponentLoader } from '@theseam/ui-common/dynamic-component-loader'
 import { notNullOrUndefined } from '@theseam/ui-common/utils'
+import { THESEAM_WIDGET_DATA } from '@theseam/ui-common/widget'
 
 import {
   IDashboardWidgetItemLayoutPreference,
@@ -123,6 +124,16 @@ export class DashboardWidgetsService {
   }
 
   public createWidgetPortal(def: IDashboardWidgetsItemDef, vcr?: ViewContainerRef): Observable<ComponentPortal<any>> {
+    const injector = Injector.create({ providers: [
+      { provide: THESEAM_WIDGET_DATA, useValue: { widgetId: def.widgetId } }
+    ], parent: this._viewContainerRefSubject.value?.injector })
+
+    // TODO: I still use the ViewContainerRef injector, but I don't pass it to
+    // the portal, because it throws an error and I am not sure why. I would
+    // like to find out why, even though I don't think it is needed, because our
+    // code has been leaving it undefined for a while, when I thought it was
+    // being used.
+
     if (typeof def.component === 'string') {
       return this._dynamicComponentLoaderModule
         .getComponentFactory(def.component)
@@ -130,8 +141,8 @@ export class DashboardWidgetsService {
           map(componentFactory => {
             return new ComponentPortal(
               componentFactory.componentType,
-              vcr,
               undefined,
+              injector,
               (componentFactory as any /* ComponentFactoryBoundToModule */).ngModule.componentFactoryResolver
             )
           }),
@@ -140,8 +151,8 @@ export class DashboardWidgetsService {
     }
 
     return def.componentFactoryResolver
-      ? of(new ComponentPortal(def.component, vcr, undefined, def.componentFactoryResolver))
-      : of(new ComponentPortal(def.component, vcr))
+      ? of(new ComponentPortal(def.component, undefined, injector, def.componentFactoryResolver))
+      : of(new ComponentPortal(def.component, undefined, injector))
   }
 
   public updateOrder(): Observable<void> {

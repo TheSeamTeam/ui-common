@@ -8,6 +8,8 @@ import {
 
 import { ThemeTypes } from '@theseam/ui-common/models'
 
+import { DatatableActionMenuComponent } from '../datatable-action-menu/datatable-action-menu.component'
+
 @Component({
   selector: 'seam-datatable-action-menu-item',
   template: ``,
@@ -34,6 +36,8 @@ export class DatatableActionMenuItemComponent {
   @Input() confirmDialog: { message?: string, alert?: string | { message: string, type: ThemeTypes } } | undefined | null
 
   @Input() disabled: boolean | undefined | null
+
+  @Input() subMenu: DatatableActionMenuComponent | undefined | null
 
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() readonly click = new EventEmitter<any>()

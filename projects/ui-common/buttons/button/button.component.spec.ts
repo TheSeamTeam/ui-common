@@ -1,6 +1,6 @@
 import { createHostFactory, Spectator } from '@ngneat/spectator/jest'
 
-import { ButtonComponent } from './button.component'
+import { TheSeamButtonComponent } from './button.component'
 
 import { render, screen } from '@testing-library/angular'
 import * as stories from './button.stories' // import all stories from the stories file
@@ -15,10 +15,10 @@ import { platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic
 // Every component that is returned maps 1:1 with the stories, but they already contain all decorators from story level, meta level and global level.
 // const { Basic } = composeStories(stories as any)
 
-describe('ButtonComponent', () => {
+describe('TheSeamButtonComponent', () => {
   describe('Normal', () => {
-    let spectator: Spectator<ButtonComponent>
-    const createHost = createHostFactory(ButtonComponent)
+    let spectator: Spectator<TheSeamButtonComponent>
+    const createHost = createHostFactory(TheSeamButtonComponent)
 
     it('should have button type by default', () => {
       spectator = createHost(`<button seamButton>Example</button>`)

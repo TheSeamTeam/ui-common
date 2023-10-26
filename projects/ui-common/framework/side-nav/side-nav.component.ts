@@ -42,7 +42,7 @@ import { ITheSeamBaseLayoutNav, ITheSeamBaseLayoutRef, THESEAM_BASE_LAYOUT_REF }
 import { BaseLayoutSideBarFooterDirective } from '../base-layout/directives/base-layout-side-bar-footer.directive'
 import { BaseLayoutSideBarHeaderDirective } from '../base-layout/directives/base-layout-side-bar-header.directive'
 import { THESEAM_SIDE_NAV_ACCESSOR } from './side-nav-tokens'
-import { ISideNavItem } from './side-nav.models'
+import { ISideNavItem, SideNavItemMenuItemTooltipConfig } from './side-nav.models'
 import { TheSeamSideNavService } from './side-nav.service'
 import { SideNavToggleComponent } from './side-nav-toggle/side-nav-toggle.component'
 import { SideNavItemComponent } from './side-nav-item/side-nav-item.component'
@@ -246,6 +246,25 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
   private _overlay = new BehaviorSubject<boolean>(false)
   public readonly overlay$ = this._overlay.asObservable()
 
+  private _menuItemTooltipConfig: SideNavItemMenuItemTooltipConfig = {
+    placement: 'right',
+    container: 'body',
+    behavior: 'always'
+  }
+
+  @Input()
+  get menuItemTooltipConfig() { return this._menuItemTooltipConfig }
+  set menuItemTooltipConfig(value: SideNavItemMenuItemTooltipConfig | undefined | null) {
+    this._menuItemTooltipConfig = {
+      class: value?.class,
+      placement: value?.placement || this._menuItemTooltipConfig.placement,
+      container: value?.container || this._menuItemTooltipConfig.container,
+      behavior: value?.behavior || this._menuItemTooltipConfig.behavior
+    }
+  }
+
+  public menuItemTooltipDisabled$: Observable<boolean> | undefined | null
+
   @Output() toggleExpand = new EventEmitter<boolean>()
 
   public readonly isMobile$: Observable<boolean>
@@ -278,6 +297,20 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
         ? overlay ? EXPANDED_OVERLAY_STATE : EXPANDED_STATE
         : overlay ? COLLAPSED_OVERLAY_STATE : COLLAPSED_STATE
       ),
+      distinctUntilChanged()
+    )
+
+    this.menuItemTooltipDisabled$ = combineLatest([ this.expanded$, this.overlay$ ]).pipe(
+      map(([ expanded, overlay ]) => {
+        // never display tooltip on mobile, it breaks the layout
+        if (overlay) {
+          return true
+        }
+
+        return this.menuItemTooltipConfig?.behavior === 'always' ? false
+          : this.menuItemTooltipConfig?.behavior === 'never' ? true
+          : this.menuItemTooltipConfig?.behavior === 'collapseOnly' ? expanded : true
+      }),
       distinctUntilChanged()
     )
   }

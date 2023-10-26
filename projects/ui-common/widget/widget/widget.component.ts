@@ -1,14 +1,53 @@
-import { animate, style, transition, trigger } from '@angular/animations'
+import { animate, state, style, transition, trigger } from '@angular/animations'
 import { BooleanInput } from '@angular/cdk/coercion'
-import { Component, ContentChild, Input, ViewEncapsulation } from '@angular/core'
+import { Component, ContentChild, Inject, Input, isDevMode, OnDestroy, Optional, ViewEncapsulation } from '@angular/core'
+import { Subject, takeUntil, tap } from 'rxjs'
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { faAngleDown, faCog } from '@fortawesome/free-solid-svg-icons'
 import { InputBoolean } from '@theseam/ui-common/core'
 import { SeamIcon } from '@theseam/ui-common/icon'
+import { hasProperty } from '@theseam/ui-common/utils'
 
 import { WidgetIconTplDirective } from '../directives/widget-icon-tpl.directive'
 import { WidgetTitleTplDirective } from '../directives/widget-title-tpl.directive'
+import { WidgetPreferencesService } from '../preferences/widget-preferences.service'
+import { THESEAM_WIDGET_DATA, THESEAM_WIDGET_DEFAULTS } from '../widget-token'
+import { TheSeamWidgetData, TheSeamWidgetDefaults } from '../widget.models'
+
+const EXPANDED_STATE = 'expanded'
+const COLLAPSED_STATE = 'collapsed'
+
+const EXPAND_TRANSITION = `${EXPANDED_STATE} <=> ${COLLAPSED_STATE}`
+
+const loadingAnimation = trigger('loadingAnim', [
+  transition(':enter', [
+    style({ opacity: 0 }),
+    animate('250ms ease-in-out', style({ opacity: 1 })),
+  ]),
+  transition(':leave', [
+    style({ opacity: 1 }),
+    animate('250ms ease-in-out', style({ opacity: 0 })),
+  ]),
+])
+
+/**
+ * I was having an issue getting the content to not be removed from the DOM,
+ * before the animation was complete. This animation is a hack to keep the
+ * content in the DOM until the animation is complete.
+ */
+const keepContentAnimation = trigger('keepContentAnim', [
+  transition(':leave', [
+    style({ opacity: 1 }),
+    animate('0ms', style({ opacity: 0 })),
+  ]),
+])
+
+const collapseAnimation = trigger('collapseAnim', [
+  state(EXPANDED_STATE, style({ height: '*' })),
+  state(COLLAPSED_STATE, style({ height: '0' })),
+  transition(EXPAND_TRANSITION, animate('0.3s ease-in-out')),
+])
 
 /**
  * Widget
@@ -25,32 +64,33 @@ import { WidgetTitleTplDirective } from '../directives/widget-title-tpl.directiv
   selector: 'seam-widget',
   templateUrl: './widget.component.html',
   styleUrls: ['./widget.component.scss'],
+  providers: [
+    WidgetPreferencesService,
+  ],
   encapsulation: ViewEncapsulation.None,
   animations: [
-    trigger('loadingAnim', [
-      transition(':enter', [
-        style({ opacity: 0 }),
-        animate('250ms ease-in-out', style({ opacity: 1 })),
-      ]),
-      transition(':leave', [
-        style({ opacity: 1 }),
-        animate('250ms ease-in-out', style({ opacity: 0 })),
-      ]),
-    ]),
+    loadingAnimation,
+    collapseAnimation,
+    keepContentAnimation,
   ],
 })
-export class WidgetComponent {
+export class WidgetComponent implements OnDestroy {
 
   static ngAcceptInputType_hasHeader: BooleanInput
   static ngAcceptInputType_loading: BooleanInput
   static ngAcceptInputType_hasConfig: BooleanInput
   static ngAcceptInputType_canCollapse: BooleanInput
 
-  /** @ignore */
-  configIcon = faCog
-  /** @ignore */
-  collapseIcon = faAngleDown
+  readonly configIcon = faCog
+  readonly collapseIcon = faAngleDown
 
+  private readonly _ngUnsubscribe = new Subject<void>()
+
+  private _preferencesKey?: string
+
+  /**
+   * Toggles the collapsed state of a widget.
+   */
   @Input() @InputBoolean() collapsed = false
 
   /**
@@ -89,10 +129,8 @@ export class WidgetComponent {
     }
   }
 
-  /** @ignore */
-  public _iconUrl: string | undefined
-  /** @ignore */
-  public _iconObj: IconProp | undefined
+  _iconUrl: string | undefined
+  _iconObj: IconProp | undefined
 
   /** Add a css class to the header icon. */
   @Input() iconClass: string | undefined | null
@@ -103,22 +141,71 @@ export class WidgetComponent {
   /** @ignore */
   // NOTE: Config is still being worked on.
   @Input() @InputBoolean() hasConfig = false
-  /** @ignore */
-  // NOTE: Collapse is still being worked on.
+
+  /**
+   * Toggles the ability to collapse a widget. An icon will be displayed in the
+   * header to toggle the collapsed state.
+   */
   @Input() @InputBoolean() canCollapse = false
 
   @ContentChild(WidgetIconTplDirective, { static: true }) iconTpl?: WidgetIconTplDirective
   @ContentChild(WidgetTitleTplDirective, { static: true }) titleTpl?: WidgetTitleTplDirective
 
+  constructor(
+    private readonly _widgetPreferences: WidgetPreferencesService,
+    @Optional() @Inject(THESEAM_WIDGET_DEFAULTS) private readonly _defaults?: TheSeamWidgetDefaults,
+    @Optional() @Inject(THESEAM_WIDGET_DATA) private readonly _data?: TheSeamWidgetData,
+  ) {
+    if (this._defaults) {
+      if (hasProperty(this._defaults, 'canCollapse')) {
+        this.canCollapse = this._defaults.canCollapse
+      }
+      if (hasProperty(this._defaults, 'collapsed')) {
+        this.collapsed = this._defaults.collapsed
+      }
+    }
+
+    if (this._data && this._data.widgetId) {
+      this._preferencesKey = `widget:${this._data.widgetId}`
+      this._widgetPreferences.preferences(this._preferencesKey).pipe(
+        tap(prefs => {
+          if (hasProperty(prefs, 'collapsed')) {
+            this.collapsed = prefs.collapsed
+          }
+        }),
+        takeUntil(this._ngUnsubscribe)
+      ).subscribe()
+    }
+  }
+
+  ngOnDestroy() {
+    this._ngUnsubscribe.next()
+    this._ngUnsubscribe.complete()
+  }
+
   /**
    * Toggles a widget's collapsed state.
-   *
-   * NOTE: Collapse is still being worked on.
-   * @depracated
-   * @ignore
    */
-  collapse() {
+  public collapse() {
+    if (!this.canCollapse) {
+      if (isDevMode()) {
+        console.warn('WidgetComponent: collapse() called when canCollapse is false.')
+      }
+      return
+    }
+
     this.collapsed = !this.collapsed
+
+    // Only update the preference, if collapse method is called, because it is
+    // assumed that the user is collapsing the widget. If the collapsed state is
+    // changed by other means, such using the widget's `collapsed` input, then
+    // the preference should not be updated, because that is assumed to be an
+    // app controlled change that should not be persisted.
+    if (this._preferencesKey) {
+      this._widgetPreferences.patchPreferences(this._preferencesKey, { collapsed: this.collapsed })
+    }
   }
+
+  get collapseState(): string { return this.collapsed ? COLLAPSED_STATE : EXPANDED_STATE }
 
 }

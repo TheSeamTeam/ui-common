@@ -1,4 +1,4 @@
-import { ComponentHarness, ComponentHarnessConstructor } from '@angular/cdk/testing'
+import { ComponentHarness, ComponentHarnessConstructor, HarnessQuery } from '@angular/cdk/testing'
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed'
 import { ComponentFixture } from '@angular/core/testing'
 
@@ -10,11 +10,14 @@ export interface GetHarnessOptions<TComponent = any> {
 }
 
 export async function getHarness<T extends ComponentHarness>(
-  harnessType: ComponentHarnessConstructor<T>,
+  harnessType: HarnessQuery<T>,
   options: GetHarnessOptions
 ): Promise<T> {
   if (options.fixture !== undefined) {
-    return TestbedHarnessEnvironment.harnessForFixture(options.fixture, harnessType)
+    if (isComponentHarnessConstructor(harnessType)) {
+      return TestbedHarnessEnvironment.harnessForFixture(options.fixture, harnessType)
+    }
+    throw Error(`Unable to get harness. harnessType must be a ComponentHarness.`)
   }
 
   if (options.canvasElement !== undefined) {
@@ -23,4 +26,8 @@ export async function getHarness<T extends ComponentHarness>(
   }
 
   throw Error(`Unable to get harness. fixture or canvasElement must be provided.`)
+}
+
+function isComponentHarnessConstructor<T extends ComponentHarness>(value: HarnessQuery<T>): value is ComponentHarnessConstructor<T> {
+  return typeof value === 'function' && Object.prototype.hasOwnProperty.call(value, 'hostSelector')
 }

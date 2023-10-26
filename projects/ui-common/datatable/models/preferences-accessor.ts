@@ -1,20 +1,4 @@
-import { Observable } from 'rxjs'
+import { TheSeamPreferencesAccessor } from '@theseam/ui-common/services'
 
-export interface TheSeamDatatablePreferencesAccessor {
-
-  /**
-   * Gets a preference.
-   */
-  get(name: string): Observable<string>
-
-  /**
-   * Update a preference.
-   */
-  update(name: string, value: string): Observable<string>
-
-  /**
-   * Delete a preference.
-   */
-  delete(name: string): Observable<boolean>
-
-}
+/** @deprecated Use `TheSeamPreferencesAccessor` instead. */
+export type TheSeamDatatablePreferencesAccessor = TheSeamPreferencesAccessor

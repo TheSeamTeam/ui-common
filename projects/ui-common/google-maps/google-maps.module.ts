@@ -39,6 +39,7 @@ import { TheSeamMapFileDropComponent } from './map-file-drop/map-file-drop.compo
     TheSeamGoogleMapsComponent,
     TheSeamGoogleMapsPlacesAutocompleteDirective,
     TheSeamGoogleMapsPlacesAutoCompleteComponent,
+    TheSeamMapsControlComponent,
   ]
 })
 export class TheSeamGoogleMapsModule { }

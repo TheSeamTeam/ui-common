@@ -27,6 +27,7 @@
       <div class="side-nav--group side-nav--group--level-0">
         <seam-side-nav-item *ngFor="let item of items$ | async"
           [compact]="!(expanded$ | async)"
+          [isMobile]="isMobile$ | async"
           [itemType]="$any(item)?.itemType"
           [icon]="$any(item)?.icon"
           [label]="$any(item)?.label"
@@ -40,7 +41,9 @@
           [active]="$any(item).__state?.active"
           [expanded]="$any(item).__state?.expanded"
           [hideEmptyIcon]="hideEmptyIcon"
-          [indentSize]="indentSize">
+          [indentSize]="indentSize"
+          [menuItemTooltipConfig]="menuItemTooltipConfig"
+          [menuItemTooltipDisabled]="menuItemTooltipDisabled$ | async">
         </seam-side-nav-item>
       </div>
     </div>

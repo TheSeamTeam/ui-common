@@ -1,3 +1,5 @@
+import { TheSeamPreferencesBase } from '@theseam/ui-common/services'
+
 import { ColumnsAlterationState } from './columns-alteration'
 
 export interface TheSeamDatatablePreferencesColumn {
@@ -11,7 +13,7 @@ export interface TheSeamDatatablePreferences_v1 {
   columns?: TheSeamDatatablePreferencesColumn[]
 }
 
-export interface TheSeamDatatablePreferences_v2 {
+export interface TheSeamDatatablePreferences_v2 extends TheSeamPreferencesBase {
   version: 2
   alterations: ColumnsAlterationState[]
 }

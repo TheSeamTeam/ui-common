@@ -8,15 +8,16 @@ import { delay } from 'rxjs/operators'
 
 import { faBell, faWrench } from '@fortawesome/free-solid-svg-icons'
 
-import { TheSeamWidgetModule } from '@theseam/ui-common/widget'
+import { TheSeamWidgetModule, THESEAM_WIDGET_PREFERENCES_ACCESSOR } from '@theseam/ui-common/widget'
 
 import { DashboardComponent } from '../dashboard.component'
 import { TheSeamDashboardModule } from '../dashboard.module'
+import { StoryPreferencesAccessorService } from '@theseam/ui-common/story-helpers'
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'story-ex-widget-1',
-  template: `<seam-widget [icon]="faWrench" titleText="Example Widget 1" [loading]="!(initialized$ | async)">
+  template: `<seam-widget [icon]="faWrench" titleText="Example Widget 1" [loading]="!(initialized$ | async)" [canCollapse]="true">
   <seam-widget-content-header>Widget example 1</seam-widget-content-header>
 
   <seam-widget-tile-list>
@@ -36,7 +37,7 @@ class StoryExWidget1Component {
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'story-ex-widget-2',
-  template: `<seam-widget [icon]="faWrench" titleText="Lazy Widget 2" [loading]="!(initialized$ | async)">
+  template: `<seam-widget [icon]="faWrench" titleText="Lazy Widget 2" [loading]="!(initialized$ | async)" [canCollapse]="true">
   <seam-widget-content-header>Widget example 2</seam-widget-content-header>
 
   <seam-widget-tile-list>
@@ -56,7 +57,7 @@ class StoryExWidget2Component {
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'story-ex-widget-3',
-  template: `<seam-widget [icon]="faWrench" titleText="Lazy Widget 3" [loading]="!(initialized$ | async)">
+  template: `<seam-widget [icon]="faWrench" titleText="Lazy Widget 3" [loading]="!(initialized$ | async)" [canCollapse]="true">
   <seam-widget-content-header>Widget example 3</seam-widget-content-header>
 
   <seam-widget-tile-list>
@@ -76,7 +77,7 @@ class StoryExWidget3Component {
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'story-ex-widget-4',
-  template: `<seam-widget [icon]="faWrench" titleText="Lazy Widget 4" [loading]="!(initialized$ | async)">
+  template: `<seam-widget [icon]="faWrench" titleText="Lazy Widget 4" [loading]="!(initialized$ | async)" [canCollapse]="true">
   <seam-widget-content-header>Widget example 4</seam-widget-content-header>
 
   <seam-widget-tile-list>
@@ -121,6 +122,14 @@ export default {
 } as Meta
 
 export const Basic: Story = args => ({
+  moduleMetadata: {
+    providers: [
+      {
+        provide: THESEAM_WIDGET_PREFERENCES_ACCESSOR,
+        useClass: StoryPreferencesAccessorService,
+      },
+    ],
+  },
   props: {
     widgets: [
       { widgetId: 'widget-1', col: 0, order: 0, component: StoryExWidget1Component },

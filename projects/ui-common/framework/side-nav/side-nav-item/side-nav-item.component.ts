@@ -18,7 +18,7 @@ import type { ThemeTypes } from '@theseam/ui-common/models'
 import { notNullOrUndefined } from '@theseam/ui-common/utils'
 
 import { SideNavAccessor, THESEAM_SIDE_NAV_ACCESSOR } from '../side-nav-tokens'
-import { ISideNavItem, SideNavItemBadgeTooltip } from '../side-nav.models'
+import { ISideNavItem, SideNavItemBadgeTooltip, SideNavItemMenuItemTooltipConfig } from '../side-nav.models'
 import { CommonModule } from '@angular/common'
 import { RouterModule } from '@angular/router'
 import { A11yModule } from '@angular/cdk/a11y'
@@ -98,6 +98,8 @@ export class SideNavItemComponent implements OnDestroy {
   private readonly _compact = new BehaviorSubject<boolean>(false)
   public readonly compact$ = this._compact.asObservable()
 
+  @Input() isMobile: boolean | undefined | null
+
   @Input() badgeText: string | undefined | null
   @Input() badgeTheme: ThemeTypes | undefined | null = 'danger'
 
@@ -114,17 +116,17 @@ export class SideNavItemComponent implements OnDestroy {
         this._badgeTooltip = {
           tooltip: value,
           placement: 'auto',
-          disabled: false,
-          container: 'body'
+          container: 'body',
+          disabled: false
         }
       } else {
         this._badgeTooltip = {
           ...value,
           placement: value.placement || 'auto',
+          container: value.container || 'body',
           disabled: typeof value?.disabled === 'boolean'
             ? value.disabled
             : typeof value.tooltip === 'string',
-          container: value.container || 'body'
         }
       }
     } else {
@@ -132,6 +134,10 @@ export class SideNavItemComponent implements OnDestroy {
     }
   }
   private _badgeTooltip: SideNavItemBadgeTooltip | undefined | null
+
+  @Input() menuItemTooltipConfig: SideNavItemMenuItemTooltipConfig | undefined | null
+
+  @Input() menuItemTooltipDisabled: boolean | undefined | null
 
   @HostBinding('class.seam-side-nav-item--active') get _isActiveCssClass() { return this.active }
 

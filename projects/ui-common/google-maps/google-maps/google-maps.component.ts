@@ -35,6 +35,11 @@ import { GoogleMapsService } from '../google-maps.service'
 import { MapControl, MAP_CONTROLS_SERVICE } from '../map-controls-service'
 import { MapValue, MapValueManagerService, MapValueSource } from '../map-value-manager.service'
 
+interface TheSeamMapContextMenuItem {
+  label: string
+  action: (item: TheSeamMapContextMenuItem) => void
+}
+
 class TheSeamGoogleMapsComponentBase {
 
   constructor(public _elementRef: ElementRef) {}
@@ -83,6 +88,7 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
   static ngAcceptInputType_mapTypeControlEnabled: BooleanInput
   static ngAcceptInputType_streetViewControlEnabled: BooleanInput
   static ngAcceptInputType_allowDrawingHoleInPolygon: BooleanInput
+  static ngAcceptInputType_editingEnabled: BooleanInput
 
   private readonly _ngUnsubscribe = new Subject<void>()
 
@@ -130,6 +136,8 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
 
   @Input() @InputBoolean() allowDrawingHoleInPolygon = false
 
+  @Input() @InputBoolean() editingEnabled = true
+
   @Input()
   set fileImportHandler(value: ((file: File) => void) | undefined | null) {
     this._googleMaps.setFileInputHandler(value)
@@ -159,6 +167,8 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
     fullscreenControl: this.fullscreenControlEnabled,
   }
 
+  readonly _contextMenuItems$: Observable<TheSeamMapContextMenuItem[]>
+
   constructor(
     readonly elementRef: ElementRef,
     private readonly _focusMonitor: FocusMonitor,
@@ -186,6 +196,23 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
       takeUntil(this._ngUnsubscribe),
     ).subscribe()
 
+    this._contextMenuItems$ = this._googleMaps.editingEnabled$.pipe(
+      map(enabled => {
+        const items: TheSeamMapContextMenuItem[] = []
+        if (enabled) {
+          items.push({ label: 'Delete', action: () => this._onClickDeleteFeature() })
+        }
+        return items
+      }),
+      tap(items => {
+        if (items.length === 0) {
+          this._googleMaps.setFeatureContextMenu(null)
+        } else {
+          this._googleMaps.setFeatureContextMenu(this.featureContextMenu)
+        }
+      })
+    )
+
     this._googleMaps.setBaseLatLng(this.latitude, this.longitude)
 
     this._gmApiLoaded = this._googleMapsApiLoader.load().pipe(
@@ -195,12 +222,16 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
   }
 
   ngOnInit() {
-    this._googleMaps.setFeatureContextMenu(this.featureContextMenu)
-
     fromEvent<KeyboardEvent>(window, 'keydown').pipe(
       tap((event: KeyboardEvent) => {
         switch (event.code) {
-          case 'Delete': this._googleMaps.deleteSelection(); event.preventDefault(); event.stopPropagation(); break
+          case 'Delete':
+            if (this._googleMaps.isEditingEnabled()) {
+              this._googleMaps.deleteSelection()
+              event.preventDefault()
+              event.stopPropagation()
+            }
+            break
           case 'Escape': this._googleMaps.stopDrawing(); event.preventDefault(); event.stopPropagation(); break
           case 'ContextMenu': this._googleMaps.openContextMenu(); event.preventDefault(); event.stopPropagation(); break
         }
@@ -242,6 +273,10 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
           fullscreenControl,
         }
       }
+    }
+
+    if (Object.prototype.hasOwnProperty.call(changes, 'editingEnabled')) {
+      this._googleMaps.setEditingEnabled(this.editingEnabled)
     }
   }
 

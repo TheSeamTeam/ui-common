@@ -40,6 +40,7 @@ export function expectFn(value: any) {
   // const t = isInJasmine ? expectJasmineFn(value) :  expect(value)
   const t = expect(value)
   return {
-    toBe: toBeFn(t)
+    toBe: toBeFn(t),
+    toStrictEqual: t.toStrictEqual
   }
 }

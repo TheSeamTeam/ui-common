@@ -4,7 +4,7 @@ import { Component, ElementRef, Input, OnDestroy, Renderer2 } from '@angular/cor
 
 import { InputBoolean, InputNumber } from '@theseam/ui-common/core'
 
-import { ButtonComponent } from '../button/button.component'
+import { TheSeamButtonComponent } from '../button/button.component'
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -20,7 +20,7 @@ import { ButtonComponent } from '../button/button.component'
     '[attr.disabled]': 'disabled || null'
   },
 })
-export class ProgressCircleButtonComponent extends ButtonComponent implements OnDestroy {
+export class TheSeamProgressCircleButtonComponent extends TheSeamButtonComponent implements OnDestroy {
   static ngAcceptInputType_fillBackground: BooleanInput
   static ngAcceptInputType_showText: BooleanInput
   static ngAcceptInputType_hiddenOnEmpty: BooleanInput

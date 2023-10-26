@@ -1,4 +1,4 @@
-import { animate, group, query, style, transition, trigger, useAnimation } from '@angular/animations'
+import { animate, group, query, style, transition, trigger, useAnimation, AnimationEvent } from '@angular/animations'
 import { FocusKeyManager, FocusOrigin } from '@angular/cdk/a11y'
 import { coerceNumberProperty } from '@angular/cdk/coercion'
 import { DOWN_ARROW, END, ESCAPE, hasModifierKey, HOME, LEFT_ARROW, RIGHT_ARROW, UP_ARROW } from '@angular/cdk/keycodes'
@@ -25,6 +25,12 @@ import { THESEAM_MENU_PANEL } from './menu-panel-token'
 
 import { MenuFooterComponent } from './menu-footer/menu-footer.component'
 import { MenuHeaderComponent } from './menu-header/menu-header.component'
+import { Direction } from '@angular/cdk/bidi'
+
+let menuPanelUid = 0
+
+/** Reason why the menu was closed. */
+export type MenuCloseReason = void | 'click' | 'keydown' | 'tab'
 
 export const LIB_MENU: any = {
   provide: THESEAM_MENU_PANEL,
@@ -50,6 +56,8 @@ export class MenuComponent implements OnDestroy, AfterContentInit, ITheSeamMenuP
 
   private readonly _ngUnsubscribe = new Subject<void>()
 
+  readonly panelId = `menu-panel-${menuPanelUid++}`
+
   private _footer = new BehaviorSubject<MenuFooterComponent | undefined | null>(undefined)
   public hasFooter$ = this._footer.pipe(map(v => v !== null && v !== undefined))
 
@@ -70,9 +78,18 @@ export class MenuComponent implements OnDestroy, AfterContentInit, ITheSeamMenuP
   /** Parent menu of the current menu panel. */
   parentMenu: ITheSeamMenuPanel | undefined
 
+  /** Layout direction of the menu. */
+  direction: Direction | undefined
+
+  /** Emits whenever an animation on the menu completes. */
+  readonly _animationDone = new Subject<AnimationEvent>()
+
+  /** Whether the menu is animating. */
+  _isAnimating = false
+
   @ViewChild(TemplateRef) templateRef?: TemplateRef<any>
 
-  @Output() readonly closed = new EventEmitter<void | 'click' | 'keydown' | 'tab'>()
+  @Output() readonly closed = new EventEmitter<MenuCloseReason>()
 
   @Input() menuClass: string | undefined | null
 
@@ -143,16 +160,16 @@ export class MenuComponent implements OnDestroy, AfterContentInit, ITheSeamMenuP
           this.closed.emit('keydown')
         }
         break
-      // case LEFT_ARROW:
-      //   if (this.parentMenu && this.direction === 'ltr') {
-      //     this.closed.emit('keydown')
-      //   }
-      //   break
-      // case RIGHT_ARROW:
-      //   if (this.parentMenu && this.direction === 'rtl') {
-      //     this.closed.emit('keydown')
-      //   }
-      //   break
+      case LEFT_ARROW:
+        if (this.parentMenu && this.direction === 'ltr') {
+          this.closed.emit('keydown')
+        }
+        break
+      case RIGHT_ARROW:
+        if (this.parentMenu && this.direction === 'rtl') {
+          this.closed.emit('keydown')
+        }
+        break
       case HOME:
       case END:
         if (!hasModifierKey(event)) {
@@ -223,6 +240,26 @@ export class MenuComponent implements OnDestroy, AfterContentInit, ITheSeamMenuP
     // managing the menu is destroyed before the menu finishes its cleanup. I
     // may look for a fix to that eventually.
     this.closed.emit('click')
+  }
+
+  /** Callback that is invoked when the panel animation completes. */
+  _onAnimationDone(event: AnimationEvent) {
+    this._animationDone.next(event)
+    this._isAnimating = false
+  }
+
+  _onAnimationStart(event: AnimationEvent) {
+    this._isAnimating = true
+
+    // Scroll the content element to the top as soon as the animation starts. This is necessary,
+    // because we move focus to the first item while it's still being animated, which can throw
+    // the browser off when it determines the scroll position. Alternatively we can move focus
+    // when the animation is done, however moving focus asynchronously will interrupt screen
+    // readers which are in the process of reading out the menu already. We take the `element`
+    // from the `event` since we can't use a `ViewChild` to access the pane.
+    if (event.toState === 'enter' && this._keyManager?.activeItemIndex === 0) {
+      event.element.scrollTop = 0
+    }
   }
 
 }

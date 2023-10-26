@@ -53,7 +53,7 @@ const _TheSeamButtonMixinBase: CanDisableCtor & CanThemeCtor & CanSizeCtor &
   },
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ButtonComponent extends _TheSeamButtonMixinBase implements OnDestroy {
+export class TheSeamButtonComponent extends _TheSeamButtonMixinBase implements OnDestroy {
 
   /** ARIA type for the button. */
   @Input() type: 'button' | 'submit' | 'reset' = 'button'
@@ -85,7 +85,7 @@ export class ButtonComponent extends _TheSeamButtonMixinBase implements OnDestro
   },
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AnchorButtonComponent extends _TheSeamButtonMixinBase implements OnDestroy {
+export class TheSeamAnchorButtonComponent extends _TheSeamButtonMixinBase implements OnDestroy {
 
   /** Tabindex of the button. */
   @Input() tabIndex: number | undefined | null

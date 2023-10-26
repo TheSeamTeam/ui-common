@@ -13,7 +13,9 @@ import {
   getBoundsWithAllFeatures,
   getFeatureCenter,
   getFeaturesCount,
+  getHoveredStyleOptionsDefinedByFeature,
   getPossibleExteriorFeature,
+  getStyleOptionsDefinedByFeature,
   isFeatureSelected,
   polygonHasValidPathsLengths,
   removeAllFeatures,
@@ -24,27 +26,26 @@ import { MapValueManagerService, MapValueSource } from './map-value-manager.serv
 
 declare const ngDevMode: boolean | undefined
 
-const DEFAULT_POLYGON_OPTIONS: google.maps.PolygonOptions = {
-  clickable: true,
-  draggable: true,
-  editable: true,
-  // fillColor: 'rgba(60,150,60,1)',
-  // strokeColor: 'rgba(155,255,0,1)'
-}
+const DEFAULT_POLYGON_OPTIONS = (editingEnabled: boolean): google.maps.PolygonOptions => ({
+  clickable: editingEnabled,
+  draggable: editingEnabled,
+  editable: editingEnabled,
+})
 
-const DEFAULT_DRAWING_MANAGER_OPTIONS: (() => google.maps.drawing.DrawingManagerOptions) = () => ({
-  drawingControl: true,
+const DEFAULT_DRAWING_MANAGER_OPTIONS = (editingEnabled: boolean): google.maps.drawing.DrawingManagerOptions => ({
+  drawingControl: editingEnabled,
   drawingControlOptions: {
     drawingModes: [
       google.maps.drawing.OverlayType.POLYGON,
     ],
   },
-  polygonOptions: DEFAULT_POLYGON_OPTIONS,
+  polygonOptions: DEFAULT_POLYGON_OPTIONS(editingEnabled),
   drawingMode: null,
 })
 
-const FEATURE_STYLE_OPTIONS_DEFAULT: google.maps.Data.StyleOptions = {
+const FEATURE_STYLE_OPTIONS_DEFAULT = (editingEnabled: boolean): google.maps.Data.StyleOptions => ({
   clickable: true,
+  // clickable: editingEnabled,
   visible: true,
   // zIndex?: number;
 
@@ -56,18 +57,37 @@ const FEATURE_STYLE_OPTIONS_DEFAULT: google.maps.Data.StyleOptions = {
   strokeColor: 'blue',
   strokeOpacity: 1,
   strokeWeight: 2,
-}
+})
 
-const FEATURE_STYLE_OPTIONS_SELECTED: google.maps.Data.StyleOptions = {
-  ...FEATURE_STYLE_OPTIONS_DEFAULT,
-  draggable: true,
-  editable: true,
+const FEATURE_STYLE_OPTIONS_SELECTED = (editingEnabled: boolean): google.maps.Data.StyleOptions => ({
+  ...FEATURE_STYLE_OPTIONS_DEFAULT(editingEnabled),
+  draggable: editingEnabled,
+  editable: editingEnabled,
   fillColor: 'green',
   fillOpacity: 0.7,
   strokeColor: 'limegreen',
   strokeOpacity: 1,
   strokeWeight: 2,
-}
+})
+
+const FEATURE_STYLE_OVERRIDE_OPTIONS_HOVERED = (editingEnabled: boolean): google.maps.Data.StyleOptions => ({
+  strokeColor: 'black',
+  strokeOpacity: 1,
+  strokeWeight: 4,
+})
+
+const SUPPORTED_PROPERTY_STYLE_OPTIONS: (keyof google.maps.Data.StyleOptions)[] = [
+  'fillColor',
+  'fillOpacity',
+  'strokeColor',
+  'strokeOpacity',
+  'strokeWeight',
+  'label',
+  'opacity',
+  'icon',
+  'clickable',
+  'visible',
+]
 
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 
@@ -77,6 +97,7 @@ export class GoogleMapsService implements OnDestroy {
   private readonly _ngUnsubscribe = new Subject<void>()
 
   private readonly _mapReadySubject = new BehaviorSubject<boolean>(false)
+  private readonly _editingEnabledSubject = new BehaviorSubject<boolean>(true)
 
   private _drawingManager?: google.maps.drawing.DrawingManager
   private _featureContextMenu: MenuComponent | null = null
@@ -94,11 +115,14 @@ export class GoogleMapsService implements OnDestroy {
 
   public get mapReady(): boolean { return this._mapReadySubject.value }
 
+  public readonly editingEnabled$: Observable<boolean>
+
   constructor(
     private readonly _mapValueManager: MapValueManagerService,
     private readonly _ngZone: NgZone,
     private readonly _vcr: ViewContainerRef,
   ) {
+    this.editingEnabled$ = this._editingEnabledSubject.asObservable()
     this.mapReady$ = this._mapReadySubject.asObservable()
   }
 
@@ -121,7 +145,36 @@ export class GoogleMapsService implements OnDestroy {
 
   // TODO: Refactor out of the service meant to just wrap the google maps api.
   public setFeatureContextMenu(menu: MenuComponent | null): void {
+    this.closeContextMenu()
     this._featureContextMenu = menu
+  }
+
+  public setEditingEnabled(enabled: boolean): void {
+    this._editingEnabledSubject.next(enabled)
+
+    if (this.mapReady) {
+      this._assertInitialized()
+      this.googleMap.data.revertStyle()
+      if (!enabled) {
+        this.stopDrawing()
+        const options = DEFAULT_DRAWING_MANAGER_OPTIONS(this.isEditingEnabled())
+        this._drawingManager?.setOptions(options)
+        this._drawingManager?.setMap(null)
+        this.googleMap.data.forEach(f => {
+          if (isFeatureSelected(f)) {
+            setFeatureSelected(f, false)
+          }
+        })
+      } else {
+        const options = DEFAULT_DRAWING_MANAGER_OPTIONS(this.isEditingEnabled())
+        this._drawingManager?.setOptions(options)
+        this._drawingManager?.setMap(this.googleMap)
+      }
+    }
+  }
+
+  public isEditingEnabled(): boolean {
+    return this._editingEnabledSubject.value
   }
 
   public getDiv(): HTMLDivElement {
@@ -170,7 +223,7 @@ export class GoogleMapsService implements OnDestroy {
       )
 
       // To fake canceling the current drawing, without disabling the drawing
-      // mode, the drawin mode is being unset then immediately set back. When
+      // mode, the drawing mode is being unset then immediately set back. When
       // the mode is unset the 'overlaycomplete' event will fire, which will
       // give a reference to the current overlay to remove, then it is set back
       // to the mode the user was using. To the user is should just seem like
@@ -194,7 +247,7 @@ export class GoogleMapsService implements OnDestroy {
 
     this._assertInitialized()
 
-    const options = DEFAULT_DRAWING_MANAGER_OPTIONS()
+    const options = DEFAULT_DRAWING_MANAGER_OPTIONS(this.isEditingEnabled())
 
     const drawingManager = new google.maps.drawing.DrawingManager(options)
     drawingManager.setMap(this.googleMap)
@@ -270,11 +323,18 @@ export class GoogleMapsService implements OnDestroy {
 
     // Determine what the style of the features are.
     this.googleMap.data.setStyle(feature => {
+      let opts = FEATURE_STYLE_OPTIONS_DEFAULT(this.isEditingEnabled())
+
+      const options = getStyleOptionsDefinedByFeature(feature)
+      this._mergeStyleOptions(opts, options ?? {})
+
       if (isFeatureSelected(feature)) {
-        return FEATURE_STYLE_OPTIONS_SELECTED
+        const hoverOptions = getHoveredStyleOptionsDefinedByFeature(feature)
+        opts = FEATURE_STYLE_OPTIONS_SELECTED(this.isEditingEnabled())
+        this._mergeStyleOptions(opts, hoverOptions ?? {})
       }
 
-      return FEATURE_STYLE_OPTIONS_DEFAULT
+      return opts
     })
 
     // Select a feature when clicked.
@@ -293,8 +353,9 @@ export class GoogleMapsService implements OnDestroy {
     this.googleMap.data.addListener('mouseover', (event: google.maps.Data.MouseEvent) => {
       this._assertInitialized()
       this.googleMap.data.revertStyle()
+
       if (!this.isDrawing() && !isFeatureSelected(event.feature)) {
-        this.googleMap.data.overrideStyle(event.feature, { strokeWeight: 4 })
+        this.setFeatureHoveredStyleOverride(event.feature)
       }
     })
 
@@ -303,6 +364,26 @@ export class GoogleMapsService implements OnDestroy {
       this._assertInitialized()
       this.googleMap.data.revertStyle()
     })
+  }
+
+  public setFeatureHoveredStyleOverride(feature: google.maps.Data.Feature) {
+    this._assertInitialized()
+    const overrideOpts = FEATURE_STYLE_OVERRIDE_OPTIONS_HOVERED(this.isEditingEnabled())
+    const hoverOptions = getHoveredStyleOptionsDefinedByFeature(feature)
+    this._mergeStyleOptions(overrideOpts, hoverOptions ?? {})
+    this.googleMap.data.overrideStyle(feature, overrideOpts)
+  }
+
+  private _mergeStyleOptions(options: google.maps.Data.StyleOptions, propertiesStyleOptions: google.maps.Data.StyleOptions): void {
+    if (Object.keys(propertiesStyleOptions).length === 0) {
+      return
+    }
+
+    for (const opt of SUPPORTED_PROPERTY_STYLE_OPTIONS) {
+      if (Object.prototype.hasOwnProperty.call(propertiesStyleOptions, opt)) {
+        options[opt] = propertiesStyleOptions[opt] as any
+      }
+    }
   }
 
   private _initFeatureChangeListeners(): void {
@@ -412,11 +493,16 @@ export class GoogleMapsService implements OnDestroy {
   }
 
   // TODO: Refactor out of the service meant to just wrap the google maps api.
-  private _openContextMenuForFeature(feature: google.maps.Data.Feature, position?: google.maps.LatLng) {
+  public closeContextMenu(): void {
     if (this._activeContextMenu) {
       this._activeContextMenu.close()
       this._activeContextMenu = null
     }
+  }
+
+  // TODO: Refactor out of the service meant to just wrap the google maps api.
+  private _openContextMenuForFeature(feature: google.maps.Data.Feature, position?: google.maps.LatLng) {
+    this.closeContextMenu()
 
     this._assertInitialized()
 
