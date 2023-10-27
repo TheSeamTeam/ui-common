@@ -40,3 +40,29 @@ ngx-datatable {
 .datatable-sort-target {
   cursor: pointer;
 }
+
+// This prevents the bug where users can infinitely scroll
+// to the right, outside the table content.
+//
+// The issue only appears with columnMode: force and content
+// in the "right" section of the datatable (e.g. the action menu
+// button when actionItemColumnPosition: frozenRight).
+//
+// I couldn't find the exact source of the bug, but it's got
+// something to do with the OverlayScrollbars implementation.
+// Perhaps an issue measuring container width when the right-hand
+// column is frozen to the outer edge of the container?
+::ng-deep .ngx-datatable {
+  .datatable-body-row {
+    position: relative;
+  }
+
+  .datatable-row-right {
+    position: absolute !important;
+    top: 0;
+  }
+
+  .datatable-row-right {
+    right: 0;
+  }
+}
