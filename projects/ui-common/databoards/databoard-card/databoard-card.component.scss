@@ -1,0 +1,27 @@
+@import '../styles/utilities';
+
+:host {
+  display: block;
+}
+
+.databoard-card {
+  padding: $seam-databoard-card-padding;
+  margin: $seam-databoard-card-margin;
+
+  background: $seam-databoard-card-background;
+  color: $seam-databoard-card-color;
+
+  border: $seam-databoard-card-border;
+  border-radius: $seam-databoard-card-border-radius;
+  box-shadow: $seam-databoard-card-box-shadow;
+}
+
+.databoard-card__placeholder {
+  margin: $seam-databoard-card-placeholder-margin;
+
+  background: $seam-databoard-card-placeholder-background;
+
+  border: $seam-databoard-card-placeholder-border;
+  border-radius: $seam-databoard-card-placeholder-border-radius;
+  box-shadow: $seam-databoard-card-placeholder-box-shadow;
+}

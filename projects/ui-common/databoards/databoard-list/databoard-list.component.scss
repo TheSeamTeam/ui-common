@@ -1,0 +1,30 @@
+@import '../styles/utilities';
+
+:host {
+  display: block;
+}
+
+.databoard-list {
+  height: 100%;
+
+  min-height: $seam-databoard-list-min-height;
+}
+
+.databoards-wrapper {
+  flex-grow: 1;
+
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-start;
+
+  margin: $seam-databoard-wrapper-margin;
+  padding: $seam-databoard-wrapper-padding;
+
+  &.databoards-wrapper__wrap {
+    flex-wrap: wrap;
+  }
+
+  &.databoards-wrapper__no-wrap {
+    flex-wrap: nowrap;
+  }
+}

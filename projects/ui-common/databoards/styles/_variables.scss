@@ -1,0 +1,68 @@
+$seam-databoard-border-color: $border-color !default;
+$seam-databoard-background: $light !default;
+$seam-databoard-color: $body-color !default;
+
+// Databoard Board Styles
+$seam-databoard-board-wrapper-margin: 4px !default;
+$seam-databoard-board-wrapper-padding: 0px !default;
+
+$seam-databoard-board-min-width: 250px !default;
+$seam-databoard-board-background: $seam-databoard-background !default;
+$seam-databoard-board-border-top: 1px solid $seam-databoard-border-color !default;
+$seam-databoard-board-border-right: 1px solid $seam-databoard-border-color !default;
+$seam-databoard-board-border-bottom: 1px solid $seam-databoard-border-color !default;
+$seam-databoard-board-border-left: 1px solid $seam-databoard-border-color !default;
+$seam-databoard-board-border-radius: .5rem !default;
+$seam-databoard-board-padding: 0 !default;
+$seam-databoard-board-margin: 0 !default;
+
+$seam-databoard-board-header-background: $seam-databoard-background !default;
+$seam-databoard-board-header-border-top: none !default;
+$seam-databoard-board-header-border-right: none !default;
+$seam-databoard-board-header-border-bottom: 1px solid $seam-databoard-border-color !default;
+$seam-databoard-board-header-border-left: none !default;
+$seam-databoard-board-header-margin: 0 !default;
+$seam-databoard-board-header-padding: .5rem 1rem !default;
+$seam-databoard-board-header-color: $seam-databoard-color !default;
+$seam-databoard-board-header-font-weight: bold !default;
+
+$seam-databoard-board-content-background: $seam-databoard-background !default;
+$seam-databoard-board-content-margin: 0 !default;
+$seam-databoard-board-content-padding: .5rem .75rem !default;
+
+$seam-databoard-board-content-empty-padding: .5rem 1rem !default;
+$seam-databoard-board-content-empty-font-size: 90% !default;
+$seam-databoard-board-content-empty-font-style: italic !default;
+$seam-databoard-board-content-empty-text-align: center !default;
+$seam-databoard-board-content-empty-color: $gray-600 !default;
+
+$seam-databoard-board-content-empty-message-margin: 0 0 1rem 0 !default;
+
+$seam-databoard-board-footer-background: $seam-databoard-background !default;
+$seam-databoard-board-footer-border-top: 1px solid $seam-databoard-border-color !default;
+$seam-databoard-board-footer-border-right: none !default;
+$seam-databoard-board-footer-border-bottom: none !default;
+$seam-databoard-board-footer-border-left: none !default;
+$seam-databoard-board-footer-margin: 0 !default;
+$seam-databoard-board-footer-padding: .5rem 1rem !default;
+
+// Databoard Card Styles
+$seam-databoard-card-padding: .5rem !default;
+$seam-databoard-card-margin: 0 0 .5rem 0 !default;
+$seam-databoard-card-background: white !default;
+$seam-databoard-card-color: $seam-databoard-color !default;
+$seam-databoard-card-border: 1px solid $seam-databoard-border-color !default;
+$seam-databoard-card-border-radius: $border-radius !default;
+$seam-databoard-card-box-shadow: $box-shadow-sm !default;
+
+$seam-databoard-card-placeholder-margin: 0 0 .5rem 0 !default;
+$seam-databoard-card-placeholder-background: $gray-300 !default;
+$seam-databoard-card-placeholder-border: 2px dashed $gray-500 !default;
+$seam-databoard-card-placeholder-border-radius: $border-radius !default;
+$seam-databoard-card-placeholder-box-shadow: $box-shadow-sm !default;
+
+// Databoard List Styles
+$seam-databoard-list-min-height: 300px !default;
+
+$seam-databoard-wrapper-margin: 0 !default;
+$seam-databoard-wrapper-padding: 0 !default;
