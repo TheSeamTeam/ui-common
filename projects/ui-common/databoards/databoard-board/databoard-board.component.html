@@ -1,0 +1,63 @@
+<div class="databoards-board" [class]="_cssClass">
+
+  <div
+    class="databoards-board__header"
+    *ngIf="_displayEmptyHeader || _headerTpl || _headerText">
+    <ng-container *ngIf="_headerTpl; else headerTextTpl">
+      <ng-container
+        [ngTemplateOutlet]="_headerTpl"
+        [ngTemplateOutletContext]="{ $implicit: boardData }">
+      </ng-container>
+    </ng-container>
+    <ng-template #headerTextTpl>
+      {{ _headerText }}
+    </ng-template>
+  </div>
+
+  <div class="databoards-board__content-wrapper" seamOverlayScrollbar [overlayScrollbarEnabled]="allowVerticalScroll">
+    <div
+      class="databoards-board__content"
+      cdkDropList
+      [cdkDropListData]="boardAndCards"
+      (cdkDropListDropped)="_cardDrop($event)"
+      [cdkDropListDisabled]="!_draggable"
+      [cdkDropListSortingDisabled]="!_reorderable"
+      [cdkDropListEnterPredicate]="_addPredicate">
+      <ng-container *ngIf="_cards?.length; else emptyBoardTpl">
+        <ng-container *ngFor="let card of _cards; trackBy: _trackBy">
+          <seam-databoard-card
+            [data]="card"
+            [cardTpl]="_cardTpl"></seam-databoard-card>
+        </ng-container>
+      </ng-container>
+      <ng-template #emptyBoardTpl>
+        <div class="databoards-board__content-empty">
+          <ng-container *ngIf="_emptyTpl; else emptyTextTpl">
+            <ng-container
+              [ngTemplateOutlet]="_emptyTpl"
+              [ngTemplateOutletContext]="{ $implicit: boardData }">
+            </ng-container>
+          </ng-container>
+          <ng-template #emptyTextTpl>
+            <span class="databoards-board__content-empty-message">{{ _emptyText }}</span>
+          </ng-template>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+
+  <div
+    *ngIf="_displayEmptyFooter || _footerTpl || _footerText"
+    class="databoards-board__footer">
+    <ng-container *ngIf="_footerTpl; else footerTextTpl">
+      <ng-container
+        [ngTemplateOutlet]="_footerTpl"
+        [ngTemplateOutletContext]="{ $implicit: boardData }">
+      </ng-container>
+    </ng-container>
+    <ng-template #footerTextTpl>
+      {{ _footerText }}
+    </ng-template>
+  </div>
+
+</div>

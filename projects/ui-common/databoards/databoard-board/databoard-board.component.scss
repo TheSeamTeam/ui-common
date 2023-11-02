@@ -1,0 +1,103 @@
+
+@import '../styles/utilities';
+
+// TODO: refactor into variables
+:host {
+  display: block;
+  margin: $seam-databoard-board-wrapper-margin;
+  padding: $seam-databoard-board-wrapper-padding;
+}
+
+.databoards-board {
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+
+  min-width: $seam-databoard-board-min-width;
+  background: $seam-databoard-board-background;
+
+  border-top: $seam-databoard-board-border-top;
+  border-right: $seam-databoard-board-border-right;
+  border-bottom: $seam-databoard-board-border-bottom;
+  border-left: $seam-databoard-board-border-left;
+
+  border-radius: $seam-databoard-board-border-radius;
+
+  padding: $seam-databoard-board-padding;
+  margin: $seam-databoard-board-margin;
+
+  overflow: hidden;
+}
+
+.databoards-board__header {
+  background: $seam-databoard-board-header-background;
+
+  border-top: $seam-databoard-board-header-border-top;
+  border-right: $seam-databoard-board-header-border-right;
+  border-bottom: $seam-databoard-board-header-border-bottom;
+  border-left: $seam-databoard-board-header-border-left;
+
+  margin: $seam-databoard-board-header-margin;
+  padding: $seam-databoard-board-header-padding;
+
+  color: $seam-databoard-board-header-color;
+  font-weight: $seam-databoard-board-header-font-weight;
+}
+
+.databoards-board__content-wrapper {
+  flex-grow: 1;
+  min-height: 0px;
+}
+
+.databoards-board__content {
+  position: relative;
+  min-height: 100%;
+
+  background: $seam-databoard-board-content-background;
+
+  margin: $seam-databoard-board-content-margin;
+  padding: $seam-databoard-board-content-padding;
+}
+
+.databoards-board__content-empty {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+
+  padding: $seam-databoard-board-content-empty-padding;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: $seam-databoard-board-content-empty-font-size;
+  font-style: $seam-databoard-board-content-empty-font-style;
+  text-align: $seam-databoard-board-content-empty-text-align;
+  color: $seam-databoard-board-content-empty-color;
+
+  .cdk-drop-list-receiving &,
+  .cdk-drop-list-dragging & {
+    display: none;
+  }
+}
+
+.databoards-board__content-empty-message {
+  margin-bottom: $seam-databoard-board-content-empty-message-margin;
+}
+
+.databoards-board__footer {
+  background: $seam-databoard-board-footer-background;
+
+  border-top: $seam-databoard-board-footer-border-top;
+  border-right: $seam-databoard-board-footer-border-right;
+  border-bottom: $seam-databoard-board-footer-border-bottom;
+  border-left: $seam-databoard-board-footer-border-left;
+
+  margin: $seam-databoard-board-footer-margin;
+  padding: $seam-databoard-board-footer-padding;
+}

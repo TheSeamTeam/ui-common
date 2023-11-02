@@ -1,0 +1,19 @@
+<div
+  *ngIf="cardTpl"
+  class="databoard-card"
+  cdkDrag
+  [cdkDragData]="data"
+  (seamElemResized)="_updatePlaceholderCardHeight($event)"
+  (cdkDragEnded)="dragEnd($event, 'cdkDragEnded')"
+  [cdkDragFreeDragPosition]="(dragPosition$ | async) || { x: 0, y: 0 }">
+
+  <ng-container *cdkDragPlaceholder>
+    <div class="databoard-card__placeholder" [style]="placeholderCardHeight$ | async" ></div>
+  </ng-container>
+
+  <ng-container
+    [ngTemplateOutlet]="cardTpl"
+    [ngTemplateOutletContext]="{ $implicit: data }">
+  </ng-container>
+
+</div>
