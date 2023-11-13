@@ -1,93 +1,103 @@
-import { action } from '@storybook/addon-actions'
-import { moduleMetadata } from '@storybook/angular'
+import { Meta, StoryObj, applicationConfig, componentWrapperDecorator, moduleMetadata } from '@storybook/angular'
+import { expect } from '@storybook/jest'
 
 import { ReactiveFormsModule } from '@angular/forms'
-import { BrowserModule } from '@angular/platform-browser'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { provideAnimations } from '@angular/platform-browser/animations'
+
+import { JsonSchemaFormComponent } from '@ajsf/core'
 
 import { TheSeamSchemaFormModule } from '../../schema-form/schema-form.module'
+import { TheSeamSchemaFormSubmitHarness } from './testing'
+import { getHarness } from '@theseam/ui-common/testing'
+import { JsonSchemaFormHarness } from '../../schema-form/testing'
 
-export default {
+const meta: Meta<JsonSchemaFormComponent> = {
   title: 'Framework/Schema Form Controls/Submit',
+  tags: [ 'autodocs' ],
   decorators: [
+    applicationConfig({
+      providers: [
+        provideAnimations(),
+      ],
+    }),
     moduleMetadata({
       imports: [
-        BrowserAnimationsModule,
-        BrowserModule,
         TheSeamSchemaFormModule,
-        ReactiveFormsModule
-      ]
-    })
-  ]
+        ReactiveFormsModule,
+      ],
+    }),
+    componentWrapperDecorator(JsonSchemaFormComponent, ({ args }) => args),
+  ],
+  argTypes: {
+    onSubmit: { action: 'onSubmit' }
+  },
+  args: {
+    framework: 'seam-framework',
+  },
 }
 
-export const Basic = () => ({
-  props: {
-    schema: {
-      '$id': 'http://example.com/example.json',
-      'type': 'object',
-      'definitions': {},
-      '$schema': 'http://json-schema.org/draft-07/schema#',
-      'properties': {
-        'Colors': {
-          '$id': '/properties/Colors',
-          'type': 'string',
-          'enum': [ 'Red', 'Green', 'Blue' ]
-        }
-      }
-    },
-    layout: [
-      { 'dataPointer': '/Colors' }
-    ]
-  },
-  template: `
-    <json-schema-form
-      framework="seam-framework"
-      [schema]="schema"
-      [layout]="layout">
-    </json-schema-form>`
-})
+export default meta
+type Story = StoryObj<JsonSchemaFormComponent>
 
-export const Required = () => ({
-  props: {
+export const Basic: Story = {
+  args: {
     schema: {
-      '$id': 'http://example.com/example.json',
       'type': 'object',
-      'definitions': {},
       '$schema': 'http://json-schema.org/draft-07/schema#',
       'properties': {
         'Colors': {
-          '$id': '/properties/Colors',
           'type': 'string',
-          'enum': [ 'red', 'green', 'blue' ],
-          'enumNames': [ 'Red', 'Green', 'Blue' ]
+          'enum': [ 'Red', 'Green', 'Blue' ],
         },
-        'Exporter': {
-          '$id': '/properties/Exporter',
-          'type': 'split-button',
-          'title': 'Export',
-          'hasSplitButton': true,
-          'exporters': [ 'PDF', 'XLSX' ]
-        }
       },
-      'required': [
-        'Available'
-      ]
     },
     layout: [
       { 'dataPointer': '/Colors' },
-      { 'dataPointer': '/Exporter' }
     ],
-    _onSubmit: (e: any) => {
-      // console.log('_onSubmit', e)
-      action('onSubmit')(e)
-    }
   },
-  template: `
-    <json-schema-form
-      framework="seam-framework"
-      [schema]="schema"
-      [layout]="layout"
-      (onSubmit)="_onSubmit($event)">
-    </json-schema-form>`
-})
+  play: async ({ canvasElement, fixture, args }) => {
+    const sfSubmitHarness = await getHarness(TheSeamSchemaFormSubmitHarness, { canvasElement, fixture })
+    await expect(await sfSubmitHarness.isRequired()).toBe(false)
+    await sfSubmitHarness.click()
+    const sfFormHarness = await getHarness(JsonSchemaFormHarness, { canvasElement, fixture })
+    await sfFormHarness.submit()
+    await expect(args.onSubmit).toHaveBeenCalledWith({ Colors: true })
+  },
+}
+
+export const Required: Story = {
+  args: {
+    schema: {
+      'type': 'object',
+      '$schema': 'http://json-schema.org/draft-07/schema#',
+      'properties': {
+        'Colors': {
+          'type': 'string',
+          'enum': [ 'red', 'green', 'blue' ],
+          'enumNames': [ 'Red', 'Green', 'Blue' ],
+        },
+        'Exporter': {
+          'type': 'split-button',
+          'title': 'Export',
+          'hasSplitButton': true,
+          'exporters': [ 'PDF', 'XLSX' ],
+        }
+      },
+      'required': [
+        'Exporter',
+      ],
+    },
+    layout: [
+      { 'dataPointer': '/Colors' },
+      { 'dataPointer': '/Exporter' },
+    ],
+  },
+  play: async ({ canvasElement, fixture, args }) => {
+    const sfSubmitHarness = await getHarness(TheSeamSchemaFormSubmitHarness, { canvasElement, fixture })
+    await expect(await sfSubmitHarness.isRequired()).toBe(true)
+    await sfSubmitHarness.click()
+    const sfFormHarness = await getHarness(JsonSchemaFormHarness, { canvasElement, fixture })
+    await sfFormHarness.submit()
+    await expect(args.onSubmit).toHaveBeenCalledWith({ Colors: true })
+  },
+}

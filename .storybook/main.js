@@ -1,6 +1,7 @@
 module.exports = {
   stories: [
-    '../projects/ui-common/**/*.stories.@(ts|mdx)',
+    // '../projects/ui-common/**/*.stories.@(ts|mdx)',
+    '../projects/ui-common/**/*.stories.@(ts)',
   ],
   // stories: ['../projects/ui-common/breadcrumbs/stories/breadcrumbs-simple.stories.@(ts|mdx)'],
   logLevel: 'debug',
