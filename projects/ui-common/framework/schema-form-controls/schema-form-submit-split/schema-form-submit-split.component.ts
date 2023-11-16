@@ -6,6 +6,7 @@ import { buildTitleMap, hasOwn, JsonSchemaFormService, TitleMapItem } from '@ajs
 
 import { observeControlStatus, observeControlValue } from '@theseam/ui-common/utils'
 import { takeUntil } from 'rxjs/operators'
+import { TheSeamSchemaFormWidget } from '@theseam/ui-common/framework'
 
 // NOTE: This is aliasing TitleMapItem, because we may want to extend it's
 // options. For simplicity, I am letting this work similar to a 'select' widget.
@@ -23,7 +24,7 @@ export type TheSeamSchemaFormSubmitSplitItem = TitleMapItem
   styleUrls: ['./schema-form-submit-split.component.scss'],
   // changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy {
+export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy, TheSeamSchemaFormWidget {
 
   /** @ignore */
   private readonly _ngUnsubscribe = new Subject<void>()

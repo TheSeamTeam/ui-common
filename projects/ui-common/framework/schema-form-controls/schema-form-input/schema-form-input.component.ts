@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core
 import { AbstractControl } from '@angular/forms'
 
 import { JsonSchemaFormService } from '@ajsf/core'
+import { TheSeamSchemaFormWidget } from '@theseam/ui-common/framework'
 
 @Component({
   selector: 'seam-schema-form-input',
@@ -9,7 +10,7 @@ import { JsonSchemaFormService } from '@ajsf/core'
   styleUrls: ['./schema-form-input.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TheSeamSchemaFormInputComponent implements OnInit {
+export class TheSeamSchemaFormInputComponent implements OnInit, TheSeamSchemaFormWidget {
 
   formControl?: AbstractControl
   controlName?: string

@@ -2,13 +2,14 @@ import { Component, Input, OnInit } from '@angular/core'
 import { AbstractControl } from '@angular/forms'
 
 import { hasOwn, JsonSchemaFormService } from '@ajsf/core'
+import { TheSeamSchemaFormWidget } from '@theseam/ui-common/framework'
 
 @Component({
   selector: 'seam-schema-form-submit',
   templateUrl: './schema-form-submit.component.html',
   styles: []
 })
-export class TheSeamSchemaFormSubmitComponent implements OnInit {
+export class TheSeamSchemaFormSubmitComponent implements OnInit, TheSeamSchemaFormWidget {
 
   formControl?: AbstractControl
   controlName?: string
