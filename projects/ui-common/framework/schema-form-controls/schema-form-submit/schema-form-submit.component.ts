@@ -1,13 +1,22 @@
 import { Component, Input, OnInit } from '@angular/core'
-import { AbstractControl } from '@angular/forms'
+import { CommonModule } from '@angular/common'
+import { AbstractControl, ReactiveFormsModule } from '@angular/forms'
 
-import { hasOwn, JsonSchemaFormService } from '@ajsf/core'
+import { hasOwn, JsonSchemaFormModule, JsonSchemaFormService } from '@ajsf/core'
 import { TheSeamSchemaFormWidget } from '@theseam/ui-common/framework'
+import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 
 @Component({
   selector: 'seam-schema-form-submit',
   templateUrl: './schema-form-submit.component.html',
-  styles: []
+  styles: [],
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    JsonSchemaFormModule,
+    TheSeamFormFieldModule,
+  ],
 })
 export class TheSeamSchemaFormSubmitComponent implements OnInit, TheSeamSchemaFormWidget {
 

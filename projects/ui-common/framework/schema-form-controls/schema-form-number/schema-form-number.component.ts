@@ -1,14 +1,23 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core'
-import { AbstractControl } from '@angular/forms'
+import { CommonModule } from '@angular/common'
+import { AbstractControl, ReactiveFormsModule } from '@angular/forms'
 
-import { JsonSchemaFormService } from '@ajsf/core'
+import { JsonSchemaFormModule, JsonSchemaFormService } from '@ajsf/core'
 import { TheSeamSchemaFormWidget } from '@theseam/ui-common/framework'
+import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 
 @Component({
   selector: 'seam-schema-form-number',
   templateUrl: './schema-form-number.component.html',
   styleUrls: ['./schema-form-number.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    JsonSchemaFormModule,
+    TheSeamFormFieldModule,
+  ],
 })
 export class TheSeamSchemaFormNumberComponent implements OnInit, TheSeamSchemaFormWidget {
 

@@ -1,13 +1,24 @@
 import { Component, Input, OnInit } from '@angular/core'
-import { AbstractControl } from '@angular/forms'
+import { CommonModule } from '@angular/common'
+import { AbstractControl, ReactiveFormsModule } from '@angular/forms'
 
-import { JsonSchemaFormService } from '@ajsf/core'
+import { JsonSchemaFormModule, JsonSchemaFormService } from '@ajsf/core'
 import { TheSeamSchemaFormWidget } from '@theseam/ui-common/framework'
+import { TheSeamCheckboxModule } from '@theseam/ui-common/checkbox'
+import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 
 @Component({
   selector: 'seam-schema-form-checkbox',
   templateUrl: './schema-form-checkbox.component.html',
-  styleUrls: ['./schema-form-checkbox.component.scss']
+  styleUrls: ['./schema-form-checkbox.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    JsonSchemaFormModule,
+    TheSeamFormFieldModule,
+    TheSeamCheckboxModule,
+  ],
 })
 export class TheSeamSchemaFormCheckboxComponent implements OnInit, TheSeamSchemaFormWidget {
 

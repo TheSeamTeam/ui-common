@@ -1,12 +1,15 @@
 import { Component, Input, isDevMode, OnDestroy, OnInit } from '@angular/core'
-import { AbstractControl, UntypedFormControl } from '@angular/forms'
+import { CommonModule } from '@angular/common'
+import { AbstractControl, ReactiveFormsModule, UntypedFormControl } from '@angular/forms'
 import { Subject } from 'rxjs'
-
-import { buildTitleMap, hasOwn, JsonSchemaFormService, TitleMapItem } from '@ajsf/core'
-
-import { observeControlStatus, observeControlValue } from '@theseam/ui-common/utils'
 import { takeUntil } from 'rxjs/operators'
+
+import { buildTitleMap, hasOwn, JsonSchemaFormModule, JsonSchemaFormService, TitleMapItem } from '@ajsf/core'
+import { observeControlStatus, observeControlValue } from '@theseam/ui-common/utils'
 import { TheSeamSchemaFormWidget } from '@theseam/ui-common/framework'
+import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
+import { TheSeamMenuModule } from '@theseam/ui-common/menu'
+import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
 
 // NOTE: This is aliasing TitleMapItem, because we may want to extend it's
 // options. For simplicity, I am letting this work similar to a 'select' widget.
@@ -22,7 +25,16 @@ export type TheSeamSchemaFormSubmitSplitItem = TitleMapItem
   selector: 'seam-schema-form-submit-split',
   templateUrl: './schema-form-submit-split.component.html',
   styleUrls: ['./schema-form-submit-split.component.scss'],
-  // changeDetection: ChangeDetectionStrategy.OnPush
+  // changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    JsonSchemaFormModule,
+    TheSeamFormFieldModule,
+    TheSeamMenuModule,
+    TheSeamButtonsModule,
+  ],
 })
 export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy, TheSeamSchemaFormWidget {
 

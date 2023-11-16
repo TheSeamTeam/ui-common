@@ -1,14 +1,25 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core'
-import { AbstractControl } from '@angular/forms'
+import { CommonModule } from '@angular/common'
+import { AbstractControl, ReactiveFormsModule } from '@angular/forms'
 
-import { buildTitleMap, isArray, JsonSchemaFormService } from '@ajsf/core'
+import { buildTitleMap, isArray, JsonSchemaFormModule, JsonSchemaFormService } from '@ajsf/core'
 import { TheSeamSchemaFormWidget } from '@theseam/ui-common/framework'
+import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
+import { NgSelectModule } from '@ng-select/ng-select'
 
 @Component({
   selector: 'seam-schema-form-select',
   templateUrl: './schema-form-select.component.html',
   styleUrls: ['./schema-form-select.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    JsonSchemaFormModule,
+    TheSeamFormFieldModule,
+    NgSelectModule,
+  ],
 })
 export class TheSeamSchemaFormSelectComponent implements OnInit, TheSeamSchemaFormWidget {
 

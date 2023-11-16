@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common'
-import { Directive, NgModule } from '@angular/core'
+import { NgModule } from '@angular/core'
 
 import {
   Framework,
@@ -9,7 +9,6 @@ import {
   WidgetLibraryModule, WidgetLibraryService
 } from '@ajsf/core'
 
-import { TheSeamSchemaFormControlsModule } from '../schema-form-controls/schema-form-controls.module'
 import { TheSeamFramework } from './schema-form-framework'
 import { TheSeamSchemaFormFrameworkComponent } from './schema-form-framework.component'
 
@@ -20,7 +19,6 @@ import { TheSeamSchemaFormFrameworkComponent } from './schema-form-framework.com
   imports: [
     CommonModule,
     JsonSchemaFormModule,
-    TheSeamSchemaFormControlsModule,
     WidgetLibraryModule,
   ],
   providers: [
@@ -33,8 +31,5 @@ import { TheSeamSchemaFormFrameworkComponent } from './schema-form-framework.com
     TheSeamSchemaFormFrameworkComponent,
     JsonSchemaFormModule
   ],
-  entryComponents: [
-    TheSeamSchemaFormFrameworkComponent
-  ]
 })
 export class TheSeamSchemaFormModule { }
