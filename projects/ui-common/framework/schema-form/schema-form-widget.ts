@@ -1,5 +1,44 @@
 import { AbstractControl } from '@angular/forms'
 
+export interface TheSeamSchemaFormWidgetLayoutNodeOptions {
+  errorMessage: any
+  validationMessages: any
+  showErrors: boolean
+  /**
+   * ?
+   */
+  copyValueTo: any[]
+  title: string
+
+  [key: string]: any
+}
+
+/**
+ * Interface to represent the properties set on a widget component instance by
+ * '@ajsf/core'.
+ *
+ * NOTE: I am not positive this is completely accurate.
+ */
+export interface TheSeamSchemaFormWidget {
+
+  options?: TheSeamSchemaFormWidgetLayoutNodeOptions
+
+  /**
+   * Node from the json schema.
+   */
+  layoutNode?: {
+    options?: TheSeamSchemaFormWidgetLayoutNodeOptions
+    name: string
+    value: any
+    dataPointer: string
+    type: string
+    dataType?: string
+    items?: any[]
+  } | null
+  layoutIndex: number[] | undefined | null
+  dataIndex: number[] | undefined | null
+}
+
 /**
  * Interface to represent the properties set on a widget component instance by
  * '@ajsf/core', when calling `initializeControl`.
@@ -9,31 +48,7 @@ import { AbstractControl } from '@angular/forms'
  *
  * NOTE: I am not positive this is completely accurate.
  */
-export interface TheSeamSchemaFormWidget {
-
-  options?: {
-    errorMessage: any
-    validationMessages: any
-    showErrors: boolean
-    /**
-     * ?
-     */
-    copyValueTo: any[]
-    title: string
-  }
-
-  /**
-   * Node from the json schema.
-   */
-  layoutNode?: {
-    options: any
-    name: string
-    value: any
-    dataPointer: string
-    type: string
-  }
-  layoutIndex: number[] | undefined | null
-  dataIndex: number[] | undefined | null
+export interface TheSeamSchemaFormControlWidget extends TheSeamSchemaFormWidget {
 
   formOptions?: {
     validateOnRender: boolean
