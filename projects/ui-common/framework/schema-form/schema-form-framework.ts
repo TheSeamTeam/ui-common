@@ -8,6 +8,7 @@ import { TheSeamSchemaFormNumberComponent } from '../schema-form-controls/schema
 import { TheSeamSchemaFormSelectComponent } from '../schema-form-controls/schema-form-select/schema-form-select.component'
 import { TheSeamSchemaFormSubmitSplitComponent } from '../schema-form-controls/schema-form-submit-split/schema-form-submit-split.component'
 import { TheSeamSchemaFormSubmitComponent } from '../schema-form-controls/schema-form-submit/schema-form-submit.component'
+import { TheSeamSchemaFormDividerComponent } from '../schema-form-controls/schema-form-divider/schema-form-divider.component'
 
 import { TheSeamSchemaFormFrameworkComponent } from './schema-form-framework.component'
 
@@ -23,6 +24,7 @@ export class TheSeamFramework extends Framework {
     'submit': TheSeamSchemaFormSubmitSplitComponent,
     'text': TheSeamSchemaFormInputComponent,
     'number': TheSeamSchemaFormNumberComponent,
-    'select': TheSeamSchemaFormSelectComponent
+    'select': TheSeamSchemaFormSelectComponent,
+    'divider': TheSeamSchemaFormDividerComponent,
   }
 }
