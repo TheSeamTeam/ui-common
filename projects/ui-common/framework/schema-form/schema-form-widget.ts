@@ -34,6 +34,7 @@ export interface TheSeamSchemaFormWidget {
     type: string
     dataType?: string
     items?: any[]
+    _id?: string
   } | null
   layoutIndex: number[] | undefined | null
   dataIndex: number[] | undefined | null

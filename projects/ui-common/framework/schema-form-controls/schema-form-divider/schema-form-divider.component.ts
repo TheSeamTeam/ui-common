@@ -10,7 +10,7 @@ import { TheSeamSchemaFormWidget } from '@theseam/ui-common/framework'
 })
 export class TheSeamSchemaFormDividerComponent implements OnInit, TheSeamSchemaFormWidget {
 
-  options: any
+  options: TheSeamSchemaFormWidget['options']
   @Input() layoutNode: any
   @Input() layoutIndex: number[] | undefined | null
   @Input() dataIndex: number[] | undefined | null

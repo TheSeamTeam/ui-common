@@ -175,11 +175,25 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
       takeUntil(this._ngUnsubscribe)
     ).subscribe(v => {
       const value = this._telInputDirective?.getFullNumber()
+      console.log('valueChanges', v, value)
       this.value = value
       if (this._controlValueAccessorChangeFn) {
         this._controlValueAccessorChangeFn(value)
       }
     })
+    console.log('this.control', this._control, this._control.value, this.value)
+    this._control.setValue(this.value ?? '')
+    console.log('_inputElementRef', (this._inputElementRef as any))
+    console.log('_inputElementRef', (this._inputElementRef as any)?.value)
+    console.log(this._elementRef.nativeElement.querySelector('input'))
+    console.log(this._elementRef.nativeElement.querySelector('input')?.value)
+  }
+
+  ngAfterViewInit() {
+    console.log('_inputElementRef2', (this._inputElementRef as any))
+    console.log('_inputElementRef2', (this._inputElementRef as any)?.value)
+    console.log(this._elementRef.nativeElement.querySelector('input'))
+    console.log(this._elementRef.nativeElement.querySelector('input')?.value)
   }
 
   /** @ignore */
@@ -193,7 +207,11 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
   // Implemented as part of ControlValueAccessor.
   /** @ignore */
   writeValue(value: any) {
+    console.log('writeValue', value, this._telInputDirective?.getFullNumber(), this._control.value)
     this.value = value
+    if (this._control.value !== value) {
+      this._control.setValue(value)
+    }
     if (this._telInputDirective) {
       this._telInputDirective.value = value
       this._telInputDirective.updateValue()

@@ -9,6 +9,7 @@ import { TheSeamSchemaFormSelectComponent } from '../schema-form-controls/schema
 import { TheSeamSchemaFormSubmitSplitComponent } from '../schema-form-controls/schema-form-submit-split/schema-form-submit-split.component'
 import { TheSeamSchemaFormSubmitComponent } from '../schema-form-controls/schema-form-submit/schema-form-submit.component'
 import { TheSeamSchemaFormDividerComponent } from '../schema-form-controls/schema-form-divider/schema-form-divider.component'
+import { TheSeamSchemaFormTelComponent } from '../schema-form-controls/schema-form-tel/schema-form-tel.component'
 
 import { TheSeamSchemaFormFrameworkComponent } from './schema-form-framework.component'
 
@@ -26,5 +27,16 @@ export class TheSeamFramework extends Framework {
     'number': TheSeamSchemaFormNumberComponent,
     'select': TheSeamSchemaFormSelectComponent,
     'divider': TheSeamSchemaFormDividerComponent,
+    'tel': TheSeamSchemaFormTelComponent,
+
+    // 'file': // TODO: Implement
+    // 'tiled-select': // TODO: Implement
+    // 'date': // TODO: Implement
+    // 'map': // TODO: Implement
+    // 'wizard': // TODO: Implement
+    // 'image': // TODO: Implement
+    // 'tabs': // TODO: Implement
+    // 'card': // TODO: Implement
+    // 'richtext': // TODO: Implement
   }
 }

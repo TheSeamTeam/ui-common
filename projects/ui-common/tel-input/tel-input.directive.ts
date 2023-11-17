@@ -50,6 +50,9 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy, DoCheck {
   ) { }
 
   ngOnInit(): void {
+    console.log('_ngControl', this._ngControl, this._ngControl?.value)
+    console.log('IntlTelInputFn', IntlTelInputFn, this._elementRef.nativeElement, this._elementRef.nativeElement?.value, this.value)
+    // this._elementRef.nativeElement.value = this.value ?? ''
     merge(
       this._assetLoader.loadStyleSheet(TEL_INPUT_STYLESHEET_PATH),
       this._assetLoader.loadStyle(TEL_INPUT_STYLES)
@@ -59,6 +62,7 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy, DoCheck {
       last(),
       // tap(v => console.log('StyleLoadingDone', v)),
       switchMap(() => {
+        console.log('IntlTelInputFn2', IntlTelInputFn, this._elementRef.nativeElement, this.value)
         this._instance = IntlTelInputFn(this._elementRef.nativeElement, {
           utilsScript: TEL_INPUT_UTILS_PATH,
           preferredCountries: [ 'US' ],
@@ -75,7 +79,7 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy, DoCheck {
 
         return this._instance.promise
       }),
-      // tap(() => console.log('%c_instance ready', 'color:green', this._instance, this._elementRef.nativeElement.value)),
+      tap(() => console.log('%c_instance ready', 'color:green', this._instance, this._elementRef.nativeElement.value)),
       tap(() => this._initDropdownListener()),
       tap(() => this.value = this._value),
       tap(this._formatIntlTelInput),
