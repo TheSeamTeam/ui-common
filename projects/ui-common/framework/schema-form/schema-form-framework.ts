@@ -10,6 +10,7 @@ import { TheSeamSchemaFormSubmitSplitComponent } from '../schema-form-controls/s
 import { TheSeamSchemaFormSubmitComponent } from '../schema-form-controls/schema-form-submit/schema-form-submit.component'
 import { TheSeamSchemaFormDividerComponent } from '../schema-form-controls/schema-form-divider/schema-form-divider.component'
 import { TheSeamSchemaFormTelComponent } from '../schema-form-controls/schema-form-tel/schema-form-tel.component'
+import { TheSeamSchemaFormTiledSelectComponent } from '../schema-form-controls/schema-form-tiled-select/schema-form-tiled-select.component'
 
 import { TheSeamSchemaFormFrameworkComponent } from './schema-form-framework.component'
 
@@ -28,9 +29,9 @@ export class TheSeamFramework extends Framework {
     'select': TheSeamSchemaFormSelectComponent,
     'divider': TheSeamSchemaFormDividerComponent,
     'tel': TheSeamSchemaFormTelComponent,
+    'tiled-select': TheSeamSchemaFormTiledSelectComponent
 
     // 'file': // TODO: Implement
-    // 'tiled-select': // TODO: Implement
     // 'date': // TODO: Implement
     // 'map': // TODO: Implement
     // 'wizard': // TODO: Implement
