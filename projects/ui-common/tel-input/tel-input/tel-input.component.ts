@@ -17,14 +17,15 @@ import {
   Output,
   ViewChild
 } from '@angular/core'
-import { ControlValueAccessor, UntypedFormControl, NgControl, NG_VALUE_ACCESSOR } from '@angular/forms'
+import { ControlValueAccessor, UntypedFormControl, NgControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms'
 import { defer, fromEvent, merge, Observable, of, Subject } from 'rxjs'
 import { auditTime, map, switchMap, takeUntil } from 'rxjs/operators'
 
 import { InputBoolean } from '@theseam/ui-common/core'
-import { InputDirective } from '@theseam/ui-common/form-field'
+import { InputDirective, TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 
 import { TheSeamTelInputDirective } from '../tel-input.directive'
+import { CommonModule } from '@angular/common'
 
 // TODO: Fix focus
 // TODO: Fix disabled
@@ -38,7 +39,14 @@ import { TheSeamTelInputDirective } from '../tel-input.directive'
     useExisting: forwardRef(() => TheSeamTelInputComponent),
     multi: true
   }],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    TheSeamFormFieldModule,
+    TheSeamTelInputDirective,
+  ],
 })
 export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValueAccessor {
   static ngAcceptInputType_required: BooleanInput
@@ -101,7 +109,7 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
 
   /** Event emitted when the "tel" input value changes. */
   // eslint-disable-next-line @angular-eslint/no-output-native
-  @Output() readonly change = new EventEmitter<string>()
+  @Output() readonly change = new EventEmitter<string | undefined | null>()
 
   /**
    * The telInput directive
@@ -175,25 +183,14 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
       takeUntil(this._ngUnsubscribe)
     ).subscribe(v => {
       const value = this._telInputDirective?.getFullNumber()
-      console.log('valueChanges', v, value)
+      // console.log('valueChanges', v, value)
       this.value = value
       if (this._controlValueAccessorChangeFn) {
         this._controlValueAccessorChangeFn(value)
+        this.change.emit(value)
       }
     })
-    console.log('this.control', this._control, this._control.value, this.value)
     this._control.setValue(this.value ?? '')
-    console.log('_inputElementRef', (this._inputElementRef as any))
-    console.log('_inputElementRef', (this._inputElementRef as any)?.value)
-    console.log(this._elementRef.nativeElement.querySelector('input'))
-    console.log(this._elementRef.nativeElement.querySelector('input')?.value)
-  }
-
-  ngAfterViewInit() {
-    console.log('_inputElementRef2', (this._inputElementRef as any))
-    console.log('_inputElementRef2', (this._inputElementRef as any)?.value)
-    console.log(this._elementRef.nativeElement.querySelector('input'))
-    console.log(this._elementRef.nativeElement.querySelector('input')?.value)
   }
 
   /** @ignore */
@@ -207,7 +204,7 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
   // Implemented as part of ControlValueAccessor.
   /** @ignore */
   writeValue(value: any) {
-    console.log('writeValue', value, this._telInputDirective?.getFullNumber(), this._control.value)
+    // console.log('writeValue', value, this._telInputDirective?.getFullNumber(), this._control.value)
     this.value = value
     if (this._control.value !== value) {
       this._control.setValue(value)

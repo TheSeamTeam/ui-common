@@ -10,14 +10,14 @@ import { TheSeamTelInputComponent } from './tel-input/tel-input.component'
 
 @NgModule({
   declarations: [
-    TheSeamTelInputDirective,
-    TheSeamTelInputComponent,
     TheSeamPhoneNumberPipe
   ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    TheSeamFormFieldModule
+    TheSeamFormFieldModule,
+    TheSeamTelInputDirective,
+    TheSeamTelInputComponent,
   ],
   exports: [
     TheSeamTelInputDirective,

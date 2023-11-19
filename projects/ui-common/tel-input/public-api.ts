@@ -7,3 +7,5 @@ export * from './tel-input.directive'
 export * from './tel-input-validator'
 export * from './tel-input.module'
 export * from './phone-number.pipe'
+
+export * from './testing/tel-input.harness'
