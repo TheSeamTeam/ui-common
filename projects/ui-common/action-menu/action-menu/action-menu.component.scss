@@ -1,0 +1,31 @@
+@import '../styles/utilities';
+
+:host {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 100%;
+}
+
+.action-button {
+  flex: 0 0 auto;
+
+  box-shadow: $action-button-box-shadow;
+  font-size: $action-button-font-size;
+  line-height: $action-button-line-height;
+
+  width: $action-button-width;
+  height: $action-button-height;
+
+  padding: $action-button-padding;
+  border-radius: $action-button-border-radius;
+  text-align: $action-button-text-align;
+
+  &::ng-deep {
+    .svg-inline--fa {
+      vertical-align: middle;
+    }
+  }
+}

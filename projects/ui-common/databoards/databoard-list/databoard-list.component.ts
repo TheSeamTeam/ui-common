@@ -75,28 +75,20 @@ export class DataboardListComponent implements OnInit {
   @Input('cardTpl')
   _cardTplInput?: TemplateRef<any> | null
 
-  // TODO: Add `descendants: false` after upgrading to Angular v15
-  // to fix bug with grabbing board template when generic template is absent
-  @ContentChild(DataboardCardTplDirective, { read: TemplateRef })
+  @ContentChild(DataboardCardTplDirective, { read: TemplateRef, descendants: false })
   _cardTplQuery?: TemplateRef<any>
 
   get cardTpl(): TemplateRef<any> | undefined | null {
     return this._cardTplInput || this._cardTplQuery
   }
 
-  // TODO: Add `descendants: false` after upgrading to Angular v15
-  // to fix bug with grabbing board template when generic template is absent
-  @ContentChild(DataboardHeaderTplDirective, { read: TemplateRef })
+  @ContentChild(DataboardHeaderTplDirective, { read: TemplateRef, descendants: false })
   _headerTplQuery?: TemplateRef<any>
 
-  // TODO: Add `descendants: false` after upgrading to Angular v15
-  // to fix bug with grabbing board template when generic template is absent
-  @ContentChild(DataboardEmptyBoardTplDirective, { read: TemplateRef })
+  @ContentChild(DataboardEmptyBoardTplDirective, { read: TemplateRef, descendants: false })
   _emptyBoardTplQuery?: TemplateRef<any>
 
-  // TODO: Add `descendants: false` after upgrading to Angular v15
-  // to fix bug with grabbing board template when generic template is absent
-  @ContentChild(DataboardFooterTplDirective, { read: TemplateRef })
+  @ContentChild(DataboardFooterTplDirective, { read: TemplateRef, descendants: false })
   _footerTplQuery?: TemplateRef<any>
 
   @ContentChildren(DataboardBoardComponent)
@@ -121,9 +113,6 @@ export class DataboardListComponent implements OnInit {
 
         const tba = this._buildBoardConfig(templateBoards)
 
-        console.log('inputBoards', inputBoards)
-        console.log('templateBoards', templateBoards)
-
         inputBoards.forEach(inputBoard => {
           const templateBoard = tba.find(t => t.prop === inputBoard.prop)
           if (templateBoard !== undefined) {
@@ -134,7 +123,6 @@ export class DataboardListComponent implements OnInit {
           }
         })
 
-        console.log('mergeBoards', inputBoards)
         return inputBoards
       })
     )
@@ -166,8 +154,6 @@ export class DataboardListComponent implements OnInit {
     if (cards === null || cards === undefined || cards.length === 0) {
       return boards
     }
-
-    console.log('this._footerTplQuery', this._footerTplQuery)
 
     return boards.map(board => {
       let boardCards = []

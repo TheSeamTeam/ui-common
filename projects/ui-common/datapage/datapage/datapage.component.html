@@ -1,0 +1,46 @@
+<div
+  class="datapage-toggle">
+  <div class="btn-group"
+    seamToggleGroup
+    [selectionToggleable]="false"
+    [value]="pageView$ | async">
+    <ng-container *ngFor="let view of (pageViewOptions$ | async)">
+      <button
+        seamButton
+        [seamToggleGroupOption]="view.value"
+        #opt="seamToggleGroupOption"
+        [class.btn-lightgray]="!opt.selected"
+        [class.btn-primary]="opt.selected"
+        [title]="view.label"
+        (click)="opt.selected=!opt.selected"
+        (click)="setPageView(view.value)"
+        size="sm"
+        [disabled]="view.disabled">
+        <seam-icon [icon]="view.icon" size="1x"></seam-icon>
+      </button>
+    </ng-container>
+  </div>
+</div>
+
+<div class="datapage-body position-relative overflow-hidden" [@page]="animateStatus$ | async">
+  <ng-container [ngSwitch]="pageView$ | async">
+    <div class="table-view h-100 w-100" *ngSwitchCase="tableView">
+      <ng-container *ngIf="datatableTplQuery$ | async as datatableTplQuery">
+        <ng-container [ngTemplateOutlet]="datatableTplQuery"></ng-container>
+      </ng-container>
+    </div>
+    <div class="boards-view h-100 w-100" *ngSwitchCase="boardsView">
+      <ng-container *ngIf="databoardTplQuery$ | async as databoardTplQuery">
+        <ng-container [ngTemplateOutlet]="databoardTplQuery"></ng-container>
+      </ng-container>
+    </div>
+    <div class="default-view h-100 w-100 d-flex align-items-center justify-content-center" *ngSwitchDefault>
+      <ng-container *ngIf="_defaultTplQuery; else defaultTplMessage">
+        <ng-container *ngTemplateOutlet="_defaultTplQuery"></ng-container>
+      </ng-container>
+      <ng-template #defaultTplMessage>
+        {{ defaultViewMessage }}
+      </ng-template>
+    </div>
+  </ng-container>
+</div>

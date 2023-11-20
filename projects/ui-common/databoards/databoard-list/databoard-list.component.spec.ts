@@ -1,25 +1,25 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { DataboardListComponent } from './databoard-list.component';
+import { DataboardListComponent } from './databoard-list.component'
 
 describe('DataboardsComponent', () => {
-  let component: DataboardListComponent;
-  let fixture: ComponentFixture<DataboardListComponent>;
+  let component: DataboardListComponent
+  let fixture: ComponentFixture<DataboardListComponent>
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ DataboardListComponent ]
     })
-    .compileComponents();
-  });
+    .compileComponents()
+  })
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DataboardListComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    fixture = TestBed.createComponent(DataboardListComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+  })
 
   it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+    expect(component).toBeTruthy()
+  })
+})

@@ -8,25 +8,28 @@ import { SeamConfirmDialogService } from '@theseam/ui-common/confirm-dialog'
 import { InputBoolean } from '@theseam/ui-common/core'
 import { MenuComponent } from '@theseam/ui-common/menu'
 
-import { DatatableActionMenuItemComponent } from '../datatable-action-menu-item/datatable-action-menu-item.component'
+import { ActionMenuItemComponent } from '../action-menu-item/action-menu-item.component'
+import { SeamIcon } from '@theseam/ui-common/icon'
+import { OutlineThemeTypes, ThemeTypes } from '@theseam/ui-common/models'
 
-/**
- * @deprecated Use `ActionMenuComponent instead`
- */
 @Component({
-  selector: 'seam-datatable-action-menu',
-  templateUrl: './datatable-action-menu.component.html',
-  styleUrls: ['./datatable-action-menu.component.scss'],
+  selector: 'seam-action-menu',
+  templateUrl: './action-menu.component.html',
+  styleUrls: ['./action-menu.component.scss'],
   exportAs: 'seamDatatableActionMenu'
 })
-export class DatatableActionMenuComponent {
+export class ActionMenuComponent {
   static ngAcceptInputType_isSubMenu: BooleanInput
 
-  readonly faEllipsisH = faEllipsisH
+  @Input() buttonIcon: SeamIcon = faEllipsisH
+
+  @Input() buttonTheme: ThemeTypes | OutlineThemeTypes = 'primary'
+
+  @Input() buttonText = 'Row Actions'
 
   @ViewChild(MenuComponent, { static: true }) menu?: MenuComponent
 
-  @ContentChildren(DatatableActionMenuItemComponent) items?: QueryList<DatatableActionMenuItemComponent>
+  @ContentChildren(ActionMenuItemComponent) items?: QueryList<ActionMenuItemComponent>
 
   /** @ignore */
   _actionMenuPositions: ConnectionPositionPair[] = [
@@ -63,7 +66,7 @@ export class DatatableActionMenuComponent {
     private _router: Router
   ) { }
 
-  activateItem(event: any, item: DatatableActionMenuItemComponent) {
+  activateItem(event: any, item: ActionMenuItemComponent) {
     if (item.confirmDialog) {
       this._confirmDialog.open(item.confirmDialog.message, item.confirmDialog.alert)
         .afterClosed()
@@ -76,7 +79,7 @@ export class DatatableActionMenuComponent {
               // if (win && item.target && item.target.toLowerCase() === '_blank') {
               //   win.opener = null
               // }
-            } else {
+            } else if (item.routerLink) {
               const extras: NavigationExtras = {}
               if (item.queryParams) { extras.queryParams = item.queryParams }
               if (item.fragment) { extras.fragment = item.fragment }

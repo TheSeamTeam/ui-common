@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { DataboardBoardComponent } from './databoard-board.component'
+import { DatapageComponent } from './datapage.component'
 
-describe('DataboardComponent', () => {
-  let component: DataboardBoardComponent
-  let fixture: ComponentFixture<DataboardBoardComponent>
+describe('DatapageComponent', () => {
+  let component: DatapageComponent
+  let fixture: ComponentFixture<DatapageComponent>
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DataboardBoardComponent ]
+      declarations: [ DatapageComponent ]
     })
     .compileComponents()
   })
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DataboardBoardComponent)
+    fixture = TestBed.createComponent(DatapageComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
   })

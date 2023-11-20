@@ -10,8 +10,10 @@
 // make the action menu items look the same as they did before the switch to
 // `seam-menu` component, which has a `min-width` set. This should probably just
 // be removed and allow the `min-width`.
-::ng-deep .seam-datatable-action-menu {
-  min-width: auto !important;
+::ng-deep {
+  .seam-datatable-action-menu, .seam-action-menu {
+    min-width: auto !important;
+  }
 }
 
 ngx-datatable {

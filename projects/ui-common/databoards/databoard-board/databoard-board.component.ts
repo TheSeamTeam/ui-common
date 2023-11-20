@@ -143,7 +143,6 @@ export class DataboardBoardComponent {
   }
 
   private _setBoardConfig(value: DataboardBoardCards) {
-    console.log('_setBoardConfig', value)
     this.prop = value.prop
 
     this._cssClass = this._valueHelper.evalSync(value.cssClass, value)

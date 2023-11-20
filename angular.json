@@ -105,8 +105,18 @@
               },
               {
                 "glob": "**/*.scss",
+                "input": "projects/ui-common/action-menu",
+                "output": "action-menu"
+              },
+              {
+                "glob": "**/*.scss",
                 "input": "breadcrumbs",
                 "output": "breadcrumbs"
+              },
+              {
+                "glob": "**/*.scss",
+                "input": "projects/ui-common/databoards",
+                "output": "databoards"
               },
               {
                 "glob": "**/*.scss",
@@ -213,8 +223,18 @@
               },
               {
                 "glob": "**/*.scss",
+                "input": "projects/ui-common/action-menu",
+                "output": "action-menu"
+              },
+              {
+                "glob": "**/*.scss",
                 "input": "breadcrumbs",
                 "output": "breadcrumbs"
+              },
+              {
+                "glob": "**/*.scss",
+                "input": "projects/ui-common/databoards",
+                "output": "databoards"
               },
               {
                 "glob": "**/*.scss",
@@ -308,8 +328,18 @@
               },
               {
                 "glob": "**/*.scss",
+                "input": "projects/ui-common/action-menu",
+                "output": "action-menu"
+              },
+              {
+                "glob": "**/*.scss",
                 "input": "projects/ui-common/breadcrumbs",
                 "output": "breadcrumbs"
+              },
+              {
+                "glob": "**/*.scss",
+                "input": "projects/ui-common/databoards",
+                "output": "databoards"
               },
               {
                 "glob": "**/*.scss",
@@ -323,7 +353,7 @@
               },
               {
                 "glob": "**/*.scss",
-                "input": "projects/ui-common/widget/nav",
+                "input": "projects/ui-common/framework/nav",
                 "output": "framework/nav"
               },
               {
@@ -333,7 +363,7 @@
               },
               {
                 "glob": "**/*.scss",
-                "input": "projects/ui-common/widget/side-nav",
+                "input": "projects/ui-common/framework/side-nav",
                 "output": "framework/side-nav"
               },
               {
@@ -416,8 +446,18 @@
               },
               {
                 "glob": "**/*.scss",
+                "input": "projects/ui-common/action-menu",
+                "output": "action-menu"
+              },
+              {
+                "glob": "**/*.scss",
                 "input": "breadcrumbs",
                 "output": "breadcrumbs"
+              },
+              {
+                "glob": "**/*.scss",
+                "input": "projects/ui-common/databoards",
+                "output": "databoards"
               },
               {
                 "glob": "**/*.scss",
@@ -431,7 +471,7 @@
               },
               {
                 "glob": "**/*.scss",
-                "input": "projects/ui-common/widget/nav",
+                "input": "projects/ui-common/framework/nav",
                 "output": "framework/nav"
               },
               {
@@ -441,7 +481,7 @@
               },
               {
                 "glob": "**/*.scss",
-                "input": "projects/ui-common/widget/side-nav",
+                "input": "projects/ui-common/framework/side-nav",
                 "output": "framework/side-nav"
               },
               {
