@@ -1,10 +1,9 @@
-import { Meta, StoryObj, moduleMetadata } from '@storybook/angular'
+import { Meta, StoryObj } from '@storybook/angular'
 
 import { expectFn, getHarness } from '@theseam/ui-common/testing'
 import { ArgsTplOptions, argsToTpl } from '@theseam/ui-common/story-helpers'
 
 import { TheSeamCheckboxComponent } from './checkbox.component'
-import { TheSeamCheckboxModule } from './checkbox.module'
 import { TheSeamCheckboxHarness } from './testing/checkbox.harness'
 
 interface ExtraArgs {
@@ -16,13 +15,6 @@ const meta: Meta<StoryComponentType> = {
   title: 'Checkbox/Components',
   tags: [ 'autodocs' ],
   component: TheSeamCheckboxComponent,
-  decorators: [
-    moduleMetadata({
-      imports: [
-        TheSeamCheckboxModule
-      ]
-    })
-  ],
   render: args => ({
     props: args,
     template: `<seam-checkbox ${argsToTpl()}>{{ngContent}}</seam-checkbox>`
@@ -93,6 +85,9 @@ export const Disabled: Story = {
   play: async ({ canvasElement, fixture }) => {
     const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
     await expectFn(await checkboxHarness.isDisabled()).toBe(true)
+    await expectFn(await checkboxHarness.isChecked()).toBe(false)
+    await checkboxHarness.click()
+    await expectFn(await checkboxHarness.isChecked()).toBe(false)
   },
 }
 

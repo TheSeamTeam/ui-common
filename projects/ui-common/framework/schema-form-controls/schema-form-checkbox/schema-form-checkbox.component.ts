@@ -4,7 +4,7 @@ import { AbstractControl, ReactiveFormsModule } from '@angular/forms'
 
 import { JsonSchemaFormModule, JsonSchemaFormService } from '@ajsf/core'
 import { TheSeamSchemaFormControlWidget, TheSeamSchemaFormWidgetLayoutNodeOptions } from '@theseam/ui-common/framework'
-import { TheSeamCheckboxModule } from '@theseam/ui-common/checkbox'
+import { TheSeamCheckboxComponent } from '@theseam/ui-common/checkbox'
 import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 
 @Component({
@@ -17,7 +17,7 @@ import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
     ReactiveFormsModule,
     JsonSchemaFormModule,
     TheSeamFormFieldModule,
-    TheSeamCheckboxModule,
+    TheSeamCheckboxComponent,
   ],
 })
 export class TheSeamSchemaFormCheckboxComponent implements OnInit, TheSeamSchemaFormControlWidget {
