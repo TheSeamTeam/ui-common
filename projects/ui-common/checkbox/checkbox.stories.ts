@@ -1,97 +1,129 @@
-import { moduleMetadata, Story } from '@storybook/angular'
-
-import { BrowserModule } from '@angular/platform-browser'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { Meta, StoryObj, moduleMetadata } from '@storybook/angular'
 
 import { expectFn, getHarness } from '@theseam/ui-common/testing'
+import { ArgsTplOptions, argsToTpl } from '@theseam/ui-common/story-helpers'
 
-import { ComponentHarness } from '@angular/cdk/testing'
 import { TheSeamCheckboxComponent } from './checkbox.component'
 import { TheSeamCheckboxModule } from './checkbox.module'
 import { TheSeamCheckboxHarness } from './testing/checkbox.harness'
 
-export default {
+interface ExtraArgs {
+  ngContent: string
+}
+type StoryComponentType = TheSeamCheckboxComponent & ExtraArgs
+
+const meta: Meta<StoryComponentType> = {
   title: 'Checkbox/Components',
+  tags: [ 'autodocs' ],
   component: TheSeamCheckboxComponent,
   decorators: [
     moduleMetadata({
       imports: [
-        BrowserAnimationsModule,
-        BrowserModule,
         TheSeamCheckboxModule
       ]
     })
   ],
+  render: args => ({
+    props: args,
+    template: `<seam-checkbox ${argsToTpl()}>{{ngContent}}</seam-checkbox>`
+  }),
   parameters: {
     docs: {
       iframeHeight: '40px',
-    }
-  }
+    },
+    argsToTplOptions: {
+      exclude: [
+        'ngContent',
+      ],
+    } satisfies ArgsTplOptions,
+  },
 }
 
-export const Basic: Story<TheSeamCheckboxComponent> = ({ ...args }) => ({
-  template: `<seam-checkbox>Checkbox</seam-checkbox>`
-})
-Basic.play = async ({ canvasElement, fixture }) => {
-  const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
-  await expectFn(await checkboxHarness.isChecked()).toBe(false)
+export default meta
+type Story = StoryObj<StoryComponentType>
+
+export const Basic: Story = {
+  args: {
+    ngContent: 'Checkbox',
+  },
+  play: async ({ canvasElement, fixture }) => {
+    const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
+    await expectFn(await checkboxHarness.isChecked()).toBe(false)
+  },
 }
 
-export const Checked: Story<TheSeamCheckboxComponent> = ({ ...args }) => ({
-  template: `<seam-checkbox [checked]="true">Initially checked.</seam-checkbox>`
-})
-Checked.play = async ({ canvasElement, fixture }) => {
-  const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
-  await expectFn(await checkboxHarness.isChecked()).toBe(true)
+export const Checked: Story = {
+  args: {
+    ngContent: 'Initially checked.',
+    checked: true,
+  },
+  play: async ({ canvasElement, fixture }) => {
+    const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
+    await expectFn(await checkboxHarness.isChecked()).toBe(true)
+  },
 }
 
-export const Unchecked: Story<TheSeamCheckboxComponent> = ({ ...args }) => ({
-  template: `<seam-checkbox [checked]="false">Initially unchecked.</seam-checkbox>`
-})
-Unchecked.play = async ({ canvasElement, fixture }) => {
-  const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
-  await expectFn(await checkboxHarness.isChecked()).toBe(false)
+export const Unchecked: Story = {
+  args: {
+    ngContent: 'Initially unchecked.',
+    checked: false,
+  },
+  play: async ({ canvasElement, fixture }) => {
+    const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
+    await expectFn(await checkboxHarness.isChecked()).toBe(false)
+  },
 }
 
-export const Indeterminate: Story<TheSeamCheckboxComponent> = ({ ...args }) => ({
-  template: `<seam-checkbox [indeterminate]="true">Initially indeterminate.</seam-checkbox>`
-})
-Indeterminate.play = async ({ canvasElement, fixture }) => {
-  const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
-  await expectFn(await checkboxHarness.isIndeterminate()).toBe(true)
+export const Indeterminate: Story = {
+  args: {
+    ngContent: 'Indeterminate.',
+    indeterminate: true,
+  },
+  play: async ({ canvasElement, fixture }) => {
+    const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
+    await expectFn(await checkboxHarness.isIndeterminate()).toBe(true)
+  },
 }
 
-export const Disabled: Story<TheSeamCheckboxComponent> = ({ ...args }) => ({
-  template: `<seam-checkbox [disabled]="true">Example.</seam-checkbox>`
-})
-Disabled.play = async ({ canvasElement, fixture }) => {
-  const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
-  await expectFn(await checkboxHarness.isDisabled()).toBe(true)
+export const Disabled: Story = {
+  args: {
+    ngContent: 'Disabled.',
+    disabled: true,
+  },
+  play: async ({ canvasElement, fixture }) => {
+    const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
+    await expectFn(await checkboxHarness.isDisabled()).toBe(true)
+  },
 }
 
-export const ExampleToggling: Story<TheSeamCheckboxComponent> = ({ ...args }) => ({
-  template: `<seam-checkbox>Toggling example.</seam-checkbox>`
-})
-ExampleToggling.play = async ({ canvasElement, fixture }) => {
-  const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
-  await expectFn(await checkboxHarness.isChecked()).toBe(false)
-  await checkboxHarness.click()
-  await expectFn(await checkboxHarness.isChecked()).toBe(true)
-  await checkboxHarness.click()
-  await expectFn(await checkboxHarness.isChecked()).toBe(false)
+export const ExampleToggling: Story = {
+  args: {
+    ngContent: 'Toggle example.',
+  },
+  play: async ({ canvasElement, fixture }) => {
+    const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
+    await expectFn(await checkboxHarness.isChecked()).toBe(false)
+    await checkboxHarness.click()
+    await expectFn(await checkboxHarness.isChecked()).toBe(true)
+    await checkboxHarness.click()
+    await expectFn(await checkboxHarness.isChecked()).toBe(false)
+  },
 }
 
-export const ExampleIndeterminateToggle: Story<TheSeamCheckboxComponent> = ({ ...args }) => ({
-  template: `<seam-checkbox [indeterminate]="true">Indeterminate toggle example.</seam-checkbox>`
-})
-ExampleIndeterminateToggle.play = async ({ canvasElement, fixture }) => {
-  const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
-  await expectFn(await checkboxHarness.isChecked()).toBe(false)
-  await expectFn(await checkboxHarness.isIndeterminate()).toBe(true)
-  await checkboxHarness.click()
-  await expectFn(await checkboxHarness.isChecked()).toBe(true)
-  await expectFn(await checkboxHarness.isIndeterminate()).toBe(false)
-  await checkboxHarness.click()
-  await expectFn(await checkboxHarness.isChecked()).toBe(false)
-  await expectFn(await checkboxHarness.isIndeterminate()).toBe(false)
+export const ExampleIndeterminateToggle: Story = {
+  args: {
+    ngContent: 'Indeterminate toggle example.',
+    indeterminate: true,
+  },
+  play: async ({ canvasElement, fixture }) => {
+    const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
+    await expectFn(await checkboxHarness.isChecked()).toBe(false)
+    await expectFn(await checkboxHarness.isIndeterminate()).toBe(true)
+    await checkboxHarness.click()
+    await expectFn(await checkboxHarness.isChecked()).toBe(true)
+    await expectFn(await checkboxHarness.isIndeterminate()).toBe(false)
+    await checkboxHarness.click()
+    await expectFn(await checkboxHarness.isChecked()).toBe(false)
+    await expectFn(await checkboxHarness.isIndeterminate()).toBe(false)
+  },
 }

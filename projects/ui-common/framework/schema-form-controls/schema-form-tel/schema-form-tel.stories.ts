@@ -99,6 +99,6 @@ export const Required: Story = {
     await expect(await sfTelHarness.getValue()).toBe('+1 901-555-5556')
     const sfFormHarness = await getHarness(JsonSchemaFormHarness, { canvasElement, fixture })
     await sfFormHarness.submit()
-    await expect(args.onSubmit).toHaveBeenCalledWith({ TelNumber: '+1 901-555-5556' })
+    await expect(args.onSubmit).toHaveBeenCalledWith({ TelNumber: '+19015555556' })
   },
 }

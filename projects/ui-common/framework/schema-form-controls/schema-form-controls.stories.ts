@@ -6,6 +6,7 @@ import { provideAnimations } from '@angular/platform-browser/animations'
 import { JsonSchemaFormComponent } from '@ajsf/core'
 
 import { TheSeamSchemaFormModule } from '../schema-form/schema-form.module'
+import { Component } from '@angular/core'
 
 const meta: Meta<JsonSchemaFormComponent> = {
   title: 'Framework/Schema Form Controls/Examples',
@@ -208,6 +209,66 @@ export const Example5: Story = {
 }
 
 export const Group: Story = {
+  args: {
+    options: {
+      addSubmit: true, // Add a submit button if layout does not have one
+      debug: false, // Don't show inline debugging information
+    },
+    schema: {
+      'type': 'object',
+      '$schema': 'http://json-schema.org/draft-07/schema#',
+      'properties': {
+        'SelfAssessmentSummary': {
+          'type': 'object',
+          'properties': {
+            'CropYear': {
+              'type': 'number',
+              'title': 'Crop Year',
+              'enum': [ 2020 ]
+            },
+            'Region': {
+              'type': 'string',
+              'title': 'Region',
+              'enum': [ 'South West', 'North West', 'South East', 'North East' ]
+            },
+            'IsIrrigated': {
+              'type': 'boolean',
+              'title': 'Irrigated',
+              'default': false
+            }
+          },
+          'required': [
+            'CropYear',
+            'Region',
+            'IsIrrigated'
+          ]
+        }
+      }
+    },
+    layout: [
+      { 'dataPointer': '/SelfAssessmentSummary/CropYear' },
+      {
+        'type': 'section',
+        'title': 'Section 1',
+        'items': [
+          { 'dataPointer': '/SelfAssessmentSummary/Region' },
+          { 'dataPointer': '/SelfAssessmentSummary/IsIrrigated' },
+        ],
+      },
+    ],
+  },
+}
+
+@Component({
+  selector: 'story-layout-tpl-1',
+  template: `Tpl 1`,
+  standalone: true,
+})
+class LayoutTpl1Component {
+
+}
+
+export const Layout: Story = {
   args: {
     options: {
       addSubmit: true, // Add a submit button if layout does not have one

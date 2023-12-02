@@ -16,7 +16,7 @@
     "test:generate-output": "jest --json --config=jest.config.js --outputFile=addon-jest.testresults.json --passWithNoTests",
     "test:watch": "jest --watch",
     "test:ci": "jest -ci --runInBand",
-    "test-storybook": "test-storybook",
+    "test-storybook": "test-storybook --url http://localhost:6007",
     "lint": "ng run ui-common:lint",
     "lint:log-timing": "cross-env TIMING=all eslint -c=./projects/ui-common/.eslintrc.json ./projects/ui-common/**/* --ext .ts .html > eslint-out.log",
     "e2e": "ng e2e",

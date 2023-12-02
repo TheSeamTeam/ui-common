@@ -16,6 +16,7 @@ import { TheSeamMenuHarness } from './testing/menu.harness'
 
 const meta: Meta<MenuComponent> = {
   title: 'Menu/Components',
+  tags: [ 'autodocs' ],
   component: MenuComponent,
   decorators: [
     applicationConfig({
@@ -41,7 +42,7 @@ const meta: Meta<MenuComponent> = {
       iframeHeight: '400px',
     },
   },
-} as Meta
+}
 
 export default meta
 type Story = StoryObj<MenuComponent>
