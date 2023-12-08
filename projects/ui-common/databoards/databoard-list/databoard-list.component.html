@@ -1,13 +1,20 @@
+<ng-container *ngIf="displayMenuBarTop">
+  <ng-container *ngTemplateOutlet="menuBar"></ng-container>
+</ng-container>
+
 <div class="databoard-list" seamOverlayScrollbar [overlayScrollbarEnabled]="allowHorizontalScroll">
   <div class="h-100 d-flex flex-column align-items-stretch">
     <div
       class="databoards-wrapper"
       [class]="horizontalLayoutClass"
       cdkDropListGroup>
-      <ng-container *ngFor="let board of boardsAndCards$ | async">
+      <ng-container *ngFor="let board of boardsAndCards$ | async; trackBy: trackBoard">
         <seam-databoard-board
           [boardAndCards]="board"
+          [boardWidth]="boardWidth"
+          [pageLength]="pageLength"
           [verticalLayoutBehavior]="verticalLayoutBehavior"
+          [trackCard]="trackCard"
           (cardDrop)="_cardDrop($event)"></seam-databoard-board>
       </ng-container>
       <div *ngIf="allowVerticalScroll" class="scroll-spacer p-1"></div>
@@ -15,3 +22,11 @@
     <div *ngIf="allowHorizontalScroll" class="scroll-spacer p-1"></div>
   </div>
 </div>
+
+<ng-container *ngIf="displayMenuBarBottom">
+  <ng-container *ngTemplateOutlet="menuBar"></ng-container>
+</ng-container>
+
+<ng-template #menuBar>
+  <ng-content select="seam-data-filter-menu-bar"></ng-content>
+</ng-template>

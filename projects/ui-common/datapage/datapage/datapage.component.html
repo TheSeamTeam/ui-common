@@ -26,12 +26,12 @@
   <ng-container [ngSwitch]="pageView$ | async">
     <div class="table-view h-100 w-100" *ngSwitchCase="tableView">
       <ng-container *ngIf="datatableTplQuery$ | async as datatableTplQuery">
-        <ng-container [ngTemplateOutlet]="datatableTplQuery"></ng-container>
+        <ng-container *ngTemplateOutlet="datatableTplQuery"></ng-container>
       </ng-container>
     </div>
     <div class="boards-view h-100 w-100" *ngSwitchCase="boardsView">
       <ng-container *ngIf="databoardTplQuery$ | async as databoardTplQuery">
-        <ng-container [ngTemplateOutlet]="databoardTplQuery"></ng-container>
+        <ng-container *ngTemplateOutlet="databoardTplQuery"></ng-container>
       </ng-container>
     </div>
     <div class="default-view h-100 w-100 d-flex align-items-center justify-content-center" *ngSwitchDefault>

@@ -44,6 +44,7 @@ import { DatatableCellTplDirective } from './directives/datatable-cell-tpl.direc
 import { DatatableFilterDirective } from './directives/datatable-filter.directive'
 import { DatatableRowActionItemDirective } from './directives/datatable-row-action-item.directive'
 import { TheSeamDatatableScrollbarHelperService } from './services/datatable-scrollbar-helper.service'
+import { TheSeamActionMenuModule } from '@theseam/ui-common/action-menu'
 
 @NgModule({
     declarations: [
@@ -89,7 +90,8 @@ import { TheSeamDatatableScrollbarHelperService } from './services/datatable-scr
         TheSeamCheckboxModule,
         TheSeamFormFieldModule,
         ReactiveFormsModule,
-        TheSeamTableCellTypeModule
+        TheSeamTableCellTypeModule,
+        TheSeamActionMenuModule
     ],
     exports: [
         DatatableComponent,

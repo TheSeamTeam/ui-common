@@ -10,7 +10,7 @@ import { DatapageDefaultTplDirective } from '../directives/datapage-default-tpl.
 
 const TABLE_SLIDE = `${DatapagePageView.Table}_${DatapageAnimation.Slide}`
 const BOARDS_SLIDE = `${DatapagePageView.Boards}_${DatapageAnimation.Slide}`
-const SLIDE_DURATION = '200ms'
+const SLIDE_DURATION = '350ms'
 
 const TABLE_FADE = `${DatapagePageView.Table}_${DatapageAnimation.Fade}`
 const BOARDS_FADE = `${DatapagePageView.Boards}_${DatapageAnimation.Fade}`

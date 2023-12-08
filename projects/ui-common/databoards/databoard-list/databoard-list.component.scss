@@ -1,11 +1,12 @@
 @import '../styles/utilities';
 
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
 }
 
 .databoard-list {
-  height: 100%;
+  flex-grow: 1;
 
   min-height: $seam-databoard-list-min-height;
 }

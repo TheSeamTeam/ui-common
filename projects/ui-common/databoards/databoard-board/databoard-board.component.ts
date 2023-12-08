@@ -13,6 +13,8 @@ import { DataboardFooterTplDirective } from '../directives/databoard-footer-tpl.
 import { DataboardCardTplDirective } from '../directives/databoard-card-tpl.directive'
 import { ThemeTypes } from '@theseam/ui-common/models'
 import { DataboardBoardData, DataboardConfirmMessage, DataboardDragPredicate, DataboardDynamicConfirmMessage } from '../models/databoard-board'
+import { InputNumber } from '@theseam/ui-common/core'
+import { DataFilterSortItem } from '@theseam/ui-common/data-filters'
 
 @Component({
   selector: 'seam-databoard-board',
@@ -36,6 +38,31 @@ export class DataboardBoardComponent {
   }
   private _boardAndCards: DataboardBoardCards | undefined
 
+  @Input() sorts: DataFilterSortItem[] | undefined
+
+  @Input()
+  get trackCard(): TrackByFunction<DataboardCard> {
+    return this._trackCard
+  }
+  set trackCard(value: TrackByFunction<DataboardCard> | undefined) {
+    if (notNullOrUndefined(value)) {
+      this._trackCard = value
+    }
+  }
+  private _trackCard: TrackByFunction<DataboardCard> = (index, item) => item
+
+  /**
+   * Inherits from DataboardListComponent, which sets the width for all boards in the list.
+   * Can be overridden via the `DataboardBoard` config object.
+   */
+  @Input() @InputNumber() boardWidth: number | undefined
+
+  /**
+   * Inherits from DataboardListComponent, which sets the page length for all boards in the list.
+   * Can be overridden via the `DataboardBoard` config object.
+   */
+  @Input() @InputNumber() pageLength: number | undefined
+
   /**
    * Inherits from DataboardListComponent. When set to `list-scroll`, the vertical scrollbar
    * will be disabled within the databoard. When set to `board-scroll` (the default), the
@@ -47,6 +74,24 @@ export class DataboardBoardComponent {
   }
 
   _cssClass: string | undefined
+  _width: number | undefined
+  get boardStyle(): string | undefined {
+    return notNullOrUndefined(this._width)
+      ? `width: ${this._width}px;`
+      : notNullOrUndefined(this.boardWidth)
+      ? `width: ${this.boardWidth}px;`
+      : undefined
+  }
+
+  _pageLength: number | undefined
+  // TODO: implement paging
+  get mergedPageLength(): number | undefined {
+    return notNullOrUndefined(this._pageLength)
+      ? this._pageLength
+      : notNullOrUndefined(this.pageLength)
+      ? this.pageLength
+      : undefined
+  }
 
   _headerTpl: TemplateRef<any> | undefined | null
   _headerText: string | undefined
@@ -54,7 +99,6 @@ export class DataboardBoardComponent {
 
   _cardTpl: TemplateRef<any> | undefined | null
   _cards: DataboardCard[] | undefined | null
-  _trackBy: TrackByFunction<DataboardCard> = (index, item) => item
 
   _emptyTpl: TemplateRef<any> | undefined | null
   _emptyText = 'No records available.'
@@ -104,7 +148,7 @@ export class DataboardBoardComponent {
       headerText: this._headerText,
       emptyText: this._emptyText,
       footerText: this._footerText,
-    }
+    } as DataboardBoardData
   }
 
   get cardCount(): number {
@@ -146,6 +190,10 @@ export class DataboardBoardComponent {
     this.prop = value.prop
 
     this._cssClass = this._valueHelper.evalSync(value.cssClass, value)
+
+    this._width = this._valueHelper.evalSync(value.width, value)
+
+    this._pageLength = this._valueHelper.evalSync(value.pageLength, value)
 
     this._headerTpl = value.headerTpl
     this._headerText = this._valueHelper.evalSync(value.headerText, value)

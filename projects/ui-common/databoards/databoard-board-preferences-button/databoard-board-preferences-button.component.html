@@ -1,0 +1,31 @@
+<ng-template #boardPrefsTpl>
+  <seam-databoard-board-preferences></seam-databoard-board-preferences>
+</ng-template>
+
+<seam-menu #menu
+  menuClass="list-group py-0 border-0 seam-datatable-action-menu"
+  animationType="fade">
+  <button seamMenuItem
+    type="button"
+    class="list-group-item list-group-item-action py-1"
+    [seamPopover]="boardPrefsTpl">
+    Show/Hide Boards
+  </button>
+
+  <button seamMenuItem
+    type="button"
+    class="list-group-item list-group-item-action py-1"
+    (click)="_resetBoards($event)">
+    Reset Boards
+  </button>
+</seam-menu>
+
+<button type="button" class="btn btn-lightgray btn-sm"
+  [seamMenuToggle]="menu"
+  [positions]="_actionMenuPositions || []"
+  style="padding-left: 10px; padding-right: 10px;"
+  title="Board Preferences">
+  <seam-icon [icon]="icon"></seam-icon>
+  <span class="sr-only">Board Preferences</span>
+</button>
+

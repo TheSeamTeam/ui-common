@@ -45,6 +45,7 @@ import {
 import { TheSeamDatatableModule } from '../datatable.module'
 import { TheSeamDatatableHarness } from '../testing'
 import { DatatableComponent } from './datatable.component'
+import { TheSeamActionMenuModule } from '@theseam/ui-common/action-menu'
 
 export default {
   title: 'Datatable/Components',
@@ -61,6 +62,7 @@ export default {
         // RouterModule.forRoot([], { useHash: true }),
         TheSeamDatatableModule,
         TheSeamTableCellTypesModule,
+        TheSeamActionMenuModule
       ],
     }),
     componentWrapperDecorator(story => `<div class="vh-100 vw-100">${story}</div>`),
@@ -209,18 +211,18 @@ export const ActionMenu = (args: any) => ({
       [rows]="__hack.rows"
       [actionItemColumnPosition]="__hack.actionItemColumnPosition">
       <ng-template seamDatatableRowActionItem let-row>
-        <seam-datatable-action-menu>
-          <seam-datatable-action-menu-item label="Action One"></seam-datatable-action-menu-item>
-          <seam-datatable-action-menu-item label="Action Two"></seam-datatable-action-menu-item>
-          <seam-datatable-action-menu-item label="Action Three" [subMenu]="subMenuOne"></seam-datatable-action-menu-item>
-          <seam-datatable-action-menu-item label="Action Four"></seam-datatable-action-menu-item>
-        </seam-datatable-action-menu>
+        <seam-action-menu>
+          <seam-action-menu-item label="Action One"></seam-action-menu-item>
+          <seam-action-menu-item label="Action Two"></seam-action-menu-item>
+          <seam-action-menu-item label="Action Three" [subMenu]="subMenuOne"></seam-action-menu-item>
+          <seam-action-menu-item label="Action Four"></seam-action-menu-item>
+        </seam-action-menu>
 
-        <seam-datatable-action-menu isSubMenu="true" #subMenuOne>
-          <seam-datatable-action-menu-item label="Action One"></seam-datatable-action-menu-item>
-          <seam-datatable-action-menu-item label="Action Two"></seam-datatable-action-menu-item>
-          <seam-datatable-action-menu-item label="Action Three"></seam-datatable-action-menu-item>
-        </seam-datatable-action-menu>
+        <seam-action-menu isSubMenu="true" #subMenuOne>
+          <seam-action-menu-item label="Action One"></seam-action-menu-item>
+          <seam-action-menu-item label="Action Two"></seam-action-menu-item>
+          <seam-action-menu-item label="Action Three"></seam-action-menu-item>
+        </seam-action-menu>
       </ng-template>
     </seam-datatable>`,
 })

@@ -12,6 +12,10 @@ import { ExportersDataEvaluator, JexlEvaluator, THESEAM_DYNAMIC_VALUE_EVALUATOR 
 import { TheSeamDatatableColumn, TheSeamDatatableModule } from '@theseam/ui-common/datatable'
 import { TheSeamActionMenuModule } from '@theseam/ui-common/action-menu'
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
+import { TheSeamDataFiltersModule } from '@theseam/ui-common/data-filters'
+import { importProvidersFrom } from '@angular/core'
+import { StoryToastrService } from '@theseam/ui-common/story-helpers'
+import { ToastrModule, ToastrService } from 'ngx-toastr'
 
 const actionButtonIcon = faEllipsisV
 
@@ -342,11 +346,13 @@ export default {
         TheSeamDataboardModule,
         TheSeamDatatableModule,
         TheSeamButtonsModule,
-        TheSeamActionMenuModule
+        TheSeamActionMenuModule,
+        TheSeamDataFiltersModule
       ],
       providers: [
         { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
         { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: ExportersDataEvaluator, multi: true },
+        { provide: ToastrService, useClass: StoryToastrService }
       ]
     }),
     componentWrapperDecorator(story => `<div class="vh-100 vw-100 p-2">${story}</div>`)
@@ -360,6 +366,13 @@ export default {
 } as Meta
 
 export const Simple: Story = args => ({
+  applicationConfig: {
+    providers: [
+      importProvidersFrom(
+        ToastrModule.forRoot()
+      )
+    ]
+  },
   props: {
     __hack: { ...args },
     actionButtonIcon,
@@ -389,29 +402,59 @@ export const Simple: Story = args => ({
       if (arg) {
         console.log('log', arg)
       }
-    }
+    },
+    filterButtons: [
+      { name: 'All', value: '' },
+      { name: 'Ungraded', value: 'ungraded' },
+      { name: 'MEntry', value: 'mEntry' },
+      { name: 'Review', value: 'review' },
+      { name: 'Pending Finalize', value: 'pendingFinalize' },
+      { name: 'Finalize Failed', value: 'finalizeFailed' },
+      { name: 'Pending EOD', value: 'pendingEOD' },
+      { name: 'Transmit', value: 'transmit' },
+    ],
   },
   template: `
-    <seam-datapage [enableDefaultView]="true">
+    <seam-datapage [enableDefaultView]="true" pageAnimation="slide">
       <ng-template seamDatapageDatatableTpl>
         <seam-datatable
           class="w-100 h-100"
           [columns]="__hack.columns"
           [rows]="__hack.items">
 
+          <seam-datatable-menu-bar>
+            <seam-datatable-menu-bar-row class="pb-2">
+            <seam-datatable-menu-bar-column-left>
+              <seam-data-filter-search seamDatatableFilter></seam-data-filter-search>
+            </seam-datatable-menu-bar-column-left>
+            <seam-datatable-menu-bar-column-center></seam-datatable-menu-bar-column-center>
+            <seam-datatable-menu-bar-column-right>
+              <seam-datatable-export-button [exporters]="exporters"></seam-datatable-export-button>
+              <seam-datatable-column-preferences-button class="ml-1"></seam-datatable-column-preferences-button>
+            </seam-datatable-menu-bar-column-right>
+            </seam-datatable-menu-bar-row>
+
+            <seam-datatable-menu-bar-row>
+              <seam-datatable-menu-bar-column-left></seam-datatable-menu-bar-column-left>
+              <seam-datatable-menu-bar-column-center>
+                <seam-data-filter-toggle-buttons seamDatatableFilter
+                  [buttons]="filterButtons"
+                  [multiple]="false"
+                  [selectionToggleable]="false"
+                  [value]="defaultFilter"
+                  [properties]="['status']">
+                </seam-data-filter-toggle-buttons>
+              </seam-datatable-menu-bar-column-center>
+              <seam-datatable-menu-bar-column-right></seam-datatable-menu-bar-column-right>
+            </seam-datatable-menu-bar-row>
+          </seam-datatable-menu-bar>
+
           <ng-template seamDatatableRowActionItem let-item>
-            <!-- Very silly workaround to rendering issue -->
+            <!-- wrapping <span> element is a very silly workaround to rendering issue -->
             <span>
               <ng-container *ngTemplateOutlet="actionMenu; context: { $implicit: item }"></ng-container>
             </span>
           </ng-template>
-
-          <seam-datatable-column name="Color" prop="color">
-            <ng-template seamDatatableCellTpl let-value="value">
-              <span *ngIf="value === 'blue'; else notBlue" style="color: blue;">{{ value }}</span>
-              <ng-template #notBlue>{{ value }}</ng-template>
-            </ng-template>
-          </seam-datatable-column>
         </seam-datatable>
       </ng-template>
 
@@ -425,13 +468,22 @@ export const Simple: Story = args => ({
           [boards]="__hack.boards"
           [cards]="__hack.items">
 
+          <seam-data-filter-menu-bar class="ml-1 mb-1">
+            <seam-data-filter-menu-bar-row>
+              <seam-data-filter-menu-bar-column-left>
+                <seam-data-filter-search seamDataFilter></seam-data-filter-search>
+              </seam-data-filter-menu-bar-column-left>
+              <seam-data-filter-menu-bar-column-right></seam-data-filter-menu-bar-column-right>
+            </seam-data-filter-menu-bar-row>
+          </seam-data-filter-menu-bar>
+
           <ng-template seamDataboardHeaderTpl let-board>
             <div class="d-flex align-items-center justify-content-between">
               <div>{{ board.headerText }}</div>
               <div
                 class="badge badge-pill font-weight-normal shadow-sm"
                 [class]="getBoardBadgeClass(board.prop)"
-                style="padding-top: 6px; padding-bottom: 6px;">{{ board.cardCount }} loads</div>
+                style="padding-top: 6px; padding-bottom: 6px;">{{ board.cardCount }} load{{ board.cardCount == 1 ? '' : 's' }}</div>
             </div>
           </ng-template>
 

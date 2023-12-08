@@ -4,12 +4,17 @@ import { CdkDrag, CdkDropList } from '@angular/cdk/drag-drop'
 
 import { DataboardCard } from './databoard-card'
 import { DataboardBoardCards } from './databoard-board-cards'
+import { DataFilterSortItem } from '@theseam/ui-common/data-filters'
 
 export interface DataboardBoard {
 
   prop?: string
 
   cssClass?: DynamicValue<string>
+
+  width?: DynamicValue<number>
+
+  pageLength?: DynamicValue<number>
 
   headerTpl?: any
 
@@ -81,6 +86,8 @@ export interface DataboardBoard {
 
   confirmReorderMessage?: DataboardDynamicConfirmMessage
 
+  comparator?: DataboardComparator
+
   // TODO: are these necessary? Don't want to conflict with add attributes
   /**
    * Function that takes a card record and
@@ -95,11 +102,19 @@ export interface DataboardBoard {
 
   // confirmRemoveMessage?: DynamicValue<string>
 
+  /**
+   * Boolean set by users through the board preferences UI.
+   */
+  hidden?: boolean
+
+  sorts?: DataFilterSortItem[] | null
 }
 
 export type DataboardDragPredicate = (drag: CdkDrag<DataboardCard>, targetList: CdkDropList<DataboardBoardCards>) => boolean
 
 export type DataboardPredicate = (card: DataboardCard, board: DataboardBoard) => boolean
+
+export type DataboardComparator = (value: any, card: any, index: number) => -1 | 0 | 1
 
 // export type DataboardAction = (x: any) => void
 
@@ -116,7 +131,7 @@ export interface DataboardConfirmMessage {
 }
 
 export interface DataboardBoardData {
-  prop: string | undefined
+  prop: string
 
   cardCount: number
 

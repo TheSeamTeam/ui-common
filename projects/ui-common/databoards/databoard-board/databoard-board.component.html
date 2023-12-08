@@ -1,4 +1,4 @@
-<div class="databoards-board" [class]="_cssClass">
+<div class="databoards-board" [class]="_cssClass" [style]="boardStyle">
 
   <div
     class="databoards-board__header"
@@ -24,7 +24,7 @@
       [cdkDropListSortingDisabled]="!_reorderable"
       [cdkDropListEnterPredicate]="_addPredicate">
       <ng-container *ngIf="_cards?.length; else emptyBoardTpl">
-        <ng-container *ngFor="let card of _cards; trackBy: _trackBy">
+        <ng-container *ngFor="let card of _cards; trackBy: trackCard">
           <seam-databoard-card
             [data]="card"
             [cardTpl]="_cardTpl"></seam-databoard-card>

@@ -13,6 +13,7 @@ import { TheSeamDatatableModule } from '@theseam/ui-common/datatable'
 import { ExportersDataEvaluator, JexlEvaluator, THESEAM_DYNAMIC_VALUE_EVALUATOR } from '@theseam/ui-common/dynamic'
 import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
 import { TheSeamActionMenuModule } from '@theseam/ui-common/action-menu'
+import { TheSeamDataFiltersModule } from '@theseam/ui-common/data-filters'
 
 const boardAddPredicate = (drag: CdkDrag<DataboardCard>, targetList: CdkDropList<DataboardBoardCards>) => {
   const card = drag.data
@@ -291,7 +292,7 @@ const cards: DataboardCard[] = [
 ]
 
 export default {
-  title: 'Databoards/Components/Databoard List',
+  title: 'Databoards/Components',
   component: DataboardListComponent,
   decorators: [
     moduleMetadata({
@@ -302,7 +303,8 @@ export default {
         TheSeamTableCellTypesModule,
         TheSeamDatatableModule,
         TheSeamButtonsModule,
-        TheSeamActionMenuModule
+        TheSeamActionMenuModule,
+        TheSeamDataFiltersModule
       ],
       providers: [
         { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
@@ -397,6 +399,130 @@ export const Simple: Story = args => ({
             </seam-databoard-list>`
 })
 Simple.args = {
+  boards,
+  cards
+}
+
+export const Filters: Story = args => ({
+  props: {
+    __hack: { ...args },
+    updateStatus(event: CdkDragDrop<DataboardBoardCards>) {
+      console.log(`updateStatus: update load ${event.item.data.loadId} to ${event.container.data.prop}`)
+    },
+    openViewModal(card: DataboardCard) {
+      console.log('open view modal', card)
+    },
+    openEditModal(card: DataboardCard) {
+      console.log('open edit modal', card)
+    },
+    getBoardBadgeClass(prop: string) {
+      switch (prop) {
+        case 'mEntry':
+        case 'pendingFinalize':
+        case 'pendingEOD':
+          return 'badge-warning'
+        case 'review':
+        case 'finalizeFailed':
+          return 'badge-danger'
+        case 'transmit':
+          return 'badge-success'
+        case 'ungraded':
+        default:
+          return 'badge-secondary'
+      }
+    },
+    log: (arg: any) => console.log('log', arg),
+    filterButtons: [
+      {
+        name: 'All',
+        value: '',
+        comparator: (value: any, row: any) => true
+      },
+      {
+        name: 'Even WT',
+        value: 'even',
+        comparator: (value: any, row: any) => {
+          const last = row.weightTicket.slice(-1)
+          return last % 2 === 0 ? 1 : -1
+        }
+      },
+      {
+        name: 'Odd WT',
+        value: 'odd',
+        comparator: (value: any, row: any) => {
+          const last = row.weightTicket.slice(-1)
+          return last % 2 !== 0 ? 1 : -1
+        }
+      },
+    ]
+  },
+  template: `<seam-databoard-list
+              class="w-100 h-100 p-2"
+              [boards]="__hack.boards"
+              [cards]="__hack.cards"
+              (cardDrop)="updateStatus($event)">
+
+              <seam-data-filter-menu-bar class="ml-1 mb-1">
+                <seam-data-filter-menu-bar-row>
+                  <seam-data-filter-menu-bar-column-right>
+                    <seam-data-filter-search seamDataFilter></seam-data-filter-search>
+                  </seam-data-filter-menu-bar-column-right>
+                </seam-data-filter-menu-bar-row>
+                <seam-datatable-menu-bar-row>
+                  <seam-datatable-menu-bar-column-left></seam-datatable-menu-bar-column-left>
+                  <seam-datatable-menu-bar-column-center>
+                    <seam-data-filter-toggle-buttons seamDataFilter
+                      [buttons]="filterButtons"
+                      [multiple]="false"
+                      [selectionToggleable]="false">
+                    </seam-data-filter-toggle-buttons>
+                  </seam-datatable-menu-bar-column-center>
+                  <seam-datatable-menu-bar-column-right></seam-datatable-menu-bar-column-right>
+                </seam-datatable-menu-bar-row>
+              </seam-data-filter-menu-bar>
+
+              <ng-template seamDataboardHeaderTpl let-board>
+                <div class="d-flex align-items-center justify-content-between">
+                  <div>{{ board.headerText }}</div>
+                  <div
+                    class="badge badge-pill font-weight-normal shadow-sm"
+                    [class]="getBoardBadgeClass(board.prop)"
+                    style="padding-top: 6px; padding-bottom: 6px;">{{ board.cardCount }} loads</div>
+                </div>
+              </ng-template>
+
+              <ng-template seamDataboardCardTpl let-card>
+                <div class="d-flex align-items-end justify-content-between">
+                  <div class="d-flex align-items-end justify-content-between">
+                    <span class="text-black-50 small mr-2">Load ID</span>
+                    <span class="h5 font-weight-bold mb-0">{{ card?.loadId }}</span>
+                  </div>
+
+                  <seam-action-menu>
+                    <seam-action-menu-item label="View" (click)="openViewModal(card)"></seam-action-menu-item>
+                    <seam-action-menu-item label="Edit" (click)="openEditModal(card)"></seam-action-menu-item>
+                    <seam-action-menu-item label="Open Google" href="https://google.com" target="_blank" [confirmDialog]="{ message: 'Are you sure you want to leave the site?' }"></seam-action-menu-item>
+                  </seam-action-menu>
+                </div>
+                <div class="d-flex align-items-end justify-content-between">
+                  <span class="text-black-50 small mr-2">Weight Ticket</span>
+                  <span>{{ card?.weightTicket }}</span>
+                </div>
+                <div class="d-flex align-items-end justify-content-between">
+                  <span class="text-black-50 small mr-2">FSA-1007</span>
+                  <span>{{ card?.fsa }}</span>
+                </div>
+              </ng-template>
+
+              <seam-databoard-board prop="mEntry">
+                <ng-template seamDataboardFooterTpl let-board>
+                  <button seamButton theme="primary" size="sm" (click)="log(board)">Click Me!</button>
+                </ng-template>
+              </seam-databoard-board>
+
+            </seam-databoard-list>`
+})
+Filters.args = {
   boards,
   cards
 }

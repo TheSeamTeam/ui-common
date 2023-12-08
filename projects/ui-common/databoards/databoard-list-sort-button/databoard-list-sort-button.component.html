@@ -1,0 +1,47 @@
+<ng-template #menu>
+  <h3 class="h6">Sort by:</h3>
+
+  <seam-form-field [numPaddingErrors]="0" >
+    <input seamInput [formControl]="_filterControl" seamInputSize="sm" placeholder="Search..." seamAutoFocus class="mb-3">
+  </seam-form-field>
+
+  <!-- TODO: add height/scrollbar -->
+  <ng-container *ngIf="(dataProps$ | async)?.length; else noProps">
+    <button *ngFor="let dataProp of dataProps$ | async"
+      class="dropdown-item mb-1"
+      style="padding-left: .75rem; padding-right: .75rem;"
+      (click)="_onChange(dataProp)">
+      <div class="w-100 d-flex justify-content-between">
+        {{ dataProp.name }}
+        <span *ngIf="dataProp.sortIcon">
+          <seam-icon [icon]="dataProp.sortIcon"></seam-icon>
+        </span>
+      </div>
+    </button>
+
+    <div class="d-flex justify-content-end">
+      <button
+        seamButton
+        size="sm"
+        theme="lightgray"
+        class="mt-2"
+        (click)="_clearSorts()">
+        Clear
+      </button>
+    </div>
+  </ng-container>
+
+  <ng-template #noProps>
+    <em class="dropdown-item disabled">No sort criteria available.</em>
+  </ng-template>
+
+</ng-template>
+
+<button
+  [seamPopover]="menu"
+  seamButton
+  theme="lightgray"
+  size="sm"
+  title="Sort">
+  <seam-icon [icon]="buttonIcon"></seam-icon>
+</button>
