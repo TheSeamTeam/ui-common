@@ -1,10 +1,11 @@
-import { Meta, StoryObj } from '@storybook/angular'
+import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 
 import { expectFn, getHarness } from '@theseam/ui-common/testing'
 import { ArgsTplOptions, argsToTpl } from '@theseam/ui-common/story-helpers'
 
 import { TheSeamCheckboxComponent } from './checkbox.component'
 import { TheSeamCheckboxHarness } from './testing/checkbox.harness'
+import { FormControl, ReactiveFormsModule } from '@angular/forms'
 
 interface ExtraArgs {
   ngContent: string
@@ -121,4 +122,35 @@ export const ExampleIndeterminateToggle: Story = {
     await expectFn(await checkboxHarness.isChecked()).toBe(false)
     await expectFn(await checkboxHarness.isIndeterminate()).toBe(false)
   },
+}
+
+export const ExampleFormControl: Story = {
+  render: args => ({
+    props: {
+      ...args,
+      control: new FormControl(),
+    },
+    template: `<seam-checkbox ${argsToTpl()} [formControl]="control">{{ngContent}}</seam-checkbox>[ {{ control.value }} ]`
+  }),
+  decorators: [
+    moduleMetadata({
+      imports: [
+        ReactiveFormsModule,
+      ],
+    }),
+  ],
+  args: {
+    ngContent: 'FormControl.',
+  },
+  // play: async ({ canvasElement, fixture }) => {
+  //   const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
+  //   await expectFn(await checkboxHarness.isChecked()).toBe(false)
+  //   await expectFn(await checkboxHarness.isIndeterminate()).toBe(true)
+  //   await checkboxHarness.click()
+  //   await expectFn(await checkboxHarness.isChecked()).toBe(true)
+  //   await expectFn(await checkboxHarness.isIndeterminate()).toBe(false)
+  //   await checkboxHarness.click()
+  //   await expectFn(await checkboxHarness.isChecked()).toBe(false)
+  //   await expectFn(await checkboxHarness.isIndeterminate()).toBe(false)
+  // },
 }
