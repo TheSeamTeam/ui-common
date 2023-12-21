@@ -6,7 +6,7 @@ import { takeUntil } from 'rxjs/operators'
 
 import { buildTitleMap, hasOwn, JsonSchemaFormModule, JsonSchemaFormService, TitleMapItem } from '@ajsf/core'
 import { observeControlStatus, observeControlValue } from '@theseam/ui-common/utils'
-import { TheSeamSchemaFormControlWidget, TheSeamSchemaFormWidgetLayoutNodeOptions } from '@theseam/ui-common/framework'
+import { TheSeamSchemaFormControlWidget, TheSeamSchemaFormWidgetLayoutNodeOptions } from '../../schema-form'
 import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 import { TheSeamMenuModule } from '@theseam/ui-common/menu'
 import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'

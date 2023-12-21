@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core'
 
-import { TheSeamSchemaFormWidget } from '@theseam/ui-common/framework'
+import { TheSeamSchemaFormWidget } from '../../schema-form'
 
 @Component({
   selector: 'seam-schema-form-divider',
