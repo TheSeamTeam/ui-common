@@ -17,6 +17,7 @@ type StoryComponentType = TheSeamFormFieldComponent & ExtraArgs
 
 const meta: Meta<TheSeamFormFieldComponent> = {
   title: 'Form Field/Components',
+  tags: [ 'autodocs' ],
   component: TheSeamFormFieldComponent,
   decorators: [
     moduleMetadata({
