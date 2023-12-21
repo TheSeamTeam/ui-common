@@ -1,18 +1,20 @@
-import { moduleMetadata } from '@storybook/angular'
-import type { Meta, Story } from '@storybook/angular'
-import { applicationConfig } from '@storybook/angular/dist/client/decorators'
+import { moduleMetadata, applicationConfig, Meta, StoryObj } from '@storybook/angular'
+import { expect } from '@storybook/jest'
 
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
 import { provideAnimations } from '@angular/platform-browser/animations'
 
 import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
-import { TheSeamSharedModule } from '@theseam/ui-common/shared'
-import { TheSeamTelInputModule } from './tel-input.module'
-import { TheSeamTelInputComponent } from './tel-input/tel-input.component'
+import { getHarness } from '@theseam/ui-common/testing'
+import { argsToTpl } from '@theseam/ui-common/story-helpers'
 
-export default {
+import { TheSeamTelInputComponent } from './tel-input/tel-input.component'
+import { TheSeamTelInputHarness } from './testing/tel-input.harness'
+
+const meta: Meta<TheSeamTelInputComponent> = {
   title: 'TelInput/Components',
   component: TheSeamTelInputComponent,
+  tags: [ 'autodocs' ],
   decorators: [
     applicationConfig({
       providers: [
@@ -21,66 +23,131 @@ export default {
     }),
     moduleMetadata({
       imports: [
-        TheSeamTelInputModule,
+        TheSeamTelInputComponent,
         ReactiveFormsModule,
         TheSeamFormFieldModule,
-        TheSeamSharedModule,
       ],
     }),
   ],
-} as Meta
-
-export const Basic: Story = ({ ...args }) => ({
-  // template: `<seam-tel-input></seam-tel-input>`
-  component: TheSeamTelInputComponent,
-  props: args,
-})
-
-export const Control: Story = ({ ...args }) => ({
-  template: `<seam-tel-input seamInput></seam-tel-input>`
-})
-
-export const FormField: Story = ({ ...args }) => {
-  // const control = new FormControl('+17024181234', [], [])
-  // const control = new FormControl('9015555555', [], [])
-  const control = new FormControl('+213 901-555-5555', [], [])
-
-  // control.valueChanges.subscribe(v => console.log('%c[Story] value', 'color:red', v))
-
-  return {
-    props: {
-      control,
-    },
-    template: `
-      <div style="max-width: 300px;">
-        <seam-form-field>
-          <seam-tel-input seamInput [formControl]="control"></seam-tel-input>
-        </seam-form-field>
-      </div>
-    `,
-  }
 }
 
-export const FormFieldDisabled: Story = ({ ...args }) => {
-  // const control = new FormControl('+17024181234', [], [])
-  // const control = new FormControl('9015555555', [], [])
-  const control = new FormControl('+213 901-555-5555', [], [])
-  control.disable()
+export default meta
+type Story = StoryObj<TheSeamTelInputComponent>
 
-  // control.valueChanges.subscribe(v => console.log('%c[Story] value', 'color:red', v))
+export const Basic: Story = { }
 
-  return {
+export const InitialValue: Story = {
+  args: {
+    value: '+1 901-555-5555',
+  },
+  play: async ({ canvasElement, fixture, args }) => {
+    const telInputHarness = await getHarness(TheSeamTelInputHarness, { canvasElement, fixture })
+    await expect(await telInputHarness.isRequired()).toBe(false)
+    await expect(await telInputHarness.getValue()).toBe('+1 901-555-5555')
+    await telInputHarness.setValue('+19015555556')
+    expect(await telInputHarness.getValue()).toBe('+1 901-555-5556')
+    // expect(args.change).toBeCalledTimes(1)
+  },
+}
+
+export const InitialValueControl: Story = {
+  render: args => ({
+    template: `<seam-tel-input ${argsToTpl()} [formControl]="control"></seam-tel-input>`,
     props: {
-      control,
+      ...args,
+      control: new FormControl('+1 901-555-5555', [], []),
     },
-    template: `
-      <div style="max-width: 300px;">
-        <seam-form-field>
-          <seam-tel-input seamInput [formControl]="control"></seam-tel-input>
-        </seam-form-field>
-      </div>
-    `,
-  }
+  }),
+  play: async ({ canvasElement, fixture, args }) => {
+    const telInputHarness = await getHarness(TheSeamTelInputHarness, { canvasElement, fixture })
+    await expect(await telInputHarness.isRequired()).toBe(false)
+    expect(await telInputHarness.getValue()).toBe('+1 901-555-5555')
+    // expect(args.change).toBeCalledTimes(1)
+  },
+}
+
+// export const ValueChange: Story = {
+//   play: async ({ canvasElement, fixture, args }) => {
+//     const telInputHarness = await getHarness(TheSeamTelInputHarness, { canvasElement, fixture })
+//     await expect(await telInputHarness.isRequired()).toBe(false)
+//     // await expect(await telInputHarness.getValue()).toBe('+1 901-555-5555')
+//     await expect(await telInputHarness.getValue()).toBe('')
+//     await telInputHarness.setValue('+19015555556')
+//     expect(await telInputHarness.getValue()).toBe('+1 901-555-5556')
+//     expect(args.change).toBeCalledTimes(1)
+//   },
+// }
+
+// export const ValueChangeControl: Story = {
+//   render: args => ({
+//     template: `<seam-tel-input ${argsToTpl()} [formControl]="control"></seam-tel-input>`,
+//     props: {
+//       ...args,
+//       control: new FormControl('+1 901-555-5555', [], []),
+//     },
+//   }),
+//   play: async ({ canvasElement, fixture, args }) => {
+//     const telInputHarness = await getHarness(TheSeamTelInputHarness, { canvasElement, fixture })
+//     await expect(await telInputHarness.isRequired()).toBe(false)
+//     // await expect(await telInputHarness.getValue()).toBe('+1 901-555-5555')
+//     await telInputHarness.setValue('+19015555556')
+//     // expect(await telInputHarness.getValue()).toBe('+1 901-555-5556')
+//     console.dir(args.change)
+//     expect(args.change).toBeCalledTimes(1)
+//   },
+// }
+
+export const Control: Story = {
+  render: args => ({
+    template: `<seam-tel-input seamInput></seam-tel-input>`,
+  }),
+}
+
+export const FormField: Story = {
+  render: args => {
+    // const control = new FormControl('+17024181234', [], [])
+    // const control = new FormControl('9015555555', [], [])
+    const control = new FormControl('+213 901-555-5555', [], [])
+
+    // control.valueChanges.subscribe(v => console.log('%c[Story] value', 'color:red', v))
+
+    return {
+      props: {
+        control,
+      },
+      template: `
+        <div style="max-width: 300px;">
+          <seam-form-field>
+            <seam-tel-input seamInput [formControl]="control"></seam-tel-input>
+          </seam-form-field>
+        </div>
+      `,
+    }
+  },
+}
+
+export const FormFieldDisabled: Story = {
+  render: args => {
+    // const control = new FormControl('+17024181234', [], [])
+    // const control = new FormControl('9015555555', [], [])
+    const control = new FormControl('+213 901-555-5555', [], [])
+    control.disable()
+
+    // control.valueChanges.subscribe(v => console.log('%c[Story] value', 'color:red', v))
+
+    return {
+      props: {
+        control,
+      },
+      template: `
+        <div style="max-width: 300px;">
+          <seam-form-field>
+            <seam-tel-input seamInput [formControl]="control"></seam-tel-input>
+          </seam-form-field>
+        </div>
+      `,
+    }
+  },
 }
 
 // export const Validator: Story = (args) => {

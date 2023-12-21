@@ -1,73 +1,82 @@
-import { moduleMetadata } from '@storybook/angular'
+import { componentWrapperDecorator, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import { expect } from '@storybook/jest'
 
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms'
-import { BrowserModule } from '@angular/platform-browser'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { NgSelectModule } from '@ng-select/ng-select'
 import dedent from 'ts-dedent'
 
 import { TheSeamFormFieldComponent } from '../form-field.component'
 import { TheSeamFormFieldModule } from '../form-field.module'
+import { TheSeamFormFieldRequiredIndicatorHarness } from '../testing'
+import { getHarness } from '@theseam/ui-common/testing'
 
-export default {
+interface ExtraArgs { }
+
+type StoryComponentType = TheSeamFormFieldComponent & ExtraArgs
+
+const meta: Meta<TheSeamFormFieldComponent> = {
   title: 'Form Field/Components',
+  tags: [ 'autodocs' ],
   component: TheSeamFormFieldComponent,
   decorators: [
     moduleMetadata({
       imports: [
-        BrowserAnimationsModule,
-        BrowserModule,
         TheSeamFormFieldModule,
-        ReactiveFormsModule
-      ]
+        ReactiveFormsModule,
+      ],
     }),
-    // withKnobs
+    componentWrapperDecorator(story => `<div class="p-1" style="min-height: 100px; width: 500px;">${story}</div>`),
   ],
   parameters: {
     docs: {
       iframeHeight: '300px',
-    }
-  }
+    },
+  },
 }
 
-export const Simple = () => ({
-  props: {
-    control: new FormControl('')
-  },
-  template: `
-    <div class="p-1" style="min-height: 100px; width: 500px;">
+export default meta
+type Story = StoryObj<StoryComponentType>
+
+export const Simple: Story = {
+  render: args => ({
+    props: {
+      ...args,
+      control: new FormControl(''),
+    },
+    template: `
       <seam-form-field label="Example">
         <input seamInput [formControl]="control">
       </seam-form-field>
-    </div>
-  `
-})
-
-export const LabelTemplate = () => ({
-  props: {
-    control: new FormControl('')
+    `,
+  }),
+  play: async ({ canvasElement, fixture }) => {
+    const requiredIndicatorHarness = await getHarness(TheSeamFormFieldRequiredIndicatorHarness, { canvasElement, fixture })
+    await expect(await requiredIndicatorHarness.isIndicatorVisible()).toBe(false)
   },
-  template: `
-    <div class="p-1" style="min-height: 100px; width: 500px;">
+}
+
+export const LabelTemplate: Story = {
+  render: args => ({
+    props: {
+      control: new FormControl(''),
+    },
+    template: `
       <seam-form-field>
         <strong *seamFormFieldLabelTpl>Tax ID:</strong>
         <input seamInput [formControl]="control">
       </seam-form-field>
-    </div>
-  `
-})
-
-LabelTemplate.story = {
-  name: 'Label Template'
+    `,
+  }),
 }
 
-export const ValidatorTemplate = () => ({
-  props: {
-    control: new FormControl('', [ Validators.required ])
-  },
-  template: `
-    <div class="p-1" style="min-height: 100px; width: 500px;">
+export const ValidatorTemplate: Story = {
+  render: args => ({
+    props: {
+      ...args,
+      control: new FormControl('', [ Validators.required ]),
+    },
+    template: `
       <span class="p-1 border bg-light">
         <em>Focus input then unfocus without a value.</em>
       </span>
@@ -75,23 +84,20 @@ export const ValidatorTemplate = () => ({
         <input seamInput [formControl]="control">
         <ng-template seamFormFieldError="required">Valid is required.</ng-template>
       </seam-form-field>
-    </div>
-  `
-})
-
-ValidatorTemplate.story = {
-  name: 'Validator Message'
+    `,
+  }),
 }
 
-export const ValidatorPaddingMessages = () => ({
-  props: {
-    control: new FormControl('', [ Validators.required ]),
-    control2: new FormControl('', [ Validators.required ]),
-    control3: new FormControl('', [ Validators.required, Validators.email, Validators.minLength(6) ]),
-    // n: number('numPaddingErrors', 3)
-  },
-  template: `
-    <div class="p-1" style="min-height: 100px; width: 500px;">
+export const ValidatorPaddingMessages: Story = {
+  render: args => ({
+    props: {
+      ...args,
+      control: new FormControl('', [ Validators.required ]),
+      control2: new FormControl('', [ Validators.required ]),
+      control3: new FormControl('', [ Validators.required, Validators.email, Validators.minLength(6) ]),
+      // n: number('numPaddingErrors', 3),
+    },
+    template: `
       <seam-form-field label="Example">
         <input seamInput [formControl]="control">
         <ng-template seamFormFieldError="required">Valid is required.</ng-template>
@@ -114,12 +120,8 @@ export const ValidatorPaddingMessages = () => ({
       </seam-form-field>
 
       <div>Example content</div>
-    </div>
-  `
-})
-
-ValidatorPaddingMessages.story = {
-  name: 'Validator Padding Messages',
+    `,
+  }),
   parameters: {
     notes: {
       markdown: dedent(`
@@ -140,27 +142,28 @@ ValidatorPaddingMessages.story = {
         Currently if you set \`numPaddingErrors\` to 3 and you have one validator
         that renders 2 lines of text, there will still be one extra empty line
         below it.
-      `)
-    }
-  }
+      `),
+    },
+  },
 }
 
-export const NgSelect = () => ({
-  moduleMetadata: {
-    imports: [
-      NgSelectModule
-    ]
-  },
-  props: {
-    control: new FormControl('', [ Validators.required ]),
-    items: [
-      { id: 1, name: 'one' },
-      { id: 2, name: 'two' },
-      { id: 3, name: 'three' }
-    ]
-  },
-  template: `
-    <div class="p-1" style="min-height: 100px; width: 500px;">
+export const NgSelect: Story = {
+  render: args => ({
+    moduleMetadata: {
+      imports: [
+        NgSelectModule,
+      ],
+    },
+    props: {
+      ...args,
+      control: new FormControl('', [ Validators.required ]),
+      items: [
+        { id: 1, name: 'one' },
+        { id: 2, name: 'two' },
+        { id: 3, name: 'three' },
+      ],
+    },
+    template: `
       <span class="p-1 border bg-light">
         <em>Focus input then unfocus without a value.</em>
       </span>
@@ -177,104 +180,113 @@ export const NgSelect = () => ({
         </ng-select>
         <ng-template seamFormFieldError="required">Valid is required.</ng-template>
       </seam-form-field>
-    </div>`
-})
+    `
+  }),
+}
 
-export const RequiredIndicator = () => ({
-  props: {
-    control: new FormControl('')
-  },
-  template: `
-    <div class="p-1" style="min-height: 100px; width: 500px;">
+export const RequiredIndicator: Story = {
+  render: args => ({
+    props: {
+      ...args,
+      control: new FormControl(''),
+    },
+    template: `
       <seam-form-field label="Example">
         <input seamInput [formControl]="control" required>
       </seam-form-field>
-    </div>
-  `
-})
+    `,
+  }),
+  parameters: {
+    notes: {
+      markdown: dedent(`
+        # Required Indicator
 
-RequiredIndicator.story = {
-  name: 'Required Indicator',
-  notes: {
-    markdown: dedent(`
-    # Required Indicator
-
-    To make an input show a required indicator, add the \`required\` attribute
-    or the \`required\` input on the \`seamInput\` directive. The form control
-    alone can't be used, because there is not a required property and validators
-    are not a reliable way to tell if a control is required. We have a way to
-    check based on validators, but I am not sure if it is a good idea to use it
-    yet for various reasons discussed in
-    \`projects/ui-common/src/lib/utils/form/has-required-control.ts\`.
-    `)
-  }
+        To make an input show a required indicator, add the \`required\` attribute
+        or the \`required\` input on the \`seamInput\` directive. The form control
+        alone can't be used, because there is not a required property and validators
+        are not a reliable way to tell if a control is required. We have a way to
+        check based on validators, but I am not sure if it is a good idea to use it
+        yet for various reasons discussed in
+        \`projects/ui-common/src/lib/utils/form/has-required-control.ts\`.
+      `),
+    },
+  },
+  play: async ({ canvasElement, fixture }) => {
+    const requiredIndicatorHarness = await getHarness(TheSeamFormFieldRequiredIndicatorHarness, { canvasElement, fixture })
+    await expect(await requiredIndicatorHarness.isIndicatorVisible()).toBe(true)
+  },
 }
 
-export const RequiredIndicatorLabelTemplate = () => ({
-  props: {
-    control: new FormControl('')
-  },
-  template: `
-    <div class="p-1" style="min-height: 100px; width: 500px;">
+export const RequiredIndicatorLabelTemplate: Story = {
+  render: args => ({
+    props: {
+      ...args,
+      control: new FormControl(''),
+    },
+    template: `
       <seam-form-field>
         <ng-template seamFormFieldLabelTpl>
           Name<seam-form-field-required-indicator class="pl-1"></seam-form-field-required-indicator>
         </ng-template>
         <input seamInput [formControl]="control" required>
       </seam-form-field>
-    </div>
-  `
-})
+    `,
+  }),
+}
 
-export const RequiredIndicatorLabelTemplateCustom = () => ({
-  props: {
-    control: new FormControl('')
-  },
-  template: `
-    <div class="p-1" style="min-height: 100px; width: 500px;">
+export const RequiredIndicatorLabelTemplateCustom: Story = {
+  render: args => ({
+    props: {
+      ...args,
+      control: new FormControl(''),
+    },
+    template: `
       <seam-form-field>
         <ng-template seamFormFieldLabelTpl let-required="required">
           Name<span *ngIf="required" class="text-danger pl-1">~*~</span>
         </ng-template>
         <input seamInput [formControl]="control" required>
       </seam-form-field>
-    </div>
-  `
-})
+    `,
+  }),
+}
 
-export const Password = () => ({
-  props: {
-    control: new FormControl('')
-  },
-  template: `
-    <div class="p-1" style="min-height: 100px; width: 500px;">
+export const Password: Story = {
+  render: args => ({
+    props: {
+      ...args,
+      control: new FormControl(''),
+    },
+    template: `
       <seam-form-field>
         <input seamInput [formControl]="control" type="password">
       </seam-form-field>
-    </div>
-  `
-})
+    `,
+  }),
+}
 
-export const HelpText = () => ({
-  props: {
-    control: new FormControl('')
-  },
-  template: `
-    <div class="p-1" style="min-height: 100px; width: 500px;">
+export const HelpText: Story = {
+  render: args => ({
+    props: {
+      ...args,
+      control: new FormControl(''),
+    },
+    template: `
       <seam-form-field helpText="Anim elit fugiat consectetur qui ullamco nulla sunt veniam reprehenderit dolor non sint adipisicing laborum.">
         <input seamInput [formControl]="control" required>
         <ng-template seamFormFieldError="required">Valid is required.</ng-template>
       </seam-form-field>
-    </div>
-  `
-})
+    `,
+  }),
+}
 
-export const HelpTemplate = () => ({
-  props: {
-    control: new FormControl('')
-  },
-  template: `
-    <div class="p-1" style="min-height: 100px; width: 500px;">
+export const HelpTemplate: Story = {
+  render: args => ({
+    props: {
+      ...args,
+      control: new FormControl(''),
+    },
+    template: `
       <seam-form-field>
         <input seamInput [formControl]="control" required>
         <ng-template seamFormFieldHelpText>
@@ -282,6 +294,6 @@ export const HelpTemplate = () => ({
         </ng-template>
         <ng-template seamFormFieldError="required">Valid is required.</ng-template>
       </seam-form-field>
-    </div>
-  `
-})
+    `,
+  }),
+}

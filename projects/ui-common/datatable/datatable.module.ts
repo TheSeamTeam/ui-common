@@ -11,7 +11,7 @@ import { NgxDatatableModule, ScrollbarHelper } from '@marklb/ngx-datatable'
 import { ToastrModule } from 'ngx-toastr'
 
 import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
-import { TheSeamCheckboxModule } from '@theseam/ui-common/checkbox'
+import { TheSeamCheckboxComponent } from '@theseam/ui-common/checkbox'
 import { TheSeamConfirmDialogModule } from '@theseam/ui-common/confirm-dialog'
 import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 import { TheSeamIconModule } from '@theseam/ui-common/icon'
@@ -86,7 +86,7 @@ import { TheSeamDatatableScrollbarHelperService } from './services/datatable-scr
         PortalModule,
         TheSeamConfirmDialogModule,
         TheSeamPopoverModule,
-        TheSeamCheckboxModule,
+        TheSeamCheckboxComponent,
         TheSeamFormFieldModule,
         ReactiveFormsModule,
         TheSeamTableCellTypeModule

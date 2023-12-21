@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common'
-import { Directive, DoCheck, ElementRef, Host, HostBinding, Inject, Input, NgZone, OnDestroy, OnInit, Optional, Self } from '@angular/core'
+import { Directive, DoCheck, ElementRef, HostBinding, Inject, Input, NgZone, OnDestroy, OnInit, Optional, Self } from '@angular/core'
 import { fromEvent, merge, Subject } from 'rxjs'
 import { auditTime, last, switchMap, takeUntil, tap } from 'rxjs/operators'
 
@@ -14,7 +14,8 @@ import { globalIntlTelInputUtils } from './utils/index'
 
 @Directive({
   selector: 'input[seamTelInput]',
-  exportAs: 'seamTelInput'
+  exportAs: 'seamTelInput',
+  standalone: true,
 })
 export class TheSeamTelInputDirective implements OnInit, OnDestroy, DoCheck {
   private readonly _ngUnsubscribe = new Subject<void>()
@@ -26,7 +27,6 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy, DoCheck {
 
   @Input()
   set value(v: string | undefined | null) {
-    // console.log('set value', v, this._instance)
     this._value = v
     if (this._instance) {
       this._instance.setNumber(notNullOrUndefined(v) ? v : '')
@@ -50,14 +50,14 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy, DoCheck {
   ) { }
 
   ngOnInit(): void {
+    this._elementRef.nativeElement.value = this._ngControl ? this._ngControl.value : this.value ?? ''
+    this._elementRef.nativeElement.setAttribute('instance-loading', '')
     merge(
       this._assetLoader.loadStyleSheet(TEL_INPUT_STYLESHEET_PATH),
       this._assetLoader.loadStyle(TEL_INPUT_STYLES)
     ).pipe(
-      // tap(v => console.log('loaded', v)),
       tap(v => this._loadedAssetRefs.push(v)),
       last(),
-      // tap(v => console.log('StyleLoadingDone', v)),
       switchMap(() => {
         this._instance = IntlTelInputFn(this._elementRef.nativeElement, {
           utilsScript: TEL_INPUT_UTILS_PATH,
@@ -73,9 +73,11 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy, DoCheck {
 
         this._tryUpdateDropdownAttributes()
 
-        return this._instance.promise
+        return this._instance.promise.then(v => {
+          this._elementRef.nativeElement.removeAttribute('instance-loading')
+          return v
+        })
       }),
-      // tap(() => console.log('%c_instance ready', 'color:green', this._instance, this._elementRef.nativeElement.value)),
       tap(() => this._initDropdownListener()),
       tap(() => this.value = this._value),
       tap(this._formatIntlTelInput),

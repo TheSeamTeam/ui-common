@@ -1,5 +1,7 @@
 import { FocusMonitor, FocusOrigin } from '@angular/cdk/a11y'
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion'
+import { ObserversModule } from '@angular/cdk/observers'
+import { CommonModule } from '@angular/common'
 import {
   AfterViewInit,
   Attribute,
@@ -61,6 +63,11 @@ let _uid = 0
   selector: 'seam-checkbox',
   templateUrl: './checkbox.component.html',
   styleUrls: ['./checkbox.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    ObserversModule,
+  ],
   exportAs: 'seamCheckbox',
   host: {
     '[attr.tabindex]': 'null',

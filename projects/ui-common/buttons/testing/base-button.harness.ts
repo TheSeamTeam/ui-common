@@ -16,7 +16,8 @@ function getButtonThemeClass(classListString: string | null) {
 /** A set of criteria that can be used to filter a list of `TheSeamBaseButtonComponentHarness` instances. */
 export interface TheSeamBaseButtonComponentHarnessFilters extends BaseHarnessFilters {
   /** Only find instances whose text matches the given value. */
-  text?: string | RegExp;
+  text?: string | RegExp
+  type?: 'button' | 'submit' | 'reset'
 }
 
 export function createBaseButtonComponentHarnessPredicate<T extends TheSeamBaseButtonComponentHarness>(
@@ -26,6 +27,9 @@ export function createBaseButtonComponentHarnessPredicate<T extends TheSeamBaseB
   return new HarnessPredicate(componentHarness, options)
     .addOption('text', options.text, (harness, text) =>
       HarnessPredicate.stringMatches(harness.getText(), text),
+    )
+    .addOption('type', options.type, (harness, type) =>
+      HarnessPredicate.stringMatches(harness.getType(), type),
     )
 }
 
@@ -42,6 +46,10 @@ export class TheSeamBaseButtonComponentHarness extends ContentContainerComponent
     return ariaValue === 'true'
   }
 
+  async getType(): Promise<string | null> {
+    return (await this.host()).getAttribute('type')
+  }
+
   /** Gets the text of the button item. */
   async getText(): Promise<string> {
     return (await this.host()).text()
@@ -50,5 +58,9 @@ export class TheSeamBaseButtonComponentHarness extends ContentContainerComponent
   /** Gets the theme of the button item. */
   async getTheme(): Promise<string | null> {
     return (await this.host()).getAttribute('class').then(c => getButtonThemeClass(c)?.replace('btn-', '') || null)
+  }
+
+  async click(): Promise<void> {
+    return (await this.host()).click()
   }
 }

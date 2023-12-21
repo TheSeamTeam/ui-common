@@ -1,11 +1,15 @@
 import { Component, Input, isDevMode, OnDestroy, OnInit } from '@angular/core'
-import { AbstractControl, UntypedFormControl } from '@angular/forms'
+import { CommonModule } from '@angular/common'
+import { AbstractControl, ReactiveFormsModule, UntypedFormControl } from '@angular/forms'
 import { Subject } from 'rxjs'
-
-import { buildTitleMap, hasOwn, JsonSchemaFormService, TitleMapItem } from '@ajsf/core'
-
-import { observeControlStatus, observeControlValue } from '@theseam/ui-common/utils'
 import { takeUntil } from 'rxjs/operators'
+
+import { buildTitleMap, hasOwn, JsonSchemaFormModule, JsonSchemaFormService, TitleMapItem } from '@ajsf/core'
+import { observeControlStatus, observeControlValue } from '@theseam/ui-common/utils'
+import { TheSeamSchemaFormControlWidget, TheSeamSchemaFormWidgetLayoutNodeOptions } from '../../schema-form'
+import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
+import { TheSeamMenuModule } from '@theseam/ui-common/menu'
+import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
 
 // NOTE: This is aliasing TitleMapItem, because we may want to extend it's
 // options. For simplicity, I am letting this work similar to a 'select' widget.
@@ -21,23 +25,32 @@ export type TheSeamSchemaFormSubmitSplitItem = TitleMapItem
   selector: 'seam-schema-form-submit-split',
   templateUrl: './schema-form-submit-split.component.html',
   styleUrls: ['./schema-form-submit-split.component.scss'],
-  // changeDetection: ChangeDetectionStrategy.OnPush
+  // changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    JsonSchemaFormModule,
+    TheSeamFormFieldModule,
+    TheSeamMenuModule,
+    TheSeamButtonsModule,
+  ],
 })
-export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy {
+export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy, TheSeamSchemaFormControlWidget {
 
   /** @ignore */
   private readonly _ngUnsubscribe = new Subject<void>()
 
   formControl?: AbstractControl
   controlName?: string
-  controlValue: any
+  controlValue?: any
   controlDisabled = false
   boundControl = false
-  options: any
+  options?: TheSeamSchemaFormWidgetLayoutNodeOptions
 
-  @Input() layoutNode: any
-  @Input() layoutIndex: number[] | undefined | null
-  @Input() dataIndex: number[] | undefined | null
+  @Input() layoutNode: TheSeamSchemaFormControlWidget['layoutNode']
+  @Input() layoutIndex: TheSeamSchemaFormControlWidget['layoutIndex']
+  @Input() dataIndex: TheSeamSchemaFormControlWidget['dataIndex']
 
   _buttonLabel = ''
 
@@ -47,13 +60,13 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy 
   _selectedItem?: TheSeamSchemaFormSubmitSplitItem
 
   constructor(
-    private jsf: JsonSchemaFormService
+    private readonly _jsf: JsonSchemaFormService
   ) { }
 
   /** @ignore */
   ngOnInit() {
-    this.options = this.layoutNode.options || {}
-    this.jsf.initializeControl(this)
+    this.options = this.layoutNode?.options || {} as TheSeamSchemaFormWidgetLayoutNodeOptions
+    this._jsf.initializeControl(this)
 
     // NOTE: This is commented out, because there is a bug with submit widgets
     // manually defined in layout. All nodes initialized from the provided
@@ -71,9 +84,9 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy 
     //   console.log('[TheSeamSchemaFormSubmitSplitComponent] hasDisabled', this.options.disabled)
     //   this.controlDisabled = this.options.disabled
     // } else
-    if (this.jsf.formOptions.disableInvalidSubmit) {
-      this.controlDisabled = !this.jsf.isValid
-      this.jsf.isValidChanges.subscribe(isValid => this.controlDisabled = !isValid)
+    if (this._jsf.formOptions.disableInvalidSubmit) {
+      this.controlDisabled = !this._jsf.isValid
+      this._jsf.isValidChanges.subscribe(isValid => this.controlDisabled = !isValid)
     }
     if (this.controlValue === null || this.controlValue === undefined) {
       this.controlValue = this.options.title
@@ -95,20 +108,20 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy 
   }
 
   updateValue(event: any) {
-    if (typeof this.options.onClick === 'function') {
+    if (typeof this.options?.onClick === 'function') {
       this.options.onClick(event)
     } else {
-      this.jsf.updateValue(this, event.target.value)
+      this._jsf.updateValue(this, event.target.value)
     }
   }
 
   private _initDropdown(): void {
-    if (!hasOwn(this.layoutNode, 'items') || !(this.layoutNode.items || []).length) {
+    if (!hasOwn(this.layoutNode, 'items') || !(this.layoutNode?.items || []).length) {
       return
     }
 
     if (isDevMode()) {
-      if (this.layoutNode.items.length > 1) {
+      if (this.layoutNode?.items && this.layoutNode?.items.length > 1) {
         // eslint-disable-next-line no-console
         console.warn(
           `TheSeamSchemaFormSubmitSplitComponent only supports one item.` +
@@ -118,7 +131,7 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy 
     }
 
     const idx = 0
-    const item = this.layoutNode.items[idx]
+    const item = (this.layoutNode?.items as any)[idx] || {}
     this._dropdownObj = {
       layoutNode: item,
       layoutIndex: (this.layoutIndex || []).concat(idx),
@@ -127,7 +140,7 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy 
       options: item.options || {}
     }
 
-    this.jsf.initializeControl(this._dropdownObj)
+    this._jsf.initializeControl(this._dropdownObj)
 
     const items = buildTitleMap(
       this._dropdownObj.options.titleMap || this._dropdownObj.options.enumNames,
