@@ -146,24 +146,6 @@ export const ValidatorPaddingMessages: Story = {
   },
 }
 
-export const Required: Story = {
-  render: args => ({
-    props: {
-      ...args,
-      control: new FormControl(''),
-    },
-    template: `
-      <seam-form-field label="Example">
-        <input seamInput [formControl]="control" required>
-      </seam-form-field>
-    `,
-  }),
-  play: async ({ canvasElement, fixture }) => {
-    const requiredIndicatorHarness = await getHarness(TheSeamFormFieldRequiredIndicatorHarness, { canvasElement, fixture })
-    await expect(await requiredIndicatorHarness.isIndicatorVisible()).toBe(true)
-  },
-}
-
 export const NgSelect: Story = {
   render: args => ({
     moduleMetadata: {
@@ -227,6 +209,10 @@ export const RequiredIndicator: Story = {
         \`projects/ui-common/src/lib/utils/form/has-required-control.ts\`.
       `),
     },
+  },
+  play: async ({ canvasElement, fixture }) => {
+    const requiredIndicatorHarness = await getHarness(TheSeamFormFieldRequiredIndicatorHarness, { canvasElement, fixture })
+    await expect(await requiredIndicatorHarness.isIndicatorVisible()).toBe(true)
   },
 }
 
