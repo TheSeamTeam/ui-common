@@ -8,7 +8,7 @@ import { InputBoolean } from '@theseam/ui-common/core'
 
 import { TiledSelectTileOverlayDirective } from './../../directives/tiled-select-tile-overlay.directive'
 
-import { ITiledSelectItem, TiledSelectLayout } from '../../tiled-select.models'
+import { TiledSelectItem, TiledSelectLayout } from '../../tiled-select.models'
 
 export const slideEnterAnimation = animation([
   style({ opacity: 0, transform: 'translateX(-15px)' }),
@@ -51,7 +51,7 @@ export class TheSeamTiledSelectComponent implements ControlValueAccessor {
   @Input() layout: TiledSelectLayout = 'grid'
   @Input()
   get tiles() { return this._tiles }
-  set tiles(value: ITiledSelectItem[]) {
+  set tiles(value: TiledSelectItem[]) {
     const _value = [ ...(value || []) ]
     for (const v of _value) {
       if (v.value === undefined) {
@@ -76,7 +76,7 @@ export class TheSeamTiledSelectComponent implements ControlValueAccessor {
 
     this._tiles = _value
   }
-  private _tiles: ITiledSelectItem[] = []
+  private _tiles: TiledSelectItem[] = []
 
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('value') val: string | string[] | undefined
@@ -139,11 +139,11 @@ export class TheSeamTiledSelectComponent implements ControlValueAccessor {
     this.disabled = isDisabled
   }
 
-  onTileSelected(event: MouseEvent, tile: ITiledSelectItem) {
+  onTileSelected(event: MouseEvent, tile: TiledSelectItem) {
     this.toggleTileSelected(tile)
   }
 
-  public isSelected(tile: ITiledSelectItem) {
+  public isSelected(tile: TiledSelectItem) {
     if (!this.multiple) {
       if (this.value === tile.value) {
         return true
@@ -161,7 +161,7 @@ export class TheSeamTiledSelectComponent implements ControlValueAccessor {
     return false
   }
 
-  public toggleTileSelected(tile: ITiledSelectItem): void {
+  public toggleTileSelected(tile: TiledSelectItem): void {
     if (!this.selectionToggleable && this.isSelected(tile)) {
       return
     }
@@ -173,7 +173,7 @@ export class TheSeamTiledSelectComponent implements ControlValueAccessor {
     }
   }
 
-  public selectTile(tile: ITiledSelectItem): void {
+  public selectTile(tile: TiledSelectItem): void {
     if (this.multiple) {
       if (!this.isSelected(tile)) {
         const value: string[] = this.value as string[] || []
@@ -184,7 +184,7 @@ export class TheSeamTiledSelectComponent implements ControlValueAccessor {
     }
   }
 
-  public unselectTile(tile: ITiledSelectItem): void {
+  public unselectTile(tile: TiledSelectItem): void {
     if (this.multiple) {
       const value: string[] = this.value as string[] || []
       this.value = value.filter(v => v !== tile.value)
@@ -193,11 +193,11 @@ export class TheSeamTiledSelectComponent implements ControlValueAccessor {
     }
   }
 
-  public getSelectedTiles(): ITiledSelectItem[] {
+  public getSelectedTiles(): TiledSelectItem[] {
     return this.tiles.filter(t => this.isSelected(t))
   }
 
-  getOverlayTpl(tile: ITiledSelectItem): TiledSelectTileOverlayDirective | undefined {
+  getOverlayTpl(tile: TiledSelectItem): TiledSelectTileOverlayDirective | undefined {
     // console.log('overlayTpls', this.overlayTpls)
     return (this.overlayTpls || []).find(t => t.record?.name === tile.name)
   }

@@ -1,5 +1,5 @@
 import { FocusMonitor } from '@angular/cdk/a11y'
-import { ChangeDetectionStrategy, Component, Directive, ElementRef, Input, OnDestroy, Renderer2 } from '@angular/core'
+import { ChangeDetectionStrategy, Component, ElementRef, Input, OnDestroy, Renderer2 } from '@angular/core'
 
 import {
   CanDisableCtor,
@@ -78,6 +78,7 @@ export class TheSeamButtonComponent extends _TheSeamButtonMixinBase implements O
   inputs: [ 'disabled', 'theme', 'size' ],
   host: {
     'class': 'btn',
+    // '[class.disabled]': 'disabled || null',
     '[attr.tabindex]': 'disabled ? -1 : (tabIndex || 0)',
     '[attr.disabled]': 'disabled || null',
     '[attr.aria-disabled]': 'disabled.toString()',

@@ -21,6 +21,7 @@ module.exports = {
     '**/validators/**/*.spec.ts',
     '**/datatable/**/*.spec.ts',
     '**/dynamic-component-loader/**/*.spec.ts',
+    '**/tel-input/**/*.spec.ts',
   ],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/' }),
 }

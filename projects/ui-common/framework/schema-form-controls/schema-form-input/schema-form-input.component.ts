@@ -1,38 +1,50 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core'
-import { AbstractControl } from '@angular/forms'
+import { CommonModule } from '@angular/common'
+import { AbstractControl, ReactiveFormsModule } from '@angular/forms'
 
-import { JsonSchemaFormService } from '@ajsf/core'
+import { JsonSchemaFormModule, JsonSchemaFormService } from '@ajsf/core'
+import { TheSeamSchemaFormControlWidget, TheSeamSchemaFormWidgetLayoutNodeOptions } from '@theseam/ui-common/framework'
+import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 
 @Component({
   selector: 'seam-schema-form-input',
   templateUrl: './schema-form-input.component.html',
   styleUrls: ['./schema-form-input.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    JsonSchemaFormModule,
+    TheSeamFormFieldModule,
+  ],
 })
-export class TheSeamSchemaFormInputComponent implements OnInit {
+export class TheSeamSchemaFormInputComponent implements OnInit, TheSeamSchemaFormControlWidget {
 
   formControl?: AbstractControl
   controlName?: string
-  controlValue?: string
+  controlValue?: any
   controlDisabled = false
   boundControl = false
-  options: any
+  options?: TheSeamSchemaFormWidgetLayoutNodeOptions
+
+  @Input() layoutNode: TheSeamSchemaFormControlWidget['layoutNode']
+  @Input() layoutIndex: TheSeamSchemaFormControlWidget['layoutIndex']
+  @Input() dataIndex: TheSeamSchemaFormControlWidget['dataIndex']
+
   autoCompleteList: string[] = []
-  @Input() layoutNode: any
-  @Input() layoutIndex: number[] | undefined | null
-  @Input() dataIndex: number[] | undefined | null
 
   constructor(
-    private jsf: JsonSchemaFormService
+    private readonly _jsf: JsonSchemaFormService
   ) { }
 
   ngOnInit() {
-    this.options = this.layoutNode.options || {}
-    this.jsf.initializeControl(this)
+    this.options = this.layoutNode?.options || {} as TheSeamSchemaFormWidgetLayoutNodeOptions
+    this._jsf.initializeControl(this)
   }
 
   updateValue(event: any) {
-    this.jsf.updateValue(this, event.target.value)
+    this._jsf.updateValue(this, event.target.value)
   }
 
 }
