@@ -35,7 +35,7 @@ let nextLabelUniqueId = 0
   providers: [
     {
       provide: FORM_FIELD_COMPONENT,
-      useClass: forwardRef(() => TheSeamFormFieldComponent),
+      useExisting: TheSeamFormFieldComponent,
     }
   ],
 })
