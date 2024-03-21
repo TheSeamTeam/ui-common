@@ -103,6 +103,7 @@ export class GoogleMapsService implements OnDestroy {
   private _featureContextMenu: MenuComponent | null = null
   private _activeContextMenu: GoogleMapsContextMenu | null = null
   private _baseLatLng?: google.maps.LatLngLiteral
+  private _padding?: number | google.maps.Padding
 
   private _allowDrawingHoleInPolygon = false
 
@@ -141,6 +142,10 @@ export class GoogleMapsService implements OnDestroy {
 
   public setBaseLatLng(lat: number, lng: number): void {
     this._baseLatLng = { lat, lng }
+  }
+
+  public setPadding(padding: number | google.maps.Padding | undefined): void {
+    this._padding = padding
   }
 
   // TODO: Refactor out of the service meant to just wrap the google maps api.
@@ -275,7 +280,7 @@ export class GoogleMapsService implements OnDestroy {
     this._assertInitialized()
     removeAllFeatures(this.googleMap.data)
     this.googleMap.data.addGeoJson(data)
-    this.googleMap.fitBounds(getBoundsWithAllFeatures(this.googleMap.data))
+    this.googleMap.fitBounds(getBoundsWithAllFeatures(this.googleMap.data), this._padding)
   }
 
   // TODO: Refactor out of the service meant to just wrap the google maps api.
@@ -289,7 +294,7 @@ export class GoogleMapsService implements OnDestroy {
       this.googleMap.panTo(this._baseLatLng)
       return
     }
-    this.googleMap.fitBounds(getBoundsWithAllFeatures(this.googleMap.data))
+    this.googleMap.fitBounds(getBoundsWithAllFeatures(this.googleMap.data), this._padding)
 
     // TODO: Fix to pan to center. Currently fitBounds results in the expected
     // result, but pantToBounds animates.

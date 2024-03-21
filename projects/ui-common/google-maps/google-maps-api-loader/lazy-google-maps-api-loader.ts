@@ -71,6 +71,8 @@ export interface TheSeamLazyMapsApiLoaderConfig {
    * https://developers.google.com/maps/documentation/javascript/basics#Language
    */
   language?: string
+
+  loading?: string
 }
 
 @Injectable()
@@ -145,6 +147,7 @@ export class TheSeamLazyMapsApiLoader extends TheSeamGoogleMapsApiLoader {
       libraries: this._config.libraries,
       region: this._config.region,
       language: this._config.language || (this._localeId !== 'en-US' ? this._localeId : null),
+      loading: this._config.loading || 'async'
     }
 
     const params: string = Object.keys(queryParams)
