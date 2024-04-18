@@ -656,7 +656,7 @@ export class DatatableComponent
       const currentOrderAlteration = this._columnsAlterationsManager.get().find(x => x.type === 'order')
       const state: OrderColumnsAlterationState = {
         columns: [
-          ...(currentOrderAlteration?.state.columns || []),
+          ...(currentOrderAlteration?.state.columns || []).filter((x: any) => x.columnProp !== columnProp),
           { columnProp, index: event.newValue }
         ]
       }
