@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core'
+import { Injectable, TemplateRef } from '@angular/core'
 
 import { Modal, ModalRef } from '@theseam/ui-common/modal'
 import { ThemeTypes } from '@theseam/ui-common/models'
@@ -14,7 +14,8 @@ export class SeamConfirmDialogService {
 
   public open(
     message?: string,
-    alert?: string | { message: string, type: ThemeTypes }
+    alert?: string | { message: string, type: ThemeTypes },
+    template?: TemplateRef<any> | { template: TemplateRef<any>, context: any }
   ): ModalRef<ConfirmDialogComponent, 'confirm' | undefined> {
     const modalRef = this.modal.openFromComponent(ConfirmDialogComponent)
 
@@ -37,6 +38,10 @@ export class SeamConfirmDialogService {
       } else {
         throw new Error('Invalid alert argument.')
       }
+    }
+
+    if (template) {
+      comp.template = template
     }
 
     return modalRef
