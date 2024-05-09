@@ -72,6 +72,54 @@ WithAlert.argTypes = {
   alertTheme: { control: 'select', options: ThemeNames },
 }
 
+export const WithTemplate: Story = args => ({
+  props: {
+    // msgText: text('Message', 'Do you confirm?'),
+    confirmed() {
+      // eslint-disable-next-line no-console
+      console.log('Confirmed')
+    }
+  },
+  template: `
+    <ng-template #confirmTpl>
+      <h2>Do you want to continue?</h2>
+      <hr/>
+      <small>This confirmation message uses a custom template.</small>
+    </ng-template>
+
+    <button type="button"
+      class="btn btn-lightgray"
+      [seamConfirmTpl]="confirmTpl"
+      (seamConfirmClick)="confirmed()">
+      Open Dialog
+    </button>
+  `
+})
+
+export const WithTemplateAndTemplateData: Story = args => ({
+  props: {
+    // msgText: text('Message', 'Do you confirm?'),
+    confirmed() {
+      // eslint-disable-next-line no-console
+      console.log('Confirmed')
+    }
+  },
+  template: `
+    <ng-template #confirmTpl let-context>
+      <h2>Do you want to continue?</h2>
+      <hr/>
+      <small>This will affect {{context.recordsAffected}} records.</small>
+    </ng-template>
+
+    <button type="button"
+      class="btn btn-lightgray"
+      [seamConfirmTpl]="{ template: confirmTpl, context: { recordsAffected: 123 }}"
+      (seamConfirmClick)="confirmed()">
+      Open Dialog
+    </button>
+  `
+})
+
 // TODO: Convert all of the following to CSF
 
 // storiesOf('Components/ConfirmDialog/Directive', module)
