@@ -318,3 +318,155 @@ export const Layout: Story = {
     ],
   },
 }
+
+export const LoadoutOrder: Story = {
+  args: {
+    options: {
+      addSubmit: true, // Add a submit button if layout does not have one
+      debug: false, // Don't show inline debugging information
+    },
+    schema: {
+      'type': 'object',
+      '$schema': 'http://json-schema.org/draft-07/schema#',
+      'properties': {
+        'LoadoutOrderAdd': {
+          'type': 'object',
+          'properties': {
+            'ReferenceDate': {
+              'type': 'string', // TODO: Add 'date' type
+              'title': 'Reference Date',
+            },
+            'RequestedLoadoutDate': {
+              'type': 'string', // TODO: Add 'date' type
+              'title': 'Requested Loadout Date',
+            },
+            'Origin': {
+              'type': 'string',
+              'title': 'Origin',
+              'enum': [ 'South West', 'North West', 'South East', 'North East' ]
+            },
+            'Destination': {
+              'type': 'string',
+              'title': 'Destination',
+              'enum': [ 'South West', 'North West', 'South East', 'North East' ]
+            },
+            'ReasonForLoadout': {
+              'type': 'string',
+              'title': 'Reason for Loadout',
+              'enum': [ 'South West', 'North West', 'South East', 'North East' ]
+            },
+            'TypeOfVehicle': {
+              'type': 'string',
+              'title': 'Type of Vehicle',
+              'enum': [ 'South West', 'North West', 'South East', 'North East' ]
+            },
+            'Truckline': {
+              'type': 'string',
+              'title': 'Truckline',
+              'enum': [ 'South West', 'North West', 'South East', 'North East' ]
+            },
+            'DispatchNumber': {
+              'type': 'string',
+              'title': 'Dispatch Number',
+            },
+            'TrailerTagNumber': {
+              'type': 'string',
+              'title': 'Trailer Tag Number',
+            },
+            'TrailerNumber': {
+              'type': 'string',
+              'title': 'Trailer Number',
+            },
+            'DriverName': {
+              'type': 'string',
+              'title': 'Driver Name',
+            },
+            'EmptyWeight': {
+              'type': 'string',
+              'title': 'Empty Weight (Tare)',
+            },
+            'Comments': {
+              'type': 'string',
+              'title': 'Comments',
+            },
+          },
+          'required': [
+            'ReferenceDate',
+            'RequestedLoadoutDate',
+            'Origin',
+            'Destination',
+            'ReasonForLoadout',
+            'TypeOfVehicle',
+            'Truckline',
+            'DispatchNumber',
+          ]
+        }
+      }
+    },
+    layout: [
+      { 'dataPointer': '/LoadoutOrderAdd/ReferenceDate' },
+      { 'dataPointer': '/LoadoutOrderAdd/RequestedLoadoutDate' },
+      { 'dataPointer': '/LoadoutOrderAdd/Origin' },
+      { 'dataPointer': '/LoadoutOrderAdd/Destination' },
+      { 'dataPointer': '/LoadoutOrderAdd/ReasonForLoadout' },
+      {
+        'type': 'section',
+        // 'title': 'Section 1',
+        'items': [
+          // {
+          //   'type': 'section',
+          //   'items': [
+          //     { 'dataPointer': '/LoadoutOrderAdd/TypeOfVehicle' },
+          //   ],
+          //   // options: {
+          //   //   displayFlex: true,
+          //   //   // 'flex-direction': 'row',
+          //   //   // htmlClass: 'asf-flex-gap',
+          //   //   // htmlClass: 'flex-row',
+          //   // },
+          //   // htmlClass: 'col-4',
+          // },
+          // {
+          //   'type': 'section',
+          //   'items': [
+          //     { 'dataPointer': '/LoadoutOrderAdd/Truckline' },
+          //   ],
+          //   // htmlClass: 'col-4',
+          // },
+          // {
+          //   'type': 'section',
+          //   'items': [
+          //     { 'dataPointer': '/LoadoutOrderAdd/DispatchNumber' },
+          //   ],
+          //   // htmlClass: 'col-4',
+          // },
+          { 'dataPointer': '/LoadoutOrderAdd/TypeOfVehicle' },
+          { 'dataPointer': '/LoadoutOrderAdd/Truckline' },
+          { 'dataPointer': '/LoadoutOrderAdd/DispatchNumber' },
+        ],
+        options: {
+          displayFlex: true,
+          'flex-direction': 'row',
+          // htmlClass: 'asf-flex-gap',
+          // htmlClass: 'flex-row',
+        },
+      },
+      {
+        'type': 'section',
+        'items': [
+          { 'dataPointer': '/LoadoutOrderAdd/TrailerTagNumber' },
+          { 'dataPointer': '/LoadoutOrderAdd/TrailerNumber' },
+          { 'dataPointer': '/LoadoutOrderAdd/DriverName' },
+        ],
+        options: {
+          displayFlex: true,
+          'flex-direction': 'row',
+          // htmlClass: 'asf-flex-gap',
+          // htmlClass: 'flex-row',
+        },
+      },
+      { 'dataPointer': '/LoadoutOrderAdd/EmptyWeight' },
+      { type: 'textarea', 'dataPointer': '/LoadoutOrderAdd/Comments' },
+    ],
+  },
+}
