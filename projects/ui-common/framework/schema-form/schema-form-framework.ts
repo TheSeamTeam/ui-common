@@ -67,14 +67,14 @@ export class TheSeamFramework extends Framework {
     'tel': TheSeamSchemaFormTelComponent,
     'tiled-select': TheSeamSchemaFormTiledSelectComponent
 
-    // 'file': // TODO: Implement
     // 'date': // TODO: Implement
-    // 'map': // TODO: Implement
-    // 'wizard': // TODO: Implement
+    // 'file': // TODO: Implement
     // 'image': // TODO: Implement
-    // 'tabs': // TODO: Implement
-    // 'card': // TODO: Implement
     // 'richtext': // TODO: Implement
+    // 'tabs': // TODO: Implement
+    // 'wizard': // TODO: Implement
+    // 'card': // TODO: Implement
+    // 'map': // TODO: Implement
   }
 
   constructor(
