@@ -88,6 +88,8 @@ export class ToggleGroupDirective implements OnDestroy, AfterViewInit, ControlVa
         ))
         .subscribe()
     })
+
+    this.optionDirectives?.changes.subscribe(() => this._updateDirectiveStates())
   }
 
   get value(): string | string[] | undefined | null {
