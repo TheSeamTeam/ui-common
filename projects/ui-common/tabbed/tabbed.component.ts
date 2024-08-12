@@ -2,6 +2,9 @@ import {
   AfterContentInit, Component, ContentChildren, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList
 } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
+import { BehaviorSubject, combineLatest, shareReplay, tap } from 'rxjs'
+
+import { isNullOrUndefined } from '@theseam/ui-common/utils'
 
 import { TabbedItemComponent } from './tabbed-item/tabbed-item.component'
 import { TabbedService, TabsDirection } from './tabbed.service'
@@ -17,7 +20,15 @@ export class TabbedComponent implements OnInit, AfterContentInit, OnDestroy {
   private _direction: TabsDirection = 'vertical'
   private _hideTabs = false
 
-  @ContentChildren(TabbedItemComponent) tabbedItems?: QueryList<TabbedItemComponent>
+  @ContentChildren(TabbedItemComponent)
+  set tabbedItems(val: QueryList<TabbedItemComponent> | undefined) {
+    this._tabbedItems.next(val)
+  }
+  get tabbedItems(): QueryList<TabbedItemComponent> | undefined {
+    return this._tabbedItems.value
+  }
+  private readonly _tabbedItems = new BehaviorSubject<QueryList<TabbedItemComponent> | undefined>(undefined)
+  public readonly tabbedItems$ = this._tabbedItems.asObservable()
 
   @Output() tabChanged = new EventEmitter<TabbedItemComponent>()
 
@@ -50,24 +61,21 @@ export class TabbedComponent implements OnInit, AfterContentInit, OnDestroy {
         return this.tabbedItems?.find(t => t.name === childPath)
       }
     } else {
-      return this._selectedTab
+      return this._selectedTab.value
     }
   }
-  set selectedTab(tab: TabbedItemComponent | undefined) { this._selectedTab = tab }
-  private _selectedTab: TabbedItemComponent | undefined
+  set selectedTab(tab: TabbedItemComponent | undefined) { this._selectedTab.next(tab) }
+  private readonly _selectedTab = new BehaviorSubject<TabbedItemComponent | undefined>(undefined)
+  public readonly selectedTab$ = this._selectedTab.asObservable().pipe(
+    shareReplay({ bufferSize: 1, refCount: true })
+  )
 
-  private _activeTabNameTimeout: any
   @Input()
   set activeTabName(val: string) {
-    clearTimeout(this._activeTabNameTimeout)
-    this._activeTabNameTimeout = setTimeout(() => {
-      if (!val) {
-        this.selectedTab = undefined
-      } else {
-        this.selectTab(val)
-      }
-    })
+    this._activeTabName.next(val)
   }
+  private readonly _activeTabName = new BehaviorSubject<string | undefined>(undefined)
+  private readonly activeTabName$ = this._activeTabName.asObservable()
 
   constructor(
     public tabbedService: TabbedService,
@@ -84,9 +92,9 @@ export class TabbedComponent implements OnInit, AfterContentInit, OnDestroy {
   }
 
   ngAfterContentInit() {
-    if (this.tabbedItems && this.tabbedItems.length > 0) {
-      this.selectedTab = this.tabbedItems.first
-    }
+    combineLatest([ this.tabbedItems$, this.activeTabName$ ]).pipe(
+      tap(([ _, activeTabName ]) => this.selectTab(activeTabName))
+    ).subscribe()
   }
 
   /**
@@ -104,12 +112,17 @@ export class TabbedComponent implements OnInit, AfterContentInit, OnDestroy {
    * TODO: Make more generic, so that the name isn't the only way
    *  to select a tab
    */
-  public selectTab(name: string) {
+  public selectTab(name?: string) {
+    if (isNullOrUndefined(name) || name === this.selectedTab?.name) {
+      return
+    }
+
     const tab = this.tabbedItems?.find(t => t.name === name)
     if (tab) {
       this.selectedTab = tab
-    } else {
-      throw new Error(`Tab with name '${name}' not found`)
+    }
+    else {
+      console.warn(`Tab with name '${name}' not found`)
     }
   }
 
