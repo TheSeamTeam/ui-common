@@ -23,7 +23,7 @@ class FakeModalRef<T, R = any> implements Partial<ModalRef<T, R>> {
         dir="ltr"
         style="justify-content: flex-start; align-items: center; pointer-events: auto"
         seamOverlayScrollbar>
-        <div class="seam-modal-container modal-dialog modal-dialog-centered {{ modalConfig?.modalSize ? 'modal-' + modalConfig.modalSize : 'modal-lg' }}"
+        <div class="seam-modal-container modal-dialog modal-dialog-centered {{ modalConfig?.modalSize ? 'modal-' + modalConfig?.modalSize : 'modal-lg' }}"
           tabindex="-1"
           [class.modal-lg]="!modalConfig">
           <div class="modal-content">
