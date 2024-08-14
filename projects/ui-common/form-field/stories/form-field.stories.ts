@@ -5,17 +5,18 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms'
 
 import { NgSelectModule } from '@ng-select/ng-select'
 import dedent from 'ts-dedent'
+import { getHarness } from '@theseam/ui-common/testing'
+import { TheSeamCheckboxComponent, TheSeamCheckboxHarness } from '@theseam/ui-common/checkbox'
 
 import { TheSeamFormFieldComponent } from '../form-field.component'
 import { TheSeamFormFieldModule } from '../form-field.module'
-import { TheSeamFormFieldRequiredIndicatorHarness } from '../testing'
-import { getHarness } from '@theseam/ui-common/testing'
+import { TheSeamFormFieldHarness, TheSeamFormFieldRequiredIndicatorHarness } from '../testing'
 
 interface ExtraArgs { }
 
 type StoryComponentType = TheSeamFormFieldComponent & ExtraArgs
 
-const meta: Meta<TheSeamFormFieldComponent> = {
+const meta: Meta<StoryComponentType> = {
   title: 'Form Field/Components',
   tags: [ 'autodocs' ],
   component: TheSeamFormFieldComponent,
@@ -53,6 +54,9 @@ export const Simple: Story = {
   play: async ({ canvasElement, fixture }) => {
     const requiredIndicatorHarness = await getHarness(TheSeamFormFieldRequiredIndicatorHarness, { canvasElement, fixture })
     await expect(await requiredIndicatorHarness.isIndicatorVisible()).toBe(false)
+
+    const formFieldHarness = await getHarness(TheSeamFormFieldHarness, { canvasElement, fixture })
+    await expect(await formFieldHarness.getLabel()).toBe('Example')
   },
 }
 
@@ -214,6 +218,9 @@ export const RequiredIndicator: Story = {
   play: async ({ canvasElement, fixture }) => {
     const requiredIndicatorHarness = await getHarness(TheSeamFormFieldRequiredIndicatorHarness, { canvasElement, fixture })
     await expect(await requiredIndicatorHarness.isIndicatorVisible()).toBe(true)
+
+    const formFieldHarness = await getHarness(TheSeamFormFieldHarness, { canvasElement, fixture })
+    await expect(await formFieldHarness.getLabel()).toBe('Example')
   },
 }
 
@@ -249,6 +256,33 @@ export const RequiredIndicatorLabelTemplateCustom: Story = {
       </seam-form-field>
     `,
   }),
+}
+
+export const RequiredIndicatorToggle: Story = {
+  decorators: [
+    moduleMetadata({
+      imports: [ TheSeamCheckboxComponent ],
+    }),
+  ],
+  render: args => ({
+    props: {
+      ...args,
+      control: new FormControl(''),
+    },
+    template: `
+      <seam-checkbox #checkbox>Required</seam-checkbox>
+      <seam-form-field label="Example">
+        <input seamInput [formControl]="control" [required]="checkbox.checked">
+      </seam-form-field>
+    `,
+  }),
+  play: async ({ canvasElement, fixture }) => {
+    const requiredIndicatorHarness = await getHarness(TheSeamFormFieldRequiredIndicatorHarness, { canvasElement, fixture })
+    const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
+    await expect(await requiredIndicatorHarness.isIndicatorVisible()).toBe(false)
+    await checkboxHarness.click()
+    await expect(await requiredIndicatorHarness.isIndicatorVisible()).toBe(true)
+  },
 }
 
 export const Password: Story = {

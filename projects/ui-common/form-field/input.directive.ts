@@ -1,5 +1,5 @@
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion'
-import { Directive, DoCheck, ElementRef, HostBinding, Input, Optional, Self } from '@angular/core'
+import { Directive, DoCheck, ElementRef, HostBinding, Input, OnChanges, Optional, Self, SimpleChanges } from '@angular/core'
 import { FormGroupDirective, NgControl, NgForm } from '@angular/forms'
 import { Subject } from 'rxjs'
 
@@ -18,7 +18,7 @@ let nextUniqueId = 0
   selector: 'input[seamInput], textarea[seamInput], ng-select[seamInput], seam-checkbox[seamInput] [ngbRadioGroup], seam-tel-input[seamInput], quill-editor[seamInput], seam-google-maps[seamInput]',
   exportAs: 'seamInput',
 })
-export class InputDirective implements DoCheck {
+export class InputDirective implements DoCheck, OnChanges {
   static ngAcceptInputType_required: BooleanInput
   static ngAcceptInputType_disabled: BooleanInput
   static ngAcceptInputType_readonly: BooleanInput
@@ -63,22 +63,10 @@ export class InputDirective implements DoCheck {
   }
   protected _type: string | undefined | null = 'text'
 
-  /**
-   * Implemented as part of MatFormFieldControl.
-   * @docs-private
-   */
   @Input() placeholder: string | undefined | null
 
-  /**
-   * Implemented as part of MatFormFieldControl.
-   * @docs-private
-   */
   @Input() @InputBoolean() required = false
 
-  /**
-   * Implemented as part of MatFormFieldControl.
-   * @docs-private
-   */
   @Input()
   get disabled(): boolean {
     if (this.ngControl && this.ngControl.disabled !== null) {
@@ -114,6 +102,14 @@ export class InputDirective implements DoCheck {
   /** Whether the element is readonly. */
   @Input() @InputBoolean() readonly = false
 
+  private readonly _requiredChange = new Subject<boolean>()
+  private readonly _disabledChange = new Subject<boolean>()
+  private readonly _readonlyChange = new Subject<boolean>()
+
+  public readonly requiredChange = this._requiredChange.asObservable()
+  public readonly disabledChange = this._disabledChange.asObservable()
+  public readonly readonlyChange = this._readonlyChange.asObservable
+
   constructor(
     public _elementRef: ElementRef<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
     @Optional() @Self() public ngControl: NgControl,
@@ -128,6 +124,18 @@ export class InputDirective implements DoCheck {
 
     if (!this._shouldHaveFormControlCssClass()) {
       this._isFormControl = false
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.required) {
+      this._requiredChange.next(this.required)
+    }
+    if (changes.disabled) {
+      this._disabledChange.next(this.disabled)
+    }
+    if (changes.readonly) {
+      this._readonlyChange.next(this.readonly)
     }
   }
 
@@ -182,13 +190,6 @@ export class InputDirective implements DoCheck {
   protected _isQuillEditor() {
     return this._elementRef.nativeElement.nodeName.toLowerCase() === 'quill-editor'
   }
-
-  /** Make sure the input is a supported type. */
-  // protected _validateType() {
-  //   if (MAT_INPUT_INVALID_TYPES.indexOf(this._type) > -1) {
-  //     throw getMatInputUnsupportedTypeError(this._type)
-  //   }
-  // }
 
   /** Focuses the input. */
   focus(): void {
