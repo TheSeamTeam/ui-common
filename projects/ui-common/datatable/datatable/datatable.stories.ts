@@ -5,8 +5,8 @@ import { applicationConfig } from '@storybook/angular/dist/client/decorators'
 import { AfterViewInit, Component, Input, OnInit, ViewChild, importProvidersFrom } from '@angular/core'
 import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms'
 import { provideAnimations } from '@angular/platform-browser/animations'
-import { BehaviorSubject, Observable, of } from 'rxjs'
-import { shareReplay } from 'rxjs/operators'
+import { BehaviorSubject, Observable, interval, of } from 'rxjs'
+import { map, shareReplay, tap } from 'rxjs/operators'
 
 import { CSVDataExporter } from '@theseam/ui-common/data-exporter'
 import { DataFilterState, TheSeamDataFiltersModule } from '@theseam/ui-common/data-filters'
@@ -172,20 +172,20 @@ export const ActionMenu = (args: any) => ({
       class="w-100 h-100"
       [columns]="__hack.columns"
       [rows]="__hack.rows">
-      <ng-template seamDatatableRowActionItem let-row>
-        <seam-datatable-action-menu>
-          <seam-datatable-action-menu-item label="Action One"></seam-datatable-action-menu-item>
-          <seam-datatable-action-menu-item label="Action Two"></seam-datatable-action-menu-item>
-          <seam-datatable-action-menu-item label="Action Three" [subMenu]="subMenuOne"></seam-datatable-action-menu-item>
-          <seam-datatable-action-menu-item label="Action Four"></seam-datatable-action-menu-item>
-        </seam-datatable-action-menu>
+        <ng-template seamDatatableRowActionItem let-row>
+          <seam-datatable-action-menu>
+            <seam-datatable-action-menu-item label="Action One"></seam-datatable-action-menu-item>
+            <seam-datatable-action-menu-item label="Action Two"></seam-datatable-action-menu-item>
+            <seam-datatable-action-menu-item label="Action Three" [subMenu]="subMenuOne"></seam-datatable-action-menu-item>
+            <seam-datatable-action-menu-item label="Action Four"></seam-datatable-action-menu-item>
+          </seam-datatable-action-menu>
 
-        <seam-datatable-action-menu isSubMenu="true" #subMenuOne>
-          <seam-datatable-action-menu-item label="Action One"></seam-datatable-action-menu-item>
-          <seam-datatable-action-menu-item label="Action Two"></seam-datatable-action-menu-item>
-          <seam-datatable-action-menu-item label="Action Three"></seam-datatable-action-menu-item>
-        </seam-datatable-action-menu>
-      </ng-template>
+          <seam-datatable-action-menu isSubMenu="true" #subMenuOne>
+            <seam-datatable-action-menu-item label="Action One"></seam-datatable-action-menu-item>
+            <seam-datatable-action-menu-item label="Action Two"></seam-datatable-action-menu-item>
+            <seam-datatable-action-menu-item label="Action Three"></seam-datatable-action-menu-item>
+          </seam-datatable-action-menu>
+        </ng-template>
     </seam-datatable>`,
 })
 ActionMenu.args = {
@@ -881,4 +881,89 @@ GraphQLQueryRef.play = async ({ canvasElement, fixture }) => {
   const page2BtnHarness = await (await datatableHarness.getPager()).getPageButtonHarness(2)
   await (await page2BtnHarness.getAnchor()).click()
   await expectFn(await datatableHarness.getCurrentPage()).toBe(2)
+}
+
+@Component({
+  selector: 'dt-wrap',
+  template: `
+    <seam-datatable #dt
+      class="w-100 h-100"
+      [columns]="columns"
+      [rows]="rows">
+
+      <ng-template seamDatatableRowActionItem let-row>
+        <seam-datatable-action-menu>
+          <ng-container *ngIf="showActionMenu$ | async">
+            <seam-datatable-action-menu-item label="Action One"></seam-datatable-action-menu-item>
+            <seam-datatable-action-menu-item label="Action Two"></seam-datatable-action-menu-item>
+            <seam-datatable-action-menu-item label="Action Three" [subMenu]="subMenuOne"></seam-datatable-action-menu-item>
+            <seam-datatable-action-menu-item label="Action Four"></seam-datatable-action-menu-item>
+          </ng-container>
+        </seam-datatable-action-menu>
+
+        <seam-datatable-action-menu isSubMenu="true" #subMenuOne>
+          <seam-datatable-action-menu-item label="Action One"></seam-datatable-action-menu-item>
+          <seam-datatable-action-menu-item label="Action Two"></seam-datatable-action-menu-item>
+          <seam-datatable-action-menu-item label="Action Three"></seam-datatable-action-menu-item>
+        </seam-datatable-action-menu>
+      </ng-template>
+
+    </seam-datatable>
+  `,
+})
+class ConditionalActionMenuComponent {
+
+  @Input() columns: any
+
+  @Input() rows: any
+
+  public showActionMenu$: Observable<boolean>
+
+  constructor()
+  {
+    this.showActionMenu$ = interval(5000).pipe(
+      map(i => i % 2 === 0),
+      tap(show => console.log('showActionMenu', show))
+    )
+  }
+
+}
+
+export const ConditionalActionMenu = (args: any) => ({
+  moduleMetadata: {
+    declarations: [
+      ConditionalActionMenuComponent
+    ]
+  },
+  props: {
+    __hack: {
+      ...args,
+      columns: [
+        { prop: 'name', name: 'Name' },
+        { prop: 'age', name: 'Age' },
+        { prop: 'color', name: 'Color' },
+      ],
+      rows: [
+        { name: 'Mark', age: 27, color: 'blue' },
+        { name: 'Joe', age: 33, color: 'green' },
+      ],
+    },
+  },
+  template: `
+    <dt-wrap
+      class="w-100 h-100"
+      [columns]="__hack.columns"
+      [rows]="__hack.rows">
+    </dt-wrap>`,
+})
+ConditionalActionMenu.args = {
+  columns: [
+    { prop: 'name', name: 'Name' },
+    { prop: 'age', name: 'Age' },
+    { prop: 'color', name: 'Color' },
+  ],
+  rows: [
+    { name: 'Mark', age: 27, color: 'blue' },
+    { name: 'Joe', age: 33, color: 'green' },
+  ],
 }

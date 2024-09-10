@@ -324,7 +324,7 @@ export class DatatableComponent
   }
 
   @ContentChild(DatatableActionMenuComponent, { static: true }) actionMenu?: DatatableActionMenuComponent
-  @ContentChild(DatatableRowActionItemDirective, { static: true })
+  @ContentChild(DatatableRowActionItemDirective)
   get rowActionItem(): DatatableRowActionItemDirective | undefined { return this._rowActionItem }
   set rowActionItem(value: DatatableRowActionItemDirective | undefined) {
     this._rowActionItem = value

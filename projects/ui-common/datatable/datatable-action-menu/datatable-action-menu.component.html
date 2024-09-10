@@ -55,7 +55,7 @@
   </ng-container>
 </seam-menu>
 
-<ng-container *ngIf="!isSubMenu">
+<ng-container *ngIf="!isSubMenu && items?.length">
   <button type="button" class="datatable-action-button btn"
     [seamMenuToggle]="menu"
     [positions]="_actionMenuPositions || []"
