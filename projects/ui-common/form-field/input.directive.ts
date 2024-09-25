@@ -15,7 +15,7 @@ let nextUniqueId = 0
 @Directive({
   // TODO: Consider removing restriction and instead adding a dev warning. A few
   // inputs in the app need to be changed for this first.
-  selector: 'input[seamInput], textarea[seamInput], ng-select[seamInput], seam-checkbox[seamInput] [ngbRadioGroup], seam-tel-input[seamInput], quill-editor[seamInput], seam-google-maps[seamInput]',
+  selector: 'input[seamInput], textarea[seamInput], ng-select[seamInput], seam-checkbox[seamInput] [ngbRadioGroup], seam-tel-input[seamInput], quill-editor[seamInput], seam-google-maps[seamInput], seam-rich-text[seamInput]',
   exportAs: 'seamInput',
 })
 export class InputDirective implements DoCheck, OnChanges {
@@ -155,7 +155,8 @@ export class InputDirective implements DoCheck, OnChanges {
       !this._isRadioInput() &&
       !this._isNgbRadioGroup() &&
       !this._isTelInput() &&
-      !this._isQuillEditor()
+      !this._isQuillEditor() &&
+      !this._isRichTextEditor()
   }
 
   /** Determines if the component host is a textarea. */
@@ -189,6 +190,10 @@ export class InputDirective implements DoCheck, OnChanges {
 
   protected _isQuillEditor() {
     return this._elementRef.nativeElement.nodeName.toLowerCase() === 'quill-editor'
+  }
+
+  protected _isRichTextEditor() {
+    return this._elementRef.nativeElement.nodeName.toLowerCase() === 'seam-rich-text'
   }
 
   /** Focuses the input. */

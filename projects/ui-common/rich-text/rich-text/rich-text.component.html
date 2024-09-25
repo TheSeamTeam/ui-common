@@ -1,0 +1,65 @@
+<div class="editor" *ngIf="configSet$ | async" [class.initializing]="!(initialized$ | async)">
+  <ng-container *ngIf="config$ | async as config">
+    <quill-editor
+      #quillEditor
+      seamInput
+      [class.disabled]="readOnly"
+      [attr.disabled]="readOnly"
+      [formControl]="formControl"
+      [placeholder]="placeholder"
+      [readOnly]="readOnly"
+      [required]="required"
+      [minLength]="minLength"
+      [maxLength]="maxLength"
+      [format]="config.format"
+      [theme]="config.theme"
+      [modules]="config.modules"
+      [debug]="config.debug"
+      [formats]="config.formats"
+      [customToolbarPosition]="config.customToolbarPosition"
+      [sanitize]="config.sanitize"
+      [styles]="config.styles"
+      [strict]="config.strict"
+      [scrollingContainer]="config.scrollingContainer"
+      [bounds]="config.bounds"
+      [customOptions]="config.customOptions"
+      [customModules]="config.customModules"
+      [trackChanges]="config.trackChanges"
+      [preserveWhitespace]="config.preserveWhitespace"
+      [classes]="config.classes"
+      [trimOnValidation]="config.trimOnValidation"
+      [linkPlaceholder]="config.linkPlaceholder"
+      [compareValues]="config.compareValues"
+      [filterNull]="config.filterNull"
+      [debounceTime]="config.debounceTime"
+      [class.can-resize]="resizable"
+      (onEditorCreated)="_onEditorCreated($event)"
+      (onEditorChanged)="_onEditorChanged($event)"
+      (onContentChanged)="_onContentChanged($event)"
+      (onSelectionChanged)="_onSelectionChanged($event)"
+      (onFocus)="_onFocus($event)"
+      (onBlur)="_onBlur($event)"></quill-editor>
+    <ng-container *ngIf="displayCharacterCounter">
+      <ng-container
+        [ngTemplateOutlet]="characterCounterTpl"
+        [ngTemplateOutletContext]="{ $implicit: characterCount$ | async, minLength: minLength, maxLength: maxLength, characterCount: characterCount$ | async }"></ng-container>
+    </ng-container>
+  </ng-container>
+</div>
+
+<ng-template #characterCounter let-implicit let-minLength="minLength" let-maxLength="maxLength" let-characterCount="characterCount">
+  <div class="small text-black-50 text-right">
+    <ng-container *ngIf="characterCount || characterCount === 0">
+      Character Count:
+      <span [class.text-danger]="characterCount && ((maxLength && characterCount > maxLength) || (minLength && characterCount < minLength))">
+        {{ characterCount | number }}
+      </span>
+      <ng-container *ngIf="maxLength">
+        / {{ maxLength }}
+      </ng-container>
+      <span *ngIf="minLength" class="font-italic">
+        (minimum {{ minLength }} expected)
+      </span>
+    </ng-container>
+  </div>
+</ng-template>

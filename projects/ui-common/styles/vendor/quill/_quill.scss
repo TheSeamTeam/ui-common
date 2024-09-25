@@ -1,26 +1,178 @@
 @import 'quill/dist/quill.core';
 @import 'quill/dist/quill.bubble';
 @import 'quill/dist/quill.snow';
+@import 'quill-mention/dist/quill.mention';
+
+$quill-input-border-radius: $input-border-radius !default;
+
+$quill-mention-menu-bg: $dropdown-bg !default;
+$quill-mention-menu-border-color: $dropdown-border-color !default;
+$quill-mention-menu-border-radius: $dropdown-border-radius !default;
+$quill-mention-menu-border-width: $dropdown-border-width !default;
+$quill-mention-menu-box-shadow: $dropdown-box-shadow !default;
+$quill-mention-menu-color: $dropdown-color !default;
+$quill-mention-menu-font-size: $dropdown-font-size !default;
+$quill-mention-menu-margin: 0 !default;
+$quill-mention-menu-min-width: $dropdown-min-width !default;
+$quill-mention-menu-padding: $dropdown-padding-y $dropdown-padding-x !default;
+$quill-mention-menu-text-align: left !default;
+
+$quill-mention-menu-loading-color: rgba(black, .5) !default;
+$quill-mention-menu-loading-text-align: center !default;
+
+$quill-mention-menu-item-line-height: 24px !default;
+$quill-mention-menu-item-padding: .25rem 1.5rem !default;
+
+$quill-mention-menu-divider-bg: $dropdown-divider-bg !default;
+$quill-mention-menu-divider-margin: $dropdown-divider-margin-y 0 !default;
+
+$quill-mention-menu-item-selected-bg: $primary !default;
+$quill-mention-menu-item-selected-color: white !default;
+
+$quill-mention-menu-item-disabled-color: rgba(black, .5) !default;
+
+$quill-mention-menu-item-group-name-color: $quill-mention-menu-item-disabled-color !default;
+$quill-mention-menu-item-group-name-font-size: $small-font-size !default;
+
+$quill-mention-bg: $quill-mention-menu-item-selected-bg !default;
+$quill-mention-color: $quill-mention-menu-item-selected-color !default;
+$quill-mention-border-radius: 1rem !default;
+$quill-mention-padding: 3px !default;
+$quill-mention-denotation-margin: 0 0 2px 0 !default;
 
 quill-editor {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  @include border-top-radius($quill-input-border-radius);
+  @include border-bottom-radius($quill-input-border-radius);
+
+  .ql-container {
+    flex-grow: 1;
+    font-family: inherit;
+    font-size: inherit;
+  }
 
   .ql-snow.ql-toolbar {
-    @include border-top-radius($input-border-radius);
-
+    @include border-top-radius($quill-input-border-radius);
   }
+
   .ql-snow.ql-container {
-    @include border-bottom-radius($input-border-radius);
-
+    @include border-top-radius($quill-input-border-radius);
+    @include border-bottom-radius($quill-input-border-radius);
   }
 
-  @each $state, $data in $form-validation-states {
-    &.is-#{$state} {
-      .ql-toolbar,
-      .ql-container {
-        border-color: map-get($data, color);
-      }
+  .ql-snow.ql-toolbar + .ql-snow.ql-container {
+    @include border-top-radius(0px);
+  }
+
+  // overwrites ql styles with bootstrap styles,
+  // which matches final rendering better
+  .ql-snow .ql-editor {
+    @import "bootstrap/scss/reboot";
+    @import "bootstrap/scss/type";
+  }
+
+  &:focus-within {
+    color: $input-focus-color;
+    background-color: $input-focus-bg;
+    outline: 0;
+    @if $enable-shadows {
+      @include box-shadow($input-box-shadow, $input-focus-box-shadow);
+    } @else {
+      // Avoid using mixin so we can pass custom focus shadow properly
+      box-shadow: $input-focus-box-shadow;
+    }
+
+    .ql-toolbar,
+    .ql-container {
+      border-color: $input-focus-border-color;
     }
   }
 
+  seam-rich-text.is-invalid & {
+    .ql-toolbar,
+    .ql-container {
+      border-color: $form-feedback-invalid-color;
+    }
+
+    &:focus-within {
+      box-shadow: 0 0 0 $input-focus-width rgba($form-feedback-invalid-color, .25);
+    }
+  }
+
+  &.disabled,
+  &:disabled {
+    pointer-events: none;
+
+    .ql-formats {
+      opacity: .5;
+    }
+
+    .ql-toolbar,
+    .ql-container {
+      background-color: $input-disabled-bg;
+    }
+  }
+}
+
+// copied from seam-menu
+.ql-mention-list-container {
+  max-height: 90vh;
+  list-style: none;
+  background-clip: padding-box;
+  text-align: $quill-mention-menu-text-align;
+  min-width: $quill-mention-menu-min-width;
+  padding: $quill-mention-menu-padding;
+  margin: $quill-mention-menu-margin;
+  color: $quill-mention-menu-color;
+  background: $quill-mention-menu-bg;
+  border: $quill-mention-menu-border-width solid $quill-mention-menu-border-color;
+  @include font-size($quill-mention-menu-font-size);
+  @include border-radius($quill-mention-menu-border-radius);
+  @include box-shadow($quill-mention-menu-box-shadow);
+
+  .ql-mention-loading {
+    color: $quill-mention-menu-loading-color;
+    text-align: $quill-mention-menu-loading-text-align;
+  }
+
+  .ql-mention-list-item {
+    line-height: $quill-mention-menu-item-line-height;
+    padding: $quill-mention-menu-item-padding;
+  }
+
+  .ql-mention-list-item.selected {
+    background: $quill-mention-menu-item-selected-bg;
+    color: $quill-mention-menu-item-selected-color;
+  }
+
+  .ql-mention-list-item.disabled {
+    color: $quill-mention-menu-item-disabled-color;
+  }
+
+  .ql-mention-list-item[data-type='divider'] {
+    @include nav-divider($quill-mention-menu-divider-bg, $quill-mention-menu-divider-margin, true);
+
+    &:first-child,
+    &:last-child,
+    + .ql-mention-list-item[data-type='divider'] {
+      display: none;
+    }
+  }
+
+  .ql-mention-list-item[data-type='groupName'] {
+    color: $quill-mention-menu-item-group-name-color;
+    font-size: $quill-mention-menu-item-group-name-font-size;
+  }
+}
+
+.mention {
+  background: $quill-mention-bg;
+  color: $quill-mention-color;
+  border-radius: $quill-mention-border-radius;
+  padding: $quill-mention-padding;
+
+  .ql-mention-denotation-char {
+    margin: $quill-mention-denotation-margin;
+  }
 }

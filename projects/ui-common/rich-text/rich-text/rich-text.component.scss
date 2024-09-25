@@ -1,0 +1,29 @@
+@import '../../styles/utilities';
+
+:host {
+  .editor {
+    position: relative;
+
+    &.initializing {
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: $light;
+        z-index: 1;
+      }
+    }
+  }
+
+  quill-editor {
+    &.can-resize {
+      ::ng-deep .ql-editor {
+        overflow: auto;
+        resize: vertical;
+      }
+    }
+  }
+}
