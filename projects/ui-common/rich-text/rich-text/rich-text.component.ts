@@ -1,5 +1,5 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { AfterViewInit, Component, EventEmitter, Inject, Input, OnInit, Optional, Output, Provider, Renderer2, TemplateRef, ViewChild, forwardRef } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, HostListener, Inject, Input, OnDestroy, OnInit, Optional, Output, Provider, Renderer2, TemplateRef, ViewChild, forwardRef } from '@angular/core';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { Blur, ContentChange, EditorChangeContent, EditorChangeSelection, Focus, QuillEditorComponent, SelectionChange } from 'ngx-quill';
@@ -25,7 +25,7 @@ export const RICH_TEXT_VALUE_ACCESSOR: Provider = {
     RICH_TEXT_VALUE_ACCESSOR
   ]
 })
-export class RichTextComponent implements OnInit, AfterViewInit, ControlValueAccessor {
+export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor {
 
   onChange: any
   onTouched: any
@@ -325,10 +325,10 @@ export class RichTextComponent implements OnInit, AfterViewInit, ControlValueAcc
   @Output() mentionsUpdated: EventEmitter<TheSeamQuillMentionMenuOption[]> = new EventEmitter()
 
   @ViewChild('quillEditor')
-  get quillEditor(): TemplateRef<QuillEditorComponent> | undefined {
+  get quillEditor(): QuillEditorComponent | undefined {
     return this._quillEditor
   }
-  set quillEditor(value: TemplateRef<QuillEditorComponent> | undefined) {
+  set quillEditor(value: QuillEditorComponent | undefined) {
     this._quillEditor = value
 
     // setTimeout because full html isn't available until the next tick
@@ -336,9 +336,21 @@ export class RichTextComponent implements OnInit, AfterViewInit, ControlValueAcc
       this._pollCalculatedRowHeight.next()
     }, 0)
   }
-  private _quillEditor: TemplateRef<QuillEditorComponent> | undefined
+  private _quillEditor: QuillEditorComponent | undefined
 
   @ViewChild('characterCounter') defaultCharacterCounterTpl: TemplateRef<any> | undefined
+
+  @HostListener('keydown', ['$event'])
+  _handleKeydown(event: KeyboardEvent) {
+    if (event.code === 'Escape') {
+      const qlEditor = this._quillEditor?.editorElem?.querySelector('.ql-editor')
+      if (notNullOrUndefined(qlEditor) && qlEditor === document.activeElement && qlEditor instanceof HTMLElement) {
+        event.preventDefault()
+        event.stopImmediatePropagation()
+        qlEditor.blur()
+      }
+    }
+  }
 
   private _isWritingValue = false
 
@@ -437,6 +449,15 @@ export class RichTextComponent implements OnInit, AfterViewInit, ControlValueAcc
     }
 
     this._templateSet.next(true)
+  }
+
+  ngOnDestroy(): void {
+    // hacky way to ensure mentions menu gets destroyed when component is destroyed
+    const mentionModule = this._quillEditor?.quillEditor.getModule('mention')
+    const hideMentionList = mentionModule?.hideMentionList
+    if (hideMentionList && typeof hideMentionList === 'function') {
+      hideMentionList.call(mentionModule)
+    }
   }
 
   private _buildQuillConfig() {
