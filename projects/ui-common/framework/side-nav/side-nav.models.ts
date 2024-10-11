@@ -2,8 +2,6 @@ import { IsActiveMatchOptions, UrlCreationOptions } from '@angular/router'
 import { SeamIcon } from '@theseam/ui-common/icon'
 import type { ThemeTypes } from '@theseam/ui-common/models'
 
-import { SideNavItemBadgeTooltip } from './side-nav-item/side-nav-item.component'
-
 export interface ISideNavItemState {
   // parent?: ISideNavItem
   active: boolean
@@ -84,6 +82,14 @@ export interface SideNavItemStateChanged {
   prop: string
   prevValue: any
   newValue: any
+}
+
+export interface SideNavItemBadgeTooltip {
+  tooltip?: string
+  class?: string
+  placement?: string
+  container?: string
+  disabled?: boolean
 }
 
 /**

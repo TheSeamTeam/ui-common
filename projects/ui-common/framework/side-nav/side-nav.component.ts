@@ -9,13 +9,12 @@ import {
   trigger
 } from '@angular/animations'
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion'
-import { TemplatePortal } from '@angular/cdk/portal'
+import { PortalModule, TemplatePortal } from '@angular/cdk/portal'
 import {
   ChangeDetectionStrategy,
   Component,
   ContentChild,
   EventEmitter,
-  forwardRef,
   HostBinding,
   Inject,
   Input,
@@ -27,19 +26,26 @@ import {
   ViewContainerRef,
   ViewEncapsulation,
 } from '@angular/core'
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router'
+import { CommonModule } from '@angular/common'
+import { A11yModule } from '@angular/cdk/a11y'
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs'
-import { distinctUntilChanged, filter, map, mapTo, pairwise, shareReplay, startWith, switchMap, takeUntil, tap } from 'rxjs/operators'
+import { distinctUntilChanged, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators'
 
-import { InputBoolean } from '@theseam/ui-common/core'
-import { TheSeamLayoutService } from '@theseam/ui-common/layout'
+import { faBars } from '@fortawesome/free-solid-svg-icons'
+import { InputBoolean, InputNumber } from '@theseam/ui-common/core'
+import { TheSeamLayoutModule, TheSeamLayoutService } from '@theseam/ui-common/layout'
+import { SeamIcon } from '@theseam/ui-common/icon'
+import { TheSeamScrollbarModule } from '@theseam/ui-common/scrollbar'
 
 import { ITheSeamBaseLayoutNav, ITheSeamBaseLayoutRef, THESEAM_BASE_LAYOUT_REF } from '../base-layout/index'
 
 import { BaseLayoutSideBarFooterDirective } from '../base-layout/directives/base-layout-side-bar-footer.directive'
+import { BaseLayoutSideBarHeaderDirective } from '../base-layout/directives/base-layout-side-bar-header.directive'
 import { THESEAM_SIDE_NAV_ACCESSOR } from './side-nav-tokens'
 import { ISideNavItem, SideNavItemMenuItemTooltipConfig } from './side-nav.models'
 import { TheSeamSideNavService } from './side-nav.service'
+import { SideNavToggleComponent } from './side-nav-toggle/side-nav-toggle.component'
+import { SideNavItemComponent } from './side-nav-item/side-nav-item.component'
 
 const EXPANDED_STATE = 'expanded'
 const COLLAPSED_STATE = 'collapsed'
@@ -82,8 +88,7 @@ export function sideNavExpandStateChangeFn(fromState: string, toState: string) {
     TheSeamSideNavService,
     {
       provide: THESEAM_SIDE_NAV_ACCESSOR,
-      // tslint:disable-next-line:no-use-before-declare
-      useExisting: forwardRef(() => SideNavComponent)
+      useExisting: SideNavComponent
     },
   ],
   animations: [
@@ -115,33 +120,47 @@ export function sideNavExpandStateChangeFn(fromState: string, toState: string) {
     ]),
 
     trigger('sideNavExpand', [
-      // TODO: Make width configurable.
+      // TODO: Make width configurable for non-overlay state.
       state(EXPANDED_STATE, style({ width: '260px' })),
       state(COLLAPSED_STATE, style({ width: '50px', 'overflow-x': 'hidden' })),
 
       state(EXPANDED_OVERLAY_STATE, style({
-        position: 'absolute',
-        top: 0,
-        height: '100%',
-        bottom: 0,
-        left: 0,
-        float: 'left',
-        zIndex: '9999',
-        width: 'calc(100vw - 50px)',
-        transform: 'translateX(0)'
-      })),
+          position: 'absolute',
+          top: 0,
+          bottom: 0,
+          left: 0,
+          height: '{{ height }}',
+          width: '{{ width }}',
+          transform: '{{ origin }}',
+          zIndex: '9999',
+        }),
+        {
+          params: {
+            origin: 'translateX(100%)',
+            height: '100%',
+            width: 'calc(100vw - 50px)',
+          }
+        }
+      ),
       state(COLLAPSED_OVERLAY_STATE, style({
-        position: 'absolute',
-        top: 0,
-        height: '100%',
-        bottom: 0,
-        left: 0,
-        float: 'left',
-        zIndex: '9999',
-        width: 'calc(100vw - 50px)',
-        transform: 'translateX(calc(-100vw + 50px))',
-        'overflow-x': 'hidden'
-      })),
+          position: 'absolute',
+          top: 0,
+          bottom: 0,
+          left: 0,
+          height: '{{ height }}',
+          width: '{{ width }}',
+          transform: '{{ origin }}',
+          'overflow-x': 'hidden',
+          zIndex: '9999',
+        }),
+        {
+          params: {
+            origin: 'translateX(0)',
+            height: '100%',
+            width: 'calc(100vw - 50px)',
+          }
+        }
+      ),
 
       // transition(`${EXPANDED_STATE} <=> ${COLLAPSED_STATE}`, animate('0.2s ease-in-out')),
 
@@ -159,13 +178,25 @@ export function sideNavExpandStateChangeFn(fromState: string, toState: string) {
       // ]),
     ])
   ],
+  imports: [
+    CommonModule,
+    A11yModule,
+    TheSeamScrollbarModule,
+    TheSeamLayoutModule,
+    PortalModule,
+    SideNavItemComponent,
+    SideNavToggleComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  standalone: true,
 })
 export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNav {
   static ngAcceptInputType_hasHeaderToggle: BooleanInput
 
   private readonly _ngUnsubscribe = new Subject<void>()
+
+  faBars = faBars
 
   // @HostBinding('@sideNavExpand') _sideNavExpand = EXPANDED_STATE
   // _sideNavExpand = EXPANDED_STATE
@@ -175,11 +206,19 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
 
   @Input() @InputBoolean() hasHeaderToggle = true
 
+  @Input() toggleIcon: SeamIcon | null | undefined = faBars
+
+  @Input() toggleTpl: TemplateRef<any> | undefined | null
+
   @Input()
   get items(): ISideNavItem[] { return this._items.value }
   set items(value: ISideNavItem[]) { this._items.next(value) }
   private _items = new BehaviorSubject<ISideNavItem[]>([])
   public readonly items$: Observable<ISideNavItem[]>
+
+  @Input() hideEmptyIcon: boolean | null | undefined
+
+  @Input() @InputNumber(10) indentSize = 10
 
   @Input()
   get expanded(): boolean { return this._expanded.value }
@@ -194,6 +233,12 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
   }
   private _expanded = new BehaviorSubject<boolean>(true)
   public readonly expanded$ = this._expanded.asObservable()
+
+  @Input() expandOrigin: 'left' | 'right' | 'top' | 'bottom' = 'left'
+
+  @Input() expandHeight = '100%'
+
+  @Input() expandWidth = 'calc(100vw - 50px)'
 
   @Input()
   get overlay(): boolean { return this._overlay.value }
@@ -226,6 +271,9 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
   public readonly sideNavExpandedState$: Observable<string>
   public _backdropHidden = new BehaviorSubject<boolean>(true)
 
+  @ContentChild(BaseLayoutSideBarHeaderDirective, { static: true, read: TemplateRef }) _sideBarHeaderTpl?: TemplateRef<any> | null
+  _sideBarHeaderPortal?: TemplatePortal
+
   @ContentChild(BaseLayoutSideBarFooterDirective, { static: true, read: TemplateRef }) _sideBarFooterTpl?: TemplateRef<any> | null
   _sideBarFooterPortal?: TemplatePortal
 
@@ -236,7 +284,7 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
     @Optional() @Inject(THESEAM_BASE_LAYOUT_REF) private readonly _baseLayoutRef: ITheSeamBaseLayoutRef
   ) {
     this.items$ = this._items.asObservable().pipe(
-      switchMap(items => this._sideNav.createItemsObservable(items)),
+      switchMap(items => items ? this._sideNav.createItemsObservable(items) : []),
       shareReplay({ bufferSize: 1, refCount: true }),
     )
 
@@ -278,6 +326,10 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
       .pipe(takeUntil(this._ngUnsubscribe))
       .subscribe(v => this._sideNavExpand = v)
 
+    if (this._sideBarHeaderTpl) {
+      this._sideBarHeaderPortal = new TemplatePortal(this._sideBarHeaderTpl, this._viewContainerRef)
+    }
+
     if (this._sideBarFooterTpl) {
       this._sideBarFooterPortal = new TemplatePortal(this._sideBarFooterTpl, this._viewContainerRef)
     }
@@ -310,6 +362,24 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
   public animateEnd() {
     if (!this.expanded) {
       this._backdropHidden.next(true)
+    }
+  }
+
+  get expandOriginTransform(): string | null {
+    switch (this.expandOrigin) {
+      case 'right':
+        return this._sideNavExpand === EXPANDED_OVERLAY_STATE ? 'translateX(100vw) translateX(-100%)'
+            : this._sideNavExpand === COLLAPSED_OVERLAY_STATE ? 'translateX(100vw)' : null
+      case 'top':
+        return this._sideNavExpand === EXPANDED_OVERLAY_STATE ? 'translateY(0)'
+            : this._sideNavExpand === COLLAPSED_OVERLAY_STATE ? 'translateY(-100%)' : null
+      case 'bottom':
+        return this._sideNavExpand === EXPANDED_OVERLAY_STATE ? 'translateY(100vh) translateY(-100%)'
+            : this._sideNavExpand === COLLAPSED_OVERLAY_STATE ? 'translateY(100vh)' : null
+      case 'left':
+      default:
+        return this._sideNavExpand === EXPANDED_OVERLAY_STATE ? 'translateX(0)'
+            : this._sideNavExpand === COLLAPSED_OVERLAY_STATE ? 'translateX(-100%)' : null
     }
   }
 

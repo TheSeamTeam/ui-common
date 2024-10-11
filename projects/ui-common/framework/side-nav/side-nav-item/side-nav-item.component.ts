@@ -1,49 +1,32 @@
-import {
-  animate,
-  query,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations'
 import { BooleanInput, coerceBooleanProperty, NumberInput } from '@angular/cdk/coercion'
 import {
   ChangeDetectionStrategy,
   Component,
-  Host,
   HostBinding,
   Inject,
   Input,
   OnDestroy,
-  Optional,
-  SkipSelf,
   ViewEncapsulation
 } from '@angular/core'
-import { BehaviorSubject, Observable, Subject } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { BehaviorSubject, map, Observable, Subject } from 'rxjs'
 
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons'
 
 import { InputBoolean, InputNumber } from '@theseam/ui-common/core'
-import type { SeamIcon } from '@theseam/ui-common/icon'
+import { SeamIcon, TheSeamIconModule } from '@theseam/ui-common/icon'
 import type { ThemeTypes } from '@theseam/ui-common/models'
+import { notNullOrUndefined } from '@theseam/ui-common/utils'
 
 import { SideNavAccessor, THESEAM_SIDE_NAV_ACCESSOR } from '../side-nav-tokens'
-import { ISideNavItem, SideNavItemMenuItemTooltipConfig } from '../side-nav.models'
-
-export interface SideNavItemBadgeTooltip {
-  tooltip?: string
-  class?: string
-  placement?: string
-  container?: string
-  disabled?: boolean
-}
+import { ISideNavItem, SideNavItemBadgeTooltip, SideNavItemMenuItemTooltipConfig } from '../side-nav.models'
+import { CommonModule } from '@angular/common'
+import { RouterModule } from '@angular/router'
+import { A11yModule } from '@angular/cdk/a11y'
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap'
+import { animate, state, style, transition, trigger } from '@angular/animations'
 
 const EXPANDED_STATE = 'expanded'
 const COLLAPSED_STATE = 'collapsed'
-
-const FULL_STATE = 'full'
-const COMPACT_STATE = 'compact'
 
 @Component({
   selector: 'seam-side-nav-item',
@@ -53,37 +36,20 @@ const COMPACT_STATE = 'compact'
   animations: [
     trigger('childGroupAnim', [
       state(EXPANDED_STATE, style({ height: '*' })),
-      state(COLLAPSED_STATE, style({ height: 0, 'overflow-y': 'hidden', visibility: 'hidden' })),
+      state(COLLAPSED_STATE, style({ height: 0, visibility: 'hidden' })),
       transition(`${EXPANDED_STATE} <=> ${COLLAPSED_STATE}`, animate('0.2s ease-in-out')),
     ]),
-
-    trigger('compactAnim', [
-      // transition('* <=> *', [
-      //   query(':enter', [
-      //     style({ opacity: '0' }),
-      //     animate('5.2s ease-in-out', style({ opacity: '1' }))
-      //   ], { optional: true }),
-      //   query(':leave', [
-      //     style({ opacity: '1' }),
-      //     animate('5.2s ease-in-out', style({ opacity: '0' }))
-      //   ], { optional: true })
-      // ])
-
-      // state(FULL_STATE, style({ opacity: '1' })),
-      // state(COMPACT_STATE, style({ opacity: '0' })),
-      // transition(`${FULL_STATE} <=> ${COMPACT_STATE}`, animate('5.2s ease-in-out')),
-      // transition(`${FULL_STATE} <=> ${COMPACT_STATE}`, [
-      // transition('* <=> *', [
-      //   query(':leave', [
-      //     style({ opacity: '1' }),
-      //     animate('5.2s ease-in-out', style({ opacity: '0' }))
-      //   ], { optional: true })
-      // ]),
-
-    ])
+  ],
+  imports: [
+    CommonModule,
+    RouterModule,
+    TheSeamIconModule,
+    A11yModule,
+    NgbTooltipModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  standalone: true,
 })
 export class SideNavItemComponent implements OnDestroy {
   static ngAcceptInputType_hierLevel: NumberInput
@@ -99,6 +65,8 @@ export class SideNavItemComponent implements OnDestroy {
   @Input() itemType: 'divider' | 'basic' | 'link' | 'button' | 'title' | undefined | null
 
   @Input() icon: SeamIcon | undefined | null
+
+  @Input() hideEmptyIcon: boolean | undefined | null
 
   @Input() label: string | undefined | null
 
@@ -158,7 +126,7 @@ export class SideNavItemComponent implements OnDestroy {
           container: value.container || 'body',
           disabled: typeof value?.disabled === 'boolean'
             ? value.disabled
-            : typeof value.tooltip !== 'string'
+            : typeof value.tooltip === 'string',
         }
       }
     } else {
@@ -176,17 +144,12 @@ export class SideNavItemComponent implements OnDestroy {
   @HostBinding('attr.data-hier-level') get _attrDataHierLevel() { return this.hierLevel }
 
   public readonly childGroupAnimState$: Observable<string>
-  public readonly compactAnimState$: Observable<string>
 
   constructor(
     @Inject(THESEAM_SIDE_NAV_ACCESSOR) private readonly _sideNav: SideNavAccessor,
-    @Optional() @SkipSelf() @Host() private readonly _parent?: SideNavItemComponent
   ) {
     this.childGroupAnimState$ = this.expanded$
       .pipe(map(expanded => expanded ? EXPANDED_STATE : COLLAPSED_STATE))
-
-    this.compactAnimState$ = this.compact$
-      .pipe(map(compact => compact ? COMPACT_STATE : FULL_STATE))
   }
 
   ngOnDestroy() {
@@ -207,6 +170,10 @@ export class SideNavItemComponent implements OnDestroy {
     if (this._sideNav.overlay) {
       this._sideNav.collapse()
     }
+  }
+
+  get showIconBlock(): boolean {
+    return notNullOrUndefined(this.icon) || this.hideEmptyIcon !== true
   }
 
 }

@@ -151,6 +151,8 @@ export class MenuToggleDirective implements OnDestroy, AfterContentInit {
     },
   ]
 
+  @Output() readonly menuToggle = new EventEmitter<boolean>()
+
   // TODO: Figure out how to automatically handle this. I think the offset can
   // be calculated using the first item's offsetTop and borderTop. The problem
   // is that I was only able to calculate it after the animation had started, so
@@ -307,6 +309,8 @@ export class MenuToggleDirective implements OnDestroy, AfterContentInit {
     // this._overlayRef.backdropClick().subscribe(v => {
     //   console.log('backdropClick', v)
     // })
+
+    this.menuToggle.emit(true)
   }
 
   /** The text direction of the containing app. */
@@ -343,6 +347,8 @@ export class MenuToggleDirective implements OnDestroy, AfterContentInit {
     }
 
     this._active = false
+
+    this.menuToggle.emit(false)
   }
 
   public menuOpen(): boolean {

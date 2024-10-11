@@ -34,6 +34,11 @@ seam-top-bar {
   }
 }
 
-.top-bar-icon-container {
-  margin: auto 0;
+.top-bar--left {
+  flex-grow: 1;
+}
+
+.top-bar-items {
+  display: flex;
+  align-items: center;
 }

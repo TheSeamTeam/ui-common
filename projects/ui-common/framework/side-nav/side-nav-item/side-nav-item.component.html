@@ -1,4 +1,4 @@
-<div class="d-flex flex-row">
+<div class="d-flex flex-row side-nav-item-wrapper">
   <ng-container *ngIf="itemType === 'basic'">
     <ng-template [ngTemplateOutlet]="itemTypeBasic"></ng-template>
   </ng-container>
@@ -34,6 +34,8 @@
       [children]="$any(child)?.children"
       [active]="$any(child).__state?.active"
       [expanded]="$any(child).__state?.expanded"
+      [hideEmptyIcon]="hideEmptyIcon"
+      [indentSize]="indentSize"
       [menuItemTooltipConfig]="menuItemTooltipConfig"
       [menuItemTooltipDisabled]="menuItemTooltipDisabled">
     </seam-side-nav-item>
@@ -41,7 +43,7 @@
 </ng-container>
 
 <ng-template #itemTypeBasic>
-  <button class="side-nav-item btn side-nav-btn p-0 d-flex flex-row rounded-0 text-decoration-none text-nowrap w-100"
+  <button class="side-nav-item btn side-nav-btn p-0 d-flex flex-row align-items-stretch rounded-0 text-decoration-none text-nowrap w-100"
     cdkMonitorElementFocus
     (click)="toggleChildren()"
     [attr.aria-expanded]="expanded"
@@ -52,7 +54,7 @@
     [disableTooltip]="$any(menuItemTooltipDisabled)">
     <div class="nav-link d-flex flex-row w-100" [class.nav-link__compact]="compact">
       <div [style.padding-left.px]="hierLevel * indentSize"></div>
-      <div class="side-nav-item--icon">
+      <div class="side-nav-item--icon" *ngIf="showIconBlock">
         <seam-icon *ngIf="icon" [icon]="icon"></seam-icon>
         <ng-container *ngIf="compact">
           <ng-template [ngTemplateOutlet]="itemBadge"></ng-template>
@@ -94,7 +96,7 @@
       [routerLinkActiveOptions]="{ exact: true }"
       (click)="_linkClicked()">
       <div [style.padding-left.px]="hierLevel * indentSize"></div>
-      <div class="side-nav-item--icon">
+      <div class="side-nav-item--icon" *ngIf="showIconBlock">
         <seam-icon *ngIf="icon" [icon]="icon"></seam-icon>
         <ng-container *ngIf="compact">
           <ng-template [ngTemplateOutlet]="itemBadge"></ng-template>

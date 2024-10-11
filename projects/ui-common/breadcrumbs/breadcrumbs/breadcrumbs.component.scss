@@ -4,7 +4,7 @@ seam-breadcrumbs {
   li {
     color: $breadcrumb-color;
     a {
-      color: inherit;
+      color: $breadcrumb-color;
     }
   }
 }

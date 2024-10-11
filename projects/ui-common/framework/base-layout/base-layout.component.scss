@@ -11,8 +11,7 @@ seam-base-layout {
     top: 0;
     bottom: 0;
     left: 0;
-    float: left;
-    z-index: 9999;
+    z-index: 999;
   }
 
   .base-layout-side-bar-container {
@@ -53,6 +52,23 @@ seam-base-layout {
 
     .base-layout-content-container-header {
       flex: 0 0 auto;
+      background: $base-header-background;
+      margin: $base-header-margin;
+      padding: $base-header-padding;
+      border-radius: $base-header-border-radius;
+      overflow: hidden;
+      &-left {
+        background: $base-header-left-bg;
+        padding: $base-header-left-padding;
+        margin: $base-header-left-margin;
+        border-radius: $base-header-left-border-radius;
+      }
+      &-right {
+        background: $base-header-right-bg;
+        padding: $base-header-right-padding;
+        margin: $base-header-right-margin;
+        border-radius: $base-header-right-border-radius;
+      }
     }
 
     .base-layout-content-container-inner {
@@ -62,14 +78,6 @@ seam-base-layout {
     .base-layout-content-container-footer {
       flex: 0 0 auto;
     }
-  }
-
-  .base-layout-content-container-header {
-    margin: $base-header-margin;
-    padding: $base-header-padding;
-    background: $base-header-background;
-    border-radius: $base-header-border-radius;
-    overflow: hidden;
   }
 
   .btn-baselayout-action {

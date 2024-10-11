@@ -10,7 +10,7 @@ import {
   QueryList,
   ViewEncapsulation
 } from '@angular/core'
-import { Observable, Subject } from 'rxjs'
+import { BehaviorSubject, Observable, Subject } from 'rxjs'
 import { map, shareReplay, startWith, takeUntil } from 'rxjs/operators'
 
 import { faBars } from '@fortawesome/free-solid-svg-icons'
@@ -20,9 +20,11 @@ import { TheSeamLayoutService } from '@theseam/ui-common/layout'
 
 import { faUserCircle } from '@fortawesome/free-regular-svg-icons'
 import { SeamIcon } from '@theseam/ui-common/icon'
+import { TopBarCompactMenuBtnDetailDirective } from './top-bar-compact-menu-btn-detail.directive'
 import { TopBarItemDirective } from './top-bar-item.directive'
 import { TopBarMenuBtnDetailDirective } from './top-bar-menu-btn-detail.directive'
 import { TopBarMenuDirective } from './top-bar-menu.directive'
+import { TopBarNavToggleBtnDetailDirective } from './top-bar-nav-toggle-btn-detail.directive'
 
 /**
  * Top bar of an app.
@@ -58,6 +60,10 @@ export class TheSeamTopBarComponent implements OnDestroy, AfterContentInit {
   @ContentChildren(TopBarItemDirective) _topBarItems?: QueryList<TopBarItemDirective>
   /** @ignore */
   @ContentChild(TopBarMenuBtnDetailDirective) _topBarMenuBtnDetailTpl?: TopBarMenuBtnDetailDirective | null
+  /** @ignore */
+  @ContentChild(TopBarCompactMenuBtnDetailDirective) _topBarCompactMenuBtnDetailTpl?: TopBarCompactMenuBtnDetailDirective | null
+  /** @ignore */
+  @ContentChild(TopBarNavToggleBtnDetailDirective) _topBarNavToggleBtnDetailTpl?: TopBarNavToggleBtnDetailDirective | null
 
   /** Logo displayed on the top bar. */
   @Input() logo: string | undefined | null
@@ -82,11 +88,32 @@ export class TheSeamTopBarComponent implements OnDestroy, AfterContentInit {
   /** Sub Title text displayed when `hasTitle` is true. The sub title will be less prominent. */
   @Input() subTitleText: string | undefined | null
 
+  /** Determines if the top bar button should be displayed. */
+  @Input() @InputBoolean() hasTopBarMenuButton: boolean = true
+
   /** Icon to display on mobile to activate profile dropdown. Defaults to faUserCircle. */
   @Input() profileIcon: SeamIcon | undefined | null = faUserCircle
 
+  /** Icon to display for mobile nav toggle. Defaults to faBars. */
+  @Input() toggleIcon: SeamIcon | undefined | null = faBars
+
+  /** Display nav toggle on either left or right side of top bar. Defaults to left. */
+  @Input() navToggleAlign: 'left' | 'right' | undefined | null = 'left'
+
   /** @ignore */
-  _items$?: Observable<TopBarItemDirective[]>
+  _leftItems = new BehaviorSubject<TopBarItemDirective[]>([])
+  /** Additional templates to display on left side of top bar */
+  leftItems$ = this._leftItems.asObservable()
+
+  /** @ignore */
+  _centerItems = new BehaviorSubject<TopBarItemDirective[]>([])
+  /** Additional templates to display in center of top bar */
+  centerItems$ = this._centerItems.asObservable()
+
+  /** @ignore */
+  _rightItems = new BehaviorSubject<TopBarItemDirective[]>([])
+  /** Additional templates to display on right side of top bar */
+  rightItems$ = this._rightItems.asObservable()
 
   /** @ignore */
   isMobile$: Observable<boolean>
@@ -106,12 +133,22 @@ export class TheSeamTopBarComponent implements OnDestroy, AfterContentInit {
   /** @ignore */
   ngAfterContentInit() {
     if (this._topBarItems) {
-      this._items$ = this._topBarItems.changes.pipe(
+      this._topBarItems.changes.pipe(
         startWith(undefined),
         takeUntil(this._ngUnsubscribe),
-        map(() => this._topBarItems?.toArray() || []),
+        map(() => {
+          const items = this._topBarItems?.toArray() || []
+
+          const left = items.filter(i => i.position === 'left')
+          const right = items.filter(i => i.position === 'right')
+          const center = items.filter(i => i.position === 'center')
+
+          this._leftItems.next(left)
+          this._rightItems.next(right)
+          this._centerItems.next(center)
+        }),
         shareReplay({ bufferSize: 1, refCount: true })
-      )
+      ).subscribe()
     }
   }
 

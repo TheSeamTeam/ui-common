@@ -1,0 +1,170 @@
+<div class="d-flex flex-row h-100">
+  <ng-container *ngIf="itemType === 'basic'">
+    <ng-template [ngTemplateOutlet]="itemTypeBasic"></ng-template>
+  </ng-container>
+  <ng-container *ngIf="itemType === 'link'">
+    <ng-template [ngTemplateOutlet]="itemTypeLink"></ng-template>
+  </ng-container>
+  <ng-container *ngIf="itemType === 'divider'">
+    <ng-template [ngTemplateOutlet]="itemTypeDivider"></ng-template>
+  </ng-container>
+  <ng-container *ngIf="itemType === 'title'">
+    <ng-template [ngTemplateOutlet]="itemTypeTitle"></ng-template>
+  </ng-container>
+</div>
+
+<ng-container *ngIf="hasExpandingChildren">
+  <div class="nav--group nav--group--level-{{ hierLevel + 1 }}"
+    *ngIf="expanded$ | async" @childGroupAnim>
+    <ng-container *ngTemplateOutlet="navChildren"></ng-container>
+  </div>
+</ng-container>
+
+<ng-template #itemTypeBasic>
+  <button class="nav-item btn nav-btn p-0 d-flex align-items-stretch flex-row text-decoration-none w-100"
+    cdkMonitorElementFocus
+    (click)="_toggleChildren($event)"
+    [seamMenuToggle]="menuTpl"
+    (menuToggle)="_menuEvent($event)"
+    [attr.aria-expanded]="expanded$ | async">
+    <div class="nav-link d-flex flex-row align-items-center w-100" [class.nav-link__compact]="compact">
+      <div class="nav-item--icon" *ngIf="showIconBlock">
+        <seam-icon [icon]="icon" *ngIf="icon"></seam-icon>
+        <ng-container *ngIf="compact">
+          <ng-template [ngTemplateOutlet]="itemBadge"></ng-template>
+        </ng-container>
+      </div>
+      <span *ngIf="!compact" nav-item-label>
+        {{ label }}
+      </span>
+      <span *ngIf="compact" class="sr-only" nav-item-label>{{ label }}</span>
+      <ng-container *ngIf="!compact">
+        <ng-template [ngTemplateOutlet]="itemBadge"></ng-template>
+      </ng-container>
+    </div>
+
+    <div *ngIf="hasChildren && !compact"
+      class="btn nav-btn nav-item--toggle-btn-container d-flex align-items-center">
+      <seam-icon
+        class="nav-item--toggle-btn"
+        [class.nav-item--toggle-btn-expanded]="expanded$ | async"
+        [icon]="faAngleLeft"
+        type>
+      </seam-icon>
+    </div>
+  </button>
+</ng-template>
+
+<ng-template #itemTypeLink>
+  <a *ngIf="link; else noLink" class="nav-item nav-link d-flex flex-row w-100 align-items-center"
+    [class.nav-link__compact]="compact"
+    [routerLink]="link"
+    [queryParams]="queryParams"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: true }">
+    <div class="nav-item--icon" *ngIf="showIconBlock">
+      <seam-icon [icon]="icon" *ngIf="icon"></seam-icon>
+      <ng-container *ngIf="compact">
+        <ng-template [ngTemplateOutlet]="itemBadge"></ng-template>
+      </ng-container>
+    </div>
+    <span *ngIf="!compact" nav-item-label>
+      {{ label }}
+    </span>
+    <span *ngIf="compact" class="sr-only" nav-item-label>{{ label }}</span>
+    <ng-container *ngIf="!compact">
+      <ng-template [ngTemplateOutlet]="itemBadge"></ng-template>
+    </ng-container>
+  </a>
+
+  <ng-template #noLink>
+    <a class="nav-item nav-link d-flex flex-row w-100 align-items-center" [class.nav-link__compact]="compact">
+      <div class="nav-item--icon" *ngIf="showIconBlock">
+        <seam-icon [icon]="icon" *ngIf="icon"></seam-icon>
+      </div>
+      <span *ngIf="!compact" nav-item-label>
+        {{ label }}
+      </span>
+      <span *ngIf="compact" class="sr-only" nav-item-label>{{ label }}</span>
+    </a>
+  </ng-template>
+
+  <button *ngIf="hasChildren && !compact"
+    type="button"
+    class="btn nav-btn nav-item--toggle-btn-container"
+    (click)="_toggleChildren($event)"
+    [seamMenuToggle]="menuTpl"
+    (menuToggle)="_menuEvent($event)"
+    [attr.aria-expanded]="expanded$ | async"
+    cdkMonitorElementFocus>
+    <seam-icon
+      class="nav-item--toggle-btn"
+      [class.nav-item--toggle-btn-expanded]="expanded$ | async"
+      [icon]="faAngleLeft"
+      type>
+    </seam-icon>
+    <span class="sr-only">Group Toggle</span>
+  </button>
+</ng-template>
+
+<ng-template #itemTypeDivider>
+  <div class="px-2 w-100">
+    <hr class="nav-item--divider" />
+  </div>
+</ng-template>
+
+<ng-template #itemTypeTitle>
+  <ng-container *ngIf="!compact">
+    <span class="nav-item--title pt-1" nav-item-label>{{ label }}</span>
+  </ng-container>
+</ng-template>
+
+<ng-template #itemBadge>
+  <ng-container *ngIf="badgeText">
+    <div class="badge-spacer flex-grow-1" *ngIf="!compact"></div>
+    <div class="nav-item--badge"
+      [class.nav-item--badge-no-icon]="!icon"
+      [ngbTooltip]="$any(badgeTooltip)?.tooltip"
+      [tooltipClass]="$any(badgeTooltip)?.class"
+      [placement]="$any(badgeTooltip)?.placement"
+      [container]="$any(badgeTooltip)?.container"
+      [disableTooltip]="!badgeTooltip || !!$any(badgeTooltip)?.disabled">
+      <span class="badge badge-pill badge-{{ badgeTheme }}">
+        <ng-container *ngIf="!compact || !icon">
+          {{ badgeText }}
+        </ng-container>
+        <span *ngIf="badgeSrContent">{{ badgeSrContent }}</span>
+      </span>
+    </div>
+  </ng-container>
+</ng-template>
+
+<seam-menu #menu *ngIf="hasMenuToggle">
+  <ng-container *ngTemplateOutlet="navChildren"></ng-container>
+</seam-menu>
+
+<ng-template #navChildren>
+  <seam-nav-item *ngFor="let child of children"
+    [item]="child"
+    [hierLevel]="compact ? 0 : (hierLevel + 1)"
+    [compact]="compact"
+    [itemType]="$any(child).itemType"
+    [icon]="$any(child).icon"
+    [label]="$any(child).label"
+    [link]="$any(child).link"
+    [badgeText]="$any(child).badge?.text"
+    [badgeTheme]="$any(child).badge?.theme || 'danger'"
+    [badgeSrContent]="$any(child).badge?.srContent"
+    [badgeTooltip]="$any(child)?.badge?.tooltip"
+    [queryParams]="$any(child).queryParams"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: true }"
+    [children]="$any(child)?.children"
+    [active]="$any(child).__state?.active"
+    [expanded]="$any(child).__state?.expanded"
+    [focused]="$any(child).__state?.focused"
+    childAction="expand"
+    [hideEmptyIcon]="hideEmptyIcon">
+  </seam-nav-item>
+</ng-template>
+

@@ -142,17 +142,19 @@
   .datatable-header,
   .datatable-body {
     .datatable-row-left {
-      background-color: $datatable-background;
-      background-position: 100% 0;
-      background-repeat: repeat-y;
-      background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABCAYAAAD5PA/NAAAAFklEQVQIHWPSkNeSBmJhTQVtbiDNCgASagIIuJX8OgAAAABJRU5ErkJggg==);
+      background-color: $datatable-left-background;
+    }
+
+    .datatable-row-even .datatable-row-left {
+      background-color: $datatable-left-row-even-background;
     }
 
     .datatable-row-right {
-      background-position: 0 0;
-      background-color: $datatable-background;
-      background-repeat: repeat-y;
-      background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABCAYAAAD5PA/NAAAAFklEQVQI12PQkNdi1VTQ5gbSwkAsDQARLAIGtOSFUAAAAABJRU5ErkJggg==);
+      background-color: $datatable-right-background;
+    }
+
+    .datatable-row-even .datatable-row-right {
+      background-color: $datatable-right-row-even-background;
     }
   }
 
@@ -268,6 +270,9 @@
         color: $datatable-body-cell-color;
         font-size: $datatable-body-cell-font-size;
         font-weight: $datatable-body-cell-font-weight;
+        .datatable-body-cell-label {
+          height: 100%;
+        }
       }
       .datatable-body-group-cell {
         vertical-align: top;
@@ -476,13 +481,51 @@
 // }
 
 .datatable-action-button {
-  color: $datatable-action-button-color;
-  background-color: $datatable-action-button-background;
-  box-shadow: $datatable-action-button-box-shadow;
-  &:hover {
-    color: $datatable-action-button-hover-color;
-    background-color: $datatable-action-button-hover-background;
+  flex: 0 0 auto;
+
+  @if $datatable-action-button-outline {
+    @include button-outline-variant(
+      $color: $datatable-action-button-outline-color,
+      $color-hover: $datatable-action-button-outline-color-hover,
+      $active-background: $datatable-action-button-outline-active-background,
+      $active-border: $datatable-action-button-outline-active-border
+    );
+
+    // allow variable override for outline button bg
+    background: $datatable-action-button-outline-background;
+
+  } @else {
+    @include button-variant(
+      $background: $datatable-action-button-background,
+      $border: $datatable-action-button-border,
+      $hover-background: $datatable-action-button-hover-background,
+      $hover-border: $datatable-action-button-hover-border,
+      $active-background: $datatable-action-button-active-background,
+      $active-border: $datatable-action-button-active-border
+    );
+
+    // allow variable override for solid button color
+    color: $datatable-action-button-color;
+
+    &:hover {
+      color: $datatable-action-button-hover-color;
+    }
+
+    &:not(:disabled):not(.disabled):active {
+      color: $datatable-action-button-active-color;
+    }
   }
+
+  box-shadow: $datatable-action-button-box-shadow;
+  font-size: $datatable-action-button-font-size;
+  line-height: $datatable-action-button-line-height;
+
+  width: $datatable-action-button-width;
+  height: $datatable-action-button-height;
+
+  padding: $datatable-action-button-padding;
+  border-radius: $datatable-action-button-border-radius;
+  text-align: $datatable-action-button-text-align;
 }
 
 /**

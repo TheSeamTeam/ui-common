@@ -159,26 +159,62 @@ export const ActionMenu = (args: any) => ({
       columns: [
         { prop: 'name', name: 'Name' },
         { prop: 'age', name: 'Age' },
-        { prop: 'color', name: 'Color' },
+        { prop: 'email', name: 'Email Address' },
+        { prop: 'phone', name: 'Phone Number' },
+        { prop: 'streetAddress', name: 'Street Address' },
+        { prop: 'city', name: 'City' },
+        { prop: 'state', name: 'State' },
+        { prop: 'zip', name: 'Zip' },
+        { prop: 'country', name: 'Country' },
+        { prop: 'color', name: 'Favorite Color' },
+        { prop: 'iceCreamFlavor', name: 'Favorite Ice Cream Flavor' },
+        { prop: 'petName', name: 'Pet\'s Name' },
       ],
       rows: [
-        { name: 'Mark', age: 27, color: 'blue' },
-        { name: 'Joe', age: 33, color: 'green' },
-      ],
-    },
+        {
+          name: 'Mark',
+          age: 27,
+          color: 'Blue',
+          email: 'mark.berry@theseam.com',
+          phone: '901-555-5555',
+          streetAddress: '123 Main St',
+          city: 'Arlington',
+          state: 'TN',
+          zip: '38111',
+          country: 'USA',
+          iceCreamFlavor: 'Chocolate',
+          petName: 'Spot',
+        },
+        {
+          name: 'Joe',
+          age: 33,
+          color: 'Green',
+          email: 'joe.schmoe@theseam.com',
+          phone: '901-888-8888',
+          streetAddress: '1600 Pennsylvaia Ave',
+          city: 'Washington',
+          state: 'DC',
+          zip: '35111',
+          country: 'USA',
+          iceCreamFlavor: 'Strawberry',
+          petName: 'Mittens',
+        },
+      ]
+    }
   },
   template: `
     <seam-datatable
       class="w-100 h-100"
       [columns]="__hack.columns"
-      [rows]="__hack.rows">
-        <ng-template seamDatatableRowActionItem let-row>
-          <seam-datatable-action-menu>
-            <seam-datatable-action-menu-item label="Action One"></seam-datatable-action-menu-item>
-            <seam-datatable-action-menu-item label="Action Two"></seam-datatable-action-menu-item>
-            <seam-datatable-action-menu-item label="Action Three" [subMenu]="subMenuOne"></seam-datatable-action-menu-item>
-            <seam-datatable-action-menu-item label="Action Four"></seam-datatable-action-menu-item>
-          </seam-datatable-action-menu>
+      [rows]="__hack.rows"
+      [actionItemColumnPosition]="__hack.actionItemColumnPosition">
+      <ng-template seamDatatableRowActionItem let-row>
+        <seam-datatable-action-menu>
+          <seam-datatable-action-menu-item label="Action One"></seam-datatable-action-menu-item>
+          <seam-datatable-action-menu-item label="Action Two"></seam-datatable-action-menu-item>
+          <seam-datatable-action-menu-item label="Action Three" [subMenu]="subMenuOne"></seam-datatable-action-menu-item>
+          <seam-datatable-action-menu-item label="Action Four"></seam-datatable-action-menu-item>
+        </seam-datatable-action-menu>
 
           <seam-datatable-action-menu isSubMenu="true" #subMenuOne>
             <seam-datatable-action-menu-item label="Action One"></seam-datatable-action-menu-item>

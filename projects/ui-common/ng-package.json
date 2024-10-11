@@ -66,6 +66,11 @@
     },
     {
       "glob": "**/*.scss",
+      "input": "framework/nav",
+      "output": "framework/nav"
+    },
+    {
+      "glob": "**/*.scss",
       "input": "framework/top-bar",
       "output": "framework/top-bar"
     },
