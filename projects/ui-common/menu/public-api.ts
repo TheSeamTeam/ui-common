@@ -1,3 +1,8 @@
+export * from './testing/menu-footer.harness'
+export * from './testing/menu-header.harness'
+export * from './testing/menu-item.harness'
+export * from './testing/menu.harness'
+
 export * from './menu-animations'
 export * from './menu-divider.component'
 export * from './menu-item.component'

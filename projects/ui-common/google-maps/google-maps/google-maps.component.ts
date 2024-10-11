@@ -156,7 +156,9 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
   @Input() @InputNumber() longitude = -98.570209
   @Input() @InputNumber() latitude = 37.633814
 
-  @Output() mapReady = new EventEmitter<void>()
+  @Input() padding: number | google.maps.Padding | undefined = 0
+
+  @Output() mapReady = new EventEmitter<google.maps.Map | undefined>()
 
   @ViewChild('featureContextMenu', { static: true, read: MenuComponent }) public featureContextMenu!: MenuComponent
 
@@ -168,6 +170,8 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
   }
 
   readonly _contextMenuItems$: Observable<TheSeamMapContextMenuItem[]>
+
+  private idleListener: google.maps.MapsEventListener | undefined
 
   constructor(
     readonly elementRef: ElementRef,
@@ -214,6 +218,8 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
     )
 
     this._googleMaps.setBaseLatLng(this.latitude, this.longitude)
+
+    this._googleMaps.setPadding(this.padding)
 
     this._gmApiLoaded = this._googleMapsApiLoader.load().pipe(
       map(() => true),
@@ -278,6 +284,10 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
     if (Object.prototype.hasOwnProperty.call(changes, 'editingEnabled')) {
       this._googleMaps.setEditingEnabled(this.editingEnabled)
     }
+
+    if (Object.prototype.hasOwnProperty.call(changes, 'padding')) {
+      this._googleMaps.setPadding(this.padding)
+    }
   }
 
   writeValue(value: MapValue): void {
@@ -320,13 +330,20 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
   _onMapReady(theMap: google.maps.Map) {
     this._googleMaps.setMap(theMap)
     this._googleMaps.setData(this._mapValueManager.value)
-    // NOTE: AgmMap has a race condition problem that causes the input latitude,
-    // longitude, and zoom to get ignored, before googlemaps emits
-    // 'center_changed'. This should avoid the issue, until we stop using AgmMap
-    // or upgrade to a more recent version that may not have the issue anymore.
-    // TODO: Check if the switch to '@angular/google-maps' fixed this problem.
-    this._googleMaps.reCenterOnFeatures()
-    this._googleMaps.googleMap?.setZoom(this.zoom)
+
+    // NOTE: The input zoom level was getting reset after this function ran,
+    // so putting in this idle listener to wait until the map is fully rendered
+    // to set the zoom.
+    // Calling reCenterOnFeatures() after setZoom() ensures that maps with pre-drawn shapes
+    // will display correctly
+    this.idleListener = this._googleMaps.googleMap?.addListener('idle', () => {
+      this._googleMaps.googleMap?.setZoom(this.zoom)
+      this._googleMaps.reCenterOnFeatures()
+      this.mapReady.emit(this._googleMaps.googleMap)
+
+      this.idleListener?.remove()
+    })
+
   }
 
   _onClickDeleteFeature() {

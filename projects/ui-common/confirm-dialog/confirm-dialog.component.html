@@ -1,9 +1,16 @@
 <seam-modal-body>
-  <h5>{{ message }}</h5>
+  <ng-container *ngIf="tpl; else messageTpl">
+    <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="{ $implicit: tplContext }"></ng-container>
+  </ng-container>
 
-  <div *ngIf="alertMessage" class="alert {{ alertType ? 'alert-' + alertType : '' }} mb-0">
-    {{ alertMessage }}
-  </div>
+  <ng-template #messageTpl>
+    <h5>{{ message }}</h5>
+
+    <div *ngIf="alertMessage" class="alert {{ alertType ? 'alert-' + alertType : '' }} mb-0">
+      {{ alertMessage }}
+    </div>
+  </ng-template>
+
 </seam-modal-body>
 <seam-modal-footer>
   <button class="btn btn-primary" seamModalClose="confirm">Yes</button>

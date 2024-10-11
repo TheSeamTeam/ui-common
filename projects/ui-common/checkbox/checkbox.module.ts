@@ -4,13 +4,10 @@ import { NgModule } from '@angular/core'
 
 import { TheSeamCheckboxComponent } from './checkbox.component'
 
+/** @deprecated */
 @NgModule({
-  declarations: [
-    TheSeamCheckboxComponent
-  ],
   imports: [
-    CommonModule,
-    ObserversModule
+    TheSeamCheckboxComponent
   ],
   exports: [
     TheSeamCheckboxComponent
