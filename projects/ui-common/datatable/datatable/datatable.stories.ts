@@ -1212,6 +1212,22 @@ ColumnFilters.args = {
       class="w-100 h-100"
       [columns]="columns"
       [rows]="rows">
+
+      <ng-template seamDatatableRowActionItem let-row>
+        <seam-datatable-action-menu>
+          <seam-datatable-action-menu-item label="Action One"></seam-datatable-action-menu-item>
+          <seam-datatable-action-menu-item label="Action Two"></seam-datatable-action-menu-item>
+          <seam-datatable-action-menu-item label="Action Three" [subMenu]="subMenuOne"></seam-datatable-action-menu-item>
+          <seam-datatable-action-menu-item label="Action Four"></seam-datatable-action-menu-item>
+        </seam-datatable-action-menu>
+
+        <seam-datatable-action-menu isSubMenu="true" #subMenuOne>
+          <seam-datatable-action-menu-item label="Action One"></seam-datatable-action-menu-item>
+          <seam-datatable-action-menu-item label="Action Two"></seam-datatable-action-menu-item>
+          <seam-datatable-action-menu-item label="Action Three"></seam-datatable-action-menu-item>
+        </seam-datatable-action-menu>
+      </ng-template>
+
       <seam-datatable-footer>
         <ng-template seamDatatableFooterTpl
           let-rowCount="rowCount"
@@ -1242,7 +1258,8 @@ export const CustomConfig = (args: any) => ({
         useValue: {
           rowHeight: 45,
           columnFilterIcon: faSearch,
-          columnFilterUpdateMethod: 'submit'
+          columnFilterUpdateMethod: 'submit',
+          actionItemColumnPosition: 'frozenLeft'
         } satisfies TheSeamDatatableConfig
       }
     ]

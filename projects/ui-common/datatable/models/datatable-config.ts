@@ -1,5 +1,6 @@
 import { InjectionToken } from "@angular/core";
 import { SeamIcon } from "@theseam/ui-common/icon";
+import { ActionItemColumnPosition } from "./action-item-column-position";
 
 export interface TheSeamDatatableMessages {
   /**
@@ -97,6 +98,13 @@ export interface TheSeamDatatableConfig {
    * @default 400
    */
   columnFilterUpdateDebounce?: number
+
+  /**
+   * Sets position behavior for optional Action Menu Button column.
+   *
+   * @default frozenRight
+   */
+  actionItemColumnPosition?: ActionItemColumnPosition
 }
 
 export const THESEAM_DATATABLE_CONFIG = new InjectionToken<TheSeamDatatableConfig>('TheSeamDatatableConfig')

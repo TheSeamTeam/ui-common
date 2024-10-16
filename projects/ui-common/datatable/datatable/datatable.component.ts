@@ -406,12 +406,20 @@ export class DatatableComponent
   @Input()
   get actionItemColumnPosition(): ActionItemColumnPosition | undefined { return this._actionItemColumnPosition }
   set actionItemColumnPosition(value: ActionItemColumnPosition | undefined) {
-    if (value && isActionItemColumnPosition(value)) {
+    if (notNullOrUndefined(value) && isActionItemColumnPosition(value)) {
       this._actionItemColumnPosition = value
     }
+    else if (notNullOrUndefined(this._config?.actionItemColumnPosition) && isActionItemColumnPosition(this._config?.actionItemColumnPosition)) {
+      this._actionItemColumnPosition = this._config?.actionItemColumnPosition
+    }
+    else {
+      this._actionItemColumnPosition = this._actionItemColumnPositionDefault
+    }
+
     this._columnsManager.setActionItemColumnPosition(this._actionItemColumnPosition)
   }
-  private _actionItemColumnPosition: ActionItemColumnPosition | undefined = 'frozenRight'
+  private readonly _actionItemColumnPositionDefault: ActionItemColumnPosition = 'frozenRight'
+  _actionItemColumnPosition: ActionItemColumnPosition | undefined
 
   @Input() get columnFilterIcon(): SeamIcon | undefined | null {
     return this._columnFilterIcon
@@ -774,6 +782,9 @@ export class DatatableComponent
     }
     if (isNullOrUndefined(this.columnFilterUpdateDebounce)) {
       this.columnFilterUpdateDebounce = undefined
+    }
+    if (isNullOrUndefined(this.actionItemColumnPosition)) {
+      this.actionItemColumnPosition = undefined
     }
   }
 
