@@ -16,8 +16,8 @@ export interface FilterStateMapperFilter {
 }
 
 export type FilterStateMapperResult = {
-  filter?: FilterStateMapperFilter | undefined | null,
-  variables?: FilterStateMapperVariables | undefined | null
+  filter: FilterStateMapperFilter,
+  variables: FilterStateMapperVariables
 } | null
 
 export type FilterStateMapper = (filterState: DataFilterState, context: MapperContext)

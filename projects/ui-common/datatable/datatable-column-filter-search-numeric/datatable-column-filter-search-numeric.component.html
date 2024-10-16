@@ -1,0 +1,26 @@
+<ng-container *ngIf="filterForm">
+  <seam-form-field [numPaddingErrors]="0" class="mb-2">
+    <ng-select
+      seamInput
+      formControlName="searchType"
+      [clearable]="false"
+      placeholder="Select search type"
+      bindValue="value"
+      [items]="searchTypes"></ng-select>
+  </seam-form-field>
+
+  <ng-container *ngIf="showSearchInput$ | async">
+    <seam-form-field [numPaddingErrors]="0" class="mb-2">
+      <input seamInput formControlName="searchText" placeholder="Type to search" seamAutoFocus>
+    </seam-form-field>
+  </ng-container>
+
+  <ng-container *ngIf="showRangeInputs$ | async">
+    <seam-form-field [numPaddingErrors]="0" class="mb-2">
+      <input seamInput formControlName="fromText" placeholder="Range Start" seamAutoFocus>
+    </seam-form-field>
+    <seam-form-field [numPaddingErrors]="0" class="mb-2">
+      <input seamInput formControlName="toText" placeholder="Range End">
+    </seam-form-field>
+  </ng-container>
+</ng-container>

@@ -3,14 +3,14 @@ import { Meta, Story, componentWrapperDecorator, moduleMetadata } from '@storybo
 import { applicationConfig } from '@storybook/angular/dist/client/decorators'
 
 import { AfterViewInit, Component, Input, OnInit, ViewChild, importProvidersFrom } from '@angular/core'
-import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms'
+import { FormControl, FormGroup, ReactiveFormsModule, UntypedFormControl } from '@angular/forms'
 import { provideAnimations } from '@angular/platform-browser/animations'
-import { BehaviorSubject, Observable, interval, of } from 'rxjs'
-import { map, shareReplay, tap } from 'rxjs/operators'
+import { BehaviorSubject, Observable, interval, of, Subject } from 'rxjs'
+import { map, shareReplay, startWith, tap } from 'rxjs/operators'
 
 import { CSVDataExporter } from '@theseam/ui-common/data-exporter'
 import { DataFilterState, TheSeamDataFiltersModule } from '@theseam/ui-common/data-filters'
-import { SortItem } from '@theseam/ui-common/datatable'
+import { SortItem, TheSeamDatatableColumn } from '@theseam/ui-common/datatable'
 import {
   DynamicActionApiService,
   DynamicActionLinkService,
@@ -29,6 +29,9 @@ import {
   SortsMapperResult,
   gqlVar,
   observeRowsWithGqlInputsHandling,
+  mapSearchNumericColumnsDataFilterStateToGql,
+  mapSearchTextColumnsDataFilterStateToGql,
+  mapSearchDateColumnsDataFilterStateToGql,
 } from '@theseam/ui-common/graphql'
 import { StoryToastrService } from '@theseam/ui-common/story-helpers'
 import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
@@ -45,6 +48,12 @@ import {
 import { TheSeamDatatableModule } from '../datatable.module'
 import { TheSeamDatatableHarness } from '../testing'
 import { DatatableComponent } from './datatable.component'
+import { THESEAM_DATATABLE_CONFIG, TheSeamDatatableConfig } from '../models/datatable-config'
+import { faAirFreshener, faSearch } from '@fortawesome/free-solid-svg-icons'
+import { ColumnsDataFilter, ColumnsDataFilterState, THESEAM_COLUMNS_DATA_FILTER } from '../models/columns-data-filter'
+import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
+import { TheSeamCheckboxModule } from '@theseam/ui-common/checkbox'
+import { isNullOrUndefined } from '@theseam/ui-common/utils'
 
 export default {
   title: 'Datatable/Components',
@@ -840,10 +849,13 @@ class StoryDataSourceTwoComponent {
       {
         'search': _mapSearchFilterState,
         'toggle-buttons': _mapToggleButtonsState,
+        'search-numeric': mapSearchNumericColumnsDataFilterStateToGql,
+        'search-text': mapSearchTextColumnsDataFilterStateToGql,
+        'search-date': mapSearchDateColumnsDataFilterStateToGql,
       },
     ).pipe(
       // tap(v => {
-      //   console.log('v')
+      //   console.log('v', v)
       // })
     )
 
@@ -882,6 +894,9 @@ export const GraphQLQueryRef: Story = args => ({
     declarations: [
       StoryDataSourceTwoComponent,
     ],
+    imports: [
+      TheSeamDataFiltersModule
+    ]
   },
   props: {
     __hack: {
@@ -897,7 +912,7 @@ export const GraphQLQueryRef: Story = args => ({
 })
 GraphQLQueryRef.args = {
   columns: [
-    { prop: 'id', name: 'Id' },
+    { prop: 'id', name: 'Id', filterable: true, filterOptions: { filterType: 'search-numeric' } },
     { prop: 'name', name: 'Name' },
   ],
   numberOfRows: 60,
@@ -1002,4 +1017,263 @@ ConditionalActionMenu.args = {
     { name: 'Mark', age: 27, color: 'blue' },
     { name: 'Joe', age: 33, color: 'green' },
   ],
+}
+
+class SearchCandy extends ColumnsDataFilter {
+
+  public readonly name = 'search-candy'
+
+  public readonly uid: string
+
+  public form: FormGroup<any>
+
+  public filterStateChanges: Observable<DataFilterState>
+
+  public options: any
+
+  private _updateFilterValue = new Subject<void>
+
+  constructor(
+    prop: string,
+    initialValue: any,
+    column: TheSeamDatatableColumn
+  ) {
+    super(prop, initialValue, column)
+
+    this.form = new FormGroup({
+      chocolatey: new FormControl<boolean | null>(null),
+      nutty: new FormControl<boolean | null>(null),
+      fruity: new FormControl<boolean | null>(null),
+    })
+
+    this.uid = `${this.name}--${prop}`
+
+    this.filterStateChanges = this._updateFilterValue.pipe(
+      startWith(undefined),
+      map(() => this.filterState())
+    )
+  }
+
+  public dataFilter(data: any[], filterValue: any, options: any): any[] {
+    if (isNullOrUndefined(filterValue) || this.isDefault()) {
+      return data
+    }
+
+    return data.filter(d => {
+      const dataProp = d[this.prop]
+      if (isNullOrUndefined(dataProp) || !Array.isArray(dataProp)) {
+        return false
+      }
+
+      if (filterValue.chocolatey && dataProp.includes('chocolatey')) {
+        return true
+      }
+      else if (filterValue.nutty && dataProp.includes('nutty')) {
+        return true
+      }
+      else if (filterValue.fruity && dataProp.includes('fruity')) {
+        return true
+      }
+
+      return false
+    })
+  }
+
+  public filter(data: any[]): Observable<any[]> {
+    return this._updateFilterValue.pipe(
+      startWith(undefined),
+      map(() => this.dataFilter(data, this.form.value, undefined))
+    )
+  }
+
+  public filterState(): ColumnsDataFilterState {
+    return {
+      name: this.name,
+      state: {
+        prop: this.prop,
+        formValue: this.form.value
+      }
+    }
+  }
+
+  public applyFilter(): void {
+    this._updateFilterValue.next()
+  }
+
+  public clearFilter(): void {
+    this.form.setValue({
+      chocolatey: null,
+      nutty: null,
+      fruity: null
+    })
+
+    this._updateFilterValue.next()
+  }
+
+  public isDefault(): boolean {
+    const formValue = this.form.value
+
+    const isDefault = !formValue.chocolatey && !formValue.nutty && !formValue.fruity
+
+    return isDefault
+  }
+}
+
+@Component({
+  selector: 'dt-wrap',
+  template: `
+    <seam-datatable #dt
+      class="w-100 h-100"
+      [columns]="columns"
+      [rows]="rows">
+
+      <seam-datatable-column-filter filterName="search-candy">
+        <ng-template seamDatatableColumnFilterTpl let-filterForm="filterForm" let-options="options" let-column="column" let-columnFilter="columnFilter">
+          <ng-container *ngIf="filterForm">
+            <div [formGroup]="filterForm" class="mt-2">
+              <seam-form-field [numPaddingErrors]="0" class="mb-1">
+                <seam-checkbox seamInput formControlName="chocolatey">Chocolatey</seam-checkbox>
+              </seam-form-field>
+              <seam-form-field [numPaddingErrors]="0" class="mb-1">
+                <seam-checkbox seamInput formControlName="nutty">Nutty</seam-checkbox>
+              </seam-form-field>
+              <seam-form-field [numPaddingErrors]="0" class="mb-1">
+                <seam-checkbox seamInput formControlName="fruity">Fruity</seam-checkbox>
+              </seam-form-field>
+            </div>
+          </ng-container>
+        </ng-template>
+      </seam-datatable-column-filter>
+
+    </seam-datatable>
+  `,
+})
+class ColumnFiltersComponent {
+  @Input() columns: any
+  @Input() rows: any
+}
+export const ColumnFilters = (args: any) => ({
+  moduleMetadata: {
+    imports: [
+      ReactiveFormsModule,
+      TheSeamFormFieldModule,
+      TheSeamCheckboxModule
+    ],
+    declarations: [
+      ColumnFiltersComponent
+    ],
+    providers: [
+      {
+        provide: THESEAM_COLUMNS_DATA_FILTER,
+        useValue: {
+          name: 'search-candy',
+          class: SearchCandy
+        },
+        multi: true
+      }
+    ]
+  },
+  props: {
+    __hack: {
+      ...args,
+      columns: [
+        { prop: 'name', name: 'Name', filterable: true  },
+        { prop: 'age', name: 'Age', filterable: true, filterOptions: { filterType: 'search-numeric' } },
+        { prop: 'startDate', name: 'Start Date', cellType: 'date', cellTypeConfig: { type: 'date' }, filterable: true, filterOptions: { dateType: 'datetime-local' } },
+        { prop: 'color', name: 'Favorite Color', filterable: true },
+        { prop: 'candy', name: 'Favorite Candy', filterable: true, filterOptions: { filterProp: 'candyAttributes', filterType: 'search-candy' } },
+      ],
+      rows: [
+        { name: 'Mark', age: 27, color: 'blue', candy: 'Reeses', candyAttributes: [ 'chocolatey', 'nutty' ], startDate: '2017-01-21 20:15:20.4166667 +00:00' },
+        { name: 'Joe', age: 33, color: 'green', candy: 'Hershey Bar', candyAttributes: [ 'chocolatey' ], startDate: '2012-04-25 17:29:36.4266667 +00:00' },
+        { name: 'Shelby', age: 30, color: 'purple', candy: 'Snickers', candyAttributes: [ 'chocolatey', 'nutty' ], startDate: '2020-11-18 20:47:25.1733333 +00:00' },
+        { name: 'Jason', age: 'abc', color: 'orange', candy: 'Whoppers', candyAttributes: [ 'chocolatey' ], startDate: '2016-05-24 23:13:26.3400000 +00:00' },
+        { name: 'David', age: null, color: 'blue', candy: 'Skittles', candyAttributes: [ 'fruity' ], startDate: '2021-06-29 16:31:37.2733333 +00:00' },
+        { name: 'Pam', age: null, color: 'red', candy: 'Starbursts', candyAttributes: [ 'fruity' ], startDate: '2012-08-11 04:00:00.000000 +00:00' },
+        { name: 'New Employee', age: null, color: null, candy: null, startDate: null }
+      ],
+    },
+  },
+  template: `
+    <dt-wrap
+      class="w-100 h-100"
+      [columns]="__hack.columns"
+      [rows]="__hack.rows">
+    </dt-wrap>
+    `,
+})
+ColumnFilters.args = {
+}
+
+@Component({
+  selector: 'dt-wrap',
+  template: `
+    <seam-datatable #dt
+      class="w-100 h-100"
+      [columns]="columns"
+      [rows]="rows">
+      <seam-datatable-footer>
+        <ng-template seamDatatableFooterTpl
+          let-rowCount="rowCount"
+          let-pageSize="pageSize"
+          let-selectedCount="selectedCount"
+          let-curPage="curPage"
+          let-offset="offset">
+          <div class="flex-grow-1 text-center mx-2" style="flex-basis: 50%;">
+            Custom Footer Height
+          </div>
+        </ng-template>
+      </seam-datatable-footer>
+    </seam-datatable>
+  `,
+})
+class CustomConfigComponent {
+  @Input() columns: any
+  @Input() rows: any
+}
+export const CustomConfig = (args: any) => ({
+  moduleMetadata: {
+    declarations: [
+      CustomConfigComponent
+    ],
+    providers: [
+      {
+        provide: THESEAM_DATATABLE_CONFIG,
+        useValue: {
+          rowHeight: 45,
+          columnFilterIcon: faSearch,
+          columnFilterUpdateMethod: 'submit'
+        } satisfies TheSeamDatatableConfig
+      }
+    ]
+  },
+  props: {
+    __hack: {
+      ...args,
+      columns: [
+        { prop: 'name', name: 'Name', filterable: true  },
+        { prop: 'age', name: 'Age', filterable: true, filterOptions: { filterType: 'search-numeric' } },
+        { prop: 'startDate', name: 'Start Date', cellType: 'date', cellTypeConfig: { type: 'date' }, filterable: true },
+        { prop: 'color', name: 'Favorite Color', filterable: true },
+        { prop: 'candy', name: 'Favorite Candy', filterable: true },
+      ] satisfies TheSeamDatatableColumn[],
+      rows: [
+        { name: 'Mark', age: 27, color: 'blue', candy: 'Reeses', startDate: '2017-01-21 20:15:20.4166667 +00:00' },
+        { name: 'Joe', age: 33, color: 'green', candy: 'Hershey Bar', startDate: '2012-04-25 17:29:36.4266667 +00:00' },
+        { name: 'Shelby', age: 30, color: 'purple', candy: 'Snickers', startDate: '2020-11-18 20:47:25.1733333 +00:00' },
+        { name: 'Jason', age: 'abc', color: 'orange', candy: 'Whoppers', startDate: '2016-05-24 23:13:26.3400000 +00:00' },
+        { name: 'David', age: null, color: 'blue', candy: 'Skittles', startDate: '2021-06-29 16:31:37.2733333 +00:00' },
+        { name: 'New Employee', age: null, color: null, candy: null, startDate: null }
+      ],
+      filterIcon: faAirFreshener
+    },
+  },
+  template: `
+    <dt-wrap
+      class="w-100 h-100"
+      [columns]="__hack.columns"
+      [rows]="__hack.rows">
+    </dt-wrap>`,
+})
+CustomConfig.args = {
 }

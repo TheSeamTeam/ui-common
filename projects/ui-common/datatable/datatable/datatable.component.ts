@@ -10,21 +10,22 @@ import {
   EventEmitter,
   forwardRef,
   HostListener,
+  Inject,
   InjectionToken,
   Input,
   isDevMode,
   KeyValueDiffer,
   OnDestroy,
   OnInit,
+  Optional,
   Output,
   QueryList,
   TemplateRef,
-  ViewChild
-} from '@angular/core'
-import { BehaviorSubject, from, isObservable, Observable, of, Subject, Subscription } from 'rxjs'
+  ViewChild} from '@angular/core'
+import { BehaviorSubject, combineLatest, from, isObservable, Observable, of, Subject, Subscription } from 'rxjs'
 import { concatMap, distinctUntilChanged, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators'
 
-import { faChevronDown, faChevronRight, faSpinner } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faChevronRight, faFilter, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import {
   ColumnMode,
   ContextmenuType,
@@ -41,7 +42,7 @@ import type { SelectionType } from '@marklb/ngx-datatable'
 import { InputBoolean, InputNumber } from '@theseam/ui-common/core'
 import { composeDataFilters, composeDataFilterStates, DataFilter, DataFilterState } from '@theseam/ui-common/data-filters'
 import { IElementResizedEvent } from '@theseam/ui-common/shared'
-import { notNullOrUndefined, waitOnConditionAsync } from '@theseam/ui-common/utils'
+import { isNullOrUndefined, notNullOrUndefined, waitOnConditionAsync } from '@theseam/ui-common/utils'
 
 import { DatatableActionMenuComponent } from '../datatable-action-menu/datatable-action-menu.component'
 import { DatatableColumnComponent } from '../datatable-column/datatable-column.component'
@@ -69,6 +70,10 @@ import { getColumnProp } from '../utils/get-column-prop'
 import { OrderColumnsAlteration, OrderColumnsAlterationState } from '../models/columns-alterations/order.columns-alteration'
 import { SortColumnsAlteration } from '../models/columns-alterations/sort.columns-alteration'
 import { ActionItemColumnPosition, isActionItemColumnPosition } from '../models/action-item-column-position'
+import { ColumnsFiltersService } from '../services/columns-filters.service'
+import { THESEAM_DATATABLE_CONFIG, TheSeamDatatableColumnFilterUpdateMethod, TheSeamDatatableConfig, TheSeamDatatableMessages } from '../models/datatable-config'
+import { SeamIcon } from '@theseam/ui-common/icon'
+import { TheSeamDatatableColumnFilterDirective } from '../directives/datatable-column-filter.directive'
 
 /**
  * NOTE: This is still being worked on. I am trying to figure out this model
@@ -137,6 +142,7 @@ export const _THESEAM_DATATABLE_ACCESSOR: any = {
     _THESEAM_DATATABLE_ACCESSOR,
     ColumnsManagerService,
     ColumnsAlterationsManagerService,
+    ColumnsFiltersService
   ]
 })
 export class DatatableComponent
@@ -168,14 +174,19 @@ export class DatatableComponent
   readonly _faSpinner = faSpinner
 
   private readonly _ngUnsubscribe = new Subject()
-  private readonly _filtersSubject = new BehaviorSubject<DataFilter[]>([])
+  private readonly _menuBarsFiltersSubject = new BehaviorSubject<DataFilter[]>([])
   private readonly _dataSourceSubject = new BehaviorSubject<DataSource<any> | any[] | undefined>(undefined)
 
   private _resizing: { [prop: string]: boolean } = {}
 
   public readonly filterStates: Observable<DataFilterState[]>
 
-  get filters(): DataFilter[] { return this._filtersSubject.value }
+  get filters(): DataFilter[] {
+    return [
+      ...this._menuBarsFiltersSubject.value,
+      ...this._columnsFilters.filters()
+    ]
+  }
 
   public readonly filters$: Observable<DataFilter[]>
 
@@ -189,6 +200,7 @@ export class DatatableComponent
   @Input()
   set columns(value: TheSeamDatatableColumn[]) {
     this._columnsManager.setInputColumns(Array.isArray(value) ? value : [])
+    this._columnsFilters.registerColumnFilters(Array.isArray(value) ? value : [])
   }
 
   @Input()
@@ -246,7 +258,21 @@ export class DatatableComponent
   }
   _sorts: SortItem[] = []
 
-  @Input() cssClasses: any | undefined | null = {
+  @Input() get cssClasses(): { [key: string]: string } | undefined | null {
+    return this._cssClasses
+  }
+  set cssClasses(value: { [key: string]: string } | undefined | null) {
+    if (notNullOrUndefined(value)) {
+      this._cssClasses = value
+    }
+    else if (notNullOrUndefined(this._config?.cssClasses)) {
+      this._cssClasses = this._config?.cssClasses
+    }
+    else {
+      this._cssClasses = this._cssClassesDefault
+    }
+  }
+  private _cssClassesDefault: { [key: string]: string } = {
     sortAscending: 'datatable-icon-up',
     sortDescending: 'datatable-icon-down',
     pagerLeftArrow: 'datatable-icon-left',
@@ -254,8 +280,26 @@ export class DatatableComponent
     pagerPrevious: 'datatable-icon-prev',
     pagerNext: 'datatable-icon-skip'
   }
+  _cssClasses: { [key: string]: string } | undefined | null
 
-  @Input() messages: any | undefined | null = {
+  @Input() get messages(): TheSeamDatatableMessages | undefined | null {
+    return this._messages
+  }
+  set messages(value: TheSeamDatatableMessages | undefined | null) {
+    if (notNullOrUndefined(value)) {
+      this._messages = value
+    }
+    else if (notNullOrUndefined(this._config?.messages)) {
+      this._messages = {
+        ...this._messagesDefault,
+        ...this._config?.messages
+      }
+    }
+    else {
+      this._messages = this._messagesDefault
+    }
+  }
+  private _messagesDefault: TheSeamDatatableMessages = {
     // Message to show when array is presented
     // but contains no values
     emptyMessage: 'No records found',
@@ -266,6 +310,7 @@ export class DatatableComponent
     // Footer selected message
     selectedMessage: 'selected'
   }
+  _messages: TheSeamDatatableMessages | undefined | null
 
   @Input() rowIdentity: ((x: any) => any) | undefined | null = (x: any) => x
 
@@ -288,9 +333,59 @@ export class DatatableComponent
 
   @Input() @InputBoolean() virtualization = true
 
-  @Input() @InputNumber() headerHeight = 50
-  @Input() @InputNumber() rowHeight = 50
-  @Input() @InputNumber() footerHeight = 40
+  @Input() @InputNumber()
+  get headerHeight(): number | undefined | null {
+    return this._headerHeight
+  }
+  set headerHeight(value: number | undefined | null) {
+    if (notNullOrUndefined(value)) {
+      this._headerHeight = value
+    }
+    else if (notNullOrUndefined(this._config?.headerHeight)) {
+      this._headerHeight = this._config?.headerHeight
+    }
+    else {
+      this._headerHeight = this._headerHeightDefault
+    }
+  }
+  private readonly _headerHeightDefault: number = 50
+  _headerHeight: number | undefined | null
+
+  @Input() @InputNumber()
+  get rowHeight(): number | undefined | null {
+    return this._rowHeight
+  }
+  set rowHeight(value: number | undefined | null) {
+    if (notNullOrUndefined(value)) {
+      this._rowHeight = value
+    }
+    else if (notNullOrUndefined(this._config?.rowHeight)) {
+      this._rowHeight = this._config?.rowHeight
+    }
+    else {
+      this._rowHeight = this._rowHeightDefault
+    }
+  }
+  private readonly _rowHeightDefault: number = 50
+  _rowHeight: number | undefined | null
+
+  @Input() @InputNumber()
+  get footerHeight(): number | undefined | null {
+    return this._footerHeight
+  }
+  set footerHeight(value: number | undefined | null) {
+    if (notNullOrUndefined(value)) {
+      this._footerHeight = value
+    }
+    else if (notNullOrUndefined(this._config?.footerHeight)) {
+      this._footerHeight = this._config?.footerHeight
+    }
+    else {
+      this._footerHeight = this._footerHeightDefault
+    }
+  }
+  private readonly _footerHeightDefault: number = 40
+  _footerHeight: number | undefined | null
 
   @Input() @InputBoolean() scrollbarV = true
   @Input() @InputBoolean() scrollbarH = true
@@ -317,6 +412,57 @@ export class DatatableComponent
     this._columnsManager.setActionItemColumnPosition(this._actionItemColumnPosition)
   }
   private _actionItemColumnPosition: ActionItemColumnPosition | undefined = 'frozenRight'
+
+  @Input() get columnFilterIcon(): SeamIcon | undefined | null {
+    return this._columnFilterIcon
+  }
+  set columnFilterIcon(value: SeamIcon | undefined | null) {
+    if (notNullOrUndefined(value)) {
+      this._columnFilterIcon = value
+    }
+    else if (notNullOrUndefined(this._config?.columnFilterIcon)) {
+      this._columnFilterIcon = this._config?.columnFilterIcon
+    }
+    else {
+      this._columnFilterIcon = this._columnFilterIconDefault
+    }
+  }
+  private readonly _columnFilterIconDefault: SeamIcon = faFilter
+  _columnFilterIcon: SeamIcon | undefined | null
+
+  @Input() get columnFilterUpdateMethod(): TheSeamDatatableColumnFilterUpdateMethod | undefined | null {
+    return this._columnFilterUpdateMethod
+  }
+  set columnFilterUpdateMethod(value: TheSeamDatatableColumnFilterUpdateMethod | undefined | null) {
+    if (notNullOrUndefined(value)) {
+      this._columnFilterUpdateMethod = value
+    }
+    else if (notNullOrUndefined(this._config?.columnFilterUpdateMethod)) {
+      this._columnFilterUpdateMethod = this._config?.columnFilterUpdateMethod
+    }
+    else {
+      this._columnFilterUpdateMethod = this._columnFilterUpdateMethodDefault
+    }
+  }
+  private readonly _columnFilterUpdateMethodDefault: TheSeamDatatableColumnFilterUpdateMethod = 'valueChanges'
+  _columnFilterUpdateMethod: TheSeamDatatableColumnFilterUpdateMethod | undefined | null
+
+  @Input() get columnFilterUpdateDebounce(): number | undefined | null {
+    return this._columnFilterUpdateDebounce
+  }
+  set columnFilterUpdateDebounce(value: number | undefined | null) {
+    if (notNullOrUndefined(value)) {
+      this._columnFilterUpdateDebounce = value
+    }
+    else if (notNullOrUndefined(this._config?.columnFilterUpdateDebounce)) {
+      this._columnFilterUpdateDebounce = this._config?.columnFilterUpdateDebounce
+    }
+    else {
+      this._columnFilterUpdateDebounce = this._columnFilterUpdateDebounceDefault
+    }
+  }
+  private readonly _columnFilterUpdateDebounceDefault: number = 400
+  _columnFilterUpdateDebounce: number | undefined | null
 
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() readonly scroll = new EventEmitter<any>()
@@ -367,6 +513,11 @@ export class DatatableComponent
   }
   private _menuBarComponent: DatatableMenuBarComponent | undefined
   private _menuBarSub: Subscription | undefined
+
+  @ContentChildren(TheSeamDatatableColumnFilterDirective)
+  set columnFilterTemplates(value: QueryList<TheSeamDatatableColumnFilterDirective> | undefined) {
+    this._columnsFilters.setFilterTemplates(value?.toArray() ?? [])
+  }
 
   @ViewChild(NgxDatatableComponent) ngxDatatable?: NgxDatatableComponent
   @ViewChild(NgxDatatableComponent, { read: ElementRef }) ngxDatatableElement?: ElementRef
@@ -455,6 +606,8 @@ export class DatatableComponent
     private readonly _preferences: DatatablePreferencesService,
     private readonly _columnsManager: ColumnsManagerService,
     private readonly _columnsAlterationsManager: ColumnsAlterationsManagerService,
+    private readonly _columnsFilters: ColumnsFiltersService,
+    @Optional() @Inject(THESEAM_DATATABLE_CONFIG) private readonly _config?: TheSeamDatatableConfig
   ) {
     this._preferencesKey.pipe(
       distinctUntilChanged(),
@@ -515,7 +668,12 @@ export class DatatableComponent
       takeUntil(this._ngUnsubscribe)
     ).subscribe()
 
-    this.columns$ = this._columnsManager.columns$
+    this.columns$ = combineLatest([this._columnsManager.columns$, this._columnsFilters.columnActiveFilterProps$]).pipe(
+      map(([ columns, columnActiveFilterProps ]) => columns.map(col => ({
+        ...col,
+        filterActive: columnActiveFilterProps.includes(this._columnsFilters.getColumnFilterProp(col) || '')
+      })))
+    )
 
     this.displayColumns$ = this.columns$.pipe(
       switchMap(cols => applyPrefs(cols)),
@@ -523,9 +681,11 @@ export class DatatableComponent
       tap(v => removeUnusedDiffs(v, this._colDiffersInp, this._colDiffersTpl)),
     )
 
-    this.filters$ = this._filtersSubject.asObservable()
+    this.filters$ = combineLatest([ this._menuBarsFiltersSubject.asObservable(), this._columnsFilters.columnsFilters$ ]).pipe(
+      map(([ menuFilters, columnsFilters ]) => [ ...menuFilters, ...columnsFilters ])
+    )
 
-    this.filterStates = this._filtersSubject.asObservable().pipe(
+    this.filterStates = this.filters$.pipe(
       switchMap(filters => composeDataFilterStates(filters))
     )
 
@@ -552,7 +712,7 @@ export class DatatableComponent
         if (!this.externalFiltering) {
           // console.log('not using externalFiltering')
           dataStream = dataStream.pipe(
-            switchMap(rows => this._filtersSubject.pipe(
+            switchMap(rows => this.filters$.pipe(
               // tap(v => console.log('filters', v)),
               concatMap(filters => of(rows).pipe(composeDataFilters(filters))),
               // tap(v => console.log('composed filters', v)),
@@ -585,6 +745,36 @@ export class DatatableComponent
         }
       })
     }
+
+    this._setDatatableConfigOrDefault()
+  }
+
+  /** Sets missing inputs from config */
+  private _setDatatableConfigOrDefault() {
+    if (isNullOrUndefined(this.messages)) {
+      this.messages = undefined
+    }
+    if (isNullOrUndefined(this.headerHeight)) {
+      this.headerHeight = undefined
+    }
+    if (isNullOrUndefined(this.rowHeight)) {
+      this.rowHeight = undefined
+    }
+    if (isNullOrUndefined(this.footerHeight)) {
+      this.footerHeight = undefined
+    }
+    if (isNullOrUndefined(this.cssClasses)) {
+      this.cssClasses = undefined
+    }
+    if (isNullOrUndefined(this.columnFilterIcon)) {
+      this.columnFilterIcon = undefined
+    }
+    if (isNullOrUndefined(this.columnFilterUpdateMethod)) {
+      this.columnFilterUpdateMethod = undefined
+    }
+    if (isNullOrUndefined(this.columnFilterUpdateDebounce)) {
+      this.columnFilterUpdateDebounce = undefined
+    }
   }
 
   ngOnDestroy() {
@@ -592,7 +782,7 @@ export class DatatableComponent
   }
 
   private _setMenuBarFilters(filters: DataFilter[]) {
-    this._filtersSubject.next(filters || [])
+    this._menuBarsFiltersSubject.next(filters || [])
   }
 
   public getColumnComponent(propName: string): DatatableColumnComponent | null {

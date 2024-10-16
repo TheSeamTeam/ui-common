@@ -16,8 +16,35 @@ export interface TheSeamDatatableColumnHidable {
 
 }
 
-export type TheSeamDatatableColumn<T extends TableCellTypeName = any, C extends TableCellTypeConfig<T> = any> =
+export interface TheSeamDatatableColumnFilterable<T extends TheSeamDatatableColumnFilterableConfig = any> {
+  filterable?: boolean
+
+  /**
+   * Additional options for a specific filter type.
+   */
+  filterOptions?: T
+}
+
+export interface TheSeamDatatableColumnFilterableConfig {
+  /**
+   * The object name on which to run the filter.
+   *
+   * Defaults to column prop.
+   */
+  filterProp?: string
+
+  /**
+   * The type of filter(s) to show in the filter menu.
+   *
+   * If not provided, will look to cellType to determine default filter(s).
+   */
+  filterType?: string
+
+}
+
+export type TheSeamDatatableColumn<T extends TableCellTypeName = any, C extends TableCellTypeConfig<T> = any, F extends TheSeamDatatableColumnFilterableConfig = any> =
   TableColumn &
   TableCellTypeColumn<T, C> &
   TableCellTypeExportProps &
-  TheSeamDatatableColumnHidable
+  TheSeamDatatableColumnHidable &
+  TheSeamDatatableColumnFilterable<F>

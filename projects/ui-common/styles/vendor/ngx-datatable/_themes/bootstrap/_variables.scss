@@ -200,3 +200,10 @@ $datatable-action-button-height: $datatable-action-button-size !default;
 $datatable-action-button-padding: 0 !default;
 $datatable-action-button-border-radius: 100% !default;
 $datatable-action-button-text-align: center !default;
+$datatable-action-button-hover-color: $primary !default;
+$datatable-action-button-hover-background: $gray-300 !default;
+
+// colors for column header filter button
+$datatable-column-header-filter-button-color: inherit !default;
+$datatable-column-header-filter-button-active-color: $datatable-column-header-filter-button-color !default;
+$datatable-column-header-filter-button-active-badge-color: $primary !default;

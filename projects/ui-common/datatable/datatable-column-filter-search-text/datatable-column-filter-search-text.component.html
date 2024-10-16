@@ -1,0 +1,21 @@
+<ng-container *ngIf="filterForm">
+  <seam-form-field [numPaddingErrors]="0" class="mb-2">
+    <ng-select
+      seamInput
+      seamAutoFocus
+      formControlName="searchType"
+      [clearable]="false"
+      placeholder="Select search type"
+      bindValue="value"
+      [items]="searchTypes"></ng-select>
+  </seam-form-field>
+  <ng-container *ngIf="showTextbox$ | async">
+    <seam-form-field [numPaddingErrors]="0" class="mb-2">
+      <input seamInput formControlName="searchText" placeholder="Type to search" seamAutoFocus>
+    </seam-form-field>
+    <!-- TODO: implement this? Does not work with current Seam GraphQL/SQL Server implementation. -->
+    <!-- <seam-form-field [numPaddingErrors]="0" class="mb-2">
+      <seam-checkbox seamInput formControlName="caseSensitive">Case Sensitive</seam-checkbox>
+    </seam-form-field> -->
+  </ng-container>
+</ng-container>

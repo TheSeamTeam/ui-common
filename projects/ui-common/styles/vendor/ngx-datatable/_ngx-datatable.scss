@@ -177,6 +177,11 @@
       font-size: $datatable-header-cell-font-size;
       font-weight: $datatable-header-cell-font-weight;
 
+      .datatable-header-cell-template-wrap {
+        display: flex;
+        align-items: center;
+      }
+
       .datatable-header-cell-wrapper {
         position: relative;
       }
@@ -217,6 +222,27 @@
       &.dragging {
         .resize-handle {
           border-right: none;
+        }
+      }
+
+      .datatable-column-header-filter-button {
+        position: relative;
+        color: $datatable-column-header-filter-button-color;
+        &.datatable-column-header-filter-button-active {
+          color: $datatable-column-header-filter-button-active-color;
+          &::before {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: -3px;
+            width: 6px;
+            height: 6px;
+            border-radius: 100%;
+            background: $datatable-column-header-filter-button-active-badge-color;
+          }
+          seam-icon {
+            clip-path: path('M6,0C6,5 12,6 16,3L16,16L0,16L0,0L6,0Z');
+          }
         }
       }
     }

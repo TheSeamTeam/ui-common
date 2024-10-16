@@ -20,6 +20,8 @@ import { TheSeamMenuModule } from '@theseam/ui-common/menu'
 import { TheSeamPopoverModule } from '@theseam/ui-common/popover'
 import { TheSeamSharedModule } from '@theseam/ui-common/shared'
 import { TheSeamTableCellTypeModule } from '@theseam/ui-common/table-cell-type'
+import { TheSeamDataFiltersModule } from '@theseam/ui-common/data-filters'
+import { TheSeamToggleGroupModule } from '@theseam/ui-common/toggle-group'
 
 import { DatatableActionMenuItemComponent } from './datatable-action-menu-item/datatable-action-menu-item.component'
 import { DatatableActionMenuComponent } from './datatable-action-menu/datatable-action-menu.component'
@@ -44,6 +46,13 @@ import { DatatableCellTplDirective } from './directives/datatable-cell-tpl.direc
 import { DatatableFilterDirective } from './directives/datatable-filter.directive'
 import { DatatableRowActionItemDirective } from './directives/datatable-row-action-item.directive'
 import { TheSeamDatatableScrollbarHelperService } from './services/datatable-scrollbar-helper.service'
+import { DatatableColumnFilterMenuComponent } from './datatable-column-filter-menu/datatable-column-filter-menu.component'
+import { NgSelectModule } from '@ng-select/ng-select'
+import { DatatableColumnFilterSearchTextComponent } from './datatable-column-filter-search-text/datatable-column-filter-search-text.component'
+import { DatatableColumnFilterSearchNumericComponent } from './datatable-column-filter-search-numeric/datatable-column-filter-search-numeric.component'
+import { DatatableColumnFilterSearchDateComponent } from './datatable-column-filter-search-date/datatable-column-filter-search-date.component'
+import { DatatableColumnFilterTplDirective } from './directives/datatable-column-filter-tpl.directive'
+import { TheSeamDatatableColumnFilterDirective } from './directives/datatable-column-filter.directive'
 
 @NgModule({
     declarations: [
@@ -69,6 +78,12 @@ import { TheSeamDatatableScrollbarHelperService } from './services/datatable-scr
         DatatableMenuBarColumnCenterComponent,
         DatatableMenuBarColumnRightComponent,
         DatatableMenuBarTextComponent,
+        DatatableColumnFilterMenuComponent,
+        DatatableColumnFilterSearchTextComponent,
+        DatatableColumnFilterSearchNumericComponent,
+        DatatableColumnFilterSearchDateComponent,
+        DatatableColumnFilterTplDirective,
+        TheSeamDatatableColumnFilterDirective
     ],
     imports: [
         CommonModule,
@@ -89,7 +104,10 @@ import { TheSeamDatatableScrollbarHelperService } from './services/datatable-scr
         TheSeamCheckboxComponent,
         TheSeamFormFieldModule,
         ReactiveFormsModule,
-        TheSeamTableCellTypeModule
+        TheSeamTableCellTypeModule,
+        TheSeamDataFiltersModule,
+        NgSelectModule,
+        TheSeamToggleGroupModule
     ],
     exports: [
         DatatableComponent,
@@ -112,7 +130,13 @@ import { TheSeamDatatableScrollbarHelperService } from './services/datatable-scr
         DatatableMenuBarColumnLeftComponent,
         DatatableMenuBarColumnCenterComponent,
         DatatableMenuBarColumnRightComponent,
-        DatatableMenuBarTextComponent
+        DatatableMenuBarTextComponent,
+        DatatableColumnFilterMenuComponent,
+        DatatableColumnFilterSearchTextComponent,
+        DatatableColumnFilterSearchNumericComponent,
+        DatatableColumnFilterSearchDateComponent,
+        DatatableColumnFilterTplDirective,
+        TheSeamDatatableColumnFilterDirective
     ],
     providers: [
         { provide: ScrollbarHelper, useClass: TheSeamDatatableScrollbarHelperService }
