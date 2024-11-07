@@ -106,10 +106,10 @@
     <button
       seamButton
       *ngIf="column.sortable"
-      class="datatable-sort-target draggable p-0"
+      class="datatable-sort-target p-0"
       (click)="sortFn()"
       title="Click to sort">
-      <strong>{{column.name}}</strong>
+      <strong class="draggable">{{column.name}}</strong>
     </button>
     <div class="datatable-column-header-separator" [attr.data-column-id]="column.$$id"></div>
   </div>
