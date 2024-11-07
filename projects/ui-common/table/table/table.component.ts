@@ -1,9 +1,10 @@
 import { BooleanInput, coerceArray } from '@angular/cdk/coercion'
 import { AfterContentChecked, ChangeDetectionStrategy, Component, ContentChildren, EventEmitter, Input, OnChanges, OnInit, Output, QueryList, SimpleChanges, TemplateRef } from '@angular/core'
 import { DomSanitizer } from '@angular/platform-browser'
+import { merge, Subject, Subscription } from 'rxjs'
 
 import { InputBoolean } from '@theseam/ui-common/core'
-import { merge, Subject, Subscription } from 'rxjs'
+
 import { TheSeamTableColumnComponent } from '../table-column.component'
 
 /**
@@ -144,12 +145,10 @@ export class TableComponent<T = any> implements OnInit, OnChanges, AfterContentC
   ) { }
 
   ngOnInit() {
-    console.log('TableComponent.ngOnInit')
     this._updateColumns()
   }
 
   ngAfterContentChecked() {
-    console.log('TableComponent.ngAfterContentChecked')
     this._updateColumns()
   }
 
@@ -200,7 +199,6 @@ export class TableComponent<T = any> implements OnInit, OnChanges, AfterContentC
       }
     }
 
-    console.log('newCols', newCols)
     this.displayedRecords = newCols
     this.displayedColumns = newCols.map(c => c.prop)
     this.columnsChange.emit({ previous: prev, current: newCols })
