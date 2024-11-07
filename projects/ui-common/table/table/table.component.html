@@ -4,13 +4,22 @@
   [class.table-no-header]="!hasHeader">
   <ng-container *ngFor="let r of displayedRecords; first as isFirst; trackBy:_trackByRecords">
     <ng-container [cdkColumnDef]="r.prop">
-      <th cdk-header-cell *cdkHeaderCellDef>
+      <th cdk-header-cell *cdkHeaderCellDef [class]="r.headerClass">
         <ng-container *ngIf="hasHeader">
-          {{ r.name }}
+          <ng-container *ngIf="$any(r)?.headerTemplate; else noHeaderTpl">
+            <ng-template
+              [ngTemplateOutlet]="$any(r)?.headerTemplate"
+              [ngTemplateOutletContext]="{ $implicit: r.name, prop: r.prop, column: r }">
+            </ng-template>
+          </ng-container>
+          <ng-template #noHeaderTpl>
+            {{ r.name }}
+          </ng-template>
         </ng-container>
       </th>
       <td cdk-cell *cdkCellDef="let element; index as rowIndex"
         [attr.colspan]="element?._emptyDisplay && isFirst ? 2 : undefined"
+        [class]="element?._emptyDisplay ? undefined : r.cellClass"
         [class.border-top-0]="element?._emptyDisplay && isFirst"
         [class.d-none]="element?._emptyDisplay && !isFirst"
         [style]="$any(r)?.cellTypeConfig?.styles">
@@ -30,6 +39,14 @@
             [colData]="r">
           </seam-table-cell-type-selector>
           <ng-template #noCellType>
+            <ng-container *ngIf="$any(r)?.cellTemplate; else noCellTpl">
+              <ng-template
+                [ngTemplateOutlet]="$any(r)?.cellTemplate"
+                [ngTemplateOutletContext]="{ $implicit: element[r.prop], row: element, rowIndex: rowIndex, column: r }">
+              </ng-template>
+            </ng-container>
+          </ng-template>
+          <ng-template #noCellTpl>
             <div class="td-text-truncate" [title]="element[r.prop]">
               {{ element[r.prop] }}
             </div>
