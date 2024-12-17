@@ -1,38 +1,26 @@
-import { Injectable, isDevMode } from '@angular/core'
-
+import { isDevMode } from '@angular/core'
+import { CanDeactivateFn } from '@angular/router'
 
 import { UnsavedChangesCanDeactivate } from './unsaved-changes-can-deactivate'
 
-@Injectable({
-  providedIn: 'root'
-})
-export class UnsavedChangesDialogGuard  {
-
-  /**
-   * NOTE: Must be synchronous for now to allow `window:beforeunload` event support.
-   */
-  canDeactivate(component: UnsavedChangesCanDeactivate): boolean {
-    if (isDevMode()) {
-      if (!component.unsavedChangesCanDeactivate) {
-        // eslint-disable-next-line no-console
-        console.warn('Route Component with [UnsavedChangesDialogGuard] guard must extend [UnsavedChangesCanDeactivate] class.')
-      }
-
-      const w = window as any
-      // Avoid redirect prevention in Storybook
-      if (w && w.__STORYBOOK_CLIENT_API__) {
-        return true
-      }
+export const UnsavedChangesDialogGuard: CanDeactivateFn<UnsavedChangesCanDeactivate> = (component, currentRoute, currentState, nextState) => {
+  if (isDevMode()) {
+    if (!component.unsavedChangesCanDeactivate) {
+      console.warn(
+        'Route Component with `UnsavedChangesDialogGuard` guard must extend `UnsavedChangesCanDeactivate` class.'
+      )
     }
+  }
 
-    if (!component.unsavedChangesCanDeactivate()) {
-      if (confirm('You have unsaved changes! If you leave, your changes will be lost.')) {
-        return true
-      } else {
-        return false
-      }
-    }
+  const w = window as any
+  // Avoid redirect prevention in Storybook
+  if (w && w.__STORYBOOK_CLIENT_API__) {
     return true
   }
 
+  if (!component.unsavedChangesCanDeactivate()) {
+    return confirm('You have unsaved changes! If you leave, your changes will be lost.')
+  }
+
+  return true
 }
