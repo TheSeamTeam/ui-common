@@ -1,12 +1,12 @@
 import { Injectable, isDevMode } from '@angular/core'
-import { CanDeactivate } from '@angular/router'
+
 
 import { UnsavedChangesCanDeactivate } from './unsaved-changes-can-deactivate'
 
 @Injectable({
   providedIn: 'root'
 })
-export class UnsavedChangesDialogGuard implements CanDeactivate<UnsavedChangesCanDeactivate> {
+export class UnsavedChangesDialogGuard  {
 
   /**
    * NOTE: Must be synchronous for now to allow `window:beforeunload` event support.
