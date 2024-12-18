@@ -1,15 +1,15 @@
-import { ArgTypes, Meta, StoryFn, applicationConfig, moduleMetadata } from "@storybook/angular";
-import { provideAnimations } from "@angular/platform-browser/animations";
-import { TheSeamMenuModule } from "../menu/menu.module";
-import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
-import { Component, Input, OnInit } from "@angular/core";
-import { RichTextComponent } from "./rich-text/rich-text.component";
-import { TheSeamRichTextModule } from "./rich-text.module";
-import { TheSeamQuillEditorConfig, TheSeamQuillMentionMenuItem } from "./utils/models";
-import { THESEAM_QUILL_EDITOR_CONFIG, THESEAM_QUILL_EDITOR_CONFIG_DEFAULT, THESEAM_QUILL_TOOLBAR_OPTIONS_DEFAULT, THESEAM_QUILL_FORMATS_DEFAULT } from "./utils/utils";
-import { delay, interval, map, of, take, tap } from "rxjs";
-import { TheSeamFormFieldModule } from "../form-field/form-field.module";
-import { TheSeamButtonsModule } from "../buttons/buttons.module";
+import { ArgTypes, Meta, StoryFn, applicationConfig, moduleMetadata } from '@storybook/angular'
+import { provideAnimations } from '@angular/platform-browser/animations'
+import { TheSeamMenuModule } from '../menu/menu.module'
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
+import { Component, Input, OnInit } from '@angular/core'
+import { RichTextComponent } from './rich-text/rich-text.component'
+import { TheSeamRichTextModule } from './rich-text.module'
+import { TheSeamQuillEditorConfig, TheSeamQuillMentionMenuItem } from './utils/models'
+import { THESEAM_QUILL_EDITOR_CONFIG, THESEAM_QUILL_EDITOR_CONFIG_DEFAULT, THESEAM_QUILL_TOOLBAR_OPTIONS_DEFAULT, THESEAM_QUILL_FORMATS_DEFAULT } from './utils/utils'
+import { delay, interval, map, of, take, tap } from 'rxjs'
+import { TheSeamFormFieldModule } from '../form-field/form-field.module'
+import { TheSeamButtonsModule } from '../buttons/buttons.module'
 
 @Component({
   selector: 'rich-text-form-component',
@@ -107,8 +107,8 @@ class RichTextFormComponent implements OnInit {
         modules: {
           toolbar: [
             ...THESEAM_QUILL_TOOLBAR_OPTIONS_DEFAULT,
-            [{ font: [ 'sans-serif', 'serif' ]}],
-            [{color: [ 'blue', 'red' ]}],
+            [{ font: [ 'sans-serif', 'serif' ] }],
+            [{ color: [ 'blue', 'red' ] }],
             [ 'image', 'video' ]
           ],
           mention: {
@@ -172,10 +172,6 @@ const meta: Meta = {
         TheSeamFormFieldModule,
         TheSeamButtonsModule
       ],
-      entryComponents: [
-        CustomConfigComponent,
-        RichTextFormComponent
-      ]
     })
   ],
 }
@@ -195,7 +191,7 @@ const controlArgTypes: Partial<ArgTypes<RichTextComponent>> = {
 export default meta
 type Story = StoryFn<RichTextComponent>
 
-export const Basic: Story = (args) => ({
+export const Basic: Story = args => ({
   props: {
     ...args,
     formControl: new FormControl(args.value)
@@ -218,7 +214,7 @@ export const Basic: Story = (args) => ({
 Basic.args = undefined
 Basic.argTypes = controlArgTypes
 
-export const CustomConfig: Story = (args) => ({
+export const CustomConfig: Story = args => ({
   props: {
     ...args,
     formControl: new FormControl(args.value),
@@ -243,7 +239,7 @@ CustomConfig.args = {
 }
 CustomConfig.argTypes = controlArgTypes
 
-export const RichTextDisabled: Story = (args) => ({
+export const RichTextDisabled: Story = args => ({
   props: {
     ...args,
     formControl: new FormControl(args.value),
@@ -269,7 +265,7 @@ RichTextDisabled.args = {
 }
 RichTextDisabled.argTypes = controlArgTypes
 
-export const CharacterCounter: Story = (args) => ({
+export const CharacterCounter: Story = args => ({
   props: {
     ...args,
     formControl: new FormControl(args.value),
@@ -295,7 +291,7 @@ CharacterCounter.args = {
 }
 CharacterCounter.argTypes = controlArgTypes
 
-export const CustomCharacterCounterTemplate: Story = (args) => ({
+export const CustomCharacterCounterTemplate: Story = args => ({
   props: {
     ...args,
     formControl: new FormControl(args.value),
@@ -331,7 +327,7 @@ CustomCharacterCounterTemplate.args = {
 }
 CustomCharacterCounterTemplate.argTypes = controlArgTypes
 
-export const Mentions: Story = (args) => ({
+export const Mentions: Story = args => ({
   props: {
     ...args,
     formControl: new FormControl(args.value),
@@ -378,7 +374,7 @@ Mentions.args = {
 }
 Mentions.argTypes = controlArgTypes
 
-export const UsingSeamInput: Story = (args) => ({
+export const UsingSeamInput: Story = args => ({
   props: {
     ...args
   },

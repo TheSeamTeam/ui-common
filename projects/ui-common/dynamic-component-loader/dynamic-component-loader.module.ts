@@ -1,5 +1,4 @@
 import {
-  ANALYZE_FOR_ENTRY_COMPONENTS,
   ModuleWithProviders,
   NgModule,
   Type,
@@ -32,7 +31,6 @@ export class TheSeamDynamicComponentLoaderModule {
     return {
       ngModule: TheSeamDynamicComponentLoaderModule,
       providers: [
-        { provide: ANALYZE_FOR_ENTRY_COMPONENTS, useValue: manifest, multi: true },
         // provider for @angular/router to parse
         { provide: ROUTES, useValue: manifest, multi: true },
         // provider for TheSeamDynamicComponentLoader to analyze
@@ -43,7 +41,6 @@ export class TheSeamDynamicComponentLoaderModule {
     return {
       ngModule: TheSeamDynamicComponentLoaderModule,
       providers: [
-        { provide: ANALYZE_FOR_ENTRY_COMPONENTS, useValue: component, multi: true },
         // provider for @angular/router to parse
         { provide: ROUTES, useValue: [], multi: true },
         // provider for TheSeamDynamicComponentLoader to analyze

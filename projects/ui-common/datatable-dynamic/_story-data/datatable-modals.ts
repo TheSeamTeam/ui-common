@@ -43,9 +43,6 @@ export class StoryModalOneComponent {
   declarations: [
     StoryModalOneComponent
   ],
-  entryComponents: [
-    StoryModalOneComponent
-  ]
 })
 export class StoryModalOneModule { }
 
@@ -88,8 +85,5 @@ export class StoryModalTwoComponent {
   declarations: [
     StoryModalTwoComponent
   ],
-  entryComponents: [
-    StoryModalTwoComponent
-  ]
 })
 export class StoryModalTwoModule { }

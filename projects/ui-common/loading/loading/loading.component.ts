@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core'
 
-import { NgxLoadingConfig } from '@marklb/ngx-loading'
+import { NgxLoadingConfig } from 'ngx-loading'
 
 import { defaultThemeConfig, primaryThemeConfig } from '../loading-themes'
 import type { TheSeamLoadingTheme } from '../loading.models'

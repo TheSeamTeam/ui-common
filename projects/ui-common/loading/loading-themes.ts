@@ -1,4 +1,4 @@
-import { ngxLoadingAnimationTypes, NgxLoadingConfig } from '@marklb/ngx-loading'
+import { ngxLoadingAnimationTypes, NgxLoadingConfig } from 'ngx-loading'
 
 export const defaultThemeConfig: NgxLoadingConfig = {
   animationType: ngxLoadingAnimationTypes.threeBounce,

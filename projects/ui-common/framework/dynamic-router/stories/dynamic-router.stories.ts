@@ -243,7 +243,6 @@ class RecursiveIdThreeComponent {
       }
     ])
   ],
-  entryComponents: [ ]
 })
 class RecursiveIdModule { }
 // ////////////////////////////////////////////////////////////////////////////
@@ -264,9 +263,6 @@ class RecursiveIdModule { }
       }
     ])
   ],
-  entryComponents: [
-    StorySubNameExComponent
-  ]
 })
 class LevelTwoModule { }
 
@@ -358,9 +354,6 @@ export const Recursive: Story = args => ({
       TheSeamFormFieldModule,
       TheSeamDynamicRouterModule,
     ],
-    entryComponents: [
-      StoryNameExComponent,
-    ],
   },
   props: { },
   template: `
@@ -411,9 +404,6 @@ export const Example: Story = args => ({
       TheSeamFormFieldModule,
       TheSeamDynamicRouterModule,
     ],
-    entryComponents: [
-
-    ],
   },
   props: { },
   template: `
@@ -447,9 +437,6 @@ export const Example: Story = args => ({
 //           }
 //         ], { useHash: true })
 //       ],
-//       entryComponents: [
-//         StoryNameExComponent
-//       ]
 //     },
 //     props: { },
 //     template: `
@@ -493,9 +480,6 @@ export const Example: Story = args => ({
 //           }
 //         ], { useHash: true })
 //       ],
-//       entryComponents: [
-
-//       ]
 //     },
 //     props: { },
 //     template: `

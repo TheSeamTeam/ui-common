@@ -101,9 +101,6 @@ export const Basic: Story = () => ({
       StoryseamModalBasicComponent,
       StoryseamModalBasicExampleComponent
     ],
-    entryComponents: [
-      StoryseamModalBasicComponent
-    ],
   },
   props: { },
   template: `<story-seam-modal-basic-example></story-seam-modal-basic-example>`
@@ -114,9 +111,6 @@ export const Simple: Story = () => ({
     declarations: [
       StoryseamModalSimpleComponent,
       StoryseamModalSimpleExampleComponent
-    ],
-    entryComponents: [
-      StoryseamModalSimpleComponent
     ],
   },
   props: { },

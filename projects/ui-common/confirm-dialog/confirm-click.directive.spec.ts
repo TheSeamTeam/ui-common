@@ -9,8 +9,6 @@ import { ConfirmClickDirective } from './confirm-click.directive'
 import { ConfirmDialogComponent } from './confirm-dialog.component'
 import { SeamConfirmDialogService } from './confirm-dialog.service'
 
-// tslint:disable:no-non-null-assertion
-
 describe('ConfirmClickDirective', () => {
   let host: SpectatorHost<ConfirmClickDirective>
 
@@ -26,9 +24,6 @@ describe('ConfirmClickDirective', () => {
       TheSeamModalModule,
       TheSeamScrollbarModule
     ],
-    entryComponents: [
-      ConfirmDialogComponent
-    ]
   })
 
   it('should get the instance', () => {

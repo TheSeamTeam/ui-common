@@ -1,4 +1,4 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular'
+import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms'
 import { BrowserModule } from '@angular/platform-browser'
@@ -11,7 +11,7 @@ import { TheSeamSharedModule } from '@theseam/ui-common/shared'
 import { TheSeamFormFieldComponent } from './../form-field.component'
 import { TheSeamFormFieldModule } from './../form-field.module'
 
-export default {
+const meta: Meta<TheSeamFormFieldComponent> = {
   title: 'Form Field/Components/Quill',
   component: TheSeamFormFieldComponent,
   decorators: [
@@ -57,21 +57,26 @@ export default {
       iframeHeight: '600px',
     }
   }
-} as Meta
+}
 
-export const Basic: Story = args => ({
-  props: {
-    ...args,
-    control: new FormControl(undefined, [ Validators.required ])
-  },
-  template: `
-    <seam-form-field label="Quill Editor:">
-      <quill-editor
-        seamInput
-        [formControl]="control"
-        [required]="true">
-      </quill-editor>
-      <ng-template seamFormFieldError="required">Body required.</ng-template>
-    </seam-form-field>
-  `
-})
+export default meta
+type Story = StoryObj<TheSeamFormFieldComponent>
+
+export const Basic: Story = {
+  render: args => ({
+    props: {
+      ...args,
+      control: new FormControl(undefined, [ Validators.required ])
+    },
+    template: `
+      <seam-form-field label="Quill Editor:">
+        <quill-editor
+          seamInput
+          [formControl]="control"
+          [required]="true">
+        </quill-editor>
+        <ng-template seamFormFieldError="required">Body required.</ng-template>
+      </seam-form-field>
+    `
+  }),
+}

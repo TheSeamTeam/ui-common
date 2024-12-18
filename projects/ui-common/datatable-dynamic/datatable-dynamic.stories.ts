@@ -70,9 +70,6 @@ class StoryExModalLazyComponent { }
     TheSeamModalModule,
     TheSeamDynamicComponentLoaderModule.forChild(StoryExModalLazyComponent),
   ],
-  entryComponents: [
-    StoryExModalLazyComponent
-  ]
 })
 class StoryExModalLazyModule { }
 
@@ -118,9 +115,6 @@ class StoryExModalLazyModule { }
 //   exports: [
 //     // RouterModule
 //   ],
-//   entryComponents: [
-//     // StoryExRouteModalComponent
-//   ]
 // })
 // class ExampleModalModule { }
 
@@ -158,7 +152,6 @@ const routes: Route[] = [
 //           }
 //         ])
 //       ],
-//       entryComponents: [ ]
 //     },
 //     props: {
 //       data: exampleData1

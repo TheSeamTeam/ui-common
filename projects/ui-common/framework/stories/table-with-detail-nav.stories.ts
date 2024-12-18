@@ -395,17 +395,6 @@ export const TableWithDetailNav: Story = args => ({
     providers: [
       { provide: APP_BASE_HREF, useValue: '/' },
     ],
-    entryComponents: [
-      StoryExWidget1Component,
-      StoryExWidget2Component,
-      StoryExWidget3Component,
-      StoryExWidget4Component,
-      StoryExWidget5Component,
-      StoryExWidget6Component,
-      StoryExWidget7Component,
-      StoryExWidget8Component,
-      UserDetailsExComponent
-    ]
   },
   props: {
     navItems: [
@@ -591,17 +580,6 @@ export const TableWithDetailNav: Story = args => ({
 //       providers: [
 //         { provide: APP_BASE_HREF, useValue: '/' },
 //       ],
-//       entryComponents: [
-//         StoryExWidget1Component,
-//         StoryExWidget2Component,
-//         StoryExWidget3Component,
-//         StoryExWidget4Component,
-//         StoryExWidget5Component,
-//         StoryExWidget6Component,
-//         StoryExWidget7Component,
-//         StoryExWidget8Component,
-//         UserDetailsExComponent
-//       ]
 //     },
 //     props: {
 //       navItems: [

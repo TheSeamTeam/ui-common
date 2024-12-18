@@ -9,7 +9,7 @@
     "@fortawesome/angular-fontawesome",
     "@marklb/file-type",
     "@marklb/ngx-datatable",
-    "@marklb/ngx-loading",
+    "ngx-loading",
     "@ng-select/ng-select",
     "@ng-bootstrap/ng-bootstrap",
     "overlayscrollbars",

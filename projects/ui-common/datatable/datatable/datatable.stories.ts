@@ -1,5 +1,5 @@
 import { action } from '@storybook/addon-actions'
-import { Meta, Story, componentWrapperDecorator, moduleMetadata } from '@storybook/angular'
+import { Meta, StoryObj, componentWrapperDecorator, moduleMetadata } from '@storybook/angular'
 import { applicationConfig } from '@storybook/angular/dist/client/decorators'
 
 import { AfterViewInit, Component, Input, OnInit, ViewChild, importProvidersFrom } from '@angular/core'
@@ -55,7 +55,7 @@ import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 import { TheSeamCheckboxModule } from '@theseam/ui-common/checkbox'
 import { isNullOrUndefined } from '@theseam/ui-common/utils'
 
-export default {
+const meta: Meta<DatatableComponent> = {
   title: 'Datatable/Components',
   component: DatatableComponent,
   decorators: [
@@ -80,245 +80,258 @@ export default {
       iframeHeight: '400px',
     },
   },
-} as Meta
-
-export const Simple: Story = args => ({
-  // props: { ...args },
-  props: {
-    __hack: { ...args },
-  },
-  template: '<seam-datatable class="w-100 h-100" [columns]="__hack.columns" [rows]="__hack.rows"></seam-datatable>',
-})
-Simple.args = {
-  columns: [
-    { prop: 'name', name: 'Name' },
-    { prop: 'age', name: 'Age' },
-    { prop: 'color', name: 'Color' },
-  ],
-  rows: [
-    { name: 'Mark', age: 27, color: 'blue' },
-    { name: 'Joe', age: 33, color: 'green' },
-    { name: 'Mark', age: 27, color: 'blue' },
-    { name: 'Joe', age: 33, color: 'green' },
-    { name: 'Mark', age: 27, color: 'blue' },
-    { name: 'Joe', age: 33, color: 'green' },
-    { name: 'Mark', age: 27, color: 'blue' },
-    { name: 'Joe', age: 33, color: 'green' },
-    { name: 'Mark', age: 27, color: 'blue' },
-    { name: 'Joe', age: 33, color: 'green' },
-    { name: 'Mark', age: 27, color: 'blue' },
-    { name: 'Joe', age: 33, color: 'green' },
-    { name: 'Mark', age: 27, color: 'blue' },
-    { name: 'Joe', age: 33, color: 'green' },
-    { name: 'Mark', age: 27, color: 'blue' },
-    { name: 'Joe', age: 33, color: 'green' },
-    { name: 'Mark', age: 27, color: 'blue' },
-    { name: 'Joe', age: 33, color: 'green' },
-    { name: 'Mark', age: 27, color: 'blue' },
-    { name: 'Joe', age: 33, color: 'green' },
-    { name: 'Mark', age: 27, color: 'blue' },
-    { name: 'Joe', age: 33, color: 'green' },
-    { name: 'Mark', age: 27, color: 'blue' },
-    { name: 'Joe', age: 33, color: 'green' },
-    { name: 'Mark', age: 27, color: 'blue' },
-    { name: 'Joe', age: 33, color: 'green' },
-    { name: 'Mark', age: 27, color: 'blue' },
-    { name: 'Joe', age: 33, color: 'green' },
-    { name: 'Mark', age: 27, color: 'blue' },
-    { name: 'Joe', age: 33, color: 'green' },
-    { name: 'Mark', age: 27, color: 'blue' },
-    { name: 'Joe', age: 33, color: 'green' },
-  ],
 }
 
-export const ColumnTemplate = (args: any) => ({
-  // props: { ...args },
-  props: {
-    __hack: { ...args },
-  },
-  template: `
-    <seam-datatable
-      class="w-100 h-100"
-      [columns]="__hack.columns"
-      [rows]="__hack.rows">
-      <seam-datatable-column name="Color" prop="color">
-        <ng-template seamDatatableCellTpl let-value="value">
-          <span *ngIf="value === 'blue'; else notBlue" style="color: blue;">{{ value }}</span>
-          <ng-template #notBlue>{{ value }}</ng-template>
-        </ng-template>
-      </seam-datatable-column>
-    </seam-datatable>`,
-})
-ColumnTemplate.args = {
-  columns: [
-    { prop: 'name', name: 'Name' },
-    { prop: 'age', name: 'Age' },
-    { prop: 'color', name: 'Color' },
-  ],
-  rows: [
-    { name: 'Mark', age: 27, color: 'blue' },
-    { name: 'Joe', age: 33, color: 'green' },
-  ],
-}
+export default meta
+type Story = StoryObj<DatatableComponent>
 
-export const ActionMenu = (args: any) => ({
-  props: {
-    __hack: {
-      ...args,
-      columns: [
-        { prop: 'name', name: 'Name' },
-        { prop: 'age', name: 'Age' },
-        { prop: 'email', name: 'Email Address' },
-        { prop: 'phone', name: 'Phone Number' },
-        { prop: 'streetAddress', name: 'Street Address' },
-        { prop: 'city', name: 'City' },
-        { prop: 'state', name: 'State' },
-        { prop: 'zip', name: 'Zip' },
-        { prop: 'country', name: 'Country' },
-        { prop: 'color', name: 'Favorite Color' },
-        { prop: 'iceCreamFlavor', name: 'Favorite Ice Cream Flavor' },
-        { prop: 'petName', name: 'Pet\'s Name' },
-      ],
-      rows: [
-        {
-          name: 'Mark',
-          age: 27,
-          color: 'Blue',
-          email: 'mark.berry@theseam.com',
-          phone: '901-555-5555',
-          streetAddress: '123 Main St',
-          city: 'Arlington',
-          state: 'TN',
-          zip: '38111',
-          country: 'USA',
-          iceCreamFlavor: 'Chocolate',
-          petName: 'Spot',
-        },
-        {
-          name: 'Joe',
-          age: 33,
-          color: 'Green',
-          email: 'joe.schmoe@theseam.com',
-          phone: '901-888-8888',
-          streetAddress: '1600 Pennsylvaia Ave',
-          city: 'Washington',
-          state: 'DC',
-          zip: '35111',
-          country: 'USA',
-          iceCreamFlavor: 'Strawberry',
-          petName: 'Mittens',
-        },
-      ]
-    }
-  },
-  template: `
-    <seam-datatable
-      class="w-100 h-100"
-      [columns]="__hack.columns"
-      [rows]="__hack.rows"
-      [actionItemColumnPosition]="__hack.actionItemColumnPosition">
-      <ng-template seamDatatableRowActionItem let-row>
-        <seam-datatable-action-menu>
-          <seam-datatable-action-menu-item label="Action One"></seam-datatable-action-menu-item>
-          <seam-datatable-action-menu-item label="Action Two"></seam-datatable-action-menu-item>
-          <seam-datatable-action-menu-item label="Action Three" [subMenu]="subMenuOne"></seam-datatable-action-menu-item>
-          <seam-datatable-action-menu-item label="Action Four"></seam-datatable-action-menu-item>
-        </seam-datatable-action-menu>
-
-          <seam-datatable-action-menu isSubMenu="true" #subMenuOne>
-            <seam-datatable-action-menu-item label="Action One"></seam-datatable-action-menu-item>
-            <seam-datatable-action-menu-item label="Action Two"></seam-datatable-action-menu-item>
-            <seam-datatable-action-menu-item label="Action Three"></seam-datatable-action-menu-item>
-          </seam-datatable-action-menu>
-        </ng-template>
-    </seam-datatable>`,
-})
-ActionMenu.args = {
-  columns: [
-    { prop: 'name', name: 'Name' },
-    { prop: 'age', name: 'Age' },
-    { prop: 'color', name: 'Color' },
-  ],
-  rows: [
-    { name: 'Mark', age: 27, color: 'blue' },
-    { name: 'Joe', age: 33, color: 'green' },
-  ],
-}
-
-export const InlineEdit = (args: any) => ({
-  moduleMetadata: {
-    imports: [
-      ReactiveFormsModule,
+export const Simple: Story = {
+  render: args => ({
+    // props: { ...args },
+    props: {
+      __hack: { ...args },
+    },
+    template: '<seam-datatable class="w-100 h-100" [columns]="__hack.columns" [rows]="__hack.rows"></seam-datatable>',
+  }),
+  args: {
+    columns: [
+      { prop: 'name', name: 'Name' },
+      { prop: 'age', name: 'Age' },
+      { prop: 'color', name: 'Color' },
+    ],
+    rows: [
+      { name: 'Mark', age: 27, color: 'blue' },
+      { name: 'Joe', age: 33, color: 'green' },
+      { name: 'Mark', age: 27, color: 'blue' },
+      { name: 'Joe', age: 33, color: 'green' },
+      { name: 'Mark', age: 27, color: 'blue' },
+      { name: 'Joe', age: 33, color: 'green' },
+      { name: 'Mark', age: 27, color: 'blue' },
+      { name: 'Joe', age: 33, color: 'green' },
+      { name: 'Mark', age: 27, color: 'blue' },
+      { name: 'Joe', age: 33, color: 'green' },
+      { name: 'Mark', age: 27, color: 'blue' },
+      { name: 'Joe', age: 33, color: 'green' },
+      { name: 'Mark', age: 27, color: 'blue' },
+      { name: 'Joe', age: 33, color: 'green' },
+      { name: 'Mark', age: 27, color: 'blue' },
+      { name: 'Joe', age: 33, color: 'green' },
+      { name: 'Mark', age: 27, color: 'blue' },
+      { name: 'Joe', age: 33, color: 'green' },
+      { name: 'Mark', age: 27, color: 'blue' },
+      { name: 'Joe', age: 33, color: 'green' },
+      { name: 'Mark', age: 27, color: 'blue' },
+      { name: 'Joe', age: 33, color: 'green' },
+      { name: 'Mark', age: 27, color: 'blue' },
+      { name: 'Joe', age: 33, color: 'green' },
+      { name: 'Mark', age: 27, color: 'blue' },
+      { name: 'Joe', age: 33, color: 'green' },
+      { name: 'Mark', age: 27, color: 'blue' },
+      { name: 'Joe', age: 33, color: 'green' },
+      { name: 'Mark', age: 27, color: 'blue' },
+      { name: 'Joe', age: 33, color: 'green' },
+      { name: 'Mark', age: 27, color: 'blue' },
+      { name: 'Joe', age: 33, color: 'green' },
     ],
   },
-  props: {
-    __hack: {
-      ...args,
-      columns: [
-        { prop: 'name', name: 'Name' },
-        { prop: 'age', name: 'Age' },
-        { prop: 'active', name: 'Active' },
-      ],
-      rows: [
-        { name: 'Mark', age: 27, active: true, control: new UntypedFormControl(true) },
-        { name: 'Joe', age: 33, active: false, control: new UntypedFormControl(false) },
-      ],
-      toggled: action('toggled'),
-    },
-  },
-  template: `
-    <seam-datatable
-      class="w-100 h-100"
-      [columns]="__hack.columns"
-      [rows]="__hack.rows">
-      <seam-datatable-column name="Active" prop="active">
-        <ng-template seamDatatableCellTpl let-value="value" let-row="row" let-rowIndex="rowIndex">
-          <div class="custom-control custom-switch">
-            <input type="checkbox" class="custom-control-input" id="customSwitch{{ rowIndex }}"
-              [formControl]="row.control"
-              (change)="toggled($event, row)">
-            <label class="custom-control-label" for="customSwitch{{ rowIndex }}">Toggle</label>
-          </div>
-        </ng-template>
-      </seam-datatable-column>
-    </seam-datatable>`,
-})
+}
 
-export const CheckboxSelection = (args: any) => ({
-  props: {
-    __hack: {
-      ...args,
-      selected: [
-        { name: 'Mark', age: 27, color: 'blue' },
-      ],
-      rowIdentity: (x: any) => `${x.name}${x.age}${x.color}`,
-      selectAllRowsOnPage: false,
+export const ColumnTemplate: Story = {
+  render: (args: any) => ({
+    // props: { ...args },
+    props: {
+      __hack: { ...args },
     },
+    template: `
+      <seam-datatable
+        class="w-100 h-100"
+        [columns]="__hack.columns"
+        [rows]="__hack.rows">
+        <seam-datatable-column name="Color" prop="color">
+          <ng-template seamDatatableCellTpl let-value="value">
+            <span *ngIf="value === 'blue'; else notBlue" style="color: blue;">{{ value }}</span>
+            <ng-template #notBlue>{{ value }}</ng-template>
+          </ng-template>
+        </seam-datatable-column>
+      </seam-datatable>`,
+  }),
+  args: {
+    columns: [
+      { prop: 'name', name: 'Name' },
+      { prop: 'age', name: 'Age' },
+      { prop: 'color', name: 'Color' },
+    ],
+    rows: [
+      { name: 'Mark', age: 27, color: 'blue' },
+      { name: 'Joe', age: 33, color: 'green' },
+    ],
   },
-  template: `
-    <seam-datatable
-      class="w-100 h-100"
-      [columns]="__hack.columns"
-      [rows]="__hack.rows"
-      selectionType="checkbox"
-      [rowIdentity]="__hack.rowIdentity"
-      [selectAllRowsOnPage]="__hack.selectAllRowsOnPage"
-      [selected]="__hack.selected">
-    </seam-datatable>`,
-})
-CheckboxSelection.args = {
-  columns: [
-    { prop: 'name', name: 'Name' },
-    { prop: 'age', name: 'Age' },
-    { prop: 'color', name: 'Color' },
-  ],
-  rows: [
-    { name: 'Mark', age: 27, color: 'blue' },
-    { name: 'Joe', age: 33, color: 'green' },
-    { name: 'Smith', age: 41, color: 'red' },
-    { name: 'Jane', age: 25, color: 'orange' },
-    { name: 'Doe', age: 14, color: 'purple' },
-  ],
+}
+
+export const ActionMenu: Story = {
+  render: (args: any) => ({
+    props: {
+      __hack: {
+        ...args,
+        columns: [
+          { prop: 'name', name: 'Name' },
+          { prop: 'age', name: 'Age' },
+          { prop: 'email', name: 'Email Address' },
+          { prop: 'phone', name: 'Phone Number' },
+          { prop: 'streetAddress', name: 'Street Address' },
+          { prop: 'city', name: 'City' },
+          { prop: 'state', name: 'State' },
+          { prop: 'zip', name: 'Zip' },
+          { prop: 'country', name: 'Country' },
+          { prop: 'color', name: 'Favorite Color' },
+          { prop: 'iceCreamFlavor', name: 'Favorite Ice Cream Flavor' },
+          { prop: 'petName', name: 'Pet\'s Name' },
+        ],
+        rows: [
+          {
+            name: 'Mark',
+            age: 27,
+            color: 'Blue',
+            email: 'mark.berry@theseam.com',
+            phone: '901-555-5555',
+            streetAddress: '123 Main St',
+            city: 'Arlington',
+            state: 'TN',
+            zip: '38111',
+            country: 'USA',
+            iceCreamFlavor: 'Chocolate',
+            petName: 'Spot',
+          },
+          {
+            name: 'Joe',
+            age: 33,
+            color: 'Green',
+            email: 'joe.schmoe@theseam.com',
+            phone: '901-888-8888',
+            streetAddress: '1600 Pennsylvaia Ave',
+            city: 'Washington',
+            state: 'DC',
+            zip: '35111',
+            country: 'USA',
+            iceCreamFlavor: 'Strawberry',
+            petName: 'Mittens',
+          },
+        ]
+      }
+    },
+    template: `
+      <seam-datatable
+        class="w-100 h-100"
+        [columns]="__hack.columns"
+        [rows]="__hack.rows"
+        [actionItemColumnPosition]="__hack.actionItemColumnPosition">
+        <ng-template seamDatatableRowActionItem let-row>
+          <seam-datatable-action-menu>
+            <seam-datatable-action-menu-item label="Action One"></seam-datatable-action-menu-item>
+            <seam-datatable-action-menu-item label="Action Two"></seam-datatable-action-menu-item>
+            <seam-datatable-action-menu-item label="Action Three" [subMenu]="subMenuOne"></seam-datatable-action-menu-item>
+            <seam-datatable-action-menu-item label="Action Four"></seam-datatable-action-menu-item>
+          </seam-datatable-action-menu>
+
+            <seam-datatable-action-menu isSubMenu="true" #subMenuOne>
+              <seam-datatable-action-menu-item label="Action One"></seam-datatable-action-menu-item>
+              <seam-datatable-action-menu-item label="Action Two"></seam-datatable-action-menu-item>
+              <seam-datatable-action-menu-item label="Action Three"></seam-datatable-action-menu-item>
+            </seam-datatable-action-menu>
+          </ng-template>
+      </seam-datatable>`,
+  }),
+  args: {
+    columns: [
+      { prop: 'name', name: 'Name' },
+      { prop: 'age', name: 'Age' },
+      { prop: 'color', name: 'Color' },
+    ],
+    rows: [
+      { name: 'Mark', age: 27, color: 'blue' },
+      { name: 'Joe', age: 33, color: 'green' },
+    ],
+  },
+}
+
+export const InlineEdit: Story = {
+  render: (args: any) => ({
+    moduleMetadata: {
+      imports: [
+        ReactiveFormsModule,
+      ],
+    },
+    props: {
+      __hack: {
+        ...args,
+        columns: [
+          { prop: 'name', name: 'Name' },
+          { prop: 'age', name: 'Age' },
+          { prop: 'active', name: 'Active' },
+        ],
+        rows: [
+          { name: 'Mark', age: 27, active: true, control: new UntypedFormControl(true) },
+          { name: 'Joe', age: 33, active: false, control: new UntypedFormControl(false) },
+        ],
+        toggled: action('toggled'),
+      },
+    },
+    template: `
+      <seam-datatable
+        class="w-100 h-100"
+        [columns]="__hack.columns"
+        [rows]="__hack.rows">
+        <seam-datatable-column name="Active" prop="active">
+          <ng-template seamDatatableCellTpl let-value="value" let-row="row" let-rowIndex="rowIndex">
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="customSwitch{{ rowIndex }}"
+                [formControl]="row.control"
+                (change)="toggled($event, row)">
+              <label class="custom-control-label" for="customSwitch{{ rowIndex }}">Toggle</label>
+            </div>
+          </ng-template>
+        </seam-datatable-column>
+      </seam-datatable>`,
+  }),
+}
+
+export const CheckboxSelection: Story = {
+  render: (args: any) => ({
+    props: {
+      __hack: {
+        ...args,
+        selected: [
+          { name: 'Mark', age: 27, color: 'blue' },
+        ],
+        rowIdentity: (x: any) => `${x.name}${x.age}${x.color}`,
+        selectAllRowsOnPage: false,
+      },
+    },
+    template: `
+      <seam-datatable
+        class="w-100 h-100"
+        [columns]="__hack.columns"
+        [rows]="__hack.rows"
+        selectionType="checkbox"
+        [rowIdentity]="__hack.rowIdentity"
+        [selectAllRowsOnPage]="__hack.selectAllRowsOnPage"
+        [selected]="__hack.selected">
+      </seam-datatable>`,
+  }),
+  args: {
+    columns: [
+      { prop: 'name', name: 'Name' },
+      { prop: 'age', name: 'Age' },
+      { prop: 'color', name: 'Color' },
+    ],
+    rows: [
+      { name: 'Mark', age: 27, color: 'blue' },
+      { name: 'Joe', age: 33, color: 'green' },
+      { name: 'Smith', age: 41, color: 'red' },
+      { name: 'Jane', age: 25, color: 'orange' },
+      { name: 'Doe', age: 14, color: 'purple' },
+    ],
+  },
 }
 
 // [selected]="selected"
@@ -326,129 +339,135 @@ CheckboxSelection.args = {
 // [selectAllRowsOnPage]="selectAllRowsOnPage"
 // (select)="onSelect($event)"
 
-export const ToggleDisplay = (args: any) => ({
-  props: {
-    __hack: {
-      ...args,
-      selected: [],
-      selectAllRowsOnPage: false,
-      displayCheck(row: any) {
-        return row.name !== 'Adam'
-      },
-      onSelect({ selected }: { selected: any }) {
-        action('select')(selected)
+export const ToggleDisplay: Story = {
+  render: (args: any) => ({
+    props: {
+      __hack: {
+        ...args,
+        selected: [],
+        selectAllRowsOnPage: false,
+        displayCheck(row: any) {
+          return row.name !== 'Adam'
+        },
+        onSelect({ selected }: { selected: any }) {
+          action('select')(selected)
 
-        this.selected.splice(0, this.selected.length)
-        this.selected.push(...selected)
+          this.selected.splice(0, this.selected.length)
+          this.selected.push(...selected)
+        },
       },
     },
+    template: `
+      <seam-datatable
+        class="w-100 h-100"
+        [columns]="__hack.columns"
+        [rows]="__hack.rows"
+        [selected]="__hack.selected"
+        [selectionType]="'checkbox'"
+        [selectAllRowsOnPage]="__hack.selectAllRowsOnPage"
+        [displayCheck]="__hack.displayCheck"
+        (select)="__hack.onSelect($event)">
+      </seam-datatable>`,
+  }),
+  args: {
+    columns: [
+      { prop: 'name', name: 'Name' },
+      { prop: 'age', name: 'Age' },
+      { prop: 'color', name: 'Color' },
+    ],
+    rows: [
+      { name: 'Mark', age: 27, color: 'blue' },
+      { name: 'Adam', age: 40, color: 'red' },
+      { name: 'Joe', age: 33, color: 'green' },
+    ],
   },
-  template: `
-    <seam-datatable
-      class="w-100 h-100"
-      [columns]="__hack.columns"
-      [rows]="__hack.rows"
-      [selected]="__hack.selected"
-      [selectionType]="'checkbox'"
-      [selectAllRowsOnPage]="__hack.selectAllRowsOnPage"
-      [displayCheck]="__hack.displayCheck"
-      (select)="__hack.onSelect($event)">
-    </seam-datatable>`,
-})
-ToggleDisplay.args = {
-  columns: [
-    { prop: 'name', name: 'Name' },
-    { prop: 'age', name: 'Age' },
-    { prop: 'color', name: 'Color' },
-  ],
-  rows: [
-    { name: 'Mark', age: 27, color: 'blue' },
-    { name: 'Adam', age: 40, color: 'red' },
-    { name: 'Joe', age: 33, color: 'green' },
-  ],
 }
 
 // NOTE: Still being worked on, but is usable.
-export const Tree = (args: any) => ({
-  props: { __hack: { ...args } },
-  template: `
-    <seam-datatable
-      class="w-100 h-100"
-      [columns]="__hack.columns"
-      [rows]="__hack.rows"
-      [treeFromRelation]="'parentCompany'"
-      [treeToRelation]="'company'">
-    </seam-datatable>`,
-})
-Tree.args = {
-  columns: [
-    { prop: 'company', name: 'Company', isTreeColumn: true },
-    { prop: 'name', name: 'Name' },
-    { prop: 'age', name: 'Age' },
-    { prop: 'color', name: 'Color' },
-  ],
-  rows: [
-    { name: 'Mark', age: 27, color: 'blue', company: 'Company 1', treeStatus: 'collapsed' },
-    { name: 'Joe', age: 33, color: 'green', company: 'Company 2', treeStatus: 'collapsed' },
-    { name: 'Adam', age: 40, color: 'red', company: 'Company 3', parentCompany: 'Company 1', treeStatus: 'disabled' },
-    { name: 'John', age: 30, color: 'blue', company: 'Company 4', parentCompany: 'Company 2', treeStatus: 'disabled' },
-    { name: 'Alice', age: 33, color: 'yellow', company: 'Company 5', parentCompany: 'Company 1', treeStatus: 'disabled' },
-    { name: 'Bob', age: 40, color: 'orange', company: 'Company 6', parentCompany: 'Company 2', treeStatus: 'disabled' },
-  ],
+export const Tree: Story = {
+  render: (args: any) => ({
+    props: { __hack: { ...args } },
+    template: `
+      <seam-datatable
+        class="w-100 h-100"
+        [columns]="__hack.columns"
+        [rows]="__hack.rows"
+        [treeFromRelation]="'parentCompany'"
+        [treeToRelation]="'company'">
+      </seam-datatable>`,
+  }),
+  args: {
+    columns: [
+      { prop: 'company', name: 'Company', isTreeColumn: true },
+      { prop: 'name', name: 'Name' },
+      { prop: 'age', name: 'Age' },
+      { prop: 'color', name: 'Color' },
+    ],
+    rows: [
+      { name: 'Mark', age: 27, color: 'blue', company: 'Company 1', treeStatus: 'collapsed' },
+      { name: 'Joe', age: 33, color: 'green', company: 'Company 2', treeStatus: 'collapsed' },
+      { name: 'Adam', age: 40, color: 'red', company: 'Company 3', parentCompany: 'Company 1', treeStatus: 'disabled' },
+      { name: 'John', age: 30, color: 'blue', company: 'Company 4', parentCompany: 'Company 2', treeStatus: 'disabled' },
+      { name: 'Alice', age: 33, color: 'yellow', company: 'Company 5', parentCompany: 'Company 1', treeStatus: 'disabled' },
+      { name: 'Bob', age: 40, color: 'orange', company: 'Company 6', parentCompany: 'Company 2', treeStatus: 'disabled' },
+    ],
+  },
 }
 
-export const Detail = (args: any) => ({
-  props: { __hack: { ...args } },
-  template: `
-    <seam-datatable #table
-      class="w-100 h-100"
-      [columns]="__hack.columns"
-      [rows]="__hack.rows">
+export const Detail: Story = {
+  render: (args: any) => ({
+    props: { __hack: { ...args } },
+    template: `
+      <seam-datatable #table
+        class="w-100 h-100"
+        [columns]="__hack.columns"
+        [rows]="__hack.rows">
 
-      <seam-datatable-row-detail rowHeight="100">
-        <ng-template let-row="row" let-expanded="expanded" seamDatatableRowDetailTpl>
-          <div style="padding-left:35px;">
-            <div><strong>Profile</strong></div>
-            <div>Name: {{ row.name }}</div>
-            <div>Age: {{ row.age }}</div>
-            <div>Favorite Color: {{ row.color }}</div>
-          </div>
-        </ng-template>
-      </seam-datatable-row-detail>
+        <seam-datatable-row-detail rowHeight="100">
+          <ng-template let-row="row" let-expanded="expanded" seamDatatableRowDetailTpl>
+            <div style="padding-left:35px;">
+              <div><strong>Profile</strong></div>
+              <div>Name: {{ row.name }}</div>
+              <div>Age: {{ row.age }}</div>
+              <div>Favorite Color: {{ row.color }}</div>
+            </div>
+          </ng-template>
+        </seam-datatable-row-detail>
 
-      <seam-datatable-column prop="detailToggle"
-        [width]="50"
-        [minWidth]="50"
-        [maxWidth]="50"
-        [resizeable]="false"
-        [sortable]="false"
-        [draggable]="false"
-        [canAutoResize]="false">
-        <ng-template seamDatatableCellTpl let-row="row" let-expanded="expanded">
-          <button type="button" class="btn btn-link p-0 text-decoration-none"
-            [class.datatable-icon-right]="!expanded"
-            [class.datatable-icon-down]="expanded"
-            title="Expand/Collapse Row"
-            (click)="table.rowDetail.toggleExpandRow(row)"
-          >
-          </button>
-        </ng-template>
-      </seam-datatable-column>
+        <seam-datatable-column prop="detailToggle"
+          [width]="50"
+          [minWidth]="50"
+          [maxWidth]="50"
+          [resizeable]="false"
+          [sortable]="false"
+          [draggable]="false"
+          [canAutoResize]="false">
+          <ng-template seamDatatableCellTpl let-row="row" let-expanded="expanded">
+            <button type="button" class="btn btn-link p-0 text-decoration-none"
+              [class.datatable-icon-right]="!expanded"
+              [class.datatable-icon-down]="expanded"
+              title="Expand/Collapse Row"
+              (click)="table.rowDetail.toggleExpandRow(row)"
+            >
+            </button>
+          </ng-template>
+        </seam-datatable-column>
 
-    </seam-datatable>`,
-})
-Detail.args = {
-  columns: [
-    { prop: 'detailToggle', name: '' },
-    { prop: 'name', name: 'Name' },
-    // { prop: 'age', name: 'Age' },
-    { prop: 'color', name: 'Color' },
-  ],
-  rows: [
-    { name: 'Alice', age: 25, color: 'red' },
-    { name: 'Joe', age: 33, color: 'green' },
-    { name: 'Mark', age: 27, color: 'blue' },
-  ],
+      </seam-datatable>`,
+  }),
+  args: {
+    columns: [
+      { prop: 'detailToggle', name: '' },
+      { prop: 'name', name: 'Name' },
+      // { prop: 'age', name: 'Age' },
+      { prop: 'color', name: 'Color' },
+    ],
+    rows: [
+      { name: 'Alice', age: 25, color: 'red' },
+      { name: 'Joe', age: 33, color: 'green' },
+      { name: 'Mark', age: 27, color: 'blue' },
+    ],
+  },
 }
 
 // NOTE: Not Working Yet
@@ -547,66 +566,68 @@ class DTFilterWrapperComponent implements OnInit, AfterViewInit {
 
 }
 
-export const Filter: Story = args => ({
-  applicationConfig: {
-    providers: [
-      importProvidersFrom(
-        ToastrModule.forRoot(),
-      ),
-      { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
-      { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: ExportersDataEvaluator, multi: true },
+export const Filter: Story = {
+  render: args => ({
+    applicationConfig: {
+      providers: [
+        importProvidersFrom(
+          ToastrModule.forRoot(),
+        ),
+        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
+        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: ExportersDataEvaluator, multi: true },
 
-      { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionApiService, multi: true },
-      { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionLinkService, multi: true },
-      { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionModalService, multi: true },
-    ],
-  },
-  moduleMetadata: {
-    declarations: [ DTFilterWrapperComponent ],
-    imports: [
-      TheSeamDataFiltersModule,
-    ],
-    providers: [
-      { provide: ToastrService, useClass: StoryToastrService },
-    ],
-  },
-  props: {
-    __hack: {
-      ...args,
-      filterButtons: [
-        { name: 'Registered',
-          value: '',
-          comparator: (value: any, row: any) => row.registered ? -1 : 1,
-        },
-        { name: 'Over 30',
-          value: 'over-30',
-          comparator: (value: any, row: any) => row.age > 30 ? 1 : -1,
-        },
+        { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionApiService, multi: true },
+        { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionLinkService, multi: true },
+        { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionModalService, multi: true },
       ],
     },
+    moduleMetadata: {
+      declarations: [ DTFilterWrapperComponent ],
+      imports: [
+        TheSeamDataFiltersModule,
+      ],
+      providers: [
+        { provide: ToastrService, useClass: StoryToastrService },
+      ],
+    },
+    props: {
+      __hack: {
+        ...args,
+        filterButtons: [
+          { name: 'Registered',
+            value: '',
+            comparator: (value: any, row: any) => row.registered ? -1 : 1,
+          },
+          { name: 'Over 30',
+            value: 'over-30',
+            comparator: (value: any, row: any) => row.age > 30 ? 1 : -1,
+          },
+        ],
+      },
+    },
+    template: `
+      <dt-filter-wrapper
+        [columns]="__hack.columns"
+        [rows]="__hack.rows"
+        [filterButtons]="__hack.filterButtons">
+      </dt-filter-wrapper>
+    `,
+  }),
+  args: {
+    columns: [
+      { prop: 'name', name: 'Name' },
+      { prop: 'age', name: 'Age' },
+      { prop: 'color', name: 'Color' },
+      { prop: 'registered', name: 'Registered' },
+    ],
+    rows: [
+      { name: 'Mark', age: 27, color: 'blue', registered: true },
+      { name: 'Joe', age: 33, color: 'green', registered: false },
+      { name: 'Alice', age: 30, color: 'red', registered: false },
+      { name: 'Bill', age: 40, color: 'orange', registered: false },
+      { name: 'Sally', age: 35, color: 'purple', registered: false },
+    ],
   },
-  template: `
-    <dt-filter-wrapper
-      [columns]="__hack.columns"
-      [rows]="__hack.rows"
-      [filterButtons]="__hack.filterButtons">
-    </dt-filter-wrapper>
-  `,
-})
-Filter.args = {
-  columns: [
-    { prop: 'name', name: 'Name' },
-    { prop: 'age', name: 'Age' },
-    { prop: 'color', name: 'Color' },
-    { prop: 'registered', name: 'Registered' },
-  ],
-  rows: [
-    { name: 'Mark', age: 27, color: 'blue', registered: true },
-    { name: 'Joe', age: 33, color: 'green', registered: false },
-    { name: 'Alice', age: 30, color: 'red', registered: false },
-    { name: 'Bill', age: 40, color: 'orange', registered: false },
-    { name: 'Sally', age: 35, color: 'purple', registered: false },
-  ],
 }
 
 // class StoryDataSource extends DatatableGqlDataSource<any> {
@@ -647,48 +668,50 @@ Filter.args = {
 //   ]
 // }
 
-export const FooterTemplate: Story = args => ({
-  props: { ...args },
-  template: `<seam-datatable class="w-100 h-100" [columns]="columns" [rows]="rows">
-      <seam-datatable-footer>
-        <ng-template seamDatatableFooterTpl
-          let-rowCount="rowCount"
-          let-pageSize="pageSize"
-          let-selectedCount="selectedCount"
-          let-curPage="curPage"
-          let-offset="offset">
-          <div class="flex-grow-1 text-center mx-2" style="flex-basis: 50%;">
-            Total Members: {{ rowCount }} | Total Age: {{ totalAge }} | Oldest Member: {{ oldestMember }}
-          </div>
-        </ng-template>
-      </seam-datatable-footer>
-    </seam-datatable>`,
-})
-FooterTemplate.args = {
-  totalAge: 87,
-  oldestMember: 'Joe',
-  columns: [
-    { prop: 'name', name: 'Name' },
-    { prop: 'age', name: 'Age' },
-    { prop: 'color', name: 'Color' },
-  ],
-  rows: [
-    { name: 'Mark', age: 27, color: 'blue' },
-    { name: 'Joe', age: 33, color: 'green' },
-    { name: 'Shelby', age: 27, color: 'grey' },
-    { name: 'Mark', age: 27, color: 'blue' },
-    { name: 'Joe', age: 33, color: 'green' },
-    { name: 'Shelby', age: 27, color: 'grey' },
-    { name: 'Mark', age: 27, color: 'blue' },
-    { name: 'Joe', age: 33, color: 'green' },
-    { name: 'Shelby', age: 27, color: 'grey' },
-    { name: 'Mark', age: 27, color: 'blue' },
-    { name: 'Joe', age: 33, color: 'green' },
-    { name: 'Shelby', age: 27, color: 'grey' },
-    { name: 'Mark', age: 27, color: 'blue' },
-    { name: 'Joe', age: 33, color: 'green' },
-    { name: 'Shelby', age: 27, color: 'grey' },
-  ],
+export const FooterTemplate: Story = {
+  render: args => ({
+    props: { ...args },
+    template: `<seam-datatable class="w-100 h-100" [columns]="columns" [rows]="rows">
+        <seam-datatable-footer>
+          <ng-template seamDatatableFooterTpl
+            let-rowCount="rowCount"
+            let-pageSize="pageSize"
+            let-selectedCount="selectedCount"
+            let-curPage="curPage"
+            let-offset="offset">
+            <div class="flex-grow-1 text-center mx-2" style="flex-basis: 50%;">
+              Total Members: {{ rowCount }} | Total Age: {{ totalAge }} | Oldest Member: {{ oldestMember }}
+            </div>
+          </ng-template>
+        </seam-datatable-footer>
+      </seam-datatable>`,
+  }),
+  args: {
+    totalAge: 87,
+    oldestMember: 'Joe',
+    columns: [
+      { prop: 'name', name: 'Name' },
+      { prop: 'age', name: 'Age' },
+      { prop: 'color', name: 'Color' },
+    ],
+    rows: [
+      { name: 'Mark', age: 27, color: 'blue' },
+      { name: 'Joe', age: 33, color: 'green' },
+      { name: 'Shelby', age: 27, color: 'grey' },
+      { name: 'Mark', age: 27, color: 'blue' },
+      { name: 'Joe', age: 33, color: 'green' },
+      { name: 'Shelby', age: 27, color: 'grey' },
+      { name: 'Mark', age: 27, color: 'blue' },
+      { name: 'Joe', age: 33, color: 'green' },
+      { name: 'Shelby', age: 27, color: 'grey' },
+      { name: 'Mark', age: 27, color: 'blue' },
+      { name: 'Joe', age: 33, color: 'green' },
+      { name: 'Shelby', age: 27, color: 'grey' },
+      { name: 'Mark', age: 27, color: 'blue' },
+      { name: 'Joe', age: 33, color: 'green' },
+      { name: 'Shelby', age: 27, color: 'grey' },
+    ],
+  },
 }
 
 // externalPaging="true"

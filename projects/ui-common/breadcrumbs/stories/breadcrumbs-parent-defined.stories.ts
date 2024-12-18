@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/angular'
+import { Meta, StoryObj } from '@storybook/angular'
 
 import { importProvidersFrom } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
@@ -8,49 +8,54 @@ import { StoryEmptyComponent, StoryEmptyWithRouteComponent, StoryInitialRouteMod
 
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component'
 
-export default {
+const meta: Meta<BreadcrumbsComponent> = {
   title: 'Breadcrumbs/Components/Parent Defined',
   component: BreadcrumbsComponent,
   decorators: [],
-} as Meta
+}
 
-export const Example: Story = () => ({
-  applicationConfig: {
-    providers: [
-      provideAnimations(),
-      importProvidersFrom(
-        RouterModule.forRoot([
-          {
-            path: 'home',
-            component: StoryEmptyWithRouteComponent,
-            data: {
-              breadcrumb: 'Home',
-            },
-            children: [
-              {
-                path: '',
-                component: StoryEmptyComponent,
-              }
-            ]
-          }
-        ], { useHash: true }),
-        StoryInitialRouteModule.forRoot('/home'),
-      ),
-    ],
-  },
-  moduleMetadata: {
-    declarations: [
-      StoryEmptyComponent,
-      StoryEmptyWithRouteComponent
-    ],
-    providers: [ ],
-    imports: [
-      RouterModule,
-    ],
-  },
-  props: { },
-  template: `
-    <seam-breadcrumbs></seam-breadcrumbs>
-    <router-outlet></router-outlet>
-  `
-})
+export default meta
+type Story = StoryObj<BreadcrumbsComponent>
+
+export const Example: Story = {
+  render: () => ({
+    applicationConfig: {
+      providers: [
+        provideAnimations(),
+        importProvidersFrom(
+          RouterModule.forRoot([
+            {
+              path: 'home',
+              component: StoryEmptyWithRouteComponent,
+              data: {
+                breadcrumb: 'Home',
+              },
+              children: [
+                {
+                  path: '',
+                  component: StoryEmptyComponent,
+                }
+              ]
+            }
+          ], { useHash: true }),
+          StoryInitialRouteModule.forRoot('/home'),
+        ),
+      ],
+    },
+    moduleMetadata: {
+      declarations: [
+        StoryEmptyComponent,
+        StoryEmptyWithRouteComponent
+      ],
+      providers: [ ],
+      imports: [
+        RouterModule,
+      ],
+    },
+    props: { },
+    template: `
+      <seam-breadcrumbs></seam-breadcrumbs>
+      <router-outlet></router-outlet>
+    `
+  })
+}

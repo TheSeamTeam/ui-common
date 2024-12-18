@@ -23,8 +23,5 @@ import { DynamicDatatablePageComponent } from './dynamic-datatable-page/dynamic-
   exports: [
     DynamicDatatablePageComponent
   ],
-  entryComponents: [
-    DynamicDatatablePageComponent
-  ]
 })
 export class DynamicPagesModule { }

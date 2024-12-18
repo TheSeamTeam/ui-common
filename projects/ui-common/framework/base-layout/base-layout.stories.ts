@@ -149,7 +149,7 @@ const routes: Route[] = [
       {
         path: 'example1',
         component: StoryRoutePlacholderComponent,
-        data: { breadcrumb: 'example1' } ,
+        data: { breadcrumb: 'example1' },
         children: [
           { path: 'example1.1', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example1.1' } },
           { path: 'example1.2', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example1.2' } },
@@ -918,13 +918,6 @@ export default {
         TheSeamScrollbarModule,
         TheSeamButtonsModule
       ],
-      entryComponents: [
-        StoryExWidget1Component,
-        StoryExWidget2Component,
-        StoryExWidget3Component,
-        StoryExWidget4Component,
-        StoryExBaseLayoutComponent
-      ]
     }),
   ],
   parameters: {

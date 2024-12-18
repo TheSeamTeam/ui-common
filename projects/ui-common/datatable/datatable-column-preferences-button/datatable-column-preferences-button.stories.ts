@@ -1,10 +1,10 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular'
+import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 import { applicationConfig } from '@storybook/angular/dist/client/decorators'
 
 import { importProvidersFrom } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { RouterModule } from '@angular/router'
-import { BehaviorSubject, of } from 'rxjs'
+import { BehaviorSubject } from 'rxjs'
 
 import { CSVDataExporter, XLSXDataExporter } from '@theseam/ui-common/data-exporter'
 import { TheSeamDataFiltersModule } from '@theseam/ui-common/data-filters'
@@ -57,7 +57,7 @@ class MockColumnsAlterationsManagerService implements Partial<ColumnsAlterations
 
 }
 
-export default {
+const meta: Meta<DatatableColumnPreferencesButtonComponent> = {
   title: 'Datatable/Components/Column Preferences',
   component: DatatableColumnPreferencesButtonComponent,
   decorators: [
@@ -93,88 +93,95 @@ export default {
       iframeHeight: '400px',
     },
   },
-} as Meta
-
-export const Example: Story = args => ({
-  props: {
-    __hack: {
-      columns: [
-        { prop: 'name',
-          name: 'Name',
-          // canAutoResize: false,
-          width: 60,
-          minWidth: 60,
-          maxWidth: 60,
-          resizeable: false },
-        { prop: 'age', name: 'Age' },
-        { prop: 'color', name: 'Color' },
-        { prop: 'color1', name: 'Color1' },
-        { prop: 'color2', name: 'Color2' },
-      ],
-      rows: [
-        { name: 'Markwwwwwwwwwwwwwwwwwww', color: 'bluewwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', color1: 'blue', color2: 'blue' },
-        { name: 'Mark', age: '279999999999999999999999999999', color: 'blue', color1: 'blue', color2: 'blue' },
-        { name: 'Joe', age: 33, color: 'green', color1: 'blue', color2: 'blue' },
-
-        // { name: 'Mark', age: '.', color: 'blue', color1: 'blue', color2: 'blue' },
-        // { name: 'Markwwwwwwwwwwwwwwwwwww', color: 'bluewwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', color1: 'blue', color2: 'blue' },
-        // { name: 'Joe', color: 'green', color1: 'blue', color2: 'blue' },
-
-        { name: 'Markwwwwwwwwwwwwwwwwwww', color: 'bluewwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', color1: 'blue', color2: 'blue' },
-        { name: 'Mark', color: 'blue', color1: 'blue', color2: 'blue' },
-        { name: 'Joe', age: 33, color: 'green', color1: 'blue', color2: 'blue' },
-      ],
-      exporters: [
-        new CSVDataExporter(),
-        new XLSXDataExporter(),
-      ],
-    },
-  },
-  template: `
-    <div class="vh-100 d-flex flex-column p-2">
-      <seam-datatable
-        preferencesKey="test-prefs-1"
-        [columns]="__hack.columns"
-        [rows]="__hack.rows"
-        sortType="multi">
-
-        <seam-datatable-menu-bar>
-          <seam-data-filter-search seamDatatableFilter></seam-data-filter-search>
-          <div class="d-flex flex-row justify-content-end">
-            <seam-datatable-column-preferences-button></seam-datatable-column-preferences-button>
-          </div>
-        </seam-datatable-menu-bar>
-
-        <!--<ng-template seamDatatableRowActionItem>
-          <seam-datatable-action-menu>
-            <seam-datatable-action-menu-item label="Action Item"></seam-datatable-action-menu-item>
-          </seam-datatable-action-menu>
-        </ng-template>-->
-
-      </seam-datatable>
-    </div>`,
-})
-Example.play = async ({ canvasElement, fixture }) => {
-  const datatableHarness = await getHarness(TheSeamDatatableHarness, { canvasElement, fixture })
-
-  await expectFn(await datatableHarness.getCurrentPage()).toBe(1)
-  // const page2BtnHarness = await (await datatableHarness.getPager()).getPageButtonHarness(2)
-  // await (await page2BtnHarness.getAnchor()).click()
-  // await expectFn(await datatableHarness.getCurrentPage()).toBe(2)
 }
 
-export const Popover: Story = args => ({
-  moduleMetadata: {
-    providers: [
-      { provide: THESEAM_DATATABLE, useClass: MockDatatable },
-      { provide: ColumnsAlterationsManagerService, useClass: MockColumnsAlterationsManagerService },
-    ],
+export default meta
+type Story = StoryObj<TabbedComponent>
+
+export const Example: Story = {
+  render: args => ({
+    props: {
+      __hack: {
+        columns: [
+          { prop: 'name',
+            name: 'Name',
+            // canAutoResize: false,
+            width: 60,
+            minWidth: 60,
+            maxWidth: 60,
+            resizeable: false },
+          { prop: 'age', name: 'Age' },
+          { prop: 'color', name: 'Color' },
+          { prop: 'color1', name: 'Color1' },
+          { prop: 'color2', name: 'Color2' },
+        ],
+        rows: [
+          { name: 'Markwwwwwwwwwwwwwwwwwww', color: 'bluewwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', color1: 'blue', color2: 'blue' },
+          { name: 'Mark', age: '279999999999999999999999999999', color: 'blue', color1: 'blue', color2: 'blue' },
+          { name: 'Joe', age: 33, color: 'green', color1: 'blue', color2: 'blue' },
+
+          // { name: 'Mark', age: '.', color: 'blue', color1: 'blue', color2: 'blue' },
+          // { name: 'Markwwwwwwwwwwwwwwwwwww', color: 'bluewwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', color1: 'blue', color2: 'blue' },
+          // { name: 'Joe', color: 'green', color1: 'blue', color2: 'blue' },
+
+          { name: 'Markwwwwwwwwwwwwwwwwwww', color: 'bluewwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', color1: 'blue', color2: 'blue' },
+          { name: 'Mark', color: 'blue', color1: 'blue', color2: 'blue' },
+          { name: 'Joe', age: 33, color: 'green', color1: 'blue', color2: 'blue' },
+        ],
+        exporters: [
+          new CSVDataExporter(),
+          new XLSXDataExporter(),
+        ],
+      },
+    },
+    template: `
+      <div class="vh-100 d-flex flex-column p-2">
+        <seam-datatable
+          preferencesKey="test-prefs-1"
+          [columns]="__hack.columns"
+          [rows]="__hack.rows"
+          sortType="multi">
+
+          <seam-datatable-menu-bar>
+            <seam-data-filter-search seamDatatableFilter></seam-data-filter-search>
+            <div class="d-flex flex-row justify-content-end">
+              <seam-datatable-column-preferences-button></seam-datatable-column-preferences-button>
+            </div>
+          </seam-datatable-menu-bar>
+
+          <!--<ng-template seamDatatableRowActionItem>
+            <seam-datatable-action-menu>
+              <seam-datatable-action-menu-item label="Action Item"></seam-datatable-action-menu-item>
+            </seam-datatable-action-menu>
+          </ng-template>-->
+
+        </seam-datatable>
+      </div>`,
+  }),
+  play: async ({ canvasElement, fixture }) => {
+    const datatableHarness = await getHarness(TheSeamDatatableHarness, { canvasElement, fixture })
+
+    await expectFn(await datatableHarness.getCurrentPage()).toBe(1)
+    // const page2BtnHarness = await (await datatableHarness.getPager()).getPageButtonHarness(2)
+    // await (await page2BtnHarness.getAnchor()).click()
+    // await expectFn(await datatableHarness.getCurrentPage()).toBe(2)
   },
-  props: { },
-  template: `
-    <div class="popover m-2">
-      <div class="popover-body">
-        <seam-datatable-column-preferences></seam-datatable-column-preferences>
-      </div>
-    </div>`,
-})
+}
+
+export const Popover: Story = {
+  render: args => ({
+    moduleMetadata: {
+      providers: [
+        { provide: THESEAM_DATATABLE, useClass: MockDatatable },
+        { provide: ColumnsAlterationsManagerService, useClass: MockColumnsAlterationsManagerService },
+      ],
+    },
+    props: { },
+    template: `
+      <div class="popover m-2">
+        <div class="popover-body">
+          <seam-datatable-column-preferences></seam-datatable-column-preferences>
+        </div>
+      </div>`,
+  }),
+}
