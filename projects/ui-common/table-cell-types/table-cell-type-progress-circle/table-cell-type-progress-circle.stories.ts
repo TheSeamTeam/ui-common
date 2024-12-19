@@ -1,8 +1,8 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular'
+import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 import { applicationConfig } from '@storybook/angular/dist/client/decorators'
 
 import { importProvidersFrom } from '@angular/core'
-import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations'
+import { provideAnimations } from '@angular/platform-browser/animations'
 import { RouterModule } from '@angular/router'
 
 import { TheSeamDatatableModule } from '@theseam/ui-common/datatable'
@@ -19,7 +19,7 @@ import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types
 
 import { TableCellTypeProgressCircleComponent } from './table-cell-type-progress-circle.component'
 
-export default {
+const meta: Meta<TableCellTypeProgressCircleComponent> = {
   title: 'Components/TableCellTypes/ProgressCircle',
   component: TableCellTypeProgressCircleComponent,
   decorators: [
@@ -53,70 +53,77 @@ export default {
       iframeHeight: '150px',
     },
   },
-} as Meta
-
-export const NoConfig: Story = args => {
-  const rows = [
-    { completionPercent: args.value }
-  ]
-  return {
-    template: `<seam-datatable class="vw-100 vh-100" [columns]="columns" [rows]="rows"></seam-datatable>`,
-    props: {
-      columns: [
-        {
-          prop: 'completionPercent',
-          name: 'Completion',
-          cellType: 'progress-circle-icon',
-        },
-      ],
-      rows,
-    },
-  }
-}
-NoConfig.args = {
-  value: 75,
 }
 
-export const WithConfig: Story = args => {
-  const columns = [
-    {
-      prop: 'completionPercent',
-      name: 'Completion',
-      exportIgnore: true,
-      cellType: 'progress-circle-icon',
-      cellTypeConfig: {
-        type: 'progress-circle-icon',
-        styles: 'max-width: 40px; width: 40px; min-width: 40px;',
-        titleAttr: 'Example title',
-        pending: false,
-        percentage: { type: 'jexl', expr: 'row.completionPercent' },
-        tooltip: 'Example tooltip',
-        tooltipClass: 'tooltip-large',
-        tooltipContainer: 'body',
-        action: {
-          type: 'link',
-          // link: 'https://google.com',
-          link: './cars',
-          external: false,
-          // target: '_blank',
-          // asset: { type: 'jexl', expr: 'row.primaryIconActionAsset' },
-          detectMimeContent: true,
-          queryParams: { test: 'thing' },
+export default meta
+type Story = StoryObj<TableCellTypeProgressCircleComponent>
+
+export const NoConfig: Story = {
+  render: args => {
+    const rows = [
+      { completionPercent: args.value }
+    ]
+    return {
+      template: `<seam-datatable class="vw-100 vh-100" [columns]="columns" [rows]="rows"></seam-datatable>`,
+      props: {
+        columns: [
+          {
+            prop: 'completionPercent',
+            name: 'Completion',
+            cellType: 'progress-circle-icon',
+          },
+        ],
+        rows,
+      },
+    }
+  },
+  args: {
+    value: 75,
+  },
+}
+
+export const WithConfig: Story = {
+  render: args => {
+    const columns = [
+      {
+        prop: 'completionPercent',
+        name: 'Completion',
+        exportIgnore: true,
+        cellType: 'progress-circle-icon',
+        cellTypeConfig: {
+          type: 'progress-circle-icon',
+          styles: 'max-width: 40px; width: 40px; min-width: 40px;',
+          titleAttr: 'Example title',
+          pending: false,
+          percentage: { type: 'jexl', expr: 'row.completionPercent' },
+          tooltip: 'Example tooltip',
+          tooltipClass: 'tooltip-large',
+          tooltipContainer: 'body',
+          action: {
+            type: 'link',
+            // link: 'https://google.com',
+            link: './cars',
+            external: false,
+            // target: '_blank',
+            // asset: { type: 'jexl', expr: 'row.primaryIconActionAsset' },
+            detectMimeContent: true,
+            queryParams: { test: 'thing' },
+          },
         },
       },
-    },
-  ]
-  const rows = [
-    { completionPercent: args.value },
-  ]
-  return {
-    template: `<seam-datatable class="vw-100 vh-100" [columns]="columns" [rows]="rows"></seam-datatable>`,
-    props: {
-      columns,
-      rows,
-    },
-  }
-}
-WithConfig.args = {
-  value: 75,
+    ]
+    const rows = [
+      { completionPercent: args.value },
+    ]
+    return {
+      template: `<seam-datatable class="vw-100 vh-100" [columns]="columns" [rows]="rows"></seam-datatable>`,
+      props: {
+        columns,
+        rows,
+      },
+    }
+  },
+  args: {
+    value: 75,
+  },
 }

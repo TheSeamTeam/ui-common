@@ -1,10 +1,12 @@
-import { Meta, StoryObj, applicationConfig, moduleMetadata } from "@storybook/angular";
-import { TabbedComponent } from "./tabbed.component";
-import { TheSeamTabbedModule } from "./tabbed.module";
-import { provideAnimations } from "@angular/platform-browser/animations";
-import { importProvidersFrom } from "@angular/core";
-import { RouterModule } from "@angular/router";
-import { of } from "rxjs";
+import { Meta, StoryObj, applicationConfig, moduleMetadata } from '@storybook/angular'
+import { of } from 'rxjs'
+
+import { provideAnimations } from '@angular/platform-browser/animations'
+import { importProvidersFrom } from '@angular/core'
+import { RouterModule } from '@angular/router'
+
+import { TabbedComponent } from './tabbed.component'
+import { TheSeamTabbedModule } from './tabbed.module'
 
 const meta: Meta<TabbedComponent> = {
   title: 'Tabs/Components',

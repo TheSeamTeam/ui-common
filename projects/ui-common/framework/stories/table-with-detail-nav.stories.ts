@@ -1,5 +1,4 @@
-// import { boolean, text, withKnobs } from '@storybook/addon-knobs'
-import { Meta, moduleMetadata, storiesOf, Story } from '@storybook/angular'
+import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 
 import { APP_BASE_HREF } from '@angular/common'
 import { Component, importProvidersFrom } from '@angular/core'
@@ -283,207 +282,211 @@ class UserDetailsExComponent {
   }
 }
 
-export default {
+const meta: Meta<any> = {
   title: 'Framework/Examples',
   decorators: [
-    moduleMetadata({
-      imports: [
-        BrowserAnimationsModule
-      ]
-    })
+    applicationConfig({
+      providers: [
+        provideAnimations(),
+      ],
+    }),
   ],
   parameters: {
     layout: 'fullscreen'
   }
-} as Meta
+}
 
-export const TableWithDetailNav: Story = args => ({
-  applicationConfig: {
-    providers: [
-      provideAnimations(),
-      importProvidersFrom(
-        RouterModule.forRoot([
-          {
-            path: 'users',
-            component: DynamicDatatablePageComponent,
-            data: {
-              name: 'Users',
-              tableDef: exampleData2
-            },
-            resolve: {
-              hierLevel: HierarchyLevelResolver
-            },
-            // loadChildren: () => Promise.resolve(LevelTwoModule)
-            // loadChildren: () => of(LevelTwoModule)
-            children: [
-              {
-                path: 'details',
-                component: UserDetailsExComponent,
-                data: { },
-                resolve: {
-                  hierLevel: HierarchyLevelResolver
-                }
+export default meta
+type Story = StoryObj<any>
+
+export const TableWithDetailNav: Story = {
+  render: args => ({
+    applicationConfig: {
+      providers: [
+        provideAnimations(),
+        importProvidersFrom(
+          RouterModule.forRoot([
+            {
+              path: 'users',
+              component: DynamicDatatablePageComponent,
+              data: {
+                name: 'Users',
+                tableDef: exampleData2
               },
-            ]
-          },
-          {
-            path: 'documents',
-            component: StoryNameExComponent,
-            data: {
-              name: 'Documents'
+              resolve: {
+                hierLevel: HierarchyLevelResolver
+              },
+              // loadChildren: () => Promise.resolve(LevelTwoModule)
+              // loadChildren: () => of(LevelTwoModule)
+              children: [
+                {
+                  path: 'details',
+                  component: UserDetailsExComponent,
+                  data: { },
+                  resolve: {
+                    hierLevel: HierarchyLevelResolver
+                  }
+                },
+              ]
             },
-            resolve: {
-              hierLevel: HierarchyLevelResolver
+            {
+              path: 'documents',
+              component: StoryNameExComponent,
+              data: {
+                name: 'Documents'
+              },
+              resolve: {
+                hierLevel: HierarchyLevelResolver
+              },
+              // loadChildren: () => Promise.resolve(LevelTwoModule)
+              // loadChildren: () => of(LevelTwoModule)
             },
-            // loadChildren: () => Promise.resolve(LevelTwoModule)
-            // loadChildren: () => of(LevelTwoModule)
-          },
-          {
-            path: 'settings',
-            component: StoryNameExComponent,
-            data: {
-              name: 'Settings'
+            {
+              path: 'settings',
+              component: StoryNameExComponent,
+              data: {
+                name: 'Settings'
+              },
+              resolve: {
+                hierLevel: HierarchyLevelResolver
+              },
+              // loadChildren: () => Promise.resolve(LevelTwoModule)
+              // loadChildren: () => of(LevelTwoModule)
             },
-            resolve: {
-              hierLevel: HierarchyLevelResolver
+            {
+              path: 'status',
+              component: StoryNameExComponent,
+              data: {
+                name: 'Status'
+              },
+              resolve: {
+                hierLevel: HierarchyLevelResolver
+              },
+              // loadChildren: () => Promise.resolve(LevelTwoModule)
+              // loadChildren: () => of(LevelTwoModule)
+            }
+          ], { useHash: true }),
+        ),
+      ],
+    },
+    moduleMetadata: {
+      declarations: [
+        StoryExWidget1Component,
+        StoryExWidget2Component,
+        StoryExWidget3Component,
+        StoryExWidget4Component,
+        StoryExWidget5Component,
+        StoryExWidget6Component,
+        StoryExWidget7Component,
+        StoryExWidget8Component,
+        StoryNameExComponent,
+        UserDetailsExComponent
+      ],
+      imports: [
+        ReactiveFormsModule,
+        TheSeamFormFieldModule,
+        TheSeamDynamicRouterModule,
+        TheSeamBaseLayoutModule,
+        TheSeamDashboardModule,
+        TheSeamSideNavModule,
+        TheSeamTopBarModule,
+        TheSeamWidgetModule,
+        DynamicPagesModule,
+        TheSeamIconModule
+      ],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: '/' },
+      ],
+    },
+    props: {
+      navItems: [
+        {
+          itemType: 'link',
+          label: 'Dashboard',
+          icon: faSignature,
+          link: '/',
+        },
+        {
+          itemType: 'basic',
+          label: 'Tables',
+          icon: faBuilding,
+          children: [
+            {
+              itemType: 'link',
+              label: 'Users',
+              icon: faSignature,
+              link: 'users',
             },
-            // loadChildren: () => Promise.resolve(LevelTwoModule)
-            // loadChildren: () => of(LevelTwoModule)
-          },
-          {
-            path: 'status',
-            component: StoryNameExComponent,
-            data: {
-              name: 'Status'
-            },
-            resolve: {
-              hierLevel: HierarchyLevelResolver
-            },
-            // loadChildren: () => Promise.resolve(LevelTwoModule)
-            // loadChildren: () => of(LevelTwoModule)
-          }
-        ], { useHash: true }),
-      ),
-    ],
-  },
-  moduleMetadata: {
-    declarations: [
-      StoryExWidget1Component,
-      StoryExWidget2Component,
-      StoryExWidget3Component,
-      StoryExWidget4Component,
-      StoryExWidget5Component,
-      StoryExWidget6Component,
-      StoryExWidget7Component,
-      StoryExWidget8Component,
+            {
+              itemType: 'link',
+              label: 'Documents',
+              icon: faBuilding,
+              link: 'documents'
+            }
+          ]
+        },
+        { itemType: 'divider' },
+        {
+          itemType: 'title',
+          label: 'Admin'
+        },
+        {
+          itemType: 'link',
+          label: 'Settings',
+          icon: faSignature,
+          link: 'settings'
+        },
+        {
+          itemType: 'link',
+          label: 'Status',
+          icon: faBuilding,
+          link: 'status'
+        }
+      ],
+      widgets: [
+        { col: 1, order: 1, type: StoryExWidget1Component },
+        { col: 2, order: 2, type: StoryExWidget2Component },
+        { col: 3, order: 1, type: StoryExWidget3Component },
+        { col: 2, order: 2, type: StoryExWidget4Component },
+        { col: 3, order: 0, type: StoryExWidget5Component },
+        { col: 1, order: 0, type: StoryExWidget6Component },
+        { col: 2, order: 0, type: StoryExWidget7Component },
+        { col: 2, order: 1, type: StoryExWidget8Component }
+      ],
+      // logo: text('logo', 'assets/images/theseam_logo.svg'),
+      // logoSm: text('logoSm', 'assets/images/theseam_logo_notext.svg'),
+      // titleText: text('titleText', 'Dashboard'),
+      // subTitleText: text('subTitleText', 'Example'),
+      // dashboardBreadcrubs: boolean('Breadcrumbs on Dashboard', true),
+    },
+    template: `
+      <div style="height: 100vh; width: 100vw;">
+        <seam-base-layout>
+          <seam-side-nav
+            *seamBaseLayoutSideBar
+            [items]="navItems">
+          </seam-side-nav>
+          <seam-top-bar
+            *seamBaseLayoutTopBar
+            [logo]="logo"
+            [logoSm]="logoSm"
+            [titleText]="titleText"
+            [subTitleText]="subTitleText">
+          </seam-top-bar>
 
-      StoryNameExComponent,
-      UserDetailsExComponent
-    ],
-    imports: [
-      ReactiveFormsModule,
-      TheSeamFormFieldModule,
-      TheSeamDynamicRouterModule,
-      TheSeamBaseLayoutModule,
-      TheSeamDashboardModule,
-      TheSeamSideNavModule,
-      TheSeamTopBarModule,
-      TheSeamWidgetModule,
-      DynamicPagesModule,
-      TheSeamIconModule
-    ],
-    providers: [
-      { provide: APP_BASE_HREF, useValue: '/' },
-    ],
-  },
-  props: {
-    navItems: [
-      {
-        itemType: 'link',
-        label: 'Dashboard',
-        icon: faSignature,
-        link: '/',
-      },
-      {
-        itemType: 'basic',
-        label: 'Tables',
-        icon: faBuilding,
-        children: [
-          {
-            itemType: 'link',
-            label: 'Users',
-            icon: faSignature,
-            link: 'users',
-          },
-          {
-            itemType: 'link',
-            label: 'Documents',
-            icon: faBuilding,
-            link: 'documents'
-          }
-        ]
-      },
-      { itemType: 'divider' },
-      {
-        itemType: 'title',
-        label: 'Admin'
-      },
-      {
-        itemType: 'link',
-        label: 'Settings',
-        icon: faSignature,
-        link: 'settings'
-      },
-      {
-        itemType: 'link',
-        label: 'Status',
-        icon: faBuilding,
-        link: 'status'
-      }
-    ],
-    widgets: [
-      { col: 1, order: 1, type: StoryExWidget1Component },
-      { col: 2, order: 2, type: StoryExWidget2Component },
-      { col: 3, order: 1, type: StoryExWidget3Component },
-      { col: 2, order: 2, type: StoryExWidget4Component },
-      { col: 3, order: 0, type: StoryExWidget5Component },
-      { col: 1, order: 0, type: StoryExWidget6Component },
-      { col: 2, order: 0, type: StoryExWidget7Component },
-      { col: 2, order: 1, type: StoryExWidget8Component }
-    ],
-    // logo: text('logo', 'assets/images/theseam_logo.svg'),
-    // logoSm: text('logoSm', 'assets/images/theseam_logo_notext.svg'),
-    // titleText: text('titleText', 'Dashboard'),
-    // subTitleText: text('subTitleText', 'Example'),
-    // dashboardBreadcrubs: boolean('Breadcrumbs on Dashboard', true),
-  },
-  template: `
-    <div style="height: 100vh; width: 100vw;">
-      <seam-base-layout>
-        <seam-side-nav
-          *seamBaseLayoutSideBar
-          [items]="navItems">
-        </seam-side-nav>
-        <seam-top-bar
-          *seamBaseLayoutTopBar
-          [logo]="logo"
-          [logoSm]="logoSm"
-          [titleText]="titleText"
-          [subTitleText]="subTitleText">
-        </seam-top-bar>
-
-        <seam-hierarchy-router-outlet *seamBaseLayoutContent>
-          <nav aria-label="breadcrumb" *ngIf="dashboardBreadcrubs">
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
-            </ol>
-          </nav>
-          <seam-dashboard [widgets]="widgets"></seam-dashboard>
-        </seam-hierarchy-router-outlet>
-      </seam-base-layout>
-    </div>
-  `
-})
+          <seam-hierarchy-router-outlet *seamBaseLayoutContent>
+            <nav aria-label="breadcrumb" *ngIf="dashboardBreadcrubs">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+              </ol>
+            </nav>
+            <seam-dashboard [widgets]="widgets"></seam-dashboard>
+          </seam-hierarchy-router-outlet>
+        </seam-base-layout>
+      </div>
+    `
+  }),
+}
 
 // storiesOf('Framework/Examples', module)
 //   // .addDecorator(withKnobs)

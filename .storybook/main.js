@@ -16,4 +16,5 @@ module.exports = {
     '@storybook/addon-interactions',
     'storybook-dark-mode',
   ],
+  docs: {},
 }

@@ -1,10 +1,9 @@
-// import { select, text, withKnobs } from '@storybook/addon-knobs'
-import { Meta, moduleMetadata, Story } from '@storybook/angular'
+import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 
 import { CommonModule } from '@angular/common'
 import { Component, importProvidersFrom, Inject, NgModule } from '@angular/core'
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
-import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations'
+import { provideAnimations } from '@angular/platform-browser/animations'
 import { ActivatedRoute, Route, Router, RouterModule } from '@angular/router'
 import { Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
@@ -313,103 +312,108 @@ class StoryEx3Component {
   // }
 }
 
-export default {
+const meta: Meta<any> = {
   title: 'Framework/Dynamic Router',
-  // component: BreadcrumbsComponent,
   decorators: [
-    // withKnobs
     // moduleMetadata({
 
     // })
   ]
-} as Meta
+}
 
-export const Recursive: Story = args => ({
-  applicationConfig: {
-    providers: [
-      provideAnimations(),
-      importProvidersFrom(
-        RouterModule.forRoot([
-          {
-            path: 'name-ex',
-            component: StoryNameExComponent,
-            data: {
-              name: 'Mark',
-            },
-            // loadChildren: () => Promise.resolve(LevelTwoModule)
-            loadChildren: () => of(LevelTwoModule),
-          }
-        ], { useHash: true }),
-      ),
-    ],
-  },
-  moduleMetadata: {
-    declarations: [
-      StoryNameExComponent,
-      StoryExBaseComponent,
-    ],
-    imports: [
-      RouterModule,
-      ReactiveFormsModule,
-      TheSeamFormFieldModule,
-      TheSeamDynamicRouterModule,
-    ],
-  },
-  props: { },
-  template: `
-    <story-ex-base></story-ex-base>
-  `,
-})
+export default meta
+type Story = StoryObj<any>
 
-export const Example: Story = args => ({
-  applicationConfig: {
-    providers: [
-      provideAnimations(),
-      importProvidersFrom(
-        RouterModule.forRoot([
-          {
-            path: '',
-            pathMatch: 'full',
-            redirectTo: '/ex-1',
-          },
-          {
-            path: 'ex-1',
-            component: StoryEx1Component,
-            children: [
-              {
-                path: 'ex-2',
-                component: StoryEx2Component,
-                children: [
-                  {
-                    path: 'ex-3',
-                    component: StoryEx3Component,
-                  },
-                ],
+export const Recursive: Story = {
+  render: args => ({
+    applicationConfig: {
+      providers: [
+        provideAnimations(),
+        importProvidersFrom(
+          RouterModule.forRoot([
+            {
+              path: 'name-ex',
+              component: StoryNameExComponent,
+              data: {
+                name: 'Mark',
               },
-            ],
-          }
-        ], { useHash: true }),
-      ),
-    ],
-  },
-  moduleMetadata: {
-    declarations: [
-      StoryEx1Component,
-      StoryEx2Component,
-      StoryEx3Component,
-    ],
-    imports: [
-      RouterModule,
-      ReactiveFormsModule,
-      TheSeamFormFieldModule,
-      TheSeamDynamicRouterModule,
-    ],
-  },
-  props: { },
-  template: `
-    <router-outlet></router-outlet>
-  `,
-})
+              // loadChildren: () => Promise.resolve(LevelTwoModule)
+              loadChildren: () => of(LevelTwoModule),
+            }
+          ], { useHash: true }),
+        ),
+      ],
+    },
+    moduleMetadata: {
+      declarations: [
+        StoryNameExComponent,
+        StoryExBaseComponent,
+      ],
+      imports: [
+        RouterModule,
+        ReactiveFormsModule,
+        TheSeamFormFieldModule,
+        TheSeamDynamicRouterModule,
+      ],
+    },
+    props: { },
+    template: `
+      <story-ex-base></story-ex-base>
+    `,
+  }),
+}
+
+export const Example: Story = {
+  render: args => ({
+    applicationConfig: {
+      providers: [
+        provideAnimations(),
+        importProvidersFrom(
+          RouterModule.forRoot([
+            {
+              path: '',
+              pathMatch: 'full',
+              redirectTo: '/ex-1',
+            },
+            {
+              path: 'ex-1',
+              component: StoryEx1Component,
+              children: [
+                {
+                  path: 'ex-2',
+                  component: StoryEx2Component,
+                  children: [
+                    {
+                      path: 'ex-3',
+                      component: StoryEx3Component,
+                    },
+                  ],
+                },
+              ],
+            }
+          ], { useHash: true }),
+        ),
+      ],
+    },
+    moduleMetadata: {
+      declarations: [
+        StoryEx1Component,
+        StoryEx2Component,
+        StoryEx3Component,
+      ],
+      imports: [
+        RouterModule,
+        ReactiveFormsModule,
+        TheSeamFormFieldModule,
+        TheSeamDynamicRouterModule,
+      ],
+    },
+    props: { },
+    template: `
+      <router-outlet></router-outlet>
+    `,
+  })
+}
 
 // storiesOf('Framework/DynamicRouter', module)
 //   .addDecorator(withKnobs)

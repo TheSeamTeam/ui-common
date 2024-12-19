@@ -96,7 +96,7 @@ const meta: Meta<DatatableColumnPreferencesButtonComponent> = {
 }
 
 export default meta
-type Story = StoryObj<TabbedComponent>
+type Story = StoryObj<DatatableColumnPreferencesButtonComponent>
 
 export const Example: Story = {
   render: args => ({

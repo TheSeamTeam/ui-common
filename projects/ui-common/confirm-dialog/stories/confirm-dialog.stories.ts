@@ -1,7 +1,7 @@
-import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import { Meta, moduleMetadata, StoryObj, applicationConfig } from '@storybook/angular'
 
 import { Component, Input } from '@angular/core'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations'
 
 import { ThemeNames } from '@theseam/ui-common/models'
 import type { ThemeTypes } from '@theseam/ui-common/models'
@@ -10,21 +10,31 @@ import { ConfirmDialogComponent } from '../confirm-dialog.component'
 import { TheSeamConfirmDialogModule } from '../confirm-dialog.module'
 import { SeamConfirmDialogService } from '../confirm-dialog.service'
 
-const meta: Meta<ConfirmDialogComponent> = {
+interface ExtraArgs {
+  msgText: string
+  alertMsgText: string
+  alertTheme: ThemeTypes
+}
+
+const meta: Meta<ConfirmDialogComponent & ExtraArgs> = {
   title: 'Confirm Dialog/Components/Directive',
   component: ConfirmDialogComponent,
   decorators: [
+    applicationConfig({
+      providers: [
+        provideAnimations(),
+      ],
+    }),
     moduleMetadata({
       imports: [
         TheSeamConfirmDialogModule,
-        BrowserAnimationsModule
-      ]
-    })
-  ]
+      ],
+    }),
+  ],
 }
 
 export default meta
-type Story = StoryObj<ConfirmDialogComponent>
+type Story = StoryObj<ConfirmDialogComponent & ExtraArgs>
 
 export const Basic: Story = {
   render: args => ({

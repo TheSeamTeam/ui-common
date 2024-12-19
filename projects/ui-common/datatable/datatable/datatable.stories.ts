@@ -668,7 +668,7 @@ export const Filter: Story = {
 //   ]
 // }
 
-export const FooterTemplate: Story = {
+export const FooterTemplate: StoryObj<DatatableComponent & { totalAge: number, oldestMember: string }> = {
   render: args => ({
     props: { ...args },
     template: `<seam-datatable class="w-100 h-100" [columns]="columns" [rows]="rows">
@@ -905,56 +905,58 @@ class StoryDataSourceTwoComponent {
 
 }
 
-export const GraphQLQueryRef: Story = args => ({
-  applicationConfig: {
-    providers: [
-      createApolloTestingProvider(
-        simpleGqlTestSchema, createSimpleGqlTestRoot(60),
-      ),
-    ],
-  },
-  moduleMetadata: {
-    declarations: [
-      StoryDataSourceTwoComponent,
-    ],
-    imports: [
-      TheSeamDataFiltersModule
-    ]
-  },
-  props: {
-    __hack: {
-      // ...args
-      columns: args.columns,
+export const GraphQLQueryRef: Story = {
+  render: args => ({
+    applicationConfig: {
+      providers: [
+        createApolloTestingProvider(
+          simpleGqlTestSchema, createSimpleGqlTestRoot(60),
+        ),
+      ],
     },
+    moduleMetadata: {
+      declarations: [
+        StoryDataSourceTwoComponent,
+      ],
+      imports: [
+        TheSeamDataFiltersModule
+      ]
+    },
+    props: {
+      __hack: {
+        // ...args
+        columns: args.columns,
+      },
+    },
+    template: `
+      <div style="height: 500px; width: 600px; display: block; position: relative;">
+        <dt-wrap style="height: 100%; width: 100%; display: block;" [columns]="__hack.columns"></dt-wrap>
+      </div>
+    `,
+  }),
+  args: {
+    columns: [
+      { prop: 'id', name: 'Id', filterable: true, filterOptions: { filterType: 'search-numeric' } },
+      { prop: 'name', name: 'Name' },
+    ],
+    // numberOfRows: 60,
   },
-  template: `
-    <div style="height: 500px; width: 600px; display: block; position: relative;">
-      <dt-wrap style="height: 100%; width: 100%; display: block;" [columns]="__hack.columns"></dt-wrap>
-    </div>
-  `,
-})
-GraphQLQueryRef.args = {
-  columns: [
-    { prop: 'id', name: 'Id', filterable: true, filterOptions: { filterType: 'search-numeric' } },
-    { prop: 'name', name: 'Name' },
-  ],
-  numberOfRows: 60,
-}
-GraphQLQueryRef.play = async ({ canvasElement, fixture }) => {
-  // const canvas = within(canvasElement)
+  play: async ({ canvasElement, fixture }) => {
+    // const canvas = within(canvasElement)
 
-  // const page2Btn = canvas.getByRole('button', { name: /page 2/i })
-  // const page2Anchor = page2Btn.getElementsByTagName('a')[0]
-  // await userEvent.click(page2Anchor)
+    // const page2Btn = canvas.getByRole('button', { name: /page 2/i })
+    // const page2Anchor = page2Btn.getElementsByTagName('a')[0]
+    // await userEvent.click(page2Anchor)
 
-  // await expectFn(page2Btn.classList.contains('active')).toBe(true)
+    // await expectFn(page2Btn.classList.contains('active')).toBe(true)
 
-  const datatableHarness = await getHarness(TheSeamDatatableHarness, { canvasElement, fixture })
+    const datatableHarness = await getHarness(TheSeamDatatableHarness, { canvasElement, fixture })
 
-  await expectFn(await datatableHarness.getCurrentPage()).toBe(1)
-  const page2BtnHarness = await (await datatableHarness.getPager()).getPageButtonHarness(2)
-  await (await page2BtnHarness.getAnchor()).click()
-  await expectFn(await datatableHarness.getCurrentPage()).toBe(2)
+    await expectFn(await datatableHarness.getCurrentPage()).toBe(1)
+    const page2BtnHarness = await (await datatableHarness.getPager()).getPageButtonHarness(2)
+    await (await page2BtnHarness.getAnchor()).click()
+    await expectFn(await datatableHarness.getCurrentPage()).toBe(2)
+  },
 }
 
 @Component({
@@ -993,8 +995,7 @@ class ConditionalActionMenuComponent {
 
   public showActionMenu$: Observable<boolean>
 
-  constructor()
-  {
+  constructor() {
     this.showActionMenu$ = interval(5000).pipe(
       map(i => i % 2 === 0),
       tap(show => console.log('showActionMenu', show))
@@ -1054,7 +1055,7 @@ class SearchCandy extends ColumnsDataFilter {
 
   public options: any
 
-  private _updateFilterValue = new Subject<void>
+  private _updateFilterValue = new Subject<void>()
 
   constructor(
     prop: string,
@@ -1090,11 +1091,9 @@ class SearchCandy extends ColumnsDataFilter {
 
       if (filterValue.chocolatey && dataProp.includes('chocolatey')) {
         return true
-      }
-      else if (filterValue.nutty && dataProp.includes('nutty')) {
+      } else if (filterValue.nutty && dataProp.includes('nutty')) {
         return true
-      }
-      else if (filterValue.fruity && dataProp.includes('fruity')) {
+      } else if (filterValue.fruity && dataProp.includes('fruity')) {
         return true
       }
 
@@ -1200,7 +1199,7 @@ export const ColumnFilters = (args: any) => ({
     __hack: {
       ...args,
       columns: [
-        { prop: 'name', name: 'Name', filterable: true  },
+        { prop: 'name', name: 'Name', filterable: true },
         { prop: 'age', name: 'Age', filterable: true, filterOptions: { filterType: 'search-numeric' } },
         { prop: 'startDate', name: 'Start Date', cellType: 'date', cellTypeConfig: { type: 'date' }, filterable: true, filterOptions: { dateType: 'datetime-local' } },
         { prop: 'color', name: 'Favorite Color', filterable: true },
@@ -1291,7 +1290,7 @@ export const CustomConfig = (args: any) => ({
     __hack: {
       ...args,
       columns: [
-        { prop: 'name', name: 'Name', filterable: true  },
+        { prop: 'name', name: 'Name', filterable: true },
         { prop: 'age', name: 'Age', filterable: true, filterOptions: { filterType: 'search-numeric' } },
         { prop: 'startDate', name: 'Start Date', cellType: 'date', cellTypeConfig: { type: 'date' }, filterable: true },
         { prop: 'color', name: 'Favorite Color', filterable: true },

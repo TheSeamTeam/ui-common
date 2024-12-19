@@ -1,4 +1,4 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular'
+import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 
 import { Component } from '@angular/core'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
@@ -82,37 +82,43 @@ class StoryseamModalSimpleExampleComponent {
   }
 }
 
-export default {
+const meta: Meta<any> = {
   title: 'Modal/Service',
   decorators: [
     moduleMetadata({
       imports: [
         TheSeamModalModule,
-        BrowserAnimationsModule,
         TheSeamScrollbarModule
       ],
     })
   ]
-} as Meta
+}
 
-export const Basic: Story = () => ({
-  moduleMetadata: {
-    declarations: [
-      StoryseamModalBasicComponent,
-      StoryseamModalBasicExampleComponent
-    ],
-  },
-  props: { },
-  template: `<story-seam-modal-basic-example></story-seam-modal-basic-example>`
-})
+export default meta
+type Story = StoryObj<any>
 
-export const Simple: Story = () => ({
-  moduleMetadata: {
-    declarations: [
-      StoryseamModalSimpleComponent,
-      StoryseamModalSimpleExampleComponent
-    ],
-  },
-  props: { },
-  template: `<story-seam-modal-simple-example></story-seam-modal-simple-example>`
-})
+export const Basic: Story = {
+  render: args => ({
+    moduleMetadata: {
+      declarations: [
+        StoryseamModalBasicComponent,
+        StoryseamModalBasicExampleComponent
+      ],
+    },
+    props: args,
+    template: `<story-seam-modal-basic-example></story-seam-modal-basic-example>`
+  }),
+}
+
+export const Simple: Story = {
+  render: args => ({
+    moduleMetadata: {
+      declarations: [
+        StoryseamModalSimpleComponent,
+        StoryseamModalSimpleExampleComponent
+      ],
+    },
+    props: args,
+    template: `<story-seam-modal-simple-example></story-seam-modal-simple-example>`
+  }),
+}

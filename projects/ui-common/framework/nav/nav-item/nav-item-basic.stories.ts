@@ -1,4 +1,4 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular'
+import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 
 import { APP_BASE_HREF } from '@angular/common'
 import { Component, Directive, Input } from '@angular/core'
@@ -28,7 +28,7 @@ class MockHorizontalNavComponent implements Partial<HorizontalNavComponent> {
   // overlay = false
 }
 
-export default {
+const meta: Meta<NavItemComponent> = {
   title: 'Framework/Nav/Item/Basic',
   component: NavItemComponent,
   decorators: [
@@ -49,127 +49,133 @@ export default {
   parameters: {
     layout: 'fullscreen',
   }
-} as Meta
-
-export const NoChildren: Story = (args) => ({
-  moduleMetadata: {
-    imports: [
-      RouterModule.forRoot([], { useHash: true }),
-    ]
-  },
-  props: { ...args },
-  template: `
-    <div class="w-100 vh-100" [storyNavToggle]="currentUrl">
-      <div style="height: 60px;" class="d-flex bg-light">
-        <seam-nav-item
-          [itemType]="itemType"
-          [icon]="icon"
-          [label]="label"
-          [expanded]="expanded"
-          [active]="active"
-          [hierLevel]="hierLevel"
-          [compact]="compact">
-        </seam-nav-item>
-      </div>
-    </div>`
-})
-NoChildren.args = {
-  itemType: 'basic',
-  icon: faBuilding,
-  label: 'Example 1',
-  expanded: false,
-  active: false,
-  hierLevel: 0,
-  compact: false,
 }
 
-export const WithChildren: Story = (args) => ({
-  moduleMetadata: {
-    declarations: [
-      StoryNavToggleDirective
-    ],
-    imports: [
-      RouterModule.forRoot([
-        { path: 'example1', component: StoryRoutePlacholderComponent },
-        { path: 'example1/example1.1', component: StoryRoutePlacholderComponent },
-        { path: 'example1/example1.2', component: StoryRoutePlacholderComponent },
-        { path: 'example1/example1.3', component: StoryRoutePlacholderComponent },
-        { path: 'example1/example1.2.1', component: StoryRoutePlacholderComponent },
-        { path: 'example1/example1.2.2', component: StoryRoutePlacholderComponent },
-        { path: 'example1/example1.2.3', component: StoryRoutePlacholderComponent },
-        { path: 'example2', component: StoryRoutePlacholderComponent }
-      ], { useHash: true })
-    ]
-  },
-  props: {
-    currentUrl: 'example1',
+export default meta
+type Story = StoryObj<NavItemComponent>
 
-    itemType: 'basic',
-    label: 'Example 1',
-    icon: faBuilding,
-    children: [
-      {
-        itemType: 'link',
-        label: 'Example 1.1',
-        icon: faSignature,
-        link: 'example1/example1.1'
-      },
-      // {
-      //   itemType: 'link',
-      //   label: 'Example 1.2',
-      //   icon: faBuilding,
-      //   link: 'example1/example1.2',
-      // },
-      {
-        itemType: 'basic',
-        label: 'Example 1.2',
-        icon: faBuilding,
-        children: [
-          {
-            itemType: 'link',
-            label: 'Example 1.1',
-            icon: faSignature,
-            link: 'example1/example1.2.1'
-          },
-          {
-            itemType: 'link',
-            label: 'Example 1.2',
-            icon: faBuilding,
-            link: 'example1/example1.2.2'
-          },
-          {
-            itemType: 'link',
-            label: 'Example 1.3',
-            link: 'example1/example1.2.3'
-          },
-        ]
-      },
-      {
-        itemType: 'link',
-        label: 'Example 1.3',
-        link: 'example1/example1.3'
-      },
-    ]
-  },
-  template: `
-    <div class="w-100 vh-100" [storyNavToggle]="currentUrl">
-      <div style="height: 60px;" class="d-flex bg-light">
-        <seam-nav-item
-          [itemType]="itemType"
-          [icon]="icon"
-          [label]="label"
-          [children]="children">
-        </seam-nav-item>
-      </div>
-
-      <div class="p-4">
-        <router-outlet></router-outlet>
-        <div>
-          <a routerLink="/example1">Set Route: '/example1'</a><br>
-          <a routerLink="/example1/example1.1">Set Route: '/example1/example1.1'</a><br>
-          <a routerLink="/example1/example1.2">Set Route: '/example1/example1.2'</a><br>
-          <a routerLink="/example1/example1.3">Set Route: '/example1/example1.3'</a><br>
+export const NoChildren: Story = {
+  render: args => ({
+    moduleMetadata: {
+      imports: [
+        RouterModule.forRoot([], { useHash: true }),
+      ]
+    },
+    props: { ...args },
+    template: `
+      <div class="w-100 vh-100" [storyNavToggle]="currentUrl">
+        <div style="height: 60px;" class="d-flex bg-light">
+          <seam-nav-item
+            [itemType]="itemType"
+            [icon]="icon"
+            [label]="label"
+            [expanded]="expanded"
+            [active]="active"
+            [hierLevel]="hierLevel"
+            [compact]="compact">
+          </seam-nav-item>
         </div>
-      </div>
-    </div>`
-})
+      </div>`
+  }),
+  args: {
+    itemType: 'basic',
+    icon: faBuilding,
+    label: 'Example 1',
+    expanded: false,
+    active: false,
+    hierLevel: 0,
+    compact: false,
+  },
+}
+
+export const WithChildren: Story = {
+  render: args => ({
+    moduleMetadata: {
+      declarations: [
+        StoryNavToggleDirective
+      ],
+      imports: [
+        RouterModule.forRoot([
+          { path: 'example1', component: StoryRoutePlacholderComponent },
+          { path: 'example1/example1.1', component: StoryRoutePlacholderComponent },
+          { path: 'example1/example1.2', component: StoryRoutePlacholderComponent },
+          { path: 'example1/example1.3', component: StoryRoutePlacholderComponent },
+          { path: 'example1/example1.2.1', component: StoryRoutePlacholderComponent },
+          { path: 'example1/example1.2.2', component: StoryRoutePlacholderComponent },
+          { path: 'example1/example1.2.3', component: StoryRoutePlacholderComponent },
+          { path: 'example2', component: StoryRoutePlacholderComponent }
+        ], { useHash: true })
+      ]
+    },
+    props: {
+      currentUrl: 'example1',
+      itemType: 'basic',
+      label: 'Example 1',
+      icon: faBuilding,
+      children: [
+        {
+          itemType: 'link',
+          label: 'Example 1.1',
+          icon: faSignature,
+          link: 'example1/example1.1'
+        },
+        // {
+        //   itemType: 'link',
+        //   label: 'Example 1.2',
+        //   icon: faBuilding,
+        //   link: 'example1/example1.2',
+        // },
+        {
+          itemType: 'basic',
+          label: 'Example 1.2',
+          icon: faBuilding,
+          children: [
+            {
+              itemType: 'link',
+              label: 'Example 1.1',
+              icon: faSignature,
+              link: 'example1/example1.2.1'
+            },
+            {
+              itemType: 'link',
+              label: 'Example 1.2',
+              icon: faBuilding,
+              link: 'example1/example1.2.2'
+            },
+            {
+              itemType: 'link',
+              label: 'Example 1.3',
+              link: 'example1/example1.2.3'
+            },
+          ]
+        },
+        {
+          itemType: 'link',
+          label: 'Example 1.3',
+          link: 'example1/example1.3'
+        },
+      ]
+    },
+    template: `
+      <div class="w-100 vh-100" [storyNavToggle]="currentUrl">
+        <div style="height: 60px;" class="d-flex bg-light">
+          <seam-nav-item
+            [itemType]="itemType"
+            [icon]="icon"
+            [label]="label"
+            [children]="children">
+          </seam-nav-item>
+        </div>
+
+        <div class="p-4">
+          <router-outlet></router-outlet>
+          <div>
+            <a routerLink="/example1">Set Route: '/example1'</a><br>
+            <a routerLink="/example1/example1.1">Set Route: '/example1/example1.1'</a><br>
+            <a routerLink="/example1/example1.2">Set Route: '/example1/example1.2'</a><br>
+            <a routerLink="/example1/example1.3">Set Route: '/example1/example1.3'</a><br>
+          </div>
+        </div>
+      </div>`
+  }),
+}

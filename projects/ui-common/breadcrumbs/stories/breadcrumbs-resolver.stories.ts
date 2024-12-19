@@ -11,14 +11,18 @@ import { StoryUserIdToNameResolver } from './story-userid-to-name.resolver'
 
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component'
 
-const meta: Meta<BreadcrumbsComponent> = {
+interface ExtraArgs {
+  route: any
+}
+
+const meta: Meta<BreadcrumbsComponent & ExtraArgs> = {
   title: 'Breadcrumbs/Components/Resolver',
   component: BreadcrumbsComponent,
   decorators: [ ]
 }
 
 export default meta
-type Story = StoryObj<BreadcrumbsComponent>
+type Story = StoryObj<BreadcrumbsComponent & ExtraArgs>
 
 export const Example: Story = {
   render: args => ({
@@ -66,11 +70,12 @@ export const Example: Story = {
     `,
   }),
   argTypes: {
+    // TODO: Fix this type
     route: routesArgType([
       '/users',
       '/users/123',
       '/users/987',
       '/users/999'
-    ]),
+    ]) as any,
   },
 }

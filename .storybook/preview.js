@@ -193,3 +193,4 @@ export const parameters = {
 // export const decorators = []
 
 global.Buffer = global.Buffer || require('buffer').Buffer
+export const tags = ['autodocs']
