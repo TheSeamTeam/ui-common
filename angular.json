@@ -280,7 +280,7 @@
             "port": 6007,
             "open": false,
             "tsConfig": "projects/ui-common/tsconfig.sb.json",
-            "compodoc": true,
+            "compodoc": false,
             "styles": [
               "projects/ui-common/styles/theme.scss",
               "node_modules/@marklb/ngx-datatable/assets/icons.css"
