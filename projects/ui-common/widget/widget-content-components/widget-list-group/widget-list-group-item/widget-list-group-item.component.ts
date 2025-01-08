@@ -17,11 +17,9 @@ import { SeamIcon } from '@theseam/ui-common/icon'
 
 import { WidgetListGroupItemIconTplDirective } from './widget-list-group-item-icon-tpl.directive'
 
-// tslint:disable-next-line: max-line-length
 const WIDGET_LIST_GROUP_ITEM_INPUTS = [ 'disabled', 'theme', 'active', 'icon', 'iconClass', 'label', 'secondaryIcon', 'secondaryIconClass', 'secondaryIconTitle' ]
 
 @Directive()
-// tslint:disable-next-line: directive-class-suffix
 class WidgetListGroupItemBase {
 
   @ContentChild(WidgetListGroupItemIconTplDirective, { static: true }) iconTpl?: WidgetListGroupItemIconTplDirective
@@ -50,7 +48,6 @@ class WidgetListGroupItemBase {
 }
 
 @Directive()
-// tslint:disable-next-line: directive-class-suffix
 class WidgetListGroupItemActionableBase extends WidgetListGroupItemBase implements OnDestroy {
   constructor(
     public _elementRef: ElementRef,

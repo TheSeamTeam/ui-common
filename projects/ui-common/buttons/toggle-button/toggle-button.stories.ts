@@ -1,5 +1,5 @@
 import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
-import { expect } from '@storybook/jest'
+import { expect } from '@storybook/test'
 
 import { ReactiveFormsModule } from '@angular/forms'
 

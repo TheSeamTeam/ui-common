@@ -1,10 +1,11 @@
 import { componentWrapperDecorator, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import { expect } from '@storybook/test'
 
 import { UntypedFormControl, ReactiveFormsModule } from '@angular/forms'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
-import { expectFn, getHarness } from '@theseam/ui-common/testing'
+import { getHarness } from '@theseam/ui-common/testing'
 
 import { TheSeamTiledSelectHarness } from './../../testing/tiled-select-harness'
 import { TheSeamTiledSelectModule } from '../../tiled-select.module'
@@ -91,10 +92,10 @@ export const Default: Story = {
     const tiledSelectHarness = await getHarness(TheSeamTiledSelectHarness, { canvasElement, fixture })
     const cottonBtnElem = await (await tiledSelectHarness.getTileByName('cotton')).getButtonElement()
     await cottonBtnElem.click()
-    await expectFn(await tiledSelectHarness.getValue()).toBe('cotton')
+    await expect(await tiledSelectHarness.getValue()).toBe('cotton')
     const cornBtnElem = await (await tiledSelectHarness.getTileByName('corn')).getButtonElement()
     await cornBtnElem.click()
-    await expectFn(await tiledSelectHarness.getValue()).toBe('corn')
+    await expect(await tiledSelectHarness.getValue()).toBe('corn')
   },
 }
 
@@ -166,9 +167,9 @@ export const WithControl: StoryObj<TheSeamTiledSelectComponent & { [key: string]
     const tiledSelectHarness = await getHarness(TheSeamTiledSelectHarness, { canvasElement, fixture })
     const cottonBtnElem = await (await tiledSelectHarness.getTileByName('cotton')).getButtonElement()
     await cottonBtnElem.click()
-    await expectFn(await tiledSelectHarness.getValue()).toBe('cotton')
+    await expect(await tiledSelectHarness.getValue()).toBe('cotton')
     const cornBtnElem = await (await tiledSelectHarness.getTileByName('corn')).getButtonElement()
     await cornBtnElem.click()
-    await expectFn(await tiledSelectHarness.getValue()).toBe('corn')
+    await expect(await tiledSelectHarness.getValue()).toBe('corn')
   },
 }

@@ -1,5 +1,6 @@
 import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 import { applicationConfig } from '@storybook/angular/dist/client/decorators'
+import { expect } from '@storybook/test'
 
 import { importProvidersFrom } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
@@ -9,7 +10,7 @@ import { BehaviorSubject } from 'rxjs'
 import { CSVDataExporter, XLSXDataExporter } from '@theseam/ui-common/data-exporter'
 import { TheSeamDataFiltersModule } from '@theseam/ui-common/data-filters'
 import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
-import { expectFn, getHarness } from '@theseam/ui-common/testing'
+import { getHarness } from '@theseam/ui-common/testing'
 
 import { THESEAM_DATATABLE } from '../datatable/datatable.component'
 import { TheSeamDatatableModule } from '../datatable.module'
@@ -161,10 +162,10 @@ export const Example: Story = {
   play: async ({ canvasElement, fixture }) => {
     const datatableHarness = await getHarness(TheSeamDatatableHarness, { canvasElement, fixture })
 
-    await expectFn(await datatableHarness.getCurrentPage()).toBe(1)
+    await expect(await datatableHarness.getCurrentPage()).toBe(1)
     // const page2BtnHarness = await (await datatableHarness.getPager()).getPageButtonHarness(2)
     // await (await page2BtnHarness.getAnchor()).click()
-    // await expectFn(await datatableHarness.getCurrentPage()).toBe(2)
+    // await expect(await datatableHarness.getCurrentPage()).toBe(2)
   },
 }
 

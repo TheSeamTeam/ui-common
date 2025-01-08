@@ -1,8 +1,9 @@
 import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import { expect } from '@storybook/test'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 
-import { expectFn, getHarness } from '@theseam/ui-common/testing'
+import { getHarness } from '@theseam/ui-common/testing'
 
 import { TheSeamCarouselComponent } from './carousel.component'
 import { TheSeamCarouselModule } from './carousel.module'
@@ -53,10 +54,10 @@ export const Basic: Story = {
   }),
   play: async ({ canvasElement, fixture }) => {
     const carouselHarness = await getHarness(TheSeamCarouselHarness, { canvasElement, fixture })
-    await expectFn(await carouselHarness.hasPreviousSlideButton()).toBe(true)
-    await expectFn(await carouselHarness.hasNextSlideButton()).toBe(true)
-    await expectFn(await carouselHarness.hasSlideButtons()).toBe(true)
-    await expectFn(await carouselHarness.hasAutoPlayToggleButton()).toBe(true)
+    await expect(await carouselHarness.hasPreviousSlideButton()).toBe(true)
+    await expect(await carouselHarness.hasNextSlideButton()).toBe(true)
+    await expect(await carouselHarness.hasSlideButtons()).toBe(true)
+    await expect(await carouselHarness.hasAutoPlayToggleButton()).toBe(true)
   },
 }
 
@@ -108,17 +109,17 @@ export const AutoplayOff: Story = {
   }),
   play: async ({ canvasElement, fixture }) => {
     const carouselHarness = await getHarness(TheSeamCarouselHarness, { canvasElement, fixture })
-    await expectFn(await carouselHarness.activeTileIndex()).toBe('0')
+    await expect(await carouselHarness.activeTileIndex()).toBe('0')
     await carouselHarness.goToNextSlide()
-    await expectFn(await carouselHarness.activeTileIndex()).toBe('1')
+    await expect(await carouselHarness.activeTileIndex()).toBe('1')
     await carouselHarness.goToSlide(3)
-    await expectFn(await carouselHarness.activeTileIndex()).toBe('3')
+    await expect(await carouselHarness.activeTileIndex()).toBe('3')
     await carouselHarness.goToNextSlide()
-    await expectFn(await carouselHarness.activeTileIndex()).toBe('0')
+    await expect(await carouselHarness.activeTileIndex()).toBe('0')
     await carouselHarness.goToPreviousSlide()
-    await expectFn(await carouselHarness.activeTileIndex()).toBe('3')
+    await expect(await carouselHarness.activeTileIndex()).toBe('3')
     await carouselHarness.goToSlide(0)
-    await expectFn(await carouselHarness.activeTileIndex()).toBe('0')
+    await expect(await carouselHarness.activeTileIndex()).toBe('0')
   },
 }
 
@@ -148,10 +149,10 @@ export const NoButtons: Story = {
   }),
   play: async ({ canvasElement, fixture }) => {
     const carouselHarness = await getHarness(TheSeamCarouselHarness, { canvasElement, fixture })
-    await expectFn(await carouselHarness.hasPreviousSlideButton()).toBe(false)
-    await expectFn(await carouselHarness.hasNextSlideButton()).toBe(false)
-    await expectFn(await carouselHarness.hasSlideButtons()).toBe(false)
-    await expectFn(await carouselHarness.hasAutoPlayToggleButton()).toBe(false)
+    await expect(await carouselHarness.hasPreviousSlideButton()).toBe(false)
+    await expect(await carouselHarness.hasNextSlideButton()).toBe(false)
+    await expect(await carouselHarness.hasSlideButtons()).toBe(false)
+    await expect(await carouselHarness.hasAutoPlayToggleButton()).toBe(false)
   },
 }
 
@@ -184,12 +185,12 @@ export const AddRemoveSlide: Story = {
     // TODO: This is a hack to wait for the carousel to update, until a better
     // way to wait in browser and tests is used.
     await lastValueFrom(timer(1000))
-    await expectFn(await carouselHarness.activeTileIndex()).toBe('2')
+    await expect(await carouselHarness.activeTileIndex()).toBe('2')
     canvasElement.querySelector<HTMLButtonElement>('#removeBtn')?.click()
     canvasElement.querySelector<HTMLButtonElement>('#removeBtn')?.click()
     canvasElement.querySelector<HTMLButtonElement>('#removeBtn')?.click()
     canvasElement.querySelector<HTMLButtonElement>('#addBtn')?.click()
     await lastValueFrom(timer(1000))
-    await expectFn(await carouselHarness.activeTileIndex()).toBe('0')
+    await expect(await carouselHarness.activeTileIndex()).toBe('0')
   },
 }

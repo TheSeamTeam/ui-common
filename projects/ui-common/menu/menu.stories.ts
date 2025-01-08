@@ -1,9 +1,10 @@
 import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import { expect } from '@storybook/test'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 
 import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
-import { expectFn, getHarness } from '@theseam/ui-common/testing'
+import { getHarness } from '@theseam/ui-common/testing'
 
 import { MenuComponent } from './menu.component'
 import { TheSeamMenuModule } from './menu.module'
@@ -63,11 +64,11 @@ export const Basic: Story = {
   }),
   play: async ({ canvasElement, fixture }) => {
     const menuHarness = await getHarness(TheSeamMenuHarness, { canvasElement, fixture })
-    await expectFn(await menuHarness.isOpen()).toBe(false)
+    await expect(await menuHarness.isOpen()).toBe(false)
     await menuHarness.open()
-    await expectFn(await menuHarness.isOpen()).toBe(true)
+    await expect(await menuHarness.isOpen()).toBe(true)
     await menuHarness.close()
-    await expectFn(await menuHarness.isOpen()).toBe(false)
+    await expect(await menuHarness.isOpen()).toBe(false)
   },
 }
 
@@ -147,16 +148,16 @@ export const Submenu: Story = {
   }),
   play: async ({ canvasElement, fixture }) => {
     const menuHarness = await getHarness(TheSeamMenuHarness, { canvasElement, fixture })
-    await expectFn(await menuHarness.isOpen()).toBe(false)
+    await expect(await menuHarness.isOpen()).toBe(false)
     await menuHarness.open()
-    await expectFn(await menuHarness.isOpen()).toBe(true)
-    await expectFn((await menuHarness.getItems()).length).toBe(3)
-    await expectFn((await menuHarness.getItems({ hasSubmenu: true })).length).toBe(1)
+    await expect(await menuHarness.isOpen()).toBe(true)
+    await expect((await menuHarness.getItems()).length).toBe(3)
+    await expect((await menuHarness.getItems({ hasSubmenu: true })).length).toBe(1)
     const submenuItem = (await menuHarness.getItems({ hasSubmenu: true }))[0]
     const submenu = await submenuItem.getSubmenu()
-    await expectFn(await submenu?.isOpen()).toBe(false)
+    await expect(await submenu?.isOpen()).toBe(false)
     await submenu?.open()
-    await expectFn(await submenu?.isOpen()).toBe(true)
+    await expect(await submenu?.isOpen()).toBe(true)
   },
 }
 
@@ -195,15 +196,15 @@ export const Hover: Story = {
   }),
   play: async ({ canvasElement, fixture }) => {
     const menuHarness = await getHarness(TheSeamMenuHarness, { canvasElement, fixture })
-    await expectFn(await menuHarness.isOpen()).toBe(false)
+    await expect(await menuHarness.isOpen()).toBe(false)
     await menuHarness.open()
-    await expectFn(await menuHarness.isOpen()).toBe(true)
-    await expectFn((await menuHarness.getItems()).length).toBe(5)
+    await expect(await menuHarness.isOpen()).toBe(true)
+    await expect((await menuHarness.getItems()).length).toBe(5)
     await menuHarness.hoverItem({ text: 'Item 3' }, { text: 'Item 3.1' })
     const submenu1 = (await (await menuHarness.getItems({ text: 'Item 3' }))[0].getSubmenu())
-    await expectFn(await submenu1?.isOpen()).toBe(true)
+    await expect(await submenu1?.isOpen()).toBe(true)
     const submenu2 = await (await submenu1?.getItems({ text: 'Item 3.1' }))?.[0].getSubmenu()
-    await expectFn(await submenu2?.isOpen()).toBe(true)
+    await expect(await submenu2?.isOpen()).toBe(true)
   },
 }
 
@@ -225,10 +226,10 @@ export const Header: Story = {
   }),
   play: async ({ canvasElement, fixture }) => {
     const menuHarness = await getHarness(TheSeamMenuHarness, { canvasElement, fixture })
-    await expectFn(await menuHarness.isOpen()).toBe(false)
+    await expect(await menuHarness.isOpen()).toBe(false)
     await menuHarness.open()
-    await expectFn(await menuHarness.isOpen()).toBe(true)
-    await expectFn((await menuHarness.getHeader()) !== null).toBe(true)
+    await expect(await menuHarness.isOpen()).toBe(true)
+    await expect((await menuHarness.getHeader()) !== null).toBe(true)
   },
 }
 
@@ -250,9 +251,9 @@ export const Footer: Story = {
   }),
   play: async ({ canvasElement, fixture }) => {
     const menuHarness = await getHarness(TheSeamMenuHarness, { canvasElement, fixture })
-    await expectFn(await menuHarness.isOpen()).toBe(false)
+    await expect(await menuHarness.isOpen()).toBe(false)
     await menuHarness.open()
-    await expectFn(await menuHarness.isOpen()).toBe(true)
-    await expectFn((await menuHarness.getFooter()) !== null).toBe(true)
+    await expect(await menuHarness.isOpen()).toBe(true)
+    await expect((await menuHarness.getFooter()) !== null).toBe(true)
   },
 }

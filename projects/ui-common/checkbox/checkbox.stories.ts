@@ -1,6 +1,7 @@
 import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import { expect } from '@storybook/test'
 
-import { expectFn, getHarness } from '@theseam/ui-common/testing'
+import { getHarness } from '@theseam/ui-common/testing'
 import { ArgsTplOptions, argsToTpl } from '@theseam/ui-common/story-helpers'
 
 import { TheSeamCheckboxComponent } from './checkbox.component'
@@ -41,7 +42,7 @@ export const Basic: Story = {
   },
   play: async ({ canvasElement, fixture }) => {
     const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
-    await expectFn(await checkboxHarness.isChecked()).toBe(false)
+    await expect(await checkboxHarness.isChecked()).toBe(false)
   },
 }
 
@@ -52,7 +53,7 @@ export const Checked: Story = {
   },
   play: async ({ canvasElement, fixture }) => {
     const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
-    await expectFn(await checkboxHarness.isChecked()).toBe(true)
+    await expect(await checkboxHarness.isChecked()).toBe(true)
   },
 }
 
@@ -63,7 +64,7 @@ export const Unchecked: Story = {
   },
   play: async ({ canvasElement, fixture }) => {
     const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
-    await expectFn(await checkboxHarness.isChecked()).toBe(false)
+    await expect(await checkboxHarness.isChecked()).toBe(false)
   },
 }
 
@@ -74,7 +75,7 @@ export const Indeterminate: Story = {
   },
   play: async ({ canvasElement, fixture }) => {
     const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
-    await expectFn(await checkboxHarness.isIndeterminate()).toBe(true)
+    await expect(await checkboxHarness.isIndeterminate()).toBe(true)
   },
 }
 
@@ -85,10 +86,10 @@ export const Disabled: Story = {
   },
   play: async ({ canvasElement, fixture }) => {
     const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
-    await expectFn(await checkboxHarness.isDisabled()).toBe(true)
-    await expectFn(await checkboxHarness.isChecked()).toBe(false)
+    await expect(await checkboxHarness.isDisabled()).toBe(true)
+    await expect(await checkboxHarness.isChecked()).toBe(false)
     await checkboxHarness.click()
-    await expectFn(await checkboxHarness.isChecked()).toBe(false)
+    await expect(await checkboxHarness.isChecked()).toBe(false)
   },
 }
 
@@ -98,11 +99,11 @@ export const ExampleToggling: Story = {
   },
   play: async ({ canvasElement, fixture }) => {
     const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
-    await expectFn(await checkboxHarness.isChecked()).toBe(false)
+    await expect(await checkboxHarness.isChecked()).toBe(false)
     await checkboxHarness.click()
-    await expectFn(await checkboxHarness.isChecked()).toBe(true)
+    await expect(await checkboxHarness.isChecked()).toBe(true)
     await checkboxHarness.click()
-    await expectFn(await checkboxHarness.isChecked()).toBe(false)
+    await expect(await checkboxHarness.isChecked()).toBe(false)
   },
 }
 
@@ -113,14 +114,14 @@ export const ExampleIndeterminateToggle: Story = {
   },
   play: async ({ canvasElement, fixture }) => {
     const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
-    await expectFn(await checkboxHarness.isChecked()).toBe(false)
-    await expectFn(await checkboxHarness.isIndeterminate()).toBe(true)
+    await expect(await checkboxHarness.isChecked()).toBe(false)
+    await expect(await checkboxHarness.isIndeterminate()).toBe(true)
     await checkboxHarness.click()
-    await expectFn(await checkboxHarness.isChecked()).toBe(true)
-    await expectFn(await checkboxHarness.isIndeterminate()).toBe(false)
+    await expect(await checkboxHarness.isChecked()).toBe(true)
+    await expect(await checkboxHarness.isIndeterminate()).toBe(false)
     await checkboxHarness.click()
-    await expectFn(await checkboxHarness.isChecked()).toBe(false)
-    await expectFn(await checkboxHarness.isIndeterminate()).toBe(false)
+    await expect(await checkboxHarness.isChecked()).toBe(false)
+    await expect(await checkboxHarness.isIndeterminate()).toBe(false)
   },
 }
 
@@ -144,13 +145,13 @@ export const ExampleFormControl: Story = {
   },
   // play: async ({ canvasElement, fixture }) => {
   //   const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
-  //   await expectFn(await checkboxHarness.isChecked()).toBe(false)
-  //   await expectFn(await checkboxHarness.isIndeterminate()).toBe(true)
+  //   await expect(await checkboxHarness.isChecked()).toBe(false)
+  //   await expect(await checkboxHarness.isIndeterminate()).toBe(true)
   //   await checkboxHarness.click()
-  //   await expectFn(await checkboxHarness.isChecked()).toBe(true)
-  //   await expectFn(await checkboxHarness.isIndeterminate()).toBe(false)
+  //   await expect(await checkboxHarness.isChecked()).toBe(true)
+  //   await expect(await checkboxHarness.isIndeterminate()).toBe(false)
   //   await checkboxHarness.click()
-  //   await expectFn(await checkboxHarness.isChecked()).toBe(false)
-  //   await expectFn(await checkboxHarness.isIndeterminate()).toBe(false)
+  //   await expect(await checkboxHarness.isChecked()).toBe(false)
+  //   await expect(await checkboxHarness.isIndeterminate()).toBe(false)
   // },
 }

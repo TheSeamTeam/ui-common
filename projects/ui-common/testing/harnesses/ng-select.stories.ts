@@ -1,5 +1,5 @@
 import { Meta, StoryObj, applicationConfig, componentWrapperDecorator, moduleMetadata } from '@storybook/angular'
-import { expect } from '@storybook/jest'
+import { expect } from '@storybook/test'
 
 import { ReactiveFormsModule } from '@angular/forms'
 import { provideAnimations } from '@angular/platform-browser/animations'

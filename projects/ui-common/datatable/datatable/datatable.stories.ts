@@ -1,6 +1,6 @@
 import { action } from '@storybook/addon-actions'
-import { Meta, StoryObj, componentWrapperDecorator, moduleMetadata } from '@storybook/angular'
-import { applicationConfig } from '@storybook/angular/dist/client/decorators'
+import { Meta, StoryObj, componentWrapperDecorator, moduleMetadata, applicationConfig } from '@storybook/angular'
+import { expect } from '@storybook/test'
 
 import { AfterViewInit, Component, Input, OnInit, ViewChild, importProvidersFrom } from '@angular/core'
 import { FormControl, FormGroup, ReactiveFormsModule, UntypedFormControl } from '@angular/forms'
@@ -35,7 +35,7 @@ import {
 } from '@theseam/ui-common/graphql'
 import { StoryToastrService } from '@theseam/ui-common/story-helpers'
 import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
-import { expectFn, getHarness } from '@theseam/ui-common/testing'
+import { getHarness } from '@theseam/ui-common/testing'
 import { ToastrModule, ToastrService } from 'ngx-toastr'
 
 import {
@@ -948,14 +948,14 @@ export const GraphQLQueryRef: Story = {
     // const page2Anchor = page2Btn.getElementsByTagName('a')[0]
     // await userEvent.click(page2Anchor)
 
-    // await expectFn(page2Btn.classList.contains('active')).toBe(true)
+    // await expect(page2Btn.classList.contains('active')).toBe(true)
 
     const datatableHarness = await getHarness(TheSeamDatatableHarness, { canvasElement, fixture })
 
-    await expectFn(await datatableHarness.getCurrentPage()).toBe(1)
+    await expect(await datatableHarness.getCurrentPage()).toBe(1)
     const page2BtnHarness = await (await datatableHarness.getPager()).getPageButtonHarness(2)
     await (await page2BtnHarness.getAnchor()).click()
-    await expectFn(await datatableHarness.getCurrentPage()).toBe(2)
+    await expect(await datatableHarness.getCurrentPage()).toBe(2)
   },
 }
 

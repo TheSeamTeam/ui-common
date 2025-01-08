@@ -1,4 +1,4 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular'
+import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 import { applicationConfig } from '@storybook/angular/dist/client/decorators'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
@@ -88,7 +88,7 @@ const GIN_DATA = [
   }
 ]
 
-export default {
+const meta: Meta<WidgetTableComponent<any>> = {
   title: 'Widget/Components/Content/Table',
   component: WidgetTableComponent,
   decorators: [
@@ -103,61 +103,70 @@ export default {
       ],
     }),
   ],
-} as Meta
+}
 
-export const Basic: Story = args => ({
-  props: {
-    ...args,
-    icon: faWrench,
-    displayedColumns: [
-      { prop: 'ginCode', name: 'Gin Code', cellType: 'integer', cellTypeConfig: { cellType: 'integer', formatNumber: false } },
-      { prop: 'name', name: 'Name' },
-      { prop: 'ginned', name: 'Lbs Ginned', cellType: 'integer' },
-    ],
-    dataSource: GIN_DATA,
-  },
-  template: `
-    <div class="p-1" style="max-height: 400px; width: 500px;">
-      <seam-widget [icon]="icon" titleText="Example Widget" loading="false">
-        <seam-widget-table [columns]="displayedColumns" [rows]="dataSource"></seam-widget-table>
-      </seam-widget>
-    </div>`,
-})
+export default meta
+type Story = StoryObj<WidgetTableComponent<any>>
 
-export const Medium: Story = args => ({
-  props: {
-    ...args,
-    icon: faWrench,
-    displayedColumns: [
-      { prop: 'ginCode', name: 'Gin Code', cellType: 'integer', cellTypeConfig: { cellType: 'integer', formatNumber: false } },
-      { prop: 'name', name: 'Name' },
-      { prop: 'ginned', name: 'Lbs Ginned', cellType: 'integer' },
-    ],
-    dataSource: GIN_DATA,
-  },
-  template: `
-    <div class="p-1" style="max-height: 400px; width: 500px;">
-      <seam-widget [icon]="icon" titleText="Example Widget" loading="false">
-        <seam-widget-table [columns]="displayedColumns" [rows]="dataSource" size="md"></seam-widget-table>
-      </seam-widget>
-    </div>`,
-})
+export const Basic: Story = {
+  render: args => ({
+    props: {
+      ...args,
+      icon: faWrench,
+      displayedColumns: [
+        { prop: 'ginCode', name: 'Gin Code', cellType: 'integer', cellTypeConfig: { cellType: 'integer', formatNumber: false } },
+        { prop: 'name', name: 'Name' },
+        { prop: 'ginned', name: 'Lbs Ginned', cellType: 'integer' },
+      ],
+      dataSource: GIN_DATA,
+    },
+    template: `
+      <div class="p-1" style="max-height: 400px; width: 500px;">
+        <seam-widget [icon]="icon" titleText="Example Widget" loading="false">
+          <seam-widget-table [columns]="displayedColumns" [rows]="dataSource"></seam-widget-table>
+        </seam-widget>
+      </div>`,
+  }),
+}
 
-export const Small: Story = args => ({
-  props: {
-    ...args,
-    icon: faWrench,
-    displayedColumns: [
-      { prop: 'ginCode', name: 'Gin Code', cellType: 'integer', cellTypeConfig: { cellType: 'integer', formatNumber: false } },
-      { prop: 'name', name: 'Name' },
-      { prop: 'ginned', name: 'Lbs Ginned', cellType: 'integer' },
-    ],
-    dataSource: GIN_DATA,
-  },
-  template: `
-    <div class="p-1" style="max-height: 400px; width: 500px;">
-      <seam-widget [icon]="icon" titleText="Example Widget" loading="false">
-        <seam-widget-table [columns]="displayedColumns" [rows]="dataSource" size="sm"></seam-widget-table>
-      </seam-widget>
-    </div>`,
-})
+export const Medium: Story = {
+  render: args => ({
+    props: {
+      ...args,
+      icon: faWrench,
+      displayedColumns: [
+        { prop: 'ginCode', name: 'Gin Code', cellType: 'integer', cellTypeConfig: { cellType: 'integer', formatNumber: false } },
+        { prop: 'name', name: 'Name' },
+        { prop: 'ginned', name: 'Lbs Ginned', cellType: 'integer' },
+      ],
+      dataSource: GIN_DATA,
+    },
+    template: `
+      <div class="p-1" style="max-height: 400px; width: 500px;">
+        <seam-widget [icon]="icon" titleText="Example Widget" loading="false">
+          <seam-widget-table [columns]="displayedColumns" [rows]="dataSource" size="md"></seam-widget-table>
+        </seam-widget>
+      </div>`,
+  }),
+}
+
+export const Small: Story = {
+  render: args => ({
+    props: {
+      ...args,
+      icon: faWrench,
+      displayedColumns: [
+        { prop: 'ginCode', name: 'Gin Code', cellType: 'integer', cellTypeConfig: { cellType: 'integer', formatNumber: false } },
+        { prop: 'name', name: 'Name' },
+        { prop: 'ginned', name: 'Lbs Ginned', cellType: 'integer' },
+      ],
+      dataSource: GIN_DATA,
+    },
+    template: `
+      <div class="p-1" style="max-height: 400px; width: 500px;">
+        <seam-widget [icon]="icon" titleText="Example Widget" loading="false">
+          <seam-widget-table [columns]="displayedColumns" [rows]="dataSource" size="sm"></seam-widget-table>
+        </seam-widget>
+      </div>`,
+  }),
+}

@@ -1,4 +1,4 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular'
+import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 import { applicationConfig } from '@storybook/angular/dist/client/decorators'
 
 import { importProvidersFrom } from '@angular/core'
@@ -14,7 +14,7 @@ import { TheSeamIconModule } from '@theseam/ui-common/icon'
 import { TheSeamWidgetModule } from '../../widget.module'
 import { WidgetListGroupItemComponent } from './widget-list-group-item/widget-list-group-item.component'
 
-export default {
+const meta: Meta<WidgetListGroupItemComponent> = {
   title: 'Widget/Components/Content/List Group',
   component: WidgetListGroupItemComponent,
   decorators: [
@@ -34,21 +34,26 @@ export default {
       ],
     }),
   ],
-} as Meta
+}
 
-export const Basic: Story = args => ({
-  props: {
-    icon: faWrench,
-    faEnvelope,
-  },
-  template: `
-    <div class="p-1" style="max-height: 400px; width: 500px;">
-      <seam-widget [icon]="icon" titleText="Example Widget" loading="false">
-        <seam-widget-list-group>
-          <seam-widget-list-group-item>Item 1</seam-widget-list-group-item>
-          <seam-widget-list-group-item>Item 2</seam-widget-list-group-item>
-          <seam-widget-list-group-item>Item 3</seam-widget-list-group-item>
-        </seam-widget-list-group>
-      </seam-widget>
-    </div>`,
-})
+export default meta
+type Story = StoryObj<WidgetListGroupItemComponent>
+
+export const Basic: Story = {
+  render: args => ({
+    props: {
+      icon: faWrench,
+      faEnvelope,
+    },
+    template: `
+      <div class="p-1" style="max-height: 400px; width: 500px;">
+        <seam-widget [icon]="icon" titleText="Example Widget" loading="false">
+          <seam-widget-list-group>
+            <seam-widget-list-group-item>Item 1</seam-widget-list-group-item>
+            <seam-widget-list-group-item>Item 2</seam-widget-list-group-item>
+            <seam-widget-list-group-item>Item 3</seam-widget-list-group-item>
+          </seam-widget-list-group>
+        </seam-widget>
+      </div>`,
+  }),
+}

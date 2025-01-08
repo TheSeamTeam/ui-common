@@ -1,4 +1,4 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular'
+import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 import { applicationConfig } from '@storybook/angular/dist/client/decorators'
 
 import { APP_BASE_HREF } from '@angular/common'
@@ -12,7 +12,7 @@ import { StoryInitialRouteModule } from '@theseam/ui-common/story-helpers'
 import { TheSeamSideNavModule } from '../side-nav.module'
 import { SideNavToggleComponent } from './side-nav-toggle.component'
 
-export default {
+const meta: Meta<SideNavToggleComponent> = {
   title: 'Framework/SideNav/Toggle',
   component: SideNavToggleComponent,
   decorators: [
@@ -36,18 +36,23 @@ export default {
   parameters: {
     layout: 'fullscreen',
   },
-} as Meta
+}
 
-export const Basic: Story = args => ({
-  props: {
-    itemType: 'basic',
-    label: 'Example 1',
-    icon: faBuilding,
-  },
-  template: `
-    <div class="d-flex flex-row vh-100">
-      <div style="width: 260px; background-color: #e9ecef;" class="h-100">
-        <seam-side-nav-toggle></seam-side-nav-toggle>
-      </div>
-    </div>`,
-})
+export default meta
+type Story = StoryObj<SideNavToggleComponent>
+
+export const Basic: Story = {
+  render: args => ({
+    props: {
+      itemType: 'basic',
+      label: 'Example 1',
+      icon: faBuilding,
+    },
+    template: `
+      <div class="d-flex flex-row vh-100">
+        <div style="width: 260px; background-color: #e9ecef;" class="h-100">
+          <seam-side-nav-toggle></seam-side-nav-toggle>
+        </div>
+      </div>`,
+  }),
+}

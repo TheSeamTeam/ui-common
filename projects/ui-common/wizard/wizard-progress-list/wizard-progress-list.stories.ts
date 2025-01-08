@@ -1,15 +1,13 @@
-import { Meta, Story } from '@storybook/angular'
+import { Meta, StoryObj } from '@storybook/angular'
 
 import { TheSeamWizardProgressListComponent } from './wizard-progress-list.component'
 
-export default {
+const meta: Meta<TheSeamWizardProgressListComponent> = {
   title: 'Wizard/ProgressList',
   component: TheSeamWizardProgressListComponent,
-} as Meta
+}
 
-export const Basic: Story = args => ({
-  props: args,
-})
-// Basic.args = {
-//   phone: '9015555555'
-// }
+export default meta
+type Story = StoryObj<TheSeamWizardProgressListComponent>
+
+export const Basic: Story = { }

@@ -1,6 +1,7 @@
 import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import { expect } from '@storybook/test'
 
-import { expectFn, getHarness } from '@theseam/ui-common/testing'
+import { getHarness } from '@theseam/ui-common/testing'
 import { ArgsTplOptions, argsToTpl } from '@theseam/ui-common/story-helpers'
 import { TheSeamCheckboxComponent } from '@theseam/ui-common/checkbox'
 
@@ -97,7 +98,7 @@ export const Basic: Story = {
   },
   // play: async ({ canvasElement, fixture }) => {
   //   const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
-  //   await expectFn(await checkboxHarness.isChecked()).toBe(false)
+  //   await expect(await checkboxHarness.isChecked()).toBe(false)
   // },
 }
 
@@ -151,6 +152,6 @@ export const Checkbox: Story = {
   },
   // play: async ({ canvasElement, fixture }) => {
   //   const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
-  //   await expectFn(await checkboxHarness.isChecked()).toBe(false)
+  //   await expect(await checkboxHarness.isChecked()).toBe(false)
   // },
 }
