@@ -38,7 +38,7 @@ export class TheSeamNavigationReloadService implements OnDestroy {
 
   reloadComponent(url: string, dummyUrl?: string): void {
     this._router.navigateByUrl(dummyUrl || '/', { skipLocationChange: true }).then(() => {
-      this._router.navigate([ url ], { skipLocationChange: true })
+      this._router.navigateByUrl(url, { skipLocationChange: true })
     })
   }
 

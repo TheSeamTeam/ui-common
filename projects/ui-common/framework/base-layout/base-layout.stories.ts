@@ -227,25 +227,29 @@ const navItems: ISideNavItem[] = [
     children: [
       {
         itemType: 'link',
-        label: 'Example 1.1',
+        label: 'Example 2.1',
         icon: faSignature,
-        link: 'example2/example1.1',
+        link: 'example2/example2.1',
       },
       {
         itemType: 'link',
-        label: 'Example 1.2',
+        label: 'Example 2.2',
         icon: faBuilding,
-        link: 'example2/example1.2'
+        link: 'example2/example2.2'
       },
       {
         itemType: 'link',
-        label: 'Example 1.3',
-        link: 'example2/example1.3'
+        label: 'Example 2.3',
+        // link: 'example2/example2.3?dtf=claimable',
+        link: 'example2/example2.3',
+        queryParams: {
+          dtf: 'claimable'
+        },
       },
       {
         itemType: 'link',
-        label: 'Example 1.4',
-        // link: 'example2/example1.4'
+        label: 'Example 2.4',
+        // link: 'example2/example2.4'
       }
     ]
   },
