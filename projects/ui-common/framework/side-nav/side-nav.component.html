@@ -27,7 +27,8 @@
         [active]="$any(item).__state.active"
         [expanded]="$any(item).__state.expanded"
         [menuItemTooltipConfig]="menuItemTooltipConfig"
-        [menuItemTooltipDisabled]="menuItemTooltipDisabled$ | async">
+        [menuItemTooltipDisabled]="menuItemTooltipDisabled$ | async"
+        [activeNavigatable]="$any(item).activeNavigatable">
       </seam-side-nav-item>
     </div>
     <ng-template [cdkPortalOutlet]="_sideBarFooterPortal"></ng-template>

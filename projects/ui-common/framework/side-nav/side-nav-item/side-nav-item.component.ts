@@ -96,6 +96,8 @@ export class SideNavItemComponent implements OnDestroy {
 
   readonly faAngleLeft = faAngleLeft
 
+  readonly _linkHistoryState = { seamReload: true, triggeredByNavBar: true }
+
   @Input() itemType: 'divider' | 'basic' | 'link' | 'button' | 'title' | undefined | null
 
   @Input() icon: SeamIcon | undefined | null
@@ -103,6 +105,8 @@ export class SideNavItemComponent implements OnDestroy {
   @Input() label: string | undefined | null
 
   @Input() @InputBoolean() active = false
+
+  @Input() @InputBoolean() activeNavigatable = false
 
   @Input()
   set link(value: string | undefined | null) { this._link.next(value) }
@@ -172,6 +176,7 @@ export class SideNavItemComponent implements OnDestroy {
   @Input() menuItemTooltipDisabled: boolean | undefined | null
 
   @HostBinding('class.seam-side-nav-item--active') get _isActiveCssClass() { return this.active }
+  @HostBinding('class.active-clickable') get _isClickableWhenActiveCssClass() { return this.activeNavigatable }
 
   @HostBinding('attr.data-hier-level') get _attrDataHierLevel() { return this.hierLevel }
 

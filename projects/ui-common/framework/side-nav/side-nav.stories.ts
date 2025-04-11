@@ -93,6 +93,7 @@ export const Basic: Story = args => ({
         label: 'Example 1',
         icon: faSignature,
         link: 'example1',
+        activeNavigatable: true,
       },
       {
         itemType: 'link',
@@ -200,7 +201,8 @@ export const Basic: Story = args => ({
           {
             itemType: 'link',
             label: 'Example 1.3',
-            link: 'example3/example1.3'
+            link: 'example3/example1.3',
+            activeNavigatable: true,
           },
         ]
       },

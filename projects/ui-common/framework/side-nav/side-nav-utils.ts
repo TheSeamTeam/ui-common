@@ -11,18 +11,20 @@ import {
   SideNavItemCanHaveChildren,
   SideNavItemCanHaveState
 } from './side-nav.models'
+import { SideNavConfig } from './side-nav-tokens'
 
-export function isNavItemType(item: ISideNavItem, type: 'title'): item is ISideNavTitle
-// eslint-disable-next-line no-redeclare
-export function isNavItemType(item: ISideNavItem, type: 'divider'): item is ISideNavDivider
-// eslint-disable-next-line no-redeclare
-export function isNavItemType(item: ISideNavItem, type: 'basic'): item is ISideNavBasic
-// eslint-disable-next-line no-redeclare
-export function isNavItemType(item: ISideNavItem, type: 'link'): item is ISideNavLink
-// eslint-disable-next-line no-redeclare
-export function isNavItemType(item: ISideNavItem, type: 'button'): item is ISideNavButton
-// eslint-disable-next-line no-redeclare
-export function isNavItemType(item: ISideNavItem, type: string): item is ISideNavItem {
+interface NavItemTypeMap {
+  title: ISideNavTitle;
+  divider: ISideNavDivider;
+  basic: ISideNavBasic;
+  link: ISideNavLink;
+  button: ISideNavButton;
+}
+
+export function isNavItemType<T extends keyof NavItemTypeMap>(
+  item: ISideNavItem,
+  type: T
+): item is NavItemTypeMap[T] {
   return item.itemType === type
 }
 
@@ -70,8 +72,8 @@ export function hasExpandedChild(item: ISideNavItem): boolean {
   return false
 }
 
-export function canBeActive(item: ISideNavItem): item is (ISideNavBasic | ISideNavLink) {
-  return isNavItemType(item, 'basic') || isNavItemType(item, 'link')
+export function canBeActive(item: ISideNavItem): item is (ISideNavButton | ISideNavLink) {
+  return isNavItemType(item, 'button') || isNavItemType(item, 'link')
 }
 
 export function canExpand(item: ISideNavItem): item is (ISideNavBasic | ISideNavLink) {
@@ -118,4 +120,18 @@ export function setDefaultState(item: ISideNavItem): ISideNavItem & Required<Sid
 
   // TODO: See if there is a nice way to fix the typing for this.
   return item as any
+}
+
+export function applyItemConfig(item: ISideNavItem, config: SideNavConfig): ISideNavItem {
+  if (canBeActive(item)) {
+    if (!hasProperty(item, 'activeNavigatable') && hasProperty(config, 'activeNavigatable')) {
+      item.activeNavigatable = config.activeNavigatable
+    }
+  }
+
+  if (hasChildren(item)) {
+    item.children = item.children.map(child => applyItemConfig(child, config))
+  }
+
+  return item
 }
