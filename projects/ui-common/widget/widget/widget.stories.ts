@@ -1,10 +1,11 @@
 import { componentWrapperDecorator, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
-import { applicationConfig } from '@storybook/angular/dist/client/decorators'
+import { applicationConfig } from '@storybook/angular'
+import { expect } from '@storybook/test'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 
 import { faWrench } from '@fortawesome/free-solid-svg-icons'
-import { expectFn, getHarness } from '@theseam/ui-common/testing'
+import { getHarness } from '@theseam/ui-common/testing'
 
 import { TheSeamWidgetModule } from '../widget.module'
 import { WidgetComponent } from './widget.component'
@@ -56,7 +57,7 @@ export const Simple: Story = {
   },
   play: async ({ canvasElement, fixture }) => {
     const harness = await getHarness(TheSeamWidgetHarness, { canvasElement, fixture })
-    await expectFn(harness !== null).toBe(true)
+    await expect(harness !== null).toBe(true)
   },
 }
 
@@ -73,7 +74,7 @@ export const FAIcon: Story = {
   },
   play: async ({ canvasElement, fixture }) => {
     const harness = await getHarness(TheSeamWidgetHarness, { canvasElement, fixture })
-    await expectFn(harness !== null).toBe(true)
+    await expect(harness !== null).toBe(true)
   },
 }
 
