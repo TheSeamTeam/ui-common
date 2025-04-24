@@ -9,27 +9,26 @@
     "postbuild": "npm run copy:schemas && npm run copy:files && npm run copy:collection"
   },
   "peerDependencies": {
-    "@angular/cdk": "^15.0.0",
-    "@angular/common": "^15.0.0",
-    "@angular/core": "^15.0.0",
-    "@angular/forms": "^15.0.0",
-    "@angular/animations": "^15.0.0",
-    "@angular/router": "^15.0.0",
+    "@angular/cdk": "^16.2.14",
+    "@angular/common": "^17.3.12",
+    "@angular/core": "^17.3.12",
+    "@angular/forms": "^17.3.12",
+    "@angular/animations": "^17.3.12",
+    "@angular/router": "^17.3.12",
     "@angular/flex-layout": "^15.0.0-beta.42",
-    "rxjs": "~7.5.0",
-    "@fortawesome/fontawesome-svg-core": ">=1.2.35",
-    "@fortawesome/free-brands-svg-icons": ">=5.15.3",
-    "@fortawesome/free-regular-svg-icons": ">=5.15.3",
-    "@fortawesome/free-solid-svg-icons": ">=5.15.3"
+    "rxjs": "~7.8.0",
+    "@fortawesome/angular-fontawesome": "^0.13.0",
+    "@fortawesome/fontawesome-svg-core": "^1.2.35",
+    "@fortawesome/free-regular-svg-icons": "^5.15.3",
+    "@fortawesome/free-solid-svg-icons": "^5.15.3"
   },
   "dependencies": {
-    "@fortawesome/angular-fontawesome": "~0.9.0",
     "@marklb/file-type": "~10.6.5",
-    "@marklb/ngx-datatable": "~18.0.5",
-    "@marklb/ngx-loading": "^10.0.0",
-    "@ng-select/ng-select": "~6.1.0",
-    "@ng-bootstrap/ng-bootstrap": "~9.1.1",
-    "apollo-angular": "^4.2.1",
+    "@marklb/ngx-datatable": "npm:@swimlane/ngx-datatable@^17.0.0",
+    "ngx-loading": "^16.0.0",
+    "@ng-select/ng-select": "11.2.0",
+    "@ng-bootstrap/ng-bootstrap": "~15.1.2",
+    "apollo-angular": "^10.0.3",
     "overlayscrollbars": "~1.7.3",
     "@types/overlayscrollbars": "~1.7.0",
     "bootstrap": "~4.6.0",
@@ -46,9 +45,9 @@
     "@types/webfontloader": "^1.6.29",
     "intl-tel-input": "^17.0.5",
     "@ajsf/core": "^0.8.0",
-    "quill": "^1.3.7",
-    "ngx-quill": "^14.0.0",
-    "@types/quill": "^1.3.7",
+    "quill": "2.0.3",
+    "ngx-quill": "^25.3.2",
+    "@types/quill": "^2.0.14",
     "@turf/boolean-contains": "^6.5.0",
     "@turf/helpers": "^6.5.0",
     "@turf/area": "^6.5.0",
@@ -60,5 +59,72 @@
     "type": "git",
     "url": "https://github.com/TheSeamTeam/ui-common"
   },
-  "schematics": "./schematics/collection.json"
+  "schematics": "./schematics/collection.json",
+  "assets": [
+    {
+      "glob": "**/*",
+      "input": "src/assets",
+      "output": "assets"
+    },
+    {
+      "glob": "**/*",
+      "input": "projects/ui-common/assets",
+      "output": "assets"
+    },
+    {
+      "glob": "**/*",
+      "input": "projects/ui-common/styles",
+      "output": "styles"
+    },
+    {
+      "glob": "**/*.scss",
+      "input": "breadcrumbs",
+      "output": "breadcrumbs"
+    },
+    {
+      "glob": "**/*.scss",
+      "input": "projects/ui-common/framework/base-layout",
+      "output": "framework/base-layout"
+    },
+    {
+      "glob": "**/*.scss",
+      "input": "projects/ui-common/framework/dashboard",
+      "output": "framework/dashboard"
+    },
+    {
+      "glob": "**/*.scss",
+      "input": "projects/ui-common/framework/top-bar",
+      "output": "framework/top-bar"
+    },
+    {
+      "glob": "**/*.scss",
+      "input": "projects/ui-common/widget/side-nav",
+      "output": "framework/side-nav"
+    },
+    {
+      "glob": "**/*.scss",
+      "input": "projects/ui-common/progress/progress-circle",
+      "output": "progress/progress-circle"
+    },
+    {
+      "glob": "**/*.scss",
+      "input": "projects/ui-common/widget",
+      "output": "widget"
+    },
+    {
+      "glob": "**/*.min.css",
+      "input": "node_modules/intl-tel-input/build/css",
+      "output": "assets/vendor/intl-tel-input/css"
+    },
+    {
+      "glob": "**/*.png",
+      "input": "node_modules/intl-tel-input/build/img",
+      "output": "assets/vendor/intl-tel-input/img"
+    },
+    {
+      "glob": "**/utils.js",
+      "input": "node_modules/intl-tel-input/build/js",
+      "output": "assets/vendor/intl-tel-input/js"
+    }
+  ]
 }

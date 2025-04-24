@@ -340,23 +340,6 @@ export interface TheSeamQuillEditorConfig {
   styles?: { [key: string]: string } | null
 
   /**
-   * When `false`, user interactions in the toolbar will emit even
-   * if the editor is marked as `readOnly`. This allows the user to
-   * make some formatting changes (e.g. creating a list) to a value
-   * that should be disabled.
-   *
-   * @default true.
-   */
-  strict: boolean
-
-  /**
-   * An element or selector that specifies the scrolling element of the editor.
-   *
-   * Default scrollingContainer is the `.ql-editor` element.
-   */
-  scrollingContainer?: HTMLElement | string | null
-
-  /**
    * An element or selector that specifies the confining element of the editor.
    *
    * Default boundary container is the document's `body` element.
@@ -384,13 +367,6 @@ export interface TheSeamQuillEditorConfig {
    * Changing to `all` is not recommended.
    */
   trackChanges?: 'user' | 'all'
-
-  /**
-   * When `true`, preserves duplicated whitespaces.
-   *
-   * @default false
-   */
-  preserveWhitespace: boolean
 
   /** Custom classes to add to the `.ql-container` element. */
   classes?: string

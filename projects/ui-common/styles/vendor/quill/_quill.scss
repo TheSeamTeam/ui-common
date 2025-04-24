@@ -1,7 +1,7 @@
 @import 'quill/dist/quill.core';
 @import 'quill/dist/quill.bubble';
 @import 'quill/dist/quill.snow';
-@import 'quill-mention/dist/quill.mention';
+@import 'node_modules/quill-mention/dist/quill.mention';
 
 $quill-input-border-radius: $input-border-radius !default;
 
@@ -41,7 +41,7 @@ $quill-mention-padding: 3px !default;
 $quill-mention-denotation-margin: 0 0 2px 0 !default;
 
 quill-editor {
-  display: flex;
+  display: flex !important;
   flex-direction: column;
   @include border-top-radius($quill-input-border-radius);
   @include border-bottom-radius($quill-input-border-radius);

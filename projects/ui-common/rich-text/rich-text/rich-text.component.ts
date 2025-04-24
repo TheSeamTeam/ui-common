@@ -1,15 +1,14 @@
-import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { AfterViewInit, Component, EventEmitter, HostListener, Inject, Input, OnDestroy, OnInit, Optional, Output, Provider, Renderer2, TemplateRef, ViewChild, forwardRef } from '@angular/core';
-import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { coerceBooleanProperty } from '@angular/cdk/coercion'
+import { AfterViewInit, Component, EventEmitter, HostListener, Inject, Input, OnDestroy, OnInit, Optional, Output, Provider, Renderer2, TemplateRef, ViewChild, forwardRef, ElementRef, inject } from '@angular/core'
+import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms'
 
-import { Blur, ContentChange, EditorChangeContent, EditorChangeSelection, Focus, QuillEditorComponent, SelectionChange } from 'ngx-quill';
-import { Delta } from 'quill';
-import 'quill-mention';
-import { BehaviorSubject, Observable, Subject, combineLatest, filter, lastValueFrom, map, of, shareReplay, startWith, switchMap, take, tap } from 'rxjs';
+import { Blur, ContentChange, EditorChangeContent, EditorChangeSelection, Focus, QuillEditorComponent, SelectionChange } from 'ngx-quill'
+import 'quill-mention/autoregister'
+import { BehaviorSubject, Observable, Subject, combineLatest, filter, lastValueFrom, map, of, shareReplay, startWith, switchMap, take, tap } from 'rxjs'
 
-import { isNullOrUndefined, notNullOrUndefined } from '@theseam/ui-common/utils';
-import { TheSeamCharacterCounterFn, TheSeamQuillEditorConfig, TheSeamQuillMentionMenuItem, TheSeamQuillMentionMenuOption, TheSeamQuillMentionSearchFn, TheSeamQuillMentionSourceFn, TheSeamQuillModules } from '../utils/models';
-import { THESEAM_QUILL_EDITOR_CONFIG, THESEAM_QUILL_EDITOR_CONFIG_DEFAULT, THESEAM_QUILL_MENTION_OPTIONS_DEFAULT, defaultHtmlCharacterCounterFn, defaultMentionRenderListFn, defaultMentionSearchFn, isMentionMenuOption } from '../utils/utils';
+import { isNullOrUndefined, notNullOrUndefined } from '@theseam/ui-common/utils'
+import { TheSeamCharacterCounterFn, TheSeamQuillEditorConfig, TheSeamQuillMentionMenuItem, TheSeamQuillMentionMenuOption, TheSeamQuillMentionSearchFn, TheSeamQuillMentionSourceFn, TheSeamQuillModules } from '../utils/models'
+import { THESEAM_QUILL_EDITOR_CONFIG, THESEAM_QUILL_EDITOR_CONFIG_DEFAULT, THESEAM_QUILL_MENTION_OPTIONS_DEFAULT, defaultHtmlCharacterCounterFn, defaultMentionRenderListFn, defaultMentionSearchFn, isMentionMenuOption } from '../utils/utils'
 
 export const RICH_TEXT_VALUE_ACCESSOR: Provider = {
   provide: NG_VALUE_ACCESSOR,
@@ -26,6 +25,8 @@ export const RICH_TEXT_VALUE_ACCESSOR: Provider = {
   ]
 })
 export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor {
+
+  private readonly _elementRef = inject(ElementRef)
 
   onChange: any
   onTouched: any
@@ -221,7 +222,7 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
       this._updateQuillConfig()
     }
   }
-  private _useMentions: boolean = false
+  private _useMentions = false
 
   /**
    * List of users, user groups, or other entities to display in mentions menu.
@@ -288,7 +289,7 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
       this._mentionListLoadingText = value
     }
   }
-  private _mentionListLoadingText: string = 'Loading...'
+  private _mentionListLoadingText = 'Loading...'
 
   /**
    * Set to override default text shown when a mention search returns no items.
@@ -304,7 +305,7 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
       this._mentionListEmptyText = value
     }
   }
-  private _mentionListEmptyText: string = 'No matches found.'
+  private _mentionListEmptyText = 'No matches found.'
 
   get mentionListEmptyItem(): TheSeamQuillMentionMenuOption {
     return {
@@ -428,7 +429,7 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
         const calculatedRowsHeight = `${this.rows * 1.5}rem`
 
         if (notNullOrUndefined(this.rows) && notNullOrUndefined(this._quillEditor)) {
-          const editorEl = this._quillEditor.elementRef.nativeElement.querySelector('.ql-editor')
+          const editorEl = this._elementRef.nativeElement.querySelector('.ql-editor')
 
           if (notNullOrUndefined(editorEl)) {
             this._renderer.setStyle(editorEl, 'height', calculatedRowsHeight)
@@ -453,7 +454,7 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
 
   ngOnDestroy(): void {
     // hacky way to ensure mentions menu gets destroyed when component is destroyed
-    const mentionModule = this._quillEditor?.quillEditor.getModule('mention')
+    const mentionModule = this._quillEditor?.quillEditor.getModule('mention') as any
     const hideMentionList = mentionModule?.hideMentionList
     if (hideMentionList && typeof hideMentionList === 'function') {
       hideMentionList.call(mentionModule)
@@ -473,8 +474,7 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
       config.modules = {
         toolbar: false
       }
-    }
-    else {
+    } else {
       config.format = this._getConfigOrDefault('format')
       config.formats = this._getConfigOrDefault('formats')
       config.modules = {
@@ -509,13 +509,10 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
     config.customToolbarPosition = this._getConfigOrDefault('customToolbarPosition')
     config.sanitize = this._getConfigOrDefault('sanitize')
     config.styles = this._getConfigOrDefault('styles')
-    config.strict = this._getConfigOrDefault('strict')
-    config.scrollingContainer = this._getConfigOrDefault('scrollingContainer')
     config.bounds = this._getConfigOrDefault('bounds')
     config.customOptions = this._getConfigOrDefault('customOptions')
     config.customModules = this._getConfigOrDefault('customModules')
     config.trackChanges = this._getConfigOrDefault('trackChanges')
-    config.preserveWhitespace = this._getConfigOrDefault('preserveWhitespace')
     config.classes = this._getConfigOrDefault('classes')
     config.trimOnValidation = this._getConfigOrDefault('trimOnValidation')
     config.linkPlaceholder = this._getConfigOrDefault('linkPlaceholder')
@@ -626,31 +623,29 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
   /**
    * Hacky way to track mention inserts/deletes
    */
-  private _updateMentionsFromDelta(content: Delta) {
+  private _updateMentionsFromDelta(content: ContentChange['content']) {
     if (notNullOrUndefined(content.ops)) {
-      const contentMentionIds = content.ops.map(o => o.insert?.mention?.id).filter(notNullOrUndefined)
+      const contentMentionIds: string[] = content.ops.map((o: any) => o.insert?.mention?.id).filter(notNullOrUndefined)
       const selectedMentions = [ ...this._selectedMentions.value ]
       const mentionOptions = [ ...this._mentionItems.value || [] ]
 
       const newMentions: TheSeamQuillMentionMenuOption[] = contentMentionIds.reduce((acc, mentionId) => {
-        const insertMention = mentionOptions.find(m => isMentionMenuOption(m) && m.id === mentionId)
+        const insertMention = mentionOptions.find((m): m is TheSeamQuillMentionMenuOption => isMentionMenuOption(m) && m.id === mentionId)
 
         if (notNullOrUndefined(insertMention)) {
           acc.push(insertMention)
-        }
-        else {
+        } else {
           console.warn('Mention addition failed! Selected mention option not found:', mentionId)
         }
 
         return acc
-      }, <TheSeamQuillMentionMenuOption[]>[])
+      }, [] as TheSeamQuillMentionMenuOption[])
 
       let emitUpdate = false
       if (selectedMentions.length !== newMentions.length) {
         // if the length has changed, we know an update occurred
         emitUpdate = true
-      }
-      else {
+      } else {
         // otherwise, test ids for old and new items to see if we need to emit a change
         const selectedMentionIds = this._selectedMentions.value.map(m => m.id)
         const newMentionIds = newMentions.map(m => m.id)
