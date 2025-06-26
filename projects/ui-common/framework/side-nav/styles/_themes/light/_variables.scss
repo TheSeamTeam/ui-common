@@ -1,29 +1,39 @@
-$seam-side-nav-bg-color: $gray-200;
+$seam-side-nav-bg-color: $gray-200 !default;
+$seam-side-nav-bg: $seam-side-nav-bg-color !default;
 
-$seam-side-nav-background-bg-color: rgba($dark, 0.6);
+// Backdrop
+$seam-side-nav-background-bg-color: rgba($dark, 0.6) !default;
 
 // Group
-$seam-side-nav-group-bg-variation-amount: 3%;
+$seam-side-nav-group-bg-variation-amount: 3% !default;
 
 // Item
-$seam-side-nav-item-bg-color-active: $white;
-$seam-side-nav-item-bg-color-hover: rgba($primary, 0.4);
+$seam-side-nav-item-bg-color-active: $white !default;
+$seam-side-nav-item-bg-color-hover: rgba($primary, 0.4) !default;
 
-$seam-side-nav-item-color: $black;
-$seam-side-nav-item-color-active: $black;
+$seam-side-nav-item-color: $black !default;
+$seam-side-nav-item-color-active: $black !default;
 
-$seam-side-nav-item-disabled-color: $text-muted;
+$seam-side-nav-item-disabled-color: $text-muted !default;
+
+$seam-side-nav-item-toggle-color: $seam-side-nav-item-color !default;
+$seam-side-nav-item-toggle-color-active: $seam-side-nav-item-toggle-color !default;
+$seam-side-nav-item-toggle-color-hover: $seam-side-nav-item-toggle-color !default;
+
+$seam-side-nav-item-toggle-disabled-color: darken($seam-side-nav-item-toggle-color, 20%) !default;
 
 // Divider
-$seam-side-nav-divider-color: $gray-500;
-$seam-side-nav-divider-size: 1px;
+$seam-side-nav-divider-color: $gray-500 !default;
+$seam-side-nav-divider-size: 1px !default;
 
 // Title
-$seam-side-nav-title-color: $black;
+$seam-side-nav-title-color: $black !default;
 
-$seam-side-nav-title-font-size: 24px;
+$seam-side-nav-title-font-size: 24px !default;
 
-$seam-side-nav-title-padding-left: 10px;
+$seam-side-nav-title-padding-left: 10px !default;
 
 // Toggle
-$seam-side-nav-toggle-btn-color: $seam-side-nav-item-color;
+$seam-side-nav-toggle-bg-color: $seam-side-nav-bg-color !default;
+$seam-side-nav-toggle-btn-color: $seam-side-nav-item-color !default;
+$seam-side-nav-toggle-height: 45px !default;

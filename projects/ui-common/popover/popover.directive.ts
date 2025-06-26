@@ -28,6 +28,8 @@ export class TheSeamPopoverDirective implements OnDestroy {
 
   @Input() seamPopover?: TemplateRef<any> | null
 
+  @Input() seamPopoverContext?: any
+
   /**
    * Defines a width for a popover that will scale down if the window innerWidth is
    * smaller than the value.
@@ -160,6 +162,8 @@ export class TheSeamPopoverDirective implements OnDestroy {
 
     this._compRef.instance.template = this.seamPopover
     this._compRef.instance.baseWidth = this.seamPopoverBaseWidth
+    this._compRef.instance.popover = this
+    this._compRef.instance.popoverContext = this.seamPopoverContext
     this._compRef.changeDetectorRef.markForCheck()
 
     this._popoverClosedSubscription = this._compRef.instance._afterExit.subscribe(v => {

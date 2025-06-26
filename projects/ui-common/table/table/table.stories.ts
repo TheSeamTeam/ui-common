@@ -185,3 +185,99 @@ export const Small = () => ({
   },
   template: `<seam-table [columns]="columns" [rows]="rows" size="sm"></seam-table>`
 })
+
+export const HeaderTpl = {
+  render: (args: any) => ({
+    props: {
+      columns: [
+        {
+          prop: 'icon',
+          name: 'Icon',
+          cellType: 'icon',
+          cellTypeConfig: {
+            type: 'icon',
+          },
+        },
+        { prop: 'ginCode', name: 'Gin Code' },
+        {
+          prop: 'name', name: 'Name',
+          cellType: 'string',
+          cellTypeConfig: {
+            type: 'string',
+            action: {
+              type: 'link',
+              link: { type: 'jexl', expr: '"page/" + row.name' },
+            },
+          },
+        },
+      ],
+      rows: [
+        { ginCode: '12345', name: 'Gin 1', icon: faEnvelope },
+        { ginCode: '12346', name: 'Gin 2', icon: faEnvelope },
+        { ginCode: '12347', name: 'Gin 3', icon: faEnvelope },
+        { ginCode: '12348', name: 'Gin 4', icon: faEnvelope },
+        { ginCode: '12349', name: 'Gin 5', icon: 'assets/images/theseam_logo_notext.svg' },
+        { ginCode: '12350', name: 'Gin 6', icon: 'https://ipfs.theseam.com/ipfs/QmenVkw7UcU6SLYfdLp6qWioQJQ2Tur8qrWj5SoV5AdF1k' },
+        { ginCode: '12351', name: 'Gin 7', icon: 'assets/images/ginner-med.svg' },
+      ],
+    },
+    template: `<seam-table [columns]="columns" [rows]="rows" size="sm">
+      <seam-table-column prop="ginCode" headerClass="p-0">
+        <ng-template seamTableColumnHeaderTpl let-value let-prop="prop" let-column="column">
+          <div class="d-flex flex-column">
+            <div>Custom</div>
+            <div class="d-flex flex-row">
+              <div style="flex: 1 1 50%;">Type</div>
+              <div style="flex: 1 1 50%;">Amount</div>
+            </div>
+          </div>
+        </ng-template>
+      </seam-table-column>
+    </seam-table>`,
+  }),
+}
+
+export const CellTpl = {
+  render: (args: any) => ({
+    props: {
+      columns: [
+        {
+          prop: 'icon',
+          name: 'Icon',
+          cellType: 'icon',
+          cellTypeConfig: {
+            type: 'icon',
+          },
+        },
+        { prop: 'ginCode', name: 'Gin Code' },
+        {
+          prop: 'name', name: 'Name',
+          cellType: 'string',
+          cellTypeConfig: {
+            type: 'string',
+            action: {
+              type: 'link',
+              link: { type: 'jexl', expr: '"page/" + row.name' },
+            },
+          },
+        },
+      ],
+      rows: [
+        { ginCode: '12345', name: 'Gin 1', icon: faEnvelope },
+        { ginCode: '12346', name: 'Gin 2', icon: faEnvelope },
+        { ginCode: '12347', name: 'Gin 3', icon: faEnvelope },
+        { ginCode: '12348', name: 'Gin 4', icon: faEnvelope },
+        { ginCode: '12349', name: 'Gin 5', icon: 'assets/images/theseam_logo_notext.svg' },
+        { ginCode: '12350', name: 'Gin 6', icon: 'https://ipfs.theseam.com/ipfs/QmenVkw7UcU6SLYfdLp6qWioQJQ2Tur8qrWj5SoV5AdF1k' },
+        { ginCode: '12351', name: 'Gin 7', icon: 'assets/images/ginner-med.svg' },
+      ],
+    },
+    template: `<seam-table [columns]="columns" [rows]="rows" size="sm">
+      <seam-table-column prop="ginCode">
+        <ng-template seamTableCellTpl let-value let-row="row" let-column="column">
+          [{{ value }}]~cell
+        </ng-template>
+      </seam-table-column>
+    </seam-table>`,
+  }),
+}

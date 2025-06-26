@@ -1,0 +1,203 @@
+@import '../styles/utilities';
+
+seam-nav-item {
+  display: block;
+  transition: 250ms ease-in-out background-color;
+  text-align: $seam-nav-item-text-align;
+  border-radius: $seam-nav-item-border-radius;
+  overflow: hidden;
+  background: $seam-nav-item-bg-color;
+  margin: $seam-nav-item-margin;
+
+  &.seam-nav-item--expanded {
+    background-color: $seam-nav-item-bg-color-expanded;
+    .nav-link {
+      color: $seam-nav-item-color-expanded;
+    }
+  }
+
+  &.seam-nav-item--child-active {
+    background-color: $seam-nav-item-bg-color-child-active;
+    .nav-link {
+      color: $seam-nav-item-color-child-active;
+    }
+  }
+
+  &.seam-nav-item--active {
+    background-color: $seam-nav-item-bg-color-active;
+
+    .active,
+    &:active,
+    .nav-item.active:hover {
+      background-color: $seam-nav-item-bg-color-active;
+    }
+
+    .nav-item {
+      &:hover {
+        background-color: $seam-nav-item-bg-color-hover;
+      }
+    }
+
+    .nav-link {
+      color: $seam-nav-item-color-active;
+    }
+  }
+
+  .badge {
+    vertical-align: middle;
+  }
+
+  &:not(.nav-item--icon) {
+    .nav-item--badge {
+      pointer-events: all;
+      margin-left: 5px;
+      margin-right: 3px;
+    }
+  }
+
+  .nav-item--icon {
+    position: relative;
+    width: 24px;
+    max-width: 24px;
+    min-width: 24px;
+    height: 24px;
+    max-height: 24px;
+    min-height: 24px;
+    text-align: center;
+
+    margin-right: .5rem;
+
+    .nav-item--badge {
+      top: -4px;
+      right: -4px;
+      position: absolute;
+
+      .badge:empty {
+        display: block;
+        width: 8px;
+        height: 8px;
+        padding: 0;
+      }
+
+      &.nav-item--badge-no-icon {
+        top: 0px;
+        right: 0px;
+      }
+    }
+  }
+
+  .nav-item {
+    transition: 250ms ease-in-out background-color;
+
+    &:hover {
+      background-color: $seam-nav-item-bg-color-hover;
+    }
+
+    &.active {
+      pointer-events: none;
+      cursor: default;
+    }
+  }
+
+  a.nav-item:not([href]):not([tabindex]) {
+    color: $seam-nav-item-disabled-color;
+
+    &:hover {
+      background-color: transparent;
+    }
+  }
+
+  .nav-link {
+    color: $seam-nav-item-color;
+  }
+
+  .nav-btn {
+    font-weight: $font-weight-normal;
+    color: $seam-nav-toggle-btn-color;
+    text-decoration: $link-decoration;
+    border-radius: $seam-nav-toggle-btn-border-radius;
+    border:
+      $seam-nav-toggle-btn-border-width
+      $seam-nav-toggle-btn-border-style
+      $seam-nav-toggle-btn-border-color;
+
+    @include hover {
+      color: $seam-nav-toggle-btn-color-hover;
+      text-decoration: $link-hover-decoration;
+    }
+
+    &:focus,
+    &.focus {
+      text-decoration: $link-hover-decoration;
+      box-shadow: none;
+    }
+
+    &:disabled,
+    &.disabled {
+      color: $seam-nav-item-disabled-color;
+      pointer-events: none;
+    }
+  }
+
+  // Add the button focus like a link when navigating with keyboard.
+  .cdk-keyboard-focused {
+    // outline: -webkit-focus-ring-color auto 1px;
+    outline: 1px dotted;
+    outline: 5px auto -webkit-focus-ring-color;
+  }
+
+  .nav-item--toggle-btn-container {
+    transition: 250ms ease-in-out background-color;
+    padding: $seam-nav-toggle-btn-padding;
+  }
+  button.nav-item--toggle-btn-container {
+    &:hover {
+      background-color: $seam-nav-item-bg-color-hover;
+    }
+  }
+
+  .nav-item--toggle-btn {
+    .svg-inline--fa {
+      transition: 100ms ease-in-out transform;
+      transform: $seam-nav-toggle-btn-transform;
+    }
+
+    @if $seam-nav-toggle-btn-use-transform-active {
+      &.nav-item--toggle-btn-expanded {
+        .svg-inline--fa {
+          transform: $seam-nav-toggle-btn-transform-active;
+        }
+      }
+    }
+  }
+
+  .nav--group {
+    will-change: height;
+    overflow: hidden;
+  }
+
+  @for $i from 1 through 9 {
+    .nav--group--level-#{$i} {
+      background-color: darken($seam-nav-bg-color, ($i * $seam-nav-group-bg-variation-amount));
+    }
+  }
+
+  .nav-item--divider {
+    display: block;
+    border-top: $seam-nav-divider-size solid $seam-nav-divider-color;
+    width: 100%;
+  }
+
+  .nav-item--title {
+    color: $seam-nav-title-color;
+    font-size: $seam-nav-title-font-size;
+    padding-left: $seam-nav-title-padding-left;
+  }
+
+  // without a set position, these labels can cause unnecessary scrollbars
+  .sr-only {
+    top: 0;
+    left: 0;
+  }
+}
+

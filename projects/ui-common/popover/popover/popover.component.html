@@ -1,6 +1,6 @@
 <div class="popover-body">
   <ng-container *ngIf="template; else noTemplate">
-    <ng-template [ngTemplateOutlet]="template"></ng-template>
+    <ng-template [ngTemplateOutlet]="template" [ngTemplateOutletContext]="{ $implicit: popover, popover: popover, popoverContext: popoverContext }"></ng-template>
   </ng-container>
 
   <ng-template #noTemplate>

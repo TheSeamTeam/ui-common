@@ -160,7 +160,9 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
       if (configAction.type === 'link') {
         link = this._parseConfigValue(configAction.link)
         if (link !== undefined && link !== null) {
-          newTplType = this._parseConfigValue(configAction.asset) ? 'link-encrypted' : 'link'
+          newTplType = this._parseConfigValue(configAction.asset)
+            ? 'link-encrypted'
+            : this._parseConfigValue(configAction.external) ? 'link-external' : 'link'
           download = !!this._parseConfigValue(configAction.download)
           detectMimeContent = !!this._parseConfigValue(configAction.detectMimeContent)
           queryParams = this._parseConfigValue(configAction.queryParams)

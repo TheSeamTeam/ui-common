@@ -1,10 +1,24 @@
-<div class="side-nav-toggle--content" *ngIf="expanded">
-  <ng-content></ng-content>
+<div class="side-nav-toggle--content">
+  <ng-container *ngIf="expanded">
+    <ng-content></ng-content>
+  </ng-container>
 </div>
-<button seamIconBtn [icon]="faBars"
-  iconType="borderless-styled-square"
-  btnSize="sm"
-  class="side-nav-toggle--btn ml-1"
-  (click)="toggle()">
-  <span class="sr-only">Toggle sidebar</span>
-</button>
+
+<ng-container *ngIf="toggleTpl; else iconBtn">
+  <button
+    class="side-nav-toggle--btn mx-1"
+    (click)="toggle()">
+    <span class="sr-only">Toggle sidebar</span>
+    <ng-container *ngTemplateOutlet="toggleTpl"></ng-container>
+  </button>
+</ng-container>
+
+<ng-template #iconBtn>
+  <button seamIconBtn [icon]="toggleIcon"
+    iconType="borderless-styled-square"
+    btnSize="sm"
+    class="side-nav-toggle--btn mx-1"
+    (click)="toggle()">
+    <span class="sr-only">Toggle sidebar</span>
+  </button>
+</ng-template>

@@ -32,7 +32,7 @@ const freePort = (port?: number) => port || detectFreePort(port)
 const startVerdaccio = (port: number) => {
   let resolved = false
   return Promise.race([
-    new Promise((resolve) => {
+    new Promise(resolve => {
       const cache = path.join(__dirname, '..', '.verdaccio-cache')
       const config = {
         ...(yaml.load(
@@ -50,21 +50,21 @@ const startVerdaccio = (port: number) => {
 
       startVerdaccioServer(config, 6000, cache, '1.0.0', 'verdaccio', onReady)
     }),
-    new Promise((_, rej) => {
+    new Promise((resolve, reject) => {
       setTimeout(() => {
         if (!resolved) {
           resolved = true
-          rej(new Error(`TIMEOUT - verdaccio didn't start within 60s`))
+          reject(new Error(`TIMEOUT - verdaccio didn't start within 60s`))
         }
       }, 60000)
     }),
   ])
 }
 const registryUrl = (command: string, url?: string) =>
-  new Promise<string>((res, rej) => {
+  new Promise<string>((resolve, reject) => {
     // TODO: Implement a better way to omit yarn.
     if (command === 'yarn' && !yarnInstalled) {
-      res('')
+      resolve('')
       return
     }
 
@@ -75,10 +75,10 @@ const registryUrl = (command: string, url?: string) =>
       if (e) {
         logger.log(`[Error] exec: ${cmd}`)
         logger.error(e)
-        rej(e)
+        reject(e)
       } else {
         logger.log(`[Success] exec: ${cmd}`, stdout.toString().trim())
-        res(url || stdout.toString().trim())
+        resolve(url || stdout.toString().trim())
       }
     })
   })
@@ -124,16 +124,16 @@ const publish = (packages: { name: string; location: string }[], url: string) =>
     packages.map(({ name, location }) =>
       limit(
         () =>
-          new Promise((res, rej) => {
+          new Promise((resolve, reject) => {
             logger.log(`🛫 publishing ${name} (${location})`)
             const command = `cd ${location} && npm publish --registry ${url} --force --access restricted`
-            exec(command, (e) => {
+            exec(command, e => {
               if (e) {
-                rej(e)
+                reject(e)
               } else {
                 i += 1
                 logger.log(`${i}/${packages.length} 🛬 successful publish of ${name}!`)
-                res(undefined)
+                resolve(undefined)
               }
             })
           })
@@ -141,6 +141,19 @@ const publish = (packages: { name: string; location: string }[], url: string) =>
     )
   )
 }
+
+const addUser = (url: string) =>
+  new Promise<void>((resolve, reject) => {
+    logger.log(`👤 add temp user to verdaccio ${process.env.NPM_REGISTRY}`)
+
+    exec(`npx npm-cli-adduser -r "${url}" -a -u user -p password -e user@example.com`, e => {
+      if (e) {
+        reject(e)
+      } else {
+        resolve()
+      }
+    })
+  })
 
 const run = async () => {
   const options = program.opts()
@@ -174,7 +187,7 @@ const run = async () => {
     originalNpmRegistryUrl
   )
 
-  // await addUser(verdaccioUrl);
+  await addUser(verdaccioUrl)
 
   if (options.publish) {
     await publish([
@@ -187,7 +200,7 @@ const run = async () => {
   }
 }
 
-run().catch((e) => {
+run().catch(e => {
   logger.error(e)
   process.exit(1)
 })

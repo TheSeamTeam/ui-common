@@ -8,10 +8,12 @@ import { TheSeamLayoutModule } from '@theseam/ui-common/layout'
 import { TheSeamMenuModule } from '@theseam/ui-common/menu'
 import { TheSeamBaseLayoutModule } from '../base-layout/index'
 
+import { TopBarCompactMenuBtnDetailDirective } from './top-bar-compact-menu-btn-detail.directive'
 import { TopBarItemDirective } from './top-bar-item.directive'
 import { TopBarMenuBtnDetailDirective } from './top-bar-menu-btn-detail.directive'
 import { TopBarMenuButtonComponent } from './top-bar-menu-button/top-bar-menu-button.component'
 import { TopBarMenuDirective } from './top-bar-menu.directive'
+import { TopBarNavToggleBtnDetailDirective } from './top-bar-nav-toggle-btn-detail.directive'
 import { TopBarTitleComponent } from './top-bar-title/top-bar-title.component'
 import { TheSeamTopBarComponent } from './top-bar.component'
 
@@ -22,7 +24,9 @@ import { TheSeamTopBarComponent } from './top-bar.component'
     TopBarMenuButtonComponent,
     TopBarMenuDirective,
     TopBarItemDirective,
-    TopBarMenuBtnDetailDirective
+    TopBarMenuBtnDetailDirective,
+    TopBarCompactMenuBtnDetailDirective,
+    TopBarNavToggleBtnDetailDirective
   ],
   imports: [
     CommonModule,
@@ -39,7 +43,9 @@ import { TheSeamTopBarComponent } from './top-bar.component'
     TopBarMenuDirective,
     TheSeamMenuModule,
     TopBarItemDirective,
-    TopBarMenuBtnDetailDirective
+    TopBarMenuBtnDetailDirective,
+    TopBarCompactMenuBtnDetailDirective,
+    TopBarNavToggleBtnDetailDirective
   ]
 })
 export class TheSeamTopBarModule { }

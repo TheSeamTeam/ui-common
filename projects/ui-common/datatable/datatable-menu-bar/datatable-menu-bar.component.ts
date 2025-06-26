@@ -1,6 +1,6 @@
 import { Component, ContentChildren, EventEmitter, forwardRef, QueryList } from '@angular/core'
 
-import { IDataFilter, THESEAM_DATA_FILTER_CONTAINER } from '@theseam/ui-common/data-filters'
+import { DataFilterContainer, IDataFilter, THESEAM_DATA_FILTER_CONTAINER } from '@theseam/ui-common/data-filters'
 import { notNullOrUndefined } from '@theseam/ui-common/utils'
 
 import { DatatableFilterDirective } from '../directives/datatable-filter.directive'
@@ -17,7 +17,7 @@ export const _THESEAM_DATA_FILTER_CONTAINER: any = {
   styleUrls: ['./datatable-menu-bar.component.scss'],
   providers: [ _THESEAM_DATA_FILTER_CONTAINER ]
 })
-export class DatatableMenuBarComponent {
+export class DatatableMenuBarComponent implements DataFilterContainer {
 
   @ContentChildren(DatatableFilterDirective)
   get filterDirectives(): QueryList<DatatableFilterDirective> | undefined {

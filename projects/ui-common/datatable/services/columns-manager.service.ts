@@ -22,6 +22,7 @@ import { getColumnProp } from '../utils/get-column-prop'
 import { setColumnDefaults } from '../utils/set-column-defaults'
 import { translateTemplateColumns } from '../utils/translate-templates'
 import { DatatableColumnChangesService } from './datatable-column-changes.service'
+import { ActionItemColumnPosition } from '../models/action-item-column-position'
 
 enum ColumnsTypes {
   Input,
@@ -48,6 +49,7 @@ export class ColumnsManagerService {
   private _selectionType: SelectionType | undefined
   private _rowActionItem: DatatableRowActionItemDirective | undefined
   private _actionMenuCellTpl: TemplateRef<DataTableColumnDirective> | undefined
+  private _actionItemColumnPosition: ActionItemColumnPosition | undefined
   private _blankHeaderTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined
   private _treeToggleTpl: TemplateRef<DataTableColumnCellTreeToggle> | undefined
   private _headerTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined
@@ -126,6 +128,14 @@ export class ColumnsManagerService {
   public setRowActionItem(rowActionItem: DatatableRowActionItemDirective | undefined): void {
     const changed = this._rowActionItem !== rowActionItem
     this._rowActionItem = rowActionItem
+    if (changed) {
+      this._updateColumns.next(undefined)
+    }
+  }
+
+  public setActionItemColumnPosition(actionItemColumnPosition: ActionItemColumnPosition | undefined) {
+    const changed = this._actionItemColumnPosition !== actionItemColumnPosition
+    this._actionItemColumnPosition = actionItemColumnPosition
     if (changed) {
       this._updateColumns.next(undefined)
     }
@@ -228,7 +238,13 @@ export class ColumnsManagerService {
     }
 
     if (this._shouldAddRowActionColumn()) {
-      cols.push(createActionMenuColumn(this._actionMenuCellTpl, this._blankHeaderTpl))
+      const actionMenuColumn = createActionMenuColumn(this._actionMenuCellTpl, this._blankHeaderTpl, this._rowActionColumnIsFrozenLeft(), this._rowActionColumnIsFrozenRight())
+
+      if (this._rowActionColumnIsStaticLeft()) {
+        cols.unshift(actionMenuColumn)
+      } else {
+        cols.push(actionMenuColumn)
+      }
     }
 
     // Make sure the default for any missing props are set.
@@ -344,6 +360,22 @@ export class ColumnsManagerService {
 
   private _shouldAddRowActionColumn(): boolean {
     return this._rowActionItem !== undefined
+  }
+
+  private _rowActionColumnIsFrozenLeft(): boolean {
+    return this._actionItemColumnPosition === 'frozenLeft'
+  }
+
+  private _rowActionColumnIsFrozenRight(): boolean {
+    return this._actionItemColumnPosition === 'frozenRight'
+  }
+
+  private _rowActionColumnIsStaticLeft(): boolean {
+    return this._actionItemColumnPosition === 'staticLeft'
+  }
+
+  private _rowActionColumnIsStaticRight(): boolean {
+    return this._actionItemColumnPosition === 'staticRight'
   }
 
   private _shouldAddTreeToggleColumn(column: TheSeamDatatableColumn): boolean {

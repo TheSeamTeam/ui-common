@@ -139,5 +139,5 @@ Run the following commands to publish a new package version to the repository.
 ```sh
 $ npm run build:ui-common
 $ cd dist/ui-common
-$ npm publish
+$ npm publish [--tag=beta if publishing a beta version]
 ```

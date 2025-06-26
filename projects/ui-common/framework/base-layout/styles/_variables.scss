@@ -1,8 +1,25 @@
+// Header Bar Styles
 $base-header-margin: .25rem !default;
 $base-header-padding: 0 !default;
 $base-header-background: none !default;
 $base-header-border-radius: 0 !default;
 
+
+// Left Side
+$base-header-left-bg: none !default;
+$base-header-left-padding: 0rem !default;
+$base-header-left-margin: 0 !default;
+$base-header-left-border-radius: 0 !default;
+
+
+// Right Side
+$base-header-right-bg: none !default;
+$base-header-right-padding: 0rem !default;
+$base-header-right-margin: 0 !default;
+$base-header-right-border-radius: 0 !default;
+
+
+// Right Side Action Buttons
 $base-action-margin: 0 0 0 .25rem !default;
 $base-action-bg: $gray-200 !default;
 $base-action-hover-bg: #d3d9df !default;
@@ -12,11 +29,15 @@ $base-action-padding-x: 1rem !default;
 $base-action-padding-y: .5rem !default;
 $base-action-border-radius: .25rem !default;
 
+
+// Top Bar Wrapper
 $base-layout-top-bar-container-border-top: none !default;
 $base-layout-top-bar-container-border-right: none !default;
 $base-layout-top-bar-container-border-bottom: 1px solid #dee2e6 !default;
 $base-layout-top-bar-container-border-left: none !default;
 
+
+// Side Bar Wrapper
 $base-layout-side-bar-container-border-top: none !default;
 $base-layout-side-bar-container-border-right: 1px solid #dee2e6 !default;
 $base-layout-side-bar-container-border-bottom: none !default;

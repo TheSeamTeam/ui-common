@@ -13,7 +13,7 @@ import { DatatableGraphQLQueryRef, DatatableGraphQLVariables } from './datatable
  * rest should be common options shared by all our app's datatables. This may
  * change if it is determined to be too restrictive.
  */
-export type DatatableQueryOptions<TVariables = OperationVariables, TData = any> =
+export type DatatableQueryOptions<TVariables extends OperationVariables = OperationVariables, TData = any> =
   Pick<WatchQueryOptions<TVariables, TData>, 'query'>
   & Pick<WatchQueryOptions<TVariables, TData>, 'variables'>
   & Pick<WatchQueryOptions<TVariables, TData>, 'context'>

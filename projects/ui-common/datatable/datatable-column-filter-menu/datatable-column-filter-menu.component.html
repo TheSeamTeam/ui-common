@@ -1,0 +1,39 @@
+<ng-container *ngIf="_filterForm && columnFilter">
+  <form [formGroup]="_filterForm" (ngSubmit)="submit()">
+    <ng-container [ngSwitch]="columnFilter.name">
+      <div *ngSwitchCase="'search-text'">
+        <seam-datatable-column-filter-search-text [filterForm]="_filterForm"></seam-datatable-column-filter-search-text>
+      </div>
+      <div *ngSwitchCase="'search-numeric'">
+        <seam-datatable-column-filter-search-numeric [filterForm]="_filterForm"></seam-datatable-column-filter-search-numeric>
+      </div>
+      <div *ngSwitchCase="'search-date'">
+        <seam-datatable-column-filter-search-date [filterForm]="_filterForm" [options]="columnFilter.options"></seam-datatable-column-filter-search-date>
+      </div>
+      <div *ngSwitchDefault>
+        <ng-container *ngIf="customFilterTemplate$ | async as filterTpl">
+          <ng-container *ngIf="filterTpl.template">
+            <ng-container
+              [ngTemplateOutlet]="filterTpl.template"
+              [ngTemplateOutletContext]="{ $implicit: _filterForm, filterForm: _filterForm, options: columnFilter.options, column: column, columnFilter: columnFilter }">
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </div>
+    </ng-container>
+
+    <hr class="mb-1">
+    <div class="d-flex align-items-center" [class.justify-content-between]="updateMethod === 'submit'" [class.text-right]="updateMethod === 'valueChanges'">
+      <button seamButton size="sm" class="text-primary p-0" (click)="clearFilter()" [disabled]="columnFilter?.isDefault() === true">Clear</button>
+      <button
+        *ngIf="updateMethod === 'submit'"
+        seamButton
+        size="sm"
+        class="text-primary p-0"
+        type="submit"
+        [disabled]="columnFilter?.isDefault() === true">
+        Apply
+      </button>
+    </div>
+  </form>
+</ng-container>

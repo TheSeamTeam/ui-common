@@ -120,12 +120,17 @@
               },
               {
                 "glob": "**/*.scss",
+                "input": "projects/ui-common/framework/nav",
+                "output": "framework/nav"
+              },
+              {
+                "glob": "**/*.scss",
                 "input": "projects/ui-common/framework/top-bar",
                 "output": "framework/top-bar"
               },
               {
                 "glob": "**/*.scss",
-                "input": "projects/ui-common/widget/side-nav",
+                "input": "projects/ui-common/framework/side-nav",
                 "output": "framework/side-nav"
               },
               {
@@ -303,7 +308,7 @@
               },
               {
                 "glob": "**/*.scss",
-                "input": "breadcrumbs",
+                "input": "projects/ui-common/breadcrumbs",
                 "output": "breadcrumbs"
               },
               {
@@ -315,6 +320,11 @@
                 "glob": "**/*.scss",
                 "input": "projects/ui-common/framework/dashboard",
                 "output": "framework/dashboard"
+              },
+              {
+                "glob": "**/*.scss",
+                "input": "projects/ui-common/widget/nav",
+                "output": "framework/nav"
               },
               {
                 "glob": "**/*.scss",
@@ -496,6 +506,11 @@
                 "glob": "**/*.scss",
                 "input": "projects/ui-common/framework/dashboard",
                 "output": "framework/dashboard"
+              },
+              {
+                "glob": "**/*.scss",
+                "input": "projects/ui-common/widget/nav",
+                "output": "framework/nav"
               },
               {
                 "glob": "**/*.scss",

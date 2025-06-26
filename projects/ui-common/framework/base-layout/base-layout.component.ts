@@ -15,7 +15,7 @@ import { BehaviorSubject, from, isObservable, Observable } from 'rxjs'
 
 import { faAngleDoubleLeft, faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons'
 
-import { TheSeamLayoutService } from '@theseam/ui-common/layout'
+import { MediaQueryAliases, TheSeamLayoutService } from '@theseam/ui-common/layout'
 
 import { BaseLayoutAction, IBaseLayoutActionButton } from './base-layout-action'
 import { ITheSeamBaseLayoutNav } from './base-layout-nav'
@@ -48,6 +48,10 @@ export class TheSeamBaseLayoutComponent implements OnInit, ITheSeamBaseLayoutRef
   faAngleDoubleLeft = faAngleDoubleLeft
 
   @Input() overlayNav = false
+
+  @Input() mobileBreakpoint: MediaQueryAliases | undefined
+
+  @Input() showSidebar: boolean | undefined = true
 
   // TODO: Consider making the template queries not be dynamic. I can see this
   // potentially causing confusion or issues with potential layouts built with
@@ -88,13 +92,19 @@ export class TheSeamBaseLayoutComponent implements OnInit, ITheSeamBaseLayoutRef
   }
 
   ngOnInit() {
+    if (this.mobileBreakpoint) {
+      this._layout.setMobileBreakpoint(this.mobileBreakpoint)
+    }
+
     if (this._topBarTpl) {
       this._topBarPortal = new TemplatePortal(this._topBarTpl, this._viewContainerRef)
     }
 
     if (this._sideBarTpl) {
       this._sideBarPortal = new TemplatePortal(this._sideBarTpl, this._viewContainerRef)
-      this._hasSideBar.next(true)
+      if (this.showSidebar) {
+        this._hasSideBar.next(true)
+      }
     }
 
     if (this._contentTpl) {

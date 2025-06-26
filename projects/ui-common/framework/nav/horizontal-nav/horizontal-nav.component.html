@@ -1,0 +1,26 @@
+<div class="nav-inner-wrapper" class="nav-inner-wrapper-{{hierLevel}}">
+  <div class="nav-items-row">
+    <seam-nav-item *ngFor="let item of items$ | async"
+      class="flex-shrink-0"
+      [item]="item"
+      [itemType]="$any(item)?.itemType"
+      [icon]="$any(item)?.icon"
+      [label]="$any(item)?.label"
+      [link]="$any(item)?.link"
+      [badgeText]="$any(item)?.badge?.text"
+      [badgeTheme]="$any(item)?.badge?.theme || 'danger'"
+      [badgeSrContent]="$any(item)?.badge?.srContent"
+      [badgeTooltip]="$any(item)?.badge?.tooltip"
+      [queryParams]="$any(item)?.queryParams"
+      [children]="$any(item)?.children"
+      [active]="$any(item).__state?.active"
+      [expanded]="$any(item).__state?.expanded"
+      [focused]="$any(item).__state?.focused"
+      [hierLevel]="hierLevel"
+      [childAction]="childAction"
+      [expandAction]="expandAction"
+      (navItemExpanded)="_navItemExpanded(item, $event)"
+      [hideEmptyIcon]="hideEmptyIcon">
+    </seam-nav-item>
+  </div>
+</div>

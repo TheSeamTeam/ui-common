@@ -7,7 +7,6 @@ import { hasProperty, notNullOrUndefined } from '@theseam/ui-common/utils'
 
 import {
   canExpand,
-  findLinkItems,
   getItemStateProp,
   hasActiveChild,
   hasChildren,

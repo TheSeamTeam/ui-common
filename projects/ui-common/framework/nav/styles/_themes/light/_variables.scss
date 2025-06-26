@@ -1,0 +1,56 @@
+$seam-nav-bg-color: $gray-100 !default;
+$seam-nav-bg: none !default;
+
+$seam-nav-row-padding: 0.25rem 0.5rem !default;
+
+// Backdrop
+$seam-nav-background-bg-color: rgba($dark, 0.6) !default;
+
+// Group
+$seam-nav-group-bg-variation-amount: 3% !default;
+
+// Item
+$seam-nav-item-text-align: inherit !default;
+
+$seam-nav-item-border-radius: 0 !default;
+
+$seam-nav-item-bg-color: transparent !default;
+$seam-nav-item-bg-color-active: darken($seam-nav-bg-color, 10%) !default;
+$seam-nav-item-bg-color-expanded: $seam-nav-item-bg-color !default;
+$seam-nav-item-bg-color-child-active: $seam-nav-item-bg-color-active !default;
+$seam-nav-item-bg-color-hover: darken($seam-nav-bg-color, 5%) !default;
+
+$seam-nav-item-color: $black !default;
+$seam-nav-item-color-active: $seam-nav-item-color !default;
+$seam-nav-item-color-expanded: $seam-nav-item-color !default;
+$seam-nav-item-color-child-active: $seam-nav-item-color-active !default;
+
+$seam-nav-item-disabled-color: darken($seam-nav-item-color, 20%) !default;
+
+$seam-nav-item-margin: 0 !default;
+
+// Divider
+$seam-nav-divider-color: darken($seam-nav-bg-color, 10%) !default;
+$seam-nav-divider-size: 1px !default;
+
+// Title
+$seam-nav-title-color: $seam-nav-item-color !default;
+
+$seam-nav-title-font-size: 24px !default;
+
+$seam-nav-title-padding-left: 10px !default;
+
+// Toggle Buttons
+$seam-nav-toggle-btn-padding: 0 .5rem !default;
+
+$seam-nav-toggle-btn-use-transform-active: true !default;
+$seam-nav-toggle-btn-transform: none !default;
+$seam-nav-toggle-btn-transform-active: rotate(-90deg) !default;
+
+$seam-nav-toggle-btn-color: $seam-nav-item-color !default;
+$seam-nav-toggle-btn-color-hover: $seam-nav-toggle-btn-color !default;
+
+$seam-nav-toggle-btn-border-radius: 0 !default;
+$seam-nav-toggle-btn-border-width: 0 !default;
+$seam-nav-toggle-btn-border-style: solid !default;
+$seam-nav-toggle-btn-border-color: $border-color !default;

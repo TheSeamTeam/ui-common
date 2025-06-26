@@ -1,6 +1,8 @@
 export * from './top-bar-menu-button/top-bar-menu-button.component'
 export * from './top-bar-title/top-bar-title.component'
 
+export * from './top-bar-compact-menu-btn-detail.directive'
+export * from './top-bar-nav-toggle-btn-detail.directive'
 export * from './top-bar-item.directive'
 export * from './top-bar-menu-btn-detail.directive'
 export * from './top-bar-menu.directive'

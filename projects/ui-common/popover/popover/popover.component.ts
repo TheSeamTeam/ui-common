@@ -12,10 +12,11 @@ import {
   OnInit,
   TemplateRef
 } from '@angular/core'
-import { BehaviorSubject, fromEvent, Observable, of, Subject } from 'rxjs'
+import { BehaviorSubject, fromEvent, of, Subject } from 'rxjs'
 import { distinctUntilChanged, map, startWith, switchMap, takeUntil } from 'rxjs/operators'
 
-import { popoverExpandIn, popoverExpandOut, popoverSlideIn, popoverSlideOut } from '../popover-animations'
+import { popoverExpandIn, popoverExpandOut } from '../popover-animations'
+import { TheSeamPopoverDirective } from '../popover.directive'
 
 @Component({
   selector: 'seam-popover',
@@ -80,6 +81,10 @@ export class PopoverComponent implements OnInit, OnDestroy {
   // @Output() readonly closed = new EventEmitter<void | 'click' | 'keydown'>()
 
   @Input() popoverClass: string | undefined | null
+
+  @Input() popover: TheSeamPopoverDirective | undefined | null
+
+  @Input() popoverContext: any
 
   /**
    * Defines a width for a popover that will scale down if the window innerWidth is
