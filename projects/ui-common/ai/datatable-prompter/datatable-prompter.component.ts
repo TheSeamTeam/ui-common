@@ -1,11 +1,15 @@
 import { ChangeDetectorRef, Component, inject, Input } from '@angular/core'
-import { AsyncPipe, JsonPipe, NgForOf } from '@angular/common'
+import { AsyncPipe, JsonPipe, NgForOf, NgIf } from '@angular/common'
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
 
 import { BehaviorSubject, combineLatest, map, switchMap } from 'rxjs'
 import { DatatableComponent } from '@theseam/ui-common/datatable'
+import { TheSeamLoadingModule } from '@theseam/ui-common/loading'
+import { TheSeamRichTextModule } from '@theseam/ui-common/rich-text'
 
 import { createSortsObservable } from './utils'
+import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
+import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
 
 const assistantPrompt = `You are a helpful assistant that provides formatting json code for a datatable.
 A datatable is a table that displays data in rows and columns, similar to a spreadsheet, with column sorting and data filtering.
@@ -143,10 +147,19 @@ async function submitPrompt(prompt: string) {
     AsyncPipe,
     JsonPipe,
     NgForOf,
+    NgIf,
+    TheSeamLoadingModule,
+    TheSeamRichTextModule,
+    TheSeamFormFieldModule,
+    TheSeamButtonsModule,
   ],
 })
 export class TheSeamDatatablePrompterComponent {
   // cdr = inject(ChangeDetectorRef)
+
+  readonly _loadingSubject = new BehaviorSubject<boolean>(false)
+
+  public readonly loading$ = this._loadingSubject.asObservable()
 
   @Input()
   set datatable(value: DatatableComponent | undefined | null) {
@@ -179,6 +192,10 @@ export class TheSeamDatatablePrompterComponent {
     if (this._form.invalid) {
       return
     }
+    if (this._loadingSubject.value) {
+      console.warn('Already loading, ignoring submit.')
+      return
+    }
 
     const prompt = this._form.value.prompt
     if (!prompt) {
@@ -199,6 +216,7 @@ export class TheSeamDatatablePrompterComponent {
     const userPrompt = getUserPrompt(columns, prompt)
     console.log('userPrompt', userPrompt)
 
+    this._loadingSubject.next(true)
     submitPrompt(userPrompt)
       .then(modifications => {
         // this._form.reset()
@@ -219,9 +237,11 @@ export class TheSeamDatatablePrompterComponent {
         datatable.rows = [ ...datatable.rows ]
 
         datatable._cdr.detectChanges()
+        this._loadingSubject.next(false)
       })
       .catch(err => {
         console.error('Error submitting prompt:', err)
+        this._loadingSubject.next(false)
       })
   }
 

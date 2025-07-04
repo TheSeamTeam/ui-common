@@ -1,25 +1,42 @@
-<div [formGroup]="_form" (ngSubmit)="_onSubmit()">
-  <div class="p-2">
-    <textarea formControlName="prompt" style="width: 800px; height: 100px;"></textarea>
+<div class="d-block border rounded border-lightgray">
+  <div [formGroup]="_form" (ngSubmit)="_onSubmit()" class="d-block position-relative">
+    <div>
+      <div class="p-1">
+        <!-- <textarea formControlName="prompt" style="width: 800px; height: 100px;"></textarea> -->
+        <seam-form-field [numPaddingErrors]="0">
+          <seam-rich-text
+            seamInput
+            formControlName="prompt"
+            placeholder="Describe what you want to apply to the datatable."
+            [rows]="3"
+            [resizable]="false"
+            [disableRichText]="true"></seam-rich-text>
+        </seam-form-field>
+      </div>
+      <div class="p-1">
+        <button class="mr-1" type="submit" seamButton theme="primary" size="sm" (click)="_onSubmit()">Submit</button>
+        <button seamButton theme="lightgray" size="sm" (click)="_form.reset()">Reset</button>
+      </div>
+    </div>
+    <div *ngIf="loading$ | async" class="d-block position-absolute" style="top: 0; left: 0; right: 0; bottom: 0;">
+      <seam-loading></seam-loading>
+    </div>
   </div>
-  <div class="p-2">
-    <button type="submit" class="btn btn-primary" (click)="_onSubmit()">Submit</button>
-    <button type="button" class="btn btn-secondary" (click)="_form.reset()">Reset</button>
-  </div>
-</div>
 
-<div class="p-2">
-  <div>Active Modifiers</div>
-  <div class="p-2 border rounded bg-lightgray">
-    <!-- {{ _modifiers$ | async | json }} -->
-    <div *ngFor="let modifier of _modifiers$ | async; let last = last">
-      <div class="d-flex align-items-center border border-dark rounded p-1" [class.mb-1]="!last">
-        <span class="badge bg-secondary">{{ modifier.type }}</span>
-        <span class="badge bg-primary">{{ modifier.label }}</span>
-        <div>
-          {{ modifier.value | json }}
+  <div class="p-2">
+    <div>Active Modifiers</div>
+    <div class="p-2 border rounded bg-lightgray">
+      <!-- {{ _modifiers$ | async | json }} -->
+      <div *ngFor="let modifier of _modifiers$ | async; let last = last">
+        <div class="d-flex align-items-center border border-dark rounded p-1" [class.mb-1]="!last">
+          <span class="badge bg-secondary">{{ modifier.type }}</span>
+          <span class="badge bg-primary">{{ modifier.label }}</span>
+          <div>
+            {{ modifier.value | json }}
+          </div>
         </div>
       </div>
     </div>
   </div>
+
 </div>
