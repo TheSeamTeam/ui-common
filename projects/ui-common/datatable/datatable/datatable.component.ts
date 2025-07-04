@@ -3,6 +3,7 @@ import { BooleanInput, coerceArray, NumberInput } from '@angular/cdk/coercion'
 import { CollectionViewer, DataSource, isDataSource, ListRange } from '@angular/cdk/collections'
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ContentChild,
   ContentChildren,
@@ -10,6 +11,7 @@ import {
   EventEmitter,
   forwardRef,
   HostListener,
+  inject,
   Inject,
   InjectionToken,
   Input,
@@ -21,7 +23,7 @@ import {
   Output,
   QueryList,
   TemplateRef,
-  ViewChild} from '@angular/core'
+  ViewChild } from '@angular/core'
 import { BehaviorSubject, combineLatest, from, isObservable, Observable, of, Subject, Subscription } from 'rxjs'
 import { concatMap, distinctUntilChanged, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators'
 
@@ -173,6 +175,8 @@ export class DatatableComponent
   readonly _faChevronRight = faChevronRight
   readonly _faSpinner = faSpinner
 
+  _cdr = inject(ChangeDetectorRef)
+
   private readonly _ngUnsubscribe = new Subject()
   private readonly _menuBarsFiltersSubject = new BehaviorSubject<DataFilter[]>([])
   private readonly _dataSourceSubject = new BehaviorSubject<DataSource<any> | any[] | undefined>(undefined)
@@ -264,11 +268,9 @@ export class DatatableComponent
   set cssClasses(value: { [key: string]: string } | undefined | null) {
     if (notNullOrUndefined(value)) {
       this._cssClasses = value
-    }
-    else if (notNullOrUndefined(this._config?.cssClasses)) {
+    } else if (notNullOrUndefined(this._config?.cssClasses)) {
       this._cssClasses = this._config?.cssClasses
-    }
-    else {
+    } else {
       this._cssClasses = this._cssClassesDefault
     }
   }
@@ -288,14 +290,12 @@ export class DatatableComponent
   set messages(value: TheSeamDatatableMessages | undefined | null) {
     if (notNullOrUndefined(value)) {
       this._messages = value
-    }
-    else if (notNullOrUndefined(this._config?.messages)) {
+    } else if (notNullOrUndefined(this._config?.messages)) {
       this._messages = {
         ...this._messagesDefault,
         ...this._config?.messages
       }
-    }
-    else {
+    } else {
       this._messages = this._messagesDefault
     }
   }
@@ -340,11 +340,9 @@ export class DatatableComponent
   set headerHeight(value: number | undefined | null) {
     if (notNullOrUndefined(value)) {
       this._headerHeight = value
-    }
-    else if (notNullOrUndefined(this._config?.headerHeight)) {
+    } else if (notNullOrUndefined(this._config?.headerHeight)) {
       this._headerHeight = this._config?.headerHeight
-    }
-    else {
+    } else {
       this._headerHeight = this._headerHeightDefault
     }
   }
@@ -358,11 +356,9 @@ export class DatatableComponent
   set rowHeight(value: number | undefined | null) {
     if (notNullOrUndefined(value)) {
       this._rowHeight = value
-    }
-    else if (notNullOrUndefined(this._config?.rowHeight)) {
+    } else if (notNullOrUndefined(this._config?.rowHeight)) {
       this._rowHeight = this._config?.rowHeight
-    }
-    else {
+    } else {
       this._rowHeight = this._rowHeightDefault
     }
   }
@@ -376,11 +372,9 @@ export class DatatableComponent
   set footerHeight(value: number | undefined | null) {
     if (notNullOrUndefined(value)) {
       this._footerHeight = value
-    }
-    else if (notNullOrUndefined(this._config?.footerHeight)) {
+    } else if (notNullOrUndefined(this._config?.footerHeight)) {
       this._footerHeight = this._config?.footerHeight
-    }
-    else {
+    } else {
       this._footerHeight = this._footerHeightDefault
     }
   }
@@ -408,11 +402,9 @@ export class DatatableComponent
   set actionItemColumnPosition(value: ActionItemColumnPosition | undefined) {
     if (notNullOrUndefined(value) && isActionItemColumnPosition(value)) {
       this._actionItemColumnPosition = value
-    }
-    else if (notNullOrUndefined(this._config?.actionItemColumnPosition) && isActionItemColumnPosition(this._config?.actionItemColumnPosition)) {
+    } else if (notNullOrUndefined(this._config?.actionItemColumnPosition) && isActionItemColumnPosition(this._config?.actionItemColumnPosition)) {
       this._actionItemColumnPosition = this._config?.actionItemColumnPosition
-    }
-    else {
+    } else {
       this._actionItemColumnPosition = this._actionItemColumnPositionDefault
     }
 
@@ -427,11 +419,9 @@ export class DatatableComponent
   set columnFilterIcon(value: SeamIcon | undefined | null) {
     if (notNullOrUndefined(value)) {
       this._columnFilterIcon = value
-    }
-    else if (notNullOrUndefined(this._config?.columnFilterIcon)) {
+    } else if (notNullOrUndefined(this._config?.columnFilterIcon)) {
       this._columnFilterIcon = this._config?.columnFilterIcon
-    }
-    else {
+    } else {
       this._columnFilterIcon = this._columnFilterIconDefault
     }
   }
@@ -444,11 +434,9 @@ export class DatatableComponent
   set columnFilterUpdateMethod(value: TheSeamDatatableColumnFilterUpdateMethod | undefined | null) {
     if (notNullOrUndefined(value)) {
       this._columnFilterUpdateMethod = value
-    }
-    else if (notNullOrUndefined(this._config?.columnFilterUpdateMethod)) {
+    } else if (notNullOrUndefined(this._config?.columnFilterUpdateMethod)) {
       this._columnFilterUpdateMethod = this._config?.columnFilterUpdateMethod
-    }
-    else {
+    } else {
       this._columnFilterUpdateMethod = this._columnFilterUpdateMethodDefault
     }
   }
@@ -461,11 +449,9 @@ export class DatatableComponent
   set columnFilterUpdateDebounce(value: number | undefined | null) {
     if (notNullOrUndefined(value)) {
       this._columnFilterUpdateDebounce = value
-    }
-    else if (notNullOrUndefined(this._config?.columnFilterUpdateDebounce)) {
+    } else if (notNullOrUndefined(this._config?.columnFilterUpdateDebounce)) {
       this._columnFilterUpdateDebounce = this._config?.columnFilterUpdateDebounce
-    }
-    else {
+    } else {
       this._columnFilterUpdateDebounce = this._columnFilterUpdateDebounceDefault
     }
   }

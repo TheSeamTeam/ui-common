@@ -1,0 +1,25 @@
+<div [formGroup]="_form" (ngSubmit)="_onSubmit()">
+  <div class="p-2">
+    <textarea formControlName="prompt" style="width: 800px; height: 100px;"></textarea>
+  </div>
+  <div class="p-2">
+    <button type="submit" class="btn btn-primary" (click)="_onSubmit()">Submit</button>
+    <button type="button" class="btn btn-secondary" (click)="_form.reset()">Reset</button>
+  </div>
+</div>
+
+<div class="p-2">
+  <div>Active Modifiers</div>
+  <div class="p-2 border rounded bg-lightgray">
+    <!-- {{ _modifiers$ | async | json }} -->
+    <div *ngFor="let modifier of _modifiers$ | async; let last = last">
+      <div class="d-flex align-items-center border border-dark rounded p-1" [class.mb-1]="!last">
+        <span class="badge bg-secondary">{{ modifier.type }}</span>
+        <span class="badge bg-primary">{{ modifier.label }}</span>
+        <div>
+          {{ modifier.value | json }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
