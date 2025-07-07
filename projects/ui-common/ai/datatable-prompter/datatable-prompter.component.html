@@ -24,19 +24,25 @@
   </div>
 
   <div class="p-2">
-    <div>Active Modifiers</div>
+    <div>Active Alterations</div>
     <div class="p-2 border rounded bg-lightgray">
-      <!-- {{ _modifiers$ | async | json }} -->
-      <div *ngFor="let modifier of _modifiers$ | async; let last = last">
+      <!-- {{ _alterations$ | async | json }} -->
+      <div *ngFor="let alteration of _alterations$ | async; let last = last">
         <div class="d-flex align-items-center border border-dark rounded p-1" [class.mb-1]="!last">
-          <span class="badge bg-secondary">{{ modifier.type }}</span>
-          <span class="badge bg-primary">{{ modifier.label }}</span>
-          <div>
-            {{ modifier.value | json }}
+          <span class="badge bg-secondary">{{ alteration.type }}</span>
+          <!-- <span class="badge bg-primary">{{ alteration.label }}</span> -->
+          <!-- <div>
+            {{ alteration.value | json }}
+          </div> -->
+          <div *ngIf="alteration.type === 'sort'">
+            <div class="d-flex flex-column">
+              <div *ngFor="let sort of alteration.state.sorts; let last = last" [class.mb-1]="!last">
+                <span class="badge bg-lightgray">{{ sort.prop }} ({{ sort.dir }})</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
 </div>
