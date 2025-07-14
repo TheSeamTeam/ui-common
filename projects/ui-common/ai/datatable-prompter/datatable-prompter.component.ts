@@ -239,14 +239,45 @@ ${JSON.stringify(columns, null, 2)}
 Request: "${request}"
 `
 
+function parseResponse(responseContent: string, responseFormat: { type: string } | undefined) {
+  if (responseFormat?.type === 'json_object') {
+    return JSON.parse(responseContent)
+  }
+
+  // Parse the JSON string to an object, which is in the string between the code blocks.
+  // So, need to find the first and last code block markers.
+  const startIndex = responseContent.indexOf('```json') + '```json'.length
+  const endIndex = responseContent.lastIndexOf('```')
+  const alterations = responseContent.substring(startIndex, endIndex).trim()
+  // console.log('Alterations:', alterations)
+
+  return JSON.parse(alterations)
+}
+
 async function submitPrompt(prompt: string) {
-  return fetch('http://localhost:1234/v1/chat/completions', {
+  // Local
+  // const url = 'http://localhost:1234/v1/chat/completions'
+  // const headers = {
+  //   'Content-Type': 'application/json',
+  // }
+  // const model = 'model-identifier'
+  // const response_format = undefined
+
+  // OpenRouter
+  const url = 'https://openrouter.ai/api/v1/chat/completions'
+  const apiKey = ''
+  const headers = {
+    'Authorization': `Bearer ${apiKey}`,
+    'Content-Type': 'application/json',
+  }
+  const model = 'google/gemini-2.5-flash'
+  const responseFormat = { 'type': 'json_object' }
+
+  return fetch(url, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers,
     body: JSON.stringify({
-      model: 'model-identifier',
+      model,
       messages: [
         {
           role: 'assistant',
@@ -257,31 +288,31 @@ async function submitPrompt(prompt: string) {
           content: prompt,
         },
       ],
+      response_format: responseFormat,
     }),
+  }).then(response => response.json()).then(data => {
+    console.log('Response from AI:', data)
+
+    const responseContent = data.choices[0].message.content
+
+    console.log(`%cResponse from AI. content:\n${responseContent}`, 'color: limegreen;')
+
+    // Replace "```json" at the start and "```" at the end
+    // const alterations = responseContent.trim().replace(/^```json/, '').replace(/```$/, '').trim()
+
+    // Parse the JSON string to an object, which is in the string between the code blocks.
+    // So, need to find the first and last code block markers.
+    // const startIndex = responseContent.indexOf('```json') + '```json'.length
+    // const endIndex = responseContent.lastIndexOf('```')
+    // const alterations = responseContent.substring(startIndex, endIndex).trim()
+
+    // console.log('Alterations:', alterations)
+    // return JSON.parse(alterations)
+
+    return parseResponse(responseContent, responseFormat)
+  }).catch(err => {
+    console.error('Error submitting prompt:', err)
   })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Response from AI:', data)
-
-      const responseContent = data.choices[0].message.content
-
-      console.log(`%cResponse from AI. content:\n${responseContent}`, 'color: limegreen;')
-
-      // Replace "```json" at the start and "```" at the end
-      // const alterations = responseContent.trim().replace(/^```json/, '').replace(/```$/, '').trim()
-
-      // Parse the JSON string to an object, which is in the string between the code blocks.
-      // So, need to find the first and last code block markers.
-      const startIndex = responseContent.indexOf('```json') + '```json'.length
-      const endIndex = responseContent.lastIndexOf('```')
-      const alterations = responseContent.substring(startIndex, endIndex).trim()
-
-      console.log('Alterations:', alterations)
-      return JSON.parse(alterations)
-    })
-    .catch(err => {
-      console.error('Error submitting prompt:', err)
-    })
 }
 
 // const PREFS_KEY = 'datatable-prompter'
@@ -393,92 +424,90 @@ export class TheSeamDatatablePrompterComponent {
     console.log('userPrompt', userPrompt)
 
     this._loadingSubject.next(true)
-    submitPrompt(userPrompt)
-      .then(async alterations => {
-        // this._form.reset()
-        console.log('Received alterations:', alterations)
-        const datatable = this._datatableSubject.value
-        if (!datatable) {
-          console.error('No datatable found to apply alterations to.')
-          return
-        }
-        // const sorts = alterations.alterations.filter((mod: any) => mod.type === 'sort')
-        //   .map((mod: any) => mod.value as { prop: string, dir: 'asc' | 'desc' })
-        // console.log('Applying sorts to datatable:', sorts)
-        // datatable.sorts = sorts
-        // // const ngxDatatable = datatable.ngxDatatable!
-        // // ngxDatatable.sorts = sorts
-        // // this.cdr.detectChanges()
+    submitPrompt(userPrompt).then(async alterations => {
+      // this._form.reset()
+      console.log('Received alterations:', alterations)
+      const datatable = this._datatableSubject.value
+      if (!datatable) {
+        console.error('No datatable found to apply alterations to.')
+        return
+      }
+      // const sorts = alterations.alterations.filter((mod: any) => mod.type === 'sort')
+      //   .map((mod: any) => mod.value as { prop: string, dir: 'asc' | 'desc' })
+      // console.log('Applying sorts to datatable:', sorts)
+      // datatable.sorts = sorts
+      // // const ngxDatatable = datatable.ngxDatatable!
+      // // ngxDatatable.sorts = sorts
+      // // this.cdr.detectChanges()
 
-        // const key = `${PREFS_KEY}-${idx++}`
-        const key = this.datatable!.preferencesKey as string
+      // const key = `${PREFS_KEY}-${idx++}`
+      const key = this.datatable!.preferencesKey as string
 
-        const before = await this._prefsAccessor?.get(key).toPromise()
-        console.log('Current preferences before update:', before)
+      const before = await this._prefsAccessor?.get(key).toPromise()
+      console.log('Current preferences before update:', before)
 
-        this._prefsAccessor?.update(key, JSON.stringify({
-          version: 2,
-          alterations,
-        })).subscribe(async () => {
-          console.log('Preferences updated successfully.')
-          // this._dtPrefsService.refresh(key)
-          // this.datatable!.preferencesKey = key
-          const _cols = this.datatable!.ngxDatatable!.columns
-          const cols = [ ..._cols ]
-          console.log('this.datatable!.columns', cols)
-          this.datatable!.columns = [ ...cols ]
-
-          const after = await this._prefsAccessor?.get(key).toPromise()
-          const _after = (JSON.parse(after || '{}').alterations || []) as ColumnsAlterationState[]
-          console.log('Current preferences after update:', after)
-
-          const mgr = (this.datatable as any)._columnsAlterationsManager
-          console.log('_columnsAlterationsManager', mgr, mgr.get())
-          const alts = mapColumnsAlterationsStates(_after)
-          console.log('Mapped alterations:', alts)
-          const columnsBefore = JSON.parse(JSON.stringify(this.datatable!.ngxDatatable!.columns.map(x => x.prop)))
-          console.log('Columns before applying alterations:', columnsBefore)
-          for (const a of alts) {
-            if (a.type === 'filter') continue// Tmp filter alteration, not yet implemented.
-            console.log('Applying alteration:', a)
-            a.apply(cols, this.datatable!)
-          }
-
-          // Mock, until filter parse is finished.
-          const filtersService = (this.datatable as any)._columnsFilters
-          if (filtersService) {
-            const subject = filtersService._columnsFilters as BehaviorSubject<any[]>
-            const ageFilter = subject.value.find(f => f.column.prop === 'age')
-            ageFilter.form.setValue({ searchType: 'gt', searchText: '30', fromText: '', toText: '' })
-            const colorFilter = subject.value.find(f => f.column.prop === 'color')
-            colorFilter.form.setValue({ searchType: 'contains', searchText: 'green' })
-
-            // console.log('Mocked filters:', subject.value, ageFilter?.form.value, colorFilter?.form.value)
-          }
-
-          this.datatable!.columns = [ ...cols ]
-          const columnsAfter = JSON.parse(JSON.stringify(this.datatable!.ngxDatatable!.columns.map(x => x.prop)))
-          console.log('Columns after applying alterations:', columnsAfter)
-
-          datatable.rows = [ ...datatable.rows ]
-          datatable._cdr.detectChanges()
-
-          this._loadingSubject.next(false)
-        })
+      this._prefsAccessor?.update(key, JSON.stringify({
+        version: 2,
+        alterations,
+      })).subscribe(async () => {
+        console.log('Preferences updated successfully.')
         // this._dtPrefsService.refresh(key)
+        // this.datatable!.preferencesKey = key
+        const _cols = this.datatable!.ngxDatatable!.columns
+        const cols = [ ..._cols ]
+        console.log('this.datatable!.columns', cols)
+        this.datatable!.columns = [ ...cols ]
 
-        // const after = this._prefsAccessor?.get(key)
-        // console.log('Current preferences after update:', after)
+        const after = await this._prefsAccessor?.get(key).toPromise()
+        const _after = (JSON.parse(after || '{}').alterations || []) as ColumnsAlterationState[]
+        console.log('Current preferences after update:', after)
 
-        // datatable.rows = [ ...datatable.rows ]
-        // datatable._cdr.detectChanges()
+        const mgr = (this.datatable as any)._columnsAlterationsManager
+        console.log('_columnsAlterationsManager', mgr, mgr.get())
+        const alts = mapColumnsAlterationsStates(_after)
+        console.log('Mapped alterations:', alts)
+        const columnsBefore = JSON.parse(JSON.stringify(this.datatable!.ngxDatatable!.columns.map(x => x.prop)))
+        console.log('Columns before applying alterations:', columnsBefore)
+        for (const a of alts) {
+          if (a.type === 'filter') continue// Tmp filter alteration, not yet implemented.
+          console.log('Applying alteration:', a)
+          a.apply(cols, this.datatable!)
+        }
 
-        // this._loadingSubject.next(false)
-      })
-      .catch(err => {
-        console.error('Error submitting prompt:', err)
+        // Mock, until filter parse is finished.
+        const filtersService = (this.datatable as any)._columnsFilters
+        if (filtersService) {
+          const subject = filtersService._columnsFilters as BehaviorSubject<any[]>
+          const ageFilter = subject.value.find(f => f.column.prop === 'age')
+          ageFilter.form.setValue({ searchType: 'gt', searchText: '30', fromText: '', toText: '' })
+          const colorFilter = subject.value.find(f => f.column.prop === 'color')
+          colorFilter.form.setValue({ searchType: 'contains', searchText: 'green' })
+
+          // console.log('Mocked filters:', subject.value, ageFilter?.form.value, colorFilter?.form.value)
+        }
+
+        this.datatable!.columns = [ ...cols ]
+        const columnsAfter = JSON.parse(JSON.stringify(this.datatable!.ngxDatatable!.columns.map(x => x.prop)))
+        console.log('Columns after applying alterations:', columnsAfter)
+
+        datatable.rows = [ ...datatable.rows ]
+        datatable._cdr.detectChanges()
+
         this._loadingSubject.next(false)
       })
+      // this._dtPrefsService.refresh(key)
+
+      // const after = this._prefsAccessor?.get(key)
+      // console.log('Current preferences after update:', after)
+
+      // datatable.rows = [ ...datatable.rows ]
+      // datatable._cdr.detectChanges()
+
+      // this._loadingSubject.next(false)
+    }).catch(err => {
+      console.error('Error submitting prompt:', err)
+      this._loadingSubject.next(false)
+    })
   }
 
 }
