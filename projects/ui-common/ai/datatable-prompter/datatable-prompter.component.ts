@@ -306,12 +306,12 @@ function parseResponse(responseContent: string, responseFormat: { type: string }
 
 async function submitPrompt(prompt: string) {
   // Local
-  const url = 'http://localhost:1234/v1/chat/completions'
-  const headers = {
-    'Content-Type': 'application/json',
-  }
-  const model = 'model-identifier'
-  const responseFormat = undefined
+  // const url = 'http://localhost:1234/v1/chat/completions'
+  // const headers = {
+  //   'Content-Type': 'application/json',
+  // }
+  // const model = 'model-identifier'
+  // const responseFormat = undefined
 
   // OpenRouter
   // const url = 'https://openrouter.ai/api/v1/chat/completions'
@@ -323,46 +323,60 @@ async function submitPrompt(prompt: string) {
   // const model = 'google/gemini-2.5-flash'
   // const responseFormat = { 'type': 'json_object' }
 
-  return fetch(url, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({
-      model,
-      messages: [
-        {
-          role: 'assistant',
-          content: assistantPrompt,
-        },
-        {
-          role: 'user',
-          content: prompt,
-        },
-      ],
-      // response_format: responseFormat,
-    }),
-  }).then(response => response.json()).then(data => {
-    console.log('Response from AI:', data)
+  // return fetch(url, {
+  //   method: 'POST',
+  //   headers,
+  //   body: JSON.stringify({
+  //     model,
+  //     messages: [
+  //       {
+  //         role: 'assistant',
+  //         content: assistantPrompt,
+  //       },
+  //       {
+  //         role: 'user',
+  //         content: prompt,
+  //       },
+  //     ],
+  //     response_format: responseFormat,
+  //   }),
+  // }).then(response => response.json()).then(data => {
+  //   console.log('Response from AI:', data)
 
-    const responseContent = data.choices[0].message.content
+  //   const responseContent = data.choices[0].message.content
 
-    console.log(`%cResponse from AI. content:\n${responseContent}`, 'color: limegreen;')
+  //   console.log(`%cResponse from AI. content:\n${responseContent}`, 'color: limegreen;')
 
-    // Replace "```json" at the start and "```" at the end
-    // const alterations = responseContent.trim().replace(/^```json/, '').replace(/```$/, '').trim()
+  //   // Replace "```json" at the start and "```" at the end
+  //   // const alterations = responseContent.trim().replace(/^```json/, '').replace(/```$/, '').trim()
 
-    // Parse the JSON string to an object, which is in the string between the code blocks.
-    // So, need to find the first and last code block markers.
-    // const startIndex = responseContent.indexOf('```json') + '```json'.length
-    // const endIndex = responseContent.lastIndexOf('```')
-    // const alterations = responseContent.substring(startIndex, endIndex).trim()
+  //   // Parse the JSON string to an object, which is in the string between the code blocks.
+  //   // So, need to find the first and last code block markers.
+  //   // const startIndex = responseContent.indexOf('```json') + '```json'.length
+  //   // const endIndex = responseContent.lastIndexOf('```')
+  //   // const alterations = responseContent.substring(startIndex, endIndex).trim()
 
-    // console.log('Alterations:', alterations)
-    // return JSON.parse(alterations)
+  //   // console.log('Alterations:', alterations)
+  //   // return JSON.parse(alterations)
 
-    return parseResponse(responseContent, responseFormat)
-  }).catch(err => {
-    console.error('Error submitting prompt:', err)
-  })
+  //   return parseResponse(responseContent, responseFormat)
+  // }).catch(err => {
+  //   console.error('Error submitting prompt:', err)
+  // })
+
+  // Mock response for testing
+  return Promise.resolve([
+    {
+      'id': 'filter--age',
+      'type': 'filter',
+      'state': {
+        'columnProp': 'age',
+        'filterType': 'text',
+        'operation': 'eq',
+        'value': '33',
+      },
+    },
+  ] as any) as Promise<any>
 }
 
 // const PREFS_KEY = 'datatable-prompter'
@@ -516,7 +530,7 @@ export class TheSeamDatatablePrompterComponent {
         const _cols = this.datatable!.ngxDatatable!.columns
         const cols = [ ..._cols ]
         console.log('this.datatable!.columns', cols)
-        this.datatable!.columns = [ ...cols ]
+        // this.datatable!.columns = [ ...cols ]
 
         const after = await this._prefsAccessor?.get(key).toPromise()
         let _after = (JSON.parse(after || '{}').alterations || []) as ColumnsAlterationState[]

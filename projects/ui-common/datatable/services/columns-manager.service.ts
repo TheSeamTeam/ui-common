@@ -22,6 +22,8 @@ import { getColumnProp } from '../utils/get-column-prop'
 import { setColumnDefaults } from '../utils/set-column-defaults'
 import { translateTemplateColumns } from '../utils/translate-templates'
 import { DatatableColumnChangesService } from './datatable-column-changes.service'
+import { ColumnsFiltersService } from './columns-filters.service'
+import { ColumnsDataFilter } from '../models/columns-data-filter'
 import { ActionItemColumnPosition } from '../models/action-item-column-position'
 
 enum ColumnsTypes {
@@ -61,6 +63,7 @@ export class ColumnsManagerService {
   constructor(
     private readonly _differs: KeyValueDiffers,
     private readonly _columnChangesService: DatatableColumnChangesService,
+    private readonly _columnsFilters: ColumnsFiltersService,
   ) {
     const templateColumns$ = this._columnChangesService.columnInputChanges$.pipe(
       startWith(undefined),
@@ -89,6 +92,8 @@ export class ColumnsManagerService {
           // true, because their differs need to be called.
           if (hasColumnsChanged || hasAddedOrRemovedColumns || isFirst) {
             isFirst = false
+            // Update the filters service with the new columns
+            this._columnsFilters.setColumns(cols)
             return of(cols)
           }
 
@@ -215,11 +220,16 @@ export class ColumnsManagerService {
         }
       }
 
+      // Preserve or create filter for this column
+      const existingFilter = this._getExistingFilter(internalCol, inpCol)
+
       const _col: TheSeamDatatableColumn = {
         ...(internalCol || {}),
         ...inpCol,
         // TODO: Rethink this, because I don't know if this is correct.
-        ...(tplCol as any || {})
+        ...(tplCol as any || {}),
+        // Store filter directly on column object
+        $$filter: existingFilter || this._createColumnFilter(inpCol)
       }
 
       if (this._shouldAddTreeToggleColumn(_col)) {
@@ -389,6 +399,28 @@ export class ColumnsManagerService {
 
   private _shouldAddCellTypeSelectorTpl(column: TheSeamDatatableColumn): boolean {
     return hasProperty(column, 'cellType')
+  }
+
+  private _getExistingFilter(internalCol: TableColumn | undefined, inputCol: TheSeamDatatableColumn): ColumnsDataFilter | undefined {
+    // Check if internal column has existing filter (from NgxDatatable)
+    if (internalCol && (internalCol as any).$$filter) {
+      return (internalCol as any).$$filter
+    }
+
+    // Check if input column has existing filter (from previous merge)
+    if ((inputCol as any).$$filter) {
+      return (inputCol as any).$$filter
+    }
+
+    return undefined
+  }
+
+  private _createColumnFilter(column: TheSeamDatatableColumn): ColumnsDataFilter | undefined {
+    if (!column.filterable) {
+      return undefined
+    }
+
+    return this._columnsFilters.createColumnDataFilter(column, null) || undefined
   }
 
 }

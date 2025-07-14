@@ -204,7 +204,6 @@ export class DatatableComponent
   @Input()
   set columns(value: TheSeamDatatableColumn[]) {
     this._columnsManager.setInputColumns(Array.isArray(value) ? value : [])
-    this._columnsFilters.registerColumnFilters(Array.isArray(value) ? value : [])
   }
 
   @Input()

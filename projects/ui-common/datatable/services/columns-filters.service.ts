@@ -4,7 +4,6 @@ import { BehaviorSubject, combineLatest, map, of, switchMap } from 'rxjs'
 import { isNullOrUndefined, notNullOrUndefined } from '@theseam/ui-common/utils'
 
 import { TheSeamDatatableColumn } from '../models/table-column'
-import { DataFilterContainer } from '@theseam/ui-common/data-filters'
 import { camelCase } from '@marklb/ngx-datatable'
 import { ColumnsDataFilter, THESEAM_COLUMNS_DATA_FILTER } from '../models/columns-data-filter'
 import { TheSeamDatatableColumnFilterDirective } from '../directives/datatable-column-filter.directive'
@@ -12,12 +11,18 @@ import { THESEAM_COLUMNS_DATA_FILTERS_DEFAULT } from '../models/columns-data-fil
 import { THESEAM_COLUMNS_DATA_FILTER_DATE_SEARCH_NAME, THESEAM_COLUMNS_DATA_FILTER_NUMERIC_SEARCH_NAME, THESEAM_COLUMNS_DATA_FILTER_TEXT_SEARCH_NAME } from '../models/columns-data-filters/models'
 
 @Injectable()
-export class ColumnsFiltersService implements DataFilterContainer {
+export class ColumnsFiltersService {
   private readonly _columnFilterTemplates = new BehaviorSubject<TheSeamDatatableColumnFilterDirective[]>([])
   public readonly columnFilterTemplates$ = this._columnFilterTemplates.asObservable()
 
-  private readonly _columnsFilters = new BehaviorSubject<ColumnsDataFilter[]>([])
-  public readonly columnsFilters$ = this._columnsFilters.asObservable()
+  private readonly _columns = new BehaviorSubject<TheSeamDatatableColumn[]>([])
+
+  public readonly columnsFilters$ = this._columns.pipe(
+    map(columns => columns
+      .map(col => (col as any).$$filter)
+      .filter(notNullOrUndefined)
+    )
+  )
 
   public readonly columnActiveFilterProps$ = this.columnsFilters$.pipe(
     switchMap(filters => {
@@ -26,7 +31,7 @@ export class ColumnsFiltersService implements DataFilterContainer {
       }
 
       return combineLatest(filters.map(f => f.filterStateChanges.pipe(
-        map(filterState => !f.isDefault() ? filterState.state.prop : null)
+        map((filterState: any) => !f.isDefault() ? filterState.state.prop : null)
       )))
     }),
     map(props => props.filter(notNullOrUndefined))
@@ -35,16 +40,6 @@ export class ColumnsFiltersService implements DataFilterContainer {
   constructor(
     @Optional() @Inject(THESEAM_COLUMNS_DATA_FILTER) private readonly _customColumnsDataFilters?: { name: string, class: any }[]
   ) {}
-
-  public registerColumnFilters(columns: TheSeamDatatableColumn[]) {
-    this._columnsFilters.next([])
-
-    const filters = columns
-      .filter(col => col.filterable)
-      .map(col => this.createColumnDataFilter(col, null))
-
-    this._columnsFilters.next(filters.filter(notNullOrUndefined))
-  }
 
   public setFilterTemplates(tpls: TheSeamDatatableColumnFilterDirective[]) {
     this._columnFilterTemplates.next(tpls)
@@ -60,8 +55,7 @@ export class ColumnsFiltersService implements DataFilterContainer {
     return this._getColumnsDataFilter(prop, column, initialValue)
   }
 
-  private _getColumnsDataFilter(prop: string, column: TheSeamDatatableColumn, initialValue: any): ColumnsDataFilter | null
-  {
+  private _getColumnsDataFilter(prop: string, column: TheSeamDatatableColumn, initialValue: any): ColumnsDataFilter | null {
     const filterClass = this._getColumnsDataFilterType(column)
 
     let filter
@@ -74,6 +68,7 @@ export class ColumnsFiltersService implements DataFilterContainer {
     }
 
     if (notNullOrUndefined(filter)) {
+      // eslint-disable-next-line new-cap
       return new filter.class(prop, initialValue, column)
     }
 
@@ -83,8 +78,7 @@ export class ColumnsFiltersService implements DataFilterContainer {
   private _getColumnsDataFilterType(column: TheSeamDatatableColumn): string {
     if (notNullOrUndefined(column.filterOptions) && notNullOrUndefined(column.filterOptions.filterType)) {
       return column.filterOptions.filterType
-    }
-    else if (notNullOrUndefined(column.cellType)) {
+    } else if (notNullOrUndefined(column.cellType)) {
       switch (column.cellType) {
         case 'string':
         case 'phone':
@@ -106,7 +100,7 @@ export class ColumnsFiltersService implements DataFilterContainer {
       return null
     }
 
-    const prop = column.filterOptions?.filterProp || column.prop || (notNullOrUndefined(column.name) ? camelCase(<string>column.name) : undefined)
+    const prop = column.filterOptions?.filterProp || column.prop || (notNullOrUndefined(column.name) ? camelCase(column.name as string) : undefined)
     if (isNullOrUndefined(prop)) {
       return null
     }
@@ -114,23 +108,33 @@ export class ColumnsFiltersService implements DataFilterContainer {
     return `${prop}`
   }
 
+  public setColumns(columns: TheSeamDatatableColumn[]) {
+    this._columns.next(columns)
+  }
+
   public getColumnFilter(prop: string | null): ColumnsDataFilter | undefined {
     if (isNullOrUndefined(prop)) {
       return undefined
     }
 
-    return this._columnsFilters.value.find(f => f.prop === prop)
+    const columns = this._columns.value
+    const column = columns.find(col => this.getColumnFilterProp(col) === prop)
+    return column ? (column as any).$$filter : undefined
   }
 
   public filters(): ColumnsDataFilter[] {
-    return this._columnsFilters.value
+    return this._columns.value
+      .map(col => (col as any).$$filter)
+      .filter(notNullOrUndefined)
   }
 
   public addFilter(filter: ColumnsDataFilter) {
-    this._columnsFilters.next([ ...this._columnsFilters.value, filter ])
+    // Filters are now managed through columns, so this method is deprecated
+    console.warn('ColumnsFiltersService.addFilter is deprecated - filters are now managed through columns')
   }
 
   public removeFilter(filter: ColumnsDataFilter) {
-    this._columnsFilters.next([ ...this._columnsFilters.value.filter(c => c.name !== filter.name) ])
+    // Filters are now managed through columns, so this method is deprecated
+    console.warn('ColumnsFiltersService.removeFilter is deprecated - filters are now managed through columns')
   }
 }
