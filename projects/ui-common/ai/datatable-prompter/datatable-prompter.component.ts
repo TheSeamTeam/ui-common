@@ -19,12 +19,15 @@ Your job is not to provide a descriptive analysis of the request or any addition
 
 The user will provide a request, and you will respond with a JSON object that contains an array of table alterations.
 The following is the typescript interface for a datatable column and the alterations you can make to it:
+
 \`\`\`typescript
 interface TableColumn {
   /** Column property */
   prop: string,
   /** Column name */
   name: string,
+  /** Column cell type - determines filter type */
+  cellType?: 'string' | 'integer' | 'decimal' | 'currency' | 'date' | 'phone',
   /** Whether the column is sortable */
   sortable?: boolean,
   /** Whether the column is filterable */
@@ -81,82 +84,28 @@ interface HideColumnState {
   hidden: boolean
 }
 
-interface FilterOperation {
-  /** The filter operation type */
-  type: 'equals' | 'contains' | 'greaterThan' | 'lessThan' | 'in' | 'notIn'
-  /** The value to filter by */
-  value: any
-}
-
-/**
- * The filter operation can be a single operation or a combination of operations.
- *
- * Example of a filter state for age greater than 18 and color contains "red":
- * \`\`\`json
- * {
- *   "filter": {
- *     "and": [
- *       { "age": { "gt": 18 } },
- *       { "color": { "contains": "red" } }
- *     ]
- *   }
- * }
- * \`\`\`
- *
- * "id" should always be "filter" for this alteration.
- */
 interface FilterState {
-  /**
-   * The filter operation. Uses a mango-like expression.
-   *
-   * Recognized conditions:
-   *  'eq' ~ equal to
-   *  'neq' ~ not equal to
-   *  'contains' ~ contains, which is a case-insensitive substring match
-   *  'objectContains' ~ object contains, which stringifies the object and checks if the value is a substring of the stringified object
-   *  'gt' ~ greater than
-   *  'gte' ~ greater than or equal to
-   *  'lt' ~ less than
-   *  'lte' ~ less than or equal to
-   *  'in' ~ in, which checks if the value is in the array
-   *  'notIn' ~ not in, which checks if the value is not in the array
-   * Recognized aggregations:
-   *  'and' ~ logical AND, which combines multiple filter operations
-   *  'or' ~ logical OR, which combines multiple filter operations
-   *
-   * Only a single operation is allowed in filter object, but aggregations can be used to combine multiple operations.
-   * Example:
-   * \`\`\`json
-   * {
-   *   "filter": {
-   *     "and": [
-   *       {
-   *         "and": [
-   *           { "age": { "gt": 20 } },
-   *           { "age": { "lt": 40 } }
-   *         ]
-   *       },
-   *       { "color": { "contains": "red" } }
-   *     ]
-   *   }
-   * }
-   * \`\`\`
-   */
-  filter: FilterOperation
+  /** The column property that this filter applies to */
+  columnProp: string,
+  /** The filter type based on column cellType */
+  filterType: 'text' | 'numeric' | 'date',
+  /** The filter operation */
+  operation: string,
+  /** The filter value (for single value operations) */
+  value?: any,
+  /** The from value (for range operations like 'between') */
+  fromValue?: any,
+  /** The to value (for range operations like 'between') */
+  toValue?: any
 }
 
 interface TableAlteration<TType extends string, TState> {
   /**
    * Unique identifier for the alteration.
-   *
-   * This should be a unique string that identifies the alteration to avoid redundant alterations.
    */
   id: string
   /**
    * The type of alteration.
-   *
-   * This must be the exact string of the TType string, because it links to the handler that knows
-   * how to apply that alteration.
    */
   type: TType
   /** The alteration state */
@@ -164,11 +113,10 @@ interface TableAlteration<TType extends string, TState> {
 }
 
 /**
- * Sort alteration for a datatable column.
- *
+ * Sort alteration for a datatable.
  * "id" should always be "sort" for this alteration.
  */
-type SortAlteration = TableAlteration<'sort', SortsState>
+type SortAlteration = TableAlteration<'sort', SortState>
 
 /**
  * Order alteration for a datatable column.
@@ -190,45 +138,106 @@ type WidthAlteration = TableAlteration<'width', WidthState>
  * "id" should always be "hide-column-<prop>" for this alteration. So, for example, if the column property is "name", the id would be "hide-column-name".
  */
 type HideColumnAlteration = TableAlteration<'hide-column', HideColumnState>
+
+/**
+ * Filter alteration for a datatable column.
+ * "id" should be "filter--<columnProp>" for this alteration.
+ * For example, if filtering the "age" column, the id would be "filter--age".
+ */
+type FilterAlteration = TableAlteration<'filter', FilterState>
 \`\`\`
-If the user provides the following columns:
+
+## Filter Operations by Type
+
+### Text Filters (cellType: 'string', 'phone')
+- 'contains': Text contains the value (case-insensitive)
+- 'eq': Text equals the value exactly
+- 'neq': Text does not equal the value
+- 'ncontains': Text does not contain the value
+- 'blank': Field is empty/null
+- 'not-blank': Field is not empty/null
+
+### Numeric Filters (cellType: 'integer', 'decimal', 'currency')
+- 'eq': Equals the value
+- 'gt': Greater than the value
+- 'gte': Greater than or equal to the value
+- 'lt': Less than the value
+- 'lte': Less than or equal to the value
+- 'between': Between fromValue and toValue (inclusive)
+- 'not-between': Not between fromValue and toValue
+- 'blank': Field is empty/null
+- 'not-blank': Field is not empty/null
+
+### Date Filters (cellType: 'date')
+- 'eq': Date equals the value
+- 'gt': Date is after the value
+- 'gte': Date is on or after the value
+- 'lt': Date is before the value
+- 'lte': Date is on or before the value
+- 'between': Date is between fromValue and toValue (inclusive)
+- 'not-between': Date is not between fromValue and toValue
+- 'blank': Field is empty/null
+- 'not-blank': Field is not empty/null
+
+## Examples
+
+Filter age greater than 30:
 \`\`\`json
-[
-  {
-    "prop": "name",
-    "name": "Name",
-    "type": "string",
-    "sortable": true,
-    "filterable": true,
-    "visible": true,
-    "resizable": true,
-    "draggable": true,
-    "width": 200,
-    "index": 0
-  },
-  {
-    "prop": "age",
-    "name": "Age",
-    "type": "number",
-    "sortable": true,
-    "filterable": true,
-    "visible": true,
-    "resizable": true,
-    "draggable": true
-    "width": 100,
-    "index": 1
-  },
-  {
-    "prop": "color",
-    "name": "Color",
-    "type": "string",
-    "sortable": true,
-    "filterable": true,
-    "visible": true,
-    "resizable": true,
-    "draggable": true
+{
+  "id": "filter--age",
+  "type": "filter",
+  "state": {
+    "columnProp": "age",
+    "filterType": "numeric",
+    "operation": "gt",
+    "value": 30
   }
-]
+}
+\`\`\`
+
+Filter color contains "red":
+\`\`\`json
+{
+  "id": "filter--color",
+  "type": "filter",
+  "state": {
+    "columnProp": "color",
+    "filterType": "text",
+    "operation": "contains",
+    "value": "red"
+  }
+}
+\`\`\`
+
+Filter age between 25 and 65:
+\`\`\`json
+{
+  "id": "filter--age",
+  "type": "filter",
+  "state": {
+    "columnProp": "age",
+    "filterType": "numeric",
+    "operation": "between",
+    "fromValue": 25,
+    "toValue": 65
+  }
+}
+\`\`\`
+
+Sort by name ascending:
+\`\`\`json
+{
+  "id": "sort",
+  "type": "sort",
+  "state": {
+    "sorts": [
+      {
+        "prop": "name",
+        "dir": "asc"
+      }
+    ]
+  }
+}
 \`\`\`
 `
 
@@ -422,6 +431,7 @@ export class TheSeamDatatablePrompterComponent {
     const columns = (this._datatableSubject.value?.ngxDatatable?.columns || []).map(col => ({
       prop: col.prop,
       name: col.name,
+      cellType: (col as any).cellType || 'string',
       sortable: col.sortable,
       filterable: true,
       visible: true,
@@ -480,39 +490,13 @@ export class TheSeamDatatablePrompterComponent {
         const columnsBefore = JSON.parse(JSON.stringify(this.datatable!.ngxDatatable!.columns.map(x => x.prop)))
         console.log('Columns before applying alterations:', columnsBefore)
         for (const a of alts) {
-          if (a.type === 'filter') continue// Tmp filter alteration, not yet implemented.
           console.log('Applying alteration:', a)
           a.apply(cols, this.datatable!)
         }
 
-        // Mock, until filter parse is finished.
-        // const filtersService = (this.datatable as any)._columnsFilters
-        // if (filtersService) {
-        //   // TODO: setting the form values does not seem to be updating the UI, need to investigate.
-        //   const subject = filtersService._columnsFilters as BehaviorSubject<any[]>
-        //   const ageFilter = subject.value.find(f => f.column.prop === 'age')
-        //   ageFilter.form.setValue({ searchType: 'gt', searchText: '30', fromText: '', toText: '' })
-        //   const colorFilter = subject.value.find(f => f.column.prop === 'color')
-        //   colorFilter.form.setValue({ searchType: 'contains', searchText: 'green' })
-
-        //   // console.log('Mocked filters:', subject.value, ageFilter?.form.value, colorFilter?.form.value)
-        // }
-
-        const filters = (_after.filter(a => a.type === 'filter') as any)[0]?.state?.filter || {}
-        console.log('Filters to apply:', filters)
-        const _rows = [ ...datatable.rows ]
-        const rows = filteredResults(_rows, {
-          where: filters,
-          skip: 0,
-          take: 1000, // Limit to 1000 rows for performance
-        }).items
-        console.log('Filtered rows:', rows)
-
         this.datatable!.columns = [ ...cols ]
         const columnsAfter = JSON.parse(JSON.stringify(this.datatable!.ngxDatatable!.columns.map(x => x.prop)))
         console.log('Columns after applying alterations:', columnsAfter)
-
-        datatable.rows = [ ...rows ]
         datatable._cdr.detectChanges()
 
         this._loadingSubject.next(false)

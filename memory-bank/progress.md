@@ -57,7 +57,9 @@
 
 #### AI Integration
 - **DataTable Prompter**: Natural language interface for data tables
-  - **Status**: Core functionality implemented
+  - **Status**: Filter alteration implementation completed
+  - **Features**: Sorting and filtering via natural language
+  - **Integration**: AI filters now visible in datatable UI components
   - **Next**: Enhanced AI capabilities and broader integration
 
 #### Advanced Features
