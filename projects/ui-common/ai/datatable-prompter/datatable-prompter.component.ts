@@ -239,6 +239,46 @@ Sort by name ascending:
   }
 }
 \`\`\`
+
+Hide the age column:
+\`\`\`json
+{
+  "id": "hide-column-age",
+  "type": "hide-column",
+  "state": {
+    "columnProp": "age",
+    "hidden": true
+  }
+}
+\`\`\`
+
+Set name column width to 300 pixels:
+\`\`\`json
+{
+  "id": "width-name",
+  "type": "width",
+  "state": {
+    "columnProp": "name",
+    "width": 300,
+    "canAutoResize": false
+  }
+}
+\`\`\`
+
+Reorder columns (name first, age second, color third):
+\`\`\`json
+{
+  "id": "order",
+  "type": "order",
+  "state": {
+    "columns": [
+      { "columnProp": "name", "index": 0 },
+      { "columnProp": "age", "index": 1 },
+      { "columnProp": "color", "index": 2 }
+    ]
+  }
+}
+\`\`\`
 `
 
 const getUserPrompt = (columns: any[], request: string): string => `
@@ -479,7 +519,10 @@ export class TheSeamDatatablePrompterComponent {
         this.datatable!.columns = [ ...cols ]
 
         const after = await this._prefsAccessor?.get(key).toPromise()
-        const _after = (JSON.parse(after || '{}').alterations || []) as ColumnsAlterationState[]
+        let _after = (JSON.parse(after || '{}').alterations || []) as ColumnsAlterationState[]
+        if (!Array.isArray(_after)) {
+          _after = [_after]
+        }
         console.log('Current preferences after update:', after)
         console.log(_after)
 

@@ -104,7 +104,7 @@ export const Basic: Story = {
       <div class="d-flex flex-column-reverse">
         <div style="height: 500px; width: 1200px; display: block;">
           <seam-datatable #datatable class="w-100 h-100" [columns]="dt.columns" [rows]="dt.rows" preferencesKey="prompter-prefs-1"
-            sortType="multi" externalFiltering="true"></seam-datatable>
+            sortType="multi"></seam-datatable>
         </div>
         <seam-datatable-prompter [datatable]="datatable" [prompt]="prompt"></seam-datatable-prompter>
       </div>
