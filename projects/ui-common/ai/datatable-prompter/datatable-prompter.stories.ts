@@ -104,13 +104,14 @@ export const Basic: Story = {
       <div class="d-flex flex-column-reverse">
         <div style="height: 500px; width: 1200px; display: block;">
           <seam-datatable #datatable class="w-100 h-100" [columns]="dt.columns" [rows]="dt.rows" preferencesKey="prompter-prefs-1"
-            sortType="multi"></seam-datatable>
+            sortType="multi" externalFiltering="true"></seam-datatable>
         </div>
-        <seam-datatable-prompter [datatable]="datatable"></seam-datatable-prompter>
+        <seam-datatable-prompter [datatable]="datatable" [prompt]="prompt"></seam-datatable-prompter>
       </div>
     `,
   }), // externalSorting="true" externalFiltering="true"
   args: {
+    prompt: 'Is 33 years old',
     dt: {
       columns: [
         { prop: 'name', name: 'Name', filterable: true, filterOptions: { filterType: 'search-text' } },

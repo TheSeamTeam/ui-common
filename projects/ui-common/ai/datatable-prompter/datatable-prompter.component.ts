@@ -6,10 +6,11 @@ import { BehaviorSubject, combineLatest, map, Observable, of, switchMap } from '
 import { ColumnsAlterationState, DatatableComponent, DatatablePreferencesService, EMPTY_DATATABLE_PREFERENCES, mapColumnsAlterationsStates, THESEAM_DATATABLE_PREFERENCES_ACCESSOR } from '@theseam/ui-common/datatable'
 import { TheSeamLoadingModule } from '@theseam/ui-common/loading'
 import { TheSeamRichTextModule } from '@theseam/ui-common/rich-text'
-
-import { createSortsObservable } from './utils'
 import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
+import { filteredResults } from '@theseam/ui-common/graphql'
+
+import { createSortsObservable } from './utils'
 
 const assistantPrompt = `You are a helpful assistant that provides formatting json code for a datatable.
 A datatable is a table that displays data in rows and columns, similar to a spreadsheet, with column sorting and data filtering.
@@ -256,22 +257,22 @@ function parseResponse(responseContent: string, responseFormat: { type: string }
 
 async function submitPrompt(prompt: string) {
   // Local
-  // const url = 'http://localhost:1234/v1/chat/completions'
-  // const headers = {
-  //   'Content-Type': 'application/json',
-  // }
-  // const model = 'model-identifier'
-  // const response_format = undefined
-
-  // OpenRouter
-  const url = 'https://openrouter.ai/api/v1/chat/completions'
-  const apiKey = ''
+  const url = 'http://localhost:1234/v1/chat/completions'
   const headers = {
-    'Authorization': `Bearer ${apiKey}`,
     'Content-Type': 'application/json',
   }
-  const model = 'google/gemini-2.5-flash'
-  const responseFormat = { 'type': 'json_object' }
+  const model = 'model-identifier'
+  const responseFormat = undefined
+
+  // OpenRouter
+  // const url = 'https://openrouter.ai/api/v1/chat/completions'
+  // const apiKey = localStorage.getItem('openrouter-api-key') || ''
+  // const headers = {
+  //   'Authorization': `Bearer ${apiKey}`,
+  //   'Content-Type': 'application/json',
+  // }
+  // const model = 'google/gemini-2.5-flash'
+  // const responseFormat = { 'type': 'json_object' }
 
   return fetch(url, {
     method: 'POST',
@@ -288,7 +289,7 @@ async function submitPrompt(prompt: string) {
           content: prompt,
         },
       ],
-      response_format: responseFormat,
+      // response_format: responseFormat,
     }),
   }).then(response => response.json()).then(data => {
     console.log('Response from AI:', data)
@@ -345,6 +346,15 @@ export class TheSeamDatatablePrompterComponent {
   readonly _loadingSubject = new BehaviorSubject<boolean>(false)
 
   public readonly loading$ = this._loadingSubject.asObservable()
+
+  @Input()
+  set prompt(value: string | undefined | null) {
+    if (value) {
+      this._form.controls.prompt.setValue(value)
+    } else {
+      this._form.controls.prompt.setValue('Sort color descending order')
+    }
+  }
 
   @Input()
   set datatable(value: DatatableComponent | undefined | null) {
@@ -461,6 +471,7 @@ export class TheSeamDatatablePrompterComponent {
         const after = await this._prefsAccessor?.get(key).toPromise()
         const _after = (JSON.parse(after || '{}').alterations || []) as ColumnsAlterationState[]
         console.log('Current preferences after update:', after)
+        console.log(_after)
 
         const mgr = (this.datatable as any)._columnsAlterationsManager
         console.log('_columnsAlterationsManager', mgr, mgr.get())
@@ -475,22 +486,33 @@ export class TheSeamDatatablePrompterComponent {
         }
 
         // Mock, until filter parse is finished.
-        const filtersService = (this.datatable as any)._columnsFilters
-        if (filtersService) {
-          const subject = filtersService._columnsFilters as BehaviorSubject<any[]>
-          const ageFilter = subject.value.find(f => f.column.prop === 'age')
-          ageFilter.form.setValue({ searchType: 'gt', searchText: '30', fromText: '', toText: '' })
-          const colorFilter = subject.value.find(f => f.column.prop === 'color')
-          colorFilter.form.setValue({ searchType: 'contains', searchText: 'green' })
+        // const filtersService = (this.datatable as any)._columnsFilters
+        // if (filtersService) {
+        //   // TODO: setting the form values does not seem to be updating the UI, need to investigate.
+        //   const subject = filtersService._columnsFilters as BehaviorSubject<any[]>
+        //   const ageFilter = subject.value.find(f => f.column.prop === 'age')
+        //   ageFilter.form.setValue({ searchType: 'gt', searchText: '30', fromText: '', toText: '' })
+        //   const colorFilter = subject.value.find(f => f.column.prop === 'color')
+        //   colorFilter.form.setValue({ searchType: 'contains', searchText: 'green' })
 
-          // console.log('Mocked filters:', subject.value, ageFilter?.form.value, colorFilter?.form.value)
-        }
+        //   // console.log('Mocked filters:', subject.value, ageFilter?.form.value, colorFilter?.form.value)
+        // }
+
+        const filters = (_after.filter(a => a.type === 'filter') as any)[0]?.state?.filter || {}
+        console.log('Filters to apply:', filters)
+        const _rows = [ ...datatable.rows ]
+        const rows = filteredResults(_rows, {
+          where: filters,
+          skip: 0,
+          take: 1000, // Limit to 1000 rows for performance
+        }).items
+        console.log('Filtered rows:', rows)
 
         this.datatable!.columns = [ ...cols ]
         const columnsAfter = JSON.parse(JSON.stringify(this.datatable!.ngxDatatable!.columns.map(x => x.prop)))
         console.log('Columns after applying alterations:', columnsAfter)
 
-        datatable.rows = [ ...datatable.rows ]
+        datatable.rows = [ ...rows ]
         datatable._cdr.detectChanges()
 
         this._loadingSubject.next(false)
