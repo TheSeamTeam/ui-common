@@ -693,246 +693,246 @@ FooterTemplate.args = {
 
 // externalPaging="true"
 
-@Component({
-  selector: 'dt-wrap',
-  template: `
-    <seam-datatable #dt
-      class="w-100 h-100"
-      [columns]="columns"
-      [rows]="_rows$ | async"
-      externalSorting="true"
-      externalFiltering="true">
-    </seam-datatable>
-  `,
-})
-class StoryDataSourceTwoComponent {
+// @Component({
+//   selector: 'dt-wrap',
+//   template: `
+//     <seam-datatable #dt
+//       class="w-100 h-100"
+//       [columns]="columns"
+//       [rows]="_rows$ | async"
+//       externalSorting="true"
+//       externalFiltering="true">
+//     </seam-datatable>
+//   `,
+// })
+// class StoryDataSourceTwoComponent {
 
-  @Input() columns: any
+//   @Input() columns: any
 
-  public readonly _rows$: Observable<any[]>
+//   public readonly _rows$: Observable<any[]>
 
-  _rowsTmp: any = [
-    { id: 0, name: 'thing' },
-    { id: 0, name: 'thing' },
-    { id: 0, name: 'thing' },
-    { id: 0, name: 'thing' },
-    { id: 0, name: 'thing' },
-    { id: 0, name: 'thing' },
-    { id: 0, name: 'thing' },
-    { id: 0, name: 'thing' },
-    { id: 0, name: 'thing' },
-    { id: 0, name: 'thing' },
-    { id: 0, name: 'thing' },
-    { id: 0, name: 'thing' },
-    { id: 0, name: 'thing' },
-    { id: 0, name: 'thing' },
-    { id: 0, name: 'thing' },
-    { id: 0, name: 'thing' },
-    { id: 0, name: 'thing' },
-    { id: 0, name: 'thing' },
-    { id: 0, name: 'thing' },
-    { id: 0, name: 'thing' },
-    { id: 0, name: 'thing' },
-    { id: 0, name: 'thing' },
-    { id: 0, name: 'thing' },
-    { id: 0, name: 'thing' },
-    { id: 0, name: 'thing' },
-    { id: 0, name: 'thing' },
-    { id: 0, name: 'thing' },
-    { id: 0, name: 'thing' },
-    { id: 0, name: 'thing' },
-    { id: 0, name: 'thing' },
-  ]
+//   _rowsTmp: any = [
+//     { id: 0, name: 'thing' },
+//     { id: 0, name: 'thing' },
+//     { id: 0, name: 'thing' },
+//     { id: 0, name: 'thing' },
+//     { id: 0, name: 'thing' },
+//     { id: 0, name: 'thing' },
+//     { id: 0, name: 'thing' },
+//     { id: 0, name: 'thing' },
+//     { id: 0, name: 'thing' },
+//     { id: 0, name: 'thing' },
+//     { id: 0, name: 'thing' },
+//     { id: 0, name: 'thing' },
+//     { id: 0, name: 'thing' },
+//     { id: 0, name: 'thing' },
+//     { id: 0, name: 'thing' },
+//     { id: 0, name: 'thing' },
+//     { id: 0, name: 'thing' },
+//     { id: 0, name: 'thing' },
+//     { id: 0, name: 'thing' },
+//     { id: 0, name: 'thing' },
+//     { id: 0, name: 'thing' },
+//     { id: 0, name: 'thing' },
+//     { id: 0, name: 'thing' },
+//     { id: 0, name: 'thing' },
+//     { id: 0, name: 'thing' },
+//     { id: 0, name: 'thing' },
+//     { id: 0, name: 'thing' },
+//     { id: 0, name: 'thing' },
+//     { id: 0, name: 'thing' },
+//     { id: 0, name: 'thing' },
+//   ]
 
-  private readonly _datatableSubject = new BehaviorSubject<any | undefined>(undefined)
+//   private readonly _datatableSubject = new BehaviorSubject<any | undefined>(undefined)
 
-  @ViewChild(DatatableComponent, { static: true })
-  set _datatableQuery(dt: DatatableComponent) { this._datatableSubject.next(dt) }
+//   @ViewChild(DatatableComponent, { static: true })
+//   set _datatableQuery(dt: DatatableComponent) { this._datatableSubject.next(dt) }
 
-  private readonly _queryRef: DatatableGraphQLQueryRef<any, any, any>
+//   private readonly _queryRef: DatatableGraphQLQueryRef<any, any, any>
 
-  private _sub: any
+//   private _sub: any
 
-  constructor(
-    private readonly _datatableGql: DatatableGraphqlService,
-  ) {
-    this._queryRef = this._datatableGql.watchQuery<any, any, any>(
-      {
-        query: SIMPLE_GQL_TEST_QUERY,
-        variables: {
-          skip: 0,
-          take: DEFAULT_PAGE_SIZE,
-        },
-      },
-      {
-        variables: {
-          // removeIfNotDefined: [ 'order', 'search' ],
-          // removeIfNotUsed: [ 'search' ],
-          inline: [ 'where' ],
-        },
-        // Disabling paging until a solution for select all, when partially loaded datatset, is decided.
-        // disablePaging: true
-      },
-    )
+//   constructor(
+//     private readonly _datatableGql: DatatableGraphqlService,
+//   ) {
+//     this._queryRef = this._datatableGql.watchQuery<any, any, any>(
+//       {
+//         query: SIMPLE_GQL_TEST_QUERY,
+//         variables: {
+//           skip: 0,
+//           take: DEFAULT_PAGE_SIZE,
+//         },
+//       },
+//       {
+//         variables: {
+//           // removeIfNotDefined: [ 'order', 'search' ],
+//           // removeIfNotUsed: [ 'search' ],
+//           inline: [ 'where' ],
+//         },
+//         // Disabling paging until a solution for select all, when partially loaded datatset, is decided.
+//         // disablePaging: true
+//       },
+//     )
 
-    const extraVariables$ = of({})
+//     const extraVariables$ = of({})
 
-    const _rows$ = this._queryRef.rows((data: any) =>
-      // console.log('~!~!~!~!~', data)
-      ({
-        rows: data.simpleGqlTestRecords.items,
-        totalCount: data.simpleGqlTestRecords.totalCount,
-      }),
-    ).pipe(
-      shareReplay({ bufferSize: 1, refCount: true }),
-      // tap(v => console.log('~! rows', v)),
-    )
+//     const _rows$ = this._queryRef.rows((data: any) =>
+//       // console.log('~!~!~!~!~', data)
+//       ({
+//         rows: data.simpleGqlTestRecords.items,
+//         totalCount: data.simpleGqlTestRecords.totalCount,
+//       }),
+//     ).pipe(
+//       shareReplay({ bufferSize: 1, refCount: true }),
+//       // tap(v => console.log('~! rows', v)),
+//     )
 
-    const _mapSorts = (sorts: SortItem[], context: MapperContext): SortsMapperResult => sorts.map(s => {
-      const _dir = s?.dir.toUpperCase()
+//     const _mapSorts = (sorts: SortItem[], context: MapperContext): SortsMapperResult => sorts.map(s => {
+//       const _dir = s?.dir.toUpperCase()
 
-      switch (s?.prop) {
-        case 'id': return ({ id: _dir })
-        case 'name': return ({ name: _dir })
-      }
-      // console.log('mapSorts', sorts)
-      return ({ name: _dir })
-    })
+//       switch (s?.prop) {
+//         case 'id': return ({ id: _dir })
+//         case 'name': return ({ name: _dir })
+//       }
+//       // console.log('mapSorts', sorts)
+//       return ({ name: _dir })
+//     })
 
-    // const _mapSearchFilterState = async (
-    const _mapSearchFilterState = (
-      filterState: DataFilterState, context: MapperContext<SimpleGqlTestExtraVariables>,
-    // ): Promise<FilterStateMapperResult> => {
-    ): FilterStateMapperResult => {
-      const value = filterState.state?.value?.trim()
-      if (typeof value !== 'string' || value.length === 0) {
-        return null
-      }
+//     // const _mapSearchFilterState = async (
+//     const _mapSearchFilterState = (
+//       filterState: DataFilterState, context: MapperContext<SimpleGqlTestExtraVariables>,
+//     // ): Promise<FilterStateMapperResult> => {
+//     ): FilterStateMapperResult => {
+//       const value = filterState.state?.value?.trim()
+//       if (typeof value !== 'string' || value.length === 0) {
+//         return null
+//       }
 
-      const searchVar = gqlVar('search')
-      const conditions: any[] = [
-        { id: { objectContains: searchVar } },
-        { name: { contains: searchVar } },
-      ]
+//       const searchVar = gqlVar('search')
+//       const conditions: any[] = [
+//         { id: { objectContains: searchVar } },
+//         { name: { contains: searchVar } },
+//       ]
 
-      // console.log('_mapSearchFilterState', filterState, conditions)
-      return {
-        filter: {
-          or: conditions,
-        },
-        variables: { search: value },
-      }
-    }
+//       // console.log('_mapSearchFilterState', filterState, conditions)
+//       return {
+//         filter: {
+//           or: conditions,
+//         },
+//         variables: { search: value },
+//       }
+//     }
 
-    const _mapToggleButtonsState = (
-      filterState: DataFilterState,
-      context: MapperContext<SimpleGqlTestExtraVariables>,
-    ): FilterStateMapperResult => {
-      // console.log('_mapToggleButtonsState', filterState)
-      const value = Array.isArray(filterState.state?.value) ? filterState.state?.value[0]?.trim() : filterState.state?.value?.trim()
-      if (typeof value !== 'string' || value.length === 0) {
-        return null
-      }
+//     const _mapToggleButtonsState = (
+//       filterState: DataFilterState,
+//       context: MapperContext<SimpleGqlTestExtraVariables>,
+//     ): FilterStateMapperResult => {
+//       // console.log('_mapToggleButtonsState', filterState)
+//       const value = Array.isArray(filterState.state?.value) ? filterState.state?.value[0]?.trim() : filterState.state?.value?.trim()
+//       if (typeof value !== 'string' || value.length === 0) {
+//         return null
+//       }
 
-      return {
-        filter: { status: { eq: value } },
-        variables: { },
-      }
-    }
+//       return {
+//         filter: { status: { eq: value } },
+//         variables: { },
+//       }
+//     }
 
-    this._rows$ = observeRowsWithGqlInputsHandling(
-      this._queryRef,
-      _rows$,
-      this._datatableSubject.asObservable(),
-      extraVariables$,
-      _mapSorts,
-      {
-        'search': _mapSearchFilterState,
-        'toggle-buttons': _mapToggleButtonsState,
-        'search-numeric': mapSearchNumericColumnsDataFilterStateToGql,
-        'search-text': mapSearchTextColumnsDataFilterStateToGql,
-        'search-date': mapSearchDateColumnsDataFilterStateToGql,
-      },
-    ).pipe(
-      // tap(v => {
-      //   console.log('v', v)
-      // })
-    )
+//     this._rows$ = observeRowsWithGqlInputsHandling(
+//       this._queryRef,
+//       _rows$,
+//       this._datatableSubject.asObservable(),
+//       extraVariables$,
+//       _mapSorts,
+//       {
+//         'search': _mapSearchFilterState,
+//         'toggle-buttons': _mapToggleButtonsState,
+//         'search-numeric': mapSearchNumericColumnsDataFilterStateToGql,
+//         'search-text': mapSearchTextColumnsDataFilterStateToGql,
+//         'search-date': mapSearchDateColumnsDataFilterStateToGql,
+//       },
+//     ).pipe(
+//       // tap(v => {
+//       //   console.log('v', v)
+//       // })
+//     )
 
-    // this._rows$ = of(this._rowsTmp)
+//     // this._rows$ = of(this._rowsTmp)
 
-    // this._sub = subscriberCount(this._rows$, 'this._rows$').pipe(
-    //   // take(1)
-    // ).subscribe(v => {
-    //   console.log('r', v)
-    //   this._rowsTmp = v
-    // })
+//     // this._sub = subscriberCount(this._rows$, 'this._rows$').pipe(
+//     //   // take(1)
+//     // ).subscribe(v => {
+//     //   console.log('r', v)
+//     //   this._rowsTmp = v
+//     // })
 
-    // console.log('~~~!')
-  }
+//     // console.log('~~~!')
+//   }
 
-  // ngOnInit() {
-  //   console.log('dt-wrap ngOnInit')
-  // }
+//   // ngOnInit() {
+//   //   console.log('dt-wrap ngOnInit')
+//   // }
 
-  // ngOnDestroy() {
-  //   console.log('dt-wrap ngOnDestroy')
-  //   // this._sub.unsubscribe()
-  // }
+//   // ngOnDestroy() {
+//   //   console.log('dt-wrap ngOnDestroy')
+//   //   // this._sub.unsubscribe()
+//   // }
 
-}
+// }
 
-export const GraphQLQueryRef: Story = args => ({
-  applicationConfig: {
-    providers: [
-      createApolloTestingProvider(
-        simpleGqlTestSchema, createSimpleGqlTestRoot(60),
-      ),
-    ],
-  },
-  moduleMetadata: {
-    declarations: [
-      StoryDataSourceTwoComponent,
-    ],
-    imports: [
-      TheSeamDataFiltersModule
-    ]
-  },
-  props: {
-    __hack: {
-      // ...args
-      columns: args.columns,
-    },
-  },
-  template: `
-    <div style="height: 500px; width: 600px; display: block; position: relative;">
-      <dt-wrap style="height: 100%; width: 100%; display: block;" [columns]="__hack.columns"></dt-wrap>
-    </div>
-  `,
-})
-GraphQLQueryRef.args = {
-  columns: [
-    { prop: 'id', name: 'Id', filterable: true, filterOptions: { filterType: 'search-numeric' } },
-    { prop: 'name', name: 'Name' },
-  ],
-  numberOfRows: 60,
-}
-GraphQLQueryRef.play = async ({ canvasElement, fixture }) => {
-  // const canvas = within(canvasElement)
+// export const GraphQLQueryRef: Story = args => ({
+//   applicationConfig: {
+//     providers: [
+//       createApolloTestingProvider(
+//         simpleGqlTestSchema, createSimpleGqlTestRoot(60),
+//       ),
+//     ],
+//   },
+//   moduleMetadata: {
+//     declarations: [
+//       StoryDataSourceTwoComponent,
+//     ],
+//     imports: [
+//       TheSeamDataFiltersModule
+//     ]
+//   },
+//   props: {
+//     __hack: {
+//       // ...args
+//       columns: args.columns,
+//     },
+//   },
+//   template: `
+//     <div style="height: 500px; width: 600px; display: block; position: relative;">
+//       <dt-wrap style="height: 100%; width: 100%; display: block;" [columns]="__hack.columns"></dt-wrap>
+//     </div>
+//   `,
+// })
+// GraphQLQueryRef.args = {
+//   columns: [
+//     { prop: 'id', name: 'Id', filterable: true, filterOptions: { filterType: 'search-numeric' } },
+//     { prop: 'name', name: 'Name' },
+//   ],
+//   numberOfRows: 60,
+// }
+// GraphQLQueryRef.play = async ({ canvasElement, fixture }) => {
+//   // const canvas = within(canvasElement)
 
-  // const page2Btn = canvas.getByRole('button', { name: /page 2/i })
-  // const page2Anchor = page2Btn.getElementsByTagName('a')[0]
-  // await userEvent.click(page2Anchor)
+//   // const page2Btn = canvas.getByRole('button', { name: /page 2/i })
+//   // const page2Anchor = page2Btn.getElementsByTagName('a')[0]
+//   // await userEvent.click(page2Anchor)
 
-  // await expectFn(page2Btn.classList.contains('active')).toBe(true)
+//   // await expectFn(page2Btn.classList.contains('active')).toBe(true)
 
-  const datatableHarness = await getHarness(TheSeamDatatableHarness, { canvasElement, fixture })
+//   const datatableHarness = await getHarness(TheSeamDatatableHarness, { canvasElement, fixture })
 
-  await expectFn(await datatableHarness.getCurrentPage()).toBe(1)
-  const page2BtnHarness = await (await datatableHarness.getPager()).getPageButtonHarness(2)
-  await (await page2BtnHarness.getAnchor()).click()
-  await expectFn(await datatableHarness.getCurrentPage()).toBe(2)
-}
+//   await expectFn(await datatableHarness.getCurrentPage()).toBe(1)
+//   const page2BtnHarness = await (await datatableHarness.getPager()).getPageButtonHarness(2)
+//   await (await page2BtnHarness.getAnchor()).click()
+//   await expectFn(await datatableHarness.getCurrentPage()).toBe(2)
+// }
 
 @Component({
   selector: 'dt-wrap',

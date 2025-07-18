@@ -220,7 +220,7 @@ export const RequiredIndicator: Story = {
     await expect(await requiredIndicatorHarness.isIndicatorVisible()).toBe(true)
 
     const formFieldHarness = await getHarness(TheSeamFormFieldHarness, { canvasElement, fixture })
-    await expect(await formFieldHarness.getLabel()).toBe('Example')
+    await expect(await formFieldHarness.getLabel()).toBe('Example*')
   },
 }
 

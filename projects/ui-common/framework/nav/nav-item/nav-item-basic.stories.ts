@@ -1,8 +1,8 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular'
+import { applicationConfig, Meta, moduleMetadata, Story } from '@storybook/angular'
 
 import { APP_BASE_HREF } from '@angular/common'
-import { Component, Directive, Input } from '@angular/core'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { Component, Directive, importProvidersFrom, Input } from '@angular/core'
+import { provideAnimations } from '@angular/platform-browser/animations'
 import { Router, RouterModule } from '@angular/router'
 
 import { faBuilding } from '@fortawesome/free-regular-svg-icons'
@@ -32,16 +32,20 @@ export default {
   title: 'Framework/Nav/Item/Basic',
   component: NavItemComponent,
   decorators: [
+    applicationConfig({
+      providers: [
+        { provide: APP_BASE_HREF, useValue: '/' },
+        provideAnimations(),
+      ]
+    }),
     moduleMetadata({
       declarations: [
         StoryRoutePlacholderComponent
       ],
       imports: [
-        BrowserAnimationsModule,
         TheSeamNavModule
       ],
       providers: [
-        { provide: APP_BASE_HREF, useValue: '/' },
         { provide: HorizontalNavComponent, useClass: MockHorizontalNavComponent }
       ]
     })
@@ -51,11 +55,13 @@ export default {
   }
 } as Meta
 
-export const NoChildren: Story = (args) => ({
-  moduleMetadata: {
-    imports: [
-      RouterModule.forRoot([], { useHash: true }),
-    ]
+export const NoChildren: Story = args => ({
+  applicationConfig: {
+    providers: [
+      importProvidersFrom(
+        RouterModule.forRoot([], { useHash: true }),
+      ),
+    ],
   },
   props: { ...args },
   template: `
@@ -83,23 +89,27 @@ NoChildren.args = {
   compact: false,
 }
 
-export const WithChildren: Story = (args) => ({
+export const WithChildren: Story = args => ({
+  applicationConfig: {
+    providers: [
+      importProvidersFrom(
+        RouterModule.forRoot([
+          { path: 'example1', component: StoryRoutePlacholderComponent },
+          { path: 'example1/example1.1', component: StoryRoutePlacholderComponent },
+          { path: 'example1/example1.2', component: StoryRoutePlacholderComponent },
+          { path: 'example1/example1.3', component: StoryRoutePlacholderComponent },
+          { path: 'example1/example1.2.1', component: StoryRoutePlacholderComponent },
+          { path: 'example1/example1.2.2', component: StoryRoutePlacholderComponent },
+          { path: 'example1/example1.2.3', component: StoryRoutePlacholderComponent },
+          { path: 'example2', component: StoryRoutePlacholderComponent }
+        ], { useHash: true }),
+      ),
+    ],
+  },
   moduleMetadata: {
     declarations: [
       StoryNavToggleDirective
     ],
-    imports: [
-      RouterModule.forRoot([
-        { path: 'example1', component: StoryRoutePlacholderComponent },
-        { path: 'example1/example1.1', component: StoryRoutePlacholderComponent },
-        { path: 'example1/example1.2', component: StoryRoutePlacholderComponent },
-        { path: 'example1/example1.3', component: StoryRoutePlacholderComponent },
-        { path: 'example1/example1.2.1', component: StoryRoutePlacholderComponent },
-        { path: 'example1/example1.2.2', component: StoryRoutePlacholderComponent },
-        { path: 'example1/example1.2.3', component: StoryRoutePlacholderComponent },
-        { path: 'example2', component: StoryRoutePlacholderComponent }
-      ], { useHash: true })
-    ]
   },
   props: {
     currentUrl: 'example1',
