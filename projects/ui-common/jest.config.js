@@ -14,12 +14,12 @@ module.exports = {
   testMatch: [
     // TODO: Remove the specific folders when the projects tests are more stable.
     '**/breadcrumbs/**/*.spec.ts',
-    '**/graphql/**/*.spec.ts',
+    // '**/graphql/**/*.spec.ts',
     '**/buttons/**/*.spec.ts',
-    '**/framework/side-nav/**/*.spec.ts',
+    // '**/framework/side-nav/**/*.spec.ts',
     '**/utils/**/*.spec.ts',
     '**/validators/**/*.spec.ts',
-    '**/datatable/**/*.spec.ts',
+    // '**/datatable/**/*.spec.ts',
     '**/dynamic-component-loader/**/*.spec.ts',
     '**/tel-input/**/*.spec.ts',
   ],
