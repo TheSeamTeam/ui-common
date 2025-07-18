@@ -1,0 +1,108 @@
+// Bootstrap 4.6 compatible tooltip styles
+// Using existing Bootstrap classes for compatibility with existing apps
+
+.tooltip {
+  position: absolute;
+  z-index: 1070;
+  display: block;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: left;
+  text-decoration: none;
+  text-shadow: none;
+  text-transform: none;
+  letter-spacing: normal;
+  word-break: normal;
+  word-spacing: normal;
+  white-space: normal;
+  line-break: auto;
+  font-size: 0.875rem;
+  word-wrap: break-word;
+  opacity: 0;
+}
+
+.tooltip.show {
+  opacity: 0.9;
+}
+
+.tooltip .tooltip-arrow {
+  position: absolute;
+  display: block;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+}
+
+.tooltip .tooltip-inner {
+  max-width: 200px;
+  padding: 0.25rem 0.5rem;
+  color: #fff;
+  text-align: center;
+  background-color: #000;
+  border-radius: 0.25rem;
+}
+
+// Positioning classes for different placements
+.bs-tooltip-top {
+  padding: 0.4rem 0;
+
+  .tooltip-arrow {
+    bottom: 0;
+    border-width: 0.4rem 0.4rem 0;
+    border-top-color: #000;
+  }
+}
+
+.bs-tooltip-right {
+  padding: 0 0.4rem;
+
+  .tooltip-arrow {
+    left: 0;
+    width: 0.4rem;
+    height: 0.4rem;
+    border-width: 0.4rem 0.4rem 0.4rem 0;
+    border-right-color: #000;
+  }
+}
+
+.bs-tooltip-bottom {
+  padding: 0.4rem 0;
+
+  .tooltip-arrow {
+    top: 0;
+    border-width: 0 0.4rem 0.4rem;
+    border-bottom-color: #000;
+  }
+}
+
+.bs-tooltip-left {
+  padding: 0 0.4rem;
+
+  .tooltip-arrow {
+    right: 0;
+    width: 0.4rem;
+    height: 0.4rem;
+    border-width: 0.4rem 0 0.4rem 0.4rem;
+    border-left-color: #000;
+  }
+}
+
+// Auto positioning variants
+.bs-tooltip-auto {
+  &[x-placement^="top"] {
+    @extend .bs-tooltip-top;
+  }
+  &[x-placement^="right"] {
+    @extend .bs-tooltip-right;
+  }
+  &[x-placement^="bottom"] {
+    @extend .bs-tooltip-bottom;
+  }
+  &[x-placement^="left"] {
+    @extend .bs-tooltip-left;
+  }
+}

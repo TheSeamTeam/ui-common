@@ -22,6 +22,7 @@ module.exports = {
     // '**/datatable/**/*.spec.ts',
     '**/dynamic-component-loader/**/*.spec.ts',
     '**/tel-input/**/*.spec.ts',
+    '**/tooltip/**/*.spec.ts',
   ],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/' }),
 }

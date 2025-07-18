@@ -45,6 +45,7 @@
 - **Loading**: Loading indicators and spinners
 - **Progress**: Progress bars and circles
 - **Popover**: Tooltip and popover components
+- **Tooltip**: Custom tooltip directive (ngbTooltip replacement)
 - **Carousel**: Image/content carousel
 
 #### Utilities
