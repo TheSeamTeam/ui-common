@@ -1,10 +1,7 @@
 import { ComponentHarness, HarnessPredicate, BaseHarnessFilters } from '@angular/cdk/testing'
 
 export interface TooltipHarnessFilters extends BaseHarnessFilters {
-  /** Filters based on the tooltip content text */
-  content?: string | RegExp
-  /** Filters based on the tooltip placement */
-  placement?: string
+  // Empty - use selector-based filtering like Angular Material
 }
 
 /**
@@ -18,48 +15,6 @@ export class TooltipHarness extends ComponentHarness {
    */
   static with(options: TooltipHarnessFilters = {}): HarnessPredicate<TooltipHarness> {
     return new HarnessPredicate(TooltipHarness, options)
-      .addOption('content', options.content, (harness, content) =>
-        HarnessPredicate.stringMatches(harness.getTooltipContent(), content)
-      )
-      .addOption('placement', options.placement, (harness, placement) =>
-        harness.getPlacement().then(p => p === placement)
-      )
-  }
-
-  /** Gets the tooltip content */
-  async getTooltipContent(): Promise<string> {
-    const content = await (await this.host()).getAttribute('seamTooltip')
-    return content || ''
-  }
-
-  /** Gets the tooltip placement */
-  async getPlacement(): Promise<string> {
-    const placement = await (await this.host()).getAttribute('placement')
-    return placement || 'top'
-  }
-
-  /** Gets whether the tooltip is disabled */
-  async isDisabled(): Promise<boolean> {
-    const disabled = await (await this.host()).getAttribute('disableTooltip')
-    return disabled === 'true'
-  }
-
-  /** Gets the show delay */
-  async getShowDelay(): Promise<number> {
-    const delay = await (await this.host()).getAttribute('showDelay')
-    return delay ? parseInt(delay, 10) : 500
-  }
-
-  /** Gets the hide delay */
-  async getHideDelay(): Promise<number> {
-    const delay = await (await this.host()).getAttribute('hideDelay')
-    return delay ? parseInt(delay, 10) : 0
-  }
-
-  /** Gets the trigger type */
-  async getTrigger(): Promise<string> {
-    const trigger = await (await this.host()).getAttribute('trigger')
-    return trigger || 'both'
   }
 
   /** Hovers over the element to show the tooltip */
@@ -89,33 +44,48 @@ export class TooltipHarness extends ComponentHarness {
 
   /** Gets whether the tooltip is currently visible */
   async isTooltipVisible(): Promise<boolean> {
-    // Check if tooltip overlay exists in the DOM
-    const tooltips = await this.documentRootLocatorFactory().locatorForAll('.tooltip.show')()
-    return tooltips.length > 0
+    const tooltipId = await this._getTooltipId()
+    if (!tooltipId) {
+      return false
+    }
+    const tooltip = await this.documentRootLocatorFactory().locatorForOptional(`#${tooltipId}.tooltip.show`)()
+    return tooltip !== null
   }
 
   /** Gets the visible tooltip text content */
   async getVisibleTooltipText(): Promise<string | null> {
-    const tooltips = await this.documentRootLocatorFactory().locatorForAll('.tooltip.show .tooltip-inner')()
-    if (tooltips.length === 0) {
+    const tooltipId = await this._getTooltipId()
+    if (!tooltipId) {
       return null
     }
-    return tooltips[0].text()
+    const tooltipInner = await this.documentRootLocatorFactory().locatorForOptional(`#${tooltipId} .tooltip-inner`)()
+    if (!tooltipInner) {
+      return null
+    }
+    return tooltipInner.text()
   }
 
   /** Gets the visible tooltip classes */
   async getVisibleTooltipClasses(): Promise<string[]> {
-    const tooltips = await this.documentRootLocatorFactory().locatorForAll('.tooltip.show')()
-    if (tooltips.length === 0) {
+    const tooltipId = await this._getTooltipId()
+    if (!tooltipId) {
       return []
     }
-    const classAttr = await tooltips[0].getAttribute('class')
+    const tooltip = await this.documentRootLocatorFactory().locatorForOptional(`#${tooltipId}.tooltip.show`)()
+    if (!tooltip) {
+      return []
+    }
+    const classAttr = await tooltip.getAttribute('class')
     return classAttr ? classAttr.split(' ').filter(c => c.trim()) : []
+  }
+
+  /** Gets the tooltip ID from the aria-describedby attribute */
+  private async _getTooltipId(): Promise<string | null> {
+    return (await this.host()).getAttribute('aria-describedby')
   }
 
   /** Waits for the tooltip to appear */
   async waitForTooltipToShow(timeout: number = 1000): Promise<void> {
-    await this.waitForTasksOutsideAngular()
     const start = Date.now()
     while (Date.now() - start < timeout) {
       if (await this.isTooltipVisible()) {
@@ -128,7 +98,6 @@ export class TooltipHarness extends ComponentHarness {
 
   /** Waits for the tooltip to disappear */
   async waitForTooltipToHide(timeout: number = 1000): Promise<void> {
-    await this.waitForTasksOutsideAngular()
     const start = Date.now()
     while (Date.now() - start < timeout) {
       if (!(await this.isTooltipVisible())) {

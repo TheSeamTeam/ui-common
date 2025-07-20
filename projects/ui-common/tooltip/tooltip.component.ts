@@ -1,12 +1,11 @@
 import { AnimationEvent, transition, trigger, style, animate } from '@angular/animations'
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   HostBinding,
   Input,
   OnDestroy,
-  TemplateRef
+  TemplateRef,
 } from '@angular/core'
 import { Subject } from 'rxjs'
 
@@ -25,21 +24,22 @@ export type TooltipPlacement =
     trigger('fadeInOut', [
       transition(':enter', [
         style({ opacity: 0 }),
-        animate('150ms ease-out', style({ opacity: 0.9 }))
+        animate('150ms ease-out', style({ opacity: 0.9 })),
       ]),
       transition(':leave', [
         style({ opacity: 0.9 }),
-        animate('150ms ease-in', style({ opacity: 0 }))
-      ])
-    ])
+        animate('150ms ease-in', style({ opacity: 0 })),
+      ]),
+    ]),
   ],
   host: {
     class: 'tooltip show',
+    '[id]': 'tooltipId',
     '[@fadeInOut]': '',
     '(@fadeInOut.start)': '_onAnimationStart($event)',
-    '(@fadeInOut.done)': '_onAnimationDone($event)'
+    '(@fadeInOut.done)': '_onAnimationDone($event)',
   },
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TooltipComponent implements OnDestroy {
 
@@ -47,12 +47,13 @@ export class TooltipComponent implements OnDestroy {
   @Input() tooltipClass?: string
   @Input() context?: any
   @Input() placement: TooltipPlacement = 'top'
+  @Input() tooltipId?: string
 
   /** A subject emitting after the tooltip enters the view. */
-  _afterEnter: Subject<void> = new Subject()
+  readonly _afterEnter: Subject<void> = new Subject()
 
   /** A subject emitting after the tooltip exits the view. */
-  _afterExit: Subject<void> = new Subject()
+  readonly _afterExit: Subject<void> = new Subject()
 
   @HostBinding('class')
   get hostClasses(): string {
@@ -60,8 +61,6 @@ export class TooltipComponent implements OnDestroy {
     const placementClass = this.getPlacementClass()
     return `${baseClass} ${placementClass}`
   }
-
-  constructor(private _changeDetectorRef: ChangeDetectorRef) {}
 
   ngOnDestroy() {
     this._afterEnter.complete()

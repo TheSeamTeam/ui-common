@@ -1,103 +1,165 @@
-import { TemplateRef } from '@angular/core'
+import { ComponentFixture } from '@angular/core/testing'
+
+import { TooltipHarness } from './tooltip.harness'
 
 /**
- * Mock template content for testing tooltips with complex content
+ * Test utility functions for tooltip implementation testing.
+ * These functions test implementation details that are not part of the user-facing harness API.
  */
-export const mockTooltipTemplates = {
-  simpleList: `
-    <ul>
-      <li>Item 1</li>
-      <li>Item 2</li>
-      <li>Item 3</li>
-    </ul>
-  `,
 
-  withIcon: `
-    <div>
-      <i class="fa fa-info-circle"></i>
-      <span>Information tooltip</span>
-    </div>
-  `,
+/**
+ * Tests tooltip show timing by triggering hover and verifying timing behavior
+ */
+export async function testTooltipShowTiming(
+  harness: TooltipHarness,
+  expectedDelay: number,
+  fixture: ComponentFixture<any>
+): Promise<void> {
+  await harness.hover()
+  fixture.detectChanges()
+  await fixture.whenStable()
 
-  formatted: `
-    <div>
-      <strong>Bold text</strong>
-      <br>
-      <em>Italic text</em>
-      <br>
-      <code>Code snippet</code>
-    </div>
-  `
+  // Check that tooltip is not visible before delay
+  expect(await harness.isTooltipVisible()).toBe(false)
+
+  // Advance time by expected delay
+  jest.advanceTimersByTime(expectedDelay)
+  fixture.detectChanges()
+  await fixture.whenStable()
+
+  // Check that tooltip is now visible
+  expect(await harness.isTooltipVisible()).toBe(true)
+
+  // Clean up
+  await harness.mouseAway()
+  jest.advanceTimersByTime(1000) // Ensure hide completes
+  fixture.detectChanges()
+  await fixture.whenStable()
 }
 
 /**
- * Helper function to create a mock TemplateRef for testing
+ * Tests tooltip hide timing by showing tooltip then triggering hide
  */
-export function createMockTemplateRef(content: string): Partial<TemplateRef<any>> {
-  return {
-    createEmbeddedView: jasmine.createSpy('createEmbeddedView').and.returnValue({
-      rootNodes: [document.createElement('div')],
-      destroy: jasmine.createSpy('destroy'),
-      detectChanges: jasmine.createSpy('detectChanges')
-    })
+export async function testTooltipHideTiming(
+  harness: TooltipHarness,
+  expectedDelay: number,
+  fixture: ComponentFixture<any>
+): Promise<void> {
+  // First show the tooltip
+  await harness.hover()
+  jest.advanceTimersByTime(1000) // Use a large delay to ensure show completes
+  fixture.detectChanges()
+  await fixture.whenStable()
+
+  expect(await harness.isTooltipVisible()).toBe(true)
+
+  // Now test hide timing
+  await harness.mouseAway()
+  fixture.detectChanges()
+  await fixture.whenStable()
+
+  // Check that tooltip is still visible before hide delay
+  expect(await harness.isTooltipVisible()).toBe(true)
+
+  // Advance time by expected delay
+  jest.advanceTimersByTime(expectedDelay)
+  fixture.detectChanges()
+  await fixture.whenStable()
+
+  // Check that tooltip is now hidden
+  expect(await harness.isTooltipVisible()).toBe(false)
+}
+
+/**
+ * Tests tooltip trigger behavior (hover, focus, or both)
+ */
+export async function testTooltipTriggerBehavior(
+  harness: TooltipHarness,
+  expectedTrigger: 'hover' | 'focus' | 'both',
+  fixture: ComponentFixture<any>
+): Promise<void> {
+  // Test hover behavior
+  await harness.hover()
+  jest.advanceTimersByTime(1000) // Advance past any show delay
+  fixture.detectChanges()
+  await fixture.whenStable()
+
+  const showsOnHover = await harness.isTooltipVisible()
+
+  await harness.mouseAway()
+  jest.advanceTimersByTime(1000) // Advance past any hide delay
+  fixture.detectChanges()
+  await fixture.whenStable()
+
+  // Test focus behavior
+  await harness.focus()
+  jest.advanceTimersByTime(1000) // Advance past any show delay
+  fixture.detectChanges()
+  await fixture.whenStable()
+
+  const showsOnFocus = await harness.isTooltipVisible()
+
+  await harness.blur()
+  jest.advanceTimersByTime(1000) // Advance past any hide delay
+  fixture.detectChanges()
+  await fixture.whenStable()
+
+  // Assert based on expected trigger type
+  switch (expectedTrigger) {
+    case 'hover':
+      expect(showsOnHover).toBe(true)
+      expect(showsOnFocus).toBe(false)
+      break
+    case 'focus':
+      expect(showsOnHover).toBe(false)
+      expect(showsOnFocus).toBe(true)
+      break
+    case 'both':
+      expect(showsOnHover).toBe(true)
+      expect(showsOnFocus).toBe(true)
+      break
   }
 }
 
 /**
- * Test data for different tooltip configurations
+ * Tests tooltip disabled state by attempting to trigger and verifying no tooltip appears
  */
-export const tooltipTestData = {
-  placements: [
-    'top', 'top-start', 'top-end',
-    'bottom', 'bottom-start', 'bottom-end',
-    'left', 'left-start', 'left-end',
-    'right', 'right-start', 'right-end',
-    'auto'
-  ] as const,
+export async function testTooltipDisabledBehavior(
+  harness: TooltipHarness,
+  fixture: ComponentFixture<any>
+): Promise<void> {
+  // Try hover
+  await harness.hover()
+  jest.advanceTimersByTime(1000) // Advance past any show delay
+  fixture.detectChanges()
+  await fixture.whenStable()
 
-  triggers: ['hover', 'focus', 'both'] as const,
+  expect(await harness.isTooltipVisible()).toBe(false)
 
-  delays: {
-    fast: { show: 100, hide: 50 },
-    normal: { show: 500, hide: 0 },
-    slow: { show: 1000, hide: 200 }
-  },
+  await harness.mouseAway()
 
-  content: {
-    short: 'Short tooltip',
-    medium: 'This is a medium length tooltip with more information',
-    long: 'This is a very long tooltip that contains a lot of information and should test how the tooltip handles longer content that might wrap to multiple lines'
-  }
+  // Try focus
+  await harness.focus()
+  jest.advanceTimersByTime(1000) // Advance past any show delay
+  fixture.detectChanges()
+  await fixture.whenStable()
+
+  expect(await harness.isTooltipVisible()).toBe(false)
+
+  await harness.blur()
 }
 
 /**
- * Helper to wait for tooltip animations
+ * Helper function to setup Jest timers for tooltip timing tests
  */
-export function waitForTooltipAnimation(duration: number = 200): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, duration))
+export function setupTooltipTimers(): void {
+  jest.useFakeTimers()
 }
 
 /**
- * Helper to simulate mouse events for testing
+ * Helper function to cleanup Jest timers after tooltip timing tests
  */
-export function simulateMouseEvent(element: HTMLElement, eventType: string, options: any = {}) {
-  const event = new MouseEvent(eventType, {
-    bubbles: true,
-    cancelable: true,
-    view: window,
-    ...options
-  })
-  element.dispatchEvent(event)
-}
-
-/**
- * Helper to simulate focus events for testing
- */
-export function simulateFocusEvent(element: HTMLElement, eventType: 'focus' | 'blur') {
-  const event = new FocusEvent(eventType, {
-    bubbles: true,
-    cancelable: true,
-    view: window
-  })
-  element.dispatchEvent(event)
+export function cleanupTooltipTimers(): void {
+  jest.runOnlyPendingTimers()
+  jest.useRealTimers()
 }

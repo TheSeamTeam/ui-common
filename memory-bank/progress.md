@@ -46,10 +46,14 @@
 - **Progress**: Progress bars and circles
 - **Popover**: Tooltip and popover components
 - **Tooltip**: ✅ COMPLETED - Custom tooltip directive (ngbTooltip replacement)
-  - **Status**: Full implementation with comprehensive testing
+  - **Status**: Full implementation with comprehensive testing and harness fixes
   - **Features**: String/template content, 12 placements, triggers, delays, accessibility
   - **Testing**: Jest unit tests, Storybook stories with play functions, testing harness
   - **Migration**: Drop-in replacement for ngbTooltip with identical API
+  - **Recent Fix**: ✅ COMPLETED - Tooltip harness reliability improvements
+    - **Problem**: Harness methods relied on attributes that Angular doesn't set for bracketed inputs
+    - **Solution**: Removed unreliable attribute-based methods, focused on user-facing interactions
+    - **Improvements**: Better tooltip targeting using aria-describedby, simplified API
 - **Carousel**: Image/content carousel
 
 #### Utilities

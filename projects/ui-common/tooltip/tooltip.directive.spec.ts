@@ -1,16 +1,13 @@
 import { Component, TemplateRef, ViewChild } from '@angular/core'
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing'
+import { ComponentFixture, TestBed } from '@angular/core/testing'
 import { OverlayModule } from '@angular/cdk/overlay'
 import { A11yModule } from '@angular/cdk/a11y'
 import { NoopAnimationsModule } from '@angular/platform-browser/animations'
-import { render, screen } from '@testing-library/angular'
+
 import userEvent from '@testing-library/user-event'
 
 import { SeamTooltipDirective } from './tooltip.directive'
-import { TooltipComponent } from './tooltip.component'
 import { TooltipModule } from './tooltip.module'
-import { TooltipHarness } from './testing/tooltip.harness'
-import { tooltipTestData } from './testing/tooltip-test-helpers'
 
 @Component({
   template: `
