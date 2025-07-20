@@ -164,10 +164,14 @@ export class SeamTooltipDirective implements OnInit, OnDestroy {
     this._compRef.instance._afterExit.pipe(
       takeUntil(this._ngUnsubscribe),
     ).subscribe(() => {
+      // Only detach if still attached (defensive check since _closeTooltip may have already detached)
       if (this._overlayRef?.hasAttached()) {
         this._overlayRef.detach()
       }
-      this._resetTooltip()
+      // Ensure cleanup happens even if _closeTooltip didn't run
+      if (this._active || this._overlayRef || this._compRef) {
+        this._resetTooltip()
+      }
     })
   }
 
@@ -176,21 +180,32 @@ export class SeamTooltipDirective implements OnInit, OnDestroy {
       return
     }
 
+    // Mark as inactive immediately to prevent new tooltips from being blocked
+    this._active = false
+
     // Detach the component from overlay, which will trigger the :leave animation
-    // The _afterExit subscription will handle final cleanup
     if (this._overlayRef?.hasAttached()) {
       this._overlayRef.detach()
     }
+
+    // Clear component reference since it's no longer active
+    this._compRef = null
   }
 
   private _resetTooltip(): void {
     this._active = false
-    this._overlayRef = null
+
+    // Dispose of overlay if it exists and hasn't been disposed already
+    if (this._overlayRef) {
+      this._overlayRef.dispose()
+      this._overlayRef = null
+    }
+
     this._compRef = null
   }
 
   public tooltipOpen(): boolean {
-    return this._overlayRef?.hasAttached() ?? false
+    return this._active && this._compRef !== null
   }
 
   private _getOverlayPosition(): PositionStrategy {

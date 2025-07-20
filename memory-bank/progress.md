@@ -50,10 +50,12 @@
   - **Features**: String/template content, 12 placements, triggers, delays, accessibility
   - **Testing**: Jest unit tests, Storybook stories with play functions, testing harness
   - **Migration**: Drop-in replacement for ngbTooltip with identical API
-  - **Recent Fix**: ✅ COMPLETED - Tooltip harness reliability improvements
-    - **Problem**: Harness methods relied on attributes that Angular doesn't set for bracketed inputs
-    - **Solution**: Removed unreliable attribute-based methods, focused on user-facing interactions
-    - **Improvements**: Better tooltip targeting using aria-describedby, simplified API
+  - **Recent Fix**: ✅ COMPLETED - Subsequent tooltip display bug fixed
+    - **Problem**: Tooltips would not show on second hover after first hover cycle
+    - **Root Cause**: Internal state not being reset properly after tooltip hide
+    - **Solution**: Modified `_closeTooltip()` to reset `_active` flag immediately while preserving animation cleanup
+    - **Files Modified**: `tooltip.directive.ts` - Updated state management logic
+    - **Testing**: Verified fix with custom test suite showing subsequent tooltips work correctly
 - **Carousel**: Image/content carousel
 
 #### Utilities
