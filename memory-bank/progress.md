@@ -45,7 +45,11 @@
 - **Loading**: Loading indicators and spinners
 - **Progress**: Progress bars and circles
 - **Popover**: Tooltip and popover components
-- **Tooltip**: Custom tooltip directive (ngbTooltip replacement)
+- **Tooltip**: ✅ COMPLETED - Custom tooltip directive (ngbTooltip replacement)
+  - **Status**: Full implementation with comprehensive testing
+  - **Features**: String/template content, 12 placements, triggers, delays, accessibility
+  - **Testing**: Jest unit tests, Storybook stories with play functions, testing harness
+  - **Migration**: Drop-in replacement for ngbTooltip with identical API
 - **Carousel**: Image/content carousel
 
 #### Utilities

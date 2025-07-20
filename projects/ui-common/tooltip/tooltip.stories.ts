@@ -153,7 +153,33 @@ export const AllPlacements: Story = {
         </div>
       </tooltip-story-wrapper>
     `
-  })
+  }),
+  play: async ({ canvasElement, fixture }) => {
+    // Test different placements using harness filters
+    const topHarness = await getHarness(TooltipHarness.with({ content: 'Top placement' }), {
+      canvasElement,
+      fixture
+    })
+    await expect(await topHarness.getPlacement()).toBe('top')
+
+    const bottomHarness = await getHarness(TooltipHarness.with({ content: 'Bottom placement' }), {
+      canvasElement,
+      fixture
+    })
+    await expect(await bottomHarness.getPlacement()).toBe('bottom')
+
+    const leftHarness = await getHarness(TooltipHarness.with({ content: 'Left placement' }), {
+      canvasElement,
+      fixture
+    })
+    await expect(await leftHarness.getPlacement()).toBe('left')
+
+    const rightHarness = await getHarness(TooltipHarness.with({ content: 'Right placement' }), {
+      canvasElement,
+      fixture
+    })
+    await expect(await rightHarness.getPlacement()).toBe('right')
+  }
 }
 
 export const TriggerTypes: Story = {
@@ -177,7 +203,33 @@ export const TriggerTypes: Story = {
                placeholder="Focus me for tooltip">
       </tooltip-story-wrapper>
     `
-  })
+  }),
+  play: async ({ canvasElement, fixture }) => {
+    // Test different trigger types
+    const hoverOnlyHarness = await getHarness(TooltipHarness.with({ content: 'Hover only' }), {
+      canvasElement,
+      fixture
+    })
+    await expect(await hoverOnlyHarness.getTrigger()).toBe('hover')
+
+    const focusOnlyHarness = await getHarness(TooltipHarness.with({ content: 'Focus only' }), {
+      canvasElement,
+      fixture
+    })
+    await expect(await focusOnlyHarness.getTrigger()).toBe('focus')
+
+    const bothTriggersHarness = await getHarness(TooltipHarness.with({ content: 'Both hover and focus' }), {
+      canvasElement,
+      fixture
+    })
+    await expect(await bothTriggersHarness.getTrigger()).toBe('both')
+
+    const inputHarness = await getHarness(TooltipHarness.with({ content: 'Input field tooltip' }), {
+      canvasElement,
+      fixture
+    })
+    await expect(await inputHarness.getTrigger()).toBe('focus')
+  }
 }
 
 export const TemplateContent: Story = {
@@ -255,7 +307,27 @@ export const DisabledState: Story = {
         </button>
       </tooltip-story-wrapper>
     `
-  })
+  }),
+  play: async ({ canvasElement, fixture }) => {
+    // Test enabled vs disabled tooltips
+    const enabledHarness = await getHarness(TooltipHarness.with({ content: 'This tooltip works' }), {
+      canvasElement,
+      fixture
+    })
+    await expect(await enabledHarness.isDisabled()).toBe(false)
+
+    const disabledHarness = await getHarness(TooltipHarness.with({ content: 'This won\'t show' }), {
+      canvasElement,
+      fixture
+    })
+    await expect(await disabledHarness.isDisabled()).toBe(true)
+
+    const disabledButtonHarness = await getHarness(TooltipHarness.with({ content: 'Disabled button with tooltip' }), {
+      canvasElement,
+      fixture
+    })
+    await expect(await disabledButtonHarness.isDisabled()).toBe(false) // Tooltip itself is not disabled, just the button
+  }
 }
 
 export const DelayConfiguration: Story = {
@@ -279,7 +351,37 @@ export const DelayConfiguration: Story = {
         </button>
       </tooltip-story-wrapper>
     `
-  })
+  }),
+  play: async ({ canvasElement, fixture }) => {
+    // Test different delay configurations
+    const instantHarness = await getHarness(TooltipHarness.with({ content: 'No delay' }), {
+      canvasElement,
+      fixture
+    })
+    await expect(await instantHarness.getShowDelay()).toBe(0)
+    await expect(await instantHarness.getHideDelay()).toBe(0)
+
+    const fastShowHarness = await getHarness(TooltipHarness.with({ content: 'Fast show, slow hide' }), {
+      canvasElement,
+      fixture
+    })
+    await expect(await fastShowHarness.getShowDelay()).toBe(100)
+    await expect(await fastShowHarness.getHideDelay()).toBe(1000)
+
+    const slowShowHarness = await getHarness(TooltipHarness.with({ content: 'Slow show, fast hide' }), {
+      canvasElement,
+      fixture
+    })
+    await expect(await slowShowHarness.getShowDelay()).toBe(1500)
+    await expect(await slowShowHarness.getHideDelay()).toBe(100)
+
+    const bothSlowHarness = await getHarness(TooltipHarness.with({ content: 'Both slow' }), {
+      canvasElement,
+      fixture
+    })
+    await expect(await bothSlowHarness.getShowDelay()).toBe(1000)
+    await expect(await bothSlowHarness.getHideDelay()).toBe(1000)
+  }
 }
 
 export const AccessibilityDemo: Story = {

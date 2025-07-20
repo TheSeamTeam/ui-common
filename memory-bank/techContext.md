@@ -87,7 +87,9 @@
 - **Standalone Components**: Self-contained with minimal dependencies
 - **Service Layer**: Shared business logic and data management
 - **Model Layer**: TypeScript interfaces and types
-- **Public API**: Controlled exports through public_api.ts
+- **Public API**: Each component package has its own public_api.ts for exports
+  - **Main public_api.ts**: The root `projects/ui-common/public_api.ts` should remain empty
+  - **Package public-api.ts**: Individual packages export through their own public-api.ts files
 
 #### Testing Strategy
 - **Unit Tests**: Component and service testing with Jest

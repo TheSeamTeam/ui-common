@@ -183,8 +183,11 @@ export class SeamTooltipDirective implements OnInit, OnDestroy {
       return
     }
 
-    // Trigger exit animation
-    this._compRef.destroy()
+    // Detach the component from overlay, which will trigger the :leave animation
+    // The _afterExit subscription will handle final cleanup
+    if (this._overlayRef?.hasAttached()) {
+      this._overlayRef.detach()
+    }
   }
 
   private _resetTooltip(): void {
