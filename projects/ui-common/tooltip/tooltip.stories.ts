@@ -373,3 +373,35 @@ export const AccessibilityDemo: Story = {
     `
   })
 }
+
+export const PlacementBug: Story = {
+  render: () => ({
+    template: `
+      <tooltip-story-wrapper>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; max-width: 600px; margin-top: 200px;">
+          <button class="btn btn-outline-primary" seamTooltip="Top placement" placement="right-end">Top</button>
+        </div>
+      </tooltip-story-wrapper>
+    `
+  }),
+  play: async ({ canvasElement, fixture }) => {
+    // Test tooltip visibility for different placements
+    const topHarness = await getHarness(TooltipHarness, { canvasElement, fixture })
+
+    await topHarness.hover()
+    await topHarness.waitForTooltipToShow()
+
+    // Verify tooltip appears and has content
+    await expect(await topHarness.isTooltipVisible()).toBe(true)
+    // await expect(await topHarness.getVisibleTooltipText()).toBe('Top placement')
+
+    // Check tooltip position relative to trigger
+    const tooltipDimensions = await topHarness.getTooltipDimensions()
+    const triggerDimensions = await topHarness.getTriggerDimensions()
+    await expect(triggerDimensions?.top).toBeGreaterThanOrEqual((tooltipDimensions?.top ?? 0) + (tooltipDimensions?.height ?? 0))
+
+    await topHarness.mouseAway()
+    await topHarness.waitForTooltipToHide()
+    await expect(await topHarness.isTooltipVisible()).toBe(false)
+  }
+}

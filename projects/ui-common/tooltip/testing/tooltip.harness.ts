@@ -1,4 +1,4 @@
-import { ComponentHarness, HarnessPredicate, BaseHarnessFilters } from '@angular/cdk/testing'
+import { ComponentHarness, HarnessPredicate, BaseHarnessFilters, ElementDimensions } from '@angular/cdk/testing'
 
 export interface TooltipHarnessFilters extends BaseHarnessFilters {
   // Empty - use selector-based filtering like Angular Material
@@ -106,5 +106,22 @@ export class TooltipHarness extends ComponentHarness {
       await new Promise(resolve => setTimeout(resolve, 50))
     }
     throw new Error(`Tooltip did not hide within ${timeout}ms`)
+  }
+
+  async getTriggerDimensions(): Promise<ElementDimensions | null> {
+    const host = await this.host()
+    return host.getDimensions()
+  }
+
+  async getTooltipDimensions(): Promise<ElementDimensions | null> {
+    const tooltipId = await this._getTooltipId()
+    if (!tooltipId) {
+      return null
+    }
+    const tooltip = await this.documentRootLocatorFactory().locatorForOptional(`#${tooltipId}.tooltip.show`)()
+    if (!tooltip) {
+      return null
+    }
+    return tooltip.getDimensions()
   }
 }

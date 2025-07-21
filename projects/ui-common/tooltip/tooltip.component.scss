@@ -3,4 +3,5 @@
 :host-context(.cdk-overlay-pane) .tooltip {
   min-width: max-content; // Prevents premature wrapping
   max-width: 300px; // Still respects reasonable maximum
+  position: relative;
 }
