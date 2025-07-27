@@ -49,6 +49,7 @@ export class TooltipComponent implements OnDestroy {
   @Input() tooltipClass?: string
   @Input() context?: any
   @Input() placement: TooltipPlacement = 'top'
+  @Input() actualPlacement?: TooltipPlacement // The actual placement determined by CDK Overlay
   @Input() tooltipId?: string
   @Input() triggerElement?: HTMLElement
 
@@ -87,7 +88,10 @@ export class TooltipComponent implements OnDestroy {
   }
 
   private getPlacementClass(): string {
-    switch (this.placement) {
+    // Use actualPlacement if available, otherwise fall back to initial placement
+    const effectivePlacement = this.actualPlacement || this.placement
+
+    switch (effectivePlacement) {
       case 'top':
       case 'top-left':
       case 'top-right':
@@ -116,7 +120,8 @@ export class TooltipComponent implements OnDestroy {
       return
     }
 
-    const placement = this.placement
+    // Use actualPlacement if available, otherwise fall back to initial placement
+    const effectivePlacement = this.actualPlacement || this.placement
     const paddingOffset = 8 // Default padding offset for arrow positioning
     const minDimension = 50 // Minimum tooltip width/height to use trigger-aligned positioning
 
@@ -125,9 +130,9 @@ export class TooltipComponent implements OnDestroy {
     const arrowRect: DOMRect = this.arrowElement.nativeElement.getBoundingClientRect()
 
     // Default arrow offset (8px padding + half arrow size)
-    const defaultArrowOffset = paddingOffset + (placement.startsWith('top') || placement.startsWith('bottom') ? arrowRect.width / 2 : arrowRect.height / 2)
+    const defaultArrowOffset = paddingOffset + (effectivePlacement.startsWith('top') || effectivePlacement.startsWith('bottom') ? arrowRect.width / 2 : arrowRect.height / 2)
 
-    if (placement.startsWith('top') || placement.startsWith('bottom')) {
+    if (effectivePlacement.startsWith('top') || effectivePlacement.startsWith('bottom')) {
       // Check if tooltip is too narrow for trigger-aligned positioning
       if (tooltipRect.width < minDimension) {
         const arrowLeft = (tooltipRect.width - arrowRect.width) / 2
@@ -151,7 +156,7 @@ export class TooltipComponent implements OnDestroy {
       const arrowLeft = Math.min(maxArrowLeft, Math.max(defaultArrowOffset, adjustedArrowLeft))
 
       this.arrowElement.nativeElement.style.left = `${arrowLeft}px`
-    } else if (placement.startsWith('left') || placement.startsWith('right')) {
+    } else if (effectivePlacement.startsWith('left') || effectivePlacement.startsWith('right')) {
       // Check if tooltip is too short for trigger-aligned positioning
       if (tooltipRect.height < minDimension) {
         const arrowTop = (tooltipRect.height - arrowRect.height) / 2

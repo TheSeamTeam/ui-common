@@ -1,6 +1,6 @@
 import { coerceBooleanProperty, coerceNumberProperty } from '@angular/cdk/coercion'
 import { ESCAPE } from '@angular/cdk/keycodes'
-import { ConnectionPositionPair, Overlay, OverlayRef, PositionStrategy } from '@angular/cdk/overlay'
+import { ConnectionPositionPair, FlexibleConnectedPositionStrategy, Overlay, OverlayRef, PositionStrategy } from '@angular/cdk/overlay'
 import { ComponentPortal } from '@angular/cdk/portal'
 import { ComponentRef, Directive, ElementRef, Input, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from '@angular/core'
 import { BehaviorSubject, fromEvent, Subject } from 'rxjs'
@@ -9,6 +9,7 @@ import { takeUntil, filter } from 'rxjs/operators'
 import { TooltipComponent, TooltipPlacement } from './tooltip.component'
 
 export type TooltipTrigger = 'hover' | 'focus' | 'both'
+export type TooltipPlacementInput = TooltipPlacement | TooltipPlacement[] | string
 
 @Directive({
   selector: '[seamTooltip]',
@@ -26,7 +27,7 @@ export class SeamTooltipDirective implements OnInit, OnDestroy {
 
   @Input() tooltipClass?: string
 
-  @Input() placement: TooltipPlacement = 'top'
+  @Input() placement: TooltipPlacementInput = 'top'
 
   @Input() container?: string | HTMLElement
 
@@ -146,20 +147,33 @@ export class SeamTooltipDirective implements OnInit, OnDestroy {
 
     this._active = true
 
+    const positionStrategy = this._getOverlayPosition()
     this._overlayRef = this._overlay.create({
-      positionStrategy: this._getOverlayPosition(),
+      positionStrategy,
       scrollStrategy: this._overlay.scrollStrategies.reposition(),
     })
 
     this._compRef = this._overlayRef.attach(new ComponentPortal(TooltipComponent, this._viewContainerRef))
 
     // Set component properties
+    const parsedPlacements = this._parsePlacementInput(this.placement)
     this._compRef.instance.content = this.seamTooltip
     this._compRef.instance.tooltipClass = this.tooltipClass
-    this._compRef.instance.placement = this.placement
+    this._compRef.instance.placement = parsedPlacements[0] || 'top' // Use first placement for initial display
     this._compRef.instance.tooltipId = this._tooltipId
     this._compRef.instance.triggerElement = this._elementRef.nativeElement
     this._compRef.changeDetectorRef.markForCheck()
+
+    // Listen for position changes to update placement class
+    positionStrategy.positionChanges.pipe(
+      takeUntil(this._ngUnsubscribe),
+    ).subscribe(positionChange => {
+      if (this._compRef && positionChange.connectionPair) {
+        const actualPlacement = this._getPlacementFromConnectionPair(positionChange.connectionPair)
+        this._compRef.instance.actualPlacement = actualPlacement
+        this._compRef.changeDetectorRef.markForCheck()
+      }
+    })
 
     // Listen for tooltip exit animation
     this._compRef.instance._afterExit.pipe(
@@ -209,7 +223,35 @@ export class SeamTooltipDirective implements OnInit, OnDestroy {
     return this._active && this._compRef !== null
   }
 
-  private _getOverlayPosition(): PositionStrategy {
+  private _parsePlacementInput(placement: TooltipPlacementInput): TooltipPlacement[] {
+    if (typeof placement === 'string') {
+      if (placement === 'auto') {
+        return ['auto']
+      }
+      // Parse space-delimited string
+      const placements = placement.split(/\s+/).filter(p => p.trim())
+      return placements.filter(p => this._isValidPlacement(p)) as TooltipPlacement[]
+    }
+
+    if (Array.isArray(placement)) {
+      return placement.filter(p => this._isValidPlacement(p))
+    }
+
+    return [placement]
+  }
+
+  private _isValidPlacement(placement: string): placement is TooltipPlacement {
+    const validPlacements: TooltipPlacement[] = [
+      'top', 'top-left', 'top-right',
+      'bottom', 'bottom-left', 'bottom-right',
+      'left', 'left-top', 'left-bottom',
+      'right', 'right-top', 'right-bottom',
+      'auto'
+    ]
+    return validPlacements.includes(placement as TooltipPlacement)
+  }
+
+  private _getOverlayPosition(): FlexibleConnectedPositionStrategy {
     const positions = this._getPositions()
 
     return this._overlay.position()
@@ -220,67 +262,55 @@ export class SeamTooltipDirective implements OnInit, OnDestroy {
   }
 
   private _getPositions(): ConnectionPositionPair[] {
-    switch (this.placement) {
+    const parsedPlacements = this._parsePlacementInput(this.placement)
+
+    // If 'auto' is specified or no valid placements, return all positions
+    if (parsedPlacements.includes('auto') || parsedPlacements.length === 0) {
+      return [
+        { originX: 'center', originY: 'top', overlayX: 'center', overlayY: 'bottom' },
+        { originX: 'center', originY: 'bottom', overlayX: 'center', overlayY: 'top' },
+        { originX: 'end', originY: 'center', overlayX: 'start', overlayY: 'center' },
+        { originX: 'start', originY: 'center', overlayX: 'end', overlayY: 'center' },
+      ]
+    }
+
+    // Return positions for specified placements only
+    const positions: ConnectionPositionPair[] = []
+
+    for (const placement of parsedPlacements) {
+      const placementPositions = this._getPositionForPlacement(placement)
+      positions.push(...placementPositions)
+    }
+
+    return positions
+  }
+
+  private _getPositionForPlacement(placement: TooltipPlacement): ConnectionPositionPair[] {
+    switch (placement) {
       case 'top':
-        return [
-          { originX: 'center', originY: 'top', overlayX: 'center', overlayY: 'bottom' },
-          { originX: 'center', originY: 'bottom', overlayX: 'center', overlayY: 'top' },
-        ]
+        return [{ originX: 'center', originY: 'top', overlayX: 'center', overlayY: 'bottom' }]
       case 'top-left':
-        return [
-          { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom' },
-          { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top' },
-        ]
+        return [{ originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom' }]
       case 'top-right':
-        return [
-          { originX: 'end', originY: 'top', overlayX: 'end', overlayY: 'bottom' },
-          { originX: 'end', originY: 'bottom', overlayX: 'end', overlayY: 'top' },
-        ]
+        return [{ originX: 'end', originY: 'top', overlayX: 'end', overlayY: 'bottom' }]
       case 'bottom':
-        return [
-          { originX: 'center', originY: 'bottom', overlayX: 'center', overlayY: 'top' },
-          { originX: 'center', originY: 'top', overlayX: 'center', overlayY: 'bottom' },
-        ]
+        return [{ originX: 'center', originY: 'bottom', overlayX: 'center', overlayY: 'top' }]
       case 'bottom-left':
-        return [
-          { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top' },
-          { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom' },
-        ]
+        return [{ originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top' }]
       case 'bottom-right':
-        return [
-          { originX: 'end', originY: 'bottom', overlayX: 'end', overlayY: 'top' },
-          { originX: 'end', originY: 'top', overlayX: 'end', overlayY: 'bottom' },
-        ]
+        return [{ originX: 'end', originY: 'bottom', overlayX: 'end', overlayY: 'top' }]
       case 'left':
-        return [
-          { originX: 'start', originY: 'center', overlayX: 'end', overlayY: 'center' },
-          { originX: 'end', originY: 'center', overlayX: 'start', overlayY: 'center' },
-        ]
+        return [{ originX: 'start', originY: 'center', overlayX: 'end', overlayY: 'center' }]
       case 'left-top':
-        return [
-          { originX: 'start', originY: 'top', overlayX: 'end', overlayY: 'top' },
-          { originX: 'end', originY: 'top', overlayX: 'start', overlayY: 'top' },
-        ]
+        return [{ originX: 'start', originY: 'top', overlayX: 'end', overlayY: 'top' }]
       case 'left-bottom':
-        return [
-          { originX: 'start', originY: 'bottom', overlayX: 'end', overlayY: 'bottom' },
-          { originX: 'end', originY: 'bottom', overlayX: 'start', overlayY: 'bottom' },
-        ]
+        return [{ originX: 'start', originY: 'bottom', overlayX: 'end', overlayY: 'bottom' }]
       case 'right':
-        return [
-          { originX: 'end', originY: 'center', overlayX: 'start', overlayY: 'center' },
-          { originX: 'start', originY: 'center', overlayX: 'end', overlayY: 'center' },
-        ]
+        return [{ originX: 'end', originY: 'center', overlayX: 'start', overlayY: 'center' }]
       case 'right-top':
-        return [
-          { originX: 'end', originY: 'top', overlayX: 'start', overlayY: 'top' },
-          { originX: 'start', originY: 'top', overlayX: 'end', overlayY: 'top' },
-        ]
+        return [{ originX: 'end', originY: 'top', overlayX: 'start', overlayY: 'top' }]
       case 'right-bottom':
-        return [
-          { originX: 'end', originY: 'bottom', overlayX: 'start', overlayY: 'bottom' },
-          { originX: 'start', originY: 'bottom', overlayX: 'end', overlayY: 'bottom' },
-        ]
+        return [{ originX: 'end', originY: 'bottom', overlayX: 'start', overlayY: 'bottom' }]
       case 'auto':
       default:
         return [
@@ -290,5 +320,40 @@ export class SeamTooltipDirective implements OnInit, OnDestroy {
           { originX: 'start', originY: 'center', overlayX: 'end', overlayY: 'center' },
         ]
     }
+  }
+
+  private _getPlacementFromConnectionPair(connectionPair: ConnectionPositionPair): TooltipPlacement {
+    const { originX, originY, overlayX, overlayY } = connectionPair
+
+    // Top placements (overlay below origin)
+    if (originY === 'top' && overlayY === 'bottom') {
+      if (originX === 'start' && overlayX === 'start') return 'top-left'
+      if (originX === 'end' && overlayX === 'end') return 'top-right'
+      if (originX === 'center' && overlayX === 'center') return 'top'
+    }
+
+    // Bottom placements (overlay above origin)
+    if (originY === 'bottom' && overlayY === 'top') {
+      if (originX === 'start' && overlayX === 'start') return 'bottom-left'
+      if (originX === 'end' && overlayX === 'end') return 'bottom-right'
+      if (originX === 'center' && overlayX === 'center') return 'bottom'
+    }
+
+    // Left placements (overlay to the right of origin)
+    if (originX === 'start' && overlayX === 'end') {
+      if (originY === 'top' && overlayY === 'top') return 'left-top'
+      if (originY === 'bottom' && overlayY === 'bottom') return 'left-bottom'
+      if (originY === 'center' && overlayY === 'center') return 'left'
+    }
+
+    // Right placements (overlay to the left of origin)
+    if (originX === 'end' && overlayX === 'start') {
+      if (originY === 'top' && overlayY === 'top') return 'right-top'
+      if (originY === 'bottom' && overlayY === 'bottom') return 'right-bottom'
+      if (originY === 'center' && overlayY === 'center') return 'right'
+    }
+
+    // Default fallback
+    return 'top'
   }
 }
