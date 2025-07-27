@@ -1,7 +1,5 @@
-// Fix for CDK overlay text wrapping issue
-// The cdk-overlay-pane has position: absolute which causes aggressive text wrapping
-:host-context(.cdk-overlay-pane) .tooltip {
-  min-width: max-content; // Prevents premature wrapping
-  max-width: 300px; // Still respects reasonable maximum
-  position: relative;
+::ng-deep {
+  .cdk-overlay-pane .tooltip {
+    position: relative;
+  }
 }

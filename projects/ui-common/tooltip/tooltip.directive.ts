@@ -158,6 +158,7 @@ export class SeamTooltipDirective implements OnInit, OnDestroy {
     this._compRef.instance.tooltipClass = this.tooltipClass
     this._compRef.instance.placement = this.placement
     this._compRef.instance.tooltipId = this._tooltipId
+    this._compRef.instance.triggerElement = this._elementRef.nativeElement
     this._compRef.changeDetectorRef.markForCheck()
 
     // Listen for tooltip exit animation
@@ -216,7 +217,6 @@ export class SeamTooltipDirective implements OnInit, OnDestroy {
       .withPositions(positions)
       .withFlexibleDimensions(false)
       .withPush(true)
-      .withViewportMargin(8)
   }
 
   private _getPositions(): ConnectionPositionPair[] {
@@ -226,12 +226,12 @@ export class SeamTooltipDirective implements OnInit, OnDestroy {
           { originX: 'center', originY: 'top', overlayX: 'center', overlayY: 'bottom' },
           { originX: 'center', originY: 'bottom', overlayX: 'center', overlayY: 'top' },
         ]
-      case 'top-start':
+      case 'top-left':
         return [
           { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom' },
           { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top' },
         ]
-      case 'top-end':
+      case 'top-right':
         return [
           { originX: 'end', originY: 'top', overlayX: 'end', overlayY: 'bottom' },
           { originX: 'end', originY: 'bottom', overlayX: 'end', overlayY: 'top' },
@@ -241,12 +241,12 @@ export class SeamTooltipDirective implements OnInit, OnDestroy {
           { originX: 'center', originY: 'bottom', overlayX: 'center', overlayY: 'top' },
           { originX: 'center', originY: 'top', overlayX: 'center', overlayY: 'bottom' },
         ]
-      case 'bottom-start':
+      case 'bottom-left':
         return [
           { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top' },
           { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom' },
         ]
-      case 'bottom-end':
+      case 'bottom-right':
         return [
           { originX: 'end', originY: 'bottom', overlayX: 'end', overlayY: 'top' },
           { originX: 'end', originY: 'top', overlayX: 'end', overlayY: 'bottom' },
@@ -256,12 +256,12 @@ export class SeamTooltipDirective implements OnInit, OnDestroy {
           { originX: 'start', originY: 'center', overlayX: 'end', overlayY: 'center' },
           { originX: 'end', originY: 'center', overlayX: 'start', overlayY: 'center' },
         ]
-      case 'left-start':
+      case 'left-top':
         return [
           { originX: 'start', originY: 'top', overlayX: 'end', overlayY: 'top' },
           { originX: 'end', originY: 'top', overlayX: 'start', overlayY: 'top' },
         ]
-      case 'left-end':
+      case 'left-bottom':
         return [
           { originX: 'start', originY: 'bottom', overlayX: 'end', overlayY: 'bottom' },
           { originX: 'end', originY: 'bottom', overlayX: 'start', overlayY: 'bottom' },
@@ -271,12 +271,12 @@ export class SeamTooltipDirective implements OnInit, OnDestroy {
           { originX: 'end', originY: 'center', overlayX: 'start', overlayY: 'center' },
           { originX: 'start', originY: 'center', overlayX: 'end', overlayY: 'center' },
         ]
-      case 'right-start':
+      case 'right-top':
         return [
           { originX: 'end', originY: 'top', overlayX: 'start', overlayY: 'top' },
           { originX: 'start', originY: 'top', overlayX: 'end', overlayY: 'top' },
         ]
-      case 'right-end':
+      case 'right-bottom':
         return [
           { originX: 'end', originY: 'bottom', overlayX: 'start', overlayY: 'bottom' },
           { originX: 'start', originY: 'bottom', overlayX: 'end', overlayY: 'bottom' },

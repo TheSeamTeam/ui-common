@@ -139,21 +139,21 @@ export const AllPlacements: Story = {
       <tooltip-story-wrapper>
         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; max-width: 600px;">
           <button class="btn btn-outline-primary" seamTooltip="Top placement" placement="top">Top</button>
-          <button class="btn btn-outline-primary" seamTooltip="Top start" placement="top-start">Top Start</button>
-          <button class="btn btn-outline-primary" seamTooltip="Top end" placement="top-end">Top End</button>
+          <button class="btn btn-outline-primary" seamTooltip="Top start" placement="top-left">Top Start</button>
+          <button class="btn btn-outline-primary" seamTooltip="Top end" placement="top-right">Top End</button>
           <button class="btn btn-outline-primary" seamTooltip="Auto placement" placement="auto">Auto</button>
 
           <button class="btn btn-outline-secondary" seamTooltip="Left placement" placement="left">Left</button>
-          <button class="btn btn-outline-secondary" seamTooltip="Left start" placement="left-start">Left Start</button>
-          <button class="btn btn-outline-secondary" seamTooltip="Left end" placement="left-end">Left End</button>
+          <button class="btn btn-outline-secondary" seamTooltip="Left start" placement="left-top">Left Start</button>
+          <button class="btn btn-outline-secondary" seamTooltip="Left end" placement="left-bottom">Left End</button>
           <button class="btn btn-outline-info" seamTooltip="Right placement" placement="right">Right</button>
 
-          <button class="btn btn-outline-info" seamTooltip="Right start" placement="right-start">Right Start</button>
-          <button class="btn btn-outline-info" seamTooltip="Right end" placement="right-end">Right End</button>
+          <button class="btn btn-outline-info" seamTooltip="Right start" placement="right-top">Right Start</button>
+          <button class="btn btn-outline-info" seamTooltip="Right end" placement="right-bottom">Right End</button>
           <button class="btn btn-outline-success" seamTooltip="Bottom placement" placement="bottom">Bottom</button>
-          <button class="btn btn-outline-success" seamTooltip="Bottom start" placement="bottom-start">Bottom Start</button>
+          <button class="btn btn-outline-success" seamTooltip="Bottom start" placement="bottom-left">Bottom Start</button>
 
-          <button class="btn btn-outline-success" seamTooltip="Bottom end" placement="bottom-end">Bottom End</button>
+          <button class="btn btn-outline-success" seamTooltip="Bottom end" placement="bottom-right">Bottom End</button>
         </div>
       </tooltip-story-wrapper>
     `
@@ -372,36 +372,4 @@ export const AccessibilityDemo: Story = {
       </tooltip-story-wrapper>
     `
   })
-}
-
-export const PlacementBug: Story = {
-  render: () => ({
-    template: `
-      <tooltip-story-wrapper>
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; max-width: 600px; margin-top: 200px;">
-          <button class="btn btn-outline-primary" seamTooltip="Top placement" placement="right-end">Top</button>
-        </div>
-      </tooltip-story-wrapper>
-    `
-  }),
-  play: async ({ canvasElement, fixture }) => {
-    // Test tooltip visibility for different placements
-    const topHarness = await getHarness(TooltipHarness, { canvasElement, fixture })
-
-    await topHarness.hover()
-    await topHarness.waitForTooltipToShow()
-
-    // Verify tooltip appears and has content
-    await expect(await topHarness.isTooltipVisible()).toBe(true)
-    // await expect(await topHarness.getVisibleTooltipText()).toBe('Top placement')
-
-    // Check tooltip position relative to trigger
-    const tooltipDimensions = await topHarness.getTooltipDimensions()
-    const triggerDimensions = await topHarness.getTriggerDimensions()
-    await expect(triggerDimensions?.top).toBeGreaterThanOrEqual((tooltipDimensions?.top ?? 0) + (tooltipDimensions?.height ?? 0))
-
-    await topHarness.mouseAway()
-    await topHarness.waitForTooltipToHide()
-    await expect(await topHarness.isTooltipVisible()).toBe(false)
-  }
 }

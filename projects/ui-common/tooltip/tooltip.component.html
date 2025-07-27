@@ -1,4 +1,4 @@
-<div class="tooltip-inner" [ngClass]="tooltipClass">
+<div #inner class="tooltip-inner" [ngClass]="tooltipClass">
   <!-- String content -->
   <span *ngIf="isStringContent">{{ content }}</span>
 
@@ -7,4 +7,4 @@
     <ng-container *ngTemplateOutlet="templateContent; context: context"></ng-container>
   </ng-container>
 </div>
-<div class="arrow"></div>
+<div #arrow class="arrow"></div>

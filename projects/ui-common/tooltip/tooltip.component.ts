@@ -2,18 +2,20 @@ import { AnimationEvent, transition, trigger, style, animate } from '@angular/an
 import {
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
   HostBinding,
   Input,
   OnDestroy,
   TemplateRef,
+  ViewChild,
 } from '@angular/core'
 import { Subject } from 'rxjs'
 
 export type TooltipPlacement =
-  | 'top' | 'top-start' | 'top-end'
-  | 'bottom' | 'bottom-start' | 'bottom-end'
-  | 'left' | 'left-start' | 'left-end'
-  | 'right' | 'right-start' | 'right-end'
+  | 'top' | 'top-left' | 'top-right'
+  | 'bottom' | 'bottom-left' | 'bottom-right'
+  | 'left' | 'left-top' | 'left-bottom'
+  | 'right' | 'right-top' | 'right-bottom'
   | 'auto'
 
 @Component({
@@ -48,6 +50,7 @@ export class TooltipComponent implements OnDestroy {
   @Input() context?: any
   @Input() placement: TooltipPlacement = 'top'
   @Input() tooltipId?: string
+  @Input() triggerElement?: HTMLElement
 
   /** A subject emitting after the tooltip enters the view. */
   readonly _afterEnter: Subject<void> = new Subject()
@@ -59,8 +62,12 @@ export class TooltipComponent implements OnDestroy {
   get hostClasses(): string {
     const baseClass = 'tooltip show'
     const placementClass = this.getPlacementClass()
+    this._setArrowPosition()
     return `${baseClass} ${placementClass}`
   }
+
+  @ViewChild('inner', { static: true }) innerElement!: ElementRef
+  @ViewChild('arrow', { static: true }) arrowElement!: ElementRef
 
   ngOnDestroy() {
     this._afterEnter.complete()
@@ -82,25 +89,92 @@ export class TooltipComponent implements OnDestroy {
   private getPlacementClass(): string {
     switch (this.placement) {
       case 'top':
-      case 'top-start':
-      case 'top-end':
+      case 'top-left':
+      case 'top-right':
         return 'bs-tooltip-top'
       case 'bottom':
-      case 'bottom-start':
-      case 'bottom-end':
+      case 'bottom-left':
+      case 'bottom-right':
         return 'bs-tooltip-bottom'
       case 'left':
-      case 'left-start':
-      case 'left-end':
+      case 'left-top':
+      case 'left-bottom':
         return 'bs-tooltip-left'
       case 'right':
-      case 'right-start':
-      case 'right-end':
+      case 'right-top':
+      case 'right-bottom':
         return 'bs-tooltip-right'
       case 'auto':
         return 'bs-tooltip-auto'
       default:
         return 'bs-tooltip-top'
+    }
+  }
+
+  private _setArrowPosition() {
+    if (!this.innerElement || !this.arrowElement || !this.triggerElement) {
+      return
+    }
+
+    const placement = this.placement
+    const paddingOffset = 8 // Default padding offset for arrow positioning
+    const minDimension = 50 // Minimum tooltip width/height to use trigger-aligned positioning
+
+    const triggerRect = this.triggerElement.getBoundingClientRect()
+    const tooltipRect: DOMRect = this.innerElement.nativeElement.getBoundingClientRect()
+    const arrowRect: DOMRect = this.arrowElement.nativeElement.getBoundingClientRect()
+
+    // Default arrow offset (8px padding + half arrow size)
+    const defaultArrowOffset = paddingOffset + (placement.startsWith('top') || placement.startsWith('bottom') ? arrowRect.width / 2 : arrowRect.height / 2)
+
+    if (placement.startsWith('top') || placement.startsWith('bottom')) {
+      // Check if tooltip is too narrow for trigger-aligned positioning
+      if (tooltipRect.width < minDimension) {
+        const arrowLeft = (tooltipRect.width - arrowRect.width) / 2
+        this.arrowElement.nativeElement.style.left = `${arrowLeft}px`
+        return
+      }
+
+      // Horizontal arrow positioning for top-* and bottom-* placements
+      const triggerCenter = triggerRect.left + triggerRect.width / 2
+      const adjustedArrowLeft = triggerCenter - tooltipRect.left - arrowRect.width / 2
+      const arrowCenter = tooltipRect.left + adjustedArrowLeft + arrowRect.width / 2
+
+      // If arrow's center is outside trigger's horizontal bounds, use default
+      if (arrowCenter < triggerRect.left || arrowCenter > triggerRect.right) {
+        this.arrowElement.nativeElement.style.left = `${defaultArrowOffset}px`
+        return
+      }
+
+      // Ensure arrow's left is within rounded corner bounds
+      const maxArrowLeft = (tooltipRect.width - arrowRect.width) - defaultArrowOffset
+      const arrowLeft = Math.min(maxArrowLeft, Math.max(defaultArrowOffset, adjustedArrowLeft))
+
+      this.arrowElement.nativeElement.style.left = `${arrowLeft}px`
+    } else if (placement.startsWith('left') || placement.startsWith('right')) {
+      // Check if tooltip is too short for trigger-aligned positioning
+      if (tooltipRect.height < minDimension) {
+        const arrowTop = (tooltipRect.height - arrowRect.height) / 2
+        this.arrowElement.nativeElement.style.top = `${arrowTop}px`
+        return
+      }
+
+      // Vertical arrow positioning for left-* and right-* placements
+      const triggerCenter = triggerRect.top + triggerRect.height / 2
+      const adjustedArrowTop = triggerCenter - tooltipRect.top - arrowRect.height / 2
+      const arrowCenter = tooltipRect.top + adjustedArrowTop + arrowRect.height / 2
+
+      // If arrow's center is outside trigger's vertical bounds, use default
+      if (arrowCenter < triggerRect.top || arrowCenter > triggerRect.bottom) {
+        this.arrowElement.nativeElement.style.top = `${defaultArrowOffset}px`
+        return
+      }
+
+      // Ensure arrow's top is within rounded corner bounds
+      const maxArrowTop = (tooltipRect.height - arrowRect.height) - defaultArrowOffset
+      const arrowTop = Math.min(maxArrowTop, Math.max(defaultArrowOffset, adjustedArrowTop))
+
+      this.arrowElement.nativeElement.style.top = `${arrowTop}px`
     }
   }
 
