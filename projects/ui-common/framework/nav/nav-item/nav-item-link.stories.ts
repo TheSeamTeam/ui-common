@@ -1,8 +1,8 @@
 import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 
 import { APP_BASE_HREF } from '@angular/common'
-import { Component, Directive, Input } from '@angular/core'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { Component, Directive, importProvidersFrom, Input } from '@angular/core'
+import { provideAnimations } from '@angular/platform-browser/animations'
 import { Router, RouterModule } from '@angular/router'
 
 import { faBuilding } from '@fortawesome/free-regular-svg-icons'
@@ -31,16 +31,20 @@ const meta: Meta<NavItemComponent> = {
   title: 'Framework/Nav/Item/Link',
   component: NavItemComponent,
   decorators: [
+    applicationConfig({
+      providers: [
+        { provide: APP_BASE_HREF, useValue: '/' },
+        provideAnimations(),
+      ]
+    }),
     moduleMetadata({
       declarations: [
         StoryRoutePlacholderComponent
       ],
       imports: [
-        BrowserAnimationsModule,
         TheSeamNavModule
       ],
       providers: [
-        { provide: APP_BASE_HREF, useValue: '/' },
         { provide: HorizontalNavComponent, useClass: MockHorizontalNavComponent }
       ]
     })

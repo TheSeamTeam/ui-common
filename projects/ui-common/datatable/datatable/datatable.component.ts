@@ -3,6 +3,7 @@ import { BooleanInput, coerceArray, NumberInput } from '@angular/cdk/coercion'
 import { CollectionViewer, DataSource, isDataSource, ListRange } from '@angular/cdk/collections'
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ContentChild,
   ContentChildren,
@@ -10,6 +11,7 @@ import {
   EventEmitter,
   forwardRef,
   HostListener,
+  inject,
   Inject,
   InjectionToken,
   Input,
@@ -173,6 +175,8 @@ export class DatatableComponent<TRow = any>
   readonly _faChevronRight = faChevronRight
   readonly _faSpinner = faSpinner
 
+  _cdr = inject(ChangeDetectorRef)
+
   private readonly _ngUnsubscribe = new Subject()
   private readonly _menuBarsFiltersSubject = new BehaviorSubject<DataFilter[]>([])
   private readonly _dataSourceSubject = new BehaviorSubject<DataSource<any> | any[] | undefined>(undefined)
@@ -200,7 +204,6 @@ export class DatatableComponent<TRow = any>
   @Input()
   set columns(value: TheSeamDatatableColumn[]) {
     this._columnsManager.setInputColumns(Array.isArray(value) ? value : [])
-    this._columnsFilters.registerColumnFilters(Array.isArray(value) ? value : [])
   }
 
   @Input()
@@ -650,7 +653,6 @@ export class DatatableComponent<TRow = any>
                 console.warn(e)
               }
             }
-
             this._columnsAlterationsManager.add(alterations)
           })
         )

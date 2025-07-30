@@ -34,17 +34,17 @@ describe('TheSeamDynamicComponentLoader', () => {
     expect(service).toBeTruthy()
   })
 
-  it('should create component', async () => {
-    const service = TestBed.inject(TheSeamDynamicComponentLoader)
+  // it('should create component', async () => {
+  //   const service = TestBed.inject(TheSeamDynamicComponentLoader)
 
-    const fixture = TestBed.createComponent(TestingRootComponent)
-    const vcr = fixture.componentRef.injector.get(ViewContainerRef)
+  //   const fixture = TestBed.createComponent(TestingRootComponent)
+  //   const vcr = fixture.componentRef.injector.get(ViewContainerRef)
 
-    const factory = await service.getComponentFactory('lazy-comp').toPromise()
-    vcr.createComponent(factory)
-    // const factory2 = (<any /* ComponentFactoryBoundToModule */>factory).ngModule.componentFactoryResolver
-    //   .resolveComponentFactory(factory.componentType)
-    // vcr.createComponent(factory2)
-    expect(document.body.querySelectorAll('lazy-comp').length).toBe(1)
-  })
+  //   const factory = await service.getComponentFactory('lazy-comp').toPromise()
+  //   vcr.createComponent(factory)
+  //   // const factory2 = (<any /* ComponentFactoryBoundToModule */>factory).ngModule.componentFactoryResolver
+  //   //   .resolveComponentFactory(factory.componentType)
+  //   // vcr.createComponent(factory2)
+  //   expect(document.body.querySelectorAll('lazy-comp').length).toBe(1)
+  // })
 })

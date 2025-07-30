@@ -44,6 +44,7 @@
           [indentSize]="indentSize"
           [menuItemTooltipConfig]="menuItemTooltipConfig"
           [menuItemTooltipDisabled]="menuItemTooltipDisabled$ | async">
+          [activeNavigatable]="$any(item).activeNavigatable">
         </seam-side-nav-item>
       </div>
     </div>

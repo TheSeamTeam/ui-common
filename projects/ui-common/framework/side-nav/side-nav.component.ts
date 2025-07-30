@@ -41,11 +41,12 @@ import { ITheSeamBaseLayoutNav, ITheSeamBaseLayoutRef, THESEAM_BASE_LAYOUT_REF }
 
 import { BaseLayoutSideBarFooterDirective } from '../base-layout/directives/base-layout-side-bar-footer.directive'
 import { BaseLayoutSideBarHeaderDirective } from '../base-layout/directives/base-layout-side-bar-header.directive'
-import { THESEAM_SIDE_NAV_ACCESSOR } from './side-nav-tokens'
+import { DEFAULT_SIDE_NAV_CONFIG, SideNavConfig, THESEAM_SIDE_NAV_ACCESSOR, THESEAM_SIDE_NAV_CONFIG } from './side-nav-tokens'
 import { ISideNavItem, SideNavItemMenuItemTooltipConfig } from './side-nav.models'
 import { TheSeamSideNavService } from './side-nav.service'
 import { SideNavToggleComponent } from './side-nav-toggle/side-nav-toggle.component'
 import { SideNavItemComponent } from './side-nav-item/side-nav-item.component'
+import { applyItemConfig } from './side-nav-utils'
 
 const EXPANDED_STATE = 'expanded'
 const COLLAPSED_STATE = 'collapsed'
@@ -281,9 +282,16 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
     private readonly _viewContainerRef: ViewContainerRef,
     private readonly _layout: TheSeamLayoutService,
     private readonly _sideNav: TheSeamSideNavService,
-    @Optional() @Inject(THESEAM_BASE_LAYOUT_REF) private readonly _baseLayoutRef: ITheSeamBaseLayoutRef
+    @Optional() @Inject(THESEAM_SIDE_NAV_CONFIG) private readonly _config?: SideNavConfig,
+    @Optional() @Inject(THESEAM_BASE_LAYOUT_REF) private readonly _baseLayoutRef?: ITheSeamBaseLayoutRef
   ) {
+    const config: SideNavConfig = {
+      ...DEFAULT_SIDE_NAV_CONFIG,
+      ...(this._config || {}),
+    }
+
     this.items$ = this._items.asObservable().pipe(
+      map(items => (items && config) ? items.map(itm => applyItemConfig(itm, config)) : []),
       switchMap(items => items ? this._sideNav.createItemsObservable(items) : []),
       shareReplay({ bufferSize: 1, refCount: true }),
     )

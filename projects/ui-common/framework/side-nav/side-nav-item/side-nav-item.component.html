@@ -37,7 +37,8 @@
       [hideEmptyIcon]="hideEmptyIcon"
       [indentSize]="indentSize"
       [menuItemTooltipConfig]="menuItemTooltipConfig"
-      [menuItemTooltipDisabled]="menuItemTooltipDisabled">
+      [menuItemTooltipDisabled]="menuItemTooltipDisabled"
+      [activeNavigatable]="$any(child).activeNavigatable">
     </seam-side-nav-item>
   </div>
 </ng-container>
@@ -51,7 +52,8 @@
     [tooltipClass]="$any(menuItemTooltipConfig)?.class"
     [placement]="$any(menuItemTooltipConfig)?.placement"
     [container]="$any(menuItemTooltipConfig)?.container"
-    [disableTooltip]="$any(menuItemTooltipDisabled)">
+    [disableTooltip]="$any(menuItemTooltipDisabled)"
+    [class.active-clickable]="activeNavigatable">
     <div class="nav-link d-flex flex-row w-100" [class.nav-link__compact]="compact">
       <div [style.padding-left.px]="hierLevel * indentSize"></div>
       <div class="side-nav-item--icon" *ngIf="showIconBlock">
@@ -92,9 +94,11 @@
       [class.nav-link__compact]="compact"
       [routerLink]="link"
       [queryParams]="queryParams"
+      [state]="_linkHistoryState"
       routerLinkActive="active"
       [routerLinkActiveOptions]="{ exact: true }"
-      (click)="_linkClicked()">
+      (click)="_linkClicked()"
+      [class.active-clickable]="activeNavigatable">
       <div [style.padding-left.px]="hierLevel * indentSize"></div>
       <div class="side-nav-item--icon" *ngIf="showIconBlock">
         <seam-icon *ngIf="icon" [icon]="icon"></seam-icon>

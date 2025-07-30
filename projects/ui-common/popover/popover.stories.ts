@@ -1,41 +1,49 @@
-import { moduleMetadata } from '@storybook/angular'
+import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 
 import { BrowserModule } from '@angular/platform-browser'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { provideAnimations } from '@angular/platform-browser/animations'
 
 import { TheSeamPopoverDirective } from './popover.directive'
 import { TheSeamPopoverModule } from './popover.module'
 
-export default {
-  title: 'Popover/Components',
+interface StoryExtraProps { }
+
+const meta: Meta<TheSeamPopoverDirective & StoryExtraProps> = {
+  title: 'Popover',
   component: TheSeamPopoverDirective,
   decorators: [
+    applicationConfig({
+      providers: [
+        provideAnimations(),
+      ],
+    }),
     moduleMetadata({
       imports: [
-        BrowserAnimationsModule,
         BrowserModule,
-        TheSeamPopoverModule
-      ]
-    })
+        TheSeamPopoverModule,
+      ],
+    }),
   ],
   parameters: {
     docs: {
       iframeHeight: '200px',
-    }
-  }
+    },
+  },
 }
 
-export const Popover = () => ({
-  template: `
-    <div class="p-1">
-      <ng-template #popoverTpl>
-        Example Popover
-      </ng-template>
-      <button type="button" class="btn btn-primary" [seamPopover]="popoverTpl">Open Popover</button>
-    </div>
-  `
-})
+export default meta
+type Story = StoryObj<TheSeamPopoverDirective & StoryExtraProps>
 
-Popover.story = {
-  name: 'Popover'
+export const Basic: Story = {
+  render: args => ({
+    props: args,
+    template: `
+      <div class="p-1">
+        <ng-template #popoverTpl>
+          Example Popover
+        </ng-template>
+        <button type="button" class="btn btn-primary" [seamPopover]="popoverTpl">Open Popover</button>
+      </div>
+    `,
+  }),
 }

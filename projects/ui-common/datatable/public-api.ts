@@ -46,6 +46,7 @@ export * from './models/table-column'
 export * from './models/sort-event'
 export * from './models/sort-item'
 export * from './models/table-column'
+export * from './models/columns-alteration'
 
 export * from './services/columns-filters.service'
 export * from './services/datatable-column-changes.service'
@@ -56,5 +57,6 @@ export * from './tokens/datatable-preferences-accessor'
 export * from './tokens/menubar-item-data'
 
 export * from './utils/with-stored-column-info'
+export * from './utils/map-columns-alterations-states'
 
 export * from './datatable.module'

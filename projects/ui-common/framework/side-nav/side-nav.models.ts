@@ -17,6 +17,18 @@ export interface SideNavItemCanHaveState {
    __state?: ISideNavItemState
 }
 
+export interface SideNavItemCanBeActive {
+  /**
+   * Can navigate, when active.
+   *
+   * Enable if you need to receive events when the item is already active, such
+   * as observing `NavigationSkipped` router events.
+   *
+   * Default: false
+   */
+  activeNavigatable?: boolean
+}
+
 export interface SideNavItemCanHaveChildren {
   children?: ISideNavItem[]
 }
@@ -59,7 +71,8 @@ export interface ISideNavBasic extends ISideNavItemBase<'basic'>, SideNavItemCan
 
 export interface ISideNavLink extends ISideNavItemBase<'link'>,
   Partial<Pick<UrlCreationOptions, 'queryParams' | 'fragment' | 'queryParamsHandling' | 'preserveFragment'>>,
-  SideNavItemCanHaveChildren {
+  SideNavItemCanHaveChildren,
+  SideNavItemCanBeActive {
   icon?: SeamIcon
   label: string
 
@@ -71,7 +84,7 @@ export interface ISideNavLink extends ISideNavItemBase<'link'>,
   matchOptions?: Partial<IsActiveMatchOptions>
 }
 
-export interface ISideNavButton extends ISideNavItemBase<'button'> {
+export interface ISideNavButton extends ISideNavItemBase<'button'>, SideNavItemCanBeActive {
   onClick: (event: MouseEvent) => void
 }
 

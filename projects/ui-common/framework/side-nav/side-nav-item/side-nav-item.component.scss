@@ -77,9 +77,14 @@ seam-side-nav-item {
       background-color: $seam-side-nav-item-bg-color-hover;
     }
 
-    &.active {
+    &.active:not(.active-clickable) {
       pointer-events: none;
       cursor: default;
+
+      .side-nav-item--badge {
+        pointer-events: none;
+        cursor: default;
+      }
     }
   }
 
@@ -123,6 +128,11 @@ seam-side-nav-item {
     &.disabled {
       color: $seam-side-nav-item-toggle-disabled-color;
       pointer-events: none;
+
+      .side-nav-item--badge {
+        pointer-events: none;
+        cursor: default;
+      }
     }
   }
 

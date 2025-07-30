@@ -5,8 +5,8 @@ import { APP_BASE_HREF } from '@angular/common'
 import { Component, Inject, importProvidersFrom } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { NavigationEnd, Route, Router, RouterModule } from '@angular/router'
-import { BehaviorSubject, Observable, of } from 'rxjs'
-import { delay, filter, map, shareReplay, tap } from 'rxjs/operators'
+import { BehaviorSubject, interval, Observable, of } from 'rxjs'
+import { delay, filter, map, shareReplay, startWith, tap } from 'rxjs/operators'
 
 import {
   faBell,
@@ -28,6 +28,7 @@ import {
 
 import { TheSeamBreadcrumbsModule } from '@theseam/ui-common/breadcrumbs'
 import { TheSeamWidgetModule } from '@theseam/ui-common/widget'
+import { provideNavigationReload } from '@theseam/ui-common/navigation-reload'
 
 import { TheSeamDashboardModule } from '../dashboard/dashboard.module'
 import { ISideNavItem } from '../side-nav/side-nav.models'
@@ -51,6 +52,7 @@ import type { ITheSeamBaseLayoutRef } from './base-layout-ref'
 import { THESEAM_BASE_LAYOUT_REF } from './base-layout-tokens'
 import { TheSeamBaseLayoutComponent } from './base-layout.component'
 import { TheSeamBaseLayoutModule } from './base-layout.module'
+import { THESEAM_SIDE_NAV_CONFIG } from '../side-nav'
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -132,12 +134,55 @@ class StoryExWidget4Component {
   items = [ 'one', 'two', 'three', 'four' ]
 }
 
-@Component({ template: `Url: {{ router.url }}` })
+@Component({
+  selector: 'story-ex-dashboard',
+  template: `
+    <seam-dashboard
+      [widgets]="widgets"
+      [widgetsDraggable]="widgetsDraggable">
+    </seam-dashboard>`,
+  standalone: true,
+  imports: [
+    TheSeamDashboardModule,
+  ],
+})
+class StoryExDashboardComponent {
+  widgets = [
+    { widgetId: 'widget-1', col: 0, order: 0, component: StoryExWidget1Component },
+    { widgetId: 'widget-2', col: 1, order: 0, component: StoryExWidget2Component },
+    { widgetId: 'widget-3', col: 2, order: 0, component: StoryExWidget3Component },
+    { widgetId: 'widget-4', col: 1, order: 1, component: StoryExWidget4Component }
+  ]
+  widgetsDraggable = true
+}
+
+// @Component({ template: `Url: {{ router.url }}` })
+// class StoryRoutePlacholderComponent {
+//   constructor(public router: Router) { }
+// }
+
+@Component({
+  template: `Url: {{ router.url }} [{{ countDown$ | async }}]`,
+})
 class StoryRoutePlacholderComponent {
-  constructor(public router: Router) { }
+  countDown$ = interval(1000).pipe(
+    map(v => v + 1),
+    startWith(0),
+  )
+  constructor(public router: Router) {
+    // console.log('StoryRoutePlacholderComponent')
+  }
+  // ngOnInit() {
+  //   console.log('StoryRoutePlacholderComponent ngOnInit')
+  // }
 }
 
 const routes: Route[] = [
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: '/dashboard',
+  },
   {
     path: '',
     data: { breadcrumb: 'Dashboard' },
@@ -151,10 +196,10 @@ const routes: Route[] = [
         component: StoryRoutePlacholderComponent,
         data: { breadcrumb: 'example1' },
         children: [
-          { path: 'example1.1', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example1.1' } },
-          { path: 'example1.2', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example1.2' } },
-          { path: 'example1.3', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example1.3' } },
-          { path: 'example1.4', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example1.4' } }
+          { path: 'example2.1', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.1' } },
+          { path: 'example2.2', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.2' } },
+          { path: 'example2.3', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.3' } },
+          { path: 'example2.4', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.4' } }
         ]
       },
       {
@@ -218,8 +263,8 @@ const routes: Route[] = [
       },
       { path: 'example4', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example4' } },
       { path: 'example5', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example5' } }
-    ]
-  }
+    ],
+  },
 ]
 
 const navItems: ISideNavItem[] = [
@@ -236,6 +281,7 @@ const navItems: ISideNavItem[] = [
         container: 'body'
       }
     },
+    activeNavigatable: false,
   },
   {
     itemType: 'link',
@@ -892,9 +938,24 @@ export default {
       providers: [
         provideAnimations(),
         importProvidersFrom(
-          RouterModule.forRoot([], { useHash: true }),
+          RouterModule.forRoot(routes, {
+            useHash: true,
+            // onSameUrlNavigation: 'reload',
+          }),
         ),
         { provide: APP_BASE_HREF, useValue: '/' },
+        {
+          provide: THESEAM_SIDE_NAV_CONFIG,
+          useValue: {
+            activeNavigatable: true,
+          },
+        },
+        // {
+        //   provide: APP_INITIALIZER,
+        //   useFactory: idleFactory,
+        //   deps: [ Router ],
+        // },
+        provideNavigationReload({ dummyUrl: '/' }),
       ],
     }),
     moduleMetadata({
@@ -995,11 +1056,10 @@ export const Basic = () => ({
             </div>
           </seam-menu>
         </seam-top-bar>
-        <seam-dashboard
-          *seamBaseLayoutContent
-          [widgets]="widgets"
-          [widgetsDraggable]="widgetsDraggable">
-        </seam-dashboard>
+        <div *seamBaseLayoutContent class="h-100">
+          <router-outlet [seamRouterOutletReload]></router-outlet>
+          <!--<seam-router-outlet-reload></seam-router-outlet-reload>-->
+        </div>
       </seam-base-layout>
     </div>
   `,

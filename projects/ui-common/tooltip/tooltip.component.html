@@ -1,0 +1,10 @@
+<div #inner class="tooltip-inner" [ngClass]="tooltipClass">
+  <!-- String content -->
+  <span *ngIf="isStringContent">{{ content }}</span>
+
+  <!-- Template content -->
+  <ng-container *ngIf="isTemplateContent">
+    <ng-container *ngTemplateOutlet="templateContent; context: context"></ng-container>
+  </ng-container>
+</div>
+<div #arrow class="arrow"></div>
