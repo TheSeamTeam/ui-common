@@ -6,8 +6,8 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations'
 
 import userEvent from '@testing-library/user-event'
 
-import { SeamTooltipDirective } from './tooltip.directive'
-import { TooltipModule } from './tooltip.module'
+import { TheSeamTooltipDirective } from './tooltip.directive'
+import { TheSeamTooltipModule } from './tooltip.module'
 
 @Component({
   template: `
@@ -50,7 +50,7 @@ class TestComponent {
   tooltipClass = 'custom-tooltip'
 }
 
-describe('SeamTooltipDirective', () => {
+describe('TheSeamTooltipDirective', () => {
   let component: TestComponent
   let fixture: ComponentFixture<TestComponent>
   let buttonElement: HTMLElement
@@ -60,7 +60,7 @@ describe('SeamTooltipDirective', () => {
     await TestBed.configureTestingModule({
       declarations: [TestComponent],
       imports: [
-        TooltipModule,
+        TheSeamTooltipModule,
         OverlayModule,
         A11yModule,
         NoopAnimationsModule
@@ -87,7 +87,7 @@ describe('SeamTooltipDirective', () => {
     })
 
     it('should have correct default values', () => {
-      const directive = fixture.debugElement.children[0].injector.get(SeamTooltipDirective)
+      const directive = fixture.debugElement.children[0].injector.get(TheSeamTooltipDirective)
       expect(directive.placement).toBe('top')
       expect(directive.disableTooltip).toBe(false)
       expect(directive.showDelay).toBe(100)

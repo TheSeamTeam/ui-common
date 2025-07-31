@@ -605,7 +605,6 @@ export class DatatableComponent
     this._preferencesKey.pipe(
       distinctUntilChanged(),
       switchMap(key => {
-        console.log('DatatableComponent preferencesKey 1', key)
         if (!notNullOrUndefined(key) || key.length === 0) {
           return of(undefined)
         }
@@ -633,7 +632,6 @@ export class DatatableComponent
     this._preferencesKey.pipe(
       distinctUntilChanged(),
       switchMap(prefsKey => {
-        console.log('DatatableComponent preferencesKey 2', prefsKey)
         if (!notNullOrUndefined(prefsKey)) {
           return of(undefined)
         }
@@ -655,7 +653,6 @@ export class DatatableComponent
                 console.warn(e)
               }
             }
-            console.log('DatatableComponent preferencesKey alterations', alterations)
             this._columnsAlterationsManager.add(alterations)
           })
         )

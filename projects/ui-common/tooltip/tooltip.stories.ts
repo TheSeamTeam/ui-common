@@ -7,8 +7,8 @@ import { provideAnimations } from '@angular/platform-browser/animations'
 
 import { getHarness } from '@theseam/ui-common/testing'
 
-import { TooltipModule } from './tooltip.module'
-import { TooltipHarness } from './testing/tooltip.harness'
+import { TheSeamTooltipModule } from './tooltip.module'
+import { TheSeamTooltipHarness } from './testing/tooltip.harness'
 
 @Component({
   selector: 'tooltip-story-wrapper',
@@ -36,7 +36,7 @@ import { TooltipHarness } from './testing/tooltip.harness'
         <span>Success! Operation completed.</span>
       </div>
     </ng-template>
-  `
+  `,
 })
 class TooltipStoryWrapper {
   @ViewChild('complexTooltip', { static: true }) complexTooltip!: TemplateRef<any>
@@ -53,9 +53,9 @@ const meta: Meta = {
       ],
     }),
     moduleMetadata({
-      imports: [TooltipModule],
-      declarations: [TooltipStoryWrapper]
-    })
+      imports: [TheSeamTooltipModule],
+      declarations: [TooltipStoryWrapper],
+    }),
   ],
   tags: ['autodocs'],
   parameters: {
@@ -84,10 +84,10 @@ Supports both string and template content with full Bootstrap 4.6 compatibility.
 // After
 <button seamTooltip="Help text" placement="top" tooltipClass="custom">
 \`\`\`
-        `
-      }
-    }
-  }
+        `,
+      },
+    },
+  },
 }
 
 export default meta
@@ -113,10 +113,10 @@ export const BasicTooltips: Story = {
           Slow tooltip
         </button>
       </tooltip-story-wrapper>
-    `
+    `,
   }),
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(TooltipHarness, { canvasElement, fixture })
+    const harness = await getHarness(TheSeamTooltipHarness, { canvasElement, fixture })
 
     // Test basic tooltip interaction - hover to show tooltip
     await harness.hover()
@@ -130,7 +130,7 @@ export const BasicTooltips: Story = {
     await harness.mouseAway()
     await harness.waitForTooltipToHide()
     await expect(await harness.isTooltipVisible()).toBe(false)
-  }
+  },
 }
 
 export const AllPlacements: Story = {
@@ -156,11 +156,11 @@ export const AllPlacements: Story = {
           <button class="btn btn-outline-success" seamTooltip="Bottom end" placement="bottom-right">Bottom End</button>
         </div>
       </tooltip-story-wrapper>
-    `
+    `,
   }),
   play: async ({ canvasElement, fixture }) => {
     // Test tooltip visibility for different placements
-    const topHarness = await getHarness(TooltipHarness, { canvasElement, fixture })
+    const topHarness = await getHarness(TheSeamTooltipHarness, { canvasElement, fixture })
 
     await topHarness.hover()
     await topHarness.waitForTooltipToShow()
@@ -172,7 +172,7 @@ export const AllPlacements: Story = {
     await topHarness.mouseAway()
     await topHarness.waitForTooltipToHide()
     await expect(await topHarness.isTooltipVisible()).toBe(false)
-  }
+  },
 }
 
 export const TriggerTypes: Story = {
@@ -195,11 +195,11 @@ export const TriggerTypes: Story = {
                seamTooltip="Input field tooltip" trigger="focus"
                placeholder="Focus me for tooltip">
       </tooltip-story-wrapper>
-    `
+    `,
   }),
   play: async ({ canvasElement, fixture }) => {
     // Test hover-only trigger
-    const hoverOnlyHarness = await getHarness(TooltipHarness, { canvasElement, fixture })
+    const hoverOnlyHarness = await getHarness(TheSeamTooltipHarness, { canvasElement, fixture })
 
     await hoverOnlyHarness.hover()
     await hoverOnlyHarness.waitForTooltipToShow()
@@ -209,7 +209,7 @@ export const TriggerTypes: Story = {
     await hoverOnlyHarness.mouseAway()
     await hoverOnlyHarness.waitForTooltipToHide()
     await expect(await hoverOnlyHarness.isTooltipVisible()).toBe(false)
-  }
+  },
 }
 
 export const TemplateContent: Story = {
@@ -238,8 +238,8 @@ export const TemplateContent: Story = {
           </div>
         </ng-template>
       </tooltip-story-wrapper>
-    `
-  })
+    `,
+  }),
 }
 
 export const CustomStyling: Story = {
@@ -266,8 +266,8 @@ export const CustomStyling: Story = {
           Small Text
         </button>
       </tooltip-story-wrapper>
-    `
-  })
+    `,
+  }),
 }
 
 export const DisabledState: Story = {
@@ -286,11 +286,11 @@ export const DisabledState: Story = {
           Disabled Button
         </button>
       </tooltip-story-wrapper>
-    `
+    `,
   }),
   play: async ({ canvasElement, fixture }) => {
     // Test enabled tooltip works
-    const enabledHarness = await getHarness(TooltipHarness, { canvasElement, fixture })
+    const enabledHarness = await getHarness(TheSeamTooltipHarness, { canvasElement, fixture })
 
     await enabledHarness.hover()
     await enabledHarness.waitForTooltipToShow()
@@ -300,7 +300,7 @@ export const DisabledState: Story = {
     await enabledHarness.mouseAway()
     await enabledHarness.waitForTooltipToHide()
     await expect(await enabledHarness.isTooltipVisible()).toBe(false)
-  }
+  },
 }
 
 export const DelayConfiguration: Story = {
@@ -323,11 +323,11 @@ export const DelayConfiguration: Story = {
           Both Slow
         </button>
       </tooltip-story-wrapper>
-    `
+    `,
   }),
   play: async ({ canvasElement, fixture }) => {
     // Test tooltip with no delay
-    const defaultHarness = await getHarness(TooltipHarness, { canvasElement, fixture })
+    const defaultHarness = await getHarness(TheSeamTooltipHarness, { canvasElement, fixture })
 
     await defaultHarness.hover()
     await defaultHarness.waitForTooltipToShow()
@@ -337,7 +337,7 @@ export const DelayConfiguration: Story = {
     await defaultHarness.mouseAway()
     await defaultHarness.waitForTooltipToHide()
     await expect(await defaultHarness.isTooltipVisible()).toBe(false)
-  }
+  },
 }
 
 export const AccessibilityDemo: Story = {
@@ -370,6 +370,6 @@ export const AccessibilityDemo: Story = {
           </div>
         </div>
       </tooltip-story-wrapper>
-    `
-  })
+    `,
+  }),
 }

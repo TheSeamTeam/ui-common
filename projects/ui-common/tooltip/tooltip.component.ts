@@ -11,7 +11,7 @@ import {
 } from '@angular/core'
 import { Subject } from 'rxjs'
 
-export type TooltipPlacement =
+export type TheSeamTooltipPlacement =
   | 'top' | 'top-left' | 'top-right'
   | 'bottom' | 'bottom-left' | 'bottom-right'
   | 'left' | 'left-top' | 'left-bottom'
@@ -43,13 +43,13 @@ export type TooltipPlacement =
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TooltipComponent implements OnDestroy {
+export class TheSeamTooltipComponent implements OnDestroy {
 
   @Input() content: string | TemplateRef<any> | null = null
   @Input() tooltipClass?: string
   @Input() context?: any
-  @Input() placement: TooltipPlacement = 'top'
-  @Input() actualPlacement?: TooltipPlacement // The actual placement determined by CDK Overlay
+  @Input() placement: TheSeamTooltipPlacement = 'top'
+  @Input() actualPlacement?: TheSeamTooltipPlacement // The actual placement determined by CDK Overlay
   @Input() tooltipId?: string
   @Input() triggerElement?: HTMLElement
 

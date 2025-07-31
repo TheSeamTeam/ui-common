@@ -1,15 +1,15 @@
 import { coerceBooleanProperty, coerceNumberProperty } from '@angular/cdk/coercion'
 import { ESCAPE } from '@angular/cdk/keycodes'
-import { ConnectionPositionPair, FlexibleConnectedPositionStrategy, Overlay, OverlayRef, PositionStrategy } from '@angular/cdk/overlay'
+import { ConnectionPositionPair, FlexibleConnectedPositionStrategy, Overlay, OverlayRef } from '@angular/cdk/overlay'
 import { ComponentPortal } from '@angular/cdk/portal'
 import { ComponentRef, Directive, ElementRef, Input, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from '@angular/core'
 import { BehaviorSubject, fromEvent, Subject } from 'rxjs'
 import { takeUntil, filter } from 'rxjs/operators'
 
-import { TooltipComponent, TooltipPlacement } from './tooltip.component'
+import { TheSeamTooltipComponent, TheSeamTooltipPlacement } from './tooltip.component'
 
-export type TooltipTrigger = 'hover' | 'focus' | 'both'
-export type TooltipPlacementInput = TooltipPlacement | TooltipPlacement[] | string
+export type TheSeamTooltipTrigger = 'hover' | 'focus' | 'both'
+export type TheSeamTooltipPlacementInput = TheSeamTooltipPlacement | TheSeamTooltipPlacement[] | string
 
 @Directive({
   selector: '[seamTooltip]',
@@ -18,7 +18,7 @@ export type TooltipPlacementInput = TooltipPlacement | TooltipPlacement[] | stri
   },
   exportAs: 'seamTooltip',
 })
-export class SeamTooltipDirective implements OnInit, OnDestroy {
+export class TheSeamTooltipDirective implements OnInit, OnDestroy {
 
   private readonly _ngUnsubscribe = new Subject<void>()
   private _tooltipId = `seam-tooltip-${Math.random().toString(36).substr(2, 9)}`
@@ -27,7 +27,7 @@ export class SeamTooltipDirective implements OnInit, OnDestroy {
 
   @Input() tooltipClass?: string
 
-  @Input() placement: TooltipPlacementInput = 'top'
+  @Input() placement: TheSeamTooltipPlacementInput = 'top'
 
   @Input() container?: string | HTMLElement
 
@@ -46,11 +46,11 @@ export class SeamTooltipDirective implements OnInit, OnDestroy {
   set hideDelay(val: number) { this._hideDelay.next(coerceNumberProperty(val, 0)) }
   private _hideDelay = new BehaviorSubject<number>(0)
 
-  @Input() trigger: TooltipTrigger = 'both'
+  @Input() trigger: TheSeamTooltipTrigger = 'both'
 
   private _active = false
   private _overlayRef: OverlayRef | null = null
-  private _compRef: ComponentRef<TooltipComponent> | null = null
+  private _compRef: ComponentRef<TheSeamTooltipComponent> | null = null
   private _showTimeoutId: any = null
   private _hideTimeoutId: any = null
 
@@ -153,7 +153,7 @@ export class SeamTooltipDirective implements OnInit, OnDestroy {
       scrollStrategy: this._overlay.scrollStrategies.reposition(),
     })
 
-    this._compRef = this._overlayRef.attach(new ComponentPortal(TooltipComponent, this._viewContainerRef))
+    this._compRef = this._overlayRef.attach(new ComponentPortal(TheSeamTooltipComponent, this._viewContainerRef))
 
     // Set component properties
     const parsedPlacements = this._parsePlacementInput(this.placement)
@@ -223,14 +223,14 @@ export class SeamTooltipDirective implements OnInit, OnDestroy {
     return this._active && this._compRef !== null
   }
 
-  private _parsePlacementInput(placement: TooltipPlacementInput): TooltipPlacement[] {
+  private _parsePlacementInput(placement: TheSeamTooltipPlacementInput): TheSeamTooltipPlacement[] {
     if (typeof placement === 'string') {
       if (placement === 'auto') {
         return ['auto']
       }
       // Parse space-delimited string
       const placements = placement.split(/\s+/).filter(p => p.trim())
-      return placements.filter(p => this._isValidPlacement(p)) as TooltipPlacement[]
+      return placements.filter(p => this._isValidPlacement(p)) as TheSeamTooltipPlacement[]
     }
 
     if (Array.isArray(placement)) {
@@ -240,15 +240,15 @@ export class SeamTooltipDirective implements OnInit, OnDestroy {
     return [placement]
   }
 
-  private _isValidPlacement(placement: string): placement is TooltipPlacement {
-    const validPlacements: TooltipPlacement[] = [
+  private _isValidPlacement(placement: string): placement is TheSeamTooltipPlacement {
+    const validPlacements: TheSeamTooltipPlacement[] = [
       'top', 'top-left', 'top-right',
       'bottom', 'bottom-left', 'bottom-right',
       'left', 'left-top', 'left-bottom',
       'right', 'right-top', 'right-bottom',
       'auto'
     ]
-    return validPlacements.includes(placement as TooltipPlacement)
+    return validPlacements.includes(placement as TheSeamTooltipPlacement)
   }
 
   private _getOverlayPosition(): FlexibleConnectedPositionStrategy {
@@ -285,7 +285,7 @@ export class SeamTooltipDirective implements OnInit, OnDestroy {
     return positions
   }
 
-  private _getPositionForPlacement(placement: TooltipPlacement): ConnectionPositionPair[] {
+  private _getPositionForPlacement(placement: TheSeamTooltipPlacement): ConnectionPositionPair[] {
     switch (placement) {
       case 'top':
         return [{ originX: 'center', originY: 'top', overlayX: 'center', overlayY: 'bottom' }]
@@ -322,7 +322,7 @@ export class SeamTooltipDirective implements OnInit, OnDestroy {
     }
   }
 
-  private _getPlacementFromConnectionPair(connectionPair: ConnectionPositionPair): TooltipPlacement {
+  private _getPlacementFromConnectionPair(connectionPair: ConnectionPositionPair): TheSeamTooltipPlacement {
     const { originX, originY, overlayX, overlayY } = connectionPair
 
     // Top placements (overlay below origin)
