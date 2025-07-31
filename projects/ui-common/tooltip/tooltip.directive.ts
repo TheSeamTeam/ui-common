@@ -2,7 +2,7 @@ import { coerceBooleanProperty, coerceNumberProperty } from '@angular/cdk/coerci
 import { ESCAPE } from '@angular/cdk/keycodes'
 import { ConnectionPositionPair, FlexibleConnectedPositionStrategy, Overlay, OverlayRef } from '@angular/cdk/overlay'
 import { ComponentPortal } from '@angular/cdk/portal'
-import { ComponentRef, Directive, ElementRef, Input, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from '@angular/core'
+import { ComponentRef, Directive, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, TemplateRef, ViewContainerRef } from '@angular/core'
 import { BehaviorSubject, fromEvent, Subject } from 'rxjs'
 import { takeUntil, filter } from 'rxjs/operators'
 
@@ -18,7 +18,7 @@ export type TheSeamTooltipPlacementInput = TheSeamTooltipPlacement | TheSeamTool
   },
   exportAs: 'seamTooltip',
 })
-export class TheSeamTooltipDirective implements OnInit, OnDestroy {
+export class TheSeamTooltipDirective implements OnInit, OnChanges, OnDestroy {
 
   private readonly _ngUnsubscribe = new Subject<void>()
   private readonly _tooltipId = `seam-tooltip-${Math.random().toString(36).slice(2, 11)}`
@@ -53,6 +53,7 @@ export class TheSeamTooltipDirective implements OnInit, OnDestroy {
   private _compRef: ComponentRef<TheSeamTooltipComponent> | null = null
   private _showTimeoutId: any = null
   private _hideTimeoutId: any = null
+  private _eventListenersSubject = new Subject<void>()
 
   constructor(
     private readonly _elementRef: ElementRef<HTMLElement>,
@@ -64,25 +65,40 @@ export class TheSeamTooltipDirective implements OnInit, OnDestroy {
     this._setupEventListeners()
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    // Re-setup event listeners if trigger changes
+    if (changes['trigger'] && !changes['trigger'].firstChange) {
+      // Re-setup event listeners with new trigger
+      this._setupEventListeners()
+    }
+  }
+
   ngOnDestroy() {
     this._clearTimeouts()
     this._closeTooltip()
+    this._eventListenersSubject.next()
+    this._eventListenersSubject.complete()
     this._ngUnsubscribe.next()
     this._ngUnsubscribe.complete()
   }
 
   private _setupEventListeners() {
+    // Clean up existing event listeners
+    this._eventListenersSubject.next()
+    this._eventListenersSubject.complete()
+    this._eventListenersSubject = new Subject<void>()
+
     const element = this._elementRef.nativeElement
 
     // Mouse events for hover trigger
     if (this.trigger === 'hover' || this.trigger === 'both') {
       fromEvent(element, 'mouseenter').pipe(
         filter(() => !this._disableTooltip.value && !!this.seamTooltip),
-        takeUntil(this._ngUnsubscribe),
+        takeUntil(this._eventListenersSubject),
       ).subscribe(() => this._scheduleShow())
 
       fromEvent(element, 'mouseleave').pipe(
-        takeUntil(this._ngUnsubscribe),
+        takeUntil(this._eventListenersSubject),
       ).subscribe(() => this._scheduleHide())
     }
 
@@ -90,18 +106,18 @@ export class TheSeamTooltipDirective implements OnInit, OnDestroy {
     if (this.trigger === 'focus' || this.trigger === 'both') {
       fromEvent(element, 'focus').pipe(
         filter(() => !this._disableTooltip.value && !!this.seamTooltip),
-        takeUntil(this._ngUnsubscribe),
+        takeUntil(this._eventListenersSubject),
       ).subscribe(() => this._scheduleShow())
 
       fromEvent(element, 'blur').pipe(
-        takeUntil(this._ngUnsubscribe),
+        takeUntil(this._eventListenersSubject),
       ).subscribe(() => this._scheduleHide())
     }
 
     // Keyboard events
     fromEvent<KeyboardEvent>(element, 'keydown').pipe(
       filter(event => event.keyCode === ESCAPE),
-      takeUntil(this._ngUnsubscribe),
+      takeUntil(this._eventListenersSubject),
     ).subscribe(() => this._closeTooltip())
   }
 

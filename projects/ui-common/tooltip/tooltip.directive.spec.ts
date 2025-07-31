@@ -253,6 +253,9 @@ describe('TheSeamTooltipDirective', () => {
       component.trigger = 'hover'
       fixture.detectChanges()
 
+      const tooltipBefore = document.querySelector('.tooltip.show')
+      expect(tooltipBefore).toBeFalsy()
+
       // Focus should not show tooltip
       await user.click(buttonElement)
       await new Promise(resolve => setTimeout(resolve, 200))
