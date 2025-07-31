@@ -28,7 +28,6 @@
     "@marklb/ngx-datatable": "~18.0.5",
     "@marklb/ngx-loading": "^10.0.0",
     "@ng-select/ng-select": "~6.1.0",
-    "@ng-bootstrap/ng-bootstrap": "~9.1.1",
     "apollo-angular": "^4.2.1",
     "overlayscrollbars": "~1.7.3",
     "@types/overlayscrollbars": "~1.7.0",

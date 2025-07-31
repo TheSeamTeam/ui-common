@@ -8,6 +8,10 @@ import {
   OnDestroy,
   ViewEncapsulation
 } from '@angular/core'
+import { animate, state, style, transition, trigger } from '@angular/animations'
+import { CommonModule } from '@angular/common'
+import { RouterModule } from '@angular/router'
+import { A11yModule } from '@angular/cdk/a11y'
 import { BehaviorSubject, map, Observable, Subject } from 'rxjs'
 
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons'
@@ -16,14 +20,10 @@ import { InputBoolean, InputNumber } from '@theseam/ui-common/core'
 import { SeamIcon, TheSeamIconModule } from '@theseam/ui-common/icon'
 import type { ThemeTypes } from '@theseam/ui-common/models'
 import { notNullOrUndefined } from '@theseam/ui-common/utils'
+import { TheSeamTooltipModule } from '@theseam/ui-common/tooltip'
 
 import { SideNavAccessor, THESEAM_SIDE_NAV_ACCESSOR } from '../side-nav-tokens'
 import { ISideNavItem, SideNavItemBadgeTooltip, SideNavItemMenuItemTooltipConfig } from '../side-nav.models'
-import { CommonModule } from '@angular/common'
-import { RouterModule } from '@angular/router'
-import { A11yModule } from '@angular/cdk/a11y'
-import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap'
-import { animate, state, style, transition, trigger } from '@angular/animations'
 
 const EXPANDED_STATE = 'expanded'
 const COLLAPSED_STATE = 'collapsed'
@@ -45,7 +45,7 @@ const COLLAPSED_STATE = 'collapsed'
     RouterModule,
     TheSeamIconModule,
     A11yModule,
-    NgbTooltipModule,
+    TheSeamTooltipModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,

@@ -4,14 +4,13 @@ import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { RouterModule } from '@angular/router'
 
-import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap'
-
 import { TheSeamIconModule } from '@theseam/ui-common/icon'
 import { TheSeamLayoutModule } from '@theseam/ui-common/layout'
 import { TheSeamMenuModule } from '@theseam/ui-common/menu'
 import { TheSeamScrollbarModule } from '@theseam/ui-common/scrollbar'
-import { HorizontalNavComponent } from './horizontal-nav/horizontal-nav.component'
+import { TheSeamTooltipModule } from '@theseam/ui-common/tooltip'
 
+import { HorizontalNavComponent } from './horizontal-nav/horizontal-nav.component'
 import { NavItemComponent } from './nav-item/nav-item.component'
 import { TheSeamNavService } from './nav.service'
 
@@ -27,9 +26,9 @@ import { TheSeamNavService } from './nav.service'
     A11yModule,
     TheSeamScrollbarModule,
     TheSeamLayoutModule,
-    NgbTooltipModule,
     PortalModule,
-    TheSeamMenuModule
+    TheSeamMenuModule,
+    TheSeamTooltipModule,
   ],
   exports: [
     NavItemComponent,
@@ -37,6 +36,6 @@ import { TheSeamNavService } from './nav.service'
   ],
   providers: [
     TheSeamNavService,
-  ]
+  ],
 })
 export class TheSeamNavModule { }

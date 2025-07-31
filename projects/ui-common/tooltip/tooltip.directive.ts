@@ -21,30 +21,30 @@ export type TheSeamTooltipPlacementInput = TheSeamTooltipPlacement | TheSeamTool
 export class TheSeamTooltipDirective implements OnInit, OnDestroy {
 
   private readonly _ngUnsubscribe = new Subject<void>()
-  private _tooltipId = `seam-tooltip-${Math.random().toString(36).substr(2, 9)}`
+  private readonly _tooltipId = `seam-tooltip-${Math.random().toString(36).slice(2, 11)}`
 
   @Input() seamTooltip: string | TemplateRef<any> | null = null
 
   @Input() tooltipClass?: string
 
-  @Input() placement: TheSeamTooltipPlacementInput = 'top'
+  @Input() placement?: TheSeamTooltipPlacementInput | null = 'top'
 
   @Input() container?: string | HTMLElement
 
   @Input()
   get disableTooltip() { return this._disableTooltip.value }
   set disableTooltip(val: boolean) { this._disableTooltip.next(coerceBooleanProperty(val)) }
-  private _disableTooltip = new BehaviorSubject<boolean>(false)
+  private readonly _disableTooltip = new BehaviorSubject<boolean>(false)
 
   @Input()
   get showDelay() { return this._showDelay.value }
   set showDelay(val: number) { this._showDelay.next(coerceNumberProperty(val, 500)) }
-  private _showDelay = new BehaviorSubject<number>(500)
+  private readonly _showDelay = new BehaviorSubject<number>(500)
 
   @Input()
   get hideDelay() { return this._hideDelay.value }
   set hideDelay(val: number) { this._hideDelay.next(coerceNumberProperty(val, 0)) }
-  private _hideDelay = new BehaviorSubject<number>(0)
+  private readonly _hideDelay = new BehaviorSubject<number>(0)
 
   @Input() trigger: TheSeamTooltipTrigger = 'both'
 
@@ -223,7 +223,11 @@ export class TheSeamTooltipDirective implements OnInit, OnDestroy {
     return this._active && this._compRef !== null
   }
 
-  private _parsePlacementInput(placement: TheSeamTooltipPlacementInput): TheSeamTooltipPlacement[] {
+  private _parsePlacementInput(placement?: TheSeamTooltipPlacementInput | null): TheSeamTooltipPlacement[] {
+    if (placement === undefined || placement === null) {
+      return ['top'] // Default placement
+    }
+
     if (typeof placement === 'string') {
       if (placement === 'auto') {
         return ['auto']

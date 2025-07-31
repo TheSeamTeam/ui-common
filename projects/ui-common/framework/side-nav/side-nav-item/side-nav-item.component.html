@@ -48,11 +48,11 @@
     cdkMonitorElementFocus
     (click)="toggleChildren()"
     [attr.aria-expanded]="expanded"
-    [ngbTooltip]="label"
-    [tooltipClass]="$any(menuItemTooltipConfig)?.class"
-    [placement]="$any(menuItemTooltipConfig)?.placement"
-    [container]="$any(menuItemTooltipConfig)?.container"
-    [disableTooltip]="$any(menuItemTooltipDisabled)"
+    [seamTooltip]="label ?? null"
+    [tooltipClass]="menuItemTooltipConfig?.class"
+    [placement]="menuItemTooltipConfig?.placement"
+    [container]="menuItemTooltipConfig?.container"
+    [disableTooltip]="menuItemTooltipDisabled ?? false"
     [class.active-clickable]="activeNavigatable">
     <div class="nav-link d-flex flex-row w-100" [class.nav-link__compact]="compact">
       <div [style.padding-left.px]="hierLevel * indentSize"></div>
@@ -85,11 +85,11 @@
 
 <ng-template #itemTypeLink>
   <div class="d-flex flex-row w-100"
-    [ngbTooltip]="label"
-    [tooltipClass]="$any(menuItemTooltipConfig)?.class"
-    [placement]="$any(menuItemTooltipConfig)?.placement"
-    [container]="$any(menuItemTooltipConfig)?.container"
-    [disableTooltip]="$any(menuItemTooltipDisabled)">
+    [seamTooltip]="label ?? null"
+    [tooltipClass]="menuItemTooltipConfig?.class"
+    [placement]="menuItemTooltipConfig?.placement"
+    [container]="menuItemTooltipConfig?.container"
+    [disableTooltip]="menuItemTooltipDisabled ?? false">
     <a *ngIf="link; else noLink" class="side-nav-item nav-link d-flex flex-row text-nowrap w-100 align-items-center"
       [class.nav-link__compact]="compact"
       [routerLink]="link"
@@ -118,11 +118,11 @@
     <ng-template #noLink>
       <a class="side-nav-item nav-link d-flex flex-row text-nowrap w-100 align-items-center"
         [class.nav-link__compact]="compact"
-        [ngbTooltip]="label"
-        [tooltipClass]="$any(menuItemTooltipConfig)?.class"
-        [placement]="$any(menuItemTooltipConfig)?.placement"
-        [container]="$any(menuItemTooltipConfig)?.container"
-        [disableTooltip]="$any(menuItemTooltipDisabled)">
+        [seamTooltip]="label ?? null"
+        [tooltipClass]="menuItemTooltipConfig?.class"
+        [placement]="menuItemTooltipConfig?.placement"
+        [container]="menuItemTooltipConfig?.container"
+        [disableTooltip]="menuItemTooltipDisabled ?? false">
         <div [style.padding-left.px]="hierLevel * indentSize"></div>
         <div class="side-nav-item--icon">
           <seam-icon *ngIf="icon" [icon]="icon"></seam-icon>
@@ -168,7 +168,7 @@
     <div class="badge-spacer flex-grow-1" *ngIf="!compact"></div>
     <div class="side-nav-item--badge"
       [class.side-nav-item--badge-no-icon]="!icon"
-      [ngbTooltip]="$any(badgeTooltip)?.tooltip"
+      [seamTooltip]="$any(badgeTooltip)?.tooltip"
       [tooltipClass]="$any(badgeTooltip)?.class"
       [placement]="$any(badgeTooltip)?.placement"
       [container]="$any(badgeTooltip)?.container"

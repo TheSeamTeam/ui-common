@@ -62,7 +62,7 @@ export class TheSeamTooltipComponent implements OnDestroy {
   @HostBinding('class')
   get hostClasses(): string {
     const baseClass = 'tooltip show'
-    const placementClass = this.getPlacementClass()
+    const placementClass = this._getPlacementClass()
     this._setArrowPosition()
     return `${baseClass} ${placementClass}`
   }
@@ -87,7 +87,7 @@ export class TheSeamTooltipComponent implements OnDestroy {
     return this.isTemplateContent ? this.content as TemplateRef<any> : null
   }
 
-  private getPlacementClass(): string {
+  private _getPlacementClass(): string {
     // Use actualPlacement if available, otherwise fall back to initial placement
     const effectivePlacement = this.actualPlacement || this.placement
 

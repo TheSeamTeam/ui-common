@@ -15,7 +15,7 @@ let nextUniqueId = 0
 @Directive({
   // TODO: Consider removing restriction and instead adding a dev warning. A few
   // inputs in the app need to be changed for this first.
-  selector: 'input[seamInput], textarea[seamInput], ng-select[seamInput], seam-checkbox[seamInput] [ngbRadioGroup], seam-tel-input[seamInput], quill-editor[seamInput], seam-google-maps[seamInput], seam-rich-text[seamInput]',
+  selector: 'input[seamInput], textarea[seamInput], ng-select[seamInput], seam-tel-input[seamInput], quill-editor[seamInput], seam-google-maps[seamInput], seam-rich-text[seamInput]',
   exportAs: 'seamInput',
 })
 export class InputDirective implements DoCheck, OnChanges {
@@ -153,7 +153,6 @@ export class InputDirective implements DoCheck, OnChanges {
   protected _shouldHaveFormControlCssClass() {
     return !this._isSeamCheckbox() &&
       !this._isRadioInput() &&
-      !this._isNgbRadioGroup() &&
       !this._isTelInput() &&
       !this._isQuillEditor() &&
       !this._isRichTextEditor()
@@ -178,10 +177,6 @@ export class InputDirective implements DoCheck, OnChanges {
   protected _isRadioInput() {
     return this._elementRef.nativeElement.nodeName.toLowerCase() === 'input' &&
       this._elementRef.nativeElement.type.toLowerCase() === 'radio'
-  }
-
-  protected _isNgbRadioGroup() {
-    return this._elementRef.nativeElement.getAttribute('ngbRadioGroup') !== null
   }
 
   protected _isTelInput() {
