@@ -1,15 +1,15 @@
 import { TemplateRef } from '@angular/core'
 
-export interface TabbedTabAccessor {
+export interface TheSeamTabbedTabAccessor {
   isActive: boolean
 }
 
-export interface TabbedTabContentAccessor {
+export interface TheSeamTabbedTabContentAccessor {
   isActive: boolean
 }
 
-export interface TabbedItemAccessor {
-  tabbedTabTpl?: TemplateRef<TabbedTabAccessor>
-  tabbedContentTpl?: TemplateRef<TabbedTabContentAccessor>
+export interface TheSeamTabbedItemAccessor {
+  tabbedTabTpl?: TemplateRef<TheSeamTabbedTabAccessor>
+  tabbedContentTpl?: TemplateRef<TheSeamTabbedTabContentAccessor>
   contentFromRoute: boolean
 }

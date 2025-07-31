@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core'
 
-import { TabbedComponent } from './tabbed.component'
+import { TheSeamTabbedComponent } from './tabbed.component'
 
-export declare type TabsDirection = 'horizontal' | 'vertical'
+export declare type TheSeamTabsDirection = 'horizontal' | 'vertical'
 
 @Injectable()
-export class TabbedService {
+export class TheSeamTabbedService {
 
-  private _tabGroups: { [groupName: string]: TabbedComponent[] } = {}
+  private _tabGroups: { [groupName: string]: TheSeamTabbedComponent[] } = {}
 
-  public registerTab(tab: TabbedComponent, groupName: string) {
+  public registerTab(tab: TheSeamTabbedComponent, groupName: string) {
     if (!this._tabGroups[groupName]) {
       this._tabGroups[groupName] = []
     }
@@ -21,7 +21,7 @@ export class TabbedService {
     this._tabGroups[groupName].push(tab)
   }
 
-  public unregisterTab(tab: TabbedComponent, groupName: string) {
+  public unregisterTab(tab: TheSeamTabbedComponent, groupName: string) {
     if (this._tabGroups[groupName]) {
       this._tabGroups[groupName] = this._tabGroups[groupName].filter(
         t => t !== tab

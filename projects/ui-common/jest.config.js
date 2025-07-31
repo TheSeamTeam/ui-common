@@ -23,6 +23,7 @@ module.exports = {
     '**/dynamic-component-loader/**/*.spec.ts',
     '**/tel-input/**/*.spec.ts',
     '**/tooltip/**/*.spec.ts',
+    '**/tabbed/**/*.spec.ts',
   ],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/' }),
 }
