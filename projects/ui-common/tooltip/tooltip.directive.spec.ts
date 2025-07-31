@@ -56,6 +56,32 @@ describe('TheSeamTooltipDirective', () => {
   let buttonElement: HTMLElement
   let templateButtonElement: HTMLElement
 
+  // Helper function to wait for tooltip to be fully shown
+  const waitForTooltipShow = async (timeout = 1000) => {
+    const startTime = Date.now()
+    while (Date.now() - startTime < timeout) {
+      const tooltip = document.querySelector('.tooltip.show:not(.ng-animating)')
+      if (tooltip) {
+        return tooltip
+      }
+      await new Promise(resolve => setTimeout(resolve, 50))
+    }
+    return null
+  }
+
+  // Helper function to wait for tooltip to be fully hidden/removed
+  const waitForTooltipHide = async (timeout = 1000) => {
+    const startTime = Date.now()
+    while (Date.now() - startTime < timeout) {
+      const tooltip = document.querySelector('.tooltip.show')
+      if (!tooltip) {
+        return true
+      }
+      await new Promise(resolve => setTimeout(resolve, 50))
+    }
+    return false
+  }
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [TestComponent],
@@ -75,10 +101,20 @@ describe('TheSeamTooltipDirective', () => {
     templateButtonElement = fixture.nativeElement.querySelectorAll('button')[1]
   })
 
-  afterEach(() => {
-    // Clean up any open tooltips
+  afterEach(async () => {
+    // Force close any active tooltips through the directive
+    const directive = fixture.debugElement.children[0].injector.get(TheSeamTooltipDirective)
+    if (directive.tooltipOpen()) {
+      directive.ngOnDestroy() // This will trigger cleanup
+    }
+
+    // Clean up any remaining DOM elements
     const tooltips = document.querySelectorAll('.tooltip')
     tooltips.forEach(tooltip => tooltip.remove())
+
+    // Wait for cleanup to complete
+    await new Promise(resolve => setTimeout(resolve, 150))
+    fixture.detectChanges()
   })
 
   describe('Basic Functionality', () => {
@@ -126,20 +162,13 @@ describe('TheSeamTooltipDirective', () => {
 
       // Show tooltip first
       await user.hover(buttonElement)
-      await new Promise(resolve => setTimeout(resolve, 200))
-      fixture.detectChanges()
-
-      let tooltip = document.querySelector('.tooltip.show')
+      const tooltip = await waitForTooltipShow()
       expect(tooltip).toBeTruthy()
 
       // Hide tooltip
       await user.unhover(buttonElement)
-      await new Promise(resolve => setTimeout(resolve, 300)) // Increased wait time
-      fixture.detectChanges()
-
-      // Check if tooltip is hidden or removed
-      tooltip = document.querySelector('.tooltip.show')
-      expect(tooltip).toBeFalsy()
+      const isHidden = await waitForTooltipHide()
+      expect(isHidden).toBe(true)
     })
 
     it('should respect show delay', async () => {
@@ -168,22 +197,20 @@ describe('TheSeamTooltipDirective', () => {
 
       // Show tooltip
       await user.hover(buttonElement)
-      await new Promise(resolve => setTimeout(resolve, 200))
-      fixture.detectChanges()
+      const tooltip = await waitForTooltipShow()
+      expect(tooltip).toBeTruthy()
 
       // Start hiding
       await user.unhover(buttonElement)
       await new Promise(resolve => setTimeout(resolve, 200)) // Less than hide delay
       fixture.detectChanges()
 
-      let tooltip = document.querySelector('.tooltip.show')
-      expect(tooltip).toBeTruthy()
+      const stillVisible = document.querySelector('.tooltip.show')
+      expect(stillVisible).toBeTruthy()
 
-      await new Promise(resolve => setTimeout(resolve, 200)) // Complete the delay
-      fixture.detectChanges()
-
-      tooltip = document.querySelector('.tooltip.show')
-      expect(tooltip).toBeFalsy()
+      // Wait for hide delay to complete
+      const isHidden = await waitForTooltipHide()
+      expect(isHidden).toBe(true)
     })
   })
 
@@ -204,22 +231,25 @@ describe('TheSeamTooltipDirective', () => {
 
       // Show tooltip
       await user.click(buttonElement) // Focus
-      await new Promise(resolve => setTimeout(resolve, 200))
-      fixture.detectChanges()
+      const tooltip = await waitForTooltipShow()
+      expect(tooltip).toBeTruthy()
 
       // Hide tooltip
       await user.tab() // This will blur the button
-      await new Promise(resolve => setTimeout(resolve, 100))
-      fixture.detectChanges()
-
-      const tooltip = document.querySelector('.tooltip.show')
-      expect(tooltip).toBeFalsy()
+      const isHidden = await waitForTooltipHide()
+      expect(isHidden).toBe(true)
     })
   })
 
   describe('Trigger Types', () => {
     it('should only respond to hover when trigger is "hover"', async () => {
       const user = userEvent.setup({ delay: null })
+
+      // Force cleanup of any existing tooltips
+      const existingTooltips = document.querySelectorAll('.tooltip')
+      existingTooltips.forEach(tooltip => tooltip.remove())
+      await new Promise(resolve => setTimeout(resolve, 100))
+
       component.trigger = 'hover'
       fixture.detectChanges()
 
@@ -228,20 +258,23 @@ describe('TheSeamTooltipDirective', () => {
       await new Promise(resolve => setTimeout(resolve, 200))
       fixture.detectChanges()
 
-      let tooltip = document.querySelector('.tooltip.show')
+      const tooltip = document.querySelector('.tooltip.show')
       expect(tooltip).toBeFalsy()
 
       // Hover should show tooltip
       await user.hover(buttonElement)
-      await new Promise(resolve => setTimeout(resolve, 200))
-      fixture.detectChanges()
-
-      tooltip = document.querySelector('.tooltip.show')
-      expect(tooltip).toBeTruthy()
+      const shownTooltip = await waitForTooltipShow()
+      expect(shownTooltip).toBeTruthy()
     })
 
     it('should only respond to focus when trigger is "focus"', async () => {
       const user = userEvent.setup({ delay: null })
+
+      // Force cleanup of any existing tooltips
+      const existingTooltips = document.querySelectorAll('.tooltip')
+      existingTooltips.forEach(tooltip => tooltip.remove())
+      await new Promise(resolve => setTimeout(resolve, 100))
+
       component.trigger = 'focus'
       fixture.detectChanges()
 
@@ -250,16 +283,13 @@ describe('TheSeamTooltipDirective', () => {
       await new Promise(resolve => setTimeout(resolve, 200))
       fixture.detectChanges()
 
-      let tooltip = document.querySelector('.tooltip.show')
+      const tooltip = document.querySelector('.tooltip.show')
       expect(tooltip).toBeFalsy()
 
       // Focus should show tooltip
       await user.click(buttonElement)
-      await new Promise(resolve => setTimeout(resolve, 200))
-      fixture.detectChanges()
-
-      tooltip = document.querySelector('.tooltip.show')
-      expect(tooltip).toBeTruthy()
+      const shownTooltip = await waitForTooltipShow()
+      expect(shownTooltip).toBeTruthy()
     })
   })
 
@@ -308,12 +338,21 @@ describe('TheSeamTooltipDirective', () => {
   describe('Template Content', () => {
     it('should display template content', async () => {
       const user = userEvent.setup({ delay: null })
+
+      // Force cleanup of any existing tooltips
+      const existingTooltips = document.querySelectorAll('.tooltip')
+      existingTooltips.forEach(tooltip => tooltip.remove())
+      await new Promise(resolve => setTimeout(resolve, 100))
+
       await user.hover(templateButtonElement)
-      await new Promise(resolve => setTimeout(resolve, 200))
+
+      const tooltip = await waitForTooltipShow()
+      expect(tooltip).toBeTruthy()
+
+      // Wait a bit more for template content to render
+      await new Promise(resolve => setTimeout(resolve, 100))
       fixture.detectChanges()
 
-      const tooltip = document.querySelector('.tooltip.show')
-      expect(tooltip).toBeTruthy()
       expect(tooltip?.textContent).toContain('Template Content')
       expect(tooltip?.textContent).toContain('Item 1')
       expect(tooltip?.textContent).toContain('Item 2')
@@ -324,21 +363,20 @@ describe('TheSeamTooltipDirective', () => {
     it('should hide tooltip on Escape key', async () => {
       const user = userEvent.setup({ delay: null })
 
+      // Force cleanup of any existing tooltips
+      const existingTooltips = document.querySelectorAll('.tooltip')
+      existingTooltips.forEach(tooltip => tooltip.remove())
+      await new Promise(resolve => setTimeout(resolve, 100))
+
       // Show tooltip
       await user.hover(buttonElement)
-      await new Promise(resolve => setTimeout(resolve, 200))
-      fixture.detectChanges()
-
-      let tooltip = document.querySelector('.tooltip.show')
+      const tooltip = await waitForTooltipShow()
       expect(tooltip).toBeTruthy()
 
       // Press Escape
       await user.keyboard('{Escape}')
-      await new Promise(resolve => setTimeout(resolve, 100))
-      fixture.detectChanges()
-
-      tooltip = document.querySelector('.tooltip.show')
-      expect(tooltip).toBeFalsy()
+      const isHidden = await waitForTooltipHide()
+      expect(isHidden).toBe(true)
     })
   })
 })

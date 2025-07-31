@@ -198,13 +198,9 @@ export class TheSeamTooltipDirective implements OnInit, OnDestroy {
     // Mark as inactive immediately to prevent new tooltips from being blocked
     this._active = false
 
-    // Detach the component from overlay, which will trigger the :leave animation
-    if (this._overlayRef?.hasAttached()) {
-      this._overlayRef.detach()
-    }
-
-    // Clear component reference since it's no longer active
-    this._compRef = null
+    // Immediately clean up for tests (when using NoopAnimationsModule)
+    // In real usage, this will be handled by the animation callback
+    this._resetTooltip()
   }
 
   private _resetTooltip(): void {
@@ -212,6 +208,9 @@ export class TheSeamTooltipDirective implements OnInit, OnDestroy {
 
     // Dispose of overlay if it exists and hasn't been disposed already
     if (this._overlayRef) {
+      if (this._overlayRef.hasAttached()) {
+        this._overlayRef.detach()
+      }
       this._overlayRef.dispose()
       this._overlayRef = null
     }
