@@ -216,8 +216,9 @@ describe('TheSeamTooltipDirective', () => {
 
   describe('Focus Interactions', () => {
     it('should show tooltip on focus', async () => {
-      const user = userEvent.setup({ delay: null })
-      await user.click(buttonElement) // This will focus the button
+      // Use direct focus to avoid mouse hover simulation
+      buttonElement.focus()
+      fixture.detectChanges()
 
       await new Promise(resolve => setTimeout(resolve, 200))
       fixture.detectChanges()
@@ -227,15 +228,15 @@ describe('TheSeamTooltipDirective', () => {
     })
 
     it('should hide tooltip on blur', async () => {
-      const user = userEvent.setup({ delay: null })
-
-      // Show tooltip
-      await user.click(buttonElement) // Focus
+      // Show tooltip with direct focus
+      buttonElement.focus()
+      fixture.detectChanges()
       const tooltip = await waitForTooltipShow()
       expect(tooltip).toBeTruthy()
 
-      // Hide tooltip
-      await user.tab() // This will blur the button
+      // Hide tooltip with direct blur
+      buttonElement.blur()
+      fixture.detectChanges()
       const isHidden = await waitForTooltipHide()
       expect(isHidden).toBe(true)
     })
@@ -256,8 +257,9 @@ describe('TheSeamTooltipDirective', () => {
       const tooltipBefore = document.querySelector('.tooltip.show')
       expect(tooltipBefore).toBeFalsy()
 
-      // Focus should not show tooltip
-      await user.click(buttonElement)
+      // Focus should not show tooltip (use direct focus to avoid hover)
+      buttonElement.focus()
+      fixture.detectChanges()
       await new Promise(resolve => setTimeout(resolve, 200))
       fixture.detectChanges()
 
@@ -289,8 +291,9 @@ describe('TheSeamTooltipDirective', () => {
       const tooltip = document.querySelector('.tooltip.show')
       expect(tooltip).toBeFalsy()
 
-      // Focus should show tooltip
-      await user.click(buttonElement)
+      // Focus should show tooltip (use direct focus to avoid hover)
+      buttonElement.focus()
+      fixture.detectChanges()
       const shownTooltip = await waitForTooltipShow()
       expect(shownTooltip).toBeTruthy()
     })

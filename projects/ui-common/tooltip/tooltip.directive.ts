@@ -54,6 +54,7 @@ export class TheSeamTooltipDirective implements OnInit, OnChanges, OnDestroy {
   private _showTimeoutId: any = null
   private _hideTimeoutId: any = null
   private _eventListenersSubject = new Subject<void>()
+  private _documentKeydownSubject = new Subject<void>()
 
   constructor(
     private readonly _elementRef: ElementRef<HTMLElement>,
@@ -68,6 +69,10 @@ export class TheSeamTooltipDirective implements OnInit, OnChanges, OnDestroy {
   ngOnChanges(changes: SimpleChanges) {
     // Re-setup event listeners if trigger changes
     if (changes['trigger'] && !changes['trigger'].firstChange) {
+      // Clear any pending timeouts
+      this._clearTimeouts()
+      // Close any existing tooltip first
+      this._closeTooltip()
       // Re-setup event listeners with new trigger
       this._setupEventListeners()
     }
@@ -78,6 +83,8 @@ export class TheSeamTooltipDirective implements OnInit, OnChanges, OnDestroy {
     this._closeTooltip()
     this._eventListenersSubject.next()
     this._eventListenersSubject.complete()
+    this._documentKeydownSubject.next()
+    this._documentKeydownSubject.complete()
     this._ngUnsubscribe.next()
     this._ngUnsubscribe.complete()
   }
@@ -113,12 +120,6 @@ export class TheSeamTooltipDirective implements OnInit, OnChanges, OnDestroy {
         takeUntil(this._eventListenersSubject),
       ).subscribe(() => this._scheduleHide())
     }
-
-    // Keyboard events
-    fromEvent<KeyboardEvent>(element, 'keydown').pipe(
-      filter(event => event.keyCode === ESCAPE),
-      takeUntil(this._eventListenersSubject),
-    ).subscribe(() => this._closeTooltip())
   }
 
   private _scheduleShow() {
@@ -204,6 +205,26 @@ export class TheSeamTooltipDirective implements OnInit, OnChanges, OnDestroy {
         this._resetTooltip()
       }
     })
+
+    // Set up document-level Escape key listener
+    this._setupDocumentKeydownListener()
+  }
+
+  private _setupDocumentKeydownListener(): void {
+    // Clean up any existing document listener
+    this._documentKeydownSubject.next()
+    this._documentKeydownSubject.complete()
+    this._documentKeydownSubject = new Subject<void>()
+
+    // Set up document-level Escape key listener
+    fromEvent<KeyboardEvent>(document, 'keydown').pipe(
+      filter(event => {
+        // Check both keyCode and key for better compatibility
+        return (event.keyCode === ESCAPE || event.key === 'Escape') && this._active
+      }),
+      takeUntil(this._documentKeydownSubject),
+      takeUntil(this._ngUnsubscribe),
+    ).subscribe(() => this._closeTooltip())
   }
 
   private _closeTooltip(): void {
@@ -213,6 +234,9 @@ export class TheSeamTooltipDirective implements OnInit, OnChanges, OnDestroy {
 
     // Mark as inactive immediately to prevent new tooltips from being blocked
     this._active = false
+
+    // Clean up document listener
+    this._documentKeydownSubject.next()
 
     // Immediately clean up for tests (when using NoopAnimationsModule)
     // In real usage, this will be handled by the animation callback
