@@ -1,15 +1,17 @@
 import { applicationConfig, componentWrapperDecorator, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 import { expect } from '@storybook/jest'
 
+import { provideAnimations } from '@angular/platform-browser/animations'
+import { Observable, of } from 'rxjs'
+
 import { getHarness } from '@theseam/ui-common/testing'
 
 import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
 import { THESEAM_DATATABLE_PREFERENCES_ACCESSOR, TheSeamDatatableModule } from '@theseam/ui-common/datatable'
+import { TheSeamPreferencesAccessor } from '@theseam/ui-common/services'
 
 import { TheSeamDatatablePrompterComponent } from './datatable-prompter.component'
-import { Observable, of } from 'rxjs'
-import { TheSeamPreferencesAccessor } from '@theseam/ui-common/services'
-import { provideAnimations } from '@angular/platform-browser/animations'
+import { THESEAM_DATATABLE_PROMPTER_PROVIDER, TheSeamDatatablePrompterProvider } from './datatable-prompter-prompt-provider'
 
 export class PreferencesAccessorService implements TheSeamPreferencesAccessor {
   private readonly _map = new Map<string, string>()
@@ -53,6 +55,24 @@ export class PreferencesAccessorService implements TheSeamPreferencesAccessor {
 
 }
 
+export class MockAiProvider implements TheSeamDatatablePrompterProvider {
+
+  async submit(prompt: string): Promise<any> {
+    return Promise.resolve([
+    {
+      'id': 'filter--age',
+      'type': 'filter',
+      'state': {
+        'columnProp': 'age',
+        'filterType': 'text',
+        'operation': 'eq',
+        'value': '33',
+      },
+    },
+  ] as any) as Promise<any>
+  }
+}
+
 interface ExtraArgs {
   dt?: {
     columns: any[]
@@ -76,6 +96,10 @@ const meta: Meta<StoryComponentType> = {
         {
           provide: THESEAM_DATATABLE_PREFERENCES_ACCESSOR,
           useClass: PreferencesAccessorService
+        },
+        {
+          provide: THESEAM_DATATABLE_PROMPTER_PROVIDER,
+          useClass: MockAiProvider,
         },
       ],
     }),
