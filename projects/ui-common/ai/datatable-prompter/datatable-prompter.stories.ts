@@ -17,7 +17,7 @@ export class PreferencesAccessorService implements TheSeamPreferencesAccessor {
   private readonly _map = new Map<string, string>()
 
   public get(name: string): Observable<string> {
-    // console.log(`Getting preference '${name}'`)
+    // console.log(`Getting preference '${name}'`, this._map.get(name))
     // const tmp = JSON.stringify({
     //   'version': 2,
     //   'alterations': [

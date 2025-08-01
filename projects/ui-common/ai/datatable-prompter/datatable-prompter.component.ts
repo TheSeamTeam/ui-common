@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, inject, Input } from '@angular/core'
 import { AsyncPipe, JsonPipe, NgForOf, NgIf } from '@angular/common'
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
 
-import { BehaviorSubject, combineLatest, map, Observable, of, switchMap } from 'rxjs'
+import { BehaviorSubject, combineLatest, map, Observable, of, startWith, switchMap, tap } from 'rxjs'
 import { ColumnsAlterationState, DatatableComponent, DatatablePreferencesService, EMPTY_DATATABLE_PREFERENCES, mapColumnsAlterationsStates, THESEAM_DATATABLE_PREFERENCES_ACCESSOR } from '@theseam/ui-common/datatable'
 import { TheSeamLoadingModule } from '@theseam/ui-common/loading'
 import { TheSeamRichTextModule } from '@theseam/ui-common/rich-text'
@@ -10,10 +10,6 @@ import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
 
 import { getUserPrompt, THESEAM_DATATABLE_PROMPTER_PROVIDER } from './datatable-prompter-prompt-provider'
-
-// const PREFS_KEY = 'datatable-prompter'
-
-const idx = 0
 
 @Component({
   selector: 'seam-datatable-prompter',
@@ -66,6 +62,12 @@ export class TheSeamDatatablePrompterComponent {
   })
 
   _alterations$: Observable<ColumnsAlterationState[]> = this._datatableSubject.asObservable().pipe(
+    switchMap((dt): Observable<DatatableComponent | null | undefined> => {
+      if (!dt) {
+        return of(dt)
+      }
+      return (dt as any)._columnsAlterationsManager.changes.pipe(startWith(undefined), map(() => dt))
+    }),
     switchMap(datatable => {
       if (!datatable) {
         return of([] as ColumnsAlterationState[])
@@ -76,15 +78,18 @@ export class TheSeamDatatablePrompterComponent {
         return of([] as ColumnsAlterationState[])
       }
 
-      return this._prefsAccessor?.get(key).pipe(
+      return this._dtPrefsService.preferences(key).pipe(
         switchMap(prefs => {
+          // console.log('~~~~Current preferences:', prefs)
           if (!prefs) {
             return of(JSON.parse(JSON.stringify(EMPTY_DATATABLE_PREFERENCES)).alterations as ColumnsAlterationState[])
           }
-          return of(JSON.parse(prefs).alterations as ColumnsAlterationState[])
+          // return of(JSON.parse(prefs).alterations as ColumnsAlterationState[])
+          return of(prefs.alterations as ColumnsAlterationState[])
         })
       ) ?? of([] as ColumnsAlterationState[])
-    })
+    }),
+    // tap(v => console.log('%cAlterations:', 'color: limegreen;', v)),
   )
 
   _onSubmit() {
@@ -139,12 +144,9 @@ export class TheSeamDatatablePrompterComponent {
 
       const _apply = async () => {
         console.log('Preferences updated successfully.')
-        // this._dtPrefsService.refresh(key)
-        // this.datatable!.preferencesKey = key
         const _cols = this.datatable!.ngxDatatable!.columns
         const cols = [ ..._cols ]
         console.log('this.datatable!.columns', cols)
-        // this.datatable!.columns = [ ...cols ]
 
         const after = await this._prefsAccessor?.get(key).toPromise()
         let _after = (JSON.parse(after || '{}').alterations || []) as ColumnsAlterationState[]
@@ -168,6 +170,7 @@ export class TheSeamDatatablePrompterComponent {
         this.datatable!.columns = [ ...cols ]
         const columnsAfter = JSON.parse(JSON.stringify(this.datatable!.ngxDatatable!.columns.map(x => x.prop)))
         console.log('Columns after applying alterations:', columnsAfter)
+        mgr.add(alts)
         datatable._cdr.detectChanges()
       }
 
@@ -183,15 +186,6 @@ export class TheSeamDatatablePrompterComponent {
 
         this._loadingSubject.next(false)
       })
-      // this._dtPrefsService.refresh(key)
-
-      // const after = this._prefsAccessor?.get(key)
-      // console.log('Current preferences after update:', after)
-
-      // datatable.rows = [ ...datatable.rows ]
-      // datatable._cdr.detectChanges()
-
-      // this._loadingSubject.next(false)
     }).catch(err => {
       console.error('Error submitting prompt:', err)
       this._loadingSubject.next(false)
