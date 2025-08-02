@@ -9,6 +9,7 @@ import {
   TheSeamColumnsDataFilterNumericSearchType,
   TheSeamColumnsDataFilterDateSearchType
 } from '../columns-data-filters/models'
+import { AlterationDisplayItem } from '../../../datatable-alterations-display/models/alteration-display.model'
 
 export type FilterType = 'text' | 'numeric' | 'date'
 
@@ -91,6 +92,23 @@ export class FilterColumnsAlteration extends ColumnsAlteration<FilterColumnsAlte
     filter.form.patchValue(formValues)
   }
 
+  public toDisplayItem(): AlterationDisplayItem {
+    const summary = this._createFilterSummary()
+    const details = this._createFilterDetails()
+
+    return {
+      id: this.id,
+      type: this.type,
+      summary,
+      details,
+      sortOrder: this._getColumnSortOrder()
+    }
+  }
+
+  public getDisplaySortOrder(): number {
+    return this._getColumnSortOrder()
+  }
+
   private _isRangeOperation(operation: FilterOperation): boolean {
     return operation === 'between' || operation === 'not-between'
   }
@@ -151,5 +169,74 @@ export class FilterColumnsAlteration extends ColumnsAlteration<FilterColumnsAlte
       default:
         return false
     }
+  }
+
+  private _createFilterSummary(): string {
+    const { columnProp, operation, value, fromValue, toValue } = this.state
+
+    if (this._isRangeOperation(operation)) {
+      return `${columnProp}: ${fromValue} to ${toValue}`
+    } else if (this._isValueOperation(operation)) {
+      return `${columnProp} ${this._getOperationSymbol(operation)} ${value}`
+    } else {
+      // blank or not-blank operations
+      const operationText = operation === 'blank' ? 'is empty' : 'is not empty'
+      return `${columnProp} ${operationText}`
+    }
+  }
+
+  private _createFilterDetails(): string[] {
+    const { columnProp, filterType, operation, value, fromValue, toValue } = this.state
+    const details = [
+      `Column: ${columnProp}`,
+      `Type: ${filterType}`,
+      `Operation: ${this._getOperationDisplayName(operation)}`
+    ]
+
+    if (this._isRangeOperation(operation)) {
+      details.push(`From: ${fromValue}`)
+      details.push(`To: ${toValue}`)
+    } else if (this._isValueOperation(operation)) {
+      details.push(`Value: ${value}`)
+    }
+
+    return details
+  }
+
+  private _getOperationSymbol(operation: FilterOperation): string {
+    const symbols: Record<string, string> = {
+      'contains': 'contains',
+      'ncontains': 'does not contain',
+      'eq': '=',
+      'neq': '≠',
+      'gt': '>',
+      'lt': '<',
+      'gte': '≥',
+      'lte': '≤'
+    }
+    return symbols[operation] || operation
+  }
+
+  private _getOperationDisplayName(operation: FilterOperation): string {
+    const names: Record<string, string> = {
+      'contains': 'Contains',
+      'ncontains': 'Does not contain',
+      'eq': 'Equals',
+      'neq': 'Not equals',
+      'gt': 'Greater than',
+      'lt': 'Less than',
+      'gte': 'Greater than or equal',
+      'lte': 'Less than or equal',
+      'blank': 'Is blank',
+      'not-blank': 'Is not blank',
+      'between': 'Between',
+      'not-between': 'Not between'
+    }
+    return names[operation] || operation
+  }
+
+  private _getColumnSortOrder(): number {
+    // Sort by column name for consistent ordering
+    return String(this.state.columnProp).charCodeAt(0)
   }
 }

@@ -5,6 +5,7 @@ import { getColumnProp } from '../../utils/get-column-prop'
 import { ColumnsAlteration } from '../columns-alteration'
 import { TheSeamDatatableAccessor } from '../datatable-accessor'
 import { TheSeamDatatableColumn } from '../table-column'
+import { AlterationDisplayItem } from '../../../datatable-alterations-display/models/alteration-display.model'
 
 export interface HideColumnColumnsAlterationState {
   columnProp: TableColumnProp
@@ -38,6 +39,23 @@ export class HideColumnColumnsAlteration extends ColumnsAlteration<HideColumnCol
     }
   }
 
+  public toDisplayItem(): AlterationDisplayItem {
+    const summary = this._createHideSummary()
+    const details = this._createHideDetails()
+
+    return {
+      id: this.id,
+      type: this.type,
+      summary,
+      details,
+      sortOrder: this._getColumnSortOrder()
+    }
+  }
+
+  public getDisplaySortOrder(): number {
+    return this._getColumnSortOrder()
+  }
+
   private _isValidState(state: HideColumnColumnsAlterationState): boolean {
     // NOTE: Checking null or undefined, even though the type doesn't allow,
     // because the state may have been loaded from an invalid persistant
@@ -56,5 +74,20 @@ export class HideColumnColumnsAlteration extends ColumnsAlteration<HideColumnCol
     }
 
     return true
+  }
+
+  private _createHideSummary(): string {
+    const action = this.state.hidden ? 'Hidden' : 'Shown'
+    return `${action}: ${this.state.columnProp}`
+  }
+
+  private _createHideDetails(): string[] {
+    const action = this.state.hidden ? 'hidden' : 'visible'
+    return [`Column: ${this.state.columnProp}`, `Status: ${action}`]
+  }
+
+  private _getColumnSortOrder(): number {
+    // Sort by column name for consistent ordering
+    return String(this.state.columnProp).charCodeAt(0)
   }
 }

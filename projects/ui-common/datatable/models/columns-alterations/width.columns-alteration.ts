@@ -5,6 +5,7 @@ import { getColumnProp } from '../../utils/get-column-prop'
 import { ColumnsAlteration } from '../columns-alteration'
 import { TheSeamDatatableAccessor } from '../datatable-accessor'
 import { TheSeamDatatableColumn } from '../table-column'
+import { AlterationDisplayItem } from '../../../datatable-alterations-display/models/alteration-display.model'
 
 export interface WidthColumnsAlterationState {
   columnProp: TableColumnProp
@@ -42,6 +43,23 @@ export class WidthColumnsAlteration extends ColumnsAlteration<WidthColumnsAltera
     }
   }
 
+  public toDisplayItem(): AlterationDisplayItem {
+    const summary = this._createWidthSummary()
+    const details = this._createWidthDetails()
+
+    return {
+      id: this.id,
+      type: this.type,
+      summary,
+      details,
+      sortOrder: this._getColumnSortOrder()
+    }
+  }
+
+  public getDisplaySortOrder(): number {
+    return this._getColumnSortOrder()
+  }
+
   private _isValidState(state: WidthColumnsAlterationState): boolean {
     // NOTE: Checking null or undefined, even though the type doesn't allow,
     // because the state may have been loaded from an invalid persistant
@@ -60,5 +78,27 @@ export class WidthColumnsAlteration extends ColumnsAlteration<WidthColumnsAltera
     }
 
     return true
+  }
+
+  private _createWidthSummary(): string {
+    const widthText = notNullOrUndefined(this.state.width) ? `${this.state.width}px` : 'auto'
+    return `${this.state.columnProp}: ${widthText}`
+  }
+
+  private _createWidthDetails(): string[] {
+    const details = [`Column: ${this.state.columnProp}`]
+
+    if (notNullOrUndefined(this.state.width)) {
+      details.push(`Width: ${this.state.width}px`)
+    }
+
+    details.push(`Auto-resize: ${this.state.canAutoResize ? 'enabled' : 'disabled'}`)
+
+    return details
+  }
+
+  private _getColumnSortOrder(): number {
+    // Sort by column name for consistent ordering
+    return String(this.state.columnProp).charCodeAt(0)
   }
 }

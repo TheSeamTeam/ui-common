@@ -1,0 +1,66 @@
+<div class="alterations-diff" [attr.data-testid]="'alterations-diff'">
+
+  <!-- Diff summary header -->
+  <div *ngIf="hasDifferences" class="mb-3 p-2 bg-light border rounded" [attr.data-testid]="'diff-summary'">
+    <small class="text-muted font-weight-bold">
+      Changes: {{ differenceSummary }}
+    </small>
+  </div>
+
+  <!-- Desktop layout: Side-by-side -->
+  <div *ngIf="!isMobile; else mobileLayout" class="row" [attr.data-testid]="'desktop-layout'">
+
+    <!-- Current alterations column -->
+    <div class="col-md-6 pr-md-2">
+      <seam-alterations-list
+        [items]="currentItems"
+        [title]="'Current Alterations'"
+        [diffState]="'current'"
+        [compact]="compact"
+        [attr.data-testid]="'current-alterations-list'">
+      </seam-alterations-list>
+    </div>
+
+    <!-- Pending alterations column -->
+    <div class="col-md-6 pl-md-2">
+      <seam-alterations-list
+        [items]="pendingItems"
+        [title]="'Pending Alterations'"
+        [diffState]="'pending'"
+        [compact]="compact"
+        [attr.data-testid]="'pending-alterations-list'">
+      </seam-alterations-list>
+    </div>
+
+  </div>
+
+  <!-- Mobile layout: Stacked -->
+  <ng-template #mobileLayout>
+    <div class="mobile-layout" [attr.data-testid]="'mobile-layout'">
+
+      <!-- Current alterations -->
+      <div class="mb-4">
+        <seam-alterations-list
+          [items]="currentItems"
+          [title]="'Current Alterations'"
+          [diffState]="'current'"
+          [compact]="compact"
+          [attr.data-testid]="'current-alterations-list-mobile'">
+        </seam-alterations-list>
+      </div>
+
+      <!-- Pending alterations -->
+      <div>
+        <seam-alterations-list
+          [items]="pendingItems"
+          [title]="'Pending Alterations'"
+          [diffState]="'pending'"
+          [compact]="compact"
+          [attr.data-testid]="'pending-alterations-list-mobile'">
+        </seam-alterations-list>
+      </div>
+
+    </div>
+  </ng-template>
+
+</div>

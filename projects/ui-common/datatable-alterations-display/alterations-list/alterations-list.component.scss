@@ -1,0 +1,49 @@
+// Component-specific styles for alterations list
+// Leverages Bootstrap 4.6 classes for most styling
+
+.alterations-list {
+  // Container styling
+  width: 100%;
+
+  // Title styling
+  h6 {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  // Items container
+  .alterations-items {
+    // Remove margin from last item to prevent extra spacing
+    seam-alteration-item:last-child {
+      .card {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  // Empty state styling
+  .text-center {
+    border: 1px dashed #dee2e6;
+    border-radius: 0.25rem;
+    background-color: #f8f9fa;
+
+    p {
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    small {
+      font-size: 0.8125rem;
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 575.98px) {
+  .alterations-list {
+    h6 {
+      font-size: 0.8125rem;
+    }
+  }
+}
