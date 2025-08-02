@@ -371,7 +371,7 @@
             "tsConfig": "projects/ui-common/tsconfig.sb.json",
             "compodoc": true,
             "enableProdMode": true,
-            "outputDir": "dist/storybook/ui-common",
+            "outputDir": "docs",
             "styles": [
               "projects/ui-common/styles/theme.scss",
               "node_modules/@marklb/ngx-datatable/assets/icons.css"
