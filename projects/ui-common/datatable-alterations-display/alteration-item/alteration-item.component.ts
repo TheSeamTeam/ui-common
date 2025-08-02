@@ -16,7 +16,6 @@ import { AlterationDisplayService } from '../services/alteration-display.service
 })
 export class AlterationItemComponent {
   @Input() item!: AlterationDisplayItem
-  @Input() diffState?: AlterationVisualState
   @Input() compact = true
 
   // FontAwesome icons
@@ -40,7 +39,7 @@ export class AlterationItemComponent {
   }
 
   get borderClass(): string {
-    switch (this.diffState) {
+    switch (this.item.diffState) {
       case 'added':
         return 'border-success'
       case 'removed':

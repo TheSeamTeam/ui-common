@@ -4,6 +4,7 @@ export interface AlterationDisplayItem {
   summary: string; // Compact one-line description
   details?: string[]; // Optional expanded details
   sortOrder?: number; // For sorting within type
+  diffState?: AlterationVisualState; // Visual state for diff display
 }
 
 export interface AlterationDiffState {

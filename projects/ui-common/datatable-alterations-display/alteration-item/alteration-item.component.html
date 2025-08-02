@@ -23,10 +23,10 @@
     </span>
 
     <!-- Diff state indicator (optional visual indicator) -->
-    <span *ngIf="diffState"
+    <span *ngIf="item.diffState"
           class="ml-2 small text-muted"
           [attr.data-testid]="'alteration-diff-state'">
-      <ng-container [ngSwitch]="diffState">
+      <ng-container [ngSwitch]="item.diffState">
         <span *ngSwitchCase="'added'" class="text-success">+</span>
         <span *ngSwitchCase="'removed'" class="text-danger">-</span>
         <span *ngSwitchCase="'changed'" class="text-warning">~</span>

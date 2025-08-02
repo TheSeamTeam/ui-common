@@ -81,7 +81,7 @@ export const WithItems: Story = {
     const harness = await getHarness(AlterationsListHarness, { canvasElement, fixture })
 
     expect(await harness.getTitle()).toBe('Current Alterations')
-    expect(await harness.getCount()).toBe('(5)')
+    expect(await harness.getCount()).toBe('5 alterations')
     expect(await harness.getItemCount()).toBe(5)
     expect(await harness.hasItems()).toBe(true)
     expect(await harness.hasEmptyState()).toBe(false)
@@ -177,8 +177,8 @@ export const WithDiffStates: Story = {
     const removedBorders = canvasElement.querySelectorAll('.border-danger')
     const changedBorders = canvasElement.querySelectorAll('.border-warning')
 
-    expect(addedBorders.length).toBeGreaterThan(0)
-    expect(removedBorders.length).toBeGreaterThan(0)
-    expect(changedBorders.length).toBeGreaterThan(0)
+    expect(addedBorders.length).toBe(2) // Two items with 'added' state
+    expect(removedBorders.length).toBe(1) // One item with 'removed' state
+    expect(changedBorders.length).toBe(1) // One item with 'changed' state
   }
 }

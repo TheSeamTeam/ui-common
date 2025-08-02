@@ -34,12 +34,6 @@ export class AlterationsListComponent {
     return this.items && this.items.length > 0
   }
 
-  getItemDiffState(item: AlterationDisplayItem): AlterationVisualState | undefined {
-    // For now, we don't set individual item diff states in the list component
-    // This will be handled by the parent diff component
-    return undefined
-  }
-
   trackByItemId(index: number, item: AlterationDisplayItem): string {
     return item.id
   }

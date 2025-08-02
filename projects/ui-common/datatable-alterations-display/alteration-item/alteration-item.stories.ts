@@ -11,10 +11,6 @@ const meta: Meta<AlterationItemComponent> = {
   component: AlterationItemComponent,
   tags: ['autodocs'],
   argTypes: {
-    diffState: {
-      control: { type: 'select' },
-      options: ['added', 'removed', 'changed', 'unchanged', undefined]
-    },
     compact: {
       control: { type: 'boolean' }
     }
@@ -139,8 +135,7 @@ export const OrderAlteration: Story = {
 
 export const AddedState: Story = {
   args: {
-    item: filterAlteration,
-    diffState: 'added',
+    item: { ...filterAlteration, diffState: 'added' },
     compact: true
   },
   play: async ({ canvasElement, fixture }) => {
@@ -153,8 +148,7 @@ export const AddedState: Story = {
 
 export const RemovedState: Story = {
   args: {
-    item: sortAlteration,
-    diffState: 'removed',
+    item: { ...sortAlteration, diffState: 'removed' },
     compact: true
   },
   play: async ({ canvasElement, fixture }) => {
@@ -167,8 +161,7 @@ export const RemovedState: Story = {
 
 export const ChangedState: Story = {
   args: {
-    item: widthAlteration,
-    diffState: 'changed',
+    item: { ...widthAlteration, diffState: 'changed' },
     compact: true
   },
   play: async ({ canvasElement, fixture }) => {

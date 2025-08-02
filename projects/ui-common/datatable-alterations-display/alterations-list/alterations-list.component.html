@@ -15,7 +15,6 @@
     <seam-alteration-item
       *ngFor="let item of sortedItems; trackBy: trackByItemId"
       [item]="item"
-      [diffState]="getItemDiffState(item)"
       [compact]="compact"
       [attr.data-testid]="'list-item-' + item.id">
     </seam-alteration-item>
