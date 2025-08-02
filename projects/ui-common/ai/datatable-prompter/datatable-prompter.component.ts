@@ -2,12 +2,13 @@ import { ChangeDetectorRef, Component, inject, Input } from '@angular/core'
 import { AsyncPipe, JsonPipe, NgForOf, NgIf } from '@angular/common'
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
 
-import { BehaviorSubject, combineLatest, map, Observable, of, startWith, switchMap, tap } from 'rxjs'
+import { BehaviorSubject, combineLatest, map, Observable, of, shareReplay, startWith, switchMap, tap } from 'rxjs'
 import { ColumnsAlterationState, DatatableComponent, DatatablePreferencesService, EMPTY_DATATABLE_PREFERENCES, mapColumnsAlterationsStates, THESEAM_DATATABLE_PREFERENCES_ACCESSOR } from '@theseam/ui-common/datatable'
 import { TheSeamLoadingModule } from '@theseam/ui-common/loading'
 import { TheSeamRichTextModule } from '@theseam/ui-common/rich-text'
 import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
+import { AlterationDisplayItem, AlterationsDiffComponent } from '@theseam/ui-common/datatable-alterations-display'
 
 import { getUserPrompt, THESEAM_DATATABLE_PROMPTER_PROVIDER } from './datatable-prompter-prompt-provider'
 
@@ -26,6 +27,7 @@ import { getUserPrompt, THESEAM_DATATABLE_PROMPTER_PROVIDER } from './datatable-
     TheSeamRichTextModule,
     TheSeamFormFieldModule,
     TheSeamButtonsModule,
+    AlterationsDiffComponent,
   ],
 })
 export class TheSeamDatatablePrompterComponent {
@@ -36,8 +38,15 @@ export class TheSeamDatatablePrompterComponent {
   private readonly _aiProvider = inject(THESEAM_DATATABLE_PROMPTER_PROVIDER, { optional: true })
 
   readonly _loadingSubject = new BehaviorSubject<boolean>(false)
+  readonly _altsDataSubject = new BehaviorSubject<{
+    currentItems: AlterationDisplayItem[]
+    pendingItems: AlterationDisplayItem[]
+  } | undefined>(undefined)
 
   public readonly loading$ = this._loadingSubject.asObservable()
+
+  @Input() diffMode: 'auto' | 'manual' = 'auto'
+  @Input() compact = true
 
   @Input()
   set prompt(value: string | undefined | null) {
@@ -56,6 +65,8 @@ export class TheSeamDatatablePrompterComponent {
     return this._datatableSubject.value
   }
   private _datatableSubject = new BehaviorSubject<DatatableComponent | undefined | null>(null)
+
+  @Input() showAlts = true
 
   readonly _form = new FormGroup({
     prompt: new FormControl<string | null>('Sort color descending order', [ Validators.required ]),
@@ -90,6 +101,32 @@ export class TheSeamDatatablePrompterComponent {
       ) ?? of([] as ColumnsAlterationState[])
     }),
     // tap(v => console.log('%cAlterations:', 'color: limegreen;', v)),
+  )
+
+  _alterationsDisplayItems$: Observable<AlterationDisplayItem[]> = this._alterations$.pipe(
+    switchMap(alterations => {
+      console.log('~~~~~Current alterations:', alterations)
+      if (!alterations || alterations.length === 0) {
+        return of([] as AlterationDisplayItem[])
+      }
+      const alts = mapColumnsAlterationsStates(alterations)
+      console.log('~~~~~Mapped alterations:', alts)
+      return of(alts.map(a => a.toDisplayItem()))
+    }),
+    shareReplay({ bufferSize: 1, refCount: true }),
+  )
+
+  _pendingAlterationsSubject = new BehaviorSubject<ColumnsAlterationState[]>([])
+  _pendingAlterationsDisplayItems$: Observable<AlterationDisplayItem[]> = this._pendingAlterationsSubject.asObservable().pipe(
+    switchMap(pending => {
+      if (!pending || pending.length === 0) {
+        return of([] as AlterationDisplayItem[])
+      }
+      const alts = mapColumnsAlterationsStates(pending)
+      console.log('~~~~~Mapped alterations2:', alts)
+      return of(alts.map(a => a.toDisplayItem()))
+    }),
+    shareReplay({ bufferSize: 1, refCount: true }),
   )
 
   _onSubmit() {
@@ -172,6 +209,8 @@ export class TheSeamDatatablePrompterComponent {
         console.log('Columns after applying alterations:', columnsAfter)
         mgr.add(alts)
         datatable._cdr.detectChanges()
+
+        this._pendingAlterationsSubject.next(_after)
       }
 
       this._prefsAccessor?.update(key, JSON.stringify({

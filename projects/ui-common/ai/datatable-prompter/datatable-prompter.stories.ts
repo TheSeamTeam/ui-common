@@ -125,6 +125,68 @@ export class SetKeyComponent {
   }
 }
 
+const dt = {
+  columns: [
+    { prop: 'name', name: 'Name', filterable: true, filterOptions: { filterType: 'search-text' } },
+    { prop: 'age', name: 'Age', filterable: true, filterOptions: { filterType: 'search-numeric' } },
+    { prop: 'color', name: 'Color', filterable: true, filterOptions: { filterType: 'search-text' } },
+  ],
+  rows: [
+    { name: 'Mark', age: 27, color: 'blue' },
+    { name: 'Joe', age: 33, color: 'green' },
+    // { name: 'Mark', age: 27, color: 'blue' },
+    // { name: 'Joe', age: 33, color: 'green' },
+    // { name: 'Mark', age: 27, color: 'blue' },
+    // { name: 'Joe', age: 33, color: 'green' },
+    // { name: 'Mark', age: 27, color: 'blue' },
+    // { name: 'Joe', age: 33, color: 'green' },
+    // { name: 'Mark', age: 27, color: 'blue' },
+    // { name: 'Joe', age: 33, color: 'green' },
+    // { name: 'Mark', age: 27, color: 'blue' },
+    // { name: 'Joe', age: 33, color: 'green' },
+    // { name: 'Mark', age: 27, color: 'blue' },
+    // { name: 'Joe', age: 33, color: 'green' },
+    // { name: 'Mark', age: 27, color: 'blue' },
+    // { name: 'Joe', age: 33, color: 'green' },
+    // { name: 'Mark', age: 27, color: 'blue' },
+    // { name: 'Joe', age: 33, color: 'green' },
+    // { name: 'Mark', age: 27, color: 'blue' },
+    // { name: 'Joe', age: 33, color: 'green' },
+    // { name: 'Mark', age: 27, color: 'blue' },
+    // { name: 'Joe', age: 33, color: 'green' },
+    // { name: 'Mark', age: 27, color: 'blue' },
+    // { name: 'Joe', age: 33, color: 'green' },
+    // { name: 'Mark', age: 27, color: 'blue' },
+    // { name: 'Joe', age: 33, color: 'green' },
+    // { name: 'Mark', age: 27, color: 'blue' },
+    // { name: 'Joe', age: 33, color: 'green' },
+    // { name: 'Mark', age: 27, color: 'blue' },
+    // { name: 'Joe', age: 33, color: 'green' },
+    // { name: 'Mark', age: 27, color: 'blue' },
+    // { name: 'Joe', age: 33, color: 'green' },
+    { name: 'Alice', age: 22, color: 'Blue' },
+    { name: 'Bob', age: 35, color: 'Red' },
+    { name: 'Clara', age: 28, color: 'Green' },
+    { name: 'David', age: 41, color: 'Yellow' },
+    { name: 'Emma', age: 19, color: 'Purple' },
+    { name: 'Frank', age: 53, color: 'Orange' },
+    { name: 'Grace', age: 30, color: 'Pink' },
+    { name: 'Henry', age: 47, color: 'Brown' },
+    { name: 'Isabel', age: 26, color: 'Teal' },
+    { name: 'Jack', age: 38, color: 'Black' },
+    { name: 'Katherine', age: 24, color: 'Violet' },
+    { name: 'Liam', age: 50, color: 'Gold' },
+    { name: 'Mia', age: 31, color: 'Silver' },
+    { name: 'Noah', age: 27, color: 'Cyan' },
+    { name: 'Olivia', age: 45, color: 'Magenta' },
+    { name: 'Peter', age: 33, color: 'Lime' },
+    { name: 'Quinn', age: 29, color: 'Indigo' },
+    { name: 'Rachel', age: 36, color: 'Turquoise' },
+    { name: 'Samuel', age: 42, color: 'Maroon' },
+    { name: 'Tara', age: 21, color: 'Coral' }
+  ],
+}
+
 interface ExtraArgs {
   dt?: {
     columns: any[]
@@ -189,47 +251,85 @@ export const Basic: Story = {
   }), // externalSorting="true" externalFiltering="true"
   args: {
     prompt: 'Is 33 years old',
-    dt: {
-      columns: [
-        { prop: 'name', name: 'Name', filterable: true, filterOptions: { filterType: 'search-text' } },
-        { prop: 'age', name: 'Age', filterable: true, filterOptions: { filterType: 'search-numeric' } },
-        { prop: 'color', name: 'Color', filterable: true, filterOptions: { filterType: 'search-text' } },
-      ],
-      rows: [
-        { name: 'Mark', age: 27, color: 'blue' },
-        { name: 'Joe', age: 33, color: 'green' },
-        { name: 'Mark', age: 27, color: 'blue' },
-        { name: 'Joe', age: 33, color: 'green' },
-        { name: 'Mark', age: 27, color: 'blue' },
-        { name: 'Joe', age: 33, color: 'green' },
-        { name: 'Mark', age: 27, color: 'blue' },
-        { name: 'Joe', age: 33, color: 'green' },
-        { name: 'Mark', age: 27, color: 'blue' },
-        { name: 'Joe', age: 33, color: 'green' },
-        { name: 'Mark', age: 27, color: 'blue' },
-        { name: 'Joe', age: 33, color: 'green' },
-        { name: 'Mark', age: 27, color: 'blue' },
-        { name: 'Joe', age: 33, color: 'green' },
-        { name: 'Mark', age: 27, color: 'blue' },
-        { name: 'Joe', age: 33, color: 'green' },
-        { name: 'Mark', age: 27, color: 'blue' },
-        { name: 'Joe', age: 33, color: 'green' },
-        { name: 'Mark', age: 27, color: 'blue' },
-        { name: 'Joe', age: 33, color: 'green' },
-        { name: 'Mark', age: 27, color: 'blue' },
-        { name: 'Joe', age: 33, color: 'green' },
-        { name: 'Mark', age: 27, color: 'blue' },
-        { name: 'Joe', age: 33, color: 'green' },
-        { name: 'Mark', age: 27, color: 'blue' },
-        { name: 'Joe', age: 33, color: 'green' },
-        { name: 'Mark', age: 27, color: 'blue' },
-        { name: 'Joe', age: 33, color: 'green' },
-        { name: 'Mark', age: 27, color: 'blue' },
-        { name: 'Joe', age: 33, color: 'green' },
-        { name: 'Mark', age: 27, color: 'blue' },
-        { name: 'Joe', age: 33, color: 'green' },
-      ],
-    },
+    dt,
+  },
+  // play: async ({ canvasElement, fixture }) => {
+  //   const requiredIndicatorHarness = await getHarness(TheSeamFormFieldRequiredIndicatorHarness, { canvasElement, fixture })
+  //   await expect(await requiredIndicatorHarness.isIndicatorVisible()).toBe(false)
+
+  //   const formFieldHarness = await getHarness(TheSeamFormFieldHarness, { canvasElement, fixture })
+  //   await expect(await formFieldHarness.getLabel()).toBe('Example')
+  // },
+}
+
+export const NoAlts: Story = {
+  render: args => ({
+    props: args,
+    template: `
+      <div class="d-flex flex-column-reverse">
+        <div style="height: 500px; width: 1200px; display: block;">
+          <seam-datatable #datatable class="w-100 h-100" [columns]="dt.columns" [rows]="dt.rows" preferencesKey="prompter-prefs-1"
+            sortType="multi"></seam-datatable>
+        </div>
+        <seam-datatable-prompter [datatable]="datatable" [prompt]="prompt" [showAlts]="false"></seam-datatable-prompter>
+      </div>
+    `,
+  }), // externalSorting="true" externalFiltering="true"
+  args: {
+    prompt: 'Is 33 years old',
+    dt,
+  },
+  // play: async ({ canvasElement, fixture }) => {
+  //   const requiredIndicatorHarness = await getHarness(TheSeamFormFieldRequiredIndicatorHarness, { canvasElement, fixture })
+  //   await expect(await requiredIndicatorHarness.isIndicatorVisible()).toBe(false)
+
+  //   const formFieldHarness = await getHarness(TheSeamFormFieldHarness, { canvasElement, fixture })
+  //   await expect(await formFieldHarness.getLabel()).toBe('Example')
+  // },
+}
+
+export const AltsCompact: Story = {
+  render: args => ({
+    props: args,
+    template: `
+      <div class="d-flex flex-column-reverse">
+        <div style="height: 500px; width: 1200px; display: block;">
+          <seam-datatable #datatable class="w-100 h-100" [columns]="dt.columns" [rows]="dt.rows" preferencesKey="prompter-prefs-1"
+            sortType="multi"></seam-datatable>
+        </div>
+        <seam-datatable-prompter [datatable]="datatable" [prompt]="prompt" [compact]="true"></seam-datatable-prompter>
+      </div>
+    `,
+  }), // externalSorting="true" externalFiltering="true"
+  args: {
+    prompt: 'Is 33 years old',
+    dt,
+  },
+  // play: async ({ canvasElement, fixture }) => {
+  //   const requiredIndicatorHarness = await getHarness(TheSeamFormFieldRequiredIndicatorHarness, { canvasElement, fixture })
+  //   await expect(await requiredIndicatorHarness.isIndicatorVisible()).toBe(false)
+
+  //   const formFieldHarness = await getHarness(TheSeamFormFieldHarness, { canvasElement, fixture })
+  //   await expect(await formFieldHarness.getLabel()).toBe('Example')
+  // },
+}
+
+export const AltsExpanded: Story = {
+  render: args => ({
+    props: args,
+    template: `
+      <div class="d-flex flex-column-reverse">
+        <div style="height: 500px; width: 1200px; display: block;">
+          <seam-datatable #datatable class="w-100 h-100" [columns]="dt.columns" [rows]="dt.rows" preferencesKey="prompter-prefs-1"
+            sortType="multi"></seam-datatable>
+        </div>
+        <seam-datatable-prompter [datatable]="datatable" [prompt]="prompt" [compact]="false"></seam-datatable-prompter>
+      </div>
+    `,
+  }), // externalSorting="true" externalFiltering="true"
+  args: {
+    prompt: 'Is 33 years old',
+    dt,
   },
   // play: async ({ canvasElement, fixture }) => {
   //   const requiredIndicatorHarness = await getHarness(TheSeamFormFieldRequiredIndicatorHarness, { canvasElement, fixture })

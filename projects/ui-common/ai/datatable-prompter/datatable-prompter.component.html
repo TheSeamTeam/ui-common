@@ -23,7 +23,7 @@
     </div>
   </div>
 
-  <div class="p-2">
+  <div class="p-2" *ngIf="showAlts">
     <div>Active Alterations</div>
     <div class="p-2 border rounded bg-lightgray">
       <!-- {{ _alterations$ | async | json }} -->
@@ -44,5 +44,11 @@
         </div>
       </div>
     </div>
+    <seam-alterations-diff
+      [currentItems]="(_alterationsDisplayItems$ | async) ?? []"
+      [pendingItems]="(_pendingAlterationsDisplayItems$ | async) ?? []"
+      [compact]="compact"
+      [diffMode]="diffMode"
+    ></seam-alterations-diff>
   </div>
 </div>
