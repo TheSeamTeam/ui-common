@@ -2,7 +2,9 @@ import { applicationConfig, componentWrapperDecorator, Meta, moduleMetadata, Sto
 import { expect } from '@storybook/jest'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
-import { Observable, of } from 'rxjs'
+import { Component } from '@angular/core'
+import { FormControl, ReactiveFormsModule } from '@angular/forms'
+import { BehaviorSubject, Observable, of } from 'rxjs'
 
 import { getHarness } from '@theseam/ui-common/testing'
 
@@ -12,6 +14,8 @@ import { TheSeamPreferencesAccessor } from '@theseam/ui-common/services'
 
 import { TheSeamDatatablePrompterComponent } from './datatable-prompter.component'
 import { THESEAM_DATATABLE_PROMPTER_PROVIDER, TheSeamDatatablePrompterProvider } from './datatable-prompter-prompt-provider'
+import { OpenRouterAiProvider } from './ai-providers/openrouter.ai-provider'
+import { AsyncPipe, NgIf } from '@angular/common'
 
 export class PreferencesAccessorService implements TheSeamPreferencesAccessor {
   private readonly _map = new Map<string, string>()
@@ -73,6 +77,54 @@ export class MockAiProvider implements TheSeamDatatablePrompterProvider {
   }
 }
 
+@Component({
+  selector: 'story-set-key',
+  template: `
+    <div class="d-flex flex-column">
+      <label for="key">API Key</label>
+      <input id="key" type="text" class="form-control" [formControl]="_apiKeyControl" />
+    </div>
+    <button class="btn btn-primary mt-2" (click)="_localStorage.setItem('openrouter-api-key', _apiKeyControl.value ?? '')">Set Key</button>
+    <!--<button class="btn btn-secondary mt-2" (click)="_refresh()">Refresh</button>
+    <div class="mt-2">
+      <span *ngIf="_loadingCreditSubject | async">Loading credits...</span>
+      <span *ngIf="!(_loadingCreditSubject | async)">Credits: {{ _creditsSubject | async }}</span>
+    </div>-->
+  `,
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    AsyncPipe,
+    NgIf,
+  ],
+})
+export class SetKeyComponent {
+  _localStorage = localStorage
+  _apiKeyControl = new FormControl<string>('')
+  _loadingCreditSubject = new BehaviorSubject<boolean>(false)
+  _creditsSubject = new BehaviorSubject<number>(0)
+
+  _refresh() {
+    this._loadingCreditSubject.next(true)
+    const url = 'https://openrouter.ai/api/v1/credits'
+    const apiKey = localStorage.getItem('openrouter-api-key') || ''
+    const headers = {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    }
+    fetch(url, {
+      method: 'GET',
+      headers,
+    }).then(response => response.json()).then(data => {
+      console.log('Response from AI:', data)
+      const credits = data.credits || 0
+      console.log(`%cCredits: ${credits}`, 'color: limegreen;')
+      this._creditsSubject.next(credits)
+    })
+    this._loadingCreditSubject.next(false)
+  }
+}
+
 interface ExtraArgs {
   dt?: {
     columns: any[]
@@ -99,7 +151,8 @@ const meta: Meta<StoryComponentType> = {
         },
         {
           provide: THESEAM_DATATABLE_PROMPTER_PROVIDER,
-          useClass: MockAiProvider,
+          // useClass: MockAiProvider,
+          useClass: OpenRouterAiProvider
         },
       ],
     }),
@@ -185,4 +238,17 @@ export const Basic: Story = {
   //   const formFieldHarness = await getHarness(TheSeamFormFieldHarness, { canvasElement, fixture })
   //   await expect(await formFieldHarness.getLabel()).toBe('Example')
   // },
+}
+
+export const SetKey: Story = {
+  render: () => ({
+    template: `
+      <story-set-key></story-set-key>
+    `,
+  }),
+  decorators: [
+    moduleMetadata({
+      imports: [SetKeyComponent],
+    }),
+  ],
 }

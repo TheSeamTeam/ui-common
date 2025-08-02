@@ -3,9 +3,11 @@ import { assistantPrompt, parseResponse, TheSeamDatatablePrompterProvider } from
 export class OpenRouterAiProvider implements TheSeamDatatablePrompterProvider {
 
   async submit(prompt: string): Promise<any> {
+    const defaultApiKey = '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'
+
     // OpenRouter
     const url = 'https://openrouter.ai/api/v1/chat/completions'
-    const apiKey = localStorage.getItem('openrouter-api-key') || ''
+    const apiKey = localStorage.getItem('openrouter-api-key') || defaultApiKey
     const headers = {
       'Authorization': `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
