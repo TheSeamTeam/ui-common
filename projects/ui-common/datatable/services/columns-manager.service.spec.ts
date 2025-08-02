@@ -1,5 +1,6 @@
 import { fakeAsync, TestBed, waitForAsync } from '@angular/core/testing'
 import { take } from 'rxjs/operators'
+import { firstValueFrom } from 'rxjs'
 
 import {
   adjustColumnWidths,
@@ -14,10 +15,10 @@ import { TheSeamDatatableColumn } from '../models/table-column'
 import { ACTION_MENU_COLUMN_PROP } from '../utils/create-action-menu-column'
 import { CHECKBOX_COLUMN_PROP } from '../utils/create-checkbox-column'
 import { setColumnDefaults } from '../utils/set-column-defaults'
+import { ColumnsFiltersService } from '../services/columns-filters.service'
 
 import { ColumnsManagerService } from './columns-manager.service'
 import { DatatableColumnChangesService } from './datatable-column-changes.service'
-import { firstValueFrom } from 'rxjs'
 
 describe('ColumnsManagerService', () => {
   let service: ColumnsManagerService
@@ -26,7 +27,7 @@ describe('ColumnsManagerService', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    providers: [ColumnsManagerService, DatatableColumnChangesService],
+    providers: [ColumnsManagerService, ColumnsFiltersService, DatatableColumnChangesService],
     teardown: { destroyAfterEach: false }
 })
     .compileComponents()
