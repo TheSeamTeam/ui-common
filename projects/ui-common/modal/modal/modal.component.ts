@@ -28,10 +28,11 @@ export const LIB_MODAL: any = {
 }
 
 @Component({
-  selector: 'seam-modal',
-  templateUrl: './modal.component.html',
-  styleUrls: ['./modal.component.scss'],
-  providers: [ LIB_MODAL ]
+    selector: 'seam-modal',
+    templateUrl: './modal.component.html',
+    styleUrls: ['./modal.component.scss'],
+    providers: [LIB_MODAL],
+    standalone: false
 })
 export class ModalComponent implements OnDestroy, AfterViewInit, IModalContainer {
   static ngAcceptInputType_showCloseBtn: BooleanInput

@@ -21,13 +21,14 @@ import { ITableCellTypeManifest, TableCellData, TableCellDataChange } from './ta
 import { TABLE_CELL_DATA, TABLE_CELL_TYPE_MANIFEST } from './table-cell-type-tokens'
 
 @Component({
-  selector: 'seam-table-cell-type-selector',
-  template: `
+    selector: 'seam-table-cell-type-selector',
+    template: `
     <ng-template *ngIf="componentPortal; else noPortal" [cdkPortalOutlet]="componentPortal"></ng-template>
     <ng-template #noPortal>{{ value }}</ng-template>
   `,
-  styles: [],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    styles: [],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class TableCellTypeSelectorComponent<T extends string = any, D = any, V = any> implements AfterViewInit, OnChanges {
 

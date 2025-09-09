@@ -11,10 +11,11 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion'
 import { TableCellTypeConfigDecimal } from './table-cell-type-decimal-config'
 
 @Component({
-  selector: 'seam-table-cell-type-decimal',
-  templateUrl: './table-cell-type-decimal.component.html',
-  styleUrls: ['./table-cell-type-decimal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'seam-table-cell-type-decimal',
+    templateUrl: './table-cell-type-decimal.component.html',
+    styleUrls: ['./table-cell-type-decimal.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class TableCellTypeDecimalComponent implements OnDestroy {
 

@@ -21,10 +21,11 @@ import { IconTemplateType } from './../table-cell-type-icon/table-cell-type-icon
 import { TableCellTypeConfigProgressCircle, TableCellTypeProgressCircleConfigAction } from './table-cell-type-progress-circle-config'
 
 @Component({
-  selector: 'seam-table-cell-type-progress-circle',
-  templateUrl: './table-cell-type-progress-circle.component.html',
-  styleUrls: ['./table-cell-type-progress-circle.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'seam-table-cell-type-progress-circle',
+    templateUrl: './table-cell-type-progress-circle.component.html',
+    styleUrls: ['./table-cell-type-progress-circle.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class TableCellTypeProgressCircleComponent implements OnDestroy {
 

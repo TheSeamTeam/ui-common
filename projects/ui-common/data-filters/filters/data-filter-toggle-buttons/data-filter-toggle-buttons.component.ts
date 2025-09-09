@@ -86,10 +86,11 @@ export function toggleButtonsFilter(data: any[], values: string[], options = Def
 let _uid = 0
 
 @Component({
-  selector: 'seam-data-filter-toggle-buttons',
-  templateUrl: './data-filter-toggle-buttons.component.html',
-  styleUrls: ['./data-filter-toggle-buttons.component.scss'],
-  providers: [ DATA_FILTER_TOGGLE_BUTTON ]
+    selector: 'seam-data-filter-toggle-buttons',
+    templateUrl: './data-filter-toggle-buttons.component.html',
+    styleUrls: ['./data-filter-toggle-buttons.component.scss'],
+    providers: [DATA_FILTER_TOGGLE_BUTTON],
+    standalone: false
 })
 export class DataFilterToggleButtonsComponent implements OnInit, OnDestroy, IDataFilter {
 

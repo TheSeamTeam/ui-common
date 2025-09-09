@@ -4,13 +4,14 @@ import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, Input } fr
 import { InputBoolean } from '@theseam/ui-common/core'
 
 @Component({
-  selector: 'seam-widget-tile-footer-item,a[seam-widget-tile-footer-item],button[seam-widget-tile-footer-item]',
-  templateUrl: './widget-tile-footer-item.component.html',
-  styleUrls: ['./widget-tile-footer-item.component.scss'],
-  host: {
-    class: 'btn btn-link py-0 px-1',
-  },
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'seam-widget-tile-footer-item,a[seam-widget-tile-footer-item],button[seam-widget-tile-footer-item]',
+    templateUrl: './widget-tile-footer-item.component.html',
+    styleUrls: ['./widget-tile-footer-item.component.scss'],
+    host: {
+        class: 'btn btn-link py-0 px-1',
+    },
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class WidgetTileFooterItemComponent {
   static ngAcceptInputType_disabled: BooleanInput

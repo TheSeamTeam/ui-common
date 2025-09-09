@@ -17,7 +17,10 @@ import { TheSeamIconType } from '@theseam/ui-common/icon'
 
 import { WidgetTileSecondaryIconDirective } from './widget-tile-secondary-icon.directive'
 
-@Component({ template: '' })
+@Component({
+    template: '',
+    standalone: false
+})
 // eslint-disable-next-line @angular-eslint/component-class-suffix
 class TheSeamWidgetTileBase implements OnDestroy, HasRenderer2, HasElementRef {
   constructor(
@@ -47,12 +50,13 @@ const _TheSeamWidgetTileMixinBase: CanDisableCtor & HasTabIndexCtor &
 
 // TODO: Should this component be split into separate components for button and anchor.
 @Component({
-  selector: 'seam-widget-tile, a[seam-widget-tile], button[seam-widget-tile]',
-  templateUrl: './widget-tile.component.html',
-  styleUrls: ['./widget-tile.component.scss'],
-  inputs: [ 'disabled' ],
-  exportAs: 'seamWidgetTile',
-  encapsulation: ViewEncapsulation.None,
+    selector: 'seam-widget-tile, a[seam-widget-tile], button[seam-widget-tile]',
+    templateUrl: './widget-tile.component.html',
+    styleUrls: ['./widget-tile.component.scss'],
+    inputs: ['disabled'],
+    exportAs: 'seamWidgetTile',
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class WidgetTileComponent extends _TheSeamWidgetTileMixinBase implements OnInit, OnDestroy {
   static ngAcceptInputType_grayscaleOnDisable: BooleanInput

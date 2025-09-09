@@ -11,9 +11,10 @@ import { ThemeTypes } from '@theseam/ui-common/models'
 import { DatatableActionMenuComponent } from '../datatable-action-menu/datatable-action-menu.component'
 
 @Component({
-  selector: 'seam-datatable-action-menu-item',
-  template: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'seam-datatable-action-menu-item',
+    template: ``,
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class DatatableActionMenuItemComponent {
 

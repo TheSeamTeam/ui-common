@@ -60,22 +60,21 @@ let _uid = 0
  * A Checkbox.
  */
 @Component({
-  selector: 'seam-checkbox',
-  templateUrl: './checkbox.component.html',
-  styleUrls: ['./checkbox.component.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    ObserversModule,
-  ],
-  exportAs: 'seamCheckbox',
-  host: {
-    '[attr.tabindex]': 'null',
-    'class': 'custom-control custom-checkbox'
-  },
-  providers: [ THESEAM_CHECKBOX_CONTROL_VALUE_ACCESSOR ],
-  inputs: [ 'tabIndex' ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'seam-checkbox',
+    templateUrl: './checkbox.component.html',
+    styleUrls: ['./checkbox.component.scss'],
+    imports: [
+        CommonModule,
+        ObserversModule,
+    ],
+    exportAs: 'seamCheckbox',
+    host: {
+        '[attr.tabindex]': 'null',
+        'class': 'custom-control custom-checkbox'
+    },
+    providers: [THESEAM_CHECKBOX_CONTROL_VALUE_ACCESSOR],
+    inputs: ['tabIndex'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TheSeamCheckboxComponent extends _TheSeamCheckboxMixinBase
   implements AfterViewInit, OnDestroy, ControlValueAccessor, CanDisable, HasTabIndex {

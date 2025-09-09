@@ -6,9 +6,10 @@ import { defaultThemeConfig, primaryThemeConfig } from '../loading-themes'
 import type { TheSeamLoadingTheme } from '../loading.models'
 
 @Component({
-  selector: 'seam-loading',
-  templateUrl: './loading.component.html',
-  styleUrls: ['./loading.component.scss']
+    selector: 'seam-loading',
+    templateUrl: './loading.component.html',
+    styleUrls: ['./loading.component.scss'],
+    standalone: false
 })
 export class TheSeamLoadingComponent {
 

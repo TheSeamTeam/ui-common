@@ -23,9 +23,10 @@ export interface IErrorRecord {
  * TODO: Cleanup remaining code from before refactor.
  */
 @Component({
-  selector: 'seam-form-field-error-list',
-  templateUrl: './form-field-error-list.component.html',
-  styleUrls: ['./form-field-error-list.component.scss']
+    selector: 'seam-form-field-error-list',
+    templateUrl: './form-field-error-list.component.html',
+    styleUrls: ['./form-field-error-list.component.scss'],
+    standalone: false
 })
 export class FormFieldErrorListComponent implements OnDestroy, DoCheck {
 

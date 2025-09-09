@@ -37,7 +37,8 @@ export interface TheSeamDatatableRow {
 }
 
 @Directive({
-  selector: '[seamDatatableActionMenuItem]'
+    selector: '[seamDatatableActionMenuItem]',
+    standalone: false
 })
 export class DatatableActionMenuItemDirective {
 

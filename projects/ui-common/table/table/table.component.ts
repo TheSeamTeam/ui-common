@@ -65,10 +65,11 @@ function mergeColumnsAndTplColumns(columns: (string | ITableColumn)[], tplColumn
 }
 
 @Component({
-  selector: 'seam-table',
-  templateUrl: './table.component.html',
-  styleUrls: ['./table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'seam-table',
+    templateUrl: './table.component.html',
+    styleUrls: ['./table.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class TableComponent<T = any> implements OnInit, OnChanges, AfterContentChecked {
   static ngAcceptInputType_hasHeader: BooleanInput

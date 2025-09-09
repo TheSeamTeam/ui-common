@@ -5,7 +5,8 @@ import { getClosestModal, Modal, ModalRef } from '@theseam/ui-common/modal'
 
 @Directive({
     selector: '[seamAutoFocus]',
-    exportAs: 'seamAutoFocus'
+    exportAs: 'seamAutoFocus',
+    standalone: false
 })
 export class AutoFocusDirective implements OnInit {
   static ngAcceptInputType_seamAutoFocus: BooleanInput

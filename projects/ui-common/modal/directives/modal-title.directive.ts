@@ -1,7 +1,8 @@
 import { Directive, ElementRef, HostBinding, TemplateRef } from '@angular/core'
 
 @Directive({
-  selector: '[seamModalTitle]'
+    selector: '[seamModalTitle]',
+    standalone: false
 })
 export class ModalTitleDirective {
 

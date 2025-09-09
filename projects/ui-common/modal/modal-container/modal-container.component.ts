@@ -29,30 +29,30 @@ export function throwDialogContentAlreadyAttachedError() {
  * @docs-private
  */
 @Component({
-  selector: 'seam-modal-container',
-  templateUrl: './modal-container.component.html',
-  styleUrls: ['./modal-container.component.scss'],
-  animations: [
-    trigger('dialog', [
-      state('enter', style({ opacity: 1 })),
-      state('exit, void', style({ opacity: 0 })),
-      transition('* => enter', animate('{{enterAnimationDuration}}')),
-      transition('* => exit, * => void', animate('{{exitAnimationDuration}}')),
-    ])
-  ],
-  // tslint:disable:use-host-property-decorator
-  host: {
-    '[@dialog]': `{
+    selector: 'seam-modal-container',
+    templateUrl: './modal-container.component.html',
+    styleUrls: ['./modal-container.component.scss'],
+    animations: [
+        trigger('dialog', [
+            state('enter', style({ opacity: 1 })),
+            state('exit, void', style({ opacity: 0 })),
+            transition('* => enter', animate('{{enterAnimationDuration}}')),
+            transition('* => exit, * => void', animate('{{exitAnimationDuration}}')),
+        ])
+    ],
+    // tslint:disable:use-host-property-decorator
+    host: {
+        '[@dialog]': `{
       value: _state,
       params: {
         enterAnimationDuration: _config.enterAnimationDuration,
         exitAnimationDuration: _config.exitAnimationDuration
       }
     }`,
-    '(@dialog.start)': '_onAnimationStart($event)',
-    '(@dialog.done)': '_animationDone.next($event)',
-  },
-  // tslint:enable:use-host-property-decorator
+        '(@dialog.start)': '_onAnimationStart($event)',
+        '(@dialog.done)': '_animationDone.next($event)',
+    },
+    standalone: false
 })
 export class ModalContainerComponent extends BasePortalOutlet implements OnDestroy {
 

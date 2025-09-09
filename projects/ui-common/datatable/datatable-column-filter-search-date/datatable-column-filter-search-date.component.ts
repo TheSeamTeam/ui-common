@@ -5,15 +5,16 @@ import { ControlContainer, FormGroupDirective } from '@angular/forms'
 import { TheSeamColumnsDataFilterDateSearchDateType, TheSeamColumnsDataFilterDateSearchForm, TheSeamColumnsDataFilterDateSearchOptions, TheSeamColumnsDataFilterDateSearchType, THESEAM_COLUMNS_DATA_FILTER_DATE_RANGE_SEARCH_TYPES, THESEAM_COLUMNS_DATA_FILTER_DATE_TEXT_SEARCH_TYPES } from '../models/columns-data-filters/models'
 
 @Component({
-  selector: 'seam-datatable-column-filter-search-date',
-  templateUrl: './datatable-column-filter-search-date.component.html',
-  styleUrls: ['./datatable-column-filter-search-date.component.scss'],
-  viewProviders: [
-    {
-      provide: ControlContainer,
-      useExisting: FormGroupDirective
-    }
-  ]
+    selector: 'seam-datatable-column-filter-search-date',
+    templateUrl: './datatable-column-filter-search-date.component.html',
+    styleUrls: ['./datatable-column-filter-search-date.component.scss'],
+    viewProviders: [
+        {
+            provide: ControlContainer,
+            useExisting: FormGroupDirective
+        }
+    ],
+    standalone: false
 })
 export class DatatableColumnFilterSearchDateComponent implements OnInit {
 

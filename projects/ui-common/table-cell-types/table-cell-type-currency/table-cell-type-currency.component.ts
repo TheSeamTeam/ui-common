@@ -12,10 +12,11 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion'
 import { TableCellTypeConfigCurrency } from './table-cell-type-currency-config'
 
 @Component({
-  selector: 'seam-table-cell-type-currency',
-  templateUrl: './table-cell-type-currency.component.html',
-  styleUrls: ['./table-cell-type-currency.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'seam-table-cell-type-currency',
+    templateUrl: './table-cell-type-currency.component.html',
+    styleUrls: ['./table-cell-type-currency.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class TableCellTypeCurrencyComponent implements OnDestroy {
 

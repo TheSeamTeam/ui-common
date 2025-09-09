@@ -5,8 +5,9 @@ import { getClosestModal } from '../modal-utils'
 import { Modal } from '../modal.service'
 
 @Directive({
-  selector: 'button[seamModalClose]',
-  exportAs: 'seamModalClose'
+    selector: 'button[seamModalClose]',
+    exportAs: 'seamModalClose',
+    standalone: false
 })
 export class ModalCloseDirective implements OnInit {
 

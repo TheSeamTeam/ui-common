@@ -16,10 +16,11 @@ export function calcDashoffset(value: number, circumference: number) {
 }
 
 @Component({
-  selector: 'seam-progress-circle',
-  templateUrl: './progress-circle.component.html',
-  styleUrls: [ './progress-circle.component.scss' ],
-  encapsulation: ViewEncapsulation.None
+    selector: 'seam-progress-circle',
+    templateUrl: './progress-circle.component.html',
+    styleUrls: ['./progress-circle.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class ProgressCircleComponent {
   static ngAcceptInputType_fillBackground: BooleanInput

@@ -5,10 +5,11 @@ import { InputBoolean } from '@theseam/ui-common/core'
 import type { ITableColumn, TrackByFunction } from '@theseam/ui-common/table'
 
 @Component({
-  selector: 'seam-widget-table',
-  templateUrl: './widget-table.component.html',
-  styleUrls: ['./widget-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'seam-widget-table',
+    templateUrl: './widget-table.component.html',
+    styleUrls: ['./widget-table.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class WidgetTableComponent<T> {
   static ngAcceptInputType_hasHeader: BooleanInput

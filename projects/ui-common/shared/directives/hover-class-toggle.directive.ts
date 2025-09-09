@@ -18,7 +18,8 @@ export interface IHoverClassToggleRecord {
  * containing this directive.
  */
 @Directive({
-  selector: '[seamHoverClassToggle]'
+    selector: '[seamHoverClassToggle]',
+    standalone: false
 })
 export class HoverClassToggleDirective {
 

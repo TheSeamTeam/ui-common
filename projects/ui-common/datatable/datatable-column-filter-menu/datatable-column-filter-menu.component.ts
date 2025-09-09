@@ -11,9 +11,10 @@ import { TheSeamDatatableColumnFilterUpdateMethod } from '../models/datatable-co
 import { InputNumber } from '@theseam/ui-common/core'
 
 @Component({
-  selector: 'seam-datatable-column-filter-menu',
-  templateUrl: './datatable-column-filter-menu.component.html',
-  styleUrls: ['./datatable-column-filter-menu.component.scss'],
+    selector: 'seam-datatable-column-filter-menu',
+    templateUrl: './datatable-column-filter-menu.component.html',
+    styleUrls: ['./datatable-column-filter-menu.component.scss'],
+    standalone: false
 })
 export class DatatableColumnFilterMenuComponent implements OnInit {
 

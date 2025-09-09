@@ -7,8 +7,8 @@ import { InputBoolean } from '@theseam/ui-common/core'
 import { FORM_FIELD_COMPONENT } from './form-field-tokens'
 
 @Component({
-  selector: 'seam-form-field-required-indicator',
-  template: `
+    selector: 'seam-form-field-required-indicator',
+    template: `
     <ng-container *ngIf="_controlRequired$; else noControl">
       <ng-container *ngIf="_controlRequired$ | async">*</ng-container>
     </ng-container>
@@ -16,11 +16,12 @@ import { FORM_FIELD_COMPONENT } from './form-field-tokens'
       <ng-container *ngIf="required">*</ng-container>
     </ng-template>
   `,
-  styles: [],
-  host: {
-    'class': 'text-danger'
-  },
-  changeDetection: ChangeDetectionStrategy.OnPush
+    styles: [],
+    host: {
+        'class': 'text-danger'
+    },
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class FormFieldRequiredIndicatorComponent implements OnChanges {
   static ngAcceptInputType_required: BooleanInput

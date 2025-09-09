@@ -8,8 +8,9 @@ import { OverlayScrollbarsService } from './overlay-scrollbars.service'
 import type { IOverlayScrollbarsConfig } from './overlay-scrollbars-config-model'
 
 @Directive({
-  selector: '[seamOverlayScrollbar]',
-  exportAs: 'seamOverlayScrollbar'
+    selector: '[seamOverlayScrollbar]',
+    exportAs: 'seamOverlayScrollbar',
+    standalone: false
 })
 export class OverlayScrollbarDirective implements AfterViewInit, OnDestroy {
   static ngAcceptInputType_seamOverlayScrollbar: IOverlayScrollbarsConfig | undefined | null | ''

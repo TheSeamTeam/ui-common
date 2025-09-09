@@ -19,29 +19,30 @@ import { popoverExpandIn, popoverExpandOut } from '../popover-animations'
 import { TheSeamPopoverDirective } from '../popover.directive'
 
 @Component({
-  selector: 'seam-popover',
-  templateUrl: './popover.component.html',
-  styleUrls: ['./popover.component.scss'],
-  animations: [
-    trigger('slideDown', [
-      transition(':enter', useAnimation(popoverExpandIn)),
-      transition(':leave', useAnimation(popoverExpandOut)),
-    ])
-  ],
-  host: {
-    class: 'popover show m-2 position-static',
-    '[@slideDown]': `{
+    selector: 'seam-popover',
+    templateUrl: './popover.component.html',
+    styleUrls: ['./popover.component.scss'],
+    animations: [
+        trigger('slideDown', [
+            transition(':enter', useAnimation(popoverExpandIn)),
+            transition(':leave', useAnimation(popoverExpandOut)),
+        ])
+    ],
+    host: {
+        class: 'popover show m-2 position-static',
+        '[@slideDown]': `{
       value: _state,
       params: {
         enterAnimationDuration: enterAnimationDuration,
         exitAnimationDuration: exitAnimationDuration
       }
     }`,
-    '(@slideDown.start)': '_onAnimationStart($event)',
-    '(@slideDown.done)': '_animationDone.next($event)',
-    '[style.width]': '_popoverWidth'
-  },
-  changeDetection: ChangeDetectionStrategy.OnPush
+        '(@slideDown.start)': '_onAnimationStart($event)',
+        '(@slideDown.done)': '_animationDone.next($event)',
+        '[style.width]': '_popoverWidth'
+    },
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class PopoverComponent implements OnInit, OnDestroy {
 

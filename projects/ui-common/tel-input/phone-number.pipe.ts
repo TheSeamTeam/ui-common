@@ -5,8 +5,9 @@ import { getCountryCode, getDialCode, getIntlTelInputUtils, globalIntlTelInputGl
 import { coercePhoneNumberFormat } from './utils'
 
 @Pipe({
-  name: 'phoneNumber',
-  pure: false
+    name: 'phoneNumber',
+    pure: false,
+    standalone: false
 })
 export class TheSeamPhoneNumberPipe implements PipeTransform {
 

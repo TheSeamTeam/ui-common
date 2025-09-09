@@ -17,20 +17,21 @@ export const TOGGLE_BUTTON_VALUE_ACCESSOR: any = {
 }
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'button[seamToggleButton]',
-  templateUrl: './toggle-button.component.html',
-  styleUrls: ['./toggle-button.component.scss'],
-  exportAs: 'seamToggleButton',
-  inputs: [ 'disabled', 'theme', 'size' ],
-  host: {
-    '[attr.type]': 'type',
-    'class': 'btn',
-    '[attr.aria-disabled]': 'disabled.toString()',
-    '[attr.disabled]': 'disabled || null',
-    '(click)': '_toggleValue()',
-  },
-  providers: [ TOGGLE_BUTTON_VALUE_ACCESSOR ]
+    // eslint-disable-next-line @angular-eslint/component-selector
+    selector: 'button[seamToggleButton]',
+    templateUrl: './toggle-button.component.html',
+    styleUrls: ['./toggle-button.component.scss'],
+    exportAs: 'seamToggleButton',
+    inputs: ['disabled', 'theme', 'size'],
+    host: {
+        '[attr.type]': 'type',
+        'class': 'btn',
+        '[attr.aria-disabled]': 'disabled.toString()',
+        '[attr.disabled]': 'disabled || null',
+        '(click)': '_toggleValue()',
+    },
+    providers: [TOGGLE_BUTTON_VALUE_ACCESSOR],
+    standalone: false
 })
 export class TheSeamToggleButtonComponent extends TheSeamButtonComponent implements OnDestroy, ControlValueAccessor {
   static ngAcceptInputType_val: BooleanInput

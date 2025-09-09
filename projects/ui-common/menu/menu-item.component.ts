@@ -16,22 +16,23 @@ const _seamMenuItemMixinBase: CanDisableCtor & typeof TheSeamMenuItemBase =
     mixinDisabled(TheSeamMenuItemBase)
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: '[seamMenuItem]',
-  templateUrl: './menu-item.component.html',
-  styleUrls: ['./menu-item.component.scss'],
-  exportAs: 'seamMenuItem',
-  inputs: [ 'disabled' ],
-  host: {
-    '[attr.role]': 'role',
-    'class': 'seam-menu-item dropdown-item',
-    '[class.seam-menu-item-highlighted]': '_highlighted',
-    '[class.seam-menu-item-submenu-trigger]': '_triggersSubmenu',
-    '[attr.tabindex]': '_getTabIndex()',
-    '[attr.aria-disabled]': 'disabled.toString()',
-    '[attr.disabled]': 'disabled || null',
-  },
-  changeDetection: ChangeDetectionStrategy.OnPush
+    // eslint-disable-next-line @angular-eslint/component-selector
+    selector: '[seamMenuItem]',
+    templateUrl: './menu-item.component.html',
+    styleUrls: ['./menu-item.component.scss'],
+    exportAs: 'seamMenuItem',
+    inputs: ['disabled'],
+    host: {
+        '[attr.role]': 'role',
+        'class': 'seam-menu-item dropdown-item',
+        '[class.seam-menu-item-highlighted]': '_highlighted',
+        '[class.seam-menu-item-submenu-trigger]': '_triggersSubmenu',
+        '[attr.tabindex]': '_getTabIndex()',
+        '[attr.aria-disabled]': 'disabled.toString()',
+        '[attr.disabled]': 'disabled || null',
+    },
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class MenuItemComponent extends _seamMenuItemMixinBase implements OnDestroy, AfterViewInit, FocusableOption {
 

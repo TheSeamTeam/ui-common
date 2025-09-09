@@ -87,10 +87,11 @@ export const THESEAM_WIDGET_ACCESSOR = new InjectionToken<TheSeamWidgetAccessor<
 )
 
 @Directive({
-  selector: '[seamWidgetDragHandle]',
-  host: {
-    'class': 'cdk-drag-handle'
-  }
+    selector: '[seamWidgetDragHandle]',
+    host: {
+        'class': 'cdk-drag-handle'
+    },
+    standalone: false
 })
 export class WidgetDragHandleDirective implements OnInit, OnDestroy, AfterViewInit, DoCheck {
   static ngAcceptInputType_disabled: BooleanInput

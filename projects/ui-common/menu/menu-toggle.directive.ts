@@ -21,15 +21,16 @@ declare const ngDevMode: any
 const passiveEventListenerOptions = normalizePassiveListenerOptions({ passive: true })
 
 @Directive({
-  selector: '[seamMenuToggle]',
-  // tslint:disable-next-line:use-host-property-decorator
-  host: {
-    'class': 'seam-menu-toggle',
-    'aria-haspopup': 'true',
-    '[attr.aria-expanded]': 'menuOpen() || null',
-    '[attr.aria-controls]': 'menuOpen() ? menu.panelId : null',
-  },
-  exportAs: 'seamMenuToggle'
+    selector: '[seamMenuToggle]',
+    // tslint:disable-next-line:use-host-property-decorator
+    host: {
+        'class': 'seam-menu-toggle',
+        'aria-haspopup': 'true',
+        '[attr.aria-expanded]': 'menuOpen() || null',
+        '[attr.aria-controls]': 'menuOpen() ? menu.panelId : null',
+    },
+    exportAs: 'seamMenuToggle',
+    standalone: false
 })
 export class MenuToggleDirective implements OnDestroy, AfterContentInit {
 

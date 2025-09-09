@@ -10,7 +10,10 @@ import {
   mixinTheme
 } from '@theseam/ui-common/core'
 
-@Component({ template: '' })
+@Component({
+    template: '',
+    standalone: false
+})
 // eslint-disable-next-line @angular-eslint/component-class-suffix
 class TheSeamButtonBase implements OnDestroy {
   constructor(
@@ -39,19 +42,20 @@ const _TheSeamButtonMixinBase: CanDisableCtor & CanThemeCtor & CanSizeCtor &
     typeof TheSeamButtonBase = mixinSize(mixinTheme(mixinDisabled(TheSeamButtonBase), 'btn'), 'btn')
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'button[seamButton]',
-  templateUrl: './button.component.html',
-  styleUrls: ['./button.component.scss'],
-  exportAs: 'seamButton',
-  inputs: [ 'disabled', 'theme', 'size' ],
-  host: {
-    '[attr.type]': 'type',
-    'class': 'btn',
-    '[attr.aria-disabled]': 'disabled.toString()',
-    '[attr.disabled]': 'disabled || null',
-  },
-  changeDetection: ChangeDetectionStrategy.OnPush
+    // eslint-disable-next-line @angular-eslint/component-selector
+    selector: 'button[seamButton]',
+    templateUrl: './button.component.html',
+    styleUrls: ['./button.component.scss'],
+    exportAs: 'seamButton',
+    inputs: ['disabled', 'theme', 'size'],
+    host: {
+        '[attr.type]': 'type',
+        'class': 'btn',
+        '[attr.aria-disabled]': 'disabled.toString()',
+        '[attr.disabled]': 'disabled || null',
+    },
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class TheSeamButtonComponent extends _TheSeamButtonMixinBase implements OnDestroy {
 
@@ -70,21 +74,22 @@ export class TheSeamButtonComponent extends _TheSeamButtonMixinBase implements O
 }
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'a[seamButton]',
-  templateUrl: './button.component.html',
-  styleUrls: ['./button.component.scss'],
-  exportAs: 'seamButton,seamButtonBaseAnchor',
-  inputs: [ 'disabled', 'theme', 'size' ],
-  host: {
-    'class': 'btn',
-    // '[class.disabled]': 'disabled || null',
-    '[attr.tabindex]': 'disabled ? -1 : (tabIndex || 0)',
-    '[attr.disabled]': 'disabled || null',
-    '[attr.aria-disabled]': 'disabled.toString()',
-    '(click)': '_haltDisabledEvents($event)',
-  },
-  changeDetection: ChangeDetectionStrategy.OnPush
+    // eslint-disable-next-line @angular-eslint/component-selector
+    selector: 'a[seamButton]',
+    templateUrl: './button.component.html',
+    styleUrls: ['./button.component.scss'],
+    exportAs: 'seamButton,seamButtonBaseAnchor',
+    inputs: ['disabled', 'theme', 'size'],
+    host: {
+        'class': 'btn',
+        // '[class.disabled]': 'disabled || null',
+        '[attr.tabindex]': 'disabled ? -1 : (tabIndex || 0)',
+        '[attr.disabled]': 'disabled || null',
+        '[attr.aria-disabled]': 'disabled.toString()',
+        '(click)': '_haltDisabledEvents($event)',
+    },
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class TheSeamAnchorButtonComponent extends _TheSeamButtonMixinBase implements OnDestroy {
 

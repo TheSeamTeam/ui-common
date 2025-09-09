@@ -14,13 +14,14 @@ import { PopoverComponent } from './popover/popover.component'
 const passiveEventListenerOptions = normalizePassiveListenerOptions({ passive: true })
 
 @Directive({
-  selector: '[seamPopover]',
-  // tslint:disable-next-line:use-host-property-decorator
-  host: {
-    'aria-haspopup': 'true',
-    '[attr.aria-expanded]': 'popoverOpen() || null'
-  },
-  exportAs: 'seamPopover'
+    selector: '[seamPopover]',
+    // tslint:disable-next-line:use-host-property-decorator
+    host: {
+        'aria-haspopup': 'true',
+        '[attr.aria-expanded]': 'popoverOpen() || null'
+    },
+    exportAs: 'seamPopover',
+    standalone: false
 })
 export class TheSeamPopoverDirective implements OnDestroy {
 

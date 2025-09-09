@@ -74,10 +74,11 @@ export function textDataFilter(data: any[], text: string, options = DefaultTextF
 let _uid = 0
 
 @Component({
-  selector: 'seam-data-filter-text',
-  templateUrl: './data-filter-text.component.html',
-  styleUrls: ['./data-filter-text.component.scss'],
-  providers: [ DATA_FILTER_TEXT ]
+    selector: 'seam-data-filter-text',
+    templateUrl: './data-filter-text.component.html',
+    styleUrls: ['./data-filter-text.component.scss'],
+    providers: [DATA_FILTER_TEXT],
+    standalone: false
 })
 export class DataFilterTextComponent implements OnInit, OnDestroy, IDataFilter {
   static ngAcceptInputType_exact: BooleanInput

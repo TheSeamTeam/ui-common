@@ -23,8 +23,8 @@ export const pulseAnimation = animation([
 ])
 
 @Component({
-  selector: 'seam-icon-notification',
-  template: `
+    selector: 'seam-icon-notification',
+    template: `
     <seam-icon *ngIf="icon && !hidden" [@counterChange]="count"
       [grayscaleOnDisable]="grayscaleOnDisable"
       [disabled]="disabled"
@@ -36,7 +36,7 @@ export const pulseAnimation = animation([
     </seam-icon>
     <ng-content select=".sr-only"></ng-content>
   `,
-  styles: [`
+    styles: [`
     :host {
       position: absolute;
       top: 0;
@@ -55,25 +55,23 @@ export const pulseAnimation = animation([
       min-height: 15px;
     }
   `],
-  // tslint:disable-next-line:use-host-property-decorator
-  host: {
-    '[attr.aria-disabled]': 'disabled.toString()',
-    '[attr.disabled]': 'disabled || null',
-  },
-  animations: [
-    trigger('counterChange', [
-      transition(
-        ':increment',
-        useAnimation(pulseAnimation, {
-          params: {
-            timings: '400ms ease-in-out',
-            scale: 1.2
-          }
-        })
-      )
-    ])
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    // tslint:disable-next-line:use-host-property-decorator
+    host: {
+        '[attr.aria-disabled]': 'disabled.toString()',
+        '[attr.disabled]': 'disabled || null',
+    },
+    animations: [
+        trigger('counterChange', [
+            transition(':increment', useAnimation(pulseAnimation, {
+                params: {
+                    timings: '400ms ease-in-out',
+                    scale: 1.2
+                }
+            }))
+        ])
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class IconNotificationComponent implements OnInit {
   static ngAcceptInputType_hidden: BooleanInput

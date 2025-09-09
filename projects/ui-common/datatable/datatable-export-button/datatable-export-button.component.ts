@@ -19,10 +19,11 @@ export interface IDatatableExportButtonData {
 }
 
 @Component({
-  selector: 'seam-datatable-export-button',
-  templateUrl: './datatable-export-button.component.html',
-  styleUrls: ['./datatable-export-button.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'seam-datatable-export-button',
+    templateUrl: './datatable-export-button.component.html',
+    styleUrls: ['./datatable-export-button.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class DatatableExportButtonComponent {
 

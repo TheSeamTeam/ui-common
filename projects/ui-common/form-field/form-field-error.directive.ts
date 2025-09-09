@@ -4,7 +4,8 @@ import { Directive, Input, TemplateRef } from '@angular/core'
 import { InputBoolean } from '@theseam/ui-common/core'
 
 @Directive({
-  selector: '[seamFormFieldError]'
+    selector: '[seamFormFieldError]',
+    standalone: false
 })
 export class FormFieldErrorDirective {
   static ngAcceptInputType_external: BooleanInput

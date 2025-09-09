@@ -1,9 +1,10 @@
 import { Component, ViewEncapsulation } from '@angular/core'
 
 @Component({
-  selector: 'seam-widget-footer-text',
-  templateUrl: './widget-footer-text.component.html',
-  styleUrls: ['./widget-footer-text.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'seam-widget-footer-text',
+    templateUrl: './widget-footer-text.component.html',
+    styleUrls: ['./widget-footer-text.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class WidgetFooterTextComponent { }

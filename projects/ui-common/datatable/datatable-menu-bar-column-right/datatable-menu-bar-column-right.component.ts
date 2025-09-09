@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
 
 @Component({
-  selector: 'seam-datatable-menu-bar-column-right',
-  templateUrl: './datatable-menu-bar-column-right.component.html',
-  styleUrls: ['./datatable-menu-bar-column-right.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'seam-datatable-menu-bar-column-right',
+    templateUrl: './datatable-menu-bar-column-right.component.html',
+    styleUrls: ['./datatable-menu-bar-column-right.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class DatatableMenuBarColumnRightComponent { }

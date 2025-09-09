@@ -8,7 +8,8 @@ export interface IElementResizedEvent {
 }
 
 @Directive({
-  selector: '[seamElemResized]'
+    selector: '[seamElemResized]',
+    standalone: false
 })
 export class ElemResizedDirective implements OnDestroy, AfterViewInit {
 

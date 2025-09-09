@@ -12,10 +12,11 @@ export const _THESEAM_DATA_FILTER_CONTAINER: any = {
 }
 
 @Component({
-  selector: 'seam-datatable-menu-bar',
-  templateUrl: './datatable-menu-bar.component.html',
-  styleUrls: ['./datatable-menu-bar.component.scss'],
-  providers: [ _THESEAM_DATA_FILTER_CONTAINER ]
+    selector: 'seam-datatable-menu-bar',
+    templateUrl: './datatable-menu-bar.component.html',
+    styleUrls: ['./datatable-menu-bar.component.scss'],
+    providers: [_THESEAM_DATA_FILTER_CONTAINER],
+    standalone: false
 })
 export class DatatableMenuBarComponent implements DataFilterContainer {
 

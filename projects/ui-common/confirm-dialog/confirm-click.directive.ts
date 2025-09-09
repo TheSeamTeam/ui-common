@@ -9,8 +9,9 @@ import { ConfirmDialogComponent } from './confirm-dialog.component'
 import { SeamConfirmDialogService } from './confirm-dialog.service'
 
 @Directive({
-  selector: '[seamConfirmClick]',
-  exportAs: 'seamConfirmClick'
+    selector: '[seamConfirmClick]',
+    exportAs: 'seamConfirmClick',
+    standalone: false
 })
 export class ConfirmClickDirective implements OnDestroy {
   static ngAcceptInputType_seamConfirmDisabled: BooleanInput

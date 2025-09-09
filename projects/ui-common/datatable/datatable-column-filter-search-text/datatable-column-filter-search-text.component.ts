@@ -4,15 +4,16 @@ import { ControlContainer, FormGroupDirective } from '@angular/forms'
 import { TheSeamColumnsDataFilterTextSearchForm, TheSeamColumnsDataFilterTextSearchType, THESEAM_COLUMNS_DATA_FILTER_TEXT_TEXT_SEARCH_TYPES } from '../models/columns-data-filters/models'
 
 @Component({
-  selector: 'seam-datatable-column-filter-search-text',
-  templateUrl: './datatable-column-filter-search-text.component.html',
-  styleUrls: ['./datatable-column-filter-search-text.component.scss'],
-  viewProviders: [
-    {
-      provide: ControlContainer,
-      useExisting: FormGroupDirective
-    }
-  ]
+    selector: 'seam-datatable-column-filter-search-text',
+    templateUrl: './datatable-column-filter-search-text.component.html',
+    styleUrls: ['./datatable-column-filter-search-text.component.scss'],
+    viewProviders: [
+        {
+            provide: ControlContainer,
+            useExisting: FormGroupDirective
+        }
+    ],
+    standalone: false
 })
 export class DatatableColumnFilterSearchTextComponent implements OnInit {
 

@@ -1,10 +1,11 @@
 import { Component, ElementRef, HostBinding, Input, ViewEncapsulation } from '@angular/core'
 
 @Component({
-  selector: 'seam-widget-empty-label,a[seam-widget-empty-label],button[seam-widget-empty-label]',
-  templateUrl: './widget-empty-label.component.html',
-  styleUrls: ['./widget-empty-label.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'seam-widget-empty-label,a[seam-widget-empty-label],button[seam-widget-empty-label]',
+    templateUrl: './widget-empty-label.component.html',
+    styleUrls: ['./widget-empty-label.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class WidgetEmptyLabelComponent {
 

@@ -3,9 +3,10 @@ import { Component, Input, TemplateRef } from '@angular/core'
 import type { ThemeTypes } from '@theseam/ui-common/models'
 
 @Component({
-  selector: 'seam-confirm-dialog',
-  templateUrl: './confirm-dialog.component.html',
-  styleUrls: ['./confirm-dialog.component.scss']
+    selector: 'seam-confirm-dialog',
+    templateUrl: './confirm-dialog.component.html',
+    styleUrls: ['./confirm-dialog.component.scss'],
+    standalone: false
 })
 export class ConfirmDialogComponent {
 

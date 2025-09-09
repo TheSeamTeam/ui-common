@@ -22,11 +22,12 @@ import { TableCellTypeConfigString, TableCellTypeStringConfigAction } from './ta
 export type StringTemplateType = 'default' | 'link' | 'link-external' | 'link-encrypted' | 'button'
 
 @Component({
-  selector: 'seam-table-cell-type-string',
-  templateUrl: './table-cell-type-string.component.html',
-  styleUrls: ['./table-cell-type-string.component.scss'],
-  host: { },
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'seam-table-cell-type-string',
+    templateUrl: './table-cell-type-string.component.html',
+    styleUrls: ['./table-cell-type-string.component.scss'],
+    host: {},
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class TableCellTypeStringComponent implements OnInit, OnDestroy {
 

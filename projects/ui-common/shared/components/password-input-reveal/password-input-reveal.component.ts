@@ -4,12 +4,12 @@ import { Component, Input } from '@angular/core'
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons'
 
 @Component({
-  selector: 'seam-password-input-reveal',
-  template: `
+    selector: 'seam-password-input-reveal',
+    template: `
     <fa-icon [icon]="passwordVisible ? faEyeSlash : faEye" class="password-reveal-icon" (click)="revealPassword()"></fa-icon>
   `,
-  styles: [
-    `
+    styles: [
+        `
     :host {
       display: flex;
       align-items: center;
@@ -33,7 +33,8 @@ import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons'
       vertical-align: middle;
     }
     `
-  ]
+    ],
+    standalone: false
 })
 export class PasswordInputRevealComponent {
   static ngAcceptInputType_passwordVisible: BooleanInput

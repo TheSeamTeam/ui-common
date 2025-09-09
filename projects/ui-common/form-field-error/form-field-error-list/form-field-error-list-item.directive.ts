@@ -1,7 +1,8 @@
 import { Directive, Input, TemplateRef } from '@angular/core'
 
 @Directive({
-  selector: '[seamFormFieldErrorListItem]'
+    selector: '[seamFormFieldErrorListItem]',
+    standalone: false
 })
 export class FormFieldErrorListItemDirective {
 

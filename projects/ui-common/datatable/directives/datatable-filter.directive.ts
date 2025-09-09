@@ -3,7 +3,8 @@ import { Directive, Inject, Self } from '@angular/core'
 import { IDataFilter, THESEAM_DATA_FILTER } from '@theseam/ui-common/data-filters'
 
 @Directive({
-  selector: '[seamDatatableFilter]'
+    selector: '[seamDatatableFilter]',
+    standalone: false
 })
 export class DatatableFilterDirective {
 

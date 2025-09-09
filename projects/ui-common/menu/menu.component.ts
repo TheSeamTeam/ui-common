@@ -39,18 +39,19 @@ export const LIB_MENU: any = {
 }
 
 @Component({
-  selector: 'seam-menu',
-  templateUrl: './menu.component.html',
-  styleUrls: ['./menu.component.scss'],
-  providers: [ LIB_MENU ],
-  animations: [
-    trigger('slideDown', [
-      transition(':enter', useAnimation(menuDropdownPanelIn)),
-      transition(':leave', useAnimation(menuDropdownPanelOut)),
-    ])
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  exportAs: 'seamMenu'
+    selector: 'seam-menu',
+    templateUrl: './menu.component.html',
+    styleUrls: ['./menu.component.scss'],
+    providers: [LIB_MENU],
+    animations: [
+        trigger('slideDown', [
+            transition(':enter', useAnimation(menuDropdownPanelIn)),
+            transition(':leave', useAnimation(menuDropdownPanelOut)),
+        ])
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    exportAs: 'seamMenu',
+    standalone: false
 })
 export class MenuComponent implements OnDestroy, AfterContentInit, ITheSeamMenuPanel {
 

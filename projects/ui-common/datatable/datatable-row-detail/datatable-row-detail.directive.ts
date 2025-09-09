@@ -3,8 +3,9 @@ import { ContentChild, Directive, EventEmitter, Input, Output, TemplateRef } fro
 import { DatatableRowDetailTplDirective } from './datatable-row-detail-tpl.directive'
 
 @Directive({
-  // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: 'seam-datatable-row-detail'
+    // eslint-disable-next-line @angular-eslint/directive-selector
+    selector: 'seam-datatable-row-detail',
+    standalone: false
 })
 export class TheSeamDatatableRowDetailDirective {
 

@@ -1,7 +1,8 @@
 import { Directive, TemplateRef } from '@angular/core'
 
 @Directive({
-  selector: '[seamFormFieldHelpText]'
+    selector: '[seamFormFieldHelpText]',
+    standalone: false
 })
 export class FormFieldHelpTextDirective {
 

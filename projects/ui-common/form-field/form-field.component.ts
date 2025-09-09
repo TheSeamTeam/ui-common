@@ -29,15 +29,16 @@ let nextLabelUniqueId = 0
  * Should wrap all form controls.
  */
 @Component({
-  selector: 'seam-form-field',
-  templateUrl: './form-field.component.html',
-  styleUrls: ['./form-field.component.scss'],
-  providers: [
-    {
-      provide: FORM_FIELD_COMPONENT,
-      useExisting: TheSeamFormFieldComponent,
-    }
-  ],
+    selector: 'seam-form-field',
+    templateUrl: './form-field.component.html',
+    styleUrls: ['./form-field.component.scss'],
+    providers: [
+        {
+            provide: FORM_FIELD_COMPONENT,
+            useExisting: TheSeamFormFieldComponent,
+        }
+    ],
+    standalone: false
 })
 export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
   static ngAcceptInputType_inline: BooleanInput

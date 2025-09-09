@@ -6,8 +6,9 @@ import { Modal } from '../modal.service'
 // TODO: Make this work for current modal usage.
 
 @Directive({
-  selector: '[seamModal]',
-  exportAs: 'seamModal'
+    selector: '[seamModal]',
+    exportAs: 'seamModal',
+    standalone: false
 })
 export class ModalDirective {
 

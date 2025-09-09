@@ -13,10 +13,11 @@ import { toggleAttribute } from '@theseam/ui-common/utils'
 let nextUniqueId = 0
 
 @Directive({
-  // TODO: Consider removing restriction and instead adding a dev warning. A few
-  // inputs in the app need to be changed for this first.
-  selector: 'input[seamInput], textarea[seamInput], ng-select[seamInput], seam-tel-input[seamInput], quill-editor[seamInput], seam-google-maps[seamInput], seam-rich-text[seamInput]',
-  exportAs: 'seamInput',
+    // TODO: Consider removing restriction and instead adding a dev warning. A few
+    // inputs in the app need to be changed for this first.
+    selector: 'input[seamInput], textarea[seamInput], ng-select[seamInput], seam-tel-input[seamInput], quill-editor[seamInput], seam-google-maps[seamInput], seam-rich-text[seamInput]',
+    exportAs: 'seamInput',
+    standalone: false
 })
 export class InputDirective implements DoCheck, OnChanges {
   static ngAcceptInputType_required: BooleanInput

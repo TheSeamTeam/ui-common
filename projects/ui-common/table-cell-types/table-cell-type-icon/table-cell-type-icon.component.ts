@@ -22,10 +22,11 @@ import { TableCellTypeConfigIcon, TableCellTypeIconConfigAction } from './table-
 export type IconTemplateType = 'default' | 'link' | 'link-external' | 'link-encrypted' | 'button'
 
 @Component({
-  selector: 'seam-table-cell-type-icon',
-  templateUrl: './table-cell-type-icon.component.html',
-  styleUrls: ['./table-cell-type-icon.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'seam-table-cell-type-icon',
+    templateUrl: './table-cell-type-icon.component.html',
+    styleUrls: ['./table-cell-type-icon.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class TableCellTypeIconComponent<R = any, V = any> implements OnDestroy {
 

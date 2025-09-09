@@ -15,9 +15,10 @@ export const TOGGLE_GROUP_VALUE_ACCESSOR: any = {
 }
 
 @Directive({
-  selector: '[seamToggleGroup]',
-  exportAs: 'seamToggleGroup',
-  providers: [ TOGGLE_GROUP_VALUE_ACCESSOR ]
+    selector: '[seamToggleGroup]',
+    exportAs: 'seamToggleGroup',
+    providers: [TOGGLE_GROUP_VALUE_ACCESSOR],
+    standalone: false
 })
 export class ToggleGroupDirective implements OnDestroy, AfterViewInit, ControlValueAccessor {
   static ngAcceptInputType_disabled: BooleanInput

@@ -122,30 +122,31 @@ export const _THESEAM_DATATABLE_ACCESSOR: any = {
 }
 
 @Component({
-  selector: 'seam-datatable',
-  templateUrl: './datatable.component.html',
-  styleUrls: ['./datatable.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [
-    trigger('slideDown', [
-      transition(':enter', [
-        style({ transform: 'translateY(-20%)', opacity: '0' }),
-        animate('250ms', style({ transform: 'translateY(0)', opacity: '1' })),
-      ]),
-      transition(':leave', [
-        style({ transform: 'translateY(0)', opacity: '1' }),
-        animate('250ms', style({ transform: 'translateY(-20%)', opacity: '0' })),
-      ])
-    ])
-  ],
-  providers: [
-    _THESEAM_DATATABLE,
-    DatatableColumnChangesService,
-    _THESEAM_DATATABLE_ACCESSOR,
-    ColumnsManagerService,
-    ColumnsAlterationsManagerService,
-    ColumnsFiltersService
-  ]
+    selector: 'seam-datatable',
+    templateUrl: './datatable.component.html',
+    styleUrls: ['./datatable.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    animations: [
+        trigger('slideDown', [
+            transition(':enter', [
+                style({ transform: 'translateY(-20%)', opacity: '0' }),
+                animate('250ms', style({ transform: 'translateY(0)', opacity: '1' })),
+            ]),
+            transition(':leave', [
+                style({ transform: 'translateY(0)', opacity: '1' }),
+                animate('250ms', style({ transform: 'translateY(-20%)', opacity: '0' })),
+            ])
+        ])
+    ],
+    providers: [
+        _THESEAM_DATATABLE,
+        DatatableColumnChangesService,
+        _THESEAM_DATATABLE_ACCESSOR,
+        ColumnsManagerService,
+        ColumnsAlterationsManagerService,
+        ColumnsFiltersService
+    ],
+    standalone: false
 })
 export class DatatableComponent<TRow = any>
   implements OnInit, OnDestroy, TheSeamDatatableAccessor, CollectionViewer {

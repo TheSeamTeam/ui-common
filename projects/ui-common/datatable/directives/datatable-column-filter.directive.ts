@@ -2,8 +2,9 @@ import { ContentChild, Directive, Input, TemplateRef } from '@angular/core'
 import { DatatableColumnFilterTplDirective } from './datatable-column-filter-tpl.directive'
 
 @Directive({
-  // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: 'seam-datatable-column-filter'
+    // eslint-disable-next-line @angular-eslint/directive-selector
+    selector: 'seam-datatable-column-filter',
+    standalone: false
 })
 export class TheSeamDatatableColumnFilterDirective {
 

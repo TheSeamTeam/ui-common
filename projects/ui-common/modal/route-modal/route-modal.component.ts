@@ -7,9 +7,10 @@ import { takeUntil } from 'rxjs/operators'
 import { Modal } from '../modal.service'
 
 @Component({
-  selector: 'seam-route-modal',
-  templateUrl: './route-modal.component.html',
-  styleUrls: ['./route-modal.component.scss']
+    selector: 'seam-route-modal',
+    templateUrl: './route-modal.component.html',
+    styleUrls: ['./route-modal.component.scss'],
+    standalone: false
 })
 export class RouteModalComponent implements OnInit, OnDestroy {
 

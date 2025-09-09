@@ -2,8 +2,9 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion'
 import { ChangeDetectorRef, Directive, ElementRef, EventEmitter, HostBinding, Input, Output } from '@angular/core'
 
 @Directive({
-  selector: '[seamToggleGroupOption]',
-  exportAs: 'seamToggleGroupOption'
+    selector: '[seamToggleGroupOption]',
+    exportAs: 'seamToggleGroupOption',
+    standalone: false
 })
 export class ToggleGroupOptionDirective {
 

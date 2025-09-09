@@ -9,10 +9,11 @@ import type { TableCellData, TheSeamTableColumn } from '@theseam/ui-common/table
 import { TableCellTypeConfigProgressCircleIcon } from './table-cell-type-progress-circle-icon-config'
 
 @Component({
-  selector: 'seam-table-cell-type-progress-circle-icon',
-  templateUrl: './table-cell-type-progress-circle-icon.component.html',
-  styleUrls: ['./table-cell-type-progress-circle-icon.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'seam-table-cell-type-progress-circle-icon',
+    templateUrl: './table-cell-type-progress-circle-icon.component.html',
+    styleUrls: ['./table-cell-type-progress-circle-icon.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class TableCellTypeProgressCircleIconComponent implements OnDestroy {
 

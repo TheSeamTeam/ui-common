@@ -13,7 +13,8 @@ declare type _PointerEvent = PointerEvent | PointerEvent
  * containing this directive.
  */
 @Directive({
-  selector: '[seamHoverClass]'
+    selector: '[seamHoverClass]',
+    standalone: false
 })
 export class HoverClassDirective {
 

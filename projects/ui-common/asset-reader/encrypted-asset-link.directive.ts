@@ -12,7 +12,8 @@ import { AssetReaderHelperService } from './asset-reader-helper.service'
 // reader can do whatever it wants. So, consider renaming to 'seamAssetLink'.
 
 @Directive({
-  selector: '[seamEncryptedAssetLink]'
+    selector: '[seamEncryptedAssetLink]',
+    standalone: false
 })
 export class EncryptedAssetLinkDirective {
   static ngAcceptInputType_seamShowLoadingOverlay: BooleanInput

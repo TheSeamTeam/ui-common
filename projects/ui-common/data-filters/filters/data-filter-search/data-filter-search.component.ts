@@ -38,11 +38,12 @@ export function searchDataFilter(data: any[], values: string, options = DefaultS
 let _uid = 0
 
 @Component({
-  selector: 'seam-data-filter-search',
-  templateUrl: './data-filter-search.component.html',
-  styleUrls: ['./data-filter-search.component.scss'],
-  providers: [ DATA_FILTER_SEARCH ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'seam-data-filter-search',
+    templateUrl: './data-filter-search.component.html',
+    styleUrls: ['./data-filter-search.component.scss'],
+    providers: [DATA_FILTER_SEARCH],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class DataFilterSearchComponent implements OnInit, OnDestroy, IDataFilter {
   static ngAcceptInputType_exact: BooleanInput

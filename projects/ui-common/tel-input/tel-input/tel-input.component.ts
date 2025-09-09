@@ -31,22 +31,21 @@ import { CommonModule } from '@angular/common'
 // TODO: Fix disabled
 
 @Component({
-  selector: 'seam-tel-input',
-  templateUrl: './tel-input.component.html',
-  styleUrls: ['./tel-input.component.scss'],
-  providers: [{
-    provide: NG_VALUE_ACCESSOR,
-    useExisting: forwardRef(() => TheSeamTelInputComponent),
-    multi: true
-  }],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    TheSeamFormFieldModule,
-    TheSeamTelInputDirective,
-  ],
+    selector: 'seam-tel-input',
+    templateUrl: './tel-input.component.html',
+    styleUrls: ['./tel-input.component.scss'],
+    providers: [{
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => TheSeamTelInputComponent),
+            multi: true
+        }],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        TheSeamFormFieldModule,
+        TheSeamTelInputDirective,
+    ]
 })
 export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValueAccessor {
   static ngAcceptInputType_required: BooleanInput

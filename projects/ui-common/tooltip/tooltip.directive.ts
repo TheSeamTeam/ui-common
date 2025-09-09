@@ -12,11 +12,12 @@ export type TheSeamTooltipTrigger = 'hover' | 'focus' | 'both'
 export type TheSeamTooltipPlacementInput = TheSeamTooltipPlacement | TheSeamTooltipPlacement[] | string
 
 @Directive({
-  selector: '[seamTooltip]',
-  host: {
-    '[attr.aria-describedby]': 'tooltipOpen() ? _tooltipId : null',
-  },
-  exportAs: 'seamTooltip',
+    selector: '[seamTooltip]',
+    host: {
+        '[attr.aria-describedby]': 'tooltipOpen() ? _tooltipId : null',
+    },
+    exportAs: 'seamTooltip',
+    standalone: false
 })
 export class TheSeamTooltipDirective implements OnInit, OnChanges, OnDestroy {
 

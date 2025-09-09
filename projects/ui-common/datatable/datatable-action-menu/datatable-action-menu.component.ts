@@ -11,10 +11,11 @@ import { MenuComponent } from '@theseam/ui-common/menu'
 import { DatatableActionMenuItemComponent } from '../datatable-action-menu-item/datatable-action-menu-item.component'
 
 @Component({
-  selector: 'seam-datatable-action-menu',
-  templateUrl: './datatable-action-menu.component.html',
-  styleUrls: ['./datatable-action-menu.component.scss'],
-  exportAs: 'seamDatatableActionMenu'
+    selector: 'seam-datatable-action-menu',
+    templateUrl: './datatable-action-menu.component.html',
+    styleUrls: ['./datatable-action-menu.component.scss'],
+    exportAs: 'seamDatatableActionMenu',
+    standalone: false
 })
 export class DatatableActionMenuComponent {
   static ngAcceptInputType_isSubMenu: BooleanInput

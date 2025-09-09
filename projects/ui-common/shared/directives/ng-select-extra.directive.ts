@@ -10,8 +10,9 @@ import { ResizeSensor } from 'css-element-queries'
 import { IElementResizedEvent } from './elem-resized.directive'
 
 @Directive({
-  // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: 'ng-select'
+    // eslint-disable-next-line @angular-eslint/directive-selector
+    selector: 'ng-select',
+    standalone: false
 })
 export class NgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestroy {
 

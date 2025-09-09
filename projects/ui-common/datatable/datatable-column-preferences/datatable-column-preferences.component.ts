@@ -13,10 +13,11 @@ import { ColumnsAlterationsManagerService } from '../services/columns-alteration
 import { getColumnProp } from '../utils/get-column-prop'
 
 @Component({
-  selector: 'seam-datatable-column-preferences',
-  templateUrl: './datatable-column-preferences.component.html',
-  styleUrls: ['./datatable-column-preferences.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'seam-datatable-column-preferences',
+    templateUrl: './datatable-column-preferences.component.html',
+    styleUrls: ['./datatable-column-preferences.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class DatatableColumnPreferencesComponent {
   _columns$: Observable<TheSeamDatatableColumn[]>

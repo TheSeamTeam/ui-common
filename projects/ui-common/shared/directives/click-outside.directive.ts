@@ -1,7 +1,8 @@
 import { Directive, ElementRef, EventEmitter, HostListener, Input, Output } from '@angular/core'
 
 @Directive({
-  selector: '[seamClickOutside]'
+    selector: '[seamClickOutside]',
+    standalone: false
 })
 export class ClickOutsideDirective {
 
