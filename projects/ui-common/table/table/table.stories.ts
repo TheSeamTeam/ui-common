@@ -1,9 +1,8 @@
-import { moduleMetadata } from '@storybook/angular'
-import { applicationConfig } from '@storybook/angular/dist/client/decorators'
+import { applicationConfig, moduleMetadata } from '@storybook/angular'
 
-import { importProvidersFrom } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
-import { RouterModule } from '@angular/router'
+import { provideRouter } from '@angular/router'
+import { provideLocationMocks } from '@angular/common/testing'
 
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons'
 
@@ -36,9 +35,8 @@ export default {
     applicationConfig({
       providers: [
         provideAnimations(),
-        importProvidersFrom(
-          RouterModule.forRoot([], { useHash: true }),
-        ),
+        provideLocationMocks(),
+        provideRouter([]),
         { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
       ],
     }),

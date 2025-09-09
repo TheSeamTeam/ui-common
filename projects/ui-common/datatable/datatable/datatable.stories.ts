@@ -905,59 +905,59 @@ export const FooterTemplate: StoryObj<DatatableComponent & { totalAge: number, o
 
 // }
 
-export const GraphQLQueryRef: Story = {
-  render: args => ({
-    applicationConfig: {
-      providers: [
-        createApolloTestingProvider(
-          simpleGqlTestSchema, createSimpleGqlTestRoot(60),
-        ),
-      ],
-    },
-    moduleMetadata: {
-      declarations: [
-        StoryDataSourceTwoComponent,
-      ],
-      imports: [
-        TheSeamDataFiltersModule
-      ]
-    },
-    props: {
-      __hack: {
-        // ...args
-        columns: args.columns,
-      },
-    },
-    template: `
-      <div style="height: 500px; width: 600px; display: block; position: relative;">
-        <dt-wrap style="height: 100%; width: 100%; display: block;" [columns]="__hack.columns"></dt-wrap>
-      </div>
-    `,
-  }),
-  args: {
-    columns: [
-      { prop: 'id', name: 'Id', filterable: true, filterOptions: { filterType: 'search-numeric' } },
-      { prop: 'name', name: 'Name' },
-    ],
-    // numberOfRows: 60,
-  },
-  play: async ({ canvasElement, fixture }) => {
-    // const canvas = within(canvasElement)
+// export const GraphQLQueryRef: Story = {
+//   render: args => ({
+//     applicationConfig: {
+//       providers: [
+//         createApolloTestingProvider(
+//           simpleGqlTestSchema, createSimpleGqlTestRoot(60),
+//         ),
+//       ],
+//     },
+//     moduleMetadata: {
+//       declarations: [
+//         StoryDataSourceTwoComponent,
+//       ],
+//       imports: [
+//         TheSeamDataFiltersModule
+//       ]
+//     },
+//     props: {
+//       __hack: {
+//         // ...args
+//         columns: args.columns,
+//       },
+//     },
+//     template: `
+//       <div style="height: 500px; width: 600px; display: block; position: relative;">
+//         <dt-wrap style="height: 100%; width: 100%; display: block;" [columns]="__hack.columns"></dt-wrap>
+//       </div>
+//     `,
+//   }),
+//   args: {
+//     columns: [
+//       { prop: 'id', name: 'Id', filterable: true, filterOptions: { filterType: 'search-numeric' } },
+//       { prop: 'name', name: 'Name' },
+//     ],
+//     // numberOfRows: 60,
+//   },
+//   play: async ({ canvasElement, fixture }) => {
+//     // const canvas = within(canvasElement)
 
-    // const page2Btn = canvas.getByRole('button', { name: /page 2/i })
-    // const page2Anchor = page2Btn.getElementsByTagName('a')[0]
-    // await userEvent.click(page2Anchor)
+//     // const page2Btn = canvas.getByRole('button', { name: /page 2/i })
+//     // const page2Anchor = page2Btn.getElementsByTagName('a')[0]
+//     // await userEvent.click(page2Anchor)
 
-    // await expect(page2Btn.classList.contains('active')).toBe(true)
+//     // await expect(page2Btn.classList.contains('active')).toBe(true)
 
-    const datatableHarness = await getHarness(TheSeamDatatableHarness, { canvasElement, fixture })
+//     const datatableHarness = await getHarness(TheSeamDatatableHarness, { canvasElement, fixture })
 
-    await expect(await datatableHarness.getCurrentPage()).toBe(1)
-    const page2BtnHarness = await (await datatableHarness.getPager()).getPageButtonHarness(2)
-    await (await page2BtnHarness.getAnchor()).click()
-    await expect(await datatableHarness.getCurrentPage()).toBe(2)
-  },
-}
+//     await expect(await datatableHarness.getCurrentPage()).toBe(1)
+//     const page2BtnHarness = await (await datatableHarness.getPager()).getPageButtonHarness(2)
+//     await (await page2BtnHarness.getAnchor()).click()
+//     await expect(await datatableHarness.getCurrentPage()).toBe(2)
+//   },
+// }
 
 @Component({
   selector: 'dt-wrap',

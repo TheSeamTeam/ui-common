@@ -1,11 +1,9 @@
 // import { boolean, text, withKnobs } from '@storybook/addon-knobs'
-import { moduleMetadata } from '@storybook/angular'
-import { applicationConfig } from '@storybook/angular/dist/client/decorators'
+import { applicationConfig, moduleMetadata } from '@storybook/angular'
 
-import { importProvidersFrom } from '@angular/core'
-import { BrowserModule } from '@angular/platform-browser'
-import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations'
-import { RouterModule } from '@angular/router'
+import { provideAnimations } from '@angular/platform-browser/animations'
+import { provideRouter } from '@angular/router'
+import { provideLocationMocks } from '@angular/common/testing'
 
 import { faBell, faComment } from '@fortawesome/free-regular-svg-icons'
 import { faExclamationTriangle, faQuestionCircle, faSignOutAlt, faUserAlt } from '@fortawesome/free-solid-svg-icons'
@@ -20,9 +18,8 @@ export default {
     applicationConfig({
       providers: [
         provideAnimations(),
-        importProvidersFrom(
-          RouterModule.forRoot([], { useHash: true }),
-        ),
+        provideLocationMocks(),
+        provideRouter([]),
       ],
     }),
     moduleMetadata({

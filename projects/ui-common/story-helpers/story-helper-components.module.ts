@@ -5,12 +5,10 @@ import { RouterModule } from '@angular/router'
 import { TheSeamScrollbarModule } from '@theseam/ui-common/scrollbar'
 
 import { StoryEmptyWithRouteComponent } from './story-empty-with-route.component'
-import { StoryEmptyComponent } from './story-empty.component'
 import { StoryModalContainerComponent } from './story-modal-container.component'
 
 @NgModule({
   declarations: [
-    StoryEmptyComponent,
     StoryEmptyWithRouteComponent,
     StoryModalContainerComponent
   ],
@@ -20,7 +18,6 @@ import { StoryModalContainerComponent } from './story-modal-container.component'
     TheSeamScrollbarModule
   ],
   exports: [
-    StoryEmptyComponent,
     StoryEmptyWithRouteComponent,
     StoryModalContainerComponent
   ]

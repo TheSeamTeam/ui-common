@@ -1,12 +1,11 @@
-import { moduleMetadata } from '@storybook/angular'
-import { applicationConfig } from '@storybook/angular/dist/client/decorators'
+import { applicationConfig, moduleMetadata } from '@storybook/angular'
 
 import { CommonModule } from '@angular/common'
 import { HttpClientModule } from '@angular/common/http'
 import { Component, importProvidersFrom, NgModule } from '@angular/core'
-import { BrowserModule } from '@angular/platform-browser'
-import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations'
-import { Route, RouterModule } from '@angular/router'
+import { provideAnimations } from '@angular/platform-browser/animations'
+import { provideRouter, Route } from '@angular/router'
+import { provideLocationMocks } from '@angular/common/testing'
 
 import {
   DataFilterSearchComponent,
@@ -188,8 +187,9 @@ export default {
     applicationConfig({
       providers: [
         provideAnimations(),
+        provideLocationMocks(),
+        provideRouter(routes),
         importProvidersFrom(
-          RouterModule.forRoot(routes, { useHash: true }),
           TheSeamDynamicComponentLoaderModule.forRoot([
             ...manifests,
             {

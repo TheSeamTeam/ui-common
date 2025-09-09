@@ -1,10 +1,10 @@
-import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
-import { applicationConfig } from '@storybook/angular/dist/client/decorators'
+import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 
 import { APP_BASE_HREF } from '@angular/common'
-import { Component, Directive, importProvidersFrom, Input } from '@angular/core'
+import { Component, Directive, Input } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
-import { Router, RouterModule } from '@angular/router'
+import { provideRouter, Router, RouterModule } from '@angular/router'
+import { provideLocationMocks } from '@angular/common/testing'
 
 import { faBuilding } from '@fortawesome/free-regular-svg-icons'
 import { faSignature } from '@fortawesome/free-solid-svg-icons'
@@ -20,7 +20,7 @@ class StoryRoutePlacholderComponent {
 }
 
 // tslint:disable-next-line:directive-selector
-@Directive({ selector: '[storyNavToggle]' })
+@Directive({ selector: '[storyNavToggle]', standalone: true })
 class StoryNavToggleDirective {
   @Input() set storyNavToggle(value: string) { this._router.navigateByUrl(value) }
   constructor(private _router: Router) { }
@@ -36,8 +36,9 @@ const meta: Meta<SideNavItemComponent> = {
   decorators: [
     applicationConfig({
       providers: [
-        provideAnimations(),
         { provide: APP_BASE_HREF, useValue: '/' },
+        provideAnimations(),
+        provideLocationMocks(),
       ],
     }),
     moduleMetadata({
@@ -46,6 +47,7 @@ const meta: Meta<SideNavItemComponent> = {
       ],
       imports: [
         TheSeamSideNavModule,
+        StoryNavToggleDirective,
       ],
       providers: [
         { provide: THESEAM_SIDE_NAV_ACCESSOR, useClass: MockSideNavComponent },
@@ -61,12 +63,14 @@ export default meta
 type Story = StoryObj<SideNavItemComponent>
 
 export const NoChildren: Story = {
-  render: args => ({
-    applicationConfig: {
+  decorators: [
+    applicationConfig({
       providers: [
-        importProvidersFrom(RouterModule.forRoot([], { useHash: true })),
+        provideRouter([]),
       ],
-    },
+    }),
+  ],
+  render: args => ({
     props: { ...args },
     template: `
       <div class="d-flex flex-row vh-100">
@@ -95,10 +99,10 @@ export const NoChildren: Story = {
 }
 
 export const WithChildren: Story = {
-  render: args => ({
-    applicationConfig: {
+  decorators: [
+    applicationConfig({
       providers: [
-        importProvidersFrom(RouterModule.forRoot([
+        provideRouter([
           { path: 'example1', component: StoryRoutePlacholderComponent },
           { path: 'example1/example1.1', component: StoryRoutePlacholderComponent },
           { path: 'example1/example1.2', component: StoryRoutePlacholderComponent },
@@ -107,17 +111,16 @@ export const WithChildren: Story = {
           { path: 'example1/example1.2.2', component: StoryRoutePlacholderComponent },
           { path: 'example1/example1.2.3', component: StoryRoutePlacholderComponent },
           { path: 'example2', component: StoryRoutePlacholderComponent },
-        ], { useHash: true })),
+        ]),
       ],
-    },
-    moduleMetadata: {
-      declarations: [
-        StoryNavToggleDirective,
-      ],
+    }),
+    moduleMetadata({
       imports: [
         RouterModule,
       ],
-    },
+    }),
+  ],
+  render: args => ({
     props: {
       currentUrl: 'example1',
       itemType: 'basic',

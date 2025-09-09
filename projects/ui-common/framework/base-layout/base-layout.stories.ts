@@ -1,10 +1,9 @@
-import { Meta, moduleMetadata } from '@storybook/angular'
-import { applicationConfig } from '@storybook/angular/dist/client/decorators'
+import { applicationConfig, Meta, moduleMetadata } from '@storybook/angular'
 
-import { APP_BASE_HREF } from '@angular/common'
-import { Component, Inject, importProvidersFrom } from '@angular/core'
+import { Component, Inject, Optional } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
-import { NavigationEnd, Route, Router, RouterModule } from '@angular/router'
+import { NavigationEnd, provideRouter, Route, Router, RouterModule } from '@angular/router'
+import { provideLocationMocks } from '@angular/common/testing'
 import { BehaviorSubject, interval, Observable, of } from 'rxjs'
 import { delay, filter, map, shareReplay, startWith, tap } from 'rxjs/operators'
 
@@ -29,18 +28,17 @@ import {
 import { TheSeamBreadcrumbsModule } from '@theseam/ui-common/breadcrumbs'
 import { TheSeamWidgetModule } from '@theseam/ui-common/widget'
 import { provideNavigationReload } from '@theseam/ui-common/navigation-reload'
+import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
+import { TheSeamIconModule } from '@theseam/ui-common/icon'
+import { TheSeamLayoutService } from '@theseam/ui-common/layout'
+import { TheSeamScrollbarModule } from '@theseam/ui-common/scrollbar'
+import { notNullOrUndefined } from '@theseam/ui-common/utils'
 
 import { TheSeamDashboardModule } from '../dashboard/dashboard.module'
 import { ISideNavItem } from '../side-nav/side-nav.models'
 import { TheSeamSideNavModule } from '../side-nav/side-nav.module'
 import { TheSeamTopBarModule } from '../top-bar/top-bar.module'
 
-import { Optional } from '@angular/core'
-import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
-import { TheSeamIconModule } from '@theseam/ui-common/icon'
-import { TheSeamLayoutService } from '@theseam/ui-common/layout'
-import { TheSeamScrollbarModule } from '@theseam/ui-common/scrollbar'
-import { notNullOrUndefined } from '@theseam/ui-common/utils'
 import {
   horizontalNavItemHasChildren,
   INavItem,
@@ -937,13 +935,8 @@ export default {
     applicationConfig({
       providers: [
         provideAnimations(),
-        importProvidersFrom(
-          RouterModule.forRoot(routes, {
-            useHash: true,
-            // onSameUrlNavigation: 'reload',
-          }),
-        ),
-        { provide: APP_BASE_HREF, useValue: '/' },
+        provideLocationMocks(),
+        provideRouter(routes),
         {
           provide: THESEAM_SIDE_NAV_CONFIG,
           useValue: {
@@ -968,6 +961,7 @@ export default {
         StoryExBaseLayoutComponent
       ],
       imports: [
+        RouterModule,
         TheSeamBaseLayoutModule,
         TheSeamDashboardModule,
         TheSeamSideNavModule,

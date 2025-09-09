@@ -1,5 +1,4 @@
-import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
-import { applicationConfig } from '@storybook/angular/dist/client/decorators'
+import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 

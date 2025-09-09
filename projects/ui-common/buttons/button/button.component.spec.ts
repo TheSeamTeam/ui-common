@@ -1,4 +1,4 @@
-import { createHostFactory, Spectator } from '@ngneat/spectator/jest'
+import { createHostFactory, SpectatorHost } from '@ngneat/spectator/jest'
 
 import { TheSeamButtonComponent } from './button.component'
 
@@ -31,7 +31,6 @@ describe('TheSeamButtonComponent', () => {
           theme: 'primary'
         },
       })
-      // spectator.setInput('theme', 'primary')
       expect(spectator.query('button', { root: true })).toHaveClass('btn-primary')
       expect(spectator.query('button', { root: true })).not.toHaveClass('btn-success')
     })

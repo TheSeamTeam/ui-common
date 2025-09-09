@@ -1,14 +1,16 @@
 import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 
 import { CommonModule } from '@angular/common'
-import { Component, importProvidersFrom, Inject, NgModule } from '@angular/core'
+import { Component, Inject, NgModule } from '@angular/core'
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
 import { provideAnimations } from '@angular/platform-browser/animations'
-import { ActivatedRoute, Route, Router, RouterModule } from '@angular/router'
+import { ActivatedRoute, provideRouter, Route, Router, RouterModule } from '@angular/router'
+import { provideLocationMocks } from '@angular/common/testing'
 import { Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
+
 import { TheSeamDynamicRouterModule } from '../dynamic-router.module'
 import { HierarchyLevelResolver } from '../resolvers/hierarchy-level.resolver'
 
@@ -329,19 +331,18 @@ export const Recursive: Story = {
     applicationConfig: {
       providers: [
         provideAnimations(),
-        importProvidersFrom(
-          RouterModule.forRoot([
-            {
-              path: 'name-ex',
-              component: StoryNameExComponent,
-              data: {
-                name: 'Mark',
-              },
-              // loadChildren: () => Promise.resolve(LevelTwoModule)
-              loadChildren: () => of(LevelTwoModule),
-            }
-          ], { useHash: true }),
-        ),
+        provideLocationMocks(),
+        provideRouter([
+          {
+            path: 'name-ex',
+            component: StoryNameExComponent,
+            data: {
+              name: 'Mark',
+            },
+            // loadChildren: () => Promise.resolve(LevelTwoModule)
+            loadChildren: () => of(LevelTwoModule),
+          }
+        ]),
       ],
     },
     moduleMetadata: {
@@ -368,31 +369,30 @@ export const Example: Story = {
     applicationConfig: {
       providers: [
         provideAnimations(),
-        importProvidersFrom(
-          RouterModule.forRoot([
-            {
-              path: '',
-              pathMatch: 'full',
-              redirectTo: '/ex-1',
-            },
-            {
-              path: 'ex-1',
-              component: StoryEx1Component,
-              children: [
-                {
-                  path: 'ex-2',
-                  component: StoryEx2Component,
-                  children: [
-                    {
-                      path: 'ex-3',
-                      component: StoryEx3Component,
-                    },
-                  ],
-                },
-              ],
-            }
-          ], { useHash: true }),
-        ),
+        provideLocationMocks(),
+        provideRouter([
+          {
+            path: '',
+            pathMatch: 'full',
+            redirectTo: '/ex-1',
+          },
+          {
+            path: 'ex-1',
+            component: StoryEx1Component,
+            children: [
+              {
+                path: 'ex-2',
+                component: StoryEx2Component,
+                children: [
+                  {
+                    path: 'ex-3',
+                    component: StoryEx3Component,
+                  },
+                ],
+              },
+            ],
+          }
+        ]),
       ],
     },
     moduleMetadata: {

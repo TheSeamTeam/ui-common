@@ -1,15 +1,15 @@
-import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
-import { applicationConfig } from '@storybook/angular/dist/client/decorators'
+import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 
-import { importProvidersFrom } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
-import { RouterModule } from '@angular/router'
+import { provideRouter } from '@angular/router'
+import { provideLocationMocks } from '@angular/common/testing'
 
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons'
 import { faPuzzlePiece, faWrench } from '@fortawesome/free-solid-svg-icons'
 
 import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
 import { SeamIcon, TheSeamIconModule } from '@theseam/ui-common/icon'
+
 import { _knobUndefinedNullHACK } from '../../../../utils/storybook-knobs-hack'
 
 import { TheSeamWidgetModule } from '../../../widget.module'
@@ -32,9 +32,8 @@ const meta: Meta<WidgetListGroupItemComponent & ExtraArgs> = {
     applicationConfig({
       providers: [
         provideAnimations(),
-        importProvidersFrom(
-          RouterModule.forRoot([], { useHash: true }),
-        ),
+        provideLocationMocks(),
+        provideRouter([]),
       ],
     }),
     moduleMetadata({

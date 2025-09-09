@@ -1,9 +1,8 @@
-import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
-import { applicationConfig } from '@storybook/angular/dist/client/decorators'
+import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 
-import { importProvidersFrom } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
-import { RouterModule } from '@angular/router'
+import { provideRouter } from '@angular/router'
+import { provideLocationMocks } from '@angular/common/testing'
 
 import { faPersonBooth, faWrench } from '@fortawesome/free-solid-svg-icons'
 
@@ -21,9 +20,8 @@ const meta: Meta<WidgetTileComponent & ExtraArgs> = {
     applicationConfig({
       providers: [
         provideAnimations(),
-        importProvidersFrom(
-          RouterModule.forRoot([], { useHash: true }),
-        ),
+        provideLocationMocks(),
+        provideRouter([]),
       ],
     }),
     moduleMetadata({

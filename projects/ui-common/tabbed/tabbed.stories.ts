@@ -1,8 +1,8 @@
 import { Meta, StoryObj, applicationConfig, moduleMetadata } from '@storybook/angular'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
-import { importProvidersFrom } from '@angular/core'
-import { RouterModule } from '@angular/router'
+import { provideRouter } from '@angular/router'
+import { provideLocationMocks } from '@angular/common/testing'
 import { of } from 'rxjs'
 
 import { TheSeamTabbedComponent } from './tabbed.component'
@@ -19,11 +19,8 @@ const meta: Meta<StoryComponentType> = {
     applicationConfig({
       providers: [
         provideAnimations(),
-        importProvidersFrom(
-          RouterModule.forRoot([
-
-          ]),
-        ),
+        provideLocationMocks(),
+        provideRouter([]),
       ],
     }),
     moduleMetadata({

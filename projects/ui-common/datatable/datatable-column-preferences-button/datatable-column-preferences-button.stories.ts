@@ -1,11 +1,10 @@
-import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
-import { applicationConfig } from '@storybook/angular/dist/client/decorators'
+import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 import { expect } from '@storybook/test'
 
-import { importProvidersFrom } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
-import { RouterModule } from '@angular/router'
+import { provideRouter } from '@angular/router'
 import { BehaviorSubject } from 'rxjs'
+import { provideLocationMocks } from '@angular/common/testing'
 
 import { CSVDataExporter, XLSXDataExporter } from '@theseam/ui-common/data-exporter'
 import { TheSeamDataFiltersModule } from '@theseam/ui-common/data-filters'
@@ -65,9 +64,8 @@ const meta: Meta<DatatableColumnPreferencesButtonComponent> = {
     applicationConfig({
       providers: [
         provideAnimations(),
-        importProvidersFrom(
-          RouterModule.forRoot([], { useHash: true }),
-        ),
+        provideLocationMocks(),
+        provideRouter([]),
         {
           provide: THESEAM_DATATABLE_PREFERENCES_ACCESSOR,
           useClass: DatatablePreferencesAccessorLocalService,

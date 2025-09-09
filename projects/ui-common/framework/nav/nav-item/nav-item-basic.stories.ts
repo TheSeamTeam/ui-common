@@ -1,9 +1,10 @@
-import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 
 import { APP_BASE_HREF } from '@angular/common'
-import { Component, Directive, importProvidersFrom, Input } from '@angular/core'
+import { Component, Directive, Input } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
-import { Router, RouterModule } from '@angular/router'
+import { provideRouter, Router, RouterModule } from '@angular/router'
+import { provideLocationMocks } from '@angular/common/testing'
 
 import { faBuilding } from '@fortawesome/free-regular-svg-icons'
 import { faSignature } from '@fortawesome/free-solid-svg-icons'
@@ -18,7 +19,7 @@ class StoryRoutePlacholderComponent {
 }
 
 // tslint:disable-next-line:directive-selector
-@Directive({ selector: '[storyNavToggle]' })
+@Directive({ selector: '[storyNavToggle]', standalone: true })
 class StoryNavToggleDirective {
   @Input() set storyNavToggle(value: string) { this._router.navigateByUrl(value) }
   constructor(private _router: Router) { }
@@ -36,35 +37,39 @@ const meta: Meta<NavItemComponent> = {
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
         provideAnimations(),
-      ]
+        provideLocationMocks(),
+      ],
     }),
     moduleMetadata({
       declarations: [
-        StoryRoutePlacholderComponent
+        StoryRoutePlacholderComponent,
       ],
       imports: [
-        TheSeamNavModule
+        TheSeamNavModule,
+        StoryNavToggleDirective,
       ],
       providers: [
-        { provide: HorizontalNavComponent, useClass: MockHorizontalNavComponent }
-      ]
-    })
+        { provide: HorizontalNavComponent, useClass: MockHorizontalNavComponent },
+      ],
+    }),
   ],
   parameters: {
     layout: 'fullscreen',
-  }
+  },
 }
 
 export default meta
 type Story = StoryObj<NavItemComponent>
 
 export const NoChildren: Story = {
+  decorators: [
+    applicationConfig({
+      providers: [
+        provideRouter([]),
+      ],
+    }),
+  ],
   render: args => ({
-    moduleMetadata: {
-      imports: [
-        RouterModule.forRoot([], { useHash: true }),
-      ]
-    },
     props: { ...args },
     template: `
       <div class="w-100 vh-100" [storyNavToggle]="currentUrl">
@@ -79,7 +84,7 @@ export const NoChildren: Story = {
             [compact]="compact">
           </seam-nav-item>
         </div>
-      </div>`
+      </div>`,
   }),
   args: {
     itemType: 'basic',
@@ -93,13 +98,10 @@ export const NoChildren: Story = {
 }
 
 export const WithChildren: Story = {
-  render: args => ({
-    moduleMetadata: {
-      declarations: [
-        StoryNavToggleDirective
-      ],
-      imports: [
-        RouterModule.forRoot([
+  decorators: [
+    applicationConfig({
+      providers: [
+        provideRouter([
           { path: 'example1', component: StoryRoutePlacholderComponent },
           { path: 'example1/example1.1', component: StoryRoutePlacholderComponent },
           { path: 'example1/example1.2', component: StoryRoutePlacholderComponent },
@@ -107,10 +109,17 @@ export const WithChildren: Story = {
           { path: 'example1/example1.2.1', component: StoryRoutePlacholderComponent },
           { path: 'example1/example1.2.2', component: StoryRoutePlacholderComponent },
           { path: 'example1/example1.2.3', component: StoryRoutePlacholderComponent },
-          { path: 'example2', component: StoryRoutePlacholderComponent }
-        ], { useHash: true })
-      ]
-    },
+          { path: 'example2', component: StoryRoutePlacholderComponent },
+        ]),
+      ],
+    }),
+    moduleMetadata({
+      imports: [
+        RouterModule,
+      ],
+    }),
+  ],
+  render: args => ({
     props: {
       currentUrl: 'example1',
       itemType: 'basic',
@@ -121,7 +130,7 @@ export const WithChildren: Story = {
           itemType: 'link',
           label: 'Example 1.1',
           icon: faSignature,
-          link: 'example1/example1.1'
+          link: 'example1/example1.1',
         },
         // {
         //   itemType: 'link',
@@ -138,27 +147,27 @@ export const WithChildren: Story = {
               itemType: 'link',
               label: 'Example 1.1',
               icon: faSignature,
-              link: 'example1/example1.2.1'
+              link: 'example1/example1.2.1',
             },
             {
               itemType: 'link',
               label: 'Example 1.2',
               icon: faBuilding,
-              link: 'example1/example1.2.2'
+              link: 'example1/example1.2.2',
             },
             {
               itemType: 'link',
               label: 'Example 1.3',
-              link: 'example1/example1.2.3'
+              link: 'example1/example1.2.3',
             },
           ]
         },
         {
           itemType: 'link',
           label: 'Example 1.3',
-          link: 'example1/example1.3'
+          link: 'example1/example1.3',
         },
-      ]
+      ],
     },
     template: `
       <div class="w-100 vh-100" [storyNavToggle]="currentUrl">

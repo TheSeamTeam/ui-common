@@ -4,7 +4,7 @@ import { APP_BASE_HREF } from '@angular/common'
 import { Component, importProvidersFrom } from '@angular/core'
 import { ReactiveFormsModule } from '@angular/forms'
 import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations'
-import { ActivatedRoute, Route, Router, RouterModule } from '@angular/router'
+import { ActivatedRoute, provideRouter, Route, Router, RouterModule } from '@angular/router'
 import { Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
 
@@ -28,6 +28,7 @@ import { TheSeamSideNavModule } from '../side-nav/index'
 import { TheSeamTopBarModule } from '../top-bar/index'
 
 import { exampleData2 } from '../../datatable-dynamic/_story-data/dynamic-data-2'
+import { provideLocationMocks } from '@angular/common/testing'
 
 @Component({
   selector: 'story-ex-widget-1',
@@ -288,6 +289,7 @@ const meta: Meta<any> = {
     applicationConfig({
       providers: [
         provideAnimations(),
+        provideLocationMocks(),
       ],
     }),
   ],
@@ -303,70 +305,67 @@ export const TableWithDetailNav: Story = {
   render: args => ({
     applicationConfig: {
       providers: [
-        provideAnimations(),
-        importProvidersFrom(
-          RouterModule.forRoot([
-            {
-              path: 'users',
-              component: DynamicDatatablePageComponent,
-              data: {
-                name: 'Users',
-                tableDef: exampleData2
-              },
-              resolve: {
-                hierLevel: HierarchyLevelResolver
-              },
-              // loadChildren: () => Promise.resolve(LevelTwoModule)
-              // loadChildren: () => of(LevelTwoModule)
-              children: [
-                {
-                  path: 'details',
-                  component: UserDetailsExComponent,
-                  data: { },
-                  resolve: {
-                    hierLevel: HierarchyLevelResolver
-                  }
-                },
-              ]
+        provideRouter([
+          {
+            path: 'users',
+            component: DynamicDatatablePageComponent,
+            data: {
+              name: 'Users',
+              tableDef: exampleData2
             },
-            {
-              path: 'documents',
-              component: StoryNameExComponent,
-              data: {
-                name: 'Documents'
-              },
-              resolve: {
-                hierLevel: HierarchyLevelResolver
-              },
-              // loadChildren: () => Promise.resolve(LevelTwoModule)
-              // loadChildren: () => of(LevelTwoModule)
+            resolve: {
+              hierLevel: HierarchyLevelResolver
             },
-            {
-              path: 'settings',
-              component: StoryNameExComponent,
-              data: {
-                name: 'Settings'
+            // loadChildren: () => Promise.resolve(LevelTwoModule)
+            // loadChildren: () => of(LevelTwoModule)
+            children: [
+              {
+                path: 'details',
+                component: UserDetailsExComponent,
+                data: { },
+                resolve: {
+                  hierLevel: HierarchyLevelResolver
+                }
               },
-              resolve: {
-                hierLevel: HierarchyLevelResolver
-              },
-              // loadChildren: () => Promise.resolve(LevelTwoModule)
-              // loadChildren: () => of(LevelTwoModule)
+            ]
+          },
+          {
+            path: 'documents',
+            component: StoryNameExComponent,
+            data: {
+              name: 'Documents'
             },
-            {
-              path: 'status',
-              component: StoryNameExComponent,
-              data: {
-                name: 'Status'
-              },
-              resolve: {
-                hierLevel: HierarchyLevelResolver
-              },
-              // loadChildren: () => Promise.resolve(LevelTwoModule)
-              // loadChildren: () => of(LevelTwoModule)
-            }
-          ], { useHash: true }),
-        ),
+            resolve: {
+              hierLevel: HierarchyLevelResolver
+            },
+            // loadChildren: () => Promise.resolve(LevelTwoModule)
+            // loadChildren: () => of(LevelTwoModule)
+          },
+          {
+            path: 'settings',
+            component: StoryNameExComponent,
+            data: {
+              name: 'Settings'
+            },
+            resolve: {
+              hierLevel: HierarchyLevelResolver
+            },
+            // loadChildren: () => Promise.resolve(LevelTwoModule)
+            // loadChildren: () => of(LevelTwoModule)
+          },
+          {
+            path: 'status',
+            component: StoryNameExComponent,
+            data: {
+              name: 'Status'
+            },
+            resolve: {
+              hierLevel: HierarchyLevelResolver
+            },
+            // loadChildren: () => Promise.resolve(LevelTwoModule)
+            // loadChildren: () => of(LevelTwoModule)
+          }
+        ]),
       ],
     },
     moduleMetadata: {
@@ -393,9 +392,6 @@ export const TableWithDetailNav: Story = {
         TheSeamWidgetModule,
         DynamicPagesModule,
         TheSeamIconModule
-      ],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: '/' },
       ],
     },
     props: {

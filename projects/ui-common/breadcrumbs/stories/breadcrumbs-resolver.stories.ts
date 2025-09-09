@@ -1,10 +1,11 @@
 import { Meta, StoryObj } from '@storybook/angular'
 
-import { importProvidersFrom } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
-import { RouterModule } from '@angular/router'
+import { provideRouter, RouterModule } from '@angular/router'
+import { provideLocationMocks } from '@angular/common/testing'
 
-import { routesArgType, StoryEmptyComponent, StoryInitialRouteModule } from '@theseam/ui-common/story-helpers'
+import { provideStoryInitialUrl } from '@marklb/storybook-angular-initial-url'
+import { routesArgType, StoryEmptyComponent } from '@theseam/ui-common/story-helpers'
 
 import { StoryUsersDataService } from './story-user-data.service'
 import { StoryUserIdToNameResolver } from './story-userid-to-name.resolver'
@@ -29,36 +30,32 @@ export const Example: Story = {
     applicationConfig: {
       providers: [
         provideAnimations(),
-        importProvidersFrom(
-          RouterModule.forRoot([
-            {
-              path: 'users',
-              component: StoryEmptyComponent,
-              data: {
-                breadcrumb: 'Users'
+        provideLocationMocks(),
+        provideRouter([
+          {
+            path: 'users',
+            component: StoryEmptyComponent,
+            data: {
+              breadcrumb: 'Users',
+            },
+            children: [
+              {
+                path: ':userId',
+                component: StoryEmptyComponent,
+                data: { },
+                resolve: {
+                  breadcrumb: StoryUserIdToNameResolver,
+                },
               },
-              children: [
-                {
-                  path: ':userId',
-                  component: StoryEmptyComponent,
-                  data: { },
-                  resolve: {
-                    breadcrumb: StoryUserIdToNameResolver
-                  }
-                }
-              ]
-            }
-          ], { useHash: true }),
-          StoryInitialRouteModule.forRoot('/users/123'),
-        ),
+            ],
+          },
+        ]),
+        provideStoryInitialUrl('/users/123'),
         StoryUsersDataService,
         StoryUserIdToNameResolver,
       ],
     },
     moduleMetadata: {
-      declarations: [
-        StoryEmptyComponent
-      ],
       imports: [
         RouterModule,
       ],

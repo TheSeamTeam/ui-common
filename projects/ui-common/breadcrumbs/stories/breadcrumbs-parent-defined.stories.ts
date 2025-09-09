@@ -1,10 +1,11 @@
 import { Meta, StoryObj } from '@storybook/angular'
 
-import { importProvidersFrom } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
-import { RouterModule } from '@angular/router'
+import { RouterModule, provideRouter } from '@angular/router'
+import { provideLocationMocks } from '@angular/common/testing'
 
-import { StoryEmptyComponent, StoryEmptyWithRouteComponent, StoryInitialRouteModule } from '@theseam/ui-common/story-helpers'
+import { provideStoryInitialUrl } from '@marklb/storybook-angular-initial-url'
+import { StoryEmptyComponent, StoryEmptyWithRouteComponent } from '@theseam/ui-common/story-helpers'
 
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component'
 
@@ -22,30 +23,28 @@ export const Example: Story = {
     applicationConfig: {
       providers: [
         provideAnimations(),
-        importProvidersFrom(
-          RouterModule.forRoot([
-            {
-              path: 'home',
-              component: StoryEmptyWithRouteComponent,
-              data: {
-                breadcrumb: 'Home',
+        provideLocationMocks(),
+        provideRouter([
+          {
+            path: 'home',
+            component: StoryEmptyWithRouteComponent,
+            data: {
+              breadcrumb: 'Home',
+            },
+            children: [
+              {
+                path: '',
+                component: StoryEmptyComponent,
               },
-              children: [
-                {
-                  path: '',
-                  component: StoryEmptyComponent,
-                }
-              ]
-            }
-          ], { useHash: true }),
-          StoryInitialRouteModule.forRoot('/home'),
-        ),
+            ],
+          },
+        ]),
+        provideStoryInitialUrl('/home'),
       ],
     },
     moduleMetadata: {
       declarations: [
-        StoryEmptyComponent,
-        StoryEmptyWithRouteComponent
+        StoryEmptyWithRouteComponent,
       ],
       providers: [ ],
       imports: [
@@ -56,6 +55,6 @@ export const Example: Story = {
     template: `
       <seam-breadcrumbs></seam-breadcrumbs>
       <router-outlet></router-outlet>
-    `
-  })
+    `,
+  }),
 }

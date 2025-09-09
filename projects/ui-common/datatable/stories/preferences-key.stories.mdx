@@ -1,8 +1,9 @@
 import { moduleMetadata } from '@storybook/angular'
 import { Story, Meta, Canvas } from '@storybook/addon-docs'
 
-import { RouterModule } from '@angular/router'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { provideRouter } from '@angular/router'
+import { provideAnimations } from '@angular/platform-browser/animations'
+import { provideLocationMocks } from '@angular/common/testing'
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
 
 import { DatatablePreferencesAccessorLocalService } from './preferences-accessor-local'
@@ -17,10 +18,11 @@ import { THESEAM_DATATABLE_PREFERENCES_ACCESSOR } from '../tokens/datatable-pref
     moduleMetadata({
       imports: [
         TheSeamDatatableModule,
-        RouterModule.forRoot([], { useHash: true }),
-        BrowserAnimationsModule
       ],
       providers: [
+        provideAnimations(),
+        provideLocationMocks(),
+        provideRouter([]),
         {
           provide: THESEAM_DATATABLE_PREFERENCES_ACCESSOR,
           useClass: DatatablePreferencesAccessorLocalService

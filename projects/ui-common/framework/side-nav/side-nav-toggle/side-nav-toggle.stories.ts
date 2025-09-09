@@ -1,13 +1,11 @@
-import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
-import { applicationConfig } from '@storybook/angular/dist/client/decorators'
+import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 
-import { APP_BASE_HREF } from '@angular/common'
-import { importProvidersFrom } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
-import { RouterModule } from '@angular/router'
+import { provideRouter } from '@angular/router'
+import { provideLocationMocks } from '@angular/common/testing'
 
 import { faBuilding } from '@fortawesome/free-regular-svg-icons'
-import { StoryInitialRouteModule } from '@theseam/ui-common/story-helpers'
+import { provideStoryInitialUrl } from '@marklb/storybook-angular-initial-url'
 
 import { TheSeamSideNavModule } from '../side-nav.module'
 import { SideNavToggleComponent } from './side-nav-toggle.component'
@@ -19,11 +17,9 @@ const meta: Meta<SideNavToggleComponent> = {
     applicationConfig({
       providers: [
         provideAnimations(),
-        importProvidersFrom(
-          RouterModule.forRoot([], { useHash: true }),
-          StoryInitialRouteModule.forRoot('/'),
-        ),
-        { provide: APP_BASE_HREF, useValue: '/' },
+        provideLocationMocks(),
+        provideRouter([]),
+        provideStoryInitialUrl('/'),
       ],
     }),
     moduleMetadata({

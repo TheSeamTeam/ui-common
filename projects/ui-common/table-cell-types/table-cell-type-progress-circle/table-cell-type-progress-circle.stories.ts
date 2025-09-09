@@ -1,9 +1,8 @@
-import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
-import { applicationConfig } from '@storybook/angular/dist/client/decorators'
+import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 
-import { importProvidersFrom } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
-import { RouterModule } from '@angular/router'
+import { provideRouter } from '@angular/router'
+import { provideLocationMocks } from '@angular/common/testing'
 
 import { TheSeamDatatableModule } from '@theseam/ui-common/datatable'
 import {
@@ -26,14 +25,12 @@ const meta: Meta<TableCellTypeProgressCircleComponent> = {
     applicationConfig({
       providers: [
         provideAnimations(),
-        importProvidersFrom(
-          RouterModule.forRoot([], { useHash: true }),
-        ),
+        provideLocationMocks(),
+        provideRouter([]),
       ],
     }),
     moduleMetadata({
       imports: [
-        RouterModule,
         TheSeamDatatableModule,
         TheSeamTableCellTypesModule,
       ],

@@ -1,15 +1,15 @@
-import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 
 import { APP_BASE_HREF } from '@angular/common'
-import { Component, Directive, importProvidersFrom, Input } from '@angular/core'
-import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations'
-import { Router, RouterModule } from '@angular/router'
-import { applicationConfig } from '@storybook/angular/dist/client/decorators'
+import { Component, Directive, Input } from '@angular/core'
+import { provideAnimations } from '@angular/platform-browser/animations'
+import { provideRouter, Router, RouterModule } from '@angular/router'
+import { provideLocationMocks } from '@angular/common/testing'
 
 import { faBuilding } from '@fortawesome/free-regular-svg-icons'
 import { faSignature } from '@fortawesome/free-solid-svg-icons'
+import { provideStoryInitialUrl } from '@marklb/storybook-angular-initial-url'
 
-import { StoryInitialRouteModule } from '@theseam/ui-common/story-helpers'
 import { THESEAM_SIDE_NAV_ACCESSOR } from '../side-nav-tokens'
 import { SideNavComponent } from '../side-nav.component'
 import { TheSeamSideNavModule } from '../side-nav.module'
@@ -25,7 +25,7 @@ class MockSideNavComponent implements Partial<SideNavComponent> {
 }
 
 // tslint:disable-next-line:directive-selector
-@Directive({ selector: '[storyNavToggle]' })
+@Directive({ selector: '[storyNavToggle]', standalone: true })
 class StoryNavToggleDirective {
   @Input() set storyNavToggle(value: string) { this._router.navigateByUrl(value) }
   constructor(private _router: Router) { }
@@ -38,15 +38,18 @@ const meta: Meta<SideNavItemComponent> = {
     applicationConfig({
       providers: [
         provideAnimations(),
-        { provide: APP_BASE_HREF, useValue: '/' },
+        provideLocationMocks(),
+        provideStoryInitialUrl('/example-1'),
       ],
     }),
     moduleMetadata({
       declarations: [
-        StoryRoutePlacholderComponent
+        StoryRoutePlacholderComponent,
       ],
       imports: [
-        TheSeamSideNavModule
+        TheSeamSideNavModule,
+        StoryNavToggleDirective,
+        RouterModule,
       ],
       providers: [
         { provide: THESEAM_SIDE_NAV_ACCESSOR, useClass: MockSideNavComponent },
@@ -62,27 +65,17 @@ export default meta
 type Story = StoryObj<SideNavItemComponent>
 
 export const NoChildren: Story = {
-  render: args => ({
-    applicationConfig: {
+  decorators: [
+    applicationConfig({
       providers: [
-        provideAnimations(),
-        importProvidersFrom(
-          RouterModule.forRoot([
-            { path: 'example1', component: StoryRoutePlacholderComponent },
-            { path: 'example2', component: StoryRoutePlacholderComponent },
-          ], { useHash: true }),
-          StoryInitialRouteModule.forRoot('/example1'),
-        ),
+        provideRouter([
+          { path: 'example1', component: StoryRoutePlacholderComponent },
+          { path: 'example2', component: StoryRoutePlacholderComponent },
+        ]),
       ],
-    },
-    moduleMetadata: {
-      declarations: [
-        StoryNavToggleDirective,
-      ],
-      imports: [
-        RouterModule,
-      ],
-    },
+    }),
+  ],
+  render: args => ({
     props: {
       currentUrl: 'example2',
 
@@ -119,30 +112,20 @@ export const NoChildren: Story = {
 }
 
 export const WithChildren: Story = {
-  render: args => ({
-    applicationConfig: {
+  decorators: [
+    applicationConfig({
       providers: [
-        provideAnimations(),
-        importProvidersFrom(
-          RouterModule.forRoot([
-            { path: 'example1', component: StoryRoutePlacholderComponent },
-            { path: 'example1/example1.1', component: StoryRoutePlacholderComponent },
-            { path: 'example1/example1.2', component: StoryRoutePlacholderComponent },
-            { path: 'example1/example1.3', component: StoryRoutePlacholderComponent },
-            { path: 'example2', component: StoryRoutePlacholderComponent },
-          ], { useHash: true }),
-          StoryInitialRouteModule.forRoot('/example1'),
-        ),
+        provideRouter([
+          { path: 'example1', component: StoryRoutePlacholderComponent },
+          { path: 'example1/example1.1', component: StoryRoutePlacholderComponent },
+          { path: 'example1/example1.2', component: StoryRoutePlacholderComponent },
+          { path: 'example1/example1.3', component: StoryRoutePlacholderComponent },
+          { path: 'example2', component: StoryRoutePlacholderComponent },
+        ]),
       ],
-    },
-    moduleMetadata: {
-      declarations: [
-        StoryNavToggleDirective
-      ],
-      imports: [
-        RouterModule,
-      ],
-    },
+    }),
+  ],
+  render: args => ({
     props: {
       currentUrl: 'example1',
 

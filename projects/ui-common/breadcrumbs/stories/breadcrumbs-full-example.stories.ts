@@ -1,10 +1,11 @@
-import { Meta, StoryObj } from '@storybook/angular'
+import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 
-import { importProvidersFrom } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
-import { RouterModule } from '@angular/router'
+import { provideRouter, RouterModule } from '@angular/router'
+import { provideLocationMocks } from '@angular/common/testing'
 
-import { routeButton, StoryEmptyComponent, StoryInitialRouteModule } from '@theseam/ui-common/story-helpers'
+import { provideStoryInitialUrl } from '@marklb/storybook-angular-initial-url'
+import { routeButton, StoryEmptyComponent } from '@theseam/ui-common/story-helpers'
 
 import { StoryUsersDataService } from './story-user-data.service'
 import { StoryUserIdToNameResolver } from './story-userid-to-name.resolver'
@@ -15,6 +16,17 @@ const meta: Meta<BreadcrumbsComponent> =  {
   title: 'Breadcrumbs/Components/Full',
   component: BreadcrumbsComponent,
   decorators: [
+    applicationConfig({
+      providers: [
+        provideAnimations(),
+        provideLocationMocks(),
+      ],
+    }),
+    moduleMetadata({
+      imports: [
+        RouterModule,
+      ],
+    }),
   ],
 }
 
@@ -25,60 +37,49 @@ export const Example: Story = {
   render: () => ({
     applicationConfig: {
       providers: [
-        provideAnimations(),
-        importProvidersFrom(
-          RouterModule.forRoot([
-            {
-              path: '',
-              pathMatch: 'full',
-              redirectTo: '/home',
-            },
-            {
-              path: 'home',
-              component: StoryEmptyComponent,
-              data: {
-                breadcrumb: 'Home'
-              }
-            },
-            {
-              path: 'dashboard',
-              component: StoryEmptyComponent,
-              data: {
-                breadcrumb: 'Dashboard'
-              },
-              children: [
-                {
-                  path: 'users',
-                  component: StoryEmptyComponent,
-                  data: {
-                    breadcrumb: 'Users'
-                  },
-                  children: [
-                    {
-                      path: ':userId',
-                      component: StoryEmptyComponent,
-                      data: { },
-                      resolve: {
-                        breadcrumb: StoryUserIdToNameResolver
-                      }
-                    }
-                  ]
-                }
-              ]
+        provideRouter([
+          {
+            path: '',
+            pathMatch: 'full',
+            redirectTo: '/home',
+          },
+          {
+            path: 'home',
+            component: StoryEmptyComponent,
+            data: {
+              breadcrumb: 'Home'
             }
-          ], { useHash: true }),
-          StoryInitialRouteModule.forRoot('/dashboard/users/123'),
-        ),
+          },
+          {
+            path: 'dashboard',
+            component: StoryEmptyComponent,
+            data: {
+              breadcrumb: 'Dashboard'
+            },
+            children: [
+              {
+                path: 'users',
+                component: StoryEmptyComponent,
+                data: {
+                  breadcrumb: 'Users'
+                },
+                children: [
+                  {
+                    path: ':userId',
+                    component: StoryEmptyComponent,
+                    data: { },
+                    resolve: {
+                      breadcrumb: StoryUserIdToNameResolver
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]),
+        provideStoryInitialUrl('/dashboard/users/123'),
         StoryUsersDataService,
-        StoryUserIdToNameResolver
-      ],
-    },
-    moduleMetadata: {
-      declarations: [
-        StoryEmptyComponent
-      ],
-      imports: [
-        RouterModule,
+        StoryUserIdToNameResolver,
       ],
     },
     props: {
