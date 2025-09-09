@@ -2,11 +2,13 @@ import { FocusMonitor, FocusOrigin } from '@angular/cdk/a11y'
 import { BooleanInput, coerceBooleanProperty, coerceNumberProperty, NumberInput } from '@angular/cdk/coercion'
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
   forwardRef,
   HostBinding,
+  inject,
   Input,
   OnChanges,
   OnDestroy,
@@ -89,6 +91,8 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
   static ngAcceptInputType_streetViewControlEnabled: BooleanInput
   static ngAcceptInputType_allowDrawingHoleInPolygon: BooleanInput
   static ngAcceptInputType_editingEnabled: BooleanInput
+
+  private readonly _changeDetectorRef = inject(ChangeDetectorRef)
 
   private readonly _ngUnsubscribe = new Subject<void>()
 
@@ -304,6 +308,7 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
 
   setDisabledState?(isDisabled: boolean): void {
     this.disabled = isDisabled
+    this._changeDetectorRef.markForCheck()
   }
 
   public fitBounds(bounds: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral, padding?: number | google.maps.Padding): void {

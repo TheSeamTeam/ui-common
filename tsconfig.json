@@ -6,7 +6,6 @@
     "strict": true,
     "sourceMap": true,
     "declaration": false,
-    "downlevelIteration": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": false,
     "forceConsistentCasingInFileNames": true,
@@ -28,7 +27,6 @@
     "strictNullChecks": true,
     // "noImplicitOverride": true, // TODO: Enable when upgraded to TS >=4.3
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     // "useDefineForClassFields":true,
     "jsx": "react",
     "paths": {

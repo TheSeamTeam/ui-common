@@ -15,12 +15,15 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/theseam-ui-common",
+            "outputPath": {
+              "base": "dist/theseam-ui-common"
+            },
             "index": "src/index.html",
-            "main": "src/main.ts",
-            "polyfills": "projects/ui-common/polyfills.ts",
+            "polyfills": [
+              "projects/ui-common/polyfills.ts"
+            ],
             "tsConfig": "tsconfig.app.json",
             "aot": true,
             "assets": [
@@ -35,7 +38,8 @@
               "src/styles.scss",
               "node_modules/@marklb/ngx-datatable/assets/icons.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "browser": "src/main.ts"
           },
           "configurations": {
             "production": {
@@ -50,8 +54,6 @@
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -386,12 +388,15 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/theseam-ui-common",
+            "outputPath": {
+              "base": "dist/theseam-ui-common"
+            },
             "index": "src/index.html",
-            "main": "src/main.ts",
-            "polyfills": "projects/ui-common/polyfills.ts",
+            "polyfills": [
+              "projects/ui-common/polyfills.ts"
+            ],
             "tsConfig": "tsconfig.app.json",
             "aot": true,
             "assets": [
@@ -467,7 +472,8 @@
               "src/styles.scss",
               "node_modules/@marklb/ngx-datatable/assets/icons.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "browser": "src/main.ts"
           },
           "configurations": {
             "production": {
@@ -482,8 +488,6 @@
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
