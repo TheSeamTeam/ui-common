@@ -3,23 +3,23 @@ import { Component, ContentChild, Input, TemplateRef } from '@angular/core'
 
 import { InputBoolean } from '@theseam/ui-common/core'
 
-import { TabbedTabContentDirective } from '../directives/tabbed-tab-content.directive'
-import { TabbedTabDirective } from '../directives/tabbed-tab.directive'
-import { TabbedItemAccessor } from '../tabbed-models'
+import { TheSeamTabbedTabContentDirective } from '../directives/tabbed-tab-content.directive'
+import { TheSeamTabbedTabDirective } from '../directives/tabbed-tab.directive'
+import { TheSeamTabbedItemAccessor } from '../tabbed-models'
 
 @Component({
   selector: 'seam-tabbed-item',
   templateUrl: './tabbed-item.component.html',
   styleUrls: ['./tabbed-item.component.scss']
 })
-export class TabbedItemComponent implements TabbedItemAccessor {
+export class TheSeamTabbedItemComponent implements TheSeamTabbedItemAccessor {
   static ngAcceptInputType_contentFromRoute: BooleanInput
 
-  @ContentChild(TabbedTabDirective, { read: TemplateRef, static: true })
-  public tabbedTabTpl?: TemplateRef<TabbedTabDirective>
+  @ContentChild(TheSeamTabbedTabDirective, { read: TemplateRef, static: true })
+  public tabbedTabTpl?: TemplateRef<TheSeamTabbedTabDirective>
 
-  @ContentChild(TabbedTabContentDirective, { read: TemplateRef, static: true })
-  public tabbedContentTpl?: TemplateRef<TabbedTabContentDirective>
+  @ContentChild(TheSeamTabbedTabContentDirective, { read: TemplateRef, static: true })
+  public tabbedContentTpl?: TemplateRef<TheSeamTabbedTabContentDirective>
 
   @Input() name: string | undefined | null
   @Input() label: string | undefined | null

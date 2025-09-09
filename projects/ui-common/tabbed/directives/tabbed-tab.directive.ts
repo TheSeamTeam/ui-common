@@ -1,14 +1,14 @@
 import { Directive, ElementRef, HostBinding, OnInit } from '@angular/core'
 
-import { TabbedTabAccessor } from '../tabbed-models'
-import { TabbedComponent } from '../tabbed.component'
-import { TabbedService } from '../tabbed.service'
+import { TheSeamTabbedTabAccessor } from '../tabbed-models'
+import { TheSeamTabbedComponent } from '../tabbed.component'
+import { TheSeamTabbedService } from '../tabbed.service'
 
 @Directive({
   selector: '[seamTabbedTab]',
   exportAs: 'seamTabbedTab'
 })
-export class TabbedTabDirective implements OnInit, TabbedTabAccessor {
+export class TheSeamTabbedTabDirective implements OnInit, TheSeamTabbedTabAccessor {
 
   // @HostBinding('class.custom-invalid')
   // get customInvalid() { return this.control.invalid }
@@ -17,8 +17,8 @@ export class TabbedTabDirective implements OnInit, TabbedTabAccessor {
 
   constructor(
     public elementRef: ElementRef,
-    // public host: TabbedComponent,
-    public tabbedService: TabbedService
+    // public host: TheSeamTabbedComponent,
+    public tabbedService: TheSeamTabbedService
   ) { }
 
   // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method

@@ -1,20 +1,20 @@
 import { ComponentHarness, HarnessPredicate, BaseHarnessFilters, ElementDimensions } from '@angular/cdk/testing'
 
-export interface TooltipHarnessFilters extends BaseHarnessFilters {
-  // Empty - use selector-based filtering like Angular Material
+export interface TheSeamTooltipHarnessFilters extends BaseHarnessFilters {
+  // Empty - use selector-based filtering
 }
 
 /**
  * Harness for interacting with tooltip directives in tests
  */
-export class TooltipHarness extends ComponentHarness {
+export class TheSeamTooltipHarness extends ComponentHarness {
   static hostSelector = '[seamTooltip]'
 
   /**
    * Gets a `HarnessPredicate` that can be used to search for a tooltip with specific attributes
    */
-  static with(options: TooltipHarnessFilters = {}): HarnessPredicate<TooltipHarness> {
-    return new HarnessPredicate(TooltipHarness, options)
+  static with(options: TheSeamTooltipHarnessFilters = {}): HarnessPredicate<TheSeamTooltipHarness> {
+    return new HarnessPredicate(TheSeamTooltipHarness, options)
   }
 
   /** Hovers over the element to show the tooltip */

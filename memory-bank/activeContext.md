@@ -2,7 +2,24 @@
 
 ## Current Work Focus
 
-### Tooltip Harness Fixes
+### Tooltip Test Fixes
+**Status**: 🔄 IN PROGRESS - Fixed Tooltip Test Timing Issues
+**Objective**: Resolve tooltip test failures related to animation timing and cleanup
+
+**Progress Made**:
+- ✅ Fixed tooltip cleanup logic in directive (`_closeTooltip()` method)
+- ✅ Added helper functions for waiting for tooltip show/hide states
+- ✅ Improved test isolation with forced cleanup between tests
+- ✅ Fixed template content test (now passing)
+- ✅ Fixed most mouse/focus interaction tests (now passing)
+
+**Remaining Issues** (3 of 16 tests failing):
+1. **Trigger Type Tests** (2 failing) - Tooltips from previous tests still present
+2. **Escape Key Test** (1 failing) - Tooltip not hiding on escape key
+
+**Root Cause**: The directive's immediate cleanup in `_closeTooltip()` works for most cases, but some edge cases with test isolation still need refinement.
+
+### Previous: Tooltip Harness Fixes
 **Status**: ✅ COMPLETED - Fixed Tooltip Harness Issues
 **Objective**: Resolve tooltip harness problems with Angular input handling and testing reliability
 

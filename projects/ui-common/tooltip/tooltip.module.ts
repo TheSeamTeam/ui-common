@@ -3,21 +3,21 @@ import { CommonModule } from '@angular/common'
 import { OverlayModule } from '@angular/cdk/overlay'
 import { A11yModule } from '@angular/cdk/a11y'
 
-import { TooltipComponent } from './tooltip.component'
-import { SeamTooltipDirective } from './tooltip.directive'
+import { TheSeamTooltipComponent } from './tooltip.component'
+import { TheSeamTooltipDirective } from './tooltip.directive'
 
 @NgModule({
   declarations: [
-    TooltipComponent,
-    SeamTooltipDirective
+    TheSeamTooltipComponent,
+    TheSeamTooltipDirective,
   ],
   imports: [
     CommonModule,
     OverlayModule,
-    A11yModule
+    A11yModule,
   ],
   exports: [
-    SeamTooltipDirective
-  ]
+    TheSeamTooltipDirective,
+  ],
 })
-export class TooltipModule { }
+export class TheSeamTooltipModule { }

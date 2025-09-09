@@ -8,6 +8,7 @@ import { ColumnsAlteration } from '../columns-alteration'
 import { TheSeamDatatableAccessor } from '../datatable-accessor'
 import { isInternalColumn } from '../internal-column-props'
 import { TheSeamDatatableColumn } from '../table-column'
+import { AlterationDisplayItem } from '../../../datatable-alterations-display/models/alteration-display.model'
 
 export interface ColumnOrderRecord {
   columnProp: TableColumnProp
@@ -83,6 +84,23 @@ export class OrderColumnsAlteration extends ColumnsAlteration<OrderColumnsAltera
     }
   }
 
+  public toDisplayItem(): AlterationDisplayItem {
+    const summary = this._createOrderSummary()
+    const details = this._createOrderDetails()
+
+    return {
+      id: this.id,
+      type: this.type,
+      summary,
+      details,
+      sortOrder: 0
+    }
+  }
+
+  public getDisplaySortOrder(): number {
+    return 0 // Only one order alteration per table
+  }
+
   private _isValidState(state: OrderColumnsAlterationState): boolean {
     // NOTE: Checking null or undefined, even though the type doesn't allow,
     // because the state may have been loaded from an invalid persistant
@@ -116,5 +134,25 @@ export class OrderColumnsAlteration extends ColumnsAlteration<OrderColumnsAltera
       }
       return true
     }).sort((a, b) => a.index === b.index ? 0 : a.index > b.index ? 1 : -1)
+  }
+
+  private _createOrderSummary(): string {
+    if (this.state.columns.length === 0) {
+      return 'Default column order'
+    }
+
+    const reorderedCount = this.state.columns.length
+    return `${reorderedCount} column${reorderedCount === 1 ? '' : 's'} reordered`
+  }
+
+  private _createOrderDetails(): string[] {
+    if (this.state.columns.length === 0) {
+      return ['Columns are in their default order']
+    }
+
+    const sortedColumns = this._stateColumns()
+    return sortedColumns.map(col =>
+      `${col.columnProp}: Position ${col.index + 1}`
+    )
   }
 }

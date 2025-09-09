@@ -11,7 +11,7 @@ import {
 } from '@angular/core'
 import { Subject } from 'rxjs'
 
-export type TooltipPlacement =
+export type TheSeamTooltipPlacement =
   | 'top' | 'top-left' | 'top-right'
   | 'bottom' | 'bottom-left' | 'bottom-right'
   | 'left' | 'left-top' | 'left-bottom'
@@ -43,13 +43,13 @@ export type TooltipPlacement =
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TooltipComponent implements OnDestroy {
+export class TheSeamTooltipComponent implements OnDestroy {
 
   @Input() content: string | TemplateRef<any> | null = null
   @Input() tooltipClass?: string
   @Input() context?: any
-  @Input() placement: TooltipPlacement = 'top'
-  @Input() actualPlacement?: TooltipPlacement // The actual placement determined by CDK Overlay
+  @Input() placement: TheSeamTooltipPlacement = 'top'
+  @Input() actualPlacement?: TheSeamTooltipPlacement // The actual placement determined by CDK Overlay
   @Input() tooltipId?: string
   @Input() triggerElement?: HTMLElement
 
@@ -62,7 +62,7 @@ export class TooltipComponent implements OnDestroy {
   @HostBinding('class')
   get hostClasses(): string {
     const baseClass = 'tooltip show'
-    const placementClass = this.getPlacementClass()
+    const placementClass = this._getPlacementClass()
     this._setArrowPosition()
     return `${baseClass} ${placementClass}`
   }
@@ -87,7 +87,7 @@ export class TooltipComponent implements OnDestroy {
     return this.isTemplateContent ? this.content as TemplateRef<any> : null
   }
 
-  private getPlacementClass(): string {
+  private _getPlacementClass(): string {
     // Use actualPlacement if available, otherwise fall back to initial placement
     const effectivePlacement = this.actualPlacement || this.placement
 

@@ -17,7 +17,7 @@ import { platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic
 
 describe('TheSeamButtonComponent', () => {
   describe('Normal', () => {
-    let spectator: Spectator<TheSeamButtonComponent>
+    let spectator: SpectatorHost<TheSeamButtonComponent>
     const createHost = createHostFactory(TheSeamButtonComponent)
 
     it('should have button type by default', () => {
@@ -26,8 +26,12 @@ describe('TheSeamButtonComponent', () => {
     })
 
     it('should set the theme class name according to the [theme] input', () => {
-      spectator = createHost(`<button seamButton>Example</button>`)
-      spectator.setInput('theme', 'primary')
+      spectator = createHost(`<button seamButton [theme]="theme">Example</button>`, {
+        hostProps: {
+          theme: 'primary'
+        },
+      })
+      // spectator.setInput('theme', 'primary')
       expect(spectator.query('button', { root: true })).toHaveClass('btn-primary')
       expect(spectator.query('button', { root: true })).not.toHaveClass('btn-success')
     })

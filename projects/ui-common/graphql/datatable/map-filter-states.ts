@@ -87,13 +87,16 @@ function mergeVariables(variableObjects: FilterStateMapperVariables[]): FilterSt
   return variables
 }
 
+function isEmptyFilter(mapperFilter: FilterStateMapperFilter): boolean {
+  return Object.keys(mapperFilter).length === 0
+}
+
 export async function mapFilterStates(
   filterStates: DataFilterState[],
   filterStateMappers: FilterStateMappers,
   context: MapperContext
 ): Promise<FilterStateMapperResult> {
-  // TODO: Fix types
-  const results: any = await resolveMappers(filterStates, filterStateMappers, context).toPromise()
+  const results: FilterStateMapperFilter[] = (await resolveMappers(filterStates, filterStateMappers, context).toPromise()) ?? []
 
   if (results.length === 0) {
     return null
@@ -102,6 +105,7 @@ export async function mapFilterStates(
   const filters = results
     .map((r: any) => r.filter)
     .filter(notNullOrUndefined)
+    .filter(mapperFilter => !isEmptyFilter(mapperFilter))
 
   const variableObjs = results
     .map((r: any) => r.variables)

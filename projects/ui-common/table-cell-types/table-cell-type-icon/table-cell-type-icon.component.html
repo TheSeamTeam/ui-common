@@ -5,10 +5,10 @@
     <a class="d-block m-auto{{ _linkClass ? ' ' + _linkClass : '' }}"
       [attr.title]="_tooltipDisabled ? _title : undefined"
       [attr.target]="_target"
-      [ngbTooltip]="_tooltip"
-      [tooltipClass]="$any(_tooltipClass)"
-      [placement]="$any(_tooltipPlacement)"
-      [container]="$any(_tooltipContainer)"
+      [seamTooltip]="_tooltip ?? null"
+      [tooltipClass]="_tooltipClass"
+      [placement]="_tooltipPlacement"
+      [container]="_tooltipContainer"
       [disableTooltip]="_tooltipDisabled">
       <seam-icon [icon]="_icon" size="lg" [iconType]="_iconType" [iconClass]="_iconClass || ''"></seam-icon>
       <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
@@ -23,10 +23,10 @@
       [queryParams]="_queryParams"
       [attr.title]="_tooltipDisabled ? _title : undefined"
       [attr.target]="_target"
-      [ngbTooltip]="_tooltip"
-      [tooltipClass]="$any(_tooltipClass)"
-      [placement]="$any(_tooltipPlacement)"
-      [container]="$any(_tooltipContainer)"
+      [seamTooltip]="_tooltip ?? null"
+      [tooltipClass]="_tooltipClass"
+      [placement]="_tooltipPlacement"
+      [container]="_tooltipContainer"
       [disableTooltip]="_tooltipDisabled">
       <seam-icon *ngIf="_icon" [icon]="_icon" size="lg" [iconType]="_iconType" [iconClass]="_iconClass"></seam-icon>
       <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
@@ -40,10 +40,10 @@
       [attr.href]="_link"
       [attr.title]="_tooltipDisabled ? _title : undefined"
       [attr.target]="_target"
-      [ngbTooltip]="_tooltip"
-      [tooltipClass]="$any(_tooltipClass)"
-      [placement]="$any(_tooltipPlacement)"
-      [container]="$any(_tooltipContainer)"
+      [seamTooltip]="_tooltip ?? null"
+      [tooltipClass]="_tooltipClass"
+      [placement]="_tooltipPlacement"
+      [container]="_tooltipContainer"
       [disableTooltip]="_tooltipDisabled">
       <seam-icon *ngIf="_icon" [icon]="_icon" size="lg" [iconType]="_iconType" [iconClass]="_iconClass"></seam-icon>
       <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
@@ -60,10 +60,10 @@
       [seamDetectMimeFromContent]="_detectMimeContent"
       [seamDownloadAsset]="_download"
       [attr.title]="_tooltipDisabled ? _title : undefined"
-      [ngbTooltip]="_tooltip"
-      [tooltipClass]="$any(_tooltipClass)"
-      [placement]="$any(_tooltipPlacement)"
-      [container]="$any(_tooltipContainer)"
+      [seamTooltip]="_tooltip ?? null"
+      [tooltipClass]="_tooltipClass"
+      [placement]="_tooltipPlacement"
+      [container]="_tooltipContainer"
       [disableTooltip]="_tooltipDisabled">
       <seam-icon *ngIf="_icon" iconType="styled-square" [icon]="_icon" size="lg" [iconType]="_iconType" [iconClass]="_iconClass"></seam-icon>
       <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
@@ -78,10 +78,10 @@
       class="btn btn-link p-0 m-auto{{ _linkClass ? ' ' + _linkClass : '' }}"
       type="button"
       [attr.title]="_tooltipDisabled ? _title : undefined"
-      [ngbTooltip]="_tooltip"
-      [tooltipClass]="$any(_tooltipClass)"
-      [placement]="$any(_tooltipPlacement)"
-      [container]="$any(_tooltipContainer)"
+      [seamTooltip]="_tooltip ?? null"
+      [tooltipClass]="_tooltipClass"
+      [placement]="_tooltipPlacement"
+      [container]="_tooltipContainer"
       [disableTooltip]="_tooltipDisabled">
       <seam-icon *ngIf="_icon" iconType="styled-square" [icon]="_icon" size="lg" [iconType]="_iconType" [iconClass]="_iconClass"></seam-icon>
       <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>

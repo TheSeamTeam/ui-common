@@ -1,0 +1,31 @@
+<div class="alterations-list" [attr.data-testid]="'alterations-list-' + (diffState || 'default')">
+
+  <!-- Title header -->
+  <div *ngIf="title" class="mb-3">
+    <h6 class="mb-1 text-muted font-weight-bold" [attr.data-testid]="'alterations-list-title'">
+      {{ title }}
+    </h6>
+    <small class="text-muted" [attr.data-testid]="'alterations-list-count'">
+      {{ items.length }} alteration{{ items.length === 1 ? '' : 's' }}
+    </small>
+  </div>
+
+  <!-- Items list -->
+  <div *ngIf="hasItems; else emptyState" class="alterations-items">
+    <seam-alteration-item
+      *ngFor="let item of sortedItems; trackBy: trackByItemId"
+      [item]="item"
+      [compact]="compact"
+      [attr.data-testid]="'list-item-' + item.id">
+    </seam-alteration-item>
+  </div>
+
+  <!-- Empty state -->
+  <ng-template #emptyState>
+    <div class="text-center py-4 text-muted" [attr.data-testid]="'alterations-list-empty'">
+      <p class="mb-0">No alterations</p>
+      <small>No changes have been made to the table configuration.</small>
+    </div>
+  </ng-template>
+
+</div>

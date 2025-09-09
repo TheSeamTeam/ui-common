@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { RouterModule } from '@angular/router'
 
-import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap'
-
 import { TheSeamAssetReaderModule } from '@theseam/ui-common/asset-reader'
 import { TheSeamIconModule } from '@theseam/ui-common/icon'
 import { TheSeamPopoverModule } from '@theseam/ui-common/popover'
@@ -12,6 +10,7 @@ import { TheSeamProgressModule } from '@theseam/ui-common/progress'
 import { TheSeamSharedModule } from '@theseam/ui-common/shared'
 import { TheSeamTableCellTypeModule } from '@theseam/ui-common/table-cell-type'
 import { TheSeamTelInputModule } from '@theseam/ui-common/tel-input'
+import { TheSeamTooltipModule } from '@theseam/ui-common/tooltip'
 
 import { TableCellTypeCurrencyComponent } from './table-cell-type-currency/table-cell-type-currency.component'
 import { TableCellTypeDateComponent } from './table-cell-type-date/table-cell-type-date.component'
@@ -68,7 +67,6 @@ const cellTypeProviders = [
     ],
     imports: [
         CommonModule,
-        NgbTooltipModule,
         RouterModule,
         TheSeamSharedModule,
         TheSeamIconModule,
@@ -77,7 +75,8 @@ const cellTypeProviders = [
         TheSeamProgressModule,
         TheSeamTelInputModule,
         TheSeamAssetReaderModule,
-        TheSeamTableCellTypeModule
+        TheSeamTableCellTypeModule,
+        TheSeamTooltipModule,
     ],
     providers: [
         ...cellTypeProviders

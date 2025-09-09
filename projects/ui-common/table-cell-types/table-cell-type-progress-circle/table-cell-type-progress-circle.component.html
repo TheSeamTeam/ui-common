@@ -59,10 +59,10 @@
       [hiddenOnEmpty]="hiddenOnEmpty"
       [percentage]="$any(value)"
       [pending]="pending"
-      [ngbTooltip]="tooltip"
-      [tooltipClass]="$any(tooltipClass)"
-      [placement]="$any(tooltipPlacement)"
-      [container]="$any(tooltipContainer)">
+      [seamTooltip]="tooltip ?? null"
+      [tooltipClass]="tooltipClass"
+      [placement]="tooltipPlacement"
+      [container]="tooltipContainer">
     </seam-progress-circle>
     <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
   </div>

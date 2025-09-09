@@ -14,16 +14,11 @@
         <ng-template #tabLabelTpl>{{ tabbedItem?.label }}</ng-template>
       </div>
     </ng-container>
-    <!-- <div class="active-indicator"
-      [class.active-indicator-horizontal]="direction === 'horizontal'"
-      [class.active-indicator-vertical]="direction === 'vertical'">
-    </div> -->
   </div>
 
   <!-- Tabs Content -->
   <div class="tabbed-tabs-content bg-light">
     <ng-container *ngIf="onlyRouteContent; else notOnlyRouteContent">
-      <!-- <app-slide-over-router-outlet></app-slide-over-router-outlet> -->
       <router-outlet></router-outlet>
     </ng-container>
     <ng-template #notOnlyRouteContent>

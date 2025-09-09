@@ -11,7 +11,16 @@ import { TheSeamTiledSelectHarness } from './../../testing/tiled-select-harness'
 import { TheSeamTiledSelectModule } from '../../tiled-select.module'
 import { TheSeamTiledSelectComponent } from './tiled-select.component'
 
-const meta: Meta<TheSeamTiledSelectComponent & { [key: string]: any }> = {
+interface ExtraArgs {
+  dt?: {
+    columns: any[]
+    rows: any[]
+  }
+}
+
+type StoryComponentType = TheSeamTiledSelectComponent & ExtraArgs
+
+const meta: Meta<StoryComponentType> = {
   title: 'Tiled Select/Components/Tiled Select',
   component: TheSeamTiledSelectComponent,
   tags: ['autodocs'],
@@ -20,7 +29,7 @@ const meta: Meta<TheSeamTiledSelectComponent & { [key: string]: any }> = {
       imports: [
         BrowserModule,
         BrowserAnimationsModule,
-        TheSeamTiledSelectModule
+        TheSeamTiledSelectModule,
       ]
     }),
     componentWrapperDecorator(story => `<div style="width: 600px">${story}</div>`)
@@ -28,7 +37,7 @@ const meta: Meta<TheSeamTiledSelectComponent & { [key: string]: any }> = {
 }
 
 export default meta
-type Story = StoryObj<TheSeamTiledSelectComponent & { [key: string]: any }>
+type Story = StoryObj<StoryComponentType>
 
 export const Default: Story = {
   render: args => ({

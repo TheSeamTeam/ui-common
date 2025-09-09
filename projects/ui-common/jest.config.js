@@ -19,10 +19,12 @@ module.exports = {
     // '**/framework/side-nav/**/*.spec.ts',
     '**/utils/**/*.spec.ts',
     '**/validators/**/*.spec.ts',
-    // '**/datatable/**/*.spec.ts',
+    '**/datatable/**/*.spec.ts',
     '**/dynamic-component-loader/**/*.spec.ts',
     '**/tel-input/**/*.spec.ts',
     '**/tooltip/**/*.spec.ts',
+    '**/tabbed/**/*.spec.ts',
+    '**/datatable-alterations-display/**/*.spec.ts',
   ],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/' }),
 }
