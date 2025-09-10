@@ -1,4 +1,5 @@
 import { animate, style, transition, trigger } from '@angular/animations'
+import { AsyncPipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common'
 import { Component, ContentChildren, Input, OnDestroy, OnInit, QueryList } from '@angular/core'
 import { BooleanInput, NumberInput } from '@angular/cdk/coercion'
 import { BehaviorSubject, combineLatest, interval, Observable, Subject } from 'rxjs'
@@ -7,6 +8,8 @@ import { filter, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/op
 import { faAngleLeft, faAngleRight, faPause, faPlay } from '@fortawesome/free-solid-svg-icons'
 import { InputBoolean, InputNumber } from '@theseam/ui-common/core'
 import { notNullOrUndefined } from '@theseam/ui-common/utils'
+import { TheSeamIconModule } from '@theseam/ui-common/icon'
+import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
 
 import { TheSeamCarouselSlideDirective } from './carousel-slide.directive'
 
@@ -23,6 +26,14 @@ import { TheSeamCarouselSlideDirective } from './carousel-slide.directive'
     ])
   ],
   exportAs: 'seamCarousel',
+  imports: [
+    NgIf,
+    NgFor,
+    NgTemplateOutlet,
+    AsyncPipe,
+    TheSeamIconModule,
+    TheSeamButtonsModule,
+  ],
 })
 export class TheSeamCarouselComponent implements OnInit, OnDestroy {
   static ngAcceptInputType_slideInterval: NumberInput
@@ -123,7 +134,7 @@ export class TheSeamCarouselComponent implements OnInit, OnDestroy {
       startWith(0),
       switchMap(i => this.slides$.pipe(
         map(slides => slides?.get(i)),
-      ))
+      )),
     )
   }
 
@@ -135,7 +146,7 @@ export class TheSeamCarouselComponent implements OnInit, OnDestroy {
         } else {
           this._startInterval()
         }
-      })
+      }),
     ).subscribe()
   }
 
@@ -151,7 +162,7 @@ export class TheSeamCarouselComponent implements OnInit, OnDestroy {
         takeUntil(this._resetInterval),
         tap(() => {
           this.pageCarousel(1)
-        })
+        }),
       ).subscribe()
     }
   }
@@ -204,7 +215,7 @@ export class TheSeamCarouselComponent implements OnInit, OnDestroy {
         index = index + step
         index = index < 0 ? slidesLen + index : index % slidesLen
         this._pollActiveIndex.next(index)
-      })
+      }),
     ).subscribe()
   }
 

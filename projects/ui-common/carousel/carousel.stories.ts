@@ -2,15 +2,17 @@ import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/an
 import { expect } from '@storybook/test'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
+import { timer, lastValueFrom } from 'rxjs'
 
 import { getHarness } from '@theseam/ui-common/testing'
 
 import { TheSeamCarouselComponent } from './carousel.component'
 import { TheSeamCarouselModule } from './carousel.module'
 import { TheSeamCarouselHarness } from './testing'
-import { timer, lastValueFrom } from 'rxjs'
 
-const meta: Meta = {
+interface StoryExtraProps { }
+
+const meta: Meta<TheSeamCarouselComponent & StoryExtraProps> = {
   title: 'Carousel/Components',
   component: TheSeamCarouselComponent,
   decorators: [
@@ -21,15 +23,15 @@ const meta: Meta = {
     }),
     moduleMetadata({
       imports: [
-        TheSeamCarouselModule
-      ]
-    })
+        TheSeamCarouselModule,
+      ],
+    }),
   ],
   tags: ['autodocs'],
 }
 
 export default meta
-type Story = StoryObj<TheSeamCarouselComponent>
+type Story = StoryObj<TheSeamCarouselComponent & StoryExtraProps>
 
 export const Basic: Story = {
   render: args => ({

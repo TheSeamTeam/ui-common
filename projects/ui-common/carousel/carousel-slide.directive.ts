@@ -1,10 +1,9 @@
-import { Directive, TemplateRef } from '@angular/core'
+import { Directive, inject, TemplateRef } from '@angular/core'
 
 @Directive({
   selector: '[seamCarouselSlide]',
+  exportAs: 'seamCarouselSlide',
 })
 export class TheSeamCarouselSlideDirective {
-
-  constructor(public readonly template: TemplateRef<any>) { }
-
+  private readonly template = inject(TemplateRef<any>)
 }
