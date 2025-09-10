@@ -26,7 +26,7 @@ import { auditTime, debounceTime, distinctUntilChanged, finalize, map, shareRepl
 import { faLock, faUnlock } from '@fortawesome/free-solid-svg-icons'
 
 import { InputBoolean } from '@theseam/ui-common/core'
-import type { IElementResizedEvent } from '@theseam/ui-common/shared'
+import type { TheSeamElementResizedEvent } from '@theseam/ui-common/shared'
 import { THESEAM_WIDGET_ACCESSOR } from '@theseam/ui-common/widget'
 
 import type { ITheSeamBaseLayoutRef } from '../../base-layout/base-layout-ref'
@@ -253,7 +253,7 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
     this._cdr.detectChanges()
   }
 
-  _resized(event: IElementResizedEvent) {
+  _resized(event: TheSeamElementResizedEvent) {
     this._widthChange.next(event.size.width)
   }
 

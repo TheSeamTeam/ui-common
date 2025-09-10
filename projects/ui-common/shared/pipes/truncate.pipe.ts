@@ -1,10 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core'
 
 @Pipe({
-    name: 'truncate',
-    standalone: false
+  name: 'truncate',
 })
-export class TruncatePipe implements PipeTransform {
+export class TheSeamTruncatePipe implements PipeTransform {
 
   transform(value: string, length: number = 30, appendEllipsis: boolean = true): string {
     let val = value

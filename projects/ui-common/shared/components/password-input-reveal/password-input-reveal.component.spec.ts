@@ -2,16 +2,16 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 
-import { PasswordInputRevealComponent } from './password-input-reveal.component'
+import { TheSeamPasswordInputRevealComponent } from './password-input-reveal.component'
 
-describe('PasswordInputRevealComponent', () => {
-  let component: PasswordInputRevealComponent
-  let fixture: ComponentFixture<PasswordInputRevealComponent>
+describe('TheSeamPasswordInputRevealComponent', () => {
+  let component: TheSeamPasswordInputRevealComponent
+  let fixture: ComponentFixture<TheSeamPasswordInputRevealComponent>
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
     declarations: [
-        PasswordInputRevealComponent
+        TheSeamPasswordInputRevealComponent
     ],
     imports: [
         FontAwesomeModule
@@ -22,7 +22,7 @@ describe('PasswordInputRevealComponent', () => {
   }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PasswordInputRevealComponent)
+    fixture = TestBed.createComponent(TheSeamPasswordInputRevealComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
   })

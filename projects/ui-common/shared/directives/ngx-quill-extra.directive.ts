@@ -1,16 +1,19 @@
 import { coerceNumberProperty } from '@angular/cdk/coercion'
-import { AfterViewInit, Directive, ElementRef, HostBinding, Input, OnDestroy } from '@angular/core'
+import { AfterViewInit, Directive, ElementRef, HostBinding, inject, Input, OnDestroy } from '@angular/core'
 import { fromEvent, Subject } from 'rxjs'
 import { filter, takeUntil, tap } from 'rxjs/operators'
 
 import { QuillEditorComponent } from 'ngx-quill'
 
 @Directive({
-    // eslint-disable-next-line @angular-eslint/directive-selector
-    selector: 'quill-editor',
-    standalone: false
+  // eslint-disable-next-line @angular-eslint/directive-selector
+  selector: 'quill-editor',
+  exportAs: 'seamNgxQuillExtra',
 })
-export class NgxQuillExtraDirective implements OnDestroy, AfterViewInit {
+export class TheSeamNgxQuillExtraDirective implements OnDestroy, AfterViewInit {
+
+  private readonly _elementRef: ElementRef<HTMLElement> = inject(ElementRef<HTMLElement>)
+  private readonly _quillEditor: QuillEditorComponent = inject(QuillEditorComponent)
 
   private readonly _ngUnsubscribe = new Subject<void>()
 
@@ -27,11 +30,6 @@ export class NgxQuillExtraDirective implements OnDestroy, AfterViewInit {
 
   @HostBinding('attr.tabindex')
   get _attrTabIndex() { return this._quillEditor.disabled ? -1 : (this.tabIndex || 0) }
-
-  constructor(
-    private readonly _elementRef: ElementRef,
-    private readonly _quillEditor: QuillEditorComponent
-  ) { }
 
   ngOnDestroy() {
     this._ngUnsubscribe.next(undefined)

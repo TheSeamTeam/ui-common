@@ -1,22 +1,29 @@
-import { Directive, ElementRef, HostListener, Input } from '@angular/core'
+import { Directive, ElementRef, HostListener, inject, Input } from '@angular/core'
 
 declare type _PointerEvent = PointerEvent | PointerEvent
 
 /**
- * Don't use this directive unless there is a reason not to use css `:hover`,
- * because the accuracy of detecting the hover is not as good. If an element is
- * moved while the mouse is idle the hover class will remain until the mouse
- * enters and leaves again.
+ * Changes a css class on mouse pointer hover.
  *
- * I have tried multiple ways of detecting the mouse no longer hovering, but all
- * have introduced a slight performance issue that just builds for each element
- * containing this directive.
+ * NOTE: Only use this if css `:hover` can't be used, because css is more
+ * accurate and better performing.
+ *
+ * NOTE: Don't use this directive unless there is a reason not to use css
+ * `:hover`, because the accuracy of detecting the hover is not as good. If an
+ * element is moved while the mouse is idle the hover class will remain until
+ * the mouse enters and leaves again.
+ *
+ * NOTE: I have tried multiple ways of detecting the mouse no longer hovering,
+ * but all have introduced a slight performance issue that just builds for each
+ * element containing this directive.
  */
 @Directive({
-    selector: '[seamHoverClass]',
-    standalone: false
+  selector: '[seamHoverClass]',
+  exportAs: 'seamHoverClass',
 })
-export class HoverClassDirective {
+export class TheSeamHoverClassDirective {
+
+  private readonly _elementRef = inject(ElementRef<HTMLElement>)
 
   private _hovered = false
   private _classes: string[] = []
@@ -49,10 +56,6 @@ export class HoverClassDirective {
     this._update()
   }
 
-  constructor(
-    private readonly _element: ElementRef
-  ) { }
-
   private _update(): void {
     for (const c of this._classes) {
       this._hovered ? this._addClass(c) : this._removeClass(c)
@@ -68,11 +71,11 @@ export class HoverClassDirective {
   }
 
   private _addClass(c: string): void {
-    this._element.nativeElement.classList.add(c)
+    this._elementRef.nativeElement.classList.add(c)
   }
 
   public _removeClass(c: string): void {
-    this._element.nativeElement.classList.remove(c)
+    this._elementRef.nativeElement.classList.remove(c)
   }
 
 }

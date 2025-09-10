@@ -43,7 +43,7 @@ import type { SelectionType } from '@marklb/ngx-datatable'
 
 import { InputBoolean, InputNumber } from '@theseam/ui-common/core'
 import { composeDataFilters, composeDataFilterStates, DataFilter, DataFilterState } from '@theseam/ui-common/data-filters'
-import { IElementResizedEvent } from '@theseam/ui-common/shared'
+import { TheSeamElementResizedEvent } from '@theseam/ui-common/shared'
 import { isNullOrUndefined, notNullOrUndefined, waitOnConditionAsync } from '@theseam/ui-common/utils'
 
 import { DatatableActionMenuComponent } from '../datatable-action-menu/datatable-action-menu.component'
@@ -813,7 +813,7 @@ export class DatatableComponent<TRow = any>
     return item.prop
   }
 
-  public onDatatableResize(event: IElementResizedEvent) {
+  public onDatatableResize(event: TheSeamElementResizedEvent) {
     if (this.ngxDatatable && this.ngxDatatableElement && this.ngxDatatableElement.nativeElement) {
       // TODO: Consider integrating this into the ngx-datatable library to avoid
       // multiple resize calls when the table resizes itself.

@@ -1,8 +1,8 @@
-// import { MaskCharsPipe } from './mask-chars.pipe'
+// import { TheSeamMaskCharsPipe } from './mask-chars.pipe'
 
-// describe('MaskCharsPipe', () => {
+// describe('TheSeamMaskCharsPipe', () => {
 //   it('create an instance', () => {
-//     const pipe = new MaskCharsPipe()
+//     const pipe = new TheSeamMaskCharsPipe()
 //     expect(pipe).toBeTruthy()
 //   })
 // })

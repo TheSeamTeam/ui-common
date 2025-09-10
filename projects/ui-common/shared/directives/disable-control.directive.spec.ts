@@ -2,7 +2,7 @@ import { Component, DebugElement } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { UntypedFormControl, UntypedFormGroup, ReactiveFormsModule } from '@angular/forms'
 import { By } from '@angular/platform-browser'
-import { DisableControlDirective } from './disable-control.directive'
+import { TheSeamDisableControlDirective } from './disable-control.directive'
 
 @Component({
   template: `<form [formGroup]="testGroup">
@@ -16,7 +16,7 @@ class TestDisableControlComponent {
   mode = true
 }
 
-describe('DisableControlDirective', () => {
+describe('TheSeamDisableControlDirective', () => {
   let component: TestDisableControlComponent
   let fixture: ComponentFixture<TestDisableControlComponent>
   let controlInput: DebugElement
@@ -28,7 +28,7 @@ describe('DisableControlDirective', () => {
     ],
     declarations: [
         TestDisableControlComponent,
-        DisableControlDirective
+        TheSeamDisableControlDirective
     ],
     teardown: { destroyAfterEach: false }
 })

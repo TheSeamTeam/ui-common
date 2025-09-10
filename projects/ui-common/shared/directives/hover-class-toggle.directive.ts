@@ -1,4 +1,4 @@
-import { Directive, ElementRef, HostListener, Input } from '@angular/core'
+import { Directive, ElementRef, HostListener, inject, Input } from '@angular/core'
 
 declare type _PointerEvent = PointerEvent | PointerEvent
 
@@ -18,10 +18,12 @@ export interface TheSeamHoverClassToggleRecord {
  * containing this directive.
  */
 @Directive({
-    selector: '[seamHoverClassToggle]',
-    standalone: true
+  selector: '[seamHoverClassToggle]',
+  exportAs: 'seamHoverClassToggle',
 })
 export class TheSeamHoverClassToggleDirective {
+
+  private readonly _elementRef = inject(ElementRef<HTMLElement>)
 
   private _hovered = false
   private _defaultClasses: string[] = []
@@ -59,10 +61,6 @@ export class TheSeamHoverClassToggleDirective {
     this._update()
   }
 
-  constructor(
-    private readonly _element: ElementRef
-  ) { }
-
   private _update(): void {
     for (const c of this._defaultClasses) {
       this._hovered ? this._removeClass(c) : this._addClass(c)
@@ -81,11 +79,11 @@ export class TheSeamHoverClassToggleDirective {
   }
 
   private _addClass(c: string): void {
-    this._element.nativeElement.classList.add(c)
+    this._elementRef.nativeElement.classList.add(c)
   }
 
   public _removeClass(c: string): void {
-    this._element.nativeElement.classList.remove(c)
+    this._elementRef.nativeElement.classList.remove(c)
   }
 
 }

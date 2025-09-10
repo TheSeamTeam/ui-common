@@ -94,7 +94,7 @@
     "@angular/compiler-cli": "^19.2.14",
     "@angular/language-service": "^19.2.14",
     "@babel/core": "^7.11.6",
-    "@compodoc/compodoc": "^1.1.30",
+    "@compodoc/compodoc": "1.1.26",
     "@marklb/storybook-angular-initial-url": "^1.0.3",
     "@ngneat/spectator": "^18.0.2",
     "@storybook/addon-a11y": "^8.6.12",

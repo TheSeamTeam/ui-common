@@ -1,61 +1,50 @@
-import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
-
-import { TheSeamLoadingModule } from '@theseam/ui-common/loading'
-import { TheSeamModalModule } from '@theseam/ui-common/modal'
 import { TheSeamScrollbarModule } from '@theseam/ui-common/scrollbar'
 
-import { AutoFocusDirective } from './directives/auto-focus.directive'
-import { ClickOutsideDirective } from './directives/click-outside.directive'
-import { DisableControlDirective } from './directives/disable-control.directive'
-import { ElemResizedDirective } from './directives/elem-resized.directive'
+import { TheSeamAutoFocusDirective } from './directives/auto-focus.directive'
+import { TheSeamClickOutsideDirective } from './directives/click-outside.directive'
+import { TheSeamDisableControlDirective } from './directives/disable-control.directive'
+import { TheSeamElemResizedDirective } from './directives/elem-resized.directive'
 import { TheSeamHoverClassToggleDirective } from './directives/hover-class-toggle.directive'
-import { HoverClassDirective } from './directives/hover-class.directive'
-import { NgSelectExtraDirective } from './directives/ng-select-extra.directive'
-import { NgxQuillExtraDirective } from './directives/ngx-quill-extra.directive'
+import { TheSeamHoverClassDirective } from './directives/hover-class.directive'
+import { TheSeamNgSelectExtraDirective } from './directives/ng-select-extra.directive'
+import { TheSeamNgxQuillExtraDirective } from './directives/ngx-quill-extra.directive'
 
-import { MaskCharsPipe } from './pipes/mask-chars.pipe'
-import { TruncatePipe } from './pipes/truncate.pipe'
+import { TheSeamMaskCharsPipe } from './pipes/mask-chars.pipe'
+import { TheSeamTruncatePipe } from './pipes/truncate.pipe'
 
-import { PasswordInputRevealComponent } from './components/password-input-reveal/password-input-reveal.component'
+import { TheSeamPasswordInputRevealComponent } from './components/password-input-reveal/password-input-reveal.component'
 
 @NgModule({
   imports: [
-    CommonModule,
-    FontAwesomeModule,
-    TheSeamModalModule,
-    TheSeamLoadingModule,
+    TheSeamAutoFocusDirective,
+    TheSeamElemResizedDirective,
     TheSeamHoverClassToggleDirective,
-  ],
-  declarations: [
-    AutoFocusDirective,
-    ElemResizedDirective,
-    PasswordInputRevealComponent,
-    NgSelectExtraDirective,
-    HoverClassDirective,
-    ClickOutsideDirective,
-    DisableControlDirective,
-    MaskCharsPipe,
-    TruncatePipe,
-    NgxQuillExtraDirective
+    TheSeamNgSelectExtraDirective,
+    TheSeamHoverClassDirective,
+    TheSeamClickOutsideDirective,
+    TheSeamDisableControlDirective,
+    TheSeamNgxQuillExtraDirective,
+    TheSeamMaskCharsPipe,
+    TheSeamTruncatePipe,
+    TheSeamPasswordInputRevealComponent,
   ],
   exports: [
-    AutoFocusDirective,
-    ElemResizedDirective,
-    PasswordInputRevealComponent,
-    NgSelectExtraDirective,
-    HoverClassDirective,
+    TheSeamAutoFocusDirective,
+    TheSeamElemResizedDirective,
+    TheSeamPasswordInputRevealComponent,
+    TheSeamNgSelectExtraDirective,
+    TheSeamHoverClassDirective,
     TheSeamHoverClassToggleDirective,
-    ClickOutsideDirective,
-    DisableControlDirective,
-    MaskCharsPipe,
-    TruncatePipe,
-    NgxQuillExtraDirective,
+    TheSeamClickOutsideDirective,
+    TheSeamDisableControlDirective,
+    TheSeamMaskCharsPipe,
+    TheSeamTruncatePipe,
+    TheSeamNgxQuillExtraDirective,
 
     // Exporting scrollbars here for backwards compatibility for now.
-    TheSeamScrollbarModule
+    TheSeamScrollbarModule,
   ]
 })
 export class TheSeamSharedModule { }

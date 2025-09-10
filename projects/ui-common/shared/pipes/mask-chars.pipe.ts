@@ -3,10 +3,9 @@ import { Pipe, PipeTransform } from '@angular/core'
 import { padEnd, padStart } from '@theseam/ui-common/utils'
 
 @Pipe({
-    name: 'maskChars',
-    standalone: false
+  name: 'maskChars',
 })
-export class MaskCharsPipe implements PipeTransform {
+export class TheSeamMaskCharsPipe implements PipeTransform {
 
   transform(value: string, replacementChar: string = '*', ignoreCount: number = 0, ignoreFrom: 'left' | 'right' = 'right'): string {
     if (ignoreFrom === 'right') {

@@ -1,15 +1,15 @@
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion'
 import { Component, Input } from '@angular/core'
 
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons'
 
 @Component({
-    selector: 'seam-password-input-reveal',
-    template: `
+  selector: 'seam-password-input-reveal',
+  template: `
     <fa-icon [icon]="passwordVisible ? faEyeSlash : faEye" class="password-reveal-icon" (click)="revealPassword()"></fa-icon>
   `,
-    styles: [
-        `
+  styles: [`
     :host {
       display: flex;
       align-items: center;
@@ -32,11 +32,12 @@ import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons'
     :host fa-icon ::ng-deep .svg-inline--fa {
       vertical-align: middle;
     }
-    `
-    ],
-    standalone: false
+  `],
+  imports: [
+    FontAwesomeModule,
+  ],
 })
-export class PasswordInputRevealComponent {
+export class TheSeamPasswordInputRevealComponent {
   static ngAcceptInputType_passwordVisible: BooleanInput
 
   faEye = faEye
