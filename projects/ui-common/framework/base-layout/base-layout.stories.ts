@@ -25,7 +25,7 @@ import {
   faWrench
 } from '@fortawesome/free-solid-svg-icons'
 
-import { TheSeamBreadcrumbsModule } from '@theseam/ui-common/breadcrumbs'
+import { TheSeamBreadcrumbsComponent } from '@theseam/ui-common/breadcrumbs'
 import { TheSeamWidgetModule } from '@theseam/ui-common/widget'
 import { provideNavigationReload } from '@theseam/ui-common/navigation-reload'
 import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
@@ -967,7 +967,7 @@ export default {
         TheSeamSideNavModule,
         TheSeamTopBarModule,
         TheSeamWidgetModule,
-        TheSeamBreadcrumbsModule,
+        TheSeamBreadcrumbsComponent,
         TheSeamNavModule,
         TheSeamIconModule,
         TheSeamScrollbarModule,

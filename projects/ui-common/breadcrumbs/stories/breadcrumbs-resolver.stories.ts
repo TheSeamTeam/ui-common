@@ -10,20 +10,20 @@ import { routesArgType, StoryEmptyComponent } from '@theseam/ui-common/story-hel
 import { StoryUsersDataService } from './story-user-data.service'
 import { StoryUserIdToNameResolver } from './story-userid-to-name.resolver'
 
-import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component'
+import { TheSeamBreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component'
 
 interface ExtraArgs {
   route: any
 }
 
-const meta: Meta<BreadcrumbsComponent & ExtraArgs> = {
+const meta: Meta<TheSeamBreadcrumbsComponent & ExtraArgs> = {
   title: 'Breadcrumbs/Components/Resolver',
-  component: BreadcrumbsComponent,
+  component: TheSeamBreadcrumbsComponent,
   decorators: [ ]
 }
 
 export default meta
-type Story = StoryObj<BreadcrumbsComponent & ExtraArgs>
+type Story = StoryObj<TheSeamBreadcrumbsComponent & ExtraArgs>
 
 export const Example: Story = {
   render: args => ({

@@ -7,16 +7,16 @@ import { provideLocationMocks } from '@angular/common/testing'
 import { provideStoryInitialUrl } from '@marklb/storybook-angular-initial-url'
 import { StoryEmptyComponent } from '@theseam/ui-common/story-helpers'
 
-import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component'
+import { TheSeamBreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component'
 
-const meta: Meta<BreadcrumbsComponent> = {
+const meta: Meta<TheSeamBreadcrumbsComponent> = {
   title: 'Breadcrumbs/Components/Simple',
-  component: BreadcrumbsComponent,
+  component: TheSeamBreadcrumbsComponent,
   decorators: [ ]
 }
 
 export default meta
-type Story = StoryObj<BreadcrumbsComponent>
+type Story = StoryObj<TheSeamBreadcrumbsComponent>
 
 export const Example: Story = {
   render: args => {

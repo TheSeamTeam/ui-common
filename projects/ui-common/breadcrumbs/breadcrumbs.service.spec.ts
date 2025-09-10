@@ -5,8 +5,8 @@ import { RouterTestingModule } from '@angular/router/testing'
 
 import { SpectatorService } from '@ngneat/spectator/jest'
 import { createServiceFactory } from '@ngneat/spectator/jest'
-import { TheSeamBreadcrumb } from './breadcrumb'
 
+import { TheSeamBreadcrumb } from './breadcrumb'
 import { TheSeamBreadcrumbsService } from './breadcrumbs.service'
 
 @Component({ template: `` })

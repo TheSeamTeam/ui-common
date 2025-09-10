@@ -1,13 +1,10 @@
-import { Injectable, isDevMode } from '@angular/core'
+import { inject, Injectable } from '@angular/core'
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router'
 import { combineLatest, Observable, of } from 'rxjs'
 import { filter, map, startWith, switchMap } from 'rxjs/operators'
 
 import {
-  activatedRoutesWithDataProperty,
   hasProperty,
-  IActivatedRouteWithData,
-  isEmptyUrlRoute,
   leafChildRoute,
   notNullOrUndefined,
   routeSnapshotPathFull,
@@ -34,40 +31,26 @@ interface BreadcrumbData {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TheSeamBreadcrumbsService {
 
-  // public readonly breadcrumbDataKey = 'breadcrumb'
+  private readonly _router = inject(Router)
+  private readonly _activatedRoute = inject(ActivatedRoute)
 
   private readonly dataProps: (keyof Omit<BreadcrumbData, 'activatedRoute'>)[] = [
     'breadcrumb',
     'breadcrumbExtras',
   ]
 
-  public readonly crumbs$: Observable<TheSeamBreadcrumb[]>
-
-  constructor(
-    private readonly _router: Router,
-    private readonly _activatedRoute: ActivatedRoute
-  ) {
-    // this.crumbs$ = this._router.events.pipe(
-    //   filter(event => event instanceof NavigationEnd),
-    //   map(_ => this._activatedRoute),
-    //   startWith(this._activatedRoute),
-    //   activatedRoutesWithDataProperty(this.breadcrumbDataKey, true),
-    //   switchMap(rwdArr => combineLatest(rwdArr.map(rwd => this._parseBreadcrumbData(rwd))))
-    // )
-
-    this.crumbs$ = this._crumbsFromRoute()
-  }
+  public readonly crumbs$ = this._crumbsFromRoute()
 
   private _crumbsFromRoute(): Observable<TheSeamBreadcrumb[]> {
     return this._router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd),
       map(() => this._activatedRoute),
       startWith(this._activatedRoute),
-      switchMap(activatedRoute => this._crumbsFromActivatedRoute(activatedRoute))
+      switchMap(activatedRoute => this._crumbsFromActivatedRoute(activatedRoute)),
     )
   }
 
@@ -90,7 +73,7 @@ export class TheSeamBreadcrumbsService {
       map(data => {
         const bcData: BreadcrumbData = {
           activatedRoute,
-          extrasPropRefs: []
+          extrasPropRefs: [],
         }
 
         let found = false
@@ -142,7 +125,7 @@ export class TheSeamBreadcrumbsService {
       // add extras
       newDatas[newDatas.length - 1].extrasPropRefs = this._filterExtrasPropRefs([
         ...newDatas[newDatas.length - 1].extrasPropRefs,
-        ...pending.map(p => p.extrasPropRefs).reduce((prev, curr) => [ ...prev, ...curr ], [])
+        ...pending.map(p => p.extrasPropRefs).reduce((prev, curr) => [ ...prev, ...curr ], []),
       ])
     }
 
@@ -162,7 +145,7 @@ export class TheSeamBreadcrumbsService {
 
   private _observeExtrasPropRefs(propRefs: ExtrasPropRef[]): Observable<string> {
     return combineLatest(propRefs.map(pf => pf.value)).pipe(
-      map(values => values.map(v => `(${v})`).join(' '))
+      map(values => values.map(v => `(${v})`).join(' ')),
     )
   }
 
@@ -220,7 +203,7 @@ export class TheSeamBreadcrumbsService {
         const breadcrumb: TheSeamBreadcrumb = {
           value: data.breadcrumb,
           path: routeSnapshotPathFull(data.activatedRoute.snapshot),
-          route: data.activatedRoute
+          route: data.activatedRoute,
         }
         breadcrumbs.push(breadcrumb)
       }
@@ -228,25 +211,4 @@ export class TheSeamBreadcrumbsService {
 
     return breadcrumbs
   }
-
-  // private _parseBreadcrumbData(routeWithData: IActivatedRouteWithData): Observable<TheSeamBreadcrumb> {
-  //   const crumbValue = routeWithData.data[this.breadcrumbDataKey]
-  //   const route = routeWithData.route
-  //   const path = routeSnapshotPathFull(route.snapshot)
-  //   let value = ''
-
-  //   if (typeof crumbValue === 'string') {
-  //     value = crumbValue
-  //   } else {
-  //     if (isDevMode()) {
-  //       console.warn(
-  //         '[TheSeamBreadcrumbsService] Only string breadcrumbs are supported currently. '
-  //         + 'Use a resolver if the value needs to be dynamically calculated.'
-  //       )
-  //     }
-  //   }
-
-  //   return of({ value, path, route })
-  // }
-
 }

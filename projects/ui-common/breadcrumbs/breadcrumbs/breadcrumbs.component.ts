@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core'
-import { Observable } from 'rxjs'
+import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common'
+import { ChangeDetectionStrategy, Component, inject, ViewEncapsulation } from '@angular/core'
+import { RouterModule } from '@angular/router'
 
-import { TheSeamBreadcrumb } from '../breadcrumb'
 import { TheSeamBreadcrumbsService } from '../breadcrumbs.service'
 
 @Component({
@@ -9,16 +9,16 @@ import { TheSeamBreadcrumbsService } from '../breadcrumbs.service'
   templateUrl: './breadcrumbs.component.html',
   styleUrls: ['./breadcrumbs.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    RouterModule,
+    NgFor,
+    AsyncPipe,
+    NgClass,
+    NgIf,
+  ],
 })
-export class BreadcrumbsComponent {
-
-  public crumbs$: Observable<TheSeamBreadcrumb[]>
-
-  constructor(
-    private _breadcrumbs: TheSeamBreadcrumbsService
-  ) {
-    this.crumbs$ = this._breadcrumbs.crumbs$
-  }
-
+export class TheSeamBreadcrumbsComponent {
+  private readonly _breadcrumbs = inject(TheSeamBreadcrumbsService)
+  public readonly crumbs$ = this._breadcrumbs.crumbs$
 }

@@ -10,11 +10,11 @@ import { routeButton, StoryEmptyComponent } from '@theseam/ui-common/story-helpe
 import { StoryUsersDataService } from './story-user-data.service'
 import { StoryUserIdToNameResolver } from './story-userid-to-name.resolver'
 
-import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component'
+import { TheSeamBreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component'
 
-const meta: Meta<BreadcrumbsComponent> =  {
+const meta: Meta<TheSeamBreadcrumbsComponent> = {
   title: 'Breadcrumbs/Components/Full',
-  component: BreadcrumbsComponent,
+  component: TheSeamBreadcrumbsComponent,
   decorators: [
     applicationConfig({
       providers: [
@@ -31,7 +31,7 @@ const meta: Meta<BreadcrumbsComponent> =  {
 }
 
 export default meta
-type Story = StoryObj<BreadcrumbsComponent>
+type Story = StoryObj<TheSeamBreadcrumbsComponent>
 
 export const Example: Story = {
   render: () => ({
