@@ -2,14 +2,18 @@ import { BooleanInput } from '@angular/cdk/coercion'
 import { Component, HostBinding, Input } from '@angular/core'
 
 import { InputBoolean } from '@theseam/ui-common/core'
-import type { ThemeTypes } from '@theseam/ui-common/models'
+import { ThemeTypes } from '@theseam/ui-common/models'
+import { TheSeamHoverClassToggleDirective } from '@theseam/ui-common/shared'
 
 @Component({
   selector: 'seam-card-action',
   templateUrl: './card-action.component.html',
-  styleUrls: ['./card-action.component.scss']
+  styleUrls: ['./card-action.component.scss'],
+  imports: [
+    TheSeamHoverClassToggleDirective,
+  ],
 })
-export class CardActionComponent {
+export class TheSeamCardActionComponent {
   static ngAcceptInputType_isLastAction: BooleanInput
 
   @HostBinding('class.border-left') _cssClassBorderLeft = true

@@ -2,7 +2,7 @@ import { Directive, ElementRef, HostListener, Input } from '@angular/core'
 
 declare type _PointerEvent = PointerEvent | PointerEvent
 
-export interface IHoverClassToggleRecord {
+export interface TheSeamHoverClassToggleRecord {
   default: string
   hover: string
 }
@@ -19,9 +19,9 @@ export interface IHoverClassToggleRecord {
  */
 @Directive({
     selector: '[seamHoverClassToggle]',
-    standalone: false
+    standalone: true
 })
-export class HoverClassToggleDirective {
+export class TheSeamHoverClassToggleDirective {
 
   private _hovered = false
   private _defaultClasses: string[] = []
@@ -44,7 +44,7 @@ export class HoverClassToggleDirective {
   }
 
   @Input()
-  set seamHoverClassToggle(value: IHoverClassToggleRecord) {
+  set seamHoverClassToggle(value: TheSeamHoverClassToggleRecord) {
     if (value) {
       if (value.default) {
         this._defaultClasses = value.default.split(' ').filter(c => c.length > 0)

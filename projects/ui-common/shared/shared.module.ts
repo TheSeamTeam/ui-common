@@ -11,7 +11,7 @@ import { AutoFocusDirective } from './directives/auto-focus.directive'
 import { ClickOutsideDirective } from './directives/click-outside.directive'
 import { DisableControlDirective } from './directives/disable-control.directive'
 import { ElemResizedDirective } from './directives/elem-resized.directive'
-import { HoverClassToggleDirective } from './directives/hover-class-toggle.directive'
+import { TheSeamHoverClassToggleDirective } from './directives/hover-class-toggle.directive'
 import { HoverClassDirective } from './directives/hover-class.directive'
 import { NgSelectExtraDirective } from './directives/ng-select-extra.directive'
 import { NgxQuillExtraDirective } from './directives/ngx-quill-extra.directive'
@@ -26,7 +26,8 @@ import { PasswordInputRevealComponent } from './components/password-input-reveal
     CommonModule,
     FontAwesomeModule,
     TheSeamModalModule,
-    TheSeamLoadingModule
+    TheSeamLoadingModule,
+    TheSeamHoverClassToggleDirective,
   ],
   declarations: [
     AutoFocusDirective,
@@ -34,7 +35,6 @@ import { PasswordInputRevealComponent } from './components/password-input-reveal
     PasswordInputRevealComponent,
     NgSelectExtraDirective,
     HoverClassDirective,
-    HoverClassToggleDirective,
     ClickOutsideDirective,
     DisableControlDirective,
     MaskCharsPipe,
@@ -47,7 +47,7 @@ import { PasswordInputRevealComponent } from './components/password-input-reveal
     PasswordInputRevealComponent,
     NgSelectExtraDirective,
     HoverClassDirective,
-    HoverClassToggleDirective,
+    TheSeamHoverClassToggleDirective,
     ClickOutsideDirective,
     DisableControlDirective,
     MaskCharsPipe,
