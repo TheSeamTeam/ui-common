@@ -39,7 +39,8 @@ class FakeModalRef<T, R = any> implements Partial<ModalRef<T, R>> {
     .seam-modal-container[tabindex="-1"]:focus {
       outline: 0 !important;
     }
-  `]
+  `],
+  standalone: false,
 })
 export class StoryModalContainerComponent<T, D = any> implements OnDestroy {
 

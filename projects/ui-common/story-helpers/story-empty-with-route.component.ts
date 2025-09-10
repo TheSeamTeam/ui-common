@@ -1,4 +1,4 @@
 import { Component } from '@angular/core'
 
-@Component({ template: `<router-outlet></router-outlet>` })
+@Component({ template: `<router-outlet></router-outlet>`, standalone: false })
 export class StoryEmptyWithRouteComponent { }
