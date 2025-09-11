@@ -25,7 +25,7 @@ import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons'
     :host fa-icon {
       opacity: 1;
       color: #bababa;
-      margin-top: 3px;
+      /* margin-top: 3px; */ /* Not needed now? */
       cursor: pointer;
     }
 
@@ -40,8 +40,8 @@ import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons'
 export class TheSeamPasswordInputRevealComponent {
   static ngAcceptInputType_passwordVisible: BooleanInput
 
-  faEye = faEye
-  faEyeSlash = faEyeSlash
+  readonly faEye = faEye
+  readonly faEyeSlash = faEyeSlash
 
   @Input()
   get inputRef(): HTMLInputElement | undefined | null { return this._passwordInput }
