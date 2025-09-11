@@ -1,19 +1,21 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
+import { AsyncPipe, NgIf, NgTemplateOutlet, DecimalPipe } from '@angular/common'
 import { AfterViewInit, Component, EventEmitter, HostListener, Inject, Input, OnDestroy, OnInit, Optional, Output, Provider, Renderer2, TemplateRef, ViewChild, forwardRef, ElementRef, inject } from '@angular/core'
-import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms'
-
-import { Blur, ContentChange, EditorChangeContent, EditorChangeSelection, Focus, QuillEditorComponent, SelectionChange } from 'ngx-quill'
-import 'quill-mention/autoregister'
+import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms'
 import { BehaviorSubject, Observable, Subject, combineLatest, filter, lastValueFrom, map, of, shareReplay, startWith, switchMap, take, tap } from 'rxjs'
 
+import { Blur, ContentChange, EditorChangeContent, EditorChangeSelection, Focus, QuillEditorComponent, QuillModule, SelectionChange } from 'ngx-quill'
+import 'quill-mention/autoregister'
 import { isNullOrUndefined, notNullOrUndefined } from '@theseam/ui-common/utils'
+import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
+
 import { TheSeamCharacterCounterFn, TheSeamQuillEditorConfig, TheSeamQuillMentionMenuItem, TheSeamQuillMentionMenuOption, TheSeamQuillMentionSearchFn, TheSeamQuillMentionSourceFn, TheSeamQuillModules } from '../utils/models'
 import { THESEAM_QUILL_EDITOR_CONFIG, THESEAM_QUILL_EDITOR_CONFIG_DEFAULT, THESEAM_QUILL_MENTION_OPTIONS_DEFAULT, defaultHtmlCharacterCounterFn, defaultMentionRenderListFn, defaultMentionSearchFn, isMentionMenuOption } from '../utils/utils'
 
 export const RICH_TEXT_VALUE_ACCESSOR: Provider = {
   provide: NG_VALUE_ACCESSOR,
   useExisting: forwardRef(() => RichTextComponent),
-  multi: true
+  multi: true,
 }
 
 @Component({
@@ -21,8 +23,17 @@ export const RICH_TEXT_VALUE_ACCESSOR: Provider = {
   templateUrl: './rich-text.component.html',
   styleUrls: ['./rich-text.component.scss'],
   providers: [
-    RICH_TEXT_VALUE_ACCESSOR
-  ]
+    RICH_TEXT_VALUE_ACCESSOR,
+  ],
+  imports: [
+    NgIf,
+    NgTemplateOutlet,
+    AsyncPipe,
+    DecimalPipe,
+    ReactiveFormsModule,
+    QuillModule,
+    TheSeamFormFieldModule,
+  ],
 })
 export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor {
 

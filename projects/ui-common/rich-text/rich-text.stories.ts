@@ -1,13 +1,14 @@
-import { ArgTypes, Meta, StoryFn, applicationConfig, moduleMetadata } from '@storybook/angular'
+import { ArgTypes, Meta, StoryFn, StoryObj, applicationConfig, moduleMetadata } from '@storybook/angular'
+
 import { provideAnimations } from '@angular/platform-browser/animations'
-import { TheSeamMenuModule } from '../menu/menu.module'
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Component, Input, OnInit } from '@angular/core'
+import { JsonPipe, NgIf } from '@angular/common'
+import { delay, interval, map, of, take, tap } from 'rxjs'
+
 import { RichTextComponent } from './rich-text/rich-text.component'
-import { TheSeamRichTextModule } from './rich-text.module'
 import { TheSeamQuillEditorConfig, TheSeamQuillMentionMenuItem } from './utils/models'
 import { THESEAM_QUILL_EDITOR_CONFIG, THESEAM_QUILL_EDITOR_CONFIG_DEFAULT, THESEAM_QUILL_TOOLBAR_OPTIONS_DEFAULT, THESEAM_QUILL_FORMATS_DEFAULT } from './utils/utils'
-import { delay, interval, map, of, take, tap } from 'rxjs'
 import { TheSeamFormFieldModule } from '../form-field/form-field.module'
 import { TheSeamButtonsModule } from '../buttons/buttons.module'
 
@@ -40,7 +41,15 @@ import { TheSeamButtonsModule } from '../buttons/buttons.module'
     <button seamButton theme="primary" (click)="disableForm()" *ngIf="form.enabled">Disable Form</button>
     <button seamButton theme="primary" (click)="enableForm()" *ngIf="form.disabled">Enable Form</button>
   </div>
-  `
+  `,
+  imports: [
+    ReactiveFormsModule,
+    NgIf,
+    JsonPipe,
+    TheSeamFormFieldModule,
+    RichTextComponent,
+    TheSeamButtonsModule,
+  ],
 })
 class RichTextFormComponent implements OnInit {
 
@@ -119,7 +128,11 @@ class RichTextFormComponent implements OnInit {
         styles: { background: '#eee' }
       } satisfies TheSeamQuillEditorConfig
     }
-  ]
+  ],
+  imports: [
+    ReactiveFormsModule,
+    RichTextComponent,
+  ],
 })
 class CustomConfigComponent implements OnInit {
 
@@ -151,8 +164,14 @@ class CustomConfigComponent implements OnInit {
 
 }
 
-const meta: Meta = {
+interface StoryExtraProps {
+  btnText: string
+  click: () => void
+}
+
+const meta: Meta<RichTextComponent & StoryExtraProps> = {
   title: 'RichText/Components',
+  component: RichTextComponent,
   tags: [ 'autodocs' ],
   decorators: [
     applicationConfig({
@@ -161,16 +180,11 @@ const meta: Meta = {
       ],
     }),
     moduleMetadata({
-      declarations: [
-        CustomConfigComponent,
-        RichTextFormComponent
-      ],
       imports: [
         ReactiveFormsModule,
-        TheSeamMenuModule,
-        TheSeamRichTextModule,
         TheSeamFormFieldModule,
-        TheSeamButtonsModule
+        CustomConfigComponent,
+        RichTextFormComponent,
       ],
     })
   ],
@@ -189,205 +203,217 @@ const controlArgTypes: Partial<ArgTypes<RichTextComponent>> = {
 }
 
 export default meta
-type Story = StoryFn<RichTextComponent>
+type Story = StoryObj<RichTextComponent & StoryExtraProps>
 
-export const Basic: Story = args => ({
-  props: {
-    ...args,
-    formControl: new FormControl(args.value)
-  },
-  template: `
-    <div style="max-width: 750px; margin: 0 auto;">
-      <seam-rich-text
-        [formControl]="formControl"
-        [required]="required"
-        [placeholder]="placeholder"
-        [rows]="rows"
-        [resizable]="resizable"
-        [disableRichText]="disableRichText"
-        [displayCharacterCounter]="displayCharacterCounter"
-        [minLength]="minLength"
-        [maxLength]="maxLength"></seam-rich-text>
-    </div>
-  `
-})
-Basic.args = undefined
-Basic.argTypes = controlArgTypes
-
-export const CustomConfig: Story = args => ({
-  props: {
-    ...args,
-    formControl: new FormControl(args.value),
-  },
-  template: `
-    <div style="max-width: 750px; margin: 0 auto;">
-      <custom-config-component
-        [form]="formControl"
-        [required]="required"
-        [placeholder]="placeholder"
-        [rows]="rows"
-        [resizable]="resizable"
-        [disableRichText]="disableRichText"
-        [displayCharacterCounter]="displayCharacterCounter"
-        [minLength]="minLength"
-        [maxLength]="maxLength"></custom-config-component>
-    </div>
-  `
-})
-CustomConfig.args = {
-  value: '<p>test text with custom config</p>',
+export const Basic: Story = {
+  render: args => ({
+    props: {
+      ...args,
+      formControl: new FormControl(args.value),
+    },
+    template: `
+      <div style="max-width: 750px; margin: 0 auto;">
+        <seam-rich-text
+          [formControl]="formControl"
+          [required]="required"
+          [placeholder]="placeholder"
+          [rows]="rows"
+          [resizable]="resizable"
+          [disableRichText]="disableRichText"
+          [displayCharacterCounter]="displayCharacterCounter"
+          [minLength]="minLength"
+          [maxLength]="maxLength"></seam-rich-text>
+      </div>
+    `,
+  }),
+  args: undefined,
+  argTypes: controlArgTypes,
 }
-CustomConfig.argTypes = controlArgTypes
 
-export const RichTextDisabled: Story = args => ({
-  props: {
-    ...args,
-    formControl: new FormControl(args.value),
+export const CustomConfig: Story = {
+  render: args => ({
+    props: {
+      ...args,
+      formControl: new FormControl(args.value),
+    },
+    template: `
+      <div style="max-width: 750px; margin: 0 auto;">
+        <custom-config-component
+          [form]="formControl"
+          [required]="required"
+          [placeholder]="placeholder"
+          [rows]="rows"
+          [resizable]="resizable"
+          [disableRichText]="disableRichText"
+          [displayCharacterCounter]="displayCharacterCounter"
+          [minLength]="minLength"
+          [maxLength]="maxLength"></custom-config-component>
+      </div>
+    `,
+  }),
+  args: {
+    value: '<p>test text with custom config</p>',
   },
-  template: `
-    <div style="max-width: 750px; margin: 0 auto;">
-      <seam-rich-text
-        [formControl]="formControl"
-        [required]="required"
-        [placeholder]="placeholder"
-        [rows]="rows"
-        [resizable]="resizable"
-        [disableRichText]="disableRichText"
-        [displayCharacterCounter]="displayCharacterCounter"
-        [minLength]="minLength"
-        [maxLength]="maxLength"></seam-rich-text>
-    </div>
-  `
-})
-RichTextDisabled.args = {
-  value: 'test text without html rendering',
-  disableRichText: true
+  argTypes: controlArgTypes,
 }
-RichTextDisabled.argTypes = controlArgTypes
 
-export const CharacterCounter: Story = args => ({
-  props: {
-    ...args,
-    formControl: new FormControl(args.value),
+export const RichTextDisabled: Story = {
+  render: args => ({
+    props: {
+      ...args,
+      formControl: new FormControl(args.value),
+    },
+    template: `
+      <div style="max-width: 750px; margin: 0 auto;">
+        <seam-rich-text
+          [formControl]="formControl"
+          [required]="required"
+          [placeholder]="placeholder"
+          [rows]="rows"
+          [resizable]="resizable"
+          [disableRichText]="disableRichText"
+          [displayCharacterCounter]="displayCharacterCounter"
+          [minLength]="minLength"
+          [maxLength]="maxLength"></seam-rich-text>
+      </div>
+    `,
+  }),
+  args: {
+    value: 'test text without html rendering',
+    disableRichText: true,
   },
-  template: `
-    <div style="max-width: 750px; margin: 0 auto;">
-      <seam-rich-text
-        [formControl]="formControl"
-        [required]="required"
-        [placeholder]="placeholder"
-        [rows]="rows"
-        [resizable]="resizable"
-        [disableRichText]="disableRichText"
-        [displayCharacterCounter]="displayCharacterCounter"
-        [minLength]="minLength"
-        [maxLength]="maxLength"></seam-rich-text>
-    </div>
-  `
-})
-CharacterCounter.args = {
-  value: '<p>test text with character counter</p>',
-  displayCharacterCounter: true
+  argTypes: controlArgTypes,
 }
-CharacterCounter.argTypes = controlArgTypes
 
-export const CustomCharacterCounterTemplate: Story = args => ({
-  props: {
-    ...args,
-    formControl: new FormControl(args.value),
+export const CharacterCounter: Story = {
+  render: args => ({
+    props: {
+      ...args,
+      formControl: new FormControl(args.value),
+    },
+    template: `
+      <div style="max-width: 750px; margin: 0 auto;">
+        <seam-rich-text
+          [formControl]="formControl"
+          [required]="required"
+          [placeholder]="placeholder"
+          [rows]="rows"
+          [resizable]="resizable"
+          [disableRichText]="disableRichText"
+          [displayCharacterCounter]="displayCharacterCounter"
+          [minLength]="minLength"
+          [maxLength]="maxLength"></seam-rich-text>
+      </div>
+    `,
+  }),
+  args: {
+    value: '<p>test text with character counter</p>',
+    displayCharacterCounter: true,
   },
-  template: `
-    <div style="max-width: 750px; margin: 0 auto;">
-      <seam-rich-text
-        [formControl]="formControl"
-        [required]="required"
-        [placeholder]="placeholder"
-        [rows]="rows"
-        [resizable]="resizable"
-        [disableRichText]="disableRichText"
-        [displayCharacterCounter]="displayCharacterCounter"
-        [characterCounterTpl]="customCharacterCounter"
-        [minLength]="minLength"
-        [maxLength]="maxLength"></seam-rich-text>
-
-      <ng-template #customCharacterCounter let-minLength="minLength" let-maxLength="maxLength" let-characterCount="characterCount">
-        <div class="font-weight-bold text-success text-center">
-          Custom Template!
-          minLength: {{ minLength || 'not set' }},
-          maxLength: {{ maxLength || 'not set' }},
-          characterCount: {{ characterCount }}
-        </div>
-      </ng-template>
-    </div>
-  `
-})
-CustomCharacterCounterTemplate.args = {
-  value: '<p>test text with character counter</p>',
-  displayCharacterCounter: true
+  argTypes: controlArgTypes,
 }
-CustomCharacterCounterTemplate.argTypes = controlArgTypes
 
-export const Mentions: Story = args => ({
-  props: {
-    ...args,
-    formControl: new FormControl(args.value),
-    mentionsInterval$: interval(3000).pipe(
-      take(6),
-      map(i => args.mentionItems?.filter((mention, mentionIdx) => mentionIdx <= i))
-    ),
-    mentions$: of(args.mentionItems).pipe(
-      delay(3000)
-    ),
-    log: (val: any) => console.log(val)
+export const CustomCharacterCounterTemplate: Story = {
+  render: args => ({
+    props: {
+      ...args,
+      formControl: new FormControl(args.value),
+    },
+    template: `
+      <div style="max-width: 750px; margin: 0 auto;">
+        <seam-rich-text
+          [formControl]="formControl"
+          [required]="required"
+          [placeholder]="placeholder"
+          [rows]="rows"
+          [resizable]="resizable"
+          [disableRichText]="disableRichText"
+          [displayCharacterCounter]="displayCharacterCounter"
+          [characterCounterTpl]="customCharacterCounter"
+          [minLength]="minLength"
+          [maxLength]="maxLength"></seam-rich-text>
+
+        <ng-template #customCharacterCounter let-minLength="minLength" let-maxLength="maxLength" let-characterCount="characterCount">
+          <div class="font-weight-bold text-success text-center">
+            Custom Template!
+            minLength: {{ minLength || 'not set' }},
+            maxLength: {{ maxLength || 'not set' }},
+            characterCount: {{ characterCount }}
+          </div>
+        </ng-template>
+      </div>
+    `,
+  }),
+  args: {
+    value: '<p>test text with character counter</p>',
+    displayCharacterCounter: true,
   },
-  template: `
-    <div style="max-width: 750px; margin: 0 auto;">
-      <seam-rich-text
-        [formControl]="formControl"
-        [required]="required"
-        [placeholder]="placeholder"
-        [rows]="rows"
-        [resizable]="resizable"
-        [disableRichText]="disableRichText"
-        [displayCharacterCounter]="displayCharacterCounter"
-        [minLength]="minLength"
-        [maxLength]="maxLength"
-        [useMentions]="true"
-        [mentionItems]="mentions$ | async"
-        (mentionsUpdated)="log({ event: $event, formControl: formControl })"></seam-rich-text>
-    </div>
-  `
-})
-Mentions.args = {
-  value: '<p>test text with mention functionality</p>',
-  mentionItems: [
-    { id: '5', value: 'ABC Farms', groupName: 'Trial Participants' },
-    { id: '6', value: 'Professional Produce Farms', groupName: 'Trial Participants' },
-    { id: '7', value: 'AgBest, LLC', groupName: 'Trial Participants' },
-    { id: '1', value: 'Shelby Manley', userId: 1, groupName: 'Trial Admins' },
-    { id: '0', value: 'Jason Sutton', userId: 2, groupName: 'Trial Admins' },
-    { id: '2', value: 'David Stone', userId: 3, groupName: 'Trial Admins' },
-    { type: 'divider' },
-    { id: '4a', value: 'All Trial Participants', userGroupId: 5, groupName: '', searchIgnore: true },
-    { id: '3a', value: 'All Trial Admins', userGroupId: 4, groupName: '', searchIgnore: true },
-  ]
+  argTypes: controlArgTypes,
 }
-Mentions.argTypes = controlArgTypes
 
-export const UsingSeamInput: Story = args => ({
-  props: {
-    ...args
+export const Mentions: Story = {
+  render: args => ({
+    props: {
+      ...args,
+      formControl: new FormControl(args.value),
+      mentionsInterval$: interval(3000).pipe(
+        take(6),
+        map(i => args.mentionItems?.filter((mention, mentionIdx) => mentionIdx <= i)),
+      ),
+      mentions$: of(args.mentionItems).pipe(
+        delay(3000),
+      ),
+      log: (val: any) => console.log(val),
+    },
+    template: `
+      <div style="max-width: 750px; margin: 0 auto;">
+        <seam-rich-text
+          [formControl]="formControl"
+          [required]="required"
+          [placeholder]="placeholder"
+          [rows]="rows"
+          [resizable]="resizable"
+          [disableRichText]="disableRichText"
+          [displayCharacterCounter]="displayCharacterCounter"
+          [minLength]="minLength"
+          [maxLength]="maxLength"
+          [useMentions]="true"
+          [mentionItems]="mentions$ | async"
+          (mentionsUpdated)="log({ event: $event, formControl: formControl })"></seam-rich-text>
+      </div>
+    `,
+  }),
+  args: {
+    value: '<p>test text with mention functionality</p>',
+    mentionItems: [
+      { id: '5', value: 'ABC Farms', groupName: 'Trial Participants' },
+      { id: '6', value: 'Professional Produce Farms', groupName: 'Trial Participants' },
+      { id: '7', value: 'AgBest, LLC', groupName: 'Trial Participants' },
+      { id: '1', value: 'Shelby Manley', userId: 1, groupName: 'Trial Admins' },
+      { id: '0', value: 'Jason Sutton', userId: 2, groupName: 'Trial Admins' },
+      { id: '2', value: 'David Stone', userId: 3, groupName: 'Trial Admins' },
+      { type: 'divider' },
+      { id: '4a', value: 'All Trial Participants', userGroupId: 5, groupName: '', searchIgnore: true },
+      { id: '3a', value: 'All Trial Admins', userGroupId: 4, groupName: '', searchIgnore: true },
+    ],
   },
-  template: `
-    <div style="max-width: 750px; margin: 0 auto;">
-      <rich-text-form-component
-        [placeholder]="placeholder"
-        [rows]="rows"
-        [resizable]="resizable"
-        [disableRichText]="disableRichText"
-        [displayCharacterCounter]="displayCharacterCounter"
-        [minLength]="minLength"
-        [maxLength]="maxLength"></rich-text-form-component>
-    </div>
-  `
-})
+  argTypes: controlArgTypes,
+}
+
+export const UsingSeamInput: Story = {
+  render: args => ({
+    props: { ...args },
+    template: `
+      <div style="max-width: 750px; margin: 0 auto;">
+        <rich-text-form-component
+          [placeholder]="placeholder"
+          [rows]="rows"
+          [resizable]="resizable"
+          [disableRichText]="disableRichText"
+          [displayCharacterCounter]="displayCharacterCounter"
+          [minLength]="minLength"
+          [maxLength]="maxLength"></rich-text-form-component>
+      </div>
+    `,
+  }),
+}
