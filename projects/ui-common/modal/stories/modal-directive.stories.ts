@@ -1,4 +1,6 @@
-import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+
+import { provideAnimations } from '@angular/platform-browser/animations'
 
 import { TheSeamScrollbarModule } from '@theseam/ui-common/scrollbar'
 
@@ -7,6 +9,11 @@ import { TheSeamModalModule } from '../modal.module'
 const meta: Meta<any> = {
   title: 'Modal/Directive/Template',
   decorators: [
+    applicationConfig({
+      providers: [
+        provideAnimations(),
+      ],
+    }),
     moduleMetadata({
       imports: [
         TheSeamModalModule,

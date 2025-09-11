@@ -1,7 +1,7 @@
-import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 
 import { Component } from '@angular/core'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { provideAnimations } from '@angular/platform-browser/animations'
 
 import { TheSeamScrollbarModule } from '@theseam/ui-common/scrollbar'
 
@@ -13,7 +13,7 @@ import { Modal } from '../modal.service'
   styles: [],
   template: `<span>Example</span>`
 })
-class StoryseamModalBasicComponent { }
+class StorySeamModalBasicComponent { }
 
 @Component({
   selector: 'story-seam-modal-simple',
@@ -32,9 +32,12 @@ class StoryseamModalBasicComponent { }
       <button class="btn btn-primary" seamModalClose="Yes">Yes</button>
       <button class="btn btn-lightgray" seamModalClose="No">No</button>
     </seam-modal-footer>
-  `
+  `,
+  imports: [
+    TheSeamModalModule,
+  ],
 })
-class StoryseamModalSimpleComponent { }
+class StorySeamModalSimpleComponent { }
 
 @Component({
   selector: 'story-seam-modal-basic-example',
@@ -45,14 +48,14 @@ class StoryseamModalSimpleComponent { }
     </div>
   `
 })
-class StoryseamModalBasicExampleComponent {
+class StorySeamModalBasicExampleComponent {
 
   constructor(
     private modal: Modal
   ) { }
 
   open() {
-    const modalRef = this.modal.openFromComponent(StoryseamModalBasicComponent)
+    const modalRef = this.modal.openFromComponent(StorySeamModalBasicComponent)
 
     // eslint-disable-next-line no-console
     modalRef.afterClosed().subscribe(v => console.log('result', v))
@@ -68,14 +71,14 @@ class StoryseamModalBasicExampleComponent {
     </div>
   `
 })
-class StoryseamModalSimpleExampleComponent {
+class StorySeamModalSimpleExampleComponent {
 
   constructor(
     private modal: Modal
   ) { }
 
   open() {
-    const modalRef = this.modal.openFromComponent(StoryseamModalSimpleComponent)
+    const modalRef = this.modal.openFromComponent(StorySeamModalSimpleComponent)
 
     // eslint-disable-next-line no-console
     modalRef.afterClosed().subscribe(v => console.log('result', v))
@@ -85,13 +88,18 @@ class StoryseamModalSimpleExampleComponent {
 const meta: Meta<any> = {
   title: 'Modal/Service',
   decorators: [
+    applicationConfig({
+      providers: [
+        provideAnimations(),
+      ],
+    }),
     moduleMetadata({
       imports: [
         TheSeamModalModule,
-        TheSeamScrollbarModule
+        TheSeamScrollbarModule,
       ],
-    })
-  ]
+    }),
+  ],
 }
 
 export default meta
@@ -100,25 +108,25 @@ type Story = StoryObj<any>
 export const Basic: Story = {
   render: args => ({
     moduleMetadata: {
-      declarations: [
-        StoryseamModalBasicComponent,
-        StoryseamModalBasicExampleComponent
+      imports: [
+        StorySeamModalBasicComponent,
+        StorySeamModalBasicExampleComponent,
       ],
     },
     props: args,
-    template: `<story-seam-modal-basic-example></story-seam-modal-basic-example>`
+    template: `<story-seam-modal-basic-example></story-seam-modal-basic-example>`,
   }),
 }
 
 export const Simple: Story = {
   render: args => ({
     moduleMetadata: {
-      declarations: [
-        StoryseamModalSimpleComponent,
-        StoryseamModalSimpleExampleComponent
+      imports: [
+        StorySeamModalSimpleComponent,
+        StorySeamModalSimpleExampleComponent,
       ],
     },
     props: args,
-    template: `<story-seam-modal-simple-example></story-seam-modal-simple-example>`
+    template: `<story-seam-modal-simple-example></story-seam-modal-simple-example>`,
   }),
 }
