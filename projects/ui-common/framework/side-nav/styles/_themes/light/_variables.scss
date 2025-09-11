@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 $seam-side-nav-bg-color: $gray-200 !default;
 $seam-side-nav-bg: $seam-side-nav-bg-color !default;
 
@@ -20,7 +22,7 @@ $seam-side-nav-item-toggle-color: $seam-side-nav-item-color !default;
 $seam-side-nav-item-toggle-color-active: $seam-side-nav-item-toggle-color !default;
 $seam-side-nav-item-toggle-color-hover: $seam-side-nav-item-toggle-color !default;
 
-$seam-side-nav-item-toggle-disabled-color: darken($seam-side-nav-item-toggle-color, 20%) !default;
+$seam-side-nav-item-toggle-disabled-color: color.adjust($seam-side-nav-item-toggle-color, $lightness: -20%, $space: hsl) !default;
 
 // Divider
 $seam-side-nav-divider-color: $gray-500 !default;

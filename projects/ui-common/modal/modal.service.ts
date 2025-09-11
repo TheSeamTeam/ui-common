@@ -323,7 +323,7 @@ export class Modal implements OnDestroy {
    * @returns A promise resolving to a ComponentRef for the attached container.
    */
   protected _attachDialogContainer(overlay: OverlayRef, config: ModalConfig): ModalContainerComponent {
-    const container = config.containerComponent || this.injector.get(MODAL_CONTAINER)
+    const container = config.containerComponent || this.injector.get(MODAL_CONTAINER, ModalContainerComponent)
     const userInjector = config && config.viewContainerRef && config.viewContainerRef.injector
     const injector = new PortalInjector(userInjector || this.injector, new WeakMap([
       [ModalConfig, config]
@@ -409,7 +409,7 @@ export class Modal implements OnDestroy {
       dialogContainer: ModalContainerComponent): PortalInjector {
     const userInjector = config && config.viewContainerRef && config.viewContainerRef.injector
     const injectionTokens = new WeakMap<any, any>([
-      [this.injector.get(MODAL_CONTAINER), dialogContainer],
+      [this.injector.get(MODAL_CONTAINER, ModalContainerComponent), dialogContainer],
       [MODAL_DATA, config.data]
     ])
 
@@ -429,7 +429,7 @@ export class Modal implements OnDestroy {
    * are undefined.
    */
   private _applyConfigDefaults(config?: ModalConfig): ModalConfig {
-    const dialogConfig = (this.injector.get(MODAL_CONFIG) as unknown) as typeof ModalConfig
+    const dialogConfig = (this.injector.get(MODAL_CONFIG, ModalConfig) as unknown) as typeof ModalConfig
     // eslint-disable-next-line new-cap
     return { ...new dialogConfig(), ...config }
   }

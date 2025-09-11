@@ -174,7 +174,6 @@ seam-side-nav-item {
 
   @for $i from 1 through 9 {
     .side-nav--group--level-#{$i} {
-      // background-color: darken($seam-side-nav-bg-color, ($i * $seam-side-nav-group-bg-variation-amount));
       background-color: color.adjust($seam-side-nav-bg-color, $lightness: -($i * $seam-side-nav-group-bg-variation-amount), $space: hsl);
     }
   }
