@@ -126,7 +126,7 @@ export class DashboardWidgetPortalOutletDirective extends BasePortalOutlet imple
     this._attachedRef = ref
     this.attached.emit(ref)
 
-    return ref
+    return ref as any
   }
 
   /**

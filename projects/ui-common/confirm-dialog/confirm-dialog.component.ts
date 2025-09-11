@@ -1,12 +1,20 @@
+import { NgIf, NgTemplateOutlet } from '@angular/common'
 import { Component, Input, TemplateRef } from '@angular/core'
 
-import type { ThemeTypes } from '@theseam/ui-common/models'
+import { TheSeamModalModule } from '@theseam/ui-common/modal'
+import { ThemeTypes } from '@theseam/ui-common/models'
+import { TheSeamAutoFocusDirective } from '@theseam/ui-common/shared'
 
 @Component({
-    selector: 'seam-confirm-dialog',
-    templateUrl: './confirm-dialog.component.html',
-    styleUrls: ['./confirm-dialog.component.scss'],
-    standalone: false
+  selector: 'seam-confirm-dialog',
+  templateUrl: './confirm-dialog.component.html',
+  styleUrls: ['./confirm-dialog.component.scss'],
+  imports: [
+    NgIf,
+    NgTemplateOutlet,
+    TheSeamModalModule,
+    TheSeamAutoFocusDirective,
+  ],
 })
 export class ConfirmDialogComponent {
 

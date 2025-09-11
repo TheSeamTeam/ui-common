@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 $seam-nav-bg-color: $gray-100 !default;
 $seam-nav-bg: none !default;
 
@@ -15,22 +17,26 @@ $seam-nav-item-text-align: inherit !default;
 $seam-nav-item-border-radius: 0 !default;
 
 $seam-nav-item-bg-color: transparent !default;
-$seam-nav-item-bg-color-active: darken($seam-nav-bg-color, 10%) !default;
+// $seam-nav-item-bg-color-active: darken($seam-nav-bg-color, 10%) !default;
+$seam-nav-item-bg-color-active: color.adjust($seam-nav-bg-color, $lightness: -10%, $space: hsl) !default;
 $seam-nav-item-bg-color-expanded: $seam-nav-item-bg-color !default;
 $seam-nav-item-bg-color-child-active: $seam-nav-item-bg-color-active !default;
-$seam-nav-item-bg-color-hover: darken($seam-nav-bg-color, 5%) !default;
+// $seam-nav-item-bg-color-hover: darken($seam-nav-bg-color, 5%) !default;
+$seam-nav-item-bg-color-hover: color.adjust($seam-nav-bg-color, $lightness: -5%, $space: hsl) !default;
 
 $seam-nav-item-color: $black !default;
 $seam-nav-item-color-active: $seam-nav-item-color !default;
 $seam-nav-item-color-expanded: $seam-nav-item-color !default;
 $seam-nav-item-color-child-active: $seam-nav-item-color-active !default;
 
-$seam-nav-item-disabled-color: darken($seam-nav-item-color, 20%) !default;
+// $seam-nav-item-disabled-color: darken($seam-nav-item-color, 20%) !default;
+$seam-nav-item-disabled-color: color.adjust($seam-nav-item-color, $lightness: -20%, $space: hsl) !default;
 
 $seam-nav-item-margin: 0 !default;
 
 // Divider
-$seam-nav-divider-color: darken($seam-nav-bg-color, 10%) !default;
+// $seam-nav-divider-color: darken($seam-nav-bg-color, 10%) !default;
+$seam-nav-divider-color: color.adjust($seam-nav-bg-color, $lightness: -10%, $space: hsl) !default;
 $seam-nav-divider-size: 1px !default;
 
 // Title

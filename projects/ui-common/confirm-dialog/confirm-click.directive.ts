@@ -1,5 +1,5 @@
 import { BooleanInput } from '@angular/cdk/coercion'
-import { Directive, EventEmitter, HostBinding, HostListener, Input, OnDestroy, Output, TemplateRef } from '@angular/core'
+import { Directive, EventEmitter, HostBinding, HostListener, inject, Input, OnDestroy, Output, TemplateRef } from '@angular/core'
 
 import { InputBoolean } from '@theseam/ui-common/core'
 import { ModalRef } from '@theseam/ui-common/modal'
@@ -9,12 +9,13 @@ import { ConfirmDialogComponent } from './confirm-dialog.component'
 import { SeamConfirmDialogService } from './confirm-dialog.service'
 
 @Directive({
-    selector: '[seamConfirmClick]',
-    exportAs: 'seamConfirmClick',
-    standalone: false
+  selector: '[seamConfirmClick]',
+  exportAs: 'seamConfirmClick',
 })
 export class ConfirmClickDirective implements OnDestroy {
   static ngAcceptInputType_seamConfirmDisabled: BooleanInput
+
+  private readonly _confirmService = inject(SeamConfirmDialogService)
 
   private _modalRef: ModalRef<ConfirmDialogComponent, 'confirm' | undefined> | undefined
 
@@ -49,8 +50,6 @@ export class ConfirmClickDirective implements OnDestroy {
       this._modalRef = undefined
     })
   }
-
-  constructor(private _confirmService: SeamConfirmDialogService) { }
 
   ngOnDestroy() {
     if (this._modalRef) {

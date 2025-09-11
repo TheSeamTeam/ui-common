@@ -32,7 +32,6 @@ import {
   MODAL_CONFIG,
   MODAL_CONTAINER,
   MODAL_DATA,
-  MODAL_REF,
   MODAL_SCROLL_STRATEGY,
 } from './modal-injectors'
 import { ModalRef } from './modal-ref'
@@ -40,9 +39,11 @@ import { ModalRef } from './modal-ref'
 /**
  * Service to open modal dialogs.
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class Modal implements OnDestroy {
   private _scrollStrategy: () => ScrollStrategy
+
+  private readonly _dialogRefConstructor = ModalRef
 
   /** Stream that emits when all dialogs are closed. */
   get _afterAllClosed(): Observable<void> {
@@ -51,7 +52,7 @@ export class Modal implements OnDestroy {
   _afterAllClosedBase = new Subject<void>()
 
   afterAllClosed: Observable<void> = defer(() => this.openDialogs.length
-      ? this._afterAllClosed : this._afterAllClosed.pipe(startWith(undefined)))
+    ? this._afterAllClosed : this._afterAllClosed.pipe(startWith(undefined)))
 
   /** Stream that emits when a dialog is opened. */
   get afterOpened(): Subject<ModalRef<any>> {
@@ -68,7 +69,6 @@ export class Modal implements OnDestroy {
   constructor(
     private overlay: Overlay,
     private injector: Injector,
-    @Inject(MODAL_REF) private dialogRefConstructor: Type<ModalRef<any>>,
     @Inject(MODAL_SCROLL_STRATEGY) scrollStrategy: any,
     @Optional() @SkipSelf() private _parentDialog: Modal,
     @Optional() location: Location,
@@ -353,7 +353,7 @@ export class Modal implements OnDestroy {
     // Create a reference to the dialog we're creating in order to give the user a handle
     // to modify and close it.
     // eslint-disable-next-line new-cap
-    const dialogRef = new this.dialogRefConstructor(overlayRef, dialogContainer, config.id)
+    const dialogRef = new this._dialogRefConstructor<T>(overlayRef, dialogContainer, config.id)
     const injector = this._createInjector<T>(config, dialogRef, dialogContainer)
     const contentRef = dialogContainer.attachComponentPortal(
         new ComponentPortal(componentOrTemplateRef, undefined, injector, componentFactoryResolver))
@@ -384,7 +384,7 @@ export class Modal implements OnDestroy {
     // Create a reference to the dialog we're creating in order to give the user a handle
     // to modify and close it.
     // eslint-disable-next-line new-cap
-    const dialogRef = new this.dialogRefConstructor(overlayRef, dialogContainer, config.id)
+    const dialogRef = new this._dialogRefConstructor(overlayRef, dialogContainer, config.id)
 
     dialogContainer.attachTemplatePortal(
       new TemplatePortal<T>(componentOrTemplateRef, null as any,
@@ -409,7 +409,6 @@ export class Modal implements OnDestroy {
       dialogContainer: ModalContainerComponent): PortalInjector {
     const userInjector = config && config.viewContainerRef && config.viewContainerRef.injector
     const injectionTokens = new WeakMap<any, any>([
-      [this.injector.get(MODAL_REF), dialogRef],
       [this.injector.get(MODAL_CONTAINER), dialogContainer],
       [MODAL_DATA, config.data]
     ])

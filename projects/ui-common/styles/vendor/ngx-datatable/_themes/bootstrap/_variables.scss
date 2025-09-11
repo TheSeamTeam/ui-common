@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 $datatable-font-size: 16px !default;
 $datatable-default-border-width: $border-width !default;
 
@@ -174,10 +176,10 @@ $datatable-summary-row-font-weight: bold !default;
 // Action Menu Button Styles
 $datatable-action-button-background: $primary !default;
 $datatable-action-button-border: $datatable-action-button-background !default;
-$datatable-action-button-hover-background: darken($datatable-action-button-background, 7.5%) !default;
-$datatable-action-button-hover-border: darken($datatable-action-button-border, 10%) !default;
-$datatable-action-button-active-background: darken($datatable-action-button-background, 10%) !default;
-$datatable-action-button-active-border: darken($datatable-action-button-border, 12.5%) !default;
+$datatable-action-button-hover-background: color.adjust($datatable-action-button-background, $lightness: -7.5%, $space: hsl) !default;
+$datatable-action-button-hover-border: color.adjust($datatable-action-button-border, $lightness: -10%, $space: hsl) !default;
+$datatable-action-button-active-background: color.adjust($datatable-action-button-background, $lightness: -10%, $space: hsl) !default;
+$datatable-action-button-active-border: color.adjust($datatable-action-button-border, $lightness: -12.5%, $space: hsl) !default;
 
 $datatable-action-button-color: color-yiq($datatable-action-button-background) !default;
 $datatable-action-button-hover-color: color-yiq($datatable-action-button-hover-background) !default;
