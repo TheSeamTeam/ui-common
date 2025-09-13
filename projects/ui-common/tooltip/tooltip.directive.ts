@@ -2,7 +2,7 @@ import { coerceBooleanProperty, coerceNumberProperty } from '@angular/cdk/coerci
 import { ESCAPE } from '@angular/cdk/keycodes'
 import { ConnectionPositionPair, FlexibleConnectedPositionStrategy, Overlay, OverlayRef } from '@angular/cdk/overlay'
 import { ComponentPortal } from '@angular/cdk/portal'
-import { ComponentRef, Directive, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, TemplateRef, ViewContainerRef } from '@angular/core'
+import { ComponentRef, Directive, ElementRef, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, TemplateRef, ViewContainerRef } from '@angular/core'
 import { BehaviorSubject, fromEvent, Subject } from 'rxjs'
 import { takeUntil, filter } from 'rxjs/operators'
 
@@ -11,15 +11,40 @@ import { TheSeamTooltipComponent, TheSeamTooltipPlacement } from './tooltip.comp
 export type TheSeamTooltipTrigger = 'hover' | 'focus' | 'both'
 export type TheSeamTooltipPlacementInput = TheSeamTooltipPlacement | TheSeamTooltipPlacement[] | string
 
+/**
+ * A custom tooltip directive that replaces \`ngbTooltip\` with zero dependencies.
+ * Supports both string and template content with full Bootstrap 4.6 compatibility.
+ *
+ * ## Features
+ * - **String & Template Content**: Support for both simple text and complex HTML content
+ * - **Multiple Triggers**: Hover, focus, or both
+ * - **Flexible Positioning**: 12 placement options with auto-fallback
+ * - **Configurable Timing**: Customizable show/hide delays
+ * - **Bootstrap Compatible**: Uses Bootstrap 4.6 classes for seamless integration
+ * - **Accessibility**: Full ARIA support and keyboard navigation
+ * - **Performance**: Lazy creation and proper cleanup
+ *
+ * ## Migration from ngbTooltip
+ * ```typescript
+ * // Before
+ * <button ngbTooltip="Help text" placement="top" tooltipClass="custom">
+ *
+ * // After
+ * <button seamTooltip="Help text" placement="top" tooltipClass="custom">
+ * ```
+ */
 @Directive({
-    selector: '[seamTooltip]',
-    host: {
-        '[attr.aria-describedby]': 'tooltipOpen() ? _tooltipId : null',
-    },
-    exportAs: 'seamTooltip',
-    standalone: false
+  selector: '[seamTooltip]',
+  host: {
+    '[attr.aria-describedby]': 'tooltipOpen() ? _tooltipId : null',
+  },
+  exportAs: 'seamTooltip',
 })
 export class TheSeamTooltipDirective implements OnInit, OnChanges, OnDestroy {
+
+  private readonly _elementRef = inject(ElementRef<HTMLElement>)
+  private readonly _viewContainerRef = inject(ViewContainerRef)
+  private readonly _overlay = inject(Overlay)
 
   private readonly _ngUnsubscribe = new Subject<void>()
   private readonly _tooltipId = `seam-tooltip-${Math.random().toString(36).slice(2, 11)}`
@@ -56,12 +81,6 @@ export class TheSeamTooltipDirective implements OnInit, OnChanges, OnDestroy {
   private _hideTimeoutId: any = null
   private _eventListenersSubject = new Subject<void>()
   private _documentKeydownSubject = new Subject<void>()
-
-  constructor(
-    private readonly _elementRef: ElementRef<HTMLElement>,
-    private readonly _viewContainerRef: ViewContainerRef,
-    private readonly _overlay: Overlay
-  ) { }
 
   ngOnInit() {
     this._setupEventListeners()
@@ -290,7 +309,7 @@ export class TheSeamTooltipDirective implements OnInit, OnChanges, OnDestroy {
       'bottom', 'bottom-left', 'bottom-right',
       'left', 'left-top', 'left-bottom',
       'right', 'right-top', 'right-bottom',
-      'auto'
+      'auto',
     ]
     return validPlacements.includes(placement as TheSeamTooltipPlacement)
   }

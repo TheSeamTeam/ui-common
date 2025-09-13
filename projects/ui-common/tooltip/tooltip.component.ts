@@ -1,4 +1,5 @@
 import { AnimationEvent, transition, trigger, style, animate } from '@angular/animations'
+import { NgClass, NgIf, NgTemplateOutlet } from '@angular/common'
 import {
   ChangeDetectionStrategy,
   Component,
@@ -19,30 +20,34 @@ export type TheSeamTooltipPlacement =
   | 'auto'
 
 @Component({
-    selector: 'seam-tooltip',
-    templateUrl: './tooltip.component.html',
-    styleUrls: ['./tooltip.component.scss'],
-    animations: [
-        trigger('fadeInOut', [
-            transition(':enter', [
-                style({ opacity: 0 }),
-                animate('150ms ease-out', style({ opacity: 0.9 })),
-            ]),
-            transition(':leave', [
-                style({ opacity: 0.9 }),
-                animate('150ms ease-in', style({ opacity: 0 })),
-            ]),
-        ]),
-    ],
-    host: {
-        class: 'tooltip show',
-        '[id]': 'tooltipId',
-        '[@fadeInOut]': '',
-        '(@fadeInOut.start)': '_onAnimationStart($event)',
-        '(@fadeInOut.done)': '_onAnimationDone($event)',
-    },
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'seam-tooltip',
+  templateUrl: './tooltip.component.html',
+  styleUrls: ['./tooltip.component.scss'],
+  animations: [
+    trigger('fadeInOut', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('150ms ease-out', style({ opacity: 0.9 })),
+      ]),
+      transition(':leave', [
+        style({ opacity: 0.9 }),
+        animate('150ms ease-in', style({ opacity: 0 })),
+      ]),
+    ]),
+  ],
+  host: {
+    class: 'tooltip show',
+    '[id]': 'tooltipId',
+    '[@fadeInOut]': '',
+    '(@fadeInOut.start)': '_onAnimationStart($event)',
+    '(@fadeInOut.done)': '_onAnimationDone($event)',
+  },
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    NgIf,
+    NgClass,
+    NgTemplateOutlet,
+  ],
 })
 export class TheSeamTooltipComponent implements OnDestroy {
 
