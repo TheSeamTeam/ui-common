@@ -15,10 +15,9 @@ export const TOGGLE_GROUP_VALUE_ACCESSOR: any = {
 }
 
 @Directive({
-    selector: '[seamToggleGroup]',
-    exportAs: 'seamToggleGroup',
-    providers: [TOGGLE_GROUP_VALUE_ACCESSOR],
-    standalone: false
+  selector: '[seamToggleGroup]',
+  exportAs: 'seamToggleGroup',
+  providers: [ TOGGLE_GROUP_VALUE_ACCESSOR ],
 })
 export class ToggleGroupDirective implements OnDestroy, AfterViewInit, ControlValueAccessor {
   static ngAcceptInputType_disabled: BooleanInput
@@ -56,38 +55,43 @@ export class ToggleGroupDirective implements OnDestroy, AfterViewInit, ControlVa
       this._updateDirectiveStates()
 
       if (this.optionDirectives) {
-        this.options = this.optionDirectives.changes
-          .pipe(takeUntil(this._ngUnsubscribe))
-          .pipe(startWith(this.optionDirectives))
-          .pipe(map(v => v.toArray() as ToggleGroupOptionDirective[]))
+        this.options = this.optionDirectives.changes.pipe(
+          startWith(this.optionDirectives),
+          map(v => v.toArray() as ToggleGroupOptionDirective[]),
+          takeUntil(this._ngUnsubscribe),
+        )
 
-        this.options.pipe(switchMap(opts => {
-          const _tmp = of(undefined)
-          if (opts) {
-            const _v: Observable<boolean>[] = []
-            for (const opt of opts) {
-              _v.push(opt.selectionChange.pipe(
-                filter(v => opt.selected !== this.isSelected(opt.value)),
-                tap(v => {
-                  if (this.isSelected(opt.value)) {
-                    this.unselectValue(opt.value)
-                  } else {
-                    this.selectValue(opt.value)
-                  }
-                })
-              ))
+        this.options.pipe(
+          switchMap(opts => {
+            const _tmp = of(undefined)
+            if (opts) {
+              const _v: Observable<boolean>[] = []
+              for (const opt of opts) {
+                _v.push(opt.selectionChange.pipe(
+                  filter(v => opt.selected !== this.isSelected(opt.value)),
+                  tap(v => {
+                    if (this.isSelected(opt.value)) {
+                      this.unselectValue(opt.value)
+                    } else {
+                      this.selectValue(opt.value)
+                    }
+                  })
+                ))
+              }
+              return combineLatest(_v)
             }
-            return combineLatest(_v)
-          }
-          return _tmp
-        })).subscribe()
+            return _tmp
+          }),
+          takeUntil(this._ngUnsubscribe),
+        ).subscribe()
       }
 
-      this.change
-        .pipe(switchMap(_ => from(this.optionDirectives?.toArray() || [])
-          .pipe(tap(opt => { this._updateDirectiveState(opt) }))
-        ))
-        .subscribe()
+      this.change.pipe(
+        switchMap(_ => from(this.optionDirectives?.toArray() || []).pipe(
+          tap(opt => { this._updateDirectiveState(opt) }),
+        )),
+        takeUntil(this._ngUnsubscribe),
+      ).subscribe()
     })
 
     this.optionDirectives?.changes.subscribe(() => this._updateDirectiveStates())

@@ -55,43 +55,43 @@ export const Basic: Story = {
       options: [
         {
           name: 'Option 1',
-          value: 'option1'
+          value: 'option1',
         },
         {
           name: 'Option 2',
-          value: 'option2'
+          value: 'option2',
         },
         {
           name: 'Option 3',
-          value: 'option3'
+          value: 'option3',
         },
         {
           name: 'Option 4',
-          value: 'option4'
-        }
+          value: 'option4',
+        },
       ],
       selectionToggleable: true,
       multiple: true,
     },
     template: `
-    <div role="group"
-      [formControl]="control"
-      seamToggleGroup
-      [multiple]="multiple"
-      [selectionToggleable]="selectionToggleable">
-      <ng-container *ngFor="let btn of options">
-        <button type="button" class="btn btn-sm px-4"
-          [seamToggleGroupOption]="btn.value"
-          #opt="seamToggleGroupOption"
-          [class.btn-lightgray]="!opt.selected"
-          [class.btn-primary]="opt.selected"
-          (click)="opt.selected=!opt.selected">
-          {{ btn.name || btn.value }}
-        </button>
-      </ng-container>
-    </div>
-    {{ { value: control.value } | json }}
-    `
+      <div role="group"
+        [formControl]="control"
+        seamToggleGroup
+        [multiple]="multiple"
+        [selectionToggleable]="selectionToggleable">
+        <ng-container *ngFor="let btn of options">
+          <button type="button" class="btn btn-sm px-4"
+            [seamToggleGroupOption]="btn.value"
+            #opt="seamToggleGroupOption"
+            [class.btn-lightgray]="!opt.selected"
+            [class.btn-primary]="opt.selected"
+            (click)="opt.selected=!opt.selected">
+            {{ btn.name || btn.value }}
+          </button>
+        </ng-container>
+      </div>
+      {{ { value: control.value } | json }}
+    `,
   }),
   args: {
     ngContent: 'Group',
@@ -110,42 +110,42 @@ export const Checkbox: Story = {
       options: [
         {
           name: 'Option 1',
-          value: 'option1'
+          value: 'option1',
         },
         {
           name: 'Option 2',
-          value: 'option2'
+          value: 'option2',
         },
         {
           name: 'Option 3',
-          value: 'option3'
+          value: 'option3',
         },
         {
           name: 'Option 4',
-          value: 'option4'
-        }
+          value: 'option4',
+        },
       ],
       selectionToggleable: true,
       multiple: true,
     },
     template: `
-    <div role="group"
-      [formControl]="control"
-      seamToggleGroup
-      [multiple]="multiple"
-      [selectionToggleable]="selectionToggleable">
-      <ng-container *ngFor="let btn of options">
-        <seam-checkbox
-          [seamToggleGroupOption]="btn.value"
-          #opt="seamToggleGroupOption"
-          [checked]="opt.selected"
-          (change)="opt.selected=$event.checked">
-          {{ btn.name || btn.value }}
-        </seam-checkbox>
-      </ng-container>
-    </div>
-    {{ { value: control.value } | json }}
-    `
+      <div role="group"
+        [formControl]="control"
+        seamToggleGroup
+        [multiple]="multiple"
+        [selectionToggleable]="selectionToggleable">
+        <ng-container *ngFor="let btn of options">
+          <seam-checkbox
+            [seamToggleGroupOption]="btn.value"
+            #opt="seamToggleGroupOption"
+            [checked]="opt.selected"
+            (change)="opt.selected=$event.checked">
+            {{ btn.name || btn.value }}
+          </seam-checkbox>
+        </ng-container>
+      </div>
+      {{ { value: control.value } | json }}
+    `,
   }),
   args: {
     ngContent: 'Group',

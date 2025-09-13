@@ -1,12 +1,13 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
-import { ChangeDetectorRef, Directive, ElementRef, EventEmitter, HostBinding, Input, Output } from '@angular/core'
+import { ChangeDetectorRef, Directive, EventEmitter, HostBinding, inject, Input, Output } from '@angular/core'
 
 @Directive({
-    selector: '[seamToggleGroupOption]',
-    exportAs: 'seamToggleGroupOption',
-    standalone: false
+  selector: '[seamToggleGroupOption]',
+  exportAs: 'seamToggleGroupOption',
 })
 export class ToggleGroupOptionDirective {
+
+  private readonly _cdr = inject(ChangeDetectorRef)
 
   @Input() seamToggleGroupOption: string | undefined | null
 
@@ -28,11 +29,6 @@ export class ToggleGroupOptionDirective {
   @HostBinding('class.lib-toggle-group-option-selected') get _checkioSelectedClass() {
     return this._selected
   }
-
-  constructor(
-    private readonly _elementRef: ElementRef,
-    private readonly _cdr: ChangeDetectorRef
-  ) { }
 
   get value(): string | undefined | null {
     return this.seamToggleGroupOption
