@@ -25,7 +25,7 @@
   "dependencies": {
     "@marklb/file-type": "~10.6.5",
     "@marklb/ngx-datatable": "~18.0.5",
-    "@marklb/ngx-loading": "^16.0.0",
+    "ngx-loading": "^17.0.0",
     "@ng-select/ng-select": "^12.0.7",
     "apollo-angular": "^10.0.3",
     "overlayscrollbars": "~1.7.3",

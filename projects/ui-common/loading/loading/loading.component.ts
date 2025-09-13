@@ -1,15 +1,17 @@
 import { Component, Input } from '@angular/core'
 
-import { NgxLoadingConfig } from 'ngx-loading'
+import { NgxLoadingConfig, NgxLoadingModule } from 'ngx-loading'
 
 import { defaultThemeConfig, primaryThemeConfig } from '../loading-themes'
-import type { TheSeamLoadingTheme } from '../loading.models'
+import { TheSeamLoadingTheme } from '../loading.models'
 
 @Component({
-    selector: 'seam-loading',
-    templateUrl: './loading.component.html',
-    styleUrls: ['./loading.component.scss'],
-    standalone: false
+  selector: 'seam-loading',
+  templateUrl: './loading.component.html',
+  styleUrls: ['./loading.component.scss'],
+  imports: [
+    NgxLoadingModule,
+  ],
 })
 export class TheSeamLoadingComponent {
 

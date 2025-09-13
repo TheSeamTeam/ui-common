@@ -11,8 +11,9 @@ import { TheSeamLoadingOverlayService } from '@theseam/ui-common/loading'
 import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
 
 import { TheSeamLoadingComponent } from './loading/loading.component'
-import { TheSeamLoadingModule } from './loading.module'
 import { TheSeamLoadingComponentHarness } from './testing/loading.harness'
+import { TheSeamLoadingModule } from './loading.module'
+import { provideTheSeamLoading } from './provide-loading'
 
 @Component({
   selector: 'story-loading-service-toggle',
@@ -22,7 +23,6 @@ import { TheSeamLoadingComponentHarness } from './testing/loading.harness'
     </button>
   `,
   imports: [ TheSeamButtonsModule ],
-  standalone: true,
 })
 class StoryLoadingServiceToggleComponent {
   private readonly _ngUnsubscribe = new Subject<void>()
@@ -41,6 +41,7 @@ const meta: Meta<TheSeamLoadingComponent> = {
     applicationConfig({
       providers: [
         provideAnimations(),
+        provideTheSeamLoading(),
       ],
     }),
     moduleMetadata({

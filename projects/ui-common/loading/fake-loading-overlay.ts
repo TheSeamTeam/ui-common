@@ -32,15 +32,14 @@ export class FakeTheSeamLoadingOverlayService {
 
   public while(source: Observable<any>) {
     this.enable()
-    return source
-      .pipe(
-        tap(() => this.disable()),
-        catchError(err => {
-          this.disable()
-          return throwError(err)
-        }),
-        finalize(() => this.disable())
-      )
+    return source.pipe(
+      tap(() => this.disable()),
+      catchError(err => {
+        this.disable()
+        return throwError(err)
+      }),
+      finalize(() => this.disable()),
+    )
   }
 
 }
