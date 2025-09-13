@@ -1,17 +1,25 @@
 import { InjectionToken } from '@angular/core'
 
-import { IOverlayScrollbarsConfig } from './overlay-scrollbars-config-model'
+import { TheSeamOverlayScrollbarsConfig } from './overlay-scrollbars-config-model'
 
-export const _OverlayScrollbarDefaults: IOverlayScrollbarsConfig = {
+export const _OverlayScrollbarDefaults: TheSeamOverlayScrollbarsConfig = {
   className: 'os-theme-dark os-theme-no-hover',
   sizeAutoCapable: false,
   paddingAbsolute: true,
-  autoUpdate: true
+  autoUpdate: true,
 }
 
-export function mergeOverlayScrollbarsConfigs(a: IOverlayScrollbarsConfig, b: IOverlayScrollbarsConfig) {
+export function mergeOverlayScrollbarsConfigs(a: TheSeamOverlayScrollbarsConfig, b: TheSeamOverlayScrollbarsConfig) {
   return { ...a, ...b }
 }
 
 /** Injection token that can be used to specify overlayscrollbars options. */
-export const LIB_OVERLAY_SCROLLBARS_CONFIG = new InjectionToken<IOverlayScrollbarsConfig>('seamOverlayScrollbarsConfig')
+export const THESEAM_OVERLAY_SCROLLBARS_CONFIG = new InjectionToken<TheSeamOverlayScrollbarsConfig>(
+  'seamOverlayScrollbarsConfig',
+  {
+    providedIn: 'root',
+    factory: () => {
+      return _OverlayScrollbarDefaults
+    },
+  },
+)

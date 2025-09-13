@@ -31,7 +31,7 @@ import { provideNavigationReload } from '@theseam/ui-common/navigation-reload'
 import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
 import { TheSeamIconModule } from '@theseam/ui-common/icon'
 import { TheSeamLayoutService } from '@theseam/ui-common/layout'
-import { TheSeamScrollbarModule } from '@theseam/ui-common/scrollbar'
+import { OverlayScrollbarDirective } from '@theseam/ui-common/scrollbar'
 import { notNullOrUndefined } from '@theseam/ui-common/utils'
 
 import { TheSeamDashboardModule } from '../dashboard/dashboard.module'
@@ -970,7 +970,7 @@ export default {
         TheSeamBreadcrumbsComponent,
         TheSeamNavModule,
         TheSeamIconModule,
-        TheSeamScrollbarModule,
+        OverlayScrollbarDirective,
         TheSeamButtonsModule
       ],
     }),

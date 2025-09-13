@@ -24,7 +24,7 @@ import { defer, Observable, of, of as observableOf, Subject } from 'rxjs'
 import { startWith, switchMap } from 'rxjs/operators'
 
 import { TheSeamDynamicComponentLoader } from '@theseam/ui-common/dynamic-component-loader'
-import { OverlayScrollbarsService } from '@theseam/ui-common/scrollbar'
+import { TheSeamOverlayScrollbarsService } from '@theseam/ui-common/scrollbar'
 
 import { ModalConfig } from './modal-config'
 import { ModalContainerComponent } from './modal-container/modal-container.component'
@@ -72,7 +72,7 @@ export class Modal implements OnDestroy {
     @Inject(MODAL_SCROLL_STRATEGY) scrollStrategy: any,
     @Optional() @SkipSelf() private _parentDialog: Modal,
     @Optional() location: Location,
-    private _scrollbars: OverlayScrollbarsService,
+    private _scrollbars: TheSeamOverlayScrollbarsService,
     private _dynamicComponentLoaderModule: TheSeamDynamicComponentLoader
   ) {
     // Close all of the dialogs when the user goes forwards/backwards in history or when the

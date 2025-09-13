@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core'
 
 import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
 import { TheSeamIconModule } from '@theseam/ui-common/icon'
-import { TheSeamScrollbarModule } from '@theseam/ui-common/scrollbar'
+import { OverlayScrollbarDirective } from '@theseam/ui-common/scrollbar'
 
 import { TheSeamBaseLayoutComponent } from './base-layout.component'
 import { BaseLayoutContentFooterDirective } from './directives/base-layout-content-footer.directive'
@@ -31,7 +31,7 @@ import { BaseLayoutTopBarDirective } from './directives/base-layout-top-bar.dire
   imports: [
     CommonModule,
     PortalModule,
-    TheSeamScrollbarModule,
+    OverlayScrollbarDirective,
     TheSeamIconModule,
     TheSeamButtonsModule
   ],

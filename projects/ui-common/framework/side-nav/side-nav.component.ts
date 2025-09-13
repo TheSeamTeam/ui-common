@@ -35,7 +35,7 @@ import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { InputBoolean, InputNumber } from '@theseam/ui-common/core'
 import { TheSeamLayoutModule, TheSeamLayoutService } from '@theseam/ui-common/layout'
 import { SeamIcon } from '@theseam/ui-common/icon'
-import { TheSeamScrollbarModule } from '@theseam/ui-common/scrollbar'
+import { OverlayScrollbarDirective } from '@theseam/ui-common/scrollbar'
 
 import { ITheSeamBaseLayoutNav, ITheSeamBaseLayoutRef, THESEAM_BASE_LAYOUT_REF } from '../base-layout/index'
 
@@ -182,7 +182,7 @@ export function sideNavExpandStateChangeFn(fromState: string, toState: string) {
   imports: [
     CommonModule,
     A11yModule,
-    TheSeamScrollbarModule,
+    OverlayScrollbarDirective,
     TheSeamLayoutModule,
     PortalModule,
     SideNavItemComponent,

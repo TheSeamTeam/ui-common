@@ -3,7 +3,7 @@ import { SpectatorElement } from '@ngneat/spectator'
 import { createHostFactory, SpectatorHost } from '@ngneat/spectator/jest'
 
 import { TheSeamModalModule } from '@theseam/ui-common/modal'
-import { TheSeamScrollbarModule } from '@theseam/ui-common/scrollbar'
+import { OverlayScrollbarDirective } from '@theseam/ui-common/scrollbar'
 
 import { ConfirmClickDirective } from './confirm-click.directive'
 import { ConfirmDialogComponent } from './confirm-dialog.component'
@@ -15,14 +15,14 @@ describe('ConfirmClickDirective', () => {
   const createHost = createHostFactory({
     component: ConfirmClickDirective,
     providers: [
-      SeamConfirmDialogService
+      SeamConfirmDialogService,
     ],
     declarations: [
-      ConfirmDialogComponent
+      ConfirmDialogComponent,
     ],
     imports: [
       TheSeamModalModule,
-      TheSeamScrollbarModule
+      OverlayScrollbarDirective,
     ],
   })
 

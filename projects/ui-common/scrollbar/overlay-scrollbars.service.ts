@@ -1,26 +1,22 @@
 import { Platform } from '@angular/cdk/platform'
-import { forwardRef, inject, Injectable, InjectionToken, Injector, INJECTOR, NgZone } from '@angular/core'
+import { inject, Injectable, Injector, NgZone } from '@angular/core'
 import { fromEvent, Subscription } from 'rxjs'
 
 import OverlayScrollbars from 'overlayscrollbars'
 
-import { LIB_OVERLAY_SCROLLBARS_CONFIG, _OverlayScrollbarDefaults } from './overlay-scrollbars-config'
-import { IOverlayScrollbarsConfig } from './overlay-scrollbars-config-model'
+import { THESEAM_OVERLAY_SCROLLBARS_CONFIG, _OverlayScrollbarDefaults } from './overlay-scrollbars-config'
+import { TheSeamOverlayScrollbarsConfig } from './overlay-scrollbars-config-model'
 
-@Injectable({
-  providedIn: 'root'
-})
-export class OverlayScrollbarsService {
+@Injectable({ providedIn: 'root' })
+export class TheSeamOverlayScrollbarsService {
+
+  private readonly _ngZone = inject(NgZone)
+  private readonly _injector = inject(Injector)
+  private readonly _platform = inject(Platform)
 
   private _inputEventSubscription = Subscription.EMPTY
 
-  constructor(
-    private _ngZone: NgZone,
-    private injector: Injector,
-    private _platform: Platform
-  ) { }
-
-  public initializeInstance(element: HTMLElement, options?: IOverlayScrollbarsConfig): void {
+  public initializeInstance(element: HTMLElement, options?: TheSeamOverlayScrollbarsConfig): void {
     if (!this.isInstanceEnabled(element) &&
       // The 'overlayscrollbars' library is causing an issue on iOS. Since iOS
       // already has native overlay scrollbars it shouldn't really effect the
@@ -68,7 +64,7 @@ export class OverlayScrollbarsService {
     return !!this.getInstance(element)
   }
 
-  public setOptions(element: HTMLElement, options: IOverlayScrollbarsConfig): boolean {
+  public setOptions(element: HTMLElement, options: TheSeamOverlayScrollbarsConfig): boolean {
     if (!this.isInstanceEnabled(element)) { return false }
 
     this.getInstance(element).options(this._applyConfigDefaults(options))
@@ -76,12 +72,12 @@ export class OverlayScrollbarsService {
     return true
   }
 
-  public getOptions(element: HTMLElement): IOverlayScrollbarsConfig {
+  public getOptions(element: HTMLElement): TheSeamOverlayScrollbarsConfig {
     return this.getInstance(element).options()
   }
 
-  private _applyConfigDefaults(config?: IOverlayScrollbarsConfig): IOverlayScrollbarsConfig {
-    const _config: IOverlayScrollbarsConfig = this.injector.get(LIB_OVERLAY_SCROLLBARS_CONFIG, _OverlayScrollbarDefaults)
+  private _applyConfigDefaults(config?: TheSeamOverlayScrollbarsConfig): TheSeamOverlayScrollbarsConfig {
+    const _config: TheSeamOverlayScrollbarsConfig = this._injector.get(THESEAM_OVERLAY_SCROLLBARS_CONFIG, _OverlayScrollbarDefaults)
     return { ..._config, ...config }
   }
 

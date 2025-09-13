@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core'
 
-import { OverlayScrollbarsService } from '@theseam/ui-common/scrollbar'
+import { TheSeamOverlayScrollbarsService } from '@theseam/ui-common/scrollbar'
 
 @Injectable()
 export class TheSeamDatatableScrollbarHelperService {
@@ -18,7 +18,7 @@ export class TheSeamDatatableScrollbarHelperService {
 
   constructor(
     private _ngZone: NgZone,
-    private _scrollbars: OverlayScrollbarsService
+    private _scrollbars: TheSeamOverlayScrollbarsService
   ) { }
 
   onInitScroller(scroller: any): void {
