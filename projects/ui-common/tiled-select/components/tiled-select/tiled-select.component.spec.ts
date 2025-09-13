@@ -1,20 +1,20 @@
 // import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
-// import { TiledSelectComponent } from './tiled-select.component'
+// import { TheSeamTiledSelectComponent } from './tiled-select.component'
 
-// describe('TiledSelectComponent', () => {
-//   let component: TiledSelectComponent
-//   let fixture: ComponentFixture<TiledSelectComponent>
+// describe('TheSeamTiledSelectComponent', () => {
+//   let component: TheSeamTiledSelectComponent
+//   let fixture: ComponentFixture<TheSeamTiledSelectComponent>
 
 //   beforeEach(async(() => {
 //     TestBed.configureTestingModule({
-//       declarations: [ TiledSelectComponent ]
+//       declarations: [ TheSeamTiledSelectComponent ]
 //     })
 //     .compileComponents()
 //   }))
 
 //   beforeEach(() => {
-//     fixture = TestBed.createComponent(TiledSelectComponent)
+//     fixture = TestBed.createComponent(TheSeamTiledSelectComponent)
 //     component = fixture.componentInstance
 //     fixture.detectChanges()
 //   })
@@ -38,7 +38,7 @@ import * as stories from './tiled-select.stories' // import all stories from the
 
 // const { Default } = composeStories(stories as any)
 
-describe('TiledSelectComponent', () => {
+describe('TheSeamTiledSelectComponent', () => {
   describe('Story', () => {
     it('should', () => {
       expect(true).toBe(true)

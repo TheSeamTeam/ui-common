@@ -1,9 +1,8 @@
-import { componentWrapperDecorator, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import { applicationConfig, componentWrapperDecorator, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 import { expect } from '@storybook/test'
 
 import { UntypedFormControl, ReactiveFormsModule } from '@angular/forms'
-import { BrowserModule } from '@angular/platform-browser'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { provideAnimations } from '@angular/platform-browser/animations'
 
 import { getHarness } from '@theseam/ui-common/testing'
 
@@ -11,12 +10,7 @@ import { TheSeamTiledSelectHarness } from './../../testing/tiled-select-harness'
 import { TheSeamTiledSelectModule } from '../../tiled-select.module'
 import { TheSeamTiledSelectComponent } from './tiled-select.component'
 
-interface ExtraArgs {
-  dt?: {
-    columns: any[]
-    rows: any[]
-  }
-}
+interface ExtraArgs { }
 
 type StoryComponentType = TheSeamTiledSelectComponent & ExtraArgs
 
@@ -25,15 +19,18 @@ const meta: Meta<StoryComponentType> = {
   component: TheSeamTiledSelectComponent,
   tags: ['autodocs'],
   decorators: [
+    applicationConfig({
+      providers: [
+        provideAnimations(),
+      ],
+    }),
     moduleMetadata({
       imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
         TheSeamTiledSelectModule,
-      ]
+      ],
     }),
-    componentWrapperDecorator(story => `<div style="width: 600px">${story}</div>`)
-  ]
+    componentWrapperDecorator(story => `<div style="width: 600px">${story}</div>`),
+  ],
 }
 
 export default meta

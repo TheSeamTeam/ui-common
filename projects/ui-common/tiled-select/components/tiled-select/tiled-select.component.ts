@@ -1,20 +1,21 @@
 import { animate, animation, query, stagger, style, transition, trigger, useAnimation } from '@angular/animations'
 import { BooleanInput, coerceArray } from '@angular/cdk/coercion'
 import { Platform } from '@angular/cdk/platform'
-import { ChangeDetectorRef, Component, ContentChildren, ElementRef, EventEmitter, forwardRef, Input, Output, QueryList, Renderer2 } from '@angular/core'
+import { ChangeDetectorRef, Component, ContentChildren, ElementRef, EventEmitter, forwardRef, inject, Input, Output, QueryList, Renderer2 } from '@angular/core'
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
 
 import { InputBoolean } from '@theseam/ui-common/core'
 
-import { TiledSelectTileOverlayDirective } from './../../directives/tiled-select-tile-overlay.directive'
-
-import { TiledSelectItem, TiledSelectLayout } from '../../tiled-select.models'
+import { TheSeamTiledSelectTileOverlayDirective } from './../../directives/tiled-select-tile-overlay.directive'
+import { TheSeamTiledSelectItem, TheSeamTiledSelectLayout } from '../../tiled-select.models'
+import { TheSeamTiledSelectTileComponent } from '../tiled-select-tile/tiled-select-tile.component'
+import { NgClass, NgFor } from '@angular/common'
 
 export const slideEnterAnimation = animation([
   style({ opacity: 0, transform: 'translateX(-15px)' }),
   stagger(100, [
-    animate('0.5s', style({ opacity: 1, transform: 'translateX(0)' }))
-  ])
+    animate('0.5s', style({ opacity: 1, transform: 'translateX(0)' })),
+  ]),
 ])
 
 export const TILED_SELECT_VALUE_ACCESSOR: any = {
@@ -29,14 +30,19 @@ export const TILED_SELECT_VALUE_ACCESSOR: any = {
   styleUrls: ['./tiled-select.component.scss'],
   providers: [ TILED_SELECT_VALUE_ACCESSOR ],
   host: {
-    '[attr.data-testid]': '"tiled-select"'
+    '[attr.data-testid]': '"tiled-select"',
   },
   animations: [
     trigger('tiles', [
       transition('* => *', [
-        query(':enter', useAnimation(slideEnterAnimation), { optional: true })
-      ])
-    ])
+        query(':enter', useAnimation(slideEnterAnimation), { optional: true }),
+      ]),
+    ]),
+  ],
+  imports: [
+    NgFor,
+    NgClass,
+    TheSeamTiledSelectTileComponent,
   ],
 })
 export class TheSeamTiledSelectComponent implements ControlValueAccessor {
@@ -48,10 +54,15 @@ export class TheSeamTiledSelectComponent implements ControlValueAccessor {
   static ngAcceptInputType_showSelectedIcon: BooleanInput
   static ngAcceptInputType_animationsDisabled: BooleanInput
 
-  @Input() layout: TiledSelectLayout = 'grid'
+  private readonly _platform = inject(Platform)
+  private readonly _cdr = inject(ChangeDetectorRef)
+  private readonly _renderer = inject(Renderer2)
+  private readonly _elementRef = inject(ElementRef)
+
+  @Input() layout: TheSeamTiledSelectLayout = 'grid'
   @Input()
   get tiles() { return this._tiles }
-  set tiles(value: TiledSelectItem[]) {
+  set tiles(value: TheSeamTiledSelectItem[]) {
     const _value = [ ...(value || []) ]
     for (const v of _value) {
       if (v.value === undefined) {
@@ -76,7 +87,7 @@ export class TheSeamTiledSelectComponent implements ControlValueAccessor {
 
     this._tiles = _value
   }
-  private _tiles: TiledSelectItem[] = []
+  private _tiles: TheSeamTiledSelectItem[] = []
 
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('value') val: string | string[] | undefined
@@ -96,15 +107,8 @@ export class TheSeamTiledSelectComponent implements ControlValueAccessor {
   onChange: any
   onTouched: any
 
-  @ContentChildren(TiledSelectTileOverlayDirective)
-  public overlayTpls?: QueryList<TiledSelectTileOverlayDirective>
-
-  constructor(
-    private readonly _platform: Platform,
-    private readonly _cdr: ChangeDetectorRef,
-    private readonly _renderer: Renderer2,
-    private readonly _elementRef: ElementRef
-  ) { }
+  @ContentChildren(TheSeamTiledSelectTileOverlayDirective)
+  public overlayTpls?: QueryList<TheSeamTiledSelectTileOverlayDirective>
 
   get value(): string | string[] | undefined {
     return this.val
@@ -139,11 +143,11 @@ export class TheSeamTiledSelectComponent implements ControlValueAccessor {
     this.disabled = isDisabled
   }
 
-  onTileSelected(event: MouseEvent, tile: TiledSelectItem) {
+  onTileSelected(event: MouseEvent, tile: TheSeamTiledSelectItem) {
     this.toggleTileSelected(tile)
   }
 
-  public isSelected(tile: TiledSelectItem) {
+  public isSelected(tile: TheSeamTiledSelectItem) {
     if (!this.multiple) {
       if (this.value === tile.value) {
         return true
@@ -161,7 +165,7 @@ export class TheSeamTiledSelectComponent implements ControlValueAccessor {
     return false
   }
 
-  public toggleTileSelected(tile: TiledSelectItem): void {
+  public toggleTileSelected(tile: TheSeamTiledSelectItem): void {
     if (!this.selectionToggleable && this.isSelected(tile)) {
       return
     }
@@ -173,7 +177,7 @@ export class TheSeamTiledSelectComponent implements ControlValueAccessor {
     }
   }
 
-  public selectTile(tile: TiledSelectItem): void {
+  public selectTile(tile: TheSeamTiledSelectItem): void {
     if (this.multiple) {
       if (!this.isSelected(tile)) {
         const value: string[] = this.value as string[] || []
@@ -184,7 +188,7 @@ export class TheSeamTiledSelectComponent implements ControlValueAccessor {
     }
   }
 
-  public unselectTile(tile: TiledSelectItem): void {
+  public unselectTile(tile: TheSeamTiledSelectItem): void {
     if (this.multiple) {
       const value: string[] = this.value as string[] || []
       this.value = value.filter(v => v !== tile.value)
@@ -193,16 +197,13 @@ export class TheSeamTiledSelectComponent implements ControlValueAccessor {
     }
   }
 
-  public getSelectedTiles(): TiledSelectItem[] {
+  public getSelectedTiles(): TheSeamTiledSelectItem[] {
     return this.tiles.filter(t => this.isSelected(t))
   }
 
-  getOverlayTpl(tile: TiledSelectItem): TiledSelectTileOverlayDirective | undefined {
+  getOverlayTpl(tile: TheSeamTiledSelectItem): TheSeamTiledSelectTileOverlayDirective | undefined {
     // console.log('overlayTpls', this.overlayTpls)
     return (this.overlayTpls || []).find(t => t.record?.name === tile.name)
   }
 
 }
-
-/** @deprecated Use `TheSeamTiledSelectComponent`. */
-export type TiledSelectComponent = TheSeamTiledSelectComponent

@@ -1,15 +1,18 @@
 import { animate, animation, keyframes, style, transition, trigger, useAnimation } from '@angular/animations'
 import { BooleanInput } from '@angular/cdk/coercion'
-import { ChangeDetectorRef, Component, ContentChild, EventEmitter, HostBinding, Input, Output } from '@angular/core'
+import { ChangeDetectorRef, Component, ContentChild, EventEmitter, HostBinding, inject, Input, Output } from '@angular/core'
+import { NgIf, NgTemplateOutlet } from '@angular/common'
 
 import { faCheckCircle } from '@fortawesome/free-regular-svg-icons'
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 
 import { InputBoolean } from '@theseam/ui-common/core'
 import { SeamIcon } from '@theseam/ui-common/icon'
 
-import { TiledSelectTileLabelTplDirective } from '../../directives/tiled-select-tile-label-tpl.directive'
-import { TiledSelectTileOverlayDirective } from '../../directives/tiled-select-tile-overlay.directive'
-import { TiledSelectLayout } from '../../tiled-select.models'
+import { TheSeamTiledSelectTileLabelTplDirective } from '../../directives/tiled-select-tile-label-tpl.directive'
+import { TheSeamTiledSelectTileOverlayDirective } from '../../directives/tiled-select-tile-overlay.directive'
+import { TheSeamTiledSelectLayout } from '../../tiled-select.models'
+import { TheSeamTiledSelectTileIconComponent } from '../tiled-select-tile-icon/tiled-select-tile-icon.component'
 
 export const tilePulse = animation(
   animate(
@@ -55,17 +58,23 @@ export const tileScaleDown = animation(
       ]),
       // transition('true => false', [
       //   useAnimation(tileScaleDown)
-      // ])
+      // ]),
     ]),
     // trigger('openClose', [
     //   state('true', style({ height: '*' })),
     //   state('false', style({ height: '0px' })),
     //   transition('false <=> true', animate(500))
-    // ])
+    // ]),
   ],
-  // changeDetection: ChangeDetectionStrategy.OnPush
+  // changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    NgIf,
+    NgTemplateOutlet,
+    FontAwesomeModule,
+    TheSeamTiledSelectTileIconComponent,
+  ],
 })
-export class TiledSelectTileComponent {
+export class TheSeamTiledSelectTileComponent {
   static ngAcceptInputType_disabled: BooleanInput
   static ngAcceptInputType_selected: BooleanInput
   static ngAcceptInputType_tileBackdrop: BooleanInput
@@ -74,12 +83,14 @@ export class TiledSelectTileComponent {
   static ngAcceptInputType_showLabel: BooleanInput
   static ngAcceptInputType_showSelectedIcon: BooleanInput
 
-  faCheckCircle = faCheckCircle
+  private readonly _cdr = inject(ChangeDetectorRef)
+
+  readonly faCheckCircle = faCheckCircle
 
   @HostBinding('@pulse') pulseAnimationState = true
   @HostBinding('attr.data-tile-name') get _tileNameAttr() { return this.name }
 
-  @Input() layout: TiledSelectLayout = 'grid'
+  @Input() layout: TheSeamTiledSelectLayout = 'grid'
 
   @Input() name: string | undefined | null
   @Input() label: string | undefined | null
@@ -95,18 +106,14 @@ export class TiledSelectTileComponent {
 
   @Input() iconClass: string | undefined | null
 
-  @Input() overlayTpl: TiledSelectTileOverlayDirective | undefined | null
+  @Input() overlayTpl: TheSeamTiledSelectTileOverlayDirective | undefined | null
 
-  @Output() activated = new EventEmitter<any>()
+  @Output() readonly activated = new EventEmitter<any>()
 
-  @ContentChild(TiledSelectTileLabelTplDirective, { static: true }) labelTpl?: TiledSelectTileLabelTplDirective
+  @ContentChild(TheSeamTiledSelectTileLabelTplDirective, { static: true }) labelTpl?: TheSeamTiledSelectTileLabelTplDirective
 
   pulsing = false
   pulsingTimeout: number | undefined
-
-  constructor(
-    private cdr: ChangeDetectorRef
-  ) { }
 
   onTileClick(event: any) {
     if (!this.selectable) { return }
@@ -125,13 +132,13 @@ export class TiledSelectTileComponent {
 
     if (!this.pulsing) {
       this.pulsing = true
-      // this.cdr.detectChanges()
+      // this._cdr.detectChanges()
     }
 
     // console.log('start')
     this.pulsingTimeout = window.setTimeout(() => {
       this.pulsing = false
-      // this.cdr.detectChanges()
+      // this._cdr.detectChanges()
       this.pulsingTimeout = undefined
     }, 750)
   }

@@ -5,7 +5,7 @@ import { AbstractControl, ReactiveFormsModule } from '@angular/forms'
 import { JsonSchemaFormModule, JsonSchemaFormService } from '@ajsf/core'
 import { TheSeamSchemaFormControlWidget, TheSeamSchemaFormWidgetLayoutNodeOptions } from '../../schema-form'
 import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
-import { TheSeamTiledSelectModule, TiledSelectItem, TiledSelectLayout } from '@theseam/ui-common/tiled-select'
+import { TheSeamTiledSelectModule, TheSeamTiledSelectItem, TheSeamTiledSelectLayout } from '@theseam/ui-common/tiled-select'
 import { Platform } from '@angular/cdk/platform'
 
 @Component({
@@ -35,8 +35,8 @@ export class TheSeamSchemaFormTiledSelectComponent implements OnInit, TheSeamSch
   @Input() layoutIndex: TheSeamSchemaFormControlWidget['layoutIndex']
   @Input() dataIndex: TheSeamSchemaFormControlWidget['dataIndex']
 
-  tiles: TiledSelectItem[] = []
-  layout: TiledSelectLayout = 'grid'
+  tiles: TheSeamTiledSelectItem[] = []
+  layout: TheSeamTiledSelectLayout = 'grid'
   multiple = false
   selectionToggleable = true
   tileBackdrop = false

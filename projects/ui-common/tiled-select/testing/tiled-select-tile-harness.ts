@@ -1,6 +1,6 @@
 import { BaseHarnessFilters, ComponentHarness, HarnessPredicate } from '@angular/cdk/testing'
 
-import { TiledSelectItem } from '../tiled-select.models'
+import { TheSeamTiledSelectItem } from '../tiled-select.models'
 
 interface TheSeamTiledSelectTileHarnessFilters extends BaseHarnessFilters {
   /** Filters based on the tile index of the tile. */
