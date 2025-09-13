@@ -203,12 +203,7 @@
             "stylePreprocessorOptions": {
               "includePaths": [
                 "./"
-              ],
-              "sass": {
-                "silenceDeprecations": [
-                  "global-builtin"
-                ]
-              }
+              ]
             },
             "assets": [
               {

@@ -1,19 +1,30 @@
 import {
   AfterContentInit, Component, ContentChildren, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList
 } from '@angular/core'
-import { ActivatedRoute, Router } from '@angular/router'
+import { AsyncPipe, NgFor, NgIf } from '@angular/common'
+import { ActivatedRoute, Router, RouterModule } from '@angular/router'
+import { FlexLayoutModule } from '@angular/flex-layout'
 import { BehaviorSubject, combineLatest, shareReplay, tap } from 'rxjs'
 
 import { isNullOrUndefined } from '@theseam/ui-common/utils'
 
 import { TheSeamTabbedItemComponent } from './tabbed-item/tabbed-item.component'
+import { TheSeamTabbedContentComponent } from './tabbed-content/tabbed-content.component'
 import { TheSeamTabbedService, TheSeamTabsDirection } from './tabbed.service'
 
 @Component({
   selector: 'seam-tabbed',
   templateUrl: './tabbed.component.html',
   styleUrls: ['./tabbed.component.scss'],
-  providers: [ TheSeamTabbedService ]
+  providers: [ TheSeamTabbedService ],
+  imports: [
+    NgIf,
+    NgFor,
+    AsyncPipe,
+    RouterModule,
+    FlexLayoutModule,
+    TheSeamTabbedContentComponent,
+  ],
 })
 export class TheSeamTabbedComponent implements OnInit, AfterContentInit, OnDestroy {
 
