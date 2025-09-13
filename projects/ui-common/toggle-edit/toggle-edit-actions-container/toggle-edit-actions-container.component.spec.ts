@@ -1,20 +1,20 @@
 // import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
-// import { ToggleEditActionsContainerComponent } from './toggle-edit-actions-container.component'
+// import { TheSeamToggleEditActionsContainerComponent } from './toggle-edit-actions-container.component'
 
-// describe('ToggleEditActionsContainerComponent', () => {
-//   let component: ToggleEditActionsContainerComponent
-//   let fixture: ComponentFixture<ToggleEditActionsContainerComponent>
+// describe('TheSeamToggleEditActionsContainerComponent', () => {
+//   let component: TheSeamToggleEditActionsContainerComponent
+//   let fixture: ComponentFixture<TheSeamToggleEditActionsContainerComponent>
 
 //   beforeEach(async(() => {
 //     TestBed.configureTestingModule({
-//       declarations: [ ToggleEditActionsContainerComponent ]
+//       declarations: [ TheSeamToggleEditActionsContainerComponent ]
 //     })
 //     .compileComponents()
 //   }))
 
 //   beforeEach(() => {
-//     fixture = TestBed.createComponent(ToggleEditActionsContainerComponent)
+//     fixture = TestBed.createComponent(TheSeamToggleEditActionsContainerComponent)
 //     component = fixture.componentInstance
 //     fixture.detectChanges()
 //   })

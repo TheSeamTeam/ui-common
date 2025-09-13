@@ -1,8 +1,8 @@
-import { FocusMonitor } from '@angular/cdk/a11y'
+import { A11yModule, FocusMonitor } from '@angular/cdk/a11y'
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion'
 import { ENTER, ESCAPE } from '@angular/cdk/keycodes'
 import { ConnectionPositionPair, Overlay, OverlayRef, PositionStrategy } from '@angular/cdk/overlay'
-import { TemplatePortal } from '@angular/cdk/portal'
+import { PortalModule, TemplatePortal } from '@angular/cdk/portal'
 import {
   AfterViewInit,
   Component,
@@ -10,44 +10,64 @@ import {
   DoCheck,
   ElementRef,
   EventEmitter,
-  Host,
   HostBinding,
+  inject,
   Input,
   NgZone,
   OnDestroy,
   OnInit,
-  Optional,
   Output,
   Renderer2,
-  Self,
   TemplateRef,
   ViewChild,
   ViewContainerRef,
 } from '@angular/core'
 import { AbstractControl, ControlContainer, FormControl, FormGroup } from '@angular/forms'
+import { NgIf, NgTemplateOutlet } from '@angular/common'
 
 import { faCheck, faPen, faTimes } from '@fortawesome/free-solid-svg-icons'
-
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 import { InputBoolean } from '@theseam/ui-common/core'
 import { TheSeamFormFieldComponent } from '@theseam/ui-common/form-field'
+import { TheSeamLoadingComponent } from '@theseam/ui-common/loading'
 
-import { ICanToggleEdit } from './models/can-toggle-edit'
-import { IToggleEditRef } from './models/toggle-edit-ref'
+import { TheSeamCanToggleEdit } from './models/can-toggle-edit'
+import { TheSeamToggleEditRef } from './models/toggle-edit-ref'
 import { ToggleEditDisplayTplDirective } from './toggle-edit-display-tpl.directive'
-import { ToggleEditKeyboardListenerService } from './toggle-edit-keyboard-listener.service'
+import { TheSeamToggleEditKeyboardListenerService } from './toggle-edit-keyboard-listener.service'
+import { TheSeamToggleEditActionsContainerComponent } from './toggle-edit-actions-container/toggle-edit-actions-container.component'
 
 @Component({
   selector: 'seam-toggle-edit',
   templateUrl: './toggle-edit.component.html',
-  styleUrls: ['./toggle-edit.component.scss']
+  styleUrls: ['./toggle-edit.component.scss'],
+  imports: [
+    NgIf,
+    NgTemplateOutlet,
+    PortalModule,
+    A11yModule,
+    FontAwesomeModule,
+    TheSeamLoadingComponent,
+    TheSeamToggleEditActionsContainerComponent,
+  ],
 })
-export class ToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, DoCheck, ICanToggleEdit, IToggleEditRef {
+export class TheSeamToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, DoCheck, TheSeamCanToggleEdit, TheSeamToggleEditRef {
   static ngAcceptInputType_cancelOnBlur: BooleanInput
   static ngAcceptInputType_waitOnSubmit: BooleanInput
 
-  faPen = faPen
-  faTimes = faTimes
-  faCheck = faCheck
+  private readonly _elementRef = inject(ElementRef<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>)
+  private readonly _controlContainer = inject(ControlContainer, { optional: true, self: true })
+  private readonly _formFieldComponent = inject(TheSeamFormFieldComponent, { optional: true, host: true })
+  private readonly _kbListener = inject(TheSeamToggleEditKeyboardListenerService)
+  private readonly _focusMonitor = inject(FocusMonitor)
+  private readonly _ngZone = inject(NgZone)
+  private readonly _renderer = inject(Renderer2)
+  private readonly _viewContainerRef = inject(ViewContainerRef)
+  private readonly _overlay = inject(Overlay)
+
+  readonly faPen = faPen
+  readonly faTimes = faTimes
+  readonly faCheck = faCheck
 
   private _previousDisabled = false
 
@@ -85,9 +105,9 @@ export class ToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, Do
   }
   private _editing = false
 
-  @Output() changeAccepted = new EventEmitter<IToggleEditRef>()
-  @Output() changeDeclined = new EventEmitter<IToggleEditRef>()
-  @Output() editingChange = new EventEmitter<boolean>()
+  @Output() readonly changeAccepted = new EventEmitter<TheSeamToggleEditRef>()
+  @Output() readonly changeDeclined = new EventEmitter<TheSeamToggleEditRef>()
+  @Output() readonly editingChange = new EventEmitter<boolean>()
 
   @ViewChild('templatePortalContent', { static: true }) templatePortalContent?: TemplateRef<any>
   public templatePortal?: TemplatePortal<any>
@@ -96,17 +116,7 @@ export class ToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, Do
 
   @ContentChild(ToggleEditDisplayTplDirective, { static: true }) displayTpl?: ToggleEditDisplayTplDirective
 
-  constructor(
-    private _elementRef: ElementRef<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
-    @Optional() @Self() private controlContainer: ControlContainer,
-    @Optional() @Host() private formFieldComponent: TheSeamFormFieldComponent,
-    private _kbListener: ToggleEditKeyboardListenerService,
-    private _focusMonitor: FocusMonitor,
-    private _ngZone: NgZone,
-    private _renderer: Renderer2,
-    private _viewContainerRef: ViewContainerRef,
-    private _overlay: Overlay
-  ) {
+  constructor() {
     this._ngZone.runOutsideAngular(() => {
       this._focusObserver = new MutationObserver(() => {
         this._ngZone.run(() => {
@@ -123,9 +133,9 @@ export class ToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, Do
 
   ngOnInit() {
     this._initMonitors()
-    if (this.formFieldComponent) {
+    if (this._formFieldComponent) {
       // TODO: Consider making this smarter, such as avoiding overwritting when input set.
-      this.formFieldComponent.numPaddingErrors = 0
+      this._formFieldComponent.numPaddingErrors = 0
     }
   }
 
@@ -134,8 +144,8 @@ export class ToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, Do
   }
 
   ngAfterViewInit() {
-    if (this.formFieldComponent && this.formFieldComponent.contentInput) {
-      this.formFieldComponent.contentInput.stateChanges.subscribe(_ => {
+    if (this._formFieldComponent && this._formFieldComponent.contentInput) {
+      this._formFieldComponent.contentInput.stateChanges.subscribe(_ => {
         this._checkDisabledChange()
       })
     }
@@ -240,22 +250,23 @@ export class ToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, Do
   }
 
   public isFormGroup(): boolean {
-    return !!this.controlContainer
+    return !!this._controlContainer
   }
 
   public getFormGroup(): FormGroup | null {
     if (!this.isFormGroup()) { return null }
-    return this.controlContainer.control as FormGroup
+    if (!this._controlContainer?.control) { return null }
+    return this._controlContainer.control as FormGroup
   }
 
   public isInFormField(): boolean {
-    return !!this.formFieldComponent
+    return !!this._formFieldComponent
   }
 
   public getFormControl(): FormControl | null {
     if (!this.isInFormField()) { return null }
-    if (!this.formFieldComponent.contentInput) { return null }
-    return this.formFieldComponent.contentInput.ngControl.control as FormControl
+    if (!this._formFieldComponent?.contentInput) { return null }
+    return this._formFieldComponent.contentInput.ngControl.control as FormControl
   }
 
   public hasControl(): boolean {
@@ -286,7 +297,7 @@ export class ToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, Do
 
     this.stopEditing()
 
-    this.changeAccepted.emit(this as IToggleEditRef)
+    this.changeAccepted.emit(this as TheSeamToggleEditRef)
   }
 
   public cancelEdit(): void {
@@ -295,7 +306,7 @@ export class ToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, Do
     this.resetValue()
     this.stopEditing()
 
-    this.changeDeclined.emit(this as IToggleEditRef)
+    this.changeDeclined.emit(this as TheSeamToggleEditRef)
   }
 
   private _onFocus(): void {
@@ -394,7 +405,6 @@ export class ToggleEditComponent implements OnInit, OnDestroy, AfterViewInit, Do
   }
 
   public keydownEvent(event: KeyboardEvent): void {
-    // tslint:disable-next-line:deprecation
     switch (event.keyCode) {
       case ESCAPE: {
         this.cancelEdit()

@@ -1,5 +1,5 @@
 
-export interface ICanToggleEdit {
+export interface TheSeamCanToggleEdit {
 
   isEditing(): boolean
 

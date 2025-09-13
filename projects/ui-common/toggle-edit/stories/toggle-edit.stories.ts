@@ -4,25 +4,29 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms'
 
 import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 
-import { ToggleEditComponent } from '../toggle-edit.component'
+import { TheSeamToggleEditComponent } from '../toggle-edit.component'
 import { TheSeamToggleEditModule } from '../toggle-edit.module'
 
-const meta: Meta<ToggleEditComponent> = {
+interface ExtraArgs { }
+
+type StoryComponentType = TheSeamToggleEditComponent & ExtraArgs
+
+const meta: Meta<StoryComponentType> = {
   title: 'Toggle Edit/Components',
-  component: ToggleEditComponent,
+  component: TheSeamToggleEditComponent,
   decorators: [
     moduleMetadata({
       imports: [
+        ReactiveFormsModule,
         TheSeamToggleEditModule,
         TheSeamFormFieldModule,
-        ReactiveFormsModule
-      ]
-    })
-  ]
+      ],
+    }),
+  ],
 }
 
 export default meta
-type Story = StoryObj<ToggleEditComponent>
+type Story = StoryObj<StoryComponentType>
 
 export const Simple: Story = {
   render: args => ({
@@ -37,7 +41,7 @@ export const Simple: Story = {
             <input seamInput [formControl]="control">
           </seam-toggle-edit>
         </seam-form-field>
-      </div>`
+      </div>`,
   }),
 }
 
