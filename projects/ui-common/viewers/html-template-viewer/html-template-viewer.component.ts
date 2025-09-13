@@ -1,19 +1,22 @@
 import { BooleanInput } from '@angular/cdk/coercion'
-import { ChangeDetectorRef, Component, ElementRef, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core'
+import { ChangeDetectorRef, Component, ElementRef, inject, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core'
+import { NgIf } from '@angular/common'
 
+import { OverlayScrollbarDirective } from '@theseam/ui-common/scrollbar'
+import { TheSeamElemResizedDirective } from '@theseam/ui-common/shared'
 import { InputBoolean } from '@theseam/ui-common/core'
 
-interface TemplateResizeMessagePayload {
+interface TheSeamTemplateResizeMessagePayload {
   width: number
   height: number
 }
 
-enum TemplateMessageType {
+enum TheSeamTemplateMessageType {
   TplData = 'theseam_tpl_data',
   TplResize = 'theseam_tpl_resize',
 }
 
-interface TemplateMessage<TType, TPayload> {
+interface TheSeamTemplateMessage<TType, TPayload> {
   type: TType
   payload: TPayload
 }
@@ -21,12 +24,21 @@ interface TemplateMessage<TType, TPayload> {
 @Component({
   selector: 'seam-html-template-viewer',
   templateUrl: './html-template-viewer.component.html',
-  styleUrls: ['./html-template-viewer.component.scss']
+  styleUrls: ['./html-template-viewer.component.scss'],
+  imports: [
+    NgIf,
+    OverlayScrollbarDirective,
+    TheSeamElemResizedDirective,
+  ],
 })
 export class TheSeamHtmlTemplateViewerComponent implements OnInit, OnDestroy {
   static ngAcceptInputType_scrollable: BooleanInput
 
-  private readonly _templateMessageHandlers: { [key in TemplateMessageType]: (payload: any) => void }
+  private readonly _ngZone = inject(NgZone)
+  private readonly _cdr = inject(ChangeDetectorRef)
+  private readonly _elementRef = inject(ElementRef)
+
+  private readonly _templateMessageHandlers: { [key in TheSeamTemplateMessageType]: (payload: any) => void }
 
   private _message: string | undefined | null
   private _dataVersion = 0
@@ -92,14 +104,10 @@ export class TheSeamHtmlTemplateViewerComponent implements OnInit, OnDestroy {
   _mouseBlockWidth = '100%'
   _mouseBlockHeight = '100%'
 
-  constructor(
-    private readonly _ngZone: NgZone,
-    private readonly _cdr: ChangeDetectorRef,
-    private readonly _elementRef: ElementRef
-  ) {
+  constructor() {
     this._templateMessageHandlers = {
-      [TemplateMessageType.TplData]: () => { }, // Not listening for message from template
-      [TemplateMessageType.TplResize]: this._onResizeMessageFromTemplate
+      [TheSeamTemplateMessageType.TplData]: () => { }, // Not listening for message from template
+      [TheSeamTemplateMessageType.TplResize]: this._onResizeMessageFromTemplate
     }
   }
 
@@ -113,13 +121,13 @@ export class TheSeamHtmlTemplateViewerComponent implements OnInit, OnDestroy {
   }
 
   private _onMessageFromTemplate = (e: any) => {
-    const type = e.data.type as TemplateMessageType
+    const type = e.data.type as TheSeamTemplateMessageType
     if (this._templateMessageHandlers[type]) {
       this._ngZone.run(() => this._templateMessageHandlers[type](e.data.payload))
     }
   }
 
-  private _onResizeMessageFromTemplate = (payload: TemplateResizeMessagePayload): void => {
+  private _onResizeMessageFromTemplate = (payload: TheSeamTemplateResizeMessagePayload): void => {
     const iframeNativeElement = this._getIFrameNativeElement()
     if (iframeNativeElement) {
       iframeNativeElement.style.height = `${payload.height}px`
@@ -140,7 +148,7 @@ export class TheSeamHtmlTemplateViewerComponent implements OnInit, OnDestroy {
     const contentWindow = this._getIFrameContentWindow()
     if (contentWindow && _msg) {
       if (this._dataVersion === 2) {
-        const wrapper: TemplateMessage<TemplateMessageType, any> = { type: TemplateMessageType.TplData, payload: undefined }
+        const wrapper: TheSeamTemplateMessage<TheSeamTemplateMessageType, any> = { type: TheSeamTemplateMessageType.TplData, payload: undefined }
         try { wrapper.payload = JSON.parse(_msg) } catch { wrapper.payload = _msg }
         _msg = JSON.stringify(wrapper)
       }

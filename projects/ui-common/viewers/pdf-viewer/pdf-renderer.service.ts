@@ -4,10 +4,8 @@ import { shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import { wrapIntoObservable } from '@theseam/ui-common/utils'
 
-@Injectable({
-  providedIn: 'root'
-})
-export class PdfRendererService {
+@Injectable({ providedIn: 'root' })
+export class TheSeamPdfRendererService {
 
   private readonly _pdfjs$: Observable<any>
 
@@ -16,7 +14,6 @@ export class PdfRendererService {
     this._pdfjs$ = pdfjsImport.pipe(
       tap((pdfJs: any) => {
         if (!pdfJs.GlobalWorkerOptions.workerSrc) {
-          // tslint:disable-next-line:max-line-length
           pdfJs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${(pdfJs as any).version}/pdf.worker.min.js`
         }
       }),
@@ -27,8 +24,8 @@ export class PdfRendererService {
   public getDocument(url: string): Observable<any> {
     return from(fetch(url)).pipe(
       switchMap(v => this._pdfjs$.pipe(
-        switchMap(pdfjs => pdfjs.getDocument(v).promise)
-      ))
+        switchMap(pdfjs => pdfjs.getDocument(v).promise),
+      )),
     )
   }
 }

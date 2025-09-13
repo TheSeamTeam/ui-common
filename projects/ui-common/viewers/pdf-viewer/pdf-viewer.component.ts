@@ -1,31 +1,39 @@
 import { BooleanInput, coerceArray, coerceNumberProperty } from '@angular/cdk/coercion'
-import { Component, Input } from '@angular/core'
+import { Component, inject, Input } from '@angular/core'
+import { AsyncPipe, NgFor } from '@angular/common'
 import { BehaviorSubject, from, Observable, of, ReplaySubject } from 'rxjs'
-import { map, shareReplay, switchMap, tap } from 'rxjs/operators'
+import { map, switchMap } from 'rxjs/operators'
 
 import { InputBoolean } from '@theseam/ui-common/core'
-import { wrapIntoObservable } from '@theseam/ui-common/utils'
 
-import { PdfRendererService } from './pdf-renderer.service'
+import { TheSeamPdfRendererService } from './pdf-renderer.service'
+import { TheSeamPdfPageComponent } from './pdf-page.component'
 
 @Component({
   selector: 'seam-pdf-viewer',
   template: `
-  <ng-container *ngFor="let page of pages$ | async">
-    <seam-pdf-page
-      class="mb-2"
-      [page]="page | async"
-      [responsive]="responsive"
-      [shadow]="shadow"
-      [renderUpdateThreshold]="renderUpdateThreshold">
-    </seam-pdf-page>
-  </ng-container>
+    <ng-container *ngFor="let page of pages$ | async">
+      <seam-pdf-page
+        class="mb-2"
+        [page]="page | async"
+        [responsive]="responsive"
+        [shadow]="shadow"
+        [renderUpdateThreshold]="renderUpdateThreshold">
+      </seam-pdf-page>
+    </ng-container>
   `,
-  styles: [`:host { display: block; }`]
+  styles: [`:host { display: block; }`],
+  imports: [
+    NgFor,
+    AsyncPipe,
+    TheSeamPdfPageComponent,
+  ],
 })
 export class TheSeamPdfViewerComponent {
   static ngAcceptInputType_shadow: BooleanInput
   static ngAcceptInputType_responsive: BooleanInput
+
+  private readonly _pdfRenderer = inject(TheSeamPdfRendererService)
 
   @Input()
   get pdfUrl(): string | undefined | null { return this._pdfUrl }
@@ -123,24 +131,23 @@ export class TheSeamPdfViewerComponent {
   private _pageNumbers: number[] = []
 
   private _documentSubject = new ReplaySubject<any>(1)
-  public document$: Observable<any>
-  public pages$: Observable<any[]>
+
+  public readonly document$: Observable<any>
+  public readonly pages$: Observable<any[]>
 
   /**
    * Undefined means all a pages
    */
   private _pageNumbersSubject = new BehaviorSubject<number[] | undefined>(undefined)
 
-  constructor(
-    private readonly _pdfRenderer: PdfRendererService
-  ) {
+  constructor() {
     this.document$ = this._documentSubject.asObservable().pipe(
       switchMap(url => {
         if (!url) {
           return of()
         }
         return this._pdfRenderer.getDocument(url)
-      })
+      }),
     )
 
     const pageNumbers$ = this._pageNumbersSubject.asObservable()
@@ -155,8 +162,8 @@ export class TheSeamPdfViewerComponent {
             }
           }
           return pages
-        })
-      ))
+        }),
+      )),
     )
   }
 

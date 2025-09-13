@@ -5,19 +5,23 @@ import { auditTime, switchMap, takeUntil } from 'rxjs/operators'
 
 import { InputBoolean } from '@theseam/ui-common/core'
 import { waitOnConditionAsync } from '@theseam/ui-common/utils'
+import { TheSeamElemResizedDirective } from '@theseam/ui-common/shared'
 
 @Component({
   selector: 'seam-pdf-page',
   template: `
-  <div #pdfContainer
-    (seamElemResized)="onResized()">
-    <canvas #pdfCanvas></canvas>
-  </div>
+    <div #pdfContainer
+      (seamElemResized)="onResized()">
+      <canvas #pdfCanvas></canvas>
+    </div>
   `,
   styles: [`
     :host { display: block; }
     canvas { display: block; }
-  `]
+  `],
+  imports: [
+    TheSeamElemResizedDirective,
+  ],
 })
 export class TheSeamPdfPageComponent implements OnDestroy, AfterViewInit {
   static ngAcceptInputType_shadow: BooleanInput
@@ -69,7 +73,7 @@ export class TheSeamPdfPageComponent implements OnDestroy, AfterViewInit {
       takeUntil(this._ngUnsubscribe),
       auditTime(500),
       switchMap(_ => from(waitOnConditionAsync(() => this.rendering === false, 30 * 1000))),
-      switchMap(_ => from(this._render()))
+      switchMap(_ => from(this._render())),
     )
   }
 
