@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core'
 
-import { OverlayScrollbarDirective } from '@theseam/ui-common/scrollbar'
-
 import { TheSeamAutoFocusDirective } from './directives/auto-focus.directive'
 import { TheSeamClickOutsideDirective } from './directives/click-outside.directive'
 import { TheSeamDisableControlDirective } from './directives/disable-control.directive'
@@ -42,9 +40,6 @@ import { TheSeamPasswordInputRevealComponent } from './components/password-input
     TheSeamMaskCharsPipe,
     TheSeamTruncatePipe,
     TheSeamNgxQuillExtraDirective,
-
-    // Exporting scrollbars here for backwards compatibility for now.
-    OverlayScrollbarDirective,
   ]
 })
 export class TheSeamSharedModule { }
