@@ -1,5 +1,5 @@
 import { Component, Input, HostBinding } from '@angular/core'
-import { CommonModule } from '@angular/common'
+import { NgFor, NgIf } from '@angular/common'
 import { BehaviorSubject, Observable } from 'rxjs'
 
 export const FILTER_VALUES: string[] = [
@@ -9,17 +9,17 @@ export const FILTER_VALUES: string[] = [
   'M', 'N', 'O', 'P',
   'Q', 'R', 'S', 'T',
   'U', 'V', 'W', 'X',
-  'Y', 'Z'
+  'Y', 'Z',
 ]
 
 @Component({
   selector: 'seam-vertical-list-filter',
   templateUrl: './vertical-list-filter.component.html',
   styleUrls: ['./vertical-list-filter.component.scss'],
-  standalone: true,
   imports: [
-    CommonModule,
-  ]
+    NgIf,
+    NgFor,
+  ],
 })
 export class TheSeamVerticalListFilterComponent {
 

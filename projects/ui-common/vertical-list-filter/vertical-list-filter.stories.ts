@@ -6,23 +6,27 @@ import { getHarness } from '@theseam/ui-common/testing'
 import { TheSeamVerticalListFilterComponent, FILTER_VALUES } from './vertical-list-filter.component'
 import { TheSeamVerticalListFilterHarness } from './testing/vertical-list-filter.harness'
 
-const meta: Meta = {
+interface ExtraArgs { }
+
+type StoryComponentType = TheSeamVerticalListFilterComponent & ExtraArgs
+
+const meta: Meta<StoryComponentType> = {
   title: 'VerticalListFilter/Components',
   component: TheSeamVerticalListFilterComponent,
   argTypes: {
     filterValue: { theme: { control: 'select', options: [ undefined, FILTER_VALUES ] } },
-  }
+  },
 }
 
 export default meta
-type Story = StoryObj<TheSeamVerticalListFilterComponent>
+type Story = StoryObj<StoryComponentType>
 
 export const Basic: Story = {
   play: async ({ canvasElement, fixture }) => {
     const alfHarness = await getHarness(TheSeamVerticalListFilterHarness, { canvasElement, fixture })
     await expect(await alfHarness.hasClearOption()).toBe(true)
     await expect(await alfHarness.filterValue()).toBe(undefined)
-  }
+  },
 }
 
 export const SelectValue: Story = {
@@ -31,12 +35,12 @@ export const SelectValue: Story = {
     await expect(await alfHarness.filterValue()).toBe(undefined)
     await alfHarness.clickValue('A')
     await expect(await alfHarness.filterValue()).toBe('A')
-  }
+  },
 }
 
 export const UnselectValue: Story = {
   args: {
-    filterValue: 'A'
+    filterValue: 'A',
   },
   play: async ({ canvasElement, fixture }) => {
     const alfHarness = await getHarness(TheSeamVerticalListFilterHarness, { canvasElement, fixture })
@@ -47,7 +51,7 @@ export const UnselectValue: Story = {
     await expect(await alfHarness.filterValue()).toBe('A')
     await alfHarness.clearFilter()
     await expect(await alfHarness.filterValue()).toBe(undefined)
-  }
+  },
 }
 
 export const WithoutClearOption: Story = {
@@ -57,5 +61,5 @@ export const WithoutClearOption: Story = {
   play: async ({ canvasElement, fixture }) => {
     const alfHarness = await getHarness(TheSeamVerticalListFilterHarness, { canvasElement, fixture })
     await expect(await alfHarness.hasClearOption()).toBe(false)
-  }
+  },
 }
