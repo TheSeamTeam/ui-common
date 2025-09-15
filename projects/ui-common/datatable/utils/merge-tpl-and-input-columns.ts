@@ -25,11 +25,11 @@ export function mergeTplAndInpColumns(
   colDiffersInp: { [propName: string]: KeyValueDiffer<any, any> },
   colDiffersTpl: { [propName: string]: KeyValueDiffer<any, any> },
   rowActionItem: DatatableRowActionItemDirective | undefined,
-  actionMenuCellTpl: TemplateRef<DataTableColumnDirective> | undefined,
+  actionMenuCellTpl: TemplateRef<DataTableColumnDirective<any>> | undefined,
   blankHeaderTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined,
   treeToggleTpl: TemplateRef<DataTableColumnCellTreeToggle> | undefined,
   headerTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined,
-  cellTypeSelectorTpl: TemplateRef<DataTableColumnDirective> | undefined,
+  cellTypeSelectorTpl: TemplateRef<DataTableColumnDirective<any>> | undefined,
   differs: KeyValueDiffers
 ): TheSeamDatatableColumn[] {
   const cols: TheSeamDatatableColumn[] = []
@@ -81,11 +81,11 @@ export function mergeTplAndInpColumns(
     }
 
     if (!hasProperty(col, 'headerTemplate')) {
-      col.headerTemplate = headerTpl
+      col.headerTemplate = headerTpl as any // TODO: Fix type
     }
 
     if (hasProperty(col, 'cellType')) {
-      col.cellTemplate = cellTypeSelectorTpl
+      col.cellTemplate = cellTypeSelectorTpl as any // TODO: Fix type
     }
   }
 

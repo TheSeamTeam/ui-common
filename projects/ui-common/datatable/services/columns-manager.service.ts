@@ -50,12 +50,12 @@ export class ColumnsManagerService {
 
   private _selectionType: SelectionType | undefined
   private _rowActionItem: DatatableRowActionItemDirective | undefined
-  private _actionMenuCellTpl: TemplateRef<DataTableColumnDirective> | undefined
+  private _actionMenuCellTpl: TemplateRef<DataTableColumnDirective<any>> | undefined
   private _actionItemColumnPosition: ActionItemColumnPosition | undefined
   private _blankHeaderTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined
   private _treeToggleTpl: TemplateRef<DataTableColumnCellTreeToggle> | undefined
   private _headerTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined
-  private _cellTypeSelectorTpl: TemplateRef<DataTableColumnDirective> | undefined
+  private _cellTypeSelectorTpl: TemplateRef<DataTableColumnDirective<any>> | undefined
 
   // TODO: Consider making this a columns changed obervable, to make changes more predictable.
   public readonly columns$: Observable<TheSeamDatatableColumn[]>
@@ -146,7 +146,7 @@ export class ColumnsManagerService {
     }
   }
 
-  public setActionMenuCellTpl(actionMenuCellTpl: TemplateRef<DataTableColumnDirective> | undefined): void {
+  public setActionMenuCellTpl(actionMenuCellTpl: TemplateRef<DataTableColumnDirective<any>> | undefined): void {
     const changed = this._actionMenuCellTpl !== actionMenuCellTpl
     this._actionMenuCellTpl = actionMenuCellTpl
     if (changed) {
@@ -178,7 +178,7 @@ export class ColumnsManagerService {
     }
   }
 
-  public setCellTypeSelectorTpl(cellTypeSelectorTpl: TemplateRef<DataTableColumnDirective> | undefined): void {
+  public setCellTypeSelectorTpl(cellTypeSelectorTpl: TemplateRef<DataTableColumnDirective<any>> | undefined): void {
     const changed = this._cellTypeSelectorTpl !== cellTypeSelectorTpl
     this._cellTypeSelectorTpl = cellTypeSelectorTpl
     if (changed) {
@@ -237,11 +237,11 @@ export class ColumnsManagerService {
       }
 
       if (this._shouldAddHeaderTemplate(_col)) {
-        _col.headerTemplate = this._headerTpl
+        _col.headerTemplate = this._headerTpl as any // TODO: Fix type
       }
 
       if (this._shouldAddCellTypeSelectorTpl(_col)) {
-        _col.cellTemplate = this._cellTypeSelectorTpl
+        _col.cellTemplate = this._cellTypeSelectorTpl as any // TODO: Fix type
       }
 
       cols.push(_col)

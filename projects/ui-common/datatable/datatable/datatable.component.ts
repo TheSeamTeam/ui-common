@@ -518,12 +518,12 @@ export class DatatableComponent<TRow = any>
   @ViewChild(DatatableRowDetailDirective) ngxRowDetail?: DatatableRowDetailDirective
 
   @ViewChild('actionMenuCellTpl', { static: true })
-  get actionMenuCellTpl(): TemplateRef<DataTableColumnDirective> | undefined { return this._actionMenuCellTpl }
-  set actionMenuCellTpl(value: TemplateRef<DataTableColumnDirective> | undefined) {
+  get actionMenuCellTpl(): TemplateRef<DataTableColumnDirective<any>> | undefined { return this._actionMenuCellTpl }
+  set actionMenuCellTpl(value: TemplateRef<DataTableColumnDirective<any>> | undefined) {
     this._actionMenuCellTpl = value
     this._columnsManager.setActionMenuCellTpl(notNullOrUndefined(value) ? value : undefined)
   }
-  private _actionMenuCellTpl: TemplateRef<DataTableColumnDirective> | undefined
+  private _actionMenuCellTpl: TemplateRef<DataTableColumnDirective<any>> | undefined
 
   @ViewChild('treeToggleTpl', { static: true })
   get treeToggleTpl(): TemplateRef<DataTableColumnCellTreeToggle> | undefined { return this._treeToggleTpl }
@@ -550,12 +550,12 @@ export class DatatableComponent<TRow = any>
   private _blankHeaderTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined
 
   @ViewChild('cellTypeSelectorTpl', { static: true })
-  get cellTypeSelectorTpl(): TemplateRef<DataTableColumnDirective> | undefined { return this._cellTypeSelectorTpl }
-  set cellTypeSelectorTpl(value: TemplateRef<DataTableColumnDirective> | undefined) {
+  get cellTypeSelectorTpl(): TemplateRef<DataTableColumnDirective<any>> | undefined { return this._cellTypeSelectorTpl }
+  set cellTypeSelectorTpl(value: TemplateRef<DataTableColumnDirective<any>> | undefined) {
     this._cellTypeSelectorTpl = value
     this._columnsManager.setCellTypeSelectorTpl(notNullOrUndefined(value) ? value : undefined)
   }
-  private _cellTypeSelectorTpl: TemplateRef<DataTableColumnDirective> | undefined
+  private _cellTypeSelectorTpl: TemplateRef<DataTableColumnDirective<any>> | undefined
 
   public columnComponents$?: Observable<DatatableColumnComponent[]>
   private _colDiffersInp: { [propName: string]: KeyValueDiffer<any, any> } = {}

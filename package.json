@@ -50,7 +50,7 @@
     "@fortawesome/free-regular-svg-icons": "^5.15.3",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@marklb/file-type": "~10.6.5",
-    "@marklb/ngx-datatable": "npm:@swimlane/ngx-datatable@^17.0.0",
+    "@marklb/ngx-datatable": "21.0.0-alpha.1",
     "@marklb/storybook-harness": "0.0.6",
     "@ng-select/ng-select": "^12.0.7",
     "@turf/area": "^6.5.0",
