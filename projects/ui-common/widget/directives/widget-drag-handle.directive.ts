@@ -147,6 +147,8 @@ export class WidgetDragHandleDirective implements OnInit, OnDestroy, AfterViewIn
 
   ngAfterViewInit() {
     if (this.__parentDrag || this._dashboardWidgets) {
+      // TODO: Determine if this is still needed, before fixing.
+      //
       // FIXME: This only works until the widget is moved to another template
       // outlet. Now that the component isn't reinitialized when moving between
       // lists the handle needs to now reflex that change to its new CdkDrag
@@ -154,30 +156,31 @@ export class WidgetDragHandleDirective implements OnInit, OnDestroy, AfterViewIn
 
       // HACK: This is a hack to allow the `CdkDrag` directive to manage a
       // handle that is not visible to `ContentChildren` query.
-      this._ngZone.onStable.asObservable()
-        // .pipe(take(1), untilDestroyed(this))
-        .pipe(
-          take(1),
-          // With the weird trick being done to keep widgets initialized when switching columns
-          switchMap(() => this._attachedToDom.pipe(filter(v => v === true))),
-          // take(1)
-          takeUntil(this._ngUnsubscribe)
-        )
-        .subscribe(() => {
-          const parent = this.getParentCdkDrag() as any
+      // this._ngZone.onStable.asObservable()
+      //   // .pipe(take(1), untilDestroyed(this))
+      //   .pipe(
+      //     take(1),
+      //     // With the weird trick being done to keep widgets initialized when switching columns
+      //     switchMap(() => this._attachedToDom.pipe(filter(v => v === true))),
+      //     // take(1)
+      //     takeUntil(this._ngUnsubscribe)
+      //   )
+      //   .subscribe(() => {
+      //     const parent = this.getParentCdkDrag() as any
 
-          if (this._knownParentDrag && this._knownParentDrag !== parent) {
-            this._knownParentDrag._dragRef.disableHandle(this.element.nativeElement)
-            this._knownParentDrag = undefined
-          }
+      //     if (this._knownParentDrag && this._knownParentDrag !== parent) {
+      //       this._knownParentDrag._dragRef.disableHandle(this.element.nativeElement)
+      //       this._knownParentDrag = undefined
+      //     }
 
-          if (parent) {
-            this._knownParentDrag = parent
-            parent._handles.reset([ ...parent._handles._results, this ])
-            parent._handles.notifyOnChanges()
-            parent._dragRef.enableHandle(this.element.nativeElement)
-          }
-        })
+      //     if (parent) {
+      //       this._knownParentDrag = parent
+      //       console.log('Enabling handle for parent drag:', parent, parent._handles)
+      //       parent._handles.reset([ ...parent._handles._results, this ])
+      //       parent._handles.notifyOnChanges()
+      //       parent._dragRef.enableHandle(this.element.nativeElement)
+      //     }
+      //   })
     }
   }
 

@@ -10,6 +10,7 @@ import {
   Component,
   EventEmitter,
   HostBinding,
+  inject,
   Input,
   OnDestroy,
   Output,
@@ -17,16 +18,19 @@ import {
   ViewChildren,
   ViewEncapsulation
 } from '@angular/core'
+import { AsyncPipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common'
+import { A11yModule } from '@angular/cdk/a11y'
+import { RouterModule } from '@angular/router'
 import { BehaviorSubject, Subject } from 'rxjs'
 
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons'
-
 import { InputBoolean, InputNumber } from '@theseam/ui-common/core'
-import type { SeamIcon } from '@theseam/ui-common/icon'
-import type { ThemeTypes } from '@theseam/ui-common/models'
-
-import { MenuComponent } from '@theseam/ui-common/menu'
+import { TheSeamIconModule, type SeamIcon } from '@theseam/ui-common/icon'
+import { ThemeTypes } from '@theseam/ui-common/models'
+import { MenuComponent, TheSeamMenuModule } from '@theseam/ui-common/menu'
 import { notNullOrUndefined } from '@theseam/ui-common/utils'
+import { TheSeamTooltipModule } from '@theseam/ui-common/tooltip'
+
 import { horizontalNavItemHasActiveChild } from '../nav-utils'
 import { INavItem, NavItemBadgeTooltip, NavItemChildAction, NavItemExpandAction } from '../nav.models'
 import { TheSeamNavService } from '../nav.service'
@@ -40,16 +44,27 @@ import { TheSeamNavService } from '../nav.service'
     trigger('childGroupAnim', [
       transition(':enter', [
         style({ height: 0 }),
-        animate('0.2s ease-in-out', style({ height: '*' }))
+        animate('0.2s ease-in-out', style({ height: '*' })),
       ]),
       transition(':leave', [
         style({ height: '*' }),
-        animate('0.2s ease-in-out', style({ height: 0 }))
-      ])
-    ])
+        animate('0.2s ease-in-out', style({ height: 0 })),
+      ]),
+    ]),
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  imports: [
+    NgIf,
+    NgFor,
+    NgTemplateOutlet,
+    AsyncPipe,
+    RouterModule,
+    A11yModule,
+    TheSeamMenuModule,
+    TheSeamIconModule,
+    TheSeamTooltipModule,
+  ],
 })
 export class NavItemComponent implements OnDestroy {
   static ngAcceptInputType_hierLevel: NumberInput
@@ -57,6 +72,8 @@ export class NavItemComponent implements OnDestroy {
   static ngAcceptInputType_expanded: BooleanInput
   static ngAcceptInputType_compact: BooleanInput
   static ngAcceptInputType_active: BooleanInput
+
+  private readonly _nav = inject(TheSeamNavService)
 
   private readonly _ngUnsubscribe = new Subject<void>()
 
@@ -156,10 +173,6 @@ export class NavItemComponent implements OnDestroy {
   @ViewChild(MenuComponent) _menu?: MenuComponent
 
   @ViewChildren(NavItemComponent) _navItems?: NavItemComponent[]
-
-  constructor(
-    private readonly _nav: TheSeamNavService
-  ) { }
 
   ngOnDestroy() {
     this._ngUnsubscribe.next()

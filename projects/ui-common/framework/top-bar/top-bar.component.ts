@@ -158,7 +158,6 @@ export class TheSeamTopBarComponent implements OnDestroy, AfterContentInit {
     if (this._topBarItems) {
       this._topBarItems.changes.pipe(
         startWith(undefined),
-        takeUntil(this._ngUnsubscribe),
         map(() => {
           const items = this._topBarItems?.toArray() || []
 
@@ -171,6 +170,7 @@ export class TheSeamTopBarComponent implements OnDestroy, AfterContentInit {
           this._centerItems.next(center)
         }),
         shareReplay({ bufferSize: 1, refCount: true }),
+        takeUntil(this._ngUnsubscribe),
       ).subscribe()
     }
   }

@@ -63,9 +63,6 @@ const meta: Meta<SideNavComponent> = {
       ],
     }),
     moduleMetadata({
-      declarations: [
-        StoryRoutePlacholderComponent
-      ],
       imports: [
         RouterModule,
         TheSeamSideNavModule

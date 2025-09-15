@@ -1,6 +1,5 @@
 import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 
-import { APP_BASE_HREF } from '@angular/common'
 import { Component, Directive, Input } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { provideRouter, Router, RouterModule } from '@angular/router'
@@ -10,16 +9,15 @@ import { faBuilding } from '@fortawesome/free-regular-svg-icons'
 import { faSignature } from '@fortawesome/free-solid-svg-icons'
 
 import { HorizontalNavComponent } from '../horizontal-nav/horizontal-nav.component'
-import { TheSeamNavModule } from '../nav.module'
 import { NavItemComponent } from './nav-item.component'
+import { TheSeamNavService } from '../nav.service'
 
 @Component({ template: `Url: {{ router.url }}` })
 class StoryRoutePlacholderComponent {
   constructor(public router: Router) { }
 }
 
-// tslint:disable-next-line:directive-selector
-@Directive({ selector: '[storyNavToggle]', standalone: true })
+@Directive({ selector: '[storyNavToggle]' })
 class StoryNavToggleDirective {
   @Input() set storyNavToggle(value: string) { this._router.navigateByUrl(value) }
   constructor(private _router: Router) { }
@@ -35,20 +33,16 @@ const meta: Meta<NavItemComponent> = {
   decorators: [
     applicationConfig({
       providers: [
-        { provide: APP_BASE_HREF, useValue: '/' },
         provideAnimations(),
         provideLocationMocks(),
       ],
     }),
     moduleMetadata({
-      declarations: [
-        StoryRoutePlacholderComponent,
-      ],
       imports: [
-        TheSeamNavModule,
         StoryNavToggleDirective,
       ],
       providers: [
+        TheSeamNavService, // Normally would be provided by HorizontalNavComponent.
         { provide: HorizontalNavComponent, useClass: MockHorizontalNavComponent },
       ],
     }),

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core'
+import { inject, Injectable } from '@angular/core'
 import { IsActiveMatchOptions, NavigationEnd, Router, UrlCreationOptions } from '@angular/router'
 import { BehaviorSubject, defer, Observable, Subject, Subscriber } from 'rxjs'
 import { distinctUntilChanged, filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators'
@@ -21,6 +21,7 @@ import { INavItem, INavItemState, INavLink, NavItemStateChanged } from './nav.mo
 
 @Injectable()
 export class TheSeamNavService {
+  private readonly _router = inject(Router)
 
   private readonly _updatingCount = new BehaviorSubject<number>(0)
 
@@ -28,13 +29,11 @@ export class TheSeamNavService {
 
   public readonly itemChanged = new Subject<NavItemStateChanged>()
 
-  constructor(
-    private readonly _router: Router
-  ) {
+  constructor() {
     this.loading$ = this._updatingCount.pipe(
       map(count => count > 0),
       distinctUntilChanged(),
-      shareReplay({ bufferSize: 1, refCount: true })
+      shareReplay({ bufferSize: 1, refCount: true }),
     )
   }
 
@@ -49,7 +48,7 @@ export class TheSeamNavService {
               this.updateFocusedItem(items, change.item)
             }
             return this.loading$.pipe(filter(loading => !loading))
-          })
+          }),
         ).subscribe(() => {
           subscriber.next(items)
         })
@@ -220,13 +219,13 @@ export class TheSeamNavService {
       paths: 'subset',
       queryParams: 'subset',
       fragment: 'ignored',
-      matrixParams: 'ignored'
+      matrixParams: 'ignored',
     }
 
     if (hasProperty(item, 'matchOptions')) {
       return {
         ...defaultMatchOpts,
-        ...item.matchOptions
+        ...item.matchOptions,
       }
     }
 
@@ -242,7 +241,7 @@ export class TheSeamNavService {
         item,
         prop,
         prevValue: currentValue,
-        newValue: value
+        newValue: value,
       }
       this.itemChanged.next(changed)
     }

@@ -52,6 +52,7 @@ import { TheSeamBaseLayoutComponent } from './base-layout.component'
 import { TheSeamBaseLayoutModule } from './base-layout.module'
 import { THESEAM_SIDE_NAV_CONFIG } from '../side-nav'
 import { AsyncPipe, DatePipe, NgFor, NgIf } from '@angular/common'
+import { TheSeamMenuModule } from '@theseam/ui-common/menu'
 
 @Component({
   selector: 'story-ex-widget-1',
@@ -67,6 +68,7 @@ import { AsyncPipe, DatePipe, NgFor, NgIf } from '@angular/common'
   imports: [
     NgIf,
     NgFor,
+    AsyncPipe,
     DatePipe,
     TheSeamWidgetModule,
   ],
@@ -76,6 +78,10 @@ class StoryExWidget1Component {
   faBell = faBell
   initialized$ = of(true).pipe(delay(1000))
   items = [ 'one', 'two', 'three', 'four' ]
+
+  ngOnInit() {
+    console.log('Widget 1 initialized')
+  }
 }
 
 @Component({
@@ -92,6 +98,7 @@ class StoryExWidget1Component {
   imports: [
     NgIf,
     NgFor,
+    AsyncPipe,
     DatePipe,
     TheSeamWidgetModule,
   ],
@@ -117,6 +124,7 @@ class StoryExWidget2Component {
   imports: [
     NgIf,
     NgFor,
+    AsyncPipe,
     DatePipe,
     TheSeamWidgetModule,
   ],
@@ -142,6 +150,7 @@ class StoryExWidget3Component {
   imports: [
     NgIf,
     NgFor,
+    AsyncPipe,
     DatePipe,
     TheSeamWidgetModule,
   ],
@@ -848,17 +857,22 @@ const horizontalNavItems: INavItem[] = [
     </seam-base-layout>
   </div>`,
   imports: [
+    AsyncPipe,
+    NgIf,
+    DatePipe,
     RouterModule,
     TheSeamBaseLayoutModule,
     TheSeamDashboardModule,
     TheSeamSideNavModule,
     TheSeamTopBarModule,
-    // TheSeamWidgetModule,
-    // TheSeamBreadcrumbsComponent,
     TheSeamNavModule,
     TheSeamIconModule,
     TheSeamOverlayScrollbarDirective,
     TheSeamButtonsModule,
+    TheSeamMenuModule,
+  ],
+  providers: [
+    TheSeamNavService, // Not intended to be used outside of the nav component, but leaving here for demo purposes, until upgrades are done.
   ],
 })
 class StoryExBaseLayoutComponent {
@@ -1021,6 +1035,7 @@ const meta: Meta<StoryComponentType> = {
         TheSeamIconModule,
         TheSeamOverlayScrollbarDirective,
         TheSeamButtonsModule,
+        TheSeamMenuModule,
         StoryExBaseLayoutComponent,
       ],
     }),

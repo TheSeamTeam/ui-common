@@ -18,7 +18,6 @@ import { SeamIcon, TheSeamIconModule } from '@theseam/ui-common/icon'
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  standalone: true,
 })
 export class SideNavToggleComponent {
   static ngAcceptInputType_expanded: BooleanInput

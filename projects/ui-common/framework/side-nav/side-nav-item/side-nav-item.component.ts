@@ -49,7 +49,6 @@ const COLLAPSED_STATE = 'collapsed'
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  standalone: true,
 })
 export class SideNavItemComponent implements OnDestroy {
   static ngAcceptInputType_hierLevel: NumberInput

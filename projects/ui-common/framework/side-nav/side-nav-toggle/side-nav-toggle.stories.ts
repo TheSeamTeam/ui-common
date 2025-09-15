@@ -1,4 +1,4 @@
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import { applicationConfig, Meta, StoryObj } from '@storybook/angular'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { provideRouter } from '@angular/router'
@@ -7,7 +7,6 @@ import { provideLocationMocks } from '@angular/common/testing'
 import { faBuilding } from '@fortawesome/free-regular-svg-icons'
 import { provideStoryInitialUrl } from '@marklb/storybook-angular-initial-url'
 
-import { TheSeamSideNavModule } from '../side-nav.module'
 import { SideNavToggleComponent } from './side-nav-toggle.component'
 
 const meta: Meta<SideNavToggleComponent> = {
@@ -20,12 +19,6 @@ const meta: Meta<SideNavToggleComponent> = {
         provideLocationMocks(),
         provideRouter([]),
         provideStoryInitialUrl('/'),
-      ],
-    }),
-    moduleMetadata({
-      declarations: [],
-      imports: [
-        TheSeamSideNavModule,
       ],
     }),
   ],

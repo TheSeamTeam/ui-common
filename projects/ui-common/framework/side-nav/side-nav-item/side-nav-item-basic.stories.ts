@@ -1,6 +1,5 @@
 import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 
-import { APP_BASE_HREF } from '@angular/common'
 import { Component, Directive, Input } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { provideRouter, Router, RouterModule } from '@angular/router'
@@ -11,16 +10,15 @@ import { faSignature } from '@fortawesome/free-solid-svg-icons'
 
 import { THESEAM_SIDE_NAV_ACCESSOR } from '../side-nav-tokens'
 import { SideNavComponent } from '../side-nav.component'
-import { TheSeamSideNavModule } from '../side-nav.module'
 import { SideNavItemComponent } from './side-nav-item.component'
+import { TheSeamSideNavService } from '../side-nav.service'
 
 @Component({ template: `Url: {{ router.url }}` })
 class StoryRoutePlacholderComponent {
   constructor(public router: Router) { }
 }
 
-// tslint:disable-next-line:directive-selector
-@Directive({ selector: '[storyNavToggle]', standalone: true })
+@Directive({ selector: '[storyNavToggle]' })
 class StoryNavToggleDirective {
   @Input() set storyNavToggle(value: string) { this._router.navigateByUrl(value) }
   constructor(private _router: Router) { }
@@ -36,20 +34,16 @@ const meta: Meta<SideNavItemComponent> = {
   decorators: [
     applicationConfig({
       providers: [
-        { provide: APP_BASE_HREF, useValue: '/' },
         provideAnimations(),
         provideLocationMocks(),
       ],
     }),
     moduleMetadata({
-      declarations: [
-        StoryRoutePlacholderComponent,
-      ],
       imports: [
-        TheSeamSideNavModule,
         StoryNavToggleDirective,
       ],
       providers: [
+        TheSeamSideNavService, // Normally would be provided by SideNavComponent.
         { provide: THESEAM_SIDE_NAV_ACCESSOR, useClass: MockSideNavComponent },
       ],
     }),

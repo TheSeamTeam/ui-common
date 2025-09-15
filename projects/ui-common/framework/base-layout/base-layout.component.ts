@@ -12,7 +12,7 @@ import {
   ViewContainerRef,
   ViewEncapsulation
 } from '@angular/core'
-import { AsyncPipe, NgIf, NgTemplateOutlet } from '@angular/common'
+import { AsyncPipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common'
 import { BehaviorSubject, from, isObservable, Observable } from 'rxjs'
 
 import { faAngleDoubleLeft, faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons'
@@ -44,6 +44,7 @@ export const THE_SEAM_BASE_LAYOUT: any = {
   encapsulation: ViewEncapsulation.None,
   imports: [
     NgIf,
+    NgFor,
     NgTemplateOutlet,
     AsyncPipe,
     PortalModule,

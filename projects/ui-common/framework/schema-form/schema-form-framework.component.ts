@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core'
 
+import { JsonSchemaFormModule } from '@ajsf/core'
+
 @Component({
   selector: 'seam-schema-form-framework',
   templateUrl: './schema-form-framework.component.html',
@@ -8,6 +10,9 @@ import { Component, Input } from '@angular/core'
     '[attr.data-name]': 'layoutNode?.node',
     '[attr.data-data-pointer]': 'layoutNode?.dataPointer',
   },
+  imports: [
+    JsonSchemaFormModule,
+  ],
 })
 export class TheSeamSchemaFormFrameworkComponent {
 

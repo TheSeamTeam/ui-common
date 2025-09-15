@@ -1,6 +1,5 @@
 import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 
-import { APP_BASE_HREF } from '@angular/common'
 import { Component, Directive, Input } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { provideRouter, Router, RouterModule } from '@angular/router'
@@ -12,8 +11,8 @@ import { provideStoryInitialUrl } from '@marklb/storybook-angular-initial-url'
 
 import { THESEAM_SIDE_NAV_ACCESSOR } from '../side-nav-tokens'
 import { SideNavComponent } from '../side-nav.component'
-import { TheSeamSideNavModule } from '../side-nav.module'
 import { SideNavItemComponent } from './side-nav-item.component'
+import { TheSeamSideNavService } from '../side-nav.service'
 
 @Component({ template: `Url: {{ router.url }}` })
 class StoryRoutePlacholderComponent {
@@ -24,8 +23,7 @@ class MockSideNavComponent implements Partial<SideNavComponent> {
   overlay = false
 }
 
-// tslint:disable-next-line:directive-selector
-@Directive({ selector: '[storyNavToggle]', standalone: true })
+@Directive({ selector: '[storyNavToggle]' })
 class StoryNavToggleDirective {
   @Input() set storyNavToggle(value: string) { this._router.navigateByUrl(value) }
   constructor(private _router: Router) { }
@@ -39,19 +37,16 @@ const meta: Meta<SideNavItemComponent> = {
       providers: [
         provideAnimations(),
         provideLocationMocks(),
-        provideStoryInitialUrl('/example-1'),
+        provideStoryInitialUrl('/example1'),
       ],
     }),
     moduleMetadata({
-      declarations: [
-        StoryRoutePlacholderComponent,
-      ],
       imports: [
-        TheSeamSideNavModule,
         StoryNavToggleDirective,
         RouterModule,
       ],
       providers: [
+        TheSeamSideNavService, // Normally would be provided by SideNavComponent.
         { provide: THESEAM_SIDE_NAV_ACCESSOR, useClass: MockSideNavComponent },
       ],
     }),
