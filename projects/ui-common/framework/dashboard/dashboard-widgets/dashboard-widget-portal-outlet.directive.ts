@@ -3,9 +3,9 @@ import {
   ComponentFactoryResolver,
   ComponentRef,
   Directive,
-  ElementRef,
   EmbeddedViewRef,
   EventEmitter,
+  inject,
   OnDestroy,
   OnInit,
   Output,
@@ -28,22 +28,17 @@ import {
 @Directive({
   selector: '[seamDashboardWidgetPortalOutlet]',
   exportAs: 'seamDashboardWidgetPortalOutlet',
-  inputs: ['portal: seamDashboardWidgetPortalOutlet']
+  inputs: ['portal: seamDashboardWidgetPortalOutlet'],
 })
 export class DashboardWidgetPortalOutletDirective extends BasePortalOutlet implements OnInit, OnDestroy {
+  private readonly _componentFactoryResolver = inject(ComponentFactoryResolver)
+  private readonly _viewContainerRef = inject(ViewContainerRef)
+
   /** Whether the portal component is initialized. */
   private _isInitialized = false
 
   /** Reference to the currently-attached component/view ref. */
   private _attachedRef?: CdkPortalOutletAttachedRef
-
-  constructor(
-    private readonly _componentFactoryResolver: ComponentFactoryResolver,
-    private readonly _viewContainerRef: ViewContainerRef,
-    private readonly _elementRef: ElementRef
-  ) {
-    super()
-  }
 
   /** Portal associated with the Portal outlet. */
   get portal(): Portal<any> | null {
@@ -112,14 +107,14 @@ export class DashboardWidgetPortalOutletDirective extends BasePortalOutlet imple
     // If the portal specifies an origin, use that as the logical location of the component
     // in the application tree. Otherwise use the location of this PortalOutlet.
     const viewContainerRef = portal.viewContainerRef != null
-        ? portal.viewContainerRef
-        : this._viewContainerRef
+      ? portal.viewContainerRef
+      : this._viewContainerRef
 
     const resolver = portal.componentFactoryResolver || this._componentFactoryResolver
     const componentFactory = resolver.resolveComponentFactory(portal.component)
     const ref = viewContainerRef.createComponent(
-        componentFactory, viewContainerRef.length,
-        portal.injector || viewContainerRef.injector)
+      componentFactory, viewContainerRef.length,
+      portal.injector || viewContainerRef.injector)
 
     super.setDisposeFn(() => ref.destroy())
     this._attachedPortal = portal
@@ -145,6 +140,4 @@ export class DashboardWidgetPortalOutletDirective extends BasePortalOutlet imple
 
     return viewRef
   }
-
-  // static ngAcceptInputType_portal: Portal<any> | null | undefined | '';
 }

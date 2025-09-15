@@ -1,4 +1,4 @@
-import { Inject, Injectable, isDevMode, Optional } from '@angular/core'
+import { inject, Inject, Injectable, isDevMode, Optional } from '@angular/core'
 import { Observable, of, Subject } from 'rxjs'
 import { auditTime, map, mapTo, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators'
 
@@ -35,19 +35,15 @@ export interface IDashboardWidgetsPreferencesMapRecord {
  * Manages anything dealing with retrieving and updating dashboard widget
  * preference data from the provided accessor.
  */
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class DashboardWidgetsPreferencesService {
+
+  private readonly _prefsAccessor: ITheSeamDashboardWidgetsPreferencesAccessor | null = inject(THESEAM_DASHBOARD_WIDGETS_PREFERENCES_ACCESSOR, { optional: true })
 
   private readonly _tablePrefsMap = new Map<string, IDashboardWidgetsPreferencesMapRecord>()
   // private _pending = false
 
   // public get pending() { return this._pending }
-
-  constructor(
-    @Optional() @Inject(THESEAM_DASHBOARD_WIDGETS_PREFERENCES_ACCESSOR) private _prefsAccessor?: ITheSeamDashboardWidgetsPreferencesAccessor
-  ) { }
 
   public preferences(preferenceKey: string): Observable<IDashboardWidgetsPreferences> {
     let prefs = this._tablePrefsMap.get(preferenceKey)
@@ -91,10 +87,10 @@ export class DashboardWidgetsPreferencesService {
           }
         }),
         map(v => v || {}),
-        // tap(v => console.log('preferences$', v))
-        // tap(v => this._pending = false)
+        // tap(v => console.log('preferences$', v)),
+        // tap(v => this._pending = false),
       )),
-      shareReplay({ bufferSize: 1, refCount: true })
+      shareReplay({ bufferSize: 1, refCount: true }),
     )
   }
 
@@ -117,7 +113,7 @@ export class DashboardWidgetsPreferencesService {
 
   public selectLayout(preferenceKey: string, layoutName: string): Observable<IDashboardWidgetItemLayoutPreference | undefined> {
     return this.preferences(preferenceKey).pipe(
-      map(prefs => (prefs.layouts || []).find(l => l.name === layoutName))
+      map(prefs => (prefs.layouts || []).find(l => l.name === layoutName)),
     )
   }
 
@@ -163,7 +159,7 @@ export class DashboardWidgetsPreferencesService {
         ? this._prefsAccessor.update(preferenceKey, JSON.stringify(newPrefs))
         : of(newPrefs)
       ),
-      switchMap(() => this.refresh(preferenceKey).pipe(mapTo(undefined)))
+      switchMap(() => this.refresh(preferenceKey).pipe(mapTo(undefined))),
     )
     // .subscribe()
   }
@@ -172,7 +168,7 @@ export class DashboardWidgetsPreferencesService {
     const serialized: IDashboardWidgetItemLayoutPreference = {
       name: layout.name,
       label: layout.label,
-      items: this.toSerializeableItems(layout.items as any) || []
+      items: this.toSerializeableItems(layout.items as any) || [],
     }
     return serialized
   }
@@ -206,7 +202,7 @@ export class DashboardWidgetsPreferencesService {
         widgetId: w.widgetId,
         col: w.col,
         order: w.order,
-        // component: w.__itemDef.component as string
+        // component: w.__itemDef.component as string,
       })
     }
     return serialized
@@ -219,7 +215,7 @@ export class DashboardWidgetsPreferencesService {
   //       widgetId: w.widgetId,
   //       col: w.col,
   //       order: w.order,
-  //       // component: w.component
+  //       // component: w.component,
   //     })
   //   }
   //   return items

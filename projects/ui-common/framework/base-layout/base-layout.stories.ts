@@ -1,4 +1,4 @@
-import { applicationConfig, Meta, moduleMetadata } from '@storybook/angular'
+import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 
 import { Component, Inject, Optional } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
@@ -29,9 +29,9 @@ import { TheSeamBreadcrumbsComponent } from '@theseam/ui-common/breadcrumbs'
 import { TheSeamWidgetModule } from '@theseam/ui-common/widget'
 import { provideNavigationReload } from '@theseam/ui-common/navigation-reload'
 import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
-import { TheSeamIconModule } from '@theseam/ui-common/icon'
+import { SeamIcon, TheSeamIconModule } from '@theseam/ui-common/icon'
 import { TheSeamLayoutService } from '@theseam/ui-common/layout'
-import { OverlayScrollbarDirective } from '@theseam/ui-common/scrollbar'
+import { TheSeamOverlayScrollbarDirective } from '@theseam/ui-common/scrollbar'
 import { notNullOrUndefined } from '@theseam/ui-common/utils'
 
 import { TheSeamDashboardModule } from '../dashboard/dashboard.module'
@@ -46,24 +46,30 @@ import {
   TheSeamNavModule
 } from '../nav'
 import { TheSeamNavService } from '../nav/nav.service'
-import type { ITheSeamBaseLayoutRef } from './base-layout-ref'
+import { TheSeamBaseLayoutRef } from './base-layout-ref'
 import { THESEAM_BASE_LAYOUT_REF } from './base-layout-tokens'
 import { TheSeamBaseLayoutComponent } from './base-layout.component'
 import { TheSeamBaseLayoutModule } from './base-layout.module'
 import { THESEAM_SIDE_NAV_CONFIG } from '../side-nav'
+import { AsyncPipe, DatePipe, NgFor, NgIf } from '@angular/common'
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'story-ex-widget-1',
   template: `<seam-widget [icon]="faWrench" titleText="Example Widget 1" [hasConfig]="true" [loading]="!(initialized$ | async)">
-  <seam-widget-content-header>Widget example 1</seam-widget-content-header>
+    <seam-widget-content-header>Widget example 1</seam-widget-content-header>
 
-  <seam-widget-tile-list>
-    <button *ngFor="let item of items" seam-widget-tile [icon]="faBell">{{ item }}</button>
-  </seam-widget-tile-list>
+    <seam-widget-tile-list>
+      <button *ngFor="let item of items" seam-widget-tile [icon]="faBell">{{ item }}</button>
+    </seam-widget-tile-list>
 
-  <seam-widget-footer-text *ngIf="p?.length">Submitted: {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text>
-</seam-widget>`,
+    <seam-widget-footer-text *ngIf="p?.length">Submitted: {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text>
+  </seam-widget>`,
+  imports: [
+    NgIf,
+    NgFor,
+    DatePipe,
+    TheSeamWidgetModule,
+  ],
 })
 class StoryExWidget1Component {
   faWrench = faWrench
@@ -73,17 +79,22 @@ class StoryExWidget1Component {
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'story-ex-widget-2',
   template: `<seam-widget [icon]="faWrench" titleText="Example Widget 2" [hasConfig]="true" [loading]="!(initialized$ | async)">
-  <seam-widget-content-header>Widget example 2</seam-widget-content-header>
+    <seam-widget-content-header>Widget example 2</seam-widget-content-header>
 
-  <seam-widget-tile-list>
-    <button *ngFor="let item of items" seam-widget-tile [icon]="faBell">{{ item }}</button>
-  </seam-widget-tile-list>
+    <seam-widget-tile-list>
+      <button *ngFor="let item of items" seam-widget-tile [icon]="faBell">{{ item }}</button>
+    </seam-widget-tile-list>
 
-  <seam-widget-footer-text *ngIf="p?.length">Submitted: {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text>
-</seam-widget>`,
+    <seam-widget-footer-text *ngIf="p?.length">Submitted: {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text>
+  </seam-widget>`,
+  imports: [
+    NgIf,
+    NgFor,
+    DatePipe,
+    TheSeamWidgetModule,
+  ],
 })
 class StoryExWidget2Component {
   faWrench = faWrench
@@ -93,17 +104,22 @@ class StoryExWidget2Component {
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'story-ex-widget-3',
   template: `<seam-widget [icon]="faWrench" titleText="Example Widget 3" [hasConfig]="true" [loading]="!(initialized$ | async)">
-  <seam-widget-content-header>Widget example 3</seam-widget-content-header>
+    <seam-widget-content-header>Widget example 3</seam-widget-content-header>
 
-  <seam-widget-tile-list>
-    <button *ngFor="let item of items.slice(0, 2)" seam-widget-tile [icon]="faBell">{{ item }}</button>
-  </seam-widget-tile-list>
+    <seam-widget-tile-list>
+      <button *ngFor="let item of items.slice(0, 2)" seam-widget-tile [icon]="faBell">{{ item }}</button>
+    </seam-widget-tile-list>
 
-  <a seam-widget-footer-link routerLink="/example1">See All</a>
-</seam-widget>`,
+    <a seam-widget-footer-link routerLink="/example1">See All</a>
+  </seam-widget>`,
+  imports: [
+    NgIf,
+    NgFor,
+    DatePipe,
+    TheSeamWidgetModule,
+  ],
 })
 class StoryExWidget3Component {
   faWrench = faWrench
@@ -113,17 +129,22 @@ class StoryExWidget3Component {
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'story-ex-widget-4',
   template: `<seam-widget [icon]="faWrench" titleText="Example Widget 4" [hasConfig]="true" [loading]="!(initialized$ | async)">
-  <seam-widget-content-header>Widget example 4</seam-widget-content-header>
+    <seam-widget-content-header>Widget example 4</seam-widget-content-header>
 
-  <seam-widget-tile-list>
-    <button *ngFor="let item of items" seam-widget-tile [icon]="faBell">{{ item }}</button>
-  </seam-widget-tile-list>
+    <seam-widget-tile-list>
+      <button *ngFor="let item of items" seam-widget-tile [icon]="faBell">{{ item }}</button>
+    </seam-widget-tile-list>
 
-  <seam-widget-footer-text *ngIf="p?.length">Submitted: {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text>
-</seam-widget>`,
+    <seam-widget-footer-text *ngIf="p?.length">Submitted: {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text>
+  </seam-widget>`,
+  imports: [
+    NgIf,
+    NgFor,
+    DatePipe,
+    TheSeamWidgetModule,
+  ],
 })
 class StoryExWidget4Component {
   faWrench = faWrench
@@ -132,27 +153,27 @@ class StoryExWidget4Component {
   items = [ 'one', 'two', 'three', 'four' ]
 }
 
-@Component({
-  selector: 'story-ex-dashboard',
-  template: `
-    <seam-dashboard
-      [widgets]="widgets"
-      [widgetsDraggable]="widgetsDraggable">
-    </seam-dashboard>`,
-  standalone: true,
-  imports: [
-    TheSeamDashboardModule,
-  ],
-})
-class StoryExDashboardComponent {
-  widgets = [
-    { widgetId: 'widget-1', col: 0, order: 0, component: StoryExWidget1Component },
-    { widgetId: 'widget-2', col: 1, order: 0, component: StoryExWidget2Component },
-    { widgetId: 'widget-3', col: 2, order: 0, component: StoryExWidget3Component },
-    { widgetId: 'widget-4', col: 1, order: 1, component: StoryExWidget4Component }
-  ]
-  widgetsDraggable = true
-}
+// @Component({
+//   selector: 'story-ex-dashboard',
+//   template: `
+//     <seam-dashboard
+//       [widgets]="widgets"
+//       [widgetsDraggable]="widgetsDraggable">
+//     </seam-dashboard>`,
+//   standalone: true,
+//   imports: [
+//     TheSeamDashboardModule,
+//   ],
+// })
+// class StoryExDashboardComponent {
+//   widgets = [
+//     { widgetId: 'widget-1', col: 0, order: 0, component: StoryExWidget1Component },
+//     { widgetId: 'widget-2', col: 1, order: 0, component: StoryExWidget2Component },
+//     { widgetId: 'widget-3', col: 2, order: 0, component: StoryExWidget3Component },
+//     { widgetId: 'widget-4', col: 1, order: 1, component: StoryExWidget4Component }
+//   ]
+//   widgetsDraggable = true
+// }
 
 // @Component({ template: `Url: {{ router.url }}` })
 // class StoryRoutePlacholderComponent {
@@ -161,6 +182,10 @@ class StoryExDashboardComponent {
 
 @Component({
   template: `Url: {{ router.url }} [{{ countDown$ | async }}]`,
+  imports: [
+    AsyncPipe,
+    RouterModule,
+  ],
 })
 class StoryRoutePlacholderComponent {
   countDown$ = interval(1000).pipe(
@@ -533,7 +558,6 @@ const horizontalNavItems: INavItem[] = [
 ]
 
 @Component({
-  // tslint:disable-next-line:component-selector
   selector: 'story-ex-base-layout',
   styles: [`
     :host::ng-deep .top-bar-items--left {
@@ -822,7 +846,20 @@ const horizontalNavItems: INavItem[] = [
 
       </div>
     </seam-base-layout>
-  </div>`
+  </div>`,
+  imports: [
+    RouterModule,
+    TheSeamBaseLayoutModule,
+    TheSeamDashboardModule,
+    TheSeamSideNavModule,
+    TheSeamTopBarModule,
+    // TheSeamWidgetModule,
+    // TheSeamBreadcrumbsComponent,
+    TheSeamNavModule,
+    TheSeamIconModule,
+    TheSeamOverlayScrollbarDirective,
+    TheSeamButtonsModule,
+  ],
 })
 class StoryExBaseLayoutComponent {
   faUserAlt = faUserAlt
@@ -866,7 +903,7 @@ class StoryExBaseLayoutComponent {
     private readonly _layout: TheSeamLayoutService,
     private readonly _router: Router,
     private readonly _nav: TheSeamNavService,
-    @Optional() @Inject(THESEAM_BASE_LAYOUT_REF) _baseLayout: ITheSeamBaseLayoutRef
+    @Optional() @Inject(THESEAM_BASE_LAYOUT_REF) _baseLayout: TheSeamBaseLayoutRef
   ) {
     this._router.events.pipe(
       filter(event => event instanceof NavigationEnd),
@@ -928,7 +965,27 @@ class StoryExBaseLayoutComponent {
   }
 }
 
-export default {
+interface ExtraArgs {
+  logo: string
+  logoSm: string
+  navItems: ISideNavItem[]
+  widgets: {
+    widgetId: string
+    col: number
+    order: number
+    component: any
+  }[]
+  faUserAlt: SeamIcon
+  faQuestionCircle: SeamIcon
+  faSignOutAlt: SeamIcon
+  faBell: SeamIcon
+  faExclamationTriangle: SeamIcon
+  faComment: SeamIcon
+}
+
+type StoryComponentType = TheSeamBaseLayoutComponent & ExtraArgs
+
+const meta: Meta<StoryComponentType> = {
   title: 'Framework/Base Layout',
   component: TheSeamBaseLayoutComponent,
   decorators: [
@@ -952,14 +1009,6 @@ export default {
       ],
     }),
     moduleMetadata({
-      declarations: [
-        StoryExWidget1Component,
-        StoryExWidget2Component,
-        StoryExWidget3Component,
-        StoryExWidget4Component,
-        StoryRoutePlacholderComponent,
-        StoryExBaseLayoutComponent
-      ],
       imports: [
         RouterModule,
         TheSeamBaseLayoutModule,
@@ -970,96 +1019,106 @@ export default {
         TheSeamBreadcrumbsComponent,
         TheSeamNavModule,
         TheSeamIconModule,
-        OverlayScrollbarDirective,
-        TheSeamButtonsModule
+        TheSeamOverlayScrollbarDirective,
+        TheSeamButtonsModule,
+        StoryExBaseLayoutComponent,
       ],
     }),
   ],
   parameters: {
     layout: 'fullscreen',
   },
-} as Meta
+}
 
-export const Basic = () => ({
-  props: {
-    logo: 'assets/images/theseam_logo.svg',
-    logoSm: 'assets/images/theseam_logo_notext.svg',
-    // hasTitle: boolean('hasTitle', false),
-    // titleText: text('titleText', 'Dashboard'),
-    // subTitleText: text('subTitleText', 'Example'),
-    navItems,
-    widgets: [
-      { widgetId: 'widget-1', col: 0, order: 0, component: StoryExWidget1Component },
-      { widgetId: 'widget-2', col: 1, order: 0, component: StoryExWidget2Component },
-      { widgetId: 'widget-3', col: 2, order: 0, component: StoryExWidget3Component },
-      { widgetId: 'widget-4', col: 1, order: 1, component: StoryExWidget4Component },
-    ],
-    faUserAlt,
-    faQuestionCircle,
-    faSignOutAlt,
-    faBell,
-    faExclamationTriangle,
-    faComment,
-    // widgetsDraggable: boolean('widgetsDraggable', true),
-  },
-  template: `
-    <div style="height: 100vh; width: 100vw;">
-      <seam-base-layout>
-        <seam-side-nav
-          *seamBaseLayoutSideBar
-          [items]="navItems">
-        </seam-side-nav>
-        <div *seamBaseLayoutContentHeader>
-          <seam-breadcrumbs class="flex-grow-1"></seam-breadcrumbs>
-        </div>
-        <seam-top-bar
-          *seamBaseLayoutTopBar
-          [logo]="logo"
-          [logoSm]="logoSm"
-          [hasTitle]="hasTitle"
-          [titleText]="titleText"
-          [subTitleText]="subTitleText">
-          <seam-menu seamTopBarMenu>
-            <a seamMenuItem [icon]="faUserAlt" routerLink="/profile">Profile</a>
-            <button seamMenuItem [icon]="faQuestionCircle">About</button>
-            <seam-menu-divider></seam-menu-divider>
-            <a seamMenuItem [icon]="faSignOutAlt" routerLink="/logout">Sign out</a>
-          </seam-menu>
+export default meta
+type Story = StoryObj<StoryComponentType>
 
-          <button seamIconBtn *seamTopBarItem
-            [icon]="faBell"
-            iconType="borderless-styled-square"
-            [seamMenuToggle]="notificationMenu">
-            <span class="sr-only">Notifications</span>
-            <seam-icon-notification iconClass="text-danger"></seam-icon-notification>
-          </button>
-          <seam-menu #notificationMenu>
-            <div style="width: 400px">
-              <a seamMenuItem [icon]="faExclamationTriangle" iconClass="text-warning" routerLink="/profile">
-                There is a problem with you self-assessment answers.
-              </a>
-              <a seamMenuItem [icon]="faExclamationTriangle" iconClass="text-warning" routerLink="/profile">
-                Your password expires in 10 days.
-              </a>
-              <button seamMenuItem [icon]="faComment" iconClass="text-primary">
-                You have unread feedback on your document.
-              </button>
-              <seam-menu-footer>
-                <a seamMenuFooterAction routerLink="/notifications">See All</a>
-              </seam-menu-footer>
-            </div>
-          </seam-menu>
-        </seam-top-bar>
-        <div *seamBaseLayoutContent class="h-100">
-          <router-outlet [seamRouterOutletReload]></router-outlet>
-          <!--<seam-router-outlet-reload></seam-router-outlet-reload>-->
-        </div>
-      </seam-base-layout>
-    </div>
-  `,
-})
+export const Basic: Story = {
+  render: args => ({
+    props: {
+      ...args,
+      logo: 'assets/images/theseam_logo.svg',
+      logoSm: 'assets/images/theseam_logo_notext.svg',
+      // hasTitle: boolean('hasTitle', false),
+      // titleText: text('titleText', 'Dashboard'),
+      // subTitleText: text('subTitleText', 'Example'),
+      navItems,
+      widgets: [
+        { widgetId: 'widget-1', col: 0, order: 0, component: StoryExWidget1Component },
+        { widgetId: 'widget-2', col: 1, order: 0, component: StoryExWidget2Component },
+        { widgetId: 'widget-3', col: 2, order: 0, component: StoryExWidget3Component },
+        { widgetId: 'widget-4', col: 1, order: 1, component: StoryExWidget4Component },
+      ],
+      faUserAlt,
+      faQuestionCircle,
+      faSignOutAlt,
+      faBell,
+      faExclamationTriangle,
+      faComment,
+      // widgetsDraggable: boolean('widgetsDraggable', true),
+    },
+    template: `
+      <div style="height: 100vh; width: 100vw;">
+        <seam-base-layout>
+          <seam-side-nav
+            *seamBaseLayoutSideBar
+            [items]="navItems">
+          </seam-side-nav>
+          <div *seamBaseLayoutContentHeader>
+            <seam-breadcrumbs class="flex-grow-1"></seam-breadcrumbs>
+          </div>
+          <seam-top-bar
+            *seamBaseLayoutTopBar
+            [logo]="logo"
+            [logoSm]="logoSm"
+            [hasTitle]="hasTitle"
+            [titleText]="titleText"
+            [subTitleText]="subTitleText">
+            <seam-menu seamTopBarMenu>
+              <a seamMenuItem [icon]="faUserAlt" routerLink="/profile">Profile</a>
+              <button seamMenuItem [icon]="faQuestionCircle">About</button>
+              <seam-menu-divider></seam-menu-divider>
+              <a seamMenuItem [icon]="faSignOutAlt" routerLink="/logout">Sign out</a>
+            </seam-menu>
+
+            <button seamIconBtn *seamTopBarItem
+              [icon]="faBell"
+              iconType="borderless-styled-square"
+              [seamMenuToggle]="notificationMenu">
+              <span class="sr-only">Notifications</span>
+              <seam-icon-notification iconClass="text-danger"></seam-icon-notification>
+            </button>
+            <seam-menu #notificationMenu>
+              <div style="width: 400px">
+                <a seamMenuItem [icon]="faExclamationTriangle" iconClass="text-warning" routerLink="/profile">
+                  There is a problem with you self-assessment answers.
+                </a>
+                <a seamMenuItem [icon]="faExclamationTriangle" iconClass="text-warning" routerLink="/profile">
+                  Your password expires in 10 days.
+                </a>
+                <button seamMenuItem [icon]="faComment" iconClass="text-primary">
+                  You have unread feedback on your document.
+                </button>
+                <seam-menu-footer>
+                  <a seamMenuFooterAction routerLink="/notifications">See All</a>
+                </seam-menu-footer>
+              </div>
+            </seam-menu>
+          </seam-top-bar>
+          <div *seamBaseLayoutContent class="h-100">
+            <router-outlet [seamRouterOutletReload]></router-outlet>
+            <!--<seam-router-outlet-reload></seam-router-outlet-reload>-->
+          </div>
+        </seam-base-layout>
+      </div>
+    `,
+  }),
+}
 
 // Using wrapper StoryExBaseLayoutComponent component to manage double nav items
-export const HorizontalNav = () => ({
-  template: `<story-ex-base-layout></story-ex-base-layout>`
-})
+export const HorizontalNav: Story = {
+  render: args => ({
+    props: args,
+    template: `<story-ex-base-layout></story-ex-base-layout>`
+  }),
+}

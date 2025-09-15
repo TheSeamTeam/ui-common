@@ -3,7 +3,7 @@ import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/an
 import { Component } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
 
-import { OverlayScrollbarDirective } from '@theseam/ui-common/scrollbar'
+import { TheSeamOverlayScrollbarDirective } from '@theseam/ui-common/scrollbar'
 
 import { TheSeamModalModule } from '../modal.module'
 import { Modal } from '../modal.service'
@@ -96,7 +96,7 @@ const meta: Meta<any> = {
     moduleMetadata({
       imports: [
         TheSeamModalModule,
-        OverlayScrollbarDirective,
+        TheSeamOverlayScrollbarDirective,
       ],
     }),
   ],

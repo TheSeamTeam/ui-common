@@ -35,9 +35,9 @@ import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { InputBoolean, InputNumber } from '@theseam/ui-common/core'
 import { TheSeamLayoutModule, TheSeamLayoutService } from '@theseam/ui-common/layout'
 import { SeamIcon } from '@theseam/ui-common/icon'
-import { OverlayScrollbarDirective } from '@theseam/ui-common/scrollbar'
+import { TheSeamOverlayScrollbarDirective } from '@theseam/ui-common/scrollbar'
 
-import { ITheSeamBaseLayoutNav, ITheSeamBaseLayoutRef, THESEAM_BASE_LAYOUT_REF } from '../base-layout/index'
+import { TheSeamBaseLayoutNav, TheSeamBaseLayoutRef, THESEAM_BASE_LAYOUT_REF } from '../base-layout/index'
 
 import { BaseLayoutSideBarFooterDirective } from '../base-layout/directives/base-layout-side-bar-footer.directive'
 import { BaseLayoutSideBarHeaderDirective } from '../base-layout/directives/base-layout-side-bar-header.directive'
@@ -182,7 +182,7 @@ export function sideNavExpandStateChangeFn(fromState: string, toState: string) {
   imports: [
     CommonModule,
     A11yModule,
-    OverlayScrollbarDirective,
+    TheSeamOverlayScrollbarDirective,
     TheSeamLayoutModule,
     PortalModule,
     SideNavItemComponent,
@@ -192,7 +192,7 @@ export function sideNavExpandStateChangeFn(fromState: string, toState: string) {
   encapsulation: ViewEncapsulation.None,
   standalone: true,
 })
-export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNav {
+export class SideNavComponent implements OnInit, OnDestroy, TheSeamBaseLayoutNav {
   static ngAcceptInputType_hasHeaderToggle: BooleanInput
 
   private readonly _ngUnsubscribe = new Subject<void>()
@@ -283,7 +283,7 @@ export class SideNavComponent implements OnInit, OnDestroy, ITheSeamBaseLayoutNa
     private readonly _layout: TheSeamLayoutService,
     private readonly _sideNav: TheSeamSideNavService,
     @Optional() @Inject(THESEAM_SIDE_NAV_CONFIG) private readonly _config?: SideNavConfig,
-    @Optional() @Inject(THESEAM_BASE_LAYOUT_REF) private readonly _baseLayoutRef?: ITheSeamBaseLayoutRef
+    @Optional() @Inject(THESEAM_BASE_LAYOUT_REF) private readonly _baseLayoutRef?: TheSeamBaseLayoutRef
   ) {
     const config: SideNavConfig = {
       ...DEFAULT_SIDE_NAV_CONFIG,

@@ -16,25 +16,29 @@ import { DashboardWidgetsComponent } from './dashboard-widgets/dashboard-widgets
 import { DashboardComponent } from './dashboard.component'
 
 @NgModule({
-  declarations: [
+  // declarations: [
+  //   // DashboardComponent,
+  //   // DashboardWidgetsComponent,
+
+  // ],
+  imports: [
+    // CommonModule,
+    // PortalModule,
+    // DragDropModule,
+    // TheSeamButtonsModule,
+    // TheSeamIconModule,
+    // TheSeamSharedModule,
+
     DashboardComponent,
     DashboardWidgetsComponent,
     DashboardWidgetContainerComponent,
     DashboardWidgetTemplateContainerComponent,
-    DashboardWidgetPortalOutletDirective
-  ],
-  imports: [
-    CommonModule,
-    PortalModule,
-    DragDropModule,
-    TheSeamButtonsModule,
-    TheSeamIconModule,
-    TheSeamSharedModule
+    DashboardWidgetPortalOutletDirective,
   ],
   exports: [
     DashboardComponent,
     DashboardWidgetsComponent,
-    DashboardWidgetPortalOutletDirective
+    DashboardWidgetPortalOutletDirective,
   ]
 })
 export class TheSeamDashboardModule { }

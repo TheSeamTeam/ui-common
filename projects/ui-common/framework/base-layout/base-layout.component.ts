@@ -1,9 +1,10 @@
-import { TemplatePortal } from '@angular/cdk/portal'
+import { PortalModule, TemplatePortal } from '@angular/cdk/portal'
 import {
   ChangeDetectionStrategy,
   Component,
   ContentChild,
   forwardRef,
+  inject,
   Input,
   isDevMode,
   OnInit,
@@ -11,15 +12,16 @@ import {
   ViewContainerRef,
   ViewEncapsulation
 } from '@angular/core'
+import { AsyncPipe, NgIf, NgTemplateOutlet } from '@angular/common'
 import { BehaviorSubject, from, isObservable, Observable } from 'rxjs'
 
 import { faAngleDoubleLeft, faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons'
-
 import { MediaQueryAliases, TheSeamLayoutService } from '@theseam/ui-common/layout'
+import { TheSeamOverlayScrollbarDirective } from '@theseam/ui-common/scrollbar'
 
-import { BaseLayoutAction, IBaseLayoutActionButton } from './base-layout-action'
-import { ITheSeamBaseLayoutNav } from './base-layout-nav'
-import { ITheSeamBaseLayoutRef } from './base-layout-ref'
+import { TheSeamBaseLayoutAction, TheSeamBaseLayoutActionButton } from './base-layout-action'
+import { TheSeamBaseLayoutNav } from './base-layout-nav'
+import { TheSeamBaseLayoutRef } from './base-layout-ref'
 import { THESEAM_BASE_LAYOUT_REF } from './base-layout-tokens'
 import { BaseLayoutContentFooterDirective } from './directives/base-layout-content-footer.directive'
 import { BaseLayoutContentHeaderDirective } from './directives/base-layout-content-header.directive'
@@ -29,7 +31,6 @@ import { BaseLayoutTopBarDirective } from './directives/base-layout-top-bar.dire
 
 export const THE_SEAM_BASE_LAYOUT: any = {
   provide: THESEAM_BASE_LAYOUT_REF,
-  // tslint:disable-next-line:no-use-before-declare
   useExisting: forwardRef(() => TheSeamBaseLayoutComponent),
   multi: false,
 }
@@ -40,12 +41,22 @@ export const THE_SEAM_BASE_LAYOUT: any = {
   styleUrls: ['./base-layout.component.scss'],
   providers: [ THE_SEAM_BASE_LAYOUT ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  imports: [
+    NgIf,
+    NgTemplateOutlet,
+    AsyncPipe,
+    PortalModule,
+    TheSeamOverlayScrollbarDirective,
+  ],
 })
-export class TheSeamBaseLayoutComponent implements OnInit, ITheSeamBaseLayoutRef {
+export class TheSeamBaseLayoutComponent implements OnInit, TheSeamBaseLayoutRef {
 
-  faAngleDoubleRight = faAngleDoubleRight
-  faAngleDoubleLeft = faAngleDoubleLeft
+  private readonly _viewContainerRef = inject(ViewContainerRef)
+  private readonly _layout = inject(TheSeamLayoutService)
+
+  readonly faAngleDoubleRight = faAngleDoubleRight
+  readonly faAngleDoubleLeft = faAngleDoubleLeft
 
   @Input() overlayNav = false
 
@@ -68,23 +79,20 @@ export class TheSeamBaseLayoutComponent implements OnInit, ITheSeamBaseLayoutRef
   _contentHeaderPortal?: TemplatePortal
   _contentFooterPortal?: TemplatePortal
 
-  private _hasSideBar = new BehaviorSubject<boolean>(false)
+  private readonly _hasSideBar = new BehaviorSubject<boolean>(false)
 
-  public hasSideBar$: Observable<boolean>
-  public isMobile$: Observable<boolean>
+  public readonly hasSideBar$: Observable<boolean>
+  public readonly isMobile$: Observable<boolean>
 
   get registeredNav() { return this._registeredNav.value }
-  private _registeredNav = new BehaviorSubject<ITheSeamBaseLayoutNav | undefined>(undefined)
-  public registeredNav$ = this._registeredNav.asObservable()
+  private readonly _registeredNav = new BehaviorSubject<TheSeamBaseLayoutNav | undefined>(undefined)
+  public readonly registeredNav$ = this._registeredNav.asObservable()
 
   get registeredActions() { return this._registeredActions.value }
-  private _registeredActions = new BehaviorSubject<BaseLayoutAction[]>([])
-  public registeredActions$: Observable<BaseLayoutAction[]>
+  private readonly _registeredActions = new BehaviorSubject<TheSeamBaseLayoutAction[]>([])
+  public readonly registeredActions$: Observable<TheSeamBaseLayoutAction[]>
 
-  constructor(
-    private _viewContainerRef: ViewContainerRef,
-    private _layout: TheSeamLayoutService
-  ) {
+  constructor() {
     this.registeredActions$ = this._registeredActions.asObservable()
 
     this.isMobile$ = this._layout.isMobile$
@@ -120,7 +128,7 @@ export class TheSeamBaseLayoutComponent implements OnInit, ITheSeamBaseLayoutRef
     }
   }
 
-  public registerNav(nav: ITheSeamBaseLayoutNav): void {
+  public registerNav(nav: TheSeamBaseLayoutNav): void {
     // TODO: Allow multiple registered navs
     // if (this.registeredNav) {
     //   throw new Error('[TheSeamBaseLayoutComponent] A nav is already registered.')
@@ -129,13 +137,13 @@ export class TheSeamBaseLayoutComponent implements OnInit, ITheSeamBaseLayoutRef
     this._registeredNav.next(nav)
   }
 
-  public unregisterNav(nav: ITheSeamBaseLayoutNav): void {
+  public unregisterNav(nav: TheSeamBaseLayoutNav): void {
     if (this.registeredNav === nav) {
       this._registeredNav.next(undefined)
     }
   }
 
-  public registerAction(action: BaseLayoutAction): void {
+  public registerAction(action: TheSeamBaseLayoutAction): void {
     const actions = this._registeredActions.value
     if (actions.findIndex(a => a.name === action.name) !== -1) {
       if (isDevMode()) {
@@ -150,7 +158,7 @@ export class TheSeamBaseLayoutComponent implements OnInit, ITheSeamBaseLayoutRef
     actions.push(action)
   }
 
-  public unregisterAction(action: BaseLayoutAction | string): void {
+  public unregisterAction(action: TheSeamBaseLayoutAction | string): void {
     const actionName = typeof action === 'string' ? action : action.name
     const actions = this._registeredActions.value
     this._registeredActions.next(actions.filter(f => f.name !== actionName))
@@ -162,11 +170,11 @@ export class TheSeamBaseLayoutComponent implements OnInit, ITheSeamBaseLayoutRef
     return !!action
   }
 
-  _handleButtonAction(action: IBaseLayoutActionButton): void {
+  _handleButtonAction(action: TheSeamBaseLayoutActionButton): void {
     this._execButtonAction(action).subscribe()
   }
 
-  _execButtonAction(action: IBaseLayoutActionButton): Observable<void> {
+  _execButtonAction(action: TheSeamBaseLayoutActionButton): Observable<void> {
     const fnRes = action.exec()
     return isObservable(fnRes) ? fnRes : from(Promise.resolve(fnRes))
   }

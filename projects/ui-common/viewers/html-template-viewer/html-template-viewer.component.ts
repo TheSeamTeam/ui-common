@@ -2,7 +2,7 @@ import { BooleanInput } from '@angular/cdk/coercion'
 import { ChangeDetectorRef, Component, ElementRef, inject, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { NgIf } from '@angular/common'
 
-import { OverlayScrollbarDirective } from '@theseam/ui-common/scrollbar'
+import { TheSeamOverlayScrollbarDirective } from '@theseam/ui-common/scrollbar'
 import { TheSeamElemResizedDirective } from '@theseam/ui-common/shared'
 import { InputBoolean } from '@theseam/ui-common/core'
 
@@ -27,7 +27,7 @@ interface TheSeamTemplateMessage<TType, TPayload> {
   styleUrls: ['./html-template-viewer.component.scss'],
   imports: [
     NgIf,
-    OverlayScrollbarDirective,
+    TheSeamOverlayScrollbarDirective,
     TheSeamElemResizedDirective,
   ],
 })

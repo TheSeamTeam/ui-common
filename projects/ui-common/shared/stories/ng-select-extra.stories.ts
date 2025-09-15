@@ -3,7 +3,7 @@ import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
 
 import { NgSelectModule } from '@ng-select/ng-select'
-import { OverlayScrollbarDirective } from '@theseam/ui-common/scrollbar'
+import { TheSeamOverlayScrollbarDirective } from '@theseam/ui-common/scrollbar'
 
 import { TheSeamNgSelectExtraDirective } from '../directives'
 
@@ -17,7 +17,7 @@ const meta: Meta<TheSeamNgSelectExtraDirective & StoryExtraProps> = {
       imports: [
         NgSelectModule,
         ReactiveFormsModule,
-        OverlayScrollbarDirective,
+        TheSeamOverlayScrollbarDirective,
       ]
     })
   ]

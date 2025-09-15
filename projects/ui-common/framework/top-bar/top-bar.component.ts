@@ -16,15 +16,23 @@ import { map, shareReplay, startWith, takeUntil } from 'rxjs/operators'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 
 import { InputBoolean } from '@theseam/ui-common/core'
-import { TheSeamLayoutService } from '@theseam/ui-common/layout'
+import { TheSeamLayoutModule, TheSeamLayoutService } from '@theseam/ui-common/layout'
 
 import { faUserCircle } from '@fortawesome/free-regular-svg-icons'
-import { SeamIcon } from '@theseam/ui-common/icon'
+import { SeamIcon, TheSeamIconModule } from '@theseam/ui-common/icon'
 import { TopBarCompactMenuBtnDetailDirective } from './top-bar-compact-menu-btn-detail.directive'
 import { TopBarItemDirective } from './top-bar-item.directive'
 import { TopBarMenuBtnDetailDirective } from './top-bar-menu-btn-detail.directive'
 import { TopBarMenuDirective } from './top-bar-menu.directive'
 import { TopBarNavToggleBtnDetailDirective } from './top-bar-nav-toggle-btn-detail.directive'
+import { AsyncPipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common'
+import { RouterModule } from '@angular/router'
+import { TopBarTitleComponent } from './top-bar-title/top-bar-title.component'
+import { TopBarMenuButtonComponent } from './top-bar-menu-button/top-bar-menu-button.component'
+// import { TheSeamBaseLayoutNavToggleDirective } from '../base-layout/directives/base-layout-nav-toggle.directive'
+import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
+import { TheSeamBaseLayoutModule } from '@theseam/ui-common/framework'
+import { TheSeamMenuModule } from '@theseam/ui-common/menu'
 
 /**
  * Top bar of an app.
@@ -43,7 +51,22 @@ import { TopBarNavToggleBtnDetailDirective } from './top-bar-nav-toggle-btn-deta
   styleUrls: ['./top-bar.component.scss'],
   encapsulation: ViewEncapsulation.None,
   exportAs: 'seamTopBar',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    NgIf,
+    NgFor,
+    NgTemplateOutlet,
+    AsyncPipe,
+    RouterModule,
+    TheSeamButtonsModule,
+    TheSeamIconModule,
+    TheSeamMenuModule,
+    TheSeamBaseLayoutModule,
+    TheSeamLayoutModule,
+    TopBarTitleComponent,
+    TopBarMenuButtonComponent,
+    // TheSeamBaseLayoutNavToggleDirective,
+  ],
 })
 export class TheSeamTopBarComponent implements OnDestroy, AfterContentInit {
   static ngAcceptInputType_hasTitle: BooleanInput
@@ -52,7 +75,7 @@ export class TheSeamTopBarComponent implements OnDestroy, AfterContentInit {
   private readonly _ngUnsubscribe = new Subject<void>()
 
   /** @ignore */
-  faBars = faBars
+  readonly faBars = faBars
 
   /** @ignore */
   @ContentChild(TopBarMenuDirective, { static: true }) _topBarMenu?: TopBarMenuDirective | null
@@ -89,7 +112,7 @@ export class TheSeamTopBarComponent implements OnDestroy, AfterContentInit {
   @Input() subTitleText: string | undefined | null
 
   /** Determines if the top bar button should be displayed. */
-  @Input() @InputBoolean() hasTopBarMenuButton: boolean = true
+  @Input() @InputBoolean() hasTopBarMenuButton = true
 
   /** Icon to display on mobile to activate profile dropdown. Defaults to faUserCircle. */
   @Input() profileIcon: SeamIcon | undefined | null = faUserCircle
@@ -101,25 +124,25 @@ export class TheSeamTopBarComponent implements OnDestroy, AfterContentInit {
   @Input() navToggleAlign: 'left' | 'right' | undefined | null = 'left'
 
   /** @ignore */
-  _leftItems = new BehaviorSubject<TopBarItemDirective[]>([])
+  readonly _leftItems = new BehaviorSubject<TopBarItemDirective[]>([])
   /** Additional templates to display on left side of top bar */
-  leftItems$ = this._leftItems.asObservable()
+  readonly leftItems$ = this._leftItems.asObservable()
 
   /** @ignore */
-  _centerItems = new BehaviorSubject<TopBarItemDirective[]>([])
+  readonly _centerItems = new BehaviorSubject<TopBarItemDirective[]>([])
   /** Additional templates to display in center of top bar */
-  centerItems$ = this._centerItems.asObservable()
+  readonly centerItems$ = this._centerItems.asObservable()
 
   /** @ignore */
-  _rightItems = new BehaviorSubject<TopBarItemDirective[]>([])
+  readonly _rightItems = new BehaviorSubject<TopBarItemDirective[]>([])
   /** Additional templates to display on right side of top bar */
-  rightItems$ = this._rightItems.asObservable()
+  readonly rightItems$ = this._rightItems.asObservable()
 
   /** @ignore */
-  isMobile$: Observable<boolean>
+  readonly isMobile$: Observable<boolean>
 
   constructor(
-    private _layout: TheSeamLayoutService
+    private readonly _layout: TheSeamLayoutService
   ) {
     this.isMobile$ = this._layout.isMobile$
   }
@@ -147,7 +170,7 @@ export class TheSeamTopBarComponent implements OnDestroy, AfterContentInit {
           this._rightItems.next(right)
           this._centerItems.next(center)
         }),
-        shareReplay({ bufferSize: 1, refCount: true })
+        shareReplay({ bufferSize: 1, refCount: true }),
       ).subscribe()
     }
   }

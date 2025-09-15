@@ -7,7 +7,7 @@ import { RouterModule } from '@angular/router'
 import { TheSeamIconModule } from '@theseam/ui-common/icon'
 import { TheSeamLayoutModule } from '@theseam/ui-common/layout'
 import { TheSeamMenuModule } from '@theseam/ui-common/menu'
-import { OverlayScrollbarDirective } from '@theseam/ui-common/scrollbar'
+import { TheSeamOverlayScrollbarDirective } from '@theseam/ui-common/scrollbar'
 import { TheSeamTooltipModule } from '@theseam/ui-common/tooltip'
 
 import { HorizontalNavComponent } from './horizontal-nav/horizontal-nav.component'
@@ -24,7 +24,7 @@ import { TheSeamNavService } from './nav.service'
     RouterModule,
     TheSeamIconModule,
     A11yModule,
-    OverlayScrollbarDirective,
+    TheSeamOverlayScrollbarDirective,
     TheSeamLayoutModule,
     PortalModule,
     TheSeamMenuModule,

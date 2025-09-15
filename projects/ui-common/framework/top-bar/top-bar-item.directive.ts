@@ -1,17 +1,17 @@
-import { Directive, Input, TemplateRef } from '@angular/core'
+import { Directive, inject, Input, TemplateRef } from '@angular/core'
 
 export type TopBarPosition = 'left' | 'right' | 'center'
 
 @Directive({
-  selector: '[seamTopBarItem]'
+  selector: '[seamTopBarItem]',
+  exportAs: 'seamTopBarItem',
 })
 export class TopBarItemDirective {
+  public readonly template = inject(TemplateRef<any>)
 
   position: TopBarPosition = 'right'
+
   @Input() set seamTopBarItem(value: any) {
     this.position = value
   }
-
-  constructor(public template: TemplateRef<any>) { }
-
 }

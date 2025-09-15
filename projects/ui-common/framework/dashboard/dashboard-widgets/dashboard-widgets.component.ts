@@ -1,5 +1,5 @@
 import { BooleanInput, coerceBooleanProperty, coerceNumberProperty, NumberInput } from '@angular/cdk/coercion'
-import { CdkDrag, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop'
+import { CdkDrag, CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop'
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -7,11 +7,10 @@ import {
   Component,
   EventEmitter,
   forwardRef,
-  Inject,
+  inject,
   Input,
   OnDestroy,
   OnInit,
-  Optional,
   Output,
   QueryList,
   TemplateRef,
@@ -20,22 +19,26 @@ import {
   ViewContainerRef,
   ViewEncapsulation
 } from '@angular/core'
+import { AsyncPipe, NgFor } from '@angular/common'
 import { BehaviorSubject, Observable, Subject } from 'rxjs'
 import { auditTime, debounceTime, distinctUntilChanged, finalize, map, shareReplay, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators'
 
 import { faLock, faUnlock } from '@fortawesome/free-solid-svg-icons'
-
 import { InputBoolean } from '@theseam/ui-common/core'
-import type { TheSeamElementResizedEvent } from '@theseam/ui-common/shared'
+import { TheSeamElementResizedEvent } from '@theseam/ui-common/shared'
 import { THESEAM_WIDGET_ACCESSOR } from '@theseam/ui-common/widget'
+import { TheSeamIconModule } from '@theseam/ui-common/icon'
+import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
 
-import type { ITheSeamBaseLayoutRef } from '../../base-layout/base-layout-ref'
+import { TheSeamBaseLayoutRef } from '../../base-layout/base-layout-ref'
 import { THESEAM_BASE_LAYOUT_REF } from '../../base-layout/base-layout-tokens'
 import { DashboardWidgetContainerComponent } from '../dashboard-widget-container/dashboard-widget-container.component'
 
 import { DashboardWidgetsAccessor, THESEAM_DASHBOARD_WIDGETS_ACCESSOR } from '../dashboard-widgets-tokens'
-import type { IDashboardWidgetsColumnRecord, IDashboardWidgetsItem, IDashboardWidgetsItemDef } from './dashboard-widgets-item'
+import { IDashboardWidgetsColumnRecord, IDashboardWidgetsItem, IDashboardWidgetsItemDef } from './dashboard-widgets-item'
 import { DashboardWidgetsService } from './dashboard-widgets.service'
+import { DashboardWidgetTemplateContainerComponent } from '../dashboard-widget-template-container/dashboard-widget-template-container.component'
+import { DashboardWidgetPortalOutletDirective } from '../dashboard-widgets/dashboard-widget-portal-outlet.directive'
 
 @Component({
   selector: 'seam-dashboard-widgets',
@@ -44,17 +47,25 @@ import { DashboardWidgetsService } from './dashboard-widgets.service'
   providers: [
     {
       provide: THESEAM_WIDGET_ACCESSOR,
-      // tslint:disable-next-line:no-use-before-declare
-      useExisting: forwardRef(() => DashboardWidgetsComponent)
+      useExisting: forwardRef(() => DashboardWidgetsComponent),
     },
     {
       provide: THESEAM_DASHBOARD_WIDGETS_ACCESSOR,
-      // tslint:disable-next-line:no-use-before-declare
-      useExisting: forwardRef(() => DashboardWidgetsComponent)
+      useExisting: forwardRef(() => DashboardWidgetsComponent),
     },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  imports: [
+    NgFor,
+    AsyncPipe,
+    DragDropModule,
+    TheSeamIconModule,
+    TheSeamButtonsModule,
+    DashboardWidgetTemplateContainerComponent,
+    DashboardWidgetContainerComponent,
+    DashboardWidgetPortalOutletDirective,
+  ],
 })
 export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewInit, DashboardWidgetsAccessor {
   static ngAcceptInputType_gapSize: NumberInput
@@ -63,8 +74,13 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
   static ngAcceptInputType_dragToggleVisible: BooleanInput
   static ngAcceptInputType_widgets: IDashboardWidgetsItemDef[] | undefined | null
 
-  faLock = faLock
-  faUnlock = faUnlock
+  private readonly _dashboardWidgets = inject(DashboardWidgetsService)
+  private readonly _viewContainerRef = inject(ViewContainerRef)
+  private readonly _cdr = inject(ChangeDetectorRef)
+  private readonly _baseLayoutRef = inject<TheSeamBaseLayoutRef | null>(THESEAM_BASE_LAYOUT_REF, { optional: true })
+
+  readonly faLock = faLock
+  readonly faUnlock = faUnlock
 
   public readonly _actionWidgetDragToggleName = 'widget-drag-toggle'
 
@@ -96,9 +112,9 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
   set widgets(value: IDashboardWidgetsItemDef[]) { this._dashboardWidgets.widgets = value || [] }
   get widgets(): IDashboardWidgetsItemDef[] { return this._dashboardWidgets.widgets }
 
-  public widgetItems$: Observable<IDashboardWidgetsItem[]>
-  public widgetColumns$: Observable<IDashboardWidgetsColumnRecord[]>
-  public containers$: Observable<DashboardWidgetContainerComponent[]>
+  public readonly widgetItems$: Observable<IDashboardWidgetsItem[]>
+  public readonly widgetColumns$: Observable<IDashboardWidgetsColumnRecord[]>
+  public readonly containers$: Observable<DashboardWidgetContainerComponent[]>
 
   readonly _gapStyleSize$: Observable<number>
 
@@ -107,19 +123,14 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
 
   @ViewChild('toggleBtnTpl', { static: true }) _toggleBtnTpl?: TemplateRef<any>
 
-  private _containers = new BehaviorSubject<DashboardWidgetContainerComponent[]>([])
-  private _layoutChange = new Subject<void>()
+  private readonly _containers = new BehaviorSubject<DashboardWidgetContainerComponent[]>([])
+  private readonly _layoutChange = new Subject<void>()
 
-  @Output() widgetsChange = new EventEmitter<IDashboardWidgetsItem[]>()
+  @Output() readonly widgetsChange = new EventEmitter<IDashboardWidgetsItem[]>()
 
   private readonly _widthChange = new Subject<number>()
 
-  constructor(
-    private _dashboardWidgets: DashboardWidgetsService,
-    private _viewContainerRef: ViewContainerRef,
-    private _cdr: ChangeDetectorRef,
-    @Optional() @Inject(THESEAM_BASE_LAYOUT_REF) private _baseLayoutRef?: ITheSeamBaseLayoutRef
-  ) {
+  constructor() {
     this._dashboardWidgets.setViewContainerRef(this._viewContainerRef)
 
     this.containers$ = this._containers.asObservable()
@@ -127,7 +138,7 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
     this._gapStyleSize$ = this._gapSize.pipe(
       auditTime(0),
       map(size => size / 2),
-      shareReplay({ bufferSize: 1, refCount: true })
+      shareReplay({ bufferSize: 1, refCount: true }),
     )
 
     this._widthChange.pipe(
@@ -141,7 +152,7 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
           this.numColumns = 1
         }
       }),
-      takeUntil(this._ngUnsubscribe)
+      takeUntil(this._ngUnsubscribe),
     ).subscribe()
 
     this.widgetItems$ = this._dashboardWidgets.widgetItems$
@@ -157,9 +168,9 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
         tap(widgetItems => this.widgetsChange.emit(widgetItems)),
         // map(widgetItems => this._dashboardWidgets.toSerializeableItems(widgetItems)),
         // tap(v => console.log('serializable', v)),
-        switchMap(() => this._dashboardWidgets.savePreferences())
+        switchMap(() => this._dashboardWidgets.savePreferences()),
       )),
-      takeUntil(this._ngUnsubscribe)
+      takeUntil(this._ngUnsubscribe),
     ).subscribe()
   }
 
@@ -181,7 +192,7 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
             this._unregisterToggleAction()
           }
         }),
-        takeUntil(this._ngUnsubscribe)
+        takeUntil(this._ngUnsubscribe),
       ).subscribe()
     }
 
@@ -189,7 +200,7 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
       startWith(undefined),
       map(() => this.containers?.toArray() || []),
       takeUntil(this._ngUnsubscribe),
-      finalize(() => this._containers.next([]))
+      finalize(() => this._containers.next([])),
     ).subscribe(v => this._containers.next(v))
   }
 
@@ -206,7 +217,7 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
           // exec: () => {
           //   console.log('toggle')
           // },
-          template: this._toggleBtnTpl
+          template: this._toggleBtnTpl,
         })
       }
     }
@@ -234,7 +245,7 @@ export class DashboardWidgetsComponent implements OnInit, OnDestroy, AfterViewIn
         event.previousContainer.data,
         event.container.data,
         event.previousIndex,
-        event.currentIndex
+        event.currentIndex,
       )
       this._dashboardWidgets.updateOrder().subscribe(() => this._layoutChange.next())
     }

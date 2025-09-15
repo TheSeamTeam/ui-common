@@ -6,7 +6,7 @@ import type { IDashboardWidgetsItemDef } from '../dashboard-widgets/dashboard-wi
   selector: 'seam-dashboard-widget-container',
   templateUrl: './dashboard-widget-container.component.html',
   styleUrls: ['./dashboard-widget-container.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardWidgetContainerComponent {
 

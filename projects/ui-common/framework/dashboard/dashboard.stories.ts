@@ -26,28 +26,4 @@ const meta: Meta<DashboardComponent> = {
 export default meta
 type Story = StoryObj<DashboardComponent>
 
-export const Example: Story = {
-  render: args => ({
-    props: { },
-    template: `
-      <seam-dashboard></seam-dashboard>
-    `
-  })
-}
-
-// storiesOf('Framework/Dashboard', module)
-//   // .addDecorator(withKnobs)
-
-//   .add('Basic', () => ({
-//     moduleMetadata: {
-//       declarations: [],
-//       imports: [
-//         BrowserAnimationsModule,
-//         TheSeamDashboardModule
-//       ]
-//     },
-//     props: { },
-//     template: `
-//       <seam-dashboard></seam-dashboard>
-//     `
-//   }))
+export const Example: Story = { }

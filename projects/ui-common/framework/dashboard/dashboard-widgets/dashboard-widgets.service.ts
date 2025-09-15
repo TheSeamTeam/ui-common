@@ -1,5 +1,5 @@
 import { ComponentPortal } from '@angular/cdk/portal'
-import { Injectable, Injector, isDevMode, ViewContainerRef } from '@angular/core'
+import { inject, Injectable, Injector, isDevMode, ViewContainerRef } from '@angular/core'
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs'
 import { auditTime, map, mapTo, shareReplay, switchMap, take, tap } from 'rxjs/operators'
 
@@ -11,14 +11,15 @@ import {
   IDashboardWidgetItemLayoutPreference,
   IDashboardWidgetsColumnRecord,
   IDashboardWidgetsItem,
-  IDashboardWidgetsItemDef
+  IDashboardWidgetsItemDef,
 } from './dashboard-widgets-item'
 import { DashboardWidgetsPreferencesService } from './dashboard-widgets-preferences.service'
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class DashboardWidgetsService {
+
+  private readonly _dynamicComponentLoaderModule = inject(TheSeamDynamicComponentLoader)
+  private readonly _preferences = inject(DashboardWidgetsPreferencesService)
 
   public readonly preferenceKey: string = 'datatable-widgets'
 
@@ -29,7 +30,7 @@ export class DashboardWidgetsService {
 
   get widgets(): IDashboardWidgetsItemDef[] { return this._widgets.value }
   set widgets(value: IDashboardWidgetsItemDef[]) { this._widgets.next(value) }
-  private _widgets = new BehaviorSubject<IDashboardWidgetsItemDef[]>([])
+  private readonly _widgets = new BehaviorSubject<IDashboardWidgetsItemDef[]>([])
 
   get numColumns(): number { return this._numColumns.value }
   set numColumns(value: number) {
@@ -37,7 +38,7 @@ export class DashboardWidgetsService {
       this._numColumns.next(value)
     }
   }
-  private _numColumns = new BehaviorSubject<number>(this.defaultNumColumns)
+  private readonly _numColumns = new BehaviorSubject<number>(this.defaultNumColumns)
 
   public readonly numColumns$: Observable<number>
   public readonly widgetItems$: Observable<IDashboardWidgetsItem[]>
@@ -45,37 +46,33 @@ export class DashboardWidgetsService {
 
   private readonly _viewContainerRefSubject = new BehaviorSubject<ViewContainerRef | undefined>(undefined)
 
-  constructor(
-    private readonly _dynamicComponentLoaderModule: TheSeamDynamicComponentLoader,
-    private readonly _preferences: DashboardWidgetsPreferencesService
-  ) {
+  constructor() {
     this.numColumns$ = this._numColumns.asObservable()
 
     // Widget items without preferences
-    const _widgetItems$ = combineLatest([ this._widgets, this._viewContainerRefSubject ])
-      .pipe(switchMap(([ defs, vcr ]) => this.createWidgetItems(defs, vcr)))
+    const _widgetItems$ = combineLatest([ this._widgets, this._viewContainerRefSubject ]).pipe(
+      switchMap(([ defs, vcr ]) => this.createWidgetItems(defs, vcr)),
+    )
 
     // Widget items with preferences
-    this.widgetItems$ = combineLatest([ _widgetItems$, this.numColumns$ ])
-      .pipe(
-        // Wait until the current tick is done, incase both the widgets and
-        // number of columns are set durring the same tick. Without the audit,
-        // this would get called twice when the component is initialized with
-        // both inputs set one after the other individually.
-        auditTime(0),
-        switchMap(([ items, numColumns ]) =>
-          this._preferences.selectLayout(this.preferenceKey, this._layoutName(numColumns)).pipe(
-            map(layout => layout ? this.withLayoutPreferences(items, layout) : items)
-          )
+    this.widgetItems$ = combineLatest([ _widgetItems$, this.numColumns$ ]).pipe(
+      // Wait until the current tick is done, incase both the widgets and
+      // number of columns are set durring the same tick. Without the audit,
+      // this would get called twice when the component is initialized with
+      // both inputs set one after the other individually.
+      auditTime(0),
+      switchMap(([ items, numColumns ]) =>
+        this._preferences.selectLayout(this.preferenceKey, this._layoutName(numColumns)).pipe(
+          map(layout => layout ? this.withLayoutPreferences(items, layout) : items)
         ),
-        shareReplay({ bufferSize: 1, refCount: true })
-      )
+      ),
+      shareReplay({ bufferSize: 1, refCount: true }),
+    )
 
-    this.widgetColumns$ = this.widgetItems$
-      .pipe(
-        map(items => this.toColumnRecords(items)),
-        shareReplay({ bufferSize: 1, refCount: true })
-      )
+    this.widgetColumns$ = this.widgetItems$.pipe(
+      map(items => this.toColumnRecords(items)),
+      shareReplay({ bufferSize: 1, refCount: true }),
+    )
   }
 
   private _layoutName(numColumns: number): string {
@@ -99,7 +96,7 @@ export class DashboardWidgetsService {
             console.warn(`[DashboardWidgetsService] Duplicate widget's with the same 'widgetId' found.`)
           }
         }
-      })
+      }),
     )
   }
 
@@ -125,7 +122,7 @@ export class DashboardWidgetsService {
 
   public createWidgetPortal(def: IDashboardWidgetsItemDef, vcr?: ViewContainerRef): Observable<ComponentPortal<any>> {
     const injector = Injector.create({ providers: [
-      { provide: THESEAM_WIDGET_DATA, useValue: { widgetId: def.widgetId } }
+      { provide: THESEAM_WIDGET_DATA, useValue: { widgetId: def.widgetId } },
     ], parent: this._viewContainerRefSubject.value?.injector })
 
     // TODO: I still use the ViewContainerRef injector, but I don't pass it to
@@ -136,8 +133,7 @@ export class DashboardWidgetsService {
 
     if (typeof def.component === 'string') {
       return this._dynamicComponentLoaderModule
-        .getComponentFactory(def.component)
-        .pipe(
+        .getComponentFactory(def.component).pipe(
           map(componentFactory => {
             return new ComponentPortal(
               componentFactory.componentType,
@@ -146,7 +142,7 @@ export class DashboardWidgetsService {
               (componentFactory as any /* ComponentFactoryBoundToModule */).ngModule.componentFactoryResolver
             )
           }),
-          take(1)
+          take(1),
         )
     }
 
@@ -156,15 +152,14 @@ export class DashboardWidgetsService {
   }
 
   public updateOrder(): Observable<void> {
-    return this.widgetColumns$
-      .pipe(
-        take(1),
-        tap(columns => columns.forEach(col => {
-          let i = 0
-          col.items.forEach(itm => itm.order = i++)
-        })),
-        mapTo(undefined)
-      )
+    return this.widgetColumns$.pipe(
+      take(1),
+      tap(columns => columns.forEach(col => {
+        let i = 0
+        col.items.forEach(itm => itm.order = i++)
+      })),
+      mapTo(undefined),
+    )
   }
 
   public toColumnRecords(items: IDashboardWidgetsItem[]): IDashboardWidgetsColumnRecord[] {
@@ -225,7 +220,7 @@ export class DashboardWidgetsService {
       const itemPref = layout.items.find(x => x.widgetId === item.widgetId)
       _items.push({
         ...item,
-        ...(itemPref || {})
+        ...(itemPref || {}),
       })
     }
 
@@ -251,7 +246,7 @@ export class DashboardWidgetsService {
           items
         })
       }),
-      mapTo(undefined)
+      mapTo(undefined),
     )
   }
 

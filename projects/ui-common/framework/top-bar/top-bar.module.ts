@@ -18,7 +18,25 @@ import { TopBarTitleComponent } from './top-bar-title/top-bar-title.component'
 import { TheSeamTopBarComponent } from './top-bar.component'
 
 @NgModule({
-  declarations: [
+  // declarations: [
+  //   TheSeamTopBarComponent,
+  //   TopBarTitleComponent,
+  //   TopBarMenuButtonComponent,
+  //   TopBarMenuDirective,
+  //   TopBarItemDirective,
+  //   TopBarMenuBtnDetailDirective,
+  //   TopBarCompactMenuBtnDetailDirective,
+  //   TopBarNavToggleBtnDetailDirective
+  // ],
+  imports: [
+    // CommonModule,
+    // TheSeamLayoutModule,
+    // TheSeamButtonsModule,
+    // TheSeamIconModule,
+    // TheSeamMenuModule,
+    // TheSeamBaseLayoutModule,
+    // RouterModule,
+
     TheSeamTopBarComponent,
     TopBarTitleComponent,
     TopBarMenuButtonComponent,
@@ -26,16 +44,7 @@ import { TheSeamTopBarComponent } from './top-bar.component'
     TopBarItemDirective,
     TopBarMenuBtnDetailDirective,
     TopBarCompactMenuBtnDetailDirective,
-    TopBarNavToggleBtnDetailDirective
-  ],
-  imports: [
-    CommonModule,
-    TheSeamLayoutModule,
-    TheSeamButtonsModule,
-    TheSeamIconModule,
-    TheSeamMenuModule,
-    TheSeamBaseLayoutModule,
-    RouterModule
+    TopBarNavToggleBtnDetailDirective,
   ],
   exports: [
     TheSeamTopBarComponent,
@@ -45,7 +54,7 @@ import { TheSeamTopBarComponent } from './top-bar.component'
     TopBarItemDirective,
     TopBarMenuBtnDetailDirective,
     TopBarCompactMenuBtnDetailDirective,
-    TopBarNavToggleBtnDetailDirective
-  ]
+    TopBarNavToggleBtnDetailDirective,
+  ],
 })
 export class TheSeamTopBarModule { }

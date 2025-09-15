@@ -11,7 +11,7 @@ import type { TheSeamOverlayScrollbarsConfig } from './overlay-scrollbars-config
   selector: '[seamOverlayScrollbar]',
   exportAs: 'seamOverlayScrollbar',
 })
-export class OverlayScrollbarDirective implements AfterViewInit, OnDestroy {
+export class TheSeamOverlayScrollbarDirective implements AfterViewInit, OnDestroy {
   static ngAcceptInputType_seamOverlayScrollbar: TheSeamOverlayScrollbarsConfig | undefined | null | ''
 
   private readonly _ref = inject(ElementRef)
