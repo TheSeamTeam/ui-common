@@ -1,7 +1,7 @@
 /* eslint-disable no-prototype-builtins */
-import { action, HandlerFunction } from '@storybook/addon-actions'
+import { action, HandlerFunction } from 'storybook/actions'
 import { AngularRenderer, ArgTypes } from '@storybook/angular'
-import { useStoryContext } from '@storybook/preview-api'
+import { useStoryContext } from 'storybook/preview-api'
 
 export interface ArgsTplParts {
   actions: { [prop: string]: HandlerFunction }

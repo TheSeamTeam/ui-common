@@ -49,7 +49,7 @@ async function coerceFileOrBufferToBuffer(fileOrBuffer: File | ArrayBuffer | Buf
     return Buffer.from(arrBuf)
   }
 
-  return Buffer.from(fileOrBuffer)
+  return Buffer.from(fileOrBuffer as any) // TODO: Fix type
 }
 
 // NOTE: Our current version of file-type does not detect shp files. We can

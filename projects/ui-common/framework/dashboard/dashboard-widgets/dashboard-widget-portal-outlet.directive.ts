@@ -1,6 +1,5 @@
 import { BasePortalOutlet, CdkPortalOutletAttachedRef, ComponentPortal, Portal, TemplatePortal } from '@angular/cdk/portal'
 import {
-  ComponentFactoryResolver,
   ComponentRef,
   Directive,
   EmbeddedViewRef,
@@ -31,7 +30,6 @@ import {
   inputs: ['portal: seamDashboardWidgetPortalOutlet'],
 })
 export class DashboardWidgetPortalOutletDirective extends BasePortalOutlet implements OnInit, OnDestroy {
-  private readonly _componentFactoryResolver = inject(ComponentFactoryResolver)
   private readonly _viewContainerRef = inject(ViewContainerRef)
 
   /** Whether the portal component is initialized. */
@@ -96,7 +94,7 @@ export class DashboardWidgetPortalOutletDirective extends BasePortalOutlet imple
   }
 
   /**
-   * Attach the given ComponentPortal to this PortalOutlet using the ComponentFactoryResolver.
+   * Attach the given ComponentPortal to this PortalOutlet.
    *
    * @param portal Portal to be attached to the portal outlet.
    * @returns Reference to the created component.
@@ -110,11 +108,10 @@ export class DashboardWidgetPortalOutletDirective extends BasePortalOutlet imple
       ? portal.viewContainerRef
       : this._viewContainerRef
 
-    const resolver = portal.componentFactoryResolver || this._componentFactoryResolver
-    const componentFactory = resolver.resolveComponentFactory(portal.component)
-    const ref = viewContainerRef.createComponent(
-      componentFactory, viewContainerRef.length,
-      portal.injector || viewContainerRef.injector)
+    const ref = viewContainerRef.createComponent(portal.component, {
+      index: viewContainerRef.length,
+      injector: portal.injector || viewContainerRef.injector,
+    })
 
     super.setDisposeFn(() => ref.destroy())
     this._attachedPortal = portal

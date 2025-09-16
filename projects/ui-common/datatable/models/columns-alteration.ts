@@ -1,6 +1,7 @@
+import { AlterationDisplayItem } from '@theseam/ui-common/datatable-alterations-display'
+
 import { TheSeamDatatableAccessor } from './datatable-accessor'
 import { TheSeamDatatableColumn } from './table-column'
-import { AlterationDisplayItem } from '../../datatable-alterations-display/models/alteration-display.model'
 
 export interface ColumnsAlterationState<TState = any> {
   readonly id: string

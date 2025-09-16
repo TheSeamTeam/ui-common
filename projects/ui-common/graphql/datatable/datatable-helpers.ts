@@ -3,10 +3,9 @@ import { combineLatest, defer, Observable, of, ReplaySubject, Subject, Subscribe
 import { catchError, distinctUntilChanged, finalize, map, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators'
 
 import { notNullOrUndefined, subscriberCount, wrapIntoObservable } from '@theseam/ui-common/utils'
-import { EmptyObject } from 'apollo-angular/types'
 import { SortItem } from '@theseam/ui-common/datatable'
 
-import { GqlDatatableAccessor } from '../models'
+import { GqlDatatableAccessor, EmptyObject } from '../models'
 import { createPageInfoObservable } from './create-page-info-observable'
 import { DatatableGraphQLQueryRef } from './datatable-graphql-query-ref'
 import { FilterStateMapperResult, FilterStateMappers, mapFilterStates } from './map-filter-states'

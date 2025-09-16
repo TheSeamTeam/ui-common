@@ -1,8 +1,8 @@
-import { Polygon } from '@turf/helpers'
 import {
   Feature,
   FeatureCollection,
   MultiPolygon,
+  Polygon,
 } from 'geojson'
 
 /**

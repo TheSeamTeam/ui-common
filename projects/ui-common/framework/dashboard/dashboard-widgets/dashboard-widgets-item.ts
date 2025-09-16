@@ -5,7 +5,6 @@ export interface IDashboardWidgetsItemDef<T = any> {
   col?: number
   order?: number
 
-  componentFactoryResolver?: any
   component: ComponentType<T> | string
 }
 

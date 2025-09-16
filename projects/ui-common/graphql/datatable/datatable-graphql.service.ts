@@ -2,9 +2,9 @@ import { Inject, Injectable, InjectionToken, Optional } from '@angular/core'
 
 import { OperationVariables } from '@apollo/client/core/types'
 import { Apollo } from 'apollo-angular'
-import { EmptyObject, WatchQueryOptions } from 'apollo-angular/types'
+import { WatchQueryOptions } from 'apollo-angular'
 
-import { QueryProcessingConfig } from '../models'
+import { QueryProcessingConfig, EmptyObject } from '../models'
 import { DatatableGraphQLQueryRef, DatatableGraphQLVariables } from './datatable-graphql-query-ref'
 
 /**

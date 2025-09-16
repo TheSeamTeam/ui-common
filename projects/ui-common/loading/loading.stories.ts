@@ -1,6 +1,6 @@
 import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
-import { userEvent, within } from '@storybook/test'
-import { expect } from '@storybook/test'
+import { userEvent, within } from 'storybook/test'
+import { expect } from 'storybook/test'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { Component, inject } from '@angular/core'

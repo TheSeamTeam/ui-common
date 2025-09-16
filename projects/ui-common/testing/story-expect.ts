@@ -1,5 +1,5 @@
 // // eslint-disable-next-line import/no-named-default
-// import { default as expectPatched } from '@storybook/test'
+// import { default as expectPatched } from 'storybook/test'
 // import { instrument } from '@storybook/instrumenter'
 // import * as mock from 'jest-mock'
 

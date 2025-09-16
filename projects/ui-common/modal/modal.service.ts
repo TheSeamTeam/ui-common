@@ -6,16 +6,16 @@ import {
   OverlayRef,
   ScrollStrategy,
 } from '@angular/cdk/overlay'
-import { ComponentPortal, PortalInjector, TemplatePortal } from '@angular/cdk/portal'
+import { ComponentPortal, TemplatePortal } from '@angular/cdk/portal'
 import { Location } from '@angular/common'
 import {
-  ComponentFactoryResolver,
   ComponentRef,
   Inject,
   Injectable,
   Injector,
   OnDestroy,
   Optional,
+  Provider,
   SkipSelf,
   TemplateRef,
   Type
@@ -98,9 +98,7 @@ export class Modal implements OnDestroy {
   /** Opens a dialog from a component. */
   openFromComponent<T, D = any>(
     component: ComponentType<T>,
-    config?: ModalConfig<D>,
-    // NOTE: Should only be needed with the current implementation of `TheSeamDynamicComponentLoader`.
-    componentFactoryResolver?: ComponentFactoryResolver | null | undefined
+    config?: ModalConfig<D>
   ): ModalRef<T, D> {
     const _config = this._applyConfigDefaults(config)
 
@@ -111,7 +109,7 @@ export class Modal implements OnDestroy {
     const overlayRef = this._createOverlay(_config)
     const dialogContainer = this._attachDialogContainer(overlayRef, _config)
     const dialogRef = this._attachDialogContentForComponent(component, dialogContainer,
-      overlayRef, _config, componentFactoryResolver)
+      overlayRef, _config)
 
     this.registerDialogRef(dialogRef)
     return dialogRef
@@ -152,7 +150,6 @@ export class Modal implements OnDestroy {
           const modalRef = this.openFromComponent(
             componentFactory.componentType,
             _config,
-            (componentFactory as any /* ComponentFactoryBoundToModule */).ngModule.componentFactoryResolver
           )
           return of(modalRef)
         })
@@ -325,9 +322,12 @@ export class Modal implements OnDestroy {
   protected _attachDialogContainer(overlay: OverlayRef, config: ModalConfig): ModalContainerComponent {
     const container = config.containerComponent || this.injector.get(MODAL_CONTAINER, ModalContainerComponent)
     const userInjector = config && config.viewContainerRef && config.viewContainerRef.injector
-    const injector = new PortalInjector(userInjector || this.injector, new WeakMap([
-      [ModalConfig, config]
-    ]))
+    const injector = Injector.create({
+      parent: userInjector || this.injector,
+      providers: [
+        { provide: ModalConfig, useValue: config },
+      ],
+    })
     const containerPortal = new ComponentPortal(container, config.viewContainerRef, injector)
     const containerRef = overlay.attach(containerPortal) as ComponentRef<ModalContainerComponent>
     containerRef.instance._config = config
@@ -348,15 +348,14 @@ export class Modal implements OnDestroy {
       componentOrTemplateRef: ComponentType<T>,
       dialogContainer: ModalContainerComponent,
       overlayRef: OverlayRef,
-      config: ModalConfig,
-      componentFactoryResolver?: ComponentFactoryResolver | null | undefined): ModalRef<any> {
+      config: ModalConfig): ModalRef<any> {
     // Create a reference to the dialog we're creating in order to give the user a handle
     // to modify and close it.
     // eslint-disable-next-line new-cap
     const dialogRef = new this._dialogRefConstructor<T>(overlayRef, dialogContainer, config.id)
     const injector = this._createInjector<T>(config, dialogRef, dialogContainer)
     const contentRef = dialogContainer.attachComponentPortal(
-        new ComponentPortal(componentOrTemplateRef, undefined, injector, componentFactoryResolver))
+        new ComponentPortal(componentOrTemplateRef, undefined, injector))
 
     dialogRef.componentInstance = contentRef.instance
     dialogRef.disableClose = config.disableClose
@@ -406,22 +405,25 @@ export class Modal implements OnDestroy {
   private _createInjector<T>(
       config: ModalConfig,
       dialogRef: ModalRef<T>,
-      dialogContainer: ModalContainerComponent): PortalInjector {
+      dialogContainer: ModalContainerComponent): Injector {
     const userInjector = config && config.viewContainerRef && config.viewContainerRef.injector
-    const injectionTokens = new WeakMap<any, any>([
-      [this.injector.get(MODAL_CONTAINER, ModalContainerComponent), dialogContainer],
-      [MODAL_DATA, config.data]
-    ])
+    const providers: Provider[] = [
+      { provide: MODAL_CONTAINER, useValue: dialogContainer },
+      { provide: MODAL_DATA, useValue: config.data },
+    ]
 
     if (config.direction &&
         (!userInjector || !userInjector.get<Directionality | null>(Directionality, null))) {
-      injectionTokens.set(Directionality, {
-        value: config.direction,
-        change: observableOf()
+      providers.push({
+        provide: Directionality,
+        useValue: {
+          value: config.direction,
+          change: observableOf(),
+        },
       })
     }
 
-    return new PortalInjector(userInjector || this.injector, injectionTokens)
+    return Injector.create({ parent: userInjector || this.injector, providers })
   }
 
   /**

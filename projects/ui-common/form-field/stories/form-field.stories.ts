@@ -1,5 +1,5 @@
 import { componentWrapperDecorator, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
-import { expect } from '@storybook/test'
+import { expect } from 'storybook/test'
 
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms'
 

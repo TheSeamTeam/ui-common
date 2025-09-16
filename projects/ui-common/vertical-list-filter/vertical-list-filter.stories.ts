@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/angular'
-import { expect } from '@storybook/test'
+import { expect } from 'storybook/test'
 
 import { getHarness } from '@theseam/ui-common/testing'
 

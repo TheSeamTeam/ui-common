@@ -1,4 +1,4 @@
-import { ComponentPortal, PortalInjector } from '@angular/cdk/portal'
+import { ComponentPortal } from '@angular/cdk/portal'
 import { ChangeDetectionStrategy, Component, Injector, Input, OnInit } from '@angular/core'
 
 import { THESEAM_DATA_FILTER_OPTIONS } from '@theseam/ui-common/data-filters'
@@ -49,10 +49,10 @@ export class DatatableDynamicFilterContainerComponent<C> implements OnInit {
     }
   }
 
-  private _createInjector(): PortalInjector {
-    return new PortalInjector(this._injector, new WeakMap <any, any>([
-      [ THESEAM_DATA_FILTER_OPTIONS, this.options ]
-    ]))
+  private _createInjector(): Injector {
+    return Injector.create({ parent: this._injector, providers: [
+      { provide: THESEAM_DATA_FILTER_OPTIONS, useValue: this.options }
+    ] })
   }
 
 }

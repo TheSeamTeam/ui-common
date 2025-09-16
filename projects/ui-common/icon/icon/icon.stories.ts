@@ -1,5 +1,5 @@
 import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
-import { expect } from '@storybook/test'
+import { expect } from 'storybook/test'
 
 import { faShare } from '@fortawesome/free-solid-svg-icons'
 import { getHarness } from '@theseam/ui-common/testing'

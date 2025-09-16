@@ -4,9 +4,9 @@ import { auditTime, filter, finalize, map, share, shareReplay, skip, startWith, 
 import { ApolloQueryResult, DocumentNode, NetworkStatus, TypedDocumentNode } from '@apollo/client/core'
 import { hasProperty, isNullOrUndefined, notNullOrUndefined } from '@theseam/ui-common/utils'
 import { QueryRef } from 'apollo-angular'
-import { EmptyObject, WatchQueryOptions } from 'apollo-angular/types'
+import { WatchQueryOptions } from 'apollo-angular'
 
-import { QueryProcessingConfig } from '../models'
+import { QueryProcessingConfig, EmptyObject } from '../models'
 import { DEFAULT_PAGE_SIZE } from './get-page-info'
 
 export interface DatatableGraphQLDataMapperResult<TRow = EmptyObject> {

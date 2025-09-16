@@ -1,6 +1,6 @@
-import { action } from '@storybook/addon-actions'
+import { action } from 'storybook/actions'
 import { Meta, StoryObj, componentWrapperDecorator, moduleMetadata, applicationConfig } from '@storybook/angular'
-import { expect } from '@storybook/test'
+import { expect } from 'storybook/test'
 
 import { AfterViewInit, Component, Input, OnInit, ViewChild, importProvidersFrom } from '@angular/core'
 import { FormControl, FormGroup, ReactiveFormsModule, UntypedFormControl } from '@angular/forms'

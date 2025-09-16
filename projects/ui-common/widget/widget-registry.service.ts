@@ -1,5 +1,5 @@
 import { ComponentPortal } from '@angular/cdk/portal'
-import { ComponentFactoryResolver, Inject, Injectable, Injector, ViewContainerRef } from '@angular/core'
+import { Inject, Injectable, Injector, ViewContainerRef } from '@angular/core'
 import { Observable, of, throwError } from 'rxjs'
 import { map } from 'rxjs/operators'
 
@@ -27,7 +27,6 @@ export class WidgetRegistryService {
     widgetId: string,
     viewContainerRef?: ViewContainerRef | null,
     injector?: Injector | null,
-    componentFactoryResolver?: ComponentFactoryResolver | null | undefined,
   ): Observable<ComponentPortal<T>> {
     const widgetDef = (this._widgets || []).find(w => w.widgetId === widgetId)
 
@@ -40,20 +39,10 @@ export class WidgetRegistryService {
         .getComponentFactory<T>(widgetDef.componentOrComponentId)
         .pipe(
           map(componentFactory => {
-            let resolver: ComponentFactoryResolver | null | undefined = componentFactoryResolver
-            if (!resolver) {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const m = (componentFactory as any /* ComponentFactoryBoundToModule */).ngModule
-              if (m && m.componentFactoryResolver) {
-                resolver = m.componentFactoryResolver
-              }
-            }
-
             const portal = new ComponentPortal(
               componentFactory.componentType,
               viewContainerRef,
               injector,
-              resolver,
             )
 
             return portal
@@ -64,7 +53,6 @@ export class WidgetRegistryService {
         widgetDef.componentOrComponentId,
         viewContainerRef,
         injector,
-        componentFactoryResolver,
       )
 
       return of(portal)

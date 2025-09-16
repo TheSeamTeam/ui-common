@@ -30,7 +30,6 @@ export class ExampleLazyLoadedWidgetsComponent implements OnInit {
 
         this.widgets = [ {
           type: componentFactory.componentType,
-          componentFactoryResolver: (<any /* ComponentFactoryBoundToModule */>componentFactory).ngModule.componentFactoryResolver
         } ]
       }, error => {
         console.warn(error)

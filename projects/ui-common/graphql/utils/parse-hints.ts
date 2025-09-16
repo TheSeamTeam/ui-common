@@ -32,10 +32,7 @@ export function parseAst(ast: DocumentNode): DocumentNode {
     return ast
   }
 
-  return parse(ast.loc.source, {
-    allowLegacySDLImplementsInterfaces: false,
-    experimentalFragmentVariables: true,
-  })
+  return parse(ast.loc.source)
 }
 
 export function isCommentToken(token: Token): boolean {

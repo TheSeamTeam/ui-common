@@ -50,7 +50,7 @@ export async function fileDataFromBuffer(
   fileBuffer: Buffer | Uint8Array | ArrayBuffer,
   defaultMime: string = 'application/octet-stream'
 ): Promise<IFileData> {
-  const _fileBuffer = Buffer.from(fileBuffer)
+  const _fileBuffer = Buffer.from(fileBuffer as any) // TODO: Fix type
   const fType = fileType(_fileBuffer as any)
   const ext = (fType && fType.ext) || undefined
   const mime = fType ? fType.mime : defaultMime

@@ -1,7 +1,9 @@
+import { Kind } from 'graphql'
+
 export enum HintsKind {
-  OperationDefinition = 'OperationDefinition',
-  Field = 'Field',
-  VariableDefinition = 'VariableDefinition',
-  Variable = 'Variable',
-  Argument = 'Argument'
+  OperationDefinition = Kind.OPERATION_DEFINITION,
+  Field = Kind.FIELD,
+  VariableDefinition = Kind.VARIABLE_DEFINITION,
+  Variable = Kind.VARIABLE,
+  Argument = Kind.ARGUMENT
 }

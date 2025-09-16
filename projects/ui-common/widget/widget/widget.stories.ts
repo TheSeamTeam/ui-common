@@ -1,6 +1,6 @@
 import { componentWrapperDecorator, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 import { applicationConfig } from '@storybook/angular'
-import { expect } from '@storybook/test'
+import { expect } from 'storybook/test'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 

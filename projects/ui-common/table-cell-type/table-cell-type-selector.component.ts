@@ -1,4 +1,4 @@
-import { ComponentPortal, PortalInjector } from '@angular/cdk/portal'
+import { ComponentPortal } from '@angular/cdk/portal'
 import { ComponentType } from '@angular/cdk/portal'
 import {
   AfterViewInit,
@@ -83,10 +83,10 @@ export class TableCellTypeSelectorComponent<T extends string = any, D = any, V =
     return manifest ? manifest.component : undefined
   }
 
-  private _createInjector(cellData: TableCellData<T, TableCellTypeConfig<T>>): PortalInjector {
-    const injectorTokens = new WeakMap()
-    injectorTokens.set(TABLE_CELL_DATA, cellData)
-    return new PortalInjector(this._injector, injectorTokens)
+  private _createInjector(cellData: TableCellData<T, TableCellTypeConfig<T>>): Injector {
+    return Injector.create({ parent: this._injector, providers: [
+      { provide: TABLE_CELL_DATA, useValue: cellData },
+    ] })
   }
 
   ngOnChanges(changes: SimpleChanges) {

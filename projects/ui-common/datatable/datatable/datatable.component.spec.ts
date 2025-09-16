@@ -28,7 +28,7 @@ import { ComponentHarness, HarnessLoader } from '@angular/cdk/testing'
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed'
 import { ComponentFixture, fakeAsync, tick } from '@angular/core/testing'
 
-import { composeStories } from '@storybook/testing-angular'
+// import { composeStories } from '@storybook/testing-angular'
 
 import { renderStory } from '@theseam/ui-common/testing'
 
@@ -38,7 +38,7 @@ import * as stories from './datatable.stories' // import all stories from the st
 
 // Every component that is returned maps 1:1 with the stories, but they already
 // contain all decorators from story level, meta level and global level.
-const { GraphQLQueryRef } = composeStories(stories as any)
+// const { GraphQLQueryRef } = composeStories(stories as any)
 
 describe('DatatableComponent', () => {
   describe('Story', () => {

@@ -1,4 +1,4 @@
-import { expect } from '@storybook/test'
+import { expect } from 'storybook/test'
 import { applicationConfig, Meta, StoryObj, moduleMetadata } from '@storybook/angular'
 
 import { Component, TemplateRef, ViewChild } from '@angular/core'

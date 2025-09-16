@@ -1,4 +1,4 @@
-import { ComponentPortal, PortalInjector } from '@angular/cdk/portal'
+import { ComponentPortal } from '@angular/cdk/portal'
 import { ChangeDetectionStrategy, Component, Inject, Injector, Input, Optional } from '@angular/core'
 import { BehaviorSubject, Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
@@ -233,9 +233,9 @@ export class DatatableDynamicMenuBarContentComponent {
     // TODO: Create a new injector with the data injected
     let injector = this._injector
     if (manifest.dataToken) {
-      injector = new PortalInjector(this._injector, new WeakMap([
-        [manifest.dataToken, data]
-      ]))
+      injector = Injector.create({ parent: this._injector, providers: [
+        { provide: manifest.dataToken, useValue: data }
+      ] })
     }
 
     if (typeof manifest.component === 'string') {
@@ -245,7 +245,6 @@ export class DatatableDynamicMenuBarContentComponent {
             componentFactory.componentType,
             null,
             injector,
-            (componentFactory as any /* ComponentFactoryBoundToModule */).ngModule.componentFactoryResolver
           )
         })
       ).toPromise()

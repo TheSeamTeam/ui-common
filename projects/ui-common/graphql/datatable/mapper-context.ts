@@ -1,4 +1,4 @@
-import { EmptyObject } from 'apollo-angular/types'
+import { EmptyObject } from '../models'
 
 export type MapperContext<TExtraVariables = EmptyObject> = {
   extraVariables: TExtraVariables

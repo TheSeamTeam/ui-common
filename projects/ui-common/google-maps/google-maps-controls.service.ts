@@ -1,4 +1,4 @@
-import { ComponentFactoryResolver, ComponentRef, Injectable, Injector, StaticProvider } from '@angular/core'
+import { ComponentRef, Injectable, Injector, StaticProvider, ViewContainerRef } from '@angular/core'
 import { Observable, Subject } from 'rxjs'
 
 import { GoogleMapsService } from './google-maps.service'
@@ -15,14 +15,14 @@ export class MapControlRef {
 
   constructor(
     private readonly _googleMaps: GoogleMapsService,
-    private readonly _componentFactoryResolver: ComponentFactoryResolver,
     private readonly _injector: Injector,
-    private readonly _controlDef: MapControl
+    private readonly _controlDef: MapControl,
+    private readonly _viewContainerRef: ViewContainerRef,
   ) {
     this.destroyed = this._destroyedSubject.asObservable()
 
     const component: any = this._controlDef.component
-    const factory = this._componentFactoryResolver.resolveComponentFactory(component)
+    // const factory = this._componentFactoryResolver.resolveComponentFactory(component)
 
     const providers: StaticProvider[] = []
     if (this._controlDef.data) {
@@ -36,7 +36,11 @@ export class MapControlRef {
       parent: this._injector,
     })
 
-    this._componentRef = factory.create(injector)
+    // this._componentRef = factory.create(injector)
+    this._componentRef = this._viewContainerRef.createComponent(component, {
+      index: this._viewContainerRef.length,
+      injector,
+    })
     this._componentRef.changeDetectorRef.detectChanges()
 
     const position = this._controlDef.position ?? google.maps.ControlPosition.LEFT_BOTTOM
@@ -76,11 +80,11 @@ export class GoogleMapsControlsService implements MapControlsService {
 
   constructor(
     private readonly _googleMaps: GoogleMapsService,
-    private readonly _componentFactoryResolver: ComponentFactoryResolver,
     private readonly _injector: Injector,
+    private readonly _viewContainerRef: ViewContainerRef,
   ) { }
 
   public add(control: MapControl): MapControlRef {
-    return new MapControlRef(this._googleMaps, this._componentFactoryResolver, this._injector, control)
+    return new MapControlRef(this._googleMaps, this._injector, control, this._viewContainerRef)
   }
 }

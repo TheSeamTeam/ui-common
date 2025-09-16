@@ -139,16 +139,13 @@ export class DashboardWidgetsService {
               componentFactory.componentType,
               undefined,
               injector,
-              (componentFactory as any /* ComponentFactoryBoundToModule */).ngModule.componentFactoryResolver
             )
           }),
           take(1),
         )
     }
 
-    return def.componentFactoryResolver
-      ? of(new ComponentPortal(def.component, undefined, injector, def.componentFactoryResolver))
-      : of(new ComponentPortal(def.component, undefined, injector))
+    return of(new ComponentPortal(def.component, undefined, injector))
   }
 
   public updateOrder(): Observable<void> {
