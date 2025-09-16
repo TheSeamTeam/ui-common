@@ -22,7 +22,8 @@ import { MapValueManagerService, MapValueSource } from '../map-value-manager.ser
   selector: 'seam-map-file-drop',
   templateUrl: './map-file-drop.component.html',
   styleUrls: ['./map-file-drop.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class TheSeamMapFileDropComponent implements OnInit, OnDestroy {
 

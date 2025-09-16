@@ -51,7 +51,8 @@ import { DynamicDatatableMenuBar } from './models/dynamic-datatable-menu-bar'
     DynamicDatatableDefService,
     DynamicDatatableRowActionsService
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class DatatableDynamicComponent {
 

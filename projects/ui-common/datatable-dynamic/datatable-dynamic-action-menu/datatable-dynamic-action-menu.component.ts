@@ -16,7 +16,8 @@ import { DynamicDatatableRowActionContext } from '../models/dynamic-datatable-ro
   selector: 'seam-datatable-dynamic-action-menu',
   templateUrl: './datatable-dynamic-action-menu.component.html',
   styleUrls: ['./datatable-dynamic-action-menu.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class DatatableDynamicActionMenuComponent {
 

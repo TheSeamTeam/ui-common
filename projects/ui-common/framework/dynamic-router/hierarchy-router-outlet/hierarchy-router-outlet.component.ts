@@ -34,7 +34,8 @@ let _uid = 0
     // sideToSide
     // contentLeave
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class HierarchyRouterOutletComponent implements OnDestroy {
 

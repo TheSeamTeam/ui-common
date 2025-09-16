@@ -23,7 +23,6 @@ import { TheSeamMapFileDropComponent } from './map-file-drop/map-file-drop.compo
     TheSeamGoogleMapsUploadButtonControlComponent,
     TheSeamGoogleMapsRecenterButtonControlComponent,
     TheSeamMapsControlComponent,
-    TheSeamGoogleMapsPlacesAutocompleteDirective,
     TheSeamGoogleMapsPlacesAutoCompleteComponent,
   ],
   imports: [
@@ -34,6 +33,7 @@ import { TheSeamMapFileDropComponent } from './map-file-drop/map-file-drop.compo
     TheSeamIconModule,
     TheSeamFormFieldModule,
     GoogleMapsModule,
+    TheSeamGoogleMapsPlacesAutocompleteDirective,
   ],
   exports: [
     TheSeamGoogleMapsComponent,

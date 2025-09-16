@@ -75,6 +75,7 @@ const _TheSeamGoogleMapsMixinBase: CanDisableCtor &
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   exportAs: 'seamGoogleMaps',
+  standalone: false,
 })
 export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
   implements OnInit, OnDestroy, OnChanges, CanDisable, ControlValueAccessor {
@@ -348,7 +349,6 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
 
       this.idleListener?.remove()
     })
-
   }
 
   _onClickDeleteFeature() {

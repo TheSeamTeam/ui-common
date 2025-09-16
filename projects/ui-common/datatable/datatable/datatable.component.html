@@ -22,8 +22,8 @@
         [swapColumns]="swapColumns"
         [sortType]="$any(sortType)"
         [sorts]="$any(_sorts)"
-        [cssClasses]="cssClasses"
-        [messages]="messages"
+        [cssClasses]="$any(cssClasses)"
+        [messages]="$any(messages)"
         [rowIdentity]="$any(rowIdentity)"
         [rowClass]="rowClass"
         [selectCheck]="selectCheck"
@@ -62,7 +62,7 @@
               [class.datatable-icon-down]="expanded"
               title="Expand/Collapse Group"
               (click)="ngxDatatable?.groupHeader?.toggleExpandGroup(group)">
-              <b>Age: {{ group.age }}</b>
+              <!-- <b>Age: {{ group.age }}</b> -->
             </div>
           </ng-template>
         </ngx-datatable-group-header>
@@ -90,7 +90,7 @@
   let-sortFn="sortFn"
 >
   <div class="d-inline-flex align-items-center">
-    <ng-container *ngIf="column.filterable">
+    <ng-container *ngIf="$any(column).filterable">
       <button
         seamIconBtn
         [icon]="columnFilterIcon"
@@ -98,7 +98,7 @@
         [seamPopover]="filterMenu"
         [seamPopoverBaseWidth]="300"
         class="datatable-column-header-filter-button d-flex align-items-center mr-2"
-        [class.datatable-column-header-filter-button-active]="column.filterActive"
+        [class.datatable-column-header-filter-button-active]="$any(column).filterActive"
         style="width: 1rem;"
         title="Click to see filter options"></button>
     </ng-container>
@@ -125,7 +125,7 @@
 <ng-template #cellTypeSelectorTpl ngx-datatable-cell-template
   let-value="value" let-rowIndex="rowIndex" let-row="row" let-column="column">
   <seam-table-cell-type-selector *ngIf="row"
-    [type]="column.cellType"
+    [type]="$any(column).cellType"
     [value]="value"
     [rowIndex]="rowIndex"
     [row]="row"

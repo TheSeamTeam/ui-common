@@ -16,7 +16,8 @@ import { MapControl, MAP_CONTROLS_SERVICE } from './map-controls-service'
 @Component({
   selector: 'seam-map-control',
   template: '',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class TheSeamMapsControlComponent implements OnInit, OnDestroy {
   private readonly _ngUnsubscribe = new Subject<void>()

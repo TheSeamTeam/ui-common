@@ -20,6 +20,16 @@ import { ModalHeaderIconTplDirective } from '../directives/modal-header-icon-tpl
 import { ModalHeaderTitleTplDirective } from '../directives/modal-header-title-tpl.directive'
 import { IModalContainer, THESEAM_MODAL_CONTAINER } from '../modal.models'
 
+export interface TheSeamModalIconTemplateContext {
+  $implicit: SeamIcon | undefined
+  icon: SeamIcon | undefined
+}
+
+export interface TheSeamModalTitleTemplateContext {
+  $implicit: string | undefined | null
+  title: string | undefined | null
+}
+
 export const LIB_MODAL: any = {
   provide: THESEAM_MODAL_CONTAINER,
   // tslint:disable-next-line:no-use-before-declare
@@ -62,22 +72,22 @@ export class ModalComponent implements OnDestroy, AfterViewInit, IModalContainer
   public _iconObj: IconProp | undefined
 
   @Input()
-  get iconTpl(): TemplateRef<HTMLElement> | undefined {
+  get iconTpl(): TemplateRef<TheSeamModalIconTemplateContext> | undefined {
     return this._iconTpl || (this._queryIconTpl && this._queryIconTpl.template)
   }
-  set iconTpl(value: TemplateRef<HTMLElement> | undefined) {
+  set iconTpl(value: TemplateRef<TheSeamModalIconTemplateContext> | undefined) {
     this._iconTpl = value
   }
-  private _iconTpl?: TemplateRef<HTMLElement>
+  private _iconTpl?: TemplateRef<TheSeamModalIconTemplateContext>
 
   @Input()
-  get titleTpl(): TemplateRef<HTMLElement> | undefined {
+  get titleTpl(): TemplateRef<TheSeamModalTitleTemplateContext> | undefined {
     return this._titleTpl || (this._queryTitleTpl && this._queryTitleTpl.template)
   }
-  set titleTpl(value: TemplateRef<HTMLElement> | undefined) {
+  set titleTpl(value: TemplateRef<TheSeamModalTitleTemplateContext> | undefined) {
     this._titleTpl = value
   }
-  private _titleTpl?: TemplateRef<HTMLElement>
+  private _titleTpl?: TemplateRef<TheSeamModalTitleTemplateContext>
 
   @Input()
   get footerTpl(): TemplateRef<HTMLElement> | undefined {

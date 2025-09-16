@@ -8,7 +8,8 @@ import type { ComponentType } from '@theseam/ui-common/models'
   selector: 'seam-datatable-dynamic-filter-container',
   templateUrl: './datatable-dynamic-filter-container.component.html',
   styleUrls: ['./datatable-dynamic-filter-container.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class DatatableDynamicFilterContainerComponent<C> implements OnInit {
 

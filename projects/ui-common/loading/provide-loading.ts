@@ -1,7 +1,8 @@
 import { EnvironmentProviders, importProvidersFrom, makeEnvironmentProviders } from '@angular/core'
 
-import { defaultThemeConfig } from '@theseam/ui-common/loading'
 import { INgxLoadingConfig, NgxLoadingModule } from 'ngx-loading'
+
+import { defaultThemeConfig } from './loading-themes'
 
 export function provideTheSeamLoading(loadingConfig: INgxLoadingConfig = defaultThemeConfig): EnvironmentProviders {
   return makeEnvironmentProviders([

@@ -10,29 +10,28 @@ import {
   QueryList,
   ViewEncapsulation
 } from '@angular/core'
+import { AsyncPipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common'
+import { RouterModule } from '@angular/router'
 import { BehaviorSubject, Observable, Subject } from 'rxjs'
 import { map, shareReplay, startWith, takeUntil } from 'rxjs/operators'
 
 import { faBars } from '@fortawesome/free-solid-svg-icons'
-
+import { faUserCircle } from '@fortawesome/free-regular-svg-icons'
 import { InputBoolean } from '@theseam/ui-common/core'
 import { TheSeamLayoutModule, TheSeamLayoutService } from '@theseam/ui-common/layout'
-
-import { faUserCircle } from '@fortawesome/free-regular-svg-icons'
 import { SeamIcon, TheSeamIconModule } from '@theseam/ui-common/icon'
+import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
+import { TheSeamMenuModule } from '@theseam/ui-common/menu'
+
 import { TopBarCompactMenuBtnDetailDirective } from './top-bar-compact-menu-btn-detail.directive'
 import { TopBarItemDirective } from './top-bar-item.directive'
 import { TopBarMenuBtnDetailDirective } from './top-bar-menu-btn-detail.directive'
 import { TopBarMenuDirective } from './top-bar-menu.directive'
 import { TopBarNavToggleBtnDetailDirective } from './top-bar-nav-toggle-btn-detail.directive'
-import { AsyncPipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common'
-import { RouterModule } from '@angular/router'
 import { TopBarTitleComponent } from './top-bar-title/top-bar-title.component'
 import { TopBarMenuButtonComponent } from './top-bar-menu-button/top-bar-menu-button.component'
 // import { TheSeamBaseLayoutNavToggleDirective } from '../base-layout/directives/base-layout-nav-toggle.directive'
-import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
-import { TheSeamBaseLayoutModule } from '@theseam/ui-common/framework'
-import { TheSeamMenuModule } from '@theseam/ui-common/menu'
+import { TheSeamBaseLayoutModule } from '../base-layout/base-layout.module'
 
 /**
  * Top bar of an app.

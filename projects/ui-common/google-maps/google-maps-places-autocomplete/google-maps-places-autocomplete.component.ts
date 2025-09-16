@@ -31,7 +31,8 @@ type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
   templateUrl: './google-maps-places-autocomplete.component.html',
   styleUrls: ['./google-maps-places-autocomplete.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  exportAs: 'seamGoogleMapsPlacesAutoComplete'
+  exportAs: 'seamGoogleMapsPlacesAutoComplete',
+  standalone: false,
 })
 export class TheSeamGoogleMapsPlacesAutoCompleteComponent implements OnDestroy {
   static ngAcceptInputType_disabled: BooleanInput

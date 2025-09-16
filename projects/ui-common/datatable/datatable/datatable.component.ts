@@ -111,7 +111,6 @@ export const THESEAM_DATATABLE = new InjectionToken<DataFilter>('LibDatatable')
 
 export const _THESEAM_DATATABLE: any = {
   provide: THESEAM_DATATABLE,
-  // tslint:disable-next-line:no-use-before-declare
   useExisting: forwardRef(() => DatatableComponent)
 }
 

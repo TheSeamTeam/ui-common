@@ -38,7 +38,8 @@ export interface GoogleMapsUploadButtonControlData {
     'type': 'button',
     'class': 'gmnoprint gm-control-active'
   },
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class TheSeamGoogleMapsUploadButtonControlComponent implements OnDestroy {
 

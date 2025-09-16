@@ -23,7 +23,6 @@ import { DatatableDynamicActionMenuItemDirective } from './directives/datatable-
     DatatableDynamicComponent,
     DatatableDynamicFilterContainerComponent,
     DatatableDynamicActionMenuComponent,
-    DatatableDynamicActionMenuItemDirective,
     DatatableDynamicMenuBarContentComponent,
   ],
   imports: [
@@ -37,12 +36,13 @@ import { DatatableDynamicActionMenuItemDirective } from './directives/datatable-
     PortalModule,
     RouterModule,
     TheSeamMenuModule,
-    TheSeamButtonsModule
+    TheSeamButtonsModule,
+    DatatableDynamicActionMenuItemDirective,
   ],
   exports: [
     DatatableDynamicComponent,
     TheSeamDatatableModule,
-    DatatableDynamicActionMenuItemDirective
+    DatatableDynamicActionMenuItemDirective,
   ]
 })
 export class TheSeamDatatableDynamicModule { }

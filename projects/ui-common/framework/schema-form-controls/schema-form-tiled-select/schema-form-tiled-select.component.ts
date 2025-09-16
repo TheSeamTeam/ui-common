@@ -1,12 +1,14 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core'
 import { CommonModule } from '@angular/common'
+import { inject } from '@angular/core'
 import { AbstractControl, ReactiveFormsModule } from '@angular/forms'
+import { Platform } from '@angular/cdk/platform'
 
 import { JsonSchemaFormModule, JsonSchemaFormService } from '@ajsf/core'
-import { TheSeamSchemaFormControlWidget, TheSeamSchemaFormWidgetLayoutNodeOptions } from '../../schema-form'
-import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 import { TheSeamTiledSelectModule, TheSeamTiledSelectItem, TheSeamTiledSelectLayout } from '@theseam/ui-common/tiled-select'
-import { Platform } from '@angular/cdk/platform'
+import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
+
+import { TheSeamSchemaFormControlWidget, TheSeamSchemaFormWidgetLayoutNodeOptions } from '../../schema-form'
 
 @Component({
   selector: 'seam-schema-form-tiled-select',
@@ -23,6 +25,9 @@ import { Platform } from '@angular/cdk/platform'
   ],
 })
 export class TheSeamSchemaFormTiledSelectComponent implements OnInit, TheSeamSchemaFormControlWidget {
+
+  private readonly _jsf = inject(JsonSchemaFormService)
+  private readonly _platform = inject(Platform)
 
   formControl?: AbstractControl
   controlName?: string
@@ -42,11 +47,6 @@ export class TheSeamSchemaFormTiledSelectComponent implements OnInit, TheSeamSch
   tileBackdrop = false
   showSelectedIcon = true
   animationsDisabled: boolean = this._platform.IOS
-
-  constructor(
-    private readonly _jsf: JsonSchemaFormService,
-    private readonly _platform: Platform,
-  ) { }
 
   ngOnInit() {
     this.options = this.layoutNode?.options || {} as TheSeamSchemaFormWidgetLayoutNodeOptions

@@ -5,11 +5,7 @@ import { Component } from '@angular/core'
 
 @Component({
   selector: 'seam-unsaved-changes-dialog',
-  template: `
-    <p>
-      unsaved-changes-dialog works!
-    </p>
-  `,
-  styles: []
+  template: ``,
+  styles: [],
 })
 export class UnsavedChangesDialogComponent { }

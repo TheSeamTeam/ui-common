@@ -1,6 +1,5 @@
 {
   "$schema": "../../../node_modules/ng-packagr/ng-package.schema.json",
-  "dest": "../../../dist/ui-common/datatable-alterations-display",
   "lib": {
     "entryFile": "public-api.ts"
   }

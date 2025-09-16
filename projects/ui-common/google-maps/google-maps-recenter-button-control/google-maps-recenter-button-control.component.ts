@@ -34,7 +34,8 @@ export interface GoogleMapsRecenterButtonControlData {
     'type': 'button',
     'class': 'gmnoprint gm-control-active'
   },
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class TheSeamGoogleMapsRecenterButtonControlComponent implements OnDestroy {
 
