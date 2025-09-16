@@ -118,7 +118,7 @@
     "@types/google.maps": "^3.52.5",
     "@types/intl-tel-input": "^17.0.1",
     "@types/jest": "^29.5.0",
-    "@types/node": "^18.19.0",
+    "@types/node": "^22.12.0",
     "@types/overlayscrollbars": "~1.7.0",
     "@types/pdfjs-dist": "^2.7.1",
     "@types/quill": "^2.0.14",
@@ -152,7 +152,7 @@
     "storybook-dark-mode": "^4.0.2",
     "ts-jest": "^29.1.0",
     "ts-node": "~10.9.1",
-    "typescript": "~5.5.4"
+    "typescript": "~5.9.2"
   },
   "optionalDependencies": {
     "verdaccio": "^4.12.0",
