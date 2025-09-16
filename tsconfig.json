@@ -10,7 +10,7 @@
     "emitDecoratorMetadata": false,
     "forceConsistentCasingInFileNames": true,
     "module": "ES2020",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2020",
     "typeRoots": [
@@ -25,9 +25,7 @@
       "dom"
     ],
     "strictNullChecks": true,
-    // "noImplicitOverride": true, // TODO: Enable when upgraded to TS >=4.3
     "esModuleInterop": true,
-    // "useDefineForClassFields":true,
     "jsx": "react",
     "paths": {
       "@theseam/ui-common/*": [

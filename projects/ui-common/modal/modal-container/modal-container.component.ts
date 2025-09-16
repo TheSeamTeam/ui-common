@@ -1,7 +1,7 @@
 import { animate, AnimationEvent, state, style, transition, trigger } from '@angular/animations'
 import { ConfigurableFocusTrap, ConfigurableFocusTrapConfig, ConfigurableFocusTrapFactory } from '@angular/cdk/a11y'
 import { BasePortalOutlet, CdkPortalOutlet, ComponentPortal, TemplatePortal } from '@angular/cdk/portal'
-import { DOCUMENT } from '@angular/common'
+
 import {
   ChangeDetectorRef,
   Component,
@@ -13,7 +13,8 @@ import {
   Inject,
   OnDestroy,
   Optional,
-  ViewChild
+  ViewChild,
+  DOCUMENT
 } from '@angular/core'
 import { Subject } from 'rxjs'
 import { distinctUntilChanged } from 'rxjs/operators'

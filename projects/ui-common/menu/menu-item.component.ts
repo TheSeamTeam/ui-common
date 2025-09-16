@@ -1,6 +1,6 @@
 import { FocusableOption, FocusMonitor, FocusOrigin } from '@angular/cdk/a11y'
-import { DOCUMENT } from '@angular/common'
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Inject, Input, OnDestroy, Optional } from '@angular/core'
+
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Inject, Input, OnDestroy, Optional, DOCUMENT } from '@angular/core'
 import { Subject } from 'rxjs'
 
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons'

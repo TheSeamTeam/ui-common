@@ -1,5 +1,5 @@
-import { DOCUMENT } from '@angular/common'
-import { Directive, DoCheck, ElementRef, HostBinding, Inject, Input, NgZone, OnDestroy, OnInit, Optional, Self } from '@angular/core'
+
+import { Directive, DoCheck, ElementRef, HostBinding, Inject, Input, NgZone, OnDestroy, OnInit, Optional, Self, DOCUMENT } from '@angular/core'
 import { fromEvent, merge, Subject } from 'rxjs'
 import { auditTime, last, switchMap, takeUntil, tap } from 'rxjs/operators'
 

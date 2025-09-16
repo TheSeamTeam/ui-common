@@ -9,7 +9,6 @@ import {
   forwardRef,
   HostBinding,
   HostListener,
-  InjectFlags,
   Injector,
   Input,
   OnDestroy,
@@ -152,7 +151,7 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
       ? fromEvent(this._telInputDirective.getHostElement(), 'blur')
       : of<Event>()
 
-    this._hasInvalidCss$ = defer(() => of((this._injector.get(NgControl, null, InjectFlags.Self)?.control) || undefined)).pipe(
+    this._hasInvalidCss$ = defer(() => of((this._injector.get(NgControl, null, { self: true })?.control) || undefined)).pipe(
       switchMap(control => {
         if (control) {
           return merge(
