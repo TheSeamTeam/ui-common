@@ -4,7 +4,7 @@ import { provideAnimations } from '@angular/platform-browser/animations'
 import { provideRouter, RouterModule } from '@angular/router'
 import { provideLocationMocks } from '@angular/common/testing'
 
-import { provideStoryInitialUrl } from '@marklb/storybook-angular-initial-url'
+import { initialUrlFromArgs } from '@marklb/storybook-angular-initial-url'
 import { routesArgType, StoryEmptyComponent } from '@theseam/ui-common/story-helpers'
 
 import { StoryUsersDataService } from './story-user-data.service'
@@ -26,6 +26,9 @@ export default meta
 type Story = StoryObj<TheSeamBreadcrumbsComponent & ExtraArgs>
 
 export const Example: Story = {
+  decorators: [
+    initialUrlFromArgs({ argName: 'route' }),
+  ],
   render: args => ({
     applicationConfig: {
       providers: [
@@ -50,7 +53,6 @@ export const Example: Story = {
             ],
           },
         ]),
-        provideStoryInitialUrl('/users/123'),
         StoryUsersDataService,
         StoryUserIdToNameResolver,
       ],
@@ -74,5 +76,8 @@ export const Example: Story = {
       '/users/987',
       '/users/999'
     ]) as any,
+  },
+  args: {
+    route: '/users/123',
   },
 }
