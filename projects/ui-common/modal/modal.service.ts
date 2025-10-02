@@ -408,6 +408,7 @@ export class Modal implements OnDestroy {
       dialogContainer: ModalContainerComponent): Injector {
     const userInjector = config && config.viewContainerRef && config.viewContainerRef.injector
     const providers: Provider[] = [
+      { provide: ModalRef, useValue: dialogRef },
       { provide: MODAL_CONTAINER, useValue: dialogContainer },
       { provide: MODAL_DATA, useValue: config.data },
     ]
