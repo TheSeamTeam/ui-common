@@ -43,7 +43,6 @@ export class TheSeamNgSelectExtraDirective implements OnInit, AfterViewChecked, 
    * `focus()` function to trigger the components focus.
    */
   @HostListener('focus', ['$event']) onFocus($event: FocusEvent) {
-    console.log('TheSeamNgSelectExtraDirective onFocus', $event)
     const target = $event.target as HTMLElement
     if (target === this._elementRef.nativeElement && !this._ngSelect.disabled()) {
       this._ngSelect.focus()
