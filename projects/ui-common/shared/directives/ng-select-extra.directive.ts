@@ -15,9 +15,9 @@ import { Subject, Subscription } from 'rxjs'
 import { filter, takeUntil } from 'rxjs/operators'
 
 import { NgOption, NgSelectComponent } from '@ng-select/ng-select'
-import { ResizeSensor } from 'css-element-queries'
+// import { ResizeSensor } from 'css-element-queries'
 
-import { TheSeamElementResizedEvent } from './elem-resized.directive'
+// import { TheSeamElementResizedEvent } from './elem-resized.directive'
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
@@ -27,18 +27,8 @@ import { TheSeamElementResizedEvent } from './elem-resized.directive'
 export class TheSeamNgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestroy {
 
   private readonly _elementRef = inject(ElementRef<HTMLElement>)
-  private readonly _ngZone = inject(NgZone)
   private readonly _ngSelect = inject(NgSelectComponent)
   private readonly _ngControl = inject<NgControl | null>(NgControl, { optional: true, self: true })
-
-  private readonly _ngUnsubscribe = new Subject<void>()
-
-  private _markedItem: NgOption | null = null
-  private _checkMarked = false
-  private _keyPressWorkaroundSub: Subscription | null = null
-
-  private _resizedEvent = new EventEmitter<TheSeamElementResizedEvent>()
-  private _resizeSensor?: ResizeSensor
 
   /**
    * Set the tab index to `-1` to allow the root element of the ng-select
@@ -46,25 +36,18 @@ export class TheSeamNgSelectExtraDirective implements OnInit, AfterViewChecked, 
    * keyboard navigation.
    */
   @HostBinding('attr.tabIndex')
-  get _tabIndex() { return this._ngSelect.disabled ? undefined : -1 }
+  get _tabIndex() { return this._ngSelect.disabled() ? undefined : -1 }
 
   /**
    * Listening for focus event on root of component to allow javascript
    * `focus()` function to trigger the components focus.
    */
   @HostListener('focus', ['$event']) onFocus($event: FocusEvent) {
+    console.log('TheSeamNgSelectExtraDirective onFocus', $event)
     const target = $event.target as HTMLElement
-    if (target === this._elementRef.nativeElement && !this._ngSelect.disabled) {
+    if (target === this._elementRef.nativeElement && !this._ngSelect.disabled()) {
       this._ngSelect.focus()
     }
-
-    // ng-select has an input `labelForId` that sets the autocomplete attribute
-    // in ngOnInit. I am not positive that it is wrong by doing that, but this
-    // hack makes it set the attributes again on focus, because that gives the
-    // result I was expecting, since we don't manually set the `labelForId`
-    // input.
-    const _ngSelect = this._ngSelect as any
-    _ngSelect._setInputAttributes()
   }
 
   @HostBinding('class.is-invalid') get _isInvalid() {
@@ -76,11 +59,11 @@ export class TheSeamNgSelectExtraDirective implements OnInit, AfterViewChecked, 
   }
 
   ngOnInit() {
-    this._ngSelect.focusEvent
-      .subscribe(v => this._enableKeyPressWorkaround())
+    // this._ngSelect.focusEvent
+    //   .subscribe(v => this._enableKeyPressWorkaround())
 
-    this._ngSelect.blurEvent
-      .subscribe(v => this._disableKeyPressWorkaround())
+    // this._ngSelect.blurEvent
+    //   .subscribe(v => this._disableKeyPressWorkaround())
 
     window.addEventListener('scroll', this._onScroll, true)
 
@@ -103,40 +86,41 @@ export class TheSeamNgSelectExtraDirective implements OnInit, AfterViewChecked, 
   }
 
   ngOnDestroy() {
-    this._resizeSensor?.detach()
+    // this._resizeSensor?.detach()
 
     window.removeEventListener('scroll', this._onScroll, true)
 
-    this._ngUnsubscribe.next(undefined)
-    this._ngUnsubscribe.complete()
+    // this._ngUnsubscribe.next(undefined)
+    // this._ngUnsubscribe.complete()
   }
 
   ngAfterViewChecked() {
-    if (this._ngSelect.dropdownPanel) {
-      if (this._checkMarked) {
-        if (this._ngSelect.dropdownPanel && this._markedItem !== null) {
-          if (this._markedItem.index !== this._ngSelect.dropdownPanel.markedItem.index) {
-            this._ngSelect.dropdownPanel.scrollTo(this._ngSelect.dropdownPanel.markedItem)
-          }
-        }
-      }
-    }
-    this._checkMarked = false
+    // const dropPanel = this._ngSelect.dropdownPanel() as any
+    // if (dropPanel) {
+    //   if (this._checkMarked) {
+    //     if (dropPanel && this._markedItem !== null) {
+    //       if (this._markedItem.index !== dropPanel.markedItem.index) {
+    //         dropPanel.scrollTo(dropPanel.markedItem)
+    //       }
+    //     }
+    //   }
+    // }
+    // this._checkMarked = false
 
-    this._resizeSensor = new ResizeSensor(this._elementRef.nativeElement, event => {
-      this._resizedEvent.emit({ element: this._elementRef.nativeElement, size: event })
-    })
+    // this._resizeSensor = new ResizeSensor(this._elementRef.nativeElement, event => {
+    //   this._resizedEvent.emit({ element: this._elementRef.nativeElement, size: event })
+    // })
   }
 
   private _onScroll = (event: any) => {
-    if (this._ngSelect && this._ngSelect.isOpen) {
+    if (this._ngSelect && this._ngSelect.isOpen()) {
       const isScrollingInScrollHost = (event.target.className as string).indexOf('ng-dropdown-panel-items') !== -1
       const isInSensor = (event.target.className as string).indexOf('resize-sensor-shrink') !== -1 ||
         (event.target.className as string).indexOf('os-resize-observer-host') !== -1
       if (isScrollingInScrollHost || isInSensor) { return }
       this._ngSelect.close()
     }
-}
+  }
 
   /**
    * Temp fix for: https://github.com/ng-select/ng-select/issues/1122
@@ -170,30 +154,30 @@ export class TheSeamNgSelectExtraDirective implements OnInit, AfterViewChecked, 
   //   }
   // }
 
-  private _enableKeyPressWorkaround() {
-    if (this._keyPressWorkaroundSub) { return }
-    const _ngSelect = this._ngSelect as any
+  // private _enableKeyPressWorkaround() {
+  //   if (this._keyPressWorkaroundSub) { return }
+  //   const _ngSelect = this._ngSelect as any
 
-    this._keyPressWorkaroundSub = _ngSelect._keyPress$
-      .pipe(takeUntil(this._ngUnsubscribe))
-      .pipe(filter(() => !this._ngSelect.searchable))
-      .subscribe(() => {
-        this._ngZone.runOutsideAngular(() => {
-          window.requestAnimationFrame(() => {
-            if (this._ngSelect.dropdownPanel) {
-              this._markedItem = this._ngSelect.dropdownPanel.markedItem
-            }
-            this._checkMarked = true
-          })
-        })
-      })
-  }
+  //   this._keyPressWorkaroundSub = _ngSelect._keyPress$
+  //     .pipe(takeUntil(this._ngUnsubscribe))
+  //     .pipe(filter(() => !this._ngSelect.searchable()))
+  //     .subscribe(() => {
+  //       this._ngZone.runOutsideAngular(() => {
+  //         window.requestAnimationFrame(() => {
+  //           if (this._ngSelect.dropdownPanel()) {
+  //             this._markedItem = this._ngSelect.dropdownPanel().markedItem()
+  //           }
+  //           this._checkMarked = true
+  //         })
+  //       })
+  //     })
+  // }
 
-  private _disableKeyPressWorkaround() {
-    if (this._keyPressWorkaroundSub) {
-      this._keyPressWorkaroundSub.unsubscribe()
-      this._keyPressWorkaroundSub = null
-    }
-  }
+  // private _disableKeyPressWorkaround() {
+  //   if (this._keyPressWorkaroundSub) {
+  //     this._keyPressWorkaroundSub.unsubscribe()
+  //     this._keyPressWorkaroundSub = null
+  //   }
+  // }
 
 }

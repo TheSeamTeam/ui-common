@@ -109,7 +109,7 @@ export class InputDirective implements DoCheck, OnChanges {
 
   public readonly requiredChange = this._requiredChange.asObservable()
   public readonly disabledChange = this._disabledChange.asObservable()
-  public readonly readonlyChange = this._readonlyChange.asObservable
+  public readonly readonlyChange = this._readonlyChange.asObservable()
 
   constructor(
     public _elementRef: ElementRef<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
@@ -142,7 +142,14 @@ export class InputDirective implements DoCheck, OnChanges {
 
   ngDoCheck() {
     if (this._isNgSelect()) {
-      this._ngSelect.labelForId = this.id
+      // this._ngSelect.labelForId = this.id // No longer possible, do to inputs being signals.
+      // More flaky and less performant than old way of just using the input, but should still work.
+      if (this._ngSelect.labelForId() === null) {
+        const inputElement = this._elementRef.nativeElement.querySelector('.ng-input > input')
+        if (inputElement) {
+          inputElement.id = this.id || ''
+        }
+      }
       this._ngSelect.setDisabledState(this.disabled)
     } else {
       toggleAttribute(this._elementRef.nativeElement, 'required', this.required)
