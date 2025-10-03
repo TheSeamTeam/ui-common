@@ -36,7 +36,7 @@
     "file-saver": "~2.0.2",
     "graphql": "^16.0.0",
     "ngx-toastr": "~16.1.0",
-    "pdfjs-dist": "2.8.335",
+    "pdfjs-dist": "5.4.149",
     "xlsx": "^0.14.4",
     "jexl": "^2.3.0",
     "@types/file-saver": "^2.0.2",

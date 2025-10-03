@@ -10,11 +10,12 @@ export class TheSeamPdfRendererService {
   private readonly _pdfjs$: Observable<any>
 
   constructor() {
-    const pdfjsImport = wrapIntoObservable(import('pdfjs-dist/legacy/build/pdf'))
+    const pdfjsImport = wrapIntoObservable(import('pdfjs-dist'))
     this._pdfjs$ = pdfjsImport.pipe(
       tap((pdfJs: any) => {
         if (!pdfJs.GlobalWorkerOptions.workerSrc) {
-          pdfJs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${(pdfJs as any).version}/pdf.worker.min.js`
+          // pdfJs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${(pdfJs as any).version}/pdf.worker.min.js`
+          pdfJs.GlobalWorkerOptions.workerSrc = `assets/vendor/pdfjs-dist/pdf.worker.min.mjs`
         }
       }),
       shareReplay({ bufferSize: 1, refCount: true })

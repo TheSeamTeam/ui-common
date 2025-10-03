@@ -275,6 +275,11 @@
                 "glob": "**/utils.js",
                 "input": "node_modules/intl-tel-input/build/js",
                 "output": "assets/vendor/intl-tel-input/js"
+              },
+              {
+                "glob": "**/pdf.worker.min.mjs",
+                "input": "node_modules/pdfjs-dist/build/pdf.worker.min.mjs",
+                "output": "assets/vendor/pdfjs-dist/"
               }
             ]
           }

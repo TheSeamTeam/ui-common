@@ -70,7 +70,7 @@
     "ngx-quill": "^27.1.2",
     "ngx-toastr": "~16.1.0",
     "overlayscrollbars": "~1.7.3",
-    "pdfjs-dist": "2.8.335",
+    "pdfjs-dist": "5.4.149",
     "quill": "2.0.3",
     "quill-mention": "^6.0.2",
     "rxjs": "~7.8.0",
