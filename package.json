@@ -26,7 +26,8 @@
     "storybook": "ng run ui-common:storybook",
     "storybook-no-prebuild": "start-storybook -p 6006 --ci",
     "docs:storybook": "npm run storybook-prebuild && npm run storybook",
-    "build-storybook": "npm run storybook-prebuild && build-storybook -o docs",
+    "build-storybook-old": "npm run storybook-prebuild && build-storybook -o docs",
+    "build-storybook": "ng run ui-common:build-storybook",
     "storybook-prebuild": "npm run docs:json",
     "local-registry": "ts-node --project=./scripts/tsconfig.json ./scripts/run-registry.ts --open --publish"
   },
