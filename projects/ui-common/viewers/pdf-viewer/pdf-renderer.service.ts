@@ -1,11 +1,14 @@
-import { Injectable } from '@angular/core'
+import { inject, Injectable } from '@angular/core'
 import { from, Observable } from 'rxjs'
 import { shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import { wrapIntoObservable } from '@theseam/ui-common/utils'
 
+import { THESEAM_PDF_VIEWER_CONFIG_PROVIDER } from './pdf-viewer-config'
+
 @Injectable({ providedIn: 'root' })
 export class TheSeamPdfRendererService {
+  private readonly _config = inject(THESEAM_PDF_VIEWER_CONFIG_PROVIDER, { optional: true })
 
   private readonly _pdfjs$: Observable<any>
 
@@ -14,8 +17,7 @@ export class TheSeamPdfRendererService {
     this._pdfjs$ = pdfjsImport.pipe(
       tap((pdfJs: any) => {
         if (!pdfJs.GlobalWorkerOptions.workerSrc) {
-          // pdfJs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${(pdfJs as any).version}/pdf.worker.min.js`
-          pdfJs.GlobalWorkerOptions.workerSrc = `assets/vendor/pdfjs-dist/pdf.worker.min.mjs`
+          pdfJs.GlobalWorkerOptions.workerSrc = this._config?.pdfJsWorkerSrc || `assets/vendor/pdfjs-dist/pdf.worker.min.mjs`
         }
       }),
       shareReplay({ bufferSize: 1, refCount: true })
