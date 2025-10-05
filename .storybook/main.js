@@ -18,4 +18,56 @@ module.exports = {
     '@storybook/addon-a11y',
   ],
   docs: {},
+  webpackFinal: async (config, { angularBuilderOptions }) => {
+    // Find the Sass rule
+    const sassRule = config.module?.rules?.find(rule =>
+      rule.test?.toString().includes('scss')
+    )?.rules[1]
+
+    if (sassRule) {
+      // Update the sass-loader options
+      sassRule.use = sassRule.use.map(loader => {
+        if (typeof loader === 'object' && loader.loader?.includes('sass-loader')) {
+          const _silenceDeprecations = [
+            'mixed-decls',
+            'color-functions',
+            'global-builtin',
+            'import',
+          ]
+
+          // NOTE: For this to work, Storybook's Angular builder schemas need to be patched to allow "sass" under "stylePreprocessorOptions"
+          const builderSilenceDeprecations = angularBuilderOptions?.stylePreprocessorOptions?.sass?.silenceDeprecations || []
+
+          const silenceDeprecations = [
+            builderSilenceDeprecations,
+            // Filter out duplicates
+            _silenceDeprecations.filter(item => !builderSilenceDeprecations.includes(item))
+          ]
+
+          const origFn = loader.options.sassOptions
+          const wrappedFn = async (...args) => {
+            const result = await origFn(...args)
+            return {
+              ...result,
+              silenceDeprecations: [
+                ...(result.silenceDeprecations || []),
+                ...silenceDeprecations
+              ],
+            }
+          }
+
+          return {
+            ...loader,
+            options: {
+              ...loader.options,
+              sassOptions: wrappedFn,
+            },
+          }
+        }
+        return loader
+      })
+    }
+
+    return config
+  }
 }
