@@ -39,19 +39,19 @@ module.exports = {
           const builderSilenceDeprecations = angularBuilderOptions?.stylePreprocessorOptions?.sass?.silenceDeprecations || []
 
           const silenceDeprecations = [
-            builderSilenceDeprecations,
+            ...builderSilenceDeprecations,
             // Filter out duplicates
-            _silenceDeprecations.filter(item => !builderSilenceDeprecations.includes(item))
+            ..._silenceDeprecations.filter(item => !builderSilenceDeprecations.includes(item)),
           ]
 
           const origFn = loader.options.sassOptions
-          const wrappedFn = async (...args) => {
-            const result = await origFn(...args)
+          const wrappedFn = (...args) => {
+            const result = origFn(...args)
             return {
               ...result,
               silenceDeprecations: [
                 ...(result.silenceDeprecations || []),
-                ...silenceDeprecations
+                ...silenceDeprecations,
               ],
             }
           }
