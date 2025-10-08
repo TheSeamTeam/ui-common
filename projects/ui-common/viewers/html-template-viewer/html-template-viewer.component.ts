@@ -97,7 +97,7 @@ export class TheSeamHtmlTemplateViewerComponent implements OnInit, OnDestroy {
       // so we can just disable the observer for native scrollbars.
       onInitializationWithdrawn: () => this._destroyScrollHandleObserver(),
       onDestroyed: () => this._destroyScrollHandleObserver(),
-    }
+    },
   }
 
   _mouseBlockActive = false
@@ -107,7 +107,7 @@ export class TheSeamHtmlTemplateViewerComponent implements OnInit, OnDestroy {
   constructor() {
     this._templateMessageHandlers = {
       [TheSeamTemplateMessageType.TplData]: () => { }, // Not listening for message from template
-      [TheSeamTemplateMessageType.TplResize]: this._onResizeMessageFromTemplate
+      [TheSeamTemplateMessageType.TplResize]: this._onResizeMessageFromTemplate,
     }
   }
 

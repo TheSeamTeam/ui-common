@@ -5,13 +5,13 @@ import { WidgetHeaderBadgeComponent } from './widget-header-badge.component'
 
 @NgModule({
   declarations: [
-    WidgetHeaderBadgeComponent
+    WidgetHeaderBadgeComponent,
   ],
   imports: [
-    CommonModule
+    CommonModule,
   ],
   exports: [
-    WidgetHeaderBadgeComponent
-  ]
+    WidgetHeaderBadgeComponent,
+  ],
 })
 export class TheSeamWidgetHeaderBadgeModule { }

@@ -97,7 +97,7 @@ export class TheSeamDatatablePrompterComponent {
           }
           // return of(JSON.parse(prefs).alterations as ColumnsAlterationState[])
           return of(prefs.alterations as ColumnsAlterationState[])
-        })
+        }),
       ) ?? of([] as ColumnsAlterationState[])
     }),
     // tap(v => console.log('%cAlterations:', 'color: limegreen;', v)),

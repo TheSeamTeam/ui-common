@@ -6,11 +6,11 @@ import { MenubarItemData } from './../models/menubar-item-data'
 import { THESEAM_MENUBAR_ITEM_DATA } from './../tokens/menubar-item-data'
 
 @Component({
-    selector: 'seam-datatable-menu-bar-text',
-    templateUrl: './datatable-menu-bar-text.component.html',
-    styleUrls: ['./datatable-menu-bar-text.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'seam-datatable-menu-bar-text',
+  templateUrl: './datatable-menu-bar-text.component.html',
+  styleUrls: ['./datatable-menu-bar-text.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class DatatableMenuBarTextComponent {
 
@@ -19,7 +19,7 @@ export class DatatableMenuBarTextComponent {
 
   constructor(
     private _menuBar: DatatableMenuBarComponent,
-    @Optional() @Inject(THESEAM_MENUBAR_ITEM_DATA) private _data: MenubarItemData | null
+    @Optional() @Inject(THESEAM_MENUBAR_ITEM_DATA) private _data: MenubarItemData | null,
   ) {
     if (notNullOrUndefined(this._data)) {
       if (hasProperty(this._data, 'value')) {

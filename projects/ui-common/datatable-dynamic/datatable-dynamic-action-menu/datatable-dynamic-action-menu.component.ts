@@ -69,7 +69,7 @@ export class DatatableDynamicActionMenuComponent {
 
   constructor(
     private _valueHelper: DynamicValueHelperService,
-    private _dynamicRowActions: DynamicDatatableRowActionsService
+    private _dynamicRowActions: DynamicDatatableRowActionsService,
   ) {
     // this._menuRecords$ = combineLatest([ this._row, this._actionDefs ]).pipe(
     //   switchMap(([ row, actionDefs ]) => !!row ? this._mapRecords(row, actionDefs) : of([]))
@@ -77,9 +77,9 @@ export class DatatableDynamicActionMenuComponent {
     this._menuRecords$ = this._row.pipe(
       switchMap(row => row
         ? this._dynamicRowActions.rowActions(row).pipe(
-            switchMap(actionDefs => this._mapRecords(row, actionDefs))
-          )
-        : of([])
+          switchMap(actionDefs => this._mapRecords(row, actionDefs)),
+        )
+        : of([]),
       ),
       // tap(v => console.log('actions', v))
     )
@@ -90,13 +90,13 @@ export class DatatableDynamicActionMenuComponent {
   // TODO: Consider moving this to `DynamicDatatableRowActionsService`.
   private _mapRecords<A extends DynamicDatatableRowAction>(
     row: DynamicDatatableRow,
-    actionDefs: A[]
+    actionDefs: A[],
   ): Observable<DynamicDatatableActionMenuRecord[]> {
     return from(actionDefs).pipe(
       concatMap(actionDef => {
         return (async () => {
           const _rowAction: DynamicDatatableRowAction = {
-            ...actionDef
+            ...actionDef,
           }
 
           const context = this._getRowActionContext(row, actionDef)
@@ -118,24 +118,24 @@ export class DatatableDynamicActionMenuComponent {
             _row: row,
             _def: actionDef,
             rowAction: _rowAction,
-            elementType: this._expectedElementType(actionDef)
+            elementType: this._expectedElementType(actionDef),
           }
 
           return record
         })()
       }),
       filter(notNullOrUndefined),
-      toArray()
+      toArray(),
     )
   }
 
   /** @ignore */
   private _getRowActionContext(
     row: DynamicDatatableRow,
-    rowActionDef: DynamicDatatableRowAction
+    rowActionDef: DynamicDatatableRowAction,
   ): DynamicDatatableRowActionContext {
     return {
-      row
+      row,
     }
   }
 

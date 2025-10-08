@@ -17,10 +17,10 @@ const meta: Meta<any> = {
     moduleMetadata({
       imports: [
         TheSeamModalModule,
-        TheSeamOverlayScrollbarDirective
+        TheSeamOverlayScrollbarDirective,
       ],
-    })
-  ]
+    }),
+  ],
 }
 
 export default meta
@@ -37,7 +37,7 @@ export const Basic: Story = {
 
       <ng-template seamModal #modal="seamModal">
         Example
-      </ng-template>`
+      </ng-template>`,
   }),
 }
 
@@ -64,6 +64,6 @@ export const Simple: Story = {
           <button class="btn btn-primary" seamModalClose="Yes">Yes</button>
           <button class="btn btn-lightgray" seamModalClose="No">No</button>
         </seam-modal-footer>
-      </ng-template>`
+      </ng-template>`,
   }),
 }

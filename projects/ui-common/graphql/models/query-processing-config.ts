@@ -12,5 +12,5 @@ export interface QueryProcessingConfig {
   /**
    * If skip and take are found, they will be removed
    */
-   disablePaging?: boolean
+  disablePaging?: boolean
 }

@@ -50,29 +50,29 @@ describe('maxFractionalDigitsValidator', () => {
       'maxFractionalDigits': {
         'reason': `Must not be greater than 0 fractional digits.`,
         'max': 0,
-        'actual': 1
-      }
+        'actual': 1,
+      },
     })
     expect(maxFractionalDigitsValidator(0)(new UntypedFormControl('.12'))).toEqual({
       'maxFractionalDigits': {
         'reason': `Must not be greater than 0 fractional digits.`,
         'max': 0,
-        'actual': 2
-      }
+        'actual': 2,
+      },
     })
     expect(maxFractionalDigitsValidator(0)(new UntypedFormControl('0.1'))).toEqual({
       'maxFractionalDigits': {
         'reason': `Must not be greater than 0 fractional digits.`,
         'max': 0,
-        'actual': 1
-      }
+        'actual': 1,
+      },
     })
     expect(maxFractionalDigitsValidator(1)(new UntypedFormControl('.12'))).toEqual({
       'maxFractionalDigits': {
         'reason': `Must not be greater than 1 fractional digits.`,
         'max': 1,
-        'actual': 2
-      }
+        'actual': 2,
+      },
     })
   })
 })

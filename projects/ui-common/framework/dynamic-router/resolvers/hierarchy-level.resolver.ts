@@ -8,7 +8,7 @@ export class HierarchyLevelResolver implements Resolve<number> {
 
   resolve(
     route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
+    state: RouterStateSnapshot,
   ): Observable<number> | Promise<number> | number {
     // console.log('[HierarchyLevelResolver]', route)
     // console.log('[HierarchyLevelResolver]', state)

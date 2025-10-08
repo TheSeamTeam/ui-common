@@ -23,7 +23,7 @@ export type TheSeamNumberFormatsInput =
 
 export function coercePhoneNumberFormat(
   format: TheSeamNumberFormatsInput,
-  defaultFormat = THESEAM_DEFAULT_PHONE_NUMBER_FORMAT
+  defaultFormat = THESEAM_DEFAULT_PHONE_NUMBER_FORMAT,
 ): intlTelInputUtils.numberFormat {
   let res = defaultFormat
 

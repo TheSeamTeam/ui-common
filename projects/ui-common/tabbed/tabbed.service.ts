@@ -24,7 +24,7 @@ export class TheSeamTabbedService {
   public unregisterTab(tab: TheSeamTabbedComponent, groupName: string) {
     if (this._tabGroups[groupName]) {
       this._tabGroups[groupName] = this._tabGroups[groupName].filter(
-        t => t !== tab
+        t => t !== tab,
       )
 
       if (this._tabGroups[groupName].length > 0) {

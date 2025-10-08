@@ -15,7 +15,7 @@ import {
   isHorizontalNavItemActive,
   isHorizontalNavItemType,
   setDefaultHorizontalNavItemState,
-  setHorizontalNavItemStateProp
+  setHorizontalNavItemStateProp,
 } from './nav-utils'
 import { INavItem, INavItemState, INavLink, NavItemStateChanged } from './nav.models'
 

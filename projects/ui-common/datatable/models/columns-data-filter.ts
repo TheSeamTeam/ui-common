@@ -39,7 +39,7 @@ export abstract class ColumnsDataFilter<TInitial = any, TForm = FormGroup, TOpti
   constructor(
     public readonly prop: string,
     public readonly initialValue: TInitial,
-    public readonly column: TheSeamDatatableColumn<any, any, TConfig>
+    public readonly column: TheSeamDatatableColumn<any, any, TConfig>,
   ) {}
 
   /**

@@ -3,12 +3,12 @@ import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, Input } fr
 // TODO: Split up the button and anchor classes.
 
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
-    selector: 'button[seamMenuFooterAction],a[seamMenuFooterAction]',
-    templateUrl: './menu-footer-action.component.html',
-    styleUrls: ['./menu-footer-action.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  // eslint-disable-next-line @angular-eslint/component-selector
+  selector: 'button[seamMenuFooterAction],a[seamMenuFooterAction]',
+  templateUrl: './menu-footer-action.component.html',
+  styleUrls: ['./menu-footer-action.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class MenuFooterActionComponent {
 
@@ -30,7 +30,7 @@ export class MenuFooterActionComponent {
   @HostBinding('style.display.px') get _styleDisplay() { return this._isButton() && 'inline' }
 
   constructor(
-    private _elementRef: ElementRef
+    private _elementRef: ElementRef,
   ) { }
 
   /** Determines if the component host is a button. */

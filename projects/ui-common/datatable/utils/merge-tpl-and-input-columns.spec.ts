@@ -27,10 +27,10 @@ describe('mergeTplAndInpColumns', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [],
-    teardown: { destroyAfterEach: false }
-})
-    .compileComponents()
+      declarations: [],
+      teardown: { destroyAfterEach: false },
+    })
+      .compileComponents()
   }))
 
   beforeEach(() => {

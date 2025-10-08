@@ -5,7 +5,7 @@ import { TheSeamDatatableColumn } from '../models/table-column'
 
 export function withStoredColumnInfo(
   columns: TheSeamDatatableColumn[],
-  preferenceColumns: TheSeamDatatablePreferencesColumn[]
+  preferenceColumns: TheSeamDatatablePreferencesColumn[],
 ): TheSeamDatatableColumn[] {
   const _columns: TheSeamDatatableColumn[] = []
   for (const col of columns) {

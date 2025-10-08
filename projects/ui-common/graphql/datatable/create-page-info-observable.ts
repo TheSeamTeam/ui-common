@@ -9,7 +9,7 @@ import { getPageInfo } from './get-page-info'
 
 export function createPageInfoObservable(
   datatable$: Observable<GqlDatatableAccessor | null | undefined>,
-  defaultPageSize: number = 20
+  defaultPageSize: number = 20,
 ): Observable<TheSeamPageInfo> {
   return new Observable<TheSeamPageInfo>((subscriber: Subscriber<TheSeamPageInfo>) => {
     let prev: TheSeamPageInfo | null = null
@@ -32,7 +32,7 @@ export function createPageInfoObservable(
         handlePageInfo(getPageInfo(dt, defaultPageSize))
 
         return dt.page.pipe(tap(p => handlePageInfo(p)))
-      })
+      }),
     ).subscribe()
 
     return () => {

@@ -13,7 +13,7 @@ export class SeamConfirmDialogService {
   public open(
     message?: string,
     alert?: string | { message: string, type: ThemeTypes },
-    template?: TemplateRef<any> | { template: TemplateRef<any>, context: any }
+    template?: TemplateRef<any> | { template: TemplateRef<any>, context: any },
   ): ModalRef<ConfirmDialogComponent, 'confirm' | undefined> {
     if (!this._modal) {
       // TODO: This shouldn't be necessary after refactoring modal service.

@@ -10,9 +10,9 @@ import type { SeamIcon } from '../icon'
 import type { TheSeamIconType } from '../icon/icon.component'
 
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
-    selector: 'button[seamIconBtn]',
-    template: `
+  // eslint-disable-next-line @angular-eslint/component-selector
+  selector: 'button[seamIconBtn]',
+  template: `
     <seam-icon *ngIf="icon"
       [grayscaleOnDisable]="grayscaleOnDisable"
       [disabled]="disabled"
@@ -24,12 +24,12 @@ import type { TheSeamIconType } from '../icon/icon.component'
     </seam-icon>
     <ng-content select=".sr-only,seam-icon-notification"></ng-content>
   `,
-    styles: [],
-    host: {
-        '[attr.aria-disabled]': 'disabled.toString()',
-        '[attr.disabled]': 'disabled || null',
-    },
-    standalone: false
+  styles: [],
+  host: {
+    '[attr.aria-disabled]': 'disabled.toString()',
+    '[attr.disabled]': 'disabled || null',
+  },
+  standalone: false,
 })
 export class IconBtnComponent implements DoCheck {
   static ngAcceptInputType_grayscaleOnDisable: BooleanInput
@@ -64,7 +64,7 @@ export class IconBtnComponent implements DoCheck {
    * Toggles whether an image that has thrown the `onerror` event should show
    * the `defaultIcon` instead.
    */
-   @Input() @InputBoolean() showDefaultOnError = false
+  @Input() @InputBoolean() showDefaultOnError = false
 
   /**
    * Shown if icon is not set or if showDefaultOnError is true and img has thrown an error.
@@ -116,7 +116,7 @@ export class IconBtnComponent implements DoCheck {
 
   constructor(
     private _elementRef: ElementRef<HTMLButtonElement | HTMLAnchorElement>,
-    private _renderer: Renderer2
+    private _renderer: Renderer2,
   ) { }
 
   ngDoCheck() {

@@ -24,24 +24,24 @@ describe('DatatableExportButtonComponent', () => {
   beforeEach(waitForAsync(() => {
     // tslint:disable:no-use-before-declare
     TestBed.configureTestingModule({
-    declarations: [
+      declarations: [
         DatatableExportButtonComponent,
-    ],
-    imports: [
+      ],
+      imports: [
         TheSeamButtonsModule,
         TheSeamMenuModule,
-        TheSeamIconModule
-    ],
-    providers: [
+        TheSeamIconModule,
+      ],
+      providers: [
         { provide: THESEAM_DATATABLE, useClass: FakeDatatableComponent },
         { provide: ToastrService, useClass: FakeToastrService },
         { provide: TheSeamLoadingOverlayService, useClass: FakeTheSeamLoadingOverlayService },
         { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
         { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: ExportersDataEvaluator, multi: true },
-    ],
-    teardown: { destroyAfterEach: false }
-})
-    .compileComponents()
+      ],
+      teardown: { destroyAfterEach: false },
+    })
+      .compileComponents()
     // tslint:enable:no-use-before-declare
   }))
 

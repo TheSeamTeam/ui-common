@@ -1,8 +1,8 @@
 import { Directive, TemplateRef } from '@angular/core'
 
 @Directive({
-    selector: '[seamFormFieldLabelTpl]',
-    standalone: false
+  selector: '[seamFormFieldLabelTpl]',
+  standalone: false,
 })
 export class FormFieldLabelTplDirective {
 

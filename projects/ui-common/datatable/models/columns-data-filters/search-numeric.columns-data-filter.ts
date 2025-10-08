@@ -22,7 +22,7 @@ export class SearchNumericColumnsDataFilter extends ColumnsDataFilter<TheSeamCol
   constructor(
     prop: string,
     initialValue: TheSeamColumnsDataFilterNumericSearchFormState,
-    column: TheSeamDatatableColumn
+    column: TheSeamDatatableColumn,
   ) {
     super(prop, initialValue, column)
 
@@ -37,7 +37,7 @@ export class SearchNumericColumnsDataFilter extends ColumnsDataFilter<TheSeamCol
 
     this.filterStateChanges = this._updateFilterValue.pipe(
       startWith(undefined),
-      map(() => this.filterState())
+      map(() => this.filterState()),
     )
   }
 
@@ -99,7 +99,7 @@ export class SearchNumericColumnsDataFilter extends ColumnsDataFilter<TheSeamCol
   public filter(data: any[]): Observable<any[]> {
     return this._updateFilterValue.pipe(
       startWith(undefined),
-      map(() => this.dataFilter(data, this.form.value, undefined))
+      map(() => this.dataFilter(data, this.form.value, undefined)),
     )
   }
 
@@ -108,8 +108,8 @@ export class SearchNumericColumnsDataFilter extends ColumnsDataFilter<TheSeamCol
       name: this.name,
       state: {
         prop: this.prop,
-        formValue: this.form.value
-      }
+        formValue: this.form.value,
+      },
     }
   }
 
@@ -122,7 +122,7 @@ export class SearchNumericColumnsDataFilter extends ColumnsDataFilter<TheSeamCol
       searchType: 'eq',
       searchText: null,
       fromText: null,
-      toText: null
+      toText: null,
     })
 
     this._updateFilterValue.next()

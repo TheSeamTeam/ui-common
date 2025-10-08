@@ -3,7 +3,7 @@ import { Observable, Subject } from 'rxjs'
 
 export enum MapValueSource {
   Input = 'input',
-  FeatureChange = 'featurechange'
+  FeatureChange = 'featurechange',
 }
 
 export type MapValue = object | undefined | null

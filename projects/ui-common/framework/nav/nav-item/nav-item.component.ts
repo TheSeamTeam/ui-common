@@ -16,7 +16,7 @@ import {
   Output,
   ViewChild,
   ViewChildren,
-  ViewEncapsulation
+  ViewEncapsulation,
 } from '@angular/core'
 import { AsyncPipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common'
 import { A11yModule } from '@angular/cdk/a11y'
@@ -137,7 +137,7 @@ export class NavItemComponent implements OnDestroy {
         this._badgeTooltip = {
           tooltip: value,
           placement: 'auto',
-          disabled: false
+          disabled: false,
         }
       } else {
         this._badgeTooltip = {
@@ -145,7 +145,7 @@ export class NavItemComponent implements OnDestroy {
           placement: value.placement || 'auto',
           disabled: typeof value?.disabled === 'boolean'
             ? value.disabled
-            : typeof value.tooltip !== 'string'
+            : typeof value.tooltip !== 'string',
         }
       }
     } else {

@@ -32,7 +32,7 @@ export const Simple: Story = {
   render: args => ({
     props: {
       ...args,
-      control: new FormControl('abc')
+      control: new FormControl('abc'),
     },
     template: `
       <div class="p-4" style="height: 400px; width: 500px;">

@@ -80,7 +80,7 @@ export function composeDataFilterStates(filters: DataFilter[]): Observable<DataF
 
   return combineLatest(filters.map(f => f.filterStateChanges.pipe(
     startWith(undefined),
-    map(() => f.filterState())
+    map(() => f.filterState()),
   )))
 }
 

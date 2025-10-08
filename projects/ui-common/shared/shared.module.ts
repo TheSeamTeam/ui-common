@@ -40,6 +40,6 @@ import { TheSeamPasswordInputRevealComponent } from './components/password-input
     TheSeamMaskCharsPipe,
     TheSeamTruncatePipe,
     TheSeamNgxQuillExtraDirective,
-  ]
+  ],
 })
 export class TheSeamSharedModule { }

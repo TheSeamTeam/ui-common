@@ -28,7 +28,7 @@ export class TheSeamCardBodyComponent implements OnDestroy, AfterViewInit {
       filter(v => !!v),
       map(v => v.toArray() as TheSeamCardActionComponent[]),
       filter(v => v && v.length > 0),
-      tap(v => setTimeout(() => v[v.length - 1].isLastAction = true))
+      tap(v => setTimeout(() => v[v.length - 1].isLastAction = true)),
     ).subscribe()
   }
 

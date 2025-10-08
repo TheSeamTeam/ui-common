@@ -282,7 +282,7 @@ export const THESEAM_QUILL_FORMATS = [
   'strike',
   'underline',
   'video',
-  'mention'
+  'mention',
 ] as const
 
 export type TheSeamQuillStyleFormat = (typeof THESEAM_QUILL_FORMATS)[number]

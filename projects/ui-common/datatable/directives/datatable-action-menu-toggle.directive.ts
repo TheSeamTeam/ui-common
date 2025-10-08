@@ -4,9 +4,9 @@ import { TemplatePortal } from '@angular/cdk/portal'
 import { Directive, ElementRef, HostListener, Input, TemplateRef, ViewContainerRef } from '@angular/core'
 
 @Directive({
-    selector: '[seamDatatableActionMenuToggle]',
-    exportAs: 'seamDatatableActionMenuToggle',
-    standalone: false
+  selector: '[seamDatatableActionMenuToggle]',
+  exportAs: 'seamDatatableActionMenuToggle',
+  standalone: false,
 })
 export class DatatableActionMenuToggleDirective {
 

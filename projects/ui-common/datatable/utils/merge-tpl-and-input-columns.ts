@@ -4,7 +4,7 @@ import {
   DataTableColumnDirective,
   DataTableColumnHeaderDirective,
   TableColumn,
-  translateTemplates
+  translateTemplates,
 } from '@marklb/ngx-datatable'
 import type { SelectionType } from '@marklb/ngx-datatable'
 
@@ -30,7 +30,7 @@ export function mergeTplAndInpColumns(
   treeToggleTpl: TemplateRef<DataTableColumnCellTreeToggle> | undefined,
   headerTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined,
   cellTypeSelectorTpl: TemplateRef<DataTableColumnDirective<any>> | undefined,
-  differs: KeyValueDiffers
+  differs: KeyValueDiffers,
 ): TheSeamDatatableColumn[] {
   const cols: TheSeamDatatableColumn[] = []
 
@@ -65,7 +65,7 @@ export function mergeTplAndInpColumns(
     const _col: TheSeamDatatableColumn = {
       ...(prev || {}),
       ..._inpCol,
-      ..._tplCol
+      ..._tplCol,
     }
 
     cols.push(_col)
@@ -99,7 +99,7 @@ export function mergeTplAndInpColumns(
 function _updateColDiff(
   colDiff: KeyValueChanges<string, any>,
   prev: TableColumn | undefined,
-  inpCol: TheSeamDatatableColumn<any, any>
+  inpCol: TheSeamDatatableColumn<any, any>,
 ): void {
   colDiff.forEachRemovedItem(r => {
     if (prev && Object.prototype.hasOwnProperty.call(prev, r.key)) {
@@ -114,7 +114,7 @@ function _updateColDiff(
 function _getColDiff(
   col: TheSeamDatatableColumn,
   colDiffers: { [propName: string]: KeyValueDiffer<any, any> },
-  differs: KeyValueDiffers
+  differs: KeyValueDiffers,
 ) {
   if (!col || !col.prop) {
     return
@@ -134,7 +134,7 @@ function _getColDiff(
 
 function _hasPrevColDiff(
   col: TheSeamDatatableColumn,
-  colDiffers: { [propName: string]: KeyValueDiffer<any, any> }
+  colDiffers: { [propName: string]: KeyValueDiffer<any, any> },
 ): boolean {
   if (!col || !col.prop) {
     return false

@@ -7,16 +7,16 @@ import { WidgetButtonGroupComponent } from './widget-button-group.component'
 
 @NgModule({
   declarations: [
-    WidgetButtonGroupComponent
+    WidgetButtonGroupComponent,
   ],
   imports: [
     CommonModule,
-    TheSeamButtonsModule
+    TheSeamButtonsModule,
   ],
   exports: [
     WidgetButtonGroupComponent,
 
-    TheSeamButtonsModule
-  ]
+    TheSeamButtonsModule,
+  ],
 })
 export class TheSeamWidgetButtonGroupModule { }

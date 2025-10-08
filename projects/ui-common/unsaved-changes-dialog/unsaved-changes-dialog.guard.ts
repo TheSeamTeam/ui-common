@@ -7,7 +7,7 @@ export const UnsavedChangesDialogGuard: CanDeactivateFn<UnsavedChangesCanDeactiv
   if (isDevMode()) {
     if (!component.unsavedChangesCanDeactivate) {
       console.warn(
-        'Route Component with `UnsavedChangesDialogGuard` guard must extend `UnsavedChangesCanDeactivate` class.'
+        'Route Component with `UnsavedChangesDialogGuard` guard must extend `UnsavedChangesCanDeactivate` class.',
       )
     }
   }

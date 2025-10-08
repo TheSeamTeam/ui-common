@@ -62,7 +62,7 @@ export class TheSeamPreferencesMapRecord {
         map(v => notNullOrUndefined(v) ? v : this._emptyPrefs),
         tap(() => {
           this._setStatus('loaded')
-        })
+        }),
       )),
       shareReplay({ bufferSize: 1, refCount: true }),
     )

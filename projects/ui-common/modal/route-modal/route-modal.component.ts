@@ -7,10 +7,10 @@ import { takeUntil } from 'rxjs/operators'
 import { Modal } from '../modal.service'
 
 @Component({
-    selector: 'seam-route-modal',
-    templateUrl: './route-modal.component.html',
-    styleUrls: ['./route-modal.component.scss'],
-    standalone: false
+  selector: 'seam-route-modal',
+  templateUrl: './route-modal.component.html',
+  styleUrls: ['./route-modal.component.scss'],
+  standalone: false,
 })
 export class RouteModalComponent implements OnInit, OnDestroy {
 
@@ -21,13 +21,13 @@ export class RouteModalComponent implements OnInit, OnDestroy {
   constructor(
     private _route: ActivatedRoute,
     private _router: Router,
-    private _modal: Modal
+    private _modal: Modal,
   ) { }
 
   ngOnInit() {
     this._route.data
       .pipe(
-        takeUntil(this._ngUnsubscribe)
+        takeUntil(this._ngUnsubscribe),
       )
       .subscribe(data => {
         // console.log('data', data)
@@ -35,14 +35,14 @@ export class RouteModalComponent implements OnInit, OnDestroy {
           // console.log(this._route.snapshot)
           const modalRef = this._modal.openFromComponent(data.routeComponent, {
             modalSize: 'lg',
-            data
+            data,
           })
           modalRef.afterClosed().subscribe(() => {
             const parent = this.getOutletParent()
             this._router.navigate(
               [{ outlets: { modal: null, primary: ['.'] } }],
               // { relativeTo: this._route.parent }
-              { relativeTo: parent }
+              { relativeTo: parent },
             )
           })
         }
@@ -64,7 +64,7 @@ export class RouteModalComponent implements OnInit, OnDestroy {
     if (this.isRouteModal()) {
       this._router.navigate(
         [{ outlets: { modal: null, primary: ['.'] } }],
-        { relativeTo: this._route.parent }
+        { relativeTo: this._route.parent },
       )
     }
   }

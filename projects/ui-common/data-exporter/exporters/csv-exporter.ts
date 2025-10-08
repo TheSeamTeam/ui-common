@@ -35,9 +35,9 @@ export class CSVDataExporter implements IDataExporter {
             tap(fileData => {
               FileSaver.saveAs(fileData.blob, `Export.csv`)
             }),
-            mapTo(true)
+            mapTo(true),
           )
-      })
+      }),
     )
   }
 

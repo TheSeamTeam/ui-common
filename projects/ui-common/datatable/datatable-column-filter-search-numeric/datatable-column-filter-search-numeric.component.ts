@@ -4,16 +4,16 @@ import { ControlContainer, FormGroupDirective } from '@angular/forms'
 import { TheSeamColumnsDataFilterNumericSearchForm, TheSeamColumnsDataFilterNumericSearchType, THESEAM_COLUMNS_DATA_FILTER_NUMERIC_RANGE_SEARCH_TYPES, THESEAM_COLUMNS_DATA_FILTER_NUMERIC_TEXT_SEARCH_TYPES } from '../models/columns-data-filters/models'
 
 @Component({
-    selector: 'seam-datatable-column-filter-search-numeric',
-    templateUrl: './datatable-column-filter-search-numeric.component.html',
-    styleUrls: ['./datatable-column-filter-search-numeric.component.scss'],
-    viewProviders: [
-        {
-            provide: ControlContainer,
-            useExisting: FormGroupDirective
-        }
-    ],
-    standalone: false
+  selector: 'seam-datatable-column-filter-search-numeric',
+  templateUrl: './datatable-column-filter-search-numeric.component.html',
+  styleUrls: ['./datatable-column-filter-search-numeric.component.scss'],
+  viewProviders: [
+    {
+      provide: ControlContainer,
+      useExisting: FormGroupDirective,
+    },
+  ],
+  standalone: false,
 })
 export class DatatableColumnFilterSearchNumericComponent implements OnInit {
 
@@ -38,12 +38,12 @@ export class DatatableColumnFilterSearchNumericComponent implements OnInit {
   ngOnInit(): void {
     this.showSearchInput$ = this.filterForm?.controls.searchType.valueChanges.pipe(
       startWith(this.filterForm?.controls.searchType.value),
-      map(searchType => THESEAM_COLUMNS_DATA_FILTER_NUMERIC_TEXT_SEARCH_TYPES.includes(searchType || ''))
+      map(searchType => THESEAM_COLUMNS_DATA_FILTER_NUMERIC_TEXT_SEARCH_TYPES.includes(searchType || '')),
     )
 
     this.showRangeInputs$ = this.filterForm?.controls.searchType.valueChanges.pipe(
       startWith(this.filterForm?.controls.searchType.value),
-      map(searchType => THESEAM_COLUMNS_DATA_FILTER_NUMERIC_RANGE_SEARCH_TYPES.includes(searchType || ''))
+      map(searchType => THESEAM_COLUMNS_DATA_FILTER_NUMERIC_RANGE_SEARCH_TYPES.includes(searchType || '')),
     )
   }
 }

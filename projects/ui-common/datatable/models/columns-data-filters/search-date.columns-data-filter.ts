@@ -23,7 +23,7 @@ export class SearchDateColumnsDataFilter extends ColumnsDataFilter<TheSeamColumn
   constructor(
     prop: string,
     initialValue: TheSeamColumnsDataFilterDateSearchFormState,
-    column: TheSeamDatatableColumn<any, any, TheSeamDatatableDateColumnFilterableConfig>
+    column: TheSeamDatatableColumn<any, any, TheSeamDatatableDateColumnFilterableConfig>,
   ) {
     super(prop, initialValue, column)
 
@@ -38,11 +38,11 @@ export class SearchDateColumnsDataFilter extends ColumnsDataFilter<TheSeamColumn
 
     this.filterStateChanges = this._updateFilterValue.pipe(
       startWith(undefined),
-      map(() => this.filterState())
+      map(() => this.filterState()),
     )
 
     this.options = {
-      dateType: this.column.filterOptions?.dateType || 'date'
+      dateType: this.column.filterOptions?.dateType || 'date',
     }
   }
 
@@ -110,7 +110,7 @@ export class SearchDateColumnsDataFilter extends ColumnsDataFilter<TheSeamColumn
   public filter(data: any[]): Observable<any[]> {
     return this._updateFilterValue.pipe(
       startWith(undefined),
-      map(() => this.dataFilter(data, this.form.value, undefined))
+      map(() => this.dataFilter(data, this.form.value, undefined)),
     )
   }
 
@@ -120,8 +120,8 @@ export class SearchDateColumnsDataFilter extends ColumnsDataFilter<TheSeamColumn
       state: {
         prop: this.prop,
         formValue: this.form.value,
-        options: this.options
-      }
+        options: this.options,
+      },
     }
   }
 
@@ -134,7 +134,7 @@ export class SearchDateColumnsDataFilter extends ColumnsDataFilter<TheSeamColumn
       searchType: 'eq',
       searchText: null,
       fromText: null,
-      toText: null
+      toText: null,
     })
 
     this._updateFilterValue.next()

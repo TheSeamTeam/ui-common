@@ -17,6 +17,6 @@ import { TheSeamCardComponent } from './card.component'
     TheSeamCardHeaderComponent,
     TheSeamCardBodyComponent,
     TheSeamCardActionComponent,
-  ]
+  ],
 })
 export class TheSeamCardModule { }

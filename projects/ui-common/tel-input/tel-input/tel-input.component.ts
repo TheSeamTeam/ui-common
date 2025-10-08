@@ -14,7 +14,7 @@ import {
   OnDestroy,
   OnInit,
   Output,
-  ViewChild
+  ViewChild,
 } from '@angular/core'
 import { ControlValueAccessor, UntypedFormControl, NgControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms'
 import { defer, fromEvent, merge, Observable, of, Subject } from 'rxjs'
@@ -30,21 +30,21 @@ import { CommonModule } from '@angular/common'
 // TODO: Fix disabled
 
 @Component({
-    selector: 'seam-tel-input',
-    templateUrl: './tel-input.component.html',
-    styleUrls: ['./tel-input.component.scss'],
-    providers: [{
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => TheSeamTelInputComponent),
-            multi: true
-        }],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        TheSeamFormFieldModule,
-        TheSeamTelInputDirective,
-    ]
+  selector: 'seam-tel-input',
+  templateUrl: './tel-input.component.html',
+  styleUrls: ['./tel-input.component.scss'],
+  providers: [{
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => TheSeamTelInputComponent),
+    multi: true,
+  }],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    TheSeamFormFieldModule,
+    TheSeamTelInputDirective,
+  ],
 })
 export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValueAccessor {
   static ngAcceptInputType_required: BooleanInput
@@ -145,7 +145,7 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
     private readonly _changeDetectorRef: ChangeDetectorRef,
     private readonly _injector: Injector,
     private readonly _elementRef: ElementRef,
-    private readonly _focusMonitor: FocusMonitor
+    private readonly _focusMonitor: FocusMonitor,
   ) {
     const telInputBlurEvent$ = this._telInputDirective
       ? fromEvent(this._telInputDirective.getHostElement(), 'blur')
@@ -157,28 +157,28 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
           return merge(
             control.valueChanges,
             control.statusChanges,
-            telInputBlurEvent$
+            telInputBlurEvent$,
           ).pipe(
             auditTime(0),
             map(() => {
               const inputControl = this._inputDirective?.ngControl
               return control.invalid && (inputControl?.dirty as boolean || inputControl?.touched as boolean)
-            })
+            }),
           )
         }
         return of(false)
-      })
+      }),
     )
   }
 
   /** @ignore */
   ngOnInit(): void {
     this._focusMonitor.monitor(this._elementRef, true).pipe(
-      takeUntil(this._ngUnsubscribe)
+      takeUntil(this._ngUnsubscribe),
     ).subscribe(origin => this._focusOrigin = origin)
 
     this._control.valueChanges.pipe(
-      takeUntil(this._ngUnsubscribe)
+      takeUntil(this._ngUnsubscribe),
     ).subscribe(v => {
       const value = this._telInputDirective?.getFullNumber()
       // console.log('valueChanges', v, value)

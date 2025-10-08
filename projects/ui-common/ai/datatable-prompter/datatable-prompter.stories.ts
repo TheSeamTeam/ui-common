@@ -63,17 +63,17 @@ export class MockAiProvider implements TheSeamDatatablePrompterProvider {
 
   async submit(prompt: string): Promise<any> {
     return Promise.resolve([
-    {
-      'id': 'filter--age',
-      'type': 'filter',
-      'state': {
-        'columnProp': 'age',
-        'filterType': 'text',
-        'operation': 'eq',
-        'value': '33',
+      {
+        'id': 'filter--age',
+        'type': 'filter',
+        'state': {
+          'columnProp': 'age',
+          'filterType': 'text',
+          'operation': 'eq',
+          'value': '33',
+        },
       },
-    },
-  ] as any) as Promise<any>
+    ] as any) as Promise<any>
   }
 }
 
@@ -183,7 +183,7 @@ const dt = {
     { name: 'Quinn', age: 29, color: 'Indigo' },
     { name: 'Rachel', age: 36, color: 'Turquoise' },
     { name: 'Samuel', age: 42, color: 'Maroon' },
-    { name: 'Tara', age: 21, color: 'Coral' }
+    { name: 'Tara', age: 21, color: 'Coral' },
   ],
 }
 
@@ -209,12 +209,12 @@ const meta: Meta<StoryComponentType> = {
         // ),
         {
           provide: THESEAM_DATATABLE_PREFERENCES_ACCESSOR,
-          useClass: PreferencesAccessorService
+          useClass: PreferencesAccessorService,
         },
         {
           provide: THESEAM_DATATABLE_PROMPTER_PROVIDER,
           // useClass: MockAiProvider,
-          useClass: OpenRouterAiProvider
+          useClass: OpenRouterAiProvider,
         },
       ],
     }),

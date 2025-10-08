@@ -169,7 +169,7 @@ export class TheSeamToggleEditComponent implements OnInit, OnDestroy, AfterViewI
       attributes: true,
       attributeFilter: ['class'],
       childList: false,
-      characterData: false
+      characterData: false,
     })
   }
 
@@ -445,7 +445,7 @@ export class TheSeamToggleEditComponent implements OnInit, OnDestroy, AfterViewI
         originX: 'end',
         originY: 'top',
         overlayX: 'end',
-        overlayY: 'bottom'
+        overlayY: 'bottom',
       },
     ]
   }

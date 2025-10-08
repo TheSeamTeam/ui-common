@@ -9,7 +9,7 @@ import {
   ISideNavLink,
   ISideNavTitle,
   SideNavItemCanHaveChildren,
-  SideNavItemCanHaveState
+  SideNavItemCanHaveState,
 } from './side-nav.models'
 import { SideNavConfig } from './side-nav-tokens'
 
@@ -23,7 +23,7 @@ interface NavItemTypeMap {
 
 export function isNavItemType<T extends keyof NavItemTypeMap>(
   item: ISideNavItem,
-  type: T
+  type: T,
 ): item is NavItemTypeMap[T] {
   return item.itemType === type
 }
@@ -115,7 +115,7 @@ export function setDefaultState(item: ISideNavItem): ISideNavItem & Required<Sid
 
   item.__state = {
     active: false,
-    expanded: false
+    expanded: false,
   }
 
   // TODO: See if there is a nice way to fix the typing for this.

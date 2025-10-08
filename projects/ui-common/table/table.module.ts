@@ -11,7 +11,7 @@ import { TheSeamTableColumnHeaderTplDirective } from './table-column-header-tpl.
 
 @NgModule({
   declarations: [
-    TableComponent
+    TableComponent,
   ],
   imports: [
     CommonModule,
@@ -26,6 +26,6 @@ import { TheSeamTableColumnHeaderTplDirective } from './table-column-header-tpl.
     TheSeamTableColumnComponent,
     TheSeamTableCellTplDirective,
     TheSeamTableColumnHeaderTplDirective,
-  ]
+  ],
 })
 export class TheSeamTableModule { }

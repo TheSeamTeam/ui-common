@@ -10,16 +10,16 @@ import { StoryModalContainerComponent } from './story-modal-container.component'
 @NgModule({
   declarations: [
     StoryEmptyWithRouteComponent,
-    StoryModalContainerComponent
+    StoryModalContainerComponent,
   ],
   imports: [
     CommonModule,
     RouterModule,
-    TheSeamOverlayScrollbarDirective
+    TheSeamOverlayScrollbarDirective,
   ],
   exports: [
     StoryEmptyWithRouteComponent,
-    StoryModalContainerComponent
-  ]
+    StoryModalContainerComponent,
+  ],
 })
 export class StoryHelperComponentsModule { }

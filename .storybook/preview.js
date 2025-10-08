@@ -42,12 +42,12 @@ if (docJson) {
   // eslint-disable-next-line no-inner-declarations
   function filterObject(obj, key) {
     for (const i in obj) {
-        if (!Object.prototype.hasOwnProperty.call(obj, i)) continue
-        if (i === key) {
-            delete obj[key]
-        } else if (typeof obj[i] === 'object') {
-            filterObject(obj[i], key)
-        }
+      if (!Object.prototype.hasOwnProperty.call(obj, i)) continue
+      if (i === key) {
+        delete obj[key]
+      } else if (typeof obj[i] === 'object') {
+        filterObject(obj[i], key)
+      }
     }
     return obj
   }
@@ -185,9 +185,9 @@ export const parameters = {
   docs: {
     inlineStories: false,
     source: {
-      type: 'dynamic'
-    }
-  }
+      type: 'dynamic',
+    },
+  },
 }
 
 // export const decorators = []

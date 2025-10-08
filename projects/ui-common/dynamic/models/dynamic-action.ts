@@ -4,7 +4,7 @@ import { DynamicActionUiDef } from './dynamic-action-ui-def'
 import { DynamicValue } from './dynamic-value'
 
 export interface DynamicAction<T extends string, D extends DynamicActionContext = any, R = any,
-   TActionDef extends DynamicActionDef<T> = any> {
+  TActionDef extends DynamicActionDef<T> = any> {
 
   readonly type: T
 

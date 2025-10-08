@@ -9,7 +9,7 @@ export function provideNavigationReload(config: TheSeamNavigationReloadConfig): 
       provide: APP_INITIALIZER,
       useFactory: (service: TheSeamNavigationReloadService) => () => service.initialize(config),
       deps: [ TheSeamNavigationReloadService ],
-      multi: true
-    }
+      multi: true,
+    },
   ]
 }

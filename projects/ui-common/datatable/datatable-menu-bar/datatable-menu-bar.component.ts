@@ -8,15 +8,15 @@ import { DatatableFilterDirective } from '../directives/datatable-filter.directi
 export const _THESEAM_DATA_FILTER_CONTAINER: any = {
   provide: THESEAM_DATA_FILTER_CONTAINER,
   // tslint:disable-next-line:no-use-before-declare
-  useExisting: forwardRef(() => DatatableMenuBarComponent)
+  useExisting: forwardRef(() => DatatableMenuBarComponent),
 }
 
 @Component({
-    selector: 'seam-datatable-menu-bar',
-    templateUrl: './datatable-menu-bar.component.html',
-    styleUrls: ['./datatable-menu-bar.component.scss'],
-    providers: [_THESEAM_DATA_FILTER_CONTAINER],
-    standalone: false
+  selector: 'seam-datatable-menu-bar',
+  templateUrl: './datatable-menu-bar.component.html',
+  styleUrls: ['./datatable-menu-bar.component.scss'],
+  providers: [_THESEAM_DATA_FILTER_CONTAINER],
+  standalone: false,
 })
 export class DatatableMenuBarComponent implements DataFilterContainer {
 
@@ -40,7 +40,7 @@ export class DatatableMenuBarComponent implements DataFilterContainer {
       : []
 
     const fArr = this._filtersArr
-    .filter(f => fDirectives.findIndex(fd => fd.uid === f.uid) === -1)
+      .filter(f => fDirectives.findIndex(fd => fd.uid === f.uid) === -1)
     return [ ...fArr, ...fDirectives ]
   }
 

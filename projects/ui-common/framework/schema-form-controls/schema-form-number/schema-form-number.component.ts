@@ -38,7 +38,7 @@ export class TheSeamSchemaFormNumberComponent implements OnInit, TheSeamSchemaFo
   lastValidNumber = ''
 
   constructor(
-    private jsf: JsonSchemaFormService
+    private jsf: JsonSchemaFormService,
   ) { }
 
   ngOnInit() {

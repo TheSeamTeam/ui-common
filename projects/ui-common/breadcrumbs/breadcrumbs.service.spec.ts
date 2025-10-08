@@ -17,8 +17,8 @@ describe('TheSeamBreadcrumbsService', () => {
     service: TheSeamBreadcrumbsService,
     declarations: [ TestPlacholderComponent ],
     imports: [
-      RouterTestingModule.withRoutes([])
-    ]
+      RouterTestingModule.withRoutes([]),
+    ],
   })
 
   let spectator: SpectatorService<TheSeamBreadcrumbsService>
@@ -57,12 +57,12 @@ describe('TheSeamBreadcrumbsService', () => {
     router.resetConfig([
       {
         path: '',
-        component: TestPlacholderComponent
+        component: TestPlacholderComponent,
       },
       {
         path: 'foo',
         component: TestPlacholderComponent,
-        data: { breadcrumb: 'Foo' }
+        data: { breadcrumb: 'Foo' },
       },
     ])
 
@@ -79,7 +79,7 @@ describe('TheSeamBreadcrumbsService', () => {
     router.resetConfig([
       {
         path: '',
-        component: TestPlacholderComponent
+        component: TestPlacholderComponent,
       },
       {
         path: 'foo',
@@ -113,8 +113,8 @@ describe('TheSeamBreadcrumbsService', () => {
             path: 'bar',
             component: TestPlacholderComponent,
             data: { breadcrumb: 'Bar' },
-          }
-        ]
+          },
+        ],
       },
     ])
 
@@ -150,10 +150,10 @@ describe('TheSeamBreadcrumbsService', () => {
                 path: 'bar',
                 component: TestPlacholderComponent,
                 data: { breadcrumb: 'Bar' },
-              }
-            ]
-          }
-        ]
+              },
+            ],
+          },
+        ],
       },
     ])
 
@@ -189,10 +189,10 @@ describe('TheSeamBreadcrumbsService', () => {
                 path: 'bar',
                 component: TestPlacholderComponent,
                 data: { breadcrumb: 'Bar' },
-              }
-            ]
-          }
-        ]
+              },
+            ],
+          },
+        ],
       },
     ])
 
@@ -228,11 +228,11 @@ describe('TheSeamBreadcrumbsService', () => {
               {
                 path: 'no-data',
                 component: TestPlacholderComponent,
-              }
-            ]
-          }
-        ]
-      }
+              },
+            ],
+          },
+        ],
+      },
     ])
 
     zone.run(() => router.initialNavigation())
@@ -261,9 +261,9 @@ describe('TheSeamBreadcrumbsService', () => {
           {
             path: '',
             component: TestPlacholderComponent,
-          }
-        ]
-      }
+          },
+        ],
+      },
     ])
 
     zone.run(() => router.initialNavigation())
@@ -288,11 +288,11 @@ describe('TheSeamBreadcrumbsService', () => {
         data: {
           breadcrumb: 'Foo',
           breadcrumbExtras: {
-            dataProps: [ 'extra1' ]
+            dataProps: [ 'extra1' ],
           },
-          extra1: 'Extra 1'
+          extra1: 'Extra 1',
         },
-      }
+      },
     ])
 
     zone.run(() => router.initialNavigation())
@@ -317,28 +317,28 @@ describe('TheSeamBreadcrumbsService', () => {
         data: {
           breadcrumb: 'Foo',
           breadcrumbExtras: {
-            dataProps: [ 'extra1' ]
+            dataProps: [ 'extra1' ],
           },
-          extra1: 'Extra 1'
+          extra1: 'Extra 1',
         },
         children: [
           {
             path: ':id',
             data: {
               breadcrumbExtras: {
-                dataProps: [ 'extra2' ]
+                dataProps: [ 'extra2' ],
               },
-              extra2: 'Extra 2'
+              extra2: 'Extra 2',
             },
             children: [
               {
                 path: 'bar',
-                component: TestPlacholderComponent
-              }
-            ]
-          }
+                component: TestPlacholderComponent,
+              },
+            ],
+          },
         ],
-      }
+      },
     ])
 
     zone.run(() => router.initialNavigation())
@@ -363,31 +363,31 @@ describe('TheSeamBreadcrumbsService', () => {
         data: {
           breadcrumb: 'Foo',
           breadcrumbExtras: {
-            dataProps: [ 'extra1' ]
+            dataProps: [ 'extra1' ],
           },
-          extra1: 'Extra 1'
+          extra1: 'Extra 1',
         },
         children: [
           {
             path: ':id',
             data: {
               breadcrumbExtras: {
-                dataProps: [ 'extra2' ]
+                dataProps: [ 'extra2' ],
               },
-              extra2: 'Extra 2'
+              extra2: 'Extra 2',
             },
             children: [
               {
                 path: 'bar',
                 component: TestPlacholderComponent,
                 data: {
-                  breadcrumb: 'Bar'
-                }
-              }
-            ]
-          }
+                  breadcrumb: 'Bar',
+                },
+              },
+            ],
+          },
         ],
-      }
+      },
     ])
 
     zone.run(() => router.initialNavigation())
@@ -415,18 +415,18 @@ describe('TheSeamBreadcrumbsService', () => {
         data: {
           breadcrumb: 'Foo',
           breadcrumbExtras: {
-            dataProps: [ 'extra1' ]
+            dataProps: [ 'extra1' ],
           },
-          extra1: 'Extra 1'
+          extra1: 'Extra 1',
         },
         children: [
           {
             path: ':id',
             data: {
               breadcrumbExtras: {
-                dataProps: [ 'extra2' ]
+                dataProps: [ 'extra2' ],
               },
-              extra2: 'Extra 2'
+              extra2: 'Extra 2',
             },
             children: [
               {
@@ -435,15 +435,15 @@ describe('TheSeamBreadcrumbsService', () => {
                 data: {
                   breadcrumb: 'Bar',
                   breadcrumbExtras: {
-                    dataProps: [ 'extra2' ]
+                    dataProps: [ 'extra2' ],
                   },
-                  extra2: 'Extra 3'
-                }
-              }
-            ]
-          }
+                  extra2: 'Extra 3',
+                },
+              },
+            ],
+          },
         ],
-      }
+      },
     ])
 
     zone.run(() => router.initialNavigation())

@@ -13,26 +13,26 @@ import { THESEAM_MENU_PANEL } from './menu-panel-token'
 class TheSeamMenuItemBase {}
 
 const _seamMenuItemMixinBase: CanDisableCtor & typeof TheSeamMenuItemBase =
-    mixinDisabled(TheSeamMenuItemBase)
+  mixinDisabled(TheSeamMenuItemBase)
 
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
-    selector: '[seamMenuItem]',
-    templateUrl: './menu-item.component.html',
-    styleUrls: ['./menu-item.component.scss'],
-    exportAs: 'seamMenuItem',
-    inputs: ['disabled'],
-    host: {
-        '[attr.role]': 'role',
-        'class': 'seam-menu-item dropdown-item',
-        '[class.seam-menu-item-highlighted]': '_highlighted',
-        '[class.seam-menu-item-submenu-trigger]': '_triggersSubmenu',
-        '[attr.tabindex]': '_getTabIndex()',
-        '[attr.aria-disabled]': 'disabled.toString()',
-        '[attr.disabled]': 'disabled || null',
-    },
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  // eslint-disable-next-line @angular-eslint/component-selector
+  selector: '[seamMenuItem]',
+  templateUrl: './menu-item.component.html',
+  styleUrls: ['./menu-item.component.scss'],
+  exportAs: 'seamMenuItem',
+  inputs: ['disabled'],
+  host: {
+    '[attr.role]': 'role',
+    'class': 'seam-menu-item dropdown-item',
+    '[class.seam-menu-item-highlighted]': '_highlighted',
+    '[class.seam-menu-item-submenu-trigger]': '_triggersSubmenu',
+    '[attr.tabindex]': '_getTabIndex()',
+    '[attr.aria-disabled]': 'disabled.toString()',
+    '[attr.disabled]': 'disabled || null',
+  },
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class MenuItemComponent extends _seamMenuItemMixinBase implements OnDestroy, AfterViewInit, FocusableOption {
 
@@ -65,7 +65,7 @@ export class MenuItemComponent extends _seamMenuItemMixinBase implements OnDestr
     @Inject(DOCUMENT) public readonly _document: any,
     private readonly _focusMonitor: FocusMonitor,
     private readonly _changeDetectorRef: ChangeDetectorRef,
-    @Inject(THESEAM_MENU_PANEL) @Optional() private readonly _parentMenu?: ITheSeamMenuPanel<MenuItemComponent>
+    @Inject(THESEAM_MENU_PANEL) @Optional() private readonly _parentMenu?: ITheSeamMenuPanel<MenuItemComponent>,
   ) {
     super()
 

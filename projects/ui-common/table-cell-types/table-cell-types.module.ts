@@ -33,7 +33,7 @@ import {
   TABLE_CELL_TYPE_MANIFEST_PHONE,
   TABLE_CELL_TYPE_MANIFEST_PROGRESS_CIRCLE,
   TABLE_CELL_TYPE_MANIFEST_PROGRESS_CIRCLE_ICON,
-  TABLE_CELL_TYPE_MANIFEST_STRING
+  TABLE_CELL_TYPE_MANIFEST_STRING,
 } from './table-cell-type-manifests'
 
 const cellTypeComponents = [
@@ -45,7 +45,7 @@ const cellTypeComponents = [
   TableCellTypeIntegerComponent,
   TableCellTypeProgressCircleComponent,
   TableCellTypeProgressCircleIconComponent,
-  TableCellTypePhoneComponent
+  TableCellTypePhoneComponent,
 ]
 
 const cellTypeProviders = [
@@ -58,31 +58,31 @@ const cellTypeProviders = [
   TABLE_CELL_TYPE_MANIFEST_IMAGE,
   TABLE_CELL_TYPE_MANIFEST_PROGRESS_CIRCLE,
   TABLE_CELL_TYPE_MANIFEST_PROGRESS_CIRCLE_ICON,
-  TABLE_CELL_TYPE_MANIFEST_PHONE
+  TABLE_CELL_TYPE_MANIFEST_PHONE,
 ]
 
 @NgModule({
-    declarations: [
-        ...cellTypeComponents
-    ],
-    imports: [
-        CommonModule,
-        RouterModule,
-        TheSeamSharedModule,
-        TheSeamIconModule,
-        PortalModule,
-        TheSeamPopoverModule,
-        TheSeamProgressModule,
-        TheSeamTelInputModule,
-        TheSeamAssetReaderModule,
-        TheSeamTableCellTypeModule,
-        TheSeamTooltipModule,
-    ],
-    providers: [
-        ...cellTypeProviders
-    ],
-    exports: [
-        ...cellTypeComponents
-    ]
+  declarations: [
+    ...cellTypeComponents,
+  ],
+  imports: [
+    CommonModule,
+    RouterModule,
+    TheSeamSharedModule,
+    TheSeamIconModule,
+    PortalModule,
+    TheSeamPopoverModule,
+    TheSeamProgressModule,
+    TheSeamTelInputModule,
+    TheSeamAssetReaderModule,
+    TheSeamTableCellTypeModule,
+    TheSeamTooltipModule,
+  ],
+  providers: [
+    ...cellTypeProviders,
+  ],
+  exports: [
+    ...cellTypeComponents,
+  ],
 })
 export class TheSeamTableCellTypesModule { }

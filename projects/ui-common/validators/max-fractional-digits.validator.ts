@@ -30,8 +30,8 @@ export function maxFractionalDigitsValidator(maxFractionalDigits: number): Valid
         'maxFractionalDigits': {
           'reason': `Must not be greater than ${maxFractionalDigits} fractional digits.`,
           'max': maxFractionalDigits,
-          'actual': count
-        }
+          'actual': count,
+        },
       }
     }
 

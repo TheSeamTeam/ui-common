@@ -31,10 +31,10 @@ export interface TableCellTypeConfigInteger extends TableCellTypeConfig<'integer
   /**
    * If `formatNumber === true`, the minimum number of integer digits before the decimal point. Default is 1.
    */
-   minIntegerDigits?: DynamicValue<number>
+  minIntegerDigits?: DynamicValue<number>
 
-   /**
+  /**
     * Default is `right`.
     */
-   textAlign?: DynamicValue<'left' | 'center' | 'right'>
+  textAlign?: DynamicValue<'left' | 'center' | 'right'>
 }

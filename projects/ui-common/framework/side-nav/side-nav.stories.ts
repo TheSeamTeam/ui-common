@@ -34,8 +34,8 @@ const meta: Meta<SideNavComponent> = {
               { path: 'example1.1', component: StoryRoutePlacholderComponent },
               { path: 'example1.2', component: StoryRoutePlacholderComponent },
               { path: 'example1.3', component: StoryRoutePlacholderComponent },
-              { path: 'example1.4', component: StoryRoutePlacholderComponent }
-            ]
+              { path: 'example1.4', component: StoryRoutePlacholderComponent },
+            ],
           },
           {
             path: 'example3',
@@ -52,20 +52,20 @@ const meta: Meta<SideNavComponent> = {
                   { path: 'example1.1', component: StoryRoutePlacholderComponent },
                   { path: 'example1.2', component: StoryRoutePlacholderComponent },
                   { path: 'example1.3', component: StoryRoutePlacholderComponent },
-                  { path: 'example1.4', component: StoryRoutePlacholderComponent }
-                ]
-              }
-            ]
+                  { path: 'example1.4', component: StoryRoutePlacholderComponent },
+                ],
+              },
+            ],
           },
           { path: 'example4', component: StoryRoutePlacholderComponent },
-          { path: 'example5', component: StoryRoutePlacholderComponent }
+          { path: 'example5', component: StoryRoutePlacholderComponent },
         ]),
       ],
     }),
     moduleMetadata({
       imports: [
         RouterModule,
-        TheSeamSideNavModule
+        TheSeamSideNavModule,
       ],
     }),
   ],
@@ -103,8 +103,8 @@ export const Basic: Story = {
             // tooltip: 'ExampleToolTip'
             tooltip: {
               tooltip: 'Example Tooltip rergerge',
-              container: 'body'
-            }
+              container: 'body',
+            },
           },
           children: [
             {
@@ -117,26 +117,26 @@ export const Basic: Story = {
               itemType: 'link',
               label: 'Example 1.2',
               icon: faBuilding,
-              link: 'example2/example1.2'
+              link: 'example2/example1.2',
             },
             {
               itemType: 'link',
               label: 'Example 1.3',
-              link: 'example2/example1.3'
+              link: 'example2/example1.3',
             },
             {
               itemType: 'link',
               label: 'Example 1.4',
               // link: 'example2/example1.4'
-            }
-          ]
+            },
+          ],
         },
         {
           itemType: 'basic',
           label: 'Example 3',
           icon: faCompass,
           badge: {
-            text: '5'
+            text: '5',
           },
           children: [
             {
@@ -149,12 +149,12 @@ export const Basic: Story = {
               itemType: 'link',
               label: 'Example 1.2',
               icon: faBuilding,
-              link: 'example3/example1.2'
+              link: 'example3/example1.2',
             },
             {
               itemType: 'link',
               label: 'Example 1.3',
-              link: 'example3/example1.3'
+              link: 'example3/example1.3',
             },
             {
               itemType: 'link',
@@ -176,12 +176,12 @@ export const Basic: Story = {
                   itemType: 'link',
                   label: 'Example 1.2',
                   icon: faBuilding,
-                  link: 'example3/ex2/example1.2'
+                  link: 'example3/ex2/example1.2',
                 },
                 {
                   itemType: 'link',
                   label: 'Example 1.3',
-                  link: 'example3/ex2/example1.3'
+                  link: 'example3/ex2/example1.3',
                 },
                 {
                   itemType: 'link',
@@ -191,35 +191,35 @@ export const Basic: Story = {
                 {
                   itemType: 'link',
                   label: 'Example 1.3',
-                  link: 'example3/ex2/example1.3'
+                  link: 'example3/ex2/example1.3',
                 },
-              ]
+              ],
             },
             {
               itemType: 'link',
               label: 'Example 1.3',
-              link: 'example3/example1.3'
+              link: 'example3/example1.3',
             },
-          ]
+          ],
         },
         { itemType: 'divider' },
         {
           itemType: 'title',
-          label: 'Extra'
+          label: 'Extra',
         },
         {
           itemType: 'link',
           label: 'Example 4',
           icon: faSignature,
-          link: 'example4'
+          link: 'example4',
         },
         {
           itemType: 'link',
           label: 'Example 5',
           icon: faBuilding,
           // link: 'example5'
-        }
-      ]
+        },
+      ],
     },
     template: `
       <div class="d-flex flex-row vh-100">
@@ -255,9 +255,9 @@ export const Collapsed: Story = {
             // tooltip: 'ExampleToolTip'
             tooltip: {
               tooltip: 'Example Tooltip rergerge',
-              container: 'body'
-            }
-          }
+              container: 'body',
+            },
+          },
         },
         {
           itemType: 'link',
@@ -270,8 +270,8 @@ export const Collapsed: Story = {
             // tooltip: 'ExampleToolTip'
             tooltip: {
               tooltip: 'Example Tooltip rergerge',
-              container: 'body'
-            }
+              container: 'body',
+            },
           },
           children: [
             {
@@ -284,7 +284,7 @@ export const Collapsed: Story = {
               itemType: 'link',
               label: 'Example 1.2',
               icon: faBuilding,
-              link: 'example2/example1.2'
+              link: 'example2/example1.2',
             },
             {
               itemType: 'link',
@@ -296,23 +296,23 @@ export const Collapsed: Story = {
                 // tooltip: 'ExampleToolTip'
                 tooltip: {
                   tooltip: 'Example Tooltip rergerge',
-                  container: 'body'
-                }
-              }
+                  container: 'body',
+                },
+              },
             },
             {
               itemType: 'link',
               label: 'Example 1.4',
               // link: 'example2/example1.4'
-            }
-          ]
+            },
+          ],
         },
         {
           itemType: 'basic',
           label: 'Example 3',
           icon: faCompass,
           badge: {
-            text: '5'
+            text: '5',
           },
           children: [
             {
@@ -325,12 +325,12 @@ export const Collapsed: Story = {
               itemType: 'link',
               label: 'Example 1.2',
               icon: faBuilding,
-              link: 'example3/example1.2'
+              link: 'example3/example1.2',
             },
             {
               itemType: 'link',
               label: 'Example 1.3',
-              link: 'example3/example1.3'
+              link: 'example3/example1.3',
             },
             {
               itemType: 'link',
@@ -352,12 +352,12 @@ export const Collapsed: Story = {
                   itemType: 'link',
                   label: 'Example 1.2',
                   icon: faBuilding,
-                  link: 'example3/ex2/example1.2'
+                  link: 'example3/ex2/example1.2',
                 },
                 {
                   itemType: 'link',
                   label: 'Example 1.3',
-                  link: 'example3/ex2/example1.3'
+                  link: 'example3/ex2/example1.3',
                 },
                 {
                   itemType: 'link',
@@ -367,35 +367,35 @@ export const Collapsed: Story = {
                 {
                   itemType: 'link',
                   label: 'Example 1.3',
-                  link: 'example3/ex2/example1.3'
+                  link: 'example3/ex2/example1.3',
                 },
-              ]
+              ],
             },
             {
               itemType: 'link',
               label: 'Example 1.3',
-              link: 'example3/example1.3'
+              link: 'example3/example1.3',
             },
-          ]
+          ],
         },
         { itemType: 'divider' },
         {
           itemType: 'title',
-          label: 'Extra'
+          label: 'Extra',
         },
         {
           itemType: 'link',
           label: 'Example 4',
           icon: faSignature,
-          link: 'example4'
+          link: 'example4',
         },
         {
           itemType: 'link',
           label: 'Example 5',
           icon: faBuilding,
           // link: 'example5'
-        }
-      ]
+        },
+      ],
     },
     template: `
       <div class="d-flex flex-row vh-100">

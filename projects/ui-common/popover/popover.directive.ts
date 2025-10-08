@@ -14,14 +14,14 @@ import { PopoverComponent } from './popover/popover.component'
 const passiveEventListenerOptions = normalizePassiveListenerOptions({ passive: true })
 
 @Directive({
-    selector: '[seamPopover]',
-    // tslint:disable-next-line:use-host-property-decorator
-    host: {
-        'aria-haspopup': 'true',
-        '[attr.aria-expanded]': 'popoverOpen() || null'
-    },
-    exportAs: 'seamPopover',
-    standalone: false
+  selector: '[seamPopover]',
+  // tslint:disable-next-line:use-host-property-decorator
+  host: {
+    'aria-haspopup': 'true',
+    '[attr.aria-expanded]': 'popoverOpen() || null',
+  },
+  exportAs: 'seamPopover',
+  standalone: false,
 })
 export class TheSeamPopoverDirective implements OnDestroy {
 
@@ -105,10 +105,10 @@ export class TheSeamPopoverDirective implements OnDestroy {
     private _elementRef: ElementRef<HTMLElement>,
     private _viewContainerRef: ViewContainerRef,
     private _overlay: Overlay,
-    private _focusMonitor: FocusMonitor
+    private _focusMonitor: FocusMonitor,
   ) {
     this._elementRef.nativeElement.addEventListener('touchstart', this._handleTouchStart,
-        passiveEventListenerOptions)
+      passiveEventListenerOptions)
 
     this._seamPopoverBaseWidth
       .pipe(takeUntil(this._ngUnsubscribe))
@@ -124,7 +124,7 @@ export class TheSeamPopoverDirective implements OnDestroy {
     this.closePopover()
 
     this._elementRef.nativeElement.removeEventListener('touchstart', this._handleTouchStart,
-        passiveEventListenerOptions)
+      passiveEventListenerOptions)
 
     this._popoverClosedSubscription.unsubscribe()
     this._closingActionsSubscription.unsubscribe()
@@ -214,13 +214,13 @@ export class TheSeamPopoverDirective implements OnDestroy {
         originX: 'center',
         originY: 'bottom',
         overlayX: 'center',
-        overlayY: 'top'
+        overlayY: 'top',
       },
       {
         originX: 'center',
         originY: 'top',
         overlayX: 'center',
-        overlayY: 'bottom'
+        overlayY: 'bottom',
       },
       {
         originX: 'end',

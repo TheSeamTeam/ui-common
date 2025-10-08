@@ -114,7 +114,7 @@ export class TheSeamPdfPageComponent implements OnDestroy, AfterViewInit {
       // Render PDF page into canvas context
       const renderContext = {
         canvasContext: context,
-        viewport: scaledViewport
+        viewport: scaledViewport,
       }
 
       const renderTask = await this.page.render(renderContext).promise

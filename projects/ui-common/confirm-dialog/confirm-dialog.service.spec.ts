@@ -8,8 +8,8 @@ describe('SeamConfirmDialogService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [TheSeamModalModule],
     providers: [SeamConfirmDialogService],
-    teardown: { destroyAfterEach: false }
-}))
+    teardown: { destroyAfterEach: false },
+  }))
 
   it('should be created', () => {
     const service: SeamConfirmDialogService = TestBed.get(SeamConfirmDialogService)

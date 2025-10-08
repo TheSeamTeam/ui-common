@@ -19,7 +19,7 @@ export class WidgetPreferencesService {
 
   constructor(
     private readonly _preferencesManager: TheSeamPreferencesManagerService,
-    @Optional() @Inject(THESEAM_WIDGET_PREFERENCES_ACCESSOR) private _prefsAccessor?: TheSeamPreferencesAccessor
+    @Optional() @Inject(THESEAM_WIDGET_PREFERENCES_ACCESSOR) private _prefsAccessor?: TheSeamPreferencesAccessor,
   ) { }
 
   public isPatchPending(preferenceKey: string): boolean {
@@ -46,7 +46,7 @@ export class WidgetPreferencesService {
         }
 
         throw Error(`Preferences for key '${preferenceKey}' is not a valid widget preferences.`)
-      })
+      }),
     )
   }
 

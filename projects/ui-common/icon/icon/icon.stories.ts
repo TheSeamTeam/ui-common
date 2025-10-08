@@ -23,10 +23,10 @@ const meta: Meta<IconComponent & StoryExtraProps> = {
   decorators: [
     moduleMetadata({
       imports: [
-        TheSeamIconModule
-      ]
-    })
-  ]
+        TheSeamIconModule,
+      ],
+    }),
+  ],
 }
 
 export default meta

@@ -12,7 +12,7 @@ export function storyInitialRouteFactory(_storyInitialRouteService: StoryInitial
 export class StoryInitialRouteService {
 
   constructor(
-    private _injector: Injector
+    private _injector: Injector,
   ) { }
 
   public setInitialRoute() {
@@ -22,9 +22,9 @@ export class StoryInitialRouteService {
       _router.navigateByUrl(url)
     } else {
       _router.events.pipe(
-          filter(e => e instanceof NavigationEnd),
-          take(1)
-        )
+        filter(e => e instanceof NavigationEnd),
+        take(1),
+      )
         .subscribe(() => { _router.navigateByUrl(url) })
     }
   }

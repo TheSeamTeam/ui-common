@@ -60,7 +60,7 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy,
   _selectedItem?: TheSeamSchemaFormSubmitSplitItem
 
   constructor(
-    private readonly _jsf: JsonSchemaFormService
+    private readonly _jsf: JsonSchemaFormService,
   ) { }
 
   /** @ignore */
@@ -125,7 +125,7 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy,
         // eslint-disable-next-line no-console
         console.warn(
           `TheSeamSchemaFormSubmitSplitComponent only supports one item.` +
-          ` items after index 0 will be ignored.`
+          ` items after index 0 will be ignored.`,
         )
       }
     }
@@ -137,7 +137,7 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy,
       layoutIndex: (this.layoutIndex || []).concat(idx),
       dataIndex: this.layoutNode?.dataType === 'array' ? (this.dataIndex || []).concat(idx) : this.dataIndex,
 
-      options: item.options || {}
+      options: item.options || {},
     }
 
     this._jsf.initializeControl(this._dropdownObj)
@@ -146,7 +146,7 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy,
       this._dropdownObj.options.titleMap || this._dropdownObj.options.enumNames,
       this._dropdownObj.options.enum,
       !!this._dropdownObj.options.required,
-      !!this._dropdownObj.options.flatList
+      !!this._dropdownObj.options.flatList,
     )
 
     this._selectList = items
@@ -158,14 +158,14 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy,
     }
 
     observeControlValue(dropdownControl).pipe(
-      takeUntil(this._ngUnsubscribe)
+      takeUntil(this._ngUnsubscribe),
     ).subscribe(value => {
       this._setSelectListCheckedProp(value)
       this._selectedItem = this._getSelectedItem()
     })
 
     observeControlStatus(dropdownControl).pipe(
-      takeUntil(this._ngUnsubscribe)
+      takeUntil(this._ngUnsubscribe),
     ).subscribe(value => {
       this._dropdownDisabled = dropdownControl.disabled
     })

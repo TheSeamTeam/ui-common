@@ -12,7 +12,7 @@ import {
   // GQL_HINT_REMOVE_NOT_DEFINED
 
   inlineVariableHintDef,
-  removeNotDefinedHintDef
+  removeNotDefinedHintDef,
 } from '../hints'
 import { HintsKind, QueryProcessingConfig } from '../models'
 import {
@@ -24,7 +24,7 @@ import {
   removeVariable,
   removeVariableDefinition,
   removeVariableDefinitionsNotDefined,
-  toGQL
+  toGQL,
 } from '../utils'
 
 export const queryProcessingLink = new ApolloLink((operation, forward) => {
@@ -50,7 +50,7 @@ export const queryProcessingLink = new ApolloLink((operation, forward) => {
 
     const result = removeNotDefinedHintDef.transformer({
       query: operation.query,
-      variables: operation.variables
+      variables: operation.variables,
     }, rulesToken)
 
     operation.query = result.query
@@ -80,7 +80,7 @@ export const queryProcessingLink = new ApolloLink((operation, forward) => {
     _ast = removeVariableDefinition(_ast, varName)
 
     const varValueNode =
-    _ast = inlineVariable(_ast, varName, parseValue(toGQL(varValue)))
+      _ast = inlineVariable(_ast, varName, parseValue(toGQL(varValue)))
   }
 
   // const removeIfNotDefined = hintsTokensContainingHint(rules, GQL_HINT_REMOVE_IF_NOT_USED)

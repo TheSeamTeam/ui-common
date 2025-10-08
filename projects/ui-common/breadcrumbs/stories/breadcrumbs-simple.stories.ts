@@ -12,7 +12,7 @@ import { TheSeamBreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.componen
 const meta: Meta<TheSeamBreadcrumbsComponent> = {
   title: 'Breadcrumbs/Components/Simple',
   component: TheSeamBreadcrumbsComponent,
-  decorators: [ ]
+  decorators: [ ],
 }
 
 export default meta
@@ -30,9 +30,9 @@ export const Example: Story = {
               path: 'home',
               component: StoryEmptyComponent,
               data: {
-                breadcrumb: 'Home'
-              }
-            }
+                breadcrumb: 'Home',
+              },
+            },
           ]),
           provideStoryInitialUrl('/home'),
         ],

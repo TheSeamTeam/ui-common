@@ -5,10 +5,10 @@ import { delay } from 'rxjs/operators'
 import { faBell, faWrench } from '@fortawesome/free-solid-svg-icons'
 
 @Component({
-    selector: 'app-lazy-widget-one',
-    templateUrl: './lazy-widget-one.component.html',
-    styleUrls: ['./lazy-widget-one.component.scss'],
-    standalone: false
+  selector: 'app-lazy-widget-one',
+  templateUrl: './lazy-widget-one.component.html',
+  styleUrls: ['./lazy-widget-one.component.scss'],
+  standalone: false,
 })
 export class LazyWidgetOneComponent implements OnInit {
 
@@ -19,7 +19,7 @@ export class LazyWidgetOneComponent implements OnInit {
     'one',
     'two',
     'three',
-    'four'
+    'four',
   ]
 
   initialized$ = of(true).pipe(delay(5000))

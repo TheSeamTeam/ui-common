@@ -37,7 +37,7 @@ import {
   DatatableComponent as NgxDatatableComponent,
   DatatableRowDetailDirective,
   SortType,
-  TreeStatus
+  TreeStatus,
 } from '@marklb/ngx-datatable'
 import type { SelectionType } from '@marklb/ngx-datatable'
 
@@ -111,44 +111,44 @@ export const THESEAM_DATATABLE = new InjectionToken<DataFilter>('LibDatatable')
 
 export const _THESEAM_DATATABLE: any = {
   provide: THESEAM_DATATABLE,
-  useExisting: forwardRef(() => DatatableComponent)
+  useExisting: forwardRef(() => DatatableComponent),
 }
 
 export const _THESEAM_DATATABLE_ACCESSOR: any = {
   provide: THESEAM_DATATABLE_ACCESSOR,
   // tslint:disable-next-line:no-use-before-declare
-  useExisting: forwardRef(() => DatatableComponent)
+  useExisting: forwardRef(() => DatatableComponent),
 }
 
 @Component({
-    selector: 'seam-datatable',
-    templateUrl: './datatable.component.html',
-    styleUrls: ['./datatable.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    animations: [
-        trigger('slideDown', [
-            transition(':enter', [
-                style({ transform: 'translateY(-20%)', opacity: '0' }),
-                animate('250ms', style({ transform: 'translateY(0)', opacity: '1' })),
-            ]),
-            transition(':leave', [
-                style({ transform: 'translateY(0)', opacity: '1' }),
-                animate('250ms', style({ transform: 'translateY(-20%)', opacity: '0' })),
-            ])
-        ])
-    ],
-    providers: [
-        _THESEAM_DATATABLE,
-        DatatableColumnChangesService,
-        _THESEAM_DATATABLE_ACCESSOR,
-        ColumnsManagerService,
-        ColumnsAlterationsManagerService,
-        ColumnsFiltersService
-    ],
-    standalone: false
+  selector: 'seam-datatable',
+  templateUrl: './datatable.component.html',
+  styleUrls: ['./datatable.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [
+    trigger('slideDown', [
+      transition(':enter', [
+        style({ transform: 'translateY(-20%)', opacity: '0' }),
+        animate('250ms', style({ transform: 'translateY(0)', opacity: '1' })),
+      ]),
+      transition(':leave', [
+        style({ transform: 'translateY(0)', opacity: '1' }),
+        animate('250ms', style({ transform: 'translateY(-20%)', opacity: '0' })),
+      ]),
+    ]),
+  ],
+  providers: [
+    _THESEAM_DATATABLE,
+    DatatableColumnChangesService,
+    _THESEAM_DATATABLE_ACCESSOR,
+    ColumnsManagerService,
+    ColumnsAlterationsManagerService,
+    ColumnsFiltersService,
+  ],
+  standalone: false,
 })
 export class DatatableComponent<TRow = any>
-  implements OnInit, OnDestroy, TheSeamDatatableAccessor, CollectionViewer {
+implements OnInit, OnDestroy, TheSeamDatatableAccessor, CollectionViewer {
   static ngAcceptInputType_externalPaging: BooleanInput
   static ngAcceptInputType_externalSorting: BooleanInput
   static ngAcceptInputType_externalFiltering: BooleanInput
@@ -188,7 +188,7 @@ export class DatatableComponent<TRow = any>
   get filters(): DataFilter[] {
     return [
       ...this._menuBarsFiltersSubject.value,
-      ...this._columnsFilters.filters()
+      ...this._columnsFilters.filters(),
     ]
   }
 
@@ -279,7 +279,7 @@ export class DatatableComponent<TRow = any>
     pagerLeftArrow: 'datatable-icon-left',
     pagerRightArrow: 'datatable-icon-right',
     pagerPrevious: 'datatable-icon-prev',
-    pagerNext: 'datatable-icon-skip'
+    pagerNext: 'datatable-icon-skip',
   }
   _cssClasses: { [key: string]: string } | undefined | null
 
@@ -292,7 +292,7 @@ export class DatatableComponent<TRow = any>
     } else if (notNullOrUndefined(this._config?.messages)) {
       this._messages = {
         ...this._messagesDefault,
-        ...this._config?.messages
+        ...this._config?.messages,
       }
     } else {
       this._messages = this._messagesDefault
@@ -307,7 +307,7 @@ export class DatatableComponent<TRow = any>
     totalMessage: 'total',
 
     // Footer selected message
-    selectedMessage: 'selected'
+    selectedMessage: 'selected',
   }
   _messages: TheSeamDatatableMessages | undefined | null
 
@@ -600,7 +600,7 @@ export class DatatableComponent<TRow = any>
     private readonly _columnsManager: ColumnsManagerService,
     private readonly _columnsAlterationsManager: ColumnsAlterationsManagerService,
     private readonly _columnsFilters: ColumnsFiltersService,
-    @Optional() @Inject(THESEAM_DATATABLE_CONFIG) private readonly _config?: TheSeamDatatableConfig
+    @Optional() @Inject(THESEAM_DATATABLE_CONFIG) private readonly _config?: TheSeamDatatableConfig,
   ) {
     this._preferencesKey.pipe(
       distinctUntilChanged(),
@@ -616,7 +616,7 @@ export class DatatableComponent<TRow = any>
               console.log('%cSaving columns alterations to preferences', 'color: blue', this._columnsAlterationsManager.get())
               this._preferences.setAlterations(key, this._columnsAlterationsManager.get())
             }),
-          ))
+          )),
         )
       }),
       takeUntil(this._ngUnsubscribe),
@@ -657,17 +657,17 @@ export class DatatableComponent<TRow = any>
             }
             console.log('%cSetting columns alterations from preferences', 'color: blue', alterations)
             this._columnsAlterationsManager.add(alterations)
-          })
+          }),
         )
       }),
-      takeUntil(this._ngUnsubscribe)
+      takeUntil(this._ngUnsubscribe),
     ).subscribe()
 
     this.columns$ = combineLatest([this._columnsManager.columns$, this._columnsFilters.columnActiveFilterProps$]).pipe(
       map(([ columns, columnActiveFilterProps ]) => columns.map(col => ({
         ...col,
-        filterActive: columnActiveFilterProps.includes(this._columnsFilters.getColumnFilterProp(col) || '')
-      })))
+        filterActive: columnActiveFilterProps.includes(this._columnsFilters.getColumnFilterProp(col) || ''),
+      }))),
     )
 
     this.displayColumns$ = this.columns$.pipe(
@@ -677,11 +677,11 @@ export class DatatableComponent<TRow = any>
     )
 
     this.filters$ = combineLatest([ this._menuBarsFiltersSubject.asObservable(), this._columnsFilters.columnsFilters$ ]).pipe(
-      map(([ menuFilters, columnsFilters ]) => [ ...menuFilters, ...columnsFilters ])
+      map(([ menuFilters, columnsFilters ]) => [ ...menuFilters, ...columnsFilters ]),
     )
 
     this.filterStates = this.filters$.pipe(
-      switchMap(filters => composeDataFilterStates(filters))
+      switchMap(filters => composeDataFilterStates(filters)),
     )
 
     this.rows$ = this._dataSourceSubject.pipe(
@@ -701,7 +701,7 @@ export class DatatableComponent<TRow = any>
         } else {
           // console.log('~rows fallback')
           dataStream = this._rows.asObservable()
-            // .pipe(tap(v => console.log('rows~', v)))
+          // .pipe(tap(v => console.log('rows~', v)))
         }
 
         if (!this.externalFiltering) {
@@ -711,7 +711,7 @@ export class DatatableComponent<TRow = any>
               // tap(v => console.log('filters', v)),
               concatMap(filters => of(rows).pipe(composeDataFilters(filters))),
               // tap(v => console.log('composed filters', v)),
-            ))
+            )),
           )
 
           // dataStream = this._filtersSubject.pipe(
@@ -723,9 +723,9 @@ export class DatatableComponent<TRow = any>
 
         return dataStream.pipe(
           // tap(v => console.log('stream', v)),
-          takeUntil(this._ngUnsubscribe)
+          takeUntil(this._ngUnsubscribe),
         )
-      })
+      }),
     )
 
     // TODO: Implement viewChange for CollectionViewer.
@@ -845,7 +845,7 @@ export class DatatableComponent<TRow = any>
         const alteration = new WidthColumnsAlteration({
           columnProp,
           width: event.column.width,
-          canAutoResize: false
+          canAutoResize: false,
         }, true)
         this._columnsAlterationsManager.add([ alteration ])
       }
@@ -861,8 +861,8 @@ export class DatatableComponent<TRow = any>
       const state: OrderColumnsAlterationState = {
         columns: [
           ...(currentOrderAlteration?.state.columns || []).filter((x: any) => x.columnProp !== columnProp),
-          { columnProp, index: event.newValue }
-        ]
+          { columnProp, index: event.newValue },
+        ],
       }
       const alteration = new OrderColumnsAlteration(state, true)
       this._columnsAlterationsManager.add([ alteration ])
@@ -899,7 +899,7 @@ export class DatatableComponent<TRow = any>
       offset: this.ngxDatatable?.offset ?? 0,
       pageSize: this.ngxDatatable?.pageSize ?? 0,
       limit: this.ngxDatatable?.limit,
-      count: this.ngxDatatable?.count ?? 0
+      count: this.ngxDatatable?.count ?? 0,
     }
   }
 

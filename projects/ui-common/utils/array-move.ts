@@ -22,7 +22,7 @@
 export function arrayMoveMutable(
   array: unknown[],
   fromIndex: number,
-  toIndex: number
+  toIndex: number,
 ): void {
   const startIndex = fromIndex < 0 ? array.length + fromIndex : fromIndex
 
@@ -65,7 +65,7 @@ export function arrayMoveMutable(
 export function arrayMoveImmutable<ValueType>(
   array: readonly ValueType[],
   fromIndex: number,
-  toIndex: number
+  toIndex: number,
 ): ValueType[] {
   const newArray = [ ...array ]
   arrayMoveMutable(newArray, fromIndex, toIndex)

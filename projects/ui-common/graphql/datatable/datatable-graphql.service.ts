@@ -28,11 +28,11 @@ export interface DatatableGraphqlServiceConfig {
 export const DATATABLE_GRAPHQL_SERVICE_CONFIG = new InjectionToken<DatatableGraphqlServiceConfig>('DATATABLE_GRAPHQL_SERVICE_CONFIG')
 
 const _CONFIG_DEFAULTS: DatatableGraphqlServiceConfig = {
-  pollingIntervalTime: 1 * 60 * 1000
+  pollingIntervalTime: 1 * 60 * 1000,
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DatatableGraphqlService {
 
@@ -40,23 +40,23 @@ export class DatatableGraphqlService {
 
   constructor(
     private readonly _apollo: Apollo,
-    @Optional() @Inject(DATATABLE_GRAPHQL_SERVICE_CONFIG) _config?: DatatableGraphqlServiceConfig
+    @Optional() @Inject(DATATABLE_GRAPHQL_SERVICE_CONFIG) _config?: DatatableGraphqlServiceConfig,
   ) {
     this._config = {
       ..._CONFIG_DEFAULTS,
-      ...(_config || {})
+      ...(_config || {}),
     }
   }
 
   public watchQuery<TData, TVariables extends DatatableGraphQLVariables = EmptyObject, TRow = EmptyObject>(
     options: DatatableQueryOptions<TVariables>,
-    queryProcessingConfig?: QueryProcessingConfig
+    queryProcessingConfig?: QueryProcessingConfig,
   ): DatatableGraphQLQueryRef<TData, TVariables, TRow> {
     const _options: WatchQueryOptions<TVariables, TData> = {
       useInitialLoading: true,
       ..._CONFIG_DEFAULTS,
       pollInterval: this._config.pollingIntervalTime,
-      ...options
+      ...options,
     }
 
     if (queryProcessingConfig) {
@@ -64,8 +64,8 @@ export class DatatableGraphqlService {
         ...(_options.context || {}),
         queryProcessingConfig: {
           ...(_options.context?.queryProcessingConfig || {}),
-          ...queryProcessingConfig
-        }
+          ...queryProcessingConfig,
+        },
       }
     }
 

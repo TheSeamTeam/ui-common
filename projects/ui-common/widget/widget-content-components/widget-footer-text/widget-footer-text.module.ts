@@ -5,13 +5,13 @@ import { WidgetFooterTextComponent } from './widget-footer-text.component'
 
 @NgModule({
   declarations: [
-    WidgetFooterTextComponent
+    WidgetFooterTextComponent,
   ],
   imports: [
-    CommonModule
+    CommonModule,
   ],
   exports: [
-    WidgetFooterTextComponent
-  ]
+    WidgetFooterTextComponent,
+  ],
 })
 export class TheSeamWidgetFooterTextModule { }

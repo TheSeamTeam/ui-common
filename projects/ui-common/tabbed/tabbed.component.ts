@@ -1,5 +1,5 @@
 import {
-  AfterContentInit, Component, ContentChildren, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList
+  AfterContentInit, Component, ContentChildren, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList,
 } from '@angular/core'
 import { AsyncPipe, NgFor, NgIf } from '@angular/common'
 import { ActivatedRoute, Router, RouterModule } from '@angular/router'
@@ -78,7 +78,7 @@ export class TheSeamTabbedComponent implements OnInit, AfterContentInit, OnDestr
   set selectedTab(tab: TheSeamTabbedItemComponent | undefined) { this._selectedTab.next(tab) }
   private readonly _selectedTab = new BehaviorSubject<TheSeamTabbedItemComponent | undefined>(undefined)
   public readonly selectedTab$ = this._selectedTab.asObservable().pipe(
-    shareReplay({ bufferSize: 1, refCount: true })
+    shareReplay({ bufferSize: 1, refCount: true }),
   )
 
   @Input()
@@ -91,7 +91,7 @@ export class TheSeamTabbedComponent implements OnInit, AfterContentInit, OnDestr
   constructor(
     private readonly _tabbedService: TheSeamTabbedService,
     private readonly _router: Router,
-    private readonly _route: ActivatedRoute
+    private readonly _route: ActivatedRoute,
   ) { }
 
   ngOnInit() {
@@ -104,7 +104,7 @@ export class TheSeamTabbedComponent implements OnInit, AfterContentInit, OnDestr
 
   ngAfterContentInit() {
     combineLatest([ this.tabbedItems$, this.activeTabName$ ]).pipe(
-      tap(([ _, activeTabName ]) => this.selectTab(activeTabName))
+      tap(([ _, activeTabName ]) => this.selectTab(activeTabName)),
     ).subscribe()
   }
 

@@ -78,12 +78,12 @@ export const Required: Story = {
         },
       },
       'required': [
-        'Color'
+        'Color',
       ],
     },
     layout: [
       { 'dataPointer': '/Color' },
-    ]
+    ],
   },
   play: async ({ canvasElement, fixture, args }) => {
     const sfSelectHarness = await getHarness(TheSeamSchemaFormSelectHarness, { canvasElement, fixture })

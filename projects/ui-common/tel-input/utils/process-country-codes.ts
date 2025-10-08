@@ -13,7 +13,7 @@ export function processCountryCodes(countries: intlTelInputUtils.CountryData[]):
     // here we store just dial codes
     dialCodes: {},
     // here we store "country codes" (both dial codes and their area codes)
-    countryCodes: {}
+    countryCodes: {},
   }
 
   // first: add dial codes

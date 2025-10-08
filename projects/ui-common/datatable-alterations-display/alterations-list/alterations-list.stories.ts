@@ -12,19 +12,19 @@ const meta: Meta<AlterationsListComponent> = {
   tags: ['autodocs'],
   argTypes: {
     compact: {
-      control: { type: 'boolean' }
+      control: { type: 'boolean' },
     },
     groupByType: {
-      control: { type: 'boolean' }
+      control: { type: 'boolean' },
     },
     sortWithinType: {
-      control: { type: 'boolean' }
+      control: { type: 'boolean' },
     },
     diffState: {
       control: { type: 'select' },
-      options: ['current', 'pending', undefined]
-    }
-  }
+      options: ['current', 'pending', undefined],
+    },
+  },
 }
 
 export default meta
@@ -37,36 +37,36 @@ const sampleAlterations: AlterationDisplayItem[] = [
     type: 'sort',
     summary: 'Name ↑, Date ↓',
     details: ['Name: Ascending (Priority: 1)', 'Date: Descending (Priority: 2)'],
-    sortOrder: 0
+    sortOrder: 0,
   },
   {
     id: 'filter--status',
     type: 'filter',
     summary: 'Status = Active',
     details: ['Column: Status', 'Type: text', 'Operation: Equals', 'Value: Active'],
-    sortOrder: 0
+    sortOrder: 0,
   },
   {
     id: 'hide-column--description',
     type: 'hide-column',
     summary: 'Hidden: Description',
     details: ['Column: Description', 'Status: hidden'],
-    sortOrder: 68
+    sortOrder: 68,
   },
   {
     id: 'width--name',
     type: 'width',
     summary: 'Name: 200px',
     details: ['Column: Name', 'Width: 200px', 'Auto-resize: disabled'],
-    sortOrder: 78
+    sortOrder: 78,
   },
   {
     id: 'order',
     type: 'order',
     summary: '3 columns reordered',
     details: ['Name: Position 1', 'Status: Position 2', 'Date: Position 3'],
-    sortOrder: 0
-  }
+    sortOrder: 0,
+  },
 ]
 
 const emptyAlterations: AlterationDisplayItem[] = []
@@ -75,7 +75,7 @@ export const WithItems: Story = {
   args: {
     items: sampleAlterations,
     title: 'Current Alterations',
-    compact: true
+    compact: true,
   },
   play: async ({ canvasElement, fixture }) => {
     const harness = await getHarness(AlterationsListHarness, { canvasElement, fixture })
@@ -92,14 +92,14 @@ export const WithItems: Story = {
     expect(itemTypes).toContain('hide-column')
     expect(itemTypes).toContain('width')
     expect(itemTypes).toContain('order')
-  }
+  },
 }
 
 export const EmptyList: Story = {
   args: {
     items: emptyAlterations,
     title: 'Pending Alterations',
-    compact: true
+    compact: true,
   },
   play: async ({ canvasElement, fixture }) => {
     const harness = await getHarness(AlterationsListHarness, { canvasElement, fixture })
@@ -108,27 +108,27 @@ export const EmptyList: Story = {
     expect(await harness.getItemCount()).toBe(0)
     expect(await harness.hasItems()).toBe(false)
     expect(await harness.hasEmptyState()).toBe(true)
-  }
+  },
 }
 
 export const WithoutTitle: Story = {
   args: {
     items: sampleAlterations,
-    compact: true
+    compact: true,
   },
   play: async ({ canvasElement, fixture }) => {
     const harness = await getHarness(AlterationsListHarness, { canvasElement, fixture })
 
     expect(await harness.getTitle()).toBeNull()
     expect(await harness.getItemCount()).toBe(5)
-  }
+  },
 }
 
 export const ExpandedView: Story = {
   args: {
     items: sampleAlterations,
     title: 'Detailed Alterations',
-    compact: false
+    compact: false,
   },
   play: async ({ canvasElement, fixture }) => {
     const harness = await getHarness(AlterationsListHarness, { canvasElement, fixture })
@@ -138,14 +138,14 @@ export const ExpandedView: Story = {
     // Check that details are visible in expanded view
     const detailsElements = canvasElement.querySelectorAll('[data-testid="alteration-detail"]')
     expect(detailsElements.length).toBeGreaterThan(0)
-  }
+  },
 }
 
 export const SingleItem: Story = {
   args: {
     items: [sampleAlterations[0]],
     title: 'Single Alteration',
-    compact: true
+    compact: true,
   },
   play: async ({ canvasElement, fixture }) => {
     const harness = await getHarness(AlterationsListHarness, { canvasElement, fixture })
@@ -155,17 +155,17 @@ export const SingleItem: Story = {
 
     const sortItem = await harness.getItemByType('sort')
     expect(sortItem).toBeTruthy()
-  }
+  },
 }
 
 export const WithDiffStates: Story = {
   args: {
     items: sampleAlterations.map((item, index) => ({
       ...item,
-      diffState: ['added', 'removed', 'changed', 'unchanged', 'added'][index] as any
+      diffState: ['added', 'removed', 'changed', 'unchanged', 'added'][index] as any,
     })),
     title: 'Alterations with Diff States',
-    compact: true
+    compact: true,
   },
   play: async ({ canvasElement, fixture }) => {
     const harness = await getHarness(AlterationsListHarness, { canvasElement, fixture })
@@ -180,5 +180,5 @@ export const WithDiffStates: Story = {
     expect(addedBorders.length).toBe(2) // Two items with 'added' state
     expect(removedBorders.length).toBe(1) // One item with 'removed' state
     expect(changedBorders.length).toBe(1) // One item with 'changed' state
-  }
+  },
 }

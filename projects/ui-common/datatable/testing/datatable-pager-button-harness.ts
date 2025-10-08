@@ -11,8 +11,8 @@ export class TheSeamDatatablePagerButtonHarness extends ComponentHarness {
   /** Creates a `HarnessPredicate` used to locate a particular `MyMenuHarness`. */
   static with(options: TheSeamDatatablePagerButtonHarnessFilters): HarnessPredicate<TheSeamDatatablePagerButtonHarness> {
     return new HarnessPredicate(TheSeamDatatablePagerButtonHarness, options)
-        .addOption('page number', options.pageNumber,
-            (harness, index) => HarnessPredicate.stringMatches(harness.getLabel(), `page ${index}`))
+      .addOption('page number', options.pageNumber,
+        (harness, index) => HarnessPredicate.stringMatches(harness.getLabel(), `page ${index}`))
   }
 
   public async getLabel(): Promise<string | null> {

@@ -13,7 +13,7 @@ import { AlterationsListComponent } from '../alterations-list/alterations-list.c
   standalone: true,
   imports: [CommonModule, AlterationsListComponent],
   templateUrl: './alterations-diff.component.html',
-  styleUrls: ['./alterations-diff.component.scss']
+  styleUrls: ['./alterations-diff.component.scss'],
 })
 export class AlterationsDiffComponent implements OnInit, OnDestroy {
   @Input() currentItems: AlterationDisplayItem[] = []
@@ -29,7 +29,7 @@ export class AlterationsDiffComponent implements OnInit, OnDestroy {
 
   constructor(
     private layoutService: TheSeamLayoutService,
-    private alterationDisplayService: AlterationDisplayService
+    private alterationDisplayService: AlterationDisplayService,
   ) {}
 
   ngOnInit(): void {
@@ -56,7 +56,7 @@ export class AlterationsDiffComponent implements OnInit, OnDestroy {
 
     return this.currentItems.map(item => ({
       ...item,
-      _diffState: this.getItemDiffState(item, 'current')
+      _diffState: this.getItemDiffState(item, 'current'),
     }))
   }
 
@@ -67,7 +67,7 @@ export class AlterationsDiffComponent implements OnInit, OnDestroy {
 
     return this.pendingItems.map(item => ({
       ...item,
-      _diffState: this.getItemDiffState(item, 'pending')
+      _diffState: this.getItemDiffState(item, 'pending'),
     }))
   }
 
@@ -115,7 +115,7 @@ export class AlterationsDiffComponent implements OnInit, OnDestroy {
     } else {
       this.diffState = this.alterationDisplayService.calculateDiff(
         this.currentItems,
-        this.pendingItems
+        this.pendingItems,
       )
     }
   }

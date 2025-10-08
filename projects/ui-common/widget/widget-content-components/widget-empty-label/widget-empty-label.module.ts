@@ -5,13 +5,13 @@ import { WidgetEmptyLabelComponent } from './widget-empty-label.component'
 
 @NgModule({
   declarations: [
-    WidgetEmptyLabelComponent
+    WidgetEmptyLabelComponent,
   ],
   imports: [
-    CommonModule
+    CommonModule,
   ],
   exports: [
-    WidgetEmptyLabelComponent
-  ]
+    WidgetEmptyLabelComponent,
+  ],
 })
 export class TheSeamWidgetEmptyLabelModule { }

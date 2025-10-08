@@ -4,6 +4,6 @@ import { UnsavedChangesDialogComponent } from './unsaved-changes-dialog.componen
 
 @NgModule({
   imports: [UnsavedChangesDialogComponent],
-  exports: [UnsavedChangesDialogComponent]
+  exports: [UnsavedChangesDialogComponent],
 })
 export class TheSeamUnsavedChangesDialogModule { }

@@ -6,15 +6,15 @@ import { Modal } from '../modal.service'
 // TODO: Make this work for current modal usage.
 
 @Directive({
-    selector: '[seamModal]',
-    exportAs: 'seamModal',
-    standalone: false
+  selector: '[seamModal]',
+  exportAs: 'seamModal',
+  standalone: false,
 })
 export class ModalDirective {
 
   constructor(
     public template: TemplateRef<HTMLElement>,
-    public modal: Modal
+    public modal: Modal,
   ) { }
 
   open(): void {

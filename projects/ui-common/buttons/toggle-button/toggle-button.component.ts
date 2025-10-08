@@ -2,7 +2,7 @@ import { FocusMonitor } from '@angular/cdk/a11y'
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion'
 import {
   Component, ElementRef, EventEmitter,
-  forwardRef, HostBinding, Input, OnDestroy, Output, Renderer2
+  forwardRef, HostBinding, Input, OnDestroy, Output, Renderer2,
 } from '@angular/core'
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
 
@@ -17,21 +17,21 @@ export const TOGGLE_BUTTON_VALUE_ACCESSOR: any = {
 }
 
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
-    selector: 'button[seamToggleButton]',
-    templateUrl: './toggle-button.component.html',
-    styleUrls: ['./toggle-button.component.scss'],
-    exportAs: 'seamToggleButton',
-    inputs: ['disabled', 'theme', 'size'],
-    host: {
-        '[attr.type]': 'type',
-        'class': 'btn',
-        '[attr.aria-disabled]': 'disabled.toString()',
-        '[attr.disabled]': 'disabled || null',
-        '(click)': '_toggleValue()',
-    },
-    providers: [TOGGLE_BUTTON_VALUE_ACCESSOR],
-    standalone: false
+  // eslint-disable-next-line @angular-eslint/component-selector
+  selector: 'button[seamToggleButton]',
+  templateUrl: './toggle-button.component.html',
+  styleUrls: ['./toggle-button.component.scss'],
+  exportAs: 'seamToggleButton',
+  inputs: ['disabled', 'theme', 'size'],
+  host: {
+    '[attr.type]': 'type',
+    'class': 'btn',
+    '[attr.aria-disabled]': 'disabled.toString()',
+    '[attr.disabled]': 'disabled || null',
+    '(click)': '_toggleValue()',
+  },
+  providers: [TOGGLE_BUTTON_VALUE_ACCESSOR],
+  standalone: false,
 })
 export class TheSeamToggleButtonComponent extends TheSeamButtonComponent implements OnDestroy, ControlValueAccessor {
   static ngAcceptInputType_val: BooleanInput
@@ -51,7 +51,7 @@ export class TheSeamToggleButtonComponent extends TheSeamButtonComponent impleme
   constructor(
     readonly _elementRef: ElementRef,
     readonly _focusMonitor: FocusMonitor,
-    readonly _renderer: Renderer2
+    readonly _renderer: Renderer2,
   ) { super(_elementRef, _focusMonitor, _renderer) }
 
   ngOnDestroy() { super.ngOnDestroy() }

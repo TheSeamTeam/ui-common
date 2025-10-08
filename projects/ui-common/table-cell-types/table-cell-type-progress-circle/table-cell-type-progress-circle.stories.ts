@@ -12,7 +12,7 @@ import {
   ExportersDataEvaluator,
   JexlEvaluator,
   THESEAM_DYNAMIC_ACTION,
-  THESEAM_DYNAMIC_VALUE_EVALUATOR
+  THESEAM_DYNAMIC_VALUE_EVALUATOR,
 } from '@theseam/ui-common/dynamic'
 import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
 
@@ -58,7 +58,7 @@ type Story = StoryObj<TableCellTypeProgressCircleComponent>
 export const NoConfig: Story = {
   render: args => {
     const rows = [
-      { completionPercent: args.value }
+      { completionPercent: args.value },
     ]
     return {
       template: `<seam-datatable class="vw-100 vh-100" [columns]="columns" [rows]="rows"></seam-datatable>`,

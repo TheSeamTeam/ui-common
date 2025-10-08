@@ -1,11 +1,11 @@
 import { Component, ElementRef, HostBinding, Input, ViewEncapsulation } from '@angular/core'
 
 @Component({
-    selector: 'seam-widget-empty-label,a[seam-widget-empty-label],button[seam-widget-empty-label]',
-    templateUrl: './widget-empty-label.component.html',
-    styleUrls: ['./widget-empty-label.component.scss'],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+  selector: 'seam-widget-empty-label,a[seam-widget-empty-label],button[seam-widget-empty-label]',
+  templateUrl: './widget-empty-label.component.html',
+  styleUrls: ['./widget-empty-label.component.scss'],
+  encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class WidgetEmptyLabelComponent {
 
@@ -26,7 +26,7 @@ export class WidgetEmptyLabelComponent {
   get type(): string | undefined | null { return this._type }
 
   constructor(
-    public _elementRef: ElementRef<HTMLElement | HTMLAnchorElement | HTMLButtonElement>
+    public _elementRef: ElementRef<HTMLElement | HTMLAnchorElement | HTMLButtonElement>,
   ) { }
 
   /** Determines if the component host is a button. */

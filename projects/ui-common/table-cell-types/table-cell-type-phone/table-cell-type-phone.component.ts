@@ -11,11 +11,11 @@ import { hasProperty } from '@theseam/ui-common/utils'
 import { TableCellTypeConfigPhone } from './table-cell-type-phone-config'
 
 @Component({
-    selector: 'seam-table-cell-type-phone',
-    templateUrl: './table-cell-type-phone.component.html',
-    styleUrls: ['./table-cell-type-phone.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'seam-table-cell-type-phone',
+  templateUrl: './table-cell-type-phone.component.html',
+  styleUrls: ['./table-cell-type-phone.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class TableCellTypePhoneComponent implements OnDestroy {
 
@@ -32,7 +32,7 @@ export class TableCellTypePhoneComponent implements OnDestroy {
 
   constructor(
     private _cdf: ChangeDetectorRef,
-    @Optional() @Inject(TABLE_CELL_DATA) _tableData?: TableCellData<'phone', TableCellTypeConfigPhone>
+    @Optional() @Inject(TABLE_CELL_DATA) _tableData?: TableCellData<'phone', TableCellTypeConfigPhone>,
   ) {
     const _data = _tableData
 

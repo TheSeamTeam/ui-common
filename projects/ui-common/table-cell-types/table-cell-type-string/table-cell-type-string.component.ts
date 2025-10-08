@@ -7,7 +7,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Optional
+  Optional,
 } from '@angular/core'
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
@@ -22,12 +22,12 @@ import { TableCellTypeConfigString, TableCellTypeStringConfigAction } from './ta
 export type StringTemplateType = 'default' | 'link' | 'link-external' | 'link-encrypted' | 'button'
 
 @Component({
-    selector: 'seam-table-cell-type-string',
-    templateUrl: './table-cell-type-string.component.html',
-    styleUrls: ['./table-cell-type-string.component.scss'],
-    host: {},
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'seam-table-cell-type-string',
+  templateUrl: './table-cell-type-string.component.html',
+  styleUrls: ['./table-cell-type-string.component.scss'],
+  host: {},
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class TableCellTypeStringComponent implements OnInit, OnDestroy {
 
@@ -100,7 +100,7 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
     private readonly _tableCellTypeHelpers: TableCellTypesHelpersService,
     @Optional() private _datatable?: DatatableComponent,
     @Optional() private _table?: TableComponent,
-    @Optional() @Inject(TABLE_CELL_DATA) readonly _tableData?: TableCellData<'string', TableCellTypeConfigString>
+    @Optional() @Inject(TABLE_CELL_DATA) readonly _tableData?: TableCellData<'string', TableCellTypeConfigString>,
   ) {
     const _data = _tableData
     this._tableCellData = _tableData
@@ -215,7 +215,7 @@ export class TableCellTypeStringComponent implements OnInit, OnDestroy {
           r => {},
           // eslint-disable-next-line no-console
           err => console.error(err),
-          () => this._actionRefreshRequest()
+          () => this._actionRefreshRequest(),
         )
     }
   }

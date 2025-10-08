@@ -12,8 +12,8 @@ export class TheSeamNgSelectOptionHarness extends ComponentHarness {
   /** Creates a `HarnessPredicate` used to locate a particular `MyMenuHarness`. */
   static with(options: TheSeamNgSelectOptionHarnessFilters): HarnessPredicate<TheSeamNgSelectOptionHarness> {
     return new HarnessPredicate(TheSeamNgSelectOptionHarness, options)
-        .addOption('option value', options.value,
-            (harness, value) => HarnessPredicate.stringMatches(harness.getValue(), value))
+      .addOption('option value', options.value,
+        (harness, value) => HarnessPredicate.stringMatches(harness.getValue(), value))
   }
 
   /**

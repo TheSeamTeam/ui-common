@@ -24,11 +24,11 @@ import { MODAL_DATA, TheSeamModalModule } from '@theseam/ui-common/modal'
       <button type="button" class="btn btn-lightgray" data-dismiss="modal" seamModalClose="next-modal">Next Modal</button>
       <button type="button" class="btn btn-primary" data-dismiss="modal" seamModalClose>Close</button>
     </seam-modal-footer>
-  `
+  `,
 })
 export class StoryModalOneComponent {
   constructor(
-    @Optional() @Inject(MODAL_DATA) public data?: any
+    @Optional() @Inject(MODAL_DATA) public data?: any,
   ) {
     // console.log('[StoryModalOneComponent] data', data)
   }
@@ -41,7 +41,7 @@ export class StoryModalOneComponent {
     TheSeamDynamicComponentLoaderModule.forChild(StoryModalOneComponent),
   ],
   declarations: [
-    StoryModalOneComponent
+    StoryModalOneComponent,
   ],
 })
 export class StoryModalOneModule { }
@@ -66,11 +66,11 @@ export class StoryModalOneModule { }
     <button type="button" class="btn btn-lightgray" data-dismiss="modal" seamModalClose>Close</button>
     <button type="button" class="btn btn-primary" data-dismiss="modal" seamModalClose>Continue</button>
     </seam-modal-footer>
-  `
+  `,
 })
 export class StoryModalTwoComponent {
   constructor(
-    @Optional() @Inject(MODAL_DATA) public data?: any
+    @Optional() @Inject(MODAL_DATA) public data?: any,
   ) {
     // console.log('[StoryModalTwoComponent] data', data)
   }
@@ -83,7 +83,7 @@ export class StoryModalTwoComponent {
     TheSeamDynamicComponentLoaderModule.forChild(StoryModalTwoComponent),
   ],
   declarations: [
-    StoryModalTwoComponent
+    StoryModalTwoComponent,
   ],
 })
 export class StoryModalTwoModule { }

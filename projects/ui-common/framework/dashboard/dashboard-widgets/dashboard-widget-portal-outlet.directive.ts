@@ -8,7 +8,7 @@ import {
   OnDestroy,
   OnInit,
   Output,
-  ViewContainerRef
+  ViewContainerRef,
 } from '@angular/core'
 
 /**
@@ -66,7 +66,7 @@ export class DashboardWidgetPortalOutletDirective extends BasePortalOutlet imple
 
   /** Emits when a portal is attached to the outlet. */
   @Output() attached: EventEmitter<CdkPortalOutletAttachedRef> =
-      new EventEmitter<CdkPortalOutletAttachedRef>()
+    new EventEmitter<CdkPortalOutletAttachedRef>()
 
   /** Component or view reference that is attached to the portal. */
   get attachedRef(): CdkPortalOutletAttachedRef | undefined {

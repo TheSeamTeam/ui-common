@@ -6,11 +6,11 @@ import { ToggleGroupDirective } from './toggle-group.directive'
 @NgModule({
   imports: [
     ToggleGroupDirective,
-    ToggleGroupOptionDirective
+    ToggleGroupOptionDirective,
   ],
   exports: [
     ToggleGroupDirective,
-    ToggleGroupOptionDirective
-  ]
+    ToggleGroupOptionDirective,
+  ],
 })
 export class TheSeamToggleGroupModule { }

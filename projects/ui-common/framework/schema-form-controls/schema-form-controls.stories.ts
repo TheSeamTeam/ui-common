@@ -33,10 +33,10 @@ const meta: Meta<JsonSchemaFormComponent> = {
         return (JSON.stringify(json).toString() as any).replaceAll('"', '\\"')
       }
       return story
-    }
+    },
   ],
   argTypes: {
-    onSubmit: { action: 'onSubmit' }
+    onSubmit: { action: 'onSubmit' },
   },
   args: {
     framework: 'seam-framework',
@@ -66,28 +66,28 @@ export const Example: Story = {
               '$id': '/properties/SelfAssessmentSummary/properties/CropYear',
               'type': 'number',
               'title': 'Crop Year',
-              'enum': [ 2020 ]
+              'enum': [ 2020 ],
             },
             'Region': {
               '$id': '/properties/SelfAssessmentSummary/properties/Region',
               'type': 'string',
               'title': 'Region',
-              'enum': [ 'South West', 'North West', 'South East', 'North East' ]
+              'enum': [ 'South West', 'North West', 'South East', 'North East' ],
             },
             'IsIrrigated': {
               '$id': '/properties/SelfAssessmentSummary/properties/IsIrrigated',
               'type': 'boolean',
               'title': 'Irrigated',
-              'default': false
-            }
+              'default': false,
+            },
           },
           'required': [
             'CropYear',
             'Region',
-            'IsIrrigated'
-          ]
-        }
-      }
+            'IsIrrigated',
+          ],
+        },
+      },
     },
     layout: [
       { 'dataPointer': '/SelfAssessmentSummary/CropYear' },
@@ -118,28 +118,28 @@ export const Example2: Story = {
               'type': 'number',
               'title': 'Crop Year',
               'enum': [ 2020 ],
-              'default': 2020
+              'default': 2020,
             },
             'Region': {
               '$id': '/properties/SelfAssessmentSummary/properties/Region',
               'type': 'string',
               'title': 'Region',
-              'enum': [ 'Far West', 'Southwest', 'Midsouth', 'Southeast' ]
+              'enum': [ 'Far West', 'Southwest', 'Midsouth', 'Southeast' ],
             },
             'IsIrrigated': {
               '$id': '/properties/SelfAssessmentSummary/properties/IsIrrigated',
               'type': 'boolean',
               'title': 'Irrigated',
-              'default': false
-            }
+              'default': false,
+            },
           },
           'required': [
             'CropYear',
             'Region',
-            'IsIrrigated'
-          ]
-        }
-      }
+            'IsIrrigated',
+          ],
+        },
+      },
     },
     layout: [
       // { 'dataPointer': '/SelfAssessmentSummary/CropYear' },
@@ -162,7 +162,7 @@ export const Example3: Story = {
       'definitions': {},
       '$schema': 'http://json-schema.org/draft-07/schema#',
       'title': 'Producers Progress',
-      'properties': { }
+      'properties': { },
     },
     layout: [
       // { 'dataPointer': '/SelfAssessmentSummary/CropYear' },
@@ -193,13 +193,13 @@ export const Example5: Story = {
           'enum': [
             'All',
             'Approved',
-            'Unapproved'
-          ]
-        }
+            'Unapproved',
+          ],
+        },
       },
       'required': [
-        'ApprovalStatus'
-      ]
+        'ApprovalStatus',
+      ],
     },
     layout: [
       { 'dataPointer': '/ApprovalStatus' },
@@ -224,26 +224,26 @@ export const Group: Story = {
             'CropYear': {
               'type': 'number',
               'title': 'Crop Year',
-              'enum': [ 2020 ]
+              'enum': [ 2020 ],
             },
             'Region': {
               'type': 'string',
               'title': 'Region',
-              'enum': [ 'South West', 'North West', 'South East', 'North East' ]
+              'enum': [ 'South West', 'North West', 'South East', 'North East' ],
             },
             'IsIrrigated': {
               'type': 'boolean',
               'title': 'Irrigated',
-              'default': false
-            }
+              'default': false,
+            },
           },
           'required': [
             'CropYear',
             'Region',
-            'IsIrrigated'
-          ]
-        }
-      }
+            'IsIrrigated',
+          ],
+        },
+      },
     },
     layout: [
       { 'dataPointer': '/SelfAssessmentSummary/CropYear' },
@@ -284,26 +284,26 @@ export const Layout: Story = {
             'CropYear': {
               'type': 'number',
               'title': 'Crop Year',
-              'enum': [ 2020 ]
+              'enum': [ 2020 ],
             },
             'Region': {
               'type': 'string',
               'title': 'Region',
-              'enum': [ 'South West', 'North West', 'South East', 'North East' ]
+              'enum': [ 'South West', 'North West', 'South East', 'North East' ],
             },
             'IsIrrigated': {
               'type': 'boolean',
               'title': 'Irrigated',
-              'default': false
-            }
+              'default': false,
+            },
           },
           'required': [
             'CropYear',
             'Region',
-            'IsIrrigated'
-          ]
-        }
-      }
+            'IsIrrigated',
+          ],
+        },
+      },
     },
     layout: [
       { 'dataPointer': '/SelfAssessmentSummary/CropYear' },
@@ -343,27 +343,27 @@ export const LoadoutOrder: Story = {
             'Origin': {
               'type': 'string',
               'title': 'Origin',
-              'enum': [ 'South West', 'North West', 'South East', 'North East' ]
+              'enum': [ 'South West', 'North West', 'South East', 'North East' ],
             },
             'Destination': {
               'type': 'string',
               'title': 'Destination',
-              'enum': [ 'South West', 'North West', 'South East', 'North East' ]
+              'enum': [ 'South West', 'North West', 'South East', 'North East' ],
             },
             'ReasonForLoadout': {
               'type': 'string',
               'title': 'Reason for Loadout',
-              'enum': [ 'South West', 'North West', 'South East', 'North East' ]
+              'enum': [ 'South West', 'North West', 'South East', 'North East' ],
             },
             'TypeOfVehicle': {
               'type': 'string',
               'title': 'Type of Vehicle',
-              'enum': [ 'South West', 'North West', 'South East', 'North East' ]
+              'enum': [ 'South West', 'North West', 'South East', 'North East' ],
             },
             'Truckline': {
               'type': 'string',
               'title': 'Truckline',
-              'enum': [ 'South West', 'North West', 'South East', 'North East' ]
+              'enum': [ 'South West', 'North West', 'South East', 'North East' ],
             },
             'DispatchNumber': {
               'type': 'string',
@@ -399,9 +399,9 @@ export const LoadoutOrder: Story = {
             'TypeOfVehicle',
             'Truckline',
             'DispatchNumber',
-          ]
-        }
-      }
+          ],
+        },
+      },
     },
     layout: [
       { 'dataPointer': '/LoadoutOrderAdd/ReferenceDate' },

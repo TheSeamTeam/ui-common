@@ -21,13 +21,13 @@ export type FilterStateMapperResult = {
 } | null
 
 export type FilterStateMapper = (filterState: DataFilterState, context: MapperContext)
-  => (FilterStateMapperResult | Promise<FilterStateMapperResult> | Observable<FilterStateMapperResult>)
+=> (FilterStateMapperResult | Promise<FilterStateMapperResult> | Observable<FilterStateMapperResult>)
 export interface FilterStateMappers { [filterName: string]: FilterStateMapper }
 
 function resolveMapper(
   filterState: DataFilterState,
   filterStateMappers: FilterStateMappers,
-  context: MapperContext
+  context: MapperContext,
 ): Observable<FilterStateMapperResult> {
   const mapper = filterStateMappers[filterState.name]
   if (!notNullOrUndefined(mapper)) {
@@ -36,19 +36,19 @@ function resolveMapper(
 
   return wrapIntoObservable(mapper(filterState, context)).pipe(
     // Require each mapper to complete.
-    take(1)
+    take(1),
   )
 }
 
 function resolveMappers(
   filterStates: DataFilterState[],
   filterStateMappers: FilterStateMappers,
-  context: MapperContext
+  context: MapperContext,
 ): Observable<(Exclude<FilterStateMapperResult, null>)[]> {
   return from(filterStates).pipe(
     concatMap(filterState => resolveMapper(filterState, filterStateMappers, context)),
     filter(notNullOrUndefined),
-    toArray()
+    toArray(),
   )
 }
 
@@ -94,7 +94,7 @@ function isEmptyFilter(mapperFilter: FilterStateMapperFilter): boolean {
 export async function mapFilterStates(
   filterStates: DataFilterState[],
   filterStateMappers: FilterStateMappers,
-  context: MapperContext
+  context: MapperContext,
 ): Promise<FilterStateMapperResult> {
   const results: FilterStateMapperFilter[] = (await resolveMappers(filterStates, filterStateMappers, context).toPromise()) ?? []
 
@@ -113,6 +113,6 @@ export async function mapFilterStates(
 
   return {
     filter: mergeFilters(filters),
-    variables: mergeVariables(variableObjs)
+    variables: mergeVariables(variableObjs),
   }
 }

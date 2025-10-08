@@ -35,19 +35,19 @@ export function hasRequiredControl(abstractControl: AbstractControl): boolean {
   if (abstractControl.validator) {
     const validator = abstractControl.validator({}as AbstractControl)
     if (validator && validator.required) {
-        return true
+      return true
     }
   }
 
   const _abstractControl: any = abstractControl
   if (hasProperty(_abstractControl, 'controls')) {
-      for (const controlName in _abstractControl.controls) {
-          if (_abstractControl.controls[controlName]) {
-              if (hasRequiredControl(_abstractControl.controls[controlName])) {
-                  return true
-              }
-          }
+    for (const controlName in _abstractControl.controls) {
+      if (_abstractControl.controls[controlName]) {
+        if (hasRequiredControl(_abstractControl.controls[controlName])) {
+          return true
+        }
       }
+    }
   }
 
   return false

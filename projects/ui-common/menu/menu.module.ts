@@ -25,7 +25,7 @@ import { MenuComponent } from './menu.component'
   imports: [
     CommonModule,
     OverlayModule,
-    TheSeamIconModule
+    TheSeamIconModule,
   ],
   exports: [
     MenuComponent,
@@ -37,7 +37,7 @@ import { MenuComponent } from './menu.component'
     OverlayModule,
     MenuFooterComponent,
     MenuFooterActionComponent,
-    MenuHeaderComponent
-  ]
+    MenuHeaderComponent,
+  ],
 })
 export class TheSeamMenuModule { }

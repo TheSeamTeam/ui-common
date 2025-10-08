@@ -30,7 +30,7 @@ export class MockDatatable implements GqlDatatableAccessor {
       offset: (dt as any).ngxDatatable?.offset ?? 0,
       pageSize: (dt as any).ngxDatatable?.pageSize ?? defaultPageSize,
       limit: (dt as any).ngxDatatable?.limit,
-      count: (dt as any).ngxDatatable?.count ?? 0
+      count: (dt as any).ngxDatatable?.count ?? 0,
     }
   }
 
@@ -38,7 +38,7 @@ export class MockDatatable implements GqlDatatableAccessor {
     return {
       offset: this.getPage(),
       pageSize: this.getPageSize(),
-      count: this._rows.length
+      count: this._rows.length,
     }
   }
 

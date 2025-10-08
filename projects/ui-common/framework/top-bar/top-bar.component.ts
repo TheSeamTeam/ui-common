@@ -8,7 +8,7 @@ import {
   Input,
   OnDestroy,
   QueryList,
-  ViewEncapsulation
+  ViewEncapsulation,
 } from '@angular/core'
 import { AsyncPipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common'
 import { RouterModule } from '@angular/router'
@@ -141,7 +141,7 @@ export class TheSeamTopBarComponent implements OnDestroy, AfterContentInit {
   readonly isMobile$: Observable<boolean>
 
   constructor(
-    private readonly _layout: TheSeamLayoutService
+    private readonly _layout: TheSeamLayoutService,
   ) {
     this.isMobile$ = this._layout.isMobile$
   }

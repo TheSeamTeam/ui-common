@@ -1,10 +1,10 @@
 import { Component, HostBinding } from '@angular/core'
 
 @Component({
-    selector: 'seam-modal-body',
-    templateUrl: './modal-body.component.html',
-    styleUrls: ['./modal-body.component.scss'],
-    standalone: false
+  selector: 'seam-modal-body',
+  templateUrl: './modal-body.component.html',
+  styleUrls: ['./modal-body.component.scss'],
+  standalone: false,
 })
 export class ModalBodyComponent {
 

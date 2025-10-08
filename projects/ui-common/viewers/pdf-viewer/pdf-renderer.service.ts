@@ -20,7 +20,7 @@ export class TheSeamPdfRendererService {
           pdfJs.GlobalWorkerOptions.workerSrc = this._config?.pdfJsWorkerSrc || `assets/vendor/pdfjs-dist/pdf.worker.min.mjs`
         }
       }),
-      shareReplay({ bufferSize: 1, refCount: true })
+      shareReplay({ bufferSize: 1, refCount: true }),
     )
   }
 

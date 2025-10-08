@@ -5,13 +5,13 @@ import { ProgressCircleComponent } from './progress-circle/progress-circle.compo
 
 @NgModule({
   declarations: [
-    ProgressCircleComponent
+    ProgressCircleComponent,
   ],
   imports: [
-    CommonModule
+    CommonModule,
   ],
   exports: [
-    ProgressCircleComponent
-  ]
+    ProgressCircleComponent,
+  ],
 })
 export class TheSeamProgressModule { }

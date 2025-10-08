@@ -8,12 +8,12 @@ import { LazyWidgetOneComponent } from 'src/app/example-lazy-loaded-widgets/lazy
 
 @NgModule({
   declarations: [
-    LazyWidgetOneComponent
+    LazyWidgetOneComponent,
   ],
   imports: [
     CommonModule,
     TheSeamWidgetModule,
     // TheSeamDynamicComponentLoaderModule.forChild(LazyWidgetOneComponent),
-  ]
+  ],
 })
 export class LazyWidgetOneModule { }

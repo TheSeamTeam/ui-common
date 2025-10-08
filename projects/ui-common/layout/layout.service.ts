@@ -7,7 +7,7 @@ import { MediaQueryAliases } from './breakpoint-aliases'
 import { observeMediaQuery } from './observe-media-query'
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TheSeamLayoutService {
 
@@ -22,11 +22,11 @@ export class TheSeamLayoutService {
   public mobileBreakpoint$ = this._mobileBreakpoint.asObservable()
 
   constructor(
-    private _media: MediaObserver
+    private _media: MediaObserver,
   ) {
     this.isMobile$ = this.mobileBreakpoint$.pipe(
       switchMap(breakpoint => this.observe(breakpoint)),
-      shareReplay({ bufferSize: 1, refCount: true })
+      shareReplay({ bufferSize: 1, refCount: true }),
     )
   }
 

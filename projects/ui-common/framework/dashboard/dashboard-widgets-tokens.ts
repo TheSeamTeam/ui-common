@@ -8,5 +8,5 @@ export interface DashboardWidgetsAccessor {
 }
 
 export const THESEAM_DASHBOARD_WIDGETS_ACCESSOR = new InjectionToken<DashboardWidgetsAccessor>(
-  'THESEAM_DASHBOARD_WIDGETS_ACCESSOR'
+  'THESEAM_DASHBOARD_WIDGETS_ACCESSOR',
 )

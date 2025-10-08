@@ -8,7 +8,7 @@ import {
   Token,
   VariableDefinitionNode,
   VariableNode,
-  visit
+  visit,
 } from 'graphql'
 
 import { notNullOrUndefined } from '@theseam/ui-common/utils'
@@ -74,7 +74,7 @@ export function createHintsToken(token: Token, node: HintsToken['node'], kind: H
   return {
     node,
     hints: hintNamesFromHintToken(token),
-    kind
+    kind,
   }
 }
 
@@ -116,7 +116,7 @@ export function getHintsToken(token: Token, ast: DocumentNode): HintsToken | nul
         appliesToNode = createHintsToken(token, node, HintsKind.Field)
         return BREAK
       }
-    }
+    },
   })
   return appliesToNode
 }

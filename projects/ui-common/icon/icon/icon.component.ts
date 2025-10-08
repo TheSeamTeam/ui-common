@@ -18,10 +18,10 @@ const needToFix = /(MSIE 10)|(Trident.*rv:11\.0)|( Edge\/[\d.]+$)/.test(navigato
 export type TheSeamIconType = 'borderless-styled-square' | 'styled-square' | 'image-fill' | undefined
 
 @Component({
-    selector: 'seam-icon',
-    templateUrl: './icon.component.html',
-    styleUrls: ['./icon.component.scss'],
-    standalone: false
+  selector: 'seam-icon',
+  templateUrl: './icon.component.html',
+  styleUrls: ['./icon.component.scss'],
+  standalone: false,
 })
 export class IconComponent {
   static ngAcceptInputType_grayscaleOnDisable: BooleanInput

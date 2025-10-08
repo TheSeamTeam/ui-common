@@ -178,7 +178,7 @@ export const Preferences: Story = {
         {
           provide: THESEAM_WIDGET_DATA,
           useValue: {
-            widgetId: 'story-widget-preferences'
+            widgetId: 'story-widget-preferences',
           } satisfies TheSeamWidgetData,
         },
       ],

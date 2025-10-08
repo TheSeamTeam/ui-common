@@ -22,7 +22,7 @@ import { ModalHeaderComponent } from './modal-header/modal-header.component'
 import {
   MODAL_CONFIG,
   MODAL_CONTAINER,
-  THESEAM_MODAL_SCROLL_STRATEGY_PROVIDER
+  THESEAM_MODAL_SCROLL_STRATEGY_PROVIDER,
 } from './modal-injectors'
 import { ModalComponent } from './modal/modal.component'
 import { RouteModalComponent } from './route-modal/route-modal.component'
@@ -40,7 +40,7 @@ import { RouteModalComponent } from './route-modal/route-modal.component'
     ModalTitleDirective,
     ModalBodyComponent,
     ModalFooterComponent,
-    ModalCloseDirective
+    ModalCloseDirective,
   ],
   imports: [
     CommonModule,
@@ -65,12 +65,12 @@ import { RouteModalComponent } from './route-modal/route-modal.component'
     ModalTitleDirective,
     ModalBodyComponent,
     ModalFooterComponent,
-    ModalCloseDirective
+    ModalCloseDirective,
   ],
   providers: [
     THESEAM_MODAL_SCROLL_STRATEGY_PROVIDER,
     { provide: MODAL_CONTAINER, useValue: ModalContainerComponent },
     { provide: MODAL_CONFIG, useValue: ModalConfig },
-  ]
+  ],
 })
 export class TheSeamModalModule { }

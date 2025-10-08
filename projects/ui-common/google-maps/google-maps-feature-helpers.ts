@@ -67,7 +67,7 @@ export function stripAppFeaturePropertiesFromJson(json: any) {
  */
 export function getPossibleExteriorFeature(
   data: google.maps.Data,
-  feature: google.maps.Data.Feature
+  feature: google.maps.Data.Feature,
 ): google.maps.Data.Feature | undefined {
   let exteriorPolygonFeature: google.maps.Data.Feature | undefined
   data.forEach(f => {
@@ -88,7 +88,7 @@ export function getPossibleExteriorFeature(
 
 export function addInnerFeatureCutoutToExteriorFeature(
   exteriorFeature: google.maps.Data.Feature,
-  innerFeature: google.maps.Data.Feature
+  innerFeature: google.maps.Data.Feature,
 ): void {
   const exteriorGeometry = exteriorFeature.getGeometry()
   if (exteriorGeometry === null) {
@@ -109,7 +109,7 @@ export function addInnerFeatureCutoutToExteriorFeature(
   const exteriorPolygon = exteriorGeometry as google.maps.Data.Polygon
   exteriorFeature.setGeometry(new google.maps.Data.Polygon([
     ...exteriorPolygon.getArray(),
-    featurePolygon.getAt(0).getArray().reverse()
+    featurePolygon.getAt(0).getArray().reverse(),
   ]))
 }
 
@@ -184,7 +184,7 @@ export function featureContains(featureA: google.maps.Data.Feature, featureB: go
 export function createDataFeatureFromPolygon(polygon: google.maps.Polygon): google.maps.Data.Feature {
   const arr = polygon.getPaths().getArray().map(x => x.getArray())
   return new google.maps.Data.Feature({
-    geometry: new google.maps.Data.Polygon(arr)
+    geometry: new google.maps.Data.Polygon(arr),
   })
 }
 

@@ -23,7 +23,7 @@ export async function readFileAsDataUrlAsync(file: Blob): Promise<string | null>
 
 export async function fileBufferToBlob(
   fileBuffer: Buffer,
-  defaultMime: string = 'application/octet-stream'
+  defaultMime: string = 'application/octet-stream',
 ): Promise<Blob> {
   const fType = fileType(fileBuffer)
   const mime = (fType) ? fType.mime : defaultMime
@@ -33,7 +33,7 @@ export async function fileBufferToBlob(
 
 export async function fileBufferToObjectUrl(
   fileBuffer: Buffer,
-  defaultMime: string = 'application/octet-stream'
+  defaultMime: string = 'application/octet-stream',
 ): Promise<string> {
   const file = await fileBufferToBlob(fileBuffer, defaultMime)
   const fileURL = URL.createObjectURL(file)
@@ -48,7 +48,7 @@ export interface IFileData {
 
 export async function fileDataFromBuffer(
   fileBuffer: Buffer | Uint8Array | ArrayBuffer,
-  defaultMime: string = 'application/octet-stream'
+  defaultMime: string = 'application/octet-stream',
 ): Promise<IFileData> {
   const _fileBuffer = Buffer.from(fileBuffer as any) // TODO: Fix type
   const fType = fileType(_fileBuffer as any)

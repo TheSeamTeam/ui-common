@@ -10,7 +10,7 @@ import { AlterationItemComponent } from '../alteration-item/alteration-item.comp
   standalone: true,
   imports: [CommonModule, AlterationItemComponent],
   templateUrl: './alterations-list.component.html',
-  styleUrls: ['./alterations-list.component.scss']
+  styleUrls: ['./alterations-list.component.scss'],
 })
 export class AlterationsListComponent {
   @Input() items: AlterationDisplayItem[] = []

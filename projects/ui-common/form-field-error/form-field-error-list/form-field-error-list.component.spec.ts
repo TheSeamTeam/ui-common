@@ -14,11 +14,11 @@ describe('FormFieldErrorListComponent', () => {
   const createComponent = createComponentFactory({
     component: FormFieldErrorListComponent,
     declarations: [
-      FormFieldErrorComponent
+      FormFieldErrorComponent,
     ],
     imports: [
-      ReactiveFormsModule
-    ]
+      ReactiveFormsModule,
+    ],
   })
 
   it('should create', () => {
@@ -65,7 +65,7 @@ describe('FormFieldErrorListComponent', () => {
   it('should not show placeholder when control is dirty with a validator with a message', fakeAsync(() => {
     const control = new UntypedFormControl(undefined, [ Validators.required ])
     const errors: IErrorRecord[] = [
-      { validatorName: 'required', error: null, message: 'Required' }
+      { validatorName: 'required', error: null, message: 'Required' },
     ]
     spectator = createComponent({ props: { control, errors } })
     let records: IErrorRecord[] = []

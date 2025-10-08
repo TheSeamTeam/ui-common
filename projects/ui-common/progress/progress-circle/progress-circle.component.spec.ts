@@ -8,10 +8,10 @@ describe('ProgressCircleComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [ProgressCircleComponent],
-    teardown: { destroyAfterEach: false }
-})
-    .compileComponents()
+      declarations: [ProgressCircleComponent],
+      teardown: { destroyAfterEach: false },
+    })
+      .compileComponents()
   }))
 
   beforeEach(() => {

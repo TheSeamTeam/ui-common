@@ -18,7 +18,7 @@ import { WidgetListGroupItemComponent } from './widget-list-group-item.component
 const iconLookup = {
   'fa-icon': faPuzzlePiece as any,
   'img': 'assets/images/icons8-cotton-filled-48.png',
-  'wide-img': 'assets/images/landdb-14d6a0.PNG'
+  'wide-img': 'assets/images/landdb-14d6a0.PNG',
 }
 
 interface ExtraArgs {

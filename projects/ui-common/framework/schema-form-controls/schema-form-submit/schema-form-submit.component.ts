@@ -32,7 +32,7 @@ export class TheSeamSchemaFormSubmitComponent implements OnInit, TheSeamSchemaFo
   @Input() dataIndex: TheSeamSchemaFormControlWidget['dataIndex']
 
   constructor(
-    private readonly _jsf: JsonSchemaFormService
+    private readonly _jsf: JsonSchemaFormService,
   ) { }
 
   ngOnInit() {

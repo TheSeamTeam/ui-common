@@ -13,7 +13,7 @@ import {
   OnDestroy,
   OnInit,
   Optional,
-  QueryList
+  QueryList,
 } from '@angular/core'
 import { BehaviorSubject, Subject } from 'rxjs'
 import { auditTime, filter, switchMap, take, takeUntil } from 'rxjs/operators'
@@ -52,7 +52,7 @@ interface DragCSSStyleDeclaration extends CSSStyleDeclaration {
 
 export function extendStyles(
   dest: Writeable<CSSStyleDeclaration>,
-  source: Partial<DragCSSStyleDeclaration>
+  source: Partial<DragCSSStyleDeclaration>,
 ) {
   for (const key in source) {
     if (Object.prototype.hasOwnProperty.call(source, key)) {
@@ -73,7 +73,7 @@ export function toggleNativeDragInteractions(element: HTMLElement, enable: boole
     userSelect,
     msUserSelect: userSelect,
     webkitUserSelect: userSelect,
-    MozUserSelect: userSelect
+    MozUserSelect: userSelect,
   })
 }
 
@@ -83,15 +83,15 @@ export interface TheSeamWidgetAccessor<TItem> {
 }
 
 export const THESEAM_WIDGET_ACCESSOR = new InjectionToken<TheSeamWidgetAccessor<any>>(
-  'TheSeamWidgetAccessor'
+  'TheSeamWidgetAccessor',
 )
 
 @Directive({
-    selector: '[seamWidgetDragHandle]',
-    host: {
-        'class': 'cdk-drag-handle'
-    },
-    standalone: false
+  selector: '[seamWidgetDragHandle]',
+  host: {
+    'class': 'cdk-drag-handle',
+  },
+  standalone: false,
 })
 export class WidgetDragHandleDirective implements OnInit, OnDestroy, AfterViewInit, DoCheck {
   static ngAcceptInputType_disabled: BooleanInput
@@ -121,7 +121,7 @@ export class WidgetDragHandleDirective implements OnInit, OnDestroy, AfterViewIn
     public element: ElementRef<HTMLElement>,
     private _ngZone: NgZone,
     @Optional() @Inject(THESEAM_WIDGET_ACCESSOR) private _dashboardWidgets?: TheSeamWidgetAccessor<any>,
-    @Optional() private __parentDrag?: CdkDrag
+    @Optional() private __parentDrag?: CdkDrag,
   ) {
     toggleNativeDragInteractions(element.nativeElement, false)
   }
@@ -130,7 +130,7 @@ export class WidgetDragHandleDirective implements OnInit, OnDestroy, AfterViewIn
     if (this._dashboardWidgets) {
       this._dashboardWidgets.widgetsChange.pipe(
         auditTime(0),
-        takeUntil(this._ngUnsubscribe)
+        takeUntil(this._ngUnsubscribe),
       ).subscribe(() => {
         if (this._knownParentDrag) {
           const isAttached = this.isAttachedToDom()

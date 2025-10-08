@@ -31,11 +31,11 @@ export const MODAL_CONFIG = new InjectionToken<ModalConfig>('ModalConfig')
 
 /** Injection token for the Dialog's DialogContainer component. */
 export const MODAL_CONTAINER =
-    new InjectionToken<ComponentType<ModalContainerComponent>>('ModalContainer')
+  new InjectionToken<ComponentType<ModalContainerComponent>>('ModalContainer')
 
 /** @docs-private */
 export function THESEAM_MODAL_SCROLL_STRATEGY_PROVIDER_FACTORY(overlay: Overlay):
-    () => ScrollStrategy {
+() => ScrollStrategy {
   return () => overlay.scrollStrategies.block()
 }
 

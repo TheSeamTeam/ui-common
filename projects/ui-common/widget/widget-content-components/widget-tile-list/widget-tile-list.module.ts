@@ -7,14 +7,14 @@ import { WidgetTileListComponent } from './widget-tile-list.component'
 
 @NgModule({
   declarations: [
-    WidgetTileListComponent
+    WidgetTileListComponent,
   ],
   imports: [
-    CommonModule
+    CommonModule,
   ],
   exports: [
     WidgetTileListComponent,
-    TheSeamWidgetTileModule
-  ]
+    TheSeamWidgetTileModule,
+  ],
 })
 export class TheSeamWidgetTileListModule { }

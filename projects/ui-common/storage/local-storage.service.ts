@@ -17,7 +17,7 @@ export interface ILocalStorageService {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LocalStorageService implements ILocalStorageService {
   protected readonly subjects: { [key: string]: BehaviorSubject<string | null> } = {}
@@ -41,7 +41,7 @@ export class LocalStorageService implements ILocalStorageService {
         }
       }),
     )
-    .subscribe()
+      .subscribe()
   }
 
   /**

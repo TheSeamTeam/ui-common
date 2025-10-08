@@ -10,13 +10,13 @@ const manifests: DynamicComponentManifest[] = [
   {
     componentId: 'widget-one',
     path: 'widget-one',
-    loadChildren: () => import('./lazy-widget-one/lazy-widget-one.module').then(m => m.LazyWidgetOneModule)
-  }
+    loadChildren: () => import('./lazy-widget-one/lazy-widget-one.module').then(m => m.LazyWidgetOneModule),
+  },
 ]
 
 @NgModule({
   declarations: [
-    ExampleLazyLoadedWidgetsComponent
+    ExampleLazyLoadedWidgetsComponent,
   ],
   imports: [
     CommonModule,
@@ -24,7 +24,7 @@ const manifests: DynamicComponentManifest[] = [
     // TheSeamDynamicComponentLoaderModule.forModule(manifests[0]),
   ],
   exports: [
-    ExampleLazyLoadedWidgetsComponent
-  ]
+    ExampleLazyLoadedWidgetsComponent,
+  ],
 })
 export class ExampleLazyLoadedWidgetsModule { }

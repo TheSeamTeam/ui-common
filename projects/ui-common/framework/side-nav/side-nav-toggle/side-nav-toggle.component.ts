@@ -10,7 +10,7 @@ import { SeamIcon, TheSeamIconModule } from '@theseam/ui-common/icon'
   templateUrl: './side-nav-toggle.component.html',
   styleUrls: ['./side-nav-toggle.component.scss'],
   host: {
-    '[class.side-nav-toggle--compact]': '!expanded'
+    '[class.side-nav-toggle--compact]': '!expanded',
   },
   imports: [
     CommonModule,

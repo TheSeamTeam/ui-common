@@ -61,10 +61,10 @@ export class TheSeamGoogleMapsPlacesAutoCompleteComponent implements OnDestroy {
    * component to receive `focus` event from javascript, but not get focused by
    * keyboard navigation.
    */
-   @Input()
-   set tabIndex(value: number) { this._tabIndex = coerceNumberProperty(value) }
-   get tabIndex(): number { return this._tabIndex }
-   private _tabIndex = -1
+  @Input()
+  set tabIndex(value: number) { this._tabIndex = coerceNumberProperty(value) }
+  get tabIndex(): number { return this._tabIndex }
+  private _tabIndex = -1
 
   @Input()
   set options(value: google.maps.places.AutocompleteOptions | undefined | null) {
@@ -114,7 +114,7 @@ export class TheSeamGoogleMapsPlacesAutoCompleteComponent implements OnDestroy {
   ) {
     this.placeChanged = this._autoCompleteReadySubject.pipe(
       startWith(undefined),
-      switchMap(() => this._createPlaceChangedObservable<any>())
+      switchMap(() => this._createPlaceChangedObservable<any>()),
     )
   }
 
@@ -135,7 +135,7 @@ export class TheSeamGoogleMapsPlacesAutoCompleteComponent implements OnDestroy {
   /**
    * Returns the bounds to which predictions are biased.
    */
-   public getBounds(): google.maps.LatLngBounds | undefined {
+  public getBounds(): google.maps.LatLngBounds | undefined {
     this._assertInitialized()
     return this.autoComplete.getBounds()
   }
@@ -155,7 +155,7 @@ export class TheSeamGoogleMapsPlacesAutoCompleteComponent implements OnDestroy {
    * successfully retrieved. Otherwise returns a stub Place object, with the
    * name property set to the current value of the input field.
    */
-   public getPlace(): google.maps.places.PlaceResult {
+  public getPlace(): google.maps.places.PlaceResult {
     this._assertInitialized()
     return this.autoComplete.getPlace()
   }

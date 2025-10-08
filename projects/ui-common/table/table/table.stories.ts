@@ -10,7 +10,7 @@ import {
   DataFilterSearchComponent,
   DataFilterTextComponent,
   DataFilterToggleButtonsComponent,
-  THESEAM_DATA_FILTER_OPTIONS
+  THESEAM_DATA_FILTER_OPTIONS,
 } from '@theseam/ui-common/data-filters'
 import { DatatableExportButtonComponent } from '@theseam/ui-common/datatable'
 import { THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM } from '@theseam/ui-common/datatable-dynamic'
@@ -21,7 +21,7 @@ import {
   JexlEvaluator,
   THESEAM_DYNAMIC_ACTION,
   THESEAM_DYNAMIC_DATA,
-  THESEAM_DYNAMIC_VALUE_EVALUATOR
+  THESEAM_DYNAMIC_VALUE_EVALUATOR,
 } from '@theseam/ui-common/dynamic'
 import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
 
@@ -43,7 +43,7 @@ export default {
     moduleMetadata({
       imports: [
         TheSeamTableModule,
-        TheSeamTableCellTypesModule
+        TheSeamTableCellTypesModule,
       ],
       providers: [
         // { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
@@ -72,14 +72,14 @@ export default {
         //   useValue: { name: 'export-button', component: DatatableExportButtonComponent, dataToken: THESEAM_DYNAMIC_DATA },
         //   multi: true
         // }
-      ]
-    })
+      ],
+    }),
   ],
   parameters: {
     docs: {
       iframeHeight: '450px',
-    }
-  }
+    },
+  },
 }
 
 export const Basic = () => ({
@@ -91,8 +91,8 @@ export const Basic = () => ({
         cellType: 'icon',
         cellTypeConfig: {
           type: 'icon',
-          iconClass: { type: 'jexl', expr: 'row.name == "Gin 4" ? "text-danger" : "text-primary"' }
-        }
+          iconClass: { type: 'jexl', expr: 'row.name == "Gin 4" ? "text-danger" : "text-primary"' },
+        },
       },
       { prop: 'ginCode', name: 'Gin Code' },
       {
@@ -103,9 +103,9 @@ export const Basic = () => ({
           action: {
             type: 'link',
             link: { type: 'jexl', expr: '"page/" + row.name' },
-          }
-        }
-      }
+          },
+        },
+      },
     ],
     rows: [
       { ginCode: '12345', name: 'Gin 1', icon: faEnvelope },
@@ -114,10 +114,10 @@ export const Basic = () => ({
       { ginCode: '12348', name: 'Gin 4', icon: faEnvelope },
       { ginCode: '12349', name: 'Gin 5', icon: 'assets/images/theseam_logo_notext.svg' },
       { ginCode: '12350', name: 'Gin 6', icon: 'https://ipfs.theseam.com/ipfs/QmenVkw7UcU6SLYfdLp6qWioQJQ2Tur8qrWj5SoV5AdF1k' },
-      { ginCode: '12351', name: 'Gin 7', icon: 'assets/images/ginner-med.svg' }
-    ]
+      { ginCode: '12351', name: 'Gin 7', icon: 'assets/images/ginner-med.svg' },
+    ],
   },
-  template: `<seam-table [columns]="columns" [rows]="rows"></seam-table>`
+  template: `<seam-table [columns]="columns" [rows]="rows"></seam-table>`,
 })
 
 export const Medium = () => ({
@@ -128,11 +128,11 @@ export const Medium = () => ({
         name: 'Icon',
         cellType: 'icon',
         cellTypeConfig: {
-          type: 'icon'
-        }
+          type: 'icon',
+        },
       },
       { prop: 'ginCode', name: 'Gin Code' },
-      { prop: 'name', name: 'Name' }
+      { prop: 'name', name: 'Name' },
     ],
     rows: [
       { ginCode: '12345', name: 'Gin 1', icon: faEnvelope },
@@ -141,10 +141,10 @@ export const Medium = () => ({
       { ginCode: '12348', name: 'Gin 4', icon: faEnvelope },
       { ginCode: '12349', name: 'Gin 5', icon: 'assets/images/theseam_logo_notext.svg' },
       { ginCode: '12350', name: 'Gin 6', icon: 'https://ipfs.theseam.com/ipfs/QmenVkw7UcU6SLYfdLp6qWioQJQ2Tur8qrWj5SoV5AdF1k' },
-      { ginCode: '12351', name: 'Gin 7', icon: 'assets/images/ginner-med.svg' }
-    ]
+      { ginCode: '12351', name: 'Gin 7', icon: 'assets/images/ginner-med.svg' },
+    ],
   },
-  template: `<seam-table [columns]="columns" [rows]="rows" size="md"></seam-table>`
+  template: `<seam-table [columns]="columns" [rows]="rows" size="md"></seam-table>`,
 })
 
 export const Small = () => ({
@@ -155,8 +155,8 @@ export const Small = () => ({
         name: 'Icon',
         cellType: 'icon',
         cellTypeConfig: {
-          type: 'icon'
-        }
+          type: 'icon',
+        },
       },
       { prop: 'ginCode', name: 'Gin Code' },
       {
@@ -167,9 +167,9 @@ export const Small = () => ({
           action: {
             type: 'link',
             link: { type: 'jexl', expr: '"page/" + row.name' },
-          }
-        }
-      }
+          },
+        },
+      },
     ],
     rows: [
       { ginCode: '12345', name: 'Gin 1', icon: faEnvelope },
@@ -178,10 +178,10 @@ export const Small = () => ({
       { ginCode: '12348', name: 'Gin 4', icon: faEnvelope },
       { ginCode: '12349', name: 'Gin 5', icon: 'assets/images/theseam_logo_notext.svg' },
       { ginCode: '12350', name: 'Gin 6', icon: 'https://ipfs.theseam.com/ipfs/QmenVkw7UcU6SLYfdLp6qWioQJQ2Tur8qrWj5SoV5AdF1k' },
-      { ginCode: '12351', name: 'Gin 7', icon: 'assets/images/ginner-med.svg' }
-    ]
+      { ginCode: '12351', name: 'Gin 7', icon: 'assets/images/ginner-med.svg' },
+    ],
   },
-  template: `<seam-table [columns]="columns" [rows]="rows" size="sm"></seam-table>`
+  template: `<seam-table [columns]="columns" [rows]="rows" size="sm"></seam-table>`,
 })
 
 export const HeaderTpl = {

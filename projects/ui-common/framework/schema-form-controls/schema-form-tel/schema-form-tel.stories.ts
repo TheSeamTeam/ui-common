@@ -30,7 +30,7 @@ const meta: Meta<JsonSchemaFormComponent> = {
     componentWrapperDecorator(JsonSchemaFormComponent, ({ args }) => args),
   ],
   argTypes: {
-    onSubmit: { action: 'onSubmit' }
+    onSubmit: { action: 'onSubmit' },
   },
   args: {
     framework: 'seam-framework',

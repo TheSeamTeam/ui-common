@@ -17,11 +17,11 @@ export const THESEAM_QUILL_TOOLBAR_OPTIONS_DEFAULT: QuillToolbarConfig = [
 export const THESEAM_QUILL_MENTION_OPTIONS_DEFAULT: Partial<TheSeamQuillMentionOptions> = {
   spaceAfterInsert: false,
   positioningStrategy: 'fixed',
-  dataAttributes: [ 'type' ]
+  dataAttributes: [ 'type' ],
 }
 
 export const THESEAM_QUILL_MODULES_DEFAULT: TheSeamQuillModules = {
-  toolbar: THESEAM_QUILL_TOOLBAR_OPTIONS_DEFAULT
+  toolbar: THESEAM_QUILL_TOOLBAR_OPTIONS_DEFAULT,
 }
 
 export const THESEAM_QUILL_FORMATS_DEFAULT: TheSeamQuillStyleFormat[] = [
@@ -35,7 +35,7 @@ export const THESEAM_QUILL_FORMATS_DEFAULT: TheSeamQuillStyleFormat[] = [
   'size',
   'strike',
   'underline',
-  'mention'
+  'mention',
 ]
 
 export const THESEAM_QUILL_EDITOR_CONFIG_DEFAULT: TheSeamQuillEditorConfig = {
@@ -49,7 +49,7 @@ export const THESEAM_QUILL_EDITOR_CONFIG_DEFAULT: TheSeamQuillEditorConfig = {
   customModules: [],
   trimOnValidation: false,
   compareValues: false,
-  filterNull: false
+  filterNull: false,
 }
 
 export const THESEAM_QUILL_EDITOR_CONFIG = new InjectionToken<TheSeamQuillEditorConfig>('TheSeamQuillEditorConfig')
@@ -100,7 +100,7 @@ export const defaultMentionRenderListFn: TheSeamQuillMentionSourceFn = (source: 
         acc.push({
           value: mention.groupName,
           disabled: true,
-          type: 'groupName'
+          type: 'groupName',
         })
 
         reduceIdx++
@@ -123,19 +123,19 @@ export const defaultMentionRenderListFn: TheSeamQuillMentionSourceFn = (source: 
 // Keeping this as an example for a custom menu item.
 // There doesn't appear to be a better way of passing in a custom template.
 // export const defaultMentionRenderItem = (item: TheSeamQuillMentionListItem) => {
-  // if (item.type === 'groupName') {
-  //   const text = document.createElement('div')
-  //   text.setAttribute('class', 'small text-black-50')
-  //   text.innerText = item.value
+// if (item.type === 'groupName') {
+//   const text = document.createElement('div')
+//   text.setAttribute('class', 'small text-black-50')
+//   text.innerText = item.value
 
-  //   return text.outerHTML
-  // }
-  // else if (item.type === 'divider') {
-  //   const div = document.createElement('hr')
-  //   div.setAttribute('class', 'my-2')
-  //   return div.outerHTML
-  // }
-  // else {
-  //   return item.value
-  // }
+//   return text.outerHTML
+// }
+// else if (item.type === 'divider') {
+//   const div = document.createElement('hr')
+//   div.setAttribute('class', 'my-2')
+//   return div.outerHTML
+// }
+// else {
+//   return item.value
+// }
 // }

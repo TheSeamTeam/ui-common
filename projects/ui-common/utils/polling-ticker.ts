@@ -8,7 +8,7 @@ class IntervalTimer {
   constructor(
     private _callback: () => void,
     intervalTime: number,
-    startOnInit: boolean = true
+    startOnInit: boolean = true,
   ) {
     this._intervalTime = intervalTime
     if (startOnInit) {
@@ -66,7 +66,7 @@ export function pollingTicker<R>(
   action: PollingActionFn<R>,
   pollingInterval?: number,
   ticker?: Observable<number | void>,
-  options?: PollingTickerOptions
+  options?: PollingTickerOptions,
 ): Observable<R> {
   return new Observable((subscriber: Subscriber<R>) => {
     const _opts = { ...(new PollingTickerOptions()), ...(options || {}) }
@@ -91,7 +91,7 @@ export function pollingTicker<R>(
             () => {
               actionSub = null
               if (timer) { timer.start() }
-            }
+            },
           )
         } else {
           subscriber.next(actionResult)

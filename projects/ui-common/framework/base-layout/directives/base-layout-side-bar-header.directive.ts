@@ -7,5 +7,5 @@ import { HasElementRef } from '@theseam/ui-common/core'
   exportAs: 'seamBaseLayoutSideBarHeader',
 })
 export class BaseLayoutSideBarHeaderDirective implements HasElementRef {
- public readonly _elementRef = inject(ElementRef)
+  public readonly _elementRef = inject(ElementRef)
 }

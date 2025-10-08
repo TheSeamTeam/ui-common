@@ -12,6 +12,6 @@ export function observeControlValueChange(control: AbstractControl): Observable<
     .pipe(
       startWith(undefined),
       pairwise(),
-      map(v => ({ previous: v[0], current: v[1] }))
+      map(v => ({ previous: v[0], current: v[1] })),
     )
 }

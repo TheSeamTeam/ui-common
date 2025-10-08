@@ -32,7 +32,7 @@ export function isOnlyGeometryTypesValidator(types: Geometry['type'][]): Validat
         [IS_ONLY_GEOMETRY_TYPES_VALIDATOR_NAME]: {
           reason: `Only geometry type${(types.length === 1 ? '' : 's')} ${types.join(', ')} allowed.`,
           notAllowedGeometryTypesFound: distinctTypesNotAllowed,
-        }
+        },
       }
     }
 

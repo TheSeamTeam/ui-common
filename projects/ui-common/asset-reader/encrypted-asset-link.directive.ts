@@ -12,8 +12,8 @@ import { AssetReaderHelperService } from './asset-reader-helper.service'
 // reader can do whatever it wants. So, consider renaming to 'seamAssetLink'.
 
 @Directive({
-    selector: '[seamEncryptedAssetLink]',
-    standalone: false
+  selector: '[seamEncryptedAssetLink]',
+  standalone: false,
 })
 export class EncryptedAssetLinkDirective {
   static ngAcceptInputType_seamShowLoadingOverlay: BooleanInput
@@ -36,7 +36,7 @@ export class EncryptedAssetLinkDirective {
       this.seamEncryptedAssetLink,
       this.seamDetectMimeFromContent,
       this.seamDownloadAsset,
-      this._isAnchor() && this._hasTarget() ? this._getTarget() : undefined
+      this._isAnchor() && this._hasTarget() ? this._getTarget() : undefined,
     )
     if (this.seamShowLoadingOverlay) {
       open$ = this._loading.while(open$)
@@ -47,7 +47,7 @@ export class EncryptedAssetLinkDirective {
   constructor(
     private _elementRef: ElementRef,
     private _assetReaderHelper: AssetReaderHelperService,
-    private _loading: TheSeamLoadingOverlayService
+    private _loading: TheSeamLoadingOverlayService,
   ) { }
 
   /** Determines if the component host is an anchor. */

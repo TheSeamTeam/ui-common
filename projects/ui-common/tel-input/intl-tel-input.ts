@@ -27,7 +27,7 @@ export namespace intlTelInputUtils {
     E164 = 0,
     INTERNATIONAL = 1,
     NATIONAL = 2,
-    RFC3966 = 3
+    RFC3966 = 3,
   }
 
   export enum numberType {
@@ -42,7 +42,7 @@ export namespace intlTelInputUtils {
     PAGER = 8,
     UAN = 9,
     VOICEMAIL = 10,
-    UNKNOWN = -1
+    UNKNOWN = -1,
   }
 
   export enum validationError {
@@ -50,7 +50,7 @@ export namespace intlTelInputUtils {
     INVALID_COUNTRY_CODE = 1,
     TOO_SHORT = 2,
     TOO_LONG = 3,
-    NOT_A_NUMBER = 4
+    NOT_A_NUMBER = 4,
   }
 
   export type placeholderNumberType =

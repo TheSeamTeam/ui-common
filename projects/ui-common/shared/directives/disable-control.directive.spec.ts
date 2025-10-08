@@ -7,11 +7,11 @@ import { TheSeamDisableControlDirective } from './disable-control.directive'
 @Component({
   template: `<form [formGroup]="testGroup">
     <input type="text" formControlName="testControl" id="testControl" [seamDisableControl]="mode">
-  </form>`
+  </form>`,
 })
 class TestDisableControlComponent {
   testGroup = new UntypedFormGroup({
-    testControl: new UntypedFormControl([''])
+    testControl: new UntypedFormControl(['']),
   })
   mode = true
 }
@@ -23,16 +23,16 @@ describe('TheSeamDisableControlDirective', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    imports: [
-        ReactiveFormsModule
-    ],
-    declarations: [
+      imports: [
+        ReactiveFormsModule,
+      ],
+      declarations: [
         TestDisableControlComponent,
-        TheSeamDisableControlDirective
-    ],
-    teardown: { destroyAfterEach: false }
-})
-    .compileComponents()
+        TheSeamDisableControlDirective,
+      ],
+      teardown: { destroyAfterEach: false },
+    })
+      .compileComponents()
   }))
 
   beforeEach(() => {

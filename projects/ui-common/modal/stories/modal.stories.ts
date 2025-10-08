@@ -11,7 +11,7 @@ import { Modal } from '../modal.service'
 @Component({
   selector: 'story-seam-modal-basic',
   styles: [],
-  template: `<span>Example</span>`
+  template: `<span>Example</span>`,
 })
 class StorySeamModalBasicComponent { }
 
@@ -46,12 +46,12 @@ class StorySeamModalSimpleComponent { }
     <div class="p-4">
       <button type="button" class="btn btn-lightgray" (click)="open()">Open</button>
     </div>
-  `
+  `,
 })
 class StorySeamModalBasicExampleComponent {
 
   constructor(
-    private modal: Modal
+    private modal: Modal,
   ) { }
 
   open() {
@@ -69,12 +69,12 @@ class StorySeamModalBasicExampleComponent {
     <div class="p-4">
       <button type="button" class="btn btn-lightgray" (click)="open()">Open</button>
     </div>
-  `
+  `,
 })
 class StorySeamModalSimpleExampleComponent {
 
   constructor(
-    private modal: Modal
+    private modal: Modal,
   ) { }
 
   open() {

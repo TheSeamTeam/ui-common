@@ -11,7 +11,7 @@ import {
   DataFilterSearchComponent,
   DataFilterTextComponent,
   DataFilterToggleButtonsComponent,
-  THESEAM_DATA_FILTER_OPTIONS
+  THESEAM_DATA_FILTER_OPTIONS,
 } from '@theseam/ui-common/data-filters'
 import { DatatableExportButtonComponent, DatatableMenuBarTextComponent, THESEAM_MENUBAR_ITEM_DATA } from '@theseam/ui-common/datatable'
 import {
@@ -22,7 +22,7 @@ import {
   JexlEvaluator,
   THESEAM_DYNAMIC_ACTION,
   THESEAM_DYNAMIC_DATA,
-  THESEAM_DYNAMIC_VALUE_EVALUATOR
+  THESEAM_DYNAMIC_VALUE_EVALUATOR,
 } from '@theseam/ui-common/dynamic'
 import { DynamicComponentManifest, TheSeamDynamicComponentLoaderModule } from '@theseam/ui-common/dynamic-component-loader'
 import { TheSeamModalModule } from '@theseam/ui-common/modal'
@@ -56,13 +56,13 @@ import { exampleData1 } from './_story-data/dynamic-data-1'
       <button class="btn btn-lightgray" seamModalClose>Cancel</button>
       <button class="btn btn-success" type="submit">Share</button>
     </seam-modal-footer>
-  `
+  `,
 })
 class StoryExModalLazyComponent { }
 
 @NgModule({
   declarations: [
-    StoryExModalLazyComponent
+    StoryExModalLazyComponent,
   ],
   imports: [
     CommonModule,
@@ -171,13 +171,13 @@ const manifests: DynamicComponentManifest[] = [
   {
     componentId: 'story-modal-1',
     path: 'story-modal-1',
-    loadChildren: () => StoryModalOneModule
+    loadChildren: () => StoryModalOneModule,
   },
   {
     componentId: 'story-modal-2',
     path: 'story-modal-2',
-    loadChildren: () => StoryModalTwoModule
-  }
+    loadChildren: () => StoryModalTwoModule,
+  },
 ]
 
 export default {
@@ -215,27 +215,27 @@ export default {
         {
           provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
           useValue: { name: 'filter-search', component: DataFilterSearchComponent, dataToken: THESEAM_DATA_FILTER_OPTIONS },
-          multi: true
+          multi: true,
         },
         {
           provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
           useValue: { name: 'filter-text', component: DataFilterTextComponent, dataToken: THESEAM_DATA_FILTER_OPTIONS },
-          multi: true
+          multi: true,
         },
         {
           provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
           useValue: { name: 'filter-buttons', component: DataFilterToggleButtonsComponent, dataToken: THESEAM_DATA_FILTER_OPTIONS },
-          multi: true
+          multi: true,
         },
         {
           provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
           useValue: { name: 'export-button', component: DatatableExportButtonComponent, dataToken: THESEAM_DYNAMIC_DATA },
-          multi: true
+          multi: true,
         },
         {
           provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
           useValue: { name: 'text', component: DatatableMenuBarTextComponent, dataToken: THESEAM_MENUBAR_ITEM_DATA },
-          multi: true
+          multi: true,
         },
 
         // { provide: THESEAM_DATA_EXPORTER, useClass: CSVDataExporter, multi: true },
@@ -249,21 +249,21 @@ export default {
         // ExampleModalModule
         TheSeamModalModule,
         // TheSeamDataExporterModule,
-      ]
-    })
+      ],
+    }),
   ],
   parameters: {
     layout: 'fullscreen',
     docs: {
       iframeHeight: '600px',
-    }
+    },
   },
-  excludeStories: [ 'StoryExModalLazyComponent', 'StoryExModalLazyModule' ]
+  excludeStories: [ 'StoryExModalLazyComponent', 'StoryExModalLazyModule' ],
 }
 
 export const Dynamic = () => ({
   props: {
-      data: exampleData1
+    data: exampleData1,
   },
   template: `
     <div style="width: 100vw; height: 100vh;" class="p-1 d-flex flex-column">
@@ -276,9 +276,9 @@ export const Dynamic = () => ({
         <seam-datatable-dynamic class="w-100 h-100" [def]="data"></seam-datatable-dynamic>
       </div>
     </div>
-  `
+  `,
 })
 
 Dynamic.story = {
-  name: 'Dynamic'
+  name: 'Dynamic',
 }

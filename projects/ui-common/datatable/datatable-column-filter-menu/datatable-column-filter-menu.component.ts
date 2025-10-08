@@ -11,10 +11,10 @@ import { TheSeamDatatableColumnFilterUpdateMethod } from '../models/datatable-co
 import { InputNumber } from '@theseam/ui-common/core'
 
 @Component({
-    selector: 'seam-datatable-column-filter-menu',
-    templateUrl: './datatable-column-filter-menu.component.html',
-    styleUrls: ['./datatable-column-filter-menu.component.scss'],
-    standalone: false
+  selector: 'seam-datatable-column-filter-menu',
+  templateUrl: './datatable-column-filter-menu.component.html',
+  styleUrls: ['./datatable-column-filter-menu.component.scss'],
+  standalone: false,
 })
 export class DatatableColumnFilterMenuComponent implements OnInit {
 
@@ -35,7 +35,7 @@ export class DatatableColumnFilterMenuComponent implements OnInit {
   @Output() closePopover = new EventEmitter()
 
   constructor(
-    private readonly _columnsFilters: ColumnsFiltersService
+    private readonly _columnsFilters: ColumnsFiltersService,
   ) {}
 
   ngOnInit(): void {
@@ -48,13 +48,13 @@ export class DatatableColumnFilterMenuComponent implements OnInit {
     }
 
     this.customFilterTemplate$ = this._columnsFilters.columnFilterTemplates$.pipe(
-      map(templates => templates.find(t => t.filterName === this.columnFilter?.name))
+      map(templates => templates.find(t => t.filterName === this.columnFilter?.name)),
     )
 
     if (this.updateMethod === 'valueChanges' && notNullOrUndefined(this._filterForm)) {
       this._filterForm.valueChanges.pipe(
         debounceTime(this.debounce || 0),
-        tap(() => this.columnFilter?.applyFilter())
+        tap(() => this.columnFilter?.applyFilter()),
       ).subscribe()
     }
   }

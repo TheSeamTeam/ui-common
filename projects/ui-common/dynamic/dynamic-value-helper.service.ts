@@ -10,14 +10,14 @@ import { THESEAM_DYNAMIC_VALUE_EVALUATOR } from './tokens/dynamic-value-evaluato
  *
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DynamicValueHelperService {
 
   private _evaluatorMap = new Map<string, IDynamicValueEvaluator>()
 
   constructor(
-    @Optional() @Inject(THESEAM_DYNAMIC_VALUE_EVALUATOR) evaluators?: IDynamicValueEvaluator[]
+    @Optional() @Inject(THESEAM_DYNAMIC_VALUE_EVALUATOR) evaluators?: IDynamicValueEvaluator[],
   ) {
     // Only one evaluator should exist for a type, so map them for faster lookup.
     for (const e of evaluators || []) {

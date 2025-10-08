@@ -16,7 +16,7 @@ export class Refreshable<T> {
 
   constructor(
     action: () => (T | Observable<T>),
-    pollingInterval?: number
+    pollingInterval?: number,
   ) {
     if (pollingInterval !== null && pollingInterval !== undefined) {
       this._pollingInterval.next(pollingInterval)
@@ -25,14 +25,14 @@ export class Refreshable<T> {
     this.pending$ = this._pending.asObservable()
       .pipe(
         distinctUntilChanged(),
-        shareReplay(1)
+        shareReplay(1),
       )
 
     this.data$ = pollingTicker(this._actionHandler(action), pollingInterval, this._ticker)
       .pipe(
         tapFirst(() => this._initialized = true),
         publishReplay(),
-        refCount()
+        refCount(),
       )
   }
 
@@ -77,7 +77,7 @@ export class Refreshable<T> {
       result$ = this.data$
         .pipe(
           tap(_ => !_polled && (_polled = true) && this._ticker.next()),
-          skip(1)
+          skip(1),
         )
     } else {
       result$ = this.data$
@@ -86,7 +86,7 @@ export class Refreshable<T> {
     return result$
       .pipe(
         take(1),
-        mapTo(undefined)
+        mapTo(undefined),
       )
   }
 

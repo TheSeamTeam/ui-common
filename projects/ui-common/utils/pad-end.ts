@@ -3,7 +3,7 @@ import { createPadding } from './create-padding'
 export function padEnd(
   stringToPad: string,
   paddingLength: number | undefined = 0,
-  paddingChars: string | undefined = ' '
+  paddingChars: string | undefined = ' ',
 ): string {
   const strLength = paddingLength ? stringToPad.length : 0
 

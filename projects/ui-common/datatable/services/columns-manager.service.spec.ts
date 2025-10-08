@@ -7,7 +7,7 @@ import {
   ColumnMode,
   forceFillColumnWidths,
   SelectionType,
-  TableColumn
+  TableColumn,
 } from '@marklb/ngx-datatable'
 
 import { DatatableColumnComponent } from '../datatable-column/datatable-column.component'
@@ -27,10 +27,10 @@ describe('ColumnsManagerService', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    providers: [ColumnsManagerService, ColumnsFiltersService, DatatableColumnChangesService],
-    teardown: { destroyAfterEach: false }
-})
-    .compileComponents()
+      providers: [ColumnsManagerService, ColumnsFiltersService, DatatableColumnChangesService],
+      teardown: { destroyAfterEach: false },
+    })
+      .compileComponents()
   }))
 
   beforeEach(() => {
@@ -52,7 +52,7 @@ describe('ColumnsManagerService', () => {
     const spy = jest.fn()
     service.columns$.subscribe(spy)
     expect(spy).toHaveBeenCalledWith([
-      ...defaultColumnWithIdentMatchers([ { prop: 'name', name: 'Name' } ])
+      ...defaultColumnWithIdentMatchers([ { prop: 'name', name: 'Name' } ]),
     ].map(v => expect.objectContaining(v)))
     expect(spy).toHaveBeenCalledTimes(1)
   }))
@@ -83,14 +83,14 @@ describe('ColumnsManagerService', () => {
     service.setInputColumns([
       { prop: 'name', name: 'Name' },
       { prop: 'age', name: 'Age' },
-      { prop: 'color', name: 'Color' }
+      { prop: 'color', name: 'Color' },
     ])
     expect(await service.columns$.pipe(take(1)).toPromise()).toEqual(expect.arrayContaining([
       ...defaultColumnWithIdentMatchers([
         { prop: 'name', name: 'Name' },
         { prop: 'age', name: 'Age' },
-        { prop: 'color', name: 'Color' }
-      ]).map(v => expect.objectContaining(v))
+        { prop: 'color', name: 'Color' },
+      ]).map(v => expect.objectContaining(v)),
     ]))
   })
 
@@ -98,19 +98,19 @@ describe('ColumnsManagerService', () => {
     service.setInputColumns([
       { prop: 'name', name: 'Name' },
       { prop: 'age', name: 'Age', cellClass: 'inp-class' },
-      { prop: 'color', name: 'Color' }
+      { prop: 'color', name: 'Color' },
     ])
     service.setTemplateColumns(initTemplateColumnComponents([
       { prop: 'name', name: 'Name' },
       { prop: 'age', name: 'Age', cellClass: 'tpl-class' },
-      { prop: 'color', name: 'Color' }
+      { prop: 'color', name: 'Color' },
     ]))
     expect(await service.columns$.pipe(take(1)).toPromise()).toEqual(expect.arrayContaining([
       ...defaultColumnWithIdentMatchers([
         { prop: 'name', name: 'Name' },
         { prop: 'age', name: 'Age', cellClass: 'tpl-class' },
-        { prop: 'color', name: 'Color' }
-      ]).map(v => expect.objectContaining(v))
+        { prop: 'color', name: 'Color' },
+      ]).map(v => expect.objectContaining(v)),
     ]))
   })
 
@@ -122,7 +122,7 @@ describe('ColumnsManagerService', () => {
     it('should have checkbox column when selectionType is "checkbox"', async () => {
       service.setSelectionType(SelectionType.checkbox)
       expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
-        expect.objectContaining({ prop: CHECKBOX_COLUMN_PROP })
+        expect.objectContaining({ prop: CHECKBOX_COLUMN_PROP }),
       )
     })
   })
@@ -138,8 +138,8 @@ describe('ColumnsManagerService', () => {
         expect.objectContaining({
           prop: ACTION_MENU_COLUMN_PROP,
           cellTemplate: undefined,
-          headerTemplate: undefined
-        })
+          headerTemplate: undefined,
+        }),
       )
     })
 
@@ -151,8 +151,8 @@ describe('ColumnsManagerService', () => {
         expect.objectContaining({
           prop: ACTION_MENU_COLUMN_PROP,
           cellTemplate,
-          headerTemplate: undefined
-        })
+          headerTemplate: undefined,
+        }),
       )
     })
 
@@ -164,8 +164,8 @@ describe('ColumnsManagerService', () => {
         expect.objectContaining({
           prop: ACTION_MENU_COLUMN_PROP,
           cellTemplate: undefined,
-          headerTemplate
-        })
+          headerTemplate,
+        }),
       )
     })
 
@@ -179,8 +179,8 @@ describe('ColumnsManagerService', () => {
         expect.objectContaining({
           prop: ACTION_MENU_COLUMN_PROP,
           cellTemplate,
-          headerTemplate
-        })
+          headerTemplate,
+        }),
       )
     })
   })
@@ -192,7 +192,7 @@ describe('ColumnsManagerService', () => {
         expect.objectContaining({
           prop: 'name',
           // isTreeColumn: undefined
-        })
+        }),
       )
     })
 
@@ -201,8 +201,8 @@ describe('ColumnsManagerService', () => {
       expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
         expect.objectContaining({
           prop: 'name',
-          isTreeColumn: true
-        })
+          isTreeColumn: true,
+        }),
       )
     })
 
@@ -213,8 +213,8 @@ describe('ColumnsManagerService', () => {
         expect.objectContaining({
           prop: 'name',
           isTreeColumn: true,
-          treeToggleTemplate: tpl
-        })
+          treeToggleTemplate: tpl,
+        }),
       )
     })
   })
@@ -224,8 +224,8 @@ describe('ColumnsManagerService', () => {
       service.setInputColumns([ { prop: 'name' } ])
       expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
         expect.objectContaining({
-          prop: 'name'
-        })
+          prop: 'name',
+        }),
       )
     })
 
@@ -237,8 +237,8 @@ describe('ColumnsManagerService', () => {
       expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
         expect.objectContaining({
           prop: 'name',
-          headerTemplate: tpl1
-        })
+          headerTemplate: tpl1,
+        }),
       )
     })
 
@@ -250,8 +250,8 @@ describe('ColumnsManagerService', () => {
       expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
         expect.objectContaining({
           prop: 'name',
-          headerTemplate: tpl2
-        })
+          headerTemplate: tpl2,
+        }),
       )
     })
   })
@@ -262,7 +262,7 @@ describe('ColumnsManagerService', () => {
       expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
         expect.objectContaining({
           prop: 'name',
-        })
+        }),
       )
     })
 
@@ -274,8 +274,8 @@ describe('ColumnsManagerService', () => {
         expect.objectContaining({
           prop: 'name',
           cellType: 'a',
-          cellTemplate: tpl
-        })
+          cellTemplate: tpl,
+        }),
       )
     })
   })
@@ -359,7 +359,7 @@ class MockDatatable {
   recalculateColumns(
     columns: any[] = this._internalColumns as any,
     forceIdx: number = -1,
-    allowBleed: boolean = this.scrollbarH
+    allowBleed: boolean = this.scrollbarH,
   ): any[] | undefined {
     if (!columns) { return undefined }
 

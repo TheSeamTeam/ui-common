@@ -3,9 +3,9 @@ import { ContentChild, Directive, Input, TemplateRef } from '@angular/core'
 import { DatatableFooterTplDirective } from './datatable-footer-tpl.directive'
 
 @Directive({
-    // eslint-disable-next-line @angular-eslint/directive-selector
-    selector: 'seam-datatable-footer',
-    standalone: false
+  // eslint-disable-next-line @angular-eslint/directive-selector
+  selector: 'seam-datatable-footer',
+  standalone: false,
 })
 export class TheSeamDatatableFooterDirective {
 

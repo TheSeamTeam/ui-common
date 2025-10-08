@@ -184,7 +184,7 @@ export const NgSelect: Story = {
         </ng-select>
         <ng-template seamFormFieldError="required">Valid is required.</ng-template>
       </seam-form-field>
-    `
+    `,
   }),
 }
 

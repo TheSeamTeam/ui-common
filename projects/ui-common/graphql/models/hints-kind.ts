@@ -5,5 +5,5 @@ export enum HintsKind {
   Field = Kind.FIELD,
   VariableDefinition = Kind.VARIABLE_DEFINITION,
   Variable = Kind.VARIABLE,
-  Argument = Kind.ARGUMENT
+  Argument = Kind.ARGUMENT,
 }

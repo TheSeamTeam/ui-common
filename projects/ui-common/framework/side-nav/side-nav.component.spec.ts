@@ -23,16 +23,16 @@ describe('SideNavComponent', () => {
   const createComponent = createRoutingFactory({
     component: SideNavComponent,
     imports: [
-      TheSeamSideNavModule
+      TheSeamSideNavModule,
     ],
     providers: [
-      { provide: THESEAM_BASE_LAYOUT_REF, useClass: MockITheSeamBaseLayoutRef }
+      { provide: THESEAM_BASE_LAYOUT_REF, useClass: MockITheSeamBaseLayoutRef },
     ],
     stubsEnabled: false,
     routes: [
       {
         path: '',
-        component: TestPlacholderComponent
+        component: TestPlacholderComponent,
       },
       {
         path: 'foo',
@@ -41,8 +41,8 @@ describe('SideNavComponent', () => {
           {
             path: 'bar',
             component: TestPlacholderComponent,
-          }
-        ]
+          },
+        ],
       },
     ],
   })
@@ -51,15 +51,15 @@ describe('SideNavComponent', () => {
     beforeEach(() => spectator = createComponent({
       providers: [
         mockProvider(TheSeamLayoutService, {
-          isMobile$: of(false)
-        })
+          isMobile$: of(false),
+        }),
       ],
       props: {
         items: [
           {
             label: '',
             itemType: 'link',
-            link: '/foo'
+            link: '/foo',
           },
           {
             label: '',
@@ -68,7 +68,7 @@ describe('SideNavComponent', () => {
               {
                 label: '',
                 itemType: 'link',
-                link: '/foo/bar'
+                link: '/foo/bar',
               },
               {
                 label: '',
@@ -77,19 +77,19 @@ describe('SideNavComponent', () => {
                   {
                     label: '',
                     itemType: 'link',
-                    link: '/foo/bar/foo'
-                  }
-                ]
-              }
-            ]
+                    link: '/foo/bar/foo',
+                  },
+                ],
+              },
+            ],
           },
           {
             label: '',
             itemType: 'link',
-            link: '/not'
-          }
-        ]
-      }
+            link: '/not',
+          },
+        ],
+      },
     }))
 
     it('should render items', fakeAsync(() => {
@@ -104,9 +104,9 @@ describe('SideNavComponent', () => {
     beforeEach(() => spectator = createComponent({
       providers: [
         mockProvider(TheSeamLayoutService, {
-          isMobile$: of(false)
-        })
-      ]
+          isMobile$: of(false),
+        }),
+      ],
     }))
 
     it('should be expanded initially', () => {
@@ -118,9 +118,9 @@ describe('SideNavComponent', () => {
     beforeEach(() => spectator = createComponent({
       providers: [
         mockProvider(TheSeamLayoutService, {
-          isMobile$: of(true)
-        })
-      ]
+          isMobile$: of(true),
+        }),
+      ],
     }))
 
     it('should be collapsed initially', () => {

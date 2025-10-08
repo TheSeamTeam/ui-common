@@ -40,6 +40,6 @@ export const Basic: Story = {
           <label for="two">Focused</label>
           <input id="two" type="text" seamAutoFocus class="form-control" />
         </div>
-      </form>`
+      </form>`,
   }),
 }

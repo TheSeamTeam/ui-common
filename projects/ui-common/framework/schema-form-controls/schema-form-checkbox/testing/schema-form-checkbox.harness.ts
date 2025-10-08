@@ -17,8 +17,8 @@ export class TheSeamSchemaFormCheckboxHarness extends ComponentHarness {
   /** Creates a `HarnessPredicate` used to locate a particular `MyMenuHarness`. */
   static with(options: TheSeamSchemaFormCheckboxHarnessFilters): HarnessPredicate<TheSeamSchemaFormCheckboxHarness> {
     return new HarnessPredicate(TheSeamSchemaFormCheckboxHarness, options)
-        .addOption('field name', options.name,
-            (harness, name) => HarnessPredicate.stringMatches(harness.getName(), name))
+      .addOption('field name', options.name,
+        (harness, name) => HarnessPredicate.stringMatches(harness.getName(), name))
   }
 
   public async getName(): Promise<string | null> {

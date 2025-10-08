@@ -19,14 +19,14 @@ describe('TheSeamDynamicComponentLoader', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [
+      declarations: [
         TestingRootComponent,
-    ],
-    imports: [
+      ],
+      imports: [
         TheSeamDynamicComponentLoaderModule.forRoot(manifests),
-    ],
-    teardown: { destroyAfterEach: false }
-}).compileComponents()
+      ],
+      teardown: { destroyAfterEach: false },
+    }).compileComponents()
   }))
 
   it('should be created', () => {

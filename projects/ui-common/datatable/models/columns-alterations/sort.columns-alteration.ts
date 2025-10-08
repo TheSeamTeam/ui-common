@@ -23,7 +23,7 @@ export class SortColumnsAlteration extends ColumnsAlteration<SortColumnsAlterati
 
   constructor(
     state: SortColumnsAlterationState,
-    persistent: boolean
+    persistent: boolean,
   ) {
     super(state, persistent)
 
@@ -51,7 +51,7 @@ export class SortColumnsAlteration extends ColumnsAlteration<SortColumnsAlterati
       type: this.type,
       summary,
       details,
-      sortOrder: 0
+      sortOrder: 0,
     }
   }
 

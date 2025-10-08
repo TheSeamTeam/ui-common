@@ -37,7 +37,7 @@ export class TheSeamSchemaFormCheckboxComponent implements OnInit, TheSeamSchema
   falseValue = false
 
   constructor(
-    private readonly _jsf: JsonSchemaFormService
+    private readonly _jsf: JsonSchemaFormService,
   ) { }
 
   ngOnInit() {

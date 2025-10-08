@@ -11,7 +11,7 @@ export type CanSizeCtor = Constructor<CanSize>
 
 /** Mixin to augment a directive with a `size` property. */
 export function mixinSize<T extends Constructor<HasElementRef>>(
-    base: T, sizePrefix: SizePrefixes, defaultSize?: SizeTypes): CanSizeCtor & T {
+  base: T, sizePrefix: SizePrefixes, defaultSize?: SizeTypes): CanSizeCtor & T {
   return class extends base {
     private _size: SizeTypes | undefined
 

@@ -27,9 +27,9 @@ export abstract class DatatableDataSource<TRow> extends DataSource<TRow> {
 
         return _datatable.sort.pipe(
           map(v => v.sorts),
-          startWith(_datatable.sorts)
+          startWith(_datatable.sorts),
         )
-      })
+      }),
     )
 
     this.filterStates$ = this._datatableSubject.pipe(
@@ -39,7 +39,7 @@ export abstract class DatatableDataSource<TRow> extends DataSource<TRow> {
         }
 
         return _datatable.filterStates
-      })
+      }),
     )
 
     this.page$ = this._datatableSubject.pipe(
@@ -49,14 +49,14 @@ export abstract class DatatableDataSource<TRow> extends DataSource<TRow> {
             offset: 0,
             pageSize: 0,
             limit: undefined,
-            count: 0
+            count: 0,
           })
         }
 
         return _datatable.page.pipe(
-          startWith(_datatable.pageInfo)
+          startWith(_datatable.pageInfo),
         )
-      })
+      }),
     )
   }
 

@@ -2,13 +2,13 @@ import { HintsToken, HintTransformer, HintTransformOperation } from '../../model
 
 export const inlineVariableTransformer: HintTransformer = (
   operation: HintTransformOperation,
-  hintsToken: HintsToken
+  hintsToken: HintsToken,
 ): HintTransformOperation => {
   const query = operation.query
   const variables = operation.variables
 
   return {
     query,
-    variables
+    variables,
   }
 }

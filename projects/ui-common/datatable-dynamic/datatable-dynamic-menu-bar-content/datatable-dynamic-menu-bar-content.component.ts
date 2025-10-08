@@ -14,7 +14,7 @@ import {
   DynamicDatatableMenuBarColumn,
   DynamicDatatableMenuBarItem,
   DynamicDatatableMenuBarRow,
-  DynamicDatatableMenuBarRowLayoutTriColumn
+  DynamicDatatableMenuBarRowLayoutTriColumn,
 } from '../models/dynamic-datatable-menu-bar'
 
 export interface IDatatableDynamicMenuBarContentItem {
@@ -84,13 +84,13 @@ export class DatatableDynamicMenuBarContentComponent {
     private readonly _dynamicComponentLoader: TheSeamDynamicComponentLoader,
     private readonly _injector: Injector,
     @Optional() @Inject(THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM)
-    private readonly _menuBarItemManifests?: IDatatableDynamicMenuBarItemManifest[]
+    private readonly _menuBarItemManifests?: IDatatableDynamicMenuBarItemManifest[],
   ) {
     this.def$ = this._def.asObservable()
-      // .pipe(tap(v => console.log('def$', v)))
+    // .pipe(tap(v => console.log('def$', v)))
 
     this._rows$ = this.def$.pipe(switchMap(def => this._mapRows((def && def.rows) || [])))
-      // .pipe(tap(v => console.log('_rows$', v)))
+    // .pipe(tap(v => console.log('_rows$', v)))
   }
 
   private _mapRows(rows: DynamicDatatableMenuBarRow[]): Promise<IDatatableDynamicMenuBarContentRow[]> {
@@ -121,7 +121,7 @@ export class DatatableDynamicMenuBarContentComponent {
 
   private async _mapRowLayout(
     layout: DynamicDatatableMenuBarRowLayoutTriColumn,
-    row: DynamicDatatableMenuBarRow
+    row: DynamicDatatableMenuBarRow,
   ): Promise<IDatatableDynamicMenuBarContentRowLayoutTriColumn> {
     const result: IDatatableDynamicMenuBarContentRowLayoutTriColumn = { }
 
@@ -142,7 +142,7 @@ export class DatatableDynamicMenuBarContentComponent {
 
   private async _mapColumn(
     column: DynamicDatatableMenuBarColumn,
-    row: DynamicDatatableMenuBarRow
+    row: DynamicDatatableMenuBarRow,
   ): Promise<IDatatableDynamicMenuBarContentColumn> {
     const result: IDatatableDynamicMenuBarContentColumn = { }
     const context = this._createColumnContext(column, row)
@@ -163,7 +163,7 @@ export class DatatableDynamicMenuBarContentComponent {
   private async _mapItem(
     item: DynamicDatatableMenuBarItem,
     row: DynamicDatatableMenuBarRow,
-    column: DynamicDatatableMenuBarColumn
+    column: DynamicDatatableMenuBarColumn,
   ): Promise<IDatatableDynamicMenuBarContentItem> {
     const result: IDatatableDynamicMenuBarContentItem = { }
     const context = this._createItemContext(item, row, column)
@@ -196,29 +196,29 @@ export class DatatableDynamicMenuBarContentComponent {
 
   private _createRowContext(row: DynamicDatatableMenuBarRow): IDatatableDynamicMenuBarContentRowContext {
     return {
-      row
+      row,
     }
   }
 
   private _createColumnContext(
     column: DynamicDatatableMenuBarColumn,
-    row: DynamicDatatableMenuBarRow
+    row: DynamicDatatableMenuBarRow,
   ): IDatatableDynamicMenuBarContentColumnContext {
     return {
       row,
-      column
+      column,
     }
   }
 
   private _createItemContext(
     item: DynamicDatatableMenuBarItem,
     row: DynamicDatatableMenuBarRow,
-    column: DynamicDatatableMenuBarColumn
+    column: DynamicDatatableMenuBarColumn,
   ): IDatatableDynamicMenuBarContentItemContext {
     return {
       item,
       row,
-      column
+      column,
     }
   }
 
@@ -234,7 +234,7 @@ export class DatatableDynamicMenuBarContentComponent {
     let injector = this._injector
     if (manifest.dataToken) {
       injector = Injector.create({ parent: this._injector, providers: [
-        { provide: manifest.dataToken, useValue: data }
+        { provide: manifest.dataToken, useValue: data },
       ] })
     }
 
@@ -246,7 +246,7 @@ export class DatatableDynamicMenuBarContentComponent {
             null,
             injector,
           )
-        })
+        }),
       ).toPromise()
     } else {
       return new ComponentPortal(manifest.component, null, injector, null)

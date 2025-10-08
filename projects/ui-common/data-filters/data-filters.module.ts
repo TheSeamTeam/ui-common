@@ -16,7 +16,7 @@ import { DataFilterToggleButtonsComponent } from './filters/data-filter-toggle-b
 const filterComponents = [
   DataFilterSearchComponent,
   DataFilterTextComponent,
-  DataFilterToggleButtonsComponent
+  DataFilterToggleButtonsComponent,
 ]
 
 const filterDefProviders = [
@@ -26,22 +26,22 @@ const filterDefProviders = [
 ]
 
 @NgModule({
-    declarations: [
-        ...filterComponents
-    ],
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        TheSeamFormFieldModule,
-        FontAwesomeModule,
-        TheSeamToggleGroupModule,
-        TheSeamIconModule
-    ],
-    providers: [
-        ...filterDefProviders
-    ],
-    exports: [
-        ...filterComponents
-    ]
+  declarations: [
+    ...filterComponents,
+  ],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    TheSeamFormFieldModule,
+    FontAwesomeModule,
+    TheSeamToggleGroupModule,
+    TheSeamIconModule,
+  ],
+  providers: [
+    ...filterDefProviders,
+  ],
+  exports: [
+    ...filterComponents,
+  ],
 })
 export class TheSeamDataFiltersModule { }

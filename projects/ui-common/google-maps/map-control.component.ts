@@ -48,7 +48,7 @@ export class TheSeamMapsControlComponent implements OnInit, OnDestroy {
           this._remove()
         }
       }),
-      takeUntil(this._ngUnsubscribe)
+      takeUntil(this._ngUnsubscribe),
     ).subscribe()
   }
 

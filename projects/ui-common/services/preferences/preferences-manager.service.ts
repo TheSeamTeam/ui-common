@@ -6,7 +6,7 @@ import { TheSeamPreferencesAccessor } from './preferences-accessor'
 import { TheSeamPreferencesMapRecord } from './preferences-record'
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TheSeamPreferencesManagerService {
 

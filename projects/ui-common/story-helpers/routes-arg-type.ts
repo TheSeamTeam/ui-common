@@ -19,7 +19,7 @@ export function routesArgType(routes: string[])/*: ArgType*/ {
     control: {
       type: 'select',
       // Runs in the 'manager', so I am emitting to a channel in the 'preview'.
-      onChange: (e: any, a: any) => { __STORYBOOK_ADDONS.getChannel().emit('custom/go-to-hash', { hash: e }); return e }
-    }
+      onChange: (e: any, a: any) => { __STORYBOOK_ADDONS.getChannel().emit('custom/go-to-hash', { hash: e }); return e },
+    },
   }
 }

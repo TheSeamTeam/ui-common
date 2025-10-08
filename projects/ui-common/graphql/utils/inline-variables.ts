@@ -36,9 +36,9 @@ export function inlineVariable(query: DocumentNode, variableName: string, variab
             if (variableName === variableNode.name.value) {
               return null
             }
-          }
+          },
         })
-      }
+      },
     })
   }
 
@@ -49,8 +49,8 @@ export function inlineVariable(query: DocumentNode, variableName: string, variab
           if (variableName === variableNode.name.value) {
             return variableValue
           }
-        }
+        },
       })
-    }
+    },
   })
 }

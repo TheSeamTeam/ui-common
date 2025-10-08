@@ -5,13 +5,13 @@ import { WidgetFooterLinkComponent } from './widget-footer-link.component'
 
 @NgModule({
   declarations: [
-    WidgetFooterLinkComponent
+    WidgetFooterLinkComponent,
   ],
   imports: [
-    CommonModule
+    CommonModule,
   ],
   exports: [
-    WidgetFooterLinkComponent
-  ]
+    WidgetFooterLinkComponent,
+  ],
 })
 export class TheSeamWidgetFooterLinkModule { }

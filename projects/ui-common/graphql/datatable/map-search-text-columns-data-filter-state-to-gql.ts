@@ -17,10 +17,10 @@ export const mapSearchTextColumnsDataFilterStateToGql = (
       filter = {
         filter: {
           and: [
-            { [filterState.state.prop]: { [filterState.state.formValue.searchType]: filterState.state.formValue.searchText } }
-          ]
+            { [filterState.state.prop]: { [filterState.state.formValue.searchType]: filterState.state.formValue.searchText } },
+          ],
         },
-        variables: {}
+        variables: {},
       }
     }
     else if (filterState.state.formValue.searchType === 'blank') {
@@ -29,9 +29,9 @@ export const mapSearchTextColumnsDataFilterStateToGql = (
           or: [
             { [filterState.state.prop]: { eq: null } },
             { [filterState.state.prop]: { eq: '' } },
-          ]
+          ],
         },
-        variables: {}
+        variables: {},
       }
     }
     else if (filterState.state.formValue.searchType === 'not-blank') {
@@ -39,10 +39,10 @@ export const mapSearchTextColumnsDataFilterStateToGql = (
         filter: {
           and: [
             { [filterState.state.prop]: { neq: null } },
-            { [filterState.state.prop]: { neq: '' } }
-          ]
+            { [filterState.state.prop]: { neq: '' } },
+          ],
         },
-        variables: {}
+        variables: {},
       }
     }
   }

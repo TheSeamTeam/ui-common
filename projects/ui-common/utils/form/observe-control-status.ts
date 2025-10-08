@@ -15,7 +15,7 @@ export function observeControlStatus(control: AbstractControl): Observable<strin
       .pipe(switchMap(status => status === 'PENDING'
         ? waitOnNonPendingStatus(control)
           .pipe(startWith(status))
-        : of(status)
-      ))
+        : of(status),
+      )),
     ))
 }

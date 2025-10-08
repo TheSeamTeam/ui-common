@@ -219,7 +219,7 @@ export class TheSeamGoogleMapsComponent extends _TheSeamGoogleMapsMixinBase
         } else {
           this._googleMaps.setFeatureContextMenu(this.featureContextMenu)
         }
-      })
+      }),
     )
 
     this._googleMaps.setBaseLatLng(this.latitude, this.longitude)

@@ -47,7 +47,7 @@ export abstract class ColumnsAlteration<TState = any> {
      * If false, the state will not be persisted to a persistent storage and
      * will be removed after applied.
      */
-    public readonly persistent: boolean
+    public readonly persistent: boolean,
   ) {
     this.state = state
   }
@@ -72,7 +72,7 @@ export abstract class ColumnsAlteration<TState = any> {
     return {
       id: this.id,
       type: this.type,
-      state: this.state
+      state: this.state,
     }
   }
 }

@@ -14,6 +14,6 @@ import { SideNavComponent } from './side-nav.component'
     SideNavItemComponent,
     SideNavComponent,
     SideNavToggleComponent,
-  ]
+  ],
 })
 export class TheSeamSideNavModule { }

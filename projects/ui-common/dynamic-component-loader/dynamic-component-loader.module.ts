@@ -10,7 +10,7 @@ import type { DynamicComponentManifest } from './dynamic-component-manifest'
 import {
   DYNAMIC_COMPONENT,
   DYNAMIC_COMPONENT_MANIFESTS,
-  DYNAMIC_MODULE
+  DYNAMIC_MODULE,
 } from './dynamic-component-tokens'
 
 @NgModule()

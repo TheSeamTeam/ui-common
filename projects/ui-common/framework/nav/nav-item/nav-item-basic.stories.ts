@@ -154,7 +154,7 @@ export const WithChildren: Story = {
               label: 'Example 1.3',
               link: 'example1/example1.2.3',
             },
-          ]
+          ],
         },
         {
           itemType: 'link',
@@ -183,6 +183,6 @@ export const WithChildren: Story = {
             <a routerLink="/example1/example1.3">Set Route: '/example1/example1.3'</a><br>
           </div>
         </div>
-      </div>`
+      </div>`,
   }),
 }

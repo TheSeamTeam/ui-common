@@ -18,8 +18,8 @@ export class TheSeamSchemaFormSelectHarness extends ComponentHarness {
   /** Creates a `HarnessPredicate` used to locate a particular `MyMenuHarness`. */
   static with(options: TheSeamSchemaFormSelectHarnessFilters): HarnessPredicate<TheSeamSchemaFormSelectHarness> {
     return new HarnessPredicate(TheSeamSchemaFormSelectHarness, options)
-        // .addOption('field name', options.name,
-        //     (harness, name) => HarnessPredicate.stringMatches(harness.getName(), name))
+    // .addOption('field name', options.name,
+    //     (harness, name) => HarnessPredicate.stringMatches(harness.getName(), name))
   }
 
   public async getName(): Promise<string | null> {
@@ -49,7 +49,7 @@ export class TheSeamSchemaFormSelectHarness extends ComponentHarness {
    *     first matching dropdown option will be clicked.
    */
   async clickOption(
-    optionFilter: Omit<TheSeamNgSelectOptionHarnessFilters, 'ancestor'>
+    optionFilter: Omit<TheSeamNgSelectOptionHarnessFilters, 'ancestor'>,
   ): Promise<void> {
     return (await this._ngSelect()).clickOption(optionFilter)
   }

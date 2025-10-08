@@ -15,8 +15,8 @@ export class TheSeamSchemaFormTiledSelectHarness extends ComponentHarness {
   /** Creates a `HarnessPredicate` used to locate a particular `TheSeamSchemaFormTiledSelectHarness`. */
   static with(options: TheSeamSchemaFormTiledSelectHarnessFilters): HarnessPredicate<TheSeamSchemaFormTiledSelectHarness> {
     return new HarnessPredicate(TheSeamSchemaFormTiledSelectHarness, options)
-        .addOption('field name', options.name,
-            (harness, name) => HarnessPredicate.stringMatches(harness.getName(), name))
+      .addOption('field name', options.name,
+        (harness, name) => HarnessPredicate.stringMatches(harness.getName(), name))
   }
 
   public async getName(): Promise<string | null> {

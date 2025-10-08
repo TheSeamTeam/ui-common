@@ -54,10 +54,10 @@ export class ColumnsAlterationsManagerService {
       ...alterations.map(a => {
         const record: ColumnsAlterationsChangedRecord = {
           type: 'added',
-          alteration: a
+          alteration: a,
         }
         return record
-      })
+      }),
     ]
 
     if (notNullOrUndefined(options?.emitEvent) && !options?.emitEvent) {
@@ -77,7 +77,7 @@ export class ColumnsAlterationsManagerService {
       if (found) {
         const eventRecord: ColumnsAlterationsChangedRecord = {
           type: 'removed',
-          alteration: x
+          alteration: x,
         }
         removed.push(eventRecord)
       }
@@ -162,7 +162,7 @@ export class ColumnsAlterationsManagerService {
     }
 
     const event: ColumnsAlterationsChangedEvent = {
-      changes
+      changes,
     }
 
     this._changesSubject.next(event)

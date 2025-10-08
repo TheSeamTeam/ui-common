@@ -24,7 +24,7 @@ storiesOf('Button', module)
         text: '😀 😎 👍 💯',
       },
     }),
-    { notes: 'My notes on a button with emojis' }
+    { notes: 'My notes on a button with emojis' },
   )
   .add(
     'with some emoji and action',
@@ -35,7 +35,7 @@ storiesOf('Button', module)
         onClick: action('This was clicked OMG'),
       },
     }),
-    { notes: 'My notes on a button with emojis' }
+    { notes: 'My notes on a button with emojis' },
   );
 
 storiesOf('Another Button', module).add('button with link to another story', () => ({

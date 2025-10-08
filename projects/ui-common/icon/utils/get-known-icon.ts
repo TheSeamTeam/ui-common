@@ -28,7 +28,7 @@ import {
   faTimesCircle,
   faTrashAlt,
   faUser,
-  faUserCircle
+  faUserCircle,
 } from '@fortawesome/free-regular-svg-icons'
 import {
   faBan,
@@ -70,7 +70,7 @@ import {
   faUserEdit,
   faUserPlus,
   faUsers,
-  faUserTimes
+  faUserTimes,
 } from '@fortawesome/free-solid-svg-icons'
 
 import { SeamIcon } from '../icon'
@@ -149,7 +149,7 @@ const knownIcons: { [key: string]: SeamIcon } = {
   faUserEdit,
   faUserTimes,
   faUsers,
-  faUserPlus
+  faUserPlus,
 }
 
 export function getKnownIcon(iconStr: string): SeamIcon | undefined {

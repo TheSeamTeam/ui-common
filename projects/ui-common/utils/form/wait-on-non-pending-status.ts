@@ -13,9 +13,9 @@ import { filter, map, mapTo, startWith, take } from 'rxjs/operators'
  */
 export function waitOnNonPendingStatus(control: AbstractControl): Observable<string> {
   return merge(
-      control.statusChanges,
-      interval(30).pipe(mapTo(control), map(c => c.status))
-    )
+    control.statusChanges,
+    interval(30).pipe(mapTo(control), map(c => c.status)),
+  )
     .pipe(startWith(control.status))
     .pipe(filter(v => v !== 'PENDING'))
     .pipe(take(1))

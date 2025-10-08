@@ -28,7 +28,7 @@ export const DefaultSearchFilterOptions: ISearchFilterOptions = {
   properties: undefined,
   omitProperties: undefined,
   exact: false,
-  caseSensitive: false
+  caseSensitive: false,
 }
 
 export function searchDataFilter(data: any[], values: string, options = DefaultSearchFilterOptions) {
@@ -38,12 +38,12 @@ export function searchDataFilter(data: any[], values: string, options = DefaultS
 let _uid = 0
 
 @Component({
-    selector: 'seam-data-filter-search',
-    templateUrl: './data-filter-search.component.html',
-    styleUrls: ['./data-filter-search.component.scss'],
-    providers: [DATA_FILTER_SEARCH],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'seam-data-filter-search',
+  templateUrl: './data-filter-search.component.html',
+  styleUrls: ['./data-filter-search.component.scss'],
+  providers: [DATA_FILTER_SEARCH],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class DataFilterSearchComponent implements OnInit, OnDestroy, IDataFilter {
   static ngAcceptInputType_exact: BooleanInput
@@ -75,11 +75,11 @@ export class DataFilterSearchComponent implements OnInit, OnDestroy, IDataFilter
 
   constructor(
     @Inject(THESEAM_DATA_FILTER_CONTAINER) private _filterContainer: DataFilterContainer,
-    @Optional() @Inject(THESEAM_DATA_FILTER_OPTIONS) private _filterOptions: ISearchFilterOptions | null
+    @Optional() @Inject(THESEAM_DATA_FILTER_OPTIONS) private _filterOptions: ISearchFilterOptions | null,
   ) {
     this.filterStateChanges = this._control.valueChanges.pipe(
       switchMap(() => of(this.filterState())),
-      shareReplay({ bufferSize: 1, refCount: true })
+      shareReplay({ bufferSize: 1, refCount: true }),
     )
   }
 
@@ -99,7 +99,7 @@ export class DataFilterSearchComponent implements OnInit, OnDestroy, IDataFilter
       properties: this.properties ?? undefined,
       omitProperties: this.omitProperties ?? undefined,
       exact: this.exact,
-      caseSensitive: this.caseSensitive
+      caseSensitive: this.caseSensitive,
     }
   }
 
@@ -117,8 +117,8 @@ export class DataFilterSearchComponent implements OnInit, OnDestroy, IDataFilter
       name: this.name,
       state: {
         value: this._control.value,
-        options: this.options
-      }
+        options: this.options,
+      },
     }
   }
 

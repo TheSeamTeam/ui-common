@@ -61,19 +61,19 @@ const collapseAnimation = trigger('collapseAnim', [
  * used then the situation should be considered for becoming a widget component.
  */
 @Component({
-    selector: 'seam-widget',
-    templateUrl: './widget.component.html',
-    styleUrls: ['./widget.component.scss'],
-    providers: [
-        WidgetPreferencesService,
-    ],
-    encapsulation: ViewEncapsulation.None,
-    animations: [
-        loadingAnimation,
-        collapseAnimation,
-        keepContentAnimation,
-    ],
-    standalone: false
+  selector: 'seam-widget',
+  templateUrl: './widget.component.html',
+  styleUrls: ['./widget.component.scss'],
+  providers: [
+    WidgetPreferencesService,
+  ],
+  encapsulation: ViewEncapsulation.None,
+  animations: [
+    loadingAnimation,
+    collapseAnimation,
+    keepContentAnimation,
+  ],
+  standalone: false,
 })
 export class WidgetComponent implements OnDestroy {
 
@@ -174,7 +174,7 @@ export class WidgetComponent implements OnDestroy {
             this.collapsed = prefs.collapsed
           }
         }),
-        takeUntil(this._ngUnsubscribe)
+        takeUntil(this._ngUnsubscribe),
       ).subscribe()
     }
   }

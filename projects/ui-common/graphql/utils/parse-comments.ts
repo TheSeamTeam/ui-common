@@ -17,7 +17,7 @@ export function parseComments(ast: DocumentNode): Token[] {
       Object.assign(next, {
         // The Comment token's column starts _after_ the `#`,
         // but we need to make sure the node captures the `#`
-        column: next.column - 1
+        column: next.column - 1,
       })
       comments.push(next)
     }

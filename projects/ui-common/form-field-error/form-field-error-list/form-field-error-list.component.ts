@@ -23,10 +23,10 @@ export interface IErrorRecord {
  * TODO: Cleanup remaining code from before refactor.
  */
 @Component({
-    selector: 'seam-form-field-error-list',
-    templateUrl: './form-field-error-list.component.html',
-    styleUrls: ['./form-field-error-list.component.scss'],
-    standalone: false
+  selector: 'seam-form-field-error-list',
+  templateUrl: './form-field-error-list.component.html',
+  styleUrls: ['./form-field-error-list.component.scss'],
+  standalone: false,
 })
 export class FormFieldErrorListComponent implements OnDestroy, DoCheck {
 
@@ -364,7 +364,7 @@ export class FormFieldErrorListComponent implements OnDestroy, DoCheck {
           validatorName: tpl.validatorName,
           error: null,
           template: tpl.template,
-          external: !!tpl.external
+          external: !!tpl.external,
         })
       } else {
         // this.errorTpl = tpl.template
@@ -392,7 +392,7 @@ export class FormFieldErrorListComponent implements OnDestroy, DoCheck {
   private _composeErrorInputs(
     controlErrors: IErrorRecord[],
     errorTemplates: IErrorRecord[],
-    errorInput: IErrorRecord[]
+    errorInput: IErrorRecord[],
   ): IErrorRecord[] {
     const errs: IErrorRecord[] = []
 
@@ -433,7 +433,7 @@ export class FormFieldErrorListComponent implements OnDestroy, DoCheck {
       .map(err => ({
         ...err,
         error: control.errors ? control.errors[err.validatorName] : null,
-        _errors: control.errors
+        _errors: control.errors,
       } as IErrorRecord))
   }
 

@@ -20,7 +20,7 @@ import {
   DynamicActionUiAnchorDef,
   DynamicActionUiButtonDef,
   DynamicActionUiDef,
-  DynamicValueHelperService
+  DynamicValueHelperService,
 } from '@theseam/ui-common/dynamic'
 import { getAttribute, hasProperty, toggleAttribute } from '@theseam/ui-common/utils'
 
@@ -47,7 +47,7 @@ export class DatatableDynamicActionMenuItemRouterLink {
     @Attribute('tabindex') tabIndex: string | null,
     private renderer: Renderer2,
     private el: ElementRef,
-    private locationStrategy: LocationStrategy
+    private locationStrategy: LocationStrategy,
   ) {
     if (el.nativeElement.nodeName.toLowerCase() === 'a') {
       this._rLinkWithHref = new RouterLinkWithHref(
@@ -56,7 +56,7 @@ export class DatatableDynamicActionMenuItemRouterLink {
         '0', // TODO: Fix type.
         renderer,
         el.nativeElement,
-        locationStrategy
+        locationStrategy,
       )
       // console.log('rLinkWithHref', this.rLinkWithHref)
 
@@ -72,7 +72,7 @@ export class DatatableDynamicActionMenuItemRouterLink {
         route,
         tabIndex as string,
         renderer,
-        el
+        el,
       )
       // console.log('rLink', this.rLink)
 
@@ -193,7 +193,7 @@ export class DatatableDynamicActionMenuItemRouterLink {
 // simplified like it was supposed to be.
 @Directive({
   selector: '[seamDatatableDynamicActionMenuItem]',
-  exportAs: 'seamDatatableDynamicActionMenuItem'
+  exportAs: 'seamDatatableDynamicActionMenuItem',
 })
 export class DatatableDynamicActionMenuItemDirective implements OnDestroy, OnChanges {
 
@@ -217,7 +217,7 @@ export class DatatableDynamicActionMenuItemDirective implements OnDestroy, OnCha
     private _assetReaderHelper: AssetReaderHelperService,
     private _router: Router,
     private _route: ActivatedRoute,
-    private _locationStrategy: LocationStrategy
+    private _locationStrategy: LocationStrategy,
   ) {
     this._recordSubscription = this._record.pipe(
       // tap(v => console.log('record', v)),
@@ -261,14 +261,14 @@ export class DatatableDynamicActionMenuItemDirective implements OnDestroy, OnCha
     return from(this._getUiProps(record)).pipe(
       switchMap(uiProps => this._isAnchor()
         ? this._updateAnchorElement(record, uiProps as DynamicActionUiAnchorDef)
-        : this._updateButtonElement(record, uiProps as DynamicActionUiButtonDef)
-      )
+        : this._updateButtonElement(record, uiProps as DynamicActionUiButtonDef),
+      ),
     )
   }
 
   private _updateAnchorElement(
     record: DynamicDatatableActionMenuRecord,
-    uiProps: DynamicActionUiAnchorDef
+    uiProps: DynamicActionUiAnchorDef,
   ): Observable<void> {
     const _stream: Observable<any> = of(undefined)
 
@@ -315,7 +315,7 @@ export class DatatableDynamicActionMenuItemDirective implements OnDestroy, OnCha
 
   private _updateButtonElement(
     record: DynamicDatatableActionMenuRecord,
-    uiProps: DynamicActionUiAnchorDef | DynamicActionUiButtonDef
+    uiProps: DynamicActionUiAnchorDef | DynamicActionUiButtonDef,
   ): Observable<void> {
     let _stream: Observable<any> = of(undefined)
     // this._updateClickElement(record, uiProps as DynamicActionUiButtonDef)
@@ -342,7 +342,7 @@ export class DatatableDynamicActionMenuItemDirective implements OnDestroy, OnCha
 
   private _updateAssetElement(
     record: DynamicDatatableActionMenuRecord,
-    uiProps: DynamicActionUiAnchorDef | DynamicActionUiButtonDef
+    uiProps: DynamicActionUiAnchorDef | DynamicActionUiButtonDef,
   ): Observable<void> {
     // console.log('_updateAssetElement')
     // return of(undefined)
@@ -369,7 +369,7 @@ export class DatatableDynamicActionMenuItemDirective implements OnDestroy, OnCha
         //   event.stopPropagation()
         // }
       }),
-      mapTo(undefined)
+      mapTo(undefined),
     )
 
     return of(undefined).pipe(
@@ -380,7 +380,7 @@ export class DatatableDynamicActionMenuItemDirective implements OnDestroy, OnCha
 
   private _updateClickElement(
     record: DynamicDatatableActionMenuRecord,
-    uiProps: DynamicActionUiButtonDef
+    uiProps: DynamicActionUiButtonDef,
   ): Observable<void> {
     // console.log('_updateClickElement', record, uiProps)
     // return of(undefined)
@@ -396,7 +396,7 @@ export class DatatableDynamicActionMenuItemDirective implements OnDestroy, OnCha
 
         return this._actionHelper.exec(uiProps._actionDef, context)
       }),
-      mapTo(undefined)
+      mapTo(undefined),
     )
   }
 
@@ -418,7 +418,7 @@ export class DatatableDynamicActionMenuItemDirective implements OnDestroy, OnCha
 
   private _tryInitBlockClick(
     record: DynamicDatatableActionMenuRecord,
-    uiProps: DynamicActionUiDef
+    uiProps: DynamicActionUiDef,
   ) {
     this._unsubClick()
     if (hasProperty(uiProps, 'blockClickExpr')) {
@@ -428,7 +428,7 @@ export class DatatableDynamicActionMenuItemDirective implements OnDestroy, OnCha
 
   private _blockClickExprObservable(
     uiProps: DynamicActionUiDef,
-    record: DynamicDatatableActionMenuRecord
+    record: DynamicDatatableActionMenuRecord,
   ) {
     return fromEvent(this._elementRef.nativeElement, 'click').pipe(
       tap(event => {
@@ -441,13 +441,13 @@ export class DatatableDynamicActionMenuItemDirective implements OnDestroy, OnCha
           event.stopPropagation()
         }
       }),
-      mapTo(undefined)
+      mapTo(undefined),
     )
   }
 
   private _initMenuItemRouterLink(
     record: DynamicDatatableActionMenuRecord,
-    uiProps: DynamicActionUiAnchorDef
+    uiProps: DynamicActionUiAnchorDef,
   ) {
     this._menuRouterLink = new DatatableDynamicActionMenuItemRouterLink(
       this._router,
@@ -455,7 +455,7 @@ export class DatatableDynamicActionMenuItemDirective implements OnDestroy, OnCha
       getAttribute(this._elementRef.nativeElement, 'tabindex'),
       this._renderer,
       this._elementRef,
-      this._locationStrategy
+      this._locationStrategy,
     )
     // console.log(this._menuRouterLink)
 
@@ -503,7 +503,7 @@ export class DatatableDynamicActionMenuItemDirective implements OnDestroy, OnCha
   /** @ignore */
   private _getContext(row: DynamicDatatableRow, rowActionDef: DynamicDatatableRowAction): DynamicDatatableRowActionContext {
     return {
-      row
+      row,
     }
   }
 

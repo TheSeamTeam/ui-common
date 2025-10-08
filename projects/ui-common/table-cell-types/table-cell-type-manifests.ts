@@ -15,88 +15,88 @@ export const TABLE_CELL_TYPE_MANIFEST_STRING: ITableCellTypeManifestProvider = {
   provide: TABLE_CELL_TYPE_MANIFEST,
   useValue: {
     name: 'string',
-    component: TableCellTypeStringComponent
+    component: TableCellTypeStringComponent,
   },
-  multi: true
+  multi: true,
 }
 
 export const TABLE_CELL_TYPE_MANIFEST_CURRENCY: ITableCellTypeManifestProvider = {
   provide: TABLE_CELL_TYPE_MANIFEST,
   useValue: {
     name: 'currency',
-    component: TableCellTypeCurrencyComponent
+    component: TableCellTypeCurrencyComponent,
   },
-  multi: true
+  multi: true,
 }
 
 export const TABLE_CELL_TYPE_MANIFEST_DECIMAL: ITableCellTypeManifestProvider = {
   provide: TABLE_CELL_TYPE_MANIFEST,
   useValue: {
     name: 'decimal',
-    component: TableCellTypeDecimalComponent
+    component: TableCellTypeDecimalComponent,
   },
-  multi: true
+  multi: true,
 }
 
 export const TABLE_CELL_TYPE_MANIFEST_INTEGER: ITableCellTypeManifestProvider = {
   provide: TABLE_CELL_TYPE_MANIFEST,
   useValue: {
     name: 'integer',
-    component: TableCellTypeIntegerComponent
+    component: TableCellTypeIntegerComponent,
   },
-  multi: true
+  multi: true,
 }
 
 export const TABLE_CELL_TYPE_MANIFEST_DATE: ITableCellTypeManifestProvider = {
   provide: TABLE_CELL_TYPE_MANIFEST,
   useValue: {
     name: 'date',
-    component: TableCellTypeDateComponent
+    component: TableCellTypeDateComponent,
   },
-  multi: true
+  multi: true,
 }
 
 export const TABLE_CELL_TYPE_MANIFEST_ICON: ITableCellTypeManifestProvider = {
   provide: TABLE_CELL_TYPE_MANIFEST,
   useValue: {
     name: 'icon',
-    component: TableCellTypeIconComponent
+    component: TableCellTypeIconComponent,
   },
-  multi: true
+  multi: true,
 }
 
 export const TABLE_CELL_TYPE_MANIFEST_IMAGE: ITableCellTypeManifestProvider = {
   provide: TABLE_CELL_TYPE_MANIFEST,
   useValue: {
     name: 'image',
-    component: TableCellTypeIconComponent
+    component: TableCellTypeIconComponent,
   },
-  multi: true
+  multi: true,
 }
 
 export const TABLE_CELL_TYPE_MANIFEST_PROGRESS_CIRCLE: ITableCellTypeManifestProvider = {
   provide: TABLE_CELL_TYPE_MANIFEST,
   useValue: {
     name: 'progress-circle',
-    component: TableCellTypeProgressCircleComponent
+    component: TableCellTypeProgressCircleComponent,
   },
-  multi: true
+  multi: true,
 }
 
 export const TABLE_CELL_TYPE_MANIFEST_PROGRESS_CIRCLE_ICON: ITableCellTypeManifestProvider = {
   provide: TABLE_CELL_TYPE_MANIFEST,
   useValue: {
     name: 'progress-circle-icon',
-    component: TableCellTypeProgressCircleIconComponent
+    component: TableCellTypeProgressCircleIconComponent,
   },
-  multi: true
+  multi: true,
 }
 
 export const TABLE_CELL_TYPE_MANIFEST_PHONE: ITableCellTypeManifestProvider = {
   provide: TABLE_CELL_TYPE_MANIFEST,
   useValue: {
     name: 'phone',
-    component: TableCellTypePhoneComponent
+    component: TableCellTypePhoneComponent,
   },
-  multi: true
+  multi: true,
 }

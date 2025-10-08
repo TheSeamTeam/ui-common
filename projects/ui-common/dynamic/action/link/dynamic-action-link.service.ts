@@ -16,7 +16,7 @@ export class DynamicActionLinkService implements DynamicActionLink {
   label = 'Link Action'
 
   constructor(
-    private _valueHandler: DynamicValueHelperService
+    private _valueHandler: DynamicValueHelperService,
   ) { }
 
   // exec?: (args: IDynamicActionDef<T>, context: D) => Observable<R>

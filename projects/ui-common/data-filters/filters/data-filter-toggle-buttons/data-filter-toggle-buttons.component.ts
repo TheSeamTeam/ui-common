@@ -38,7 +38,7 @@ export const DefaultToggleButtonsFilterOptions: IToggleButtonsFilterOptions = {
   selectionToggleable: false,
   buttons: [],
   exact: false,
-  caseSensitive: false
+  caseSensitive: false,
 }
 
 export function toggleButtonsFilter(data: any[], values: string[], options = DefaultToggleButtonsFilterOptions) {
@@ -76,7 +76,7 @@ export function toggleButtonsFilter(data: any[], values: string[], options = Def
         properties: options.properties,
         omitProperties: options.omitProperties,
         exact: options.exact,
-        caseSensitive: options.caseSensitive
+        caseSensitive: options.caseSensitive,
       })
     }
   }
@@ -86,11 +86,11 @@ export function toggleButtonsFilter(data: any[], values: string[], options = Def
 let _uid = 0
 
 @Component({
-    selector: 'seam-data-filter-toggle-buttons',
-    templateUrl: './data-filter-toggle-buttons.component.html',
-    styleUrls: ['./data-filter-toggle-buttons.component.scss'],
-    providers: [DATA_FILTER_TOGGLE_BUTTON],
-    standalone: false
+  selector: 'seam-data-filter-toggle-buttons',
+  templateUrl: './data-filter-toggle-buttons.component.html',
+  styleUrls: ['./data-filter-toggle-buttons.component.scss'],
+  providers: [DATA_FILTER_TOGGLE_BUTTON],
+  standalone: false,
 })
 export class DataFilterToggleButtonsComponent implements OnInit, OnDestroy, IDataFilter {
 
@@ -120,13 +120,13 @@ export class DataFilterToggleButtonsComponent implements OnInit, OnDestroy, IDat
 
   constructor(
     @Inject(THESEAM_DATA_FILTER_CONTAINER) private _filterContainer: DataFilterContainer,
-    @Optional() @Inject(THESEAM_DATA_FILTER_OPTIONS) private _filterOptions: IToggleButtonsFilterOptions | null
+    @Optional() @Inject(THESEAM_DATA_FILTER_OPTIONS) private _filterOptions: IToggleButtonsFilterOptions | null,
   ) {
     this.filterStateChanges = this._control.valueChanges.pipe(
       // tap(v => console.log('v', v)),
       switchMap(() => of(this.filterState())),
       // tap(v => console.log('v2', v)),
-      shareReplay({ bufferSize: 1, refCount: true })
+      shareReplay({ bufferSize: 1, refCount: true }),
     )
   }
 
@@ -154,7 +154,7 @@ export class DataFilterToggleButtonsComponent implements OnInit, OnDestroy, IDat
       selectionToggleable: this.selectionToggleable,
       buttons: this.buttons,
       exact: this.exact,
-      caseSensitive: this.caseSensitive
+      caseSensitive: this.caseSensitive,
     }
   }
 
@@ -172,8 +172,8 @@ export class DataFilterToggleButtonsComponent implements OnInit, OnDestroy, IDat
       name: this.name,
       state: {
         value: this._control.value,
-        options: this.options
-      }
+        options: this.options,
+      },
     }
   }
 

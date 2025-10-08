@@ -17,7 +17,7 @@ const GIN_DATA = [
     'countyCode': 1,
     'zipCode': '00000',
     'isRegistered': false,
-    'ginned': 43897
+    'ginned': 43897,
   },
   {
     'ginCode': '12346',
@@ -28,7 +28,7 @@ const GIN_DATA = [
     'countyCode': 115,
     'zipCode': '00000',
     'isRegistered': false,
-    'ginned': 786542
+    'ginned': 786542,
   },
   {
     'ginCode': '12347',
@@ -39,7 +39,7 @@ const GIN_DATA = [
     'countyCode': 115,
     'zipCode': '00000',
     'isRegistered': false,
-    'ginned': 9846
+    'ginned': 9846,
   },
   {
     'ginCode': '12348',
@@ -50,7 +50,7 @@ const GIN_DATA = [
     'countyCode': 115,
     'zipCode': '00000',
     'isRegistered': false,
-    'ginned': 3548
+    'ginned': 3548,
   },
   {
     'ginCode': '12349',
@@ -61,7 +61,7 @@ const GIN_DATA = [
     'countyCode': 61,
     'zipCode': '00000',
     'isRegistered': false,
-    'ginned': 7561
+    'ginned': 7561,
   },
   {
     'ginCode': '12350',
@@ -72,7 +72,7 @@ const GIN_DATA = [
     'countyCode': 61,
     'zipCode': '00000',
     'isRegistered': false,
-    'ginned': 684615
+    'ginned': 684615,
   },
   {
     'ginCode': '12351',
@@ -83,8 +83,8 @@ const GIN_DATA = [
     'countyCode': 115,
     'zipCode': '00000',
     'isRegistered': false,
-    'ginned': 65165
-  }
+    'ginned': 65165,
+  },
 ]
 
 const meta: Meta<WidgetTableComponent<any>> = {

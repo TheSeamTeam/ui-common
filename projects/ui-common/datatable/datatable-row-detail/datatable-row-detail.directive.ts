@@ -3,9 +3,9 @@ import { ContentChild, Directive, EventEmitter, Input, Output, TemplateRef } fro
 import { DatatableRowDetailTplDirective } from './datatable-row-detail-tpl.directive'
 
 @Directive({
-    // eslint-disable-next-line @angular-eslint/directive-selector
-    selector: 'seam-datatable-row-detail',
-    standalone: false
+  // eslint-disable-next-line @angular-eslint/directive-selector
+  selector: 'seam-datatable-row-detail',
+  standalone: false,
 })
 export class TheSeamDatatableRowDetailDirective {
 
@@ -49,7 +49,7 @@ export class TheSeamDatatableRowDetailDirective {
   toggleExpandRow(row: any): void {
     this._toggle.emit({
       type: 'row',
-      value: row
+      value: row,
     })
   }
 
@@ -59,7 +59,7 @@ export class TheSeamDatatableRowDetailDirective {
   expandAllRows(): void {
     this._toggle.emit({
       type: 'all',
-      value: true
+      value: true,
     })
   }
 
@@ -69,7 +69,7 @@ export class TheSeamDatatableRowDetailDirective {
   collapseAllRows(): void {
     this._toggle.emit({
       type: 'all',
-      value: false
+      value: false,
     })
   }
 

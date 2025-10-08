@@ -23,7 +23,7 @@ import { TheSeamCarouselSlideDirective } from './carousel-slide.directive'
         style({ opacity: '0', height: '*' }),
         animate(250, style({ opacity: '1', height: '*' })),
       ]),
-    ])
+    ]),
   ],
   exportAs: 'seamCarousel',
   imports: [

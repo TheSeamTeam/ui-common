@@ -253,7 +253,7 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
   private _mentionItems = new BehaviorSubject<TheSeamQuillMentionMenuItem[] | null | undefined>(undefined)
   public mentionItems$ = this._mentionItems.asObservable().pipe(
     filter(mentions => notNullOrUndefined(mentions) && mentions.length > 0),
-    shareReplay({ bufferSize: 1, refCount: true })
+    shareReplay({ bufferSize: 1, refCount: true }),
   )
 
   /**
@@ -323,7 +323,7 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
       id: 'undefined',
       value: this.mentionListEmptyText,
       disabled: true,
-      emptyList: true
+      emptyList: true,
     }
   }
 
@@ -386,14 +386,14 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
 
   constructor(
     private readonly _renderer: Renderer2,
-    @Optional() @Inject(THESEAM_QUILL_EDITOR_CONFIG) private _customConfig?: TheSeamQuillEditorConfig
+    @Optional() @Inject(THESEAM_QUILL_EDITOR_CONFIG) private _customConfig?: TheSeamQuillEditorConfig,
   ) {
     this.initialized$ = combineLatest([
       this._configSet.asObservable(),
       this._stylesSet.asObservable(),
       this._templateSet.asObservable(),
     ]).pipe(
-      map(sets => sets.findIndex(s => !s) === -1)
+      map(sets => sets.findIndex(s => !s) === -1),
     )
 
     this.characterCount$ = this.initialized$.pipe(
@@ -407,11 +407,11 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
         }
 
         return of(0)
-      })
+      }),
     )
 
     this.selectedMentions$.pipe(
-      tap(mentions => this.mentionsUpdated.emit(mentions))
+      tap(mentions => this.mentionsUpdated.emit(mentions)),
     ).subscribe()
   }
 
@@ -424,13 +424,13 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
       switchMap(() => this.formControl.valueChanges.pipe(
         // skip(1),
         take(1),
-        tap(() => initialEmitComplete = true)
-      ))
+        tap(() => initialEmitComplete = true),
+      )),
     ).subscribe()
 
     this.formControl.valueChanges.pipe(
       filter(() => !this._isWritingValue && initialEmitComplete),
-      tap(value => this.value = value)
+      tap(value => this.value = value),
     ).subscribe()
 
     this._pollCalculatedRowHeight.asObservable().pipe(
@@ -449,7 +449,7 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
         }
 
         this._stylesSet.next(true)
-      })
+      }),
     ).subscribe()
 
     this._buildQuillConfig()
@@ -476,20 +476,20 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
     this._configSet.next(false)
 
     const config: TheSeamQuillEditorConfig = {
-      ...THESEAM_QUILL_EDITOR_CONFIG_DEFAULT
+      ...THESEAM_QUILL_EDITOR_CONFIG_DEFAULT,
     }
 
     if (this.disableRichText) {
       config.format = 'text'
       config.formats = []
       config.modules = {
-        toolbar: false
+        toolbar: false,
       }
     } else {
       config.format = this._getConfigOrDefault('format')
       config.formats = this._getConfigOrDefault('formats')
       config.modules = {
-        ...this._getConfigOrDefault('modules')
+        ...this._getConfigOrDefault('modules'),
       }
     }
 
@@ -509,7 +509,7 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
             }
           },
           ...config.modules?.mention,
-        }
+        },
       }
 
       config.modules = mentionModules

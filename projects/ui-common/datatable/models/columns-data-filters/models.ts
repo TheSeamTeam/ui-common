@@ -12,7 +12,7 @@ export const THESEAM_COLUMNS_DATA_FILTER_DATE_SEARCH_TYPES = [
   'blank',
   'not-blank',
   'between',
-  'not-between'
+  'not-between',
 ] as const
 
 export const THESEAM_COLUMNS_DATA_FILTER_DATE_TEXT_SEARCH_TYPES = [
@@ -25,7 +25,7 @@ export const THESEAM_COLUMNS_DATA_FILTER_DATE_TEXT_SEARCH_TYPES = [
 
 export const THESEAM_COLUMNS_DATA_FILTER_DATE_RANGE_SEARCH_TYPES = [
   'between',
-  'not-between'
+  'not-between',
 ]
 
 export const THESEAM_COLUMNS_DATA_FILTER_DATE_SELECT_SEARCH_TYPES = [
@@ -78,7 +78,7 @@ export const THESEAM_COLUMNS_DATA_FILTER_NUMERIC_SEARCH_TYPES = [
   'blank',
   'not-blank',
   'between',
-  'not-between'
+  'not-between',
 ] as const
 
 export const THESEAM_COLUMNS_DATA_FILTER_NUMERIC_TEXT_SEARCH_TYPES = [
@@ -91,7 +91,7 @@ export const THESEAM_COLUMNS_DATA_FILTER_NUMERIC_TEXT_SEARCH_TYPES = [
 
 export const THESEAM_COLUMNS_DATA_FILTER_NUMERIC_RANGE_SEARCH_TYPES = [
   'between',
-  'not-between'
+  'not-between',
 ]
 
 export const THESEAM_COLUMNS_DATA_FILTER_NUMERIC_SELECT_SEARCH_TYPES = [
@@ -123,7 +123,7 @@ export const THESEAM_COLUMNS_DATA_FILTER_TEXT_SEARCH_TYPES = [
   'eq',
   'neq',
   'blank',
-  'not-blank'
+  'not-blank',
 ] as const
 
 export const THESEAM_COLUMNS_DATA_FILTER_TEXT_TEXT_SEARCH_TYPES = [
@@ -135,7 +135,7 @@ export const THESEAM_COLUMNS_DATA_FILTER_TEXT_TEXT_SEARCH_TYPES = [
 
 export const THESEAM_COLUMNS_DATA_FILTER_TEXT_SELECT_SEARCH_TYPES = [
   'blank',
-  'not-blank'
+  'not-blank',
 ]
 
 export type TheSeamColumnsDataFilterTextSearchType = typeof THESEAM_COLUMNS_DATA_FILTER_TEXT_SEARCH_TYPES[number]

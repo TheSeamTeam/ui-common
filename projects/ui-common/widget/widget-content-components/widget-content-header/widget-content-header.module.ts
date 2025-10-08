@@ -5,13 +5,13 @@ import { WidgetContentHeaderComponent } from './widget-content-header.component'
 
 @NgModule({
   declarations: [
-    WidgetContentHeaderComponent
+    WidgetContentHeaderComponent,
   ],
   imports: [
-    CommonModule
+    CommonModule,
   ],
   exports: [
-    WidgetContentHeaderComponent
-  ]
+    WidgetContentHeaderComponent,
+  ],
 })
 export class TheSeamWidgetContentHeaderModule { }

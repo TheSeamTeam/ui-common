@@ -19,7 +19,7 @@ interface ExtraArgs {
 const meta: Meta<TheSeamBreadcrumbsComponent & ExtraArgs> = {
   title: 'Breadcrumbs/Components/Resolver',
   component: TheSeamBreadcrumbsComponent,
-  decorators: [ ]
+  decorators: [ ],
 }
 
 export default meta
@@ -74,7 +74,7 @@ export const Example: Story = {
       '/users',
       '/users/123',
       '/users/987',
-      '/users/999'
+      '/users/999',
     ]) as any,
   },
   args: {

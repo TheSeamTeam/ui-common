@@ -30,7 +30,7 @@ describe('ConfirmClickDirective', () => {
     host = createHost(`<div seamConfirmClick>Testing ConfirmClickDirective</div>`)
 
     const instance = host.queryHost<ConfirmClickDirective>(
-      ConfirmClickDirective
+      ConfirmClickDirective,
     )
 
     expect(instance).toBeDefined()
@@ -40,7 +40,7 @@ describe('ConfirmClickDirective', () => {
     host = createHost(`<div seamConfirmClick class="test-btn">Testing ConfirmClickDirective</div>`)
 
     const instance = host.queryHost<ConfirmClickDirective>(
-      ConfirmClickDirective
+      ConfirmClickDirective,
     )
 
     host.dispatchMouseEvent(host.element, 'click')
@@ -60,7 +60,7 @@ describe('ConfirmClickDirective', () => {
     host = createHost(`<div seamConfirmClick class="test-btn">Testing ConfirmClickDirective</div>`)
 
     const instance = host.queryHost<ConfirmClickDirective>(
-      ConfirmClickDirective
+      ConfirmClickDirective,
     )
 
     host.dispatchMouseEvent(host.element, 'click')
@@ -86,7 +86,7 @@ describe('ConfirmClickDirective', () => {
     host = createHost(`<div seamConfirmClick class="test-btn">Testing ConfirmClickDirective</div>`)
 
     const instance = host.queryHost<ConfirmClickDirective>(
-      ConfirmClickDirective
+      ConfirmClickDirective,
     )
 
     host.dispatchMouseEvent(host.element, 'click')

@@ -79,7 +79,7 @@ export const NoChildren: Story = {
       icon: faBuilding,
       link: 'example1',
       queryParams: [],
-      children: []
+      children: [],
     },
     template: `
       <div class="d-flex flex-row vh-100" [storyNavToggle]="currentUrl">
@@ -102,7 +102,7 @@ export const NoChildren: Story = {
           </div>
         </div>
       </div>
-    `
+    `,
   }),
 }
 
@@ -133,18 +133,18 @@ export const WithChildren: Story = {
           itemType: 'link',
           label: 'Example 1.1',
           icon: faSignature,
-          link: 'example1/example1.1'
+          link: 'example1/example1.1',
         },
         {
           itemType: 'link',
           label: 'Example 1.2',
           icon: faBuilding,
-          link: 'example1/example1.2'
+          link: 'example1/example1.2',
         },
         {
           itemType: 'link',
           label: 'Example 1.3',
-          link: 'example1/example1.3'
+          link: 'example1/example1.3',
         },
       ],
     },

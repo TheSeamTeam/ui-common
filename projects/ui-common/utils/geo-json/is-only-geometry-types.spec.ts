@@ -76,7 +76,7 @@ describe('isOnlyGeometryTypes', () => {
                 [ 1, 1 ],
                 [ 1, 0 ],
                 [ 0, 0 ],
-              ]
+              ],
             ],
           },
           properties: { },
@@ -109,7 +109,7 @@ describe('isOnlyGeometryTypes', () => {
                 [ 1, 1 ],
                 [ 1, 0 ],
                 [ 0, 0 ],
-              ]
+              ],
             ],
           },
           properties: { },

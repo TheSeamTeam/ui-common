@@ -9,7 +9,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  QueryList
+  QueryList,
 } from '@angular/core'
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subscription } from 'rxjs'
 import { distinctUntilChanged, filter, map, startWith, switchMap, tap } from 'rxjs/operators'
@@ -29,16 +29,16 @@ let nextLabelUniqueId = 0
  * Should wrap all form controls.
  */
 @Component({
-    selector: 'seam-form-field',
-    templateUrl: './form-field.component.html',
-    styleUrls: ['./form-field.component.scss'],
-    providers: [
-        {
-            provide: FORM_FIELD_COMPONENT,
-            useExisting: TheSeamFormFieldComponent,
-        }
-    ],
-    standalone: false
+  selector: 'seam-form-field',
+  templateUrl: './form-field.component.html',
+  styleUrls: ['./form-field.component.scss'],
+  providers: [
+    {
+      provide: FORM_FIELD_COMPONENT,
+      useExisting: TheSeamFormFieldComponent,
+    },
+  ],
+  standalone: false,
 })
 export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
   static ngAcceptInputType_inline: BooleanInput
@@ -158,7 +158,7 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
                 validatorName: item.validatorName,
                 error: null,
                 template: item.template,
-                external: item.external
+                external: item.external,
               })
             }
           }
@@ -196,7 +196,7 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
 
   /** @ignore */
   constructor(
-    private readonly _elementRef: ElementRef
+    private readonly _elementRef: ElementRef,
   ) { }
 
   /** @ignore */
@@ -205,7 +205,7 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
       filter(contentInput => !!contentInput),
       switchMap(contentInput => combineLatest([
         this._helpTextStrSubject,
-        this._helpTextTplSubject
+        this._helpTextTplSubject,
       ]).pipe(
         map(() => this.hasHelpText),
         distinctUntilChanged(),
@@ -213,8 +213,8 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
           if (contentInput) {
             contentInput.ariaDescribedBy = this._helpTextId || undefined
           }
-        })
-      ))
+        }),
+      )),
     ).subscribe()
   }
 

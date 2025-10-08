@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core'
 import { AlterationDisplayItem, AlterationDiffState } from '../models/alteration-display.model'
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AlterationDisplayService {
 
@@ -12,7 +12,7 @@ export class AlterationDisplayService {
    */
   calculateDiff(
     current: AlterationDisplayItem[],
-    pending: AlterationDisplayItem[]
+    pending: AlterationDisplayItem[],
   ): AlterationDiffState {
     const currentIds = new Set(current.map(item => item.id))
     const pendingIds = new Set(pending.map(item => item.id))
@@ -40,7 +40,7 @@ export class AlterationDisplayService {
       added,
       removed,
       changed,
-      unchanged
+      unchanged,
     }
   }
 
@@ -54,7 +54,7 @@ export class AlterationDisplayService {
       'order': 2,
       'hide-column': 3,
       'width': 4,
-      'filter': 5
+      'filter': 5,
     }
 
     return items.sort((a, b) => {
@@ -88,7 +88,7 @@ export class AlterationDisplayService {
       'order': 'Order',
       'hide-column': 'Visibility',
       'width': 'Width',
-      'filter': 'Filter'
+      'filter': 'Filter',
     }
     return typeNames[type] || type
   }
@@ -102,7 +102,7 @@ export class AlterationDisplayService {
       'order': 'arrows-alt',
       'hide-column': 'eye-slash',
       'width': 'arrows-alt-h',
-      'filter': 'filter'
+      'filter': 'filter',
     }
     return typeIcons[type] || 'cog'
   }

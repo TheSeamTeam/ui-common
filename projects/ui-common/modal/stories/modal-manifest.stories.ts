@@ -33,7 +33,7 @@ class StoryExampleDirective {
 @Component({
   selector: 'story-seam-modal-basic',
   styles: [],
-  template: `<span>Example</span>`
+  template: `<span>Example</span>`,
 })
 class StorySeamModalBasicComponent {
   private readonly _modalRef = inject(ModalRef<StorySeamModalBasicComponent>)
@@ -49,7 +49,7 @@ class StorySeamModalBasicComponent {
     <div class="p-4">
       <button type="button" class="btn btn-lightgray" (click)="open()">Open</button>
     </div>
-  `
+  `,
 })
 class StorySeamModalBasicExampleComponent {
   private readonly _modal = inject(Modal)
@@ -158,7 +158,7 @@ class StorySeamModalSimpleComponent {
     <div class="p-4">
       <button type="button" class="btn btn-lightgray" (click)="open()">Open</button>
     </div>
-  `
+  `,
 })
 class StorySeamModalSimpleExampleComponent {
   private readonly _modal = inject(Modal)

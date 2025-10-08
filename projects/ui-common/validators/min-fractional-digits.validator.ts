@@ -30,8 +30,8 @@ export function minFractionalDigitsValidator(minFractionalDigits: number): Valid
         'minFractionalDigits': {
           'reason': `Must not be less than ${minFractionalDigits} fractional digits.`,
           'min': minFractionalDigits,
-          'actual': count
-        }
+          'actual': count,
+        },
       }
     }
 

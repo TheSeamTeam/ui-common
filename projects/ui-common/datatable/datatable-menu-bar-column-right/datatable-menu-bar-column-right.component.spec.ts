@@ -8,10 +8,10 @@ describe('DatatableMenuBarColumnRightComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [DatatableMenuBarColumnRightComponent],
-    teardown: { destroyAfterEach: false }
-})
-    .compileComponents()
+      declarations: [DatatableMenuBarColumnRightComponent],
+      teardown: { destroyAfterEach: false },
+    })
+      .compileComponents()
   }))
 
   beforeEach(() => {

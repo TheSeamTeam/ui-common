@@ -22,7 +22,7 @@ export class SearchTextColumnsDataFilter extends ColumnsDataFilter<TheSeamColumn
   constructor(
     prop: string,
     initialValue: TheSeamColumnsDataFilterTextSearchFormState,
-    column: TheSeamDatatableColumn
+    column: TheSeamDatatableColumn,
   ) {
     super(prop, initialValue, column)
 
@@ -36,7 +36,7 @@ export class SearchTextColumnsDataFilter extends ColumnsDataFilter<TheSeamColumn
 
     this.filterStateChanges = this._updateFilterValue.pipe(
       startWith(undefined),
-      map(() => this.filterState())
+      map(() => this.filterState()),
     )
   }
 
@@ -83,7 +83,7 @@ export class SearchTextColumnsDataFilter extends ColumnsDataFilter<TheSeamColumn
   public filter(data: any[]): Observable<any[]> {
     return this._updateFilterValue.pipe(
       startWith(undefined),
-      map(() => this.dataFilter(data, this.form.value, undefined))
+      map(() => this.dataFilter(data, this.form.value, undefined)),
     )
   }
 
@@ -93,7 +93,7 @@ export class SearchTextColumnsDataFilter extends ColumnsDataFilter<TheSeamColumn
       state: {
         prop: this.prop,
         formValue: this.form.value,
-      }
+      },
     }
   }
 

@@ -10,7 +10,7 @@ import { delay, filter, map, shareReplay, startWith, tap } from 'rxjs/operators'
 import {
   faBell,
   faCalendar,
-  faComment
+  faComment,
 } from '@fortawesome/free-regular-svg-icons'
 import {
   faAngleDown,
@@ -22,7 +22,7 @@ import {
   faSignOutAlt,
   faTimes,
   faUserAlt,
-  faWrench
+  faWrench,
 } from '@fortawesome/free-solid-svg-icons'
 
 import { TheSeamBreadcrumbsComponent } from '@theseam/ui-common/breadcrumbs'
@@ -43,7 +43,7 @@ import {
   horizontalNavItemHasChildren,
   INavItem,
   NavItemExpandedEvent,
-  TheSeamNavModule
+  TheSeamNavModule,
 } from '../nav'
 import { TheSeamNavService } from '../nav/nav.service'
 import { TheSeamBaseLayoutRef } from './base-layout-ref'
@@ -231,8 +231,8 @@ const routes: Route[] = [
           { path: 'example2.1', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.1' } },
           { path: 'example2.2', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.2' } },
           { path: 'example2.3', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.3' } },
-          { path: 'example2.4', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.4' } }
-        ]
+          { path: 'example2.4', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.4' } },
+        ],
       },
       {
         path: 'example2',
@@ -254,11 +254,11 @@ const routes: Route[] = [
                   { path: 'example2.2.2.1', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.2.2.1' } },
                   { path: 'example2.2.2.2', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.2.2.2' } },
                   { path: 'example2.2.2.3', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.2.2.3' } },
-                  { path: 'example2.2.2.4', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.2.2.4' } }
-                ]
+                  { path: 'example2.2.2.4', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.2.2.4' } },
+                ],
               },
               { path: 'example2.2.3', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.3' } },
-            ]
+            ],
           },
           {
             path: 'example2.3',
@@ -274,13 +274,13 @@ const routes: Route[] = [
                   { path: 'example2.3.2.1', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.3.2.1' } },
                   { path: 'example2.3.2.2', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.3.2.2' } },
                   { path: 'example2.3.2.3', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.3.2.3' } },
-                ]
+                ],
               },
               { path: 'example2.3.3', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.3' } },
-            ]
+            ],
           },
-          { path: 'example2.4', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.4' } }
-        ]
+          { path: 'example2.4', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.4' } },
+        ],
       },
       {
         path: 'example3',
@@ -290,11 +290,11 @@ const routes: Route[] = [
           { path: 'example3.1', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example3.1' } },
           { path: 'example3.2', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example3.2' } },
           { path: 'example3.3', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example3.3' } },
-          { path: 'example3.4', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example3.4' } }
-        ]
+          { path: 'example3.4', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example3.4' } },
+        ],
       },
       { path: 'example4', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example4' } },
-      { path: 'example5', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example5' } }
+      { path: 'example5', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example5' } },
     ],
   },
 ]
@@ -310,8 +310,8 @@ const navItems: ISideNavItem[] = [
       theme: 'warning',
       tooltip: {
         tooltip: 'Example Tooltip',
-        container: 'body'
-      }
+        container: 'body',
+      },
     },
     activeNavigatable: false,
   },
@@ -331,27 +331,27 @@ const navItems: ISideNavItem[] = [
           theme: 'danger',
           tooltip: {
             tooltip: 'Example 2.1 Tooltip',
-            container: 'body'
-          }
-        }
+            container: 'body',
+          },
+        },
       },
       {
         itemType: 'link',
         label: 'Example 2.2',
         icon: faBuilding,
-        link: 'example2/example2.2'
+        link: 'example2/example2.2',
       },
       {
         itemType: 'link',
         label: 'Example 2.3',
-        link: 'example2/example2.3'
+        link: 'example2/example2.3',
       },
       {
         itemType: 'link',
         label: 'Example 2.4',
         // link: 'example2/example1.4'
-      }
-    ]
+      },
+    ],
   },
   {
     itemType: 'basic',
@@ -368,37 +368,37 @@ const navItems: ISideNavItem[] = [
         itemType: 'link',
         label: 'Example 3.2',
         icon: faBuilding,
-        link: 'example3/example3.2'
+        link: 'example3/example3.2',
       },
       {
         itemType: 'link',
         label: 'Example 3.3',
-        link: 'example3/example3.3'
+        link: 'example3/example3.3',
       },
       {
         itemType: 'link',
         label: 'Example 3.4',
         // link: 'example3/example3.4'
-      }
-    ]
+      },
+    ],
   },
   {
     itemType: 'link',
     label: 'Example 4',
-    link: 'example4'
+    link: 'example4',
   },
   {
     itemType: 'link',
     label: 'Example 5',
     // link: 'example5'
-  }
+  },
 ]
 
 const horizontalNavItems: INavItem[] = [
   {
     itemType: 'link',
     label: 'Dashboard',
-    link: 'dashboard'
+    link: 'dashboard',
   },
   {
     itemType: 'link',
@@ -420,9 +420,9 @@ const horizontalNavItems: INavItem[] = [
           // tooltip: 'ExampleToolTip'
           tooltip: {
             tooltip: 'Example 1.2 Tooltip',
-            container: 'body'
-          }
-        }
+            container: 'body',
+          },
+        },
       },
       {
         itemType: 'link',
@@ -432,8 +432,8 @@ const horizontalNavItems: INavItem[] = [
       {
         itemType: 'link',
         label: 'Example 1.4',
-      }
-    ]
+      },
+    ],
   },
   {
     itemType: 'link',
@@ -475,14 +475,14 @@ const horizontalNavItems: INavItem[] = [
                 label: 'Example 2.2.2.3',
                 link: 'example2/example2.2/example2.2.2/example2.2.2.3',
               },
-            ]
+            ],
           },
           {
             itemType: 'link',
             label: 'Example 2.2.3',
             link: 'example2/example2.2/example2.2.3',
           },
-        ]
+        ],
       },
       {
         itemType: 'basic',
@@ -513,20 +513,20 @@ const horizontalNavItems: INavItem[] = [
                 label: 'Example 2.3.2.3',
                 link: 'example2/example2.3/example2.3.2/example2.3.2.3',
               },
-            ]
+            ],
           },
           {
             itemType: 'link',
             label: 'Example 2.3.3',
             link: 'example2/example2.3/example2.3.3',
           },
-        ]
+        ],
       },
       {
         itemType: 'link',
         label: 'Example 2.4',
-      }
-    ]
+      },
+    ],
   },
   {
     itemType: 'basic',
@@ -550,20 +550,20 @@ const horizontalNavItems: INavItem[] = [
       {
         itemType: 'link',
         label: 'Example 3.4',
-      }
-    ]
+      },
+    ],
   },
   { itemType: 'divider' },
   {
     itemType: 'link',
     label: 'Example 4',
-    link: 'example4'
+    link: 'example4',
   },
   {
     itemType: 'link',
     label: 'Example 5',
-    link: 'example5'
-  }
+    link: 'example5',
+  },
 ]
 
 @Component({
@@ -655,7 +655,7 @@ const horizontalNavItems: INavItem[] = [
     }
     :host::ng-deep .base-layout-nav-toggle.base-layout-nav-toggle--expanded .mobile-nav-bar__bottom {
       transform: translateX(6px) rotate(-45deg);
-    }`
+    }`,
   ],
   template: `<div style="height: 100vh; width: 100vw;" [class.app-desktop]="!(isMobile$ | async)" [class.app-mobile]="isMobile$ | async" [class.app-mobileNav]="isMobileNav$ | async">
     <seam-base-layout [showSidebar]="false" mobileBreakpoint="lt-md">
@@ -895,7 +895,7 @@ class StoryExBaseLayoutComponent {
     { widgetId: 'widget-1', col: 0, order: 0, component: StoryExWidget1Component },
     { widgetId: 'widget-2', col: 1, order: 0, component: StoryExWidget2Component },
     { widgetId: 'widget-3', col: 2, order: 0, component: StoryExWidget3Component },
-    { widgetId: 'widget-4', col: 1, order: 1, component: StoryExWidget4Component }
+    { widgetId: 'widget-4', col: 1, order: 1, component: StoryExWidget4Component },
   ]
 
   public levelTwoItems$: Observable<INavItem[]>
@@ -917,7 +917,7 @@ class StoryExBaseLayoutComponent {
     private readonly _layout: TheSeamLayoutService,
     private readonly _router: Router,
     private readonly _nav: TheSeamNavService,
-    @Optional() @Inject(THESEAM_BASE_LAYOUT_REF) _baseLayout: TheSeamBaseLayoutRef
+    @Optional() @Inject(THESEAM_BASE_LAYOUT_REF) _baseLayout: TheSeamBaseLayoutRef,
   ) {
     this._router.events.pipe(
       filter(event => event instanceof NavigationEnd),
@@ -931,13 +931,13 @@ class StoryExBaseLayoutComponent {
     this.isMobileNav$ = this._layout.observe('lt-sm')
 
     this.expandOrigin$ = this.isMobileNav$.pipe(
-      map(isMobileNav => isMobileNav ? 'right' : 'left')
+      map(isMobileNav => isMobileNav ? 'right' : 'left'),
     )
     this.expandWidth$ = this.isMobileNav$.pipe(
-      map(isMobileNav => isMobileNav ? '100%' : '450px')
+      map(isMobileNav => isMobileNav ? '100%' : '450px'),
     )
     this.navToggleAlign$ = this.isMobileNav$.pipe(
-      map(isMobileNav => isMobileNav ? 'right' : 'left')
+      map(isMobileNav => isMobileNav ? 'right' : 'left'),
     )
 
     this._focusActiveItem()
@@ -948,7 +948,7 @@ class StoryExBaseLayoutComponent {
         }
 
         return []
-      })
+      }),
     )
   }
 
@@ -1134,6 +1134,6 @@ export const Basic: Story = {
 export const HorizontalNav: Story = {
   render: args => ({
     props: args,
-    template: `<story-ex-base-layout></story-ex-base-layout>`
+    template: `<story-ex-base-layout></story-ex-base-layout>`,
   }),
 }

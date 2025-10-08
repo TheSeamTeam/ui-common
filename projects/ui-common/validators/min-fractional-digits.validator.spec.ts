@@ -50,15 +50,15 @@ describe('minFractionalDigitsValidator', () => {
       'minFractionalDigits': {
         'reason': `Must not be less than 2 fractional digits.`,
         'min': 2,
-        'actual': 1
-      }
+        'actual': 1,
+      },
     })
     expect(minFractionalDigitsValidator(1)(new UntypedFormControl('0.'))).toEqual({
       'minFractionalDigits': {
         'reason': `Must not be less than 1 fractional digits.`,
         'min': 1,
-        'actual': 0
-      }
+        'actual': 0,
+      },
     })
   })
 })

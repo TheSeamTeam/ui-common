@@ -16,11 +16,11 @@ const meta: Meta<IconNotificationComponent> = {
     }),
     moduleMetadata({
       imports: [
-        TheSeamIconModule
-      ]
+        TheSeamIconModule,
+      ],
     }),
-    componentWrapperDecorator(story => `<seam-icon icon="assets/images/icons8-cotton-filled-48.png">${story}</seam-icon>`)
-  ]
+    componentWrapperDecorator(story => `<seam-icon icon="assets/images/icons8-cotton-filled-48.png">${story}</seam-icon>`),
+  ],
 }
 
 export default meta

@@ -15,7 +15,7 @@ export interface NavItemCanHaveState {
    *
    * @ignore
    */
-   __state?: INavItemState
+  __state?: INavItemState
 }
 
 export interface NavItemCanHaveChildren {

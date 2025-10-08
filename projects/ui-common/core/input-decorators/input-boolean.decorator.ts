@@ -16,7 +16,7 @@ export function InputBoolean() {
   return function(
     target: any,
     propertyKey: string,
-    descriptor?: PropertyDescriptor
+    descriptor?: PropertyDescriptor,
   ) {
     Object.defineProperty(target, propertyKey, {
       set(value: boolean) {

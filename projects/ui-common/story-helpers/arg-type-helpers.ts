@@ -9,7 +9,7 @@ export const themeArgType: ArgType = {
   control: {
     type: 'select',
   },
-  description: `Theme style.`
+  description: `Theme style.`,
 }
 
 export const themeWithOutlineArgType: ArgType = {
@@ -17,7 +17,7 @@ export const themeWithOutlineArgType: ArgType = {
   control: {
     type: 'select',
   },
-  description: `Theme style.`
+  description: `Theme style.`,
 }
 
 export const sizeArgType: ArgType = {
@@ -25,7 +25,7 @@ export const sizeArgType: ArgType = {
   control: {
     type: 'select',
   },
-  description: `Size.`
+  description: `Size.`,
 }
 
 export const buttonTypeArgType: ArgType = {
@@ -33,5 +33,5 @@ export const buttonTypeArgType: ArgType = {
   control: {
     type: 'select',
   },
-  description: `Button type.`
+  description: `Button type.`,
 }

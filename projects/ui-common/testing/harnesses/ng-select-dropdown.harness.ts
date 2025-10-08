@@ -20,8 +20,8 @@ export class TheSeamNgSelectDropdownHarness extends ComponentHarness {
   /** Creates a `HarnessPredicate` used to locate a particular `MyMenuHarness`. */
   static with(options: TheSeamNgSelectDropdownHarnessFilters): HarnessPredicate<TheSeamNgSelectDropdownHarness> {
     return new HarnessPredicate(TheSeamNgSelectDropdownHarness, options)
-        .addOption('field id', options.id,
-            (harness, id) => HarnessPredicate.stringMatches(harness.getId(), id))
+      .addOption('field id', options.id,
+        (harness, id) => HarnessPredicate.stringMatches(harness.getId(), id))
   }
 
   public async getId(): Promise<string | null> {
@@ -48,7 +48,7 @@ export class TheSeamNgSelectDropdownHarness extends ComponentHarness {
    *     first matching dropdown option will be clicked.
    */
   async clickOption(
-    optionFilter: Omit<TheSeamNgSelectOptionHarnessFilters, 'ancestor'>
+    optionFilter: Omit<TheSeamNgSelectOptionHarnessFilters, 'ancestor'>,
   ): Promise<void> {
     const options = await this.getOptions(optionFilter)
     if (!options.length) {

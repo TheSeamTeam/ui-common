@@ -139,7 +139,7 @@ export const Required: Story = {
         },
       },
       'required': [
-        'Crop'
+        'Crop',
       ],
     },
     layout: [

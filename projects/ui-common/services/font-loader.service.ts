@@ -21,7 +21,7 @@ export type TheSeamFontEvents =
  * config differences being confusing.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TheSeamFontLoaderService {
 

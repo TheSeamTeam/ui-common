@@ -19,11 +19,11 @@ export interface IDatatableExportButtonData {
 }
 
 @Component({
-    selector: 'seam-datatable-export-button',
-    templateUrl: './datatable-export-button.component.html',
-    styleUrls: ['./datatable-export-button.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'seam-datatable-export-button',
+  templateUrl: './datatable-export-button.component.html',
+  styleUrls: ['./datatable-export-button.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class DatatableExportButtonComponent {
 
@@ -40,7 +40,7 @@ export class DatatableExportButtonComponent {
     private readonly _toastr: ToastrService,
     private readonly _loading: TheSeamLoadingOverlayService,
     private readonly _valueHelper: DynamicValueHelperService,
-    @Optional() @Inject(THESEAM_DYNAMIC_DATA) private readonly _data?: IDatatableExportButtonData
+    @Optional() @Inject(THESEAM_DYNAMIC_DATA) private readonly _data?: IDatatableExportButtonData,
   ) {
     if (this._data && this._data.exporters) {
       this.exporters = this._data.exporters
@@ -57,7 +57,7 @@ export class DatatableExportButtonComponent {
 
     const export$ = combineLatest([
       this._datatable.rows$,
-      this._datatable.columns$.pipe(map(cols => cols.filter(c => !isInternalColumn(c))))
+      this._datatable.columns$.pipe(map(cols => cols.filter(c => !isInternalColumn(c)))),
     ]).pipe(
       take(1),
       map(([ rows, columns ]) => {
@@ -78,7 +78,7 @@ export class DatatableExportButtonComponent {
         } else {
           this._toastr.error(`${exporter.label} export failed.`, 'Data Export')
         }
-      })
+      }),
     )
 
     this._loading.while(export$).subscribe()

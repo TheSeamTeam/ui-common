@@ -28,7 +28,7 @@
  * | gt-lg      | 'screen and (min-width: 1920px)'                        |
  */
 export type MediaQueryAliases =
-  // Breakpoint      MediaQuery
+// Breakpoint      MediaQuery
     'xs' //         'screen and (max-width: 599px)'
   | 'sm' //         'screen and (min-width: 600px) and (max-width: 959px)'
   | 'md' //         'screen and (min-width: 960px) and (max-width: 1279px)'

@@ -1,8 +1,8 @@
 import { Directive, TemplateRef } from '@angular/core'
 
 @Directive({
-    selector: '[seamWidgetIconTpl]',
-    standalone: false
+  selector: '[seamWidgetIconTpl]',
+  standalone: false,
 })
 export class WidgetIconTplDirective {
 

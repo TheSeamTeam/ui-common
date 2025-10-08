@@ -19,7 +19,7 @@ import { TheSeamToggleButtonComponent } from './toggle-button/toggle-button.comp
   ],
   imports: [
     CommonModule,
-    TheSeamProgressModule
+    TheSeamProgressModule,
   ],
   exports: [
     TheSeamBadgeButtonComponent,
@@ -28,6 +28,6 @@ import { TheSeamToggleButtonComponent } from './toggle-button/toggle-button.comp
     TheSeamButtonComponent,
     TheSeamAnchorButtonComponent,
     TheSeamAnchorBadgeButtonComponent,
-  ]
+  ],
 })
 export class TheSeamButtonsModule { }

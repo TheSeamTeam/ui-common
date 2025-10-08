@@ -6,7 +6,7 @@ import { TheSeamTabbedService } from '../tabbed.service'
 
 @Directive({
   selector: '[seamTabbedTab]',
-  exportAs: 'seamTabbedTab'
+  exportAs: 'seamTabbedTab',
 })
 export class TheSeamTabbedTabDirective implements OnInit, TheSeamTabbedTabAccessor {
 
@@ -18,7 +18,7 @@ export class TheSeamTabbedTabDirective implements OnInit, TheSeamTabbedTabAccess
   constructor(
     public elementRef: ElementRef,
     // public host: TheSeamTabbedComponent,
-    public tabbedService: TheSeamTabbedService
+    public tabbedService: TheSeamTabbedService,
   ) { }
 
   // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method

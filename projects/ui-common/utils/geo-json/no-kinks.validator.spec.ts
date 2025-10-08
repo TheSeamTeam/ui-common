@@ -42,7 +42,7 @@ describe('noKinksValidator', () => {
                   [ 1, 1 ],
                   [ 1, 0 ],
                   [ 0, 0 ],
-                ]
+                ],
               ],
             },
             properties: { },
@@ -69,7 +69,7 @@ describe('noKinksValidator', () => {
                   [ 2, 0 ],
                   [ 0, 2 ], // Causes kink
                   [ 0, 0 ],
-                ]
+                ],
               ],
             },
             properties: { },
@@ -97,7 +97,7 @@ describe('noKinksValidator', () => {
                   [ 1, 1 ],
                   [ 1, 0 ],
                   [ 0, 0 ],
-                ]
+                ],
               ],
             },
             properties: { },
@@ -126,7 +126,7 @@ describe('noKinksValidator', () => {
                 [ 2, 0 ],
                 [ 0, 2 ], // Causes kink
                 [ 0, 0 ],
-              ]
+              ],
             ],
           },
           properties: { },

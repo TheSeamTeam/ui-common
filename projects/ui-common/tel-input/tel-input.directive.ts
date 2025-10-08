@@ -54,7 +54,7 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy, DoCheck {
     this._elementRef.nativeElement.setAttribute('instance-loading', '')
     merge(
       this._assetLoader.loadStyleSheet(TEL_INPUT_STYLESHEET_PATH),
-      this._assetLoader.loadStyle(TEL_INPUT_STYLES)
+      this._assetLoader.loadStyle(TEL_INPUT_STYLES),
     ).pipe(
       tap(v => this._loadedAssetRefs.push(v)),
       last(),
@@ -83,10 +83,10 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy, DoCheck {
       tap(this._formatIntlTelInput),
       switchMap(() => merge(
         fromEvent(this._elementRef.nativeElement, 'keyup'),
-        fromEvent(this._elementRef.nativeElement, 'change')
+        fromEvent(this._elementRef.nativeElement, 'change'),
       )),
       tap(this._formatIntlTelInput),
-      takeUntil(this._ngUnsubscribe)
+      takeUntil(this._ngUnsubscribe),
     ).subscribe()
   }
 
@@ -167,7 +167,7 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy, DoCheck {
   private _initDropdownListener() {
     const doc = this._document
     if (!doc) {
-        return
+      return
     }
 
     this._ngZone.runOutsideAngular(() => {
@@ -178,7 +178,7 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy, DoCheck {
         switchMap(() => {
           const pressDown$ = merge(
             fromEvent(doc, 'touchstart', { capture: true }),
-            fromEvent(doc, 'mousedown', { capture: true })
+            fromEvent(doc, 'mousedown', { capture: true }),
           ).pipe(
             auditTime(0),
             tap((event: any) => {
@@ -186,7 +186,7 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy, DoCheck {
                 return
               }
               instance._closeDropdown()
-            })
+            }),
           )
 
           const flagBtnClick$ = fromEvent<MouseEvent>(instance.selectedFlag, 'click').pipe(
@@ -197,12 +197,12 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy, DoCheck {
 
               event.preventDefault()
               instance._closeDropdown()
-            })
+            }),
           )
 
           return merge(pressDown$, flagBtnClick$).pipe(takeUntil(closeDropdown$))
         }),
-        takeUntil(this._ngUnsubscribe)
+        takeUntil(this._ngUnsubscribe),
       ).subscribe()
 
       const flagsContainer: HTMLElement | null | undefined = (this._instance as any)?.selectedFlag
@@ -220,7 +220,7 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy, DoCheck {
               }
             }
           }),
-          takeUntil(this._ngUnsubscribe)
+          takeUntil(this._ngUnsubscribe),
         ).subscribe()
       }
     })

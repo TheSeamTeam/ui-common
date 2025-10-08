@@ -4,7 +4,7 @@ import { TheSeamTabbedTabContentAccessor } from '../tabbed-models'
 
 @Directive({
   selector: '[seamTabbedTabContent]',
-  exportAs: 'seamTabbedTabContent'
+  exportAs: 'seamTabbedTabContent',
 })
 export class TheSeamTabbedTabContentDirective implements TheSeamTabbedTabContentAccessor {
 

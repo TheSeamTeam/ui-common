@@ -2,13 +2,13 @@ import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, Input, Ren
 
 import {
   CanThemeCtor,
-  mixinTheme
+  mixinTheme,
 } from '@theseam/ui-common/core'
 
 class WidgetHeaderBadgeBase {
 
   constructor(
-    public _elementRef: ElementRef
+    public _elementRef: ElementRef,
   ) { }
 
 }
@@ -17,24 +17,24 @@ const _WidgetHeaderBadgeMixinBase: CanThemeCtor &
     typeof WidgetHeaderBadgeBase = mixinTheme(WidgetHeaderBadgeBase, 'badge')
 
 @Component({
-    selector: 'seam-widget-header-badge',
-    templateUrl: './widget-header-badge.component.html',
-    styleUrls: ['./widget-header-badge.component.scss'],
-    // tslint:disable-next-line:use-input-property-decorator
-    inputs: ['theme'],
-    // tslint:disable-next-line:use-host-property-decorator
-    host: {
-        'class': 'badge float-right'
-    },
-    encapsulation: ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'seam-widget-header-badge',
+  templateUrl: './widget-header-badge.component.html',
+  styleUrls: ['./widget-header-badge.component.scss'],
+  // tslint:disable-next-line:use-input-property-decorator
+  inputs: ['theme'],
+  // tslint:disable-next-line:use-host-property-decorator
+  host: {
+    'class': 'badge float-right',
+  },
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class WidgetHeaderBadgeComponent extends _WidgetHeaderBadgeMixinBase {
 
   // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(
-    _elementRef: ElementRef
+    _elementRef: ElementRef,
   ) { super(_elementRef) }
 
 }

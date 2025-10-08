@@ -35,7 +35,7 @@ export class TheSeamSchemaFormInputComponent implements OnInit, TheSeamSchemaFor
   autoCompleteList: string[] = []
 
   constructor(
-    private readonly _jsf: JsonSchemaFormService
+    private readonly _jsf: JsonSchemaFormService,
   ) { }
 
   ngOnInit() {

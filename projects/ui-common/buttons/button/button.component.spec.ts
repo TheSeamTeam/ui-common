@@ -28,7 +28,7 @@ describe('TheSeamButtonComponent', () => {
     it('should set the theme class name according to the [theme] input', () => {
       spectator = createHost(`<button seamButton [theme]="theme">Example</button>`, {
         hostProps: {
-          theme: 'primary'
+          theme: 'primary',
         },
       })
       expect(spectator.query('button', { root: true })).toHaveClass('btn-primary')

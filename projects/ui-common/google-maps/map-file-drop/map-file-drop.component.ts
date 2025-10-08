@@ -43,7 +43,7 @@ export class TheSeamMapFileDropComponent implements OnInit, OnDestroy {
     private readonly _ngZone: NgZone,
     private readonly _googleMaps: GoogleMapsService,
     private readonly _mapValueManager: MapValueManagerService,
-    private readonly _renderer: Renderer2
+    private readonly _renderer: Renderer2,
   ) { }
 
   /** @ignore */
@@ -56,7 +56,7 @@ export class TheSeamMapFileDropComponent implements OnInit, OnDestroy {
           this._disableFileDrop()
         }
       }),
-      takeUntil(this._ngUnsubscribe)
+      takeUntil(this._ngUnsubscribe),
     ).subscribe()
   }
 

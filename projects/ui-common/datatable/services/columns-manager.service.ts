@@ -69,7 +69,7 @@ export class ColumnsManagerService {
       startWith(undefined),
       switchMap(() => {
         return this._templateColumns.asObservable().pipe(map(translateTemplateColumns))
-      })
+      }),
     )
 
     this.columns$ = defer(() => {
@@ -77,7 +77,7 @@ export class ColumnsManagerService {
       return combineLatest([
         this._inputColumns.asObservable(),
         templateColumns$,
-        this._updateColumns.asObservable().pipe(auditTime(0), startWith(undefined))
+        this._updateColumns.asObservable().pipe(auditTime(0), startWith(undefined)),
       ]).pipe(
         switchMap(([ inputColumns, templateColumns ]) => {
           const cols = this._mergeColumns(inputColumns, templateColumns)
@@ -101,7 +101,7 @@ export class ColumnsManagerService {
         }),
       )
     }).pipe(
-      shareReplay({ refCount: true, bufferSize: 1 })
+      shareReplay({ refCount: true, bufferSize: 1 }),
     )
   }
 
@@ -188,7 +188,7 @@ export class ColumnsManagerService {
 
   private _mergeColumns(
     inputColumns: TheSeamDatatableColumn[],
-    templateColumns: DatatableColumnComponent[]
+    templateColumns: DatatableColumnComponent[],
   ): TheSeamDatatableColumn[] {
     const cols: TheSeamDatatableColumn[] = []
 
@@ -229,7 +229,7 @@ export class ColumnsManagerService {
         // TODO: Rethink this, because I don't know if this is correct.
         ...(tplCol as any || {}),
         // Store filter directly on column object
-        $$filter: existingFilter || this._createColumnFilter(inpCol)
+        $$filter: existingFilter || this._createColumnFilter(inpCol),
       }
 
       if (this._shouldAddTreeToggleColumn(_col)) {
@@ -285,7 +285,7 @@ export class ColumnsManagerService {
 
   private _findColumnByProp<T extends TheSeamDatatableColumn | DatatableColumnComponent>(
     prop: TableColumnProp,
-    columns: T[]
+    columns: T[],
   ): T | undefined {
     return columns.find(c => getColumnProp(c) === prop)
   }
@@ -318,7 +318,7 @@ export class ColumnsManagerService {
 
   private _getColDif(
     col: TheSeamDatatableColumn | DatatableColumnComponent,
-    colsType: ColumnsTypes
+    colsType: ColumnsTypes,
   ): KeyValueChanges<string, any> | null {
     const prop = getColumnProp(col)
     if (prop === undefined) {
@@ -331,7 +331,7 @@ export class ColumnsManagerService {
   private _updateColDif(
     colDif: KeyValueChanges<string, any>,
     internalColumn: TableColumn | undefined,
-    col: TheSeamDatatableColumn | DatatableColumnComponent
+    col: TheSeamDatatableColumn | DatatableColumnComponent,
   ): void {
     colDif.forEachRemovedItem(r => {
       if (internalColumn && Object.prototype.hasOwnProperty.call(internalColumn, r.key)) {

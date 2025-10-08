@@ -48,7 +48,7 @@ export class DataFiltersManager {
 
   public filter<T>(data: T[]): Observable<T[]> {
     return defer(() => of().pipe(composeDataFilters(this.filters))).pipe(
-      repeatWhen<any>(() => this.filtersChanged)
+      repeatWhen<any>(() => this.filtersChanged),
     )
   }
 

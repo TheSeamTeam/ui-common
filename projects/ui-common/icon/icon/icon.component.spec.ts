@@ -10,13 +10,13 @@ describe('IconComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [IconComponent],
-    imports: [
-        FontAwesomeModule
-    ],
-    teardown: { destroyAfterEach: false }
-})
-    .compileComponents()
+      declarations: [IconComponent],
+      imports: [
+        FontAwesomeModule,
+      ],
+      teardown: { destroyAfterEach: false },
+    })
+      .compileComponents()
   }))
 
   beforeEach(() => {

@@ -5,19 +5,19 @@ import type { ITheSeamMenuPanel } from '../menu-panel'
 import { THESEAM_MENU_PANEL } from '../menu-panel-token'
 
 @Component({
-    selector: 'seam-menu-header',
-    templateUrl: './menu-header.component.html',
-    styleUrls: ['./menu-header.component.scss'],
-    host: {
-        'class': 'd-flex flex-column bg-light border-bottom rounded-top py-2 mb-2'
-    },
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'seam-menu-header',
+  templateUrl: './menu-header.component.html',
+  styleUrls: ['./menu-header.component.scss'],
+  host: {
+    'class': 'd-flex flex-column bg-light border-bottom rounded-top py-2 mb-2',
+  },
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class MenuHeaderComponent implements OnInit, OnDestroy {
 
   constructor(
-    @Inject(THESEAM_MENU_PANEL) @Optional() private _parentMenu?: ITheSeamMenuPanel<MenuItemComponent>
+    @Inject(THESEAM_MENU_PANEL) @Optional() private _parentMenu?: ITheSeamMenuPanel<MenuItemComponent>,
   ) { }
 
   ngOnInit() {

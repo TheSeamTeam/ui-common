@@ -6,10 +6,10 @@ import { FlexLayoutModule } from '@angular/flex-layout'
   declarations: [],
   imports: [
     CommonModule,
-    FlexLayoutModule
+    FlexLayoutModule,
   ],
   exports: [
-    FlexLayoutModule
-  ]
+    FlexLayoutModule,
+  ],
 })
 export class TheSeamLayoutModule { }

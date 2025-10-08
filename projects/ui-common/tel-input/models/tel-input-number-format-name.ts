@@ -4,5 +4,5 @@ export const TelInputNumberFormatName: { [name: string]: intlTelInputUtils.numbe
   'E164': intlTelInputUtils.numberFormat.E164,
   'INTERNATIONAL': intlTelInputUtils.numberFormat.INTERNATIONAL,
   'NATIONAL': intlTelInputUtils.numberFormat.NATIONAL,
-  'RFC3966': intlTelInputUtils.numberFormat.RFC3966
+  'RFC3966': intlTelInputUtils.numberFormat.RFC3966,
 }

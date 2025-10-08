@@ -10,7 +10,7 @@ import {
   OnInit,
   TemplateRef,
   ViewContainerRef,
-  ViewEncapsulation
+  ViewEncapsulation,
 } from '@angular/core'
 import { AsyncPipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common'
 import { BehaviorSubject, from, isObservable, Observable } from 'rxjs'
@@ -151,7 +151,7 @@ export class TheSeamBaseLayoutComponent implements OnInit, TheSeamBaseLayoutRef 
         // eslint-disable-next-line no-console
         console.warn(
           `[TheSeamBaseLayoutComponent] registerAction(): Action ${action.name} not ` +
-          'registered, because another action by that name is already registered.'
+          'registered, because another action by that name is already registered.',
         )
       }
       return

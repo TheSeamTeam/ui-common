@@ -3,7 +3,7 @@ import { Component, HostBinding } from '@angular/core'
 @Component({
   selector: 'seam-card-header',
   templateUrl: './card-header.component.html',
-  styleUrls: ['./card-header.component.scss']
+  styleUrls: ['./card-header.component.scss'],
 })
 export class TheSeamCardHeaderComponent {
 

@@ -7,7 +7,7 @@ import { WidgetListGroupItemIconTplDirective } from './widget-list-group-item/wi
 import {
   WidgetListGroupItemAnchorComponent,
   WidgetListGroupItemButtonComponent,
-  WidgetListGroupItemComponent
+  WidgetListGroupItemComponent,
 } from './widget-list-group-item/widget-list-group-item.component'
 import { WidgetListGroupComponent } from './widget-list-group.component'
 
@@ -17,18 +17,18 @@ import { WidgetListGroupComponent } from './widget-list-group.component'
     WidgetListGroupItemAnchorComponent,
     WidgetListGroupItemButtonComponent,
     WidgetListGroupItemComponent,
-    WidgetListGroupItemIconTplDirective
+    WidgetListGroupItemIconTplDirective,
   ],
   imports: [
     CommonModule,
-    TheSeamIconModule
+    TheSeamIconModule,
   ],
   exports: [
     WidgetListGroupComponent,
     WidgetListGroupItemAnchorComponent,
     WidgetListGroupItemButtonComponent,
     WidgetListGroupItemComponent,
-    WidgetListGroupItemIconTplDirective
-  ]
+    WidgetListGroupItemIconTplDirective,
+  ],
 })
 export class TheSeamWidgetListGroupModule { }

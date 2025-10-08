@@ -11,11 +11,11 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion'
 import { TableCellTypeConfigInteger } from './table-cell-type-integer-config'
 
 @Component({
-    selector: 'seam-table-cell-type-integer',
-    templateUrl: './table-cell-type-integer.component.html',
-    styleUrls: ['./table-cell-type-integer.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'seam-table-cell-type-integer',
+  templateUrl: './table-cell-type-integer.component.html',
+  styleUrls: ['./table-cell-type-integer.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class TableCellTypeIntegerComponent implements OnDestroy {
 
@@ -31,7 +31,7 @@ export class TableCellTypeIntegerComponent implements OnDestroy {
   constructor(
     private _cdf: ChangeDetectorRef,
     private _tableCellTypeHelpers: TableCellTypesHelpersService,
-    @Optional() @Inject(TABLE_CELL_DATA) _tableData?: TableCellData<'integer', TableCellTypeConfigInteger>
+    @Optional() @Inject(TABLE_CELL_DATA) _tableData?: TableCellData<'integer', TableCellTypeConfigInteger>,
   ) {
     const tableData = _tableData
     this.value = tableData && this._formatInteger(tableData.value, tableData)

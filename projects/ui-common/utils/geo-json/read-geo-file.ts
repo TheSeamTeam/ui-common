@@ -29,7 +29,7 @@ export async function readGeoFile(fileOrBuffer: File | ArrayBuffer | Buffer): Pr
           console.warn(
             'Try adding Buffer polyfill.\n' +
             'Install: npm install buffer\n' +
-            'Add `global.Buffer = global.Buffer || require(\'buffer\').Buffer` to "src/polyfills.ts"'
+            'Add `global.Buffer = global.Buffer || require(\'buffer\').Buffer` to "src/polyfills.ts"',
           )
         }
       }
@@ -78,8 +78,8 @@ async function parseShpFile(buffer: Buffer): Promise<FeatureCollection> {
     features: geometries.map(geom => ({
       type: 'Feature',
       geometry: geom,
-      properties: { }
-    }))
+      properties: { },
+    })),
   }
   return featCollection
 }

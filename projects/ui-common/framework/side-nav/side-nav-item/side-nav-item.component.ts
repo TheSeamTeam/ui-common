@@ -6,7 +6,7 @@ import {
   Inject,
   Input,
   OnDestroy,
-  ViewEncapsulation
+  ViewEncapsulation,
 } from '@angular/core'
 import { animate, state, style, transition, trigger } from '@angular/animations'
 import { CommonModule } from '@angular/common'
@@ -120,7 +120,7 @@ export class SideNavItemComponent implements OnDestroy {
           tooltip: value,
           placement: 'auto',
           container: 'body',
-          disabled: false
+          disabled: false,
         }
       } else {
         this._badgeTooltip = {

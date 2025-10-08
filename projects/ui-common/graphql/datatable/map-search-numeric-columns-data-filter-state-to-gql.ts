@@ -20,10 +20,10 @@ export const mapSearchNumericColumnsDataFilterStateToGql = (
         filter = {
           filter: {
             and: [
-              { [filterState.state.prop]: { [filterState.state.formValue.searchType]: searchNumeric } }
-            ]
+              { [filterState.state.prop]: { [filterState.state.formValue.searchType]: searchNumeric } },
+            ],
           },
-          variables: {}
+          variables: {},
         }
       }
     }
@@ -39,9 +39,9 @@ export const mapSearchNumericColumnsDataFilterStateToGql = (
               and: [
                 { [filterState.state.prop]: { 'gte': fromNumeric } },
                 { [filterState.state.prop]: { 'lte': toNumeric } },
-              ]
+              ],
             },
-            variables: {}
+            variables: {},
           }
         }
         else if (filterState.state.formValue.searchType === 'not-between') {
@@ -50,9 +50,9 @@ export const mapSearchNumericColumnsDataFilterStateToGql = (
               or: [
                 { [filterState.state.prop]: { 'lt': fromNumeric } },
                 { [filterState.state.prop]: { 'gt': toNumeric } },
-              ]
+              ],
             },
-            variables: {}
+            variables: {},
           }
         }
       }
@@ -63,9 +63,9 @@ export const mapSearchNumericColumnsDataFilterStateToGql = (
           or: [
             { [filterState.state.prop]: { eq: null } },
             { [filterState.state.prop]: { eq: '' } },
-          ]
+          ],
         },
-        variables: {}
+        variables: {},
       }
     }
     else if (filterState.state.formValue.searchType === 'not-blank') {
@@ -73,10 +73,10 @@ export const mapSearchNumericColumnsDataFilterStateToGql = (
         filter: {
           and: [
             { [filterState.state.prop]: { neq: null } },
-            { [filterState.state.prop]: { neq: '' } }
-          ]
+            { [filterState.state.prop]: { neq: '' } },
+          ],
         },
-        variables: {}
+        variables: {},
       }
     }
   }

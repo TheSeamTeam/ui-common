@@ -16,11 +16,11 @@ export function calcDashoffset(value: number, circumference: number) {
 }
 
 @Component({
-    selector: 'seam-progress-circle',
-    templateUrl: './progress-circle.component.html',
-    styleUrls: ['./progress-circle.component.scss'],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+  selector: 'seam-progress-circle',
+  templateUrl: './progress-circle.component.html',
+  styleUrls: ['./progress-circle.component.scss'],
+  encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class ProgressCircleComponent {
   static ngAcceptInputType_fillBackground: BooleanInput
@@ -52,7 +52,7 @@ export class ProgressCircleComponent {
     return {
       dashoffset: calcDashoffset(this.percentage || 0, this.circumference),
       circumference: this.circumference,
-      percent: Math.floor(this.percentage || 0)
+      percent: Math.floor(this.percentage || 0),
     }
   }
 }

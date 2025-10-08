@@ -10,7 +10,7 @@ import { map } from 'rxjs/operators'
 
 import {
   faBell, faBuilding, faChartLine, faCompass, faFilePdf, faSignature,
-  faUsers, faWrench
+  faUsers, faWrench,
 } from '@fortawesome/free-solid-svg-icons'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
 
@@ -41,7 +41,7 @@ import { provideLocationMocks } from '@angular/common/testing'
   </seam-widget-tile-list>
 
   <seam-widget-footer-text *ngIf="p?.length">Submitted: {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text>
-</seam-widget>`
+</seam-widget>`,
 })
 class StoryExWidget1Component {
   faWrench = faWrench
@@ -61,7 +61,7 @@ class StoryExWidget1Component {
   </seam-widget-tile-list>
 
   <seam-widget-footer-text *ngIf="p?.length">Submitted: {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text>
-</seam-widget>`
+</seam-widget>`,
 })
 class StoryExWidget2Component {
   faWrench = faWrench
@@ -81,7 +81,7 @@ class StoryExWidget2Component {
   </seam-widget-tile-list>
 
   <a seam-widget-footer-link routerLink="/example1">See All</a>
-</seam-widget>`
+</seam-widget>`,
 })
 class StoryExWidget3Component {
   faWrench = faWrench
@@ -101,7 +101,7 @@ class StoryExWidget3Component {
   </seam-widget-tile-list>
 
   <seam-widget-footer-text *ngIf="p?.length">Submitted: {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text>
-</seam-widget>`
+</seam-widget>`,
 })
 class StoryExWidget4Component {
   faWrench = faWrench
@@ -121,7 +121,7 @@ class StoryExWidget4Component {
       [notificationIcon]="faClock" notificationIconClass="text-danger">13 pending approvals.</button>
     [notificationIcon]="faClock" notificationIconClass="text-danger"
   </seam-widget-tile-list>
-</seam-widget>`
+</seam-widget>`,
 })
 class StoryExWidget5Component {
   faUsers = faUsers
@@ -182,7 +182,7 @@ class StoryExWidget5Component {
     </tbody>
   </table>
 
-</seam-widget>`
+</seam-widget>`,
 })
 class StoryExWidget6Component {
   faSignature = faSignature
@@ -197,7 +197,7 @@ class StoryExWidget6Component {
 
   <img [src]="figureImg" />
 
-</seam-widget>`
+</seam-widget>`,
 })
 class StoryExWidget7Component {
   faChartLine = faChartLine
@@ -218,7 +218,7 @@ class StoryExWidget7Component {
   pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa
   qui officia deserunt mollit anim id est laborum. <a>More…</a></p>
 
-</seam-widget>`
+</seam-widget>`,
 })
 class StoryExWidget8Component {
   faClock = faClock
@@ -229,7 +229,7 @@ class StoryExWidget8Component {
   selector: 'name-ex',
   template: `
     <div>Name: {{ name$ | async }}</div>
-  `
+  `,
 })
 class StoryNameExComponent {
 
@@ -237,7 +237,7 @@ class StoryNameExComponent {
 
   constructor(
     private _route: ActivatedRoute,
-    private _router: Router
+    private _router: Router,
   ) {
     // eslint-disable-next-line no-console
     console.log('name-ex', this)
@@ -263,7 +263,7 @@ class StoryNameExComponent {
     </nav>
 
     <div>User Details</div>
-  `
+  `,
 })
 class UserDetailsExComponent {
 
@@ -271,7 +271,7 @@ class UserDetailsExComponent {
 
   constructor(
     private _route: ActivatedRoute,
-    private _router: Router
+    private _router: Router,
   ) {
     // eslint-disable-next-line no-console
     console.log('user-details-ex', this)
@@ -294,8 +294,8 @@ const meta: Meta<any> = {
     }),
   ],
   parameters: {
-    layout: 'fullscreen'
-  }
+    layout: 'fullscreen',
+  },
 }
 
 export default meta
@@ -311,10 +311,10 @@ export const TableWithDetailNav: Story = {
             component: DynamicDatatablePageComponent,
             data: {
               name: 'Users',
-              tableDef: exampleData2
+              tableDef: exampleData2,
             },
             resolve: {
-              hierLevel: HierarchyLevelResolver
+              hierLevel: HierarchyLevelResolver,
             },
             // loadChildren: () => Promise.resolve(LevelTwoModule)
             // loadChildren: () => of(LevelTwoModule)
@@ -324,19 +324,19 @@ export const TableWithDetailNav: Story = {
                 component: UserDetailsExComponent,
                 data: { },
                 resolve: {
-                  hierLevel: HierarchyLevelResolver
-                }
+                  hierLevel: HierarchyLevelResolver,
+                },
               },
-            ]
+            ],
           },
           {
             path: 'documents',
             component: StoryNameExComponent,
             data: {
-              name: 'Documents'
+              name: 'Documents',
             },
             resolve: {
-              hierLevel: HierarchyLevelResolver
+              hierLevel: HierarchyLevelResolver,
             },
             // loadChildren: () => Promise.resolve(LevelTwoModule)
             // loadChildren: () => of(LevelTwoModule)
@@ -345,10 +345,10 @@ export const TableWithDetailNav: Story = {
             path: 'settings',
             component: StoryNameExComponent,
             data: {
-              name: 'Settings'
+              name: 'Settings',
             },
             resolve: {
-              hierLevel: HierarchyLevelResolver
+              hierLevel: HierarchyLevelResolver,
             },
             // loadChildren: () => Promise.resolve(LevelTwoModule)
             // loadChildren: () => of(LevelTwoModule)
@@ -357,14 +357,14 @@ export const TableWithDetailNav: Story = {
             path: 'status',
             component: StoryNameExComponent,
             data: {
-              name: 'Status'
+              name: 'Status',
             },
             resolve: {
-              hierLevel: HierarchyLevelResolver
+              hierLevel: HierarchyLevelResolver,
             },
             // loadChildren: () => Promise.resolve(LevelTwoModule)
             // loadChildren: () => of(LevelTwoModule)
-          }
+          },
         ]),
       ],
     },
@@ -379,7 +379,7 @@ export const TableWithDetailNav: Story = {
         StoryExWidget7Component,
         StoryExWidget8Component,
         StoryNameExComponent,
-        UserDetailsExComponent
+        UserDetailsExComponent,
       ],
       imports: [
         ReactiveFormsModule,
@@ -391,7 +391,7 @@ export const TableWithDetailNav: Story = {
         TheSeamTopBarModule,
         TheSeamWidgetModule,
         DynamicPagesModule,
-        TheSeamIconModule
+        TheSeamIconModule,
       ],
     },
     props: {
@@ -417,27 +417,27 @@ export const TableWithDetailNav: Story = {
               itemType: 'link',
               label: 'Documents',
               icon: faBuilding,
-              link: 'documents'
-            }
-          ]
+              link: 'documents',
+            },
+          ],
         },
         { itemType: 'divider' },
         {
           itemType: 'title',
-          label: 'Admin'
+          label: 'Admin',
         },
         {
           itemType: 'link',
           label: 'Settings',
           icon: faSignature,
-          link: 'settings'
+          link: 'settings',
         },
         {
           itemType: 'link',
           label: 'Status',
           icon: faBuilding,
-          link: 'status'
-        }
+          link: 'status',
+        },
       ],
       widgets: [
         { col: 1, order: 1, type: StoryExWidget1Component },
@@ -447,7 +447,7 @@ export const TableWithDetailNav: Story = {
         { col: 3, order: 0, type: StoryExWidget5Component },
         { col: 1, order: 0, type: StoryExWidget6Component },
         { col: 2, order: 0, type: StoryExWidget7Component },
-        { col: 2, order: 1, type: StoryExWidget8Component }
+        { col: 2, order: 1, type: StoryExWidget8Component },
       ],
       // logo: text('logo', 'assets/images/theseam_logo.svg'),
       // logoSm: text('logoSm', 'assets/images/theseam_logo_notext.svg'),
@@ -480,7 +480,7 @@ export const TableWithDetailNav: Story = {
           </seam-hierarchy-router-outlet>
         </seam-base-layout>
       </div>
-    `
+    `,
   }),
 }
 

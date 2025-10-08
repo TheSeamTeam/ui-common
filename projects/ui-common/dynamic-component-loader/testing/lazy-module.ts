@@ -12,11 +12,11 @@ export class LazyComponent {}
 
 @NgModule({
   declarations: [
-    LazyComponent
+    LazyComponent,
   ],
   imports: [
     CommonModule,
     TheSeamDynamicComponentLoaderModule.forChild(LazyComponent),
-  ]
+  ],
 })
 export class LazyModule { }

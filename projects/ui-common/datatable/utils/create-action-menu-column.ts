@@ -6,7 +6,7 @@ export function createActionMenuColumn(
   cellTemplate: any,
   headerTemplate: any,
   frozenLeft?: boolean,
-  frozenRight?: boolean
+  frozenRight?: boolean,
 ): TheSeamDatatableColumn {
   return {
     prop: ACTION_MENU_COLUMN_PROP,

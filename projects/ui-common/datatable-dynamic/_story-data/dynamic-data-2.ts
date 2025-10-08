@@ -11,21 +11,21 @@ export const exampleData2: DatatableDynamicDef = {
         options: {
           buttons: [
             { name: '30', value: '30' },
-            { name: '32', value: '32' }
-          ]
-        }
-      }
+            { name: '32', value: '32' },
+          ],
+        },
+      },
     ],
     exporters: [
       'exporter:csv',
-      'exporter:xlsx'
+      'exporter:xlsx',
     ],
   },
   columns: [
     { prop: 'firstName', name: 'First Name' },
     { prop: 'lastName', name: 'Last Name' },
     { prop: 'age', name: 'Age' },
-    { prop: 'sentDate', name: 'Sent Date', cellType: 'date' }
+    { prop: 'sentDate', name: 'Sent Date', cellType: 'date' },
   ],
   rows: [
     { firstName: 'User1', lastName: 'Last1', age: 28, sentDate: '2019-07-22T16:25:58.0266996+00:00' },
@@ -37,11 +37,11 @@ export const exampleData2: DatatableDynamicDef = {
       label: 'View Detail',
       action: {
         type: 'link',
-        link: 'details'
-      }
-    }
+        link: 'details',
+      },
+    },
   ],
   options: {
-    virtualization: true
-  }
+    virtualization: true,
+  },
 }

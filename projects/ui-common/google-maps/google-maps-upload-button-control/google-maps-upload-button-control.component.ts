@@ -36,7 +36,7 @@ export interface GoogleMapsUploadButtonControlData {
     '[attr.aria-label]': 'label',
     '[attr.title]': 'label',
     'type': 'button',
-    'class': 'gmnoprint gm-control-active'
+    'class': 'gmnoprint gm-control-active',
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false,
@@ -63,7 +63,7 @@ export class TheSeamGoogleMapsUploadButtonControlComponent implements OnDestroy 
     private readonly _mapValueManager: MapValueManagerService,
     private readonly _renderer: Renderer2,
     private readonly _googleMaps: GoogleMapsService,
-    @Optional() @Inject(MAP_CONTROL_DATA) _data?: GoogleMapsUploadButtonControlData
+    @Optional() @Inject(MAP_CONTROL_DATA) _data?: GoogleMapsUploadButtonControlData,
   ) {
     if (_data) {
       if (Object.prototype.hasOwnProperty.call(_data, 'label')) {
@@ -134,7 +134,7 @@ export class TheSeamGoogleMapsUploadButtonControlComponent implements OnDestroy 
   /**
    * Reset input element, so that the same file can be added again.
    */
-   private _resetInput(): void {
+  private _resetInput(): void {
     const formElement = this._createTemporaryFormElement()
     this._renderer.appendChild(formElement, this._fileInputElement)
     formElement.reset()

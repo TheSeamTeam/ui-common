@@ -5,10 +5,10 @@ import { TheSeamDynamicComponentLoader } from '@theseam/ui-common/dynamic-compon
 import { LazyWidgetOneComponent } from 'src/app/example-lazy-loaded-widgets/lazy-widget-one/lazy-widget-one.component'
 
 @Component({
-    selector: 'app-example-lazy-loaded-widgets',
-    templateUrl: './example-lazy-loaded-widgets.component.html',
-    styleUrls: ['./example-lazy-loaded-widgets.component.scss'],
-    standalone: false
+  selector: 'app-example-lazy-loaded-widgets',
+  templateUrl: './example-lazy-loaded-widgets.component.html',
+  styleUrls: ['./example-lazy-loaded-widgets.component.scss'],
+  standalone: false,
 })
 export class ExampleLazyLoadedWidgetsComponent implements OnInit {
 
@@ -17,7 +17,7 @@ export class ExampleLazyLoadedWidgetsComponent implements OnInit {
   widgets: any[] = []
 
   constructor(
-    private _dynamicComponentLoaderModule: TheSeamDynamicComponentLoader
+    private _dynamicComponentLoaderModule: TheSeamDynamicComponentLoader,
   ) { }
 
   ngOnInit() { }

@@ -12,10 +12,10 @@ type _PipeTransform = PipeTransform | PipeTransform
 // providing some properties by input and some by template could be confusing.
 
 @Component({
-    selector: 'seam-datatable-column',
-    templateUrl: './datatable-column.component.html',
-    styleUrls: ['./datatable-column.component.scss'],
-    standalone: false
+  selector: 'seam-datatable-column',
+  templateUrl: './datatable-column.component.html',
+  styleUrls: ['./datatable-column.component.scss'],
+  standalone: false,
 })
 export class DatatableColumnComponent implements OnChanges {
 
@@ -92,7 +92,7 @@ export class DatatableColumnComponent implements OnChanges {
   // }
 
   constructor(
-    private _columnChangesService: DatatableColumnChangesService
+    private _columnChangesService: DatatableColumnChangesService,
   ) {}
 
   ngOnChanges(changes: SimpleChanges) {

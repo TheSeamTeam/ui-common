@@ -15,7 +15,7 @@ export type SubscriberCountChangedFn = (description: string, count: number, reas
 export function subscriberCount<T>(
   sourceObservable: Observable<T>,
   description: string,
-  countChangedFn: SubscriberCountChangedFn | undefined | null = logOnChange
+  countChangedFn: SubscriberCountChangedFn | undefined | null = logOnChange,
 ) {
   let counter = 0
   return new Observable((subscriber: Subscriber<T>) => {

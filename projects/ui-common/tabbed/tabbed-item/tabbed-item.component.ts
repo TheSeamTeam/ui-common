@@ -10,7 +10,7 @@ import { TheSeamTabbedItemAccessor } from '../tabbed-models'
 @Component({
   selector: 'seam-tabbed-item',
   templateUrl: './tabbed-item.component.html',
-  styleUrls: ['./tabbed-item.component.scss']
+  styleUrls: ['./tabbed-item.component.scss'],
 })
 export class TheSeamTabbedItemComponent implements TheSeamTabbedItemAccessor {
   static ngAcceptInputType_contentFromRoute: BooleanInput

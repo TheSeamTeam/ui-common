@@ -30,7 +30,7 @@ export class DynamicActionApiService implements DynamicActionApi {
   constructor(
     private _valueHelper: DynamicValueHelperService,
     @Optional() private _http: HttpClient,
-    @Optional() @Inject(THESEAM_API_CONFIG) private _configs: IApiConfig[]
+    @Optional() @Inject(THESEAM_API_CONFIG) private _configs: IApiConfig[],
   ) { }
 
   public exec(args: DynamicActionApiDef, context: any): Promise<any> {
@@ -46,7 +46,7 @@ export class DynamicActionApiService implements DynamicActionApi {
   public async getUiProps(args: DynamicActionApiDef, context: any): Promise<DynamicActionUiButtonDef> {
     return {
       _actionDef: args,
-      triggerType: 'click'
+      triggerType: 'click',
     }
   }
 
@@ -66,7 +66,7 @@ export class DynamicActionApiService implements DynamicActionApi {
     const result = {
       url,
       method,
-      options: { body, params, headers }
+      options: { body, params, headers },
     }
 
     return result
@@ -187,7 +187,7 @@ export class DynamicActionApiService implements DynamicActionApi {
 
   private async _evalHeaders(
     headers: string | DynamicValue<string> | { [name: string]: DynamicValue<string> | DynamicValue<string>[] },
-    context?: any
+    context?: any,
   ) {
     let res: string | { [name: string]: string | string[] } = {}
 

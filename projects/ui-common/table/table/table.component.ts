@@ -34,9 +34,9 @@ function mergeColumnsAndTplColumns(columns: (string | ITableColumn)[], tplColumn
   for (const col of columns) {
     const newCol: ITableColumn = {
       ...((typeof col === 'string') ? {
-          prop: col,
-          name: col,
-        } : col),
+        prop: col,
+        name: col,
+      } : col),
     }
     const tplCol = tplColumns.find(c => c.prop === newCol.prop)
     // newCol.cellTypeConfig = tplCol?.cellTypeConfig
@@ -65,11 +65,11 @@ function mergeColumnsAndTplColumns(columns: (string | ITableColumn)[], tplColumn
 }
 
 @Component({
-    selector: 'seam-table',
-    templateUrl: './table.component.html',
-    styleUrls: ['./table.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'seam-table',
+  templateUrl: './table.component.html',
+  styleUrls: ['./table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class TableComponent<T = any> implements OnInit, OnChanges, AfterContentChecked {
   static ngAcceptInputType_hasHeader: BooleanInput
@@ -94,7 +94,7 @@ export class TableComponent<T = any> implements OnInit, OnChanges, AfterContentC
 
     if (this._rows.length < 1) {
       this._displayedRows = [
-        { _emptyDisplay: true } as any
+        { _emptyDisplay: true } as any,
       ]
     } else {
       this._displayedRows = this._rows
@@ -142,7 +142,7 @@ export class TableComponent<T = any> implements OnInit, OnChanges, AfterContentC
   private _columnComponentChange = Subscription.EMPTY
 
   constructor(
-    private readonly _sanitizer: DomSanitizer
+    private readonly _sanitizer: DomSanitizer,
   ) { }
 
   ngOnInit() {
@@ -176,7 +176,7 @@ export class TableComponent<T = any> implements OnInit, OnChanges, AfterContentC
       if (typeof col === 'string') {
         const newCol: ITableColumn = {
           prop: col,
-          name: col
+          name: col,
         }
         newCols.push(newCol)
       } else {
@@ -187,7 +187,7 @@ export class TableComponent<T = any> implements OnInit, OnChanges, AfterContentC
         const newCol: ITableColumn = {
           ...col,
           prop: col.prop,
-          name
+          name,
         }
         newCols.push(newCol)
       }

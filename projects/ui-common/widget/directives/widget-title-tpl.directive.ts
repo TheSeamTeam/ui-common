@@ -1,8 +1,8 @@
 import { Directive, TemplateRef } from '@angular/core'
 
 @Directive({
-    selector: '[seamWidgetTitleTpl]',
-    standalone: false
+  selector: '[seamWidgetTitleTpl]',
+  standalone: false,
 })
 export class WidgetTitleTplDirective {
 

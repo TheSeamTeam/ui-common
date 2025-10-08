@@ -14,7 +14,7 @@ export interface SideNavItemCanHaveState {
    *
    * @ignore
    */
-   __state?: ISideNavItemState
+  __state?: ISideNavItemState
 }
 
 export interface SideNavItemCanBeActive {

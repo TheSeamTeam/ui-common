@@ -30,7 +30,7 @@ export class OrderColumnsAlteration extends ColumnsAlteration<OrderColumnsAltera
 
   constructor(
     state: OrderColumnsAlterationState,
-    persistent: boolean
+    persistent: boolean,
   ) {
     super(state, persistent)
 
@@ -93,7 +93,7 @@ export class OrderColumnsAlteration extends ColumnsAlteration<OrderColumnsAltera
       type: this.type,
       summary,
       details,
-      sortOrder: 0
+      sortOrder: 0,
     }
   }
 
@@ -152,7 +152,7 @@ export class OrderColumnsAlteration extends ColumnsAlteration<OrderColumnsAltera
 
     const sortedColumns = this._stateColumns()
     return sortedColumns.map(col =>
-      `${col.columnProp}: Position ${col.index + 1}`
+      `${col.columnProp}: Position ${col.index + 1}`,
     )
   }
 }

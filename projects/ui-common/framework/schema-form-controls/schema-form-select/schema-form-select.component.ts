@@ -38,14 +38,14 @@ export class TheSeamSchemaFormSelectComponent implements OnInit, TheSeamSchemaFo
   isArray = isArray
 
   constructor(
-    private readonly _jsf: JsonSchemaFormService
+    private readonly _jsf: JsonSchemaFormService,
   ) { }
 
   ngOnInit() {
     this.options = this.layoutNode?.options || {} as TheSeamSchemaFormWidgetLayoutNodeOptions
     this.selectList = buildTitleMap(
       this.options.titleMap || this.options.enumNames,
-      this.options.enum, !!this.options.required, !!this.options.flatList
+      this.options.enum, !!this.options.required, !!this.options.flatList,
     )
 
     this._jsf.initializeControl(this)

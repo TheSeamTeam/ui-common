@@ -11,16 +11,16 @@ describe('WidgetTileComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [
+      declarations: [
         WidgetTileComponent,
-        WidgetTileSecondaryIconDirective
-    ],
-    imports: [
-        TheSeamIconModule
-    ],
-    teardown: { destroyAfterEach: false }
-})
-    .compileComponents()
+        WidgetTileSecondaryIconDirective,
+      ],
+      imports: [
+        TheSeamIconModule,
+      ],
+      teardown: { destroyAfterEach: false },
+    })
+      .compileComponents()
   }))
 
   beforeEach(() => {

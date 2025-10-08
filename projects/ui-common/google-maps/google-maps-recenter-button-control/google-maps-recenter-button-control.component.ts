@@ -32,7 +32,7 @@ export interface GoogleMapsRecenterButtonControlData {
     '[attr.aria-label]': 'label',
     '[attr.title]': 'label',
     'type': 'button',
-    'class': 'gmnoprint gm-control-active'
+    'class': 'gmnoprint gm-control-active',
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false,
@@ -54,7 +54,7 @@ export class TheSeamGoogleMapsRecenterButtonControlComponent implements OnDestro
 
   constructor(
     private readonly _googleMaps: GoogleMapsService,
-    @Optional() @Inject(MAP_CONTROL_DATA) _data?: GoogleMapsRecenterButtonControlData
+    @Optional() @Inject(MAP_CONTROL_DATA) _data?: GoogleMapsRecenterButtonControlData,
   ) {
     if (_data) {
       if (Object.prototype.hasOwnProperty.call(_data, 'label')) {

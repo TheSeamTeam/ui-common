@@ -5,7 +5,7 @@ import { setDynamicDatatableFilterMenuDefaults } from './set-dynamic-datatable-f
 import { setDynamicDatatableOptionsDefaults } from './set-dynamic-datatable-options-defaults'
 
 export function setDynamicDatatableDefDefaults(
-  def: DatatableDynamicDef
+  def: DatatableDynamicDef,
 ) {
   setDynamicDatatableColumnsDefaults(def.columns)
 

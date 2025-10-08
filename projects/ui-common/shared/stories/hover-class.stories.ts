@@ -24,6 +24,6 @@ type Story = StoryObj<TheSeamHoverClassDirective & StoryExtraProps>
 export const Basic: Story = {
   render: args => ({
     props: { ...args },
-    template: `<div style="padding: 25px;" class="text-center bg-primary" seamHoverClass="bg-success">Hover me</div>`
+    template: `<div style="padding: 25px;" class="text-center bg-primary" seamHoverClass="bg-success">Hover me</div>`,
   }),
 }

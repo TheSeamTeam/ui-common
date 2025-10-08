@@ -7,19 +7,19 @@ import { InputBoolean, InputNumber } from '@theseam/ui-common/core'
 import { TheSeamButtonComponent } from '../button/button.component'
 
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
-    selector: 'button[seamProgressCircleButton]',
-    templateUrl: './progress-circle-button.component.html',
-    styleUrls: ['./progress-circle-button.component.scss'],
-    exportAs: 'seamProgressCircleButton',
-    inputs: ['disabled', 'theme', 'size'],
-    host: {
-        '[attr.type]': 'type',
-        'class': 'btn',
-        '[attr.aria-disabled]': 'disabled.toString()',
-        '[attr.disabled]': 'disabled || null'
-    },
-    standalone: false
+  // eslint-disable-next-line @angular-eslint/component-selector
+  selector: 'button[seamProgressCircleButton]',
+  templateUrl: './progress-circle-button.component.html',
+  styleUrls: ['./progress-circle-button.component.scss'],
+  exportAs: 'seamProgressCircleButton',
+  inputs: ['disabled', 'theme', 'size'],
+  host: {
+    '[attr.type]': 'type',
+    'class': 'btn',
+    '[attr.aria-disabled]': 'disabled.toString()',
+    '[attr.disabled]': 'disabled || null',
+  },
+  standalone: false,
 })
 export class TheSeamProgressCircleButtonComponent extends TheSeamButtonComponent implements OnDestroy {
   static ngAcceptInputType_fillBackground: BooleanInput
@@ -36,7 +36,7 @@ export class TheSeamProgressCircleButtonComponent extends TheSeamButtonComponent
   constructor(
     readonly _elementRef: ElementRef,
     readonly _focusMonitor: FocusMonitor,
-    readonly _renderer: Renderer2
+    readonly _renderer: Renderer2,
   ) { super(_elementRef, _focusMonitor, _renderer) }
 
   ngOnDestroy() { super.ngOnDestroy() }

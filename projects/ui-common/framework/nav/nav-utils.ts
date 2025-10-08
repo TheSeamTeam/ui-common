@@ -9,7 +9,7 @@ import {
   INavLink,
   INavTitle,
   NavItemCanHaveChildren,
-  NavItemCanHaveState
+  NavItemCanHaveState,
 } from './nav.models'
 
 export function isHorizontalNavItemType(item: INavItem, type: 'title'): item is INavTitle
@@ -113,7 +113,7 @@ export function setDefaultHorizontalNavItemState(item: INavItem): INavItem & Req
   item.__state = {
     active: false,
     expanded: false,
-    focused: false
+    focused: false,
   } as INavItemState
 
   // TODO: See if there is a nice way to fix the typing for this.

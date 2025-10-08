@@ -25,7 +25,7 @@ const meta: Meta<TheSeamAnchorButtonComponent & StoryExtraProps> = {
   ],
   render: args => ({
     props: args,
-    template: `<a seamButton ${argsToTpl()}>{{ btnText }}</a>`
+    template: `<a seamButton ${argsToTpl()}>{{ btnText }}</a>`,
   }),
   tags: ['autodocs'],
   argTypes: {
@@ -52,7 +52,7 @@ type Story = StoryObj<TheSeamAnchorButtonComponent & StoryExtraProps>
 export const Basic: Story = {
   args: {
     btnText: 'Example Text',
-    theme: 'primary'
+    theme: 'primary',
   },
   play: async ({ canvasElement, fixture, args }) => {
     const harness = await getHarness(TheSeamAnchorButtonComponentHarness, { canvasElement, fixture })

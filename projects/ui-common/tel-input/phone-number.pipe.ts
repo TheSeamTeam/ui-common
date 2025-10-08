@@ -5,9 +5,9 @@ import { getCountryCode, getDialCode, getIntlTelInputUtils, globalIntlTelInputGl
 import { coercePhoneNumberFormat } from './utils'
 
 @Pipe({
-    name: 'phoneNumber',
-    pure: false,
-    standalone: false
+  name: 'phoneNumber',
+  pure: false,
+  standalone: false,
 })
 export class TheSeamPhoneNumberPipe implements PipeTransform {
 
@@ -19,7 +19,7 @@ export class TheSeamPhoneNumberPipe implements PipeTransform {
 
   transform(
     phoneNumber: string,
-    numberFormat: TheSeamNumberFormatsInput = intlTelInputUtils.numberFormat.INTERNATIONAL
+    numberFormat: TheSeamNumberFormatsInput = intlTelInputUtils.numberFormat.INTERNATIONAL,
   ): any {
     // console.log('transform', phoneNumber, numberFormat)
     if (this._latestPhoneNumber !== phoneNumber || this._latestNumberFormat !== numberFormat) {

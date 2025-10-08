@@ -14,10 +14,10 @@ export class TheSeamCheckboxHarness extends ComponentHarness {
   /** Creates a `HarnessPredicate` used to locate a particular `MyMenuHarness`. */
   static with(options: TheSeamCheckboxHarnessFilters): HarnessPredicate<TheSeamCheckboxHarness> {
     return new HarnessPredicate(TheSeamCheckboxHarness, options)
-        .addOption('checkbox id', options.id,
-            (harness, index) => HarnessPredicate.stringMatches(harness.getId(), `${index}`))
-        .addOption('checkbox name', options.name,
-            (harness, name) => HarnessPredicate.stringMatches(harness.getName(), name))
+      .addOption('checkbox id', options.id,
+        (harness, index) => HarnessPredicate.stringMatches(harness.getId(), `${index}`))
+      .addOption('checkbox name', options.name,
+        (harness, name) => HarnessPredicate.stringMatches(harness.getName(), name))
   }
 
   public async getId(): Promise<string | null> {

@@ -65,7 +65,7 @@ export class TheSeamFramework extends Framework {
     'select': TheSeamSchemaFormSelectComponent,
     'divider': TheSeamSchemaFormDividerComponent,
     'tel': TheSeamSchemaFormTelComponent,
-    'tiled-select': TheSeamSchemaFormTiledSelectComponent
+    'tiled-select': TheSeamSchemaFormTiledSelectComponent,
 
     // 'date': // TODO: Implement
     // 'file': // TODO: Implement
@@ -78,7 +78,7 @@ export class TheSeamFramework extends Framework {
   }
 
   constructor(
-    @Optional() @Inject(THESEAM_SCHEMA_FRAMEWORK_OVERRIDES) _overrides?: TheSeamSchemaFormFrameworkOverrides[]
+    @Optional() @Inject(THESEAM_SCHEMA_FRAMEWORK_OVERRIDES) _overrides?: TheSeamSchemaFormFrameworkOverrides[],
   ) {
     super()
 

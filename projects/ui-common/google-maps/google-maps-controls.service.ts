@@ -28,7 +28,7 @@ export class MapControlRef {
     if (this._controlDef.data) {
       providers.push({
         provide: MAP_CONTROL_DATA,
-        useValue: this._controlDef.data
+        useValue: this._controlDef.data,
       })
     }
     const injector = Injector.create({
@@ -47,7 +47,7 @@ export class MapControlRef {
 
     this._googleMaps.addControl(
       this._componentRef.location.nativeElement,
-      position
+      position,
     )
 
     this._addedAtPosition = position

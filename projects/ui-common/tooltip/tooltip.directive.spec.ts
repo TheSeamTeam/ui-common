@@ -37,7 +37,7 @@ import { TheSeamTooltipModule } from './tooltip.module'
         </ul>
       </div>
     </ng-template>
-  `
+  `,
 })
 class TestComponent {
   @ViewChild('templateTooltip', { static: true }) templateTooltip!: TemplateRef<any>
@@ -89,8 +89,8 @@ describe('TheSeamTooltipDirective', () => {
         TheSeamTooltipModule,
         OverlayModule,
         A11yModule,
-        NoopAnimationsModule
-      ]
+        NoopAnimationsModule,
+      ],
     }).compileComponents()
 
     fixture = TestBed.createComponent(TestComponent)

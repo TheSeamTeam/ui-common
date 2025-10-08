@@ -32,9 +32,9 @@ export class XLSXDataExporter implements IDataExporter {
             tap(fileData => {
               FileSaver.saveAs(fileData.blob, `Export.xlsx`)
             }),
-            mapTo(true)
+            mapTo(true),
           )
-      })
+      }),
     )
   }
 

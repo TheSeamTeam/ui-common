@@ -16,14 +16,14 @@ import {
   SimpleGqlTestRecord,
   simpleGqlTestSchema,
   SimpleGqlTestVariables,
-  SIMPLE_GQL_TEST_QUERY
+  SIMPLE_GQL_TEST_QUERY,
 } from '../testing'
 import { createApolloTestingProvider } from '../testing/create-apollo-testing-provider'
 import { gqlVar } from '../utils/gql-var'
 import { DatatableGraphQLQueryRef, DatatableGraphQLVariables } from './datatable-graphql-query-ref'
 import { DatatableGraphqlService } from './datatable-graphql.service'
 import {
-  observeRowsWithGqlInputsHandling, SortsMapper, SortsMapperResult
+  observeRowsWithGqlInputsHandling, SortsMapper, SortsMapperResult,
 } from './datatable-helpers'
 import { DEFAULT_PAGE_SIZE } from './get-page-info'
 import { FilterStateMapperResult } from './map-filter-states'
@@ -154,18 +154,18 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
         query: SIMPLE_GQL_TEST_QUERY,
         variables: {
           skip: 0,
-          take: DEFAULT_PAGE_SIZE
-        }
+          take: DEFAULT_PAGE_SIZE,
+        },
       },
       {
         variables: {
           // removeIfNotDefined: [ 'order', 'search' ],
           // removeIfNotUsed: [ 'search' ],
-          inline: [ 'where' ]
+          inline: [ 'where' ],
         },
         // Disabling paging until a solution for select all, when partially loaded datatset, is decided.
         // disablePaging: true
-      }
+      },
     )
 
     const extraVariables$ = of({})
@@ -173,7 +173,7 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
     const _rows$ = this._queryRef.rows((data: any) => {
       return {
         rows: data.simpleGqlTestRecords.items,
-        totalCount: data.simpleGqlTestRecords.totalCount
+        totalCount: data.simpleGqlTestRecords.totalCount,
       }
     }).pipe(
       shareReplay({ bufferSize: 1, refCount: true }),
@@ -193,7 +193,7 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
     }
 
     const _mapSearchFilterState = async (
-      filterState: DataFilterState, context: MapperContext<SimpleGqlTestExtraVariables>
+      filterState: DataFilterState, context: MapperContext<SimpleGqlTestExtraVariables>,
     ): Promise<FilterStateMapperResult> => {
       const value = filterState.state?.value?.trim()
       if (typeof value !== 'string' || value.length === 0) {
@@ -208,15 +208,15 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
 
       return {
         filter: {
-          or: conditions
+          or: conditions,
         },
-        variables: { search: value }
+        variables: { search: value },
       }
     }
 
     const _mapToggleButtonsState = (
       filterState: DataFilterState,
-      context: MapperContext<SimpleGqlTestExtraVariables>
+      context: MapperContext<SimpleGqlTestExtraVariables>,
     ): FilterStateMapperResult => {
       const value = Array.isArray(filterState.state?.value) ? filterState.state?.value[0]?.trim() : filterState.state?.value?.trim()
       if (typeof value !== 'string' || value.length === 0) {
@@ -225,7 +225,7 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
 
       return {
         filter: { status: { eq: value } },
-        variables: { }
+        variables: { },
       }
     }
 
@@ -237,8 +237,8 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
       _mapSorts,
       {
         'search': _mapSearchFilterState,
-        'toggle-buttons': _mapToggleButtonsState
-      }
+        'toggle-buttons': _mapToggleButtonsState,
+      },
     )
   }
 

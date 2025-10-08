@@ -23,7 +23,7 @@ class StorySubNameExComponent {
   name$: Observable<string | undefined>
 
   constructor(
-    private _route: ActivatedRoute
+    private _route: ActivatedRoute,
   ) {
     // console.log('sub-name-ex', this)
     this.name$ = this._route.data.pipe(map(v => v['name'] || undefined))
@@ -35,7 +35,7 @@ class StorySubNameExComponent {
   template: `
     <div>Name: {{ name$ | async }}</div>
     <router-outlet></router-outlet>
-  `
+  `,
 })
 class StoryNameExComponent {
 
@@ -43,7 +43,7 @@ class StoryNameExComponent {
 
   constructor(
     private _route: ActivatedRoute,
-    private _router: Router
+    private _router: Router,
   ) {
     // console.log('name-ex', this)
     this.name$ = this._route.data.pipe(map(v => v['name'] || undefined))
@@ -67,7 +67,7 @@ class StoryNameExComponent {
     <div>
       <router-outlet></router-outlet>
     </div>
-  `
+  `,
 })
 class StoryExBaseComponent {
 
@@ -75,7 +75,7 @@ class StoryExBaseComponent {
 
   constructor(
     private _route: ActivatedRoute,
-    public _router: Router
+    public _router: Router,
   ) {
     // console.log('this._route', this._route)
     // console.log('this._router', this._router)
@@ -102,7 +102,7 @@ class StoryExBaseComponent {
       <button type="button" class="btn btn-sm btn-light px-4" routerLink="view/{{ nextId }}">Next[view]</button>
     </div>
     <router-outlet></router-outlet>
-  `
+  `,
 })
 class RecursiveIdOneComponent {
 
@@ -113,7 +113,7 @@ class RecursiveIdOneComponent {
 
   constructor(
     private _route: ActivatedRoute,
-    private _router: Router
+    private _router: Router,
   ) {
     this.id$ = this._route.paramMap.pipe(map(v => v.get('id') || undefined))
     this.type$ = this._route.data.pipe(map(v => v['type'] || undefined))
@@ -132,7 +132,7 @@ class RecursiveIdOneComponent {
       <button type="button" class="btn btn-sm btn-light px-4" routerLink="view/{{ nextId }}">Next[view]</button>
     </div>
     <router-outlet></router-outlet>
-  `
+  `,
 })
 class RecursiveIdTwoComponent {
 
@@ -143,7 +143,7 @@ class RecursiveIdTwoComponent {
 
   constructor(
     private _route: ActivatedRoute,
-    private _router: Router
+    private _router: Router,
   ) {
     this.id$ = this._route.paramMap.pipe(map(v => v.get('id') || undefined))
     // this.type$ = this._route.data.pipe(map(v => v['type'] || undefined))
@@ -175,7 +175,7 @@ class RecursiveIdTwoComponent {
       width: 100%;
       height: 100px;
     }
-  `]
+  `],
 })
 class RecursiveIdThreeComponent {
 
@@ -185,7 +185,7 @@ class RecursiveIdThreeComponent {
 
   constructor(
     private _route: ActivatedRoute,
-    private _router: Router
+    private _router: Router,
   ) {
     this.type$ = this._route.paramMap.pipe(map(v => v.get('type') || undefined))
   }
@@ -196,7 +196,7 @@ class RecursiveIdThreeComponent {
   declarations: [
     RecursiveIdOneComponent,
     RecursiveIdTwoComponent,
-    RecursiveIdThreeComponent
+    RecursiveIdThreeComponent,
   ],
   imports: [
     CommonModule,
@@ -238,11 +238,11 @@ class RecursiveIdThreeComponent {
         path: ':type',
         component: RecursiveIdThreeComponent,
         resolve: {
-          hierLevel: HierarchyLevelResolver
+          hierLevel: HierarchyLevelResolver,
         },
-        loadChildren: () => RecursiveIdModule
-      }
-    ])
+        loadChildren: () => RecursiveIdModule,
+      },
+    ]),
   ],
 })
 class RecursiveIdModule { }
@@ -252,7 +252,7 @@ class RecursiveIdModule { }
 
 @NgModule({
   declarations: [
-    StorySubNameExComponent
+    StorySubNameExComponent,
   ],
   imports: [
     CommonModule,
@@ -260,9 +260,9 @@ class RecursiveIdModule { }
       {
         path: 'sub-name',
         component: StorySubNameExComponent,
-        loadChildren: () => RecursiveIdModule
-      }
-    ])
+        loadChildren: () => RecursiveIdModule,
+      },
+    ]),
   ],
 })
 class LevelTwoModule { }
@@ -277,7 +277,7 @@ class LevelTwoModule { }
     <seam-hierarchy-router-outlet>
       <button type="button" routerLink="/ex-1/ex-2">Next</button>
     </seam-hierarchy-router-outlet>
-  `
+  `,
 })
 class StoryEx1Component {
   // constructor() {
@@ -292,7 +292,7 @@ class StoryEx1Component {
       <button type="button" routerLink="/ex-1">Prev</button>
       <button type="button" routerLink="/ex-1/ex-2/ex-3">Next</button>
     </seam-hierarchy-router-outlet>
-  `
+  `,
 })
 class StoryEx2Component {
   // constructor() {
@@ -306,7 +306,7 @@ class StoryEx2Component {
     <seam-hierarchy-router-outlet>
       <button type="button" routerLink="/ex-1/ex-2">Prev</button>
     </seam-hierarchy-router-outlet>
-  `
+  `,
 })
 class StoryEx3Component {
   // constructor() {
@@ -320,7 +320,7 @@ const meta: Meta<any> = {
     // moduleMetadata({
 
     // })
-  ]
+  ],
 }
 
 export default meta
@@ -341,7 +341,7 @@ export const Recursive: Story = {
             },
             // loadChildren: () => Promise.resolve(LevelTwoModule)
             loadChildren: () => of(LevelTwoModule),
-          }
+          },
         ]),
       ],
     },
@@ -391,7 +391,7 @@ export const Example: Story = {
                 ],
               },
             ],
-          }
+          },
         ]),
       ],
     },
@@ -412,7 +412,7 @@ export const Example: Story = {
     template: `
       <router-outlet></router-outlet>
     `,
-  })
+  }),
 }
 
 // storiesOf('Framework/DynamicRouter', module)

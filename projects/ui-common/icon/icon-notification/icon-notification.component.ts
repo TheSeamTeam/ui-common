@@ -17,14 +17,14 @@ export const pulseAnimation = animation([
     keyframes([
       style({ transform: 'scale(1)', offset: 0 }),
       style({ transform: 'scale({{ scale }})', offset: 0.5 }),
-      style({ transform: 'scale(1)', offset: 1 })
-    ])
-  )
+      style({ transform: 'scale(1)', offset: 1 }),
+    ]),
+  ),
 ])
 
 @Component({
-    selector: 'seam-icon-notification',
-    template: `
+  selector: 'seam-icon-notification',
+  template: `
     <seam-icon *ngIf="icon && !hidden" [@counterChange]="count"
       [grayscaleOnDisable]="grayscaleOnDisable"
       [disabled]="disabled"
@@ -36,7 +36,7 @@ export const pulseAnimation = animation([
     </seam-icon>
     <ng-content select=".sr-only"></ng-content>
   `,
-    styles: [`
+  styles: [`
     :host {
       position: absolute;
       top: 0;
@@ -55,23 +55,23 @@ export const pulseAnimation = animation([
       min-height: 15px;
     }
   `],
-    // tslint:disable-next-line:use-host-property-decorator
-    host: {
-        '[attr.aria-disabled]': 'disabled.toString()',
-        '[attr.disabled]': 'disabled || null',
-    },
-    animations: [
-        trigger('counterChange', [
-            transition(':increment', useAnimation(pulseAnimation, {
-                params: {
-                    timings: '400ms ease-in-out',
-                    scale: 1.2
-                }
-            }))
-        ])
-    ],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  // tslint:disable-next-line:use-host-property-decorator
+  host: {
+    '[attr.aria-disabled]': 'disabled.toString()',
+    '[attr.disabled]': 'disabled || null',
+  },
+  animations: [
+    trigger('counterChange', [
+      transition(':increment', useAnimation(pulseAnimation, {
+        params: {
+          timings: '400ms ease-in-out',
+          scale: 1.2,
+        },
+      })),
+    ]),
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class IconNotificationComponent implements OnInit {
   static ngAcceptInputType_hidden: BooleanInput
@@ -106,7 +106,7 @@ export class IconNotificationComponent implements OnInit {
    * Toggles whether an image that has thrown the `onerror` event should show
    * the `defaultIcon` instead.
    */
-   @Input() @InputBoolean() showDefaultOnError = false
+  @Input() @InputBoolean() showDefaultOnError = false
 
   /**
    * Shown if icon is not set or if showDefaultOnError is true and img has thrown an error.
@@ -123,7 +123,7 @@ export class IconNotificationComponent implements OnInit {
   @Input() iconType: TheSeamIconType | undefined | null = 'image-fill'
 
   constructor(
-    private _elementRef: ElementRef<HTMLElement>
+    private _elementRef: ElementRef<HTMLElement>,
   ) { }
 
   ngOnInit() {

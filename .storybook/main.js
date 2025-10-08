@@ -21,7 +21,7 @@ module.exports = {
   webpackFinal: async (config, { angularBuilderOptions }) => {
     // Find the Sass rule
     const sassRule = config.module?.rules?.find(rule =>
-      rule.test?.toString().includes('scss')
+      rule.test?.toString().includes('scss'),
     )?.rules[1]
 
     if (sassRule) {
@@ -69,5 +69,5 @@ module.exports = {
     }
 
     return config
-  }
+  },
 }

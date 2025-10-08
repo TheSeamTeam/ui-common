@@ -16,10 +16,10 @@ export class TheSeamFormFieldHarness extends ComponentHarness {
   /** Creates a `HarnessPredicate` used to locate a particular `TheSeamFormFieldHarness`. */
   static with(options: TheSeamFormFieldHarnessFilters): HarnessPredicate<TheSeamFormFieldHarness> {
     return new HarnessPredicate(TheSeamFormFieldHarness, options)
-        // .addOption('field name', options.name,
-        //     (harness, name) => HarnessPredicate.stringMatches(harness.getName(), name))
-        .addOption('label', options.label,
-            (harness, label) => HarnessPredicate.stringMatches(harness.getLabel(), label))
+    // .addOption('field name', options.name,
+    //     (harness, name) => HarnessPredicate.stringMatches(harness.getName(), name))
+      .addOption('label', options.label,
+        (harness, label) => HarnessPredicate.stringMatches(harness.getLabel(), label))
   }
 
   public async getLabel(): Promise<string | null> {

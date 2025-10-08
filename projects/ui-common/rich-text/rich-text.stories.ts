@@ -55,7 +55,7 @@ class RichTextFormComponent implements OnInit {
 
   form = new FormGroup({
     input: new FormControl<string | null>(null, [ Validators.required ]),
-    text: new FormControl<string | null>(null, [ Validators.required ])
+    text: new FormControl<string | null>(null, [ Validators.required ]),
   })
 
   @Input() placeholder: string | undefined
@@ -76,7 +76,7 @@ class RichTextFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.form?.valueChanges.pipe(
-      tap(vc => console.log({ vc, form: this.form }))
+      tap(vc => console.log({ vc, form: this.form })),
     ).subscribe()
   }
 
@@ -118,16 +118,16 @@ class RichTextFormComponent implements OnInit {
             ...THESEAM_QUILL_TOOLBAR_OPTIONS_DEFAULT,
             [{ font: [ 'sans-serif', 'serif' ] }],
             [{ color: [ 'blue', 'red' ] }],
-            [ 'image', 'video' ]
+            [ 'image', 'video' ],
           ],
           mention: {
-            mentionDenotationChars: [ '*', '#' ]
-          }
+            mentionDenotationChars: [ '*', '#' ],
+          },
         },
         formats: [ ...THESEAM_QUILL_FORMATS_DEFAULT, 'color', 'font' ],
-        styles: { background: '#eee' }
-      } satisfies TheSeamQuillEditorConfig
-    }
+        styles: { background: '#eee' },
+      } satisfies TheSeamQuillEditorConfig,
+    },
   ],
   imports: [
     ReactiveFormsModule,
@@ -158,7 +158,7 @@ class CustomConfigComponent implements OnInit {
 
   ngOnInit(): void {
     this.form?.valueChanges.pipe(
-      tap(vc => console.log({ vc, form: this.form }))
+      tap(vc => console.log({ vc, form: this.form })),
     ).subscribe()
   }
 
@@ -186,7 +186,7 @@ const meta: Meta<RichTextComponent & StoryExtraProps> = {
         CustomConfigComponent,
         RichTextFormComponent,
       ],
-    })
+    }),
   ],
 }
 
@@ -199,7 +199,7 @@ const controlArgTypes: Partial<ArgTypes<RichTextComponent>> = {
   disableRichText: { type: 'boolean', defaultValue: false },
   displayCharacterCounter: { type: 'boolean' },
   minLength: { type: 'number' },
-  maxLength: { type: 'number' }
+  maxLength: { type: 'number' },
 }
 
 export default meta

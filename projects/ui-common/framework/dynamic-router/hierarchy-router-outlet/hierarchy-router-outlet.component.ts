@@ -9,7 +9,7 @@ export function routeChanges(router: Router) {
   return router.events.pipe(
     filter(event => event instanceof NavigationStart || event instanceof NavigationEnd),
     distinctUntilChanged((x: any, y: any) => x.id === y.id),
-    map(event => ({ url: event.url }))
+    map(event => ({ url: event.url })),
   )
 }
 
@@ -52,14 +52,14 @@ export class HierarchyRouterOutletComponent implements OnDestroy {
 
   constructor(
     private _route: ActivatedRoute,
-    private _router: Router
+    private _router: Router,
   ) {
     this._router.events.pipe(
       filter(event => event instanceof NavigationEnd),
       // tap(v => console.log(`_hasChildren()[${this._uid}]`, this._hasChildren())),
-      takeUntil(this._ngUnsubscribe)
+      takeUntil(this._ngUnsubscribe),
     )
-    .subscribe()
+      .subscribe()
 
     // routeChanges(this._router)
     //   .pipe(

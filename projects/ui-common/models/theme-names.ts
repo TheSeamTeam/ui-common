@@ -9,7 +9,7 @@ export const ThemeNames: string[] = [
   'light',
   'dark',
   'lightgray',
-  'lightblue'
+  'lightblue',
 ]
 
 export const OutlineThemeNames: string[] = [
@@ -22,5 +22,5 @@ export const OutlineThemeNames: string[] = [
   'outline-light',
   'outline-dark',
   'outline-lightgray',
-  'outline-lightblue'
+  'outline-lightblue',
 ]

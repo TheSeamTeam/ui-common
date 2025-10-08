@@ -40,13 +40,13 @@ export class GoogleMapsContextMenu {
       this._menu.focusFirstItem('program')
     })
     this._menu.closed.pipe(
-      takeUntil(ngUnsubscribe)
+      takeUntil(ngUnsubscribe),
     ).subscribe(v => {
       this.close()
     })
 
     fromEvent(document, 'keydown').pipe(
-      takeUntil(ngUnsubscribe)
+      takeUntil(ngUnsubscribe),
     ).subscribe((event: any) => {
       if (event.keyCode === ESCAPE) {
         this.close()
@@ -59,7 +59,7 @@ export class GoogleMapsContextMenu {
 
       constructor(
         public position: google.maps.LatLng,
-        content: HTMLElement
+        content: HTMLElement,
       ) {
         super()
         this.position = position

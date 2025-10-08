@@ -41,7 +41,7 @@ export function noKinksValidator(): ValidatorFn {
         [NO_KINKS_VALIDATOR_NAME]: {
           reason: 'Paths should not intersect themselves.',
           featuresWithKink: kinksFound,
-        }
+        },
       }
     }
 

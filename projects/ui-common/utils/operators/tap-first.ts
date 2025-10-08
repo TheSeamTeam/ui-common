@@ -13,6 +13,6 @@ export function tapFirst<T>(predicate: (value: T) => void) {
           predicate(v)
           _initialized = true
         }
-      })
+      }),
     )
 }

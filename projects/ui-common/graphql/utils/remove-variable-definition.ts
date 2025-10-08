@@ -8,7 +8,7 @@ export function removeVariableDefinition(query: DocumentNode, variableName: stri
         if (name === variableName) {
           return null
         }
-      }
-    }
+      },
+    },
   })
 }

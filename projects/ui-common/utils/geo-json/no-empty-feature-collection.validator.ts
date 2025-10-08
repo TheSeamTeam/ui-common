@@ -22,7 +22,7 @@ export function noEmptyFeatureCollectionValidator(): ValidatorFn {
       return {
         [NO_EMPTY_FEATURE_COLLECTION_VALIDATOR_NAME]: {
           reason: `FeatureCollection must have a value.`,
-        }
+        },
       }
     }
 

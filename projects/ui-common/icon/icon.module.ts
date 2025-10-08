@@ -11,16 +11,16 @@ import { IconComponent } from './icon/icon.component'
   declarations: [
     IconComponent,
     IconBtnComponent,
-    IconNotificationComponent
+    IconNotificationComponent,
   ],
   imports: [
     CommonModule,
-    FontAwesomeModule
+    FontAwesomeModule,
   ],
   exports: [
     IconComponent,
     IconBtnComponent,
-    IconNotificationComponent
-  ]
+    IconNotificationComponent,
+  ],
 })
 export class TheSeamIconModule { }

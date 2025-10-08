@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators'
   selector: 'seam-dynamic-datatable-page',
   templateUrl: './dynamic-datatable-page.component.html',
   styleUrls: ['./dynamic-datatable-page.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DynamicDatatablePageComponent implements OnDestroy {
 
@@ -17,7 +17,7 @@ export class DynamicDatatablePageComponent implements OnDestroy {
 
   constructor(
     private _route: ActivatedRoute,
-    private _router: Router
+    private _router: Router,
   ) {
     this.tableDef$ = this._route.data.pipe(map(v => v['tableDef'] || undefined))
   }

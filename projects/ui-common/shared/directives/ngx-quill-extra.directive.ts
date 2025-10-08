@@ -44,7 +44,7 @@ export class TheSeamNgxQuillExtraDirective implements OnDestroy, AfterViewInit {
       fromEvent(parent, 'click').pipe(
         takeUntil(this._ngUnsubscribe),
         filter(e => (e.target as HTMLElement)?.getAttribute('for') === this._elementRef.nativeElement.id),
-        tap(() => this._quillEditor.quillEditor.focus())
+        tap(() => this._quillEditor.quillEditor.focus()),
       ).subscribe()
     }
   }

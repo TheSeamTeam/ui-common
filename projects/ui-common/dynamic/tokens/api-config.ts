@@ -17,7 +17,7 @@ export const VALID_REQUEST_METHODS: (keyof ApiRequestMethodHeaders)[] = [
   'POST',
   'PUT',
   'PATCH',
-  'DELETE'
+  'DELETE',
 ]
 
 export function isValidRequestMethod(method: string): method is keyof ApiRequestMethodHeaders {
@@ -49,8 +49,8 @@ export const THESEAM_API_CONFIG_DEFAULT: IApiConfig = {
     'POST': { 'Content-Type': 'application/json' },
     'PUT': { 'Content-Type': 'application/json' },
     'PATCH': { 'Content-Type': 'application/json' },
-    'DELETE': { 'Content-Type': 'application/json' }
-  }
+    'DELETE': { 'Content-Type': 'application/json' },
+  },
 }
 
 // export const THESEAM_API_CONFIG = new InjectionToken<IApiConfig[]>(
@@ -60,5 +60,5 @@ export const THESEAM_API_CONFIG_DEFAULT: IApiConfig = {
 export const THESEAM_API_CONFIG = new InjectionToken<IApiConfig[]>(
   'Api config token, config options for actions that make an api request in library', {
     providedIn: 'root',
-    factory: () => [ THESEAM_API_CONFIG_DEFAULT ]
+    factory: () => [ THESEAM_API_CONFIG_DEFAULT ],
   })

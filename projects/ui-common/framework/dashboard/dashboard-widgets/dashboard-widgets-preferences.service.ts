@@ -10,7 +10,7 @@ import {
   IDashboardWidgetsItem,
   IDashboardWidgetsItemDef,
   IDashboardWidgetsItemSerialized,
-  IDashboardWidgetsPreferences
+  IDashboardWidgetsPreferences,
 } from './dashboard-widgets-item'
 import type { ITheSeamDashboardWidgetsPreferencesAccessor } from './dashboard-widgets-preferences-accessor'
 import { THESEAM_DASHBOARD_WIDGETS_PREFERENCES_ACCESSOR } from './dashboard-widgets-preferences-accessor-token'
@@ -51,7 +51,7 @@ export class DashboardWidgetsPreferencesService {
       const refreshSubject = new Subject<void>()
       prefs = {
         observable: this._createObservable(refreshSubject, preferenceKey),
-        refresh: refreshSubject
+        refresh: refreshSubject,
       }
       this._tablePrefsMap.set(preferenceKey, prefs)
     }
@@ -157,7 +157,7 @@ export class DashboardWidgetsPreferencesService {
       take(1),
       switchMap(newPrefs => this._prefsAccessor
         ? this._prefsAccessor.update(preferenceKey, JSON.stringify(newPrefs))
-        : of(newPrefs)
+        : of(newPrefs),
       ),
       switchMap(() => this.refresh(preferenceKey).pipe(mapTo(undefined))),
     )

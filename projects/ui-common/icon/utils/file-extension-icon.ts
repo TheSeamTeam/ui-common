@@ -6,7 +6,7 @@ import {
   faFileImage,
   faFilePdf,
   faFilePowerpoint,
-  faFileWord
+  faFileWord,
 } from '@fortawesome/free-regular-svg-icons'
 
 import { SeamIcon } from '../icon'
@@ -25,7 +25,7 @@ const FILE_EXTENSION_ICONS: { [type: string]: SeamIcon } = {
   'ppt': faFilePowerpoint,
   'pptx': faFilePowerpoint,
   'txt': faFileAlt,
-  'json': faFileAlt
+  'json': faFileAlt,
 }
 
 export const DEFAULT_FILE_EXTENSION_ICON: SeamIcon = faFile

@@ -19,7 +19,7 @@ export class HideColumnColumnsAlteration extends ColumnsAlteration<HideColumnCol
 
   constructor(
     state: HideColumnColumnsAlterationState,
-    persistent: boolean
+    persistent: boolean,
   ) {
     super(state, persistent)
 
@@ -48,7 +48,7 @@ export class HideColumnColumnsAlteration extends ColumnsAlteration<HideColumnCol
       type: this.type,
       summary,
       details,
-      sortOrder: this._getColumnSortOrder()
+      sortOrder: this._getColumnSortOrder(),
     }
   }
 

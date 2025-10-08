@@ -75,12 +75,12 @@ export class DynamicDatatableDefService {
 
     this.exporters$ = this.def$.pipe(
       map(def => def ? this._mapExporters(def) : []),
-      shareReplay({ bufferSize: 1, refCount: true })
+      shareReplay({ bufferSize: 1, refCount: true }),
     )
 
     this.filterMenuItems$ = this.def$.pipe(
       map(def => def ? this._mapFilterMenuItems(def) : []),
-      shareReplay({ bufferSize: 1, refCount: true })
+      shareReplay({ bufferSize: 1, refCount: true }),
     )
 
     this.hasFilterMenu$ = this.def$.pipe(
@@ -98,21 +98,21 @@ export class DynamicDatatableDefService {
         // Check if there is anything to put in the filter menu.
         return combineLatest([
           this.exporters$.pipe(map(e => e.length > 0)),
-          this.filterMenuItems$.pipe(map(f => f.length > 0))
+          this.filterMenuItems$.pipe(map(f => f.length > 0)),
         ]).pipe(map(v => v.indexOf(true) !== -1))
       }),
-      shareReplay({ bufferSize: 1, refCount: true })
+      shareReplay({ bufferSize: 1, refCount: true }),
     )
 
     this.options$ = this.def$.pipe(
       map(def => def ? def.options : undefined),
-      shareReplay({ bufferSize: 1, refCount: true })
+      shareReplay({ bufferSize: 1, refCount: true }),
     )
 
     this.menuBar$ = this.def$.pipe(
       map(def => (notNullOrUndefined(def) && hasProperty(def, 'menuBar')) ? def.menuBar : undefined),
       // tap(v => console.log('menubar', v)),
-      shareReplay({ bufferSize: 1, refCount: true })
+      shareReplay({ bufferSize: 1, refCount: true }),
     )
   }
 

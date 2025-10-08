@@ -20,8 +20,8 @@ export class ColumnsFiltersService {
   public readonly columnsFilters$ = this._columns.pipe(
     map(columns => columns
       .map(col => (col as any).$$filter)
-      .filter(notNullOrUndefined)
-    )
+      .filter(notNullOrUndefined),
+    ),
   )
 
   public readonly columnActiveFilterProps$ = this.columnsFilters$.pipe(
@@ -31,14 +31,14 @@ export class ColumnsFiltersService {
       }
 
       return combineLatest(filters.map(f => f.filterStateChanges.pipe(
-        map((filterState: any) => !f.isDefault() ? filterState.state.prop : null)
+        map((filterState: any) => !f.isDefault() ? filterState.state.prop : null),
       )))
     }),
-    map(props => props.filter(notNullOrUndefined))
+    map(props => props.filter(notNullOrUndefined)),
   )
 
   constructor(
-    @Optional() @Inject(THESEAM_COLUMNS_DATA_FILTER) private readonly _customColumnsDataFilters?: { name: string, class: any }[]
+    @Optional() @Inject(THESEAM_COLUMNS_DATA_FILTER) private readonly _customColumnsDataFilters?: { name: string, class: any }[],
   ) {}
 
   public setFilterTemplates(tpls: TheSeamDatatableColumnFilterDirective[]) {

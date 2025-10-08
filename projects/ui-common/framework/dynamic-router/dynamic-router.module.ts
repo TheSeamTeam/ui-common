@@ -6,14 +6,14 @@ import { HierarchyRouterOutletComponent } from './hierarchy-router-outlet/hierar
 
 @NgModule({
   declarations: [
-    HierarchyRouterOutletComponent
+    HierarchyRouterOutletComponent,
   ],
   imports: [
     CommonModule,
-    RouterModule
+    RouterModule,
   ],
   exports: [
-    HierarchyRouterOutletComponent
-  ]
+    HierarchyRouterOutletComponent,
+  ],
 })
 export class TheSeamDynamicRouterModule { }

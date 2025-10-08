@@ -8,13 +8,13 @@ import { DynamicComponentManifest } from './dynamic-component-manifest'
 import {
   DYNAMIC_COMPONENT,
   DYNAMIC_COMPONENT_MANIFESTS,
-  DYNAMIC_MODULE
+  DYNAMIC_MODULE,
 } from './dynamic-component-tokens'
 
 import { wrapIntoObservable } from '@theseam/ui-common/utils'
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TheSeamDynamicComponentLoader {
 

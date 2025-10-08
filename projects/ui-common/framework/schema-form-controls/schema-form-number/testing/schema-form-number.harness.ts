@@ -16,8 +16,8 @@ export class TheSeamSchemaFormNumberHarness extends ComponentHarness {
   /** Creates a `HarnessPredicate` used to locate a particular `MyMenuHarness`. */
   static with(options: TheSeamSchemaFormNumberHarnessFilters): HarnessPredicate<TheSeamSchemaFormNumberHarness> {
     return new HarnessPredicate(TheSeamSchemaFormNumberHarness, options)
-        .addOption('field name', options.name,
-            (harness, name) => HarnessPredicate.stringMatches(harness.getName(), name))
+      .addOption('field name', options.name,
+        (harness, name) => HarnessPredicate.stringMatches(harness.getName(), name))
   }
 
   public async getName(): Promise<string | null> {

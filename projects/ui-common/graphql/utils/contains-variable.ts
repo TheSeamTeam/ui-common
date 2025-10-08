@@ -9,7 +9,7 @@ export function containsVariable(node: DocumentNode | ValueNode, variableName: s
         found = true
         return BREAK
       }
-    }
+    },
   })
 
   return found

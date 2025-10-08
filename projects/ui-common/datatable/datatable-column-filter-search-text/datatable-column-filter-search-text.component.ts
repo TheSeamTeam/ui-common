@@ -4,16 +4,16 @@ import { ControlContainer, FormGroupDirective } from '@angular/forms'
 import { TheSeamColumnsDataFilterTextSearchForm, TheSeamColumnsDataFilterTextSearchType, THESEAM_COLUMNS_DATA_FILTER_TEXT_TEXT_SEARCH_TYPES } from '../models/columns-data-filters/models'
 
 @Component({
-    selector: 'seam-datatable-column-filter-search-text',
-    templateUrl: './datatable-column-filter-search-text.component.html',
-    styleUrls: ['./datatable-column-filter-search-text.component.scss'],
-    viewProviders: [
-        {
-            provide: ControlContainer,
-            useExisting: FormGroupDirective
-        }
-    ],
-    standalone: false
+  selector: 'seam-datatable-column-filter-search-text',
+  templateUrl: './datatable-column-filter-search-text.component.html',
+  styleUrls: ['./datatable-column-filter-search-text.component.scss'],
+  viewProviders: [
+    {
+      provide: ControlContainer,
+      useExisting: FormGroupDirective,
+    },
+  ],
+  standalone: false,
 })
 export class DatatableColumnFilterSearchTextComponent implements OnInit {
 
@@ -33,7 +33,7 @@ export class DatatableColumnFilterSearchTextComponent implements OnInit {
   ngOnInit(): void {
     this.showTextbox$ = this.filterForm?.controls.searchType.valueChanges.pipe(
       startWith(this.filterForm?.controls.searchType.value),
-      map(value => THESEAM_COLUMNS_DATA_FILTER_TEXT_TEXT_SEARCH_TYPES.includes(value || ''))
+      map(value => THESEAM_COLUMNS_DATA_FILTER_TEXT_TEXT_SEARCH_TYPES.includes(value || '')),
     )
   }
 }

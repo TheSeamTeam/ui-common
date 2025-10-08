@@ -27,8 +27,8 @@ export function minMaxPointsValidator(min: number | undefined = 3, max?: number 
         : `A polygon must have at least ${min} points.`
       return {
         [MIN_MAX_POINTS_VALIDATOR_NAME]: {
-          reason
-        }
+          reason,
+        },
       }
     }
     return null
@@ -40,7 +40,7 @@ export function minMaxPointsValidator(min: number | undefined = 3, max?: number 
  *
  * NOTE: Does not consider GeometryCollection.
  */
- function collectionViolatesMinMax(featureCollection: FeatureCollection, min: number, max: number | undefined): boolean {
+function collectionViolatesMinMax(featureCollection: FeatureCollection, min: number, max: number | undefined): boolean {
   for (const f of featureCollection.features) {
     if (f.geometry.type === 'Polygon') {
       if (polygonViolatesMinMax(f.geometry.coordinates[0].length, min, max)) {

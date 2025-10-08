@@ -7,10 +7,10 @@ import { TheSeamCheckboxComponent } from './checkbox.component'
 /** @deprecated */
 @NgModule({
   imports: [
-    TheSeamCheckboxComponent
+    TheSeamCheckboxComponent,
   ],
   exports: [
-    TheSeamCheckboxComponent
-  ]
+    TheSeamCheckboxComponent,
+  ],
 })
 export class TheSeamCheckboxModule { }

@@ -8,7 +8,7 @@ import {
   leafChildRoute,
   notNullOrUndefined,
   routeSnapshotPathFull,
-  willHaveDataProp
+  willHaveDataProp,
 } from '@theseam/ui-common/utils'
 
 import { TheSeamBreadcrumb } from './breadcrumb'
@@ -56,7 +56,7 @@ export class TheSeamBreadcrumbsService {
 
   private _crumbsFromActivatedRoute(activatedRoute: ActivatedRoute): Observable<TheSeamBreadcrumb[]> {
     return this._breadcrumbDatasFromRoot(activatedRoute).pipe(
-      map(bcDatas => this._breadcrumbsFromData(bcDatas))
+      map(bcDatas => this._breadcrumbsFromData(bcDatas)),
     )
   }
 
@@ -98,7 +98,7 @@ export class TheSeamBreadcrumbsService {
         bcData.extrasPropRefs = this._getBreadcrumbExtrasDataProps(bcData)
 
         return bcData
-      })
+      }),
     )
   }
 
@@ -138,7 +138,7 @@ export class TheSeamBreadcrumbsService {
         map(extrasStr => {
           data.breadcrumb = `${data.breadcrumb} ${extrasStr}`
           return data
-        })
+        }),
       )
     }))
   }

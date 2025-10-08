@@ -7,7 +7,7 @@ import { GeoJSON, Feature, FeatureCollection, Geometry, GeoJsonProperties } from
  */
 export function geoJsonToArea(
   geoJson: GeoJSON | Feature<any, GeoJsonProperties> | FeatureCollection<any, GeoJsonProperties> | Geometry,
-  units: AreaUnits = 'acres'
+  units: AreaUnits = 'acres',
 ): number {
   const areaMSqr = area(geoJson as any)
   const acres = convertArea(areaMSqr, 'meters', units)

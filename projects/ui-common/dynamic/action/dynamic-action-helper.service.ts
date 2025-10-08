@@ -12,7 +12,7 @@ import { DynamicActionUiDef } from '../models/dynamic-action-ui-def'
 import { THESEAM_DYNAMIC_ACTION } from '../tokens/dynamic-action'
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DynamicActionHelperService {
 
@@ -22,7 +22,7 @@ export class DynamicActionHelperService {
     private _valueHelper: DynamicValueHelperService,
     // TODO: Consider making the action confirm more generic
     @Optional() private _confirmDialog?: SeamConfirmDialogService,
-    @Optional() @Inject(THESEAM_DYNAMIC_ACTION) actions?: DynamicAction<string>[]
+    @Optional() @Inject(THESEAM_DYNAMIC_ACTION) actions?: DynamicAction<string>[],
   ) {
     // Only one evaluator should exist for a type, so map them for faster lookup.
     for (const e of (actions || [])) {
@@ -140,7 +140,7 @@ export class DynamicActionHelperService {
       if (!disabled) {
         throw Error(
           `[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' can't open ` +
-          `confirm dialog. Only async actions support confirm dialog.`
+          `confirm dialog. Only async actions support confirm dialog.`,
         )
       }
       return false
@@ -148,7 +148,7 @@ export class DynamicActionHelperService {
 
     throw Error(
       `[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' can't open ` +
-      `confirm dialog. Only async actions support confirm dialog.`
+      `confirm dialog. Only async actions support confirm dialog.`,
     )
   }
 
@@ -156,7 +156,7 @@ export class DynamicActionHelperService {
     if (!this._confirmDialog) {
       throw Error(
         `[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' can't open ` +
-        `confirm dialog. Confirm dialog service is not injected.`
+        `confirm dialog. Confirm dialog service is not injected.`,
       )
     }
 
@@ -164,7 +164,7 @@ export class DynamicActionHelperService {
     if (!confirmDef) {
       throw Error(
         `[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' can't open ` +
-        `confirm dialog. Confirm def is not defined.`
+        `confirm dialog. Confirm def is not defined.`,
       )
     }
 
@@ -179,7 +179,7 @@ export class DynamicActionHelperService {
 
     const modalDef = this._confirmDialog.open(message, alert)
     return modalDef.afterClosed().pipe(
-      map(v => v === 'confirm')
+      map(v => v === 'confirm'),
     ).toPromise().then(x => x ?? false)
   }
 

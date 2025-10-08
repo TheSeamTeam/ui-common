@@ -4,7 +4,7 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay'
 import { ComponentPortal, TemplatePortal } from '@angular/cdk/portal'
 import {
   AfterViewInit, Component, ContentChild, EventEmitter, forwardRef, Input,
-  isDevMode, OnDestroy, Output, TemplateRef, ViewChild, ViewContainerRef
+  isDevMode, OnDestroy, Output, TemplateRef, ViewChild, ViewContainerRef,
 } from '@angular/core'
 import { UntypedFormGroup } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router'
@@ -38,11 +38,11 @@ export const LIB_MODAL: any = {
 }
 
 @Component({
-    selector: 'seam-modal',
-    templateUrl: './modal.component.html',
-    styleUrls: ['./modal.component.scss'],
-    providers: [LIB_MODAL],
-    standalone: false
+  selector: 'seam-modal',
+  templateUrl: './modal.component.html',
+  styleUrls: ['./modal.component.scss'],
+  providers: [LIB_MODAL],
+  standalone: false,
 })
 export class ModalComponent implements OnDestroy, AfterViewInit, IModalContainer {
   static ngAcceptInputType_showCloseBtn: BooleanInput
@@ -119,7 +119,7 @@ export class ModalComponent implements OnDestroy, AfterViewInit, IModalContainer
   constructor(
     private _viewContainerRef: ViewContainerRef,
     private _overlay: Overlay,
-    private _route: ActivatedRoute
+    private _route: ActivatedRoute,
   ) {
     if (isDevMode()) {
       // eslint-disable-next-line no-console
@@ -147,7 +147,7 @@ export class ModalComponent implements OnDestroy, AfterViewInit, IModalContainer
 
     this._overlayRef = this._overlay.create({
       hasBackdrop: true,
-      positionStrategy
+      positionStrategy,
     })
 
     this._overlayRef.detachments().subscribe(_ => this.overlayDetached.emit())

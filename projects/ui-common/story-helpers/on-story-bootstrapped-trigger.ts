@@ -37,6 +37,6 @@ export function onStoryBootstrappedTrigger(targetSelector: string, eventName: st
   return {
     provide: APP_BOOTSTRAP_LISTENER,
     useValue: bootstrapped,
-    multi: true
+    multi: true,
   }
 }

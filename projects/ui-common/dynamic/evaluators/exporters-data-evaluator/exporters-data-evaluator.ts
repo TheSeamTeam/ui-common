@@ -12,7 +12,7 @@ export class ExportersDataEvaluator implements IDynamicValueEvaluator<'exporters
   public readonly type = 'exporters-data'
 
   constructor(
-    private _injector: Injector
+    private _injector: Injector,
   ) { }
 
   public async eval(value: IExportersDataValue<IDataExporter[]>, context?: any): Promise<{ exporters: IDataExporter[] }> {
@@ -21,7 +21,7 @@ export class ExportersDataEvaluator implements IDynamicValueEvaluator<'exporters
 
   public evalSync(value: IExportersDataValue<IDataExporter[]>, context?: any): { exporters: IDataExporter[] } {
     return {
-      exporters: this._exporters(value.exporters || [])
+      exporters: this._exporters(value.exporters || []),
     }
   }
 

@@ -15,7 +15,7 @@ import {
   NgZone,
   OnDestroy,
   Output,
-  ViewChild
+  ViewChild,
 } from '@angular/core'
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
 
@@ -32,7 +32,7 @@ export class TheSeamCheckboxChange {
 
   constructor(
     private readonly _source: TheSeamCheckboxComponent,
-    private readonly _checked: boolean
+    private readonly _checked: boolean,
   ) {
     this.source = _source
     this.checked = _checked
@@ -43,7 +43,7 @@ export const THESEAM_CHECKBOX_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
   // tslint:disable-next-line: no-use-before-declare
   useExisting: forwardRef(() => TheSeamCheckboxComponent),
-  multi: true
+  multi: true,
 }
 
 class TheSeamCheckboxComponentBase {
@@ -60,21 +60,21 @@ let _uid = 0
  * A Checkbox.
  */
 @Component({
-    selector: 'seam-checkbox',
-    templateUrl: './checkbox.component.html',
-    styleUrls: ['./checkbox.component.scss'],
-    imports: [
-        CommonModule,
-        ObserversModule,
-    ],
-    exportAs: 'seamCheckbox',
-    host: {
-        '[attr.tabindex]': 'null',
-        'class': 'custom-control custom-checkbox'
-    },
-    providers: [THESEAM_CHECKBOX_CONTROL_VALUE_ACCESSOR],
-    inputs: ['tabIndex'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'seam-checkbox',
+  templateUrl: './checkbox.component.html',
+  styleUrls: ['./checkbox.component.scss'],
+  imports: [
+    CommonModule,
+    ObserversModule,
+  ],
+  exportAs: 'seamCheckbox',
+  host: {
+    '[attr.tabindex]': 'null',
+    'class': 'custom-control custom-checkbox',
+  },
+  providers: [THESEAM_CHECKBOX_CONTROL_VALUE_ACCESSOR],
+  inputs: ['tabIndex'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TheSeamCheckboxComponent extends _TheSeamCheckboxMixinBase
   implements AfterViewInit, OnDestroy, ControlValueAccessor, CanDisable, HasTabIndex {
@@ -191,7 +191,7 @@ export class TheSeamCheckboxComponent extends _TheSeamCheckboxMixinBase
     private _changeDetectorRef: ChangeDetectorRef,
     private _focusMonitor: FocusMonitor,
     private _ngZone: NgZone,
-    @Attribute('tabindex') tabIndex: string
+    @Attribute('tabindex') tabIndex: string,
   ) {
     super(elementRef)
 

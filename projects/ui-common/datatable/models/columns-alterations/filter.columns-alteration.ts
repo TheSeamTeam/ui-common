@@ -7,7 +7,7 @@ import { TheSeamDatatableColumn } from '../table-column'
 import {
   TheSeamColumnsDataFilterTextSearchType,
   TheSeamColumnsDataFilterNumericSearchType,
-  TheSeamColumnsDataFilterDateSearchType
+  TheSeamColumnsDataFilterDateSearchType,
 } from '../columns-data-filters/models'
 import { AlterationDisplayItem } from '../../../datatable-alterations-display/models/alteration-display.model'
 
@@ -34,7 +34,7 @@ export class FilterColumnsAlteration extends ColumnsAlteration<FilterColumnsAlte
 
   constructor(
     state: FilterColumnsAlterationState,
-    persistent: boolean
+    persistent: boolean,
   ) {
     super(state, persistent)
 
@@ -70,7 +70,7 @@ export class FilterColumnsAlteration extends ColumnsAlteration<FilterColumnsAlte
       searchType: operation,
       searchText: null,
       fromText: null,
-      toText: null
+      toText: null,
     }
 
     // Set values based on operation type
@@ -101,7 +101,7 @@ export class FilterColumnsAlteration extends ColumnsAlteration<FilterColumnsAlte
       type: this.type,
       summary,
       details,
-      sortOrder: this._getColumnSortOrder()
+      sortOrder: this._getColumnSortOrder(),
     }
   }
 
@@ -116,7 +116,7 @@ export class FilterColumnsAlteration extends ColumnsAlteration<FilterColumnsAlte
   private _isValueOperation(operation: FilterOperation): boolean {
     const valueOperations: FilterOperation[] = [
       'contains', 'ncontains', 'eq', 'neq', // text
-      'gt', 'lt', 'gte', 'lte' // numeric/date
+      'gt', 'lt', 'gte', 'lte', // numeric/date
     ]
     return valueOperations.includes(operation)
   }
@@ -190,7 +190,7 @@ export class FilterColumnsAlteration extends ColumnsAlteration<FilterColumnsAlte
     const details = [
       `Column: ${columnProp}`,
       `Type: ${filterType}`,
-      `Operation: ${this._getOperationDisplayName(operation)}`
+      `Operation: ${this._getOperationDisplayName(operation)}`,
     ]
 
     if (this._isRangeOperation(operation)) {
@@ -212,7 +212,7 @@ export class FilterColumnsAlteration extends ColumnsAlteration<FilterColumnsAlte
       'gt': '>',
       'lt': '<',
       'gte': '≥',
-      'lte': '≤'
+      'lte': '≤',
     }
     return symbols[operation] || operation
   }
@@ -230,7 +230,7 @@ export class FilterColumnsAlteration extends ColumnsAlteration<FilterColumnsAlte
       'blank': 'Is blank',
       'not-blank': 'Is not blank',
       'between': 'Between',
-      'not-between': 'Not between'
+      'not-between': 'Not between',
     }
     return names[operation] || operation
   }

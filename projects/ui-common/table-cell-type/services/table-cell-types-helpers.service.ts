@@ -9,13 +9,13 @@ import { CaluclatedValueContextType, ICalucatedValueContext, TableCellData } fro
 import { TableCellTypeName } from '../table-cell-type-name'
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TableCellTypesHelpersService {
 
   constructor(
     private _dynamicActionHelper: DynamicActionHelperService,
-    private _valueHelper: DynamicValueHelperService
+    private _valueHelper: DynamicValueHelperService,
   ) { }
 
   public parseValueProp(value: any, contextOrContextFn: CaluclatedValueContextType) {
@@ -28,7 +28,7 @@ export class TableCellTypesHelpersService {
       row: data && data.row,
       rowIndex: data && data.rowIndex,
       colData: data && data.colData,
-      value
+      value,
     }
   }
 
@@ -42,7 +42,7 @@ export class TableCellTypesHelpersService {
 
   public handleModalAction<R = any>(
     action: DynamicActionModalDef,
-    contextOrContextFn: CaluclatedValueContextType
+    contextOrContextFn: CaluclatedValueContextType,
   ) {
     // TODO: Try to simplify this observable. It seems fairly easy to read like
     // this, but seems like it is doing more than it needs to with the multiple
@@ -59,7 +59,7 @@ export class TableCellTypesHelpersService {
         .subscribe(
           result => subscriber.next(result),
           err => subscriber.error(err),
-          () => stopSubject.complete()
+          () => stopSubject.complete(),
         )
 
       // Handle the potentially deep chain of actions.
@@ -68,7 +68,7 @@ export class TableCellTypesHelpersService {
         .subscribe(
           () => {},
           err => subscriber.error(err),
-          () => subscriber.complete()
+          () => subscriber.complete(),
         )
 
       // Clean up on unsubscribe.
@@ -82,7 +82,7 @@ export class TableCellTypesHelpersService {
   private _handleModalAction(
     action: DynamicActionModalDef,
     contextOrContextFn: CaluclatedValueContextType,
-    resultSubject: Subject<any>
+    resultSubject: Subject<any>,
   ) {
     const context = this._resolveValueContext(contextOrContextFn)
     return from(this._dynamicActionHelper.exec(action, context))

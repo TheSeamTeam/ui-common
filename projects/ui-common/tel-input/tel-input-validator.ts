@@ -6,7 +6,7 @@ import {
   getIntlTelInputUtils,
   getValidationErrorMessage,
   globalIntlTelInputGlobals,
-  processCountryCodes
+  processCountryCodes,
 } from './utils'
 
 export function telInputValidator(control: UntypedFormControl) {

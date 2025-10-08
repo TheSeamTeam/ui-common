@@ -17,7 +17,7 @@ const mediaQueriesMap: { [breakpoint: string]: string } = {
   'gt-xs': 'screen and (min-width: 600px)',
   'gt-sm': 'screen and (min-width: 960px)',
   'gt-md': 'screen and (min-width: 1280px)',
-  'gt-lg': 'screen and (min-width: 1920px)'
+  'gt-lg': 'screen and (min-width: 1920px)',
 }
 
 /**
@@ -40,7 +40,7 @@ function isMediaQueryActive(query: string, fallback: MediaObserver) {
  */
 export function observeMediaQuery(
   mediaObserver: MediaObserver,
-  alias: MediaQueryAliases
+  alias: MediaQueryAliases,
 ): Observable<boolean> {
   // console.log(alias, mediaObserver.isActive(alias), isMediaQueryActive(alias, mediaObserver))
   return mediaObserver.asObservable()
@@ -49,6 +49,6 @@ export function observeMediaQuery(
       // startWith(mediaObserver.isActive(alias)),
       startWith(isMediaQueryActive(alias, mediaObserver)),
       distinctUntilChanged(),
-      shareReplay({ refCount: true, bufferSize: 1 })
+      shareReplay({ refCount: true, bufferSize: 1 }),
     )
 }

@@ -14,7 +14,7 @@ import { MapperContext } from './mapper-context'
 
 export type SortsMapperResult = { [name: string]: any }[]
 export type SortsMapper = (sorts: SortItem[], context: MapperContext)
-  => (SortsMapperResult | Promise<SortsMapperResult> | Observable<SortsMapperResult>)
+=> (SortsMapperResult | Promise<SortsMapperResult> | Observable<SortsMapperResult>)
 
 interface DatatableResults {
   pageInfo: PageInfoMapperResult
@@ -35,7 +35,7 @@ export function observeRowsWithGqlInputsHandling<TData, TRow, GqlVariables exten
   datatable: Observable<GqlDatatableAccessor | undefined> | Promise<GqlDatatableAccessor | undefined> | GqlDatatableAccessor,
   extraVariables: Observable<Partial<GqlVariables>> | Promise<Partial<GqlVariables>> | Partial<GqlVariables>,
   sortsMapper: SortsMapper,
-  filterStateMappers: FilterStateMappers
+  filterStateMappers: FilterStateMappers,
 ): Observable<TRow[]> {
   return new Observable<TRow[]>((subscriber: Subscriber<TRow[]>) => {
     const datatable$ = wrapIntoObservable(datatable)
@@ -44,12 +44,12 @@ export function observeRowsWithGqlInputsHandling<TData, TRow, GqlVariables exten
     const context$ = extraVariables$.pipe(
       map(_extraVariables => {
         const context: MapperContext = {
-          extraVariables: _extraVariables
+          extraVariables: _extraVariables,
         }
 
         return context
       }),
-      shareReplay({ bufferSize: 1, refCount: true })
+      shareReplay({ bufferSize: 1, refCount: true }),
     )
 
     const datatableMappers: DatatableMappers = {
@@ -71,9 +71,9 @@ export function observeRowsWithGqlInputsHandling<TData, TRow, GqlVariables exten
           ...results.pageInfo,
           ...(results.sorts.length > 0 ? { order: results.sorts } : {}),
           ...(results.filter?.variables || {}),
-          ...(results.filter?.filter ? { where: results.filter.filter } : {})
+          ...(results.filter?.filter ? { where: results.filter.filter } : {}),
         } as any)
-      })
+      }),
     )
 
     // const _emitSubject = new Subject<void>()
@@ -188,9 +188,9 @@ function _createSortsObservable(datatable$: Observable<GqlDatatableAccessor | un
     // tap(v => console.log('sorts got dt', v)),
     switchMap(dt => dt
       ? dt.sort.pipe(map(v => v.sorts), startWith(dt.sorts)) // .pipe(tap(v => console.log('sorts 1', v)))
-      : of([]) // .pipe(tap(v => console.log('sorts 2', v)))
+      : of([]), // .pipe(tap(v => console.log('sorts 2', v)))
     ),
-    shareReplay({ bufferSize: 1, refCount: true })
+    shareReplay({ bufferSize: 1, refCount: true }),
   )
 }
 
@@ -199,7 +199,7 @@ function _createFilterStatesObservable(datatable$: Observable<GqlDatatableAccess
     // tap(v => console.log('filters got dt', v)),
     switchMap(dt => dt
       ? dt.filterStates // .pipe(tap(v => console.log('filterStates 1', v)))
-      : of([]) // .pipe(tap(v => console.log('filterStates 2', v)))
+      : of([]), // .pipe(tap(v => console.log('filterStates 2', v)))
     ),
     // TODO: Remove when the datatable fixes the bug causing it to emit more than it should.
     distinctUntilChanged((x, y) => JSON.stringify(x) === JSON.stringify(y)),
@@ -217,7 +217,7 @@ function _createDatatableResultsObservable(
     const dtSub = datatable$.subscribe(
       dt => datatableSubject.next(dt),
       err => datatableSubject.error(err),
-      () => datatableSubject.complete()
+      () => datatableSubject.complete(),
     )
 
     const ctxSub = context$.pipe(
@@ -225,11 +225,11 @@ function _createDatatableResultsObservable(
         // TODO: Decide if the disabled paging feature will be reimplemented in a way
         // that it should be considered here. `_isPagingDisabled(queryRef)`
         const pageInfo$ = createPageInfoObservable(datatable$).pipe(
-          map(info => mappers.pageInfo(info))
+          map(info => mappers.pageInfo(info)),
         )
 
         const sorts$ = _createSortsObservable(datatable$).pipe(
-          switchMap(m => wrapIntoObservable(mappers.sorts(m, context)))
+          switchMap(m => wrapIntoObservable(mappers.sorts(m, context))),
         )
 
         const filterInfo$ = _createFilterStatesObservable(datatable$).pipe(
@@ -245,10 +245,10 @@ function _createDatatableResultsObservable(
             pageInfo,
             sorts,
             filter: filterInfo,
-            context
-          }))
+            context,
+          })),
         )
-      })
+      }),
     ).subscribe(subscriber)
 
     return () => {

@@ -12,35 +12,35 @@ export class FakeToastrService {
     message?: string,
     title?: string,
     override: Partial<IndividualConfig> = {},
-    type = ''
+    type = '',
   ) { }
 
   /** show successful toast */
   success(
     message?: string,
     title?: string,
-    override: Partial<IndividualConfig> = {}
+    override: Partial<IndividualConfig> = {},
   ) { }
 
   /** show error toast */
   error(
     message?: string,
     title?: string,
-    override: Partial<IndividualConfig> = {}
+    override: Partial<IndividualConfig> = {},
   ) { }
 
   /** show info toast */
   info(
     message?: string,
     title?: string,
-    override: Partial<IndividualConfig> = {}
+    override: Partial<IndividualConfig> = {},
   ) { }
 
   /** show warning toast */
   warning(
     message?: string,
     title?: string,
-    override: Partial<IndividualConfig> = {}
+    override: Partial<IndividualConfig> = {},
   ) { }
 
   /**

@@ -63,7 +63,7 @@ export class DashboardWidgetsService {
       auditTime(0),
       switchMap(([ items, numColumns ]) =>
         this._preferences.selectLayout(this.preferenceKey, this._layoutName(numColumns)).pipe(
-          map(layout => layout ? this.withLayoutPreferences(items, layout) : items)
+          map(layout => layout ? this.withLayoutPreferences(items, layout) : items),
         ),
       ),
       shareReplay({ bufferSize: 1, refCount: true }),
@@ -115,8 +115,8 @@ export class DashboardWidgetsService {
         col: def.col || this.defaultColumn,
         order: def.order || 0,
         portal,
-        __itemDef: def
-      }))
+        __itemDef: def,
+      })),
     )
   }
 
@@ -230,7 +230,7 @@ export class DashboardWidgetsService {
     // the column records.
     const items$ = this.widgetColumns$.pipe(
       map(columns => ([] as IDashboardWidgetsItem[])
-        .concat(...(columns.map(c => c.items.map(itm => ({ ...itm, col: c.column })))))
+        .concat(...(columns.map(c => c.items.map(itm => ({ ...itm, col: c.column }))))),
       ),
     )
 
@@ -240,7 +240,7 @@ export class DashboardWidgetsService {
       switchMap(([ items, numColumns ]) => {
         return this._preferences.updateLayout(this.preferenceKey, {
           name: this._layoutName(numColumns),
-          items
+          items,
         })
       }),
       mapTo(undefined),

@@ -44,7 +44,7 @@ class StoryLibConfirmDialogBasicServiceComponent {
       class="btn btn-lightgray"
       (click)="open()">
       Open Dialog
-    </button>`
+    </button>`,
 })
 class StoryLibConfirmDialogAlertServiceComponent {
 
@@ -58,7 +58,7 @@ class StoryLibConfirmDialogAlertServiceComponent {
     if (this.theme) {
       this._confirmDialog.open(
         this.msgText,
-        { message: this.alertMsgText || '', type: this.theme }
+        { message: this.alertMsgText || '', type: this.theme },
       ).afterClosed().subscribe(result => {
         if (result === 'confirm') {
           console.log('confirmed')

@@ -8,15 +8,15 @@ import { WidgetTableComponent } from './widget-table.component'
 
 @NgModule({
   declarations: [
-    WidgetTableComponent
+    WidgetTableComponent,
   ],
   imports: [
     CommonModule,
     TheSeamTableModule,
-    TheSeamTableCellTypesModule
+    TheSeamTableCellTypesModule,
   ],
   exports: [
-    WidgetTableComponent
-  ]
+    WidgetTableComponent,
+  ],
 })
 export class TheSeamWidgetTableModule { }

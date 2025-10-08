@@ -10,7 +10,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  TemplateRef
+  TemplateRef,
 } from '@angular/core'
 import { BehaviorSubject, fromEvent, of, Subject } from 'rxjs'
 import { distinctUntilChanged, map, startWith, switchMap, takeUntil } from 'rxjs/operators'
@@ -19,30 +19,30 @@ import { popoverExpandIn, popoverExpandOut } from '../popover-animations'
 import { TheSeamPopoverDirective } from '../popover.directive'
 
 @Component({
-    selector: 'seam-popover',
-    templateUrl: './popover.component.html',
-    styleUrls: ['./popover.component.scss'],
-    animations: [
-        trigger('slideDown', [
-            transition(':enter', useAnimation(popoverExpandIn)),
-            transition(':leave', useAnimation(popoverExpandOut)),
-        ])
-    ],
-    host: {
-        class: 'popover show m-2 position-static',
-        '[@slideDown]': `{
+  selector: 'seam-popover',
+  templateUrl: './popover.component.html',
+  styleUrls: ['./popover.component.scss'],
+  animations: [
+    trigger('slideDown', [
+      transition(':enter', useAnimation(popoverExpandIn)),
+      transition(':leave', useAnimation(popoverExpandOut)),
+    ]),
+  ],
+  host: {
+    class: 'popover show m-2 position-static',
+    '[@slideDown]': `{
       value: _state,
       params: {
         enterAnimationDuration: enterAnimationDuration,
         exitAnimationDuration: exitAnimationDuration
       }
     }`,
-        '(@slideDown.start)': '_onAnimationStart($event)',
-        '(@slideDown.done)': '_animationDone.next($event)',
-        '[style.width]': '_popoverWidth'
-    },
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    '(@slideDown.start)': '_onAnimationStart($event)',
+    '(@slideDown.done)': '_animationDone.next($event)',
+    '[style.width]': '_popoverWidth',
+  },
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class PopoverComponent implements OnInit, OnDestroy {
 
@@ -133,12 +133,12 @@ export class PopoverComponent implements OnInit, OnDestroy {
         if (baseWidth) {
           return fromEvent(window, 'resize').pipe(
             startWith(undefined),
-            map(() => window.innerWidth < baseWidth ? `${window.innerWidth}px` : `${baseWidth}px`)
+            map(() => window.innerWidth < baseWidth ? `${window.innerWidth}px` : `${baseWidth}px`),
           )
         }
         return of(undefined)
       }),
-      takeUntil(this._ngUnsubscribe)
+      takeUntil(this._ngUnsubscribe),
     ).subscribe(w => {
       this._popoverWidth = w
       this._changeDetectorRef.markForCheck()

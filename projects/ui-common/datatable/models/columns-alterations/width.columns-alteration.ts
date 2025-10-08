@@ -20,7 +20,7 @@ export class WidthColumnsAlteration extends ColumnsAlteration<WidthColumnsAltera
 
   constructor(
     state: WidthColumnsAlterationState,
-    persistent: boolean
+    persistent: boolean,
   ) {
     super(state, persistent)
 
@@ -52,7 +52,7 @@ export class WidthColumnsAlteration extends ColumnsAlteration<WidthColumnsAltera
       type: this.type,
       summary,
       details,
-      sortOrder: this._getColumnSortOrder()
+      sortOrder: this._getColumnSortOrder(),
     }
   }
 

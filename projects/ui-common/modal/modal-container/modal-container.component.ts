@@ -14,7 +14,7 @@ import {
   OnDestroy,
   Optional,
   ViewChild,
-  DOCUMENT
+  DOCUMENT,
 } from '@angular/core'
 import { Subject } from 'rxjs'
 import { distinctUntilChanged } from 'rxjs/operators'
@@ -30,30 +30,30 @@ export function throwDialogContentAlreadyAttachedError() {
  * @docs-private
  */
 @Component({
-    selector: 'seam-modal-container',
-    templateUrl: './modal-container.component.html',
-    styleUrls: ['./modal-container.component.scss'],
-    animations: [
-        trigger('dialog', [
-            state('enter', style({ opacity: 1 })),
-            state('exit, void', style({ opacity: 0 })),
-            transition('* => enter', animate('{{enterAnimationDuration}}')),
-            transition('* => exit, * => void', animate('{{exitAnimationDuration}}')),
-        ])
-    ],
-    // tslint:disable:use-host-property-decorator
-    host: {
-        '[@dialog]': `{
+  selector: 'seam-modal-container',
+  templateUrl: './modal-container.component.html',
+  styleUrls: ['./modal-container.component.scss'],
+  animations: [
+    trigger('dialog', [
+      state('enter', style({ opacity: 1 })),
+      state('exit, void', style({ opacity: 0 })),
+      transition('* => enter', animate('{{enterAnimationDuration}}')),
+      transition('* => exit, * => void', animate('{{exitAnimationDuration}}')),
+    ]),
+  ],
+  // tslint:disable:use-host-property-decorator
+  host: {
+    '[@dialog]': `{
       value: _state,
       params: {
         enterAnimationDuration: _config.enterAnimationDuration,
         exitAnimationDuration: _config.exitAnimationDuration
       }
     }`,
-        '(@dialog.start)': '_onAnimationStart($event)',
-        '(@dialog.done)': '_animationDone.next($event)',
-    },
-    standalone: false
+    '(@dialog.start)': '_onAnimationStart($event)',
+    '(@dialog.done)': '_animationDone.next($event)',
+  },
+  standalone: false,
 })
 export class ModalContainerComponent extends BasePortalOutlet implements OnDestroy {
 
@@ -116,7 +116,7 @@ export class ModalContainerComponent extends BasePortalOutlet implements OnDestr
   /** Element that was focused before the dialog was opened. Save this to restore upon close. */
   private _elementFocusedBeforeDialogWasOpened: HTMLElement | null = null
 
-   /** The class that traps and manages focus within the dialog. */
+  /** The class that traps and manages focus within the dialog. */
   private _focusTrap: ConfigurableFocusTrap
 
   @HostBinding('class.modal-dialog') _modalDialog = true

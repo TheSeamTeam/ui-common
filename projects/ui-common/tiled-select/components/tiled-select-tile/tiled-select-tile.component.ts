@@ -21,9 +21,9 @@ export const tilePulse = animation(
       style({ transform: 'scale3d(1, 1, 1)' }),
       style({ transform: 'scale3d({{ scale }}, {{ scale }}, {{ scale }})' }),
       style({ transform: 'scale3d(1, 1, 1)' }),
-    ])
+    ]),
   ),
-  { params: { scale: 1.05, timing: 0.75, delay: 0 } }
+  { params: { scale: 1.05, timing: 0.75, delay: 0 } },
 )
 
 export const tileScaleUp = animation(
@@ -31,9 +31,9 @@ export const tileScaleUp = animation(
     '{{ timing }}s {{ delay }}s',
     keyframes([
       style({ transform: 'scale3d({{ scale }}, {{ scale }}, {{ scale }})' }),
-    ])
+    ]),
   ),
-  { params: { scale: 1.05, timing: 0.75, delay: 0 } }
+  { params: { scale: 1.05, timing: 0.75, delay: 0 } },
 )
 
 export const tileScaleDown = animation(
@@ -41,9 +41,9 @@ export const tileScaleDown = animation(
     '{{ timing }}s {{ delay }}s',
     keyframes([
       style({ transform: 'scale3d(1, 1, 1)' }),
-    ])
+    ]),
   ),
-  { params: { scale: 1.05, timing: 0.75, delay: 0 } }
+  { params: { scale: 1.05, timing: 0.75, delay: 0 } },
 )
 
 @Component({
@@ -53,7 +53,7 @@ export const tileScaleDown = animation(
   animations: [
     trigger('pulse', [
       transition('false => true', [
-        useAnimation(tilePulse)
+        useAnimation(tilePulse),
         // useAnimation(tileScaleUp)
       ]),
       // transition('true => false', [

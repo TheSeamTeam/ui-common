@@ -36,10 +36,10 @@ export const mapSearchDateColumnsDataFilterStateToGql = (
               filter: {
                 and: [
                   { [filterState.state.prop]: { gte: searchDate.toISOString() } },
-                  { [filterState.state.prop]: { lt: searchDateEnd.toISOString() } }
-                ]
+                  { [filterState.state.prop]: { lt: searchDateEnd.toISOString() } },
+                ],
               },
-              variables: {}
+              variables: {},
             }
           }
 
@@ -64,9 +64,9 @@ export const mapSearchDateColumnsDataFilterStateToGql = (
               filter: {
                 and: [
                   { [filterState.state.prop]: { [comparator]: searchDateEnd.toISOString() } },
-                ]
+                ],
               },
-              variables: {}
+              variables: {},
             }
           }
 
@@ -78,9 +78,9 @@ export const mapSearchDateColumnsDataFilterStateToGql = (
             filter: {
               and: [
                 { [filterState.state.prop]: { [formValue.searchType]: searchDate.toISOString() } },
-              ]
+              ],
             },
-            variables: {}
+            variables: {},
           }
 
           break
@@ -112,9 +112,9 @@ export const mapSearchDateColumnsDataFilterStateToGql = (
               and: [
                 { [filterState.state.prop]: { gte: fromDate.toISOString() } },
                 { [filterState.state.prop]: { lt: toDateEnd.toISOString() } },
-              ]
+              ],
             },
-            variables: {}
+            variables: {},
           }
         }
         else if (formValue.searchType === 'not-between') {
@@ -123,9 +123,9 @@ export const mapSearchDateColumnsDataFilterStateToGql = (
               or: [
                 { [filterState.state.prop]: { lt: fromDate.toISOString() } },
                 { [filterState.state.prop]: { gt: toDateEnd.toISOString() } },
-              ]
+              ],
             },
-            variables: {}
+            variables: {},
           }
         }
       }
@@ -135,20 +135,20 @@ export const mapSearchDateColumnsDataFilterStateToGql = (
     filter = {
       filter: {
         or: [
-          { [filterState.state.prop]: { eq: null } }
-        ]
+          { [filterState.state.prop]: { eq: null } },
+        ],
       },
-      variables: {}
+      variables: {},
     }
   }
   else if (formValue.searchType === 'not-blank') {
     filter = {
       filter: {
         and: [
-          { [filterState.state.prop]: { neq: null } }
-        ]
+          { [filterState.state.prop]: { neq: null } },
+        ],
       },
-      variables: {}
+      variables: {},
     }
   }
 

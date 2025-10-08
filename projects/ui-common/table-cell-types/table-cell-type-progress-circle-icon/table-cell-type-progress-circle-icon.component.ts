@@ -9,11 +9,11 @@ import type { TableCellData, TheSeamTableColumn } from '@theseam/ui-common/table
 import { TableCellTypeConfigProgressCircleIcon } from './table-cell-type-progress-circle-icon-config'
 
 @Component({
-    selector: 'seam-table-cell-type-progress-circle-icon',
-    templateUrl: './table-cell-type-progress-circle-icon.component.html',
-    styleUrls: ['./table-cell-type-progress-circle-icon.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'seam-table-cell-type-progress-circle-icon',
+  templateUrl: './table-cell-type-progress-circle-icon.component.html',
+  styleUrls: ['./table-cell-type-progress-circle-icon.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class TableCellTypeProgressCircleIconComponent implements OnDestroy {
 
@@ -31,7 +31,7 @@ export class TableCellTypeProgressCircleIconComponent implements OnDestroy {
   constructor(
     private _cdf: ChangeDetectorRef,
     private _tableCellTypeHelpers: TableCellTypesHelpersService,
-    @Optional() @Inject(TABLE_CELL_DATA) _tableData?: TableCellData<'progress-circle-icon', TableCellTypeConfigProgressCircleIcon>
+    @Optional() @Inject(TABLE_CELL_DATA) _tableData?: TableCellData<'progress-circle-icon', TableCellTypeConfigProgressCircleIcon>,
   ) {
     const tableData = _tableData
     this.value = tableData && tableData.value
@@ -73,9 +73,9 @@ export class TableCellTypeProgressCircleIconComponent implements OnDestroy {
       tableData.colData.cellTypeConfig.icon &&
       this._parseConfigValue(tableData.colData.cellTypeConfig.displayIcon, tableData) &&
       this._parseConfigValue(tableData.colData.cellTypeConfig.icon, tableData)) {
-        this.icon = this._parseConfigValue(tableData.colData.cellTypeConfig.icon, tableData)
-        this.displayIcon = this._parseConfigValue(tableData.colData.cellTypeConfig.displayIcon, tableData)
-      }
+      this.icon = this._parseConfigValue(tableData.colData.cellTypeConfig.icon, tableData)
+      this.displayIcon = this._parseConfigValue(tableData.colData.cellTypeConfig.displayIcon, tableData)
+    }
   }
 
   private _parseConfigValue(val: any, tableData?: TableCellData<'progress-circle-icon', TableCellTypeConfigProgressCircleIcon>) {

@@ -36,7 +36,7 @@ const startVerdaccio = (port: number) => {
       const cache = path.join(__dirname, '..', '.verdaccio-cache')
       const config = {
         ...(yaml.load(
-          fs.readFileSync(path.join(__dirname, 'verdaccio.yaml'), 'utf8')
+          fs.readFileSync(path.join(__dirname, 'verdaccio.yaml'), 'utf8'),
         ) as Record<string, any>),
         self_path: cache,
       }
@@ -90,7 +90,7 @@ const applyRegistriesUrl = (
   yarnUrl: string,
   npmUrl: string,
   originalYarnUrl: string,
-  originalNpmUrl: string
+  originalNpmUrl: string,
 ) => {
   logger.log(`↪️  changing system config`)
   nodeCleanup((exitCode, signal) => {
@@ -136,9 +136,9 @@ const publish = (packages: { name: string; location: string }[], url: string) =>
                 resolve(undefined)
               }
             })
-          })
-      )
-    )
+          }),
+      ),
+    ),
   )
 }
 
@@ -184,14 +184,14 @@ const run = async () => {
     verdaccioUrl,
     verdaccioUrl,
     originalYarnRegistryUrl,
-    originalNpmRegistryUrl
+    originalNpmRegistryUrl,
   )
 
   await addUser(verdaccioUrl)
 
   if (options.publish) {
     await publish([
-      { name: '@theseam/ui-common', location: path.join(__dirname, '../dist/ui-common') }
+      { name: '@theseam/ui-common', location: path.join(__dirname, '../dist/ui-common') },
     ], verdaccioUrl)
   }
 

@@ -17,18 +17,18 @@ describe('SideNavItemComponent', () => {
   const createComponent = createRoutingFactory({
     component: SideNavItemComponent,
     imports: [
-      TheSeamSideNavModule
+      TheSeamSideNavModule,
     ],
     providers: [
       mockProvider(SideNavComponent, {
-        overlay: false
-      })
+        overlay: false,
+      }),
     ],
     stubsEnabled: false,
     routes: [
       {
         path: '',
-        component: TestPlacholderComponent
+        component: TestPlacholderComponent,
       },
       {
         path: 'foo',
@@ -37,8 +37,8 @@ describe('SideNavItemComponent', () => {
           {
             path: 'bar',
             component: TestPlacholderComponent,
-          }
-        ]
+          },
+        ],
       },
     ],
   })
@@ -60,7 +60,7 @@ describe('SideNavItemComponent', () => {
             // badgeTheme: 'primary',
             // badgeSrContent: 'foo',
             // children: []
-          }
+          },
         })
 
         expect(spectator.queryAll('[side-nav-item-label]:not(.sr-only)').length).toBe(1)
@@ -84,7 +84,7 @@ describe('SideNavItemComponent', () => {
             // badgeTheme: 'primary',
             // badgeSrContent: 'foo',
             // children: []
-          }
+          },
         })
 
         expect(spectator.queryAll('[side-nav-item-label]:not(.sr-only)').length).toBe(0)

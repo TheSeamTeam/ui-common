@@ -18,7 +18,7 @@ export class TheSeamDatatableScrollbarHelperService {
 
   constructor(
     private _ngZone: NgZone,
-    private _scrollbars: TheSeamOverlayScrollbarsService
+    private _scrollbars: TheSeamOverlayScrollbarsService,
   ) { }
 
   onInitScroller(scroller: any): void {
@@ -28,8 +28,8 @@ export class TheSeamDatatableScrollbarHelperService {
           this._ngZone.run(() => {
             scroller.onScrolled(e)
           })
-        }
-      }
+        },
+      },
     })
   }
 

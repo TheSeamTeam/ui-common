@@ -23,16 +23,16 @@ const _columnDefs: ColumnDefType[] = [
         component: 'story-modal-1',
         data: { type: 'jexl', expr: '{ message: row.item }' },
         confirmDef: {
-          message: 'Are you sure you want to view message?'
+          message: 'Are you sure you want to view message?',
         },
         resultActions: {
           'next-modal': {
             type: 'modal',
             component: 'story-modal-2',
-            data: { type: 'jexl', expr: '{ message: row.item, isReply: true }' }
-          }
-        }
-      }
+            data: { type: 'jexl', expr: '{ message: row.item, isReply: true }' },
+          },
+        },
+      },
     },
     exportHeader: 'Read Status',
     exportValue: { type: 'jexl', expr: 'row.read ? "Read" : "Unread"' },
@@ -41,7 +41,7 @@ const _columnDefs: ColumnDefType[] = [
   { prop: 'lastName', name: 'Last Name' },
   { prop: 'age', name: 'Age' },
   { prop: 'sentDate', name: 'Sent Date', cellType: 'date' },
-  { prop: 'error', name: 'Error' }
+  { prop: 'error', name: 'Error' },
 ]
 
 export const exampleData1: DatatableDynamicDef = {
@@ -79,24 +79,24 @@ export const exampleData1: DatatableDynamicDef = {
           type: 'tri-column',
           columnLeft: {
             items: [
-              { component: 'text', data: { value: 'Test value for text component' } }
-            ]
+              { component: 'text', data: { value: 'Test value for text component' } },
+            ],
           },
           columnCenter: {
-            items: []
+            items: [],
           },
           columnRight: {
             items: [
-              { component: 'filter-search' }
-            ]
-          }
-        }
+              { component: 'filter-search' },
+            ],
+          },
+        },
       },
       {
         layout: {
           type: 'tri-column',
           columnLeft: {
-            items: []
+            items: [],
           },
           columnCenter: {
             items: [
@@ -106,15 +106,15 @@ export const exampleData1: DatatableDynamicDef = {
                   buttons: [
                     { name: 'All', value: '' },
                     { name: '30', value: '30' },
-                    { name: '32', value: '32' }
+                    { name: '32', value: '32' },
                   ],
                   multiple: false,
                   selectionToggleable: false,
                   initialValue: '',
-                  properties: ['age']
-                }
-              }
-            ]
+                  properties: ['age'],
+                },
+              },
+            ],
           },
           columnRight: {
             items: [
@@ -124,15 +124,15 @@ export const exampleData1: DatatableDynamicDef = {
                   type: 'exporters-data',
                   exporters: [
                     'exporter:csv',
-                    'exporter:xlsx'
-                  ]
-                }
-              }
-            ]
-          }
-        }
-      }
-    ]
+                    'exporter:xlsx',
+                  ],
+                },
+              },
+            ],
+          },
+        },
+      },
+    ],
   },
   columns: _columnDefs,
   rows: [
@@ -189,10 +189,10 @@ export const exampleData1: DatatableDynamicDef = {
       label: 'Modal',
       // action: { type: 'modal', component: 'story-ex-modal' }
       // action: { type: 'modal', component: { type: 'jexl', expr: 'row.age > 30 ? "story-ex-modal" : "story-ex-modal2"' } }
-      action: { type: 'modal', component: { type: 'jexl', expr: 'row.age > 30 ? "story-modal-1" : "story-modal-2"' } }
-    }
+      action: { type: 'modal', component: { type: 'jexl', expr: 'row.age > 30 ? "story-modal-1" : "story-modal-2"' } },
+    },
   ],
   options: {
-    virtualization: true
-  }
+    virtualization: true,
+  },
 }

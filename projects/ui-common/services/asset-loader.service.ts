@@ -9,7 +9,7 @@ export class LoadedAssetRef<T extends HTMLLinkElement | HTMLScriptElement | HTML
   constructor(
     public readonly nativeElement: T,
     public readonly path?: string,
-    public readonly content?: string
+    public readonly content?: string,
   ) {
 
   }
@@ -21,7 +21,7 @@ export class LoadedAssetRef<T extends HTMLLinkElement | HTMLScriptElement | HTML
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AssetLoaderService {
 

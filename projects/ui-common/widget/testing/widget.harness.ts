@@ -24,14 +24,14 @@ export class TheSeamWidgetHarness extends ContentContainerComponentHarness<strin
     options: TheSeamWidgetHarnessFilters = {},
   ): HarnessPredicate<T> {
     return new HarnessPredicate(this, options)
-      // .addOption('text', options.text, (harness, text) =>
-      //   HarnessPredicate.stringMatches(harness.getText(), text),
-      // )
-      // .addOption(
-      //   'hasSubmenu',
-      //   options.hasSubmenu,
-      //   async (harness, hasSubmenu) => (await harness.hasSubmenu()) === hasSubmenu,
-      // )
+    // .addOption('text', options.text, (harness, text) =>
+    //   HarnessPredicate.stringMatches(harness.getText(), text),
+    // )
+    // .addOption(
+    //   'hasSubmenu',
+    //   options.hasSubmenu,
+    //   async (harness, hasSubmenu) => (await harness.hasSubmenu()) === hasSubmenu,
+    // )
   }
 
   /** Whether the menu is disabled. */

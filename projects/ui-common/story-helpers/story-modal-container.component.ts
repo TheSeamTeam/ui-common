@@ -57,18 +57,18 @@ export class StoryModalContainerComponent<T, D = any> implements OnDestroy {
   _outletData$: Observable<{ component: ComponentType<T>, injector: Injector } | null>
 
   constructor(
-    private _injector: Injector
+    private _injector: Injector,
   ) {
     this._outletData$ = combineLatest([
       this._component.asObservable(),
-      this._data.asObservable().pipe(startWith(undefined))
+      this._data.asObservable().pipe(startWith(undefined)),
     ]).pipe(
       auditTime(0),
       map(([ component, data ]) => ({
         component,
-        injector: this._createInjector(data)
+        injector: this._createInjector(data),
       })),
-      takeUntil(this._ngUnsubscribe)
+      takeUntil(this._ngUnsubscribe),
     )
   }
 
@@ -81,9 +81,9 @@ export class StoryModalContainerComponent<T, D = any> implements OnDestroy {
     return Injector.create({
       providers: [
         { provide: ModalRef, useClass: FakeModalRef, deps: [] },
-        { provide: MODAL_DATA, useValue: data }
+        { provide: MODAL_DATA, useValue: data },
       ],
-      parent: this._injector
+      parent: this._injector,
     })
   }
 

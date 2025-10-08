@@ -28,7 +28,7 @@ export class DatatableDynamicFilterContainerComponent<C> implements OnInit {
   _portal: ComponentPortal<C> | null = null
 
   constructor(
-    private _injector: Injector
+    private _injector: Injector,
   ) { }
 
   ngOnInit() {
@@ -51,7 +51,7 @@ export class DatatableDynamicFilterContainerComponent<C> implements OnInit {
 
   private _createInjector(): Injector {
     return Injector.create({ parent: this._injector, providers: [
-      { provide: THESEAM_DATA_FILTER_OPTIONS, useValue: this.options }
+      { provide: THESEAM_DATA_FILTER_OPTIONS, useValue: this.options },
     ] })
   }
 

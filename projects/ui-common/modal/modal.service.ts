@@ -18,7 +18,7 @@ import {
   Provider,
   SkipSelf,
   TemplateRef,
-  Type
+  Type,
 } from '@angular/core'
 import { defer, Observable, of, of as observableOf, Subject } from 'rxjs'
 import { startWith, switchMap } from 'rxjs/operators'
@@ -73,7 +73,7 @@ export class Modal implements OnDestroy {
     @Optional() @SkipSelf() private _parentDialog: Modal,
     @Optional() location: Location,
     private _scrollbars: TheSeamOverlayScrollbarsService,
-    private _dynamicComponentLoaderModule: TheSeamDynamicComponentLoader
+    private _dynamicComponentLoaderModule: TheSeamDynamicComponentLoader,
   ) {
     // Close all of the dialogs when the user goes forwards/backwards in history or when the
     // location hash changes. Note that this usually doesn't include clicking on links (unless
@@ -98,7 +98,7 @@ export class Modal implements OnDestroy {
   /** Opens a dialog from a component. */
   openFromComponent<T, D = any>(
     component: ComponentType<T>,
-    config?: ModalConfig<D>
+    config?: ModalConfig<D>,
   ): ModalRef<T, D> {
     const _config = this._applyConfigDefaults(config)
 
@@ -135,7 +135,7 @@ export class Modal implements OnDestroy {
   /** Opens a dialog from a lazy-loaded component. */
   openFromLazyComponent<T, D = any>(
     componentId: string,
-    config?: ModalConfig<D>
+    config?: ModalConfig<D>,
   ): Observable<ModalRef<T, D>> {
     const _config = this._applyConfigDefaults(config)
 
@@ -152,7 +152,7 @@ export class Modal implements OnDestroy {
             _config,
           )
           return of(modalRef)
-        })
+        }),
       )
   }
 
@@ -258,8 +258,8 @@ export class Modal implements OnDestroy {
           //   document.removeEventListener('touchend', _scrollbarMouseUpListener)
           //   document.removeEventListener('touchcancel', _scrollbarMouseUpListener)
           // }
-        }
-      }
+        },
+      },
     })
 
     // Cleans up the registered events.
@@ -304,7 +304,7 @@ export class Modal implements OnDestroy {
       minWidth: config.minWidth,
       minHeight: config.minHeight,
       maxWidth: config.maxWidth,
-      maxHeight: config.maxHeight
+      maxHeight: config.maxHeight,
     })
 
     if (config.backdropClass) {
@@ -345,23 +345,23 @@ export class Modal implements OnDestroy {
    * @returns A promise resolving to the MatDialogRef that should be returned to the user.
    */
   protected _attachDialogContentForComponent<T>(
-      componentOrTemplateRef: ComponentType<T>,
-      dialogContainer: ModalContainerComponent,
-      overlayRef: OverlayRef,
-      config: ModalConfig): ModalRef<any> {
+    componentOrTemplateRef: ComponentType<T>,
+    dialogContainer: ModalContainerComponent,
+    overlayRef: OverlayRef,
+    config: ModalConfig): ModalRef<any> {
     // Create a reference to the dialog we're creating in order to give the user a handle
     // to modify and close it.
     // eslint-disable-next-line new-cap
     const dialogRef = new this._dialogRefConstructor<T>(overlayRef, dialogContainer, config.id)
     const injector = this._createInjector<T>(config, dialogRef, dialogContainer)
     const contentRef = dialogContainer.attachComponentPortal(
-        new ComponentPortal(componentOrTemplateRef, undefined, injector))
+      new ComponentPortal(componentOrTemplateRef, undefined, injector))
 
     dialogRef.componentInstance = contentRef.instance
     dialogRef.disableClose = config.disableClose
 
     dialogRef.updateSize({ width: config.width, height: config.height })
-             .updatePosition(config.position)
+      .updatePosition(config.position)
 
     return dialogRef
   }
@@ -376,10 +376,10 @@ export class Modal implements OnDestroy {
    * @returns A promise resolving to the MatDialogRef that should be returned to the user.
    */
   protected _attachDialogContentForTemplate<T>(
-      componentOrTemplateRef: TemplateRef<T>,
-      dialogContainer: ModalContainerComponent,
-      overlayRef: OverlayRef,
-      config: ModalConfig): ModalRef<any> {
+    componentOrTemplateRef: TemplateRef<T>,
+    dialogContainer: ModalContainerComponent,
+    overlayRef: OverlayRef,
+    config: ModalConfig): ModalRef<any> {
     // Create a reference to the dialog we're creating in order to give the user a handle
     // to modify and close it.
     // eslint-disable-next-line new-cap
@@ -389,7 +389,7 @@ export class Modal implements OnDestroy {
       new TemplatePortal<T>(componentOrTemplateRef, null as any,
         { $implicit: config.data, dialogRef } as any))
     dialogRef.updateSize({ width: config.width, height: config.height })
-             .updatePosition(config.position)
+      .updatePosition(config.position)
 
     return dialogRef
   }
@@ -403,9 +403,9 @@ export class Modal implements OnDestroy {
    * @returns The custom injector that can be used inside the dialog.
    */
   private _createInjector<T>(
-      config: ModalConfig,
-      dialogRef: ModalRef<T>,
-      dialogContainer: ModalContainerComponent): Injector {
+    config: ModalConfig,
+    dialogRef: ModalRef<T>,
+    dialogContainer: ModalContainerComponent): Injector {
     const userInjector = config && config.viewContainerRef && config.viewContainerRef.injector
     const providers: Provider[] = [
       { provide: ModalRef, useValue: dialogRef },

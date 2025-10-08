@@ -13,7 +13,7 @@ import {
   OnDestroy,
   Output,
   TemplateRef,
-  ViewChild
+  ViewChild,
 } from '@angular/core'
 import { BehaviorSubject, fromEvent, merge, Observable, of, Subject, Subscription } from 'rxjs'
 
@@ -35,23 +35,23 @@ export type MenuCloseReason = void | 'click' | 'keydown' | 'tab'
 export const LIB_MENU: any = {
   provide: THESEAM_MENU_PANEL,
   // tslint:disable-next-line:no-use-before-declare
-  useExisting: forwardRef(() => MenuComponent)
+  useExisting: forwardRef(() => MenuComponent),
 }
 
 @Component({
-    selector: 'seam-menu',
-    templateUrl: './menu.component.html',
-    styleUrls: ['./menu.component.scss'],
-    providers: [LIB_MENU],
-    animations: [
-        trigger('slideDown', [
-            transition(':enter', useAnimation(menuDropdownPanelIn)),
-            transition(':leave', useAnimation(menuDropdownPanelOut)),
-        ])
-    ],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    exportAs: 'seamMenu',
-    standalone: false
+  selector: 'seam-menu',
+  templateUrl: './menu.component.html',
+  styleUrls: ['./menu.component.scss'],
+  providers: [LIB_MENU],
+  animations: [
+    trigger('slideDown', [
+      transition(':enter', useAnimation(menuDropdownPanelIn)),
+      transition(':leave', useAnimation(menuDropdownPanelOut)),
+    ]),
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  exportAs: 'seamMenu',
+  standalone: false,
 })
 export class MenuComponent implements OnDestroy, AfterContentInit, ITheSeamMenuPanel {
 
@@ -117,13 +117,13 @@ export class MenuComponent implements OnDestroy, AfterContentInit, ITheSeamMenuP
         if (baseWidth) {
           return fromEvent(window, 'resize').pipe(
             startWith(undefined),
-            map(() => window.innerWidth < baseWidth ? `${window.innerWidth}px` : `${baseWidth}px`)
+            map(() => window.innerWidth < baseWidth ? `${window.innerWidth}px` : `${baseWidth}px`),
           )
         }
         return of(undefined)
       }),
       distinctUntilChanged(),
-      takeUntil(this._ngUnsubscribe)
+      takeUntil(this._ngUnsubscribe),
     )
   }
 
@@ -144,7 +144,7 @@ export class MenuComponent implements OnDestroy, AfterContentInit, ITheSeamMenuP
   _hovered(): Observable<MenuItemComponent> {
     return this._itemChanges.pipe(
       startWith(this._items),
-      switchMap(items => merge(...items.map(item => item._hovered)))
+      switchMap(items => merge(...items.map(item => item._hovered))),
     )
   }
 

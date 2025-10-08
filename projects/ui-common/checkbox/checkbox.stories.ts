@@ -19,7 +19,7 @@ const meta: Meta<StoryComponentType> = {
   component: TheSeamCheckboxComponent,
   render: args => ({
     props: args,
-    template: `<seam-checkbox ${argsToTpl()}>{{ngContent}}</seam-checkbox>`
+    template: `<seam-checkbox ${argsToTpl()}>{{ngContent}}</seam-checkbox>`,
   }),
   parameters: {
     docs: {
@@ -131,7 +131,7 @@ export const ExampleFormControl: Story = {
       ...args,
       control: new FormControl(),
     },
-    template: `<seam-checkbox ${argsToTpl()} [formControl]="control">{{ngContent}}</seam-checkbox>[ {{ control.value }} ]`
+    template: `<seam-checkbox ${argsToTpl()} [formControl]="control">{{ngContent}}</seam-checkbox>[ {{ control.value }} ]`,
   }),
   decorators: [
     moduleMetadata({

@@ -14,7 +14,7 @@ export class TheSeamNoopGoogleMapsAPILoader extends TheSeamGoogleMapsApiLoader {
     return defer(() => {
       if (!(window as any).google || !(window as any).google.maps) {
         return throwError(new Error(
-          'Google Maps API not loaded on page. Make sure window.google.maps is available.'
+          'Google Maps API not loaded on page. Make sure window.google.maps is available.',
         ))
       }
       return of(undefined)

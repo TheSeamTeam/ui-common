@@ -6,7 +6,7 @@ import {
   Inject,
   Input,
   OnDestroy,
-  Optional
+  Optional,
 } from '@angular/core'
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
@@ -22,11 +22,11 @@ import { TableCellTypeConfigIcon, TableCellTypeIconConfigAction } from './table-
 export type IconTemplateType = 'default' | 'link' | 'link-external' | 'link-encrypted' | 'button'
 
 @Component({
-    selector: 'seam-table-cell-type-icon',
-    templateUrl: './table-cell-type-icon.component.html',
-    styleUrls: ['./table-cell-type-icon.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'seam-table-cell-type-icon',
+  templateUrl: './table-cell-type-icon.component.html',
+  styleUrls: ['./table-cell-type-icon.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class TableCellTypeIconComponent<R = any, V = any> implements OnDestroy {
 
@@ -97,7 +97,7 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnDestroy {
     private _tableCellTypeHelpers: TableCellTypesHelpersService,
     @Optional() private _datatable?: DatatableComponent,
     @Optional() private _table?: TableComponent,
-    @Optional() @Inject(TABLE_CELL_DATA) _tableData?: TableCellData<'icon', TableCellTypeConfigIcon>
+    @Optional() @Inject(TABLE_CELL_DATA) _tableData?: TableCellData<'icon', TableCellTypeConfigIcon>,
   ) {
     if (_datatable) {
       this._isDatatable = true
@@ -198,7 +198,7 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnDestroy {
           r => {},
           // eslint-disable-next-line no-console
           err => console.error(err),
-          () => this._actionRefreshRequest()
+          () => this._actionRefreshRequest(),
         )
     }
   }

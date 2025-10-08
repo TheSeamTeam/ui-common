@@ -74,11 +74,11 @@ export function textDataFilter(data: any[], text: string, options = DefaultTextF
 let _uid = 0
 
 @Component({
-    selector: 'seam-data-filter-text',
-    templateUrl: './data-filter-text.component.html',
-    styleUrls: ['./data-filter-text.component.scss'],
-    providers: [DATA_FILTER_TEXT],
-    standalone: false
+  selector: 'seam-data-filter-text',
+  templateUrl: './data-filter-text.component.html',
+  styleUrls: ['./data-filter-text.component.scss'],
+  providers: [DATA_FILTER_TEXT],
+  standalone: false,
 })
 export class DataFilterTextComponent implements OnInit, OnDestroy, IDataFilter {
   static ngAcceptInputType_exact: BooleanInput
@@ -109,11 +109,11 @@ export class DataFilterTextComponent implements OnInit, OnDestroy, IDataFilter {
 
   constructor(
     @Inject(THESEAM_DATA_FILTER_CONTAINER) private _filterContainer: DataFilterContainer,
-    @Optional() @Inject(THESEAM_DATA_FILTER_OPTIONS) private _filterOptions: ITextFilterOptions | null
+    @Optional() @Inject(THESEAM_DATA_FILTER_OPTIONS) private _filterOptions: ITextFilterOptions | null,
   ) {
     this.filterStateChanges = this._control.valueChanges.pipe(
       switchMap(() => of(this.filterState())),
-      shareReplay({ bufferSize: 1, refCount: true })
+      shareReplay({ bufferSize: 1, refCount: true }),
     )
   }
 
@@ -133,7 +133,7 @@ export class DataFilterTextComponent implements OnInit, OnDestroy, IDataFilter {
       properties: this.properties ?? undefined,
       omitProperties: this.omitProperties ?? undefined,
       exact: this.exact,
-      caseSensitive: this.caseSensitive
+      caseSensitive: this.caseSensitive,
     }
   }
 
@@ -151,8 +151,8 @@ export class DataFilterTextComponent implements OnInit, OnDestroy, IDataFilter {
       name: this.name,
       state: {
         value: this._control.value,
-        options: this.options
-      }
+        options: this.options,
+      },
     }
   }
 

@@ -11,7 +11,7 @@ import {
   HasElementRef,
   mixinActive,
   mixinDisabled,
-  mixinTheme
+  mixinTheme,
 } from '@theseam/ui-common/core'
 import { SeamIcon } from '@theseam/ui-common/icon'
 
@@ -34,7 +34,7 @@ class WidgetListGroupItemBase {
 
   constructor(
     public _elementRef: ElementRef,
-    public _renderer: Renderer2
+    public _renderer: Renderer2,
   ) { }
 
   /** Focuses the element. */
@@ -52,7 +52,7 @@ class WidgetListGroupItemActionableBase extends WidgetListGroupItemBase implemen
   constructor(
     public _elementRef: ElementRef,
     public _focusMonitor: FocusMonitor,
-    public _renderer: Renderer2
+    public _renderer: Renderer2,
   ) {
     super(_elementRef, _renderer)
     this._focusMonitor.monitor(this._elementRef, true)
@@ -70,47 +70,47 @@ const _WidgetListGroupItemActionableBase: CanDisableCtor & CanThemeCtor & CanBeA
   typeof WidgetListGroupItemActionableBase = mixinActive(mixinTheme(mixinDisabled(WidgetListGroupItemActionableBase), 'list-group-item'))
 
 @Component({
-    selector: 'seam-widget-list-group-item',
-    templateUrl: './widget-list-group-item.component.html',
-    styleUrls: ['./widget-list-group-item.component.scss'],
-    exportAs: 'seamWidgetListGroupItem',
-    inputs: WIDGET_LIST_GROUP_ITEM_INPUTS,
-    host: {
-        'class': 'list-group-item',
-        '[class.active]': 'active',
-        '[attr.aria-disabled]': 'disabled.toString()',
-        '[attr.disabled]': 'disabled || null',
-    },
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'seam-widget-list-group-item',
+  templateUrl: './widget-list-group-item.component.html',
+  styleUrls: ['./widget-list-group-item.component.scss'],
+  exportAs: 'seamWidgetListGroupItem',
+  inputs: WIDGET_LIST_GROUP_ITEM_INPUTS,
+  host: {
+    'class': 'list-group-item',
+    '[class.active]': 'active',
+    '[attr.aria-disabled]': 'disabled.toString()',
+    '[attr.disabled]': 'disabled || null',
+  },
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class WidgetListGroupItemComponent extends _WidgetListGroupItemBase
   implements HasElementRef, CanTheme, CanDisable, CanBeActive {
 
   constructor(
     public _elementRef: ElementRef<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
-    public _renderer: Renderer2
+    public _renderer: Renderer2,
   ) {
     super(_elementRef, _renderer)
   }
 }
 
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
-    selector: 'button[seam-widget-list-group-item],button[seamWidgetListGroupItem]',
-    templateUrl: './widget-list-group-item.component.html',
-    styleUrls: ['./widget-list-group-item.component.scss'],
-    exportAs: 'seamWidgetListGroupItem',
-    inputs: WIDGET_LIST_GROUP_ITEM_INPUTS,
-    host: {
-        '[attr.type]': 'type',
-        'class': 'list-group-item list-group-item-action',
-        '[class.active]': 'active',
-        '[attr.aria-disabled]': 'disabled.toString()',
-        '[attr.disabled]': 'disabled || null',
-    },
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  // eslint-disable-next-line @angular-eslint/component-selector
+  selector: 'button[seam-widget-list-group-item],button[seamWidgetListGroupItem]',
+  templateUrl: './widget-list-group-item.component.html',
+  styleUrls: ['./widget-list-group-item.component.scss'],
+  exportAs: 'seamWidgetListGroupItem',
+  inputs: WIDGET_LIST_GROUP_ITEM_INPUTS,
+  host: {
+    '[attr.type]': 'type',
+    'class': 'list-group-item list-group-item-action',
+    '[class.active]': 'active',
+    '[attr.aria-disabled]': 'disabled.toString()',
+    '[attr.disabled]': 'disabled || null',
+  },
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class WidgetListGroupItemButtonComponent extends _WidgetListGroupItemActionableBase
   implements HasElementRef, CanTheme, CanDisable, CanBeActive, OnDestroy {
@@ -121,7 +121,7 @@ export class WidgetListGroupItemButtonComponent extends _WidgetListGroupItemActi
   constructor(
     public _elementRef: ElementRef<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
     public _focusMonitor: FocusMonitor,
-    public _renderer: Renderer2
+    public _renderer: Renderer2,
   ) {
     super(_elementRef, _focusMonitor, _renderer)
   }
@@ -131,22 +131,22 @@ export class WidgetListGroupItemButtonComponent extends _WidgetListGroupItemActi
 }
 
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
-    selector: 'a[seam-widget-list-group-item],a[seamWidgetListGroupItem]',
-    templateUrl: './widget-list-group-item.component.html',
-    styleUrls: ['./widget-list-group-item.component.scss'],
-    exportAs: 'seamWidgetListGroupItem',
-    inputs: WIDGET_LIST_GROUP_ITEM_INPUTS,
-    host: {
-        'class': 'list-group-item list-group-item-action',
-        '[class.active]': 'active',
-        '[attr.tabindex]': 'disabled ? -1 : (tabIndex || 0)',
-        '[attr.aria-disabled]': 'disabled.toString()',
-        '[attr.disabled]': 'disabled || null',
-        '(click)': '_haltDisabledEvents($event)',
-    },
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  // eslint-disable-next-line @angular-eslint/component-selector
+  selector: 'a[seam-widget-list-group-item],a[seamWidgetListGroupItem]',
+  templateUrl: './widget-list-group-item.component.html',
+  styleUrls: ['./widget-list-group-item.component.scss'],
+  exportAs: 'seamWidgetListGroupItem',
+  inputs: WIDGET_LIST_GROUP_ITEM_INPUTS,
+  host: {
+    'class': 'list-group-item list-group-item-action',
+    '[class.active]': 'active',
+    '[attr.tabindex]': 'disabled ? -1 : (tabIndex || 0)',
+    '[attr.aria-disabled]': 'disabled.toString()',
+    '[attr.disabled]': 'disabled || null',
+    '(click)': '_haltDisabledEvents($event)',
+  },
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class WidgetListGroupItemAnchorComponent extends _WidgetListGroupItemActionableBase
   implements HasElementRef, CanTheme, CanDisable, CanBeActive, OnDestroy {
@@ -157,7 +157,7 @@ export class WidgetListGroupItemAnchorComponent extends _WidgetListGroupItemActi
   constructor(
     public _elementRef: ElementRef<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
     public _focusMonitor: FocusMonitor,
-    public _renderer: Renderer2
+    public _renderer: Renderer2,
   ) {
     super(_elementRef, _focusMonitor, _renderer)
   }

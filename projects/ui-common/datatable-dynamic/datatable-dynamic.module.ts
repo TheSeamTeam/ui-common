@@ -43,6 +43,6 @@ import { DatatableDynamicActionMenuItemDirective } from './directives/datatable-
     DatatableDynamicComponent,
     TheSeamDatatableModule,
     DatatableDynamicActionMenuItemDirective,
-  ]
+  ],
 })
 export class TheSeamDatatableDynamicModule { }

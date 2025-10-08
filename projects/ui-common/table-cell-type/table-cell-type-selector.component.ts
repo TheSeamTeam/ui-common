@@ -11,7 +11,7 @@ import {
   isDevMode,
   OnChanges,
   Optional,
-  SimpleChanges
+  SimpleChanges,
 } from '@angular/core'
 import { Subject } from 'rxjs'
 
@@ -21,14 +21,14 @@ import { ITableCellTypeManifest, TableCellData, TableCellDataChange } from './ta
 import { TABLE_CELL_DATA, TABLE_CELL_TYPE_MANIFEST } from './table-cell-type-tokens'
 
 @Component({
-    selector: 'seam-table-cell-type-selector',
-    template: `
+  selector: 'seam-table-cell-type-selector',
+  template: `
     <ng-template *ngIf="componentPortal; else noPortal" [cdkPortalOutlet]="componentPortal"></ng-template>
     <ng-template #noPortal>{{ value }}</ng-template>
   `,
-    styles: [],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  styles: [],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class TableCellTypeSelectorComponent<T extends string = any, D = any, V = any> implements AfterViewInit, OnChanges {
 
@@ -47,7 +47,7 @@ export class TableCellTypeSelectorComponent<T extends string = any, D = any, V =
   constructor(
     private _injector: Injector,
     private _ref: ChangeDetectorRef,
-    @Optional() @Inject(TABLE_CELL_TYPE_MANIFEST) manifests?: ITableCellTypeManifest[]
+    @Optional() @Inject(TABLE_CELL_TYPE_MANIFEST) manifests?: ITableCellTypeManifest[],
   ) { this._manifests = manifests || [] }
 
   ngAfterViewInit() {
@@ -64,7 +64,7 @@ export class TableCellTypeSelectorComponent<T extends string = any, D = any, V =
         rowIndex: this.rowIndex ?? -1,
         colData: this.colData ?? {},
         value: this.value,
-        changed: this._dataChangeSubject.asObservable()
+        changed: this._dataChangeSubject.asObservable(),
       }
 
       this.componentPortal = new ComponentPortal(comp, null, this._createInjector(this._data))
@@ -95,13 +95,13 @@ export class TableCellTypeSelectorComponent<T extends string = any, D = any, V =
         this._tryUpdateDataProp(changes, 'row'),
         this._tryUpdateDataProp(changes, 'rowIndex'),
         this._tryUpdateDataProp(changes, 'colData'),
-        this._tryUpdateDataProp(changes, 'value')
+        this._tryUpdateDataProp(changes, 'value'),
       ].findIndex(b => b === true) !== -1
 
       if (dataChanged && this._dataChangeSubject) {
         this._dataChangeSubject.next({
           data: this._data,
-          changes
+          changes,
         })
       }
     }

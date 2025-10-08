@@ -47,21 +47,21 @@ export const Example: Story = {
             path: 'home',
             component: StoryEmptyComponent,
             data: {
-              breadcrumb: 'Home'
-            }
+              breadcrumb: 'Home',
+            },
           },
           {
             path: 'dashboard',
             component: StoryEmptyComponent,
             data: {
-              breadcrumb: 'Dashboard'
+              breadcrumb: 'Dashboard',
             },
             children: [
               {
                 path: 'users',
                 component: StoryEmptyComponent,
                 data: {
-                  breadcrumb: 'Users'
+                  breadcrumb: 'Users',
                 },
                 children: [
                   {
@@ -69,13 +69,13 @@ export const Example: Story = {
                     component: StoryEmptyComponent,
                     data: { },
                     resolve: {
-                      breadcrumb: StoryUserIdToNameResolver
-                    }
-                  }
-                ]
-              }
-            ]
-          }
+                      breadcrumb: StoryUserIdToNameResolver,
+                    },
+                  },
+                ],
+              },
+            ],
+          },
         ]),
         provideStoryInitialUrl('/dashboard/users/123'),
         StoryUsersDataService,
@@ -93,6 +93,6 @@ export const Example: Story = {
     template: `
       <seam-breadcrumbs></seam-breadcrumbs>
       <router-outlet></router-outlet>
-    `
-  })
+    `,
+  }),
 }

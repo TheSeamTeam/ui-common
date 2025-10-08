@@ -5,19 +5,19 @@ import type { ThemeTypes } from '@theseam/ui-common/models'
 import { TheSeamAnchorButtonComponent, TheSeamButtonComponent } from '../button/button.component'
 
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
-    selector: 'button[seamBadgeButton]',
-    templateUrl: './badge-button.component.html',
-    styleUrls: ['./badge-button.component.scss'],
-    exportAs: 'seamBadgeButton',
-    inputs: ['disabled', 'theme', 'size'],
-    host: {
-        '[attr.type]': 'type',
-        'class': 'btn',
-        '[attr.aria-disabled]': 'disabled.toString()',
-        '[attr.disabled]': 'disabled || null'
-    },
-    standalone: false
+  // eslint-disable-next-line @angular-eslint/component-selector
+  selector: 'button[seamBadgeButton]',
+  templateUrl: './badge-button.component.html',
+  styleUrls: ['./badge-button.component.scss'],
+  exportAs: 'seamBadgeButton',
+  inputs: ['disabled', 'theme', 'size'],
+  host: {
+    '[attr.type]': 'type',
+    'class': 'btn',
+    '[attr.aria-disabled]': 'disabled.toString()',
+    '[attr.disabled]': 'disabled || null',
+  },
+  standalone: false,
 })
 export class TheSeamBadgeButtonComponent extends TheSeamButtonComponent implements OnDestroy {
 
@@ -30,7 +30,7 @@ export class TheSeamBadgeButtonComponent extends TheSeamButtonComponent implemen
   constructor(
     _elementRef: ElementRef,
     _focusMonitor: FocusMonitor,
-    _renderer: Renderer2
+    _renderer: Renderer2,
   ) { super(_elementRef, _focusMonitor, _renderer) }
 
   ngOnDestroy() { super.ngOnDestroy() }
@@ -38,20 +38,20 @@ export class TheSeamBadgeButtonComponent extends TheSeamButtonComponent implemen
 }
 
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
-    selector: 'a[seamBadgeButton]',
-    templateUrl: './badge-button.component.html',
-    styleUrls: ['./badge-button.component.scss'],
-    exportAs: 'seamBadgeButton,seamBadgeButtonAnchor',
-    inputs: ['disabled', 'theme', 'size'],
-    host: {
-        'class': 'btn',
-        '[attr.tabindex]': 'disabled ? -1 : (tabIndex || 0)',
-        '[attr.disabled]': 'disabled || null',
-        '[attr.aria-disabled]': 'disabled.toString()',
-        '(click)': '_haltDisabledEvents($event)',
-    },
-    standalone: false
+  // eslint-disable-next-line @angular-eslint/component-selector
+  selector: 'a[seamBadgeButton]',
+  templateUrl: './badge-button.component.html',
+  styleUrls: ['./badge-button.component.scss'],
+  exportAs: 'seamBadgeButton,seamBadgeButtonAnchor',
+  inputs: ['disabled', 'theme', 'size'],
+  host: {
+    'class': 'btn',
+    '[attr.tabindex]': 'disabled ? -1 : (tabIndex || 0)',
+    '[attr.disabled]': 'disabled || null',
+    '[attr.aria-disabled]': 'disabled.toString()',
+    '(click)': '_haltDisabledEvents($event)',
+  },
+  standalone: false,
 })
 export class TheSeamAnchorBadgeButtonComponent extends TheSeamAnchorButtonComponent implements OnDestroy {
 
@@ -64,7 +64,7 @@ export class TheSeamAnchorBadgeButtonComponent extends TheSeamAnchorButtonCompon
   constructor(
     _elementRef: ElementRef,
     _focusMonitor: FocusMonitor,
-    _renderer: Renderer2
+    _renderer: Renderer2,
   ) { super(_elementRef, _focusMonitor, _renderer) }
 
   ngOnDestroy() { super.ngOnDestroy() }

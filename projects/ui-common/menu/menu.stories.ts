@@ -28,9 +28,9 @@ const meta: Meta<MenuComponent> = {
     moduleMetadata({
       imports: [
         TheSeamButtonsModule,
-        TheSeamMenuModule
-      ]
-    })
+        TheSeamMenuModule,
+      ],
+    }),
   ],
   // argTypes: {
   //   position: {

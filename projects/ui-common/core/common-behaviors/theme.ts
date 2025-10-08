@@ -12,7 +12,7 @@ export type CanThemeCtor = Constructor<CanTheme>
 
 /** Mixin to augment a directive with a `theme` property. */
 export function mixinTheme<T extends Constructor<HasElementRef>>(
-    base: T, themePrefix: ThemePrefixes, defaultTheme?: ThemeTypes | OutlineThemeTypes): CanThemeCtor & T {
+  base: T, themePrefix: ThemePrefixes, defaultTheme?: ThemeTypes | OutlineThemeTypes): CanThemeCtor & T {
   return class extends base {
     private _theme: ThemeTypes | OutlineThemeTypes | undefined
 

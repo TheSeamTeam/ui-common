@@ -12,7 +12,7 @@ import { AlterationDisplayService } from '../services/alteration-display.service
   standalone: true,
   imports: [CommonModule, TheSeamIconModule],
   templateUrl: './alteration-item.component.html',
-  styleUrls: ['./alteration-item.component.scss']
+  styleUrls: ['./alteration-item.component.scss'],
 })
 export class AlterationItemComponent {
   @Input() item!: AlterationDisplayItem
@@ -25,7 +25,7 @@ export class AlterationItemComponent {
     'hide-column': faEyeSlash,
     'width': faArrowsAltH,
     'filter': faFilter,
-    'default': faCog
+    'default': faCog,
   }
 
   constructor(private alterationDisplayService: AlterationDisplayService) {}

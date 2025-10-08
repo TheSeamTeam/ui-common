@@ -5,7 +5,7 @@ import { TheSeamDatatableColumn } from './../models/table-column'
 export function removeUnusedDiffs(
   cols: TheSeamDatatableColumn[],
   colDiffersInp: { [propName: string]: KeyValueDiffer<any, any> },
-  colDiffersTpl: { [propName: string]: KeyValueDiffer<any, any> }
+  colDiffersTpl: { [propName: string]: KeyValueDiffer<any, any> },
 ): void {
   const inpKeys = Object.keys(colDiffersInp)
   inpKeys.filter(k => cols.findIndex(c => c.prop === k) === -1)

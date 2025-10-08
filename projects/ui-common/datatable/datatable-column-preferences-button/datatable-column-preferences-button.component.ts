@@ -6,11 +6,11 @@ import { faColumns } from '@fortawesome/free-solid-svg-icons'
 import { ColumnsAlterationsManagerService } from '../services/columns-alterations-manager.service'
 
 @Component({
-    selector: 'seam-datatable-column-preferences-button',
-    templateUrl: './datatable-column-preferences-button.component.html',
-    styleUrls: ['./datatable-column-preferences-button.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'seam-datatable-column-preferences-button',
+  templateUrl: './datatable-column-preferences-button.component.html',
+  styleUrls: ['./datatable-column-preferences-button.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class DatatableColumnPreferencesButtonComponent {
 

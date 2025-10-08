@@ -1,8 +1,8 @@
 import { Directive, TemplateRef } from '@angular/core'
 
 @Directive({
-    selector: '[seamDatatableRowActionItem]',
-    standalone: false
+  selector: '[seamDatatableRowActionItem]',
+  standalone: false,
 })
 export class DatatableRowActionItemDirective {
 

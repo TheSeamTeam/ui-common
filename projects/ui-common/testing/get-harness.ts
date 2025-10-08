@@ -11,7 +11,7 @@ export interface GetHarnessOptions<TComponent = any> {
 
 export async function getHarness<T extends ComponentHarness>(
   harnessType: HarnessQuery<T>,
-  options: GetHarnessOptions
+  options: GetHarnessOptions,
 ): Promise<T> {
   if (options.fixture !== undefined) {
     if (isComponentHarnessConstructor(harnessType)) {

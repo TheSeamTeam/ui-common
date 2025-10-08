@@ -75,7 +75,7 @@ export class ToggleGroupDirective implements OnDestroy, AfterViewInit, ControlVa
                     } else {
                       this.selectValue(opt.value)
                     }
-                  })
+                  }),
                 ))
               }
               return combineLatest(_v)

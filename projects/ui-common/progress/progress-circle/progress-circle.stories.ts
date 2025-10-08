@@ -10,7 +10,7 @@ const meta: Meta<ProgressCircleComponent> = {
     moduleMetadata({
       imports: [
         TheSeamProgressModule,
-      ]
+      ],
     }),
   ],
   parameters: {

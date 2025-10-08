@@ -1,8 +1,8 @@
 import { Directive, TemplateRef } from '@angular/core'
 
 @Directive({
-    selector: '[seamDatatableCellTpl]',
-    standalone: false
+  selector: '[seamDatatableCellTpl]',
+  standalone: false,
 })
 export class DatatableCellTplDirective {
 

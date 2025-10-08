@@ -11,17 +11,17 @@ import { DynamicDatatablePageComponent } from './dynamic-datatable-page/dynamic-
 
 @NgModule({
   declarations: [
-    DynamicDatatablePageComponent
+    DynamicDatatablePageComponent,
   ],
   imports: [
     CommonModule,
     RouterModule,
     TheSeamDynamicRouterModule,
     TheSeamDatatableDynamicModule,
-    TheSeamTableCellTypesModule
+    TheSeamTableCellTypesModule,
   ],
   exports: [
-    DynamicDatatablePageComponent
+    DynamicDatatablePageComponent,
   ],
 })
 export class DynamicPagesModule { }

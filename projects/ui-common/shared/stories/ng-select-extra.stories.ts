@@ -18,9 +18,9 @@ const meta: Meta<TheSeamNgSelectExtraDirective & StoryExtraProps> = {
         NgSelectModule,
         ReactiveFormsModule,
         TheSeamOverlayScrollbarDirective,
-      ]
-    })
-  ]
+      ],
+    }),
+  ],
 }
 
 export default meta

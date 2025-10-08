@@ -20,7 +20,7 @@ export function activatedRoutesWithDataProperty(prop: string, mustHaveDefined: b
       map(v => v.filter(_v => Object.prototype.hasOwnProperty.call(_v.data, prop))),
       map(v => mustHaveDefined
         ? v.filter(_v => willHaveDataProp(_v.route, prop))
-        : v
-      )
+        : v,
+      ),
     )
 }

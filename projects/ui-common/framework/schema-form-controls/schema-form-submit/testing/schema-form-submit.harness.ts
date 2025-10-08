@@ -14,8 +14,8 @@ export class TheSeamSchemaFormSubmitHarness extends ComponentHarness {
   /** Creates a `HarnessPredicate` used to locate a particular `TheSeamSchemaFormSubmitHarness`. */
   static with(options: TheSeamSchemaFormSubmitHarnessFilters): HarnessPredicate<TheSeamSchemaFormSubmitHarness> {
     return new HarnessPredicate(TheSeamSchemaFormSubmitHarness, options)
-        .addOption('field name', options.name,
-            (harness, name) => HarnessPredicate.stringMatches(harness.getName(), name))
+      .addOption('field name', options.name,
+        (harness, name) => HarnessPredicate.stringMatches(harness.getName(), name))
   }
 
   public async getName(): Promise<string | null> {

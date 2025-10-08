@@ -5,13 +5,13 @@ import { WidgetDescriptionComponent } from './widget-description.component'
 
 @NgModule({
   declarations: [
-    WidgetDescriptionComponent
+    WidgetDescriptionComponent,
   ],
   imports: [
-    CommonModule
+    CommonModule,
   ],
   exports: [
-    WidgetDescriptionComponent
-  ]
+    WidgetDescriptionComponent,
+  ],
 })
 export class TheSeamWidgetDescriptionModule { }

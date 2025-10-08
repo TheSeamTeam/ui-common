@@ -25,7 +25,7 @@ export const fader =
       // Animate the new page in
       query(':enter', [
         animate('600ms ease', style({ opacity: 1, transform: 'scale(1) translateY(0)' })),
-      ], { optional: true })
+      ], { optional: true }),
     ]),
   ])
 
@@ -83,24 +83,24 @@ export const slider =
           position: 'absolute',
           top: 0,
           left: 0,
-          width: '100%'
-        })
+          width: '100%',
+        }),
       ], { optional: true }),
       query('.router-container :enter', [
-        style({ left: '-100%' })
+        style({ left: '-100%' }),
       ], { optional: true }),
       query('.hierarchy-router-outlet--content', [
-        style({ left: '0%', position: 'absolute' })
+        style({ left: '0%', position: 'absolute' }),
       ], { optional: true }),
       group([
         query('.router-container :leave', [
-          animate('1000ms ease', style({ left: '100%' }))
+          animate('1000ms ease', style({ left: '100%' })),
         ], { optional: true }),
         query('.router-container :enter', [
-          animate('1000ms ease', style({ left: '0%' }))
+          animate('1000ms ease', style({ left: '0%' })),
         ], { optional: true }),
         query('.hierarchy-router-outlet--content', [
-          animate('1000ms ease', style({ left: '-100%' }))
+          animate('1000ms ease', style({ left: '-100%' })),
         ], { optional: true }),
       ]),
       // Normalize the page style... Might not be necessary
@@ -115,24 +115,24 @@ export const slider =
           position: 'absolute',
           top: 0,
           right: 0,
-          width: '100%'
-        })
+          width: '100%',
+        }),
       ], { optional: true }),
       query('.router-container :enter', [
-        style({ right: '-100%' })
+        style({ right: '-100%' }),
       ], { optional: true }),
       query('.hierarchy-router-outlet--content', [
-        style({ left: '0%', position: 'absolute' })
+        style({ left: '0%', position: 'absolute' }),
       ], { optional: true }),
       group([
         query('.router-container :leave', [
-          animate('1000ms ease', style({ right: '100%' }))
+          animate('1000ms ease', style({ right: '100%' })),
         ], { optional: true }),
         query('.router-container :enter', [
-          animate('1000ms ease', style({ right: '0%' }))
+          animate('1000ms ease', style({ right: '0%' })),
         ], { optional: true }),
         query('.hierarchy-router-outlet--content', [
-          animate('1000ms ease', style({ left: '-100%' }))
+          animate('1000ms ease', style({ left: '-100%' })),
         ], { optional: true }),
       ]),
       // Normalize the page style... Might not be necessary
@@ -147,24 +147,24 @@ export const slider =
           position: 'absolute',
           top: 0,
           left: 0,
-          width: '100%'
-        })
+          width: '100%',
+        }),
       ], { optional: true }),
       query('.router-container :enter', [
-        style({ left: '-100%' })
+        style({ left: '-100%' }),
       ], { optional: true }),
       query('.hierarchy-router-outlet--content', [
-        style({ left: '0%', position: 'absolute' })
+        style({ left: '0%', position: 'absolute' }),
       ], { optional: true }),
       group([
         query('.router-container :leave', [
-          animate('1000ms ease', style({ left: '100%' }))
+          animate('1000ms ease', style({ left: '100%' })),
         ], { optional: true }),
         query('.router-container :enter', [
-          animate('1000ms ease', style({ left: '0%' }))
+          animate('1000ms ease', style({ left: '0%' })),
         ], { optional: true }),
         query('.hierarchy-router-outlet--content', [
-          animate('1000ms ease', style({ left: '-100%' }))
+          animate('1000ms ease', style({ left: '-100%' })),
         ], { optional: true }),
       ]),
       // Normalize the page style... Might not be necessary
@@ -179,26 +179,26 @@ export const slider =
           position: 'absolute',
           top: 0,
           right: 0,
-          width: '100%'
-        })
+          width: '100%',
+        }),
       ], { optional: true }),
       query('.router-container :enter', [
-        style({ right: '-100%' })
+        style({ right: '-100%' }),
       ], { optional: true }),
       group([
         query('.router-container :leave', [
-          animate('1000ms ease', style({ right: '100%' }))
+          animate('1000ms ease', style({ right: '100%' })),
         ], { optional: true }),
         query('.router-container :enter', [
-          animate('1000ms ease', style({ right: '0%' }))
-        ], { optional: true })
+          animate('1000ms ease', style({ right: '0%' })),
+        ], { optional: true }),
       ]),
       // Normalize the page style... Might not be necessary
 
       // Required only if you have child animations on the page
       query('.router-container :leave', animateChild(), { optional: true }),
       query('.router-container :enter', animateChild(), { optional: true }),
-    ])
+    ]),
   ])
 
 export const transformer =
@@ -206,8 +206,8 @@ export const transformer =
     transition('* => isLeft', transformTo({ x: -100, y: -100, rotate: -720 })),
     transition('* => isRight', transformTo({ x: 100, y: -100, rotate: 90 })),
     transition('isRight => *', transformTo({ x: -100, y: -100, rotate: 360 })),
-    transition('isLeft => *', transformTo({ x: 100, y: -100, rotate: -360 }))
-])
+    transition('isLeft => *', transformTo({ x: 100, y: -100, rotate: -360 })),
+  ])
 
 function transformTo({ x = 100, y = 0, rotate = 0 }) {
   const optional = { optional: true }
@@ -217,19 +217,19 @@ function transformTo({ x = 100, y = 0, rotate = 0 }) {
         position: 'absolute',
         top: 0,
         left: 0,
-        width: '100%'
-      })
+        width: '100%',
+      }),
     ], optional),
     query(':enter', [
-      style({ transform: `translate(${x}%, ${y}%) rotate(${rotate}deg)` })
+      style({ transform: `translate(${x}%, ${y}%) rotate(${rotate}deg)` }),
     ], { optional: true }),
     group([
       query(':leave', [
-        animate('600ms ease-out', style({ transform: `translate(${x}%, ${y}%) rotate(${rotate}deg)` }))
+        animate('600ms ease-out', style({ transform: `translate(${x}%, ${y}%) rotate(${rotate}deg)` })),
       ], optional),
       query(':enter', [
-        animate('600ms ease-out', style({ transform: `translate(0, 0) rotate(0)` }))
-      ], { optional: true })
+        animate('600ms ease-out', style({ transform: `translate(0, 0) rotate(0)` })),
+      ], { optional: true }),
     ]),
   ]
 }
@@ -258,9 +258,9 @@ export const stepper =
             style({ transform: 'scale(0.5) translateX(-25%) rotate(0)', offset: 0.35 }),
             style({ opacity: 0, transform: 'translateX(-50%) rotate(-180deg) scale(6)', offset: 1 }),
           ])),
-        ], { optional: true })
+        ], { optional: true }),
       ]),
-    ])
+    ]),
   ])
 
 export const sideToSide = trigger('routeAnimations', [
@@ -268,16 +268,16 @@ export const sideToSide = trigger('routeAnimations', [
     style({
       position: 'fixed',
       width: '100%',
-      transform: 'translateX(-100%)'
+      transform: 'translateX(-100%)',
     }),
-    animate('1000ms ease', style({ transform: 'translateX(0%)' }))
+    animate('1000ms ease', style({ transform: 'translateX(0%)' })),
   ]),
   transition(':leave', [
     style({
       position: 'fixed',
       width: '100%',
-      transform: 'translateX(0%)'
+      transform: 'translateX(0%)',
     }),
-    animate('1000ms ease', style({ transform: 'translateX(-100%)' }))
-  ])
+    animate('1000ms ease', style({ transform: 'translateX(-100%)' })),
+  ]),
 ])

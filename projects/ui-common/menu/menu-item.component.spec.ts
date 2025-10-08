@@ -12,11 +12,11 @@ describe('MenuItemComponent', () => {
     TestBed.configureTestingModule({
       declarations: [MenuItemComponent],
       imports: [
-          TheSeamIconModule
+        TheSeamIconModule,
       ],
-      teardown: { destroyAfterEach: false }
+      teardown: { destroyAfterEach: false },
     })
-    .compileComponents()
+      .compileComponents()
   }))
 
   beforeEach(() => {

@@ -5,7 +5,7 @@ import { Subject, takeUntil } from 'rxjs'
 import { THESEAM_RELOAD_PROPERTY, TheSeamNavigationReloadConfig } from './navigation-reload.config'
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TheSeamNavigationReloadService implements OnDestroy {
   private readonly _router = inject(Router)
@@ -50,7 +50,7 @@ export class TheSeamNavigationReloadService implements OnDestroy {
         'WARNING: Router is configured with onSameUrlNavigation: "reload". ' +
         'This component relies on "ignore" to trigger reloads via NavigationSkipped. ' +
         'Reload behavior may not work as expected. Consider reverting to "ignore" ' +
-        'or updating the reload logic.'
+        'or updating the reload logic.',
       )
     }
   }

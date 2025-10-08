@@ -8,11 +8,11 @@ import type { TableCellData } from '@theseam/ui-common/table-cell-type'
 import { TableCellTypeConfigDate } from './table-cell-type-date-config'
 
 @Component({
-    selector: 'seam-table-cell-type-date',
-    templateUrl: './table-cell-type-date.component.html',
-    styleUrls: ['./table-cell-type-date.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'seam-table-cell-type-date',
+  templateUrl: './table-cell-type-date.component.html',
+  styleUrls: ['./table-cell-type-date.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class TableCellTypeDateComponent implements OnDestroy {
 
@@ -23,7 +23,7 @@ export class TableCellTypeDateComponent implements OnDestroy {
 
   constructor(
     private _cdf: ChangeDetectorRef,
-    @Optional() @Inject(TABLE_CELL_DATA) _tableData?: TableCellData<'date', TableCellTypeConfigDate>
+    @Optional() @Inject(TABLE_CELL_DATA) _tableData?: TableCellData<'date', TableCellTypeConfigDate>,
   ) {
     const _data = _tableData
 

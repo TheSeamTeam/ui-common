@@ -9,7 +9,7 @@ import { TheSeamDatatableColumn } from './table-column'
  */
 export const INTERNAL_COLUMN_PROPS: string[] = [
   ACTION_MENU_COLUMN_PROP,
-  CHECKBOX_COLUMN_PROP
+  CHECKBOX_COLUMN_PROP,
 ]
 
 export function isInternalColumn(column: TheSeamDatatableColumn): boolean {

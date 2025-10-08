@@ -19,7 +19,7 @@ export interface DatatableGraphQLDataMapperResult<TRow = EmptyObject> {
 }
 
 export type DatatableGraphQLDataMapper<TData, TRow = EmptyObject> = (data: TData) =>
-    (DatatableGraphQLDataMapperResult<TRow> |
+(DatatableGraphQLDataMapperResult<TRow> |
     Promise<DatatableGraphQLDataMapperResult<TRow>> |
     Observable<DatatableGraphQLDataMapperResult<TRow>>)
 
@@ -61,7 +61,7 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
     /**
      * How long to wait before refetching from an update to the query or variables.
      */
-    private readonly _updatesPollDelay: number = 500
+    private readonly _updatesPollDelay: number = 500,
   ) {
     this._variablesSubject.next((this._queryRef as any).obsQuery.options.variables || {})
     // this._getValueChanges().subscribe(v => this._logNetworkStatus(v.networkStatus))
@@ -81,7 +81,7 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
             this.refetch()
             this._variablesUpdatePending = false
           }
-        })
+        }),
       ).subscribe(variables => {
         // console.log('set vars', variables)
         this._setVariablesImmediate(variables)
@@ -99,11 +99,11 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
           // console.log('Done observing value changes')
           varChangesSub.unsubscribe()
           this._observingChanges = false
-        })
+        }),
       )
     }).pipe(
       // share()
-      shareReplay({ bufferSize: 1, refCount: true })
+      shareReplay({ bufferSize: 1, refCount: true }),
     )
 
     this.loading$ = this._observingChangesSubject.pipe(
@@ -116,9 +116,9 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
           map(result => result.loading),
           startWith(this._queryRef.getCurrentResult().loading),
           auditTime(0),
-          shareReplay({ bufferSize: 1, refCount: true })
+          shareReplay({ bufferSize: 1, refCount: true }),
         )
-      })
+      }),
     )
   }
 
@@ -183,9 +183,9 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
 
               rowsBuffer = rows
               rowsBufferSubject.next(rows)
-            })
+            }),
           )
-        })
+        }),
       ).subscribe()
 
       const rowsSub = rowsBufferSubject.subscribe(subscriber)
@@ -214,7 +214,7 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
   }
 
   private _resolveRowMapper(
-    mapperReturn: ReturnType<DatatableGraphQLDataMapper<TData, TRow>>
+    mapperReturn: ReturnType<DatatableGraphQLDataMapper<TData, TRow>>,
   ): Observable<DatatableGraphQLDataMapperResult<TRow>> {
     if (isObservable(mapperReturn)) {
       return mapperReturn.pipe(take(1))
@@ -239,7 +239,7 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
   private _patchVariablesImmediate(variables: Partial<TVariables>): Promise<void | ApolloQueryResult<TData>> {
     const _variables = {
       ...this.getVariables(),
-      ...variables
+      ...variables,
     }
 
     const _vars = this._withVariableOverrides(_variables)
@@ -256,7 +256,7 @@ export class DatatableGraphQLQueryRef<TData, TVariables extends DatatableGraphQL
   public patchVariables(variables: Partial<TVariables>): void {
     const _variables = {
       ...this.getVariables(),
-      ...variables
+      ...variables,
     }
 
     this._variablesSubject.next(_variables)

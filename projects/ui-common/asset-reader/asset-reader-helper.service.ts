@@ -9,12 +9,12 @@ import { fileDataFromBuffer, openBlob, readFileAsync } from '@theseam/ui-common/
 import { EncryptedAssetReader } from './encrypted-asset-reader'
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AssetReaderHelperService {
 
   constructor(
-    @Optional() private _assetReader?: EncryptedAssetReader
+    @Optional() private _assetReader?: EncryptedAssetReader,
   ) {
     if (isDevMode() && !this._assetReader) {
       // eslint-disable-next-line no-console
@@ -26,7 +26,7 @@ export class AssetReaderHelperService {
     url: string,
     detectMimeFromContent: boolean = true,
     download: boolean = true,
-    target?: string
+    target?: string,
   ): Observable<boolean> {
     if (!(url === undefined || url === null)) {
       if (!this._assetReader) {
@@ -48,11 +48,11 @@ export class AssetReaderHelperService {
               .pipe(
                 switchMap(_buf => _buf
                   ? from(fileDataFromBuffer(_buf))
-                  : throwError('Unable to read file.')
+                  : throwError('Unable to read file.'),
                 ),
-                map(data => ({ ...data, blob, filename }))
+                map(data => ({ ...data, blob, filename })),
               )
-          })
+          }),
         )
 
       const open$ = data$
@@ -71,7 +71,7 @@ export class AssetReaderHelperService {
             if (isDevMode()) { console.error('err', err) }
             return of(false)
           }),
-          mapTo(true)
+          mapTo(true),
         )
 
       return open$

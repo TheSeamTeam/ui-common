@@ -14,10 +14,10 @@ export class StoryInitialRouteModule {
           provide: APP_INITIALIZER,
           useFactory: storyInitialRouteFactory,
           deps: [ StoryInitialRouteService ],
-          multi: true
+          multi: true,
         },
-        { provide: STORY_INITIAL_ROUTE_URL, useValue: url }
-      ]
+        { provide: STORY_INITIAL_ROUTE_URL, useValue: url },
+      ],
     }
   }
 

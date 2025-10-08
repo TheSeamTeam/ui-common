@@ -6,7 +6,7 @@ import { IDataExporter } from '@theseam/ui-common/data-exporter'
 
 import {
   DatatableDynamicDef,
-  DynamicDatatableOptions
+  DynamicDatatableOptions,
 } from './datatable-dynamic-def'
 import { DynamicDatatableDefService } from './dynamic-datatable-def.service'
 import { DynamicDatatableRowActionsService } from './dynamic-datatable-row-actions.service'
@@ -49,7 +49,7 @@ import { DynamicDatatableMenuBar } from './models/dynamic-datatable-menu-bar'
   styleUrls: ['./datatable-dynamic.component.scss'],
   providers: [
     DynamicDatatableDefService,
-    DynamicDatatableRowActionsService
+    DynamicDatatableRowActionsService,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false,
@@ -115,7 +115,7 @@ export class DatatableDynamicComponent {
   _tmp_rows$: Observable<any>
 
   constructor(
-    private readonly _dynamicDef: DynamicDatatableDefService
+    private readonly _dynamicDef: DynamicDatatableDefService,
   ) {
     this._hasDef$ = this._dynamicDef.def$.pipe(map(def => !!def))
 
@@ -134,7 +134,7 @@ export class DatatableDynamicComponent {
     this._options$ = this._dynamicDef.options$
 
     this._tmp_columns$ = this._dynamicDef.def$.pipe(
-      map(def => def ? def.columns : [])
+      map(def => def ? def.columns : []),
     )
 
     this._tmp_rows$ = this._dynamicDef.def$.pipe(

@@ -47,7 +47,7 @@ const meta: Meta<JsonSchemaFormComponent> = {
           useValue: {
             widgets: {
               'submit': TheSeamSchemaFormSubmitComponent,
-            }
+            },
           },
           multi: true,
         },
@@ -62,7 +62,7 @@ const meta: Meta<JsonSchemaFormComponent> = {
     componentWrapperDecorator(JsonSchemaFormComponent, ({ args }) => args),
   ],
   argTypes: {
-    onSubmit: { action: 'onSubmit' }
+    onSubmit: { action: 'onSubmit' },
   },
   args: {
     framework: 'seam-framework',

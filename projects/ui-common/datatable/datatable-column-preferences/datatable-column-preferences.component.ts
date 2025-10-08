@@ -13,11 +13,11 @@ import { ColumnsAlterationsManagerService } from '../services/columns-alteration
 import { getColumnProp } from '../utils/get-column-prop'
 
 @Component({
-    selector: 'seam-datatable-column-preferences',
-    templateUrl: './datatable-column-preferences.component.html',
-    styleUrls: ['./datatable-column-preferences.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'seam-datatable-column-preferences',
+  templateUrl: './datatable-column-preferences.component.html',
+  styleUrls: ['./datatable-column-preferences.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class DatatableColumnPreferencesComponent {
   _columns$: Observable<TheSeamDatatableColumn[]>
@@ -30,7 +30,7 @@ export class DatatableColumnPreferencesComponent {
   ) {
     this._columns$ = combineLatest([
       this._datatable.columns$ ?? of([]),
-      observeControlValue<string>(this._filterControl)
+      observeControlValue<string>(this._filterControl),
     ]).pipe(
       map(([ columns, filter ]) => {
         const _filter = (filter || '').trim().toLowerCase()
@@ -65,9 +65,9 @@ export class DatatableColumnPreferencesComponent {
     const alteration = new HideColumnColumnsAlteration(
       {
         columnProp,
-        hidden
+        hidden,
       },
-      hidden
+      hidden,
     )
 
     this._columnsAlterationsManager.add([ alteration ])

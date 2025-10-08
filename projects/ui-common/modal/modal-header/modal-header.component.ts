@@ -4,10 +4,10 @@ import { ModalCloseDirective } from '../directives/modal-close.directive'
 import { ModalTitleDirective } from '../directives/modal-title.directive'
 
 @Component({
-    selector: 'seam-modal-header',
-    templateUrl: './modal-header.component.html',
-    styleUrls: ['./modal-header.component.scss'],
-    standalone: false
+  selector: 'seam-modal-header',
+  templateUrl: './modal-header.component.html',
+  styleUrls: ['./modal-header.component.scss'],
+  standalone: false,
 })
 export class ModalHeaderComponent {
 

@@ -10,5 +10,5 @@ export interface DataFilterContainer {
 }
 
 export const THESEAM_DATA_FILTER_CONTAINER = new InjectionToken<DataFilterContainer>(
-  'DataFilterContainer'
+  'DataFilterContainer',
 )

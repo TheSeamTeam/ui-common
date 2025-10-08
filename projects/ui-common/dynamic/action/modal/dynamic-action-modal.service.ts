@@ -24,7 +24,7 @@ export class DynamicActionModalService implements DynamicActionModal {
   constructor(
     private _valueHelper: DynamicValueHelperService,
     private _modal: Modal,
-    private _injector: Injector
+    private _injector: Injector,
   ) { }
 
   async exec(args: DynamicActionModalDef, context: any): Promise<any> {
@@ -42,8 +42,8 @@ export class DynamicActionModalService implements DynamicActionModal {
             return dynamicActionHelper.exec(resultAction, context)
           }
           return of(result)
-        })
-      ))
+        }),
+      )),
     ).toPromise()
   }
 
@@ -52,7 +52,7 @@ export class DynamicActionModalService implements DynamicActionModal {
   public async getUiProps(args: DynamicActionModalDef, context: any): Promise<DynamicActionUiButtonDef> {
     return {
       _actionDef: args,
-      triggerType: 'click'
+      triggerType: 'click',
     }
   }
 
@@ -91,7 +91,7 @@ export class DynamicActionModalService implements DynamicActionModal {
     // TODO: Replace with JSON valid config from input def model
     const config: ModalConfig = {
       data,
-      modalSize: 'lg'
+      modalSize: 'lg',
     }
 
     if (typeof modal === 'string') {

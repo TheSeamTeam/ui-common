@@ -18,8 +18,8 @@ export class TheSeamSchemaFormSubmitSplitHarness extends ComponentHarness {
   /** Creates a `HarnessPredicate` used to locate a particular `TheSeamSchemaFormSubmitSplitHarness`. */
   static with(options: TheSeamSchemaFormSubmitSplitHarnessFilters): HarnessPredicate<TheSeamSchemaFormSubmitSplitHarness> {
     return new HarnessPredicate(TheSeamSchemaFormSubmitSplitHarness, options)
-        .addOption('field name', options.name,
-            (harness, name) => HarnessPredicate.stringMatches(harness.getName(), name))
+      .addOption('field name', options.name,
+        (harness, name) => HarnessPredicate.stringMatches(harness.getName(), name))
   }
 
   public async getName(): Promise<string | null> {

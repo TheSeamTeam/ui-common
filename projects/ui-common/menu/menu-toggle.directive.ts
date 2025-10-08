@@ -21,16 +21,16 @@ declare const ngDevMode: any
 const passiveEventListenerOptions = normalizePassiveListenerOptions({ passive: true })
 
 @Directive({
-    selector: '[seamMenuToggle]',
-    // tslint:disable-next-line:use-host-property-decorator
-    host: {
-        'class': 'seam-menu-toggle',
-        'aria-haspopup': 'true',
-        '[attr.aria-expanded]': 'menuOpen() || null',
-        '[attr.aria-controls]': 'menuOpen() ? menu.panelId : null',
-    },
-    exportAs: 'seamMenuToggle',
-    standalone: false
+  selector: '[seamMenuToggle]',
+  // tslint:disable-next-line:use-host-property-decorator
+  host: {
+    'class': 'seam-menu-toggle',
+    'aria-haspopup': 'true',
+    '[attr.aria-expanded]': 'menuOpen() || null',
+    '[attr.aria-controls]': 'menuOpen() ? menu.panelId : null',
+  },
+  exportAs: 'seamMenuToggle',
+  standalone: false,
 })
 export class MenuToggleDirective implements OnDestroy, AfterContentInit {
 
@@ -250,14 +250,14 @@ export class MenuToggleDirective implements OnDestroy, AfterContentInit {
     this._parentMenuComponent = this._parentMenu instanceof MenuComponent ? this._parentMenu : undefined
 
     this._elementRef.nativeElement.addEventListener('touchstart', this._handleTouchStart,
-        passiveEventListenerOptions)
+      passiveEventListenerOptions)
   }
 
   ngOnDestroy() {
     this.closeMenu()
 
     this._elementRef.nativeElement.removeEventListener('touchstart', this._handleTouchStart,
-        passiveEventListenerOptions)
+      passiveEventListenerOptions)
 
     this._menuClosedSubscription.unsubscribe()
     this._closingActionsSubscription.unsubscribe()
@@ -338,7 +338,7 @@ export class MenuToggleDirective implements OnDestroy, AfterContentInit {
     this._resetMenu()
 
     this._elementRef.nativeElement.removeEventListener('touchstart', this._handleTouchStart,
-        passiveEventListenerOptions)
+      passiveEventListenerOptions)
 
     this._menuClosedSubscription.unsubscribe()
     this._closingActionsSubscription.unsubscribe()
@@ -434,7 +434,7 @@ export class MenuToggleDirective implements OnDestroy, AfterContentInit {
     const parentClose = this._parentMenu ? this._parentMenu.closed : of()
     const hover = this._parentMenuComponent ? this._parentMenuComponent._hovered().pipe(
       filter(active => active !== this._menuItemInstance),
-      filter(() => this.menuOpen())
+      filter(() => this.menuOpen()),
     ) : of()
 
     return merge(backdrop, parentClose as Observable<MenuCloseReason>, hover, detachments)

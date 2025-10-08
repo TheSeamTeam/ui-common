@@ -35,13 +35,13 @@ import { queryProcessingLink } from './query-processing-link'
 
 const testResultLink = new ApolloLink(operation => {
   return Observable.of({
-    data: { operation }
+    data: { operation },
   })
 })
 
 function testHintTransform(
   before: HintTransformOperation,
-  afterTransform: HintTransformOperation
+  afterTransform: HintTransformOperation,
 ) {
   const query = before.query
   const variables = before.variables
@@ -51,7 +51,7 @@ function testHintTransform(
     // .concat(queryProcessingLink)
     queryProcessingLink
     // .concat(printOperationLink({ tag: 'After', styles: 'color:limegreen' }))
-    .concat(testResultLink)
+      .concat(testResultLink)
 
   ApolloLink.execute(link, { query, variables }).subscribe(v => {
     expect(print(v.data?.operation.query)).toBe(print(afterTransform.query))
@@ -76,7 +76,7 @@ describe('GraphQL apollo-links queryProcessingLink', () => {
               }
             }
           `,
-          variables: { search: undefined }
+          variables: { search: undefined },
         },
         {
           query: gql`
@@ -90,8 +90,8 @@ describe('GraphQL apollo-links queryProcessingLink', () => {
               }
             }
           `,
-          variables: { search: undefined }
-        }
+          variables: { search: undefined },
+        },
       )
     })
   })

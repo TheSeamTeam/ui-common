@@ -52,7 +52,7 @@ export const Basic: Story = {
         <ng-template seamCarouselSlide>
           <div class="text-center p-4">4</div>
         </ng-template>
-      </seam-carousel>`
+      </seam-carousel>`,
   }),
   play: async ({ canvasElement, fixture }) => {
     const carouselHarness = await getHarness(TheSeamCarouselHarness, { canvasElement, fixture })
@@ -83,8 +83,8 @@ export const Fast: Story = {
         <ng-template seamCarouselSlide>
           <div class="text-center p-4">4</div>
         </ng-template>
-      </seam-carousel>`
-  })
+      </seam-carousel>`,
+  }),
 }
 
 export const AutoplayOff: Story = {
@@ -107,7 +107,7 @@ export const AutoplayOff: Story = {
         <ng-template seamCarouselSlide>
           <div class="text-center p-4">4</div>
         </ng-template>
-      </seam-carousel>`
+      </seam-carousel>`,
   }),
   play: async ({ canvasElement, fixture }) => {
     const carouselHarness = await getHarness(TheSeamCarouselHarness, { canvasElement, fixture })
@@ -147,7 +147,7 @@ export const NoButtons: Story = {
         <ng-template seamCarouselSlide>
           <div class="text-center p-4">4</div>
         </ng-template>
-      </seam-carousel>`
+      </seam-carousel>`,
   }),
   play: async ({ canvasElement, fixture }) => {
     const carouselHarness = await getHarness(TheSeamCarouselHarness, { canvasElement, fixture })
@@ -176,7 +176,7 @@ export const AddRemoveSlide: Story = {
         </ng-container>
       </seam-carousel>
       <button id="addBtn" type="button" (click)="items.push('' + items.length)">Add Slide</button>
-      <button id="removeBtn" type="button" (click)="items.pop()">Remove Slide</button>`
+      <button id="removeBtn" type="button" (click)="items.pop()">Remove Slide</button>`,
   }),
   play: async ({ canvasElement, fixture }) => {
     const carouselHarness = await getHarness(TheSeamCarouselHarness, { canvasElement, fixture })

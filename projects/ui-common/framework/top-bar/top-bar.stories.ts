@@ -36,8 +36,8 @@ const meta: Meta<TheSeamTopBarComponent & StoryExtraProps> = {
   parameters: {
     docs: {
       iframeHeight: '300px',
-    }
-  }
+    },
+  },
 }
 
 export default meta

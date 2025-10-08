@@ -4,7 +4,7 @@ export function checkRecordsHaveValue(
   arr: any[] | null,
   indices: (number | [ startIndex: number, endIndex: number ])[],
   testValueCheckProp: string | null = 'name',
-  onlyCheckProvidedIndices: boolean = false
+  onlyCheckProvidedIndices: boolean = false,
 ): void {
   if (indices.length > 0 && !Array.isArray(arr)) {
     throw Error(`Records array should be defined.`)

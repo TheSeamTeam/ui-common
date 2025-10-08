@@ -20,7 +20,7 @@ describe('TheSeamSideNavService', () => {
       RouterTestingModule.withRoutes([
         {
           path: '',
-          component: TestPlacholderComponent
+          component: TestPlacholderComponent,
         },
         {
           path: 'foo',
@@ -29,11 +29,11 @@ describe('TheSeamSideNavService', () => {
             {
               path: 'bar',
               component: TestPlacholderComponent,
-            }
-          ]
+            },
+          ],
         },
-      ])
-    ]
+      ]),
+    ],
   })
 
   let spectator: SpectatorService<TheSeamSideNavService>
@@ -60,18 +60,18 @@ describe('TheSeamSideNavService', () => {
     const activeItem: ISideNavItem = {
       label: '',
       itemType: 'link',
-      link: '/foo'
+      link: '/foo',
     }
 
     const notActiveItem: ISideNavItem = {
       label: '',
       itemType: 'link',
-      link: '/not'
+      link: '/not',
     }
 
     const items: ISideNavItem[] = [
       activeItem,
-      notActiveItem
+      notActiveItem,
     ]
     spectator.service.updateItemsStates(items)
     expect(isNavItemActive(activeItem)).toBe(true)
@@ -84,13 +84,13 @@ describe('TheSeamSideNavService', () => {
     const activeItem: ISideNavItem = {
       label: '',
       itemType: 'link',
-      link: '/foo'
+      link: '/foo',
     }
 
     const notActiveItem: ISideNavItem = {
       label: '',
       itemType: 'link',
-      link: '/not'
+      link: '/not',
     }
 
     const items: ISideNavItem[] = [
@@ -99,9 +99,9 @@ describe('TheSeamSideNavService', () => {
         itemType: 'basic',
         children: [
           activeItem,
-          notActiveItem
-        ]
-      }
+          notActiveItem,
+        ],
+      },
     ]
     spectator.service.updateItemsStates(items)
     expect(isNavItemActive(activeItem)).toBe(true)
@@ -115,7 +115,7 @@ describe('TheSeamSideNavService', () => {
       {
         label: '',
         itemType: 'link',
-        link: '/foo'
+        link: '/foo',
       },
       {
         label: '',
@@ -124,15 +124,15 @@ describe('TheSeamSideNavService', () => {
           {
             label: '',
             itemType: 'link',
-            link: '/foo/bar'
-          }
-        ]
+            link: '/foo/bar',
+          },
+        ],
       },
       {
         label: '',
         itemType: 'link',
-        link: '/not'
-      }
+        link: '/not',
+      },
     ]
 
     spectator.service.createItemsObservable(items).subscribe()
@@ -159,7 +159,7 @@ describe('TheSeamSideNavService', () => {
       {
         label: '',
         itemType: 'link',
-        link: ''
+        link: '',
       },
       {
         label: '',
@@ -168,9 +168,9 @@ describe('TheSeamSideNavService', () => {
           {
             label: '',
             itemType: 'link',
-            link: '/foo'
+            link: '/foo',
           },
-        ]
+        ],
       },
       {
         label: '',
@@ -180,9 +180,9 @@ describe('TheSeamSideNavService', () => {
           {
             label: '',
             itemType: 'link',
-            link: '/bar'
-          }
-        ]
+            link: '/bar',
+          },
+        ],
       },
       {
         label: '',
@@ -195,11 +195,11 @@ describe('TheSeamSideNavService', () => {
               {
                 label: '',
                 itemType: 'link',
-                link: '/foo'
+                link: '/foo',
               },
-            ]
+            ],
           },
-        ]
+        ],
       },
     ]
 

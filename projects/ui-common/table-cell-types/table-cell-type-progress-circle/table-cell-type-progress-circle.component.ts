@@ -21,11 +21,11 @@ import { IconTemplateType } from './../table-cell-type-icon/table-cell-type-icon
 import { TableCellTypeConfigProgressCircle, TableCellTypeProgressCircleConfigAction } from './table-cell-type-progress-circle-config'
 
 @Component({
-    selector: 'seam-table-cell-type-progress-circle',
-    templateUrl: './table-cell-type-progress-circle.component.html',
-    styleUrls: ['./table-cell-type-progress-circle.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'seam-table-cell-type-progress-circle',
+  templateUrl: './table-cell-type-progress-circle.component.html',
+  styleUrls: ['./table-cell-type-progress-circle.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class TableCellTypeProgressCircleComponent implements OnDestroy {
 
@@ -69,7 +69,7 @@ export class TableCellTypeProgressCircleComponent implements OnDestroy {
     private _tableCellTypeHelpers: TableCellTypesHelpersService,
     @Optional() private _datatable?: DatatableComponent,
     @Optional() private _table?: TableComponent,
-    @Optional() @Inject(TABLE_CELL_DATA) _tableData?: TableCellData<'progress-circle', TableCellTypeConfigProgressCircle>
+    @Optional() @Inject(TABLE_CELL_DATA) _tableData?: TableCellData<'progress-circle', TableCellTypeConfigProgressCircle>,
   ) {
     if (_datatable) {
       this._isDatatable = true
@@ -190,7 +190,7 @@ export class TableCellTypeProgressCircleComponent implements OnDestroy {
           r => {},
           // eslint-disable-next-line no-console
           err => console.error(err),
-          () => this._actionRefreshRequest()
+          () => this._actionRefreshRequest(),
         )
     }
   }

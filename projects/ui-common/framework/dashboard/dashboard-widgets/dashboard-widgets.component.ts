@@ -17,7 +17,7 @@ import {
   ViewChild,
   ViewChildren,
   ViewContainerRef,
-  ViewEncapsulation
+  ViewEncapsulation,
 } from '@angular/core'
 import { AsyncPipe, NgFor } from '@angular/common'
 import { BehaviorSubject, Observable, Subject } from 'rxjs'

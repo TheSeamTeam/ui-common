@@ -51,7 +51,7 @@ export function createSimpleGqlTestRoot(numRecords: number) {
   for (let i = 0; i < numRecords; i++) { _records.push(createSimpleGqlTestRecord(i)) }
 
   return {
-    simpleGqlTestRecords: (args?: any) => filteredResults([ ..._records ], args)
+    simpleGqlTestRecords: (args?: any) => filteredResults([ ..._records ], args),
   }
 }
 

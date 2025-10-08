@@ -8,6 +8,6 @@ import { startWith, switchMap } from 'rxjs/operators'
 export function observeControlValue<T = any>(control: AbstractControl): Observable<T> {
   return of(control)
     .pipe(switchMap(_control => _control.valueChanges
-      .pipe(startWith(_control.value))
+      .pipe(startWith(_control.value)),
     ))
 }

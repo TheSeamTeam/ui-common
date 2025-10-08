@@ -6,12 +6,12 @@ declare const ngDevMode: boolean | undefined
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 
 export const SEAM_GOOGLE_PLACES_AUTOCOMPLETE_DEFAULT_OPTIONS: google.maps.places.AutocompleteOptions = {
-  componentRestrictions: { country: 'US' }
+  componentRestrictions: { country: 'US' },
 }
 
 @Directive({
   selector: 'input[seamGoogleMapsPlacesAutocomplete]',
-  exportAs: 'seamGoogleMapsPlacesAutocomplete'
+  exportAs: 'seamGoogleMapsPlacesAutocomplete',
 })
 export class TheSeamGoogleMapsPlacesAutocompleteDirective implements OnInit, OnDestroy, OnChanges {
   private readonly _autoCompleteReadySubject = new Subject<void>()
@@ -47,7 +47,7 @@ export class TheSeamGoogleMapsPlacesAutocompleteDirective implements OnInit, OnD
   ) {
     this.placeChanged = this._autoCompleteReadySubject.pipe(
       startWith(undefined),
-      switchMap(() => this._createPlaceChangedObservable<any>())
+      switchMap(() => this._createPlaceChangedObservable<any>()),
     )
   }
 

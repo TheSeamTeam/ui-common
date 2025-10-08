@@ -6,7 +6,7 @@ import {
   state,
   style,
   transition,
-  trigger
+  trigger,
 } from '@angular/animations'
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion'
 import { PortalModule, TemplatePortal } from '@angular/cdk/portal'
@@ -89,7 +89,7 @@ export function sideNavExpandStateChangeFn(fromState: string, toState: string) {
     TheSeamSideNavService,
     {
       provide: THESEAM_SIDE_NAV_ACCESSOR,
-      useExisting: SideNavComponent
+      useExisting: SideNavComponent,
     },
   ],
   animations: [
@@ -126,41 +126,41 @@ export function sideNavExpandStateChangeFn(fromState: string, toState: string) {
       state(COLLAPSED_STATE, style({ width: '50px', 'overflow-x': 'hidden' })),
 
       state(EXPANDED_OVERLAY_STATE, style({
-          position: 'absolute',
-          top: 0,
-          bottom: 0,
-          left: 0,
-          height: '{{ height }}',
-          width: '{{ width }}',
-          transform: '{{ origin }}',
-          zIndex: '9999',
-        }),
-        {
-          params: {
-            origin: 'translateX(100%)',
-            height: '100%',
-            width: 'calc(100vw - 50px)',
-          }
-        }
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        height: '{{ height }}',
+        width: '{{ width }}',
+        transform: '{{ origin }}',
+        zIndex: '9999',
+      }),
+      {
+        params: {
+          origin: 'translateX(100%)',
+          height: '100%',
+          width: 'calc(100vw - 50px)',
+        },
+      },
       ),
       state(COLLAPSED_OVERLAY_STATE, style({
-          position: 'absolute',
-          top: 0,
-          bottom: 0,
-          left: 0,
-          height: '{{ height }}',
-          width: '{{ width }}',
-          transform: '{{ origin }}',
-          'overflow-x': 'hidden',
-          zIndex: '9999',
-        }),
-        {
-          params: {
-            origin: 'translateX(0)',
-            height: '100%',
-            width: 'calc(100vw - 50px)',
-          }
-        }
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        height: '{{ height }}',
+        width: '{{ width }}',
+        transform: '{{ origin }}',
+        'overflow-x': 'hidden',
+        zIndex: '9999',
+      }),
+      {
+        params: {
+          origin: 'translateX(0)',
+          height: '100%',
+          width: 'calc(100vw - 50px)',
+        },
+      },
       ),
 
       // transition(`${EXPANDED_STATE} <=> ${COLLAPSED_STATE}`, animate('0.2s ease-in-out')),
@@ -177,7 +177,7 @@ export function sideNavExpandStateChangeFn(fromState: string, toState: string) {
       //     animate('5.2s ease-in-out')
       //   ])
       // ]),
-    ])
+    ]),
   ],
   imports: [
     CommonModule,
@@ -250,7 +250,7 @@ export class SideNavComponent implements OnInit, OnDestroy, TheSeamBaseLayoutNav
   private _menuItemTooltipConfig: SideNavItemMenuItemTooltipConfig = {
     placement: 'right',
     container: 'body',
-    behavior: 'always'
+    behavior: 'always',
   }
 
   @Input()
@@ -260,7 +260,7 @@ export class SideNavComponent implements OnInit, OnDestroy, TheSeamBaseLayoutNav
       class: value?.class,
       placement: value?.placement || this._menuItemTooltipConfig.placement,
       container: value?.container || this._menuItemTooltipConfig.container,
-      behavior: value?.behavior || this._menuItemTooltipConfig.behavior
+      behavior: value?.behavior || this._menuItemTooltipConfig.behavior,
     }
   }
 
@@ -283,7 +283,7 @@ export class SideNavComponent implements OnInit, OnDestroy, TheSeamBaseLayoutNav
     private readonly _layout: TheSeamLayoutService,
     private readonly _sideNav: TheSeamSideNavService,
     @Optional() @Inject(THESEAM_SIDE_NAV_CONFIG) private readonly _config?: SideNavConfig,
-    @Optional() @Inject(THESEAM_BASE_LAYOUT_REF) private readonly _baseLayoutRef?: TheSeamBaseLayoutRef
+    @Optional() @Inject(THESEAM_BASE_LAYOUT_REF) private readonly _baseLayoutRef?: TheSeamBaseLayoutRef,
   ) {
     const config: SideNavConfig = {
       ...DEFAULT_SIDE_NAV_CONFIG,
@@ -297,15 +297,15 @@ export class SideNavComponent implements OnInit, OnDestroy, TheSeamBaseLayoutNav
     )
 
     this.isMobile$ = this._layout.isMobile$.pipe(
-      tap(isMobile => isMobile ? this.collapse() : this.expand())
+      tap(isMobile => isMobile ? this.collapse() : this.expand()),
     )
 
     this.sideNavExpandedState$ = combineLatest([ this.expanded$, this.overlay$ ]).pipe(
       map(([ expanded, overlay ]) => expanded
         ? overlay ? EXPANDED_OVERLAY_STATE : EXPANDED_STATE
-        : overlay ? COLLAPSED_OVERLAY_STATE : COLLAPSED_STATE
+        : overlay ? COLLAPSED_OVERLAY_STATE : COLLAPSED_STATE,
       ),
-      distinctUntilChanged()
+      distinctUntilChanged(),
     )
 
     this.menuItemTooltipDisabled$ = combineLatest([ this.expanded$, this.overlay$ ]).pipe(
@@ -317,9 +317,9 @@ export class SideNavComponent implements OnInit, OnDestroy, TheSeamBaseLayoutNav
 
         return this.menuItemTooltipConfig?.behavior === 'always' ? false
           : this.menuItemTooltipConfig?.behavior === 'never' ? true
-          : this.menuItemTooltipConfig?.behavior === 'collapseOnly' ? expanded : true
+            : this.menuItemTooltipConfig?.behavior === 'collapseOnly' ? expanded : true
       }),
-      distinctUntilChanged()
+      distinctUntilChanged(),
     )
   }
 
@@ -377,17 +377,17 @@ export class SideNavComponent implements OnInit, OnDestroy, TheSeamBaseLayoutNav
     switch (this.expandOrigin) {
       case 'right':
         return this._sideNavExpand === EXPANDED_OVERLAY_STATE ? 'translateX(100vw) translateX(-100%)'
-            : this._sideNavExpand === COLLAPSED_OVERLAY_STATE ? 'translateX(100vw)' : null
+          : this._sideNavExpand === COLLAPSED_OVERLAY_STATE ? 'translateX(100vw)' : null
       case 'top':
         return this._sideNavExpand === EXPANDED_OVERLAY_STATE ? 'translateY(0)'
-            : this._sideNavExpand === COLLAPSED_OVERLAY_STATE ? 'translateY(-100%)' : null
+          : this._sideNavExpand === COLLAPSED_OVERLAY_STATE ? 'translateY(-100%)' : null
       case 'bottom':
         return this._sideNavExpand === EXPANDED_OVERLAY_STATE ? 'translateY(100vh) translateY(-100%)'
-            : this._sideNavExpand === COLLAPSED_OVERLAY_STATE ? 'translateY(100vh)' : null
+          : this._sideNavExpand === COLLAPSED_OVERLAY_STATE ? 'translateY(100vh)' : null
       case 'left':
       default:
         return this._sideNavExpand === EXPANDED_OVERLAY_STATE ? 'translateX(0)'
-            : this._sideNavExpand === COLLAPSED_OVERLAY_STATE ? 'translateX(-100%)' : null
+          : this._sideNavExpand === COLLAPSED_OVERLAY_STATE ? 'translateX(-100%)' : null
     }
   }
 

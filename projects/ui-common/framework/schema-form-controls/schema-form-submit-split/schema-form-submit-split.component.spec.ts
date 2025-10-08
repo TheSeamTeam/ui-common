@@ -8,10 +8,10 @@ describe('TheSeamSchemaFormSubmitSplitComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    declarations: [TheSeamSchemaFormSubmitSplitComponent],
-    teardown: { destroyAfterEach: false }
-})
-    .compileComponents()
+      declarations: [TheSeamSchemaFormSubmitSplitComponent],
+      teardown: { destroyAfterEach: false },
+    })
+      .compileComponents()
   })
 
   beforeEach(() => {

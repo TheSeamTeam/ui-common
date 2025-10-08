@@ -15,7 +15,7 @@ export class DynamicDatatableRowActionsService {
 
   constructor(
     private _valueHelper: DynamicValueHelperService,
-    private _dynamicDef: DynamicDatatableDefService
+    private _dynamicDef: DynamicDatatableDefService,
   ) { }
 
   /**
@@ -40,17 +40,17 @@ export class DynamicDatatableRowActionsService {
             return rowAction
           }),
           toArray(),
-          map(v => v.filter(notNullOrUndefined))
+          map(v => v.filter(notNullOrUndefined)),
         )
-        : of([])
-      )
+        : of([]),
+      ),
     )
   }
 
   /** @ignore */
   private _getRowActionContext(row: DynamicDatatableRow, rowActionDef: DynamicDatatableRowAction): DynamicDatatableRowActionContext {
     return {
-      row
+      row,
     }
   }
 

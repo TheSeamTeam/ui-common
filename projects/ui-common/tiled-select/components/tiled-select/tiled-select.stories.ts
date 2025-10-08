@@ -166,7 +166,7 @@ export const WithControl: StoryObj<TheSeamTiledSelectComponent & { [key: string]
         label: 'Other, unlisted',
         icon: 'assets/images/icons8-cotton-filled-48.png',
         disabled: false,
-      }
+      },
     ],
   },
   play: async ({ canvasElement, fixture }) => {

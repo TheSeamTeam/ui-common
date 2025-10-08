@@ -6,7 +6,7 @@ const meta: Meta<any> = {
   title: 'Pipes/PhoneNumber',
   decorators: [
     moduleMetadata({ declarations: [ TheSeamPhoneNumberPipe ] }),
-  ]
+  ],
 }
 
 export default meta

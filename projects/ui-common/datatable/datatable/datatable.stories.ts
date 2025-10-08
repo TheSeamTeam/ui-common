@@ -216,8 +216,8 @@ export const ActionMenu: Story = {
             iceCreamFlavor: 'Strawberry',
             petName: 'Mittens',
           },
-        ]
-      }
+        ],
+      },
     },
     template: `
       <seam-datatable
@@ -998,7 +998,7 @@ class ConditionalActionMenuComponent {
   constructor() {
     this.showActionMenu$ = interval(5000).pipe(
       map(i => i % 2 === 0),
-      tap(show => console.log('showActionMenu', show))
+      tap(show => console.log('showActionMenu', show)),
     )
   }
 
@@ -1007,8 +1007,8 @@ class ConditionalActionMenuComponent {
 export const ConditionalActionMenu = (args: any) => ({
   moduleMetadata: {
     declarations: [
-      ConditionalActionMenuComponent
-    ]
+      ConditionalActionMenuComponent,
+    ],
   },
   props: {
     __hack: {
@@ -1060,7 +1060,7 @@ class SearchCandy extends ColumnsDataFilter {
   constructor(
     prop: string,
     initialValue: any,
-    column: TheSeamDatatableColumn
+    column: TheSeamDatatableColumn,
   ) {
     super(prop, initialValue, column)
 
@@ -1074,7 +1074,7 @@ class SearchCandy extends ColumnsDataFilter {
 
     this.filterStateChanges = this._updateFilterValue.pipe(
       startWith(undefined),
-      map(() => this.filterState())
+      map(() => this.filterState()),
     )
   }
 
@@ -1104,7 +1104,7 @@ class SearchCandy extends ColumnsDataFilter {
   public filter(data: any[]): Observable<any[]> {
     return this._updateFilterValue.pipe(
       startWith(undefined),
-      map(() => this.dataFilter(data, this.form.value, undefined))
+      map(() => this.dataFilter(data, this.form.value, undefined)),
     )
   }
 
@@ -1113,8 +1113,8 @@ class SearchCandy extends ColumnsDataFilter {
       name: this.name,
       state: {
         prop: this.prop,
-        formValue: this.form.value
-      }
+        formValue: this.form.value,
+      },
     }
   }
 
@@ -1126,7 +1126,7 @@ class SearchCandy extends ColumnsDataFilter {
     this.form.setValue({
       chocolatey: null,
       nutty: null,
-      fruity: null
+      fruity: null,
     })
 
     this._updateFilterValue.next()
@@ -1179,21 +1179,21 @@ export const ColumnFilters = (args: any) => ({
     imports: [
       ReactiveFormsModule,
       TheSeamFormFieldModule,
-      TheSeamCheckboxModule
+      TheSeamCheckboxModule,
     ],
     declarations: [
-      ColumnFiltersComponent
+      ColumnFiltersComponent,
     ],
     providers: [
       {
         provide: THESEAM_COLUMNS_DATA_FILTER,
         useValue: {
           name: 'search-candy',
-          class: SearchCandy
+          class: SearchCandy,
         },
-        multi: true
-      }
-    ]
+        multi: true,
+      },
+    ],
   },
   props: {
     __hack: {
@@ -1212,7 +1212,7 @@ export const ColumnFilters = (args: any) => ({
         { name: 'Jason', age: 'abc', color: 'orange', candy: 'Whoppers', candyAttributes: [ 'chocolatey' ], startDate: '2016-05-24 23:13:26.3400000 +00:00' },
         { name: 'David', age: null, color: 'blue', candy: 'Skittles', candyAttributes: [ 'fruity' ], startDate: '2021-06-29 16:31:37.2733333 +00:00' },
         { name: 'Pam', age: null, color: 'red', candy: 'Starbursts', candyAttributes: [ 'fruity' ], startDate: '2012-08-11 04:00:00.000000 +00:00' },
-        { name: 'New Employee', age: null, color: null, candy: null, startDate: null }
+        { name: 'New Employee', age: null, color: null, candy: null, startDate: null },
       ],
     },
   },
@@ -1272,7 +1272,7 @@ class CustomConfigComponent {
 export const CustomConfig = (args: any) => ({
   moduleMetadata: {
     declarations: [
-      CustomConfigComponent
+      CustomConfigComponent,
     ],
     providers: [
       {
@@ -1281,10 +1281,10 @@ export const CustomConfig = (args: any) => ({
           rowHeight: 45,
           columnFilterIcon: faSearch,
           columnFilterUpdateMethod: 'submit',
-          actionItemColumnPosition: 'frozenLeft'
-        } satisfies TheSeamDatatableConfig
-      }
-    ]
+          actionItemColumnPosition: 'frozenLeft',
+        } satisfies TheSeamDatatableConfig,
+      },
+    ],
   },
   props: {
     __hack: {
@@ -1302,9 +1302,9 @@ export const CustomConfig = (args: any) => ({
         { name: 'Shelby', age: 30, color: 'purple', candy: 'Snickers', startDate: '2020-11-18 20:47:25.1733333 +00:00' },
         { name: 'Jason', age: 'abc', color: 'orange', candy: 'Whoppers', startDate: '2016-05-24 23:13:26.3400000 +00:00' },
         { name: 'David', age: null, color: 'blue', candy: 'Skittles', startDate: '2021-06-29 16:31:37.2733333 +00:00' },
-        { name: 'New Employee', age: null, color: null, candy: null, startDate: null }
+        { name: 'New Employee', age: null, color: null, candy: null, startDate: null },
       ],
-      filterIcon: faAirFreshener
+      filterIcon: faAirFreshener,
     },
   },
   template: `
