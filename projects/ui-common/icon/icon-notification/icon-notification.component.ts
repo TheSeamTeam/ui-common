@@ -55,7 +55,6 @@ export const pulseAnimation = animation([
       min-height: 15px;
     }
   `],
-  // tslint:disable-next-line:use-host-property-decorator
   host: {
     '[attr.aria-disabled]': 'disabled.toString()',
     '[attr.disabled]': 'disabled || null',

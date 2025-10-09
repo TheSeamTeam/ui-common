@@ -1,7 +1,7 @@
-import { ColumnsDataFilterState, TheSeamColumnsDataFilterNumericSearchFormState, THESEAM_COLUMNS_DATA_FILTER_NUMERIC_TEXT_SEARCH_TYPES, THESEAM_COLUMNS_DATA_FILTER_NUMERIC_RANGE_SEARCH_TYPES } from "@theseam/ui-common/datatable"
-import { isNullOrUndefined, notNullOrUndefined } from "@theseam/ui-common/utils"
-import { FilterStateMapperResult } from "./map-filter-states"
-import { MapperContext } from "./mapper-context"
+import { ColumnsDataFilterState, TheSeamColumnsDataFilterNumericSearchFormState, THESEAM_COLUMNS_DATA_FILTER_NUMERIC_TEXT_SEARCH_TYPES, THESEAM_COLUMNS_DATA_FILTER_NUMERIC_RANGE_SEARCH_TYPES } from '@theseam/ui-common/datatable'
+import { isNullOrUndefined, notNullOrUndefined } from '@theseam/ui-common/utils'
+import { FilterStateMapperResult } from './map-filter-states'
+import { MapperContext } from './mapper-context'
 
 export const mapSearchNumericColumnsDataFilterStateToGql = (
   filterState: ColumnsDataFilterState<TheSeamColumnsDataFilterNumericSearchFormState>, context: MapperContext<any>,
@@ -26,8 +26,7 @@ export const mapSearchNumericColumnsDataFilterStateToGql = (
           variables: {},
         }
       }
-    }
-    else if (THESEAM_COLUMNS_DATA_FILTER_NUMERIC_RANGE_SEARCH_TYPES.includes(filterState.state.formValue.searchType) && notNullOrUndefined(filterState.state.formValue.fromText) && notNullOrUndefined(filterState.state.formValue.toText)) {
+    } else if (THESEAM_COLUMNS_DATA_FILTER_NUMERIC_RANGE_SEARCH_TYPES.includes(filterState.state.formValue.searchType) && notNullOrUndefined(filterState.state.formValue.fromText) && notNullOrUndefined(filterState.state.formValue.toText)) {
       const fromNumeric = parseFloat(filterState.state.formValue.fromText)
 
       const toNumeric = parseFloat(filterState.state.formValue.toText)
@@ -43,8 +42,7 @@ export const mapSearchNumericColumnsDataFilterStateToGql = (
             },
             variables: {},
           }
-        }
-        else if (filterState.state.formValue.searchType === 'not-between') {
+        } else if (filterState.state.formValue.searchType === 'not-between') {
           filter = {
             filter: {
               or: [
@@ -56,8 +54,7 @@ export const mapSearchNumericColumnsDataFilterStateToGql = (
           }
         }
       }
-    }
-    else if (filterState.state.formValue.searchType === 'blank') {
+    } else if (filterState.state.formValue.searchType === 'blank') {
       filter = {
         filter: {
           or: [
@@ -67,8 +64,7 @@ export const mapSearchNumericColumnsDataFilterStateToGql = (
         },
         variables: {},
       }
-    }
-    else if (filterState.state.formValue.searchType === 'not-blank') {
+    } else if (filterState.state.formValue.searchType === 'not-blank') {
       filter = {
         filter: {
           and: [

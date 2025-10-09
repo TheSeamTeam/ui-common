@@ -41,7 +41,6 @@ export class TheSeamCheckboxChange {
 
 export const THESEAM_CHECKBOX_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
-  // tslint:disable-next-line: no-use-before-declare
   useExisting: forwardRef(() => TheSeamCheckboxComponent),
   multi: true,
 }

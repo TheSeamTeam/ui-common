@@ -1,6 +1,6 @@
-import { InjectionToken } from "@angular/core";
-import { SeamIcon } from "@theseam/ui-common/icon";
-import { ActionItemColumnPosition } from "./action-item-column-position";
+import { InjectionToken } from '@angular/core';
+import { SeamIcon } from '@theseam/ui-common/icon';
+import { ActionItemColumnPosition } from './action-item-column-position';
 
 export interface TheSeamDatatableMessages {
   /**

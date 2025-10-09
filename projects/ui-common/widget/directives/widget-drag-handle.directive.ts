@@ -56,7 +56,6 @@ export function extendStyles(
 ) {
   for (const key in source) {
     if (Object.prototype.hasOwnProperty.call(source, key)) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       dest[key] = source[key]!
     }
   }

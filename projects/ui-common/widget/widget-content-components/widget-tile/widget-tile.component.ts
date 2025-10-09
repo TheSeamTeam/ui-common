@@ -21,7 +21,7 @@ import { WidgetTileSecondaryIconDirective } from './widget-tile-secondary-icon.d
   template: '',
   standalone: false,
 })
-// eslint-disable-next-line @angular-eslint/component-class-suffix
+
 class TheSeamWidgetTileBase implements OnDestroy, HasRenderer2, HasElementRef {
   constructor(
     public _elementRef: ElementRef,

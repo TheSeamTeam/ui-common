@@ -166,7 +166,7 @@ export class TheSeamGoogleMapsPlacesAutoCompleteComponent implements OnDestroy {
    */
   public setBounds(bounds?: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral): void {
     this._assertInitialized()
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
     return this.autoComplete.setBounds(bounds!)
   }
 
@@ -177,7 +177,7 @@ export class TheSeamGoogleMapsPlacesAutoCompleteComponent implements OnDestroy {
    */
   public setComponentRestrictions(restrictions?: google.maps.places.ComponentRestrictions): void {
     this._assertInitialized()
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
     return this.autoComplete.setComponentRestrictions(restrictions!)
   }
 
@@ -188,14 +188,14 @@ export class TheSeamGoogleMapsPlacesAutoCompleteComponent implements OnDestroy {
    */
   public setFields(fields?: string[]): void {
     this._assertInitialized()
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
     return this.autoComplete.setFields(fields!)
   }
 
   /** */
   public setOptions(options?: google.maps.places.AutocompleteOptions): void {
     this._assertInitialized()
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
     return this.autoComplete.setOptions(options!)
   }
 
@@ -206,7 +206,7 @@ export class TheSeamGoogleMapsPlacesAutoCompleteComponent implements OnDestroy {
    */
   public setTypes(types?: string[]): void {
     this._assertInitialized()
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
     return this.autoComplete.setTypes(types!)
   }
 

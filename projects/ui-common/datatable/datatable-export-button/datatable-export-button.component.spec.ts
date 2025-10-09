@@ -22,7 +22,6 @@ describe('DatatableExportButtonComponent', () => {
   let fixture: ComponentFixture<DatatableExportButtonComponent>
 
   beforeEach(waitForAsync(() => {
-    // tslint:disable:no-use-before-declare
     TestBed.configureTestingModule({
       declarations: [
         DatatableExportButtonComponent,
@@ -42,7 +41,6 @@ describe('DatatableExportButtonComponent', () => {
       teardown: { destroyAfterEach: false },
     })
       .compileComponents()
-    // tslint:enable:no-use-before-declare
   }))
 
   beforeEach(() => {

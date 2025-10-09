@@ -33,7 +33,7 @@ import { hasProperty } from '../has-property'
  */
 export function hasRequiredControl(abstractControl: AbstractControl): boolean {
   if (abstractControl.validator) {
-    const validator = abstractControl.validator({}as AbstractControl)
+    const validator = abstractControl.validator({} as AbstractControl)
     if (validator && validator.required) {
       return true
     }

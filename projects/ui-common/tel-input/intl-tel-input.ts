@@ -54,18 +54,18 @@ export namespace intlTelInputUtils {
   }
 
   export type placeholderNumberType =
-    | 'FIXED_LINE_OR_MOBILE'
-    | 'FIXED_LINE'
-    | 'MOBILE'
-    | 'PAGER'
-    | 'PERSONAL_NUMBER'
-    | 'PREMIUM_RATE'
-    | 'SHARED_COST'
-    | 'TOLL_FREE'
-    | 'UAN'
-    | 'UNKNOWN'
-    | 'VOICEMAIL'
-    | 'VOIP'
+    'FIXED_LINE_OR_MOBILE' |
+    'FIXED_LINE' |
+    'MOBILE' |
+    'PAGER' |
+    'PERSONAL_NUMBER' |
+    'PREMIUM_RATE' |
+    'SHARED_COST' |
+    'TOLL_FREE' |
+    'UAN' |
+    'UNKNOWN' |
+    'VOICEMAIL' |
+    'VOIP'
 
 }
 

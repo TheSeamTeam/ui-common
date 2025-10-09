@@ -47,11 +47,9 @@ class IntervalTimer {
 
 export type PollingActionFn<R> = () => R | Observable<R>
 
-// tslint:disable:no-inferrable-types
 export class PollingTickerOptions {
   emitOnInit?: boolean = true
 }
-// tslint:enable:no-inferrable-types
 
 // TODO: Simplify complexity.
 

@@ -40,8 +40,8 @@ export class DatatableColumnComponent implements OnChanges {
   @Input() checkboxable?: boolean | null
   @Input() headerCheckboxable?: boolean | null
 
-  @Input() headerClass?: string | ((data: any) => string|any) | null
-  @Input() cellClass?: string | ((data: any) => string|any) | null
+  @Input() headerClass?: string | ((data: any) => string | any) | null
+  @Input() cellClass?: string | ((data: any) => string | any) | null
 
   @Input() frozenLeft?: boolean | null
   @Input() frozenRight?: boolean | null

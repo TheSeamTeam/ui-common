@@ -50,7 +50,6 @@ describe('ConfirmClickDirective', () => {
     expect(instance?.modalRef).toBeDefined()
     expect(instance?.modalRef?.componentInstance).toBeDefined()
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const id = instance!.modalRef!.id
 
     expect(document.getElementById(id)).not.toBeNull()
@@ -70,7 +69,6 @@ describe('ConfirmClickDirective', () => {
     expect(instance?.modalRef).toBeDefined()
     expect(instance?.modalRef?.componentInstance).toBeDefined()
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const id = instance!.modalRef!.id
 
     expect(document.getElementById(id)).not.toBeNull()
@@ -96,7 +94,6 @@ describe('ConfirmClickDirective', () => {
     expect(instance?.modalRef).toBeDefined()
     expect(instance?.modalRef?.componentInstance).toBeDefined()
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const id = instance!.modalRef!.id
 
     expect(document.getElementById(id)).not.toBeNull()

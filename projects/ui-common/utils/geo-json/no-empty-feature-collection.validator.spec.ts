@@ -5,7 +5,6 @@ import {
 } from 'geojson'
 import { NO_EMPTY_FEATURE_COLLECTION_VALIDATOR_NAME, noEmptyFeatureCollectionValidator } from './no-empty-feature-collection.validator'
 
-
 describe('isOnlyGeometryTypesValidator', () => {
   it('should be valid if value is null', () => {
     const control = new UntypedFormControl(null, [ noEmptyFeatureCollectionValidator() ])

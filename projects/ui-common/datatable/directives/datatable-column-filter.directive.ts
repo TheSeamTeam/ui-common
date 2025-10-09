@@ -8,7 +8,7 @@ import { DatatableColumnFilterTplDirective } from './datatable-column-filter-tpl
 })
 export class TheSeamDatatableColumnFilterDirective {
 
-  @Input() filterName : string | undefined | null
+  @Input() filterName: string | undefined | null
 
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('template')

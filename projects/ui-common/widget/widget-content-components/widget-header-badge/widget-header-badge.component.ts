@@ -20,9 +20,7 @@ const _WidgetHeaderBadgeMixinBase: CanThemeCtor &
   selector: 'seam-widget-header-badge',
   templateUrl: './widget-header-badge.component.html',
   styleUrls: ['./widget-header-badge.component.scss'],
-  // tslint:disable-next-line:use-input-property-decorator
   inputs: ['theme'],
-  // tslint:disable-next-line:use-host-property-decorator
   host: {
     'class': 'badge float-right',
   },

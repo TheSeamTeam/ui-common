@@ -7,7 +7,7 @@ import { ComponentHarnessConstructor, HarnessPredicate } from '@angular/cdk/test
 import { TheSeamBaseButtonComponentHarness, TheSeamBaseButtonComponentHarnessFilters, createBaseButtonComponentHarnessPredicate } from './base-button.harness'
 
 /** A set of criteria that can be used to filter a list of `TheSeamButtonComponentHarness` instances. */
-export interface TheSeamButtonComponentHarnessFilters extends TheSeamBaseButtonComponentHarnessFilters { }
+export type TheSeamButtonComponentHarnessFilters = TheSeamBaseButtonComponentHarnessFilters
 
 export class TheSeamButtonComponentHarness extends TheSeamBaseButtonComponentHarness {
 

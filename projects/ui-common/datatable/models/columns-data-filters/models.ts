@@ -1,5 +1,5 @@
-import { FormControl, FormGroup } from "@angular/forms"
-import { TheSeamDatatableColumnFilterableConfig } from "../table-column"
+import { FormControl, FormGroup } from '@angular/forms'
+import { TheSeamDatatableColumnFilterableConfig } from '../table-column'
 
 export const THESEAM_COLUMNS_DATA_FILTER_DATE_SEARCH_NAME = 'search-date' as const
 
@@ -108,7 +108,7 @@ export type TheSeamColumnsDataFilterNumericSearchForm = FormGroup<{
   toText: FormControl<string | null>
 }>
 
-export type TheSeamColumnsDataFilterNumericSearchFormState = {
+export interface TheSeamColumnsDataFilterNumericSearchFormState {
   searchType: TheSeamColumnsDataFilterNumericSearchType | null
   searchText: string | null
   fromText: string | null
@@ -146,7 +146,7 @@ export type TheSeamColumnsDataFilterTextSearchForm = FormGroup<{
   // caseSensitive: FormControl<boolean | null>
 }>
 
-export type TheSeamColumnsDataFilterTextSearchFormState = {
+export interface TheSeamColumnsDataFilterTextSearchFormState {
   searchType: TheSeamColumnsDataFilterTextSearchType | null
   searchText: string | null
   // caseSensitive: boolean | null

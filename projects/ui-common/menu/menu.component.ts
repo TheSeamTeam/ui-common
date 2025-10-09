@@ -34,7 +34,6 @@ export type MenuCloseReason = void | 'click' | 'keydown' | 'tab'
 
 export const LIB_MENU: any = {
   provide: THESEAM_MENU_PANEL,
-  // tslint:disable-next-line:no-use-before-declare
   useExisting: forwardRef(() => MenuComponent),
 }
 
@@ -150,7 +149,6 @@ export class MenuComponent implements OnDestroy, AfterContentInit, ITheSeamMenuP
 
   /** Handle a keyboard event from the menu, delegating to the appropriate action. */
   _handleKeydown(event: KeyboardEvent) {
-    // tslint:disable-next-line:deprecation
     const keyCode = event.keyCode
     const manager = this._keyManager
 

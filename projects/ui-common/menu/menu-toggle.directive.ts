@@ -22,7 +22,6 @@ const passiveEventListenerOptions = normalizePassiveListenerOptions({ passive: t
 
 @Directive({
   selector: '[seamMenuToggle]',
-  // tslint:disable-next-line:use-host-property-decorator
   host: {
     'class': 'seam-menu-toggle',
     'aria-haspopup': 'true',
@@ -187,7 +186,6 @@ export class MenuToggleDirective implements OnDestroy, AfterContentInit {
     this._openedBy = null
     // console.log('keydown', event)
 
-    // tslint:disable-next-line:deprecation
     const keyCode = event.keyCode
 
     if (keyCode === UP_ARROW || keyCode === DOWN_ARROW) {

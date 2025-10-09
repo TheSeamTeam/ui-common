@@ -15,7 +15,6 @@ export interface IModalPosition {
   right?: string
 }
 
-// tslint:disable:no-inferrable-types
 export class ModalConfig<D = any> {
   /** Component to use as the container for the dialog. */
   containerComponent?: ComponentType<ModalContainerComponent>
@@ -91,7 +90,6 @@ export class ModalConfig<D = any> {
   /** Bootstrap modal sizes */
   modalSize?: 'sm' | 'lg' | 'xl'
 }
-// tslint:enable:no-inferrable-types
 
 export function mergeModalConfigs(a: ModalConfig, b: ModalConfig) {
   return { ...a, ...b }

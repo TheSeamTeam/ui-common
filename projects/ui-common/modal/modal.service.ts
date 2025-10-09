@@ -58,7 +58,7 @@ export class Modal implements OnDestroy {
   get afterOpened(): Subject<ModalRef<any>> {
     return this._parentDialog ? this._parentDialog.afterOpened : this._afterOpened
   }
-  _afterOpened: Subject<ModalRef<any>> = new Subject()
+  _afterOpened = new Subject<ModalRef<any>>()
 
   /** Stream that emits when a dialog is opened. */
   get openDialogs(): ModalRef<any>[] {
@@ -351,7 +351,7 @@ export class Modal implements OnDestroy {
     config: ModalConfig): ModalRef<any> {
     // Create a reference to the dialog we're creating in order to give the user a handle
     // to modify and close it.
-    // eslint-disable-next-line new-cap
+
     const dialogRef = new this._dialogRefConstructor<T>(overlayRef, dialogContainer, config.id)
     const injector = this._createInjector<T>(config, dialogRef, dialogContainer)
     const contentRef = dialogContainer.attachComponentPortal(
@@ -382,7 +382,7 @@ export class Modal implements OnDestroy {
     config: ModalConfig): ModalRef<any> {
     // Create a reference to the dialog we're creating in order to give the user a handle
     // to modify and close it.
-    // eslint-disable-next-line new-cap
+
     const dialogRef = new this._dialogRefConstructor(overlayRef, dialogContainer, config.id)
 
     dialogContainer.attachTemplatePortal(

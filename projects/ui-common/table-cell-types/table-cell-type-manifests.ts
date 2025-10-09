@@ -6,7 +6,6 @@ import { TableCellTypeDecimalComponent } from './table-cell-type-decimal/table-c
 import { TableCellTypeIconComponent } from './table-cell-type-icon/table-cell-type-icon.component'
 import { TableCellTypeIntegerComponent } from './table-cell-type-integer/table-cell-type-integer.component'
 import { TableCellTypePhoneComponent } from './table-cell-type-phone/table-cell-type-phone.component'
-// tslint:disable-next-line: max-line-length
 import { TableCellTypeProgressCircleIconComponent } from './table-cell-type-progress-circle-icon/table-cell-type-progress-circle-icon.component'
 import { TableCellTypeProgressCircleComponent } from './table-cell-type-progress-circle/table-cell-type-progress-circle.component'
 import { TableCellTypeStringComponent } from './table-cell-type-string/table-cell-type-string.component'

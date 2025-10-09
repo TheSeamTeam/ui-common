@@ -14,9 +14,9 @@ import { DatatableGraphQLQueryRef, DatatableGraphQLVariables } from './datatable
  * change if it is determined to be too restrictive.
  */
 export type DatatableQueryOptions<TVariables extends OperationVariables = OperationVariables, TData = any> =
-  Pick<WatchQueryOptions<TVariables, TData>, 'query'>
-  & Pick<WatchQueryOptions<TVariables, TData>, 'variables'>
-  & Pick<WatchQueryOptions<TVariables, TData>, 'context'>
+  Pick<WatchQueryOptions<TVariables, TData>, 'query'> &
+  Pick<WatchQueryOptions<TVariables, TData>, 'variables'> &
+  Pick<WatchQueryOptions<TVariables, TData>, 'context'>
 
 export interface DatatableGraphqlServiceConfig {
   /**

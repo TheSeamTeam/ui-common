@@ -36,7 +36,6 @@ import { StoryModalOneModule, StoryModalTwoModule } from './_story-data/datatabl
 import { exampleData1 } from './_story-data/dynamic-data-1'
 
 @Component({
-  // tslint:disable-next-line: component-selector
   selector: 'story-ex-modal-lazy',
   template: `
     <seam-modal-header>

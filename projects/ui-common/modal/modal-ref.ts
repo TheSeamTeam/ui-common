@@ -56,7 +56,6 @@ export class ModalRef<T, R = any> {
 
     // Close when escape keydown event occurs
     _overlayRef.keydownEvents()
-      // tslint:disable-next-line:deprecation
       .pipe(filter(event => event.keyCode === ESCAPE && !this.disableClose))
       .subscribe(() => this.close())
   }
@@ -172,11 +171,9 @@ export class ModalRef<T, R = any> {
    */
   updateSize(size: OverlaySizeConfig): this {
     if (size.width) {
-      // tslint:disable-next-line:deprecation
       this._getPositionStrategy().width(size.width.toString())
     }
     if (size.height) {
-      // tslint:disable-next-line:deprecation
       this._getPositionStrategy().height(size.height.toString())
     }
     this._overlayRef.updateSize(size)

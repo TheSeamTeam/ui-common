@@ -14,7 +14,6 @@ import { ITextFilterOptions } from './text-filter-options'
 
 export const DATA_FILTER_TEXT: any = {
   provide: THESEAM_DATA_FILTER,
-  // tslint:disable-next-line:no-use-before-declare
   useExisting: forwardRef(() => DataFilterTextComponent),
   multi: true,
 }

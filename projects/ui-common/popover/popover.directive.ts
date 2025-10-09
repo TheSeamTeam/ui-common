@@ -15,7 +15,6 @@ const passiveEventListenerOptions = normalizePassiveListenerOptions({ passive: t
 
 @Directive({
   selector: '[seamPopover]',
-  // tslint:disable-next-line:use-host-property-decorator
   host: {
     'aria-haspopup': 'true',
     '[attr.aria-expanded]': 'popoverOpen() || null',

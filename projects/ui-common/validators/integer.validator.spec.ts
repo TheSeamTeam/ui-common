@@ -62,7 +62,7 @@ describe('integerValidator', () => {
     expect(integerValidator(new UntypedFormControl(NaN))).toEqual({ 'integer': { 'reason': 'Must be valid integer.' } })
     expect(integerValidator(new UntypedFormControl(Infinity))).toEqual({ 'integer': { 'reason': 'Must be valid integer.' } })
     expect(integerValidator(new UntypedFormControl(new Date()))).toEqual({ 'integer': { 'reason': 'Must be valid integer.' } })
-    // eslint-disable-next-line no-new-object
+
     expect(integerValidator(new UntypedFormControl(new Object()))).toEqual({ 'integer': { 'reason': 'Must be valid integer.' } })
     expect(integerValidator(new UntypedFormControl(true))).toEqual({ 'integer': { 'reason': 'Must be valid integer.' } })
     expect(integerValidator(new UntypedFormControl(false))).toEqual({ 'integer': { 'reason': 'Must be valid integer.' } })

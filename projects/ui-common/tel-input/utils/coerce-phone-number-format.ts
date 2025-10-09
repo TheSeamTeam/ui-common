@@ -8,18 +8,18 @@ export const THESEAM_DEFAULT_PHONE_NUMBER_FORMAT = intlTelInputUtils.numberForma
  */
 export type TheSeamNumberFormatsInput =
   // Enum
-  intlTelInputUtils.numberFormat
+  intlTelInputUtils.numberFormat |
   // Strings matching enum
-  | 'E164'
-  | 'INTERNATIONAL'
-  | 'NATIONAL'
-  | 'RFC3966'
+  'E164' |
+  'INTERNATIONAL' |
+  'NATIONAL' |
+  'RFC3966' |
   // Strings matching enum in lower case, since it would be what a user will
   // most likely type if string is necessary.
-  | 'e164'
-  | 'international'
-  | 'national'
-  | 'rfc3966'
+  'e164' |
+  'international' |
+  'national' |
+  'rfc3966'
 
 export function coercePhoneNumberFormat(
   format: TheSeamNumberFormatsInput,

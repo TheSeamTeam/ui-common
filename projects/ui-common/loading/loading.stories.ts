@@ -3,7 +3,7 @@ import { userEvent, within } from 'storybook/test'
 import { expect } from 'storybook/test'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
-import { Component, inject } from '@angular/core'
+import { Component, inject, OnDestroy } from '@angular/core'
 import { Subject, interval, take, takeUntil } from 'rxjs'
 
 import { getHarness } from '@theseam/ui-common/testing'
@@ -24,7 +24,7 @@ import { provideTheSeamLoading } from './provide-loading'
   `,
   imports: [ TheSeamButtonsModule ],
 })
-class StoryLoadingServiceToggleComponent {
+class StoryLoadingServiceToggleComponent implements OnDestroy {
   private readonly _ngUnsubscribe = new Subject<void>()
   readonly _loadingService = inject(TheSeamLoadingOverlayService)
   toggleLoading() {

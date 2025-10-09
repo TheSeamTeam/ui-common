@@ -30,7 +30,7 @@ export class TheSeamDatatableRowDetailDirective {
    * Row detail row visbility was toggled.
    */
   // NOTE: This will trigger from the internal ngx-datatable toggle event.
-  @Output() toggle: EventEmitter<any> = new EventEmitter()
+  @Output() toggle = new EventEmitter<any>()
 
   /**
    * Internal use for wrapper only.
@@ -41,7 +41,7 @@ export class TheSeamDatatableRowDetailDirective {
    * this directives `toggle` stream.
    * @ignore
    */
-  _toggle: EventEmitter<any> = new EventEmitter()
+  _toggle = new EventEmitter<any>()
 
   /**
    * Toggle the expansion of the row

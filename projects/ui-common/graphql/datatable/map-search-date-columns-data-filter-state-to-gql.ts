@@ -1,7 +1,7 @@
-import { ColumnsDataFilterState, TheSeamColumnsDataFilterDateSearchFormState, TheSeamColumnsDataFilterDateSearchOptions, THESEAM_COLUMNS_DATA_FILTER_DATE_TEXT_SEARCH_TYPES, getFormattedDateForComparison, THESEAM_COLUMNS_DATA_FILTER_DATE_RANGE_SEARCH_TYPES } from "@theseam/ui-common/datatable"
-import { isNullOrUndefined, notNullOrUndefined } from "@theseam/ui-common/utils"
-import { FilterStateMapperResult } from "./map-filter-states"
-import { MapperContext } from "./mapper-context"
+import { ColumnsDataFilterState, TheSeamColumnsDataFilterDateSearchFormState, TheSeamColumnsDataFilterDateSearchOptions, THESEAM_COLUMNS_DATA_FILTER_DATE_TEXT_SEARCH_TYPES, getFormattedDateForComparison, THESEAM_COLUMNS_DATA_FILTER_DATE_RANGE_SEARCH_TYPES } from '@theseam/ui-common/datatable'
+import { isNullOrUndefined, notNullOrUndefined } from '@theseam/ui-common/utils'
+import { FilterStateMapperResult } from './map-filter-states'
+import { MapperContext } from './mapper-context'
 
 export const mapSearchDateColumnsDataFilterStateToGql = (
   filterState: ColumnsDataFilterState<TheSeamColumnsDataFilterDateSearchFormState, TheSeamColumnsDataFilterDateSearchOptions>, context: MapperContext<any>,
@@ -25,8 +25,7 @@ export const mapSearchDateColumnsDataFilterStateToGql = (
           if (options.dateType === 'datetime-local') {
             searchDateEnd = new Date(searchDate)
             searchDateEnd.setMinutes(searchDateEnd.getMinutes() + 1)
-          }
-          else if (options.dateType === 'date') {
+          } else if (options.dateType === 'date') {
             searchDateEnd = new Date(searchDate)
             searchDateEnd.setDate(searchDateEnd.getDate() + 1)
           }
@@ -53,8 +52,7 @@ export const mapSearchDateColumnsDataFilterStateToGql = (
           if (options.dateType === 'datetime-local') {
             searchDateEnd = new Date(searchDate)
             searchDateEnd.setMinutes(searchDateEnd.getMinutes() + 1)
-          }
-          else if (options.dateType === 'date') {
+          } else if (options.dateType === 'date') {
             searchDateEnd = new Date(searchDate)
             searchDateEnd.setDate(searchDateEnd.getDate() + 1)
           }
@@ -89,8 +87,7 @@ export const mapSearchDateColumnsDataFilterStateToGql = (
           break
       }
     }
-  }
-  else if (THESEAM_COLUMNS_DATA_FILTER_DATE_RANGE_SEARCH_TYPES.includes(formValue.searchType) && notNullOrUndefined(formValue.fromText) && notNullOrUndefined(formValue.toText)) {
+  } else if (THESEAM_COLUMNS_DATA_FILTER_DATE_RANGE_SEARCH_TYPES.includes(formValue.searchType) && notNullOrUndefined(formValue.fromText) && notNullOrUndefined(formValue.toText)) {
     const fromDate = getFormattedDateForComparison(formValue.fromText, options.dateType, true)
     const toDate = getFormattedDateForComparison(formValue.toText, options.dateType, true)
 
@@ -99,8 +96,7 @@ export const mapSearchDateColumnsDataFilterStateToGql = (
       if (options.dateType === 'datetime-local') {
         toDateEnd = new Date(toDate)
         toDateEnd.setMinutes(toDateEnd.getMinutes() + 1)
-      }
-      else if (options.dateType === 'date') {
+      } else if (options.dateType === 'date') {
         toDateEnd = new Date(toDate)
         toDateEnd.setDate(toDateEnd.getDate() + 1)
       }
@@ -116,8 +112,7 @@ export const mapSearchDateColumnsDataFilterStateToGql = (
             },
             variables: {},
           }
-        }
-        else if (formValue.searchType === 'not-between') {
+        } else if (formValue.searchType === 'not-between') {
           filter = {
             filter: {
               or: [
@@ -130,8 +125,7 @@ export const mapSearchDateColumnsDataFilterStateToGql = (
         }
       }
     }
-  }
-  else if (formValue.searchType === 'blank') {
+  } else if (formValue.searchType === 'blank') {
     filter = {
       filter: {
         or: [
@@ -140,8 +134,7 @@ export const mapSearchDateColumnsDataFilterStateToGql = (
       },
       variables: {},
     }
-  }
-  else if (formValue.searchType === 'not-blank') {
+  } else if (formValue.searchType === 'not-blank') {
     filter = {
       filter: {
         and: [

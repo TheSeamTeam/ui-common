@@ -322,6 +322,7 @@ export default defineConfig(
     processor: angular.processInlineTemplates,
     rules: {
       '@angular-eslint/no-empty-lifecycle-method': 'off', // TODO: Consider enabling
+      '@angular-eslint/no-inputs-metadata-property': 'off',
     },
   },
   // App Angular files

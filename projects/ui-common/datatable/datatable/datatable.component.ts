@@ -116,7 +116,6 @@ export const _THESEAM_DATATABLE: any = {
 
 export const _THESEAM_DATATABLE_ACCESSOR: any = {
   provide: THESEAM_DATATABLE_ACCESSOR,
-  // tslint:disable-next-line:no-use-before-declare
   useExisting: forwardRef(() => DatatableComponent),
 }
 

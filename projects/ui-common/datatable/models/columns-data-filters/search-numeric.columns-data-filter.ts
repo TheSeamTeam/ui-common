@@ -1,10 +1,10 @@
-import { ColumnsDataFilter, ColumnsDataFilterState } from "../columns-data-filter";
-import { TheSeamDatatableColumn } from "../table-column";
-import { FormControl, FormGroup } from "@angular/forms";
-import { DataFilterState } from "@theseam/ui-common/data-filters";
-import { isNullOrUndefined, isNullOrUndefinedOrEmpty, notNullOrUndefined, notNullOrUndefinedOrEmpty } from "@theseam/ui-common/utils";
-import { Observable, Subject, map, startWith } from "rxjs";
-import { TheSeamColumnsDataFilterNumericSearchFormState, TheSeamColumnsDataFilterNumericSearchForm, THESEAM_COLUMNS_DATA_FILTER_NUMERIC_SEARCH_NAME, TheSeamColumnsDataFilterNumericSearchType, THESEAM_COLUMNS_DATA_FILTER_NUMERIC_TEXT_SEARCH_TYPES, THESEAM_COLUMNS_DATA_FILTER_NUMERIC_RANGE_SEARCH_TYPES, THESEAM_COLUMNS_DATA_FILTER_NUMERIC_SELECT_SEARCH_TYPES } from "./models";
+import { ColumnsDataFilter, ColumnsDataFilterState } from '../columns-data-filter';
+import { TheSeamDatatableColumn } from '../table-column';
+import { FormControl, FormGroup } from '@angular/forms';
+import { DataFilterState } from '@theseam/ui-common/data-filters';
+import { isNullOrUndefined, isNullOrUndefinedOrEmpty, notNullOrUndefined, notNullOrUndefinedOrEmpty } from '@theseam/ui-common/utils';
+import { Observable, Subject, map, startWith } from 'rxjs';
+import { TheSeamColumnsDataFilterNumericSearchFormState, TheSeamColumnsDataFilterNumericSearchForm, THESEAM_COLUMNS_DATA_FILTER_NUMERIC_SEARCH_NAME, TheSeamColumnsDataFilterNumericSearchType, THESEAM_COLUMNS_DATA_FILTER_NUMERIC_TEXT_SEARCH_TYPES, THESEAM_COLUMNS_DATA_FILTER_NUMERIC_RANGE_SEARCH_TYPES, THESEAM_COLUMNS_DATA_FILTER_NUMERIC_SELECT_SEARCH_TYPES } from './models';
 
 export class SearchNumericColumnsDataFilter extends ColumnsDataFilter<TheSeamColumnsDataFilterNumericSearchFormState, TheSeamColumnsDataFilterNumericSearchForm, undefined> {
   public readonly name = THESEAM_COLUMNS_DATA_FILTER_NUMERIC_SEARCH_NAME
@@ -17,7 +17,7 @@ export class SearchNumericColumnsDataFilter extends ColumnsDataFilter<TheSeamCol
 
   public options: any
 
-  private _updateFilterValue = new Subject<void>
+  private _updateFilterValue = new Subject<void>()
 
   constructor(
     prop: string,
@@ -52,8 +52,7 @@ export class SearchNumericColumnsDataFilter extends ColumnsDataFilter<TheSeamCol
   private _isInvalidSearchTerm(searchText: number, fromText: number, toText: number, comparator: TheSeamColumnsDataFilterNumericSearchType): boolean {
     if (isNaN(searchText) && THESEAM_COLUMNS_DATA_FILTER_NUMERIC_TEXT_SEARCH_TYPES.includes(comparator)) {
       return true
-    }
-    else if ((isNaN(fromText) || isNaN(toText)) && THESEAM_COLUMNS_DATA_FILTER_NUMERIC_RANGE_SEARCH_TYPES.includes(comparator)) {
+    } else if ((isNaN(fromText) || isNaN(toText)) && THESEAM_COLUMNS_DATA_FILTER_NUMERIC_RANGE_SEARCH_TYPES.includes(comparator)) {
       return true
     }
 
@@ -76,7 +75,7 @@ export class SearchNumericColumnsDataFilter extends ColumnsDataFilter<TheSeamCol
     }
 
     return data.filter(item => {
-      let propNumeric = parseFloat(item[prop])
+      const propNumeric = parseFloat(item[prop])
 
       if (
         (comparator === 'blank' && (isNullOrUndefined(item[prop]) || isNullOrUndefinedOrEmpty(`${item[prop]}`))) ||
@@ -133,14 +132,11 @@ export class SearchNumericColumnsDataFilter extends ColumnsDataFilter<TheSeamCol
 
     if (isNullOrUndefinedOrEmpty(formValue.searchType)) {
       return true
-    }
-    else if (THESEAM_COLUMNS_DATA_FILTER_NUMERIC_SELECT_SEARCH_TYPES.includes(formValue.searchType)) {
+    } else if (THESEAM_COLUMNS_DATA_FILTER_NUMERIC_SELECT_SEARCH_TYPES.includes(formValue.searchType)) {
       return false
-    }
-    else if (THESEAM_COLUMNS_DATA_FILTER_NUMERIC_TEXT_SEARCH_TYPES.includes(formValue.searchType) && notNullOrUndefinedOrEmpty(formValue.searchText)) {
+    } else if (THESEAM_COLUMNS_DATA_FILTER_NUMERIC_TEXT_SEARCH_TYPES.includes(formValue.searchType) && notNullOrUndefinedOrEmpty(formValue.searchText)) {
       return false
-    }
-    else if (THESEAM_COLUMNS_DATA_FILTER_NUMERIC_RANGE_SEARCH_TYPES.includes(formValue.searchType) && notNullOrUndefinedOrEmpty(formValue.fromText) && notNullOrUndefinedOrEmpty(formValue.toText)) {
+    } else if (THESEAM_COLUMNS_DATA_FILTER_NUMERIC_RANGE_SEARCH_TYPES.includes(formValue.searchType) && notNullOrUndefinedOrEmpty(formValue.fromText) && notNullOrUndefinedOrEmpty(formValue.toText)) {
       return false
     }
 

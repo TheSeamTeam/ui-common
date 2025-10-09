@@ -1,6 +1,6 @@
 import { applicationConfig, componentWrapperDecorator, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 
-import { Component, Directive, importProvidersFrom, inject, input, NgModule } from '@angular/core'
+import { Component, Directive, importProvidersFrom, inject, input, NgModule, OnInit } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { switchMap } from 'rxjs'
 
@@ -16,7 +16,7 @@ import { ModalRef } from '../modal-ref'
   exportAs: 'storyExampleDirective',
   standalone: true,
 })
-class StoryExampleDirective {
+class StoryExampleDirective implements OnInit {
   storyExampleDirective = input<string>('')
   constructor() {
     console.log('StoryExampleDirective')
@@ -35,7 +35,7 @@ class StoryExampleDirective {
   styles: [],
   template: `<span>Example</span>`,
 })
-class StorySeamModalBasicComponent {
+class StorySeamModalBasicComponent implements OnInit {
   private readonly _modalRef = inject(ModalRef<StorySeamModalBasicComponent>)
   ngOnInit() {
     console.log('StorySeamModalBasicComponent modalRef', this._modalRef)
@@ -80,7 +80,7 @@ class StorySeamModalBasicExampleModule { }
   template: `<span [storyExampleDirective]="'Example'" #tmp="storyExampleDirective">Example</span>[{{ tmp.storyExampleDirective() }}]`,
   standalone: false,
 })
-class StorySeamModalBasicNonSaComponent {
+class StorySeamModalBasicNonSaComponent implements OnInit {
   private readonly _modalRef = inject(ModalRef<StorySeamModalBasicNonSaComponent>)
 
   ngOnInit() {
@@ -144,7 +144,7 @@ class StorySeamModalBasicNonSaExampleModule { }
     TheSeamModalModule,
   ],
 })
-class StorySeamModalSimpleComponent {
+class StorySeamModalSimpleComponent implements OnInit {
   private readonly _modalRef = inject(ModalRef<StorySeamModalSimpleComponent>)
   ngOnInit() {
     console.log('StorySeamModalSimpleComponent modalRef', this._modalRef)
@@ -217,7 +217,7 @@ const meta: Meta<any> = {
         TheSeamOverlayScrollbarDirective,
       ],
     }),
-    componentWrapperDecorator((story) => `<div class="info info-warning">This is the old implementation, from before components could easily be lazy loaded.</div>${story}`),
+    componentWrapperDecorator(story => `<div class="info info-warning">This is the old implementation, from before components could easily be lazy loaded.</div>${story}`),
   ],
 }
 

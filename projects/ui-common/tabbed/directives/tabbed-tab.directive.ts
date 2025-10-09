@@ -21,7 +21,6 @@ export class TheSeamTabbedTabDirective implements OnInit, TheSeamTabbedTabAccess
     public tabbedService: TheSeamTabbedService,
   ) { }
 
-  // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
   ngOnInit() {
     // this.tabbedService.selectedTab.subscribe(tab => {
     //   console.log('tab: ', tab)

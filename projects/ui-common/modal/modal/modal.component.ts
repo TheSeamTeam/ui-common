@@ -32,7 +32,6 @@ export interface TheSeamModalTitleTemplateContext {
 
 export const LIB_MODAL: any = {
   provide: THESEAM_MODAL_CONTAINER,
-  // tslint:disable-next-line:no-use-before-declare
   useExisting: forwardRef(() => ModalComponent),
   multi: true,
 }
@@ -155,7 +154,6 @@ export class ModalComponent implements OnDestroy, AfterViewInit, IModalContainer
     this._overlayRef.backdropClick().subscribe(_ => this.close())
 
     this._overlayRef.keydownEvents()
-      // tslint:disable-next-line:deprecation
       .pipe(filter(e => e.keyCode === ESCAPE))
       .subscribe(_ => this.close())
 

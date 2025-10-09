@@ -11,7 +11,7 @@ function getbadgeThemeClass(classListString: string | null) {
 }
 
 /** A set of criteria that can be used to filter a list of `TheSeamBaseBadgeButtonComponentHarness` instances. */
-export interface TheSeamBaseBadgeButtonComponentHarnessFilters extends TheSeamBaseButtonComponentHarnessFilters { }
+export type TheSeamBaseBadgeButtonComponentHarnessFilters = TheSeamBaseButtonComponentHarnessFilters
 
 export function createBaseBadgeButtonComponentHarnessPredicate<T extends TheSeamBaseBadgeButtonComponentHarness>(
   componentHarness: ComponentHarnessConstructor<T>,

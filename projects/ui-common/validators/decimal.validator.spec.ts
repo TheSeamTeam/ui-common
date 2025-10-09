@@ -81,7 +81,7 @@ describe('decimalValidator', () => {
     expect(decimalValidator(new UntypedFormControl(NaN))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
     expect(decimalValidator(new UntypedFormControl(Infinity))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
     expect(decimalValidator(new UntypedFormControl(new Date()))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    // eslint-disable-next-line no-new-object
+
     expect(decimalValidator(new UntypedFormControl(new Object()))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
     expect(decimalValidator(new UntypedFormControl(true))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
     expect(decimalValidator(new UntypedFormControl(false))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })

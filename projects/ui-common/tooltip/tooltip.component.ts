@@ -13,11 +13,11 @@ import {
 import { Subject } from 'rxjs'
 
 export type TheSeamTooltipPlacement =
-  | 'top' | 'top-left' | 'top-right'
-  | 'bottom' | 'bottom-left' | 'bottom-right'
-  | 'left' | 'left-top' | 'left-bottom'
-  | 'right' | 'right-top' | 'right-bottom'
-  | 'auto'
+  'top' | 'top-left' | 'top-right' |
+  'bottom' | 'bottom-left' | 'bottom-right' |
+  'left' | 'left-top' | 'left-bottom' |
+  'right' | 'right-top' | 'right-bottom' |
+  'auto'
 
 @Component({
   selector: 'seam-tooltip',
@@ -60,10 +60,10 @@ export class TheSeamTooltipComponent implements OnDestroy {
   @Input() triggerElement?: HTMLElement
 
   /** A subject emitting after the tooltip enters the view. */
-  readonly _afterEnter: Subject<void> = new Subject()
+  readonly _afterEnter = new Subject<void>()
 
   /** A subject emitting after the tooltip exits the view. */
-  readonly _afterExit: Subject<void> = new Subject()
+  readonly _afterExit = new Subject<void>()
 
   @HostBinding('class')
   get hostClasses(): string {

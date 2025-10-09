@@ -1,7 +1,7 @@
-import { ColumnsDataFilterState, TheSeamColumnsDataFilterTextSearchFormState, THESEAM_COLUMNS_DATA_FILTER_TEXT_TEXT_SEARCH_TYPES } from "@theseam/ui-common/datatable"
-import { isNullOrUndefined, notNullOrUndefined } from "@theseam/ui-common/utils"
-import { FilterStateMapperResult } from "./map-filter-states"
-import { MapperContext } from "./mapper-context"
+import { ColumnsDataFilterState, TheSeamColumnsDataFilterTextSearchFormState, THESEAM_COLUMNS_DATA_FILTER_TEXT_TEXT_SEARCH_TYPES } from '@theseam/ui-common/datatable'
+import { isNullOrUndefined, notNullOrUndefined } from '@theseam/ui-common/utils'
+import { FilterStateMapperResult } from './map-filter-states'
+import { MapperContext } from './mapper-context'
 
 export const mapSearchTextColumnsDataFilterStateToGql = (
   filterState: ColumnsDataFilterState<TheSeamColumnsDataFilterTextSearchFormState>, context: MapperContext<any>,
@@ -22,8 +22,7 @@ export const mapSearchTextColumnsDataFilterStateToGql = (
         },
         variables: {},
       }
-    }
-    else if (filterState.state.formValue.searchType === 'blank') {
+    } else if (filterState.state.formValue.searchType === 'blank') {
       filter = {
         filter: {
           or: [
@@ -33,8 +32,7 @@ export const mapSearchTextColumnsDataFilterStateToGql = (
         },
         variables: {},
       }
-    }
-    else if (filterState.state.formValue.searchType === 'not-blank') {
+    } else if (filterState.state.formValue.searchType === 'not-blank') {
       filter = {
         filter: {
           and: [

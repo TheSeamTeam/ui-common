@@ -1,11 +1,11 @@
-import { ColumnsDataFilter, ColumnsDataFilterState } from "../columns-data-filter";
-import { TheSeamDatatableColumn } from "../table-column";
-import { FormControl, FormGroup } from "@angular/forms";
-import { DataFilterState } from "@theseam/ui-common/data-filters";
-import { isNullOrUndefined, isNullOrUndefinedOrEmpty, notNullOrUndefined, notNullOrUndefinedOrEmpty } from "@theseam/ui-common/utils";
-import { Observable, Subject, map, startWith } from "rxjs";
-import { TheSeamColumnsDataFilterDateSearchFormState, TheSeamColumnsDataFilterDateSearchForm, TheSeamColumnsDataFilterDateSearchOptions, TheSeamDatatableDateColumnFilterableConfig, THESEAM_COLUMNS_DATA_FILTER_DATE_SEARCH_NAME, TheSeamColumnsDataFilterDateSearchType, THESEAM_COLUMNS_DATA_FILTER_DATE_TEXT_SEARCH_TYPES, THESEAM_COLUMNS_DATA_FILTER_DATE_RANGE_SEARCH_TYPES, THESEAM_COLUMNS_DATA_FILTER_DATE_SELECT_SEARCH_TYPES } from "./models";
-import { getFormattedDateForComparison } from "./utils";
+import { ColumnsDataFilter, ColumnsDataFilterState } from '../columns-data-filter';
+import { TheSeamDatatableColumn } from '../table-column';
+import { FormControl, FormGroup } from '@angular/forms';
+import { DataFilterState } from '@theseam/ui-common/data-filters';
+import { isNullOrUndefined, isNullOrUndefinedOrEmpty, notNullOrUndefined, notNullOrUndefinedOrEmpty } from '@theseam/ui-common/utils';
+import { Observable, Subject, map, startWith } from 'rxjs';
+import { TheSeamColumnsDataFilterDateSearchFormState, TheSeamColumnsDataFilterDateSearchForm, TheSeamColumnsDataFilterDateSearchOptions, TheSeamDatatableDateColumnFilterableConfig, THESEAM_COLUMNS_DATA_FILTER_DATE_SEARCH_NAME, TheSeamColumnsDataFilterDateSearchType, THESEAM_COLUMNS_DATA_FILTER_DATE_TEXT_SEARCH_TYPES, THESEAM_COLUMNS_DATA_FILTER_DATE_RANGE_SEARCH_TYPES, THESEAM_COLUMNS_DATA_FILTER_DATE_SELECT_SEARCH_TYPES } from './models';
+import { getFormattedDateForComparison } from './utils';
 
 export class SearchDateColumnsDataFilter extends ColumnsDataFilter<TheSeamColumnsDataFilterDateSearchFormState, TheSeamColumnsDataFilterDateSearchForm, TheSeamColumnsDataFilterDateSearchOptions, TheSeamDatatableDateColumnFilterableConfig> {
   public readonly name = THESEAM_COLUMNS_DATA_FILTER_DATE_SEARCH_NAME
@@ -18,7 +18,7 @@ export class SearchDateColumnsDataFilter extends ColumnsDataFilter<TheSeamColumn
 
   public options: TheSeamColumnsDataFilterDateSearchOptions
 
-  private _updateFilterValue = new Subject<void>
+  private _updateFilterValue = new Subject<void>()
 
   constructor(
     prop: string,
@@ -61,8 +61,7 @@ export class SearchDateColumnsDataFilter extends ColumnsDataFilter<TheSeamColumn
   private _isInvalidSearchTerm(searchText: string | null | undefined, fromText: string | null | undefined, toText: string | null | undefined, comparator: TheSeamColumnsDataFilterDateSearchType): boolean {
     if (THESEAM_COLUMNS_DATA_FILTER_DATE_TEXT_SEARCH_TYPES.includes(comparator) && this._isInvalidDate(searchText)) {
       return true
-    }
-    else if (THESEAM_COLUMNS_DATA_FILTER_DATE_RANGE_SEARCH_TYPES.includes(comparator) && (this._isInvalidDate(fromText) || this._isInvalidDate(toText))) {
+    } else if (THESEAM_COLUMNS_DATA_FILTER_DATE_RANGE_SEARCH_TYPES.includes(comparator) && (this._isInvalidDate(fromText) || this._isInvalidDate(toText))) {
       return true
     }
 
@@ -87,7 +86,7 @@ export class SearchDateColumnsDataFilter extends ColumnsDataFilter<TheSeamColumn
     const toTextDate = getFormattedDateForComparison(toText, this.options.dateType, true)
 
     return data.filter(item => {
-      let propDate = getFormattedDateForComparison(item[prop], this.options.dateType, useLocalTime)
+      const propDate = getFormattedDateForComparison(item[prop], this.options.dateType, useLocalTime)
 
       if (
         (comparator === 'blank' && (isNullOrUndefined(item[prop]) || isNullOrUndefinedOrEmpty(`${item[prop]}`))) ||
@@ -148,11 +147,9 @@ export class SearchDateColumnsDataFilter extends ColumnsDataFilter<TheSeamColumn
     }
     if (THESEAM_COLUMNS_DATA_FILTER_DATE_SELECT_SEARCH_TYPES.includes(formValue.searchType)) {
       return false
-    }
-    else if (THESEAM_COLUMNS_DATA_FILTER_DATE_TEXT_SEARCH_TYPES.includes(formValue.searchType) && notNullOrUndefinedOrEmpty(formValue.searchText)) {
+    } else if (THESEAM_COLUMNS_DATA_FILTER_DATE_TEXT_SEARCH_TYPES.includes(formValue.searchType) && notNullOrUndefinedOrEmpty(formValue.searchText)) {
       return false
-    }
-    else if (THESEAM_COLUMNS_DATA_FILTER_DATE_RANGE_SEARCH_TYPES.includes(formValue.searchType) && notNullOrUndefinedOrEmpty(formValue.fromText) && notNullOrUndefinedOrEmpty(formValue.toText)) {
+    } else if (THESEAM_COLUMNS_DATA_FILTER_DATE_RANGE_SEARCH_TYPES.includes(formValue.searchType) && notNullOrUndefinedOrEmpty(formValue.fromText) && notNullOrUndefinedOrEmpty(formValue.toText)) {
       return false
     }
 

@@ -1,10 +1,10 @@
-import { ColumnsDataFilter, ColumnsDataFilterState } from "../columns-data-filter";
-import { TheSeamDatatableColumn } from "../table-column";
-import { FormControl, FormGroup } from "@angular/forms";
-import { DataFilterState } from "@theseam/ui-common/data-filters";
-import { isNullOrUndefined, isNullOrUndefinedOrEmpty, notNullOrUndefined, notNullOrUndefinedOrEmpty } from "@theseam/ui-common/utils";
-import { Observable, Subject, map, startWith } from "rxjs";
-import { TheSeamColumnsDataFilterTextSearchFormState, TheSeamColumnsDataFilterTextSearchForm, THESEAM_COLUMNS_DATA_FILTER_TEXT_SEARCH_NAME, TheSeamColumnsDataFilterTextSearchType, THESEAM_COLUMNS_DATA_FILTER_TEXT_TEXT_SEARCH_TYPES, THESEAM_COLUMNS_DATA_FILTER_TEXT_SELECT_SEARCH_TYPES } from "./models";
+import { ColumnsDataFilter, ColumnsDataFilterState } from '../columns-data-filter';
+import { TheSeamDatatableColumn } from '../table-column';
+import { FormControl, FormGroup } from '@angular/forms';
+import { DataFilterState } from '@theseam/ui-common/data-filters';
+import { isNullOrUndefined, isNullOrUndefinedOrEmpty, notNullOrUndefined, notNullOrUndefinedOrEmpty } from '@theseam/ui-common/utils';
+import { Observable, Subject, map, startWith } from 'rxjs';
+import { TheSeamColumnsDataFilterTextSearchFormState, TheSeamColumnsDataFilterTextSearchForm, THESEAM_COLUMNS_DATA_FILTER_TEXT_SEARCH_NAME, TheSeamColumnsDataFilterTextSearchType, THESEAM_COLUMNS_DATA_FILTER_TEXT_TEXT_SEARCH_TYPES, THESEAM_COLUMNS_DATA_FILTER_TEXT_SELECT_SEARCH_TYPES } from './models';
 
 export class SearchTextColumnsDataFilter extends ColumnsDataFilter<TheSeamColumnsDataFilterTextSearchFormState, TheSeamColumnsDataFilterTextSearchForm> {
   public readonly name = THESEAM_COLUMNS_DATA_FILTER_TEXT_SEARCH_NAME
@@ -17,7 +17,7 @@ export class SearchTextColumnsDataFilter extends ColumnsDataFilter<TheSeamColumn
 
   public options: any
 
-  private _updateFilterValue = new Subject<void>
+  private _updateFilterValue = new Subject<void>()
 
   constructor(
     prop: string,
@@ -116,11 +116,9 @@ export class SearchTextColumnsDataFilter extends ColumnsDataFilter<TheSeamColumn
 
     if (isNullOrUndefinedOrEmpty(formValue.searchType)) {
       return true
-    }
-    else if (THESEAM_COLUMNS_DATA_FILTER_TEXT_TEXT_SEARCH_TYPES.includes(formValue.searchType) && notNullOrUndefinedOrEmpty(formValue.searchText)) {
+    } else if (THESEAM_COLUMNS_DATA_FILTER_TEXT_TEXT_SEARCH_TYPES.includes(formValue.searchType) && notNullOrUndefinedOrEmpty(formValue.searchText)) {
       return false
-    }
-    else if (THESEAM_COLUMNS_DATA_FILTER_TEXT_SELECT_SEARCH_TYPES.includes(formValue.searchType)) {
+    } else if (THESEAM_COLUMNS_DATA_FILTER_TEXT_SELECT_SEARCH_TYPES.includes(formValue.searchType)) {
       return false
     }
 

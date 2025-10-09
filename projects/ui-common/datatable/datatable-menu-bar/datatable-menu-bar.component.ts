@@ -7,7 +7,6 @@ import { DatatableFilterDirective } from '../directives/datatable-filter.directi
 
 export const _THESEAM_DATA_FILTER_CONTAINER: any = {
   provide: THESEAM_DATA_FILTER_CONTAINER,
-  // tslint:disable-next-line:no-use-before-declare
   useExisting: forwardRef(() => DatatableMenuBarComponent),
 }
 

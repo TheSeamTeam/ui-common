@@ -17,7 +17,7 @@ export class MockDatatable implements GqlDatatableAccessor {
   private _bodyHeight = 500
   private _scrolledPosV = 0
 
-  page: EventEmitter<TheSeamPageInfo> = new EventEmitter()
+  page = new EventEmitter<TheSeamPageInfo>()
 
   sort: EventEmitter<SortEvent> = new EventEmitter<SortEvent>()
   get sorts(): SortItem[] { return this._sorts }

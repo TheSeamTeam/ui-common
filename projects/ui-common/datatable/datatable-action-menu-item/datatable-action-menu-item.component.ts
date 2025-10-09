@@ -25,13 +25,13 @@ export class DatatableActionMenuItemComponent {
   @Input() target: string | undefined | null
 
   // Allow routerLink inputs on menu item
-  @Input() queryParams: {[k: string]: any} | undefined | null
+  @Input() queryParams: { [k: string]: any } | undefined | null
   @Input() fragment: string | undefined | null
   @Input() queryParamsHandling: any
-  @Input() preserveFragment: boolean| undefined | null
-  @Input() skipLocationChange: boolean| undefined | null
-  @Input() replaceUrl: boolean| undefined | null
-  @Input() state: {[k: string]: any} | undefined | null
+  @Input() preserveFragment: boolean | undefined | null
+  @Input() skipLocationChange: boolean | undefined | null
+  @Input() replaceUrl: boolean | undefined | null
+  @Input() state: { [k: string]: any } | undefined | null
   @Input() routerLink: string | any[] | undefined | null
 
   @Input() confirmDialog: { message?: string, alert?: string | { message: string, type: ThemeTypes } } | undefined | null

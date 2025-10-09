@@ -14,12 +14,11 @@ import {
   template: '',
   standalone: false,
 })
-// eslint-disable-next-line @angular-eslint/component-class-suffix
 class TheSeamButtonBase implements OnDestroy {
   constructor(
-    public _elementRef: ElementRef,
-    public _focusMonitor: FocusMonitor,
-    public _renderer: Renderer2,
+    public readonly _elementRef: ElementRef,
+    public readonly _focusMonitor: FocusMonitor,
+    public readonly _renderer: Renderer2,
   ) {
     this._focusMonitor.monitor(this._elementRef, true)
   }
@@ -64,9 +63,9 @@ export class TheSeamButtonComponent extends _TheSeamButtonMixinBase implements O
 
   // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(
-    _elementRef: ElementRef,
-    _focusMonitor: FocusMonitor,
-    _renderer: Renderer2,
+    readonly _elementRef: ElementRef,
+    readonly _focusMonitor: FocusMonitor,
+    readonly _renderer: Renderer2,
   ) { super(_elementRef, _focusMonitor, _renderer) }
 
   ngOnDestroy() { super.ngOnDestroy() }
@@ -105,9 +104,9 @@ export class TheSeamAnchorButtonComponent extends _TheSeamButtonMixinBase implem
 
   // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(
-    _elementRef: ElementRef,
-    _focusMonitor: FocusMonitor,
-    _renderer: Renderer2,
+    readonly _elementRef: ElementRef,
+    readonly _focusMonitor: FocusMonitor,
+    readonly _renderer: Renderer2,
   ) { super(_elementRef, _focusMonitor, _renderer) }
 
   ngOnDestroy() { super.ngOnDestroy() }

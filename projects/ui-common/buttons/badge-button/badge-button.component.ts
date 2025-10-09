@@ -2,6 +2,7 @@ import { FocusMonitor } from '@angular/cdk/a11y'
 import { Component, ElementRef, HostBinding, Input, OnDestroy, Renderer2 } from '@angular/core'
 
 import type { ThemeTypes } from '@theseam/ui-common/models'
+
 import { TheSeamAnchorButtonComponent, TheSeamButtonComponent } from '../button/button.component'
 
 @Component({
@@ -28,9 +29,9 @@ export class TheSeamBadgeButtonComponent extends TheSeamButtonComponent implemen
 
   // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(
-    _elementRef: ElementRef,
-    _focusMonitor: FocusMonitor,
-    _renderer: Renderer2,
+    readonly _elementRef: ElementRef,
+    readonly _focusMonitor: FocusMonitor,
+    readonly _renderer: Renderer2,
   ) { super(_elementRef, _focusMonitor, _renderer) }
 
   ngOnDestroy() { super.ngOnDestroy() }
@@ -62,9 +63,9 @@ export class TheSeamAnchorBadgeButtonComponent extends TheSeamAnchorButtonCompon
 
   // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(
-    _elementRef: ElementRef,
-    _focusMonitor: FocusMonitor,
-    _renderer: Renderer2,
+    readonly _elementRef: ElementRef,
+    readonly _focusMonitor: FocusMonitor,
+    readonly _renderer: Renderer2,
   ) { super(_elementRef, _focusMonitor, _renderer) }
 
   ngOnDestroy() { super.ngOnDestroy() }

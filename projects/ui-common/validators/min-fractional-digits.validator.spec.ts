@@ -17,7 +17,7 @@ describe('minFractionalDigitsValidator', () => {
     expect(minFractionalDigitsValidator(0)(new UntypedFormControl(NaN))).toBeNull()
     expect(minFractionalDigitsValidator(0)(new UntypedFormControl(Infinity))).toBeNull()
     expect(minFractionalDigitsValidator(0)(new UntypedFormControl(new Date()))).toBeNull()
-    // eslint-disable-next-line no-new-object
+
     expect(minFractionalDigitsValidator(0)(new UntypedFormControl(new Object()))).toBeNull()
     expect(minFractionalDigitsValidator(0)(new UntypedFormControl(true))).toBeNull()
     expect(minFractionalDigitsValidator(0)(new UntypedFormControl(false))).toBeNull()

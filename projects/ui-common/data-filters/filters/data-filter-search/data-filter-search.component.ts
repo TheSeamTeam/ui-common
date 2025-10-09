@@ -19,7 +19,6 @@ import { ISearchFilterOptions } from './search-filter-options'
 
 export const DATA_FILTER_SEARCH: any = {
   provide: THESEAM_DATA_FILTER,
-  // tslint:disable-next-line:no-use-before-declare
   useExisting: forwardRef(() => DataFilterSearchComponent),
   multi: true,
 }

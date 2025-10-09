@@ -68,7 +68,6 @@ export class ColumnsFiltersService {
     }
 
     if (notNullOrUndefined(filter)) {
-      // eslint-disable-next-line new-cap
       return new filter.class(prop, initialValue, column)
     }
 

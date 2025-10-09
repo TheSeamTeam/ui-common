@@ -41,7 +41,6 @@ export function throwDialogContentAlreadyAttachedError() {
       transition('* => exit, * => void', animate('{{exitAnimationDuration}}')),
     ]),
   ],
-  // tslint:disable:use-host-property-decorator
   host: {
     '[@dialog]': `{
       value: _state,
@@ -62,7 +61,6 @@ export class ModalContainerComponent extends BasePortalOutlet implements OnDestr
   // @HostBinding is used in the class as it is expected to be extended.  Since @Component decorator
   // metadata is not inherited by child classes, instead the host binding data is defined in a way
   // that can be inherited.
-  // tslint:disable:no-host-decorator-in-concrete
   @HostBinding('attr.aria-label') get _ariaLabel() { return this._config.ariaLabel || null }
 
   @HostBinding('attr.aria-describedby')
@@ -130,16 +128,16 @@ export class ModalContainerComponent extends BasePortalOutlet implements OnDestr
   @ViewChild(CdkPortalOutlet /*, { static: true }*/, { static: true }) _portalHost?: CdkPortalOutlet
 
   /** A subject emitting before the dialog enters the view. */
-  _beforeEnter: Subject<void> = new Subject()
+  _beforeEnter = new Subject<void>()
 
   /** A subject emitting after the dialog enters the view. */
-  _afterEnter: Subject<void> = new Subject()
+  _afterEnter = new Subject<void>()
 
   /** A subject emitting before the dialog exits the view. */
-  _beforeExit: Subject<void> = new Subject()
+  _beforeExit = new Subject<void>()
 
   /** A subject emitting after the dialog exits the view. */
-  _afterExit: Subject<void> = new Subject()
+  _afterExit = new Subject<void>()
 
   /** Stream of animation `done` events. */
   _animationDone = new Subject<AnimationEvent>()

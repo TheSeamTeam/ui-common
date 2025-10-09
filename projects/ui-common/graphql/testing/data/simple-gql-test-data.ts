@@ -75,7 +75,6 @@ export const SIMPLE_GQL_TEST_QUERY = gql`
   }
 `
 
-// tslint:disable-next-line: no-empty-interface
 export interface SimpleGqlTestExtraVariables {
 
 }

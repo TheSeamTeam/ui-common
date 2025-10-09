@@ -14,9 +14,9 @@ import { AlterationDisplayItem } from '../../../datatable-alterations-display/mo
 export type FilterType = 'text' | 'numeric' | 'date'
 
 export type FilterOperation =
-  | TheSeamColumnsDataFilterTextSearchType
-  | TheSeamColumnsDataFilterNumericSearchType
-  | TheSeamColumnsDataFilterDateSearchType
+  TheSeamColumnsDataFilterTextSearchType |
+  TheSeamColumnsDataFilterNumericSearchType |
+  TheSeamColumnsDataFilterDateSearchType
 
 export interface FilterColumnsAlterationState {
   columnProp: TableColumnProp

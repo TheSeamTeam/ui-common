@@ -1,6 +1,6 @@
 import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 
-import { Component, Inject, Optional } from '@angular/core'
+import { Component, Inject, Optional, OnInit } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { NavigationEnd, provideRouter, Route, Router, RouterModule } from '@angular/router'
 import { provideLocationMocks } from '@angular/common/testing'
@@ -73,7 +73,7 @@ import { TheSeamMenuModule } from '@theseam/ui-common/menu'
     TheSeamWidgetModule,
   ],
 })
-class StoryExWidget1Component {
+class StoryExWidget1Component implements OnInit {
   faWrench = faWrench
   faBell = faBell
   initialized$ = of(true).pipe(delay(1000))

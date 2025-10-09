@@ -59,7 +59,7 @@ export class DatatableActionMenuItemDirective {
   @Input() preserveFragment: boolean | undefined | null
   @Input() skipLocationChange: boolean | undefined | null
   @Input() replaceUrl: boolean | undefined | null
-  @Input() state: {[k: string]: any} | undefined | null
+  @Input() state: { [k: string]: any } | undefined | null
   @Input() routerLink: string | any[] | undefined | null
 
   @Input() confirmDialog: any

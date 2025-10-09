@@ -7,7 +7,6 @@ import {
 } from '@angular/cdk/overlay'
 import { inject, InjectionToken, Injector, DOCUMENT } from '@angular/core'
 
-
 import { ModalConfig } from './modal-config'
 import { ModalContainerComponent } from './modal-container/modal-container.component'
 

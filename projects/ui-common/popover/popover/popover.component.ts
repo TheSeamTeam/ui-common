@@ -58,16 +58,16 @@ export class PopoverComponent implements OnInit, OnDestroy {
   _state: 'void' | 'enter' | 'exit' = 'enter'
 
   /** A subject emitting before the dialog enters the view. */
-  _beforeEnter: Subject<void> = new Subject()
+  _beforeEnter = new Subject<void>()
 
   /** A subject emitting after the dialog enters the view. */
-  _afterEnter: Subject<void> = new Subject()
+  _afterEnter = new Subject<void>()
 
   /** A subject emitting before the dialog exits the view. */
-  _beforeExit: Subject<void> = new Subject()
+  _beforeExit = new Subject<void>()
 
   /** A subject emitting after the dialog exits the view. */
-  _afterExit: Subject<void> = new Subject()
+  _afterExit = new Subject<void>()
 
   /** Stream of animation `done` events. */
   _animationDone = new Subject<AnimationEvent>()
@@ -177,7 +177,6 @@ export class PopoverComponent implements OnInit, OnDestroy {
   /** Handle a keyboard event from the menu, delegating to the appropriate action. */
   @HostListener('keydown', [ '$event' ])
   _handleKeydown(event: KeyboardEvent) {
-    // tslint:disable-next-line:deprecation
     const keyCode = event.keyCode
 
     switch (keyCode) {

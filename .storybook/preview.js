@@ -1,10 +1,11 @@
+import { Buffer } from 'buffer/'
+
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 // import { setCompodocJson } from '@storybook/addon-docs/angular'
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-// eslint-disable-next-line import/extensions, import/no-unresolved
 import docJson from '../documentation.json'
 
 if (docJson) {
@@ -38,6 +39,8 @@ if (docJson) {
   // }
 
   // objStripDefaultValue(docJson)
+
+  // TODO: Update the filters. They are a mess and may not even be correct.
 
   // eslint-disable-next-line no-inner-declarations
   function filterObject(obj, key) {
@@ -192,5 +195,6 @@ export const parameters = {
 
 // export const decorators = []
 
-global.Buffer = global.Buffer || require('buffer').Buffer
+global.Buffer = global.Buffer || Buffer
+
 export const tags = ['autodocs']

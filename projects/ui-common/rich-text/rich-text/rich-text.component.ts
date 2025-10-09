@@ -327,14 +327,14 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
     }
   }
 
-  @Output() quillEditorCreated: EventEmitter<any> = new EventEmitter()
-  @Output() quillEditorChanged: EventEmitter<EditorChangeContent | EditorChangeSelection> = new EventEmitter()
-  @Output() quillContentChanged: EventEmitter<ContentChange> = new EventEmitter()
-  @Output() quillSelectionChanged: EventEmitter<SelectionChange> = new EventEmitter()
-  @Output() quillFocus: EventEmitter<Focus> = new EventEmitter()
-  @Output() quillBlur: EventEmitter<Blur> = new EventEmitter()
+  @Output() quillEditorCreated = new EventEmitter<any>()
+  @Output() quillEditorChanged = new EventEmitter<EditorChangeContent | EditorChangeSelection>()
+  @Output() quillContentChanged = new EventEmitter<ContentChange>()
+  @Output() quillSelectionChanged = new EventEmitter<SelectionChange>()
+  @Output() quillFocus = new EventEmitter<Focus>()
+  @Output() quillBlur = new EventEmitter<Blur>()
 
-  @Output() mentionsUpdated: EventEmitter<TheSeamQuillMentionMenuOption[]> = new EventEmitter()
+  @Output() mentionsUpdated = new EventEmitter<TheSeamQuillMentionMenuOption[]>()
 
   @ViewChild('quillEditor')
   get quillEditor(): QuillEditorComponent | undefined {

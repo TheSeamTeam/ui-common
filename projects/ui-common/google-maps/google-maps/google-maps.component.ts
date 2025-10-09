@@ -68,7 +68,7 @@ const _TheSeamGoogleMapsMixinBase: CanDisableCtor &
     { provide: MAP_CONTROLS_SERVICE, useClass: GoogleMapsControlsService },
     {
       provide: NG_VALUE_ACCESSOR,
-      // eslint-disable-next-line no-use-before-define
+
       useExisting: forwardRef(() => TheSeamGoogleMapsComponent),
       multi: true,
     },
