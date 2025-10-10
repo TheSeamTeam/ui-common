@@ -21,9 +21,7 @@
               "base": "dist/theseam-ui-common"
             },
             "index": "src/index.html",
-            "polyfills": [
-              "projects/ui-common/polyfills.ts"
-            ],
+            "polyfills": ["projects/ui-common/polyfills.ts"],
             "tsConfig": "tsconfig.app.json",
             "aot": true,
             "assets": [
@@ -84,89 +82,6 @@
           "options": {
             "buildTarget": "theseam-ui-common:build"
           }
-        },
-        "test": {
-          "builder": "@angular/build:karma",
-          "options": {
-            "main": "src/test.ts",
-            "polyfills": "projects/ui-common/polyfills.ts",
-            "tsConfig": "tsconfig.spec.json",
-            "karmaConfig": "karma.conf.js",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets",
-              {
-                "glob": "**/*",
-                "input": "projects/ui-common/assets",
-                "output": "assets"
-              },
-              {
-                "glob": "**/*",
-                "input": "projects/ui-common/styles",
-                "output": "styles"
-              },
-              {
-                "glob": "**/*.scss",
-                "input": "breadcrumbs",
-                "output": "breadcrumbs"
-              },
-              {
-                "glob": "**/*.scss",
-                "input": "projects/ui-common/framework/base-layout",
-                "output": "framework/base-layout"
-              },
-              {
-                "glob": "**/*.scss",
-                "input": "projects/ui-common/framework/dashboard",
-                "output": "framework/dashboard"
-              },
-              {
-                "glob": "**/*.scss",
-                "input": "projects/ui-common/framework/nav",
-                "output": "framework/nav"
-              },
-              {
-                "glob": "**/*.scss",
-                "input": "projects/ui-common/framework/top-bar",
-                "output": "framework/top-bar"
-              },
-              {
-                "glob": "**/*.scss",
-                "input": "projects/ui-common/framework/side-nav",
-                "output": "framework/side-nav"
-              },
-              {
-                "glob": "**/*.scss",
-                "input": "projects/ui-common/progress/progress-circle",
-                "output": "progress/progress-circle"
-              },
-              {
-                "glob": "**/*.scss",
-                "input": "projects/ui-common/widget",
-                "output": "widget"
-              },
-              {
-                "glob": "**/*.min.css",
-                "input": "node_modules/intl-tel-input/build/css",
-                "output": "assets/vendor/intl-tel-input/css"
-              },
-              {
-                "glob": "**/*.png",
-                "input": "node_modules/intl-tel-input/build/img",
-                "output": "assets/vendor/intl-tel-input/img"
-              },
-              {
-                "glob": "**/utils.js",
-                "input": "node_modules/intl-tel-input/build/js",
-                "output": "assets/vendor/intl-tel-input/js"
-              }
-            ],
-            "styles": [
-              "src/styles.scss",
-              "node_modules/@marklb/ngx-datatable/assets/icons.css"
-            ],
-            "scripts": []
-          }
         }
       }
     },
@@ -201,9 +116,7 @@
               "node_modules/@marklb/ngx-datatable/assets/icons.css"
             ],
             "stylePreprocessorOptions": {
-              "includePaths": [
-                "./"
-              ]
+              "includePaths": ["./"]
             },
             "assets": [
               {
@@ -297,9 +210,7 @@
               "node_modules/@marklb/ngx-datatable/assets/icons.css"
             ],
             "stylePreprocessorOptions": {
-              "includePaths": [
-                "./"
-              ]
+              "includePaths": ["./"]
             },
             "assets": [
               {
@@ -404,9 +315,7 @@
               "base": "dist/theseam-ui-common"
             },
             "index": "src/index.html",
-            "polyfills": [
-              "projects/ui-common/polyfills.ts"
-            ],
+            "polyfills": ["projects/ui-common/polyfills.ts"],
             "tsConfig": "tsconfig.app.json",
             "aot": true,
             "assets": [
