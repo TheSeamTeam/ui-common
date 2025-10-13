@@ -13,24 +13,14 @@
     "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2020",
-    "typeRoots": [
-      "custom_types",
-      "node_modules/@types"
-    ],
-    "types": [
-      "google.maps"
-    ],
-    "lib": [
-      "ES2020",
-      "dom"
-    ],
+    "typeRoots": ["custom_types", "node_modules/@types"],
+    "types": ["google.maps"],
+    "lib": ["ES2020", "dom"],
     "strictNullChecks": true,
     "esModuleInterop": true,
     "jsx": "react",
     "paths": {
-      "@theseam/ui-common/*": [
-        "projects/ui-common/*/public-api"
-      ]
+      "@theseam/ui-common/*": ["projects/ui-common/*/public-api"]
     }
   },
   "angularCompilerOptions": {
@@ -39,7 +29,5 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true
   },
-  "exclude": [
-    "projects/ui-common/schematics/**/*"
-  ]
+  "exclude": ["projects/ui-common/schematics/**/*"]
 }

@@ -2,3 +2,10 @@ package.json
 package-lock.json
 
 **/schematics/**/files/*.ts
+
+.vscode/
+.clinerules/
+docs/
+node_modules/
+dist/
+memory-bank/

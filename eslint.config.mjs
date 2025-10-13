@@ -25,10 +25,8 @@ export default defineConfig(
     plugins: {
       '@stylistic': stylistic,
     },
-    files: [
-      '{src,projects,scripts,.storybook}/**/*.{ts,js,mjs}',
-    ],
-    "extends": [
+    files: ['{src,projects,scripts,.storybook}/**/*.{ts,js,mjs}'],
+    extends: [
       // @ts-expect-error // The 'eslint-plugin-promise' config is defined in a way that Typescript is unable to notice it has a `configs` property.
       pluginPromise.configs['flat/recommended'],
       nodePlugin.configs['flat/recommended-script'],
@@ -37,7 +35,7 @@ export default defineConfig(
       // '**/*.scss',
       // '**/*.html',
       // '!.storybook',
-      'node_modules/**/*'
+      'node_modules/**/*',
     ],
     languageOptions: {
       parserOptions: {
@@ -47,20 +45,23 @@ export default defineConfig(
     rules: {
       'accessor-pairs': 'off',
       // 'arrow-body-style': ['error', 'as-needed'],
-      'camelcase': ['error', { 'properties': 'never' }], // TODO: Consider changing to 'always'
+      camelcase: ['error', { properties: 'never' }], // TODO: Consider changing to 'always'
       // 'complexity': ['error', 10],
-      'complexity': 'off',
-      'curly': ['error', 'multi-line'],
+      complexity: 'off',
+      curly: ['error', 'multi-line'],
       'dot-notation': 'off',
-      'eqeqeq': ['error', 'always', { 'null': 'ignore' }],
+      eqeqeq: ['error', 'always', { null: 'ignore' }],
       'guard-for-in': 'error',
       // 'id-blacklist': [ 'error', 'any', 'Number', 'number', 'String', 'string', 'Boolean', 'boolean', 'Undefined', 'undefined' ],
       // 'id-match': 'error',
-      'new-cap': ['error', { 'newIsCap': true, 'capIsNew': false, 'properties': false }],
+      'new-cap': [
+        'error',
+        { newIsCap: true, capIsNew: false, properties: false },
+      ],
       'no-bitwise': 'error',
       'no-array-constructor': 'error',
       'no-caller': 'error',
-      'no-constant-condition': ['error', { 'checkLoops': false }],
+      'no-constant-condition': ['error', { checkLoops: false }],
       'no-console': 'warn',
       'no-empty': 'error',
       'no-empty-function': 'off', // TODO: Consider enabling
@@ -73,7 +74,7 @@ export default defineConfig(
       'no-invalid-this': 'error',
       'no-iterator': 'error',
       'no-label-var': 'error',
-      'no-labels': ['error', { 'allowLoop': false, 'allowSwitch': false }],
+      'no-labels': ['error', { allowLoop: false, allowSwitch: false }],
       'no-lone-blocks': 'error',
       'no-multi-str': 'error',
       'no-new': 'error',
@@ -95,8 +96,15 @@ export default defineConfig(
       'no-undef': 'off', // Typescript compiler should handle this.
       'no-undef-init': 'error',
       'no-unmodified-loop-condition': 'error',
-      'no-unneeded-ternary': ['error', { 'defaultAssignment': false }],
-      'no-unused-expressions': ['error', { 'allowShortCircuit': true, 'allowTernary': true, 'allowTaggedTemplates': true }],
+      'no-unneeded-ternary': ['error', { defaultAssignment: false }],
+      'no-unused-expressions': [
+        'error',
+        {
+          allowShortCircuit: true,
+          allowTernary: true,
+          allowTaggedTemplates: true,
+        },
+      ],
       'no-unused-vars': 'off',
       'no-use-before-define': 'off',
       'no-useless-call': 'error',
@@ -112,69 +120,94 @@ export default defineConfig(
       'prefer-const': 'error',
       'prefer-object-spread': 'error',
       'prefer-template': 'off', // auto-fix is bugged, so disable for now.
-      'radix': 'error',
+      radix: 'error',
       'no-underscore-dangle': 'off',
-      'one-var': ['error', { 'initialized': 'never' }],
+      'one-var': ['error', { initialized: 'never' }],
       'prefer-promise-reject-errors': 'error',
       'symbol-description': 'error',
       'unicode-bom': ['error', 'never'],
-      'valid-typeof': ['error', { 'requireStringLiterals': true }],
-      'yoda': ['error', 'never'],
+      'valid-typeof': ['error', { requireStringLiterals: true }],
+      yoda: ['error', 'never'],
       // 'sort-imports': ['error', { 'allowSeparatedGroups': true }],
       'sort-imports': 'off', // TODO: Consider enabling. This may need a different rule to configure better.
 
       '@stylistic/semi': 'off',
-      '@stylistic/semi-spacing': ['error', { 'before': false, 'after': true }],
-      '@stylistic/quotes': ['error', 'single', { 'avoidEscape': true, 'allowTemplateLiterals': 'always' }],
-      '@stylistic/arrow-parens': ['error', 'as-needed'],
-      '@stylistic/arrow-spacing': ['error', { 'before': true, 'after': true }],
-      '@stylistic/indent': ['error', 2, {
-        'SwitchCase': 1,
-      }],
+      '@stylistic/semi-spacing': ['error', { before: false, after: true }],
+      '@stylistic/quotes': [
+        'error',
+        'single',
+        { avoidEscape: true, allowTemplateLiterals: 'always' },
+      ],
+      // '@stylistic/arrow-parens': ['error', 'as-needed'],
+      '@stylistic/arrow-parens': ['error', 'always'],
+      '@stylistic/arrow-spacing': ['error', { before: true, after: true }],
+      '@stylistic/indent': [
+        'error',
+        2,
+        {
+          SwitchCase: 1,
+        },
+      ],
       '@stylistic/block-spacing': ['error', 'always'],
-      '@stylistic/brace-style': ['error', '1tbs', { 'allowSingleLine': true }],
+      '@stylistic/brace-style': ['error', '1tbs', { allowSingleLine: true }],
       '@stylistic/comma-dangle': ['error', 'always-multiline'],
-      '@stylistic/comma-spacing': ['error', { 'before': false, 'after': true }],
+      '@stylistic/comma-spacing': ['error', { before: false, after: true }],
       '@stylistic/comma-style': ['error', 'last'],
       '@stylistic/dot-location': ['error', 'property'],
       '@stylistic/eol-last': ['error', 'always'],
       '@stylistic/linebreak-style': ['error', 'unix'],
       '@stylistic/function-call-spacing': ['error', 'never'],
       '@stylistic/generator-star-spacing': ['error', 'before'],
-      '@stylistic/key-spacing': ['error', { 'beforeColon': false, 'afterColon': true }],
-      '@stylistic/keyword-spacing': ['error', { 'before': true, 'after': true }],
+      '@stylistic/key-spacing': [
+        'error',
+        { beforeColon: false, afterColon: true },
+      ],
+      '@stylistic/keyword-spacing': ['error', { before: true, after: true }],
       // '@stylistic/max-len': ['error', {'code': 140, 'ignoreComments': true}],
       '@stylistic/max-len': 'off',
       '@stylistic/new-parens': ['error', 'always'],
       '@stylistic/no-extra-parens': ['error', 'functions'],
       '@stylistic/no-extra-semi': 'error',
       '@stylistic/no-floating-decimal': 'error',
-      '@stylistic/no-mixed-operators': ['error', {
-        'groups': [
-          ['==', '!=', '===', '!==', '>', '>=', '<', '<='],
-          ['&&', '||'],
-          ['in', 'instanceof'],
-        ],
-        'allowSamePrecedence': true,
-      }],
+      '@stylistic/no-mixed-operators': [
+        'error',
+        {
+          groups: [
+            ['==', '!=', '===', '!==', '>', '>=', '<', '<='],
+            ['&&', '||'],
+            ['in', 'instanceof'],
+          ],
+          allowSamePrecedence: true,
+        },
+      ],
       '@stylistic/no-mixed-spaces-and-tabs': 'error',
       '@stylistic/no-multi-spaces': 'error',
-      '@stylistic/no-multiple-empty-lines': ['error', { 'max': 1, 'maxEOF': 0 }],
+      '@stylistic/no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0 }],
       '@stylistic/no-tabs': 'error',
       '@stylistic/no-trailing-spaces': 'error',
       '@stylistic/no-whitespace-before-property': 'error',
       '@stylistic/object-curly-spacing': ['error', 'always'],
       // '@stylistic/object-property-newline': ['error', { 'allowMultiplePropertiesPerLine': true }],
       '@stylistic/object-property-newline': 'off',
-      '@stylistic/operator-linebreak': ['error', 'after', { 'overrides': { '?': 'before', ':': 'before' } }],
+      '@stylistic/operator-linebreak': [
+        'error',
+        'after',
+        { overrides: { '?': 'before', ':': 'before' } },
+      ],
       // '@stylistic/padded-blocks': ['error', { 'blocks': 'never', 'switches': 'never', 'classes': 'always' }], // TODO: Decide on a rule for 'classes'.
-      '@stylistic/padded-blocks': ['error', { 'blocks': 'never', 'switches': 'never' }],
+      '@stylistic/padded-blocks': [
+        'error',
+        { blocks: 'never', switches: 'never' },
+      ],
       '@stylistic/rest-spread-spacing': ['error', 'never'],
       '@stylistic/space-before-blocks': ['error', 'always'],
-      '@stylistic/space-before-function-paren': ['error', { 'anonymous': 'never', 'named': 'never', 'asyncArrow': 'always' }],
+      '@stylistic/space-before-function-paren': [
+        'error',
+        { anonymous: 'never', named: 'never', asyncArrow: 'always' },
+      ],
       '@stylistic/space-in-parens': ['error', 'never'],
       '@stylistic/space-infix-ops': 'error',
-      '@stylistic/space-unary-ops': ['error', { 'words': true, 'nonwords': false }],
+      '@stylistic/space-unary-ops': ['error', { words: true, nonwords: false }],
       // '@stylistic/spaced-comment': ['error', 'always', {
       //   'line': { 'markers': ['*package', '!', '/', ',', '='] },
       //   'block': { 'balanced': true, 'markers': ['*package', '!', ',', ':', '::', 'flow-include'], 'exceptions': ['*'] }
@@ -182,7 +215,11 @@ export default defineConfig(
       '@stylistic/spaced-comment': 'off', // TODO: Consider enabling.
       '@stylistic/template-curly-spacing': 'off', // This missed an ending bracket that caused worse consistency, so disabling for now.
       '@stylistic/template-tag-spacing': ['error', 'never'],
-      '@stylistic/wrap-iife': ['error', 'any', { 'functionPrototypeMethods': true }],
+      '@stylistic/wrap-iife': [
+        'error',
+        'any',
+        { functionPrototypeMethods: true },
+      ],
       '@stylistic/yield-star-spacing': ['error', 'both'],
 
       // 'import/export': 'error',
@@ -255,7 +292,10 @@ export default defineConfig(
       '@typescript-eslint/consistent-type-assertions': 'off',
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-member-accessibility': 'off',
-      '@typescript-eslint/interface-name-prefix': ['off', { 'prefixWithI': 'always' }],
+      '@typescript-eslint/interface-name-prefix': [
+        'off',
+        { prefixWithI: 'always' },
+      ],
       // '@typescript-eslint/member-ordering': ['error', {
       //   'default': [
       //     'public-static-field',
@@ -276,7 +316,10 @@ export default defineConfig(
       '@typescript-eslint/no-empty-function': 'off',
       '@typescript-eslint/no-empty-interface': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-inferrable-types': ['error', { 'ignoreParameters': true }],
+      '@typescript-eslint/no-inferrable-types': [
+        'error',
+        { ignoreParameters: true },
+      ],
       '@typescript-eslint/no-misused-new': 'error',
       '@typescript-eslint/no-parameter-properties': 'off',
       '@typescript-eslint/no-shadow': 'warn',
@@ -284,7 +327,10 @@ export default defineConfig(
       // '@typescript-eslint/prefer-for-of': 'error',
       '@typescript-eslint/prefer-for-of': 'off',
       '@typescript-eslint/prefer-function-type': 'error',
-      '@typescript-eslint/triple-slash-reference': ['error', { 'path': 'always', 'types': 'prefer-import' }],
+      '@typescript-eslint/triple-slash-reference': [
+        'error',
+        { path: 'always', types: 'prefer-import' },
+      ],
       '@typescript-eslint/unified-signatures': 'error',
       '@typescript-eslint/no-useless-constructor': 'error',
       // '@typescript-eslint/no-unused-vars': ['error', { 'vars': 'all', 'args': 'none', 'ignoreRestSiblings': true }],
@@ -309,13 +355,8 @@ export default defineConfig(
   },
   // All Angular typescript files
   {
-    files: [
-      '{src,projects}/**/*.{ts,js,mjs}',
-    ],
-    ignores: [
-      '**/*.spec.ts',
-      '**/*.stories.ts',
-    ],
+    files: ['{src,projects}/**/*.{ts,js,mjs}'],
+    ignores: ['**/*.spec.ts', '**/*.stories.ts'],
     // IMPORTANT: Set the custom processor to enable inline template linting
     // This allows your inline Component templates to be extracted and linted with the same
     // rules as your external .html template files
@@ -327,56 +368,46 @@ export default defineConfig(
   },
   // App Angular files
   {
-    files: [
-      'src/**/*.{ts,js,mjs}',
-    ],
-    ignores: [
-      '**/*.spec.ts',
-      '**/*.stories.ts',
-    ],
+    files: ['src/**/*.{ts,js,mjs}'],
+    ignores: ['**/*.spec.ts', '**/*.stories.ts'],
     rules: {
       '@angular-eslint/directive-selector': [
         'error',
         {
-          'type': 'attribute',
-          'prefix': 'app',
-          'style': 'camelCase',
+          type: 'attribute',
+          prefix: 'app',
+          style: 'camelCase',
         },
       ],
       '@angular-eslint/component-selector': [
         'error',
         {
-          'type': 'element',
-          'prefix': 'app',
-          'style': 'kebab-case',
+          type: 'element',
+          prefix: 'app',
+          style: 'kebab-case',
         },
       ],
     },
   },
   // Lib angular files
   {
-    files: [
-      'projects/**/*.{ts,js,mjs}',
-    ],
-    ignores: [
-      '**/*.spec.ts',
-      '**/*.stories.ts',
-    ],
+    files: ['projects/**/*.{ts,js,mjs}'],
+    ignores: ['**/*.spec.ts', '**/*.stories.ts'],
     rules: {
       '@angular-eslint/directive-selector': [
         'error',
         {
-          'type': 'attribute',
-          'prefix': 'seam',
-          'style': 'camelCase',
+          type: 'attribute',
+          prefix: 'seam',
+          style: 'camelCase',
         },
       ],
       '@angular-eslint/component-selector': [
         'error',
         {
-          'type': 'element',
-          'prefix': 'seam',
-          'style': 'kebab-case',
+          type: 'element',
+          prefix: 'seam',
+          style: 'kebab-case',
         },
       ],
     },
@@ -384,9 +415,7 @@ export default defineConfig(
   {
     // Everything in this config object targets our HTML files (both external template files,
     // AND inline templates thanks to the processor set in the TypeScript config above)
-    files: [
-      '{src,projects,scripts,.storybook}/**/*.html',
-    ],
+    files: ['{src,projects,scripts,.storybook}/**/*.html'],
     extends: [
       // Apply the recommended Angular template rules
       ...angular.configs.templateRecommended,
