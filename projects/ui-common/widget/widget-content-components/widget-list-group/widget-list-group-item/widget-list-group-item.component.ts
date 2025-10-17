@@ -132,8 +132,8 @@ export class WidgetListGroupItemComponent
 }
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
   selector:
+    // eslint-disable-next-line @angular-eslint/component-selector
     'button[seam-widget-list-group-item],button[seamWidgetListGroupItem]',
   templateUrl: './widget-list-group-item.component.html',
   styleUrls: ['./widget-list-group-item.component.scss'],

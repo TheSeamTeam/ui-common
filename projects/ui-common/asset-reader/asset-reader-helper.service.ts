@@ -75,8 +75,8 @@ export class AssetReaderHelperService {
           }
         }),
         catchError((err) => {
-          // eslint-disable-next-line no-console
           if (isDevMode()) {
+            // eslint-disable-next-line no-console
             console.error('err', err)
           }
           return of(false)

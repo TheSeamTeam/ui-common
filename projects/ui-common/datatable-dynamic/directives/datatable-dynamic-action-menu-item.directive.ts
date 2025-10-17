@@ -266,8 +266,8 @@ export class DatatableDynamicActionMenuItemDirective
           this._setInvalidActionState(false)
         }),
         catchError((error) => {
-          // eslint-disable-next-line no-console
           if (isDevMode()) {
+            // eslint-disable-next-line no-console
             console.error(error)
           }
           this._setInvalidActionState(true)
