@@ -37,7 +37,7 @@ $ npm link
 $ npm link @theseam/ui-common
 ```
 
-angular.json
+`angular.json`
 
 > This change shouldn't be needed when the build process is more refined. The libraries icons include font files as a path that the sass compiler isn't finding through npm link.
 > If not using npm link, change "node_modules/@theseam/ui-common/node_modules/@marklb/ngx-datatable/assets/icons.css" to "node_modules/@marklb/ngx-datatable/assets/icons.css"
@@ -74,7 +74,7 @@ angular.json
 }
 ```
 
-tsconfig.json
+`tsconfig.json`
 
 > The compiler options are for importing js libraries that don't have valid ES module exports.
 
@@ -96,7 +96,7 @@ tsconfig.json
 
 ```
 
-polyfils.ts
+`polyfils.ts`
 
 > This is needed for a library that checks if a property is defined on the global object.
 
@@ -110,7 +110,7 @@ polyfils.ts
 
 The files used for the styles aren't very important, but the two separate files are.
 
-styles/styles.scss
+`styles/styles.scss`
 
 > This is the global stylesheet. There will not be any component scoping added, so the rules will be applied to any matching elements like normal.
 
@@ -119,7 +119,7 @@ styles/styles.scss
 ...
 ```
 
-styles/_utilities.scss
+`styles/_utilities.scss`
 
 > This is the file that should be careful about its imports. There should not be any css rules in this file or any files imported by this file. It should only have compile time only code, such as variables, functions, and mixins.
 > If you need access to variables in a component's stylesheet, then import this file.
