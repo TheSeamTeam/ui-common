@@ -7,6 +7,7 @@ import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 import { TheSeamToggleEditComponent } from '../toggle-edit.component'
 import { TheSeamToggleEditModule } from '../toggle-edit.module'
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface ExtraArgs {}
 
 type StoryComponentType = TheSeamToggleEditComponent & ExtraArgs

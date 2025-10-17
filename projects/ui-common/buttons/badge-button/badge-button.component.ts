@@ -39,7 +39,6 @@ export class TheSeamBadgeButtonComponent
   @Input() badgeTheme: ThemeTypes = 'light'
   @Input() badgeText = ''
 
-  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(
     readonly _elementRef: ElementRef,
     readonly _focusMonitor: FocusMonitor,
@@ -78,7 +77,6 @@ export class TheSeamAnchorBadgeButtonComponent
   @Input() badgeTheme: ThemeTypes = 'light'
   @Input() badgeText = ''
 
-  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(
     readonly _elementRef: ElementRef,
     readonly _focusMonitor: FocusMonitor,

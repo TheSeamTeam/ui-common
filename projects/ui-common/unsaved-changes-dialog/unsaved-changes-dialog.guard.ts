@@ -8,6 +8,7 @@ export const UnsavedChangesDialogGuard: CanDeactivateFn<
 > = (component, currentRoute, currentState, nextState) => {
   if (isDevMode()) {
     if (!component.unsavedChangesCanDeactivate) {
+      // eslint-disable-next-line no-console
       console.warn(
         'Route Component with `UnsavedChangesDialogGuard` guard must extend `UnsavedChangesCanDeactivate` class.',
       )

@@ -51,6 +51,7 @@ class TooltipStoryWrapper {
   @ViewChild('iconTooltip', { static: true }) iconTooltip!: TemplateRef<any>
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface ExtraArgs {}
 
 type StoryComponentType = TheSeamTooltipDirective & ExtraArgs

@@ -185,7 +185,7 @@ const run = async () => {
     originalNpmRegistryUrl = 'https://registry.npmjs.org/'
   }
 
-  console.log({ originalYarnRegistryUrl, originalNpmRegistryUrl })
+  // console.log({ originalYarnRegistryUrl, originalNpmRegistryUrl })
 
   logger.log(`🎬 starting verdaccio (this takes ±5 seconds, so be patient)`)
 
@@ -221,5 +221,6 @@ const run = async () => {
 
 run().catch((e) => {
   logger.error(e)
+  // eslint-disable-next-line n/no-process-exit
   process.exit(1)
 })

@@ -228,9 +228,11 @@ export class MenuComponent
       case HOME:
       case END:
         if (!hasModifierKey(event)) {
-          keyCode === HOME
-            ? manager?.setFirstItemActive()
-            : manager?.setLastItemActive()
+          if (keyCode === HOME) {
+            manager?.setFirstItemActive()
+          } else {
+            manager?.setLastItemActive()
+          }
           event.preventDefault()
         }
         break

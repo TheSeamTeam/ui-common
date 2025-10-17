@@ -149,6 +149,7 @@ export class TheSeamTabbedComponent
     if (tab) {
       this.selectedTab = tab
     } else {
+      // eslint-disable-next-line no-console
       console.warn(`Tab with name '${name}' not found`)
     }
   }

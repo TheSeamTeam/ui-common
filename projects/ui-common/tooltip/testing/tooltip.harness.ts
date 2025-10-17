@@ -5,6 +5,7 @@ import {
   ElementDimensions,
 } from '@angular/cdk/testing'
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface TheSeamTooltipHarnessFilters extends BaseHarnessFilters {
   // Empty - use selector-based filtering
 }

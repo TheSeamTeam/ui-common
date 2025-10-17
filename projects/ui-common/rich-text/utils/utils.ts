@@ -81,6 +81,7 @@ export const defaultHtmlCharacterCounterFn: TheSeamCharacterCounterFn = (
   } else if (format === 'text') {
     return value.replace(/\s\s+/g, ' ').trim().length
   } else {
+    // eslint-disable-next-line no-console
     console.warn(`Format ${format} not supported!`)
     return 0
   }

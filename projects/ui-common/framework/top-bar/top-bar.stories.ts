@@ -22,6 +22,7 @@ import { TheSeamTopBarComponent } from './top-bar.component'
 // import { TheSeamTopBarModule } from './top-bar.module'
 import { TheSeamMenuModule } from '@theseam/ui-common/menu'
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface StoryExtraProps {}
 
 const meta: Meta<TheSeamTopBarComponent & StoryExtraProps> = {

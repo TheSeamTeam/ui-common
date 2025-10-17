@@ -37,6 +37,7 @@ describe('maxFractionalDigitsValidator', () => {
     ).toBeNull()
 
     expect(
+      // eslint-disable-next-line no-object-constructor
       maxFractionalDigitsValidator(0)(new UntypedFormControl(new Object())),
     ).toBeNull()
     expect(

@@ -136,8 +136,10 @@ export class SetKeyComponent {
     })
       .then((response) => response.json())
       .then((data) => {
+        // eslint-disable-next-line no-console
         console.log('Response from AI:', data)
         const credits = data.credits || 0
+        // eslint-disable-next-line no-console
         console.log(`%cCredits: ${credits}`, 'color: limegreen;')
         this._creditsSubject.next(credits)
       })

@@ -48,7 +48,7 @@ export default defineConfig(
       camelcase: ['error', { properties: 'never' }], // TODO: Consider changing to 'always'
       // 'complexity': ['error', 10],
       complexity: 'off',
-      curly: ['error', 'multi-line'],
+      // 'curly': ['error', 'multi-line'], // NOTE: Use prettier?
       'dot-notation': 'off',
       eqeqeq: ['error', 'always', { null: 'ignore' }],
       'guard-for-in': 'error',
@@ -110,7 +110,7 @@ export default defineConfig(
       'no-useless-call': 'error',
       'no-useless-computed-key': 'error',
       'no-useless-concat': 'error',
-      'no-useless-constructor': 'error',
+      // 'no-useless-constructor': 'error',
       'no-useless-rename': 'error',
       'no-useless-return': 'error',
       'no-var': 'error',
@@ -131,96 +131,67 @@ export default defineConfig(
       // 'sort-imports': ['error', { 'allowSeparatedGroups': true }],
       'sort-imports': 'off', // TODO: Consider enabling. This may need a different rule to configure better.
 
-      '@stylistic/semi': 'off',
-      '@stylistic/semi-spacing': ['error', { before: false, after: true }],
-      '@stylistic/quotes': [
-        'error',
-        'single',
-        { avoidEscape: true, allowTemplateLiterals: 'always' },
-      ],
-      // '@stylistic/arrow-parens': ['error', 'as-needed'],
-      '@stylistic/arrow-parens': ['error', 'always'],
-      '@stylistic/arrow-spacing': ['error', { before: true, after: true }],
-      '@stylistic/indent': [
-        'error',
-        2,
-        {
-          SwitchCase: 1,
-        },
-      ],
-      '@stylistic/block-spacing': ['error', 'always'],
-      '@stylistic/brace-style': ['error', '1tbs', { allowSingleLine: true }],
-      '@stylistic/comma-dangle': ['error', 'always-multiline'],
-      '@stylistic/comma-spacing': ['error', { before: false, after: true }],
-      '@stylistic/comma-style': ['error', 'last'],
-      '@stylistic/dot-location': ['error', 'property'],
-      '@stylistic/eol-last': ['error', 'always'],
-      '@stylistic/linebreak-style': ['error', 'unix'],
-      '@stylistic/function-call-spacing': ['error', 'never'],
-      '@stylistic/generator-star-spacing': ['error', 'before'],
-      '@stylistic/key-spacing': [
-        'error',
-        { beforeColon: false, afterColon: true },
-      ],
-      '@stylistic/keyword-spacing': ['error', { before: true, after: true }],
-      // '@stylistic/max-len': ['error', {'code': 140, 'ignoreComments': true}],
-      '@stylistic/max-len': 'off',
-      '@stylistic/new-parens': ['error', 'always'],
-      '@stylistic/no-extra-parens': ['error', 'functions'],
-      '@stylistic/no-extra-semi': 'error',
-      '@stylistic/no-floating-decimal': 'error',
-      '@stylistic/no-mixed-operators': [
-        'error',
-        {
-          groups: [
-            ['==', '!=', '===', '!==', '>', '>=', '<', '<='],
-            ['&&', '||'],
-            ['in', 'instanceof'],
-          ],
-          allowSamePrecedence: true,
-        },
-      ],
-      '@stylistic/no-mixed-spaces-and-tabs': 'error',
-      '@stylistic/no-multi-spaces': 'error',
-      '@stylistic/no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0 }],
-      '@stylistic/no-tabs': 'error',
-      '@stylistic/no-trailing-spaces': 'error',
-      '@stylistic/no-whitespace-before-property': 'error',
-      '@stylistic/object-curly-spacing': ['error', 'always'],
+      // '@stylistic/semi': 'off', // NOTE: Use prettier
+      // '@stylistic/semi-spacing': ['error', { 'before': false, 'after': true }], // NOTE: Use prettier
+      // '@stylistic/quotes': ['error', 'single', { 'avoidEscape': true, 'allowTemplateLiterals': 'always' }], // NOTE: Use prettier?
+      // '@stylistic/arrow-parens': ['error', 'as-needed'], // NOTE: Use prettier
+      // '@stylistic/arrow-spacing': ['error', { 'before': true, 'after': true }], // NOTE: Use prettier
+      // '@stylistic/indent': ['error', 2, {
+      //   'SwitchCase': 1,
+      // }], // NOTE: Use prettier?
+      // '@stylistic/block-spacing': ['error', 'always'], // NOTE: Use prettier
+      // '@stylistic/brace-style': ['error', '1tbs', { 'allowSingleLine': true }], // NOTE: Use prettier
+      // '@stylistic/comma-dangle': ['error', 'always-multiline'], // NOTE: Use prettier
+      // '@stylistic/comma-spacing': ['error', { 'before': false, 'after': true }], // NOTE: Use prettier
+      // '@stylistic/comma-style': ['error', 'last'], // NOTE: Use prettier
+      // '@stylistic/dot-location': ['error', 'property'], // NOTE: Use prettier
+      // '@stylistic/eol-last': ['error', 'always'], // NOTE: Use prettier
+      // '@stylistic/linebreak-style': ['error', 'unix'], // NOTE: Use prettier
+      // '@stylistic/function-call-spacing': ['error', 'never'], // NOTE: Use prettier
+      // '@stylistic/generator-star-spacing': ['error', 'before'], // NOTE: Use prettier
+      // '@stylistic/key-spacing': ['error', { 'beforeColon': false, 'afterColon': true }], // NOTE: Use prettier
+      // '@stylistic/keyword-spacing': ['error', { 'before': true, 'after': true }], // NOTE: Use prettier
+      // '@stylistic/max-len': ['error', {'code': 140, 'ignoreComments': true}], // NOTE: Use prettier?
+      // '@stylistic/max-len': 'off', // NOTE: Use prettier?
+      // '@stylistic/new-parens': ['error', 'always'], // NOTE: Use prettier
+      // '@stylistic/no-extra-parens': ['error', 'functions'], // NOTE: Use prettier
+      // '@stylistic/no-extra-semi': 'error', // NOTE: Use prettier
+      // '@stylistic/no-floating-decimal': 'error', // NOTE: Use prettier
+      // '@stylistic/no-mixed-operators': ['error', {
+      //   'groups': [
+      //     ['==', '!=', '===', '!==', '>', '>=', '<', '<='],
+      //     ['&&', '||'],
+      //     ['in', 'instanceof'],
+      //   ],
+      //   'allowSamePrecedence': true,
+      // }], // NOTE: Use prettier?
+      // '@stylistic/no-mixed-spaces-and-tabs': 'error', // NOTE: Use prettier
+      // '@stylistic/no-multi-spaces': 'error', // NOTE: Use prettier
+      // '@stylistic/no-multiple-empty-lines': ['error', { 'max': 1, 'maxEOF': 0 }], // NOTE: Use prettier
+      // '@stylistic/no-tabs': 'error', // NOTE: Use prettier?
+      // '@stylistic/no-trailing-spaces': 'error', // NOTE: Use prettier
+      // '@stylistic/no-whitespace-before-property': 'error', // NOTE: Use prettier
+      // '@stylistic/object-curly-spacing': ['error', 'always'], // NOTE: Use prettier
       // '@stylistic/object-property-newline': ['error', { 'allowMultiplePropertiesPerLine': true }],
-      '@stylistic/object-property-newline': 'off',
-      '@stylistic/operator-linebreak': [
-        'error',
-        'after',
-        { overrides: { '?': 'before', ':': 'before' } },
-      ],
+      // '@stylistic/object-property-newline': 'off', // NOTE: Use prettier
+      // '@stylistic/operator-linebreak': ['error', 'after', { 'overrides': { '?': 'before', ':': 'before' } }], // NOTE: Use prettier
       // '@stylistic/padded-blocks': ['error', { 'blocks': 'never', 'switches': 'never', 'classes': 'always' }], // TODO: Decide on a rule for 'classes'.
-      '@stylistic/padded-blocks': [
-        'error',
-        { blocks: 'never', switches: 'never' },
-      ],
-      '@stylistic/rest-spread-spacing': ['error', 'never'],
-      '@stylistic/space-before-blocks': ['error', 'always'],
-      '@stylistic/space-before-function-paren': [
-        'error',
-        { anonymous: 'never', named: 'never', asyncArrow: 'always' },
-      ],
-      '@stylistic/space-in-parens': ['error', 'never'],
-      '@stylistic/space-infix-ops': 'error',
-      '@stylistic/space-unary-ops': ['error', { words: true, nonwords: false }],
+      // '@stylistic/padded-blocks': ['error', { 'blocks': 'never', 'switches': 'never' }], // NOTE: Use prettier
+      // '@stylistic/rest-spread-spacing': ['error', 'never'], // NOTE: Use prettier
+      // '@stylistic/space-before-blocks': ['error', 'always'], // NOTE: Use prettier
+      // '@stylistic/space-before-function-paren': ['error', { 'anonymous': 'never', 'named': 'never', 'asyncArrow': 'always' }], // NOTE: Use prettier
+      // '@stylistic/space-in-parens': ['error', 'never'], // NOTE: Use prettier
+      // '@stylistic/space-infix-ops': 'error', // NOTE: Use prettier
+      // '@stylistic/space-unary-ops': ['error', { 'words': true, 'nonwords': false }], // NOTE: Use prettier
       // '@stylistic/spaced-comment': ['error', 'always', {
       //   'line': { 'markers': ['*package', '!', '/', ',', '='] },
       //   'block': { 'balanced': true, 'markers': ['*package', '!', ',', ':', '::', 'flow-include'], 'exceptions': ['*'] }
       // }],
       '@stylistic/spaced-comment': 'off', // TODO: Consider enabling.
-      '@stylistic/template-curly-spacing': 'off', // This missed an ending bracket that caused worse consistency, so disabling for now.
-      '@stylistic/template-tag-spacing': ['error', 'never'],
-      '@stylistic/wrap-iife': [
-        'error',
-        'any',
-        { functionPrototypeMethods: true },
-      ],
-      '@stylistic/yield-star-spacing': ['error', 'both'],
+      // '@stylistic/template-curly-spacing': 'off', // This missed an ending bracket that caused worse consistency, so disabling for now. // NOTE: Use prettier
+      // '@stylistic/template-tag-spacing': ['error', 'never'], // NOTE: Use prettier
+      // '@stylistic/wrap-iife': ['error', 'any', { 'functionPrototypeMethods': true }], // NOTE: Use prettier
+      // '@stylistic/yield-star-spacing': ['error', 'both'], // NOTE: Use prettier
 
       // 'import/export': 'error',
       // 'import/first': 'error',
@@ -416,6 +387,10 @@ export default defineConfig(
     // Everything in this config object targets our HTML files (both external template files,
     // AND inline templates thanks to the processor set in the TypeScript config above)
     files: ['{src,projects,scripts,.storybook}/**/*.html'],
+    ignores: [
+      'src/index.html', // Ignore index.html since it's not an Angular template.
+      'src/index.prod.html',
+    ],
     extends: [
       // Apply the recommended Angular template rules
       ...angular.configs.templateRecommended,

@@ -140,11 +140,13 @@ export class SearchDateColumnsDataFilter extends ColumnsDataFilter<
     comparator: TheSeamColumnsDataFilterDateSearchType | null,
   ) {
     if (!data || data.length <= 0 || isNullOrUndefined(comparator)) {
+      // eslint-disable-next-line no-console
       console.warn('No filter applied - invalid options.')
       return data
     }
 
     if (this._isInvalidSearchTerm(text, fromText, toText, comparator)) {
+      // eslint-disable-next-line no-console
       console.warn('No filter applied - invalid search terms.')
       return data
     }

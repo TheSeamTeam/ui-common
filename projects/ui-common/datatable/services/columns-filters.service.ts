@@ -167,6 +167,7 @@ export class ColumnsFiltersService {
 
   public addFilter(filter: ColumnsDataFilter) {
     // Filters are now managed through columns, so this method is deprecated
+    // eslint-disable-next-line no-console
     console.warn(
       'ColumnsFiltersService.addFilter is deprecated - filters are now managed through columns',
     )
@@ -174,6 +175,7 @@ export class ColumnsFiltersService {
 
   public removeFilter(filter: ColumnsDataFilter) {
     // Filters are now managed through columns, so this method is deprecated
+    // eslint-disable-next-line no-console
     console.warn(
       'ColumnsFiltersService.removeFilter is deprecated - filters are now managed through columns',
     )

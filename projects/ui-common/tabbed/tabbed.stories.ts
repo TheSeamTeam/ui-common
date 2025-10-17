@@ -13,6 +13,7 @@ import { of } from 'rxjs'
 import { TheSeamTabbedComponent } from './tabbed.component'
 import { TheSeamTabbedModule } from './tabbed.module'
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface ExtraArgs {}
 
 type StoryComponentType = TheSeamTabbedComponent & ExtraArgs

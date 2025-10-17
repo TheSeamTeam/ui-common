@@ -119,6 +119,7 @@ class RichTextFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.form?.valueChanges
+      // eslint-disable-next-line no-console
       .pipe(tap((vc) => console.log({ vc, form: this.form })))
       .subscribe()
   }
@@ -197,6 +198,7 @@ class CustomConfigComponent implements OnInit {
 
   ngOnInit(): void {
     this.form?.valueChanges
+      // eslint-disable-next-line no-console
       .pipe(tap((vc) => console.log({ vc, form: this.form })))
       .subscribe()
   }
@@ -399,6 +401,7 @@ export const Mentions: Story = {
         ),
       ),
       mentions$: of(args.mentionItems).pipe(delay(3000)),
+      // eslint-disable-next-line no-console
       log: (val: any) => console.log(val),
     },
     template: `

@@ -135,6 +135,7 @@ describe('integerValidator', () => {
       integer: { reason: 'Must be valid integer.' },
     })
 
+    // eslint-disable-next-line no-object-constructor
     expect(integerValidator(new UntypedFormControl(new Object()))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })

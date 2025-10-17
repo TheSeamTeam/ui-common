@@ -15,6 +15,7 @@ import {
   TheSeamNgSelectDropdownHarnessFilters,
 } from './ng-select-dropdown.harness'
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface TheSeamNgSelectHarnessFilters extends BaseHarnessFilters {
   /** Filters based on the name of the field. */
   // name?: string | RegExp

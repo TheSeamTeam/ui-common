@@ -51,6 +51,8 @@ import { TheSeamPopoverDirective } from '../popover.directive'
     '(@slideDown.start)': '_onAnimationStart($event)',
     '(@slideDown.done)': '_animationDone.next($event)',
     '[style.width]': '_popoverWidth',
+    '[attr.role]': '"dialog"',
+    '[attr.tabindex]': '-1',
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false,
@@ -83,13 +85,6 @@ export class PopoverComponent implements OnInit, OnDestroy {
   _animationDone = new Subject<AnimationEvent>()
 
   // @HostBinding('attr.role') get _role() { return this._config.role }
-  @HostBinding('attr.role') get _role() {
-    return 'dialog'
-  }
-
-  @HostBinding('attr.tabindex') get _tabindex() {
-    return -1
-  }
 
   @Input() template: TemplateRef<any> | undefined | null
 

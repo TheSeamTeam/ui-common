@@ -489,7 +489,11 @@ export class MenuToggleDirective implements OnDestroy, AfterContentInit {
   private _setIsMenuOpen(isOpen: boolean): void {
     if (isOpen !== this.menuOpen()) {
       // this._menuOpen = isOpen
-      this.menuOpen() ? this.menuOpened.emit() : this.menuClosed.emit()
+      if (this.menuOpen()) {
+        this.menuOpened.emit()
+      } else {
+        this.menuClosed.emit()
+      }
 
       if (this.triggersSubmenu()) {
         this._menuItemInstance?._setHighlighted(isOpen)

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component } from '@angular/core'
 import { of } from 'rxjs'
 import { delay } from 'rxjs/operators'
 
@@ -10,17 +10,13 @@ import { faBell, faWrench } from '@fortawesome/free-solid-svg-icons'
   styleUrls: ['./lazy-widget-one.component.scss'],
   standalone: false,
 })
-export class LazyWidgetOneComponent implements OnInit {
+export class LazyWidgetOneComponent {
   faWrench = faWrench
   faBell = faBell
 
   items = ['one', 'two', 'three', 'four']
 
   initialized$ = of(true).pipe(delay(5000))
-
-  constructor() {}
-
-  ngOnInit() {}
 
   getDate() {
     return Date.now()

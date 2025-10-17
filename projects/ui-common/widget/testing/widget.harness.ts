@@ -10,6 +10,7 @@ import {
 // import { animatingWait } from './utils'
 
 /** A set of criteria that can be used to filter a list of `TheSeamWidgetHarness` instances. */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface TheSeamWidgetHarnessFilters extends BaseHarnessFilters {
   /** Only find instances whose text matches the given value. */
   // text?: string | RegExp;

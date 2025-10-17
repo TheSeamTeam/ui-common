@@ -11,6 +11,7 @@ import { provideAnimations } from '@angular/platform-browser/animations'
 import { TheSeamPopoverDirective } from './popover.directive'
 import { TheSeamPopoverModule } from './popover.module'
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface StoryExtraProps {}
 
 const meta: Meta<TheSeamPopoverDirective & StoryExtraProps> = {

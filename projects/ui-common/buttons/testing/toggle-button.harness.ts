@@ -10,6 +10,7 @@ import {
 } from './base-button.harness'
 
 /** A set of criteria that can be used to filter a list of `TheSeamToggleButtonComponentHarness` instances. */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface TheSeamToggleButtonComponentHarnessFilters
   extends TheSeamBaseButtonComponentHarnessFilters {}
 

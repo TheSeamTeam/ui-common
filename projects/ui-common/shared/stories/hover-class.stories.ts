@@ -4,6 +4,7 @@ import { NgIf } from '@angular/common'
 
 import { TheSeamHoverClassDirective } from '../directives/hover-class.directive'
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface StoryExtraProps {}
 
 const meta: Meta<TheSeamHoverClassDirective & StoryExtraProps> = {

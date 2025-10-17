@@ -66,8 +66,6 @@ export class TheSeamSchemaFormTiledSelectComponent
       this.layoutNode?.options ||
       ({} as TheSeamSchemaFormWidgetLayoutNodeOptions)
     this._jsf.initializeControl(this)
-    console.log(this.options)
-    console.log(this.layoutNode)
     this.tiles = this.options.tiles || []
   }
 

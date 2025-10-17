@@ -12,7 +12,7 @@ import { LazyWidgetOneComponent } from 'src/app/example-lazy-loaded-widgets/lazy
 })
 export class ExampleLazyLoadedWidgetsComponent implements OnInit {
   @ViewChild('testOutlet', { static: true, read: ViewContainerRef })
-  testOutlet: ViewContainerRef
+  testOutlet!: ViewContainerRef
 
   widgets: any[] = []
 
@@ -27,7 +27,7 @@ export class ExampleLazyLoadedWidgetsComponent implements OnInit {
       .getComponentFactory<LazyWidgetOneComponent>('widget-one')
       .subscribe(
         (componentFactory) => {
-          console.log('componentFactory', componentFactory)
+          // console.log('componentFactory', componentFactory)
 
           this.widgets = [
             {
@@ -36,6 +36,7 @@ export class ExampleLazyLoadedWidgetsComponent implements OnInit {
           ]
         },
         (error) => {
+          // eslint-disable-next-line no-console
           console.warn(error)
         },
       )

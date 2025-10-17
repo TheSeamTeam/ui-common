@@ -75,7 +75,6 @@ export class TheSeamButtonComponent
   /** ARIA type for the button. */
   @Input() type: 'button' | 'submit' | 'reset' = 'button'
 
-  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(
     readonly _elementRef: ElementRef,
     readonly _focusMonitor: FocusMonitor,
@@ -121,7 +120,6 @@ export class TheSeamAnchorButtonComponent
   //
   // rel="noopener noreferrer"
 
-  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(
     readonly _elementRef: ElementRef,
     readonly _focusMonitor: FocusMonitor,

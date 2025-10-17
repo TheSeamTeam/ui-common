@@ -4,6 +4,7 @@ import {
   HarnessPredicate,
 } from '@angular/cdk/testing'
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface JsonSchemaFormHarnessFilters extends BaseHarnessFilters {}
 
 export class JsonSchemaFormHarness extends ComponentHarness {

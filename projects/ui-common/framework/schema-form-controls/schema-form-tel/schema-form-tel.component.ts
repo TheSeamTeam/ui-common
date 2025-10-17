@@ -52,8 +52,6 @@ export class TheSeamSchemaFormTelComponent
       this.layoutNode?.options ||
       ({} as TheSeamSchemaFormWidgetLayoutNodeOptions)
     this._jsf.initializeControl(this)
-    console.log(this.controlValue)
-    console.log(this.formControl?.value)
   }
 
   updateValue(event: any) {

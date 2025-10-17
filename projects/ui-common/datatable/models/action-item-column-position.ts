@@ -20,6 +20,6 @@ export function isActionItemColumnPosition(
   input: unknown,
 ): input is ActionItemColumnPosition {
   return (
-    ActionItemColumnPosition.indexOf(input as ActionItemColumnPosition) != -1
+    ActionItemColumnPosition.indexOf(input as ActionItemColumnPosition) !== -1
   )
 }

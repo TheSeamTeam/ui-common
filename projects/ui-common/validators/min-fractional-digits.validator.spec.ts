@@ -37,6 +37,7 @@ describe('minFractionalDigitsValidator', () => {
     ).toBeNull()
 
     expect(
+      // eslint-disable-next-line no-object-constructor
       minFractionalDigitsValidator(0)(new UntypedFormControl(new Object())),
     ).toBeNull()
     expect(

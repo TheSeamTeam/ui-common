@@ -2,6 +2,7 @@ import { componentWrapperDecorator, Meta, StoryObj } from '@storybook/angular'
 
 import { TheSeamPdfViewerComponent } from './pdf-viewer.component'
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface ExtraArgs {}
 
 type StoryComponentType = TheSeamPdfViewerComponent & ExtraArgs

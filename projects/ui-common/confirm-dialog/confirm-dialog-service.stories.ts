@@ -32,8 +32,10 @@ class StoryLibConfirmDialogBasicServiceComponent {
       .afterClosed()
       .subscribe((result) => {
         if (result === 'confirm') {
+          // eslint-disable-next-line no-console
           console.log('confirmed')
         } else {
+          // eslint-disable-next-line no-console
           console.log('canceled')
         }
       })
@@ -63,8 +65,10 @@ class StoryLibConfirmDialogAlertServiceComponent {
         .afterClosed()
         .subscribe((result) => {
           if (result === 'confirm') {
+            // eslint-disable-next-line no-console
             console.log('confirmed')
           } else {
+            // eslint-disable-next-line no-console
             console.log('canceled')
           }
         })
@@ -74,8 +78,10 @@ class StoryLibConfirmDialogAlertServiceComponent {
         .afterClosed()
         .subscribe((result) => {
           if (result === 'confirm') {
+            // eslint-disable-next-line no-console
             console.log('confirmed')
           } else {
+            // eslint-disable-next-line no-console
             console.log('canceled')
           }
         })

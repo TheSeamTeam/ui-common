@@ -9,6 +9,7 @@ import {
 } from './vertical-list-filter.component'
 import { TheSeamVerticalListFilterHarness } from './testing/vertical-list-filter.harness'
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface ExtraArgs {}
 
 type StoryComponentType = TheSeamVerticalListFilterComponent & ExtraArgs

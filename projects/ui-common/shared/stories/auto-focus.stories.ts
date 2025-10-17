@@ -4,6 +4,7 @@ import { NgIf } from '@angular/common'
 
 import { TheSeamAutoFocusDirective } from '../directives/auto-focus.directive'
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface StoryExtraProps {}
 
 const meta: Meta<TheSeamAutoFocusDirective & StoryExtraProps> = {

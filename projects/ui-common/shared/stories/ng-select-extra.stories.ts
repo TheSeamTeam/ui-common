@@ -7,6 +7,7 @@ import { TheSeamOverlayScrollbarDirective } from '@theseam/ui-common/scrollbar'
 
 import { TheSeamNgSelectExtraDirective } from '../directives'
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface StoryExtraProps {}
 
 const meta: Meta<TheSeamNgSelectExtraDirective & StoryExtraProps> = {

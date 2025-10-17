@@ -5,7 +5,7 @@ import {
   StoryObj,
 } from '@storybook/angular'
 
-import { Component, Inject, Optional, OnInit } from '@angular/core'
+import { Component, Inject, Optional } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
 import {
   NavigationEnd,
@@ -88,15 +88,11 @@ import { TheSeamMenuModule } from '@theseam/ui-common/menu'
   </seam-widget>`,
   imports: [NgIf, NgFor, AsyncPipe, DatePipe, TheSeamWidgetModule],
 })
-class StoryExWidget1Component implements OnInit {
+class StoryExWidget1Component {
   faWrench = faWrench
   faBell = faBell
   initialized$ = of(true).pipe(delay(1000))
   items = ['one', 'two', 'three', 'four']
-
-  ngOnInit() {
-    console.log('Widget 1 initialized')
-  }
 }
 
 @Component({

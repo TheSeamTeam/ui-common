@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-redeclare
 import { Buffer } from 'buffer/'
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment

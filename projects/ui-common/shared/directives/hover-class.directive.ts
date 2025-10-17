@@ -65,7 +65,11 @@ export class TheSeamHoverClassDirective {
 
   private _update(): void {
     for (const c of this._classes) {
-      this._hovered ? this._addClass(c) : this._removeClass(c)
+      if (this._hovered) {
+        this._addClass(c)
+      } else {
+        this._removeClass(c)
+      }
     }
   }
 

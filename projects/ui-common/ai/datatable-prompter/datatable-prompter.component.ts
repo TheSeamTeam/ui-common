@@ -130,6 +130,7 @@ export class TheSeamDatatablePrompterComponent {
         }
         const key = datatable.preferencesKey
         if (!key) {
+          // eslint-disable-next-line no-console
           console.warn(
             'No preferences key set on datatable, returning empty alterations.',
           )

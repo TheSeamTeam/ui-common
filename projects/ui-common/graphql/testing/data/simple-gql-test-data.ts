@@ -77,6 +77,7 @@ export const SIMPLE_GQL_TEST_QUERY = gql`
   }
 `
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface SimpleGqlTestExtraVariables {}
 
 export interface SimpleGqlTestVariables extends SimpleGqlTestExtraVariables {

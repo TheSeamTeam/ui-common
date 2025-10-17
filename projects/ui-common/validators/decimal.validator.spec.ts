@@ -158,6 +158,7 @@ describe('decimalValidator', () => {
       decimal: { reason: 'Must be valid decimal number.' },
     })
 
+    // eslint-disable-next-line no-object-constructor
     expect(decimalValidator(new UntypedFormControl(new Object()))).toEqual({
       decimal: { reason: 'Must be valid decimal number.' },
     })

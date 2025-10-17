@@ -13,7 +13,7 @@ export class StoryPreferencesAccessorService
    * Gets a preference.
    */
   public get(name: string): Observable<string> {
-    console.log('get', name)
+    // console.log('get', name)
     return of(localStorage.getItem(`${ACCESSOR_PREFIX}-${name}`) || '{}')
   }
 

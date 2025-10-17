@@ -15,6 +15,7 @@ import { TheSeamCarouselComponent } from './carousel.component'
 import { TheSeamCarouselModule } from './carousel.module'
 import { TheSeamCarouselHarness } from './testing'
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface StoryExtraProps {}
 
 const meta: Meta<TheSeamCarouselComponent & StoryExtraProps> = {

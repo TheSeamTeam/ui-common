@@ -781,6 +781,7 @@ export class RichTextComponent
           if (notNullOrUndefined(insertMention)) {
             acc.push(insertMention)
           } else {
+            // eslint-disable-next-line no-console
             console.warn(
               'Mention addition failed! Selected mention option not found:',
               mentionId,

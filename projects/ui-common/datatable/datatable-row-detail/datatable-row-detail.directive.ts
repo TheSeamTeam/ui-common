@@ -43,6 +43,7 @@ export class TheSeamDatatableRowDetailDirective {
    * Row detail row visbility was toggled.
    */
   // NOTE: This will trigger from the internal ngx-datatable toggle event.
+  // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() toggle = new EventEmitter<any>()
 
   /**

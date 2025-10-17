@@ -13,7 +13,6 @@ import {
   inject,
   input,
   NgModule,
-  OnInit,
 } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { switchMap } from 'rxjs'
@@ -33,14 +32,8 @@ import { ModalRef } from '../modal-ref'
   exportAs: 'storyExampleDirective',
   standalone: true,
 })
-class StoryExampleDirective implements OnInit {
+class StoryExampleDirective {
   storyExampleDirective = input<string>('')
-  constructor() {
-    console.log('StoryExampleDirective')
-  }
-  ngOnInit() {
-    console.log('StoryExampleDirective init', this.storyExampleDirective)
-  }
 }
 
 //
@@ -52,11 +45,8 @@ class StoryExampleDirective implements OnInit {
   styles: [],
   template: `<span>Example</span>`,
 })
-class StorySeamModalBasicComponent implements OnInit {
+class StorySeamModalBasicComponent {
   private readonly _modalRef = inject(ModalRef<StorySeamModalBasicComponent>)
-  ngOnInit() {
-    console.log('StorySeamModalBasicComponent modalRef', this._modalRef)
-  }
 }
 
 @Component({
@@ -77,6 +67,7 @@ class StorySeamModalBasicExampleComponent {
     this._modal
       .openFromLazyComponent('basic-modal')
       .pipe(switchMap((mr) => mr.afterClosed()))
+      // eslint-disable-next-line no-console
       .subscribe((v) => console.log('result', v))
   }
 }
@@ -104,14 +95,10 @@ class StorySeamModalBasicExampleModule {}
     >[{{ tmp.storyExampleDirective() }}]`,
   standalone: false,
 })
-class StorySeamModalBasicNonSaComponent implements OnInit {
+class StorySeamModalBasicNonSaComponent {
   private readonly _modalRef = inject(
     ModalRef<StorySeamModalBasicNonSaComponent>,
   )
-
-  ngOnInit() {
-    console.log('StorySeamModalBasicNonSaComponent modalRef', this._modalRef)
-  }
 }
 
 @Component({
@@ -132,6 +119,7 @@ class StorySeamModalBasicNonSaExampleComponent {
     this._modal
       .openFromLazyComponent('basic-non-sa-modal')
       .pipe(switchMap((mr) => mr.afterClosed()))
+      // eslint-disable-next-line no-console
       .subscribe((v) => console.log('result', v))
   }
 }
@@ -171,11 +159,8 @@ class StorySeamModalBasicNonSaExampleModule {}
   `,
   imports: [TheSeamModalModule],
 })
-class StorySeamModalSimpleComponent implements OnInit {
+class StorySeamModalSimpleComponent {
   private readonly _modalRef = inject(ModalRef<StorySeamModalSimpleComponent>)
-  ngOnInit() {
-    console.log('StorySeamModalSimpleComponent modalRef', this._modalRef)
-  }
 }
 
 @Component({
@@ -196,6 +181,7 @@ class StorySeamModalSimpleExampleComponent {
     this._modal
       .openFromLazyComponent('simple-modal')
       .pipe(switchMap((mr) => mr.afterClosed()))
+      // eslint-disable-next-line no-console
       .subscribe((v) => console.log('result', v))
   }
 }

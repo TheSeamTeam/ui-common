@@ -203,6 +203,7 @@ export class WidgetComponent implements OnDestroy {
   public collapse() {
     if (!this.canCollapse) {
       if (isDevMode()) {
+        // eslint-disable-next-line no-console
         console.warn(
           'WidgetComponent: collapse() called when canCollapse is false.',
         )

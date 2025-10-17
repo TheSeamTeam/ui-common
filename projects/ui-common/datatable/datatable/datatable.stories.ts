@@ -632,10 +632,12 @@ class DTFilterWrapperComponent implements OnInit, AfterViewInit {
 
   defaultFilter = ''
 
+  // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
   ngOnInit() {
     // console.log('this._datatable', this._datatable)
   }
 
+  // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
   ngAfterViewInit() {
     // console.log('this._datatable2', this._datatable)
     // this._datatable?.filterStates.subscribe(fs => console.log('filterStates', fs))
@@ -1101,6 +1103,7 @@ class ConditionalActionMenuComponent {
   constructor() {
     this.showActionMenu$ = interval(5000).pipe(
       map((i) => i % 2 === 0),
+      // eslint-disable-next-line no-console
       tap((show) => console.log('showActionMenu', show)),
     )
   }
