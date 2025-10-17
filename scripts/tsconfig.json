@@ -4,8 +4,8 @@
     "baseUrl": ".",
     "strict": false,
     "resolveJsonModule": true,
-    "target": "es5",
-    "module": "commonjs",
+    "target": "ES2020",
+    "module": "ES2020",
     "types": ["node"]
   },
   "include": ["./**/*"]
