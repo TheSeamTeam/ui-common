@@ -2,8 +2,15 @@ import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 import { expect } from 'storybook/test'
 
 import { getHarness } from '@theseam/ui-common/testing'
-import { ArgsTplOptions, sizeArgType, themeWithOutlineArgType } from '@theseam/ui-common/story-helpers'
-import { TheSeamAnchorButtonComponent, TheSeamButtonsModule } from '@theseam/ui-common/buttons'
+import {
+  ArgsTplOptions,
+  sizeArgType,
+  themeWithOutlineArgType,
+} from '@theseam/ui-common/story-helpers'
+import {
+  TheSeamAnchorButtonComponent,
+  TheSeamButtonsModule,
+} from '@theseam/ui-common/buttons'
 import { argsToTpl } from '@theseam/ui-common/story-helpers'
 
 import { TheSeamAnchorButtonComponentHarness } from '../testing/anchor-button.harness'
@@ -18,12 +25,10 @@ const meta: Meta<TheSeamAnchorButtonComponent & StoryExtraProps> = {
   component: TheSeamAnchorButtonComponent,
   decorators: [
     moduleMetadata({
-      imports: [
-        TheSeamButtonsModule,
-      ],
+      imports: [TheSeamButtonsModule],
     }),
   ],
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `<a seamButton ${argsToTpl()}>{{ btnText }}</a>`,
   }),
@@ -39,9 +44,7 @@ const meta: Meta<TheSeamAnchorButtonComponent & StoryExtraProps> = {
   },
   parameters: {
     argsToTplOptions: {
-      exclude: [
-        'btnText',
-      ],
+      exclude: ['btnText'],
     } satisfies ArgsTplOptions,
   },
 }
@@ -55,7 +58,10 @@ export const Basic: Story = {
     theme: 'primary',
   },
   play: async ({ canvasElement, fixture, args }) => {
-    const harness = await getHarness(TheSeamAnchorButtonComponentHarness, { canvasElement, fixture })
+    const harness = await getHarness(TheSeamAnchorButtonComponentHarness, {
+      canvasElement,
+      fixture,
+    })
     await expect(await harness.getText()).toBe('Example Text')
     await expect(await harness.getTheme()).toBe('primary')
     await expect(await harness.isDisabled()).toBe(false)
@@ -72,7 +78,10 @@ export const Disabled: Story = {
     disabled: true,
   },
   play: async ({ canvasElement, fixture, args }) => {
-    const harness = await getHarness(TheSeamAnchorButtonComponentHarness, { canvasElement, fixture })
+    const harness = await getHarness(TheSeamAnchorButtonComponentHarness, {
+      canvasElement,
+      fixture,
+    })
     await expect(await harness.getText()).toBe('Example Text')
     await expect(await harness.isDisabled()).toBe(true)
     await expect(await harness.hasDisabledAria()).toBe(true)

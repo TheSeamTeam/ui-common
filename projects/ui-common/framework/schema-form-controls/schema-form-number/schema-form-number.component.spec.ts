@@ -10,8 +10,7 @@ describe('TheSeamSchemaFormNumberComponent', () => {
     TestBed.configureTestingModule({
       declarations: [TheSeamSchemaFormNumberComponent],
       teardown: { destroyAfterEach: false },
-    })
-      .compileComponents()
+    }).compileComponents()
   }))
 
   beforeEach(() => {

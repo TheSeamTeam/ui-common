@@ -2,13 +2,18 @@ import { EventEmitter } from '@angular/core'
 import { BehaviorSubject, Observable } from 'rxjs'
 
 import { DataFilterState } from '@theseam/ui-common/data-filters'
-import { SortEvent, SortItem, TheSeamPageInfo } from '@theseam/ui-common/datatable'
+import {
+  SortEvent,
+  SortItem,
+  TheSeamPageInfo,
+} from '@theseam/ui-common/datatable'
 
 import { GqlDatatableAccessor } from '../models'
 
 export class MockDatatable implements GqlDatatableAccessor {
-
-  private readonly _filterStatesSubject = new BehaviorSubject<DataFilterState[]>([])
+  private readonly _filterStatesSubject = new BehaviorSubject<
+    DataFilterState[]
+  >([])
 
   private _sorts: SortItem[] = []
   private _rows: any[] = []
@@ -20,10 +25,15 @@ export class MockDatatable implements GqlDatatableAccessor {
   page = new EventEmitter<TheSeamPageInfo>()
 
   sort: EventEmitter<SortEvent> = new EventEmitter<SortEvent>()
-  get sorts(): SortItem[] { return this._sorts }
-  set sorts(value: SortItem[]) { this._sorts = value }
+  get sorts(): SortItem[] {
+    return this._sorts
+  }
+  set sorts(value: SortItem[]) {
+    this._sorts = value
+  }
 
-  public readonly filterStates: Observable<DataFilterState[]> = this._filterStatesSubject.asObservable()
+  public readonly filterStates: Observable<DataFilterState[]> =
+    this._filterStatesSubject.asObservable()
 
   static pageDefaults(dt: any, defaultPageSize: number = 20): TheSeamPageInfo {
     return {
@@ -34,7 +44,12 @@ export class MockDatatable implements GqlDatatableAccessor {
     }
   }
 
-  get ngxDatatable(): { offset: number; pageSize: number; limit?: number; count: number } {
+  get ngxDatatable(): {
+    offset: number
+    pageSize: number
+    limit?: number
+    count: number
+  } {
     return {
       offset: this.getPage(),
       pageSize: this.getPageSize(),
@@ -52,9 +67,13 @@ export class MockDatatable implements GqlDatatableAccessor {
   }
 
   getNumPages(): number {
-    if (this._rows.length === 0) { return 1 }
+    if (this._rows.length === 0) {
+      return 1
+    }
     const t = Math.ceil(this._rows.length / this.getPageSize())
-    if (t <= 0) { return 1 }
+    if (t <= 0) {
+      return 1
+    }
     return t
   }
 
@@ -63,7 +82,7 @@ export class MockDatatable implements GqlDatatableAccessor {
     const bodyHeight = this._rowHeight * this.getPageSize()
     const visibleHeight = this._bodyHeight + this._scrolledPosV
     const pages = Math.floor(visibleHeight / bodyHeight)
-    const overflow = visibleHeight - (pages * bodyHeight)
+    const overflow = visibleHeight - pages * bodyHeight
     const page = overflow > 1 ? pages + 1 : pages
     return page - 1
   }
@@ -101,7 +120,9 @@ export class MockDatatable implements GqlDatatableAccessor {
   }
 
   setScrolledPosV(v: number): void {
-    if (this._scrolledPosV === v) { return }
+    if (this._scrolledPosV === v) {
+      return
+    }
     const pageBefore = this.getPage()
     this._scrolledPosV = v
     this._offset = this._calcPage()

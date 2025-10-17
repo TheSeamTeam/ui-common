@@ -10,14 +10,10 @@ import { JsonSchemaFormModule } from '@ajsf/core'
     '[attr.data-name]': 'layoutNode?.node',
     '[attr.data-data-pointer]': 'layoutNode?.dataPointer',
   },
-  imports: [
-    JsonSchemaFormModule,
-  ],
+  imports: [JsonSchemaFormModule],
 })
 export class TheSeamSchemaFormFrameworkComponent {
-
   @Input() layoutNode: any
   @Input() layoutIndex: number[] | undefined | null
   @Input() dataIndex: number[] | undefined | null
-
 }

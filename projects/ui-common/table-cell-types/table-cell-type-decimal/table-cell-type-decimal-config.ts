@@ -1,11 +1,16 @@
-import { DynamicActionLinkDef, DynamicActionModalDef, DynamicValue } from '@theseam/ui-common/dynamic'
+import {
+  DynamicActionLinkDef,
+  DynamicActionModalDef,
+  DynamicValue,
+} from '@theseam/ui-common/dynamic'
 import { TableCellTypeConfig } from '@theseam/ui-common/table-cell-type'
 
 export type TableCellTypeDecimalConfigAction =
-  DynamicActionLinkDef |
-  DynamicActionModalDef
+  | DynamicActionLinkDef
+  | DynamicActionModalDef
 
-export interface TableCellTypeConfigDecimal extends TableCellTypeConfig<'decimal'> {
+export interface TableCellTypeConfigDecimal
+  extends TableCellTypeConfig<'decimal'> {
   action?: TableCellTypeDecimalConfigAction
 
   /**

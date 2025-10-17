@@ -1,13 +1,37 @@
-import { animate, animation, query, stagger, style, transition, trigger, useAnimation } from '@angular/animations'
+import {
+  animate,
+  animation,
+  query,
+  stagger,
+  style,
+  transition,
+  trigger,
+  useAnimation,
+} from '@angular/animations'
 import { BooleanInput, coerceArray } from '@angular/cdk/coercion'
 import { Platform } from '@angular/cdk/platform'
-import { ChangeDetectorRef, Component, ContentChildren, ElementRef, EventEmitter, forwardRef, inject, Input, Output, QueryList, Renderer2 } from '@angular/core'
+import {
+  ChangeDetectorRef,
+  Component,
+  ContentChildren,
+  ElementRef,
+  EventEmitter,
+  forwardRef,
+  inject,
+  Input,
+  Output,
+  QueryList,
+  Renderer2,
+} from '@angular/core'
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
 
 import { InputBoolean } from '@theseam/ui-common/core'
 
 import { TheSeamTiledSelectTileOverlayDirective } from './../../directives/tiled-select-tile-overlay.directive'
-import { TheSeamTiledSelectItem, TheSeamTiledSelectLayout } from '../../tiled-select.models'
+import {
+  TheSeamTiledSelectItem,
+  TheSeamTiledSelectLayout,
+} from '../../tiled-select.models'
 import { TheSeamTiledSelectTileComponent } from '../tiled-select-tile/tiled-select-tile.component'
 import { NgClass, NgFor } from '@angular/common'
 
@@ -28,7 +52,7 @@ export const TILED_SELECT_VALUE_ACCESSOR: any = {
   selector: 'seam-tiled-select',
   templateUrl: './tiled-select.component.html',
   styleUrls: ['./tiled-select.component.scss'],
-  providers: [ TILED_SELECT_VALUE_ACCESSOR ],
+  providers: [TILED_SELECT_VALUE_ACCESSOR],
   host: {
     '[attr.data-testid]': '"tiled-select"',
   },
@@ -39,11 +63,7 @@ export const TILED_SELECT_VALUE_ACCESSOR: any = {
       ]),
     ]),
   ],
-  imports: [
-    NgFor,
-    NgClass,
-    TheSeamTiledSelectTileComponent,
-  ],
+  imports: [NgFor, NgClass, TheSeamTiledSelectTileComponent],
 })
 export class TheSeamTiledSelectComponent implements ControlValueAccessor {
   static ngAcceptInputType_val: BooleanInput
@@ -61,9 +81,11 @@ export class TheSeamTiledSelectComponent implements ControlValueAccessor {
 
   @Input() layout: TheSeamTiledSelectLayout = 'grid'
   @Input()
-  get tiles() { return this._tiles }
+  get tiles() {
+    return this._tiles
+  }
   set tiles(value: TheSeamTiledSelectItem[]) {
-    const _value = [ ...(value || []) ]
+    const _value = [...(value || [])]
     for (const v of _value) {
       if (v.value === undefined) {
         if (v.name === undefined) {
@@ -78,7 +100,7 @@ export class TheSeamTiledSelectComponent implements ControlValueAccessor {
       this.tilesAnimationState = !this.tilesAnimationState
     } else {
       for (const t of _value) {
-        if (!prev.find(p => p.name === t.name)) {
+        if (!prev.find((p) => p.name === t.name)) {
           this.tilesAnimationState = !this.tilesAnimationState
           break
         }
@@ -115,16 +137,22 @@ export class TheSeamTiledSelectComponent implements ControlValueAccessor {
   }
 
   set value(value: string | string[] | undefined) {
-    this.val = (this.multiple) ? [ ...(value as string[] || []) ] : value || ''
+    this.val = this.multiple ? [...((value as string[]) || [])] : value || ''
 
-    this._renderer.setProperty(this._elementRef.nativeElement, 'value', this.val)
+    this._renderer.setProperty(
+      this._elementRef.nativeElement,
+      'value',
+      this.val,
+    )
 
     if (this.onChange) {
       this.onChange(this.val)
       this.change.emit(this.val)
       this._cdr.markForCheck()
     }
-    if (this.onTouched) { this.onTouched() }
+    if (this.onTouched) {
+      this.onTouched()
+    }
   }
 
   writeValue(value: any): void {
@@ -180,8 +208,8 @@ export class TheSeamTiledSelectComponent implements ControlValueAccessor {
   public selectTile(tile: TheSeamTiledSelectItem): void {
     if (this.multiple) {
       if (!this.isSelected(tile)) {
-        const value: string[] = this.value as string[] || []
-        this.value = [ ...coerceArray(value), tile.value ]
+        const value: string[] = (this.value as string[]) || []
+        this.value = [...coerceArray(value), tile.value]
       }
     } else {
       this.value = tile.value
@@ -190,20 +218,21 @@ export class TheSeamTiledSelectComponent implements ControlValueAccessor {
 
   public unselectTile(tile: TheSeamTiledSelectItem): void {
     if (this.multiple) {
-      const value: string[] = this.value as string[] || []
-      this.value = value.filter(v => v !== tile.value)
+      const value: string[] = (this.value as string[]) || []
+      this.value = value.filter((v) => v !== tile.value)
     } else {
       this.value = undefined
     }
   }
 
   public getSelectedTiles(): TheSeamTiledSelectItem[] {
-    return this.tiles.filter(t => this.isSelected(t))
+    return this.tiles.filter((t) => this.isSelected(t))
   }
 
-  getOverlayTpl(tile: TheSeamTiledSelectItem): TheSeamTiledSelectTileOverlayDirective | undefined {
+  getOverlayTpl(
+    tile: TheSeamTiledSelectItem,
+  ): TheSeamTiledSelectTileOverlayDirective | undefined {
     // console.log('overlayTpls', this.overlayTpls)
-    return (this.overlayTpls || []).find(t => t.record?.name === tile.name)
+    return (this.overlayTpls || []).find((t) => t.record?.name === tile.name)
   }
-
 }

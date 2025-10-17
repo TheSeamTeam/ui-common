@@ -2,7 +2,11 @@ import { Component } from '@angular/core'
 import { fakeAsync } from '@angular/core/testing'
 import { SideNavComponent } from './../side-nav.component'
 
-import { createRoutingFactory, mockProvider, SpectatorRouting } from '@ngneat/spectator/jest'
+import {
+  createRoutingFactory,
+  mockProvider,
+  SpectatorRouting,
+} from '@ngneat/spectator/jest'
 
 import { faAlignLeft } from '@fortawesome/free-solid-svg-icons'
 
@@ -10,15 +14,13 @@ import { TheSeamSideNavModule } from '../side-nav.module'
 import { SideNavItemComponent } from './side-nav-item.component'
 
 @Component({ template: `` })
-class TestPlacholderComponent { }
+class TestPlacholderComponent {}
 
 describe('SideNavItemComponent', () => {
   let spectator: SpectatorRouting<SideNavItemComponent>
   const createComponent = createRoutingFactory({
     component: SideNavItemComponent,
-    imports: [
-      TheSeamSideNavModule,
-    ],
+    imports: [TheSeamSideNavModule],
     providers: [
       mockProvider(SideNavComponent, {
         overlay: false,
@@ -63,8 +65,12 @@ describe('SideNavItemComponent', () => {
           },
         })
 
-        expect(spectator.queryAll('[side-nav-item-label]:not(.sr-only)').length).toBe(1)
-        expect(spectator.queryAll('.sr-only[side-nav-item-label]').length).toBe(0)
+        expect(
+          spectator.queryAll('[side-nav-item-label]:not(.sr-only)').length,
+        ).toBe(1)
+        expect(spectator.queryAll('.sr-only[side-nav-item-label]').length).toBe(
+          0,
+        )
       }))
     })
 
@@ -87,8 +93,12 @@ describe('SideNavItemComponent', () => {
           },
         })
 
-        expect(spectator.queryAll('[side-nav-item-label]:not(.sr-only)').length).toBe(0)
-        expect(spectator.queryAll('.sr-only[side-nav-item-label]').length).toBe(1)
+        expect(
+          spectator.queryAll('[side-nav-item-label]:not(.sr-only)').length,
+        ).toBe(0)
+        expect(spectator.queryAll('.sr-only[side-nav-item-label]').length).toBe(
+          1,
+        )
       }))
     })
   })

@@ -8,8 +8,9 @@ import { TheSeamTabbedService } from '../tabbed.service'
   selector: '[seamTabbedTab]',
   exportAs: 'seamTabbedTab',
 })
-export class TheSeamTabbedTabDirective implements OnInit, TheSeamTabbedTabAccessor {
-
+export class TheSeamTabbedTabDirective
+  implements OnInit, TheSeamTabbedTabAccessor
+{
   // @HostBinding('class.custom-invalid')
   // get customInvalid() { return this.control.invalid }
 
@@ -19,7 +20,7 @@ export class TheSeamTabbedTabDirective implements OnInit, TheSeamTabbedTabAccess
     public elementRef: ElementRef,
     // public host: TheSeamTabbedComponent,
     public tabbedService: TheSeamTabbedService,
-  ) { }
+  ) {}
 
   ngOnInit() {
     // this.tabbedService.selectedTab.subscribe(tab => {
@@ -33,5 +34,4 @@ export class TheSeamTabbedTabDirective implements OnInit, TheSeamTabbedTabAccess
     //   }
     // })
   }
-
 }

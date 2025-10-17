@@ -17,11 +17,15 @@ import { TheSeamAutoFocusDirective } from '@theseam/ui-common/shared'
   ],
 })
 export class ConfirmDialogComponent {
-
-  @Input() message: string | undefined | null = 'Are you sure you want to continue?'
+  @Input() message: string | undefined | null =
+    'Are you sure you want to continue?'
   @Input() alertMessage: string | undefined | null
   @Input() alertType: ThemeTypes | undefined | null = 'warning'
-  @Input() template: TemplateRef<any> | { template: TemplateRef<any>, context: any } | undefined | null
+  @Input() template:
+    | TemplateRef<any>
+    | { template: TemplateRef<any>; context: any }
+    | undefined
+    | null
 
   get tpl(): TemplateRef<any> | null | undefined {
     if (this.template && 'template' in this.template) {
@@ -38,5 +42,4 @@ export class ConfirmDialogComponent {
 
     return undefined
   }
-
 }

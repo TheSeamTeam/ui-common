@@ -11,8 +11,12 @@ export class TheSeamDatatablePagerHarness extends ComponentHarness {
   //   return this.locatorForAll(TheSeamTiledSelectTileHarness)
   // }
 
-  public async getPageButtonHarness(pageNumber: number): Promise<TheSeamDatatablePagerButtonHarness> {
-    const getTileAtIndex = this.locatorFor(TheSeamDatatablePagerButtonHarness.with({ pageNumber }))
+  public async getPageButtonHarness(
+    pageNumber: number,
+  ): Promise<TheSeamDatatablePagerButtonHarness> {
+    const getTileAtIndex = this.locatorFor(
+      TheSeamDatatablePagerButtonHarness.with({ pageNumber }),
+    )
     return getTileAtIndex()
     // return this.locatorFor(TheSeamTiledSelectTileHarness.with({ tileIndex: index }))
   }

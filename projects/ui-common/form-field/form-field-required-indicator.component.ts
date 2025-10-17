@@ -1,5 +1,13 @@
 import { BooleanInput } from '@angular/cdk/coercion'
-import { ChangeDetectionStrategy, Component, Inject, Input, OnChanges, Optional, SimpleChanges } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  Input,
+  OnChanges,
+  Optional,
+  SimpleChanges,
+} from '@angular/core'
 import { Observable, shareReplay, startWith, Subject, switchMap } from 'rxjs'
 
 import { InputBoolean } from '@theseam/ui-common/core'
@@ -18,7 +26,7 @@ import { FORM_FIELD_COMPONENT } from './form-field-tokens'
   `,
   styles: [],
   host: {
-    'class': 'text-danger',
+    class: 'text-danger',
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false,
@@ -40,9 +48,7 @@ export class FormFieldRequiredIndicatorComponent implements OnChanges {
       this._controlRequired$ = _formField._contentInputSubject.pipe(
         switchMap((contentInput: any) => {
           if (!contentInput) {
-            return this._requiredChange.pipe(
-              startWith(this.required),
-            )
+            return this._requiredChange.pipe(startWith(this.required))
           }
 
           return contentInput.requiredChange.pipe(
@@ -59,5 +65,4 @@ export class FormFieldRequiredIndicatorComponent implements OnChanges {
       this._requiredChange.next(this.required)
     }
   }
-
 }

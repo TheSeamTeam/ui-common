@@ -7,7 +7,9 @@ import { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson'
  * requirement. This may add redundent points to the GeoJSON, but it will ensure
  * that the GeoJSON is valid for Google Maps.
  */
-export function closePolygons(geoJson: FeatureCollection | Feature | Polygon | MultiPolygon) {
+export function closePolygons(
+  geoJson: FeatureCollection | Feature | Polygon | MultiPolygon,
+) {
   if (geoJson.type === 'FeatureCollection') {
     for (const f of geoJson.features) {
       closePolygonsFeature(f)

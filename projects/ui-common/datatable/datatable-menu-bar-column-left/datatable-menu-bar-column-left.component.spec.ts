@@ -10,8 +10,7 @@ describe('DatatableMenuBarColumnLeftComponent', () => {
     TestBed.configureTestingModule({
       declarations: [DatatableMenuBarColumnLeftComponent],
       teardown: { destroyAfterEach: false },
-    })
-      .compileComponents()
+    }).compileComponents()
   }))
 
   beforeEach(() => {

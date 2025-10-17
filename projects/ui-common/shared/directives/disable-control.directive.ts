@@ -8,7 +8,6 @@ import { NgControl } from '@angular/forms'
   exportAs: 'seamDisableControl',
 })
 export class TheSeamDisableControlDirective {
-
   private readonly _ngControl = inject(NgControl)
 
   @Input() set seamDisableControl(condition: boolean) {
@@ -18,5 +17,4 @@ export class TheSeamDisableControlDirective {
       control[action]()
     }
   }
-
 }

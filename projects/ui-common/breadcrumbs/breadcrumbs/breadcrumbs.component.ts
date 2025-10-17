@@ -1,5 +1,10 @@
 import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common'
-import { ChangeDetectionStrategy, Component, inject, ViewEncapsulation } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  ViewEncapsulation,
+} from '@angular/core'
 import { RouterModule } from '@angular/router'
 
 import { TheSeamBreadcrumbsService } from '../breadcrumbs.service'
@@ -10,13 +15,7 @@ import { TheSeamBreadcrumbsService } from '../breadcrumbs.service'
   styleUrls: ['./breadcrumbs.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    RouterModule,
-    NgFor,
-    AsyncPipe,
-    NgClass,
-    NgIf,
-  ],
+  imports: [RouterModule, NgFor, AsyncPipe, NgClass, NgIf],
 })
 export class TheSeamBreadcrumbsComponent {
   private readonly _breadcrumbs = inject(TheSeamBreadcrumbsService)

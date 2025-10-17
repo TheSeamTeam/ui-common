@@ -17,18 +17,17 @@ import { THESEAM_WIDGETS } from './widget-token'
   providedIn: 'root',
 })
 export class WidgetRegistryService {
-
   constructor(
     @Inject(THESEAM_WIDGETS) private _widgets: IWidgetRegistryRecord[],
     private _dynamicComponentLoader: TheSeamDynamicComponentLoader,
-  ) { }
+  ) {}
 
   public createWidgetPortal<T>(
     widgetId: string,
     viewContainerRef?: ViewContainerRef | null,
     injector?: Injector | null,
   ): Observable<ComponentPortal<T>> {
-    const widgetDef = (this._widgets || []).find(w => w.widgetId === widgetId)
+    const widgetDef = (this._widgets || []).find((w) => w.widgetId === widgetId)
 
     if (!widgetDef) {
       return throwError(`WidgetRegstry: Unknown widgetId "${widgetId}"`)
@@ -38,7 +37,7 @@ export class WidgetRegistryService {
       return this._dynamicComponentLoader
         .getComponentFactory<T>(widgetDef.componentOrComponentId)
         .pipe(
-          map(componentFactory => {
+          map((componentFactory) => {
             const portal = new ComponentPortal(
               componentFactory.componentType,
               viewContainerRef,
@@ -58,5 +57,4 @@ export class WidgetRegistryService {
       return of(portal)
     }
   }
-
 }

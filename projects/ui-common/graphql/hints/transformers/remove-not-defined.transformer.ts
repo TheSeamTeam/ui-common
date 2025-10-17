@@ -1,4 +1,8 @@
-import { HintsToken, HintTransformer, HintTransformOperation } from '../../models'
+import {
+  HintsToken,
+  HintTransformer,
+  HintTransformOperation,
+} from '../../models'
 
 export const removeNotDefinedTransformer: HintTransformer = (
   operation: HintTransformOperation,

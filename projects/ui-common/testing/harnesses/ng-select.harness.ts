@@ -1,9 +1,19 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
-import { BaseHarnessFilters, ComponentHarness, HarnessPredicate } from '@angular/cdk/testing'
+import {
+  BaseHarnessFilters,
+  ComponentHarness,
+  HarnessPredicate,
+} from '@angular/cdk/testing'
 
 import { TheSeamFormFieldRequiredIndicatorHarness } from '@theseam/ui-common/form-field'
-import { TheSeamNgSelectOptionHarness, TheSeamNgSelectOptionHarnessFilters } from './ng-select-option.harness'
-import { TheSeamNgSelectDropdownHarness, TheSeamNgSelectDropdownHarnessFilters } from './ng-select-dropdown.harness'
+import {
+  TheSeamNgSelectOptionHarness,
+  TheSeamNgSelectOptionHarnessFilters,
+} from './ng-select-option.harness'
+import {
+  TheSeamNgSelectDropdownHarness,
+  TheSeamNgSelectDropdownHarnessFilters,
+} from './ng-select-dropdown.harness'
 
 export interface TheSeamNgSelectHarnessFilters extends BaseHarnessFilters {
   /** Filters based on the name of the field. */
@@ -19,7 +29,9 @@ export class TheSeamNgSelectHarness extends ComponentHarness {
   private readonly _valueLabel = this.locatorForOptional('.ng-value-label')
 
   /** Creates a `HarnessPredicate` used to locate a particular `MyMenuHarness`. */
-  static with(options: TheSeamNgSelectHarnessFilters): HarnessPredicate<TheSeamNgSelectHarness> {
+  static with(
+    options: TheSeamNgSelectHarnessFilters,
+  ): HarnessPredicate<TheSeamNgSelectHarness> {
     return new HarnessPredicate(TheSeamNgSelectHarness, options)
     // .addOption('field name', options.name,
     //     (harness, name) => HarnessPredicate.stringMatches(harness.getName(), name))

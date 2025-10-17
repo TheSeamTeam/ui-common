@@ -54,16 +54,19 @@ export interface DataFilter {
   filterState(): DataFilterState
 }
 
-export const THESEAM_DATA_FILTER = new InjectionToken<DataFilter>('TheSeamDataFilter')
-export const THESEAM_DATA_FILTER_OPTIONS = new InjectionToken<object>('TheSeamDataFilterOptions')
+export const THESEAM_DATA_FILTER = new InjectionToken<DataFilter>(
+  'TheSeamDataFilter',
+)
+export const THESEAM_DATA_FILTER_OPTIONS = new InjectionToken<object>(
+  'TheSeamDataFilterOptions',
+)
 
 export function filterOperator<T>(filterFn: DataFilterFunction) {
-  return (source$: Observable<T[]>) =>
-    source$.pipe(switchMap(filterFn))
+  return (source$: Observable<T[]>) => source$.pipe(switchMap(filterFn))
 }
 
 export function composeDataFilters(filters: DataFilter[]) {
-  const filterFunctions = filters.map(f => filterOperator(f.filter.bind(f)))
+  const filterFunctions = filters.map((f) => filterOperator(f.filter.bind(f)))
   return (source$: Observable<any>) => {
     let src$ = source$
     for (const f of filterFunctions) {
@@ -73,15 +76,21 @@ export function composeDataFilters(filters: DataFilter[]) {
   }
 }
 
-export function composeDataFilterStates(filters: DataFilter[]): Observable<DataFilterState[]> {
+export function composeDataFilterStates(
+  filters: DataFilter[],
+): Observable<DataFilterState[]> {
   if (filters.length === 0) {
     return of([])
   }
 
-  return combineLatest(filters.map(f => f.filterStateChanges.pipe(
-    startWith(undefined),
-    map(() => f.filterState()),
-  )))
+  return combineLatest(
+    filters.map((f) =>
+      f.filterStateChanges.pipe(
+        startWith(undefined),
+        map(() => f.filterState()),
+      ),
+    ),
+  )
 }
 
 /** @deprecated Use `DataFilter` instead. */

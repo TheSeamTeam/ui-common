@@ -40,14 +40,19 @@ export function isCommentToken(token: Token): boolean {
 }
 
 export function isHintToken(token: Token): boolean {
-  return (isCommentToken(token) &&
-    (token.value?.match(HINT_PREFIX_REGEX)?.length || 0) > 0) || false
+  return (
+    (isCommentToken(token) &&
+      (token.value?.match(HINT_PREFIX_REGEX)?.length || 0) > 0) ||
+    false
+  )
 }
 
 export function isInlineComment(token: Token): boolean {
-  return isCommentToken(token) &&
+  return (
+    isCommentToken(token) &&
     token.prev !== null &&
     token.prev.line === token.line
+  )
 }
 
 export function hintNamesFromHintToken(token: Token): string[] {
@@ -55,7 +60,10 @@ export function hintNamesFromHintToken(token: Token): string[] {
   if (grp === null || grp === undefined || grp.length === 0) {
     return []
   }
-  return grp[1].split(' ').map(x => x.trim()).filter(x => x.length > 0)
+  return grp[1]
+    .split(' ')
+    .map((x) => x.trim())
+    .filter((x) => x.length > 0)
 }
 
 export function getTokenAppliesTo(token: Token): Token | null {
@@ -70,7 +78,11 @@ export function getTokenAppliesTo(token: Token): Token | null {
   return t
 }
 
-export function createHintsToken(token: Token, node: HintsToken['node'], kind: HintsKind): HintsToken {
+export function createHintsToken(
+  token: Token,
+  node: HintsToken['node'],
+  kind: HintsKind,
+): HintsToken {
   return {
     node,
     hints: hintNamesFromHintToken(token),
@@ -78,7 +90,10 @@ export function createHintsToken(token: Token, node: HintsToken['node'], kind: H
   }
 }
 
-export function getHintsToken(token: Token, ast: DocumentNode): HintsToken | null {
+export function getHintsToken(
+  token: Token,
+  ast: DocumentNode,
+): HintsToken | null {
   // console.log('getHintsToken', token)
   const appliesTo = getTokenAppliesTo(token)
   if (appliesTo === null) {
@@ -89,13 +104,21 @@ export function getHintsToken(token: Token, ast: DocumentNode): HintsToken | nul
   visit(ast, {
     OperationDefinition(node: OperationDefinitionNode) {
       if (node.loc?.start === appliesTo.start) {
-        appliesToNode = createHintsToken(token, node, HintsKind.OperationDefinition)
+        appliesToNode = createHintsToken(
+          token,
+          node,
+          HintsKind.OperationDefinition,
+        )
         return BREAK
       }
     },
     VariableDefinition(node: VariableDefinitionNode) {
       if (node.variable.name.loc?.start === appliesTo.start) {
-        appliesToNode = createHintsToken(token, node, HintsKind.VariableDefinition)
+        appliesToNode = createHintsToken(
+          token,
+          node,
+          HintsKind.VariableDefinition,
+        )
         return BREAK
       }
     },
@@ -126,6 +149,6 @@ export function parseHints(ast: DocumentNode): HintsToken[] {
   // console.log('_ast', _ast)
   return parseComments(_ast)
     .filter(isHintToken)
-    .map(r => getHintsToken(r, _ast))
+    .map((r) => getHintsToken(r, _ast))
     .filter(notNullOrUndefined)
 }

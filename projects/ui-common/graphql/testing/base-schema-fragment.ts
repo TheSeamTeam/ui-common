@@ -71,19 +71,21 @@ export const baseSchemaFragment = gql`
     objectContains: String
   }
 
-
   enum SortEnumType {
     ASC
     DESC
   }
 
-
-  """The \`DateTime\` scalar represents an ISO-8601 compliant date time type."""
+  """
+  The \`DateTime\` scalar represents an ISO-8601 compliant date time type.
+  """
   scalar DateTime
 
   scalar Uuid
 
-  """The built-in \`Decimal\` scalar type."""
+  """
+  The built-in \`Decimal\` scalar type.
+  """
   scalar Decimal
 
   """
@@ -91,8 +93,9 @@ export const baseSchemaFragment = gql`
   """
   scalar Long
 
-
-  """Information about the offset pagination."""
+  """
+  Information about the offset pagination.
+  """
   type CollectionSegmentInfo {
     """
     Indicates whether more items exist following the set defined by the clients arguments.

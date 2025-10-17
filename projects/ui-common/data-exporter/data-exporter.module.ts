@@ -13,4 +13,4 @@ import { THESEAM_DATA_EXPORTER } from './data-exporter'
     { provide: THESEAM_DATA_EXPORTER, useClass: XLSXDataExporter, multi: true },
   ],
 })
-export class TheSeamDataExporterModule { }
+export class TheSeamDataExporterModule {}

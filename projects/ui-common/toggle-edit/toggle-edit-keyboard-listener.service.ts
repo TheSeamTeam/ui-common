@@ -5,7 +5,6 @@ import { TheSeamCanToggleEdit } from './models'
 
 @Injectable({ providedIn: 'root' })
 export class TheSeamToggleEditKeyboardListenerService {
-
   private readonly _document: Document = inject(DOCUMENT)
 
   private _elements: TheSeamCanToggleEdit[] = []
@@ -18,7 +17,7 @@ export class TheSeamToggleEditKeyboardListenerService {
   }
 
   public remove(element: TheSeamCanToggleEdit): void {
-    this._elements = this._elements.filter(v => v !== element)
+    this._elements = this._elements.filter((v) => v !== element)
     if (this._elements.length === 0) {
       this._stopListening()
     }
@@ -43,7 +42,11 @@ export class TheSeamToggleEditKeyboardListenerService {
       return
     }
 
-    this._document.body.removeEventListener('keydown', this._keydownListener, true)
+    this._document.body.removeEventListener(
+      'keydown',
+      this._keydownListener,
+      true,
+    )
 
     this._isListening = false
   }
@@ -55,5 +58,4 @@ export class TheSeamToggleEditKeyboardListenerService {
       }
     }
   }
-
 }

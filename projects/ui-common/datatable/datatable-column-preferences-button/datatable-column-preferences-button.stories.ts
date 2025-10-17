@@ -1,4 +1,9 @@
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 import { expect } from 'storybook/test'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
@@ -6,7 +11,10 @@ import { provideRouter } from '@angular/router'
 import { BehaviorSubject } from 'rxjs'
 import { provideLocationMocks } from '@angular/common/testing'
 
-import { CSVDataExporter, XLSXDataExporter } from '@theseam/ui-common/data-exporter'
+import {
+  CSVDataExporter,
+  XLSXDataExporter,
+} from '@theseam/ui-common/data-exporter'
 import { TheSeamDataFiltersModule } from '@theseam/ui-common/data-filters'
 import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
 import { getHarness } from '@theseam/ui-common/testing'
@@ -14,14 +22,16 @@ import { getHarness } from '@theseam/ui-common/testing'
 import { THESEAM_DATATABLE } from '../datatable/datatable.component'
 import { TheSeamDatatableModule } from '../datatable.module'
 import { ColumnsAlteration } from '../models/columns-alteration'
-import { ColumnsAlterationsChangedRecord, ColumnsAlterationsManagerService } from '../services/columns-alterations-manager.service'
+import {
+  ColumnsAlterationsChangedRecord,
+  ColumnsAlterationsManagerService,
+} from '../services/columns-alterations-manager.service'
 import { DatatablePreferencesAccessorLocalService } from '../stories/preferences-accessor-local'
 import { TheSeamDatatableHarness } from '../testing'
 import { THESEAM_DATATABLE_PREFERENCES_ACCESSOR } from '../tokens/datatable-preferences-accessor'
 import { DatatableColumnPreferencesButtonComponent } from './datatable-column-preferences-button.component'
 
 class MockDatatable {
-
   _columns = new BehaviorSubject<any>([
     { prop: 'name', name: 'Name' },
     { prop: 'age', name: 'Age' },
@@ -39,22 +49,30 @@ class MockDatatable {
     { prop: 'color11', name: 'Color11' },
   ])
 
-  get columns() { return this._columns.value }
-  set columns(value: any) { this._columns.next(value) }
+  get columns() {
+    return this._columns.value
+  }
+  set columns(value: any) {
+    this._columns.next(value)
+  }
 
   columns$ = this._columns.asObservable()
-
 }
 
-class MockColumnsAlterationsManagerService implements Partial<ColumnsAlterationsManagerService> {
-
-  public add(alterations: ColumnsAlteration[], options?: { emitEvent?: boolean }): ColumnsAlterationsChangedRecord[] {
+class MockColumnsAlterationsManagerService
+  implements Partial<ColumnsAlterationsManagerService>
+{
+  public add(
+    alterations: ColumnsAlteration[],
+    options?: { emitEvent?: boolean },
+  ): ColumnsAlterationsChangedRecord[] {
     return []
   }
-  public clear(options?: { emitEvent?: boolean }): ColumnsAlterationsChangedRecord[] {
+  public clear(options?: {
+    emitEvent?: boolean
+  }): ColumnsAlterationsChangedRecord[] {
     return []
   }
-
 }
 
 const meta: Meta<DatatableColumnPreferencesButtonComponent> = {
@@ -98,39 +116,66 @@ export default meta
 type Story = StoryObj<DatatableColumnPreferencesButtonComponent>
 
 export const Example: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       __hack: {
         columns: [
-          { prop: 'name',
+          {
+            prop: 'name',
             name: 'Name',
             // canAutoResize: false,
             width: 60,
             minWidth: 60,
             maxWidth: 60,
-            resizeable: false },
+            resizeable: false,
+          },
           { prop: 'age', name: 'Age' },
           { prop: 'color', name: 'Color' },
           { prop: 'color1', name: 'Color1' },
           { prop: 'color2', name: 'Color2' },
         ],
         rows: [
-          { name: 'Markwwwwwwwwwwwwwwwwwww', color: 'bluewwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', color1: 'blue', color2: 'blue' },
-          { name: 'Mark', age: '279999999999999999999999999999', color: 'blue', color1: 'blue', color2: 'blue' },
-          { name: 'Joe', age: 33, color: 'green', color1: 'blue', color2: 'blue' },
+          {
+            name: 'Markwwwwwwwwwwwwwwwwwww',
+            color: 'bluewwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
+            color1: 'blue',
+            color2: 'blue',
+          },
+          {
+            name: 'Mark',
+            age: '279999999999999999999999999999',
+            color: 'blue',
+            color1: 'blue',
+            color2: 'blue',
+          },
+          {
+            name: 'Joe',
+            age: 33,
+            color: 'green',
+            color1: 'blue',
+            color2: 'blue',
+          },
 
           // { name: 'Mark', age: '.', color: 'blue', color1: 'blue', color2: 'blue' },
           // { name: 'Markwwwwwwwwwwwwwwwwwww', color: 'bluewwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', color1: 'blue', color2: 'blue' },
           // { name: 'Joe', color: 'green', color1: 'blue', color2: 'blue' },
 
-          { name: 'Markwwwwwwwwwwwwwwwwwww', color: 'bluewwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww', color1: 'blue', color2: 'blue' },
+          {
+            name: 'Markwwwwwwwwwwwwwwwwwww',
+            color: 'bluewwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
+            color1: 'blue',
+            color2: 'blue',
+          },
           { name: 'Mark', color: 'blue', color1: 'blue', color2: 'blue' },
-          { name: 'Joe', age: 33, color: 'green', color1: 'blue', color2: 'blue' },
+          {
+            name: 'Joe',
+            age: 33,
+            color: 'green',
+            color1: 'blue',
+            color2: 'blue',
+          },
         ],
-        exporters: [
-          new CSVDataExporter(),
-          new XLSXDataExporter(),
-        ],
+        exporters: [new CSVDataExporter(), new XLSXDataExporter()],
       },
     },
     template: `
@@ -158,7 +203,10 @@ export const Example: Story = {
       </div>`,
   }),
   play: async ({ canvasElement, fixture }) => {
-    const datatableHarness = await getHarness(TheSeamDatatableHarness, { canvasElement, fixture })
+    const datatableHarness = await getHarness(TheSeamDatatableHarness, {
+      canvasElement,
+      fixture,
+    })
 
     await expect(await datatableHarness.getCurrentPage()).toBe(1)
     // const page2BtnHarness = await (await datatableHarness.getPager()).getPageButtonHarness(2)
@@ -168,14 +216,17 @@ export const Example: Story = {
 }
 
 export const Popover: Story = {
-  render: args => ({
+  render: (args) => ({
     moduleMetadata: {
       providers: [
         { provide: THESEAM_DATATABLE, useClass: MockDatatable },
-        { provide: ColumnsAlterationsManagerService, useClass: MockColumnsAlterationsManagerService },
+        {
+          provide: ColumnsAlterationsManagerService,
+          useClass: MockColumnsAlterationsManagerService,
+        },
       ],
     },
-    props: { },
+    props: {},
     template: `
       <div class="popover m-2">
         <div class="popover-body">

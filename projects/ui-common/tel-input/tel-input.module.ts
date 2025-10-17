@@ -9,9 +9,7 @@ import { TheSeamTelInputDirective } from './tel-input.directive'
 import { TheSeamTelInputComponent } from './tel-input/tel-input.component'
 
 @NgModule({
-  declarations: [
-    TheSeamPhoneNumberPipe,
-  ],
+  declarations: [TheSeamPhoneNumberPipe],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -25,4 +23,4 @@ import { TheSeamTelInputComponent } from './tel-input/tel-input.component'
     TheSeamPhoneNumberPipe,
   ],
 })
-export class TheSeamTelInputModule { }
+export class TheSeamTelInputModule {}

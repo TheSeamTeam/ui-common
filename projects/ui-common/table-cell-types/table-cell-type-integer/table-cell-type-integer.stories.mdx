@@ -13,32 +13,55 @@ import {
   ExportersDataEvaluator,
   JexlEvaluator,
   THESEAM_DYNAMIC_ACTION,
-  THESEAM_DYNAMIC_VALUE_EVALUATOR
+  THESEAM_DYNAMIC_VALUE_EVALUATOR,
 } from '@theseam/ui-common/dynamic'
 
 # Cell Type Integer
 
-<Meta title="TableCellTypes/Integer"
-  decorators={[moduleMetadata({
-    imports: [
-      BrowserAnimationsModule,
-      RouterModule.forRoot([], { useHash: true }),
-      TheSeamDatatableModule,
-      TheSeamTableCellTypesModule
-    ],
-    providers: [
-      { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
-      { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: ExportersDataEvaluator, multi: true },
-      { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionApiService, multi: true },
-      { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionLinkService, multi: true },
-      { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionModalService, multi: true },
-    ]
-  })]}
+<Meta
+  title="TableCellTypes/Integer"
+  decorators={[
+    moduleMetadata({
+      imports: [
+        BrowserAnimationsModule,
+        RouterModule.forRoot([], { useHash: true }),
+        TheSeamDatatableModule,
+        TheSeamTableCellTypesModule,
+      ],
+      providers: [
+        {
+          provide: THESEAM_DYNAMIC_VALUE_EVALUATOR,
+          useClass: JexlEvaluator,
+          multi: true,
+        },
+        {
+          provide: THESEAM_DYNAMIC_VALUE_EVALUATOR,
+          useClass: ExportersDataEvaluator,
+          multi: true,
+        },
+        {
+          provide: THESEAM_DYNAMIC_ACTION,
+          useClass: DynamicActionApiService,
+          multi: true,
+        },
+        {
+          provide: THESEAM_DYNAMIC_ACTION,
+          useClass: DynamicActionLinkService,
+          multi: true,
+        },
+        {
+          provide: THESEAM_DYNAMIC_ACTION,
+          useClass: DynamicActionModalService,
+          multi: true,
+        },
+      ],
+    }),
+  ]}
   parameters={{
     layout: 'fullscreen',
     docs: {
       iframeHeight: '400px',
-    }
+    },
   }}
 />
 
@@ -93,11 +116,9 @@ import {
     {{
       template: `<seam-datatable class="vw-100 vh-100" [columns]="columns" [rows]="rows"></seam-datatable>`,
       props: {
-        columns: [
-          { prop: 'integer', name: 'Integer', cellType: 'integer' },
-        ],
+        columns: [{ prop: 'integer', name: 'Integer', cellType: 'integer' }],
         rows: [
-          { integer: .41235489 },
+          { integer: 0.41235489 },
           { integer: 152.89463 },
           { integer: 2.000254 },
           { integer: 0 },
@@ -105,7 +126,7 @@ import {
           { integer: undefined },
           { integer: '' },
           { integer: '123abcdef' },
-        ]
+        ],
       },
     }}
   </Story>
@@ -126,18 +147,24 @@ import {
               minIntegerDigits: 3,
               textAlign: 'left',
               formatNumber: 'true',
-              titleAttr: { type: 'jexl', expr: 'row.integer + " is a big number!"' },
-              styleAttr: { type: 'jexl', expr: '!row.integer || row.integer < 1 ? "color: red;" : ""'},
+              titleAttr: {
+                type: 'jexl',
+                expr: 'row.integer + " is a big number!"',
+              },
+              styleAttr: {
+                type: 'jexl',
+                expr: '!row.integer || row.integer < 1 ? "color: red;" : ""',
+              },
               classAttr: 'custom-class',
               action: {
                 type: 'link',
-                link: '#'
-              }
-            }
+                link: '#',
+              },
+            },
           },
         ],
         rows: [
-          { integer: .41235489 },
+          { integer: 0.41235489 },
           { integer: 1552.89463 },
           { integer: 2.000254 },
           { integer: 0 },
@@ -145,9 +172,8 @@ import {
           { integer: undefined },
           { integer: '' },
           { integer: '123abcdef' },
-        ]
+        ],
       },
     }}
   </Story>
 </Preview>
-

@@ -1,4 +1,10 @@
-import { applicationConfig, componentWrapperDecorator, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  componentWrapperDecorator,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 import { expect } from 'storybook/test'
 
 import { UntypedFormControl, ReactiveFormsModule } from '@angular/forms'
@@ -10,7 +16,7 @@ import { TheSeamTiledSelectHarness } from './../../testing/tiled-select-harness'
 import { TheSeamTiledSelectModule } from '../../tiled-select.module'
 import { TheSeamTiledSelectComponent } from './tiled-select.component'
 
-interface ExtraArgs { }
+interface ExtraArgs {}
 
 type StoryComponentType = TheSeamTiledSelectComponent & ExtraArgs
 
@@ -20,16 +26,14 @@ const meta: Meta<StoryComponentType> = {
   tags: ['autodocs'],
   decorators: [
     applicationConfig({
-      providers: [
-        provideAnimations(),
-      ],
+      providers: [provideAnimations()],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamTiledSelectModule,
-      ],
+      imports: [TheSeamTiledSelectModule],
     }),
-    componentWrapperDecorator(story => `<div style="width: 600px">${story}</div>`),
+    componentWrapperDecorator(
+      (story) => `<div style="width: 600px">${story}</div>`,
+    ),
   ],
 }
 
@@ -37,7 +41,7 @@ export default meta
 type Story = StoryObj<StoryComponentType>
 
 export const Default: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `<seam-tiled-select [tiles]="tiles"></seam-tiled-select>`,
   }),
@@ -95,20 +99,29 @@ export const Default: Story = {
     ],
   },
   play: async ({ canvasElement, fixture }) => {
-    const tiledSelectHarness = await getHarness(TheSeamTiledSelectHarness, { canvasElement, fixture })
-    const cottonBtnElem = await (await tiledSelectHarness.getTileByName('cotton')).getButtonElement()
+    const tiledSelectHarness = await getHarness(TheSeamTiledSelectHarness, {
+      canvasElement,
+      fixture,
+    })
+    const cottonBtnElem = await (
+      await tiledSelectHarness.getTileByName('cotton')
+    ).getButtonElement()
     await cottonBtnElem.click()
     await expect(await tiledSelectHarness.getValue()).toBe('cotton')
-    const cornBtnElem = await (await tiledSelectHarness.getTileByName('corn')).getButtonElement()
+    const cornBtnElem = await (
+      await tiledSelectHarness.getTileByName('corn')
+    ).getButtonElement()
     await cornBtnElem.click()
     await expect(await tiledSelectHarness.getValue()).toBe('corn')
   },
 }
 
-export const WithControl: StoryObj<TheSeamTiledSelectComponent & { [key: string]: any }> = {
-  render: args => ({
+export const WithControl: StoryObj<
+  TheSeamTiledSelectComponent & { [key: string]: any }
+> = {
+  render: (args) => ({
     moduleMetadata: {
-      imports: [ ReactiveFormsModule ],
+      imports: [ReactiveFormsModule],
     },
     props: {
       ...args,
@@ -170,11 +183,18 @@ export const WithControl: StoryObj<TheSeamTiledSelectComponent & { [key: string]
     ],
   },
   play: async ({ canvasElement, fixture }) => {
-    const tiledSelectHarness = await getHarness(TheSeamTiledSelectHarness, { canvasElement, fixture })
-    const cottonBtnElem = await (await tiledSelectHarness.getTileByName('cotton')).getButtonElement()
+    const tiledSelectHarness = await getHarness(TheSeamTiledSelectHarness, {
+      canvasElement,
+      fixture,
+    })
+    const cottonBtnElem = await (
+      await tiledSelectHarness.getTileByName('cotton')
+    ).getButtonElement()
     await cottonBtnElem.click()
     await expect(await tiledSelectHarness.getValue()).toBe('cotton')
-    const cornBtnElem = await (await tiledSelectHarness.getTileByName('corn')).getButtonElement()
+    const cornBtnElem = await (
+      await tiledSelectHarness.getTileByName('corn')
+    ).getButtonElement()
     await cornBtnElem.click()
     await expect(await tiledSelectHarness.getValue()).toBe('corn')
   },

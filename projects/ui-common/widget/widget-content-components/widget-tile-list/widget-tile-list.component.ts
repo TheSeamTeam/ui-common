@@ -6,4 +6,4 @@ import { Component } from '@angular/core'
   styleUrls: ['./widget-tile-list.component.scss'],
   standalone: false,
 })
-export class WidgetTileListComponent { }
+export class WidgetTileListComponent {}

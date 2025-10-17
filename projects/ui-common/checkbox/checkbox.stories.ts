@@ -15,9 +15,9 @@ type StoryComponentType = TheSeamCheckboxComponent & ExtraArgs
 
 const meta: Meta<StoryComponentType> = {
   title: 'Checkbox/Components',
-  tags: [ 'autodocs' ],
+  tags: ['autodocs'],
   component: TheSeamCheckboxComponent,
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `<seam-checkbox ${argsToTpl()}>{{ngContent}}</seam-checkbox>`,
   }),
@@ -26,9 +26,7 @@ const meta: Meta<StoryComponentType> = {
       iframeHeight: '40px',
     },
     argsToTplOptions: {
-      exclude: [
-        'ngContent',
-      ],
+      exclude: ['ngContent'],
     } satisfies ArgsTplOptions,
   },
 }
@@ -41,7 +39,10 @@ export const Basic: Story = {
     ngContent: 'Checkbox',
   },
   play: async ({ canvasElement, fixture }) => {
-    const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
+    const checkboxHarness = await getHarness(TheSeamCheckboxHarness, {
+      canvasElement,
+      fixture,
+    })
     await expect(await checkboxHarness.isChecked()).toBe(false)
   },
 }
@@ -52,7 +53,10 @@ export const Checked: Story = {
     checked: true,
   },
   play: async ({ canvasElement, fixture }) => {
-    const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
+    const checkboxHarness = await getHarness(TheSeamCheckboxHarness, {
+      canvasElement,
+      fixture,
+    })
     await expect(await checkboxHarness.isChecked()).toBe(true)
   },
 }
@@ -63,7 +67,10 @@ export const Unchecked: Story = {
     checked: false,
   },
   play: async ({ canvasElement, fixture }) => {
-    const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
+    const checkboxHarness = await getHarness(TheSeamCheckboxHarness, {
+      canvasElement,
+      fixture,
+    })
     await expect(await checkboxHarness.isChecked()).toBe(false)
   },
 }
@@ -74,7 +81,10 @@ export const Indeterminate: Story = {
     indeterminate: true,
   },
   play: async ({ canvasElement, fixture }) => {
-    const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
+    const checkboxHarness = await getHarness(TheSeamCheckboxHarness, {
+      canvasElement,
+      fixture,
+    })
     await expect(await checkboxHarness.isIndeterminate()).toBe(true)
   },
 }
@@ -85,7 +95,10 @@ export const Disabled: Story = {
     disabled: true,
   },
   play: async ({ canvasElement, fixture }) => {
-    const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
+    const checkboxHarness = await getHarness(TheSeamCheckboxHarness, {
+      canvasElement,
+      fixture,
+    })
     await expect(await checkboxHarness.isDisabled()).toBe(true)
     await expect(await checkboxHarness.isChecked()).toBe(false)
     await checkboxHarness.click()
@@ -98,7 +111,10 @@ export const ExampleToggling: Story = {
     ngContent: 'Toggle example.',
   },
   play: async ({ canvasElement, fixture }) => {
-    const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
+    const checkboxHarness = await getHarness(TheSeamCheckboxHarness, {
+      canvasElement,
+      fixture,
+    })
     await expect(await checkboxHarness.isChecked()).toBe(false)
     await checkboxHarness.click()
     await expect(await checkboxHarness.isChecked()).toBe(true)
@@ -113,7 +129,10 @@ export const ExampleIndeterminateToggle: Story = {
     indeterminate: true,
   },
   play: async ({ canvasElement, fixture }) => {
-    const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
+    const checkboxHarness = await getHarness(TheSeamCheckboxHarness, {
+      canvasElement,
+      fixture,
+    })
     await expect(await checkboxHarness.isChecked()).toBe(false)
     await expect(await checkboxHarness.isIndeterminate()).toBe(true)
     await checkboxHarness.click()
@@ -126,7 +145,7 @@ export const ExampleIndeterminateToggle: Story = {
 }
 
 export const ExampleFormControl: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       control: new FormControl(),
@@ -135,9 +154,7 @@ export const ExampleFormControl: Story = {
   }),
   decorators: [
     moduleMetadata({
-      imports: [
-        ReactiveFormsModule,
-      ],
+      imports: [ReactiveFormsModule],
     }),
   ],
   args: {

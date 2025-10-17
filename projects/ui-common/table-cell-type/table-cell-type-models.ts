@@ -33,19 +33,29 @@ export interface ICalucatedValueContext<R = any, V = any>
 
 export type CalculatedValueContextFn = () => ICalucatedValueContext
 
-export type CaluclatedValueContextType = ICalucatedValueContext | CalculatedValueContextFn
+export type CaluclatedValueContextType =
+  | ICalucatedValueContext
+  | CalculatedValueContextFn
 
-export type TheSeamTableColumn<T extends TableCellTypeName, C extends TableCellTypeConfig<T> = any> =
-  TableColumn &
-  TableCellTypeColumn<T, C> &
-  TableCellTypeExportProps
+export type TheSeamTableColumn<
+  T extends TableCellTypeName,
+  C extends TableCellTypeConfig<T> = any,
+> = TableColumn & TableCellTypeColumn<T, C> & TableCellTypeExportProps
 
-export interface TableCellDataChange<T extends TableCellTypeName, C extends TableCellTypeConfig<T>> {
+export interface TableCellDataChange<
+  T extends TableCellTypeName,
+  C extends TableCellTypeConfig<T>,
+> {
   data: TableCellData<T, C>
   changes: SimpleChanges
 }
 
-export interface TableCellData<T extends TableCellTypeName, C extends TableCellTypeConfig<T>, R = any, V = any> {
+export interface TableCellData<
+  T extends TableCellTypeName,
+  C extends TableCellTypeConfig<T>,
+  R = any,
+  V = any,
+> {
   row: R
   rowIndex: number
   colData: TheSeamTableColumn<T, C>

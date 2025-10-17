@@ -8,9 +8,9 @@ module.exports = {
   ],
   // stories: ['../projects/ui-common/breadcrumbs/stories/breadcrumbs-simple.stories.@(ts|mdx)'],
   logLevel: 'debug',
-  'framework': {
-    'name': '@storybook/angular',
-    'options': {},
+  framework: {
+    name: '@storybook/angular',
+    options: {},
   },
   addons: [
     '@storybook/addon-docs',
@@ -20,14 +20,17 @@ module.exports = {
   docs: {},
   webpackFinal: async (config, { angularBuilderOptions }) => {
     // Find the Sass rule
-    const sassRule = config.module?.rules?.find(rule =>
+    const sassRule = config.module?.rules?.find((rule) =>
       rule.test?.toString().includes('scss'),
     )?.rules[1]
 
     if (sassRule) {
       // Update the sass-loader options
-      sassRule.use = sassRule.use.map(loader => {
-        if (typeof loader === 'object' && loader.loader?.includes('sass-loader')) {
+      sassRule.use = sassRule.use.map((loader) => {
+        if (
+          typeof loader === 'object' &&
+          loader.loader?.includes('sass-loader')
+        ) {
           const _silenceDeprecations = [
             'mixed-decls',
             'color-functions',
@@ -36,12 +39,16 @@ module.exports = {
           ]
 
           // NOTE: For this to work, Storybook's Angular builder schemas need to be patched to allow "sass" under "stylePreprocessorOptions"
-          const builderSilenceDeprecations = angularBuilderOptions?.stylePreprocessorOptions?.sass?.silenceDeprecations || []
+          const builderSilenceDeprecations =
+            angularBuilderOptions?.stylePreprocessorOptions?.sass
+              ?.silenceDeprecations || []
 
           const silenceDeprecations = [
             ...builderSilenceDeprecations,
             // Filter out duplicates
-            ..._silenceDeprecations.filter(item => !builderSilenceDeprecations.includes(item)),
+            ..._silenceDeprecations.filter(
+              (item) => !builderSilenceDeprecations.includes(item),
+            ),
           ]
 
           const origFn = loader.options.sassOptions

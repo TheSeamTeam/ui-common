@@ -26,5 +26,7 @@ module.exports = {
     '**/tabbed/**/*.spec.ts',
     '**/datatable-alterations-display/**/*.spec.ts',
   ],
-  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/' }),
+  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
+    prefix: '<rootDir>/',
+  }),
 }

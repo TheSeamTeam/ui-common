@@ -8,7 +8,8 @@ import { FormControl } from '@angular/forms'
  *  'xxx-xx-xxxx'  // 'x' is a number
  */
 export function taxIdValidator(control: FormControl) {
-  const isValid = /^$|^\d{9}$|^\d{2}-\d{7}$|^\d{3}-\d{2}-\d{4}$/.test(control.value)
-  return isValid
-    ? null : { taxId: {} }
+  const isValid = /^$|^\d{9}$|^\d{2}-\d{7}$|^\d{3}-\d{2}-\d{4}$/.test(
+    control.value,
+  )
+  return isValid ? null : { taxId: {} }
 }

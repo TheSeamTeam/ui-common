@@ -37,7 +37,12 @@ const currentAlterations: AlterationDisplayItem[] = [
     id: 'filter--status',
     type: 'filter',
     summary: 'Status = Active',
-    details: ['Column: Status', 'Type: text', 'Operation: Equals', 'Value: Active'],
+    details: [
+      'Column: Status',
+      'Type: text',
+      'Operation: Equals',
+      'Value: Active',
+    ],
     sortOrder: 0,
   },
   {
@@ -54,14 +59,22 @@ const pendingAlterations: AlterationDisplayItem[] = [
     id: 'sort',
     type: 'sort',
     summary: 'Name ↑, Date ↓',
-    details: ['Name: Ascending (Priority: 1)', 'Date: Descending (Priority: 2)'],
+    details: [
+      'Name: Ascending (Priority: 1)',
+      'Date: Descending (Priority: 2)',
+    ],
     sortOrder: 0,
   },
   {
     id: 'filter--category',
     type: 'filter',
     summary: 'Category contains "Product"',
-    details: ['Column: Category', 'Type: text', 'Operation: Contains', 'Value: Product'],
+    details: [
+      'Column: Category',
+      'Type: text',
+      'Operation: Contains',
+      'Value: Product',
+    ],
     sortOrder: 0,
   },
   {
@@ -90,7 +103,10 @@ export const WithDifferences: Story = {
     compact: true,
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(AlterationsDiffHarness, { canvasElement, fixture })
+    const harness = await getHarness(AlterationsDiffHarness, {
+      canvasElement,
+      fixture,
+    })
 
     expect(await harness.hasDiffSummary()).toBe(true)
     const summaryText = await harness.getDiffSummaryText()
@@ -111,7 +127,10 @@ export const NoDifferences: Story = {
     compact: true,
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(AlterationsDiffHarness, { canvasElement, fixture })
+    const harness = await getHarness(AlterationsDiffHarness, {
+      canvasElement,
+      fixture,
+    })
 
     expect(await harness.hasDiffSummary()).toBe(false)
     expect(await harness.getCurrentItemCount()).toBe(3)
@@ -127,7 +146,10 @@ export const EmptyCurrentState: Story = {
     compact: true,
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(AlterationsDiffHarness, { canvasElement, fixture })
+    const harness = await getHarness(AlterationsDiffHarness, {
+      canvasElement,
+      fixture,
+    })
 
     expect(await harness.hasDiffSummary()).toBe(true)
     const summaryText = await harness.getDiffSummaryText()
@@ -147,7 +169,10 @@ export const EmptyPendingState: Story = {
     compact: true,
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(AlterationsDiffHarness, { canvasElement, fixture })
+    const harness = await getHarness(AlterationsDiffHarness, {
+      canvasElement,
+      fixture,
+    })
 
     expect(await harness.hasDiffSummary()).toBe(true)
     const summaryText = await harness.getDiffSummaryText()
@@ -167,7 +192,10 @@ export const BothEmpty: Story = {
     compact: true,
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(AlterationsDiffHarness, { canvasElement, fixture })
+    const harness = await getHarness(AlterationsDiffHarness, {
+      canvasElement,
+      fixture,
+    })
 
     expect(await harness.hasDiffSummary()).toBe(false)
     expect(await harness.hasCurrentEmptyState()).toBe(true)
@@ -185,14 +213,19 @@ export const ExpandedView: Story = {
     compact: false,
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(AlterationsDiffHarness, { canvasElement, fixture })
+    const harness = await getHarness(AlterationsDiffHarness, {
+      canvasElement,
+      fixture,
+    })
 
     // Verify that both lists have items
     expect(await harness.getCurrentItemCount()).toBeGreaterThan(0)
     expect(await harness.getPendingItemCount()).toBeGreaterThan(0)
 
     // Check that details are visible in expanded view
-    const detailsElements = canvasElement.querySelectorAll('[data-testid="alteration-detail"]')
+    const detailsElements = canvasElement.querySelectorAll(
+      '[data-testid="alteration-detail"]',
+    )
     expect(detailsElements.length).toBeGreaterThan(0)
   },
 }

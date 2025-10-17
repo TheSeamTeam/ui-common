@@ -19,10 +19,7 @@ import { WidgetListGroupComponent } from './widget-list-group.component'
     WidgetListGroupItemComponent,
     WidgetListGroupItemIconTplDirective,
   ],
-  imports: [
-    CommonModule,
-    TheSeamIconModule,
-  ],
+  imports: [CommonModule, TheSeamIconModule],
   exports: [
     WidgetListGroupComponent,
     WidgetListGroupItemAnchorComponent,
@@ -31,4 +28,4 @@ import { WidgetListGroupComponent } from './widget-list-group.component'
     WidgetListGroupItemIconTplDirective,
   ],
 })
-export class TheSeamWidgetListGroupModule { }
+export class TheSeamWidgetListGroupModule {}

@@ -1,7 +1,6 @@
 import { Observable } from 'rxjs'
 
 export interface TheSeamPreferencesAccessor {
-
   /**
    * Gets a preference.
    */
@@ -16,5 +15,4 @@ export interface TheSeamPreferencesAccessor {
    * Delete a preference.
    */
   delete(name: string): Observable<boolean>
-
 }

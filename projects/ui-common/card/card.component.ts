@@ -6,7 +6,5 @@ import { Component, HostBinding } from '@angular/core'
   styleUrls: ['./card.component.scss'],
 })
 export class TheSeamCardComponent {
-
   @HostBinding('class.card') _cssClassCard = true
-
 }

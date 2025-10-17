@@ -1,8 +1,13 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
-import { BaseHarnessFilters, ComponentHarness, HarnessPredicate } from '@angular/cdk/testing'
+import {
+  BaseHarnessFilters,
+  ComponentHarness,
+  HarnessPredicate,
+} from '@angular/cdk/testing'
 import { TheSeamTiledSelectHarness } from '@theseam/ui-common/tiled-select'
 
-interface TheSeamSchemaFormTiledSelectHarnessFilters extends BaseHarnessFilters {
+interface TheSeamSchemaFormTiledSelectHarnessFilters
+  extends BaseHarnessFilters {
   /** Filters based on the name of the field. */
   name?: string | RegExp
 }
@@ -13,10 +18,15 @@ export class TheSeamSchemaFormTiledSelectHarness extends ComponentHarness {
   private readonly _tiledSelect = this.locatorFor(TheSeamTiledSelectHarness)
 
   /** Creates a `HarnessPredicate` used to locate a particular `TheSeamSchemaFormTiledSelectHarness`. */
-  static with(options: TheSeamSchemaFormTiledSelectHarnessFilters): HarnessPredicate<TheSeamSchemaFormTiledSelectHarness> {
-    return new HarnessPredicate(TheSeamSchemaFormTiledSelectHarness, options)
-      .addOption('field name', options.name,
-        (harness, name) => HarnessPredicate.stringMatches(harness.getName(), name))
+  static with(
+    options: TheSeamSchemaFormTiledSelectHarnessFilters,
+  ): HarnessPredicate<TheSeamSchemaFormTiledSelectHarness> {
+    return new HarnessPredicate(
+      TheSeamSchemaFormTiledSelectHarness,
+      options,
+    ).addOption('field name', options.name, (harness, name) =>
+      HarnessPredicate.stringMatches(harness.getName(), name),
+    )
   }
 
   public async getName(): Promise<string | null> {
@@ -32,7 +42,9 @@ export class TheSeamSchemaFormTiledSelectHarness extends ComponentHarness {
   }
 
   public async isRequired(): Promise<boolean> {
-    const required = await (await (await this._tiledSelect()).host()).getAttribute('required')
+    const required = await (
+      await (await this._tiledSelect()).host()
+    ).getAttribute('required')
     return coerceBooleanProperty(required)
   }
 

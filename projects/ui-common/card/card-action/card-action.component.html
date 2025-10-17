@@ -1,7 +1,12 @@
-<button type="button"
+<button
+  type="button"
   class="btn border-0 h-100"
-  [seamHoverClassToggle]="{ default: 'btn-outline-lightgray', hover: 'btn-outline-' + theme }"
+  [seamHoverClassToggle]="{
+    default: 'btn-outline-lightgray',
+    hover: 'btn-outline-' + theme,
+  }"
   [attr.title]="title"
-  [attr.data-last-action]="isLastAction ? 'true' : 'false'">
+  [attr.data-last-action]="isLastAction ? 'true' : 'false'"
+>
   <ng-content></ng-content>
 </button>

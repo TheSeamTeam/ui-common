@@ -1,5 +1,15 @@
 import { BooleanInput } from '@angular/cdk/coercion'
-import { ChangeDetectionStrategy, Component, forwardRef, Inject, Input, OnDestroy, OnInit, Optional, TemplateRef } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  forwardRef,
+  Inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  Optional,
+  TemplateRef,
+} from '@angular/core'
 import { UntypedFormControl } from '@angular/forms'
 import { Observable, of } from 'rxjs'
 import { map, shareReplay, startWith, switchMap } from 'rxjs/operators'
@@ -10,7 +20,12 @@ import { InputBoolean } from '@theseam/ui-common/core'
 import type { SeamIcon } from '@theseam/ui-common/icon'
 import { isNullOrUndefined } from '@theseam/ui-common/utils'
 
-import { DataFilterState, IDataFilter, THESEAM_DATA_FILTER, THESEAM_DATA_FILTER_OPTIONS } from '../../data-filter'
+import {
+  DataFilterState,
+  IDataFilter,
+  THESEAM_DATA_FILTER,
+  THESEAM_DATA_FILTER_OPTIONS,
+} from '../../data-filter'
 import { THESEAM_DATA_FILTER_CONTAINER } from '../../data-filter-container'
 import type { DataFilterContainer } from '../../data-filter-container'
 import { textDataFilter } from '../data-filter-text/data-filter-text.component'
@@ -30,7 +45,11 @@ export const DefaultSearchFilterOptions: ISearchFilterOptions = {
   caseSensitive: false,
 }
 
-export function searchDataFilter(data: any[], values: string, options = DefaultSearchFilterOptions) {
+export function searchDataFilter(
+  data: any[],
+  values: string,
+  options = DefaultSearchFilterOptions,
+) {
   return textDataFilter(data, values, options)
 }
 
@@ -44,7 +63,9 @@ let _uid = 0
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false,
 })
-export class DataFilterSearchComponent implements OnInit, OnDestroy, IDataFilter {
+export class DataFilterSearchComponent
+  implements OnInit, OnDestroy, IDataFilter
+{
   static ngAcceptInputType_exact: BooleanInput
   static ngAcceptInputType_caseSensitive: BooleanInput
 
@@ -53,10 +74,13 @@ export class DataFilterSearchComponent implements OnInit, OnDestroy, IDataFilter
 
   _control = new UntypedFormControl()
 
-  @Input() properties: string[] | undefined | null = this._optDefault('properties')
-  @Input() omitProperties: string[] | undefined | null = this._optDefault('omitProperties')
+  @Input() properties: string[] | undefined | null =
+    this._optDefault('properties')
+  @Input() omitProperties: string[] | undefined | null =
+    this._optDefault('omitProperties')
   @Input() @InputBoolean() exact: boolean = this._optDefault('exact')
-  @Input() @InputBoolean() caseSensitive: boolean = this._optDefault('caseSensitive')
+  @Input() @InputBoolean() caseSensitive: boolean =
+    this._optDefault('caseSensitive')
 
   @Input() placeholder: string | undefined | null = 'Search...'
   @Input() icon: SeamIcon | undefined | null = faSearch
@@ -73,8 +97,11 @@ export class DataFilterSearchComponent implements OnInit, OnDestroy, IDataFilter
   public readonly filterStateChanges: Observable<DataFilterState>
 
   constructor(
-    @Inject(THESEAM_DATA_FILTER_CONTAINER) private _filterContainer: DataFilterContainer,
-    @Optional() @Inject(THESEAM_DATA_FILTER_OPTIONS) private _filterOptions: ISearchFilterOptions | null,
+    @Inject(THESEAM_DATA_FILTER_CONTAINER)
+    private _filterContainer: DataFilterContainer,
+    @Optional()
+    @Inject(THESEAM_DATA_FILTER_OPTIONS)
+    private _filterOptions: ISearchFilterOptions | null,
   ) {
     this.filterStateChanges = this._control.valueChanges.pipe(
       switchMap(() => of(this.filterState())),
@@ -82,12 +109,19 @@ export class DataFilterSearchComponent implements OnInit, OnDestroy, IDataFilter
     )
   }
 
-  ngOnInit() { this._filterContainer.addFilter(this) }
+  ngOnInit() {
+    this._filterContainer.addFilter(this)
+  }
 
-  ngOnDestroy() { this._filterContainer.removeFilter(this) }
+  ngOnDestroy() {
+    this._filterContainer.removeFilter(this)
+  }
 
   private _optDefault<K extends keyof ISearchFilterOptions>(prop: K) {
-    if (this._filterOptions && Object.prototype.hasOwnProperty.call(this._filterOptions, prop)) {
+    if (
+      this._filterOptions &&
+      Object.prototype.hasOwnProperty.call(this._filterOptions, prop)
+    ) {
       return this._filterOptions[prop]
     }
     return DefaultSearchFilterOptions[prop]
@@ -103,11 +137,10 @@ export class DataFilterSearchComponent implements OnInit, OnDestroy, IDataFilter
   }
 
   public filter<T>(data: T[]): Observable<T[]> {
-    return this._control.valueChanges
-      .pipe(
-        map(v => searchDataFilter(data, v, this.options)),
-        startWith(searchDataFilter(data, this._control.value, this.options)),
-      )
+    return this._control.valueChanges.pipe(
+      map((v) => searchDataFilter(data, v, this.options)),
+      startWith(searchDataFilter(data, this._control.value, this.options)),
+    )
   }
 
   public filterState(): DataFilterState {
@@ -120,5 +153,4 @@ export class DataFilterSearchComponent implements OnInit, OnDestroy, IDataFilter
       },
     }
   }
-
 }

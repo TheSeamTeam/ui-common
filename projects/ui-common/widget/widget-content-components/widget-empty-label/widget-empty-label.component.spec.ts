@@ -10,8 +10,7 @@ describe('WidgetEmptyLabelComponent', () => {
     TestBed.configureTestingModule({
       declarations: [WidgetEmptyLabelComponent],
       teardown: { destroyAfterEach: false },
-    })
-      .compileComponents()
+    }).compileComponents()
   }))
 
   beforeEach(() => {

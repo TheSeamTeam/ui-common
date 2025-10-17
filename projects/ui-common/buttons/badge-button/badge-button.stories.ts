@@ -1,8 +1,17 @@
-import { componentWrapperDecorator, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  componentWrapperDecorator,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 import { expect } from 'storybook/test'
 
 import { getHarness } from '@theseam/ui-common/testing'
-import { buttonTypeArgType, sizeArgType, themeWithOutlineArgType } from '@theseam/ui-common/story-helpers'
+import {
+  buttonTypeArgType,
+  sizeArgType,
+  themeWithOutlineArgType,
+} from '@theseam/ui-common/story-helpers'
 
 import { TheSeamButtonsModule } from '../buttons.module'
 import { TheSeamBadgeButtonComponent } from './badge-button.component'
@@ -17,11 +26,10 @@ const meta: Meta<TheSeamBadgeButtonComponent & StoryExtraProps> = {
   component: TheSeamBadgeButtonComponent,
   decorators: [
     moduleMetadata({
-      imports: [
-        TheSeamButtonsModule,
-      ],
+      imports: [TheSeamButtonsModule],
     }),
-    componentWrapperDecorator(story => `
+    componentWrapperDecorator(
+      (story) => `
       <button seamBadgeButton
         [theme]="theme"
         [badgeTheme]="badgeTheme"
@@ -30,7 +38,8 @@ const meta: Meta<TheSeamBadgeButtonComponent & StoryExtraProps> = {
         [disabled]="disabled"
         [type]="type"
       >${story}</button>
-    `),
+    `,
+    ),
   ],
   tags: ['autodocs'],
   argTypes: {
@@ -52,7 +61,7 @@ export default meta
 type Story = StoryObj<TheSeamBadgeButtonComponent & StoryExtraProps>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `{{ btnText }}`,
   }),
@@ -63,7 +72,10 @@ export const Basic: Story = {
     badgeTheme: 'primary',
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(TheSeamBadgeButtonComponentHarness, { canvasElement, fixture })
+    const harness = await getHarness(TheSeamBadgeButtonComponentHarness, {
+      canvasElement,
+      fixture,
+    })
     await expect(await harness.getText()).toBe('Example Text')
     await expect(await harness.getTheme()).toBe('primary')
     await expect(await harness.getBadgeText()).toBe('Badge Text')
@@ -74,7 +86,7 @@ export const Basic: Story = {
 }
 
 export const Disabled: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `{{ btnText }}`,
   }),
@@ -86,7 +98,10 @@ export const Disabled: Story = {
     disabled: true,
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(TheSeamBadgeButtonComponentHarness, { canvasElement, fixture })
+    const harness = await getHarness(TheSeamBadgeButtonComponentHarness, {
+      canvasElement,
+      fixture,
+    })
     await expect(await harness.getText()).toBe('Example Text')
     await expect(await harness.getTheme()).toBe('primary')
     await expect(await harness.getBadgeText()).toBe('Badge Text')

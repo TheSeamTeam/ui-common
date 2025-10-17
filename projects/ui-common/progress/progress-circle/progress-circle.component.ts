@@ -36,12 +36,15 @@ export class ProgressCircleComponent {
   @Input() @InputBoolean() hiddenOnEmpty = true
   @Input() @InputBoolean() pending = false
 
-  @Input() @InputNumber()
+  @Input()
+  @InputNumber()
   set percentage(value: number) {
     this._percentage = value
     this._progressInfo = this._getProgress()
   }
-  get percentage(): number { return this._percentage }
+  get percentage(): number {
+    return this._percentage
+  }
 
   public readonly radius = 15
   public readonly circumference = 2 * Math.PI * this.radius

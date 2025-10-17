@@ -1,9 +1,22 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
+} from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { AbstractControl, ReactiveFormsModule } from '@angular/forms'
 
-import { buildTitleMap, isArray, JsonSchemaFormModule, JsonSchemaFormService } from '@ajsf/core'
-import { TheSeamSchemaFormControlWidget, TheSeamSchemaFormWidgetLayoutNodeOptions } from '../../schema-form'
+import {
+  buildTitleMap,
+  isArray,
+  JsonSchemaFormModule,
+  JsonSchemaFormService,
+} from '@ajsf/core'
+import {
+  TheSeamSchemaFormControlWidget,
+  TheSeamSchemaFormWidgetLayoutNodeOptions,
+} from '../../schema-form'
 import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 import { NgSelectModule } from '@ng-select/ng-select'
 
@@ -21,8 +34,9 @@ import { NgSelectModule } from '@ng-select/ng-select'
     NgSelectModule,
   ],
 })
-export class TheSeamSchemaFormSelectComponent implements OnInit, TheSeamSchemaFormControlWidget {
-
+export class TheSeamSchemaFormSelectComponent
+  implements OnInit, TheSeamSchemaFormControlWidget
+{
   formControl?: AbstractControl
   controlName?: string
   controlValue?: any
@@ -37,15 +51,17 @@ export class TheSeamSchemaFormSelectComponent implements OnInit, TheSeamSchemaFo
   selectList: any[] = []
   isArray = isArray
 
-  constructor(
-    private readonly _jsf: JsonSchemaFormService,
-  ) { }
+  constructor(private readonly _jsf: JsonSchemaFormService) {}
 
   ngOnInit() {
-    this.options = this.layoutNode?.options || {} as TheSeamSchemaFormWidgetLayoutNodeOptions
+    this.options =
+      this.layoutNode?.options ||
+      ({} as TheSeamSchemaFormWidgetLayoutNodeOptions)
     this.selectList = buildTitleMap(
       this.options.titleMap || this.options.enumNames,
-      this.options.enum, !!this.options.required, !!this.options.flatList,
+      this.options.enum,
+      !!this.options.required,
+      !!this.options.flatList,
     )
 
     this._jsf.initializeControl(this)
@@ -54,5 +70,4 @@ export class TheSeamSchemaFormSelectComponent implements OnInit, TheSeamSchemaFo
   updateValue(event: any) {
     this._jsf.updateValue(this, event.value)
   }
-
 }

@@ -10,8 +10,7 @@ describe('WidgetContentHeaderComponent', () => {
     TestBed.configureTestingModule({
       declarations: [WidgetContentHeaderComponent],
       teardown: { destroyAfterEach: false },
-    })
-      .compileComponents()
+    }).compileComponents()
   }))
 
   beforeEach(() => {

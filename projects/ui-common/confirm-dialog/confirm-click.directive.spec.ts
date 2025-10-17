@@ -14,20 +14,15 @@ describe('ConfirmClickDirective', () => {
 
   const createHost = createHostFactory({
     component: ConfirmClickDirective,
-    providers: [
-      SeamConfirmDialogService,
-    ],
-    declarations: [
-      ConfirmDialogComponent,
-    ],
-    imports: [
-      TheSeamModalModule,
-      TheSeamOverlayScrollbarDirective,
-    ],
+    providers: [SeamConfirmDialogService],
+    declarations: [ConfirmDialogComponent],
+    imports: [TheSeamModalModule, TheSeamOverlayScrollbarDirective],
   })
 
   it('should get the instance', () => {
-    host = createHost(`<div seamConfirmClick>Testing ConfirmClickDirective</div>`)
+    host = createHost(
+      `<div seamConfirmClick>Testing ConfirmClickDirective</div>`,
+    )
 
     const instance = host.queryHost<ConfirmClickDirective>(
       ConfirmClickDirective,
@@ -37,7 +32,9 @@ describe('ConfirmClickDirective', () => {
   })
 
   it('should open dialog on click', fakeAsync(() => {
-    host = createHost(`<div seamConfirmClick class="test-btn">Testing ConfirmClickDirective</div>`)
+    host = createHost(
+      `<div seamConfirmClick class="test-btn">Testing ConfirmClickDirective</div>`,
+    )
 
     const instance = host.queryHost<ConfirmClickDirective>(
       ConfirmClickDirective,
@@ -56,7 +53,9 @@ describe('ConfirmClickDirective', () => {
   }))
 
   it('should stay open on dialog content click', fakeAsync(() => {
-    host = createHost(`<div seamConfirmClick class="test-btn">Testing ConfirmClickDirective</div>`)
+    host = createHost(
+      `<div seamConfirmClick class="test-btn">Testing ConfirmClickDirective</div>`,
+    )
 
     const instance = host.queryHost<ConfirmClickDirective>(
       ConfirmClickDirective,
@@ -73,7 +72,10 @@ describe('ConfirmClickDirective', () => {
 
     expect(document.getElementById(id)).not.toBeNull()
 
-    host.dispatchMouseEvent(document.getElementById(id) as SpectatorElement, 'click')
+    host.dispatchMouseEvent(
+      document.getElementById(id) as SpectatorElement,
+      'click',
+    )
 
     tick(500)
 
@@ -81,7 +83,9 @@ describe('ConfirmClickDirective', () => {
   }))
 
   it('should close on click outside dialog content', fakeAsync(() => {
-    host = createHost(`<div seamConfirmClick class="test-btn">Testing ConfirmClickDirective</div>`)
+    host = createHost(
+      `<div seamConfirmClick class="test-btn">Testing ConfirmClickDirective</div>`,
+    )
 
     const instance = host.queryHost<ConfirmClickDirective>(
       ConfirmClickDirective,
@@ -98,7 +102,10 @@ describe('ConfirmClickDirective', () => {
 
     expect(document.getElementById(id)).not.toBeNull()
 
-    host.dispatchMouseEvent(document.getElementById(id)?.parentElement as SpectatorElement, 'click')
+    host.dispatchMouseEvent(
+      document.getElementById(id)?.parentElement as SpectatorElement,
+      'click',
+    )
     tick(500)
 
     expect(document.getElementById(id)).toBeNull()

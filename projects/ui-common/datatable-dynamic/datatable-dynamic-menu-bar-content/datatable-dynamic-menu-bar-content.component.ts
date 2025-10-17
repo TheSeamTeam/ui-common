@@ -1,5 +1,12 @@
 import { ComponentPortal } from '@angular/cdk/portal'
-import { ChangeDetectionStrategy, Component, Inject, Injector, Input, Optional } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  Injector,
+  Input,
+  Optional,
+} from '@angular/core'
 import { BehaviorSubject, Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
@@ -68,12 +75,17 @@ export interface IDatatableDynamicMenuBarContentItemContext {
   standalone: false,
 })
 export class DatatableDynamicMenuBarContentComponent {
-
-  private readonly _def = new BehaviorSubject<DynamicDatatableMenuBar | undefined>(undefined)
+  private readonly _def = new BehaviorSubject<
+    DynamicDatatableMenuBar | undefined
+  >(undefined)
 
   @Input()
-  set def(value: DynamicDatatableMenuBar | undefined) { this._def.next(value) }
-  get def(): DynamicDatatableMenuBar | undefined { return this._def.value }
+  set def(value: DynamicDatatableMenuBar | undefined) {
+    this._def.next(value)
+  }
+  get def(): DynamicDatatableMenuBar | undefined {
+    return this._def.value
+  }
 
   public readonly def$: Observable<DynamicDatatableMenuBar | undefined>
 
@@ -83,22 +95,29 @@ export class DatatableDynamicMenuBarContentComponent {
     private readonly _valueHelper: DynamicValueHelperService,
     private readonly _dynamicComponentLoader: TheSeamDynamicComponentLoader,
     private readonly _injector: Injector,
-    @Optional() @Inject(THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM)
+    @Optional()
+    @Inject(THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM)
     private readonly _menuBarItemManifests?: IDatatableDynamicMenuBarItemManifest[],
   ) {
     this.def$ = this._def.asObservable()
     // .pipe(tap(v => console.log('def$', v)))
 
-    this._rows$ = this.def$.pipe(switchMap(def => this._mapRows((def && def.rows) || [])))
+    this._rows$ = this.def$.pipe(
+      switchMap((def) => this._mapRows((def && def.rows) || [])),
+    )
     // .pipe(tap(v => console.log('_rows$', v)))
   }
 
-  private _mapRows(rows: DynamicDatatableMenuBarRow[]): Promise<IDatatableDynamicMenuBarContentRow[]> {
-    return Promise.all(rows.map(r => this._mapRow(r)))
+  private _mapRows(
+    rows: DynamicDatatableMenuBarRow[],
+  ): Promise<IDatatableDynamicMenuBarContentRow[]> {
+    return Promise.all(rows.map((r) => this._mapRow(r)))
   }
 
-  private async _mapRow(row: DynamicDatatableMenuBarRow): Promise<IDatatableDynamicMenuBarContentRow> {
-    const result: IDatatableDynamicMenuBarContentRow = { }
+  private async _mapRow(
+    row: DynamicDatatableMenuBarRow,
+  ): Promise<IDatatableDynamicMenuBarContentRow> {
+    const result: IDatatableDynamicMenuBarContentRow = {}
     const context = this._createRowContext(row)
 
     if (hasProperty(row, 'styles')) {
@@ -123,7 +142,7 @@ export class DatatableDynamicMenuBarContentComponent {
     layout: DynamicDatatableMenuBarRowLayoutTriColumn,
     row: DynamicDatatableMenuBarRow,
   ): Promise<IDatatableDynamicMenuBarContentRowLayoutTriColumn> {
-    const result: IDatatableDynamicMenuBarContentRowLayoutTriColumn = { }
+    const result: IDatatableDynamicMenuBarContentRowLayoutTriColumn = {}
 
     if (hasProperty(layout, 'columnLeft')) {
       result.columnLeft = await this._mapColumn(layout.columnLeft, row)
@@ -144,7 +163,7 @@ export class DatatableDynamicMenuBarContentComponent {
     column: DynamicDatatableMenuBarColumn,
     row: DynamicDatatableMenuBarRow,
   ): Promise<IDatatableDynamicMenuBarContentColumn> {
-    const result: IDatatableDynamicMenuBarContentColumn = { }
+    const result: IDatatableDynamicMenuBarContentColumn = {}
     const context = this._createColumnContext(column, row)
 
     if (hasProperty(column, 'styles')) {
@@ -155,7 +174,9 @@ export class DatatableDynamicMenuBarContentComponent {
       result.cssClass = await this._valueHelper.eval(column.cssClass, context)
     }
 
-    result.items = await Promise.all(column.items.map(v => this._mapItem(v, row, column)))
+    result.items = await Promise.all(
+      column.items.map((v) => this._mapItem(v, row, column)),
+    )
 
     return result
   }
@@ -165,7 +186,7 @@ export class DatatableDynamicMenuBarContentComponent {
     row: DynamicDatatableMenuBarRow,
     column: DynamicDatatableMenuBarColumn,
   ): Promise<IDatatableDynamicMenuBarContentItem> {
-    const result: IDatatableDynamicMenuBarContentItem = { }
+    const result: IDatatableDynamicMenuBarContentItem = {}
     const context = this._createItemContext(item, row, column)
 
     // if (hasProperty(item, 'styles')) {
@@ -194,7 +215,9 @@ export class DatatableDynamicMenuBarContentComponent {
     return result
   }
 
-  private _createRowContext(row: DynamicDatatableMenuBarRow): IDatatableDynamicMenuBarContentRowContext {
+  private _createRowContext(
+    row: DynamicDatatableMenuBarRow,
+  ): IDatatableDynamicMenuBarContentRowContext {
     return {
       row,
     }
@@ -222,8 +245,13 @@ export class DatatableDynamicMenuBarContentComponent {
     }
   }
 
-  private async _getComponentPortal(component: string, data?: any): Promise<ComponentPortal<object> | undefined> {
-    const manifest = (this._menuBarItemManifests || []).find(m => m.name === component)
+  private async _getComponentPortal(
+    component: string,
+    data?: any,
+  ): Promise<ComponentPortal<object> | undefined> {
+    const manifest = (this._menuBarItemManifests || []).find(
+      (m) => m.name === component,
+    )
 
     if (!manifest) {
       // TODO: Make sure the component is skipped instead of erroring outside of dev mode.
@@ -233,24 +261,27 @@ export class DatatableDynamicMenuBarContentComponent {
     // TODO: Create a new injector with the data injected
     let injector = this._injector
     if (manifest.dataToken) {
-      injector = Injector.create({ parent: this._injector, providers: [
-        { provide: manifest.dataToken, useValue: data },
-      ] })
+      injector = Injector.create({
+        parent: this._injector,
+        providers: [{ provide: manifest.dataToken, useValue: data }],
+      })
     }
 
     if (typeof manifest.component === 'string') {
-      this._dynamicComponentLoader.getComponentFactory<object>(manifest.component).pipe(
-        map(componentFactory => {
-          return new ComponentPortal(
-            componentFactory.componentType,
-            null,
-            injector,
-          )
-        }),
-      ).toPromise()
+      this._dynamicComponentLoader
+        .getComponentFactory<object>(manifest.component)
+        .pipe(
+          map((componentFactory) => {
+            return new ComponentPortal(
+              componentFactory.componentType,
+              null,
+              injector,
+            )
+          }),
+        )
+        .toPromise()
     } else {
       return new ComponentPortal(manifest.component, null, injector, null)
     }
   }
-
 }

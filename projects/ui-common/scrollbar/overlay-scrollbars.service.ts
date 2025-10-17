@@ -4,20 +4,26 @@ import { fromEvent, Subscription } from 'rxjs'
 
 import OverlayScrollbars from 'overlayscrollbars'
 
-import { THESEAM_OVERLAY_SCROLLBARS_CONFIG, _OverlayScrollbarDefaults } from './overlay-scrollbars-config'
+import {
+  THESEAM_OVERLAY_SCROLLBARS_CONFIG,
+  _OverlayScrollbarDefaults,
+} from './overlay-scrollbars-config'
 import { TheSeamOverlayScrollbarsConfig } from './overlay-scrollbars-config-model'
 
 @Injectable({ providedIn: 'root' })
 export class TheSeamOverlayScrollbarsService {
-
   private readonly _ngZone = inject(NgZone)
   private readonly _injector = inject(Injector)
   private readonly _platform = inject(Platform)
 
   private _inputEventSubscription = Subscription.EMPTY
 
-  public initializeInstance(element: HTMLElement, options?: TheSeamOverlayScrollbarsConfig): void {
-    if (!this.isInstanceEnabled(element) &&
+  public initializeInstance(
+    element: HTMLElement,
+    options?: TheSeamOverlayScrollbarsConfig,
+  ): void {
+    if (
+      !this.isInstanceEnabled(element) &&
       // The 'overlayscrollbars' library is causing an issue on iOS. Since iOS
       // already has native overlay scrollbars it shouldn't really effect the
       // app layout.
@@ -31,7 +37,7 @@ export class TheSeamOverlayScrollbarsService {
           // the fact that timing out for 100ms is usually enough time to wait
           // for update to correctly calculate.
           // NOTE: This may be fixed in a newer version to not need this hack.
-          fromEvent(element, 'change').subscribe(_ => {
+          fromEvent(element, 'change').subscribe((_) => {
             this._ngZone.run(() => {
               setTimeout(() => {
                 if (this.isInstanceEnabled(element)) {
@@ -49,7 +55,10 @@ export class TheSeamOverlayScrollbarsService {
     if (this.isInstanceEnabled(element)) {
       this._ngZone.runOutsideAngular(() => {
         this.getInstance(element).destroy()
-        if (this._inputEventSubscription && !this._inputEventSubscription.closed) {
+        if (
+          this._inputEventSubscription &&
+          !this._inputEventSubscription.closed
+        ) {
           this._inputEventSubscription.unsubscribe()
         }
       })
@@ -64,8 +73,13 @@ export class TheSeamOverlayScrollbarsService {
     return !!this.getInstance(element)
   }
 
-  public setOptions(element: HTMLElement, options: TheSeamOverlayScrollbarsConfig): boolean {
-    if (!this.isInstanceEnabled(element)) { return false }
+  public setOptions(
+    element: HTMLElement,
+    options: TheSeamOverlayScrollbarsConfig,
+  ): boolean {
+    if (!this.isInstanceEnabled(element)) {
+      return false
+    }
 
     this.getInstance(element).options(this._applyConfigDefaults(options))
 
@@ -76,8 +90,13 @@ export class TheSeamOverlayScrollbarsService {
     return this.getInstance(element).options()
   }
 
-  private _applyConfigDefaults(config?: TheSeamOverlayScrollbarsConfig): TheSeamOverlayScrollbarsConfig {
-    const _config: TheSeamOverlayScrollbarsConfig = this._injector.get(THESEAM_OVERLAY_SCROLLBARS_CONFIG, _OverlayScrollbarDefaults)
+  private _applyConfigDefaults(
+    config?: TheSeamOverlayScrollbarsConfig,
+  ): TheSeamOverlayScrollbarsConfig {
+    const _config: TheSeamOverlayScrollbarsConfig = this._injector.get(
+      THESEAM_OVERLAY_SCROLLBARS_CONFIG,
+      _OverlayScrollbarDefaults,
+    )
     return { ..._config, ...config }
   }
 
@@ -85,5 +104,4 @@ export class TheSeamOverlayScrollbarsService {
   protected _isTextarea(element: HTMLElement) {
     return element.nodeName.toLowerCase() === 'textarea'
   }
-
 }

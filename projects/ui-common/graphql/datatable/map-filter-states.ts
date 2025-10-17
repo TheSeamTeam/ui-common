@@ -3,7 +3,10 @@ import { from, Observable } from 'rxjs'
 import { concatMap, filter, take, toArray } from 'rxjs/operators'
 
 import { DataFilterState } from '@theseam/ui-common/data-filters'
-import { notNullOrUndefined, wrapIntoObservable } from '@theseam/ui-common/utils'
+import {
+  notNullOrUndefined,
+  wrapIntoObservable,
+} from '@theseam/ui-common/utils'
 
 import { MapperContext } from './mapper-context'
 
@@ -16,13 +19,20 @@ export interface FilterStateMapperFilter {
 }
 
 export type FilterStateMapperResult = {
-  filter: FilterStateMapperFilter,
+  filter: FilterStateMapperFilter
   variables: FilterStateMapperVariables
 } | null
 
-export type FilterStateMapper = (filterState: DataFilterState, context: MapperContext)
-=> (FilterStateMapperResult | Promise<FilterStateMapperResult> | Observable<FilterStateMapperResult>)
-export interface FilterStateMappers { [filterName: string]: FilterStateMapper }
+export type FilterStateMapper = (
+  filterState: DataFilterState,
+  context: MapperContext,
+) =>
+  | FilterStateMapperResult
+  | Promise<FilterStateMapperResult>
+  | Observable<FilterStateMapperResult>
+export interface FilterStateMappers {
+  [filterName: string]: FilterStateMapper
+}
 
 function resolveMapper(
   filterState: DataFilterState,
@@ -44,15 +54,19 @@ function resolveMappers(
   filterStates: DataFilterState[],
   filterStateMappers: FilterStateMappers,
   context: MapperContext,
-): Observable<(Exclude<FilterStateMapperResult, null>)[]> {
+): Observable<Exclude<FilterStateMapperResult, null>[]> {
   return from(filterStates).pipe(
-    concatMap(filterState => resolveMapper(filterState, filterStateMappers, context)),
+    concatMap((filterState) =>
+      resolveMapper(filterState, filterStateMappers, context),
+    ),
     filter(notNullOrUndefined),
     toArray(),
   )
 }
 
-function mergeFilters(filters: FilterStateMapperFilter[]): { or: FilterStateMapperFilter[] } {
+function mergeFilters(filters: FilterStateMapperFilter[]): {
+  or: FilterStateMapperFilter[]
+} {
   return { or: filters }
 }
 
@@ -63,7 +77,9 @@ function mergeFilters(filters: FilterStateMapperFilter[]): { or: FilterStateMapp
  * variable then the last object's value will be in the merged object. *In
  * devMode an error will be thrown.*
  */
-function mergeVariables(variableObjects: FilterStateMapperVariables[]): FilterStateMapperVariables {
+function mergeVariables(
+  variableObjects: FilterStateMapperVariables[],
+): FilterStateMapperVariables {
   const variables: FilterStateMapperVariables = {}
 
   for (const v of variableObjects) {
@@ -73,7 +89,9 @@ function mergeVariables(variableObjects: FilterStateMapperVariables[]): FilterSt
       for (const p of props) {
         if (notNullOrUndefined(variables[p]) && variables[p] !== v[p]) {
           // eslint-disable-next-line no-console
-          console.warn(`Multiple filters adding the same variable with a different result. This could cause unexpected results.`)
+          console.warn(
+            `Multiple filters adding the same variable with a different result. This could cause unexpected results.`,
+          )
           break
         }
       }
@@ -96,7 +114,12 @@ export async function mapFilterStates(
   filterStateMappers: FilterStateMappers,
   context: MapperContext,
 ): Promise<FilterStateMapperResult> {
-  const results: FilterStateMapperFilter[] = (await resolveMappers(filterStates, filterStateMappers, context).toPromise()) ?? []
+  const results: FilterStateMapperFilter[] =
+    (await resolveMappers(
+      filterStates,
+      filterStateMappers,
+      context,
+    ).toPromise()) ?? []
 
   if (results.length === 0) {
     return null
@@ -105,7 +128,7 @@ export async function mapFilterStates(
   const filters = results
     .map((r: any) => r.filter)
     .filter(notNullOrUndefined)
-    .filter(mapperFilter => !isEmptyFilter(mapperFilter))
+    .filter((mapperFilter) => !isEmptyFilter(mapperFilter))
 
   const variableObjs = results
     .map((r: any) => r.variables)

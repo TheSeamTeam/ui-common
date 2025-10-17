@@ -1,5 +1,13 @@
 import { BooleanInput } from '@angular/cdk/coercion'
-import { AfterViewInit, Component, ElementRef, HostBinding, Input, OnDestroy, ViewChild } from '@angular/core'
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostBinding,
+  Input,
+  OnDestroy,
+  ViewChild,
+} from '@angular/core'
 import { from, Observable, Subject } from 'rxjs'
 import { auditTime, switchMap, takeUntil } from 'rxjs/operators'
 
@@ -10,18 +18,21 @@ import { TheSeamElemResizedDirective } from '@theseam/ui-common/shared'
 @Component({
   selector: 'seam-pdf-page',
   template: `
-    <div #pdfContainer
-      (seamElemResized)="onResized()">
+    <div #pdfContainer (seamElemResized)="onResized()">
       <canvas #pdfCanvas></canvas>
     </div>
   `,
-  styles: [`
-    :host { display: block; }
-    canvas { display: block; }
-  `],
-  imports: [
-    TheSeamElemResizedDirective,
+  styles: [
+    `
+      :host {
+        display: block;
+      }
+      canvas {
+        display: block;
+      }
+    `,
   ],
+  imports: [TheSeamElemResizedDirective],
 })
 export class TheSeamPdfPageComponent implements OnDestroy, AfterViewInit {
   static ngAcceptInputType_shadow: BooleanInput
@@ -30,19 +41,27 @@ export class TheSeamPdfPageComponent implements OnDestroy, AfterViewInit {
   private readonly _ngUnsubscribe = new Subject<void>()
 
   @Input()
-  public get page() { return this._page }
+  public get page() {
+    return this._page
+  }
   public set page(value) {
     this._page = value
-    setTimeout(() => { this.render() })
+    setTimeout(() => {
+      this.render()
+    })
   }
   private _page: any
 
   @Input() @InputBoolean() shadow = false
 
-  @HostBinding('class.shadow') get _shadow() { return this.shadow }
+  @HostBinding('class.shadow') get _shadow() {
+    return this.shadow
+  }
 
-  @ViewChild('pdfContainer', { static: true }) pdfContainer?: ElementRef<HTMLDivElement>
-  @ViewChild('pdfCanvas', { static: true }) pdfCanvas?: ElementRef<HTMLCanvasElement>
+  @ViewChild('pdfContainer', { static: true })
+  pdfContainer?: ElementRef<HTMLDivElement>
+  @ViewChild('pdfCanvas', { static: true })
+  pdfCanvas?: ElementRef<HTMLCanvasElement>
 
   /**
    * Canvas will responsively scale and rerender if scaled more than
@@ -72,8 +91,10 @@ export class TheSeamPdfPageComponent implements OnDestroy, AfterViewInit {
     this._render$ = this._renderRequestSubject.pipe(
       takeUntil(this._ngUnsubscribe),
       auditTime(500),
-      switchMap(_ => from(waitOnConditionAsync(() => this.rendering === false, 30 * 1000))),
-      switchMap(_ => from(this._render())),
+      switchMap((_) =>
+        from(waitOnConditionAsync(() => this.rendering === false, 30 * 1000)),
+      ),
+      switchMap((_) => from(this._render())),
     )
   }
 
@@ -134,20 +155,25 @@ export class TheSeamPdfPageComponent implements OnDestroy, AfterViewInit {
   }
 
   onResized() {
-    if (!this.responsive || this.renderUpdateThreshold === -1) { return }
+    if (!this.responsive || this.renderUpdateThreshold === -1) {
+      return
+    }
 
     if (!this.pdfContainer || !this.pdfCanvas) {
       return
     }
 
-    const containerRect = this.pdfContainer.nativeElement.getBoundingClientRect()
+    const containerRect =
+      this.pdfContainer.nativeElement.getBoundingClientRect()
     const pdfWidth = this.pdfCanvas.nativeElement.width
     const pdfHeight = this.pdfCanvas.nativeElement.height
     const wDiff = Math.abs(containerRect.width - pdfWidth)
     const hDiff = Math.abs(containerRect.height - pdfHeight)
-    if (wDiff > this.renderUpdateThreshold || hDiff > this.renderUpdateThreshold) {
+    if (
+      wDiff > this.renderUpdateThreshold ||
+      hDiff > this.renderUpdateThreshold
+    ) {
       this.render()
     }
   }
-
 }

@@ -6,6 +6,6 @@ import { inlineVariableTransformer } from './transformers/inline-variable.transf
  */
 export const inlineVariableHintDef: HintDefinition = {
   name: 'inline-variable',
-  appliesTo: [ HintsKind.Variable, HintsKind.VariableDefinition ],
+  appliesTo: [HintsKind.Variable, HintsKind.VariableDefinition],
   transformer: inlineVariableTransformer,
 }

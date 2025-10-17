@@ -38,12 +38,15 @@ export interface TheSeamQuillMentionMenuHeader {
   disabled?: boolean
 }
 
-export type TheSeamQuillMentionMenuItem = TheSeamQuillMentionMenuOption | TheSeamQuillMentionMenuDivider | TheSeamQuillMentionMenuHeader
+export type TheSeamQuillMentionMenuItem =
+  | TheSeamQuillMentionMenuOption
+  | TheSeamQuillMentionMenuDivider
+  | TheSeamQuillMentionMenuHeader
 
 export type TheSeamQuillMentionSearchFn = (
   source: TheSeamQuillMentionMenuItem[],
   textAfter: string,
-  mentionChar: string
+  mentionChar: string,
 ) => TheSeamQuillMentionMenuItem[]
 
 export type TheSeamQuillMentionSourceFn = (
@@ -57,9 +60,9 @@ export type TheSeamQuillMentionSourceFn = (
       value: string
       [key: string]: string | undefined
     }[],
-    searchTerm: string
+    searchTerm: string,
   ) => void,
-  mentionChar: string
+  mentionChar: string,
 ) => void
 
 /**
@@ -202,9 +205,9 @@ export interface TheSeamQuillMentionOptions {
         value: string
         [key: string]: string | undefined
       }[],
-      searchTerm: string
+      searchTerm: string,
     ) => void,
-    mentionChar: string
+    mentionChar: string,
   ) => void
 
   /**
@@ -233,7 +236,7 @@ export interface TheSeamQuillMentionOptions {
    */
   renderItem?: (
     item: { id: string; value: string; [key: string]: unknown },
-    searchTerm: string
+    searchTerm: string,
   ) => string | HTMLElement
 
   /**
@@ -252,8 +255,8 @@ export interface TheSeamQuillMentionOptions {
     insertItem: (
       data: Record<string, unknown>,
       programmaticInsert?: boolean,
-      overriddenOptions?: object
-    ) => void
+      overriddenOptions?: object,
+    ) => void,
   ) => void
 }
 
@@ -418,7 +421,7 @@ export interface TheSeamQuillEditorConfig {
    */
   valueGetter?: (
     quillEditor: QuillType,
-    editorElement: HTMLElement
+    editorElement: HTMLElement,
   ) => string | any
 
   /**
@@ -433,5 +436,5 @@ export interface TheSeamQuillEditorConfig {
 
 export type TheSeamCharacterCounterFn = (
   value: string,
-  format: TheSeamQuillInputFormat | undefined
+  format: TheSeamQuillInputFormat | undefined,
 ) => number

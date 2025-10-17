@@ -28,10 +28,13 @@ export function createApolloTestingProvider(
     useFactory: () => {
       return {
         cache: new InMemoryCache(),
-        link: concat(queryProcessingLink, graphQLLink({
-          schema,
-          rootValue,
-        })),
+        link: concat(
+          queryProcessingLink,
+          graphQLLink({
+            schema,
+            rootValue,
+          }),
+        ),
         defaultOptions: {
           watchQuery: {
             fetchPolicy: 'cache-and-network',

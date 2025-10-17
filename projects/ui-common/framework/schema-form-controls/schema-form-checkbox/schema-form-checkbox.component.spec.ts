@@ -10,8 +10,7 @@ describe('TheSeamSchemaFormCheckboxComponent', () => {
     TestBed.configureTestingModule({
       declarations: [TheSeamSchemaFormCheckboxComponent],
       teardown: { destroyAfterEach: false },
-    })
-      .compileComponents()
+    }).compileComponents()
   }))
 
   beforeEach(() => {

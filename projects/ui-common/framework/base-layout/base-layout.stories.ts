@@ -1,8 +1,19 @@
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 
 import { Component, Inject, Optional, OnInit } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
-import { NavigationEnd, provideRouter, Route, Router, RouterModule } from '@angular/router'
+import {
+  NavigationEnd,
+  provideRouter,
+  Route,
+  Router,
+  RouterModule,
+} from '@angular/router'
 import { provideLocationMocks } from '@angular/common/testing'
 import { BehaviorSubject, interval, Observable, of } from 'rxjs'
 import { delay, filter, map, shareReplay, startWith, tap } from 'rxjs/operators'
@@ -56,28 +67,32 @@ import { TheSeamMenuModule } from '@theseam/ui-common/menu'
 
 @Component({
   selector: 'story-ex-widget-1',
-  template: `<seam-widget [icon]="faWrench" titleText="Example Widget 1" [hasConfig]="true" [loading]="!(initialized$ | async)">
+  template: `<seam-widget
+    [icon]="faWrench"
+    titleText="Example Widget 1"
+    [hasConfig]="true"
+    [loading]="!(initialized$ | async)"
+  >
     <seam-widget-content-header>Widget example 1</seam-widget-content-header>
 
     <seam-widget-tile-list>
-      <button *ngFor="let item of items" seam-widget-tile [icon]="faBell">{{ item }}</button>
+      <button *ngFor="let item of items" seam-widget-tile [icon]="faBell">
+        {{ item }}
+      </button>
     </seam-widget-tile-list>
 
-    <seam-widget-footer-text *ngIf="p?.length">Submitted: {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text>
+    <seam-widget-footer-text *ngIf="p?.length"
+      >Submitted:
+      {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text
+    >
   </seam-widget>`,
-  imports: [
-    NgIf,
-    NgFor,
-    AsyncPipe,
-    DatePipe,
-    TheSeamWidgetModule,
-  ],
+  imports: [NgIf, NgFor, AsyncPipe, DatePipe, TheSeamWidgetModule],
 })
 class StoryExWidget1Component implements OnInit {
   faWrench = faWrench
   faBell = faBell
   initialized$ = of(true).pipe(delay(1000))
-  items = [ 'one', 'two', 'three', 'four' ]
+  items = ['one', 'two', 'three', 'four']
 
   ngOnInit() {
     console.log('Widget 1 initialized')
@@ -86,80 +101,93 @@ class StoryExWidget1Component implements OnInit {
 
 @Component({
   selector: 'story-ex-widget-2',
-  template: `<seam-widget [icon]="faWrench" titleText="Example Widget 2" [hasConfig]="true" [loading]="!(initialized$ | async)">
+  template: `<seam-widget
+    [icon]="faWrench"
+    titleText="Example Widget 2"
+    [hasConfig]="true"
+    [loading]="!(initialized$ | async)"
+  >
     <seam-widget-content-header>Widget example 2</seam-widget-content-header>
 
     <seam-widget-tile-list>
-      <button *ngFor="let item of items" seam-widget-tile [icon]="faBell">{{ item }}</button>
+      <button *ngFor="let item of items" seam-widget-tile [icon]="faBell">
+        {{ item }}
+      </button>
     </seam-widget-tile-list>
 
-    <seam-widget-footer-text *ngIf="p?.length">Submitted: {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text>
+    <seam-widget-footer-text *ngIf="p?.length"
+      >Submitted:
+      {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text
+    >
   </seam-widget>`,
-  imports: [
-    NgIf,
-    NgFor,
-    AsyncPipe,
-    DatePipe,
-    TheSeamWidgetModule,
-  ],
+  imports: [NgIf, NgFor, AsyncPipe, DatePipe, TheSeamWidgetModule],
 })
 class StoryExWidget2Component {
   faWrench = faWrench
   faBell = faBell
   initialized$ = of(true).pipe(delay(1000))
-  items = [ 'one', 'two', 'three', 'four' ]
+  items = ['one', 'two', 'three', 'four']
 }
 
 @Component({
   selector: 'story-ex-widget-3',
-  template: `<seam-widget [icon]="faWrench" titleText="Example Widget 3" [hasConfig]="true" [loading]="!(initialized$ | async)">
+  template: `<seam-widget
+    [icon]="faWrench"
+    titleText="Example Widget 3"
+    [hasConfig]="true"
+    [loading]="!(initialized$ | async)"
+  >
     <seam-widget-content-header>Widget example 3</seam-widget-content-header>
 
     <seam-widget-tile-list>
-      <button *ngFor="let item of items.slice(0, 2)" seam-widget-tile [icon]="faBell">{{ item }}</button>
+      <button
+        *ngFor="let item of items.slice(0, 2)"
+        seam-widget-tile
+        [icon]="faBell"
+      >
+        {{ item }}
+      </button>
     </seam-widget-tile-list>
 
     <a seam-widget-footer-link routerLink="/example1">See All</a>
   </seam-widget>`,
-  imports: [
-    NgIf,
-    NgFor,
-    AsyncPipe,
-    DatePipe,
-    TheSeamWidgetModule,
-  ],
+  imports: [NgIf, NgFor, AsyncPipe, DatePipe, TheSeamWidgetModule],
 })
 class StoryExWidget3Component {
   faWrench = faWrench
   faBell = faBell
   initialized$ = of(true).pipe(delay(1000))
-  items = [ 'one', 'two', 'three', 'four' ]
+  items = ['one', 'two', 'three', 'four']
 }
 
 @Component({
   selector: 'story-ex-widget-4',
-  template: `<seam-widget [icon]="faWrench" titleText="Example Widget 4" [hasConfig]="true" [loading]="!(initialized$ | async)">
+  template: `<seam-widget
+    [icon]="faWrench"
+    titleText="Example Widget 4"
+    [hasConfig]="true"
+    [loading]="!(initialized$ | async)"
+  >
     <seam-widget-content-header>Widget example 4</seam-widget-content-header>
 
     <seam-widget-tile-list>
-      <button *ngFor="let item of items" seam-widget-tile [icon]="faBell">{{ item }}</button>
+      <button *ngFor="let item of items" seam-widget-tile [icon]="faBell">
+        {{ item }}
+      </button>
     </seam-widget-tile-list>
 
-    <seam-widget-footer-text *ngIf="p?.length">Submitted: {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text>
+    <seam-widget-footer-text *ngIf="p?.length"
+      >Submitted:
+      {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text
+    >
   </seam-widget>`,
-  imports: [
-    NgIf,
-    NgFor,
-    AsyncPipe,
-    DatePipe,
-    TheSeamWidgetModule,
-  ],
+  imports: [NgIf, NgFor, AsyncPipe, DatePipe, TheSeamWidgetModule],
 })
 class StoryExWidget4Component {
   faWrench = faWrench
   faBell = faBell
   initialized$ = of(true).pipe(delay(1000))
-  items = [ 'one', 'two', 'three', 'four' ]
+  items = ['one', 'two', 'three', 'four']
 }
 
 // @Component({
@@ -191,14 +219,11 @@ class StoryExWidget4Component {
 
 @Component({
   template: `Url: {{ router.url }} [{{ countDown$ | async }}]`,
-  imports: [
-    AsyncPipe,
-    RouterModule,
-  ],
+  imports: [AsyncPipe, RouterModule],
 })
 class StoryRoutePlacholderComponent {
   countDown$ = interval(1000).pipe(
-    map(v => v + 1),
+    map((v) => v + 1),
     startWith(0),
   )
   constructor(public router: Router) {
@@ -228,10 +253,26 @@ const routes: Route[] = [
         component: StoryRoutePlacholderComponent,
         data: { breadcrumb: 'example1' },
         children: [
-          { path: 'example2.1', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.1' } },
-          { path: 'example2.2', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.2' } },
-          { path: 'example2.3', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.3' } },
-          { path: 'example2.4', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.4' } },
+          {
+            path: 'example2.1',
+            component: StoryRoutePlacholderComponent,
+            data: { breadcrumb: 'example2.1' },
+          },
+          {
+            path: 'example2.2',
+            component: StoryRoutePlacholderComponent,
+            data: { breadcrumb: 'example2.2' },
+          },
+          {
+            path: 'example2.3',
+            component: StoryRoutePlacholderComponent,
+            data: { breadcrumb: 'example2.3' },
+          },
+          {
+            path: 'example2.4',
+            component: StoryRoutePlacholderComponent,
+            data: { breadcrumb: 'example2.4' },
+          },
         ],
       },
       {
@@ -239,25 +280,53 @@ const routes: Route[] = [
         component: StoryRoutePlacholderComponent,
         data: { breadcrumb: 'example2' },
         children: [
-          { path: 'example2.1', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.1' } },
+          {
+            path: 'example2.1',
+            component: StoryRoutePlacholderComponent,
+            data: { breadcrumb: 'example2.1' },
+          },
           {
             path: 'example2.2',
             component: StoryRoutePlacholderComponent,
             data: { breadcrumb: 'example2.2' },
             children: [
-              { path: 'example2.2.1', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.1' } },
+              {
+                path: 'example2.2.1',
+                component: StoryRoutePlacholderComponent,
+                data: { breadcrumb: 'example2.1' },
+              },
               {
                 path: 'example2.2.2',
                 component: StoryRoutePlacholderComponent,
                 data: { breadcrumb: 'example2.2.2' },
                 children: [
-                  { path: 'example2.2.2.1', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.2.2.1' } },
-                  { path: 'example2.2.2.2', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.2.2.2' } },
-                  { path: 'example2.2.2.3', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.2.2.3' } },
-                  { path: 'example2.2.2.4', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.2.2.4' } },
+                  {
+                    path: 'example2.2.2.1',
+                    component: StoryRoutePlacholderComponent,
+                    data: { breadcrumb: 'example2.2.2.1' },
+                  },
+                  {
+                    path: 'example2.2.2.2',
+                    component: StoryRoutePlacholderComponent,
+                    data: { breadcrumb: 'example2.2.2.2' },
+                  },
+                  {
+                    path: 'example2.2.2.3',
+                    component: StoryRoutePlacholderComponent,
+                    data: { breadcrumb: 'example2.2.2.3' },
+                  },
+                  {
+                    path: 'example2.2.2.4',
+                    component: StoryRoutePlacholderComponent,
+                    data: { breadcrumb: 'example2.2.2.4' },
+                  },
                 ],
               },
-              { path: 'example2.2.3', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.3' } },
+              {
+                path: 'example2.2.3',
+                component: StoryRoutePlacholderComponent,
+                data: { breadcrumb: 'example2.3' },
+              },
             ],
           },
           {
@@ -265,21 +334,45 @@ const routes: Route[] = [
             component: StoryRoutePlacholderComponent,
             data: { breadcrumb: 'example2.3' },
             children: [
-              { path: 'example2.3.1', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.1' } },
+              {
+                path: 'example2.3.1',
+                component: StoryRoutePlacholderComponent,
+                data: { breadcrumb: 'example2.1' },
+              },
               {
                 path: 'example2.3.2',
                 component: StoryRoutePlacholderComponent,
                 data: { breadcrumb: 'example2.3.2' },
                 children: [
-                  { path: 'example2.3.2.1', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.3.2.1' } },
-                  { path: 'example2.3.2.2', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.3.2.2' } },
-                  { path: 'example2.3.2.3', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.3.2.3' } },
+                  {
+                    path: 'example2.3.2.1',
+                    component: StoryRoutePlacholderComponent,
+                    data: { breadcrumb: 'example2.3.2.1' },
+                  },
+                  {
+                    path: 'example2.3.2.2',
+                    component: StoryRoutePlacholderComponent,
+                    data: { breadcrumb: 'example2.3.2.2' },
+                  },
+                  {
+                    path: 'example2.3.2.3',
+                    component: StoryRoutePlacholderComponent,
+                    data: { breadcrumb: 'example2.3.2.3' },
+                  },
                 ],
               },
-              { path: 'example2.3.3', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.3' } },
+              {
+                path: 'example2.3.3',
+                component: StoryRoutePlacholderComponent,
+                data: { breadcrumb: 'example2.3' },
+              },
             ],
           },
-          { path: 'example2.4', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example2.4' } },
+          {
+            path: 'example2.4',
+            component: StoryRoutePlacholderComponent,
+            data: { breadcrumb: 'example2.4' },
+          },
         ],
       },
       {
@@ -287,14 +380,38 @@ const routes: Route[] = [
         component: StoryRoutePlacholderComponent,
         data: { breadcrumb: 'example3' },
         children: [
-          { path: 'example3.1', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example3.1' } },
-          { path: 'example3.2', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example3.2' } },
-          { path: 'example3.3', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example3.3' } },
-          { path: 'example3.4', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example3.4' } },
+          {
+            path: 'example3.1',
+            component: StoryRoutePlacholderComponent,
+            data: { breadcrumb: 'example3.1' },
+          },
+          {
+            path: 'example3.2',
+            component: StoryRoutePlacholderComponent,
+            data: { breadcrumb: 'example3.2' },
+          },
+          {
+            path: 'example3.3',
+            component: StoryRoutePlacholderComponent,
+            data: { breadcrumb: 'example3.3' },
+          },
+          {
+            path: 'example3.4',
+            component: StoryRoutePlacholderComponent,
+            data: { breadcrumb: 'example3.4' },
+          },
         ],
       },
-      { path: 'example4', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example4' } },
-      { path: 'example5', component: StoryRoutePlacholderComponent, data: { breadcrumb: 'example5' } },
+      {
+        path: 'example4',
+        component: StoryRoutePlacholderComponent,
+        data: { breadcrumb: 'example4' },
+      },
+      {
+        path: 'example5',
+        component: StoryRoutePlacholderComponent,
+        data: { breadcrumb: 'example5' },
+      },
     ],
   },
 ]
@@ -568,96 +685,114 @@ const horizontalNavItems: INavItem[] = [
 
 @Component({
   selector: 'story-ex-base-layout',
-  styles: [`
-    :host::ng-deep .top-bar-items--left {
-       flex-grow: 1;
-       align-items: stretch;
-    }
+  styles: [
+    `
+      :host::ng-deep .top-bar-items--left {
+        flex-grow: 1;
+        align-items: stretch;
+      }
 
-    :host::ng-deep .base-layout-top-bar-container {
-      box-shadow: 0 0 6px gray;
-    }
+      :host::ng-deep .base-layout-top-bar-container {
+        box-shadow: 0 0 6px gray;
+      }
 
-    :host .app-mobile::ng-deep .base-layout-top-bar-container {
-      height: 58px;
-    }
+      :host .app-mobile::ng-deep .base-layout-top-bar-container {
+        height: 58px;
+      }
 
-    .profile-button {
-      width: 35px;
-      height: 35px;
-      background-color: white;
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      border-radius: 100%;
-      border: 2px solid #357ebd;
-      padding: 0;
+      .profile-button {
+        width: 35px;
+        height: 35px;
+        background-color: white;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        border-radius: 100%;
+        border: 2px solid #357ebd;
+        padding: 0;
+      }
 
-    }
+      :host::ng-deep .seam-nav-item--focused {
+        border-bottom: 1px solid #357ebd;
+      }
 
-    :host::ng-deep .seam-nav-item--focused {
-      border-bottom: 1px solid #357ebd;
-    }
+      :host::ng-deep .base-layout-content-container-footer .profile-button {
+        border-color: white;
+      }
 
-    :host::ng-deep .base-layout-content-container-footer .profile-button {
-      border-color: white;
-    }
+      :host::ng-deep .base-layout-side-bar-nav-content-mobile {
+        top: 58px;
+      }
 
-    :host::ng-deep .base-layout-side-bar-nav-content-mobile {
-      top: 58px;
-    }
+      :host .app-mobileNav::ng-deep .base-layout-side-bar-nav-content-mobile {
+        bottom: 49px;
+      }
 
-    :host .app-mobileNav::ng-deep .base-layout-side-bar-nav-content-mobile {
-      bottom: 49px;
-    }
+      :host::ng-deep .base-layout-nav-toggle {
+        padding: 0;
+        margin: 0 0.5rem;
+      }
 
-    :host::ng-deep .base-layout-nav-toggle {
-      padding: 0;
-      margin: 0 .5rem;
-    }
+      :host .app-mobileNav::ng-deep .base-layout-nav-toggle {
+        margin-right: 0;
+      }
 
-    :host .app-mobileNav::ng-deep .base-layout-nav-toggle {
-      margin-right: 0;
-    }
+      :host::ng-deep .base-layout-nav-toggle .mobile-nav-bars {
+        position: relative;
+        width: 35px;
+        height: 28px;
+      }
 
-    :host::ng-deep .base-layout-nav-toggle .mobile-nav-bars {
-      position: relative;
-      width: 35px;
-      height: 28px;
-    }
+      :host::ng-deep .base-layout-nav-toggle .mobile-nav-bar {
+        position: absolute;
+        left: 0;
+        width: 35px;
+        height: 5px;
+        border-radius: 5px;
+        background: #357ebd;
+        transition: 0.3s;
+      }
+      :host::ng-deep
+        .base-layout-nav-toggle
+        .mobile-nav-bar.mobile-nav-bar__top {
+        top: 0;
+        transform-origin: top left;
+      }
+      :host::ng-deep
+        .base-layout-nav-toggle
+        .mobile-nav-bar.mobile-nav-bar__middle {
+        top: calc(50% - 2.5px);
+      }
+      :host::ng-deep
+        .base-layout-nav-toggle
+        .mobile-nav-bar.mobile-nav-bar__bottom {
+        bottom: 0;
+        transform-origin: bottom left;
+      }
 
-    :host::ng-deep .base-layout-nav-toggle .mobile-nav-bar {
-      position: absolute;
-      left: 0;
-      width: 35px;
-      height: 5px;
-      border-radius: 5px;
-      background: #357ebd;
-      transition: .3s;
-    }
-    :host::ng-deep .base-layout-nav-toggle .mobile-nav-bar.mobile-nav-bar__top {
-      top: 0;
-      transform-origin: top left;
-    }
-    :host::ng-deep .base-layout-nav-toggle .mobile-nav-bar.mobile-nav-bar__middle {
-      top: calc(50% - 2.5px);
-    }
-    :host::ng-deep .base-layout-nav-toggle .mobile-nav-bar.mobile-nav-bar__bottom {
-      bottom: 0;
-      transform-origin: bottom left;
-    }
-
-    :host::ng-deep .base-layout-nav-toggle.base-layout-nav-toggle--expanded .mobile-nav-bar__top {
-      transform: translateX(6px) rotate(45deg);
-    }
-    :host::ng-deep .base-layout-nav-toggle.base-layout-nav-toggle--expanded .mobile-nav-bar__middle {
-      opacity: 0;
-    }
-    :host::ng-deep .base-layout-nav-toggle.base-layout-nav-toggle--expanded .mobile-nav-bar__bottom {
-      transform: translateX(6px) rotate(-45deg);
-    }`,
+      :host::ng-deep
+        .base-layout-nav-toggle.base-layout-nav-toggle--expanded
+        .mobile-nav-bar__top {
+        transform: translateX(6px) rotate(45deg);
+      }
+      :host::ng-deep
+        .base-layout-nav-toggle.base-layout-nav-toggle--expanded
+        .mobile-nav-bar__middle {
+        opacity: 0;
+      }
+      :host::ng-deep
+        .base-layout-nav-toggle.base-layout-nav-toggle--expanded
+        .mobile-nav-bar__bottom {
+        transform: translateX(6px) rotate(-45deg);
+      }
+    `,
   ],
-  template: `<div style="height: 100vh; width: 100vw;" [class.app-desktop]="!(isMobile$ | async)" [class.app-mobile]="isMobile$ | async" [class.app-mobileNav]="isMobileNav$ | async">
+  template: `<div
+    style="height: 100vh; width: 100vw;"
+    [class.app-desktop]="!(isMobile$ | async)"
+    [class.app-mobile]="isMobile$ | async"
+    [class.app-mobileNav]="isMobileNav$ | async"
+  >
     <seam-base-layout [showSidebar]="false" mobileBreakpoint="lt-md">
       <seam-top-bar
         *seamBaseLayoutTopBar
@@ -666,46 +801,68 @@ const horizontalNavItems: INavItem[] = [
         [titleText]="titleText"
         [subTitleText]="subTitleText"
         [hasTopBarMenuButton]="!(isMobileNav$ | async)"
-        [navToggleAlign]="navToggleAlign$ | async">
+        [navToggleAlign]="navToggleAlign$ | async"
+      >
         <seam-menu seamTopBarMenu>
           <a seamMenuItem [icon]="faUserAlt" routerLink="/profile">Profile</a>
           <button seamMenuItem [icon]="faQuestionCircle">About</button>
           <seam-menu-divider></seam-menu-divider>
-          <a seamMenuItem [icon]="faSignOutAlt" routerLink="/logout">Sign out</a>
+          <a seamMenuItem [icon]="faSignOutAlt" routerLink="/logout"
+            >Sign out</a
+          >
         </seam-menu>
 
         <ng-container *ngIf="!(isMobile$ | async)">
-          <div class="w-100 top-bar-nav-wrapper"
+          <div
+            class="w-100 top-bar-nav-wrapper"
             *seamTopBarItem="'left'"
-            [seamOverlayScrollbar]="{ overflowBehavior: { x: 'scroll', y: 'hidden' } }">
+            [seamOverlayScrollbar]="{
+              overflowBehavior: { x: 'scroll', y: 'hidden' },
+            }"
+          >
             <seam-horizontal-nav
               [items]="horizontalNavItems"
               [hierLevel]="1"
               childAction="none"
               expandAction="expandOnly"
               class="ml-2"
-              (navItemExpanded)="_navItemExpanded($event)">
+              (navItemExpanded)="_navItemExpanded($event)"
+            >
             </seam-horizontal-nav>
           </div>
         </ng-container>
 
         <ng-container *ngIf="!(isMobileNav$ | async)">
-          <button *seamTopBarItem
+          <button
+            *seamTopBarItem
             seamIconBtn
             [icon]="faBell"
             iconType="borderless-styled-square"
-            [seamMenuToggle]="notificationMenu">
+            [seamMenuToggle]="notificationMenu"
+          >
             <span class="sr-only">Notifications</span>
-            <seam-icon-notification iconClass="text-danger"></seam-icon-notification>
+            <seam-icon-notification
+              iconClass="text-danger"
+            ></seam-icon-notification>
           </button>
         </ng-container>
 
         <seam-menu #notificationMenu>
           <div style="width: 400px">
-            <a seamMenuItem [icon]="faExclamationTriangle" iconClass="text-warning" routerLink="/profile">
+            <a
+              seamMenuItem
+              [icon]="faExclamationTriangle"
+              iconClass="text-warning"
+              routerLink="/profile"
+            >
               There is a problem with you self-assessment answers.
             </a>
-            <a seamMenuItem [icon]="faExclamationTriangle" iconClass="text-warning" routerLink="/profile">
+            <a
+              seamMenuItem
+              [icon]="faExclamationTriangle"
+              iconClass="text-warning"
+              routerLink="/profile"
+            >
               Your password expires in 10 days.
             </a>
             <button seamMenuItem [icon]="faComment" iconClass="text-primary">
@@ -719,13 +876,19 @@ const horizontalNavItems: INavItem[] = [
 
         <ng-container *seamTopBarMenuBtnDetail>
           <div class="d-flex align-items-center">
-            <div class="profile-button mr-2" style="background-image: url({{ logoSm }});"></div>
+            <div
+              class="profile-button mr-2"
+              style="background-image: url({{ logoSm }});"
+            ></div>
             Test User 1
           </div>
         </ng-container>
 
         <ng-container *seamTopBarCompactMenuBtnDetail>
-          <div class="profile-button" style="background-image: url({{ logoSm }});"></div>
+          <div
+            class="profile-button"
+            style="background-image: url({{ logoSm }});"
+          ></div>
         </ng-container>
 
         <ng-container *seamTopBarNavToggleBtnDetail>
@@ -735,26 +898,45 @@ const horizontalNavItems: INavItem[] = [
             <span class="mobile-nav-bar mobile-nav-bar__bottom"></span>
           </div>
         </ng-container>
-
       </seam-top-bar>
-      <div *seamBaseLayoutContentHeader class="d-flex justify-content-between h-100 overflow-hidden">
+      <div
+        *seamBaseLayoutContentHeader
+        class="d-flex justify-content-between h-100 overflow-hidden"
+      >
         <ng-container *ngIf="!(isMobile$ | async)">
-          <div class="w-100 h-100"
-            [seamOverlayScrollbar]="{ overflowBehavior: { x: 'scroll', y: 'hidden' } }">
+          <div
+            class="w-100 h-100"
+            [seamOverlayScrollbar]="{
+              overflowBehavior: { x: 'scroll', y: 'hidden' },
+            }"
+          >
             <seam-horizontal-nav
               [items]="levelTwoItems$ | async"
-              [hierLevel]="2">
+              [hierLevel]="2"
+            >
             </seam-horizontal-nav>
           </div>
         </ng-container>
         <ng-container *ngIf="!(isMobileNav$ | async)">
           <seam-menu #cropYearMenu>
-            <button seamMenuItem (click)="_setActiveCropYear(2020)">2020</button>
-            <button seamMenuItem (click)="_setActiveCropYear(2021)">2021</button>
-            <button seamMenuItem (click)="_setActiveCropYear(2022)">2022</button>
-            <button seamMenuItem (click)="_setActiveCropYear(2023)">2023</button>
+            <button seamMenuItem (click)="_setActiveCropYear(2020)">
+              2020
+            </button>
+            <button seamMenuItem (click)="_setActiveCropYear(2021)">
+              2021
+            </button>
+            <button seamMenuItem (click)="_setActiveCropYear(2022)">
+              2022
+            </button>
+            <button seamMenuItem (click)="_setActiveCropYear(2023)">
+              2023
+            </button>
           </seam-menu>
-          <button type="button" class="d-flex align-items-center mr-2 btn border-none text-decoration-none py-0" [seamMenuToggle]="cropYearMenu">
+          <button
+            type="button"
+            class="d-flex align-items-center mr-2 btn border-none text-decoration-none py-0"
+            [seamMenuToggle]="cropYearMenu"
+          >
             {{ activeCropYear$ | async }}
             <div class="pl-2 d-flex flex-column">
               <seam-icon class="d-block" [icon]="faAngleDown"></seam-icon>
@@ -770,13 +952,18 @@ const horizontalNavItems: INavItem[] = [
         [expandOrigin]="expandOrigin$ | async"
         [expandWidth]="expandWidth$ | async"
         [toggleIcon]="faTimes"
-        indentSize="0">
+        indentSize="0"
+      >
         <div class="p-2" *seamBaseLayoutSideBarHeader>
-          <img [src]="logo" height="40px">
+          <img [src]="logo" height="40px" />
         </div>
         <ng-container *seamBaseLayoutSideBarFooter>
-          <div class="bg-white py-1 px-2 border-top" *ngIf="isMobileNav$ | async">
-            <span>Copyright &copy; 2021
+          <div
+            class="bg-white py-1 px-2 border-top"
+            *ngIf="isMobileNav$ | async"
+          >
+            <span
+              >Copyright &copy; 2021
               <a href="https://www.theseam.com" target="_blank">
                 The Seam, LLC
               </a>
@@ -788,59 +975,94 @@ const horizontalNavItems: INavItem[] = [
       <seam-dashboard
         *seamBaseLayoutContent
         [widgets]="widgets"
-        [widgetsDraggable]="widgetsDraggable">
+        [widgetsDraggable]="widgetsDraggable"
+      >
       </seam-dashboard>
 
       <div *seamBaseLayoutContentFooter>
-        <div class="bg-white py-1 px-2 border-top" *ngIf="!(isMobileNav$ | async); else mobileFooter">
-          <span>Copyright &copy; 2021
+        <div
+          class="bg-white py-1 px-2 border-top"
+          *ngIf="!(isMobileNav$ | async); else mobileFooter"
+        >
+          <span
+            >Copyright &copy; 2021
             <a href="https://www.theseam.com" target="_blank">
               The Seam, LLC
             </a>
           </span>
         </div>
         <ng-template #mobileFooter>
-          <div class="bg-primary py-1 px-2 d-flex align-items-center justify-content-around">
+          <div
+            class="bg-primary py-1 px-2 d-flex align-items-center justify-content-around"
+          >
             <button
               seamButton
               type="button"
               class="btn"
-              [seamMenuToggle]="cropYearMenu">
+              [seamMenuToggle]="cropYearMenu"
+            >
               {{ activeCropYear$ | async }}
             </button>
             <seam-menu baseWidth="600" #cropYearMenu>
-              <button seamMenuItem (click)="_setActiveCropYear(2020)">2020</button>
-              <button seamMenuItem (click)="_setActiveCropYear(2021)">2021</button>
-              <button seamMenuItem (click)="_setActiveCropYear(2022)">2022</button>
-              <button seamMenuItem (click)="_setActiveCropYear(2023)">2023</button>
+              <button seamMenuItem (click)="_setActiveCropYear(2020)">
+                2020
+              </button>
+              <button seamMenuItem (click)="_setActiveCropYear(2021)">
+                2021
+              </button>
+              <button seamMenuItem (click)="_setActiveCropYear(2022)">
+                2022
+              </button>
+              <button seamMenuItem (click)="_setActiveCropYear(2023)">
+                2023
+              </button>
             </seam-menu>
 
-            <button class="profile-button"
+            <button
+              class="profile-button"
               seamButton
               [seamMenuToggle]="seamTopBarMenu"
-              style="background-image: url({{ logoSm }});">
+              style="background-image: url({{ logoSm }});"
+            >
               <span class="sr-only">Profile</span>
             </button>
             <seam-menu baseWidth="600" #seamTopBarMenu>
-              <a seamMenuItem [icon]="faUserAlt" routerLink="/profile">Profile</a>
+              <a seamMenuItem [icon]="faUserAlt" routerLink="/profile"
+                >Profile</a
+              >
               <button seamMenuItem [icon]="faQuestionCircle">About</button>
               <seam-menu-divider></seam-menu-divider>
-              <a seamMenuItem [icon]="faSignOutAlt" routerLink="/logout">Sign out</a>
+              <a seamMenuItem [icon]="faSignOutAlt" routerLink="/logout"
+                >Sign out</a
+              >
             </seam-menu>
 
             <button
               seamIconBtn
               [icon]="faBell"
               iconType="borderless-styled-square"
-              [seamMenuToggle]="notificationMenu">
+              [seamMenuToggle]="notificationMenu"
+            >
               <span class="sr-only">Notifications</span>
-              <seam-icon-notification iconClass="text-danger"></seam-icon-notification>
+              <seam-icon-notification
+                iconClass="text-danger"
+              ></seam-icon-notification>
             </button>
             <seam-menu baseWidth="600" #notificationMenu>
-              <a seamMenuItem [icon]="faExclamationTriangle" iconClass="text-warning" routerLink="/profile">
+              <a
+                seamMenuItem
+                [icon]="faExclamationTriangle"
+                iconClass="text-warning"
+                routerLink="/profile"
+              >
                 There is a problem with you self-assessment answers.
               </a>
-              <a seamMenuItem [icon]="faExclamationTriangle" iconClass="text-warning" routerLink="/profile">
+              <a
+                seamMenuItem
+                [icon]="faExclamationTriangle"
+                iconClass="text-warning"
+                routerLink="/profile"
+              >
                 Your password expires in 10 days.
               </a>
               <button seamMenuItem [icon]="faComment" iconClass="text-primary">
@@ -852,7 +1074,6 @@ const horizontalNavItems: INavItem[] = [
             </seam-menu>
           </div>
         </ng-template>
-
       </div>
     </seam-base-layout>
   </div>`,
@@ -892,10 +1113,30 @@ class StoryExBaseLayoutComponent {
   logoSm = 'assets/images/theseam_logo_notext.svg'
 
   widgets = [
-    { widgetId: 'widget-1', col: 0, order: 0, component: StoryExWidget1Component },
-    { widgetId: 'widget-2', col: 1, order: 0, component: StoryExWidget2Component },
-    { widgetId: 'widget-3', col: 2, order: 0, component: StoryExWidget3Component },
-    { widgetId: 'widget-4', col: 1, order: 1, component: StoryExWidget4Component },
+    {
+      widgetId: 'widget-1',
+      col: 0,
+      order: 0,
+      component: StoryExWidget1Component,
+    },
+    {
+      widgetId: 'widget-2',
+      col: 1,
+      order: 0,
+      component: StoryExWidget2Component,
+    },
+    {
+      widgetId: 'widget-3',
+      col: 2,
+      order: 0,
+      component: StoryExWidget3Component,
+    },
+    {
+      widgetId: 'widget-4',
+      col: 1,
+      order: 1,
+      component: StoryExWidget4Component,
+    },
   ]
 
   public levelTwoItems$: Observable<INavItem[]>
@@ -910,40 +1151,47 @@ class StoryExBaseLayoutComponent {
   public expandWidth$: Observable<string>
   public navToggleAlign$: Observable<string>
 
-  public _focusedItem = new BehaviorSubject<INavItem | null | undefined>(undefined)
+  public _focusedItem = new BehaviorSubject<INavItem | null | undefined>(
+    undefined,
+  )
   public focusedItem$ = this._focusedItem.asObservable()
 
   constructor(
     private readonly _layout: TheSeamLayoutService,
     private readonly _router: Router,
     private readonly _nav: TheSeamNavService,
-    @Optional() @Inject(THESEAM_BASE_LAYOUT_REF) _baseLayout: TheSeamBaseLayoutRef,
+    @Optional()
+    @Inject(THESEAM_BASE_LAYOUT_REF)
+    _baseLayout: TheSeamBaseLayoutRef,
   ) {
-    this._router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-    ).subscribe(event => {
-      _baseLayout?.registeredNav?.collapse()
-      this._focusActiveItem()
-    })
+    this._router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe((event) => {
+        _baseLayout?.registeredNav?.collapse()
+        this._focusActiveItem()
+      })
 
     this.isMobile$ = this._layout.isMobile$
 
     this.isMobileNav$ = this._layout.observe('lt-sm')
 
     this.expandOrigin$ = this.isMobileNav$.pipe(
-      map(isMobileNav => isMobileNav ? 'right' : 'left'),
+      map((isMobileNav) => (isMobileNav ? 'right' : 'left')),
     )
     this.expandWidth$ = this.isMobileNav$.pipe(
-      map(isMobileNav => isMobileNav ? '100%' : '450px'),
+      map((isMobileNav) => (isMobileNav ? '100%' : '450px')),
     )
     this.navToggleAlign$ = this.isMobileNav$.pipe(
-      map(isMobileNav => isMobileNav ? 'right' : 'left'),
+      map((isMobileNav) => (isMobileNav ? 'right' : 'left')),
     )
 
     this._focusActiveItem()
     this.levelTwoItems$ = this.focusedItem$.pipe(
-      map(focusedItem => {
-        if (notNullOrUndefined(focusedItem) && horizontalNavItemHasChildren(focusedItem)) {
+      map((focusedItem) => {
+        if (
+          notNullOrUndefined(focusedItem) &&
+          horizontalNavItemHasChildren(focusedItem)
+        ) {
           return focusedItem.children
         }
 
@@ -958,14 +1206,17 @@ class StoryExBaseLayoutComponent {
   }
 
   _findActiveItem(items: INavItem[]): INavItem | undefined {
-    const activeItem = items.find(i => this._nav.horizontalNavLinkActive(i))
+    const activeItem = items.find((i) => this._nav.horizontalNavLinkActive(i))
 
     if (activeItem !== undefined) {
       return activeItem
     }
 
-    return items.find(i => horizontalNavItemHasChildren(i) &&
-      this._findActiveItem(i.children) !== undefined)
+    return items.find(
+      (i) =>
+        horizontalNavItemHasChildren(i) &&
+        this._findActiveItem(i.children) !== undefined,
+    )
   }
 
   _navItemExpanded(event: NavItemExpandedEvent) {
@@ -1049,7 +1300,7 @@ export default meta
 type Story = StoryObj<StoryComponentType>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       logo: 'assets/images/theseam_logo.svg',
@@ -1059,10 +1310,30 @@ export const Basic: Story = {
       // subTitleText: text('subTitleText', 'Example'),
       navItems,
       widgets: [
-        { widgetId: 'widget-1', col: 0, order: 0, component: StoryExWidget1Component },
-        { widgetId: 'widget-2', col: 1, order: 0, component: StoryExWidget2Component },
-        { widgetId: 'widget-3', col: 2, order: 0, component: StoryExWidget3Component },
-        { widgetId: 'widget-4', col: 1, order: 1, component: StoryExWidget4Component },
+        {
+          widgetId: 'widget-1',
+          col: 0,
+          order: 0,
+          component: StoryExWidget1Component,
+        },
+        {
+          widgetId: 'widget-2',
+          col: 1,
+          order: 0,
+          component: StoryExWidget2Component,
+        },
+        {
+          widgetId: 'widget-3',
+          col: 2,
+          order: 0,
+          component: StoryExWidget3Component,
+        },
+        {
+          widgetId: 'widget-4',
+          col: 1,
+          order: 1,
+          component: StoryExWidget4Component,
+        },
       ],
       faUserAlt,
       faQuestionCircle,
@@ -1132,7 +1403,7 @@ export const Basic: Story = {
 
 // Using wrapper StoryExBaseLayoutComponent component to manage double nav items
 export const HorizontalNav: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `<story-ex-base-layout></story-ex-base-layout>`,
   }),

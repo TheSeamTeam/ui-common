@@ -4,7 +4,13 @@ import { CommonModule } from '@angular/common'
 import { Component, Inject, NgModule } from '@angular/core'
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
 import { provideAnimations } from '@angular/platform-browser/animations'
-import { ActivatedRoute, provideRouter, Route, Router, RouterModule } from '@angular/router'
+import {
+  ActivatedRoute,
+  provideRouter,
+  Route,
+  Router,
+  RouterModule,
+} from '@angular/router'
 import { provideLocationMocks } from '@angular/common/testing'
 import { Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
@@ -16,17 +22,15 @@ import { HierarchyLevelResolver } from '../resolvers/hierarchy-level.resolver'
 
 @Component({
   selector: 'sub-name-ex',
-  template: `<div>Sub Name: {{ name$ | async }}</div><router-outlet></router-outlet>`,
+  template: `<div>Sub Name: {{ name$ | async }}</div>
+    <router-outlet></router-outlet>`,
 })
 class StorySubNameExComponent {
-
   name$: Observable<string | undefined>
 
-  constructor(
-    private _route: ActivatedRoute,
-  ) {
+  constructor(private _route: ActivatedRoute) {
     // console.log('sub-name-ex', this)
-    this.name$ = this._route.data.pipe(map(v => v['name'] || undefined))
+    this.name$ = this._route.data.pipe(map((v) => v['name'] || undefined))
   }
 }
 
@@ -38,7 +42,6 @@ class StorySubNameExComponent {
   `,
 })
 class StoryNameExComponent {
-
   name$: Observable<string | undefined>
 
   constructor(
@@ -46,7 +49,7 @@ class StoryNameExComponent {
     private _router: Router,
   ) {
     // console.log('name-ex', this)
-    this.name$ = this._route.data.pipe(map(v => v['name'] || undefined))
+    this.name$ = this._route.data.pipe(map((v) => v['name'] || undefined))
 
     // console.log('config', this._router.config)
     // console.log('config2', this._route.routeConfig)
@@ -60,9 +63,15 @@ class StoryNameExComponent {
     URL: {{ _router.url }}
     <div class="my-2 p-2">
       <form class="mb-2" (ngSubmit)="go()">
-        <input seamInput [formControl]="_control">
+        <input seamInput [formControl]="_control" />
       </form>
-      <button class="btn btn-sm btn-light" type="button" [routerLink]="_control.value">Go</button>
+      <button
+        class="btn btn-sm btn-light"
+        type="button"
+        [routerLink]="_control.value"
+      >
+        Go
+      </button>
     </div>
     <div>
       <router-outlet></router-outlet>
@@ -70,7 +79,6 @@ class StoryNameExComponent {
   `,
 })
 class StoryExBaseComponent {
-
   _control = new FormControl('/name-ex/sub-name')
 
   constructor(
@@ -96,16 +104,39 @@ class StoryExBaseComponent {
   template: `
     <div>
       <div>{{ type$ | async }} : {{ id$ | async }}</div>
-      <button type="button" class="btn btn-sm btn-light px-4" routerLink="table/{{ nextId }}">Next[table]</button>
-      <button type="button" class="btn btn-sm btn-light px-4" routerLink="new/{{ nextId }}">Next[new]</button>
-      <button type="button" class="btn btn-sm btn-light px-4" routerLink="edit/{{ nextId }}">Next[edit]</button>
-      <button type="button" class="btn btn-sm btn-light px-4" routerLink="view/{{ nextId }}">Next[view]</button>
+      <button
+        type="button"
+        class="btn btn-sm btn-light px-4"
+        routerLink="table/{{ nextId }}"
+      >
+        Next[table]
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm btn-light px-4"
+        routerLink="new/{{ nextId }}"
+      >
+        Next[new]
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm btn-light px-4"
+        routerLink="edit/{{ nextId }}"
+      >
+        Next[edit]
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm btn-light px-4"
+        routerLink="view/{{ nextId }}"
+      >
+        Next[view]
+      </button>
     </div>
     <router-outlet></router-outlet>
   `,
 })
 class RecursiveIdOneComponent {
-
   id$: Observable<string | undefined>
   type$: Observable<string | undefined>
 
@@ -115,10 +146,9 @@ class RecursiveIdOneComponent {
     private _route: ActivatedRoute,
     private _router: Router,
   ) {
-    this.id$ = this._route.paramMap.pipe(map(v => v.get('id') || undefined))
-    this.type$ = this._route.data.pipe(map(v => v['type'] || undefined))
+    this.id$ = this._route.paramMap.pipe(map((v) => v.get('id') || undefined))
+    this.type$ = this._route.data.pipe(map((v) => v['type'] || undefined))
   }
-
 }
 
 @Component({
@@ -126,16 +156,39 @@ class RecursiveIdOneComponent {
   template: `
     <div>
       <div>{{ type$ | async }} : {{ id$ | async }}</div>
-      <button type="button" class="btn btn-sm btn-light px-4" routerLink="table/{{ nextId }}">Next[table]</button>
-      <button type="button" class="btn btn-sm btn-light px-4" routerLink="new/{{ nextId }}">Next[new]</button>
-      <button type="button" class="btn btn-sm btn-light px-4" routerLink="edit/{{ nextId }}">Next[edit]</button>
-      <button type="button" class="btn btn-sm btn-light px-4" routerLink="view/{{ nextId }}">Next[view]</button>
+      <button
+        type="button"
+        class="btn btn-sm btn-light px-4"
+        routerLink="table/{{ nextId }}"
+      >
+        Next[table]
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm btn-light px-4"
+        routerLink="new/{{ nextId }}"
+      >
+        Next[new]
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm btn-light px-4"
+        routerLink="edit/{{ nextId }}"
+      >
+        Next[edit]
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm btn-light px-4"
+        routerLink="view/{{ nextId }}"
+      >
+        Next[view]
+      </button>
     </div>
     <router-outlet></router-outlet>
   `,
 })
 class RecursiveIdTwoComponent {
-
   id$: Observable<string | undefined>
   type$: Observable<string | undefined>
 
@@ -145,11 +198,12 @@ class RecursiveIdTwoComponent {
     private _route: ActivatedRoute,
     private _router: Router,
   ) {
-    this.id$ = this._route.paramMap.pipe(map(v => v.get('id') || undefined))
+    this.id$ = this._route.paramMap.pipe(map((v) => v.get('id') || undefined))
     // this.type$ = this._route.data.pipe(map(v => v['type'] || undefined))
-    this.type$ = this._route.paramMap.pipe(map(v => v.get('type') || undefined))
+    this.type$ = this._route.paramMap.pipe(
+      map((v) => v.get('type') || undefined),
+    )
   }
-
 }
 
 @Component({
@@ -158,27 +212,58 @@ class RecursiveIdTwoComponent {
     <seam-hierarchy-router-outlet>
       <div>
         <div>Type: {{ type$ | async }}</div>
-        <button type="button" class="btn btn-sm btn-light px-4" routerLink="table/{{ nextId }}">Next[table]</button>
-        <button type="button" class="btn btn-sm btn-light px-4" routerLink="new/{{ nextId }}">Next[new]</button>
-        <button type="button" class="btn btn-sm btn-light px-4" routerLink="edit/{{ nextId }}">Next[edit]</button>
-        <button type="button" class="btn btn-sm btn-light px-4" routerLink="view/{{ nextId }}">Next[view]</button>
-        <button type="button" class="btn btn-sm btn-light px-4" routerLink="{{ nextId }}">Next Random</button>
+        <button
+          type="button"
+          class="btn btn-sm btn-light px-4"
+          routerLink="table/{{ nextId }}"
+        >
+          Next[table]
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-light px-4"
+          routerLink="new/{{ nextId }}"
+        >
+          Next[new]
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-light px-4"
+          routerLink="edit/{{ nextId }}"
+        >
+          Next[edit]
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-light px-4"
+          routerLink="view/{{ nextId }}"
+        >
+          Next[view]
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-light px-4"
+          routerLink="{{ nextId }}"
+        >
+          Next Random
+        </button>
       </div>
     </seam-hierarchy-router-outlet>
     <!--<router-outlet></router-outlet>-->
   `,
-  styles: [`
-    :host {
-      display: block;
-      background: rgba(30,30,80,0.3);
-      outline: red;
-      width: 100%;
-      height: 100px;
-    }
-  `],
+  styles: [
+    `
+      :host {
+        display: block;
+        background: rgba(30, 30, 80, 0.3);
+        outline: red;
+        width: 100%;
+        height: 100px;
+      }
+    `,
+  ],
 })
 class RecursiveIdThreeComponent {
-
   type$: Observable<string | undefined>
 
   nextId = (Math.random() * 1 * 50).toFixed(0)
@@ -187,9 +272,10 @@ class RecursiveIdThreeComponent {
     private _route: ActivatedRoute,
     private _router: Router,
   ) {
-    this.type$ = this._route.paramMap.pipe(map(v => v.get('type') || undefined))
+    this.type$ = this._route.paramMap.pipe(
+      map((v) => v.get('type') || undefined),
+    )
   }
-
 }
 
 @NgModule({
@@ -245,15 +331,13 @@ class RecursiveIdThreeComponent {
     ]),
   ],
 })
-class RecursiveIdModule { }
+class RecursiveIdModule {}
 // ////////////////////////////////////////////////////////////////////////////
 // Recursive Id End
 // ////////////////////////////////////////////////////////////////////////////
 
 @NgModule({
-  declarations: [
-    StorySubNameExComponent,
-  ],
+  declarations: [StorySubNameExComponent],
   imports: [
     CommonModule,
     RouterModule.forChild([
@@ -265,7 +349,7 @@ class RecursiveIdModule { }
     ]),
   ],
 })
-class LevelTwoModule { }
+class LevelTwoModule {}
 
 //
 // Example
@@ -318,7 +402,6 @@ const meta: Meta<any> = {
   title: 'Framework/Dynamic Router',
   decorators: [
     // moduleMetadata({
-
     // })
   ],
 }
@@ -327,7 +410,7 @@ export default meta
 type Story = StoryObj<any>
 
 export const Recursive: Story = {
-  render: args => ({
+  render: (args) => ({
     applicationConfig: {
       providers: [
         provideAnimations(),
@@ -346,10 +429,7 @@ export const Recursive: Story = {
       ],
     },
     moduleMetadata: {
-      declarations: [
-        StoryNameExComponent,
-        StoryExBaseComponent,
-      ],
+      declarations: [StoryNameExComponent, StoryExBaseComponent],
       imports: [
         RouterModule,
         ReactiveFormsModule,
@@ -357,7 +437,7 @@ export const Recursive: Story = {
         TheSeamDynamicRouterModule,
       ],
     },
-    props: { },
+    props: {},
     template: `
       <story-ex-base></story-ex-base>
     `,
@@ -365,7 +445,7 @@ export const Recursive: Story = {
 }
 
 export const Example: Story = {
-  render: args => ({
+  render: (args) => ({
     applicationConfig: {
       providers: [
         provideAnimations(),
@@ -396,11 +476,7 @@ export const Example: Story = {
       ],
     },
     moduleMetadata: {
-      declarations: [
-        StoryEx1Component,
-        StoryEx2Component,
-        StoryEx3Component,
-      ],
+      declarations: [StoryEx1Component, StoryEx2Component, StoryEx3Component],
       imports: [
         RouterModule,
         ReactiveFormsModule,
@@ -408,7 +484,7 @@ export const Example: Story = {
         TheSeamDynamicRouterModule,
       ],
     },
-    props: { },
+    props: {},
     template: `
       <router-outlet></router-outlet>
     `,

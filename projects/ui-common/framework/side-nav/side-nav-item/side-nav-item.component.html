@@ -14,10 +14,13 @@
 </div>
 
 <ng-container *ngIf="hasChildren">
-  <div class="side-nav--group side-nav--group--level-{{ hierLevel + 1 }}"
-    [@childGroupAnim]="childGroupAnimState$ | async">
-    <seam-side-nav-item *ngFor="let child of children"
-      [hierLevel]="compact ? 0 : (hierLevel + 1)"
+  <div
+    class="side-nav--group side-nav--group--level-{{ hierLevel + 1 }}"
+    [@childGroupAnim]="childGroupAnimState$ | async"
+  >
+    <seam-side-nav-item
+      *ngFor="let child of children"
+      [hierLevel]="compact ? 0 : hierLevel + 1"
       [compact]="compact"
       [isMobile]="isMobile"
       [itemType]="$any(child).itemType"
@@ -38,13 +41,15 @@
       [indentSize]="indentSize"
       [menuItemTooltipConfig]="menuItemTooltipConfig"
       [menuItemTooltipDisabled]="menuItemTooltipDisabled"
-      [activeNavigatable]="$any(child).activeNavigatable">
+      [activeNavigatable]="$any(child).activeNavigatable"
+    >
     </seam-side-nav-item>
   </div>
 </ng-container>
 
 <ng-template #itemTypeBasic>
-  <button class="side-nav-item btn side-nav-btn p-0 d-flex flex-row align-items-stretch rounded-0 text-decoration-none text-nowrap w-100"
+  <button
+    class="side-nav-item btn side-nav-btn p-0 d-flex flex-row align-items-stretch rounded-0 text-decoration-none text-nowrap w-100"
     cdkMonitorElementFocus
     (click)="toggleChildren()"
     [attr.aria-expanded]="expanded"
@@ -53,8 +58,12 @@
     [placement]="menuItemTooltipConfig?.placement"
     [container]="menuItemTooltipConfig?.container"
     [disableTooltip]="menuItemTooltipDisabled ?? false"
-    [class.active-clickable]="activeNavigatable">
-    <div class="nav-link d-flex flex-row w-100" [class.nav-link__compact]="compact">
+    [class.active-clickable]="activeNavigatable"
+  >
+    <div
+      class="nav-link d-flex flex-row w-100"
+      [class.nav-link__compact]="compact"
+    >
       <div [style.padding-left.px]="hierLevel * indentSize"></div>
       <div class="side-nav-item--icon" *ngIf="showIconBlock">
         <seam-icon *ngIf="icon" [icon]="icon"></seam-icon>
@@ -62,35 +71,44 @@
           <ng-template [ngTemplateOutlet]="itemBadge"></ng-template>
         </ng-container>
       </div>
-      <span *ngIf="!compact" side-nav-item-label style="margin-left: 11px;">
+      <span *ngIf="!compact" side-nav-item-label style="margin-left: 11px">
         {{ label }}
       </span>
-      <span *ngIf="compact" class="sr-only" side-nav-item-label>{{ label }}</span>
+      <span *ngIf="compact" class="sr-only" side-nav-item-label>{{
+        label
+      }}</span>
       <ng-container *ngIf="!compact">
         <ng-template [ngTemplateOutlet]="itemBadge"></ng-template>
       </ng-container>
     </div>
 
-    <div *ngIf="hasChildren && !compact"
-      class="btn side-nav-btn side-nav-item--toggle-btn-container rounded-0">
+    <div
+      *ngIf="hasChildren && !compact"
+      class="btn side-nav-btn side-nav-item--toggle-btn-container rounded-0"
+    >
       <seam-icon
         class="side-nav-item--toggle-btn"
         [class.side-nav-item--toggle-btn-expanded]="expanded"
         [icon]="faAngleLeft"
-        type>
+        type
+      >
       </seam-icon>
     </div>
   </button>
 </ng-template>
 
 <ng-template #itemTypeLink>
-  <div class="d-flex flex-row w-100"
+  <div
+    class="d-flex flex-row w-100"
     [seamTooltip]="label ?? null"
     [tooltipClass]="menuItemTooltipConfig?.class"
     [placement]="menuItemTooltipConfig?.placement"
     [container]="menuItemTooltipConfig?.container"
-    [disableTooltip]="menuItemTooltipDisabled ?? false">
-    <a *ngIf="link; else noLink" class="side-nav-item nav-link d-flex flex-row text-nowrap w-100 align-items-center"
+    [disableTooltip]="menuItemTooltipDisabled ?? false"
+  >
+    <a
+      *ngIf="link; else noLink"
+      class="side-nav-item nav-link d-flex flex-row text-nowrap w-100 align-items-center"
       [class.nav-link__compact]="compact"
       [routerLink]="link"
       [queryParams]="queryParams"
@@ -98,7 +116,8 @@
       routerLinkActive="active"
       [routerLinkActiveOptions]="{ exact: true }"
       (click)="_linkClicked()"
-      [class.active-clickable]="activeNavigatable">
+      [class.active-clickable]="activeNavigatable"
+    >
       <div [style.padding-left.px]="hierLevel * indentSize"></div>
       <div class="side-nav-item--icon" *ngIf="showIconBlock">
         <seam-icon *ngIf="icon" [icon]="icon"></seam-icon>
@@ -106,45 +125,54 @@
           <ng-template [ngTemplateOutlet]="itemBadge"></ng-template>
         </ng-container>
       </div>
-      <span *ngIf="!compact" style="margin-left: 11px;" side-nav-item-label>
+      <span *ngIf="!compact" style="margin-left: 11px" side-nav-item-label>
         {{ label }}
       </span>
-      <span *ngIf="compact" class="sr-only" side-nav-item-label>{{ label }}</span>
+      <span *ngIf="compact" class="sr-only" side-nav-item-label>{{
+        label
+      }}</span>
       <ng-container *ngIf="!compact">
         <ng-template [ngTemplateOutlet]="itemBadge"></ng-template>
       </ng-container>
     </a>
 
     <ng-template #noLink>
-      <a class="side-nav-item nav-link d-flex flex-row text-nowrap w-100 align-items-center"
+      <a
+        class="side-nav-item nav-link d-flex flex-row text-nowrap w-100 align-items-center"
         [class.nav-link__compact]="compact"
         [seamTooltip]="label ?? null"
         [tooltipClass]="menuItemTooltipConfig?.class"
         [placement]="menuItemTooltipConfig?.placement"
         [container]="menuItemTooltipConfig?.container"
-        [disableTooltip]="menuItemTooltipDisabled ?? false">
+        [disableTooltip]="menuItemTooltipDisabled ?? false"
+      >
         <div [style.padding-left.px]="hierLevel * indentSize"></div>
         <div class="side-nav-item--icon">
           <seam-icon *ngIf="icon" [icon]="icon"></seam-icon>
         </div>
-        <span *ngIf="!compact" style="margin-left: 11px;" side-nav-item-label>
+        <span *ngIf="!compact" style="margin-left: 11px" side-nav-item-label>
           {{ label }}
         </span>
-        <span *ngIf="compact" class="sr-only" side-nav-item-label>{{ label }}</span>
+        <span *ngIf="compact" class="sr-only" side-nav-item-label>{{
+          label
+        }}</span>
       </a>
     </ng-template>
 
-    <button *ngIf="hasChildren && !compact"
+    <button
+      *ngIf="hasChildren && !compact"
       type="button"
       class="btn side-nav-btn side-nav-item--toggle-btn-container rounded-0"
       (click)="toggleChildren()"
       [attr.aria-expanded]="expanded"
-      cdkMonitorElementFocus>
+      cdkMonitorElementFocus
+    >
       <seam-icon
         class="side-nav-item--toggle-btn"
         [class.side-nav-item--toggle-btn-expanded]="expanded"
         [icon]="faAngleLeft"
-        type>
+        type
+      >
       </seam-icon>
       <span class="sr-only">Group Toggle</span>
     </button>
@@ -159,20 +187,26 @@
 
 <ng-template #itemTypeTitle>
   <ng-container *ngIf="!compact">
-    <span class="side-nav-item--title pt-1" side-nav-item-label>{{ label }}</span>
+    <span class="side-nav-item--title pt-1" side-nav-item-label>{{
+      label
+    }}</span>
   </ng-container>
 </ng-template>
 
 <ng-template #itemBadge>
   <ng-container *ngIf="badgeText">
     <div class="badge-spacer flex-grow-1" *ngIf="!compact"></div>
-    <div class="side-nav-item--badge"
+    <div
+      class="side-nav-item--badge"
       [class.side-nav-item--badge-no-icon]="!icon"
       [seamTooltip]="$any(badgeTooltip)?.tooltip"
       [tooltipClass]="$any(badgeTooltip)?.class"
       [placement]="$any(badgeTooltip)?.placement"
       [container]="$any(badgeTooltip)?.container"
-      [disableTooltip]="isMobile || !badgeTooltip || !!$any(badgeTooltip)?.disabled">
+      [disableTooltip]="
+        isMobile || !badgeTooltip || !!$any(badgeTooltip)?.disabled
+      "
+    >
       <span class="badge badge-pill badge-{{ badgeTheme }}">
         <ng-container *ngIf="!compact || !icon">
           {{ badgeText }}

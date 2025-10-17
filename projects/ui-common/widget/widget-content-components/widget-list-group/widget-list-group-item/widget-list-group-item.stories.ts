@@ -1,4 +1,9 @@
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { provideRouter } from '@angular/router'
@@ -17,7 +22,7 @@ import { WidgetListGroupItemComponent } from './widget-list-group-item.component
 
 const iconLookup = {
   'fa-icon': faPuzzlePiece as any,
-  'img': 'assets/images/icons8-cotton-filled-48.png',
+  img: 'assets/images/icons8-cotton-filled-48.png',
   'wide-img': 'assets/images/landdb-14d6a0.PNG',
 }
 
@@ -37,11 +42,7 @@ const meta: Meta<WidgetListGroupItemComponent & ExtraArgs> = {
       ],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamWidgetModule,
-        TheSeamButtonsModule,
-        TheSeamIconModule,
-      ],
+      imports: [TheSeamWidgetModule, TheSeamButtonsModule, TheSeamIconModule],
     }),
   ],
 }
@@ -50,7 +51,7 @@ export default meta
 type Story = StoryObj<WidgetListGroupItemComponent & ExtraArgs>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       icon: faWrench,
@@ -70,7 +71,7 @@ export const Basic: Story = {
 }
 
 export const Link: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       icon: faWrench,
@@ -90,7 +91,7 @@ export const Link: Story = {
 }
 
 export const Button: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       icon: faWrench,
@@ -110,7 +111,7 @@ export const Button: Story = {
 }
 
 export const LabelOnly: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       icon: faWrench,
@@ -131,7 +132,7 @@ export const LabelOnly: Story = {
 }
 
 export const IconWithLabel: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       icon: faWrench,
@@ -160,7 +161,7 @@ export const IconWithLabel: Story = {
 }
 
 export const SecondaryIcon: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       icon: faWrench,

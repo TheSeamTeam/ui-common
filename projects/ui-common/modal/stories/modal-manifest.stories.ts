@@ -1,11 +1,28 @@
-import { applicationConfig, componentWrapperDecorator, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  componentWrapperDecorator,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 
-import { Component, Directive, importProvidersFrom, inject, input, NgModule, OnInit } from '@angular/core'
+import {
+  Component,
+  Directive,
+  importProvidersFrom,
+  inject,
+  input,
+  NgModule,
+  OnInit,
+} from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { switchMap } from 'rxjs'
 
 import { TheSeamOverlayScrollbarDirective } from '@theseam/ui-common/scrollbar'
-import { DynamicComponentManifest, TheSeamDynamicComponentLoaderModule } from '@theseam/ui-common/dynamic-component-loader'
+import {
+  DynamicComponentManifest,
+  TheSeamDynamicComponentLoaderModule,
+} from '@theseam/ui-common/dynamic-component-loader'
 
 import { TheSeamModalModule } from '../modal.module'
 import { Modal } from '../modal.service'
@@ -47,7 +64,9 @@ class StorySeamModalBasicComponent implements OnInit {
   styles: [],
   template: `
     <div class="p-4">
-      <button type="button" class="btn btn-lightgray" (click)="open()">Open</button>
+      <button type="button" class="btn btn-lightgray" (click)="open()">
+        Open
+      </button>
     </div>
   `,
 })
@@ -55,9 +74,10 @@ class StorySeamModalBasicExampleComponent {
   private readonly _modal = inject(Modal)
 
   open() {
-    this._modal.openFromLazyComponent('basic-modal').pipe(
-      switchMap(mr => mr.afterClosed()),
-    ).subscribe(v => console.log('result', v))
+    this._modal
+      .openFromLazyComponent('basic-modal')
+      .pipe(switchMap((mr) => mr.afterClosed()))
+      .subscribe((v) => console.log('result', v))
   }
 }
 
@@ -68,7 +88,7 @@ class StorySeamModalBasicExampleComponent {
     TheSeamDynamicComponentLoaderModule.forChild(StorySeamModalBasicComponent),
   ],
 })
-class StorySeamModalBasicExampleModule { }
+class StorySeamModalBasicExampleModule {}
 
 //
 // Basic Non Sa
@@ -77,11 +97,17 @@ class StorySeamModalBasicExampleModule { }
 @Component({
   selector: 'story-seam-modal-basic-non-sa',
   styles: [],
-  template: `<span [storyExampleDirective]="'Example'" #tmp="storyExampleDirective">Example</span>[{{ tmp.storyExampleDirective() }}]`,
+  template: `<span
+      [storyExampleDirective]="'Example'"
+      #tmp="storyExampleDirective"
+      >Example</span
+    >[{{ tmp.storyExampleDirective() }}]`,
   standalone: false,
 })
 class StorySeamModalBasicNonSaComponent implements OnInit {
-  private readonly _modalRef = inject(ModalRef<StorySeamModalBasicNonSaComponent>)
+  private readonly _modalRef = inject(
+    ModalRef<StorySeamModalBasicNonSaComponent>,
+  )
 
   ngOnInit() {
     console.log('StorySeamModalBasicNonSaComponent modalRef', this._modalRef)
@@ -93,7 +119,9 @@ class StorySeamModalBasicNonSaComponent implements OnInit {
   styles: [],
   template: `
     <div class="p-4">
-      <button type="button" class="btn btn-lightgray" (click)="open()">Open</button>
+      <button type="button" class="btn btn-lightgray" (click)="open()">
+        Open
+      </button>
     </div>
   `,
 })
@@ -101,9 +129,10 @@ class StorySeamModalBasicNonSaExampleComponent {
   private readonly _modal = inject(Modal)
 
   open() {
-    this._modal.openFromLazyComponent('basic-non-sa-modal').pipe(
-      switchMap(mr => mr.afterClosed()),
-    ).subscribe(v => console.log('result', v))
+    this._modal
+      .openFromLazyComponent('basic-non-sa-modal')
+      .pipe(switchMap((mr) => mr.afterClosed()))
+      .subscribe((v) => console.log('result', v))
   }
 }
 
@@ -112,11 +141,13 @@ class StorySeamModalBasicNonSaExampleComponent {
     TheSeamModalModule,
     TheSeamOverlayScrollbarDirective,
     StoryExampleDirective,
-    TheSeamDynamicComponentLoaderModule.forChild(StorySeamModalBasicNonSaComponent),
+    TheSeamDynamicComponentLoaderModule.forChild(
+      StorySeamModalBasicNonSaComponent,
+    ),
   ],
   declarations: [StorySeamModalBasicNonSaComponent],
 })
-class StorySeamModalBasicNonSaExampleModule { }
+class StorySeamModalBasicNonSaExampleModule {}
 
 //
 // Simple
@@ -132,17 +163,13 @@ class StorySeamModalBasicNonSaExampleModule { }
         <span aria-hidden="true">&times;</span>
       </button>
     </seam-modal-header>
-    <seam-modal-body>
-      Example
-    </seam-modal-body>
+    <seam-modal-body> Example </seam-modal-body>
     <seam-modal-footer>
       <button class="btn btn-primary" seamModalClose="Yes">Yes</button>
       <button class="btn btn-lightgray" seamModalClose="No">No</button>
     </seam-modal-footer>
   `,
-  imports: [
-    TheSeamModalModule,
-  ],
+  imports: [TheSeamModalModule],
 })
 class StorySeamModalSimpleComponent implements OnInit {
   private readonly _modalRef = inject(ModalRef<StorySeamModalSimpleComponent>)
@@ -156,7 +183,9 @@ class StorySeamModalSimpleComponent implements OnInit {
   styles: [],
   template: `
     <div class="p-4">
-      <button type="button" class="btn btn-lightgray" (click)="open()">Open</button>
+      <button type="button" class="btn btn-lightgray" (click)="open()">
+        Open
+      </button>
     </div>
   `,
 })
@@ -164,9 +193,10 @@ class StorySeamModalSimpleExampleComponent {
   private readonly _modal = inject(Modal)
 
   open() {
-    this._modal.openFromLazyComponent('simple-modal').pipe(
-      switchMap(mr => mr.afterClosed()),
-    ).subscribe(v => console.log('result', v))
+    this._modal
+      .openFromLazyComponent('simple-modal')
+      .pipe(switchMap((mr) => mr.afterClosed()))
+      .subscribe((v) => console.log('result', v))
   }
 }
 
@@ -177,7 +207,7 @@ class StorySeamModalSimpleExampleComponent {
     TheSeamDynamicComponentLoaderModule.forChild(StorySeamModalSimpleComponent),
   ],
 })
-class StorySeamModalSimpleExampleModule { }
+class StorySeamModalSimpleExampleModule {}
 
 //
 // Manifests
@@ -208,16 +238,18 @@ const meta: Meta<any> = {
     applicationConfig({
       providers: [
         provideAnimations(),
-        importProvidersFrom(TheSeamDynamicComponentLoaderModule.forRoot(manifests)),
+        importProvidersFrom(
+          TheSeamDynamicComponentLoaderModule.forRoot(manifests),
+        ),
       ],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamModalModule,
-        TheSeamOverlayScrollbarDirective,
-      ],
+      imports: [TheSeamModalModule, TheSeamOverlayScrollbarDirective],
     }),
-    componentWrapperDecorator(story => `<div class="info info-warning">This is the old implementation, from before components could easily be lazy loaded.</div>${story}`),
+    componentWrapperDecorator(
+      (story) =>
+        `<div class="info info-warning">This is the old implementation, from before components could easily be lazy loaded.</div>${story}`,
+    ),
   ],
 }
 
@@ -225,7 +257,7 @@ export default meta
 type Story = StoryObj<any>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     moduleMetadata: {
       imports: [
         // StorySeamModalBasicComponent,
@@ -238,7 +270,7 @@ export const Basic: Story = {
 }
 
 export const BasicNonSa: Story = {
-  render: args => ({
+  render: (args) => ({
     moduleMetadata: {
       imports: [
         // StorySeamModalBasicNonSaComponent,
@@ -251,7 +283,7 @@ export const BasicNonSa: Story = {
 }
 
 export const Simple: Story = {
-  render: args => ({
+  render: (args) => ({
     moduleMetadata: {
       imports: [
         // StorySeamModalSimpleComponent,

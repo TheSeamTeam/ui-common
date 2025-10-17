@@ -9,8 +9,9 @@ import { TheSeamPageInfo } from './page-info'
 import { SortItem } from './sort-item'
 
 export abstract class DatatableDataSource<TRow> extends DataSource<TRow> {
-
-  private readonly _datatableSubject = new BehaviorSubject<TheSeamDatatableAccessor | undefined>(undefined)
+  private readonly _datatableSubject = new BehaviorSubject<
+    TheSeamDatatableAccessor | undefined
+  >(undefined)
 
   public readonly sorts$: Observable<SortItem[]>
   public readonly filterStates$: Observable<DataFilterState[]>
@@ -20,20 +21,20 @@ export abstract class DatatableDataSource<TRow> extends DataSource<TRow> {
     super()
 
     this.sorts$ = this._datatableSubject.pipe(
-      switchMap(_datatable => {
+      switchMap((_datatable) => {
         if (!_datatable) {
           return of([])
         }
 
         return _datatable.sort.pipe(
-          map(v => v.sorts),
+          map((v) => v.sorts),
           startWith(_datatable.sorts),
         )
       }),
     )
 
     this.filterStates$ = this._datatableSubject.pipe(
-      switchMap(_datatable => {
+      switchMap((_datatable) => {
         if (!_datatable) {
           return of([])
         }
@@ -43,7 +44,7 @@ export abstract class DatatableDataSource<TRow> extends DataSource<TRow> {
     )
 
     this.page$ = this._datatableSubject.pipe(
-      switchMap(_datatable => {
+      switchMap((_datatable) => {
         if (!_datatable) {
           return of({
             offset: 0,
@@ -53,9 +54,7 @@ export abstract class DatatableDataSource<TRow> extends DataSource<TRow> {
           })
         }
 
-        return _datatable.page.pipe(
-          startWith(_datatable.pageInfo),
-        )
+        return _datatable.page.pipe(startWith(_datatable.pageInfo))
       }),
     )
   }
@@ -71,5 +70,4 @@ export abstract class DatatableDataSource<TRow> extends DataSource<TRow> {
   public setDatatableAccessor(accessor: TheSeamDatatableAccessor): void {
     this._datatableSubject.next(accessor)
   }
-
 }

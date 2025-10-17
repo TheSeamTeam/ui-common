@@ -18,11 +18,11 @@ describe('Decorator InputBoolean', () => {
     shouldCoerce(true, true)
   })
 
-  it('should coerce \'true\' to true', () => {
+  it("should coerce 'true' to true", () => {
     shouldCoerce('true', true)
   })
 
-  it('should coerce \'false\' to false', () => {
+  it("should coerce 'false' to false", () => {
     shouldCoerce('false', false)
   })
 

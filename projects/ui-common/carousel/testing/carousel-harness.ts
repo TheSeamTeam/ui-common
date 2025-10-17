@@ -30,7 +30,9 @@ export class TheSeamCarouselHarness extends ComponentHarness {
   }
 
   public async goToSlide(index: number) {
-    return (await this.locatorFor(`[title="Go to slide ${index + 1}"]`)()).click()
+    return (
+      await this.locatorFor(`[title="Go to slide ${index + 1}"]`)()
+    ).click()
   }
 
   public async hasPreviousSlideButton() {
@@ -42,7 +44,10 @@ export class TheSeamCarouselHarness extends ComponentHarness {
   }
 
   public async hasSlideButton(index: number) {
-    return (await this.locatorForAll(`[title="Go to slide ${index + 1}"]`)()) !== null
+    return (
+      (await this.locatorForAll(`[title="Go to slide ${index + 1}"]`)()) !==
+      null
+    )
   }
 
   public async hasSlideButtons() {
@@ -50,7 +55,9 @@ export class TheSeamCarouselHarness extends ComponentHarness {
   }
 
   public async hasAutoPlayToggleButton() {
-    return ((await this._playButton()) !== null) || ((await this._pauseButton()) !== null)
+    return (
+      (await this._playButton()) !== null ||
+      (await this._pauseButton()) !== null
+    )
   }
-
 }

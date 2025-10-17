@@ -1,4 +1,8 @@
-import { BaseHarnessFilters, ComponentHarness, HarnessPredicate } from '@angular/cdk/testing'
+import {
+  BaseHarnessFilters,
+  ComponentHarness,
+  HarnessPredicate,
+} from '@angular/cdk/testing'
 
 import { waitOnConditionAsync } from '@theseam/ui-common/utils'
 
@@ -13,10 +17,15 @@ export class TheSeamTelInputHarness extends ComponentHarness {
   private readonly _input = this.locatorFor('input')
 
   /** Creates a `HarnessPredicate` used to locate a particular `TheSeamTelInputHarness`. */
-  static with(options: TheSeamTelInputHarnessFilters): HarnessPredicate<TheSeamTelInputHarness> {
-    return new HarnessPredicate(TheSeamTelInputHarness, options)
-      .addOption('field name', options.name,
-        (harness, name) => HarnessPredicate.stringMatches(harness.getName(), name))
+  static with(
+    options: TheSeamTelInputHarnessFilters,
+  ): HarnessPredicate<TheSeamTelInputHarness> {
+    return new HarnessPredicate(TheSeamTelInputHarness, options).addOption(
+      'field name',
+      options.name,
+      (harness, name) =>
+        HarnessPredicate.stringMatches(harness.getName(), name),
+    )
   }
 
   public async getName(): Promise<string | null> {
@@ -44,7 +53,7 @@ export class TheSeamTelInputHarness extends ComponentHarness {
     // TODO: Find out why setInputValue() doesn't update the FormControl.
     // return (await this._input()).setInputValue(value)
     await (await this._input()).click()
-    await this._input().then(x => x.setInputValue(''))
+    await this._input().then((x) => x.setInputValue(''))
     return (await this._input()).sendKeys(value)
   }
 
@@ -57,8 +66,6 @@ export class TheSeamTelInputHarness extends ComponentHarness {
     if (isInstanceReady()) {
       return true
     }
-    await waitOnConditionAsync(
-      isInstanceReady, 10000,
-    )
+    await waitOnConditionAsync(isInstanceReady, 10000)
   }
 }

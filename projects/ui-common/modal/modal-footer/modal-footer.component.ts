@@ -7,7 +7,5 @@ import { Component, HostBinding } from '@angular/core'
   standalone: false,
 })
 export class ModalFooterComponent {
-
   @HostBinding('class.modal-footer') _modalFooterCss = true
-
 }

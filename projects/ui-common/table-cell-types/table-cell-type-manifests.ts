@@ -1,4 +1,7 @@
-import { ITableCellTypeManifestProvider, TABLE_CELL_TYPE_MANIFEST } from '@theseam/ui-common/table-cell-type'
+import {
+  ITableCellTypeManifestProvider,
+  TABLE_CELL_TYPE_MANIFEST,
+} from '@theseam/ui-common/table-cell-type'
 
 import { TableCellTypeCurrencyComponent } from './table-cell-type-currency/table-cell-type-currency.component'
 import { TableCellTypeDateComponent } from './table-cell-type-date/table-cell-type-date.component'
@@ -19,32 +22,35 @@ export const TABLE_CELL_TYPE_MANIFEST_STRING: ITableCellTypeManifestProvider = {
   multi: true,
 }
 
-export const TABLE_CELL_TYPE_MANIFEST_CURRENCY: ITableCellTypeManifestProvider = {
-  provide: TABLE_CELL_TYPE_MANIFEST,
-  useValue: {
-    name: 'currency',
-    component: TableCellTypeCurrencyComponent,
-  },
-  multi: true,
-}
+export const TABLE_CELL_TYPE_MANIFEST_CURRENCY: ITableCellTypeManifestProvider =
+  {
+    provide: TABLE_CELL_TYPE_MANIFEST,
+    useValue: {
+      name: 'currency',
+      component: TableCellTypeCurrencyComponent,
+    },
+    multi: true,
+  }
 
-export const TABLE_CELL_TYPE_MANIFEST_DECIMAL: ITableCellTypeManifestProvider = {
-  provide: TABLE_CELL_TYPE_MANIFEST,
-  useValue: {
-    name: 'decimal',
-    component: TableCellTypeDecimalComponent,
-  },
-  multi: true,
-}
+export const TABLE_CELL_TYPE_MANIFEST_DECIMAL: ITableCellTypeManifestProvider =
+  {
+    provide: TABLE_CELL_TYPE_MANIFEST,
+    useValue: {
+      name: 'decimal',
+      component: TableCellTypeDecimalComponent,
+    },
+    multi: true,
+  }
 
-export const TABLE_CELL_TYPE_MANIFEST_INTEGER: ITableCellTypeManifestProvider = {
-  provide: TABLE_CELL_TYPE_MANIFEST,
-  useValue: {
-    name: 'integer',
-    component: TableCellTypeIntegerComponent,
-  },
-  multi: true,
-}
+export const TABLE_CELL_TYPE_MANIFEST_INTEGER: ITableCellTypeManifestProvider =
+  {
+    provide: TABLE_CELL_TYPE_MANIFEST,
+    useValue: {
+      name: 'integer',
+      component: TableCellTypeIntegerComponent,
+    },
+    multi: true,
+  }
 
 export const TABLE_CELL_TYPE_MANIFEST_DATE: ITableCellTypeManifestProvider = {
   provide: TABLE_CELL_TYPE_MANIFEST,
@@ -73,23 +79,25 @@ export const TABLE_CELL_TYPE_MANIFEST_IMAGE: ITableCellTypeManifestProvider = {
   multi: true,
 }
 
-export const TABLE_CELL_TYPE_MANIFEST_PROGRESS_CIRCLE: ITableCellTypeManifestProvider = {
-  provide: TABLE_CELL_TYPE_MANIFEST,
-  useValue: {
-    name: 'progress-circle',
-    component: TableCellTypeProgressCircleComponent,
-  },
-  multi: true,
-}
+export const TABLE_CELL_TYPE_MANIFEST_PROGRESS_CIRCLE: ITableCellTypeManifestProvider =
+  {
+    provide: TABLE_CELL_TYPE_MANIFEST,
+    useValue: {
+      name: 'progress-circle',
+      component: TableCellTypeProgressCircleComponent,
+    },
+    multi: true,
+  }
 
-export const TABLE_CELL_TYPE_MANIFEST_PROGRESS_CIRCLE_ICON: ITableCellTypeManifestProvider = {
-  provide: TABLE_CELL_TYPE_MANIFEST,
-  useValue: {
-    name: 'progress-circle-icon',
-    component: TableCellTypeProgressCircleIconComponent,
-  },
-  multi: true,
-}
+export const TABLE_CELL_TYPE_MANIFEST_PROGRESS_CIRCLE_ICON: ITableCellTypeManifestProvider =
+  {
+    provide: TABLE_CELL_TYPE_MANIFEST,
+    useValue: {
+      name: 'progress-circle-icon',
+      component: TableCellTypeProgressCircleIconComponent,
+    },
+    multi: true,
+  }
 
 export const TABLE_CELL_TYPE_MANIFEST_PHONE: ITableCellTypeManifestProvider = {
   provide: TABLE_CELL_TYPE_MANIFEST,

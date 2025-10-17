@@ -1,11 +1,17 @@
 /** Returns object without property */
-export function withoutProperty<T, K extends keyof T>(obj: T, propName: K): Pick<T, Exclude<keyof T, K>> {
+export function withoutProperty<T, K extends keyof T>(
+  obj: T,
+  propName: K,
+): Pick<T, Exclude<keyof T, K>> {
   const { [propName]: _, ...without } = obj
   return without
 }
 
 /** Returns object without properties */
-export function withoutProperties<T, K extends keyof T>(obj: T, propNames: K[]): Pick<T, Exclude<keyof T, K>> {
+export function withoutProperties<T, K extends keyof T>(
+  obj: T,
+  propNames: K[],
+): Pick<T, Exclude<keyof T, K>> {
   let without: any = obj
   for (const propName of propNames) {
     without = withoutProperty(without, propName)
@@ -14,14 +20,20 @@ export function withoutProperties<T, K extends keyof T>(obj: T, propNames: K[]):
 }
 
 /** Delete property of object */
-export function deleteProperty<T extends object, K extends keyof T>(obj: T, propName: K): void {
+export function deleteProperty<T extends object, K extends keyof T>(
+  obj: T,
+  propName: K,
+): void {
   if (Object.prototype.hasOwnProperty.call(obj, propName)) {
     delete obj[propName]
   }
 }
 
 /** Delete properties of object */
-export function deleteProperties<T extends object, K extends keyof T>(obj: T, propNames: K[]): void {
+export function deleteProperties<T extends object, K extends keyof T>(
+  obj: T,
+  propNames: K[],
+): void {
   for (const propName of propNames) {
     deleteProperty(obj, propName)
   }

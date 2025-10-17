@@ -1,7 +1,16 @@
 // import { QueryParamsHandling } from '@angular/router/src/config'
 import { ComponentType } from '@angular/cdk/portal'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { Component, Directive, EventEmitter, HostBinding, Input, isDevMode, Optional, Output } from '@angular/core'
+import {
+  Component,
+  Directive,
+  EventEmitter,
+  HostBinding,
+  Input,
+  isDevMode,
+  Optional,
+  Output,
+} from '@angular/core'
 import { Subscription } from 'rxjs'
 
 // import jexl from 'jexl'
@@ -41,7 +50,6 @@ export interface TheSeamDatatableRow {
   standalone: false,
 })
 export class DatatableActionMenuItemDirective {
-
   @HostBinding('class.list-group-item') _listGroupItem = true
   @HostBinding('class.list-group-item-action') _listGroupItemAction = true
 
@@ -109,7 +117,7 @@ export class DatatableActionMenuItemDirective {
     private readonly _modal: Modal,
     private readonly _dynamicComponentLoader: TheSeamDynamicComponentLoader,
     @Optional() private readonly _http: HttpClient,
-  ) { }
+  ) {}
 
   // private _handleEndpointAction() {
   //   if (!this._http) {
@@ -174,5 +182,4 @@ export class DatatableActionMenuItemDirective {
   //     this._modal.openFromComponent(this._modalConfig.component)
   //   }
   // }
-
 }

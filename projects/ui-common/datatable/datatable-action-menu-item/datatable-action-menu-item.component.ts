@@ -17,7 +17,6 @@ import { DatatableActionMenuComponent } from '../datatable-action-menu/datatable
   standalone: false,
 })
 export class DatatableActionMenuItemComponent {
-
   @Input() label: string | undefined | null
 
   // eslint-disable-next-line @angular-eslint/no-input-rename
@@ -34,7 +33,13 @@ export class DatatableActionMenuItemComponent {
   @Input() state: { [k: string]: any } | undefined | null
   @Input() routerLink: string | any[] | undefined | null
 
-  @Input() confirmDialog: { message?: string, alert?: string | { message: string, type: ThemeTypes } } | undefined | null
+  @Input() confirmDialog:
+    | {
+        message?: string
+        alert?: string | { message: string; type: ThemeTypes }
+      }
+    | undefined
+    | null
 
   @Input() disabled: boolean | undefined | null
 
@@ -42,5 +47,4 @@ export class DatatableActionMenuItemComponent {
 
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() readonly click = new EventEmitter<any>()
-
 }

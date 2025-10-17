@@ -10,8 +10,7 @@ describe('TableCellTypeIntegerComponent', () => {
     TestBed.configureTestingModule({
       declarations: [TableCellTypeIntegerComponent],
       teardown: { destroyAfterEach: false },
-    })
-      .compileComponents()
+    }).compileComponents()
   }))
 
   beforeEach(() => {

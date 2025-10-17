@@ -8,9 +8,7 @@ import { TheSeamIconModule } from '@theseam/ui-common/icon'
 import { TheSeamSharedModule } from '@theseam/ui-common/shared'
 
 import { DashboardWidgetContainerComponent } from './dashboard-widget-container/dashboard-widget-container.component'
-import {
-  DashboardWidgetTemplateContainerComponent,
-} from './dashboard-widget-template-container/dashboard-widget-template-container.component'
+import { DashboardWidgetTemplateContainerComponent } from './dashboard-widget-template-container/dashboard-widget-template-container.component'
 import { DashboardWidgetPortalOutletDirective } from './dashboard-widgets/dashboard-widget-portal-outlet.directive'
 import { DashboardWidgetsComponent } from './dashboard-widgets/dashboard-widgets.component'
 import { DashboardComponent } from './dashboard.component'
@@ -41,4 +39,4 @@ import { DashboardComponent } from './dashboard.component'
     DashboardWidgetPortalOutletDirective,
   ],
 })
-export class TheSeamDashboardModule { }
+export class TheSeamDashboardModule {}

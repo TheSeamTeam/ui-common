@@ -2,7 +2,6 @@ import { EventEmitter } from '@angular/core'
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms'
 
 export interface TheSeamToggleEditRef {
-
   cancelOnBlur: boolean
   placeholder: string
   editing: boolean

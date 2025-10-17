@@ -1,4 +1,10 @@
-import { Meta, StoryObj, applicationConfig, componentWrapperDecorator, moduleMetadata } from '@storybook/angular'
+import {
+  Meta,
+  StoryObj,
+  applicationConfig,
+  componentWrapperDecorator,
+  moduleMetadata,
+} from '@storybook/angular'
 import { expect } from 'storybook/test'
 
 import { ReactiveFormsModule } from '@angular/forms'
@@ -10,22 +16,17 @@ import { argsToTpl } from '@theseam/ui-common/story-helpers'
 
 const meta: Meta<NgSelectComponent> = {
   title: 'External/ngSelect',
-  tags: [ 'autodocs' ],
+  tags: ['autodocs'],
   decorators: [
     applicationConfig({
-      providers: [
-        provideAnimations(),
-      ],
+      providers: [provideAnimations()],
     }),
     moduleMetadata({
-      imports: [
-        NgSelectModule,
-        ReactiveFormsModule,
-      ],
+      imports: [NgSelectModule, ReactiveFormsModule],
     }),
     // componentWrapperDecorator(NgSelectComponent, ({ args }) => args),
   ],
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `<ng-select ${argsToTpl()}></ng-select>`,
   }),
@@ -42,15 +43,13 @@ type Story = StoryObj<NgSelectComponent>
 
 export const Basic: Story = {
   args: {
-    items: [
-      'one',
-      'two',
-      'three',
-      'four',
-    ],
+    items: ['one', 'two', 'three', 'four'],
   },
   play: async ({ canvasElement, fixture, args }) => {
-    const ngSelectHarness = await getHarness(TheSeamNgSelectHarness, { canvasElement, fixture })
+    const ngSelectHarness = await getHarness(TheSeamNgSelectHarness, {
+      canvasElement,
+      fixture,
+    })
     await expect(await ngSelectHarness.isRequired()).toBe(false)
     await expect(await ngSelectHarness.getValue()).toBe(null)
     await ngSelectHarness.clickOption({ value: 'two' })

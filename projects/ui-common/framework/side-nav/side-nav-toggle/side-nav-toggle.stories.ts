@@ -31,7 +31,7 @@ export default meta
 type Story = StoryObj<SideNavToggleComponent>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       itemType: 'basic',
       label: 'Example 1',

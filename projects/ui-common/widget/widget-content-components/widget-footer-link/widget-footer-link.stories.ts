@@ -1,4 +1,9 @@
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { provideRouter } from '@angular/router'
@@ -21,9 +26,7 @@ const meta: Meta<WidgetFooterLinkComponent> = {
       ],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamWidgetModule,
-      ],
+      imports: [TheSeamWidgetModule],
     }),
   ],
 }
@@ -32,7 +35,7 @@ export default meta
 type Story = StoryObj<WidgetFooterLinkComponent>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       icon: faWrench,

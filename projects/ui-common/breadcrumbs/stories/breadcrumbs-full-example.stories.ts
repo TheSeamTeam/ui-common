@@ -1,11 +1,19 @@
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { provideRouter, RouterModule } from '@angular/router'
 import { provideLocationMocks } from '@angular/common/testing'
 
 import { provideStoryInitialUrl } from '@marklb/storybook-angular-initial-url'
-import { routeButton, StoryEmptyComponent } from '@theseam/ui-common/story-helpers'
+import {
+  routeButton,
+  StoryEmptyComponent,
+} from '@theseam/ui-common/story-helpers'
 
 import { StoryUsersDataService } from './story-user-data.service'
 import { StoryUserIdToNameResolver } from './story-userid-to-name.resolver'
@@ -17,15 +25,10 @@ const meta: Meta<TheSeamBreadcrumbsComponent> = {
   component: TheSeamBreadcrumbsComponent,
   decorators: [
     applicationConfig({
-      providers: [
-        provideAnimations(),
-        provideLocationMocks(),
-      ],
+      providers: [provideAnimations(), provideLocationMocks()],
     }),
     moduleMetadata({
-      imports: [
-        RouterModule,
-      ],
+      imports: [RouterModule],
     }),
   ],
 }
@@ -67,7 +70,7 @@ export const Example: Story = {
                   {
                     path: ':userId',
                     component: StoryEmptyComponent,
-                    data: { },
+                    data: {},
                     resolve: {
                       breadcrumb: StoryUserIdToNameResolver,
                     },

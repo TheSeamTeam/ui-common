@@ -1,4 +1,9 @@
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 import { expect } from 'storybook/test'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
@@ -10,21 +15,17 @@ import { TheSeamCarouselComponent } from './carousel.component'
 import { TheSeamCarouselModule } from './carousel.module'
 import { TheSeamCarouselHarness } from './testing'
 
-interface StoryExtraProps { }
+interface StoryExtraProps {}
 
 const meta: Meta<TheSeamCarouselComponent & StoryExtraProps> = {
   title: 'Carousel/Components',
   component: TheSeamCarouselComponent,
   decorators: [
     applicationConfig({
-      providers: [
-        provideAnimations(),
-      ],
+      providers: [provideAnimations()],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamCarouselModule,
-      ],
+      imports: [TheSeamCarouselModule],
     }),
   ],
   tags: ['autodocs'],
@@ -34,7 +35,7 @@ export default meta
 type Story = StoryObj<TheSeamCarouselComponent & StoryExtraProps>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `
       <seam-carousel
@@ -55,7 +56,10 @@ export const Basic: Story = {
       </seam-carousel>`,
   }),
   play: async ({ canvasElement, fixture }) => {
-    const carouselHarness = await getHarness(TheSeamCarouselHarness, { canvasElement, fixture })
+    const carouselHarness = await getHarness(TheSeamCarouselHarness, {
+      canvasElement,
+      fixture,
+    })
     await expect(await carouselHarness.hasPreviousSlideButton()).toBe(true)
     await expect(await carouselHarness.hasNextSlideButton()).toBe(true)
     await expect(await carouselHarness.hasSlideButtons()).toBe(true)
@@ -64,7 +68,7 @@ export const Basic: Story = {
 }
 
 export const Fast: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `
       <seam-carousel
@@ -88,7 +92,7 @@ export const Fast: Story = {
 }
 
 export const AutoplayOff: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `
       <seam-carousel
@@ -110,7 +114,10 @@ export const AutoplayOff: Story = {
       </seam-carousel>`,
   }),
   play: async ({ canvasElement, fixture }) => {
-    const carouselHarness = await getHarness(TheSeamCarouselHarness, { canvasElement, fixture })
+    const carouselHarness = await getHarness(TheSeamCarouselHarness, {
+      canvasElement,
+      fixture,
+    })
     await expect(await carouselHarness.activeTileIndex()).toBe('0')
     await carouselHarness.goToNextSlide()
     await expect(await carouselHarness.activeTileIndex()).toBe('1')
@@ -126,7 +133,7 @@ export const AutoplayOff: Story = {
 }
 
 export const NoButtons: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `
       <seam-carousel
@@ -150,7 +157,10 @@ export const NoButtons: Story = {
       </seam-carousel>`,
   }),
   play: async ({ canvasElement, fixture }) => {
-    const carouselHarness = await getHarness(TheSeamCarouselHarness, { canvasElement, fixture })
+    const carouselHarness = await getHarness(TheSeamCarouselHarness, {
+      canvasElement,
+      fixture,
+    })
     await expect(await carouselHarness.hasPreviousSlideButton()).toBe(false)
     await expect(await carouselHarness.hasNextSlideButton()).toBe(false)
     await expect(await carouselHarness.hasSlideButtons()).toBe(false)
@@ -159,10 +169,10 @@ export const NoButtons: Story = {
 }
 
 export const AddRemoveSlide: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
-      items: [ 'a', 'b', 'c' ],
+      items: ['a', 'b', 'c'],
     },
     template: `
       <seam-carousel
@@ -179,7 +189,10 @@ export const AddRemoveSlide: Story = {
       <button id="removeBtn" type="button" (click)="items.pop()">Remove Slide</button>`,
   }),
   play: async ({ canvasElement, fixture }) => {
-    const carouselHarness = await getHarness(TheSeamCarouselHarness, { canvasElement, fixture })
+    const carouselHarness = await getHarness(TheSeamCarouselHarness, {
+      canvasElement,
+      fixture,
+    })
     await carouselHarness.goToSlide(2)
     canvasElement.querySelector<HTMLButtonElement>('#addBtn')?.click()
     await carouselHarness.goToSlide(3)

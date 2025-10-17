@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, Input } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  HostBinding,
+  Input,
+} from '@angular/core'
 
 // TODO: Split up the button and anchor classes.
 
@@ -11,27 +17,38 @@ import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, Input } fr
   standalone: false,
 })
 export class MenuFooterActionComponent {
-
-  @HostBinding('attr.type') get _attrType() { return this.type }
+  @HostBinding('attr.type') get _attrType() {
+    return this.type
+  }
 
   /** ARIA type for the button. */
   @Input()
-  get type() { return this._isButton() ? this._type || 'button' : undefined }
+  get type() {
+    return this._isButton() ? this._type || 'button' : undefined
+  }
   set type(value: 'button' | 'submit' | 'reset' | undefined | null) {
     this._type = value
   }
   private _type: 'button' | 'submit' | 'reset' | undefined | null
 
-  @HostBinding('class.btn') get _classBtn() { return this._isButton() }
-  @HostBinding('class.btn-link') get _classBtnLink() { return this._isButton() }
+  @HostBinding('class.btn') get _classBtn() {
+    return this._isButton()
+  }
+  @HostBinding('class.btn-link') get _classBtnLink() {
+    return this._isButton()
+  }
 
-  @HostBinding('style.padding.px') get _stylePadding() { return this._isButton() && 0 }
-  @HostBinding('style.border.px') get _styleBorder() { return this._isButton() && 0 }
-  @HostBinding('style.display.px') get _styleDisplay() { return this._isButton() && 'inline' }
+  @HostBinding('style.padding.px') get _stylePadding() {
+    return this._isButton() && 0
+  }
+  @HostBinding('style.border.px') get _styleBorder() {
+    return this._isButton() && 0
+  }
+  @HostBinding('style.display.px') get _styleDisplay() {
+    return this._isButton() && 'inline'
+  }
 
-  constructor(
-    private _elementRef: ElementRef,
-  ) { }
+  constructor(private _elementRef: ElementRef) {}
 
   /** Determines if the component host is a button. */
   protected _isButton() {
@@ -42,5 +59,4 @@ export class MenuFooterActionComponent {
   protected _isAnchor() {
     return this._elementRef.nativeElement.nodeName.toLowerCase() === 'a'
   }
-
 }

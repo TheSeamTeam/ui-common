@@ -1,7 +1,8 @@
 import { FormControl, FormGroup } from '@angular/forms'
 import { TheSeamDatatableColumnFilterableConfig } from '../table-column'
 
-export const THESEAM_COLUMNS_DATA_FILTER_DATE_SEARCH_NAME = 'search-date' as const
+export const THESEAM_COLUMNS_DATA_FILTER_DATE_SEARCH_NAME =
+  'search-date' as const
 
 export const THESEAM_COLUMNS_DATA_FILTER_DATE_SEARCH_TYPES = [
   'lt',
@@ -33,7 +34,8 @@ export const THESEAM_COLUMNS_DATA_FILTER_DATE_SELECT_SEARCH_TYPES = [
   'not-blank',
 ]
 
-export type TheSeamColumnsDataFilterDateSearchType = typeof THESEAM_COLUMNS_DATA_FILTER_DATE_SEARCH_TYPES[number]
+export type TheSeamColumnsDataFilterDateSearchType =
+  (typeof THESEAM_COLUMNS_DATA_FILTER_DATE_SEARCH_TYPES)[number]
 
 export type TheSeamColumnsDataFilterDateSearchForm = FormGroup<{
   searchType: FormControl<TheSeamColumnsDataFilterDateSearchType | null>
@@ -49,9 +51,12 @@ export interface TheSeamColumnsDataFilterDateSearchFormState {
   toText: string | null
 }
 
-export type TheSeamColumnsDataFilterDateSearchDateType = 'date' | 'datetime-local'
+export type TheSeamColumnsDataFilterDateSearchDateType =
+  | 'date'
+  | 'datetime-local'
 
-export interface TheSeamDatatableDateColumnFilterableConfig extends TheSeamDatatableColumnFilterableConfig {
+export interface TheSeamDatatableDateColumnFilterableConfig
+  extends TheSeamDatatableColumnFilterableConfig {
   /**
    * The input type to use for the date filter form.
    */
@@ -67,7 +72,8 @@ export interface TheSeamColumnsDataFilterDateSearchOptions {
   dateType: TheSeamColumnsDataFilterDateSearchDateType
 }
 
-export const THESEAM_COLUMNS_DATA_FILTER_NUMERIC_SEARCH_NAME = 'search-numeric' as const
+export const THESEAM_COLUMNS_DATA_FILTER_NUMERIC_SEARCH_NAME =
+  'search-numeric' as const
 
 export const THESEAM_COLUMNS_DATA_FILTER_NUMERIC_SEARCH_TYPES = [
   'gt',
@@ -99,7 +105,8 @@ export const THESEAM_COLUMNS_DATA_FILTER_NUMERIC_SELECT_SEARCH_TYPES = [
   'not-blank',
 ]
 
-export type TheSeamColumnsDataFilterNumericSearchType = typeof THESEAM_COLUMNS_DATA_FILTER_NUMERIC_SEARCH_TYPES[number]
+export type TheSeamColumnsDataFilterNumericSearchType =
+  (typeof THESEAM_COLUMNS_DATA_FILTER_NUMERIC_SEARCH_TYPES)[number]
 
 export type TheSeamColumnsDataFilterNumericSearchForm = FormGroup<{
   searchType: FormControl<TheSeamColumnsDataFilterNumericSearchType | null>
@@ -115,7 +122,8 @@ export interface TheSeamColumnsDataFilterNumericSearchFormState {
   toText: string | null
 }
 
-export const THESEAM_COLUMNS_DATA_FILTER_TEXT_SEARCH_NAME = 'search-text' as const
+export const THESEAM_COLUMNS_DATA_FILTER_TEXT_SEARCH_NAME =
+  'search-text' as const
 
 export const THESEAM_COLUMNS_DATA_FILTER_TEXT_SEARCH_TYPES = [
   'contains',
@@ -138,7 +146,8 @@ export const THESEAM_COLUMNS_DATA_FILTER_TEXT_SELECT_SEARCH_TYPES = [
   'not-blank',
 ]
 
-export type TheSeamColumnsDataFilterTextSearchType = typeof THESEAM_COLUMNS_DATA_FILTER_TEXT_SEARCH_TYPES[number]
+export type TheSeamColumnsDataFilterTextSearchType =
+  (typeof THESEAM_COLUMNS_DATA_FILTER_TEXT_SEARCH_TYPES)[number]
 
 export type TheSeamColumnsDataFilterTextSearchForm = FormGroup<{
   searchType: FormControl<TheSeamColumnsDataFilterTextSearchType | null>

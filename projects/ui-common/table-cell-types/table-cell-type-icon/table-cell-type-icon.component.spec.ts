@@ -10,8 +10,7 @@ describe('TableCellTypeIconComponent', () => {
     TestBed.configureTestingModule({
       declarations: [TableCellTypeIconComponent],
       teardown: { destroyAfterEach: false },
-    })
-      .compileComponents()
+    }).compileComponents()
   }))
 
   beforeEach(() => {

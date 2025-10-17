@@ -1,4 +1,8 @@
-import { BaseHarnessFilters, ComponentHarness, HarnessPredicate } from '@angular/cdk/testing'
+import {
+  BaseHarnessFilters,
+  ComponentHarness,
+  HarnessPredicate,
+} from '@angular/cdk/testing'
 
 import { TheSeamCheckboxHarness } from '@theseam/ui-common/checkbox'
 import { TheSeamFormFieldRequiredIndicatorHarness } from '@theseam/ui-common/form-field'
@@ -12,13 +16,20 @@ export class TheSeamSchemaFormCheckboxHarness extends ComponentHarness {
   static hostSelector = 'seam-schema-form-checkbox'
 
   private readonly _checkbox = this.locatorFor(TheSeamCheckboxHarness)
-  private readonly _requiredIndicator = this.locatorFor(TheSeamFormFieldRequiredIndicatorHarness)
+  private readonly _requiredIndicator = this.locatorFor(
+    TheSeamFormFieldRequiredIndicatorHarness,
+  )
 
   /** Creates a `HarnessPredicate` used to locate a particular `MyMenuHarness`. */
-  static with(options: TheSeamSchemaFormCheckboxHarnessFilters): HarnessPredicate<TheSeamSchemaFormCheckboxHarness> {
-    return new HarnessPredicate(TheSeamSchemaFormCheckboxHarness, options)
-      .addOption('field name', options.name,
-        (harness, name) => HarnessPredicate.stringMatches(harness.getName(), name))
+  static with(
+    options: TheSeamSchemaFormCheckboxHarnessFilters,
+  ): HarnessPredicate<TheSeamSchemaFormCheckboxHarness> {
+    return new HarnessPredicate(
+      TheSeamSchemaFormCheckboxHarness,
+      options,
+    ).addOption('field name', options.name, (harness, name) =>
+      HarnessPredicate.stringMatches(harness.getName(), name),
+    )
   }
 
   public async getName(): Promise<string | null> {

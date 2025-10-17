@@ -5,7 +5,5 @@ import { Directive, TemplateRef } from '@angular/core'
   standalone: false,
 })
 export class FormFieldLabelTplDirective {
-
-  constructor(public template: TemplateRef<any>) { }
-
+  constructor(public template: TemplateRef<any>) {}
 }

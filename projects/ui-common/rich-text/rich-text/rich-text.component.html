@@ -1,4 +1,8 @@
-<div class="editor" *ngIf="configSet$ | async" [class.initializing]="!(initialized$ | async)">
+<div
+  class="editor"
+  *ngIf="configSet$ | async"
+  [class.initializing]="!(initialized$ | async)"
+>
   <ng-container *ngIf="config$ | async as config">
     <quill-editor
       #quillEditor
@@ -35,25 +39,42 @@
       (onContentChanged)="_onContentChanged($event)"
       (onSelectionChanged)="_onSelectionChanged($event)"
       (onFocus)="_onFocus($event)"
-      (onBlur)="_onBlur($event)"></quill-editor>
+      (onBlur)="_onBlur($event)"
+    ></quill-editor>
     <ng-container *ngIf="displayCharacterCounter">
       <ng-container
         [ngTemplateOutlet]="characterCounterTpl"
-        [ngTemplateOutletContext]="{ $implicit: characterCount$ | async, minLength: minLength, maxLength: maxLength, characterCount: characterCount$ | async }"></ng-container>
+        [ngTemplateOutletContext]="{
+          $implicit: characterCount$ | async,
+          minLength: minLength,
+          maxLength: maxLength,
+          characterCount: characterCount$ | async,
+        }"
+      ></ng-container>
     </ng-container>
   </ng-container>
 </div>
 
-<ng-template #characterCounter let-implicit let-minLength="minLength" let-maxLength="maxLength" let-characterCount="characterCount">
+<ng-template
+  #characterCounter
+  let-implicit
+  let-minLength="minLength"
+  let-maxLength="maxLength"
+  let-characterCount="characterCount"
+>
   <div class="small text-black-50 text-right">
     <ng-container *ngIf="characterCount || characterCount === 0">
       Character Count:
-      <span [class.text-danger]="characterCount && ((maxLength && characterCount > maxLength) || (minLength && characterCount < minLength))">
+      <span
+        [class.text-danger]="
+          characterCount &&
+          ((maxLength && characterCount > maxLength) ||
+            (minLength && characterCount < minLength))
+        "
+      >
         {{ characterCount | number }}
       </span>
-      <ng-container *ngIf="maxLength">
-        / {{ maxLength }}
-      </ng-container>
+      <ng-container *ngIf="maxLength"> / {{ maxLength }} </ng-container>
       <span *ngIf="minLength" class="font-italic">
         (minimum {{ minLength }} expected)
       </span>

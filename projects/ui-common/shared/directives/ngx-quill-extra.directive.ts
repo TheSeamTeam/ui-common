@@ -1,5 +1,13 @@
 import { coerceNumberProperty } from '@angular/cdk/coercion'
-import { AfterViewInit, Directive, ElementRef, HostBinding, inject, Input, OnDestroy } from '@angular/core'
+import {
+  AfterViewInit,
+  Directive,
+  ElementRef,
+  HostBinding,
+  inject,
+  Input,
+  OnDestroy,
+} from '@angular/core'
 import { fromEvent, Subject } from 'rxjs'
 import { filter, takeUntil, tap } from 'rxjs/operators'
 
@@ -11,9 +19,11 @@ import { QuillEditorComponent } from 'ngx-quill'
   exportAs: 'seamNgxQuillExtra',
 })
 export class TheSeamNgxQuillExtraDirective implements OnDestroy, AfterViewInit {
-
-  private readonly _elementRef: ElementRef<HTMLElement> = inject(ElementRef<HTMLElement>)
-  private readonly _quillEditor: QuillEditorComponent = inject(QuillEditorComponent)
+  private readonly _elementRef: ElementRef<HTMLElement> = inject(
+    ElementRef<HTMLElement>,
+  )
+  private readonly _quillEditor: QuillEditorComponent =
+    inject(QuillEditorComponent)
 
   private readonly _ngUnsubscribe = new Subject<void>()
 
@@ -25,11 +35,17 @@ export class TheSeamNgxQuillExtraDirective implements OnDestroy, AfterViewInit {
    * keyboard navigation.
    */
   @Input()
-  set tabIndex(value: number) { this._tabIndex = coerceNumberProperty(value) }
-  get tabIndex(): number { return this._tabIndex }
+  set tabIndex(value: number) {
+    this._tabIndex = coerceNumberProperty(value)
+  }
+  get tabIndex(): number {
+    return this._tabIndex
+  }
 
   @HostBinding('attr.tabindex')
-  get _attrTabIndex() { return this._quillEditor.disabled ? -1 : (this.tabIndex || 0) }
+  get _attrTabIndex() {
+    return this._quillEditor.disabled ? -1 : this.tabIndex || 0
+  }
 
   ngOnDestroy() {
     this._ngUnsubscribe.next(undefined)
@@ -41,11 +57,17 @@ export class TheSeamNgxQuillExtraDirective implements OnDestroy, AfterViewInit {
     if (parent) {
       // NOTE: This is a hack to avoid an issue letting a label with "for"
       // attribute focus the control.
-      fromEvent(parent, 'click').pipe(
-        takeUntil(this._ngUnsubscribe),
-        filter(e => (e.target as HTMLElement)?.getAttribute('for') === this._elementRef.nativeElement.id),
-        tap(() => this._quillEditor.quillEditor.focus()),
-      ).subscribe()
+      fromEvent(parent, 'click')
+        .pipe(
+          takeUntil(this._ngUnsubscribe),
+          filter(
+            (e) =>
+              (e.target as HTMLElement)?.getAttribute('for') ===
+              this._elementRef.nativeElement.id,
+          ),
+          tap(() => this._quillEditor.quillEditor.focus()),
+        )
+        .subscribe()
     }
   }
 
@@ -64,5 +86,4 @@ export class TheSeamNgxQuillExtraDirective implements OnDestroy, AfterViewInit {
 
     return findElem(this._elementRef.nativeElement)
   }
-
 }

@@ -1,11 +1,20 @@
-import { ComponentRef, Injectable, Injector, StaticProvider, ViewContainerRef } from '@angular/core'
+import {
+  ComponentRef,
+  Injectable,
+  Injector,
+  StaticProvider,
+  ViewContainerRef,
+} from '@angular/core'
 import { Observable, Subject } from 'rxjs'
 
 import { GoogleMapsService } from './google-maps.service'
-import { MapControl, MapControlsService, MAP_CONTROL_DATA } from './map-controls-service'
+import {
+  MapControl,
+  MapControlsService,
+  MAP_CONTROL_DATA,
+} from './map-controls-service'
 
 export class MapControlRef {
-
   private readonly _destroyedSubject = new Subject<void>()
 
   private _componentRef: ComponentRef<any>
@@ -43,7 +52,8 @@ export class MapControlRef {
     })
     this._componentRef.changeDetectorRef.detectChanges()
 
-    const position = this._controlDef.position ?? google.maps.ControlPosition.LEFT_BOTTOM
+    const position =
+      this._controlDef.position ?? google.maps.ControlPosition.LEFT_BOTTOM
 
     this._googleMaps.addControl(
       this._componentRef.location.nativeElement,
@@ -72,19 +82,22 @@ export class MapControlRef {
     this._destroyedSubject.next()
     this._destroyedSubject.complete()
   }
-
 }
 
 @Injectable()
 export class GoogleMapsControlsService implements MapControlsService {
-
   constructor(
     private readonly _googleMaps: GoogleMapsService,
     private readonly _injector: Injector,
     private readonly _viewContainerRef: ViewContainerRef,
-  ) { }
+  ) {}
 
   public add(control: MapControl): MapControlRef {
-    return new MapControlRef(this._googleMaps, this._injector, control, this._viewContainerRef)
+    return new MapControlRef(
+      this._googleMaps,
+      this._injector,
+      control,
+      this._viewContainerRef,
+    )
   }
 }

@@ -1,4 +1,9 @@
-import { AnimationEvent, transition, trigger, useAnimation } from '@angular/animations'
+import {
+  AnimationEvent,
+  transition,
+  trigger,
+  useAnimation,
+} from '@angular/animations'
 import { coerceNumberProperty } from '@angular/cdk/coercion'
 import { ESCAPE, hasModifierKey } from '@angular/cdk/keycodes'
 import {
@@ -13,7 +18,13 @@ import {
   TemplateRef,
 } from '@angular/core'
 import { BehaviorSubject, fromEvent, of, Subject } from 'rxjs'
-import { distinctUntilChanged, map, startWith, switchMap, takeUntil } from 'rxjs/operators'
+import {
+  distinctUntilChanged,
+  map,
+  startWith,
+  switchMap,
+  takeUntil,
+} from 'rxjs/operators'
 
 import { popoverExpandIn, popoverExpandOut } from '../popover-animations'
 import { TheSeamPopoverDirective } from '../popover.directive'
@@ -45,7 +56,6 @@ import { TheSeamPopoverDirective } from '../popover.directive'
   standalone: false,
 })
 export class PopoverComponent implements OnInit, OnDestroy {
-
   private readonly _ngUnsubscribe = new Subject<void>()
 
   /** Duration of the enter animation. Has to be a valid CSS value (e.g. 100ms). */
@@ -73,9 +83,13 @@ export class PopoverComponent implements OnInit, OnDestroy {
   _animationDone = new Subject<AnimationEvent>()
 
   // @HostBinding('attr.role') get _role() { return this._config.role }
-  @HostBinding('attr.role') get _role() { return 'dialog' }
+  @HostBinding('attr.role') get _role() {
+    return 'dialog'
+  }
 
-  @HostBinding('attr.tabindex') get _tabindex() { return -1 }
+  @HostBinding('attr.tabindex') get _tabindex() {
+    return -1
+  }
 
   @Input() template: TemplateRef<any> | undefined | null
 
@@ -92,7 +106,9 @@ export class PopoverComponent implements OnInit, OnDestroy {
    * smaller than the value.
    */
   @Input()
-  get baseWidth() { return this._baseWidth.value }
+  get baseWidth() {
+    return this._baseWidth.value
+  }
   set baseWidth(value: number | null) {
     const _val = coerceNumberProperty(value, null)
     if (_val !== this._baseWidth.value) {
@@ -110,39 +126,52 @@ export class PopoverComponent implements OnInit, OnDestroy {
     // We use a Subject with a distinctUntilChanged, rather than a callback attached to .done,
     // because some browsers fire the done event twice and we don't want to emit duplicate events.
     // See: https://github.com/angular/angular/issues/24084
-    this._animationDone.pipe(distinctUntilChanged((x, y) => {
-      return x.fromState === y.fromState && x.toState === y.toState
-    })).subscribe(event => {
-      // Emit lifecycle events based on animation `done` callback.
-      if (event.toState === 'enter') {
-        this._afterEnter.next()
-        this._afterEnter.complete()
-      }
+    this._animationDone
+      .pipe(
+        distinctUntilChanged((x, y) => {
+          return x.fromState === y.fromState && x.toState === y.toState
+        }),
+      )
+      .subscribe((event) => {
+        // Emit lifecycle events based on animation `done` callback.
+        if (event.toState === 'enter') {
+          this._afterEnter.next()
+          this._afterEnter.complete()
+        }
 
-      if (event.fromState === 'enter' && (event.toState === 'void' || event.toState === 'exit')) {
-        this._afterExit.next()
-        this._afterExit.complete()
-      }
-    })
+        if (
+          event.fromState === 'enter' &&
+          (event.toState === 'void' || event.toState === 'exit')
+        ) {
+          this._afterExit.next()
+          this._afterExit.complete()
+        }
+      })
   }
 
   ngOnInit() {
     // this._popoverWidth$ =
-    this._baseWidth.pipe(
-      switchMap(baseWidth => {
-        if (baseWidth) {
-          return fromEvent(window, 'resize').pipe(
-            startWith(undefined),
-            map(() => window.innerWidth < baseWidth ? `${window.innerWidth}px` : `${baseWidth}px`),
-          )
-        }
-        return of(undefined)
-      }),
-      takeUntil(this._ngUnsubscribe),
-    ).subscribe(w => {
-      this._popoverWidth = w
-      this._changeDetectorRef.markForCheck()
-    })
+    this._baseWidth
+      .pipe(
+        switchMap((baseWidth) => {
+          if (baseWidth) {
+            return fromEvent(window, 'resize').pipe(
+              startWith(undefined),
+              map(() =>
+                window.innerWidth < baseWidth
+                  ? `${window.innerWidth}px`
+                  : `${baseWidth}px`,
+              ),
+            )
+          }
+          return of(undefined)
+        }),
+        takeUntil(this._ngUnsubscribe),
+      )
+      .subscribe((w) => {
+        this._popoverWidth = w
+        this._changeDetectorRef.markForCheck()
+      })
   }
 
   ngOnDestroy() {
@@ -168,14 +197,17 @@ export class PopoverComponent implements OnInit, OnDestroy {
       this._beforeEnter.next()
       this._beforeEnter.complete()
     }
-    if (event.fromState === 'enter' && (event.toState === 'void' || event.toState === 'exit')) {
+    if (
+      event.fromState === 'enter' &&
+      (event.toState === 'void' || event.toState === 'exit')
+    ) {
       this._beforeExit.next()
       this._beforeExit.complete()
     }
   }
 
   /** Handle a keyboard event from the menu, delegating to the appropriate action. */
-  @HostListener('keydown', [ '$event' ])
+  @HostListener('keydown', ['$event'])
   _handleKeydown(event: KeyboardEvent) {
     const keyCode = event.keyCode
 
@@ -189,5 +221,4 @@ export class PopoverComponent implements OnInit, OnDestroy {
         break
     }
   }
-
 }

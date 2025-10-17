@@ -3,7 +3,8 @@ import { AbstractControl, ValidatorFn } from '@angular/forms'
 import { isEmptyInputValue } from '../form/is-empty-input-value'
 import { coerceFeatureCollection } from './coerce-feature-collection'
 
-export const NO_EMPTY_FEATURE_COLLECTION_VALIDATOR_NAME = 'no-empty-feature-collection'
+export const NO_EMPTY_FEATURE_COLLECTION_VALIDATOR_NAME =
+  'no-empty-feature-collection'
 
 export function noEmptyFeatureCollectionValidator(): ValidatorFn {
   return (control: AbstractControl) => {

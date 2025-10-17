@@ -1,5 +1,11 @@
 import { ComponentPortal } from '@angular/cdk/portal'
-import { ChangeDetectionStrategy, Component, Injector, Input, OnInit } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Injector,
+  Input,
+  OnInit,
+} from '@angular/core'
 
 import { THESEAM_DATA_FILTER_OPTIONS } from '@theseam/ui-common/data-filters'
 import type { ComponentType } from '@theseam/ui-common/models'
@@ -12,7 +18,6 @@ import type { ComponentType } from '@theseam/ui-common/models'
   standalone: false,
 })
 export class DatatableDynamicFilterContainerComponent<C> implements OnInit {
-
   @Input()
   set filterComponent(value: ComponentType<C> | undefined | null) {
     this._filterComponent = value
@@ -20,16 +25,16 @@ export class DatatableDynamicFilterContainerComponent<C> implements OnInit {
     //   this._setPortal(value)
     // }
   }
-  get filterComponent() { return this._filterComponent }
+  get filterComponent() {
+    return this._filterComponent
+  }
   private _filterComponent: ComponentType<C> | undefined | null
 
   @Input() options: any
 
   _portal: ComponentPortal<C> | null = null
 
-  constructor(
-    private _injector: Injector,
-  ) { }
+  constructor(private _injector: Injector) {}
 
   ngOnInit() {
     if (this.filterComponent) {
@@ -43,16 +48,22 @@ export class DatatableDynamicFilterContainerComponent<C> implements OnInit {
     }
 
     if (component) {
-      this._portal = new ComponentPortal(component, undefined, this._createInjector())
+      this._portal = new ComponentPortal(
+        component,
+        undefined,
+        this._createInjector(),
+      )
     } else {
       this._portal = null
     }
   }
 
   private _createInjector(): Injector {
-    return Injector.create({ parent: this._injector, providers: [
-      { provide: THESEAM_DATA_FILTER_OPTIONS, useValue: this.options },
-    ] })
+    return Injector.create({
+      parent: this._injector,
+      providers: [
+        { provide: THESEAM_DATA_FILTER_OPTIONS, useValue: this.options },
+      ],
+    })
   }
-
 }

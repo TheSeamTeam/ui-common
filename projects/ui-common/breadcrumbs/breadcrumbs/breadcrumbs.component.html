@@ -1,10 +1,14 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb mb-0">
-    <li *ngFor="let crumb of crumbs$ | async; last as isLast"
+    <li
+      *ngFor="let crumb of crumbs$ | async; last as isLast"
       class="breadcrumb-item"
-      [ngClass]="{ 'active': isLast }"
-      [attr.aria-current]="isLast ? 'page' : undefined">
-      <a *ngIf="!isLast; else notLink" [routerLink]="crumb.path">{{ crumb.value }}</a>
+      [ngClass]="{ active: isLast }"
+      [attr.aria-current]="isLast ? 'page' : undefined"
+    >
+      <a *ngIf="!isLast; else notLink" [routerLink]="crumb.path">{{
+        crumb.value
+      }}</a>
       <ng-template #notLink>{{ crumb.value }}</ng-template>
     </li>
   </ol>

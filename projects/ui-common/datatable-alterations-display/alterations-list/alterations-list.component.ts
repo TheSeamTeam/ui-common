@@ -1,7 +1,10 @@
 import { Component, Input } from '@angular/core'
 import { CommonModule } from '@angular/common'
 
-import { AlterationDisplayItem, AlterationVisualState } from '../models/alteration-display.model'
+import {
+  AlterationDisplayItem,
+  AlterationVisualState,
+} from '../models/alteration-display.model'
 import { AlterationDisplayService } from '../services/alteration-display.service'
 import { AlterationItemComponent } from '../alteration-item/alteration-item.component'
 

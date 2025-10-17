@@ -13,10 +13,10 @@ function _integerValidator(): ValidatorFn {
     const isInteger =
       !Array.isArray(control.value) &&
       isNumeric(control.value) &&
-      (Validators.pattern(INTEGER_REGEX)(control) === null)
+      Validators.pattern(INTEGER_REGEX)(control) === null
 
     if (!isInteger) {
-      return { 'integer': { 'reason': 'Must be valid integer.' } }
+      return { integer: { reason: 'Must be valid integer.' } }
     }
     return null
   }

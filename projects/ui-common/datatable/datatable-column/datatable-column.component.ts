@@ -1,4 +1,12 @@
-import { Component, ContentChild, Input, OnChanges, PipeTransform, SimpleChanges, TemplateRef } from '@angular/core'
+import {
+  Component,
+  ContentChild,
+  Input,
+  OnChanges,
+  PipeTransform,
+  SimpleChanges,
+  TemplateRef,
+} from '@angular/core'
 
 import { ColumnChangesService, TableColumnProp } from '@marklb/ngx-datatable'
 
@@ -18,7 +26,6 @@ type _PipeTransform = PipeTransform | PipeTransform
   standalone: false,
 })
 export class DatatableColumnComponent implements OnChanges {
-
   @Input() name?: string | null
   @Input() prop?: TableColumnProp | null
 
@@ -33,7 +40,15 @@ export class DatatableColumnComponent implements OnChanges {
 
   @Input() canAutoResize?: boolean | null
 
-  @Input() comparator?: ((valueA: any, valueB: any, rowA?: any, rowB?: any, sortDirection?: 'asc' | 'desc') => -1 | 0 | 1) | null
+  @Input() comparator?:
+    | ((
+        valueA: any,
+        valueB: any,
+        rowA?: any,
+        rowB?: any,
+        sortDirection?: 'asc' | 'desc',
+      ) => -1 | 0 | 1)
+    | null
 
   @Input() headerTemplate?: TemplateRef<any> | null
 
@@ -58,7 +73,8 @@ export class DatatableColumnComponent implements OnChanges {
 
   private _isFirstChange = true
 
-  @ContentChild(DatatableCellTplDirective, { static: true }) cellTplDirective?: DatatableCellTplDirective
+  @ContentChild(DatatableCellTplDirective, { static: true })
+  cellTplDirective?: DatatableCellTplDirective
 
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('cellTemplate')
@@ -91,9 +107,7 @@ export class DatatableColumnComponent implements OnChanges {
   //   return this._treeToggleTemplateInput || this._treeToggleTemplateQuery;
   // }
 
-  constructor(
-    private _columnChangesService: DatatableColumnChangesService,
-  ) {}
+  constructor(private _columnChangesService: DatatableColumnChangesService) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (this._isFirstChange) {
@@ -110,5 +124,4 @@ export class DatatableColumnComponent implements OnChanges {
 
     return null
   }
-
 }

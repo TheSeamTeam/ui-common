@@ -1,12 +1,54 @@
-import { FocusMonitor, FocusOrigin, isFakeMousedownFromScreenReader } from '@angular/cdk/a11y'
+import {
+  FocusMonitor,
+  FocusOrigin,
+  isFakeMousedownFromScreenReader,
+} from '@angular/cdk/a11y'
 import { Direction, Directionality } from '@angular/cdk/bidi'
 import { NumberInput } from '@angular/cdk/coercion'
-import { DOWN_ARROW, ENTER, ESCAPE, LEFT_ARROW, RIGHT_ARROW, SPACE, UP_ARROW } from '@angular/cdk/keycodes'
-import { ConnectionPositionPair, Overlay, OverlayRef, PositionStrategy } from '@angular/cdk/overlay'
+import {
+  DOWN_ARROW,
+  ENTER,
+  ESCAPE,
+  LEFT_ARROW,
+  RIGHT_ARROW,
+  SPACE,
+  UP_ARROW,
+} from '@angular/cdk/keycodes'
+import {
+  ConnectionPositionPair,
+  Overlay,
+  OverlayRef,
+  PositionStrategy,
+} from '@angular/cdk/overlay'
 import { normalizePassiveListenerOptions } from '@angular/cdk/platform'
 import { TemplatePortal } from '@angular/cdk/portal'
-import { AfterContentInit, ChangeDetectorRef, Directive, ElementRef, EventEmitter, HostListener, inject, Inject, Input, OnDestroy, Optional, Output, Self, ViewContainerRef } from '@angular/core'
-import { asapScheduler, delay, filter, merge, Observable, of, Subscription, take, takeUntil } from 'rxjs'
+import {
+  AfterContentInit,
+  ChangeDetectorRef,
+  Directive,
+  ElementRef,
+  EventEmitter,
+  HostListener,
+  inject,
+  Inject,
+  Input,
+  OnDestroy,
+  Optional,
+  Output,
+  Self,
+  ViewContainerRef,
+} from '@angular/core'
+import {
+  asapScheduler,
+  delay,
+  filter,
+  merge,
+  Observable,
+  of,
+  Subscription,
+  take,
+  takeUntil,
+} from 'rxjs'
 
 import { InputNumber } from '@theseam/ui-common/core'
 
@@ -18,12 +60,14 @@ import { MenuCloseReason, MenuComponent } from './menu.component'
 declare const ngDevMode: any
 
 /** Options for binding a passive event listener. */
-const passiveEventListenerOptions = normalizePassiveListenerOptions({ passive: true })
+const passiveEventListenerOptions = normalizePassiveListenerOptions({
+  passive: true,
+})
 
 @Directive({
   selector: '[seamMenuToggle]',
   host: {
-    'class': 'seam-menu-toggle',
+    class: 'seam-menu-toggle',
     'aria-haspopup': 'true',
     '[attr.aria-expanded]': 'menuOpen() || null',
     '[attr.aria-controls]': 'menuOpen() ? menu.panelId : null',
@@ -32,7 +76,6 @@ const passiveEventListenerOptions = normalizePassiveListenerOptions({ passive: t
   standalone: false,
 })
 export class MenuToggleDirective implements OnDestroy, AfterContentInit {
-
   static ngAcceptInputType_seamMenuTogglePositionsOffsetY: NumberInput
 
   private _active = false
@@ -49,7 +92,9 @@ export class MenuToggleDirective implements OnDestroy, AfterContentInit {
   _openedBy: 'mouse' | 'touch' | 'keyboard' | null = null
 
   @Input('seamMenuToggle')
-  get menu() { return this._menu }
+  get menu() {
+    return this._menu
+  }
   set menu(menu: MenuComponent | undefined | null) {
     if (menu === this._menu) {
       return
@@ -59,22 +104,30 @@ export class MenuToggleDirective implements OnDestroy, AfterContentInit {
     this._menuClosedSubscription.unsubscribe()
 
     if (menu) {
-      if (menu === this._parentMenuComponent && (typeof ngDevMode === 'undefined' || ngDevMode)) {
+      if (
+        menu === this._parentMenuComponent &&
+        (typeof ngDevMode === 'undefined' || ngDevMode)
+      ) {
         throw Error(
           `seamMenuToggle: menu cannot contain its own trigger. Assign a menu that is ` +
-          `not a parent of the trigger or move the trigger outside of the menu.`,
+            `not a parent of the trigger or move the trigger outside of the menu.`,
         )
       }
 
-      this._menuClosedSubscription = menu.closed.subscribe((reason: MenuCloseReason) => {
-        // this._destroyMenu(reason)
-        this.closeMenu()
+      this._menuClosedSubscription = menu.closed.subscribe(
+        (reason: MenuCloseReason) => {
+          // this._destroyMenu(reason)
+          this.closeMenu()
 
-        // If a click closed the menu, we should close the entire chain of nested menus.
-        if ((reason === 'click' || reason === 'tab') && this._parentMenuComponent) {
-          this._parentMenuComponent.closed.emit(reason)
-        }
-      })
+          // If a click closed the menu, we should close the entire chain of nested menus.
+          if (
+            (reason === 'click' || reason === 'tab') &&
+            this._parentMenuComponent
+          ) {
+            this._parentMenuComponent.closed.emit(reason)
+          }
+        },
+      )
     }
 
     this._menuItemInstance?._setTriggersSubmenu(this.triggersSubmenu())
@@ -85,7 +138,9 @@ export class MenuToggleDirective implements OnDestroy, AfterContentInit {
   set positions(val: ConnectionPositionPair[]) {
     this._positions = val
     if (this.menuOpen()) {
-      this._overlayRef?.updatePositionStrategy(this.getOverlayPosition(this._elementRef.nativeElement))
+      this._overlayRef?.updatePositionStrategy(
+        this.getOverlayPosition(this._elementRef.nativeElement),
+      )
     }
   }
   get positions() {
@@ -165,7 +220,7 @@ export class MenuToggleDirective implements OnDestroy, AfterContentInit {
   /** Event emitted when the associated menu is opened. */
   @Output() readonly menuClosed = new EventEmitter<void>()
 
-  @HostListener('mousedown', [ '$event' ])
+  @HostListener('mousedown', ['$event'])
   _onMouseDown(event: MouseEvent) {
     if (!isFakeMousedownFromScreenReader(event)) {
       // Since right or middle button clicks won't trigger the `click` event,
@@ -181,7 +236,7 @@ export class MenuToggleDirective implements OnDestroy, AfterContentInit {
     }
   }
 
-  @HostListener('keydown', [ '$event' ])
+  @HostListener('keydown', ['$event'])
   _onKeydown(event: any) {
     this._openedBy = null
     // console.log('keydown', event)
@@ -211,7 +266,7 @@ export class MenuToggleDirective implements OnDestroy, AfterContentInit {
     }
   }
 
-  @HostListener('click', [ '$event' ])
+  @HostListener('click', ['$event'])
   _onClick(event: any) {
     if (this.triggersSubmenu()) {
       // Stop event propagation to avoid closing the parent menu.
@@ -222,7 +277,7 @@ export class MenuToggleDirective implements OnDestroy, AfterContentInit {
     }
   }
 
-  @HostListener('document:keydown', [ '$event' ])
+  @HostListener('document:keydown', ['$event'])
   _onDocumentKeydown(event: any) {
     if (event.keyCode === ESCAPE) {
       this.closeMenu()
@@ -241,21 +296,30 @@ export class MenuToggleDirective implements OnDestroy, AfterContentInit {
     private readonly _viewContainerRef: ViewContainerRef,
     private readonly _overlay: Overlay,
     private readonly _focusMonitor: FocusMonitor,
-    @Inject(THESEAM_MENU_PANEL) @Optional() private readonly _parentMenu?: ITheSeamMenuPanel<MenuItemComponent>,
+    @Inject(THESEAM_MENU_PANEL)
+    @Optional()
+    private readonly _parentMenu?: ITheSeamMenuPanel<MenuItemComponent>,
     @Optional() @Self() private readonly _menuItemInstance?: MenuItemComponent,
     @Optional() private readonly _dir?: Directionality,
   ) {
-    this._parentMenuComponent = this._parentMenu instanceof MenuComponent ? this._parentMenu : undefined
+    this._parentMenuComponent =
+      this._parentMenu instanceof MenuComponent ? this._parentMenu : undefined
 
-    this._elementRef.nativeElement.addEventListener('touchstart', this._handleTouchStart,
-      passiveEventListenerOptions)
+    this._elementRef.nativeElement.addEventListener(
+      'touchstart',
+      this._handleTouchStart,
+      passiveEventListenerOptions,
+    )
   }
 
   ngOnDestroy() {
     this.closeMenu()
 
-    this._elementRef.nativeElement.removeEventListener('touchstart', this._handleTouchStart,
-      passiveEventListenerOptions)
+    this._elementRef.nativeElement.removeEventListener(
+      'touchstart',
+      this._handleTouchStart,
+      passiveEventListenerOptions,
+    )
 
     this._menuClosedSubscription.unsubscribe()
     this._closingActionsSubscription.unsubscribe()
@@ -270,7 +334,7 @@ export class MenuToggleDirective implements OnDestroy, AfterContentInit {
    * Handles touch start events on the trigger.
    * Needs to be an arrow function so we can easily use addEventListener and removeEventListener.
    */
-  private _handleTouchStart = () => this._openedBy = 'touch'
+  private _handleTouchStart = () => (this._openedBy = 'touch')
 
   public toggle(): void {
     if (this._active) {
@@ -281,7 +345,9 @@ export class MenuToggleDirective implements OnDestroy, AfterContentInit {
   }
 
   public openMenu(): void {
-    if (this._active || !this.menu) { return }
+    if (this._active || !this.menu) {
+      return
+    }
     this._active = true
 
     this._overlayRef = this._overlay.create({
@@ -297,10 +363,12 @@ export class MenuToggleDirective implements OnDestroy, AfterContentInit {
 
     this._overlayRef.attach(new TemplatePortal(tpl, this._viewContainerRef))
 
-    this._closingActionsSubscription = this._menuClosingActions().subscribe(() => this.closeMenu())
+    this._closingActionsSubscription = this._menuClosingActions().subscribe(
+      () => this.closeMenu(),
+    )
     this._initMenu(this.menu)
 
-    this._menuClosedSubscription = this.menu.closed.subscribe(v => {
+    this._menuClosedSubscription = this.menu.closed.subscribe((v) => {
       // console.log('closed', v)
       this.closeMenu()
     })
@@ -323,7 +391,9 @@ export class MenuToggleDirective implements OnDestroy, AfterContentInit {
   }
 
   public closeMenu(): void {
-    if (!this._active) { return }
+    if (!this._active) {
+      return
+    }
     let emitCloseEvent = false
     if (this.menuOpen()) {
       emitCloseEvent = true
@@ -335,8 +405,11 @@ export class MenuToggleDirective implements OnDestroy, AfterContentInit {
 
     this._resetMenu()
 
-    this._elementRef.nativeElement.removeEventListener('touchstart', this._handleTouchStart,
-      passiveEventListenerOptions)
+    this._elementRef.nativeElement.removeEventListener(
+      'touchstart',
+      this._handleTouchStart,
+      passiveEventListenerOptions,
+    )
 
     this._menuClosedSubscription.unsubscribe()
     this._closingActionsSubscription.unsubscribe()
@@ -355,7 +428,8 @@ export class MenuToggleDirective implements OnDestroy, AfterContentInit {
   }
 
   private getOverlayPosition(origin: HTMLElement): PositionStrategy {
-    const positionStrategy = this._overlay.position()
+    const positionStrategy = this._overlay
+      .position()
       .flexibleConnectedTo(origin)
       .withPositions(this.positions)
       .withFlexibleDimensions(false)
@@ -430,12 +504,19 @@ export class MenuToggleDirective implements OnDestroy, AfterContentInit {
     const backdrop = this._overlayRef?.backdropClick() ?? of()
     const detachments = this._overlayRef?.detachments() ?? of()
     const parentClose = this._parentMenu ? this._parentMenu.closed : of()
-    const hover = this._parentMenuComponent ? this._parentMenuComponent._hovered().pipe(
-      filter(active => active !== this._menuItemInstance),
-      filter(() => this.menuOpen()),
-    ) : of()
+    const hover = this._parentMenuComponent
+      ? this._parentMenuComponent._hovered().pipe(
+          filter((active) => active !== this._menuItemInstance),
+          filter(() => this.menuOpen()),
+        )
+      : of()
 
-    return merge(backdrop, parentClose as Observable<MenuCloseReason>, hover, detachments)
+    return merge(
+      backdrop,
+      parentClose as Observable<MenuCloseReason>,
+      hover,
+      detachments,
+    )
   }
 
   /** Handles the cases where the user hovers over the trigger. */
@@ -451,7 +532,9 @@ export class MenuToggleDirective implements OnDestroy, AfterContentInit {
       // with different data and triggers), we have to delay it by a tick to ensure that
       // it won't be closed immediately after it is opened.
       .pipe(
-        filter(active => active === this._menuItemInstance && !active.disabled),
+        filter(
+          (active) => active === this._menuItemInstance && !active.disabled,
+        ),
         delay(0, asapScheduler),
       )
       .subscribe(() => {
@@ -464,7 +547,11 @@ export class MenuToggleDirective implements OnDestroy, AfterContentInit {
           // We need the `delay(0)` here in order to avoid
           // 'changed after checked' errors in some cases. See #12194.
           this.menu._animationDone
-            .pipe(take(1), delay(0, asapScheduler), takeUntil(this._parentMenuComponent!._hovered()))
+            .pipe(
+              take(1),
+              delay(0, asapScheduler),
+              takeUntil(this._parentMenuComponent!._hovered()),
+            )
             .subscribe(() => this.openMenu())
         } else {
           this.openMenu()

@@ -1,4 +1,9 @@
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 
@@ -12,14 +17,10 @@ const meta: Meta<WidgetDescriptionComponent> = {
   component: WidgetDescriptionComponent,
   decorators: [
     applicationConfig({
-      providers: [
-        provideAnimations(),
-      ],
+      providers: [provideAnimations()],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamWidgetModule,
-      ],
+      imports: [TheSeamWidgetModule],
     }),
   ],
 }
@@ -28,7 +29,7 @@ export default meta
 type Story = StoryObj<WidgetDescriptionComponent>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       icon: faWrench,
@@ -41,6 +42,7 @@ export const Basic: Story = {
       </div>`,
   }),
   args: {
-    descText: 'Anim eiusmod aliquip veniam anim est do. Pariatur officia dolore proident do ad et enim laborum voluptate reprehenderit. Aute voluptate irure deserunt do est dolore esse minim. Deserunt do enim ea esse duis velit id cillum sunt. Officia laboris incididunt esse elit laboris. Occaecat anim magna quis mollit occaecat ad quis proident laborum.',
+    descText:
+      'Anim eiusmod aliquip veniam anim est do. Pariatur officia dolore proident do ad et enim laborum voluptate reprehenderit. Aute voluptate irure deserunt do est dolore esse minim. Deserunt do enim ea esse duis velit id cillum sunt. Officia laboris incididunt esse elit laboris. Occaecat anim magna quis mollit occaecat ad quis proident laborum.',
   },
 }

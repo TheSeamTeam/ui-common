@@ -1,3 +1,1 @@
-export interface Schema {
-
-}
+export interface Schema {}

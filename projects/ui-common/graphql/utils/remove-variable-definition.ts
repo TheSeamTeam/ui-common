@@ -1,6 +1,9 @@
 import { DocumentNode, visit } from 'graphql'
 
-export function removeVariableDefinition(query: DocumentNode, variableName: string): DocumentNode {
+export function removeVariableDefinition(
+  query: DocumentNode,
+  variableName: string,
+): DocumentNode {
   return visit(query, {
     VariableDefinition: {
       enter(variable) {

@@ -1,6 +1,9 @@
 import { BREAK, DocumentNode, ValueNode, visit } from 'graphql/language'
 
-export function containsVariable(node: DocumentNode | ValueNode, variableName: string) {
+export function containsVariable(
+  node: DocumentNode | ValueNode,
+  variableName: string,
+) {
   let found = false
 
   visit(node, {

@@ -1,4 +1,9 @@
-import { Meta, moduleMetadata, StoryObj, applicationConfig } from '@storybook/angular'
+import {
+  Meta,
+  moduleMetadata,
+  StoryObj,
+  applicationConfig,
+} from '@storybook/angular'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 
@@ -18,14 +23,10 @@ const meta: Meta<ConfirmDialogComponent & ExtraArgs> = {
   component: ConfirmDialogComponent,
   decorators: [
     applicationConfig({
-      providers: [
-        provideAnimations(),
-      ],
+      providers: [provideAnimations()],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamConfirmDialogModule,
-      ],
+      imports: [TheSeamConfirmDialogModule],
     }),
   ],
 }
@@ -34,7 +35,7 @@ export default meta
 type Story = StoryObj<ConfirmDialogComponent & ExtraArgs>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       // msgText: text('Message', 'Do you confirm?'),
       confirmed() {
@@ -54,7 +55,7 @@ export const Basic: Story = {
 }
 
 export const WithAlert: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       // msgText: text('Message', 'Do you confirm?'),
       // alertMsgText: text('Alert Message', 'This is an alert'),
@@ -86,7 +87,7 @@ export const WithAlert: Story = {
 }
 
 export const WithTemplate: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       // msgText: text('Message', 'Do you confirm?'),
       confirmed() {
@@ -112,7 +113,7 @@ export const WithTemplate: Story = {
 }
 
 export const WithTemplateAndTemplateData: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       // msgText: text('Message', 'Do you confirm?'),
       confirmed() {

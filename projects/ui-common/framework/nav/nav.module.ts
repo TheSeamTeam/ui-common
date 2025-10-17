@@ -4,13 +4,7 @@ import { HorizontalNavComponent } from './horizontal-nav/horizontal-nav.componen
 import { NavItemComponent } from './nav-item/nav-item.component'
 
 @NgModule({
-  imports: [
-    NavItemComponent,
-    HorizontalNavComponent,
-  ],
-  exports: [
-    NavItemComponent,
-    HorizontalNavComponent,
-  ],
+  imports: [NavItemComponent, HorizontalNavComponent],
+  exports: [NavItemComponent, HorizontalNavComponent],
 })
-export class TheSeamNavModule { }
+export class TheSeamNavModule {}

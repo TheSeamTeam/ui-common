@@ -17,12 +17,14 @@ import { InputNumber } from '@theseam/ui-common/core'
   standalone: false,
 })
 export class DatatableColumnFilterMenuComponent implements OnInit {
-
   _filterForm: FormGroup<any> | undefined
 
   @Input() column: TheSeamDatatableColumn | null | undefined
 
-  @Input() updateMethod: TheSeamDatatableColumnFilterUpdateMethod | null | undefined
+  @Input() updateMethod:
+    | TheSeamDatatableColumnFilterUpdateMethod
+    | null
+    | undefined
 
   @Input() @InputNumber() debounce: number | null | undefined
 
@@ -34,28 +36,38 @@ export class DatatableColumnFilterMenuComponent implements OnInit {
 
   @Output() closePopover = new EventEmitter()
 
-  constructor(
-    private readonly _columnsFilters: ColumnsFiltersService,
-  ) {}
+  constructor(private readonly _columnsFilters: ColumnsFiltersService) {}
 
   ngOnInit(): void {
-    this.columnFilterProp = this._columnsFilters.getColumnFilterProp(this.column)
+    this.columnFilterProp = this._columnsFilters.getColumnFilterProp(
+      this.column,
+    )
 
-    this.columnFilter = this._columnsFilters.getColumnFilter(this.columnFilterProp)
+    this.columnFilter = this._columnsFilters.getColumnFilter(
+      this.columnFilterProp,
+    )
 
     if (notNullOrUndefined(this.columnFilter)) {
       this._filterForm = this.columnFilter.form
     }
 
-    this.customFilterTemplate$ = this._columnsFilters.columnFilterTemplates$.pipe(
-      map(templates => templates.find(t => t.filterName === this.columnFilter?.name)),
-    )
+    this.customFilterTemplate$ =
+      this._columnsFilters.columnFilterTemplates$.pipe(
+        map((templates) =>
+          templates.find((t) => t.filterName === this.columnFilter?.name),
+        ),
+      )
 
-    if (this.updateMethod === 'valueChanges' && notNullOrUndefined(this._filterForm)) {
-      this._filterForm.valueChanges.pipe(
-        debounceTime(this.debounce || 0),
-        tap(() => this.columnFilter?.applyFilter()),
-      ).subscribe()
+    if (
+      this.updateMethod === 'valueChanges' &&
+      notNullOrUndefined(this._filterForm)
+    ) {
+      this._filterForm.valueChanges
+        .pipe(
+          debounceTime(this.debounce || 0),
+          tap(() => this.columnFilter?.applyFilter()),
+        )
+        .subscribe()
     }
   }
 
@@ -68,5 +80,4 @@ export class DatatableColumnFilterMenuComponent implements OnInit {
   public clearFilter() {
     this.columnFilter?.clearFilter()
   }
-
 }

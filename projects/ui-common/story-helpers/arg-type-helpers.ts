@@ -13,7 +13,7 @@ export const themeArgType: ArgType = {
 }
 
 export const themeWithOutlineArgType: ArgType = {
-  options: [ ...ThemeNames, ...OutlineThemeNames ],
+  options: [...ThemeNames, ...OutlineThemeNames],
   control: {
     type: 'select',
   },
@@ -21,7 +21,7 @@ export const themeWithOutlineArgType: ArgType = {
 }
 
 export const sizeArgType: ArgType = {
-  options: [ undefined, 'sm', 'lg' ],
+  options: [undefined, 'sm', 'lg'],
   control: {
     type: 'select',
   },
@@ -29,7 +29,7 @@ export const sizeArgType: ArgType = {
 }
 
 export const buttonTypeArgType: ArgType = {
-  options: [ 'button', 'submit' ],
+  options: ['button', 'submit'],
   control: {
     type: 'select',
   },

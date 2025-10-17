@@ -1,4 +1,9 @@
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 
@@ -10,15 +15,10 @@ const meta: Meta<any> = {
   title: 'Modal/Directive/Template',
   decorators: [
     applicationConfig({
-      providers: [
-        provideAnimations(),
-      ],
+      providers: [provideAnimations()],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamModalModule,
-        TheSeamOverlayScrollbarDirective,
-      ],
+      imports: [TheSeamModalModule, TheSeamOverlayScrollbarDirective],
     }),
   ],
 }
@@ -27,7 +27,7 @@ export default meta
 type Story = StoryObj<any>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `
       <div class="p-4">
@@ -42,7 +42,7 @@ export const Basic: Story = {
 }
 
 export const Simple: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `
       <div class="p-4">

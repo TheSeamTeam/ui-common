@@ -11,14 +11,24 @@ import {
   ViewChild,
 } from '@angular/core'
 import { interval, Observable, of, Subject, Subscriber } from 'rxjs'
-import { filter, mapTo, startWith, switchMap, take, takeUntil } from 'rxjs/operators'
+import {
+  filter,
+  mapTo,
+  startWith,
+  switchMap,
+  take,
+  takeUntil,
+} from 'rxjs/operators'
 
 import { faSearchLocation } from '@fortawesome/free-solid-svg-icons'
 import { InputBoolean } from '@theseam/ui-common/core'
 import { InputDirective } from '@theseam/ui-common/form-field'
 import { SeamIcon } from '@theseam/ui-common/icon'
 
-import { SEAM_GOOGLE_PLACES_AUTOCOMPLETE_DEFAULT_OPTIONS, TheSeamGoogleMapsPlacesAutocompleteDirective } from './google-maps-places-autocomplete.directive'
+import {
+  SEAM_GOOGLE_PLACES_AUTOCOMPLETE_DEFAULT_OPTIONS,
+  TheSeamGoogleMapsPlacesAutocompleteDirective,
+} from './google-maps-places-autocomplete.directive'
 
 declare const ngDevMode: boolean | undefined
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
@@ -40,7 +50,10 @@ export class TheSeamGoogleMapsPlacesAutoCompleteComponent implements OnDestroy {
   private readonly _ngUnsubscribe = new Subject<void>()
   private readonly _autoCompleteReadySubject = new Subject()
 
-  private _placeChangedPending: { observable: Observable<any>, subscriber: Subscriber<any> }[] = []
+  private _placeChangedPending: {
+    observable: Observable<any>
+    subscriber: Subscriber<any>
+  }[] = []
 
   public autoComplete?: google.maps.places.Autocomplete
 
@@ -50,7 +63,8 @@ export class TheSeamGoogleMapsPlacesAutoCompleteComponent implements OnDestroy {
 
   @Input() @InputBoolean() disabled: BooleanInput = false
 
-  @Input() placeholder: string | undefined | null = 'Enter address, place or name'
+  @Input() placeholder: string | undefined | null =
+    'Enter address, place or name'
 
   @Input() autocorrect: 'off' | 'on' | undefined | null = 'off'
 
@@ -62,15 +76,22 @@ export class TheSeamGoogleMapsPlacesAutoCompleteComponent implements OnDestroy {
    * keyboard navigation.
    */
   @Input()
-  set tabIndex(value: number) { this._tabIndex = coerceNumberProperty(value) }
-  get tabIndex(): number { return this._tabIndex }
+  set tabIndex(value: number) {
+    this._tabIndex = coerceNumberProperty(value)
+  }
+  get tabIndex(): number {
+    return this._tabIndex
+  }
   private _tabIndex = -1
 
   @Input()
-  set options(value: google.maps.places.AutocompleteOptions | undefined | null) {
+  set options(
+    value: google.maps.places.AutocompleteOptions | undefined | null,
+  ) {
     this._options = value || SEAM_GOOGLE_PLACES_AUTOCOMPLETE_DEFAULT_OPTIONS
   }
-  _options: google.maps.places.AutocompleteOptions = SEAM_GOOGLE_PLACES_AUTOCOMPLETE_DEFAULT_OPTIONS
+  _options: google.maps.places.AutocompleteOptions =
+    SEAM_GOOGLE_PLACES_AUTOCOMPLETE_DEFAULT_OPTIONS
 
   /**
    * This event is fired when a PlaceResult is made available for a Place the
@@ -83,35 +104,42 @@ export class TheSeamGoogleMapsPlacesAutoCompleteComponent implements OnDestroy {
    */
   @Output() readonly placeChanged: Observable<void>
 
-  @ViewChild('inp', { read: InputDirective, static: true }) _inputDirective!: InputDirective
+  @ViewChild('inp', { read: InputDirective, static: true })
+  _inputDirective!: InputDirective
 
   @ViewChild(TheSeamGoogleMapsPlacesAutocompleteDirective, { static: true })
-  set __autocompleteDirective(value: TheSeamGoogleMapsPlacesAutocompleteDirective) {
+  set __autocompleteDirective(
+    value: TheSeamGoogleMapsPlacesAutocompleteDirective,
+  ) {
     this._autoCompleteDirective = value
-    this._untilAutoCompleteReady().pipe(takeUntil(this._ngUnsubscribe)).subscribe(() => {
-      this.autoComplete = this._autoCompleteDirective.autoComplete
-      this._placeChangedPending.forEach(pending => pending.observable.subscribe(pending.subscriber))
-      this._placeChangedPending = []
-    })
+    this._untilAutoCompleteReady()
+      .pipe(takeUntil(this._ngUnsubscribe))
+      .subscribe(() => {
+        this.autoComplete = this._autoCompleteDirective.autoComplete
+        this._placeChangedPending.forEach((pending) =>
+          pending.observable.subscribe(pending.subscriber),
+        )
+        this._placeChangedPending = []
+      })
   }
   _autoCompleteDirective!: TheSeamGoogleMapsPlacesAutocompleteDirective
 
   @HostBinding('attr.tabindex')
-  get _attrTabIndex() { return this.disabled ? -1 : (this.tabIndex || 0) }
+  get _attrTabIndex() {
+    return this.disabled ? -1 : this.tabIndex || 0
+  }
 
-  @HostListener('click', [ 'event' ])
+  @HostListener('click', ['event'])
   _onClick(event: MouseEvent) {
     this._inputDirective.focus()
   }
 
-  @HostListener('focus', [ '$event' ])
+  @HostListener('focus', ['$event'])
   _onFocus() {
     this._inputDirective?.focus()
   }
 
-  constructor(
-    private readonly _elementRef: ElementRef,
-  ) {
+  constructor(private readonly _elementRef: ElementRef) {
     this.placeChanged = this._autoCompleteReadySubject.pipe(
       startWith(undefined),
       switchMap(() => this._createPlaceChangedObservable<any>()),
@@ -164,7 +192,9 @@ export class TheSeamGoogleMapsPlacesAutoCompleteComponent implements OnDestroy {
    * Sets the preferred area within which to return Place results. Results are
    * biased towards, but not restricted to, this area.
    */
-  public setBounds(bounds?: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral): void {
+  public setBounds(
+    bounds?: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral,
+  ): void {
     this._assertInitialized()
 
     return this.autoComplete.setBounds(bounds!)
@@ -175,7 +205,9 @@ export class TheSeamGoogleMapsPlacesAutoCompleteComponent implements OnDestroy {
    * restrict predictions to only those within the parent component. For
    * example, the country.
    */
-  public setComponentRestrictions(restrictions?: google.maps.places.ComponentRestrictions): void {
+  public setComponentRestrictions(
+    restrictions?: google.maps.places.ComponentRestrictions,
+  ): void {
     this._assertInitialized()
 
     return this.autoComplete.setComponentRestrictions(restrictions!)
@@ -225,7 +257,7 @@ export class TheSeamGoogleMapsPlacesAutoCompleteComponent implements OnDestroy {
   }
 
   private _createPlaceChangedObservable<T>(): Observable<T> {
-    const observable = new Observable<T>(subscriber => {
+    const observable = new Observable<T>((subscriber) => {
       if (!this.autoComplete) {
         this._placeChangedPending.push({ observable, subscriber })
         return undefined
@@ -239,7 +271,10 @@ export class TheSeamGoogleMapsPlacesAutoCompleteComponent implements OnDestroy {
   }
 
   /** Asserts that the map has been initialized. */
-  private _assertInitialized(): asserts this is WithRequired<TheSeamGoogleMapsPlacesAutoCompleteComponent, 'autoComplete'> {
+  private _assertInitialized(): asserts this is WithRequired<
+    TheSeamGoogleMapsPlacesAutoCompleteComponent,
+    'autoComplete'
+  > {
     if (!this.autoComplete && (typeof ngDevMode === 'undefined' || ngDevMode)) {
       throw Error(
         'Cannot access Google Map Places information before the API has been initialized. ' +
@@ -247,5 +282,4 @@ export class TheSeamGoogleMapsPlacesAutoCompleteComponent implements OnDestroy {
       )
     }
   }
-
 }

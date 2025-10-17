@@ -1,6 +1,15 @@
 import { inject, Inject, Injectable, isDevMode, Optional } from '@angular/core'
 import { Observable, of, Subject } from 'rxjs'
-import { auditTime, map, mapTo, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators'
+import {
+  auditTime,
+  map,
+  mapTo,
+  shareReplay,
+  startWith,
+  switchMap,
+  take,
+  tap,
+} from 'rxjs/operators'
 
 import { hasProperty } from '@theseam/ui-common/utils'
 
@@ -37,15 +46,20 @@ export interface IDashboardWidgetsPreferencesMapRecord {
  */
 @Injectable({ providedIn: 'root' })
 export class DashboardWidgetsPreferencesService {
+  private readonly _prefsAccessor: ITheSeamDashboardWidgetsPreferencesAccessor | null =
+    inject(THESEAM_DASHBOARD_WIDGETS_PREFERENCES_ACCESSOR, { optional: true })
 
-  private readonly _prefsAccessor: ITheSeamDashboardWidgetsPreferencesAccessor | null = inject(THESEAM_DASHBOARD_WIDGETS_PREFERENCES_ACCESSOR, { optional: true })
-
-  private readonly _tablePrefsMap = new Map<string, IDashboardWidgetsPreferencesMapRecord>()
+  private readonly _tablePrefsMap = new Map<
+    string,
+    IDashboardWidgetsPreferencesMapRecord
+  >()
   // private _pending = false
 
   // public get pending() { return this._pending }
 
-  public preferences(preferenceKey: string): Observable<IDashboardWidgetsPreferences> {
+  public preferences(
+    preferenceKey: string,
+  ): Observable<IDashboardWidgetsPreferences> {
     let prefs = this._tablePrefsMap.get(preferenceKey)
     if (!prefs) {
       const refreshSubject = new Subject<void>()
@@ -58,7 +72,10 @@ export class DashboardWidgetsPreferencesService {
     return prefs.observable
   }
 
-  private _createObservable(refreshSubject: Subject<void>, prefKey: string): Observable<IDashboardWidgetsPreferences> {
+  private _createObservable(
+    refreshSubject: Subject<void>,
+    prefKey: string,
+  ): Observable<IDashboardWidgetsPreferences> {
     if (!this._prefsAccessor) {
       return of({})
     }
@@ -69,27 +86,29 @@ export class DashboardWidgetsPreferencesService {
     return refreshSubject.pipe(
       startWith({}),
       // tap(() => console.log('Start requesting: ', prefKey)),
-      switchMap(() => accessor(prefKey).pipe(
-        map(v => {
-          if (!v) {
-            return null
-          }
-
-          // TODO: Add a schema validator and migration tool to avoid parsing issues.
-          try {
-            return JSON.parse(v) as IDashboardWidgetsPreferences
-          } catch (error) {
-            if (isDevMode()) {
-              // eslint-disable-next-line no-console
-              console.error(error)
+      switchMap(() =>
+        accessor(prefKey).pipe(
+          map((v) => {
+            if (!v) {
+              return null
             }
-            return null
-          }
-        }),
-        map(v => v || {}),
-        // tap(v => console.log('preferences$', v)),
-        // tap(v => this._pending = false),
-      )),
+
+            // TODO: Add a schema validator and migration tool to avoid parsing issues.
+            try {
+              return JSON.parse(v) as IDashboardWidgetsPreferences
+            } catch (error) {
+              if (isDevMode()) {
+                // eslint-disable-next-line no-console
+                console.error(error)
+              }
+              return null
+            }
+          }),
+          map((v) => v || {}),
+          // tap(v => console.log('preferences$', v)),
+          // tap(v => this._pending = false),
+        ),
+      ),
       shareReplay({ bufferSize: 1, refCount: true }),
     )
   }
@@ -101,7 +120,11 @@ export class DashboardWidgetsPreferencesService {
       // prefs.refresh.next()
       return prefs.observable.pipe(
         // tap(() => prefs.refresh.next()),
-        tap(() => setTimeout(() => { prefs.refresh.next() }, 0)),
+        tap(() =>
+          setTimeout(() => {
+            prefs.refresh.next()
+          }, 0),
+        ),
         mapTo(undefined),
         take(1),
         // tap(() => console.log('Done refreshing: ', preferenceKey)),
@@ -111,9 +134,12 @@ export class DashboardWidgetsPreferencesService {
     return of(undefined)
   }
 
-  public selectLayout(preferenceKey: string, layoutName: string): Observable<IDashboardWidgetItemLayoutPreference | undefined> {
+  public selectLayout(
+    preferenceKey: string,
+    layoutName: string,
+  ): Observable<IDashboardWidgetItemLayoutPreference | undefined> {
     return this.preferences(preferenceKey).pipe(
-      map(prefs => (prefs.layouts || []).find(l => l.name === layoutName)),
+      map((prefs) => (prefs.layouts || []).find((l) => l.name === layoutName)),
     )
   }
 
@@ -124,29 +150,40 @@ export class DashboardWidgetsPreferencesService {
   // out of order updates. This shouldn't be an issue, with how fast preferences
   // will most likely be changing, but it could happen in situations, such as
   // network issues.
-  public updateLayout(preferenceKey: string, layout: IDashboardWidgetItemLayout): Observable<void> {
+  public updateLayout(
+    preferenceKey: string,
+    layout: IDashboardWidgetItemLayout,
+  ): Observable<void> {
     if (!this._prefsAccessor) {
       return of(undefined)
     }
 
     if (!hasProperty(layout, 'name')) {
-      throw Error(`Unable to save layout preference. 'name' is required for a layout preference.`)
+      throw Error(
+        `Unable to save layout preference. 'name' is required for a layout preference.`,
+      )
     }
 
     const _layout = this.toSerializeableLayout(layout)
 
     // this._pending = true
     return this.preferences(preferenceKey).pipe(
-      map(prefs => {
+      map((prefs) => {
         // Making the preferences immutable may not be necessary, but for now
         // this obj->str->obj will work as a naive clone.
         const layouts = JSON.parse(JSON.stringify(prefs.layouts || []))
         const _layoutPref = layouts.find((c: any) => c.name === _layout.name)
         // console.log('has', _layoutPref)
         if (_layoutPref) {
-          if (hasProperty(_layout, 'name')) { _layoutPref.name = _layout.name }
-          if (hasProperty(_layout, 'label')) { _layoutPref.label = _layout.label }
-          if (hasProperty(_layout, 'items')) { _layoutPref.items = _layout.items }
+          if (hasProperty(_layout, 'name')) {
+            _layoutPref.name = _layout.name
+          }
+          if (hasProperty(_layout, 'label')) {
+            _layoutPref.label = _layout.label
+          }
+          if (hasProperty(_layout, 'items')) {
+            _layoutPref.items = _layout.items
+          }
         } else {
           layouts.push({ ..._layout })
         }
@@ -155,16 +192,19 @@ export class DashboardWidgetsPreferencesService {
       }),
       // tap(v => console.log('newPrefs', v)),
       take(1),
-      switchMap(newPrefs => this._prefsAccessor
-        ? this._prefsAccessor.update(preferenceKey, JSON.stringify(newPrefs))
-        : of(newPrefs),
+      switchMap((newPrefs) =>
+        this._prefsAccessor
+          ? this._prefsAccessor.update(preferenceKey, JSON.stringify(newPrefs))
+          : of(newPrefs),
       ),
       switchMap(() => this.refresh(preferenceKey).pipe(mapTo(undefined))),
     )
     // .subscribe()
   }
 
-  public toSerializeableLayout(layout: IDashboardWidgetItemLayout): IDashboardWidgetItemLayoutPreference {
+  public toSerializeableLayout(
+    layout: IDashboardWidgetItemLayout,
+  ): IDashboardWidgetItemLayoutPreference {
     const serialized: IDashboardWidgetItemLayoutPreference = {
       name: layout.name,
       label: layout.label,
@@ -183,7 +223,9 @@ export class DashboardWidgetsPreferencesService {
    * Returns the serializable widget items as objects that can be serialized to
    * a JSON string for storage.
    */
-  public toSerializeableItems(widgets: IDashboardWidgetsItem[]): IDashboardWidgetsItemSerialized[] {
+  public toSerializeableItems(
+    widgets: IDashboardWidgetsItem[],
+  ): IDashboardWidgetsItemSerialized[] {
     const serialized: IDashboardWidgetsItemSerialized[] = []
     for (const w of widgets) {
       // if (!w.__itemDef.component || typeof w.__itemDef.component !== 'string') {
@@ -220,5 +262,4 @@ export class DashboardWidgetsPreferencesService {
   //   }
   //   return items
   // }
-
 }

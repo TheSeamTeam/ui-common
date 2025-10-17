@@ -11,37 +11,44 @@ export function createPageInfoObservable(
   datatable$: Observable<GqlDatatableAccessor | null | undefined>,
   defaultPageSize: number = 20,
 ): Observable<TheSeamPageInfo> {
-  return new Observable<TheSeamPageInfo>((subscriber: Subscriber<TheSeamPageInfo>) => {
-    let prev: TheSeamPageInfo | null = null
-    const handlePageInfo = (pageInfo: TheSeamPageInfo | null) => {
-      if (!_isPageInfoSame(prev, pageInfo)) {
-        if (pageInfo !== null) {
-          subscriber.next(pageInfo)
+  return new Observable<TheSeamPageInfo>(
+    (subscriber: Subscriber<TheSeamPageInfo>) => {
+      let prev: TheSeamPageInfo | null = null
+      const handlePageInfo = (pageInfo: TheSeamPageInfo | null) => {
+        if (!_isPageInfoSame(prev, pageInfo)) {
+          if (pageInfo !== null) {
+            subscriber.next(pageInfo)
+          }
+          prev = pageInfo
         }
-        prev = pageInfo
       }
-    }
 
-    const dtSub = datatable$.pipe(
-      switchMap(dt => {
-        if (!notNullOrUndefined(dt)) {
-          handlePageInfo(null)
-          return EMPTY
-        }
+      const dtSub = datatable$
+        .pipe(
+          switchMap((dt) => {
+            if (!notNullOrUndefined(dt)) {
+              handlePageInfo(null)
+              return EMPTY
+            }
 
-        handlePageInfo(getPageInfo(dt, defaultPageSize))
+            handlePageInfo(getPageInfo(dt, defaultPageSize))
 
-        return dt.page.pipe(tap(p => handlePageInfo(p)))
-      }),
-    ).subscribe()
+            return dt.page.pipe(tap((p) => handlePageInfo(p)))
+          }),
+        )
+        .subscribe()
 
-    return () => {
-      dtSub.unsubscribe()
-    }
-  })
+      return () => {
+        dtSub.unsubscribe()
+      }
+    },
+  )
 }
 
-function _isPageInfoSame(prev: TheSeamPageInfo | null, curr: TheSeamPageInfo | null): boolean {
+function _isPageInfoSame(
+  prev: TheSeamPageInfo | null,
+  curr: TheSeamPageInfo | null,
+): boolean {
   if (
     prev?.offset === curr?.offset &&
     prev?.pageSize === curr?.pageSize &&

@@ -1,4 +1,10 @@
-import { BasePortalOutlet, CdkPortalOutletAttachedRef, ComponentPortal, Portal, TemplatePortal } from '@angular/cdk/portal'
+import {
+  BasePortalOutlet,
+  CdkPortalOutletAttachedRef,
+  ComponentPortal,
+  Portal,
+  TemplatePortal,
+} from '@angular/cdk/portal'
 import {
   ComponentRef,
   Directive,
@@ -29,7 +35,10 @@ import {
   exportAs: 'seamDashboardWidgetPortalOutlet',
   inputs: ['portal: seamDashboardWidgetPortalOutlet'],
 })
-export class DashboardWidgetPortalOutletDirective extends BasePortalOutlet implements OnInit, OnDestroy {
+export class DashboardWidgetPortalOutletDirective
+  extends BasePortalOutlet
+  implements OnInit, OnDestroy
+{
   private readonly _viewContainerRef = inject(ViewContainerRef)
 
   /** Whether the portal component is initialized. */
@@ -104,9 +113,10 @@ export class DashboardWidgetPortalOutletDirective extends BasePortalOutlet imple
 
     // If the portal specifies an origin, use that as the logical location of the component
     // in the application tree. Otherwise use the location of this PortalOutlet.
-    const viewContainerRef = portal.viewContainerRef != null
-      ? portal.viewContainerRef
-      : this._viewContainerRef
+    const viewContainerRef =
+      portal.viewContainerRef != null
+        ? portal.viewContainerRef
+        : this._viewContainerRef
 
     const ref = viewContainerRef.createComponent(portal.component, {
       index: viewContainerRef.length,
@@ -128,7 +138,10 @@ export class DashboardWidgetPortalOutletDirective extends BasePortalOutlet imple
    */
   attachTemplatePortal<C>(portal: TemplatePortal<C>): EmbeddedViewRef<C> {
     portal.setAttachedHost(this)
-    const viewRef = this._viewContainerRef.createEmbeddedView(portal.templateRef, portal.context)
+    const viewRef = this._viewContainerRef.createEmbeddedView(
+      portal.templateRef,
+      portal.context,
+    )
     super.setDisposeFn(() => this._viewContainerRef.clear())
 
     this._attachedPortal = portal

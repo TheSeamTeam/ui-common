@@ -73,4 +73,4 @@ import { RouteModalComponent } from './route-modal/route-modal.component'
     { provide: MODAL_CONFIG, useValue: ModalConfig },
   ],
 })
-export class TheSeamModalModule { }
+export class TheSeamModalModule {}

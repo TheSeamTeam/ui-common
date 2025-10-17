@@ -1,4 +1,9 @@
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 
@@ -10,15 +15,11 @@ const meta: Meta<DashboardComponent> = {
   component: DashboardComponent,
   decorators: [
     applicationConfig({
-      providers: [
-        provideAnimations(),
-      ],
+      providers: [provideAnimations()],
     }),
     moduleMetadata({
       declarations: [],
-      imports: [
-        TheSeamDashboardModule,
-      ],
+      imports: [TheSeamDashboardModule],
     }),
   ],
 }
@@ -26,4 +27,4 @@ const meta: Meta<DashboardComponent> = {
 export default meta
 type Story = StoryObj<DashboardComponent>
 
-export const Example: Story = { }
+export const Example: Story = {}

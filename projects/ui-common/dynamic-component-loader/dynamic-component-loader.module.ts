@@ -1,8 +1,4 @@
-import {
-  ModuleWithProviders,
-  NgModule,
-  Type,
-} from '@angular/core'
+import { ModuleWithProviders, NgModule, Type } from '@angular/core'
 import { ROUTES } from '@angular/router'
 
 import { TheSeamDynamicComponentLoader } from './dynamic-component-loader.service'
@@ -15,7 +11,9 @@ import {
 
 @NgModule()
 export class TheSeamDynamicComponentLoaderModule {
-  static forRoot(manifests: DynamicComponentManifest[]): ModuleWithProviders<TheSeamDynamicComponentLoaderModule> {
+  static forRoot(
+    manifests: DynamicComponentManifest[],
+  ): ModuleWithProviders<TheSeamDynamicComponentLoaderModule> {
     return {
       ngModule: TheSeamDynamicComponentLoaderModule,
       providers: [
@@ -27,17 +25,22 @@ export class TheSeamDynamicComponentLoaderModule {
       ],
     }
   }
-  static forModule(manifest: DynamicComponentManifest): ModuleWithProviders<TheSeamDynamicComponentLoaderModule> {
+  static forModule(
+    manifest: DynamicComponentManifest,
+  ): ModuleWithProviders<TheSeamDynamicComponentLoaderModule> {
     return {
       ngModule: TheSeamDynamicComponentLoaderModule,
       providers: [
         // provider for @angular/router to parse
         { provide: ROUTES, useValue: manifest, multi: true },
         // provider for TheSeamDynamicComponentLoader to analyze
-        { provide: DYNAMIC_MODULE, useValue: manifest }],
+        { provide: DYNAMIC_MODULE, useValue: manifest },
+      ],
     }
   }
-  static forChild(component: Type<any>): ModuleWithProviders<TheSeamDynamicComponentLoaderModule> {
+  static forChild(
+    component: Type<any>,
+  ): ModuleWithProviders<TheSeamDynamicComponentLoaderModule> {
     return {
       ngModule: TheSeamDynamicComponentLoaderModule,
       providers: [

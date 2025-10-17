@@ -13,24 +13,23 @@ describe('TheSeamDynamicComponentLoader', () => {
     {
       componentId: 'lazy-comp',
       path: 'lazy-comp',
-      loadChildren: () => import('./testing/lazy-module').then(m => m.LazyModule),
+      loadChildren: () =>
+        import('./testing/lazy-module').then((m) => m.LazyModule),
     },
   ]
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        TestingRootComponent,
-      ],
-      imports: [
-        TheSeamDynamicComponentLoaderModule.forRoot(manifests),
-      ],
+      declarations: [TestingRootComponent],
+      imports: [TheSeamDynamicComponentLoaderModule.forRoot(manifests)],
       teardown: { destroyAfterEach: false },
     }).compileComponents()
   }))
 
   it('should be created', () => {
-    const service: TheSeamDynamicComponentLoader = TestBed.inject(TheSeamDynamicComponentLoader)
+    const service: TheSeamDynamicComponentLoader = TestBed.inject(
+      TheSeamDynamicComponentLoader,
+    )
     expect(service).toBeTruthy()
   })
 

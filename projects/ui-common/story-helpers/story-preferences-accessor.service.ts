@@ -6,8 +6,9 @@ import { TheSeamPreferencesAccessor } from '@theseam/ui-common/services'
 const ACCESSOR_PREFIX = 'story-pref'
 
 @Injectable()
-export class StoryPreferencesAccessorService implements TheSeamPreferencesAccessor {
-
+export class StoryPreferencesAccessorService
+  implements TheSeamPreferencesAccessor
+{
   /**
    * Gets a preference.
    */
@@ -32,5 +33,4 @@ export class StoryPreferencesAccessorService implements TheSeamPreferencesAccess
     localStorage.removeItem(`${ACCESSOR_PREFIX}-${name}`)
     return of(true)
   }
-
 }

@@ -12,14 +12,14 @@ import { TheSeamBreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.componen
 const meta: Meta<TheSeamBreadcrumbsComponent> = {
   title: 'Breadcrumbs/Components/Simple',
   component: TheSeamBreadcrumbsComponent,
-  decorators: [ ],
+  decorators: [],
 }
 
 export default meta
 type Story = StoryObj<TheSeamBreadcrumbsComponent>
 
 export const Example: Story = {
-  render: args => {
+  render: (args) => {
     return {
       applicationConfig: {
         providers: [
@@ -38,10 +38,8 @@ export const Example: Story = {
         ],
       },
       moduleMetadata: {
-        providers: [ ],
-        imports: [
-          RouterModule,
-        ],
+        providers: [],
+        imports: [RouterModule],
       },
       props: { ...args },
       template: `

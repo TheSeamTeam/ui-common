@@ -6,8 +6,8 @@ import { TheSeamTabbedTabContentAccessor } from '../tabbed-models'
   selector: '[seamTabbedTabContent]',
   exportAs: 'seamTabbedTabContent',
 })
-export class TheSeamTabbedTabContentDirective implements TheSeamTabbedTabContentAccessor {
-
+export class TheSeamTabbedTabContentDirective
+  implements TheSeamTabbedTabContentAccessor
+{
   public isActive = false
-
 }

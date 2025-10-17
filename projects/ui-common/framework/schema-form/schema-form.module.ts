@@ -6,7 +6,8 @@ import {
   FrameworkLibraryService,
   JsonSchemaFormModule,
   JsonSchemaFormService,
-  WidgetLibraryModule, WidgetLibraryService,
+  WidgetLibraryModule,
+  WidgetLibraryService,
 } from '@ajsf/core'
 
 import { TheSeamFramework } from './schema-form-framework'
@@ -25,9 +26,6 @@ import { TheSeamSchemaFormFrameworkComponent } from './schema-form-framework.com
     WidgetLibraryService,
     { provide: Framework, useClass: TheSeamFramework, multi: true },
   ],
-  exports: [
-    TheSeamSchemaFormFrameworkComponent,
-    JsonSchemaFormModule,
-  ],
+  exports: [TheSeamSchemaFormFrameworkComponent, JsonSchemaFormModule],
 })
-export class TheSeamSchemaFormModule { }
+export class TheSeamSchemaFormModule {}

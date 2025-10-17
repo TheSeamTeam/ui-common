@@ -1,4 +1,5 @@
-<input #input
+<input
+  #input
   type="checkbox"
   class="custom-control-input"
   [id]="inputId"
@@ -12,10 +13,13 @@
   [attr.aria-labelledby]="ariaLabelledby"
   [attr.aria-checked]="_getAriaChecked()"
   (change)="_onInteractionEvent($event)"
-  (click)="_onInputClick($event)">
-<label #checkboxLabel
+  (click)="_onInputClick($event)"
+/>
+<label
+  #checkboxLabel
   class="custom-control-label"
   [attr.for]="inputId"
-  (cdkObserveContent)="_onLabelTextChange()">
+  (cdkObserveContent)="_onLabelTextChange()"
+>
   <ng-content></ng-content>
 </label>

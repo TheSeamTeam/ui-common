@@ -4,7 +4,6 @@ import { TheSeamBaseLayoutAction } from './base-layout-action'
 import { TheSeamBaseLayoutNav } from './base-layout-nav'
 
 export interface TheSeamBaseLayoutRef {
-
   readonly registeredNav: TheSeamBaseLayoutNav | undefined
   readonly registeredActions: TheSeamBaseLayoutAction[]
 
@@ -20,5 +19,4 @@ export interface TheSeamBaseLayoutRef {
   unregisterAction(action: TheSeamBaseLayoutAction | string): void
 
   isActionRegistered(actionName: string): boolean
-
 }

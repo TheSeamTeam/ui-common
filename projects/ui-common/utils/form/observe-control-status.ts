@@ -8,14 +8,20 @@ import { waitOnNonPendingStatus } from './wait-on-non-pending-status'
  * Observe the status of a control using a work around for status not changing
  * after pending.
  */
-export function observeControlStatus(control: AbstractControl): Observable<string> {
-  return of(control)
-    .pipe(switchMap(_control => _control.statusChanges
-      .pipe(startWith(_control.status))
-      .pipe(switchMap(status => status === 'PENDING'
-        ? waitOnNonPendingStatus(control)
-          .pipe(startWith(status))
-        : of(status),
-      )),
-    ))
+export function observeControlStatus(
+  control: AbstractControl,
+): Observable<string> {
+  return of(control).pipe(
+    switchMap((_control) =>
+      _control.statusChanges
+        .pipe(startWith(_control.status))
+        .pipe(
+          switchMap((status) =>
+            status === 'PENDING'
+              ? waitOnNonPendingStatus(control).pipe(startWith(status))
+              : of(status),
+          ),
+        ),
+    ),
+  )
 }

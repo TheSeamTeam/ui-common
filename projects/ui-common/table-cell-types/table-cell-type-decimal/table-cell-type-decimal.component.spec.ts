@@ -10,8 +10,7 @@ describe('TableCellTypeDecimalComponent', () => {
     TestBed.configureTestingModule({
       declarations: [TableCellTypeDecimalComponent],
       teardown: { destroyAfterEach: false },
-    })
-      .compileComponents()
+    }).compileComponents()
   }))
 
   beforeEach(() => {

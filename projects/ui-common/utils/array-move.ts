@@ -67,7 +67,7 @@ export function arrayMoveImmutable<ValueType>(
   fromIndex: number,
   toIndex: number,
 ): ValueType[] {
-  const newArray = [ ...array ]
+  const newArray = [...array]
   arrayMoveMutable(newArray, fromIndex, toIndex)
   return newArray
 }

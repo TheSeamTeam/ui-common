@@ -14,9 +14,9 @@ import { AlterationDisplayItem } from '../../../datatable-alterations-display/mo
 export type FilterType = 'text' | 'numeric' | 'date'
 
 export type FilterOperation =
-  TheSeamColumnsDataFilterTextSearchType |
-  TheSeamColumnsDataFilterNumericSearchType |
-  TheSeamColumnsDataFilterDateSearchType
+  | TheSeamColumnsDataFilterTextSearchType
+  | TheSeamColumnsDataFilterNumericSearchType
+  | TheSeamColumnsDataFilterDateSearchType
 
 export interface FilterColumnsAlterationState {
   columnProp: TableColumnProp
@@ -32,10 +32,7 @@ export class FilterColumnsAlteration extends ColumnsAlteration<FilterColumnsAlte
 
   public readonly type: string = 'filter'
 
-  constructor(
-    state: FilterColumnsAlterationState,
-    persistent: boolean,
-  ) {
+  constructor(state: FilterColumnsAlterationState, persistent: boolean) {
     super(state, persistent)
 
     if (!this._isValidState(state)) {
@@ -45,7 +42,10 @@ export class FilterColumnsAlteration extends ColumnsAlteration<FilterColumnsAlte
     this.id = `${this.type}--${state.columnProp}`
   }
 
-  public apply(columns: TheSeamDatatableColumn<any, any>[], datatable: TheSeamDatatableAccessor): void {
+  public apply(
+    columns: TheSeamDatatableColumn<any, any>[],
+    datatable: TheSeamDatatableAccessor,
+  ): void {
     // Get the columns filters service from the datatable
     const columnsFiltersService = (datatable as any)._columnsFilters
     if (!columnsFiltersService) {
@@ -76,7 +76,9 @@ export class FilterColumnsAlteration extends ColumnsAlteration<FilterColumnsAlte
     // Set values based on operation type
     if (this._isRangeOperation(operation)) {
       if (!notNullOrUndefined(fromValue) || !notNullOrUndefined(toValue)) {
-        throw new Error(`Range operation '${operation}' requires both fromValue and toValue`)
+        throw new Error(
+          `Range operation '${operation}' requires both fromValue and toValue`,
+        )
       }
       formValues.fromText = String(fromValue)
       formValues.toText = String(toValue)
@@ -115,8 +117,14 @@ export class FilterColumnsAlteration extends ColumnsAlteration<FilterColumnsAlte
 
   private _isValueOperation(operation: FilterOperation): boolean {
     const valueOperations: FilterOperation[] = [
-      'contains', 'ncontains', 'eq', 'neq', // text
-      'gt', 'lt', 'gte', 'lte', // numeric/date
+      'contains',
+      'ncontains',
+      'eq',
+      'neq', // text
+      'gt',
+      'lt',
+      'gte',
+      'lte', // numeric/date
     ]
     return valueOperations.includes(operation)
   }
@@ -136,14 +144,23 @@ export class FilterColumnsAlteration extends ColumnsAlteration<FilterColumnsAlte
     }
 
     // Validate operation is valid for filter type
-    if (!this._isValidOperationForFilterType(state.operation, state.filterType)) {
-      throw new Error(`Operation '${state.operation}' is not valid for filter type '${state.filterType}'`)
+    if (
+      !this._isValidOperationForFilterType(state.operation, state.filterType)
+    ) {
+      throw new Error(
+        `Operation '${state.operation}' is not valid for filter type '${state.filterType}'`,
+      )
     }
 
     // Validate required values for operations
     if (this._isRangeOperation(state.operation)) {
-      if (!notNullOrUndefined(state.fromValue) || !notNullOrUndefined(state.toValue)) {
-        throw new Error(`Range operation '${state.operation}' requires both fromValue and toValue`)
+      if (
+        !notNullOrUndefined(state.fromValue) ||
+        !notNullOrUndefined(state.toValue)
+      ) {
+        throw new Error(
+          `Range operation '${state.operation}' requires both fromValue and toValue`,
+        )
       }
     } else if (this._isValueOperation(state.operation)) {
       if (!notNullOrUndefined(state.value)) {
@@ -154,10 +171,40 @@ export class FilterColumnsAlteration extends ColumnsAlteration<FilterColumnsAlte
     return true
   }
 
-  private _isValidOperationForFilterType(operation: FilterOperation, filterType: FilterType): boolean {
-    const textOperations: FilterOperation[] = ['contains', 'ncontains', 'eq', 'neq', 'blank', 'not-blank']
-    const numericOperations: FilterOperation[] = ['gt', 'lt', 'eq', 'gte', 'lte', 'blank', 'not-blank', 'between', 'not-between']
-    const dateOperations: FilterOperation[] = ['lt', 'lte', 'gt', 'gte', 'eq', 'blank', 'not-blank', 'between', 'not-between']
+  private _isValidOperationForFilterType(
+    operation: FilterOperation,
+    filterType: FilterType,
+  ): boolean {
+    const textOperations: FilterOperation[] = [
+      'contains',
+      'ncontains',
+      'eq',
+      'neq',
+      'blank',
+      'not-blank',
+    ]
+    const numericOperations: FilterOperation[] = [
+      'gt',
+      'lt',
+      'eq',
+      'gte',
+      'lte',
+      'blank',
+      'not-blank',
+      'between',
+      'not-between',
+    ]
+    const dateOperations: FilterOperation[] = [
+      'lt',
+      'lte',
+      'gt',
+      'gte',
+      'eq',
+      'blank',
+      'not-blank',
+      'between',
+      'not-between',
+    ]
 
     switch (filterType) {
       case 'text':
@@ -186,7 +233,8 @@ export class FilterColumnsAlteration extends ColumnsAlteration<FilterColumnsAlte
   }
 
   private _createFilterDetails(): string[] {
-    const { columnProp, filterType, operation, value, fromValue, toValue } = this.state
+    const { columnProp, filterType, operation, value, fromValue, toValue } =
+      this.state
     const details = [
       `Column: ${columnProp}`,
       `Type: ${filterType}`,
@@ -205,31 +253,31 @@ export class FilterColumnsAlteration extends ColumnsAlteration<FilterColumnsAlte
 
   private _getOperationSymbol(operation: FilterOperation): string {
     const symbols: Record<string, string> = {
-      'contains': 'contains',
-      'ncontains': 'does not contain',
-      'eq': '=',
-      'neq': '≠',
-      'gt': '>',
-      'lt': '<',
-      'gte': '≥',
-      'lte': '≤',
+      contains: 'contains',
+      ncontains: 'does not contain',
+      eq: '=',
+      neq: '≠',
+      gt: '>',
+      lt: '<',
+      gte: '≥',
+      lte: '≤',
     }
     return symbols[operation] || operation
   }
 
   private _getOperationDisplayName(operation: FilterOperation): string {
     const names: Record<string, string> = {
-      'contains': 'Contains',
-      'ncontains': 'Does not contain',
-      'eq': 'Equals',
-      'neq': 'Not equals',
-      'gt': 'Greater than',
-      'lt': 'Less than',
-      'gte': 'Greater than or equal',
-      'lte': 'Less than or equal',
-      'blank': 'Is blank',
+      contains: 'Contains',
+      ncontains: 'Does not contain',
+      eq: 'Equals',
+      neq: 'Not equals',
+      gt: 'Greater than',
+      lt: 'Less than',
+      gte: 'Greater than or equal',
+      lte: 'Less than or equal',
+      blank: 'Is blank',
       'not-blank': 'Is not blank',
-      'between': 'Between',
+      between: 'Between',
       'not-between': 'Not between',
     }
     return names[operation] || operation

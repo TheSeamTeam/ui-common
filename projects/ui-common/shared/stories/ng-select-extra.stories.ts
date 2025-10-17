@@ -7,7 +7,7 @@ import { TheSeamOverlayScrollbarDirective } from '@theseam/ui-common/scrollbar'
 
 import { TheSeamNgSelectExtraDirective } from '../directives'
 
-interface StoryExtraProps { }
+interface StoryExtraProps {}
 
 const meta: Meta<TheSeamNgSelectExtraDirective & StoryExtraProps> = {
   title: 'Shared/NgSelectExtra',
@@ -27,7 +27,7 @@ export default meta
 type Story = StoryObj<TheSeamNgSelectExtraDirective & StoryExtraProps>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       control: new FormControl(),

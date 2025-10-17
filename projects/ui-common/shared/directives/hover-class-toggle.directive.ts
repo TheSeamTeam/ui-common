@@ -1,4 +1,10 @@
-import { Directive, ElementRef, HostListener, inject, Input } from '@angular/core'
+import {
+  Directive,
+  ElementRef,
+  HostListener,
+  inject,
+  Input,
+} from '@angular/core'
 
 declare type _PointerEvent = PointerEvent | PointerEvent
 
@@ -22,7 +28,6 @@ export interface TheSeamHoverClassToggleRecord {
   exportAs: 'seamHoverClassToggle',
 })
 export class TheSeamHoverClassToggleDirective {
-
   private readonly _elementRef = inject(ElementRef<HTMLElement>)
 
   private _hovered = false
@@ -37,7 +42,9 @@ export class TheSeamHoverClassToggleDirective {
     this._setHovered(false)
   }
 
-  @HostListener('pointerover', ['$event']) onPointerOver($event: _PointerEvent) {
+  @HostListener('pointerover', ['$event']) onPointerOver(
+    $event: _PointerEvent,
+  ) {
     this._setHovered(true)
   }
 
@@ -49,14 +56,18 @@ export class TheSeamHoverClassToggleDirective {
   set seamHoverClassToggle(value: TheSeamHoverClassToggleRecord) {
     if (value) {
       if (value.default) {
-        this._defaultClasses = value.default.split(' ').filter(c => c.length > 0)
+        this._defaultClasses = value.default
+          .split(' ')
+          .filter((c) => c.length > 0)
       }
       if (value.hover) {
-        this._hoverClasses = value.hover.split(' ').filter(c => c.length > 0)
+        this._hoverClasses = value.hover.split(' ').filter((c) => c.length > 0)
       }
     }
 
-    this._hoverClasses = this._hoverClasses.filter(v => !this._defaultClasses.find(_v => _v === v))
+    this._hoverClasses = this._hoverClasses.filter(
+      (v) => !this._defaultClasses.find((_v) => _v === v),
+    )
 
     this._update()
   }
@@ -85,5 +96,4 @@ export class TheSeamHoverClassToggleDirective {
   public _removeClass(c: string): void {
     this._elementRef.nativeElement.classList.remove(c)
   }
-
 }

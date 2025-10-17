@@ -1,6 +1,20 @@
-import { animate, animation, keyframes, style, transition, trigger, useAnimation } from '@angular/animations'
+import {
+  animate,
+  animation,
+  keyframes,
+  style,
+  transition,
+  trigger,
+  useAnimation,
+} from '@angular/animations'
 import { BooleanInput } from '@angular/cdk/coercion'
-import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  Input,
+  OnInit,
+} from '@angular/core'
 
 import { SizeProp } from '@fortawesome/fontawesome-svg-core'
 import { faCircle } from '@fortawesome/free-solid-svg-icons'
@@ -25,48 +39,56 @@ export const pulseAnimation = animation([
 @Component({
   selector: 'seam-icon-notification',
   template: `
-    <seam-icon *ngIf="icon && !hidden" [@counterChange]="count"
+    <seam-icon
+      *ngIf="icon && !hidden"
+      [@counterChange]="count"
       [grayscaleOnDisable]="grayscaleOnDisable"
       [disabled]="disabled"
       [iconClass]="iconClass"
       [icon]="icon"
       [size]="size"
       [showDefaultOnError]="showDefaultOnError"
-      [iconType]="iconType">
+      [iconType]="iconType"
+    >
     </seam-icon>
     <ng-content select=".sr-only"></ng-content>
   `,
-  styles: [`
-    :host {
-      position: absolute;
-      top: 0;
-      right: 0;
-      left: 0;
-      bottom: 0;
-    }
+  styles: [
+    `
+      :host {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+      }
 
-    seam-icon {
-      position: absolute;
-      top: 4px;
-      right: 4px;
-      width: 25% !important;
-      height: 25% !important;
-      min-width: 15px;
-      min-height: 15px;
-    }
-  `],
+      seam-icon {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        width: 25% !important;
+        height: 25% !important;
+        min-width: 15px;
+        min-height: 15px;
+      }
+    `,
+  ],
   host: {
     '[attr.aria-disabled]': 'disabled.toString()',
     '[attr.disabled]': 'disabled || null',
   },
   animations: [
     trigger('counterChange', [
-      transition(':increment', useAnimation(pulseAnimation, {
-        params: {
-          timings: '400ms ease-in-out',
-          scale: 1.2,
-        },
-      })),
+      transition(
+        ':increment',
+        useAnimation(pulseAnimation, {
+          params: {
+            timings: '400ms ease-in-out',
+            scale: 1.2,
+          },
+        }),
+      ),
     ]),
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -121,16 +143,17 @@ export class IconNotificationComponent implements OnInit {
 
   @Input() iconType: TheSeamIconType | undefined | null = 'image-fill'
 
-  constructor(
-    private _elementRef: ElementRef<HTMLElement>,
-  ) { }
+  constructor(private _elementRef: ElementRef<HTMLElement>) {}
 
   ngOnInit() {
-    if (this._elementRef && this._elementRef.nativeElement && this._elementRef.nativeElement.parentElement) {
+    if (
+      this._elementRef &&
+      this._elementRef.nativeElement &&
+      this._elementRef.nativeElement.parentElement
+    ) {
       this._elementRef.nativeElement.parentElement.style.position = 'relative'
     }
   }
 
   // ngDoCheck() {}
-
 }

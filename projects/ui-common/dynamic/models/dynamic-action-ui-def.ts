@@ -9,7 +9,6 @@ import { DynamicValue } from './dynamic-value'
  * there will not be a high priority on keeping this backwards compatibile yet.
  */
 export interface DynamicActionUiDef {
-
   /** Action def this ui def is for. */
   _actionDef: DynamicActionDef<string>
 
@@ -38,5 +37,4 @@ export interface DynamicActionUiDef {
    *  }
    */
   blockClickExpr?: DynamicValue<boolean>
-
 }

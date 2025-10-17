@@ -6,8 +6,6 @@ import { Component, HostBinding } from '@angular/core'
   styleUrls: ['./card-header.component.scss'],
 })
 export class TheSeamCardHeaderComponent {
-
   @HostBinding('class.card-header') _cssClassCardHeader = true
   @HostBinding('class.py-0') _cssClassPY0 = true
-
 }

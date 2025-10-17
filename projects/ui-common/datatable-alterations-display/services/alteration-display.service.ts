@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core'
 
-import { AlterationDisplayItem, AlterationDiffState } from '../models/alteration-display.model'
+import {
+  AlterationDisplayItem,
+  AlterationDiffState,
+} from '../models/alteration-display.model'
 
 @Injectable({
   providedIn: 'root',
 })
 export class AlterationDisplayService {
-
   /**
    * Calculate the differences between current and pending alterations
    */
@@ -14,11 +16,11 @@ export class AlterationDisplayService {
     current: AlterationDisplayItem[],
     pending: AlterationDisplayItem[],
   ): AlterationDiffState {
-    const currentIds = new Set(current.map(item => item.id))
-    const pendingIds = new Set(pending.map(item => item.id))
+    const currentIds = new Set(current.map((item) => item.id))
+    const pendingIds = new Set(pending.map((item) => item.id))
 
-    const added = pending.filter(item => !currentIds.has(item.id))
-    const removed = current.filter(item => !pendingIds.has(item.id))
+    const added = pending.filter((item) => !currentIds.has(item.id))
+    const removed = current.filter((item) => !pendingIds.has(item.id))
 
     const unchanged: AlterationDisplayItem[] = []
     const changed: AlterationDisplayItem[] = []
@@ -26,7 +28,7 @@ export class AlterationDisplayService {
     // Check for changes in items that exist in both arrays
     for (const currentItem of current) {
       if (pendingIds.has(currentItem.id)) {
-        const pendingItem = pending.find(item => item.id === currentItem.id)!
+        const pendingItem = pending.find((item) => item.id === currentItem.id)!
 
         if (this._areItemsEqual(currentItem, pendingItem)) {
           unchanged.push(currentItem)
@@ -50,11 +52,11 @@ export class AlterationDisplayService {
   groupAndSortItems(items: AlterationDisplayItem[]): AlterationDisplayItem[] {
     // Define type order: sort, order, hide-column, width, filter (filters last due to variation)
     const typeOrder: Record<string, number> = {
-      'sort': 1,
-      'order': 2,
+      sort: 1,
+      order: 2,
       'hide-column': 3,
-      'width': 4,
-      'filter': 5,
+      width: 4,
+      filter: 5,
     }
 
     return items.sort((a, b) => {
@@ -84,11 +86,11 @@ export class AlterationDisplayService {
    */
   getTypeDisplayName(type: string): string {
     const typeNames: Record<string, string> = {
-      'sort': 'Sort',
-      'order': 'Order',
+      sort: 'Sort',
+      order: 'Order',
       'hide-column': 'Visibility',
-      'width': 'Width',
-      'filter': 'Filter',
+      width: 'Width',
+      filter: 'Filter',
     }
     return typeNames[type] || type
   }
@@ -98,16 +100,19 @@ export class AlterationDisplayService {
    */
   getTypeIconName(type: string): string {
     const typeIcons: Record<string, string> = {
-      'sort': 'sort',
-      'order': 'arrows-alt',
+      sort: 'sort',
+      order: 'arrows-alt',
       'hide-column': 'eye-slash',
-      'width': 'arrows-alt-h',
-      'filter': 'filter',
+      width: 'arrows-alt-h',
+      filter: 'filter',
     }
     return typeIcons[type] || 'cog'
   }
 
-  private _areItemsEqual(item1: AlterationDisplayItem, item2: AlterationDisplayItem): boolean {
+  private _areItemsEqual(
+    item1: AlterationDisplayItem,
+    item2: AlterationDisplayItem,
+  ): boolean {
     // Compare all properties except sortOrder (which shouldn't affect equality)
     return (
       item1.id === item2.id &&

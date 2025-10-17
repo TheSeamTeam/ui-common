@@ -9,9 +9,7 @@ import { TheSeamHoverClassToggleDirective } from '@theseam/ui-common/shared'
   selector: 'seam-card-action',
   templateUrl: './card-action.component.html',
   styleUrls: ['./card-action.component.scss'],
-  imports: [
-    TheSeamHoverClassToggleDirective,
-  ],
+  imports: [TheSeamHoverClassToggleDirective],
 })
 export class TheSeamCardActionComponent {
   static ngAcceptInputType_isLastAction: BooleanInput
@@ -23,5 +21,4 @@ export class TheSeamCardActionComponent {
   @Input() title: string | undefined | null
 
   @Input() @InputBoolean() isLastAction = false
-
 }

@@ -2,7 +2,7 @@
 
 :host {
   // When using a mouse, the first item doesn't need to display as focused, if it isn't hovered by the mouse.
-  &.cdk-mouse-focused:not(:hover){
+  &.cdk-mouse-focused:not(:hover) {
     background: transparent;
   }
 

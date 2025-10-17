@@ -10,8 +10,7 @@ describe('WidgetFooterLinkComponent', () => {
     TestBed.configureTestingModule({
       declarations: [WidgetFooterLinkComponent],
       teardown: { destroyAfterEach: false },
-    })
-      .compileComponents()
+    }).compileComponents()
   }))
 
   beforeEach(() => {

@@ -1,4 +1,9 @@
-import { KeyValueChanges, KeyValueDiffer, KeyValueDiffers, TemplateRef } from '@angular/core'
+import {
+  KeyValueChanges,
+  KeyValueDiffer,
+  KeyValueDiffers,
+  TemplateRef,
+} from '@angular/core'
 import {
   DataTableColumnCellTreeToggle,
   DataTableColumnDirective,
@@ -41,22 +46,32 @@ export function mergeTplAndInpColumns(
 
   const _tplCols = translateTemplates((tplCols || []) as any)
   for (const col of inpCols) {
-    const tplCol = _tplCols.find(t => t.prop === col.prop)
+    const tplCol = _tplCols.find((t) => t.prop === col.prop)
     // console.log({ col: { ...(col || {}) }, tplCol: { ...(tplCol || {}) } })
 
     const dtColumns = ngxDatatableInternalColumns
-    const prev = dtColumns.find(c => c.prop === col.prop)
+    const prev = dtColumns.find((c) => c.prop === col.prop)
 
     const inpColDiff = _getColDiff(col, colDiffersInp, differs)
-    const _inpCol = inpColDiff ? {} : _hasPrevColDiff(col, colDiffersInp) ? {} : col
+    const _inpCol = inpColDiff
+      ? {}
+      : _hasPrevColDiff(col, colDiffersInp)
+        ? {}
+        : col
     if (inpColDiff) {
       _updateColDiff(inpColDiff, prev, _inpCol)
     }
 
     let _tplCol: TheSeamDatatableColumn = {}
     if (tplCol) {
-      const tplColDiff = tplCol ? _getColDiff(tplCol, colDiffersTpl, differs) : undefined
-      _tplCol = tplColDiff ? {} : _hasPrevColDiff(col, colDiffersTpl) ? {} : tplCol
+      const tplColDiff = tplCol
+        ? _getColDiff(tplCol, colDiffersTpl, differs)
+        : undefined
+      _tplCol = tplColDiff
+        ? {}
+        : _hasPrevColDiff(col, colDiffersTpl)
+          ? {}
+          : tplCol
       if (tplColDiff) {
         _updateColDiff(tplColDiff, prev, _tplCol)
       }
@@ -101,14 +116,14 @@ function _updateColDiff(
   prev: TableColumn | undefined,
   inpCol: TheSeamDatatableColumn<any, any>,
 ): void {
-  colDiff.forEachRemovedItem(r => {
+  colDiff.forEachRemovedItem((r) => {
     if (prev && Object.prototype.hasOwnProperty.call(prev, r.key)) {
       const k = r.key as keyof TableColumn
       delete prev[k]
     }
   })
-  colDiff.forEachAddedItem(r => (inpCol as any)[r.key] = r.currentValue)
-  colDiff.forEachChangedItem(r => (inpCol as any)[r.key] = r.currentValue)
+  colDiff.forEachAddedItem((r) => ((inpCol as any)[r.key] = r.currentValue))
+  colDiff.forEachChangedItem((r) => ((inpCol as any)[r.key] = r.currentValue))
 }
 
 function _getColDiff(

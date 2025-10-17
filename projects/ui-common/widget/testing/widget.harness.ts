@@ -1,5 +1,10 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
-import { BaseHarnessFilters, ComponentHarnessConstructor, ContentContainerComponentHarness, HarnessPredicate } from '@angular/cdk/testing'
+import {
+  BaseHarnessFilters,
+  ComponentHarnessConstructor,
+  ContentContainerComponentHarness,
+  HarnessPredicate,
+} from '@angular/cdk/testing'
 
 // import { TheSeamMenuHarness } from './menu.harness'
 // import { animatingWait } from './utils'

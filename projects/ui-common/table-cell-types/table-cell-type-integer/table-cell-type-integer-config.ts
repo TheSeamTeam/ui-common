@@ -1,11 +1,16 @@
-import { DynamicActionLinkDef, DynamicActionModalDef, DynamicValue } from '@theseam/ui-common/dynamic'
+import {
+  DynamicActionLinkDef,
+  DynamicActionModalDef,
+  DynamicValue,
+} from '@theseam/ui-common/dynamic'
 import { TableCellTypeConfig } from '@theseam/ui-common/table-cell-type'
 
 export type TableCellTypeIntegerConfigAction =
-  DynamicActionLinkDef |
-  DynamicActionModalDef
+  | DynamicActionLinkDef
+  | DynamicActionModalDef
 
-export interface TableCellTypeConfigInteger extends TableCellTypeConfig<'integer'> {
+export interface TableCellTypeConfigInteger
+  extends TableCellTypeConfig<'integer'> {
   action?: TableCellTypeIntegerConfigAction
 
   /**
@@ -34,7 +39,7 @@ export interface TableCellTypeConfigInteger extends TableCellTypeConfig<'integer
   minIntegerDigits?: DynamicValue<number>
 
   /**
-    * Default is `right`.
-    */
+   * Default is `right`.
+   */
   textAlign?: DynamicValue<'left' | 'center' | 'right'>
 }

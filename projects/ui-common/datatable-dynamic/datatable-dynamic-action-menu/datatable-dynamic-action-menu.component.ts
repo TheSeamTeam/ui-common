@@ -8,7 +8,10 @@ import { hasProperty, notNullOrUndefined } from '@theseam/ui-common/utils'
 
 import { DynamicDatatableRow } from '../datatable-dynamic-def'
 import { DynamicDatatableRowActionsService } from '../dynamic-datatable-row-actions.service'
-import { DynamicDatatableActionMenuElementTypes, DynamicDatatableActionMenuRecord } from '../models/dynamic-datatable-action-menu-record'
+import {
+  DynamicDatatableActionMenuElementTypes,
+  DynamicDatatableActionMenuRecord,
+} from '../models/dynamic-datatable-action-menu-record'
 import { DynamicDatatableRowAction } from '../models/dynamic-datatable-row-action'
 import { DynamicDatatableRowActionContext } from '../models/dynamic-datatable-row-action-context'
 
@@ -20,18 +23,21 @@ import { DynamicDatatableRowActionContext } from '../models/dynamic-datatable-ro
   standalone: false,
 })
 export class DatatableDynamicActionMenuComponent {
-
   faEllipsisH = faEllipsisH
 
   @Input()
-  get row() { return this._row.value }
+  get row() {
+    return this._row.value
+  }
   set row(value: DynamicDatatableRow | undefined) {
     this._row.next(value || undefined)
   }
   private _row = new BehaviorSubject<DynamicDatatableRow | undefined>(undefined)
 
   @Input()
-  get actionDefs() { return this._actionDefs.value }
+  get actionDefs() {
+    return this._actionDefs.value
+  }
   set actionDefs(value: DynamicDatatableRowAction[]) {
     this._actionDefs.next(value || [])
   }
@@ -75,11 +81,14 @@ export class DatatableDynamicActionMenuComponent {
     //   switchMap(([ row, actionDefs ]) => !!row ? this._mapRecords(row, actionDefs) : of([]))
     // )
     this._menuRecords$ = this._row.pipe(
-      switchMap(row => row
-        ? this._dynamicRowActions.rowActions(row).pipe(
-          switchMap(actionDefs => this._mapRecords(row, actionDefs)),
-        )
-        : of([]),
+      switchMap((row) =>
+        row
+          ? this._dynamicRowActions
+              .rowActions(row)
+              .pipe(
+                switchMap((actionDefs) => this._mapRecords(row, actionDefs)),
+              )
+          : of([]),
       ),
       // tap(v => console.log('actions', v))
     )
@@ -93,7 +102,7 @@ export class DatatableDynamicActionMenuComponent {
     actionDefs: A[],
   ): Observable<DynamicDatatableActionMenuRecord[]> {
     return from(actionDefs).pipe(
-      concatMap(actionDef => {
+      concatMap((actionDef) => {
         return (async () => {
           const _rowAction: DynamicDatatableRowAction = {
             ...actionDef,
@@ -102,16 +111,25 @@ export class DatatableDynamicActionMenuComponent {
           const context = this._getRowActionContext(row, actionDef)
 
           if (hasProperty(_rowAction, 'hidden')) {
-            _rowAction.hidden = await this._valueHelper.eval(_rowAction.hidden, context)
+            _rowAction.hidden = await this._valueHelper.eval(
+              _rowAction.hidden,
+              context,
+            )
             if (_rowAction.hidden) {
               return undefined
             }
           }
 
-          _rowAction.label = await this._valueHelper.eval(actionDef.label, context)
+          _rowAction.label = await this._valueHelper.eval(
+            actionDef.label,
+            context,
+          )
 
           if (hasProperty(_rowAction, 'disabled')) {
-            _rowAction.disabled = await this._valueHelper.eval(_rowAction.disabled, context)
+            _rowAction.disabled = await this._valueHelper.eval(
+              _rowAction.disabled,
+              context,
+            )
           }
 
           const record: DynamicDatatableActionMenuRecord = {
@@ -139,7 +157,9 @@ export class DatatableDynamicActionMenuComponent {
     }
   }
 
-  private _expectedElementType(def: DynamicDatatableRowAction): DynamicDatatableActionMenuElementTypes {
+  private _expectedElementType(
+    def: DynamicDatatableRowAction,
+  ): DynamicDatatableActionMenuElementTypes {
     const action = def.action
 
     if (action.type === 'link') {
@@ -151,5 +171,4 @@ export class DatatableDynamicActionMenuComponent {
 
     return 'button'
   }
-
 }

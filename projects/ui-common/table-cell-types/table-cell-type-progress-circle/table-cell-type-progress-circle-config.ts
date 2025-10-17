@@ -1,12 +1,16 @@
-import { DynamicActionLinkDef, DynamicActionModalDef, DynamicValue } from '@theseam/ui-common/dynamic'
+import {
+  DynamicActionLinkDef,
+  DynamicActionModalDef,
+  DynamicValue,
+} from '@theseam/ui-common/dynamic'
 import { TableCellTypeConfig } from '@theseam/ui-common/table-cell-type'
 
 export type TableCellTypeProgressCircleConfigAction =
-  DynamicActionLinkDef |
-  DynamicActionModalDef
+  | DynamicActionLinkDef
+  | DynamicActionModalDef
 
-export interface TableCellTypeConfigProgressCircle extends TableCellTypeConfig<'progress-circle'> {
-
+export interface TableCellTypeConfigProgressCircle
+  extends TableCellTypeConfig<'progress-circle'> {
   /**
    *
    */
@@ -41,5 +45,4 @@ export interface TableCellTypeConfigProgressCircle extends TableCellTypeConfig<'
   tooltipPlacement?: DynamicValue<string>
 
   tooltipContainer?: DynamicValue<string>
-
 }

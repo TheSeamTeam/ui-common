@@ -10,8 +10,21 @@ import {
   Renderer2,
   SimpleChanges,
 } from '@angular/core'
-import { ActivatedRoute, QueryParamsHandling, Router, RouterLink, RouterLinkWithHref } from '@angular/router'
-import { from, fromEvent, Observable, of, ReplaySubject, Subscription } from 'rxjs'
+import {
+  ActivatedRoute,
+  QueryParamsHandling,
+  Router,
+  RouterLink,
+  RouterLinkWithHref,
+} from '@angular/router'
+import {
+  from,
+  fromEvent,
+  Observable,
+  of,
+  ReplaySubject,
+  Subscription,
+} from 'rxjs'
 import { catchError, mapTo, switchMap, tap } from 'rxjs/operators'
 
 import { AssetReaderHelperService } from '@theseam/ui-common/asset-reader'
@@ -22,7 +35,11 @@ import {
   DynamicActionUiDef,
   DynamicValueHelperService,
 } from '@theseam/ui-common/dynamic'
-import { getAttribute, hasProperty, toggleAttribute } from '@theseam/ui-common/utils'
+import {
+  getAttribute,
+  hasProperty,
+  toggleAttribute,
+} from '@theseam/ui-common/utils'
 
 import { DynamicDatatableRow } from '../datatable-dynamic-def'
 import type { DynamicDatatableActionMenuRecord } from '../models/dynamic-datatable-action-menu-record'
@@ -34,7 +51,6 @@ import { DynamicDatatableRowActionContext } from '../models/dynamic-datatable-ro
  * can be dynamically built in a clean way with or without `routerLink`.
  */
 export class DatatableDynamicActionMenuItemRouterLink {
-
   private _rLink?: RouterLink
   private _rLinkWithHref?: RouterLinkWithHref
 
@@ -60,12 +76,21 @@ export class DatatableDynamicActionMenuItemRouterLink {
       )
       // console.log('rLinkWithHref', this.rLinkWithHref)
 
-      this._rLinkClickEventListener = this.el.nativeElement.addEventListener('click', (event: MouseEvent) => {
-        // console.log('this._rLinkWithHref', this._rLinkWithHref, this._rLinkWithHref && this._rLinkWithHref.href)
-        if (this._rLinkWithHref) {
-          return this._rLinkWithHref.onClick(event.button, event.ctrlKey, event.shiftKey, event.altKey, event.metaKey)
-        }
-      })
+      this._rLinkClickEventListener = this.el.nativeElement.addEventListener(
+        'click',
+        (event: MouseEvent) => {
+          // console.log('this._rLinkWithHref', this._rLinkWithHref, this._rLinkWithHref && this._rLinkWithHref.href)
+          if (this._rLinkWithHref) {
+            return this._rLinkWithHref.onClick(
+              event.button,
+              event.ctrlKey,
+              event.shiftKey,
+              event.altKey,
+              event.metaKey,
+            )
+          }
+        },
+      )
     } else {
       this._rLink = new RouterLink(
         router,
@@ -76,10 +101,15 @@ export class DatatableDynamicActionMenuItemRouterLink {
       )
       // console.log('rLink', this.rLink)
 
-      this._rLinkClickEventListener = this.el.nativeElement.addEventListener('click', () => {
-        // console.log('this._rLink', this._rLink && this._rLink.urlTree)
-        if (this._rLink) { return (this._rLink as any).onClick() }
-      })
+      this._rLinkClickEventListener = this.el.nativeElement.addEventListener(
+        'click',
+        () => {
+          // console.log('this._rLink', this._rLink && this._rLink.urlTree)
+          if (this._rLink) {
+            return (this._rLink as any).onClick()
+          }
+        },
+      )
 
       // this._clickSubscription = fromEvent(el.nativeElement, 'click')
       //   .subscribe(() => {
@@ -94,8 +124,12 @@ export class DatatableDynamicActionMenuItemRouterLink {
     }
   }
 
-  get routerLink(): RouterLink | undefined { return this._rLink }
-  get routerLinkWithHref(): RouterLinkWithHref | undefined { return this._rLinkWithHref }
+  get routerLink(): RouterLink | undefined {
+    return this._rLink
+  }
+  get routerLinkWithHref(): RouterLinkWithHref | undefined {
+    return this._rLinkWithHref
+  }
 
   set routerLinkInput(commands: any[] | string) {
     if (this._rLink) {
@@ -178,7 +212,10 @@ export class DatatableDynamicActionMenuItemRouterLink {
     //   this._clickSubscription.unsubscribe()
     // }
     if (this._rLinkClickEventListener) {
-      this.el.nativeElement.removeEventListener('click', this._rLinkClickEventListener)
+      this.el.nativeElement.removeEventListener(
+        'click',
+        this._rLinkClickEventListener,
+      )
       this._rLinkClickEventListener = null
     }
 
@@ -186,7 +223,6 @@ export class DatatableDynamicActionMenuItemRouterLink {
       this._rLinkWithHref.ngOnDestroy()
     }
   }
-
 }
 
 // TODO: Refactor this directive. It got way more complex instead of more
@@ -195,11 +231,14 @@ export class DatatableDynamicActionMenuItemRouterLink {
   selector: '[seamDatatableDynamicActionMenuItem]',
   exportAs: 'seamDatatableDynamicActionMenuItem',
 })
-export class DatatableDynamicActionMenuItemDirective implements OnDestroy, OnChanges {
-
+export class DatatableDynamicActionMenuItemDirective
+  implements OnDestroy, OnChanges
+{
   @Input()
   // get seamDatatableDynamicActionMenuItem(): DynamicDatatableActionMenuRecord { return this._record }
-  set seamDatatableDynamicActionMenuItem(value: DynamicDatatableActionMenuRecord) {
+  set seamDatatableDynamicActionMenuItem(
+    value: DynamicDatatableActionMenuRecord,
+  ) {
     this._record.next(value)
   }
   private _record = new ReplaySubject<DynamicDatatableActionMenuRecord>(1)
@@ -219,18 +258,24 @@ export class DatatableDynamicActionMenuItemDirective implements OnDestroy, OnCha
     private _route: ActivatedRoute,
     private _locationStrategy: LocationStrategy,
   ) {
-    this._recordSubscription = this._record.pipe(
-      // tap(v => console.log('record', v)),
-      switchMap(record => this._update(record)),
-      tap(() => { this._setInvalidActionState(false) }),
-      catchError(error => {
-        // eslint-disable-next-line no-console
-        if (isDevMode()) { console.error(error) }
-        this._setInvalidActionState(true)
-        return of(undefined)
-      }),
-      // tap(v => console.log('record DONE', v))
-    ).subscribe()
+    this._recordSubscription = this._record
+      .pipe(
+        // tap(v => console.log('record', v)),
+        switchMap((record) => this._update(record)),
+        tap(() => {
+          this._setInvalidActionState(false)
+        }),
+        catchError((error) => {
+          // eslint-disable-next-line no-console
+          if (isDevMode()) {
+            console.error(error)
+          }
+          this._setInvalidActionState(true)
+          return of(undefined)
+        }),
+        // tap(v => console.log('record DONE', v))
+      )
+      .subscribe()
   }
 
   ngOnDestroy() {
@@ -246,8 +291,15 @@ export class DatatableDynamicActionMenuItemDirective implements OnDestroy, OnCha
     if (this._menuRouterLink && this._menuRouterLink.routerLinkWithHref) {
       this._menuRouterLink.routerLinkWithHref.ngOnChanges({})
       if (this._menuRouterLink.routerLinkWithHref.href) {
-        if (getAttribute(this._elementRef.nativeElement, 'href') !== this._menuRouterLink.routerLinkWithHref.href) {
-          this._renderer.setAttribute(this._elementRef.nativeElement, 'href', this._menuRouterLink.routerLinkWithHref.href)
+        if (
+          getAttribute(this._elementRef.nativeElement, 'href') !==
+          this._menuRouterLink.routerLinkWithHref.href
+        ) {
+          this._renderer.setAttribute(
+            this._elementRef.nativeElement,
+            'href',
+            this._menuRouterLink.routerLinkWithHref.href,
+          )
         }
       } else {
         toggleAttribute(this._elementRef.nativeElement, 'href', false)
@@ -259,9 +311,16 @@ export class DatatableDynamicActionMenuItemDirective implements OnDestroy, OnCha
     this._unsubClick()
 
     return from(this._getUiProps(record)).pipe(
-      switchMap(uiProps => this._isAnchor()
-        ? this._updateAnchorElement(record, uiProps as DynamicActionUiAnchorDef)
-        : this._updateButtonElement(record, uiProps as DynamicActionUiButtonDef),
+      switchMap((uiProps) =>
+        this._isAnchor()
+          ? this._updateAnchorElement(
+              record,
+              uiProps as DynamicActionUiAnchorDef,
+            )
+          : this._updateButtonElement(
+              record,
+              uiProps as DynamicActionUiButtonDef,
+            ),
       ),
     )
   }
@@ -306,11 +365,14 @@ export class DatatableDynamicActionMenuItemDirective implements OnDestroy, OnCha
       //   this._tryInitBlockClick(record, uiProps)
       //   break
       // }
-      default: throw Error('[DatatableDynamicActionMenuItemDirective] ' +
-        `triggerType ${uiProps.triggerType} is not valid for _updateAnchorElement().`)
+      default:
+        throw Error(
+          '[DatatableDynamicActionMenuItemDirective] ' +
+            `triggerType ${uiProps.triggerType} is not valid for _updateAnchorElement().`,
+        )
     }
 
-    return _stream// .pipe(mapTo(undefined))
+    return _stream // .pipe(mapTo(undefined))
   }
 
   private _updateButtonElement(
@@ -324,20 +386,27 @@ export class DatatableDynamicActionMenuItemDirective implements OnDestroy, OnCha
         // console.log('Handle "link-asset" triggerType.', uiProps)
         // this._tryInitTabIndex()
         this._tryInitBlockClick(record, uiProps)
-        _stream = _stream.pipe(switchMap(() => this._updateAssetElement(record, uiProps)))
+        _stream = _stream.pipe(
+          switchMap(() => this._updateAssetElement(record, uiProps)),
+        )
         break
       }
       case 'click': {
         // console.log('Handle "click" triggerType.', uiProps)
         this._tryInitBlockClick(record, uiProps)
-        _stream = _stream.pipe(switchMap(() => this._updateClickElement(record, uiProps)))
+        _stream = _stream.pipe(
+          switchMap(() => this._updateClickElement(record, uiProps)),
+        )
         break
       }
-      default: throw Error('[DatatableDynamicActionMenuItemDirective] ' +
-        `triggerType ${uiProps.triggerType} is not valid for _updateAnchorElement().`)
+      default:
+        throw Error(
+          '[DatatableDynamicActionMenuItemDirective] ' +
+            `triggerType ${uiProps.triggerType} is not valid for _updateAnchorElement().`,
+        )
     }
 
-    return _stream// .pipe(mapTo(undefined))
+    return _stream // .pipe(mapTo(undefined))
   }
 
   private _updateAssetElement(
@@ -348,17 +417,23 @@ export class DatatableDynamicActionMenuItemDirective implements OnDestroy, OnCha
     // return of(undefined)
     // console.log('this._elementRef.nativeElement', this._elementRef.nativeElement)
     const t = fromEvent(this._elementRef.nativeElement, 'click').pipe(
-      tap(event => {
+      tap((event) => {
         // const _context = this._getContext(record._row, record.rowAction)
         // const context = { ..._context, event, uiProps }
         // const result = this._valueHelper.evalSync(uiProps.blockClickExpr, context)
         // console.log(record, uiProps)
         // console.log('_updateClickElement click', (<any>event).button, event)
         if (this._assetReaderHelper) {
-          if (uiProps.triggerType === 'link-asset' && hasProperty(uiProps, 'linkUrl')) {
+          if (
+            uiProps.triggerType === 'link-asset' &&
+            hasProperty(uiProps, 'linkUrl')
+          ) {
             const url = uiProps.linkUrl
             let target: string | undefined
-            if (hasProperty(uiProps, 'linkExtras') && hasProperty(uiProps.linkExtras, 'target')) {
+            if (
+              hasProperty(uiProps, 'linkExtras') &&
+              hasProperty(uiProps.linkExtras, 'target')
+            ) {
               target = uiProps.linkExtras.target
             }
             this._assetReaderHelper.openLink(url, true, true, target)
@@ -385,7 +460,7 @@ export class DatatableDynamicActionMenuItemDirective implements OnDestroy, OnCha
     // console.log('_updateClickElement', record, uiProps)
     // return of(undefined)
     return fromEvent(this._elementRef.nativeElement, 'click').pipe(
-      switchMap(event => {
+      switchMap((event) => {
         const _context = this._getContext(record._row, record.rowAction)
         const context = { ..._context, event, uiProps }
         // console.log('click', (<any>event).button, event)
@@ -412,7 +487,11 @@ export class DatatableDynamicActionMenuItemDirective implements OnDestroy, OnCha
 
   private _tryInitTabIndex() {
     if (getAttribute(this._elementRef.nativeElement, 'tabindex') === null) {
-      this._renderer.setAttribute(this._elementRef.nativeElement, 'tabindex', '0')
+      this._renderer.setAttribute(
+        this._elementRef.nativeElement,
+        'tabindex',
+        '0',
+      )
     }
   }
 
@@ -422,7 +501,10 @@ export class DatatableDynamicActionMenuItemDirective implements OnDestroy, OnCha
   ) {
     this._unsubClick()
     if (hasProperty(uiProps, 'blockClickExpr')) {
-      this._clickSubscription = this._blockClickExprObservable(uiProps, record).subscribe()
+      this._clickSubscription = this._blockClickExprObservable(
+        uiProps,
+        record,
+      ).subscribe()
     }
   }
 
@@ -431,10 +513,13 @@ export class DatatableDynamicActionMenuItemDirective implements OnDestroy, OnCha
     record: DynamicDatatableActionMenuRecord,
   ) {
     return fromEvent(this._elementRef.nativeElement, 'click').pipe(
-      tap(event => {
+      tap((event) => {
         const _context = this._getContext(record._row, record.rowAction)
         const context = { ..._context, event, uiProps }
-        const result = this._valueHelper.evalSync(uiProps.blockClickExpr, context)
+        const result = this._valueHelper.evalSync(
+          uiProps.blockClickExpr,
+          context,
+        )
         // console.log('click', result, (<any>event).button, event)
         if (!result) {
           event.preventDefault()
@@ -472,13 +557,16 @@ export class DatatableDynamicActionMenuItemDirective implements OnDestroy, OnCha
         this._menuRouterLink.fragment = uiProps.linkExtras.fragment
       }
       if (hasProperty(uiProps.linkExtras, 'queryParamsHandling')) {
-        this._menuRouterLink.queryParamsHandling = uiProps.linkExtras.queryParamsHandling
+        this._menuRouterLink.queryParamsHandling =
+          uiProps.linkExtras.queryParamsHandling
       }
       if (hasProperty(uiProps.linkExtras, 'preserveFragment')) {
-        this._menuRouterLink.preserveFragment = uiProps.linkExtras.preserveFragment
+        this._menuRouterLink.preserveFragment =
+          uiProps.linkExtras.preserveFragment
       }
       if (hasProperty(uiProps.linkExtras, 'skipLocationChange')) {
-        this._menuRouterLink.skipLocationChange = uiProps.linkExtras.skipLocationChange
+        this._menuRouterLink.skipLocationChange =
+          uiProps.linkExtras.skipLocationChange
       }
       if (hasProperty(uiProps.linkExtras, 'replaceUrl')) {
         this._menuRouterLink.replaceUrl = uiProps.linkExtras.replaceUrl
@@ -495,13 +583,18 @@ export class DatatableDynamicActionMenuItemDirective implements OnDestroy, OnCha
     return this._elementRef.nativeElement.nodeName.toLowerCase() === 'a'
   }
 
-  private _getUiProps(record: DynamicDatatableActionMenuRecord): Promise<DynamicActionUiDef> {
+  private _getUiProps(
+    record: DynamicDatatableActionMenuRecord,
+  ): Promise<DynamicActionUiDef> {
     const context = this._getContext(record._row, record.rowAction)
     return this._actionHelper.getUiProps(record.rowAction.action, context)
   }
 
   /** @ignore */
-  private _getContext(row: DynamicDatatableRow, rowActionDef: DynamicDatatableRowAction): DynamicDatatableRowActionContext {
+  private _getContext(
+    row: DynamicDatatableRow,
+    rowActionDef: DynamicDatatableRowAction,
+  ): DynamicDatatableRowActionContext {
     return {
       row,
     }
@@ -511,5 +604,4 @@ export class DatatableDynamicActionMenuItemDirective implements OnDestroy, OnCha
     const element = this._elementRef.nativeElement
     toggleAttribute(element, 'disabled', invalid)
   }
-
 }

@@ -2,7 +2,6 @@ import { Directive, HostListener, isDevMode } from '@angular/core'
 
 @Directive()
 export abstract class UnsavedChangesCanDeactivate {
-
   abstract unsavedChangesCanDeactivate(): boolean
 
   @HostListener('window:beforeunload', ['$event'])
@@ -10,7 +9,9 @@ export abstract class UnsavedChangesCanDeactivate {
     if (isDevMode()) {
       if (!this.unsavedChangesCanDeactivate) {
         // eslint-disable-next-line no-console
-        console.warn('Route Component with [UnsavedChangesDialogGuard] guard must extend [UnsavedChangesCanDeactivate] class.')
+        console.warn(
+          'Route Component with [UnsavedChangesDialogGuard] guard must extend [UnsavedChangesCanDeactivate] class.',
+        )
       }
 
       const w = window as any
@@ -22,8 +23,8 @@ export abstract class UnsavedChangesCanDeactivate {
 
     if (!this.unsavedChangesCanDeactivate()) {
       // $event.returnValue = true
-      $event.returnValue = 'You have unsaved changes! If you leave, your changes will be lost.'
+      $event.returnValue =
+        'You have unsaved changes! If you leave, your changes will be lost.'
     }
   }
-
 }

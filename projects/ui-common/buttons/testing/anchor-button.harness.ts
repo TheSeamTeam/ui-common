@@ -1,12 +1,19 @@
-import { ComponentHarnessConstructor, HarnessPredicate } from '@angular/cdk/testing'
+import {
+  ComponentHarnessConstructor,
+  HarnessPredicate,
+} from '@angular/cdk/testing'
 
-import { TheSeamBaseButtonComponentHarness, TheSeamBaseButtonComponentHarnessFilters, createBaseButtonComponentHarnessPredicate } from './base-button.harness'
+import {
+  TheSeamBaseButtonComponentHarness,
+  TheSeamBaseButtonComponentHarnessFilters,
+  createBaseButtonComponentHarnessPredicate,
+} from './base-button.harness'
 
 /** A set of criteria that can be used to filter a list of `TheSeamAnchorButtonComponentHarness` instances. */
-export type TheSeamAnchorButtonComponentHarnessFilters = TheSeamBaseButtonComponentHarnessFilters
+export type TheSeamAnchorButtonComponentHarnessFilters =
+  TheSeamBaseButtonComponentHarnessFilters
 
 export class TheSeamAnchorButtonComponentHarness extends TheSeamBaseButtonComponentHarness {
-
   /** The selector for the host element of a `TheSeamAnchorButtonComponent` instance. */
   static hostSelector = 'a[seamButton]'
 
@@ -26,5 +33,4 @@ export class TheSeamAnchorButtonComponentHarness extends TheSeamBaseButtonCompon
     const tabIndex = await (await this.host()).getAttribute('tabindex')
     return Number(tabIndex)
   }
-
 }

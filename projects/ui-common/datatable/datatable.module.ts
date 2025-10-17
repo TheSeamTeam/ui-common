@@ -138,7 +138,10 @@ import { TheSeamDatatableColumnFilterDirective } from './directives/datatable-co
     TheSeamDatatableColumnFilterDirective,
   ],
   providers: [
-    { provide: ScrollbarHelper, useClass: TheSeamDatatableScrollbarHelperService },
+    {
+      provide: ScrollbarHelper,
+      useClass: TheSeamDatatableScrollbarHelperService,
+    },
   ],
 })
-export class TheSeamDatatableModule { }
+export class TheSeamDatatableModule {}

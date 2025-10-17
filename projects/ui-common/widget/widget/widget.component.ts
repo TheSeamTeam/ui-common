@@ -1,6 +1,15 @@
 import { animate, state, style, transition, trigger } from '@angular/animations'
 import { BooleanInput } from '@angular/cdk/coercion'
-import { Component, ContentChild, Inject, Input, isDevMode, OnDestroy, Optional, ViewEncapsulation } from '@angular/core'
+import {
+  Component,
+  ContentChild,
+  Inject,
+  Input,
+  isDevMode,
+  OnDestroy,
+  Optional,
+  ViewEncapsulation,
+} from '@angular/core'
 import { Subject, takeUntil, tap } from 'rxjs'
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
@@ -64,19 +73,12 @@ const collapseAnimation = trigger('collapseAnim', [
   selector: 'seam-widget',
   templateUrl: './widget.component.html',
   styleUrls: ['./widget.component.scss'],
-  providers: [
-    WidgetPreferencesService,
-  ],
+  providers: [WidgetPreferencesService],
   encapsulation: ViewEncapsulation.None,
-  animations: [
-    loadingAnimation,
-    collapseAnimation,
-    keepContentAnimation,
-  ],
+  animations: [loadingAnimation, collapseAnimation, keepContentAnimation],
   standalone: false,
 })
 export class WidgetComponent implements OnDestroy {
-
   static ngAcceptInputType_hasHeader: BooleanInput
   static ngAcceptInputType_loading: BooleanInput
   static ngAcceptInputType_hasConfig: BooleanInput
@@ -119,7 +121,9 @@ export class WidgetComponent implements OnDestroy {
    * as different developers keep making tweaks.
    */
   @Input()
-  get icon(): SeamIcon | undefined { return this._iconUrl || this._iconObj }
+  get icon(): SeamIcon | undefined {
+    return this._iconUrl || this._iconObj
+  }
   set icon(value: SeamIcon | undefined) {
     if (typeof value === 'string') {
       this._iconUrl = value
@@ -149,13 +153,19 @@ export class WidgetComponent implements OnDestroy {
    */
   @Input() @InputBoolean() canCollapse = false
 
-  @ContentChild(WidgetIconTplDirective, { static: true }) iconTpl?: WidgetIconTplDirective
-  @ContentChild(WidgetTitleTplDirective, { static: true }) titleTpl?: WidgetTitleTplDirective
+  @ContentChild(WidgetIconTplDirective, { static: true })
+  iconTpl?: WidgetIconTplDirective
+  @ContentChild(WidgetTitleTplDirective, { static: true })
+  titleTpl?: WidgetTitleTplDirective
 
   constructor(
     private readonly _widgetPreferences: WidgetPreferencesService,
-    @Optional() @Inject(THESEAM_WIDGET_DEFAULTS) private readonly _defaults?: TheSeamWidgetDefaults,
-    @Optional() @Inject(THESEAM_WIDGET_DATA) private readonly _data?: TheSeamWidgetData,
+    @Optional()
+    @Inject(THESEAM_WIDGET_DEFAULTS)
+    private readonly _defaults?: TheSeamWidgetDefaults,
+    @Optional()
+    @Inject(THESEAM_WIDGET_DATA)
+    private readonly _data?: TheSeamWidgetData,
   ) {
     if (this._defaults) {
       if (hasProperty(this._defaults, 'canCollapse')) {
@@ -168,14 +178,17 @@ export class WidgetComponent implements OnDestroy {
 
     if (this._data && this._data.widgetId) {
       this._preferencesKey = `widget:${this._data.widgetId}`
-      this._widgetPreferences.preferences(this._preferencesKey).pipe(
-        tap(prefs => {
-          if (hasProperty(prefs, 'collapsed')) {
-            this.collapsed = prefs.collapsed
-          }
-        }),
-        takeUntil(this._ngUnsubscribe),
-      ).subscribe()
+      this._widgetPreferences
+        .preferences(this._preferencesKey)
+        .pipe(
+          tap((prefs) => {
+            if (hasProperty(prefs, 'collapsed')) {
+              this.collapsed = prefs.collapsed
+            }
+          }),
+          takeUntil(this._ngUnsubscribe),
+        )
+        .subscribe()
     }
   }
 
@@ -190,7 +203,9 @@ export class WidgetComponent implements OnDestroy {
   public collapse() {
     if (!this.canCollapse) {
       if (isDevMode()) {
-        console.warn('WidgetComponent: collapse() called when canCollapse is false.')
+        console.warn(
+          'WidgetComponent: collapse() called when canCollapse is false.',
+        )
       }
       return
     }
@@ -203,10 +218,13 @@ export class WidgetComponent implements OnDestroy {
     // the preference should not be updated, because that is assumed to be an
     // app controlled change that should not be persisted.
     if (this._preferencesKey) {
-      this._widgetPreferences.patchPreferences(this._preferencesKey, { collapsed: this.collapsed })
+      this._widgetPreferences.patchPreferences(this._preferencesKey, {
+        collapsed: this.collapsed,
+      })
     }
   }
 
-  get collapseState(): string { return this.collapsed ? COLLAPSED_STATE : EXPANDED_STATE }
-
+  get collapseState(): string {
+    return this.collapsed ? COLLAPSED_STATE : EXPANDED_STATE
+  }
 }

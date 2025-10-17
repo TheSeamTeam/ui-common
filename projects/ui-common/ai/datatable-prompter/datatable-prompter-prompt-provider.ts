@@ -277,7 +277,10 @@ ${JSON.stringify(columns, null, 2)}
 Request: "${request}"
 `
 
-export function parseResponse(responseContent: string, responseFormat: { type: string } | undefined) {
+export function parseResponse(
+  responseContent: string,
+  responseFormat: { type: string } | undefined,
+) {
   if (responseFormat?.type === 'json_object') {
     return JSON.parse(responseContent)
   }
@@ -296,9 +299,10 @@ export interface TheSeamDatatablePrompterProvider {
   submit(prompt: string): Promise<any>
 }
 
-export const THESEAM_DATATABLE_PROMPTER_PROVIDER = new InjectionToken<TheSeamDatatablePrompterProvider>(
-  'TheSeamDatatablePrompterProvider',
-)
+export const THESEAM_DATATABLE_PROMPTER_PROVIDER =
+  new InjectionToken<TheSeamDatatablePrompterProvider>(
+    'TheSeamDatatablePrompterProvider',
+  )
 
 async function submitPrompt(prompt: string) {
   // Local
@@ -363,13 +367,13 @@ async function submitPrompt(prompt: string) {
   // Mock response for testing
   return Promise.resolve([
     {
-      'id': 'filter--age',
-      'type': 'filter',
-      'state': {
-        'columnProp': 'age',
-        'filterType': 'text',
-        'operation': 'eq',
-        'value': '33',
+      id: 'filter--age',
+      type: 'filter',
+      state: {
+        columnProp: 'age',
+        filterType: 'text',
+        operation: 'eq',
+        value: '33',
       },
     },
   ] as any) as Promise<any>

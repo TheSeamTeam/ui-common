@@ -1,6 +1,10 @@
-import { BaseHarnessFilters, ComponentHarness, HarnessPredicate } from '@angular/cdk/testing'
+import {
+  BaseHarnessFilters,
+  ComponentHarness,
+  HarnessPredicate,
+} from '@angular/cdk/testing'
 
-interface JsonSchemaFormHarnessFilters extends BaseHarnessFilters { }
+interface JsonSchemaFormHarnessFilters extends BaseHarnessFilters {}
 
 export class JsonSchemaFormHarness extends ComponentHarness {
   static hostSelector = 'json-schema-form'
@@ -8,7 +12,9 @@ export class JsonSchemaFormHarness extends ComponentHarness {
   private readonly _form = this.locatorFor('form')
 
   /** Creates a `HarnessPredicate` used to locate a particular `JsonSchemaFormHarness`. */
-  static with(options: JsonSchemaFormHarnessFilters): HarnessPredicate<JsonSchemaFormHarness> {
+  static with(
+    options: JsonSchemaFormHarnessFilters,
+  ): HarnessPredicate<JsonSchemaFormHarness> {
     return new HarnessPredicate(JsonSchemaFormHarness, options)
   }
 

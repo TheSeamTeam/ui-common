@@ -1,7 +1,25 @@
-import { animate, group, query, style, transition, trigger, useAnimation, AnimationEvent } from '@angular/animations'
+import {
+  animate,
+  group,
+  query,
+  style,
+  transition,
+  trigger,
+  useAnimation,
+  AnimationEvent,
+} from '@angular/animations'
 import { FocusKeyManager, FocusOrigin } from '@angular/cdk/a11y'
 import { coerceNumberProperty } from '@angular/cdk/coercion'
-import { DOWN_ARROW, END, ESCAPE, hasModifierKey, HOME, LEFT_ARROW, RIGHT_ARROW, UP_ARROW } from '@angular/cdk/keycodes'
+import {
+  DOWN_ARROW,
+  END,
+  ESCAPE,
+  hasModifierKey,
+  HOME,
+  LEFT_ARROW,
+  RIGHT_ARROW,
+  UP_ARROW,
+} from '@angular/cdk/keycodes'
 import {
   AfterContentInit,
   ChangeDetectionStrategy,
@@ -15,10 +33,29 @@ import {
   TemplateRef,
   ViewChild,
 } from '@angular/core'
-import { BehaviorSubject, fromEvent, merge, Observable, of, Subject, Subscription } from 'rxjs'
+import {
+  BehaviorSubject,
+  fromEvent,
+  merge,
+  Observable,
+  of,
+  Subject,
+  Subscription,
+} from 'rxjs'
 
-import { distinctUntilChanged, map, startWith, switchMap, takeUntil } from 'rxjs/operators'
-import { menuDropdownPanelIn, menuDropdownPanelOut, menuDropdownPanelSlideIn, menuDropdownPanelSlideOut } from './menu-animations'
+import {
+  distinctUntilChanged,
+  map,
+  startWith,
+  switchMap,
+  takeUntil,
+} from 'rxjs/operators'
+import {
+  menuDropdownPanelIn,
+  menuDropdownPanelOut,
+  menuDropdownPanelSlideIn,
+  menuDropdownPanelSlideOut,
+} from './menu-animations'
 import { MenuItemComponent } from './menu-item.component'
 import { ITheSeamMenuPanel } from './menu-panel'
 import { THESEAM_MENU_PANEL } from './menu-panel-token'
@@ -52,17 +89,26 @@ export const LIB_MENU: any = {
   exportAs: 'seamMenu',
   standalone: false,
 })
-export class MenuComponent implements OnDestroy, AfterContentInit, ITheSeamMenuPanel {
-
+export class MenuComponent
+  implements OnDestroy, AfterContentInit, ITheSeamMenuPanel
+{
   private readonly _ngUnsubscribe = new Subject<void>()
 
   readonly panelId = `menu-panel-${menuPanelUid++}`
 
-  private _footer = new BehaviorSubject<MenuFooterComponent | undefined | null>(undefined)
-  public hasFooter$ = this._footer.pipe(map(v => v !== null && v !== undefined))
+  private _footer = new BehaviorSubject<MenuFooterComponent | undefined | null>(
+    undefined,
+  )
+  public hasFooter$ = this._footer.pipe(
+    map((v) => v !== null && v !== undefined),
+  )
 
-  private _header = new BehaviorSubject<MenuHeaderComponent | undefined | null>(undefined)
-  public hasHeader$ = this._header.pipe(map(v => v !== null && v !== undefined))
+  private _header = new BehaviorSubject<MenuHeaderComponent | undefined | null>(
+    undefined,
+  )
+  public hasHeader$ = this._header.pipe(
+    map((v) => v !== null && v !== undefined),
+  )
 
   private _keyManager?: FocusKeyManager<MenuItemComponent>
 
@@ -98,7 +144,9 @@ export class MenuComponent implements OnDestroy, AfterContentInit, ITheSeamMenuP
    * smaller than the value.
    */
   @Input()
-  get baseWidth() { return this._baseWidth.value }
+  get baseWidth() {
+    return this._baseWidth.value
+  }
   set baseWidth(value: number | null) {
     const _val = coerceNumberProperty(value, null)
     if (_val !== this._baseWidth.value) {
@@ -112,11 +160,15 @@ export class MenuComponent implements OnDestroy, AfterContentInit, ITheSeamMenuP
 
   constructor() {
     this._menuWidth$ = this._baseWidth.pipe(
-      switchMap(baseWidth => {
+      switchMap((baseWidth) => {
         if (baseWidth) {
           return fromEvent(window, 'resize').pipe(
             startWith(undefined),
-            map(() => window.innerWidth < baseWidth ? `${window.innerWidth}px` : `${baseWidth}px`),
+            map(() =>
+              window.innerWidth < baseWidth
+                ? `${window.innerWidth}px`
+                : `${baseWidth}px`,
+            ),
           )
         }
         return of(undefined)
@@ -135,15 +187,19 @@ export class MenuComponent implements OnDestroy, AfterContentInit, ITheSeamMenuP
   }
 
   ngAfterContentInit() {
-    this._keyManager = new FocusKeyManager<MenuItemComponent>(this._items).withWrap().withTypeAhead()
-    this._tabSubscription = this._keyManager.tabOut.subscribe(() => this.closed.emit('tab'))
+    this._keyManager = new FocusKeyManager<MenuItemComponent>(this._items)
+      .withWrap()
+      .withTypeAhead()
+    this._tabSubscription = this._keyManager.tabOut.subscribe(() =>
+      this.closed.emit('tab'),
+    )
   }
 
   /** Stream that emits whenever the hovered menu item changes. */
   _hovered(): Observable<MenuItemComponent> {
     return this._itemChanges.pipe(
       startWith(this._items),
-      switchMap(items => merge(...items.map(item => item._hovered))),
+      switchMap((items) => merge(...items.map((item) => item._hovered))),
     )
   }
 
@@ -172,7 +228,9 @@ export class MenuComponent implements OnDestroy, AfterContentInit, ITheSeamMenuP
       case HOME:
       case END:
         if (!hasModifierKey(event)) {
-          keyCode === HOME ? manager?.setFirstItemActive() : manager?.setLastItemActive()
+          keyCode === HOME
+            ? manager?.setFirstItemActive()
+            : manager?.setLastItemActive()
           event.preventDefault()
         }
         break
@@ -260,5 +318,4 @@ export class MenuComponent implements OnDestroy, AfterContentInit, ITheSeamMenuP
       event.element.scrollTop = 0
     }
   }
-
 }

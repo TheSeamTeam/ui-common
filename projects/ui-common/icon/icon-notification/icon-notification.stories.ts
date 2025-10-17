@@ -1,4 +1,10 @@
-import { componentWrapperDecorator, Meta, moduleMetadata, StoryObj, applicationConfig } from '@storybook/angular'
+import {
+  componentWrapperDecorator,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+  applicationConfig,
+} from '@storybook/angular'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 
@@ -10,16 +16,15 @@ const meta: Meta<IconNotificationComponent> = {
   component: IconNotificationComponent,
   decorators: [
     applicationConfig({
-      providers: [
-        provideAnimations(),
-      ],
+      providers: [provideAnimations()],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamIconModule,
-      ],
+      imports: [TheSeamIconModule],
     }),
-    componentWrapperDecorator(story => `<seam-icon icon="assets/images/icons8-cotton-filled-48.png">${story}</seam-icon>`),
+    componentWrapperDecorator(
+      (story) =>
+        `<seam-icon icon="assets/images/icons8-cotton-filled-48.png">${story}</seam-icon>`,
+    ),
   ],
 }
 

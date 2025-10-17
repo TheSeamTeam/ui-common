@@ -1,4 +1,8 @@
-import { BooleanInput, coerceArray, coerceNumberProperty } from '@angular/cdk/coercion'
+import {
+  BooleanInput,
+  coerceArray,
+  coerceNumberProperty,
+} from '@angular/cdk/coercion'
 import { Component, inject, Input } from '@angular/core'
 import { AsyncPipe, NgFor } from '@angular/common'
 import { BehaviorSubject, from, Observable, of, ReplaySubject } from 'rxjs'
@@ -18,16 +22,19 @@ import { TheSeamPdfPageComponent } from './pdf-page.component'
         [page]="page | async"
         [responsive]="responsive"
         [shadow]="shadow"
-        [renderUpdateThreshold]="renderUpdateThreshold">
+        [renderUpdateThreshold]="renderUpdateThreshold"
+      >
       </seam-pdf-page>
     </ng-container>
   `,
-  styles: [`:host { display: block; }`],
-  imports: [
-    NgFor,
-    AsyncPipe,
-    TheSeamPdfPageComponent,
+  styles: [
+    `
+      :host {
+        display: block;
+      }
+    `,
   ],
+  imports: [NgFor, AsyncPipe, TheSeamPdfPageComponent],
 })
 export class TheSeamPdfViewerComponent {
   static ngAcceptInputType_shadow: BooleanInput
@@ -36,7 +43,9 @@ export class TheSeamPdfViewerComponent {
   private readonly _pdfRenderer = inject(TheSeamPdfRendererService)
 
   @Input()
-  get pdfUrl(): string | undefined | null { return this._pdfUrl }
+  get pdfUrl(): string | undefined | null {
+    return this._pdfUrl
+  }
   set pdfUrl(value: string | undefined | null) {
     this._pdfUrl = value
     this._documentSubject.next(value)
@@ -62,8 +71,12 @@ export class TheSeamPdfViewerComponent {
    * NOTE: Only used when `responsive` is `true`.
    */
   @Input()
-  set renderUpdateThreshold(value: number) { this._renderUpdateThreshold = coerceNumberProperty(value) }
-  get renderUpdateThreshold(): number { return this._renderUpdateThreshold }
+  set renderUpdateThreshold(value: number) {
+    this._renderUpdateThreshold = coerceNumberProperty(value)
+  }
+  get renderUpdateThreshold(): number {
+    return this._renderUpdateThreshold
+  }
   private _renderUpdateThreshold = 100
 
   /**
@@ -73,7 +86,9 @@ export class TheSeamPdfViewerComponent {
    *  [pageRange]="[1,3]"
    */
   @Input()
-  get pageRange(): number[] { return this._pageRange }
+  get pageRange(): number[] {
+    return this._pageRange
+  }
   set pageRange(value: number[]) {
     this._pageRange = value
 
@@ -84,10 +99,14 @@ export class TheSeamPdfViewerComponent {
     try {
       const range = coerceArray(this._pageRange)
       if (range.length !== 2) {
-        throw new Error('[pdf-viewer] Invalid Page Range. Range array must have two numbers only.')
+        throw new Error(
+          '[pdf-viewer] Invalid Page Range. Range array must have two numbers only.',
+        )
       }
       if (range[0] > range[1]) {
-        throw new Error('[pdf-viewer] Invalid Page Range. Start of the range must be less than or equal to the end.')
+        throw new Error(
+          '[pdf-viewer] Invalid Page Range. Start of the range must be less than or equal to the end.',
+        )
       }
 
       const nums: number[] = []
@@ -108,10 +127,14 @@ export class TheSeamPdfViewerComponent {
    * Render a specific page.
    */
   @Input()
-  get pageNumber(): number { return this._pageNumber }
+  get pageNumber(): number {
+    return this._pageNumber
+  }
   set pageNumber(value: number) {
     this._pageNumber = coerceNumberProperty(value, -1)
-    this._pageNumbersSubject.next(this._pageNumber === -1 ? undefined : [ this._pageNumber ])
+    this._pageNumbersSubject.next(
+      this._pageNumber === -1 ? undefined : [this._pageNumber],
+    )
   }
   private _pageNumber = -1
 
@@ -119,7 +142,9 @@ export class TheSeamPdfViewerComponent {
    * Specific page numbers to render.
    */
   @Input()
-  get pageNumbers(): number[] { return this._pageNumbers }
+  get pageNumbers(): number[] {
+    return this._pageNumbers
+  }
   set pageNumbers(value: number[]) {
     this._pageNumbers = value
     if (Array.isArray(this._pageNumbers)) {
@@ -138,11 +163,13 @@ export class TheSeamPdfViewerComponent {
   /**
    * Undefined means all a pages
    */
-  private _pageNumbersSubject = new BehaviorSubject<number[] | undefined>(undefined)
+  private _pageNumbersSubject = new BehaviorSubject<number[] | undefined>(
+    undefined,
+  )
 
   constructor() {
     this.document$ = this._documentSubject.asObservable().pipe(
-      switchMap(url => {
+      switchMap((url) => {
         if (!url) {
           return of()
         }
@@ -153,18 +180,19 @@ export class TheSeamPdfViewerComponent {
     const pageNumbers$ = this._pageNumbersSubject.asObservable()
 
     this.pages$ = this.document$.pipe(
-      switchMap(doc => pageNumbers$.pipe(
-        map(pageNumbers => {
-          const pages: any[] = []
-          for (let i = 0; i < doc.numPages; i++) {
-            if (!pageNumbers || pageNumbers.indexOf(i + 1) !== -1) {
-              pages.push(from(doc.getPage(i + 1)))
+      switchMap((doc) =>
+        pageNumbers$.pipe(
+          map((pageNumbers) => {
+            const pages: any[] = []
+            for (let i = 0; i < doc.numPages; i++) {
+              if (!pageNumbers || pageNumbers.indexOf(i + 1) !== -1) {
+                pages.push(from(doc.getPage(i + 1)))
+              }
             }
-          }
-          return pages
-        }),
-      )),
+            return pages
+          }),
+        ),
+      ),
     )
   }
-
 }

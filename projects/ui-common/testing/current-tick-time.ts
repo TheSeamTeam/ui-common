@@ -1,4 +1,3 @@
-
 /**
  * When using `fakeAsync` this can access the internal currentTickTime of the
  * fake zone's scheduler.
@@ -12,5 +11,6 @@
  * that I can observe in the debugger's watch variables.
  */
 export function currentTickTime(documentWindow: any = window): number {
-  return documentWindow.Zone.current._properties.FakeAsyncTestZoneSpec._scheduler._currentTickTime
+  return documentWindow.Zone.current._properties.FakeAsyncTestZoneSpec
+    ._scheduler._currentTickTime
 }

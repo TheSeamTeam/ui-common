@@ -17,11 +17,11 @@ $quill-mention-menu-min-width: $dropdown-min-width !default;
 $quill-mention-menu-padding: $dropdown-padding-y $dropdown-padding-x !default;
 $quill-mention-menu-text-align: left !default;
 
-$quill-mention-menu-loading-color: rgba(black, .5) !default;
+$quill-mention-menu-loading-color: rgba(black, 0.5) !default;
 $quill-mention-menu-loading-text-align: center !default;
 
 $quill-mention-menu-item-line-height: 24px !default;
-$quill-mention-menu-item-padding: .25rem 1.5rem !default;
+$quill-mention-menu-item-padding: 0.25rem 1.5rem !default;
 
 $quill-mention-menu-divider-bg: $dropdown-divider-bg !default;
 $quill-mention-menu-divider-margin: $dropdown-divider-margin-y 0 !default;
@@ -29,7 +29,7 @@ $quill-mention-menu-divider-margin: $dropdown-divider-margin-y 0 !default;
 $quill-mention-menu-item-selected-bg: $primary !default;
 $quill-mention-menu-item-selected-color: white !default;
 
-$quill-mention-menu-item-disabled-color: rgba(black, .5) !default;
+$quill-mention-menu-item-disabled-color: rgba(black, 0.5) !default;
 
 $quill-mention-menu-item-group-name-color: $quill-mention-menu-item-disabled-color !default;
 $quill-mention-menu-item-group-name-font-size: $small-font-size !default;
@@ -68,8 +68,8 @@ quill-editor {
   // overwrites ql styles with bootstrap styles,
   // which matches final rendering better
   .ql-snow .ql-editor {
-    @import "bootstrap/scss/reboot";
-    @import "bootstrap/scss/type";
+    @import 'bootstrap/scss/reboot';
+    @import 'bootstrap/scss/type';
   }
 
   &:focus-within {
@@ -96,7 +96,8 @@ quill-editor {
     }
 
     &:focus-within {
-      box-shadow: 0 0 0 $input-focus-width rgba($form-feedback-invalid-color, .25);
+      box-shadow: 0 0 0 $input-focus-width
+        rgba($form-feedback-invalid-color, 0.25);
     }
   }
 
@@ -105,7 +106,7 @@ quill-editor {
     pointer-events: none;
 
     .ql-formats {
-      opacity: .5;
+      opacity: 0.5;
     }
 
     .ql-toolbar,
@@ -126,7 +127,8 @@ quill-editor {
   margin: $quill-mention-menu-margin;
   color: $quill-mention-menu-color;
   background: $quill-mention-menu-bg;
-  border: $quill-mention-menu-border-width solid $quill-mention-menu-border-color;
+  border: $quill-mention-menu-border-width solid
+    $quill-mention-menu-border-color;
   @include font-size($quill-mention-menu-font-size);
   @include border-radius($quill-mention-menu-border-radius);
   @include box-shadow($quill-mention-menu-box-shadow);
@@ -151,7 +153,11 @@ quill-editor {
   }
 
   .ql-mention-list-item[data-type='divider'] {
-    @include nav-divider($quill-mention-menu-divider-bg, $quill-mention-menu-divider-margin, true);
+    @include nav-divider(
+      $quill-mention-menu-divider-bg,
+      $quill-mention-menu-divider-margin,
+      true
+    );
 
     &:first-child,
     &:last-child,

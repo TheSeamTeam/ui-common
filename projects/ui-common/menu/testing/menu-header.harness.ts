@@ -1,9 +1,14 @@
-import { BaseHarnessFilters, ComponentHarnessConstructor, ContentContainerComponentHarness, HarnessPredicate } from '@angular/cdk/testing'
+import {
+  BaseHarnessFilters,
+  ComponentHarnessConstructor,
+  ContentContainerComponentHarness,
+  HarnessPredicate,
+} from '@angular/cdk/testing'
 
 import { animatingWait } from './utils'
 
 /** A set of criteria that can be used to filter a list of `TheSeamMenuHeaderHarness` instances. */
-export interface TheSeamMenuHeaderHarnessFilters extends BaseHarnessFilters { }
+export interface TheSeamMenuHeaderHarnessFilters extends BaseHarnessFilters {}
 
 export class TheSeamMenuHeaderHarness extends ContentContainerComponentHarness<string> {
   /** The selector for the host element of a `MenuHeaderComponent` instance. */
@@ -30,5 +35,4 @@ export class TheSeamMenuHeaderHarness extends ContentContainerComponentHarness<s
   async hover(): Promise<void> {
     return (await this.host()).hover().then(() => animatingWait())
   }
-
 }

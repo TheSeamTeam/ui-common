@@ -1,6 +1,18 @@
 import { FocusableOption, FocusMonitor, FocusOrigin } from '@angular/cdk/a11y'
 
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Inject, Input, OnDestroy, Optional, DOCUMENT } from '@angular/core'
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  HostListener,
+  Inject,
+  Input,
+  OnDestroy,
+  Optional,
+  DOCUMENT,
+} from '@angular/core'
 import { Subject } from 'rxjs'
 
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons'
@@ -24,7 +36,7 @@ const _seamMenuItemMixinBase: CanDisableCtor & typeof TheSeamMenuItemBase =
   inputs: ['disabled'],
   host: {
     '[attr.role]': 'role',
-    'class': 'seam-menu-item dropdown-item',
+    class: 'seam-menu-item dropdown-item',
     '[class.seam-menu-item-highlighted]': '_highlighted',
     '[class.seam-menu-item-submenu-trigger]': '_triggersSubmenu',
     '[attr.tabindex]': '_getTabIndex()',
@@ -34,10 +46,17 @@ const _seamMenuItemMixinBase: CanDisableCtor & typeof TheSeamMenuItemBase =
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false,
 })
-export class MenuItemComponent extends _seamMenuItemMixinBase implements OnDestroy, AfterViewInit, FocusableOption {
-
+export class MenuItemComponent
+  extends _seamMenuItemMixinBase
+  implements OnDestroy, AfterViewInit, FocusableOption
+{
   /** ARIA role for the menu item. */
-  @Input() role: 'menuitem' | 'menuitemradio' | 'menuitemcheckbox' | undefined | null = 'menuitem'
+  @Input() role:
+    | 'menuitem'
+    | 'menuitemradio'
+    | 'menuitemcheckbox'
+    | undefined
+    | null = 'menuitem'
 
   @Input() icon: SeamIcon | string | undefined | null
   @Input() iconClass: string | undefined | null
@@ -65,7 +84,9 @@ export class MenuItemComponent extends _seamMenuItemMixinBase implements OnDestr
     @Inject(DOCUMENT) public readonly _document: any,
     private readonly _focusMonitor: FocusMonitor,
     private readonly _changeDetectorRef: ChangeDetectorRef,
-    @Inject(THESEAM_MENU_PANEL) @Optional() private readonly _parentMenu?: ITheSeamMenuPanel<MenuItemComponent>,
+    @Inject(THESEAM_MENU_PANEL)
+    @Optional()
+    private readonly _parentMenu?: ITheSeamMenuPanel<MenuItemComponent>,
   ) {
     super()
 
@@ -165,6 +186,8 @@ export class MenuItemComponent extends _seamMenuItemMixinBase implements OnDestr
   }
 
   _hasFocus(): boolean {
-    return this._document && this._document.activeElement === this._getHostElement()
+    return (
+      this._document && this._document.activeElement === this._getHostElement()
+    )
   }
 }

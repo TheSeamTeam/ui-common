@@ -36,4 +36,4 @@ import { InputDirective } from './input.directive'
     FormFieldHelpTextDirective,
   ],
 })
-export class TheSeamFormFieldModule { }
+export class TheSeamFormFieldModule {}

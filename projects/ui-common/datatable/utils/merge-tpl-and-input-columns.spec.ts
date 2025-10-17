@@ -5,7 +5,13 @@ import { DatatableColumnChangesService } from './../services/datatable-column-ch
 
 import { KeyValueDiffer, KeyValueDiffers, TemplateRef } from '@angular/core'
 import { TestBed, waitForAsync } from '@angular/core/testing'
-import { DataTableColumnCellTreeToggle, DataTableColumnDirective, DataTableColumnHeaderDirective, SelectionType, TableColumn } from '@marklb/ngx-datatable'
+import {
+  DataTableColumnCellTreeToggle,
+  DataTableColumnDirective,
+  DataTableColumnHeaderDirective,
+  SelectionType,
+  TableColumn,
+} from '@marklb/ngx-datatable'
 import { deleteProperties } from '@theseam/ui-common/utils/'
 import { mergeTplAndInpColumns } from './merge-tpl-and-input-columns'
 import { setColumnDefaults } from './set-column-defaults'
@@ -18,19 +24,24 @@ describe('mergeTplAndInpColumns', () => {
   const colDiffersInp: { [propName: string]: KeyValueDiffer<any, any> } = {}
   const colDiffersTpl: { [propName: string]: KeyValueDiffer<any, any> } = {}
   const rowActionItem: DatatableRowActionItemDirective | undefined = undefined
-  const actionMenuCellTpl: TemplateRef<DataTableColumnDirective> | undefined = undefined
-  const blankHeaderTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined = undefined
-  const treeToggleTpl: TemplateRef<DataTableColumnCellTreeToggle> | undefined = undefined
-  const headerTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined = undefined
-  const cellTypeSelectorTpl: TemplateRef<DataTableColumnDirective> | undefined = undefined
+  const actionMenuCellTpl: TemplateRef<DataTableColumnDirective> | undefined =
+    undefined
+  const blankHeaderTpl:
+    | TemplateRef<DataTableColumnHeaderDirective>
+    | undefined = undefined
+  const treeToggleTpl: TemplateRef<DataTableColumnCellTreeToggle> | undefined =
+    undefined
+  const headerTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined =
+    undefined
+  const cellTypeSelectorTpl: TemplateRef<DataTableColumnDirective> | undefined =
+    undefined
   let differs: KeyValueDiffers
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [],
       teardown: { destroyAfterEach: false },
-    })
-      .compileComponents()
+    }).compileComponents()
   }))
 
   beforeEach(() => {
@@ -212,7 +223,9 @@ describe('mergeTplAndInpColumns', () => {
    * NOTE: I plan to remove the need for this here, but I want to slowly
    * refactor to avoid breaking current functionality.
    */
-  function initTemplateColumnComponents(o: TheSeamDatatableColumn[]): DatatableColumnComponent[] {
+  function initTemplateColumnComponents(
+    o: TheSeamDatatableColumn[],
+  ): DatatableColumnComponent[] {
     const comps: DatatableColumnComponent[] = []
     for (const col of o) {
       const comp: any = new DatatableColumnComponent(_colChangesService)
@@ -229,7 +242,10 @@ describe('mergeTplAndInpColumns', () => {
  * Populates defaults, but replaces '$$id' with an "any string" matcher and
  * '$$valueGetter' with an "any function" mathcer.
  */
-function defaultColumnWithIdentMatchers(o: TheSeamDatatableColumn[], includesTplCols: boolean = false): TheSeamDatatableColumn[] {
+function defaultColumnWithIdentMatchers(
+  o: TheSeamDatatableColumn[],
+  includesTplCols: boolean = false,
+): TheSeamDatatableColumn[] {
   setColumnDefaults(o)
   for (const col of o) {
     const _o: any = col

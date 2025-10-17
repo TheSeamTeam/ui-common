@@ -17,22 +17,38 @@ $seam-nav-item-text-align: inherit !default;
 $seam-nav-item-border-radius: 0 !default;
 
 $seam-nav-item-bg-color: transparent !default;
-$seam-nav-item-bg-color-active: color.adjust($seam-nav-bg-color, $lightness: -10%, $space: hsl) !default;
+$seam-nav-item-bg-color-active: color.adjust(
+  $seam-nav-bg-color,
+  $lightness: -10%,
+  $space: hsl
+) !default;
 $seam-nav-item-bg-color-expanded: $seam-nav-item-bg-color !default;
 $seam-nav-item-bg-color-child-active: $seam-nav-item-bg-color-active !default;
-$seam-nav-item-bg-color-hover: color.adjust($seam-nav-bg-color, $lightness: -5%, $space: hsl) !default;
+$seam-nav-item-bg-color-hover: color.adjust(
+  $seam-nav-bg-color,
+  $lightness: -5%,
+  $space: hsl
+) !default;
 
 $seam-nav-item-color: $black !default;
 $seam-nav-item-color-active: $seam-nav-item-color !default;
 $seam-nav-item-color-expanded: $seam-nav-item-color !default;
 $seam-nav-item-color-child-active: $seam-nav-item-color-active !default;
 
-$seam-nav-item-disabled-color: color.adjust($seam-nav-item-color, $lightness: -20%, $space: hsl) !default;
+$seam-nav-item-disabled-color: color.adjust(
+  $seam-nav-item-color,
+  $lightness: -20%,
+  $space: hsl
+) !default;
 
 $seam-nav-item-margin: 0 !default;
 
 // Divider
-$seam-nav-divider-color: color.adjust($seam-nav-bg-color, $lightness: -10%, $space: hsl) !default;
+$seam-nav-divider-color: color.adjust(
+  $seam-nav-bg-color,
+  $lightness: -10%,
+  $space: hsl
+) !default;
 $seam-nav-divider-size: 1px !default;
 
 // Title
@@ -43,7 +59,7 @@ $seam-nav-title-font-size: 24px !default;
 $seam-nav-title-padding-left: 10px !default;
 
 // Toggle Buttons
-$seam-nav-toggle-btn-padding: 0 .5rem !default;
+$seam-nav-toggle-btn-padding: 0 0.5rem !default;
 
 $seam-nav-toggle-btn-use-transform-active: true !default;
 $seam-nav-toggle-btn-transform: none !default;

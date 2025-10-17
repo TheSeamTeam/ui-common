@@ -2,7 +2,6 @@ import { Observable, throwError } from 'rxjs'
 import { catchError, finalize, tap } from 'rxjs/operators'
 
 export class FakeTheSeamLoadingOverlayService {
-
   private _enabled = false
 
   get enabled(): boolean {
@@ -19,13 +18,17 @@ export class FakeTheSeamLoadingOverlayService {
   }
 
   public enable() {
-    if (this.enabled) { return }
+    if (this.enabled) {
+      return
+    }
 
     this._enabled = true
   }
 
   public disable() {
-    if (!this.enabled) { return }
+    if (!this.enabled) {
+      return
+    }
 
     this._enabled = false
   }
@@ -34,12 +37,11 @@ export class FakeTheSeamLoadingOverlayService {
     this.enable()
     return source.pipe(
       tap(() => this.disable()),
-      catchError(err => {
+      catchError((err) => {
         this.disable()
         return throwError(err)
       }),
       finalize(() => this.disable()),
     )
   }
-
 }

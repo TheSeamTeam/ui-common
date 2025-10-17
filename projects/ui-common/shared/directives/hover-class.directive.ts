@@ -1,4 +1,10 @@
-import { Directive, ElementRef, HostListener, inject, Input } from '@angular/core'
+import {
+  Directive,
+  ElementRef,
+  HostListener,
+  inject,
+  Input,
+} from '@angular/core'
 
 declare type _PointerEvent = PointerEvent | PointerEvent
 
@@ -22,7 +28,6 @@ declare type _PointerEvent = PointerEvent | PointerEvent
   exportAs: 'seamHoverClass',
 })
 export class TheSeamHoverClassDirective {
-
   private readonly _elementRef = inject(ElementRef<HTMLElement>)
 
   private _hovered = false
@@ -36,7 +41,9 @@ export class TheSeamHoverClassDirective {
     this._setHovered(false)
   }
 
-  @HostListener('pointerover', ['$event']) onPointerOver($event: _PointerEvent) {
+  @HostListener('pointerover', ['$event']) onPointerOver(
+    $event: _PointerEvent,
+  ) {
     this._setHovered(true)
   }
 
@@ -46,7 +53,7 @@ export class TheSeamHoverClassDirective {
 
   @Input()
   set seamHoverClass(classList: string) {
-    const newClasses = classList.split(' ').filter(c => c.length > 0)
+    const newClasses = classList.split(' ').filter((c) => c.length > 0)
     for (const c of this._classes) {
       if (newClasses.indexOf(c) !== 0) {
         this._removeClass(c)
@@ -77,5 +84,4 @@ export class TheSeamHoverClassDirective {
   public _removeClass(c: string): void {
     this._elementRef.nativeElement.classList.remove(c)
   }
-
 }

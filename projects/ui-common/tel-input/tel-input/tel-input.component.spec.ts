@@ -1,4 +1,10 @@
-import { ComponentFixture, TestBed, fakeAsync, flush, waitForAsync } from '@angular/core/testing'
+import {
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+  flush,
+  waitForAsync,
+} from '@angular/core/testing'
 
 import { TheSeamTelInputComponent } from './tel-input.component'
 import { AssetLoaderService, LoadedAssetRef } from '@theseam/ui-common/services'
@@ -12,7 +18,7 @@ describe('TheSeamTelInputComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ TheSeamTelInputComponent ],
+      imports: [TheSeamTelInputComponent],
       providers: [
         { provide: AssetLoaderService, useClass: FakeAssetLoaderService },
       ],
@@ -52,7 +58,10 @@ describe('TheSeamTelInputComponent', () => {
 
     fixture = TestBed.createComponent(TheSeamTelInputComponent)
     component = fixture.componentInstance
-    const harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, TheSeamTelInputHarness)
+    const harness = await TestbedHarnessEnvironment.harnessForFixture(
+      fixture,
+      TheSeamTelInputHarness,
+    )
     // const somethingSpy = jest.spyOn(component, 'writeValue')
     // component.change.subscribe(changeSpy)
     // component.value = '+1 901-555-5555'
@@ -65,12 +74,15 @@ describe('TheSeamTelInputComponent', () => {
 })
 
 class FakeAssetLoaderService implements Partial<AssetLoaderService> {
-  private readonly _delay = () => new Promise((resolve, reject) => {
-    setTimeout(() => {
-      return resolve(true)
-    }, 1000)
-  })
-  public loadStyleSheet(path: string): Observable<LoadedAssetRef<HTMLLinkElement>> {
+  private readonly _delay = () =>
+    new Promise((resolve, reject) => {
+      setTimeout(() => {
+        return resolve(true)
+      }, 1000)
+    })
+  public loadStyleSheet(
+    path: string,
+  ): Observable<LoadedAssetRef<HTMLLinkElement>> {
     const tmp = document.createElement('link')
     return defer(() => {
       return this._delay().then(() => {
@@ -79,9 +91,13 @@ class FakeAssetLoaderService implements Partial<AssetLoaderService> {
     })
   }
 
-  public loadStyle(content: string): Observable<LoadedAssetRef<HTMLStyleElement>> {
+  public loadStyle(
+    content: string,
+  ): Observable<LoadedAssetRef<HTMLStyleElement>> {
     const tmp = document.createElement('link')
-    return defer(() => this._delay().then(() => new LoadedAssetRef(tmp, undefined, content)))
+    return defer(() =>
+      this._delay().then(() => new LoadedAssetRef(tmp, undefined, content)),
+    )
   }
 }
 
@@ -89,6 +105,7 @@ function mockIntlUtilsLoad() {
   const _win = window as any
   _win.intlTelInputGlobals.loadUtils = jest.fn()
   _win.intlTelInputGlobals.loadUtils.mockReturnValue(
-    import('intl-tel-input/build/js/utils') as any)
+    import('intl-tel-input/build/js/utils') as any,
+  )
 }
 mockIntlUtilsLoad()

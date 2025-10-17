@@ -1,5 +1,9 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
-import { BaseHarnessFilters, ComponentHarness, HarnessPredicate } from '@angular/cdk/testing'
+import {
+  BaseHarnessFilters,
+  ComponentHarness,
+  HarnessPredicate,
+} from '@angular/cdk/testing'
 
 interface TheSeamSchemaFormSubmitHarnessFilters extends BaseHarnessFilters {
   /** Filters based on the name of the field. */
@@ -12,10 +16,15 @@ export class TheSeamSchemaFormSubmitHarness extends ComponentHarness {
   private readonly _input = this.locatorFor('input')
 
   /** Creates a `HarnessPredicate` used to locate a particular `TheSeamSchemaFormSubmitHarness`. */
-  static with(options: TheSeamSchemaFormSubmitHarnessFilters): HarnessPredicate<TheSeamSchemaFormSubmitHarness> {
-    return new HarnessPredicate(TheSeamSchemaFormSubmitHarness, options)
-      .addOption('field name', options.name,
-        (harness, name) => HarnessPredicate.stringMatches(harness.getName(), name))
+  static with(
+    options: TheSeamSchemaFormSubmitHarnessFilters,
+  ): HarnessPredicate<TheSeamSchemaFormSubmitHarness> {
+    return new HarnessPredicate(
+      TheSeamSchemaFormSubmitHarness,
+      options,
+    ).addOption('field name', options.name, (harness, name) =>
+      HarnessPredicate.stringMatches(harness.getName(), name),
+    )
   }
 
   public async getName(): Promise<string | null> {

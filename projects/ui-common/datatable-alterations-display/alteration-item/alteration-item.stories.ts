@@ -33,7 +33,12 @@ const filterAlteration: AlterationDisplayItem = {
   id: 'filter--status',
   type: 'filter',
   summary: 'Status = Active',
-  details: ['Column: Status', 'Type: text', 'Operation: Equals', 'Value: Active'],
+  details: [
+    'Column: Status',
+    'Type: text',
+    'Operation: Equals',
+    'Value: Active',
+  ],
   sortOrder: 0,
 }
 
@@ -67,7 +72,10 @@ export const SortAlteration: Story = {
     compact: true,
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(AlterationItemHarness, { canvasElement, fixture })
+    const harness = await getHarness(AlterationItemHarness, {
+      canvasElement,
+      fixture,
+    })
 
     expect(await harness.getType()).toBe('sort')
     expect(await harness.getTypeDisplayName()).toBe('Sort')
@@ -82,7 +90,10 @@ export const FilterAlteration: Story = {
     compact: true,
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(AlterationItemHarness, { canvasElement, fixture })
+    const harness = await getHarness(AlterationItemHarness, {
+      canvasElement,
+      fixture,
+    })
 
     expect(await harness.getType()).toBe('filter')
     expect(await harness.getTypeDisplayName()).toBe('Filter')
@@ -97,7 +108,10 @@ export const HideColumnAlteration: Story = {
     compact: true,
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(AlterationItemHarness, { canvasElement, fixture })
+    const harness = await getHarness(AlterationItemHarness, {
+      canvasElement,
+      fixture,
+    })
 
     expect(await harness.getType()).toBe('hide-column')
     expect(await harness.getTypeDisplayName()).toBe('Visibility')
@@ -111,7 +125,10 @@ export const WidthAlteration: Story = {
     compact: true,
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(AlterationItemHarness, { canvasElement, fixture })
+    const harness = await getHarness(AlterationItemHarness, {
+      canvasElement,
+      fixture,
+    })
 
     expect(await harness.getType()).toBe('width')
     expect(await harness.getTypeDisplayName()).toBe('Width')
@@ -125,7 +142,10 @@ export const OrderAlteration: Story = {
     compact: true,
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(AlterationItemHarness, { canvasElement, fixture })
+    const harness = await getHarness(AlterationItemHarness, {
+      canvasElement,
+      fixture,
+    })
 
     expect(await harness.getType()).toBe('order')
     expect(await harness.getTypeDisplayName()).toBe('Order')
@@ -139,7 +159,10 @@ export const AddedState: Story = {
     compact: true,
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(AlterationItemHarness, { canvasElement, fixture })
+    const harness = await getHarness(AlterationItemHarness, {
+      canvasElement,
+      fixture,
+    })
 
     expect(await harness.hasBorderSuccess()).toBe(true)
     expect(await harness.getDiffState()).toBe('added')
@@ -152,7 +175,10 @@ export const RemovedState: Story = {
     compact: true,
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(AlterationItemHarness, { canvasElement, fixture })
+    const harness = await getHarness(AlterationItemHarness, {
+      canvasElement,
+      fixture,
+    })
 
     expect(await harness.hasBorderDanger()).toBe(true)
     expect(await harness.getDiffState()).toBe('removed')
@@ -165,7 +191,10 @@ export const ChangedState: Story = {
     compact: true,
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(AlterationItemHarness, { canvasElement, fixture })
+    const harness = await getHarness(AlterationItemHarness, {
+      canvasElement,
+      fixture,
+    })
 
     expect(await harness.hasBorderWarning()).toBe(true)
     expect(await harness.getDiffState()).toBe('changed')
@@ -178,7 +207,10 @@ export const ExpandedDetails: Story = {
     compact: false,
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(AlterationItemHarness, { canvasElement, fixture })
+    const harness = await getHarness(AlterationItemHarness, {
+      canvasElement,
+      fixture,
+    })
 
     expect(await harness.hasDetails()).toBe(true)
     const details = await harness.getDetails()

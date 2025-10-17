@@ -5,7 +5,8 @@ import { waitOnConditionAsync } from '@theseam/ui-common/utils'
  * broswer-based solution is added, for Storybook interactions.
  */
 export async function animatingWait() {
-  const selectAnimating = () => document.querySelectorAll('.seam-menu-container .ng-animating')
+  const selectAnimating = () =>
+    document.querySelectorAll('.seam-menu-container .ng-animating')
   if (selectAnimating().length === 0) {
     return
   }

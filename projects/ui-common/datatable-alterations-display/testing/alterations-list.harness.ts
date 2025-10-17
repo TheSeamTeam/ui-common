@@ -4,9 +4,15 @@ import { AlterationItemHarness } from './alteration-item.harness'
 export class AlterationsListHarness extends ComponentHarness {
   static hostSelector = 'seam-alterations-list'
 
-  private _getTitle = this.locatorForOptional('[data-testid="alterations-list-title"]')
-  private _getCount = this.locatorForOptional('[data-testid="alterations-list-count"]')
-  private _getEmptyState = this.locatorForOptional('[data-testid="alterations-list-empty"]')
+  private _getTitle = this.locatorForOptional(
+    '[data-testid="alterations-list-title"]',
+  )
+  private _getCount = this.locatorForOptional(
+    '[data-testid="alterations-list-count"]',
+  )
+  private _getEmptyState = this.locatorForOptional(
+    '[data-testid="alterations-list-empty"]',
+  )
   private _getItems = this.locatorForAll(AlterationItemHarness)
 
   async getTitle(): Promise<string | null> {

@@ -7,16 +7,8 @@ import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types
 import { WidgetTableComponent } from './widget-table.component'
 
 @NgModule({
-  declarations: [
-    WidgetTableComponent,
-  ],
-  imports: [
-    CommonModule,
-    TheSeamTableModule,
-    TheSeamTableCellTypesModule,
-  ],
-  exports: [
-    WidgetTableComponent,
-  ],
+  declarations: [WidgetTableComponent],
+  imports: [CommonModule, TheSeamTableModule, TheSeamTableCellTypesModule],
+  exports: [WidgetTableComponent],
 })
-export class TheSeamWidgetTableModule { }
+export class TheSeamWidgetTableModule {}

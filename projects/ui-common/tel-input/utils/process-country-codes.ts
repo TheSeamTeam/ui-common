@@ -7,7 +7,9 @@ import { addCountryCode } from './add-country-code'
  *
  * Based on: https://github.com/jackocnr/intl-tel-input/blob/4fe25fcf142c341a85b7b15cc307d66afb8573a3/src/js/intlTelInput.js#L252
  */
-export function processCountryCodes(countries: intlTelInputUtils.CountryData[]): TelInputCountryData {
+export function processCountryCodes(
+  countries: intlTelInputUtils.CountryData[],
+): TelInputCountryData {
   const data: TelInputCountryData = {
     countryCodeMaxLen: 0,
     // here we store just dial codes
@@ -18,7 +20,9 @@ export function processCountryCodes(countries: intlTelInputUtils.CountryData[]):
 
   // first: add dial codes
   for (const c of countries) {
-    if (!data.dialCodes[c.dialCode]) { data.dialCodes[c.dialCode] = true }
+    if (!data.dialCodes[c.dialCode]) {
+      data.dialCodes[c.dialCode] = true
+    }
     addCountryCode(data, c.iso2, c.dialCode, c.priority)
   }
 

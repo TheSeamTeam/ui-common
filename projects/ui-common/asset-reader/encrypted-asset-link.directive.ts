@@ -1,5 +1,11 @@
 import { BooleanInput } from '@angular/cdk/coercion'
-import { Directive, ElementRef, HostBinding, HostListener, Input } from '@angular/core'
+import {
+  Directive,
+  ElementRef,
+  HostBinding,
+  HostListener,
+  Input,
+} from '@angular/core'
 
 import { InputBoolean } from '@theseam/ui-common/core'
 import { TheSeamLoadingOverlayService } from '@theseam/ui-common/loading'
@@ -26,11 +32,15 @@ export class EncryptedAssetLinkDirective {
   @Input() @InputBoolean() seamDownloadAsset = false
 
   // TODO: Find out why I need this for buttons.
-  @HostBinding('attr.href') get _attrHref() { return this.seamEncryptedAssetLink }
+  @HostBinding('attr.href') get _attrHref() {
+    return this.seamEncryptedAssetLink
+  }
 
-  @HostListener('click', [ '$event' ])
+  @HostListener('click', ['$event'])
   _onClick(event: MouseEvent) {
-    if (!this.seamEncryptedAssetLink) { return }
+    if (!this.seamEncryptedAssetLink) {
+      return
+    }
 
     let open$ = this._assetReaderHelper.openLink(
       this.seamEncryptedAssetLink,
@@ -48,7 +58,7 @@ export class EncryptedAssetLinkDirective {
     private _elementRef: ElementRef,
     private _assetReaderHelper: AssetReaderHelperService,
     private _loading: TheSeamLoadingOverlayService,
-  ) { }
+  ) {}
 
   /** Determines if the component host is an anchor. */
   protected _isAnchor(): boolean {
@@ -63,5 +73,4 @@ export class EncryptedAssetLinkDirective {
   protected _getTarget(): string {
     return (this._elementRef.nativeElement as HTMLAnchorElement).target
   }
-
 }

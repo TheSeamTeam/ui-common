@@ -7,7 +7,10 @@ import { notNullOrUndefined } from '@theseam/ui-common/utils'
 import { LocalStorageMemory } from './localstorage-memory'
 
 // NOTE: Temporary localStorage polyfill just to get the app running without localStorage for now.
-const localStorage: Storage = 'localStorage' in window && window.localStorage != null ? window.localStorage : new LocalStorageMemory()
+const localStorage: Storage =
+  'localStorage' in window && window.localStorage != null
+    ? window.localStorage
+    : new LocalStorageMemory()
 
 export interface ILocalStorageService {
   select(key: string, defaultValue: string | null): Observable<string | null>
@@ -20,27 +23,30 @@ export interface ILocalStorageService {
   providedIn: 'root',
 })
 export class LocalStorageService implements ILocalStorageService {
-  protected readonly subjects: { [key: string]: BehaviorSubject<string | null> } = {}
+  protected readonly subjects: {
+    [key: string]: BehaviorSubject<string | null>
+  } = {}
 
   /** This is only here for testing/debugging. */
   private readonly _localStorage = localStorage
 
   constructor() {
-    fromEvent<StorageEvent>(window, 'storage').pipe(
-      map(e => e.key),
-      filter(notNullOrUndefined),
-      tap(key => {
-        const subjectValue = this.get(key)
-        const storedValue = this._localStorage.getItem(key)
-        if (subjectValue !== storedValue) {
-          if (storedValue) {
-            this.set(key, storedValue)
-          } else {
-            this.remove(key)
+    fromEvent<StorageEvent>(window, 'storage')
+      .pipe(
+        map((e) => e.key),
+        filter(notNullOrUndefined),
+        tap((key) => {
+          const subjectValue = this.get(key)
+          const storedValue = this._localStorage.getItem(key)
+          if (subjectValue !== storedValue) {
+            if (storedValue) {
+              this.set(key, storedValue)
+            } else {
+              this.remove(key)
+            }
           }
-        }
-      }),
-    )
+        }),
+      )
       .subscribe()
   }
 
@@ -50,7 +56,10 @@ export class LocalStorageService implements ILocalStorageService {
    * NOTE: Only emits changes if the item is changed with the set method of this
    * class instance.
    */
-  public select(key: string, defaultValue: string | null = null): Observable<string | null> {
+  public select(
+    key: string,
+    defaultValue: string | null = null,
+  ): Observable<string | null> {
     if (Object.prototype.hasOwnProperty.call(this.subjects, key)) {
       return this.subjects[key]
     }

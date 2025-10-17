@@ -8,7 +8,7 @@
 
   // HACK: Scrollbar was getting placed behind the backdrop making it
   // unreachable.
-  .os-scrollbar{
+  .os-scrollbar {
     z-index: $zindex-modal + 2;
   }
 }

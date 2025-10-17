@@ -8,19 +8,22 @@ import { TheSeamDatatableModule } from '@theseam/ui-common/datatable'
 
 # Datatable Cell Types
 
-<Meta title="TableCellTypes/String"
-  decorators={[moduleMetadata({
-    imports: [
-      BrowserAnimationsModule,
-      TheSeamDatatableModule,
-      TheSeamTableCellTypesModule
-    ]
-  })]}
+<Meta
+  title="TableCellTypes/String"
+  decorators={[
+    moduleMetadata({
+      imports: [
+        BrowserAnimationsModule,
+        TheSeamDatatableModule,
+        TheSeamTableCellTypesModule,
+      ],
+    }),
+  ]}
   parameters={{
     layout: 'fullscreen',
     docs: {
       iframeHeight: '400px',
-    }
+    },
   }}
 />
 
@@ -89,12 +92,8 @@ import { TheSeamDatatableModule } from '@theseam/ui-common/datatable'
     {{
       template: `<seam-datatable class="vw-100 vh-100" [columns]="columns" [rows]="rows"></seam-datatable>`,
       props: {
-        columns: [
-          { prop: 'name', name: 'Name', cellType: 'string' }
-        ],
-        rows: [
-          { name: 'Some Value' }
-        ]
+        columns: [{ prop: 'name', name: 'Name', cellType: 'string' }],
+        rows: [{ name: 'Some Value' }],
       },
     }}
   </Story>

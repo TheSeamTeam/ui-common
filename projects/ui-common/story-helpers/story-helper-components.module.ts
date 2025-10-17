@@ -8,18 +8,8 @@ import { StoryEmptyWithRouteComponent } from './story-empty-with-route.component
 import { StoryModalContainerComponent } from './story-modal-container.component'
 
 @NgModule({
-  declarations: [
-    StoryEmptyWithRouteComponent,
-    StoryModalContainerComponent,
-  ],
-  imports: [
-    CommonModule,
-    RouterModule,
-    TheSeamOverlayScrollbarDirective,
-  ],
-  exports: [
-    StoryEmptyWithRouteComponent,
-    StoryModalContainerComponent,
-  ],
+  declarations: [StoryEmptyWithRouteComponent, StoryModalContainerComponent],
+  imports: [CommonModule, RouterModule, TheSeamOverlayScrollbarDirective],
+  exports: [StoryEmptyWithRouteComponent, StoryModalContainerComponent],
 })
-export class StoryHelperComponentsModule { }
+export class StoryHelperComponentsModule {}

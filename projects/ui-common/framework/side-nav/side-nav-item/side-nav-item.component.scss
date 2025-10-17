@@ -174,7 +174,11 @@ seam-side-nav-item {
 
   @for $i from 1 through 9 {
     .side-nav--group--level-#{$i} {
-      background-color: color.adjust($seam-side-nav-bg-color, $lightness: -($i * $seam-side-nav-group-bg-variation-amount), $space: hsl);
+      background-color: color.adjust(
+        $seam-side-nav-bg-color,
+        $lightness: -($i * $seam-side-nav-group-bg-variation-amount),
+        $space: hsl
+      );
     }
   }
 
@@ -196,4 +200,3 @@ seam-side-nav-item {
     left: 0;
   }
 }
-

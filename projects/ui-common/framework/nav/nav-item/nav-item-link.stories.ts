@@ -1,4 +1,9 @@
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 
 import { Component, Directive, Input } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
@@ -14,13 +19,15 @@ import { TheSeamNavService } from '../nav.service'
 
 @Component({ template: `Url: {{ router.url }}` })
 class StoryRoutePlacholderComponent {
-  constructor(public router: Router) { }
+  constructor(public router: Router) {}
 }
 
 @Directive({ selector: '[storyNavToggle]' })
 class StoryNavToggleDirective {
-  @Input() set storyNavToggle(value: string) { this._router.navigateByUrl(value) }
-  constructor(private _router: Router) { }
+  @Input() set storyNavToggle(value: string) {
+    this._router.navigateByUrl(value)
+  }
+  constructor(private _router: Router) {}
 }
 
 class MockHorizontalNavComponent implements Partial<HorizontalNavComponent> {
@@ -32,18 +39,16 @@ const meta: Meta<NavItemComponent> = {
   component: NavItemComponent,
   decorators: [
     applicationConfig({
-      providers: [
-        provideAnimations(),
-        provideLocationMocks(),
-      ],
+      providers: [provideAnimations(), provideLocationMocks()],
     }),
     moduleMetadata({
-      imports: [
-        StoryNavToggleDirective,
-      ],
+      imports: [StoryNavToggleDirective],
       providers: [
         TheSeamNavService, // Normally would be provided by HorizontalNavComponent.
-        { provide: HorizontalNavComponent, useClass: MockHorizontalNavComponent },
+        {
+          provide: HorizontalNavComponent,
+          useClass: MockHorizontalNavComponent,
+        },
       ],
     }),
   ],
@@ -66,12 +71,10 @@ export const NoChildren: Story = {
       ],
     }),
     moduleMetadata({
-      imports: [
-        RouterModule,
-      ],
+      imports: [RouterModule],
     }),
   ],
-  render: args => ({
+  render: (args) => ({
     props: {
       currentUrl: 'example2',
       itemType: 'link',
@@ -112,20 +115,27 @@ export const WithChildren: Story = {
       providers: [
         provideRouter([
           { path: 'example1', component: StoryRoutePlacholderComponent },
-          { path: 'example1/example1.1', component: StoryRoutePlacholderComponent },
-          { path: 'example1/example1.2', component: StoryRoutePlacholderComponent },
-          { path: 'example1/example1.3', component: StoryRoutePlacholderComponent },
+          {
+            path: 'example1/example1.1',
+            component: StoryRoutePlacholderComponent,
+          },
+          {
+            path: 'example1/example1.2',
+            component: StoryRoutePlacholderComponent,
+          },
+          {
+            path: 'example1/example1.3',
+            component: StoryRoutePlacholderComponent,
+          },
           { path: 'example2', component: StoryRoutePlacholderComponent },
         ]),
       ],
     }),
     moduleMetadata({
-      imports: [
-        RouterModule,
-      ],
+      imports: [RouterModule],
     }),
   ],
-  render: args => ({
+  render: (args) => ({
     props: {
       currentUrl: 'example1',
 

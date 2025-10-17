@@ -10,8 +10,7 @@ describe('TheSeamSchemaFormInputComponent', () => {
     TestBed.configureTestingModule({
       declarations: [TheSeamSchemaFormInputComponent],
       teardown: { destroyAfterEach: false },
-    })
-      .compileComponents()
+    }).compileComponents()
   }))
 
   beforeEach(() => {

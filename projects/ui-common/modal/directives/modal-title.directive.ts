@@ -5,11 +5,7 @@ import { Directive, ElementRef, HostBinding, TemplateRef } from '@angular/core'
   standalone: false,
 })
 export class ModalTitleDirective {
-
   @HostBinding('class.modal-title') _modalTitleCss = true
 
-  constructor(
-    private _elementRef: ElementRef<HTMLElement>,
-  ) { }
-
+  constructor(private _elementRef: ElementRef<HTMLElement>) {}
 }

@@ -9,10 +9,12 @@ export function withStoredColumnInfo(
 ): TheSeamDatatableColumn[] {
   const _columns: TheSeamDatatableColumn[] = []
   for (const col of columns) {
-    const storedCol = preferenceColumns.find(v => v.prop === col.prop)
+    const storedCol = preferenceColumns.find((v) => v.prop === col.prop)
     if (storedCol) {
       const _col = { ...col }
-      if (hasProperty(storedCol, 'width')) { _col.width = Math.max(storedCol.width, 0) }
+      if (hasProperty(storedCol, 'width')) {
+        _col.width = Math.max(storedCol.width, 0)
+      }
       _col.canAutoResize = storedCol.canAutoResize
       _columns.push(_col)
     } else {

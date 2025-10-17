@@ -14,28 +14,32 @@ export interface TheSeamBaseLayoutActionBase {
   disabled?: boolean
 }
 
-export interface TheSeamBaseLayoutActionButton extends TheSeamBaseLayoutActionBase {
+export interface TheSeamBaseLayoutActionButton
+  extends TheSeamBaseLayoutActionBase {
   type: 'button'
   exec: () => Promise<void> | Observable<void> | void
 }
 
-export interface TheSeamBaseLayoutActionRouterLink extends TheSeamBaseLayoutActionBase {
+export interface TheSeamBaseLayoutActionRouterLink
+  extends TheSeamBaseLayoutActionBase {
   type: 'router-link'
   url: string
 }
 
-export interface TheSeamBaseLayoutActionHref extends TheSeamBaseLayoutActionBase {
+export interface TheSeamBaseLayoutActionHref
+  extends TheSeamBaseLayoutActionBase {
   type: 'href'
   url: string
 }
 
-export interface TheSeamBaseLayoutActionTemplate extends TheSeamBaseLayoutActionBase {
+export interface TheSeamBaseLayoutActionTemplate
+  extends TheSeamBaseLayoutActionBase {
   type: 'template'
   template: TemplateRef<any>
 }
 
 export type TheSeamBaseLayoutAction =
-  TheSeamBaseLayoutActionButton |
-  TheSeamBaseLayoutActionRouterLink |
-  TheSeamBaseLayoutActionHref |
-  TheSeamBaseLayoutActionTemplate
+  | TheSeamBaseLayoutActionButton
+  | TheSeamBaseLayoutActionRouterLink
+  | TheSeamBaseLayoutActionHref
+  | TheSeamBaseLayoutActionTemplate

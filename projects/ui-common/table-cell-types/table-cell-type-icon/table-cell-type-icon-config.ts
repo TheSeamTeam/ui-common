@@ -1,10 +1,14 @@
-import { DynamicActionLinkDef, DynamicActionModalDef, DynamicValue } from '@theseam/ui-common/dynamic'
+import {
+  DynamicActionLinkDef,
+  DynamicActionModalDef,
+  DynamicValue,
+} from '@theseam/ui-common/dynamic'
 import { TheSeamIconType } from '@theseam/ui-common/icon'
 import { TableCellTypeConfig } from '@theseam/ui-common/table-cell-type'
 
 export type TableCellTypeIconConfigAction =
-  DynamicActionLinkDef |
-  DynamicActionModalDef
+  | DynamicActionLinkDef
+  | DynamicActionModalDef
 
 export interface TableCellTypeConfigIcon extends TableCellTypeConfig<'icon'> {
   /**

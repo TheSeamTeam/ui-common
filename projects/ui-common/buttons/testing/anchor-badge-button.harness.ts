@@ -1,12 +1,19 @@
-import { ComponentHarnessConstructor, HarnessPredicate } from '@angular/cdk/testing'
+import {
+  ComponentHarnessConstructor,
+  HarnessPredicate,
+} from '@angular/cdk/testing'
 
-import { TheSeamBaseBadgeButtonComponentHarness, TheSeamBaseBadgeButtonComponentHarnessFilters, createBaseBadgeButtonComponentHarnessPredicate } from './base-badge-button.harness'
+import {
+  TheSeamBaseBadgeButtonComponentHarness,
+  TheSeamBaseBadgeButtonComponentHarnessFilters,
+  createBaseBadgeButtonComponentHarnessPredicate,
+} from './base-badge-button.harness'
 
 /** A set of criteria that can be used to filter a list of `TheSeamAnchorBadgeButtonComponentHarness` instances. */
-export type TheSeamAnchorBadgeButtonComponentHarnessFilters = TheSeamBaseBadgeButtonComponentHarnessFilters
+export type TheSeamAnchorBadgeButtonComponentHarnessFilters =
+  TheSeamBaseBadgeButtonComponentHarnessFilters
 
 export class TheSeamAnchorBadgeButtonComponentHarness extends TheSeamBaseBadgeButtonComponentHarness {
-
   /** The selector for the host element of a `TheSeamAnchorBadgeButtonComponent` instance. */
   static hostSelector = 'a[seamBadgeButton]'
 
@@ -26,5 +33,4 @@ export class TheSeamAnchorBadgeButtonComponentHarness extends TheSeamBaseBadgeBu
     const tabIndex = await (await this.host()).getAttribute('tabindex')
     return Number(tabIndex)
   }
-
 }

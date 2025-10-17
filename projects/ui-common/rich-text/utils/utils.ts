@@ -1,7 +1,22 @@
 import { InjectionToken } from '@angular/core'
 import { QuillToolbarConfig } from 'ngx-quill'
-import { TheSeamQuillModules, TheSeamQuillStyleFormat, TheSeamQuillEditorConfig, TheSeamQuillMentionMenuOption, TheSeamQuillInputFormat, TheSeamQuillMentionOptions, TheSeamQuillMentionSourceFn, TheSeamQuillMentionSearchFn, TheSeamCharacterCounterFn, TheSeamQuillMentionMenuItem } from './models'
-import { isNullOrUndefined, notNullOrUndefined, notNullOrUndefinedOrEmpty } from '@theseam/ui-common/utils'
+import {
+  TheSeamQuillModules,
+  TheSeamQuillStyleFormat,
+  TheSeamQuillEditorConfig,
+  TheSeamQuillMentionMenuOption,
+  TheSeamQuillInputFormat,
+  TheSeamQuillMentionOptions,
+  TheSeamQuillMentionSourceFn,
+  TheSeamQuillMentionSearchFn,
+  TheSeamCharacterCounterFn,
+  TheSeamQuillMentionMenuItem,
+} from './models'
+import {
+  isNullOrUndefined,
+  notNullOrUndefined,
+  notNullOrUndefinedOrEmpty,
+} from '@theseam/ui-common/utils'
 
 export const HTML_ENTITY_REGEX = /<[^>]+>/gm
 
@@ -14,11 +29,12 @@ export const THESEAM_QUILL_TOOLBAR_OPTIONS_DEFAULT: QuillToolbarConfig = [
   ['clean'],
 ]
 
-export const THESEAM_QUILL_MENTION_OPTIONS_DEFAULT: Partial<TheSeamQuillMentionOptions> = {
-  spaceAfterInsert: false,
-  positioningStrategy: 'fixed',
-  dataAttributes: [ 'type' ],
-}
+export const THESEAM_QUILL_MENTION_OPTIONS_DEFAULT: Partial<TheSeamQuillMentionOptions> =
+  {
+    spaceAfterInsert: false,
+    positioningStrategy: 'fixed',
+    dataAttributes: ['type'],
+  }
 
 export const THESEAM_QUILL_MODULES_DEFAULT: TheSeamQuillModules = {
   toolbar: THESEAM_QUILL_TOOLBAR_OPTIONS_DEFAULT,
@@ -52,11 +68,16 @@ export const THESEAM_QUILL_EDITOR_CONFIG_DEFAULT: TheSeamQuillEditorConfig = {
   filterNull: false,
 }
 
-export const THESEAM_QUILL_EDITOR_CONFIG = new InjectionToken<TheSeamQuillEditorConfig>('TheSeamQuillEditorConfig')
+export const THESEAM_QUILL_EDITOR_CONFIG =
+  new InjectionToken<TheSeamQuillEditorConfig>('TheSeamQuillEditorConfig')
 
-export const defaultHtmlCharacterCounterFn: TheSeamCharacterCounterFn = (value: string, format: TheSeamQuillInputFormat | undefined): number => {
+export const defaultHtmlCharacterCounterFn: TheSeamCharacterCounterFn = (
+  value: string,
+  format: TheSeamQuillInputFormat | undefined,
+): number => {
   if (format === 'html') {
-    return value.replace(HTML_ENTITY_REGEX, ' ').replace(/\s\s+/g, ' ').trim().length
+    return value.replace(HTML_ENTITY_REGEX, ' ').replace(/\s\s+/g, ' ').trim()
+      .length
   } else if (format === 'text') {
     return value.replace(/\s\s+/g, ' ').trim().length
   } else {
@@ -65,7 +86,9 @@ export const defaultHtmlCharacterCounterFn: TheSeamCharacterCounterFn = (value: 
   }
 }
 
-export function isMentionMenuOption(value: TheSeamQuillMentionMenuItem | undefined): value is TheSeamQuillMentionMenuOption {
+export function isMentionMenuOption(
+  value: TheSeamQuillMentionMenuItem | undefined,
+): value is TheSeamQuillMentionMenuOption {
   if (isNullOrUndefined(value) || typeof value !== 'object') {
     return false
   }
@@ -73,8 +96,12 @@ export function isMentionMenuOption(value: TheSeamQuillMentionMenuItem | undefin
   return Object.prototype.hasOwnProperty.call(value, 'id')
 }
 
-export const defaultMentionSearchFn: TheSeamQuillMentionSearchFn = (source: TheSeamQuillMentionMenuItem[], textAfter: string, mentionChar: string) => {
-  return source.filter(u => {
+export const defaultMentionSearchFn: TheSeamQuillMentionSearchFn = (
+  source: TheSeamQuillMentionMenuItem[],
+  textAfter: string,
+  mentionChar: string,
+) => {
+  return source.filter((u) => {
     if (!isMentionMenuOption(u) || u.searchIgnore === true) {
       return true
     }
@@ -83,7 +110,14 @@ export const defaultMentionSearchFn: TheSeamQuillMentionSearchFn = (source: TheS
   })
 }
 
-export const defaultMentionRenderListFn: TheSeamQuillMentionSourceFn = (source: TheSeamQuillMentionMenuItem[], searchFn: TheSeamQuillMentionSearchFn, emptyListItem: TheSeamQuillMentionMenuItem | undefined, textAfter: string, renderList: (list: any[], searchTerm: string) => any, mentionChar: string) => {
+export const defaultMentionRenderListFn: TheSeamQuillMentionSourceFn = (
+  source: TheSeamQuillMentionMenuItem[],
+  searchFn: TheSeamQuillMentionSearchFn,
+  emptyListItem: TheSeamQuillMentionMenuItem | undefined,
+  textAfter: string,
+  renderList: (list: any[], searchTerm: string) => any,
+  mentionChar: string,
+) => {
   let list = searchFn(source, textAfter, mentionChar)
 
   if (list.length === 0 && notNullOrUndefined(emptyListItem)) {
@@ -92,10 +126,13 @@ export const defaultMentionRenderListFn: TheSeamQuillMentionSourceFn = (source: 
     let reduceIdx = 0
     list = list.reduce((acc, mention) => {
       const previousMenuItem = acc[reduceIdx - 1]
-      const previousMenuItemGroupName = isMentionMenuOption(previousMenuItem) ? previousMenuItem.groupName : undefined
-      if (isMentionMenuOption(mention) &&
-          notNullOrUndefinedOrEmpty(mention.groupName) &&
-          mention.groupName !== previousMenuItemGroupName
+      const previousMenuItemGroupName = isMentionMenuOption(previousMenuItem)
+        ? previousMenuItem.groupName
+        : undefined
+      if (
+        isMentionMenuOption(mention) &&
+        notNullOrUndefinedOrEmpty(mention.groupName) &&
+        mention.groupName !== previousMenuItemGroupName
       ) {
         acc.push({
           value: mention.groupName,

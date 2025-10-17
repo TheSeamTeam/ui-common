@@ -1,12 +1,21 @@
 import { Component, DebugElement } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { UntypedFormControl, UntypedFormGroup, ReactiveFormsModule } from '@angular/forms'
+import {
+  UntypedFormControl,
+  UntypedFormGroup,
+  ReactiveFormsModule,
+} from '@angular/forms'
 import { By } from '@angular/platform-browser'
 import { TheSeamDisableControlDirective } from './disable-control.directive'
 
 @Component({
   template: `<form [formGroup]="testGroup">
-    <input type="text" formControlName="testControl" id="testControl" [seamDisableControl]="mode">
+    <input
+      type="text"
+      formControlName="testControl"
+      id="testControl"
+      [seamDisableControl]="mode"
+    />
   </form>`,
 })
 class TestDisableControlComponent {
@@ -23,16 +32,13 @@ describe('TheSeamDisableControlDirective', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        ReactiveFormsModule,
-      ],
+      imports: [ReactiveFormsModule],
       declarations: [
         TestDisableControlComponent,
         TheSeamDisableControlDirective,
       ],
       teardown: { destroyAfterEach: false },
-    })
-      .compileComponents()
+    }).compileComponents()
   }))
 
   beforeEach(() => {

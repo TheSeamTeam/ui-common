@@ -7,7 +7,6 @@
   padding-bottom: $alert-padding-y-slim;
 
   &.alert-dismissible {
-
     .close {
       padding-top: $alert-padding-y-slim;
       padding-bottom: $alert-padding-y-slim;
@@ -45,7 +44,6 @@
   }
 }
 
-
 .table {
   thead th {
     border-bottom: $table-border-width solid $table-border-color;
@@ -56,7 +54,6 @@
 //
 //
 .breadcrumb-item {
-
   &::before {
     display: inline-block; // Suppress underlining of the separator in modern browsers
     font-weight: $font-weight-base;
@@ -67,7 +64,6 @@
     font-weight: $font-weight-bold;
   }
 }
-
 
 // Popovers
 //
@@ -83,22 +79,22 @@
     // }
 
     &.bs-popover-top > .arrow::before,
-    &.bs-popover-auto[x-placement^=top] > .arrow::before {
+    &.bs-popover-auto[x-placement^='top'] > .arrow::before {
       border-top-color: $value !important;
     }
 
     &.bs-popover-right > .arrow::before,
-    &.bs-popover-auto[x-placement^=right] > .arrow::before {
+    &.bs-popover-auto[x-placement^='right'] > .arrow::before {
       border-right-color: $value !important;
     }
 
     &.bs-popover-bottom > .arrow::before,
-    &.bs-popover-auto[x-placement^=bottom] > .arrow::before {
+    &.bs-popover-auto[x-placement^='bottom'] > .arrow::before {
       border-bottom-color: $value !important;
     }
 
     &.bs-popover-left > .arrow::before,
-    &.bs-popover-auto[x-placement^=left] > .arrow::before {
+    &.bs-popover-auto[x-placement^='left'] > .arrow::before {
       border-left-color: $value !important;
     }
   }

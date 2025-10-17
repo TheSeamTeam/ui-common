@@ -1,4 +1,1 @@
-
-export interface DynamicActionContext {
-
-}
+export interface DynamicActionContext {}

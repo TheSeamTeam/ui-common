@@ -1,8 +1,4 @@
-import {
-  FeatureCollection,
-  MultiPolygon,
-  Polygon,
-} from 'geojson'
+import { FeatureCollection, MultiPolygon, Polygon } from 'geojson'
 
 import { mergePolygons } from './merge-polygons'
 
@@ -24,9 +20,9 @@ describe('mergePolygons', () => {
           type: 'Feature',
           geometry: {
             type: 'Point',
-            coordinates: [ 0, 0 ],
+            coordinates: [0, 0],
           },
-          properties: { },
+          properties: {},
         },
       ],
     }
@@ -40,10 +36,10 @@ describe('mergePolygons', () => {
       type: 'Polygon',
       coordinates: [
         [
-          [ 0, 0 ],
-          [ 0, 1 ],
-          [ 1, 0 ],
-          [ 0, 0 ],
+          [0, 0],
+          [0, 1],
+          [1, 0],
+          [0, 0],
         ],
       ],
     }
@@ -51,10 +47,10 @@ describe('mergePolygons', () => {
       type: 'Polygon',
       coordinates: [
         [
-          [ 1, 1 ],
-          [ 1, 2 ],
-          [ 2, 1 ],
-          [ 1, 1 ],
+          [1, 1],
+          [1, 2],
+          [2, 1],
+          [1, 1],
         ],
       ],
     }
@@ -62,10 +58,10 @@ describe('mergePolygons', () => {
       type: 'Polygon',
       coordinates: [
         [
-          [ 2, 2 ],
-          [ 2, 3 ],
-          [ 3, 2 ],
-          [ 2, 2 ],
+          [2, 2],
+          [2, 3],
+          [3, 2],
+          [2, 2],
         ],
       ],
     }
@@ -75,24 +71,26 @@ describe('mergePolygons', () => {
         {
           type: 'Feature',
           geometry: polygon1,
-          properties: { },
+          properties: {},
         },
         {
           type: 'Feature',
           geometry: polygon2,
-          properties: { },
+          properties: {},
         },
         {
           type: 'Feature',
           geometry: polygon3,
-          properties: { },
+          properties: {},
         },
       ],
     }
     mergePolygons(featureCollection)
     expect(featureCollection.features.length).toBe(1)
     expect(featureCollection.features[0].geometry.type).toBe('MultiPolygon')
-    expect((featureCollection.features[0].geometry as MultiPolygon).coordinates).toStrictEqual([
+    expect(
+      (featureCollection.features[0].geometry as MultiPolygon).coordinates,
+    ).toStrictEqual([
       polygon1.coordinates,
       polygon2.coordinates,
       polygon3.coordinates,
@@ -104,10 +102,10 @@ describe('mergePolygons', () => {
       type: 'Polygon',
       coordinates: [
         [
-          [ 0, 0 ],
-          [ 0, 1 ],
-          [ 1, 0 ],
-          [ 0, 0 ],
+          [0, 0],
+          [0, 1],
+          [1, 0],
+          [0, 0],
         ],
       ],
     }
@@ -115,10 +113,10 @@ describe('mergePolygons', () => {
       type: 'Polygon',
       coordinates: [
         [
-          [ 1, 1 ],
-          [ 1, 2 ],
-          [ 2, 1 ],
-          [ 1, 1 ],
+          [1, 1],
+          [1, 2],
+          [2, 1],
+          [1, 1],
         ],
       ],
     }
@@ -126,10 +124,10 @@ describe('mergePolygons', () => {
       type: 'Polygon',
       coordinates: [
         [
-          [ 2, 2 ],
-          [ 2, 3 ],
-          [ 3, 2 ],
-          [ 2, 2 ],
+          [2, 2],
+          [2, 3],
+          [3, 2],
+          [2, 2],
         ],
       ],
     }
@@ -139,25 +137,25 @@ describe('mergePolygons', () => {
         {
           type: 'Feature',
           geometry: polygon1,
-          properties: { },
+          properties: {},
         },
         {
           type: 'Feature',
           geometry: {
             type: 'Point',
-            coordinates: [ 0, 0 ],
+            coordinates: [0, 0],
           },
-          properties: { },
+          properties: {},
         },
         {
           type: 'Feature',
           geometry: polygon2,
-          properties: { },
+          properties: {},
         },
         {
           type: 'Feature',
           geometry: polygon3,
-          properties: { },
+          properties: {},
         },
       ],
     }
@@ -165,7 +163,9 @@ describe('mergePolygons', () => {
     expect(featureCollection.features.length).toBe(2)
     expect(featureCollection.features[0].geometry.type).toBe('Point')
     expect(featureCollection.features[1].geometry.type).toBe('MultiPolygon')
-    expect((featureCollection.features[1].geometry as MultiPolygon).coordinates).toStrictEqual([
+    expect(
+      (featureCollection.features[1].geometry as MultiPolygon).coordinates,
+    ).toStrictEqual([
       polygon1.coordinates,
       polygon2.coordinates,
       polygon3.coordinates,

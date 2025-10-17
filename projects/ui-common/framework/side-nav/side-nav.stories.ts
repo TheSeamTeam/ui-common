@@ -1,4 +1,9 @@
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 
 import { Component } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
@@ -14,7 +19,7 @@ import { TheSeamSideNavModule } from './side-nav.module'
 
 @Component({ template: `Url: {{ router.url }}` })
 class StoryRoutePlacholderComponent {
-  constructor(public router: Router) { }
+  constructor(public router: Router) {}
 }
 
 const meta: Meta<SideNavComponent> = {
@@ -49,10 +54,22 @@ const meta: Meta<SideNavComponent> = {
                 path: 'ex2',
                 component: StoryRoutePlacholderComponent,
                 children: [
-                  { path: 'example1.1', component: StoryRoutePlacholderComponent },
-                  { path: 'example1.2', component: StoryRoutePlacholderComponent },
-                  { path: 'example1.3', component: StoryRoutePlacholderComponent },
-                  { path: 'example1.4', component: StoryRoutePlacholderComponent },
+                  {
+                    path: 'example1.1',
+                    component: StoryRoutePlacholderComponent,
+                  },
+                  {
+                    path: 'example1.2',
+                    component: StoryRoutePlacholderComponent,
+                  },
+                  {
+                    path: 'example1.3',
+                    component: StoryRoutePlacholderComponent,
+                  },
+                  {
+                    path: 'example1.4',
+                    component: StoryRoutePlacholderComponent,
+                  },
                 ],
               },
             ],
@@ -63,10 +80,7 @@ const meta: Meta<SideNavComponent> = {
       ],
     }),
     moduleMetadata({
-      imports: [
-        RouterModule,
-        TheSeamSideNavModule,
-      ],
+      imports: [RouterModule, TheSeamSideNavModule],
     }),
   ],
   parameters: {
@@ -78,11 +92,9 @@ export default meta
 type Story = StoryObj<SideNavComponent>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     applicationConfig: {
-      providers: [
-        provideStoryInitialUrl('/example3/ex2/example1.3'),
-      ],
+      providers: [provideStoryInitialUrl('/example3/ex2/example1.3')],
     },
     props: {
       items: [
@@ -236,11 +248,9 @@ export const Basic: Story = {
 }
 
 export const Collapsed: Story = {
-  render: args => ({
+  render: (args) => ({
     applicationConfig: {
-      providers: [
-        provideStoryInitialUrl('/example2'),
-      ],
+      providers: [provideStoryInitialUrl('/example2')],
     },
     props: {
       items: [

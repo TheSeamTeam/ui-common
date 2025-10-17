@@ -5,11 +5,18 @@ import { TheSeamSchemaFormWidget } from '../../schema-form'
 @Component({
   selector: 'seam-schema-form-divider',
   template: `<hr [class]="options?.htmlClass" />`,
-  styles: [`:host { display: block; }`],
+  styles: [
+    `
+      :host {
+        display: block;
+      }
+    `,
+  ],
   standalone: true,
 })
-export class TheSeamSchemaFormDividerComponent implements OnInit, TheSeamSchemaFormWidget {
-
+export class TheSeamSchemaFormDividerComponent
+  implements OnInit, TheSeamSchemaFormWidget
+{
   options: TheSeamSchemaFormWidget['options']
   @Input() layoutNode: any
   @Input() layoutIndex: number[] | undefined | null
@@ -18,5 +25,4 @@ export class TheSeamSchemaFormDividerComponent implements OnInit, TheSeamSchemaF
   ngOnInit() {
     this.options = this.layoutNode.options || {}
   }
-
 }

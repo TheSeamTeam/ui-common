@@ -1,5 +1,13 @@
 import {
-  AfterContentInit, Component, ContentChildren, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList,
+  AfterContentInit,
+  Component,
+  ContentChildren,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  QueryList,
 } from '@angular/core'
 import { AsyncPipe, NgFor, NgIf } from '@angular/common'
 import { ActivatedRoute, Router, RouterModule } from '@angular/router'
@@ -16,7 +24,7 @@ import { TheSeamTabbedService, TheSeamTabsDirection } from './tabbed.service'
   selector: 'seam-tabbed',
   templateUrl: './tabbed.component.html',
   styleUrls: ['./tabbed.component.scss'],
-  providers: [ TheSeamTabbedService ],
+  providers: [TheSeamTabbedService],
   imports: [
     NgIf,
     NgFor,
@@ -26,8 +34,9 @@ import { TheSeamTabbedService, TheSeamTabsDirection } from './tabbed.service'
     TheSeamTabbedContentComponent,
   ],
 })
-export class TheSeamTabbedComponent implements OnInit, AfterContentInit, OnDestroy {
-
+export class TheSeamTabbedComponent
+  implements OnInit, AfterContentInit, OnDestroy
+{
   private _direction: TheSeamTabsDirection = 'vertical'
   private _hideTabs = false
 
@@ -38,7 +47,9 @@ export class TheSeamTabbedComponent implements OnInit, AfterContentInit, OnDestr
   get tabbedItems(): QueryList<TheSeamTabbedItemComponent> | undefined {
     return this._tabbedItems.value
   }
-  private readonly _tabbedItems = new BehaviorSubject<QueryList<TheSeamTabbedItemComponent> | undefined>(undefined)
+  private readonly _tabbedItems = new BehaviorSubject<
+    QueryList<TheSeamTabbedItemComponent> | undefined
+  >(undefined)
   public readonly tabbedItems$ = this._tabbedItems.asObservable()
 
   @Output() tabChanged = new EventEmitter<TheSeamTabbedItemComponent>()
@@ -69,30 +80,36 @@ export class TheSeamTabbedComponent implements OnInit, AfterContentInit, OnDestr
       if (this._route.snapshot.children.length > 0) {
         const config = this._route.snapshot.children[0].routeConfig
         const childPath = config && config.path
-        return this.tabbedItems?.find(t => t.name === childPath)
+        return this.tabbedItems?.find((t) => t.name === childPath)
       }
     } else {
       return this._selectedTab.value
     }
   }
-  set selectedTab(tab: TheSeamTabbedItemComponent | undefined) { this._selectedTab.next(tab) }
-  private readonly _selectedTab = new BehaviorSubject<TheSeamTabbedItemComponent | undefined>(undefined)
-  public readonly selectedTab$ = this._selectedTab.asObservable().pipe(
-    shareReplay({ bufferSize: 1, refCount: true }),
-  )
+  set selectedTab(tab: TheSeamTabbedItemComponent | undefined) {
+    this._selectedTab.next(tab)
+  }
+  private readonly _selectedTab = new BehaviorSubject<
+    TheSeamTabbedItemComponent | undefined
+  >(undefined)
+  public readonly selectedTab$ = this._selectedTab
+    .asObservable()
+    .pipe(shareReplay({ bufferSize: 1, refCount: true }))
 
   @Input()
   set activeTabName(val: string) {
     this._activeTabName.next(val)
   }
-  private readonly _activeTabName = new BehaviorSubject<string | undefined>(undefined)
+  private readonly _activeTabName = new BehaviorSubject<string | undefined>(
+    undefined,
+  )
   private readonly activeTabName$ = this._activeTabName.asObservable()
 
   constructor(
     private readonly _tabbedService: TheSeamTabbedService,
     private readonly _router: Router,
     private readonly _route: ActivatedRoute,
-  ) { }
+  ) {}
 
   ngOnInit() {
     this._tabbedService.registerTab(this, 'main')
@@ -103,9 +120,9 @@ export class TheSeamTabbedComponent implements OnInit, AfterContentInit, OnDestr
   }
 
   ngAfterContentInit() {
-    combineLatest([ this.tabbedItems$, this.activeTabName$ ]).pipe(
-      tap(([ _, activeTabName ]) => this.selectTab(activeTabName)),
-    ).subscribe()
+    combineLatest([this.tabbedItems$, this.activeTabName$])
+      .pipe(tap(([_, activeTabName]) => this.selectTab(activeTabName)))
+      .subscribe()
   }
 
   /**
@@ -114,7 +131,7 @@ export class TheSeamTabbedComponent implements OnInit, AfterContentInit, OnDestr
   public onClickTab(event: any, tab: TheSeamTabbedItemComponent) {
     this.selectedTab = tab
     if (this.onlyRouteContent) {
-      this._router.navigate([ tab.name ], { relativeTo: this._route })
+      this._router.navigate([tab.name], { relativeTo: this._route })
     }
     this.tabChanged.emit(tab)
   }
@@ -128,12 +145,11 @@ export class TheSeamTabbedComponent implements OnInit, AfterContentInit, OnDestr
       return
     }
 
-    const tab = this.tabbedItems?.find(t => t.name === name)
+    const tab = this.tabbedItems?.find((t) => t.name === name)
     if (tab) {
       this.selectedTab = tab
     } else {
       console.warn(`Tab with name '${name}' not found`)
     }
   }
-
 }

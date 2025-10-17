@@ -20,7 +20,6 @@ export interface TheSeamSchemaFormWidgetLayoutNodeOptions {
  * NOTE: I am not positive this is completely accurate.
  */
 export interface TheSeamSchemaFormWidget {
-
   options?: TheSeamSchemaFormWidgetLayoutNodeOptions
 
   /**
@@ -49,8 +48,8 @@ export interface TheSeamSchemaFormWidget {
  *
  * NOTE: I am not positive this is completely accurate.
  */
-export interface TheSeamSchemaFormControlWidget extends TheSeamSchemaFormWidget {
-
+export interface TheSeamSchemaFormControlWidget
+  extends TheSeamSchemaFormWidget {
   formOptions?: {
     validateOnRender: boolean
   }

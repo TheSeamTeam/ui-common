@@ -42,4 +42,4 @@ import { TheSeamMapFileDropComponent } from './map-file-drop/map-file-drop.compo
     TheSeamMapsControlComponent,
   ],
 })
-export class TheSeamGoogleMapsModule { }
+export class TheSeamGoogleMapsModule {}

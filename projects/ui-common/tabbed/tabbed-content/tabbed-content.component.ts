@@ -9,15 +9,8 @@ import { TheSeamTabbedItemAccessor } from '../tabbed-models'
   selector: 'seam-tabbed-content',
   templateUrl: './tabbed-content.component.html',
   styleUrls: ['./tabbed-content.component.scss'],
-  imports: [
-    NgIf,
-    NgTemplateOutlet,
-    RouterModule,
-    FlexLayoutModule,
-  ],
+  imports: [NgIf, NgTemplateOutlet, RouterModule, FlexLayoutModule],
 })
 export class TheSeamTabbedContentComponent {
-
   @Input() tabbedItem?: TheSeamTabbedItemAccessor
-
 }

@@ -8,7 +8,11 @@ import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
 import { TheSeamIconModule } from '@theseam/ui-common/icon'
 import { TheSeamLoadingOverlayService } from '@theseam/ui-common/loading'
 import { TheSeamMenuModule } from '@theseam/ui-common/menu'
-import { ExportersDataEvaluator, JexlEvaluator, THESEAM_DYNAMIC_VALUE_EVALUATOR } from '@theseam/ui-common/dynamic'
+import {
+  ExportersDataEvaluator,
+  JexlEvaluator,
+  THESEAM_DYNAMIC_VALUE_EVALUATOR,
+} from '@theseam/ui-common/dynamic'
 
 import { FakeTheSeamLoadingOverlayService } from '../../loading/fake-loading-overlay'
 import { FakeToastrService } from '../../testing/fake-toastr'
@@ -23,24 +27,28 @@ describe('DatatableExportButtonComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        DatatableExportButtonComponent,
-      ],
-      imports: [
-        TheSeamButtonsModule,
-        TheSeamMenuModule,
-        TheSeamIconModule,
-      ],
+      declarations: [DatatableExportButtonComponent],
+      imports: [TheSeamButtonsModule, TheSeamMenuModule, TheSeamIconModule],
       providers: [
         { provide: THESEAM_DATATABLE, useClass: FakeDatatableComponent },
         { provide: ToastrService, useClass: FakeToastrService },
-        { provide: TheSeamLoadingOverlayService, useClass: FakeTheSeamLoadingOverlayService },
-        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
-        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: ExportersDataEvaluator, multi: true },
+        {
+          provide: TheSeamLoadingOverlayService,
+          useClass: FakeTheSeamLoadingOverlayService,
+        },
+        {
+          provide: THESEAM_DYNAMIC_VALUE_EVALUATOR,
+          useClass: JexlEvaluator,
+          multi: true,
+        },
+        {
+          provide: THESEAM_DYNAMIC_VALUE_EVALUATOR,
+          useClass: ExportersDataEvaluator,
+          multi: true,
+        },
       ],
       teardown: { destroyAfterEach: false },
-    })
-      .compileComponents()
+    }).compileComponents()
   }))
 
   beforeEach(() => {
@@ -61,8 +69,12 @@ describe('DatatableExportButtonComponent', () => {
 export class FakeDatatableComponent {
   columns: TheSeamDatatableColumn[] = []
 
-  get rows(): any[] { return this._rows.value }
-  set rows(value: any[]) { this._rows.next(value || []) }
+  get rows(): any[] {
+    return this._rows.value
+  }
+  set rows(value: any[]) {
+    this._rows.next(value || [])
+  }
   private _rows = new BehaviorSubject<any[]>([])
 
   public rows$: Observable<any[]> = of([])

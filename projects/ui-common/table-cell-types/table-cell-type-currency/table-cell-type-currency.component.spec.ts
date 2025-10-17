@@ -10,8 +10,7 @@ describe('TableCellTypeCurrencyComponent', () => {
     TestBed.configureTestingModule({
       declarations: [TableCellTypeCurrencyComponent],
       teardown: { destroyAfterEach: false },
-    })
-      .compileComponents()
+    }).compileComponents()
   }))
 
   beforeEach(() => {

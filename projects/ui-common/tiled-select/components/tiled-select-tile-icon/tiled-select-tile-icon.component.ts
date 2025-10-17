@@ -10,17 +10,15 @@ import { SeamIcon } from '@theseam/ui-common/icon'
 import { TheSeamTiledSelectTileIconTplDirective } from '../../directives/tiled-select-tile-icon-tpl.directive'
 import { TheSeamTiledSelectLayout } from '../../tiled-select.models'
 
-const needToFix = /(MSIE 10)|(Trident.*rv:11\.0)|( Edge\/[\d.]+$)/.test(navigator.userAgent)
+const needToFix = /(MSIE 10)|(Trident.*rv:11\.0)|( Edge\/[\d.]+$)/.test(
+  navigator.userAgent,
+)
 
 @Component({
   selector: 'seam-tiled-select-tile-icon',
   templateUrl: './tiled-select-tile-icon.component.html',
   styleUrls: ['./tiled-select-tile-icon.component.scss'],
-  imports: [
-    NgIf,
-    NgTemplateOutlet,
-    FontAwesomeModule,
-  ],
+  imports: [NgIf, NgTemplateOutlet, FontAwesomeModule],
 })
 export class TheSeamTiledSelectTileIconComponent {
   static ngAcceptInputType_grayscaleOnDisable: BooleanInput
@@ -28,12 +26,20 @@ export class TheSeamTiledSelectTileIconComponent {
 
   readonly needToFix = needToFix
 
-  @HostBinding('class.grid') get _cssClassGrid() { return this.layout === 'grid' }
-  @HostBinding('class.list') get _cssClassList() { return this.layout === 'list' }
+  @HostBinding('class.grid') get _cssClassGrid() {
+    return this.layout === 'grid'
+  }
+  @HostBinding('class.list') get _cssClassList() {
+    return this.layout === 'list'
+  }
 
   @Input()
-  set layout(value: TheSeamTiledSelectLayout) { this._layout = value || 'grid' }
-  get layout(): TheSeamTiledSelectLayout { return this._layout }
+  set layout(value: TheSeamTiledSelectLayout) {
+    this._layout = value || 'grid'
+  }
+  get layout(): TheSeamTiledSelectLayout {
+    return this._layout
+  }
   private _layout: TheSeamTiledSelectLayout = 'grid'
 
   @Input() @InputBoolean() grayscaleOnDisable = false
@@ -42,7 +48,9 @@ export class TheSeamTiledSelectTileIconComponent {
   @Input() iconClass: string | undefined | null
 
   @Input()
-  get icon(): SeamIcon | undefined | null { return this._iconUrl || this._iconObj }
+  get icon(): SeamIcon | undefined | null {
+    return this._iconUrl || this._iconObj
+  }
   set icon(value: SeamIcon | undefined | null) {
     if (typeof value === 'string') {
       this._iconUrl = value
@@ -56,6 +64,6 @@ export class TheSeamTiledSelectTileIconComponent {
   public _iconUrl: string | undefined | null
   public _iconObj: IconProp | undefined | null
 
-  @ContentChild(TheSeamTiledSelectTileIconTplDirective, { static: true }) iconTpl?: TheSeamTiledSelectTileIconTplDirective
-
+  @ContentChild(TheSeamTiledSelectTileIconTplDirective, { static: true })
+  iconTpl?: TheSeamTiledSelectTileIconTplDirective
 }

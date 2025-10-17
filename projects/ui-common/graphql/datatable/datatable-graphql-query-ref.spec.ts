@@ -20,10 +20,15 @@ import {
 } from '../testing'
 import { createApolloTestingProvider } from '../testing/create-apollo-testing-provider'
 import { gqlVar } from '../utils/gql-var'
-import { DatatableGraphQLQueryRef, DatatableGraphQLVariables } from './datatable-graphql-query-ref'
+import {
+  DatatableGraphQLQueryRef,
+  DatatableGraphQLVariables,
+} from './datatable-graphql-query-ref'
 import { DatatableGraphqlService } from './datatable-graphql.service'
 import {
-  observeRowsWithGqlInputsHandling, SortsMapper, SortsMapperResult,
+  observeRowsWithGqlInputsHandling,
+  SortsMapper,
+  SortsMapperResult,
 } from './datatable-helpers'
 import { DEFAULT_PAGE_SIZE } from './get-page-info'
 import { FilterStateMapperResult } from './map-filter-states'
@@ -49,7 +54,8 @@ describe('DatatableGraphQLQueryRef', () => {
   //   pageFixture = new BasicDatatablePageFixture(datatableGql)
   // })
 
-  it('should', () => { // Placeholder
+  it('should', () => {
+    // Placeholder
     expect(true).toBeTruthy()
   })
 
@@ -137,11 +143,16 @@ describe('DatatableGraphQLQueryRef', () => {
 //
 //
 class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
-
-  private readonly _datatableSubject = new BehaviorSubject<GqlDatatableAccessor | undefined>(undefined)
+  private readonly _datatableSubject = new BehaviorSubject<
+    GqlDatatableAccessor | undefined
+  >(undefined)
   private readonly _rows$: Observable<TRow[]>
   private readonly _gqlDtAccessor: MockDatatable = new MockDatatable()
-  private readonly _queryRef: DatatableGraphQLQueryRef<TData, SimpleGqlTestVariables, TRow>
+  private readonly _queryRef: DatatableGraphQLQueryRef<
+    TData,
+    SimpleGqlTestVariables,
+    TRow
+  >
 
   private _rowsSub: Subscription = Subscription.EMPTY
   private _emittedData: TRow[] | null = []
@@ -149,7 +160,11 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
   private _datatableEmitted = false
 
   constructor(datatableGql: DatatableGraphqlService) {
-    this._queryRef = datatableGql.watchQuery<TData, SimpleGqlTestVariables, TRow>(
+    this._queryRef = datatableGql.watchQuery<
+      TData,
+      SimpleGqlTestVariables,
+      TRow
+    >(
       {
         query: SIMPLE_GQL_TEST_QUERY,
         variables: {
@@ -161,7 +176,7 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
         variables: {
           // removeIfNotDefined: [ 'order', 'search' ],
           // removeIfNotUsed: [ 'search' ],
-          inline: [ 'where' ],
+          inline: ['where'],
         },
         // Disabling paging until a solution for select all, when partially loaded datatset, is decided.
         // disablePaging: true
@@ -170,30 +185,36 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
 
     const extraVariables$ = of({})
 
-    const _rows$ = this._queryRef.rows((data: any) => {
-      return {
-        rows: data.simpleGqlTestRecords.items,
-        totalCount: data.simpleGqlTestRecords.totalCount,
-      }
-    }).pipe(
-      shareReplay({ bufferSize: 1, refCount: true }),
-    )
+    const _rows$ = this._queryRef
+      .rows((data: any) => {
+        return {
+          rows: data.simpleGqlTestRecords.items,
+          totalCount: data.simpleGqlTestRecords.totalCount,
+        }
+      })
+      .pipe(shareReplay({ bufferSize: 1, refCount: true }))
 
-    const _mapSorts = (sorts: SortItem[], context: MapperContext): SortsMapperResult => {
-      return sorts.map(s => {
+    const _mapSorts = (
+      sorts: SortItem[],
+      context: MapperContext,
+    ): SortsMapperResult => {
+      return sorts.map((s) => {
         const _dir = s?.dir.toUpperCase()
 
         switch (s?.prop) {
-          case 'id': return ({ id: _dir })
-          case 'name': return ({ name: _dir })
+          case 'id':
+            return { id: _dir }
+          case 'name':
+            return { name: _dir }
         }
 
-        return ({ name: _dir })
+        return { name: _dir }
       })
     }
 
     const _mapSearchFilterState = async (
-      filterState: DataFilterState, context: MapperContext<SimpleGqlTestExtraVariables>,
+      filterState: DataFilterState,
+      context: MapperContext<SimpleGqlTestExtraVariables>,
     ): Promise<FilterStateMapperResult> => {
       const value = filterState.state?.value?.trim()
       if (typeof value !== 'string' || value.length === 0) {
@@ -218,14 +239,16 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
       filterState: DataFilterState,
       context: MapperContext<SimpleGqlTestExtraVariables>,
     ): FilterStateMapperResult => {
-      const value = Array.isArray(filterState.state?.value) ? filterState.state?.value[0]?.trim() : filterState.state?.value?.trim()
+      const value = Array.isArray(filterState.state?.value)
+        ? filterState.state?.value[0]?.trim()
+        : filterState.state?.value?.trim()
       if (typeof value !== 'string' || value.length === 0) {
         return null
       }
 
       return {
         filter: { status: { eq: value } },
-        variables: { },
+        variables: {},
       }
     }
 
@@ -236,7 +259,7 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
       extraVariables$,
       _mapSorts,
       {
-        'search': _mapSearchFilterState,
+        search: _mapSearchFilterState,
         'toggle-buttons': _mapToggleButtonsState,
       },
     )
@@ -247,7 +270,7 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
     this._emittedData = null
     this._emittedDataCount = 0
 
-    this._rowsSub = this._rows$.subscribe(data => {
+    this._rowsSub = this._rows$.subscribe((data) => {
       // console.log('time', currentTickTime())
       this._gqlDtAccessor?.setRows(data)
       this._emittedData = data
@@ -285,7 +308,9 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
       //  + My main concern is the page state not being in sync with the emitted
       //    data.
 
-      throw Error(`BasicDatatablePageFixture does not support emitting the datatable more than once, yet.`)
+      throw Error(
+        `BasicDatatablePageFixture does not support emitting the datatable more than once, yet.`,
+      )
     }
 
     this._datatableSubject.next(this._gqlDtAccessor)
@@ -295,17 +320,25 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
   /**
    * Access the datatable.
    */
-  public get datatable(): MockDatatable { return this._gqlDtAccessor }
+  public get datatable(): MockDatatable {
+    return this._gqlDtAccessor
+  }
 
   /**
    * Returns the most recently emitted data.
    */
-  public get emittedData(): TRow[] | null { return this._emittedData }
+  public get emittedData(): TRow[] | null {
+    return this._emittedData
+  }
 
   /**
    * Returns how many times the data has been emitted.
    */
-  public get emittedDataCount(): number { return this._emittedDataCount }
+  public get emittedDataCount(): number {
+    return this._emittedDataCount
+  }
 
-  public get updatesPollDelay(): number { return this._queryRef.updatesPollDelay }
+  public get updatesPollDelay(): number {
+    return this._queryRef.updatesPollDelay
+  }
 }

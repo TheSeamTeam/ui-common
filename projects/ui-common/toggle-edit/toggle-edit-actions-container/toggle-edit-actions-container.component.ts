@@ -5,4 +5,4 @@ import { Component } from '@angular/core'
   templateUrl: './toggle-edit-actions-container.component.html',
   styleUrls: ['./toggle-edit-actions-container.component.scss'],
 })
-export class TheSeamToggleEditActionsContainerComponent { }
+export class TheSeamToggleEditActionsContainerComponent {}

@@ -16,10 +16,7 @@ export const exampleData2: DatatableDynamicDef = {
         },
       },
     ],
-    exporters: [
-      'exporter:csv',
-      'exporter:xlsx',
-    ],
+    exporters: ['exporter:csv', 'exporter:xlsx'],
   },
   columns: [
     { prop: 'firstName', name: 'First Name' },
@@ -28,9 +25,24 @@ export const exampleData2: DatatableDynamicDef = {
     { prop: 'sentDate', name: 'Sent Date', cellType: 'date' },
   ],
   rows: [
-    { firstName: 'User1', lastName: 'Last1', age: 28, sentDate: '2019-07-22T16:25:58.0266996+00:00' },
-    { firstName: 'User2', lastName: 'Last2', age: 30, sentDate: '2019-04-22T12:15:58.0266996+00:00' },
-    { firstName: 'User3', lastName: 'Last3', age: 32, sentDate: '2019-08-22T19:23:58.0266996+00:00' },
+    {
+      firstName: 'User1',
+      lastName: 'Last1',
+      age: 28,
+      sentDate: '2019-07-22T16:25:58.0266996+00:00',
+    },
+    {
+      firstName: 'User2',
+      lastName: 'Last2',
+      age: 30,
+      sentDate: '2019-04-22T12:15:58.0266996+00:00',
+    },
+    {
+      firstName: 'User3',
+      lastName: 'Last3',
+      age: 32,
+      sentDate: '2019-08-22T19:23:58.0266996+00:00',
+    },
   ],
   rowActions: [
     {

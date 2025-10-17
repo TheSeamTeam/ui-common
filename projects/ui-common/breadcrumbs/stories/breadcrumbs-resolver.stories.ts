@@ -5,7 +5,10 @@ import { provideRouter, RouterModule } from '@angular/router'
 import { provideLocationMocks } from '@angular/common/testing'
 
 import { initialUrlFromArgs } from '@marklb/storybook-angular-initial-url'
-import { routesArgType, StoryEmptyComponent } from '@theseam/ui-common/story-helpers'
+import {
+  routesArgType,
+  StoryEmptyComponent,
+} from '@theseam/ui-common/story-helpers'
 
 import { StoryUsersDataService } from './story-user-data.service'
 import { StoryUserIdToNameResolver } from './story-userid-to-name.resolver'
@@ -19,17 +22,15 @@ interface ExtraArgs {
 const meta: Meta<TheSeamBreadcrumbsComponent & ExtraArgs> = {
   title: 'Breadcrumbs/Components/Resolver',
   component: TheSeamBreadcrumbsComponent,
-  decorators: [ ],
+  decorators: [],
 }
 
 export default meta
 type Story = StoryObj<TheSeamBreadcrumbsComponent & ExtraArgs>
 
 export const Example: Story = {
-  decorators: [
-    initialUrlFromArgs({ argName: 'route' }),
-  ],
-  render: args => ({
+  decorators: [initialUrlFromArgs({ argName: 'route' })],
+  render: (args) => ({
     applicationConfig: {
       providers: [
         provideAnimations(),
@@ -45,7 +46,7 @@ export const Example: Story = {
               {
                 path: ':userId',
                 component: StoryEmptyComponent,
-                data: { },
+                data: {},
                 resolve: {
                   breadcrumb: StoryUserIdToNameResolver,
                 },
@@ -58,9 +59,7 @@ export const Example: Story = {
       ],
     },
     moduleMetadata: {
-      imports: [
-        RouterModule,
-      ],
+      imports: [RouterModule],
     },
     props: { ...args },
     template: `

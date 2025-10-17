@@ -10,8 +10,7 @@ describe('DatatableDynamicActionMenuComponent', () => {
     TestBed.configureTestingModule({
       declarations: [DatatableDynamicActionMenuComponent],
       teardown: { destroyAfterEach: false },
-    })
-      .compileComponents()
+    }).compileComponents()
   }))
 
   beforeEach(() => {

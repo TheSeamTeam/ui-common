@@ -1,32 +1,59 @@
-import { Directive, ElementRef, HostBinding, Input, NgZone, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core'
+import {
+  Directive,
+  ElementRef,
+  HostBinding,
+  Input,
+  NgZone,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core'
 import { interval, Observable, Subject, Subscriber } from 'rxjs'
-import { filter, mapTo, startWith, switchMap, take, takeUntil } from 'rxjs/operators'
+import {
+  filter,
+  mapTo,
+  startWith,
+  switchMap,
+  take,
+  takeUntil,
+} from 'rxjs/operators'
 
 declare const ngDevMode: boolean | undefined
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 
-export const SEAM_GOOGLE_PLACES_AUTOCOMPLETE_DEFAULT_OPTIONS: google.maps.places.AutocompleteOptions = {
-  componentRestrictions: { country: 'US' },
-}
+export const SEAM_GOOGLE_PLACES_AUTOCOMPLETE_DEFAULT_OPTIONS: google.maps.places.AutocompleteOptions =
+  {
+    componentRestrictions: { country: 'US' },
+  }
 
 @Directive({
   selector: 'input[seamGoogleMapsPlacesAutocomplete]',
   exportAs: 'seamGoogleMapsPlacesAutocomplete',
 })
-export class TheSeamGoogleMapsPlacesAutocompleteDirective implements OnInit, OnDestroy, OnChanges {
+export class TheSeamGoogleMapsPlacesAutocompleteDirective
+  implements OnInit, OnDestroy, OnChanges
+{
   private readonly _autoCompleteReadySubject = new Subject<void>()
   private readonly _ngUnsubscribe = new Subject<void>()
 
-  private _placeChangedPending: { observable: Observable<any>, subscriber: Subscriber<any> }[] = []
+  private _placeChangedPending: {
+    observable: Observable<any>
+    subscriber: Subscriber<any>
+  }[] = []
   private _listeners: google.maps.MapsEventListener[] = []
 
   public autoComplete?: google.maps.places.Autocomplete
 
   @Input()
-  set options(value: google.maps.places.AutocompleteOptions | undefined | null) {
+  set options(
+    value: google.maps.places.AutocompleteOptions | undefined | null,
+  ) {
     this._options = value || SEAM_GOOGLE_PLACES_AUTOCOMPLETE_DEFAULT_OPTIONS
   }
-  private _options: google.maps.places.AutocompleteOptions = SEAM_GOOGLE_PLACES_AUTOCOMPLETE_DEFAULT_OPTIONS
+  private _options: google.maps.places.AutocompleteOptions =
+    SEAM_GOOGLE_PLACES_AUTOCOMPLETE_DEFAULT_OPTIONS
 
   /**
    * This event is fired when a PlaceResult is made available for a Place the
@@ -53,18 +80,25 @@ export class TheSeamGoogleMapsPlacesAutocompleteDirective implements OnInit, OnD
 
   ngOnInit(): void {
     this._ngZone.runOutsideAngular(() => {
-      this._untilGoogleMapsApiLoaded().pipe(takeUntil(this._ngUnsubscribe)).subscribe(() => {
-        this.autoComplete = new google.maps.places.Autocomplete(this.getHostElement(), this._options)
+      this._untilGoogleMapsApiLoaded()
+        .pipe(takeUntil(this._ngUnsubscribe))
+        .subscribe(() => {
+          this.autoComplete = new google.maps.places.Autocomplete(
+            this.getHostElement(),
+            this._options,
+          )
 
-        this._placeChangedPending.forEach(pending => pending.observable.subscribe(pending.subscriber))
+          this._placeChangedPending.forEach((pending) =>
+            pending.observable.subscribe(pending.subscriber),
+          )
 
-        this._autoCompleteReadySubject.next(undefined)
-      })
+          this._autoCompleteReadySubject.next(undefined)
+        })
     })
   }
 
   ngOnDestroy(): void {
-    this._listeners.forEach(l => l.remove())
+    this._listeners.forEach((l) => l.remove())
     this._listeners = []
 
     this._ngUnsubscribe.next(undefined)
@@ -79,7 +113,10 @@ export class TheSeamGoogleMapsPlacesAutocompleteDirective implements OnInit, OnD
 
   private _untilGoogleMapsApiLoaded(): Observable<void> {
     return interval(500).pipe(
-      filter(() => !!(window.google && window.google.maps && window.google.maps.version)),
+      filter(
+        () =>
+          !!(window.google && window.google.maps && window.google.maps.version),
+      ),
       take(1),
       mapTo(undefined),
     )
@@ -117,7 +154,9 @@ export class TheSeamGoogleMapsPlacesAutocompleteDirective implements OnInit, OnD
    * Sets the preferred area within which to return Place results. Results are
    * biased towards, but not restricted to, this area.
    */
-  public setBounds(bounds?: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral): void {
+  public setBounds(
+    bounds?: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral,
+  ): void {
     this._assertInitialized()
 
     return this.autoComplete.setBounds(bounds!)
@@ -128,7 +167,9 @@ export class TheSeamGoogleMapsPlacesAutocompleteDirective implements OnInit, OnD
    * restrict predictions to only those within the parent component. For
    * example, the country.
    */
-  public setComponentRestrictions(restrictions?: google.maps.places.ComponentRestrictions): void {
+  public setComponentRestrictions(
+    restrictions?: google.maps.places.ComponentRestrictions,
+  ): void {
     this._assertInitialized()
 
     return this.autoComplete.setComponentRestrictions(restrictions!)
@@ -178,14 +219,17 @@ export class TheSeamGoogleMapsPlacesAutocompleteDirective implements OnInit, OnD
   }
 
   private _createPlaceChangedObservable<T>(): Observable<T> {
-    const observable = new Observable<T>(subscriber => {
+    const observable = new Observable<T>((subscriber) => {
       if (!this.autoComplete) {
         this._placeChangedPending.push({ observable, subscriber })
         return undefined
       }
-      const listener = this.autoComplete.addListener('place_changed', (event: T) => {
-        this._ngZone.run(() => subscriber.next(event))
-      })
+      const listener = this.autoComplete.addListener(
+        'place_changed',
+        (event: T) => {
+          this._ngZone.run(() => subscriber.next(event))
+        },
+      )
       this._listeners.push(listener)
 
       return () => listener.remove()
@@ -194,7 +238,10 @@ export class TheSeamGoogleMapsPlacesAutocompleteDirective implements OnInit, OnD
   }
 
   /** Asserts that the map has been initialized. */
-  private _assertInitialized(): asserts this is WithRequired<TheSeamGoogleMapsPlacesAutocompleteDirective, 'autoComplete'> {
+  private _assertInitialized(): asserts this is WithRequired<
+    TheSeamGoogleMapsPlacesAutocompleteDirective,
+    'autoComplete'
+  > {
     if (!this.autoComplete && (typeof ngDevMode === 'undefined' || ngDevMode)) {
       throw Error(
         'Cannot access Google Map Places information before the API has been initialized. ' +

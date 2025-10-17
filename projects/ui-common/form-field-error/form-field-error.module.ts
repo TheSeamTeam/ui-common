@@ -13,9 +13,7 @@ import { FormFieldErrorComponent } from './form-field-error/form-field-error.com
     FormFieldErrorListItemDirective,
     FormFieldErrorListItemTplDirective,
   ],
-  imports: [
-    CommonModule,
-  ],
+  imports: [CommonModule],
   exports: [
     FormFieldErrorComponent,
     FormFieldErrorListComponent,
@@ -23,4 +21,4 @@ import { FormFieldErrorComponent } from './form-field-error/form-field-error.com
     FormFieldErrorListItemTplDirective,
   ],
 })
-export class TheSeamFormFieldErrorModule { }
+export class TheSeamFormFieldErrorModule {}

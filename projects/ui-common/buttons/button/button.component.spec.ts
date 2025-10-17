@@ -22,17 +22,26 @@ describe('TheSeamButtonComponent', () => {
 
     it('should have button type by default', () => {
       spectator = createHost(`<button seamButton>Example</button>`)
-      expect(spectator.query('button[seamButton][type="button"]', { root: true })).toBeTruthy()
+      expect(
+        spectator.query('button[seamButton][type="button"]', { root: true }),
+      ).toBeTruthy()
     })
 
     it('should set the theme class name according to the [theme] input', () => {
-      spectator = createHost(`<button seamButton [theme]="theme">Example</button>`, {
-        hostProps: {
-          theme: 'primary',
+      spectator = createHost(
+        `<button seamButton [theme]="theme">Example</button>`,
+        {
+          hostProps: {
+            theme: 'primary',
+          },
         },
-      })
-      expect(spectator.query('button', { root: true })).toHaveClass('btn-primary')
-      expect(spectator.query('button', { root: true })).not.toHaveClass('btn-success')
+      )
+      expect(spectator.query('button', { root: true })).toHaveClass(
+        'btn-primary',
+      )
+      expect(spectator.query('button', { root: true })).not.toHaveClass(
+        'btn-success',
+      )
     })
   })
 

@@ -12,14 +12,32 @@ import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
 
 import { DatatableComponent } from '@theseam/ui-common/datatable'
-import { getKnownIcon, SeamIcon, TheSeamIconType } from '@theseam/ui-common/icon'
+import {
+  getKnownIcon,
+  SeamIcon,
+  TheSeamIconType,
+} from '@theseam/ui-common/icon'
 import { TableComponent } from '@theseam/ui-common/table'
-import { TableCellTypesHelpersService, TABLE_CELL_DATA } from '@theseam/ui-common/table-cell-type'
-import type { TableCellData, TheSeamTableColumn } from '@theseam/ui-common/table-cell-type'
+import {
+  TableCellTypesHelpersService,
+  TABLE_CELL_DATA,
+} from '@theseam/ui-common/table-cell-type'
+import type {
+  TableCellData,
+  TheSeamTableColumn,
+} from '@theseam/ui-common/table-cell-type'
 
-import { TableCellTypeConfigIcon, TableCellTypeIconConfigAction } from './table-cell-type-icon-config'
+import {
+  TableCellTypeConfigIcon,
+  TableCellTypeIconConfigAction,
+} from './table-cell-type-icon-config'
 
-export type IconTemplateType = 'default' | 'link' | 'link-external' | 'link-encrypted' | 'button'
+export type IconTemplateType =
+  | 'default'
+  | 'link'
+  | 'link-external'
+  | 'link-encrypted'
+  | 'button'
 
 @Component({
   selector: 'seam-table-cell-type-icon',
@@ -29,11 +47,12 @@ export type IconTemplateType = 'default' | 'link' | 'link-external' | 'link-encr
   standalone: false,
 })
 export class TableCellTypeIconComponent<R = any, V = any> implements OnDestroy {
-
   private readonly _ngUnsubscribe = new Subject<void>()
 
   @Input()
-  get value() { return this._value }
+  get value() {
+    return this._value
+  }
   set value(value: string | undefined | null) {
     this._value = value
     this._icon = value ? getKnownIcon(value) || value : value
@@ -41,7 +60,9 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnDestroy {
   private _value: string | undefined | null
 
   @Input()
-  get config() { return this._config }
+  get config() {
+    return this._config
+  }
   set config(value: TableCellTypeConfigIcon | undefined | null) {
     this._config = value
     if (value) {
@@ -54,7 +75,8 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnDestroy {
       this._tooltip = this._parseConfigValue(value.tooltip)
       if (this._tooltip) {
         this._tooltipClass = this._parseConfigValue(value.tooltipClass)
-        this._tooltipPlacement = this._parseConfigValue(value.tooltipPlacement) || 'auto'
+        this._tooltipPlacement =
+          this._parseConfigValue(value.tooltipPlacement) || 'auto'
         this._tooltipContainer = this._parseConfigValue(value.tooltipContainer)
         this._tooltipDisabled = false
       } else {
@@ -97,7 +119,9 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnDestroy {
     private _tableCellTypeHelpers: TableCellTypesHelpersService,
     @Optional() private _datatable?: DatatableComponent,
     @Optional() private _table?: TableComponent,
-    @Optional() @Inject(TABLE_CELL_DATA) _tableData?: TableCellData<'icon', TableCellTypeConfigIcon>,
+    @Optional()
+    @Inject(TABLE_CELL_DATA)
+    _tableData?: TableCellData<'icon', TableCellTypeConfigIcon>,
   ) {
     if (_datatable) {
       this._isDatatable = true
@@ -120,29 +144,27 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnDestroy {
     }
 
     if (_data) {
-      _data.changed
-        .pipe(takeUntil(this._ngUnsubscribe))
-        .subscribe(v => {
-          if (Object.prototype.hasOwnProperty.call(v.changes, 'value')) {
-            this.value = v.changes.value.currentValue
-            this.config = this._config
-            this._cdf.markForCheck()
-          }
+      _data.changed.pipe(takeUntil(this._ngUnsubscribe)).subscribe((v) => {
+        if (Object.prototype.hasOwnProperty.call(v.changes, 'value')) {
+          this.value = v.changes.value.currentValue
+          this.config = this._config
+          this._cdf.markForCheck()
+        }
 
-          if (Object.prototype.hasOwnProperty.call(v.changes, 'colData')) {
-            const colData = v.changes.colData.currentValue
-            if (colData && colData.cellTypeConfig !== this.config) {
-              this.config = colData.cellTypeConfig
-            } else {
-              this.config = undefined
-            }
-            this._cdf.markForCheck()
+        if (Object.prototype.hasOwnProperty.call(v.changes, 'colData')) {
+          const colData = v.changes.colData.currentValue
+          if (colData && colData.cellTypeConfig !== this.config) {
+            this.config = colData.cellTypeConfig
           } else {
-            if (Object.prototype.hasOwnProperty.call(v.changes, 'row')) {
-              this._cdf.markForCheck()
-            }
+            this.config = undefined
           }
-        })
+          this._cdf.markForCheck()
+        } else {
+          if (Object.prototype.hasOwnProperty.call(v.changes, 'row')) {
+            this._cdf.markForCheck()
+          }
+        }
+      })
     }
   }
 
@@ -165,9 +187,13 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnDestroy {
         if (link !== undefined && link !== null) {
           newTplType = this._parseConfigValue(configAction.asset)
             ? 'link-encrypted'
-            : this._parseConfigValue(configAction.external) ? 'link-external' : 'link'
+            : this._parseConfigValue(configAction.external)
+              ? 'link-external'
+              : 'link'
           download = !!this._parseConfigValue(configAction.download)
-          detectMimeContent = !!this._parseConfigValue(configAction.detectMimeContent)
+          detectMimeContent = !!this._parseConfigValue(
+            configAction.detectMimeContent,
+          )
           target = this._parseConfigValue(configAction.target)
           queryParams = this._parseConfigValue(configAction.queryParams)
         }
@@ -186,18 +212,24 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnDestroy {
   }
 
   private _parseConfigValue(val: any) {
-    const contextFn = () => this._tableCellTypeHelpers.getValueContext(val, this._tableCellData)
+    const contextFn = () =>
+      this._tableCellTypeHelpers.getValueContext(val, this._tableCellData)
     return this._tableCellTypeHelpers.parseValueProp(val, contextFn)
   }
 
   _doButtonAction() {
     if (this._buttonAction && this._buttonAction.type === 'modal') {
-      const contextFn = () => this._tableCellTypeHelpers.getValueContext(this.value, this._tableCellData)
-      this._tableCellTypeHelpers.handleModalAction(this._buttonAction, contextFn)
+      const contextFn = () =>
+        this._tableCellTypeHelpers.getValueContext(
+          this.value,
+          this._tableCellData,
+        )
+      this._tableCellTypeHelpers
+        .handleModalAction(this._buttonAction, contextFn)
         .subscribe(
-          r => {},
+          (r) => {},
           // eslint-disable-next-line no-console
-          err => console.error(err),
+          (err) => console.error(err),
           () => this._actionRefreshRequest(),
         )
     }
@@ -210,5 +242,4 @@ export class TableCellTypeIconComponent<R = any, V = any> implements OnDestroy {
       this._table.triggerActionRefreshRequest()
     }
   }
-
 }

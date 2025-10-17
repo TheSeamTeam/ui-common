@@ -1,4 +1,9 @@
-import { moduleMetadata, applicationConfig, Meta, StoryObj } from '@storybook/angular'
+import {
+  moduleMetadata,
+  applicationConfig,
+  Meta,
+  StoryObj,
+} from '@storybook/angular'
 import { expect } from 'storybook/test'
 
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
@@ -14,12 +19,10 @@ import { TheSeamTelInputHarness } from './testing/tel-input.harness'
 const meta: Meta<TheSeamTelInputComponent> = {
   title: 'TelInput/Components',
   component: TheSeamTelInputComponent,
-  tags: [ 'autodocs' ],
+  tags: ['autodocs'],
   decorators: [
     applicationConfig({
-      providers: [
-        provideAnimations(),
-      ],
+      providers: [provideAnimations()],
     }),
     moduleMetadata({
       imports: [
@@ -34,14 +37,17 @@ const meta: Meta<TheSeamTelInputComponent> = {
 export default meta
 type Story = StoryObj<TheSeamTelInputComponent>
 
-export const Basic: Story = { }
+export const Basic: Story = {}
 
 export const InitialValue: Story = {
   args: {
     value: '+1 901-555-5555',
   },
   play: async ({ canvasElement, fixture, args }) => {
-    const telInputHarness = await getHarness(TheSeamTelInputHarness, { canvasElement, fixture })
+    const telInputHarness = await getHarness(TheSeamTelInputHarness, {
+      canvasElement,
+      fixture,
+    })
     await expect(await telInputHarness.isRequired()).toBe(false)
     await expect(await telInputHarness.getValue()).toBe('+1 901-555-5555')
     await telInputHarness.setValue('+19015555556')
@@ -51,7 +57,7 @@ export const InitialValue: Story = {
 }
 
 export const InitialValueControl: Story = {
-  render: args => ({
+  render: (args) => ({
     template: `<seam-tel-input ${argsToTpl()} [formControl]="control"></seam-tel-input>`,
     props: {
       ...args,
@@ -59,7 +65,10 @@ export const InitialValueControl: Story = {
     },
   }),
   play: async ({ canvasElement, fixture, args }) => {
-    const telInputHarness = await getHarness(TheSeamTelInputHarness, { canvasElement, fixture })
+    const telInputHarness = await getHarness(TheSeamTelInputHarness, {
+      canvasElement,
+      fixture,
+    })
     await expect(await telInputHarness.isRequired()).toBe(false)
     expect(await telInputHarness.getValue()).toBe('+1 901-555-5555')
     // expect(args.change).toBeCalledTimes(1)
@@ -98,13 +107,13 @@ export const InitialValueControl: Story = {
 // }
 
 export const Control: Story = {
-  render: args => ({
+  render: (args) => ({
     template: `<seam-tel-input seamInput></seam-tel-input>`,
   }),
 }
 
 export const FormField: Story = {
-  render: args => {
+  render: (args) => {
     // const control = new FormControl('+17024181234', [], [])
     // const control = new FormControl('9015555555', [], [])
     const control = new FormControl('+213 901-555-5555', [], [])
@@ -127,7 +136,7 @@ export const FormField: Story = {
 }
 
 export const FormFieldDisabled: Story = {
-  render: args => {
+  render: (args) => {
     // const control = new FormControl('+17024181234', [], [])
     // const control = new FormControl('9015555555', [], [])
     const control = new FormControl('+213 901-555-5555', [], [])

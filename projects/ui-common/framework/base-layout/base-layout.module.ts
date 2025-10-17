@@ -34,4 +34,4 @@ import { BaseLayoutTopBarDirective } from './directives/base-layout-top-bar.dire
     BaseLayoutContentFooterDirective,
   ],
 })
-export class TheSeamBaseLayoutModule { }
+export class TheSeamBaseLayoutModule {}

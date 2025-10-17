@@ -11,12 +11,10 @@ import { TheSeamDynamicComponentLoaderModule } from '../dynamic-component-loader
 export class LazyComponent {}
 
 @NgModule({
-  declarations: [
-    LazyComponent,
-  ],
+  declarations: [LazyComponent],
   imports: [
     CommonModule,
     TheSeamDynamicComponentLoaderModule.forChild(LazyComponent),
   ],
 })
-export class LazyModule { }
+export class LazyModule {}

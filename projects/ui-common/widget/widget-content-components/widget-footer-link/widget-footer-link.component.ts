@@ -8,4 +8,4 @@ import { Component, ViewEncapsulation } from '@angular/core'
   encapsulation: ViewEncapsulation.None,
   standalone: false,
 })
-export class WidgetFooterLinkComponent { }
+export class WidgetFooterLinkComponent {}

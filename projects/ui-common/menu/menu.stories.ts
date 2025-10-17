@@ -1,4 +1,9 @@
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 import { expect } from 'storybook/test'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
@@ -17,19 +22,14 @@ import { TheSeamMenuHarness } from './testing/menu.harness'
 
 const meta: Meta<MenuComponent> = {
   title: 'Menu/Components',
-  tags: [ 'autodocs' ],
+  tags: ['autodocs'],
   component: MenuComponent,
   decorators: [
     applicationConfig({
-      providers: [
-        provideAnimations(),
-      ],
+      providers: [provideAnimations()],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamButtonsModule,
-        TheSeamMenuModule,
-      ],
+      imports: [TheSeamButtonsModule, TheSeamMenuModule],
     }),
   ],
   // argTypes: {
@@ -49,7 +49,7 @@ export default meta
 type Story = StoryObj<MenuComponent>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `
       <div style="padding:200px;">
@@ -63,7 +63,10 @@ export const Basic: Story = {
     `,
   }),
   play: async ({ canvasElement, fixture }) => {
-    const menuHarness = await getHarness(TheSeamMenuHarness, { canvasElement, fixture })
+    const menuHarness = await getHarness(TheSeamMenuHarness, {
+      canvasElement,
+      fixture,
+    })
     await expect(await menuHarness.isOpen()).toBe(false)
     await menuHarness.open()
     await expect(await menuHarness.isOpen()).toBe(true)
@@ -73,7 +76,7 @@ export const Basic: Story = {
 }
 
 export const TopLeft: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `
       <seam-menu #menu>
@@ -87,7 +90,7 @@ export const TopLeft: Story = {
 }
 
 export const TopRight: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `
       <seam-menu #menu>
@@ -101,7 +104,7 @@ export const TopRight: Story = {
 }
 
 export const BottomLeft: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `
       <seam-menu #menu>
@@ -115,7 +118,7 @@ export const BottomLeft: Story = {
 }
 
 export const BottomRight: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `
       <seam-menu #menu>
@@ -129,7 +132,7 @@ export const BottomRight: Story = {
 }
 
 export const Submenu: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `
       <seam-menu #menu>
@@ -147,12 +150,17 @@ export const Submenu: Story = {
     `,
   }),
   play: async ({ canvasElement, fixture }) => {
-    const menuHarness = await getHarness(TheSeamMenuHarness, { canvasElement, fixture })
+    const menuHarness = await getHarness(TheSeamMenuHarness, {
+      canvasElement,
+      fixture,
+    })
     await expect(await menuHarness.isOpen()).toBe(false)
     await menuHarness.open()
     await expect(await menuHarness.isOpen()).toBe(true)
     await expect((await menuHarness.getItems()).length).toBe(3)
-    await expect((await menuHarness.getItems({ hasSubmenu: true })).length).toBe(1)
+    await expect(
+      (await menuHarness.getItems({ hasSubmenu: true })).length,
+    ).toBe(1)
     const submenuItem = (await menuHarness.getItems({ hasSubmenu: true }))[0]
     const submenu = await submenuItem.getSubmenu()
     await expect(await submenu?.isOpen()).toBe(false)
@@ -162,7 +170,7 @@ export const Submenu: Story = {
 }
 
 export const Hover: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `
       <seam-menu #menu>
@@ -195,21 +203,28 @@ export const Hover: Story = {
     `,
   }),
   play: async ({ canvasElement, fixture }) => {
-    const menuHarness = await getHarness(TheSeamMenuHarness, { canvasElement, fixture })
+    const menuHarness = await getHarness(TheSeamMenuHarness, {
+      canvasElement,
+      fixture,
+    })
     await expect(await menuHarness.isOpen()).toBe(false)
     await menuHarness.open()
     await expect(await menuHarness.isOpen()).toBe(true)
     await expect((await menuHarness.getItems()).length).toBe(5)
     await menuHarness.hoverItem({ text: 'Item 3' }, { text: 'Item 3.1' })
-    const submenu1 = (await (await menuHarness.getItems({ text: 'Item 3' }))[0].getSubmenu())
+    const submenu1 = await (
+      await menuHarness.getItems({ text: 'Item 3' })
+    )[0].getSubmenu()
     await expect(await submenu1?.isOpen()).toBe(true)
-    const submenu2 = await (await submenu1?.getItems({ text: 'Item 3.1' }))?.[0].getSubmenu()
+    const submenu2 = await (
+      await submenu1?.getItems({ text: 'Item 3.1' })
+    )?.[0].getSubmenu()
     await expect(await submenu2?.isOpen()).toBe(true)
   },
 }
 
 export const Header: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `
       <seam-menu #menu>
@@ -225,7 +240,10 @@ export const Header: Story = {
     `,
   }),
   play: async ({ canvasElement, fixture }) => {
-    const menuHarness = await getHarness(TheSeamMenuHarness, { canvasElement, fixture })
+    const menuHarness = await getHarness(TheSeamMenuHarness, {
+      canvasElement,
+      fixture,
+    })
     await expect(await menuHarness.isOpen()).toBe(false)
     await menuHarness.open()
     await expect(await menuHarness.isOpen()).toBe(true)
@@ -234,7 +252,7 @@ export const Header: Story = {
 }
 
 export const Footer: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `
       <seam-menu #menu>
@@ -250,7 +268,10 @@ export const Footer: Story = {
     `,
   }),
   play: async ({ canvasElement, fixture }) => {
-    const menuHarness = await getHarness(TheSeamMenuHarness, { canvasElement, fixture })
+    const menuHarness = await getHarness(TheSeamMenuHarness, {
+      canvasElement,
+      fixture,
+    })
     await expect(await menuHarness.isOpen()).toBe(false)
     await menuHarness.open()
     await expect(await menuHarness.isOpen()).toBe(true)

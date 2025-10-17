@@ -1,11 +1,16 @@
 import { faFilePdf } from '@fortawesome/free-regular-svg-icons'
 
-import { DEFAULT_FILE_EXTENSION_ICON, fileExtensionIcon } from './file-extension-icon'
+import {
+  DEFAULT_FILE_EXTENSION_ICON,
+  fileExtensionIcon,
+} from './file-extension-icon'
 
 describe('fileExtensionIcon', () => {
   describe('`defaultIfNotFound` is `true`', () => {
     it('should return `DEFAULT_FILE_EXTENSION_ICON` if the input is `undefined or `null`', () => {
-      expect(fileExtensionIcon(undefined, true)).toBe(DEFAULT_FILE_EXTENSION_ICON)
+      expect(fileExtensionIcon(undefined, true)).toBe(
+        DEFAULT_FILE_EXTENSION_ICON,
+      )
       expect(fileExtensionIcon(null, true)).toBe(DEFAULT_FILE_EXTENSION_ICON)
     })
 

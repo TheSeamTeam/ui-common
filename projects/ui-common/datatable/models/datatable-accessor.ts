@@ -11,7 +11,6 @@ import { SortType } from '@marklb/ngx-datatable'
 // TODO: Replace BehaviorSubject based observables with change only emitting
 // observables.
 export interface TheSeamDatatableAccessor {
-
   columns: TheSeamDatatableColumn[]
 
   readonly columns$: Observable<TheSeamDatatableColumn[]>

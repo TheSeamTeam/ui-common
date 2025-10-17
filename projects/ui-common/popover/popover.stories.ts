@@ -1,4 +1,9 @@
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 
 import { BrowserModule } from '@angular/platform-browser'
 import { provideAnimations } from '@angular/platform-browser/animations'
@@ -6,22 +11,17 @@ import { provideAnimations } from '@angular/platform-browser/animations'
 import { TheSeamPopoverDirective } from './popover.directive'
 import { TheSeamPopoverModule } from './popover.module'
 
-interface StoryExtraProps { }
+interface StoryExtraProps {}
 
 const meta: Meta<TheSeamPopoverDirective & StoryExtraProps> = {
   title: 'Popover',
   component: TheSeamPopoverDirective,
   decorators: [
     applicationConfig({
-      providers: [
-        provideAnimations(),
-      ],
+      providers: [provideAnimations()],
     }),
     moduleMetadata({
-      imports: [
-        BrowserModule,
-        TheSeamPopoverModule,
-      ],
+      imports: [BrowserModule, TheSeamPopoverModule],
     }),
   ],
   parameters: {
@@ -35,7 +35,7 @@ export default meta
 type Story = StoryObj<TheSeamPopoverDirective & StoryExtraProps>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `
       <div class="p-1">

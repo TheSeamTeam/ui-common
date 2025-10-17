@@ -5,7 +5,10 @@ import { RouterModule, provideRouter } from '@angular/router'
 import { provideLocationMocks } from '@angular/common/testing'
 
 import { provideStoryInitialUrl } from '@marklb/storybook-angular-initial-url'
-import { StoryEmptyComponent, StoryEmptyWithRouteComponent } from '@theseam/ui-common/story-helpers'
+import {
+  StoryEmptyComponent,
+  StoryEmptyWithRouteComponent,
+} from '@theseam/ui-common/story-helpers'
 
 import { TheSeamBreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component'
 
@@ -43,15 +46,11 @@ export const Example: Story = {
       ],
     },
     moduleMetadata: {
-      declarations: [
-        StoryEmptyWithRouteComponent,
-      ],
-      providers: [ ],
-      imports: [
-        RouterModule,
-      ],
+      declarations: [StoryEmptyWithRouteComponent],
+      providers: [],
+      imports: [RouterModule],
     },
-    props: { },
+    props: {},
     template: `
       <seam-breadcrumbs></seam-breadcrumbs>
       <router-outlet></router-outlet>

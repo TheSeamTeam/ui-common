@@ -32,7 +32,7 @@ const freePort = (port?: number) => port || detectFreePort(port)
 const startVerdaccio = (port: number) => {
   let resolved = false
   return Promise.race([
-    new Promise(resolve => {
+    new Promise((resolve) => {
       const cache = path.join(__dirname, '..', '.verdaccio-cache')
       const config = {
         ...(yaml.load(
@@ -68,7 +68,9 @@ const registryUrl = (command: string, url?: string) =>
       return
     }
 
-    const args = url ? ['config', 'set', 'registry', url] : ['config', 'get', 'registry']
+    const args = url
+      ? ['config', 'set', 'registry', url]
+      : ['config', 'get', 'registry']
     const cmd = `${command} ${args.join(' ')}`
     logger.log(`exec: ${cmd}`)
     exec(cmd, (e, stdout) => {
@@ -84,7 +86,10 @@ const registryUrl = (command: string, url?: string) =>
   })
 
 const registriesUrl = (yarnUrl?: string, npmUrl?: string) =>
-  Promise.all([registryUrl('yarn', yarnUrl), registryUrl('npm', npmUrl || yarnUrl)])
+  Promise.all([
+    registryUrl('yarn', yarnUrl),
+    registryUrl('npm', npmUrl || yarnUrl),
+  ])
 
 const applyRegistriesUrl = (
   yarnUrl: string,
@@ -96,11 +101,11 @@ const applyRegistriesUrl = (
   nodeCleanup((exitCode, signal) => {
     registriesUrl(originalYarnUrl, originalNpmUrl)
       .then(() => registriesUrl())
-      .then(v => {
+      .then((v) => {
         logger.log('~v', v)
         process.kill(process.pid, signal)
       })
-      .catch(err => logger.error('~err', err))
+      .catch((err) => logger.error('~err', err))
 
     logger.log(dedent`
       Your registry config has been restored from:
@@ -114,7 +119,10 @@ const applyRegistriesUrl = (
   return registriesUrl(yarnUrl, npmUrl)
 }
 
-const publish = (packages: { name: string; location: string }[], url: string) => {
+const publish = (
+  packages: { name: string; location: string }[],
+  url: string,
+) => {
   logger.log(`Publishing packages with a concurrency of ${maxConcurrentTasks}`)
 
   const limit = pLimit(maxConcurrentTasks)
@@ -127,12 +135,14 @@ const publish = (packages: { name: string; location: string }[], url: string) =>
           new Promise((resolve, reject) => {
             logger.log(`🛫 publishing ${name} (${location})`)
             const command = `cd ${location} && npm publish --registry ${url} --force --access restricted`
-            exec(command, e => {
+            exec(command, (e) => {
               if (e) {
                 reject(e)
               } else {
                 i += 1
-                logger.log(`${i}/${packages.length} 🛬 successful publish of ${name}!`)
+                logger.log(
+                  `${i}/${packages.length} 🛬 successful publish of ${name}!`,
+                )
                 resolve(undefined)
               }
             })
@@ -146,13 +156,16 @@ const addUser = (url: string) =>
   new Promise<void>((resolve, reject) => {
     logger.log(`👤 add temp user to verdaccio ${process.env.NPM_REGISTRY}`)
 
-    exec(`npx npm-cli-adduser -r "${url}" -a -u user -p password -e user@example.com`, e => {
-      if (e) {
-        reject(e)
-      } else {
-        resolve()
-      }
-    })
+    exec(
+      `npx npm-cli-adduser -r "${url}" -a -u user -p password -e user@example.com`,
+      (e) => {
+        if (e) {
+          reject(e)
+        } else {
+          resolve()
+        }
+      },
+    )
   })
 
 const run = async () => {
@@ -190,9 +203,15 @@ const run = async () => {
   await addUser(verdaccioUrl)
 
   if (options.publish) {
-    await publish([
-      { name: '@theseam/ui-common', location: path.join(__dirname, '../dist/ui-common') },
-    ], verdaccioUrl)
+    await publish(
+      [
+        {
+          name: '@theseam/ui-common',
+          location: path.join(__dirname, '../dist/ui-common'),
+        },
+      ],
+      verdaccioUrl,
+    )
   }
 
   if (!options.open) {
@@ -200,7 +219,7 @@ const run = async () => {
   }
 }
 
-run().catch(e => {
+run().catch((e) => {
   logger.error(e)
   process.exit(1)
 })

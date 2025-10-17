@@ -1,6 +1,10 @@
 import { AbstractControl, ValidatorFn } from '@angular/forms'
 
-import { fractionalDigitsCount, isEmptyInputValue, isNumeric } from '@theseam/ui-common/utils'
+import {
+  fractionalDigitsCount,
+  isEmptyInputValue,
+  isNumeric,
+} from '@theseam/ui-common/utils'
 
 /**
  * Validates a number has at least X fractional digits.
@@ -9,7 +13,9 @@ import { fractionalDigitsCount, isEmptyInputValue, isNumeric } from '@theseam/ui
  * value is also a number then also use a number validator, such as
  * `decimalValidator`.
  */
-export function minFractionalDigitsValidator(minFractionalDigits: number): ValidatorFn {
+export function minFractionalDigitsValidator(
+  minFractionalDigits: number,
+): ValidatorFn {
   return (control: AbstractControl) => {
     if (isEmptyInputValue(control.value)) {
       return null // don't validate empty values to allow optional controls
@@ -27,10 +33,10 @@ export function minFractionalDigitsValidator(minFractionalDigits: number): Valid
 
     if (count < minFractionalDigits) {
       return {
-        'minFractionalDigits': {
-          'reason': `Must not be less than ${minFractionalDigits} fractional digits.`,
-          'min': minFractionalDigits,
-          'actual': count,
+        minFractionalDigits: {
+          reason: `Must not be less than ${minFractionalDigits} fractional digits.`,
+          min: minFractionalDigits,
+          actual: count,
         },
       }
     }

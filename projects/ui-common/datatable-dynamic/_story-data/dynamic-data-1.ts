@@ -1,16 +1,24 @@
-import { TableCellTypeConfigDate, TableCellTypeConfigIcon, TableCellTypeConfigString } from '@theseam/ui-common/table-cell-types'
+import {
+  TableCellTypeConfigDate,
+  TableCellTypeConfigIcon,
+  TableCellTypeConfigString,
+} from '@theseam/ui-common/table-cell-types'
 
-import { DatatableDynamicDef, DynamicDatatableColumn } from '../datatable-dynamic-def'
+import {
+  DatatableDynamicDef,
+  DynamicDatatableColumn,
+} from '../datatable-dynamic-def'
 
 type ColumnDefType =
-  DynamicDatatableColumn<'string', TableCellTypeConfigString> |
-  DynamicDatatableColumn<'date', TableCellTypeConfigDate> |
-  DynamicDatatableColumn<'icon', TableCellTypeConfigIcon>
+  | DynamicDatatableColumn<'string', TableCellTypeConfigString>
+  | DynamicDatatableColumn<'date', TableCellTypeConfigDate>
+  | DynamicDatatableColumn<'icon', TableCellTypeConfigIcon>
 
 const _columnDefs: ColumnDefType[] = [
   // { prop: 'icn', name: 'Icon', cellType: 'icon' },
   {
-    prop: 'icn', name: 'Icon',
+    prop: 'icn',
+    name: 'Icon',
     width: 60,
     resizeable: false,
     canAutoResize: false,
@@ -29,7 +37,10 @@ const _columnDefs: ColumnDefType[] = [
           'next-modal': {
             type: 'modal',
             component: 'story-modal-2',
-            data: { type: 'jexl', expr: '{ message: row.item, isReply: true }' },
+            data: {
+              type: 'jexl',
+              expr: '{ message: row.item, isReply: true }',
+            },
           },
         },
       },
@@ -79,16 +90,17 @@ export const exampleData1: DatatableDynamicDef = {
           type: 'tri-column',
           columnLeft: {
             items: [
-              { component: 'text', data: { value: 'Test value for text component' } },
+              {
+                component: 'text',
+                data: { value: 'Test value for text component' },
+              },
             ],
           },
           columnCenter: {
             items: [],
           },
           columnRight: {
-            items: [
-              { component: 'filter-search' },
-            ],
+            items: [{ component: 'filter-search' }],
           },
         },
       },
@@ -122,10 +134,7 @@ export const exampleData1: DatatableDynamicDef = {
                 component: 'export-button',
                 data: {
                   type: 'exporters-data',
-                  exporters: [
-                    'exporter:csv',
-                    'exporter:xlsx',
-                  ],
+                  exporters: ['exporter:csv', 'exporter:xlsx'],
                 },
               },
             ],
@@ -136,11 +145,44 @@ export const exampleData1: DatatableDynamicDef = {
   },
   columns: _columnDefs,
   rows: [
-    { icn: 'faEnvelope', firstName: 'User1', lastName: 'Last1', age: 28, sentDate: '2019-07-22T16:25:58.0266996+00:00' },
-    { icn: 'faEnvelope', firstName: 'User2', lastName: 'Last2', age: 30, sentDate: '2019-08-22T19:23:58.0266996+00:00' },
-    { icn: 'faEnvelope', firstName: 'User3', lastName: 'Last3', age: 32, sentDate: '' },
-    { icn: 'faEnvelope', firstName: 'User4', lastName: 'Last4', age: 34, sentDate: '2019-08-22T19:23:58.0266996+00:00', error: 'Sint enim do adipisicing in veniamaa' },
-    { icn: 'faEnvelope', firstName: 'User4', lastName: 'Last4', age: 34, sentDate: '2019-08-22T19:23:58.0266996+00:00', error: 'Sint enim do adipisicing in veniam ullamco tempor sunt sunt cillum magna. Proident ullamco ut nulla nisi ullamco occaecat cupidatat nisi. Elit proident sint ex ex reprehenderit anim adipisicing dolore pariatur ea officia est quis fugiat. Quis nostrud amet magna do proident consequat irure minim quis. Aute sit et pariatur ipsum.' },
+    {
+      icn: 'faEnvelope',
+      firstName: 'User1',
+      lastName: 'Last1',
+      age: 28,
+      sentDate: '2019-07-22T16:25:58.0266996+00:00',
+    },
+    {
+      icn: 'faEnvelope',
+      firstName: 'User2',
+      lastName: 'Last2',
+      age: 30,
+      sentDate: '2019-08-22T19:23:58.0266996+00:00',
+    },
+    {
+      icn: 'faEnvelope',
+      firstName: 'User3',
+      lastName: 'Last3',
+      age: 32,
+      sentDate: '',
+    },
+    {
+      icn: 'faEnvelope',
+      firstName: 'User4',
+      lastName: 'Last4',
+      age: 34,
+      sentDate: '2019-08-22T19:23:58.0266996+00:00',
+      error: 'Sint enim do adipisicing in veniamaa',
+    },
+    {
+      icn: 'faEnvelope',
+      firstName: 'User4',
+      lastName: 'Last4',
+      age: 34,
+      sentDate: '2019-08-22T19:23:58.0266996+00:00',
+      error:
+        'Sint enim do adipisicing in veniam ullamco tempor sunt sunt cillum magna. Proident ullamco ut nulla nisi ullamco occaecat cupidatat nisi. Elit proident sint ex ex reprehenderit anim adipisicing dolore pariatur ea officia est quis fugiat. Quis nostrud amet magna do proident consequat irure minim quis. Aute sit et pariatur ipsum.',
+    },
   ],
   rowActions: [
     // {
@@ -187,7 +229,13 @@ export const exampleData1: DatatableDynamicDef = {
       label: 'Modal',
       // action: { type: 'modal', component: 'story-ex-modal' }
       // action: { type: 'modal', component: { type: 'jexl', expr: 'row.age > 30 ? "story-ex-modal" : "story-ex-modal2"' } }
-      action: { type: 'modal', component: { type: 'jexl', expr: 'row.age > 30 ? "story-modal-1" : "story-modal-2"' } },
+      action: {
+        type: 'modal',
+        component: {
+          type: 'jexl',
+          expr: 'row.age > 30 ? "story-modal-1" : "story-modal-2"',
+        },
+      },
     },
   ],
   options: {

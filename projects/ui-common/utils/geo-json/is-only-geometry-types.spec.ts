@@ -16,7 +16,7 @@ describe('isOnlyGeometryTypes', () => {
       type: 'FeatureCollection',
       features: [],
     }
-    expect(isOnlyGeometryTypes(featureCollection, [ 'Point' ])).toBe(true)
+    expect(isOnlyGeometryTypes(featureCollection, ['Point'])).toBe(true)
   })
 
   it('should be true if 1 feature, with specified type, and 1 type', () => {
@@ -27,13 +27,13 @@ describe('isOnlyGeometryTypes', () => {
           type: 'Feature',
           geometry: {
             type: 'Point',
-            coordinates: [ 0, 0 ],
+            coordinates: [0, 0],
           },
-          properties: { },
+          properties: {},
         },
       ],
     }
-    expect(isOnlyGeometryTypes(featureCollection, [ 'Point' ])).toBe(true)
+    expect(isOnlyGeometryTypes(featureCollection, ['Point'])).toBe(true)
   })
 
   it('should be false if 1 feature, with not specified type, and 1 type', () => {
@@ -44,13 +44,13 @@ describe('isOnlyGeometryTypes', () => {
           type: 'Feature',
           geometry: {
             type: 'Point',
-            coordinates: [ 0, 0 ],
+            coordinates: [0, 0],
           },
-          properties: { },
+          properties: {},
         },
       ],
     }
-    expect(isOnlyGeometryTypes(featureCollection, [ 'Polygon' ])).toBe(false)
+    expect(isOnlyGeometryTypes(featureCollection, ['Polygon'])).toBe(false)
   })
 
   it('should be false if 2 features, with one specified type, and 1 type', () => {
@@ -61,9 +61,9 @@ describe('isOnlyGeometryTypes', () => {
           type: 'Feature',
           geometry: {
             type: 'Point',
-            coordinates: [ 0, 0 ],
+            coordinates: [0, 0],
           },
-          properties: { },
+          properties: {},
         },
         {
           type: 'Feature',
@@ -71,19 +71,19 @@ describe('isOnlyGeometryTypes', () => {
             type: 'Polygon',
             coordinates: [
               [
-                [ 0, 0 ],
-                [ 0, 1 ],
-                [ 1, 1 ],
-                [ 1, 0 ],
-                [ 0, 0 ],
+                [0, 0],
+                [0, 1],
+                [1, 1],
+                [1, 0],
+                [0, 0],
               ],
             ],
           },
-          properties: { },
+          properties: {},
         },
       ],
     }
-    expect(isOnlyGeometryTypes(featureCollection, [ 'Point' ])).toBe(false)
+    expect(isOnlyGeometryTypes(featureCollection, ['Point'])).toBe(false)
   })
 
   it('should be true if 2 features, with specified type, and 2 types', () => {
@@ -94,9 +94,9 @@ describe('isOnlyGeometryTypes', () => {
           type: 'Feature',
           geometry: {
             type: 'Point',
-            coordinates: [ 0, 0 ],
+            coordinates: [0, 0],
           },
-          properties: { },
+          properties: {},
         },
         {
           type: 'Feature',
@@ -104,19 +104,21 @@ describe('isOnlyGeometryTypes', () => {
             type: 'Polygon',
             coordinates: [
               [
-                [ 0, 0 ],
-                [ 0, 1 ],
-                [ 1, 1 ],
-                [ 1, 0 ],
-                [ 0, 0 ],
+                [0, 0],
+                [0, 1],
+                [1, 1],
+                [1, 0],
+                [0, 0],
               ],
             ],
           },
-          properties: { },
+          properties: {},
         },
       ],
     }
-    expect(isOnlyGeometryTypes(featureCollection, [ 'Point', 'Polygon' ])).toBe(true)
+    expect(isOnlyGeometryTypes(featureCollection, ['Point', 'Polygon'])).toBe(
+      true,
+    )
   })
 
   it('should be true if 1 feature, with specified type, and 2 types', () => {
@@ -127,12 +129,14 @@ describe('isOnlyGeometryTypes', () => {
           type: 'Feature',
           geometry: {
             type: 'Point',
-            coordinates: [ 0, 0 ],
+            coordinates: [0, 0],
           },
-          properties: { },
+          properties: {},
         },
       ],
     }
-    expect(isOnlyGeometryTypes(featureCollection, [ 'Point', 'Polygon' ])).toBe(true)
+    expect(isOnlyGeometryTypes(featureCollection, ['Point', 'Polygon'])).toBe(
+      true,
+    )
   })
 })

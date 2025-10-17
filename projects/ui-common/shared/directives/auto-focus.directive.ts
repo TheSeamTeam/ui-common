@@ -48,11 +48,15 @@ export class TheSeamAutoFocusDirective implements OnInit {
 
     if (!this.modalRef) {
       if (this._focus) {
-        setTimeout(() => { this.focus() })
+        setTimeout(() => {
+          this.focus()
+        })
       }
     } else {
       this.modalRef.afterOpened().subscribe(() => {
-        setTimeout(() => { this.focus() })
+        setTimeout(() => {
+          this.focus()
+        })
       })
     }
   }

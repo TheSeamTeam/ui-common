@@ -1,16 +1,34 @@
-import { notNullOrUndefined } from '@theseam/ui-common/utils';
-import { SearchDateColumnsDataFilter } from './search-date.columns-data-filter';
-import { SearchNumericColumnsDataFilter } from './search-numeric.columns-data-filter';
-import { SearchTextColumnsDataFilter } from './search-text.columns-data-filter';
-import { TheSeamColumnsDataFilterDateSearchDateType, THESEAM_COLUMNS_DATA_FILTER_DATE_SEARCH_NAME, THESEAM_COLUMNS_DATA_FILTER_NUMERIC_SEARCH_NAME, THESEAM_COLUMNS_DATA_FILTER_TEXT_SEARCH_NAME } from './models';
+import { notNullOrUndefined } from '@theseam/ui-common/utils'
+import { SearchDateColumnsDataFilter } from './search-date.columns-data-filter'
+import { SearchNumericColumnsDataFilter } from './search-numeric.columns-data-filter'
+import { SearchTextColumnsDataFilter } from './search-text.columns-data-filter'
+import {
+  TheSeamColumnsDataFilterDateSearchDateType,
+  THESEAM_COLUMNS_DATA_FILTER_DATE_SEARCH_NAME,
+  THESEAM_COLUMNS_DATA_FILTER_NUMERIC_SEARCH_NAME,
+  THESEAM_COLUMNS_DATA_FILTER_TEXT_SEARCH_NAME,
+} from './models'
 
 export const THESEAM_COLUMNS_DATA_FILTERS_DEFAULT = [
-  { name: THESEAM_COLUMNS_DATA_FILTER_TEXT_SEARCH_NAME, class: SearchTextColumnsDataFilter },
-  { name: THESEAM_COLUMNS_DATA_FILTER_NUMERIC_SEARCH_NAME, class: SearchNumericColumnsDataFilter },
-  { name: THESEAM_COLUMNS_DATA_FILTER_DATE_SEARCH_NAME, class: SearchDateColumnsDataFilter },
+  {
+    name: THESEAM_COLUMNS_DATA_FILTER_TEXT_SEARCH_NAME,
+    class: SearchTextColumnsDataFilter,
+  },
+  {
+    name: THESEAM_COLUMNS_DATA_FILTER_NUMERIC_SEARCH_NAME,
+    class: SearchNumericColumnsDataFilter,
+  },
+  {
+    name: THESEAM_COLUMNS_DATA_FILTER_DATE_SEARCH_NAME,
+    class: SearchDateColumnsDataFilter,
+  },
 ] as const
 
-export const getFormattedDateForComparison = (date: string | number | Date | null | undefined, dateType: TheSeamColumnsDataFilterDateSearchDateType, setToLocalTime: boolean = false): Date => {
+export const getFormattedDateForComparison = (
+  date: string | number | Date | null | undefined,
+  dateType: TheSeamColumnsDataFilterDateSearchDateType,
+  setToLocalTime: boolean = false,
+): Date => {
   const dateObj = new Date(notNullOrUndefined(date) ? date : '')
 
   if (dateType === 'datetime-local') {

@@ -1,4 +1,9 @@
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { provideRouter } from '@angular/router'
@@ -30,17 +35,34 @@ const meta: Meta<TableCellTypeProgressCircleComponent> = {
       ],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamDatatableModule,
-        TheSeamTableCellTypesModule,
-      ],
+      imports: [TheSeamDatatableModule, TheSeamTableCellTypesModule],
       providers: [
-        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
-        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: ExportersDataEvaluator, multi: true },
+        {
+          provide: THESEAM_DYNAMIC_VALUE_EVALUATOR,
+          useClass: JexlEvaluator,
+          multi: true,
+        },
+        {
+          provide: THESEAM_DYNAMIC_VALUE_EVALUATOR,
+          useClass: ExportersDataEvaluator,
+          multi: true,
+        },
 
-        { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionApiService, multi: true },
-        { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionLinkService, multi: true },
-        { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionModalService, multi: true },
+        {
+          provide: THESEAM_DYNAMIC_ACTION,
+          useClass: DynamicActionApiService,
+          multi: true,
+        },
+        {
+          provide: THESEAM_DYNAMIC_ACTION,
+          useClass: DynamicActionLinkService,
+          multi: true,
+        },
+        {
+          provide: THESEAM_DYNAMIC_ACTION,
+          useClass: DynamicActionModalService,
+          multi: true,
+        },
       ],
     }),
   ],
@@ -56,10 +78,8 @@ export default meta
 type Story = StoryObj<TableCellTypeProgressCircleComponent>
 
 export const NoConfig: Story = {
-  render: args => {
-    const rows = [
-      { completionPercent: args.value },
-    ]
+  render: (args) => {
+    const rows = [{ completionPercent: args.value }]
     return {
       template: `<seam-datatable class="vw-100 vh-100" [columns]="columns" [rows]="rows"></seam-datatable>`,
       props: {
@@ -80,7 +100,7 @@ export const NoConfig: Story = {
 }
 
 export const WithConfig: Story = {
-  render: args => {
+  render: (args) => {
     const columns = [
       {
         prop: 'completionPercent',
@@ -109,9 +129,7 @@ export const WithConfig: Story = {
         },
       },
     ]
-    const rows = [
-      { completionPercent: args.value },
-    ]
+    const rows = [{ completionPercent: args.value }]
     return {
       template: `<seam-datatable class="vw-100 vh-100" [columns]="columns" [rows]="rows"></seam-datatable>`,
       props: {

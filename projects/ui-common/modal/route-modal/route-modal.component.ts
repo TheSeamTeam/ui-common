@@ -13,7 +13,6 @@ import { Modal } from '../modal.service'
   standalone: false,
 })
 export class RouteModalComponent implements OnInit, OnDestroy {
-
   private readonly _ngUnsubscribe = new Subject<void>()
 
   // @ViewChild(ModalComponent, { static: true }) _modal: ModalComponent
@@ -22,31 +21,27 @@ export class RouteModalComponent implements OnInit, OnDestroy {
     private _route: ActivatedRoute,
     private _router: Router,
     private _modal: Modal,
-  ) { }
+  ) {}
 
   ngOnInit() {
-    this._route.data
-      .pipe(
-        takeUntil(this._ngUnsubscribe),
-      )
-      .subscribe(data => {
-        // console.log('data', data)
-        if (data.routeComponent) {
-          // console.log(this._route.snapshot)
-          const modalRef = this._modal.openFromComponent(data.routeComponent, {
-            modalSize: 'lg',
-            data,
-          })
-          modalRef.afterClosed().subscribe(() => {
-            const parent = this.getOutletParent()
-            this._router.navigate(
-              [{ outlets: { modal: null, primary: ['.'] } }],
-              // { relativeTo: this._route.parent }
-              { relativeTo: parent },
-            )
-          })
-        }
-      })
+    this._route.data.pipe(takeUntil(this._ngUnsubscribe)).subscribe((data) => {
+      // console.log('data', data)
+      if (data.routeComponent) {
+        // console.log(this._route.snapshot)
+        const modalRef = this._modal.openFromComponent(data.routeComponent, {
+          modalSize: 'lg',
+          data,
+        })
+        modalRef.afterClosed().subscribe(() => {
+          const parent = this.getOutletParent()
+          this._router.navigate(
+            [{ outlets: { modal: null, primary: ['.'] } }],
+            // { relativeTo: this._route.parent }
+            { relativeTo: parent },
+          )
+        })
+      }
+    })
   }
 
   ngOnDestroy() {
@@ -56,21 +51,21 @@ export class RouteModalComponent implements OnInit, OnDestroy {
 
   getOutletParent() {
     let route: ActivatedRoute | null = this._route
-    while (route && route.outlet !== 'modal') { route = route.parent }
+    while (route && route.outlet !== 'modal') {
+      route = route.parent
+    }
     return route ? route.parent : route
   }
 
   public _onDetached() {
     if (this.isRouteModal()) {
-      this._router.navigate(
-        [{ outlets: { modal: null, primary: ['.'] } }],
-        { relativeTo: this._route.parent },
-      )
+      this._router.navigate([{ outlets: { modal: null, primary: ['.'] } }], {
+        relativeTo: this._route.parent,
+      })
     }
   }
 
   public isRouteModal() {
     return this._route.outlet === 'modal'
   }
-
 }

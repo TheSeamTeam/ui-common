@@ -10,8 +10,7 @@ describe('FormFieldRequiredIndicatorComponent', () => {
     TestBed.configureTestingModule({
       declarations: [FormFieldRequiredIndicatorComponent],
       teardown: { destroyAfterEach: false },
-    })
-      .compileComponents()
+    }).compileComponents()
   }))
 
   beforeEach(() => {

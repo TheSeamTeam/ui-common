@@ -15,7 +15,6 @@ export interface MapValueChange {
 
 @Injectable()
 export class MapValueManagerService {
-
   private readonly _valueChangedSubject = new Subject<MapValueChange>()
 
   private _value: MapValue
@@ -58,5 +57,4 @@ export class MapValueManagerService {
   public get value(): MapValue {
     return this._value
   }
-
 }

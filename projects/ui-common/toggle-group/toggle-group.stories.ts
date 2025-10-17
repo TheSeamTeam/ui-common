@@ -17,7 +17,7 @@ type StoryComponentType = ToggleGroupDirective & ExtraArgs
 
 const meta: Meta<StoryComponentType> = {
   title: 'ToggleGroup/Components',
-  tags: [ 'autodocs' ],
+  tags: ['autodocs'],
   component: ToggleGroupDirective,
   // render: args => ({
   //   props: args,
@@ -37,9 +37,7 @@ const meta: Meta<StoryComponentType> = {
     //   iframeHeight: '40px',
     // },
     argsToTplOptions: {
-      exclude: [
-        'ngContent',
-      ],
+      exclude: ['ngContent'],
     } satisfies ArgsTplOptions,
   },
 }
@@ -48,7 +46,7 @@ export default meta
 type Story = StoryObj<StoryComponentType>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       control: new FormControl(),
@@ -103,7 +101,7 @@ export const Basic: Story = {
 }
 
 export const Checkbox: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       control: new FormControl(),

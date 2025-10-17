@@ -5,7 +5,10 @@ import { Apollo } from 'apollo-angular'
 import { WatchQueryOptions } from 'apollo-angular'
 
 import { QueryProcessingConfig, EmptyObject } from '../models'
-import { DatatableGraphQLQueryRef, DatatableGraphQLVariables } from './datatable-graphql-query-ref'
+import {
+  DatatableGraphQLQueryRef,
+  DatatableGraphQLVariables,
+} from './datatable-graphql-query-ref'
 
 /**
  * NOTE: Any of ApolloClient's WatchQueryOptions properties can be set, but I
@@ -13,8 +16,10 @@ import { DatatableGraphQLQueryRef, DatatableGraphQLVariables } from './datatable
  * rest should be common options shared by all our app's datatables. This may
  * change if it is determined to be too restrictive.
  */
-export type DatatableQueryOptions<TVariables extends OperationVariables = OperationVariables, TData = any> =
-  Pick<WatchQueryOptions<TVariables, TData>, 'query'> &
+export type DatatableQueryOptions<
+  TVariables extends OperationVariables = OperationVariables,
+  TData = any,
+> = Pick<WatchQueryOptions<TVariables, TData>, 'query'> &
   Pick<WatchQueryOptions<TVariables, TData>, 'variables'> &
   Pick<WatchQueryOptions<TVariables, TData>, 'context'>
 
@@ -25,7 +30,10 @@ export interface DatatableGraphqlServiceConfig {
   pollingIntervalTime?: number
 }
 
-export const DATATABLE_GRAPHQL_SERVICE_CONFIG = new InjectionToken<DatatableGraphqlServiceConfig>('DATATABLE_GRAPHQL_SERVICE_CONFIG')
+export const DATATABLE_GRAPHQL_SERVICE_CONFIG =
+  new InjectionToken<DatatableGraphqlServiceConfig>(
+    'DATATABLE_GRAPHQL_SERVICE_CONFIG',
+  )
 
 const _CONFIG_DEFAULTS: DatatableGraphqlServiceConfig = {
   pollingIntervalTime: 1 * 60 * 1000,
@@ -35,12 +43,13 @@ const _CONFIG_DEFAULTS: DatatableGraphqlServiceConfig = {
   providedIn: 'root',
 })
 export class DatatableGraphqlService {
-
   private readonly _config: DatatableGraphqlServiceConfig
 
   constructor(
     private readonly _apollo: Apollo,
-    @Optional() @Inject(DATATABLE_GRAPHQL_SERVICE_CONFIG) _config?: DatatableGraphqlServiceConfig,
+    @Optional()
+    @Inject(DATATABLE_GRAPHQL_SERVICE_CONFIG)
+    _config?: DatatableGraphqlServiceConfig,
   ) {
     this._config = {
       ..._CONFIG_DEFAULTS,
@@ -48,7 +57,11 @@ export class DatatableGraphqlService {
     }
   }
 
-  public watchQuery<TData, TVariables extends DatatableGraphQLVariables = EmptyObject, TRow = EmptyObject>(
+  public watchQuery<
+    TData,
+    TVariables extends DatatableGraphQLVariables = EmptyObject,
+    TRow = EmptyObject,
+  >(
     options: DatatableQueryOptions<TVariables>,
     queryProcessingConfig?: QueryProcessingConfig,
   ): DatatableGraphQLQueryRef<TData, TVariables, TRow> {
@@ -73,5 +86,4 @@ export class DatatableGraphqlService {
 
     return new DatatableGraphQLQueryRef(queryRef)
   }
-
 }

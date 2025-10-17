@@ -7,6 +7,7 @@ import { IDynamicValueType } from '../../models/dynamic-value-type'
  *
  * Jexl: https://github.com/TomFrost/Jexl
  */
-export interface IJexlValue<R extends DynamicValueBaseType> extends IDynamicValueType<'jexl', R> {
+export interface IJexlValue<R extends DynamicValueBaseType>
+  extends IDynamicValueType<'jexl', R> {
   expr: string
 }

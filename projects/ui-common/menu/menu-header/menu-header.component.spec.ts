@@ -10,8 +10,7 @@ describe('MenuHeaderComponent', () => {
     TestBed.configureTestingModule({
       declarations: [MenuHeaderComponent],
       teardown: { destroyAfterEach: false },
-    })
-      .compileComponents()
+    }).compileComponents()
   }))
 
   beforeEach(() => {

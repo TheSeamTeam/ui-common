@@ -1,10 +1,9 @@
+import { animate, style, transition, trigger } from '@angular/animations'
 import {
-  animate,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations'
-import { BooleanInput, coerceBooleanProperty, NumberInput } from '@angular/cdk/coercion'
+  BooleanInput,
+  coerceBooleanProperty,
+  NumberInput,
+} from '@angular/cdk/coercion'
 import {
   ChangeDetectionStrategy,
   Component,
@@ -32,7 +31,12 @@ import { notNullOrUndefined } from '@theseam/ui-common/utils'
 import { TheSeamTooltipModule } from '@theseam/ui-common/tooltip'
 
 import { horizontalNavItemHasActiveChild } from '../nav-utils'
-import { INavItem, NavItemBadgeTooltip, NavItemChildAction, NavItemExpandAction } from '../nav.models'
+import {
+  INavItem,
+  NavItemBadgeTooltip,
+  NavItemChildAction,
+  NavItemExpandAction,
+} from '../nav.models'
 import { TheSeamNavService } from '../nav.service'
 
 @Component({
@@ -81,7 +85,14 @@ export class NavItemComponent implements OnDestroy {
 
   @Input() item: INavItem | undefined | null
 
-  @Input() itemType: 'divider' | 'basic' | 'link' | 'button' | 'title' | undefined | null
+  @Input() itemType:
+    | 'divider'
+    | 'basic'
+    | 'link'
+    | 'button'
+    | 'title'
+    | undefined
+    | null
 
   @Input() icon: SeamIcon | undefined | null
 
@@ -92,9 +103,15 @@ export class NavItemComponent implements OnDestroy {
   @Input() @InputBoolean() active = false
 
   @Input()
-  set link(value: string | undefined | null) { this._link.next(value) }
-  get link() { return this._link.value }
-  private readonly _link = new BehaviorSubject<string | undefined | null>(undefined)
+  set link(value: string | undefined | null) {
+    this._link.next(value)
+  }
+  get link() {
+    return this._link.value
+  }
+  private readonly _link = new BehaviorSubject<string | undefined | null>(
+    undefined,
+  )
   public readonly link$ = this._link.asObservable()
 
   @Input() queryParams: { [k: string]: any } | undefined | null
@@ -109,13 +126,19 @@ export class NavItemComponent implements OnDestroy {
   set expanded(value: boolean) {
     this._expanded.next(coerceBooleanProperty(value))
   }
-  get expanded() { return this._expanded.value }
+  get expanded() {
+    return this._expanded.value
+  }
   private readonly _expanded = new BehaviorSubject<boolean>(false)
   public readonly expanded$ = this._expanded.asObservable()
 
   @Input()
-  set compact(value: boolean) { this._compact.next(coerceBooleanProperty(value)) }
-  get compact() { return this._compact.value }
+  set compact(value: boolean) {
+    this._compact.next(coerceBooleanProperty(value))
+  }
+  get compact() {
+    return this._compact.value
+  }
   private readonly _compact = new BehaviorSubject<boolean>(false)
   public readonly compact$ = this._compact.asObservable()
 
@@ -130,7 +153,9 @@ export class NavItemComponent implements OnDestroy {
   @Input() badgeSrContent: string | undefined | null
 
   @Input()
-  get badgeTooltip() { return this._badgeTooltip }
+  get badgeTooltip() {
+    return this._badgeTooltip
+  }
   set badgeTooltip(value: string | NavItemBadgeTooltip | undefined | null) {
     if (value !== null && value !== undefined) {
       if (typeof value === 'string') {
@@ -143,9 +168,10 @@ export class NavItemComponent implements OnDestroy {
         this._badgeTooltip = {
           ...value,
           placement: value.placement || 'auto',
-          disabled: typeof value?.disabled === 'boolean'
-            ? value.disabled
-            : typeof value.tooltip !== 'string',
+          disabled:
+            typeof value?.disabled === 'boolean'
+              ? value.disabled
+              : typeof value.tooltip !== 'string',
         }
       }
     } else {
@@ -160,15 +186,26 @@ export class NavItemComponent implements OnDestroy {
 
   @Output() navItemExpanded = new EventEmitter<boolean>()
 
-  @HostBinding('class.seam-nav-item--active') get _isActiveCssClass() { return this.active }
+  @HostBinding('class.seam-nav-item--active') get _isActiveCssClass() {
+    return this.active
+  }
 
-  @HostBinding('class.seam-nav-item--child-active') get _isChildActiveCssClass() { return this.hasActiveChild }
+  @HostBinding('class.seam-nav-item--child-active')
+  get _isChildActiveCssClass() {
+    return this.hasActiveChild
+  }
 
-  @HostBinding('class.seam-nav-item--expanded') get _isExpandedCssClass() { return this.expanded }
+  @HostBinding('class.seam-nav-item--expanded') get _isExpandedCssClass() {
+    return this.expanded
+  }
 
-  @HostBinding('class.seam-nav-item--focused') get _isFocusedCssClass() { return this.focused }
+  @HostBinding('class.seam-nav-item--focused') get _isFocusedCssClass() {
+    return this.focused
+  }
 
-  @HostBinding('attr.data-hier-level') get _attrDataHierLevel() { return this.hierLevel }
+  @HostBinding('attr.data-hier-level') get _attrDataHierLevel() {
+    return this.hierLevel
+  }
 
   @ViewChild(MenuComponent) _menu?: MenuComponent
 
@@ -225,7 +262,7 @@ export class NavItemComponent implements OnDestroy {
 
       // TODO: figure out why closing seam-menu with expanded submenu messes up animation
       if (this._navItems && this._navItems.length) {
-        this._navItems.forEach(navItem => {
+        this._navItems.forEach((navItem) => {
           navItem.expanded = false
         })
       }
@@ -235,5 +272,4 @@ export class NavItemComponent implements OnDestroy {
   get showIconBlock(): boolean {
     return notNullOrUndefined(this.icon) || this.hideEmptyIcon !== true
   }
-
 }

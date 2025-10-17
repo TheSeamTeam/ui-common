@@ -1,11 +1,37 @@
 import { animate, style, transition, trigger } from '@angular/animations'
 import { AsyncPipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common'
-import { Component, ContentChildren, Input, OnDestroy, OnInit, QueryList } from '@angular/core'
+import {
+  Component,
+  ContentChildren,
+  Input,
+  OnDestroy,
+  OnInit,
+  QueryList,
+} from '@angular/core'
 import { BooleanInput, NumberInput } from '@angular/cdk/coercion'
-import { BehaviorSubject, combineLatest, interval, Observable, Subject } from 'rxjs'
-import { filter, map, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators'
+import {
+  BehaviorSubject,
+  combineLatest,
+  interval,
+  Observable,
+  Subject,
+} from 'rxjs'
+import {
+  filter,
+  map,
+  startWith,
+  switchMap,
+  take,
+  takeUntil,
+  tap,
+} from 'rxjs/operators'
 
-import { faAngleLeft, faAngleRight, faPause, faPlay } from '@fortawesome/free-solid-svg-icons'
+import {
+  faAngleLeft,
+  faAngleRight,
+  faPause,
+  faPlay,
+} from '@fortawesome/free-solid-svg-icons'
 import { InputBoolean, InputNumber } from '@theseam/ui-common/core'
 import { notNullOrUndefined } from '@theseam/ui-common/utils'
 import { TheSeamIconModule } from '@theseam/ui-common/icon'
@@ -113,7 +139,9 @@ export class TheSeamCarouselComponent implements OnInit, OnDestroy {
 
     this._slides.next(value)
   }
-  private readonly _slides = new BehaviorSubject<QueryList<TheSeamCarouselSlideDirective> | undefined>(undefined)
+  private readonly _slides = new BehaviorSubject<
+    QueryList<TheSeamCarouselSlideDirective> | undefined
+  >(undefined)
   public readonly slides$ = this._slides.asObservable()
 
   public readonly activeSlide$: Observable<any | undefined>
@@ -132,22 +160,22 @@ export class TheSeamCarouselComponent implements OnInit, OnDestroy {
   constructor() {
     this.activeSlide$ = this._pollActiveIndex.pipe(
       startWith(0),
-      switchMap(i => this.slides$.pipe(
-        map(slides => slides?.get(i)),
-      )),
+      switchMap((i) => this.slides$.pipe(map((slides) => slides?.get(i)))),
     )
   }
 
   ngOnInit(): void {
-    combineLatest([this.carouselPaused$, this.carouselStopped$]).pipe(
-      tap(([paused, stopped]) => {
-        if (paused || stopped) {
-          this._resetInterval.next(undefined)
-        } else {
-          this._startInterval()
-        }
-      }),
-    ).subscribe()
+    combineLatest([this.carouselPaused$, this.carouselStopped$])
+      .pipe(
+        tap(([paused, stopped]) => {
+          if (paused || stopped) {
+            this._resetInterval.next(undefined)
+          } else {
+            this._startInterval()
+          }
+        }),
+      )
+      .subscribe()
   }
 
   ngOnDestroy(): void {
@@ -158,12 +186,14 @@ export class TheSeamCarouselComponent implements OnInit, OnDestroy {
   private _startInterval() {
     this._resetInterval.next(undefined)
     if (this.autoPlay) {
-      interval(this.slideInterval).pipe(
-        takeUntil(this._resetInterval),
-        tap(() => {
-          this.pageCarousel(1)
-        }),
-      ).subscribe()
+      interval(this.slideInterval)
+        .pipe(
+          takeUntil(this._resetInterval),
+          tap(() => {
+            this.pageCarousel(1)
+          }),
+        )
+        .subscribe()
     }
   }
 
@@ -206,17 +236,19 @@ export class TheSeamCarouselComponent implements OnInit, OnDestroy {
   }
 
   pageCarousel(step: number) {
-    this.slides$.pipe(
-      take(1),
-      filter(slides => notNullOrUndefined(slides)),
-      map(slides => {
-        const slidesLen = slides?.length || 1
-        let index = this._pollActiveIndex.value
-        index = index + step
-        index = index < 0 ? slidesLen + index : index % slidesLen
-        this._pollActiveIndex.next(index)
-      }),
-    ).subscribe()
+    this.slides$
+      .pipe(
+        take(1),
+        filter((slides) => notNullOrUndefined(slides)),
+        map((slides) => {
+          const slidesLen = slides?.length || 1
+          let index = this._pollActiveIndex.value
+          index = index + step
+          index = index < 0 ? slidesLen + index : index % slidesLen
+          this._pollActiveIndex.next(index)
+        }),
+      )
+      .subscribe()
   }
 
   toggleCarouselStop() {

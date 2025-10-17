@@ -15,21 +15,24 @@ import { THESEAM_DYNAMIC_ACTION } from '../tokens/dynamic-action'
   providedIn: 'root',
 })
 export class DynamicActionHelperService {
-
   private _actionMap = new Map<string, DynamicAction<string>>()
 
   constructor(
     private _valueHelper: DynamicValueHelperService,
     // TODO: Consider making the action confirm more generic
     @Optional() private _confirmDialog?: SeamConfirmDialogService,
-    @Optional() @Inject(THESEAM_DYNAMIC_ACTION) actions?: DynamicAction<string>[],
+    @Optional()
+    @Inject(THESEAM_DYNAMIC_ACTION)
+    actions?: DynamicAction<string>[],
   ) {
     // Only one evaluator should exist for a type, so map them for faster lookup.
-    for (const e of (actions || [])) {
+    for (const e of actions || []) {
       if (isDevMode()) {
         if (this._actionMap.has(e.type)) {
           // eslint-disable-next-line no-console
-          console.warn(`[DynamicActionHelperService] Multiple actions found for type '${e.type}'`)
+          console.warn(
+            `[DynamicActionHelperService] Multiple actions found for type '${e.type}'`,
+          )
         }
       }
       this._actionMap.set(e.type, e)
@@ -41,13 +44,20 @@ export class DynamicActionHelperService {
    *
    * TODO: Improve context and return typing.
    */
-  public async exec<T extends string>(actionDef: DynamicActionDef<T>, context?: any): Promise<DynamicActionDef<T>> {
+  public async exec<T extends string>(
+    actionDef: DynamicActionDef<T>,
+    context?: any,
+  ): Promise<DynamicActionDef<T>> {
     const action = this._actionMap.get(actionDef.type)
     if (!action) {
-      throw Error(`[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' not found.`)
+      throw Error(
+        `[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' not found.`,
+      )
     }
     if (!action.exec) {
-      throw Error(`[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' does not implement 'exec()'.`)
+      throw Error(
+        `[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' does not implement 'exec()'.`,
+      )
     }
 
     if (await this.requiresConfirmation(actionDef, context)) {
@@ -66,13 +76,20 @@ export class DynamicActionHelperService {
    *
    * TODO: Improve context and return typing.
    */
-  public execSync<T extends string>(actionDef: DynamicActionDef<T>, context?: any): DynamicActionDef<T> {
+  public execSync<T extends string>(
+    actionDef: DynamicActionDef<T>,
+    context?: any,
+  ): DynamicActionDef<T> {
     const action = this._actionMap.get(actionDef.type)
     if (!action) {
-      throw Error(`[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' not found.`)
+      throw Error(
+        `[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' not found.`,
+      )
     }
     if (!action.execSync) {
-      throw Error(`[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' does not implement 'execSync()'.`)
+      throw Error(
+        `[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' does not implement 'execSync()'.`,
+      )
     }
 
     return action.execSync(actionDef, context)
@@ -83,13 +100,20 @@ export class DynamicActionHelperService {
    *
    * TODO: Improve context and return typing.
    */
-  public getUiProps<T extends string>(actionDef: DynamicActionDef<T>, context?: any): Promise<DynamicActionUiDef> {
+  public getUiProps<T extends string>(
+    actionDef: DynamicActionDef<T>,
+    context?: any,
+  ): Promise<DynamicActionUiDef> {
     const action = this._actionMap.get(actionDef.type)
     if (!action) {
-      throw Error(`[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' not found.`)
+      throw Error(
+        `[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' not found.`,
+      )
     }
     if (!action.getUiProps) {
-      throw Error(`[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' does not implement 'getUiProps()'.`)
+      throw Error(
+        `[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' does not implement 'getUiProps()'.`,
+      )
     }
 
     return action.getUiProps(actionDef, context)
@@ -98,7 +122,10 @@ export class DynamicActionHelperService {
   /**
    * Checks if a DynamicActionDef is a type that can be executed.
    */
-  public isExecutableType<T extends string>(value: DynamicActionDef<T>, isAsync: boolean): boolean {
+  public isExecutableType<T extends string>(
+    value: DynamicActionDef<T>,
+    isAsync: boolean,
+  ): boolean {
     if (value === undefined || value === null) {
       return false
     }
@@ -118,29 +145,41 @@ export class DynamicActionHelperService {
     return true
   }
 
-  public async requiresConfirmation<T extends string>(actionDef: DynamicActionDef<T>, context?: any): Promise<boolean> {
+  public async requiresConfirmation<T extends string>(
+    actionDef: DynamicActionDef<T>,
+    context?: any,
+  ): Promise<boolean> {
     if (!hasProperty(actionDef, 'confirmDef')) {
       return false
     }
 
     if (hasProperty(actionDef.confirmDef, 'disabled')) {
-      return !(await this._valueHelper.eval(actionDef.confirmDef.disabled, context))
+      return !(await this._valueHelper.eval(
+        actionDef.confirmDef.disabled,
+        context,
+      ))
     }
 
     return true
   }
 
-  public requiresConfirmationSync<T extends string>(actionDef: DynamicActionDef<T>, context?: any): boolean {
+  public requiresConfirmationSync<T extends string>(
+    actionDef: DynamicActionDef<T>,
+    context?: any,
+  ): boolean {
     if (!hasProperty(actionDef, 'confirmDef')) {
       return false
     }
 
     if (hasProperty(actionDef.confirmDef, 'disabled')) {
-      const disabled = !this._valueHelper.evalSync(actionDef.confirmDef.disabled, context)
+      const disabled = !this._valueHelper.evalSync(
+        actionDef.confirmDef.disabled,
+        context,
+      )
       if (!disabled) {
         throw Error(
           `[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' can't open ` +
-          `confirm dialog. Only async actions support confirm dialog.`,
+            `confirm dialog. Only async actions support confirm dialog.`,
         )
       }
       return false
@@ -148,15 +187,18 @@ export class DynamicActionHelperService {
 
     throw Error(
       `[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' can't open ` +
-      `confirm dialog. Only async actions support confirm dialog.`,
+        `confirm dialog. Only async actions support confirm dialog.`,
     )
   }
 
-  public async promptConfirmation<T extends string>(actionDef: DynamicActionDef<T>, context?: any): Promise<boolean> {
+  public async promptConfirmation<T extends string>(
+    actionDef: DynamicActionDef<T>,
+    context?: any,
+  ): Promise<boolean> {
     if (!this._confirmDialog) {
       throw Error(
         `[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' can't open ` +
-        `confirm dialog. Confirm dialog service is not injected.`,
+          `confirm dialog. Confirm dialog service is not injected.`,
       )
     }
 
@@ -164,7 +206,7 @@ export class DynamicActionHelperService {
     if (!confirmDef) {
       throw Error(
         `[DynamicActionHelperService] Action '${actionDef ? actionDef.type : undefined}' can't open ` +
-        `confirm dialog. Confirm def is not defined.`,
+          `confirm dialog. Confirm def is not defined.`,
       )
     }
 
@@ -172,15 +214,16 @@ export class DynamicActionHelperService {
     if (hasProperty(confirmDef, 'message')) {
       message = await this._valueHelper.eval(confirmDef.message, context)
     }
-    let alert: string | { message: string, type: ThemeTypes } | undefined
+    let alert: string | { message: string; type: ThemeTypes } | undefined
     if (hasProperty(confirmDef, 'alert')) {
       alert = await this._valueHelper.eval(confirmDef.alert, context)
     }
 
     const modalDef = this._confirmDialog.open(message, alert)
-    return modalDef.afterClosed().pipe(
-      map(v => v === 'confirm'),
-    ).toPromise().then(x => x ?? false)
+    return modalDef
+      .afterClosed()
+      .pipe(map((v) => v === 'confirm'))
+      .toPromise()
+      .then((x) => x ?? false)
   }
-
 }

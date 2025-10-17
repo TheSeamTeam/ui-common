@@ -1,46 +1,90 @@
-import { ArgTypes, Meta, StoryFn, StoryObj, applicationConfig, moduleMetadata } from '@storybook/angular'
+import {
+  ArgTypes,
+  Meta,
+  StoryFn,
+  StoryObj,
+  applicationConfig,
+  moduleMetadata,
+} from '@storybook/angular'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
-import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms'
 import { Component, Input, OnInit } from '@angular/core'
 import { JsonPipe, NgIf } from '@angular/common'
 import { delay, interval, map, of, take, tap } from 'rxjs'
 
 import { RichTextComponent } from './rich-text/rich-text.component'
-import { TheSeamQuillEditorConfig, TheSeamQuillMentionMenuItem } from './utils/models'
-import { THESEAM_QUILL_EDITOR_CONFIG, THESEAM_QUILL_EDITOR_CONFIG_DEFAULT, THESEAM_QUILL_TOOLBAR_OPTIONS_DEFAULT, THESEAM_QUILL_FORMATS_DEFAULT } from './utils/utils'
+import {
+  TheSeamQuillEditorConfig,
+  TheSeamQuillMentionMenuItem,
+} from './utils/models'
+import {
+  THESEAM_QUILL_EDITOR_CONFIG,
+  THESEAM_QUILL_EDITOR_CONFIG_DEFAULT,
+  THESEAM_QUILL_TOOLBAR_OPTIONS_DEFAULT,
+  THESEAM_QUILL_FORMATS_DEFAULT,
+} from './utils/utils'
 import { TheSeamFormFieldModule } from '../form-field/form-field.module'
 import { TheSeamButtonsModule } from '../buttons/buttons.module'
 
 @Component({
   selector: 'rich-text-form-component',
   template: `
-  <div style="max-width: 750px; margin: 0 auto;" [formGroup]="form">
-    <seam-form-field label="Standard Input:" class="mb-2">
-      <input seamInput formControlName="input" required/>
-      <ng-template seamFormFieldError="required">Standard Input is required.</ng-template>
-    </seam-form-field>
-    <div class="mb-2">Standard Input Errors: {{ form.controls.input.errors | json }}</div>
-    <seam-form-field label="Rich Text:" class="mb-2">
-      <seam-rich-text
-        seamInput
-        formControlName="text"
-        [placeholder]="placeholder"
-        [rows]="rows"
-        [resizable]="resizable"
-        [disableRichText]="disableRichText"
-        [displayCharacterCounter]="displayCharacterCounter"
-        [minLength]="minLength"
-        [maxLength]="maxLength"
-        required></seam-rich-text>
-      <ng-template seamFormFieldError="required">Rich Text is required.</ng-template>
-    </seam-form-field>
-    <div class="mb-2">Rich Text Errors: {{ form.controls.text.errors | json }}</div>
-    <div class="mb-2">Form Status: {{ form.status }}</div>
-    <div class="mb-2">Form Value: {{ form.value | json }}</div>
-    <button seamButton theme="primary" (click)="disableForm()" *ngIf="form.enabled">Disable Form</button>
-    <button seamButton theme="primary" (click)="enableForm()" *ngIf="form.disabled">Enable Form</button>
-  </div>
+    <div style="max-width: 750px; margin: 0 auto;" [formGroup]="form">
+      <seam-form-field label="Standard Input:" class="mb-2">
+        <input seamInput formControlName="input" required />
+        <ng-template seamFormFieldError="required"
+          >Standard Input is required.</ng-template
+        >
+      </seam-form-field>
+      <div class="mb-2">
+        Standard Input Errors: {{ form.controls.input.errors | json }}
+      </div>
+      <seam-form-field label="Rich Text:" class="mb-2">
+        <seam-rich-text
+          seamInput
+          formControlName="text"
+          [placeholder]="placeholder"
+          [rows]="rows"
+          [resizable]="resizable"
+          [disableRichText]="disableRichText"
+          [displayCharacterCounter]="displayCharacterCounter"
+          [minLength]="minLength"
+          [maxLength]="maxLength"
+          required
+        ></seam-rich-text>
+        <ng-template seamFormFieldError="required"
+          >Rich Text is required.</ng-template
+        >
+      </seam-form-field>
+      <div class="mb-2">
+        Rich Text Errors: {{ form.controls.text.errors | json }}
+      </div>
+      <div class="mb-2">Form Status: {{ form.status }}</div>
+      <div class="mb-2">Form Value: {{ form.value | json }}</div>
+      <button
+        seamButton
+        theme="primary"
+        (click)="disableForm()"
+        *ngIf="form.enabled"
+      >
+        Disable Form
+      </button>
+      <button
+        seamButton
+        theme="primary"
+        (click)="enableForm()"
+        *ngIf="form.disabled"
+      >
+        Enable Form
+      </button>
+    </div>
   `,
   imports: [
     ReactiveFormsModule,
@@ -52,10 +96,9 @@ import { TheSeamButtonsModule } from '../buttons/buttons.module'
   ],
 })
 class RichTextFormComponent implements OnInit {
-
   form = new FormGroup({
-    input: new FormControl<string | null>(null, [ Validators.required ]),
-    text: new FormControl<string | null>(null, [ Validators.required ]),
+    input: new FormControl<string | null>(null, [Validators.required]),
+    text: new FormControl<string | null>(null, [Validators.required]),
   })
 
   @Input() placeholder: string | undefined
@@ -75,9 +118,9 @@ class RichTextFormComponent implements OnInit {
   @Input() mentionItems: TheSeamQuillMentionMenuItem[] | undefined
 
   ngOnInit(): void {
-    this.form?.valueChanges.pipe(
-      tap(vc => console.log({ vc, form: this.form })),
-    ).subscribe()
+    this.form?.valueChanges
+      .pipe(tap((vc) => console.log({ vc, form: this.form })))
+      .subscribe()
   }
 
   disableForm() {
@@ -87,25 +130,25 @@ class RichTextFormComponent implements OnInit {
   enableForm() {
     this.form.enable()
   }
-
 }
 
 @Component({
   selector: 'custom-config-component',
   template: `
-  <div style="max-width: 750px; margin: 0 auto;">
-    <seam-rich-text
-      [formControl]="form"
-      [required]="required"
-      [placeholder]="placeholder"
-      [rows]="rows"
-      [resizable]="resizable"
-      [disableRichText]="disableRichText"
-      [displayCharacterCounter]="displayCharacterCounter"
-      [minLength]="minLength"
-      [maxLength]="maxLength"
-      [mentionItems]="mentionItems"></seam-rich-text>
-  </div>
+    <div style="max-width: 750px; margin: 0 auto;">
+      <seam-rich-text
+        [formControl]="form"
+        [required]="required"
+        [placeholder]="placeholder"
+        [rows]="rows"
+        [resizable]="resizable"
+        [disableRichText]="disableRichText"
+        [displayCharacterCounter]="displayCharacterCounter"
+        [minLength]="minLength"
+        [maxLength]="maxLength"
+        [mentionItems]="mentionItems"
+      ></seam-rich-text>
+    </div>
   `,
   providers: [
     {
@@ -116,26 +159,22 @@ class RichTextFormComponent implements OnInit {
         modules: {
           toolbar: [
             ...THESEAM_QUILL_TOOLBAR_OPTIONS_DEFAULT,
-            [{ font: [ 'sans-serif', 'serif' ] }],
-            [{ color: [ 'blue', 'red' ] }],
-            [ 'image', 'video' ],
+            [{ font: ['sans-serif', 'serif'] }],
+            [{ color: ['blue', 'red'] }],
+            ['image', 'video'],
           ],
           mention: {
-            mentionDenotationChars: [ '*', '#' ],
+            mentionDenotationChars: ['*', '#'],
           },
         },
-        formats: [ ...THESEAM_QUILL_FORMATS_DEFAULT, 'color', 'font' ],
+        formats: [...THESEAM_QUILL_FORMATS_DEFAULT, 'color', 'font'],
         styles: { background: '#eee' },
       } satisfies TheSeamQuillEditorConfig,
     },
   ],
-  imports: [
-    ReactiveFormsModule,
-    RichTextComponent,
-  ],
+  imports: [ReactiveFormsModule, RichTextComponent],
 })
 class CustomConfigComponent implements OnInit {
-
   @Input() form: AbstractControl | undefined
 
   @Input() required: boolean | undefined
@@ -157,11 +196,10 @@ class CustomConfigComponent implements OnInit {
   @Input() mentionItems: TheSeamQuillMentionMenuItem[] | undefined
 
   ngOnInit(): void {
-    this.form?.valueChanges.pipe(
-      tap(vc => console.log({ vc, form: this.form })),
-    ).subscribe()
+    this.form?.valueChanges
+      .pipe(tap((vc) => console.log({ vc, form: this.form })))
+      .subscribe()
   }
-
 }
 
 interface StoryExtraProps {
@@ -172,12 +210,10 @@ interface StoryExtraProps {
 const meta: Meta<RichTextComponent & StoryExtraProps> = {
   title: 'RichText/Components',
   component: RichTextComponent,
-  tags: [ 'autodocs' ],
+  tags: ['autodocs'],
   decorators: [
     applicationConfig({
-      providers: [
-        provideAnimations(),
-      ],
+      providers: [provideAnimations()],
     }),
     moduleMetadata({
       imports: [
@@ -206,7 +242,7 @@ export default meta
 type Story = StoryObj<RichTextComponent & StoryExtraProps>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       formControl: new FormControl(args.value),
@@ -231,7 +267,7 @@ export const Basic: Story = {
 }
 
 export const CustomConfig: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       formControl: new FormControl(args.value),
@@ -258,7 +294,7 @@ export const CustomConfig: Story = {
 }
 
 export const RichTextDisabled: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       formControl: new FormControl(args.value),
@@ -286,7 +322,7 @@ export const RichTextDisabled: Story = {
 }
 
 export const CharacterCounter: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       formControl: new FormControl(args.value),
@@ -314,7 +350,7 @@ export const CharacterCounter: Story = {
 }
 
 export const CustomCharacterCounterTemplate: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       formControl: new FormControl(args.value),
@@ -352,17 +388,17 @@ export const CustomCharacterCounterTemplate: Story = {
 }
 
 export const Mentions: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       formControl: new FormControl(args.value),
       mentionsInterval$: interval(3000).pipe(
         take(6),
-        map(i => args.mentionItems?.filter((mention, mentionIdx) => mentionIdx <= i)),
+        map((i) =>
+          args.mentionItems?.filter((mention, mentionIdx) => mentionIdx <= i),
+        ),
       ),
-      mentions$: of(args.mentionItems).pipe(
-        delay(3000),
-      ),
+      mentions$: of(args.mentionItems).pipe(delay(3000)),
       log: (val: any) => console.log(val),
     },
     template: `
@@ -387,21 +423,37 @@ export const Mentions: Story = {
     value: '<p>test text with mention functionality</p>',
     mentionItems: [
       { id: '5', value: 'ABC Farms', groupName: 'Trial Participants' },
-      { id: '6', value: 'Professional Produce Farms', groupName: 'Trial Participants' },
+      {
+        id: '6',
+        value: 'Professional Produce Farms',
+        groupName: 'Trial Participants',
+      },
       { id: '7', value: 'AgBest, LLC', groupName: 'Trial Participants' },
       { id: '1', value: 'Shelby Manley', userId: 1, groupName: 'Trial Admins' },
       { id: '0', value: 'Jason Sutton', userId: 2, groupName: 'Trial Admins' },
       { id: '2', value: 'David Stone', userId: 3, groupName: 'Trial Admins' },
       { type: 'divider' },
-      { id: '4a', value: 'All Trial Participants', userGroupId: 5, groupName: '', searchIgnore: true },
-      { id: '3a', value: 'All Trial Admins', userGroupId: 4, groupName: '', searchIgnore: true },
+      {
+        id: '4a',
+        value: 'All Trial Participants',
+        userGroupId: 5,
+        groupName: '',
+        searchIgnore: true,
+      },
+      {
+        id: '3a',
+        value: 'All Trial Admins',
+        userGroupId: 4,
+        groupName: '',
+        searchIgnore: true,
+      },
     ],
   },
   argTypes: controlArgTypes,
 }
 
 export const UsingSeamInput: Story = {
-  render: args => ({
+  render: (args) => ({
     props: { ...args },
     template: `
       <div style="max-width: 750px; margin: 0 auto;">

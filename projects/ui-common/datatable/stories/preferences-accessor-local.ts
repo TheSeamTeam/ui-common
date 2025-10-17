@@ -7,8 +7,9 @@ import { TheSeamDatatablePreferencesAccessor } from '../models/preferences-acces
 const ACCESSOR_PREFIX = 'story-pref'
 
 @Injectable()
-export class DatatablePreferencesAccessorLocalService implements TheSeamDatatablePreferencesAccessor {
-
+export class DatatablePreferencesAccessorLocalService
+  implements TheSeamDatatablePreferencesAccessor
+{
   /**
    * Gets a preference.
    */
@@ -33,5 +34,4 @@ export class DatatablePreferencesAccessorLocalService implements TheSeamDatatabl
     localStorage.removeItem(`${ACCESSOR_PREFIX}-${name}`)
     return of(true)
   }
-
 }

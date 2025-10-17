@@ -1,4 +1,7 @@
-import { coerceBooleanProperty, coerceNumberProperty } from '@angular/cdk/coercion'
+import {
+  coerceBooleanProperty,
+  coerceNumberProperty,
+} from '@angular/cdk/coercion'
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -14,11 +17,20 @@ import { takeUntil } from 'rxjs/operators'
 
 import { DatatableComponent } from '@theseam/ui-common/datatable'
 import { TableComponent } from '@theseam/ui-common/table'
-import { TableCellTypesHelpersService, TABLE_CELL_DATA } from '@theseam/ui-common/table-cell-type'
-import type { TableCellData, TheSeamTableColumn } from '@theseam/ui-common/table-cell-type'
+import {
+  TableCellTypesHelpersService,
+  TABLE_CELL_DATA,
+} from '@theseam/ui-common/table-cell-type'
+import type {
+  TableCellData,
+  TheSeamTableColumn,
+} from '@theseam/ui-common/table-cell-type'
 
 import { IconTemplateType } from './../table-cell-type-icon/table-cell-type-icon.component'
-import { TableCellTypeConfigProgressCircle, TableCellTypeProgressCircleConfigAction } from './table-cell-type-progress-circle-config'
+import {
+  TableCellTypeConfigProgressCircle,
+  TableCellTypeProgressCircleConfigAction,
+} from './table-cell-type-progress-circle-config'
 
 @Component({
   selector: 'seam-table-cell-type-progress-circle',
@@ -28,13 +40,18 @@ import { TableCellTypeConfigProgressCircle, TableCellTypeProgressCircleConfigAct
   standalone: false,
 })
 export class TableCellTypeProgressCircleComponent implements OnDestroy {
-
   private readonly _ngUnsubscribe = new Subject<void>()
 
   @Input() value: number | null | undefined
 
-  _tableCellData?: TableCellData<'progress-circle', TableCellTypeConfigProgressCircle>
-  colData?: TheSeamTableColumn<'progress-circle', TableCellTypeConfigProgressCircle>
+  _tableCellData?: TableCellData<
+    'progress-circle',
+    TableCellTypeConfigProgressCircle
+  >
+  colData?: TheSeamTableColumn<
+    'progress-circle',
+    TableCellTypeConfigProgressCircle
+  >
 
   fillBackground = false
   showText = false
@@ -69,7 +86,12 @@ export class TableCellTypeProgressCircleComponent implements OnDestroy {
     private _tableCellTypeHelpers: TableCellTypesHelpersService,
     @Optional() private _datatable?: DatatableComponent,
     @Optional() private _table?: TableComponent,
-    @Optional() @Inject(TABLE_CELL_DATA) _tableData?: TableCellData<'progress-circle', TableCellTypeConfigProgressCircle>,
+    @Optional()
+    @Inject(TABLE_CELL_DATA)
+    _tableData?: TableCellData<
+      'progress-circle',
+      TableCellTypeConfigProgressCircle
+    >,
   ) {
     if (_datatable) {
       this._isDatatable = true
@@ -86,32 +108,30 @@ export class TableCellTypeProgressCircleComponent implements OnDestroy {
     }
 
     if (tableData) {
-      tableData.changed
-        .pipe(takeUntil(this._ngUnsubscribe))
-        .subscribe(v => {
-          if (Object.prototype.hasOwnProperty.call(v.changes, 'value')) {
-            this.value = coerceNumberProperty(v.changes.value.currentValue)
-            if (this._config) {
-              this._setCellTypeConfigProps(this._config)
-            }
-            this._cdf.markForCheck()
+      tableData.changed.pipe(takeUntil(this._ngUnsubscribe)).subscribe((v) => {
+        if (Object.prototype.hasOwnProperty.call(v.changes, 'value')) {
+          this.value = coerceNumberProperty(v.changes.value.currentValue)
+          if (this._config) {
+            this._setCellTypeConfigProps(this._config)
           }
+          this._cdf.markForCheck()
+        }
 
-          if (Object.prototype.hasOwnProperty.call(v.changes, 'colData')) {
-            this.colData = v.changes.colData.currentValue
-            if (this.colData && this.colData.cellTypeConfig) {
+        if (Object.prototype.hasOwnProperty.call(v.changes, 'colData')) {
+          this.colData = v.changes.colData.currentValue
+          if (this.colData && this.colData.cellTypeConfig) {
+            this._setCellTypeConfigProps(this.colData.cellTypeConfig)
+          }
+          this._cdf.markForCheck()
+        } else {
+          if (Object.prototype.hasOwnProperty.call(v.changes, 'row')) {
+            if (this.colData?.cellTypeConfig) {
               this._setCellTypeConfigProps(this.colData.cellTypeConfig)
-            }
-            this._cdf.markForCheck()
-          } else {
-            if (Object.prototype.hasOwnProperty.call(v.changes, 'row')) {
-              if (this.colData?.cellTypeConfig) {
-                this._setCellTypeConfigProps(this.colData.cellTypeConfig)
-                this._cdf.markForCheck()
-              }
+              this._cdf.markForCheck()
             }
           }
-        })
+        }
+      })
     }
   }
 
@@ -121,7 +141,8 @@ export class TableCellTypeProgressCircleComponent implements OnDestroy {
   }
 
   private _parseConfigValue(val: any) {
-    const contextFn = () => this._tableCellTypeHelpers.getValueContext(val, this._tableCellData)
+    const contextFn = () =>
+      this._tableCellTypeHelpers.getValueContext(val, this._tableCellData)
     return this._tableCellTypeHelpers.parseValueProp(val, contextFn)
   }
 
@@ -139,9 +160,13 @@ export class TableCellTypeProgressCircleComponent implements OnDestroy {
         if (link !== undefined && link !== null) {
           newTplType = this._parseConfigValue(configAction.asset)
             ? 'link-encrypted'
-            : this._parseConfigValue(configAction.external) ? 'link-external' : 'link'
+            : this._parseConfigValue(configAction.external)
+              ? 'link-external'
+              : 'link'
           download = !!this._parseConfigValue(configAction.download)
-          detectMimeContent = !!this._parseConfigValue(configAction.detectMimeContent)
+          detectMimeContent = !!this._parseConfigValue(
+            configAction.detectMimeContent,
+          )
           target = this._parseConfigValue(configAction.target)
           queryParams = this._parseConfigValue(configAction.queryParams)
         }
@@ -159,19 +184,28 @@ export class TableCellTypeProgressCircleComponent implements OnDestroy {
     this._queryParams = queryParams
   }
 
-  private _setCellTypeConfigProps(config: TableCellTypeConfigProgressCircle): void {
+  private _setCellTypeConfigProps(
+    config: TableCellTypeConfigProgressCircle,
+  ): void {
     this._config = config
     this.setAction(config.action)
-    this.fillBackground = coerceBooleanProperty(this._parseConfigValue(config.fillBackground))
-    this.showText = coerceBooleanProperty(this._parseConfigValue(config.showText))
-    this.hiddenOnEmpty = coerceBooleanProperty(this._parseConfigValue(config.hiddenOnEmpty))
+    this.fillBackground = coerceBooleanProperty(
+      this._parseConfigValue(config.fillBackground),
+    )
+    this.showText = coerceBooleanProperty(
+      this._parseConfigValue(config.showText),
+    )
+    this.hiddenOnEmpty = coerceBooleanProperty(
+      this._parseConfigValue(config.hiddenOnEmpty),
+    )
     this.pending = coerceBooleanProperty(this._parseConfigValue(config.pending))
     this.tooltip = this._parseConfigValue(config.tooltip)
 
     this.tooltip = this._parseConfigValue(config.tooltip)
     if (this.tooltip) {
       this.tooltipClass = this._parseConfigValue(config.tooltipClass)
-      this.tooltipPlacement = this._parseConfigValue(config.tooltipPlacement) || 'auto'
+      this.tooltipPlacement =
+        this._parseConfigValue(config.tooltipPlacement) || 'auto'
       this.tooltipContainer = this._parseConfigValue(config.tooltipContainer)
       this._tooltipDisabled = false
     } else {
@@ -184,12 +218,17 @@ export class TableCellTypeProgressCircleComponent implements OnDestroy {
 
   _doButtonAction() {
     if (this._buttonAction && this._buttonAction.type === 'modal') {
-      const contextFn = () => this._tableCellTypeHelpers.getValueContext(this.value, this._tableCellData)
-      this._tableCellTypeHelpers.handleModalAction(this._buttonAction, contextFn)
+      const contextFn = () =>
+        this._tableCellTypeHelpers.getValueContext(
+          this.value,
+          this._tableCellData,
+        )
+      this._tableCellTypeHelpers
+        .handleModalAction(this._buttonAction, contextFn)
         .subscribe(
-          r => {},
+          (r) => {},
           // eslint-disable-next-line no-console
-          err => console.error(err),
+          (err) => console.error(err),
           () => this._actionRefreshRequest(),
         )
     }
@@ -202,5 +241,4 @@ export class TableCellTypeProgressCircleComponent implements OnDestroy {
       this._table.triggerActionRefreshRequest()
     }
   }
-
 }

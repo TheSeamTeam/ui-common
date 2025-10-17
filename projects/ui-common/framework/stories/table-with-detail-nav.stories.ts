@@ -1,16 +1,36 @@
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 
 import { APP_BASE_HREF } from '@angular/common'
 import { Component, importProvidersFrom } from '@angular/core'
 import { ReactiveFormsModule } from '@angular/forms'
-import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations'
-import { ActivatedRoute, provideRouter, Route, Router, RouterModule } from '@angular/router'
+import {
+  BrowserAnimationsModule,
+  provideAnimations,
+} from '@angular/platform-browser/animations'
+import {
+  ActivatedRoute,
+  provideRouter,
+  Route,
+  Router,
+  RouterModule,
+} from '@angular/router'
 import { Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 import {
-  faBell, faBuilding, faChartLine, faCompass, faFilePdf, faSignature,
-  faUsers, faWrench,
+  faBell,
+  faBuilding,
+  faChartLine,
+  faCompass,
+  faFilePdf,
+  faSignature,
+  faUsers,
+  faWrench,
 } from '@fortawesome/free-solid-svg-icons'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
 
@@ -32,96 +52,147 @@ import { provideLocationMocks } from '@angular/common/testing'
 
 @Component({
   selector: 'story-ex-widget-1',
-  template: `<seam-widget [icon]="faWrench" titleText="Example Widget 1"
-    [hasConfig]="true" [canCollapse]="true" [loading]="!(initialized$ | async)">
-  <seam-widget-content-header>Widget example 1</seam-widget-content-header>
+  template: `<seam-widget
+    [icon]="faWrench"
+    titleText="Example Widget 1"
+    [hasConfig]="true"
+    [canCollapse]="true"
+    [loading]="!(initialized$ | async)"
+  >
+    <seam-widget-content-header>Widget example 1</seam-widget-content-header>
 
-  <seam-widget-tile-list>
-    <button *ngFor="let item of items" seam-widget-tile [icon]="faBell">{{ item }}</button>
-  </seam-widget-tile-list>
+    <seam-widget-tile-list>
+      <button *ngFor="let item of items" seam-widget-tile [icon]="faBell">
+        {{ item }}
+      </button>
+    </seam-widget-tile-list>
 
-  <seam-widget-footer-text *ngIf="p?.length">Submitted: {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text>
-</seam-widget>`,
+    <seam-widget-footer-text *ngIf="p?.length"
+      >Submitted:
+      {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text
+    >
+  </seam-widget>`,
 })
 class StoryExWidget1Component {
   faWrench = faWrench
   faBell = faBell
   initialized$ = of(true)
-  items = [ 'one', 'two', 'three', 'four' ]
+  items = ['one', 'two', 'three', 'four']
 }
 
 @Component({
   selector: 'story-ex-widget-2',
-  template: `<seam-widget [icon]="faWrench" titleText="Example Widget 2"
-    [hasConfig]="true" [canCollapse]="true" [loading]="!(initialized$ | async)">
-  <seam-widget-content-header>Widget example 2</seam-widget-content-header>
+  template: `<seam-widget
+    [icon]="faWrench"
+    titleText="Example Widget 2"
+    [hasConfig]="true"
+    [canCollapse]="true"
+    [loading]="!(initialized$ | async)"
+  >
+    <seam-widget-content-header>Widget example 2</seam-widget-content-header>
 
-  <seam-widget-tile-list>
-    <button *ngFor="let item of items" seam-widget-tile [icon]="faBell">{{ item }}</button>
-  </seam-widget-tile-list>
+    <seam-widget-tile-list>
+      <button *ngFor="let item of items" seam-widget-tile [icon]="faBell">
+        {{ item }}
+      </button>
+    </seam-widget-tile-list>
 
-  <seam-widget-footer-text *ngIf="p?.length">Submitted: {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text>
-</seam-widget>`,
+    <seam-widget-footer-text *ngIf="p?.length"
+      >Submitted:
+      {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text
+    >
+  </seam-widget>`,
 })
 class StoryExWidget2Component {
   faWrench = faWrench
   faBell = faBell
   initialized$ = of(true)
-  items = [ 'one', 'two', 'three', 'four' ]
+  items = ['one', 'two', 'three', 'four']
 }
 
 @Component({
   selector: 'story-ex-widget-3',
-  template: `<seam-widget [icon]="faWrench" titleText="Example Widget 3"
-    [hasConfig]="true" [canCollapse]="true" [loading]="!(initialized$ | async)">
-  <seam-widget-content-header>Widget example 3</seam-widget-content-header>
+  template: `<seam-widget
+    [icon]="faWrench"
+    titleText="Example Widget 3"
+    [hasConfig]="true"
+    [canCollapse]="true"
+    [loading]="!(initialized$ | async)"
+  >
+    <seam-widget-content-header>Widget example 3</seam-widget-content-header>
 
-  <seam-widget-tile-list>
-    <button *ngFor="let item of items.slice(0, 2)" seam-widget-tile [icon]="faBell">{{ item }}</button>
-  </seam-widget-tile-list>
+    <seam-widget-tile-list>
+      <button
+        *ngFor="let item of items.slice(0, 2)"
+        seam-widget-tile
+        [icon]="faBell"
+      >
+        {{ item }}
+      </button>
+    </seam-widget-tile-list>
 
-  <a seam-widget-footer-link routerLink="/example1">See All</a>
-</seam-widget>`,
+    <a seam-widget-footer-link routerLink="/example1">See All</a>
+  </seam-widget>`,
 })
 class StoryExWidget3Component {
   faWrench = faWrench
   faBell = faBell
   initialized$ = of(true)
-  items = [ 'one', 'two', 'three', 'four' ]
+  items = ['one', 'two', 'three', 'four']
 }
 
 @Component({
   selector: 'story-ex-widget-4',
-  template: `<seam-widget [icon]="faWrench" titleText="Example Widget 4"
-    [hasConfig]="true" [canCollapse]="true" [loading]="!(initialized$ | async)">
-  <seam-widget-content-header>Widget example 4</seam-widget-content-header>
+  template: `<seam-widget
+    [icon]="faWrench"
+    titleText="Example Widget 4"
+    [hasConfig]="true"
+    [canCollapse]="true"
+    [loading]="!(initialized$ | async)"
+  >
+    <seam-widget-content-header>Widget example 4</seam-widget-content-header>
 
-  <seam-widget-tile-list>
-    <button *ngFor="let item of items" seam-widget-tile [icon]="faBell">{{ item }}</button>
-  </seam-widget-tile-list>
+    <seam-widget-tile-list>
+      <button *ngFor="let item of items" seam-widget-tile [icon]="faBell">
+        {{ item }}
+      </button>
+    </seam-widget-tile-list>
 
-  <seam-widget-footer-text *ngIf="p?.length">Submitted: {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text>
-</seam-widget>`,
+    <seam-widget-footer-text *ngIf="p?.length"
+      >Submitted:
+      {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text
+    >
+  </seam-widget>`,
 })
 class StoryExWidget4Component {
   faWrench = faWrench
   faBell = faBell
   initialized$ = of(true)
-  items = [ 'one', 'two', 'three', 'four' ]
+  items = ['one', 'two', 'three', 'four']
 }
 
 @Component({
   selector: 'story-ex-widget-5',
-  template: `<seam-widget [icon]="faUsers" titleText="2019 Member Enrollments"
-    [hasConfig]="true" [canCollapse]="true" [loading]="!(initialized$ | async)">
-
-  <seam-widget-tile-list>
-    <button seam-widget-tile [icon]="tileIcon">17 members.</button>
-    <button seam-widget-tile [icon]="tileIcon"
-      [notificationIcon]="faClock" notificationIconClass="text-danger">13 pending approvals.</button>
-    [notificationIcon]="faClock" notificationIconClass="text-danger"
-  </seam-widget-tile-list>
-</seam-widget>`,
+  template: `<seam-widget
+    [icon]="faUsers"
+    titleText="2019 Member Enrollments"
+    [hasConfig]="true"
+    [canCollapse]="true"
+    [loading]="!(initialized$ | async)"
+  >
+    <seam-widget-tile-list>
+      <button seam-widget-tile [icon]="tileIcon">17 members.</button>
+      <button
+        seam-widget-tile
+        [icon]="tileIcon"
+        [notificationIcon]="faClock"
+        notificationIconClass="text-danger"
+      >
+        13 pending approvals.
+      </button>
+      [notificationIcon]="faClock" notificationIconClass="text-danger"
+    </seam-widget-tile-list>
+  </seam-widget>`,
 })
 class StoryExWidget5Component {
   faUsers = faUsers
@@ -132,57 +203,60 @@ class StoryExWidget5Component {
 
 @Component({
   selector: 'story-ex-widget-6',
-  template: `<seam-widget [icon]="faSignature" titleText="Bill of Ladings"
-    [hasConfig]="true" [canCollapse]="true" [loading]="!(initialized$ | async)">
-
-  <table class="table table-striped mb-0">
-    <thead>
-      <tr>
-        <th scope="col"></th>
-        <th scope="col">Bill of Lading</th>
-        <th scope="col">Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th scope="row">
-          <seam-icon [icon]="faFilePdf" iconClass="text-danger"></seam-icon>
-        </th>
-        <td>8514071</td>
-        <td>In Transit</td>
-      </tr>
-      <tr>
-        <th scope="row">
-          <seam-icon [icon]="faFilePdf" iconClass="text-danger"></seam-icon>
-        </th>
-        <td>8513935</td>
-        <td>In Transit</td>
-      </tr>
-      <tr>
-        <th scope="row">
-          <seam-icon [icon]="faFilePdf" iconClass="text-danger"></seam-icon>
-        </th>
-        <td>8514006</td>
-        <td>Awaiting Signature</td>
-      </tr>
-      <tr>
-        <th scope="row">
-          <seam-icon [icon]="faFilePdf" iconClass="text-danger"></seam-icon>
-        </th>
-        <td>8513991</td>
-        <td>In Transit</td>
-      </tr>
-      <tr>
-        <th scope="row">
-          <seam-icon [icon]="faFilePdf" iconClass="text-danger"></seam-icon>
-        </th>
-        <td>8514077</td>
-        <td>Complete</td>
-      </tr>
-    </tbody>
-  </table>
-
-</seam-widget>`,
+  template: `<seam-widget
+    [icon]="faSignature"
+    titleText="Bill of Ladings"
+    [hasConfig]="true"
+    [canCollapse]="true"
+    [loading]="!(initialized$ | async)"
+  >
+    <table class="table table-striped mb-0">
+      <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">Bill of Lading</th>
+          <th scope="col">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">
+            <seam-icon [icon]="faFilePdf" iconClass="text-danger"></seam-icon>
+          </th>
+          <td>8514071</td>
+          <td>In Transit</td>
+        </tr>
+        <tr>
+          <th scope="row">
+            <seam-icon [icon]="faFilePdf" iconClass="text-danger"></seam-icon>
+          </th>
+          <td>8513935</td>
+          <td>In Transit</td>
+        </tr>
+        <tr>
+          <th scope="row">
+            <seam-icon [icon]="faFilePdf" iconClass="text-danger"></seam-icon>
+          </th>
+          <td>8514006</td>
+          <td>Awaiting Signature</td>
+        </tr>
+        <tr>
+          <th scope="row">
+            <seam-icon [icon]="faFilePdf" iconClass="text-danger"></seam-icon>
+          </th>
+          <td>8513991</td>
+          <td>In Transit</td>
+        </tr>
+        <tr>
+          <th scope="row">
+            <seam-icon [icon]="faFilePdf" iconClass="text-danger"></seam-icon>
+          </th>
+          <td>8514077</td>
+          <td>Complete</td>
+        </tr>
+      </tbody>
+    </table>
+  </seam-widget>`,
 })
 class StoryExWidget6Component {
   faSignature = faSignature
@@ -192,12 +266,15 @@ class StoryExWidget6Component {
 
 @Component({
   selector: 'story-ex-widget-7',
-  template: `<seam-widget [icon]="faChartLine" titleText="Product Trends By Month"
-    [hasConfig]="true" [canCollapse]="true" [loading]="!(initialized$ | async)">
-
-  <img [src]="figureImg" />
-
-</seam-widget>`,
+  template: `<seam-widget
+    [icon]="faChartLine"
+    titleText="Product Trends By Month"
+    [hasConfig]="true"
+    [canCollapse]="true"
+    [loading]="!(initialized$ | async)"
+  >
+    <img [src]="figureImg" />
+  </seam-widget>`,
 })
 class StoryExWidget7Component {
   faChartLine = faChartLine
@@ -207,18 +284,23 @@ class StoryExWidget7Component {
 
 @Component({
   selector: 'story-ex-widget-8',
-  template: `<seam-widget [icon]="faClock" titleText="Example Text"
-    [hasConfig]="true" [canCollapse]="true" [loading]="!(initialized$ | async)">
-
-  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-  sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-  Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-  nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-  reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-  pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa
-  qui officia deserunt mollit anim id est laborum. <a>More…</a></p>
-
-</seam-widget>`,
+  template: `<seam-widget
+    [icon]="faClock"
+    titleText="Example Text"
+    [hasConfig]="true"
+    [canCollapse]="true"
+    [loading]="!(initialized$ | async)"
+  >
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+      commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+      velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+      cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
+      est laborum. <a>More…</a>
+    </p>
+  </seam-widget>`,
 })
 class StoryExWidget8Component {
   faClock = faClock
@@ -227,12 +309,9 @@ class StoryExWidget8Component {
 
 @Component({
   selector: 'name-ex',
-  template: `
-    <div>Name: {{ name$ | async }}</div>
-  `,
+  template: ` <div>Name: {{ name$ | async }}</div> `,
 })
 class StoryNameExComponent {
-
   name$: Observable<string | undefined>
 
   constructor(
@@ -241,7 +320,7 @@ class StoryNameExComponent {
   ) {
     // eslint-disable-next-line no-console
     console.log('name-ex', this)
-    this.name$ = this._route.data.pipe(map(v => v['name'] || undefined))
+    this.name$ = this._route.data.pipe(map((v) => v['name'] || undefined))
 
     // eslint-disable-next-line no-console
     console.log('config', this._router.config)
@@ -266,7 +345,6 @@ class StoryNameExComponent {
   `,
 })
 class UserDetailsExComponent {
-
   name$: Observable<string | undefined>
 
   constructor(
@@ -275,7 +353,7 @@ class UserDetailsExComponent {
   ) {
     // eslint-disable-next-line no-console
     console.log('user-details-ex', this)
-    this.name$ = this._route.data.pipe(map(v => v['name'] || undefined))
+    this.name$ = this._route.data.pipe(map((v) => v['name'] || undefined))
 
     // console.log('config', this._router.config)
     // console.log('config2', this._route.routeConfig)
@@ -287,10 +365,7 @@ const meta: Meta<any> = {
   title: 'Framework/Examples',
   decorators: [
     applicationConfig({
-      providers: [
-        provideAnimations(),
-        provideLocationMocks(),
-      ],
+      providers: [provideAnimations(), provideLocationMocks()],
     }),
   ],
   parameters: {
@@ -302,7 +377,7 @@ export default meta
 type Story = StoryObj<any>
 
 export const TableWithDetailNav: Story = {
-  render: args => ({
+  render: (args) => ({
     applicationConfig: {
       providers: [
         provideRouter([
@@ -322,7 +397,7 @@ export const TableWithDetailNav: Story = {
               {
                 path: 'details',
                 component: UserDetailsExComponent,
-                data: { },
+                data: {},
                 resolve: {
                   hierLevel: HierarchyLevelResolver,
                 },

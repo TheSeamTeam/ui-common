@@ -19,7 +19,15 @@ import {
 } from '@angular/core'
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
 
-import { CanDisable, CanDisableCtor, HasTabIndex, HasTabIndexCtor, InputBoolean, mixinDisabled, mixinTabIndex } from '@theseam/ui-common/core'
+import {
+  CanDisable,
+  CanDisableCtor,
+  HasTabIndex,
+  HasTabIndexCtor,
+  InputBoolean,
+  mixinDisabled,
+  mixinTabIndex,
+} from '@theseam/ui-common/core'
 
 // NOTE: Partially based on mat-checkbox: https://github.com/angular/components/blob/master/src/material/checkbox/checkbox.ts
 
@@ -49,9 +57,11 @@ class TheSeamCheckboxComponentBase {
   constructor(public _elementRef: ElementRef) {}
 }
 
-const _TheSeamCheckboxMixinBase: HasTabIndexCtor & CanDisableCtor &
-  typeof TheSeamCheckboxComponentBase =
-    mixinTabIndex(mixinDisabled(TheSeamCheckboxComponentBase))
+const _TheSeamCheckboxMixinBase: HasTabIndexCtor &
+  CanDisableCtor &
+  typeof TheSeamCheckboxComponentBase = mixinTabIndex(
+  mixinDisabled(TheSeamCheckboxComponentBase),
+)
 
 let _uid = 0
 
@@ -62,21 +72,25 @@ let _uid = 0
   selector: 'seam-checkbox',
   templateUrl: './checkbox.component.html',
   styleUrls: ['./checkbox.component.scss'],
-  imports: [
-    CommonModule,
-    ObserversModule,
-  ],
+  imports: [CommonModule, ObserversModule],
   exportAs: 'seamCheckbox',
   host: {
     '[attr.tabindex]': 'null',
-    'class': 'custom-control custom-checkbox',
+    class: 'custom-control custom-checkbox',
   },
   providers: [THESEAM_CHECKBOX_CONTROL_VALUE_ACCESSOR],
   inputs: ['tabIndex'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TheSeamCheckboxComponent extends _TheSeamCheckboxMixinBase
-  implements AfterViewInit, OnDestroy, ControlValueAccessor, CanDisable, HasTabIndex {
+export class TheSeamCheckboxComponent
+  extends _TheSeamCheckboxMixinBase
+  implements
+    AfterViewInit,
+    OnDestroy,
+    ControlValueAccessor,
+    CanDisable,
+    HasTabIndex
+{
   static ngAcceptInputType_checked: BooleanInput
   static ngAcceptInputType_disabled: BooleanInput
   static ngAcceptInputType_indeterminate: BooleanInput
@@ -88,7 +102,9 @@ export class TheSeamCheckboxComponent extends _TheSeamCheckboxMixinBase
   @Input() id?: string = this._uid
 
   /** Returns the unique id for the input. */
-  get inputId(): string { return `${this.id || this._uid}` }
+  get inputId(): string {
+    return `${this.id || this._uid}`
+  }
 
   /**
    * Attached to the aria-label attribute of the host element. In most cases, aria-labelledby will
@@ -106,7 +122,9 @@ export class TheSeamCheckboxComponent extends _TheSeamCheckboxMixinBase
 
   /** Whether the checkbox is checked. */
   @Input()
-  get checked(): boolean { return this._checked }
+  get checked(): boolean {
+    return this._checked
+  }
   set checked(value: boolean) {
     const newValue = coerceBooleanProperty(value)
 
@@ -124,7 +142,9 @@ export class TheSeamCheckboxComponent extends _TheSeamCheckboxMixinBase
   // This fully overrides the implementation provided by mixinDisabled, but the
   // mixin is still required because mixinTabIndex requires it.
   @Input()
-  get disabled(): boolean { return this._disabled }
+  get disabled(): boolean {
+    return this._disabled
+  }
   set disabled(value: boolean) {
     const newValue = coerceBooleanProperty(value)
 
@@ -143,7 +163,9 @@ export class TheSeamCheckboxComponent extends _TheSeamCheckboxMixinBase
    * set to false.
    */
   @Input()
-  get indeterminate(): boolean { return this._indeterminate }
+  get indeterminate(): boolean {
+    return this._indeterminate
+  }
   set indeterminate(value: boolean) {
     const changed = value !== this._indeterminate
     this._indeterminate = coerceBooleanProperty(value)
@@ -165,7 +187,8 @@ export class TheSeamCheckboxComponent extends _TheSeamCheckboxMixinBase
   @Output() readonly change = new EventEmitter<TheSeamCheckboxChange>()
 
   /** Event emitted when the checkbox's `indeterminate` value changes. */
-  @Output() readonly indeterminateChange: EventEmitter<boolean> = new EventEmitter<boolean>()
+  @Output() readonly indeterminateChange: EventEmitter<boolean> =
+    new EventEmitter<boolean>()
 
   /** The value attribute of the native input element */
   @Input() value: string | undefined | null
@@ -174,7 +197,10 @@ export class TheSeamCheckboxComponent extends _TheSeamCheckboxMixinBase
    * The native `<input type="checkbox">` element
    * @ignore
    */
-  @ViewChild('input', { static: true }) _inputElement: ElementRef<HTMLInputElement> | undefined | null
+  @ViewChild('input', { static: true }) _inputElement:
+    | ElementRef<HTMLInputElement>
+    | undefined
+    | null
 
   /**
    * Called when the checkbox is blurred. Needed to properly implement ControlValueAccessor.
@@ -196,7 +222,7 @@ export class TheSeamCheckboxComponent extends _TheSeamCheckboxMixinBase
 
     this.tabIndex = parseInt(tabIndex, 10) || 0
 
-    this._focusMonitor.monitor(elementRef, true).subscribe(focusOrigin => {
+    this._focusMonitor.monitor(elementRef, true).subscribe((focusOrigin) => {
       if (!focusOrigin) {
         // When a focused element becomes disabled, the browser *immediately* fires a blur event.
         // Angular does not expect events to be raised during change detection, so any state change
@@ -260,7 +286,7 @@ export class TheSeamCheckboxComponent extends _TheSeamCheckboxMixinBase
 
   /** @ignore */
   _getAriaChecked(): 'true' | 'false' | 'mixed' {
-    return this.checked ? 'true' : (this.indeterminate ? 'mixed' : 'false')
+    return this.checked ? 'true' : this.indeterminate ? 'mixed' : 'false'
   }
 
   /** @ignore */
@@ -305,7 +331,9 @@ export class TheSeamCheckboxComponent extends _TheSeamCheckboxMixinBase
 
   /** Focuses the checkbox. */
   focus(origin: FocusOrigin = 'keyboard', options?: FocusOptions): void {
-    if (!this._inputElement) { return }
+    if (!this._inputElement) {
+      return
+    }
     this._focusMonitor.focusVia(this._inputElement, origin, options)
   }
 
@@ -333,5 +361,4 @@ export class TheSeamCheckboxComponent extends _TheSeamCheckboxMixinBase
       nativeCheckbox.nativeElement.indeterminate = value
     }
   }
-
 }

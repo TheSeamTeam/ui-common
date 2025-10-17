@@ -3,7 +3,10 @@ import { CommonModule } from '@angular/common'
 import { AbstractControl, ReactiveFormsModule } from '@angular/forms'
 
 import { hasOwn, JsonSchemaFormModule, JsonSchemaFormService } from '@ajsf/core'
-import { TheSeamSchemaFormControlWidget, TheSeamSchemaFormWidgetLayoutNodeOptions } from '../../schema-form'
+import {
+  TheSeamSchemaFormControlWidget,
+  TheSeamSchemaFormWidgetLayoutNodeOptions,
+} from '../../schema-form'
 import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 
 @Component({
@@ -18,8 +21,9 @@ import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
     TheSeamFormFieldModule,
   ],
 })
-export class TheSeamSchemaFormSubmitComponent implements OnInit, TheSeamSchemaFormControlWidget {
-
+export class TheSeamSchemaFormSubmitComponent
+  implements OnInit, TheSeamSchemaFormControlWidget
+{
   formControl?: AbstractControl
   controlName?: string
   controlValue?: any
@@ -31,18 +35,20 @@ export class TheSeamSchemaFormSubmitComponent implements OnInit, TheSeamSchemaFo
   @Input() layoutIndex: TheSeamSchemaFormControlWidget['layoutIndex']
   @Input() dataIndex: TheSeamSchemaFormControlWidget['dataIndex']
 
-  constructor(
-    private readonly _jsf: JsonSchemaFormService,
-  ) { }
+  constructor(private readonly _jsf: JsonSchemaFormService) {}
 
   ngOnInit() {
-    this.options = this.layoutNode?.options || {} as TheSeamSchemaFormWidgetLayoutNodeOptions
+    this.options =
+      this.layoutNode?.options ||
+      ({} as TheSeamSchemaFormWidgetLayoutNodeOptions)
     this._jsf.initializeControl(this)
     if (hasOwn(this.options, 'disabled')) {
       this.controlDisabled = this.options.disabled
     } else if (this._jsf.formOptions.disableInvalidSubmit) {
       this.controlDisabled = !this._jsf.isValid
-      this._jsf.isValidChanges.subscribe(isValid => this.controlDisabled = !isValid)
+      this._jsf.isValidChanges.subscribe(
+        (isValid) => (this.controlDisabled = !isValid),
+      )
     }
     if (this.controlValue === null || this.controlValue === undefined) {
       this.controlValue = this.options.title

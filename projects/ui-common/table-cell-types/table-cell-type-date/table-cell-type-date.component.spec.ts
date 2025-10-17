@@ -10,8 +10,7 @@ describe('TableCellTypeDateComponent', () => {
     TestBed.configureTestingModule({
       declarations: [TableCellTypeDateComponent],
       teardown: { destroyAfterEach: false },
-    })
-      .compileComponents()
+    }).compileComponents()
   }))
 
   beforeEach(() => {

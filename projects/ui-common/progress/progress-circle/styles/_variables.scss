@@ -1,10 +1,22 @@
 @use 'sass:color';
 
 $seam-progress-complete: $green !default;
-$seam-progress-complete-bg: color.adjust($green, $lightness: 40%, $space: hsl) !default;
+$seam-progress-complete-bg: color.adjust(
+  $green,
+  $lightness: 40%,
+  $space: hsl
+) !default;
 
 $seam-progress-incomplete: $orange !default;
-$seam-progress-incomplete-bg: color.adjust($orange, $lightness: 40%, $space: hsl) !default;
+$seam-progress-incomplete-bg: color.adjust(
+  $orange,
+  $lightness: 40%,
+  $space: hsl
+) !default;
 
 $seam-progress-new: $gray-600 !default;
-$seam-progress-new-bg: color.adjust($gray-600, $lightness: 40%, $space: hsl) !default;
+$seam-progress-new-bg: color.adjust(
+  $gray-600,
+  $lightness: 40%,
+  $space: hsl
+) !default;

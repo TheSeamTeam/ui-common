@@ -17,10 +17,7 @@ export class HideColumnColumnsAlteration extends ColumnsAlteration<HideColumnCol
 
   public readonly type: string = 'hide-column'
 
-  constructor(
-    state: HideColumnColumnsAlterationState,
-    persistent: boolean,
-  ) {
+  constructor(state: HideColumnColumnsAlterationState, persistent: boolean) {
     super(state, persistent)
 
     if (!this._isValidState(state)) {
@@ -30,7 +27,10 @@ export class HideColumnColumnsAlteration extends ColumnsAlteration<HideColumnCol
     this.id = `${this.type}--${state.columnProp}`
   }
 
-  public apply(columns: TheSeamDatatableColumn<any, any>[], datatable: TheSeamDatatableAccessor): void {
+  public apply(
+    columns: TheSeamDatatableColumn<any, any>[],
+    datatable: TheSeamDatatableAccessor,
+  ): void {
     for (const col of columns) {
       const prop = getColumnProp(col)
       if (prop === this.state.columnProp) {

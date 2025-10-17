@@ -1,6 +1,10 @@
 import { Meta, StoryObj, moduleMetadata } from '@storybook/angular'
 
-import { buttonTypeArgType, sizeArgType, themeWithOutlineArgType } from '@theseam/ui-common/story-helpers'
+import {
+  buttonTypeArgType,
+  sizeArgType,
+  themeWithOutlineArgType,
+} from '@theseam/ui-common/story-helpers'
 
 import { TheSeamButtonsModule } from '../buttons.module'
 import { TheSeamProgressCircleButtonComponent } from './progress-circle-button.component'
@@ -14,9 +18,7 @@ const meta: Meta<TheSeamProgressCircleButtonComponent & StoryExtraProps> = {
   component: TheSeamProgressCircleButtonComponent,
   decorators: [
     moduleMetadata({
-      imports: [
-        TheSeamButtonsModule,
-      ],
+      imports: [TheSeamButtonsModule],
     }),
   ],
   tags: ['autodocs'],
@@ -42,7 +44,7 @@ export default meta
 type Story = StoryObj<TheSeamProgressCircleButtonComponent & StoryExtraProps>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `
       <button seamProgressCircleButton

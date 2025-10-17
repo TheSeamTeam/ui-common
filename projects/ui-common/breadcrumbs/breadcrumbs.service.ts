@@ -34,14 +34,11 @@ interface BreadcrumbData {
   providedIn: 'root',
 })
 export class TheSeamBreadcrumbsService {
-
   private readonly _router = inject(Router)
   private readonly _activatedRoute = inject(ActivatedRoute)
 
-  private readonly dataProps: (keyof Omit<BreadcrumbData, 'activatedRoute'>)[] = [
-    'breadcrumb',
-    'breadcrumbExtras',
-  ]
+  private readonly dataProps: (keyof Omit<BreadcrumbData, 'activatedRoute'>)[] =
+    ['breadcrumb', 'breadcrumbExtras']
 
   public readonly crumbs$ = this._crumbsFromRoute()
 
@@ -50,27 +47,37 @@ export class TheSeamBreadcrumbsService {
       filter((event): event is NavigationEnd => event instanceof NavigationEnd),
       map(() => this._activatedRoute),
       startWith(this._activatedRoute),
-      switchMap(activatedRoute => this._crumbsFromActivatedRoute(activatedRoute)),
+      switchMap((activatedRoute) =>
+        this._crumbsFromActivatedRoute(activatedRoute),
+      ),
     )
   }
 
-  private _crumbsFromActivatedRoute(activatedRoute: ActivatedRoute): Observable<TheSeamBreadcrumb[]> {
+  private _crumbsFromActivatedRoute(
+    activatedRoute: ActivatedRoute,
+  ): Observable<TheSeamBreadcrumb[]> {
     return this._breadcrumbDatasFromRoot(activatedRoute).pipe(
-      map(bcDatas => this._breadcrumbsFromData(bcDatas)),
+      map((bcDatas) => this._breadcrumbsFromData(bcDatas)),
     )
   }
 
-  private _breadcrumbDatasFromRoot(activatedRoute: ActivatedRoute): Observable<BreadcrumbData[]> {
-    const bcDataObs = leafChildRoute(activatedRoute).pathFromRoot.map(r => this._breadcrumbData(r))
+  private _breadcrumbDatasFromRoot(
+    activatedRoute: ActivatedRoute,
+  ): Observable<BreadcrumbData[]> {
+    const bcDataObs = leafChildRoute(activatedRoute).pathFromRoot.map((r) =>
+      this._breadcrumbData(r),
+    )
     return combineLatest(bcDataObs).pipe(
-      map(v => v.filter(notNullOrUndefined)),
-      switchMap(v => this._applyBreadcrumbExtras(v)),
+      map((v) => v.filter(notNullOrUndefined)),
+      switchMap((v) => this._applyBreadcrumbExtras(v)),
     )
   }
 
-  private _breadcrumbData(activatedRoute: ActivatedRoute): Observable<BreadcrumbData | null> {
+  private _breadcrumbData(
+    activatedRoute: ActivatedRoute,
+  ): Observable<BreadcrumbData | null> {
     return activatedRoute.data.pipe(
-      map(data => {
+      map((data) => {
         const bcData: BreadcrumbData = {
           activatedRoute,
           extrasPropRefs: [],
@@ -78,7 +85,10 @@ export class TheSeamBreadcrumbsService {
 
         let found = false
         for (const prop of this.dataProps) {
-          if (prop === 'breadcrumb' && !willHaveDataProp(activatedRoute, prop)) {
+          if (
+            prop === 'breadcrumb' &&
+            !willHaveDataProp(activatedRoute, prop)
+          ) {
             // Need to skip if the 'breadcrumb' data prop is not in the config,
             // because we will get duplicates if the data 'breadcrumb' prop is
             // inheritted from a parent route.
@@ -102,7 +112,9 @@ export class TheSeamBreadcrumbsService {
     )
   }
 
-  private _applyBreadcrumbExtras(datas: BreadcrumbData[]): Observable<BreadcrumbData[]> {
+  private _applyBreadcrumbExtras(
+    datas: BreadcrumbData[],
+  ): Observable<BreadcrumbData[]> {
     const newDatas: BreadcrumbData[] = []
 
     let pending: BreadcrumbData[] = []
@@ -123,29 +135,37 @@ export class TheSeamBreadcrumbsService {
 
     if (pending.length > 0) {
       // add extras
-      newDatas[newDatas.length - 1].extrasPropRefs = this._filterExtrasPropRefs([
-        ...newDatas[newDatas.length - 1].extrasPropRefs,
-        ...pending.map(p => p.extrasPropRefs).reduce((prev, curr) => [ ...prev, ...curr ], []),
-      ])
+      newDatas[newDatas.length - 1].extrasPropRefs = this._filterExtrasPropRefs(
+        [
+          ...newDatas[newDatas.length - 1].extrasPropRefs,
+          ...pending
+            .map((p) => p.extrasPropRefs)
+            .reduce((prev, curr) => [...prev, ...curr], []),
+        ],
+      )
     }
 
-    return combineLatest(newDatas.map(data => {
-      if (data.extrasPropRefs.length === 0) {
-        return of(data)
-      }
+    return combineLatest(
+      newDatas.map((data) => {
+        if (data.extrasPropRefs.length === 0) {
+          return of(data)
+        }
 
-      return this._observeExtrasPropRefs(data.extrasPropRefs).pipe(
-        map(extrasStr => {
-          data.breadcrumb = `${data.breadcrumb} ${extrasStr}`
-          return data
-        }),
-      )
-    }))
+        return this._observeExtrasPropRefs(data.extrasPropRefs).pipe(
+          map((extrasStr) => {
+            data.breadcrumb = `${data.breadcrumb} ${extrasStr}`
+            return data
+          }),
+        )
+      }),
+    )
   }
 
-  private _observeExtrasPropRefs(propRefs: ExtrasPropRef[]): Observable<string> {
-    return combineLatest(propRefs.map(pf => pf.value)).pipe(
-      map(values => values.map(v => `(${v})`).join(' ')),
+  private _observeExtrasPropRefs(
+    propRefs: ExtrasPropRef[],
+  ): Observable<string> {
+    return combineLatest(propRefs.map((pf) => pf.value)).pipe(
+      map((values) => values.map((v) => `(${v})`).join(' ')),
     )
   }
 
@@ -158,7 +178,7 @@ export class TheSeamBreadcrumbsService {
       return []
     }
 
-    const propRefs = data.breadcrumbExtras.dataProps.map(prop => {
+    const propRefs = data.breadcrumbExtras.dataProps.map((prop) => {
       return { prop, value: this._getDataProp(data.activatedRoute, prop) }
     })
 
@@ -166,8 +186,8 @@ export class TheSeamBreadcrumbsService {
   }
 
   private _filterExtrasPropRefs(propRefs: ExtrasPropRef[]): ExtrasPropRef[] {
-    const seen: { [key: string]: boolean } = { }
-    return propRefs.filter(propRef => {
+    const seen: { [key: string]: boolean } = {}
+    return propRefs.filter((propRef) => {
       if (seen[propRef.prop]) {
         return false
       }
@@ -176,17 +196,20 @@ export class TheSeamBreadcrumbsService {
     })
   }
 
-  private _getDataProp(activatedRoute: ActivatedRoute, prop: string): Observable<string> {
+  private _getDataProp(
+    activatedRoute: ActivatedRoute,
+    prop: string,
+  ): Observable<string> {
     if (activatedRoute.routeConfig !== null) {
       if (willHaveDataProp(activatedRoute, prop)) {
-        return activatedRoute.data.pipe(map(d => d[prop]))
+        return activatedRoute.data.pipe(map((d) => d[prop]))
       }
     }
 
     let r = activatedRoute.parent
     while (r !== null) {
       if (willHaveDataProp(r, prop)) {
-        return r.data.pipe(map(d => d[prop]))
+        return r.data.pipe(map((d) => d[prop]))
       }
 
       r = r.parent

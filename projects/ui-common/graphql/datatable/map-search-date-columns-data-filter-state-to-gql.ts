@@ -1,22 +1,47 @@
-import { ColumnsDataFilterState, TheSeamColumnsDataFilterDateSearchFormState, TheSeamColumnsDataFilterDateSearchOptions, THESEAM_COLUMNS_DATA_FILTER_DATE_TEXT_SEARCH_TYPES, getFormattedDateForComparison, THESEAM_COLUMNS_DATA_FILTER_DATE_RANGE_SEARCH_TYPES } from '@theseam/ui-common/datatable'
+import {
+  ColumnsDataFilterState,
+  TheSeamColumnsDataFilterDateSearchFormState,
+  TheSeamColumnsDataFilterDateSearchOptions,
+  THESEAM_COLUMNS_DATA_FILTER_DATE_TEXT_SEARCH_TYPES,
+  getFormattedDateForComparison,
+  THESEAM_COLUMNS_DATA_FILTER_DATE_RANGE_SEARCH_TYPES,
+} from '@theseam/ui-common/datatable'
 import { isNullOrUndefined, notNullOrUndefined } from '@theseam/ui-common/utils'
 import { FilterStateMapperResult } from './map-filter-states'
 import { MapperContext } from './mapper-context'
 
 export const mapSearchDateColumnsDataFilterStateToGql = (
-  filterState: ColumnsDataFilterState<TheSeamColumnsDataFilterDateSearchFormState, TheSeamColumnsDataFilterDateSearchOptions>, context: MapperContext<any>,
+  filterState: ColumnsDataFilterState<
+    TheSeamColumnsDataFilterDateSearchFormState,
+    TheSeamColumnsDataFilterDateSearchOptions
+  >,
+  context: MapperContext<any>,
 ): FilterStateMapperResult => {
   const formValue = filterState.state.formValue
   const options = filterState.state.options
 
   let filter = null
 
-  if (isNullOrUndefined(filterState.state.prop) || isNullOrUndefined(options) || isNullOrUndefined(formValue) || isNullOrUndefined(formValue.searchType)) {
+  if (
+    isNullOrUndefined(filterState.state.prop) ||
+    isNullOrUndefined(options) ||
+    isNullOrUndefined(formValue) ||
+    isNullOrUndefined(formValue.searchType)
+  ) {
     return filter
   }
 
-  if (THESEAM_COLUMNS_DATA_FILTER_DATE_TEXT_SEARCH_TYPES.includes(formValue.searchType) && notNullOrUndefined(formValue.searchText)) {
-    const searchDate = getFormattedDateForComparison(formValue.searchText, options.dateType, true)
+  if (
+    THESEAM_COLUMNS_DATA_FILTER_DATE_TEXT_SEARCH_TYPES.includes(
+      formValue.searchType,
+    ) &&
+    notNullOrUndefined(formValue.searchText)
+  ) {
+    const searchDate = getFormattedDateForComparison(
+      formValue.searchText,
+      options.dateType,
+      true,
+    )
 
     if (!isNaN(searchDate.valueOf())) {
       switch (formValue.searchType) {
@@ -34,8 +59,14 @@ export const mapSearchDateColumnsDataFilterStateToGql = (
             filter = {
               filter: {
                 and: [
-                  { [filterState.state.prop]: { gte: searchDate.toISOString() } },
-                  { [filterState.state.prop]: { lt: searchDateEnd.toISOString() } },
+                  {
+                    [filterState.state.prop]: { gte: searchDate.toISOString() },
+                  },
+                  {
+                    [filterState.state.prop]: {
+                      lt: searchDateEnd.toISOString(),
+                    },
+                  },
                 ],
               },
               variables: {},
@@ -46,7 +77,12 @@ export const mapSearchDateColumnsDataFilterStateToGql = (
         }
         case 'gt':
         case 'lte': {
-          const comparator = formValue.searchType === 'gt' ? 'gte' : formValue.searchType === 'lte' ? 'lt' : null
+          const comparator =
+            formValue.searchType === 'gt'
+              ? 'gte'
+              : formValue.searchType === 'lte'
+                ? 'lt'
+                : null
 
           let searchDateEnd
           if (options.dateType === 'datetime-local') {
@@ -57,11 +93,18 @@ export const mapSearchDateColumnsDataFilterStateToGql = (
             searchDateEnd.setDate(searchDateEnd.getDate() + 1)
           }
 
-          if (notNullOrUndefined(comparator) && notNullOrUndefined(searchDateEnd)) {
+          if (
+            notNullOrUndefined(comparator) &&
+            notNullOrUndefined(searchDateEnd)
+          ) {
             filter = {
               filter: {
                 and: [
-                  { [filterState.state.prop]: { [comparator]: searchDateEnd.toISOString() } },
+                  {
+                    [filterState.state.prop]: {
+                      [comparator]: searchDateEnd.toISOString(),
+                    },
+                  },
                 ],
               },
               variables: {},
@@ -75,7 +118,11 @@ export const mapSearchDateColumnsDataFilterStateToGql = (
           filter = {
             filter: {
               and: [
-                { [filterState.state.prop]: { [formValue.searchType]: searchDate.toISOString() } },
+                {
+                  [filterState.state.prop]: {
+                    [formValue.searchType]: searchDate.toISOString(),
+                  },
+                },
               ],
             },
             variables: {},
@@ -87,9 +134,23 @@ export const mapSearchDateColumnsDataFilterStateToGql = (
           break
       }
     }
-  } else if (THESEAM_COLUMNS_DATA_FILTER_DATE_RANGE_SEARCH_TYPES.includes(formValue.searchType) && notNullOrUndefined(formValue.fromText) && notNullOrUndefined(formValue.toText)) {
-    const fromDate = getFormattedDateForComparison(formValue.fromText, options.dateType, true)
-    const toDate = getFormattedDateForComparison(formValue.toText, options.dateType, true)
+  } else if (
+    THESEAM_COLUMNS_DATA_FILTER_DATE_RANGE_SEARCH_TYPES.includes(
+      formValue.searchType,
+    ) &&
+    notNullOrUndefined(formValue.fromText) &&
+    notNullOrUndefined(formValue.toText)
+  ) {
+    const fromDate = getFormattedDateForComparison(
+      formValue.fromText,
+      options.dateType,
+      true,
+    )
+    const toDate = getFormattedDateForComparison(
+      formValue.toText,
+      options.dateType,
+      true,
+    )
 
     if (!isNaN(fromDate.valueOf()) && !isNaN(toDate.valueOf())) {
       let toDateEnd
@@ -128,18 +189,14 @@ export const mapSearchDateColumnsDataFilterStateToGql = (
   } else if (formValue.searchType === 'blank') {
     filter = {
       filter: {
-        or: [
-          { [filterState.state.prop]: { eq: null } },
-        ],
+        or: [{ [filterState.state.prop]: { eq: null } }],
       },
       variables: {},
     }
   } else if (formValue.searchType === 'not-blank') {
     filter = {
       filter: {
-        and: [
-          { [filterState.state.prop]: { neq: null } },
-        ],
+        and: [{ [filterState.state.prop]: { neq: null } }],
       },
       variables: {},
     }

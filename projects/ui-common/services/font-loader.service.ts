@@ -6,12 +6,12 @@ import WebFont from 'webfontloader'
 import { hasProperty } from '@theseam/ui-common/utils'
 
 export type TheSeamFontEvents =
-  { type: 'loading' } |
-  { type: 'active' } |
-  { type: 'inactive' } |
-  { type: 'fontloading', familyName: string, fvd: string } |
-  { type: 'fontactive', familyName: string, fvd: string } |
-  { type: 'fontinactive', familyName: string, fvd: string }
+  | { type: 'loading' }
+  | { type: 'active' }
+  | { type: 'inactive' }
+  | { type: 'fontloading'; familyName: string; fvd: string }
+  | { type: 'fontactive'; familyName: string; fvd: string }
+  | { type: 'fontinactive'; familyName: string; fvd: string }
 
 /**
  * Service to help loading fonts.
@@ -24,7 +24,6 @@ export type TheSeamFontEvents =
   providedIn: 'root',
 })
 export class TheSeamFontLoaderService {
-
   /**
    * Since this method is just a wrapper for webfontloader right now it accepts
    * anything webfontloader's config accepts, so the event callbacks can still
@@ -85,5 +84,4 @@ export class TheSeamFontLoaderService {
       })
     })
   }
-
 }

@@ -1,10 +1,19 @@
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { provideRouter } from '@angular/router'
 import { provideLocationMocks } from '@angular/common/testing'
 
-import { faPersonBooth, faPlusCircle, faWrench } from '@fortawesome/free-solid-svg-icons'
+import {
+  faPersonBooth,
+  faPlusCircle,
+  faWrench,
+} from '@fortawesome/free-solid-svg-icons'
 
 import { TheSeamWidgetModule } from '../../widget.module'
 import { WidgetTileListComponent } from './widget-tile-list.component'
@@ -21,9 +30,7 @@ const meta: Meta<WidgetTileListComponent> = {
       ],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamWidgetModule,
-      ],
+      imports: [TheSeamWidgetModule],
     }),
   ],
 }
@@ -32,11 +39,11 @@ export default meta
 type Story = StoryObj<WidgetTileListComponent>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       icon: faWrench,
-      icons: [ faPersonBooth, faWrench, faPersonBooth, faPlusCircle ],
+      icons: [faPersonBooth, faWrench, faPersonBooth, faPlusCircle],
     },
     template: `
       <div class="p-1" style="max-height: 400px; width: 500px;">

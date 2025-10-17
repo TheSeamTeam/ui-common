@@ -1,4 +1,9 @@
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms'
 import { provideAnimations } from '@angular/platform-browser/animations'
@@ -29,17 +34,17 @@ const meta: Meta<TheSeamFormFieldComponent> = {
                 ['blockquote'],
 
                 // [{ 'header': 1 }, { 'header': 2 }],               // custom button values
-                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                [{ 'script': 'sub' }, { 'script': 'super' }], // superscript/subscript
-                [{ 'indent': '-1' }, { 'indent': '+1' }], // outdent/indent
+                [{ list: 'ordered' }, { list: 'bullet' }],
+                [{ script: 'sub' }, { script: 'super' }], // superscript/subscript
+                [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
                 // [{ 'direction': 'rtl' }],                         // text direction
 
-                [{ 'size': ['small', false, 'large', 'huge'] }], // custom dropdown
-                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
+                [{ header: [1, 2, 3, 4, 5, 6, false] }],
 
-                [{ 'color': [] }, { 'background': [] }], // dropdown with defaults from theme
+                [{ color: [] }, { background: [] }], // dropdown with defaults from theme
                 // [{ 'font': [] }],
-                [{ 'align': [] }],
+                [{ align: [] }],
 
                 ['clean'], // remove formatting button
 
@@ -71,10 +76,10 @@ export default meta
 type Story = StoryObj<TheSeamFormFieldComponent>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
-      control: new FormControl(undefined, [ Validators.required ]),
+      control: new FormControl(undefined, [Validators.required]),
     },
     template: `
       <seam-form-field label="Quill Editor:">

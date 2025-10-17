@@ -4,12 +4,7 @@ import { FlexLayoutModule } from '@angular/flex-layout'
 
 @NgModule({
   declarations: [],
-  imports: [
-    CommonModule,
-    FlexLayoutModule,
-  ],
-  exports: [
-    FlexLayoutModule,
-  ],
+  imports: [CommonModule, FlexLayoutModule],
+  exports: [FlexLayoutModule],
 })
-export class TheSeamLayoutModule { }
+export class TheSeamLayoutModule {}

@@ -16,25 +16,23 @@ import { THESEAM_DATATABLE_PREFERENCES_ACCESSOR } from '../tokens/datatable-pref
   title="Datatable/Docs/Preferences/Storage"
   decorators={[
     moduleMetadata({
-      imports: [
-        TheSeamDatatableModule,
-      ],
+      imports: [TheSeamDatatableModule],
       providers: [
         provideAnimations(),
         provideLocationMocks(),
         provideRouter([]),
         {
           provide: THESEAM_DATATABLE_PREFERENCES_ACCESSOR,
-          useClass: DatatablePreferencesAccessorLocalService
-        }
-      ]
-    })
+          useClass: DatatablePreferencesAccessorLocalService,
+        },
+      ],
+    }),
   ]}
   parameters={{
     layout: 'fullscreen',
     docs: {
       iframeHeight: '400px',
-    }
+    },
   }}
 />
 
@@ -65,7 +63,6 @@ Accessor interface of the class to provide:
 
 ```ts
 export interface TheSeamDatatablePreferencesAccessor {
-
   /**
    * Gets a preference.
    */
@@ -80,7 +77,6 @@ export interface TheSeamDatatablePreferencesAccessor {
    * Delete a preference.
    */
   delete(name: string): Observable<boolean>
-
 }
 ```
 
@@ -95,13 +91,13 @@ export interface TheSeamDatatablePreferencesAccessor {
         columns: [
           { prop: 'name', name: 'Name' },
           { prop: 'amount', name: 'Amount' },
-          { prop: 'active', name: 'Active' }
+          { prop: 'active', name: 'Active' },
         ],
         rows: [
           { name: 'Thing', amount: 5, active: true },
           { name: 'Another Item', amount: 10, active: false },
-          { name: 'Other', amount: 2, active: true }
-        ]
+          { name: 'Other', amount: 2, active: true },
+        ],
       },
     }}
   </Story>

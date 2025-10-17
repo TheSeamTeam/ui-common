@@ -4,14 +4,8 @@ import { NgModule } from '@angular/core'
 import { WidgetFooterLinkComponent } from './widget-footer-link.component'
 
 @NgModule({
-  declarations: [
-    WidgetFooterLinkComponent,
-  ],
-  imports: [
-    CommonModule,
-  ],
-  exports: [
-    WidgetFooterLinkComponent,
-  ],
+  declarations: [WidgetFooterLinkComponent],
+  imports: [CommonModule],
+  exports: [WidgetFooterLinkComponent],
 })
-export class TheSeamWidgetFooterLinkModule { }
+export class TheSeamWidgetFooterLinkModule {}

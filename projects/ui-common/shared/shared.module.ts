@@ -42,4 +42,4 @@ import { TheSeamPasswordInputRevealComponent } from './components/password-input
     TheSeamNgxQuillExtraDirective,
   ],
 })
-export class TheSeamSharedModule { }
+export class TheSeamSharedModule {}

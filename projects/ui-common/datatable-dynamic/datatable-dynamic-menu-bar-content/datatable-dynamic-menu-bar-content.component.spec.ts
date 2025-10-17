@@ -10,8 +10,7 @@ describe('DatatableDynamicMenuBarContentComponent', () => {
     TestBed.configureTestingModule({
       declarations: [DatatableDynamicMenuBarContentComponent],
       teardown: { destroyAfterEach: false },
-    })
-      .compileComponents()
+    }).compileComponents()
   }))
 
   beforeEach(() => {

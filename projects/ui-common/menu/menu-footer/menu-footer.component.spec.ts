@@ -10,8 +10,7 @@ describe('MenuFooterComponent', () => {
     TestBed.configureTestingModule({
       declarations: [MenuFooterComponent],
       teardown: { destroyAfterEach: false },
-    })
-      .compileComponents()
+    }).compileComponents()
   }))
 
   beforeEach(() => {

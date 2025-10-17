@@ -1,14 +1,26 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
+} from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { inject } from '@angular/core'
 import { AbstractControl, ReactiveFormsModule } from '@angular/forms'
 import { Platform } from '@angular/cdk/platform'
 
 import { JsonSchemaFormModule, JsonSchemaFormService } from '@ajsf/core'
-import { TheSeamTiledSelectModule, TheSeamTiledSelectItem, TheSeamTiledSelectLayout } from '@theseam/ui-common/tiled-select'
+import {
+  TheSeamTiledSelectModule,
+  TheSeamTiledSelectItem,
+  TheSeamTiledSelectLayout,
+} from '@theseam/ui-common/tiled-select'
 import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 
-import { TheSeamSchemaFormControlWidget, TheSeamSchemaFormWidgetLayoutNodeOptions } from '../../schema-form'
+import {
+  TheSeamSchemaFormControlWidget,
+  TheSeamSchemaFormWidgetLayoutNodeOptions,
+} from '../../schema-form'
 
 @Component({
   selector: 'seam-schema-form-tiled-select',
@@ -24,8 +36,9 @@ import { TheSeamSchemaFormControlWidget, TheSeamSchemaFormWidgetLayoutNodeOption
     TheSeamTiledSelectModule,
   ],
 })
-export class TheSeamSchemaFormTiledSelectComponent implements OnInit, TheSeamSchemaFormControlWidget {
-
+export class TheSeamSchemaFormTiledSelectComponent
+  implements OnInit, TheSeamSchemaFormControlWidget
+{
   private readonly _jsf = inject(JsonSchemaFormService)
   private readonly _platform = inject(Platform)
 
@@ -49,7 +62,9 @@ export class TheSeamSchemaFormTiledSelectComponent implements OnInit, TheSeamSch
   animationsDisabled: boolean = this._platform.IOS
 
   ngOnInit() {
-    this.options = this.layoutNode?.options || {} as TheSeamSchemaFormWidgetLayoutNodeOptions
+    this.options =
+      this.layoutNode?.options ||
+      ({} as TheSeamSchemaFormWidgetLayoutNodeOptions)
     this._jsf.initializeControl(this)
     console.log(this.options)
     console.log(this.layoutNode)
@@ -59,5 +74,4 @@ export class TheSeamSchemaFormTiledSelectComponent implements OnInit, TheSeamSch
   updateValue(event: any) {
     this._jsf.updateValue(this, event.target.value)
   }
-
 }

@@ -7,7 +7,9 @@ export class AlterationItemHarness extends ComponentHarness {
   private _getTypeBadge = this.locatorFor('[data-testid^="alteration-type-"]')
   private _getIcon = this.locatorFor('[data-testid^="alteration-icon-"]')
   private _getSummary = this.locatorFor('[data-testid="alteration-summary"]')
-  private _getDiffState = this.locatorForOptional('[data-testid="alteration-diff-state"]')
+  private _getDiffState = this.locatorForOptional(
+    '[data-testid="alteration-diff-state"]',
+  )
   private _getDetails = this.locatorForAll('[data-testid="alteration-detail"]')
 
   async getType(): Promise<string> {
@@ -40,7 +42,7 @@ export class AlterationItemHarness extends ComponentHarness {
 
   async getDetails(): Promise<string[]> {
     const detailElements = await this._getDetails()
-    return Promise.all(detailElements.map(el => el.text()))
+    return Promise.all(detailElements.map((el) => el.text()))
   }
 
   async hasDetails(): Promise<boolean> {
@@ -69,7 +71,8 @@ export class AlterationItemHarness extends ComponentHarness {
   async getBadgeClass(): Promise<string> {
     const badge = await this._getTypeBadge()
     const classes = await badge.getAttribute('class')
-    const badgeClasses = classes?.split(' ').filter(cls => cls.startsWith('badge-')) || []
+    const badgeClasses =
+      classes?.split(' ').filter((cls) => cls.startsWith('badge-')) || []
     return badgeClasses[0] || ''
   }
 

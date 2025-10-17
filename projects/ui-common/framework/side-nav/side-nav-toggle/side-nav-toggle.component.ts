@@ -1,6 +1,14 @@
 import { BooleanInput } from '@angular/cdk/coercion'
 import { CommonModule } from '@angular/common'
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, TemplateRef, ViewEncapsulation } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  TemplateRef,
+  ViewEncapsulation,
+} from '@angular/core'
 
 import { InputBoolean } from '@theseam/ui-common/core'
 import { SeamIcon, TheSeamIconModule } from '@theseam/ui-common/icon'
@@ -12,10 +20,7 @@ import { SeamIcon, TheSeamIconModule } from '@theseam/ui-common/icon'
   host: {
     '[class.side-nav-toggle--compact]': '!expanded',
   },
-  imports: [
-    CommonModule,
-    TheSeamIconModule,
-  ],
+  imports: [CommonModule, TheSeamIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
@@ -33,5 +38,4 @@ export class SideNavToggleComponent {
   toggle() {
     this.toggleExpand.emit()
   }
-
 }

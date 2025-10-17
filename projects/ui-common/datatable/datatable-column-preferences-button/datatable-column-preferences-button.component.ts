@@ -13,7 +13,6 @@ import { ColumnsAlterationsManagerService } from '../services/columns-alteration
   standalone: false,
 })
 export class DatatableColumnPreferencesButtonComponent {
-
   icon = faColumns
 
   /** @ignore */
@@ -46,10 +45,9 @@ export class DatatableColumnPreferencesButtonComponent {
 
   constructor(
     private readonly _columnsAlterationsManager: ColumnsAlterationsManagerService,
-  ) { }
+  ) {}
 
   _resetColumns(event: any) {
     this._columnsAlterationsManager.clear()
   }
-
 }

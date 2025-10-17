@@ -36,14 +36,22 @@ const sampleAlterations: AlterationDisplayItem[] = [
     id: 'sort',
     type: 'sort',
     summary: 'Name ↑, Date ↓',
-    details: ['Name: Ascending (Priority: 1)', 'Date: Descending (Priority: 2)'],
+    details: [
+      'Name: Ascending (Priority: 1)',
+      'Date: Descending (Priority: 2)',
+    ],
     sortOrder: 0,
   },
   {
     id: 'filter--status',
     type: 'filter',
     summary: 'Status = Active',
-    details: ['Column: Status', 'Type: text', 'Operation: Equals', 'Value: Active'],
+    details: [
+      'Column: Status',
+      'Type: text',
+      'Operation: Equals',
+      'Value: Active',
+    ],
     sortOrder: 0,
   },
   {
@@ -78,7 +86,10 @@ export const WithItems: Story = {
     compact: true,
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(AlterationsListHarness, { canvasElement, fixture })
+    const harness = await getHarness(AlterationsListHarness, {
+      canvasElement,
+      fixture,
+    })
 
     expect(await harness.getTitle()).toBe('Current Alterations')
     expect(await harness.getCount()).toBe('5 alterations')
@@ -102,7 +113,10 @@ export const EmptyList: Story = {
     compact: true,
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(AlterationsListHarness, { canvasElement, fixture })
+    const harness = await getHarness(AlterationsListHarness, {
+      canvasElement,
+      fixture,
+    })
 
     expect(await harness.getTitle()).toBe('Pending Alterations')
     expect(await harness.getItemCount()).toBe(0)
@@ -117,7 +131,10 @@ export const WithoutTitle: Story = {
     compact: true,
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(AlterationsListHarness, { canvasElement, fixture })
+    const harness = await getHarness(AlterationsListHarness, {
+      canvasElement,
+      fixture,
+    })
 
     expect(await harness.getTitle()).toBeNull()
     expect(await harness.getItemCount()).toBe(5)
@@ -131,12 +148,17 @@ export const ExpandedView: Story = {
     compact: false,
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(AlterationsListHarness, { canvasElement, fixture })
+    const harness = await getHarness(AlterationsListHarness, {
+      canvasElement,
+      fixture,
+    })
 
     expect(await harness.getItemCount()).toBe(5)
 
     // Check that details are visible in expanded view
-    const detailsElements = canvasElement.querySelectorAll('[data-testid="alteration-detail"]')
+    const detailsElements = canvasElement.querySelectorAll(
+      '[data-testid="alteration-detail"]',
+    )
     expect(detailsElements.length).toBeGreaterThan(0)
   },
 }
@@ -148,7 +170,10 @@ export const SingleItem: Story = {
     compact: true,
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(AlterationsListHarness, { canvasElement, fixture })
+    const harness = await getHarness(AlterationsListHarness, {
+      canvasElement,
+      fixture,
+    })
 
     expect(await harness.getTitle()).toBe('Single Alteration')
     expect(await harness.getItemCount()).toBe(1)
@@ -162,13 +187,18 @@ export const WithDiffStates: Story = {
   args: {
     items: sampleAlterations.map((item, index) => ({
       ...item,
-      diffState: ['added', 'removed', 'changed', 'unchanged', 'added'][index] as any,
+      diffState: ['added', 'removed', 'changed', 'unchanged', 'added'][
+        index
+      ] as any,
     })),
     title: 'Alterations with Diff States',
     compact: true,
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(AlterationsListHarness, { canvasElement, fixture })
+    const harness = await getHarness(AlterationsListHarness, {
+      canvasElement,
+      fixture,
+    })
 
     expect(await harness.getItemCount()).toBe(5)
 

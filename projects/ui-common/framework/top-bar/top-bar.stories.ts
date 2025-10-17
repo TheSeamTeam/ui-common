@@ -1,18 +1,28 @@
 // import { boolean, text, withKnobs } from '@storybook/addon-knobs'
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { provideRouter } from '@angular/router'
 import { provideLocationMocks } from '@angular/common/testing'
 
 import { faBell, faComment } from '@fortawesome/free-regular-svg-icons'
-import { faExclamationTriangle, faQuestionCircle, faSignOutAlt, faUserAlt } from '@fortawesome/free-solid-svg-icons'
+import {
+  faExclamationTriangle,
+  faQuestionCircle,
+  faSignOutAlt,
+  faUserAlt,
+} from '@fortawesome/free-solid-svg-icons'
 
 import { TheSeamTopBarComponent } from './top-bar.component'
 // import { TheSeamTopBarModule } from './top-bar.module'
 import { TheSeamMenuModule } from '@theseam/ui-common/menu'
 
-interface StoryExtraProps { }
+interface StoryExtraProps {}
 
 const meta: Meta<TheSeamTopBarComponent & StoryExtraProps> = {
   title: 'Framework/Top Bar',
@@ -44,7 +54,7 @@ export default meta
 type Story = StoryObj<TheSeamTopBarComponent & StoryExtraProps>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       // logo: text('logo', 'assets/images/theseam_logo.svg'),
@@ -110,7 +120,7 @@ export const Basic: Story = {
 }
 
 export const ExternalLink: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       // logo: text('logo', 'assets/images/theseam_logo.svg'),

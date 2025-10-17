@@ -4,16 +4,14 @@ import { NgIf } from '@angular/common'
 
 import { TheSeamAutoFocusDirective } from '../directives/auto-focus.directive'
 
-interface StoryExtraProps { }
+interface StoryExtraProps {}
 
 const meta: Meta<TheSeamAutoFocusDirective & StoryExtraProps> = {
   title: 'Shared/AutoFocus',
   component: TheSeamAutoFocusDirective,
   decorators: [
     moduleMetadata({
-      imports: [
-        NgIf,
-      ],
+      imports: [NgIf],
     }),
   ],
 }
@@ -22,7 +20,7 @@ export default meta
 type Story = StoryObj<TheSeamAutoFocusDirective & StoryExtraProps>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       visible: false,

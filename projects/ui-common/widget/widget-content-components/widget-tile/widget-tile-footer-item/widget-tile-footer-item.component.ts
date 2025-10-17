@@ -1,10 +1,17 @@
 import { BooleanInput } from '@angular/cdk/coercion'
-import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, Input } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  HostBinding,
+  Input,
+} from '@angular/core'
 
 import { InputBoolean } from '@theseam/ui-common/core'
 
 @Component({
-  selector: 'seam-widget-tile-footer-item,a[seam-widget-tile-footer-item],button[seam-widget-tile-footer-item]',
+  selector:
+    'seam-widget-tile-footer-item,a[seam-widget-tile-footer-item],button[seam-widget-tile-footer-item]',
   templateUrl: './widget-tile-footer-item.component.html',
   styleUrls: ['./widget-tile-footer-item.component.scss'],
   host: {
@@ -24,16 +31,22 @@ export class WidgetTileFooterItemComponent {
   }
 
   @HostBinding('class.disabled')
-  get _DisabledCss() { return this.disabled }
+  get _DisabledCss() {
+    return this.disabled
+  }
 
   @Input()
-  get type(): string | undefined | null { return this._type }
+  get type(): string | undefined | null {
+    return this._type
+  }
 
   @Input() @InputBoolean() disabled = false
 
   constructor(
-    public _elementRef: ElementRef<HTMLElement | HTMLAnchorElement | HTMLButtonElement>,
-  ) { }
+    public _elementRef: ElementRef<
+      HTMLElement | HTMLAnchorElement | HTMLButtonElement
+    >,
+  ) {}
 
   /** Determines if the component host is a button. */
   private _isButton(): boolean {

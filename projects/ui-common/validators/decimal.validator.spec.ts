@@ -40,52 +40,138 @@ describe('decimalValidator', () => {
     expect(decimalValidator(new UntypedFormControl('-0.1'))).toBeNull()
     expect(decimalValidator(new UntypedFormControl('-1.0'))).toBeNull()
     expect(decimalValidator(new UntypedFormControl('-1.1'))).toBeNull()
-    expect(decimalValidator(new UntypedFormControl('-1234567.012345'))).toBeNull()
-    expect(decimalValidator(new UntypedFormControl('-1234567.012345'))).toBeNull()
+    expect(
+      decimalValidator(new UntypedFormControl('-1234567.012345')),
+    ).toBeNull()
+    expect(
+      decimalValidator(new UntypedFormControl('-1234567.012345')),
+    ).toBeNull()
   })
 
   it('should fail for non-valid decimal control values', () => {
-    expect(decimalValidator(new UntypedFormControl('a'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('a-'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('a1'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('a1-'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('1a'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('1a-'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('a.1'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('a.1-'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('1.a'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('1.a-'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('--a'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('a--'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('-a1'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('-1a'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('-a.1'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('-1.a'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('-'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('+'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('--1'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('-+1'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('+-1'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('++1'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('1--'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('1-+'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('1+-'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('1++'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('1..1'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('-1..1'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('..1'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('1..'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('.'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl('..'))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl({}))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl(NaN))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl(Infinity))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl(new Date()))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
+    expect(decimalValidator(new UntypedFormControl('a'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('a-'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('a1'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('a1-'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('1a'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('1a-'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('a.1'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('a.1-'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('1.a'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('1.a-'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('--a'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('a--'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('-a1'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('-1a'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('-a.1'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('-1.a'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('-'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('+'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('--1'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('-+1'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('+-1'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('++1'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('1--'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('1-+'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('1+-'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('1++'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('1..1'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('-1..1'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('..1'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('1..'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('.'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl('..'))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl({}))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl(NaN))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl(Infinity))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl(new Date()))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
 
-    expect(decimalValidator(new UntypedFormControl(new Object()))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl(true))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl(false))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl([1]))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
-    expect(decimalValidator(new UntypedFormControl(['1']))).toEqual({ 'decimal': { 'reason': 'Must be valid decimal number.' } })
+    expect(decimalValidator(new UntypedFormControl(new Object()))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl(true))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl(false))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl([1]))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
+    expect(decimalValidator(new UntypedFormControl(['1']))).toEqual({
+      decimal: { reason: 'Must be valid decimal number.' },
+    })
   })
 })

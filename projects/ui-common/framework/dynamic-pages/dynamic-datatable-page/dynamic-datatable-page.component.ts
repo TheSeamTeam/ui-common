@@ -10,7 +10,6 @@ import { map } from 'rxjs/operators'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DynamicDatatablePageComponent implements OnDestroy {
-
   private _tableDefSubscription = Subscription.EMPTY
 
   tableDef$: Observable<any>
@@ -19,9 +18,12 @@ export class DynamicDatatablePageComponent implements OnDestroy {
     private _route: ActivatedRoute,
     private _router: Router,
   ) {
-    this.tableDef$ = this._route.data.pipe(map(v => v['tableDef'] || undefined))
+    this.tableDef$ = this._route.data.pipe(
+      map((v) => v['tableDef'] || undefined),
+    )
   }
 
-  ngOnDestroy() { this._tableDefSubscription.unsubscribe() }
-
+  ngOnDestroy() {
+    this._tableDefSubscription.unsubscribe()
+  }
 }

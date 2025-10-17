@@ -18,7 +18,10 @@ import { map, shareReplay, startWith, takeUntil } from 'rxjs/operators'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { faUserCircle } from '@fortawesome/free-regular-svg-icons'
 import { InputBoolean } from '@theseam/ui-common/core'
-import { TheSeamLayoutModule, TheSeamLayoutService } from '@theseam/ui-common/layout'
+import {
+  TheSeamLayoutModule,
+  TheSeamLayoutService,
+} from '@theseam/ui-common/layout'
 import { SeamIcon, TheSeamIconModule } from '@theseam/ui-common/icon'
 import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
 import { TheSeamMenuModule } from '@theseam/ui-common/menu'
@@ -77,15 +80,20 @@ export class TheSeamTopBarComponent implements OnDestroy, AfterContentInit {
   readonly faBars = faBars
 
   /** @ignore */
-  @ContentChild(TopBarMenuDirective, { static: true }) _topBarMenu?: TopBarMenuDirective | null
+  @ContentChild(TopBarMenuDirective, { static: true })
+  _topBarMenu?: TopBarMenuDirective | null
   /** @ignore */
-  @ContentChildren(TopBarItemDirective) _topBarItems?: QueryList<TopBarItemDirective>
+  @ContentChildren(TopBarItemDirective)
+  _topBarItems?: QueryList<TopBarItemDirective>
   /** @ignore */
-  @ContentChild(TopBarMenuBtnDetailDirective) _topBarMenuBtnDetailTpl?: TopBarMenuBtnDetailDirective | null
+  @ContentChild(TopBarMenuBtnDetailDirective)
+  _topBarMenuBtnDetailTpl?: TopBarMenuBtnDetailDirective | null
   /** @ignore */
-  @ContentChild(TopBarCompactMenuBtnDetailDirective) _topBarCompactMenuBtnDetailTpl?: TopBarCompactMenuBtnDetailDirective | null
+  @ContentChild(TopBarCompactMenuBtnDetailDirective)
+  _topBarCompactMenuBtnDetailTpl?: TopBarCompactMenuBtnDetailDirective | null
   /** @ignore */
-  @ContentChild(TopBarNavToggleBtnDetailDirective) _topBarNavToggleBtnDetailTpl?: TopBarNavToggleBtnDetailDirective | null
+  @ContentChild(TopBarNavToggleBtnDetailDirective)
+  _topBarNavToggleBtnDetailTpl?: TopBarNavToggleBtnDetailDirective | null
 
   /** Logo displayed on the top bar. */
   @Input() logo: string | undefined | null
@@ -140,9 +148,7 @@ export class TheSeamTopBarComponent implements OnDestroy, AfterContentInit {
   /** @ignore */
   readonly isMobile$: Observable<boolean>
 
-  constructor(
-    private readonly _layout: TheSeamLayoutService,
-  ) {
+  constructor(private readonly _layout: TheSeamLayoutService) {
     this.isMobile$ = this._layout.isMobile$
   }
 
@@ -155,23 +161,24 @@ export class TheSeamTopBarComponent implements OnDestroy, AfterContentInit {
   /** @ignore */
   ngAfterContentInit() {
     if (this._topBarItems) {
-      this._topBarItems.changes.pipe(
-        startWith(undefined),
-        map(() => {
-          const items = this._topBarItems?.toArray() || []
+      this._topBarItems.changes
+        .pipe(
+          startWith(undefined),
+          map(() => {
+            const items = this._topBarItems?.toArray() || []
 
-          const left = items.filter(i => i.position === 'left')
-          const right = items.filter(i => i.position === 'right')
-          const center = items.filter(i => i.position === 'center')
+            const left = items.filter((i) => i.position === 'left')
+            const right = items.filter((i) => i.position === 'right')
+            const center = items.filter((i) => i.position === 'center')
 
-          this._leftItems.next(left)
-          this._rightItems.next(right)
-          this._centerItems.next(center)
-        }),
-        shareReplay({ bufferSize: 1, refCount: true }),
-        takeUntil(this._ngUnsubscribe),
-      ).subscribe()
+            this._leftItems.next(left)
+            this._rightItems.next(right)
+            this._centerItems.next(center)
+          }),
+          shareReplay({ bufferSize: 1, refCount: true }),
+          takeUntil(this._ngUnsubscribe),
+        )
+        .subscribe()
     }
   }
-
 }

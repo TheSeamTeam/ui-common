@@ -10,9 +10,9 @@ describe('mapFilterStates', () => {
   })
 
   it('should return null if no filterStates return value', async () => {
-    const state = [ { name: 'a', state: {} } ]
+    const state = [{ name: 'a', state: {} }]
     const mappers = {
-      'a': (filterState: DataFilterState, context: MapperContext) => null,
+      a: (filterState: DataFilterState, context: MapperContext) => null,
     }
     const result = await mapFilterStates(state, mappers, { extraVariables: {} })
     expect(result).toBeNull()
@@ -26,13 +26,27 @@ describe('mapFilterStates', () => {
       { name: 'd', state: {} },
     ]
     const mappers: FilterStateMappers = {
-      'a': (filterState: DataFilterState, context: MapperContext) => ({ filter: { eq: 'a' }, variables: { a: 'b' } }),
-      'b': (filterState: DataFilterState, context: MapperContext) => ({ filter: { eq: 'b' }, variables: { c: 'd' } }),
-      'c': (filterState: DataFilterState, context: MapperContext) => ({ filter: { }, variables: { e: 'f' } }),
-      'd': (filterState: DataFilterState, context: MapperContext) => ({ filter: { eq: 'b' }, variables: { } }),
+      a: (filterState: DataFilterState, context: MapperContext) => ({
+        filter: { eq: 'a' },
+        variables: { a: 'b' },
+      }),
+      b: (filterState: DataFilterState, context: MapperContext) => ({
+        filter: { eq: 'b' },
+        variables: { c: 'd' },
+      }),
+      c: (filterState: DataFilterState, context: MapperContext) => ({
+        filter: {},
+        variables: { e: 'f' },
+      }),
+      d: (filterState: DataFilterState, context: MapperContext) => ({
+        filter: { eq: 'b' },
+        variables: {},
+      }),
     }
     const result = await mapFilterStates(state, mappers, { extraVariables: {} })
-    expect(result?.filter).toEqual({ or: [ { eq: 'a' }, { eq: 'b' }, { eq: 'b' } ] })
+    expect(result?.filter).toEqual({
+      or: [{ eq: 'a' }, { eq: 'b' }, { eq: 'b' }],
+    })
     expect(result?.variables).toEqual({ a: 'b', c: 'd', e: 'f' })
   })
 })

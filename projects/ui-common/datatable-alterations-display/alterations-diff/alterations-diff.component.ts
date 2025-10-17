@@ -4,7 +4,12 @@ import { Subject, takeUntil } from 'rxjs'
 
 import { TheSeamLayoutService } from '@theseam/ui-common/layout'
 
-import { AlterationDisplayItem, AlterationDiffState, AlterationDiffMode, AlterationVisualState } from '../models/alteration-display.model'
+import {
+  AlterationDisplayItem,
+  AlterationDiffState,
+  AlterationDiffMode,
+  AlterationVisualState,
+} from '../models/alteration-display.model'
 import { AlterationDisplayService } from '../services/alteration-display.service'
 import { AlterationsListComponent } from '../alterations-list/alterations-list.component'
 
@@ -34,9 +39,10 @@ export class AlterationsDiffComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     // Subscribe to mobile breakpoint changes
-    this.layoutService.observe('lt-md')
+    this.layoutService
+      .observe('lt-md')
       .pipe(takeUntil(this.destroy$))
-      .subscribe(isMobile => {
+      .subscribe((isMobile) => {
         this.isMobile = isMobile
       })
 
@@ -54,7 +60,7 @@ export class AlterationsDiffComponent implements OnInit, OnDestroy {
       return this.currentItems
     }
 
-    return this.currentItems.map(item => ({
+    return this.currentItems.map((item) => ({
       ...item,
       _diffState: this.getItemDiffState(item, 'current'),
     }))
@@ -65,7 +71,7 @@ export class AlterationsDiffComponent implements OnInit, OnDestroy {
       return this.pendingItems
     }
 
-    return this.pendingItems.map(item => ({
+    return this.pendingItems.map((item) => ({
       ...item,
       _diffState: this.getItemDiffState(item, 'pending'),
     }))
@@ -120,22 +126,29 @@ export class AlterationsDiffComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getItemDiffState(item: AlterationDisplayItem, context: 'current' | 'pending'): AlterationVisualState | undefined {
+  private getItemDiffState(
+    item: AlterationDisplayItem,
+    context: 'current' | 'pending',
+  ): AlterationVisualState | undefined {
     if (!this.diffState) {
       return undefined
     }
 
     const itemId = item.id
 
-    if (this.diffState.added.some(addedItem => addedItem.id === itemId)) {
+    if (this.diffState.added.some((addedItem) => addedItem.id === itemId)) {
       return context === 'pending' ? 'added' : undefined
     }
 
-    if (this.diffState.removed.some(removedItem => removedItem.id === itemId)) {
+    if (
+      this.diffState.removed.some((removedItem) => removedItem.id === itemId)
+    ) {
       return context === 'current' ? 'removed' : undefined
     }
 
-    if (this.diffState.changed.some(changedItem => changedItem.id === itemId)) {
+    if (
+      this.diffState.changed.some((changedItem) => changedItem.id === itemId)
+    ) {
       return 'changed'
     }
 

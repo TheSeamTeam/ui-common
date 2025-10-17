@@ -55,7 +55,10 @@ export abstract class ColumnsAlteration<TState = any> {
   /**
    * Apply alteration to column.
    */
-  public abstract apply(columns: TheSeamDatatableColumn[], datatable: TheSeamDatatableAccessor): void
+  public abstract apply(
+    columns: TheSeamDatatableColumn[],
+    datatable: TheSeamDatatableAccessor,
+  ): void
 
   /**
    * Convert alteration to display format for UI rendering.

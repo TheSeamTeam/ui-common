@@ -1,5 +1,9 @@
 import { FocusMonitor, FocusOrigin } from '@angular/cdk/a11y'
-import { BooleanInput, coerceBooleanProperty, coerceNumberProperty } from '@angular/cdk/coercion'
+import {
+  BooleanInput,
+  coerceBooleanProperty,
+  coerceNumberProperty,
+} from '@angular/cdk/coercion'
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -16,12 +20,21 @@ import {
   Output,
   ViewChild,
 } from '@angular/core'
-import { ControlValueAccessor, UntypedFormControl, NgControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms'
+import {
+  ControlValueAccessor,
+  UntypedFormControl,
+  NgControl,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+} from '@angular/forms'
 import { defer, fromEvent, merge, Observable, of, Subject } from 'rxjs'
 import { auditTime, map, switchMap, takeUntil } from 'rxjs/operators'
 
 import { InputBoolean } from '@theseam/ui-common/core'
-import { InputDirective, TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
+import {
+  InputDirective,
+  TheSeamFormFieldModule,
+} from '@theseam/ui-common/form-field'
 
 import { TheSeamTelInputDirective } from '../tel-input.directive'
 import { CommonModule } from '@angular/common'
@@ -33,11 +46,13 @@ import { CommonModule } from '@angular/common'
   selector: 'seam-tel-input',
   templateUrl: './tel-input.component.html',
   styleUrls: ['./tel-input.component.scss'],
-  providers: [{
-    provide: NG_VALUE_ACCESSOR,
-    useExisting: forwardRef(() => TheSeamTelInputComponent),
-    multi: true,
-  }],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => TheSeamTelInputComponent),
+      multi: true,
+    },
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
@@ -46,7 +61,9 @@ import { CommonModule } from '@angular/common'
     TheSeamTelInputDirective,
   ],
 })
-export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValueAccessor {
+export class TheSeamTelInputComponent
+  implements OnInit, OnDestroy, ControlValueAccessor
+{
   static ngAcceptInputType_required: BooleanInput
   static ngAcceptInputType_disabled: BooleanInput
 
@@ -63,7 +80,9 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
   @Input() @InputBoolean() required = false
 
   @Input()
-  get disabled(): boolean { return this._disabled }
+  get disabled(): boolean {
+    return this._disabled
+  }
   set disabled(value: boolean) {
     const newValue = coerceBooleanProperty(value)
 
@@ -89,15 +108,23 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
    * keyboard navigation.
    */
   @Input()
-  set tabIndex(value: number) { this._tabIndex = coerceNumberProperty(value) }
-  get tabIndex(): number { return this._tabIndex }
+  set tabIndex(value: number) {
+    this._tabIndex = coerceNumberProperty(value)
+  }
+  get tabIndex(): number {
+    return this._tabIndex
+  }
   private _tabIndex = -1
 
   @HostBinding('attr.disabled')
-  get _attrDisabled() { return this.disabled || null }
+  get _attrDisabled() {
+    return this.disabled || null
+  }
 
   @HostBinding('attr.tabindex')
-  get _attrTabIndex() { return this.disabled ? -1 : (this.tabIndex || 0) }
+  get _attrTabIndex() {
+    return this.disabled ? -1 : this.tabIndex || 0
+  }
 
   /** Name value will be applied to the input element if present */
   @Input() name: string | undefined | null = null
@@ -113,7 +140,8 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
    * The telInput directive
    * @ignore
    */
-  @ViewChild(TheSeamTelInputDirective, { static: true }) _telInputDirective?: TheSeamTelInputDirective
+  @ViewChild(TheSeamTelInputDirective, { static: true })
+  _telInputDirective?: TheSeamTelInputDirective
 
   /**
    * The telInput directive
@@ -125,9 +153,10 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
    * The native `<input type="tel">` element
    * @ignore
    */
-  @ViewChild('input', { static: true }) _inputElementRef?: ElementRef<HTMLInputElement>
+  @ViewChild('input', { static: true })
+  _inputElementRef?: ElementRef<HTMLInputElement>
 
-  @HostListener('focus', [ '$event' ])
+  @HostListener('focus', ['$event'])
   _onFocus() {
     this._telInputDirective?.focus()
   }
@@ -151,8 +180,13 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
       ? fromEvent(this._telInputDirective.getHostElement(), 'blur')
       : of<Event>()
 
-    this._hasInvalidCss$ = defer(() => of((this._injector.get(NgControl, null, { self: true })?.control) || undefined)).pipe(
-      switchMap(control => {
+    this._hasInvalidCss$ = defer(() =>
+      of(
+        this._injector.get(NgControl, null, { self: true })?.control ||
+          undefined,
+      ),
+    ).pipe(
+      switchMap((control) => {
         if (control) {
           return merge(
             control.valueChanges,
@@ -162,7 +196,11 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
             auditTime(0),
             map(() => {
               const inputControl = this._inputDirective?.ngControl
-              return control.invalid && (inputControl?.dirty as boolean || inputControl?.touched as boolean)
+              return (
+                control.invalid &&
+                ((inputControl?.dirty as boolean) ||
+                  (inputControl?.touched as boolean))
+              )
             }),
           )
         }
@@ -173,21 +211,22 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
 
   /** @ignore */
   ngOnInit(): void {
-    this._focusMonitor.monitor(this._elementRef, true).pipe(
-      takeUntil(this._ngUnsubscribe),
-    ).subscribe(origin => this._focusOrigin = origin)
+    this._focusMonitor
+      .monitor(this._elementRef, true)
+      .pipe(takeUntil(this._ngUnsubscribe))
+      .subscribe((origin) => (this._focusOrigin = origin))
 
-    this._control.valueChanges.pipe(
-      takeUntil(this._ngUnsubscribe),
-    ).subscribe(v => {
-      const value = this._telInputDirective?.getFullNumber()
-      // console.log('valueChanges', v, value)
-      this.value = value
-      if (this._controlValueAccessorChangeFn) {
-        this._controlValueAccessorChangeFn(value)
-        this.change.emit(value)
-      }
-    })
+    this._control.valueChanges
+      .pipe(takeUntil(this._ngUnsubscribe))
+      .subscribe((v) => {
+        const value = this._telInputDirective?.getFullNumber()
+        // console.log('valueChanges', v, value)
+        this.value = value
+        if (this._controlValueAccessorChangeFn) {
+          this._controlValueAccessorChangeFn(value)
+          this.change.emit(value)
+        }
+      })
     this._control.setValue(this.value ?? '')
   }
 
@@ -244,5 +283,4 @@ export class TheSeamTelInputComponent implements OnInit, OnDestroy, ControlValue
   public hasFocus(): boolean {
     return this._focusOrigin !== null && this._focusOrigin !== undefined
   }
-
 }

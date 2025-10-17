@@ -4,16 +4,14 @@ import { TheSeamPhoneNumberPipe } from './phone-number.pipe'
 
 const meta: Meta<any> = {
   title: 'Pipes/PhoneNumber',
-  decorators: [
-    moduleMetadata({ declarations: [ TheSeamPhoneNumberPipe ] }),
-  ],
+  decorators: [moduleMetadata({ declarations: [TheSeamPhoneNumberPipe] })],
 }
 
 export default meta
 type Story = StoryObj<any>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     template: `[{{ phone }}]  {{ phone | phoneNumber }}`,
     props: args,
   }),

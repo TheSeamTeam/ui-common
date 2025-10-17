@@ -1,4 +1,9 @@
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { provideRouter } from '@angular/router'
@@ -25,9 +30,7 @@ const meta: Meta<WidgetTileComponent & ExtraArgs> = {
       ],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamWidgetModule,
-      ],
+      imports: [TheSeamWidgetModule],
     }),
   ],
 }
@@ -36,7 +39,7 @@ export default meta
 type Story = StoryObj<WidgetTileComponent & ExtraArgs>
 
 export const Link: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       icon: faWrench,
@@ -60,7 +63,7 @@ export const Link: Story = {
 }
 
 export const Button: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       icon: faWrench,
@@ -80,7 +83,7 @@ export const Button: Story = {
 }
 
 export const ButtonWithFooter: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       icon: faWrench,

@@ -8,9 +8,7 @@ const meta: Meta<TheSeamCardComponent> = {
   component: TheSeamCardComponent,
   decorators: [
     moduleMetadata({
-      imports: [
-        TheSeamCardModule,
-      ],
+      imports: [TheSeamCardModule],
     }),
   ],
   parameters: {
@@ -24,7 +22,7 @@ export default meta
 type Story = StoryObj<TheSeamCardComponent>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     props: { ...args },
     template: `
       <seam-card>

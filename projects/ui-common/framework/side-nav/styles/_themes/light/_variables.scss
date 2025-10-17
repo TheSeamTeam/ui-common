@@ -22,7 +22,11 @@ $seam-side-nav-item-toggle-color: $seam-side-nav-item-color !default;
 $seam-side-nav-item-toggle-color-active: $seam-side-nav-item-toggle-color !default;
 $seam-side-nav-item-toggle-color-hover: $seam-side-nav-item-toggle-color !default;
 
-$seam-side-nav-item-toggle-disabled-color: color.adjust($seam-side-nav-item-toggle-color, $lightness: -20%, $space: hsl) !default;
+$seam-side-nav-item-toggle-disabled-color: color.adjust(
+  $seam-side-nav-item-toggle-color,
+  $lightness: -20%,
+  $space: hsl
+) !default;
 
 // Divider
 $seam-side-nav-divider-color: $gray-500 !default;

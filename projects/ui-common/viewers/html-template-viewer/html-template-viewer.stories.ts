@@ -2,7 +2,7 @@ import { componentWrapperDecorator, Meta, StoryObj } from '@storybook/angular'
 
 import { TheSeamHtmlTemplateViewerComponent } from './html-template-viewer.component'
 
-interface ExtraArgs { }
+interface ExtraArgs {}
 
 type StoryComponentType = TheSeamHtmlTemplateViewerComponent & ExtraArgs
 
@@ -10,7 +10,9 @@ const meta: Meta<StoryComponentType> = {
   title: 'Viewers/HTML Template',
   component: TheSeamHtmlTemplateViewerComponent,
   decorators: [
-    componentWrapperDecorator(story => `<div style="max-width: 1200px">${story}</div>`),
+    componentWrapperDecorator(
+      (story) => `<div style="max-width: 1200px">${story}</div>`,
+    ),
   ],
   parameters: {
     docs: {

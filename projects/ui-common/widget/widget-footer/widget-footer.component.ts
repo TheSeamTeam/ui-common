@@ -1,4 +1,8 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ViewEncapsulation,
+} from '@angular/core'
 
 @Component({
   selector: 'seam-widget-footer',
@@ -8,4 +12,4 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/
   encapsulation: ViewEncapsulation.None,
   standalone: false,
 })
-export class WidgetFooterComponent { }
+export class WidgetFooterComponent {}

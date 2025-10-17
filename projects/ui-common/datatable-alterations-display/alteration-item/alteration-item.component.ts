@@ -1,10 +1,20 @@
 import { Component, Input } from '@angular/core'
 import { CommonModule } from '@angular/common'
 
-import { faSort, faArrowsAlt, faEyeSlash, faArrowsAltH, faFilter, faCog } from '@fortawesome/free-solid-svg-icons'
+import {
+  faSort,
+  faArrowsAlt,
+  faEyeSlash,
+  faArrowsAltH,
+  faFilter,
+  faCog,
+} from '@fortawesome/free-solid-svg-icons'
 import { TheSeamIconModule } from '@theseam/ui-common/icon'
 
-import { AlterationDisplayItem, AlterationVisualState } from '../models/alteration-display.model'
+import {
+  AlterationDisplayItem,
+  AlterationVisualState,
+} from '../models/alteration-display.model'
 import { AlterationDisplayService } from '../services/alteration-display.service'
 
 @Component({
@@ -20,12 +30,12 @@ export class AlterationItemComponent {
 
   // FontAwesome icons
   private readonly typeIcons = {
-    'sort': faSort,
-    'order': faArrowsAlt,
+    sort: faSort,
+    order: faArrowsAlt,
     'hide-column': faEyeSlash,
-    'width': faArrowsAltH,
-    'filter': faFilter,
-    'default': faCog,
+    width: faArrowsAltH,
+    filter: faFilter,
+    default: faCog,
   }
 
   constructor(private alterationDisplayService: AlterationDisplayService) {}
@@ -35,7 +45,10 @@ export class AlterationItemComponent {
   }
 
   get typeIcon() {
-    return this.typeIcons[this.item.type as keyof typeof this.typeIcons] || this.typeIcons.default
+    return (
+      this.typeIcons[this.item.type as keyof typeof this.typeIcons] ||
+      this.typeIcons.default
+    )
   }
 
   get borderClass(): string {

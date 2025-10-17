@@ -1,5 +1,11 @@
 import { BooleanInput } from '@angular/cdk/coercion'
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+} from '@angular/core'
 
 import { InputBoolean } from '@theseam/ui-common/core'
 import type { ITableColumn, TrackByFunction } from '@theseam/ui-common/table'
@@ -25,5 +31,4 @@ export class WidgetTableComponent<T> {
   _actionRefreshRequest() {
     this.actionRefreshRequest.emit()
   }
-
 }

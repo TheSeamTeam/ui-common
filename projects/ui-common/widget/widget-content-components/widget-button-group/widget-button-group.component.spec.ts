@@ -10,8 +10,7 @@ describe('WidgetButtonGroupComponent', () => {
     TestBed.configureTestingModule({
       declarations: [WidgetButtonGroupComponent],
       teardown: { destroyAfterEach: false },
-    })
-      .compileComponents()
+    }).compileComponents()
   }))
 
   beforeEach(() => {

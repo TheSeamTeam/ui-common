@@ -1,17 +1,48 @@
-import { FocusMonitor, FocusOrigin, isFakeMousedownFromScreenReader } from '@angular/cdk/a11y'
-import { coerceBooleanProperty, coerceNumberProperty } from '@angular/cdk/coercion'
+import {
+  FocusMonitor,
+  FocusOrigin,
+  isFakeMousedownFromScreenReader,
+} from '@angular/cdk/a11y'
+import {
+  coerceBooleanProperty,
+  coerceNumberProperty,
+} from '@angular/cdk/coercion'
 import { ESCAPE } from '@angular/cdk/keycodes'
-import { ConnectionPositionPair, Overlay, OverlayRef, PositionStrategy } from '@angular/cdk/overlay'
+import {
+  ConnectionPositionPair,
+  Overlay,
+  OverlayRef,
+  PositionStrategy,
+} from '@angular/cdk/overlay'
 import { normalizePassiveListenerOptions } from '@angular/cdk/platform'
 import { ComponentPortal } from '@angular/cdk/portal'
-import { ComponentRef, Directive, ElementRef, HostListener, Input, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from '@angular/core'
-import { BehaviorSubject, fromEvent, merge, of, Subject, Subscription } from 'rxjs'
+import {
+  ComponentRef,
+  Directive,
+  ElementRef,
+  HostListener,
+  Input,
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+  ViewContainerRef,
+} from '@angular/core'
+import {
+  BehaviorSubject,
+  fromEvent,
+  merge,
+  of,
+  Subject,
+  Subscription,
+} from 'rxjs'
 import { switchMap, takeUntil } from 'rxjs/operators'
 
 import { PopoverComponent } from './popover/popover.component'
 
 /** Options for binding a passive event listener. */
-const passiveEventListenerOptions = normalizePassiveListenerOptions({ passive: true })
+const passiveEventListenerOptions = normalizePassiveListenerOptions({
+  passive: true,
+})
 
 @Directive({
   selector: '[seamPopover]',
@@ -23,7 +54,6 @@ const passiveEventListenerOptions = normalizePassiveListenerOptions({ passive: t
   standalone: false,
 })
 export class TheSeamPopoverDirective implements OnDestroy {
-
   private readonly _ngUnsubscribe = new Subject<void>()
 
   @Input() seamPopover?: TemplateRef<any> | null
@@ -35,7 +65,9 @@ export class TheSeamPopoverDirective implements OnDestroy {
    * smaller than the value.
    */
   @Input()
-  get seamPopoverBaseWidth() { return this._seamPopoverBaseWidth.value }
+  get seamPopoverBaseWidth() {
+    return this._seamPopoverBaseWidth.value
+  }
   set seamPopoverBaseWidth(value: number | null) {
     const _val = coerceNumberProperty(value, null)
     if (_val !== this._seamPopoverBaseWidth.value) {
@@ -45,8 +77,12 @@ export class TheSeamPopoverDirective implements OnDestroy {
   private _seamPopoverBaseWidth = new BehaviorSubject<number | null>(null)
 
   @Input()
-  get seamPopoverDisabled() { return this._seamPopoverDisabled.value }
-  set seamPopoverDisabled(val: boolean) { this._seamPopoverDisabled.next(coerceBooleanProperty(val)) }
+  get seamPopoverDisabled() {
+    return this._seamPopoverDisabled.value
+  }
+  set seamPopoverDisabled(val: boolean) {
+    this._seamPopoverDisabled.next(coerceBooleanProperty(val))
+  }
   private _seamPopoverDisabled = new BehaviorSubject<boolean>(false)
 
   // ngOnInit() {
@@ -79,7 +115,7 @@ export class TheSeamPopoverDirective implements OnDestroy {
   // the first item of the list when the menu is opened via the keyboard
   _openedBy: 'mouse' | 'touch' | null = null
 
-  @HostListener('mousedown', [ '$event' ])
+  @HostListener('mousedown', ['$event'])
   _onMouseDown(event: MouseEvent) {
     if (!isFakeMousedownFromScreenReader(event)) {
       // Since right or middle button clicks won't trigger the `click` event,
@@ -88,12 +124,12 @@ export class TheSeamPopoverDirective implements OnDestroy {
     }
   }
 
-  @HostListener('click', [ '$event' ])
+  @HostListener('click', ['$event'])
   _onClick(event: any) {
     this.toggle()
   }
 
-  @HostListener('document:keydown', [ '$event' ])
+  @HostListener('document:keydown', ['$event'])
   _onDocumentKeydown(event: any) {
     if (event.keyCode === ESCAPE) {
       this.closePopover()
@@ -106,12 +142,15 @@ export class TheSeamPopoverDirective implements OnDestroy {
     private _overlay: Overlay,
     private _focusMonitor: FocusMonitor,
   ) {
-    this._elementRef.nativeElement.addEventListener('touchstart', this._handleTouchStart,
-      passiveEventListenerOptions)
+    this._elementRef.nativeElement.addEventListener(
+      'touchstart',
+      this._handleTouchStart,
+      passiveEventListenerOptions,
+    )
 
     this._seamPopoverBaseWidth
       .pipe(takeUntil(this._ngUnsubscribe))
-      .subscribe(w => {
+      .subscribe((w) => {
         if (this._compRef && this._compRef.instance) {
           this._compRef.instance.baseWidth = w
           this._compRef.changeDetectorRef.markForCheck()
@@ -122,8 +161,11 @@ export class TheSeamPopoverDirective implements OnDestroy {
   ngOnDestroy() {
     this.closePopover()
 
-    this._elementRef.nativeElement.removeEventListener('touchstart', this._handleTouchStart,
-      passiveEventListenerOptions)
+    this._elementRef.nativeElement.removeEventListener(
+      'touchstart',
+      this._handleTouchStart,
+      passiveEventListenerOptions,
+    )
 
     this._popoverClosedSubscription.unsubscribe()
     this._closingActionsSubscription.unsubscribe()
@@ -136,7 +178,7 @@ export class TheSeamPopoverDirective implements OnDestroy {
    * Handles touch start events on the trigger.
    * Needs to be an arrow function so we can easily use addEventListener and removeEventListener.
    */
-  private _handleTouchStart = () => this._openedBy = 'touch'
+  private _handleTouchStart = () => (this._openedBy = 'touch')
 
   public toggle(): void {
     if (this._active || this.seamPopoverDisabled) {
@@ -147,7 +189,9 @@ export class TheSeamPopoverDirective implements OnDestroy {
   }
 
   public openPopover(): void {
-    if (this._active || !this.seamPopover) { return }
+    if (this._active || !this.seamPopover) {
+      return
+    }
     this._active = true
 
     this._overlayRef = this._overlay.create({
@@ -156,9 +200,13 @@ export class TheSeamPopoverDirective implements OnDestroy {
       positionStrategy: this.getOverlayPosition(this._elementRef.nativeElement),
     })
 
-    this._compRef = this._overlayRef.attach(new ComponentPortal(PopoverComponent, this._viewContainerRef))
+    this._compRef = this._overlayRef.attach(
+      new ComponentPortal(PopoverComponent, this._viewContainerRef),
+    )
 
-    this._closingActionsSubscription = this._popoverClosingActions().subscribe(() => this.closePopover())
+    this._closingActionsSubscription = this._popoverClosingActions().subscribe(
+      () => this.closePopover(),
+    )
 
     this._compRef.instance.template = this.seamPopover
     this._compRef.instance.baseWidth = this.seamPopoverBaseWidth
@@ -166,24 +214,27 @@ export class TheSeamPopoverDirective implements OnDestroy {
     this._compRef.instance.popoverContext = this.seamPopoverContext
     this._compRef.changeDetectorRef.markForCheck()
 
-    this._popoverClosedSubscription = this._compRef.instance._afterExit.subscribe(v => {
-      // console.log('closed', v)
-      if (this._overlayRef?.hasAttached()) {
-        this._overlayRef.detach()
-      }
+    this._popoverClosedSubscription =
+      this._compRef.instance._afterExit.subscribe((v) => {
+        // console.log('closed', v)
+        if (this._overlayRef?.hasAttached()) {
+          this._overlayRef.detach()
+        }
 
-      this._resetPopover()
+        this._resetPopover()
 
-      this._popoverClosedSubscription.unsubscribe()
-      this._closingActionsSubscription.unsubscribe()
+        this._popoverClosedSubscription.unsubscribe()
+        this._closingActionsSubscription.unsubscribe()
 
-      this._active = false
-      this._closing = false
-    })
+        this._active = false
+        this._closing = false
+      })
   }
 
   public closePopover(): void {
-    if (!this._active) { return }
+    if (!this._active) {
+      return
+    }
 
     if (!this._closing) {
       if (this._compRef && this._compRef.instance) {
@@ -198,7 +249,8 @@ export class TheSeamPopoverDirective implements OnDestroy {
   }
 
   private getOverlayPosition(origin: HTMLElement): PositionStrategy {
-    const positionStrategy = this._overlay.position()
+    const positionStrategy = this._overlay
+      .position()
       .flexibleConnectedTo(origin)
       .withPositions(this.getPositions())
       .withFlexibleDimensions(false)
@@ -287,5 +339,4 @@ export class TheSeamPopoverDirective implements OnDestroy {
 
     return merge(backdrop, hover, detachments)
   }
-
 }

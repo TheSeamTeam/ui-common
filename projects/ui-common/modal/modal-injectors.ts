@@ -17,7 +17,11 @@ export const MODAL_SCROLL_STRATEGY = new InjectionToken<() => ScrollStrategy>(
     providedIn: 'root',
     factory: () => {
       const injector = inject(Injector)
-      return () => new BlockScrollStrategy(injector.get(ViewportRuler), injector.get(DOCUMENT))
+      return () =>
+        new BlockScrollStrategy(
+          injector.get(ViewportRuler),
+          injector.get(DOCUMENT),
+        )
     },
   },
 )
@@ -29,18 +33,20 @@ export const MODAL_DATA = new InjectionToken<any>('ModalData')
 export const MODAL_CONFIG = new InjectionToken<ModalConfig>('ModalConfig')
 
 /** Injection token for the Dialog's DialogContainer component. */
-export const MODAL_CONTAINER =
-  new InjectionToken<ComponentType<ModalContainerComponent>>('ModalContainer')
+export const MODAL_CONTAINER = new InjectionToken<
+  ComponentType<ModalContainerComponent>
+>('ModalContainer')
 
 /** @docs-private */
-export function THESEAM_MODAL_SCROLL_STRATEGY_PROVIDER_FACTORY(overlay: Overlay):
-() => ScrollStrategy {
+export function THESEAM_MODAL_SCROLL_STRATEGY_PROVIDER_FACTORY(
+  overlay: Overlay,
+): () => ScrollStrategy {
   return () => overlay.scrollStrategies.block()
 }
 
 /** @docs-private */
 export const THESEAM_MODAL_SCROLL_STRATEGY_PROVIDER = {
   provide: MODAL_SCROLL_STRATEGY,
-  deps: [ Overlay ],
+  deps: [Overlay],
   useFactory: THESEAM_MODAL_SCROLL_STRATEGY_PROVIDER_FACTORY,
 }

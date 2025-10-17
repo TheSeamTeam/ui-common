@@ -4,9 +4,7 @@ import { setDynamicDatatableColumnsDefaults } from './set-dynamic-datatable-colu
 import { setDynamicDatatableFilterMenuDefaults } from './set-dynamic-datatable-filter-menu-defaults'
 import { setDynamicDatatableOptionsDefaults } from './set-dynamic-datatable-options-defaults'
 
-export function setDynamicDatatableDefDefaults(
-  def: DatatableDynamicDef,
-) {
+export function setDynamicDatatableDefDefaults(def: DatatableDynamicDef) {
   setDynamicDatatableColumnsDefaults(def.columns)
 
   if (def.filterMenu) {

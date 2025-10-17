@@ -19,22 +19,30 @@ import { IJexlValue } from './jexl-value'
 
 @Injectable()
 export class JexlEvaluator implements IDynamicValueEvaluator<'jexl'> {
-
   public readonly type = 'jexl'
 
   private readonly _jexl = new jexl.Jexl()
 
   constructor() {
-    this._jexl.addTransform('date', (val: any, row: any) => new DatePipe('en-US').transform(val, 'yyyy-MM-dd h:mm aaa'))
-    this._jexl.addTransform('length', (val: any) => val !== null && val !== undefined ? val.length : 0)
+    this._jexl.addTransform('date', (val: any, row: any) =>
+      new DatePipe('en-US').transform(val, 'yyyy-MM-dd h:mm aaa'),
+    )
+    this._jexl.addTransform('length', (val: any) =>
+      val !== null && val !== undefined ? val.length : 0,
+    )
   }
 
-  public eval<R extends DynamicValueBaseType>(value: IJexlValue<R>, context?: any): Promise<R> {
+  public eval<R extends DynamicValueBaseType>(
+    value: IJexlValue<R>,
+    context?: any,
+  ): Promise<R> {
     return this._jexl.eval(value.expr, context)
   }
 
-  public evalSync<R extends DynamicValueBaseType>(value: IJexlValue<R>, context?: any): R {
+  public evalSync<R extends DynamicValueBaseType>(
+    value: IJexlValue<R>,
+    context?: any,
+  ): R {
     return this._jexl.evalSync(value.expr, context)
   }
-
 }

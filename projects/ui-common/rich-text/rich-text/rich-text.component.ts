@@ -1,16 +1,78 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
 import { AsyncPipe, NgIf, NgTemplateOutlet, DecimalPipe } from '@angular/common'
-import { AfterViewInit, Component, EventEmitter, HostListener, Inject, Input, OnDestroy, OnInit, Optional, Output, Provider, Renderer2, TemplateRef, ViewChild, forwardRef, ElementRef, inject } from '@angular/core'
-import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms'
-import { BehaviorSubject, Observable, Subject, combineLatest, filter, lastValueFrom, map, of, shareReplay, startWith, switchMap, take, tap } from 'rxjs'
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  HostListener,
+  Inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  Optional,
+  Output,
+  Provider,
+  Renderer2,
+  TemplateRef,
+  ViewChild,
+  forwardRef,
+  ElementRef,
+  inject,
+} from '@angular/core'
+import {
+  ControlValueAccessor,
+  FormControl,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+} from '@angular/forms'
+import {
+  BehaviorSubject,
+  Observable,
+  Subject,
+  combineLatest,
+  filter,
+  lastValueFrom,
+  map,
+  of,
+  shareReplay,
+  startWith,
+  switchMap,
+  take,
+  tap,
+} from 'rxjs'
 
-import { Blur, ContentChange, EditorChangeContent, EditorChangeSelection, Focus, QuillEditorComponent, QuillModule, SelectionChange } from 'ngx-quill'
+import {
+  Blur,
+  ContentChange,
+  EditorChangeContent,
+  EditorChangeSelection,
+  Focus,
+  QuillEditorComponent,
+  QuillModule,
+  SelectionChange,
+} from 'ngx-quill'
 import 'quill-mention/autoregister'
 import { isNullOrUndefined, notNullOrUndefined } from '@theseam/ui-common/utils'
 import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 
-import { TheSeamCharacterCounterFn, TheSeamQuillEditorConfig, TheSeamQuillMentionMenuItem, TheSeamQuillMentionMenuOption, TheSeamQuillMentionSearchFn, TheSeamQuillMentionSourceFn, TheSeamQuillModules } from '../utils/models'
-import { THESEAM_QUILL_EDITOR_CONFIG, THESEAM_QUILL_EDITOR_CONFIG_DEFAULT, THESEAM_QUILL_MENTION_OPTIONS_DEFAULT, defaultHtmlCharacterCounterFn, defaultMentionRenderListFn, defaultMentionSearchFn, isMentionMenuOption } from '../utils/utils'
+import {
+  TheSeamCharacterCounterFn,
+  TheSeamQuillEditorConfig,
+  TheSeamQuillMentionMenuItem,
+  TheSeamQuillMentionMenuOption,
+  TheSeamQuillMentionSearchFn,
+  TheSeamQuillMentionSourceFn,
+  TheSeamQuillModules,
+} from '../utils/models'
+import {
+  THESEAM_QUILL_EDITOR_CONFIG,
+  THESEAM_QUILL_EDITOR_CONFIG_DEFAULT,
+  THESEAM_QUILL_MENTION_OPTIONS_DEFAULT,
+  defaultHtmlCharacterCounterFn,
+  defaultMentionRenderListFn,
+  defaultMentionSearchFn,
+  isMentionMenuOption,
+} from '../utils/utils'
 
 export const RICH_TEXT_VALUE_ACCESSOR: Provider = {
   provide: NG_VALUE_ACCESSOR,
@@ -22,9 +84,7 @@ export const RICH_TEXT_VALUE_ACCESSOR: Provider = {
   selector: 'seam-rich-text',
   templateUrl: './rich-text.component.html',
   styleUrls: ['./rich-text.component.scss'],
-  providers: [
-    RICH_TEXT_VALUE_ACCESSOR,
-  ],
+  providers: [RICH_TEXT_VALUE_ACCESSOR],
   imports: [
     NgIf,
     NgTemplateOutlet,
@@ -35,8 +95,9 @@ export const RICH_TEXT_VALUE_ACCESSOR: Provider = {
     TheSeamFormFieldModule,
   ],
 })
-export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor {
-
+export class RichTextComponent
+  implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor
+{
   private readonly _elementRef = inject(ElementRef)
 
   onChange: any
@@ -250,9 +311,11 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
       this._mentionItems.next(value)
     }
   }
-  private _mentionItems = new BehaviorSubject<TheSeamQuillMentionMenuItem[] | null | undefined>(undefined)
+  private _mentionItems = new BehaviorSubject<
+    TheSeamQuillMentionMenuItem[] | null | undefined
+  >(undefined)
   public mentionItems$ = this._mentionItems.asObservable().pipe(
-    filter(mentions => notNullOrUndefined(mentions) && mentions.length > 0),
+    filter((mentions) => notNullOrUndefined(mentions) && mentions.length > 0),
     shareReplay({ bufferSize: 1, refCount: true }),
   )
 
@@ -279,12 +342,15 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
   get mentionRenderListFn(): TheSeamQuillMentionSourceFn {
     return this._mentionRenderListFn
   }
-  set mentionRenderListFn(value: TheSeamQuillMentionSourceFn | null | undefined) {
+  set mentionRenderListFn(
+    value: TheSeamQuillMentionSourceFn | null | undefined,
+  ) {
     if (notNullOrUndefined(value)) {
       this._mentionRenderListFn = value
     }
   }
-  private _mentionRenderListFn: TheSeamQuillMentionSourceFn = defaultMentionRenderListFn
+  private _mentionRenderListFn: TheSeamQuillMentionSourceFn =
+    defaultMentionRenderListFn
 
   /**
    * Set to override default text shown while mention items are loading.
@@ -328,13 +394,17 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
   }
 
   @Output() quillEditorCreated = new EventEmitter<any>()
-  @Output() quillEditorChanged = new EventEmitter<EditorChangeContent | EditorChangeSelection>()
+  @Output() quillEditorChanged = new EventEmitter<
+    EditorChangeContent | EditorChangeSelection
+  >()
   @Output() quillContentChanged = new EventEmitter<ContentChange>()
   @Output() quillSelectionChanged = new EventEmitter<SelectionChange>()
   @Output() quillFocus = new EventEmitter<Focus>()
   @Output() quillBlur = new EventEmitter<Blur>()
 
-  @Output() mentionsUpdated = new EventEmitter<TheSeamQuillMentionMenuOption[]>()
+  @Output() mentionsUpdated = new EventEmitter<
+    TheSeamQuillMentionMenuOption[]
+  >()
 
   @ViewChild('quillEditor')
   get quillEditor(): QuillEditorComponent | undefined {
@@ -350,13 +420,20 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
   }
   private _quillEditor: QuillEditorComponent | undefined
 
-  @ViewChild('characterCounter') defaultCharacterCounterTpl: TemplateRef<any> | undefined
+  @ViewChild('characterCounter') defaultCharacterCounterTpl:
+    | TemplateRef<any>
+    | undefined
 
   @HostListener('keydown', ['$event'])
   _handleKeydown(event: KeyboardEvent) {
     if (event.code === 'Escape') {
-      const qlEditor = this._quillEditor?.editorElem?.querySelector('.ql-editor')
-      if (notNullOrUndefined(qlEditor) && qlEditor === document.activeElement && qlEditor instanceof HTMLElement) {
+      const qlEditor =
+        this._quillEditor?.editorElem?.querySelector('.ql-editor')
+      if (
+        notNullOrUndefined(qlEditor) &&
+        qlEditor === document.activeElement &&
+        qlEditor instanceof HTMLElement
+      ) {
         event.preventDefault()
         event.stopImmediatePropagation()
         qlEditor.blur()
@@ -378,31 +455,40 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
 
   public characterCount$: Observable<number>
 
-  private _config = new BehaviorSubject<TheSeamQuillEditorConfig | undefined>(undefined)
+  private _config = new BehaviorSubject<TheSeamQuillEditorConfig | undefined>(
+    undefined,
+  )
   public config$ = this._config.asObservable()
 
-  private _selectedMentions = new BehaviorSubject<TheSeamQuillMentionMenuOption[]>([])
+  private _selectedMentions = new BehaviorSubject<
+    TheSeamQuillMentionMenuOption[]
+  >([])
   public selectedMentions$ = this._selectedMentions.asObservable()
 
   constructor(
     private readonly _renderer: Renderer2,
-    @Optional() @Inject(THESEAM_QUILL_EDITOR_CONFIG) private _customConfig?: TheSeamQuillEditorConfig,
+    @Optional()
+    @Inject(THESEAM_QUILL_EDITOR_CONFIG)
+    private _customConfig?: TheSeamQuillEditorConfig,
   ) {
     this.initialized$ = combineLatest([
       this._configSet.asObservable(),
       this._stylesSet.asObservable(),
       this._templateSet.asObservable(),
-    ]).pipe(
-      map(sets => sets.findIndex(s => !s) === -1),
-    )
+    ]).pipe(map((sets) => sets.findIndex((s) => !s) === -1))
 
     this.characterCount$ = this.initialized$.pipe(
-      filter(i => i),
+      filter((i) => i),
       switchMap(() => {
         if (notNullOrUndefined(this.formControl)) {
           return this.formControl.valueChanges.pipe(
             startWith(this.formControl.value),
-            map(v => this.characterCounterFn(v || '' as string, this._config.value?.format)),
+            map((v) =>
+              this.characterCounterFn(
+                v || ('' as string),
+                this._config.value?.format,
+              ),
+            ),
           )
         }
 
@@ -410,47 +496,64 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
       }),
     )
 
-    this.selectedMentions$.pipe(
-      tap(mentions => this.mentionsUpdated.emit(mentions)),
-    ).subscribe()
+    this.selectedMentions$
+      .pipe(tap((mentions) => this.mentionsUpdated.emit(mentions)))
+      .subscribe()
   }
 
   ngOnInit(): void {
     // TODO: test this more
     // ignore quill initial valueChange event, to keep functionality in line with other inputs
     let initialEmitComplete = false
-    this._configSet.pipe(
-      filter(s => s),
-      switchMap(() => this.formControl.valueChanges.pipe(
-        // skip(1),
-        take(1),
-        tap(() => initialEmitComplete = true),
-      )),
-    ).subscribe()
+    this._configSet
+      .pipe(
+        filter((s) => s),
+        switchMap(() =>
+          this.formControl.valueChanges.pipe(
+            // skip(1),
+            take(1),
+            tap(() => (initialEmitComplete = true)),
+          ),
+        ),
+      )
+      .subscribe()
 
-    this.formControl.valueChanges.pipe(
-      filter(() => !this._isWritingValue && initialEmitComplete),
-      tap(value => this.value = value),
-    ).subscribe()
+    this.formControl.valueChanges
+      .pipe(
+        filter(() => !this._isWritingValue && initialEmitComplete),
+        tap((value) => (this.value = value)),
+      )
+      .subscribe()
 
-    this._pollCalculatedRowHeight.asObservable().pipe(
-      tap(() => {
-        this._stylesSet.next(false)
+    this._pollCalculatedRowHeight
+      .asObservable()
+      .pipe(
+        tap(() => {
+          this._stylesSet.next(false)
 
-        const calculatedRowsHeight = `${this.rows * 1.5}rem`
+          const calculatedRowsHeight = `${this.rows * 1.5}rem`
 
-        if (notNullOrUndefined(this.rows) && notNullOrUndefined(this._quillEditor)) {
-          const editorEl = this._elementRef.nativeElement.querySelector('.ql-editor')
+          if (
+            notNullOrUndefined(this.rows) &&
+            notNullOrUndefined(this._quillEditor)
+          ) {
+            const editorEl =
+              this._elementRef.nativeElement.querySelector('.ql-editor')
 
-          if (notNullOrUndefined(editorEl)) {
-            this._renderer.setStyle(editorEl, 'height', calculatedRowsHeight)
-            this._renderer.setStyle(editorEl, 'min-height', calculatedRowsHeight)
+            if (notNullOrUndefined(editorEl)) {
+              this._renderer.setStyle(editorEl, 'height', calculatedRowsHeight)
+              this._renderer.setStyle(
+                editorEl,
+                'min-height',
+                calculatedRowsHeight,
+              )
+            }
           }
-        }
 
-        this._stylesSet.next(true)
-      }),
-    ).subscribe()
+          this._stylesSet.next(true)
+        }),
+      )
+      .subscribe()
 
     this._buildQuillConfig()
   }
@@ -465,7 +568,9 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
 
   ngOnDestroy(): void {
     // hacky way to ensure mentions menu gets destroyed when component is destroyed
-    const mentionModule = this._quillEditor?.quillEditor.getModule('mention') as any
+    const mentionModule = this._quillEditor?.quillEditor.getModule(
+      'mention',
+    ) as any
     const hideMentionList = mentionModule?.hideMentionList
     if (hideMentionList && typeof hideMentionList === 'function') {
       hideMentionList.call(mentionModule)
@@ -499,13 +604,26 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
         mention: {
           ...THESEAM_QUILL_MENTION_OPTIONS_DEFAULT,
           renderLoading: () => this.mentionListLoadingText,
-          source: async (searchTerm: string, renderList: (list: any[], searchTerm: string) => void, mentionChar: string) => {
+          source: async (
+            searchTerm: string,
+            renderList: (list: any[], searchTerm: string) => void,
+            mentionChar: string,
+          ) => {
             // this function is called every time the menu is triggered,
             // so it will always have the latest value from mentionItems$
-            const mentionsAsync = await lastValueFrom(this.mentionItems$.pipe(take(1)))
+            const mentionsAsync = await lastValueFrom(
+              this.mentionItems$.pipe(take(1)),
+            )
 
             if (notNullOrUndefined(mentionsAsync)) {
-              this.mentionRenderListFn(mentionsAsync, this.mentionSearchFn, this.mentionListEmptyItem, searchTerm, renderList, mentionChar)
+              this.mentionRenderListFn(
+                mentionsAsync,
+                this.mentionSearchFn,
+                this.mentionListEmptyItem,
+                searchTerm,
+                renderList,
+                mentionChar,
+              )
             }
           },
           ...config.modules?.mention,
@@ -517,7 +635,9 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
 
     config.theme = this._getConfigOrDefault('theme')
     config.debug = this._getConfigOrDefault('debug')
-    config.customToolbarPosition = this._getConfigOrDefault('customToolbarPosition')
+    config.customToolbarPosition = this._getConfigOrDefault(
+      'customToolbarPosition',
+    )
     config.sanitize = this._getConfigOrDefault('sanitize')
     config.styles = this._getConfigOrDefault('styles')
     config.bounds = this._getConfigOrDefault('bounds')
@@ -540,8 +660,13 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
     }, 0)
   }
 
-  private _getConfigOrDefault<K extends keyof TheSeamQuillEditorConfig>(prop: K): TheSeamQuillEditorConfig[K] {
-    if (this._customConfig && Object.prototype.hasOwnProperty.call(this._customConfig, prop)) {
+  private _getConfigOrDefault<K extends keyof TheSeamQuillEditorConfig>(
+    prop: K,
+  ): TheSeamQuillEditorConfig[K] {
+    if (
+      this._customConfig &&
+      Object.prototype.hasOwnProperty.call(this._customConfig, prop)
+    ) {
       return this._customConfig[prop]
     }
     return THESEAM_QUILL_EDITOR_CONFIG_DEFAULT[prop]
@@ -575,8 +700,12 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
   set value(value: string | undefined | null) {
     this._value = value
 
-    if (this.onChange) { this.onChange(value) }
-    if (this.onTouched) { this.onTouched() }
+    if (this.onChange) {
+      this.onChange(value)
+    }
+    if (this.onTouched) {
+      this.onTouched()
+    }
   }
   private _value: string | undefined | null
 
@@ -636,21 +765,30 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
    */
   private _updateMentionsFromDelta(content: ContentChange['content']) {
     if (notNullOrUndefined(content.ops)) {
-      const contentMentionIds: string[] = content.ops.map((o: any) => o.insert?.mention?.id).filter(notNullOrUndefined)
-      const selectedMentions = [ ...this._selectedMentions.value ]
-      const mentionOptions = [ ...this._mentionItems.value || [] ]
+      const contentMentionIds: string[] = content.ops
+        .map((o: any) => o.insert?.mention?.id)
+        .filter(notNullOrUndefined)
+      const selectedMentions = [...this._selectedMentions.value]
+      const mentionOptions = [...(this._mentionItems.value || [])]
 
-      const newMentions: TheSeamQuillMentionMenuOption[] = contentMentionIds.reduce((acc, mentionId) => {
-        const insertMention = mentionOptions.find((m): m is TheSeamQuillMentionMenuOption => isMentionMenuOption(m) && m.id === mentionId)
+      const newMentions: TheSeamQuillMentionMenuOption[] =
+        contentMentionIds.reduce((acc, mentionId) => {
+          const insertMention = mentionOptions.find(
+            (m): m is TheSeamQuillMentionMenuOption =>
+              isMentionMenuOption(m) && m.id === mentionId,
+          )
 
-        if (notNullOrUndefined(insertMention)) {
-          acc.push(insertMention)
-        } else {
-          console.warn('Mention addition failed! Selected mention option not found:', mentionId)
-        }
+          if (notNullOrUndefined(insertMention)) {
+            acc.push(insertMention)
+          } else {
+            console.warn(
+              'Mention addition failed! Selected mention option not found:',
+              mentionId,
+            )
+          }
 
-        return acc
-      }, [] as TheSeamQuillMentionMenuOption[])
+          return acc
+        }, [] as TheSeamQuillMentionMenuOption[])
 
       let emitUpdate = false
       if (selectedMentions.length !== newMentions.length) {
@@ -658,12 +796,13 @@ export class RichTextComponent implements OnInit, AfterViewInit, OnDestroy, Cont
         emitUpdate = true
       } else {
         // otherwise, test ids for old and new items to see if we need to emit a change
-        const selectedMentionIds = this._selectedMentions.value.map(m => m.id)
-        const newMentionIds = newMentions.map(m => m.id)
+        const selectedMentionIds = this._selectedMentions.value.map((m) => m.id)
+        const newMentionIds = newMentions.map((m) => m.id)
 
         if (
-          selectedMentionIds.findIndex(m => !newMentionIds.includes(m)) !== -1 ||
-          newMentionIds.findIndex(m => !selectedMentionIds.includes(m)) !== -1
+          selectedMentionIds.findIndex((m) => !newMentionIds.includes(m)) !==
+            -1 ||
+          newMentionIds.findIndex((m) => !selectedMentionIds.includes(m)) !== -1
         ) {
           emitUpdate = true
         }

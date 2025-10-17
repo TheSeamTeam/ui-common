@@ -1,4 +1,10 @@
-import { AnimationEvent, transition, trigger, style, animate } from '@angular/animations'
+import {
+  AnimationEvent,
+  transition,
+  trigger,
+  style,
+  animate,
+} from '@angular/animations'
 import { NgClass, NgIf, NgTemplateOutlet } from '@angular/common'
 import {
   ChangeDetectionStrategy,
@@ -13,11 +19,19 @@ import {
 import { Subject } from 'rxjs'
 
 export type TheSeamTooltipPlacement =
-  'top' | 'top-left' | 'top-right' |
-  'bottom' | 'bottom-left' | 'bottom-right' |
-  'left' | 'left-top' | 'left-bottom' |
-  'right' | 'right-top' | 'right-bottom' |
-  'auto'
+  | 'top'
+  | 'top-left'
+  | 'top-right'
+  | 'bottom'
+  | 'bottom-left'
+  | 'bottom-right'
+  | 'left'
+  | 'left-top'
+  | 'left-bottom'
+  | 'right'
+  | 'right-top'
+  | 'right-bottom'
+  | 'auto'
 
 @Component({
   selector: 'seam-tooltip',
@@ -43,14 +57,9 @@ export type TheSeamTooltipPlacement =
     '(@fadeInOut.done)': '_onAnimationDone($event)',
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    NgIf,
-    NgClass,
-    NgTemplateOutlet,
-  ],
+  imports: [NgIf, NgClass, NgTemplateOutlet],
 })
 export class TheSeamTooltipComponent implements OnDestroy {
-
   @Input() content: string | TemplateRef<any> | null = null
   @Input() tooltipClass?: string
   @Input() context?: any
@@ -90,7 +99,7 @@ export class TheSeamTooltipComponent implements OnDestroy {
   }
 
   get templateContent(): TemplateRef<any> | null {
-    return this.isTemplateContent ? this.content as TemplateRef<any> : null
+    return this.isTemplateContent ? (this.content as TemplateRef<any>) : null
   }
 
   private _getPlacementClass(): string {
@@ -132,13 +141,23 @@ export class TheSeamTooltipComponent implements OnDestroy {
     const minDimension = 50 // Minimum tooltip width/height to use trigger-aligned positioning
 
     const triggerRect = this.triggerElement.getBoundingClientRect()
-    const tooltipRect: DOMRect = this.innerElement.nativeElement.getBoundingClientRect()
-    const arrowRect: DOMRect = this.arrowElement.nativeElement.getBoundingClientRect()
+    const tooltipRect: DOMRect =
+      this.innerElement.nativeElement.getBoundingClientRect()
+    const arrowRect: DOMRect =
+      this.arrowElement.nativeElement.getBoundingClientRect()
 
     // Default arrow offset (8px padding + half arrow size)
-    const defaultArrowOffset = paddingOffset + (effectivePlacement.startsWith('top') || effectivePlacement.startsWith('bottom') ? arrowRect.width / 2 : arrowRect.height / 2)
+    const defaultArrowOffset =
+      paddingOffset +
+      (effectivePlacement.startsWith('top') ||
+      effectivePlacement.startsWith('bottom')
+        ? arrowRect.width / 2
+        : arrowRect.height / 2)
 
-    if (effectivePlacement.startsWith('top') || effectivePlacement.startsWith('bottom')) {
+    if (
+      effectivePlacement.startsWith('top') ||
+      effectivePlacement.startsWith('bottom')
+    ) {
       // Check if tooltip is too narrow for trigger-aligned positioning
       if (tooltipRect.width < minDimension) {
         const arrowLeft = (tooltipRect.width - arrowRect.width) / 2
@@ -148,8 +167,10 @@ export class TheSeamTooltipComponent implements OnDestroy {
 
       // Horizontal arrow positioning for top-* and bottom-* placements
       const triggerCenter = triggerRect.left + triggerRect.width / 2
-      const adjustedArrowLeft = triggerCenter - tooltipRect.left - arrowRect.width / 2
-      const arrowCenter = tooltipRect.left + adjustedArrowLeft + arrowRect.width / 2
+      const adjustedArrowLeft =
+        triggerCenter - tooltipRect.left - arrowRect.width / 2
+      const arrowCenter =
+        tooltipRect.left + adjustedArrowLeft + arrowRect.width / 2
 
       // If arrow's center is outside trigger's horizontal bounds, use default
       if (arrowCenter < triggerRect.left || arrowCenter > triggerRect.right) {
@@ -158,11 +179,18 @@ export class TheSeamTooltipComponent implements OnDestroy {
       }
 
       // Ensure arrow's left is within rounded corner bounds
-      const maxArrowLeft = (tooltipRect.width - arrowRect.width) - defaultArrowOffset
-      const arrowLeft = Math.min(maxArrowLeft, Math.max(defaultArrowOffset, adjustedArrowLeft))
+      const maxArrowLeft =
+        tooltipRect.width - arrowRect.width - defaultArrowOffset
+      const arrowLeft = Math.min(
+        maxArrowLeft,
+        Math.max(defaultArrowOffset, adjustedArrowLeft),
+      )
 
       this.arrowElement.nativeElement.style.left = `${arrowLeft}px`
-    } else if (effectivePlacement.startsWith('left') || effectivePlacement.startsWith('right')) {
+    } else if (
+      effectivePlacement.startsWith('left') ||
+      effectivePlacement.startsWith('right')
+    ) {
       // Check if tooltip is too short for trigger-aligned positioning
       if (tooltipRect.height < minDimension) {
         const arrowTop = (tooltipRect.height - arrowRect.height) / 2
@@ -172,8 +200,10 @@ export class TheSeamTooltipComponent implements OnDestroy {
 
       // Vertical arrow positioning for left-* and right-* placements
       const triggerCenter = triggerRect.top + triggerRect.height / 2
-      const adjustedArrowTop = triggerCenter - tooltipRect.top - arrowRect.height / 2
-      const arrowCenter = tooltipRect.top + adjustedArrowTop + arrowRect.height / 2
+      const adjustedArrowTop =
+        triggerCenter - tooltipRect.top - arrowRect.height / 2
+      const arrowCenter =
+        tooltipRect.top + adjustedArrowTop + arrowRect.height / 2
 
       // If arrow's center is outside trigger's vertical bounds, use default
       if (arrowCenter < triggerRect.top || arrowCenter > triggerRect.bottom) {
@@ -182,8 +212,12 @@ export class TheSeamTooltipComponent implements OnDestroy {
       }
 
       // Ensure arrow's top is within rounded corner bounds
-      const maxArrowTop = (tooltipRect.height - arrowRect.height) - defaultArrowOffset
-      const arrowTop = Math.min(maxArrowTop, Math.max(defaultArrowOffset, adjustedArrowTop))
+      const maxArrowTop =
+        tooltipRect.height - arrowRect.height - defaultArrowOffset
+      const arrowTop = Math.min(
+        maxArrowTop,
+        Math.max(defaultArrowOffset, adjustedArrowTop),
+      )
 
       this.arrowElement.nativeElement.style.top = `${arrowTop}px`
     }

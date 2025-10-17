@@ -6,7 +6,5 @@ import { Directive, TemplateRef } from '@angular/core'
   standalone: false,
 })
 export class WidgetListGroupItemIconTplDirective {
-
-  constructor(public template: TemplateRef<any>) { }
-
+  constructor(public template: TemplateRef<any>) {}
 }

@@ -1,7 +1,9 @@
-<div
-  [class]="options?.htmlClass || ''">
+<div [class]="options?.htmlClass || ''">
   <div [class.btn-group]="_dropdownObj">
-    <button seamButton theme="primary" type="submit"
+    <button
+      seamButton
+      theme="primary"
+      type="submit"
       [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
       [attr.readonly]="options?.readonly ? 'readonly' : null"
       [attr.required]="options?.required"
@@ -10,24 +12,28 @@
       [id]="'control' + layoutNode?._id"
       [name]="controlName"
       [value]="controlValue"
-      (click)="updateValue($event)">
+      (click)="updateValue($event)"
+    >
       {{ _buttonLabel }}
-      <span *ngIf="_selectedItem">
-        [{{ _selectedItem.name }}]
-      </span>
+      <span *ngIf="_selectedItem"> [{{ _selectedItem.name }}] </span>
     </button>
     <ng-container *ngIf="_dropdownObj">
       <button
-        [seamMenuToggle]="menu" seamButton theme="primary"
+        [seamMenuToggle]="menu"
+        seamButton
+        theme="primary"
         class="dropdown-toggle dropdown-toggle-split"
-        [disabled]="_dropdownDisabled">
+        [disabled]="_dropdownDisabled"
+      >
         <span class="sr-only">Toggle Dropdown</span>
       </button>
       <seam-menu #menu>
         <ng-container *ngFor="let item of _selectList">
-          <button seamMenuItem
+          <button
+            seamMenuItem
             [class.active]="item.checked"
-            (click)="_setDropdownValue(item.value)">
+            (click)="_setDropdownValue(item.value)"
+          >
             {{ item.name }}
           </button>
         </ng-container>

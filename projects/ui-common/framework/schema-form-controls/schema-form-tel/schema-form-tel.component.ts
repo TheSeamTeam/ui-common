@@ -1,9 +1,17 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
+} from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { AbstractControl, ReactiveFormsModule } from '@angular/forms'
 
 import { JsonSchemaFormModule, JsonSchemaFormService } from '@ajsf/core'
-import { TheSeamSchemaFormControlWidget, TheSeamSchemaFormWidgetLayoutNodeOptions } from '../../schema-form'
+import {
+  TheSeamSchemaFormControlWidget,
+  TheSeamSchemaFormWidgetLayoutNodeOptions,
+} from '../../schema-form'
 import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 import { TheSeamTelInputModule } from '@theseam/ui-common/tel-input'
 
@@ -21,8 +29,9 @@ import { TheSeamTelInputModule } from '@theseam/ui-common/tel-input'
     TheSeamTelInputModule,
   ],
 })
-export class TheSeamSchemaFormTelComponent implements OnInit, TheSeamSchemaFormControlWidget {
-
+export class TheSeamSchemaFormTelComponent
+  implements OnInit, TheSeamSchemaFormControlWidget
+{
   formControl?: AbstractControl
   controlName?: string
   controlValue?: any
@@ -36,12 +45,12 @@ export class TheSeamSchemaFormTelComponent implements OnInit, TheSeamSchemaFormC
 
   autoCompleteList: string[] = []
 
-  constructor(
-    private readonly _jsf: JsonSchemaFormService,
-  ) { }
+  constructor(private readonly _jsf: JsonSchemaFormService) {}
 
   ngOnInit() {
-    this.options = this.layoutNode?.options || {} as TheSeamSchemaFormWidgetLayoutNodeOptions
+    this.options =
+      this.layoutNode?.options ||
+      ({} as TheSeamSchemaFormWidgetLayoutNodeOptions)
     this._jsf.initializeControl(this)
     console.log(this.controlValue)
     console.log(this.formControl?.value)
@@ -50,5 +59,4 @@ export class TheSeamSchemaFormTelComponent implements OnInit, TheSeamSchemaFormC
   updateValue(event: any) {
     this._jsf.updateValue(this, event.target.value)
   }
-
 }

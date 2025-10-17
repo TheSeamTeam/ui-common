@@ -1,4 +1,9 @@
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 
@@ -12,15 +17,10 @@ const meta: Meta<TableCellTypePhoneComponent> = {
   component: TableCellTypePhoneComponent,
   decorators: [
     applicationConfig({
-      providers: [
-        provideAnimations(),
-      ],
+      providers: [provideAnimations()],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamDatatableModule,
-        TheSeamTableCellTypesModule,
-      ],
+      imports: [TheSeamDatatableModule, TheSeamTableCellTypesModule],
     }),
   ],
   parameters: {
@@ -35,15 +35,17 @@ export default meta
 type Story = StoryObj<TableCellTypePhoneComponent>
 
 export const NoConfig: Story = {
-  render: args => {
-    const rows = [
-      { phoneNumber: args.value },
-    ]
+  render: (args) => {
+    const rows = [{ phoneNumber: args.value }]
     return {
       template: `<seam-datatable class="vw-100 vh-100" [columns]="columns" [rows]="rows"></seam-datatable>`,
       props: {
         columns: [
-          { prop: 'phoneNumber', phoneNumber: 'Phone Number', cellType: 'phone' },
+          {
+            prop: 'phoneNumber',
+            phoneNumber: 'Phone Number',
+            cellType: 'phone',
+          },
         ],
         rows,
       },
@@ -55,17 +57,16 @@ export const NoConfig: Story = {
 }
 
 export const WithConfig: Story = {
-  render: args => {
+  render: (args) => {
     const columns = [
       {
-        prop: 'phoneNumber', phoneNumber: 'Phone Number',
+        prop: 'phoneNumber',
+        phoneNumber: 'Phone Number',
         cellType: 'phone',
         cellTypeConfig: { type: 'phone', format: args.format },
       },
     ]
-    const rows = [
-      { phoneNumber: args.value },
-    ]
+    const rows = [{ phoneNumber: args.value }]
     return {
       template: `<seam-datatable class="vw-100 vh-100" [columns]="columns" [rows]="rows"></seam-datatable>`,
       props: {
@@ -82,7 +83,7 @@ export const WithConfig: Story = {
       defaultValue: 'INTERNATIONAL',
       control: {
         type: 'select',
-        options: [ 'E164', 'INTERNATIONAL', 'NATIONAL', 'RFC3966' ],
+        options: ['E164', 'INTERNATIONAL', 'NATIONAL', 'RFC3966'],
       },
     },
   },

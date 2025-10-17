@@ -27,7 +27,10 @@ import { getControlName } from './get-control-name'
  * ```
  *
  */
-export function getControlPath(c: AbstractControl, path: string = ''): string | null {
+export function getControlPath(
+  c: AbstractControl,
+  path: string = '',
+): string | null {
   let _path = path
   _path = getControlName(c) + _path
 

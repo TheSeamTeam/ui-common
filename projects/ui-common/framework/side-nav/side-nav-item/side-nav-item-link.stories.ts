@@ -1,4 +1,9 @@
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 
 import { Component, Directive, Input } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
@@ -16,7 +21,7 @@ import { TheSeamSideNavService } from '../side-nav.service'
 
 @Component({ template: `Url: {{ router.url }}` })
 class StoryRoutePlacholderComponent {
-  constructor(public router: Router) { }
+  constructor(public router: Router) {}
 }
 
 class MockSideNavComponent implements Partial<SideNavComponent> {
@@ -25,8 +30,10 @@ class MockSideNavComponent implements Partial<SideNavComponent> {
 
 @Directive({ selector: '[storyNavToggle]' })
 class StoryNavToggleDirective {
-  @Input() set storyNavToggle(value: string) { this._router.navigateByUrl(value) }
-  constructor(private _router: Router) { }
+  @Input() set storyNavToggle(value: string) {
+    this._router.navigateByUrl(value)
+  }
+  constructor(private _router: Router) {}
 }
 
 const meta: Meta<SideNavItemComponent> = {
@@ -41,10 +48,7 @@ const meta: Meta<SideNavItemComponent> = {
       ],
     }),
     moduleMetadata({
-      imports: [
-        StoryNavToggleDirective,
-        RouterModule,
-      ],
+      imports: [StoryNavToggleDirective, RouterModule],
       providers: [
         TheSeamSideNavService, // Normally would be provided by SideNavComponent.
         { provide: THESEAM_SIDE_NAV_ACCESSOR, useClass: MockSideNavComponent },
@@ -70,7 +74,7 @@ export const NoChildren: Story = {
       ],
     }),
   ],
-  render: args => ({
+  render: (args) => ({
     props: {
       currentUrl: 'example2',
 
@@ -112,15 +116,24 @@ export const WithChildren: Story = {
       providers: [
         provideRouter([
           { path: 'example1', component: StoryRoutePlacholderComponent },
-          { path: 'example1/example1.1', component: StoryRoutePlacholderComponent },
-          { path: 'example1/example1.2', component: StoryRoutePlacholderComponent },
-          { path: 'example1/example1.3', component: StoryRoutePlacholderComponent },
+          {
+            path: 'example1/example1.1',
+            component: StoryRoutePlacholderComponent,
+          },
+          {
+            path: 'example1/example1.2',
+            component: StoryRoutePlacholderComponent,
+          },
+          {
+            path: 'example1/example1.3',
+            component: StoryRoutePlacholderComponent,
+          },
           { path: 'example2', component: StoryRoutePlacholderComponent },
         ]),
       ],
     }),
   ],
-  render: args => ({
+  render: (args) => ({
     props: {
       currentUrl: 'example1',
 

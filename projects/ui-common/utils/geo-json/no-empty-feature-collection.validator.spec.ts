@@ -1,28 +1,37 @@
 import { UntypedFormControl } from '@angular/forms'
 
+import { FeatureCollection } from 'geojson'
 import {
-  FeatureCollection,
-} from 'geojson'
-import { NO_EMPTY_FEATURE_COLLECTION_VALIDATOR_NAME, noEmptyFeatureCollectionValidator } from './no-empty-feature-collection.validator'
+  NO_EMPTY_FEATURE_COLLECTION_VALIDATOR_NAME,
+  noEmptyFeatureCollectionValidator,
+} from './no-empty-feature-collection.validator'
 
 describe('isOnlyGeometryTypesValidator', () => {
   it('should be valid if value is null', () => {
-    const control = new UntypedFormControl(null, [ noEmptyFeatureCollectionValidator() ])
+    const control = new UntypedFormControl(null, [
+      noEmptyFeatureCollectionValidator(),
+    ])
     expect(control.valid).toBe(true)
   })
 
   it('should be valid if value is undefined', () => {
-    const control = new UntypedFormControl(undefined, [ noEmptyFeatureCollectionValidator() ])
+    const control = new UntypedFormControl(undefined, [
+      noEmptyFeatureCollectionValidator(),
+    ])
     expect(control.valid).toBe(true)
   })
 
   it('should be valid if value is empty string', () => {
-    const control = new UntypedFormControl('', [ noEmptyFeatureCollectionValidator() ])
+    const control = new UntypedFormControl('', [
+      noEmptyFeatureCollectionValidator(),
+    ])
     expect(control.valid).toBe(true)
   })
 
   it('should be valid if value is not a FeatureCollection', () => {
-    const control = new UntypedFormControl('abc', [ noEmptyFeatureCollectionValidator() ])
+    const control = new UntypedFormControl('abc', [
+      noEmptyFeatureCollectionValidator(),
+    ])
     expect(control.valid).toBe(true)
   })
 
@@ -32,10 +41,15 @@ describe('isOnlyGeometryTypesValidator', () => {
         type: 'FeatureCollection',
         features: [],
       }
-      const control = new UntypedFormControl(featureCollection, [ noEmptyFeatureCollectionValidator() ])
+      const control = new UntypedFormControl(featureCollection, [
+        noEmptyFeatureCollectionValidator(),
+      ])
       expect(control.valid).toBe(false)
       expect(control.errors).not.toBeNull()
-      expect(control.errors !== null && control.errors[NO_EMPTY_FEATURE_COLLECTION_VALIDATOR_NAME].reason).toBe(`FeatureCollection must have a value.`)
+      expect(
+        control.errors !== null &&
+          control.errors[NO_EMPTY_FEATURE_COLLECTION_VALIDATOR_NAME].reason,
+      ).toBe(`FeatureCollection must have a value.`)
     })
   })
 
@@ -46,10 +60,15 @@ describe('isOnlyGeometryTypesValidator', () => {
         features: [],
       }
       const value = JSON.stringify(featureCollection)
-      const control = new UntypedFormControl(value, [ noEmptyFeatureCollectionValidator() ])
+      const control = new UntypedFormControl(value, [
+        noEmptyFeatureCollectionValidator(),
+      ])
       expect(control.valid).toBe(false)
       expect(control.errors).not.toBeNull()
-      expect(control.errors !== null && control.errors[NO_EMPTY_FEATURE_COLLECTION_VALIDATOR_NAME].reason).toBe(`FeatureCollection must have a value.`)
+      expect(
+        control.errors !== null &&
+          control.errors[NO_EMPTY_FEATURE_COLLECTION_VALIDATOR_NAME].reason,
+      ).toBe(`FeatureCollection must have a value.`)
     })
   })
 
@@ -62,13 +81,15 @@ describe('isOnlyGeometryTypesValidator', () => {
             type: 'Feature',
             geometry: {
               type: 'Point',
-              coordinates: [ 0, 0 ],
+              coordinates: [0, 0],
             },
-            properties: { },
+            properties: {},
           },
         ],
       }
-      const control = new UntypedFormControl(featureCollection, [ noEmptyFeatureCollectionValidator() ])
+      const control = new UntypedFormControl(featureCollection, [
+        noEmptyFeatureCollectionValidator(),
+      ])
       expect(control.valid).toBe(true)
     })
   })
@@ -82,14 +103,16 @@ describe('isOnlyGeometryTypesValidator', () => {
             type: 'Feature',
             geometry: {
               type: 'Point',
-              coordinates: [ 0, 0 ],
+              coordinates: [0, 0],
             },
-            properties: { },
+            properties: {},
           },
         ],
       }
       const value = JSON.stringify(featureCollection)
-      const control = new UntypedFormControl(value, [ noEmptyFeatureCollectionValidator() ])
+      const control = new UntypedFormControl(value, [
+        noEmptyFeatureCollectionValidator(),
+      ])
       expect(control.valid).toBe(true)
     })
   })

@@ -1,4 +1,9 @@
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { provideRouter } from '@angular/router'
@@ -25,11 +30,7 @@ const meta: Meta<WidgetButtonGroupComponent> = {
       ],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamWidgetModule,
-        TheSeamButtonsModule,
-        TheSeamIconModule,
-      ],
+      imports: [TheSeamWidgetModule, TheSeamButtonsModule, TheSeamIconModule],
     }),
   ],
 }
@@ -38,7 +39,7 @@ export default meta
 type Story = StoryObj<WidgetButtonGroupComponent>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       icon: faWrench,

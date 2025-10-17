@@ -12,8 +12,6 @@ import { TheSeamTooltipDirective } from './tooltip.directive'
     TheSeamTooltipComponent,
     TheSeamTooltipDirective,
   ],
-  exports: [
-    TheSeamTooltipDirective,
-  ],
+  exports: [TheSeamTooltipDirective],
 })
-export class TheSeamTooltipModule { }
+export class TheSeamTooltipModule {}

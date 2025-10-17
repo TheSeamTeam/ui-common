@@ -26,7 +26,11 @@
 //   })
 // })
 
-import { createComponentFactory, createHostFactory, Spectator } from '@ngneat/spectator/jest'
+import {
+  createComponentFactory,
+  createHostFactory,
+  Spectator,
+} from '@ngneat/spectator/jest'
 
 // import { TheSeamButtonComponent } from './button.component'
 

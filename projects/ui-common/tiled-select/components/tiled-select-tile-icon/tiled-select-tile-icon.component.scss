@@ -1,5 +1,5 @@
-$light-grey: rgba(230,230,230,1);
-$light-blue: rgba(60,150,200,1);
+$light-grey: rgba(230, 230, 230, 1);
+$light-blue: rgba(60, 150, 200, 1);
 
 :host {
   display: block;
@@ -20,7 +20,7 @@ $light-blue: rgba(60,150,200,1);
       max-height: 75px;
       margin: 0 auto;
 
-      &[src$=".svg"] {
+      &[src$='.svg'] {
         height: 100%; // Needed for IE
       }
     }

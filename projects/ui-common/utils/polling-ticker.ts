@@ -1,7 +1,6 @@
 import { isObservable, Observable, Subscriber, Subscription } from 'rxjs'
 
 class IntervalTimer {
-
   private _intervalTime: number
   private _intervalId: number | null = null
 
@@ -42,7 +41,6 @@ class IntervalTimer {
     this.stop()
     this.start()
   }
-
 }
 
 export type PollingActionFn<R> = () => R | Observable<R>
@@ -67,7 +65,7 @@ export function pollingTicker<R>(
   options?: PollingTickerOptions,
 ): Observable<R> {
   return new Observable((subscriber: Subscriber<R>) => {
-    const _opts = { ...(new PollingTickerOptions()), ...(options || {}) }
+    const _opts = { ...new PollingTickerOptions(), ...(options || {}) }
 
     let timer: IntervalTimer | null = null
     let actionSub: Subscription | null = null
@@ -75,7 +73,9 @@ export function pollingTicker<R>(
 
     try {
       const handleAction = () => {
-        if (timer) { timer.stop() }
+        if (timer) {
+          timer.stop()
+        }
 
         const actionResult = action()
 
@@ -84,17 +84,28 @@ export function pollingTicker<R>(
             actionSub.unsubscribe()
           }
           actionSub = actionResult.subscribe(
-            (v: R) => { subscriber.next(v); if (timer) { timer.reset() } },
-            err => { subscriber.error(err) },
+            (v: R) => {
+              subscriber.next(v)
+              if (timer) {
+                timer.reset()
+              }
+            },
+            (err) => {
+              subscriber.error(err)
+            },
             () => {
               actionSub = null
-              if (timer) { timer.start() }
+              if (timer) {
+                timer.start()
+              }
             },
           )
         } else {
           subscriber.next(actionResult)
         }
-        if (timer) { timer.start() }
+        if (timer) {
+          timer.start()
+        }
       }
 
       if (_opts.emitOnInit) {
@@ -108,7 +119,7 @@ export function pollingTicker<R>(
       }
 
       if (ticker) {
-        tickerSub = ticker.subscribe(newPollingInterval => {
+        tickerSub = ticker.subscribe((newPollingInterval) => {
           if (newPollingInterval && timer) {
             timer.stop()
             if (newPollingInterval) {
@@ -116,7 +127,9 @@ export function pollingTicker<R>(
             }
           }
           handleAction()
-          if (timer) { timer.reset() }
+          if (timer) {
+            timer.reset()
+          }
         })
       }
     } catch (err) {

@@ -24,11 +24,15 @@ import { NgOption, NgSelectComponent } from '@ng-select/ng-select'
   selector: 'ng-select',
   exportAs: 'seamNgSelectExtra',
 })
-export class TheSeamNgSelectExtraDirective implements OnInit, AfterViewChecked, OnDestroy {
-
+export class TheSeamNgSelectExtraDirective
+  implements OnInit, AfterViewChecked, OnDestroy
+{
   private readonly _elementRef = inject(ElementRef<HTMLElement>)
   private readonly _ngSelect = inject(NgSelectComponent)
-  private readonly _ngControl = inject<NgControl | null>(NgControl, { optional: true, self: true })
+  private readonly _ngControl = inject<NgControl | null>(NgControl, {
+    optional: true,
+    self: true,
+  })
 
   /**
    * Set the tab index to `-1` to allow the root element of the ng-select
@@ -36,7 +40,9 @@ export class TheSeamNgSelectExtraDirective implements OnInit, AfterViewChecked, 
    * keyboard navigation.
    */
   @HostBinding('attr.tabIndex')
-  get _tabIndex() { return this._ngSelect.disabled() ? undefined : -1 }
+  get _tabIndex() {
+    return this._ngSelect.disabled() ? undefined : -1
+  }
 
   /**
    * Listening for focus event on root of component to allow javascript
@@ -44,13 +50,19 @@ export class TheSeamNgSelectExtraDirective implements OnInit, AfterViewChecked, 
    */
   @HostListener('focus', ['$event']) onFocus($event: FocusEvent) {
     const target = $event.target as HTMLElement
-    if (target === this._elementRef.nativeElement && !this._ngSelect.disabled()) {
+    if (
+      target === this._elementRef.nativeElement &&
+      !this._ngSelect.disabled()
+    ) {
       this._ngSelect.focus()
     }
   }
 
   @HostBinding('class.is-invalid') get _isInvalid() {
-    return this._ngControl ? this._ngControl.invalid && (this._ngControl.dirty || this._ngControl.touched) : false
+    return this._ngControl
+      ? this._ngControl.invalid &&
+          (this._ngControl.dirty || this._ngControl.touched)
+      : false
   }
 
   @HostBinding('class.ng-empty-string-value') get _isEmptyStringValue() {
@@ -105,7 +117,6 @@ export class TheSeamNgSelectExtraDirective implements OnInit, AfterViewChecked, 
     //   }
     // }
     // this._checkMarked = false
-
     // this._resizeSensor = new ResizeSensor(this._elementRef.nativeElement, event => {
     //   this._resizedEvent.emit({ element: this._elementRef.nativeElement, size: event })
     // })
@@ -113,10 +124,19 @@ export class TheSeamNgSelectExtraDirective implements OnInit, AfterViewChecked, 
 
   private _onScroll = (event: any) => {
     if (this._ngSelect && this._ngSelect.isOpen()) {
-      const isScrollingInScrollHost = (event.target.className as string).indexOf('ng-dropdown-panel-items') !== -1
-      const isInSensor = (event.target.className as string).indexOf('resize-sensor-shrink') !== -1 ||
-        (event.target.className as string).indexOf('os-resize-observer-host') !== -1
-      if (isScrollingInScrollHost || isInSensor) { return }
+      const isScrollingInScrollHost =
+        (event.target.className as string).indexOf(
+          'ng-dropdown-panel-items',
+        ) !== -1
+      const isInSensor =
+        (event.target.className as string).indexOf('resize-sensor-shrink') !==
+          -1 ||
+        (event.target.className as string).indexOf(
+          'os-resize-observer-host',
+        ) !== -1
+      if (isScrollingInScrollHost || isInSensor) {
+        return
+      }
       this._ngSelect.close()
     }
   }
@@ -178,5 +198,4 @@ export class TheSeamNgSelectExtraDirective implements OnInit, AfterViewChecked, 
   //     this._keyPressWorkaroundSub = null
   //   }
   // }
-
 }

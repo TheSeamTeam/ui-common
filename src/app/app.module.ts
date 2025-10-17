@@ -15,14 +15,15 @@ const manifests: DynamicComponentManifest[] = [
   {
     componentId: 'widget-one',
     path: 'widget-one',
-    loadChildren: () => import('./example-lazy-loaded-widgets/lazy-widget-one/lazy-widget-one.module').then(m => m.LazyWidgetOneModule),
+    loadChildren: () =>
+      import(
+        './example-lazy-loaded-widgets/lazy-widget-one/lazy-widget-one.module'
+      ).then((m) => m.LazyWidgetOneModule),
   },
 ]
 
 @NgModule({
-  declarations: [
-    AppComponent,
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -33,4 +34,4 @@ const manifests: DynamicComponentManifest[] = [
   providers: [],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

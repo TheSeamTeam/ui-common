@@ -19,4 +19,4 @@ import { TheSeamCardComponent } from './card.component'
     TheSeamCardActionComponent,
   ],
 })
-export class TheSeamCardModule { }
+export class TheSeamCardModule {}

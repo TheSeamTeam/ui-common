@@ -9,10 +9,8 @@ import { InputBoolean } from '@theseam/ui-common/core'
   standalone: false,
 })
 export class FormFieldErrorComponent {
-
   @Input() validatorName: string | undefined | null
   @Input() message: string | undefined | null
 
   @Input() @InputBoolean() showValidatorName = false
-
 }

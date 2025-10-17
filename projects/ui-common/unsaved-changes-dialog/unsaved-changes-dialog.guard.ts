@@ -3,7 +3,9 @@ import { CanDeactivateFn } from '@angular/router'
 
 import { UnsavedChangesCanDeactivate } from './unsaved-changes-can-deactivate'
 
-export const UnsavedChangesDialogGuard: CanDeactivateFn<UnsavedChangesCanDeactivate> = (component, currentRoute, currentState, nextState) => {
+export const UnsavedChangesDialogGuard: CanDeactivateFn<
+  UnsavedChangesCanDeactivate
+> = (component, currentRoute, currentState, nextState) => {
   if (isDevMode()) {
     if (!component.unsavedChangesCanDeactivate) {
       console.warn(
@@ -19,7 +21,9 @@ export const UnsavedChangesDialogGuard: CanDeactivateFn<UnsavedChangesCanDeactiv
   }
 
   if (!component.unsavedChangesCanDeactivate()) {
-    return confirm('You have unsaved changes! If you leave, your changes will be lost.')
+    return confirm(
+      'You have unsaved changes! If you leave, your changes will be lost.',
+    )
   }
 
   return true

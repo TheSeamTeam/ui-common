@@ -10,8 +10,7 @@ describe('TableCellTypeSelectorComponent', () => {
     TestBed.configureTestingModule({
       declarations: [TableCellTypeSelectorComponent],
       teardown: { destroyAfterEach: false },
-    })
-      .compileComponents()
+    }).compileComponents()
   }))
 
   beforeEach(() => {

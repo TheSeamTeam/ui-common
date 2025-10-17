@@ -4,14 +4,8 @@ import { NgModule } from '@angular/core'
 import { WidgetEmptyLabelComponent } from './widget-empty-label.component'
 
 @NgModule({
-  declarations: [
-    WidgetEmptyLabelComponent,
-  ],
-  imports: [
-    CommonModule,
-  ],
-  exports: [
-    WidgetEmptyLabelComponent,
-  ],
+  declarations: [WidgetEmptyLabelComponent],
+  imports: [CommonModule],
+  exports: [WidgetEmptyLabelComponent],
 })
-export class TheSeamWidgetEmptyLabelModule { }
+export class TheSeamWidgetEmptyLabelModule {}

@@ -4,7 +4,9 @@
 
   <!-- Template content -->
   <ng-container *ngIf="isTemplateContent">
-    <ng-container *ngTemplateOutlet="templateContent; context: context"></ng-container>
+    <ng-container
+      *ngTemplateOutlet="templateContent; context: context"
+    ></ng-container>
   </ng-container>
 </div>
 <div #arrow class="arrow"></div>

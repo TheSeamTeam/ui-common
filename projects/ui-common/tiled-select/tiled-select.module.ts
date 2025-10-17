@@ -22,4 +22,4 @@ import { TheSeamTiledSelectTileOverlayDirective } from './directives/tiled-selec
     TheSeamTiledSelectTileLabelTplDirective,
   ],
 })
-export class TheSeamTiledSelectModule { }
+export class TheSeamTiledSelectModule {}

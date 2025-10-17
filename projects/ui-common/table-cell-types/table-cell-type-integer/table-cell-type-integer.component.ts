@@ -1,9 +1,22 @@
 import { formatNumber } from '@angular/common'
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  Optional,
+} from '@angular/core'
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
 
-import { TableCellTypesHelpersService, TABLE_CELL_DATA, TheSeamTableColumn } from '@theseam/ui-common/table-cell-type'
+import {
+  TableCellTypesHelpersService,
+  TABLE_CELL_DATA,
+  TheSeamTableColumn,
+} from '@theseam/ui-common/table-cell-type'
 import type { TableCellData } from '@theseam/ui-common/table-cell-type'
 import { isNumeric, notNullOrUndefined } from '@theseam/ui-common/utils'
 
@@ -18,7 +31,6 @@ import { TableCellTypeConfigInteger } from './table-cell-type-integer-config'
   standalone: false,
 })
 export class TableCellTypeIntegerComponent implements OnDestroy {
-
   private readonly _ngUnsubscribe = new Subject<void>()
 
   @Input() value: string | null | undefined
@@ -31,29 +43,36 @@ export class TableCellTypeIntegerComponent implements OnDestroy {
   constructor(
     private _cdf: ChangeDetectorRef,
     private _tableCellTypeHelpers: TableCellTypesHelpersService,
-    @Optional() @Inject(TABLE_CELL_DATA) _tableData?: TableCellData<'integer', TableCellTypeConfigInteger>,
+    @Optional()
+    @Inject(TABLE_CELL_DATA)
+    _tableData?: TableCellData<'integer', TableCellTypeConfigInteger>,
   ) {
     const tableData = _tableData
     this.value = tableData && this._formatInteger(tableData.value, tableData)
     this.row = tableData && tableData.row
     this.rowIndex = tableData && tableData.rowIndex
     this.colData = tableData && tableData.colData
-    this.textAlign = this._parseConfigValue(tableData?.colData?.cellTypeConfig?.textAlign, tableData) || 'right'
+    this.textAlign =
+      this._parseConfigValue(
+        tableData?.colData?.cellTypeConfig?.textAlign,
+        tableData,
+      ) || 'right'
 
     if (tableData) {
-      tableData.changed
-        .pipe(takeUntil(this._ngUnsubscribe))
-        .subscribe(v => {
-          if (Object.prototype.hasOwnProperty.call(v.changes, 'value')) {
-            this.value = this._formatInteger(v.changes.value.currentValue, tableData)
-            this._cdf.markForCheck()
-          }
+      tableData.changed.pipe(takeUntil(this._ngUnsubscribe)).subscribe((v) => {
+        if (Object.prototype.hasOwnProperty.call(v.changes, 'value')) {
+          this.value = this._formatInteger(
+            v.changes.value.currentValue,
+            tableData,
+          )
+          this._cdf.markForCheck()
+        }
 
-          if (Object.prototype.hasOwnProperty.call(v.changes, 'colData')) {
-            this.colData = v.changes.colData.currentValue
-            this._cdf.markForCheck()
-          }
-        })
+        if (Object.prototype.hasOwnProperty.call(v.changes, 'colData')) {
+          this.colData = v.changes.colData.currentValue
+          this._cdf.markForCheck()
+        }
+      })
     }
   }
 
@@ -62,12 +81,25 @@ export class TableCellTypeIntegerComponent implements OnDestroy {
     this._ngUnsubscribe.complete()
   }
 
-  private _formatInteger(currentValue?: any, tableData?: TableCellData<'integer', TableCellTypeConfigInteger> | undefined): string {
+  private _formatInteger(
+    currentValue?: any,
+    tableData?:
+      | TableCellData<'integer', TableCellTypeConfigInteger>
+      | undefined,
+  ): string {
     const config = tableData?.colData?.cellTypeConfig
     const defaultToEmpty = notNullOrUndefined(config?.defaultToEmpty)
-      ? this._parseConfigValue(coerceBooleanProperty(config?.defaultToEmpty), tableData) : true
+      ? this._parseConfigValue(
+          coerceBooleanProperty(config?.defaultToEmpty),
+          tableData,
+        )
+      : true
     const formatInteger = notNullOrUndefined(config?.formatNumber)
-      ? this._parseConfigValue(coerceBooleanProperty(config?.formatNumber), tableData) : true
+      ? this._parseConfigValue(
+          coerceBooleanProperty(config?.formatNumber),
+          tableData,
+        )
+      : true
     let _currentValue = currentValue
     const valueIsNumeric = isNumeric(_currentValue)
 
@@ -83,15 +115,21 @@ export class TableCellTypeIntegerComponent implements OnDestroy {
     }
 
     const locale = this._parseConfigValue(config?.locale, tableData) || 'en-US'
-    const minIntegerDigits = this._parseConfigValue(config?.minIntegerDigits, tableData) || 1
+    const minIntegerDigits =
+      this._parseConfigValue(config?.minIntegerDigits, tableData) || 1
     const format = `${minIntegerDigits}.0-0`
 
-    return formatInteger ? formatNumber(_currentValue, locale, format) : _currentValue
+    return formatInteger
+      ? formatNumber(_currentValue, locale, format)
+      : _currentValue
   }
 
-  private _parseConfigValue(val?: any, tableData?: TableCellData<'integer', TableCellTypeConfigInteger>) {
-    const contextFn = () => this._tableCellTypeHelpers.getValueContext(val, tableData)
+  private _parseConfigValue(
+    val?: any,
+    tableData?: TableCellData<'integer', TableCellTypeConfigInteger>,
+  ) {
+    const contextFn = () =>
+      this._tableCellTypeHelpers.getValueContext(val, tableData)
     return this._tableCellTypeHelpers.parseValueProp(val, contextFn)
   }
-
 }

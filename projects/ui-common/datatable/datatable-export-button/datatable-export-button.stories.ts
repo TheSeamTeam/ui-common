@@ -1,9 +1,21 @@
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 
-import { CSVDataExporter, XLSXDataExporter } from '@theseam/ui-common/data-exporter'
-import { ExportersDataEvaluator, JexlEvaluator, THESEAM_DYNAMIC_VALUE_EVALUATOR } from '@theseam/ui-common/dynamic'
+import {
+  CSVDataExporter,
+  XLSXDataExporter,
+} from '@theseam/ui-common/data-exporter'
+import {
+  ExportersDataEvaluator,
+  JexlEvaluator,
+  THESEAM_DYNAMIC_VALUE_EVALUATOR,
+} from '@theseam/ui-common/dynamic'
 import { StoryToastrService } from '@theseam/ui-common/story-helpers'
 import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
 import { ToastrService } from 'ngx-toastr'
@@ -18,18 +30,21 @@ const meta: Meta<DatatableExportButtonComponent> = {
     applicationConfig({
       providers: [
         provideAnimations(),
-        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
-        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: ExportersDataEvaluator, multi: true },
+        {
+          provide: THESEAM_DYNAMIC_VALUE_EVALUATOR,
+          useClass: JexlEvaluator,
+          multi: true,
+        },
+        {
+          provide: THESEAM_DYNAMIC_VALUE_EVALUATOR,
+          useClass: ExportersDataEvaluator,
+          multi: true,
+        },
       ],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamDatatableModule,
-        TheSeamTableCellTypesModule,
-      ],
-      providers: [
-        { provide: ToastrService, useClass: StoryToastrService },
-      ],
+      imports: [TheSeamDatatableModule, TheSeamTableCellTypesModule],
+      providers: [{ provide: ToastrService, useClass: StoryToastrService }],
     }),
   ],
   parameters: {
@@ -44,7 +59,7 @@ export default meta
 type Story = StoryObj<DatatableExportButtonComponent>
 
 export const Exports: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       columns: [
         { prop: 'name', name: 'Name' },
@@ -55,10 +70,7 @@ export const Exports: Story = {
         { name: 'Mark', age: 27, color: 'blue' },
         { name: 'Joe', age: 33, color: 'green' },
       ],
-      exporters: [
-        new CSVDataExporter(),
-        new XLSXDataExporter(),
-      ],
+      exporters: [new CSVDataExporter(), new XLSXDataExporter()],
     },
     template: `
       <div class="vh-100 d-flex flex-column p-2">

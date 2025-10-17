@@ -14,11 +14,12 @@ import { observeControlValue } from './observe-control-value'
  *
  * TODO: Allow the value compare implementation to be optionally changed.
  */
-export function observeControlIsDifferent(control: AbstractControl): Observable<boolean> {
+export function observeControlIsDifferent(
+  control: AbstractControl,
+): Observable<boolean> {
   const _initial = JSON.stringify(control.value)
-  return observeControlValue(control)
-    .pipe(
-      map(value => JSON.stringify(value) !== _initial),
-      distinctUntilChanged(),
-    )
+  return observeControlValue(control).pipe(
+    map((value) => JSON.stringify(value) !== _initial),
+    distinctUntilChanged(),
+  )
 }

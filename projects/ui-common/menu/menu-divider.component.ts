@@ -5,9 +5,9 @@ import { ChangeDetectionStrategy, Component } from '@angular/core'
   template: ``,
   styles: [],
   host: {
-    'class': 'dropdown-divider d-block',
+    class: 'dropdown-divider d-block',
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false,
 })
-export class MenuDividerComponent { }
+export class MenuDividerComponent {}

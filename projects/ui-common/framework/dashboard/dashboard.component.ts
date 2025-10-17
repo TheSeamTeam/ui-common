@@ -11,9 +11,7 @@ import { DashboardWidgetsComponent } from './dashboard-widgets/dashboard-widgets
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    DashboardWidgetsComponent,
-  ],
+  imports: [DashboardWidgetsComponent],
 })
 export class DashboardComponent {
   @Input() widgets: IDashboardWidgetsItemDef[] | undefined | null

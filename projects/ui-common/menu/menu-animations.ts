@@ -1,4 +1,11 @@
-import { animate, animation, group, query, style, useAnimation } from '@angular/animations'
+import {
+  animate,
+  animation,
+  group,
+  query,
+  style,
+  useAnimation,
+} from '@angular/animations'
 
 export const menuDropdownPanelSlideIn = animation([
   style({
@@ -55,11 +62,27 @@ export const menuDropdownPanelFadeOut = animation([
 ])
 
 export const menuDropdownPanelIn = animation([
-  query('.seam-menu-container.seam-menu-anim--slide .dropdown-menu', useAnimation(menuDropdownPanelSlideIn), { optional: true }),
-  query('.seam-menu-container.seam-menu-anim--fade .dropdown-menu', useAnimation(menuDropdownPanelFadeIn), { optional: true }),
+  query(
+    '.seam-menu-container.seam-menu-anim--slide .dropdown-menu',
+    useAnimation(menuDropdownPanelSlideIn),
+    { optional: true },
+  ),
+  query(
+    '.seam-menu-container.seam-menu-anim--fade .dropdown-menu',
+    useAnimation(menuDropdownPanelFadeIn),
+    { optional: true },
+  ),
 ])
 
 export const menuDropdownPanelOut = animation([
-  query('.seam-menu-container.seam-menu-anim--slide .dropdown-menu', useAnimation(menuDropdownPanelSlideOut), { optional: true }),
-  query('.seam-menu-container.seam-menu-anim--fade .dropdown-menu', useAnimation(menuDropdownPanelFadeOut), { optional: true }),
+  query(
+    '.seam-menu-container.seam-menu-anim--slide .dropdown-menu',
+    useAnimation(menuDropdownPanelSlideOut),
+    { optional: true },
+  ),
+  query(
+    '.seam-menu-container.seam-menu-anim--fade .dropdown-menu',
+    useAnimation(menuDropdownPanelFadeOut),
+    { optional: true },
+  ),
 ])

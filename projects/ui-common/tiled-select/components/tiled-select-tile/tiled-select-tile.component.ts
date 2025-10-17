@@ -1,6 +1,23 @@
-import { animate, animation, keyframes, style, transition, trigger, useAnimation } from '@angular/animations'
+import {
+  animate,
+  animation,
+  keyframes,
+  style,
+  transition,
+  trigger,
+  useAnimation,
+} from '@angular/animations'
 import { BooleanInput } from '@angular/cdk/coercion'
-import { ChangeDetectorRef, Component, ContentChild, EventEmitter, HostBinding, inject, Input, Output } from '@angular/core'
+import {
+  ChangeDetectorRef,
+  Component,
+  ContentChild,
+  EventEmitter,
+  HostBinding,
+  inject,
+  Input,
+  Output,
+} from '@angular/core'
 import { NgIf, NgTemplateOutlet } from '@angular/common'
 
 import { faCheckCircle } from '@fortawesome/free-regular-svg-icons'
@@ -39,9 +56,7 @@ export const tileScaleUp = animation(
 export const tileScaleDown = animation(
   animate(
     '{{ timing }}s {{ delay }}s',
-    keyframes([
-      style({ transform: 'scale3d(1, 1, 1)' }),
-    ]),
+    keyframes([style({ transform: 'scale3d(1, 1, 1)' })]),
   ),
   { params: { scale: 1.05, timing: 0.75, delay: 0 } },
 )
@@ -88,7 +103,9 @@ export class TheSeamTiledSelectTileComponent {
   readonly faCheckCircle = faCheckCircle
 
   @HostBinding('@pulse') pulseAnimationState = true
-  @HostBinding('attr.data-tile-name') get _tileNameAttr() { return this.name }
+  @HostBinding('attr.data-tile-name') get _tileNameAttr() {
+    return this.name
+  }
 
   @Input() layout: TheSeamTiledSelectLayout = 'grid'
 
@@ -110,13 +127,16 @@ export class TheSeamTiledSelectTileComponent {
 
   @Output() readonly activated = new EventEmitter<any>()
 
-  @ContentChild(TheSeamTiledSelectTileLabelTplDirective, { static: true }) labelTpl?: TheSeamTiledSelectTileLabelTplDirective
+  @ContentChild(TheSeamTiledSelectTileLabelTplDirective, { static: true })
+  labelTpl?: TheSeamTiledSelectTileLabelTplDirective
 
   pulsing = false
   pulsingTimeout: number | undefined
 
   onTileClick(event: any) {
-    if (!this.selectable) { return }
+    if (!this.selectable) {
+      return
+    }
     this.activated.emit(event)
 
     // this.pulsing = true
@@ -142,5 +162,4 @@ export class TheSeamTiledSelectTileComponent {
       this.pulsingTimeout = undefined
     }, 750)
   }
-
 }

@@ -11,8 +11,12 @@ export class FormFieldErrorDirective {
   static ngAcceptInputType_external: BooleanInput
 
   @Input()
-  get validatorName(): string | undefined | null { return this._validatorName || this.seamFormFieldError }
-  set validatorName(value: string | undefined | null) { this._validatorName = value }
+  get validatorName(): string | undefined | null {
+    return this._validatorName || this.seamFormFieldError
+  }
+  set validatorName(value: string | undefined | null) {
+    this._validatorName = value
+  }
   private _validatorName: string | undefined | null
 
   @Input() seamFormFieldError: string | undefined | null
@@ -20,5 +24,4 @@ export class FormFieldErrorDirective {
   @Input() @InputBoolean() external = false
 
   constructor(public template: TemplateRef<any>) {}
-
 }

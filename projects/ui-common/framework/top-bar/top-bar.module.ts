@@ -30,4 +30,4 @@ import { TopBarTitleComponent } from './top-bar-title/top-bar-title.component'
     TopBarNavToggleBtnDetailDirective,
   ],
 })
-export class TheSeamTopBarModule { }
+export class TheSeamTopBarModule {}

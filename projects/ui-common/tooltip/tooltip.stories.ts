@@ -1,5 +1,10 @@
 import { expect } from 'storybook/test'
-import { applicationConfig, Meta, StoryObj, moduleMetadata } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  StoryObj,
+  moduleMetadata,
+} from '@storybook/angular'
 
 import { Component, TemplateRef, ViewChild } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
@@ -13,7 +18,9 @@ import { TheSeamTooltipHarness } from './testing/tooltip.harness'
 @Component({
   selector: 'tooltip-story-wrapper',
   template: `
-    <div style="padding: 100px; display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
+    <div
+      style="padding: 100px; display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;"
+    >
       <ng-content></ng-content>
     </div>
 
@@ -39,11 +46,12 @@ import { TheSeamTooltipHarness } from './testing/tooltip.harness'
   `,
 })
 class TooltipStoryWrapper {
-  @ViewChild('complexTooltip', { static: true }) complexTooltip!: TemplateRef<any>
+  @ViewChild('complexTooltip', { static: true })
+  complexTooltip!: TemplateRef<any>
   @ViewChild('iconTooltip', { static: true }) iconTooltip!: TemplateRef<any>
 }
 
-interface ExtraArgs { }
+interface ExtraArgs {}
 
 type StoryComponentType = TheSeamTooltipDirective & ExtraArgs
 
@@ -52,15 +60,10 @@ const meta: Meta<StoryComponentType> = {
   component: TheSeamTooltipDirective,
   decorators: [
     applicationConfig({
-      providers: [
-        provideAnimations(),
-      ],
+      providers: [provideAnimations()],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamTooltipModule,
-        TooltipStoryWrapper,
-      ],
+      imports: [TheSeamTooltipModule, TooltipStoryWrapper],
     }),
   ],
   tags: ['autodocs'],
@@ -99,7 +102,9 @@ export const BasicTooltips: Story = {
     await harness.waitForTooltipToShow()
 
     // Verify tooltip content is visible
-    await expect(await harness.getVisibleTooltipText()).toBe('Simple tooltip text')
+    await expect(await harness.getVisibleTooltipText()).toBe(
+      'Simple tooltip text',
+    )
     await expect(await harness.isTooltipVisible()).toBe(true)
 
     // Hide tooltip
@@ -136,7 +141,9 @@ export const AllPlacements: Story = {
   }),
   play: async ({ canvasElement }) => {
     // Test tooltip visibility for different placements
-    const topHarness = await getHarness(TheSeamTooltipHarness, { canvasElement })
+    const topHarness = await getHarness(TheSeamTooltipHarness, {
+      canvasElement,
+    })
 
     await topHarness.hover()
     await topHarness.waitForTooltipToShow()
@@ -175,31 +182,41 @@ export const TriggerTypes: Story = {
   }),
   play: async ({ canvasElement }) => {
     // Test hover-only trigger
-    const hoverOnlyHarness = await getHarness(TheSeamTooltipHarness.with({ selector: '#hover-only' }), { canvasElement })
+    const hoverOnlyHarness = await getHarness(
+      TheSeamTooltipHarness.with({ selector: '#hover-only' }),
+      { canvasElement },
+    )
 
     await hoverOnlyHarness.hover()
     await hoverOnlyHarness.waitForTooltipToShow()
     await expect(await hoverOnlyHarness.isTooltipVisible()).toBe(true)
-    await expect(await hoverOnlyHarness.getVisibleTooltipText()).toBe('Hover only')
+    await expect(await hoverOnlyHarness.getVisibleTooltipText()).toBe(
+      'Hover only',
+    )
 
     await hoverOnlyHarness.mouseAway()
     await hoverOnlyHarness.waitForTooltipToHide()
     await expect(await hoverOnlyHarness.isTooltipVisible()).toBe(false)
 
     // Test focus-only trigger
-    const focusOnlyHarness = await getHarness(TheSeamTooltipHarness.with({ selector: '#focus-only' }), { canvasElement })
+    const focusOnlyHarness = await getHarness(
+      TheSeamTooltipHarness.with({ selector: '#focus-only' }),
+      { canvasElement },
+    )
 
     await focusOnlyHarness.focus()
     await focusOnlyHarness.waitForTooltipToShow()
     await expect(await focusOnlyHarness.isTooltipVisible()).toBe(true)
-    await expect(await focusOnlyHarness.getVisibleTooltipText()).toBe('Focus only')
+    await expect(await focusOnlyHarness.getVisibleTooltipText()).toBe(
+      'Focus only',
+    )
 
     await focusOnlyHarness.blur()
     await focusOnlyHarness.waitForTooltipToHide()
     await expect(await focusOnlyHarness.isTooltipVisible()).toBe(false)
 
     await focusOnlyHarness.click()
-    await new Promise(resolve => setTimeout(resolve, 1000)) // Allow time for any potential tooltip to show
+    await new Promise((resolve) => setTimeout(resolve, 1000)) // Allow time for any potential tooltip to show
     await expect(await focusOnlyHarness.isTooltipVisible()).toBe(false)
   },
 }
@@ -282,22 +299,30 @@ export const DisabledState: Story = {
   }),
   play: async ({ canvasElement }) => {
     // Test enabled tooltip works
-    const enabledHarness = await getHarness(TheSeamTooltipHarness.with({ selector: '#enabled-tooltip' }), { canvasElement })
+    const enabledHarness = await getHarness(
+      TheSeamTooltipHarness.with({ selector: '#enabled-tooltip' }),
+      { canvasElement },
+    )
 
     await enabledHarness.hover()
     await enabledHarness.waitForTooltipToShow()
     await expect(await enabledHarness.isTooltipVisible()).toBe(true)
-    await expect(await enabledHarness.getVisibleTooltipText()).toBe('This tooltip works')
+    await expect(await enabledHarness.getVisibleTooltipText()).toBe(
+      'This tooltip works',
+    )
 
     await enabledHarness.mouseAway()
     await enabledHarness.waitForTooltipToHide()
     await expect(await enabledHarness.isTooltipVisible()).toBe(false)
 
     // Test disabled tooltip does not show
-    const disabledHarness = await getHarness(TheSeamTooltipHarness.with({ selector: '#disabled-tooltip' }), { canvasElement })
+    const disabledHarness = await getHarness(
+      TheSeamTooltipHarness.with({ selector: '#disabled-tooltip' }),
+      { canvasElement },
+    )
 
     await disabledHarness.hover()
-    await new Promise(resolve => setTimeout(resolve, 100)) // Allow time for any potential tooltip to show
+    await new Promise((resolve) => setTimeout(resolve, 100)) // Allow time for any potential tooltip to show
     await expect(await disabledHarness.isTooltipVisible()).toBe(false)
   },
 }
@@ -326,7 +351,9 @@ export const DelayConfiguration: Story = {
   }),
   play: async ({ canvasElement }) => {
     // Test tooltip with no delay
-    const defaultHarness = await getHarness(TheSeamTooltipHarness, { canvasElement })
+    const defaultHarness = await getHarness(TheSeamTooltipHarness, {
+      canvasElement,
+    })
 
     await defaultHarness.hover()
     await defaultHarness.waitForTooltipToShow()

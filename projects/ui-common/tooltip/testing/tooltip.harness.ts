@@ -1,4 +1,9 @@
-import { ComponentHarness, HarnessPredicate, BaseHarnessFilters, ElementDimensions } from '@angular/cdk/testing'
+import {
+  ComponentHarness,
+  HarnessPredicate,
+  BaseHarnessFilters,
+  ElementDimensions,
+} from '@angular/cdk/testing'
 
 export interface TheSeamTooltipHarnessFilters extends BaseHarnessFilters {
   // Empty - use selector-based filtering
@@ -13,7 +18,9 @@ export class TheSeamTooltipHarness extends ComponentHarness {
   /**
    * Gets a `HarnessPredicate` that can be used to search for a tooltip with specific attributes
    */
-  static with(options: TheSeamTooltipHarnessFilters = {}): HarnessPredicate<TheSeamTooltipHarness> {
+  static with(
+    options: TheSeamTooltipHarnessFilters = {},
+  ): HarnessPredicate<TheSeamTooltipHarness> {
     return new HarnessPredicate(TheSeamTooltipHarness, options)
   }
 
@@ -48,7 +55,9 @@ export class TheSeamTooltipHarness extends ComponentHarness {
     if (!tooltipId) {
       return false
     }
-    const tooltip = await this.documentRootLocatorFactory().locatorForOptional(`#${tooltipId}.tooltip.show`)()
+    const tooltip = await this.documentRootLocatorFactory().locatorForOptional(
+      `#${tooltipId}.tooltip.show`,
+    )()
     return tooltip !== null
   }
 
@@ -58,7 +67,10 @@ export class TheSeamTooltipHarness extends ComponentHarness {
     if (!tooltipId) {
       return null
     }
-    const tooltipInner = await this.documentRootLocatorFactory().locatorForOptional(`#${tooltipId} .tooltip-inner`)()
+    const tooltipInner =
+      await this.documentRootLocatorFactory().locatorForOptional(
+        `#${tooltipId} .tooltip-inner`,
+      )()
     if (!tooltipInner) {
       return null
     }
@@ -71,12 +83,14 @@ export class TheSeamTooltipHarness extends ComponentHarness {
     if (!tooltipId) {
       return []
     }
-    const tooltip = await this.documentRootLocatorFactory().locatorForOptional(`#${tooltipId}.tooltip.show`)()
+    const tooltip = await this.documentRootLocatorFactory().locatorForOptional(
+      `#${tooltipId}.tooltip.show`,
+    )()
     if (!tooltip) {
       return []
     }
     const classAttr = await tooltip.getAttribute('class')
-    return classAttr ? classAttr.split(' ').filter(c => c.trim()) : []
+    return classAttr ? classAttr.split(' ').filter((c) => c.trim()) : []
   }
 
   /** Gets the tooltip ID from the aria-describedby attribute */
@@ -91,7 +105,7 @@ export class TheSeamTooltipHarness extends ComponentHarness {
       if (await this.isTooltipVisible()) {
         return
       }
-      await new Promise(resolve => setTimeout(resolve, 50))
+      await new Promise((resolve) => setTimeout(resolve, 50))
     }
     throw new Error(`Tooltip did not appear within ${timeout}ms`)
   }
@@ -103,7 +117,7 @@ export class TheSeamTooltipHarness extends ComponentHarness {
       if (!(await this.isTooltipVisible())) {
         return
       }
-      await new Promise(resolve => setTimeout(resolve, 50))
+      await new Promise((resolve) => setTimeout(resolve, 50))
     }
     throw new Error(`Tooltip did not hide within ${timeout}ms`)
   }
@@ -118,7 +132,9 @@ export class TheSeamTooltipHarness extends ComponentHarness {
     if (!tooltipId) {
       return null
     }
-    const tooltip = await this.documentRootLocatorFactory().locatorForOptional(`#${tooltipId}.tooltip.show`)()
+    const tooltip = await this.documentRootLocatorFactory().locatorForOptional(
+      `#${tooltipId}.tooltip.show`,
+    )()
     if (!tooltip) {
       return null
     }

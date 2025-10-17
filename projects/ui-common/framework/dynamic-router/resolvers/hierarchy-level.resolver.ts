@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core'
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router'
+import {
+  ActivatedRouteSnapshot,
+  Resolve,
+  RouterStateSnapshot,
+} from '@angular/router'
 import { Observable } from 'rxjs'
 import { map, take } from 'rxjs/operators'
 
 @Injectable({ providedIn: 'root' })
 export class HierarchyLevelResolver implements Resolve<number> {
-
   resolve(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot,
@@ -26,5 +29,4 @@ export class HierarchyLevelResolver implements Resolve<number> {
 
     return 0
   }
-
 }

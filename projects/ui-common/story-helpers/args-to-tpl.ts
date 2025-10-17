@@ -52,7 +52,7 @@ export interface ArgsTplParts {
 
 function removeDuplicates(arr: string[]) {
   const seen: { [k: string]: boolean } = {}
-  return arr.filter(item => {
+  return arr.filter((item) => {
     if (!seen[item]) {
       seen[item] = true
       return true
@@ -89,14 +89,11 @@ export function argsToTpl(options?: ArgsTplOptions) {
 
   const alwaysBind = context?.parameters?.argsToTplOptions?.alwaysBind || []
 
-  const props = removeDuplicates([
-    ...alwaysBind,
-    ...Object.keys(context.args),
-  ])
+  const props = removeDuplicates([...alwaysBind, ...Object.keys(context.args)])
 
   const parts = props
-    .filter(k => exclude.indexOf(k) === -1)
-    .map(k => {
+    .filter((k) => exclude.indexOf(k) === -1)
+    .map((k) => {
       // Outputs
       if (
         context.argTypes[k]?.hasOwnProperty('action') &&
@@ -106,9 +103,7 @@ export function argsToTpl(options?: ArgsTplOptions) {
       }
 
       // Inputs
-      if (
-        (context.args.hasOwnProperty(k) || alwaysBind.indexOf(k) !== -1)
-      ) {
+      if (context.args.hasOwnProperty(k) || alwaysBind.indexOf(k) !== -1) {
         return `[${k}]="${k}"`
       }
     })

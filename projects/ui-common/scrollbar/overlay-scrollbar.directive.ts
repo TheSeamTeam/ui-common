@@ -1,5 +1,12 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
-import { AfterViewInit, Directive, ElementRef, inject, Input, OnDestroy } from '@angular/core'
+import {
+  AfterViewInit,
+  Directive,
+  ElementRef,
+  inject,
+  Input,
+  OnDestroy,
+} from '@angular/core'
 
 import OverlayScrollbars from 'overlayscrollbars'
 
@@ -11,8 +18,14 @@ import type { TheSeamOverlayScrollbarsConfig } from './overlay-scrollbars-config
   selector: '[seamOverlayScrollbar]',
   exportAs: 'seamOverlayScrollbar',
 })
-export class TheSeamOverlayScrollbarDirective implements AfterViewInit, OnDestroy {
-  static ngAcceptInputType_seamOverlayScrollbar: TheSeamOverlayScrollbarsConfig | undefined | null | ''
+export class TheSeamOverlayScrollbarDirective
+  implements AfterViewInit, OnDestroy
+{
+  static ngAcceptInputType_seamOverlayScrollbar:
+    | TheSeamOverlayScrollbarsConfig
+    | undefined
+    | null
+    | ''
 
   private readonly _ref = inject(ElementRef)
   private readonly _scrollbars = inject(TheSeamOverlayScrollbarsService)
@@ -20,7 +33,11 @@ export class TheSeamOverlayScrollbarDirective implements AfterViewInit, OnDestro
   private _disabled = false
 
   @Input()
-  set seamOverlayScrollbar(value: TheSeamOverlayScrollbarsConfig | undefined | null) { this.options = value }
+  set seamOverlayScrollbar(
+    value: TheSeamOverlayScrollbarsConfig | undefined | null,
+  ) {
+    this.options = value
+  }
 
   @Input()
   get overlayScrollbarEnabled(): boolean {
@@ -29,7 +46,10 @@ export class TheSeamOverlayScrollbarDirective implements AfterViewInit, OnDestro
   set overlayScrollbarEnabled(value: boolean) {
     this._disabled = !coerceBooleanProperty(value)
     if (!this._disabled) {
-      this._scrollbars.initializeInstance(this._ref.nativeElement, this._options)
+      this._scrollbars.initializeInstance(
+        this._ref.nativeElement,
+        this._options,
+      )
     } else {
       this._scrollbars.destroyInstance(this._ref.nativeElement)
     }
@@ -49,7 +69,10 @@ export class TheSeamOverlayScrollbarDirective implements AfterViewInit, OnDestro
 
   ngAfterViewInit() {
     if (!this._disabled) {
-      this._scrollbars.initializeInstance(this._ref.nativeElement, this._options)
+      this._scrollbars.initializeInstance(
+        this._ref.nativeElement,
+        this._options,
+      )
     }
   }
 
@@ -60,5 +83,4 @@ export class TheSeamOverlayScrollbarDirective implements AfterViewInit, OnDestro
   get instance(): OverlayScrollbars {
     return this._scrollbars.getInstance(this._ref.nativeElement)
   }
-
 }

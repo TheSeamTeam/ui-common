@@ -4,13 +4,27 @@ import { AlterationsListHarness } from './alterations-list.harness'
 export class AlterationsDiffHarness extends ComponentHarness {
   static hostSelector = 'seam-alterations-diff'
 
-  private _getDiffSummary = this.locatorForOptional('[data-testid="diff-summary"]')
-  private _getCurrentList = this.locatorForOptional('[data-testid="current-alterations-list"]')
-  private _getPendingList = this.locatorForOptional('[data-testid="pending-alterations-list"]')
-  private _getCurrentListMobile = this.locatorForOptional('[data-testid="current-alterations-list-mobile"]')
-  private _getPendingListMobile = this.locatorForOptional('[data-testid="pending-alterations-list-mobile"]')
-  private _getDesktopLayout = this.locatorForOptional('[data-testid="desktop-layout"]')
-  private _getMobileLayout = this.locatorForOptional('[data-testid="mobile-layout"]')
+  private _getDiffSummary = this.locatorForOptional(
+    '[data-testid="diff-summary"]',
+  )
+  private _getCurrentList = this.locatorForOptional(
+    '[data-testid="current-alterations-list"]',
+  )
+  private _getPendingList = this.locatorForOptional(
+    '[data-testid="pending-alterations-list"]',
+  )
+  private _getCurrentListMobile = this.locatorForOptional(
+    '[data-testid="current-alterations-list-mobile"]',
+  )
+  private _getPendingListMobile = this.locatorForOptional(
+    '[data-testid="pending-alterations-list-mobile"]',
+  )
+  private _getDesktopLayout = this.locatorForOptional(
+    '[data-testid="desktop-layout"]',
+  )
+  private _getMobileLayout = this.locatorForOptional(
+    '[data-testid="mobile-layout"]',
+  )
 
   async hasDiffSummary(): Promise<boolean> {
     const summary = await this._getDiffSummary()

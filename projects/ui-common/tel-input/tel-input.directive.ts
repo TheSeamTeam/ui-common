@@ -1,15 +1,36 @@
-
-import { Directive, DoCheck, ElementRef, HostBinding, Inject, Input, NgZone, OnDestroy, OnInit, Optional, Self, DOCUMENT } from '@angular/core'
+import {
+  Directive,
+  DoCheck,
+  ElementRef,
+  HostBinding,
+  Inject,
+  Input,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  Optional,
+  Self,
+  DOCUMENT,
+} from '@angular/core'
 import { fromEvent, merge, Subject } from 'rxjs'
 import { auditTime, last, switchMap, takeUntil, tap } from 'rxjs/operators'
 
 import { AssetLoaderService, LoadedAssetRef } from '@theseam/ui-common/services'
-import { getAttribute, hasAttribute, notNullOrUndefined, toggleAttribute } from '@theseam/ui-common/utils'
+import {
+  getAttribute,
+  hasAttribute,
+  notNullOrUndefined,
+  toggleAttribute,
+} from '@theseam/ui-common/utils'
 
 import { NgControl } from '@angular/forms'
 import { IntlTelInputFn, intlTelInputUtils } from './intl-tel-input'
 import type { IntlTelInput } from './intl-tel-input'
-import { TEL_INPUT_STYLES, TEL_INPUT_STYLESHEET_PATH, TEL_INPUT_UTILS_PATH } from './tel-input-constants'
+import {
+  TEL_INPUT_STYLES,
+  TEL_INPUT_STYLESHEET_PATH,
+  TEL_INPUT_UTILS_PATH,
+} from './tel-input-constants'
 import { globalIntlTelInputUtils } from './utils/index'
 
 @Directive({
@@ -21,7 +42,9 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy, DoCheck {
   private readonly _ngUnsubscribe = new Subject<void>()
 
   private _instance: IntlTelInput.Plugin | undefined
-  private _loadedAssetRefs: LoadedAssetRef<HTMLLinkElement | HTMLStyleElement>[] = []
+  private _loadedAssetRefs: LoadedAssetRef<
+    HTMLLinkElement | HTMLStyleElement
+  >[] = []
 
   @HostBinding('attr.type') _attrType = 'tel'
 
@@ -47,47 +70,53 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy, DoCheck {
     private readonly _ngZone: NgZone,
     @Optional() @Inject(DOCUMENT) private readonly _document?: any,
     @Optional() @Self() private readonly _ngControl?: NgControl,
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    this._elementRef.nativeElement.value = this._ngControl ? this._ngControl.value : this.value ?? ''
+    this._elementRef.nativeElement.value = this._ngControl
+      ? this._ngControl.value
+      : (this.value ?? '')
     this._elementRef.nativeElement.setAttribute('instance-loading', '')
     merge(
       this._assetLoader.loadStyleSheet(TEL_INPUT_STYLESHEET_PATH),
       this._assetLoader.loadStyle(TEL_INPUT_STYLES),
-    ).pipe(
-      tap(v => this._loadedAssetRefs.push(v)),
-      last(),
-      switchMap(() => {
-        this._instance = IntlTelInputFn(this._elementRef.nativeElement, {
-          utilsScript: TEL_INPUT_UTILS_PATH,
-          preferredCountries: [ 'US' ],
-          nationalMode: false,
-          formatOnDisplay: true,
-          autoPlaceholder: 'off',
-          separateDialCode: false,
-          autoHideDialCode: false,
-          // TODO: Add initialCountry support.
-          // initialCountry: 'auto'
-        })
+    )
+      .pipe(
+        tap((v) => this._loadedAssetRefs.push(v)),
+        last(),
+        switchMap(() => {
+          this._instance = IntlTelInputFn(this._elementRef.nativeElement, {
+            utilsScript: TEL_INPUT_UTILS_PATH,
+            preferredCountries: ['US'],
+            nationalMode: false,
+            formatOnDisplay: true,
+            autoPlaceholder: 'off',
+            separateDialCode: false,
+            autoHideDialCode: false,
+            // TODO: Add initialCountry support.
+            // initialCountry: 'auto'
+          })
 
-        this._tryUpdateDropdownAttributes()
+          this._tryUpdateDropdownAttributes()
 
-        return this._instance.promise.then(v => {
-          this._elementRef.nativeElement.removeAttribute('instance-loading')
-          return v
-        })
-      }),
-      tap(() => this._initDropdownListener()),
-      tap(() => this.value = this._value),
-      tap(this._formatIntlTelInput),
-      switchMap(() => merge(
-        fromEvent(this._elementRef.nativeElement, 'keyup'),
-        fromEvent(this._elementRef.nativeElement, 'change'),
-      )),
-      tap(this._formatIntlTelInput),
-      takeUntil(this._ngUnsubscribe),
-    ).subscribe()
+          return this._instance.promise.then((v) => {
+            this._elementRef.nativeElement.removeAttribute('instance-loading')
+            return v
+          })
+        }),
+        tap(() => this._initDropdownListener()),
+        tap(() => (this.value = this._value)),
+        tap(this._formatIntlTelInput),
+        switchMap(() =>
+          merge(
+            fromEvent(this._elementRef.nativeElement, 'keyup'),
+            fromEvent(this._elementRef.nativeElement, 'change'),
+          ),
+        ),
+        tap(this._formatIntlTelInput),
+        takeUntil(this._ngUnsubscribe),
+      )
+      .subscribe()
   }
 
   ngOnDestroy(): void {
@@ -107,9 +136,15 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy, DoCheck {
   private _tryUpdateDropdownAttributes() {
     const control = this._ngControl
     if (control) {
-      const flagsContainer: HTMLElement | null | undefined = (this._instance as any)?.selectedFlag
+      const flagsContainer: HTMLElement | null | undefined = (
+        this._instance as any
+      )?.selectedFlag
       if (flagsContainer) {
-        toggleAttribute(flagsContainer, 'aria-disabled', control.disabled ?? false)
+        toggleAttribute(
+          flagsContainer,
+          'aria-disabled',
+          control.disabled ?? false,
+        )
 
         const disabled = control.disabled ?? false
         if (!disabled) {
@@ -141,7 +176,9 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy, DoCheck {
   public updateValue(): void {
     // console.log('%cupdateValue START', 'color:cyan', typeof intlTelInputUtils !== 'undefined')
     if (typeof globalIntlTelInputUtils() !== 'undefined') {
-      const currentText = this._instance?.getNumber(intlTelInputUtils.numberFormat.E164)
+      const currentText = this._instance?.getNumber(
+        intlTelInputUtils.numberFormat.E164,
+      )
       // console.log('currentText', currentText, this._instance?.getSelectedCountryData())
       // console.log('fullNumber', (this._instance as any)._getFullNumber())
       // console.log('E164', this._instance?.getNumber(intlTelInputUtils.numberFormat.E164))
@@ -171,57 +208,82 @@ export class TheSeamTelInputDirective implements OnInit, OnDestroy, DoCheck {
     }
 
     this._ngZone.runOutsideAngular(() => {
-      const openDropdown$ = fromEvent(this._elementRef.nativeElement, 'open:countrydropdown')
-      const closeDropdown$ = fromEvent(this._elementRef.nativeElement, 'close:countrydropdown')
+      const openDropdown$ = fromEvent(
+        this._elementRef.nativeElement,
+        'open:countrydropdown',
+      )
+      const closeDropdown$ = fromEvent(
+        this._elementRef.nativeElement,
+        'close:countrydropdown',
+      )
       const instance = this._instance as any
-      openDropdown$.pipe(
-        switchMap(() => {
-          const pressDown$ = merge(
-            fromEvent(doc, 'touchstart', { capture: true }),
-            fromEvent(doc, 'mousedown', { capture: true }),
-          ).pipe(
-            auditTime(0),
-            tap((event: any) => {
-              if (instance.countryList.contains(event.target) || instance.selectedFlag.contains(event.target)) {
-                return
-              }
-              instance._closeDropdown()
-            }),
-          )
+      openDropdown$
+        .pipe(
+          switchMap(() => {
+            const pressDown$ = merge(
+              fromEvent(doc, 'touchstart', { capture: true }),
+              fromEvent(doc, 'mousedown', { capture: true }),
+            ).pipe(
+              auditTime(0),
+              tap((event: any) => {
+                if (
+                  instance.countryList.contains(event.target) ||
+                  instance.selectedFlag.contains(event.target)
+                ) {
+                  return
+                }
+                instance._closeDropdown()
+              }),
+            )
 
-          const flagBtnClick$ = fromEvent<MouseEvent>(instance.selectedFlag, 'click').pipe(
-            tap((event: MouseEvent) => {
-              if (!this.isDropdownVisible()) {
-                return
-              }
+            const flagBtnClick$ = fromEvent<MouseEvent>(
+              instance.selectedFlag,
+              'click',
+            ).pipe(
+              tap((event: MouseEvent) => {
+                if (!this.isDropdownVisible()) {
+                  return
+                }
 
-              event.preventDefault()
-              instance._closeDropdown()
-            }),
-          )
+                event.preventDefault()
+                instance._closeDropdown()
+              }),
+            )
 
-          return merge(pressDown$, flagBtnClick$).pipe(takeUntil(closeDropdown$))
-        }),
-        takeUntil(this._ngUnsubscribe),
-      ).subscribe()
-
-      const flagsContainer: HTMLElement | null | undefined = (this._instance as any)?.selectedFlag
-      if (flagsContainer) {
-        fromEvent(flagsContainer, 'keydown', { capture: true }).pipe(
-          tap((e: any) => {
-            const control = this._ngControl
-            if (control) {
-              const disabled = control.disabled ?? false
-              if (disabled && ['ArrowUp', 'Up', 'ArrowDown', 'Down', ' ', 'Enter'].indexOf(e.key) !== -1) {
-                // prevent form from being submitted if "ENTER" was pressed
-                e.preventDefault()
-                // prevent event from being handled again by document
-                e.stopPropagation()
-              }
-            }
+            return merge(pressDown$, flagBtnClick$).pipe(
+              takeUntil(closeDropdown$),
+            )
           }),
           takeUntil(this._ngUnsubscribe),
-        ).subscribe()
+        )
+        .subscribe()
+
+      const flagsContainer: HTMLElement | null | undefined = (
+        this._instance as any
+      )?.selectedFlag
+      if (flagsContainer) {
+        fromEvent(flagsContainer, 'keydown', { capture: true })
+          .pipe(
+            tap((e: any) => {
+              const control = this._ngControl
+              if (control) {
+                const disabled = control.disabled ?? false
+                if (
+                  disabled &&
+                  ['ArrowUp', 'Up', 'ArrowDown', 'Down', ' ', 'Enter'].indexOf(
+                    e.key,
+                  ) !== -1
+                ) {
+                  // prevent form from being submitted if "ENTER" was pressed
+                  e.preventDefault()
+                  // prevent event from being handled again by document
+                  e.stopPropagation()
+                }
+              }
+            }),
+            takeUntil(this._ngUnsubscribe),
+          )
+          .subscribe()
       }
     })
   }

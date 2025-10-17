@@ -1,4 +1,8 @@
-import { BaseHarnessFilters, ComponentHarness, HarnessPredicate } from '@angular/cdk/testing'
+import {
+  BaseHarnessFilters,
+  ComponentHarness,
+  HarnessPredicate,
+} from '@angular/cdk/testing'
 
 import { TheSeamFormFieldRequiredIndicatorHarness } from '@theseam/ui-common/form-field'
 
@@ -11,13 +15,20 @@ export class TheSeamSchemaFormNumberHarness extends ComponentHarness {
   static hostSelector = 'seam-schema-form-number'
 
   private readonly _input = this.locatorFor('input')
-  private readonly _requiredIndicator = this.locatorFor(TheSeamFormFieldRequiredIndicatorHarness)
+  private readonly _requiredIndicator = this.locatorFor(
+    TheSeamFormFieldRequiredIndicatorHarness,
+  )
 
   /** Creates a `HarnessPredicate` used to locate a particular `MyMenuHarness`. */
-  static with(options: TheSeamSchemaFormNumberHarnessFilters): HarnessPredicate<TheSeamSchemaFormNumberHarness> {
-    return new HarnessPredicate(TheSeamSchemaFormNumberHarness, options)
-      .addOption('field name', options.name,
-        (harness, name) => HarnessPredicate.stringMatches(harness.getName(), name))
+  static with(
+    options: TheSeamSchemaFormNumberHarnessFilters,
+  ): HarnessPredicate<TheSeamSchemaFormNumberHarness> {
+    return new HarnessPredicate(
+      TheSeamSchemaFormNumberHarness,
+      options,
+    ).addOption('field name', options.name, (harness, name) =>
+      HarnessPredicate.stringMatches(harness.getName(), name),
+    )
   }
 
   public async getName(): Promise<string | null> {

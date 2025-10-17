@@ -1,4 +1,9 @@
-import { componentWrapperDecorator, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  componentWrapperDecorator,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 import { applicationConfig } from '@storybook/angular'
 import { expect } from 'storybook/test'
 
@@ -20,16 +25,14 @@ const meta: Meta<WidgetComponent> = {
   component: WidgetComponent,
   decorators: [
     applicationConfig({
-      providers: [
-        provideAnimations(),
-      ],
+      providers: [provideAnimations()],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamWidgetModule,
-      ],
+      imports: [TheSeamWidgetModule],
     }),
-    componentWrapperDecorator(story => `<div style="height: 270px; width: 400px;">${story}</div>`),
+    componentWrapperDecorator(
+      (story) => `<div style="height: 270px; width: 400px;">${story}</div>`,
+    ),
   ],
   // parameters: {
   //   docs: {
@@ -45,7 +48,7 @@ export default meta
 type Story = StoryObj<WidgetComponent>
 
 export const Simple: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       icon: faWrench,
@@ -56,13 +59,16 @@ export const Simple: Story = {
     titleText: 'Example Widget',
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(TheSeamWidgetHarness, { canvasElement, fixture })
+    const harness = await getHarness(TheSeamWidgetHarness, {
+      canvasElement,
+      fixture,
+    })
     await expect(harness !== null).toBe(true)
   },
 }
 
 export const FAIcon: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       icon: faWrench,
@@ -73,13 +79,16 @@ export const FAIcon: Story = {
     titleText: 'Example Widget',
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(TheSeamWidgetHarness, { canvasElement, fixture })
+    const harness = await getHarness(TheSeamWidgetHarness, {
+      canvasElement,
+      fixture,
+    })
     await expect(harness !== null).toBe(true)
   },
 }
 
 export const ImageIcon: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       icon: 'assets/images/icons8-pass-fail-32.png',
@@ -92,7 +101,7 @@ export const ImageIcon: Story = {
 }
 
 export const TitleTemplate: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       icon: faWrench,
@@ -114,7 +123,7 @@ export const TitleTemplate: Story = {
 }
 
 export const IconTemplate: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `
       <seam-widget [titleText]="titleText">
@@ -132,7 +141,7 @@ export const IconTemplate: Story = {
 }
 
 export const Loading: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       icon: faWrench,
@@ -148,7 +157,7 @@ export const Loading: Story = {
 }
 
 export const NoHeader: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `<seam-widget [hasHeader]="hasHeader">Widget Body</seam-widget>`,
   }),
@@ -158,7 +167,7 @@ export const NoHeader: Story = {
 }
 
 export const Collapse: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `<seam-widget [canCollapse]="canCollapse">Widget Body</seam-widget>`,
   }),
@@ -168,7 +177,7 @@ export const Collapse: Story = {
 }
 
 export const Preferences: Story = {
-  render: args => ({
+  render: (args) => ({
     moduleMetadata: {
       providers: [
         {
@@ -192,7 +201,7 @@ export const Preferences: Story = {
 }
 
 export const DefaultsProvider: Story = {
-  render: args => ({
+  render: (args) => ({
     moduleMetadata: {
       providers: [
         {
@@ -210,7 +219,7 @@ export const DefaultsProvider: Story = {
 }
 
 export const DefaultsProviderWithInput: Story = {
-  render: args => ({
+  render: (args) => ({
     moduleMetadata: {
       providers: [
         {

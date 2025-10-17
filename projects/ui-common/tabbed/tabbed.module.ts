@@ -22,4 +22,4 @@ import { TheSeamTabbedComponent } from './tabbed.component'
     TheSeamTabbedContentComponent,
   ],
 })
-export class TheSeamTabbedModule { }
+export class TheSeamTabbedModule {}

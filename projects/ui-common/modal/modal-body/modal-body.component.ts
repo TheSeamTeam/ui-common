@@ -7,8 +7,6 @@ import { Component, HostBinding } from '@angular/core'
   standalone: false,
 })
 export class ModalBodyComponent {
-
   @HostBinding('class.modal-body') _modalBodyCss = true
   @HostBinding('class.p-3') _paddingCss = true
-
 }

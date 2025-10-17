@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, Inject, Input, isDevMode, Optional } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  Input,
+  isDevMode,
+  Optional,
+} from '@angular/core'
 import { combineLatest, of } from 'rxjs'
 import { catchError, concatMap, map, take, tap } from 'rxjs/operators'
 
@@ -6,11 +13,17 @@ import { faFileDownload } from '@fortawesome/free-solid-svg-icons'
 import { ToastrService } from 'ngx-toastr'
 
 import { IDataExporter } from '@theseam/ui-common/data-exporter'
-import { DynamicValueHelperService, THESEAM_DYNAMIC_DATA } from '@theseam/ui-common/dynamic'
+import {
+  DynamicValueHelperService,
+  THESEAM_DYNAMIC_DATA,
+} from '@theseam/ui-common/dynamic'
 import { TheSeamLoadingOverlayService } from '@theseam/ui-common/loading'
 import { hasProperty } from '@theseam/ui-common/utils'
 
-import { DatatableComponent, THESEAM_DATATABLE } from '../datatable/datatable.component'
+import {
+  DatatableComponent,
+  THESEAM_DATATABLE,
+} from '../datatable/datatable.component'
 import { isInternalColumn } from '../models/internal-column-props'
 import { TheSeamDatatableColumn } from '../models/table-column'
 
@@ -26,7 +39,6 @@ export interface IDatatableExportButtonData {
   standalone: false,
 })
 export class DatatableExportButtonComponent {
-
   icon = faFileDownload
 
   @Input() exporters: IDataExporter[] | undefined | null
@@ -40,7 +52,9 @@ export class DatatableExportButtonComponent {
     private readonly _toastr: ToastrService,
     private readonly _loading: TheSeamLoadingOverlayService,
     private readonly _valueHelper: DynamicValueHelperService,
-    @Optional() @Inject(THESEAM_DYNAMIC_DATA) private readonly _data?: IDatatableExportButtonData,
+    @Optional()
+    @Inject(THESEAM_DYNAMIC_DATA)
+    private readonly _data?: IDatatableExportButtonData,
   ) {
     if (this._data && this._data.exporters) {
       this.exporters = this._data.exporters
@@ -57,24 +71,29 @@ export class DatatableExportButtonComponent {
 
     const export$ = combineLatest([
       this._datatable.rows$,
-      this._datatable.columns$.pipe(map(cols => cols.filter(c => !isInternalColumn(c)))),
+      this._datatable.columns$.pipe(
+        map((cols) => cols.filter((c) => !isInternalColumn(c))),
+      ),
     ]).pipe(
       take(1),
-      map(([ rows, columns ]) => {
+      map(([rows, columns]) => {
         if (exporter.skipDataMapping) {
           return rows
         }
         return this._mapExportData(columns || [], rows)
       }),
-      concatMap(data => exporter.export(data)),
-      catchError(err => {
+      concatMap((data) => exporter.export(data)),
+      catchError((err) => {
         // eslint-disable-next-line no-console
         console.error(err)
         return of(false)
       }),
-      tap(success => {
+      tap((success) => {
         if (success) {
-          this._toastr.success(`${exporter.label} export complete.`, 'Data Export')
+          this._toastr.success(
+            `${exporter.label} export complete.`,
+            'Data Export',
+          )
         } else {
           this._toastr.error(`${exporter.label} export failed.`, 'Data Export')
         }
@@ -117,5 +136,4 @@ export class DatatableExportButtonComponent {
     }
     return undefined
   }
-
 }

@@ -10,8 +10,7 @@ describe('WidgetHeaderBadgeComponent', () => {
     TestBed.configureTestingModule({
       declarations: [WidgetHeaderBadgeComponent],
       teardown: { destroyAfterEach: false },
-    })
-      .compileComponents()
+    }).compileComponents()
   }))
 
   beforeEach(() => {

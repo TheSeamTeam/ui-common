@@ -11,12 +11,9 @@ describe('MenuItemComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [MenuItemComponent],
-      imports: [
-        TheSeamIconModule,
-      ],
+      imports: [TheSeamIconModule],
       teardown: { destroyAfterEach: false },
-    })
-      .compileComponents()
+    }).compileComponents()
   }))
 
   beforeEach(() => {

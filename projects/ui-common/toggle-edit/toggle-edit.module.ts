@@ -4,13 +4,7 @@ import { ToggleEditDisplayTplDirective } from './toggle-edit-display-tpl.directi
 import { TheSeamToggleEditComponent } from './toggle-edit.component'
 
 @NgModule({
-  imports: [
-    ToggleEditDisplayTplDirective,
-    TheSeamToggleEditComponent,
-  ],
-  exports: [
-    ToggleEditDisplayTplDirective,
-    TheSeamToggleEditComponent,
-  ],
+  imports: [ToggleEditDisplayTplDirective, TheSeamToggleEditComponent],
+  exports: [ToggleEditDisplayTplDirective, TheSeamToggleEditComponent],
 })
-export class TheSeamToggleEditModule { }
+export class TheSeamToggleEditModule {}

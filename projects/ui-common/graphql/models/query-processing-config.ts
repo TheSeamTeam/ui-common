@@ -1,4 +1,4 @@
-export const DEFAULT_TO_REMOVE_ON_UNDEFINED = [ 'where', 'order' ]
+export const DEFAULT_TO_REMOVE_ON_UNDEFINED = ['where', 'order']
 
 export interface QueryProcessingVariablesConfig {
   removeIfNotDefined?: string[]

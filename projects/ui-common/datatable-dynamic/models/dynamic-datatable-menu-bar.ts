@@ -1,6 +1,8 @@
 import { DynamicValue, DynamicValueBaseType } from '@theseam/ui-common/dynamic'
 
-export interface DynamicDatatableMenuBarItem<C extends DynamicValueBaseType = any> {
+export interface DynamicDatatableMenuBarItem<
+  C extends DynamicValueBaseType = any,
+> {
   /**
    * Styles added to the root cell elements `style` attribute.
    */
@@ -42,7 +44,8 @@ export interface DynamicDatatableMenuBarRowLayout<T extends string> {
  * If the center column is undefined, then the left column should fill the
  * remaining space to the left of the right column.
  */
-export interface DynamicDatatableMenuBarRowLayoutTriColumn extends DynamicDatatableMenuBarRowLayout<'tri-column'> {
+export interface DynamicDatatableMenuBarRowLayoutTriColumn
+  extends DynamicDatatableMenuBarRowLayout<'tri-column'> {
   columnLeft?: DynamicDatatableMenuBarColumn
   columnCenter?: DynamicDatatableMenuBarColumn
   columnRight?: DynamicDatatableMenuBarColumn

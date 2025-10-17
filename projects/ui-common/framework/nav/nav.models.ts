@@ -40,7 +40,6 @@ export interface INavDivider extends INavItemBase<'divider'> {
 }
 
 export interface INavBadge {
-
   text?: string
 
   theme?: ThemeTypes
@@ -53,14 +52,22 @@ export interface INavBadge {
   tooltip?: string | NavItemBadgeTooltip
 }
 
-export interface INavBasic extends INavItemBase<'basic'>, NavItemCanHaveChildren {
+export interface INavBasic
+  extends INavItemBase<'basic'>,
+    NavItemCanHaveChildren {
   icon?: SeamIcon
   label: string
 }
 
-export interface INavLink extends INavItemBase<'link'>,
-  Partial<Pick<UrlCreationOptions, 'queryParams' | 'fragment' | 'queryParamsHandling' | 'preserveFragment'>>,
-  NavItemCanHaveChildren {
+export interface INavLink
+  extends INavItemBase<'link'>,
+    Partial<
+      Pick<
+        UrlCreationOptions,
+        'queryParams' | 'fragment' | 'queryParamsHandling' | 'preserveFragment'
+      >
+    >,
+    NavItemCanHaveChildren {
   icon?: SeamIcon
   label: string
 
@@ -76,7 +83,12 @@ export interface INavButton extends INavItemBase<'button'> {
   onClick: (event: MouseEvent) => void
 }
 
-export type INavItem = INavTitle | INavDivider | INavBasic | INavLink | INavButton
+export type INavItem =
+  | INavTitle
+  | INavDivider
+  | INavBasic
+  | INavLink
+  | INavButton
 
 export interface NavItemStateChanged {
   item: INavItem
@@ -98,6 +110,6 @@ export type NavItemChildAction = 'menu' | 'expand' | 'none' | null | undefined
 export type NavItemExpandAction = 'toggle' | 'expandOnly' | null | undefined
 
 export interface NavItemExpandedEvent {
-  navItem: INavItem,
+  navItem: INavItem
   expanded: boolean
 }

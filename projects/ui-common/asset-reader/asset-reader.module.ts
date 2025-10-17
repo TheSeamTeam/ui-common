@@ -3,11 +3,7 @@ import { NgModule } from '@angular/core'
 import { EncryptedAssetLinkDirective } from './encrypted-asset-link.directive'
 
 @NgModule({
-  declarations: [
-    EncryptedAssetLinkDirective,
-  ],
-  exports: [
-    EncryptedAssetLinkDirective,
-  ],
+  declarations: [EncryptedAssetLinkDirective],
+  exports: [EncryptedAssetLinkDirective],
 })
-export class TheSeamAssetReaderModule { }
+export class TheSeamAssetReaderModule {}

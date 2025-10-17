@@ -10,8 +10,7 @@ describe('WidgetTileGroupComponent', () => {
     TestBed.configureTestingModule({
       declarations: [WidgetTileGroupComponent],
       teardown: { destroyAfterEach: false },
-    })
-      .compileComponents()
+    }).compileComponents()
   }))
 
   beforeEach(() => {

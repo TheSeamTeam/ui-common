@@ -4,14 +4,8 @@ import { NgModule } from '@angular/core'
 import { WidgetFooterTextComponent } from './widget-footer-text.component'
 
 @NgModule({
-  declarations: [
-    WidgetFooterTextComponent,
-  ],
-  imports: [
-    CommonModule,
-  ],
-  exports: [
-    WidgetFooterTextComponent,
-  ],
+  declarations: [WidgetFooterTextComponent],
+  imports: [CommonModule],
+  exports: [WidgetFooterTextComponent],
 })
-export class TheSeamWidgetFooterTextModule { }
+export class TheSeamWidgetFooterTextModule {}

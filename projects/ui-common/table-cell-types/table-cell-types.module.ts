@@ -61,9 +61,7 @@ const cellTypeProviders = [
 ]
 
 @NgModule({
-  declarations: [
-    ...cellTypeComponents,
-  ],
+  declarations: [...cellTypeComponents],
   imports: [
     CommonModule,
     RouterModule,
@@ -77,11 +75,7 @@ const cellTypeProviders = [
     TheSeamTableCellTypeModule,
     TheSeamTooltipModule,
   ],
-  providers: [
-    ...cellTypeProviders,
-  ],
-  exports: [
-    ...cellTypeComponents,
-  ],
+  providers: [...cellTypeProviders],
+  exports: [...cellTypeComponents],
 })
-export class TheSeamTableCellTypesModule { }
+export class TheSeamTableCellTypesModule {}

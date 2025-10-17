@@ -1,5 +1,15 @@
 import { isDevMode } from '@angular/core'
-import { map, Observable, of, shareReplay, startWith, Subject, switchMap, take, tap } from 'rxjs'
+import {
+  map,
+  Observable,
+  of,
+  shareReplay,
+  startWith,
+  Subject,
+  switchMap,
+  take,
+  tap,
+} from 'rxjs'
 
 import { notNullOrUndefined } from '@theseam/ui-common/utils'
 
@@ -14,9 +24,9 @@ export interface TheSeamPreferencesRecordStatusChange {
 }
 
 export class TheSeamPreferencesMapRecord {
-
   private readonly _refreshSubject = new Subject<void>()
-  private readonly _statusChangeSubject = new Subject<TheSeamPreferencesRecordStatusChange>()
+  private readonly _statusChangeSubject =
+    new Subject<TheSeamPreferencesRecordStatusChange>()
 
   private _status: TheSeamPreferencesRecordStatus = 'pending'
 
@@ -38,38 +48,45 @@ export class TheSeamPreferencesMapRecord {
     }
 
     const accessor = (key: string): Observable<string> =>
-      this._accessor ? this._accessor.get(key) : of(JSON.stringify(this._emptyPrefs))
+      this._accessor
+        ? this._accessor.get(key)
+        : of(JSON.stringify(this._emptyPrefs))
 
     return this._refreshSubject.pipe(
       startWith(undefined),
-      switchMap(() => accessor(this._key).pipe(
-        map(v => {
-          if (!v) {
-            return null
-          }
-
-          // TODO: Add a schema validator and migration tool to avoid parsing issues.
-          try {
-            return this._descerializePreferences(v)
-          } catch (error) {
-            if (isDevMode()) {
-              // eslint-disable-next-line no-console
-              console.error(error)
+      switchMap(() =>
+        accessor(this._key).pipe(
+          map((v) => {
+            if (!v) {
+              return null
             }
-            return null
-          }
-        }),
-        map(v => notNullOrUndefined(v) ? v : this._emptyPrefs),
-        tap(() => {
-          this._setStatus('loaded')
-        }),
-      )),
+
+            // TODO: Add a schema validator and migration tool to avoid parsing issues.
+            try {
+              return this._descerializePreferences(v)
+            } catch (error) {
+              if (isDevMode()) {
+                // eslint-disable-next-line no-console
+                console.error(error)
+              }
+              return null
+            }
+          }),
+          map((v) => (notNullOrUndefined(v) ? v : this._emptyPrefs)),
+          tap(() => {
+            this._setStatus('loaded')
+          }),
+        ),
+      ),
       shareReplay({ bufferSize: 1, refCount: true }),
     )
   }
 
   public update(value: TheSeamPreferencesBase): void {
-    this._accessor.update(this._key, JSON.stringify(value)).pipe(take(1)).subscribe()
+    this._accessor
+      .update(this._key, JSON.stringify(value))
+      .pipe(take(1))
+      .subscribe()
   }
 
   public delete(): void {

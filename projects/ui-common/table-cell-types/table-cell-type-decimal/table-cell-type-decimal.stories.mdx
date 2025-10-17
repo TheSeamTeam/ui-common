@@ -13,32 +13,55 @@ import {
   ExportersDataEvaluator,
   JexlEvaluator,
   THESEAM_DYNAMIC_ACTION,
-  THESEAM_DYNAMIC_VALUE_EVALUATOR
+  THESEAM_DYNAMIC_VALUE_EVALUATOR,
 } from '@theseam/ui-common/dynamic'
 
 # Cell Type Decimal
 
-<Meta title="TableCellTypes/Decimal"
-  decorators={[moduleMetadata({
-    imports: [
-      BrowserAnimationsModule,
-      RouterModule.forRoot([], { useHash: true }),
-      TheSeamDatatableModule,
-      TheSeamTableCellTypesModule
-    ],
-    providers: [
-      { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
-      { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: ExportersDataEvaluator, multi: true },
-      { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionApiService, multi: true },
-      { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionLinkService, multi: true },
-      { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionModalService, multi: true },
-    ]
-  })]}
+<Meta
+  title="TableCellTypes/Decimal"
+  decorators={[
+    moduleMetadata({
+      imports: [
+        BrowserAnimationsModule,
+        RouterModule.forRoot([], { useHash: true }),
+        TheSeamDatatableModule,
+        TheSeamTableCellTypesModule,
+      ],
+      providers: [
+        {
+          provide: THESEAM_DYNAMIC_VALUE_EVALUATOR,
+          useClass: JexlEvaluator,
+          multi: true,
+        },
+        {
+          provide: THESEAM_DYNAMIC_VALUE_EVALUATOR,
+          useClass: ExportersDataEvaluator,
+          multi: true,
+        },
+        {
+          provide: THESEAM_DYNAMIC_ACTION,
+          useClass: DynamicActionApiService,
+          multi: true,
+        },
+        {
+          provide: THESEAM_DYNAMIC_ACTION,
+          useClass: DynamicActionLinkService,
+          multi: true,
+        },
+        {
+          provide: THESEAM_DYNAMIC_ACTION,
+          useClass: DynamicActionModalService,
+          multi: true,
+        },
+      ],
+    }),
+  ]}
   parameters={{
     layout: 'fullscreen',
     docs: {
       iframeHeight: '400px',
-    }
+    },
   }}
 />
 
@@ -93,11 +116,9 @@ import {
     {{
       template: `<seam-datatable class="vw-100 vh-100" [columns]="columns" [rows]="rows"></seam-datatable>`,
       props: {
-        columns: [
-          { prop: 'decimal', name: 'Decimal', cellType: 'decimal' },
-        ],
+        columns: [{ prop: 'decimal', name: 'Decimal', cellType: 'decimal' }],
         rows: [
-          { decimal: .51235489 },
+          { decimal: 0.51235489 },
           { decimal: 1552.89463 },
           { decimal: 2.000254 },
           { decimal: null },
@@ -105,7 +126,7 @@ import {
           { decimal: '' },
           { decimal: '123abcdef' },
           { decimal: '10001, 10002, 10003' },
-        ]
+        ],
       },
     }}
   </Story>
@@ -129,12 +150,15 @@ import {
               defaultToEmpty: 'false',
               textAlign: 'left',
               formatNumber: 'false',
-              titleAttr: { type: 'jexl', expr: 'row.decimal + " is a big number!"' }
-            }
+              titleAttr: {
+                type: 'jexl',
+                expr: 'row.decimal + " is a big number!"',
+              },
+            },
           },
         ],
         rows: [
-          { decimal: .51235489 },
+          { decimal: 0.51235489 },
           { decimal: 1552.89463 },
           { decimal: 2.000254 },
           { decimal: null },
@@ -142,9 +166,8 @@ import {
           { decimal: '' },
           { decimal: '123abcdef' },
           { decimal: '10001, 10002, 10003' },
-        ]
+        ],
       },
     }}
   </Story>
 </Preview>
-

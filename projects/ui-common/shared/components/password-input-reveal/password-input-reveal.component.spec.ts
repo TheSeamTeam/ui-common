@@ -10,15 +10,10 @@ describe('TheSeamPasswordInputRevealComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        TheSeamPasswordInputRevealComponent,
-      ],
-      imports: [
-        FontAwesomeModule,
-      ],
+      declarations: [TheSeamPasswordInputRevealComponent],
+      imports: [FontAwesomeModule],
       teardown: { destroyAfterEach: false },
-    })
-      .compileComponents()
+    }).compileComponents()
   }))
 
   beforeEach(() => {

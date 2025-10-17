@@ -18,13 +18,12 @@ import { TheSeamTooltipModule } from './tooltip.module'
       [showDelay]="showDelay"
       [hideDelay]="hideDelay"
       [trigger]="trigger"
-      [tooltipClass]="tooltipClass">
+      [tooltipClass]="tooltipClass"
+    >
       Test Button
     </button>
 
-    <button
-      [seamTooltip]="templateTooltip"
-      placement="bottom">
+    <button [seamTooltip]="templateTooltip" placement="bottom">
       Template Button
     </button>
 
@@ -40,7 +39,8 @@ import { TheSeamTooltipModule } from './tooltip.module'
   `,
 })
 class TestComponent {
-  @ViewChild('templateTooltip', { static: true }) templateTooltip!: TemplateRef<any>
+  @ViewChild('templateTooltip', { static: true })
+  templateTooltip!: TemplateRef<any>
 
   placement = 'top'
   disabled = false
@@ -64,7 +64,7 @@ describe('TheSeamTooltipDirective', () => {
       if (tooltip) {
         return tooltip
       }
-      await new Promise(resolve => setTimeout(resolve, 50))
+      await new Promise((resolve) => setTimeout(resolve, 50))
     }
     return null
   }
@@ -77,7 +77,7 @@ describe('TheSeamTooltipDirective', () => {
       if (!tooltip) {
         return true
       }
-      await new Promise(resolve => setTimeout(resolve, 50))
+      await new Promise((resolve) => setTimeout(resolve, 50))
     }
     return false
   }
@@ -103,17 +103,19 @@ describe('TheSeamTooltipDirective', () => {
 
   afterEach(async () => {
     // Force close any active tooltips through the directive
-    const directive = fixture.debugElement.children[0].injector.get(TheSeamTooltipDirective)
+    const directive = fixture.debugElement.children[0].injector.get(
+      TheSeamTooltipDirective,
+    )
     if (directive.tooltipOpen()) {
       directive.ngOnDestroy() // This will trigger cleanup
     }
 
     // Clean up any remaining DOM elements
     const tooltips = document.querySelectorAll('.tooltip')
-    tooltips.forEach(tooltip => tooltip.remove())
+    tooltips.forEach((tooltip) => tooltip.remove())
 
     // Wait for cleanup to complete
-    await new Promise(resolve => setTimeout(resolve, 150))
+    await new Promise((resolve) => setTimeout(resolve, 150))
     fixture.detectChanges()
   })
 
@@ -123,7 +125,9 @@ describe('TheSeamTooltipDirective', () => {
     })
 
     it('should have correct default values', () => {
-      const directive = fixture.debugElement.children[0].injector.get(TheSeamTooltipDirective)
+      const directive = fixture.debugElement.children[0].injector.get(
+        TheSeamTooltipDirective,
+      )
       expect(directive.placement).toBe('top')
       expect(directive.disableTooltip).toBe(false)
       expect(directive.showDelay).toBe(100)
@@ -136,10 +140,12 @@ describe('TheSeamTooltipDirective', () => {
       await user.hover(buttonElement)
 
       // Wait for tooltip to appear
-      await new Promise(resolve => setTimeout(resolve, 200))
+      await new Promise((resolve) => setTimeout(resolve, 200))
       fixture.detectChanges()
 
-      expect(buttonElement.getAttribute('aria-describedby')).toContain('seam-tooltip-')
+      expect(buttonElement.getAttribute('aria-describedby')).toContain(
+        'seam-tooltip-',
+      )
     })
   })
 
@@ -149,7 +155,7 @@ describe('TheSeamTooltipDirective', () => {
       await user.hover(buttonElement)
 
       // Wait for tooltip to appear
-      await new Promise(resolve => setTimeout(resolve, 200))
+      await new Promise((resolve) => setTimeout(resolve, 200))
       fixture.detectChanges()
 
       const tooltip = document.querySelector('.tooltip.show')
@@ -177,13 +183,13 @@ describe('TheSeamTooltipDirective', () => {
       fixture.detectChanges()
 
       await user.hover(buttonElement)
-      await new Promise(resolve => setTimeout(resolve, 400)) // Less than show delay
+      await new Promise((resolve) => setTimeout(resolve, 400)) // Less than show delay
       fixture.detectChanges()
 
       let tooltip = document.querySelector('.tooltip.show')
       expect(tooltip).toBeFalsy()
 
-      await new Promise(resolve => setTimeout(resolve, 200)) // Complete the delay
+      await new Promise((resolve) => setTimeout(resolve, 200)) // Complete the delay
       fixture.detectChanges()
 
       tooltip = document.querySelector('.tooltip.show')
@@ -202,7 +208,7 @@ describe('TheSeamTooltipDirective', () => {
 
       // Start hiding
       await user.unhover(buttonElement)
-      await new Promise(resolve => setTimeout(resolve, 200)) // Less than hide delay
+      await new Promise((resolve) => setTimeout(resolve, 200)) // Less than hide delay
       fixture.detectChanges()
 
       const stillVisible = document.querySelector('.tooltip.show')
@@ -220,7 +226,7 @@ describe('TheSeamTooltipDirective', () => {
       buttonElement.focus()
       fixture.detectChanges()
 
-      await new Promise(resolve => setTimeout(resolve, 200))
+      await new Promise((resolve) => setTimeout(resolve, 200))
       fixture.detectChanges()
 
       const tooltip = document.querySelector('.tooltip.show')
@@ -248,8 +254,8 @@ describe('TheSeamTooltipDirective', () => {
 
       // Force cleanup of any existing tooltips
       const existingTooltips = document.querySelectorAll('.tooltip')
-      existingTooltips.forEach(tooltip => tooltip.remove())
-      await new Promise(resolve => setTimeout(resolve, 100))
+      existingTooltips.forEach((tooltip) => tooltip.remove())
+      await new Promise((resolve) => setTimeout(resolve, 100))
 
       component.trigger = 'hover'
       fixture.detectChanges()
@@ -260,7 +266,7 @@ describe('TheSeamTooltipDirective', () => {
       // Focus should not show tooltip (use direct focus to avoid hover)
       buttonElement.focus()
       fixture.detectChanges()
-      await new Promise(resolve => setTimeout(resolve, 200))
+      await new Promise((resolve) => setTimeout(resolve, 200))
       fixture.detectChanges()
 
       const tooltip = document.querySelector('.tooltip.show')
@@ -277,15 +283,15 @@ describe('TheSeamTooltipDirective', () => {
 
       // Force cleanup of any existing tooltips
       const existingTooltips = document.querySelectorAll('.tooltip')
-      existingTooltips.forEach(tooltip => tooltip.remove())
-      await new Promise(resolve => setTimeout(resolve, 100))
+      existingTooltips.forEach((tooltip) => tooltip.remove())
+      await new Promise((resolve) => setTimeout(resolve, 100))
 
       component.trigger = 'focus'
       fixture.detectChanges()
 
       // Hover should not show tooltip
       await user.hover(buttonElement)
-      await new Promise(resolve => setTimeout(resolve, 200))
+      await new Promise((resolve) => setTimeout(resolve, 200))
       fixture.detectChanges()
 
       const tooltip = document.querySelector('.tooltip.show')
@@ -306,7 +312,7 @@ describe('TheSeamTooltipDirective', () => {
       fixture.detectChanges()
 
       await user.hover(buttonElement)
-      await new Promise(resolve => setTimeout(resolve, 200))
+      await new Promise((resolve) => setTimeout(resolve, 200))
       fixture.detectChanges()
 
       const tooltip = document.querySelector('.tooltip.show')
@@ -321,7 +327,7 @@ describe('TheSeamTooltipDirective', () => {
       fixture.detectChanges()
 
       await user.hover(buttonElement)
-      await new Promise(resolve => setTimeout(resolve, 200))
+      await new Promise((resolve) => setTimeout(resolve, 200))
       fixture.detectChanges()
 
       const tooltip = document.querySelector('.tooltip.show')
@@ -333,7 +339,7 @@ describe('TheSeamTooltipDirective', () => {
     it('should apply custom tooltip class', async () => {
       const user = userEvent.setup({ delay: null })
       await user.hover(buttonElement)
-      await new Promise(resolve => setTimeout(resolve, 200))
+      await new Promise((resolve) => setTimeout(resolve, 200))
       fixture.detectChanges()
 
       const tooltipInner = document.querySelector('.tooltip-inner')
@@ -347,8 +353,8 @@ describe('TheSeamTooltipDirective', () => {
 
       // Force cleanup of any existing tooltips
       const existingTooltips = document.querySelectorAll('.tooltip')
-      existingTooltips.forEach(tooltip => tooltip.remove())
-      await new Promise(resolve => setTimeout(resolve, 100))
+      existingTooltips.forEach((tooltip) => tooltip.remove())
+      await new Promise((resolve) => setTimeout(resolve, 100))
 
       await user.hover(templateButtonElement)
 
@@ -356,7 +362,7 @@ describe('TheSeamTooltipDirective', () => {
       expect(tooltip).toBeTruthy()
 
       // Wait a bit more for template content to render
-      await new Promise(resolve => setTimeout(resolve, 100))
+      await new Promise((resolve) => setTimeout(resolve, 100))
       fixture.detectChanges()
 
       expect(tooltip?.textContent).toContain('Template Content')
@@ -371,8 +377,8 @@ describe('TheSeamTooltipDirective', () => {
 
       // Force cleanup of any existing tooltips
       const existingTooltips = document.querySelectorAll('.tooltip')
-      existingTooltips.forEach(tooltip => tooltip.remove())
-      await new Promise(resolve => setTimeout(resolve, 100))
+      existingTooltips.forEach((tooltip) => tooltip.remove())
+      await new Promise((resolve) => setTimeout(resolve, 100))
 
       // Show tooltip
       await user.hover(buttonElement)

@@ -5,13 +5,7 @@ import { NgModule } from '@angular/core'
 import { TheSeamLoadingComponent } from './loading/loading.component'
 
 @NgModule({
-  imports: [
-    TheSeamLoadingComponent,
-  ],
-  exports: [
-    OverlayModule,
-    PortalModule,
-    TheSeamLoadingComponent,
-  ],
+  imports: [TheSeamLoadingComponent],
+  exports: [OverlayModule, PortalModule, TheSeamLoadingComponent],
 })
-export class TheSeamLoadingModule { }
+export class TheSeamLoadingModule {}

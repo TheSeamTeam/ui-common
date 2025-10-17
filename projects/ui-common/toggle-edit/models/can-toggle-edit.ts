@@ -1,6 +1,4 @@
-
 export interface TheSeamCanToggleEdit {
-
   isEditing(): boolean
 
   toggleEditing(isEditing?: boolean): void
@@ -10,5 +8,4 @@ export interface TheSeamCanToggleEdit {
   stopEditing(): void
 
   keydownEvent(event: KeyboardEvent): void
-
 }

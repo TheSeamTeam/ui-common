@@ -9,17 +9,21 @@ export const _OverlayScrollbarDefaults: TheSeamOverlayScrollbarsConfig = {
   autoUpdate: true,
 }
 
-export function mergeOverlayScrollbarsConfigs(a: TheSeamOverlayScrollbarsConfig, b: TheSeamOverlayScrollbarsConfig) {
+export function mergeOverlayScrollbarsConfigs(
+  a: TheSeamOverlayScrollbarsConfig,
+  b: TheSeamOverlayScrollbarsConfig,
+) {
   return { ...a, ...b }
 }
 
 /** Injection token that can be used to specify overlayscrollbars options. */
-export const THESEAM_OVERLAY_SCROLLBARS_CONFIG = new InjectionToken<TheSeamOverlayScrollbarsConfig>(
-  'seamOverlayScrollbarsConfig',
-  {
-    providedIn: 'root',
-    factory: () => {
-      return _OverlayScrollbarDefaults
+export const THESEAM_OVERLAY_SCROLLBARS_CONFIG =
+  new InjectionToken<TheSeamOverlayScrollbarsConfig>(
+    'seamOverlayScrollbarsConfig',
+    {
+      providedIn: 'root',
+      factory: () => {
+        return _OverlayScrollbarDefaults
+      },
     },
-  },
-)
+  )

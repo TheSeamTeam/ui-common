@@ -1,8 +1,4 @@
-import {
-  Feature,
-  FeatureCollection,
-  MultiPolygon,
-} from 'geojson'
+import { Feature, FeatureCollection, MultiPolygon } from 'geojson'
 
 /**
  * Merge Polygon and MultiPolygon geometries into a single MultiPolygon. Any
@@ -34,7 +30,7 @@ export function mergePolygons(featureCollection: FeatureCollection): void {
     const feature: Feature = {
       type: 'Feature',
       geometry: multiPolygon,
-      properties: { },
+      properties: {},
     }
     featureCollection.features.push(feature)
   }

@@ -11,29 +11,33 @@ import { LazyWidgetOneComponent } from 'src/app/example-lazy-loaded-widgets/lazy
   standalone: false,
 })
 export class ExampleLazyLoadedWidgetsComponent implements OnInit {
-
-  @ViewChild('testOutlet', { static: true, read: ViewContainerRef }) testOutlet: ViewContainerRef
+  @ViewChild('testOutlet', { static: true, read: ViewContainerRef })
+  testOutlet: ViewContainerRef
 
   widgets: any[] = []
 
   constructor(
     private _dynamicComponentLoaderModule: TheSeamDynamicComponentLoader,
-  ) { }
+  ) {}
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   loadComponent() {
     this._dynamicComponentLoaderModule
       .getComponentFactory<LazyWidgetOneComponent>('widget-one')
-      .subscribe(componentFactory => {
-        console.log('componentFactory', componentFactory)
+      .subscribe(
+        (componentFactory) => {
+          console.log('componentFactory', componentFactory)
 
-        this.widgets = [ {
-          type: componentFactory.componentType,
-        } ]
-      }, error => {
-        console.warn(error)
-      })
+          this.widgets = [
+            {
+              type: componentFactory.componentType,
+            },
+          ]
+        },
+        (error) => {
+          console.warn(error)
+        },
+      )
   }
-
 }

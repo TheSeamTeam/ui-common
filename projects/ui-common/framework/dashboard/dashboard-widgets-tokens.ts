@@ -7,6 +7,7 @@ export interface DashboardWidgetsAccessor {
   containers$: Observable<DashboardWidgetContainerComponent[]>
 }
 
-export const THESEAM_DASHBOARD_WIDGETS_ACCESSOR = new InjectionToken<DashboardWidgetsAccessor>(
-  'THESEAM_DASHBOARD_WIDGETS_ACCESSOR',
-)
+export const THESEAM_DASHBOARD_WIDGETS_ACCESSOR =
+  new InjectionToken<DashboardWidgetsAccessor>(
+    'THESEAM_DASHBOARD_WIDGETS_ACCESSOR',
+  )

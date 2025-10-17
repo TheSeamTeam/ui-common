@@ -4,7 +4,11 @@ import { expect } from 'storybook/test'
 import { ReactiveFormsModule } from '@angular/forms'
 
 import { getHarness } from '@theseam/ui-common/testing'
-import { buttonTypeArgType, sizeArgType, themeWithOutlineArgType } from '@theseam/ui-common/story-helpers'
+import {
+  buttonTypeArgType,
+  sizeArgType,
+  themeWithOutlineArgType,
+} from '@theseam/ui-common/story-helpers'
 
 import { TheSeamButtonsModule } from '../buttons.module'
 import { TheSeamToggleButtonComponent } from './toggle-button.component'
@@ -19,10 +23,7 @@ const meta: Meta<TheSeamToggleButtonComponent & StoryExtraProps> = {
   component: TheSeamToggleButtonComponent,
   decorators: [
     moduleMetadata({
-      imports: [
-        ReactiveFormsModule,
-        TheSeamButtonsModule,
-      ],
+      imports: [ReactiveFormsModule, TheSeamButtonsModule],
     }),
   ],
   tags: ['autodocs'],
@@ -43,7 +44,7 @@ export default meta
 type Story = StoryObj<TheSeamToggleButtonComponent & StoryExtraProps>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `
       <button seamToggleButton
@@ -55,7 +56,10 @@ export const Basic: Story = {
     `,
   }),
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(TheSeamToggleButtonComponentHarness, { canvasElement, fixture })
+    const harness = await getHarness(TheSeamToggleButtonComponentHarness, {
+      canvasElement,
+      fixture,
+    })
     await expect(await harness.getText()).toBe('Example Text')
     await expect(await harness.getTheme()).toBe(null)
     await expect(await harness.isDisabled()).toBe(false)

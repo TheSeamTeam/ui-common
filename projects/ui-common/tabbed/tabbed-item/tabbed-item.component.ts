@@ -18,7 +18,10 @@ export class TheSeamTabbedItemComponent implements TheSeamTabbedItemAccessor {
   @ContentChild(TheSeamTabbedTabDirective, { read: TemplateRef, static: true })
   public tabbedTabTpl?: TemplateRef<TheSeamTabbedTabDirective>
 
-  @ContentChild(TheSeamTabbedTabContentDirective, { read: TemplateRef, static: true })
+  @ContentChild(TheSeamTabbedTabContentDirective, {
+    read: TemplateRef,
+    static: true,
+  })
   public tabbedContentTpl?: TemplateRef<TheSeamTabbedTabContentDirective>
 
   @Input() name: string | undefined | null

@@ -3,8 +3,14 @@ import { Inject, Injectable } from '@angular/core'
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'
 
-import { IDataExporter, THESEAM_DATA_EXPORTER } from '@theseam/ui-common/data-exporter'
-import { IDataFilter, THESEAM_DATA_FILTER_DEF } from '@theseam/ui-common/data-filters'
+import {
+  IDataExporter,
+  THESEAM_DATA_EXPORTER,
+} from '@theseam/ui-common/data-exporter'
+import {
+  IDataFilter,
+  THESEAM_DATA_FILTER_DEF,
+} from '@theseam/ui-common/data-filters'
 import { DynamicValueHelperService } from '@theseam/ui-common/dynamic'
 import { hasProperty, notNullOrUndefined } from '@theseam/ui-common/utils'
 
@@ -20,7 +26,6 @@ import { setDynamicDatatableDefDefaults } from './utils/index'
  */
 @Injectable()
 export class DynamicDatatableDefService {
-
   /**
    * @deprecated
    * @ignore
@@ -31,10 +36,15 @@ export class DynamicDatatableDefService {
    * @deprecated
    * @ignore
    */
-  private _dataFilters: { name: string, component: ComponentType<IDataFilter> }[]
+  private _dataFilters: {
+    name: string
+    component: ComponentType<IDataFilter>
+  }[]
 
   /** @ignore */
-  private readonly _defSubject = new BehaviorSubject<DatatableDynamicDef | undefined>(undefined)
+  private readonly _defSubject = new BehaviorSubject<
+    DatatableDynamicDef | undefined
+  >(undefined)
 
   /** Dynamic datatable definition. */
   public readonly def$: Observable<DatatableDynamicDef | undefined>
@@ -65,52 +75,61 @@ export class DynamicDatatableDefService {
 
   constructor(
     @Inject(THESEAM_DATA_EXPORTER) dataExporters: IDataExporter[],
-    @Inject(THESEAM_DATA_FILTER_DEF) dataFilters: { name: string, component: ComponentType<IDataFilter> }[],
+    @Inject(THESEAM_DATA_FILTER_DEF)
+    dataFilters: { name: string; component: ComponentType<IDataFilter> }[],
     private _valueHelper: DynamicValueHelperService,
   ) {
-    this._dataExporters = (dataExporters || [])
-    this._dataFilters = (dataFilters || [])
+    this._dataExporters = dataExporters || []
+    this._dataFilters = dataFilters || []
 
     this.def$ = this._defSubject.asObservable()
 
     this.exporters$ = this.def$.pipe(
-      map(def => def ? this._mapExporters(def) : []),
+      map((def) => (def ? this._mapExporters(def) : [])),
       shareReplay({ bufferSize: 1, refCount: true }),
     )
 
     this.filterMenuItems$ = this.def$.pipe(
-      map(def => def ? this._mapFilterMenuItems(def) : []),
+      map((def) => (def ? this._mapFilterMenuItems(def) : [])),
       shareReplay({ bufferSize: 1, refCount: true }),
     )
 
     this.hasFilterMenu$ = this.def$.pipe(
-      switchMap(def => {
-        if (!def) { return of(false) }
+      switchMap((def) => {
+        if (!def) {
+          return of(false)
+        }
 
         // Check if the visibility can be determined by the state value only.
         if (def.filterMenu && def.filterMenu.state) {
           switch (def.filterMenu.state) {
-            case 'always-visible': return of(true)
-            case 'hidden': return of(false)
+            case 'always-visible':
+              return of(true)
+            case 'hidden':
+              return of(false)
           }
         }
 
         // Check if there is anything to put in the filter menu.
         return combineLatest([
-          this.exporters$.pipe(map(e => e.length > 0)),
-          this.filterMenuItems$.pipe(map(f => f.length > 0)),
-        ]).pipe(map(v => v.indexOf(true) !== -1))
+          this.exporters$.pipe(map((e) => e.length > 0)),
+          this.filterMenuItems$.pipe(map((f) => f.length > 0)),
+        ]).pipe(map((v) => v.indexOf(true) !== -1))
       }),
       shareReplay({ bufferSize: 1, refCount: true }),
     )
 
     this.options$ = this.def$.pipe(
-      map(def => def ? def.options : undefined),
+      map((def) => (def ? def.options : undefined)),
       shareReplay({ bufferSize: 1, refCount: true }),
     )
 
     this.menuBar$ = this.def$.pipe(
-      map(def => (notNullOrUndefined(def) && hasProperty(def, 'menuBar')) ? def.menuBar : undefined),
+      map((def) =>
+        notNullOrUndefined(def) && hasProperty(def, 'menuBar')
+          ? def.menuBar
+          : undefined,
+      ),
       // tap(v => console.log('menubar', v)),
       shareReplay({ bufferSize: 1, refCount: true }),
     )
@@ -118,7 +137,9 @@ export class DynamicDatatableDefService {
 
   /** Sets the `DatatableDynamicDef` that defines the datatable.  */
   public setDef(def: DatatableDynamicDef | undefined): void {
-    if (def) { setDynamicDatatableDefDefaults(def) }
+    if (def) {
+      setDynamicDatatableDefDefaults(def)
+    }
     this._defSubject.next(def || undefined)
   }
 
@@ -129,22 +150,29 @@ export class DynamicDatatableDefService {
     }
 
     return def.filterMenu.exporters
-      .map(e => this._dataExporters.find(de => de.name === e))
+      .map((e) => this._dataExporters.find((de) => de.name === e))
       .filter(notNullOrUndefined)
   }
 
   /** Map the def filter menu items to provided components. */
-  private _mapFilterMenuItems(def: DatatableDynamicDef): DynamicDatatableFilterMenuItem[] {
-    if (!def.filterMenu || !def.filterMenu.filters || !Array.isArray(def.filterMenu.filters)) {
+  private _mapFilterMenuItems(
+    def: DatatableDynamicDef,
+  ): DynamicDatatableFilterMenuItem[] {
+    if (
+      !def.filterMenu ||
+      !def.filterMenu.filters ||
+      !Array.isArray(def.filterMenu.filters)
+    ) {
       return []
     }
 
     return def.filterMenu.filters
-      .map(f => {
-        const _df = this._dataFilters.find(df => df.name === f.name)
-        if (_df) { return { ...f, component: _df.component } }
+      .map((f) => {
+        const _df = this._dataFilters.find((df) => df.name === f.name)
+        if (_df) {
+          return { ...f, component: _df.component }
+        }
       })
       .filter(notNullOrUndefined)
   }
-
 }

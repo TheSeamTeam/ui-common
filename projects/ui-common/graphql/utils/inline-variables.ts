@@ -3,7 +3,11 @@ import { isDevMode } from '@angular/core'
 import { hasProperty } from '@theseam/ui-common/utils'
 import { BREAK, DocumentNode, ValueNode, visit } from 'graphql'
 
-export function inlineVariable(query: DocumentNode, variableName: string, variableValue: ValueNode): DocumentNode {
+export function inlineVariable(
+  query: DocumentNode,
+  variableName: string,
+  variableValue: ValueNode,
+): DocumentNode {
   // return visit(query, {
   //   VariableDefinition(node) {
   //     if (variableName === node.variable.name.value) {
@@ -24,10 +28,15 @@ export function inlineVariable(query: DocumentNode, variableName: string, variab
   // console.log('~inlineVariable', variableName, variableValue)
 
   // TODO: Decide if this is a good solution.
-  if (hasProperty(variableValue as any, 'value') && (variableValue as any).value === 'undefined') {
+  if (
+    hasProperty(variableValue as any, 'value') &&
+    (variableValue as any).value === 'undefined'
+  ) {
     if (isDevMode()) {
       // eslint-disable-next-line no-console
-      console.warn(`Ignoring attempt to inline '${variableName}', because it is undefined.`)
+      console.warn(
+        `Ignoring attempt to inline '${variableName}', because it is undefined.`,
+      )
     }
     return visit(query, {
       SelectionSet(selectionSetNode) {

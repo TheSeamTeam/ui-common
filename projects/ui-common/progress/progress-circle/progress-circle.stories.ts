@@ -8,9 +8,7 @@ const meta: Meta<ProgressCircleComponent> = {
   component: ProgressCircleComponent,
   decorators: [
     moduleMetadata({
-      imports: [
-        TheSeamProgressModule,
-      ],
+      imports: [TheSeamProgressModule],
     }),
   ],
   parameters: {
@@ -24,7 +22,7 @@ export default meta
 type Story = StoryObj<ProgressCircleComponent>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `
       <seam-progress-circle style="position: relative; width: 100px; height: 100px"

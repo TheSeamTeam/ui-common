@@ -15,5 +15,4 @@ export class FormFieldErrorListItemTplDirective {
   @Input() @InputBoolean() external = false
 
   constructor(public template: TemplateRef<any>) {}
-
 }

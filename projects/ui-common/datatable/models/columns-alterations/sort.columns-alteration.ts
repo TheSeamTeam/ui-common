@@ -21,10 +21,7 @@ export class SortColumnsAlteration extends ColumnsAlteration<SortColumnsAlterati
 
   public readonly type: string = 'sort'
 
-  constructor(
-    state: SortColumnsAlterationState,
-    persistent: boolean,
-  ) {
+  constructor(state: SortColumnsAlterationState, persistent: boolean) {
     super(state, persistent)
 
     if (!this._isValidState(state)) {
@@ -34,9 +31,12 @@ export class SortColumnsAlteration extends ColumnsAlteration<SortColumnsAlterati
     this.id = `${this.type}`
   }
 
-  public apply(columns: TheSeamDatatableColumn<any, any>[], datatable: TheSeamDatatableAccessor): void {
+  public apply(
+    columns: TheSeamDatatableColumn<any, any>[],
+    datatable: TheSeamDatatableAccessor,
+  ): void {
     if (datatable.sortType === SortType.single) {
-      datatable.sorts = this.state.sorts.length > 0 ? [ this.state.sorts[0] ] : []
+      datatable.sorts = this.state.sorts.length > 0 ? [this.state.sorts[0]] : []
     } else {
       datatable.sorts = this.state.sorts
     }
@@ -78,7 +78,7 @@ export class SortColumnsAlteration extends ColumnsAlteration<SortColumnsAlterati
       return 'No sorting'
     }
 
-    const sortDescriptions = this.state.sorts.map(sort => {
+    const sortDescriptions = this.state.sorts.map((sort) => {
       const direction = sort.dir === 'asc' ? '↑' : '↓'
       return `${sort.prop} ${direction}`
     })
@@ -93,7 +93,8 @@ export class SortColumnsAlteration extends ColumnsAlteration<SortColumnsAlterati
 
     return this.state.sorts.map((sort, index) => {
       const direction = sort.dir === 'asc' ? 'Ascending' : 'Descending'
-      const priority = this.state.sorts.length > 1 ? ` (Priority: ${index + 1})` : ''
+      const priority =
+        this.state.sorts.length > 1 ? ` (Priority: ${index + 1})` : ''
       return `${sort.prop}: ${direction}${priority}`
     })
   }

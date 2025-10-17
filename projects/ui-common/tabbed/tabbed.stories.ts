@@ -1,4 +1,9 @@
-import { Meta, StoryObj, applicationConfig, moduleMetadata } from '@storybook/angular'
+import {
+  Meta,
+  StoryObj,
+  applicationConfig,
+  moduleMetadata,
+} from '@storybook/angular'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { provideRouter } from '@angular/router'
@@ -8,7 +13,7 @@ import { of } from 'rxjs'
 import { TheSeamTabbedComponent } from './tabbed.component'
 import { TheSeamTabbedModule } from './tabbed.module'
 
-interface ExtraArgs { }
+interface ExtraArgs {}
 
 type StoryComponentType = TheSeamTabbedComponent & ExtraArgs
 
@@ -24,9 +29,7 @@ const meta: Meta<StoryComponentType> = {
       ],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamTabbedModule,
-      ],
+      imports: [TheSeamTabbedModule],
     }),
   ],
 }
@@ -35,7 +38,7 @@ export default meta
 type Story = StoryObj<StoryComponentType>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     template: `
       <seam-tabbed [activeTabName]="activeTabName$ | async">
         <seam-tabbed-item name="tab-1" label="Tab 1">

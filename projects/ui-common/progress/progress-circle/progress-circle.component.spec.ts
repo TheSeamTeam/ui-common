@@ -10,8 +10,7 @@ describe('ProgressCircleComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ProgressCircleComponent],
       teardown: { destroyAfterEach: false },
-    })
-      .compileComponents()
+    }).compileComponents()
   }))
 
   beforeEach(() => {

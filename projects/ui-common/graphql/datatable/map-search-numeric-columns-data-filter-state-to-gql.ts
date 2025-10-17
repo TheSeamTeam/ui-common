@@ -1,10 +1,16 @@
-import { ColumnsDataFilterState, TheSeamColumnsDataFilterNumericSearchFormState, THESEAM_COLUMNS_DATA_FILTER_NUMERIC_TEXT_SEARCH_TYPES, THESEAM_COLUMNS_DATA_FILTER_NUMERIC_RANGE_SEARCH_TYPES } from '@theseam/ui-common/datatable'
+import {
+  ColumnsDataFilterState,
+  TheSeamColumnsDataFilterNumericSearchFormState,
+  THESEAM_COLUMNS_DATA_FILTER_NUMERIC_TEXT_SEARCH_TYPES,
+  THESEAM_COLUMNS_DATA_FILTER_NUMERIC_RANGE_SEARCH_TYPES,
+} from '@theseam/ui-common/datatable'
 import { isNullOrUndefined, notNullOrUndefined } from '@theseam/ui-common/utils'
 import { FilterStateMapperResult } from './map-filter-states'
 import { MapperContext } from './mapper-context'
 
 export const mapSearchNumericColumnsDataFilterStateToGql = (
-  filterState: ColumnsDataFilterState<TheSeamColumnsDataFilterNumericSearchFormState>, context: MapperContext<any>,
+  filterState: ColumnsDataFilterState<TheSeamColumnsDataFilterNumericSearchFormState>,
+  context: MapperContext<any>,
 ): FilterStateMapperResult => {
   let filter = null
 
@@ -12,21 +18,39 @@ export const mapSearchNumericColumnsDataFilterStateToGql = (
     return filter
   }
 
-  if (notNullOrUndefined(filterState.state.formValue) && notNullOrUndefined(filterState.state.formValue.searchType)) {
-    if (THESEAM_COLUMNS_DATA_FILTER_NUMERIC_TEXT_SEARCH_TYPES.includes(filterState.state.formValue.searchType) && notNullOrUndefined(filterState.state.formValue.searchText)) {
+  if (
+    notNullOrUndefined(filterState.state.formValue) &&
+    notNullOrUndefined(filterState.state.formValue.searchType)
+  ) {
+    if (
+      THESEAM_COLUMNS_DATA_FILTER_NUMERIC_TEXT_SEARCH_TYPES.includes(
+        filterState.state.formValue.searchType,
+      ) &&
+      notNullOrUndefined(filterState.state.formValue.searchText)
+    ) {
       const searchNumeric = parseFloat(filterState.state.formValue.searchText)
 
       if (!isNaN(searchNumeric)) {
         filter = {
           filter: {
             and: [
-              { [filterState.state.prop]: { [filterState.state.formValue.searchType]: searchNumeric } },
+              {
+                [filterState.state.prop]: {
+                  [filterState.state.formValue.searchType]: searchNumeric,
+                },
+              },
             ],
           },
           variables: {},
         }
       }
-    } else if (THESEAM_COLUMNS_DATA_FILTER_NUMERIC_RANGE_SEARCH_TYPES.includes(filterState.state.formValue.searchType) && notNullOrUndefined(filterState.state.formValue.fromText) && notNullOrUndefined(filterState.state.formValue.toText)) {
+    } else if (
+      THESEAM_COLUMNS_DATA_FILTER_NUMERIC_RANGE_SEARCH_TYPES.includes(
+        filterState.state.formValue.searchType,
+      ) &&
+      notNullOrUndefined(filterState.state.formValue.fromText) &&
+      notNullOrUndefined(filterState.state.formValue.toText)
+    ) {
       const fromNumeric = parseFloat(filterState.state.formValue.fromText)
 
       const toNumeric = parseFloat(filterState.state.formValue.toText)
@@ -36,8 +60,8 @@ export const mapSearchNumericColumnsDataFilterStateToGql = (
           filter = {
             filter: {
               and: [
-                { [filterState.state.prop]: { 'gte': fromNumeric } },
-                { [filterState.state.prop]: { 'lte': toNumeric } },
+                { [filterState.state.prop]: { gte: fromNumeric } },
+                { [filterState.state.prop]: { lte: toNumeric } },
               ],
             },
             variables: {},
@@ -46,8 +70,8 @@ export const mapSearchNumericColumnsDataFilterStateToGql = (
           filter = {
             filter: {
               or: [
-                { [filterState.state.prop]: { 'lt': fromNumeric } },
-                { [filterState.state.prop]: { 'gt': toNumeric } },
+                { [filterState.state.prop]: { lt: fromNumeric } },
+                { [filterState.state.prop]: { gt: toNumeric } },
               ],
             },
             variables: {},

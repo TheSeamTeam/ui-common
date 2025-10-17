@@ -7,7 +7,7 @@ import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 import { TheSeamToggleEditComponent } from '../toggle-edit.component'
 import { TheSeamToggleEditModule } from '../toggle-edit.module'
 
-interface ExtraArgs { }
+interface ExtraArgs {}
 
 type StoryComponentType = TheSeamToggleEditComponent & ExtraArgs
 
@@ -29,7 +29,7 @@ export default meta
 type Story = StoryObj<StoryComponentType>
 
 export const Simple: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       control: new FormControl('abc'),
@@ -46,7 +46,7 @@ export const Simple: Story = {
 }
 
 export const LabelTemplate: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       control: new FormControl('abc'),
@@ -64,10 +64,10 @@ export const LabelTemplate: Story = {
 }
 
 export const ValidatorMessage: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
-      control: new FormControl('abc', [ Validators.maxLength(3) ]),
+      control: new FormControl('abc', [Validators.maxLength(3)]),
     },
     template: `
       <div class="p-4" style="height: 400px; width: 500px;">

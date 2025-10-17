@@ -1,4 +1,8 @@
-import { BaseHarnessFilters, ComponentHarness, HarnessPredicate } from '@angular/cdk/testing'
+import {
+  BaseHarnessFilters,
+  ComponentHarness,
+  HarnessPredicate,
+} from '@angular/cdk/testing'
 
 interface TheSeamFormFieldHarnessFilters extends BaseHarnessFilters {
   /** Filters based on the name of the field. */
@@ -14,12 +18,17 @@ export class TheSeamFormFieldHarness extends ComponentHarness {
   // private readonly _input = this.locatorFor('input')
 
   /** Creates a `HarnessPredicate` used to locate a particular `TheSeamFormFieldHarness`. */
-  static with(options: TheSeamFormFieldHarnessFilters): HarnessPredicate<TheSeamFormFieldHarness> {
-    return new HarnessPredicate(TheSeamFormFieldHarness, options)
-    // .addOption('field name', options.name,
-    //     (harness, name) => HarnessPredicate.stringMatches(harness.getName(), name))
-      .addOption('label', options.label,
-        (harness, label) => HarnessPredicate.stringMatches(harness.getLabel(), label))
+  static with(
+    options: TheSeamFormFieldHarnessFilters,
+  ): HarnessPredicate<TheSeamFormFieldHarness> {
+    return (
+      new HarnessPredicate(TheSeamFormFieldHarness, options)
+        // .addOption('field name', options.name,
+        //     (harness, name) => HarnessPredicate.stringMatches(harness.getName(), name))
+        .addOption('label', options.label, (harness, label) =>
+          HarnessPredicate.stringMatches(harness.getLabel(), label),
+        )
+    )
   }
 
   public async getLabel(): Promise<string | null> {

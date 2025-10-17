@@ -3,9 +3,15 @@ import { UntypedFormControl } from '@angular/forms'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-import { notNullOrUndefined, observeControlValue } from '@theseam/ui-common/utils'
+import {
+  notNullOrUndefined,
+  observeControlValue,
+} from '@theseam/ui-common/utils'
 
-import { DatatableComponent, THESEAM_DATATABLE } from '../datatable/datatable.component'
+import {
+  DatatableComponent,
+  THESEAM_DATATABLE,
+} from '../datatable/datatable.component'
 import { HideColumnColumnsAlteration } from '../models/columns-alterations/hide-column.columns-alteration'
 import { isInternalColumn } from '../models/internal-column-props'
 import { TheSeamDatatableColumn } from '../models/table-column'
@@ -32,15 +38,18 @@ export class DatatableColumnPreferencesComponent {
       this._datatable.columns$ ?? of([]),
       observeControlValue<string>(this._filterControl),
     ]).pipe(
-      map(([ columns, filter ]) => {
+      map(([columns, filter]) => {
         const _filter = (filter || '').trim().toLowerCase()
-        return columns
-          .filter(c => this._canToggleColumn(c, _filter))
+        return columns.filter((c) => this._canToggleColumn(c, _filter))
       }),
     )
   }
 
-  private _canToggleColumn(column: TheSeamDatatableColumn, filter: string, omitInternalColumns: boolean = true): boolean {
+  private _canToggleColumn(
+    column: TheSeamDatatableColumn,
+    filter: string,
+    omitInternalColumns: boolean = true,
+  ): boolean {
     if (omitInternalColumns && isInternalColumn(column)) {
       return false
     }
@@ -48,10 +57,15 @@ export class DatatableColumnPreferencesComponent {
     return this._columnMatchesFilter(column, filter)
   }
 
-  private _columnMatchesFilter(column: TheSeamDatatableColumn, filter: string): boolean {
-    if (filter.length === 0) { return true }
+  private _columnMatchesFilter(
+    column: TheSeamDatatableColumn,
+    filter: string,
+  ): boolean {
+    if (filter.length === 0) {
+      return true
+    }
 
-    return `${(getColumnProp(column) || '')}`.toLowerCase().indexOf(filter) !== -1
+    return `${getColumnProp(column) || ''}`.toLowerCase().indexOf(filter) !== -1
   }
 
   _onChange(event: any, col: TheSeamDatatableColumn) {
@@ -70,7 +84,6 @@ export class DatatableColumnPreferencesComponent {
       hidden,
     )
 
-    this._columnsAlterationsManager.add([ alteration ])
+    this._columnsAlterationsManager.add([alteration])
   }
-
 }

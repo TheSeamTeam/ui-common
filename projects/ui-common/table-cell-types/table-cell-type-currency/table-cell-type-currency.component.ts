@@ -1,9 +1,21 @@
 import { formatCurrency } from '@angular/common'
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnDestroy, Optional } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  Input,
+  OnDestroy,
+  Optional,
+} from '@angular/core'
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
 
-import { TableCellTypesHelpersService, TABLE_CELL_DATA, TheSeamTableColumn } from '@theseam/ui-common/table-cell-type'
+import {
+  TableCellTypesHelpersService,
+  TABLE_CELL_DATA,
+  TheSeamTableColumn,
+} from '@theseam/ui-common/table-cell-type'
 import type { TableCellData } from '@theseam/ui-common/table-cell-type'
 import { isNumeric, notNullOrUndefined } from '@theseam/ui-common/utils'
 
@@ -19,7 +31,6 @@ import { TableCellTypeConfigCurrency } from './table-cell-type-currency-config'
   standalone: false,
 })
 export class TableCellTypeCurrencyComponent implements OnDestroy {
-
   private readonly _ngUnsubscribe = new Subject<void>()
 
   @Input() value: string | null | undefined
@@ -34,30 +45,37 @@ export class TableCellTypeCurrencyComponent implements OnDestroy {
   constructor(
     private _cdf: ChangeDetectorRef,
     private _tableCellTypeHelpers: TableCellTypesHelpersService,
-    @Optional() @Inject(TABLE_CELL_DATA) _tableData?: TableCellData<'currency', TableCellTypeConfigCurrency>,
+    @Optional()
+    @Inject(TABLE_CELL_DATA)
+    _tableData?: TableCellData<'currency', TableCellTypeConfigCurrency>,
   ) {
     const tableData = _tableData
     this.value = tableData && this._formatCurrency(tableData.value, tableData)
     this.row = tableData && tableData.row
     this.rowIndex = tableData && tableData.rowIndex
     this.colData = tableData && tableData.colData
-    this.textAlign = this._parseConfigValue(tableData?.colData?.cellTypeConfig?.textAlign, tableData) || 'right'
+    this.textAlign =
+      this._parseConfigValue(
+        tableData?.colData?.cellTypeConfig?.textAlign,
+        tableData,
+      ) || 'right'
     // this.titleAttr = this._parseConfigValue(tableData?.colData?.cellTypeConfig?.titleAttr, tableData) || this.value
 
     if (tableData) {
-      tableData.changed
-        .pipe(takeUntil(this._ngUnsubscribe))
-        .subscribe(v => {
-          if (Object.prototype.hasOwnProperty.call(v.changes, 'value')) {
-            this.value = this._formatCurrency(v.changes.value.currentValue, tableData)
-            this._cdf.markForCheck()
-          }
+      tableData.changed.pipe(takeUntil(this._ngUnsubscribe)).subscribe((v) => {
+        if (Object.prototype.hasOwnProperty.call(v.changes, 'value')) {
+          this.value = this._formatCurrency(
+            v.changes.value.currentValue,
+            tableData,
+          )
+          this._cdf.markForCheck()
+        }
 
-          if (Object.prototype.hasOwnProperty.call(v.changes, 'colData')) {
-            this.colData = v.changes.colData.currentValue
-            this._cdf.markForCheck()
-          }
-        })
+        if (Object.prototype.hasOwnProperty.call(v.changes, 'colData')) {
+          this.colData = v.changes.colData.currentValue
+          this._cdf.markForCheck()
+        }
+      })
     }
   }
 
@@ -66,10 +84,17 @@ export class TableCellTypeCurrencyComponent implements OnDestroy {
     this._ngUnsubscribe.complete()
   }
 
-  private _formatCurrency(currentValue?: any, tableData?: TableCellData<'currency', TableCellTypeConfigCurrency>): string {
+  private _formatCurrency(
+    currentValue?: any,
+    tableData?: TableCellData<'currency', TableCellTypeConfigCurrency>,
+  ): string {
     const config = tableData?.colData?.cellTypeConfig
     const defaultToEmpty = notNullOrUndefined(config?.defaultToEmpty)
-      ? this._parseConfigValue(coerceBooleanProperty(config?.defaultToEmpty), tableData) : true
+      ? this._parseConfigValue(
+          coerceBooleanProperty(config?.defaultToEmpty),
+          tableData,
+        )
+      : true
     let _currentValue = currentValue
     const valueIsNumeric = isNumeric(_currentValue)
 
@@ -85,19 +110,26 @@ export class TableCellTypeCurrencyComponent implements OnDestroy {
 
     const locale = this._parseConfigValue(config?.locale, tableData) || 'en-US'
     const currency = this._parseConfigValue(config?.currency, tableData) || '$'
-    const currencyCode = this._parseConfigValue(config?.currencyCode, tableData) || 'USD'
+    const currencyCode =
+      this._parseConfigValue(config?.currencyCode, tableData) || 'USD'
 
-    const minIntegerDigits = this._parseConfigValue(config?.minIntegerDigits, tableData) || 1
-    const minFractionDigits = this._parseConfigValue(config?.minFractionDigits, tableData) || 2
-    const maxFractionDigits = this._parseConfigValue(config?.maxFractionDigits, tableData) || 2
+    const minIntegerDigits =
+      this._parseConfigValue(config?.minIntegerDigits, tableData) || 1
+    const minFractionDigits =
+      this._parseConfigValue(config?.minFractionDigits, tableData) || 2
+    const maxFractionDigits =
+      this._parseConfigValue(config?.maxFractionDigits, tableData) || 2
     const format = `${minIntegerDigits}.${minFractionDigits}-${maxFractionDigits}`
 
     return formatCurrency(_currentValue, locale, currency, currencyCode, format)
   }
 
-  private _parseConfigValue(val?: any, tableData?: TableCellData<'currency', TableCellTypeConfigCurrency>) {
-    const contextFn = () => this._tableCellTypeHelpers.getValueContext(val, tableData)
+  private _parseConfigValue(
+    val?: any,
+    tableData?: TableCellData<'currency', TableCellTypeConfigCurrency>,
+  ) {
+    const contextFn = () =>
+      this._tableCellTypeHelpers.getValueContext(val, tableData)
     return this._tableCellTypeHelpers.parseValueProp(val, contextFn)
   }
-
 }

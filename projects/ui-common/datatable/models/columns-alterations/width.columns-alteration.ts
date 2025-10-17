@@ -18,10 +18,7 @@ export class WidthColumnsAlteration extends ColumnsAlteration<WidthColumnsAltera
 
   public readonly type: string = 'width'
 
-  constructor(
-    state: WidthColumnsAlterationState,
-    persistent: boolean,
-  ) {
+  constructor(state: WidthColumnsAlterationState, persistent: boolean) {
     super(state, persistent)
 
     if (!this._isValidState(state)) {
@@ -31,7 +28,10 @@ export class WidthColumnsAlteration extends ColumnsAlteration<WidthColumnsAltera
     this.id = `${this.type}--${state.columnProp}`
   }
 
-  public apply(columns: TheSeamDatatableColumn<any, any>[], datatable: TheSeamDatatableAccessor): void {
+  public apply(
+    columns: TheSeamDatatableColumn<any, any>[],
+    datatable: TheSeamDatatableAccessor,
+  ): void {
     for (const col of columns) {
       const prop = getColumnProp(col)
       if (prop === this.state.columnProp) {
@@ -81,7 +81,9 @@ export class WidthColumnsAlteration extends ColumnsAlteration<WidthColumnsAltera
   }
 
   private _createWidthSummary(): string {
-    const widthText = notNullOrUndefined(this.state.width) ? `${this.state.width}px` : 'auto'
+    const widthText = notNullOrUndefined(this.state.width)
+      ? `${this.state.width}px`
+      : 'auto'
     return `${this.state.columnProp}: ${widthText}`
   }
 
@@ -92,7 +94,9 @@ export class WidthColumnsAlteration extends ColumnsAlteration<WidthColumnsAltera
       details.push(`Width: ${this.state.width}px`)
     }
 
-    details.push(`Auto-resize: ${this.state.canAutoResize ? 'enabled' : 'disabled'}`)
+    details.push(
+      `Auto-resize: ${this.state.canAutoResize ? 'enabled' : 'disabled'}`,
+    )
 
     return details
   }

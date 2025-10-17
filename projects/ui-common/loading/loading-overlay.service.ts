@@ -8,14 +8,15 @@ import { TheSeamLoadingComponent } from './loading/loading.component'
 
 @Injectable({ providedIn: 'root' })
 export class TheSeamLoadingOverlayService {
-
   private readonly _overlay = inject(Overlay)
 
   private _enabled = false
 
   private _overlayRef?: OverlayRef
 
-  get enabled(): boolean { return this._enabled }
+  get enabled(): boolean {
+    return this._enabled
+  }
 
   public toggle(enabled?: boolean) {
     const enable = enabled === undefined ? !this.enabled : enabled
@@ -27,7 +28,9 @@ export class TheSeamLoadingOverlayService {
   }
 
   public enable() {
-    if (this.enabled) { return }
+    if (this.enabled) {
+      return
+    }
 
     this._overlayRef = this._overlay.create({
       hasBackdrop: false,
@@ -40,7 +43,9 @@ export class TheSeamLoadingOverlayService {
   }
 
   public disable() {
-    if (!this.enabled) { return }
+    if (!this.enabled) {
+      return
+    }
 
     this._overlayRef?.dispose()
 
@@ -51,12 +56,11 @@ export class TheSeamLoadingOverlayService {
     this.enable()
     return source.pipe(
       tap(() => this.disable()),
-      catchError(err => {
+      catchError((err) => {
         this.disable()
         return throwError(err)
       }),
       finalize(() => this.disable()),
     )
   }
-
 }

@@ -1,4 +1,10 @@
-import { applicationConfig, componentWrapperDecorator, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  componentWrapperDecorator,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 import { expect } from 'storybook/test'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
@@ -9,11 +15,17 @@ import { BehaviorSubject, Observable, of } from 'rxjs'
 import { getHarness } from '@theseam/ui-common/testing'
 
 import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
-import { THESEAM_DATATABLE_PREFERENCES_ACCESSOR, TheSeamDatatableModule } from '@theseam/ui-common/datatable'
+import {
+  THESEAM_DATATABLE_PREFERENCES_ACCESSOR,
+  TheSeamDatatableModule,
+} from '@theseam/ui-common/datatable'
 import { TheSeamPreferencesAccessor } from '@theseam/ui-common/services'
 
 import { TheSeamDatatablePrompterComponent } from './datatable-prompter.component'
-import { THESEAM_DATATABLE_PROMPTER_PROVIDER, TheSeamDatatablePrompterProvider } from './datatable-prompter-prompt-provider'
+import {
+  THESEAM_DATATABLE_PROMPTER_PROVIDER,
+  TheSeamDatatablePrompterProvider,
+} from './datatable-prompter-prompt-provider'
 import { OpenRouterAiProvider } from './ai-providers/openrouter.ai-provider'
 import { AsyncPipe, NgIf } from '@angular/common'
 
@@ -56,21 +68,19 @@ export class PreferencesAccessorService implements TheSeamPreferencesAccessor {
     this._map.delete(name)
     return of(true)
   }
-
 }
 
 export class MockAiProvider implements TheSeamDatatablePrompterProvider {
-
   async submit(prompt: string): Promise<any> {
     return Promise.resolve([
       {
-        'id': 'filter--age',
-        'type': 'filter',
-        'state': {
-          'columnProp': 'age',
-          'filterType': 'text',
-          'operation': 'eq',
-          'value': '33',
+        id: 'filter--age',
+        type: 'filter',
+        state: {
+          columnProp: 'age',
+          filterType: 'text',
+          operation: 'eq',
+          value: '33',
         },
       },
     ] as any) as Promise<any>
@@ -82,9 +92,21 @@ export class MockAiProvider implements TheSeamDatatablePrompterProvider {
   template: `
     <div class="d-flex flex-column">
       <label for="key">API Key</label>
-      <input id="key" type="text" class="form-control" [formControl]="_apiKeyControl" />
+      <input
+        id="key"
+        type="text"
+        class="form-control"
+        [formControl]="_apiKeyControl"
+      />
     </div>
-    <button class="btn btn-primary mt-2" (click)="_localStorage.setItem('openrouter-api-key', _apiKeyControl.value ?? '')">Set Key</button>
+    <button
+      class="btn btn-primary mt-2"
+      (click)="
+        _localStorage.setItem('openrouter-api-key', _apiKeyControl.value ?? '')
+      "
+    >
+      Set Key
+    </button>
     <!--<button class="btn btn-secondary mt-2" (click)="_refresh()">Refresh</button>
     <div class="mt-2">
       <span *ngIf="_loadingCreditSubject | async">Loading credits...</span>
@@ -92,11 +114,7 @@ export class MockAiProvider implements TheSeamDatatablePrompterProvider {
     </div>-->
   `,
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    AsyncPipe,
-    NgIf,
-  ],
+  imports: [ReactiveFormsModule, AsyncPipe, NgIf],
 })
 export class SetKeyComponent {
   _localStorage = localStorage
@@ -109,27 +127,44 @@ export class SetKeyComponent {
     const url = 'https://openrouter.ai/api/v1/credits'
     const apiKey = localStorage.getItem('openrouter-api-key') || ''
     const headers = {
-      'Authorization': `Bearer ${apiKey}`,
+      Authorization: `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
     }
     fetch(url, {
       method: 'GET',
       headers,
-    }).then(response => response.json()).then(data => {
-      console.log('Response from AI:', data)
-      const credits = data.credits || 0
-      console.log(`%cCredits: ${credits}`, 'color: limegreen;')
-      this._creditsSubject.next(credits)
     })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Response from AI:', data)
+        const credits = data.credits || 0
+        console.log(`%cCredits: ${credits}`, 'color: limegreen;')
+        this._creditsSubject.next(credits)
+      })
     this._loadingCreditSubject.next(false)
   }
 }
 
 const dt = {
   columns: [
-    { prop: 'name', name: 'Name', filterable: true, filterOptions: { filterType: 'search-text' } },
-    { prop: 'age', name: 'Age', filterable: true, filterOptions: { filterType: 'search-numeric' } },
-    { prop: 'color', name: 'Color', filterable: true, filterOptions: { filterType: 'search-text' } },
+    {
+      prop: 'name',
+      name: 'Name',
+      filterable: true,
+      filterOptions: { filterType: 'search-text' },
+    },
+    {
+      prop: 'age',
+      name: 'Age',
+      filterable: true,
+      filterOptions: { filterType: 'search-numeric' },
+    },
+    {
+      prop: 'color',
+      name: 'Color',
+      filterable: true,
+      filterOptions: { filterType: 'search-text' },
+    },
   ],
   rows: [
     { name: 'Mark', age: 27, color: 'blue' },
@@ -198,7 +233,7 @@ type StoryComponentType = TheSeamDatatablePrompterComponent & ExtraArgs
 
 const meta: Meta<StoryComponentType> = {
   title: 'AI/DatatablePrompter',
-  tags: [ 'autodocs' ],
+  tags: ['autodocs'],
   component: TheSeamDatatablePrompterComponent,
   decorators: [
     applicationConfig({
@@ -219,12 +254,12 @@ const meta: Meta<StoryComponentType> = {
       ],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamDatatableModule,
-        TheSeamTableCellTypesModule,
-      ],
+      imports: [TheSeamDatatableModule, TheSeamTableCellTypesModule],
     }),
-    componentWrapperDecorator(story => `<div class="p-1" style="min-height: 100px; min-width: 800px;">${story}</div>`),
+    componentWrapperDecorator(
+      (story) =>
+        `<div class="p-1" style="min-height: 100px; min-width: 800px;">${story}</div>`,
+    ),
   ],
   parameters: {
     docs: {
@@ -237,7 +272,7 @@ export default meta
 type Story = StoryObj<StoryComponentType>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `
       <div class="d-flex flex-column-reverse">
@@ -263,7 +298,7 @@ export const Basic: Story = {
 }
 
 export const NoAlts: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `
       <div class="d-flex flex-column-reverse">
@@ -289,7 +324,7 @@ export const NoAlts: Story = {
 }
 
 export const AltsCompact: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `
       <div class="d-flex flex-column-reverse">
@@ -315,7 +350,7 @@ export const AltsCompact: Story = {
 }
 
 export const AltsExpanded: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `
       <div class="d-flex flex-column-reverse">

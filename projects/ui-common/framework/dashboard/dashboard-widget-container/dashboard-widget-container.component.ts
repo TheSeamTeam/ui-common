@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, Input, TemplateRef, ViewChild } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core'
 
 import type { IDashboardWidgetsItemDef } from '../dashboard-widgets/dashboard-widgets-item'
 
@@ -9,9 +15,7 @@ import type { IDashboardWidgetsItemDef } from '../dashboard-widgets/dashboard-wi
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardWidgetContainerComponent {
-
   @Input() def: IDashboardWidgetsItemDef | undefined | null
 
   @ViewChild(TemplateRef) templateRef?: TemplateRef<any>
-
 }

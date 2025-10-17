@@ -10,4 +10,4 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false,
 })
-export class WidgetTileFooterComponent { }
+export class WidgetTileFooterComponent {}

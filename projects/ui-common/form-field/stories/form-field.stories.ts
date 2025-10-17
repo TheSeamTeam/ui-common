@@ -1,4 +1,9 @@
-import { componentWrapperDecorator, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  componentWrapperDecorator,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 import { expect } from 'storybook/test'
 
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms'
@@ -6,28 +11,34 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms'
 import { NgSelectModule } from '@ng-select/ng-select'
 import dedent from 'ts-dedent'
 import { getHarness } from '@theseam/ui-common/testing'
-import { TheSeamCheckboxComponent, TheSeamCheckboxHarness } from '@theseam/ui-common/checkbox'
+import {
+  TheSeamCheckboxComponent,
+  TheSeamCheckboxHarness,
+} from '@theseam/ui-common/checkbox'
 
 import { TheSeamFormFieldComponent } from '../form-field.component'
 import { TheSeamFormFieldModule } from '../form-field.module'
-import { TheSeamFormFieldHarness, TheSeamFormFieldRequiredIndicatorHarness } from '../testing'
+import {
+  TheSeamFormFieldHarness,
+  TheSeamFormFieldRequiredIndicatorHarness,
+} from '../testing'
 
-interface ExtraArgs { }
+interface ExtraArgs {}
 
 type StoryComponentType = TheSeamFormFieldComponent & ExtraArgs
 
 const meta: Meta<StoryComponentType> = {
   title: 'Form Field/Components',
-  tags: [ 'autodocs' ],
+  tags: ['autodocs'],
   component: TheSeamFormFieldComponent,
   decorators: [
     moduleMetadata({
-      imports: [
-        TheSeamFormFieldModule,
-        ReactiveFormsModule,
-      ],
+      imports: [TheSeamFormFieldModule, ReactiveFormsModule],
     }),
-    componentWrapperDecorator(story => `<div class="p-1" style="min-height: 100px; width: 500px;">${story}</div>`),
+    componentWrapperDecorator(
+      (story) =>
+        `<div class="p-1" style="min-height: 100px; width: 500px;">${story}</div>`,
+    ),
   ],
   parameters: {
     docs: {
@@ -40,7 +51,7 @@ export default meta
 type Story = StoryObj<StoryComponentType>
 
 export const Simple: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       control: new FormControl(''),
@@ -52,16 +63,24 @@ export const Simple: Story = {
     `,
   }),
   play: async ({ canvasElement, fixture }) => {
-    const requiredIndicatorHarness = await getHarness(TheSeamFormFieldRequiredIndicatorHarness, { canvasElement, fixture })
-    await expect(await requiredIndicatorHarness.isIndicatorVisible()).toBe(false)
+    const requiredIndicatorHarness = await getHarness(
+      TheSeamFormFieldRequiredIndicatorHarness,
+      { canvasElement, fixture },
+    )
+    await expect(await requiredIndicatorHarness.isIndicatorVisible()).toBe(
+      false,
+    )
 
-    const formFieldHarness = await getHarness(TheSeamFormFieldHarness, { canvasElement, fixture })
+    const formFieldHarness = await getHarness(TheSeamFormFieldHarness, {
+      canvasElement,
+      fixture,
+    })
     await expect(await formFieldHarness.getLabel()).toBe('Example')
   },
 }
 
 export const LabelTemplate: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       control: new FormControl(''),
     },
@@ -75,10 +94,10 @@ export const LabelTemplate: Story = {
 }
 
 export const ValidatorTemplate: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
-      control: new FormControl('', [ Validators.required ]),
+      control: new FormControl('', [Validators.required]),
     },
     template: `
       <span class="p-1 border bg-light">
@@ -93,12 +112,16 @@ export const ValidatorTemplate: Story = {
 }
 
 export const ValidatorPaddingMessages: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
-      control: new FormControl('', [ Validators.required ]),
-      control2: new FormControl('', [ Validators.required ]),
-      control3: new FormControl('', [ Validators.required, Validators.email, Validators.minLength(6) ]),
+      control: new FormControl('', [Validators.required]),
+      control2: new FormControl('', [Validators.required]),
+      control3: new FormControl('', [
+        Validators.required,
+        Validators.email,
+        Validators.minLength(6),
+      ]),
       // n: number('numPaddingErrors', 3),
     },
     template: `
@@ -152,15 +175,13 @@ export const ValidatorPaddingMessages: Story = {
 }
 
 export const NgSelect: Story = {
-  render: args => ({
+  render: (args) => ({
     moduleMetadata: {
-      imports: [
-        NgSelectModule,
-      ],
+      imports: [NgSelectModule],
     },
     props: {
       ...args,
-      control: new FormControl('', [ Validators.required ]),
+      control: new FormControl('', [Validators.required]),
       items: [
         { id: 1, name: 'one' },
         { id: 2, name: 'two' },
@@ -189,7 +210,7 @@ export const NgSelect: Story = {
 }
 
 export const RequiredIndicator: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       control: new FormControl(''),
@@ -216,16 +237,22 @@ export const RequiredIndicator: Story = {
     },
   },
   play: async ({ canvasElement, fixture }) => {
-    const requiredIndicatorHarness = await getHarness(TheSeamFormFieldRequiredIndicatorHarness, { canvasElement, fixture })
+    const requiredIndicatorHarness = await getHarness(
+      TheSeamFormFieldRequiredIndicatorHarness,
+      { canvasElement, fixture },
+    )
     await expect(await requiredIndicatorHarness.isIndicatorVisible()).toBe(true)
 
-    const formFieldHarness = await getHarness(TheSeamFormFieldHarness, { canvasElement, fixture })
+    const formFieldHarness = await getHarness(TheSeamFormFieldHarness, {
+      canvasElement,
+      fixture,
+    })
     await expect(await formFieldHarness.getLabel()).toBe('Example*')
   },
 }
 
 export const RequiredIndicatorLabelTemplate: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       control: new FormControl(''),
@@ -242,7 +269,7 @@ export const RequiredIndicatorLabelTemplate: Story = {
 }
 
 export const RequiredIndicatorLabelTemplateCustom: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       control: new FormControl(''),
@@ -261,10 +288,10 @@ export const RequiredIndicatorLabelTemplateCustom: Story = {
 export const RequiredIndicatorToggle: Story = {
   decorators: [
     moduleMetadata({
-      imports: [ TheSeamCheckboxComponent ],
+      imports: [TheSeamCheckboxComponent],
     }),
   ],
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       control: new FormControl(''),
@@ -277,16 +304,24 @@ export const RequiredIndicatorToggle: Story = {
     `,
   }),
   play: async ({ canvasElement, fixture }) => {
-    const requiredIndicatorHarness = await getHarness(TheSeamFormFieldRequiredIndicatorHarness, { canvasElement, fixture })
-    const checkboxHarness = await getHarness(TheSeamCheckboxHarness, { canvasElement, fixture })
-    await expect(await requiredIndicatorHarness.isIndicatorVisible()).toBe(false)
+    const requiredIndicatorHarness = await getHarness(
+      TheSeamFormFieldRequiredIndicatorHarness,
+      { canvasElement, fixture },
+    )
+    const checkboxHarness = await getHarness(TheSeamCheckboxHarness, {
+      canvasElement,
+      fixture,
+    })
+    await expect(await requiredIndicatorHarness.isIndicatorVisible()).toBe(
+      false,
+    )
     await checkboxHarness.click()
     await expect(await requiredIndicatorHarness.isIndicatorVisible()).toBe(true)
   },
 }
 
 export const Password: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       control: new FormControl(''),
@@ -300,7 +335,7 @@ export const Password: Story = {
 }
 
 export const HelpText: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       control: new FormControl(''),
@@ -315,7 +350,7 @@ export const HelpText: Story = {
 }
 
 export const HelpTemplate: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       control: new FormControl(''),

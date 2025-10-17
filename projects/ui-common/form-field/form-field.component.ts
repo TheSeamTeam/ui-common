@@ -11,8 +11,21 @@ import {
   OnInit,
   QueryList,
 } from '@angular/core'
-import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subscription } from 'rxjs'
-import { distinctUntilChanged, filter, map, startWith, switchMap, tap } from 'rxjs/operators'
+import {
+  BehaviorSubject,
+  combineLatest,
+  Observable,
+  ReplaySubject,
+  Subscription,
+} from 'rxjs'
+import {
+  distinctUntilChanged,
+  filter,
+  map,
+  startWith,
+  switchMap,
+  tap,
+} from 'rxjs/operators'
 
 import { InputBoolean } from '@theseam/ui-common/core'
 import { IErrorRecord } from '@theseam/ui-common/form-field-error'
@@ -43,9 +56,15 @@ let nextLabelUniqueId = 0
 export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
   static ngAcceptInputType_inline: BooleanInput
 
-  private readonly _helpTextStrSubject = new BehaviorSubject<string | undefined>(undefined)
-  private readonly _helpTextTplSubject = new BehaviorSubject<FormFieldHelpTextDirective | undefined>(undefined)
-  private readonly _contentInputSubject = new BehaviorSubject<InputDirective | undefined>(undefined)
+  private readonly _helpTextStrSubject = new BehaviorSubject<
+    string | undefined
+  >(undefined)
+  private readonly _helpTextTplSubject = new BehaviorSubject<
+    FormFieldHelpTextDirective | undefined
+  >(undefined)
+  private readonly _contentInputSubject = new BehaviorSubject<
+    InputDirective | undefined
+  >(undefined)
 
   /** @ignore */
   protected _labelUid = `seam-label-${nextLabelUniqueId++}`
@@ -57,7 +76,9 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
   public _errorPadding = '0px'
 
   /** @ignore */
-  @HostBinding('style.display') get _displayStyle() { return this.inline ? 'inline-block' : 'block' }
+  @HostBinding('style.display') get _displayStyle() {
+    return this.inline ? 'inline-block' : 'block'
+  }
 
   /**
    * Used to declare an inline element.
@@ -100,8 +121,12 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
    * most situations, because a unique id will be generated if not provided.
    */
   @Input()
-  get labelId(): string | undefined | null { return this._labelId }
-  set labelId(value: string | undefined | null) { this._labelId = value || this._labelUid }
+  get labelId(): string | undefined | null {
+    return this._labelId
+  }
+  set labelId(value: string | undefined | null) {
+    this._labelId = value || this._labelUid
+  }
   /** @ignore */
   protected _labelId: string | undefined | null
 
@@ -109,7 +134,9 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
    * Help text added below the control.
    */
   @Input()
-  get helpText(): string | undefined | null { return this._helpTextStrSubject.value }
+  get helpText(): string | undefined | null {
+    return this._helpTextStrSubject.value
+  }
   set helpText(value: string | undefined | null) {
     this._helpTextStrSubject.next(value || undefined)
   }
@@ -119,52 +146,71 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
    * most situations, because a unique id will be generated if not provided.
    */
   @Input()
-  get helpTextId(): string | undefined | null { return this._helpTextId }
-  set helpTextId(value: string | undefined | null) { this._helpTextId = value || this._helpTextUid }
+  get helpTextId(): string | undefined | null {
+    return this._helpTextId
+  }
+  set helpTextId(value: string | undefined | null) {
+    this._helpTextId = value || this._helpTextUid
+  }
   /** @ignore */
   protected _helpTextId: string | undefined | null
 
   /** @ignore */
   @ContentChild(FormFieldHelpTextDirective, { static: true })
-  get helpTextTpl(): FormFieldLabelTplDirective | undefined { return this._helpTextTplSubject.value }
+  get helpTextTpl(): FormFieldLabelTplDirective | undefined {
+    return this._helpTextTplSubject.value
+  }
   set helpTextTpl(value: FormFieldLabelTplDirective | undefined) {
     this._helpTextTplSubject.next(value || undefined)
   }
 
   /** @ignore */
-  @ContentChild(FormFieldLabelTplDirective, { static: true }) labelTpl?: FormFieldLabelTplDirective
+  @ContentChild(FormFieldLabelTplDirective, { static: true })
+  labelTpl?: FormFieldLabelTplDirective
 
   /** @ignore */
   @ContentChild(InputDirective, { static: true })
-  get contentInput(): InputDirective | undefined { return this._contentInputSubject.value }
-  set contentInput(value: InputDirective | undefined) { this._contentInputSubject.next(value || undefined) }
+  get contentInput(): InputDirective | undefined {
+    return this._contentInputSubject.value
+  }
+  set contentInput(value: InputDirective | undefined) {
+    this._contentInputSubject.next(value || undefined)
+  }
 
   /** @ignore */
   @ContentChildren(FormFieldErrorDirective)
-  get fieldErrors() { return this._fieldErrors }
-  set fieldErrors(value: QueryList<FormFieldErrorDirective[]> | undefined | null) {
+  get fieldErrors() {
+    return this._fieldErrors
+  }
+  set fieldErrors(
+    value: QueryList<FormFieldErrorDirective[]> | undefined | null,
+  ) {
     this._fieldErrors = value
 
-    if (this._sub) { this._sub.unsubscribe() }
+    if (this._sub) {
+      this._sub.unsubscribe()
+    }
     if (this.fieldErrors) {
       this._sub = this.fieldErrors.changes
         .pipe(startWith(this.fieldErrors))
-        .pipe(map(v => v.toArray() as FormFieldErrorDirective[]))
-        .pipe(tap(v => {
-          const records: IErrorRecord[] = []
-          for (const item of v) {
-            if (item.validatorName) {
-              records.push({
-                validatorName: item.validatorName,
-                error: null,
-                template: item.template,
-                external: item.external,
-              })
+        .pipe(map((v) => v.toArray() as FormFieldErrorDirective[]))
+        .pipe(
+          tap((v) => {
+            const records: IErrorRecord[] = []
+            for (const item of v) {
+              if (item.validatorName) {
+                records.push({
+                  validatorName: item.validatorName,
+                  error: null,
+                  template: item.template,
+                  external: item.external,
+                })
+              }
             }
-          }
-          this._fieldErrorsSubject2.next(records)
-        }))
-        .subscribe(v => this._fieldErrorsSubject.next(v))
+            this._fieldErrorsSubject2.next(records)
+          }),
+        )
+        .subscribe((v) => this._fieldErrorsSubject.next(v))
     }
   }
   /** @ignore */
@@ -173,49 +219,65 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
   private _sub?: Subscription
 
   /** @ignore */
-  private readonly _fieldErrorsSubject = new ReplaySubject<FormFieldErrorDirective[]>(1)
+  private readonly _fieldErrorsSubject = new ReplaySubject<
+    FormFieldErrorDirective[]
+  >(1)
   /** @ignore */
-  public readonly fieldErrors$: Observable<FormFieldErrorDirective[]> = this._fieldErrorsSubject.asObservable()
+  public readonly fieldErrors$: Observable<FormFieldErrorDirective[]> =
+    this._fieldErrorsSubject.asObservable()
 
   /** @ignore */
   private readonly _fieldErrorsSubject2 = new ReplaySubject<IErrorRecord[]>(1)
   /** @ignore */
-  public readonly fieldErrors2$: Observable<IErrorRecord[]> = this._fieldErrorsSubject2.asObservable()
+  public readonly fieldErrors2$: Observable<IErrorRecord[]> =
+    this._fieldErrorsSubject2.asObservable()
 
   get isPasswordInput() {
-    return this.contentInput && this.contentInput.type && this.contentInput.type === 'password'
+    return (
+      this.contentInput &&
+      this.contentInput.type &&
+      this.contentInput.type === 'password'
+    )
   }
   get passwordInputElement() {
-    return this.contentInput && this.contentInput._elementRef && this.contentInput._elementRef.nativeElement
+    return (
+      this.contentInput &&
+      this.contentInput._elementRef &&
+      this.contentInput._elementRef.nativeElement
+    )
   }
 
-  get hasHelpText() { return !!this._helpTextStrSubject.value || !!this._helpTextTplSubject.value }
+  get hasHelpText() {
+    return !!this._helpTextStrSubject.value || !!this._helpTextTplSubject.value
+  }
   // get hasHelpText() { return !!this.helpText || !!this._helpTextTpl }
 
   private _helpTextSub = Subscription.EMPTY
 
   /** @ignore */
-  constructor(
-    private readonly _elementRef: ElementRef,
-  ) { }
+  constructor(private readonly _elementRef: ElementRef) {}
 
   /** @ignore */
   ngOnInit() {
-    this._helpTextSub = this._contentInputSubject.pipe(
-      filter(contentInput => !!contentInput),
-      switchMap(contentInput => combineLatest([
-        this._helpTextStrSubject,
-        this._helpTextTplSubject,
-      ]).pipe(
-        map(() => this.hasHelpText),
-        distinctUntilChanged(),
-        tap(() => {
-          if (contentInput) {
-            contentInput.ariaDescribedBy = this._helpTextId || undefined
-          }
-        }),
-      )),
-    ).subscribe()
+    this._helpTextSub = this._contentInputSubject
+      .pipe(
+        filter((contentInput) => !!contentInput),
+        switchMap((contentInput) =>
+          combineLatest([
+            this._helpTextStrSubject,
+            this._helpTextTplSubject,
+          ]).pipe(
+            map(() => this.hasHelpText),
+            distinctUntilChanged(),
+            tap(() => {
+              if (contentInput) {
+                contentInput.ariaDescribedBy = this._helpTextId || undefined
+              }
+            }),
+          ),
+        ),
+      )
+      .subscribe()
   }
 
   /** @ignore */
@@ -225,7 +287,11 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
   }
 
   /** @ignore */
-  public isValidatorMatch(validatorName: string, tplValidatorName: string, errors: any): boolean {
+  public isValidatorMatch(
+    validatorName: string,
+    tplValidatorName: string,
+    errors: any,
+  ): boolean {
     const tplValidatorNames = tplValidatorName.split(' ')
 
     for (let i = 0; i < tplValidatorNames.length; i++) {
@@ -250,5 +316,4 @@ export class TheSeamFormFieldComponent implements OnInit, OnDestroy {
   public getElement(): HTMLElement {
     return this._elementRef.nativeElement
   }
-
 }

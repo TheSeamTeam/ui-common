@@ -1,4 +1,9 @@
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 
@@ -9,81 +14,81 @@ import { WidgetTableComponent } from './widget-table.component'
 
 const GIN_DATA = [
   {
-    'ginCode': '12345',
-    'name': 'Gin 1',
-    'city': 'SELMA',
-    'state': 'AL',
-    'stateCode': 1,
-    'countyCode': 1,
-    'zipCode': '00000',
-    'isRegistered': false,
-    'ginned': 43897,
+    ginCode: '12345',
+    name: 'Gin 1',
+    city: 'SELMA',
+    state: 'AL',
+    stateCode: 1,
+    countyCode: 1,
+    zipCode: '00000',
+    isRegistered: false,
+    ginned: 43897,
   },
   {
-    'ginCode': '12346',
-    'name': 'Gin 2',
-    'city': 'WELCH',
-    'state': 'TX',
-    'stateCode': 48,
-    'countyCode': 115,
-    'zipCode': '00000',
-    'isRegistered': false,
-    'ginned': 786542,
+    ginCode: '12346',
+    name: 'Gin 2',
+    city: 'WELCH',
+    state: 'TX',
+    stateCode: 48,
+    countyCode: 115,
+    zipCode: '00000',
+    isRegistered: false,
+    ginned: 786542,
   },
   {
-    'ginCode': '12347',
-    'name': 'Gin 3',
-    'city': 'LAMESA',
-    'state': 'TX',
-    'stateCode': 48,
-    'countyCode': 115,
-    'zipCode': '00000',
-    'isRegistered': false,
-    'ginned': 9846,
+    ginCode: '12347',
+    name: 'Gin 3',
+    city: 'LAMESA',
+    state: 'TX',
+    stateCode: 48,
+    countyCode: 115,
+    zipCode: '00000',
+    isRegistered: false,
+    ginned: 9846,
   },
   {
-    'ginCode': '12348',
-    'name': 'Gin 4',
-    'city': 'WELCH',
-    'state': 'TX',
-    'stateCode': 48,
-    'countyCode': 115,
-    'zipCode': '00000',
-    'isRegistered': false,
-    'ginned': 3548,
+    ginCode: '12348',
+    name: 'Gin 4',
+    city: 'WELCH',
+    state: 'TX',
+    stateCode: 48,
+    countyCode: 115,
+    zipCode: '00000',
+    isRegistered: false,
+    ginned: 3548,
   },
   {
-    'ginCode': '12349',
-    'name': 'Gin 5',
-    'city': 'RIO HONDO',
-    'state': 'TX',
-    'stateCode': 48,
-    'countyCode': 61,
-    'zipCode': '00000',
-    'isRegistered': false,
-    'ginned': 7561,
+    ginCode: '12349',
+    name: 'Gin 5',
+    city: 'RIO HONDO',
+    state: 'TX',
+    stateCode: 48,
+    countyCode: 61,
+    zipCode: '00000',
+    isRegistered: false,
+    ginned: 7561,
   },
   {
-    'ginCode': '12350',
-    'name': 'Gin 6',
-    'city': 'RIO HONDO',
-    'state': 'TX',
-    'stateCode': 48,
-    'countyCode': 61,
-    'zipCode': '00000',
-    'isRegistered': false,
-    'ginned': 684615,
+    ginCode: '12350',
+    name: 'Gin 6',
+    city: 'RIO HONDO',
+    state: 'TX',
+    stateCode: 48,
+    countyCode: 61,
+    zipCode: '00000',
+    isRegistered: false,
+    ginned: 684615,
   },
   {
-    'ginCode': '12351',
-    'name': 'Gin 7',
-    'city': 'LAMESA',
-    'state': 'TX',
-    'stateCode': 48,
-    'countyCode': 115,
-    'zipCode': '00000',
-    'isRegistered': false,
-    'ginned': 65165,
+    ginCode: '12351',
+    name: 'Gin 7',
+    city: 'LAMESA',
+    state: 'TX',
+    stateCode: 48,
+    countyCode: 115,
+    zipCode: '00000',
+    isRegistered: false,
+    ginned: 65165,
   },
 ]
 
@@ -92,14 +97,10 @@ const meta: Meta<WidgetTableComponent<any>> = {
   component: WidgetTableComponent,
   decorators: [
     applicationConfig({
-      providers: [
-        provideAnimations(),
-      ],
+      providers: [provideAnimations()],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamWidgetModule,
-      ],
+      imports: [TheSeamWidgetModule],
     }),
   ],
 }
@@ -108,12 +109,17 @@ export default meta
 type Story = StoryObj<WidgetTableComponent<any>>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       icon: faWrench,
       displayedColumns: [
-        { prop: 'ginCode', name: 'Gin Code', cellType: 'integer', cellTypeConfig: { cellType: 'integer', formatNumber: false } },
+        {
+          prop: 'ginCode',
+          name: 'Gin Code',
+          cellType: 'integer',
+          cellTypeConfig: { cellType: 'integer', formatNumber: false },
+        },
         { prop: 'name', name: 'Name' },
         { prop: 'ginned', name: 'Lbs Ginned', cellType: 'integer' },
       ],
@@ -129,12 +135,17 @@ export const Basic: Story = {
 }
 
 export const Medium: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       icon: faWrench,
       displayedColumns: [
-        { prop: 'ginCode', name: 'Gin Code', cellType: 'integer', cellTypeConfig: { cellType: 'integer', formatNumber: false } },
+        {
+          prop: 'ginCode',
+          name: 'Gin Code',
+          cellType: 'integer',
+          cellTypeConfig: { cellType: 'integer', formatNumber: false },
+        },
         { prop: 'name', name: 'Name' },
         { prop: 'ginned', name: 'Lbs Ginned', cellType: 'integer' },
       ],
@@ -150,12 +161,17 @@ export const Medium: Story = {
 }
 
 export const Small: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       icon: faWrench,
       displayedColumns: [
-        { prop: 'ginCode', name: 'Gin Code', cellType: 'integer', cellTypeConfig: { cellType: 'integer', formatNumber: false } },
+        {
+          prop: 'ginCode',
+          name: 'Gin Code',
+          cellType: 'integer',
+          cellTypeConfig: { cellType: 'integer', formatNumber: false },
+        },
         { prop: 'name', name: 'Name' },
         { prop: 'ginned', name: 'Lbs Ginned', cellType: 'integer' },
       ],

@@ -24,7 +24,9 @@ export async function waitOnConditionAsync(
         }
       }
 
-      setTimeout(() => { _waitFunc(callbackFn) }, 30)
+      setTimeout(() => {
+        _waitFunc(callbackFn)
+      }, 30)
     }
   }
 
