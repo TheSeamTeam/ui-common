@@ -1,11 +1,4 @@
 {
-  "beautify.language": {
-    "js": {
-      "filename": [".jshintrc", ".jsbeautifyrc"]
-    },
-    "css": ["css", "scss"],
-    "html": ["htm", "html"]
-  },
   // Set the default
   "editor.formatOnSave": false,
   // Enable per-language
@@ -19,17 +12,6 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
-
-  // "angularKarmaTestExplorer.defaultAngularProjectName": "ui-common",
-  // "angularKarmaTestExplorer.defaultSocketConnectionPort": 9333,
-
-  // "karmaTestExplorer.defaultAngularProjectName": "ui-common",
-  // "karmaTestExplorer.karmaConfFilePath": "projects/ui-common/karma.conf.js",
-
-  // "karmaTestExplorer.karmaPort": 9333,
-  // "karmaTestExplorer.defaultSocketConnectionPort": 9333,
-
-  // "karmaTestExplorer.karmaConfFilePath"
 
   // Makes sure we use the dependent typescript version.
   // --------------------------------------------------------------------------

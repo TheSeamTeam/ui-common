@@ -5,13 +5,9 @@
     "eamodio.gitlens",
     "codezombiech.gitignore",
     "esbenp.prettier-vscode",
-    "hookyqr.beautify",
     "dbaeumer.vscode-eslint",
 
     /** Optional, but recomended */
-    "zignd.html-css-class-completion",
-    "msjsdiag.debugger-for-chrome",
-    "eg2.vscode-npm-script",
     "christian-kohler.npm-intellisense",
     "kisstkondoros.vscode-gutter-preview",
     "tyriar.lorem-ipsum",
@@ -20,7 +16,6 @@
     "wayou.vscode-todo-highlight",
     "tomoki1207.pdf",
     "cyrilletuzi.angular-schematics",
-    "lucono.karma-test-explorer",
 
     /** Optional */
 
