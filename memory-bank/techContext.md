@@ -3,25 +3,25 @@
 ## Technology Stack
 
 ### Core Framework
-- **Angular 15**: Modern Angular framework with latest features
-- **TypeScript 4.9.5**: Fully typed codebase for better development experience
-- **RxJS 7.5.0**: Reactive programming for data handling
+- **Angular 20**: Modern Angular framework with latest features
+- **TypeScript 5.9.2**: Fully typed codebase for better development experience
+- **RxJS 7.8.0**: Reactive programming for data handling
 
 ### Build & Development Tools
-- **Angular CLI 15.2.4**: Project scaffolding and build management
+- **Angular CLI 20.3.1**: Project scaffolding and build management
 - **ng-packagr**: Library packaging for npm distribution
 - **Webpack 5**: Module bundling (via Angular CLI)
 - **ESBuild**: Fast TypeScript compilation
 
 ### Testing Framework
-- **Jest 29.5.0**: Primary testing framework
+- **Jest 30.0.0**: Primary testing framework
 - **jest-preset-angular**: Angular-specific Jest configuration
 - **@testing-library/angular**: Component testing utilities
 - **@ngneat/spectator**: Enhanced Angular testing utilities
 - **Storybook Test Runner**: Visual regression testing
 
 ### Documentation & Development
-- **Storybook 7.5.3**: Component documentation and development environment
+- **Storybook 9.6.1**: Component documentation and development environment
 - **Compodoc**: TypeScript documentation generation
 - **ESLint**: Code quality and style enforcement
 - **Prettier**: Code formatting
@@ -30,7 +30,6 @@
 - **Bootstrap 4.6.0**: Base CSS framework
 - **Angular Flex Layout**: Responsive layout system
 - **FontAwesome**: Icon library
-- **ng-bootstrap**: Bootstrap components for Angular
 - **SCSS**: Styling preprocessor
 
 ### Key Dependencies
@@ -95,7 +94,6 @@
 - **Unit Tests**: Component and service testing with Jest
 - **Integration Tests**: Component interaction testing
 - **Visual Testing**: Storybook-based visual regression
-- **E2E Tests**: Protractor-based end-to-end testing
 
 #### Build & Distribution
 - **Library Build**: ng-packagr for npm-ready packages

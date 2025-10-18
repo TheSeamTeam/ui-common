@@ -33,7 +33,7 @@ Based on the project structure, the library includes:
 ## Development Approach
 - **Storybook-driven development**: Primary development environment
 - **Component isolation**: Each component developed and tested independently
-- **Angular 15**: Built on modern Angular framework
+- **Angular 20**: Built on modern Angular framework
 - **TypeScript**: Fully typed codebase
 - **Jest testing**: Comprehensive test coverage
 - **ESLint**: Code quality enforcement
