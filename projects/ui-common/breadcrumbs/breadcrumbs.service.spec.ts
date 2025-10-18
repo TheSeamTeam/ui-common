@@ -15,8 +15,7 @@ class TestPlacholderComponent {}
 describe('TheSeamBreadcrumbsService', () => {
   const createService = createServiceFactory({
     service: TheSeamBreadcrumbsService,
-    declarations: [TestPlacholderComponent],
-    imports: [RouterTestingModule.withRoutes([])],
+    imports: [RouterTestingModule.withRoutes([]), TestPlacholderComponent],
   })
 
   let spectator: SpectatorService<TheSeamBreadcrumbsService>

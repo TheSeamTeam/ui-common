@@ -24,8 +24,9 @@ describe('mergeTplAndInpColumns', () => {
   const colDiffersInp: { [propName: string]: KeyValueDiffer<any, any> } = {}
   const colDiffersTpl: { [propName: string]: KeyValueDiffer<any, any> } = {}
   const rowActionItem: DatatableRowActionItemDirective | undefined = undefined
-  const actionMenuCellTpl: TemplateRef<DataTableColumnDirective> | undefined =
-    undefined
+  const actionMenuCellTpl:
+    | TemplateRef<DataTableColumnDirective<any>>
+    | undefined = undefined
   const blankHeaderTpl:
     | TemplateRef<DataTableColumnHeaderDirective>
     | undefined = undefined
@@ -33,8 +34,9 @@ describe('mergeTplAndInpColumns', () => {
     undefined
   const headerTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined =
     undefined
-  const cellTypeSelectorTpl: TemplateRef<DataTableColumnDirective> | undefined =
-    undefined
+  const cellTypeSelectorTpl:
+    | TemplateRef<DataTableColumnDirective<any>>
+    | undefined = undefined
   let differs: KeyValueDiffers
 
   beforeEach(waitForAsync(() => {

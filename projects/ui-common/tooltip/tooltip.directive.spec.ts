@@ -37,6 +37,7 @@ import { TheSeamTooltipModule } from './tooltip.module'
       </div>
     </ng-template>
   `,
+  standalone: false,
 })
 class TestComponent {
   @ViewChild('templateTooltip', { static: true })

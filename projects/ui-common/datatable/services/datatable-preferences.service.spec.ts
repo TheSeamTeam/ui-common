@@ -8,7 +8,7 @@ describe('DatatablePreferencesService', () => {
   )
 
   it('should be created', () => {
-    const service: DatatablePreferencesService = TestBed.get(
+    const service: DatatablePreferencesService = TestBed.inject(
       DatatablePreferencesService,
     )
     expect(service).toBeTruthy()
