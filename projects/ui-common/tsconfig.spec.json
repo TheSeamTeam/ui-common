@@ -4,7 +4,7 @@
     "outDir": "../../out-tsc/lib",
     "baseUrl": ".",
     "rootDir": ".",
-    "esModuleInterop": true,
+    "module": "CommonJS",
     "types": ["jest"],
     "paths": {
       "@theseam/ui-common/*": ["./*/public-api"]

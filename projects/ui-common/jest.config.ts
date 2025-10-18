@@ -1,16 +1,17 @@
-// require('jest-preset-angular/ngcc-jest-processor');
+import type { Config } from 'jest'
+import { createCjsPreset } from 'jest-preset-angular/presets'
 
 import { pathsToModuleNameMapper } from 'ts-jest'
 // In the following statement, replace `./tsconfig` with the path to your `tsconfig` file
 // which contains the path mapping (ie the `compilerOptions.paths` option):
-import { compilerOptions } from './tsconfig.spec'
+import { compilerOptions } from './tsconfig.spec.json'
 
-/** @type {import('@jest/types').Config.InitialOptions} */
-module.exports = {
+export default {
+  ...createCjsPreset(),
   displayName: 'ui-common',
-  preset: 'jest-preset-angular',
+  // preset: 'jest-preset-angular',
   setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
-  globalSetup: 'jest-preset-angular/global-setup',
+  // globalSetup: 'jest-preset-angular/global-setup',
   testMatch: [
     // TODO: Remove the specific folders when the projects tests are more stable.
     '**/breadcrumbs/**/*.spec.ts',
@@ -29,4 +30,4 @@ module.exports = {
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: '<rootDir>/',
   }),
-}
+} satisfies Config
