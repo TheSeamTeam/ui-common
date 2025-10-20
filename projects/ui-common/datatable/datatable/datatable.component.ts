@@ -787,11 +787,11 @@ export class DatatableComponent<TRow = any>
               this._columnsAlterationsManager.changes.pipe(
                 startWith(undefined),
                 tap(() => {
-                  console.log(
-                    '%cSaving columns alterations to preferences',
-                    'color: blue',
-                    this._columnsAlterationsManager.get(),
-                  )
+                  // console.log(
+                  //   '%cSaving columns alterations to preferences',
+                  //   'color: blue',
+                  //   this._columnsAlterationsManager.get(),
+                  // )
                   this._preferences.setAlterations(
                     key,
                     this._columnsAlterationsManager.get(),
@@ -809,7 +809,7 @@ export class DatatableComponent<TRow = any>
       this._columnsAlterationsManager.changes.pipe(
         startWith(undefined),
         map(() => {
-          console.log('%cApplying columns alterations', 'color: blue', cols)
+          // console.log('%cApplying columns alterations', 'color: blue', cols)
           this._columnsAlterationsManager.apply(cols, this)
           return cols
         }),
@@ -844,11 +844,11 @@ export class DatatableComponent<TRow = any>
                   console.warn(e)
                 }
               }
-              console.log(
-                '%cSetting columns alterations from preferences',
-                'color: blue',
-                alterations,
-              )
+              // console.log(
+              //   '%cSetting columns alterations from preferences',
+              //   'color: blue',
+              //   alterations,
+              // )
               this._columnsAlterationsManager.add(alterations)
             }),
           )
