@@ -90,27 +90,20 @@ export default defineConfig(
       'no-return-assign': 'off',
       'no-self-compare': 'error',
       'no-sequences': 'error',
-      'no-shadow': 'error',
+      'no-shadow': 'off', // Using '@typscript-eslint/no-shadow' instead.
       'no-template-curly-in-string': 'error',
       'no-throw-literal': 'error',
       'no-undef': 'off', // Typescript compiler should handle this.
       'no-undef-init': 'error',
       'no-unmodified-loop-condition': 'error',
       'no-unneeded-ternary': ['error', { defaultAssignment: false }],
-      'no-unused-expressions': [
-        'error',
-        {
-          allowShortCircuit: true,
-          allowTernary: true,
-          allowTaggedTemplates: true,
-        },
-      ],
+      'no-unused-expressions': 'off', // Using '@typescript-eslint/no-unused-expressions' instead.
       'no-unused-vars': 'off',
       'no-use-before-define': 'off',
       'no-useless-call': 'error',
       'no-useless-computed-key': 'error',
       'no-useless-concat': 'error',
-      // 'no-useless-constructor': 'error',
+      'no-useless-constructor': 'off', // Using '@typscript-eslint/no-constructor' instead.
       'no-useless-rename': 'error',
       'no-useless-return': 'error',
       'no-var': 'error',
@@ -293,8 +286,16 @@ export default defineConfig(
       ],
       '@typescript-eslint/no-misused-new': 'error',
       '@typescript-eslint/no-parameter-properties': 'off',
-      '@typescript-eslint/no-shadow': 'warn',
+      '@typescript-eslint/no-shadow': 'error',
       '@typescript-eslint/no-var-requires': 'off',
+      '@typescript-eslint/no-unused-expressions': [
+        'error',
+        {
+          allowShortCircuit: true,
+          allowTernary: true,
+          allowTaggedTemplates: true,
+        },
+      ],
       // '@typescript-eslint/prefer-for-of': 'error',
       '@typescript-eslint/prefer-for-of': 'off',
       '@typescript-eslint/prefer-function-type': 'error',

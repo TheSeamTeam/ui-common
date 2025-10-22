@@ -285,15 +285,6 @@
               }
             ]
           }
-        },
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
-          "options": {
-            "lintFilePatterns": [
-              "projects/ui-common/**/*.ts",
-              "projects/ui-common/**/*.html"
-            ]
-          }
         }
       }
     },
