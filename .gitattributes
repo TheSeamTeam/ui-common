@@ -2,6 +2,7 @@
 * text=auto
 
 *.js eol=lf
+*.mjs eol=lf
 *.ts eol=lf
 *.json eol=lf
 *.css eol=lf
