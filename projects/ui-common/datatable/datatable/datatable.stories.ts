@@ -31,7 +31,11 @@ import {
   DataFilterState,
   TheSeamDataFiltersModule,
 } from '@theseam/ui-common/data-filters'
-import { SortItem, TheSeamDatatableColumn } from '@theseam/ui-common/datatable'
+import {
+  SortItem,
+  THESEAM_DATATABLE_PREFERENCES_ACCESSOR,
+  TheSeamDatatableColumn,
+} from '@theseam/ui-common/datatable'
 import {
   DynamicActionApiService,
   DynamicActionLinkService,
@@ -82,6 +86,7 @@ import {
 import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 import { TheSeamCheckboxModule } from '@theseam/ui-common/checkbox'
 import { isNullOrUndefined } from '@theseam/ui-common/utils'
+import { TheSeamPreferencesAccessor } from '@theseam/ui-common/services'
 
 const meta: Meta<DatatableComponent> = {
   title: 'Datatable/Components',
@@ -1240,6 +1245,50 @@ class SearchCandy extends ColumnsDataFilter {
   }
 }
 
+export class PreferencesAccessorService implements TheSeamPreferencesAccessor {
+  private readonly _map = new Map<string, string>()
+
+  public get(name: string): Observable<string> {
+    console.log(`Getting preference '${name}'`, this._map.get(name))
+    const tmp = JSON.stringify({
+      version: 2,
+      alterations: [
+        {
+          id: 'sort',
+          type: 'sort',
+          state: {
+            sorts: [
+              {
+                prop: 'age',
+                dir: 'desc',
+              },
+            ],
+          },
+        },
+      ],
+    })
+    if (!this._map.has(name)) {
+      this._map.set(name, tmp)
+    }
+    // return of(this._map.get(name) || tmp)
+    return of(this._map.get(name) || '{}')
+  }
+
+  public update(name: string, value: string): Observable<string> {
+    console.log(`Updating preference '${name}' to`, value)
+    this._map.set(name, value)
+    // console.log(this._map.get(name))
+    // console.log(JSON.stringify(JSON.parse(this._map.get(name) || '{}'), null, 2))
+    return of(value)
+  }
+
+  public delete(name: string): Observable<boolean> {
+    console.log(`Deleting preference '${name}'`)
+    this._map.delete(name)
+    return of(true)
+  }
+}
+
 @Component({
   selector: 'dt-wrap',
   template: `
@@ -1275,12 +1324,22 @@ class SearchCandy extends ColumnsDataFilter {
       </seam-datatable-column-filter>
     </seam-datatable>
   `,
+  standalone: false,
 })
 class ColumnFiltersComponent {
   @Input() columns: any
   @Input() rows: any
 }
+
 export const ColumnFilters = (args: any) => ({
+  applicationConfig: {
+    providers: [
+      {
+        provide: THESEAM_DATATABLE_PREFERENCES_ACCESSOR,
+        useClass: PreferencesAccessorService,
+      },
+    ],
+  },
   moduleMetadata: {
     imports: [
       ReactiveFormsModule,
@@ -1303,7 +1362,13 @@ export const ColumnFilters = (args: any) => ({
     __hack: {
       ...args,
       columns: [
-        { prop: 'name', name: 'Name', filterable: true },
+        {
+          prop: 'name',
+          name: 'Name',
+          filterable: true,
+          cellClass: 'text-right',
+          headerClass: 'text-right',
+        },
         {
           prop: 'age',
           name: 'Age',
@@ -1544,3 +1609,116 @@ export const CustomConfig = (args: any) => ({
     </dt-wrap>`,
 })
 CustomConfig.args = {}
+
+export const TextAlign = {
+  decorators: [
+    componentWrapperDecorator(
+      (story) => `
+    <seam-datatable class="w-100 h-100"
+      [columns]="__hack.columns"
+      [rows]="__hack.rows">
+    </seam-datatable>
+  `,
+    ),
+  ],
+  render: (args: any) => ({
+    // applicationConfig: {
+    //   providers: [
+    //     {
+    //       provide: THESEAM_DATATABLE_PREFERENCES_ACCESSOR,
+    //       useClass: PreferencesAccessorService,
+    //     },
+    //   ],
+    // },
+    moduleMetadata: {
+      // imports: [
+      //   ReactiveFormsModule,
+      //   TheSeamFormFieldModule,
+      //   TheSeamCheckboxModule,
+      // ],
+      // providers: [
+      //   {
+      //     provide: THESEAM_COLUMNS_DATA_FILTER,
+      //     useValue: {
+      //       name: 'search-candy',
+      //       class: SearchCandy,
+      //     },
+      //     multi: true,
+      //   },
+      // ],
+    },
+    props: {
+      __hack: {
+        ...args,
+        columns: [
+          {
+            prop: 'name',
+            name: 'Name',
+            filterable: true,
+            cellClass: 'text-right',
+            headerClass: 'text-right',
+          },
+          {
+            prop: 'age',
+            name: 'Age',
+            filterable: true,
+            filterOptions: { filterType: 'search-numeric' },
+          },
+          {
+            prop: 'startDate',
+            name: 'Start Date',
+            cellType: 'date',
+            cellTypeConfig: { type: 'date' },
+            filterable: true,
+            filterOptions: { dateType: 'datetime-local' },
+          },
+          { prop: 'color', name: 'Favorite Color', filterable: true },
+        ],
+        rows: [
+          {
+            name: 'Mark',
+            age: 27,
+            color: 'blue',
+            startDate: '2017-01-21 20:15:20.4166667 +00:00',
+          },
+          {
+            name: 'Joe',
+            age: 33,
+            color: 'green',
+            startDate: '2012-04-25 17:29:36.4266667 +00:00',
+          },
+          {
+            name: 'Shelby',
+            age: 30,
+            color: 'purple',
+            startDate: '2020-11-18 20:47:25.1733333 +00:00',
+          },
+          {
+            name: 'Jason',
+            age: 'abc',
+            color: 'orange',
+            startDate: '2016-05-24 23:13:26.3400000 +00:00',
+          },
+          {
+            name: 'David',
+            age: null,
+            color: 'blue',
+            startDate: '2021-06-29 16:31:37.2733333 +00:00',
+          },
+          {
+            name: 'Pam',
+            age: null,
+            color: 'red',
+            startDate: '2012-08-11 04:00:00.000000 +00:00',
+          },
+          {
+            name: 'New Employee',
+            age: null,
+            color: null,
+            startDate: null,
+          },
+        ],
+      },
+    },
+  }),
+}

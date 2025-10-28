@@ -118,6 +118,7 @@ export const Basic: Story = {
           prop: 'ginCode',
           name: 'Gin Code',
           cellType: 'integer',
+          headerClass: 'text-right',
           cellTypeConfig: { cellType: 'integer', formatNumber: false },
         },
         { prop: 'name', name: 'Name' },

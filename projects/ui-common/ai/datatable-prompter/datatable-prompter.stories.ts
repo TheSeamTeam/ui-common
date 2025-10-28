@@ -33,30 +33,33 @@ export class PreferencesAccessorService implements TheSeamPreferencesAccessor {
   private readonly _map = new Map<string, string>()
 
   public get(name: string): Observable<string> {
-    // console.log(`Getting preference '${name}'`, this._map.get(name))
-    // const tmp = JSON.stringify({
-    //   'version': 2,
-    //   'alterations': [
-    //     {
-    //       'id': 'sort',
-    //       'type': 'sort',
-    //       'state': {
-    //         'sorts': [
-    //           {
-    //             'prop': 'age',
-    //             'dir': 'desc'
-    //           }
-    //         ]
-    //       }
-    //     }
-    //   ]
-    // })
+    console.log(`Getting preference '${name}'`, this._map.get(name))
+    const tmp = JSON.stringify({
+      version: 2,
+      alterations: [
+        {
+          id: 'sort',
+          type: 'sort',
+          state: {
+            sorts: [
+              {
+                prop: 'age',
+                dir: 'desc',
+              },
+            ],
+          },
+        },
+      ],
+    })
+    if (!this._map.has(name)) {
+      this._map.set(name, tmp)
+    }
     // return of(this._map.get(name) || tmp)
     return of(this._map.get(name) || '{}')
   }
 
   public update(name: string, value: string): Observable<string> {
-    // console.log(`Updating preference '${name}' to`, value)
+    console.log(`Updating preference '${name}' to`, value)
     this._map.set(name, value)
     // console.log(this._map.get(name))
     // console.log(JSON.stringify(JSON.parse(this._map.get(name) || '{}'), null, 2))
@@ -64,7 +67,7 @@ export class PreferencesAccessorService implements TheSeamPreferencesAccessor {
   }
 
   public delete(name: string): Observable<boolean> {
-    // console.log(`Deleting preference '${name}'`)
+    console.log(`Deleting preference '${name}'`)
     this._map.delete(name)
     return of(true)
   }
@@ -250,8 +253,8 @@ const meta: Meta<StoryComponentType> = {
         },
         {
           provide: THESEAM_DATATABLE_PROMPTER_PROVIDER,
-          // useClass: MockAiProvider,
-          useClass: OpenRouterAiProvider,
+          useClass: MockAiProvider,
+          // useClass: OpenRouterAiProvider,
         },
       ],
     }),
