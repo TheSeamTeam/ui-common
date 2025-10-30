@@ -35,6 +35,10 @@ export class TheSeamTableColumnComponent implements OnChanges {
   // @Input() cellClass?: string | ((data: any) => string|any) | null
   @Input() cellClass?: string | null
 
+  @Input() align?: 'left' | 'center' | 'right' | null
+  @Input() alignHeader?: 'left' | 'center' | 'right' | null
+  @Input() alignCell?: 'left' | 'center' | 'right' | null
+
   private _isFirstChange = true
 
   @ContentChild(TheSeamTableCellTplDirective, { static: true })

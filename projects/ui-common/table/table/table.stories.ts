@@ -333,3 +333,122 @@ export const CellTpl = {
     </seam-table>`,
   }),
 }
+
+export const ColumnAlign = () => ({
+  props: {
+    columns: [
+      {
+        prop: 'icon',
+        name: 'Icon',
+        cellType: 'icon',
+        cellTypeConfig: {
+          type: 'icon',
+          iconClass: {
+            type: 'jexl',
+            expr: 'row.name == "Gin 4" ? "text-danger" : "text-primary"',
+          },
+        },
+      },
+      { prop: 'ginCode', name: 'Gin Code' },
+      {
+        prop: 'name',
+        name: 'Name',
+        cellType: 'string',
+        cellTypeConfig: {
+          type: 'string',
+          action: {
+            type: 'link',
+            link: { type: 'jexl', expr: '"page/" + row.name' },
+          },
+        },
+      },
+      {
+        prop: 'oldAlign',
+        name: 'Old Align',
+        cellClass: 'text-right',
+        headerClass: 'text-right',
+      },
+      {
+        prop: 'right',
+        name: 'Right',
+        align: 'right',
+      },
+      {
+        prop: 'center',
+        name: 'Center',
+        align: 'center',
+      },
+      {
+        prop: 'rHeader',
+        name: 'R Header',
+        alignHeader: 'right',
+      },
+    ],
+    rows: [
+      {
+        ginCode: '12345',
+        name: 'Gin 1',
+        icon: faEnvelope,
+        oldAlign: 'one',
+        right: 'one',
+        center: 'one',
+        rHeader: 'one',
+      },
+      {
+        ginCode: '12346',
+        name: 'Gin 2',
+        icon: faEnvelope,
+        oldAlign: 'two',
+        right: 'two',
+        center: 'two',
+        rHeader: 'two',
+      },
+      {
+        ginCode: '12347',
+        name: 'Gin 3',
+        icon: faEnvelope,
+        oldAlign: 'three',
+        right: 'three',
+        center: 'three',
+        rHeader: 'three',
+      },
+      {
+        ginCode: '12348',
+        name: 'Gin 4',
+        icon: faEnvelope,
+        oldAlign: 'four',
+        right: 'four',
+        center: 'four',
+        rHeader: 'four',
+      },
+      {
+        ginCode: '12349',
+        name: 'Gin 5',
+        icon: 'assets/images/theseam_logo_notext.svg',
+        oldAlign: 'five',
+        right: 'five',
+        center: 'five',
+        rHeader: 'five',
+      },
+      {
+        ginCode: '12350',
+        name: 'Gin 6',
+        icon: 'https://ipfs.theseam.com/ipfs/QmenVkw7UcU6SLYfdLp6qWioQJQ2Tur8qrWj5SoV5AdF1k',
+        oldAlign: 'six',
+        right: 'six',
+        center: 'six',
+        rHeader: 'six',
+      },
+      {
+        ginCode: '12351',
+        name: 'Gin 7',
+        icon: 'assets/images/ginner-med.svg',
+        oldAlign: 'seven',
+        right: 'seven',
+        center: 'seven',
+        rHeader: 'seven',
+      },
+    ],
+  },
+  template: `<seam-table [columns]="columns" [rows]="rows"></seam-table>`,
+})

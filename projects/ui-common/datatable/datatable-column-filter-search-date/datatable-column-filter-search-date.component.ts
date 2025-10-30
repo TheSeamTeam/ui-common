@@ -1,7 +1,20 @@
 import { Component, Input, OnInit } from '@angular/core'
+import { CommonModule } from '@angular/common'
+import {
+  ControlContainer,
+  FormGroupDirective,
+  ReactiveFormsModule,
+} from '@angular/forms'
 import { Observable, map, startWith } from 'rxjs'
+
+import { NgSelectModule } from '@ng-select/ng-select'
 import { notNullOrUndefined } from '@theseam/ui-common/utils'
-import { ControlContainer, FormGroupDirective } from '@angular/forms'
+import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
+import {
+  TheSeamAutoFocusDirective,
+  TheSeamNgSelectExtraDirective,
+} from '@theseam/ui-common/shared'
+
 import {
   TheSeamColumnsDataFilterDateSearchDateType,
   TheSeamColumnsDataFilterDateSearchForm,
@@ -21,7 +34,14 @@ import {
       useExisting: FormGroupDirective,
     },
   ],
-  standalone: false,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    NgSelectModule,
+    TheSeamFormFieldModule,
+    TheSeamNgSelectExtraDirective,
+    TheSeamAutoFocusDirective,
+  ],
 })
 export class DatatableColumnFilterSearchDateComponent implements OnInit {
   searchTypes: {

@@ -5,6 +5,7 @@ import {
   TableCellTypeConfig,
   TableCellTypeExportProps,
   TableCellTypeName,
+  TheSeamTableCellTypeColumnAlign,
 } from '@theseam/ui-common/table-cell-type'
 
 export interface TheSeamDatatableColumnHidable {
@@ -28,6 +29,13 @@ export interface TheSeamDatatableColumnFilterable<
    * Additional options for a specific filter type.
    */
   filterOptions?: T
+
+  /**
+   * Whether the filter is active or not.
+   *
+   * This is set internally, it will likely not work if set from outside.
+   */
+  filterActive?: boolean
 }
 
 export interface TheSeamDatatableColumnFilterableConfig {
@@ -54,4 +62,5 @@ export type TheSeamDatatableColumn<
   TableCellTypeColumn<T, C> &
   TableCellTypeExportProps &
   TheSeamDatatableColumnHidable &
-  TheSeamDatatableColumnFilterable<F>
+  TheSeamDatatableColumnFilterable<F> &
+  TheSeamTableCellTypeColumnAlign

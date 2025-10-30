@@ -1,0 +1,37 @@
+@if (column().filterable) {
+  <button
+    seamIconBtn
+    [icon]="columnFilterIcon()"
+    size="sm"
+    [seamPopover]="filterMenu"
+    [seamPopoverBaseWidth]="300"
+    class="datatable-column-header-filter-button d-flex align-items-center mr-2"
+    [class.datatable-column-header-filter-button-active]="column().filterActive"
+    style="width: 1rem"
+    title="Click to see filter options"
+  ></button>
+}
+@if (column().sortable) {
+  <button
+    seamButton
+    class="datatable-sort-target p-0"
+    (click)="sortFn()()"
+    title="Click to sort"
+  >
+    <strong class="draggable">{{ column().name }}</strong>
+  </button>
+} @else {
+  <strong class="draggable">{{ column().name }}</strong>
+}
+<div
+  class="datatable-column-header-separator"
+  [attr.data-column-id]="column().$$id"
+></div>
+<ng-template #filterMenu let-popover="popover">
+  <seam-datatable-column-filter-menu
+    [column]="column()"
+    [updateMethod]="columnFilterUpdateMethod()"
+    [debounce]="columnFilterUpdateDebounce()"
+    (closePopover)="popover?.closePopover()"
+  ></seam-datatable-column-filter-menu>
+</ng-template>

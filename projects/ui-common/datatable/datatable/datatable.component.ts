@@ -531,12 +531,13 @@ export class DatatableComponent<TRow = any>
       this._columnFilterUpdateMethod = this._columnFilterUpdateMethodDefault
     }
   }
-  private readonly _columnFilterUpdateMethodDefault: TheSeamDatatableColumnFilterUpdateMethod =
-    'valueChanges'
   _columnFilterUpdateMethod:
     | TheSeamDatatableColumnFilterUpdateMethod
     | undefined
     | null
+
+  private readonly _columnFilterUpdateMethodDefault: TheSeamDatatableColumnFilterUpdateMethod =
+    'valueChanges'
 
   @Input() get columnFilterUpdateDebounce(): number | undefined | null {
     return this._columnFilterUpdateDebounce

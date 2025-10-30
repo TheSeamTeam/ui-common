@@ -52,6 +52,7 @@ import { DatatableColumnFilterSearchNumericComponent } from './datatable-column-
 import { DatatableColumnFilterSearchDateComponent } from './datatable-column-filter-search-date/datatable-column-filter-search-date.component'
 import { DatatableColumnFilterTplDirective } from './directives/datatable-column-filter-tpl.directive'
 import { TheSeamDatatableColumnFilterDirective } from './directives/datatable-column-filter.directive'
+import { DatatableColumnHeaderComponent } from './datatable-column-header/datatable-column-header.component'
 
 @NgModule({
   declarations: [
@@ -77,10 +78,6 @@ import { TheSeamDatatableColumnFilterDirective } from './directives/datatable-co
     DatatableMenuBarColumnCenterComponent,
     DatatableMenuBarColumnRightComponent,
     DatatableMenuBarTextComponent,
-    DatatableColumnFilterMenuComponent,
-    DatatableColumnFilterSearchTextComponent,
-    DatatableColumnFilterSearchNumericComponent,
-    DatatableColumnFilterSearchDateComponent,
     DatatableColumnFilterTplDirective,
     TheSeamDatatableColumnFilterDirective,
   ],
@@ -107,6 +104,11 @@ import { TheSeamDatatableColumnFilterDirective } from './directives/datatable-co
     TheSeamDataFiltersModule,
     NgSelectModule,
     TheSeamToggleGroupModule,
+    DatatableColumnHeaderComponent,
+    DatatableColumnFilterMenuComponent,
+    DatatableColumnFilterSearchTextComponent,
+    DatatableColumnFilterSearchNumericComponent,
+    DatatableColumnFilterSearchDateComponent,
   ],
   exports: [
     DatatableComponent,

@@ -17,6 +17,7 @@ import { DomSanitizer } from '@angular/platform-browser'
 import { merge, Subject, Subscription } from 'rxjs'
 
 import { InputBoolean } from '@theseam/ui-common/core'
+import { setColumnAlignDefaults } from '@theseam/ui-common/table-cell-type'
 
 import { TheSeamTableColumnComponent } from '../table-column.component'
 
@@ -78,6 +79,8 @@ function mergeColumnsAndTplColumns(
         newCol.headerClass = tplCol.headerClass ?? undefined
       }
     }
+
+    setColumnAlignDefaults(newCol)
 
     newCols.push(newCol)
   }

@@ -1,6 +1,19 @@
 import { Component, Input, OnInit } from '@angular/core'
+import { CommonModule } from '@angular/common'
+import {
+  ControlContainer,
+  FormGroupDirective,
+  ReactiveFormsModule,
+} from '@angular/forms'
 import { Observable, map, startWith } from 'rxjs'
-import { ControlContainer, FormGroupDirective } from '@angular/forms'
+
+import { NgSelectModule } from '@ng-select/ng-select'
+import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
+import {
+  TheSeamAutoFocusDirective,
+  TheSeamNgSelectExtraDirective,
+} from '@theseam/ui-common/shared'
+
 import {
   TheSeamColumnsDataFilterTextSearchForm,
   TheSeamColumnsDataFilterTextSearchType,
@@ -17,7 +30,14 @@ import {
       useExisting: FormGroupDirective,
     },
   ],
-  standalone: false,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    NgSelectModule,
+    TheSeamFormFieldModule,
+    TheSeamNgSelectExtraDirective,
+    TheSeamAutoFocusDirective,
+  ],
 })
 export class DatatableColumnFilterSearchTextComponent implements OnInit {
   searchTypes: {

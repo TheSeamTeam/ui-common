@@ -1610,7 +1610,7 @@ export const CustomConfig = (args: any) => ({
 })
 CustomConfig.args = {}
 
-export const TextAlign = {
+export const ColumnAlign = {
   decorators: [
     componentWrapperDecorator(
       (story) => `
@@ -1622,31 +1622,6 @@ export const TextAlign = {
     ),
   ],
   render: (args: any) => ({
-    // applicationConfig: {
-    //   providers: [
-    //     {
-    //       provide: THESEAM_DATATABLE_PREFERENCES_ACCESSOR,
-    //       useClass: PreferencesAccessorService,
-    //     },
-    //   ],
-    // },
-    moduleMetadata: {
-      // imports: [
-      //   ReactiveFormsModule,
-      //   TheSeamFormFieldModule,
-      //   TheSeamCheckboxModule,
-      // ],
-      // providers: [
-      //   {
-      //     provide: THESEAM_COLUMNS_DATA_FILTER,
-      //     useValue: {
-      //       name: 'search-candy',
-      //       class: SearchCandy,
-      //     },
-      //     multi: true,
-      //   },
-      // ],
-    },
     props: {
       __hack: {
         ...args,
@@ -1659,10 +1634,19 @@ export const TextAlign = {
             headerClass: 'text-right',
           },
           {
+            prop: 'title',
+            name: 'Title',
+            filterable: true,
+            cellClass: 'text-right',
+            headerClass: 'text-right',
+            sortable: false,
+          },
+          {
             prop: 'age',
             name: 'Age',
             filterable: true,
             filterOptions: { filterType: 'search-numeric' },
+            align: 'right',
           },
           {
             prop: 'startDate',
@@ -1672,50 +1656,71 @@ export const TextAlign = {
             filterable: true,
             filterOptions: { dateType: 'datetime-local' },
           },
-          { prop: 'color', name: 'Favorite Color', filterable: true },
+          { prop: 'color', name: 'Favorite Color' },
+          { prop: 'status', name: 'Status', filterable: true, align: 'center' },
+          { prop: 'active', name: 'Active', filterable: true },
         ],
         rows: [
           {
             name: 'Mark',
+            title: 'Something',
             age: 27,
             color: 'blue',
             startDate: '2017-01-21 20:15:20.4166667 +00:00',
+            status: 'Pending',
+            active: true,
           },
           {
             name: 'Joe',
+            title: 'Something Else',
             age: 33,
             color: 'green',
             startDate: '2012-04-25 17:29:36.4266667 +00:00',
+            status: 'InActive',
+            active: false,
           },
           {
             name: 'Shelby',
+            title: 'Something',
             age: 30,
             color: 'purple',
             startDate: '2020-11-18 20:47:25.1733333 +00:00',
+            status: 'Active',
+            active: true,
           },
           {
             name: 'Jason',
+            title: 'Something Different',
             age: 'abc',
             color: 'orange',
             startDate: '2016-05-24 23:13:26.3400000 +00:00',
+            status: 'Pending',
+            active: false,
           },
           {
             name: 'David',
+            title: 'Another Thing',
             age: null,
             color: 'blue',
             startDate: '2021-06-29 16:31:37.2733333 +00:00',
+            status: 'New',
+            active: true,
           },
           {
             name: 'Pam',
             age: null,
             color: 'red',
             startDate: '2012-08-11 04:00:00.000000 +00:00',
+            status: 'Expired',
+            active: false,
           },
           {
             name: 'New Employee',
             age: null,
             color: null,
             startDate: null,
+            status: null,
+            active: null,
           },
         ],
       },
