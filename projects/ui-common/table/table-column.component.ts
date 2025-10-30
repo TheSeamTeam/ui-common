@@ -25,7 +25,7 @@ export class TheSeamTableColumnComponent implements OnChanges {
   @Input() name?: string | null
   @Input() prop?: TableColumnProp | null
 
-  @Input() flexGrow?: number | null
+  // @Input() flexGrow?: number | null
   // @Input() minWidth?: number | null
   // @Input() maxWidth?: number | null
   // @Input() width?: number | null
@@ -35,9 +35,9 @@ export class TheSeamTableColumnComponent implements OnChanges {
   // @Input() cellClass?: string | ((data: any) => string|any) | null
   @Input() cellClass?: string | null
 
-  @Input() align?: 'left' | 'center' | 'right' | null
-  @Input() alignHeader?: 'left' | 'center' | 'right' | null
-  @Input() alignCell?: 'left' | 'center' | 'right' | null
+  // @Input() align?: 'left' | 'center' | 'right' | null
+  // @Input() alignHeader?: 'left' | 'center' | 'right' | null
+  // @Input() alignCell?: 'left' | 'center' | 'right' | null
 
   private _isFirstChange = true
 

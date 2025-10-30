@@ -1,6 +1,7 @@
 import {
   Component,
   ContentChild,
+  inject,
   Input,
   OnChanges,
   PipeTransform,
@@ -16,7 +17,7 @@ import { DatatableColumnChangesService } from '../services/datatable-column-chan
 // HACK: Union type prevents the not found warning
 type _PipeTransform = PipeTransform | PipeTransform
 
-// TODO: The column component should implement `ITheSeamDatatableColumn`, since
+// TODO: The column component should implement `TheSeamDatatableColumn`, since
 // providing some properties by input and some by template could be confusing.
 
 @Component({
@@ -26,6 +27,8 @@ type _PipeTransform = PipeTransform | PipeTransform
   standalone: false,
 })
 export class DatatableColumnComponent implements OnChanges {
+  private readonly _columnChangesService = inject(DatatableColumnChangesService)
+
   @Input() name?: string | null
   @Input() prop?: TableColumnProp | null
 
@@ -77,43 +80,24 @@ export class DatatableColumnComponent implements OnChanges {
 
   private _isFirstChange = true
 
-  @ContentChild(DatatableCellTplDirective, { static: true })
-  cellTplDirective?: DatatableCellTplDirective
-
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('cellTemplate')
   _cellTemplateInput?: TemplateRef<any> | null
 
   @ContentChild(DatatableCellTplDirective, { read: TemplateRef, static: true })
-  _cellTemplateQuery?: TemplateRef<any>
+  set _setCellTemplateQuery(value: TemplateRef<any> | null) {
+    this._cellTemplateQuery = value
+    if (!this.__propsChanged.includes('cellTemplate')) {
+      this.__propsChanged.push('cellTemplate')
+    }
+  }
+  _cellTemplateQuery?: TemplateRef<any> | null
 
   get cellTemplate(): TemplateRef<any> | undefined | null {
     return this._cellTemplateInput || this._cellTemplateQuery
   }
 
-  // @Input('headerTemplate')
-  // _headerTemplateInput: TemplateRef<any>;
-
-  // @ContentChild(DataTableColumnHeaderDirective, { read: TemplateRef, static: true })
-  // _headerTemplateQuery: TemplateRef<any>;
-
-  // get headerTemplate(): TemplateRef<any> {
-  //   return this._headerTemplateInput || this._headerTemplateQuery;
-  // }
-
-  // @Input('treeToggleTemplate')
-  // _treeToggleTemplateInput: TemplateRef<any>;
-
-  // @ContentChild(DataTableColumnCellTreeToggle, { read: TemplateRef, static: true })
-  // _treeToggleTemplateQuery: TemplateRef<any>;
-
-  // get treeToggleTemplate(): TemplateRef<any> {
-  //   return this._treeToggleTemplateInput || this._treeToggleTemplateQuery;
-  // }
-
   readonly __propsChanged: string[] = []
-
-  constructor(private _columnChangesService: DatatableColumnChangesService) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (this._isFirstChange) {
@@ -129,14 +113,6 @@ export class DatatableColumnComponent implements OnChanges {
         }
       }
     }
-  }
-
-  public getCellDirective(): DatatableCellTplDirective | null {
-    if (this.cellTplDirective) {
-      return this.cellTplDirective
-    }
-
-    return null
   }
 }
 
