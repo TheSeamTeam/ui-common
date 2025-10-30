@@ -22,11 +22,13 @@ import {
   Input,
   isDevMode,
   KeyValueDiffer,
+  OnChanges,
   OnDestroy,
   OnInit,
   Optional,
   Output,
   QueryList,
+  SimpleChanges,
   TemplateRef,
   ViewChild,
 } from '@angular/core'
@@ -199,7 +201,12 @@ export const _THESEAM_DATATABLE_ACCESSOR: any = {
   standalone: false,
 })
 export class DatatableComponent<TRow = any>
-  implements OnInit, OnDestroy, TheSeamDatatableAccessor, CollectionViewer
+  implements
+    OnInit,
+    OnDestroy,
+    OnChanges,
+    TheSeamDatatableAccessor,
+    CollectionViewer
 {
   static ngAcceptInputType_externalPaging: BooleanInput
   static ngAcceptInputType_externalSorting: BooleanInput
@@ -1002,6 +1009,12 @@ export class DatatableComponent<TRow = any>
     }
 
     return null
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['sorts']) {
+      this._columnsAlterationsManager.setDefaultSorts(this._sorts)
+    }
   }
 
   _columnData(col: any): { col: any; comp: DatatableColumnComponent | null } {

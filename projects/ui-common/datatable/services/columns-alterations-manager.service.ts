@@ -9,6 +9,7 @@ import { TheSeamDatatableAccessor } from '../models/datatable-accessor'
 import { HideColumnColumnsAlteration } from '../models/columns-alterations/hide-column.columns-alteration'
 import { SortColumnsAlteration } from '../models/columns-alterations/sort.columns-alteration'
 import { WidthColumnsAlteration } from '../models/columns-alterations/width.columns-alteration'
+import { SortItem } from '../models/sort-item'
 
 export interface ColumnsAlterationsChangedRecord {
   type: 'added' | 'removed'
@@ -24,6 +25,8 @@ export class ColumnsAlterationsManagerService {
   private readonly _changesSubject =
     new Subject<ColumnsAlterationsChangedEvent>()
   private _alterations: ColumnsAlteration[] = []
+
+  private _defaultSorts: SortItem[] = []
 
   public readonly changes: Observable<ColumnsAlterationsChangedEvent>
 
@@ -147,7 +150,10 @@ export class ColumnsAlterationsManagerService {
           break
         }
         case 'sort': {
-          const alteration = new SortColumnsAlteration({ sorts: [] }, false)
+          const alteration = new SortColumnsAlteration(
+            { sorts: [...this._defaultSorts] },
+            false,
+          )
           changes.push(...this.add([alteration]))
           break
         }
@@ -169,6 +175,10 @@ export class ColumnsAlterationsManagerService {
     this._emitChanges(changes)
 
     return changes
+  }
+
+  public setDefaultSorts(sorts: SortItem[]): void {
+    this._defaultSorts = sorts
   }
 
   private _removeNonPersistant(): void {

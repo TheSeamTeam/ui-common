@@ -177,6 +177,10 @@ export const Example: Story = {
         ],
         exporters: [new CSVDataExporter(), new XLSXDataExporter()],
       },
+      sorts: [
+        { prop: 'age', dir: 'desc' },
+        { prop: 'color', dir: 'asc' },
+      ],
     },
     template: `
       <div class="vh-100 d-flex flex-column p-2">
@@ -184,6 +188,7 @@ export const Example: Story = {
           preferencesKey="test-prefs-1"
           [columns]="__hack.columns"
           [rows]="__hack.rows"
+          [sorts]="sorts"
           sortType="multi">
 
           <seam-datatable-menu-bar>
