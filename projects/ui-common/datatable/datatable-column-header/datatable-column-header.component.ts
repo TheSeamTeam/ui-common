@@ -21,7 +21,10 @@ import { DatatableColumnFilterMenuComponent } from '../datatable-column-filter-m
     DatatableColumnFilterMenuComponent,
   ],
   host: {
-    class: 'd-inline-flex align-items-center flex-fill',
+    class: 'd-inline-flex align-items-center',
+    '[class.flex-fill]': 'column().alignHeader !== "left"',
+    // TODO: fix 'center' alignment. This solution leaves the sort icon on the
+    // far right, away from the text.
     '[class.justify-content-center]': 'column().alignHeader === "center"',
     '[class.justify-content-end]': 'column().alignHeader === "right"',
   },
