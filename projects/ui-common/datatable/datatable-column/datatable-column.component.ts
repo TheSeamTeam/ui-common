@@ -8,7 +8,7 @@ import {
   TemplateRef,
 } from '@angular/core'
 
-import { ColumnChangesService, TableColumnProp } from '@marklb/ngx-datatable'
+import { TableColumnProp } from '@marklb/ngx-datatable'
 
 import { DatatableCellTplDirective } from '../directives/datatable-cell-tpl.directive'
 import { DatatableColumnChangesService } from '../services/datatable-column-changes.service'
@@ -71,6 +71,10 @@ export class DatatableColumnComponent implements OnChanges {
 
   @Input() hidden?: boolean | null
 
+  @Input() align?: 'left' | 'center' | 'right' | null
+  @Input() alignHeader?: 'left' | 'center' | 'right' | null
+  @Input() alignCell?: 'left' | 'center' | 'right' | null
+
   private _isFirstChange = true
 
   @ContentChild(DatatableCellTplDirective, { static: true })
@@ -107,6 +111,8 @@ export class DatatableColumnComponent implements OnChanges {
   //   return this._treeToggleTemplateInput || this._treeToggleTemplateQuery;
   // }
 
+  readonly __propsChanged: string[] = []
+
   constructor(private _columnChangesService: DatatableColumnChangesService) {}
 
   ngOnChanges(changes: SimpleChanges) {
@@ -114,6 +120,14 @@ export class DatatableColumnComponent implements OnChanges {
       this._isFirstChange = false
     } else {
       this._columnChangesService.onInputChange()
+    }
+
+    for (const propName in changes) {
+      if (Object.prototype.hasOwnProperty.call(changes, propName)) {
+        if (!this.__propsChanged.includes(propName)) {
+          this.__propsChanged.push(propName)
+        }
+      }
     }
   }
 
@@ -124,4 +138,27 @@ export class DatatableColumnComponent implements OnChanges {
 
     return null
   }
+}
+
+/**
+ * Check if a column is bound to a property.
+ *
+ * This is not guaranteed to be 100% accurate in all cases, but Angular seems
+ * to now define properties on the instance for all inputs. So, just relying
+ * on defined properties determine if bound will not work. The workaround is
+ * to track changes in `ngOnChanges` and use that to determine if a property
+ * is bound.
+ *
+ * NOTE: This is not an instance method, because the way we are handling the
+ * instance was causing the method to not be available where needed.
+ *
+ * @param column the column to check
+ * @param propName name of an input property
+ * @returns true if the property is bound, false otherwise
+ */
+export function isColumnBoundToProp(
+  column: DatatableColumnComponent,
+  propName: string,
+): boolean {
+  return column.__propsChanged.includes(propName)
 }

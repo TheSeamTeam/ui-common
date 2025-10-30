@@ -33,7 +33,10 @@ import {
 
 import { hasProperty, notNullOrUndefined } from '@theseam/ui-common/utils'
 
-import { DatatableColumnComponent } from '../datatable-column/datatable-column.component'
+import {
+  DatatableColumnComponent,
+  isColumnBoundToProp,
+} from '../datatable-column/datatable-column.component'
 import { DatatableRowActionItemDirective } from '../directives/datatable-row-action-item.directive'
 import { TheSeamDatatableColumn } from '../models/table-column'
 import { createActionMenuColumn } from '../utils/create-action-menu-column'
@@ -268,7 +271,7 @@ export class ColumnsManagerService {
         this._updateColDif(inpColDif, internalCol, inpCol)
       }
 
-      const tplCol = this._findColumnByProp(prop, templateColumns)
+      const tplCol = this._getTemplateColumnByProp(prop, templateColumns)
       if (tplCol !== undefined) {
         const tplColDif = this._getColDif(tplCol, ColumnsTypes.Template)
         if (notNullOrUndefined(tplColDif)) {
@@ -348,6 +351,25 @@ export class ColumnsManagerService {
     T extends TheSeamDatatableColumn | DatatableColumnComponent,
   >(prop: TableColumnProp, columns: T[]): T | undefined {
     return columns.find((c) => getColumnProp(c) === prop)
+  }
+
+  private _getTemplateColumnByProp<
+    T extends TheSeamDatatableColumn | DatatableColumnComponent,
+  >(prop: TableColumnProp, columns: T[]): T | undefined {
+    const tplCol = this._findColumnByProp<T>(prop, columns)
+    if (tplCol === undefined) {
+      return undefined
+    }
+    const _tplCol: any = {}
+    for (const key in tplCol) {
+      if (
+        Object.prototype.hasOwnProperty.call(tplCol, key) &&
+        isColumnBoundToProp(tplCol as DatatableColumnComponent, key)
+      ) {
+        _tplCol[key] = tplCol[key as keyof T]
+      }
+    }
+    return _tplCol
   }
 
   private _getDifMapForColumnsType(
