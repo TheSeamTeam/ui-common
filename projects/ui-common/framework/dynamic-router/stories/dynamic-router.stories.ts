@@ -24,6 +24,7 @@ import { HierarchyLevelResolver } from '../resolvers/hierarchy-level.resolver'
   selector: 'sub-name-ex',
   template: `<div>Sub Name: {{ name$ | async }}</div>
     <router-outlet></router-outlet>`,
+  standalone: false,
 })
 class StorySubNameExComponent {
   name$: Observable<string | undefined>
@@ -40,6 +41,7 @@ class StorySubNameExComponent {
     <div>Name: {{ name$ | async }}</div>
     <router-outlet></router-outlet>
   `,
+  standalone: false,
 })
 class StoryNameExComponent {
   name$: Observable<string | undefined>
@@ -77,6 +79,7 @@ class StoryNameExComponent {
       <router-outlet></router-outlet>
     </div>
   `,
+  standalone: false,
 })
 class StoryExBaseComponent {
   _control = new FormControl('/name-ex/sub-name')
@@ -135,6 +138,7 @@ class StoryExBaseComponent {
     </div>
     <router-outlet></router-outlet>
   `,
+  standalone: false,
 })
 class RecursiveIdOneComponent {
   id$: Observable<string | undefined>
@@ -187,6 +191,7 @@ class RecursiveIdOneComponent {
     </div>
     <router-outlet></router-outlet>
   `,
+  standalone: false,
 })
 class RecursiveIdTwoComponent {
   id$: Observable<string | undefined>
@@ -262,6 +267,7 @@ class RecursiveIdTwoComponent {
       }
     `,
   ],
+  standalone: false,
 })
 class RecursiveIdThreeComponent {
   type$: Observable<string | undefined>
@@ -362,6 +368,7 @@ class LevelTwoModule {}
       <button type="button" routerLink="/ex-1/ex-2">Next</button>
     </seam-hierarchy-router-outlet>
   `,
+  standalone: false,
 })
 class StoryEx1Component {
   // constructor() {
@@ -377,6 +384,7 @@ class StoryEx1Component {
       <button type="button" routerLink="/ex-1/ex-2/ex-3">Next</button>
     </seam-hierarchy-router-outlet>
   `,
+  standalone: false,
 })
 class StoryEx2Component {
   // constructor() {
@@ -391,6 +399,7 @@ class StoryEx2Component {
       <button type="button" routerLink="/ex-1/ex-2">Prev</button>
     </seam-hierarchy-router-outlet>
   `,
+  standalone: false,
 })
 class StoryEx3Component {
   // constructor() {

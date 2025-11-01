@@ -5,7 +5,7 @@ import {
   moduleMetadata,
   StoryObj,
 } from '@storybook/angular'
-import { expect } from 'storybook/test'
+import { expect, fn } from 'storybook/test'
 
 import { ReactiveFormsModule } from '@angular/forms'
 import { provideAnimations } from '@angular/platform-browser/animations'
@@ -35,6 +35,7 @@ const meta: Meta<JsonSchemaFormComponent> = {
   },
   args: {
     framework: 'seam-framework',
+    onSubmit: fn(),
   },
 }
 
@@ -56,10 +57,10 @@ export const Basic: Story = {
     },
     layout: [{ dataPointer: '/Available' }],
   },
-  play: async ({ canvasElement, fixture, args }) => {
+  play: async ({ canvasElement, args }) => {
     const sfCheckboxHarness = await getHarness(
       TheSeamSchemaFormCheckboxHarness,
-      { canvasElement, fixture },
+      { canvasElement },
     )
     await expect(await sfCheckboxHarness.isRequired()).toBe(false)
     await expect(await sfCheckboxHarness.hasRequiredIndicator()).toBe(false)
@@ -68,7 +69,6 @@ export const Basic: Story = {
     await expect(await sfCheckboxHarness.getValue()).toBe(true)
     const sfFormHarness = await getHarness(JsonSchemaFormHarness, {
       canvasElement,
-      fixture,
     })
     await sfFormHarness.submit()
     await expect(args.onSubmit).toHaveBeenCalledWith({ Available: true })
@@ -91,10 +91,10 @@ export const Required: Story = {
     },
     layout: [{ dataPointer: '/Available' }],
   },
-  play: async ({ canvasElement, fixture, args }) => {
+  play: async ({ canvasElement, args }) => {
     const sfCheckboxHarness = await getHarness(
       TheSeamSchemaFormCheckboxHarness,
-      { canvasElement, fixture },
+      { canvasElement },
     )
     await expect(await sfCheckboxHarness.isRequired()).toBe(true)
     await expect(await sfCheckboxHarness.hasRequiredIndicator()).toBe(true)
@@ -103,7 +103,6 @@ export const Required: Story = {
     await expect(await sfCheckboxHarness.getValue()).toBe(true)
     const sfFormHarness = await getHarness(JsonSchemaFormHarness, {
       canvasElement,
-      fixture,
     })
     await sfFormHarness.submit()
     await expect(args.onSubmit).toHaveBeenCalledWith({ Available: true })

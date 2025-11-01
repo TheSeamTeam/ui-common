@@ -625,6 +625,7 @@ export const Detail: Story = {
       </seam-datatable-menu-bar-row>
     </seam-datatable-menu-bar>
   </seam-datatable>`,
+  standalone: false,
 })
 class DTFilterWrapperComponent implements OnInit, AfterViewInit {
   @ViewChild(DatatableComponent) _datatable: DatatableComponent | undefined
@@ -1097,6 +1098,7 @@ export const FooterTemplate: StoryObj<
       </ng-template>
     </seam-datatable>
   `,
+  standalone: false,
 })
 class ConditionalActionMenuComponent {
   @Input() columns: any
@@ -1513,6 +1515,7 @@ ColumnFilters.args = {}
       </seam-datatable-footer>
     </seam-datatable>
   `,
+  standalone: false,
 })
 class CustomConfigComponent {
   @Input() columns: any

@@ -5,7 +5,7 @@ import {
   moduleMetadata,
   StoryObj,
 } from '@storybook/angular'
-import { expect } from 'storybook/test'
+import { expect, fn } from 'storybook/test'
 
 import { ReactiveFormsModule } from '@angular/forms'
 import { provideAnimations } from '@angular/platform-browser/animations'
@@ -35,6 +35,7 @@ const meta: Meta<JsonSchemaFormComponent> = {
   },
   args: {
     framework: 'seam-framework',
+    onSubmit: fn(),
   },
 }
 
@@ -56,10 +57,9 @@ export const Basic: Story = {
     },
     layout: [{ dataPointer: '/TelNumber', widget: 'tel' }],
   },
-  play: async ({ canvasElement, fixture, args }) => {
+  play: async ({ canvasElement, args }) => {
     const sfTelHarness = await getHarness(TheSeamSchemaFormTelHarness, {
       canvasElement,
-      fixture,
     })
     await expect(await sfTelHarness.isRequired()).toBe(false)
     await expect(await sfTelHarness.hasRequiredIndicator()).toBe(false)
@@ -68,7 +68,6 @@ export const Basic: Story = {
     await expect(await sfTelHarness.getValue()).toBe('+1 901-555-5556')
     const sfFormHarness = await getHarness(JsonSchemaFormHarness, {
       canvasElement,
-      fixture,
     })
     await sfFormHarness.submit()
     await expect(args.onSubmit).toHaveBeenCalledWith({
@@ -93,10 +92,9 @@ export const Required: Story = {
     },
     layout: [{ dataPointer: '/TelNumber', widget: 'tel' }],
   },
-  play: async ({ canvasElement, fixture, args }) => {
+  play: async ({ canvasElement, args }) => {
     const sfTelHarness = await getHarness(TheSeamSchemaFormTelHarness, {
       canvasElement,
-      fixture,
     })
     await expect(await sfTelHarness.isRequired()).toBe(true)
     await expect(await sfTelHarness.hasRequiredIndicator()).toBe(true)
@@ -105,7 +103,6 @@ export const Required: Story = {
     await expect(await sfTelHarness.getValue()).toBe('+1 901-555-5556')
     const sfFormHarness = await getHarness(JsonSchemaFormHarness, {
       canvasElement,
-      fixture,
     })
     await sfFormHarness.submit()
     await expect(args.onSubmit).toHaveBeenCalledWith({

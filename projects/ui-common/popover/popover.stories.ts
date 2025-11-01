@@ -5,7 +5,6 @@ import {
   StoryObj,
 } from '@storybook/angular'
 
-import { BrowserModule } from '@angular/platform-browser'
 import { provideAnimations } from '@angular/platform-browser/animations'
 
 import { TheSeamPopoverDirective } from './popover.directive'
@@ -22,7 +21,7 @@ const meta: Meta<TheSeamPopoverDirective & StoryExtraProps> = {
       providers: [provideAnimations()],
     }),
     moduleMetadata({
-      imports: [BrowserModule, TheSeamPopoverModule],
+      imports: [TheSeamPopoverModule],
     }),
   ],
   parameters: {

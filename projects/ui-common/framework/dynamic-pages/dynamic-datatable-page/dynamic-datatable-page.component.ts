@@ -8,6 +8,7 @@ import { map } from 'rxjs/operators'
   templateUrl: './dynamic-datatable-page.component.html',
   styleUrls: ['./dynamic-datatable-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class DynamicDatatablePageComponent implements OnDestroy {
   private _tableDefSubscription = Subscription.EMPTY

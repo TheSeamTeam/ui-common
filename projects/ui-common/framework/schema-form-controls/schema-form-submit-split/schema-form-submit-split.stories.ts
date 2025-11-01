@@ -5,14 +5,15 @@ import {
   componentWrapperDecorator,
   moduleMetadata,
 } from '@storybook/angular'
-import { expect } from 'storybook/test'
+import { expect, fn } from 'storybook/test'
 
 import { ReactiveFormsModule } from '@angular/forms'
 import { provideAnimations } from '@angular/platform-browser/animations'
 
-import { TheSeamSchemaFormModule } from '../../schema-form/schema-form.module'
 import { JsonSchemaFormComponent } from '@ajsf/core'
 import { getHarness } from '@theseam/ui-common/testing'
+
+import { TheSeamSchemaFormModule } from '../../schema-form/schema-form.module'
 import { TheSeamSchemaFormSubmitSplitHarness } from './testing'
 import { JsonSchemaFormHarness } from '../../schema-form/testing'
 import { TheSeamSchemaFormSelectHarness } from '../schema-form-select/testing'
@@ -34,6 +35,7 @@ const meta: Meta<JsonSchemaFormComponent> = {
   },
   args: {
     framework: 'seam-framework',
+    onSubmit: fn(),
   },
 }
 
@@ -121,16 +123,15 @@ export const SplitButton: Story = {
       },
     ],
   },
-  play: async ({ canvasElement, fixture, args }) => {
+  play: async ({ canvasElement, args }) => {
     const sfSubmitHarness = await getHarness(
       TheSeamSchemaFormSubmitSplitHarness,
-      { canvasElement, fixture },
+      { canvasElement },
     )
     await expect(await sfSubmitHarness.isDisabled()).toBe(true)
 
     const sfSelectHarness = await getHarness(TheSeamSchemaFormSelectHarness, {
       canvasElement,
-      fixture,
     })
     await expect(await sfSelectHarness.isRequired()).toBe(true)
     await expect(await sfSelectHarness.getValue()).toBe(null)
@@ -141,7 +142,6 @@ export const SplitButton: Story = {
     await sfSubmitHarness.click()
     const sfFormHarness = await getHarness(JsonSchemaFormHarness, {
       canvasElement,
-      fixture,
     })
     await sfFormHarness.submit()
     await expect(args.onSubmit).toHaveBeenCalledWith({

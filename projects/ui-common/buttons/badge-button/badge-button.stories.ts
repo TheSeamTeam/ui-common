@@ -1,13 +1,10 @@
-import {
-  componentWrapperDecorator,
-  Meta,
-  moduleMetadata,
-  StoryObj,
-} from '@storybook/angular'
-import { expect } from 'storybook/test'
+import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import { expect, fn } from 'storybook/test'
 
 import { getHarness } from '@theseam/ui-common/testing'
 import {
+  argsToTpl,
+  ArgsTplOptions,
   buttonTypeArgType,
   sizeArgType,
   themeWithOutlineArgType,
@@ -19,6 +16,7 @@ import { TheSeamBadgeButtonComponentHarness } from '../testing/badge-button.harn
 
 interface StoryExtraProps {
   btnText: string
+  click: () => void
 }
 
 const meta: Meta<TheSeamBadgeButtonComponent & StoryExtraProps> = {
@@ -28,32 +26,30 @@ const meta: Meta<TheSeamBadgeButtonComponent & StoryExtraProps> = {
     moduleMetadata({
       imports: [TheSeamButtonsModule],
     }),
-    componentWrapperDecorator(
-      (story) => `
-      <button seamBadgeButton
-        [theme]="theme"
-        [badgeTheme]="badgeTheme"
-        [badgeText]="badgeText"
-        [size]="size"
-        [disabled]="disabled"
-        [type]="type"
-      >${story}</button>
-    `,
-    ),
   ],
+  render: (args) => ({
+    props: args,
+    template: `<button seamBadgeButton ${argsToTpl()}>{{ btnText }}</button>`,
+  }),
   tags: ['autodocs'],
   argTypes: {
     btnText: {
       control: { type: 'text' },
     },
     badgeText: {
-      defaultValue: 'Badge Text',
       control: { type: 'text' },
     },
     theme: themeWithOutlineArgType,
     badgeTheme: themeWithOutlineArgType,
     size: sizeArgType,
     type: buttonTypeArgType,
+    click: { action: 'click' },
+  },
+  parameters: {
+    argsToTplOptions: {
+      alwaysBind: ['theme', 'size', 'type', 'badgeTheme', 'badgeText'],
+      exclude: ['btnText'],
+    } satisfies ArgsTplOptions,
   },
 }
 
@@ -61,20 +57,16 @@ export default meta
 type Story = StoryObj<TheSeamBadgeButtonComponent & StoryExtraProps>
 
 export const Basic: Story = {
-  render: (args) => ({
-    props: args,
-    template: `{{ btnText }}`,
-  }),
   args: {
     btnText: 'Example Text',
     theme: 'primary',
     badgeText: 'Badge Text',
     badgeTheme: 'primary',
+    click: fn(),
   },
-  play: async ({ canvasElement, fixture }) => {
+  play: async ({ canvasElement, args }) => {
     const harness = await getHarness(TheSeamBadgeButtonComponentHarness, {
       canvasElement,
-      fixture,
     })
     await expect(await harness.getText()).toBe('Example Text')
     await expect(await harness.getTheme()).toBe('primary')
@@ -82,25 +74,23 @@ export const Basic: Story = {
     await expect(await harness.getBadgeTheme()).toBe('primary')
     await expect(await harness.isDisabled()).toBe(false)
     await expect(await harness.hasDisabledAria()).toBe(false)
+    await harness.click()
+    await expect(args.click).toHaveBeenCalled()
   },
 }
 
 export const Disabled: Story = {
-  render: (args) => ({
-    props: args,
-    template: `{{ btnText }}`,
-  }),
   args: {
     btnText: 'Example Text',
     theme: 'primary',
     badgeText: 'Badge Text',
     badgeTheme: 'primary',
     disabled: true,
+    click: fn(),
   },
-  play: async ({ canvasElement, fixture }) => {
+  play: async ({ canvasElement, args }) => {
     const harness = await getHarness(TheSeamBadgeButtonComponentHarness, {
       canvasElement,
-      fixture,
     })
     await expect(await harness.getText()).toBe('Example Text')
     await expect(await harness.getTheme()).toBe('primary')
@@ -108,5 +98,7 @@ export const Disabled: Story = {
     await expect(await harness.getBadgeTheme()).toBe('primary')
     await expect(await harness.isDisabled()).toBe(true)
     await expect(await harness.hasDisabledAria()).toBe(true)
+    await harness.click()
+    await expect(args.click).not.toHaveBeenCalled()
   },
 }

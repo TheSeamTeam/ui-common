@@ -3,7 +3,9 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  inject,
   Input,
+  NgZone,
   OnDestroy,
   Renderer2,
 } from '@angular/core'
@@ -101,7 +103,6 @@ export class TheSeamButtonComponent
     '[attr.tabindex]': 'disabled ? -1 : (tabIndex || 0)',
     '[attr.disabled]': 'disabled || null',
     '[attr.aria-disabled]': 'disabled.toString()',
-    '(click)': '_haltDisabledEvents($event)',
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false,
@@ -110,6 +111,10 @@ export class TheSeamAnchorButtonComponent
   extends _TheSeamButtonMixinBase
   implements OnDestroy
 {
+  protected readonly _ngZone = inject(NgZone)
+
+  private readonly _cleanupClick = this._createClickListener()
+
   /** Tabindex of the button. */
   @Input() tabIndex: number | undefined | null
 
@@ -130,6 +135,7 @@ export class TheSeamAnchorButtonComponent
 
   ngOnDestroy() {
     super.ngOnDestroy()
+    this._cleanupClick()
   }
 
   _haltDisabledEvents(event: Event) {
@@ -138,5 +144,15 @@ export class TheSeamAnchorButtonComponent
       event.preventDefault()
       event.stopImmediatePropagation()
     }
+  }
+
+  private _createClickListener() {
+    return this._ngZone.runOutsideAngular(() =>
+      this._renderer.listen(
+        this._elementRef.nativeElement,
+        'click',
+        (event: Event) => this._haltDisabledEvents(event),
+      ),
+    )
   }
 }

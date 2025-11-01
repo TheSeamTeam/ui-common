@@ -72,6 +72,7 @@ import { provideLocationMocks } from '@angular/common/testing'
       {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text
     >
   </seam-widget>`,
+  standalone: false,
 })
 class StoryExWidget1Component {
   faWrench = faWrench
@@ -102,6 +103,7 @@ class StoryExWidget1Component {
       {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text
     >
   </seam-widget>`,
+  standalone: false,
 })
 class StoryExWidget2Component {
   faWrench = faWrench
@@ -133,6 +135,7 @@ class StoryExWidget2Component {
 
     <a seam-widget-footer-link routerLink="/example1">See All</a>
   </seam-widget>`,
+  standalone: false,
 })
 class StoryExWidget3Component {
   faWrench = faWrench
@@ -163,6 +166,7 @@ class StoryExWidget3Component {
       {{ Date.now() | date: 'yyyy-MM-dd h:mm aaa' }}</seam-widget-footer-text
     >
   </seam-widget>`,
+  standalone: false,
 })
 class StoryExWidget4Component {
   faWrench = faWrench
@@ -193,6 +197,7 @@ class StoryExWidget4Component {
       [notificationIcon]="faClock" notificationIconClass="text-danger"
     </seam-widget-tile-list>
   </seam-widget>`,
+  standalone: false,
 })
 class StoryExWidget5Component {
   faUsers = faUsers
@@ -257,6 +262,7 @@ class StoryExWidget5Component {
       </tbody>
     </table>
   </seam-widget>`,
+  standalone: false,
 })
 class StoryExWidget6Component {
   faSignature = faSignature
@@ -275,6 +281,7 @@ class StoryExWidget6Component {
   >
     <img [src]="figureImg" />
   </seam-widget>`,
+  standalone: false,
 })
 class StoryExWidget7Component {
   faChartLine = faChartLine
@@ -301,6 +308,7 @@ class StoryExWidget7Component {
       est laborum. <a>More…</a>
     </p>
   </seam-widget>`,
+  standalone: false,
 })
 class StoryExWidget8Component {
   faClock = faClock
@@ -310,6 +318,7 @@ class StoryExWidget8Component {
 @Component({
   selector: 'name-ex',
   template: ` <div>Name: {{ name$ | async }}</div> `,
+  standalone: false,
 })
 class StoryNameExComponent {
   name$: Observable<string | undefined>
@@ -343,6 +352,7 @@ class StoryNameExComponent {
 
     <div>User Details</div>
   `,
+  standalone: false,
 })
 class UserDetailsExComponent {
   name$: Observable<string | undefined>

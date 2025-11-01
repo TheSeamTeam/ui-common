@@ -1,8 +1,7 @@
 import { moduleMetadata } from '@storybook/angular'
 
+import { CommonModule } from '@angular/common'
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
-import { BrowserModule } from '@angular/platform-browser'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { TheSeamGoogleMapsComponent } from './google-maps/google-maps.component'
 import { TheSeamGoogleMapsApiLoader } from './google-maps-api-loader/google-maps-api-loader'
@@ -17,11 +16,7 @@ export default {
   // component: TheSeamGoogleMapsComponent,
   decorators: [
     moduleMetadata({
-      imports: [
-        BrowserAnimationsModule,
-        BrowserModule,
-        TheSeamGoogleMapsModule,
-      ],
+      imports: [CommonModule, TheSeamGoogleMapsModule],
       providers: [
         {
           provide: TheSeamGoogleMapsApiLoader,

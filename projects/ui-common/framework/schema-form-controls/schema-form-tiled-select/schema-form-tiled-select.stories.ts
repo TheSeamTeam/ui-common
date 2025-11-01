@@ -5,7 +5,7 @@ import {
   componentWrapperDecorator,
   moduleMetadata,
 } from '@storybook/angular'
-import { expect } from 'storybook/test'
+import { expect, fn } from 'storybook/test'
 
 import { ReactiveFormsModule } from '@angular/forms'
 import { provideAnimations } from '@angular/platform-browser/animations'
@@ -14,7 +14,6 @@ import { JsonSchemaFormComponent } from '@ajsf/core'
 
 import { TheSeamSchemaFormModule } from '../../schema-form/schema-form.module'
 import { getHarness } from '@theseam/ui-common/testing'
-// import { TheSeamSchemaFormSelectHarness } from './testing'
 import { JsonSchemaFormHarness } from '../../schema-form/testing'
 import { TheSeamSchemaFormTiledSelectHarness } from './testing/schema-form-tiled-select.harness'
 
@@ -34,6 +33,7 @@ const meta: Meta<JsonSchemaFormComponent> = {
   },
   args: {
     framework: 'seam-framework',
+    onSubmit: fn(),
   },
 }
 
@@ -110,10 +110,10 @@ export const Basic: Story = {
       },
     ],
   },
-  play: async ({ canvasElement, fixture, args }) => {
+  play: async ({ canvasElement, args }) => {
     const sfTiledSelectHarness = await getHarness(
       TheSeamSchemaFormTiledSelectHarness,
-      { canvasElement, fixture },
+      { canvasElement },
     )
     await expect(await sfTiledSelectHarness.isRequired()).toBe(false)
     await expect(await sfTiledSelectHarness.getValue()).toBe('')
@@ -131,7 +131,6 @@ export const Basic: Story = {
 
     const sfFormHarness = await getHarness(JsonSchemaFormHarness, {
       canvasElement,
-      fixture,
     })
     await sfFormHarness.submit()
     await expect(args.onSubmit).toHaveBeenCalledWith({ Crop: 'corn' })
@@ -209,10 +208,10 @@ export const Required: Story = {
       },
     ],
   },
-  play: async ({ canvasElement, fixture, args }) => {
+  play: async ({ canvasElement, args }) => {
     const sfTiledSelectHarness = await getHarness(
       TheSeamSchemaFormTiledSelectHarness,
-      { canvasElement, fixture },
+      { canvasElement },
     )
     await expect(await sfTiledSelectHarness.isRequired()).toBe(true)
     await expect(await sfTiledSelectHarness.getValue()).toBe('')
@@ -230,7 +229,6 @@ export const Required: Story = {
 
     const sfFormHarness = await getHarness(JsonSchemaFormHarness, {
       canvasElement,
-      fixture,
     })
     await sfFormHarness.submit()
     await expect(args.onSubmit).toHaveBeenCalledWith({ Crop: 'corn' })

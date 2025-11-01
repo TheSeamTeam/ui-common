@@ -64,7 +64,6 @@ export class TheSeamBadgeButtonComponent
     '[attr.tabindex]': 'disabled ? -1 : (tabIndex || 0)',
     '[attr.disabled]': 'disabled || null',
     '[attr.aria-disabled]': 'disabled.toString()',
-    '(click)': '_haltDisabledEvents($event)',
   },
   standalone: false,
 })

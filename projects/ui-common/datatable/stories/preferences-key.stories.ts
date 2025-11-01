@@ -184,6 +184,7 @@ export const Api: Story = {
 
     await new Promise((resolve) => setTimeout(resolve, 6))
 
+    // TODO: Fix this test. It is inconsistent.
     await expect(args.get).toHaveBeenCalledTimes(2)
   },
 }

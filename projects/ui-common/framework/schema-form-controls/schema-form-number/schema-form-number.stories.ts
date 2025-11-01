@@ -5,7 +5,7 @@ import {
   moduleMetadata,
   StoryObj,
 } from '@storybook/angular'
-import { expect } from 'storybook/test'
+import { expect, fn } from 'storybook/test'
 
 import { ReactiveFormsModule } from '@angular/forms'
 import { provideAnimations } from '@angular/platform-browser/animations'
@@ -35,6 +35,7 @@ const meta: Meta<JsonSchemaFormComponent> = {
   },
   args: {
     framework: 'seam-framework',
+    onSubmit: fn(),
   },
 }
 
@@ -55,10 +56,9 @@ export const Basic: Story = {
     },
     layout: [{ dataPointer: '/Number' }],
   },
-  play: async ({ canvasElement, fixture, args }) => {
+  play: async ({ canvasElement, args }) => {
     const sfNumberHarness = await getHarness(TheSeamSchemaFormNumberHarness, {
       canvasElement,
-      fixture,
     })
     await expect(await sfNumberHarness.isRequired()).toBe(false)
     await expect(await sfNumberHarness.hasRequiredIndicator()).toBe(false)
@@ -67,7 +67,6 @@ export const Basic: Story = {
     await expect(await sfNumberHarness.getValue()).toBe('123')
     const sfFormHarness = await getHarness(JsonSchemaFormHarness, {
       canvasElement,
-      fixture,
     })
     await sfFormHarness.submit()
     await expect(args.onSubmit).toHaveBeenCalledWith({ Number: 123 })
@@ -89,10 +88,9 @@ export const Required: Story = {
     },
     layout: [{ dataPointer: '/Number' }],
   },
-  play: async ({ canvasElement, fixture, args }) => {
+  play: async ({ canvasElement, args }) => {
     const sfNumberHarness = await getHarness(TheSeamSchemaFormNumberHarness, {
       canvasElement,
-      fixture,
     })
     await expect(await sfNumberHarness.isRequired()).toBe(true)
     await expect(await sfNumberHarness.hasRequiredIndicator()).toBe(true)
@@ -101,7 +99,6 @@ export const Required: Story = {
     await expect(await sfNumberHarness.getValue()).toBe('123')
     const sfFormHarness = await getHarness(JsonSchemaFormHarness, {
       canvasElement,
-      fixture,
     })
     await sfFormHarness.submit()
     await expect(args.onSubmit).toHaveBeenCalledWith({ Number: 123 })

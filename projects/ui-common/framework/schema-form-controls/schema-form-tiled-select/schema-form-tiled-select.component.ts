@@ -25,7 +25,6 @@ import {
 @Component({
   selector: 'seam-schema-form-tiled-select',
   templateUrl: './schema-form-tiled-select.component.html',
-  // styleUrls: ['./schema-form-tiled-select.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [

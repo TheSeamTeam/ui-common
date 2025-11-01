@@ -1,5 +1,5 @@
 import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
-import { expect } from 'storybook/test'
+import { expect, fn } from 'storybook/test'
 
 import { getHarness } from '@theseam/ui-common/testing'
 import {
@@ -39,8 +39,7 @@ const meta: Meta<TheSeamAnchorButtonComponent & StoryExtraProps> = {
     },
     theme: themeWithOutlineArgType,
     size: sizeArgType,
-    // TODO: Fix click event handling.
-    // click: { action: 'click' },
+    click: { action: 'click' },
   },
   parameters: {
     argsToTplOptions: {
@@ -56,19 +55,19 @@ export const Basic: Story = {
   args: {
     btnText: 'Example Text',
     theme: 'primary',
+    click: fn(),
   },
-  play: async ({ canvasElement, fixture, args }) => {
+  play: async ({ canvasElement, args }) => {
     const harness = await getHarness(TheSeamAnchorButtonComponentHarness, {
       canvasElement,
-      fixture,
     })
     await expect(await harness.getText()).toBe('Example Text')
     await expect(await harness.getTheme()).toBe('primary')
     await expect(await harness.isDisabled()).toBe(false)
     await expect(await harness.hasDisabledAria()).toBe(false)
     await expect(await harness.getTabIndex()).toBe(0)
-    // await harness.click()
-    // await expect(args.click).toHaveBeenCalled()
+    await harness.click()
+    await expect(args.click).toHaveBeenCalled()
   },
 }
 
@@ -76,17 +75,17 @@ export const Disabled: Story = {
   args: {
     btnText: 'Example Text',
     disabled: true,
+    click: fn(),
   },
-  play: async ({ canvasElement, fixture, args }) => {
+  play: async ({ canvasElement, args }) => {
     const harness = await getHarness(TheSeamAnchorButtonComponentHarness, {
       canvasElement,
-      fixture,
     })
     await expect(await harness.getText()).toBe('Example Text')
     await expect(await harness.isDisabled()).toBe(true)
     await expect(await harness.hasDisabledAria()).toBe(true)
     await expect(await harness.getTabIndex()).toBe(-1)
-    // await harness.click()
-    // await expect(args.click).not.toHaveBeenCalled()
+    await harness.click()
+    await expect(args.click).not.toHaveBeenCalled()
   },
 }
