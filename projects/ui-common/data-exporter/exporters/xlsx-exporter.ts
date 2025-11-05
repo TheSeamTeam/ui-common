@@ -12,6 +12,7 @@ import {
 } from '@theseam/ui-common/utils'
 
 import { IDataExporter } from '../data-exporter'
+import { importXlsx } from '../import-xlsx'
 
 @Injectable()
 export class XLSXDataExporter implements IDataExporter {
@@ -22,8 +23,7 @@ export class XLSXDataExporter implements IDataExporter {
   public icon = faFileExcel
 
   public export<T>(data: T[]): Observable<boolean> {
-    // TODO: Fix typing for the dynamic imports
-    return wrapIntoObservable(import('xlsx')).pipe(
+    return wrapIntoObservable(importXlsx()).pipe(
       switchMap((XLSX: any) => {
         const ws = XLSX.utils.json_to_sheet(data)
         const wb = { Sheets: { data: ws }, SheetNames: ['data'] }
