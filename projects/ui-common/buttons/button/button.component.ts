@@ -113,7 +113,7 @@ export class TheSeamAnchorButtonComponent
 {
   protected readonly _ngZone = inject(NgZone)
 
-  private readonly _cleanupClick = this._createClickListener()
+  private readonly _cleanupClick: () => void
 
   /** Tabindex of the button. */
   @Input() tabIndex: number | undefined | null
@@ -131,6 +131,10 @@ export class TheSeamAnchorButtonComponent
     readonly _renderer: Renderer2,
   ) {
     super(_elementRef, _focusMonitor, _renderer)
+
+    // Can't initialize on the property since it depends on a
+    // constructor-injected value.
+    this._cleanupClick = this._createClickListener()
   }
 
   ngOnDestroy() {
