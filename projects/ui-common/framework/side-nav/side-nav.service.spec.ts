@@ -10,17 +10,17 @@ import { ISideNavItem } from './side-nav.models'
 import { TheSeamSideNavService } from './side-nav.service'
 
 @Component({ template: `` })
-class TestPlacholderComponent { }
+class TestPlacholderComponent {}
 
 describe('TheSeamSideNavService', () => {
   const createService = createServiceFactory({
     service: TheSeamSideNavService,
-    declarations: [ TestPlacholderComponent ],
+    declarations: [TestPlacholderComponent],
     imports: [
       RouterTestingModule.withRoutes([
         {
           path: '',
-          component: TestPlacholderComponent
+          component: TestPlacholderComponent,
         },
         {
           path: 'foo',
@@ -29,11 +29,11 @@ describe('TheSeamSideNavService', () => {
             {
               path: 'bar',
               component: TestPlacholderComponent,
-            }
-          ]
+            },
+          ],
         },
-      ])
-    ]
+      ]),
+    ],
   })
 
   let spectator: SpectatorService<TheSeamSideNavService>
@@ -55,53 +55,47 @@ describe('TheSeamSideNavService', () => {
   })
 
   it('should be active at first level', async () => {
-    await navigate([ '/foo' ])
+    await navigate(['/foo'])
 
     const activeItem: ISideNavItem = {
       label: '',
       itemType: 'link',
-      link: '/foo'
+      link: '/foo',
     }
 
     const notActiveItem: ISideNavItem = {
       label: '',
       itemType: 'link',
-      link: '/not'
+      link: '/not',
     }
 
-    const items: ISideNavItem[] = [
-      activeItem,
-      notActiveItem
-    ]
+    const items: ISideNavItem[] = [activeItem, notActiveItem]
     spectator.service.updateItemsStates(items)
     expect(isNavItemActive(activeItem)).toBe(true)
     expect(isNavItemActive(notActiveItem)).toBe(false)
   })
 
   it('should be active at second level', async () => {
-    await navigate([ '/foo' ])
+    await navigate(['/foo'])
 
     const activeItem: ISideNavItem = {
       label: '',
       itemType: 'link',
-      link: '/foo'
+      link: '/foo',
     }
 
     const notActiveItem: ISideNavItem = {
       label: '',
       itemType: 'link',
-      link: '/not'
+      link: '/not',
     }
 
     const items: ISideNavItem[] = [
       {
         label: '',
         itemType: 'basic',
-        children: [
-          activeItem,
-          notActiveItem
-        ]
-      }
+        children: [activeItem, notActiveItem],
+      },
     ]
     spectator.service.updateItemsStates(items)
     expect(isNavItemActive(activeItem)).toBe(true)
@@ -109,13 +103,13 @@ describe('TheSeamSideNavService', () => {
   })
 
   it('should update link items states when navigated', async () => {
-    await navigate([ '/foo' ])
+    await navigate(['/foo'])
 
     const items: ISideNavItem[] = [
       {
         label: '',
         itemType: 'link',
-        link: '/foo'
+        link: '/foo',
       },
       {
         label: '',
@@ -124,15 +118,15 @@ describe('TheSeamSideNavService', () => {
           {
             label: '',
             itemType: 'link',
-            link: '/foo/bar'
-          }
-        ]
+            link: '/foo/bar',
+          },
+        ],
       },
       {
         label: '',
         itemType: 'link',
-        link: '/not'
-      }
+        link: '/not',
+      },
     ]
 
     spectator.service.createItemsObservable(items).subscribe()
@@ -141,13 +135,13 @@ describe('TheSeamSideNavService', () => {
     expect(isNavItemActive((items[1] as any).children[0])).toBe(false)
     expect(isNavItemActive(items[2])).toBe(false)
 
-    await navigate([ '/foo/bar' ])
+    await navigate(['/foo/bar'])
 
     expect(isNavItemActive(items[0])).toBe(true)
     expect(isNavItemActive((items[1] as any).children[0])).toBe(true)
     expect(isNavItemActive(items[2])).toBe(false)
 
-    await navigate([ '/' ])
+    await navigate(['/'])
 
     expect(isNavItemActive(items[0])).toBe(false)
     expect(isNavItemActive((items[1] as any).children[0])).toBe(false)
@@ -159,7 +153,7 @@ describe('TheSeamSideNavService', () => {
       {
         label: '',
         itemType: 'link',
-        link: ''
+        link: '',
       },
       {
         label: '',
@@ -168,9 +162,9 @@ describe('TheSeamSideNavService', () => {
           {
             label: '',
             itemType: 'link',
-            link: '/foo'
+            link: '/foo',
           },
-        ]
+        ],
       },
       {
         label: '',
@@ -180,9 +174,9 @@ describe('TheSeamSideNavService', () => {
           {
             label: '',
             itemType: 'link',
-            link: '/bar'
-          }
-        ]
+            link: '/bar',
+          },
+        ],
       },
       {
         label: '',
@@ -195,11 +189,11 @@ describe('TheSeamSideNavService', () => {
               {
                 label: '',
                 itemType: 'link',
-                link: '/foo'
+                link: '/foo',
               },
-            ]
+            ],
           },
-        ]
+        ],
       },
     ]
 
@@ -214,7 +208,7 @@ describe('TheSeamSideNavService', () => {
     expect(isExpanded((items as any)[3].children[0])).toBe(false)
     expect(isExpanded((items as any)[3].children[0].children[0])).toBe(false)
 
-    await navigate([ '/foo' ])
+    await navigate(['/foo'])
 
     expect(isExpanded(items[0])).toBe(false)
     expect(isExpanded(items[1])).toBe(true)

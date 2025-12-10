@@ -1,12 +1,19 @@
-import { ComponentHarnessConstructor, HarnessPredicate } from '@angular/cdk/testing'
+import {
+  ComponentHarnessConstructor,
+  HarnessPredicate,
+} from '@angular/cdk/testing'
 
-import { TheSeamBaseBadgeButtonComponentHarness, TheSeamBaseBadgeButtonComponentHarnessFilters, createBaseBadgeButtonComponentHarnessPredicate } from './base-badge-button.harness'
+import {
+  TheSeamBaseBadgeButtonComponentHarness,
+  TheSeamBaseBadgeButtonComponentHarnessFilters,
+  createBaseBadgeButtonComponentHarnessPredicate,
+} from './base-badge-button.harness'
 
 /** A set of criteria that can be used to filter a list of `TheSeamBadgeButtonComponentHarness` instances. */
-export interface TheSeamBadgeButtonComponentHarnessFilters extends TheSeamBaseBadgeButtonComponentHarnessFilters { }
+export type TheSeamBadgeButtonComponentHarnessFilters =
+  TheSeamBaseBadgeButtonComponentHarnessFilters
 
 export class TheSeamBadgeButtonComponentHarness extends TheSeamBaseBadgeButtonComponentHarness {
-
   /** The selector for the host element of a `TheSeamBadgeButtonComponent` instance. */
   static hostSelector = 'button[seamBadgeButton]'
 
@@ -21,5 +28,4 @@ export class TheSeamBadgeButtonComponentHarness extends TheSeamBaseBadgeButtonCo
   ): HarnessPredicate<T> {
     return createBaseBadgeButtonComponentHarnessPredicate(this, options)
   }
-
 }

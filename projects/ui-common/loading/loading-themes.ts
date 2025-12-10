@@ -1,4 +1,4 @@
-import { ngxLoadingAnimationTypes, NgxLoadingConfig } from '@marklb/ngx-loading'
+import { ngxLoadingAnimationTypes, NgxLoadingConfig } from 'ngx-loading'
 
 export const defaultThemeConfig: NgxLoadingConfig = {
   animationType: ngxLoadingAnimationTypes.threeBounce,
@@ -6,7 +6,7 @@ export const defaultThemeConfig: NgxLoadingConfig = {
   backdropBorderRadius: '0px',
   primaryColour: '#ffffff',
   secondaryColour: '#ffffff',
-  tertiaryColour: '#ffffff'
+  tertiaryColour: '#ffffff',
 }
 
 export const primaryThemeConfig: NgxLoadingConfig = {
@@ -15,5 +15,5 @@ export const primaryThemeConfig: NgxLoadingConfig = {
   backdropBorderRadius: '0px',
   primaryColour: 'rgba(53,126,189,0.7)',
   secondaryColour: 'rgba(53,126,189,0.7)',
-  tertiaryColour: 'rgba(53,126,189,0.7)'
+  tertiaryColour: 'rgba(53,126,189,0.7)',
 }

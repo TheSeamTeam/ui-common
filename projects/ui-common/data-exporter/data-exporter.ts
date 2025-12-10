@@ -35,9 +35,10 @@ export interface IDataExporter {
   export<T>(data: T[]): Observable<boolean>
 }
 
-export const THESEAM_DATA_EXPORTER = new InjectionToken<IDataExporter>('TheSeamDataExporter')
+export const THESEAM_DATA_EXPORTER = new InjectionToken<IDataExporter>(
+  'TheSeamDataExporter',
+)
 
 export function exportOperator<T>(exportFn: IDataExporterFunction) {
-  return (source$: Observable<T[]>) =>
-    source$.pipe(switchMap(exportFn))
+  return (source$: Observable<T[]>) => source$.pipe(switchMap(exportFn))
 }

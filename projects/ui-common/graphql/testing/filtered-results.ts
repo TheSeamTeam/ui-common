@@ -28,7 +28,7 @@ export function filteredResults<T>(items: T[], args: any): FilteredResults<T> {
   }
 
   const pageInfo: FilteredResultsPageInfo = {
-    hasNextPage: (skip + take) < totalCount,
+    hasNextPage: skip + take < totalCount,
     hasPreviousPage: skip > 0,
   }
 

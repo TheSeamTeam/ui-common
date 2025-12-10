@@ -10,13 +10,14 @@ interface ColorDispProps {
 }
 
 export class ColorDisp extends React.Component<ColorDispProps> {
-
   render() {
     const { title, subtitle, colorVars } = this.props
 
     const colors: string[] = []
     for (const c of colorVars) {
-      colors.push(getComputedStyle(document.documentElement).getPropertyValue(c))
+      colors.push(
+        getComputedStyle(document.documentElement).getPropertyValue(c),
+      )
     }
     return (
       // <ColorItem

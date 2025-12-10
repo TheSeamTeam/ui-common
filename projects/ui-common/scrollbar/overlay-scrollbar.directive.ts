@@ -1,23 +1,43 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
-import { AfterViewInit, Directive, ElementRef, Input, OnDestroy } from '@angular/core'
+import {
+  AfterViewInit,
+  Directive,
+  ElementRef,
+  inject,
+  Input,
+  OnDestroy,
+} from '@angular/core'
 
 import OverlayScrollbars from 'overlayscrollbars'
 
-import { OverlayScrollbarsService } from './overlay-scrollbars.service'
+import { TheSeamOverlayScrollbarsService } from './overlay-scrollbars.service'
 
-import type { IOverlayScrollbarsConfig } from './overlay-scrollbars-config-model'
+import type { TheSeamOverlayScrollbarsConfig } from './overlay-scrollbars-config-model'
 
 @Directive({
   selector: '[seamOverlayScrollbar]',
-  exportAs: 'seamOverlayScrollbar'
+  exportAs: 'seamOverlayScrollbar',
 })
-export class OverlayScrollbarDirective implements AfterViewInit, OnDestroy {
-  static ngAcceptInputType_seamOverlayScrollbar: IOverlayScrollbarsConfig | undefined | null | ''
+export class TheSeamOverlayScrollbarDirective
+  implements AfterViewInit, OnDestroy
+{
+  static ngAcceptInputType_seamOverlayScrollbar:
+    | TheSeamOverlayScrollbarsConfig
+    | undefined
+    | null
+    | ''
+
+  private readonly _ref = inject(ElementRef)
+  private readonly _scrollbars = inject(TheSeamOverlayScrollbarsService)
 
   private _disabled = false
 
   @Input()
-  set seamOverlayScrollbar(value: IOverlayScrollbarsConfig | undefined | null) { this.options = value }
+  set seamOverlayScrollbar(
+    value: TheSeamOverlayScrollbarsConfig | undefined | null,
+  ) {
+    this.options = value
+  }
 
   @Input()
   get overlayScrollbarEnabled(): boolean {
@@ -26,13 +46,16 @@ export class OverlayScrollbarDirective implements AfterViewInit, OnDestroy {
   set overlayScrollbarEnabled(value: boolean) {
     this._disabled = !coerceBooleanProperty(value)
     if (!this._disabled) {
-      this._scrollbars.initializeInstance(this._ref.nativeElement, this._options)
+      this._scrollbars.initializeInstance(
+        this._ref.nativeElement,
+        this._options,
+      )
     } else {
       this._scrollbars.destroyInstance(this._ref.nativeElement)
     }
   }
 
-  set options(value: IOverlayScrollbarsConfig | undefined | null) {
+  set options(value: TheSeamOverlayScrollbarsConfig | undefined | null) {
     this._options = value || {}
     this._scrollbars.setOptions(this._ref.nativeElement, this._options)
   }
@@ -42,16 +65,14 @@ export class OverlayScrollbarDirective implements AfterViewInit, OnDestroy {
     }
     return this._options
   }
-  private _options: IOverlayScrollbarsConfig = {}
-
-  constructor(
-    private _ref: ElementRef,
-    private _scrollbars: OverlayScrollbarsService
-  ) { }
+  private _options: TheSeamOverlayScrollbarsConfig = {}
 
   ngAfterViewInit() {
     if (!this._disabled) {
-      this._scrollbars.initializeInstance(this._ref.nativeElement, this._options)
+      this._scrollbars.initializeInstance(
+        this._ref.nativeElement,
+        this._options,
+      )
     }
   }
 
@@ -62,5 +83,4 @@ export class OverlayScrollbarDirective implements AfterViewInit, OnDestroy {
   get instance(): OverlayScrollbars {
     return this._scrollbars.getInstance(this._ref.nativeElement)
   }
-
 }

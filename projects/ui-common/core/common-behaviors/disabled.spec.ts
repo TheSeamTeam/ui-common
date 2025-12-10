@@ -2,7 +2,7 @@ import { mixinDisabled } from './disabled'
 
 describe('MixinDisabled', () => {
   it('should augment an existing class with a disabled property', () => {
-    class EmptyClass { }
+    class EmptyClass {}
 
     const classWithDisabled = mixinDisabled(EmptyClass)
     // eslint-disable-next-line new-cap

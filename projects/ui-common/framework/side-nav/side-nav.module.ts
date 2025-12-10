@@ -5,15 +5,7 @@ import { SideNavToggleComponent } from './side-nav-toggle/side-nav-toggle.compon
 import { SideNavComponent } from './side-nav.component'
 
 @NgModule({
-  imports: [
-    SideNavItemComponent,
-    SideNavComponent,
-    SideNavToggleComponent,
-  ],
-  exports: [
-    SideNavItemComponent,
-    SideNavComponent,
-    SideNavToggleComponent,
-  ]
+  imports: [SideNavItemComponent, SideNavComponent, SideNavToggleComponent],
+  exports: [SideNavItemComponent, SideNavComponent, SideNavToggleComponent],
 })
-export class TheSeamSideNavModule { }
+export class TheSeamSideNavModule {}

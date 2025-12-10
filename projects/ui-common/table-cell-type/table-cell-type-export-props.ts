@@ -1,7 +1,6 @@
 import { DynamicValue } from '@theseam/ui-common/dynamic'
 
 export interface TableCellTypeExportProps {
-
   /**
    * Ignore column in export.
    */
@@ -16,5 +15,4 @@ export interface TableCellTypeExportProps {
    * Transform function for column value in export.
    */
   exportValue?: DynamicValue<string>
-
 }

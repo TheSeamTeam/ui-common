@@ -6,7 +6,7 @@ import { isNullOrUndefined } from '@theseam/ui-common/utils'
 export function removeVariableDefinitionsNotDefined(
   query: DocumentNode,
   node: OperationDefinitionNode,
-  variables: Operation['variables']
+  variables: Operation['variables'],
 ) {
   return visit(query, {
     OperationDefinition(opDef) {
@@ -17,9 +17,9 @@ export function removeVariableDefinitionsNotDefined(
             if (isNullOrUndefined(variables[name])) {
               return null
             }
-          }
+          },
         })
       }
-    }
+    },
   })
 }

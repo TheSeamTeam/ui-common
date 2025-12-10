@@ -13,10 +13,10 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion'
  */
 export function InputBoolean() {
   const cachedValueKey = Symbol('Cached boolean input value')
-  return function(
+  return function (
     target: any,
     propertyKey: string,
-    descriptor?: PropertyDescriptor
+    descriptor?: PropertyDescriptor,
   ) {
     Object.defineProperty(target, propertyKey, {
       set(value: boolean) {

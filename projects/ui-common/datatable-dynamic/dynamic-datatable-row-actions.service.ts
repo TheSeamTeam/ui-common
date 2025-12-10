@@ -12,46 +12,53 @@ import { DynamicDatatableRowActionContext } from './models/dynamic-datatable-row
 
 @Injectable()
 export class DynamicDatatableRowActionsService {
-
   constructor(
     private _valueHelper: DynamicValueHelperService,
-    private _dynamicDef: DynamicDatatableDefService
-  ) { }
+    private _dynamicDef: DynamicDatatableDefService,
+  ) {}
 
   /**
    * Observe actions for specified row
    */
-  public rowActions(row: DynamicDatatableRow): Observable<DynamicDatatableRowAction[]> {
+  public rowActions(
+    row: DynamicDatatableRow,
+  ): Observable<DynamicDatatableRowAction[]> {
     return this._dynamicDef.def$.pipe(
-      map(def => (def && def.rowActions) ? def.rowActions || [] : []),
-      switchMap(rowActions => rowActions
-        ? from(rowActions).pipe(
-          map(rowAction => {
-            if (Object.prototype.hasOwnProperty.call(rowAction, 'hidden')) {
-              if (typeof rowAction.hidden === 'boolean') {
-                return rowAction.hidden ? undefined : rowAction
-              } else {
-                const context = this._getRowActionContext(row, rowAction)
-                // TODO: Fix async eval
-                const isHidden = this._valueHelper.evalSync(rowAction.hidden, context)
-                return isHidden ? undefined : rowAction
-              }
-            }
-            return rowAction
-          }),
-          toArray(),
-          map(v => v.filter(notNullOrUndefined))
-        )
-        : of([])
-      )
+      map((def) => (def && def.rowActions ? def.rowActions || [] : [])),
+      switchMap((rowActions) =>
+        rowActions
+          ? from(rowActions).pipe(
+              map((rowAction) => {
+                if (Object.prototype.hasOwnProperty.call(rowAction, 'hidden')) {
+                  if (typeof rowAction.hidden === 'boolean') {
+                    return rowAction.hidden ? undefined : rowAction
+                  } else {
+                    const context = this._getRowActionContext(row, rowAction)
+                    // TODO: Fix async eval
+                    const isHidden = this._valueHelper.evalSync(
+                      rowAction.hidden,
+                      context,
+                    )
+                    return isHidden ? undefined : rowAction
+                  }
+                }
+                return rowAction
+              }),
+              toArray(),
+              map((v) => v.filter(notNullOrUndefined)),
+            )
+          : of([]),
+      ),
     )
   }
 
   /** @ignore */
-  private _getRowActionContext(row: DynamicDatatableRow, rowActionDef: DynamicDatatableRowAction): DynamicDatatableRowActionContext {
+  private _getRowActionContext(
+    row: DynamicDatatableRow,
+    rowActionDef: DynamicDatatableRowAction,
+  ): DynamicDatatableRowActionContext {
     return {
-      row
+      row,
     }
   }
-
 }

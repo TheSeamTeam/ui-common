@@ -3,11 +3,10 @@ import { Component, HostBinding } from '@angular/core'
 @Component({
   selector: 'seam-modal-body',
   templateUrl: './modal-body.component.html',
-  styleUrls: ['./modal-body.component.scss']
+  styleUrls: ['./modal-body.component.scss'],
+  standalone: false,
 })
 export class ModalBodyComponent {
-
   @HostBinding('class.modal-body') _modalBodyCss = true
   @HostBinding('class.p-3') _paddingCss = true
-
 }

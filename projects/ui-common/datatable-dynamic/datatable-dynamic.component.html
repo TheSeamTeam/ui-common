@@ -1,12 +1,15 @@
 <ng-container *ngIf="_hasDef$ | async">
-  <seam-datatable *ngIf="_options$ | async as opts"
+  <seam-datatable
+    *ngIf="_options$ | async as opts"
     class="w-100 h-100"
     [columns]="_tmp_columns$ | async"
     [rows]="_tmp_rows$ | async"
-    [virtualization]="opts.virtualization">
-
+    [virtualization]="opts.virtualization"
+  >
     <seam-datatable-menu-bar *ngIf="menuBar$ | async as menuBar">
-      <seam-datatable-dynamic-menu-bar-content [def]="menuBar"></seam-datatable-dynamic-menu-bar-content>
+      <seam-datatable-dynamic-menu-bar-content
+        [def]="menuBar"
+      ></seam-datatable-dynamic-menu-bar-content>
     </seam-datatable-menu-bar>
     <!-- <seam-datatable-menu-bar *ngIf="_hasFilterMenu$ | async">
       <div class="d-flex flex-row pb-2">
@@ -31,8 +34,9 @@
     </seam-datatable-menu-bar> -->
 
     <ng-template seamDatatableRowActionItem let-row>
-      <seam-datatable-dynamic-action-menu [row]="row"></seam-datatable-dynamic-action-menu>
+      <seam-datatable-dynamic-action-menu
+        [row]="row"
+      ></seam-datatable-dynamic-action-menu>
     </ng-template>
-
   </seam-datatable>
 </ng-container>

@@ -1,9 +1,17 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
+} from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { AbstractControl, ReactiveFormsModule } from '@angular/forms'
 
 import { JsonSchemaFormModule, JsonSchemaFormService } from '@ajsf/core'
-import { TheSeamSchemaFormControlWidget, TheSeamSchemaFormWidgetLayoutNodeOptions } from '../../schema-form'
+import {
+  TheSeamSchemaFormControlWidget,
+  TheSeamSchemaFormWidgetLayoutNodeOptions,
+} from '../../schema-form'
 import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 
 @Component({
@@ -19,8 +27,9 @@ import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
     TheSeamFormFieldModule,
   ],
 })
-export class TheSeamSchemaFormNumberComponent implements OnInit, TheSeamSchemaFormControlWidget {
-
+export class TheSeamSchemaFormNumberComponent
+  implements OnInit, TheSeamSchemaFormControlWidget
+{
   formControl?: AbstractControl
   controlName?: string
   controlValue?: any
@@ -37,18 +46,19 @@ export class TheSeamSchemaFormNumberComponent implements OnInit, TheSeamSchemaFo
   allowExponents = false
   lastValidNumber = ''
 
-  constructor(
-    private jsf: JsonSchemaFormService
-  ) { }
+  constructor(private jsf: JsonSchemaFormService) {}
 
   ngOnInit() {
-    this.options = this.layoutNode?.options || {} as TheSeamSchemaFormWidgetLayoutNodeOptions
+    this.options =
+      this.layoutNode?.options ||
+      ({} as TheSeamSchemaFormWidgetLayoutNodeOptions)
     this.jsf.initializeControl(this)
-    if (this.layoutNode?.dataType === 'integer') { this.allowDecimal = false }
+    if (this.layoutNode?.dataType === 'integer') {
+      this.allowDecimal = false
+    }
   }
 
   updateValue(event: any) {
     this.jsf.updateValue(this, event.target.value)
   }
-
 }

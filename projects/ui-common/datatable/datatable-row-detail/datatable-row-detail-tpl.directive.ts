@@ -1,10 +1,9 @@
 import { Directive, TemplateRef } from '@angular/core'
 
 @Directive({
-  selector: '[seamDatatableRowDetailTpl]'
+  selector: '[seamDatatableRowDetailTpl]',
+  standalone: false,
 })
 export class DatatableRowDetailTplDirective {
-
-  constructor(public template: TemplateRef<any>) { }
-
+  constructor(public template: TemplateRef<any>) {}
 }

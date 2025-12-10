@@ -7,8 +7,9 @@ import { ChangeDetectionStrategy, Component } from '@angular/core'
   templateUrl: './widget-list-group.component.html',
   styleUrls: ['./widget-list-group.component.scss'],
   host: {
-    'class': 'list-group'
+    class: 'list-group',
   },
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
-export class WidgetListGroupComponent { }
+export class WidgetListGroupComponent {}

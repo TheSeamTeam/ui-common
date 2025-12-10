@@ -1,36 +1,39 @@
-<div [fxLayout]="(direction === 'horizontal') ? 'column' : 'row'" fxFlexFill>
-
+<div [fxLayout]="direction === 'horizontal' ? 'column' : 'row'" fxFlexFill>
   <!-- Tabs -->
-  <div *ngIf="!hideTabs"
-    [fxLayout]="(direction === 'horizontal') ? 'row' : 'column'"
-    style="position: relative;">
+  <div
+    *ngIf="!hideTabs"
+    [fxLayout]="direction === 'horizontal' ? 'row' : 'column'"
+    style="position: relative"
+  >
     <ng-container *ngFor="let tabbedItem of tabbedItems$ | async">
-      <div class="tabbed-tab pt-2 pb-2 pl-4 pr-4 bg-light text-nowrap"
+      <div
+        class="tabbed-tab pt-2 pb-2 pl-4 pr-4 bg-light text-nowrap"
         [class.tab-dir-horizontal]="direction === 'horizontal'"
         [class.tab-dir-vertical]="direction === 'vertical'"
         (click)="onClickTab($event, tabbedItem)"
-        [class.active]="tabbedItem === (selectedTab$ | async)">
-        <ng-template *ngIf="tabbedItem.tabbedTabTpl; else tabLabelTpl" [ngTemplateOutlet]="tabbedItem.tabbedTabTpl"></ng-template>
+        [class.active]="tabbedItem === (selectedTab$ | async)"
+      >
+        <ng-template
+          *ngIf="tabbedItem.tabbedTabTpl; else tabLabelTpl"
+          [ngTemplateOutlet]="tabbedItem.tabbedTabTpl"
+        ></ng-template>
         <ng-template #tabLabelTpl>{{ tabbedItem?.label }}</ng-template>
       </div>
     </ng-container>
-    <!-- <div class="active-indicator"
-      [class.active-indicator-horizontal]="direction === 'horizontal'"
-      [class.active-indicator-vertical]="direction === 'vertical'">
-    </div> -->
   </div>
 
   <!-- Tabs Content -->
   <div class="tabbed-tabs-content bg-light">
     <ng-container *ngIf="onlyRouteContent; else notOnlyRouteContent">
-      <!-- <app-slide-over-router-outlet></app-slide-over-router-outlet> -->
       <router-outlet></router-outlet>
     </ng-container>
     <ng-template #notOnlyRouteContent>
       <ng-container *ngIf="selectedTab$ | async as selectedTab">
-        <seam-tabbed-content fxFlexFill [tabbedItem]="selectedTab"></seam-tabbed-content>
+        <seam-tabbed-content
+          fxFlexFill
+          [tabbedItem]="selectedTab"
+        ></seam-tabbed-content>
       </ng-container>
     </ng-template>
   </div>
-
 </div>

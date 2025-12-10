@@ -16,7 +16,10 @@ import { readGeoFile } from '@theseam/ui-common/utils'
 
 import { GoogleMapsService } from '../google-maps.service'
 import { MAP_CONTROL_DATA } from '../map-controls-service'
-import { MapValueManagerService, MapValueSource } from '../map-value-manager.service'
+import {
+  MapValueManagerService,
+  MapValueSource,
+} from '../map-value-manager.service'
 
 export interface GoogleMapsUploadButtonControlData {
   label?: string | undefined | null
@@ -35,13 +38,15 @@ export interface GoogleMapsUploadButtonControlData {
     '[attr.draggable]': 'false',
     '[attr.aria-label]': 'label',
     '[attr.title]': 'label',
-    'type': 'button',
-    'class': 'gmnoprint gm-control-active'
+    type: 'button',
+    class: 'gmnoprint gm-control-active',
   },
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
-export class TheSeamGoogleMapsUploadButtonControlComponent implements OnDestroy {
-
+export class TheSeamGoogleMapsUploadButtonControlComponent
+  implements OnDestroy
+{
   private readonly _ngUnsubscribe = new Subject<void>()
 
   private readonly _fileInputElement: HTMLInputElement
@@ -52,7 +57,7 @@ export class TheSeamGoogleMapsUploadButtonControlComponent implements OnDestroy 
 
   @Input() icon: SeamIcon | undefined | null
 
-  @HostListener('click', [ 'event' ])
+  @HostListener('click', ['event'])
   _onClick(event: MouseEvent) {
     this._fileInputElement.click()
   }
@@ -62,7 +67,9 @@ export class TheSeamGoogleMapsUploadButtonControlComponent implements OnDestroy 
     private readonly _mapValueManager: MapValueManagerService,
     private readonly _renderer: Renderer2,
     private readonly _googleMaps: GoogleMapsService,
-    @Optional() @Inject(MAP_CONTROL_DATA) _data?: GoogleMapsUploadButtonControlData
+    @Optional()
+    @Inject(MAP_CONTROL_DATA)
+    _data?: GoogleMapsUploadButtonControlData,
   ) {
     if (_data) {
       if (Object.prototype.hasOwnProperty.call(_data, 'label')) {
@@ -74,12 +81,15 @@ export class TheSeamGoogleMapsUploadButtonControlComponent implements OnDestroy 
     }
 
     this._fileInputElement = this._createHiddenInput()
-    this._renderer.appendChild(this._elementRef.nativeElement, this._fileInputElement)
+    this._renderer.appendChild(
+      this._elementRef.nativeElement,
+      this._fileInputElement,
+    )
   }
 
   /** @ignore */
   ngOnDestroy() {
-    this._listeners.forEach(l => l())
+    this._listeners.forEach((l) => l())
 
     this._ngUnsubscribe.next()
     this._ngUnsubscribe.complete()
@@ -110,18 +120,26 @@ export class TheSeamGoogleMapsUploadButtonControlComponent implements OnDestroy 
     const fileInputElement = this._renderer.createElement('input')
     this._renderer.setAttribute(fileInputElement, 'type', 'file')
     this._renderer.setAttribute(fileInputElement, 'hidden', '')
-    this._renderer.setAttribute(fileInputElement, 'accept', '.json,.geojson,.shp,.zip')
+    this._renderer.setAttribute(
+      fileInputElement,
+      'accept',
+      '.json,.geojson,.shp,.zip',
+    )
 
-    this._listeners.push(this._renderer.listen(fileInputElement, 'change', (event: Event) => {
-      const file = this._getFile()
-      if (file === null) { return }
-      const fileImportHandler = this._googleMaps.getFileInputHandler()
-      if (fileImportHandler) {
-        fileImportHandler(file)
-      } else {
-        this._importFile(file)
-      }
-    }))
+    this._listeners.push(
+      this._renderer.listen(fileInputElement, 'change', (event: Event) => {
+        const file = this._getFile()
+        if (file === null) {
+          return
+        }
+        const fileImportHandler = this._googleMaps.getFileInputHandler()
+        if (fileImportHandler) {
+          fileImportHandler(file)
+        } else {
+          this._importFile(file)
+        }
+      }),
+    )
 
     return fileInputElement
   }
@@ -133,10 +151,13 @@ export class TheSeamGoogleMapsUploadButtonControlComponent implements OnDestroy 
   /**
    * Reset input element, so that the same file can be added again.
    */
-   private _resetInput(): void {
+  private _resetInput(): void {
     const formElement = this._createTemporaryFormElement()
     this._renderer.appendChild(formElement, this._fileInputElement)
     formElement.reset()
-    this._renderer.appendChild(this._elementRef.nativeElement, this._fileInputElement)
+    this._renderer.appendChild(
+      this._elementRef.nativeElement,
+      this._fileInputElement,
+    )
   }
 }

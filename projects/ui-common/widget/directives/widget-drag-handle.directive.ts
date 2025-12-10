@@ -13,7 +13,7 @@ import {
   OnDestroy,
   OnInit,
   Optional,
-  QueryList
+  QueryList,
 } from '@angular/core'
 import { BehaviorSubject, Subject } from 'rxjs'
 import { auditTime, filter, switchMap, take, takeUntil } from 'rxjs/operators'
@@ -52,11 +52,10 @@ interface DragCSSStyleDeclaration extends CSSStyleDeclaration {
 
 export function extendStyles(
   dest: Writeable<CSSStyleDeclaration>,
-  source: Partial<DragCSSStyleDeclaration>
+  source: Partial<DragCSSStyleDeclaration>,
 ) {
   for (const key in source) {
     if (Object.prototype.hasOwnProperty.call(source, key)) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       dest[key] = source[key]!
     }
   }
@@ -64,7 +63,10 @@ export function extendStyles(
   return dest
 }
 
-export function toggleNativeDragInteractions(element: HTMLElement, enable: boolean) {
+export function toggleNativeDragInteractions(
+  element: HTMLElement,
+  enable: boolean,
+) {
   const userSelect = enable ? '' : 'none'
 
   extendStyles(element.style, {
@@ -73,7 +75,7 @@ export function toggleNativeDragInteractions(element: HTMLElement, enable: boole
     userSelect,
     msUserSelect: userSelect,
     webkitUserSelect: userSelect,
-    MozUserSelect: userSelect
+    MozUserSelect: userSelect,
   })
 }
 
@@ -82,17 +84,20 @@ export interface TheSeamWidgetAccessor<TItem> {
   cdkDragDirectives: QueryList<CdkDrag>
 }
 
-export const THESEAM_WIDGET_ACCESSOR = new InjectionToken<TheSeamWidgetAccessor<any>>(
-  'TheSeamWidgetAccessor'
-)
+export const THESEAM_WIDGET_ACCESSOR = new InjectionToken<
+  TheSeamWidgetAccessor<any>
+>('TheSeamWidgetAccessor')
 
 @Directive({
   selector: '[seamWidgetDragHandle]',
   host: {
-    'class': 'cdk-drag-handle'
-  }
+    class: 'cdk-drag-handle',
+  },
+  standalone: false,
 })
-export class WidgetDragHandleDirective implements OnInit, OnDestroy, AfterViewInit, DoCheck {
+export class WidgetDragHandleDirective
+  implements OnInit, OnDestroy, AfterViewInit, DoCheck
+{
   static ngAcceptInputType_disabled: BooleanInput
 
   private readonly _ngUnsubscribe = new Subject<void>()
@@ -102,14 +107,18 @@ export class WidgetDragHandleDirective implements OnInit, OnDestroy, AfterViewIn
   private _knownParentDrag: any /* CdkDrag | undefined */
 
   /** Needed because CdkDrag reads this variable */
-  get _parentDrag() { return this.getParentCdkDrag() }
+  get _parentDrag() {
+    return this.getParentCdkDrag()
+  }
 
   /** Emits when the state of the handle has changed. */
   _stateChanges = new Subject<CdkDragHandle>()
 
   /** Whether starting to drag through this handle is disabled. */
   @Input('cdkDragHandleDisabled')
-  get disabled(): boolean { return this._disabled }
+  get disabled(): boolean {
+    return this._disabled
+  }
   set disabled(value: boolean) {
     this._disabled = coerceBooleanProperty(value)
     this._stateChanges.next(this as any)
@@ -119,64 +128,65 @@ export class WidgetDragHandleDirective implements OnInit, OnDestroy, AfterViewIn
   constructor(
     public element: ElementRef<HTMLElement>,
     private _ngZone: NgZone,
-    @Optional() @Inject(THESEAM_WIDGET_ACCESSOR) private _dashboardWidgets?: TheSeamWidgetAccessor<any>,
-    @Optional() private __parentDrag?: CdkDrag
+    @Optional()
+    @Inject(THESEAM_WIDGET_ACCESSOR)
+    private _dashboardWidgets?: TheSeamWidgetAccessor<any>,
+    @Optional() private __parentDrag?: CdkDrag,
   ) {
     toggleNativeDragInteractions(element.nativeElement, false)
   }
 
   ngOnInit() {
     if (this._dashboardWidgets) {
-      this._dashboardWidgets.widgetsChange.pipe(
-        auditTime(0),
-        takeUntil(this._ngUnsubscribe)
-      ).subscribe(() => {
-        if (this._knownParentDrag) {
-          const isAttached = this.isAttachedToDom()
-          if (isAttached) {
-            const parent = this.getParentCdkDrag() as any
-            if (this._knownParentDrag !== parent) {
-              this._attachedToDom.next(isAttached)
+      this._dashboardWidgets.widgetsChange
+        .pipe(auditTime(0), takeUntil(this._ngUnsubscribe))
+        .subscribe(() => {
+          if (this._knownParentDrag) {
+            const isAttached = this.isAttachedToDom()
+            if (isAttached) {
+              const parent = this.getParentCdkDrag() as any
+              if (this._knownParentDrag !== parent) {
+                this._attachedToDom.next(isAttached)
+              }
             }
           }
-        }
-      })
+        })
     }
   }
 
   ngAfterViewInit() {
     if (this.__parentDrag || this._dashboardWidgets) {
+      // TODO: Determine if this is still needed, before fixing.
+      //
       // FIXME: This only works until the widget is moved to another template
       // outlet. Now that the component isn't reinitialized when moving between
       // lists the handle needs to now reflex that change to its new CdkDrag
       // parent and possibly tell its previous parent to forget it.
-
       // HACK: This is a hack to allow the `CdkDrag` directive to manage a
       // handle that is not visible to `ContentChildren` query.
-      this._ngZone.onStable.asObservable()
-        // .pipe(take(1), untilDestroyed(this))
-        .pipe(
-          take(1),
-          // With the weird trick being done to keep widgets initialized when switching columns
-          switchMap(() => this._attachedToDom.pipe(filter(v => v === true))),
-          // take(1)
-          takeUntil(this._ngUnsubscribe)
-        )
-        .subscribe(() => {
-          const parent = this.getParentCdkDrag() as any
-
-          if (this._knownParentDrag && this._knownParentDrag !== parent) {
-            this._knownParentDrag._dragRef.disableHandle(this.element.nativeElement)
-            this._knownParentDrag = undefined
-          }
-
-          if (parent) {
-            this._knownParentDrag = parent
-            parent._handles.reset([ ...parent._handles._results, this ])
-            parent._handles.notifyOnChanges()
-            parent._dragRef.enableHandle(this.element.nativeElement)
-          }
-        })
+      // this._ngZone.onStable.asObservable()
+      //   // .pipe(take(1), untilDestroyed(this))
+      //   .pipe(
+      //     take(1),
+      //     // With the weird trick being done to keep widgets initialized when switching columns
+      //     switchMap(() => this._attachedToDom.pipe(filter(v => v === true))),
+      //     // take(1)
+      //     takeUntil(this._ngUnsubscribe)
+      //   )
+      //   .subscribe(() => {
+      //     const parent = this.getParentCdkDrag() as any
+      //     if (this._knownParentDrag && this._knownParentDrag !== parent) {
+      //       this._knownParentDrag._dragRef.disableHandle(this.element.nativeElement)
+      //       this._knownParentDrag = undefined
+      //     }
+      //     if (parent) {
+      //       this._knownParentDrag = parent
+      //       console.log('Enabling handle for parent drag:', parent, parent._handles)
+      //       parent._handles.reset([ ...parent._handles._results, this ])
+      //       parent._handles.notifyOnChanges()
+      //       parent._dragRef.enableHandle(this.element.nativeElement)
+      //     }
+      //   })
     }
   }
 
@@ -191,7 +201,9 @@ export class WidgetDragHandleDirective implements OnInit, OnDestroy, AfterViewIn
   ngDoCheck() {
     // The attached observable only emits once, so we can stop checking if
     // attached.
-    if (this._doneCheckingAttached) { return }
+    if (this._doneCheckingAttached) {
+      return
+    }
 
     const isAttached = this.isAttachedToDom()
     if (isAttached !== this._attachedToDom.value) {
@@ -208,11 +220,13 @@ export class WidgetDragHandleDirective implements OnInit, OnDestroy, AfterViewIn
   public getParentCdkDrag(): CdkDrag | undefined {
     if (this.__parentDrag) {
       return this.__parentDrag
-    } else if (this._dashboardWidgets && this._dashboardWidgets.cdkDragDirectives) {
+    } else if (
+      this._dashboardWidgets &&
+      this._dashboardWidgets.cdkDragDirectives
+    ) {
       const dragsArr = this._dashboardWidgets.cdkDragDirectives.toArray()
       const closest = getClosestWidgetCdkDrag(this.element, dragsArr)
-      return (closest !== undefined && closest !== null) ? closest : undefined
+      return closest !== undefined && closest !== null ? closest : undefined
     }
   }
-
 }

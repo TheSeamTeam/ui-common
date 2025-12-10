@@ -2,7 +2,6 @@ import { DynamicActionDef } from '../../models/dynamic-action-def'
 import { DynamicValue } from '../../models/dynamic-value'
 
 export interface DynamicActionLinkDef extends DynamicActionDef<'link'> {
-
   /**
    * Link url.
    */
@@ -65,5 +64,4 @@ export interface DynamicActionLinkDef extends DynamicActionDef<'link'> {
    * TODO: Ensure this works with all features that support link actions.
    */
   queryParams?: { [k: string]: any }
-
 }

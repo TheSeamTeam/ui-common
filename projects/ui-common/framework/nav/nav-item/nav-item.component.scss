@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 @import '../styles/utilities';
 
 seam-nav-item {
@@ -65,7 +67,7 @@ seam-nav-item {
     min-height: 24px;
     text-align: center;
 
-    margin-right: .5rem;
+    margin-right: 0.5rem;
 
     .nav-item--badge {
       top: -4px;
@@ -116,9 +118,7 @@ seam-nav-item {
     color: $seam-nav-toggle-btn-color;
     text-decoration: $link-decoration;
     border-radius: $seam-nav-toggle-btn-border-radius;
-    border:
-      $seam-nav-toggle-btn-border-width
-      $seam-nav-toggle-btn-border-style
+    border: $seam-nav-toggle-btn-border-width $seam-nav-toggle-btn-border-style
       $seam-nav-toggle-btn-border-color;
 
     @include hover {
@@ -178,7 +178,11 @@ seam-nav-item {
 
   @for $i from 1 through 9 {
     .nav--group--level-#{$i} {
-      background-color: darken($seam-nav-bg-color, ($i * $seam-nav-group-bg-variation-amount));
+      background-color: color.adjust(
+        $seam-nav-bg-color,
+        $lightness: -($i * $seam-nav-group-bg-variation-amount),
+        $space: hsl
+      );
     }
   }
 
@@ -200,4 +204,3 @@ seam-nav-item {
     left: 0;
   }
 }
-

@@ -1,10 +1,9 @@
 import { Injectable, NgZone } from '@angular/core'
 
-import { OverlayScrollbarsService } from '@theseam/ui-common/scrollbar'
+import { TheSeamOverlayScrollbarsService } from '@theseam/ui-common/scrollbar'
 
 @Injectable()
 export class TheSeamDatatableScrollbarHelperService {
-
   width = 0
 
   /**
@@ -18,18 +17,18 @@ export class TheSeamDatatableScrollbarHelperService {
 
   constructor(
     private _ngZone: NgZone,
-    private _scrollbars: OverlayScrollbarsService
-  ) { }
+    private _scrollbars: TheSeamOverlayScrollbarsService,
+  ) {}
 
   onInitScroller(scroller: any): void {
     this._scrollbars.initializeInstance(scroller.parentElement, {
       callbacks: {
-        onScroll: e => {
+        onScroll: (e) => {
           this._ngZone.run(() => {
             scroller.onScrolled(e)
           })
-        }
-      }
+        },
+      },
     })
   }
 
@@ -40,10 +39,12 @@ export class TheSeamDatatableScrollbarHelperService {
   setOffset(scroller: any, offsetY: number): void {
     this._ngZone.runOutsideAngular(() => {
       if (this.animatedScrolling) {
-        this._scrollbars.getInstance(scroller.parentElement)
+        this._scrollbars
+          .getInstance(scroller.parentElement)
           .scroll({ y: offsetY }, this.animatedScrollingTime)
       } else {
-        this._scrollbars.getInstance(scroller.parentElement)
+        this._scrollbars
+          .getInstance(scroller.parentElement)
           .scroll({ y: offsetY })
       }
     })

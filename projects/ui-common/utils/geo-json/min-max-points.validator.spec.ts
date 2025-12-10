@@ -1,28 +1,26 @@
 import { UntypedFormControl } from '@angular/forms'
-import {
-  FeatureCollection,
-} from 'geojson'
+import { FeatureCollection } from 'geojson'
 
 import { minMaxPointsValidator } from './min-max-points.validator'
 
 describe('minMaxPointsValidator', () => {
   it('should be valid if value is null', () => {
-    const control = new UntypedFormControl(null, [ minMaxPointsValidator() ])
+    const control = new UntypedFormControl(null, [minMaxPointsValidator()])
     expect(control.valid).toBe(true)
   })
 
   it('should be valid if value is undefined', () => {
-    const control = new UntypedFormControl(undefined, [ minMaxPointsValidator() ])
+    const control = new UntypedFormControl(undefined, [minMaxPointsValidator()])
     expect(control.valid).toBe(true)
   })
 
   it('should be valid if value is empty string', () => {
-    const control = new UntypedFormControl('', [ minMaxPointsValidator() ])
+    const control = new UntypedFormControl('', [minMaxPointsValidator()])
     expect(control.valid).toBe(true)
   })
 
   it('should be valid if value is a value that is not a FeatureCollection', () => {
-    const control = new UntypedFormControl('a', [ minMaxPointsValidator() ])
+    const control = new UntypedFormControl('a', [minMaxPointsValidator()])
     expect(control.valid).toBe(true)
   })
 
@@ -37,19 +35,21 @@ describe('minMaxPointsValidator', () => {
               type: 'Polygon',
               coordinates: [
                 [
-                  [ 0, 0 ],
-                  [ 0, 1 ],
-                  [ 1, 1 ],
-                  [ 1, 0 ],
-                  [ 0, 0 ],
-                ]
+                  [0, 0],
+                  [0, 1],
+                  [1, 1],
+                  [1, 0],
+                  [0, 0],
+                ],
               ],
             },
-            properties: { },
+            properties: {},
           },
         ],
       }
-      const control = new UntypedFormControl(featureCollection, [ minMaxPointsValidator() ])
+      const control = new UntypedFormControl(featureCollection, [
+        minMaxPointsValidator(),
+      ])
       expect(control.valid).toBe(true)
     })
 
@@ -64,28 +64,30 @@ describe('minMaxPointsValidator', () => {
               coordinates: [
                 [
                   [
-                    [ 0, 0 ],
-                    [ 0, 1 ],
-                    [ 1, 1 ],
-                    [ 1, 0 ],
-                    [ 0, 0 ],
-                  ]
+                    [0, 0],
+                    [0, 1],
+                    [1, 1],
+                    [1, 0],
+                    [0, 0],
+                  ],
                 ],
                 [
                   [
-                    [ 2, 2 ],
-                    [ 2, 3 ],
-                    [ 3, 3 ],
-                    [ 2, 2 ]
-                  ]
-                ]
+                    [2, 2],
+                    [2, 3],
+                    [3, 3],
+                    [2, 2],
+                  ],
+                ],
               ],
             },
-            properties: { },
+            properties: {},
           },
         ],
       }
-      const control = new UntypedFormControl(featureCollection, [ minMaxPointsValidator() ])
+      const control = new UntypedFormControl(featureCollection, [
+        minMaxPointsValidator(),
+      ])
       expect(control.valid).toBe(true)
     })
 
@@ -99,16 +101,18 @@ describe('minMaxPointsValidator', () => {
               type: 'Polygon',
               coordinates: [
                 [
-                  [ 0, 0 ],
-                  [ 0, 1 ],
-                ]
+                  [0, 0],
+                  [0, 1],
+                ],
               ],
             },
-            properties: { },
+            properties: {},
           },
         ],
       }
-      const control = new UntypedFormControl(featureCollection, [ minMaxPointsValidator(2, 3) ])
+      const control = new UntypedFormControl(featureCollection, [
+        minMaxPointsValidator(2, 3),
+      ])
       expect(control.valid).toBe(true)
     })
 
@@ -123,24 +127,26 @@ describe('minMaxPointsValidator', () => {
               coordinates: [
                 [
                   [
-                    [ 0, 0 ],
-                    [ 0, 1 ],
-                  ]
+                    [0, 0],
+                    [0, 1],
+                  ],
                 ],
                 [
                   [
-                    [ 2, 2 ],
-                    [ 2, 3 ],
-                    [ 3, 3 ],
-                  ]
-                ]
+                    [2, 2],
+                    [2, 3],
+                    [3, 3],
+                  ],
+                ],
               ],
             },
-            properties: { },
+            properties: {},
           },
         ],
       }
-      const control = new UntypedFormControl(featureCollection, [ minMaxPointsValidator(2, 3) ])
+      const control = new UntypedFormControl(featureCollection, [
+        minMaxPointsValidator(2, 3),
+      ])
       expect(control.valid).toBe(true)
     })
 
@@ -154,16 +160,18 @@ describe('minMaxPointsValidator', () => {
               type: 'Polygon',
               coordinates: [
                 [
-                  [ 0, 0 ],
-                  [ 0, 0 ],
-                ]
+                  [0, 0],
+                  [0, 0],
+                ],
               ],
             },
-            properties: { },
+            properties: {},
           },
         ],
       }
-      const control = new UntypedFormControl(featureCollection, [ minMaxPointsValidator() ])
+      const control = new UntypedFormControl(featureCollection, [
+        minMaxPointsValidator(),
+      ])
       expect(control.valid).toBe(false)
     })
 
@@ -178,26 +186,28 @@ describe('minMaxPointsValidator', () => {
               coordinates: [
                 [
                   [
-                    [ 0, 0 ],
-                    [ 0, 1 ],
-                    [ 1, 1 ],
-                    [ 1, 0 ],
-                    [ 0, 0 ],
-                  ]
+                    [0, 0],
+                    [0, 1],
+                    [1, 1],
+                    [1, 0],
+                    [0, 0],
+                  ],
                 ],
                 [
                   [
-                    [ 0, 0 ],
-                    [ 0, 0 ],
-                  ]
-                ]
+                    [0, 0],
+                    [0, 0],
+                  ],
+                ],
               ],
             },
-            properties: { },
+            properties: {},
           },
         ],
       }
-      const control = new UntypedFormControl(featureCollection, [ minMaxPointsValidator() ])
+      const control = new UntypedFormControl(featureCollection, [
+        minMaxPointsValidator(),
+      ])
       expect(control.valid).toBe(false)
     })
 
@@ -211,19 +221,21 @@ describe('minMaxPointsValidator', () => {
               type: 'Polygon',
               coordinates: [
                 [
-                  [ 0, 0 ],
-                  [ 0, 1 ],
-                  [ 1, 1 ],
-                  [ 1, 0 ],
-                  [ 0, 0 ],
-                ]
+                  [0, 0],
+                  [0, 1],
+                  [1, 1],
+                  [1, 0],
+                  [0, 0],
+                ],
               ],
             },
-            properties: { },
+            properties: {},
           },
         ],
       }
-      const control = new UntypedFormControl(featureCollection, [ minMaxPointsValidator(6) ])
+      const control = new UntypedFormControl(featureCollection, [
+        minMaxPointsValidator(6),
+      ])
       expect(control.valid).toBe(false)
     })
 
@@ -238,20 +250,22 @@ describe('minMaxPointsValidator', () => {
               coordinates: [
                 [
                   [
-                    [ 0, 0 ],
-                    [ 0, 1 ],
-                    [ 1, 1 ],
-                    [ 1, 0 ],
-                    [ 0, 0 ],
-                  ]
-                ]
+                    [0, 0],
+                    [0, 1],
+                    [1, 1],
+                    [1, 0],
+                    [0, 0],
+                  ],
+                ],
               ],
             },
-            properties: { },
+            properties: {},
           },
         ],
       }
-      const control = new UntypedFormControl(featureCollection, [ minMaxPointsValidator(6) ])
+      const control = new UntypedFormControl(featureCollection, [
+        minMaxPointsValidator(6),
+      ])
       expect(control.valid).toBe(false)
     })
 
@@ -265,19 +279,21 @@ describe('minMaxPointsValidator', () => {
               type: 'Polygon',
               coordinates: [
                 [
-                  [ 0, 0 ],
-                  [ 0, 1 ],
-                  [ 1, 1 ],
-                  [ 1, 0 ],
-                  [ 0, 0 ],
-                ]
+                  [0, 0],
+                  [0, 1],
+                  [1, 1],
+                  [1, 0],
+                  [0, 0],
+                ],
               ],
             },
-            properties: { },
+            properties: {},
           },
         ],
       }
-      const control = new UntypedFormControl(featureCollection, [ minMaxPointsValidator(2, 3) ])
+      const control = new UntypedFormControl(featureCollection, [
+        minMaxPointsValidator(2, 3),
+      ])
       expect(control.valid).toBe(false)
     })
 
@@ -292,20 +308,22 @@ describe('minMaxPointsValidator', () => {
               coordinates: [
                 [
                   [
-                    [ 0, 0 ],
-                    [ 0, 1 ],
-                    [ 1, 1 ],
-                    [ 1, 0 ],
-                    [ 0, 0 ],
-                  ]
-                ]
+                    [0, 0],
+                    [0, 1],
+                    [1, 1],
+                    [1, 0],
+                    [0, 0],
+                  ],
+                ],
               ],
             },
-            properties: { },
+            properties: {},
           },
         ],
       }
-      const control = new UntypedFormControl(featureCollection, [ minMaxPointsValidator(2, 3) ])
+      const control = new UntypedFormControl(featureCollection, [
+        minMaxPointsValidator(2, 3),
+      ])
       expect(control.valid).toBe(false)
     })
   })
@@ -321,20 +339,20 @@ describe('minMaxPointsValidator', () => {
               type: 'Polygon',
               coordinates: [
                 [
-                  [ 0, 0 ],
-                  [ 0, 1 ],
-                  [ 1, 1 ],
-                  [ 1, 0 ],
-                  [ 0, 0 ],
-                ]
+                  [0, 0],
+                  [0, 1],
+                  [1, 1],
+                  [1, 0],
+                  [0, 0],
+                ],
               ],
             },
-            properties: { },
+            properties: {},
           },
         ],
       }
       const value = JSON.stringify(featureCollection)
-      const control = new UntypedFormControl(value, [ minMaxPointsValidator() ])
+      const control = new UntypedFormControl(value, [minMaxPointsValidator()])
       expect(control.valid).toBe(true)
     })
 
@@ -349,29 +367,29 @@ describe('minMaxPointsValidator', () => {
               coordinates: [
                 [
                   [
-                    [ 0, 0 ],
-                    [ 0, 1 ],
-                    [ 1, 1 ],
-                    [ 1, 0 ],
-                    [ 0, 0 ],
-                  ]
+                    [0, 0],
+                    [0, 1],
+                    [1, 1],
+                    [1, 0],
+                    [0, 0],
+                  ],
                 ],
                 [
                   [
-                    [ 2, 2 ],
-                    [ 2, 3 ],
-                    [ 3, 3 ],
-                    [ 2, 2 ]
-                  ]
-                ]
+                    [2, 2],
+                    [2, 3],
+                    [3, 3],
+                    [2, 2],
+                  ],
+                ],
               ],
             },
-            properties: { },
+            properties: {},
           },
         ],
       }
       const value = JSON.stringify(featureCollection)
-      const control = new UntypedFormControl(value, [ minMaxPointsValidator() ])
+      const control = new UntypedFormControl(value, [minMaxPointsValidator()])
       expect(control.valid).toBe(true)
     })
 
@@ -385,17 +403,19 @@ describe('minMaxPointsValidator', () => {
               type: 'Polygon',
               coordinates: [
                 [
-                  [ 0, 0 ],
-                  [ 0, 1 ],
-                ]
+                  [0, 0],
+                  [0, 1],
+                ],
               ],
             },
-            properties: { },
+            properties: {},
           },
         ],
       }
       const value = JSON.stringify(featureCollection)
-      const control = new UntypedFormControl(value, [ minMaxPointsValidator(2, 3) ])
+      const control = new UntypedFormControl(value, [
+        minMaxPointsValidator(2, 3),
+      ])
       expect(control.valid).toBe(true)
     })
 
@@ -410,25 +430,27 @@ describe('minMaxPointsValidator', () => {
               coordinates: [
                 [
                   [
-                    [ 0, 0 ],
-                    [ 0, 1 ],
-                  ]
+                    [0, 0],
+                    [0, 1],
+                  ],
                 ],
                 [
                   [
-                    [ 2, 2 ],
-                    [ 2, 3 ],
-                    [ 3, 3 ],
-                  ]
-                ]
+                    [2, 2],
+                    [2, 3],
+                    [3, 3],
+                  ],
+                ],
               ],
             },
-            properties: { },
+            properties: {},
           },
         ],
       }
       const value = JSON.stringify(featureCollection)
-      const control = new UntypedFormControl(value, [ minMaxPointsValidator(2, 3) ])
+      const control = new UntypedFormControl(value, [
+        minMaxPointsValidator(2, 3),
+      ])
       expect(control.valid).toBe(true)
     })
 
@@ -442,17 +464,17 @@ describe('minMaxPointsValidator', () => {
               type: 'Polygon',
               coordinates: [
                 [
-                  [ 0, 0 ],
-                  [ 0, 0 ],
-                ]
+                  [0, 0],
+                  [0, 0],
+                ],
               ],
             },
-            properties: { },
+            properties: {},
           },
         ],
       }
       const value = JSON.stringify(featureCollection)
-      const control = new UntypedFormControl(value, [ minMaxPointsValidator() ])
+      const control = new UntypedFormControl(value, [minMaxPointsValidator()])
       expect(control.valid).toBe(false)
     })
 
@@ -467,27 +489,27 @@ describe('minMaxPointsValidator', () => {
               coordinates: [
                 [
                   [
-                    [ 0, 0 ],
-                    [ 0, 1 ],
-                    [ 1, 1 ],
-                    [ 1, 0 ],
-                    [ 0, 0 ],
-                  ]
+                    [0, 0],
+                    [0, 1],
+                    [1, 1],
+                    [1, 0],
+                    [0, 0],
+                  ],
                 ],
                 [
                   [
-                    [ 0, 0 ],
-                    [ 0, 0 ],
-                  ]
-                ]
+                    [0, 0],
+                    [0, 0],
+                  ],
+                ],
               ],
             },
-            properties: { },
+            properties: {},
           },
         ],
       }
       const value = JSON.stringify(featureCollection)
-      const control = new UntypedFormControl(value, [ minMaxPointsValidator() ])
+      const control = new UntypedFormControl(value, [minMaxPointsValidator()])
       expect(control.valid).toBe(false)
     })
 
@@ -501,20 +523,20 @@ describe('minMaxPointsValidator', () => {
               type: 'Polygon',
               coordinates: [
                 [
-                  [ 0, 0 ],
-                  [ 0, 1 ],
-                  [ 1, 1 ],
-                  [ 1, 0 ],
-                  [ 0, 0 ],
-                ]
+                  [0, 0],
+                  [0, 1],
+                  [1, 1],
+                  [1, 0],
+                  [0, 0],
+                ],
               ],
             },
-            properties: { },
+            properties: {},
           },
         ],
       }
       const value = JSON.stringify(featureCollection)
-      const control = new UntypedFormControl(value, [ minMaxPointsValidator(6) ])
+      const control = new UntypedFormControl(value, [minMaxPointsValidator(6)])
       expect(control.valid).toBe(false)
     })
 
@@ -529,21 +551,21 @@ describe('minMaxPointsValidator', () => {
               coordinates: [
                 [
                   [
-                    [ 0, 0 ],
-                    [ 0, 1 ],
-                    [ 1, 1 ],
-                    [ 1, 0 ],
-                    [ 0, 0 ],
-                  ]
-                ]
+                    [0, 0],
+                    [0, 1],
+                    [1, 1],
+                    [1, 0],
+                    [0, 0],
+                  ],
+                ],
               ],
             },
-            properties: { },
+            properties: {},
           },
         ],
       }
       const value = JSON.stringify(featureCollection)
-      const control = new UntypedFormControl(value, [ minMaxPointsValidator(6) ])
+      const control = new UntypedFormControl(value, [minMaxPointsValidator(6)])
       expect(control.valid).toBe(false)
     })
 
@@ -557,20 +579,22 @@ describe('minMaxPointsValidator', () => {
               type: 'Polygon',
               coordinates: [
                 [
-                  [ 0, 0 ],
-                  [ 0, 1 ],
-                  [ 1, 1 ],
-                  [ 1, 0 ],
-                  [ 0, 0 ],
-                ]
+                  [0, 0],
+                  [0, 1],
+                  [1, 1],
+                  [1, 0],
+                  [0, 0],
+                ],
               ],
             },
-            properties: { },
+            properties: {},
           },
         ],
       }
       const value = JSON.stringify(featureCollection)
-      const control = new UntypedFormControl(value, [ minMaxPointsValidator(2, 3) ])
+      const control = new UntypedFormControl(value, [
+        minMaxPointsValidator(2, 3),
+      ])
       expect(control.valid).toBe(false)
     })
 
@@ -585,21 +609,23 @@ describe('minMaxPointsValidator', () => {
               coordinates: [
                 [
                   [
-                    [ 0, 0 ],
-                    [ 0, 1 ],
-                    [ 1, 1 ],
-                    [ 1, 0 ],
-                    [ 0, 0 ],
-                  ]
-                ]
+                    [0, 0],
+                    [0, 1],
+                    [1, 1],
+                    [1, 0],
+                    [0, 0],
+                  ],
+                ],
               ],
             },
-            properties: { },
+            properties: {},
           },
         ],
       }
       const value = JSON.stringify(featureCollection)
-      const control = new UntypedFormControl(value, [ minMaxPointsValidator(2, 3) ])
+      const control = new UntypedFormControl(value, [
+        minMaxPointsValidator(2, 3),
+      ])
       expect(control.valid).toBe(false)
     })
   })

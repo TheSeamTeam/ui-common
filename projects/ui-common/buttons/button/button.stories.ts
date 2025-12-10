@@ -1,10 +1,19 @@
-import { componentWrapperDecorator, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
-import { expect } from '@storybook/jest'
+import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import { expect, fn } from 'storybook/test'
 
 import { getHarness } from '@theseam/ui-common/testing'
-import { argsToTpl, ArgsTplOptions, buttonTypeArgType, sizeArgType, themeWithOutlineArgType } from '@theseam/ui-common/story-helpers'
+import {
+  argsToTpl,
+  ArgsTplOptions,
+  buttonTypeArgType,
+  sizeArgType,
+  themeWithOutlineArgType,
+} from '@theseam/ui-common/story-helpers'
+import {
+  TheSeamButtonComponent,
+  TheSeamButtonsModule,
+} from '@theseam/ui-common/buttons'
 
-import { TheSeamButtonComponent, TheSeamButtonsModule } from '@theseam/ui-common/buttons'
 import { TheSeamButtonComponentHarness } from '../testing/button.harness'
 
 interface StoryExtraProps {
@@ -17,23 +26,12 @@ const meta: Meta<TheSeamButtonComponent & StoryExtraProps> = {
   component: TheSeamButtonComponent,
   decorators: [
     moduleMetadata({
-      imports: [
-        TheSeamButtonsModule,
-      ],
+      imports: [TheSeamButtonsModule],
     }),
-    // componentWrapperDecorator(story => `
-    //   <button seamButton
-    //     [theme]="theme"
-    //     [size]="size"
-    //     [type]="type"
-    //     [disabled]="disabled"
-    //     (click)="click($event)"
-    //   >${story}</button>
-    // `),
   ],
-  render: args => ({
+  render: (args) => ({
     props: args,
-    template: `<button seamButton ${argsToTpl()}>{{ btnText }}</button>`
+    template: `<button seamButton ${argsToTpl()}>{{ btnText }}</button>`,
   }),
   tags: ['autodocs'],
   argTypes: {
@@ -47,14 +45,8 @@ const meta: Meta<TheSeamButtonComponent & StoryExtraProps> = {
   },
   parameters: {
     argsToTplOptions: {
-      alwaysBind: [
-        'theme',
-        'size',
-        'type',
-      ],
-      exclude: [
-        'btnText',
-      ],
+      alwaysBind: ['theme', 'size', 'type'],
+      exclude: ['btnText'],
     } satisfies ArgsTplOptions,
   },
 }
@@ -63,16 +55,15 @@ export default meta
 type Story = StoryObj<TheSeamButtonComponent & StoryExtraProps>
 
 export const Basic: Story = {
-  // render: args => ({
-  //   props: args,
-  //   template: `{{ btnText }}`
-  // }),
   args: {
     btnText: 'Example Text',
-    theme: 'primary'
+    theme: 'primary',
+    click: fn(),
   },
-  play: async ({ canvasElement, fixture, args }) => {
-    const harness = await getHarness(TheSeamButtonComponentHarness, { canvasElement, fixture })
+  play: async ({ canvasElement, args }) => {
+    const harness = await getHarness(TheSeamButtonComponentHarness, {
+      canvasElement,
+    })
     await expect(await harness.getText()).toBe('Example Text')
     await expect(await harness.getTheme()).toBe('primary')
     await expect(await harness.isDisabled()).toBe(false)
@@ -83,16 +74,15 @@ export const Basic: Story = {
 }
 
 export const Disabled: Story = {
-  // render: args => ({
-  //   props: args,
-  //   template: `{{ btnText }}`
-  // }),
   args: {
     btnText: 'Example Text',
     disabled: true,
+    click: fn(),
   },
-  play: async ({ canvasElement, fixture, args }) => {
-    const harness = await getHarness(TheSeamButtonComponentHarness, { canvasElement, fixture })
+  play: async ({ canvasElement, args }) => {
+    const harness = await getHarness(TheSeamButtonComponentHarness, {
+      canvasElement,
+    })
     await expect(await harness.getText()).toBe('Example Text')
     await expect(await harness.isDisabled()).toBe(true)
     await expect(await harness.hasDisabledAria()).toBe(true)

@@ -1,14 +1,14 @@
 <!-- <p>lazy-widget-one works!</p> -->
 
-<seam-widget [icon]="faWrench" titleText="Lazy Widget 1" [loading]="!(initialized$ | async)">
-  <seam-widget-content-header>
-    Widget example 1
-  </seam-widget-content-header>
+<seam-widget
+  [icon]="faWrench"
+  titleText="Lazy Widget 1"
+  [loading]="!(initialized$ | async)"
+>
+  <seam-widget-content-header> Widget example 1 </seam-widget-content-header>
 
   <seam-widget-tile-list>
-    <button *ngFor="let item of items"
-      seam-widget-tile
-      [icon]="faBell">
+    <button *ngFor="let item of items" seam-widget-tile [icon]="faBell">
       {{ item }}
     </button>
   </seam-widget-tile-list>

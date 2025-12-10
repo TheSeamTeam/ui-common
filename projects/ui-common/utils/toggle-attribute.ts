@@ -13,17 +13,27 @@
  * Source:
  * https://developer.mozilla.org/en-US/docs/Web/API/Element/toggleAttribute#Polyfill
  */
-export function toggleAttribute(element: HTMLElement, name: string, force: boolean): boolean {
+export function toggleAttribute(
+  element: HTMLElement,
+  name: string,
+  force: boolean,
+): boolean {
   let _force = force
-  if (_force !== void 0) { _force = !!_force }
+  if (_force !== void 0) {
+    _force = !!_force
+  }
 
   if (element.getAttribute(name) !== null) {
-    if (_force) { return true }
+    if (_force) {
+      return true
+    }
 
     element.removeAttribute(name)
     return false
   } else {
-    if (_force === false) { return false }
+    if (_force === false) {
+      return false
+    }
 
     element.setAttribute(name, '')
     return true

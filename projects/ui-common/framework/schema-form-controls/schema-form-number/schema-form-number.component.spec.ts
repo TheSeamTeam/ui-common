@@ -8,10 +8,9 @@ describe('TheSeamSchemaFormNumberComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [TheSeamSchemaFormNumberComponent],
-    teardown: { destroyAfterEach: false }
-})
-    .compileComponents()
+      declarations: [TheSeamSchemaFormNumberComponent],
+      teardown: { destroyAfterEach: false },
+    }).compileComponents()
   }))
 
   beforeEach(() => {

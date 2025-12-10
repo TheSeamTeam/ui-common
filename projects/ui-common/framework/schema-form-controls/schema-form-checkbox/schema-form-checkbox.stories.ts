@@ -1,5 +1,11 @@
-import { applicationConfig, componentWrapperDecorator, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
-import { expect } from '@storybook/jest'
+import {
+  applicationConfig,
+  componentWrapperDecorator,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
+import { expect, fn } from 'storybook/test'
 
 import { ReactiveFormsModule } from '@angular/forms'
 import { provideAnimations } from '@angular/platform-browser/animations'
@@ -14,26 +20,22 @@ import { JsonSchemaFormHarness } from '../../schema-form/testing'
 
 const meta: Meta<JsonSchemaFormComponent> = {
   title: 'Framework/Schema Form Controls/Checkbox',
-  tags: [ 'autodocs' ],
+  tags: ['autodocs'],
   decorators: [
     applicationConfig({
-      providers: [
-        provideAnimations(),
-      ],
+      providers: [provideAnimations()],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamSchemaFormModule,
-        ReactiveFormsModule,
-      ],
+      imports: [TheSeamSchemaFormModule, ReactiveFormsModule],
     }),
     componentWrapperDecorator(JsonSchemaFormComponent, ({ args }) => args),
   ],
   argTypes: {
-    onSubmit: { action: 'onSubmit' }
+    onSubmit: { action: 'onSubmit' },
   },
   args: {
     framework: 'seam-framework',
+    onSubmit: fn(),
   },
 }
 
@@ -43,28 +45,31 @@ type Story = StoryObj<JsonSchemaFormComponent>
 export const Basic: Story = {
   args: {
     schema: {
-      'type': 'object',
-      '$schema': 'http://json-schema.org/draft-07/schema#',
-      'properties': {
-        'Available': {
-          'type': 'boolean',
-          'title': 'Is Available',
-          'default': false,
+      type: 'object',
+      $schema: 'http://json-schema.org/draft-07/schema#',
+      properties: {
+        Available: {
+          type: 'boolean',
+          title: 'Is Available',
+          default: false,
         },
       },
     },
-    layout: [
-      { 'dataPointer': '/Available' },
-    ],
+    layout: [{ dataPointer: '/Available' }],
   },
-  play: async ({ canvasElement, fixture, args }) => {
-    const sfCheckboxHarness = await getHarness(TheSeamSchemaFormCheckboxHarness, { canvasElement, fixture })
+  play: async ({ canvasElement, args }) => {
+    const sfCheckboxHarness = await getHarness(
+      TheSeamSchemaFormCheckboxHarness,
+      { canvasElement },
+    )
     await expect(await sfCheckboxHarness.isRequired()).toBe(false)
     await expect(await sfCheckboxHarness.hasRequiredIndicator()).toBe(false)
     await expect(await sfCheckboxHarness.getValue()).toBe(false)
     await sfCheckboxHarness.click()
     await expect(await sfCheckboxHarness.getValue()).toBe(true)
-    const sfFormHarness = await getHarness(JsonSchemaFormHarness, { canvasElement, fixture })
+    const sfFormHarness = await getHarness(JsonSchemaFormHarness, {
+      canvasElement,
+    })
     await sfFormHarness.submit()
     await expect(args.onSubmit).toHaveBeenCalledWith({ Available: true })
   },
@@ -73,31 +78,32 @@ export const Basic: Story = {
 export const Required: Story = {
   args: {
     schema: {
-      'type': 'object',
-      '$schema': 'http://json-schema.org/draft-07/schema#',
-      'properties': {
-        'Available': {
-          'type': 'boolean',
-          'title': 'Is Available',
-          'default': false,
+      type: 'object',
+      $schema: 'http://json-schema.org/draft-07/schema#',
+      properties: {
+        Available: {
+          type: 'boolean',
+          title: 'Is Available',
+          default: false,
         },
       },
-      'required': [
-        'Available',
-      ],
+      required: ['Available'],
     },
-    layout: [
-      { 'dataPointer': '/Available' },
-    ],
+    layout: [{ dataPointer: '/Available' }],
   },
-  play: async ({ canvasElement, fixture, args }) => {
-    const sfCheckboxHarness = await getHarness(TheSeamSchemaFormCheckboxHarness, { canvasElement, fixture })
+  play: async ({ canvasElement, args }) => {
+    const sfCheckboxHarness = await getHarness(
+      TheSeamSchemaFormCheckboxHarness,
+      { canvasElement },
+    )
     await expect(await sfCheckboxHarness.isRequired()).toBe(true)
     await expect(await sfCheckboxHarness.hasRequiredIndicator()).toBe(true)
     await expect(await sfCheckboxHarness.getValue()).toBe(false)
     await sfCheckboxHarness.click()
     await expect(await sfCheckboxHarness.getValue()).toBe(true)
-    const sfFormHarness = await getHarness(JsonSchemaFormHarness, { canvasElement, fixture })
+    const sfFormHarness = await getHarness(JsonSchemaFormHarness, {
+      canvasElement,
+    })
     await sfFormHarness.submit()
     await expect(args.onSubmit).toHaveBeenCalledWith({ Available: true })
   },

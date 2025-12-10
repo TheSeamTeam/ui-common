@@ -1,4 +1,11 @@
-import { Component, ContentChild, Input, OnChanges, SimpleChanges, TemplateRef } from '@angular/core'
+import {
+  Component,
+  ContentChild,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  TemplateRef,
+} from '@angular/core'
 import { Subject } from 'rxjs'
 
 import { ColumnChangesService, TableColumnProp } from '@marklb/ngx-datatable'
@@ -15,11 +22,10 @@ import { TheSeamTableColumnHeaderTplDirective } from './table-column-header-tpl.
   template: ``,
 })
 export class TheSeamTableColumnComponent implements OnChanges {
-
   @Input() name?: string | null
   @Input() prop?: TableColumnProp | null
 
-  @Input() flexGrow?: number | null
+  // @Input() flexGrow?: number | null
   // @Input() minWidth?: number | null
   // @Input() maxWidth?: number | null
   // @Input() width?: number | null
@@ -29,15 +35,23 @@ export class TheSeamTableColumnComponent implements OnChanges {
   // @Input() cellClass?: string | ((data: any) => string|any) | null
   @Input() cellClass?: string | null
 
+  // @Input() align?: 'left' | 'center' | 'right' | null
+  // @Input() alignHeader?: 'left' | 'center' | 'right' | null
+  // @Input() alignCell?: 'left' | 'center' | 'right' | null
+
   private _isFirstChange = true
 
-  @ContentChild(TheSeamTableCellTplDirective, { static: true }) cellTplDirective?: TheSeamTableCellTplDirective
+  @ContentChild(TheSeamTableCellTplDirective, { static: true })
+  cellTplDirective?: TheSeamTableCellTplDirective
 
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('cellTemplate')
   _cellTemplateInput?: TemplateRef<any> | null
 
-  @ContentChild(TheSeamTableCellTplDirective, { read: TemplateRef, static: true })
+  @ContentChild(TheSeamTableCellTplDirective, {
+    read: TemplateRef,
+    static: true,
+  })
   _cellTemplateQuery?: TemplateRef<any>
 
   get cellTemplate(): TemplateRef<any> | undefined | null {
@@ -48,7 +62,10 @@ export class TheSeamTableColumnComponent implements OnChanges {
   @Input('headerTemplate')
   _headerTemplateInput?: TemplateRef<any> | null
 
-  @ContentChild(TheSeamTableColumnHeaderTplDirective, { read: TemplateRef, static: true })
+  @ContentChild(TheSeamTableColumnHeaderTplDirective, {
+    read: TemplateRef,
+    static: true,
+  })
   _headerTemplateQuery?: TemplateRef<any>
 
   get headerTemplate(): TemplateRef<any> | undefined | null {
@@ -70,5 +87,4 @@ export class TheSeamTableColumnComponent implements OnChanges {
       this._columnChange.next()
     }
   }
-
 }

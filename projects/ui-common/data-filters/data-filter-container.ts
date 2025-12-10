@@ -9,6 +9,5 @@ export interface DataFilterContainer {
   removeFilter(dataFilter: IDataFilter): void
 }
 
-export const THESEAM_DATA_FILTER_CONTAINER = new InjectionToken<DataFilterContainer>(
-  'DataFilterContainer'
-)
+export const THESEAM_DATA_FILTER_CONTAINER =
+  new InjectionToken<DataFilterContainer>('DataFilterContainer')

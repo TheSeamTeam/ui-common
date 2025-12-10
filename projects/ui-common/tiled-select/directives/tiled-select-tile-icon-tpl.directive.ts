@@ -1,11 +1,9 @@
-import { Directive, TemplateRef } from '@angular/core'
+import { Directive, inject, TemplateRef } from '@angular/core'
 
 @Directive({
   selector: '[seamTiledSelectTileIconTpl]',
-  exportAs: 'seamTiledSelectTileIconTpl'
+  exportAs: 'seamTiledSelectTileIconTpl',
 })
-export class TiledSelectTileIconTplDirective {
-
-  constructor(public template: TemplateRef<any>) { }
-
+export class TheSeamTiledSelectTileIconTplDirective {
+  public readonly template = inject(TemplateRef<any>)
 }

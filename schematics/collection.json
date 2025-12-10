@@ -1,0 +1,10 @@
+{
+  "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "migrate-stories-to-csf3": {
+      "description": "Migrate stories to CSF3.",
+      "factory": "./migrate-stories-to-csf3/index#migrate",
+      "schema": "./migrate-stories-to-csf3/schema.json"
+    }
+  }
+}

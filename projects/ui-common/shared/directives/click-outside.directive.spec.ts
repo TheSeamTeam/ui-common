@@ -1,8 +1,8 @@
-// import { ClickOutsideDirective } from './click-outside.directive'
+// import { TheSeamClickOutsideDirective } from './click-outside.directive'
 
-// describe('ClickOutsideDirective', () => {
+// describe('TheSeamClickOutsideDirective', () => {
 //   it('should create an instance', () => {
-//     const directive = new ClickOutsideDirective()
+//     const directive = new TheSeamClickOutsideDirective()
 //     expect(directive).toBeTruthy()
 //   })
 // })

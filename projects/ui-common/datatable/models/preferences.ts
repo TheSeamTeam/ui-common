@@ -24,5 +24,5 @@ export const CURRENT_DATATABLE_PREFERENCES_VERSION = 2
 
 export const EMPTY_DATATABLE_PREFERENCES: TheSeamDatatablePreferences = {
   version: 2,
-  alterations: []
+  alterations: [],
 }

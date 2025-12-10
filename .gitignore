@@ -50,3 +50,6 @@ addon-jest.testresults.json
 # System Files
 .DS_Store
 Thumbs.db
+
+*storybook.log
+storybook-static

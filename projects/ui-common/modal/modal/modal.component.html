@@ -1,5 +1,11 @@
 <ng-template #modalTpl>
-  <form *ngIf="form" [formGroup]="form" (ngSubmit)="_onSubmit()" class="p-4" style="max-width: 800px">
+  <form
+    *ngIf="form"
+    [formGroup]="form"
+    (ngSubmit)="_onSubmit()"
+    class="p-4"
+    style="max-width: 800px"
+  >
     <ng-container *ngTemplateOutlet="modalContent"></ng-container>
   </form>
 
@@ -15,17 +21,23 @@
             <ng-container *ngIf="iconTpl; else noIconTpl">
               <ng-template
                 [ngTemplateOutlet]="iconTpl"
-                [ngTemplateOutletContext]="{ $implicit: icon, icon: icon }">
+                [ngTemplateOutletContext]="{ $implicit: icon, icon: icon }"
+              >
               </ng-template>
             </ng-container>
             <ng-template #noIconTpl>
-              <fa-icon *ngIf="_iconObj"
+              <fa-icon
+                *ngIf="_iconObj"
                 class="modal-header-icon--fa"
                 [icon]="_iconObj"
-                size="sm"></fa-icon>
-              <img *ngIf="_iconUrl"
+                size="sm"
+              ></fa-icon>
+              <img
+                *ngIf="_iconUrl"
                 class="modal-header-icon--img"
-                [src]="_iconUrl" [alt]="titleText">
+                [src]="_iconUrl"
+                [alt]="titleText"
+              />
             </ng-template>
           </span>
 
@@ -33,17 +45,23 @@
             <ng-container *ngIf="titleTpl; else noTitleTpl">
               <ng-template
                 [ngTemplateOutlet]="titleTpl"
-                [ngTemplateOutletContext]="{ $implicit: titleText, title: titleText }">
+                [ngTemplateOutletContext]="{
+                  $implicit: titleText,
+                  title: titleText,
+                }"
+              >
               </ng-template>
             </ng-container>
             <ng-template #noTitleTpl>{{ titleText }}</ng-template>
           </span>
         </h4>
-        <button *ngIf="showCloseBtn"
+        <button
+          *ngIf="showCloseBtn"
           type="button"
           class="close"
           (click)="close()"
-          aria-label="Close">
+          aria-label="Close"
+        >
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -51,7 +69,9 @@
         <ng-content></ng-content>
       </div>
       <div *ngIf="_queryFooterTpl" class="modal-footer p-2">
-        <ng-container *ngComponentOutlet="$any(_queryFooterTpl.template)"></ng-container>
+        <ng-container
+          *ngComponentOutlet="$any(_queryFooterTpl.template)"
+        ></ng-container>
       </div>
     </div>
   </ng-template>

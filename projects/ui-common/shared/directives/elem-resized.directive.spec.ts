@@ -1,8 +1,8 @@
-import { ElemResizedDirective } from './elem-resized.directive'
+import { TheSeamElemResizedDirective } from './elem-resized.directive'
 
-// describe('ElemResizedDirective', () => {
+// describe('TheSeamElemResizedDirective', () => {
 //   it('should create an instance', () => {
-//     const directive = new ElemResizedDirective()
+//     const directive = new TheSeamElemResizedDirective()
 //     expect(directive).toBeTruthy()
 //   })
 // })

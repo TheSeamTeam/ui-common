@@ -8,19 +8,8 @@ import { IconNotificationComponent } from './icon-notification/icon-notification
 import { IconComponent } from './icon/icon.component'
 
 @NgModule({
-  declarations: [
-    IconComponent,
-    IconBtnComponent,
-    IconNotificationComponent
-  ],
-  imports: [
-    CommonModule,
-    FontAwesomeModule
-  ],
-  exports: [
-    IconComponent,
-    IconBtnComponent,
-    IconNotificationComponent
-  ]
+  declarations: [IconComponent, IconBtnComponent, IconNotificationComponent],
+  imports: [CommonModule, FontAwesomeModule],
+  exports: [IconComponent, IconBtnComponent, IconNotificationComponent],
 })
-export class TheSeamIconModule { }
+export class TheSeamIconModule {}

@@ -1,10 +1,9 @@
 import { Directive, TemplateRef } from '@angular/core'
 
 @Directive({
-  selector: '[seamModalFooterTpl]'
+  selector: '[seamModalFooterTpl]',
+  standalone: false,
 })
 export class ModalFooterTplDirective {
-
-  constructor(public template: TemplateRef<any>) { }
-
+  constructor(public template: TemplateRef<any>) {}
 }

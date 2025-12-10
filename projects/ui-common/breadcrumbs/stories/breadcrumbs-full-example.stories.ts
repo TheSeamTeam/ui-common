@@ -1,32 +1,46 @@
-// import { button, withKnobs } from '@storybook/addon-knobs'
-import { Meta, Story } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 
-import { BrowserModule } from '@angular/platform-browser'
-import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations'
-import { RouterModule } from '@angular/router'
+import { provideAnimations } from '@angular/platform-browser/animations'
+import { provideRouter, RouterModule } from '@angular/router'
+import { provideLocationMocks } from '@angular/common/testing'
 
-import { routeButton, StoryEmptyComponent, StoryInitialRouteModule } from '@theseam/ui-common/story-helpers'
+import { provideStoryInitialUrl } from '@marklb/storybook-angular-initial-url'
+import {
+  routeButton,
+  StoryEmptyComponent,
+} from '@theseam/ui-common/story-helpers'
 
 import { StoryUsersDataService } from './story-user-data.service'
 import { StoryUserIdToNameResolver } from './story-userid-to-name.resolver'
 
-import { importProvidersFrom } from '@angular/core'
-import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component'
+import { TheSeamBreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component'
 
-export default {
+const meta: Meta<TheSeamBreadcrumbsComponent> = {
   title: 'Breadcrumbs/Components/Full',
-  component: BreadcrumbsComponent,
+  component: TheSeamBreadcrumbsComponent,
   decorators: [
-    // withKnobs
-  ]
-} as Meta
+    applicationConfig({
+      providers: [provideAnimations(), provideLocationMocks()],
+    }),
+    moduleMetadata({
+      imports: [RouterModule],
+    }),
+  ],
+}
 
-export const Example: Story = () => ({
-  applicationConfig: {
-    providers: [
-      provideAnimations(),
-      importProvidersFrom(
-        RouterModule.forRoot([
+export default meta
+type Story = StoryObj<TheSeamBreadcrumbsComponent>
+
+export const Example: Story = {
+  render: () => ({
+    applicationConfig: {
+      providers: [
+        provideRouter([
           {
             path: '',
             pathMatch: 'full',
@@ -36,60 +50,52 @@ export const Example: Story = () => ({
             path: 'home',
             component: StoryEmptyComponent,
             data: {
-              breadcrumb: 'Home'
-            }
+              breadcrumb: 'Home',
+            },
           },
           {
             path: 'dashboard',
             component: StoryEmptyComponent,
             data: {
-              breadcrumb: 'Dashboard'
+              breadcrumb: 'Dashboard',
             },
             children: [
               {
                 path: 'users',
                 component: StoryEmptyComponent,
                 data: {
-                  breadcrumb: 'Users'
+                  breadcrumb: 'Users',
                 },
                 children: [
                   {
                     path: ':userId',
                     component: StoryEmptyComponent,
-                    data: { },
+                    data: {},
                     resolve: {
-                      breadcrumb: StoryUserIdToNameResolver
-                    }
-                  }
-                ]
-              }
-            ]
-          }
-        ], { useHash: true }),
-        StoryInitialRouteModule.forRoot('/dashboard/users/123'),
-      ),
-      StoryUsersDataService,
-      StoryUserIdToNameResolver
-    ],
-  },
-  moduleMetadata: {
-    declarations: [
-      StoryEmptyComponent
-    ],
-    imports: [
-      RouterModule,
-    ],
-  },
-  props: {
-    // btn1: routeButton(button, '/'),
-    // btn2: routeButton(button, '/home'),
-    // btn3: routeButton(button, '/dashboard'),
-    // btn4: routeButton(button, '/dashboard/users'),
-    // btn5: routeButton(button, '/dashboard/users/123'),
-    // btn6: routeButton(button, '/dashboard/users/987'),
-  },
-  template: `
-    <seam-breadcrumbs></seam-breadcrumbs>
-    <router-outlet></router-outlet>
-  `
-})
+                      breadcrumb: StoryUserIdToNameResolver,
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ]),
+        provideStoryInitialUrl('/dashboard/users/123'),
+        StoryUsersDataService,
+        StoryUserIdToNameResolver,
+      ],
+    },
+    props: {
+      // btn1: routeButton(button, '/'),
+      // btn2: routeButton(button, '/home'),
+      // btn3: routeButton(button, '/dashboard'),
+      // btn4: routeButton(button, '/dashboard/users'),
+      // btn5: routeButton(button, '/dashboard/users/123'),
+      // btn6: routeButton(button, '/dashboard/users/987'),
+    },
+    template: `
+      <seam-breadcrumbs></seam-breadcrumbs>
+      <router-outlet></router-outlet>
+    `,
+  }),
+}

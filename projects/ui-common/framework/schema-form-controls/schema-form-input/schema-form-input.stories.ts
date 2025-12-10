@@ -1,5 +1,11 @@
-import { applicationConfig, componentWrapperDecorator, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
-import { expect } from '@storybook/jest'
+import {
+  applicationConfig,
+  componentWrapperDecorator,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
+import { expect, fn } from 'storybook/test'
 
 import { ReactiveFormsModule } from '@angular/forms'
 import { provideAnimations } from '@angular/platform-browser/animations'
@@ -14,26 +20,22 @@ import { JsonSchemaFormHarness } from '../../schema-form/testing'
 
 const meta: Meta<JsonSchemaFormComponent> = {
   title: 'Framework/Schema Form Controls/Input',
-  tags: [ 'autodocs' ],
+  tags: ['autodocs'],
   decorators: [
     applicationConfig({
-      providers: [
-        provideAnimations(),
-      ],
+      providers: [provideAnimations()],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamSchemaFormModule,
-        ReactiveFormsModule,
-      ],
+      imports: [TheSeamSchemaFormModule, ReactiveFormsModule],
     }),
     componentWrapperDecorator(JsonSchemaFormComponent, ({ args }) => args),
   ],
   argTypes: {
-    onSubmit: { action: 'onSubmit' }
+    onSubmit: { action: 'onSubmit' },
   },
   args: {
     framework: 'seam-framework',
+    onSubmit: fn(),
   },
 }
 
@@ -43,27 +45,29 @@ type Story = StoryObj<JsonSchemaFormComponent>
 export const Basic: Story = {
   args: {
     schema: {
-      'type': 'object',
-      '$schema': 'http://json-schema.org/draft-07/schema#',
-      'properties': {
-        'Input': {
-          'type': 'string',
-          'title': 'Input',
+      type: 'object',
+      $schema: 'http://json-schema.org/draft-07/schema#',
+      properties: {
+        Input: {
+          type: 'string',
+          title: 'Input',
         },
       },
     },
-    layout: [
-      { 'dataPointer': '/Input' },
-    ],
+    layout: [{ dataPointer: '/Input' }],
   },
-  play: async ({ canvasElement, fixture, args }) => {
-    const sfInputHarness = await getHarness(TheSeamSchemaFormInputHarness, { canvasElement, fixture })
+  play: async ({ canvasElement, args }) => {
+    const sfInputHarness = await getHarness(TheSeamSchemaFormInputHarness, {
+      canvasElement,
+    })
     await expect(await sfInputHarness.isRequired()).toBe(false)
     await expect(await sfInputHarness.hasRequiredIndicator()).toBe(false)
     await expect(await sfInputHarness.getValue()).toBe('')
     await sfInputHarness.setValue('Test')
     await expect(await sfInputHarness.getValue()).toBe('Test')
-    const sfFormHarness = await getHarness(JsonSchemaFormHarness, { canvasElement, fixture })
+    const sfFormHarness = await getHarness(JsonSchemaFormHarness, {
+      canvasElement,
+    })
     await sfFormHarness.submit()
     await expect(args.onSubmit).toHaveBeenCalledWith({ Input: 'Test' })
   },
@@ -72,30 +76,30 @@ export const Basic: Story = {
 export const Required: Story = {
   args: {
     schema: {
-      'type': 'object',
-      '$schema': 'http://json-schema.org/draft-07/schema#',
-      'properties': {
-        'Input': {
-          'type': 'string',
-          'title': 'Input',
+      type: 'object',
+      $schema: 'http://json-schema.org/draft-07/schema#',
+      properties: {
+        Input: {
+          type: 'string',
+          title: 'Input',
         },
       },
-      'required': [
-        'Input',
-      ],
+      required: ['Input'],
     },
-    layout: [
-      { 'dataPointer': '/Input' },
-    ],
+    layout: [{ dataPointer: '/Input' }],
   },
-  play: async ({ canvasElement, fixture, args }) => {
-    const sfInputHarness = await getHarness(TheSeamSchemaFormInputHarness, { canvasElement, fixture })
+  play: async ({ canvasElement, args }) => {
+    const sfInputHarness = await getHarness(TheSeamSchemaFormInputHarness, {
+      canvasElement,
+    })
     await expect(await sfInputHarness.isRequired()).toBe(true)
     await expect(await sfInputHarness.hasRequiredIndicator()).toBe(true)
     await expect(await sfInputHarness.getValue()).toBe('')
     await sfInputHarness.setValue('Test')
     await expect(await sfInputHarness.getValue()).toBe('Test')
-    const sfFormHarness = await getHarness(JsonSchemaFormHarness, { canvasElement, fixture })
+    const sfFormHarness = await getHarness(JsonSchemaFormHarness, {
+      canvasElement,
+    })
     await sfFormHarness.submit()
     await expect(args.onSubmit).toHaveBeenCalledWith({ Input: 'Test' })
   },

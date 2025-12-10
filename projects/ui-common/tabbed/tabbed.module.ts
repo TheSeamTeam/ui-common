@@ -1,36 +1,25 @@
-import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
-import { RouterModule } from '@angular/router'
 
-import { FlexLayoutModule } from '@angular/flex-layout'
-
-import { TabbedContentComponent } from './tabbed-content/tabbed-content.component'
-import { TabbedItemComponent } from './tabbed-item/tabbed-item.component'
-import { TabbedComponent } from './tabbed.component'
-
-import { TabbedTabContentDirective } from './directives/tabbed-tab-content.directive'
-import { TabbedTabDirective } from './directives/tabbed-tab.directive'
+import { TheSeamTabbedTabContentDirective } from './directives/tabbed-tab-content.directive'
+import { TheSeamTabbedTabDirective } from './directives/tabbed-tab.directive'
+import { TheSeamTabbedContentComponent } from './tabbed-content/tabbed-content.component'
+import { TheSeamTabbedItemComponent } from './tabbed-item/tabbed-item.component'
+import { TheSeamTabbedComponent } from './tabbed.component'
 
 @NgModule({
   imports: [
-    CommonModule,
-    RouterModule,
-    FlexLayoutModule,
+    TheSeamTabbedComponent,
+    TheSeamTabbedTabContentDirective,
+    TheSeamTabbedTabDirective,
+    TheSeamTabbedItemComponent,
+    TheSeamTabbedContentComponent,
   ],
-  declarations: [
-    TabbedComponent,
-    TabbedTabContentDirective,
-    TabbedTabDirective,
-    TabbedItemComponent,
-    TabbedContentComponent,
-    TabbedContentComponent,
-],
   exports: [
-    TabbedComponent,
-    TabbedTabContentDirective,
-    TabbedTabDirective,
-    TabbedItemComponent,
-    TabbedContentComponent,
-  ]
+    TheSeamTabbedComponent,
+    TheSeamTabbedTabContentDirective,
+    TheSeamTabbedTabDirective,
+    TheSeamTabbedItemComponent,
+    TheSeamTabbedContentComponent,
+  ],
 })
 export class TheSeamTabbedModule {}

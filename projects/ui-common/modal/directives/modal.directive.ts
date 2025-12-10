@@ -7,19 +7,18 @@ import { Modal } from '../modal.service'
 
 @Directive({
   selector: '[seamModal]',
-  exportAs: 'seamModal'
+  exportAs: 'seamModal',
+  standalone: false,
 })
 export class ModalDirective {
-
   constructor(
     public template: TemplateRef<HTMLElement>,
-    public modal: Modal
-  ) { }
+    public modal: Modal,
+  ) {}
 
   open(): void {
     // console.log('[ModalDirective] open')
     const ref = this.modal.openFromTemplate(this.template)
     // ref.backdropClick().subscribe(e => console.log('backdropClick', e))
   }
-
 }

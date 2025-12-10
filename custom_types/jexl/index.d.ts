@@ -1,5 +1,4 @@
 declare module 'jexl' {
-
   /**
    * Transform functions take one or more arguments: The value to be
    * transformed, followed by anything else passed to it in the expression. They
@@ -16,7 +15,6 @@ declare module 'jexl' {
    * once, even if they're evaluated multiple times.
    */
   export interface JexlExpression {
-
     /**
      * Forces the expression to compile, even if it was compiled before. Note
      * that each compile will happen with the latest grammar and transforms from
@@ -34,7 +32,6 @@ declare module 'jexl' {
      * optional.
      */
     evalSync: <C = any, R = any>(context?: C) => R
-
   }
 
   /**
@@ -63,7 +60,11 @@ declare module 'jexl' {
      * value. It should return either the resulting value, or a Promise that
      * resolves to the resulting value.
      */
-    addBinaryOp: (operator: string, precedence: number, fn: <R = any>(left: any, right: any) => R | Promise<R>) => void
+    addBinaryOp: (
+      operator: string,
+      precedence: number,
+      fn: <R = any>(left: any, right: any) => R | Promise<R>,
+    ) => void
 
     /**
      * Adds a unary operator to the Jexl instance. A unary operator is one that
@@ -72,7 +73,10 @@ declare module 'jexl' {
      * value to the operator's right. It should return either the resulting
      * value, or a Promise that resolves to the resulting value.
      */
-    addUnaryOp: (operator: string, fn: <R = any>(right: any) => R | Promise<R>) => void
+    addUnaryOp: (
+      operator: string,
+      fn: <R = any>(right: any) => R | Promise<R>,
+    ) => void
 
     /**
      * Adds a transform function to this Jexl instance. See the Transforms
@@ -84,7 +88,9 @@ declare module 'jexl' {
      * Adds multiple transforms from a supplied map of transform name to
      * transform function.
      */
-    addTransforms: (transforms: { [name: string]: JexlTransformFunction }) => void
+    addTransforms: (transforms: {
+      [name: string]: JexlTransformFunction
+    }) => void
 
     /**
      * Constructs an Expression object around the given Jexl expression string.
@@ -111,7 +117,9 @@ declare module 'jexl' {
      * Gets a previously set transform function, or undefined if no function of
      * that name exists.
      */
-    getTransform: <R = any>(name: string) => JexlTransformFunction<R> | undefined
+    getTransform: <R = any>(
+      name: string,
+    ) => JexlTransformFunction<R> | undefined
 
     /**
      * Evaluates an expression. The context map is optional.

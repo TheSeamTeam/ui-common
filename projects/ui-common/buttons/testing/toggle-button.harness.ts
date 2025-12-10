@@ -1,12 +1,20 @@
-import { ComponentHarnessConstructor, HarnessPredicate } from '@angular/cdk/testing'
+import {
+  ComponentHarnessConstructor,
+  HarnessPredicate,
+} from '@angular/cdk/testing'
 
-import { TheSeamBaseButtonComponentHarness, TheSeamBaseButtonComponentHarnessFilters, createBaseButtonComponentHarnessPredicate } from './base-button.harness'
+import {
+  TheSeamBaseButtonComponentHarness,
+  TheSeamBaseButtonComponentHarnessFilters,
+  createBaseButtonComponentHarnessPredicate,
+} from './base-button.harness'
 
 /** A set of criteria that can be used to filter a list of `TheSeamToggleButtonComponentHarness` instances. */
-export interface TheSeamToggleButtonComponentHarnessFilters extends TheSeamBaseButtonComponentHarnessFilters { }
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface TheSeamToggleButtonComponentHarnessFilters
+  extends TheSeamBaseButtonComponentHarnessFilters {}
 
 export class TheSeamToggleButtonComponentHarness extends TheSeamBaseButtonComponentHarness {
-
   /** The selector for the host element of a `TheSeamToggleButtonComponent` instance. */
   static hostSelector = 'button[seamToggleButton]'
 
@@ -31,7 +39,8 @@ export class TheSeamToggleButtonComponentHarness extends TheSeamBaseButtonCompon
 
   /** Gets the theme of the button item. */
   async isActive(): Promise<boolean> {
-    return (await this.host()).getAttribute('class')
-      .then(c => (c?.split(' ').indexOf('active') !== -1) || false)
+    return (await this.host())
+      .getAttribute('class')
+      .then((c) => c?.split(' ').indexOf('active') !== -1 || false)
   }
 }

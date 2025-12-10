@@ -1,10 +1,12 @@
+// eslint-disable-next-line no-redeclare
+import { Buffer } from 'buffer/'
+
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 // import { setCompodocJson } from '@storybook/addon-docs/angular'
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-// eslint-disable-next-line import/extensions, import/no-unresolved
 import docJson from '../documentation.json'
 
 if (docJson) {
@@ -39,15 +41,17 @@ if (docJson) {
 
   // objStripDefaultValue(docJson)
 
+  // TODO: Update the filters. They are a mess and may not even be correct.
+
   // eslint-disable-next-line no-inner-declarations
   function filterObject(obj, key) {
     for (const i in obj) {
-        if (!Object.prototype.hasOwnProperty.call(obj, i)) continue
-        if (i === key) {
-            delete obj[key]
-        } else if (typeof obj[i] === 'object') {
-            filterObject(obj[i], key)
-        }
+      if (!Object.prototype.hasOwnProperty.call(obj, i)) continue
+      if (i === key) {
+        delete obj[key]
+      } else if (typeof obj[i] === 'object') {
+        filterObject(obj[i], key)
+      }
     }
     return obj
   }
@@ -185,11 +189,13 @@ export const parameters = {
   docs: {
     inlineStories: false,
     source: {
-      type: 'dynamic'
-    }
-  }
+      type: 'dynamic',
+    },
+  },
 }
 
 // export const decorators = []
 
-global.Buffer = global.Buffer || require('buffer').Buffer
+global.Buffer = global.Buffer || Buffer
+
+export const tags = ['autodocs']

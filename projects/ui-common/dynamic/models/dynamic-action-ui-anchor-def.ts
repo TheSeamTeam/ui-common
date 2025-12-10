@@ -11,7 +11,6 @@ import { DynamicValue } from './dynamic-value'
  * there will not be a high priority on keeping this backwards compatibile yet.
  */
 export interface DynamicActionUiAnchorDef extends DynamicActionUiDef {
-
   triggerType: 'link' | 'link-external' | 'link-asset'
 
   /**
@@ -39,5 +38,4 @@ export interface DynamicActionUiAnchorDef extends DynamicActionUiDef {
     replaceUrl?: boolean
     state?: { [k: string]: any }
   }
-
 }

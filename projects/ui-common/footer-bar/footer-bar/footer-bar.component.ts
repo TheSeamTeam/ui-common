@@ -4,6 +4,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core'
   selector: 'seam-footer-bar',
   templateUrl: './footer-bar.component.html',
   styleUrls: ['./footer-bar.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FooterBarComponent { }
+export class FooterBarComponent {}

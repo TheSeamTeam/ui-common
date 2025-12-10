@@ -1,5 +1,10 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
-import { BaseHarnessFilters, ComponentHarnessConstructor, ContentContainerComponentHarness, HarnessPredicate } from '@angular/cdk/testing'
+import {
+  BaseHarnessFilters,
+  ComponentHarnessConstructor,
+  ContentContainerComponentHarness,
+  HarnessPredicate,
+} from '@angular/cdk/testing'
 
 import { TheSeamMenuHarness } from './menu.harness'
 import { animatingWait } from './utils'
@@ -7,9 +12,9 @@ import { animatingWait } from './utils'
 /** A set of criteria that can be used to filter a list of `TheSeamMenuItemHarness` instances. */
 export interface TheSeamMenuItemHarnessFilters extends BaseHarnessFilters {
   /** Only find instances whose text matches the given value. */
-  text?: string | RegExp;
+  text?: string | RegExp
   /** Only find instances that have a sub-menu. */
-  hasSubmenu?: boolean;
+  hasSubmenu?: boolean
 }
 
 export class TheSeamMenuItemHarness extends ContentContainerComponentHarness<string> {
@@ -32,7 +37,8 @@ export class TheSeamMenuItemHarness extends ContentContainerComponentHarness<str
       .addOption(
         'hasSubmenu',
         options.hasSubmenu,
-        async (harness, hasSubmenu) => (await harness.hasSubmenu()) === hasSubmenu,
+        async (harness, hasSubmenu) =>
+          (await harness.hasSubmenu()) === hasSubmenu,
       )
   }
 

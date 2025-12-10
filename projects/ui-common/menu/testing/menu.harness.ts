@@ -9,15 +9,24 @@ import {
   BaseHarnessFilters,
 } from '@angular/cdk/testing'
 
-import { TheSeamMenuItemHarness, TheSeamMenuItemHarnessFilters } from './menu-item.harness'
-import { TheSeamMenuFooterHarness, TheSeamMenuFooterHarnessFilters } from './menu-footer.harness'
-import { TheSeamMenuHeaderHarness, TheSeamMenuHeaderHarnessFilters } from './menu-header.harness'
+import {
+  TheSeamMenuItemHarness,
+  TheSeamMenuItemHarnessFilters,
+} from './menu-item.harness'
+import {
+  TheSeamMenuFooterHarness,
+  TheSeamMenuFooterHarnessFilters,
+} from './menu-footer.harness'
+import {
+  TheSeamMenuHeaderHarness,
+  TheSeamMenuHeaderHarnessFilters,
+} from './menu-header.harness'
 import { animatingWait } from './utils'
 
 /** A set of criteria that can be used to filter a list of `TheSeamMenuHarness` instances. */
 export interface TheSeamMenuHarnessFilters extends BaseHarnessFilters {
   /** Only find instances whose trigger text matches the given value. */
-  triggerText?: string | RegExp;
+  triggerText?: string | RegExp
 }
 
 export class TheSeamMenuHarness extends ContentContainerComponentHarness<string> {
@@ -38,7 +47,8 @@ export class TheSeamMenuHarness extends ContentContainerComponentHarness<string>
     return new HarnessPredicate(this, options).addOption(
       'triggerText',
       options.triggerText,
-      (harness, text) => HarnessPredicate.stringMatches(harness.getTriggerText(), text),
+      (harness, text) =>
+        HarnessPredicate.stringMatches(harness.getTriggerText(), text),
     )
   }
 
@@ -131,9 +141,13 @@ export class TheSeamMenuHarness extends ContentContainerComponentHarness<string>
 
     const menu = await items[0].getSubmenu()
     if (!menu) {
-      throw Error(`Item matching ${JSON.stringify(itemFilter)} does not have a submenu`)
+      throw Error(
+        `Item matching ${JSON.stringify(itemFilter)} does not have a submenu`,
+      )
     }
-    return menu.clickItem(...(subItemFilters as [Omit<TheSeamMenuItemHarnessFilters, 'ancestor'>]))
+    return menu.clickItem(
+      ...(subItemFilters as [Omit<TheSeamMenuItemHarnessFilters, 'ancestor'>]),
+    )
   }
 
   /**
@@ -160,9 +174,13 @@ export class TheSeamMenuHarness extends ContentContainerComponentHarness<string>
 
     const menu = await items[0].getSubmenu()
     if (!menu) {
-      throw Error(`Item matching ${JSON.stringify(itemFilter)} does not have a submenu`)
+      throw Error(
+        `Item matching ${JSON.stringify(itemFilter)} does not have a submenu`,
+      )
     }
-    return menu.hoverItem(...(subItemFilters as [Omit<TheSeamMenuItemHarnessFilters, 'ancestor'>]))
+    return menu.hoverItem(
+      ...(subItemFilters as [Omit<TheSeamMenuItemHarnessFilters, 'ancestor'>]),
+    )
   }
 
   /**
@@ -211,7 +229,9 @@ export class TheSeamMenuHarness extends ContentContainerComponentHarness<string>
   /** Gets the menu panel associated with this menu. */
   private async _getMenuPanel(): Promise<TestElement | null> {
     const panelId = await this._getPanelId()
-    return panelId ? this._documentRootLocator.locatorForOptional(`#${panelId}`)() : null
+    return panelId
+      ? this._documentRootLocator.locatorForOptional(`#${panelId}`)()
+      : null
   }
 
   /** Gets the id of the menu panel associated with this menu. */
@@ -219,5 +239,4 @@ export class TheSeamMenuHarness extends ContentContainerComponentHarness<string>
     const panelId = await (await this.host()).getAttribute('aria-controls')
     return panelId || null
   }
-
 }

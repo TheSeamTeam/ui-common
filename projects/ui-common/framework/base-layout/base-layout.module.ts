@@ -1,39 +1,26 @@
-import { PortalModule } from '@angular/cdk/portal'
-import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
-
-import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
-import { TheSeamIconModule } from '@theseam/ui-common/icon'
-import { TheSeamScrollbarModule } from '@theseam/ui-common/scrollbar'
 
 import { TheSeamBaseLayoutComponent } from './base-layout.component'
 import { BaseLayoutContentFooterDirective } from './directives/base-layout-content-footer.directive'
 import { BaseLayoutContentHeaderDirective } from './directives/base-layout-content-header.directive'
 import { BaseLayoutContentDirective } from './directives/base-layout-content.directive'
-import { BaseLayoutNavToggleDirective } from './directives/base-layout-nav-toggle.directive'
+import { TheSeamBaseLayoutNavToggleDirective } from './directives/base-layout-nav-toggle.directive'
 import { BaseLayoutSideBarFooterDirective } from './directives/base-layout-side-bar-footer.directive'
 import { BaseLayoutSideBarHeaderDirective } from './directives/base-layout-side-bar-header.directive'
 import { BaseLayoutSideBarDirective } from './directives/base-layout-side-bar.directive'
 import { BaseLayoutTopBarDirective } from './directives/base-layout-top-bar.directive'
 
 @NgModule({
-  declarations: [
+  imports: [
     TheSeamBaseLayoutComponent,
     BaseLayoutContentDirective,
     BaseLayoutSideBarDirective,
     BaseLayoutSideBarFooterDirective,
     BaseLayoutSideBarHeaderDirective,
     BaseLayoutTopBarDirective,
-    BaseLayoutNavToggleDirective,
+    TheSeamBaseLayoutNavToggleDirective,
     BaseLayoutContentHeaderDirective,
-    BaseLayoutContentFooterDirective
-  ],
-  imports: [
-    CommonModule,
-    PortalModule,
-    TheSeamScrollbarModule,
-    TheSeamIconModule,
-    TheSeamButtonsModule
+    BaseLayoutContentFooterDirective,
   ],
   exports: [
     TheSeamBaseLayoutComponent,
@@ -42,9 +29,9 @@ import { BaseLayoutTopBarDirective } from './directives/base-layout-top-bar.dire
     BaseLayoutSideBarFooterDirective,
     BaseLayoutSideBarHeaderDirective,
     BaseLayoutTopBarDirective,
-    BaseLayoutNavToggleDirective,
+    TheSeamBaseLayoutNavToggleDirective,
     BaseLayoutContentHeaderDirective,
-    BaseLayoutContentFooterDirective
-  ]
+    BaseLayoutContentFooterDirective,
+  ],
 })
-export class TheSeamBaseLayoutModule { }
+export class TheSeamBaseLayoutModule {}

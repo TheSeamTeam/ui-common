@@ -1,52 +1,72 @@
 import { Meta, StoryObj } from '@storybook/angular'
+import { expect } from 'storybook/test'
 
-import { expectFn, getHarness } from '@theseam/ui-common/testing'
+import { getHarness } from '@theseam/ui-common/testing'
 
-import { TheSeamVerticalListFilterComponent, FILTER_VALUES } from './vertical-list-filter.component'
+import {
+  TheSeamVerticalListFilterComponent,
+  FILTER_VALUES,
+} from './vertical-list-filter.component'
 import { TheSeamVerticalListFilterHarness } from './testing/vertical-list-filter.harness'
 
-const meta: Meta = {
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+interface ExtraArgs {}
+
+type StoryComponentType = TheSeamVerticalListFilterComponent & ExtraArgs
+
+const meta: Meta<StoryComponentType> = {
   title: 'VerticalListFilter/Components',
   component: TheSeamVerticalListFilterComponent,
   argTypes: {
-    filterValue: { theme: { control: 'select', options: [ undefined, FILTER_VALUES ] } },
-  }
+    filterValue: {
+      theme: { control: 'select', options: [undefined, FILTER_VALUES] },
+    },
+  },
 }
 
 export default meta
-type Story = StoryObj<TheSeamVerticalListFilterComponent>
+type Story = StoryObj<StoryComponentType>
 
 export const Basic: Story = {
   play: async ({ canvasElement, fixture }) => {
-    const alfHarness = await getHarness(TheSeamVerticalListFilterHarness, { canvasElement, fixture })
-    await expectFn(await alfHarness.hasClearOption()).toBe(true)
-    await expectFn(await alfHarness.filterValue()).toBe(undefined)
-  }
+    const alfHarness = await getHarness(TheSeamVerticalListFilterHarness, {
+      canvasElement,
+      fixture,
+    })
+    await expect(await alfHarness.hasClearOption()).toBe(true)
+    await expect(await alfHarness.filterValue()).toBe(undefined)
+  },
 }
 
 export const SelectValue: Story = {
   play: async ({ canvasElement, fixture }) => {
-    const alfHarness = await getHarness(TheSeamVerticalListFilterHarness, { canvasElement, fixture })
-    await expectFn(await alfHarness.filterValue()).toBe(undefined)
+    const alfHarness = await getHarness(TheSeamVerticalListFilterHarness, {
+      canvasElement,
+      fixture,
+    })
+    await expect(await alfHarness.filterValue()).toBe(undefined)
     await alfHarness.clickValue('A')
-    await expectFn(await alfHarness.filterValue()).toBe('A')
-  }
+    await expect(await alfHarness.filterValue()).toBe('A')
+  },
 }
 
 export const UnselectValue: Story = {
   args: {
-    filterValue: 'A'
+    filterValue: 'A',
   },
   play: async ({ canvasElement, fixture }) => {
-    const alfHarness = await getHarness(TheSeamVerticalListFilterHarness, { canvasElement, fixture })
-    await expectFn(await alfHarness.filterValue()).toBe('A')
+    const alfHarness = await getHarness(TheSeamVerticalListFilterHarness, {
+      canvasElement,
+      fixture,
+    })
+    await expect(await alfHarness.filterValue()).toBe('A')
     await alfHarness.clickValue('A')
-    await expectFn(await alfHarness.filterValue()).toBe(undefined)
+    await expect(await alfHarness.filterValue()).toBe(undefined)
     await alfHarness.clickValue('A')
-    await expectFn(await alfHarness.filterValue()).toBe('A')
+    await expect(await alfHarness.filterValue()).toBe('A')
     await alfHarness.clearFilter()
-    await expectFn(await alfHarness.filterValue()).toBe(undefined)
-  }
+    await expect(await alfHarness.filterValue()).toBe(undefined)
+  },
 }
 
 export const WithoutClearOption: Story = {
@@ -54,7 +74,10 @@ export const WithoutClearOption: Story = {
     showClearOption: false,
   },
   play: async ({ canvasElement, fixture }) => {
-    const alfHarness = await getHarness(TheSeamVerticalListFilterHarness, { canvasElement, fixture })
-    await expectFn(await alfHarness.hasClearOption()).toBe(false)
-  }
+    const alfHarness = await getHarness(TheSeamVerticalListFilterHarness, {
+      canvasElement,
+      fixture,
+    })
+    await expect(await alfHarness.hasClearOption()).toBe(false)
+  },
 }

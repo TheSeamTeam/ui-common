@@ -10,9 +10,7 @@ import { TheSeamTableCellTplDirective } from './table-cell-tpl.directive'
 import { TheSeamTableColumnHeaderTplDirective } from './table-column-header-tpl.directive'
 
 @NgModule({
-  declarations: [
-    TableComponent
-  ],
+  declarations: [TableComponent],
   imports: [
     CommonModule,
     CdkTableModule,
@@ -26,6 +24,6 @@ import { TheSeamTableColumnHeaderTplDirective } from './table-column-header-tpl.
     TheSeamTableColumnComponent,
     TheSeamTableCellTplDirective,
     TheSeamTableColumnHeaderTplDirective,
-  ]
+  ],
 })
-export class TheSeamTableModule { }
+export class TheSeamTableModule {}

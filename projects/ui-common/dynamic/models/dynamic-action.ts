@@ -3,9 +3,12 @@ import { DynamicActionDef } from './dynamic-action-def'
 import { DynamicActionUiDef } from './dynamic-action-ui-def'
 import { DynamicValue } from './dynamic-value'
 
-export interface DynamicAction<T extends string, D extends DynamicActionContext = any, R = any,
-   TActionDef extends DynamicActionDef<T> = any> {
-
+export interface DynamicAction<
+  T extends string,
+  D extends DynamicActionContext = any,
+  R = any,
+  TActionDef extends DynamicActionDef<T> = any,
+> {
   readonly type: T
 
   // TODO: Is this neccessary? It is basically just a default lavel for the
@@ -23,5 +26,4 @@ export interface DynamicAction<T extends string, D extends DynamicActionContext 
   execSync?: (args: TActionDef, context: D) => R
 
   getUiProps?: (args: TActionDef, context: D) => Promise<DynamicActionUiDef>
-
 }

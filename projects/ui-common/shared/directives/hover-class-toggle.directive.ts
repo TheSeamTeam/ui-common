@@ -1,8 +1,14 @@
-import { Directive, ElementRef, HostListener, Input } from '@angular/core'
+import {
+  Directive,
+  ElementRef,
+  HostListener,
+  inject,
+  Input,
+} from '@angular/core'
 
 declare type _PointerEvent = PointerEvent | PointerEvent
 
-export interface IHoverClassToggleRecord {
+export interface TheSeamHoverClassToggleRecord {
   default: string
   hover: string
 }
@@ -18,9 +24,11 @@ export interface IHoverClassToggleRecord {
  * containing this directive.
  */
 @Directive({
-  selector: '[seamHoverClassToggle]'
+  selector: '[seamHoverClassToggle]',
+  exportAs: 'seamHoverClassToggle',
 })
-export class HoverClassToggleDirective {
+export class TheSeamHoverClassToggleDirective {
+  private readonly _elementRef = inject(ElementRef<HTMLElement>)
 
   private _hovered = false
   private _defaultClasses: string[] = []
@@ -34,7 +42,9 @@ export class HoverClassToggleDirective {
     this._setHovered(false)
   }
 
-  @HostListener('pointerover', ['$event']) onPointerOver($event: _PointerEvent) {
+  @HostListener('pointerover', ['$event']) onPointerOver(
+    $event: _PointerEvent,
+  ) {
     this._setHovered(true)
   }
 
@@ -43,31 +53,39 @@ export class HoverClassToggleDirective {
   }
 
   @Input()
-  set seamHoverClassToggle(value: IHoverClassToggleRecord) {
+  set seamHoverClassToggle(value: TheSeamHoverClassToggleRecord) {
     if (value) {
       if (value.default) {
-        this._defaultClasses = value.default.split(' ').filter(c => c.length > 0)
+        this._defaultClasses = value.default
+          .split(' ')
+          .filter((c) => c.length > 0)
       }
       if (value.hover) {
-        this._hoverClasses = value.hover.split(' ').filter(c => c.length > 0)
+        this._hoverClasses = value.hover.split(' ').filter((c) => c.length > 0)
       }
     }
 
-    this._hoverClasses = this._hoverClasses.filter(v => !this._defaultClasses.find(_v => _v === v))
+    this._hoverClasses = this._hoverClasses.filter(
+      (v) => !this._defaultClasses.find((_v) => _v === v),
+    )
 
     this._update()
   }
 
-  constructor(
-    private readonly _element: ElementRef
-  ) { }
-
   private _update(): void {
     for (const c of this._defaultClasses) {
-      this._hovered ? this._removeClass(c) : this._addClass(c)
+      if (this._hovered) {
+        this._removeClass(c)
+      } else {
+        this._addClass(c)
+      }
     }
     for (const c of this._hoverClasses) {
-      this._hovered ? this._addClass(c) : this._removeClass(c)
+      if (this._hovered) {
+        this._addClass(c)
+      } else {
+        this._removeClass(c)
+      }
     }
   }
 
@@ -80,11 +98,10 @@ export class HoverClassToggleDirective {
   }
 
   private _addClass(c: string): void {
-    this._element.nativeElement.classList.add(c)
+    this._elementRef.nativeElement.classList.add(c)
   }
 
   public _removeClass(c: string): void {
-    this._element.nativeElement.classList.remove(c)
+    this._elementRef.nativeElement.classList.remove(c)
   }
-
 }

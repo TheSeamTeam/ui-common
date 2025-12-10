@@ -1,4 +1,10 @@
-import { Inject, Injectable, InjectionToken, Optional, inject } from '@angular/core'
+import {
+  Inject,
+  Injectable,
+  InjectionToken,
+  Optional,
+  inject,
+} from '@angular/core'
 
 import { Framework } from '@ajsf/core'
 
@@ -15,16 +21,28 @@ import { TheSeamSchemaFormTiledSelectComponent } from '../schema-form-controls/s
 import { TheSeamSchemaFormFrameworkComponent } from './schema-form-framework.component'
 import { hasProperty } from '@theseam/ui-common/utils'
 
-export type TheSeamSchemaFormFrameworkOverrides = Omit<Framework, 'name' | 'framework' | 'stylesheet' | 'scripts'>
+export type TheSeamSchemaFormFrameworkOverrides = Omit<
+  Framework,
+  'name' | 'framework' | 'stylesheet' | 'scripts'
+>
 
-export const THESEAM_SCHEMA_FRAMEWORK_OVERRIDES = new InjectionToken<TheSeamSchemaFormFrameworkOverrides>('THESEAM_SCHEMA_FRAMEWORK_OVERRIDES')
+export const THESEAM_SCHEMA_FRAMEWORK_OVERRIDES =
+  new InjectionToken<TheSeamSchemaFormFrameworkOverrides>(
+    'THESEAM_SCHEMA_FRAMEWORK_OVERRIDES',
+  )
 
-export function extendFramework(toExtend: Framework, extendFrameworkOrName: Framework | string): void {
+export function extendFramework(
+  toExtend: Framework,
+  extendFrameworkOrName: Framework | string,
+): void {
   // console.log('extendFramework', toExtend, extendFrameworkOrName)
-  const _overrides: Framework[] | null = inject(Framework, { optional: true }) as Framework[] | null
-  const overrides = typeof extendFrameworkOrName === 'string'
-    ? (_overrides || []).filter(x => x.name === extendFrameworkOrName)
-    : [ extendFrameworkOrName ]
+  const _overrides: Framework[] | null = inject(Framework, {
+    optional: true,
+  }) as Framework[] | null
+  const overrides =
+    typeof extendFrameworkOrName === 'string'
+      ? (_overrides || []).filter((x) => x.name === extendFrameworkOrName)
+      : [extendFrameworkOrName]
 
   // console.log(_overrides, overrides)
 
@@ -40,7 +58,10 @@ export function extendFramework(toExtend: Framework, extendFrameworkOrName: Fram
       }
 
       if (hasProperty(override, 'stylesheets')) {
-        toExtend.stylesheets = { ...toExtend.stylesheets, ...override.stylesheets }
+        toExtend.stylesheets = {
+          ...toExtend.stylesheets,
+          ...override.stylesheets,
+        }
       }
 
       if (hasProperty(override, 'scripts')) {
@@ -57,15 +78,15 @@ export class TheSeamFramework extends Framework {
   framework = TheSeamSchemaFormFrameworkComponent
 
   widgets = {
-    'checkbox': TheSeamSchemaFormCheckboxComponent,
+    checkbox: TheSeamSchemaFormCheckboxComponent,
     // 'submit': TheSeamSchemaFormSubmitComponent,
-    'submit': TheSeamSchemaFormSubmitSplitComponent,
-    'text': TheSeamSchemaFormInputComponent,
-    'number': TheSeamSchemaFormNumberComponent,
-    'select': TheSeamSchemaFormSelectComponent,
-    'divider': TheSeamSchemaFormDividerComponent,
-    'tel': TheSeamSchemaFormTelComponent,
-    'tiled-select': TheSeamSchemaFormTiledSelectComponent
+    submit: TheSeamSchemaFormSubmitSplitComponent,
+    text: TheSeamSchemaFormInputComponent,
+    number: TheSeamSchemaFormNumberComponent,
+    select: TheSeamSchemaFormSelectComponent,
+    divider: TheSeamSchemaFormDividerComponent,
+    tel: TheSeamSchemaFormTelComponent,
+    'tiled-select': TheSeamSchemaFormTiledSelectComponent,
 
     // 'date': // TODO: Implement
     // 'file': // TODO: Implement
@@ -78,7 +99,9 @@ export class TheSeamFramework extends Framework {
   }
 
   constructor(
-    @Optional() @Inject(THESEAM_SCHEMA_FRAMEWORK_OVERRIDES) _overrides?: TheSeamSchemaFormFrameworkOverrides[]
+    @Optional()
+    @Inject(THESEAM_SCHEMA_FRAMEWORK_OVERRIDES)
+    _overrides?: TheSeamSchemaFormFrameworkOverrides[],
   ) {
     super()
 

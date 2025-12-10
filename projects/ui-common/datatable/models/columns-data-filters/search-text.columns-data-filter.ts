@@ -1,12 +1,30 @@
-import { ColumnsDataFilter, ColumnsDataFilterState } from "../columns-data-filter";
-import { TheSeamDatatableColumn } from "../table-column";
-import { FormControl, FormGroup } from "@angular/forms";
-import { DataFilterState } from "@theseam/ui-common/data-filters";
-import { isNullOrUndefined, isNullOrUndefinedOrEmpty, notNullOrUndefined, notNullOrUndefinedOrEmpty } from "@theseam/ui-common/utils";
-import { Observable, Subject, map, startWith } from "rxjs";
-import { TheSeamColumnsDataFilterTextSearchFormState, TheSeamColumnsDataFilterTextSearchForm, THESEAM_COLUMNS_DATA_FILTER_TEXT_SEARCH_NAME, TheSeamColumnsDataFilterTextSearchType, THESEAM_COLUMNS_DATA_FILTER_TEXT_TEXT_SEARCH_TYPES, THESEAM_COLUMNS_DATA_FILTER_TEXT_SELECT_SEARCH_TYPES } from "./models";
+import {
+  ColumnsDataFilter,
+  ColumnsDataFilterState,
+} from '../columns-data-filter'
+import { TheSeamDatatableColumn } from '../table-column'
+import { FormControl, FormGroup } from '@angular/forms'
+import { DataFilterState } from '@theseam/ui-common/data-filters'
+import {
+  isNullOrUndefined,
+  isNullOrUndefinedOrEmpty,
+  notNullOrUndefined,
+  notNullOrUndefinedOrEmpty,
+} from '@theseam/ui-common/utils'
+import { Observable, Subject, map, startWith } from 'rxjs'
+import {
+  TheSeamColumnsDataFilterTextSearchFormState,
+  TheSeamColumnsDataFilterTextSearchForm,
+  THESEAM_COLUMNS_DATA_FILTER_TEXT_SEARCH_NAME,
+  TheSeamColumnsDataFilterTextSearchType,
+  THESEAM_COLUMNS_DATA_FILTER_TEXT_TEXT_SEARCH_TYPES,
+  THESEAM_COLUMNS_DATA_FILTER_TEXT_SELECT_SEARCH_TYPES,
+} from './models'
 
-export class SearchTextColumnsDataFilter extends ColumnsDataFilter<TheSeamColumnsDataFilterTextSearchFormState, TheSeamColumnsDataFilterTextSearchForm> {
+export class SearchTextColumnsDataFilter extends ColumnsDataFilter<
+  TheSeamColumnsDataFilterTextSearchFormState,
+  TheSeamColumnsDataFilterTextSearchForm
+> {
   public readonly name = THESEAM_COLUMNS_DATA_FILTER_TEXT_SEARCH_NAME
 
   public readonly uid: string
@@ -17,18 +35,25 @@ export class SearchTextColumnsDataFilter extends ColumnsDataFilter<TheSeamColumn
 
   public options: any
 
-  private _updateFilterValue = new Subject<void>
+  private _updateFilterValue = new Subject<void>()
 
   constructor(
     prop: string,
     initialValue: TheSeamColumnsDataFilterTextSearchFormState,
-    column: TheSeamDatatableColumn
+    column: TheSeamDatatableColumn,
   ) {
     super(prop, initialValue, column)
 
     this.form = new FormGroup({
-      searchType: new FormControl<TheSeamColumnsDataFilterTextSearchType | null>(notNullOrUndefined(initialValue) ? initialValue.searchType : 'contains'),
-      searchText: new FormControl<string | null>(notNullOrUndefined(initialValue) ? initialValue.searchText : null),
+      searchType:
+        new FormControl<TheSeamColumnsDataFilterTextSearchType | null>(
+          notNullOrUndefined(initialValue)
+            ? initialValue.searchType
+            : 'contains',
+        ),
+      searchText: new FormControl<string | null>(
+        notNullOrUndefined(initialValue) ? initialValue.searchText : null,
+      ),
       // caseSensitive: new FormControl<boolean | null>(notNullOrUndefined(initialValue) ? initialValue.caseSensitive : null),
     })
 
@@ -36,24 +61,38 @@ export class SearchTextColumnsDataFilter extends ColumnsDataFilter<TheSeamColumn
 
     this.filterStateChanges = this._updateFilterValue.pipe(
       startWith(undefined),
-      map(() => this.filterState())
+      map(() => this.filterState()),
     )
   }
 
-  public dataFilter(data: any[], filterValue: Partial<TheSeamColumnsDataFilterTextSearchFormState>, options: any): any[] {
+  public dataFilter(
+    data: any[],
+    filterValue: Partial<TheSeamColumnsDataFilterTextSearchFormState>,
+    options: any,
+  ): any[] {
     if (isNullOrUndefined(filterValue) || this.isDefault()) {
       return data
     }
 
-    return this._textSearchDataFilter(this.prop, data, filterValue.searchText, filterValue.searchType || null)
+    return this._textSearchDataFilter(
+      this.prop,
+      data,
+      filterValue.searchText,
+      filterValue.searchType || null,
+    )
   }
 
-  private _textSearchDataFilter(prop: string, data: any[], text: string | null | undefined, comparator: TheSeamColumnsDataFilterTextSearchType | null) {
+  private _textSearchDataFilter(
+    prop: string,
+    data: any[],
+    text: string | null | undefined,
+    comparator: TheSeamColumnsDataFilterTextSearchType | null,
+  ) {
     if (!data || data.length < 0 || isNullOrUndefined(comparator)) {
       return data
     }
 
-    return data.filter(item => {
+    return data.filter((item) => {
       let value1 = `${notNullOrUndefined(item[prop]) ? item[prop] : ''}`
       let value2 = text || ''
 
@@ -83,7 +122,7 @@ export class SearchTextColumnsDataFilter extends ColumnsDataFilter<TheSeamColumn
   public filter(data: any[]): Observable<any[]> {
     return this._updateFilterValue.pipe(
       startWith(undefined),
-      map(() => this.dataFilter(data, this.form.value, undefined))
+      map(() => this.dataFilter(data, this.form.value, undefined)),
     )
   }
 
@@ -93,7 +132,7 @@ export class SearchTextColumnsDataFilter extends ColumnsDataFilter<TheSeamColumn
       state: {
         prop: this.prop,
         formValue: this.form.value,
-      }
+      },
     }
   }
 
@@ -116,15 +155,21 @@ export class SearchTextColumnsDataFilter extends ColumnsDataFilter<TheSeamColumn
 
     if (isNullOrUndefinedOrEmpty(formValue.searchType)) {
       return true
-    }
-    else if (THESEAM_COLUMNS_DATA_FILTER_TEXT_TEXT_SEARCH_TYPES.includes(formValue.searchType) && notNullOrUndefinedOrEmpty(formValue.searchText)) {
+    } else if (
+      THESEAM_COLUMNS_DATA_FILTER_TEXT_TEXT_SEARCH_TYPES.includes(
+        formValue.searchType,
+      ) &&
+      notNullOrUndefinedOrEmpty(formValue.searchText)
+    ) {
       return false
-    }
-    else if (THESEAM_COLUMNS_DATA_FILTER_TEXT_SELECT_SEARCH_TYPES.includes(formValue.searchType)) {
+    } else if (
+      THESEAM_COLUMNS_DATA_FILTER_TEXT_SELECT_SEARCH_TYPES.includes(
+        formValue.searchType,
+      )
+    ) {
       return false
     }
 
     return true
   }
-
 }

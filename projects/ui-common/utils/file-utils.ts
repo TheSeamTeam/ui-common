@@ -11,7 +11,9 @@ export function readFileAsync(file: any): Promise<ArrayBuffer | null> {
   })
 }
 
-export async function readFileAsDataUrlAsync(file: Blob): Promise<string | null> {
+export async function readFileAsDataUrlAsync(
+  file: Blob,
+): Promise<string | null> {
   return new Promise<string | null>((resolve, reject) => {
     const reader = new FileReader()
     reader.onload = () => {
@@ -23,17 +25,17 @@ export async function readFileAsDataUrlAsync(file: Blob): Promise<string | null>
 
 export async function fileBufferToBlob(
   fileBuffer: Buffer,
-  defaultMime: string = 'application/octet-stream'
+  defaultMime: string = 'application/octet-stream',
 ): Promise<Blob> {
   const fType = fileType(fileBuffer)
-  const mime = (fType) ? fType.mime : defaultMime
+  const mime = fType ? fType.mime : defaultMime
   const blob = new Blob([fileBuffer as any], { type: mime })
   return blob
 }
 
 export async function fileBufferToObjectUrl(
   fileBuffer: Buffer,
-  defaultMime: string = 'application/octet-stream'
+  defaultMime: string = 'application/octet-stream',
 ): Promise<string> {
   const file = await fileBufferToBlob(fileBuffer, defaultMime)
   const fileURL = URL.createObjectURL(file)
@@ -48,9 +50,9 @@ export interface IFileData {
 
 export async function fileDataFromBuffer(
   fileBuffer: Buffer | Uint8Array | ArrayBuffer,
-  defaultMime: string = 'application/octet-stream'
+  defaultMime: string = 'application/octet-stream',
 ): Promise<IFileData> {
-  const _fileBuffer = Buffer.from(fileBuffer)
+  const _fileBuffer = Buffer.from(fileBuffer as any) // TODO: Fix type
   const fType = fileType(_fileBuffer as any)
   const ext = (fType && fType.ext) || undefined
   const mime = fType ? fType.mime : defaultMime

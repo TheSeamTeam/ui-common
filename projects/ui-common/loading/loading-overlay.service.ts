@@ -1,21 +1,18 @@
 import { Overlay, OverlayRef } from '@angular/cdk/overlay'
 import { ComponentPortal } from '@angular/cdk/portal'
-import { Injectable } from '@angular/core'
+import { inject, Injectable } from '@angular/core'
 import { Observable, throwError } from 'rxjs'
 import { catchError, finalize, tap } from 'rxjs/operators'
 
 import { TheSeamLoadingComponent } from './loading/loading.component'
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class TheSeamLoadingOverlayService {
+  private readonly _overlay = inject(Overlay)
 
   private _enabled = false
 
   private _overlayRef?: OverlayRef
-
-  constructor(
-    private _overlay: Overlay
-  ) { }
 
   get enabled(): boolean {
     return this._enabled
@@ -31,12 +28,14 @@ export class TheSeamLoadingOverlayService {
   }
 
   public enable() {
-    if (this.enabled) { return }
+    if (this.enabled) {
+      return
+    }
 
     this._overlayRef = this._overlay.create({
       hasBackdrop: false,
       width: '100%',
-      height: '100%'
+      height: '100%',
     })
     this._overlayRef.attach(new ComponentPortal(TheSeamLoadingComponent))
 
@@ -44,7 +43,9 @@ export class TheSeamLoadingOverlayService {
   }
 
   public disable() {
-    if (!this.enabled) { return }
+    if (!this.enabled) {
+      return
+    }
 
     this._overlayRef?.dispose()
 
@@ -53,15 +54,13 @@ export class TheSeamLoadingOverlayService {
 
   public while<T = any>(source: Observable<T>): Observable<T> {
     this.enable()
-    return source
-      .pipe(
-        tap(() => this.disable()),
-        catchError(err => {
-          this.disable()
-          return throwError(err)
-        }),
-        finalize(() => this.disable())
-      )
+    return source.pipe(
+      tap(() => this.disable()),
+      catchError((err) => {
+        this.disable()
+        return throwError(err)
+      }),
+      finalize(() => this.disable()),
+    )
   }
-
 }

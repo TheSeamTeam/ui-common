@@ -12,7 +12,9 @@ import { withoutProperty } from '../obj-utils'
  * Reads a File, or buffer of file content, in GeoJSON or ESRI Shapefile format
  * and returns a GeoJSON `FeatureCollection`.
  */
-export async function readGeoFile(fileOrBuffer: File | ArrayBuffer | Buffer): Promise<FeatureCollection> {
+export async function readGeoFile(
+  fileOrBuffer: File | ArrayBuffer | Buffer,
+): Promise<FeatureCollection> {
   const buffer = await coerceFileOrBufferToBuffer(fileOrBuffer)
 
   if (isShpFile(buffer)) {
@@ -28,8 +30,8 @@ export async function readGeoFile(fileOrBuffer: File | ArrayBuffer | Buffer): Pr
           // eslint-disable-next-line no-console
           console.warn(
             'Try adding Buffer polyfill.\n' +
-            'Install: npm install buffer\n' +
-            'Add `global.Buffer = global.Buffer || require(\'buffer\').Buffer` to "src/polyfills.ts"'
+              'Install: npm install buffer\n' +
+              'Add `global.Buffer = global.Buffer || require(\'buffer\').Buffer` to "src/polyfills.ts"',
           )
         }
       }
@@ -40,7 +42,9 @@ export async function readGeoFile(fileOrBuffer: File | ArrayBuffer | Buffer): Pr
   return parseGeoJson(buffer)
 }
 
-async function coerceFileOrBufferToBuffer(fileOrBuffer: File | ArrayBuffer | Buffer): Promise<Buffer> {
+async function coerceFileOrBufferToBuffer(
+  fileOrBuffer: File | ArrayBuffer | Buffer,
+): Promise<Buffer> {
   if (fileOrBuffer instanceof File) {
     const arrBuf = await readFileAsync(fileOrBuffer)
     if (arrBuf === null) {
@@ -49,16 +53,18 @@ async function coerceFileOrBufferToBuffer(fileOrBuffer: File | ArrayBuffer | Buf
     return Buffer.from(arrBuf)
   }
 
-  return Buffer.from(fileOrBuffer)
+  return Buffer.from(fileOrBuffer as any) // TODO: Fix type
 }
 
 // NOTE: Our current version of file-type does not detect shp files. We can
 // remove this function when file-types is upgraded.
 function isShpFile(buffer: Buffer): boolean {
-  const header = [ 0x27, 0x0A, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 ]
+  const header = [
+    0x27, 0x0a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  ]
   const offset = 2
 
-  if (buffer.length < (header.length + offset)) {
+  if (buffer.length < header.length + offset) {
     return false
   }
 
@@ -75,11 +81,11 @@ async function parseShpFile(buffer: Buffer): Promise<FeatureCollection> {
   const geometries = await shp.parseShp(buffer, undefined as any)
   const featCollection: FeatureCollection = {
     type: 'FeatureCollection',
-    features: geometries.map(geom => ({
+    features: geometries.map((geom) => ({
       type: 'Feature',
       geometry: geom,
-      properties: { }
-    }))
+      properties: {},
+    })),
   }
   return featCollection
 }

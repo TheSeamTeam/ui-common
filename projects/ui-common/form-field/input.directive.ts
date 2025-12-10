@@ -1,5 +1,15 @@
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion'
-import { Directive, DoCheck, ElementRef, HostBinding, Input, OnChanges, Optional, Self, SimpleChanges } from '@angular/core'
+import {
+  Directive,
+  DoCheck,
+  ElementRef,
+  HostBinding,
+  Input,
+  OnChanges,
+  Optional,
+  Self,
+  SimpleChanges,
+} from '@angular/core'
 import { FormGroupDirective, NgControl, NgForm } from '@angular/forms'
 import { Subject } from 'rxjs'
 
@@ -15,8 +25,10 @@ let nextUniqueId = 0
 @Directive({
   // TODO: Consider removing restriction and instead adding a dev warning. A few
   // inputs in the app need to be changed for this first.
-  selector: 'input[seamInput], textarea[seamInput], ng-select[seamInput], seam-checkbox[seamInput] [ngbRadioGroup], seam-tel-input[seamInput], quill-editor[seamInput], seam-google-maps[seamInput], seam-rich-text[seamInput]',
+  selector:
+    'input[seamInput], textarea[seamInput], ng-select[seamInput], seam-tel-input[seamInput], quill-editor[seamInput], seam-google-maps[seamInput], seam-rich-text[seamInput]',
   exportAs: 'seamInput',
+  standalone: false,
 })
 export class InputDirective implements DoCheck, OnChanges {
   static ngAcceptInputType_required: BooleanInput
@@ -33,23 +45,37 @@ export class InputDirective implements DoCheck, OnChanges {
     return this._isFormControl && this.seamInputSize === 'sm'
   }
   @HostBinding('class.is-invalid') get _isInvalid() {
-    return this.ngControl && this.ngControl.invalid && (this.ngControl.dirty || this.ngControl.touched)
+    return (
+      this.ngControl &&
+      this.ngControl.invalid &&
+      (this.ngControl.dirty || this.ngControl.touched)
+    )
   }
 
-  @HostBinding('attr.id') get _attrId() { return this._isNgSelect() ? undefined : this.id }
-  @HostBinding('attr.placeholder') get _attrPlaceholder() { return this.placeholder }
+  @HostBinding('attr.id') get _attrId() {
+    return this._isNgSelect() ? undefined : this.id
+  }
+  @HostBinding('attr.placeholder') get _attrPlaceholder() {
+    return this.placeholder
+  }
   @HostBinding('attr.aria-describedby') ariaDescribedBy: string | undefined
 
   @Input() seamInputSize: 'sm' | 'normal' = 'normal'
 
   @Input()
-  get id(): string | undefined | null { return this._id }
-  set id(value: string | undefined | null) { this._id = value || this._uid }
+  get id(): string | undefined | null {
+    return this._id
+  }
+  set id(value: string | undefined | null) {
+    this._id = value || this._uid
+  }
   protected _id: string | undefined | null
 
   /** Input type of the element. */
   @Input()
-  get type(): string | undefined | null { return this._type }
+  get type(): string | undefined | null {
+    return this._type
+  }
   set type(value: string | undefined | null) {
     this._type = value || 'text'
     // this._validateType()
@@ -57,8 +83,11 @@ export class InputDirective implements DoCheck, OnChanges {
     // When using Angular inputs, developers are no longer able to set the properties on the native
     // input element. To ensure that bindings for `type` work, we need to sync the setter
     // with the native property. Textarea elements don't support the type property or attribute.
-    if ((!this._isTextarea() && !this._isNgSelect()) /* && getSupportedInputTypes().has(this._type) */) {
-      (this._elementRef.nativeElement as HTMLInputElement).type = this._type
+    if (
+      !this._isTextarea() &&
+      !this._isNgSelect() /* && getSupportedInputTypes().has(this._type) */
+    ) {
+      ;(this._elementRef.nativeElement as HTMLInputElement).type = this._type
     }
   }
   protected _type: string | undefined | null = 'text'
@@ -108,15 +137,17 @@ export class InputDirective implements DoCheck, OnChanges {
 
   public readonly requiredChange = this._requiredChange.asObservable()
   public readonly disabledChange = this._disabledChange.asObservable()
-  public readonly readonlyChange = this._readonlyChange.asObservable
+  public readonly readonlyChange = this._readonlyChange.asObservable()
 
   constructor(
-    public _elementRef: ElementRef<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+    public _elementRef: ElementRef<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
     @Optional() @Self() public ngControl: NgControl,
     @Optional() private _parentForm: NgForm,
     @Optional() private _parentFormGroup: FormGroupDirective,
     // 3rd party support
-    @Optional() private _ngSelect: NgSelectComponent
+    @Optional() private _ngSelect: NgSelectComponent,
   ) {
     // Force setter to be called in case id was not specified.
     // eslint-disable-next-line no-self-assign
@@ -141,7 +172,15 @@ export class InputDirective implements DoCheck, OnChanges {
 
   ngDoCheck() {
     if (this._isNgSelect()) {
-      this._ngSelect.labelForId = this.id
+      // this._ngSelect.labelForId = this.id // No longer possible, do to inputs being signals.
+      // More flaky and less performant than old way of just using the input, but should still work.
+      if (this._ngSelect.labelForId() === null) {
+        const inputElement =
+          this._elementRef.nativeElement.querySelector('.ng-input > input')
+        if (inputElement) {
+          inputElement.id = this.id || ''
+        }
+      }
       this._ngSelect.setDisabledState(this.disabled)
     } else {
       toggleAttribute(this._elementRef.nativeElement, 'required', this.required)
@@ -151,12 +190,13 @@ export class InputDirective implements DoCheck, OnChanges {
 
   /** Should only be textual inputs, but initially our app added to all form controls. */
   protected _shouldHaveFormControlCssClass() {
-    return !this._isSeamCheckbox() &&
+    return (
+      !this._isSeamCheckbox() &&
       !this._isRadioInput() &&
-      !this._isNgbRadioGroup() &&
       !this._isTelInput() &&
       !this._isQuillEditor() &&
       !this._isRichTextEditor()
+    )
   }
 
   /** Determines if the component host is a textarea. */
@@ -171,29 +211,35 @@ export class InputDirective implements DoCheck, OnChanges {
 
   /** Determines if the component host is a seam-checkbox. */
   protected _isSeamCheckbox() {
-    return this._elementRef.nativeElement.nodeName.toLowerCase() === 'seam-checkbox'
+    return (
+      this._elementRef.nativeElement.nodeName.toLowerCase() === 'seam-checkbox'
+    )
   }
 
   /** Determines if the component host is a radio input. */
   protected _isRadioInput() {
-    return this._elementRef.nativeElement.nodeName.toLowerCase() === 'input' &&
+    return (
+      this._elementRef.nativeElement.nodeName.toLowerCase() === 'input' &&
       this._elementRef.nativeElement.type.toLowerCase() === 'radio'
-  }
-
-  protected _isNgbRadioGroup() {
-    return this._elementRef.nativeElement.getAttribute('ngbRadioGroup') !== null
+    )
   }
 
   protected _isTelInput() {
-    return this._elementRef.nativeElement.nodeName.toLowerCase() === 'seam-tel-input'
+    return (
+      this._elementRef.nativeElement.nodeName.toLowerCase() === 'seam-tel-input'
+    )
   }
 
   protected _isQuillEditor() {
-    return this._elementRef.nativeElement.nodeName.toLowerCase() === 'quill-editor'
+    return (
+      this._elementRef.nativeElement.nodeName.toLowerCase() === 'quill-editor'
+    )
   }
 
   protected _isRichTextEditor() {
-    return this._elementRef.nativeElement.nodeName.toLowerCase() === 'seam-rich-text'
+    return (
+      this._elementRef.nativeElement.nodeName.toLowerCase() === 'seam-rich-text'
+    )
   }
 
   /** Focuses the input. */
@@ -214,5 +260,4 @@ export class InputDirective implements DoCheck, OnChanges {
       }
     }
   }
-
 }

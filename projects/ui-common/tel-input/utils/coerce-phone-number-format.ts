@@ -1,14 +1,15 @@
 import { intlTelInputUtils } from '../intl-tel-input'
 import { TelInputNumberFormatName } from '../models/index'
 
-export const THESEAM_DEFAULT_PHONE_NUMBER_FORMAT = intlTelInputUtils.numberFormat.INTERNATIONAL
+export const THESEAM_DEFAULT_PHONE_NUMBER_FORMAT =
+  intlTelInputUtils.numberFormat.INTERNATIONAL
 
 /**
  * Types that should be acceptable in a template.
  */
 export type TheSeamNumberFormatsInput =
   // Enum
-  intlTelInputUtils.numberFormat
+  | intlTelInputUtils.numberFormat
   // Strings matching enum
   | 'E164'
   | 'INTERNATIONAL'
@@ -23,13 +24,13 @@ export type TheSeamNumberFormatsInput =
 
 export function coercePhoneNumberFormat(
   format: TheSeamNumberFormatsInput,
-  defaultFormat = THESEAM_DEFAULT_PHONE_NUMBER_FORMAT
+  defaultFormat = THESEAM_DEFAULT_PHONE_NUMBER_FORMAT,
 ): intlTelInputUtils.numberFormat {
   let res = defaultFormat
 
   if (typeof format === 'string') {
     const _format = TelInputNumberFormatName[`${format}`.trim().toUpperCase()]
-    res = (_format === undefined || _format === null) ? defaultFormat : _format
+    res = _format === undefined || _format === null ? defaultFormat : _format
   } else if (typeof format === 'number') {
     // We could check for a number range, but I think it is safer to assume it's
     // valid if a number was provided. A number most likely means the value came

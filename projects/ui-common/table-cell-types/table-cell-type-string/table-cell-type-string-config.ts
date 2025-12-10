@@ -1,11 +1,16 @@
-import { DynamicActionLinkDef, DynamicActionModalDef, DynamicValue } from '@theseam/ui-common/dynamic'
+import {
+  DynamicActionLinkDef,
+  DynamicActionModalDef,
+  DynamicValue,
+} from '@theseam/ui-common/dynamic'
 import { TableCellTypeConfig } from '@theseam/ui-common/table-cell-type'
 
 export type TableCellTypeStringConfigAction =
-  DynamicActionLinkDef |
-  DynamicActionModalDef
+  | DynamicActionLinkDef
+  | DynamicActionModalDef
 
-export interface TableCellTypeConfigString extends TableCellTypeConfig<'string'> {
+export interface TableCellTypeConfigString
+  extends TableCellTypeConfig<'string'> {
   action?: TableCellTypeStringConfigAction
 
   /**
@@ -24,5 +29,4 @@ export interface TableCellTypeConfigString extends TableCellTypeConfig<'string'>
    */
   // TODO: refactor TableCellTypeConfig cssClass obj to be dynamic?
   classAttr?: DynamicValue<string | string[]>
-
 }

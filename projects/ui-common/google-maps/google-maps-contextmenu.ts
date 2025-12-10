@@ -10,7 +10,6 @@ import { isFeatureSelected } from './google-maps-feature-helpers'
 // TODO: Close on map losing focus.
 
 export class GoogleMapsContextMenu {
-
   private readonly _overlayView: google.maps.OverlayView
   private readonly _cleanupFn: () => void
 
@@ -39,19 +38,17 @@ export class GoogleMapsContextMenu {
     setTimeout(() => {
       this._menu.focusFirstItem('program')
     })
-    this._menu.closed.pipe(
-      takeUntil(ngUnsubscribe)
-    ).subscribe(v => {
+    this._menu.closed.pipe(takeUntil(ngUnsubscribe)).subscribe((v) => {
       this.close()
     })
 
-    fromEvent(document, 'keydown').pipe(
-      takeUntil(ngUnsubscribe)
-    ).subscribe((event: any) => {
-      if (event.keyCode === ESCAPE) {
-        this.close()
-      }
-    })
+    fromEvent(document, 'keydown')
+      .pipe(takeUntil(ngUnsubscribe))
+      .subscribe((event: any) => {
+        if (event.keyCode === ESCAPE) {
+          this.close()
+        }
+      })
 
     const __cleanup = () => this._cleanupFn()
     class GoogleMapsContextMenuOverlayView extends google.maps.OverlayView {
@@ -59,7 +56,7 @@ export class GoogleMapsContextMenu {
 
       constructor(
         public position: google.maps.LatLng,
-        content: HTMLElement
+        content: HTMLElement,
       ) {
         super()
         this.position = position
@@ -71,7 +68,9 @@ export class GoogleMapsContextMenu {
         this.containerDiv.appendChild(content)
 
         // Optionally stop clicks, etc., from bubbling up to the map.
-        GoogleMapsContextMenuOverlayView.preventMapHitsAndGesturesFrom(this.containerDiv)
+        GoogleMapsContextMenuOverlayView.preventMapHitsAndGesturesFrom(
+          this.containerDiv,
+        )
       }
 
       /** Called when the view is added to the map. */
@@ -89,7 +88,9 @@ export class GoogleMapsContextMenu {
 
       /** Called each frame when the view needs to draw itself. */
       draw() {
-        const divPosition = this.getProjection().fromLatLngToDivPixel(this.position)
+        const divPosition = this.getProjection().fromLatLngToDivPixel(
+          this.position,
+        )
         if (!divPosition) {
           return
         }
@@ -111,35 +112,79 @@ export class GoogleMapsContextMenu {
       }
     }
 
-    this._overlayView = new GoogleMapsContextMenuOverlayView(_position, ref.rootNodes[0])
+    this._overlayView = new GoogleMapsContextMenuOverlayView(
+      _position,
+      ref.rootNodes[0],
+    )
     this._overlayView.setMap(this._map)
 
     this._ngZone.runOutsideAngular(() => {
-      listeners.push(this._data.addListener('removefeature', (event: google.maps.Data.RemoveFeatureEvent) => {
-        if (event.feature === this._feature) {
-          this._ngZone.run(() => { this.close() })
-        }
-      }))
+      listeners.push(
+        this._data.addListener(
+          'removefeature',
+          (event: google.maps.Data.RemoveFeatureEvent) => {
+            if (event.feature === this._feature) {
+              this._ngZone.run(() => {
+                this.close()
+              })
+            }
+          },
+        ),
+      )
 
-      listeners.push(this._data.addListener('setproperty', (event: google.maps.Data.SetPropertyEvent) => {
-        if (event.feature === this._feature && !isFeatureSelected(this._feature)) {
-          this._ngZone.run(() => { this.close() })
-        }
-      }))
+      listeners.push(
+        this._data.addListener(
+          'setproperty',
+          (event: google.maps.Data.SetPropertyEvent) => {
+            if (
+              event.feature === this._feature &&
+              !isFeatureSelected(this._feature)
+            ) {
+              this._ngZone.run(() => {
+                this.close()
+              })
+            }
+          },
+        ),
+      )
 
-      listeners.push(this._data.addListener('removeproperty', (event: google.maps.Data.RemovePropertyEvent) => {
-        if (event.feature === this._feature && !isFeatureSelected(this._feature)) {
-          this._ngZone.run(() => { this.close() })
-        }
-      }))
+      listeners.push(
+        this._data.addListener(
+          'removeproperty',
+          (event: google.maps.Data.RemovePropertyEvent) => {
+            if (
+              event.feature === this._feature &&
+              !isFeatureSelected(this._feature)
+            ) {
+              this._ngZone.run(() => {
+                this.close()
+              })
+            }
+          },
+        ),
+      )
 
-      listeners.push(this._map.addListener('click', (event: google.maps.MapMouseEvent | google.maps.IconMouseEvent) => {
-        this._ngZone.run(() => { this.close() })
-      }))
+      listeners.push(
+        this._map.addListener(
+          'click',
+          (event: google.maps.MapMouseEvent | google.maps.IconMouseEvent) => {
+            this._ngZone.run(() => {
+              this.close()
+            })
+          },
+        ),
+      )
 
-      listeners.push(this._data.addListener('click', (event: google.maps.Data.MouseEvent) => {
-        this._ngZone.run(() => { this.close() })
-      }))
+      listeners.push(
+        this._data.addListener(
+          'click',
+          (event: google.maps.Data.MouseEvent) => {
+            this._ngZone.run(() => {
+              this.close()
+            })
+          },
+        ),
+      )
     })
 
     this._cleanupFn = () => {
@@ -152,5 +197,4 @@ export class GoogleMapsContextMenu {
   public close(): void {
     this._overlayView.setMap(null)
   }
-
 }

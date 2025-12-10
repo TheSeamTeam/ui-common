@@ -33,14 +33,6 @@ ngx-datatable {
   }
 }
 
-.datatable-column-header-separator {
-  position: absolute;
-}
-
-.datatable-sort-target {
-  cursor: pointer;
-}
-
 // This prevents the bug where users can infinitely scroll
 // to the right, outside the table content.
 //

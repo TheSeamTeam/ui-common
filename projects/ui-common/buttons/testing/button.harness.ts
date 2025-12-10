@@ -1,16 +1,23 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
-import { ComponentHarnessConstructor, HarnessPredicate } from '@angular/cdk/testing'
+import {
+  ComponentHarnessConstructor,
+  HarnessPredicate,
+} from '@angular/cdk/testing'
 
 // import { TheSeamMenuHarness } from './button.harness'
 // import { animatingWait } from './utils'
 
-import { TheSeamBaseButtonComponentHarness, TheSeamBaseButtonComponentHarnessFilters, createBaseButtonComponentHarnessPredicate } from './base-button.harness'
+import {
+  TheSeamBaseButtonComponentHarness,
+  TheSeamBaseButtonComponentHarnessFilters,
+  createBaseButtonComponentHarnessPredicate,
+} from './base-button.harness'
 
 /** A set of criteria that can be used to filter a list of `TheSeamButtonComponentHarness` instances. */
-export interface TheSeamButtonComponentHarnessFilters extends TheSeamBaseButtonComponentHarnessFilters { }
+export type TheSeamButtonComponentHarnessFilters =
+  TheSeamBaseButtonComponentHarnessFilters
 
 export class TheSeamButtonComponentHarness extends TheSeamBaseButtonComponentHarness {
-
   /** The selector for the host element of a `TheSeamButtonComponent` instance. */
   static hostSelector = 'button[seamButton]'
 
@@ -25,5 +32,4 @@ export class TheSeamButtonComponentHarness extends TheSeamBaseButtonComponentHar
   ): HarnessPredicate<T> {
     return createBaseButtonComponentHarnessPredicate(this, options)
   }
-
 }

@@ -13,9 +13,14 @@ export enum AppFeaturePropertyName {
   IsSelected = `__app__isSelected`,
 }
 
-export function isAppFeatureProperty(propertyName: string): propertyName is AppFeaturePropertyName {
-  return Object.values(AppFeaturePropertyName)
-    .findIndex(value => value === propertyName) !== -1
+export function isAppFeatureProperty(
+  propertyName: string,
+): propertyName is AppFeaturePropertyName {
+  return (
+    Object.values(AppFeaturePropertyName).findIndex(
+      (value) => value === propertyName,
+    ) !== -1
+  )
 }
 
 export function isFeatureSelected(feature: google.maps.Data.Feature): boolean {
@@ -23,24 +28,47 @@ export function isFeatureSelected(feature: google.maps.Data.Feature): boolean {
   return coerceBooleanProperty(isSelected)
 }
 
-export function setFeatureSelected(feature: google.maps.Data.Feature, isSelected: boolean): void {
+export function setFeatureSelected(
+  feature: google.maps.Data.Feature,
+  isSelected: boolean,
+): void {
   feature.setProperty(AppFeaturePropertyName.IsSelected, isSelected)
 }
 
 const EXTERNAL_FEATURE_DEFINED_STYLE_OPTIONS_PROPERTY_NAME = 'styleOptions'
-const EXTERNAL_FEATURE_DEFINED_STYLE_OPTIONS_HOVERED_PROPERTY_NAME = 'styleOptionsHovered'
-const EXTERNAL_FEATURE_DEFINED_STYLE_OPTIONS_SELECTED_PROPERTY_NAME = 'styleOptionsSelected'
+const EXTERNAL_FEATURE_DEFINED_STYLE_OPTIONS_HOVERED_PROPERTY_NAME =
+  'styleOptionsHovered'
+const EXTERNAL_FEATURE_DEFINED_STYLE_OPTIONS_SELECTED_PROPERTY_NAME =
+  'styleOptionsSelected'
 
-export function getStyleOptionsDefinedByFeature(feature: google.maps.Data.Feature): google.maps.Data.StyleOptions | undefined {
-  return feature.getProperty(EXTERNAL_FEATURE_DEFINED_STYLE_OPTIONS_PROPERTY_NAME) as google.maps.Data.StyleOptions || undefined
+export function getStyleOptionsDefinedByFeature(
+  feature: google.maps.Data.Feature,
+): google.maps.Data.StyleOptions | undefined {
+  return (
+    (feature.getProperty(
+      EXTERNAL_FEATURE_DEFINED_STYLE_OPTIONS_PROPERTY_NAME,
+    ) as google.maps.Data.StyleOptions) || undefined
+  )
 }
 
-export function getHoveredStyleOptionsDefinedByFeature(feature: google.maps.Data.Feature): google.maps.Data.StyleOptions | undefined {
-  return feature.getProperty(EXTERNAL_FEATURE_DEFINED_STYLE_OPTIONS_HOVERED_PROPERTY_NAME) as google.maps.Data.StyleOptions || undefined
+export function getHoveredStyleOptionsDefinedByFeature(
+  feature: google.maps.Data.Feature,
+): google.maps.Data.StyleOptions | undefined {
+  return (
+    (feature.getProperty(
+      EXTERNAL_FEATURE_DEFINED_STYLE_OPTIONS_HOVERED_PROPERTY_NAME,
+    ) as google.maps.Data.StyleOptions) || undefined
+  )
 }
 
-export function getSelectedStyleOptionsDefinedByFeature(feature: google.maps.Data.Feature): google.maps.Data.StyleOptions | undefined {
-  return feature.getProperty(EXTERNAL_FEATURE_DEFINED_STYLE_OPTIONS_SELECTED_PROPERTY_NAME) as google.maps.Data.StyleOptions || undefined
+export function getSelectedStyleOptionsDefinedByFeature(
+  feature: google.maps.Data.Feature,
+): google.maps.Data.StyleOptions | undefined {
+  return (
+    (feature.getProperty(
+      EXTERNAL_FEATURE_DEFINED_STYLE_OPTIONS_SELECTED_PROPERTY_NAME,
+    ) as google.maps.Data.StyleOptions) || undefined
+  )
 }
 
 // TODO: Check performance of cloning a google.maps.Data instance, so the
@@ -67,10 +95,10 @@ export function stripAppFeaturePropertiesFromJson(json: any) {
  */
 export function getPossibleExteriorFeature(
   data: google.maps.Data,
-  feature: google.maps.Data.Feature
+  feature: google.maps.Data.Feature,
 ): google.maps.Data.Feature | undefined {
   let exteriorPolygonFeature: google.maps.Data.Feature | undefined
-  data.forEach(f => {
+  data.forEach((f) => {
     if (f === feature) {
       return
     }
@@ -88,7 +116,7 @@ export function getPossibleExteriorFeature(
 
 export function addInnerFeatureCutoutToExteriorFeature(
   exteriorFeature: google.maps.Data.Feature,
-  innerFeature: google.maps.Data.Feature
+  innerFeature: google.maps.Data.Feature,
 ): void {
   const exteriorGeometry = exteriorFeature.getGeometry()
   if (exteriorGeometry === null) {
@@ -101,23 +129,30 @@ export function addInnerFeatureCutoutToExteriorFeature(
   // NOTE: Other geometries may support cutouts, but our map shapes editor only
   // supports polygons currently, so we will need to handle other geometry types
   // here if we start allowing users to draw shapes other than polygon.
-  if (exteriorGeometry.getType() !== 'Polygon' || innerGeometry.getType() !== 'Polygon') {
+  if (
+    exteriorGeometry.getType() !== 'Polygon' ||
+    innerGeometry.getType() !== 'Polygon'
+  ) {
     throw Error(`Inner cutout is only supported by Polygon gemoetry.`)
   }
 
   const featurePolygon = innerGeometry as google.maps.Data.Polygon
   const exteriorPolygon = exteriorGeometry as google.maps.Data.Polygon
-  exteriorFeature.setGeometry(new google.maps.Data.Polygon([
-    ...exteriorPolygon.getArray(),
-    featurePolygon.getAt(0).getArray().reverse()
-  ]))
+  exteriorFeature.setGeometry(
+    new google.maps.Data.Polygon([
+      ...exteriorPolygon.getArray(),
+      featurePolygon.getAt(0).getArray().reverse(),
+    ]),
+  )
 }
 
 /**
  * Google maps paths don't always start and stop at the exact same position, so
  * this will fix that for turfjs.
  */
-export function fixPathDifferentStartingAndEndingPoint(coordinates: number[][]): void {
+export function fixPathDifferentStartingAndEndingPoint(
+  coordinates: number[][],
+): void {
   if (coordinates.length <= 1) {
     return
   }
@@ -131,7 +166,10 @@ export function fixPathDifferentStartingAndEndingPoint(coordinates: number[][]):
   coordinates.push(coordinates[0])
 }
 
-export function polygonHasValidPathsLengths(polygon: google.maps.Polygon, minPointsInValidPath: number = 3): boolean {
+export function polygonHasValidPathsLengths(
+  polygon: google.maps.Polygon,
+  minPointsInValidPath: number = 3,
+): boolean {
   const paths = polygon.getPaths().getArray()
   for (const path of paths) {
     if (path.getLength() < minPointsInValidPath) {
@@ -141,23 +179,29 @@ export function polygonHasValidPathsLengths(polygon: google.maps.Polygon, minPoi
   return true
 }
 
-export function polygonCoordinates(polygon: google.maps.Data.Polygon): number[][][] {
-  return polygon.getArray().map(linRing => {
-    const coords = linRing.getArray().map(x => [ x.lng(), x.lat() ])
+export function polygonCoordinates(
+  polygon: google.maps.Data.Polygon,
+): number[][][] {
+  return polygon.getArray().map((linRing) => {
+    const coords = linRing.getArray().map((x) => [x.lng(), x.lat()])
     fixPathDifferentStartingAndEndingPoint(coords)
     return coords
   })
 }
 
-export function multiPolygonCoordinates(multiPolygon: google.maps.Data.MultiPolygon): number[][][][] {
-  return multiPolygon.getArray().map(x => polygonCoordinates(x))
+export function multiPolygonCoordinates(
+  multiPolygon: google.maps.Data.MultiPolygon,
+): number[][][][] {
+  return multiPolygon.getArray().map((x) => polygonCoordinates(x))
 }
 
 export function toTurfJsPolygon(polygon: google.maps.Data.Polygon) {
   return turfjsPolygon(polygonCoordinates(polygon))
 }
 
-export function toTurfJsMultiPolygon(multiPolygon: google.maps.Data.MultiPolygon) {
+export function toTurfJsMultiPolygon(
+  multiPolygon: google.maps.Data.MultiPolygon,
+) {
   return turfjsMultiPolygon(multiPolygonCoordinates(multiPolygon))
 }
 
@@ -175,28 +219,38 @@ export function toTurfJsFeature(googleFeature: google.maps.Data.Feature) {
   throw Error(`Unexpected geometry.`)
 }
 
-export function featureContains(featureA: google.maps.Data.Feature, featureB: google.maps.Data.Feature): boolean {
+export function featureContains(
+  featureA: google.maps.Data.Feature,
+  featureB: google.maps.Data.Feature,
+): boolean {
   const polygonA = toTurfJsFeature(featureA)
   const polygonB = toTurfJsFeature(featureB)
   return booleanContains(polygonA, polygonB)
 }
 
-export function createDataFeatureFromPolygon(polygon: google.maps.Polygon): google.maps.Data.Feature {
-  const arr = polygon.getPaths().getArray().map(x => x.getArray())
+export function createDataFeatureFromPolygon(
+  polygon: google.maps.Polygon,
+): google.maps.Data.Feature {
+  const arr = polygon
+    .getPaths()
+    .getArray()
+    .map((x) => x.getArray())
   return new google.maps.Data.Feature({
-    geometry: new google.maps.Data.Polygon(arr)
+    geometry: new google.maps.Data.Polygon(arr),
   })
 }
 
-export function getBoundsWithAllFeatures(data: google.maps.Data): google.maps.LatLngBounds {
+export function getBoundsWithAllFeatures(
+  data: google.maps.Data,
+): google.maps.LatLngBounds {
   const bounds = new google.maps.LatLngBounds()
 
-  data.forEach(feature => {
+  data.forEach((feature) => {
     const geometry = feature.getGeometry()
     if (geometry === null) {
       throw Error(`Geometry not found.`)
     }
-    geometry.forEachLatLng(latLng => {
+    geometry.forEachLatLng((latLng) => {
       bounds.extend(latLng)
     })
   })
@@ -204,26 +258,30 @@ export function getBoundsWithAllFeatures(data: google.maps.Data): google.maps.La
   return bounds
 }
 
-export function getFeatureBounds(feature: google.maps.Data.Feature): google.maps.LatLngBounds {
+export function getFeatureBounds(
+  feature: google.maps.Data.Feature,
+): google.maps.LatLngBounds {
   const bounds = new google.maps.LatLngBounds()
 
   const geometry = feature.getGeometry()
   if (geometry === null) {
     throw Error(`Geometry not found.`)
   }
-  geometry.forEachLatLng(latLng => {
+  geometry.forEachLatLng((latLng) => {
     bounds.extend(latLng)
   })
 
   return bounds
 }
 
-export function getFeatureCenter(feature: google.maps.Data.Feature): google.maps.LatLng {
+export function getFeatureCenter(
+  feature: google.maps.Data.Feature,
+): google.maps.LatLng {
   return getFeatureBounds(feature).getCenter()
 }
 
 export function removeAllFeatures(data: google.maps.Data): void {
-  data.forEach(f => data.remove(f))
+  data.forEach((f) => data.remove(f))
 }
 
 export function getFeaturesCount(data: google.maps.Data): number {
@@ -235,34 +293,72 @@ export function getFeaturesCount(data: google.maps.Data): number {
 /**
  * NOTE: Original events are not emitted, because filtering may omit events.
  */
-export function createFeatureChangeObservable(data: google.maps.Data, ngZone: NgZone): Observable<void> {
-  return new Observable<void>(subscriber => {
+export function createFeatureChangeObservable(
+  data: google.maps.Data,
+  ngZone: NgZone,
+): Observable<void> {
+  return new Observable<void>((subscriber) => {
     const listeners: google.maps.MapsEventListener[] = []
 
     ngZone.runOutsideAngular(() => {
-      listeners.push(data.addListener('setgeometry', (event: google.maps.Data.SetGeometryEvent) => {
-        ngZone.run(() => { subscriber.next(undefined) })
-      }))
+      listeners.push(
+        data.addListener(
+          'setgeometry',
+          (event: google.maps.Data.SetGeometryEvent) => {
+            ngZone.run(() => {
+              subscriber.next(undefined)
+            })
+          },
+        ),
+      )
 
-      listeners.push(data.addListener('addfeature', (event: google.maps.Data.AddFeatureEvent) => {
-        ngZone.run(() => { subscriber.next(undefined) })
-      }))
+      listeners.push(
+        data.addListener(
+          'addfeature',
+          (event: google.maps.Data.AddFeatureEvent) => {
+            ngZone.run(() => {
+              subscriber.next(undefined)
+            })
+          },
+        ),
+      )
 
-      listeners.push(data.addListener('removefeature', (event: google.maps.Data.RemoveFeatureEvent) => {
-        ngZone.run(() => { subscriber.next(undefined) })
-      }))
+      listeners.push(
+        data.addListener(
+          'removefeature',
+          (event: google.maps.Data.RemoveFeatureEvent) => {
+            ngZone.run(() => {
+              subscriber.next(undefined)
+            })
+          },
+        ),
+      )
 
-      listeners.push(data.addListener('setproperty', (event: google.maps.Data.SetPropertyEvent) => {
-        if (!isAppFeatureProperty(event.name)) {
-          ngZone.run(() => { subscriber.next(undefined) })
-        }
-      }))
+      listeners.push(
+        data.addListener(
+          'setproperty',
+          (event: google.maps.Data.SetPropertyEvent) => {
+            if (!isAppFeatureProperty(event.name)) {
+              ngZone.run(() => {
+                subscriber.next(undefined)
+              })
+            }
+          },
+        ),
+      )
 
-      listeners.push(data.addListener('removeproperty', (event: google.maps.Data.RemovePropertyEvent) => {
-        if (!isAppFeatureProperty(event.name)) {
-          ngZone.run(() => { subscriber.next(undefined) })
-        }
-      }))
+      listeners.push(
+        data.addListener(
+          'removeproperty',
+          (event: google.maps.Data.RemovePropertyEvent) => {
+            if (!isAppFeatureProperty(event.name)) {
+              ngZone.run(() => {
+                subscriber.next(undefined)
+              })
+            }
+          },
+        ),
+      )
     })
 
     return () => {

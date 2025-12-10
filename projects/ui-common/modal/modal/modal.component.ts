@@ -3,8 +3,18 @@ import { ESCAPE } from '@angular/cdk/keycodes'
 import { Overlay, OverlayRef } from '@angular/cdk/overlay'
 import { ComponentPortal, TemplatePortal } from '@angular/cdk/portal'
 import {
-  AfterViewInit, Component, ContentChild, EventEmitter, forwardRef, Input,
-  isDevMode, OnDestroy, Output, TemplateRef, ViewChild, ViewContainerRef
+  AfterViewInit,
+  Component,
+  ContentChild,
+  EventEmitter,
+  forwardRef,
+  Input,
+  isDevMode,
+  OnDestroy,
+  Output,
+  TemplateRef,
+  ViewChild,
+  ViewContainerRef,
 } from '@angular/core'
 import { UntypedFormGroup } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router'
@@ -20,9 +30,18 @@ import { ModalHeaderIconTplDirective } from '../directives/modal-header-icon-tpl
 import { ModalHeaderTitleTplDirective } from '../directives/modal-header-title-tpl.directive'
 import { IModalContainer, THESEAM_MODAL_CONTAINER } from '../modal.models'
 
+export interface TheSeamModalIconTemplateContext {
+  $implicit: SeamIcon | undefined
+  icon: SeamIcon | undefined
+}
+
+export interface TheSeamModalTitleTemplateContext {
+  $implicit: string | undefined | null
+  title: string | undefined | null
+}
+
 export const LIB_MODAL: any = {
   provide: THESEAM_MODAL_CONTAINER,
-  // tslint:disable-next-line:no-use-before-declare
   useExisting: forwardRef(() => ModalComponent),
   multi: true,
 }
@@ -31,22 +50,31 @@ export const LIB_MODAL: any = {
   selector: 'seam-modal',
   templateUrl: './modal.component.html',
   styleUrls: ['./modal.component.scss'],
-  providers: [ LIB_MODAL ]
+  providers: [LIB_MODAL],
+  standalone: false,
 })
-export class ModalComponent implements OnDestroy, AfterViewInit, IModalContainer {
+export class ModalComponent
+  implements OnDestroy, AfterViewInit, IModalContainer
+{
   static ngAcceptInputType_showCloseBtn: BooleanInput
 
   @Input()
-  set closeOnKeyPressed(value: number[]) { this._closeOnKeyPressed = Array.isArray(value) ? value : [] }
-  get closeOnKeyPressed(): number[] { return this._closeOnKeyPressed }
-  private _closeOnKeyPressed: number[] = [ ESCAPE ]
+  set closeOnKeyPressed(value: number[]) {
+    this._closeOnKeyPressed = Array.isArray(value) ? value : []
+  }
+  get closeOnKeyPressed(): number[] {
+    return this._closeOnKeyPressed
+  }
+  private _closeOnKeyPressed: number[] = [ESCAPE]
 
   @Input() @InputBoolean() showCloseBtn = true
 
   @Input() titleText: string | undefined | null
 
   @Input()
-  get icon(): SeamIcon | undefined { return this._iconUrl || this._iconObj }
+  get icon(): SeamIcon | undefined {
+    return this._iconUrl || this._iconObj
+  }
   set icon(value: SeamIcon | undefined) {
     if (typeof value === 'string') {
       this._iconUrl = value
@@ -61,26 +89,32 @@ export class ModalComponent implements OnDestroy, AfterViewInit, IModalContainer
   public _iconObj: IconProp | undefined
 
   @Input()
-  get iconTpl(): TemplateRef<HTMLElement> | undefined {
+  get iconTpl(): TemplateRef<TheSeamModalIconTemplateContext> | undefined {
     return this._iconTpl || (this._queryIconTpl && this._queryIconTpl.template)
   }
-  set iconTpl(value: TemplateRef<HTMLElement> | undefined) {
+  set iconTpl(value: TemplateRef<TheSeamModalIconTemplateContext> | undefined) {
     this._iconTpl = value
   }
-  private _iconTpl?: TemplateRef<HTMLElement>
+  private _iconTpl?: TemplateRef<TheSeamModalIconTemplateContext>
 
   @Input()
-  get titleTpl(): TemplateRef<HTMLElement> | undefined {
-    return this._titleTpl || (this._queryTitleTpl && this._queryTitleTpl.template)
+  get titleTpl(): TemplateRef<TheSeamModalTitleTemplateContext> | undefined {
+    return (
+      this._titleTpl || (this._queryTitleTpl && this._queryTitleTpl.template)
+    )
   }
-  set titleTpl(value: TemplateRef<HTMLElement> | undefined) {
+  set titleTpl(
+    value: TemplateRef<TheSeamModalTitleTemplateContext> | undefined,
+  ) {
     this._titleTpl = value
   }
-  private _titleTpl?: TemplateRef<HTMLElement>
+  private _titleTpl?: TemplateRef<TheSeamModalTitleTemplateContext>
 
   @Input()
   get footerTpl(): TemplateRef<HTMLElement> | undefined {
-    return this._footerTpl || (this._queryFooterTpl && this._queryFooterTpl.template)
+    return (
+      this._footerTpl || (this._queryFooterTpl && this._queryFooterTpl.template)
+    )
   }
   set footerTpl(value: TemplateRef<HTMLElement> | undefined) {
     this._footerTpl = value
@@ -93,9 +127,12 @@ export class ModalComponent implements OnDestroy, AfterViewInit, IModalContainer
 
   @Output() overlayDetached = new EventEmitter<void>()
 
-  @ContentChild(ModalHeaderIconTplDirective, { static: true }) _queryIconTpl?: ModalHeaderIconTplDirective
-  @ContentChild(ModalHeaderTitleTplDirective, { static: true }) _queryTitleTpl?: ModalHeaderTitleTplDirective
-  @ContentChild(ModalFooterTplDirective, { static: true }) _queryFooterTpl?: ModalFooterTplDirective
+  @ContentChild(ModalHeaderIconTplDirective, { static: true })
+  _queryIconTpl?: ModalHeaderIconTplDirective
+  @ContentChild(ModalHeaderTitleTplDirective, { static: true })
+  _queryTitleTpl?: ModalHeaderTitleTplDirective
+  @ContentChild(ModalFooterTplDirective, { static: true })
+  _queryFooterTpl?: ModalFooterTplDirective
 
   @ViewChild('modalTpl', { static: true }) _modalTpl?: TemplateRef<HTMLElement>
 
@@ -108,11 +145,13 @@ export class ModalComponent implements OnDestroy, AfterViewInit, IModalContainer
   constructor(
     private _viewContainerRef: ViewContainerRef,
     private _overlay: Overlay,
-    private _route: ActivatedRoute
+    private _route: ActivatedRoute,
   ) {
     if (isDevMode()) {
       // eslint-disable-next-line no-console
-      console.warn('seamModal has some issues with its design. Use the Modal service for now, because seamModal will have breaking changes or be removed soon.')
+      console.warn(
+        'seamModal has some issues with its design. Use the Modal service for now, because seamModal will have breaking changes or be removed soon.',
+      )
     }
   }
 
@@ -127,40 +166,48 @@ export class ModalComponent implements OnDestroy, AfterViewInit, IModalContainer
   }
 
   public open(portal?: TemplatePortal | ComponentPortal<object>) {
-    if (this._overlayRef && this._overlayRef.hasAttached()) { return }
+    if (this._overlayRef && this._overlayRef.hasAttached()) {
+      return
+    }
 
-    const positionStrategy = this._overlay.position()
+    const positionStrategy = this._overlay
+      .position()
       .global()
       .centerHorizontally()
       .centerVertically()
 
     this._overlayRef = this._overlay.create({
       hasBackdrop: true,
-      positionStrategy
+      positionStrategy,
     })
 
-    this._overlayRef.detachments().subscribe(_ => this.overlayDetached.emit())
+    this._overlayRef.detachments().subscribe((_) => this.overlayDetached.emit())
 
-    this._overlayRef.backdropClick().subscribe(_ => this.close())
+    this._overlayRef.backdropClick().subscribe((_) => this.close())
 
-    this._overlayRef.keydownEvents()
-      // tslint:disable-next-line:deprecation
-      .pipe(filter(e => e.keyCode === ESCAPE))
-      .subscribe(_ => this.close())
+    this._overlayRef
+      .keydownEvents()
+      .pipe(filter((e) => e.keyCode === ESCAPE))
+      .subscribe((_) => this.close())
 
     let portalToAttach = portal
     if (!portalToAttach) {
       if (!this._modalTpl) {
         throw new Error(`_modalTpl not found.`)
       }
-      portalToAttach = new TemplatePortal(this._modalTpl, this._viewContainerRef)
+      portalToAttach = new TemplatePortal(
+        this._modalTpl,
+        this._viewContainerRef,
+      )
     }
 
     this._overlayRef.attach(portalToAttach)
   }
 
   public close() {
-    if (!this._overlayRef || !this._overlayRef.hasAttached()) { return }
+    if (!this._overlayRef || !this._overlayRef.hasAttached()) {
+      return
+    }
 
     this._overlayRef.detach()
 
@@ -174,5 +221,4 @@ export class ModalComponent implements OnDestroy, AfterViewInit, IModalContainer
   public isRouteModal() {
     return this._route.outlet === 'modal'
   }
-
 }

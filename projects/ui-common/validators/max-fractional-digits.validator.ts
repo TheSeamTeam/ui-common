@@ -1,6 +1,10 @@
 import { AbstractControl, ValidatorFn } from '@angular/forms'
 
-import { fractionalDigitsCount, isEmptyInputValue, isNumeric } from '@theseam/ui-common/utils'
+import {
+  fractionalDigitsCount,
+  isEmptyInputValue,
+  isNumeric,
+} from '@theseam/ui-common/utils'
 
 /**
  * Validates a number does not have more than X fractional digits.
@@ -9,7 +13,9 @@ import { fractionalDigitsCount, isEmptyInputValue, isNumeric } from '@theseam/ui
  * value is also a number then also use a number validator, such as
  * `decimalValidator`.
  */
-export function maxFractionalDigitsValidator(maxFractionalDigits: number): ValidatorFn {
+export function maxFractionalDigitsValidator(
+  maxFractionalDigits: number,
+): ValidatorFn {
   return (control: AbstractControl) => {
     if (isEmptyInputValue(control.value)) {
       return null // don't validate empty values to allow optional controls
@@ -27,11 +33,11 @@ export function maxFractionalDigitsValidator(maxFractionalDigits: number): Valid
 
     if (count > maxFractionalDigits) {
       return {
-        'maxFractionalDigits': {
-          'reason': `Must not be greater than ${maxFractionalDigits} fractional digits.`,
-          'max': maxFractionalDigits,
-          'actual': count
-        }
+        maxFractionalDigits: {
+          reason: `Must not be greater than ${maxFractionalDigits} fractional digits.`,
+          max: maxFractionalDigits,
+          actual: count,
+        },
       }
     }
 

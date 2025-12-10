@@ -1,21 +1,35 @@
-import { Directive, ElementRef, EventEmitter, HostListener, Input, Output } from '@angular/core'
+import {
+  Directive,
+  ElementRef,
+  EventEmitter,
+  HostListener,
+  inject,
+  Input,
+  Output,
+} from '@angular/core'
 
 @Directive({
-  selector: '[seamClickOutside]'
+  selector: '[seamClickOutside]',
+  exportAs: 'seamClickOutside',
 })
-export class ClickOutsideDirective {
+export class TheSeamClickOutsideDirective {
+  private readonly _elementRef = inject(ElementRef<HTMLElement>)
 
   @Input()
   get seamClickOutsideActive(): boolean {
     return this._active
   }
   set seamClickOutsideActive(value: boolean) {
-    if (this._active === value) { return }
+    if (this._active === value) {
+      return
+    }
 
     if (value) {
       // `setTimeout` is used to avoid the click event triggering when the value
       // changes if the value was changed with a click.
-      setTimeout(() => { this._active = value })
+      setTimeout(() => {
+        this._active = value
+      })
     } else {
       this._active = value
     }
@@ -31,12 +45,12 @@ export class ClickOutsideDirective {
     if (this._active) {
       const targetElement = event.target as HTMLElement
       // Check if the click was outside the element
-      if (targetElement && !this.elementRef.nativeElement.contains(targetElement)) {
+      if (
+        targetElement &&
+        !this._elementRef.nativeElement.contains(targetElement)
+      ) {
         this.seamClickOutside.emit(event)
       }
     }
   }
-
-  constructor(private elementRef: ElementRef) { }
-
 }

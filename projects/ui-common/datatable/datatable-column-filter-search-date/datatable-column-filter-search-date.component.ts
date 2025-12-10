@@ -1,8 +1,28 @@
 import { Component, Input, OnInit } from '@angular/core'
+import { CommonModule } from '@angular/common'
+import {
+  ControlContainer,
+  FormGroupDirective,
+  ReactiveFormsModule,
+} from '@angular/forms'
 import { Observable, map, startWith } from 'rxjs'
+
+import { NgSelectModule } from '@ng-select/ng-select'
 import { notNullOrUndefined } from '@theseam/ui-common/utils'
-import { ControlContainer, FormGroupDirective } from '@angular/forms'
-import { TheSeamColumnsDataFilterDateSearchDateType, TheSeamColumnsDataFilterDateSearchForm, TheSeamColumnsDataFilterDateSearchOptions, TheSeamColumnsDataFilterDateSearchType, THESEAM_COLUMNS_DATA_FILTER_DATE_RANGE_SEARCH_TYPES, THESEAM_COLUMNS_DATA_FILTER_DATE_TEXT_SEARCH_TYPES } from '../models/columns-data-filters/models'
+import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
+import {
+  TheSeamAutoFocusDirective,
+  TheSeamNgSelectExtraDirective,
+} from '@theseam/ui-common/shared'
+
+import {
+  TheSeamColumnsDataFilterDateSearchDateType,
+  TheSeamColumnsDataFilterDateSearchForm,
+  TheSeamColumnsDataFilterDateSearchOptions,
+  TheSeamColumnsDataFilterDateSearchType,
+  THESEAM_COLUMNS_DATA_FILTER_DATE_RANGE_SEARCH_TYPES,
+  THESEAM_COLUMNS_DATA_FILTER_DATE_TEXT_SEARCH_TYPES,
+} from '../models/columns-data-filters/models'
 
 @Component({
   selector: 'seam-datatable-column-filter-search-date',
@@ -11,13 +31,23 @@ import { TheSeamColumnsDataFilterDateSearchDateType, TheSeamColumnsDataFilterDat
   viewProviders: [
     {
       provide: ControlContainer,
-      useExisting: FormGroupDirective
-    }
-  ]
+      useExisting: FormGroupDirective,
+    },
+  ],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    NgSelectModule,
+    TheSeamFormFieldModule,
+    TheSeamNgSelectExtraDirective,
+    TheSeamAutoFocusDirective,
+  ],
 })
 export class DatatableColumnFilterSearchDateComponent implements OnInit {
-
-  searchTypes: { label: string, value: TheSeamColumnsDataFilterDateSearchType }[] = [
+  searchTypes: {
+    label: string
+    value: TheSeamColumnsDataFilterDateSearchType
+  }[] = [
     { label: 'Before', value: 'lt' },
     { label: 'Before or on', value: 'lte' },
     { label: 'On', value: 'eq' },
@@ -44,14 +74,24 @@ export class DatatableColumnFilterSearchDateComponent implements OnInit {
       this.dateFormat = this.options?.dateType
     }
 
-    this.showSearchInput$ = this.filterForm?.controls.searchType.valueChanges.pipe(
-      startWith(this.filterForm?.controls.searchType.value),
-      map(searchType => THESEAM_COLUMNS_DATA_FILTER_DATE_TEXT_SEARCH_TYPES.includes(searchType || ''))
-    )
+    this.showSearchInput$ =
+      this.filterForm?.controls.searchType.valueChanges.pipe(
+        startWith(this.filterForm?.controls.searchType.value),
+        map((searchType) =>
+          THESEAM_COLUMNS_DATA_FILTER_DATE_TEXT_SEARCH_TYPES.includes(
+            searchType || '',
+          ),
+        ),
+      )
 
-    this.showRangeInputs$ = this.filterForm?.controls.searchType.valueChanges.pipe(
-      startWith(this.filterForm?.controls.searchType.value),
-      map(searchType => THESEAM_COLUMNS_DATA_FILTER_DATE_RANGE_SEARCH_TYPES.includes(searchType || ''))
-    )
+    this.showRangeInputs$ =
+      this.filterForm?.controls.searchType.valueChanges.pipe(
+        startWith(this.filterForm?.controls.searchType.value),
+        map((searchType) =>
+          THESEAM_COLUMNS_DATA_FILTER_DATE_RANGE_SEARCH_TYPES.includes(
+            searchType || '',
+          ),
+        ),
+      )
   }
 }

@@ -1,8 +1,8 @@
-// import { HoverClassDirective } from './hover-class.directive'
+// import { TheSeamHoverClassDirective } from './hover-class.directive'
 
-// describe('HoverClassDirective', () => {
+// describe('TheSeamHoverClassDirective', () => {
 //   it('should create an instance', () => {
-//     const directive = new HoverClassDirective()
+//     const directive = new TheSeamHoverClassDirective()
 //     expect(directive).toBeTruthy()
 //   })
 // })

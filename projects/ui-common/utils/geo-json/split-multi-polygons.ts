@@ -1,9 +1,4 @@
-import { Polygon } from '@turf/helpers'
-import {
-  Feature,
-  FeatureCollection,
-  MultiPolygon,
-} from 'geojson'
+import { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson'
 
 /**
  * Split all MultiPolygon into Polygon. Any properties, other than
@@ -16,11 +11,14 @@ export function splitMultiPolygons(featureCollection: FeatureCollection): void {
     if (featureCollection.features[i]) {
       const geometry = featureCollection.features[i].geometry
       if (geometry.type === 'MultiPolygon') {
-        const features = splitMultPolygon(geometry).map(p => ({
-          type: 'Feature',
-          geometry: p,
-          properties: { },
-        } as Feature))
+        const features = splitMultPolygon(geometry).map(
+          (p) =>
+            ({
+              type: 'Feature',
+              geometry: p,
+              properties: {},
+            }) as Feature,
+        )
         featureCollection.features.splice(i, 1, ...features)
         i += Math.max(features.length - 1, 0)
       }
@@ -29,7 +27,7 @@ export function splitMultiPolygons(featureCollection: FeatureCollection): void {
 }
 
 function splitMultPolygon(multiPolygon: MultiPolygon): Polygon[] {
-  return multiPolygon.coordinates.map(c => ({
+  return multiPolygon.coordinates.map((c) => ({
     type: 'Polygon',
     coordinates: c,
   }))

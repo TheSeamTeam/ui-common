@@ -42,7 +42,7 @@ describe('GraphQL Utils toGql', () => {
   })
 
   it('should handle single array prop with single object', () => {
-    const input = { prop: [ { prop2: 2 } ] }
+    const input = { prop: [{ prop2: 2 }] }
     const output = toGQL(input)
 
     const expectedOutput = '{prop: [{prop2: 2}]}'
@@ -51,7 +51,7 @@ describe('GraphQL Utils toGql', () => {
   })
 
   it('should handle single array prop with multiple objects', () => {
-    const input = { prop: [ { prop2: 2 }, { prop3: 3 } ] }
+    const input = { prop: [{ prop2: 2 }, { prop3: 3 }] }
     const output = toGQL(input)
 
     const expectedOutput = '{prop: [{prop2: 2},{prop3: 3}]}'

@@ -1,4 +1,9 @@
-const ActionItemColumnPosition = ['frozenLeft', 'frozenRight', 'staticLeft', 'staticRight'] as const
+const ActionItemColumnPosition = [
+  'frozenLeft',
+  'frozenRight',
+  'staticLeft',
+  'staticRight',
+] as const
 
 /**
  * If `frozenLeft`, action item column will be fixed to the left side of the table.
@@ -9,8 +14,12 @@ const ActionItemColumnPosition = ['frozenLeft', 'frozenRight', 'staticLeft', 'st
  *
  * If `staticRight`, action item column will be the last static column on the right side of the table.
  */
-export type ActionItemColumnPosition = typeof ActionItemColumnPosition[number];
+export type ActionItemColumnPosition = (typeof ActionItemColumnPosition)[number]
 
-export function isActionItemColumnPosition(input: unknown): input is ActionItemColumnPosition {
-  return ActionItemColumnPosition.indexOf(input as ActionItemColumnPosition) != -1;
+export function isActionItemColumnPosition(
+  input: unknown,
+): input is ActionItemColumnPosition {
+  return (
+    ActionItemColumnPosition.indexOf(input as ActionItemColumnPosition) !== -1
+  )
 }

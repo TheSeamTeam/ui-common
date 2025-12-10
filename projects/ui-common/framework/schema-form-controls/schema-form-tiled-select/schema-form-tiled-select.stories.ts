@@ -1,5 +1,11 @@
-import { Meta, StoryObj, applicationConfig, componentWrapperDecorator, moduleMetadata } from '@storybook/angular'
-import { expect } from '@storybook/jest'
+import {
+  Meta,
+  StoryObj,
+  applicationConfig,
+  componentWrapperDecorator,
+  moduleMetadata,
+} from '@storybook/angular'
+import { expect, fn } from 'storybook/test'
 
 import { ReactiveFormsModule } from '@angular/forms'
 import { provideAnimations } from '@angular/platform-browser/animations'
@@ -8,7 +14,6 @@ import { JsonSchemaFormComponent } from '@ajsf/core'
 
 import { TheSeamSchemaFormModule } from '../../schema-form/schema-form.module'
 import { getHarness } from '@theseam/ui-common/testing'
-// import { TheSeamSchemaFormSelectHarness } from './testing'
 import { JsonSchemaFormHarness } from '../../schema-form/testing'
 import { TheSeamSchemaFormTiledSelectHarness } from './testing/schema-form-tiled-select.harness'
 
@@ -16,15 +21,10 @@ const meta: Meta<JsonSchemaFormComponent> = {
   title: 'Framework/Schema Form Controls/Tiled Select',
   decorators: [
     applicationConfig({
-      providers: [
-        provideAnimations(),
-      ],
+      providers: [provideAnimations()],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamSchemaFormModule,
-        ReactiveFormsModule,
-      ],
+      imports: [TheSeamSchemaFormModule, ReactiveFormsModule],
     }),
     componentWrapperDecorator(JsonSchemaFormComponent, ({ args }) => args),
   ],
@@ -33,6 +33,7 @@ const meta: Meta<JsonSchemaFormComponent> = {
   },
   args: {
     framework: 'seam-framework',
+    onSubmit: fn(),
   },
 }
 
@@ -42,20 +43,20 @@ type Story = StoryObj<JsonSchemaFormComponent>
 export const Basic: Story = {
   args: {
     schema: {
-      'type': 'object',
-      '$schema': 'http://json-schema.org/draft-07/schema#',
-      'properties': {
-        'Crop': {
-          'type': 'string',
-          'title': 'Crop',
+      type: 'object',
+      $schema: 'http://json-schema.org/draft-07/schema#',
+      properties: {
+        Crop: {
+          type: 'string',
+          title: 'Crop',
         },
       },
     },
     layout: [
       {
-        'dataPointer': '/Crop',
-        'widget': 'tiled-select',
-        'tiles': [
+        dataPointer: '/Crop',
+        widget: 'tiled-select',
+        tiles: [
           {
             name: 'cotton',
             value: 'cotton',
@@ -109,19 +110,28 @@ export const Basic: Story = {
       },
     ],
   },
-  play: async ({ canvasElement, fixture, args }) => {
-    const sfTiledSelectHarness = await getHarness(TheSeamSchemaFormTiledSelectHarness, { canvasElement, fixture })
+  play: async ({ canvasElement, args }) => {
+    const sfTiledSelectHarness = await getHarness(
+      TheSeamSchemaFormTiledSelectHarness,
+      { canvasElement },
+    )
     await expect(await sfTiledSelectHarness.isRequired()).toBe(false)
     await expect(await sfTiledSelectHarness.getValue()).toBe('')
 
-    const cottonBtnElem = await (await sfTiledSelectHarness.getTileByName('cotton')).getButtonElement()
+    const cottonBtnElem = await (
+      await sfTiledSelectHarness.getTileByName('cotton')
+    ).getButtonElement()
     await cottonBtnElem.click()
     await expect(await sfTiledSelectHarness.getValue()).toBe('cotton')
-    const cornBtnElem = await (await sfTiledSelectHarness.getTileByName('corn')).getButtonElement()
+    const cornBtnElem = await (
+      await sfTiledSelectHarness.getTileByName('corn')
+    ).getButtonElement()
     await cornBtnElem.click()
     await expect(await sfTiledSelectHarness.getValue()).toBe('corn')
 
-    const sfFormHarness = await getHarness(JsonSchemaFormHarness, { canvasElement, fixture })
+    const sfFormHarness = await getHarness(JsonSchemaFormHarness, {
+      canvasElement,
+    })
     await sfFormHarness.submit()
     await expect(args.onSubmit).toHaveBeenCalledWith({ Crop: 'corn' })
   },
@@ -130,23 +140,21 @@ export const Basic: Story = {
 export const Required: Story = {
   args: {
     schema: {
-      'type': 'object',
-      '$schema': 'http://json-schema.org/draft-07/schema#',
-      'properties': {
-        'Crop': {
-          'type': 'string',
-          'title': 'Crop',
+      type: 'object',
+      $schema: 'http://json-schema.org/draft-07/schema#',
+      properties: {
+        Crop: {
+          type: 'string',
+          title: 'Crop',
         },
       },
-      'required': [
-        'Crop'
-      ],
+      required: ['Crop'],
     },
     layout: [
       {
-        'dataPointer': '/Crop',
-        'widget': 'tiled-select',
-        'tiles': [
+        dataPointer: '/Crop',
+        widget: 'tiled-select',
+        tiles: [
           {
             name: 'cotton',
             value: 'cotton',
@@ -200,19 +208,28 @@ export const Required: Story = {
       },
     ],
   },
-  play: async ({ canvasElement, fixture, args }) => {
-    const sfTiledSelectHarness = await getHarness(TheSeamSchemaFormTiledSelectHarness, { canvasElement, fixture })
+  play: async ({ canvasElement, args }) => {
+    const sfTiledSelectHarness = await getHarness(
+      TheSeamSchemaFormTiledSelectHarness,
+      { canvasElement },
+    )
     await expect(await sfTiledSelectHarness.isRequired()).toBe(true)
     await expect(await sfTiledSelectHarness.getValue()).toBe('')
 
-    const cottonBtnElem = await (await sfTiledSelectHarness.getTileByName('cotton')).getButtonElement()
+    const cottonBtnElem = await (
+      await sfTiledSelectHarness.getTileByName('cotton')
+    ).getButtonElement()
     await cottonBtnElem.click()
     await expect(await sfTiledSelectHarness.getValue()).toBe('cotton')
-    const cornBtnElem = await (await sfTiledSelectHarness.getTileByName('corn')).getButtonElement()
+    const cornBtnElem = await (
+      await sfTiledSelectHarness.getTileByName('corn')
+    ).getButtonElement()
     await cornBtnElem.click()
     await expect(await sfTiledSelectHarness.getValue()).toBe('corn')
 
-    const sfFormHarness = await getHarness(JsonSchemaFormHarness, { canvasElement, fixture })
+    const sfFormHarness = await getHarness(JsonSchemaFormHarness, {
+      canvasElement,
+    })
     await sfFormHarness.submit()
     await expect(args.onSubmit).toHaveBeenCalledWith({ Crop: 'corn' })
   },

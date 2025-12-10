@@ -14,7 +14,7 @@ export interface SideNavItemCanHaveState {
    *
    * @ignore
    */
-   __state?: ISideNavItemState
+  __state?: ISideNavItemState
 }
 
 export interface SideNavItemCanBeActive {
@@ -33,7 +33,8 @@ export interface SideNavItemCanHaveChildren {
   children?: ISideNavItem[]
 }
 
-export interface ISideNavItemBase<T extends string> extends SideNavItemCanHaveState {
+export interface ISideNavItemBase<T extends string>
+  extends SideNavItemCanHaveState {
   /**
    * default: 'route'
    */
@@ -51,7 +52,6 @@ export interface ISideNavDivider extends ISideNavItemBase<'divider'> {
 }
 
 export interface ISideNavBadge {
-
   text?: string
 
   theme?: ThemeTypes
@@ -64,15 +64,23 @@ export interface ISideNavBadge {
   tooltip?: string | SideNavItemBadgeTooltip
 }
 
-export interface ISideNavBasic extends ISideNavItemBase<'basic'>, SideNavItemCanHaveChildren {
+export interface ISideNavBasic
+  extends ISideNavItemBase<'basic'>,
+    SideNavItemCanHaveChildren {
   icon?: SeamIcon
   label: string
 }
 
-export interface ISideNavLink extends ISideNavItemBase<'link'>,
-  Partial<Pick<UrlCreationOptions, 'queryParams' | 'fragment' | 'queryParamsHandling' | 'preserveFragment'>>,
-  SideNavItemCanHaveChildren,
-  SideNavItemCanBeActive {
+export interface ISideNavLink
+  extends ISideNavItemBase<'link'>,
+    Partial<
+      Pick<
+        UrlCreationOptions,
+        'queryParams' | 'fragment' | 'queryParamsHandling' | 'preserveFragment'
+      >
+    >,
+    SideNavItemCanHaveChildren,
+    SideNavItemCanBeActive {
   icon?: SeamIcon
   label: string
 
@@ -84,11 +92,18 @@ export interface ISideNavLink extends ISideNavItemBase<'link'>,
   matchOptions?: Partial<IsActiveMatchOptions>
 }
 
-export interface ISideNavButton extends ISideNavItemBase<'button'>, SideNavItemCanBeActive {
+export interface ISideNavButton
+  extends ISideNavItemBase<'button'>,
+    SideNavItemCanBeActive {
   onClick: (event: MouseEvent) => void
 }
 
-export type ISideNavItem = ISideNavTitle | ISideNavDivider | ISideNavBasic | ISideNavLink | ISideNavButton
+export type ISideNavItem =
+  | ISideNavTitle
+  | ISideNavDivider
+  | ISideNavBasic
+  | ISideNavLink
+  | ISideNavButton
 
 export interface SideNavItemStateChanged {
   item: ISideNavItem
@@ -110,7 +125,10 @@ export interface SideNavItemBadgeTooltip {
  * When `always`, menu item tooltip is always enabled.
  * When `collapseOnly`, menu item tooltip is enabled only when the sidenav is collapsed.
  */
-export type SideNavItemMenuItemTooltipBehavior = 'never' | 'always' | 'collapseOnly'
+export type SideNavItemMenuItemTooltipBehavior =
+  | 'never'
+  | 'always'
+  | 'collapseOnly'
 
 export interface SideNavItemMenuItemTooltipConfig {
   class?: string

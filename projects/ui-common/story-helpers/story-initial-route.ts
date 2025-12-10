@@ -1,7 +1,10 @@
 import { APP_INITIALIZER, ModuleWithProviders, NgModule } from '@angular/core'
 
 import { storyInitialRouteFactory } from './initial-route-factory'
-import { StoryInitialRouteService, STORY_INITIAL_ROUTE_URL } from './initial-route.service'
+import {
+  StoryInitialRouteService,
+  STORY_INITIAL_ROUTE_URL,
+} from './initial-route.service'
 
 @NgModule()
 export class StoryInitialRouteModule {
@@ -13,12 +16,11 @@ export class StoryInitialRouteModule {
         {
           provide: APP_INITIALIZER,
           useFactory: storyInitialRouteFactory,
-          deps: [ StoryInitialRouteService ],
-          multi: true
+          deps: [StoryInitialRouteService],
+          multi: true,
         },
-        { provide: STORY_INITIAL_ROUTE_URL, useValue: url }
-      ]
+        { provide: STORY_INITIAL_ROUTE_URL, useValue: url },
+      ],
     }
   }
-
 }

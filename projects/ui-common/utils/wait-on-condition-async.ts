@@ -1,7 +1,7 @@
 export async function waitOnConditionAsync(
   condition: () => boolean,
   timeoutDuration: number = -1,
-  throwOnTimeout: boolean = true
+  throwOnTimeout: boolean = true,
 ): Promise<any> {
   const timeStart: any = new Date()
 
@@ -24,7 +24,9 @@ export async function waitOnConditionAsync(
         }
       }
 
-      setTimeout(() => { _waitFunc(callbackFn) }, 30)
+      setTimeout(() => {
+        _waitFunc(callbackFn)
+      }, 30)
     }
   }
 

@@ -1,17 +1,26 @@
 import { PipeTransform } from '@angular/core'
 import { TableColumnProp } from '@marklb/ngx-datatable'
 
-import { TheSeamDatatableColumn, TheSeamDatatableRow } from '@theseam/ui-common/datatable'
+import {
+  TheSeamDatatableColumn,
+  TheSeamDatatableRow,
+} from '@theseam/ui-common/datatable'
 
 import { DynamicValue } from '@theseam/ui-common/dynamic'
 import { ThemeTypes } from '@theseam/ui-common/models'
-import { TableCellTypeConfig, TableCellTypeName, TheSeamTableColumn } from '@theseam/ui-common/table-cell-type'
+import {
+  TableCellTypeConfig,
+  TableCellTypeName,
+  TheSeamTableColumn,
+} from '@theseam/ui-common/table-cell-type'
 
 import { DynamicDatatableMenuBar } from './models/dynamic-datatable-menu-bar'
 import { DynamicDatatableRowAction } from './models/dynamic-datatable-row-action'
 
-export type DynamicDatatableColumn<T extends TableCellTypeName = any, C extends TableCellTypeConfig<T> = any> =
-  TheSeamDatatableColumn<T, C> | TheSeamTableColumn<T, C>
+export type DynamicDatatableColumn<
+  T extends TableCellTypeName = any,
+  C extends TableCellTypeConfig<T> = any,
+> = TheSeamDatatableColumn<T, C> | TheSeamTableColumn<T, C>
 
 // export interface DynamicDatatableColumn<T extends DynamicDatatableCellType, C extends DynamicDatatableCellTypeConfig<T>> {
 //   /**
@@ -176,7 +185,6 @@ export type DynamicDatatableColumn<T extends TableCellTypeName = any, C extends 
 export type DynamicDatatableRow = TheSeamDatatableRow
 
 export interface DynamicDatatableFilterMenuItemDef<O = any> {
-
   /** */
   name: string
 
@@ -198,7 +206,6 @@ export interface DynamicDatatableFilterMenuItemDef<O = any> {
 }
 
 export interface DynamicDatatableFilterMenu {
-
   /**
    * Default 'default'
    */
@@ -214,21 +221,24 @@ export interface DynamicDatatableFilterMenu {
    * Example: [ 'exporter:csv', 'exporter:xlsx' ]
    */
   exporters?: string[]
-
 }
 
 export type DynamicDatatableFooterMenuItemType = 'button' | 'text'
 
-export interface DynamicDatatableFooterMenuItem<T = DynamicDatatableFooterMenuItemType> {
+export interface DynamicDatatableFooterMenuItem<
+  T = DynamicDatatableFooterMenuItemType,
+> {
   type: T
 }
 
-export interface DynamicDatatableFooterMenuItemButton extends DynamicDatatableFooterMenuItem<'button'> {
+export interface DynamicDatatableFooterMenuItemButton
+  extends DynamicDatatableFooterMenuItem<'button'> {
   text: string
   theme: ThemeTypes
 }
 
-export interface DynamicDatatableFooterMenuItemText extends DynamicDatatableFooterMenuItem<'text'> {
+export interface DynamicDatatableFooterMenuItemText
+  extends DynamicDatatableFooterMenuItem<'text'> {
   text: string
 }
 
@@ -250,7 +260,10 @@ export interface DynamicDatatableFooterMenu {
 export interface DatatableDynamicDef {
   readonly menuBar?: DynamicDatatableMenuBar
   readonly filterMenu?: DynamicDatatableFilterMenu
-  readonly columns: DynamicDatatableColumn<TableCellTypeName, TableCellTypeConfig<TableCellTypeName>>[]
+  readonly columns: DynamicDatatableColumn<
+    TableCellTypeName,
+    TableCellTypeConfig<TableCellTypeName>
+  >[]
   readonly rows: DynamicDatatableRow[]
   readonly rowActions?: DynamicDatatableRowAction[]
   // footerMenu?: DynamicDatatableFooterMenu

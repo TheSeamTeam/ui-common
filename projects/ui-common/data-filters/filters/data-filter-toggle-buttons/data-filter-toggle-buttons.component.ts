@@ -1,12 +1,25 @@
 import { coerceArray } from '@angular/cdk/coercion'
-import { Component, forwardRef, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core'
+import {
+  Component,
+  forwardRef,
+  Inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  Optional,
+} from '@angular/core'
 import { UntypedFormControl } from '@angular/forms'
 import { Observable, of } from 'rxjs'
 import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators'
 
 import { hasProperty, isNullOrUndefined } from '@theseam/ui-common/utils'
 
-import { DataFilterState, IDataFilter, THESEAM_DATA_FILTER, THESEAM_DATA_FILTER_OPTIONS } from '../../data-filter'
+import {
+  DataFilterState,
+  IDataFilter,
+  THESEAM_DATA_FILTER,
+  THESEAM_DATA_FILTER_OPTIONS,
+} from '../../data-filter'
 import { THESEAM_DATA_FILTER_CONTAINER } from '../../data-filter-container'
 import type { DataFilterContainer } from '../../data-filter-container'
 import { textDataFilter } from '../data-filter-text/data-filter-text.component'
@@ -38,10 +51,14 @@ export const DefaultToggleButtonsFilterOptions: IToggleButtonsFilterOptions = {
   selectionToggleable: false,
   buttons: [],
   exact: false,
-  caseSensitive: false
+  caseSensitive: false,
 }
 
-export function toggleButtonsFilter(data: any[], values: string[], options = DefaultToggleButtonsFilterOptions) {
+export function toggleButtonsFilter(
+  data: any[],
+  values: string[],
+  options = DefaultToggleButtonsFilterOptions,
+) {
   if (!data || !values) {
     return data
   }
@@ -55,7 +72,9 @@ export function toggleButtonsFilter(data: any[], values: string[], options = Def
 
   let _data = data
   for (const val of values) {
-    if (val === '') { continue }
+    if (val === '') {
+      continue
+    }
 
     let cmp
     for (const btn of customComparatorBtns) {
@@ -76,7 +95,7 @@ export function toggleButtonsFilter(data: any[], values: string[], options = Def
         properties: options.properties,
         omitProperties: options.omitProperties,
         exact: options.exact,
-        caseSensitive: options.caseSensitive
+        caseSensitive: options.caseSensitive,
       })
     }
   }
@@ -89,10 +108,12 @@ let _uid = 0
   selector: 'seam-data-filter-toggle-buttons',
   templateUrl: './data-filter-toggle-buttons.component.html',
   styleUrls: ['./data-filter-toggle-buttons.component.scss'],
-  providers: [ DATA_FILTER_TOGGLE_BUTTON ]
+  providers: [DATA_FILTER_TOGGLE_BUTTON],
+  standalone: false,
 })
-export class DataFilterToggleButtonsComponent implements OnInit, OnDestroy, IDataFilter {
-
+export class DataFilterToggleButtonsComponent
+  implements OnInit, OnDestroy, IDataFilter
+{
   public readonly name = 'toggle-buttons'
   public readonly uid = `toggle-buttons__${_uid++}`
 
@@ -118,28 +139,39 @@ export class DataFilterToggleButtonsComponent implements OnInit, OnDestroy, IDat
   public readonly filterStateChanges: Observable<DataFilterState>
 
   constructor(
-    @Inject(THESEAM_DATA_FILTER_CONTAINER) private _filterContainer: DataFilterContainer,
-    @Optional() @Inject(THESEAM_DATA_FILTER_OPTIONS) private _filterOptions: IToggleButtonsFilterOptions | null
+    @Inject(THESEAM_DATA_FILTER_CONTAINER)
+    private _filterContainer: DataFilterContainer,
+    @Optional()
+    @Inject(THESEAM_DATA_FILTER_OPTIONS)
+    private _filterOptions: IToggleButtonsFilterOptions | null,
   ) {
     this.filterStateChanges = this._control.valueChanges.pipe(
       // tap(v => console.log('v', v)),
       switchMap(() => of(this.filterState())),
       // tap(v => console.log('v2', v)),
-      shareReplay({ bufferSize: 1, refCount: true })
+      shareReplay({ bufferSize: 1, refCount: true }),
     )
   }
 
   ngOnInit() {
     this._filterContainer.addFilter(this)
-    if (this._filterOptions && hasProperty(this._filterOptions, 'initialValue')) {
+    if (
+      this._filterOptions &&
+      hasProperty(this._filterOptions, 'initialValue')
+    ) {
       this.value = this._optDefault('initialValue')
     }
   }
 
-  ngOnDestroy() { this._filterContainer.removeFilter(this) }
+  ngOnDestroy() {
+    this._filterContainer.removeFilter(this)
+  }
 
   private _optDefault<K extends keyof IToggleButtonsFilterOptions>(prop: K) {
-    if (this._filterOptions && Object.prototype.hasOwnProperty.call(this._filterOptions, prop)) {
+    if (
+      this._filterOptions &&
+      Object.prototype.hasOwnProperty.call(this._filterOptions, prop)
+    ) {
       return this._filterOptions[prop]
     }
     return DefaultToggleButtonsFilterOptions[prop]
@@ -153,16 +185,21 @@ export class DataFilterToggleButtonsComponent implements OnInit, OnDestroy, IDat
       selectionToggleable: this.selectionToggleable,
       buttons: this.buttons,
       exact: this.exact,
-      caseSensitive: this.caseSensitive
+      caseSensitive: this.caseSensitive,
     }
   }
 
   public filter<T>(data: T[]): Observable<T[]> {
-    return this._control.valueChanges
-      .pipe(
-        map(v => toggleButtonsFilter(data, coerceArray(v), this.options)),
-        startWith(toggleButtonsFilter(data, coerceArray(this._control.value), this.options)),
-      )
+    return this._control.valueChanges.pipe(
+      map((v) => toggleButtonsFilter(data, coerceArray(v), this.options)),
+      startWith(
+        toggleButtonsFilter(
+          data,
+          coerceArray(this._control.value),
+          this.options,
+        ),
+      ),
+    )
   }
 
   public filterState(): DataFilterState {
@@ -171,9 +208,8 @@ export class DataFilterToggleButtonsComponent implements OnInit, OnDestroy, IDat
       name: this.name,
       state: {
         value: this._control.value,
-        options: this.options
-      }
+        options: this.options,
+      },
     }
   }
-
 }

@@ -1,5 +1,5 @@
 export type ThemeTypes =
-  'default'
+  | 'default'
   | 'primary'
   | 'secondary'
   | 'success'

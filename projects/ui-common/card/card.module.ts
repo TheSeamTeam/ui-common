@@ -1,32 +1,22 @@
-import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 
-import { TheSeamSharedModule } from '@theseam/ui-common/shared'
-
-import { CardActionComponent } from './card-action/card-action.component'
-import { CardBodyComponent } from './card-body/card-body.component'
-import { CardFooterComponent } from './card-footer/card-footer.component'
-import { CardHeaderComponent } from './card-header/card-header.component'
-import { CardComponent } from './card.component'
+import { TheSeamCardActionComponent } from './card-action/card-action.component'
+import { TheSeamCardBodyComponent } from './card-body/card-body.component'
+import { TheSeamCardHeaderComponent } from './card-header/card-header.component'
+import { TheSeamCardComponent } from './card.component'
 
 @NgModule({
-  declarations: [
-    CardComponent,
-    CardHeaderComponent,
-    CardBodyComponent,
-    CardFooterComponent,
-    CardActionComponent
-  ],
   imports: [
-    CommonModule,
-    TheSeamSharedModule
+    TheSeamCardComponent,
+    TheSeamCardHeaderComponent,
+    TheSeamCardBodyComponent,
+    TheSeamCardActionComponent,
   ],
   exports: [
-    CardComponent,
-    CardHeaderComponent,
-    CardBodyComponent,
-    CardFooterComponent,
-    CardActionComponent
-  ]
+    TheSeamCardComponent,
+    TheSeamCardHeaderComponent,
+    TheSeamCardBodyComponent,
+    TheSeamCardActionComponent,
+  ],
 })
-export class TheSeamCardModule { }
+export class TheSeamCardModule {}

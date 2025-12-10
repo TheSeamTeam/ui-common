@@ -1,17 +1,17 @@
 import { Component, Input } from '@angular/core'
 
-import { NgxLoadingConfig } from '@marklb/ngx-loading'
+import { NgxLoadingConfig, NgxLoadingModule } from 'ngx-loading'
 
 import { defaultThemeConfig, primaryThemeConfig } from '../loading-themes'
-import type { TheSeamLoadingTheme } from '../loading.models'
+import { TheSeamLoadingTheme } from '../loading.models'
 
 @Component({
   selector: 'seam-loading',
   templateUrl: './loading.component.html',
-  styleUrls: ['./loading.component.scss']
+  styleUrls: ['./loading.component.scss'],
+  imports: [NgxLoadingModule],
 })
 export class TheSeamLoadingComponent {
-
   @Input()
   set theme(value: TheSeamLoadingTheme) {
     if (value === 'primary') {
@@ -21,5 +21,4 @@ export class TheSeamLoadingComponent {
     }
   }
   _theme: NgxLoadingConfig = defaultThemeConfig
-
 }

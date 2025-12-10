@@ -53,14 +53,15 @@ import { tick } from '@angular/core/testing'
  * ```
  */
 export class TickHelper {
-
   private _startTime = Date.now()
 
   /**
    * Returns the number of ticks that have elapsed since this class was
    * initialized.
    */
-  public get ticksElapsed() { return Date.now() - this._startTime }
+  public get ticksElapsed() {
+    return Date.now() - this._startTime
+  }
 
   /**
    * Calls `tick()` for the remaining number of ticks to reach elapsed ticks.
@@ -71,6 +72,7 @@ export class TickHelper {
    * t.tickTo(10) // Equivalent to `tick(7)` in this case to reach 10 ticks.
    * ```
    */
-  public tickTo(ticks: number) { tick(ticks - this.ticksElapsed) }
-
+  public tickTo(ticks: number) {
+    tick(ticks - this.ticksElapsed)
+  }
 }

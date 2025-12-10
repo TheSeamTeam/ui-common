@@ -3,7 +3,10 @@ import { CommonModule } from '@angular/common'
 import { AbstractControl, ReactiveFormsModule } from '@angular/forms'
 
 import { JsonSchemaFormModule, JsonSchemaFormService } from '@ajsf/core'
-import { TheSeamSchemaFormControlWidget, TheSeamSchemaFormWidgetLayoutNodeOptions } from '../../schema-form'
+import {
+  TheSeamSchemaFormControlWidget,
+  TheSeamSchemaFormWidgetLayoutNodeOptions,
+} from '../../schema-form'
 import { TheSeamCheckboxComponent } from '@theseam/ui-common/checkbox'
 import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 
@@ -20,8 +23,9 @@ import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
     TheSeamCheckboxComponent,
   ],
 })
-export class TheSeamSchemaFormCheckboxComponent implements OnInit, TheSeamSchemaFormControlWidget {
-
+export class TheSeamSchemaFormCheckboxComponent
+  implements OnInit, TheSeamSchemaFormControlWidget
+{
   formControl?: AbstractControl
   controlName?: string
   controlValue?: any
@@ -36,12 +40,12 @@ export class TheSeamSchemaFormCheckboxComponent implements OnInit, TheSeamSchema
   trueValue = true
   falseValue = false
 
-  constructor(
-    private readonly _jsf: JsonSchemaFormService
-  ) { }
+  constructor(private readonly _jsf: JsonSchemaFormService) {}
 
   ngOnInit() {
-    this.options = this.layoutNode?.options || {} as TheSeamSchemaFormWidgetLayoutNodeOptions
+    this.options =
+      this.layoutNode?.options ||
+      ({} as TheSeamSchemaFormWidgetLayoutNodeOptions)
     this._jsf.initializeControl(this)
     if (this.controlValue === null || this.controlValue === undefined) {
       this.controlValue = this.options?.title
@@ -50,11 +54,13 @@ export class TheSeamSchemaFormCheckboxComponent implements OnInit, TheSeamSchema
 
   updateValue(event: any) {
     event.preventDefault()
-    this._jsf.updateValue(this, event.target.checked ? this.trueValue : this.falseValue)
+    this._jsf.updateValue(
+      this,
+      event.target.checked ? this.trueValue : this.falseValue,
+    )
   }
 
   get isChecked() {
-    return this._jsf.getFormControlValue(this) as any === this.trueValue
+    return (this._jsf.getFormControlValue(this) as any) === this.trueValue
   }
-
 }

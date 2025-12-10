@@ -9,7 +9,7 @@ Object.defineProperty(window, 'getComputedStyle', {
       appearance: ['-webkit-appearance'],
       getPropertyValue: () => {
         return ''
-      }
+      },
     }
   },
 })

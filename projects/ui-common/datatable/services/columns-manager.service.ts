@@ -1,6 +1,26 @@
-import { Injectable, KeyValueChanges, KeyValueDiffer, KeyValueDiffers, TemplateRef } from '@angular/core'
-import { BehaviorSubject, combineLatest, defer, EMPTY, Observable, of, Subject } from 'rxjs'
-import { auditTime, map, shareReplay, startWith, switchMap } from 'rxjs/operators'
+import {
+  Injectable,
+  KeyValueChanges,
+  KeyValueDiffer,
+  KeyValueDiffers,
+  TemplateRef,
+} from '@angular/core'
+import {
+  BehaviorSubject,
+  combineLatest,
+  defer,
+  EMPTY,
+  Observable,
+  of,
+  Subject,
+} from 'rxjs'
+import {
+  auditTime,
+  map,
+  shareReplay,
+  startWith,
+  switchMap,
+} from 'rxjs/operators'
 
 import {
   DataTableColumnCellTreeToggle,
@@ -13,7 +33,10 @@ import {
 
 import { hasProperty, notNullOrUndefined } from '@theseam/ui-common/utils'
 
-import { DatatableColumnComponent } from '../datatable-column/datatable-column.component'
+import {
+  DatatableColumnComponent,
+  isColumnBoundToProp,
+} from '../datatable-column/datatable-column.component'
 import { DatatableRowActionItemDirective } from '../directives/datatable-row-action-item.directive'
 import { TheSeamDatatableColumn } from '../models/table-column'
 import { createActionMenuColumn } from '../utils/create-action-menu-column'
@@ -22,6 +45,8 @@ import { getColumnProp } from '../utils/get-column-prop'
 import { setColumnDefaults } from '../utils/set-column-defaults'
 import { translateTemplateColumns } from '../utils/translate-templates'
 import { DatatableColumnChangesService } from './datatable-column-changes.service'
+import { ColumnsFiltersService } from './columns-filters.service'
+import { ColumnsDataFilter } from '../models/columns-data-filter'
 import { ActionItemColumnPosition } from '../models/action-item-column-position'
 
 enum ColumnsTypes {
@@ -36,24 +61,43 @@ export type InternalColumnsGetter = () => TableColumn[]
 export class ColumnsManagerService {
   private readonly _updateColumns = new Subject<void>()
 
-  private readonly _inputColumns = new BehaviorSubject<TheSeamDatatableColumn[]>([])
-  private readonly _templateColumns = new BehaviorSubject<DatatableColumnComponent[]>([])
+  private readonly _inputColumns = new BehaviorSubject<
+    TheSeamDatatableColumn[]
+  >([])
+  private readonly _templateColumns = new BehaviorSubject<
+    DatatableColumnComponent[]
+  >([])
 
-  private readonly _inpColDiffersMap = new Map<TableColumnProp, KeyValueDiffer<any, any>>()
-  private readonly _tplColDiffersMap = new Map<TableColumnProp, KeyValueDiffer<any, any>>()
-  private readonly _resultColDiffersMap = new Map<TableColumnProp, KeyValueDiffer<any, any>>()
+  private readonly _inpColDiffersMap = new Map<
+    TableColumnProp,
+    KeyValueDiffer<any, any>
+  >()
+  private readonly _tplColDiffersMap = new Map<
+    TableColumnProp,
+    KeyValueDiffer<any, any>
+  >()
+  private readonly _resultColDiffersMap = new Map<
+    TableColumnProp,
+    KeyValueDiffer<any, any>
+  >()
   private _colPropsDiffer?: KeyValueDiffer<any, any>
 
   private _internalColumnsGetter?: InternalColumnsGetter
 
   private _selectionType: SelectionType | undefined
   private _rowActionItem: DatatableRowActionItemDirective | undefined
-  private _actionMenuCellTpl: TemplateRef<DataTableColumnDirective> | undefined
+  private _actionMenuCellTpl:
+    | TemplateRef<DataTableColumnDirective<any>>
+    | undefined
   private _actionItemColumnPosition: ActionItemColumnPosition | undefined
-  private _blankHeaderTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined
+  private _blankHeaderTpl:
+    | TemplateRef<DataTableColumnHeaderDirective>
+    | undefined
   private _treeToggleTpl: TemplateRef<DataTableColumnCellTreeToggle> | undefined
   private _headerTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined
-  private _cellTypeSelectorTpl: TemplateRef<DataTableColumnDirective> | undefined
+  private _cellTypeSelectorTpl:
+    | TemplateRef<DataTableColumnDirective<any>>
+    | undefined
 
   // TODO: Consider making this a columns changed obervable, to make changes more predictable.
   public readonly columns$: Observable<TheSeamDatatableColumn[]>
@@ -61,22 +105,28 @@ export class ColumnsManagerService {
   constructor(
     private readonly _differs: KeyValueDiffers,
     private readonly _columnChangesService: DatatableColumnChangesService,
+    private readonly _columnsFilters: ColumnsFiltersService,
   ) {
-    const templateColumns$ = this._columnChangesService.columnInputChanges$.pipe(
-      startWith(undefined),
-      switchMap(() => {
-        return this._templateColumns.asObservable().pipe(map(translateTemplateColumns))
-      })
-    )
+    const templateColumns$ =
+      this._columnChangesService.columnInputChanges$.pipe(
+        startWith(undefined),
+        switchMap(() => {
+          return this._templateColumns
+            .asObservable()
+            .pipe(map(translateTemplateColumns))
+        }),
+      )
 
     this.columns$ = defer(() => {
       let isFirst = true
       return combineLatest([
         this._inputColumns.asObservable(),
         templateColumns$,
-        this._updateColumns.asObservable().pipe(auditTime(0), startWith(undefined))
+        this._updateColumns
+          .asObservable()
+          .pipe(auditTime(0), startWith(undefined)),
       ]).pipe(
-        switchMap(([ inputColumns, templateColumns ]) => {
+        switchMap(([inputColumns, templateColumns]) => {
           const cols = this._mergeColumns(inputColumns, templateColumns)
 
           const hasColumnsChanged = this._hasColumnsChanged(cols)
@@ -89,15 +139,15 @@ export class ColumnsManagerService {
           // true, because their differs need to be called.
           if (hasColumnsChanged || hasAddedOrRemovedColumns || isFirst) {
             isFirst = false
+            // Update the filters service with the new columns
+            this._columnsFilters.setColumns(cols)
             return of(cols)
           }
 
           return EMPTY
         }),
       )
-    }).pipe(
-      shareReplay({ refCount: true, bufferSize: 1 })
-    )
+    }).pipe(shareReplay({ refCount: true, bufferSize: 1 }))
   }
 
   public setInputColumns(columns: TheSeamDatatableColumn[]): void {
@@ -125,7 +175,9 @@ export class ColumnsManagerService {
     return this._selectionType
   }
 
-  public setRowActionItem(rowActionItem: DatatableRowActionItemDirective | undefined): void {
+  public setRowActionItem(
+    rowActionItem: DatatableRowActionItemDirective | undefined,
+  ): void {
     const changed = this._rowActionItem !== rowActionItem
     this._rowActionItem = rowActionItem
     if (changed) {
@@ -133,7 +185,9 @@ export class ColumnsManagerService {
     }
   }
 
-  public setActionItemColumnPosition(actionItemColumnPosition: ActionItemColumnPosition | undefined) {
+  public setActionItemColumnPosition(
+    actionItemColumnPosition: ActionItemColumnPosition | undefined,
+  ) {
     const changed = this._actionItemColumnPosition !== actionItemColumnPosition
     this._actionItemColumnPosition = actionItemColumnPosition
     if (changed) {
@@ -141,7 +195,9 @@ export class ColumnsManagerService {
     }
   }
 
-  public setActionMenuCellTpl(actionMenuCellTpl: TemplateRef<DataTableColumnDirective> | undefined): void {
+  public setActionMenuCellTpl(
+    actionMenuCellTpl: TemplateRef<DataTableColumnDirective<any>> | undefined,
+  ): void {
     const changed = this._actionMenuCellTpl !== actionMenuCellTpl
     this._actionMenuCellTpl = actionMenuCellTpl
     if (changed) {
@@ -149,7 +205,9 @@ export class ColumnsManagerService {
     }
   }
 
-  public setBlankHeaderTpl(blankHeaderTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined): void {
+  public setBlankHeaderTpl(
+    blankHeaderTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined,
+  ): void {
     const changed = this._blankHeaderTpl !== blankHeaderTpl
     this._blankHeaderTpl = blankHeaderTpl
     if (changed) {
@@ -157,7 +215,9 @@ export class ColumnsManagerService {
     }
   }
 
-  public setTreeToggleTpl(treeToggleTpl: TemplateRef<DataTableColumnCellTreeToggle> | undefined): void {
+  public setTreeToggleTpl(
+    treeToggleTpl: TemplateRef<DataTableColumnCellTreeToggle> | undefined,
+  ): void {
     const changed = this._treeToggleTpl !== treeToggleTpl
     this._treeToggleTpl = treeToggleTpl
     if (changed) {
@@ -165,7 +225,9 @@ export class ColumnsManagerService {
     }
   }
 
-  public setHeaderTpl(headerTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined): void {
+  public setHeaderTpl(
+    headerTpl: TemplateRef<DataTableColumnHeaderDirective> | undefined,
+  ): void {
     const changed = this._headerTpl !== headerTpl
     this._headerTpl = headerTpl
     if (changed) {
@@ -173,7 +235,9 @@ export class ColumnsManagerService {
     }
   }
 
-  public setCellTypeSelectorTpl(cellTypeSelectorTpl: TemplateRef<DataTableColumnDirective> | undefined): void {
+  public setCellTypeSelectorTpl(
+    cellTypeSelectorTpl: TemplateRef<DataTableColumnDirective<any>> | undefined,
+  ): void {
     const changed = this._cellTypeSelectorTpl !== cellTypeSelectorTpl
     this._cellTypeSelectorTpl = cellTypeSelectorTpl
     if (changed) {
@@ -183,7 +247,7 @@ export class ColumnsManagerService {
 
   private _mergeColumns(
     inputColumns: TheSeamDatatableColumn[],
-    templateColumns: DatatableColumnComponent[]
+    templateColumns: DatatableColumnComponent[],
   ): TheSeamDatatableColumn[] {
     const cols: TheSeamDatatableColumn[] = []
 
@@ -207,7 +271,7 @@ export class ColumnsManagerService {
         this._updateColDif(inpColDif, internalCol, inpCol)
       }
 
-      const tplCol = this._findColumnByProp(prop, templateColumns)
+      const tplCol = this._getTemplateColumnByProp(prop, templateColumns)
       if (tplCol !== undefined) {
         const tplColDif = this._getColDif(tplCol, ColumnsTypes.Template)
         if (notNullOrUndefined(tplColDif)) {
@@ -215,11 +279,16 @@ export class ColumnsManagerService {
         }
       }
 
+      // Preserve or create filter for this column
+      const existingFilter = this._getExistingFilter(internalCol, inpCol)
+
       const _col: TheSeamDatatableColumn = {
         ...(internalCol || {}),
         ...inpCol,
         // TODO: Rethink this, because I don't know if this is correct.
-        ...(tplCol as any || {})
+        ...((tplCol as any) || {}),
+        // Store filter directly on column object
+        $$filter: existingFilter || this._createColumnFilter(inpCol),
       }
 
       if (this._shouldAddTreeToggleColumn(_col)) {
@@ -227,18 +296,23 @@ export class ColumnsManagerService {
       }
 
       if (this._shouldAddHeaderTemplate(_col)) {
-        _col.headerTemplate = this._headerTpl
+        _col.headerTemplate = this._headerTpl as any // TODO: Fix type
       }
 
       if (this._shouldAddCellTypeSelectorTpl(_col)) {
-        _col.cellTemplate = this._cellTypeSelectorTpl
+        _col.cellTemplate = this._cellTypeSelectorTpl as any // TODO: Fix type
       }
 
       cols.push(_col)
     }
 
     if (this._shouldAddRowActionColumn()) {
-      const actionMenuColumn = createActionMenuColumn(this._actionMenuCellTpl, this._blankHeaderTpl, this._rowActionColumnIsFrozenLeft(), this._rowActionColumnIsFrozenRight())
+      const actionMenuColumn = createActionMenuColumn(
+        this._actionMenuCellTpl,
+        this._blankHeaderTpl,
+        this._rowActionColumnIsFrozenLeft(),
+        this._rowActionColumnIsFrozenRight(),
+      )
 
       if (this._rowActionColumnIsStaticLeft()) {
         cols.unshift(actionMenuColumn)
@@ -270,25 +344,51 @@ export class ColumnsManagerService {
       return undefined
     }
 
-    return internalCols.find(c => getColumnProp(c) === prop)
+    return internalCols.find((c) => getColumnProp(c) === prop)
   }
 
-  private _findColumnByProp<T extends TheSeamDatatableColumn | DatatableColumnComponent>(
-    prop: TableColumnProp,
-    columns: T[]
-  ): T | undefined {
-    return columns.find(c => getColumnProp(c) === prop)
+  private _findColumnByProp<
+    T extends TheSeamDatatableColumn | DatatableColumnComponent,
+  >(prop: TableColumnProp, columns: T[]): T | undefined {
+    return columns.find((c) => getColumnProp(c) === prop)
   }
 
-  private _getDifMapForColumnsType(columnsType: ColumnsTypes): Map<TableColumnProp, KeyValueDiffer<any, any>> {
+  private _getTemplateColumnByProp<
+    T extends TheSeamDatatableColumn | DatatableColumnComponent,
+  >(prop: TableColumnProp, columns: T[]): T | undefined {
+    const tplCol = this._findColumnByProp<T>(prop, columns)
+    if (tplCol === undefined) {
+      return undefined
+    }
+    const _tplCol: any = {}
+    for (const key in tplCol) {
+      if (
+        Object.prototype.hasOwnProperty.call(tplCol, key) &&
+        isColumnBoundToProp(tplCol as DatatableColumnComponent, key)
+      ) {
+        _tplCol[key] = tplCol[key as keyof T]
+      }
+    }
+    return _tplCol
+  }
+
+  private _getDifMapForColumnsType(
+    columnsType: ColumnsTypes,
+  ): Map<TableColumnProp, KeyValueDiffer<any, any>> {
     switch (columnsType) {
-      case ColumnsTypes.Input: return this._inpColDiffersMap
-      case ColumnsTypes.Template: return this._tplColDiffersMap
-      case ColumnsTypes.Result: return this._resultColDiffersMap
+      case ColumnsTypes.Input:
+        return this._inpColDiffersMap
+      case ColumnsTypes.Template:
+        return this._tplColDiffersMap
+      case ColumnsTypes.Result:
+        return this._resultColDiffersMap
     }
   }
 
-  private _getColumnDiffer(prop: TableColumnProp, colsType: ColumnsTypes): KeyValueDiffer<string, any> {
+  private _getColumnDiffer(
+    prop: TableColumnProp,
+    colsType: ColumnsTypes,
+  ): KeyValueDiffer<string, any> {
     const difMap = this._getDifMapForColumnsType(colsType)
     if (difMap === null) {
       throw Error(`Invalid columns type.`)
@@ -308,7 +408,7 @@ export class ColumnsManagerService {
 
   private _getColDif(
     col: TheSeamDatatableColumn | DatatableColumnComponent,
-    colsType: ColumnsTypes
+    colsType: ColumnsTypes,
   ): KeyValueChanges<string, any> | null {
     const prop = getColumnProp(col)
     if (prop === undefined) {
@@ -321,24 +421,29 @@ export class ColumnsManagerService {
   private _updateColDif(
     colDif: KeyValueChanges<string, any>,
     internalColumn: TableColumn | undefined,
-    col: TheSeamDatatableColumn | DatatableColumnComponent
+    col: TheSeamDatatableColumn | DatatableColumnComponent,
   ): void {
-    colDif.forEachRemovedItem(r => {
-      if (internalColumn && Object.prototype.hasOwnProperty.call(internalColumn, r.key)) {
+    colDif.forEachRemovedItem((r) => {
+      if (
+        internalColumn &&
+        Object.prototype.hasOwnProperty.call(internalColumn, r.key)
+      ) {
         const k = r.key as keyof TableColumn
         delete internalColumn[k]
       }
     })
-    colDif.forEachAddedItem(r => (col as any)[r.key] = r.currentValue)
-    colDif.forEachChangedItem(r => (col as any)[r.key] = r.currentValue)
+    colDif.forEachAddedItem((r) => ((col as any)[r.key] = r.currentValue))
+    colDif.forEachChangedItem((r) => ((col as any)[r.key] = r.currentValue))
   }
 
-  private _hasAddedOrRemovedColumns(columns: TheSeamDatatableColumn[]): boolean {
+  private _hasAddedOrRemovedColumns(
+    columns: TheSeamDatatableColumn[],
+  ): boolean {
     if (!this._colPropsDiffer) {
       this._colPropsDiffer = this._differs.find([]).create()
     }
 
-    const props = columns.map(c => getColumnProp(c))
+    const props = columns.map((c) => getColumnProp(c))
     return this._colPropsDiffer.diff(props) !== null
   }
 
@@ -379,16 +484,50 @@ export class ColumnsManagerService {
   }
 
   private _shouldAddTreeToggleColumn(column: TheSeamDatatableColumn): boolean {
-    return column.isTreeColumn !== undefined && column.isTreeColumn &&
-      (!hasProperty(column, 'treeToggleTemplate') || !notNullOrUndefined(column.treeToggleTemplate))
+    return (
+      column.isTreeColumn !== undefined &&
+      column.isTreeColumn &&
+      (!hasProperty(column, 'treeToggleTemplate') ||
+        !notNullOrUndefined(column.treeToggleTemplate))
+    )
   }
 
   private _shouldAddHeaderTemplate(column: TheSeamDatatableColumn): boolean {
     return !hasProperty(column, 'headerTemplate')
   }
 
-  private _shouldAddCellTypeSelectorTpl(column: TheSeamDatatableColumn): boolean {
+  private _shouldAddCellTypeSelectorTpl(
+    column: TheSeamDatatableColumn,
+  ): boolean {
     return hasProperty(column, 'cellType')
   }
 
+  private _getExistingFilter(
+    internalCol: TableColumn | undefined,
+    inputCol: TheSeamDatatableColumn,
+  ): ColumnsDataFilter | undefined {
+    // Check if internal column has existing filter (from NgxDatatable)
+    if (internalCol && (internalCol as any).$$filter) {
+      return (internalCol as any).$$filter
+    }
+
+    // Check if input column has existing filter (from previous merge)
+    if ((inputCol as any).$$filter) {
+      return (inputCol as any).$$filter
+    }
+
+    return undefined
+  }
+
+  private _createColumnFilter(
+    column: TheSeamDatatableColumn,
+  ): ColumnsDataFilter | undefined {
+    if (!column.filterable) {
+      return undefined
+    }
+
+    return (
+      this._columnsFilters.createColumnDataFilter(column, null) || undefined
+    )
+  }
 }

@@ -1,13 +1,31 @@
-import { Component, ContentChildren, DoCheck, HostBinding, Input, OnDestroy, QueryList, TemplateRef } from '@angular/core'
-import { AbstractControl, AbstractControlDirective, ValidationErrors } from '@angular/forms'
+import {
+  Component,
+  ContentChildren,
+  DoCheck,
+  HostBinding,
+  Input,
+  OnDestroy,
+  QueryList,
+  TemplateRef,
+} from '@angular/core'
+import {
+  AbstractControl,
+  AbstractControlDirective,
+  ValidationErrors,
+} from '@angular/forms'
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs'
-import { distinctUntilChanged, map, shareReplay, startWith } from 'rxjs/operators'
+import {
+  distinctUntilChanged,
+  map,
+  shareReplay,
+  startWith,
+} from 'rxjs/operators'
 
 import { FormFieldErrorListItemTplDirective } from './form-field-error-list-item-tpl.directive'
 
 export interface IErrorRecord {
   validatorName: string
-  error: any,
+  error: any
   message?: string
   template?: TemplateRef<any>
 
@@ -25,22 +43,26 @@ export interface IErrorRecord {
 @Component({
   selector: 'seam-form-field-error-list',
   templateUrl: './form-field-error-list.component.html',
-  styleUrls: ['./form-field-error-list.component.scss']
+  styleUrls: ['./form-field-error-list.component.scss'],
+  standalone: false,
 })
 export class FormFieldErrorListComponent implements OnDestroy, DoCheck {
-
   @HostBinding('style.display') get _display() {
     return this.showErrors ? 'block' : 'none'
   }
 
-  private static readonly defaultMessages: { [name: string]: ((params: any) => string) | (() => string) } = {
+  private static readonly defaultMessages: {
+    [name: string]: ((params: any) => string) | (() => string)
+  } = {
     // required: () => 'Required',
     // minlength: (params) => 'The min number of characters is ' + params.requiredLength,
     // maxlength: (params) => 'The max allowed number of characters is ' + params.requiredLength,
     // pattern: (params) => 'The required pattern is: ' + params.requiredPattern
   }
 
-  private readonly _defaultMessages: { [name: string]: ((params: any) => string) | (() => string) } = {
+  private readonly _defaultMessages: {
+    [name: string]: ((params: any) => string) | (() => string)
+  } = {
     // required: () => 'Required',
     // minlength: (params) => 'The min number of characters is ' + params.requiredLength,
     // maxlength: (params) => 'The max allowed number of characters is ' + params.requiredLength,
@@ -195,14 +217,22 @@ export class FormFieldErrorListComponent implements OnDestroy, DoCheck {
   @Input() maxErrors = -1
 
   @Input()
-  get control(): AbstractControlDirective | AbstractControl | undefined | null { return this._control }
-  set control(value: AbstractControlDirective | AbstractControl | undefined | null) {
+  get control(): AbstractControlDirective | AbstractControl | undefined | null {
+    return this._control
+  }
+  set control(
+    value: AbstractControlDirective | AbstractControl | undefined | null,
+  ) {
     this._control = value
     if (value) {
       this._initControlListeners(value)
     }
   }
-  private _control: AbstractControlDirective | AbstractControl | undefined | null
+  private _control:
+    | AbstractControlDirective
+    | AbstractControl
+    | undefined
+    | null
 
   private _valueChangeSub = Subscription.EMPTY
   private _errorTplsChangeSub = Subscription.EMPTY
@@ -230,7 +260,10 @@ export class FormFieldErrorListComponent implements OnDestroy, DoCheck {
       if (this.numPaddingErrors > 0) {
         show = true
       } else {
-        show = !!(this.control.invalid && (this.control.dirty || this.control.touched))
+        show = !!(
+          this.control.invalid &&
+          (this.control.dirty || this.control.touched)
+        )
       }
     }
 
@@ -240,7 +273,10 @@ export class FormFieldErrorListComponent implements OnDestroy, DoCheck {
   get showControlErrors(): boolean {
     let show = false
     if (this.control && this.showErrors) {
-      show = !!(this.control.invalid && (this.control.dirty || this.control.touched))
+      show = !!(
+        this.control.invalid &&
+        (this.control.dirty || this.control.touched)
+      )
     }
 
     return show
@@ -249,44 +285,62 @@ export class FormFieldErrorListComponent implements OnDestroy, DoCheck {
   public errorRecords$: Observable<IErrorRecord[]>
 
   constructor() {
-    this.showControlErrors$ = this._showControlErrorsSubject.asObservable()
+    this.showControlErrors$ = this._showControlErrorsSubject
+      .asObservable()
       .pipe(distinctUntilChanged())
       .pipe(shareReplay(1))
 
-    this.errorRecords$ = combineLatest([this._controlErrors, this._errorTpls, this._errorInput])
-      .pipe(map(([ctrlErrs, errTpls, errorInput]) => this._composeErrorInputs(ctrlErrs, errTpls, errorInput)))
+    this.errorRecords$ = combineLatest([
+      this._controlErrors,
+      this._errorTpls,
+      this._errorInput,
+    ])
+      .pipe(
+        map(([ctrlErrs, errTpls, errorInput]) =>
+          this._composeErrorInputs(ctrlErrs, errTpls, errorInput),
+        ),
+      )
       .pipe(shareReplay(1))
 
     this.displayRecords$ = this.errorRecords$
-      .pipe(map(records => {
-        let resultRecords: IErrorRecord[] = []
+      .pipe(
+        map((records) => {
+          let resultRecords: IErrorRecord[] = []
 
-        if (!this.showErrors) {
-          // TODO: Implement
-        } else {
-          let errs = [ ...records ]
+          if (!this.showErrors) {
+            // TODO: Implement
+          } else {
+            let errs = [...records]
 
-          if (this.maxErrors >= 0) {
-            errs = errs.slice(0, this.maxErrors)
-          }
+            if (this.maxErrors >= 0) {
+              errs = errs.slice(0, this.maxErrors)
+            }
 
-          const count = this.showControlErrors ? this.numPaddingErrors - errs.length : this.numPaddingErrors
-          const paddingErrors: IErrorRecord[] = []
-          if (count > 0) {
-            for (let i = 0; i < count; i++) {
-              paddingErrors.push({ validatorName: '__padding__', error: {}, message: '', external: false })
+            const count = this.showControlErrors
+              ? this.numPaddingErrors - errs.length
+              : this.numPaddingErrors
+            const paddingErrors: IErrorRecord[] = []
+            if (count > 0) {
+              for (let i = 0; i < count; i++) {
+                paddingErrors.push({
+                  validatorName: '__padding__',
+                  error: {},
+                  message: '',
+                  external: false,
+                })
+              }
+            }
+
+            if (this.showControlErrors) {
+              resultRecords = [...errs, ...paddingErrors]
+            } else {
+              resultRecords = [...paddingErrors]
             }
           }
 
-          if (this.showControlErrors) {
-            resultRecords = [ ...errs, ...paddingErrors ]
-          } else {
-            resultRecords = [ ...paddingErrors ]
-          }
-        }
-
-        return resultRecords
-      }))
+          return resultRecords
+        }),
+      )
       .pipe(shareReplay(1))
   }
 
@@ -299,16 +353,21 @@ export class FormFieldErrorListComponent implements OnDestroy, DoCheck {
     this._showControlErrorsSubject.next(this.showControlErrors)
   }
 
-  private _initControlListeners(control: AbstractControlDirective | AbstractControl): void {
+  private _initControlListeners(
+    control: AbstractControlDirective | AbstractControl,
+  ): void {
     // Unsubscribe from old control changes
     if (this._valueChangeSub && !this._valueChangeSub.closed) {
       this._valueChangeSub.unsubscribe()
     }
 
     if (control.valueChanges !== null) {
-      this._valueChangeSub = combineLatest([this.showControlErrors$, control.valueChanges.pipe(startWith(undefined))])
+      this._valueChangeSub = combineLatest([
+        this.showControlErrors$,
+        control.valueChanges.pipe(startWith(undefined)),
+      ])
         .pipe(startWith(undefined))
-        .subscribe(_ => this._updateControlErrors(control.errors))
+        .subscribe((_) => this._updateControlErrors(control.errors))
     } else {
       this._setControlErrors([])
     }
@@ -319,7 +378,10 @@ export class FormFieldErrorListComponent implements OnDestroy, DoCheck {
     for (const validatorName in errors) {
       if (Object.prototype.hasOwnProperty.call(errors, validatorName)) {
         const error = errors[validatorName]
-        const message = this._parseMessage(this._defaultMessages[validatorName], error)
+        const message = this._parseMessage(
+          this._defaultMessages[validatorName],
+          error,
+        )
         const external = false
         errs.push({ validatorName, error, message, external })
       }
@@ -332,7 +394,9 @@ export class FormFieldErrorListComponent implements OnDestroy, DoCheck {
   }
 
   private _parseMessage(message: any, error: any) {
-    if (!message) { return }
+    if (!message) {
+      return
+    }
 
     if (typeof message === 'string') {
       return message
@@ -341,7 +405,9 @@ export class FormFieldErrorListComponent implements OnDestroy, DoCheck {
     }
   }
 
-  private _initErrorTemplates(tplsQueryList: QueryList<FormFieldErrorListItemTplDirective>) {
+  private _initErrorTemplates(
+    tplsQueryList: QueryList<FormFieldErrorListItemTplDirective>,
+  ) {
     if (this._errorTplsChangeSub && !this._errorTplsChangeSub.closed) {
       this._errorTplsChangeSub.unsubscribe()
     }
@@ -349,13 +415,15 @@ export class FormFieldErrorListComponent implements OnDestroy, DoCheck {
     if (tplsQueryList) {
       this._errorTplsChangeSub = tplsQueryList.changes
         .pipe(startWith(undefined))
-        .subscribe(_ => this._updateErrorTemplates(tplsQueryList.toArray()))
+        .subscribe((_) => this._updateErrorTemplates(tplsQueryList.toArray()))
     } else {
       this._setErrorTemplates([])
     }
   }
 
-  private _updateErrorTemplates(tplsList: FormFieldErrorListItemTplDirective[]): void {
+  private _updateErrorTemplates(
+    tplsList: FormFieldErrorListItemTplDirective[],
+  ): void {
     const errs: IErrorRecord[] = []
     for (const tpl of tplsList) {
       if (tpl.validatorName !== undefined && tpl.validatorName !== null) {
@@ -363,7 +431,7 @@ export class FormFieldErrorListComponent implements OnDestroy, DoCheck {
           validatorName: tpl.validatorName,
           error: null,
           template: tpl.template,
-          external: !!tpl.external
+          external: !!tpl.external,
         })
       } else {
         // this.errorTpl = tpl.template
@@ -391,7 +459,7 @@ export class FormFieldErrorListComponent implements OnDestroy, DoCheck {
   private _composeErrorInputs(
     controlErrors: IErrorRecord[],
     errorTemplates: IErrorRecord[],
-    errorInput: IErrorRecord[]
+    errorInput: IErrorRecord[],
   ): IErrorRecord[] {
     const errs: IErrorRecord[] = []
 
@@ -427,20 +495,28 @@ export class FormFieldErrorListComponent implements OnDestroy, DoCheck {
     }
 
     return errs
-      .filter(err => this._isErrorValidator(control.errors, err.validatorName))
-      .filter(err => !err.external)
-      .map(err => ({
-        ...err,
-        error: control.errors ? control.errors[err.validatorName] : null,
-        _errors: control.errors
-      } as IErrorRecord))
+      .filter((err) =>
+        this._isErrorValidator(control.errors, err.validatorName),
+      )
+      .filter((err) => !err.external)
+      .map(
+        (err) =>
+          ({
+            ...err,
+            error: control.errors ? control.errors[err.validatorName] : null,
+            _errors: control.errors,
+          }) as IErrorRecord,
+      )
   }
 
-  private _isErrorValidator(errors: ValidationErrors | null, validatorName: string): boolean {
+  private _isErrorValidator(
+    errors: ValidationErrors | null,
+    validatorName: string,
+  ): boolean {
     if (!errors) {
       return false
     }
-    const arr = validatorName.split(' ').filter(v => v.trim().length > 0)
+    const arr = validatorName.split(' ').filter((v) => v.trim().length > 0)
     for (const item of arr) {
       if (Object.prototype.hasOwnProperty.call(errors, item)) {
         return true
@@ -448,5 +524,4 @@ export class FormFieldErrorListComponent implements OnDestroy, DoCheck {
     }
     return false
   }
-
 }

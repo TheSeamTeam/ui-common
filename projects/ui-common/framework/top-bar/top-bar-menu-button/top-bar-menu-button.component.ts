@@ -1,10 +1,22 @@
 import { BooleanInput } from '@angular/cdk/coercion'
-import { ChangeDetectionStrategy, Component, HostBinding, Input, TemplateRef, ViewEncapsulation } from '@angular/core'
+import { NgIf, NgTemplateOutlet } from '@angular/common'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  HostBinding,
+  Input,
+  TemplateRef,
+  ViewEncapsulation,
+} from '@angular/core'
 
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons'
 
-import { CanDisableCtor, InputBoolean, mixinDisabled } from '@theseam/ui-common/core'
-import { SeamIcon } from '@theseam/ui-common/icon'
+import {
+  CanDisableCtor,
+  InputBoolean,
+  mixinDisabled,
+} from '@theseam/ui-common/core'
+import { SeamIcon, TheSeamIconModule } from '@theseam/ui-common/icon'
 
 class TopBarMenuButtonBase {}
 
@@ -18,14 +30,15 @@ const _TopBarMenuButtonMixinBase: CanDisableCtor & typeof TopBarMenuButtonBase =
   styleUrls: ['./top-bar-menu-button.component.scss'],
   encapsulation: ViewEncapsulation.None,
   exportAs: 'seamButton',
-  inputs: [ 'disabled' ],
+  inputs: ['disabled'],
   host: {
     'attr.type': 'button',
-    'class': 'btn border text-decoration-none py-0 top-bar-menu-button',
+    class: 'btn border text-decoration-none py-0 top-bar-menu-button',
     '[attr.aria-disabled]': 'disabled.toString()',
     '[attr.disabled]': 'disabled || null',
   },
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [NgIf, NgTemplateOutlet, TheSeamIconModule],
 })
 export class TopBarMenuButtonComponent extends _TopBarMenuButtonMixinBase {
   static ngAcceptInputType_compact: BooleanInput
@@ -38,14 +51,21 @@ export class TopBarMenuButtonComponent extends _TopBarMenuButtonMixinBase {
   /** Custom template to show in mobile mode. Defaults to icon. */
   @Input() compactDetailTpl: TemplateRef<any> | undefined | null
 
-  @Input() @InputBoolean() compact: boolean = false
+  @Input() @InputBoolean() compact = false
 
   /** Icon to display on mobile to activate profile dropdown. Defaults to faUserCircle. */
   @Input() profileIcon: SeamIcon | undefined | null
 
-  @HostBinding('class.top-bar-menu-button--compact') get _hasCompactClass() { return this.compact }
-  @HostBinding('class.p-0') get _hasPadding0Class() { return this.compact }
-  @HostBinding('class.rounded') get _hasRoundedClass() { return this.compact }
-  @HostBinding('class.btn-link') get _hasBtnLinkClass() { return !this.compact }
-
+  @HostBinding('class.top-bar-menu-button--compact') get _hasCompactClass() {
+    return this.compact
+  }
+  @HostBinding('class.p-0') get _hasPadding0Class() {
+    return this.compact
+  }
+  @HostBinding('class.rounded') get _hasRoundedClass() {
+    return this.compact
+  }
+  @HostBinding('class.btn-link') get _hasBtnLinkClass() {
+    return !this.compact
+  }
 }

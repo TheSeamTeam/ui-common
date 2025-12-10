@@ -1,37 +1,42 @@
-import { applicationConfig, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
+import { expect } from 'storybook/test'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
+import { timer, lastValueFrom } from 'rxjs'
 
-import { expectFn, getHarness } from '@theseam/ui-common/testing'
+import { getHarness } from '@theseam/ui-common/testing'
 
 import { TheSeamCarouselComponent } from './carousel.component'
 import { TheSeamCarouselModule } from './carousel.module'
 import { TheSeamCarouselHarness } from './testing'
-import { timer, lastValueFrom } from 'rxjs'
 
-const meta: Meta = {
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+interface StoryExtraProps {}
+
+const meta: Meta<TheSeamCarouselComponent & StoryExtraProps> = {
   title: 'Carousel/Components',
   component: TheSeamCarouselComponent,
   decorators: [
     applicationConfig({
-      providers: [
-        provideAnimations(),
-      ],
+      providers: [provideAnimations()],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamCarouselModule
-      ]
-    })
+      imports: [TheSeamCarouselModule],
+    }),
   ],
   tags: ['autodocs'],
 }
 
 export default meta
-type Story = StoryObj<TheSeamCarouselComponent>
+type Story = StoryObj<TheSeamCarouselComponent & StoryExtraProps>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `
       <seam-carousel
@@ -49,19 +54,22 @@ export const Basic: Story = {
         <ng-template seamCarouselSlide>
           <div class="text-center p-4">4</div>
         </ng-template>
-      </seam-carousel>`
+      </seam-carousel>`,
   }),
   play: async ({ canvasElement, fixture }) => {
-    const carouselHarness = await getHarness(TheSeamCarouselHarness, { canvasElement, fixture })
-    await expectFn(await carouselHarness.hasPreviousSlideButton()).toBe(true)
-    await expectFn(await carouselHarness.hasNextSlideButton()).toBe(true)
-    await expectFn(await carouselHarness.hasSlideButtons()).toBe(true)
-    await expectFn(await carouselHarness.hasAutoPlayToggleButton()).toBe(true)
+    const carouselHarness = await getHarness(TheSeamCarouselHarness, {
+      canvasElement,
+      fixture,
+    })
+    await expect(await carouselHarness.hasPreviousSlideButton()).toBe(true)
+    await expect(await carouselHarness.hasNextSlideButton()).toBe(true)
+    await expect(await carouselHarness.hasSlideButtons()).toBe(true)
+    await expect(await carouselHarness.hasAutoPlayToggleButton()).toBe(true)
   },
 }
 
 export const Fast: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `
       <seam-carousel
@@ -80,12 +88,12 @@ export const Fast: Story = {
         <ng-template seamCarouselSlide>
           <div class="text-center p-4">4</div>
         </ng-template>
-      </seam-carousel>`
-  })
+      </seam-carousel>`,
+  }),
 }
 
 export const AutoplayOff: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `
       <seam-carousel
@@ -104,26 +112,29 @@ export const AutoplayOff: Story = {
         <ng-template seamCarouselSlide>
           <div class="text-center p-4">4</div>
         </ng-template>
-      </seam-carousel>`
+      </seam-carousel>`,
   }),
   play: async ({ canvasElement, fixture }) => {
-    const carouselHarness = await getHarness(TheSeamCarouselHarness, { canvasElement, fixture })
-    await expectFn(await carouselHarness.activeTileIndex()).toBe('0')
+    const carouselHarness = await getHarness(TheSeamCarouselHarness, {
+      canvasElement,
+      fixture,
+    })
+    await expect(await carouselHarness.activeTileIndex()).toBe('0')
     await carouselHarness.goToNextSlide()
-    await expectFn(await carouselHarness.activeTileIndex()).toBe('1')
+    await expect(await carouselHarness.activeTileIndex()).toBe('1')
     await carouselHarness.goToSlide(3)
-    await expectFn(await carouselHarness.activeTileIndex()).toBe('3')
+    await expect(await carouselHarness.activeTileIndex()).toBe('3')
     await carouselHarness.goToNextSlide()
-    await expectFn(await carouselHarness.activeTileIndex()).toBe('0')
+    await expect(await carouselHarness.activeTileIndex()).toBe('0')
     await carouselHarness.goToPreviousSlide()
-    await expectFn(await carouselHarness.activeTileIndex()).toBe('3')
+    await expect(await carouselHarness.activeTileIndex()).toBe('3')
     await carouselHarness.goToSlide(0)
-    await expectFn(await carouselHarness.activeTileIndex()).toBe('0')
+    await expect(await carouselHarness.activeTileIndex()).toBe('0')
   },
 }
 
 export const NoButtons: Story = {
-  render: args => ({
+  render: (args) => ({
     props: args,
     template: `
       <seam-carousel
@@ -144,22 +155,25 @@ export const NoButtons: Story = {
         <ng-template seamCarouselSlide>
           <div class="text-center p-4">4</div>
         </ng-template>
-      </seam-carousel>`
+      </seam-carousel>`,
   }),
   play: async ({ canvasElement, fixture }) => {
-    const carouselHarness = await getHarness(TheSeamCarouselHarness, { canvasElement, fixture })
-    await expectFn(await carouselHarness.hasPreviousSlideButton()).toBe(false)
-    await expectFn(await carouselHarness.hasNextSlideButton()).toBe(false)
-    await expectFn(await carouselHarness.hasSlideButtons()).toBe(false)
-    await expectFn(await carouselHarness.hasAutoPlayToggleButton()).toBe(false)
+    const carouselHarness = await getHarness(TheSeamCarouselHarness, {
+      canvasElement,
+      fixture,
+    })
+    await expect(await carouselHarness.hasPreviousSlideButton()).toBe(false)
+    await expect(await carouselHarness.hasNextSlideButton()).toBe(false)
+    await expect(await carouselHarness.hasSlideButtons()).toBe(false)
+    await expect(await carouselHarness.hasAutoPlayToggleButton()).toBe(false)
   },
 }
 
 export const AddRemoveSlide: Story = {
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
-      items: [ 'a', 'b', 'c' ],
+      items: ['a', 'b', 'c'],
     },
     template: `
       <seam-carousel
@@ -173,10 +187,13 @@ export const AddRemoveSlide: Story = {
         </ng-container>
       </seam-carousel>
       <button id="addBtn" type="button" (click)="items.push('' + items.length)">Add Slide</button>
-      <button id="removeBtn" type="button" (click)="items.pop()">Remove Slide</button>`
+      <button id="removeBtn" type="button" (click)="items.pop()">Remove Slide</button>`,
   }),
   play: async ({ canvasElement, fixture }) => {
-    const carouselHarness = await getHarness(TheSeamCarouselHarness, { canvasElement, fixture })
+    const carouselHarness = await getHarness(TheSeamCarouselHarness, {
+      canvasElement,
+      fixture,
+    })
     await carouselHarness.goToSlide(2)
     canvasElement.querySelector<HTMLButtonElement>('#addBtn')?.click()
     await carouselHarness.goToSlide(3)
@@ -184,12 +201,12 @@ export const AddRemoveSlide: Story = {
     // TODO: This is a hack to wait for the carousel to update, until a better
     // way to wait in browser and tests is used.
     await lastValueFrom(timer(1000))
-    await expectFn(await carouselHarness.activeTileIndex()).toBe('2')
+    await expect(await carouselHarness.activeTileIndex()).toBe('2')
     canvasElement.querySelector<HTMLButtonElement>('#removeBtn')?.click()
     canvasElement.querySelector<HTMLButtonElement>('#removeBtn')?.click()
     canvasElement.querySelector<HTMLButtonElement>('#removeBtn')?.click()
     canvasElement.querySelector<HTMLButtonElement>('#addBtn')?.click()
     await lastValueFrom(timer(1000))
-    await expectFn(await carouselHarness.activeTileIndex()).toBe('0')
+    await expect(await carouselHarness.activeTileIndex()).toBe('0')
   },
 }

@@ -1,6 +1,16 @@
 import { FocusMonitor } from '@angular/cdk/a11y'
 import { BooleanInput } from '@angular/cdk/coercion'
-import { Component, ContentChild, ElementRef, HostBinding, Input, OnDestroy, OnInit, Renderer2, ViewEncapsulation } from '@angular/core'
+import {
+  Component,
+  ContentChild,
+  ElementRef,
+  HostBinding,
+  Input,
+  OnDestroy,
+  OnInit,
+  Renderer2,
+  ViewEncapsulation,
+} from '@angular/core'
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 
@@ -17,8 +27,10 @@ import { TheSeamIconType } from '@theseam/ui-common/icon'
 
 import { WidgetTileSecondaryIconDirective } from './widget-tile-secondary-icon.directive'
 
-@Component({ template: '' })
-// eslint-disable-next-line @angular-eslint/component-class-suffix
+@Component({
+  template: '',
+  standalone: false,
+})
 class TheSeamWidgetTileBase implements OnDestroy, HasRenderer2, HasElementRef {
   constructor(
     public _elementRef: ElementRef,
@@ -42,19 +54,26 @@ class TheSeamWidgetTileBase implements OnDestroy, HasRenderer2, HasElementRef {
   }
 }
 
-const _TheSeamWidgetTileMixinBase: CanDisableCtor & HasTabIndexCtor &
-    typeof TheSeamWidgetTileBase = mixinTabIndex(mixinDisabled(TheSeamWidgetTileBase))
+const _TheSeamWidgetTileMixinBase: CanDisableCtor &
+  HasTabIndexCtor &
+  typeof TheSeamWidgetTileBase = mixinTabIndex(
+  mixinDisabled(TheSeamWidgetTileBase),
+)
 
 // TODO: Should this component be split into separate components for button and anchor.
 @Component({
   selector: 'seam-widget-tile, a[seam-widget-tile], button[seam-widget-tile]',
   templateUrl: './widget-tile.component.html',
   styleUrls: ['./widget-tile.component.scss'],
-  inputs: [ 'disabled' ],
+  inputs: ['disabled'],
   exportAs: 'seamWidgetTile',
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
-export class WidgetTileComponent extends _TheSeamWidgetTileMixinBase implements OnInit, OnDestroy {
+export class WidgetTileComponent
+  extends _TheSeamWidgetTileMixinBase
+  implements OnInit, OnDestroy
+{
   static ngAcceptInputType_grayscaleOnDisable: BooleanInput
 
   private _clickUnListen: (() => void | undefined | null) | undefined | null
@@ -67,22 +86,34 @@ export class WidgetTileComponent extends _TheSeamWidgetTileMixinBase implements 
   }
 
   @HostBinding('class.btn')
-  get _btnCss() { return !!this._isButton() }
+  get _btnCss() {
+    return !!this._isButton()
+  }
 
   @HostBinding('class.disabled')
-  get _disabledCss() { return this.disabled }
+  get _disabledCss() {
+    return this.disabled
+  }
 
   @HostBinding('attr.aria-disabled')
-  get _ariaDisabled() { return this.disabled.toString() }
+  get _ariaDisabled() {
+    return this.disabled.toString()
+  }
 
   @HostBinding('attr.disabled')
-  get _attrDisabled() { return this.disabled || null }
+  get _attrDisabled() {
+    return this.disabled || null
+  }
 
   @HostBinding('attr.tabindex')
-  get _attrTabIndex() { return this.disabled ? -1 : (this.tabIndex || 0) }
+  get _attrTabIndex() {
+    return this.disabled ? -1 : this.tabIndex || 0
+  }
 
   @Input()
-  get type(): string | undefined | null { return this._type }
+  get type(): string | undefined | null {
+    return this._type
+  }
 
   @Input() icon: string | IconProp | undefined | null
 
@@ -95,18 +126,27 @@ export class WidgetTileComponent extends _TheSeamWidgetTileMixinBase implements 
   @Input() notificationIcon: string | IconProp | undefined | null
   @Input() notificationIconClass: string | undefined | null
 
-  @ContentChild(WidgetTileSecondaryIconDirective, { static: true }) secondaryIcon?: WidgetTileSecondaryIconDirective
+  @ContentChild(WidgetTileSecondaryIconDirective, { static: true })
+  secondaryIcon?: WidgetTileSecondaryIconDirective
 
   // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(
-    _elementRef: ElementRef<HTMLElement | HTMLAnchorElement | HTMLButtonElement>,
+    _elementRef: ElementRef<
+      HTMLElement | HTMLAnchorElement | HTMLButtonElement
+    >,
     _focusMonitor: FocusMonitor,
     _renderer: Renderer2,
-  ) { super(_elementRef, _focusMonitor, _renderer) }
+  ) {
+    super(_elementRef, _focusMonitor, _renderer)
+  }
 
   ngOnInit() {
     if (this._isAnchor()) {
-      this._clickUnListen = this._renderer.listen(this._getHostElement(), 'click', this._haltDisabledEvents)
+      this._clickUnListen = this._renderer.listen(
+        this._getHostElement(),
+        'click',
+        this._haltDisabledEvents,
+      )
     }
   }
 
@@ -134,5 +174,4 @@ export class WidgetTileComponent extends _TheSeamWidgetTileMixinBase implements 
       event.stopImmediatePropagation()
     }
   }
-
 }

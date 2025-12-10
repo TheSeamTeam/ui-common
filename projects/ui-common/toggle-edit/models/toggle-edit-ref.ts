@@ -1,15 +1,14 @@
 import { EventEmitter } from '@angular/core'
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms'
 
-export interface IToggleEditRef {
-
+export interface TheSeamToggleEditRef {
   cancelOnBlur: boolean
   placeholder: string
   editing: boolean
   waitOnSubmit: boolean
 
-  changeAccepted: EventEmitter<IToggleEditRef>
-  changeDeclined: EventEmitter<IToggleEditRef>
+  changeAccepted: EventEmitter<TheSeamToggleEditRef>
+  changeDeclined: EventEmitter<TheSeamToggleEditRef>
   editingChange: EventEmitter<boolean>
 
   canSubmit(): boolean

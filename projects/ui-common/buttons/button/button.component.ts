@@ -1,5 +1,14 @@
 import { FocusMonitor } from '@angular/cdk/a11y'
-import { ChangeDetectionStrategy, Component, ElementRef, Input, OnDestroy, Renderer2 } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  inject,
+  Input,
+  NgZone,
+  OnDestroy,
+  Renderer2,
+} from '@angular/core'
 
 import {
   CanDisableCtor,
@@ -7,16 +16,18 @@ import {
   CanThemeCtor,
   mixinDisabled,
   mixinSize,
-  mixinTheme
+  mixinTheme,
 } from '@theseam/ui-common/core'
 
-@Component({ template: '' })
-// eslint-disable-next-line @angular-eslint/component-class-suffix
+@Component({
+  template: '',
+  standalone: false,
+})
 class TheSeamButtonBase implements OnDestroy {
   constructor(
-    public _elementRef: ElementRef,
-    public _focusMonitor: FocusMonitor,
-    public _renderer: Renderer2
+    public readonly _elementRef: ElementRef,
+    public readonly _focusMonitor: FocusMonitor,
+    public readonly _renderer: Renderer2,
   ) {
     this._focusMonitor.monitor(this._elementRef, true)
   }
@@ -35,8 +46,13 @@ class TheSeamButtonBase implements OnDestroy {
   }
 }
 
-const _TheSeamButtonMixinBase: CanDisableCtor & CanThemeCtor & CanSizeCtor &
-    typeof TheSeamButtonBase = mixinSize(mixinTheme(mixinDisabled(TheSeamButtonBase), 'btn'), 'btn')
+const _TheSeamButtonMixinBase: CanDisableCtor &
+  CanThemeCtor &
+  CanSizeCtor &
+  typeof TheSeamButtonBase = mixinSize(
+  mixinTheme(mixinDisabled(TheSeamButtonBase), 'btn'),
+  'btn',
+)
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -44,29 +60,34 @@ const _TheSeamButtonMixinBase: CanDisableCtor & CanThemeCtor & CanSizeCtor &
   templateUrl: './button.component.html',
   styleUrls: ['./button.component.scss'],
   exportAs: 'seamButton',
-  inputs: [ 'disabled', 'theme', 'size' ],
+  inputs: ['disabled', 'theme', 'size'],
   host: {
     '[attr.type]': 'type',
-    'class': 'btn',
+    class: 'btn',
     '[attr.aria-disabled]': 'disabled.toString()',
     '[attr.disabled]': 'disabled || null',
   },
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
-export class TheSeamButtonComponent extends _TheSeamButtonMixinBase implements OnDestroy {
-
+export class TheSeamButtonComponent
+  extends _TheSeamButtonMixinBase
+  implements OnDestroy
+{
   /** ARIA type for the button. */
   @Input() type: 'button' | 'submit' | 'reset' = 'button'
 
-  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(
-    _elementRef: ElementRef,
-    _focusMonitor: FocusMonitor,
-    _renderer: Renderer2
-  ) { super(_elementRef, _focusMonitor, _renderer) }
+    readonly _elementRef: ElementRef,
+    readonly _focusMonitor: FocusMonitor,
+    readonly _renderer: Renderer2,
+  ) {
+    super(_elementRef, _focusMonitor, _renderer)
+  }
 
-  ngOnDestroy() { super.ngOnDestroy() }
-
+  ngOnDestroy() {
+    super.ngOnDestroy()
+  }
 }
 
 @Component({
@@ -75,18 +96,24 @@ export class TheSeamButtonComponent extends _TheSeamButtonMixinBase implements O
   templateUrl: './button.component.html',
   styleUrls: ['./button.component.scss'],
   exportAs: 'seamButton,seamButtonBaseAnchor',
-  inputs: [ 'disabled', 'theme', 'size' ],
+  inputs: ['disabled', 'theme', 'size'],
   host: {
-    'class': 'btn',
+    class: 'btn',
     // '[class.disabled]': 'disabled || null',
     '[attr.tabindex]': 'disabled ? -1 : (tabIndex || 0)',
     '[attr.disabled]': 'disabled || null',
     '[attr.aria-disabled]': 'disabled.toString()',
-    '(click)': '_haltDisabledEvents($event)',
   },
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
-export class TheSeamAnchorButtonComponent extends _TheSeamButtonMixinBase implements OnDestroy {
+export class TheSeamAnchorButtonComponent
+  extends _TheSeamButtonMixinBase
+  implements OnDestroy
+{
+  protected readonly _ngZone = inject(NgZone)
+
+  private readonly _cleanupClick: () => void
 
   /** Tabindex of the button. */
   @Input() tabIndex: number | undefined | null
@@ -98,14 +125,22 @@ export class TheSeamAnchorButtonComponent extends _TheSeamButtonMixinBase implem
   //
   // rel="noopener noreferrer"
 
-  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(
-    _elementRef: ElementRef,
-    _focusMonitor: FocusMonitor,
-    _renderer: Renderer2
-  ) { super(_elementRef, _focusMonitor, _renderer) }
+    readonly _elementRef: ElementRef,
+    readonly _focusMonitor: FocusMonitor,
+    readonly _renderer: Renderer2,
+  ) {
+    super(_elementRef, _focusMonitor, _renderer)
 
-  ngOnDestroy() { super.ngOnDestroy() }
+    // Can't initialize on the property since it depends on a
+    // constructor-injected value.
+    this._cleanupClick = this._createClickListener()
+  }
+
+  ngOnDestroy() {
+    super.ngOnDestroy()
+    this._cleanupClick()
+  }
 
   _haltDisabledEvents(event: Event) {
     // A disabled button shouldn't apply any actions
@@ -115,4 +150,13 @@ export class TheSeamAnchorButtonComponent extends _TheSeamButtonMixinBase implem
     }
   }
 
+  private _createClickListener() {
+    return this._ngZone.runOutsideAngular(() =>
+      this._renderer.listen(
+        this._elementRef.nativeElement,
+        'click',
+        (event: Event) => this._haltDisabledEvents(event),
+      ),
+    )
+  }
 }

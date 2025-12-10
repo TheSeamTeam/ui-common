@@ -1,4 +1,3 @@
-
 export function createPadding(len: number, chars: string): string {
   // if (chars.length <= len) {
   //   return chars

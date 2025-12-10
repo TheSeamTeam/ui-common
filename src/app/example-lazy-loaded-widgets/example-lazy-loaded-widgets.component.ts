@@ -7,33 +7,38 @@ import { LazyWidgetOneComponent } from 'src/app/example-lazy-loaded-widgets/lazy
 @Component({
   selector: 'app-example-lazy-loaded-widgets',
   templateUrl: './example-lazy-loaded-widgets.component.html',
-  styleUrls: ['./example-lazy-loaded-widgets.component.scss']
+  styleUrls: ['./example-lazy-loaded-widgets.component.scss'],
+  standalone: false,
 })
 export class ExampleLazyLoadedWidgetsComponent implements OnInit {
-
-  @ViewChild('testOutlet', { static: true, read: ViewContainerRef }) testOutlet: ViewContainerRef
+  @ViewChild('testOutlet', { static: true, read: ViewContainerRef })
+  testOutlet!: ViewContainerRef
 
   widgets: any[] = []
 
   constructor(
-    private _dynamicComponentLoaderModule: TheSeamDynamicComponentLoader
-  ) { }
+    private _dynamicComponentLoaderModule: TheSeamDynamicComponentLoader,
+  ) {}
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   loadComponent() {
     this._dynamicComponentLoaderModule
       .getComponentFactory<LazyWidgetOneComponent>('widget-one')
-      .subscribe(componentFactory => {
-        console.log('componentFactory', componentFactory)
+      .subscribe(
+        (componentFactory) => {
+          // console.log('componentFactory', componentFactory)
 
-        this.widgets = [ {
-          type: componentFactory.componentType,
-          componentFactoryResolver: (<any /* ComponentFactoryBoundToModule */>componentFactory).ngModule.componentFactoryResolver
-        } ]
-      }, error => {
-        console.warn(error)
-      })
+          this.widgets = [
+            {
+              type: componentFactory.componentType,
+            },
+          ]
+        },
+        (error) => {
+          // eslint-disable-next-line no-console
+          console.warn(error)
+        },
+      )
   }
-
 }

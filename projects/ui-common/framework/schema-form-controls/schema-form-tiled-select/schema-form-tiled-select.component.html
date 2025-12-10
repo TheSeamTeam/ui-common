@@ -1,7 +1,11 @@
 <seam-form-field *ngIf="boundControl">
   <ng-template seamFormFieldLabelTpl let-required="required">
     <ng-container *ngIf="!options?.notitle">
-      {{ options?.title }}<seam-form-field-required-indicator class="pl-1" [required]="options?.required"></seam-form-field-required-indicator>
+      {{ options?.title
+      }}<seam-form-field-required-indicator
+        class="pl-1"
+        [required]="options?.required"
+      ></seam-form-field-required-indicator>
     </ng-container>
   </ng-template>
   <seam-tiled-select
@@ -18,14 +22,19 @@
     [selectionToggleable]="selectionToggleable"
     [tileBackdrop]="tileBackdrop"
     [showSelectedIcon]="showSelectedIcon"
-    [animationsDisabled]="animationsDisabled">
+    [animationsDisabled]="animationsDisabled"
+  >
   </seam-tiled-select>
 </seam-form-field>
 
 <seam-form-field *ngIf="!boundControl">
   <ng-template seamFormFieldLabelTpl let-required="required">
     <ng-container *ngIf="!options?.notitle">
-      {{ options?.title }}<seam-form-field-required-indicator class="pl-1" [required]="options?.required"></seam-form-field-required-indicator>
+      {{ options?.title
+      }}<seam-form-field-required-indicator
+        class="pl-1"
+        [required]="options?.required"
+      ></seam-form-field-required-indicator>
     </ng-container>
   </ng-template>
   <seam-tiled-select
@@ -44,6 +53,7 @@
     [selectionToggleable]="selectionToggleable"
     [tileBackdrop]="tileBackdrop"
     [showSelectedIcon]="showSelectedIcon"
-    [animationsDisabled]="animationsDisabled">
+    [animationsDisabled]="animationsDisabled"
+  >
   </seam-tiled-select>
 </seam-form-field>

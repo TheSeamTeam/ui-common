@@ -8,6 +8,7 @@ import { ColumnsAlteration } from '../columns-alteration'
 import { TheSeamDatatableAccessor } from '../datatable-accessor'
 import { isInternalColumn } from '../internal-column-props'
 import { TheSeamDatatableColumn } from '../table-column'
+import { AlterationDisplayItem } from '../../../datatable-alterations-display/models/alteration-display.model'
 
 export interface ColumnOrderRecord {
   columnProp: TableColumnProp
@@ -27,10 +28,7 @@ export class OrderColumnsAlteration extends ColumnsAlteration<OrderColumnsAltera
 
   public readonly type: string = 'order'
 
-  constructor(
-    state: OrderColumnsAlterationState,
-    persistent: boolean
-  ) {
+  constructor(state: OrderColumnsAlterationState, persistent: boolean) {
     super(state, persistent)
 
     if (!this._isValidState(state)) {
@@ -40,7 +38,10 @@ export class OrderColumnsAlteration extends ColumnsAlteration<OrderColumnsAltera
     this.id = `${this.type}`
   }
 
-  public apply(columns: TheSeamDatatableColumn<any, any>[], datatable: TheSeamDatatableAccessor): void {
+  public apply(
+    columns: TheSeamDatatableColumn<any, any>[],
+    datatable: TheSeamDatatableAccessor,
+  ): void {
     if (this.state.columns.length === 0) {
       return
     }
@@ -56,10 +57,12 @@ export class OrderColumnsAlteration extends ColumnsAlteration<OrderColumnsAltera
     // to be changed.
     const internalColumns = columns
       .map((column, index) => ({ column, index }))
-      .filter(x => isInternalColumn(x.column))
+      .filter((x) => isInternalColumn(x.column))
 
     for (const c of stateColumns) {
-      const currentIndex = columns.findIndex(x => getColumnProp(x) === c.columnProp)
+      const currentIndex = columns.findIndex(
+        (x) => getColumnProp(x) === c.columnProp,
+      )
       if (currentIndex === c.index || currentIndex === -1) {
         // Skip if already at correct index.
         // Skip columns not found. It may be a column that was removed from the
@@ -71,16 +74,35 @@ export class OrderColumnsAlteration extends ColumnsAlteration<OrderColumnsAltera
     }
 
     for (const c of internalColumns) {
-      const currentIndex = columns.findIndex(col => col === c.column)
+      const currentIndex = columns.findIndex((col) => col === c.column)
       if (currentIndex !== -1) {
         arrayMoveMutable(columns, currentIndex, c.index)
       } else {
         if (isDevMode()) {
           // eslint-disable-next-line no-console
-          console.warn(`Internal column could not be found after sorting. Was it lost during the sorting?`)
+          console.warn(
+            `Internal column could not be found after sorting. Was it lost during the sorting?`,
+          )
         }
       }
     }
+  }
+
+  public toDisplayItem(): AlterationDisplayItem {
+    const summary = this._createOrderSummary()
+    const details = this._createOrderDetails()
+
+    return {
+      id: this.id,
+      type: this.type,
+      summary,
+      details,
+      sortOrder: 0,
+    }
+  }
+
+  public getDisplaySortOrder(): number {
+    return 0 // Only one order alteration per table
   }
 
   private _isValidState(state: OrderColumnsAlterationState): boolean {
@@ -102,19 +124,44 @@ export class OrderColumnsAlteration extends ColumnsAlteration<OrderColumnsAltera
   }
 
   private _isColumnOrderRecordValid(columnOrder: ColumnOrderRecord): boolean {
-    return notNullOrUndefined(columnOrder.columnProp) && notNullOrUndefined(columnOrder.index)
+    return (
+      notNullOrUndefined(columnOrder.columnProp) &&
+      notNullOrUndefined(columnOrder.index)
+    )
   }
 
   private _stateColumns(): ColumnOrderRecord[] {
-    return this.state.columns.filter(c => {
-      if (!this._isColumnOrderRecordValid(c)) {
-        if (isDevMode()) {
-          // eslint-disable-next-line no-console
-          console.warn('Invalid column order record', c)
+    return this.state.columns
+      .filter((c) => {
+        if (!this._isColumnOrderRecordValid(c)) {
+          if (isDevMode()) {
+            // eslint-disable-next-line no-console
+            console.warn('Invalid column order record', c)
+          }
+          return false
         }
-        return false
-      }
-      return true
-    }).sort((a, b) => a.index === b.index ? 0 : a.index > b.index ? 1 : -1)
+        return true
+      })
+      .sort((a, b) => (a.index === b.index ? 0 : a.index > b.index ? 1 : -1))
+  }
+
+  private _createOrderSummary(): string {
+    if (this.state.columns.length === 0) {
+      return 'Default column order'
+    }
+
+    const reorderedCount = this.state.columns.length
+    return `${reorderedCount} column${reorderedCount === 1 ? '' : 's'} reordered`
+  }
+
+  private _createOrderDetails(): string[] {
+    if (this.state.columns.length === 0) {
+      return ['Columns are in their default order']
+    }
+
+    const sortedColumns = this._stateColumns()
+    return sortedColumns.map(
+      (col) => `${col.columnProp}: Position ${col.index + 1}`,
+    )
   }
 }

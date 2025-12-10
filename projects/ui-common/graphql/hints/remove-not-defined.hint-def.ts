@@ -7,6 +7,6 @@ import { removeNotDefinedTransformer } from './transformers/remove-not-defined.t
  */
 export const removeNotDefinedHintDef: HintDefinition = {
   name: 'remove-not-defined',
-  appliesTo: [ HintsKind.OperationDefinition ],
-  transformer: removeNotDefinedTransformer
+  appliesTo: [HintsKind.OperationDefinition],
+  transformer: removeNotDefinedTransformer,
 }

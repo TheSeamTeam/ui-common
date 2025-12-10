@@ -1,7 +1,6 @@
 import { LoadChildren } from '@angular/router'
 
 export interface DynamicComponentManifest {
-
   /** Unique identifier, used in the application to retrieve a ComponentFactory. */
   componentId: string
 

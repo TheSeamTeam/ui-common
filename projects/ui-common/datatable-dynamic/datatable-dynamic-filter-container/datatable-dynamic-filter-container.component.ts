@@ -1,5 +1,11 @@
-import { ComponentPortal, PortalInjector } from '@angular/cdk/portal'
-import { ChangeDetectionStrategy, Component, Injector, Input, OnInit } from '@angular/core'
+import { ComponentPortal } from '@angular/cdk/portal'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Injector,
+  Input,
+  OnInit,
+} from '@angular/core'
 
 import { THESEAM_DATA_FILTER_OPTIONS } from '@theseam/ui-common/data-filters'
 import type { ComponentType } from '@theseam/ui-common/models'
@@ -8,10 +14,10 @@ import type { ComponentType } from '@theseam/ui-common/models'
   selector: 'seam-datatable-dynamic-filter-container',
   templateUrl: './datatable-dynamic-filter-container.component.html',
   styleUrls: ['./datatable-dynamic-filter-container.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class DatatableDynamicFilterContainerComponent<C> implements OnInit {
-
   @Input()
   set filterComponent(value: ComponentType<C> | undefined | null) {
     this._filterComponent = value
@@ -19,16 +25,16 @@ export class DatatableDynamicFilterContainerComponent<C> implements OnInit {
     //   this._setPortal(value)
     // }
   }
-  get filterComponent() { return this._filterComponent }
+  get filterComponent() {
+    return this._filterComponent
+  }
   private _filterComponent: ComponentType<C> | undefined | null
 
   @Input() options: any
 
   _portal: ComponentPortal<C> | null = null
 
-  constructor(
-    private _injector: Injector
-  ) { }
+  constructor(private _injector: Injector) {}
 
   ngOnInit() {
     if (this.filterComponent) {
@@ -42,16 +48,22 @@ export class DatatableDynamicFilterContainerComponent<C> implements OnInit {
     }
 
     if (component) {
-      this._portal = new ComponentPortal(component, undefined, this._createInjector())
+      this._portal = new ComponentPortal(
+        component,
+        undefined,
+        this._createInjector(),
+      )
     } else {
       this._portal = null
     }
   }
 
-  private _createInjector(): PortalInjector {
-    return new PortalInjector(this._injector, new WeakMap <any, any>([
-      [ THESEAM_DATA_FILTER_OPTIONS, this.options ]
-    ]))
+  private _createInjector(): Injector {
+    return Injector.create({
+      parent: this._injector,
+      providers: [
+        { provide: THESEAM_DATA_FILTER_OPTIONS, useValue: this.options },
+      ],
+    })
   }
-
 }

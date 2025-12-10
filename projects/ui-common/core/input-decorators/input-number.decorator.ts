@@ -13,10 +13,10 @@ import { coerceNumberProperty } from '@angular/cdk/coercion'
  */
 export function InputNumber<TFallback>(fallback?: TFallback) {
   const cachedValueKey = Symbol('Cached input number value')
-  return function(
+  return function (
     target: any,
     propertyKey: string,
-    descriptor?: PropertyDescriptor
+    descriptor?: PropertyDescriptor,
   ) {
     Object.defineProperty(target, propertyKey, {
       set(value: number) {

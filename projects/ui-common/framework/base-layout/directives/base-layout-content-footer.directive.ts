@@ -1,14 +1,11 @@
-import { Directive, ElementRef } from '@angular/core'
+import { Directive, ElementRef, inject } from '@angular/core'
 
 import { HasElementRef } from '@theseam/ui-common/core'
 
 @Directive({
-  selector: '[seamBaseLayoutContentFooter]'
+  selector: '[seamBaseLayoutContentFooter]',
+  exportAs: 'seamBaseLayoutContentFooter',
 })
 export class BaseLayoutContentFooterDirective implements HasElementRef {
-
-  constructor(
-    public _elementRef: ElementRef
-  ) { }
-
+  public readonly _elementRef = inject(ElementRef)
 }

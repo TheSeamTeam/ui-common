@@ -3,7 +3,6 @@ import { TableCellTypeConfig } from '@theseam/ui-common/table-cell-type'
 import type { TheSeamNumberFormatsInput } from '@theseam/ui-common/tel-input'
 
 export interface TableCellTypeConfigPhone extends TableCellTypeConfig<'phone'> {
-
   /**
    * Element title attribute.
    */

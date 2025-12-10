@@ -1,17 +1,14 @@
-import { Injectable, isDevMode } from '@angular/core'
+import { inject, Injectable } from '@angular/core'
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router'
 import { combineLatest, Observable, of } from 'rxjs'
 import { filter, map, startWith, switchMap } from 'rxjs/operators'
 
 import {
-  activatedRoutesWithDataProperty,
   hasProperty,
-  IActivatedRouteWithData,
-  isEmptyUrlRoute,
   leafChildRoute,
   notNullOrUndefined,
   routeSnapshotPathFull,
-  willHaveDataProp
+  willHaveDataProp,
 } from '@theseam/ui-common/utils'
 
 import { TheSeamBreadcrumb } from './breadcrumb'
@@ -34,68 +31,64 @@ interface BreadcrumbData {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TheSeamBreadcrumbsService {
+  private readonly _router = inject(Router)
+  private readonly _activatedRoute = inject(ActivatedRoute)
 
-  // public readonly breadcrumbDataKey = 'breadcrumb'
+  private readonly dataProps: (keyof Omit<BreadcrumbData, 'activatedRoute'>)[] =
+    ['breadcrumb', 'breadcrumbExtras']
 
-  private readonly dataProps: (keyof Omit<BreadcrumbData, 'activatedRoute'>)[] = [
-    'breadcrumb',
-    'breadcrumbExtras',
-  ]
-
-  public readonly crumbs$: Observable<TheSeamBreadcrumb[]>
-
-  constructor(
-    private readonly _router: Router,
-    private readonly _activatedRoute: ActivatedRoute
-  ) {
-    // this.crumbs$ = this._router.events.pipe(
-    //   filter(event => event instanceof NavigationEnd),
-    //   map(_ => this._activatedRoute),
-    //   startWith(this._activatedRoute),
-    //   activatedRoutesWithDataProperty(this.breadcrumbDataKey, true),
-    //   switchMap(rwdArr => combineLatest(rwdArr.map(rwd => this._parseBreadcrumbData(rwd))))
-    // )
-
-    this.crumbs$ = this._crumbsFromRoute()
-  }
+  public readonly crumbs$ = this._crumbsFromRoute()
 
   private _crumbsFromRoute(): Observable<TheSeamBreadcrumb[]> {
     return this._router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd),
       map(() => this._activatedRoute),
       startWith(this._activatedRoute),
-      switchMap(activatedRoute => this._crumbsFromActivatedRoute(activatedRoute))
+      switchMap((activatedRoute) =>
+        this._crumbsFromActivatedRoute(activatedRoute),
+      ),
     )
   }
 
-  private _crumbsFromActivatedRoute(activatedRoute: ActivatedRoute): Observable<TheSeamBreadcrumb[]> {
+  private _crumbsFromActivatedRoute(
+    activatedRoute: ActivatedRoute,
+  ): Observable<TheSeamBreadcrumb[]> {
     return this._breadcrumbDatasFromRoot(activatedRoute).pipe(
-      map(bcDatas => this._breadcrumbsFromData(bcDatas))
+      map((bcDatas) => this._breadcrumbsFromData(bcDatas)),
     )
   }
 
-  private _breadcrumbDatasFromRoot(activatedRoute: ActivatedRoute): Observable<BreadcrumbData[]> {
-    const bcDataObs = leafChildRoute(activatedRoute).pathFromRoot.map(r => this._breadcrumbData(r))
+  private _breadcrumbDatasFromRoot(
+    activatedRoute: ActivatedRoute,
+  ): Observable<BreadcrumbData[]> {
+    const bcDataObs = leafChildRoute(activatedRoute).pathFromRoot.map((r) =>
+      this._breadcrumbData(r),
+    )
     return combineLatest(bcDataObs).pipe(
-      map(v => v.filter(notNullOrUndefined)),
-      switchMap(v => this._applyBreadcrumbExtras(v)),
+      map((v) => v.filter(notNullOrUndefined)),
+      switchMap((v) => this._applyBreadcrumbExtras(v)),
     )
   }
 
-  private _breadcrumbData(activatedRoute: ActivatedRoute): Observable<BreadcrumbData | null> {
+  private _breadcrumbData(
+    activatedRoute: ActivatedRoute,
+  ): Observable<BreadcrumbData | null> {
     return activatedRoute.data.pipe(
-      map(data => {
+      map((data) => {
         const bcData: BreadcrumbData = {
           activatedRoute,
-          extrasPropRefs: []
+          extrasPropRefs: [],
         }
 
         let found = false
         for (const prop of this.dataProps) {
-          if (prop === 'breadcrumb' && !willHaveDataProp(activatedRoute, prop)) {
+          if (
+            prop === 'breadcrumb' &&
+            !willHaveDataProp(activatedRoute, prop)
+          ) {
             // Need to skip if the 'breadcrumb' data prop is not in the config,
             // because we will get duplicates if the data 'breadcrumb' prop is
             // inheritted from a parent route.
@@ -115,11 +108,13 @@ export class TheSeamBreadcrumbsService {
         bcData.extrasPropRefs = this._getBreadcrumbExtrasDataProps(bcData)
 
         return bcData
-      })
+      }),
     )
   }
 
-  private _applyBreadcrumbExtras(datas: BreadcrumbData[]): Observable<BreadcrumbData[]> {
+  private _applyBreadcrumbExtras(
+    datas: BreadcrumbData[],
+  ): Observable<BreadcrumbData[]> {
     const newDatas: BreadcrumbData[] = []
 
     let pending: BreadcrumbData[] = []
@@ -140,29 +135,37 @@ export class TheSeamBreadcrumbsService {
 
     if (pending.length > 0) {
       // add extras
-      newDatas[newDatas.length - 1].extrasPropRefs = this._filterExtrasPropRefs([
-        ...newDatas[newDatas.length - 1].extrasPropRefs,
-        ...pending.map(p => p.extrasPropRefs).reduce((prev, curr) => [ ...prev, ...curr ], [])
-      ])
+      newDatas[newDatas.length - 1].extrasPropRefs = this._filterExtrasPropRefs(
+        [
+          ...newDatas[newDatas.length - 1].extrasPropRefs,
+          ...pending
+            .map((p) => p.extrasPropRefs)
+            .reduce((prev, curr) => [...prev, ...curr], []),
+        ],
+      )
     }
 
-    return combineLatest(newDatas.map(data => {
-      if (data.extrasPropRefs.length === 0) {
-        return of(data)
-      }
+    return combineLatest(
+      newDatas.map((data) => {
+        if (data.extrasPropRefs.length === 0) {
+          return of(data)
+        }
 
-      return this._observeExtrasPropRefs(data.extrasPropRefs).pipe(
-        map(extrasStr => {
-          data.breadcrumb = `${data.breadcrumb} ${extrasStr}`
-          return data
-        })
-      )
-    }))
+        return this._observeExtrasPropRefs(data.extrasPropRefs).pipe(
+          map((extrasStr) => {
+            data.breadcrumb = `${data.breadcrumb} ${extrasStr}`
+            return data
+          }),
+        )
+      }),
+    )
   }
 
-  private _observeExtrasPropRefs(propRefs: ExtrasPropRef[]): Observable<string> {
-    return combineLatest(propRefs.map(pf => pf.value)).pipe(
-      map(values => values.map(v => `(${v})`).join(' '))
+  private _observeExtrasPropRefs(
+    propRefs: ExtrasPropRef[],
+  ): Observable<string> {
+    return combineLatest(propRefs.map((pf) => pf.value)).pipe(
+      map((values) => values.map((v) => `(${v})`).join(' ')),
     )
   }
 
@@ -175,7 +178,7 @@ export class TheSeamBreadcrumbsService {
       return []
     }
 
-    const propRefs = data.breadcrumbExtras.dataProps.map(prop => {
+    const propRefs = data.breadcrumbExtras.dataProps.map((prop) => {
       return { prop, value: this._getDataProp(data.activatedRoute, prop) }
     })
 
@@ -183,8 +186,8 @@ export class TheSeamBreadcrumbsService {
   }
 
   private _filterExtrasPropRefs(propRefs: ExtrasPropRef[]): ExtrasPropRef[] {
-    const seen: { [key: string]: boolean } = { }
-    return propRefs.filter(propRef => {
+    const seen: { [key: string]: boolean } = {}
+    return propRefs.filter((propRef) => {
       if (seen[propRef.prop]) {
         return false
       }
@@ -193,17 +196,20 @@ export class TheSeamBreadcrumbsService {
     })
   }
 
-  private _getDataProp(activatedRoute: ActivatedRoute, prop: string): Observable<string> {
+  private _getDataProp(
+    activatedRoute: ActivatedRoute,
+    prop: string,
+  ): Observable<string> {
     if (activatedRoute.routeConfig !== null) {
       if (willHaveDataProp(activatedRoute, prop)) {
-        return activatedRoute.data.pipe(map(d => d[prop]))
+        return activatedRoute.data.pipe(map((d) => d[prop]))
       }
     }
 
     let r = activatedRoute.parent
     while (r !== null) {
       if (willHaveDataProp(r, prop)) {
-        return r.data.pipe(map(d => d[prop]))
+        return r.data.pipe(map((d) => d[prop]))
       }
 
       r = r.parent
@@ -220,7 +226,7 @@ export class TheSeamBreadcrumbsService {
         const breadcrumb: TheSeamBreadcrumb = {
           value: data.breadcrumb,
           path: routeSnapshotPathFull(data.activatedRoute.snapshot),
-          route: data.activatedRoute
+          route: data.activatedRoute,
         }
         breadcrumbs.push(breadcrumb)
       }
@@ -228,25 +234,4 @@ export class TheSeamBreadcrumbsService {
 
     return breadcrumbs
   }
-
-  // private _parseBreadcrumbData(routeWithData: IActivatedRouteWithData): Observable<TheSeamBreadcrumb> {
-  //   const crumbValue = routeWithData.data[this.breadcrumbDataKey]
-  //   const route = routeWithData.route
-  //   const path = routeSnapshotPathFull(route.snapshot)
-  //   let value = ''
-
-  //   if (typeof crumbValue === 'string') {
-  //     value = crumbValue
-  //   } else {
-  //     if (isDevMode()) {
-  //       console.warn(
-  //         '[TheSeamBreadcrumbsService] Only string breadcrumbs are supported currently. '
-  //         + 'Use a resolver if the value needs to be dynamically calculated.'
-  //       )
-  //     }
-  //   }
-
-  //   return of({ value, path, route })
-  // }
-
 }

@@ -1,7 +1,25 @@
 import { Component, Input, OnInit } from '@angular/core'
+import { CommonModule } from '@angular/common'
+import {
+  ControlContainer,
+  FormGroupDirective,
+  ReactiveFormsModule,
+} from '@angular/forms'
 import { Observable, map, startWith } from 'rxjs'
-import { ControlContainer, FormGroupDirective } from '@angular/forms'
-import { TheSeamColumnsDataFilterNumericSearchForm, TheSeamColumnsDataFilterNumericSearchType, THESEAM_COLUMNS_DATA_FILTER_NUMERIC_RANGE_SEARCH_TYPES, THESEAM_COLUMNS_DATA_FILTER_NUMERIC_TEXT_SEARCH_TYPES } from '../models/columns-data-filters/models'
+
+import { NgSelectModule } from '@ng-select/ng-select'
+import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
+import {
+  TheSeamAutoFocusDirective,
+  TheSeamNgSelectExtraDirective,
+} from '@theseam/ui-common/shared'
+
+import {
+  TheSeamColumnsDataFilterNumericSearchForm,
+  TheSeamColumnsDataFilterNumericSearchType,
+  THESEAM_COLUMNS_DATA_FILTER_NUMERIC_RANGE_SEARCH_TYPES,
+  THESEAM_COLUMNS_DATA_FILTER_NUMERIC_TEXT_SEARCH_TYPES,
+} from '../models/columns-data-filters/models'
 
 @Component({
   selector: 'seam-datatable-column-filter-search-numeric',
@@ -10,13 +28,23 @@ import { TheSeamColumnsDataFilterNumericSearchForm, TheSeamColumnsDataFilterNume
   viewProviders: [
     {
       provide: ControlContainer,
-      useExisting: FormGroupDirective
-    }
-  ]
+      useExisting: FormGroupDirective,
+    },
+  ],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    NgSelectModule,
+    TheSeamFormFieldModule,
+    TheSeamNgSelectExtraDirective,
+    TheSeamAutoFocusDirective,
+  ],
 })
 export class DatatableColumnFilterSearchNumericComponent implements OnInit {
-
-  searchTypes: { label: string, value: TheSeamColumnsDataFilterNumericSearchType }[] = [
+  searchTypes: {
+    label: string
+    value: TheSeamColumnsDataFilterNumericSearchType
+  }[] = [
     { label: 'Less than (<)', value: 'lt' },
     { label: 'Less than or equal to (<=)', value: 'lte' },
     { label: 'Equal to (=)', value: 'eq' },
@@ -35,14 +63,24 @@ export class DatatableColumnFilterSearchNumericComponent implements OnInit {
   public showRangeInputs$: Observable<boolean> | undefined
 
   ngOnInit(): void {
-    this.showSearchInput$ = this.filterForm?.controls.searchType.valueChanges.pipe(
-      startWith(this.filterForm?.controls.searchType.value),
-      map(searchType => THESEAM_COLUMNS_DATA_FILTER_NUMERIC_TEXT_SEARCH_TYPES.includes(searchType || ''))
-    )
+    this.showSearchInput$ =
+      this.filterForm?.controls.searchType.valueChanges.pipe(
+        startWith(this.filterForm?.controls.searchType.value),
+        map((searchType) =>
+          THESEAM_COLUMNS_DATA_FILTER_NUMERIC_TEXT_SEARCH_TYPES.includes(
+            searchType || '',
+          ),
+        ),
+      )
 
-    this.showRangeInputs$ = this.filterForm?.controls.searchType.valueChanges.pipe(
-      startWith(this.filterForm?.controls.searchType.value),
-      map(searchType => THESEAM_COLUMNS_DATA_FILTER_NUMERIC_RANGE_SEARCH_TYPES.includes(searchType || ''))
-    )
+    this.showRangeInputs$ =
+      this.filterForm?.controls.searchType.valueChanges.pipe(
+        startWith(this.filterForm?.controls.searchType.value),
+        map((searchType) =>
+          THESEAM_COLUMNS_DATA_FILTER_NUMERIC_RANGE_SEARCH_TYPES.includes(
+            searchType || '',
+          ),
+        ),
+      )
   }
 }

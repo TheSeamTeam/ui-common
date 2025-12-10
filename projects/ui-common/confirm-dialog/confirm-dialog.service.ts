@@ -1,23 +1,27 @@
-import { Injectable, TemplateRef } from '@angular/core'
+import { inject, Injectable, TemplateRef } from '@angular/core'
 
 import { Modal, ModalRef } from '@theseam/ui-common/modal'
 import { ThemeTypes } from '@theseam/ui-common/models'
 
 import { ConfirmDialogComponent } from './confirm-dialog.component'
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class SeamConfirmDialogService {
-
-  constructor(
-    private modal: Modal
-  ) { }
+  private readonly _modal = inject(Modal, { optional: true })
 
   public open(
     message?: string,
-    alert?: string | { message: string, type: ThemeTypes },
-    template?: TemplateRef<any> | { template: TemplateRef<any>, context: any }
+    alert?: string | { message: string; type: ThemeTypes },
+    template?: TemplateRef<any> | { template: TemplateRef<any>; context: any },
   ): ModalRef<ConfirmDialogComponent, 'confirm' | undefined> {
-    const modalRef = this.modal.openFromComponent(ConfirmDialogComponent)
+    if (!this._modal) {
+      // TODO: This shouldn't be necessary after refactoring modal service.
+      throw new Error(
+        'Modal service not provided. Please import TheSeamModalModule in your application.',
+      )
+    }
+
+    const modalRef = this._modal.openFromComponent(ConfirmDialogComponent)
 
     if (!modalRef.componentInstance) {
       throw new Error('ConfirmDialogComponent not created.')
@@ -46,5 +50,4 @@ export class SeamConfirmDialogService {
 
     return modalRef
   }
-
 }

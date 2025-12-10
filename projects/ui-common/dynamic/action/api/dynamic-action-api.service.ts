@@ -8,7 +8,14 @@ import { isAbsoluteUrl } from '@theseam/ui-common/utils'
 import { DynamicValueHelperService } from '../../dynamic-value-helper.service'
 import { DynamicActionUiButtonDef } from '../../models/dynamic-action-ui-button-def'
 import { DynamicValue } from '../../models/dynamic-value'
-import { ApiRequestMethodHeader, ApiRequestMethodHeaders, IApiConfig, isValidRequestMethod, THESEAM_API_CONFIG, VALID_REQUEST_METHODS } from '../../tokens/api-config'
+import {
+  ApiRequestMethodHeader,
+  ApiRequestMethodHeaders,
+  IApiConfig,
+  isValidRequestMethod,
+  THESEAM_API_CONFIG,
+  VALID_REQUEST_METHODS,
+} from '../../tokens/api-config'
 
 import { DynamicActionApi } from './dynamic-action-api'
 import { DynamicActionApiDef } from './dynamic-action-api-def'
@@ -22,7 +29,6 @@ import { dynamicActionApiNotSupportedError } from './dynamic-action-api-errors'
  */
 @Injectable()
 export class DynamicActionApiService implements DynamicActionApi {
-
   readonly type = 'api'
 
   label = 'Api Action'
@@ -30,23 +36,28 @@ export class DynamicActionApiService implements DynamicActionApi {
   constructor(
     private _valueHelper: DynamicValueHelperService,
     @Optional() private _http: HttpClient,
-    @Optional() @Inject(THESEAM_API_CONFIG) private _configs: IApiConfig[]
-  ) { }
+    @Optional() @Inject(THESEAM_API_CONFIG) private _configs: IApiConfig[],
+  ) {}
 
   public exec(args: DynamicActionApiDef, context: any): Promise<any> {
     if (!this._isSupported()) {
       throw dynamicActionApiNotSupportedError()
     }
 
-    return from(this._getExecInfo(args, context)).pipe(
-      switchMap(x => this._http.request<any>(x.method, x.url, x.options)),
-    ).toPromise()
+    return from(this._getExecInfo(args, context))
+      .pipe(
+        switchMap((x) => this._http.request<any>(x.method, x.url, x.options)),
+      )
+      .toPromise()
   }
 
-  public async getUiProps(args: DynamicActionApiDef, context: any): Promise<DynamicActionUiButtonDef> {
+  public async getUiProps(
+    args: DynamicActionApiDef,
+    context: any,
+  ): Promise<DynamicActionUiButtonDef> {
     return {
       _actionDef: args,
-      triggerType: 'click'
+      triggerType: 'click',
     }
   }
 
@@ -66,13 +77,16 @@ export class DynamicActionApiService implements DynamicActionApi {
     const result = {
       url,
       method,
-      options: { body, params, headers }
+      options: { body, params, headers },
     }
 
     return result
   }
 
-  private async _getUrl(args: DynamicActionApiDef, context?: any): Promise<string | null> {
+  private async _getUrl(
+    args: DynamicActionApiDef,
+    context?: any,
+  ): Promise<string | null> {
     const config = this._getApiConfig(args)
 
     let endpoint = ''
@@ -87,8 +101,11 @@ export class DynamicActionApiService implements DynamicActionApi {
     if (config && config.url !== undefined && config.url !== null) {
       const url = await this._valueHelper.eval(config.url, context)
       if (typeof url === 'string') {
-        const addSlash = endpoint.length > 0 && endpoint.indexOf('/') !== 0 &&
-          url.length > 0 && url.indexOf('/') !== 0
+        const addSlash =
+          endpoint.length > 0 &&
+          endpoint.indexOf('/') !== 0 &&
+          url.length > 0 &&
+          url.indexOf('/') !== 0
         return `${config.url}${addSlash ? '/' : ''}${endpoint}`
       }
     }
@@ -128,7 +145,10 @@ export class DynamicActionApiService implements DynamicActionApi {
     return undefined
   }
 
-  private async _getHeaders(args: DynamicActionApiDef, context?: any): Promise<HttpHeaders> {
+  private async _getHeaders(
+    args: DynamicActionApiDef,
+    context?: any,
+  ): Promise<HttpHeaders> {
     let headers: ApiRequestMethodHeaders = {}
 
     const config = this._getApiConfig(args)
@@ -138,17 +158,20 @@ export class DynamicActionApiService implements DynamicActionApi {
     // dynamic action types should be written.
 
     if (config && config.methodHeaders) {
-      const method = typeof args.method === 'string'
-        ? args.method.trim().toUpperCase()
-        : 'GET' // Default method type
+      const method =
+        typeof args.method === 'string'
+          ? args.method.trim().toUpperCase()
+          : 'GET' // Default method type
 
       if (!isValidRequestMethod(method)) {
-        throw Error(`API request method must be one of ${VALID_REQUEST_METHODS}`)
+        throw Error(
+          `API request method must be one of ${VALID_REQUEST_METHODS}`,
+        )
       }
 
       const h = method && config.methodHeaders[method]
       if (h !== undefined && h !== null) {
-        headers = await this._evalHeaders(h, context) as any
+        headers = (await this._evalHeaders(h, context)) as any
       }
     }
 
@@ -165,7 +188,9 @@ export class DynamicActionApiService implements DynamicActionApi {
           const keys = Object.keys(argHeaders)
           for (const key of keys) {
             if (!isValidRequestMethod(key)) {
-              throw Error(`API request method must be one of ${VALID_REQUEST_METHODS}`)
+              throw Error(
+                `API request method must be one of ${VALID_REQUEST_METHODS}`,
+              )
             }
 
             // TODO: Fix types
@@ -173,7 +198,9 @@ export class DynamicActionApiService implements DynamicActionApi {
             if (typeof value === 'string') {
               headers[key] = value
             } else if (Array.isArray(value)) {
-              headers[key] = await Promise.all(value.map(async v => this._valueHelper.eval(v, context))) as any
+              headers[key] = (await Promise.all(
+                value.map(async (v) => this._valueHelper.eval(v, context)),
+              )) as any
             } else {
               headers[key] = await this._valueHelper.eval(value, context)
             }
@@ -186,8 +213,11 @@ export class DynamicActionApiService implements DynamicActionApi {
   }
 
   private async _evalHeaders(
-    headers: string | DynamicValue<string> | { [name: string]: DynamicValue<string> | DynamicValue<string>[] },
-    context?: any
+    headers:
+      | string
+      | DynamicValue<string>
+      | { [name: string]: DynamicValue<string> | DynamicValue<string>[] },
+    context?: any,
   ) {
     let res: string | { [name: string]: string | string[] } = {}
 
@@ -205,7 +235,9 @@ export class DynamicActionApiService implements DynamicActionApi {
           if (typeof value === 'string') {
             res[key] = value
           } else if (Array.isArray(value)) {
-            res[key] = await Promise.all(value.map(async v => this._valueHelper.eval(v, context)))
+            res[key] = await Promise.all(
+              value.map(async (v) => this._valueHelper.eval(v, context)),
+            )
           } else {
             res[key] = await this._valueHelper.eval(value, context)
           }
@@ -218,17 +250,23 @@ export class DynamicActionApiService implements DynamicActionApi {
   private _isSupported(): boolean {
     if (isDevMode()) {
       // eslint-disable-next-line no-console
-      console.warn(`[DynamicActionApiService] Action is not ready for production yet.`)
+      console.warn(
+        `[DynamicActionApiService] Action is not ready for production yet.`,
+      )
     } else {
       // I don't expect this to be attempted in prod before completed, so I am just adding a console warning.
       // eslint-disable-next-line no-console
-      console.warn(`Unable to complete request. Contact support for assistance.`)
+      console.warn(
+        `Unable to complete request. Contact support for assistance.`,
+      )
     }
 
     if (!this._http) {
       if (isDevMode()) {
         // eslint-disable-next-line no-console
-        console.warn(`[DynamicActionApiService] Endpoint actions require \`HttpClientModule\` to be imported.`)
+        console.warn(
+          `[DynamicActionApiService] Endpoint actions require \`HttpClientModule\` to be imported.`,
+        )
       }
       return false
     }

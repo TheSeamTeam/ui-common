@@ -1,5 +1,11 @@
 import { Component, ViewChild } from '@angular/core'
-import { ComponentFixture, TestBed, fakeAsync, flush, tick } from '@angular/core/testing'
+import {
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+  flush,
+  tick,
+} from '@angular/core/testing'
 
 import { TheSeamTelInputDirective } from './tel-input.directive'
 import { AssetLoaderService, LoadedAssetRef } from '@theseam/ui-common/services'
@@ -13,7 +19,7 @@ describe('TelInputDirective', () => {
   describe('TestTelInputHostComponent', () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [ TestTelInputHostComponent ],
+        imports: [TestTelInputHostComponent],
         providers: [
           { provide: AssetLoaderService, useClass: FakeAssetLoaderService },
         ],
@@ -46,12 +52,15 @@ describe('TelInputDirective', () => {
 })
 
 class FakeAssetLoaderService implements Partial<AssetLoaderService> {
-  private readonly _delay = () => new Promise((resolve, reject) => {
-    setTimeout(() => {
-      return resolve(true)
-    }, 1000)
-  })
-  public loadStyleSheet(path: string): Observable<LoadedAssetRef<HTMLLinkElement>> {
+  private readonly _delay = () =>
+    new Promise((resolve, reject) => {
+      setTimeout(() => {
+        return resolve(true)
+      }, 1000)
+    })
+  public loadStyleSheet(
+    path: string,
+  ): Observable<LoadedAssetRef<HTMLLinkElement>> {
     const tmp = document.createElement('link')
     return defer(() => {
       return this._delay().then(() => {
@@ -60,9 +69,13 @@ class FakeAssetLoaderService implements Partial<AssetLoaderService> {
     })
   }
 
-  public loadStyle(content: string): Observable<LoadedAssetRef<HTMLStyleElement>> {
+  public loadStyle(
+    content: string,
+  ): Observable<LoadedAssetRef<HTMLStyleElement>> {
     const tmp = document.createElement('link')
-    return defer(() => this._delay().then(() => new LoadedAssetRef(tmp, undefined, content)))
+    return defer(() =>
+      this._delay().then(() => new LoadedAssetRef(tmp, undefined, content)),
+    )
   }
 }
 
@@ -70,18 +83,18 @@ class FakeAssetLoaderService implements Partial<AssetLoaderService> {
   selector: 'test-tel-input-host',
   template: '<input seamTelInput />',
   standalone: true,
-  imports: [
-    TheSeamTelInputDirective,
-  ],
+  imports: [TheSeamTelInputDirective],
 })
 class TestTelInputHostComponent {
-  @ViewChild(TheSeamTelInputDirective, { static: true }) telInput!: TheSeamTelInputDirective
+  @ViewChild(TheSeamTelInputDirective, { static: true })
+  telInput!: TheSeamTelInputDirective
 }
 
 function mockIntlUtilsLoad() {
   const _win = window as any
   _win.intlTelInputGlobals.loadUtils = jest.fn()
   _win.intlTelInputGlobals.loadUtils.mockReturnValue(
-    import('intl-tel-input/build/js/utils') as any)
+    import('intl-tel-input/build/js/utils') as any,
+  )
 }
 mockIntlUtilsLoad()

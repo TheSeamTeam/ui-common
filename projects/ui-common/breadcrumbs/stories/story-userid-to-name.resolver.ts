@@ -9,14 +9,11 @@ import { TheSeamBreadcrumbsResolver } from '../breadcrumbs-resolver'
 
 @Injectable()
 export class StoryUserIdToNameResolver implements TheSeamBreadcrumbsResolver {
-
-  constructor(
-    private _users: StoryUsersDataService
-  ) {}
+  constructor(private _users: StoryUsersDataService) {}
 
   resolve(
     route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
+    state: RouterStateSnapshot,
   ): Observable<string> | Promise<string> | string {
     const UNKNOWN_USER = 'Unknown User'
     const userId = route.paramMap.get('userId')
@@ -24,11 +21,11 @@ export class StoryUserIdToNameResolver implements TheSeamBreadcrumbsResolver {
     return userId !== null
       ? this._users.users$.pipe(
           // Find the user record
-          map(users => users.find(u => u.id === +userId)),
+          map((users) => users.find((u) => u.id === +userId)),
           // Map the record to name
-          map(user => user ? user.name : UNKNOWN_USER),
+          map((user) => (user ? user.name : UNKNOWN_USER)),
           // Ensure the observable completes
-          take(1)
+          take(1),
         )
       : UNKNOWN_USER
   }

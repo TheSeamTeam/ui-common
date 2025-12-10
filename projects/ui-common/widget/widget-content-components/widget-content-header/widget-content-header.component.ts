@@ -4,6 +4,7 @@ import { Component, ViewEncapsulation } from '@angular/core'
   selector: 'seam-widget-content-header',
   templateUrl: './widget-content-header.component.html',
   styleUrls: ['./widget-content-header.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
-export class WidgetContentHeaderComponent { }
+export class WidgetContentHeaderComponent {}

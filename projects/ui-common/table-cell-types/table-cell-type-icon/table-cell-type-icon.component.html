@@ -1,58 +1,89 @@
 <ng-container *ngIf="_icon">
-  <div *ngIf="!_tplType || _tplType === 'default'"
+  <div
+    *ngIf="!_tplType || _tplType === 'default'"
     class="d-flex align-items-center justify-center"
-    [class.datatable-icon-fix]="_isDatatable">
-    <a class="d-block m-auto{{ _linkClass ? ' ' + _linkClass : '' }}"
+    [class.datatable-icon-fix]="_isDatatable"
+  >
+    <a
+      class="d-block m-auto{{ _linkClass ? ' ' + _linkClass : '' }}"
       [attr.title]="_tooltipDisabled ? _title : undefined"
       [attr.target]="_target"
-      [ngbTooltip]="_tooltip"
-      [tooltipClass]="$any(_tooltipClass)"
-      [placement]="$any(_tooltipPlacement)"
-      [container]="$any(_tooltipContainer)"
-      [disableTooltip]="_tooltipDisabled">
-      <seam-icon [icon]="_icon" size="lg" [iconType]="_iconType" [iconClass]="_iconClass || ''"></seam-icon>
+      [seamTooltip]="_tooltip ?? null"
+      [tooltipClass]="_tooltipClass"
+      [placement]="_tooltipPlacement"
+      [container]="_tooltipContainer"
+      [disableTooltip]="_tooltipDisabled"
+    >
+      <seam-icon
+        [icon]="_icon"
+        size="lg"
+        [iconType]="_iconType"
+        [iconClass]="_iconClass || ''"
+      ></seam-icon>
       <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
     </a>
   </div>
 
-  <div *ngIf="_tplType === 'link'"
+  <div
+    *ngIf="_tplType === 'link'"
     class="d-flex align-items-center justify-center"
-    [class.datatable-icon-fix]="_isDatatable">
-    <a class="d-block m-auto{{ _linkClass ? ' ' + _linkClass : '' }}"
+    [class.datatable-icon-fix]="_isDatatable"
+  >
+    <a
+      class="d-block m-auto{{ _linkClass ? ' ' + _linkClass : '' }}"
       [routerLink]="_link"
       [queryParams]="_queryParams"
       [attr.title]="_tooltipDisabled ? _title : undefined"
       [attr.target]="_target"
-      [ngbTooltip]="_tooltip"
-      [tooltipClass]="$any(_tooltipClass)"
-      [placement]="$any(_tooltipPlacement)"
-      [container]="$any(_tooltipContainer)"
-      [disableTooltip]="_tooltipDisabled">
-      <seam-icon *ngIf="_icon" [icon]="_icon" size="lg" [iconType]="_iconType" [iconClass]="_iconClass"></seam-icon>
+      [seamTooltip]="_tooltip ?? null"
+      [tooltipClass]="_tooltipClass"
+      [placement]="_tooltipPlacement"
+      [container]="_tooltipContainer"
+      [disableTooltip]="_tooltipDisabled"
+    >
+      <seam-icon
+        *ngIf="_icon"
+        [icon]="_icon"
+        size="lg"
+        [iconType]="_iconType"
+        [iconClass]="_iconClass"
+      ></seam-icon>
       <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
     </a>
   </div>
 
-  <div *ngIf="_tplType === 'link-external'"
+  <div
+    *ngIf="_tplType === 'link-external'"
     class="d-flex align-items-center justify-center"
-    [class.datatable-icon-fix]="_isDatatable">
-    <a class="d-block m-auto{{ _linkClass ? ' ' + _linkClass : '' }}"
+    [class.datatable-icon-fix]="_isDatatable"
+  >
+    <a
+      class="d-block m-auto{{ _linkClass ? ' ' + _linkClass : '' }}"
       [attr.href]="_link"
       [attr.title]="_tooltipDisabled ? _title : undefined"
       [attr.target]="_target"
-      [ngbTooltip]="_tooltip"
-      [tooltipClass]="$any(_tooltipClass)"
-      [placement]="$any(_tooltipPlacement)"
-      [container]="$any(_tooltipContainer)"
-      [disableTooltip]="_tooltipDisabled">
-      <seam-icon *ngIf="_icon" [icon]="_icon" size="lg" [iconType]="_iconType" [iconClass]="_iconClass"></seam-icon>
+      [seamTooltip]="_tooltip ?? null"
+      [tooltipClass]="_tooltipClass"
+      [placement]="_tooltipPlacement"
+      [container]="_tooltipContainer"
+      [disableTooltip]="_tooltipDisabled"
+    >
+      <seam-icon
+        *ngIf="_icon"
+        [icon]="_icon"
+        size="lg"
+        [iconType]="_iconType"
+        [iconClass]="_iconClass"
+      ></seam-icon>
       <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
     </a>
   </div>
 
-  <div *ngIf="_tplType === 'link-encrypted'"
+  <div
+    *ngIf="_tplType === 'link-encrypted'"
     class="d-flex align-items-center justify-center"
-    [class.datatable-icon-fix]="_isDatatable">
+    [class.datatable-icon-fix]="_isDatatable"
+  >
     <button
       class="btn btn-link p-0 m-auto{{ _linkClass ? ' ' + _linkClass : '' }}"
       type="button"
@@ -60,30 +91,48 @@
       [seamDetectMimeFromContent]="_detectMimeContent"
       [seamDownloadAsset]="_download"
       [attr.title]="_tooltipDisabled ? _title : undefined"
-      [ngbTooltip]="_tooltip"
-      [tooltipClass]="$any(_tooltipClass)"
-      [placement]="$any(_tooltipPlacement)"
-      [container]="$any(_tooltipContainer)"
-      [disableTooltip]="_tooltipDisabled">
-      <seam-icon *ngIf="_icon" iconType="styled-square" [icon]="_icon" size="lg" [iconType]="_iconType" [iconClass]="_iconClass"></seam-icon>
+      [seamTooltip]="_tooltip ?? null"
+      [tooltipClass]="_tooltipClass"
+      [placement]="_tooltipPlacement"
+      [container]="_tooltipContainer"
+      [disableTooltip]="_tooltipDisabled"
+    >
+      <seam-icon
+        *ngIf="_icon"
+        iconType="styled-square"
+        [icon]="_icon"
+        size="lg"
+        [iconType]="_iconType"
+        [iconClass]="_iconClass"
+      ></seam-icon>
       <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
     </button>
   </div>
 
-  <div *ngIf="_tplType === 'button'"
+  <div
+    *ngIf="_tplType === 'button'"
     class="d-flex align-items-center justify-center"
     [class.datatable-icon-fix]="_isDatatable"
-    (click)="_doButtonAction()">
+    (click)="_doButtonAction()"
+  >
     <button
       class="btn btn-link p-0 m-auto{{ _linkClass ? ' ' + _linkClass : '' }}"
       type="button"
       [attr.title]="_tooltipDisabled ? _title : undefined"
-      [ngbTooltip]="_tooltip"
-      [tooltipClass]="$any(_tooltipClass)"
-      [placement]="$any(_tooltipPlacement)"
-      [container]="$any(_tooltipContainer)"
-      [disableTooltip]="_tooltipDisabled">
-      <seam-icon *ngIf="_icon" iconType="styled-square" [icon]="_icon" size="lg" [iconType]="_iconType" [iconClass]="_iconClass"></seam-icon>
+      [seamTooltip]="_tooltip ?? null"
+      [tooltipClass]="_tooltipClass"
+      [placement]="_tooltipPlacement"
+      [container]="_tooltipContainer"
+      [disableTooltip]="_tooltipDisabled"
+    >
+      <seam-icon
+        *ngIf="_icon"
+        iconType="styled-square"
+        [icon]="_icon"
+        size="lg"
+        [iconType]="_iconType"
+        [iconClass]="_iconClass"
+      ></seam-icon>
       <span *ngIf="_srOnly" class="sr-only">{{ _srOnly }}</span>
     </button>
   </div>

@@ -1,9 +1,14 @@
 import { TableColumn } from '@marklb/ngx-datatable'
 
-import { TableCellTypeColumn, TableCellTypeConfig, TableCellTypeExportProps, TableCellTypeName } from '@theseam/ui-common/table-cell-type'
+import {
+  TableCellTypeColumn,
+  TableCellTypeConfig,
+  TableCellTypeExportProps,
+  TableCellTypeName,
+  TheSeamTableCellTypeColumnAlign,
+} from '@theseam/ui-common/table-cell-type'
 
 export interface TheSeamDatatableColumnHidable {
-
   /**
    * Hide a column, but let the datatable still know about it. Useful for
    * hidding a columns that can be unhidden through a setting.
@@ -13,16 +18,24 @@ export interface TheSeamDatatableColumnHidable {
    * list.
    */
   hidden?: boolean
-
 }
 
-export interface TheSeamDatatableColumnFilterable<T extends TheSeamDatatableColumnFilterableConfig = any> {
+export interface TheSeamDatatableColumnFilterable<
+  T extends TheSeamDatatableColumnFilterableConfig = any,
+> {
   filterable?: boolean
 
   /**
    * Additional options for a specific filter type.
    */
   filterOptions?: T
+
+  /**
+   * Whether the filter is active or not.
+   *
+   * This is set internally, it will likely not work if set from outside.
+   */
+  filterActive?: boolean
 }
 
 export interface TheSeamDatatableColumnFilterableConfig {
@@ -39,12 +52,15 @@ export interface TheSeamDatatableColumnFilterableConfig {
    * If not provided, will look to cellType to determine default filter(s).
    */
   filterType?: string
-
 }
 
-export type TheSeamDatatableColumn<T extends TableCellTypeName = any, C extends TableCellTypeConfig<T> = any, F extends TheSeamDatatableColumnFilterableConfig = any> =
-  TableColumn &
+export type TheSeamDatatableColumn<
+  T extends TableCellTypeName = any,
+  C extends TableCellTypeConfig<T> = any,
+  F extends TheSeamDatatableColumnFilterableConfig = any,
+> = TableColumn &
   TableCellTypeColumn<T, C> &
   TableCellTypeExportProps &
   TheSeamDatatableColumnHidable &
-  TheSeamDatatableColumnFilterable<F>
+  TheSeamDatatableColumnFilterable<F> &
+  TheSeamTableCellTypeColumnAlign

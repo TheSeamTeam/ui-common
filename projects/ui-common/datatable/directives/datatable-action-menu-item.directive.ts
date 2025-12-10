@@ -1,7 +1,16 @@
 // import { QueryParamsHandling } from '@angular/router/src/config'
 import { ComponentType } from '@angular/cdk/portal'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { Component, Directive, EventEmitter, HostBinding, Input, isDevMode, Optional, Output } from '@angular/core'
+import {
+  Component,
+  Directive,
+  EventEmitter,
+  HostBinding,
+  Input,
+  isDevMode,
+  Optional,
+  Output,
+} from '@angular/core'
 import { Subscription } from 'rxjs'
 
 // import jexl from 'jexl'
@@ -37,10 +46,10 @@ export interface TheSeamDatatableRow {
 }
 
 @Directive({
-  selector: '[seamDatatableActionMenuItem]'
+  selector: '[seamDatatableActionMenuItem]',
+  standalone: false,
 })
 export class DatatableActionMenuItemDirective {
-
   @HostBinding('class.list-group-item') _listGroupItem = true
   @HostBinding('class.list-group-item-action') _listGroupItemAction = true
 
@@ -58,7 +67,7 @@ export class DatatableActionMenuItemDirective {
   @Input() preserveFragment: boolean | undefined | null
   @Input() skipLocationChange: boolean | undefined | null
   @Input() replaceUrl: boolean | undefined | null
-  @Input() state: {[k: string]: any} | undefined | null
+  @Input() state: { [k: string]: any } | undefined | null
   @Input() routerLink: string | any[] | undefined | null
 
   @Input() confirmDialog: any
@@ -108,7 +117,7 @@ export class DatatableActionMenuItemDirective {
     private readonly _modal: Modal,
     private readonly _dynamicComponentLoader: TheSeamDynamicComponentLoader,
     @Optional() private readonly _http: HttpClient,
-  ) { }
+  ) {}
 
   // private _handleEndpointAction() {
   //   if (!this._http) {
@@ -173,5 +182,4 @@ export class DatatableActionMenuItemDirective {
   //     this._modal.openFromComponent(this._modalConfig.component)
   //   }
   // }
-
 }

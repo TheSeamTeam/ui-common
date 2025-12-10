@@ -10,7 +10,11 @@ describe('pollingTicker', () => {
   describe('sync action', () => {
     it('should skip first emit if emitOnInit = false', fakeAsync(() => {
       let count = 0
-      const pt$ = pollingTicker(() => {}, 100, undefined, { emitOnInit: false }).subscribe(() => { count++ })
+      const pt$ = pollingTicker(() => {}, 100, undefined, {
+        emitOnInit: false,
+      }).subscribe(() => {
+        count++
+      })
       tick(99)
       expect(count).toBe(0)
       pt$.unsubscribe()
@@ -18,14 +22,22 @@ describe('pollingTicker', () => {
 
     it('should emit immediately if emitOnInit = true', fakeAsync(() => {
       let count = 0
-      const pt$ = pollingTicker(() => {}, 100, undefined, { emitOnInit: true }).subscribe(() => { count++ })
+      const pt$ = pollingTicker(() => {}, 100, undefined, {
+        emitOnInit: true,
+      }).subscribe(() => {
+        count++
+      })
       expect(count).toBe(1)
       pt$.unsubscribe()
     }))
 
     it('should not emit before polling interval', fakeAsync(() => {
       let result
-      const pt$ = pollingTicker(() => 'test', 100, undefined, { emitOnInit: false }).subscribe(v => { result = v })
+      const pt$ = pollingTicker(() => 'test', 100, undefined, {
+        emitOnInit: false,
+      }).subscribe((v) => {
+        result = v
+      })
       tick(99)
       expect(result).toBeUndefined()
       pt$.unsubscribe()
@@ -33,7 +45,11 @@ describe('pollingTicker', () => {
 
     it('should emit at polling interval', fakeAsync(() => {
       let result: any
-      const pt$ = pollingTicker(() => 'test', 100, undefined, { emitOnInit: false }).subscribe(v => { result = v })
+      const pt$ = pollingTicker(() => 'test', 100, undefined, {
+        emitOnInit: false,
+      }).subscribe((v) => {
+        result = v
+      })
       tick(100)
       expect(result).toBe('test')
       pt$.unsubscribe()
@@ -41,7 +57,9 @@ describe('pollingTicker', () => {
 
     it('should emit at each polling interval', fakeAsync(() => {
       let count = 0
-      const pt$ = pollingTicker(() => {}, 100).subscribe(() => { count++ })
+      const pt$ = pollingTicker(() => {}, 100).subscribe(() => {
+        count++
+      })
       tick(300)
       expect(count).toBe(4)
       pt$.unsubscribe()
@@ -52,7 +70,11 @@ describe('pollingTicker', () => {
     describe('action completes immediately', () => {
       it('should skip first emit if emitOnInit = false', fakeAsync(() => {
         let count = 0
-        const pt$ = pollingTicker(() => of('api result'), 100, undefined, { emitOnInit: false }).subscribe(() => { count++ })
+        const pt$ = pollingTicker(() => of('api result'), 100, undefined, {
+          emitOnInit: false,
+        }).subscribe(() => {
+          count++
+        })
         tick(99)
         expect(count).toBe(0)
         pt$.unsubscribe()
@@ -60,14 +82,22 @@ describe('pollingTicker', () => {
 
       it('should emit immediately if emitOnInit = true', fakeAsync(() => {
         let count = 0
-        const pt$ = pollingTicker(() => of('api result'), 100, undefined, { emitOnInit: true }).subscribe(() => { count++ })
+        const pt$ = pollingTicker(() => of('api result'), 100, undefined, {
+          emitOnInit: true,
+        }).subscribe(() => {
+          count++
+        })
         expect(count).toBe(1)
         pt$.unsubscribe()
       }))
 
       it('should not emit before polling interval', fakeAsync(() => {
         let result
-        const pt$ = pollingTicker(() => of('api result'), 100, undefined, { emitOnInit: false }).subscribe(v => { result = v })
+        const pt$ = pollingTicker(() => of('api result'), 100, undefined, {
+          emitOnInit: false,
+        }).subscribe((v) => {
+          result = v
+        })
         tick(99)
         expect(result).toBeUndefined()
         pt$.unsubscribe()
@@ -75,7 +105,11 @@ describe('pollingTicker', () => {
 
       it('should emit at polling interval', fakeAsync(() => {
         let result: any
-        const pt$ = pollingTicker(() => of('api result'), 100, undefined, { emitOnInit: false }).subscribe(v => { result = v })
+        const pt$ = pollingTicker(() => of('api result'), 100, undefined, {
+          emitOnInit: false,
+        }).subscribe((v) => {
+          result = v
+        })
         tick(100)
         expect(result).toBe('api result')
         pt$.unsubscribe()
@@ -83,7 +117,9 @@ describe('pollingTicker', () => {
 
       it('should emit at each polling interval', fakeAsync(() => {
         let count = 0
-        const pt$ = pollingTicker(() => of('api result'), 100).subscribe(() => { count++ })
+        const pt$ = pollingTicker(() => of('api result'), 100).subscribe(() => {
+          count++
+        })
         tick(300)
         expect(count).toBe(4)
         pt$.unsubscribe()
@@ -102,7 +138,9 @@ describe('pollingTicker', () => {
         let count = 0
         const t = new TickHelper()
         // const pt$ = pollingTicker(() => data$, 100).subscribe(v => { count++; console.log('emit', t.ticksElapsed, v) })
-        const pt$ = pollingTicker(() => data$, 100).subscribe(v => { count++ })
+        const pt$ = pollingTicker(() => data$, 100).subscribe((v) => {
+          count++
+        })
 
         expect(count).toBe(1)
 
@@ -133,7 +171,11 @@ describe('pollingTicker', () => {
     it('should emit on ticker emit', fakeAsync(() => {
       let count = 0
       const ticker = new Subject<void>()
-      const pt$ = pollingTicker(() => of('api result'), undefined, ticker, { emitOnInit: false }).subscribe(() => { count++ })
+      const pt$ = pollingTicker(() => of('api result'), undefined, ticker, {
+        emitOnInit: false,
+      }).subscribe(() => {
+        count++
+      })
       tick(1)
       expect(count).toBe(0)
       ticker.next()
@@ -146,7 +188,11 @@ describe('pollingTicker', () => {
     it('should reset interval on ticker emit', fakeAsync(() => {
       let count = 0
       const ticker = new Subject<void>()
-      const pt$ = pollingTicker(() => of('api result'), 100, ticker, { emitOnInit: false }).subscribe(() => { count++ })
+      const pt$ = pollingTicker(() => of('api result'), 100, ticker, {
+        emitOnInit: false,
+      }).subscribe(() => {
+        count++
+      })
       tick(99)
       expect(count).toBe(0)
       ticker.next()

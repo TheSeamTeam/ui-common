@@ -6,7 +6,10 @@ import { ModalRef } from './modal-ref'
  * @param element Element relative to which to look for a dialog.
  * @param openDialogs References to the currently-open dialogs.
  */
-export function getClosestModal(element: ElementRef<HTMLElement>, openDialogs: ModalRef<any>[]) {
+export function getClosestModal(
+  element: ElementRef<HTMLElement>,
+  openDialogs: ModalRef<any>[],
+) {
   let parent: HTMLElement | null = element.nativeElement.parentElement
 
   while (parent && !parent.classList.contains('seam-modal-container')) {
@@ -14,5 +17,5 @@ export function getClosestModal(element: ElementRef<HTMLElement>, openDialogs: M
   }
 
   const parentId = parent ? parent.id : null
-  return parentId ? openDialogs.find(dialog => dialog.id === parentId) : null
+  return parentId ? openDialogs.find((dialog) => dialog.id === parentId) : null
 }

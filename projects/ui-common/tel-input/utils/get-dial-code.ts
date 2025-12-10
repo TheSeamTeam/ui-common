@@ -7,7 +7,11 @@ import type { TelInputCountryData } from '../models/index'
  *
  * Based on: https://github.com/jackocnr/intl-tel-input/blob/4fe25fcf142c341a85b7b15cc307d66afb8573a3/src/js/intlTelInput.js#L1161
  */
-export function getDialCode(data: TelInputCountryData, number: string, includeAreaCode: boolean = false): string {
+export function getDialCode(
+  data: TelInputCountryData,
+  number: string,
+  includeAreaCode: boolean = false,
+): string {
   // console.log('getDialCode', number, includeAreaCode)
   // const data = processCountryCodes(globalIntlTelInputGlobals().getCountryData() as TelInputCountryData[])
 

@@ -1,10 +1,16 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
-import { BaseHarnessFilters, ComponentHarnessConstructor, ContentContainerComponentHarness, HarnessPredicate } from '@angular/cdk/testing'
+import {
+  BaseHarnessFilters,
+  ComponentHarnessConstructor,
+  ContentContainerComponentHarness,
+  HarnessPredicate,
+} from '@angular/cdk/testing'
 
 // import { TheSeamMenuHarness } from './menu.harness'
 // import { animatingWait } from './utils'
 
 /** A set of criteria that can be used to filter a list of `TheSeamWidgetHarness` instances. */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface TheSeamWidgetHarnessFilters extends BaseHarnessFilters {
   /** Only find instances whose text matches the given value. */
   // text?: string | RegExp;
@@ -24,14 +30,14 @@ export class TheSeamWidgetHarness extends ContentContainerComponentHarness<strin
     options: TheSeamWidgetHarnessFilters = {},
   ): HarnessPredicate<T> {
     return new HarnessPredicate(this, options)
-      // .addOption('text', options.text, (harness, text) =>
-      //   HarnessPredicate.stringMatches(harness.getText(), text),
-      // )
-      // .addOption(
-      //   'hasSubmenu',
-      //   options.hasSubmenu,
-      //   async (harness, hasSubmenu) => (await harness.hasSubmenu()) === hasSubmenu,
-      // )
+    // .addOption('text', options.text, (harness, text) =>
+    //   HarnessPredicate.stringMatches(harness.getText(), text),
+    // )
+    // .addOption(
+    //   'hasSubmenu',
+    //   options.hasSubmenu,
+    //   async (harness, hasSubmenu) => (await harness.hasSubmenu()) === hasSubmenu,
+    // )
   }
 
   /** Whether the menu is disabled. */

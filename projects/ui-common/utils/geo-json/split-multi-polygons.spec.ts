@@ -1,8 +1,4 @@
-import {
-  FeatureCollection,
-  MultiPolygon,
-  Polygon,
-} from 'geojson'
+import { FeatureCollection, MultiPolygon, Polygon } from 'geojson'
 
 import { splitMultiPolygons } from './split-multi-polygons'
 
@@ -24,9 +20,9 @@ describe('splitMultiPolygons', () => {
           type: 'Feature',
           geometry: {
             type: 'Point',
-            coordinates: [ 0, 0 ],
+            coordinates: [0, 0],
           },
-          properties: { },
+          properties: {},
         },
       ],
     }
@@ -40,10 +36,10 @@ describe('splitMultiPolygons', () => {
       type: 'Polygon',
       coordinates: [
         [
-          [ 0, 0 ],
-          [ 0, 1 ],
-          [ 1, 0 ],
-          [ 0, 0 ],
+          [0, 0],
+          [0, 1],
+          [1, 0],
+          [0, 0],
         ],
       ],
     }
@@ -51,10 +47,10 @@ describe('splitMultiPolygons', () => {
       type: 'Polygon',
       coordinates: [
         [
-          [ 1, 1 ],
-          [ 1, 2 ],
-          [ 2, 1 ],
-          [ 1, 1 ],
+          [1, 1],
+          [1, 2],
+          [2, 1],
+          [1, 1],
         ],
       ],
     }
@@ -62,10 +58,10 @@ describe('splitMultiPolygons', () => {
       type: 'Polygon',
       coordinates: [
         [
-          [ 2, 2 ],
-          [ 2, 3 ],
-          [ 3, 2 ],
-          [ 2, 2 ],
+          [2, 2],
+          [2, 3],
+          [3, 2],
+          [2, 2],
         ],
       ],
     }
@@ -83,7 +79,7 @@ describe('splitMultiPolygons', () => {
         {
           type: 'Feature',
           geometry: multiPolygon1,
-          properties: { },
+          properties: {},
         },
       ],
     }
@@ -96,17 +92,17 @@ describe('splitMultiPolygons', () => {
       {
         type: 'Feature',
         geometry: polygon1,
-        properties: { },
+        properties: {},
       },
       {
         type: 'Feature',
         geometry: polygon2,
-        properties: { },
+        properties: {},
       },
       {
         type: 'Feature',
         geometry: polygon3,
-        properties: { },
+        properties: {},
       },
     ])
   })
@@ -116,10 +112,10 @@ describe('splitMultiPolygons', () => {
       type: 'Polygon',
       coordinates: [
         [
-          [ 0, 0 ],
-          [ 0, 1 ],
-          [ 1, 0 ],
-          [ 0, 0 ],
+          [0, 0],
+          [0, 1],
+          [1, 0],
+          [0, 0],
         ],
       ],
     }
@@ -127,10 +123,10 @@ describe('splitMultiPolygons', () => {
       type: 'Polygon',
       coordinates: [
         [
-          [ 1, 1 ],
-          [ 1, 2 ],
-          [ 2, 1 ],
-          [ 1, 1 ],
+          [1, 1],
+          [1, 2],
+          [2, 1],
+          [1, 1],
         ],
       ],
     }
@@ -138,10 +134,10 @@ describe('splitMultiPolygons', () => {
       type: 'Polygon',
       coordinates: [
         [
-          [ 2, 2 ],
-          [ 2, 3 ],
-          [ 3, 2 ],
-          [ 2, 2 ],
+          [2, 2],
+          [2, 3],
+          [3, 2],
+          [2, 2],
         ],
       ],
     }
@@ -160,22 +156,22 @@ describe('splitMultiPolygons', () => {
           type: 'Feature',
           geometry: {
             type: 'Point',
-            coordinates: [ 0, 0 ],
+            coordinates: [0, 0],
           },
-          properties: { },
+          properties: {},
         },
         {
           type: 'Feature',
           geometry: multiPolygon1,
-          properties: { },
+          properties: {},
         },
         {
           type: 'Feature',
           geometry: {
             type: 'Point',
-            coordinates: [ 1, 1 ],
+            coordinates: [1, 1],
           },
-          properties: { },
+          properties: {},
         },
       ],
     }
@@ -186,32 +182,32 @@ describe('splitMultiPolygons', () => {
         type: 'Feature',
         geometry: {
           type: 'Point',
-          coordinates: [ 0, 0 ],
+          coordinates: [0, 0],
         },
-        properties: { },
+        properties: {},
       },
       {
         type: 'Feature',
         geometry: polygon1,
-        properties: { },
+        properties: {},
       },
       {
         type: 'Feature',
         geometry: polygon2,
-        properties: { },
+        properties: {},
       },
       {
         type: 'Feature',
         geometry: polygon3,
-        properties: { },
+        properties: {},
       },
       {
         type: 'Feature',
         geometry: {
           type: 'Point',
-          coordinates: [ 1, 1 ],
+          coordinates: [1, 1],
         },
-        properties: { },
+        properties: {},
       },
     ])
   })

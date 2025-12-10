@@ -3,7 +3,6 @@ import { EventEmitter, InjectionToken } from '@angular/core'
 import { UntypedFormGroup } from '@angular/forms'
 
 export interface IModalContainer {
-
   /**
    * Modal will close if a key is pressed with any of these key codes.
    *
@@ -28,7 +27,8 @@ export interface IModalContainer {
 
   /** Closes the modal. */
   close(): void
-
 }
 
-export const THESEAM_MODAL_CONTAINER = new InjectionToken<IModalContainer>('seamModalContainer')
+export const THESEAM_MODAL_CONTAINER = new InjectionToken<IModalContainer>(
+  'seamModalContainer',
+)

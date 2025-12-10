@@ -4,6 +4,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core'
   selector: 'seam-datatable-menu-bar-column-center',
   templateUrl: './datatable-menu-bar-column-center.component.html',
   styleUrls: ['./datatable-menu-bar-column-center.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
-export class DatatableMenuBarColumnCenterComponent { }
+export class DatatableMenuBarColumnCenterComponent {}

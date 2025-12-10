@@ -4,14 +4,8 @@ import { NgModule } from '@angular/core'
 import { ProgressCircleComponent } from './progress-circle/progress-circle.component'
 
 @NgModule({
-  declarations: [
-    ProgressCircleComponent
-  ],
-  imports: [
-    CommonModule
-  ],
-  exports: [
-    ProgressCircleComponent
-  ]
+  declarations: [ProgressCircleComponent],
+  imports: [CommonModule],
+  exports: [ProgressCircleComponent],
 })
-export class TheSeamProgressModule { }
+export class TheSeamProgressModule {}

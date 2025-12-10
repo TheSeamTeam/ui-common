@@ -1,10 +1,18 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
-import { BaseHarnessFilters, ComponentHarness, HarnessPredicate } from '@angular/cdk/testing'
+import {
+  BaseHarnessFilters,
+  ComponentHarness,
+  HarnessPredicate,
+} from '@angular/cdk/testing'
 
 import { TheSeamFormFieldRequiredIndicatorHarness } from '@theseam/ui-common/form-field'
-import { TheSeamNgSelectOptionHarness, TheSeamNgSelectOptionHarnessFilters } from './ng-select-option.harness'
+import {
+  TheSeamNgSelectOptionHarness,
+  TheSeamNgSelectOptionHarnessFilters,
+} from './ng-select-option.harness'
 
-export interface TheSeamNgSelectDropdownHarnessFilters extends BaseHarnessFilters {
+export interface TheSeamNgSelectDropdownHarnessFilters
+  extends BaseHarnessFilters {
   /** Filters based on the name of the field. */
   id?: string | RegExp
 }
@@ -18,10 +26,15 @@ export class TheSeamNgSelectDropdownHarness extends ComponentHarness {
   // private readonly _options = this.locatorForOptional(TheSeamNgSelectOptionHarness)
 
   /** Creates a `HarnessPredicate` used to locate a particular `MyMenuHarness`. */
-  static with(options: TheSeamNgSelectDropdownHarnessFilters): HarnessPredicate<TheSeamNgSelectDropdownHarness> {
-    return new HarnessPredicate(TheSeamNgSelectDropdownHarness, options)
-        .addOption('field id', options.id,
-            (harness, id) => HarnessPredicate.stringMatches(harness.getId(), id))
+  static with(
+    options: TheSeamNgSelectDropdownHarnessFilters,
+  ): HarnessPredicate<TheSeamNgSelectDropdownHarness> {
+    return new HarnessPredicate(
+      TheSeamNgSelectDropdownHarness,
+      options,
+    ).addOption('field id', options.id, (harness, id) =>
+      HarnessPredicate.stringMatches(harness.getId(), id),
+    )
   }
 
   public async getId(): Promise<string | null> {
@@ -48,14 +61,15 @@ export class TheSeamNgSelectDropdownHarness extends ComponentHarness {
    *     first matching dropdown option will be clicked.
    */
   async clickOption(
-    optionFilter: Omit<TheSeamNgSelectOptionHarnessFilters, 'ancestor'>
+    optionFilter: Omit<TheSeamNgSelectOptionHarnessFilters, 'ancestor'>,
   ): Promise<void> {
     const options = await this.getOptions(optionFilter)
     if (!options.length) {
-      throw Error(`Could not find option matching ${JSON.stringify(optionFilter)}`)
+      throw Error(
+        `Could not find option matching ${JSON.stringify(optionFilter)}`,
+      )
     }
 
     return options[0].click()
   }
-
 }

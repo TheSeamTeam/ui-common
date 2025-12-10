@@ -4,21 +4,24 @@ import { catchError, map, mapTo, switchMap, tap } from 'rxjs/operators'
 
 import FileSaver from 'file-saver'
 
-import { fileDataFromBuffer, openBlob, readFileAsync } from '@theseam/ui-common/utils'
+import {
+  fileDataFromBuffer,
+  openBlob,
+  readFileAsync,
+} from '@theseam/ui-common/utils'
 
 import { EncryptedAssetReader } from './encrypted-asset-reader'
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AssetReaderHelperService {
-
-  constructor(
-    @Optional() private _assetReader?: EncryptedAssetReader
-  ) {
+  constructor(@Optional() private _assetReader?: EncryptedAssetReader) {
     if (isDevMode() && !this._assetReader) {
       // eslint-disable-next-line no-console
-      console.warn(`[EncryptedAssetLinkDirective] Unable to get encrypted files unless an EncryptedAssetReader is provided.`)
+      console.warn(
+        `[EncryptedAssetLinkDirective] Unable to get encrypted files unless an EncryptedAssetReader is provided.`,
+      )
     }
   }
 
@@ -26,7 +29,7 @@ export class AssetReaderHelperService {
     url: string,
     detectMimeFromContent: boolean = true,
     download: boolean = true,
-    target?: string
+    target?: string,
   ): Observable<boolean> {
     if (!(url === undefined || url === null)) {
       if (!this._assetReader) {
@@ -39,45 +42,51 @@ export class AssetReaderHelperService {
         return of(false)
       }
 
-      const data$ = this._assetReader.getAssetBlobFromUrl(url, detectMimeFromContent)
+      const data$ = this._assetReader
+        .getAssetBlobFromUrl(url, detectMimeFromContent)
         .pipe(
-          switchMap(v => {
-            const filename: string | undefined = v instanceof Blob ? undefined : v.filename
+          switchMap((v) => {
+            const filename: string | undefined =
+              v instanceof Blob ? undefined : v.filename
             const blob: Blob = v instanceof Blob ? v : v.blob
-            return from(readFileAsync(blob))
-              .pipe(
-                switchMap(_buf => _buf
+            return from(readFileAsync(blob)).pipe(
+              switchMap((_buf) =>
+                _buf
                   ? from(fileDataFromBuffer(_buf))
-                  : throwError('Unable to read file.')
-                ),
-                map(data => ({ ...data, blob, filename }))
-              )
-          })
+                  : throwError('Unable to read file.'),
+              ),
+              map((data) => ({ ...data, blob, filename })),
+            )
+          }),
         )
 
-      const open$ = data$
-        .pipe(
-          tap(data => {
-            if (!data || !data.blob) { throw new Error('File unsuccessfully read.') }
-            const filename = data.filename ? data.filename : `Untitled${data.ext ? `.${data.ext}` : ''}`
-            if (download) {
-              FileSaver.saveAs(data.blob, filename)
-            } else {
-              openBlob(data.blob, target, filename)
-            }
-          }),
-          catchError(err => {
+      const open$ = data$.pipe(
+        tap((data) => {
+          if (!data || !data.blob) {
+            throw new Error('File unsuccessfully read.')
+          }
+          const filename = data.filename
+            ? data.filename
+            : `Untitled${data.ext ? `.${data.ext}` : ''}`
+          if (download) {
+            FileSaver.saveAs(data.blob, filename)
+          } else {
+            openBlob(data.blob, target, filename)
+          }
+        }),
+        catchError((err) => {
+          if (isDevMode()) {
             // eslint-disable-next-line no-console
-            if (isDevMode()) { console.error('err', err) }
-            return of(false)
-          }),
-          mapTo(true)
-        )
+            console.error('err', err)
+          }
+          return of(false)
+        }),
+        mapTo(true),
+      )
 
       return open$
     }
 
     return of(false)
   }
-
 }

@@ -72,4 +72,4 @@ const contentModules = [
     ...contentModules,
   ],
 })
-export class TheSeamWidgetModule { }
+export class TheSeamWidgetModule {}

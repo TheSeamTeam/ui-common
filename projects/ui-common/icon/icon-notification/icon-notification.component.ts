@@ -1,6 +1,20 @@
-import { animate, animation, keyframes, style, transition, trigger, useAnimation } from '@angular/animations'
+import {
+  animate,
+  animation,
+  keyframes,
+  style,
+  transition,
+  trigger,
+  useAnimation,
+} from '@angular/animations'
 import { BooleanInput } from '@angular/cdk/coercion'
-import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  Input,
+  OnInit,
+} from '@angular/core'
 
 import { SizeProp } from '@fortawesome/fontawesome-svg-core'
 import { faCircle } from '@fortawesome/free-solid-svg-icons'
@@ -17,45 +31,49 @@ export const pulseAnimation = animation([
     keyframes([
       style({ transform: 'scale(1)', offset: 0 }),
       style({ transform: 'scale({{ scale }})', offset: 0.5 }),
-      style({ transform: 'scale(1)', offset: 1 })
-    ])
-  )
+      style({ transform: 'scale(1)', offset: 1 }),
+    ]),
+  ),
 ])
 
 @Component({
   selector: 'seam-icon-notification',
   template: `
-    <seam-icon *ngIf="icon && !hidden" [@counterChange]="count"
+    <seam-icon
+      *ngIf="icon && !hidden"
+      [@counterChange]="count"
       [grayscaleOnDisable]="grayscaleOnDisable"
       [disabled]="disabled"
       [iconClass]="iconClass"
       [icon]="icon"
       [size]="size"
       [showDefaultOnError]="showDefaultOnError"
-      [iconType]="iconType">
+      [iconType]="iconType"
+    >
     </seam-icon>
     <ng-content select=".sr-only"></ng-content>
   `,
-  styles: [`
-    :host {
-      position: absolute;
-      top: 0;
-      right: 0;
-      left: 0;
-      bottom: 0;
-    }
+  styles: [
+    `
+      :host {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+      }
 
-    seam-icon {
-      position: absolute;
-      top: 4px;
-      right: 4px;
-      width: 25% !important;
-      height: 25% !important;
-      min-width: 15px;
-      min-height: 15px;
-    }
-  `],
-  // tslint:disable-next-line:use-host-property-decorator
+      seam-icon {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        width: 25% !important;
+        height: 25% !important;
+        min-width: 15px;
+        min-height: 15px;
+      }
+    `,
+  ],
   host: {
     '[attr.aria-disabled]': 'disabled.toString()',
     '[attr.disabled]': 'disabled || null',
@@ -67,13 +85,14 @@ export const pulseAnimation = animation([
         useAnimation(pulseAnimation, {
           params: {
             timings: '400ms ease-in-out',
-            scale: 1.2
-          }
-        })
-      )
-    ])
+            scale: 1.2,
+          },
+        }),
+      ),
+    ]),
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class IconNotificationComponent implements OnInit {
   static ngAcceptInputType_hidden: BooleanInput
@@ -108,7 +127,7 @@ export class IconNotificationComponent implements OnInit {
    * Toggles whether an image that has thrown the `onerror` event should show
    * the `defaultIcon` instead.
    */
-   @Input() @InputBoolean() showDefaultOnError = false
+  @Input() @InputBoolean() showDefaultOnError = false
 
   /**
    * Shown if icon is not set or if showDefaultOnError is true and img has thrown an error.
@@ -124,16 +143,17 @@ export class IconNotificationComponent implements OnInit {
 
   @Input() iconType: TheSeamIconType | undefined | null = 'image-fill'
 
-  constructor(
-    private _elementRef: ElementRef<HTMLElement>
-  ) { }
+  constructor(private _elementRef: ElementRef<HTMLElement>) {}
 
   ngOnInit() {
-    if (this._elementRef && this._elementRef.nativeElement && this._elementRef.nativeElement.parentElement) {
+    if (
+      this._elementRef &&
+      this._elementRef.nativeElement &&
+      this._elementRef.nativeElement.parentElement
+    ) {
       this._elementRef.nativeElement.parentElement.style.position = 'relative'
     }
   }
 
   // ngDoCheck() {}
-
 }

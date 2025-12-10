@@ -1,4 +1,12 @@
-import { Directive, ElementRef, HostBinding, HostListener, Input, OnInit, Optional } from '@angular/core'
+import {
+  Directive,
+  ElementRef,
+  HostBinding,
+  HostListener,
+  Input,
+  OnInit,
+  Optional,
+} from '@angular/core'
 
 import { ModalRef } from '../modal-ref'
 import { getClosestModal } from '../modal-utils'
@@ -6,21 +14,25 @@ import { Modal } from '../modal.service'
 
 @Directive({
   selector: 'button[seamModalClose]',
-  exportAs: 'seamModalClose'
+  exportAs: 'seamModalClose',
+  standalone: false,
 })
 export class ModalCloseDirective implements OnInit {
-
   public modalRef: ModalRef<any> | undefined | null
 
   // @HostBinding('class.close') _closeCss = true
 
   @HostBinding('attr.type')
-  get _attrType() { return this.type }
+  get _attrType() {
+    return this.type
+  }
 
   @Input() type = 'button'
 
   @HostBinding('attr.aria-label')
-  get _attrAriaLabel() { return this.ariaLabel || null }
+  get _attrAriaLabel() {
+    return this.ariaLabel || null
+  }
 
   /** Screenreader label for the button. */
   @Input('aria-label') ariaLabel: string | undefined | null
@@ -37,9 +49,17 @@ export class ModalCloseDirective implements OnInit {
       if (this.seamModalNext) {
         this.modalRef.afterClosed().subscribe(() => {
           if (typeof this.seamModalNext === 'string') {
-            this._modal.openFromLazyComponent(this.seamModalNext, this.seamModalNextConfig).subscribe()
+            this._modal
+              .openFromLazyComponent(
+                this.seamModalNext,
+                this.seamModalNextConfig,
+              )
+              .subscribe()
           } else {
-            this._modal.openFromComponent(this.seamModalNext, this.seamModalNextConfig)
+            this._modal.openFromComponent(
+              this.seamModalNext,
+              this.seamModalNextConfig,
+            )
           }
         })
       }
@@ -50,7 +70,7 @@ export class ModalCloseDirective implements OnInit {
   constructor(
     private _elementRef: ElementRef<HTMLElement>,
     private _modal: Modal,
-    @Optional() private _modalRef?: ModalRef<any>
+    @Optional() private _modalRef?: ModalRef<any>,
   ) {
     this.modalRef = _modalRef
   }
@@ -65,5 +85,4 @@ export class ModalCloseDirective implements OnInit {
       this.modalRef = getClosestModal(this._elementRef, this._modal.openDialogs)
     }
   }
-
 }

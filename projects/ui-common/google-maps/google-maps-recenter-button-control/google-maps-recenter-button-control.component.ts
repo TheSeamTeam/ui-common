@@ -31,13 +31,15 @@ export interface GoogleMapsRecenterButtonControlData {
     '[attr.draggable]': 'false',
     '[attr.aria-label]': 'label',
     '[attr.title]': 'label',
-    'type': 'button',
-    'class': 'gmnoprint gm-control-active'
+    type: 'button',
+    class: 'gmnoprint gm-control-active',
   },
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
-export class TheSeamGoogleMapsRecenterButtonControlComponent implements OnDestroy {
-
+export class TheSeamGoogleMapsRecenterButtonControlComponent
+  implements OnDestroy
+{
   private readonly _ngUnsubscribe = new Subject<void>()
 
   private _listeners: (() => void)[] = []
@@ -46,14 +48,16 @@ export class TheSeamGoogleMapsRecenterButtonControlComponent implements OnDestro
 
   @Input() icon: SeamIcon | undefined | null
 
-  @HostListener('click', [ 'event' ])
+  @HostListener('click', ['event'])
   _onClick(event: MouseEvent) {
     this._googleMaps.reCenterOnFeatures()
   }
 
   constructor(
     private readonly _googleMaps: GoogleMapsService,
-    @Optional() @Inject(MAP_CONTROL_DATA) _data?: GoogleMapsRecenterButtonControlData
+    @Optional()
+    @Inject(MAP_CONTROL_DATA)
+    _data?: GoogleMapsRecenterButtonControlData,
   ) {
     if (_data) {
       if (Object.prototype.hasOwnProperty.call(_data, 'label')) {
@@ -67,7 +71,7 @@ export class TheSeamGoogleMapsRecenterButtonControlComponent implements OnDestro
 
   /** @ignore */
   ngOnDestroy() {
-    this._listeners.forEach(l => l())
+    this._listeners.forEach((l) => l())
 
     this._ngUnsubscribe.next()
     this._ngUnsubscribe.complete()

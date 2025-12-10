@@ -2,9 +2,9 @@ import { notNullOrUndefined } from '@theseam/ui-common/utils'
 
 export function checkRecordsHaveValue(
   arr: any[] | null,
-  indices: (number | [ startIndex: number, endIndex: number ])[],
+  indices: (number | [startIndex: number, endIndex: number])[],
   testValueCheckProp: string | null = 'name',
-  onlyCheckProvidedIndices: boolean = false
+  onlyCheckProvidedIndices: boolean = false,
 ): void {
   if (indices.length > 0 && !Array.isArray(arr)) {
     throw Error(`Records array should be defined.`)
@@ -24,7 +24,9 @@ export function checkRecordsHaveValue(
         const actualValue = item[testValueCheckProp]
         const expectedValue = `Item_${i}`
         if (actualValue !== expectedValue) {
-          throw Error(`Record at index '${i}' should be '${expectedValue}', but is '${actualValue}'`)
+          throw Error(
+            `Record at index '${i}' should be '${expectedValue}', but is '${actualValue}'`,
+          )
         }
       }
     } else {
@@ -40,7 +42,10 @@ export function checkRecordsHaveValue(
 /**
  * NOTE: This is a very niave implementation that could be improved.
  */
-function _isOneOfIndices(indices: (number | [ startIndex: number, endIndex: number ])[], index: number): boolean {
+function _isOneOfIndices(
+  indices: (number | [startIndex: number, endIndex: number])[],
+  index: number,
+): boolean {
   for (const r of indices) {
     if (Array.isArray(r)) {
       if (index >= r[0] && index <= r[1]) {

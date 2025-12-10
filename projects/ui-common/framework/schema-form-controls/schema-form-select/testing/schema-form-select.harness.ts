@@ -1,8 +1,16 @@
-import { BaseHarnessFilters, ComponentHarness, HarnessPredicate } from '@angular/cdk/testing'
+import {
+  BaseHarnessFilters,
+  ComponentHarness,
+  HarnessPredicate,
+} from '@angular/cdk/testing'
 
 import { TheSeamCheckboxHarness } from '@theseam/ui-common/checkbox'
 import { TheSeamFormFieldRequiredIndicatorHarness } from '@theseam/ui-common/form-field'
-import { TheSeamNgSelectHarness, TheSeamNgSelectOptionHarness, TheSeamNgSelectOptionHarnessFilters } from '@theseam/ui-common/testing'
+import {
+  TheSeamNgSelectHarness,
+  TheSeamNgSelectOptionHarness,
+  TheSeamNgSelectOptionHarnessFilters,
+} from '@theseam/ui-common/testing'
 
 interface TheSeamSchemaFormSelectHarnessFilters extends BaseHarnessFilters {
   /** Filters based on the name of the field. */
@@ -13,13 +21,17 @@ export class TheSeamSchemaFormSelectHarness extends ComponentHarness {
   static hostSelector = 'seam-schema-form-select'
 
   private readonly _ngSelect = this.locatorFor(TheSeamNgSelectHarness)
-  private readonly _requiredIndicator = this.locatorFor(TheSeamFormFieldRequiredIndicatorHarness)
+  private readonly _requiredIndicator = this.locatorFor(
+    TheSeamFormFieldRequiredIndicatorHarness,
+  )
 
   /** Creates a `HarnessPredicate` used to locate a particular `MyMenuHarness`. */
-  static with(options: TheSeamSchemaFormSelectHarnessFilters): HarnessPredicate<TheSeamSchemaFormSelectHarness> {
+  static with(
+    options: TheSeamSchemaFormSelectHarnessFilters,
+  ): HarnessPredicate<TheSeamSchemaFormSelectHarness> {
     return new HarnessPredicate(TheSeamSchemaFormSelectHarness, options)
-        // .addOption('field name', options.name,
-        //     (harness, name) => HarnessPredicate.stringMatches(harness.getName(), name))
+    // .addOption('field name', options.name,
+    //     (harness, name) => HarnessPredicate.stringMatches(harness.getName(), name))
   }
 
   public async getName(): Promise<string | null> {
@@ -49,7 +61,7 @@ export class TheSeamSchemaFormSelectHarness extends ComponentHarness {
    *     first matching dropdown option will be clicked.
    */
   async clickOption(
-    optionFilter: Omit<TheSeamNgSelectOptionHarnessFilters, 'ancestor'>
+    optionFilter: Omit<TheSeamNgSelectOptionHarnessFilters, 'ancestor'>,
   ): Promise<void> {
     return (await this._ngSelect()).clickOption(optionFilter)
   }

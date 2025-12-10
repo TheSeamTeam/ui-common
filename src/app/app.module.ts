@@ -7,7 +7,7 @@ import { ExampleLazyLoadedWidgetsModule } from './example-lazy-loaded-widgets/ex
 import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
 import {
   DynamicComponentManifest,
-  TheSeamDynamicComponentLoaderModule
+  TheSeamDynamicComponentLoaderModule,
 } from '@theseam/ui-common/dynamic-component-loader'
 import { AppComponent } from './app.component'
 
@@ -15,22 +15,23 @@ const manifests: DynamicComponentManifest[] = [
   {
     componentId: 'widget-one',
     path: 'widget-one',
-    loadChildren: () => import('./example-lazy-loaded-widgets/lazy-widget-one/lazy-widget-one.module').then(m => m.LazyWidgetOneModule)
-  }
+    loadChildren: () =>
+      import(
+        './example-lazy-loaded-widgets/lazy-widget-one/lazy-widget-one.module'
+      ).then((m) => m.LazyWidgetOneModule),
+  },
 ]
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     // TheSeamDynamicComponentLoaderModule.forRoot(manifests),
     ExampleLazyLoadedWidgetsModule,
-    TheSeamButtonsModule
+    TheSeamButtonsModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

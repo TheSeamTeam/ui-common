@@ -1,12 +1,14 @@
 import { moduleMetadata } from '@storybook/angular'
 
+import { CommonModule } from '@angular/common'
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
-import { BrowserModule } from '@angular/platform-browser'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { TheSeamGoogleMapsComponent } from './google-maps/google-maps.component'
 import { TheSeamGoogleMapsApiLoader } from './google-maps-api-loader/google-maps-api-loader'
-import { TheSeamLazyMapsApiLoader, THESEAM_LAZY_MAPS_API_CONFIG } from './google-maps-api-loader/lazy-google-maps-api-loader'
+import {
+  TheSeamLazyMapsApiLoader,
+  THESEAM_LAZY_MAPS_API_CONFIG,
+} from './google-maps-api-loader/lazy-google-maps-api-loader'
 import { TheSeamGoogleMapsModule } from './google-maps.module'
 
 export default {
@@ -14,11 +16,7 @@ export default {
   // component: TheSeamGoogleMapsComponent,
   decorators: [
     moduleMetadata({
-      imports: [
-        BrowserAnimationsModule,
-        BrowserModule,
-        TheSeamGoogleMapsModule,
-      ],
+      imports: [CommonModule, TheSeamGoogleMapsModule],
       providers: [
         {
           provide: TheSeamGoogleMapsApiLoader,
@@ -43,9 +41,7 @@ export const Basic = ({ ...args }) => ({
 
 export const Control = ({ ...args }) => ({
   moduleMetadata: {
-    imports: [
-      ReactiveFormsModule,
-    ],
+    imports: [ReactiveFormsModule],
   },
   template: `
     <input type="text" />
@@ -60,12 +56,12 @@ export const Control = ({ ...args }) => ({
 
 export const Places = ({ ...args }) => ({
   template: `<input seamGoogleMapsPlacesAutocomplete />`,
-  props: { },
+  props: {},
 })
 
 export const PlacesComponent = ({ ...args }) => ({
   template: `<seam-google-maps-places-autocomplete></seam-google-maps-places-autocomplete>`,
-  props: { },
+  props: {},
 })
 
 export const PlacesMapBind = ({ ...args }) => ({
@@ -73,5 +69,5 @@ export const PlacesMapBind = ({ ...args }) => ({
     <seam-google-maps-places-autocomplete></seam-google-maps-places-autocomplete>
     <seam-google-maps></seam-google-maps>
   `,
-  props: { },
+  props: {},
 })

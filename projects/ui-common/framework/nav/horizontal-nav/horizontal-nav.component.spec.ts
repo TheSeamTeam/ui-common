@@ -6,16 +6,16 @@
 
 // import { TheSeamLayoutService } from '@theseam/ui-common/layout'
 
-// import { ITheSeamBaseLayoutNav, ITheSeamBaseLayoutRef, THESEAM_BASE_LAYOUT_REF } from '../../base-layout/index'
+// import { TheSeamBaseLayoutNav, TheSeamBaseLayoutRef, THESEAM_BASE_LAYOUT_REF } from '../../base-layout/index'
 // import { TheSeamNavModule } from '../nav.module'
 // import { HorizontalNavComponent } from './horizontal-nav.component'
 
 // @Component({ template: `` })
 // class TestPlacholderComponent { }
 
-// class MockITheSeamBaseLayoutRef implements Partial<ITheSeamBaseLayoutRef> {
-//   registerNav(nav: ITheSeamBaseLayoutNav): void { }
-//   unregisterNav(nav: ITheSeamBaseLayoutNav): void { }
+// class MockITheSeamBaseLayoutRef implements Partial<TheSeamBaseLayoutRef> {
+//   registerNav(nav: TheSeamBaseLayoutNav): void { }
+//   unregisterNav(nav: TheSeamBaseLayoutNav): void { }
 // }
 
 // describe('HorizontalNavComponent', () => {

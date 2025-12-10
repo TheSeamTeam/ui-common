@@ -1,8 +1,8 @@
-import { TruncatePipe } from './truncate.pipe'
+import { TheSeamTruncatePipe } from './truncate.pipe'
 
-describe('TruncatePipe', () => {
+describe('TheSeamTruncatePipe', () => {
   it('should create an instance', () => {
-    const pipe = new TruncatePipe()
+    const pipe = new TheSeamTruncatePipe()
     expect(pipe).toBeTruthy()
   })
 })

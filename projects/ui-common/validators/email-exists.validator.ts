@@ -6,11 +6,13 @@ import { map } from 'rxjs/operators'
  * Validates that an email already exists.
  */
 export function emailExistsValidator(
-  emailExists: (email: string) => Promise<boolean> | Observable<boolean> | boolean
+  emailExists: (
+    email: string,
+  ) => Promise<boolean> | Observable<boolean> | boolean,
 ) {
   return (control: FormControl) => {
     const validationResult = (exists: boolean) => {
-      return exists === false ? null : { 'emailExists': {} }
+      return exists === false ? null : { emailExists: {} }
     }
 
     const fnRes = emailExists(control.value)

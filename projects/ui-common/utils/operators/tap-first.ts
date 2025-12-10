@@ -8,11 +8,11 @@ export function tapFirst<T>(predicate: (value: T) => void) {
   let _initialized = false
   return (source$: Observable<T>): Observable<T> =>
     source$.pipe(
-      tap(v => {
+      tap((v) => {
         if (!_initialized) {
           predicate(v)
           _initialized = true
         }
-      })
+      }),
     )
 }

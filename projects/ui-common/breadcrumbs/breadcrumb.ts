@@ -8,10 +8,3 @@ export interface TheSeamBreadcrumb {
   /** Route the crumb is from. */
   route: ActivatedRoute
 }
-
-//
-// NOTE: The following types are only for backward compatability.
-//
-
-/** @deprecated Use `TheSeamBreadcrumb` instead. */
-export type ITheSeamBreadcrumb = TheSeamBreadcrumb

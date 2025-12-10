@@ -1,0 +1,75 @@
+// Component-specific styles for alterations diff
+// Leverages Bootstrap 4.6 classes for most styling
+
+.alterations-diff {
+  // Container styling
+  width: 100%;
+
+  // Diff summary styling
+  .bg-light {
+    background-color: #f8f9fa !important;
+
+    small {
+      font-size: 0.8125rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  // Desktop layout adjustments
+  .row {
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+
+    .col-md-6 {
+      &.pr-md-2 {
+        padding-right: 0.5rem;
+      }
+
+      &.pl-md-2 {
+        padding-left: 0.5rem;
+      }
+    }
+  }
+
+  // Mobile layout styling
+  .mobile-layout {
+    // Ensure proper spacing between sections
+    > div:not(:last-child) {
+      border-bottom: 1px solid #dee2e6;
+      padding-bottom: 1rem;
+    }
+  }
+}
+
+// Responsive adjustments
+@media (min-width: 768px) {
+  .alterations-diff {
+    // Desktop-specific adjustments
+    .row {
+      // Add visual separator between columns
+      .col-md-6:first-child::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 1px;
+        background-color: #dee2e6;
+        z-index: 1;
+      }
+    }
+  }
+}
+
+@media (max-width: 767.98px) {
+  .alterations-diff {
+    // Mobile-specific adjustments
+    .bg-light {
+      margin-left: -0.25rem;
+      margin-right: -0.25rem;
+      padding-left: 0.75rem !important;
+      padding-right: 0.75rem !important;
+    }
+  }
+}

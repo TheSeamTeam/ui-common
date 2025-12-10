@@ -1,38 +1,44 @@
 import { Component, DebugElement } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { UntypedFormControl, UntypedFormGroup, ReactiveFormsModule } from '@angular/forms'
+import {
+  UntypedFormControl,
+  UntypedFormGroup,
+  ReactiveFormsModule,
+} from '@angular/forms'
 import { By } from '@angular/platform-browser'
-import { DisableControlDirective } from './disable-control.directive'
+import { TheSeamDisableControlDirective } from './disable-control.directive'
 
 @Component({
   template: `<form [formGroup]="testGroup">
-    <input type="text" formControlName="testControl" id="testControl" [seamDisableControl]="mode">
-  </form>`
+    <input
+      type="text"
+      formControlName="testControl"
+      id="testControl"
+      [seamDisableControl]="mode"
+    />
+  </form>`,
 })
 class TestDisableControlComponent {
   testGroup = new UntypedFormGroup({
-    testControl: new UntypedFormControl([''])
+    testControl: new UntypedFormControl(['']),
   })
   mode = true
 }
 
-describe('DisableControlDirective', () => {
+describe('TheSeamDisableControlDirective', () => {
   let component: TestDisableControlComponent
   let fixture: ComponentFixture<TestDisableControlComponent>
   let controlInput: DebugElement
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    imports: [
-        ReactiveFormsModule
-    ],
-    declarations: [
+      imports: [ReactiveFormsModule],
+      declarations: [
         TestDisableControlComponent,
-        DisableControlDirective
-    ],
-    teardown: { destroyAfterEach: false }
-})
-    .compileComponents()
+        TheSeamDisableControlDirective,
+      ],
+      teardown: { destroyAfterEach: false },
+    }).compileComponents()
   }))
 
   beforeEach(() => {

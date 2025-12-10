@@ -5,6 +5,7 @@ import { getColumnProp } from '../../utils/get-column-prop'
 import { ColumnsAlteration } from '../columns-alteration'
 import { TheSeamDatatableAccessor } from '../datatable-accessor'
 import { TheSeamDatatableColumn } from '../table-column'
+import { AlterationDisplayItem } from '../../../datatable-alterations-display/models/alteration-display.model'
 
 export interface HideColumnColumnsAlterationState {
   columnProp: TableColumnProp
@@ -16,10 +17,7 @@ export class HideColumnColumnsAlteration extends ColumnsAlteration<HideColumnCol
 
   public readonly type: string = 'hide-column'
 
-  constructor(
-    state: HideColumnColumnsAlterationState,
-    persistent: boolean
-  ) {
+  constructor(state: HideColumnColumnsAlterationState, persistent: boolean) {
     super(state, persistent)
 
     if (!this._isValidState(state)) {
@@ -29,13 +27,33 @@ export class HideColumnColumnsAlteration extends ColumnsAlteration<HideColumnCol
     this.id = `${this.type}--${state.columnProp}`
   }
 
-  public apply(columns: TheSeamDatatableColumn<any, any>[], datatable: TheSeamDatatableAccessor): void {
+  public apply(
+    columns: TheSeamDatatableColumn<any, any>[],
+    datatable: TheSeamDatatableAccessor,
+  ): void {
     for (const col of columns) {
       const prop = getColumnProp(col)
       if (prop === this.state.columnProp) {
         col.hidden = this.state.hidden
       }
     }
+  }
+
+  public toDisplayItem(): AlterationDisplayItem {
+    const summary = this._createHideSummary()
+    const details = this._createHideDetails()
+
+    return {
+      id: this.id,
+      type: this.type,
+      summary,
+      details,
+      sortOrder: this._getColumnSortOrder(),
+    }
+  }
+
+  public getDisplaySortOrder(): number {
+    return this._getColumnSortOrder()
   }
 
   private _isValidState(state: HideColumnColumnsAlterationState): boolean {
@@ -56,5 +74,20 @@ export class HideColumnColumnsAlteration extends ColumnsAlteration<HideColumnCol
     }
 
     return true
+  }
+
+  private _createHideSummary(): string {
+    const action = this.state.hidden ? 'Hidden' : 'Shown'
+    return `${action}: ${this.state.columnProp}`
+  }
+
+  private _createHideDetails(): string[] {
+    const action = this.state.hidden ? 'hidden' : 'visible'
+    return [`Column: ${this.state.columnProp}`, `Status: ${action}`]
+  }
+
+  private _getColumnSortOrder(): number {
+    // Sort by column name for consistent ordering
+    return String(this.state.columnProp).charCodeAt(0)
   }
 }

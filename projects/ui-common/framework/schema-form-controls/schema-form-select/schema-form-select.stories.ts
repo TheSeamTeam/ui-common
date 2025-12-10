@@ -1,5 +1,11 @@
-import { Meta, StoryObj, applicationConfig, componentWrapperDecorator, moduleMetadata } from '@storybook/angular'
-import { expect } from '@storybook/jest'
+import {
+  Meta,
+  StoryObj,
+  applicationConfig,
+  componentWrapperDecorator,
+  moduleMetadata,
+} from '@storybook/angular'
+import { expect, fn } from 'storybook/test'
 
 import { ReactiveFormsModule } from '@angular/forms'
 import { provideAnimations } from '@angular/platform-browser/animations'
@@ -15,15 +21,10 @@ const meta: Meta<JsonSchemaFormComponent> = {
   title: 'Framework/Schema Form Controls/Select',
   decorators: [
     applicationConfig({
-      providers: [
-        provideAnimations(),
-      ],
+      providers: [provideAnimations()],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamSchemaFormModule,
-        ReactiveFormsModule,
-      ],
+      imports: [TheSeamSchemaFormModule, ReactiveFormsModule],
     }),
     componentWrapperDecorator(JsonSchemaFormComponent, ({ args }) => args),
   ],
@@ -32,6 +33,7 @@ const meta: Meta<JsonSchemaFormComponent> = {
   },
   args: {
     framework: 'seam-framework',
+    onSubmit: fn(),
   },
 }
 
@@ -41,26 +43,28 @@ type Story = StoryObj<JsonSchemaFormComponent>
 export const Basic: Story = {
   args: {
     schema: {
-      'type': 'object',
-      '$schema': 'http://json-schema.org/draft-07/schema#',
-      'properties': {
-        'Color': {
-          'type': 'string',
-          'enum': [ 'Red', 'Green', 'Blue' ],
+      type: 'object',
+      $schema: 'http://json-schema.org/draft-07/schema#',
+      properties: {
+        Color: {
+          type: 'string',
+          enum: ['Red', 'Green', 'Blue'],
         },
       },
     },
-    layout: [
-      { 'dataPointer': '/Color' },
-    ],
+    layout: [{ dataPointer: '/Color' }],
   },
-  play: async ({ canvasElement, fixture, args }) => {
-    const sfSelectHarness = await getHarness(TheSeamSchemaFormSelectHarness, { canvasElement, fixture })
+  play: async ({ canvasElement, args }) => {
+    const sfSelectHarness = await getHarness(TheSeamSchemaFormSelectHarness, {
+      canvasElement,
+    })
     await expect(await sfSelectHarness.isRequired()).toBe(false)
     await expect(await sfSelectHarness.getValue()).toBe(null)
     await sfSelectHarness.clickOption({ value: 'Red' })
     await expect(await sfSelectHarness.getValue()).toBe('Red')
-    const sfFormHarness = await getHarness(JsonSchemaFormHarness, { canvasElement, fixture })
+    const sfFormHarness = await getHarness(JsonSchemaFormHarness, {
+      canvasElement,
+    })
     await sfFormHarness.submit()
     await expect(args.onSubmit).toHaveBeenCalledWith({ Color: 'Red' })
   },
@@ -69,29 +73,29 @@ export const Basic: Story = {
 export const Required: Story = {
   args: {
     schema: {
-      'type': 'object',
-      '$schema': 'http://json-schema.org/draft-07/schema#',
-      'properties': {
-        'Color': {
-          'type': 'string',
-          'enum': [ 'Red', 'Green', 'Blue' ],
+      type: 'object',
+      $schema: 'http://json-schema.org/draft-07/schema#',
+      properties: {
+        Color: {
+          type: 'string',
+          enum: ['Red', 'Green', 'Blue'],
         },
       },
-      'required': [
-        'Color'
-      ],
+      required: ['Color'],
     },
-    layout: [
-      { 'dataPointer': '/Color' },
-    ]
+    layout: [{ dataPointer: '/Color' }],
   },
-  play: async ({ canvasElement, fixture, args }) => {
-    const sfSelectHarness = await getHarness(TheSeamSchemaFormSelectHarness, { canvasElement, fixture })
+  play: async ({ canvasElement, args }) => {
+    const sfSelectHarness = await getHarness(TheSeamSchemaFormSelectHarness, {
+      canvasElement,
+    })
     await expect(await sfSelectHarness.isRequired()).toBe(true)
     await expect(await sfSelectHarness.getValue()).toBe(null)
     await sfSelectHarness.clickOption({ value: 'Red' })
     await expect(await sfSelectHarness.getValue()).toBe('Red')
-    const sfFormHarness = await getHarness(JsonSchemaFormHarness, { canvasElement, fixture })
+    const sfFormHarness = await getHarness(JsonSchemaFormHarness, {
+      canvasElement,
+    })
     await sfFormHarness.submit()
     await expect(args.onSubmit).toHaveBeenCalledWith({ Color: 'Red' })
   },

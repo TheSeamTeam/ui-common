@@ -1,13 +1,13 @@
 import { Directive } from '@angular/core'
 
-import { TabbedTabContentAccessor } from '../tabbed-models'
+import { TheSeamTabbedTabContentAccessor } from '../tabbed-models'
 
 @Directive({
   selector: '[seamTabbedTabContent]',
-  exportAs: 'seamTabbedTabContent'
+  exportAs: 'seamTabbedTabContent',
 })
-export class TabbedTabContentDirective implements TabbedTabContentAccessor {
-
+export class TheSeamTabbedTabContentDirective
+  implements TheSeamTabbedTabContentAccessor
+{
   public isActive = false
-
 }

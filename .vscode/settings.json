@@ -1,35 +1,35 @@
 {
-  "beautify.language": {
-    "js": {
-      "filename": [".jshintrc", ".jsbeautifyrc"]
-    },
-    "css": ["css", "scss"],
-    "html": ["htm", "html"]
-  },
   // Set the default
-  "editor.formatOnSave": false,
+  "editor.formatOnSave": true,
   // Enable per-language
   "[javascript]": {
-    "editor.formatOnSave": false
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescript]": {
-    "editor.formatOnSave": false
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[scss]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[markdown]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
 
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
-
-  // "angularKarmaTestExplorer.defaultAngularProjectName": "ui-common",
-  // "angularKarmaTestExplorer.defaultSocketConnectionPort": 9333,
-
-  // "karmaTestExplorer.defaultAngularProjectName": "ui-common",
-  // "karmaTestExplorer.karmaConfFilePath": "projects/ui-common/karma.conf.js",
-
-  // "karmaTestExplorer.karmaPort": 9333,
-  // "karmaTestExplorer.defaultSocketConnectionPort": 9333,
-
-  // "karmaTestExplorer.karmaConfFilePath"
 
   // Makes sure we use the dependent typescript version.
   // --------------------------------------------------------------------------

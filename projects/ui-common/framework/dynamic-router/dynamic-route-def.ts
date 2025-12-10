@@ -1,4 +1,3 @@
-
 export interface IDynamicRouteDef {
   path?: string
   // pathMatch?: string

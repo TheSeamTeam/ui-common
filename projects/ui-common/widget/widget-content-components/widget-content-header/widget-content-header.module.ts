@@ -4,14 +4,8 @@ import { NgModule } from '@angular/core'
 import { WidgetContentHeaderComponent } from './widget-content-header.component'
 
 @NgModule({
-  declarations: [
-    WidgetContentHeaderComponent
-  ],
-  imports: [
-    CommonModule
-  ],
-  exports: [
-    WidgetContentHeaderComponent
-  ]
+  declarations: [WidgetContentHeaderComponent],
+  imports: [CommonModule],
+  exports: [WidgetContentHeaderComponent],
 })
-export class TheSeamWidgetContentHeaderModule { }
+export class TheSeamWidgetContentHeaderModule {}

@@ -8,10 +8,9 @@ describe('MenuFooterActionComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [MenuFooterActionComponent],
-    teardown: { destroyAfterEach: false }
-})
-    .compileComponents()
+      declarations: [MenuFooterActionComponent],
+      teardown: { destroyAfterEach: false },
+    }).compileComponents()
   }))
 
   beforeEach(() => {

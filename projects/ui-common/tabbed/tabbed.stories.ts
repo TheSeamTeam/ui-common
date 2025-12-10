@@ -1,38 +1,45 @@
-import { Meta, StoryObj, applicationConfig, moduleMetadata } from "@storybook/angular";
-import { TabbedComponent } from "./tabbed.component";
-import { TheSeamTabbedModule } from "./tabbed.module";
-import { provideAnimations } from "@angular/platform-browser/animations";
-import { importProvidersFrom } from "@angular/core";
-import { RouterModule } from "@angular/router";
-import { of } from "rxjs";
+import {
+  Meta,
+  StoryObj,
+  applicationConfig,
+  moduleMetadata,
+} from '@storybook/angular'
 
-const meta: Meta<TabbedComponent> = {
+import { provideAnimations } from '@angular/platform-browser/animations'
+import { provideRouter } from '@angular/router'
+import { provideLocationMocks } from '@angular/common/testing'
+import { of } from 'rxjs'
+
+import { TheSeamTabbedComponent } from './tabbed.component'
+import { TheSeamTabbedModule } from './tabbed.module'
+
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+interface ExtraArgs {}
+
+type StoryComponentType = TheSeamTabbedComponent & ExtraArgs
+
+const meta: Meta<StoryComponentType> = {
   title: 'Tabs/Components',
-  component: TabbedComponent,
+  component: TheSeamTabbedComponent,
   decorators: [
     applicationConfig({
       providers: [
         provideAnimations(),
-        importProvidersFrom(
-          RouterModule.forRoot([
-
-          ])
-        )
+        provideLocationMocks(),
+        provideRouter([]),
       ],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamTabbedModule
-      ]
-    })
-  ]
+      imports: [TheSeamTabbedModule],
+    }),
+  ],
 }
 
 export default meta
-type Story = StoryObj<TabbedComponent>
+type Story = StoryObj<StoryComponentType>
 
 export const Basic: Story = {
-  render: args => ({
+  render: (args) => ({
     template: `
       <seam-tabbed [activeTabName]="activeTabName$ | async">
         <seam-tabbed-item name="tab-1" label="Tab 1">
@@ -54,7 +61,7 @@ export const Basic: Story = {
     `,
     props: {
       ...args,
-      activeTabName$: of('tab-2')
-    }
-  })
+      activeTabName$: of('tab-2'),
+    },
+  }),
 }

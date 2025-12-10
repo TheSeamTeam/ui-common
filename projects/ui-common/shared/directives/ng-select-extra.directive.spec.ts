@@ -1,8 +1,8 @@
-// import { NgSelectExtraDirective } from './ng-select-extra.directive'
+// import { TheSeamNgSelectExtraDirective } from './ng-select-extra.directive'
 
-// describe('NgSelectExtraDirective', () => {
+// describe('TheSeamNgSelectExtraDirective', () => {
 //   it('should create an instance', () => {
-//     const directive = new NgSelectExtraDirective()
+//     const directive = new TheSeamNgSelectExtraDirective()
 //     expect(directive).toBeTruthy()
 //   })
 // })

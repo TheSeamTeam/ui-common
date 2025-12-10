@@ -5,6 +5,7 @@ import { getColumnProp } from '../../utils/get-column-prop'
 import { ColumnsAlteration } from '../columns-alteration'
 import { TheSeamDatatableAccessor } from '../datatable-accessor'
 import { TheSeamDatatableColumn } from '../table-column'
+import { AlterationDisplayItem } from '../../../datatable-alterations-display/models/alteration-display.model'
 
 export interface WidthColumnsAlterationState {
   columnProp: TableColumnProp
@@ -17,10 +18,7 @@ export class WidthColumnsAlteration extends ColumnsAlteration<WidthColumnsAltera
 
   public readonly type: string = 'width'
 
-  constructor(
-    state: WidthColumnsAlterationState,
-    persistent: boolean
-  ) {
+  constructor(state: WidthColumnsAlterationState, persistent: boolean) {
     super(state, persistent)
 
     if (!this._isValidState(state)) {
@@ -30,7 +28,10 @@ export class WidthColumnsAlteration extends ColumnsAlteration<WidthColumnsAltera
     this.id = `${this.type}--${state.columnProp}`
   }
 
-  public apply(columns: TheSeamDatatableColumn<any, any>[], datatable: TheSeamDatatableAccessor): void {
+  public apply(
+    columns: TheSeamDatatableColumn<any, any>[],
+    datatable: TheSeamDatatableAccessor,
+  ): void {
     for (const col of columns) {
       const prop = getColumnProp(col)
       if (prop === this.state.columnProp) {
@@ -40,6 +41,23 @@ export class WidthColumnsAlteration extends ColumnsAlteration<WidthColumnsAltera
         }
       }
     }
+  }
+
+  public toDisplayItem(): AlterationDisplayItem {
+    const summary = this._createWidthSummary()
+    const details = this._createWidthDetails()
+
+    return {
+      id: this.id,
+      type: this.type,
+      summary,
+      details,
+      sortOrder: this._getColumnSortOrder(),
+    }
+  }
+
+  public getDisplaySortOrder(): number {
+    return this._getColumnSortOrder()
   }
 
   private _isValidState(state: WidthColumnsAlterationState): boolean {
@@ -60,5 +78,31 @@ export class WidthColumnsAlteration extends ColumnsAlteration<WidthColumnsAltera
     }
 
     return true
+  }
+
+  private _createWidthSummary(): string {
+    const widthText = notNullOrUndefined(this.state.width)
+      ? `${this.state.width}px`
+      : 'auto'
+    return `${this.state.columnProp}: ${widthText}`
+  }
+
+  private _createWidthDetails(): string[] {
+    const details = [`Column: ${this.state.columnProp}`]
+
+    if (notNullOrUndefined(this.state.width)) {
+      details.push(`Width: ${this.state.width}px`)
+    }
+
+    details.push(
+      `Auto-resize: ${this.state.canAutoResize ? 'enabled' : 'disabled'}`,
+    )
+
+    return details
+  }
+
+  private _getColumnSortOrder(): number {
+    // Sort by column name for consistent ordering
+    return String(this.state.columnProp).charCodeAt(0)
   }
 }

@@ -9,17 +9,11 @@
     "importHelpers": true,
     "skipLibCheck": true,
     "stripInternal": true,
-    "lib": [
-      "dom",
-      "ES2020"
-    ],
+    "types": ["google.maps"],
+    "lib": ["dom", "ES2020"],
     "paths": {
-      "@theseam/ui-common/*": [
-        "./*/public-api"
-      ]
+      "@theseam/ui-common/*": ["./*/public-api"]
     }
   },
-  "files": [
-    "./public_api.ts"
-  ]
+  "files": ["./public_api.ts"]
 }

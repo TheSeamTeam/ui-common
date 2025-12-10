@@ -6,7 +6,7 @@ import { IDataExporter } from '@theseam/ui-common/data-exporter'
 
 import {
   DatatableDynamicDef,
-  DynamicDatatableOptions
+  DynamicDatatableOptions,
 } from './datatable-dynamic-def'
 import { DynamicDatatableDefService } from './dynamic-datatable-def.service'
 import { DynamicDatatableRowActionsService } from './dynamic-datatable-row-actions.service'
@@ -47,14 +47,11 @@ import { DynamicDatatableMenuBar } from './models/dynamic-datatable-menu-bar'
   selector: 'seam-datatable-dynamic',
   templateUrl: './datatable-dynamic.component.html',
   styleUrls: ['./datatable-dynamic.component.scss'],
-  providers: [
-    DynamicDatatableDefService,
-    DynamicDatatableRowActionsService
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  providers: [DynamicDatatableDefService, DynamicDatatableRowActionsService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class DatatableDynamicComponent {
-
   /** The `DatatableDynamicDef` that defines the datatable. */
   @Input() set def(value: DatatableDynamicDef | undefined | null) {
     this._dynamicDef.setDef(value || undefined)
@@ -113,33 +110,32 @@ export class DatatableDynamicComponent {
    */
   _tmp_rows$: Observable<any>
 
-  constructor(
-    private readonly _dynamicDef: DynamicDatatableDefService
-  ) {
-    this._hasDef$ = this._dynamicDef.def$.pipe(map(def => !!def))
+  constructor(private readonly _dynamicDef: DynamicDatatableDefService) {
+    this._hasDef$ = this._dynamicDef.def$.pipe(map((def) => !!def))
 
     this.menuBar$ = this._dynamicDef.menuBar$
 
     this._exporters$ = this._dynamicDef.exporters$
 
-    this._commonFilterMenuItems$ = this._dynamicDef.filterMenuItems$
-      .pipe(map(f => f.filter(_f => _f.type === 'common')))
+    this._commonFilterMenuItems$ = this._dynamicDef.filterMenuItems$.pipe(
+      map((f) => f.filter((_f) => _f.type === 'common')),
+    )
 
-    this._hasFullSearch$ = this._dynamicDef.filterMenuItems$
-      .pipe(map(f => !!f.find(_f => _f.type === 'full-search')))
+    this._hasFullSearch$ = this._dynamicDef.filterMenuItems$.pipe(
+      map((f) => !!f.find((_f) => _f.type === 'full-search')),
+    )
 
     this._hasFilterMenu$ = this._dynamicDef.hasFilterMenu$
 
     this._options$ = this._dynamicDef.options$
 
     this._tmp_columns$ = this._dynamicDef.def$.pipe(
-      map(def => def ? def.columns : [])
+      map((def) => (def ? def.columns : [])),
     )
 
     this._tmp_rows$ = this._dynamicDef.def$.pipe(
-      map(def => def ? def.rows : []),
+      map((def) => (def ? def.rows : [])),
       // tap(v => console.log('_tmp_rows$', v))
     )
   }
-
 }

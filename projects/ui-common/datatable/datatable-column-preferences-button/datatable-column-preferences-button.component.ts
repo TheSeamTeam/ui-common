@@ -9,10 +9,10 @@ import { ColumnsAlterationsManagerService } from '../services/columns-alteration
   selector: 'seam-datatable-column-preferences-button',
   templateUrl: './datatable-column-preferences-button.component.html',
   styleUrls: ['./datatable-column-preferences-button.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class DatatableColumnPreferencesButtonComponent {
-
   icon = faColumns
 
   /** @ignore */
@@ -45,10 +45,9 @@ export class DatatableColumnPreferencesButtonComponent {
 
   constructor(
     private readonly _columnsAlterationsManager: ColumnsAlterationsManagerService,
-  ) { }
+  ) {}
 
   _resetColumns(event: any) {
     this._columnsAlterationsManager.clear()
   }
-
 }

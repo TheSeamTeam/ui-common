@@ -22,11 +22,7 @@ import { MenuComponent } from './menu.component'
     MenuFooterActionComponent,
     MenuHeaderComponent,
   ],
-  imports: [
-    CommonModule,
-    OverlayModule,
-    TheSeamIconModule
-  ],
+  imports: [CommonModule, OverlayModule, TheSeamIconModule],
   exports: [
     MenuComponent,
     MenuToggleDirective,
@@ -37,7 +33,7 @@ import { MenuComponent } from './menu.component'
     OverlayModule,
     MenuFooterComponent,
     MenuFooterActionComponent,
-    MenuHeaderComponent
-  ]
+    MenuHeaderComponent,
+  ],
 })
-export class TheSeamMenuModule { }
+export class TheSeamMenuModule {}

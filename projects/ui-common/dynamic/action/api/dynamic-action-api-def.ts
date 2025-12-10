@@ -2,7 +2,6 @@ import { DynamicActionDef } from '../../models/dynamic-action-def'
 import { DynamicValue } from '../../models/dynamic-value'
 
 export interface DynamicActionApiDef extends DynamicActionDef<'api'> {
-
   /**
    * Id to identify which `THESEAM_API_CONFIG` to use. If not provided, the first
    * provided config will be used.
@@ -36,6 +35,8 @@ export interface DynamicActionApiDef extends DynamicActionDef<'api'> {
    * evaluated type, but in this case `DynamicValue` should result in a
    * `string`.
    */
-  headers?: string | DynamicValue<string> | { [name: string]: DynamicValue<string> | DynamicValue<string>[] }
-
+  headers?:
+    | string
+    | DynamicValue<string>
+    | { [name: string]: DynamicValue<string> | DynamicValue<string>[] }
 }

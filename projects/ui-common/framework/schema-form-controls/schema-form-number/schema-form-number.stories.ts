@@ -1,5 +1,11 @@
-import { applicationConfig, componentWrapperDecorator, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
-import { expect } from '@storybook/jest'
+import {
+  applicationConfig,
+  componentWrapperDecorator,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
+import { expect, fn } from 'storybook/test'
 
 import { ReactiveFormsModule } from '@angular/forms'
 import { provideAnimations } from '@angular/platform-browser/animations'
@@ -14,26 +20,22 @@ import { JsonSchemaFormHarness } from '../../schema-form/testing'
 
 const meta: Meta<JsonSchemaFormComponent> = {
   title: 'Framework/Schema Form Controls/Number',
-  tags: [ 'autodocs' ],
+  tags: ['autodocs'],
   decorators: [
     applicationConfig({
-      providers: [
-        provideAnimations(),
-      ],
+      providers: [provideAnimations()],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamSchemaFormModule,
-        ReactiveFormsModule,
-      ],
+      imports: [TheSeamSchemaFormModule, ReactiveFormsModule],
     }),
     componentWrapperDecorator(JsonSchemaFormComponent, ({ args }) => args),
   ],
   argTypes: {
-    onSubmit: { action: 'onSubmit' }
+    onSubmit: { action: 'onSubmit' },
   },
   args: {
     framework: 'seam-framework',
+    onSubmit: fn(),
   },
 }
 
@@ -43,27 +45,29 @@ type Story = StoryObj<JsonSchemaFormComponent>
 export const Basic: Story = {
   args: {
     schema: {
-      'type': 'object',
-      '$schema': 'http://json-schema.org/draft-07/schema#',
-      'properties': {
-        'Number': {
-          'type': 'number',
-          'title': 'Number',
+      type: 'object',
+      $schema: 'http://json-schema.org/draft-07/schema#',
+      properties: {
+        Number: {
+          type: 'number',
+          title: 'Number',
         },
       },
     },
-    layout: [
-      { 'dataPointer': '/Number' },
-    ],
+    layout: [{ dataPointer: '/Number' }],
   },
-  play: async ({ canvasElement, fixture, args }) => {
-    const sfNumberHarness = await getHarness(TheSeamSchemaFormNumberHarness, { canvasElement, fixture })
+  play: async ({ canvasElement, args }) => {
+    const sfNumberHarness = await getHarness(TheSeamSchemaFormNumberHarness, {
+      canvasElement,
+    })
     await expect(await sfNumberHarness.isRequired()).toBe(false)
     await expect(await sfNumberHarness.hasRequiredIndicator()).toBe(false)
     await expect(await sfNumberHarness.getValue()).toBe('')
     await sfNumberHarness.setValue('123')
     await expect(await sfNumberHarness.getValue()).toBe('123')
-    const sfFormHarness = await getHarness(JsonSchemaFormHarness, { canvasElement, fixture })
+    const sfFormHarness = await getHarness(JsonSchemaFormHarness, {
+      canvasElement,
+    })
     await sfFormHarness.submit()
     await expect(args.onSubmit).toHaveBeenCalledWith({ Number: 123 })
   },
@@ -72,30 +76,30 @@ export const Basic: Story = {
 export const Required: Story = {
   args: {
     schema: {
-      'type': 'object',
-      '$schema': 'http://json-schema.org/draft-07/schema#',
-      'properties': {
-        'Number': {
-          'type': 'number',
-          'title': 'Number',
+      type: 'object',
+      $schema: 'http://json-schema.org/draft-07/schema#',
+      properties: {
+        Number: {
+          type: 'number',
+          title: 'Number',
         },
       },
-      'required': [
-        'Number',
-      ],
+      required: ['Number'],
     },
-    layout: [
-      { 'dataPointer': '/Number' },
-    ],
+    layout: [{ dataPointer: '/Number' }],
   },
-  play: async ({ canvasElement, fixture, args }) => {
-    const sfNumberHarness = await getHarness(TheSeamSchemaFormNumberHarness, { canvasElement, fixture })
+  play: async ({ canvasElement, args }) => {
+    const sfNumberHarness = await getHarness(TheSeamSchemaFormNumberHarness, {
+      canvasElement,
+    })
     await expect(await sfNumberHarness.isRequired()).toBe(true)
     await expect(await sfNumberHarness.hasRequiredIndicator()).toBe(true)
     await expect(await sfNumberHarness.getValue()).toBe('')
     await sfNumberHarness.setValue('123')
     await expect(await sfNumberHarness.getValue()).toBe('123')
-    const sfFormHarness = await getHarness(JsonSchemaFormHarness, { canvasElement, fixture })
+    const sfFormHarness = await getHarness(JsonSchemaFormHarness, {
+      canvasElement,
+    })
     await sfFormHarness.submit()
     await expect(args.onSubmit).toHaveBeenCalledWith({ Number: 123 })
   },

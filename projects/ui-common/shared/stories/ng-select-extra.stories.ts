@@ -1,57 +1,62 @@
-import { moduleMetadata } from '@storybook/angular'
+import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
 
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
-import { BrowserModule } from '@angular/platform-browser'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { NgSelectModule } from '@ng-select/ng-select'
+import { TheSeamOverlayScrollbarDirective } from '@theseam/ui-common/scrollbar'
 
-import { TheSeamScrollbarModule } from './../../scrollbar/scrollbar.module'
-import { TheSeamSharedModule } from './../shared.module'
+import { TheSeamNgSelectExtraDirective } from '../directives'
 
-export default {
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+interface StoryExtraProps {}
+
+const meta: Meta<TheSeamNgSelectExtraDirective & StoryExtraProps> = {
   title: 'Shared/NgSelectExtra',
+  component: TheSeamNgSelectExtraDirective,
   decorators: [
     moduleMetadata({
       imports: [
-        BrowserAnimationsModule,
-        BrowserModule,
         NgSelectModule,
-        TheSeamSharedModule,
         ReactiveFormsModule,
-        TheSeamScrollbarModule
-      ]
-    })
-  ]
+        TheSeamOverlayScrollbarDirective,
+      ],
+    }),
+  ],
 }
 
-export const Basic = () => ({
-  props: {
-    control: new FormControl(),
-    items: [
-      'one',
-      'two',
-      'three',
-      'wd',
-      'th1ree',
-      'th2ree',
-      'thr3ee',
-      'th4ree',
-      'thr5ee',
-      'th6ree',
-      'th7ree',
-    ]
-  },
-  template: `
-    <div style="height: 400px; box-sizing: border-box; border: 1px solid blue; overflow: scroll;"
-      [seamOverlayScrollbar]="{ overflowBehavior: { x: 'hidden' } }">
-      <div style="height: 1500px; padding-top: 150px;">
-        <ng-select
-          [formControl]="control"
-          class="form-control"
-          appendTo="body"
-          [items]="items">
-        </ng-select>
-      </div>
-    </div>`
-})
+export default meta
+type Story = StoryObj<TheSeamNgSelectExtraDirective & StoryExtraProps>
+
+export const Basic: Story = {
+  render: (args) => ({
+    props: {
+      ...args,
+      control: new FormControl(),
+      items: [
+        'one',
+        'two',
+        'three',
+        'wd',
+        'th1ree',
+        'th2ree',
+        'thr3ee',
+        'th4ree',
+        'thr5ee',
+        'th6ree',
+        'th7ree',
+      ],
+    },
+    template: `
+      <div style="height: 400px; box-sizing: border-box; border: 1px solid blue; overflow: scroll;"
+        [seamOverlayScrollbar]="{ overflowBehavior: { x: 'hidden' } }">
+        <div style="height: 1500px; padding-top: 150px;">
+          <ng-select
+            [formControl]="control"
+            class="form-control"
+            appendTo="body"
+            [items]="items">
+          </ng-select>
+        </div>
+      </div>`,
+  }),
+}

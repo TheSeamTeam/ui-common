@@ -3,8 +3,7 @@ import { NgModule } from '@angular/core'
 import { UnsavedChangesDialogComponent } from './unsaved-changes-dialog.component'
 
 @NgModule({
-  declarations: [UnsavedChangesDialogComponent],
-  imports: [],
-  exports: [UnsavedChangesDialogComponent]
+  imports: [UnsavedChangesDialogComponent],
+  exports: [UnsavedChangesDialogComponent],
 })
-export class TheSeamUnsavedChangesDialogModule { }
+export class TheSeamUnsavedChangesDialogModule {}

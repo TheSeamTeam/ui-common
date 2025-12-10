@@ -6,12 +6,16 @@ export class TheSeamVerticalListFilterHarness extends ComponentHarness {
   _clearOptionElement = this.locatorForOptional(`.vertical-list-filter--clear`)
 
   public async clickValue(value: string) {
-    const element = await this.locatorFor(`.vertical-list-filter--item[data-value="${value}"]`)()
+    const element = await this.locatorFor(
+      `.vertical-list-filter--item[data-value="${value}"]`,
+    )()
     return element.click()
   }
 
   public async filterValue(): Promise<string | undefined> {
-    const filterValue = await (await this.host()).getAttribute('data-filter-value')
+    const filterValue = await (
+      await this.host()
+    ).getAttribute('data-filter-value')
     return filterValue ?? undefined
   }
 
@@ -27,5 +31,4 @@ export class TheSeamVerticalListFilterHarness extends ComponentHarness {
     }
     return element.click()
   }
-
 }

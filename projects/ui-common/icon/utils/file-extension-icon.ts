@@ -6,31 +6,34 @@ import {
   faFileImage,
   faFilePdf,
   faFilePowerpoint,
-  faFileWord
+  faFileWord,
 } from '@fortawesome/free-regular-svg-icons'
 
 import { SeamIcon } from '../icon'
 
 const FILE_EXTENSION_ICONS: { [type: string]: SeamIcon } = {
-  'pdf': faFilePdf,
-  'doc': faFileWord,
-  'docx': faFileWord,
-  'xls': faFileExcel,
-  'xlsx': faFileExcel,
-  'gif': faFileImage,
-  'jpg': faFileImage,
-  'jpeg': faFileImage,
-  'png': faFileImage,
-  'zip': faFileArchive,
-  'ppt': faFilePowerpoint,
-  'pptx': faFilePowerpoint,
-  'txt': faFileAlt,
-  'json': faFileAlt
+  pdf: faFilePdf,
+  doc: faFileWord,
+  docx: faFileWord,
+  xls: faFileExcel,
+  xlsx: faFileExcel,
+  gif: faFileImage,
+  jpg: faFileImage,
+  jpeg: faFileImage,
+  png: faFileImage,
+  zip: faFileArchive,
+  ppt: faFilePowerpoint,
+  pptx: faFilePowerpoint,
+  txt: faFileAlt,
+  json: faFileAlt,
 }
 
 export const DEFAULT_FILE_EXTENSION_ICON: SeamIcon = faFile
 
-export function fileExtensionIcon(extension: string | null | undefined, defaultIfNotFound: boolean = true): SeamIcon | undefined {
+export function fileExtensionIcon(
+  extension: string | null | undefined,
+  defaultIfNotFound: boolean = true,
+): SeamIcon | undefined {
   if (!extension) {
     return defaultIfNotFound ? DEFAULT_FILE_EXTENSION_ICON : undefined
   }

@@ -1,8 +1,16 @@
-<div class="position-relative"
+<div
+  class="position-relative"
   [class.data-filter-search-has-icon]="iconTpl || icon"
-  (click)="inp.focus()">
+  (click)="inp.focus()"
+>
   <label [attr.for]="inp.id" class="sr-only">Search filter</label>
-  <input seamInput #inp="seamInput" seamInputSize="sm" [formControl]="_control" [placeholder]="placeholder">
+  <input
+    seamInput
+    #inp="seamInput"
+    seamInputSize="sm"
+    [formControl]="_control"
+    [placeholder]="placeholder"
+  />
   <ng-container *ngIf="iconTpl; else searchIconTpl">
     <div class="data-filter-search--icon-wrapper">
       <ng-container *ngTemplateOutlet="iconTpl"></ng-container>

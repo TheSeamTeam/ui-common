@@ -1,4 +1,10 @@
-import { Meta, StoryObj, applicationConfig, componentWrapperDecorator, moduleMetadata } from '@storybook/angular'
+import {
+  Meta,
+  StoryObj,
+  applicationConfig,
+  componentWrapperDecorator,
+  moduleMetadata,
+} from '@storybook/angular'
 
 import { ReactiveFormsModule } from '@angular/forms'
 import { provideAnimations } from '@angular/platform-browser/animations'
@@ -10,18 +16,13 @@ import { Component } from '@angular/core'
 
 const meta: Meta<JsonSchemaFormComponent> = {
   title: 'Framework/Schema Form Controls/Examples',
-  tags: [ 'autodocs' ],
+  tags: ['autodocs'],
   decorators: [
     applicationConfig({
-      providers: [
-        provideAnimations(),
-      ],
+      providers: [provideAnimations()],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamSchemaFormModule,
-        ReactiveFormsModule,
-      ],
+      imports: [TheSeamSchemaFormModule, ReactiveFormsModule],
     }),
     componentWrapperDecorator(JsonSchemaFormComponent, ({ args }) => args),
     (storyFn, storyContext) => {
@@ -33,10 +34,10 @@ const meta: Meta<JsonSchemaFormComponent> = {
         return (JSON.stringify(json).toString() as any).replaceAll('"', '\\"')
       }
       return story
-    }
+    },
   ],
   argTypes: {
-    onSubmit: { action: 'onSubmit' }
+    onSubmit: { action: 'onSubmit' },
   },
   args: {
     framework: 'seam-framework',
@@ -53,46 +54,42 @@ export const Example: Story = {
       debug: false, // Don't show inline debugging information
     },
     schema: {
-      '$id': 'http://example.com/example.json',
-      'type': 'object',
-      'definitions': {},
-      '$schema': 'http://json-schema.org/draft-07/schema#',
-      'properties': {
-        'SelfAssessmentSummary': {
-          '$id': '/properties/SelfAssessmentSummary',
-          'type': 'object',
-          'properties': {
-            'CropYear': {
-              '$id': '/properties/SelfAssessmentSummary/properties/CropYear',
-              'type': 'number',
-              'title': 'Crop Year',
-              'enum': [ 2020 ]
+      $id: 'http://example.com/example.json',
+      type: 'object',
+      definitions: {},
+      $schema: 'http://json-schema.org/draft-07/schema#',
+      properties: {
+        SelfAssessmentSummary: {
+          $id: '/properties/SelfAssessmentSummary',
+          type: 'object',
+          properties: {
+            CropYear: {
+              $id: '/properties/SelfAssessmentSummary/properties/CropYear',
+              type: 'number',
+              title: 'Crop Year',
+              enum: [2020],
             },
-            'Region': {
-              '$id': '/properties/SelfAssessmentSummary/properties/Region',
-              'type': 'string',
-              'title': 'Region',
-              'enum': [ 'South West', 'North West', 'South East', 'North East' ]
+            Region: {
+              $id: '/properties/SelfAssessmentSummary/properties/Region',
+              type: 'string',
+              title: 'Region',
+              enum: ['South West', 'North West', 'South East', 'North East'],
             },
-            'IsIrrigated': {
-              '$id': '/properties/SelfAssessmentSummary/properties/IsIrrigated',
-              'type': 'boolean',
-              'title': 'Irrigated',
-              'default': false
-            }
+            IsIrrigated: {
+              $id: '/properties/SelfAssessmentSummary/properties/IsIrrigated',
+              type: 'boolean',
+              title: 'Irrigated',
+              default: false,
+            },
           },
-          'required': [
-            'CropYear',
-            'Region',
-            'IsIrrigated'
-          ]
-        }
-      }
+          required: ['CropYear', 'Region', 'IsIrrigated'],
+        },
+      },
     },
     layout: [
-      { 'dataPointer': '/SelfAssessmentSummary/CropYear' },
-      { 'dataPointer': '/SelfAssessmentSummary/Region' },
-      { 'dataPointer': '/SelfAssessmentSummary/IsIrrigated' },
+      { dataPointer: '/SelfAssessmentSummary/CropYear' },
+      { dataPointer: '/SelfAssessmentSummary/Region' },
+      { dataPointer: '/SelfAssessmentSummary/IsIrrigated' },
     ],
   },
 }
@@ -104,48 +101,44 @@ export const Example2: Story = {
       debug: false, // Don't show inline debugging information
     },
     schema: {
-      '$id': 'http://example.com/example.json',
-      'type': 'object',
-      'definitions': {},
-      '$schema': 'http://json-schema.org/draft-07/schema#',
-      'properties': {
-        'SelfAssessmentSummary': {
-          '$id': '/properties/SelfAssessmentSummary',
-          'type': 'object',
-          'properties': {
-            'CropYear': {
-              '$id': '/properties/SelfAssessmentSummary/properties/CropYear',
-              'type': 'number',
-              'title': 'Crop Year',
-              'enum': [ 2020 ],
-              'default': 2020
+      $id: 'http://example.com/example.json',
+      type: 'object',
+      definitions: {},
+      $schema: 'http://json-schema.org/draft-07/schema#',
+      properties: {
+        SelfAssessmentSummary: {
+          $id: '/properties/SelfAssessmentSummary',
+          type: 'object',
+          properties: {
+            CropYear: {
+              $id: '/properties/SelfAssessmentSummary/properties/CropYear',
+              type: 'number',
+              title: 'Crop Year',
+              enum: [2020],
+              default: 2020,
             },
-            'Region': {
-              '$id': '/properties/SelfAssessmentSummary/properties/Region',
-              'type': 'string',
-              'title': 'Region',
-              'enum': [ 'Far West', 'Southwest', 'Midsouth', 'Southeast' ]
+            Region: {
+              $id: '/properties/SelfAssessmentSummary/properties/Region',
+              type: 'string',
+              title: 'Region',
+              enum: ['Far West', 'Southwest', 'Midsouth', 'Southeast'],
             },
-            'IsIrrigated': {
-              '$id': '/properties/SelfAssessmentSummary/properties/IsIrrigated',
-              'type': 'boolean',
-              'title': 'Irrigated',
-              'default': false
-            }
+            IsIrrigated: {
+              $id: '/properties/SelfAssessmentSummary/properties/IsIrrigated',
+              type: 'boolean',
+              title: 'Irrigated',
+              default: false,
+            },
           },
-          'required': [
-            'CropYear',
-            'Region',
-            'IsIrrigated'
-          ]
-        }
-      }
+          required: ['CropYear', 'Region', 'IsIrrigated'],
+        },
+      },
     },
     layout: [
       // { 'dataPointer': '/SelfAssessmentSummary/CropYear' },
-      { 'dataPointer': '/SelfAssessmentSummary/Region' },
-      { 'dataPointer': '/SelfAssessmentSummary/IsIrrigated' },
-      { 'widget': 'submit', 'title': 'View' },
+      { dataPointer: '/SelfAssessmentSummary/Region' },
+      { dataPointer: '/SelfAssessmentSummary/IsIrrigated' },
+      { widget: 'submit', title: 'View' },
     ],
   },
 }
@@ -157,18 +150,18 @@ export const Example3: Story = {
       debug: false, // Don't show inline debugging information
     },
     schema: {
-      '$id': 'http://example.com/example.json',
-      'type': 'object',
-      'definitions': {},
-      '$schema': 'http://json-schema.org/draft-07/schema#',
-      'title': 'Producers Progress',
-      'properties': { }
+      $id: 'http://example.com/example.json',
+      type: 'object',
+      definitions: {},
+      $schema: 'http://json-schema.org/draft-07/schema#',
+      title: 'Producers Progress',
+      properties: {},
     },
     layout: [
       // { 'dataPointer': '/SelfAssessmentSummary/CropYear' },
       // { 'dataPointer': '/SelfAssessmentSummary/Region' },
       // { 'dataPointer': '/SelfAssessmentSummary/IsIrrigated' },
-      { 'widget': 'submit', 'title': 'View' },
+      { widget: 'submit', title: 'View' },
     ],
   },
 }
@@ -180,30 +173,24 @@ export const Example5: Story = {
       debug: false, // Don't show inline debugging information
     },
     schema: {
-      '$id': 'http://example.com/example.json',
-      'type': 'object',
-      'definitions': {},
-      '$schema': 'http://json-schema.org/draft-07/schema#',
-      'properties': {
-        'ApprovalStatus': {
-          '$id': '/properties/ApprovalStatus',
-          'type': 'string',
-          'title': 'Approval Status',
-          'default': 'All',
-          'enum': [
-            'All',
-            'Approved',
-            'Unapproved'
-          ]
-        }
+      $id: 'http://example.com/example.json',
+      type: 'object',
+      definitions: {},
+      $schema: 'http://json-schema.org/draft-07/schema#',
+      properties: {
+        ApprovalStatus: {
+          $id: '/properties/ApprovalStatus',
+          type: 'string',
+          title: 'Approval Status',
+          default: 'All',
+          enum: ['All', 'Approved', 'Unapproved'],
+        },
       },
-      'required': [
-        'ApprovalStatus'
-      ]
+      required: ['ApprovalStatus'],
     },
     layout: [
-      { 'dataPointer': '/ApprovalStatus' },
-      { 'widget': 'submit', 'title': 'View' },
+      { dataPointer: '/ApprovalStatus' },
+      { widget: 'submit', title: 'View' },
     ],
   },
 }
@@ -215,44 +202,40 @@ export const Group: Story = {
       debug: false, // Don't show inline debugging information
     },
     schema: {
-      'type': 'object',
-      '$schema': 'http://json-schema.org/draft-07/schema#',
-      'properties': {
-        'SelfAssessmentSummary': {
-          'type': 'object',
-          'properties': {
-            'CropYear': {
-              'type': 'number',
-              'title': 'Crop Year',
-              'enum': [ 2020 ]
+      type: 'object',
+      $schema: 'http://json-schema.org/draft-07/schema#',
+      properties: {
+        SelfAssessmentSummary: {
+          type: 'object',
+          properties: {
+            CropYear: {
+              type: 'number',
+              title: 'Crop Year',
+              enum: [2020],
             },
-            'Region': {
-              'type': 'string',
-              'title': 'Region',
-              'enum': [ 'South West', 'North West', 'South East', 'North East' ]
+            Region: {
+              type: 'string',
+              title: 'Region',
+              enum: ['South West', 'North West', 'South East', 'North East'],
             },
-            'IsIrrigated': {
-              'type': 'boolean',
-              'title': 'Irrigated',
-              'default': false
-            }
+            IsIrrigated: {
+              type: 'boolean',
+              title: 'Irrigated',
+              default: false,
+            },
           },
-          'required': [
-            'CropYear',
-            'Region',
-            'IsIrrigated'
-          ]
-        }
-      }
+          required: ['CropYear', 'Region', 'IsIrrigated'],
+        },
+      },
     },
     layout: [
-      { 'dataPointer': '/SelfAssessmentSummary/CropYear' },
+      { dataPointer: '/SelfAssessmentSummary/CropYear' },
       {
-        'type': 'section',
-        'title': 'Section 1',
-        'items': [
-          { 'dataPointer': '/SelfAssessmentSummary/Region' },
-          { 'dataPointer': '/SelfAssessmentSummary/IsIrrigated' },
+        type: 'section',
+        title: 'Section 1',
+        items: [
+          { dataPointer: '/SelfAssessmentSummary/Region' },
+          { dataPointer: '/SelfAssessmentSummary/IsIrrigated' },
         ],
       },
     ],
@@ -264,9 +247,7 @@ export const Group: Story = {
   template: `Tpl 1`,
   standalone: true,
 })
-class LayoutTpl1Component {
-
-}
+class LayoutTpl1Component {}
 
 export const Layout: Story = {
   args: {
@@ -275,44 +256,40 @@ export const Layout: Story = {
       debug: false, // Don't show inline debugging information
     },
     schema: {
-      'type': 'object',
-      '$schema': 'http://json-schema.org/draft-07/schema#',
-      'properties': {
-        'SelfAssessmentSummary': {
-          'type': 'object',
-          'properties': {
-            'CropYear': {
-              'type': 'number',
-              'title': 'Crop Year',
-              'enum': [ 2020 ]
+      type: 'object',
+      $schema: 'http://json-schema.org/draft-07/schema#',
+      properties: {
+        SelfAssessmentSummary: {
+          type: 'object',
+          properties: {
+            CropYear: {
+              type: 'number',
+              title: 'Crop Year',
+              enum: [2020],
             },
-            'Region': {
-              'type': 'string',
-              'title': 'Region',
-              'enum': [ 'South West', 'North West', 'South East', 'North East' ]
+            Region: {
+              type: 'string',
+              title: 'Region',
+              enum: ['South West', 'North West', 'South East', 'North East'],
             },
-            'IsIrrigated': {
-              'type': 'boolean',
-              'title': 'Irrigated',
-              'default': false
-            }
+            IsIrrigated: {
+              type: 'boolean',
+              title: 'Irrigated',
+              default: false,
+            },
           },
-          'required': [
-            'CropYear',
-            'Region',
-            'IsIrrigated'
-          ]
-        }
-      }
+          required: ['CropYear', 'Region', 'IsIrrigated'],
+        },
+      },
     },
     layout: [
-      { 'dataPointer': '/SelfAssessmentSummary/CropYear' },
+      { dataPointer: '/SelfAssessmentSummary/CropYear' },
       {
-        'type': 'section',
-        'title': 'Section 1',
-        'items': [
-          { 'dataPointer': '/SelfAssessmentSummary/Region' },
-          { 'dataPointer': '/SelfAssessmentSummary/IsIrrigated' },
+        type: 'section',
+        title: 'Section 1',
+        items: [
+          { dataPointer: '/SelfAssessmentSummary/Region' },
+          { dataPointer: '/SelfAssessmentSummary/IsIrrigated' },
         ],
       },
     ],
@@ -326,71 +303,71 @@ export const LoadoutOrder: Story = {
       debug: false, // Don't show inline debugging information
     },
     schema: {
-      'type': 'object',
-      '$schema': 'http://json-schema.org/draft-07/schema#',
-      'properties': {
-        'LoadoutOrderAdd': {
-          'type': 'object',
-          'properties': {
-            'ReferenceDate': {
-              'type': 'string', // TODO: Add 'date' type
-              'title': 'Reference Date',
+      type: 'object',
+      $schema: 'http://json-schema.org/draft-07/schema#',
+      properties: {
+        LoadoutOrderAdd: {
+          type: 'object',
+          properties: {
+            ReferenceDate: {
+              type: 'string', // TODO: Add 'date' type
+              title: 'Reference Date',
             },
-            'RequestedLoadoutDate': {
-              'type': 'string', // TODO: Add 'date' type
-              'title': 'Requested Loadout Date',
+            RequestedLoadoutDate: {
+              type: 'string', // TODO: Add 'date' type
+              title: 'Requested Loadout Date',
             },
-            'Origin': {
-              'type': 'string',
-              'title': 'Origin',
-              'enum': [ 'South West', 'North West', 'South East', 'North East' ]
+            Origin: {
+              type: 'string',
+              title: 'Origin',
+              enum: ['South West', 'North West', 'South East', 'North East'],
             },
-            'Destination': {
-              'type': 'string',
-              'title': 'Destination',
-              'enum': [ 'South West', 'North West', 'South East', 'North East' ]
+            Destination: {
+              type: 'string',
+              title: 'Destination',
+              enum: ['South West', 'North West', 'South East', 'North East'],
             },
-            'ReasonForLoadout': {
-              'type': 'string',
-              'title': 'Reason for Loadout',
-              'enum': [ 'South West', 'North West', 'South East', 'North East' ]
+            ReasonForLoadout: {
+              type: 'string',
+              title: 'Reason for Loadout',
+              enum: ['South West', 'North West', 'South East', 'North East'],
             },
-            'TypeOfVehicle': {
-              'type': 'string',
-              'title': 'Type of Vehicle',
-              'enum': [ 'South West', 'North West', 'South East', 'North East' ]
+            TypeOfVehicle: {
+              type: 'string',
+              title: 'Type of Vehicle',
+              enum: ['South West', 'North West', 'South East', 'North East'],
             },
-            'Truckline': {
-              'type': 'string',
-              'title': 'Truckline',
-              'enum': [ 'South West', 'North West', 'South East', 'North East' ]
+            Truckline: {
+              type: 'string',
+              title: 'Truckline',
+              enum: ['South West', 'North West', 'South East', 'North East'],
             },
-            'DispatchNumber': {
-              'type': 'string',
-              'title': 'Dispatch Number',
+            DispatchNumber: {
+              type: 'string',
+              title: 'Dispatch Number',
             },
-            'TrailerTagNumber': {
-              'type': 'string',
-              'title': 'Trailer Tag Number',
+            TrailerTagNumber: {
+              type: 'string',
+              title: 'Trailer Tag Number',
             },
-            'TrailerNumber': {
-              'type': 'string',
-              'title': 'Trailer Number',
+            TrailerNumber: {
+              type: 'string',
+              title: 'Trailer Number',
             },
-            'DriverName': {
-              'type': 'string',
-              'title': 'Driver Name',
+            DriverName: {
+              type: 'string',
+              title: 'Driver Name',
             },
-            'EmptyWeight': {
-              'type': 'string',
-              'title': 'Empty Weight (Tare)',
+            EmptyWeight: {
+              type: 'string',
+              title: 'Empty Weight (Tare)',
             },
-            'Comments': {
-              'type': 'string',
-              'title': 'Comments',
+            Comments: {
+              type: 'string',
+              title: 'Comments',
             },
           },
-          'required': [
+          required: [
             'ReferenceDate',
             'RequestedLoadoutDate',
             'Origin',
@@ -399,20 +376,20 @@ export const LoadoutOrder: Story = {
             'TypeOfVehicle',
             'Truckline',
             'DispatchNumber',
-          ]
-        }
-      }
+          ],
+        },
+      },
     },
     layout: [
-      { 'dataPointer': '/LoadoutOrderAdd/ReferenceDate' },
-      { 'dataPointer': '/LoadoutOrderAdd/RequestedLoadoutDate' },
-      { 'dataPointer': '/LoadoutOrderAdd/Origin' },
-      { 'dataPointer': '/LoadoutOrderAdd/Destination' },
-      { 'dataPointer': '/LoadoutOrderAdd/ReasonForLoadout' },
+      { dataPointer: '/LoadoutOrderAdd/ReferenceDate' },
+      { dataPointer: '/LoadoutOrderAdd/RequestedLoadoutDate' },
+      { dataPointer: '/LoadoutOrderAdd/Origin' },
+      { dataPointer: '/LoadoutOrderAdd/Destination' },
+      { dataPointer: '/LoadoutOrderAdd/ReasonForLoadout' },
       {
-        'type': 'section',
+        type: 'section',
         // 'title': 'Section 1',
-        'items': [
+        items: [
           // {
           //   'type': 'section',
           //   'items': [
@@ -440,9 +417,9 @@ export const LoadoutOrder: Story = {
           //   ],
           //   // htmlClass: 'col-4',
           // },
-          { 'dataPointer': '/LoadoutOrderAdd/TypeOfVehicle' },
-          { 'dataPointer': '/LoadoutOrderAdd/Truckline' },
-          { 'dataPointer': '/LoadoutOrderAdd/DispatchNumber' },
+          { dataPointer: '/LoadoutOrderAdd/TypeOfVehicle' },
+          { dataPointer: '/LoadoutOrderAdd/Truckline' },
+          { dataPointer: '/LoadoutOrderAdd/DispatchNumber' },
         ],
         options: {
           displayFlex: true,
@@ -452,11 +429,11 @@ export const LoadoutOrder: Story = {
         },
       },
       {
-        'type': 'section',
-        'items': [
-          { 'dataPointer': '/LoadoutOrderAdd/TrailerTagNumber' },
-          { 'dataPointer': '/LoadoutOrderAdd/TrailerNumber' },
-          { 'dataPointer': '/LoadoutOrderAdd/DriverName' },
+        type: 'section',
+        items: [
+          { dataPointer: '/LoadoutOrderAdd/TrailerTagNumber' },
+          { dataPointer: '/LoadoutOrderAdd/TrailerNumber' },
+          { dataPointer: '/LoadoutOrderAdd/DriverName' },
         ],
         options: {
           displayFlex: true,
@@ -465,8 +442,8 @@ export const LoadoutOrder: Story = {
           // htmlClass: 'flex-row',
         },
       },
-      { 'dataPointer': '/LoadoutOrderAdd/EmptyWeight' },
-      { type: 'textarea', 'dataPointer': '/LoadoutOrderAdd/Comments' },
+      { dataPointer: '/LoadoutOrderAdd/EmptyWeight' },
+      { type: 'textarea', dataPointer: '/LoadoutOrderAdd/Comments' },
     ],
   },
 }

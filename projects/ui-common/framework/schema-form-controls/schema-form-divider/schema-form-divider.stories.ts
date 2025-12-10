@@ -1,5 +1,11 @@
-import { applicationConfig, componentWrapperDecorator, Meta, moduleMetadata, StoryObj } from '@storybook/angular'
-import { expect } from '@storybook/jest'
+import {
+  applicationConfig,
+  componentWrapperDecorator,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
+import { expect } from 'storybook/test'
 
 import { ReactiveFormsModule } from '@angular/forms'
 import { provideAnimations } from '@angular/platform-browser/animations'
@@ -12,23 +18,18 @@ import { TheSeamSchemaFormModule } from '../../schema-form/schema-form.module'
 
 const meta: Meta<JsonSchemaFormComponent> = {
   title: 'Framework/Schema Form Controls/Divider',
-  tags: [ 'autodocs' ],
+  tags: ['autodocs'],
   decorators: [
     applicationConfig({
-      providers: [
-        provideAnimations(),
-      ],
+      providers: [provideAnimations()],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamSchemaFormModule,
-        ReactiveFormsModule,
-      ],
+      imports: [TheSeamSchemaFormModule, ReactiveFormsModule],
     }),
     componentWrapperDecorator(JsonSchemaFormComponent, ({ args }) => args),
   ],
   argTypes: {
-    onSubmit: { action: 'onSubmit' }
+    onSubmit: { action: 'onSubmit' },
   },
   args: {
     framework: 'seam-framework',
@@ -41,24 +42,24 @@ type Story = StoryObj<JsonSchemaFormComponent>
 export const Basic: Story = {
   args: {
     schema: {
-      'type': 'object',
-      '$schema': 'http://json-schema.org/draft-07/schema#',
-      'properties': {
-        'One': {
-          'type': 'boolean',
-          'title': 'Checkbox One',
-          'default': false,
+      type: 'object',
+      $schema: 'http://json-schema.org/draft-07/schema#',
+      properties: {
+        One: {
+          type: 'boolean',
+          title: 'Checkbox One',
+          default: false,
         },
-        'Two': {
-          'type': 'string',
-          'title': 'Input Two',
+        Two: {
+          type: 'string',
+          title: 'Input Two',
         },
       },
     },
     layout: [
-      { 'dataPointer': '/One' },
-      { 'type': 'divider', 'htmlClass': 'mx-4' },
-      { 'dataPointer': '/Two' },
+      { dataPointer: '/One' },
+      { type: 'divider', htmlClass: 'mx-4' },
+      { dataPointer: '/Two' },
     ],
   },
 }

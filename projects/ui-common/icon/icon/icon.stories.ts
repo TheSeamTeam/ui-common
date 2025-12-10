@@ -1,11 +1,15 @@
 import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
+import { expect } from 'storybook/test'
 
 import { faShare } from '@fortawesome/free-solid-svg-icons'
-import { expectFn, getHarness } from '@theseam/ui-common/testing'
+import { getHarness } from '@theseam/ui-common/testing'
 
 import { TheSeamIconModule } from '../icon.module'
 import { IconComponent } from './icon.component'
-import { TheSeamIconComponentHarness, toIconLookup } from '../testing/icon.harness'
+import {
+  TheSeamIconComponentHarness,
+  toIconLookup,
+} from '../testing/icon.harness'
 import { SeamIcon } from '../icon'
 
 const ASSET_URL = 'assets/images/icons8-cotton-filled-48.png'
@@ -21,11 +25,9 @@ const meta: Meta<IconComponent & StoryExtraProps> = {
   tags: ['autodocs'],
   decorators: [
     moduleMetadata({
-      imports: [
-        TheSeamIconModule
-      ]
-    })
-  ]
+      imports: [TheSeamIconModule],
+    }),
+  ],
 }
 
 export default meta
@@ -36,10 +38,13 @@ export const Url: Story = {
     icon: ASSET_URL,
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(TheSeamIconComponentHarness, { canvasElement, fixture })
-    await expectFn(await harness.getIcon()).toBe(ASSET_URL)
-    await expectFn(await harness.getIconType()).toBe(undefined)
-    await expectFn(await harness.isDisabled()).toBe(false)
+    const harness = await getHarness(TheSeamIconComponentHarness, {
+      canvasElement,
+      fixture,
+    })
+    await expect(await harness.getIcon()).toBe(ASSET_URL)
+    await expect(await harness.getIconType()).toBe(undefined)
+    await expect(await harness.isDisabled()).toBe(false)
   },
 }
 
@@ -50,16 +55,19 @@ export const UrlStyledSquare: Story = {
     iconType: 'styled-square',
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(TheSeamIconComponentHarness, { canvasElement, fixture })
-    await expectFn(await harness.getIcon()).toBe(ASSET_URL)
-    await expectFn(await harness.getIconType()).toBe('styled-square')
-    await expectFn(await harness.isDisabled()).toBe(false)
+    const harness = await getHarness(TheSeamIconComponentHarness, {
+      canvasElement,
+      fixture,
+    })
+    await expect(await harness.getIcon()).toBe(ASSET_URL)
+    await expect(await harness.getIconType()).toBe('styled-square')
+    await expect(await harness.isDisabled()).toBe(false)
   },
 }
 
 export const UrlImageFill: Story = {
   name: 'Url(image-fill)',
-  render: args => ({
+  render: (args) => ({
     props: { ...args },
     template: `
       <div class="p-5">
@@ -79,37 +87,46 @@ export const UrlImageFill: Story = {
     icon2: ASSET2_URL,
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(TheSeamIconComponentHarness.with({ icon: ASSET_URL }), { canvasElement, fixture })
-    await expectFn(await harness.getIcon()).toBe(ASSET_URL)
-    await expectFn(await harness.getIconType()).toBe('image-fill')
-    await expectFn(await harness.isDisabled()).toBe(false)
+    const harness = await getHarness(
+      TheSeamIconComponentHarness.with({ icon: ASSET_URL }),
+      { canvasElement, fixture },
+    )
+    await expect(await harness.getIcon()).toBe(ASSET_URL)
+    await expect(await harness.getIconType()).toBe('image-fill')
+    await expect(await harness.isDisabled()).toBe(false)
 
-    const harness2 = await getHarness(TheSeamIconComponentHarness.with({ icon: ASSET2_URL }), { canvasElement, fixture })
-    await expectFn(await harness2.getIcon()).toBe(ASSET2_URL)
-    await expectFn(await harness2.getIconType()).toBe('image-fill')
-    await expectFn(await harness2.isDisabled()).toBe(false)
+    const harness2 = await getHarness(
+      TheSeamIconComponentHarness.with({ icon: ASSET2_URL }),
+      { canvasElement, fixture },
+    )
+    await expect(await harness2.getIcon()).toBe(ASSET2_URL)
+    await expect(await harness2.getIconType()).toBe('image-fill')
+    await expect(await harness2.isDisabled()).toBe(false)
   },
 }
 
 export const FontAwesome: Story = {
   name: 'FontAwesome',
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       icon: faShare,
     },
   }),
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(TheSeamIconComponentHarness, { canvasElement, fixture })
-    await expectFn(await harness.getIcon()).toStrictEqual(toIconLookup(faShare))
-    await expectFn(await harness.getIconType()).toBe(undefined)
-    await expectFn(await harness.isDisabled()).toBe(false)
+    const harness = await getHarness(TheSeamIconComponentHarness, {
+      canvasElement,
+      fixture,
+    })
+    await expect(await harness.getIcon()).toStrictEqual(toIconLookup(faShare))
+    await expect(await harness.getIconType()).toBe(undefined)
+    await expect(await harness.isDisabled()).toBe(false)
   },
 }
 
 export const FontAwesomeStyledSquare: Story = {
   name: 'FontAwesome(styled-square)',
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       icon: faShare,
@@ -119,16 +136,19 @@ export const FontAwesomeStyledSquare: Story = {
     iconType: 'styled-square',
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(TheSeamIconComponentHarness, { canvasElement, fixture })
-    await expectFn(await harness.getIcon()).toStrictEqual(toIconLookup(faShare))
-    await expectFn(await harness.getIconType()).toBe('styled-square')
-    await expectFn(await harness.isDisabled()).toBe(false)
+    const harness = await getHarness(TheSeamIconComponentHarness, {
+      canvasElement,
+      fixture,
+    })
+    await expect(await harness.getIcon()).toStrictEqual(toIconLookup(faShare))
+    await expect(await harness.getIconType()).toBe('styled-square')
+    await expect(await harness.isDisabled()).toBe(false)
   },
 }
 
 export const FontAwesomeImageFill: Story = {
   name: 'FontAwesome(image-fill)',
-  render: args => ({
+  render: (args) => ({
     props: {
       ...args,
       icon: faShare,
@@ -138,10 +158,13 @@ export const FontAwesomeImageFill: Story = {
     iconType: 'image-fill',
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(TheSeamIconComponentHarness, { canvasElement, fixture })
-    await expectFn(await harness.getIcon()).toStrictEqual(toIconLookup(faShare))
-    await expectFn(await harness.getIconType()).toBe('image-fill')
-    await expectFn(await harness.isDisabled()).toBe(false)
+    const harness = await getHarness(TheSeamIconComponentHarness, {
+      canvasElement,
+      fixture,
+    })
+    await expect(await harness.getIcon()).toStrictEqual(toIconLookup(faShare))
+    await expect(await harness.getIconType()).toBe('image-fill')
+    await expect(await harness.isDisabled()).toBe(false)
   },
 }
 
@@ -150,10 +173,13 @@ export const DefaultIcon: Story = {
     defaultIcon: ASSET2_URL,
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(TheSeamIconComponentHarness, { canvasElement, fixture })
-    await expectFn(await harness.getIcon()).toBe(ASSET2_URL)
-    await expectFn(await harness.getIconType()).toBe(undefined)
-    await expectFn(await harness.isDisabled()).toBe(false)
+    const harness = await getHarness(TheSeamIconComponentHarness, {
+      canvasElement,
+      fixture,
+    })
+    await expect(await harness.getIcon()).toBe(ASSET2_URL)
+    await expect(await harness.getIconType()).toBe(undefined)
+    await expect(await harness.isDisabled()).toBe(false)
   },
 }
 
@@ -162,9 +188,12 @@ export const Disabled: Story = {
     disabled: true,
   },
   play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(TheSeamIconComponentHarness, { canvasElement, fixture })
-    await expectFn(await harness.getIcon()).toBe(undefined)
-    await expectFn(await harness.getIconType()).toBe(undefined)
-    await expectFn(await harness.isDisabled()).toBe(true)
+    const harness = await getHarness(TheSeamIconComponentHarness, {
+      canvasElement,
+      fixture,
+    })
+    await expect(await harness.getIcon()).toBe(undefined)
+    await expect(await harness.getIconType()).toBe(undefined)
+    await expect(await harness.isDisabled()).toBe(true)
   },
 }

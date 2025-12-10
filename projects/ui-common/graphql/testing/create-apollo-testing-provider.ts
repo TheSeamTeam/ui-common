@@ -21,17 +21,20 @@ import { queryProcessingLink } from '../apollo-links/query-processing-link'
  */
 export function createApolloTestingProvider(
   schema: GraphQLSchema,
-  rootValue: any
+  rootValue: any,
 ) {
   return {
     provide: APOLLO_OPTIONS,
     useFactory: () => {
       return {
         cache: new InMemoryCache(),
-        link: concat(queryProcessingLink, graphQLLink({
-          schema,
-          rootValue,
-        })),
+        link: concat(
+          queryProcessingLink,
+          graphQLLink({
+            schema,
+            rootValue,
+          }),
+        ),
         defaultOptions: {
           watchQuery: {
             fetchPolicy: 'cache-and-network',
@@ -41,8 +44,8 @@ export function createApolloTestingProvider(
             fetchPolicy: 'network-only',
             errorPolicy: 'all',
           },
-        }
+        },
       }
-    }
+    },
   }
 }

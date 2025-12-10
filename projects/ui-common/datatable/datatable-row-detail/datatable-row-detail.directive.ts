@@ -1,24 +1,38 @@
-import { ContentChild, Directive, EventEmitter, Input, Output, TemplateRef } from '@angular/core'
+import {
+  ContentChild,
+  Directive,
+  EventEmitter,
+  Input,
+  Output,
+  TemplateRef,
+} from '@angular/core'
 
 import { DatatableRowDetailTplDirective } from './datatable-row-detail-tpl.directive'
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: 'seam-datatable-row-detail'
+  selector: 'seam-datatable-row-detail',
+  standalone: false,
 })
 export class TheSeamDatatableRowDetailDirective {
-
   /**
    * The detail row height is required especially
    * when virtual scroll is enabled.
    */
-  @Input() rowHeight: number | ((row?: any, index?: number) => number) | undefined | null = 0
+  @Input() rowHeight:
+    | number
+    | ((row?: any, index?: number) => number)
+    | undefined
+    | null = 0
 
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('template')
   _templateInput: TemplateRef<any> | undefined | null
 
-  @ContentChild(DatatableRowDetailTplDirective, { read: TemplateRef, static: true })
+  @ContentChild(DatatableRowDetailTplDirective, {
+    read: TemplateRef,
+    static: true,
+  })
   _templateQuery: TemplateRef<any> | undefined | null
 
   get template(): TemplateRef<any> | undefined | null {
@@ -29,7 +43,8 @@ export class TheSeamDatatableRowDetailDirective {
    * Row detail row visbility was toggled.
    */
   // NOTE: This will trigger from the internal ngx-datatable toggle event.
-  @Output() toggle: EventEmitter<any> = new EventEmitter()
+  // eslint-disable-next-line @angular-eslint/no-output-native
+  @Output() toggle = new EventEmitter<any>()
 
   /**
    * Internal use for wrapper only.
@@ -40,7 +55,7 @@ export class TheSeamDatatableRowDetailDirective {
    * this directives `toggle` stream.
    * @ignore
    */
-  _toggle: EventEmitter<any> = new EventEmitter()
+  _toggle = new EventEmitter<any>()
 
   /**
    * Toggle the expansion of the row
@@ -48,7 +63,7 @@ export class TheSeamDatatableRowDetailDirective {
   toggleExpandRow(row: any): void {
     this._toggle.emit({
       type: 'row',
-      value: row
+      value: row,
     })
   }
 
@@ -58,7 +73,7 @@ export class TheSeamDatatableRowDetailDirective {
   expandAllRows(): void {
     this._toggle.emit({
       type: 'all',
-      value: true
+      value: true,
     })
   }
 
@@ -68,8 +83,7 @@ export class TheSeamDatatableRowDetailDirective {
   collapseAllRows(): void {
     this._toggle.emit({
       type: 'all',
-      value: false
+      value: false,
     })
   }
-
 }

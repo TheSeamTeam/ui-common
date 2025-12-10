@@ -1,34 +1,25 @@
-import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
-
-import { TiledSelectTileIconComponent } from './components/tiled-select-tile-icon/tiled-select-tile-icon.component'
-import { TiledSelectTileComponent } from './components/tiled-select-tile/tiled-select-tile.component'
+import { TheSeamTiledSelectTileComponent } from './components/tiled-select-tile/tiled-select-tile.component'
 import { TheSeamTiledSelectComponent } from './components/tiled-select/tiled-select.component'
-import { TiledSelectTileIconTplDirective } from './directives/tiled-select-tile-icon-tpl.directive'
-import { TiledSelectTileLabelTplDirective } from './directives/tiled-select-tile-label-tpl.directive'
-import { TiledSelectTileOverlayDirective } from './directives/tiled-select-tile-overlay.directive'
+import { TheSeamTiledSelectTileIconTplDirective } from './directives/tiled-select-tile-icon-tpl.directive'
+import { TheSeamTiledSelectTileLabelTplDirective } from './directives/tiled-select-tile-label-tpl.directive'
+import { TheSeamTiledSelectTileOverlayDirective } from './directives/tiled-select-tile-overlay.directive'
 
 @NgModule({
   imports: [
-    CommonModule,
-    FontAwesomeModule
-  ],
-  declarations: [
     TheSeamTiledSelectComponent,
-    TiledSelectTileComponent,
-    TiledSelectTileOverlayDirective,
-    TiledSelectTileIconComponent,
-    TiledSelectTileIconTplDirective,
-    TiledSelectTileLabelTplDirective
+    TheSeamTiledSelectTileComponent,
+    TheSeamTiledSelectTileOverlayDirective,
+    TheSeamTiledSelectTileIconTplDirective,
+    TheSeamTiledSelectTileLabelTplDirective,
   ],
   exports: [
     TheSeamTiledSelectComponent,
-    TiledSelectTileComponent,
-    TiledSelectTileOverlayDirective,
-    TiledSelectTileIconTplDirective,
-    TiledSelectTileLabelTplDirective
-  ]
+    TheSeamTiledSelectTileComponent,
+    TheSeamTiledSelectTileOverlayDirective,
+    TheSeamTiledSelectTileIconTplDirective,
+    TheSeamTiledSelectTileLabelTplDirective,
+  ],
 })
-export class TheSeamTiledSelectModule { }
+export class TheSeamTiledSelectModule {}

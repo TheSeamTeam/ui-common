@@ -1,20 +1,23 @@
-import { moduleMetadata } from '@storybook/angular'
-import { applicationConfig } from '@storybook/angular/dist/client/decorators'
+import { applicationConfig, moduleMetadata } from '@storybook/angular'
 
 import { CommonModule } from '@angular/common'
 import { HttpClientModule } from '@angular/common/http'
 import { Component, importProvidersFrom, NgModule } from '@angular/core'
-import { BrowserModule } from '@angular/platform-browser'
-import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations'
-import { Route, RouterModule } from '@angular/router'
+import { provideAnimations } from '@angular/platform-browser/animations'
+import { provideRouter, Route } from '@angular/router'
+import { provideLocationMocks } from '@angular/common/testing'
 
 import {
   DataFilterSearchComponent,
   DataFilterTextComponent,
   DataFilterToggleButtonsComponent,
-  THESEAM_DATA_FILTER_OPTIONS
+  THESEAM_DATA_FILTER_OPTIONS,
 } from '@theseam/ui-common/data-filters'
-import { DatatableExportButtonComponent, DatatableMenuBarTextComponent, THESEAM_MENUBAR_ITEM_DATA } from '@theseam/ui-common/datatable'
+import {
+  DatatableExportButtonComponent,
+  DatatableMenuBarTextComponent,
+  THESEAM_MENUBAR_ITEM_DATA,
+} from '@theseam/ui-common/datatable'
 import {
   DynamicActionApiService,
   DynamicActionLinkService,
@@ -23,58 +26,58 @@ import {
   JexlEvaluator,
   THESEAM_DYNAMIC_ACTION,
   THESEAM_DYNAMIC_DATA,
-  THESEAM_DYNAMIC_VALUE_EVALUATOR
+  THESEAM_DYNAMIC_VALUE_EVALUATOR,
 } from '@theseam/ui-common/dynamic'
-import { DynamicComponentManifest, TheSeamDynamicComponentLoaderModule } from '@theseam/ui-common/dynamic-component-loader'
+import {
+  DynamicComponentManifest,
+  TheSeamDynamicComponentLoaderModule,
+} from '@theseam/ui-common/dynamic-component-loader'
 import { TheSeamModalModule } from '@theseam/ui-common/modal'
 
-import { CSVDataExporter, THESEAM_DATA_EXPORTER, XLSXDataExporter } from '@theseam/ui-common/data-exporter'
+import {
+  CSVDataExporter,
+  THESEAM_DATA_EXPORTER,
+  XLSXDataExporter,
+} from '@theseam/ui-common/data-exporter'
 import { TheSeamDataExporterModule } from '../data-exporter/data-exporter.module'
 import { THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM } from './datatable-dynamic-menu-bar-token'
 import { DatatableDynamicComponent } from './datatable-dynamic.component'
 import { TheSeamDatatableDynamicModule } from './datatable-dynamic.module'
-import { StoryModalOneModule, StoryModalTwoModule } from './_story-data/datatable-modals'
+import {
+  StoryModalOneModule,
+  StoryModalTwoModule,
+} from './_story-data/datatable-modals'
 import { exampleData1 } from './_story-data/dynamic-data-1'
 
 @Component({
-  // tslint:disable-next-line: component-selector
   selector: 'story-ex-modal-lazy',
   template: `
     <seam-modal-header>
-      <h4 seamModalTitle>
-        Example Header
-      </h4>
+      <h4 seamModalTitle>Example Header</h4>
       <button seamModalClose class="close" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
     </seam-modal-header>
 
-    <seam-modal-body>
-      Example Body
-    </seam-modal-body>
+    <seam-modal-body> Example Body </seam-modal-body>
 
     <seam-modal-footer>
       <button class="btn btn-lightgray" seamModalClose>Cancel</button>
       <button class="btn btn-success" type="submit">Share</button>
     </seam-modal-footer>
-  `
+  `,
 })
-class StoryExModalLazyComponent { }
+class StoryExModalLazyComponent {}
 
 @NgModule({
-  declarations: [
-    StoryExModalLazyComponent
-  ],
+  declarations: [StoryExModalLazyComponent],
   imports: [
     CommonModule,
     TheSeamModalModule,
     TheSeamDynamicComponentLoaderModule.forChild(StoryExModalLazyComponent),
   ],
-  entryComponents: [
-    StoryExModalLazyComponent
-  ]
 })
-class StoryExModalLazyModule { }
+class StoryExModalLazyModule {}
 
 // This array defines which "componentId" maps to which lazy-loaded module.
 // const manifest: DynamicComponentManifest[] = [
@@ -118,9 +121,6 @@ class StoryExModalLazyModule { }
 //   exports: [
 //     // RouterModule
 //   ],
-//   entryComponents: [
-//     // StoryExRouteModalComponent
-//   ]
 // })
 // class ExampleModalModule { }
 
@@ -158,7 +158,6 @@ const routes: Route[] = [
 //           }
 //         ])
 //       ],
-//       entryComponents: [ ]
 //     },
 //     props: {
 //       data: exampleData1
@@ -179,13 +178,13 @@ const manifests: DynamicComponentManifest[] = [
   {
     componentId: 'story-modal-1',
     path: 'story-modal-1',
-    loadChildren: () => StoryModalOneModule
+    loadChildren: () => StoryModalOneModule,
   },
   {
     componentId: 'story-modal-2',
     path: 'story-modal-2',
-    loadChildren: () => StoryModalTwoModule
-  }
+    loadChildren: () => StoryModalTwoModule,
+  },
 ]
 
 export default {
@@ -195,8 +194,9 @@ export default {
     applicationConfig({
       providers: [
         provideAnimations(),
+        provideLocationMocks(),
+        provideRouter(routes),
         importProvidersFrom(
-          RouterModule.forRoot(routes, { useHash: true }),
           TheSeamDynamicComponentLoaderModule.forRoot([
             ...manifests,
             {
@@ -212,37 +212,77 @@ export default {
             },
           ]),
         ),
-        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
-        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: ExportersDataEvaluator, multi: true },
+        {
+          provide: THESEAM_DYNAMIC_VALUE_EVALUATOR,
+          useClass: JexlEvaluator,
+          multi: true,
+        },
+        {
+          provide: THESEAM_DYNAMIC_VALUE_EVALUATOR,
+          useClass: ExportersDataEvaluator,
+          multi: true,
+        },
 
-        { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionApiService, multi: true },
-        { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionLinkService, multi: true },
-        { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionModalService, multi: true },
+        {
+          provide: THESEAM_DYNAMIC_ACTION,
+          useClass: DynamicActionApiService,
+          multi: true,
+        },
+        {
+          provide: THESEAM_DYNAMIC_ACTION,
+          useClass: DynamicActionLinkService,
+          multi: true,
+        },
+        {
+          provide: THESEAM_DYNAMIC_ACTION,
+          useClass: DynamicActionModalService,
+          multi: true,
+        },
 
         {
           provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
-          useValue: { name: 'filter-search', component: DataFilterSearchComponent, dataToken: THESEAM_DATA_FILTER_OPTIONS },
-          multi: true
+          useValue: {
+            name: 'filter-search',
+            component: DataFilterSearchComponent,
+            dataToken: THESEAM_DATA_FILTER_OPTIONS,
+          },
+          multi: true,
         },
         {
           provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
-          useValue: { name: 'filter-text', component: DataFilterTextComponent, dataToken: THESEAM_DATA_FILTER_OPTIONS },
-          multi: true
+          useValue: {
+            name: 'filter-text',
+            component: DataFilterTextComponent,
+            dataToken: THESEAM_DATA_FILTER_OPTIONS,
+          },
+          multi: true,
         },
         {
           provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
-          useValue: { name: 'filter-buttons', component: DataFilterToggleButtonsComponent, dataToken: THESEAM_DATA_FILTER_OPTIONS },
-          multi: true
+          useValue: {
+            name: 'filter-buttons',
+            component: DataFilterToggleButtonsComponent,
+            dataToken: THESEAM_DATA_FILTER_OPTIONS,
+          },
+          multi: true,
         },
         {
           provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
-          useValue: { name: 'export-button', component: DatatableExportButtonComponent, dataToken: THESEAM_DYNAMIC_DATA },
-          multi: true
+          useValue: {
+            name: 'export-button',
+            component: DatatableExportButtonComponent,
+            dataToken: THESEAM_DYNAMIC_DATA,
+          },
+          multi: true,
         },
         {
           provide: THESEAM_DATATABLE_DYNAMIC_MENUBAR_ITEM,
-          useValue: { name: 'text', component: DatatableMenuBarTextComponent, dataToken: THESEAM_MENUBAR_ITEM_DATA },
-          multi: true
+          useValue: {
+            name: 'text',
+            component: DatatableMenuBarTextComponent,
+            dataToken: THESEAM_MENUBAR_ITEM_DATA,
+          },
+          multi: true,
         },
 
         // { provide: THESEAM_DATA_EXPORTER, useClass: CSVDataExporter, multi: true },
@@ -256,21 +296,21 @@ export default {
         // ExampleModalModule
         TheSeamModalModule,
         // TheSeamDataExporterModule,
-      ]
-    })
+      ],
+    }),
   ],
   parameters: {
     layout: 'fullscreen',
     docs: {
       iframeHeight: '600px',
-    }
+    },
   },
-  excludeStories: [ 'StoryExModalLazyComponent', 'StoryExModalLazyModule' ]
+  excludeStories: ['StoryExModalLazyComponent', 'StoryExModalLazyModule'],
 }
 
 export const Dynamic = () => ({
   props: {
-      data: exampleData1
+    data: exampleData1,
   },
   template: `
     <div style="width: 100vw; height: 100vh;" class="p-1 d-flex flex-column">
@@ -283,9 +323,9 @@ export const Dynamic = () => ({
         <seam-datatable-dynamic class="w-100 h-100" [def]="data"></seam-datatable-dynamic>
       </div>
     </div>
-  `
+  `,
 })
 
 Dynamic.story = {
-  name: 'Dynamic'
+  name: 'Dynamic',
 }

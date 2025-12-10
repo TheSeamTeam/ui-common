@@ -1,9 +1,23 @@
 import { BooleanInput, coerceArray } from '@angular/cdk/coercion'
-import { AfterContentChecked, ChangeDetectionStrategy, Component, ContentChildren, EventEmitter, Input, OnChanges, OnInit, Output, QueryList, SimpleChanges, TemplateRef } from '@angular/core'
+import {
+  AfterContentChecked,
+  ChangeDetectionStrategy,
+  Component,
+  ContentChildren,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  QueryList,
+  SimpleChanges,
+  TemplateRef,
+} from '@angular/core'
 import { DomSanitizer } from '@angular/platform-browser'
 import { merge, Subject, Subscription } from 'rxjs'
 
 import { InputBoolean } from '@theseam/ui-common/core'
+import { setColumnAlignDefaults } from '@theseam/ui-common/table-cell-type'
 
 import { TheSeamTableColumnComponent } from '../table-column.component'
 
@@ -28,17 +42,22 @@ export interface ITableColumn {
   headerClass?: string // | ((data: any) => string | any)
 }
 
-function mergeColumnsAndTplColumns(columns: (string | ITableColumn)[], tplColumns: TheSeamTableColumnComponent[]): ITableColumn[] {
+function mergeColumnsAndTplColumns(
+  columns: (string | ITableColumn)[],
+  tplColumns: TheSeamTableColumnComponent[],
+): ITableColumn[] {
   const newCols: ITableColumn[] = []
 
   for (const col of columns) {
     const newCol: ITableColumn = {
-      ...((typeof col === 'string') ? {
-          prop: col,
-          name: col,
-        } : col),
+      ...(typeof col === 'string'
+        ? {
+            prop: col,
+            name: col,
+          }
+        : col),
     }
-    const tplCol = tplColumns.find(c => c.prop === newCol.prop)
+    const tplCol = tplColumns.find((c) => c.prop === newCol.prop)
     // newCol.cellTypeConfig = tplCol?.cellTypeConfig
     if (tplCol) {
       if (tplCol.name !== undefined && tplCol.name !== null) {
@@ -47,7 +66,10 @@ function mergeColumnsAndTplColumns(columns: (string | ITableColumn)[], tplColumn
       if (tplCol.cellTemplate !== undefined && tplCol.cellTemplate !== null) {
         newCol.cellTemplate = tplCol.cellTemplate ?? undefined
       }
-      if (tplCol.headerTemplate !== undefined && tplCol.headerTemplate !== null) {
+      if (
+        tplCol.headerTemplate !== undefined &&
+        tplCol.headerTemplate !== null
+      ) {
         newCol.headerTemplate = tplCol.headerTemplate ?? undefined
       }
       if (tplCol.cellClass !== undefined && tplCol.cellClass !== null) {
@@ -57,6 +79,8 @@ function mergeColumnsAndTplColumns(columns: (string | ITableColumn)[], tplColumn
         newCol.headerClass = tplCol.headerClass ?? undefined
       }
     }
+
+    setColumnAlignDefaults(newCol)
 
     newCols.push(newCol)
   }
@@ -68,40 +92,50 @@ function mergeColumnsAndTplColumns(columns: (string | ITableColumn)[], tplColumn
   selector: 'seam-table',
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
-export class TableComponent<T = any> implements OnInit, OnChanges, AfterContentChecked {
+export class TableComponent<T = any>
+  implements OnInit, OnChanges, AfterContentChecked
+{
   static ngAcceptInputType_hasHeader: BooleanInput
 
   private readonly _ngUnsubscribe = new Subject<void>()
 
   @Input()
-  get columns() { return this._columns }
+  get columns() {
+    return this._columns
+  }
   set columns(value: (string | ITableColumn)[] | undefined | null) {
     this._columns = value
     // this._setColumns(value || [])
-    const cols = mergeColumnsAndTplColumns(value || [], this._columnComponents?.toArray() ?? [])
+    const cols = mergeColumnsAndTplColumns(
+      value || [],
+      this._columnComponents?.toArray() ?? [],
+    )
     // this._setColumns(cols)
     this._pendingColumns = cols
   }
   private _columns: (string | ITableColumn)[] | undefined | null
 
   @Input()
-  get rows(): T[] | undefined | null { return this._rows }
+  get rows(): T[] | undefined | null {
+    return this._rows
+  }
   set rows(value: T[] | undefined | null) {
     this._rows = value ? coerceArray(value) : []
 
     if (this._rows.length < 1) {
-      this._displayedRows = [
-        { _emptyDisplay: true } as any
-      ]
+      this._displayedRows = [{ _emptyDisplay: true } as any]
     } else {
       this._displayedRows = this._rows
     }
   }
   private _rows: T[] | undefined | null = []
 
-  get displayedRows() { return this._displayedRows }
+  get displayedRows() {
+    return this._displayedRows
+  }
   private _displayedRows: T[] & { _colSpan?: number } = []
 
   @Input() trackBy: TrackByFunction<T> | undefined | null
@@ -115,23 +149,34 @@ export class TableComponent<T = any> implements OnInit, OnChanges, AfterContentC
   public displayedRecords?: ITableColumn[]
   public displayedColumns?: string[]
 
-  @Output() readonly columnsChange = new EventEmitter<{ previous: ITableColumn[] | undefined, current: ITableColumn[] }>()
+  @Output() readonly columnsChange = new EventEmitter<{
+    previous: ITableColumn[] | undefined
+    current: ITableColumn[]
+  }>()
   @Output() readonly actionRefreshRequest = new EventEmitter<void>()
 
   @ContentChildren(TheSeamTableColumnComponent)
-  set columnComponents(value: QueryList<TheSeamTableColumnComponent> | undefined) {
+  set columnComponents(
+    value: QueryList<TheSeamTableColumnComponent> | undefined,
+  ) {
     // this._columnsManager.setTemplateColumns(translateTemplateColumns(value?.toArray() ?? []))
     this._columnComponents = value
     if (value?.toArray().length === 0) return
-    const cols = mergeColumnsAndTplColumns(this._columns || [], value?.toArray() ?? [])
+    const cols = mergeColumnsAndTplColumns(
+      this._columns || [],
+      value?.toArray() ?? [],
+    )
     // this._setColumns(cols)
     this._pendingColumns = cols
 
     if (this._columnComponentChange) this._columnComponentChange.unsubscribe()
-    const obsArr = value?.toArray().map(c => c.columnChange$)
+    const obsArr = value?.toArray().map((c) => c.columnChange$)
     if (obsArr && obsArr.length > 0) {
       this._columnComponentChange = merge(obsArr).subscribe(() => {
-        const _cols = mergeColumnsAndTplColumns(this._columns || [], value?.toArray() ?? [])
+        const _cols = mergeColumnsAndTplColumns(
+          this._columns || [],
+          value?.toArray() ?? [],
+        )
         // this._setColumns(_cols)
         this._pendingColumns = _cols
       })
@@ -140,9 +185,7 @@ export class TableComponent<T = any> implements OnInit, OnChanges, AfterContentC
   private _columnComponents: QueryList<TheSeamTableColumnComponent> | undefined
   private _columnComponentChange = Subscription.EMPTY
 
-  constructor(
-    private readonly _sanitizer: DomSanitizer
-  ) { }
+  constructor(private readonly _sanitizer: DomSanitizer) {}
 
   ngOnInit() {
     this._updateColumns()
@@ -175,7 +218,7 @@ export class TableComponent<T = any> implements OnInit, OnChanges, AfterContentC
       if (typeof col === 'string') {
         const newCol: ITableColumn = {
           prop: col,
-          name: col
+          name: col,
         }
         newCols.push(newCol)
       } else {
@@ -186,7 +229,7 @@ export class TableComponent<T = any> implements OnInit, OnChanges, AfterContentC
         const newCol: ITableColumn = {
           ...col,
           prop: col.prop,
-          name
+          name,
         }
         newCols.push(newCol)
       }
@@ -195,12 +238,14 @@ export class TableComponent<T = any> implements OnInit, OnChanges, AfterContentC
     for (const col of newCols) {
       const _col = col as any
       if (_col && _col.cellTypeConfig && _col.cellTypeConfig.styles) {
-        _col.cellTypeConfig.styles = this._sanitizer.bypassSecurityTrustStyle(_col.cellTypeConfig.styles)
+        _col.cellTypeConfig.styles = this._sanitizer.bypassSecurityTrustStyle(
+          _col.cellTypeConfig.styles,
+        )
       }
     }
 
     this.displayedRecords = newCols
-    this.displayedColumns = newCols.map(c => c.prop)
+    this.displayedColumns = newCols.map((c) => c.prop)
     this.columnsChange.emit({ previous: prev, current: newCols })
   }
 
@@ -211,5 +256,4 @@ export class TableComponent<T = any> implements OnInit, OnChanges, AfterContentC
   _trackByRecords(r: any) {
     return r.prop + r.name
   }
-
 }

@@ -1,6 +1,9 @@
 import { DocumentNode, visit } from 'graphql'
 
-export function removeVariable(query: DocumentNode, variableName: string): DocumentNode {
+export function removeVariable(
+  query: DocumentNode,
+  variableName: string,
+): DocumentNode {
   return visit(query, {
     VariableDefinition: {
       enter(variable) {
@@ -8,7 +11,7 @@ export function removeVariable(query: DocumentNode, variableName: string): Docum
         if (name === variableName) {
           return null
         }
-      }
+      },
     },
     Argument: {
       enter(variable) {
@@ -16,7 +19,7 @@ export function removeVariable(query: DocumentNode, variableName: string): Docum
         if (name === variableName) {
           return null
         }
-      }
-    }
+      },
+    },
   })
 }

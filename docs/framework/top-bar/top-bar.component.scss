@@ -1,0 +1,44 @@
+@import './styles/utilities';
+
+seam-top-bar {
+  display: flex;
+  flex: 1 1 100%;
+  flex-direction: row;
+
+  background: $seam-top-bar-bg;
+  margin: $seam-top-bar-margin;
+  padding: $seam-top-bar-padding;
+  border-radius: $seam-top-bar-border-radius;
+  box-shadow: $seam-top-bar-box-shadow;
+}
+
+.top-bar--logo {
+  flex: 0 0 auto;
+  overflow: hidden;
+  cursor: pointer;
+
+  img {
+    height: $seam-top-bar-logo-height;
+    max-height: $seam-top-bar-logo-max-height;
+    width: $seam-top-bar-logo-width;
+    max-width: $seam-top-bar-logo-max-width;
+  }
+
+  &.top-bar--logo-mobile {
+    img {
+      height: $seam-top-bar-logo-mobile-height;
+      max-height: $seam-top-bar-logo-mobile-max-height;
+      width: $seam-top-bar-logo-mobile-width;
+      max-width: $seam-top-bar-logo-mobile-max-width;
+    }
+  }
+}
+
+.top-bar--left {
+  flex-grow: 1;
+}
+
+.top-bar-items {
+  display: flex;
+  align-items: center;
+}

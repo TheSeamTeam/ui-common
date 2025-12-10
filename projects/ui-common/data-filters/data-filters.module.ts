@@ -16,32 +16,41 @@ import { DataFilterToggleButtonsComponent } from './filters/data-filter-toggle-b
 const filterComponents = [
   DataFilterSearchComponent,
   DataFilterTextComponent,
-  DataFilterToggleButtonsComponent
+  DataFilterToggleButtonsComponent,
 ]
 
 const filterDefProviders = [
-  { provide: THESEAM_DATA_FILTER_DEF, useValue: { name: 'search', component: DataFilterSearchComponent }, multi: true },
-  { provide: THESEAM_DATA_FILTER_DEF, useValue: { name: 'text', component: DataFilterTextComponent }, multi: true },
-  { provide: THESEAM_DATA_FILTER_DEF, useValue: { name: 'toggle-buttons', component: DataFilterToggleButtonsComponent }, multi: true },
+  {
+    provide: THESEAM_DATA_FILTER_DEF,
+    useValue: { name: 'search', component: DataFilterSearchComponent },
+    multi: true,
+  },
+  {
+    provide: THESEAM_DATA_FILTER_DEF,
+    useValue: { name: 'text', component: DataFilterTextComponent },
+    multi: true,
+  },
+  {
+    provide: THESEAM_DATA_FILTER_DEF,
+    useValue: {
+      name: 'toggle-buttons',
+      component: DataFilterToggleButtonsComponent,
+    },
+    multi: true,
+  },
 ]
 
 @NgModule({
-    declarations: [
-        ...filterComponents
-    ],
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        TheSeamFormFieldModule,
-        FontAwesomeModule,
-        TheSeamToggleGroupModule,
-        TheSeamIconModule
-    ],
-    providers: [
-        ...filterDefProviders
-    ],
-    exports: [
-        ...filterComponents
-    ]
+  declarations: [...filterComponents],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    TheSeamFormFieldModule,
+    FontAwesomeModule,
+    TheSeamToggleGroupModule,
+    TheSeamIconModule,
+  ],
+  providers: [...filterDefProviders],
+  exports: [...filterComponents],
 })
-export class TheSeamDataFiltersModule { }
+export class TheSeamDataFiltersModule {}

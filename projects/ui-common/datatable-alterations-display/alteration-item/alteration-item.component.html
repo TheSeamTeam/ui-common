@@ -1,0 +1,57 @@
+<div
+  class="card card-body py-2 px-3 mb-2"
+  [class]="borderClass"
+  [attr.data-testid]="'alteration-item-' + item.id"
+>
+  <div class="d-flex align-items-center">
+    <!-- Type badge -->
+    <span
+      class="badge mr-2"
+      [class]="badgeClass"
+      [attr.data-testid]="'alteration-type-' + item.type"
+    >
+      {{ typeDisplayName }}
+    </span>
+
+    <!-- Type icon -->
+    <seam-icon
+      [icon]="typeIcon"
+      class="mr-2 text-muted"
+      [attr.data-testid]="'alteration-icon-' + item.type"
+    >
+    </seam-icon>
+
+    <!-- Summary text -->
+    <span class="flex-grow-1" [attr.data-testid]="'alteration-summary'">
+      {{ item.summary }}
+    </span>
+
+    <!-- Diff state indicator (optional visual indicator) -->
+    <span
+      *ngIf="item.diffState"
+      class="ml-2 small text-muted"
+      [attr.data-testid]="'alteration-diff-state'"
+    >
+      <ng-container [ngSwitch]="item.diffState">
+        <span *ngSwitchCase="'added'" class="text-success">+</span>
+        <span *ngSwitchCase="'removed'" class="text-danger">-</span>
+        <span *ngSwitchCase="'changed'" class="text-warning">~</span>
+      </ng-container>
+    </span>
+  </div>
+
+  <!-- Expanded details (for future enhancement) -->
+  <div
+    *ngIf="!compact && item.details && item.details.length > 0"
+    class="mt-2 pt-2 border-top"
+  >
+    <ul class="list-unstyled mb-0 small text-muted">
+      <li
+        *ngFor="let detail of item.details"
+        [attr.data-testid]="'alteration-detail'"
+      >
+        {{ detail }}
+      </li>
+    </ul>
+  </div>
+</div>

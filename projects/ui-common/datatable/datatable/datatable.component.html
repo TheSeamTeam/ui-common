@@ -22,8 +22,8 @@
         [swapColumns]="swapColumns"
         [sortType]="$any(sortType)"
         [sorts]="$any(_sorts)"
-        [cssClasses]="cssClasses"
-        [messages]="messages"
+        [cssClasses]="$any(cssClasses)"
+        [messages]="$any(messages)"
         [rowIdentity]="$any(rowIdentity)"
         [rowClass]="rowClass"
         [selectCheck]="selectCheck"
@@ -51,30 +51,43 @@
         (tableContextmenu)="tableContextmenu.emit($event)"
         (treeAction)="treeAction.emit($event)"
         (seamElemResized)="onDatatableResize($event)"
-        (treeAction)="_onTreeAction($event)">
-
-        <ngx-datatable-group-header [rowHeight]="50" #myGroupHeader *ngIf="groupRowsBy">
-          <ng-template let-group="group" let-expanded="expanded" ngx-datatable-group-header-template>
+        (treeAction)="_onTreeAction($event)"
+      >
+        <ngx-datatable-group-header
+          [rowHeight]="50"
+          #myGroupHeader
+          *ngIf="groupRowsBy"
+        >
+          <ng-template
+            let-group="group"
+            let-expanded="expanded"
+            ngx-datatable-group-header-template
+          >
             <div
               class="w-100 bg-light p-1"
               [class.border-bottom]="!expanded"
               [class.datatable-icon-right]="!expanded"
               [class.datatable-icon-down]="expanded"
               title="Expand/Collapse Group"
-              (click)="ngxDatatable?.groupHeader?.toggleExpandGroup(group)">
-              <b>Age: {{ group.age }}</b>
+              (click)="ngxDatatable?.groupHeader?.toggleExpandGroup(group)"
+            >
+              <!-- <b>Age: {{ group.age }}</b> -->
             </div>
           </ng-template>
         </ngx-datatable-group-header>
 
-        <ngx-datatable-row-detail *ngIf="rowDetail && rowDetail.template"
+        <ngx-datatable-row-detail
+          *ngIf="rowDetail && rowDetail.template"
           [rowHeight]="rowDetail.rowHeight || 0"
           [template]="$any(rowDetail.template)"
-          (toggle)="rowDetail.toggle.emit($event)">
+          (toggle)="rowDetail.toggle.emit($event)"
+        >
         </ngx-datatable-row-detail>
 
-        <ngx-datatable-footer *ngIf="footer && footer.template"
-          [template]="$any(footer.template)">
+        <ngx-datatable-footer
+          *ngIf="footer && footer.template"
+          [template]="$any(footer.template)"
+        >
         </ngx-datatable-footer>
       </ngx-datatable>
     </ng-container>
@@ -89,77 +102,70 @@
   let-column="column"
   let-sortFn="sortFn"
 >
-  <div class="d-inline-flex align-items-center">
-    <ng-container *ngIf="column.filterable">
-      <button
-        seamIconBtn
-        [icon]="columnFilterIcon"
-        size="sm"
-        [seamPopover]="filterMenu"
-        [seamPopoverBaseWidth]="300"
-        class="datatable-column-header-filter-button d-flex align-items-center mr-2"
-        [class.datatable-column-header-filter-button-active]="column.filterActive"
-        style="width: 1rem;"
-        title="Click to see filter options"></button>
-    </ng-container>
-    <strong *ngIf="!column.sortable" class="draggable">{{column.name}}</strong>
-    <button
-      seamButton
-      *ngIf="column.sortable"
-      class="datatable-sort-target p-0"
-      (click)="sortFn()"
-      title="Click to sort">
-      <strong class="draggable">{{column.name}}</strong>
-    </button>
-    <div class="datatable-column-header-separator" [attr.data-column-id]="column.$$id"></div>
-  </div>
-  <ng-template #filterMenu let-popover="popover">
-    <seam-datatable-column-filter-menu
-      [column]="column"
-      [updateMethod]="columnFilterUpdateMethod"
-      [debounce]="columnFilterUpdateDebounce"
-      (closePopover)="popover?.closePopover()"></seam-datatable-column-filter-menu>
-  </ng-template>
+  <seam-datatable-column-header
+    [column]="column"
+    [sortFn]="sortFn"
+    [columnFilterIcon]="columnFilterIcon"
+    [columnFilterUpdateMethod]="columnFilterUpdateMethod"
+    [columnFilterUpdateDebounce]="columnFilterUpdateDebounce"
+  ></seam-datatable-column-header>
 </ng-template>
 
-<ng-template #cellTypeSelectorTpl ngx-datatable-cell-template
-  let-value="value" let-rowIndex="rowIndex" let-row="row" let-column="column">
-  <seam-table-cell-type-selector *ngIf="row"
-    [type]="column.cellType"
+<ng-template
+  #cellTypeSelectorTpl
+  ngx-datatable-cell-template
+  let-value="value"
+  let-rowIndex="rowIndex"
+  let-row="row"
+  let-column="column"
+>
+  <seam-table-cell-type-selector
+    *ngIf="row"
+    [type]="$any(column).cellType"
     [value]="value"
     [rowIndex]="rowIndex"
     [row]="row"
-    [colData]="column">
+    [colData]="column"
+  >
   </seam-table-cell-type-selector>
 </ng-template>
 
-<ng-template #actionMenuCellTpl ngx-datatable-cell-template
-  let-value="value" let-rowIndex="rowIndex" let-row="row">
-
+<ng-template
+  #actionMenuCellTpl
+  ngx-datatable-cell-template
+  let-value="value"
+  let-rowIndex="rowIndex"
+  let-row="row"
+>
   <ng-container *ngIf="row && rowActionItem?.template">
     <ng-template
       [ngTemplateOutlet]="$any(rowActionItem?.template)"
-      [ngTemplateOutletContext]="{ $implicit: row, row: row, rowIndex: rowIndex }">
+      [ngTemplateOutletContext]="{
+        $implicit: row,
+        row: row,
+        rowIndex: rowIndex,
+      }"
+    >
     </ng-template>
   </ng-container>
-
 </ng-template>
 
 <ng-template #treeToggleTpl ngx-datatable-tree-toggle let-tree="cellContext">
   <button
     class="p-0 bg-transparent border-0 btn"
-    [disabled]="tree.treeStatus==='disabled'"
-    (click)="tree.onTreeAction()">
-    <span *ngIf="tree.treeStatus==='loading'">
+    [disabled]="tree.treeStatus === 'disabled'"
+    (click)="tree.onTreeAction()"
+  >
+    <span *ngIf="tree.treeStatus === 'loading'">
       <fa-icon [icon]="_faSpinner"></fa-icon>
     </span>
-    <span *ngIf="tree.treeStatus==='collapsed'">
+    <span *ngIf="tree.treeStatus === 'collapsed'">
       <fa-icon [icon]="_faChevronRight"></fa-icon>
     </span>
-    <span *ngIf="tree.treeStatus==='expanded'">
+    <span *ngIf="tree.treeStatus === 'expanded'">
       <fa-icon [icon]="_faChevronDown"></fa-icon>
     </span>
-    <span *ngIf="tree.treeStatus==='disabled'">
+    <span *ngIf="tree.treeStatus === 'disabled'">
       <fa-icon [icon]="_faChevronRight"></fa-icon>
     </span>
   </button>

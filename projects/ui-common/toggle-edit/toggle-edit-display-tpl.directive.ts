@@ -1,10 +1,9 @@
-import { Directive, TemplateRef } from '@angular/core'
+import { Directive, inject, TemplateRef } from '@angular/core'
 
 @Directive({
-  selector: '[seamToggleEditDisplayTpl]'
+  selector: '[seamToggleEditDisplayTpl]',
+  exportAs: 'seamToggleEditDisplayTpl',
 })
 export class ToggleEditDisplayTplDirective {
-
-  constructor(public template: TemplateRef<any>) {}
-
+  public readonly template = inject(TemplateRef<any>)
 }

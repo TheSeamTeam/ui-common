@@ -4,26 +4,18 @@
     "outDir": "../../out-tsc/lib",
     "baseUrl": ".",
     "rootDir": ".",
-    "esModuleInterop": true,
-    "types": [
-      "jest"
-    ],
+    "module": "CommonJS",
+    "types": ["jest"],
     "paths": {
-      "@theseam/ui-common/*": [
-        "./*/public-api"
-      ]
+      "@theseam/ui-common/*": ["./*/public-api"]
     }
   },
-  "files": [
-    "./setup-jest.ts"
-  ],
+  "files": ["./setup-jest.ts"],
   "include": [
     "**/*.spec.ts",
     "**/*.d.ts",
     "../../custom_types/**/*.d.ts",
     "../../.storybook/**/*.d.ts"
   ],
-  "exclude": [
-    "**/schematics/**/*"
-  ]
+  "exclude": ["**/schematics/**/*"]
 }

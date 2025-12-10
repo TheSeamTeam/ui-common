@@ -1,19 +1,32 @@
 import { BooleanInput } from '@angular/cdk/coercion'
-import { ChangeDetectorRef, Component, ElementRef, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core'
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  inject,
+  Input,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core'
+import { NgIf } from '@angular/common'
 
+import { TheSeamOverlayScrollbarDirective } from '@theseam/ui-common/scrollbar'
+import { TheSeamElemResizedDirective } from '@theseam/ui-common/shared'
 import { InputBoolean } from '@theseam/ui-common/core'
 
-interface TemplateResizeMessagePayload {
+interface TheSeamTemplateResizeMessagePayload {
   width: number
   height: number
 }
 
-enum TemplateMessageType {
+enum TheSeamTemplateMessageType {
   TplData = 'theseam_tpl_data',
   TplResize = 'theseam_tpl_resize',
 }
 
-interface TemplateMessage<TType, TPayload> {
+interface TheSeamTemplateMessage<TType, TPayload> {
   type: TType
   payload: TPayload
 }
@@ -21,19 +34,32 @@ interface TemplateMessage<TType, TPayload> {
 @Component({
   selector: 'seam-html-template-viewer',
   templateUrl: './html-template-viewer.component.html',
-  styleUrls: ['./html-template-viewer.component.scss']
+  styleUrls: ['./html-template-viewer.component.scss'],
+  imports: [
+    NgIf,
+    TheSeamOverlayScrollbarDirective,
+    TheSeamElemResizedDirective,
+  ],
 })
 export class TheSeamHtmlTemplateViewerComponent implements OnInit, OnDestroy {
   static ngAcceptInputType_scrollable: BooleanInput
 
-  private readonly _templateMessageHandlers: { [key in TemplateMessageType]: (payload: any) => void }
+  private readonly _ngZone = inject(NgZone)
+  private readonly _cdr = inject(ChangeDetectorRef)
+  private readonly _elementRef = inject(ElementRef)
+
+  private readonly _templateMessageHandlers: {
+    [key in TheSeamTemplateMessageType]: (payload: any) => void
+  }
 
   private _message: string | undefined | null
   private _dataVersion = 0
   private _scrollHandleObserver: MutationObserver | null = null
 
   @Input()
-  get src(): string | null | undefined { return this._src }
+  get src(): string | null | undefined {
+    return this._src
+  }
   set src(val: string | null | undefined) {
     this._src = val
     this._updateSrc()
@@ -52,10 +78,13 @@ export class TheSeamHtmlTemplateViewerComponent implements OnInit, OnDestroy {
 
   @Input()
   set data(value: any) {
-    this.postMessage((value !== null && value !== undefined) ? JSON.stringify(value) : value)
+    this.postMessage(
+      value !== null && value !== undefined ? JSON.stringify(value) : value,
+    )
   }
 
-  @Input() @InputBoolean()
+  @Input()
+  @InputBoolean()
   set scrollable(value: boolean) {
     this._scrollable = value
     if (this._scrollable) {
@@ -85,26 +114,24 @@ export class TheSeamHtmlTemplateViewerComponent implements OnInit, OnDestroy {
       // so we can just disable the observer for native scrollbars.
       onInitializationWithdrawn: () => this._destroyScrollHandleObserver(),
       onDestroyed: () => this._destroyScrollHandleObserver(),
-    }
+    },
   }
 
   _mouseBlockActive = false
   _mouseBlockWidth = '100%'
   _mouseBlockHeight = '100%'
 
-  constructor(
-    private readonly _ngZone: NgZone,
-    private readonly _cdr: ChangeDetectorRef,
-    private readonly _elementRef: ElementRef
-  ) {
+  constructor() {
     this._templateMessageHandlers = {
-      [TemplateMessageType.TplData]: () => { }, // Not listening for message from template
-      [TemplateMessageType.TplResize]: this._onResizeMessageFromTemplate
+      [TheSeamTemplateMessageType.TplData]: () => {}, // Not listening for message from template
+      [TheSeamTemplateMessageType.TplResize]: this._onResizeMessageFromTemplate,
     }
   }
 
   ngOnInit(): void {
-    this._ngZone.runOutsideAngular(() => window.addEventListener('message', this._onMessageFromTemplate))
+    this._ngZone.runOutsideAngular(() =>
+      window.addEventListener('message', this._onMessageFromTemplate),
+    )
   }
 
   ngOnDestroy(): void {
@@ -113,13 +140,17 @@ export class TheSeamHtmlTemplateViewerComponent implements OnInit, OnDestroy {
   }
 
   private _onMessageFromTemplate = (e: any) => {
-    const type = e.data.type as TemplateMessageType
+    const type = e.data.type as TheSeamTemplateMessageType
     if (this._templateMessageHandlers[type]) {
-      this._ngZone.run(() => this._templateMessageHandlers[type](e.data.payload))
+      this._ngZone.run(() =>
+        this._templateMessageHandlers[type](e.data.payload),
+      )
     }
   }
 
-  private _onResizeMessageFromTemplate = (payload: TemplateResizeMessagePayload): void => {
+  private _onResizeMessageFromTemplate = (
+    payload: TheSeamTemplateResizeMessagePayload,
+  ): void => {
     const iframeNativeElement = this._getIFrameNativeElement()
     if (iframeNativeElement) {
       iframeNativeElement.style.height = `${payload.height}px`
@@ -140,8 +171,13 @@ export class TheSeamHtmlTemplateViewerComponent implements OnInit, OnDestroy {
     const contentWindow = this._getIFrameContentWindow()
     if (contentWindow && _msg) {
       if (this._dataVersion === 2) {
-        const wrapper: TemplateMessage<TemplateMessageType, any> = { type: TemplateMessageType.TplData, payload: undefined }
-        try { wrapper.payload = JSON.parse(_msg) } catch { wrapper.payload = _msg }
+        const wrapper: TheSeamTemplateMessage<TheSeamTemplateMessageType, any> =
+          { type: TheSeamTemplateMessageType.TplData, payload: undefined }
+        try {
+          wrapper.payload = JSON.parse(_msg)
+        } catch {
+          wrapper.payload = _msg
+        }
         _msg = JSON.stringify(wrapper)
       }
 
@@ -153,18 +189,18 @@ export class TheSeamHtmlTemplateViewerComponent implements OnInit, OnDestroy {
     this._updateSrc()
   }
 
-  _onResized(event: { width: number, height: number }) {
+  _onResized(event: { width: number; height: number }) {
     // This ensures the iframe scales itself if it isn't listening to or misses
     // the resize event.
     this.reload()
   }
 
   private _getIFrameNativeElement(): HTMLIFrameElement | null {
-    return (this._iframeElementRef?.nativeElement) || null
+    return this._iframeElementRef?.nativeElement || null
   }
 
   private _getIFrameContentWindow(): Window | null {
-    return (this._iframeElementRef?.nativeElement?.contentWindow) || null
+    return this._iframeElementRef?.nativeElement?.contentWindow || null
   }
 
   /**
@@ -192,7 +228,7 @@ export class TheSeamHtmlTemplateViewerComponent implements OnInit, OnDestroy {
 
       observer.observe(this._elementRef.nativeElement, {
         attributes: true,
-        attributeFilter: [ 'class' ],
+        attributeFilter: ['class'],
         childList: true,
         subtree: true,
         characterData: false,
@@ -243,7 +279,10 @@ export class TheSeamHtmlTemplateViewerComponent implements OnInit, OnDestroy {
   }
 
   private _isScrollbarHandleActive(): boolean {
-    return this._elementRef.nativeElement.querySelector('.os-scrollbar-handle.active') !== null
+    return (
+      this._elementRef.nativeElement.querySelector(
+        '.os-scrollbar-handle.active',
+      ) !== null
+    )
   }
-
 }

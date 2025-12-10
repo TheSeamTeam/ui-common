@@ -1,12 +1,13 @@
 import { fakeAsync, TestBed, waitForAsync } from '@angular/core/testing'
 import { take } from 'rxjs/operators'
+import { firstValueFrom } from 'rxjs'
 
 import {
   adjustColumnWidths,
   ColumnMode,
   forceFillColumnWidths,
   SelectionType,
-  TableColumn
+  TableColumn,
 } from '@marklb/ngx-datatable'
 
 import { DatatableColumnComponent } from '../datatable-column/datatable-column.component'
@@ -14,10 +15,10 @@ import { TheSeamDatatableColumn } from '../models/table-column'
 import { ACTION_MENU_COLUMN_PROP } from '../utils/create-action-menu-column'
 import { CHECKBOX_COLUMN_PROP } from '../utils/create-checkbox-column'
 import { setColumnDefaults } from '../utils/set-column-defaults'
+import { ColumnsFiltersService } from '../services/columns-filters.service'
 
 import { ColumnsManagerService } from './columns-manager.service'
 import { DatatableColumnChangesService } from './datatable-column-changes.service'
-import { firstValueFrom } from 'rxjs'
 
 describe('ColumnsManagerService', () => {
   let service: ColumnsManagerService
@@ -26,10 +27,13 @@ describe('ColumnsManagerService', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    providers: [ColumnsManagerService, DatatableColumnChangesService],
-    teardown: { destroyAfterEach: false }
-})
-    .compileComponents()
+      providers: [
+        ColumnsManagerService,
+        ColumnsFiltersService,
+        DatatableColumnChangesService,
+      ],
+      teardown: { destroyAfterEach: false },
+    }).compileComponents()
   }))
 
   beforeEach(() => {
@@ -47,17 +51,21 @@ describe('ColumnsManagerService', () => {
   }))
 
   it('returns input columns set before observed', fakeAsync(() => {
-    service.setInputColumns([ { prop: 'name', name: 'Name' } ])
+    service.setInputColumns([{ prop: 'name', name: 'Name' }])
     const spy = jest.fn()
     service.columns$.subscribe(spy)
-    expect(spy).toHaveBeenCalledWith([
-      ...defaultColumnWithIdentMatchers([ { prop: 'name', name: 'Name' } ])
-    ].map(v => expect.objectContaining(v)))
+    expect(spy).toHaveBeenCalledWith(
+      [...defaultColumnWithIdentMatchers([{ prop: 'name', name: 'Name' }])].map(
+        (v) => expect.objectContaining(v),
+      ),
+    )
     expect(spy).toHaveBeenCalledTimes(1)
   }))
 
   it('returns 0 columns if only templateColumns', fakeAsync(() => {
-    service.setTemplateColumns(initTemplateColumnComponents([ { prop: 'name', name: 'Name' } ]))
+    service.setTemplateColumns(
+      initTemplateColumnComponents([{ prop: 'name', name: 'Name' }]),
+    )
     const spy = jest.fn()
     service.columns$.subscribe(spy)
     expect(spy).toHaveBeenCalledWith([])
@@ -82,53 +90,63 @@ describe('ColumnsManagerService', () => {
     service.setInputColumns([
       { prop: 'name', name: 'Name' },
       { prop: 'age', name: 'Age' },
-      { prop: 'color', name: 'Color' }
+      { prop: 'color', name: 'Color' },
     ])
-    expect(await service.columns$.pipe(take(1)).toPromise()).toEqual(expect.arrayContaining([
-      ...defaultColumnWithIdentMatchers([
-        { prop: 'name', name: 'Name' },
-        { prop: 'age', name: 'Age' },
-        { prop: 'color', name: 'Color' }
-      ]).map(v => expect.objectContaining(v))
-    ]))
+    expect(await service.columns$.pipe(take(1)).toPromise()).toEqual(
+      expect.arrayContaining([
+        ...defaultColumnWithIdentMatchers([
+          { prop: 'name', name: 'Name' },
+          { prop: 'age', name: 'Age' },
+          { prop: 'color', name: 'Color' },
+        ]).map((v) => expect.objectContaining(v)),
+      ]),
+    )
   })
 
   it('should prioritize Template props', async () => {
     service.setInputColumns([
       { prop: 'name', name: 'Name' },
       { prop: 'age', name: 'Age', cellClass: 'inp-class' },
-      { prop: 'color', name: 'Color' }
+      { prop: 'color', name: 'Color' },
     ])
-    service.setTemplateColumns(initTemplateColumnComponents([
-      { prop: 'name', name: 'Name' },
-      { prop: 'age', name: 'Age', cellClass: 'tpl-class' },
-      { prop: 'color', name: 'Color' }
-    ]))
-    expect(await service.columns$.pipe(take(1)).toPromise()).toEqual(expect.arrayContaining([
-      ...defaultColumnWithIdentMatchers([
+    service.setTemplateColumns(
+      initTemplateColumnComponents([
         { prop: 'name', name: 'Name' },
         { prop: 'age', name: 'Age', cellClass: 'tpl-class' },
-        { prop: 'color', name: 'Color' }
-      ]).map(v => expect.objectContaining(v))
-    ]))
+        { prop: 'color', name: 'Color' },
+      ]),
+    )
+    expect(await service.columns$.pipe(take(1)).toPromise()).toEqual(
+      expect.arrayContaining([
+        ...defaultColumnWithIdentMatchers([
+          { prop: 'name', name: 'Name' },
+          { prop: 'age', name: 'Age', cellClass: 'tpl-class' },
+          { prop: 'color', name: 'Color' },
+        ]).map((v) => expect.objectContaining(v)),
+      ]),
+    )
   })
 
   describe('checkbox column', () => {
     it('should not have checkbox column by default', async () => {
-      expect((await firstValueFrom(service.columns$.pipe(take(1)))).length).toEqual(0)
+      expect(
+        (await firstValueFrom(service.columns$.pipe(take(1)))).length,
+      ).toEqual(0)
     })
 
     it('should have checkbox column when selectionType is "checkbox"', async () => {
       service.setSelectionType(SelectionType.checkbox)
       expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
-        expect.objectContaining({ prop: CHECKBOX_COLUMN_PROP })
+        expect.objectContaining({ prop: CHECKBOX_COLUMN_PROP }),
       )
     })
   })
 
   describe('rowActionItem', () => {
     it('should not have row action menu column if not set', async () => {
-      expect((await firstValueFrom(service.columns$.pipe(take(1)))).length).toEqual(0)
+      expect(
+        (await firstValueFrom(service.columns$.pipe(take(1)))).length,
+      ).toEqual(0)
     })
 
     it('should have row action menu column when actionMenuCellTpl set', async () => {
@@ -137,8 +155,8 @@ describe('ColumnsManagerService', () => {
         expect.objectContaining({
           prop: ACTION_MENU_COLUMN_PROP,
           cellTemplate: undefined,
-          headerTemplate: undefined
-        })
+          headerTemplate: undefined,
+        }),
       )
     })
 
@@ -150,8 +168,8 @@ describe('ColumnsManagerService', () => {
         expect.objectContaining({
           prop: ACTION_MENU_COLUMN_PROP,
           cellTemplate,
-          headerTemplate: undefined
-        })
+          headerTemplate: undefined,
+        }),
       )
     })
 
@@ -163,8 +181,8 @@ describe('ColumnsManagerService', () => {
         expect.objectContaining({
           prop: ACTION_MENU_COLUMN_PROP,
           cellTemplate: undefined,
-          headerTemplate
-        })
+          headerTemplate,
+        }),
       )
     })
 
@@ -178,103 +196,105 @@ describe('ColumnsManagerService', () => {
         expect.objectContaining({
           prop: ACTION_MENU_COLUMN_PROP,
           cellTemplate,
-          headerTemplate
-        })
+          headerTemplate,
+        }),
       )
     })
   })
 
   describe('treeToggleTpl', () => {
     it('should not have treeToggleTemplate', async () => {
-      service.setInputColumns([ { prop: 'name' } ])
+      service.setInputColumns([{ prop: 'name' }])
       expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
         expect.objectContaining({
           prop: 'name',
           // isTreeColumn: undefined
-        })
+        }),
       )
     })
 
     it('should not have treeToggleTemplate if only isTreeColumn set', async () => {
-      service.setInputColumns([ { prop: 'name', isTreeColumn: true } ])
+      service.setInputColumns([{ prop: 'name', isTreeColumn: true }])
       expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
         expect.objectContaining({
           prop: 'name',
-          isTreeColumn: true
-        })
+          isTreeColumn: true,
+        }),
       )
     })
 
     it('should have treeToggleTemplate if isTreeColumn and treeToggleTemplate set', async () => {
       const tpl = {} as any
-      service.setInputColumns([ { prop: 'name', isTreeColumn: true, treeToggleTemplate: tpl } ])
+      service.setInputColumns([
+        { prop: 'name', isTreeColumn: true, treeToggleTemplate: tpl },
+      ])
       expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
         expect.objectContaining({
           prop: 'name',
           isTreeColumn: true,
-          treeToggleTemplate: tpl
-        })
+          treeToggleTemplate: tpl,
+        }),
       )
     })
   })
 
   describe('headerTemplate', () => {
     it('should not have headerTemplate', async () => {
-      service.setInputColumns([ { prop: 'name' } ])
+      service.setInputColumns([{ prop: 'name' }])
       expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
         expect.objectContaining({
-          prop: 'name'
-        })
+          prop: 'name',
+        }),
       )
     })
 
     it('should have headerTemplate from column input', async () => {
       const tpl1 = { a: 'a' } as any
       const tpl2 = { b: 'b' } as any
-      service.setInputColumns([ { prop: 'name', headerTemplate: tpl1 } ])
+      service.setInputColumns([{ prop: 'name', headerTemplate: tpl1 }])
       service.setHeaderTpl(tpl2)
       expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
         expect.objectContaining({
           prop: 'name',
-          headerTemplate: tpl1
-        })
+          headerTemplate: tpl1,
+        }),
       )
     })
 
     it('should have headerTemplate from setHeaderTpl', async () => {
       const tpl1 = { a: 'a' } as any
       const tpl2 = { b: 'b' } as any
-      service.setInputColumns([ { prop: 'name' } ])
+      service.setInputColumns([{ prop: 'name' }])
       service.setHeaderTpl(tpl2)
       expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
         expect.objectContaining({
           prop: 'name',
-          headerTemplate: tpl2
-        })
+          headerTemplate: tpl2,
+        }),
       )
     })
   })
 
   describe('cellTypeSelectorTpl', () => {
     it('should not have cellTypeSelectorTpl', async () => {
-      service.setInputColumns([ { prop: 'name' } ])
+      service.setInputColumns([{ prop: 'name' }])
       expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
         expect.objectContaining({
           prop: 'name',
-        })
+        }),
       )
     })
 
     it('should have cellTemplate if cellType set', async () => {
       const tpl = { a: 'a' } as any
-      service.setInputColumns([ { prop: 'name', cellType: 'a' } ])
+      service.setInputColumns([{ prop: 'name', cellType: 'a' }])
       service.setCellTypeSelectorTpl(tpl)
       expect((await firstValueFrom(service.columns$.pipe(take(1))))[0]).toEqual(
         expect.objectContaining({
           prop: 'name',
           cellType: 'a',
-          cellTemplate: tpl
-        })
+          cellTemplate: tpl,
+        }),
       )
     })
   })
@@ -286,7 +306,9 @@ describe('ColumnsManagerService', () => {
    * NOTE: I plan to remove the need for this here, but I want to slowly
    * refactor to avoid breaking current functionality.
    */
-  function initTemplateColumnComponents(o: TheSeamDatatableColumn[]): DatatableColumnComponent[] {
+  function initTemplateColumnComponents(
+    o: TheSeamDatatableColumn[],
+  ): DatatableColumnComponent[] {
     const comps: DatatableColumnComponent[] = []
     for (const col of o) {
       const comp: any = new DatatableColumnComponent(colChangesService)
@@ -303,7 +325,10 @@ describe('ColumnsManagerService', () => {
  * Populates defaults, but replaces '$$id' with an "any string" matcher and
  * '$$valueGetter' with an "any function" mathcer.
  */
-function defaultColumnWithIdentMatchers(o: TheSeamDatatableColumn[], includesTplCols: boolean = false): TheSeamDatatableColumn[] {
+function defaultColumnWithIdentMatchers(
+  o: TheSeamDatatableColumn[],
+  includesTplCols: boolean = false,
+): TheSeamDatatableColumn[] {
   setColumnDefaults(o)
   for (const col of o) {
     const _o: any = col
@@ -321,7 +346,6 @@ function defaultColumnWithIdentMatchers(o: TheSeamDatatableColumn[], includesTpl
 }
 
 class MockDatatable {
-
   _internalColumns?: TableColumn[]
   private _columns: TableColumn[] = []
   private _innerWidth = 500
@@ -358,9 +382,11 @@ class MockDatatable {
   recalculateColumns(
     columns: any[] = this._internalColumns as any,
     forceIdx: number = -1,
-    allowBleed: boolean = this.scrollbarH
+    allowBleed: boolean = this.scrollbarH,
   ): any[] | undefined {
-    if (!columns) { return undefined }
+    if (!columns) {
+      return undefined
+    }
 
     let width = this._innerWidth
     if (this.scrollbarV) {

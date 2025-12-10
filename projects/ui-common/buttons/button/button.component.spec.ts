@@ -1,4 +1,4 @@
-import { createHostFactory, Spectator } from '@ngneat/spectator/jest'
+import { createHostFactory, SpectatorHost } from '@ngneat/spectator/jest'
 
 import { TheSeamButtonComponent } from './button.component'
 
@@ -17,19 +17,31 @@ import { platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic
 
 describe('TheSeamButtonComponent', () => {
   describe('Normal', () => {
-    let spectator: Spectator<TheSeamButtonComponent>
+    let spectator: SpectatorHost<TheSeamButtonComponent>
     const createHost = createHostFactory(TheSeamButtonComponent)
 
     it('should have button type by default', () => {
       spectator = createHost(`<button seamButton>Example</button>`)
-      expect(spectator.query('button[seamButton][type="button"]', { root: true })).toBeTruthy()
+      expect(
+        spectator.query('button[seamButton][type="button"]', { root: true }),
+      ).toBeTruthy()
     })
 
     it('should set the theme class name according to the [theme] input', () => {
-      spectator = createHost(`<button seamButton>Example</button>`)
-      spectator.setInput('theme', 'primary')
-      expect(spectator.query('button', { root: true })).toHaveClass('btn-primary')
-      expect(spectator.query('button', { root: true })).not.toHaveClass('btn-success')
+      spectator = createHost(
+        `<button seamButton [theme]="theme">Example</button>`,
+        {
+          hostProps: {
+            theme: 'primary',
+          },
+        },
+      )
+      expect(spectator.query('button', { root: true })).toHaveClass(
+        'btn-primary',
+      )
+      expect(spectator.query('button', { root: true })).not.toHaveClass(
+        'btn-success',
+      )
     })
   })
 

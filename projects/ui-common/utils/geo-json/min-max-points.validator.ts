@@ -8,7 +8,10 @@ import { coerceFeatureCollection } from './coerce-feature-collection'
 
 export const MIN_MAX_POINTS_VALIDATOR_NAME = 'min-max-points'
 
-export function minMaxPointsValidator(min: number | undefined = 3, max?: number | undefined): ValidatorFn {
+export function minMaxPointsValidator(
+  min: number | undefined = 3,
+  max?: number | undefined,
+): ValidatorFn {
   return (control: AbstractControl) => {
     // Don't need to validate if there isn't a value. Use `Validators.required` for that.
     if (isEmptyInputValue(control.value)) {
@@ -27,8 +30,8 @@ export function minMaxPointsValidator(min: number | undefined = 3, max?: number 
         : `A polygon must have at least ${min} points.`
       return {
         [MIN_MAX_POINTS_VALIDATOR_NAME]: {
-          reason
-        }
+          reason,
+        },
       }
     }
     return null
@@ -40,7 +43,11 @@ export function minMaxPointsValidator(min: number | undefined = 3, max?: number 
  *
  * NOTE: Does not consider GeometryCollection.
  */
- function collectionViolatesMinMax(featureCollection: FeatureCollection, min: number, max: number | undefined): boolean {
+function collectionViolatesMinMax(
+  featureCollection: FeatureCollection,
+  min: number,
+  max: number | undefined,
+): boolean {
   for (const f of featureCollection.features) {
     if (f.geometry.type === 'Polygon') {
       if (polygonViolatesMinMax(f.geometry.coordinates[0].length, min, max)) {
@@ -58,8 +65,15 @@ export function minMaxPointsValidator(min: number | undefined = 3, max?: number 
   return false
 }
 
-function polygonViolatesMinMax(coordinateLength: number, min: number, max: number | undefined): boolean {
-  if (coordinateLength < min || (notNullOrUndefined(max) && max > min && coordinateLength > max)) {
+function polygonViolatesMinMax(
+  coordinateLength: number,
+  min: number,
+  max: number | undefined,
+): boolean {
+  if (
+    coordinateLength < min ||
+    (notNullOrUndefined(max) && max > min && coordinateLength > max)
+  ) {
     return true
   }
 

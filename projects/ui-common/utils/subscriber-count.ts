@@ -1,6 +1,10 @@
 import { Observable, Subscriber } from 'rxjs'
 
-export type SubscriberCountChangedFn = (description: string, count: number, reason: 'subscribed' | 'unsubscribed') => void
+export type SubscriberCountChangedFn = (
+  description: string,
+  count: number,
+  reason: 'subscribed' | 'unsubscribed',
+) => void
 
 /**
  * This is just for helping debug observables that aren't being unsubscribed
@@ -15,7 +19,7 @@ export type SubscriberCountChangedFn = (description: string, count: number, reas
 export function subscriberCount<T>(
   sourceObservable: Observable<T>,
   description: string,
-  countChangedFn: SubscriberCountChangedFn | undefined | null = logOnChange
+  countChangedFn: SubscriberCountChangedFn | undefined | null = logOnChange,
 ) {
   let counter = 0
   return new Observable((subscriber: Subscriber<T>) => {
@@ -37,7 +41,11 @@ export function subscriberCount<T>(
   })
 }
 
-const logOnChange: SubscriberCountChangedFn = (description: string, count: number, reason: 'subscribed' | 'unsubscribed') => {
+const logOnChange: SubscriberCountChangedFn = (
+  description: string,
+  count: number,
+  reason: 'subscribed' | 'unsubscribed',
+) => {
   // eslint-disable-next-line no-console
   console.log(`${description} subscriptions: ${count}  [${reason}]`)
 }

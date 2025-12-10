@@ -1,15 +1,43 @@
-import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy } from '@angular/core'
-import { ActivatedRoute, NavigationEnd, NavigationStart, Router, RouterOutlet } from '@angular/router'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  HostBinding,
+  OnDestroy,
+} from '@angular/core'
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  NavigationStart,
+  Router,
+  RouterOutlet,
+} from '@angular/router'
 import { combineLatest, Subject } from 'rxjs'
-import { distinctUntilChanged, filter, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators'
+import {
+  distinctUntilChanged,
+  filter,
+  map,
+  startWith,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs/operators'
 
-import { fader, sideToSide, slider, stepper, transformer } from './hierarchy-route-animations'
+import {
+  fader,
+  sideToSide,
+  slider,
+  stepper,
+  transformer,
+} from './hierarchy-route-animations'
 
 export function routeChanges(router: Router) {
   return router.events.pipe(
-    filter(event => event instanceof NavigationStart || event instanceof NavigationEnd),
+    filter(
+      (event) =>
+        event instanceof NavigationStart || event instanceof NavigationEnd,
+    ),
     distinctUntilChanged((x: any, y: any) => x.id === y.id),
-    map(event => ({ url: event.url }))
+    map((event) => ({ url: event.url })),
   )
 }
 
@@ -34,10 +62,10 @@ let _uid = 0
     // sideToSide
     // contentLeave
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class HierarchyRouterOutletComponent implements OnDestroy {
-
   private _uid = _uid++
 
   private readonly _ngUnsubscribe = new Subject<void>()
@@ -51,14 +79,15 @@ export class HierarchyRouterOutletComponent implements OnDestroy {
 
   constructor(
     private _route: ActivatedRoute,
-    private _router: Router
+    private _router: Router,
   ) {
-    this._router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      // tap(v => console.log(`_hasChildren()[${this._uid}]`, this._hasChildren())),
-      takeUntil(this._ngUnsubscribe)
-    )
-    .subscribe()
+    this._router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        // tap(v => console.log(`_hasChildren()[${this._uid}]`, this._hasChildren())),
+        takeUntil(this._ngUnsubscribe),
+      )
+      .subscribe()
 
     // routeChanges(this._router)
     //   .pipe(
@@ -83,7 +112,8 @@ export class HierarchyRouterOutletComponent implements OnDestroy {
     const count = this._route.pathFromRoot.length - 1
     let countFull = 0
     if (this._router.parseUrl(this._router.url).root.children.primary) {
-      countFull = this._router.parseUrl(this._router.url).root.children.primary.segments.length
+      countFull = this._router.parseUrl(this._router.url).root.children.primary
+        .segments.length
     }
     // console.log(`_hasChildren[${this._uid}]`, { count, countFull })
     return countFull > count
@@ -128,5 +158,4 @@ export class HierarchyRouterOutletComponent implements OnDestroy {
     // console.log('routeAnimationsDone', event)
     this.ngContentVisible = !this.outletActive
   }
-
 }

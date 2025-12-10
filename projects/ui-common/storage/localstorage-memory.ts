@@ -1,4 +1,3 @@
-
 export class LocalStorageMemory implements Storage {
   [name: string]: any
 
@@ -68,5 +67,4 @@ export class LocalStorageMemory implements Storage {
       this._cache[key] = `${value}`
     }
   }
-
 }

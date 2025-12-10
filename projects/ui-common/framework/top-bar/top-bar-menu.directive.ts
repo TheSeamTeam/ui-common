@@ -1,14 +1,11 @@
-import { Directive, Self } from '@angular/core'
+import { Directive, inject } from '@angular/core'
 
 import { MenuComponent } from '@theseam/ui-common/menu'
 
 @Directive({
-  selector: 'seam-menu[seamTopBarMenu]'
+  selector: 'seam-menu[seamTopBarMenu]',
+  exportAs: 'seamTopBarMenu',
 })
 export class TopBarMenuDirective {
-
-  constructor(
-    @Self() public menu: MenuComponent
-  ) { }
-
+  public readonly menu = inject(MenuComponent, { self: true })
 }

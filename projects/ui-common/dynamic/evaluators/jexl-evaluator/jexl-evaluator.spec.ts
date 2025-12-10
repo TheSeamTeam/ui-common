@@ -7,15 +7,23 @@ import { JexlEvaluator } from './jexl-evaluator'
 import { IJexlValue } from './jexl-value'
 
 describe('JexlEvaluator', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    providers: [
-        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true }
-    ],
-    teardown: { destroyAfterEach: false }
-}))
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: THESEAM_DYNAMIC_VALUE_EVALUATOR,
+          useClass: JexlEvaluator,
+          multi: true,
+        },
+      ],
+      teardown: { destroyAfterEach: false },
+    }),
+  )
 
   it('should return transformed value if input type is evaluatable', () => {
-    const service: DynamicValueHelperService = TestBed.get(DynamicValueHelperService)
+    const service: DynamicValueHelperService = TestBed.get(
+      DynamicValueHelperService,
+    )
     const inValue: IJexlValue<string> = { type: 'jexl', expr: 'a.b' }
     const context = { a: { b: 'thing' } }
     const outValue = service.evalSync(inValue, context)
@@ -23,7 +31,9 @@ describe('JexlEvaluator', () => {
   })
 
   it('should return transformed value if input type is evaluatable', async () => {
-    const service: DynamicValueHelperService = TestBed.get(DynamicValueHelperService)
+    const service: DynamicValueHelperService = TestBed.get(
+      DynamicValueHelperService,
+    )
     const inValue: IJexlValue<string> = { type: 'jexl', expr: 'a.b' }
     const context = { a: { b: 'thing' } }
     const outValue = await service.eval(inValue, context)

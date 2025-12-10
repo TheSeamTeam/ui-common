@@ -1,15 +1,13 @@
-import { Directive, Input, TemplateRef } from '@angular/core'
+import { Directive, inject, Input, TemplateRef } from '@angular/core'
 
-import { ITiledSelectItem } from '../tiled-select.models'
+import { TheSeamTiledSelectItem } from '../tiled-select.models'
 
 @Directive({
   selector: '[seamTiledSelectTileOverlay]',
-  exportAs: 'seamTiledSelectTileOverlay'
+  exportAs: 'seamTiledSelectTileOverlay',
 })
-export class TiledSelectTileOverlayDirective {
+export class TheSeamTiledSelectTileOverlayDirective {
+  public readonly template = inject(TemplateRef<any>)
 
-  @Input() record: ITiledSelectItem | undefined | null
-
-  constructor(public template: TemplateRef<any>) { }
-
+  @Input() record: TheSeamTiledSelectItem | undefined | null
 }

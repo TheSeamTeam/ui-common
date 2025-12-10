@@ -1,7 +1,19 @@
-import { Injectable } from '@angular/core'
-import { IsActiveMatchOptions, NavigationEnd, Router, UrlCreationOptions } from '@angular/router'
+import { inject, Injectable } from '@angular/core'
+import {
+  IsActiveMatchOptions,
+  NavigationEnd,
+  Router,
+  UrlCreationOptions,
+} from '@angular/router'
 import { BehaviorSubject, defer, Observable, Subject, Subscriber } from 'rxjs'
-import { distinctUntilChanged, filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators'
+import {
+  distinctUntilChanged,
+  filter,
+  map,
+  shareReplay,
+  startWith,
+  switchMap,
+} from 'rxjs/operators'
 
 import { hasProperty, notNullOrUndefined } from '@theseam/ui-common/utils'
 
@@ -15,12 +27,18 @@ import {
   isHorizontalNavItemActive,
   isHorizontalNavItemType,
   setDefaultHorizontalNavItemState,
-  setHorizontalNavItemStateProp
+  setHorizontalNavItemStateProp,
 } from './nav-utils'
-import { INavItem, INavItemState, INavLink, NavItemStateChanged } from './nav.models'
+import {
+  INavItem,
+  INavItemState,
+  INavLink,
+  NavItemStateChanged,
+} from './nav.models'
 
 @Injectable()
 export class TheSeamNavService {
+  private readonly _router = inject(Router)
 
   private readonly _updatingCount = new BehaviorSubject<number>(0)
 
@@ -28,13 +46,11 @@ export class TheSeamNavService {
 
   public readonly itemChanged = new Subject<NavItemStateChanged>()
 
-  constructor(
-    private readonly _router: Router
-  ) {
+  constructor() {
     this.loading$ = this._updatingCount.pipe(
-      map(count => count > 0),
+      map((count) => count > 0),
       distinctUntilChanged(),
-      shareReplay({ bufferSize: 1, refCount: true })
+      shareReplay({ bufferSize: 1, refCount: true }),
     )
   }
 
@@ -43,16 +59,18 @@ export class TheSeamNavService {
       this.updateItemsStates(items)
       this.updateRouterFocusedItem(items)
       return new Observable((subscriber: Subscriber<INavItem[]>) => {
-        const stateChangeSub = this.itemChanged.pipe(
-          switchMap(change => {
-            if (change.prop === 'focused' && change.newValue) {
-              this.updateFocusedItem(items, change.item)
-            }
-            return this.loading$.pipe(filter(loading => !loading))
+        const stateChangeSub = this.itemChanged
+          .pipe(
+            switchMap((change) => {
+              if (change.prop === 'focused' && change.newValue) {
+                this.updateFocusedItem(items, change.item)
+              }
+              return this.loading$.pipe(filter((loading) => !loading))
+            }),
+          )
+          .subscribe(() => {
+            subscriber.next(items)
           })
-        ).subscribe(() => {
-          subscriber.next(items)
-        })
 
         try {
           this.updateItemsStates(items)
@@ -60,16 +78,16 @@ export class TheSeamNavService {
           subscriber.error(err)
         }
 
-        const routeChangeSub = this._router.events.pipe(
-          filter(event => event instanceof NavigationEnd),
-        ).subscribe(event => {
-          try {
-            this.updateItemsStates(items)
-            this.updateRouterFocusedItem(items)
-          } catch (err) {
-            subscriber.error(err)
-          }
-        })
+        const routeChangeSub = this._router.events
+          .pipe(filter((event) => event instanceof NavigationEnd))
+          .subscribe((event) => {
+            try {
+              this.updateItemsStates(items)
+              this.updateRouterFocusedItem(items)
+            } catch (err) {
+              subscriber.error(err)
+            }
+          })
 
         return () => {
           stateChangeSub.unsubscribe()
@@ -158,7 +176,10 @@ export class TheSeamNavService {
       this._updateItemsExpandedState(item.children)
     }
 
-    if (horizontalNavItemHasActiveChild(item) || horizontalNavItemHasExpandedChild(item)) {
+    if (
+      horizontalNavItemHasActiveChild(item) ||
+      horizontalNavItemHasExpandedChild(item)
+    ) {
       if (!getHorizontalNavItemStateProp(item, 'expanded')) {
         this.setItemStateProp(item, 'expanded', true)
       }
@@ -170,13 +191,18 @@ export class TheSeamNavService {
   }
 
   public updateRouterFocusedItem(items: INavItem[]) {
-    const focusedItem = items.find(i => isHorizontalNavItemActive(i)) || items.find(i => horizontalNavItemHasActiveChild(i))
+    const focusedItem =
+      items.find((i) => isHorizontalNavItemActive(i)) ||
+      items.find((i) => horizontalNavItemHasActiveChild(i))
     if (notNullOrUndefined(focusedItem)) {
       this.updateFocusedItem(items, focusedItem)
     }
   }
 
-  public updateFocusedItem(items: INavItem[], focusedItem: INavItem | undefined): void {
+  public updateFocusedItem(
+    items: INavItem[],
+    focusedItem: INavItem | undefined,
+  ): void {
     for (const item of items) {
       if (areSameHorizontalNavItem(item, focusedItem)) {
         setHorizontalNavItemStateProp(item, 'focused', true)
@@ -187,7 +213,7 @@ export class TheSeamNavService {
   }
 
   private _getNavExtras(item: INavLink): UrlCreationOptions {
-    const navigationExtras: UrlCreationOptions = { }
+    const navigationExtras: UrlCreationOptions = {}
     if (hasProperty(item, 'queryParams')) {
       navigationExtras.queryParams = item.queryParams
     }
@@ -207,9 +233,13 @@ export class TheSeamNavService {
     const link = item.link
 
     if (typeof link === 'string') {
-      return this._router.createUrlTree([ link ], this._getNavExtras(item)).toString()
+      return this._router
+        .createUrlTree([link], this._getNavExtras(item))
+        .toString()
     } else if (Array.isArray(link)) {
-      return this._router.createUrlTree(link, this._getNavExtras(item)).toString()
+      return this._router
+        .createUrlTree(link, this._getNavExtras(item))
+        .toString()
     }
 
     return null
@@ -220,20 +250,24 @@ export class TheSeamNavService {
       paths: 'subset',
       queryParams: 'subset',
       fragment: 'ignored',
-      matrixParams: 'ignored'
+      matrixParams: 'ignored',
     }
 
     if (hasProperty(item, 'matchOptions')) {
       return {
         ...defaultMatchOpts,
-        ...item.matchOptions
+        ...item.matchOptions,
       }
     }
 
     return defaultMatchOpts
   }
 
-  public setItemStateProp<K extends keyof INavItemState>(item: INavItem, prop: K, value: INavItemState[K]): void {
+  public setItemStateProp<K extends keyof INavItemState>(
+    item: INavItem,
+    prop: K,
+    value: INavItemState[K],
+  ): void {
     const currentValue = getHorizontalNavItemStateProp(item, prop)
     if (currentValue !== value) {
       setHorizontalNavItemStateProp(item, prop, value)
@@ -242,7 +276,7 @@ export class TheSeamNavService {
         item,
         prop,
         prevValue: currentValue,
-        newValue: value
+        newValue: value,
       }
       this.itemChanged.next(changed)
     }

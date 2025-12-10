@@ -6,7 +6,12 @@ import { Feature, FeatureCollection } from 'geojson'
 import { isEmptyInputValue } from '../form/is-empty-input-value'
 import { coerceFeatureCollection } from './coerce-feature-collection'
 
-const kinkableGeometryTypes = [ 'LineString', 'MultiLineString', 'MultiPolygon', 'Polygon' ]
+const kinkableGeometryTypes = [
+  'LineString',
+  'MultiLineString',
+  'MultiPolygon',
+  'Polygon',
+]
 
 export const NO_KINKS_VALIDATOR_NAME = 'no-kinks'
 
@@ -23,7 +28,7 @@ export function noKinksValidator(): ValidatorFn {
       return null
     }
 
-    const kinksFound: { feature: Feature, kinks: FeatureCollection }[] = []
+    const kinksFound: { feature: Feature; kinks: FeatureCollection }[] = []
     for (const f of value.features) {
       if (kinkableGeometryTypes.indexOf(f.geometry.type) !== -1) {
         const _kinks = kinks(f as any)
@@ -41,7 +46,7 @@ export function noKinksValidator(): ValidatorFn {
         [NO_KINKS_VALIDATOR_NAME]: {
           reason: 'Paths should not intersect themselves.',
           featuresWithKink: kinksFound,
-        }
+        },
       }
     }
 

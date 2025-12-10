@@ -1,6 +1,5 @@
-import { moduleMetadata } from '@storybook/angular'
+import { applicationConfig, moduleMetadata } from '@storybook/angular'
 import { Story, Meta, Preview } from '@storybook/addon-docs'
-import { applicationConfig } from '@storybook/angular/dist/client/decorators'
 
 import { RouterModule } from '@angular/router'
 import { importProvidersFrom } from '@angular/core'
@@ -15,40 +14,56 @@ import {
   ExportersDataEvaluator,
   JexlEvaluator,
   THESEAM_DYNAMIC_ACTION,
-  THESEAM_DYNAMIC_VALUE_EVALUATOR
+  THESEAM_DYNAMIC_VALUE_EVALUATOR,
 } from '@theseam/ui-common/dynamic'
 
 # Cell Type Icon
 
-<Meta title="TableCellTypes/Icon"
+<Meta
+  title="TableCellTypes/Icon"
   decorators={[
     applicationConfig({
       providers: [
         provideAnimations(),
-        importProvidersFrom(
-          RouterModule.forRoot([], { useHash: true }),
-        ),
+        importProvidersFrom(RouterModule.forRoot([], { useHash: true })),
       ],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamDatatableModule,
-        TheSeamTableCellTypesModule,
-      ],
+      imports: [TheSeamDatatableModule, TheSeamTableCellTypesModule],
       providers: [
-        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: JexlEvaluator, multi: true },
-        { provide: THESEAM_DYNAMIC_VALUE_EVALUATOR, useClass: ExportersDataEvaluator, multi: true },
-        { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionApiService, multi: true },
-        { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionLinkService, multi: true },
-        { provide: THESEAM_DYNAMIC_ACTION, useClass: DynamicActionModalService, multi: true },
-      ]
-    })
+        {
+          provide: THESEAM_DYNAMIC_VALUE_EVALUATOR,
+          useClass: JexlEvaluator,
+          multi: true,
+        },
+        {
+          provide: THESEAM_DYNAMIC_VALUE_EVALUATOR,
+          useClass: ExportersDataEvaluator,
+          multi: true,
+        },
+        {
+          provide: THESEAM_DYNAMIC_ACTION,
+          useClass: DynamicActionApiService,
+          multi: true,
+        },
+        {
+          provide: THESEAM_DYNAMIC_ACTION,
+          useClass: DynamicActionLinkService,
+          multi: true,
+        },
+        {
+          provide: THESEAM_DYNAMIC_ACTION,
+          useClass: DynamicActionModalService,
+          multi: true,
+        },
+      ],
+    }),
   ]}
   parameters={{
     layout: 'fullscreen',
     docs: {
       iframeHeight: '400px',
-    }
+    },
   }}
 />
 
@@ -146,11 +161,14 @@ import {
       template: `<seam-datatable class="vw-100 vh-100" [columns]="columns" [rows]="rows"></seam-datatable>`,
       props: {
         columns: [
-          { prop: 'icn', name: 'Icon', cellType: 'icon', cellTypeConfig: { type: 'icon' } }
+          {
+            prop: 'icn',
+            name: 'Icon',
+            cellType: 'icon',
+            cellTypeConfig: { type: 'icon' },
+          },
         ],
-        rows: [
-          { icn: 'faEnvelope' }
-        ]
+        rows: [{ icn: 'faEnvelope' }],
       },
     }}
   </Story>
@@ -165,13 +183,16 @@ import {
       props: {
         columns: [
           {
-            prop: 'icn', name: 'Icon', cellType: 'icon',
-            cellTypeConfig: { type: 'icon', action: { type: 'link', link: 'example-1' } }
-          }
+            prop: 'icn',
+            name: 'Icon',
+            cellType: 'icon',
+            cellTypeConfig: {
+              type: 'icon',
+              action: { type: 'link', link: 'example-1' },
+            },
+          },
         ],
-        rows: [
-          { icn: 'faEnvelope' }
-        ]
+        rows: [{ icn: 'faEnvelope' }],
       },
     }}
   </Story>
@@ -186,16 +207,16 @@ import {
       props: {
         columns: [
           {
-            prop: 'icn', name: 'Icon', cellType: 'icon',
+            prop: 'icn',
+            name: 'Icon',
+            cellType: 'icon',
             cellTypeConfig: {
               type: 'icon',
-              action: { type: 'link', link: 'example-1', encrypted: true }
-            }
-          }
+              action: { type: 'link', link: 'example-1', encrypted: true },
+            },
+          },
         ],
-        rows: [
-          { icn: 'faEnvelope' }
-        ]
+        rows: [{ icn: 'faEnvelope' }],
       },
     }}
   </Story>
@@ -210,17 +231,17 @@ import {
       props: {
         columns: [
           {
-            prop: 'icn', name: 'Icon', cellType: 'icon',
+            prop: 'icn',
+            name: 'Icon',
+            cellType: 'icon',
             cellTypeConfig: {
               type: 'icon',
               linkClass: 'text-danger',
-              action: { type: 'link', link: 'example-1' }
-            }
-          }
+              action: { type: 'link', link: 'example-1' },
+            },
+          },
         ],
-        rows: [
-          { icn: 'faEnvelope' }
-        ]
+        rows: [{ icn: 'faEnvelope' }],
       },
     }}
   </Story>
@@ -235,17 +256,17 @@ import {
       props: {
         columns: [
           {
-            prop: 'icn', name: 'Icon', cellType: 'icon',
+            prop: 'icn',
+            name: 'Icon',
+            cellType: 'icon',
             cellTypeConfig: {
               type: 'icon',
               iconType: 'styled-square',
-              action: { type: 'link', link: 'example-1' }
-            }
-          }
+              action: { type: 'link', link: 'example-1' },
+            },
+          },
         ],
-        rows: [
-          { icn: 'faEnvelope' }
-        ]
+        rows: [{ icn: 'faEnvelope' }],
       },
     }}
   </Story>

@@ -9,14 +9,18 @@ import {
 import { Subject } from 'rxjs'
 import { takeUntil, tap } from 'rxjs/operators'
 
-import { GoogleMapsControlsService, MapControlRef } from './google-maps-controls.service'
+import {
+  GoogleMapsControlsService,
+  MapControlRef,
+} from './google-maps-controls.service'
 import { GoogleMapsService } from './google-maps.service'
 import { MapControl, MAP_CONTROLS_SERVICE } from './map-controls-service'
 
 @Component({
   selector: 'seam-map-control',
   template: '',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class TheSeamMapsControlComponent implements OnInit, OnDestroy {
   private readonly _ngUnsubscribe = new Subject<void>()
@@ -34,21 +38,24 @@ export class TheSeamMapsControlComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly _googleMaps: GoogleMapsService,
-    @Inject(MAP_CONTROLS_SERVICE) private readonly _googleMapsControls: GoogleMapsControlsService,
-  ) { }
+    @Inject(MAP_CONTROLS_SERVICE)
+    private readonly _googleMapsControls: GoogleMapsControlsService,
+  ) {}
 
   /** @ignore */
   ngOnInit(): void {
-    this._googleMaps.mapReady$.pipe(
-      tap(ready => {
-        if (ready) {
-          this._add()
-        } else {
-          this._remove()
-        }
-      }),
-      takeUntil(this._ngUnsubscribe)
-    ).subscribe()
+    this._googleMaps.mapReady$
+      .pipe(
+        tap((ready) => {
+          if (ready) {
+            this._add()
+          } else {
+            this._remove()
+          }
+        }),
+        takeUntil(this._ngUnsubscribe),
+      )
+      .subscribe()
   }
 
   /** @ignore */

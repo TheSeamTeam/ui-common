@@ -3,7 +3,10 @@ import { FeatureCollection, Geometry } from 'geojson'
 /**
  * Returns true if the GeoJSON is only specifies geometries.
  */
-export function isOnlyGeometryTypes(featureCollection: FeatureCollection, types: Geometry['type'][]): boolean {
+export function isOnlyGeometryTypes(
+  featureCollection: FeatureCollection,
+  types: Geometry['type'][],
+): boolean {
   if (types.length === 0) {
     if (featureCollection.features.length > 0) {
       // If no types are specified then there can't be any specified types found.

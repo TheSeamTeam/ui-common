@@ -33,15 +33,15 @@ import { queryProcessingLink } from './query-processing-link'
 //   }
 // `
 
-const testResultLink = new ApolloLink(operation => {
+const testResultLink = new ApolloLink((operation) => {
   return Observable.of({
-    data: { operation }
+    data: { operation },
   })
 })
 
 function testHintTransform(
   before: HintTransformOperation,
-  afterTransform: HintTransformOperation
+  afterTransform: HintTransformOperation,
 ) {
   const query = before.query
   const variables = before.variables
@@ -50,10 +50,10 @@ function testHintTransform(
     // printOperationLink({ tag: 'Before', styles: 'color:cyan' })
     // .concat(queryProcessingLink)
     queryProcessingLink
-    // .concat(printOperationLink({ tag: 'After', styles: 'color:limegreen' }))
-    .concat(testResultLink)
+      // .concat(printOperationLink({ tag: 'After', styles: 'color:limegreen' }))
+      .concat(testResultLink)
 
-  ApolloLink.execute(link, { query, variables }).subscribe(v => {
+  ApolloLink.execute(link, { query, variables }).subscribe((v) => {
     expect(print(v.data?.operation.query)).toBe(print(afterTransform.query))
     expect(before.variables).toEqual(afterTransform.variables)
   })
@@ -66,7 +66,7 @@ describe('GraphQL apollo-links queryProcessingLink', () => {
         {
           query: gql`
             # @gql-hint: remove-not-defined
-            query TestQuery ($search: String) {
+            query TestQuery($search: String) {
               example {
                 totalCount
                 items {
@@ -76,7 +76,7 @@ describe('GraphQL apollo-links queryProcessingLink', () => {
               }
             }
           `,
-          variables: { search: undefined }
+          variables: { search: undefined },
         },
         {
           query: gql`
@@ -90,8 +90,8 @@ describe('GraphQL apollo-links queryProcessingLink', () => {
               }
             }
           `,
-          variables: { search: undefined }
-        }
+          variables: { search: undefined },
+        },
       )
     })
   })

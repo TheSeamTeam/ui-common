@@ -86,8 +86,15 @@ seam-base-layout {
       $background: $base-action-bg,
       $border: $base-action-bg,
       $hover-background: $base-action-hover-bg,
-      $active-background: $base-action-hover-bg,);
-    @include button-size($base-action-padding-y, $base-action-padding-x, $font-size-base, $line-height-base, $base-action-border-radius);
+      $active-background: $base-action-hover-bg
+    );
+    @include button-size(
+      $base-action-padding-y,
+      $base-action-padding-x,
+      $font-size-base,
+      $line-height-base,
+      $base-action-border-radius
+    );
     border: none;
     color: $base-action-color;
     @include hover() {
@@ -98,6 +105,4 @@ seam-base-layout {
       color: $base-action-hover-color;
     }
   }
-
 }
-

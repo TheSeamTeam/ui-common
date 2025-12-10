@@ -1,6 +1,7 @@
-<div class="nav-inner-wrapper" class="nav-inner-wrapper-{{hierLevel}}">
+<div class="nav-inner-wrapper" class="nav-inner-wrapper-{{ hierLevel }}">
   <div class="nav-items-row">
-    <seam-nav-item *ngFor="let item of items$ | async"
+    <seam-nav-item
+      *ngFor="let item of items$ | async"
       class="flex-shrink-0"
       [item]="item"
       [itemType]="$any(item)?.itemType"
@@ -20,7 +21,8 @@
       [childAction]="childAction"
       [expandAction]="expandAction"
       (navItemExpanded)="_navItemExpanded(item, $event)"
-      [hideEmptyIcon]="hideEmptyIcon">
+      [hideEmptyIcon]="hideEmptyIcon"
+    >
     </seam-nav-item>
   </div>
 </div>

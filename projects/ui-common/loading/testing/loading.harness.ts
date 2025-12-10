@@ -1,13 +1,19 @@
-import { BaseHarnessFilters, ComponentHarnessConstructor, ContentContainerComponentHarness, HarnessPredicate } from '@angular/cdk/testing'
+import {
+  BaseHarnessFilters,
+  ComponentHarnessConstructor,
+  ContentContainerComponentHarness,
+  HarnessPredicate,
+} from '@angular/cdk/testing'
 
 import { TheSeamLoadingTheme } from '../loading.models'
 import { primaryThemeConfig } from '../loading-themes'
 
 /** A set of criteria that can be used to filter a list of `TheSeamLoadingComponentHarness` instances. */
-export interface TheSeamLoadingComponentHarnessFilters extends BaseHarnessFilters { }
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface TheSeamLoadingComponentHarnessFilters
+  extends BaseHarnessFilters {}
 
 export class TheSeamLoadingComponentHarness extends ContentContainerComponentHarness<string> {
-
   /** The selector for the host element of a `TheSeamLoadingComponent` instance. */
   static hostSelector = 'seam-loading'
 
@@ -29,6 +35,9 @@ export class TheSeamLoadingComponentHarness extends ContentContainerComponentHar
   async getTheme(): Promise<TheSeamLoadingTheme> {
     const backdrop = await this._backdropElement()
     const backgroundColor = await backdrop.getCssValue('background-color')
-    return backgroundColor.replace(/\s/g, '') === primaryThemeConfig.backdropBackgroundColour ? 'primary' : 'default'
+    return backgroundColor.replace(/\s/g, '') ===
+      primaryThemeConfig.backdropBackgroundColour
+      ? 'primary'
+      : 'default'
   }
 }

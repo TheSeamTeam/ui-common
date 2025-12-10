@@ -1,8 +1,8 @@
-// import { AutoFocusDirective } from './auto-focus.directive'
+// import { TheSeamAutoFocusDirective } from './auto-focus.directive'
 
-// describe('AutoFocusDirective', () => {
+// describe('TheSeamAutoFocusDirective', () => {
 //   it('should create an instance', () => {
-//     const directive = new AutoFocusDirective()
+//     const directive = new TheSeamAutoFocusDirective()
 //     expect(directive).toBeTruthy()
 //   })
 // })

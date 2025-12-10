@@ -4,7 +4,6 @@ import { DynamicDatatableRowAction } from '../models/dynamic-datatable-row-actio
 export type DynamicDatatableActionMenuElementTypes = 'a' | 'button'
 
 export interface DynamicDatatableActionMenuRecord {
-
   /** Row input. */
   _row: DynamicDatatableRow
 

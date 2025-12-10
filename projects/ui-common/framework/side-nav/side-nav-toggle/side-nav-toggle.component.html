@@ -5,20 +5,21 @@
 </div>
 
 <ng-container *ngIf="toggleTpl; else iconBtn">
-  <button
-    class="side-nav-toggle--btn mx-1"
-    (click)="toggle()">
+  <button class="side-nav-toggle--btn mx-1" (click)="toggle()">
     <span class="sr-only">Toggle sidebar</span>
     <ng-container *ngTemplateOutlet="toggleTpl"></ng-container>
   </button>
 </ng-container>
 
 <ng-template #iconBtn>
-  <button seamIconBtn [icon]="toggleIcon"
+  <button
+    seamIconBtn
+    [icon]="toggleIcon"
     iconType="borderless-styled-square"
     btnSize="sm"
     class="side-nav-toggle--btn mx-1"
-    (click)="toggle()">
+    (click)="toggle()"
+  >
     <span class="sr-only">Toggle sidebar</span>
   </button>
 </ng-template>

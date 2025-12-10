@@ -1,11 +1,20 @@
-import { ComponentFactoryResolver, ComponentRef, Injectable, Injector, StaticProvider } from '@angular/core'
+import {
+  ComponentRef,
+  Injectable,
+  Injector,
+  StaticProvider,
+  ViewContainerRef,
+} from '@angular/core'
 import { Observable, Subject } from 'rxjs'
 
 import { GoogleMapsService } from './google-maps.service'
-import { MapControl, MapControlsService, MAP_CONTROL_DATA } from './map-controls-service'
+import {
+  MapControl,
+  MapControlsService,
+  MAP_CONTROL_DATA,
+} from './map-controls-service'
 
 export class MapControlRef {
-
   private readonly _destroyedSubject = new Subject<void>()
 
   private _componentRef: ComponentRef<any>
@@ -15,20 +24,20 @@ export class MapControlRef {
 
   constructor(
     private readonly _googleMaps: GoogleMapsService,
-    private readonly _componentFactoryResolver: ComponentFactoryResolver,
     private readonly _injector: Injector,
-    private readonly _controlDef: MapControl
+    private readonly _controlDef: MapControl,
+    private readonly _viewContainerRef: ViewContainerRef,
   ) {
     this.destroyed = this._destroyedSubject.asObservable()
 
     const component: any = this._controlDef.component
-    const factory = this._componentFactoryResolver.resolveComponentFactory(component)
+    // const factory = this._componentFactoryResolver.resolveComponentFactory(component)
 
     const providers: StaticProvider[] = []
     if (this._controlDef.data) {
       providers.push({
         provide: MAP_CONTROL_DATA,
-        useValue: this._controlDef.data
+        useValue: this._controlDef.data,
       })
     }
     const injector = Injector.create({
@@ -36,14 +45,19 @@ export class MapControlRef {
       parent: this._injector,
     })
 
-    this._componentRef = factory.create(injector)
+    // this._componentRef = factory.create(injector)
+    this._componentRef = this._viewContainerRef.createComponent(component, {
+      index: this._viewContainerRef.length,
+      injector,
+    })
     this._componentRef.changeDetectorRef.detectChanges()
 
-    const position = this._controlDef.position ?? google.maps.ControlPosition.LEFT_BOTTOM
+    const position =
+      this._controlDef.position ?? google.maps.ControlPosition.LEFT_BOTTOM
 
     this._googleMaps.addControl(
       this._componentRef.location.nativeElement,
-      position
+      position,
     )
 
     this._addedAtPosition = position
@@ -68,19 +82,22 @@ export class MapControlRef {
     this._destroyedSubject.next()
     this._destroyedSubject.complete()
   }
-
 }
 
 @Injectable()
 export class GoogleMapsControlsService implements MapControlsService {
-
   constructor(
     private readonly _googleMaps: GoogleMapsService,
-    private readonly _componentFactoryResolver: ComponentFactoryResolver,
     private readonly _injector: Injector,
-  ) { }
+    private readonly _viewContainerRef: ViewContainerRef,
+  ) {}
 
   public add(control: MapControl): MapControlRef {
-    return new MapControlRef(this._googleMaps, this._componentFactoryResolver, this._injector, control)
+    return new MapControlRef(
+      this._googleMaps,
+      this._injector,
+      control,
+      this._viewContainerRef,
+    )
   }
 }

@@ -1,5 +1,10 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
-import { BaseHarnessFilters, ComponentHarnessConstructor, ContentContainerComponentHarness, HarnessPredicate } from '@angular/cdk/testing'
+import {
+  BaseHarnessFilters,
+  ComponentHarnessConstructor,
+  ContentContainerComponentHarness,
+  HarnessPredicate,
+} from '@angular/cdk/testing'
 
 import { IconDefinition, IconLookup } from '@fortawesome/fontawesome-svg-core'
 import { SeamIcon } from '@theseam/ui-common/icon'
@@ -25,7 +30,7 @@ function isIconLookup(icon: any): icon is IconLookup {
 /** A set of criteria that can be used to filter a list of `TheSeamIconComponentHarness` instances. */
 export interface TheSeamIconComponentHarnessFilters extends BaseHarnessFilters {
   /** Only find instances whose text matches the given value. */
-  icon?: string | RegExp | SeamIcon;
+  icon?: string | RegExp | SeamIcon
 }
 
 export class TheSeamIconComponentHarness extends ContentContainerComponentHarness<string> {
@@ -44,27 +49,36 @@ export class TheSeamIconComponentHarness extends ContentContainerComponentHarnes
     this: ComponentHarnessConstructor<T>,
     options: TheSeamIconComponentHarnessFilters = {},
   ): HarnessPredicate<T> {
-    return new HarnessPredicate(this, options)
-      .addOption('icon', options.icon, async (harness, icon) => {
+    return new HarnessPredicate(this, options).addOption(
+      'icon',
+      options.icon,
+      async (harness, icon) => {
         const _icon = await harness.getIcon()
         if (_icon === undefined) {
           return false
         }
 
-        if (typeof _icon === 'string' && (typeof icon === 'string' || icon instanceof RegExp)) {
+        if (
+          typeof _icon === 'string' &&
+          (typeof icon === 'string' || icon instanceof RegExp)
+        ) {
           return HarnessPredicate.stringMatches(_icon, icon)
         } else if (isIconLookup(_icon) && isIconLookup(icon)) {
-          return _icon.prefix === icon.prefix && _icon.iconName === icon.iconName
+          return (
+            _icon.prefix === icon.prefix && _icon.iconName === icon.iconName
+          )
         }
 
         return false
-      })
+      },
+    )
   }
 
   /** Whether the menu is disabled. */
   async isDisabled(): Promise<boolean> {
-    const disabled = (await this.host()).getAttribute('class')
-      .then(c => c === null ? false : c.indexOf('disabled') !== -1)
+    const disabled = (await this.host())
+      .getAttribute('class')
+      .then((c) => (c === null ? false : c.indexOf('disabled') !== -1))
     return coerceBooleanProperty(await disabled)
   }
 
@@ -72,7 +86,9 @@ export class TheSeamIconComponentHarness extends ContentContainerComponentHarnes
   async getIcon(): Promise<TestSeamIcon | undefined> {
     const img = await this._imgElement()
     const svg = await this._svgElement()
-    if (img === null && svg === null) { return undefined }
+    if (img === null && svg === null) {
+      return undefined
+    }
 
     if (img !== null) {
       const src = await img.getAttribute('src')
@@ -92,5 +108,4 @@ export class TheSeamIconComponentHarness extends ContentContainerComponentHarnes
     const iconType = await (await this.host()).getAttribute('icon-type')
     return typeof iconType === 'string' ? iconType : undefined
   }
-
 }

@@ -1,5 +1,5 @@
 @import './variables';
-@import '@marklb/ngx-datatable/index';
+// @import '@marklb/ngx-datatable/index';
 
 .ngx-datatable {
   background: $datatable-background;
@@ -118,10 +118,14 @@
     vertical-align: top;
     height: $datatable-empty-row-height;
     padding: $datatable-empty-row-padding;
-    border-top: $datatable-empty-row-border-top-width solid $datatable-empty-row-border-color;
-    border-right: $datatable-empty-row-border-right-width solid $datatable-empty-row-border-color;
-    border-bottom: $datatable-empty-row-border-bottom-width solid $datatable-empty-row-border-color;
-    border-left: $datatable-empty-row-border-left-width solid $datatable-empty-row-border-color;
+    border-top: $datatable-empty-row-border-top-width solid
+      $datatable-empty-row-border-color;
+    border-right: $datatable-empty-row-border-right-width solid
+      $datatable-empty-row-border-color;
+    border-bottom: $datatable-empty-row-border-bottom-width solid
+      $datatable-empty-row-border-color;
+    border-left: $datatable-empty-row-border-left-width solid
+      $datatable-empty-row-border-color;
     margin: $datatable-empty-row-margin;
     text-align: $datatable-empty-row-text-align;
   }
@@ -130,10 +134,14 @@
     vertical-align: top;
     text-align: $datatable-loading-row-text-align;
     padding: $datatable-loading-row-padding;
-    border-top: $datatable-loading-row-border-top-width solid $datatable-loading-row-border-color;
-    border-right: $datatable-loading-row-border-right-width solid $datatable-loading-row-border-color;
-    border-bottom: $datatable-loading-row-border-bottom-width solid $datatable-loading-row-border-color;
-    border-left: $datatable-loading-row-border-left-width solid $datatable-loading-row-border-color;
+    border-top: $datatable-loading-row-border-top-width solid
+      $datatable-loading-row-border-color;
+    border-right: $datatable-loading-row-border-right-width solid
+      $datatable-loading-row-border-color;
+    border-bottom: $datatable-loading-row-border-bottom-width solid
+      $datatable-loading-row-border-color;
+    border-left: $datatable-loading-row-border-left-width solid
+      $datatable-loading-row-border-color;
   }
 
   /**
@@ -162,10 +170,14 @@
 	 * Header Styles
 	 */
   .datatable-header {
-    border-top: $datatable-header-border-top-width solid $datatable-header-border-color;
-    border-right: $datatable-header-border-right-width solid $datatable-header-border-color;
-    border-bottom: $datatable-header-border-bottom-width solid $datatable-header-border-color;
-    border-left: $datatable-header-border-left-width solid $datatable-header-border-color;
+    border-top: $datatable-header-border-top-width solid
+      $datatable-header-border-color;
+    border-right: $datatable-header-border-right-width solid
+      $datatable-header-border-color;
+    border-bottom: $datatable-header-border-bottom-width solid
+      $datatable-header-border-color;
+    border-left: $datatable-header-border-left-width solid
+      $datatable-header-border-color;
     background-color: $datatable-header-background;
     color: $datatable-header-color;
     height: unset !important;
@@ -196,7 +208,9 @@
 
       &.longpress {
         .draggable::after {
-          transition: transform 400ms ease, opacity 400ms ease;
+          transition:
+            transform 400ms ease,
+            opacity 400ms ease;
           opacity: 0.5;
           transform: scale(1);
         }
@@ -255,7 +269,6 @@
       width: 2px;
       background-color: $datatable-header-resize-handle-color;
     }
-
   }
 
   /**
@@ -272,27 +285,39 @@
 
     .datatable-group-header {
       background: $datatable-group-header-background;
-      border-top: $datatable-group-header-border-top-width solid $datatable-group-header-border-color;
-      border-right: $datatable-group-header-border-right-width solid $datatable-group-header-border-color;
-      border-bottom: $datatable-group-header-border-bottom-width solid $datatable-group-header-border-color;
-      border-left: $datatable-group-header-border-left-width solid $datatable-group-header-border-color;
+      border-top: $datatable-group-header-border-top-width solid
+        $datatable-group-header-border-color;
+      border-right: $datatable-group-header-border-right-width solid
+        $datatable-group-header-border-color;
+      border-bottom: $datatable-group-header-border-bottom-width solid
+        $datatable-group-header-border-color;
+      border-left: $datatable-group-header-border-left-width solid
+        $datatable-group-header-border-color;
     }
 
     .datatable-body-row {
       vertical-align: top;
-      border-top: $datatable-row-border-top-width solid $datatable-row-border-color;
-      border-right: $datatable-row-border-right-width solid $datatable-row-border-color;
-      border-bottom: $datatable-row-border-bottom-width solid $datatable-row-border-color;
-      border-left: $datatable-row-border-left-width solid $datatable-row-border-color;
+      border-top: $datatable-row-border-top-width solid
+        $datatable-row-border-color;
+      border-right: $datatable-row-border-right-width solid
+        $datatable-row-border-color;
+      border-bottom: $datatable-row-border-bottom-width solid
+        $datatable-row-border-color;
+      border-left: $datatable-row-border-left-width solid
+        $datatable-row-border-color;
       .datatable-body-cell {
         vertical-align: top;
         transition: width 0.3s ease;
         text-align: $datatable-body-cell-text-align;
         padding: $datatable-body-cell-padding;
-        border-top: $datatable-body-cell-border-top-width solid $datatable-row-border-color;
-        border-right: $datatable-body-cell-border-right-width solid $datatable-row-border-color;
-        border-bottom: $datatable-body-cell-border-bottom-width solid $datatable-row-border-color;
-        border-left: $datatable-body-cell-border-left-width solid $datatable-row-border-color;
+        border-top: $datatable-body-cell-border-top-width solid
+          $datatable-row-border-color;
+        border-right: $datatable-body-cell-border-right-width solid
+          $datatable-row-border-color;
+        border-bottom: $datatable-body-cell-border-bottom-width solid
+          $datatable-row-border-color;
+        border-left: $datatable-body-cell-border-left-width solid
+          $datatable-row-border-color;
         color: $datatable-body-cell-color;
         font-size: $datatable-body-cell-font-size;
         font-weight: $datatable-body-cell-font-weight;
@@ -338,7 +363,10 @@
 
           .bar {
             transition: all 0.2s linear;
-            -webkit-animation: query 0.8s infinite cubic-bezier(0.39, 0.575, 0.565, 1);
+            -webkit-animation: query
+              0.8s
+              infinite
+              cubic-bezier(0.39, 0.575, 0.565, 1);
             animation: query 0.8s infinite cubic-bezier(0.39, 0.575, 0.565, 1);
 
             transition: -webkit-transform 0.2s linear;
@@ -370,10 +398,14 @@
 
     .datatable-footer-inner {
       background: $datatable-footer-background;
-      border-top: $datatable-footer-border-top-width solid $datatable-footer-border-color;
-      border-right: $datatable-footer-border-right-width solid $datatable-footer-border-color;
-      border-bottom: $datatable-footer-border-bottom-width solid $datatable-footer-border-color;
-      border-left: $datatable-footer-border-left-width solid $datatable-footer-border-color;
+      border-top: $datatable-footer-border-top-width solid
+        $datatable-footer-border-color;
+      border-right: $datatable-footer-border-right-width solid
+        $datatable-footer-border-color;
+      border-bottom: $datatable-footer-border-bottom-width solid
+        $datatable-footer-border-color;
+      border-left: $datatable-footer-border-left-width solid
+        $datatable-footer-border-color;
       border-radius: $datatable-footer-border-radius;
     }
 
@@ -519,7 +551,6 @@
 
     // allow variable override for outline button bg
     background: $datatable-action-button-outline-background;
-
   } @else {
     @include button-variant(
       $background: $datatable-action-button-background,

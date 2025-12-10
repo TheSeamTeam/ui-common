@@ -1,46 +1,30 @@
-// import { select, text, withKnobs } from '@storybook/addon-knobs'
-import { Meta, moduleMetadata, Story } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { provideAnimations } from '@angular/platform-browser/animations'
 
 import { DashboardComponent } from './dashboard.component'
 import { TheSeamDashboardModule } from './dashboard.module'
 
-export default {
+const meta: Meta<DashboardComponent> = {
   title: 'Framework/Dashboard',
   component: DashboardComponent,
   decorators: [
-    // withKnobs
+    applicationConfig({
+      providers: [provideAnimations()],
+    }),
     moduleMetadata({
       declarations: [],
-      imports: [
-        BrowserAnimationsModule,
-        TheSeamDashboardModule
-      ]
-    })
-  ]
-} as Meta
+      imports: [TheSeamDashboardModule],
+    }),
+  ],
+}
 
-export const Example: Story = args => ({
-  props: { },
-  template: `
-    <seam-dashboard></seam-dashboard>
-  `
-})
+export default meta
+type Story = StoryObj<DashboardComponent>
 
-// storiesOf('Framework/Dashboard', module)
-//   // .addDecorator(withKnobs)
-
-//   .add('Basic', () => ({
-//     moduleMetadata: {
-//       declarations: [],
-//       imports: [
-//         BrowserAnimationsModule,
-//         TheSeamDashboardModule
-//       ]
-//     },
-//     props: { },
-//     template: `
-//       <seam-dashboard></seam-dashboard>
-//     `
-//   }))
+export const Example: Story = {}

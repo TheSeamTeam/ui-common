@@ -1,4 +1,10 @@
-import { Inject, Injectable, InjectionToken, LOCALE_ID, Optional } from '@angular/core'
+import {
+  Inject,
+  Injectable,
+  InjectionToken,
+  LOCALE_ID,
+  Optional,
+} from '@angular/core'
 import { from, Observable, of } from 'rxjs'
 
 import { TheSeamGoogleMapsApiLoader } from './google-maps-api-loader'
@@ -14,7 +20,10 @@ declare const window: GoogleMapsWindow
  * Token for the config of the LazyMapsAPILoader. Please provide an object of
  * type {@link TheSeamLazyMapsApiLoader}.
  */
-export const THESEAM_LAZY_MAPS_API_CONFIG = new InjectionToken<TheSeamLazyMapsApiLoaderConfig>('THESEAM_LAZY_MAPS_API_CONFIG')
+export const THESEAM_LAZY_MAPS_API_CONFIG =
+  new InjectionToken<TheSeamLazyMapsApiLoaderConfig>(
+    'THESEAM_LAZY_MAPS_API_CONFIG',
+  )
 
 /**
  * Configuration for the {@link TheSeamLazyMapsApiLoader}.
@@ -84,7 +93,9 @@ export class TheSeamLazyMapsApiLoader extends TheSeamGoogleMapsApiLoader {
 
   constructor(
     @Inject(LOCALE_ID) private readonly _localeId: string,
-    @Optional() @Inject(THESEAM_LAZY_MAPS_API_CONFIG) readonly config?: TheSeamLazyMapsApiLoaderConfig,
+    @Optional()
+    @Inject(THESEAM_LAZY_MAPS_API_CONFIG)
+    readonly config?: TheSeamLazyMapsApiLoaderConfig,
   ) {
     super()
     this._config = config || {}
@@ -121,7 +132,9 @@ export class TheSeamLazyMapsApiLoader extends TheSeamGoogleMapsApiLoader {
   private _assignScriptLoadingPromise(scriptElem: HTMLElement) {
     this._scriptLoadingPromise = new Promise((resolve, reject) => {
       const win = window as any
-      win[this.callbackName] = () => { resolve() }
+      win[this.callbackName] = () => {
+        resolve()
+      }
 
       scriptElem.onerror = (error: Event | string) => {
         reject(error)
@@ -137,22 +150,28 @@ export class TheSeamLazyMapsApiLoader extends TheSeamGoogleMapsApiLoader {
   }
 
   protected _getScriptSrc(callbackName: string): string {
-    const hostAndPath: string = this._config.url || 'https://maps.googleapis.com/maps/api/js'
-    const queryParams: { [key: string]: string | string[] | undefined | null } = {
-      v: this._config.apiVersion || 'quarterly',
-      callback: callbackName,
-      key: this._config.apiKey,
-      client: this._config.clientId,
-      channel: this._config.channel,
-      libraries: this._config.libraries,
-      region: this._config.region,
-      language: this._config.language || (this._localeId !== 'en-US' ? this._localeId : null),
-      loading: this._config.loading || 'async'
-    }
+    const hostAndPath: string =
+      this._config.url || 'https://maps.googleapis.com/maps/api/js'
+    const queryParams: { [key: string]: string | string[] | undefined | null } =
+      {
+        v: this._config.apiVersion || 'quarterly',
+        callback: callbackName,
+        key: this._config.apiKey,
+        client: this._config.clientId,
+        channel: this._config.channel,
+        libraries: this._config.libraries,
+        region: this._config.region,
+        language:
+          this._config.language ||
+          (this._localeId !== 'en-US' ? this._localeId : null),
+        loading: this._config.loading || 'async',
+      }
 
     const params: string = Object.keys(queryParams)
       // Remove undefined or null params.
-      .filter((k: string) => queryParams[k] !== undefined && queryParams[k] !== null)
+      .filter(
+        (k: string) => queryParams[k] !== undefined && queryParams[k] !== null,
+      )
       // Remove empty arrays.
       .filter((k: string) => {
         const param = queryParams[k]
@@ -161,9 +180,12 @@ export class TheSeamLazyMapsApiLoader extends TheSeamGoogleMapsApiLoader {
       // Join arrays as comma seperated strings.
       .map((k: string) => {
         const param = queryParams[k]
-        return { key: k, value: Array.isArray(param) ? param.join(',') : param } as { key: string, value: string }
+        return {
+          key: k,
+          value: Array.isArray(param) ? param.join(',') : param,
+        } as { key: string; value: string }
       })
-      .map((entry: { key: string, value: string }) => {
+      .map((entry: { key: string; value: string }) => {
         return `${entry.key}=${entry.value}`
       })
       .join('&')

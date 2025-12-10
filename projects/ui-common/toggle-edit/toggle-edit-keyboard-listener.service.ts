@@ -1,32 +1,23 @@
 import { DOCUMENT } from '@angular/common'
-import { Inject, Injectable } from '@angular/core'
+import { inject, Injectable } from '@angular/core'
 
-import { ICanToggleEdit } from './models'
+import { TheSeamCanToggleEdit } from './models'
 
-@Injectable({
-  providedIn: 'root'
-})
-export class ToggleEditKeyboardListenerService {
+@Injectable({ providedIn: 'root' })
+export class TheSeamToggleEditKeyboardListenerService {
+  private readonly _document: Document = inject(DOCUMENT)
 
-  private _elements: ICanToggleEdit[] = []
+  private _elements: TheSeamCanToggleEdit[] = []
 
   private _isListening = false
 
-  private _document: Document
-
-  constructor(
-    @Inject(DOCUMENT) private document: any
-  ) {
-    this._document = document
-  }
-
-  public add(element: ICanToggleEdit): void {
+  public add(element: TheSeamCanToggleEdit): void {
     this._elements.push(element)
     this._startListening()
   }
 
-  public remove(element: ICanToggleEdit): void {
-    this._elements = this._elements.filter(v => v !== element)
+  public remove(element: TheSeamCanToggleEdit): void {
+    this._elements = this._elements.filter((v) => v !== element)
     if (this._elements.length === 0) {
       this._stopListening()
     }
@@ -51,7 +42,11 @@ export class ToggleEditKeyboardListenerService {
       return
     }
 
-    this._document.body.removeEventListener('keydown', this._keydownListener, true)
+    this._document.body.removeEventListener(
+      'keydown',
+      this._keydownListener,
+      true,
+    )
 
     this._isListening = false
   }
@@ -63,5 +58,4 @@ export class ToggleEditKeyboardListenerService {
       }
     }
   }
-
 }

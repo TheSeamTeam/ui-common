@@ -1,12 +1,28 @@
 import { Component, Input, isDevMode, OnDestroy, OnInit } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import { AbstractControl, ReactiveFormsModule, UntypedFormControl } from '@angular/forms'
+import {
+  AbstractControl,
+  ReactiveFormsModule,
+  UntypedFormControl,
+} from '@angular/forms'
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
 
-import { buildTitleMap, hasOwn, JsonSchemaFormModule, JsonSchemaFormService, TitleMapItem } from '@ajsf/core'
-import { observeControlStatus, observeControlValue } from '@theseam/ui-common/utils'
-import { TheSeamSchemaFormControlWidget, TheSeamSchemaFormWidgetLayoutNodeOptions } from '../../schema-form'
+import {
+  buildTitleMap,
+  hasOwn,
+  JsonSchemaFormModule,
+  JsonSchemaFormService,
+  TitleMapItem,
+} from '@ajsf/core'
+import {
+  observeControlStatus,
+  observeControlValue,
+} from '@theseam/ui-common/utils'
+import {
+  TheSeamSchemaFormControlWidget,
+  TheSeamSchemaFormWidgetLayoutNodeOptions,
+} from '../../schema-form'
 import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 import { TheSeamMenuModule } from '@theseam/ui-common/menu'
 import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
@@ -36,8 +52,9 @@ export type TheSeamSchemaFormSubmitSplitItem = TitleMapItem
     TheSeamButtonsModule,
   ],
 })
-export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy, TheSeamSchemaFormControlWidget {
-
+export class TheSeamSchemaFormSubmitSplitComponent
+  implements OnInit, OnDestroy, TheSeamSchemaFormControlWidget
+{
   /** @ignore */
   private readonly _ngUnsubscribe = new Subject<void>()
 
@@ -59,13 +76,13 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy,
   _selectList: TheSeamSchemaFormSubmitSplitItem[] = []
   _selectedItem?: TheSeamSchemaFormSubmitSplitItem
 
-  constructor(
-    private readonly _jsf: JsonSchemaFormService
-  ) { }
+  constructor(private readonly _jsf: JsonSchemaFormService) {}
 
   /** @ignore */
   ngOnInit() {
-    this.options = this.layoutNode?.options || {} as TheSeamSchemaFormWidgetLayoutNodeOptions
+    this.options =
+      this.layoutNode?.options ||
+      ({} as TheSeamSchemaFormWidgetLayoutNodeOptions)
     this._jsf.initializeControl(this)
 
     // NOTE: This is commented out, because there is a bug with submit widgets
@@ -86,7 +103,9 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy,
     // } else
     if (this._jsf.formOptions.disableInvalidSubmit) {
       this.controlDisabled = !this._jsf.isValid
-      this._jsf.isValidChanges.subscribe(isValid => this.controlDisabled = !isValid)
+      this._jsf.isValidChanges.subscribe(
+        (isValid) => (this.controlDisabled = !isValid),
+      )
     }
     if (this.controlValue === null || this.controlValue === undefined) {
       this.controlValue = this.options.title
@@ -116,7 +135,10 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy,
   }
 
   private _initDropdown(): void {
-    if (!hasOwn(this.layoutNode, 'items') || !(this.layoutNode?.items || []).length) {
+    if (
+      !hasOwn(this.layoutNode, 'items') ||
+      !(this.layoutNode?.items || []).length
+    ) {
       return
     }
 
@@ -125,7 +147,7 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy,
         // eslint-disable-next-line no-console
         console.warn(
           `TheSeamSchemaFormSubmitSplitComponent only supports one item.` +
-          ` items after index 0 will be ignored.`
+            ` items after index 0 will be ignored.`,
         )
       }
     }
@@ -135,9 +157,12 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy,
     this._dropdownObj = {
       layoutNode: item,
       layoutIndex: (this.layoutIndex || []).concat(idx),
-      dataIndex: this.layoutNode?.dataType === 'array' ? (this.dataIndex || []).concat(idx) : this.dataIndex,
+      dataIndex:
+        this.layoutNode?.dataType === 'array'
+          ? (this.dataIndex || []).concat(idx)
+          : this.dataIndex,
 
-      options: item.options || {}
+      options: item.options || {},
     }
 
     this._jsf.initializeControl(this._dropdownObj)
@@ -146,7 +171,7 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy,
       this._dropdownObj.options.titleMap || this._dropdownObj.options.enumNames,
       this._dropdownObj.options.enum,
       !!this._dropdownObj.options.required,
-      !!this._dropdownObj.options.flatList
+      !!this._dropdownObj.options.flatList,
     )
 
     this._selectList = items
@@ -157,18 +182,18 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy,
       return
     }
 
-    observeControlValue(dropdownControl).pipe(
-      takeUntil(this._ngUnsubscribe)
-    ).subscribe(value => {
-      this._setSelectListCheckedProp(value)
-      this._selectedItem = this._getSelectedItem()
-    })
+    observeControlValue(dropdownControl)
+      .pipe(takeUntil(this._ngUnsubscribe))
+      .subscribe((value) => {
+        this._setSelectListCheckedProp(value)
+        this._selectedItem = this._getSelectedItem()
+      })
 
-    observeControlStatus(dropdownControl).pipe(
-      takeUntil(this._ngUnsubscribe)
-    ).subscribe(value => {
-      this._dropdownDisabled = dropdownControl.disabled
-    })
+    observeControlStatus(dropdownControl)
+      .pipe(takeUntil(this._ngUnsubscribe))
+      .subscribe((value) => {
+        this._dropdownDisabled = dropdownControl.disabled
+      })
   }
 
   private _getDropdownControl(): UntypedFormControl | undefined {
@@ -184,16 +209,15 @@ export class TheSeamSchemaFormSubmitSplitComponent implements OnInit, OnDestroy,
         item.checked = false
       }
     }
-    this._selectList = [ ...items ]
+    this._selectList = [...items]
   }
 
   private _getSelectedItem(): TheSeamSchemaFormSubmitSplitItem | undefined {
-    return (this._selectList || []).find(x => x.checked === true)
+    return (this._selectList || []).find((x) => x.checked === true)
   }
 
   _setDropdownValue(value: any) {
     const formControl = this._getDropdownControl()
     formControl?.setValue(value)
   }
-
 }

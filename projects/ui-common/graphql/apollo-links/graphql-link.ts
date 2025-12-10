@@ -1,7 +1,10 @@
 import { ApolloLink, Observable, OperationVariables } from '@apollo/client/core'
 import { GraphQLSchema, graphqlSync, print } from 'graphql'
 
-export interface GraphQLLinkOptions<TVariables = OperationVariables, TData = any> {
+export interface GraphQLLinkOptions<
+  TVariables = OperationVariables,
+  TData = any,
+> {
   schema: GraphQLSchema
   rootValue: any
   delay?: number
@@ -9,7 +12,7 @@ export interface GraphQLLinkOptions<TVariables = OperationVariables, TData = any
 
 export function graphQLLink(options: GraphQLLinkOptions) {
   return new ApolloLink((operation, forward) => {
-    return new Observable(subscriber => {
+    return new Observable((subscriber) => {
       // console.log('graphQLLink', operation.variables)
       const response = graphqlSync({
         schema: options.schema,
@@ -28,7 +31,7 @@ export function graphQLLink(options: GraphQLLinkOptions) {
       subscriber.next(response)
       subscriber.complete()
 
-      return () => { }
+      return () => {}
     })
   })
 }

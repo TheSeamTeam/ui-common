@@ -1,4 +1,9 @@
-import { BaseHarnessFilters, ComponentHarness, HarnessPredicate, TestKey } from '@angular/cdk/testing'
+import {
+  BaseHarnessFilters,
+  ComponentHarness,
+  HarnessPredicate,
+  TestKey,
+} from '@angular/cdk/testing'
 
 import { TheSeamFormFieldRequiredIndicatorHarness } from '@theseam/ui-common/form-field'
 import { TheSeamTelInputHarness } from '@theseam/ui-common/tel-input'
@@ -13,13 +18,20 @@ export class TheSeamSchemaFormTelHarness extends ComponentHarness {
 
   // private readonly _input = this.locatorFor('input')
   private readonly _telInput = this.locatorFor(TheSeamTelInputHarness)
-  private readonly _requiredIndicator = this.locatorFor(TheSeamFormFieldRequiredIndicatorHarness)
+  private readonly _requiredIndicator = this.locatorFor(
+    TheSeamFormFieldRequiredIndicatorHarness,
+  )
 
   /** Creates a `HarnessPredicate` used to locate a particular `MyMenuHarness`. */
-  static with(options: TheSeamSchemaFormTelHarnessFilters): HarnessPredicate<TheSeamSchemaFormTelHarness> {
-    return new HarnessPredicate(TheSeamSchemaFormTelHarness, options)
-        .addOption('field name', options.name,
-            (harness, name) => HarnessPredicate.stringMatches(harness.getName(), name))
+  static with(
+    options: TheSeamSchemaFormTelHarnessFilters,
+  ): HarnessPredicate<TheSeamSchemaFormTelHarness> {
+    return new HarnessPredicate(TheSeamSchemaFormTelHarness, options).addOption(
+      'field name',
+      options.name,
+      (harness, name) =>
+        HarnessPredicate.stringMatches(harness.getName(), name),
+    )
   }
 
   public async getName(): Promise<string | null> {

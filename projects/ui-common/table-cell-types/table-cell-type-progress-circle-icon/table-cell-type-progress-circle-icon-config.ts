@@ -1,13 +1,17 @@
-import { DynamicActionLinkDef, DynamicActionModalDef, DynamicValue } from '@theseam/ui-common/dynamic'
+import {
+  DynamicActionLinkDef,
+  DynamicActionModalDef,
+  DynamicValue,
+} from '@theseam/ui-common/dynamic'
 import { SeamIcon, TheSeamIconType } from '@theseam/ui-common/icon'
 import { TableCellTypeConfig } from '@theseam/ui-common/table-cell-type'
 
 export type TableCellTypeIconConfigAction =
-  DynamicActionLinkDef |
-  DynamicActionModalDef
+  | DynamicActionLinkDef
+  | DynamicActionModalDef
 
-export interface TableCellTypeConfigProgressCircleIcon extends TableCellTypeConfig<'progress-circle-icon'> {
-
+export interface TableCellTypeConfigProgressCircleIcon
+  extends TableCellTypeConfig<'progress-circle-icon'> {
   /**
    * Progress circle with an icon fallback.
    *
@@ -68,5 +72,4 @@ export interface TableCellTypeConfigProgressCircleIcon extends TableCellTypeConf
    * Can apply pre-defined icon styles.
    */
   iconType?: TheSeamIconType
-
 }

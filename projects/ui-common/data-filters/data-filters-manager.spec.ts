@@ -8,7 +8,7 @@ describe('DataFiltersManager', () => {
     const filter = new MockFilter()
     const manager = new DataFiltersManager()
     expect(manager.filters.length).toBe(0)
-    manager.addFilters([ filter ])
+    manager.addFilters([filter])
     expect(manager.filters.length).toBe(1)
     expect(manager.filters[0]).toBe(filter)
   })
@@ -18,7 +18,7 @@ describe('DataFiltersManager', () => {
     const filter2 = new MockFilter()
     const manager = new DataFiltersManager()
     expect(manager.filters.length).toBe(0)
-    manager.addFilters([ filter1, filter2 ])
+    manager.addFilters([filter1, filter2])
     expect(manager.filters.length).toBe(2)
     expect(manager.filters[0]).toBe(filter1)
     expect(manager.filters[1]).toBe(filter2)
@@ -28,10 +28,10 @@ describe('DataFiltersManager', () => {
     const filter = new MockFilter()
     const manager = new DataFiltersManager()
     expect(manager.filters.length).toBe(0)
-    manager.addFilters([ filter ])
+    manager.addFilters([filter])
     expect(manager.filters.length).toBe(1)
     expect(manager.filters[0]).toBe(filter)
-    manager.removeFilters([ filter ])
+    manager.removeFilters([filter])
     expect(manager.filters.length).toBe(0)
   })
 
@@ -41,12 +41,12 @@ describe('DataFiltersManager', () => {
     const filter3 = new MockFilter()
     const manager = new DataFiltersManager()
     expect(manager.filters.length).toBe(0)
-    manager.addFilters([ filter1, filter2, filter3 ])
+    manager.addFilters([filter1, filter2, filter3])
     expect(manager.filters.length).toBe(3)
     expect(manager.filters[0]).toBe(filter1)
     expect(manager.filters[1]).toBe(filter2)
     expect(manager.filters[2]).toBe(filter3)
-    manager.removeFilters([ filter1, filter3 ])
+    manager.removeFilters([filter1, filter3])
     expect(manager.filters.length).toBe(1)
     expect(manager.filters[0]).toBe(filter2)
   })
@@ -57,18 +57,18 @@ describe('DataFiltersManager', () => {
     let count = 0
     manager.filtersChanged.subscribe(() => count++)
     expect(count).toBe(0)
-    manager.addFilters([ filter ])
+    manager.addFilters([filter])
     expect(count).toBe(1)
   })
 
   it('should emit filterChanged on filter removed', () => {
     const filter = new MockFilter()
     const manager = new DataFiltersManager()
-    manager.addFilters([ filter ])
+    manager.addFilters([filter])
     let count = 0
     manager.filtersChanged.subscribe(() => count++)
     expect(count).toBe(0)
-    manager.removeFilters([ filter ])
+    manager.removeFilters([filter])
     expect(count).toBe(1)
   })
 })
@@ -87,6 +87,6 @@ class MockFilter implements DataFilter {
   }
 
   filterState(): DataFilterState {
-    return { name: this.name, state: { } }
+    return { name: this.name, state: {} }
   }
 }

@@ -13,10 +13,10 @@ function _decimalValidator(): ValidatorFn {
     const isDecimal =
       !Array.isArray(control.value) &&
       isNumeric(control.value) &&
-      (Validators.pattern(DECIMAL_REGEX)(control) === null)
+      Validators.pattern(DECIMAL_REGEX)(control) === null
 
     if (!isDecimal) {
-      return { 'decimal': { 'reason': 'Must be valid decimal number.' } }
+      return { decimal: { reason: 'Must be valid decimal number.' } }
     }
 
     return null

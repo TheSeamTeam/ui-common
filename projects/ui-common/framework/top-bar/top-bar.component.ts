@@ -8,23 +8,33 @@ import {
   Input,
   OnDestroy,
   QueryList,
-  ViewEncapsulation
+  ViewEncapsulation,
 } from '@angular/core'
+import { AsyncPipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common'
+import { RouterModule } from '@angular/router'
 import { BehaviorSubject, Observable, Subject } from 'rxjs'
 import { map, shareReplay, startWith, takeUntil } from 'rxjs/operators'
 
 import { faBars } from '@fortawesome/free-solid-svg-icons'
-
-import { InputBoolean } from '@theseam/ui-common/core'
-import { TheSeamLayoutService } from '@theseam/ui-common/layout'
-
 import { faUserCircle } from '@fortawesome/free-regular-svg-icons'
-import { SeamIcon } from '@theseam/ui-common/icon'
+import { InputBoolean } from '@theseam/ui-common/core'
+import {
+  TheSeamLayoutModule,
+  TheSeamLayoutService,
+} from '@theseam/ui-common/layout'
+import { SeamIcon, TheSeamIconModule } from '@theseam/ui-common/icon'
+import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
+import { TheSeamMenuModule } from '@theseam/ui-common/menu'
+
 import { TopBarCompactMenuBtnDetailDirective } from './top-bar-compact-menu-btn-detail.directive'
 import { TopBarItemDirective } from './top-bar-item.directive'
 import { TopBarMenuBtnDetailDirective } from './top-bar-menu-btn-detail.directive'
 import { TopBarMenuDirective } from './top-bar-menu.directive'
 import { TopBarNavToggleBtnDetailDirective } from './top-bar-nav-toggle-btn-detail.directive'
+import { TopBarTitleComponent } from './top-bar-title/top-bar-title.component'
+import { TopBarMenuButtonComponent } from './top-bar-menu-button/top-bar-menu-button.component'
+// import { TheSeamBaseLayoutNavToggleDirective } from '../base-layout/directives/base-layout-nav-toggle.directive'
+import { TheSeamBaseLayoutModule } from '../base-layout/base-layout.module'
 
 /**
  * Top bar of an app.
@@ -43,7 +53,22 @@ import { TopBarNavToggleBtnDetailDirective } from './top-bar-nav-toggle-btn-deta
   styleUrls: ['./top-bar.component.scss'],
   encapsulation: ViewEncapsulation.None,
   exportAs: 'seamTopBar',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    NgIf,
+    NgFor,
+    NgTemplateOutlet,
+    AsyncPipe,
+    RouterModule,
+    TheSeamButtonsModule,
+    TheSeamIconModule,
+    TheSeamMenuModule,
+    TheSeamBaseLayoutModule,
+    TheSeamLayoutModule,
+    TopBarTitleComponent,
+    TopBarMenuButtonComponent,
+    // TheSeamBaseLayoutNavToggleDirective,
+  ],
 })
 export class TheSeamTopBarComponent implements OnDestroy, AfterContentInit {
   static ngAcceptInputType_hasTitle: BooleanInput
@@ -52,18 +77,23 @@ export class TheSeamTopBarComponent implements OnDestroy, AfterContentInit {
   private readonly _ngUnsubscribe = new Subject<void>()
 
   /** @ignore */
-  faBars = faBars
+  readonly faBars = faBars
 
   /** @ignore */
-  @ContentChild(TopBarMenuDirective, { static: true }) _topBarMenu?: TopBarMenuDirective | null
+  @ContentChild(TopBarMenuDirective, { static: true })
+  _topBarMenu?: TopBarMenuDirective | null
   /** @ignore */
-  @ContentChildren(TopBarItemDirective) _topBarItems?: QueryList<TopBarItemDirective>
+  @ContentChildren(TopBarItemDirective)
+  _topBarItems?: QueryList<TopBarItemDirective>
   /** @ignore */
-  @ContentChild(TopBarMenuBtnDetailDirective) _topBarMenuBtnDetailTpl?: TopBarMenuBtnDetailDirective | null
+  @ContentChild(TopBarMenuBtnDetailDirective)
+  _topBarMenuBtnDetailTpl?: TopBarMenuBtnDetailDirective | null
   /** @ignore */
-  @ContentChild(TopBarCompactMenuBtnDetailDirective) _topBarCompactMenuBtnDetailTpl?: TopBarCompactMenuBtnDetailDirective | null
+  @ContentChild(TopBarCompactMenuBtnDetailDirective)
+  _topBarCompactMenuBtnDetailTpl?: TopBarCompactMenuBtnDetailDirective | null
   /** @ignore */
-  @ContentChild(TopBarNavToggleBtnDetailDirective) _topBarNavToggleBtnDetailTpl?: TopBarNavToggleBtnDetailDirective | null
+  @ContentChild(TopBarNavToggleBtnDetailDirective)
+  _topBarNavToggleBtnDetailTpl?: TopBarNavToggleBtnDetailDirective | null
 
   /** Logo displayed on the top bar. */
   @Input() logo: string | undefined | null
@@ -89,7 +119,7 @@ export class TheSeamTopBarComponent implements OnDestroy, AfterContentInit {
   @Input() subTitleText: string | undefined | null
 
   /** Determines if the top bar button should be displayed. */
-  @Input() @InputBoolean() hasTopBarMenuButton: boolean = true
+  @Input() @InputBoolean() hasTopBarMenuButton = true
 
   /** Icon to display on mobile to activate profile dropdown. Defaults to faUserCircle. */
   @Input() profileIcon: SeamIcon | undefined | null = faUserCircle
@@ -101,26 +131,24 @@ export class TheSeamTopBarComponent implements OnDestroy, AfterContentInit {
   @Input() navToggleAlign: 'left' | 'right' | undefined | null = 'left'
 
   /** @ignore */
-  _leftItems = new BehaviorSubject<TopBarItemDirective[]>([])
+  readonly _leftItems = new BehaviorSubject<TopBarItemDirective[]>([])
   /** Additional templates to display on left side of top bar */
-  leftItems$ = this._leftItems.asObservable()
+  readonly leftItems$ = this._leftItems.asObservable()
 
   /** @ignore */
-  _centerItems = new BehaviorSubject<TopBarItemDirective[]>([])
+  readonly _centerItems = new BehaviorSubject<TopBarItemDirective[]>([])
   /** Additional templates to display in center of top bar */
-  centerItems$ = this._centerItems.asObservable()
+  readonly centerItems$ = this._centerItems.asObservable()
 
   /** @ignore */
-  _rightItems = new BehaviorSubject<TopBarItemDirective[]>([])
+  readonly _rightItems = new BehaviorSubject<TopBarItemDirective[]>([])
   /** Additional templates to display on right side of top bar */
-  rightItems$ = this._rightItems.asObservable()
+  readonly rightItems$ = this._rightItems.asObservable()
 
   /** @ignore */
-  isMobile$: Observable<boolean>
+  readonly isMobile$: Observable<boolean>
 
-  constructor(
-    private _layout: TheSeamLayoutService
-  ) {
+  constructor(private readonly _layout: TheSeamLayoutService) {
     this.isMobile$ = this._layout.isMobile$
   }
 
@@ -133,23 +161,24 @@ export class TheSeamTopBarComponent implements OnDestroy, AfterContentInit {
   /** @ignore */
   ngAfterContentInit() {
     if (this._topBarItems) {
-      this._topBarItems.changes.pipe(
-        startWith(undefined),
-        takeUntil(this._ngUnsubscribe),
-        map(() => {
-          const items = this._topBarItems?.toArray() || []
+      this._topBarItems.changes
+        .pipe(
+          startWith(undefined),
+          map(() => {
+            const items = this._topBarItems?.toArray() || []
 
-          const left = items.filter(i => i.position === 'left')
-          const right = items.filter(i => i.position === 'right')
-          const center = items.filter(i => i.position === 'center')
+            const left = items.filter((i) => i.position === 'left')
+            const right = items.filter((i) => i.position === 'right')
+            const center = items.filter((i) => i.position === 'center')
 
-          this._leftItems.next(left)
-          this._rightItems.next(right)
-          this._centerItems.next(center)
-        }),
-        shareReplay({ bufferSize: 1, refCount: true })
-      ).subscribe()
+            this._leftItems.next(left)
+            this._rightItems.next(right)
+            this._centerItems.next(center)
+          }),
+          shareReplay({ bufferSize: 1, refCount: true }),
+          takeUntil(this._ngUnsubscribe),
+        )
+        .subscribe()
     }
   }
-
 }

@@ -32,8 +32,9 @@ export interface HasInitialized {
 export type HasInitializedCtor = Constructor<HasInitialized>
 
 /** Mixin to augment a directive with an initialized property that will emits when ngOnInit ends. */
-export function mixinInitialized<T extends Constructor<object>>(base: T):
-    HasInitializedCtor & T {
+export function mixinInitialized<T extends Constructor<object>>(
+  base: T,
+): HasInitializedCtor & T {
   return class extends base {
     /** Whether this directive has been marked as initialized. */
     _isInitialized = false
@@ -49,7 +50,7 @@ export function mixinInitialized<T extends Constructor<object>>(base: T):
      * Observable stream that emits when the directive initializes. If already initialized, the
      * subscriber is stored to be notified once _markInitialized is called.
      */
-    initialized = new Observable<void>(subscriber => {
+    initialized = new Observable<void>((subscriber) => {
       // If initialized, immediately notify the subscriber. Otherwise store the subscriber to notify
       // when _markInitialized is called.
       if (this._isInitialized) {
@@ -62,7 +63,9 @@ export function mixinInitialized<T extends Constructor<object>>(base: T):
     })
 
     // eslint-disable-next-line @typescript-eslint/no-useless-constructor
-    constructor(...args: any[]) { super(...args) }
+    constructor(...args: any[]) {
+      super(...args)
+    }
 
     /**
      * Marks the state as initialized and notifies pending subscribers. Should be called at the end
@@ -71,8 +74,10 @@ export function mixinInitialized<T extends Constructor<object>>(base: T):
      */
     _markInitialized(): void {
       if (this._isInitialized) {
-        throw Error('This directive has already been marked as initialized and ' +
-            'should not be called twice.')
+        throw Error(
+          'This directive has already been marked as initialized and ' +
+            'should not be called twice.',
+        )
       }
 
       this._isInitialized = true

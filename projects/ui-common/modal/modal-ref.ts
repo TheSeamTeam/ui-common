@@ -1,5 +1,9 @@
 import { ESCAPE } from '@angular/cdk/keycodes'
-import { GlobalPositionStrategy, OverlayRef, OverlaySizeConfig } from '@angular/cdk/overlay'
+import {
+  GlobalPositionStrategy,
+  OverlayRef,
+  OverlaySizeConfig,
+} from '@angular/cdk/overlay'
 import { Observable } from 'rxjs'
 import { filter, map } from 'rxjs/operators'
 
@@ -29,7 +33,8 @@ export class ModalRef<T, R = any> {
   constructor(
     public _overlayRef: OverlayRef,
     protected _containerInstance: ModalContainerComponent,
-    readonly id: string = `seam-modal-${uniqueId++}`) {
+    readonly id: string = `seam-modal-${uniqueId++}`,
+  ) {
     // Pass the id along to the container.
     _containerInstance._id = id
 
@@ -55,9 +60,9 @@ export class ModalRef<T, R = any> {
     })
 
     // Close when escape keydown event occurs
-    _overlayRef.keydownEvents()
-      // tslint:disable-next-line:deprecation
-      .pipe(filter(event => event.keyCode === ESCAPE && !this.disableClose))
+    _overlayRef
+      .keydownEvents()
+      .pipe(filter((event) => event.keyCode === ESCAPE && !this.disableClose))
       .subscribe(() => this.close())
   }
 
@@ -72,16 +77,18 @@ export class ModalRef<T, R = any> {
       return this._containerInstance.getNativeElement().contains(target)
     }
 
-    const getPosition = (event: MouseEvent | PointerEvent): { x: number, y: number } => {
+    const getPosition = (
+      event: MouseEvent | PointerEvent,
+    ): { x: number; y: number } => {
       return { x: event.clientX, y: event.clientY }
     }
 
     const dist = (x1: number, y1: number, x2: number, y2: number): number => {
-      return Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2))
+      return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))
     }
 
     let pressed = false
-    let pressedPosition: { x: number, y: number } | null = null
+    let pressedPosition: { x: number; y: number } | null = null
     const _handlePressDown = (event: MouseEvent | PointerEvent) => {
       pressed = true
       pressedPosition = getPosition(event)
@@ -92,7 +99,12 @@ export class ModalRef<T, R = any> {
         const target = event.target as HTMLElement | null
         if (target && !isInContainer(target)) {
           const currentPosition = getPosition(event)
-          const d = dist(currentPosition.x, currentPosition.y, pressedPosition.x, pressedPosition.y)
+          const d = dist(
+            currentPosition.x,
+            currentPosition.y,
+            pressedPosition.x,
+            pressedPosition.y,
+          )
           if (d < DRAG_CLOSE_THRESHOLD) {
             close()
           }
@@ -105,18 +117,39 @@ export class ModalRef<T, R = any> {
       pressed = false
     }
 
-    this._overlayRef.overlayElement.addEventListener('mousedown', _handlePressDown)
-    this._overlayRef.overlayElement.addEventListener('pointerdown', _handlePressDown)
+    this._overlayRef.overlayElement.addEventListener(
+      'mousedown',
+      _handlePressDown,
+    )
+    this._overlayRef.overlayElement.addEventListener(
+      'pointerdown',
+      _handlePressDown,
+    )
 
     this._overlayRef.overlayElement.addEventListener('mouseup', _handlePressUp)
-    this._overlayRef.overlayElement.addEventListener('pointerup', _handlePressUp)
+    this._overlayRef.overlayElement.addEventListener(
+      'pointerup',
+      _handlePressUp,
+    )
 
     return () => {
-      this._overlayRef.overlayElement.removeEventListener('mousedown', _handlePressDown)
-      this._overlayRef.overlayElement.removeEventListener('pointerdown', _handlePressDown)
+      this._overlayRef.overlayElement.removeEventListener(
+        'mousedown',
+        _handlePressDown,
+      )
+      this._overlayRef.overlayElement.removeEventListener(
+        'pointerdown',
+        _handlePressDown,
+      )
 
-      this._overlayRef.overlayElement.removeEventListener('mouseup', _handlePressUp)
-      this._overlayRef.overlayElement.removeEventListener('pointerup', _handlePressUp)
+      this._overlayRef.overlayElement.removeEventListener(
+        'mouseup',
+        _handlePressUp,
+      )
+      this._overlayRef.overlayElement.removeEventListener(
+        'pointerup',
+        _handlePressUp,
+      )
     }
   }
 
@@ -132,7 +165,9 @@ export class ModalRef<T, R = any> {
   close(dialogResult?: R): void {
     this._result = dialogResult
     this._containerInstance._startExiting()
-    if (this._clickOutsideCleanup) { this._clickOutsideCleanup() }
+    if (this._clickOutsideCleanup) {
+      this._clickOutsideCleanup()
+    }
   }
 
   /**
@@ -143,13 +178,21 @@ export class ModalRef<T, R = any> {
     const strategy = this._getPositionStrategy()
 
     if (position && (position.left || position.right)) {
-      position.left ? strategy.left(position.left) : strategy.right(position.right)
+      if (position.left) {
+        strategy.left(position.left)
+      } else {
+        strategy.right(position.right)
+      }
     } else {
       strategy.centerHorizontally()
     }
 
     if (position && (position.top || position.bottom)) {
-      position.top ? strategy.top(position.top) : strategy.bottom(position.bottom)
+      if (position.top) {
+        strategy.top(position.top)
+      } else {
+        strategy.bottom(position.bottom)
+      }
     } else {
       strategy.centerVertically()
     }
@@ -172,11 +215,9 @@ export class ModalRef<T, R = any> {
    */
   updateSize(size: OverlaySizeConfig): this {
     if (size.width) {
-      // tslint:disable-next-line:deprecation
       this._getPositionStrategy().width(size.width.toString())
     }
     if (size.height) {
-      // tslint:disable-next-line:deprecation
       this._getPositionStrategy().height(size.height.toString())
     }
     this._overlayRef.updateSize(size)
@@ -186,7 +227,8 @@ export class ModalRef<T, R = any> {
 
   /** Fetches the position strategy object from the overlay ref. */
   private _getPositionStrategy(): GlobalPositionStrategy {
-    return this._overlayRef.getConfig().positionStrategy as GlobalPositionStrategy
+    return this._overlayRef.getConfig()
+      .positionStrategy as GlobalPositionStrategy
   }
 
   /** Gets an observable that emits when dialog begins opening. */

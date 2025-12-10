@@ -4,7 +4,8 @@ import { Directive, Input, TemplateRef } from '@angular/core'
 import { InputBoolean } from '@theseam/ui-common/core'
 
 @Directive({
-  selector: '[seamFormFieldErrorListItemTpl]'
+  selector: '[seamFormFieldErrorListItemTpl]',
+  standalone: false,
 })
 export class FormFieldErrorListItemTplDirective {
   static ngAcceptInputType_external: BooleanInput
@@ -14,5 +15,4 @@ export class FormFieldErrorListItemTplDirective {
   @Input() @InputBoolean() external = false
 
   constructor(public template: TemplateRef<any>) {}
-
 }

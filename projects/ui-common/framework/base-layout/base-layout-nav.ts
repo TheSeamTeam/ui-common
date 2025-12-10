@@ -7,7 +7,7 @@ import { Observable } from 'rxjs'
  * A benefit to registering the nav is that the base layout can control the
  * expand state.
  */
-export interface ITheSeamBaseLayoutNav {
+export interface TheSeamBaseLayoutNav {
   /** Is nav expanded. */
   expanded$: Observable<boolean>
 

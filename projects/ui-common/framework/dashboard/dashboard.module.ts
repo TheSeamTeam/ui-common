@@ -8,33 +8,35 @@ import { TheSeamIconModule } from '@theseam/ui-common/icon'
 import { TheSeamSharedModule } from '@theseam/ui-common/shared'
 
 import { DashboardWidgetContainerComponent } from './dashboard-widget-container/dashboard-widget-container.component'
-import {
-  DashboardWidgetTemplateContainerComponent
-} from './dashboard-widget-template-container/dashboard-widget-template-container.component'
+import { DashboardWidgetTemplateContainerComponent } from './dashboard-widget-template-container/dashboard-widget-template-container.component'
 import { DashboardWidgetPortalOutletDirective } from './dashboard-widgets/dashboard-widget-portal-outlet.directive'
 import { DashboardWidgetsComponent } from './dashboard-widgets/dashboard-widgets.component'
 import { DashboardComponent } from './dashboard.component'
 
 @NgModule({
-  declarations: [
+  // declarations: [
+  //   // DashboardComponent,
+  //   // DashboardWidgetsComponent,
+
+  // ],
+  imports: [
+    // CommonModule,
+    // PortalModule,
+    // DragDropModule,
+    // TheSeamButtonsModule,
+    // TheSeamIconModule,
+    // TheSeamSharedModule,
+
     DashboardComponent,
     DashboardWidgetsComponent,
     DashboardWidgetContainerComponent,
     DashboardWidgetTemplateContainerComponent,
-    DashboardWidgetPortalOutletDirective
-  ],
-  imports: [
-    CommonModule,
-    PortalModule,
-    DragDropModule,
-    TheSeamButtonsModule,
-    TheSeamIconModule,
-    TheSeamSharedModule
+    DashboardWidgetPortalOutletDirective,
   ],
   exports: [
     DashboardComponent,
     DashboardWidgetsComponent,
-    DashboardWidgetPortalOutletDirective
-  ]
+    DashboardWidgetPortalOutletDirective,
+  ],
 })
-export class TheSeamDashboardModule { }
+export class TheSeamDashboardModule {}

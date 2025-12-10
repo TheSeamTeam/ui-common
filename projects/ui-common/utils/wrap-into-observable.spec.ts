@@ -9,7 +9,7 @@ describe('wrapIntoObservable', () => {
       const value = 123
       const obs = wrapIntoObservable(value)
       let result: number | undefined
-      obs.subscribe(v => result = v)
+      obs.subscribe((v) => (result = v))
       tick(0)
       expect(result).toBe(123)
     }))
@@ -20,16 +20,18 @@ describe('wrapIntoObservable', () => {
       const value = new Promise<number>((resolve, reject) => resolve(123))
       const obs = wrapIntoObservable(value)
       let result: number | undefined
-      obs.subscribe(v => result = v)
+      obs.subscribe((v) => (result = v))
       tick(0)
       expect(result).toBe(123)
     }))
 
     it('completes with Promise after delay', fakeAsync(() => {
-      const value = new Promise<number>((resolve, reject) => setTimeout(() => resolve(123), 5))
+      const value = new Promise<number>((resolve, reject) =>
+        setTimeout(() => resolve(123), 5),
+      )
       const obs = wrapIntoObservable(value)
       let result: number | undefined
-      obs.subscribe(v => result = v)
+      obs.subscribe((v) => (result = v))
       tick(4)
       expect(result).toBe(undefined)
       tick(1)
@@ -39,19 +41,21 @@ describe('wrapIntoObservable', () => {
 
   describe('Observable', () => {
     it('completes with Observable', fakeAsync(() => {
-      const value = new Observable<number>(subscriber => subscriber.next(123))
+      const value = new Observable<number>((subscriber) => subscriber.next(123))
       const obs = wrapIntoObservable(value)
       let result: number | undefined
-      obs.subscribe(v => result = v)
+      obs.subscribe((v) => (result = v))
       tick(0)
       expect(result).toBe(123)
     }))
 
     it('completes with Observable after delay', fakeAsync(() => {
-      const value = new Observable<number>(subscriber => { setTimeout(() => subscriber.next(123), 5) })
+      const value = new Observable<number>((subscriber) => {
+        setTimeout(() => subscriber.next(123), 5)
+      })
       const obs = wrapIntoObservable(value)
       let result: number | undefined
-      obs.subscribe(v => result = v)
+      obs.subscribe((v) => (result = v))
       tick(4)
       expect(result).toBe(undefined)
       tick(1)

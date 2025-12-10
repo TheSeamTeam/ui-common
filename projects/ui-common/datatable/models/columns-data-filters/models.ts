@@ -1,7 +1,8 @@
-import { FormControl, FormGroup } from "@angular/forms"
-import { TheSeamDatatableColumnFilterableConfig } from "../table-column"
+import { FormControl, FormGroup } from '@angular/forms'
+import { TheSeamDatatableColumnFilterableConfig } from '../table-column'
 
-export const THESEAM_COLUMNS_DATA_FILTER_DATE_SEARCH_NAME = 'search-date' as const
+export const THESEAM_COLUMNS_DATA_FILTER_DATE_SEARCH_NAME =
+  'search-date' as const
 
 export const THESEAM_COLUMNS_DATA_FILTER_DATE_SEARCH_TYPES = [
   'lt',
@@ -12,7 +13,7 @@ export const THESEAM_COLUMNS_DATA_FILTER_DATE_SEARCH_TYPES = [
   'blank',
   'not-blank',
   'between',
-  'not-between'
+  'not-between',
 ] as const
 
 export const THESEAM_COLUMNS_DATA_FILTER_DATE_TEXT_SEARCH_TYPES = [
@@ -25,7 +26,7 @@ export const THESEAM_COLUMNS_DATA_FILTER_DATE_TEXT_SEARCH_TYPES = [
 
 export const THESEAM_COLUMNS_DATA_FILTER_DATE_RANGE_SEARCH_TYPES = [
   'between',
-  'not-between'
+  'not-between',
 ]
 
 export const THESEAM_COLUMNS_DATA_FILTER_DATE_SELECT_SEARCH_TYPES = [
@@ -33,7 +34,8 @@ export const THESEAM_COLUMNS_DATA_FILTER_DATE_SELECT_SEARCH_TYPES = [
   'not-blank',
 ]
 
-export type TheSeamColumnsDataFilterDateSearchType = typeof THESEAM_COLUMNS_DATA_FILTER_DATE_SEARCH_TYPES[number]
+export type TheSeamColumnsDataFilterDateSearchType =
+  (typeof THESEAM_COLUMNS_DATA_FILTER_DATE_SEARCH_TYPES)[number]
 
 export type TheSeamColumnsDataFilterDateSearchForm = FormGroup<{
   searchType: FormControl<TheSeamColumnsDataFilterDateSearchType | null>
@@ -49,9 +51,12 @@ export interface TheSeamColumnsDataFilterDateSearchFormState {
   toText: string | null
 }
 
-export type TheSeamColumnsDataFilterDateSearchDateType = 'date' | 'datetime-local'
+export type TheSeamColumnsDataFilterDateSearchDateType =
+  | 'date'
+  | 'datetime-local'
 
-export interface TheSeamDatatableDateColumnFilterableConfig extends TheSeamDatatableColumnFilterableConfig {
+export interface TheSeamDatatableDateColumnFilterableConfig
+  extends TheSeamDatatableColumnFilterableConfig {
   /**
    * The input type to use for the date filter form.
    */
@@ -67,7 +72,8 @@ export interface TheSeamColumnsDataFilterDateSearchOptions {
   dateType: TheSeamColumnsDataFilterDateSearchDateType
 }
 
-export const THESEAM_COLUMNS_DATA_FILTER_NUMERIC_SEARCH_NAME = 'search-numeric' as const
+export const THESEAM_COLUMNS_DATA_FILTER_NUMERIC_SEARCH_NAME =
+  'search-numeric' as const
 
 export const THESEAM_COLUMNS_DATA_FILTER_NUMERIC_SEARCH_TYPES = [
   'gt',
@@ -78,7 +84,7 @@ export const THESEAM_COLUMNS_DATA_FILTER_NUMERIC_SEARCH_TYPES = [
   'blank',
   'not-blank',
   'between',
-  'not-between'
+  'not-between',
 ] as const
 
 export const THESEAM_COLUMNS_DATA_FILTER_NUMERIC_TEXT_SEARCH_TYPES = [
@@ -91,7 +97,7 @@ export const THESEAM_COLUMNS_DATA_FILTER_NUMERIC_TEXT_SEARCH_TYPES = [
 
 export const THESEAM_COLUMNS_DATA_FILTER_NUMERIC_RANGE_SEARCH_TYPES = [
   'between',
-  'not-between'
+  'not-between',
 ]
 
 export const THESEAM_COLUMNS_DATA_FILTER_NUMERIC_SELECT_SEARCH_TYPES = [
@@ -99,7 +105,8 @@ export const THESEAM_COLUMNS_DATA_FILTER_NUMERIC_SELECT_SEARCH_TYPES = [
   'not-blank',
 ]
 
-export type TheSeamColumnsDataFilterNumericSearchType = typeof THESEAM_COLUMNS_DATA_FILTER_NUMERIC_SEARCH_TYPES[number]
+export type TheSeamColumnsDataFilterNumericSearchType =
+  (typeof THESEAM_COLUMNS_DATA_FILTER_NUMERIC_SEARCH_TYPES)[number]
 
 export type TheSeamColumnsDataFilterNumericSearchForm = FormGroup<{
   searchType: FormControl<TheSeamColumnsDataFilterNumericSearchType | null>
@@ -108,14 +115,15 @@ export type TheSeamColumnsDataFilterNumericSearchForm = FormGroup<{
   toText: FormControl<string | null>
 }>
 
-export type TheSeamColumnsDataFilterNumericSearchFormState = {
+export interface TheSeamColumnsDataFilterNumericSearchFormState {
   searchType: TheSeamColumnsDataFilterNumericSearchType | null
   searchText: string | null
   fromText: string | null
   toText: string | null
 }
 
-export const THESEAM_COLUMNS_DATA_FILTER_TEXT_SEARCH_NAME = 'search-text' as const
+export const THESEAM_COLUMNS_DATA_FILTER_TEXT_SEARCH_NAME =
+  'search-text' as const
 
 export const THESEAM_COLUMNS_DATA_FILTER_TEXT_SEARCH_TYPES = [
   'contains',
@@ -123,7 +131,7 @@ export const THESEAM_COLUMNS_DATA_FILTER_TEXT_SEARCH_TYPES = [
   'eq',
   'neq',
   'blank',
-  'not-blank'
+  'not-blank',
 ] as const
 
 export const THESEAM_COLUMNS_DATA_FILTER_TEXT_TEXT_SEARCH_TYPES = [
@@ -135,10 +143,11 @@ export const THESEAM_COLUMNS_DATA_FILTER_TEXT_TEXT_SEARCH_TYPES = [
 
 export const THESEAM_COLUMNS_DATA_FILTER_TEXT_SELECT_SEARCH_TYPES = [
   'blank',
-  'not-blank'
+  'not-blank',
 ]
 
-export type TheSeamColumnsDataFilterTextSearchType = typeof THESEAM_COLUMNS_DATA_FILTER_TEXT_SEARCH_TYPES[number]
+export type TheSeamColumnsDataFilterTextSearchType =
+  (typeof THESEAM_COLUMNS_DATA_FILTER_TEXT_SEARCH_TYPES)[number]
 
 export type TheSeamColumnsDataFilterTextSearchForm = FormGroup<{
   searchType: FormControl<TheSeamColumnsDataFilterTextSearchType | null>
@@ -146,7 +155,7 @@ export type TheSeamColumnsDataFilterTextSearchForm = FormGroup<{
   // caseSensitive: FormControl<boolean | null>
 }>
 
-export type TheSeamColumnsDataFilterTextSearchFormState = {
+export interface TheSeamColumnsDataFilterTextSearchFormState {
   searchType: TheSeamColumnsDataFilterTextSearchType | null
   searchText: string | null
   // caseSensitive: boolean | null

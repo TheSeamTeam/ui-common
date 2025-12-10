@@ -13,14 +13,21 @@ import { SeamIcon } from '../icon'
 //
 
 // Browsers that do not support css grayscale filter.
-const needToFix = /(MSIE 10)|(Trident.*rv:11\.0)|( Edge\/[\d.]+$)/.test(navigator.userAgent)
+const needToFix = /(MSIE 10)|(Trident.*rv:11\.0)|( Edge\/[\d.]+$)/.test(
+  navigator.userAgent,
+)
 
-export type TheSeamIconType = 'borderless-styled-square' | 'styled-square' | 'image-fill' | undefined
+export type TheSeamIconType =
+  | 'borderless-styled-square'
+  | 'styled-square'
+  | 'image-fill'
+  | undefined
 
 @Component({
   selector: 'seam-icon',
   templateUrl: './icon.component.html',
-  styleUrls: ['./icon.component.scss']
+  styleUrls: ['./icon.component.scss'],
+  standalone: false,
 })
 export class IconComponent {
   static ngAcceptInputType_grayscaleOnDisable: BooleanInput
@@ -47,7 +54,9 @@ export class IconComponent {
    * If the input is not a string it will be assumed to be a font-awesome IconProp object.
    */
   @Input()
-  get icon(): SeamIcon | undefined | null { return this._iconUrl || this._iconObj }
+  get icon(): SeamIcon | undefined | null {
+    return this._iconUrl || this._iconObj
+  }
   set icon(value: SeamIcon | undefined | null) {
     if (typeof value === 'string') {
       this._iconUrl = value
@@ -82,7 +91,9 @@ export class IconComponent {
    * the `defaultIcon` instead.
    */
   @Input()
-  get showDefaultOnError(): boolean { return this._showDefaultOnError }
+  get showDefaultOnError(): boolean {
+    return this._showDefaultOnError
+  }
   set showDefaultOnError(value: boolean) {
     this._showDefaultOnError = coerceBooleanProperty(value)
     if (this._hasError) {
@@ -103,7 +114,9 @@ export class IconComponent {
    * Shown if icon is not set or if showDefaultOnError is true and img has thrown an error.
    */
   @Input()
-  get defaultIcon(): SeamIcon | undefined | null { return this._defaultIconUrl || this._defaultIconObj }
+  get defaultIcon(): SeamIcon | undefined | null {
+    return this._defaultIconUrl || this._defaultIconObj
+  }
   set defaultIcon(value: SeamIcon | undefined | null) {
     if (typeof value === 'string') {
       this._defaultIconUrl = value
@@ -130,13 +143,18 @@ export class IconComponent {
   @Input() iconType: TheSeamIconType | undefined | null
 
   @HostBinding('attr.icon-type')
-  get _iconTypeAttr() { return this.iconType }
+  get _iconTypeAttr() {
+    return this.iconType
+  }
 
   private _hasError = false
 
   public _imgError(event: ErrorEvent): void {
     this._hasError = true
-    if (this._showDefaultOnError && (this._defaultIconUrl || this._defaultIconObj)) {
+    if (
+      this._showDefaultOnError &&
+      (this._defaultIconUrl || this._defaultIconObj)
+    ) {
       this._iconUrlBeforeError = this._iconUrl
       this._iconObjBeforeError = this._iconObj
       this._iconUrl = this._defaultIconUrl
@@ -145,9 +163,12 @@ export class IconComponent {
   }
 
   @HostBinding('class.disabled')
-  get _cssDisabled() { return this.disabled || null }
+  get _cssDisabled() {
+    return this.disabled || null
+  }
 
   @HostBinding('class.no-grayscale')
-  get _cssNoGreyscale() { return !this.grayscaleOnDisable }
-
+  get _cssNoGreyscale() {
+    return !this.grayscaleOnDisable
+  }
 }

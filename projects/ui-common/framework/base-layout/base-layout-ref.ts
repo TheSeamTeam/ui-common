@@ -1,24 +1,22 @@
 import { Observable } from 'rxjs'
 
-import { BaseLayoutAction } from './base-layout-action'
-import { ITheSeamBaseLayoutNav } from './base-layout-nav'
+import { TheSeamBaseLayoutAction } from './base-layout-action'
+import { TheSeamBaseLayoutNav } from './base-layout-nav'
 
-export interface ITheSeamBaseLayoutRef {
+export interface TheSeamBaseLayoutRef {
+  readonly registeredNav: TheSeamBaseLayoutNav | undefined
+  readonly registeredActions: TheSeamBaseLayoutAction[]
 
-  readonly registeredNav: ITheSeamBaseLayoutNav | undefined
-  readonly registeredActions: BaseLayoutAction[]
+  readonly registeredNav$: Observable<TheSeamBaseLayoutNav | undefined>
+  readonly registeredActions$: Observable<TheSeamBaseLayoutAction[]>
 
-  readonly registeredNav$: Observable<ITheSeamBaseLayoutNav | undefined>
-  readonly registeredActions$: Observable<BaseLayoutAction[]>
+  registerNav(nav: TheSeamBaseLayoutNav): void
 
-  registerNav(nav: ITheSeamBaseLayoutNav): void
+  unregisterNav(nav: TheSeamBaseLayoutNav): void
 
-  unregisterNav(nav: ITheSeamBaseLayoutNav): void
+  registerAction(action: TheSeamBaseLayoutAction): void
 
-  registerAction(action: BaseLayoutAction): void
-
-  unregisterAction(action: BaseLayoutAction | string): void
+  unregisterAction(action: TheSeamBaseLayoutAction | string): void
 
   isActionRegistered(actionName: string): boolean
-
 }

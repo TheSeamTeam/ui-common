@@ -1,11 +1,14 @@
 import { Pipe, PipeTransform } from '@angular/core'
 
 @Pipe({
-  name: 'truncate'
+  name: 'truncate',
 })
-export class TruncatePipe implements PipeTransform {
-
-  transform(value: string, length: number = 30, appendEllipsis: boolean = true): string {
+export class TheSeamTruncatePipe implements PipeTransform {
+  transform(
+    value: string,
+    length: number = 30,
+    appendEllipsis: boolean = true,
+  ): string {
     let val = value
 
     if (value && typeof value === 'string' && value.length > length) {
@@ -17,5 +20,4 @@ export class TruncatePipe implements PipeTransform {
 
     return val
   }
-
 }

@@ -4,5 +4,6 @@ import { Component } from '@angular/core'
   selector: 'seam-widget-tile-list',
   templateUrl: './widget-tile-list.component.html',
   styleUrls: ['./widget-tile-list.component.scss'],
+  standalone: false,
 })
-export class WidgetTileListComponent { }
+export class WidgetTileListComponent {}

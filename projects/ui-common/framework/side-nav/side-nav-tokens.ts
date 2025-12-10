@@ -6,7 +6,7 @@ export interface SideNavAccessor {
 }
 
 export const THESEAM_SIDE_NAV_ACCESSOR = new InjectionToken<SideNavAccessor>(
-  'THESEAM_SIDE_NAV_ACCESSOR'
+  'THESEAM_SIDE_NAV_ACCESSOR',
 )
 
 export interface SideNavConfig {
@@ -17,9 +17,9 @@ export interface SideNavConfig {
 }
 
 export const THESEAM_SIDE_NAV_CONFIG = new InjectionToken<SideNavConfig>(
-  'THESEAM_SIDE_NAV_CONFIG'
+  'THESEAM_SIDE_NAV_CONFIG',
 )
 
 export const DEFAULT_SIDE_NAV_CONFIG: SideNavConfig = {
-  activeNavigatable: false
+  activeNavigatable: false,
 }

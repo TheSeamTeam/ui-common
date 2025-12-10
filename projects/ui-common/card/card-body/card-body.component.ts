@@ -1,20 +1,27 @@
-import { AfterViewInit, Component, ContentChildren, HostBinding, OnDestroy, QueryList } from '@angular/core'
+import {
+  AfterViewInit,
+  Component,
+  ContentChildren,
+  HostBinding,
+  OnDestroy,
+  QueryList,
+} from '@angular/core'
 import { Subscription } from 'rxjs'
 import { filter, map, startWith, tap } from 'rxjs/operators'
 
-import { CardActionComponent } from './../card-action/card-action.component'
+import { TheSeamCardActionComponent } from './../card-action/card-action.component'
 
 @Component({
   selector: 'seam-card-body',
   templateUrl: './card-body.component.html',
-  styleUrls: ['./card-body.component.scss']
+  styleUrls: ['./card-body.component.scss'],
 })
-export class CardBodyComponent implements OnDestroy, AfterViewInit {
-
+export class TheSeamCardBodyComponent implements OnDestroy, AfterViewInit {
   @HostBinding('class.card-body') _cssClassCardBody = true
   @HostBinding('class.p-0') _cssClassP0 = true
 
-  @ContentChildren(CardActionComponent) cardActionComponents?: QueryList<CardActionComponent>
+  @ContentChildren(TheSeamCardActionComponent)
+  TheSeamCardActionComponents?: QueryList<TheSeamCardActionComponent>
 
   private _changesSubscription: Subscription | undefined
 
@@ -23,13 +30,14 @@ export class CardBodyComponent implements OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this._changesSubscription = this.cardActionComponents?.changes.pipe(
-      startWith(this.cardActionComponents),
-      filter(v => !!v),
-      map(v => v.toArray() as CardActionComponent[]),
-      filter(v => v && v.length > 0),
-      tap(v => setTimeout(() => v[v.length - 1].isLastAction = true))
-    ).subscribe()
+    this._changesSubscription = this.TheSeamCardActionComponents?.changes
+      .pipe(
+        startWith(this.TheSeamCardActionComponents),
+        filter((v) => !!v),
+        map((v) => v.toArray() as TheSeamCardActionComponent[]),
+        filter((v) => v && v.length > 0),
+        tap((v) => setTimeout(() => (v[v.length - 1].isLastAction = true))),
+      )
+      .subscribe()
   }
-
 }

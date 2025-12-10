@@ -3,8 +3,14 @@ import { NgModule } from '@angular/core'
 
 import { TheSeamProgressModule } from '@theseam/ui-common/progress'
 
-import { TheSeamAnchorBadgeButtonComponent, TheSeamBadgeButtonComponent } from './badge-button/badge-button.component'
-import { TheSeamAnchorButtonComponent, TheSeamButtonComponent } from './button/button.component'
+import {
+  TheSeamAnchorBadgeButtonComponent,
+  TheSeamBadgeButtonComponent,
+} from './badge-button/badge-button.component'
+import {
+  TheSeamAnchorButtonComponent,
+  TheSeamButtonComponent,
+} from './button/button.component'
 import { TheSeamProgressCircleButtonComponent } from './progress-circle-button/progress-circle-button.component'
 import { TheSeamToggleButtonComponent } from './toggle-button/toggle-button.component'
 
@@ -17,10 +23,7 @@ import { TheSeamToggleButtonComponent } from './toggle-button/toggle-button.comp
     TheSeamAnchorButtonComponent,
     TheSeamAnchorBadgeButtonComponent,
   ],
-  imports: [
-    CommonModule,
-    TheSeamProgressModule
-  ],
+  imports: [CommonModule, TheSeamProgressModule],
   exports: [
     TheSeamBadgeButtonComponent,
     TheSeamProgressCircleButtonComponent,
@@ -28,6 +31,6 @@ import { TheSeamToggleButtonComponent } from './toggle-button/toggle-button.comp
     TheSeamButtonComponent,
     TheSeamAnchorButtonComponent,
     TheSeamAnchorBadgeButtonComponent,
-  ]
+  ],
 })
-export class TheSeamButtonsModule { }
+export class TheSeamButtonsModule {}

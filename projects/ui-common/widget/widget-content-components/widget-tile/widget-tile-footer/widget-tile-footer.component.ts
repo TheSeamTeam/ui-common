@@ -8,5 +8,6 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
     class: 'd-flex flex-row justify-content-end',
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
-export class WidgetTileFooterComponent { }
+export class WidgetTileFooterComponent {}

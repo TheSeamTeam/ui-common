@@ -1,6 +1,6 @@
-import { InjectionToken } from "@angular/core";
-import { SeamIcon } from "@theseam/ui-common/icon";
-import { ActionItemColumnPosition } from "./action-item-column-position";
+import { InjectionToken } from '@angular/core'
+import { SeamIcon } from '@theseam/ui-common/icon'
+import { ActionItemColumnPosition } from './action-item-column-position'
 
 export interface TheSeamDatatableMessages {
   /**
@@ -32,7 +32,6 @@ export type TheSeamDatatableColumnFilterUpdateMethod = 'valueChanges' | 'submit'
  * to apply specific TheSeamDatatable settings site-wide.
  */
 export interface TheSeamDatatableConfig {
-
   /**
    * See `TheSeamDatatableMessages`.
    */
@@ -107,4 +106,5 @@ export interface TheSeamDatatableConfig {
   actionItemColumnPosition?: ActionItemColumnPosition
 }
 
-export const THESEAM_DATATABLE_CONFIG = new InjectionToken<TheSeamDatatableConfig>('TheSeamDatatableConfig')
+export const THESEAM_DATATABLE_CONFIG =
+  new InjectionToken<TheSeamDatatableConfig>('TheSeamDatatableConfig')

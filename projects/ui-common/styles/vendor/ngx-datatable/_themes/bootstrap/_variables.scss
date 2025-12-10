@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 $datatable-font-size: 16px !default;
 $datatable-default-border-width: $border-width !default;
 
@@ -156,7 +158,10 @@ $datatable-pager-item-color: $body-color !default;
 $datatable-pager-item-hover-color: $body-color !default;
 $datatable-pager-item-hover-background: $gray-200 !default;
 
-$datatable-pager-item-disabled-color: rgba($datatable-pager-item-color, 0.5) !default;
+$datatable-pager-item-disabled-color: rgba(
+  $datatable-pager-item-color,
+  0.5
+) !default;
 $datatable-pager-item-disabled-background: transparent !default;
 
 $datatable-pager-item-active-background: $gray-200 !default;
@@ -174,18 +179,42 @@ $datatable-summary-row-font-weight: bold !default;
 // Action Menu Button Styles
 $datatable-action-button-background: $primary !default;
 $datatable-action-button-border: $datatable-action-button-background !default;
-$datatable-action-button-hover-background: darken($datatable-action-button-background, 7.5%) !default;
-$datatable-action-button-hover-border: darken($datatable-action-button-border, 10%) !default;
-$datatable-action-button-active-background: darken($datatable-action-button-background, 10%) !default;
-$datatable-action-button-active-border: darken($datatable-action-button-border, 12.5%) !default;
+$datatable-action-button-hover-background: color.adjust(
+  $datatable-action-button-background,
+  $lightness: -7.5%,
+  $space: hsl
+) !default;
+$datatable-action-button-hover-border: color.adjust(
+  $datatable-action-button-border,
+  $lightness: -10%,
+  $space: hsl
+) !default;
+$datatable-action-button-active-background: color.adjust(
+  $datatable-action-button-background,
+  $lightness: -10%,
+  $space: hsl
+) !default;
+$datatable-action-button-active-border: color.adjust(
+  $datatable-action-button-border,
+  $lightness: -12.5%,
+  $space: hsl
+) !default;
 
-$datatable-action-button-color: color-yiq($datatable-action-button-background) !default;
-$datatable-action-button-hover-color: color-yiq($datatable-action-button-hover-background) !default;
-$datatable-action-button-active-color: color-yiq($datatable-action-button-active-background) !default;
+$datatable-action-button-color: color-yiq(
+  $datatable-action-button-background
+) !default;
+$datatable-action-button-hover-color: color-yiq(
+  $datatable-action-button-hover-background
+) !default;
+$datatable-action-button-active-color: color-yiq(
+  $datatable-action-button-active-background
+) !default;
 
 $datatable-action-button-outline: false !default;
 $datatable-action-button-outline-color: $datatable-action-button-background !default;
-$datatable-action-button-outline-color-hover: color-yiq($datatable-action-button-outline-color) !default;
+$datatable-action-button-outline-color-hover: color-yiq(
+  $datatable-action-button-outline-color
+) !default;
 $datatable-action-button-outline-active-background: $datatable-action-button-outline-color !default;
 $datatable-action-button-outline-active-border: $datatable-action-button-outline-color !default;
 

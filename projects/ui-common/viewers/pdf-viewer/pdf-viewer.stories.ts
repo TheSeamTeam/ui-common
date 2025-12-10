@@ -1,43 +1,34 @@
-import { moduleMetadata } from '@storybook/angular'
-
-import { BrowserModule } from '@angular/platform-browser'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { componentWrapperDecorator, Meta, StoryObj } from '@storybook/angular'
 
 import { TheSeamPdfViewerComponent } from './pdf-viewer.component'
-import { TheSeamPdfViewerModule } from './pdf-viewer.module'
 
-export default {
-  title: 'Viewers/Components/Pdf',
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+interface ExtraArgs {}
+
+type StoryComponentType = TheSeamPdfViewerComponent & ExtraArgs
+
+const meta: Meta<StoryComponentType> = {
+  title: 'Viewers/Pdf',
   component: TheSeamPdfViewerComponent,
   decorators: [
-    moduleMetadata({
-      imports: [
-        BrowserAnimationsModule,
-        BrowserModule,
-        TheSeamPdfViewerModule
-      ]
-    })
+    componentWrapperDecorator(
+      (story) => `<div style="max-width: 1200px">${story}</div>`,
+    ),
   ],
   parameters: {
     docs: {
       iframeHeight: '600px',
-    }
-  }
+    },
+  },
 }
 
-export const Basic = () => ({
-  props: {
+export default meta
+type Story = StoryObj<StoryComponentType>
+
+export const Basic: Story = {
+  args: {
     pdfUrl: '/assets/ProducerCertificateSample.pdf',
     responsive: true,
-    renderUpdateThreshold: 50
+    renderUpdateThreshold: 50,
   },
-  template: `
-    <div class="p-2" style="max-width: 1200px;">
-      <seam-pdf-viewer
-        [pdfUrl]="pdfUrl"
-        [responsive]="responsive"
-        [renderUpdateThreshold]="renderUpdateThreshold">
-      </seam-pdf-viewer>
-    </div>
-  `
-})
+}

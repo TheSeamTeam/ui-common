@@ -1,4 +1,4 @@
-export const DEFAULT_TO_REMOVE_ON_UNDEFINED = [ 'where', 'order' ]
+export const DEFAULT_TO_REMOVE_ON_UNDEFINED = ['where', 'order']
 
 export interface QueryProcessingVariablesConfig {
   removeIfNotDefined?: string[]
@@ -12,5 +12,5 @@ export interface QueryProcessingConfig {
   /**
    * If skip and take are found, they will be removed
    */
-   disablePaging?: boolean
+  disablePaging?: boolean
 }

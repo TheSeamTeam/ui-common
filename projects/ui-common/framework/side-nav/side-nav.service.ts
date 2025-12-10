@@ -1,7 +1,29 @@
 import { Injectable } from '@angular/core'
-import { ActivatedRoute, IsActiveMatchOptions, NavigationEnd, Router, UrlCreationOptions } from '@angular/router'
-import { BehaviorSubject, combineLatest, defer, Observable, of, Subject, Subscriber } from 'rxjs'
-import { distinctUntilChanged, filter, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators'
+import {
+  ActivatedRoute,
+  IsActiveMatchOptions,
+  NavigationEnd,
+  Router,
+  UrlCreationOptions,
+} from '@angular/router'
+import {
+  BehaviorSubject,
+  combineLatest,
+  defer,
+  Observable,
+  of,
+  Subject,
+  Subscriber,
+} from 'rxjs'
+import {
+  distinctUntilChanged,
+  filter,
+  map,
+  shareReplay,
+  startWith,
+  switchMap,
+  tap,
+} from 'rxjs/operators'
 
 import { hasProperty, notNullOrUndefined } from '@theseam/ui-common/utils'
 
@@ -13,38 +35,44 @@ import {
   hasExpandedChild,
   isNavItemType,
   setDefaultState,
-  setItemStateProp
+  setItemStateProp,
 } from './side-nav-utils'
-import { ISideNavItem, ISideNavItemState, ISideNavLink, SideNavItemStateChanged } from './side-nav.models'
+import {
+  ISideNavItem,
+  ISideNavItemState,
+  ISideNavLink,
+  SideNavItemStateChanged,
+} from './side-nav.models'
 
 @Injectable()
 export class TheSeamSideNavService {
-
   private readonly _updatingCount = new BehaviorSubject<number>(0)
 
   public readonly loading$: Observable<boolean>
 
   public readonly itemChanged = new Subject<SideNavItemStateChanged>()
 
-  constructor(
-    private readonly _router: Router
-  ) {
+  constructor(private readonly _router: Router) {
     this.loading$ = this._updatingCount.pipe(
-      map(count => count > 0),
+      map((count) => count > 0),
       distinctUntilChanged(),
-      shareReplay({ bufferSize: 1, refCount: true })
+      shareReplay({ bufferSize: 1, refCount: true }),
     )
   }
 
-  public createItemsObservable(items: ISideNavItem[]): Observable<ISideNavItem[]> {
+  public createItemsObservable(
+    items: ISideNavItem[],
+  ): Observable<ISideNavItem[]> {
     return defer(() => {
       this.updateItemsStates(items)
       return new Observable((subscriber: Subscriber<ISideNavItem[]>) => {
-        const stateChangeSub = this.itemChanged.pipe(
-          switchMap(() => this.loading$.pipe(filter(loading => !loading)))
-        ).subscribe(() => {
-          subscriber.next(items)
-        })
+        const stateChangeSub = this.itemChanged
+          .pipe(
+            switchMap(() => this.loading$.pipe(filter((loading) => !loading))),
+          )
+          .subscribe(() => {
+            subscriber.next(items)
+          })
 
         try {
           this.updateItemsStates(items)
@@ -54,16 +82,18 @@ export class TheSeamSideNavService {
 
         // const linkItems = findLinkItems(items)
 
-        const routeChangeSub = this._router.events.pipe(
-          filter(event => event instanceof NavigationEnd),
-        // ).subscribe(() => linkItems.forEach(itm => this.updateItemState(itm)))
-        ).subscribe(() => {
-          try {
-            this.updateItemsStates(items)
-          } catch (err) {
-            subscriber.error(err)
-          }
-        })
+        const routeChangeSub = this._router.events
+          .pipe(
+            filter((event) => event instanceof NavigationEnd),
+            // ).subscribe(() => linkItems.forEach(itm => this.updateItemState(itm)))
+          )
+          .subscribe(() => {
+            try {
+              this.updateItemsStates(items)
+            } catch (err) {
+              subscriber.error(err)
+            }
+          })
 
         return () => {
           stateChangeSub.unsubscribe()
@@ -110,7 +140,11 @@ export class TheSeamSideNavService {
         const url = this._getUrl(item)
         if (notNullOrUndefined(url)) {
           const opts = this._getMatchOptions(item)
-          this.setItemStateProp(item, 'active', this._router.isActive(url, opts))
+          this.setItemStateProp(
+            item,
+            'active',
+            this._router.isActive(url, opts),
+          )
         }
       }
 
@@ -159,7 +193,7 @@ export class TheSeamSideNavService {
   }
 
   private _getNavExtras(item: ISideNavLink): UrlCreationOptions {
-    const navigationExtras: UrlCreationOptions = { }
+    const navigationExtras: UrlCreationOptions = {}
     if (hasProperty(item, 'queryParams')) {
       navigationExtras.queryParams = item.queryParams
     }
@@ -179,9 +213,13 @@ export class TheSeamSideNavService {
     const link = item.link
 
     if (typeof link === 'string') {
-      return this._router.createUrlTree([ link ], this._getNavExtras(item)).toString()
+      return this._router
+        .createUrlTree([link], this._getNavExtras(item))
+        .toString()
     } else if (Array.isArray(link)) {
-      return this._router.createUrlTree(link, this._getNavExtras(item)).toString()
+      return this._router
+        .createUrlTree(link, this._getNavExtras(item))
+        .toString()
     }
 
     return null
@@ -192,20 +230,24 @@ export class TheSeamSideNavService {
       paths: 'subset',
       queryParams: 'subset',
       fragment: 'ignored',
-      matrixParams: 'ignored'
+      matrixParams: 'ignored',
     }
 
     if (hasProperty(item, 'matchOptions')) {
       return {
         ...defaultMatchOpts,
-        ...item.matchOptions
+        ...item.matchOptions,
       }
     }
 
     return defaultMatchOpts
   }
 
-  public setItemStateProp<K extends keyof ISideNavItemState>(item: ISideNavItem, prop: K, value: ISideNavItemState[K]): void {
+  public setItemStateProp<K extends keyof ISideNavItemState>(
+    item: ISideNavItem,
+    prop: K,
+    value: ISideNavItemState[K],
+  ): void {
     const currentValue = getItemStateProp(item, prop)
     if (currentValue !== value) {
       setItemStateProp(item, prop, value)
@@ -214,7 +256,7 @@ export class TheSeamSideNavService {
         item,
         prop,
         prevValue: currentValue,
-        newValue: value
+        newValue: value,
       }
       this.itemChanged.next(changed)
     }

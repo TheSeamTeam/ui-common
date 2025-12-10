@@ -17,10 +17,7 @@ import { WidgetTileComponent } from './widget-tile.component'
     WidgetTileGroupComponent,
     WidgetTileFooterItemComponent,
   ],
-  imports: [
-    CommonModule,
-    TheSeamIconModule,
-  ],
+  imports: [CommonModule, TheSeamIconModule],
   exports: [
     WidgetTileComponent,
     WidgetTileSecondaryIconDirective,
@@ -29,4 +26,4 @@ import { WidgetTileComponent } from './widget-tile.component'
     WidgetTileFooterItemComponent,
   ],
 })
-export class TheSeamWidgetTileModule { }
+export class TheSeamWidgetTileModule {}

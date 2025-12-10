@@ -4,18 +4,21 @@
       [icon]="icon"
       [iconType]="iconType"
       [iconClass]="iconClass"
-      [disabled]="disabled">
+      [disabled]="disabled"
+    >
     </seam-icon>
 
-    <seam-icon *ngIf="notificationIcon"
+    <seam-icon
+      *ngIf="notificationIcon"
       class="widget-tile--notification-icon"
       [icon]="notificationIcon"
       iconType="image-fill"
       [iconClass]="notificationIconClass"
-      [disabled]="disabled">
+      [disabled]="disabled"
+    >
     </seam-icon>
   </div>
-  <div class="flex-grow-1 text-left pl-2" style="margin: auto 0;">
+  <div class="flex-grow-1 text-left pl-2" style="margin: auto 0">
     <ng-content></ng-content>
   </div>
   <div *ngIf="secondaryIcon">

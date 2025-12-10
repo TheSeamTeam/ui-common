@@ -9,6 +9,7 @@ import { TheSeamDatatableAccessor } from '../models/datatable-accessor'
 import { HideColumnColumnsAlteration } from '../models/columns-alterations/hide-column.columns-alteration'
 import { SortColumnsAlteration } from '../models/columns-alterations/sort.columns-alteration'
 import { WidthColumnsAlteration } from '../models/columns-alterations/width.columns-alteration'
+import { SortItem } from '../models/sort-item'
 
 export interface ColumnsAlterationsChangedRecord {
   type: 'added' | 'removed'
@@ -21,9 +22,11 @@ export interface ColumnsAlterationsChangedEvent {
 
 @Injectable()
 export class ColumnsAlterationsManagerService {
-
-  private readonly _changesSubject = new Subject<ColumnsAlterationsChangedEvent>()
+  private readonly _changesSubject =
+    new Subject<ColumnsAlterationsChangedEvent>()
   private _alterations: ColumnsAlteration[] = []
+
+  private _defaultSorts: SortItem[] = []
 
   public readonly changes: Observable<ColumnsAlterationsChangedEvent>
 
@@ -32,7 +35,7 @@ export class ColumnsAlterationsManagerService {
   }
 
   public get(): ColumnsAlteration[] {
-    return [ ...this._alterations ]
+    return [...this._alterations]
   }
 
   /**
@@ -44,20 +47,26 @@ export class ColumnsAlterationsManagerService {
    * NOTE: When there is a duplicate alteration the old alteration is removed,
    * instead of updated, to maintain the order alterations are applied.
    */
-  public add(alterations: ColumnsAlteration[], options?: { emitEvent?: boolean }): ColumnsAlterationsChangedRecord[] {
+  public add(
+    alterations: ColumnsAlteration[],
+    options?: { emitEvent?: boolean },
+  ): ColumnsAlterationsChangedRecord[] {
     // console.log('add', alterations)
-    const removed: ColumnsAlterationsChangedRecord[] = this.remove(alterations, { emitEvent: false })
-    this._alterations = [ ...this._alterations, ...alterations ]
+    const removed: ColumnsAlterationsChangedRecord[] = this.remove(
+      alterations,
+      { emitEvent: false },
+    )
+    this._alterations = [...this._alterations, ...alterations]
 
     const changes: ColumnsAlterationsChangedRecord[] = [
       ...removed,
-      ...alterations.map(a => {
+      ...alterations.map((a) => {
         const record: ColumnsAlterationsChangedRecord = {
           type: 'added',
-          alteration: a
+          alteration: a,
         }
         return record
-      })
+      }),
     ]
 
     if (notNullOrUndefined(options?.emitEvent) && !options?.emitEvent) {
@@ -69,15 +78,18 @@ export class ColumnsAlterationsManagerService {
     return changes
   }
 
-  public remove(alterations: ColumnsAlteration[], options?: { emitEvent?: boolean }): ColumnsAlterationsChangedRecord[] {
+  public remove(
+    alterations: ColumnsAlteration[],
+    options?: { emitEvent?: boolean },
+  ): ColumnsAlterationsChangedRecord[] {
     // console.log('remove', alterations)
     const removed: ColumnsAlterationsChangedRecord[] = []
-    this._alterations = this._alterations.filter(x => {
-      const found = alterations.findIndex(y => y.id === x.id) !== -1
+    this._alterations = this._alterations.filter((x) => {
+      const found = alterations.findIndex((y) => y.id === x.id) !== -1
       if (found) {
         const eventRecord: ColumnsAlterationsChangedRecord = {
           type: 'removed',
-          alteration: x
+          alteration: x,
         }
         removed.push(eventRecord)
       }
@@ -95,7 +107,10 @@ export class ColumnsAlterationsManagerService {
     return removed
   }
 
-  public apply(columns: TheSeamDatatableColumn[], datatable: TheSeamDatatableAccessor): void {
+  public apply(
+    columns: TheSeamDatatableColumn[],
+    datatable: TheSeamDatatableAccessor,
+  ): void {
     for (const a of this._alterations) {
       a.apply(columns, datatable)
     }
@@ -116,27 +131,38 @@ export class ColumnsAlterationsManagerService {
   // TODO: Find a generic way to clear alterations. I would like to add an
   // `unapply` method to `ColumnsAlteration`, but since the alterations
   // themselves are not too generic it may be tricky.
-  public clear(options?: { emitEvent?: boolean }): ColumnsAlterationsChangedRecord[] {
+  public clear(options?: {
+    emitEvent?: boolean
+  }): ColumnsAlterationsChangedRecord[] {
     const changes: ColumnsAlterationsChangedRecord[] = []
     for (const colAlt of this._alterations) {
       switch (colAlt.type) {
         case 'hide-column': {
-          const alteration = new HideColumnColumnsAlteration({ columnProp: colAlt.state.columnProp, hidden: false }, false)
-          changes.push(...this.add([ alteration ]))
+          const alteration = new HideColumnColumnsAlteration(
+            { columnProp: colAlt.state.columnProp, hidden: false },
+            false,
+          )
+          changes.push(...this.add([alteration]))
           break
         }
         case 'order': {
-          changes.push(...this.remove([ colAlt ]))
+          changes.push(...this.remove([colAlt]))
           break
         }
         case 'sort': {
-          const alteration = new SortColumnsAlteration({ sorts: [] }, false)
-          changes.push(...this.add([ alteration ]))
+          const alteration = new SortColumnsAlteration(
+            { sorts: [...this._defaultSorts] },
+            false,
+          )
+          changes.push(...this.add([alteration]))
           break
         }
         case 'width': {
-          const alteration = new WidthColumnsAlteration({ columnProp: colAlt.state.columnProp, canAutoResize: true }, false)
-          changes.push(...this.add([ alteration ]))
+          const alteration = new WidthColumnsAlteration(
+            { columnProp: colAlt.state.columnProp, canAutoResize: true },
+            false,
+          )
+          changes.push(...this.add([alteration]))
           break
         }
       }
@@ -151,8 +177,12 @@ export class ColumnsAlterationsManagerService {
     return changes
   }
 
+  public setDefaultSorts(sorts: SortItem[]): void {
+    this._defaultSorts = sorts
+  }
+
   private _removeNonPersistant(): void {
-    const nonPersistent = this._alterations.filter(x => !x.persistent)
+    const nonPersistent = this._alterations.filter((x) => !x.persistent)
     this.remove(nonPersistent, { emitEvent: false })
   }
 
@@ -162,10 +192,9 @@ export class ColumnsAlterationsManagerService {
     }
 
     const event: ColumnsAlterationsChangedEvent = {
-      changes
+      changes,
     }
 
     this._changesSubject.next(event)
   }
-
 }

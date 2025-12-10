@@ -1,10 +1,9 @@
-import { Directive, TemplateRef } from '@angular/core'
+import { Directive, inject, TemplateRef } from '@angular/core'
 
 @Directive({
-  selector: '[seamTopBarCompactMenuBtnDetail]'
+  selector: '[seamTopBarCompactMenuBtnDetail]',
+  exportAs: 'seamTopBarCompactMenuBtnDetail',
 })
 export class TopBarCompactMenuBtnDetailDirective {
-
-  constructor(public template: TemplateRef<any>) { }
-
+  public readonly template = inject(TemplateRef<any>)
 }

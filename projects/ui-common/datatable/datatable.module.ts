@@ -9,7 +9,7 @@ import { RouterModule } from '@angular/router'
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 import { NgxDatatableModule, ScrollbarHelper } from '@marklb/ngx-datatable'
 import { ToastrModule } from 'ngx-toastr'
-
+import { NgSelectModule } from '@ng-select/ng-select'
 import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
 import { TheSeamCheckboxComponent } from '@theseam/ui-common/checkbox'
 import { TheSeamConfirmDialogModule } from '@theseam/ui-common/confirm-dialog'
@@ -25,7 +25,7 @@ import { TheSeamToggleGroupModule } from '@theseam/ui-common/toggle-group'
 
 import { DatatableActionMenuItemComponent } from './datatable-action-menu-item/datatable-action-menu-item.component'
 import { DatatableActionMenuComponent } from './datatable-action-menu/datatable-action-menu.component'
-import { DatatableColumnPreferencesButtonComponent } from './datatable-column-preferences-button/datatable-column-preferences-button.component' // tslint:disable-line: max-line-length
+import { DatatableColumnPreferencesButtonComponent } from './datatable-column-preferences-button/datatable-column-preferences-button.component'
 import { DatatableColumnPreferencesComponent } from './datatable-column-preferences/datatable-column-preferences.component'
 import { DatatableColumnComponent } from './datatable-column/datatable-column.component'
 import { DatatableExportButtonComponent } from './datatable-export-button/datatable-export-button.component'
@@ -47,99 +47,103 @@ import { DatatableFilterDirective } from './directives/datatable-filter.directiv
 import { DatatableRowActionItemDirective } from './directives/datatable-row-action-item.directive'
 import { TheSeamDatatableScrollbarHelperService } from './services/datatable-scrollbar-helper.service'
 import { DatatableColumnFilterMenuComponent } from './datatable-column-filter-menu/datatable-column-filter-menu.component'
-import { NgSelectModule } from '@ng-select/ng-select'
 import { DatatableColumnFilterSearchTextComponent } from './datatable-column-filter-search-text/datatable-column-filter-search-text.component'
 import { DatatableColumnFilterSearchNumericComponent } from './datatable-column-filter-search-numeric/datatable-column-filter-search-numeric.component'
 import { DatatableColumnFilterSearchDateComponent } from './datatable-column-filter-search-date/datatable-column-filter-search-date.component'
 import { DatatableColumnFilterTplDirective } from './directives/datatable-column-filter-tpl.directive'
 import { TheSeamDatatableColumnFilterDirective } from './directives/datatable-column-filter.directive'
+import { DatatableColumnHeaderComponent } from './datatable-column-header/datatable-column-header.component'
 
 @NgModule({
-    declarations: [
-        DatatableComponent,
-        DatatableCellTplDirective,
-        DatatableColumnComponent,
-        DatatableActionMenuComponent,
-        DatatableActionMenuToggleDirective,
-        DatatableActionMenuItemComponent,
-        DatatableMenuBarComponent,
-        DatatableFilterDirective,
-        DatatableRowActionItemDirective,
-        DatatableExportButtonComponent,
-        TheSeamDatatableRowDetailDirective,
-        DatatableRowDetailTplDirective,
-        TheSeamDatatableFooterDirective,
-        DatatableFooterTplDirective,
-        DatatableColumnPreferencesComponent,
-        DatatableColumnPreferencesButtonComponent,
-        DatatableActionMenuItemDirective,
-        DatatableMenuBarRowComponent,
-        DatatableMenuBarColumnLeftComponent,
-        DatatableMenuBarColumnCenterComponent,
-        DatatableMenuBarColumnRightComponent,
-        DatatableMenuBarTextComponent,
-        DatatableColumnFilterMenuComponent,
-        DatatableColumnFilterSearchTextComponent,
-        DatatableColumnFilterSearchNumericComponent,
-        DatatableColumnFilterSearchDateComponent,
-        DatatableColumnFilterTplDirective,
-        TheSeamDatatableColumnFilterDirective
-    ],
-    imports: [
-        CommonModule,
-        NgxDatatableModule,
-        FontAwesomeModule,
-        OverlayModule,
-        A11yModule,
-        TheSeamSharedModule,
-        RouterModule,
-        TheSeamMenuModule,
-        TheSeamButtonsModule,
-        TheSeamIconModule,
-        ToastrModule,
-        TheSeamLoadingModule,
-        PortalModule,
-        TheSeamConfirmDialogModule,
-        TheSeamPopoverModule,
-        TheSeamCheckboxComponent,
-        TheSeamFormFieldModule,
-        ReactiveFormsModule,
-        TheSeamTableCellTypeModule,
-        TheSeamDataFiltersModule,
-        NgSelectModule,
-        TheSeamToggleGroupModule
-    ],
-    exports: [
-        DatatableComponent,
-        DatatableCellTplDirective,
-        DatatableColumnComponent,
-        DatatableActionMenuComponent,
-        DatatableActionMenuItemComponent,
-        DatatableMenuBarComponent,
-        DatatableFilterDirective,
-        DatatableRowActionItemDirective,
-        DatatableExportButtonComponent,
-        TheSeamDatatableRowDetailDirective,
-        DatatableRowDetailTplDirective,
-        TheSeamDatatableFooterDirective,
-        DatatableFooterTplDirective,
-        DatatableColumnPreferencesComponent,
-        DatatableColumnPreferencesButtonComponent,
-        DatatableActionMenuItemDirective,
-        DatatableMenuBarRowComponent,
-        DatatableMenuBarColumnLeftComponent,
-        DatatableMenuBarColumnCenterComponent,
-        DatatableMenuBarColumnRightComponent,
-        DatatableMenuBarTextComponent,
-        DatatableColumnFilterMenuComponent,
-        DatatableColumnFilterSearchTextComponent,
-        DatatableColumnFilterSearchNumericComponent,
-        DatatableColumnFilterSearchDateComponent,
-        DatatableColumnFilterTplDirective,
-        TheSeamDatatableColumnFilterDirective
-    ],
-    providers: [
-        { provide: ScrollbarHelper, useClass: TheSeamDatatableScrollbarHelperService }
-    ]
+  declarations: [
+    DatatableComponent,
+    DatatableCellTplDirective,
+    DatatableColumnComponent,
+    DatatableActionMenuComponent,
+    DatatableActionMenuToggleDirective,
+    DatatableActionMenuItemComponent,
+    DatatableMenuBarComponent,
+    DatatableFilterDirective,
+    DatatableRowActionItemDirective,
+    DatatableExportButtonComponent,
+    TheSeamDatatableRowDetailDirective,
+    DatatableRowDetailTplDirective,
+    TheSeamDatatableFooterDirective,
+    DatatableFooterTplDirective,
+    DatatableColumnPreferencesComponent,
+    DatatableColumnPreferencesButtonComponent,
+    DatatableActionMenuItemDirective,
+    DatatableMenuBarRowComponent,
+    DatatableMenuBarColumnLeftComponent,
+    DatatableMenuBarColumnCenterComponent,
+    DatatableMenuBarColumnRightComponent,
+    DatatableMenuBarTextComponent,
+    DatatableColumnFilterTplDirective,
+    TheSeamDatatableColumnFilterDirective,
+  ],
+  imports: [
+    CommonModule,
+    NgxDatatableModule,
+    FontAwesomeModule,
+    OverlayModule,
+    A11yModule,
+    TheSeamSharedModule,
+    RouterModule,
+    TheSeamMenuModule,
+    TheSeamButtonsModule,
+    TheSeamIconModule,
+    ToastrModule,
+    TheSeamLoadingModule,
+    PortalModule,
+    TheSeamConfirmDialogModule,
+    TheSeamPopoverModule,
+    TheSeamCheckboxComponent,
+    TheSeamFormFieldModule,
+    ReactiveFormsModule,
+    TheSeamTableCellTypeModule,
+    TheSeamDataFiltersModule,
+    NgSelectModule,
+    TheSeamToggleGroupModule,
+    DatatableColumnHeaderComponent,
+    DatatableColumnFilterMenuComponent,
+    DatatableColumnFilterSearchTextComponent,
+    DatatableColumnFilterSearchNumericComponent,
+    DatatableColumnFilterSearchDateComponent,
+  ],
+  exports: [
+    DatatableComponent,
+    DatatableCellTplDirective,
+    DatatableColumnComponent,
+    DatatableActionMenuComponent,
+    DatatableActionMenuItemComponent,
+    DatatableMenuBarComponent,
+    DatatableFilterDirective,
+    DatatableRowActionItemDirective,
+    DatatableExportButtonComponent,
+    TheSeamDatatableRowDetailDirective,
+    DatatableRowDetailTplDirective,
+    TheSeamDatatableFooterDirective,
+    DatatableFooterTplDirective,
+    DatatableColumnPreferencesComponent,
+    DatatableColumnPreferencesButtonComponent,
+    DatatableActionMenuItemDirective,
+    DatatableMenuBarRowComponent,
+    DatatableMenuBarColumnLeftComponent,
+    DatatableMenuBarColumnCenterComponent,
+    DatatableMenuBarColumnRightComponent,
+    DatatableMenuBarTextComponent,
+    DatatableColumnFilterMenuComponent,
+    DatatableColumnFilterSearchTextComponent,
+    DatatableColumnFilterSearchNumericComponent,
+    DatatableColumnFilterSearchDateComponent,
+    DatatableColumnFilterTplDirective,
+    TheSeamDatatableColumnFilterDirective,
+  ],
+  providers: [
+    {
+      provide: ScrollbarHelper,
+      useClass: TheSeamDatatableScrollbarHelperService,
+    },
+  ],
 })
-export class TheSeamDatatableModule { }
+export class TheSeamDatatableModule {}

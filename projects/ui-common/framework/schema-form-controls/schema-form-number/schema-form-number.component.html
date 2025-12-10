@@ -1,10 +1,15 @@
 <seam-form-field *ngIf="boundControl">
   <ng-template seamFormFieldLabelTpl let-required="required">
     <ng-container *ngIf="!options?.notitle">
-      {{ options?.title }}<seam-form-field-required-indicator class="pl-1" [required]="options?.required"></seam-form-field-required-indicator>
+      {{ options?.title
+      }}<seam-form-field-required-indicator
+        class="pl-1"
+        [required]="options?.required"
+      ></seam-form-field-required-indicator>
     </ng-container>
   </ng-template>
-  <input seamInput
+  <input
+    seamInput
     [formControl]="$any(formControl)"
     [ngClass]="options?.fieldHtmlClass"
     [id]="'control' + layoutNode?._id"
@@ -13,36 +18,6 @@
     [attr.max]="options?.maximum"
     [attr.min]="options?.minimum"
     [attr.step]="options?.multipleOf || options?.step || 'any'"
-
-    [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
-    [attr.list]="'control' + layoutNode?._id + 'Autocomplete'"
-    [attr.maxlength]="options?.maxLength"
-    [attr.minlength]="options?.minLength"
-    [attr.pattern]="options?.pattern"
-    [attr.placeholder]="options?.placeholder"
-    [attr.required]="options?.required"
-    [readonly]="options?.readonly ? 'readonly' : null"
-    [type]="layoutNode?.type === 'range' ? 'range' : 'number'">
-  <span *ngIf="layoutNode?.type === 'range'" [innerHTML]="controlValue"></span>
-</seam-form-field>
-
-<seam-form-field *ngIf="!boundControl">
-  <ng-template seamFormFieldLabelTpl let-required="required">
-    <ng-container *ngIf="!options?.notitle">
-      {{ options?.title }}<seam-form-field-required-indicator class="pl-1" [required]="options?.required"></seam-form-field-required-indicator>
-    </ng-container>
-  </ng-template>
-  <input seamInput
-    [ngClass]="options?.fieldHtmlClass"
-    [id]="'control' + layoutNode?._id"
-    [name]="controlName"
-    [required]="options?.required"
-    [attr.max]="options?.maximum"
-    [attr.min]="options?.minimum"
-    [attr.step]="options?.multipleOf || options?.step || 'any'"
-    [value]="controlValue"
-    (input)="updateValue($event)"
-
     [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
     [attr.list]="'control' + layoutNode?._id + 'Autocomplete'"
     [attr.maxlength]="options?.maxLength"
@@ -52,6 +27,41 @@
     [attr.required]="options?.required"
     [readonly]="options?.readonly ? 'readonly' : null"
     [type]="layoutNode?.type === 'range' ? 'range' : 'number'"
-    [disabled]="controlDisabled">
+  />
+  <span *ngIf="layoutNode?.type === 'range'" [innerHTML]="controlValue"></span>
+</seam-form-field>
+
+<seam-form-field *ngIf="!boundControl">
+  <ng-template seamFormFieldLabelTpl let-required="required">
+    <ng-container *ngIf="!options?.notitle">
+      {{ options?.title
+      }}<seam-form-field-required-indicator
+        class="pl-1"
+        [required]="options?.required"
+      ></seam-form-field-required-indicator>
+    </ng-container>
+  </ng-template>
+  <input
+    seamInput
+    [ngClass]="options?.fieldHtmlClass"
+    [id]="'control' + layoutNode?._id"
+    [name]="controlName"
+    [required]="options?.required"
+    [attr.max]="options?.maximum"
+    [attr.min]="options?.minimum"
+    [attr.step]="options?.multipleOf || options?.step || 'any'"
+    [value]="controlValue"
+    (input)="updateValue($event)"
+    [attr.aria-describedby]="'control' + layoutNode?._id + 'Status'"
+    [attr.list]="'control' + layoutNode?._id + 'Autocomplete'"
+    [attr.maxlength]="options?.maxLength"
+    [attr.minlength]="options?.minLength"
+    [attr.pattern]="options?.pattern"
+    [attr.placeholder]="options?.placeholder"
+    [attr.required]="options?.required"
+    [readonly]="options?.readonly ? 'readonly' : null"
+    [type]="layoutNode?.type === 'range' ? 'range' : 'number'"
+    [disabled]="controlDisabled"
+  />
   <span *ngIf="layoutNode?.type === 'range'" [innerHTML]="controlValue"></span>
 </seam-form-field>

@@ -5,6 +5,7 @@ import { Component, ViewEncapsulation } from '@angular/core'
   selector: 'a[seam-widget-footer-link]',
   templateUrl: './widget-footer-link.component.html',
   styleUrls: ['./widget-footer-link.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
-export class WidgetFooterLinkComponent { }
+export class WidgetFooterLinkComponent {}

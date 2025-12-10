@@ -1,7 +1,10 @@
-<div class="side-nav-backdrop" *ngIf="isMobile$ | async"
+<div
+  class="side-nav-backdrop"
+  *ngIf="isMobile$ | async"
   [@sideNavBackdrop]="_sideNavExpand"
   [class.side-nav-backdrop-hidden]="_backdropHidden | async"
-  (click)="collapse()"></div>
+  (click)="collapse()"
+></div>
 
 <div
   class="side-nav-inner-wrapper"
@@ -10,22 +13,26 @@
     params: {
       origin: expandOriginTransform,
       height: expandHeight,
-      width: expandWidth
-    }
+      width: expandWidth,
+    },
   }"
   (@sideNavExpand.start)="animateStart()"
-  (@sideNavExpand.done)="animateEnd()">
+  (@sideNavExpand.done)="animateEnd()"
+>
   <nav class="nav side-nav-content">
-    <seam-side-nav-toggle *ngIf="hasHeaderToggle"
+    <seam-side-nav-toggle
+      *ngIf="hasHeaderToggle"
       [toggleIcon]="toggleIcon"
       [toggleTpl]="toggleTpl"
       [expanded]="expanded$ | async"
-      (toggleExpand)="toggle()">
+      (toggleExpand)="toggle()"
+    >
       <ng-template [cdkPortalOutlet]="_sideBarHeaderPortal"></ng-template>
     </seam-side-nav-toggle>
     <div class="side-nav-items-container" seamOverlayScrollbar>
       <div class="side-nav--group side-nav--group--level-0">
-        <seam-side-nav-item *ngFor="let item of items$ | async"
+        <seam-side-nav-item
+          *ngFor="let item of items$ | async"
           [compact]="!(expanded$ | async)"
           [isMobile]="isMobile$ | async"
           [itemType]="$any(item)?.itemType"
@@ -43,7 +50,8 @@
           [hideEmptyIcon]="hideEmptyIcon"
           [indentSize]="indentSize"
           [menuItemTooltipConfig]="menuItemTooltipConfig"
-          [menuItemTooltipDisabled]="menuItemTooltipDisabled$ | async">
+          [menuItemTooltipDisabled]="menuItemTooltipDisabled$ | async"
+        >
           [activeNavigatable]="$any(item).activeNavigatable">
         </seam-side-nav-item>
       </div>

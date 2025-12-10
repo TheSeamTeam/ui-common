@@ -10,21 +10,14 @@ import { TheSeamDynamicRouterModule } from '../dynamic-router/dynamic-router.mod
 import { DynamicDatatablePageComponent } from './dynamic-datatable-page/dynamic-datatable-page.component'
 
 @NgModule({
-  declarations: [
-    DynamicDatatablePageComponent
-  ],
+  declarations: [DynamicDatatablePageComponent],
   imports: [
     CommonModule,
     RouterModule,
     TheSeamDynamicRouterModule,
     TheSeamDatatableDynamicModule,
-    TheSeamTableCellTypesModule
+    TheSeamTableCellTypesModule,
   ],
-  exports: [
-    DynamicDatatablePageComponent
-  ],
-  entryComponents: [
-    DynamicDatatablePageComponent
-  ]
+  exports: [DynamicDatatablePageComponent],
 })
-export class DynamicPagesModule { }
+export class DynamicPagesModule {}

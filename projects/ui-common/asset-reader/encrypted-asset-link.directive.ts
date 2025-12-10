@@ -1,5 +1,11 @@
 import { BooleanInput } from '@angular/cdk/coercion'
-import { Directive, ElementRef, HostBinding, HostListener, Input } from '@angular/core'
+import {
+  Directive,
+  ElementRef,
+  HostBinding,
+  HostListener,
+  Input,
+} from '@angular/core'
 
 import { InputBoolean } from '@theseam/ui-common/core'
 import { TheSeamLoadingOverlayService } from '@theseam/ui-common/loading'
@@ -12,7 +18,8 @@ import { AssetReaderHelperService } from './asset-reader-helper.service'
 // reader can do whatever it wants. So, consider renaming to 'seamAssetLink'.
 
 @Directive({
-  selector: '[seamEncryptedAssetLink]'
+  selector: '[seamEncryptedAssetLink]',
+  standalone: false,
 })
 export class EncryptedAssetLinkDirective {
   static ngAcceptInputType_seamShowLoadingOverlay: BooleanInput
@@ -25,17 +32,21 @@ export class EncryptedAssetLinkDirective {
   @Input() @InputBoolean() seamDownloadAsset = false
 
   // TODO: Find out why I need this for buttons.
-  @HostBinding('attr.href') get _attrHref() { return this.seamEncryptedAssetLink }
+  @HostBinding('attr.href') get _attrHref() {
+    return this.seamEncryptedAssetLink
+  }
 
-  @HostListener('click', [ '$event' ])
+  @HostListener('click', ['$event'])
   _onClick(event: MouseEvent) {
-    if (!this.seamEncryptedAssetLink) { return }
+    if (!this.seamEncryptedAssetLink) {
+      return
+    }
 
     let open$ = this._assetReaderHelper.openLink(
       this.seamEncryptedAssetLink,
       this.seamDetectMimeFromContent,
       this.seamDownloadAsset,
-      this._isAnchor() && this._hasTarget() ? this._getTarget() : undefined
+      this._isAnchor() && this._hasTarget() ? this._getTarget() : undefined,
     )
     if (this.seamShowLoadingOverlay) {
       open$ = this._loading.while(open$)
@@ -46,8 +57,8 @@ export class EncryptedAssetLinkDirective {
   constructor(
     private _elementRef: ElementRef,
     private _assetReaderHelper: AssetReaderHelperService,
-    private _loading: TheSeamLoadingOverlayService
-  ) { }
+    private _loading: TheSeamLoadingOverlayService,
+  ) {}
 
   /** Determines if the component host is an anchor. */
   protected _isAnchor(): boolean {
@@ -62,5 +73,4 @@ export class EncryptedAssetLinkDirective {
   protected _getTarget(): string {
     return (this._elementRef.nativeElement as HTMLAnchorElement).target
   }
-
 }

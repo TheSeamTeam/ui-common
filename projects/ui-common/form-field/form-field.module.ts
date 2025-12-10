@@ -19,13 +19,13 @@ import { InputDirective } from './input.directive'
     FormFieldErrorDirective,
     FormFieldLabelTplDirective,
     FormFieldRequiredIndicatorComponent,
-    FormFieldHelpTextDirective
+    FormFieldHelpTextDirective,
   ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
     TheSeamFormFieldErrorModule,
-    TheSeamSharedModule
+    TheSeamSharedModule,
   ],
   exports: [
     TheSeamFormFieldComponent,
@@ -33,7 +33,7 @@ import { InputDirective } from './input.directive'
     FormFieldErrorDirective,
     FormFieldLabelTplDirective,
     FormFieldRequiredIndicatorComponent,
-    FormFieldHelpTextDirective
-  ]
+    FormFieldHelpTextDirective,
+  ],
 })
-export class TheSeamFormFieldModule { }
+export class TheSeamFormFieldModule {}

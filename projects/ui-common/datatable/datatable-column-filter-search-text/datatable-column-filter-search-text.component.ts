@@ -1,7 +1,24 @@
 import { Component, Input, OnInit } from '@angular/core'
+import { CommonModule } from '@angular/common'
+import {
+  ControlContainer,
+  FormGroupDirective,
+  ReactiveFormsModule,
+} from '@angular/forms'
 import { Observable, map, startWith } from 'rxjs'
-import { ControlContainer, FormGroupDirective } from '@angular/forms'
-import { TheSeamColumnsDataFilterTextSearchForm, TheSeamColumnsDataFilterTextSearchType, THESEAM_COLUMNS_DATA_FILTER_TEXT_TEXT_SEARCH_TYPES } from '../models/columns-data-filters/models'
+
+import { NgSelectModule } from '@ng-select/ng-select'
+import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
+import {
+  TheSeamAutoFocusDirective,
+  TheSeamNgSelectExtraDirective,
+} from '@theseam/ui-common/shared'
+
+import {
+  TheSeamColumnsDataFilterTextSearchForm,
+  TheSeamColumnsDataFilterTextSearchType,
+  THESEAM_COLUMNS_DATA_FILTER_TEXT_TEXT_SEARCH_TYPES,
+} from '../models/columns-data-filters/models'
 
 @Component({
   selector: 'seam-datatable-column-filter-search-text',
@@ -10,13 +27,23 @@ import { TheSeamColumnsDataFilterTextSearchForm, TheSeamColumnsDataFilterTextSea
   viewProviders: [
     {
       provide: ControlContainer,
-      useExisting: FormGroupDirective
-    }
-  ]
+      useExisting: FormGroupDirective,
+    },
+  ],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    NgSelectModule,
+    TheSeamFormFieldModule,
+    TheSeamNgSelectExtraDirective,
+    TheSeamAutoFocusDirective,
+  ],
 })
 export class DatatableColumnFilterSearchTextComponent implements OnInit {
-
-  searchTypes: { label: string, value: TheSeamColumnsDataFilterTextSearchType }[] = [
+  searchTypes: {
+    label: string
+    value: TheSeamColumnsDataFilterTextSearchType
+  }[] = [
     { label: 'Contains', value: 'contains' },
     { label: 'Does not contain', value: 'ncontains' },
     { label: 'Matches exactly', value: 'eq' },
@@ -32,7 +59,11 @@ export class DatatableColumnFilterSearchTextComponent implements OnInit {
   ngOnInit(): void {
     this.showTextbox$ = this.filterForm?.controls.searchType.valueChanges.pipe(
       startWith(this.filterForm?.controls.searchType.value),
-      map(value => THESEAM_COLUMNS_DATA_FILTER_TEXT_TEXT_SEARCH_TYPES.includes(value || ''))
+      map((value) =>
+        THESEAM_COLUMNS_DATA_FILTER_TEXT_TEXT_SEARCH_TYPES.includes(
+          value || '',
+        ),
+      ),
     )
   }
 }

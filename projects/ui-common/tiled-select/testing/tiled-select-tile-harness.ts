@@ -1,6 +1,10 @@
-import { BaseHarnessFilters, ComponentHarness, HarnessPredicate } from '@angular/cdk/testing'
+import {
+  BaseHarnessFilters,
+  ComponentHarness,
+  HarnessPredicate,
+} from '@angular/cdk/testing'
 
-import { TiledSelectItem } from '../tiled-select.models'
+import { TheSeamTiledSelectItem } from '../tiled-select.models'
 
 interface TheSeamTiledSelectTileHarnessFilters extends BaseHarnessFilters {
   /** Filters based on the tile index of the tile. */
@@ -14,12 +18,16 @@ export class TheSeamTiledSelectTileHarness extends ComponentHarness {
   static hostSelector = 'seam-tiled-select-tile'
 
   /** Creates a `HarnessPredicate` used to locate a particular `MyMenuHarness`. */
-  static with(options: TheSeamTiledSelectTileHarnessFilters): HarnessPredicate<TheSeamTiledSelectTileHarness> {
+  static with(
+    options: TheSeamTiledSelectTileHarnessFilters,
+  ): HarnessPredicate<TheSeamTiledSelectTileHarness> {
     return new HarnessPredicate(TheSeamTiledSelectTileHarness, options)
-        .addOption('tile index', options.tileIndex,
-            (harness, index) => HarnessPredicate.stringMatches(harness.getTileIndex(), `${index}`))
-        .addOption('tile name', options.tileName,
-            (harness, name) => HarnessPredicate.stringMatches(harness.getTileName(), name))
+      .addOption('tile index', options.tileIndex, (harness, index) =>
+        HarnessPredicate.stringMatches(harness.getTileIndex(), `${index}`),
+      )
+      .addOption('tile name', options.tileName, (harness, name) =>
+        HarnessPredicate.stringMatches(harness.getTileName(), name),
+      )
   }
 
   public async getTileIndex() {

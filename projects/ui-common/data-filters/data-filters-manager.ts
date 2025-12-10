@@ -4,14 +4,15 @@ import { repeatWhen } from 'rxjs/operators'
 import { composeDataFilters, DataFilter } from './data-filter'
 
 export class DataFiltersManager {
-
   private readonly _filtersChanged = new Subject<void>()
 
   private readonly _filters: DataFilter[] = []
 
   public readonly filtersChanged = this._filtersChanged.asObservable()
 
-  get filters(): DataFilter[] { return this._filters }
+  get filters(): DataFilter[] {
+    return this._filters
+  }
 
   public addFilters(filters: DataFilter[]): void {
     if (filters.length === 0) {
@@ -35,7 +36,7 @@ export class DataFiltersManager {
     }
 
     for (const filter of filters) {
-      const idx = this._filters.findIndex(f => this._isSameFilter(f, filter))
+      const idx = this._filters.findIndex((f) => this._isSameFilter(f, filter))
       if (idx === -1) {
         throw Error(`Filter '${filter.name}' not found.`)
       }
@@ -48,12 +49,12 @@ export class DataFiltersManager {
 
   public filter<T>(data: T[]): Observable<T[]> {
     return defer(() => of().pipe(composeDataFilters(this.filters))).pipe(
-      repeatWhen<any>(() => this.filtersChanged)
+      repeatWhen<any>(() => this.filtersChanged),
     )
   }
 
   private _hasFilter(filter: DataFilter): boolean {
-    return this._filters.findIndex(f => this._isSameFilter(filter, f)) !== -1
+    return this._filters.findIndex((f) => this._isSameFilter(filter, f)) !== -1
   }
 
   private _isSameFilter(f1: DataFilter, f2: DataFilter): boolean {
@@ -61,5 +62,4 @@ export class DataFiltersManager {
     const ident2 = f2.uid
     return ident1 === ident2
   }
-
 }

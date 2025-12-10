@@ -1,5 +1,11 @@
-import { Meta, StoryObj, applicationConfig, componentWrapperDecorator, moduleMetadata } from '@storybook/angular'
-import { expect } from '@storybook/jest'
+import {
+  Meta,
+  StoryObj,
+  applicationConfig,
+  componentWrapperDecorator,
+  moduleMetadata,
+} from '@storybook/angular'
+import { expect, fn } from 'storybook/test'
 
 import { ReactiveFormsModule } from '@angular/forms'
 import { provideAnimations } from '@angular/platform-browser/animations'
@@ -8,7 +14,11 @@ import { Injectable } from '@angular/core'
 import { Framework, JsonSchemaFormComponent } from '@ajsf/core'
 
 import { getHarness } from '@theseam/ui-common/testing'
-import { THESEAM_SCHEMA_FRAMEWORK_OVERRIDES, TheSeamSchemaFormFrameworkComponent, extendFramework } from '@theseam/ui-common/framework'
+import {
+  THESEAM_SCHEMA_FRAMEWORK_OVERRIDES,
+  TheSeamSchemaFormFrameworkComponent,
+  extendFramework,
+} from '@theseam/ui-common/framework'
 
 import { TheSeamSchemaFormModule } from '../../schema-form/schema-form.module'
 import { TheSeamSchemaFormSubmitHarness } from './testing'
@@ -36,7 +46,7 @@ import { TheSeamSchemaFormSelectHarness } from '../schema-form-select/testing'
 
 const meta: Meta<JsonSchemaFormComponent> = {
   title: 'Framework/Schema Form Controls/Submit',
-  tags: [ 'autodocs' ],
+  tags: ['autodocs'],
   decorators: [
     applicationConfig({
       providers: [
@@ -46,26 +56,24 @@ const meta: Meta<JsonSchemaFormComponent> = {
           provide: THESEAM_SCHEMA_FRAMEWORK_OVERRIDES,
           useValue: {
             widgets: {
-              'submit': TheSeamSchemaFormSubmitComponent,
-            }
+              submit: TheSeamSchemaFormSubmitComponent,
+            },
           },
           multi: true,
         },
       ],
     }),
     moduleMetadata({
-      imports: [
-        TheSeamSchemaFormModule,
-        ReactiveFormsModule,
-      ],
+      imports: [TheSeamSchemaFormModule, ReactiveFormsModule],
     }),
     componentWrapperDecorator(JsonSchemaFormComponent, ({ args }) => args),
   ],
   argTypes: {
-    onSubmit: { action: 'onSubmit' }
+    onSubmit: { action: 'onSubmit' },
   },
   args: {
     framework: 'seam-framework',
+    onSubmit: fn(),
   },
 }
 
@@ -75,28 +83,28 @@ type Story = StoryObj<JsonSchemaFormComponent>
 export const Basic: Story = {
   args: {
     schema: {
-      'type': 'object',
-      '$schema': 'http://json-schema.org/draft-07/schema#',
-      'properties': {
-        'Color': {
-          'type': 'string',
-          'enum': [ 'red', 'green', 'blue' ],
-          'enumNames': [ 'Red', 'Green', 'Blue' ],
+      type: 'object',
+      $schema: 'http://json-schema.org/draft-07/schema#',
+      properties: {
+        Color: {
+          type: 'string',
+          enum: ['red', 'green', 'blue'],
+          enumNames: ['Red', 'Green', 'Blue'],
         },
       },
-      'required': [
-        'Color',
-      ],
+      required: ['Color'],
     },
-    layout: [
-      { 'dataPointer': '/Color' },
-    ],
+    layout: [{ dataPointer: '/Color' }],
   },
-  play: async ({ canvasElement, fixture, args }) => {
-    const sfSubmitHarness = await getHarness(TheSeamSchemaFormSubmitHarness, { canvasElement, fixture })
+  play: async ({ canvasElement, args }) => {
+    const sfSubmitHarness = await getHarness(TheSeamSchemaFormSubmitHarness, {
+      canvasElement,
+    })
     await expect(await sfSubmitHarness.isDisabled()).toBe(true)
 
-    const sfSelectHarness = await getHarness(TheSeamSchemaFormSelectHarness, { canvasElement, fixture })
+    const sfSelectHarness = await getHarness(TheSeamSchemaFormSelectHarness, {
+      canvasElement,
+    })
     await expect(await sfSelectHarness.isRequired()).toBe(true)
     await expect(await sfSelectHarness.getValue()).toBe(null)
     await sfSelectHarness.clickOption({ value: 'Red' })
@@ -104,7 +112,9 @@ export const Basic: Story = {
 
     await expect(await sfSubmitHarness.isDisabled()).toBe(false)
     await sfSubmitHarness.click()
-    const sfFormHarness = await getHarness(JsonSchemaFormHarness, { canvasElement, fixture })
+    const sfFormHarness = await getHarness(JsonSchemaFormHarness, {
+      canvasElement,
+    })
     await sfFormHarness.submit()
     await expect(args.onSubmit).toHaveBeenCalledWith({ Color: 'red' })
   },

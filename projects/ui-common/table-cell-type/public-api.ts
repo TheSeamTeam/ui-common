@@ -1,4 +1,5 @@
 export * from './table-cell-type-action'
+export * from './table-cell-type-column-align'
 export * from './table-cell-type-column'
 export * from './table-cell-type-config'
 export * from './table-cell-type-export-props'

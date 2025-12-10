@@ -1,10 +1,9 @@
 import { Directive, TemplateRef } from '@angular/core'
 
 @Directive({
-  selector: '[seamModalHeaderIconTpl]'
+  selector: '[seamModalHeaderIconTpl]',
+  standalone: false,
 })
 export class ModalHeaderIconTplDirective {
-
-  constructor(public template: TemplateRef<any>) { }
-
+  constructor(public template: TemplateRef<any>) {}
 }

@@ -16,7 +16,6 @@ import { DynamicActionModalDef } from './dynamic-action-modal-def'
  */
 @Injectable()
 export class DynamicActionModalService implements DynamicActionModal {
-
   readonly type = 'modal'
 
   label = 'Modal Action'
@@ -24,35 +23,42 @@ export class DynamicActionModalService implements DynamicActionModal {
   constructor(
     private _valueHelper: DynamicValueHelperService,
     private _modal: Modal,
-    private _injector: Injector
-  ) { }
+    private _injector: Injector,
+  ) {}
 
   async exec(args: DynamicActionModalDef, context: any): Promise<any> {
     const component = this._getComponent(args, context)
     const data = this._getData(args, context)
 
-    return this._openModal(component, data).pipe(
-      switchMap(modalRef => modalRef.afterClosed().pipe(
-        switchMap(result => {
-          const resultAction = this._getModalResultAction(args, result)
+    return this._openModal(component, data)
+      .pipe(
+        switchMap((modalRef) =>
+          modalRef.afterClosed().pipe(
+            switchMap((result) => {
+              const resultAction = this._getModalResultAction(args, result)
 
-          // TODO: Come up with a way to pass data from previous action
-          if (resultAction) {
-            const dynamicActionHelper = this._getDynamicActionHelper()
-            return dynamicActionHelper.exec(resultAction, context)
-          }
-          return of(result)
-        })
-      ))
-    ).toPromise()
+              // TODO: Come up with a way to pass data from previous action
+              if (resultAction) {
+                const dynamicActionHelper = this._getDynamicActionHelper()
+                return dynamicActionHelper.exec(resultAction, context)
+              }
+              return of(result)
+            }),
+          ),
+        ),
+      )
+      .toPromise()
   }
 
   // execSync?: (args: IDynamicActionDef<T>, context: D) => R
 
-  public async getUiProps(args: DynamicActionModalDef, context: any): Promise<DynamicActionUiButtonDef> {
+  public async getUiProps(
+    args: DynamicActionModalDef,
+    context: any,
+  ): Promise<DynamicActionUiButtonDef> {
     return {
       _actionDef: args,
-      triggerType: 'click'
+      triggerType: 'click',
     }
   }
 
@@ -65,7 +71,10 @@ export class DynamicActionModalService implements DynamicActionModal {
     return this._injector.get(DynamicActionHelperService)
   }
 
-  private _getComponent(args: DynamicActionModalDef, context: any): string | ComponentType<object> | undefined {
+  private _getComponent(
+    args: DynamicActionModalDef,
+    context: any,
+  ): string | ComponentType<object> | undefined {
     let component = args && args.component
     if (component) {
       component = this._valueHelper.evalSync(component, context)
@@ -91,7 +100,7 @@ export class DynamicActionModalService implements DynamicActionModal {
     // TODO: Replace with JSON valid config from input def model
     const config: ModalConfig = {
       data,
-      modalSize: 'lg'
+      modalSize: 'lg',
     }
 
     if (typeof modal === 'string') {

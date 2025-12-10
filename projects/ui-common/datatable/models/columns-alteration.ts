@@ -1,3 +1,5 @@
+import { AlterationDisplayItem } from '@theseam/ui-common/datatable-alterations-display'
+
 import { TheSeamDatatableAccessor } from './datatable-accessor'
 import { TheSeamDatatableColumn } from './table-column'
 
@@ -45,7 +47,7 @@ export abstract class ColumnsAlteration<TState = any> {
      * If false, the state will not be persisted to a persistent storage and
      * will be removed after applied.
      */
-    public readonly persistent: boolean
+    public readonly persistent: boolean,
   ) {
     this.state = state
   }
@@ -53,13 +55,27 @@ export abstract class ColumnsAlteration<TState = any> {
   /**
    * Apply alteration to column.
    */
-  public abstract apply(columns: TheSeamDatatableColumn[], datatable: TheSeamDatatableAccessor): void
+  public abstract apply(
+    columns: TheSeamDatatableColumn[],
+    datatable: TheSeamDatatableAccessor,
+  ): void
+
+  /**
+   * Convert alteration to display format for UI rendering.
+   */
+  public abstract toDisplayItem(): AlterationDisplayItem
+
+  /**
+   * Get sort order for grouping alterations of the same type.
+   * Lower numbers appear first.
+   */
+  public abstract getDisplaySortOrder(): number
 
   public toJSON(): ColumnsAlterationState<TState> {
     return {
       id: this.id,
       type: this.type,
-      state: this.state
+      state: this.state,
     }
   }
 }

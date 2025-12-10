@@ -10,7 +10,8 @@
   [@pulse]="pulsing ? true : false"
   [attr.data-category]="name"
   [attr.title]="showLabel ? '' : label"
-  type="button">
+  type="button"
+>
   <div class="tiled-select-tile-panel--content">
     <seam-tiled-select-tile-icon
       class="tiled-select-tile-panel--icon"
@@ -19,22 +20,31 @@
       [iconClass]="iconClass"
       [layout]="layout"
       [grayscaleOnDisable]="grayscaleOnDisable"
-      [disabled]="disabled">
+      [disabled]="disabled"
+    >
     </seam-tiled-select-tile-icon>
     <div class="tiled-select-tile-panel--label-container" *ngIf="showLabel">
-      <span *ngIf="!labelTpl" class="tiled-select-tile-panel--label">{{ label }}</span>
-      <ng-template *ngIf="labelTpl"
+      <span *ngIf="!labelTpl" class="tiled-select-tile-panel--label">{{
+        label
+      }}</span>
+      <ng-template
+        *ngIf="labelTpl"
         [ngTemplateOutlet]="labelTpl.template"
-        [ngTemplateOutletContext]="{ $implicit: label, label: label }">
+        [ngTemplateOutletContext]="{ $implicit: label, label: label }"
+      >
       </ng-template>
     </div>
-    <div *ngIf="tileBackdrop" class="selected-backdrop"
-      [class.bg-success]="selected"></div>
+    <div
+      *ngIf="tileBackdrop"
+      class="selected-backdrop"
+      [class.bg-success]="selected"
+    ></div>
     <fa-icon
       *ngIf="selected && showSelectedIcon"
       class="tiled-select-tile-panel--selected text-success"
       [icon]="faCheckCircle"
-      size="3x">
+      size="3x"
+    >
     </fa-icon>
   </div>
   <div class="tiled-select-tile-panel--overlay" *ngIf="overlayTpl">

@@ -19,7 +19,8 @@ import { Observable } from 'rxjs'
  */
 
 export abstract class EncryptedAssetReader {
-
-  abstract getAssetBlobFromUrl(url: string, detectMimeFromContent: boolean): Observable<Blob | { blob: Blob, filename?: string }>
-
+  abstract getAssetBlobFromUrl(
+    url: string,
+    detectMimeFromContent: boolean,
+  ): Observable<Blob | { blob: Blob; filename?: string }>
 }

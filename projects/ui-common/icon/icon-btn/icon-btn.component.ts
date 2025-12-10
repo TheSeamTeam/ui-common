@@ -1,5 +1,12 @@
 import { BooleanInput } from '@angular/cdk/coercion'
-import { Component, DoCheck, ElementRef, HostBinding, Input, Renderer2 } from '@angular/core'
+import {
+  Component,
+  DoCheck,
+  ElementRef,
+  HostBinding,
+  Input,
+  Renderer2,
+} from '@angular/core'
 
 import { SizeProp } from '@fortawesome/fontawesome-svg-core'
 
@@ -13,14 +20,16 @@ import type { TheSeamIconType } from '../icon/icon.component'
   // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'button[seamIconBtn]',
   template: `
-    <seam-icon *ngIf="icon"
+    <seam-icon
+      *ngIf="icon"
       [grayscaleOnDisable]="grayscaleOnDisable"
       [disabled]="disabled"
       [iconClass]="iconClass"
       [icon]="icon"
       [size]="size"
       [showDefaultOnError]="showDefaultOnError"
-      [iconType]="iconType">
+      [iconType]="iconType"
+    >
     </seam-icon>
     <ng-content select=".sr-only,seam-icon-notification"></ng-content>
   `,
@@ -29,6 +38,7 @@ import type { TheSeamIconType } from '../icon/icon.component'
     '[attr.aria-disabled]': 'disabled.toString()',
     '[attr.disabled]': 'disabled || null',
   },
+  standalone: false,
 })
 export class IconBtnComponent implements DoCheck {
   static ngAcceptInputType_grayscaleOnDisable: BooleanInput
@@ -63,7 +73,7 @@ export class IconBtnComponent implements DoCheck {
    * Toggles whether an image that has thrown the `onerror` event should show
    * the `defaultIcon` instead.
    */
-   @Input() @InputBoolean() showDefaultOnError = false
+  @Input() @InputBoolean() showDefaultOnError = false
 
   /**
    * Shown if icon is not set or if showDefaultOnError is true and img has thrown an error.
@@ -79,19 +89,43 @@ export class IconBtnComponent implements DoCheck {
   @HostBinding('class.btn') _btn = true
   @HostBinding('class.text-nowrap') _textNoWrap = true
 
-  @HostBinding('class.btn-default') get _btnDefault() { return this.isBtnTheme('default') }
-  @HostBinding('class.btn-primary') get _btnPrimary() { return this.isBtnTheme('primary') }
-  @HostBinding('class.btn-secondary') get _btnSecondary() { return this.isBtnTheme('secondary') }
-  @HostBinding('class.btn-success') get _btnSuccess() { return this.isBtnTheme('success') }
-  @HostBinding('class.btn-danger') get _btnDanger() { return this.isBtnTheme('danger') }
-  @HostBinding('class.btn-warning') get _btnWarning() { return this.isBtnTheme('warning') }
-  @HostBinding('class.btn-info') get _btnInfo() { return this.isBtnTheme('info') }
-  @HostBinding('class.btn-light') get _btnLight() { return this.isBtnTheme('light') }
-  @HostBinding('class.btn-dark') get _btnDark() { return this.isBtnTheme('dark') }
-  @HostBinding('class.btn-lightgray') get _btnLightGray() { return this.isBtnTheme('lightgray') }
+  @HostBinding('class.btn-default') get _btnDefault() {
+    return this.isBtnTheme('default')
+  }
+  @HostBinding('class.btn-primary') get _btnPrimary() {
+    return this.isBtnTheme('primary')
+  }
+  @HostBinding('class.btn-secondary') get _btnSecondary() {
+    return this.isBtnTheme('secondary')
+  }
+  @HostBinding('class.btn-success') get _btnSuccess() {
+    return this.isBtnTheme('success')
+  }
+  @HostBinding('class.btn-danger') get _btnDanger() {
+    return this.isBtnTheme('danger')
+  }
+  @HostBinding('class.btn-warning') get _btnWarning() {
+    return this.isBtnTheme('warning')
+  }
+  @HostBinding('class.btn-info') get _btnInfo() {
+    return this.isBtnTheme('info')
+  }
+  @HostBinding('class.btn-light') get _btnLight() {
+    return this.isBtnTheme('light')
+  }
+  @HostBinding('class.btn-dark') get _btnDark() {
+    return this.isBtnTheme('dark')
+  }
+  @HostBinding('class.btn-lightgray') get _btnLightGray() {
+    return this.isBtnTheme('lightgray')
+  }
 
-  @HostBinding('class.btn-sm') get _btnSizeSm() { return this.btnSize === 'sm' }
-  @HostBinding('class.btn-lg') get _btnSizeLg() { return this.btnSize === 'lg' }
+  @HostBinding('class.btn-sm') get _btnSizeSm() {
+    return this.btnSize === 'sm'
+  }
+  @HostBinding('class.btn-lg') get _btnSizeLg() {
+    return this.btnSize === 'lg'
+  }
 
   @Input() btnTheme: ThemeTypes | undefined | null = 'default'
   @Input() badgeTheme: ThemeTypes | undefined | null = 'light'
@@ -100,14 +134,18 @@ export class IconBtnComponent implements DoCheck {
   @Input() btnSize: 'sm' | 'lg' | undefined | null
 
   @Input()
-  get type(): string | undefined | null { return this._type }
+  get type(): string | undefined | null {
+    return this._type
+  }
   set type(value: string | undefined | null) {
     this._type = value
   }
   private _type: string | undefined | null
 
   @Input()
-  get role(): string | undefined | null { return this._role }
+  get role(): string | undefined | null {
+    return this._role
+  }
   set role(value: string | undefined | null) {
     this._role = value
   }
@@ -115,14 +153,22 @@ export class IconBtnComponent implements DoCheck {
 
   constructor(
     private _elementRef: ElementRef<HTMLButtonElement | HTMLAnchorElement>,
-    private _renderer: Renderer2
-  ) { }
+    private _renderer: Renderer2,
+  ) {}
 
   ngDoCheck() {
     if (this._isButton()) {
-      this._renderer.setAttribute(this._elementRef.nativeElement, 'type', this._type || 'button')
+      this._renderer.setAttribute(
+        this._elementRef.nativeElement,
+        'type',
+        this._type || 'button',
+      )
     } else if (this._isAnchor()) {
-      this._renderer.setAttribute(this._elementRef.nativeElement, 'role', this._role || 'button')
+      this._renderer.setAttribute(
+        this._elementRef.nativeElement,
+        'role',
+        this._role || 'button',
+      )
     }
   }
 
@@ -137,5 +183,4 @@ export class IconBtnComponent implements DoCheck {
   protected _isAnchor() {
     return this._elementRef.nativeElement.nodeName.toLowerCase() === 'button'
   }
-
 }

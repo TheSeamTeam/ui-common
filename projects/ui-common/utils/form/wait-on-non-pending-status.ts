@@ -11,12 +11,17 @@ import { filter, map, mapTo, startWith, take } from 'rxjs/operators'
  *  before completing, even if the validator completes(subscription `complete`
  *  if observable).
  */
-export function waitOnNonPendingStatus(control: AbstractControl): Observable<string> {
+export function waitOnNonPendingStatus(
+  control: AbstractControl,
+): Observable<string> {
   return merge(
-      control.statusChanges,
-      interval(30).pipe(mapTo(control), map(c => c.status))
-    )
+    control.statusChanges,
+    interval(30).pipe(
+      mapTo(control),
+      map((c) => c.status),
+    ),
+  )
     .pipe(startWith(control.status))
-    .pipe(filter(v => v !== 'PENDING'))
+    .pipe(filter((v) => v !== 'PENDING'))
     .pipe(take(1))
 }

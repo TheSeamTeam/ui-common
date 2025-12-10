@@ -1,8 +1,19 @@
 import { FocusMonitor } from '@angular/cdk/a11y'
-import { Component, ElementRef, HostBinding, Input, OnDestroy, Renderer2 } from '@angular/core'
+import {
+  Component,
+  ElementRef,
+  HostBinding,
+  Input,
+  OnDestroy,
+  Renderer2,
+} from '@angular/core'
 
 import type { ThemeTypes } from '@theseam/ui-common/models'
-import { TheSeamAnchorButtonComponent, TheSeamButtonComponent } from '../button/button.component'
+
+import {
+  TheSeamAnchorButtonComponent,
+  TheSeamButtonComponent,
+} from '../button/button.component'
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -10,30 +21,35 @@ import { TheSeamAnchorButtonComponent, TheSeamButtonComponent } from '../button/
   templateUrl: './badge-button.component.html',
   styleUrls: ['./badge-button.component.scss'],
   exportAs: 'seamBadgeButton',
-  inputs: [ 'disabled', 'theme', 'size' ],
+  inputs: ['disabled', 'theme', 'size'],
   host: {
     '[attr.type]': 'type',
-    'class': 'btn',
+    class: 'btn',
     '[attr.aria-disabled]': 'disabled.toString()',
-    '[attr.disabled]': 'disabled || null'
+    '[attr.disabled]': 'disabled || null',
   },
+  standalone: false,
 })
-export class TheSeamBadgeButtonComponent extends TheSeamButtonComponent implements OnDestroy {
-
+export class TheSeamBadgeButtonComponent
+  extends TheSeamButtonComponent
+  implements OnDestroy
+{
   @HostBinding('class.text-nowrap') _textNoWrap = true
 
   @Input() badgeTheme: ThemeTypes = 'light'
   @Input() badgeText = ''
 
-  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(
-    _elementRef: ElementRef,
-    _focusMonitor: FocusMonitor,
-    _renderer: Renderer2
-  ) { super(_elementRef, _focusMonitor, _renderer) }
+    readonly _elementRef: ElementRef,
+    readonly _focusMonitor: FocusMonitor,
+    readonly _renderer: Renderer2,
+  ) {
+    super(_elementRef, _focusMonitor, _renderer)
+  }
 
-  ngOnDestroy() { super.ngOnDestroy() }
-
+  ngOnDestroy() {
+    super.ngOnDestroy()
+  }
 }
 
 @Component({
@@ -42,29 +58,33 @@ export class TheSeamBadgeButtonComponent extends TheSeamButtonComponent implemen
   templateUrl: './badge-button.component.html',
   styleUrls: ['./badge-button.component.scss'],
   exportAs: 'seamBadgeButton,seamBadgeButtonAnchor',
-  inputs: [ 'disabled', 'theme', 'size' ],
+  inputs: ['disabled', 'theme', 'size'],
   host: {
-    'class': 'btn',
+    class: 'btn',
     '[attr.tabindex]': 'disabled ? -1 : (tabIndex || 0)',
     '[attr.disabled]': 'disabled || null',
     '[attr.aria-disabled]': 'disabled.toString()',
-    '(click)': '_haltDisabledEvents($event)',
   },
+  standalone: false,
 })
-export class TheSeamAnchorBadgeButtonComponent extends TheSeamAnchorButtonComponent implements OnDestroy {
-
+export class TheSeamAnchorBadgeButtonComponent
+  extends TheSeamAnchorButtonComponent
+  implements OnDestroy
+{
   @HostBinding('class.text-nowrap') _textNoWrap = true
 
   @Input() badgeTheme: ThemeTypes = 'light'
   @Input() badgeText = ''
 
-  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(
-    _elementRef: ElementRef,
-    _focusMonitor: FocusMonitor,
-    _renderer: Renderer2
-  ) { super(_elementRef, _focusMonitor, _renderer) }
+    readonly _elementRef: ElementRef,
+    readonly _focusMonitor: FocusMonitor,
+    readonly _renderer: Renderer2,
+  ) {
+    super(_elementRef, _focusMonitor, _renderer)
+  }
 
-  ngOnDestroy() { super.ngOnDestroy() }
-
+  ngOnDestroy() {
+    super.ngOnDestroy()
+  }
 }

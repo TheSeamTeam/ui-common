@@ -1,10 +1,22 @@
 import { Provider } from '@angular/core'
 
 import { ApolloLink, concat, InMemoryCache } from '@apollo/client/core'
-import { isNullOrUndefined, notNullOrUndefined, withoutProperty } from '@theseam/ui-common/utils'
+import {
+  isNullOrUndefined,
+  notNullOrUndefined,
+  withoutProperty,
+} from '@theseam/ui-common/utils'
 import { APOLLO_OPTIONS } from 'apollo-angular'
 import { HttpLink } from 'apollo-angular/http'
-import { OperationDefinitionNode, parse, parseValue, print, ValueNode, VariableDefinitionNode, VariableNode } from 'graphql'
+import {
+  OperationDefinitionNode,
+  parse,
+  parseValue,
+  print,
+  ValueNode,
+  VariableDefinitionNode,
+  VariableNode,
+} from 'graphql'
 
 import {
   // GQL_HINT_INLINE_VARIABLE,
@@ -12,7 +24,7 @@ import {
   // GQL_HINT_REMOVE_NOT_DEFINED
 
   inlineVariableHintDef,
-  removeNotDefinedHintDef
+  removeNotDefinedHintDef,
 } from '../hints'
 import { HintsKind, QueryProcessingConfig } from '../models'
 import {
@@ -24,14 +36,15 @@ import {
   removeVariable,
   removeVariableDefinition,
   removeVariableDefinitionsNotDefined,
-  toGQL
+  toGQL,
 } from '../utils'
 
 export const queryProcessingLink = new ApolloLink((operation, forward) => {
   // console.log('~link operation', operation)
 
   const context = operation.getContext()
-  const queryProcessingConfig: QueryProcessingConfig = context.queryProcessingConfig || {}
+  const queryProcessingConfig: QueryProcessingConfig =
+    context.queryProcessingConfig || {}
 
   // console.log(operation.query)
 
@@ -42,22 +55,33 @@ export const queryProcessingLink = new ApolloLink((operation, forward) => {
 
   operation.query = _ast
 
-  const removeNotDefined = hintsTokensContainingHint(rules, removeNotDefinedHintDef.name)
+  const removeNotDefined = hintsTokensContainingHint(
+    rules,
+    removeNotDefinedHintDef.name,
+  )
   // console.log('removeNotDefined', removeNotDefined)
   for (const rulesToken of removeNotDefined) {
     // _ast = removeVariableDefinitionsNotDefined(_ast, rulesToken.node as OperationDefinitionNode, operation.variables)
-    if (!removeNotDefinedHintDef.transformer) { continue }
+    if (!removeNotDefinedHintDef.transformer) {
+      continue
+    }
 
-    const result = removeNotDefinedHintDef.transformer({
-      query: operation.query,
-      variables: operation.variables
-    }, rulesToken)
+    const result = removeNotDefinedHintDef.transformer(
+      {
+        query: operation.query,
+        variables: operation.variables,
+      },
+      rulesToken,
+    )
 
     operation.query = result.query
     operation.variables = result.variables
   }
 
-  const inlineVariableRulesTokens = hintsTokensContainingHint(rules, inlineVariableHintDef.name)
+  const inlineVariableRulesTokens = hintsTokensContainingHint(
+    rules,
+    inlineVariableHintDef.name,
+  )
   // console.log('inlineVariableRulesTokens', inlineVariableRulesTokens)
   for (const rulesToken of inlineVariableRulesTokens) {
     let varName: string | null = null
@@ -79,8 +103,11 @@ export const queryProcessingLink = new ApolloLink((operation, forward) => {
     operation.variables = withoutProperty(operation.variables, varName)
     _ast = removeVariableDefinition(_ast, varName)
 
-    const varValueNode =
-    _ast = inlineVariable(_ast, varName, parseValue(toGQL(varValue)))
+    const varValueNode = (_ast = inlineVariable(
+      _ast,
+      varName,
+      parseValue(toGQL(varValue)),
+    ))
   }
 
   // const removeIfNotDefined = hintsTokensContainingHint(rules, GQL_HINT_REMOVE_IF_NOT_USED)

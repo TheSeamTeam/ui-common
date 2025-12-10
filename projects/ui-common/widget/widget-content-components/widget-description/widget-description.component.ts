@@ -4,6 +4,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core'
   selector: 'seam-widget-description',
   templateUrl: './widget-description.component.html',
   styleUrls: ['./widget-description.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
-export class WidgetDescriptionComponent { }
+export class WidgetDescriptionComponent {}

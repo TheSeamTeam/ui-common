@@ -9,15 +9,33 @@ import {
   INavLink,
   INavTitle,
   NavItemCanHaveChildren,
-  NavItemCanHaveState
+  NavItemCanHaveState,
 } from './nav.models'
 
-export function isHorizontalNavItemType(item: INavItem, type: 'title'): item is INavTitle
-export function isHorizontalNavItemType(item: INavItem, type: 'divider'): item is INavDivider
-export function isHorizontalNavItemType(item: INavItem, type: 'basic'): item is INavBasic
-export function isHorizontalNavItemType(item: INavItem, type: 'link'): item is INavLink
-export function isHorizontalNavItemType(item: INavItem, type: 'button'): item is INavButton
-export function isHorizontalNavItemType(item: INavItem, type: string): item is INavItem {
+export function isHorizontalNavItemType(
+  item: INavItem,
+  type: 'title',
+): item is INavTitle
+export function isHorizontalNavItemType(
+  item: INavItem,
+  type: 'divider',
+): item is INavDivider
+export function isHorizontalNavItemType(
+  item: INavItem,
+  type: 'basic',
+): item is INavBasic
+export function isHorizontalNavItemType(
+  item: INavItem,
+  type: 'link',
+): item is INavLink
+export function isHorizontalNavItemType(
+  item: INavItem,
+  type: 'button',
+): item is INavButton
+export function isHorizontalNavItemType(
+  item: INavItem,
+  type: string,
+): item is INavItem {
   return item.itemType === type
 }
 
@@ -33,12 +51,23 @@ export function isHorizontalNavItemFocused(item: INavItem): boolean {
   return item.__state?.focused ?? false
 }
 
-export function horizontalNavItemHasChildren(item: INavItem): item is (INavBasic | INavLink) & Required<NavItemCanHaveChildren> {
-  return horizontalNavItemCanHaveChildren(item) && hasProperty(item, 'children') && item.children.length > 0
+export function horizontalNavItemHasChildren(
+  item: INavItem,
+): item is (INavBasic | INavLink) & Required<NavItemCanHaveChildren> {
+  return (
+    horizontalNavItemCanHaveChildren(item) &&
+    hasProperty(item, 'children') &&
+    item.children.length > 0
+  )
 }
 
-export function horizontalNavItemCanHaveChildren(item: INavItem): item is (INavBasic | INavLink) {
-  return isHorizontalNavItemType(item, 'basic') || isHorizontalNavItemType(item, 'link')
+export function horizontalNavItemCanHaveChildren(
+  item: INavItem,
+): item is INavBasic | INavLink {
+  return (
+    isHorizontalNavItemType(item, 'basic') ||
+    isHorizontalNavItemType(item, 'link')
+  )
 }
 
 export function horizontalNavItemHasActiveChild(item: INavItem): boolean {
@@ -47,7 +76,10 @@ export function horizontalNavItemHasActiveChild(item: INavItem): boolean {
   }
 
   for (const child of item.children) {
-    if (getHorizontalNavItemStateProp(child, 'active') || horizontalNavItemHasActiveChild(child)) {
+    if (
+      getHorizontalNavItemStateProp(child, 'active') ||
+      horizontalNavItemHasActiveChild(child)
+    ) {
       return true
     }
   }
@@ -69,11 +101,18 @@ export function horizontalNavItemHasExpandedChild(item: INavItem): boolean {
   return false
 }
 
-export function horizontalNavItemCanBeActive(item: INavItem): item is (INavBasic | INavLink) {
-  return isHorizontalNavItemType(item, 'basic') || isHorizontalNavItemType(item, 'link')
+export function horizontalNavItemCanBeActive(
+  item: INavItem,
+): item is INavBasic | INavLink {
+  return (
+    isHorizontalNavItemType(item, 'basic') ||
+    isHorizontalNavItemType(item, 'link')
+  )
 }
 
-export function horizontalNavItemCanExpand(item: INavItem): item is (INavBasic | INavLink) {
+export function horizontalNavItemCanExpand(
+  item: INavItem,
+): item is INavBasic | INavLink {
   return horizontalNavItemCanHaveChildren(item)
 }
 
@@ -85,7 +124,10 @@ export function findHorizontalNavLinkItems(items: INavItem[]): INavLink[] {
       if (isHorizontalNavItemType(item, 'link')) {
         linkItems.push(item)
       }
-      if (horizontalNavItemCanHaveChildren(item) && hasProperty(item, 'children')) {
+      if (
+        horizontalNavItemCanHaveChildren(item) &&
+        hasProperty(item, 'children')
+      ) {
         _fn(item.children)
       }
     }
@@ -95,17 +137,26 @@ export function findHorizontalNavLinkItems(items: INavItem[]): INavLink[] {
   return linkItems
 }
 
-export function setHorizontalNavItemStateProp<K extends keyof INavItemState>(item: INavItem, prop: K, value: INavItemState[K]): void {
+export function setHorizontalNavItemStateProp<K extends keyof INavItemState>(
+  item: INavItem,
+  prop: K,
+  value: INavItemState[K],
+): void {
   if (hasProperty(item, '__state')) {
     item.__state[prop] = value
   }
 }
 
-export function getHorizontalNavItemStateProp<K extends keyof INavItemState>(item: INavItem, prop: K): INavItemState[K] {
+export function getHorizontalNavItemStateProp<K extends keyof INavItemState>(
+  item: INavItem,
+  prop: K,
+): INavItemState[K] {
   return setDefaultHorizontalNavItemState(item).__state[prop]
 }
 
-export function setDefaultHorizontalNavItemState(item: INavItem): INavItem & Required<NavItemCanHaveState> {
+export function setDefaultHorizontalNavItemState(
+  item: INavItem,
+): INavItem & Required<NavItemCanHaveState> {
   if (hasProperty(item, '__state')) {
     return item
   }
@@ -113,14 +164,17 @@ export function setDefaultHorizontalNavItemState(item: INavItem): INavItem & Req
   item.__state = {
     active: false,
     expanded: false,
-    focused: false
+    focused: false,
   } as INavItemState
 
   // TODO: See if there is a nice way to fix the typing for this.
   return item as any
 }
 
-export function areSameHorizontalNavItem(item1: INavItem | undefined, item2: INavItem | undefined): boolean {
+export function areSameHorizontalNavItem(
+  item1: INavItem | undefined,
+  item2: INavItem | undefined,
+): boolean {
   if (isNullOrUndefined(item1) || isNullOrUndefined(item2)) {
     return false
   }
@@ -129,15 +183,30 @@ export function areSameHorizontalNavItem(item1: INavItem | undefined, item2: INa
     return false
   }
 
-  if (isHorizontalNavItemType(item1, 'title') && isHorizontalNavItemType(item2, 'title')) {
+  if (
+    isHorizontalNavItemType(item1, 'title') &&
+    isHorizontalNavItemType(item2, 'title')
+  ) {
     return item1.label === item2.label
-  } else if (isHorizontalNavItemType(item1, 'divider') && isHorizontalNavItemType(item2, 'divider')) {
+  } else if (
+    isHorizontalNavItemType(item1, 'divider') &&
+    isHorizontalNavItemType(item2, 'divider')
+  ) {
     return item1.label === item2.label
-  } else if (isHorizontalNavItemType(item1, 'basic') && isHorizontalNavItemType(item2, 'basic')) {
+  } else if (
+    isHorizontalNavItemType(item1, 'basic') &&
+    isHorizontalNavItemType(item2, 'basic')
+  ) {
     return item1.label === item2.label
-  } else if (isHorizontalNavItemType(item1, 'link') && isHorizontalNavItemType(item2, 'link')) {
+  } else if (
+    isHorizontalNavItemType(item1, 'link') &&
+    isHorizontalNavItemType(item2, 'link')
+  ) {
     return item1.label === item2.label && item1.link === item2.link
-  } else if (isHorizontalNavItemType(item1, 'button') && isHorizontalNavItemType(item2, 'button')) {
+  } else if (
+    isHorizontalNavItemType(item1, 'button') &&
+    isHorizontalNavItemType(item2, 'button')
+  ) {
     return item1.onClick === item2.onClick
   }
 

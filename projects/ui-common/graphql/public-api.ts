@@ -1,2 +1,5 @@
 export * from './utils'
 export * from './datatable'
+export * from './hints'
+export * from './models'
+export * from './testing'

@@ -32,8 +32,8 @@ export function noInnerRingsValidator(): ValidatorFn {
     if (hasInnerRing(value)) {
       return {
         [NO_INNER_RINGS_VALIDATOR_NAME]: {
-          reason: `A shape cannot have an inner ring.`
-        }
+          reason: `A shape cannot have an inner ring.`,
+        },
       }
     }
 

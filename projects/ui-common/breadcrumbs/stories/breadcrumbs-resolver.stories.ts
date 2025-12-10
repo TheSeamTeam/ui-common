@@ -1,71 +1,82 @@
-import { Meta, Story } from '@storybook/angular'
+import { Meta, StoryObj } from '@storybook/angular'
 
-import { importProvidersFrom } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
-import { RouterModule } from '@angular/router'
+import { provideRouter, RouterModule } from '@angular/router'
+import { provideLocationMocks } from '@angular/common/testing'
 
-import { routesArgType, StoryEmptyComponent, StoryInitialRouteModule } from '@theseam/ui-common/story-helpers'
+import { initialUrlFromArgs } from '@marklb/storybook-angular-initial-url'
+import {
+  routesArgType,
+  StoryEmptyComponent,
+} from '@theseam/ui-common/story-helpers'
 
 import { StoryUsersDataService } from './story-user-data.service'
 import { StoryUserIdToNameResolver } from './story-userid-to-name.resolver'
 
-import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component'
+import { TheSeamBreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component'
 
-export default {
+interface ExtraArgs {
+  route: any
+}
+
+const meta: Meta<TheSeamBreadcrumbsComponent & ExtraArgs> = {
   title: 'Breadcrumbs/Components/Resolver',
-  component: BreadcrumbsComponent,
-  decorators: [ ]
-} as Meta
+  component: TheSeamBreadcrumbsComponent,
+  decorators: [],
+}
 
-export const Example: Story = args => ({
-  applicationConfig: {
-    providers: [
-      provideAnimations(),
-      importProvidersFrom(
-        RouterModule.forRoot([
+export default meta
+type Story = StoryObj<TheSeamBreadcrumbsComponent & ExtraArgs>
+
+export const Example: Story = {
+  decorators: [initialUrlFromArgs({ argName: 'route' })],
+  render: (args) => ({
+    applicationConfig: {
+      providers: [
+        provideAnimations(),
+        provideLocationMocks(),
+        provideRouter([
           {
             path: 'users',
             component: StoryEmptyComponent,
             data: {
-              breadcrumb: 'Users'
+              breadcrumb: 'Users',
             },
             children: [
               {
                 path: ':userId',
                 component: StoryEmptyComponent,
-                data: { },
+                data: {},
                 resolve: {
-                  breadcrumb: StoryUserIdToNameResolver
-                }
-              }
-            ]
-          }
-        ], { useHash: true }),
-        StoryInitialRouteModule.forRoot('/users/123'),
-      ),
-      StoryUsersDataService,
-      StoryUserIdToNameResolver,
-    ],
+                  breadcrumb: StoryUserIdToNameResolver,
+                },
+              },
+            ],
+          },
+        ]),
+        StoryUsersDataService,
+        StoryUserIdToNameResolver,
+      ],
+    },
+    moduleMetadata: {
+      imports: [RouterModule],
+    },
+    props: { ...args },
+    template: `
+      <seam-breadcrumbs></seam-breadcrumbs>
+      <router-outlet></router-outlet>
+    `,
+  }),
+  argTypes: {
+    // TODO: Fix this type
+    route: routesArgType([
+      '/users',
+      '/users/123',
+      '/users/987',
+      '/users/999',
+    ]) as any,
   },
-  moduleMetadata: {
-    declarations: [
-      StoryEmptyComponent
-    ],
-    imports: [
-      RouterModule,
-    ]
+  args: {
+    route: '/users/123',
   },
-  props: { ...args },
-  template: `
-    <seam-breadcrumbs></seam-breadcrumbs>
-    <router-outlet></router-outlet>
-  `
-})
-Example.argTypes = {
-  route: routesArgType([
-    '/users',
-    '/users/123',
-    '/users/987',
-    '/users/999'
-  ])
 }

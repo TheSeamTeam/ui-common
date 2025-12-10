@@ -1,58 +1,69 @@
-import { Meta, moduleMetadata, Story } from '@storybook/angular'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
 
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { provideAnimations } from '@angular/platform-browser/animations'
 
-import { TheSeamScrollbarModule } from '@theseam/ui-common/scrollbar'
+import { TheSeamOverlayScrollbarDirective } from '@theseam/ui-common/scrollbar'
 
 import { TheSeamModalModule } from '../modal.module'
 
-export default {
+const meta: Meta<any> = {
   title: 'Modal/Directive/Template',
   decorators: [
+    applicationConfig({
+      providers: [provideAnimations()],
+    }),
     moduleMetadata({
-      imports: [
-        TheSeamModalModule,
-        BrowserAnimationsModule,
-        TheSeamScrollbarModule
-      ],
-    })
-  ]
-} as Meta
+      imports: [TheSeamModalModule, TheSeamOverlayScrollbarDirective],
+    }),
+  ],
+}
 
-export const Basic: Story = () => ({
-  props: { },
-  template: `
-    <div class="p-4">
-      <button type="button" class="btn btn-lightgray"
-        (click)="modal.open()">Open Modal</button>
-    </div>
+export default meta
+type Story = StoryObj<any>
 
-    <ng-template seamModal #modal="seamModal">
-      Example
-    </ng-template>`
-})
+export const Basic: Story = {
+  render: (args) => ({
+    props: args,
+    template: `
+      <div class="p-4">
+        <button type="button" class="btn btn-lightgray"
+          (click)="modal.open()">Open Modal</button>
+      </div>
 
-export const Simple: Story = () => ({
-  props: { },
-  template: `
-    <div class="p-4">
-      <button type="button" class="btn btn-lightgray"
-        (click)="modal.open()">Open Modal</button>
-    </div>
-
-    <ng-template seamModal #modal="seamModal">
-      <seam-modal-header>
-        <h4 seamModalTitle>Title</h4>
-        <button seamModalClose="cancel" class="close" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </seam-modal-header>
-      <seam-modal-body>
+      <ng-template seamModal #modal="seamModal">
         Example
-      </seam-modal-body>
-      <seam-modal-footer>
-        <button class="btn btn-primary" seamModalClose="Yes">Yes</button>
-        <button class="btn btn-lightgray" seamModalClose="No">No</button>
-      </seam-modal-footer>
-    </ng-template>`
-})
+      </ng-template>`,
+  }),
+}
+
+export const Simple: Story = {
+  render: (args) => ({
+    props: args,
+    template: `
+      <div class="p-4">
+        <button type="button" class="btn btn-lightgray"
+          (click)="modal.open()">Open Modal</button>
+      </div>
+
+      <ng-template seamModal #modal="seamModal">
+        <seam-modal-header>
+          <h4 seamModalTitle>Title</h4>
+          <button seamModalClose="cancel" class="close" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </seam-modal-header>
+        <seam-modal-body>
+          Example
+        </seam-modal-body>
+        <seam-modal-footer>
+          <button class="btn btn-primary" seamModalClose="Yes">Yes</button>
+          <button class="btn btn-lightgray" seamModalClose="No">No</button>
+        </seam-modal-footer>
+      </ng-template>`,
+  }),
+}

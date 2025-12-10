@@ -9,29 +9,29 @@ export const themeArgType: ArgType = {
   control: {
     type: 'select',
   },
-  description: `Theme style.`
+  description: `Theme style.`,
 }
 
 export const themeWithOutlineArgType: ArgType = {
-  options: [ ...ThemeNames, ...OutlineThemeNames ],
+  options: [...ThemeNames, ...OutlineThemeNames],
   control: {
     type: 'select',
   },
-  description: `Theme style.`
+  description: `Theme style.`,
 }
 
 export const sizeArgType: ArgType = {
-  options: [ undefined, 'sm', 'lg' ],
+  options: [undefined, 'sm', 'lg'],
   control: {
     type: 'select',
   },
-  description: `Size.`
+  description: `Size.`,
 }
 
 export const buttonTypeArgType: ArgType = {
-  options: [ 'button', 'submit' ],
+  options: ['button', 'submit'],
   control: {
     type: 'select',
   },
-  description: `Button type.`
+  description: `Button type.`,
 }

@@ -1,5 +1,5 @@
 export type SizeTypes =
-  'default'
+  | 'default'
   | 'primary'
   | 'secondary'
   | 'success'

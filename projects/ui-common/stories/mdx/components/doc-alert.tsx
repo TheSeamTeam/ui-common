@@ -13,7 +13,6 @@ interface DocAlertProps {
 }
 
 export class DocAlert extends React.Component<DocAlertProps> {
-
   render() {
     const { children, kind } = this.props
     const _kind = kind || 'warning'

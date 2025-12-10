@@ -13,8 +13,8 @@ describe('GraphQL Utils containsVariable', () => {
     // }
 
     const QUERY = gql`
-      query ExampleQuery($skip: Int, $take: Int, $search: String){
-        exampleOperation(order: {}, skip: $skip, take: $take, where: {  }) {
+      query ExampleQuery($skip: Int, $take: Int, $search: String) {
+        exampleOperation(order: {}, skip: $skip, take: $take, where: {}) {
           items {
             username
             subject

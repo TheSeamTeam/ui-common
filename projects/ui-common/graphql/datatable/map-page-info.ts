@@ -1,6 +1,9 @@
 import { TheSeamPageInfo } from '@theseam/ui-common/datatable'
 
-export interface PageInfoMapperResult { skip: number, take: number }
+export interface PageInfoMapperResult {
+  skip: number
+  take: number
+}
 export type PageInfoMapper = (pageInfo: TheSeamPageInfo) => PageInfoMapperResult
 
 /**
@@ -15,6 +18,6 @@ export function mapPageInfo(pageInfo: TheSeamPageInfo): PageInfoMapperResult {
 
   return {
     skip: Math.max(skipWithWindowOffset, 0),
-    take: Math.max((pageInfo.pageSize * 3) + takeOffset, 0)
+    take: Math.max(pageInfo.pageSize * 3 + takeOffset, 0),
   }
 }

@@ -13,45 +13,51 @@ export function createSimpleGqlTestRecord(num: number): SimpleGqlTestRecord {
   return { id: num, name: `Item_${num}` }
 }
 
-export const simpleGqlTestSchema = buildSchema(print(gql`
-  ${baseSchemaFragment}
+export const simpleGqlTestSchema = buildSchema(
+  print(gql`
+    ${baseSchemaFragment}
 
-  type SimpleGqlTestRecordCollectionSegment {
-    items: [SimpleGqlTestRecord!]
+    type SimpleGqlTestRecordCollectionSegment {
+      items: [SimpleGqlTestRecord!]
 
-    """Information to aid in pagination."""
-    pageInfo: CollectionSegmentInfo!
-    totalCount: Int!
-  }
+      """
+      Information to aid in pagination.
+      """
+      pageInfo: CollectionSegmentInfo!
+      totalCount: Int!
+    }
 
-  input SimpleGqlTestRecordFilterInput {
-    and: [SimpleGqlTestRecordFilterInput!]
-    or: [SimpleGqlTestRecordFilterInput!]
-    objectContains: String
-    id: ComparableInt32OperationFilterInput
-    name: StringOperationFilterInput
-  }
+    input SimpleGqlTestRecordFilterInput {
+      and: [SimpleGqlTestRecordFilterInput!]
+      or: [SimpleGqlTestRecordFilterInput!]
+      objectContains: String
+      id: ComparableInt32OperationFilterInput
+      name: StringOperationFilterInput
+    }
 
-  type SimpleGqlTestRecord {
-    id: Int
-    name: String
-  }
+    type SimpleGqlTestRecord {
+      id: Int
+      name: String
+    }
 
-  type Query {
-    simpleGqlTestRecords(
-      skip: Int
-      take: Int
-      where: SimpleGqlTestRecordFilterInput
-    ): SimpleGqlTestRecordCollectionSegment
-  }
-`))
+    type Query {
+      simpleGqlTestRecords(
+        skip: Int
+        take: Int
+        where: SimpleGqlTestRecordFilterInput
+      ): SimpleGqlTestRecordCollectionSegment
+    }
+  `),
+)
 
 export function createSimpleGqlTestRoot(numRecords: number) {
   const _records: SimpleGqlTestRecord[] = []
-  for (let i = 0; i < numRecords; i++) { _records.push(createSimpleGqlTestRecord(i)) }
+  for (let i = 0; i < numRecords; i++) {
+    _records.push(createSimpleGqlTestRecord(i))
+  }
 
   return {
-    simpleGqlTestRecords: (args?: any) => filteredResults([ ..._records ], args)
+    simpleGqlTestRecords: (args?: any) => filteredResults([..._records], args),
   }
 }
 
@@ -61,11 +67,7 @@ export const SIMPLE_GQL_TEST_QUERY = gql`
     $take: Int
     $where: SimpleGqlTestRecordFilterInput
   ) {
-    simpleGqlTestRecords(
-      skip: $skip
-      take: $take
-      where: $where
-    ) {
+    simpleGqlTestRecords(skip: $skip, take: $take, where: $where) {
       items {
         id
         name
@@ -75,10 +77,8 @@ export const SIMPLE_GQL_TEST_QUERY = gql`
   }
 `
 
-// tslint:disable-next-line: no-empty-interface
-export interface SimpleGqlTestExtraVariables {
-
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface SimpleGqlTestExtraVariables {}
 
 export interface SimpleGqlTestVariables extends SimpleGqlTestExtraVariables {
   skip?: number

@@ -18,7 +18,7 @@ export function isFeatureCollectionValidator(): ValidatorFn {
       return {
         [IS_FEATURE_COLLECTION_VALIDATOR_NAME]: {
           reason: `Must be a FeatureCollection.`,
-        }
+        },
       }
     }
 

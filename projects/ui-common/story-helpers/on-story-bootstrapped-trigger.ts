@@ -20,13 +20,18 @@ import { APP_BOOTSTRAP_LISTENER, ComponentRef, ElementRef } from '@angular/core'
  * })
  * ```
  */
-export function onStoryBootstrappedTrigger(targetSelector: string, eventName: string) {
+export function onStoryBootstrappedTrigger(
+  targetSelector: string,
+  eventName: string,
+) {
   function bootstrapped(componentRef: ComponentRef<any>) {
     const elementRef = componentRef.injector.get(ElementRef, null)
     const target = elementRef?.nativeElement.querySelector(targetSelector)
     if (!target) {
       // eslint-disable-next-line no-console
-      console.warn(`Unable to trigger event '${eventName}'. Target '${targetSelector}' not found.`)
+      console.warn(
+        `Unable to trigger event '${eventName}'. Target '${targetSelector}' not found.`,
+      )
     }
 
     const e = document.createEvent('HTMLEvents')
@@ -37,6 +42,6 @@ export function onStoryBootstrappedTrigger(targetSelector: string, eventName: st
   return {
     provide: APP_BOOTSTRAP_LISTENER,
     useValue: bootstrapped,
-    multi: true
+    multi: true,
   }
 }

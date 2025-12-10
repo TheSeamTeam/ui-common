@@ -1,10 +1,16 @@
 import { Meta, moduleMetadata, StoryObj } from '@storybook/angular'
-import { expect } from '@storybook/jest'
+import { expect, fn } from 'storybook/test'
 
 import { ReactiveFormsModule } from '@angular/forms'
 
 import { getHarness } from '@theseam/ui-common/testing'
-import { buttonTypeArgType, sizeArgType, themeWithOutlineArgType } from '@theseam/ui-common/story-helpers'
+import {
+  argsToTpl,
+  ArgsTplOptions,
+  buttonTypeArgType,
+  sizeArgType,
+  themeWithOutlineArgType,
+} from '@theseam/ui-common/story-helpers'
 
 import { TheSeamButtonsModule } from '../buttons.module'
 import { TheSeamToggleButtonComponent } from './toggle-button.component'
@@ -12,6 +18,7 @@ import { TheSeamToggleButtonComponentHarness } from '../testing/toggle-button.ha
 
 interface StoryExtraProps {
   btnText: string
+  click: () => void
 }
 
 const meta: Meta<TheSeamToggleButtonComponent & StoryExtraProps> = {
@@ -19,12 +26,13 @@ const meta: Meta<TheSeamToggleButtonComponent & StoryExtraProps> = {
   component: TheSeamToggleButtonComponent,
   decorators: [
     moduleMetadata({
-      imports: [
-        ReactiveFormsModule,
-        TheSeamButtonsModule,
-      ],
+      imports: [ReactiveFormsModule, TheSeamButtonsModule],
     }),
   ],
+  render: (args) => ({
+    props: args,
+    template: `<button seamToggleButton ${argsToTpl()}>{{ btnText }}</button>`,
+  }),
   tags: ['autodocs'],
   argTypes: {
     btnText: {
@@ -33,9 +41,17 @@ const meta: Meta<TheSeamToggleButtonComponent & StoryExtraProps> = {
     theme: themeWithOutlineArgType,
     size: sizeArgType,
     type: buttonTypeArgType,
+    click: { action: 'click' },
   },
   args: {
     btnText: 'Example Text',
+    click: fn(),
+  },
+  parameters: {
+    argsToTplOptions: {
+      alwaysBind: ['theme', 'size', 'type'],
+      exclude: ['btnText'],
+    } satisfies ArgsTplOptions,
   },
 }
 
@@ -43,25 +59,36 @@ export default meta
 type Story = StoryObj<TheSeamToggleButtonComponent & StoryExtraProps>
 
 export const Basic: Story = {
-  render: args => ({
-    props: args,
-    template: `
-      <button seamToggleButton
-        [theme]="theme"
-        [size]="size"
-        [type]="type">
-        {{ btnText }}
-      </button>
-    `,
-  }),
-  play: async ({ canvasElement, fixture }) => {
-    const harness = await getHarness(TheSeamToggleButtonComponentHarness, { canvasElement, fixture })
+  play: async ({ canvasElement, args }) => {
+    const harness = await getHarness(TheSeamToggleButtonComponentHarness, {
+      canvasElement,
+    })
     await expect(await harness.getText()).toBe('Example Text')
     await expect(await harness.getTheme()).toBe(null)
     await expect(await harness.isDisabled()).toBe(false)
     await expect(await harness.hasDisabledAria()).toBe(false)
     await expect(await harness.isActive()).toBe(false)
     await harness.click()
+    await expect(args.click).toHaveBeenCalled()
     await expect(await harness.isActive()).toBe(true)
+  },
+}
+
+export const Disabled: Story = {
+  args: {
+    disabled: true,
+  },
+  play: async ({ canvasElement, args }) => {
+    const harness = await getHarness(TheSeamToggleButtonComponentHarness, {
+      canvasElement,
+    })
+    await expect(await harness.getText()).toBe('Example Text')
+    await expect(await harness.getTheme()).toBe(null)
+    await expect(await harness.isDisabled()).toBe(true)
+    await expect(await harness.hasDisabledAria()).toBe(true)
+    await expect(await harness.isActive()).toBe(false)
+    await harness.click()
+    await expect(args.click).not.toHaveBeenCalled()
+    await expect(await harness.isActive()).toBe(false)
   },
 }

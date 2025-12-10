@@ -10,7 +10,5 @@ import { DynamicActionUiDef } from './dynamic-action-ui-def'
  * TODO: Rename to DynamicActionUiClickDef
  */
 export interface DynamicActionUiButtonDef extends DynamicActionUiDef {
-
   triggerType: 'click'
-
 }

@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, Inject, Input, Optional } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  Input,
+  Optional,
+} from '@angular/core'
 
 import { hasProperty, notNullOrUndefined } from '@theseam/ui-common/utils'
 import { DatatableMenuBarComponent } from './../datatable-menu-bar/datatable-menu-bar.component'
@@ -9,16 +15,18 @@ import { THESEAM_MENUBAR_ITEM_DATA } from './../tokens/menubar-item-data'
   selector: 'seam-datatable-menu-bar-text',
   templateUrl: './datatable-menu-bar-text.component.html',
   styleUrls: ['./datatable-menu-bar-text.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class DatatableMenuBarTextComponent {
-
   @Input()
   public value: string | undefined | null
 
   constructor(
     private _menuBar: DatatableMenuBarComponent,
-    @Optional() @Inject(THESEAM_MENUBAR_ITEM_DATA) private _data: MenubarItemData | null
+    @Optional()
+    @Inject(THESEAM_MENUBAR_ITEM_DATA)
+    private _data: MenubarItemData | null,
   ) {
     if (notNullOrUndefined(this._data)) {
       if (hasProperty(this._data, 'value')) {
@@ -26,5 +34,4 @@ export class DatatableMenuBarTextComponent {
       }
     }
   }
-
 }
