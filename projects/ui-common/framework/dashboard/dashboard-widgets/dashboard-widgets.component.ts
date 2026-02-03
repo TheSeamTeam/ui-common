@@ -48,7 +48,10 @@ import {
 
 import { faLock, faUnlock } from '@fortawesome/free-solid-svg-icons'
 import { InputBoolean } from '@theseam/ui-common/core'
-import { TheSeamElementResizedEvent } from '@theseam/ui-common/shared'
+import {
+  TheSeamElementResizedEvent,
+  TheSeamElemResizedDirective,
+} from '@theseam/ui-common/shared'
 import { THESEAM_WIDGET_ACCESSOR } from '@theseam/ui-common/widget'
 import { TheSeamIconModule } from '@theseam/ui-common/icon'
 import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
@@ -92,6 +95,7 @@ import { DashboardWidgetPortalOutletDirective } from '../dashboard-widgets/dashb
     DragDropModule,
     TheSeamIconModule,
     TheSeamButtonsModule,
+    TheSeamElemResizedDirective,
     DashboardWidgetTemplateContainerComponent,
     DashboardWidgetContainerComponent,
     DashboardWidgetPortalOutletDirective,
