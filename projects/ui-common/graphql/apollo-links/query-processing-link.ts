@@ -1,32 +1,9 @@
-import { Provider } from '@angular/core'
+import { ApolloLink } from '@apollo/client/core'
+import { isNullOrUndefined, withoutProperty } from '@theseam/ui-common/utils'
+import { parseValue } from 'graphql'
 
-import { ApolloLink, concat, InMemoryCache } from '@apollo/client/core'
-import {
-  isNullOrUndefined,
-  notNullOrUndefined,
-  withoutProperty,
-} from '@theseam/ui-common/utils'
-import { APOLLO_OPTIONS } from 'apollo-angular'
-import { HttpLink } from 'apollo-angular/http'
-import {
-  OperationDefinitionNode,
-  parse,
-  parseValue,
-  print,
-  ValueNode,
-  VariableDefinitionNode,
-  VariableNode,
-} from 'graphql'
-
-import {
-  // GQL_HINT_INLINE_VARIABLE,
-  // GQL_HINT_REMOVE_IF_NOT_USED,
-  // GQL_HINT_REMOVE_NOT_DEFINED
-
-  inlineVariableHintDef,
-  removeNotDefinedHintDef,
-} from '../hints'
-import { HintsKind, QueryProcessingConfig } from '../models'
+import { inlineVariableHintDef, removeNotDefinedHintDef } from '../hints'
+import { QueryProcessingConfig } from '../models'
 import {
   containsVariable,
   hintsTokensContainingHint,
@@ -35,109 +12,93 @@ import {
   parseHints,
   removeVariable,
   removeVariableDefinition,
-  removeVariableDefinitionsNotDefined,
   toGQL,
 } from '../utils'
 
+/**
+ * Apollo link that transforms GraphQL operations before they are sent.
+ *
+ * Two mechanisms are supported and can be combined freely:
+ *
+ * **Hint-based** — place `# @gql-hint: <name>` comments directly in the query.
+ * Supported hints:
+ * - `remove-not-defined` on the operation definition: removes every variable
+ *   whose value is null/undefined (definition + argument usage).
+ * - `inline-variable` on a variable definition or usage: substitutes the
+ *   variable's current value directly into the query AST and removes it from
+ *   the variables map.
+ *
+ * **Config-based** — pass a `QueryProcessingConfig` via Apollo context under
+ * the key `queryProcessingConfig`. Supported options:
+ * - `variables.removeIfNotDefined`: remove named variables when null/undefined.
+ * - `variables.removeIfNotUsed`: remove named variable definitions when the
+ *   variable is not referenced anywhere in the (possibly already-transformed)
+ *   query body.
+ * - `variables.inline`: inline named variables into the query AST.
+ *
+ * Hints are applied first, then config-based processing.
+ */
 export const queryProcessingLink = new ApolloLink((operation, forward) => {
-  // console.log('~link operation', operation)
-
   const context = operation.getContext()
   const queryProcessingConfig: QueryProcessingConfig =
-    context.queryProcessingConfig || {}
+    context.queryProcessingConfig ?? {}
 
-  // console.log(operation.query)
-
-  // const rules = parseHints(operation.query)
+  // Reparse to ensure token/comment info is present for hint parsing.
   let _ast = parseAst(operation.query)
   const rules = parseHints(_ast)
-  // console.log('rules', rules)
 
-  operation.query = _ast
-
-  const removeNotDefined = hintsTokensContainingHint(
+  // ---- Hint: remove-not-defined ----------------------------------------
+  for (const hintsToken of hintsTokensContainingHint(
     rules,
     removeNotDefinedHintDef.name,
-  )
-  // console.log('removeNotDefined', removeNotDefined)
-  for (const rulesToken of removeNotDefined) {
-    // _ast = removeVariableDefinitionsNotDefined(_ast, rulesToken.node as OperationDefinitionNode, operation.variables)
-    if (!removeNotDefinedHintDef.transformer) {
-      continue
-    }
-
-    const result = removeNotDefinedHintDef.transformer(
-      {
-        query: operation.query,
-        variables: operation.variables,
-      },
-      rulesToken,
+  )) {
+    const result = removeNotDefinedHintDef.transformer!(
+      { query: _ast, variables: operation.variables },
+      hintsToken,
     )
-
-    operation.query = result.query
+    _ast = result.query
     operation.variables = result.variables
   }
 
-  const inlineVariableRulesTokens = hintsTokensContainingHint(
+  // ---- Hint: inline-variable --------------------------------------------
+  for (const hintsToken of hintsTokensContainingHint(
     rules,
     inlineVariableHintDef.name,
-  )
-  // console.log('inlineVariableRulesTokens', inlineVariableRulesTokens)
-  for (const rulesToken of inlineVariableRulesTokens) {
-    let varName: string | null = null
-    let varDefaultValue: ValueNode | undefined
-    if (rulesToken.kind === HintsKind.VariableDefinition) {
-      varName = (rulesToken.node as VariableDefinitionNode).variable.name.value
-      varDefaultValue = (rulesToken.node as VariableDefinitionNode).defaultValue
-    } else if (rulesToken.kind === HintsKind.Variable) {
-      varName = (rulesToken.node as VariableNode).name.value
-    }
-
-    if (varName === null) {
-      // TODO: Throw error here?
-      continue
-    }
-
-    const varValue = operation.variables[varName]
-
-    operation.variables = withoutProperty(operation.variables, varName)
-    _ast = removeVariableDefinition(_ast, varName)
-
-    const varValueNode = (_ast = inlineVariable(
-      _ast,
-      varName,
-      parseValue(toGQL(varValue)),
-    ))
+  )) {
+    const result = inlineVariableHintDef.transformer!(
+      { query: _ast, variables: operation.variables },
+      hintsToken,
+    )
+    _ast = result.query
+    operation.variables = result.variables
   }
 
-  // const removeIfNotDefined = hintsTokensContainingHint(rules, GQL_HINT_REMOVE_IF_NOT_USED)
-  // console.log('removeIfNotDefined', removeIfNotDefined)
+  // ---- Config: removeIfNotDefined ---------------------------------------
+  for (const varName of queryProcessingConfig?.variables?.removeIfNotDefined ??
+    []) {
+    if (isNullOrUndefined(operation.variables[varName])) {
+      _ast = removeVariable(_ast, varName)
+    }
+  }
 
-  // const _operation = operation
+  // ---- Config: removeIfNotUsed -----------------------------------------
+  // Intentionally runs after removeIfNotDefined so that variables which were
+  // only referenced inside another (now-removed) variable can be cleaned up.
+  for (const varName of queryProcessingConfig?.variables?.removeIfNotUsed ??
+    []) {
+    if (!containsVariable(_ast, varName)) {
+      _ast = removeVariable(_ast, varName)
+    }
+  }
 
-  // const removeIdNotDefined = (queryProcessingConfig?.variables?.removeIfNotDefined || [])
-  // for (const varName of removeIdNotDefined) {
-  //   if (isNullOrUndefined(operation.variables[varName])) {
-  //     _operation.query = removeVariable(_operation.query, varName)
-  //   }
-  // }
-
-  // const removeIfNotUsed = (queryProcessingConfig?.variables?.removeIfNotUsed || [])
-  // for (const varName of removeIfNotUsed) {
-  //   if (!containsVariable(_operation.query, varName)) {
-  //     _operation.query = removeVariable(_operation.query, varName)
-  //   }
-  // }
-
-  // const inlineVariables = (queryProcessingConfig?.variables?.inline || [])
-  // for (const varName of inlineVariables) {
-  //   const varValue = _operation.variables[varName]
-  //   _operation.variables = withoutProperty(_operation.variables, varName)
-  //   _operation.query = removeVariableDefinition(_operation.query, varName)
-  //   _operation.query = inlineVariable(_operation.query, varName, parseValue(toGQL(varValue)))
-  // }
+  // ---- Config: inline --------------------------------------------------
+  for (const varName of queryProcessingConfig?.variables?.inline ?? []) {
+    const varValue = operation.variables[varName]
+    operation.variables = withoutProperty(operation.variables, varName)
+    _ast = removeVariableDefinition(_ast, varName)
+    _ast = inlineVariable(_ast, varName, parseValue(toGQL(varValue)))
+  }
 
   operation.query = _ast
-
   return forward(operation)
 })
