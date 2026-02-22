@@ -6,8 +6,7 @@ import { SortItem } from '@theseam/ui-common/datatable'
 import { DataFilterState } from '@theseam/ui-common/data-filters'
 import { currentTickTime } from '@theseam/ui-common/testing'
 
-import { EmptyObject } from 'apollo-angular/types'
-import { GqlDatatableAccessor } from '../models'
+import { GqlDatatableAccessor, EmptyObject } from '../models'
 import {
   checkRecordsHaveValue,
   createSimpleGqlTestRoot,

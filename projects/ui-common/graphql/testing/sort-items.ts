@@ -35,7 +35,14 @@ export function sortItems<T>(items: T[], order: SortClause[]): T[] {
       const aVal = (a as any)[field]
       const bVal = (b as any)[field]
 
-      const comparison = _compareValues(aVal, bVal)
+      // Nulls always sort last regardless of direction — check before inverting.
+      const aNull = aVal == null
+      const bNull = bVal == null
+      if (aNull && bNull) continue
+      if (aNull) return 1
+      if (bNull) return -1
+
+      const comparison = _compareNonNullValues(aVal, bVal)
       if (comparison !== 0) {
         return direction === 'DESC' ? -comparison : comparison
       }
@@ -45,14 +52,7 @@ export function sortItems<T>(items: T[], order: SortClause[]): T[] {
   })
 }
 
-function _compareValues(a: any, b: any): number {
-  // Nulls/undefined sort last regardless of direction (caller negates if DESC)
-  const aNull = a == null
-  const bNull = b == null
-  if (aNull && bNull) return 0
-  if (aNull) return 1
-  if (bNull) return -1
-
+function _compareNonNullValues(a: any, b: any): number {
   if (typeof a === 'string' && typeof b === 'string') {
     return a.localeCompare(b)
   }
