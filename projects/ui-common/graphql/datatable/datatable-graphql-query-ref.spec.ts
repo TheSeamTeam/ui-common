@@ -2,7 +2,6 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing'
 import { BehaviorSubject, Observable, of, Subscription } from 'rxjs'
 import { shareReplay } from 'rxjs/operators'
 
-import { SortItem } from '@theseam/ui-common/datatable'
 import { DataFilterState } from '@theseam/ui-common/data-filters'
 import { currentTickTime } from '@theseam/ui-common/testing'
 
@@ -26,11 +25,8 @@ import {
   DatatableGraphQLVariables,
 } from './datatable-graphql-query-ref'
 import { DatatableGraphqlService } from './datatable-graphql.service'
-import {
-  observeRowsWithGqlInputsHandling,
-  SortsMapper,
-  SortsMapperResult,
-} from './datatable-helpers'
+import { createSortsMapper } from './create-sorts-mapper'
+import { observeRowsWithGqlInputsHandling } from './datatable-helpers'
 import { DEFAULT_PAGE_SIZE } from './get-page-info'
 import { FilterStateMapperResult } from './map-filter-states'
 import { MapperContext } from './mapper-context'
@@ -284,23 +280,10 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
       })
       .pipe(shareReplay({ bufferSize: 1, refCount: true }))
 
-    const _mapSorts = (
-      sorts: SortItem[],
-      context: MapperContext,
-    ): SortsMapperResult => {
-      return sorts.map((s) => {
-        const _dir = s?.dir.toUpperCase()
-
-        switch (s?.prop) {
-          case 'id':
-            return { id: _dir }
-          case 'name':
-            return { name: _dir }
-        }
-
-        return { name: _dir }
-      })
-    }
+    const _mapSorts = createSortsMapper<'id' | 'name'>({
+      id: 'id',
+      name: 'name',
+    })
 
     const _mapSearchFilterState = async (
       filterState: DataFilterState,

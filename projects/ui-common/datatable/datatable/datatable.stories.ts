@@ -33,7 +33,6 @@ import {
   TheSeamDataFiltersModule,
 } from '@theseam/ui-common/data-filters'
 import {
-  SortItem,
   THESEAM_DATATABLE_PREFERENCES_ACCESSOR,
   TheSeamDatatableColumn,
 } from '@theseam/ui-common/datatable'
@@ -47,12 +46,12 @@ import {
   THESEAM_DYNAMIC_VALUE_EVALUATOR,
 } from '@theseam/ui-common/dynamic'
 import {
+  createSortsMapper,
   DEFAULT_PAGE_SIZE,
   DatatableGraphQLQueryRef,
   DatatableGraphqlService,
   FilterStateMapperResult,
   MapperContext,
-  SortsMapperResult,
   gqlVar,
   observeRowsWithGqlInputsHandling,
   mapSearchNumericColumnsDataFilterStateToGql,
@@ -909,20 +908,10 @@ class GqlDatatableWrapperComponent {
       }))
       .pipe(shareReplay({ bufferSize: 1, refCount: true }))
 
-    const _mapSorts = (
-      sorts: SortItem[],
-      _context: MapperContext,
-    ): SortsMapperResult =>
-      sorts.map((s) => {
-        const _dir = s?.dir.toUpperCase()
-        switch (s?.prop) {
-          case 'id':
-            return { id: _dir }
-          case 'name':
-            return { name: _dir }
-        }
-        return { name: _dir }
-      })
+    const _mapSorts = createSortsMapper<'id' | 'name'>({
+      id: 'id',
+      name: 'name',
+    })
 
     const _mapSearchFilterState = (
       filterState: DataFilterState,
