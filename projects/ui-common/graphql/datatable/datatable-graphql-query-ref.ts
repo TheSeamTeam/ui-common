@@ -340,6 +340,15 @@ export class DatatableGraphQLQueryRef<
                   rows = [...mapperResult.rows]
                 }
 
+                // ngx-datatable does row lookups in a WeakMap and my assumption
+                // is that the pre-allocated empty objects seem to be getting
+                // recognized as the same object, so to avoid that, we add a
+                // unique property to each row.
+                rows = rows.map((v, i) => ({
+                  ...v,
+                  __dt_id: `row-${i}`,
+                }))
+
                 rowsBufferSubject.next(rows)
               }),
             )

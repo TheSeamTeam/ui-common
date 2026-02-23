@@ -29,6 +29,7 @@ import { map, shareReplay, startWith, tap } from 'rxjs/operators'
 import { CSVDataExporter } from '@theseam/ui-common/data-exporter'
 import {
   DataFilterState,
+  IToggleButton,
   TheSeamDataFiltersModule,
 } from '@theseam/ui-common/data-filters'
 import {
@@ -821,11 +822,40 @@ export const FooterTemplate: StoryObj<
   template: `
     <seam-datatable
       class="w-100 h-100"
+      [loadingIndicator]="loading$ | async"
       [columns]="columns"
       [rows]="_rows$ | async"
       externalSorting="true"
       externalFiltering="true"
     >
+      <seam-datatable-menu-bar>
+        <seam-datatable-menu-bar-row class="pb-2">
+          <seam-datatable-menu-bar-column-left>
+          </seam-datatable-menu-bar-column-left>
+          <seam-datatable-menu-bar-column-center></seam-datatable-menu-bar-column-center>
+          <seam-datatable-menu-bar-column-right>
+            <seam-data-filter-search
+              seamDatatableFilter
+            ></seam-data-filter-search>
+          </seam-datatable-menu-bar-column-right>
+        </seam-datatable-menu-bar-row>
+
+        <seam-datatable-menu-bar-row>
+          <seam-datatable-menu-bar-column-left></seam-datatable-menu-bar-column-left>
+          <seam-datatable-menu-bar-column-center>
+            <seam-data-filter-toggle-buttons
+              seamDatatableFilter
+              [buttons]="_filterButtons"
+              [multiple]="false"
+              [selectionToggleable]="false"
+              [value]="_defaultFilter"
+              [properties]="['id']"
+            >
+            </seam-data-filter-toggle-buttons>
+          </seam-datatable-menu-bar-column-center>
+          <seam-datatable-menu-bar-column-right></seam-datatable-menu-bar-column-right>
+        </seam-datatable-menu-bar-row>
+      </seam-datatable-menu-bar>
     </seam-datatable>
   `,
   standalone: false,
@@ -834,6 +864,7 @@ class GqlDatatableWrapperComponent {
   @Input() columns: any[] = []
 
   public readonly _rows$: Observable<any[]>
+  public readonly loading$: Observable<boolean>
 
   private readonly _datatableSubject = new BehaviorSubject<any>(undefined)
 
@@ -843,6 +874,13 @@ class GqlDatatableWrapperComponent {
   }
 
   private readonly _queryRef: DatatableGraphQLQueryRef<any, any, any>
+
+  readonly _filterButtons: IToggleButton[] = [
+    { name: 'All', value: '' },
+    { name: 'Id lt 30', value: 'id_lt_30' },
+  ]
+
+  _defaultFilter = ''
 
   constructor(private readonly _datatableGql: DatatableGraphqlService) {
     this._queryRef = this._datatableGql.watchQuery<any, any, any>(
@@ -856,6 +894,8 @@ class GqlDatatableWrapperComponent {
         },
       },
     )
+
+    this.loading$ = this._queryRef.loading$
 
     const extraVariables$ = of({})
 
@@ -901,6 +941,23 @@ class GqlDatatableWrapperComponent {
       }
     }
 
+    const _mapToggleButtonsFilterState = (
+      filterState: DataFilterState,
+      _context: MapperContext<SimpleGqlTestExtraVariables>,
+    ): FilterStateMapperResult => {
+      const value = Array.isArray(filterState.state?.value)
+        ? filterState.state?.value[0]?.trim().toLowerCase()
+        : filterState.state?.value?.trim().toLowerCase()
+      if (typeof value !== 'string' || value.length === 0) {
+        return null
+      }
+
+      return {
+        filter: { id: { lt: 30 } },
+        variables: {},
+      }
+    }
+
     this._rows$ = observeRowsWithGqlInputsHandling(
       this._queryRef,
       _rows$,
@@ -909,6 +966,7 @@ class GqlDatatableWrapperComponent {
       _mapSorts,
       {
         search: _mapSearchFilterState,
+        'toggle-buttons': _mapToggleButtonsFilterState,
         'search-numeric': mapSearchNumericColumnsDataFilterStateToGql,
         'search-text': mapSearchTextColumnsDataFilterStateToGql,
         'search-date': mapSearchDateColumnsDataFilterStateToGql,
@@ -921,9 +979,10 @@ export const GraphQLQueryRef: Story = {
   render: (args) => ({
     applicationConfig: {
       providers: [
+        importProvidersFrom(ToastrModule.forRoot()),
         createApolloTestingProvider(
           simpleGqlTestSchema,
-          createSimpleGqlTestRoot(60),
+          createSimpleGqlTestRoot(600),
         ),
       ],
     },
@@ -936,11 +995,7 @@ export const GraphQLQueryRef: Story = {
         columns: args.columns,
       },
     },
-    template: `
-      <div style="height: 500px; width: 600px; display: block; position: relative;">
-        <dt-gql-wrap style="height: 100%; width: 100%; display: block;" [columns]="__hack.columns"></dt-gql-wrap>
-      </div>
-    `,
+    template: `<dt-gql-wrap [columns]="__hack.columns"></dt-gql-wrap>`,
   }),
   args: {
     columns: [
