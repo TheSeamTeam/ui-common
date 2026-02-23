@@ -1,6 +1,6 @@
 import { ApolloLink } from '@apollo/client/core'
 import { isNullOrUndefined, withoutProperty } from '@theseam/ui-common/utils'
-import { parseValue, print } from 'graphql'
+import { parseValue } from 'graphql'
 
 import { inlineVariableHintDef, removeNotDefinedHintDef } from '../hints'
 import { QueryProcessingConfig } from '../models'
@@ -42,14 +42,6 @@ export const queryProcessingLink = new ApolloLink((operation, forward) => {
   const context = operation.getContext()
   const queryProcessingConfig: QueryProcessingConfig =
     context.queryProcessingConfig ?? {}
-
-  // console.log(operation.query)
-
-  const _operation = operation
-  // console.log(
-  //   `%c~~~BEFORE\n${print(_operation.query)}\n${JSON.stringify(_operation.variables, null, 2)}`,
-  //   'color: cyan',
-  // )
 
   // Reparse to ensure token/comment info is present for hint parsing.
   let _ast = parseAst(operation.query)
@@ -109,9 +101,5 @@ export const queryProcessingLink = new ApolloLink((operation, forward) => {
 
   operation.query = _ast
 
-  // console.log(
-  //   `%c~~~AFTER\n${print(operation.query)}\n${JSON.stringify(operation.variables, null, 2)}`,
-  //   'color: limegreen',
-  // )
   return forward(operation)
 })
