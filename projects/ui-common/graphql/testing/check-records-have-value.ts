@@ -31,7 +31,10 @@ export function checkRecordsHaveValue(
       }
     } else {
       if (!onlyCheckProvidedIndices) {
-        if (notNullOrUndefined(arr[i])) {
+        const isItemDefined = notNullOrUndefined(testValueCheckProp)
+          ? notNullOrUndefined(item?.[testValueCheckProp])
+          : notNullOrUndefined(item)
+        if (isItemDefined) {
           throw Error(`Record at index '${i}' should not be defined.`)
         }
       }

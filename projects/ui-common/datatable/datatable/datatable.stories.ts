@@ -66,7 +66,7 @@ import { getHarness } from '@theseam/ui-common/testing'
 import { ToastrModule, ToastrService } from 'ngx-toastr'
 
 import {
-  SIMPLE_GQL_TEST_QUERY,
+  SIMPLE_GQL_TEST_SEARCH_QUERY,
   SimpleGqlTestExtraVariables,
   createApolloTestingProvider,
   createSimpleGqlTestRoot,
@@ -886,7 +886,7 @@ class GqlDatatableWrapperComponent {
   constructor(private readonly _datatableGql: DatatableGraphqlService) {
     this._queryRef = this._datatableGql.watchQuery<any, any, any>(
       {
-        query: SIMPLE_GQL_TEST_QUERY,
+        query: SIMPLE_GQL_TEST_SEARCH_QUERY,
         variables: { skip: 0, take: DEFAULT_PAGE_SIZE },
       },
       {
