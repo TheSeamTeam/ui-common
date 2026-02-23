@@ -113,7 +113,7 @@ export function observeRowsWithGqlInputsHandling<
     const queryVariablesChanged$ = datatableResults$.pipe(
       tap((results) => {
         queryRef.setVariables({
-          ...(results.context || {}),
+          ...(results.context.extraVariables || {}),
           ...results.pageInfo,
           ...(results.sorts.length > 0 ? { order: results.sorts } : {}),
           ...(results.filter?.variables || {}),

@@ -19,6 +19,7 @@ import { queryProcessingLink } from '../apollo-links/query-processing-link'
 export function createApolloTestingProvider(
   schema: GraphQLSchema,
   rootValue: any,
+  delay?: number,
 ): Provider {
   return provideApollo(() => ({
     cache: new InMemoryCache(),
@@ -27,6 +28,7 @@ export function createApolloTestingProvider(
       graphQLLink({
         schema,
         rootValue,
+        delay,
       }),
     ),
     defaultOptions: {

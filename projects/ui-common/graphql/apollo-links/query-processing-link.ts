@@ -43,13 +43,13 @@ export const queryProcessingLink = new ApolloLink((operation, forward) => {
   const queryProcessingConfig: QueryProcessingConfig =
     context.queryProcessingConfig ?? {}
 
-  console.log(operation.query)
+  // console.log(operation.query)
 
   const _operation = operation
-  console.log(
-    `%c~~~BEFORE\n${print(_operation.query)}\n${JSON.stringify(_operation.variables, null, 2)}`,
-    'color: cyan',
-  )
+  // console.log(
+  //   `%c~~~BEFORE\n${print(_operation.query)}\n${JSON.stringify(_operation.variables, null, 2)}`,
+  //   'color: cyan',
+  // )
 
   // Reparse to ensure token/comment info is present for hint parsing.
   let _ast = parseAst(operation.query)
@@ -107,11 +107,11 @@ export const queryProcessingLink = new ApolloLink((operation, forward) => {
     _ast = inlineVariable(_ast, varName, parseValue(toGQL(varValue)))
   }
 
-  console.log(
-    `%c~~~AFTER\n${print(operation.query)}\n${JSON.stringify(operation.variables, null, 2)}`,
-    'color: limegreen',
-  )
-
   operation.query = _ast
+
+  // console.log(
+  //   `%c~~~AFTER\n${print(operation.query)}\n${JSON.stringify(operation.variables, null, 2)}`,
+  //   'color: limegreen',
+  // )
   return forward(operation)
 })

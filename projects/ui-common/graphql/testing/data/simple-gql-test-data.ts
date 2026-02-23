@@ -73,6 +73,7 @@ export const SIMPLE_GQL_TEST_QUERY = gql`
     $take: Int
     $order: [SimpleGqlTestRecordSortInput!]
     $where: SimpleGqlTestRecordFilterInput
+    $search: String
   ) {
     simpleGqlTestRecords(
       skip: $skip
@@ -97,4 +98,5 @@ export interface SimpleGqlTestVariables extends SimpleGqlTestExtraVariables {
   take?: number
   order?: Partial<Record<keyof SimpleGqlTestRecord, 'ASC' | 'DESC'>>[]
   where?: any
+  search?: string
 }

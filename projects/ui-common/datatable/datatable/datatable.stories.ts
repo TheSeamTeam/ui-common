@@ -58,6 +58,7 @@ import {
   mapSearchNumericColumnsDataFilterStateToGql,
   mapSearchTextColumnsDataFilterStateToGql,
   mapSearchDateColumnsDataFilterStateToGql,
+  DEFAULT_TO_REMOVE_ON_UNDEFINED,
 } from '@theseam/ui-common/graphql'
 import { StoryToastrService } from '@theseam/ui-common/story-helpers'
 import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
@@ -890,6 +891,8 @@ class GqlDatatableWrapperComponent {
       },
       {
         variables: {
+          removeIfNotDefined: [...DEFAULT_TO_REMOVE_ON_UNDEFINED, 'search'],
+          removeIfNotUsed: ['search'],
           inline: ['where'],
         },
       },
@@ -983,6 +986,7 @@ export const GraphQLQueryRef: Story = {
         createApolloTestingProvider(
           simpleGqlTestSchema,
           createSimpleGqlTestRoot(600),
+          1000,
         ),
       ],
     },
