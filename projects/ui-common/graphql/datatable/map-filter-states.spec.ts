@@ -45,7 +45,7 @@ describe('mapFilterStates', () => {
     }
     const result = await mapFilterStates(state, mappers, { extraVariables: {} })
     expect(result?.filter).toEqual({
-      or: [{ eq: 'a' }, { eq: 'b' }, { eq: 'b' }],
+      and: [{ eq: 'a' }, { eq: 'b' }, { eq: 'b' }],
     })
     expect(result?.variables).toEqual({ a: 'b', c: 'd', e: 'f' })
   })
