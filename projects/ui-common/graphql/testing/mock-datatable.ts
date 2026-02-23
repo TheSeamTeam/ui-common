@@ -23,6 +23,8 @@ export class MockDatatable implements GqlDatatableAccessor {
   private _scrolledPosV = 0
 
   page = new EventEmitter<TheSeamPageInfo>()
+  resize = new EventEmitter<any>()
+  externalSorting = false
 
   sort: EventEmitter<SortEvent> = new EventEmitter<SortEvent>()
   get sorts(): SortItem[] {
@@ -30,6 +32,10 @@ export class MockDatatable implements GqlDatatableAccessor {
   }
   set sorts(value: SortItem[]) {
     this._sorts = value
+  }
+
+  get pageInfo(): TheSeamPageInfo {
+    return this.ngxDatatable
   }
 
   public readonly filterStates: Observable<DataFilterState[]> =
