@@ -74,8 +74,6 @@ jobs:
       - name: Publish beta
         working-directory: dist/ui-common
         run: npm publish --tag=beta --provenance --access=public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   release-please:
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
@@ -112,8 +110,6 @@ jobs:
       - name: Publish to npm
         working-directory: dist/ui-common
         run: npm publish --provenance --access=public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   deploy-docs:
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
