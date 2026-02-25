@@ -66,6 +66,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           registry-url: 'https://registry.npmjs.org'
+      - run: npm install -g npm@latest
       - name: Set beta version
         working-directory: dist/ui-common
         run: |
@@ -107,6 +108,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           registry-url: 'https://registry.npmjs.org'
+      - run: npm install -g npm@latest
       - name: Publish to npm
         working-directory: dist/ui-common
         run: npm publish --provenance --access=public
