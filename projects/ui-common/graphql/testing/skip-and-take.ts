@@ -8,7 +8,7 @@ export function skipAndTake<T>(data: T[], skip: number, take: number): T[] {
   // }
 
   const tmp: T[] = []
-  for (let i = skip; i < take + skip && i < data.length - 1; i++) {
+  for (let i = skip; i < take + skip && i < data.length; i++) {
     tmp.push(data[i])
   }
 

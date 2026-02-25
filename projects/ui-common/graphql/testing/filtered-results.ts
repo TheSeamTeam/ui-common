@@ -1,5 +1,6 @@
 import { filterWhere, WhereArg } from './filter-where'
 import { skipAndTake } from './skip-and-take'
+import { sortItems, SortClause } from './sort-items'
 
 export interface FilteredResultsPageInfo {
   hasNextPage: boolean
@@ -17,6 +18,11 @@ export function filteredResults<T>(items: T[], args: any): FilteredResults<T> {
   const where: WhereArg = args?.where
   if (where !== undefined) {
     _items = filterWhere(_items, where)
+  }
+
+  const order: SortClause[] = args?.order
+  if (order !== undefined) {
+    _items = sortItems(_items, order)
   }
 
   const totalCount = _items.length

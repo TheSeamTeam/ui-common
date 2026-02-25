@@ -14,23 +14,31 @@ export function graphQLLink(options: GraphQLLinkOptions) {
   return new ApolloLink((operation, forward) => {
     return new Observable((subscriber) => {
       // console.log('graphQLLink', operation.variables)
-      const response = graphqlSync({
-        schema: options.schema,
-        source: print(operation.query),
-        rootValue: options.rootValue,
-        contextValue: operation.getContext(),
-        variableValues: operation.variables,
-        operationName: operation.operationName,
-        // fieldResolver?: Maybe<GraphQLFieldResolver<any, any>>;
-        // typeResolver?: Maybe<GraphQLTypeResolver<any, any>>;
-      })
+      const execute = () => {
+        const response = graphqlSync({
+          schema: options.schema,
+          source: print(operation.query),
+          rootValue: options.rootValue,
+          contextValue: operation.getContext(),
+          variableValues: operation.variables,
+          operationName: operation.operationName,
+          // fieldResolver?: Maybe<GraphQLFieldResolver<any, any>>;
+          // typeResolver?: Maybe<GraphQLTypeResolver<any, any>>;
+        })
 
-      // console.log('graphQLLink response', response)
-      operation.setContext({ response })
+        // console.log('graphQLLink response', response)
+        operation.setContext({ response })
 
-      subscriber.next(response)
-      subscriber.complete()
+        subscriber.next(response)
+        subscriber.complete()
+      }
 
+      if (options.delay && options.delay > 0) {
+        const timeoutId = setTimeout(execute, options.delay)
+        return () => clearTimeout(timeoutId)
+      }
+
+      execute()
       return () => {}
     })
   })

@@ -225,41 +225,41 @@ describe('mergeTplAndInpColumns', () => {
    * NOTE: I plan to remove the need for this here, but I want to slowly
    * refactor to avoid breaking current functionality.
    */
-  function initTemplateColumnComponents(
-    o: TheSeamDatatableColumn[],
-  ): DatatableColumnComponent[] {
-    const comps: DatatableColumnComponent[] = []
-    for (const col of o) {
-      const comp: any = new DatatableColumnComponent(_colChangesService)
-      for (const key of Object.keys(col)) {
-        comp[key] = (col as any)[key]
-      }
-      comps.push(comp)
-    }
-    return comps
-  }
+  // function initTemplateColumnComponents(
+  //   o: TheSeamDatatableColumn[],
+  // ): DatatableColumnComponent[] {
+  //   const comps: DatatableColumnComponent[] = []
+  //   for (const col of o) {
+  //     const comp: any = new DatatableColumnComponent(_colChangesService)
+  //     for (const key of Object.keys(col)) {
+  //       comp[key] = (col as any)[key]
+  //     }
+  //     comps.push(comp)
+  //   }
+  //   return comps
+  // }
 })
 
 /**
  * Populates defaults, but replaces '$$id' with an "any string" matcher and
  * '$$valueGetter' with an "any function" mathcer.
  */
-function defaultColumnWithIdentMatchers(
-  o: TheSeamDatatableColumn[],
-  includesTplCols: boolean = false,
-): TheSeamDatatableColumn[] {
-  setColumnDefaults(o)
-  for (const col of o) {
-    const _o: any = col
-    _o.$$id = expect.any(String)
-    _o.$$valueGetter = expect.any(Function)
+// function defaultColumnWithIdentMatchers(
+//   o: TheSeamDatatableColumn[],
+//   includesTplCols: boolean = false,
+// ): TheSeamDatatableColumn[] {
+//   setColumnDefaults(o)
+//   for (const col of o) {
+//     const _o: any = col
+//     _o.$$id = expect.any(String)
+//     _o.$$valueGetter = expect.any(Function)
 
-    if (includesTplCols) {
-      _o._columnChangesService = expect.anything()
-      _o._isFirstChange = expect.any(Boolean)
-    }
+//     if (includesTplCols) {
+//       _o._columnChangesService = expect.anything()
+//       _o._isFirstChange = expect.any(Boolean)
+//     }
 
-    // deleteProperties(col, [ '$$id', '$$valueGetter' ])
-  }
-  return o
-}
+//     // deleteProperties(col, [ '$$id', '$$valueGetter' ])
+//   }
+//   return o
+// }
