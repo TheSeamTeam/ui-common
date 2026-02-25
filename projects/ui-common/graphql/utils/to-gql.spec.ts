@@ -58,4 +58,34 @@ describe('GraphQL Utils toGql', () => {
 
     expect(output).toBe(expectedOutput)
   })
+
+  describe('primitive top-level values', () => {
+    it('should handle a top-level string', () => {
+      expect(toGQL('hello')).toBe('"hello"')
+    })
+
+    it('should handle a top-level integer', () => {
+      expect(toGQL(42)).toBe('42')
+    })
+
+    it('should handle a top-level float', () => {
+      expect(toGQL(3.14)).toBe('3.14')
+    })
+
+    it('should handle a top-level boolean true', () => {
+      expect(toGQL(true)).toBe('true')
+    })
+
+    it('should handle a top-level boolean false', () => {
+      expect(toGQL(false)).toBe('false')
+    })
+
+    it('should handle a top-level null', () => {
+      expect(toGQL(null)).toBe('null')
+    })
+
+    it('should handle a top-level array', () => {
+      expect(toGQL([{ prop: 1 }, { prop: 2 }])).toBe('[{prop: 1},{prop: 2}]')
+    })
+  })
 })

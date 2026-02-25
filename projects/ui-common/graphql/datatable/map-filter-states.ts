@@ -15,11 +15,57 @@ export interface FilterStateMapperVariables {
 }
 
 export interface FilterStateMapperFilter {
+  and?: FilterStateMapperFilter[]
+  or?: FilterStateMapperFilter[]
   [name: string]: any
 }
 
 export type FilterStateMapperResult = {
   filter: FilterStateMapperFilter
+  variables: FilterStateMapperVariables
+} | null
+
+/**
+ * A filter input type constrained to the field names of `T`.
+ *
+ * Use this as the building block for {@link TypedFilterStateMapperResult}
+ * when you want compile-time checking that filter conditions only reference
+ * real fields in the corresponding GQL input type.
+ *
+ * @example
+ * type MyFilter = TypedFilterInput<'id' | 'name'>
+ * // { id?: any; name?: any }
+ */
+export type TypedFilterInput<T extends string | number | symbol> = {
+  [name in T]?: any
+}
+
+/**
+ * A type-safe alternative to {@link FilterStateMapperResult} that constrains
+ * filter field names to the union `T`.
+ *
+ * The filter can be either a direct field-condition object or a combined
+ * object with `or`/`and` arrays:
+ *
+ * ```ts
+ * // Direct field condition
+ * { filter: { status: { eq: 'active' } }, variables: {} }
+ *
+ * // Combined (OR)
+ * { filter: { or: [{ id: { lt: 30 } }, { name: { contains: 'foo' } }] }, variables: {} }
+ * ```
+ *
+ * Because TypeScript uses structural typing, a mapper that returns
+ * `TypedFilterStateMapperResult<'id' | 'name'>` is assignable to the
+ * untyped {@link FilterStateMapper} signature without any cast.
+ */
+export type TypedFilterStateMapperResult<T extends string | number | symbol> = {
+  filter:
+    | {
+        or?: TypedFilterInput<T>[]
+        and?: TypedFilterInput<T>[]
+      }
+    | TypedFilterInput<T>
   variables: FilterStateMapperVariables
 } | null
 
@@ -64,10 +110,14 @@ function resolveMappers(
   )
 }
 
-function mergeFilters(filters: FilterStateMapperFilter[]): {
-  or: FilterStateMapperFilter[]
-} {
-  return { or: filters }
+/**
+ * Combines multiple active filter results with AND so that all conditions must
+ * be satisfied simultaneously (e.g. a search filter AND a status filter).
+ */
+function mergeFilters(
+  filters: FilterStateMapperFilter[],
+): FilterStateMapperFilter {
+  return { and: filters }
 }
 
 /**

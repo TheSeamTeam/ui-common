@@ -8,6 +8,24 @@ import { GQLDirection } from '../models'
 // type-safe one, but that is becoming surprisingly harder to find than I
 // expected for GraphQL.
 export function toGQL(json: any): string {
+  // Handle primitive top-level values so callers can pass non-objects (e.g.
+  // when inlining a String or Int variable directly into a query argument).
+  if (json === null || json === undefined) {
+    return 'null'
+  }
+  if (typeof json === 'string') {
+    return `"${json}"`
+  }
+  if (typeof json === 'number' || typeof json === 'boolean') {
+    return `${json}`
+  }
+  if (json instanceof GQLDirection) {
+    return `${json.direction}`
+  }
+  if (Array.isArray(json)) {
+    return `[${json.map((v) => toGQL(v)).join(',')}]`
+  }
+
   const props: string[] = Object.keys(json).map((prop) => {
     const value = json[prop]
     let resultValue: string | undefined

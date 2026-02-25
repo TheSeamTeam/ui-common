@@ -1,6 +1,7 @@
 export * from './base-schema-fragment'
 export * from './filter-where'
 export * from './skip-and-take'
+export * from './sort-items'
 export * from './filtered-results'
 export * from './mock-datatable'
 export * from './check-records-have-value'

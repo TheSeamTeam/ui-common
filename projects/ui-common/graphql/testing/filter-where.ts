@@ -1,117 +1,166 @@
-interface WhereItemDef {
-  eq?: any | WhereItem
-  neq?: any | WhereItem
-}
+export type WhereArg = Record<string, any>
 
-interface WhereItemCollection {
-  and?: WhereItem | WhereItem[] | WhereItemField
-  or?: WhereItem | WhereItem[] | WhereItemField
-}
-const _whereItemCollectionKinds: (keyof WhereItemCollection)[] = ['and', 'or']
+/**
+ * The set of leaf-level operator keys used by HotChocolate filter inputs
+ * (e.g. StringOperationFilterInput, ComparableInt32OperationFilterInput).
+ * Any key not in this set is treated as a field name, causing the evaluator
+ * to recurse into `value[key]`.
+ */
+const OPERATOR_KEYS = new Set([
+  'eq',
+  'neq',
+  'gt',
+  'gte',
+  'lt',
+  'lte',
+  'ngt',
+  'ngte',
+  'nlt',
+  'nlte',
+  'in',
+  'nin',
+  'contains',
+  'ncontains',
+  'startsWith',
+  'nstartsWith',
+  'endsWith',
+  'nendsWith',
+  'objectContains',
+])
 
-interface WhereItemField {
-  [field: string]: WhereItemDef
-}
-
-type WhereItem = WhereItemCollection | WhereItemField
-
-export type WhereArg = WhereItem
-
-type WhereFieldFn<T = any> = (obj: any) => T
-type WhereField<T = any> = WhereFieldFn<T> | T
-type WhereConditionFn = (obj: any) => boolean
-
-type WhereConditionOperator = (
-  field1: WhereField,
-  field2: WhereField,
-) => WhereConditionFn
-// type WhereConditionCollection = (kind: any, ops: WhereConditionOperator[]) => WhereConditionFn
-
-type WhereCondition = WhereConditionOperator // | WhereConditionCollection
-
-function _createWhereFieldFn(fieldName: string): WhereFieldFn {
-  return (obj: any) => obj[fieldName]
-}
-
-function _resolveWhereField<T = any>(obj: any, f: WhereField<T>): any {
-  if (f instanceof Function) {
-    return f(obj)
+function applyOperator(operator: string, value: any, operand: any): boolean {
+  switch (operator) {
+    case 'eq':
+      return value === operand
+    case 'neq':
+      return value !== operand
+    case 'gt':
+      return value > operand
+    case 'gte':
+      return value >= operand
+    case 'lt':
+      return value < operand
+    case 'lte':
+      return value <= operand
+    // Negated comparisons — logical complements of the above
+    case 'ngt':
+      return !(value > operand) // equivalent to lte
+    case 'ngte':
+      return !(value >= operand) // equivalent to lt
+    case 'nlt':
+      return !(value < operand) // equivalent to gte
+    case 'nlte':
+      return !(value <= operand) // equivalent to gt
+    case 'in':
+      return Array.isArray(operand) && operand.includes(value)
+    case 'nin':
+      return Array.isArray(operand) && !operand.includes(value)
+    case 'contains':
+      return (
+        typeof value === 'string' &&
+        typeof operand === 'string' &&
+        value.includes(operand)
+      )
+    case 'ncontains':
+      return (
+        typeof value === 'string' &&
+        typeof operand === 'string' &&
+        !value.includes(operand)
+      )
+    case 'startsWith':
+      return (
+        typeof value === 'string' &&
+        typeof operand === 'string' &&
+        value.startsWith(operand)
+      )
+    case 'nstartsWith':
+      return (
+        typeof value === 'string' &&
+        typeof operand === 'string' &&
+        !value.startsWith(operand)
+      )
+    case 'endsWith':
+      return (
+        typeof value === 'string' &&
+        typeof operand === 'string' &&
+        value.endsWith(operand)
+      )
+    case 'nendsWith':
+      return (
+        typeof value === 'string' &&
+        typeof operand === 'string' &&
+        !value.endsWith(operand)
+      )
+    case 'objectContains': {
+      // Custom Seam/HotChocolate operator: convert the field value to a string
+      // and check if it contains the operand (case-insensitive, matching search UX).
+      const strValue = value == null ? '' : String(value)
+      const strOperand = operand == null ? '' : String(operand)
+      return strValue.toLowerCase().includes(strOperand.toLowerCase())
+    }
+    default:
+      throw new Error(`Unknown filter operator: "${operator}"`)
   }
-  return f
 }
 
-const _eqConditionOp: WhereConditionOperator =
-  (field1: WhereField, field2: WhereField): WhereConditionFn =>
-  (obj: any): boolean =>
-    _resolveWhereField(obj, field1) === _resolveWhereField(obj, field2)
+/**
+ * Recursively evaluates a HotChocolate-style filter against a value.
+ *
+ * Rules:
+ * - `and` array: all sub-filters must pass (AND logic)
+ * - `or` array: at least one sub-filter must pass (OR logic)
+ * - Known operator keys (`eq`, `contains`, `gt`, ...): apply the operator to
+ *   the current `value`
+ * - Any other key: treat as a field name; recurse with `value[key]` and the
+ *   nested filter
+ * - All non-`and`/`or` conditions are implicitly ANDed together
+ */
+function evaluateCondition(value: any, filter: any): boolean {
+  if (filter === null || filter === undefined) {
+    return true
+  }
 
-const _neqConditionOp: WhereConditionOperator =
-  (field1: WhereField, field2: WhereField): WhereConditionFn =>
-  (obj: any): boolean =>
-    _resolveWhereField(obj, field1) !== _resolveWhereField(obj, field2)
-
-interface WhereConditionOperatorMap {
-  eq: WhereCondition
-  neq: WhereCondition
-}
-
-const _conditions: WhereConditionOperatorMap = {
-  eq: _eqConditionOp,
-  neq: _neqConditionOp,
-}
-const _conditionKinds: (keyof WhereConditionOperatorMap)[] = ['eq', 'neq']
-
-function _getWhereCondition(
-  x: any,
-): { condition: WhereCondition; value: any } | null {
-  for (const k of _conditionKinds) {
-    // if (hasProperty(x, k)) {
-    if (x[k] !== undefined) {
-      return { condition: _conditions[k], value: x[k] }
+  if (Array.isArray(filter.and)) {
+    if (!filter.and.every((f: any) => evaluateCondition(value, f))) {
+      return false
     }
   }
-  return null
-}
 
-function _parseWhereItems(where: WhereArg): WhereConditionFn[] {
-  const conditions: WhereConditionFn[] = []
+  if (Array.isArray(filter.or)) {
+    if (!filter.or.some((f: any) => evaluateCondition(value, f))) {
+      return false
+    }
+  }
 
-  const keys = Object.keys(where)
-  if (
-    keys.find(
-      (k) => _whereItemCollectionKinds.find((k2) => k === k2) !== undefined,
-    ) !== undefined
-  ) {
-    // TODO: Implement
-  } else {
-    for (const k of keys as (keyof WhereItemField)[]) {
-      const c = _getWhereCondition((where as any)[k])
-      if (c === null) {
-        throw Error(`Unexpected where item.`)
+  for (const key of Object.keys(filter)) {
+    if (key === 'and' || key === 'or') {
+      continue
+    }
+
+    if (OPERATOR_KEYS.has(key)) {
+      if (!applyOperator(key, value, filter[key])) {
+        return false
       }
-
-      conditions.push(c.condition(_createWhereFieldFn(`${k}`), c.value))
+    } else {
+      if (!evaluateCondition(value?.[key], filter[key])) {
+        return false
+      }
     }
   }
 
-  return conditions
+  return true
 }
 
+/**
+ * Filters an array using a HotChocolate-style where clause.
+ *
+ * Top-level field conditions are implicitly ANDed. Use `and`/`or` arrays for
+ * explicit logical grouping.
+ *
+ * @example
+ * filterWhere(records, { name: { contains: 'foo' }, id: { gt: 5 } })
+ * filterWhere(records, { or: [{ name: { eq: 'a' } }, { name: { eq: 'b' } }] })
+ */
 export function filterWhere<T>(data: T[], where: WhereArg): T[] {
-  const items = _parseWhereItems(where)
-  const filteredClaims = data.filter((c) => {
-    // const idx = items.indexOf(itm => itm(c))
-    // return idx !== -1
-
-    let found = false
-    for (const itm of items) {
-      const b = itm(c)
-      if (b) {
-        found = b
-        break
-      }
-    }
-    return found
-  })
-  return filteredClaims
+  return data.filter((item) => evaluateCondition(item, where))
 }

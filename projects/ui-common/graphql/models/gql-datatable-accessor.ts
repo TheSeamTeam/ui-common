@@ -2,7 +2,13 @@ import { DatatableComponent } from '@theseam/ui-common/datatable'
 
 export type GqlDatatableAccessor = Pick<
   DatatableComponent,
-  'page' | 'sort' | 'sorts' | 'filterStates'
+  | 'page'
+  | 'sort'
+  | 'sorts'
+  | 'filterStates'
+  | 'resize'
+  | 'pageInfo'
+  | 'externalSorting'
 > &
   // TODO: Remove when Datatable wrapper is fixed and exposes these.
   {

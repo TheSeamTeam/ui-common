@@ -19,6 +19,7 @@ import { ColumnsFiltersService } from '../services/columns-filters.service'
 
 import { ColumnsManagerService } from './columns-manager.service'
 import { DatatableColumnChangesService } from './datatable-column-changes.service'
+import { SimpleChange, SimpleChanges } from '@angular/core'
 
 describe('ColumnsManagerService', () => {
   let service: ColumnsManagerService
@@ -311,10 +312,16 @@ describe('ColumnsManagerService', () => {
   ): DatatableColumnComponent[] {
     const comps: DatatableColumnComponent[] = []
     for (const col of o) {
-      const comp: any = new DatatableColumnComponent(colChangesService)
+      const comp: any = TestBed.createComponent(
+        DatatableColumnComponent,
+      ).componentInstance
+      const changes: SimpleChanges = {}
       for (const key of Object.keys(col)) {
         comp[key] = (col as any)[key]
+        changes[key] = new SimpleChange(null, (col as any)[key], true)
       }
+      comp.ngOnChanges(changes)
+
       comps.push(comp)
     }
     return comps
