@@ -1,5 +1,5 @@
 import type { Config } from 'jest'
-import { createCjsPreset } from 'jest-preset-angular/presets'
+import { createCjsPreset } from 'jest-preset-angular/presets/index.js'
 
 import { pathsToModuleNameMapper } from 'ts-jest'
 // In the following statement, replace `./tsconfig` with the path to your `tsconfig` file
