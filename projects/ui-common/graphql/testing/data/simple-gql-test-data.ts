@@ -1,7 +1,5 @@
 import { gql } from 'apollo-angular'
-import { buildSchema, print } from 'graphql'
 
-import { baseSchemaFragment } from '../base-schema-fragment'
 import { filteredResults } from '../filtered-results'
 
 export interface SimpleGqlTestRecord {
@@ -12,49 +10,6 @@ export interface SimpleGqlTestRecord {
 export function createSimpleGqlTestRecord(num: number): SimpleGqlTestRecord {
   return { id: num, name: `Item_${num}` }
 }
-
-export const simpleGqlTestSchema = buildSchema(
-  print(gql`
-    ${baseSchemaFragment}
-
-    type SimpleGqlTestRecordCollectionSegment {
-      items: [SimpleGqlTestRecord!]
-
-      """
-      Information to aid in pagination.
-      """
-      pageInfo: CollectionSegmentInfo!
-      totalCount: Int!
-    }
-
-    input SimpleGqlTestRecordFilterInput {
-      and: [SimpleGqlTestRecordFilterInput!]
-      or: [SimpleGqlTestRecordFilterInput!]
-      objectContains: String
-      id: ComparableInt32OperationFilterInput
-      name: StringOperationFilterInput
-    }
-
-    input SimpleGqlTestRecordSortInput {
-      id: SortEnumType
-      name: SortEnumType
-    }
-
-    type SimpleGqlTestRecord {
-      id: Int
-      name: String
-    }
-
-    type Query {
-      simpleGqlTestRecords(
-        skip: Int
-        take: Int
-        order: [SimpleGqlTestRecordSortInput!]
-        where: SimpleGqlTestRecordFilterInput
-      ): SimpleGqlTestRecordCollectionSegment
-    }
-  `),
-)
 
 export function createSimpleGqlTestRoot(numRecords: number) {
   const _records: SimpleGqlTestRecord[] = []
