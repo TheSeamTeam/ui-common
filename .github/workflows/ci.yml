@@ -83,7 +83,7 @@ jobs:
       contents: write
       pull-requests: write
     outputs:
-      release_created: ${{ steps.release.outputs.release_created }}
+      release_created: ${{ steps.release.outputs.releases_created }}
     steps:
       - id: release
         uses: googleapis/release-please-action@v4
