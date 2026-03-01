@@ -67,9 +67,8 @@ import { ToastrModule, ToastrService } from 'ngx-toastr'
 import {
   SIMPLE_GQL_TEST_SEARCH_QUERY,
   SimpleGqlTestExtraVariables,
-  createApolloTestingProvider,
+  createMockApolloTestingProvider,
   createSimpleGqlTestRoot,
-  simpleGqlTestSchema,
 } from '../../graphql/testing'
 import { TheSeamDatatableModule } from '../datatable.module'
 import { TheSeamDatatableHarness } from '../testing'
@@ -972,11 +971,19 @@ export const GraphQLQueryRef: Story = {
     applicationConfig: {
       providers: [
         importProvidersFrom(ToastrModule.forRoot()),
-        createApolloTestingProvider(
-          simpleGqlTestSchema,
-          createSimpleGqlTestRoot(600),
-          1000,
-        ),
+        createMockApolloTestingProvider({
+          resolve: (operation) => {
+            const root = createSimpleGqlTestRoot(600)
+            return {
+              data: {
+                simpleGqlTestRecords: root.simpleGqlTestRecords(
+                  operation.variables,
+                ),
+              },
+            }
+          },
+          delay: 1000,
+        }),
       ],
     },
     moduleMetadata: {
