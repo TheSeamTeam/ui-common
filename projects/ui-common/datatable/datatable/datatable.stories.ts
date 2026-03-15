@@ -67,6 +67,7 @@ import { ToastrModule, ToastrService } from 'ngx-toastr'
 import {
   SIMPLE_GQL_TEST_SEARCH_QUERY,
   SimpleGqlTestExtraVariables,
+  SimpleGqlTestRecord,
   createMockApolloTestingProvider,
   createSimpleGqlTestRoot,
 } from '../../graphql/testing'
@@ -907,7 +908,7 @@ class GqlDatatableWrapperComponent {
       }))
       .pipe(shareReplay({ bufferSize: 1, refCount: true }))
 
-    const _mapSorts = createSortsMapper<'id' | 'name'>({
+    const _mapSorts = createSortsMapper<SimpleGqlTestRecord>({
       id: 'id',
       name: 'name',
     })
