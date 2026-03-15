@@ -289,7 +289,7 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
       })
       .pipe(shareReplay({ bufferSize: 1, refCount: true }))
 
-    const _mapSorts = createSortsMapper<'id' | 'name'>({
+    const _mapSorts = createSortsMapper<SimpleGqlTestRecord>({
       id: 'id',
       name: 'name',
     })
