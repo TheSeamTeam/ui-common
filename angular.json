@@ -112,7 +112,13 @@
             "tsConfig": "projects/ui-common/tsconfig.sb.json",
             "compodoc": true,
             "compodocArgs": [
-              "-p", "./tsconfig.stories.json", "-e", "json", "-d", ".", "--disableLifeCycleHooks"
+              "-p",
+              "./tsconfig.stories.json",
+              "-e",
+              "json",
+              "-d",
+              ".",
+              "--disableLifeCycleHooks"
             ],
             "styles": [
               "projects/ui-common/styles/theme.scss",
@@ -212,8 +218,17 @@
             "browserTarget": "ui-common:build",
             "tsConfig": "projects/ui-common/tsconfig.sb.json",
             "compodoc": true,
+            "compodocArgs": [
+              "-p",
+              "./tsconfig.stories.json",
+              "-e",
+              "json",
+              "-d",
+              ".",
+              "--disableLifeCycleHooks"
+            ],
             "enableProdMode": true,
-            "outputDir": "docs",
+            "outputDir": "storybook-static",
             "styles": [
               "projects/ui-common/styles/theme.scss",
               "projects/ui-common/framework/route-transitions/route-transitions.css",
