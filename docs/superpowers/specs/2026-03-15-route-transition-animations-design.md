@@ -44,9 +44,9 @@ Direction is determined by the **shared path prefix**, not raw depth comparison.
 1. Split previous and next URLs into path segments
 2. Find the longest shared prefix (segments that match from the start)
 3. Compare the remaining segments after the shared prefix:
-   - Next has more remaining segments than previous -> **deeper**
-   - Previous has more remaining segments than next -> **shallower**
-   - Both have the same number of remaining segments -> **sibling**
+   - Previous has no remaining segments and next has some -> **deeper** (entering a child)
+   - Previous has remaining segments and next has none -> **shallower** (returning to parent)
+   - Otherwise -> **sibling** (switching sections / cross-branch navigation)
 
 **Examples:**
 
@@ -57,23 +57,23 @@ Direction is determined by the **shared path prefix**, not raw depth comparison.
 
 /claims/123/edit -> /purchase-orders/456
   shared: /  |  prev remainder: [claims,123,edit]  |  next remainder: [purchase-orders,456]
-  -> sibling (at the root level — switched sections)
+  -> sibling (both have remainders — switched sections)
 
 /claims -> /claims/123
   shared: /claims  |  prev remainder: []  |  next remainder: [123]
-  -> deeper
+  -> deeper (prev has no remainder, entering a child)
 
 /claims/123 -> /claims
   shared: /claims  |  prev remainder: [123]  |  next remainder: []
-  -> shallower
+  -> shallower (next has no remainder, returning to parent)
 
 /claims/123/edit -> /purchase-orders
   shared: /  |  prev remainder: [claims,123,edit]  |  next remainder: [purchase-orders]
-  -> shallower (cross-branch, prev has more remaining segments)
+  -> sibling (both have remainders — switched sections)
 
 /purchase-orders -> /claims/123/edit
   shared: /  |  prev remainder: [purchase-orders]  |  next remainder: [claims,123,edit]
-  -> deeper (cross-branch, next has more remaining segments)
+  -> sibling (both have remainders — switched sections)
 ```
 
 ## Architecture
@@ -135,8 +135,8 @@ function computeDirection(prev: string[], next: string[]): 'sibling' | 'deeper' 
   const prevRemaining = prev.length - shared
   const nextRemaining = next.length - shared
 
-  if (nextRemaining > prevRemaining) return 'deeper'
-  if (prevRemaining > nextRemaining) return 'shallower'
+  if (prevRemaining === 0 && nextRemaining > 0) return 'deeper'
+  if (prevRemaining > 0 && nextRemaining === 0) return 'shallower'
   return 'sibling'
 }
 ```
