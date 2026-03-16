@@ -113,6 +113,7 @@
             "compodoc": false,
             "styles": [
               "projects/ui-common/styles/theme.scss",
+              "projects/ui-common/framework/route-transitions/route-transitions.css",
               "node_modules/@marklb/ngx-datatable/assets/icons.css"
             ],
             "stylePreprocessorOptions": {
@@ -207,6 +208,7 @@
             "outputDir": "docs",
             "styles": [
               "projects/ui-common/styles/theme.scss",
+              "projects/ui-common/framework/route-transitions/route-transitions.css",
               "node_modules/@marklb/ngx-datatable/assets/icons.css"
             ],
             "stylePreprocessorOptions": {
