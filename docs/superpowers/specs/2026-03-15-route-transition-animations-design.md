@@ -66,6 +66,14 @@ Direction is determined by the **shared path prefix**, not raw depth comparison.
 /claims/123 -> /claims
   shared: /claims  |  prev remainder: [123]  |  next remainder: []
   -> shallower
+
+/claims/123/edit -> /purchase-orders
+  shared: /  |  prev remainder: [claims,123,edit]  |  next remainder: [purchase-orders]
+  -> shallower (cross-branch, prev has more remaining segments)
+
+/purchase-orders -> /claims/123/edit
+  shared: /  |  prev remainder: [purchase-orders]  |  next remainder: [claims,123,edit]
+  -> deeper (cross-branch, next has more remaining segments)
 ```
 
 ## Architecture
@@ -75,7 +83,7 @@ The solution uses the **View Transition API** via Angular's built-in `withViewTr
 ### Why View Transitions
 
 - **Browser-native** — the browser captures a bitmap screenshot of the old state and animates to the new DOM. No element cloning, no lifecycle management, no scroll position loss.
-- **Angular integration** — `withViewTransitions()` (available since Angular 17) provides a clean hook via `onViewTransitionCreated`.
+- **Angular integration** — `withViewTransitions()` (available since Angular 17) provides a clean hook via `onViewTransitionCreated`. Note: `ViewTransitionInfo` is marked `@developerPreview` as of Angular 20, meaning the API surface may change in future Angular versions. This is acceptable given that the integration surface is small (a single callback) and easy to update.
 - **Graceful degradation** — browsers without View Transition API support simply navigate instantly. The app remains fully usable.
 - **Performance** — animations run on the compositor thread, off the main thread.
 - **`prefers-reduced-motion`** — trivially handled via CSS media query.
@@ -92,17 +100,18 @@ The solution uses the **View Transition API** via Angular's built-in `withViewTr
 
 A factory function that returns a callback compatible with `withViewTransitions({ onViewTransitionCreated })`.
 
+Note: The code below is **pseudocode illustrating intent**. The exact `ViewTransitionInfo` shape and property names must be verified against the project's installed Angular version during implementation, as this interface is marked `@developerPreview` and may differ across Angular versions.
+
 ```typescript
 import { ViewTransitionInfo } from '@angular/router'
 
 export function seamRouteTransition(): (info: ViewTransitionInfo) => void {
-  let previousUrl: string[] = []
-
   return (info: ViewTransitionInfo) => {
-    const currentUrl = getUrlSegments(info.to)
-    const direction = computeDirection(previousUrl, currentUrl)
+    // Property names (from/to) are illustrative — verify against actual Angular API
+    const prevSegments = getUrlSegments(info.from)
+    const nextSegments = getUrlSegments(info.to)
+    const direction = computeDirection(prevSegments, nextSegments)
     document.documentElement.dataset['routeDirection'] = direction
-    previousUrl = currentUrl
   }
 }
 
@@ -134,7 +143,7 @@ function computeDirection(prev: string[], next: string[]): 'sibling' | 'deeper' 
 
 ### `SeamRouteShellComponent` — Reusable Shell
 
-Replaces all per-module Base components. Sets a unique `view-transition-name` based on route depth to avoid conflicts when multiple shells are active at different nesting levels.
+Replaces all per-module Base components. Sets `view-transition-name: seam-route-content` so the CSS route transition rules target it. Since only one shell level transitions at a time during any given navigation, a shared name is sufficient — multiple shells at different nesting levels don't animate simultaneously.
 
 ```typescript
 @Component({
@@ -151,15 +160,7 @@ Replaces all per-module Base components. Sets a unique `view-transition-name` ba
 export class SeamRouteShellComponent {
   private route = inject(ActivatedRoute)
 
-  get transitionName(): string {
-    let depth = 0
-    let current = this.route.snapshot
-    while (current.parent) {
-      depth++
-      current = current.parent
-    }
-    return `seam-route-content-${depth}`
-  }
+  protected readonly transitionName = 'seam-route-content'
 }
 ```
 
@@ -192,40 +193,58 @@ export class SeamRouteShellComponent {
   to   { transform: translateX(100%); }
 }
 
+/*
+ * Target the default "root" view transition name. Elements with explicit
+ * view-transition-name values (e.g., SeamRouteShellComponent's
+ * seam-route-content-{depth}) participate as named transitions and are
+ * targeted separately below.
+ *
+ * Only seam-route-content-* names are targeted — other view transitions
+ * in the app (e.g., shared element animations) are not affected.
+ */
+
 /* Sibling swap: current slides right, new slides left */
-html[data-route-direction="sibling"] ::view-transition-old(*) {
+html[data-route-direction="sibling"] ::view-transition-old(root),
+html[data-route-direction="sibling"] ::view-transition-old(seam-route-content) {
   animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) seam-slide-out-right;
 }
-html[data-route-direction="sibling"] ::view-transition-new(*) {
+html[data-route-direction="sibling"] ::view-transition-new(root),
+html[data-route-direction="sibling"] ::view-transition-new(seam-route-content) {
   animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) seam-slide-in-left;
 }
 
 /* Deeper: both slide left */
-html[data-route-direction="deeper"] ::view-transition-old(*) {
+html[data-route-direction="deeper"] ::view-transition-old(root),
+html[data-route-direction="deeper"] ::view-transition-old(seam-route-content) {
   animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) seam-slide-out-left;
 }
-html[data-route-direction="deeper"] ::view-transition-new(*) {
+html[data-route-direction="deeper"] ::view-transition-new(root),
+html[data-route-direction="deeper"] ::view-transition-new(seam-route-content) {
   animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) seam-slide-in-left;
 }
 
 /* Shallower: both slide right */
-html[data-route-direction="shallower"] ::view-transition-old(*) {
+html[data-route-direction="shallower"] ::view-transition-old(root),
+html[data-route-direction="shallower"] ::view-transition-old(seam-route-content) {
   animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) seam-slide-out-right;
 }
-html[data-route-direction="shallower"] ::view-transition-new(*) {
+html[data-route-direction="shallower"] ::view-transition-new(root),
+html[data-route-direction="shallower"] ::view-transition-new(seam-route-content) {
   animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) seam-slide-in-right;
 }
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(*),
-  ::view-transition-new(*) {
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  ::view-transition-old(seam-route-content),
+  ::view-transition-new(seam-route-content) {
     animation-duration: 0s !important;
   }
 }
 ```
 
-Note: The `*` wildcard in `::view-transition-old(*)` targets all named view transitions. This may need to be scoped to specific `view-transition-name` values (e.g., `seam-route-content-*`) depending on whether the wildcard selector is supported or if other view transitions exist in the app. This will be validated during implementation.
+**Scoping decision:** The CSS explicitly targets `::view-transition-old(root)` and `::view-transition-old(seam-route-content)` (and their `new` counterparts). This scopes route animations to only the default document transition and seam shell components. Other `view-transition-name` values in the app (e.g., shared element animations) are not affected by these rules. A single shared name `seam-route-content` is used rather than depth-suffixed names, since only one shell level transitions at a time during any navigation.
 
 ## App Integration
 
@@ -279,7 +298,7 @@ If a component like `BaseLayoutComponent` already has a `<router-outlet>` (e.g.,
 ```html
 <!-- base-layout.component.html -->
 <app-sidebar></app-sidebar>
-<main style="view-transition-name: seam-route-content-0">
+<main style="view-transition-name: seam-route-content">
   <router-outlet></router-outlet>
 </main>
 ```
@@ -303,20 +322,37 @@ Apps override these in their global `:root` styles.
 
 ## File Structure in ui-common
 
-```
+**TypeScript exports** (via `framework` secondary entrypoint):
+
+```text
 projects/ui-common/
   framework/
     route-transitions/
       index.ts                          # Public API barrel
       seam-route-transition.ts          # seamRouteTransition() factory
       seam-route-shell.component.ts     # SeamRouteShellComponent
-      route-transitions.css             # Animation stylesheet
 ```
+
+Apps import TypeScript exports as: `import { seamRouteTransition, SeamRouteShellComponent } from '@theseam/ui-common/framework'`
+
+**CSS stylesheet** (separate path for style imports):
+
+```text
+projects/ui-common/
+  styles/
+    route-transitions.css               # Animation keyframes and direction rules
+```
+
+Apps import the stylesheet as: `@import '@theseam/ui-common/styles/route-transitions'`
+
+The CSS distribution mechanism (secondary entrypoint, `ng-package.json` assets, or `styleIncludePaths`) should follow whatever pattern ui-common already uses for shared stylesheets. If no pattern exists, the implementation should establish one.
+
+**`view-transition-name` convention:** The naming pattern is `seam-route-content` for CSS targeting. Components manually setting `view-transition-name` (e.g., `BaseLayoutComponent`) should use this same name to participate in route transition animations.
 
 ## Testing Strategy
 
 - **Unit tests** for `computeDirection()` — verify all direction cases including cross-branch navigation
 - **Unit tests** for `getUrlSegments()` — verify segment extraction from route snapshots
-- **Integration test** with Angular `RouterTestingModule` — verify `data-route-direction` attribute is set correctly on navigation
-- **Storybook stories** — visual demonstration of all three transition directions, replacing the existing `dynamic-router` stories
+- **Integration test** with `provideRouter()` + `provideLocationMocks()` — verify `data-route-direction` attribute is set correctly on navigation
+- **Storybook stories** — visual demonstration of all three transition directions. The existing `dynamic-router` module (`projects/ui-common/framework/dynamic-router/`) is unused by any app and was an earlier experimental attempt at solving this same problem. It can be deprecated and eventually removed once this implementation is validated
 - **Manual testing** — verify `prefers-reduced-motion` behavior, verify graceful degradation in older browsers (if available)
