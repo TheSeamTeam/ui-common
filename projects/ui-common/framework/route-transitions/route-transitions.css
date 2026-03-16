@@ -25,51 +25,91 @@
 }
 
 /*
- * View transition pseudo-elements are pseudo-elements of the document element,
- * NOT descendants. The selector must have NO SPACE between the attribute
- * selector and the pseudo-element (e.g., html[attr]::view-transition-old(root),
- * not html[attr] ::view-transition-old(root)).
+ * Suppress the default root transition so only the shell content area
+ * animates (not the entire page including sidebar/header).
+ */
+html[data-route-direction]::view-transition-old(root),
+html[data-route-direction]::view-transition-new(root) {
+  animation: none;
+}
+
+/*
+ * Each SeamRouteShellComponent gets a unique view-transition-name based on
+ * its route depth (seam-route-content-0, seam-route-content-1, etc.).
+ * Target depths 0-5 to cover any realistic nesting.
  *
- * Targets both root (whole page) and seam-route-content (scoped to content area
- * when the app sets view-transition-name: seam-route-content on a container).
+ * View transition pseudo-elements are pseudo-elements of the document element,
+ * NOT descendants — no space between the attribute selector and pseudo-element.
  */
 
 /* Sibling swap: current slides right, new slides left */
-html[data-route-direction="sibling"]::view-transition-old(root),
-html[data-route-direction="sibling"]::view-transition-old(seam-route-content) {
+html[data-route-direction="sibling"]::view-transition-old(seam-route-content-0),
+html[data-route-direction="sibling"]::view-transition-old(seam-route-content-1),
+html[data-route-direction="sibling"]::view-transition-old(seam-route-content-2),
+html[data-route-direction="sibling"]::view-transition-old(seam-route-content-3),
+html[data-route-direction="sibling"]::view-transition-old(seam-route-content-4),
+html[data-route-direction="sibling"]::view-transition-old(seam-route-content-5) {
   animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) seam-slide-out-right;
 }
-html[data-route-direction="sibling"]::view-transition-new(root),
-html[data-route-direction="sibling"]::view-transition-new(seam-route-content) {
+html[data-route-direction="sibling"]::view-transition-new(seam-route-content-0),
+html[data-route-direction="sibling"]::view-transition-new(seam-route-content-1),
+html[data-route-direction="sibling"]::view-transition-new(seam-route-content-2),
+html[data-route-direction="sibling"]::view-transition-new(seam-route-content-3),
+html[data-route-direction="sibling"]::view-transition-new(seam-route-content-4),
+html[data-route-direction="sibling"]::view-transition-new(seam-route-content-5) {
   animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) seam-slide-in-left;
 }
 
 /* Deeper: both slide left */
-html[data-route-direction="deeper"]::view-transition-old(root),
-html[data-route-direction="deeper"]::view-transition-old(seam-route-content) {
+html[data-route-direction="deeper"]::view-transition-old(seam-route-content-0),
+html[data-route-direction="deeper"]::view-transition-old(seam-route-content-1),
+html[data-route-direction="deeper"]::view-transition-old(seam-route-content-2),
+html[data-route-direction="deeper"]::view-transition-old(seam-route-content-3),
+html[data-route-direction="deeper"]::view-transition-old(seam-route-content-4),
+html[data-route-direction="deeper"]::view-transition-old(seam-route-content-5) {
   animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) seam-slide-out-left;
 }
-html[data-route-direction="deeper"]::view-transition-new(root),
-html[data-route-direction="deeper"]::view-transition-new(seam-route-content) {
+html[data-route-direction="deeper"]::view-transition-new(seam-route-content-0),
+html[data-route-direction="deeper"]::view-transition-new(seam-route-content-1),
+html[data-route-direction="deeper"]::view-transition-new(seam-route-content-2),
+html[data-route-direction="deeper"]::view-transition-new(seam-route-content-3),
+html[data-route-direction="deeper"]::view-transition-new(seam-route-content-4),
+html[data-route-direction="deeper"]::view-transition-new(seam-route-content-5) {
   animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) seam-slide-in-left;
 }
 
 /* Shallower: both slide right */
-html[data-route-direction="shallower"]::view-transition-old(root),
-html[data-route-direction="shallower"]::view-transition-old(seam-route-content) {
+html[data-route-direction="shallower"]::view-transition-old(seam-route-content-0),
+html[data-route-direction="shallower"]::view-transition-old(seam-route-content-1),
+html[data-route-direction="shallower"]::view-transition-old(seam-route-content-2),
+html[data-route-direction="shallower"]::view-transition-old(seam-route-content-3),
+html[data-route-direction="shallower"]::view-transition-old(seam-route-content-4),
+html[data-route-direction="shallower"]::view-transition-old(seam-route-content-5) {
   animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) seam-slide-out-right;
 }
-html[data-route-direction="shallower"]::view-transition-new(root),
-html[data-route-direction="shallower"]::view-transition-new(seam-route-content) {
+html[data-route-direction="shallower"]::view-transition-new(seam-route-content-0),
+html[data-route-direction="shallower"]::view-transition-new(seam-route-content-1),
+html[data-route-direction="shallower"]::view-transition-new(seam-route-content-2),
+html[data-route-direction="shallower"]::view-transition-new(seam-route-content-3),
+html[data-route-direction="shallower"]::view-transition-new(seam-route-content-4),
+html[data-route-direction="shallower"]::view-transition-new(seam-route-content-5) {
   animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) seam-slide-in-right;
 }
 
 /* Reduced motion: disable all route transition animations */
 @media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(root),
-  ::view-transition-new(root),
-  ::view-transition-old(seam-route-content),
-  ::view-transition-new(seam-route-content) {
+  ::view-transition-old(seam-route-content-0),
+  ::view-transition-new(seam-route-content-0),
+  ::view-transition-old(seam-route-content-1),
+  ::view-transition-new(seam-route-content-1),
+  ::view-transition-old(seam-route-content-2),
+  ::view-transition-new(seam-route-content-2),
+  ::view-transition-old(seam-route-content-3),
+  ::view-transition-new(seam-route-content-3),
+  ::view-transition-old(seam-route-content-4),
+  ::view-transition-new(seam-route-content-4),
+  ::view-transition-old(seam-route-content-5),
+  ::view-transition-new(seam-route-content-5) {
     animation-duration: 0s !important;
   }
 }
