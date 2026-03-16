@@ -156,7 +156,7 @@ class StoryPODetailComponent {}
         Route Transition Demo — click links to see directional transitions
       </div>
       <div
-        style="position: relative; overflow: hidden; height: calc(100% - 37px); view-transition-name: seam-route-content;"
+        style="position: relative; overflow: hidden; height: calc(100% - 37px);"
       >
         <router-outlet></router-outlet>
       </div>
