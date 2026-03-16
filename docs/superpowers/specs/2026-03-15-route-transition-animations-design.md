@@ -150,18 +150,15 @@ Replaces all per-module Base components. Sets `view-transition-name: seam-route-
   selector: 'seam-route-shell',
   template: `<router-outlet></router-outlet>`,
   host: {
-    '[style.view-transition-name]': 'transitionName',
+    '[style.view-transition-name]': '"seam-route-content"',
     '[style.display]': '"flex"',
     '[style.flex-direction]': '"column"',
     '[style.height]': '"100%"',
   },
+  imports: [RouterOutlet],
   standalone: true,
 })
-export class SeamRouteShellComponent {
-  private route = inject(ActivatedRoute)
-
-  protected readonly transitionName = 'seam-route-content'
-}
+export class SeamRouteShellComponent {}
 ```
 
 ### CSS Stylesheet — `route-transitions`
