@@ -1,0 +1,166 @@
+:root {
+  --seam-route-transition-duration: 400ms;
+  --seam-route-transition-easing: ease-in-out;
+}
+
+/* Keyframes */
+@keyframes seam-slide-in-left {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+
+@keyframes seam-slide-in-right {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+
+@keyframes seam-slide-out-left {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
+}
+
+@keyframes seam-slide-out-right {
+  from { transform: translateX(0); }
+  to   { transform: translateX(100%); }
+}
+
+/*
+ * Suppress the default root transition so only the shell content area
+ * animates (not the entire page including sidebar/header).
+ */
+html[data-route-direction]::view-transition-old(root),
+html[data-route-direction]::view-transition-new(root) {
+  animation: none;
+}
+
+/*
+ * Clip slide animations to the bounds of the original element so
+ * content doesn't overflow into the sidebar/header area. The
+ * view-transition-group exists in an overlay layer outside the
+ * normal DOM, so the parent container's overflow: hidden has no effect.
+ */
+::view-transition-group(seam-route-content-0),
+::view-transition-group(seam-route-content-1),
+::view-transition-group(seam-route-content-2),
+::view-transition-group(seam-route-content-3),
+::view-transition-group(seam-route-content-4),
+::view-transition-group(seam-route-content-5) {
+  overflow: hidden;
+}
+
+/*
+ * Override the browser's default mix-blend-mode: plus-lighter on the
+ * image pair, which causes flicker/ghosting artifacts with slide
+ * animations (as opposed to the default cross-fade).
+ */
+::view-transition-image-pair(seam-route-content-0),
+::view-transition-image-pair(seam-route-content-1),
+::view-transition-image-pair(seam-route-content-2),
+::view-transition-image-pair(seam-route-content-3),
+::view-transition-image-pair(seam-route-content-4),
+::view-transition-image-pair(seam-route-content-5) {
+  isolation: auto;
+}
+
+/*
+ * Ensure the leaving element stays behind the entering element
+ * during slide transitions to prevent the old content from
+ * flashing on top at the end of the animation.
+ */
+::view-transition-old(seam-route-content-0),
+::view-transition-old(seam-route-content-1),
+::view-transition-old(seam-route-content-2),
+::view-transition-old(seam-route-content-3),
+::view-transition-old(seam-route-content-4),
+::view-transition-old(seam-route-content-5) {
+  z-index: 1;
+}
+::view-transition-new(seam-route-content-0),
+::view-transition-new(seam-route-content-1),
+::view-transition-new(seam-route-content-2),
+::view-transition-new(seam-route-content-3),
+::view-transition-new(seam-route-content-4),
+::view-transition-new(seam-route-content-5) {
+  z-index: 2;
+}
+
+/*
+ * Each SeamRouteShellComponent gets a unique view-transition-name based on
+ * its route depth (seam-route-content-0, seam-route-content-1, etc.).
+ * Target depths 0-5 to cover any realistic nesting.
+ *
+ * View transition pseudo-elements are pseudo-elements of the document element,
+ * NOT descendants — no space between the attribute selector and pseudo-element.
+ */
+
+/* Sibling swap: current slides right, new slides left */
+html[data-route-direction="sibling"]::view-transition-old(seam-route-content-0),
+html[data-route-direction="sibling"]::view-transition-old(seam-route-content-1),
+html[data-route-direction="sibling"]::view-transition-old(seam-route-content-2),
+html[data-route-direction="sibling"]::view-transition-old(seam-route-content-3),
+html[data-route-direction="sibling"]::view-transition-old(seam-route-content-4),
+html[data-route-direction="sibling"]::view-transition-old(seam-route-content-5) {
+  animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) both seam-slide-out-right;
+}
+html[data-route-direction="sibling"]::view-transition-new(seam-route-content-0),
+html[data-route-direction="sibling"]::view-transition-new(seam-route-content-1),
+html[data-route-direction="sibling"]::view-transition-new(seam-route-content-2),
+html[data-route-direction="sibling"]::view-transition-new(seam-route-content-3),
+html[data-route-direction="sibling"]::view-transition-new(seam-route-content-4),
+html[data-route-direction="sibling"]::view-transition-new(seam-route-content-5) {
+  animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) both seam-slide-in-left;
+}
+
+/* Deeper: both slide left */
+html[data-route-direction="deeper"]::view-transition-old(seam-route-content-0),
+html[data-route-direction="deeper"]::view-transition-old(seam-route-content-1),
+html[data-route-direction="deeper"]::view-transition-old(seam-route-content-2),
+html[data-route-direction="deeper"]::view-transition-old(seam-route-content-3),
+html[data-route-direction="deeper"]::view-transition-old(seam-route-content-4),
+html[data-route-direction="deeper"]::view-transition-old(seam-route-content-5) {
+  animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) both seam-slide-out-left;
+}
+html[data-route-direction="deeper"]::view-transition-new(seam-route-content-0),
+html[data-route-direction="deeper"]::view-transition-new(seam-route-content-1),
+html[data-route-direction="deeper"]::view-transition-new(seam-route-content-2),
+html[data-route-direction="deeper"]::view-transition-new(seam-route-content-3),
+html[data-route-direction="deeper"]::view-transition-new(seam-route-content-4),
+html[data-route-direction="deeper"]::view-transition-new(seam-route-content-5) {
+  animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) both seam-slide-in-left;
+}
+
+/* Shallower: both slide right */
+html[data-route-direction="shallower"]::view-transition-old(seam-route-content-0),
+html[data-route-direction="shallower"]::view-transition-old(seam-route-content-1),
+html[data-route-direction="shallower"]::view-transition-old(seam-route-content-2),
+html[data-route-direction="shallower"]::view-transition-old(seam-route-content-3),
+html[data-route-direction="shallower"]::view-transition-old(seam-route-content-4),
+html[data-route-direction="shallower"]::view-transition-old(seam-route-content-5) {
+  animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) both seam-slide-out-right;
+}
+html[data-route-direction="shallower"]::view-transition-new(seam-route-content-0),
+html[data-route-direction="shallower"]::view-transition-new(seam-route-content-1),
+html[data-route-direction="shallower"]::view-transition-new(seam-route-content-2),
+html[data-route-direction="shallower"]::view-transition-new(seam-route-content-3),
+html[data-route-direction="shallower"]::view-transition-new(seam-route-content-4),
+html[data-route-direction="shallower"]::view-transition-new(seam-route-content-5) {
+  animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) both seam-slide-in-right;
+}
+
+/* Reduced motion: disable all route transition animations */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(seam-route-content-0),
+  ::view-transition-new(seam-route-content-0),
+  ::view-transition-old(seam-route-content-1),
+  ::view-transition-new(seam-route-content-1),
+  ::view-transition-old(seam-route-content-2),
+  ::view-transition-new(seam-route-content-2),
+  ::view-transition-old(seam-route-content-3),
+  ::view-transition-new(seam-route-content-3),
+  ::view-transition-old(seam-route-content-4),
+  ::view-transition-new(seam-route-content-4),
+  ::view-transition-old(seam-route-content-5),
+  ::view-transition-new(seam-route-content-5) {
+    animation-duration: 0s !important;
+  }
+}

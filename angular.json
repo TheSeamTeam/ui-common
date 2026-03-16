@@ -110,9 +110,19 @@
             "port": 6007,
             "open": false,
             "tsConfig": "projects/ui-common/tsconfig.sb.json",
-            "compodoc": false,
+            "compodoc": true,
+            "compodocArgs": [
+              "-p",
+              "./tsconfig.stories.json",
+              "-e",
+              "json",
+              "-d",
+              ".",
+              "--disableLifeCycleHooks"
+            ],
             "styles": [
               "projects/ui-common/styles/theme.scss",
+              "projects/ui-common/framework/route-transitions/route-transitions.css",
               "node_modules/@marklb/ngx-datatable/assets/icons.css"
             ],
             "stylePreprocessorOptions": {
@@ -148,6 +158,11 @@
                 "glob": "**/*.scss",
                 "input": "projects/ui-common/framework/dashboard",
                 "output": "framework/dashboard"
+              },
+              {
+                "glob": "**/*.css",
+                "input": "projects/ui-common/framework/route-transitions",
+                "output": "framework/route-transitions"
               },
               {
                 "glob": "**/*.scss",
@@ -203,10 +218,20 @@
             "browserTarget": "ui-common:build",
             "tsConfig": "projects/ui-common/tsconfig.sb.json",
             "compodoc": true,
+            "compodocArgs": [
+              "-p",
+              "./tsconfig.stories.json",
+              "-e",
+              "json",
+              "-d",
+              ".",
+              "--disableLifeCycleHooks"
+            ],
             "enableProdMode": true,
-            "outputDir": "docs",
+            "outputDir": "storybook-static",
             "styles": [
               "projects/ui-common/styles/theme.scss",
+              "projects/ui-common/framework/route-transitions/route-transitions.css",
               "node_modules/@marklb/ngx-datatable/assets/icons.css"
             ],
             "stylePreprocessorOptions": {
@@ -242,6 +267,11 @@
                 "glob": "**/*.scss",
                 "input": "projects/ui-common/framework/dashboard",
                 "output": "framework/dashboard"
+              },
+              {
+                "glob": "**/*.css",
+                "input": "projects/ui-common/framework/route-transitions",
+                "output": "framework/route-transitions"
               },
               {
                 "glob": "**/*.scss",
