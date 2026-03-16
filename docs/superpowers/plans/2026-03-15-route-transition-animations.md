@@ -23,16 +23,16 @@ projects/ui-common/
       get-url-segments.ts                 # Pure function: ActivatedRouteSnapshot => string[]
       seam-route-transition.ts            # Factory for withViewTransitions() callback
       seam-route-shell.component.ts       # Standalone shell component
+      route-transitions.css               # Animation keyframes and direction rules
       compute-direction.spec.ts           # Unit tests for direction logic
       get-url-segments.spec.ts            # Unit tests for segment extraction
       seam-route-transition.spec.ts       # Integration test for the factory
-  styles/
-    route-transitions.css                 # Animation keyframes and direction rules
 ```
 
 **Modified files:**
 - `projects/ui-common/framework/public-api.ts` — add `route-transitions` export
 - `projects/ui-common/jest.config.ts` — add `route-transitions` to testMatch
+- `projects/ui-common/ng-package.json` — add `framework/route-transitions` CSS asset entry
 
 ---
 
@@ -299,9 +299,16 @@ function makeSnapshot(pathSegments: string[][]): ActivatedRouteSnapshot {
 describe('seamRouteTransition', () => {
   let callback: (info: any) => void
 
+  function makeInfo(fromSegments: string[][], toSegments: string[][]) {
+    return {
+      transition: {} as any,
+      from: makeSnapshot(fromSegments),
+      to: makeSnapshot(toSegments),
+    }
+  }
+
   beforeEach(() => {
     callback = seamRouteTransition()
-    // Clean up after each test
     delete document.documentElement.dataset['routeDirection']
   })
 
@@ -309,42 +316,48 @@ describe('seamRouteTransition', () => {
     delete document.documentElement.dataset['routeDirection']
   })
 
+  it('skips the first navigation (no animation on initial load)', () => {
+    callback(makeInfo([[''], ['']], [[''], ['dashboard']]))
+
+    expect(document.documentElement.dataset['routeDirection']).toBeUndefined()
+  })
+
+  it('animates the second navigation onward', () => {
+    // First call — skipped
+    callback(makeInfo([[''], ['']], [[''], ['dashboard']]))
+    // Second call — should set direction
+    callback(makeInfo([[''], ['dashboard']], [[''], ['claims']]))
+
+    expect(document.documentElement.dataset['routeDirection']).toBe('sibling')
+  })
+
   it('sets data-route-direction to "sibling" for same-depth navigation', () => {
-    callback({
-      transition: {} as any,
-      from: makeSnapshot([[''], ['claims']]),
-      to: makeSnapshot([[''], ['purchase-orders']]),
-    })
+    callback(makeInfo([[''], ['']], [[''], ['dashboard']])) // skip first
+    callback(makeInfo([[''], ['claims']], [[''], ['purchase-orders']]))
 
     expect(document.documentElement.dataset['routeDirection']).toBe('sibling')
   })
 
   it('sets data-route-direction to "deeper" when navigating deeper', () => {
-    callback({
-      transition: {} as any,
-      from: makeSnapshot([[''], ['claims']]),
-      to: makeSnapshot([[''], ['claims'], ['123']]),
-    })
+    callback(makeInfo([[''], ['']], [[''], ['dashboard']])) // skip first
+    callback(makeInfo([[''], ['claims']], [[''], ['claims'], ['123']]))
 
     expect(document.documentElement.dataset['routeDirection']).toBe('deeper')
   })
 
   it('sets data-route-direction to "shallower" when navigating shallower', () => {
-    callback({
-      transition: {} as any,
-      from: makeSnapshot([[''], ['claims'], ['123']]),
-      to: makeSnapshot([[''], ['claims']]),
-    })
+    callback(makeInfo([[''], ['']], [[''], ['dashboard']])) // skip first
+    callback(makeInfo([[''], ['claims'], ['123']], [[''], ['claims']]))
 
     expect(document.documentElement.dataset['routeDirection']).toBe('shallower')
   })
 
   it('handles cross-branch navigation as sibling', () => {
-    callback({
-      transition: {} as any,
-      from: makeSnapshot([[''], ['claims'], ['123'], ['edit']]),
-      to: makeSnapshot([[''], ['purchase-orders'], ['456']]),
-    })
+    callback(makeInfo([[''], ['']], [[''], ['dashboard']])) // skip first
+    callback(makeInfo(
+      [[''], ['claims'], ['123'], ['edit']],
+      [[''], ['purchase-orders'], ['456']],
+    ))
 
     expect(document.documentElement.dataset['routeDirection']).toBe('sibling')
   })
@@ -367,7 +380,16 @@ import { computeDirection } from './compute-direction'
 import { getUrlSegments } from './get-url-segments'
 
 export function seamRouteTransition(): (info: ViewTransitionInfo) => void {
+  let isFirst = true
+
   return (info: ViewTransitionInfo) => {
+    // Skip the first navigation (typically a redirect from / to /dashboard).
+    // No animation on initial page load.
+    if (isFirst) {
+      isFirst = false
+      return
+    }
+
     const prevSegments = getUrlSegments(info.from)
     const nextSegments = getUrlSegments(info.to)
     const direction = computeDirection(prevSegments, nextSegments)
@@ -427,14 +449,15 @@ git commit -m "feat(route-transitions): add SeamRouteShellComponent"
 
 ---
 
-### Task 5: Create CSS stylesheet
+### Task 5: Create CSS stylesheet and register asset
 
 **Files:**
-- Create: `projects/ui-common/styles/route-transitions.css`
+- Create: `projects/ui-common/framework/route-transitions/route-transitions.css`
+- Modify: `projects/ui-common/ng-package.json`
 
 - [ ] **Step 1: Create the stylesheet**
 
-Create `projects/ui-common/styles/route-transitions.css`:
+Create `projects/ui-common/framework/route-transitions/route-transitions.css`:
 
 ```css
 :root {
@@ -504,11 +527,28 @@ html[data-route-direction="shallower"] ::view-transition-new(seam-route-content)
 }
 ```
 
-- [ ] **Step 2: Commit**
+- [ ] **Step 2: Add asset entry to ng-package.json**
+
+Add the following entry to the `assets` array in `projects/ui-common/ng-package.json`, following the pattern used by other framework modules (e.g., `framework/base-layout`):
+
+```json
+{
+  "glob": "**/*.css",
+  "input": "framework/route-transitions",
+  "output": "framework/route-transitions"
+}
+```
+
+This allows consuming apps to import the stylesheet as:
+```scss
+@import 'node_modules/@theseam/ui-common/framework/route-transitions/route-transitions.css';
+```
+
+- [ ] **Step 3: Commit**
 
 ```bash
-git add projects/ui-common/styles/route-transitions.css
-git commit -m "feat(route-transitions): add CSS animation stylesheet"
+git add projects/ui-common/framework/route-transitions/route-transitions.css projects/ui-common/ng-package.json
+git commit -m "feat(route-transitions): add CSS animation stylesheet and register asset"
 ```
 
 ---
@@ -756,7 +796,7 @@ export const Demo: Story = {}
 
 - [ ] **Step 2: Add the route-transitions CSS to storybook styles**
 
-Add `projects/ui-common/styles/route-transitions.css` to the `styles` array in `angular.json` at both of these JSON paths:
+Add `projects/ui-common/framework/route-transitions/route-transitions.css` to the `styles` array in `angular.json` at both of these JSON paths:
 - `projects.ui-common.architect.storybook.options.styles`
 - `projects.ui-common.architect.build-storybook.options.styles`
 
@@ -783,13 +823,13 @@ git commit -m "feat(route-transitions): add Storybook demo stories"
 - [ ] **Step 1: Run all route-transitions tests**
 
 Run: `npx jest --config projects/ui-common/jest.config.ts --testPathPattern route-transitions --verbose`
-Expected: All tests pass (10 + 5 + 4 = 19 tests)
+Expected: All tests pass (10 + 5 + 6 = 21 tests)
 
 - [ ] **Step 2: Run the library build**
 
 Run: `npx ng build ui-common`
 Expected: Build succeeds. Verify these files exist in the output:
-- `dist/ui-common/styles/route-transitions.css`
+- `dist/ui-common/framework/route-transitions/route-transitions.css`
 - TypeScript types for `seamRouteTransition`, `SeamRouteShellComponent`, `computeDirection`, `getUrlSegments` in the framework entrypoint
 
 - [ ] **Step 3: Run the existing test suite to verify no regressions**

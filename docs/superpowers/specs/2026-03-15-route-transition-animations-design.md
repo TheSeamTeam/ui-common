@@ -94,7 +94,7 @@ The solution uses the **View Transition API** via Angular's built-in `withViewTr
 |--------|------|---------|
 | `seamRouteTransition()` | Function | Factory for `withViewTransitions()` callback. Detects navigation direction and sets `data-route-direction` attribute on `<html>`. |
 | `SeamRouteShellComponent` | Standalone Component | Drop-in replacement for all per-module Base components. Hosts `<router-outlet>` with unique `view-transition-name`. |
-| `@theseam/ui-common/styles/route-transitions` | CSS Stylesheet | Animation keyframes, direction-based rules, and `prefers-reduced-motion` handling. |
+| `@theseam/ui-common/framework/route-transitions/route-transitions.css` | CSS Stylesheet | Animation keyframes, direction-based rules, and `prefers-reduced-motion` handling. |
 
 ### `seamRouteTransition()` — Direction Detection
 
@@ -106,7 +106,16 @@ Note: The code below is **pseudocode illustrating intent**. The exact `ViewTrans
 import { ViewTransitionInfo } from '@angular/router'
 
 export function seamRouteTransition(): (info: ViewTransitionInfo) => void {
+  let isFirst = true
+
   return (info: ViewTransitionInfo) => {
+    // Skip the first navigation (typically a redirect from / to /dashboard).
+    // No animation on initial page load.
+    if (isFirst) {
+      isFirst = false
+      return
+    }
+
     // Property names (from/to) are illustrative — verify against actual Angular API
     const prevSegments = getUrlSegments(info.from)
     const nextSegments = getUrlSegments(info.to)
@@ -263,7 +272,7 @@ provideRouter(
 
 ```css
 /* styles.css or styles.scss */
-@import '@theseam/ui-common/styles/route-transitions';
+@import '@theseam/ui-common/framework/route-transitions/route-transitions.css';
 ```
 
 **3. Replace Base components in route configs:**
@@ -332,17 +341,18 @@ projects/ui-common/
 
 Apps import TypeScript exports as: `import { seamRouteTransition, SeamRouteShellComponent } from '@theseam/ui-common/framework'`
 
-**CSS stylesheet** (separate path for style imports):
+**CSS stylesheet** (co-located with the module, distributed via `ng-package.json` assets):
 
 ```text
 projects/ui-common/
-  styles/
-    route-transitions.css               # Animation keyframes and direction rules
+  framework/
+    route-transitions/
+      route-transitions.css             # Animation keyframes and direction rules
 ```
 
-Apps import the stylesheet as: `@import '@theseam/ui-common/styles/route-transitions'`
+Apps import the stylesheet as: `@import 'node_modules/@theseam/ui-common/framework/route-transitions/route-transitions.css'`
 
-The CSS distribution mechanism (secondary entrypoint, `ng-package.json` assets, or `styleIncludePaths`) should follow whatever pattern ui-common already uses for shared stylesheets. If no pattern exists, the implementation should establish one.
+The CSS is distributed via an asset entry in `ng-package.json`, following the same pattern as other framework modules (e.g., `framework/base-layout`).
 
 **`view-transition-name` convention:** The naming pattern is `seam-route-content` for CSS targeting. Components manually setting `view-transition-name` (e.g., `BaseLayoutComponent`) should use this same name to participate in route transition animations.
 
