@@ -1,0 +1,65 @@
+:root {
+  --seam-route-transition-duration: 400ms;
+  --seam-route-transition-easing: ease-in-out;
+}
+
+/* Keyframes */
+@keyframes seam-slide-in-left {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+
+@keyframes seam-slide-in-right {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+
+@keyframes seam-slide-out-left {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
+}
+
+@keyframes seam-slide-out-right {
+  from { transform: translateX(0); }
+  to   { transform: translateX(100%); }
+}
+
+/* Sibling swap: current slides right, new slides left */
+html[data-route-direction="sibling"] ::view-transition-old(root),
+html[data-route-direction="sibling"] ::view-transition-old(seam-route-content) {
+  animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) seam-slide-out-right;
+}
+html[data-route-direction="sibling"] ::view-transition-new(root),
+html[data-route-direction="sibling"] ::view-transition-new(seam-route-content) {
+  animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) seam-slide-in-left;
+}
+
+/* Deeper: both slide left */
+html[data-route-direction="deeper"] ::view-transition-old(root),
+html[data-route-direction="deeper"] ::view-transition-old(seam-route-content) {
+  animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) seam-slide-out-left;
+}
+html[data-route-direction="deeper"] ::view-transition-new(root),
+html[data-route-direction="deeper"] ::view-transition-new(seam-route-content) {
+  animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) seam-slide-in-left;
+}
+
+/* Shallower: both slide right */
+html[data-route-direction="shallower"] ::view-transition-old(root),
+html[data-route-direction="shallower"] ::view-transition-old(seam-route-content) {
+  animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) seam-slide-out-right;
+}
+html[data-route-direction="shallower"] ::view-transition-new(root),
+html[data-route-direction="shallower"] ::view-transition-new(seam-route-content) {
+  animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) seam-slide-in-right;
+}
+
+/* Reduced motion: disable all route transition animations */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  ::view-transition-old(seam-route-content),
+  ::view-transition-new(seam-route-content) {
+    animation-duration: 0s !important;
+  }
+}
