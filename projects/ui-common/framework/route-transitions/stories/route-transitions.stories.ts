@@ -188,11 +188,9 @@ const storyRoutes: Routes = [
 
 // --- Story definition ---
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface StoryComponentType {}
-
-const meta: Meta<StoryComponentType> = {
+const meta: Meta<SeamRouteShellComponent> = {
   title: 'Framework/Route Transitions',
+  component: SeamRouteShellComponent,
   decorators: [
     applicationConfig({
       providers: [
@@ -211,25 +209,18 @@ const meta: Meta<StoryComponentType> = {
   ],
   render: (args) => ({
     props: args,
-    template: `<router-outlet></router-outlet>`,
-  }),
-}
-
-export default meta
-type Story = StoryObj<StoryComponentType>
-
-export const Demo: Story = {}
-
-export const OnlyContent: Story = {
-  render: (args) => ({
-    props: args,
     template: `
-      <div style="border: 1px solid #ccc; border-radius: 4px; overflow: hidden; height: 500px;">
-        <div style="padding: 8px 16px; background: #777edd; border-bottom: 1px solid #ccc; font-size: 12px; color: #666;">
-          In ea adipisicing do id qui aliqua reprehenderit reprehenderit labore sit velit.
+      <div style="border: 1px solid #ccc; border-radius: 4px; overflow: hidden; height: 400px;">
+        <div style="padding: 8px 16px; background: #f5f5f5; border-bottom: 1px solid #ccc; font-size: 12px; color: #666;">
+          Route Transition Demo — click links to see directional transitions
         </div>
         <router-outlet></router-outlet>
       </div>
     `,
   }),
 }
+
+export default meta
+type Story = StoryObj<SeamRouteShellComponent>
+
+export const Demo: Story = {}
