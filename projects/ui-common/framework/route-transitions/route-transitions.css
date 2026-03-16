@@ -34,6 +34,21 @@ html[data-route-direction]::view-transition-new(root) {
 }
 
 /*
+ * Clip slide animations to the bounds of the original element so
+ * content doesn't overflow into the sidebar/header area. The
+ * view-transition-group exists in an overlay layer outside the
+ * normal DOM, so the parent container's overflow: hidden has no effect.
+ */
+::view-transition-group(seam-route-content-0),
+::view-transition-group(seam-route-content-1),
+::view-transition-group(seam-route-content-2),
+::view-transition-group(seam-route-content-3),
+::view-transition-group(seam-route-content-4),
+::view-transition-group(seam-route-content-5) {
+  overflow: hidden;
+}
+
+/*
  * Override the browser's default mix-blend-mode: plus-lighter on the
  * image pair, which causes flicker/ghosting artifacts with slide
  * animations (as opposed to the default cross-fade).
