@@ -26,6 +26,7 @@ export default {
     '**/tooltip/**/*.spec.ts',
     '**/tabbed/**/*.spec.ts',
     '**/datatable-alterations-display/**/*.spec.ts',
+    '**/route-transitions/**/*.spec.ts',
   ],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: '<rootDir>/',
