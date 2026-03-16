@@ -85,7 +85,7 @@ html[data-route-direction="sibling"]::view-transition-old(seam-route-content-2),
 html[data-route-direction="sibling"]::view-transition-old(seam-route-content-3),
 html[data-route-direction="sibling"]::view-transition-old(seam-route-content-4),
 html[data-route-direction="sibling"]::view-transition-old(seam-route-content-5) {
-  animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) seam-slide-out-right;
+  animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) both seam-slide-out-right;
 }
 html[data-route-direction="sibling"]::view-transition-new(seam-route-content-0),
 html[data-route-direction="sibling"]::view-transition-new(seam-route-content-1),
@@ -93,7 +93,7 @@ html[data-route-direction="sibling"]::view-transition-new(seam-route-content-2),
 html[data-route-direction="sibling"]::view-transition-new(seam-route-content-3),
 html[data-route-direction="sibling"]::view-transition-new(seam-route-content-4),
 html[data-route-direction="sibling"]::view-transition-new(seam-route-content-5) {
-  animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) seam-slide-in-left;
+  animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) both seam-slide-in-left;
 }
 
 /* Deeper: both slide left */
@@ -103,7 +103,7 @@ html[data-route-direction="deeper"]::view-transition-old(seam-route-content-2),
 html[data-route-direction="deeper"]::view-transition-old(seam-route-content-3),
 html[data-route-direction="deeper"]::view-transition-old(seam-route-content-4),
 html[data-route-direction="deeper"]::view-transition-old(seam-route-content-5) {
-  animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) seam-slide-out-left;
+  animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) both seam-slide-out-left;
 }
 html[data-route-direction="deeper"]::view-transition-new(seam-route-content-0),
 html[data-route-direction="deeper"]::view-transition-new(seam-route-content-1),
@@ -111,7 +111,7 @@ html[data-route-direction="deeper"]::view-transition-new(seam-route-content-2),
 html[data-route-direction="deeper"]::view-transition-new(seam-route-content-3),
 html[data-route-direction="deeper"]::view-transition-new(seam-route-content-4),
 html[data-route-direction="deeper"]::view-transition-new(seam-route-content-5) {
-  animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) seam-slide-in-left;
+  animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) both seam-slide-in-left;
 }
 
 /* Shallower: both slide right */
@@ -121,7 +121,7 @@ html[data-route-direction="shallower"]::view-transition-old(seam-route-content-2
 html[data-route-direction="shallower"]::view-transition-old(seam-route-content-3),
 html[data-route-direction="shallower"]::view-transition-old(seam-route-content-4),
 html[data-route-direction="shallower"]::view-transition-old(seam-route-content-5) {
-  animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) seam-slide-out-right;
+  animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) both seam-slide-out-right;
 }
 html[data-route-direction="shallower"]::view-transition-new(seam-route-content-0),
 html[data-route-direction="shallower"]::view-transition-new(seam-route-content-1),
@@ -129,7 +129,7 @@ html[data-route-direction="shallower"]::view-transition-new(seam-route-content-2
 html[data-route-direction="shallower"]::view-transition-new(seam-route-content-3),
 html[data-route-direction="shallower"]::view-transition-new(seam-route-content-4),
 html[data-route-direction="shallower"]::view-transition-new(seam-route-content-5) {
-  animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) seam-slide-in-right;
+  animation: var(--seam-route-transition-duration) var(--seam-route-transition-easing) both seam-slide-in-right;
 }
 
 /* Reduced motion: disable all route transition animations */
