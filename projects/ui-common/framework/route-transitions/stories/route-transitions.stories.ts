@@ -1,3 +1,6 @@
+import { applicationConfig, type Meta, type StoryObj } from '@storybook/angular'
+
+import { provideLocationMocks } from '@angular/common/testing'
 import { Component } from '@angular/core'
 import {
   RouterLink,
@@ -6,7 +9,6 @@ import {
   withViewTransitions,
   Routes,
 } from '@angular/router'
-import { applicationConfig, type Meta, type StoryObj } from '@storybook/angular'
 
 import { seamRouteTransition } from '../seam-route-transition'
 import { SeamRouteShellComponent } from '../seam-route-shell.component'
@@ -154,7 +156,7 @@ class StoryPODetailComponent {}
         Route Transition Demo — click links to see directional transitions
       </div>
       <div
-        style="position: relative; overflow: hidden; height: calc(100% - 37px);"
+        style="position: relative; overflow: hidden; height: calc(100% - 37px); view-transition-name: seam-route-content;"
       >
         <router-outlet></router-outlet>
       </div>
@@ -212,6 +214,7 @@ const meta: Meta<StoryWrapperComponent> = {
   decorators: [
     applicationConfig({
       providers: [
+        provideLocationMocks(),
         provideRouter(
           storyRoutes,
           withViewTransitions({

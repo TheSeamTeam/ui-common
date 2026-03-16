@@ -5,7 +5,6 @@ import { RouterOutlet } from '@angular/router'
   selector: 'seam-route-shell',
   template: `<router-outlet></router-outlet>`,
   host: {
-    '[style.view-transition-name]': '"seam-route-content"',
     '[style.display]': '"flex"',
     '[style.flex-direction]': '"column"',
     '[style.height]': '"100%"',
