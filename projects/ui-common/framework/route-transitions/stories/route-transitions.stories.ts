@@ -1,4 +1,9 @@
-import { applicationConfig, type Meta, type StoryObj } from '@storybook/angular'
+import {
+  applicationConfig,
+  moduleMetadata,
+  type Meta,
+  type StoryObj,
+} from '@storybook/angular'
 
 import { provideLocationMocks } from '@angular/common/testing'
 import { Component } from '@angular/core'
@@ -142,37 +147,12 @@ class StoryPOListComponent {}
 })
 class StoryPODetailComponent {}
 
-// --- Story wrapper ---
-
-@Component({
-  selector: 'story-wrapper',
-  template: `
-    <div
-      style="border: 1px solid #ccc; border-radius: 4px; overflow: hidden; height: 400px;"
-    >
-      <div
-        style="padding: 8px 16px; background: #f5f5f5; border-bottom: 1px solid #ccc; font-size: 12px; color: #666;"
-      >
-        Route Transition Demo — click links to see directional transitions
-      </div>
-      <div
-        style="position: relative; overflow: hidden; height: calc(100% - 37px);"
-      >
-        <router-outlet></router-outlet>
-      </div>
-    </div>
-  `,
-  imports: [RouterOutlet],
-  standalone: true,
-})
-class StoryWrapperComponent {}
-
 // --- Routes ---
 
 const storyRoutes: Routes = [
   {
     path: '',
-    component: StoryWrapperComponent,
+    component: SeamRouteShellComponent,
     children: [
       { path: '', component: StoryHomeComponent, pathMatch: 'full' },
       {
@@ -208,9 +188,11 @@ const storyRoutes: Routes = [
 
 // --- Story definition ---
 
-const meta: Meta<StoryWrapperComponent> = {
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+interface StoryComponentType {}
+
+const meta: Meta<StoryComponentType> = {
   title: 'Framework/Route Transitions',
-  component: StoryWrapperComponent,
   decorators: [
     applicationConfig({
       providers: [
@@ -223,10 +205,31 @@ const meta: Meta<StoryWrapperComponent> = {
         ),
       ],
     }),
+    moduleMetadata({
+      imports: [RouterOutlet],
+    }),
   ],
+  render: (args) => ({
+    props: args,
+    template: `<router-outlet></router-outlet>`,
+  }),
 }
 
 export default meta
-type Story = StoryObj<StoryWrapperComponent>
+type Story = StoryObj<StoryComponentType>
 
 export const Demo: Story = {}
+
+export const OnlyContent: Story = {
+  render: (args) => ({
+    props: args,
+    template: `
+      <div style="border: 1px solid #ccc; border-radius: 4px; overflow: hidden; height: 500px;">
+        <div style="padding: 8px 16px; background: #777edd; border-bottom: 1px solid #ccc; font-size: 12px; color: #666;">
+          In ea adipisicing do id qui aliqua reprehenderit reprehenderit labore sit velit.
+        </div>
+        <router-outlet></router-outlet>
+      </div>
+    `,
+  }),
+}

@@ -34,6 +34,42 @@ html[data-route-direction]::view-transition-new(root) {
 }
 
 /*
+ * Override the browser's default mix-blend-mode: plus-lighter on the
+ * image pair, which causes flicker/ghosting artifacts with slide
+ * animations (as opposed to the default cross-fade).
+ */
+::view-transition-image-pair(seam-route-content-0),
+::view-transition-image-pair(seam-route-content-1),
+::view-transition-image-pair(seam-route-content-2),
+::view-transition-image-pair(seam-route-content-3),
+::view-transition-image-pair(seam-route-content-4),
+::view-transition-image-pair(seam-route-content-5) {
+  isolation: auto;
+}
+
+/*
+ * Ensure the leaving element stays behind the entering element
+ * during slide transitions to prevent the old content from
+ * flashing on top at the end of the animation.
+ */
+::view-transition-old(seam-route-content-0),
+::view-transition-old(seam-route-content-1),
+::view-transition-old(seam-route-content-2),
+::view-transition-old(seam-route-content-3),
+::view-transition-old(seam-route-content-4),
+::view-transition-old(seam-route-content-5) {
+  z-index: 1;
+}
+::view-transition-new(seam-route-content-0),
+::view-transition-new(seam-route-content-1),
+::view-transition-new(seam-route-content-2),
+::view-transition-new(seam-route-content-3),
+::view-transition-new(seam-route-content-4),
+::view-transition-new(seam-route-content-5) {
+  z-index: 2;
+}
+
+/*
  * Each SeamRouteShellComponent gets a unique view-transition-name based on
  * its route depth (seam-route-content-0, seam-route-content-1, etc.).
  * Target depths 0-5 to cover any realistic nesting.
