@@ -2,7 +2,6 @@ import {
   Meta,
   StoryObj,
   applicationConfig,
-  componentWrapperDecorator,
   moduleMetadata,
 } from '@storybook/angular'
 import { expect } from 'storybook/test'
@@ -24,18 +23,11 @@ const meta: Meta<NgSelectComponent> = {
     moduleMetadata({
       imports: [NgSelectModule, ReactiveFormsModule],
     }),
-    // componentWrapperDecorator(NgSelectComponent, ({ args }) => args),
   ],
   render: (args) => ({
     props: args,
     template: `<ng-select ${argsToTpl()}></ng-select>`,
   }),
-  argTypes: {
-    // onSubmit: { action: 'onSubmit' }
-  },
-  args: {
-    // framework: 'seam-framework',
-  },
 }
 
 export default meta
@@ -52,53 +44,7 @@ export const Basic: Story = {
     })
     await expect(await ngSelectHarness.isRequired()).toBe(false)
     await expect(await ngSelectHarness.getValue()).toBe(null)
-    await ngSelectHarness.clickOption({ value: 'two' })
+    await ngSelectHarness.clickOption({ label: 'two' })
     await expect(await ngSelectHarness.getValue()).toBe('two')
-    // const sfFormHarness = await getHarness(JsonSchemaFormHarness, { canvasElement, fixture })
-    // await sfFormHarness.submit()
-    // await expect(args.onSubmit).toHaveBeenCalledWith({ Colors: true })
   },
 }
-
-// export const SplitButton: Story = {
-//   args: {
-//     schema: {
-//       'type': 'object',
-//       '$schema': 'http://json-schema.org/draft-07/schema#',
-//       'properties': {
-//         'Colors': {
-//           'type': 'string',
-//           'enum': [ 'red', 'green', 'blue' ],
-//           'enumNames': [ 'Red', 'Green', 'Blue' ],
-//         },
-//         'ExportType': {
-//           'type': 'string',
-//           'enum': [ 'pdf', 'xlsx' ],
-//           'enumNames': [ 'PDF', 'XLSX' ],
-//           'default': 'xlsx',
-//         },
-//       },
-//       'required': [
-//         'Colors',
-//         'ExportType',
-//       ],
-//     },
-//     layout: [
-//       { 'dataPointer': '/Colors' },
-//       {
-//         'type': 'submit', 'title': 'Generate',
-//         'items': [
-//           { 'dataPointer': '/ExportType' },
-//         ],
-//       },
-//     ],
-//   },
-//   play: async ({ canvasElement, fixture, args }) => {
-//     const sfSubmitHarness = await getHarness(TheSeamSchemaFormSubmitSplitHarness, { canvasElement, fixture })
-//     await expect(await sfSubmitHarness.isRequired()).toBe(true)
-//     await sfSubmitHarness.click()
-//     const sfFormHarness = await getHarness(JsonSchemaFormHarness, { canvasElement, fixture })
-//     await sfFormHarness.submit()
-//     await expect(args.onSubmit).toHaveBeenCalledWith({ Colors: true })
-//   },
-// }

@@ -78,6 +78,22 @@ export class TheSeamMenuItemHarness extends ContentContainerComponentHarness<str
     return (await this.host()).hover().then(() => animatingWait())
   }
 
+  /** Whether this item is rendered as a link (`<a>`) rather than a `<button>`. */
+  async isLink(): Promise<boolean> {
+    const tagName = await (await this.host()).getProperty<string>('tagName')
+    return tagName.toLowerCase() === 'a'
+  }
+
+  /** Gets the `href` attribute, or `null` if not a link. */
+  async getHref(): Promise<string | null> {
+    return (await this.host()).getAttribute('href')
+  }
+
+  /** Gets the `target` attribute (e.g. `_blank`), or `null` if not set. */
+  async getTarget(): Promise<string | null> {
+    return (await this.host()).getAttribute('target')
+  }
+
   /** Whether this item has a submenu. */
   async hasSubmenu(): Promise<boolean> {
     return (await this.host()).matchesSelector(TheSeamMenuHarness.hostSelector)

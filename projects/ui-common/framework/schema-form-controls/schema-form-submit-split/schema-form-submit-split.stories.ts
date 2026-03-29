@@ -77,7 +77,7 @@ export const Basic: Story = {
     })
     await expect(await sfSelectHarness.isRequired()).toBe(true)
     await expect(await sfSelectHarness.getValue()).toBe(null)
-    await sfSelectHarness.clickOption({ value: 'Red' })
+    await sfSelectHarness.clickOption({ label: 'Red' })
     await expect(await sfSelectHarness.getValue()).toBe('Red')
 
     await expect(await sfSubmitHarness.isDisabled()).toBe(false)
@@ -135,7 +135,7 @@ export const SplitButton: Story = {
     })
     await expect(await sfSelectHarness.isRequired()).toBe(true)
     await expect(await sfSelectHarness.getValue()).toBe(null)
-    await sfSelectHarness.clickOption({ value: 'Red' })
+    await sfSelectHarness.clickOption({ label: 'Red' })
     await expect(await sfSelectHarness.getValue()).toBe('Red')
 
     await expect(await sfSubmitHarness.isDisabled()).toBe(false)
