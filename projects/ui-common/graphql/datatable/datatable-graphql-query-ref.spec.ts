@@ -8,15 +8,14 @@ import { currentTickTime } from '@theseam/ui-common/testing'
 import { GqlDatatableAccessor, EmptyObject } from '../models'
 import {
   checkRecordsHaveValue,
+  createMockApolloTestingProvider,
   createSimpleGqlTestRoot,
   MockDatatable,
   SimpleGqlTestExtraVariables,
   SimpleGqlTestRecord,
-  simpleGqlTestSchema,
   SimpleGqlTestVariables,
   SIMPLE_GQL_TEST_QUERY,
 } from '../testing'
-import { createApolloTestingProvider } from '../testing/create-apollo-testing-provider'
 import { gqlVar } from '../utils/gql-var'
 import {
   DatatableGraphQLDataMapper,
@@ -59,7 +58,17 @@ describe('DatatableGraphQLQueryRef', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [createApolloTestingProvider(simpleGqlTestSchema, root)],
+      providers: [
+        createMockApolloTestingProvider({
+          resolve: (operation) => ({
+            data: {
+              simpleGqlTestRecords: root.simpleGqlTestRecords(
+                operation.variables,
+              ),
+            },
+          }),
+        }),
+      ],
       teardown: { destroyAfterEach: false },
     })
 
@@ -280,7 +289,7 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
       })
       .pipe(shareReplay({ bufferSize: 1, refCount: true }))
 
-    const _mapSorts = createSortsMapper<'id' | 'name'>({
+    const _mapSorts = createSortsMapper<SimpleGqlTestRecord>({
       id: 'id',
       name: 'name',
     })

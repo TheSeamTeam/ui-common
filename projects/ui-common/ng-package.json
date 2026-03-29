@@ -87,6 +87,11 @@
       "glob": "**/*.scss",
       "input": "widget",
       "output": "widget"
+    },
+    {
+      "glob": "**/*.css",
+      "input": "framework/route-transitions",
+      "output": "framework/route-transitions"
     }
   ]
 }

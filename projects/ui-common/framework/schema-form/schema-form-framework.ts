@@ -7,6 +7,7 @@ import {
 } from '@angular/core'
 
 import { Framework } from '@ajsf/core'
+import { hasProperty } from '@theseam/ui-common/utils'
 
 import { TheSeamSchemaFormCheckboxComponent } from '../schema-form-controls/schema-form-checkbox/schema-form-checkbox.component'
 import { TheSeamSchemaFormInputComponent } from '../schema-form-controls/schema-form-input/schema-form-input.component'
@@ -19,7 +20,6 @@ import { TheSeamSchemaFormTelComponent } from '../schema-form-controls/schema-fo
 import { TheSeamSchemaFormTiledSelectComponent } from '../schema-form-controls/schema-form-tiled-select/schema-form-tiled-select.component'
 
 import { TheSeamSchemaFormFrameworkComponent } from './schema-form-framework.component'
-import { hasProperty } from '@theseam/ui-common/utils'
 
 export type TheSeamSchemaFormFrameworkOverrides = Omit<
   Framework,

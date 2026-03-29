@@ -5,6 +5,7 @@ export * from './sort-items'
 export * from './filtered-results'
 export * from './mock-datatable'
 export * from './check-records-have-value'
-export * from './create-apollo-testing-provider'
+export * from './mock-graphql-link'
+export * from './create-mock-apollo-testing-provider'
 
 export * from './data/simple-gql-test-data'

@@ -11,9 +11,9 @@ import { ReactiveFormsModule } from '@angular/forms'
 import { provideAnimations } from '@angular/platform-browser/animations'
 
 import { JsonSchemaFormComponent } from '@ajsf/core'
+import { getHarness } from '@theseam/ui-common/testing'
 
 import { TheSeamSchemaFormModule } from '../../schema-form/schema-form.module'
-import { getHarness } from '@theseam/ui-common/testing'
 import { TheSeamSchemaFormSelectHarness } from './testing'
 import { JsonSchemaFormHarness } from '../../schema-form/testing'
 

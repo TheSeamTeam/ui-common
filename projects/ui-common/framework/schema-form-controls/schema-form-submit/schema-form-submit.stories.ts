@@ -12,7 +12,6 @@ import { provideAnimations } from '@angular/platform-browser/animations'
 import { Injectable } from '@angular/core'
 
 import { Framework, JsonSchemaFormComponent } from '@ajsf/core'
-
 import { getHarness } from '@theseam/ui-common/testing'
 import {
   THESEAM_SCHEMA_FRAMEWORK_OVERRIDES,

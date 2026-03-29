@@ -67,9 +67,9 @@ import { ToastrModule, ToastrService } from 'ngx-toastr'
 import {
   SIMPLE_GQL_TEST_SEARCH_QUERY,
   SimpleGqlTestExtraVariables,
-  createApolloTestingProvider,
+  SimpleGqlTestRecord,
+  createMockApolloTestingProvider,
   createSimpleGqlTestRoot,
-  simpleGqlTestSchema,
 } from '../../graphql/testing'
 import { TheSeamDatatableModule } from '../datatable.module'
 import { TheSeamDatatableHarness } from '../testing'
@@ -908,7 +908,7 @@ class GqlDatatableWrapperComponent {
       }))
       .pipe(shareReplay({ bufferSize: 1, refCount: true }))
 
-    const _mapSorts = createSortsMapper<'id' | 'name'>({
+    const _mapSorts = createSortsMapper<SimpleGqlTestRecord>({
       id: 'id',
       name: 'name',
     })
@@ -972,11 +972,19 @@ export const GraphQLQueryRef: Story = {
     applicationConfig: {
       providers: [
         importProvidersFrom(ToastrModule.forRoot()),
-        createApolloTestingProvider(
-          simpleGqlTestSchema,
-          createSimpleGqlTestRoot(600),
-          1000,
-        ),
+        createMockApolloTestingProvider({
+          resolve: (operation) => {
+            const root = createSimpleGqlTestRoot(600)
+            return {
+              data: {
+                simpleGqlTestRecords: root.simpleGqlTestRecords(
+                  operation.variables,
+                ),
+              },
+            }
+          },
+          delay: 1000,
+        }),
       ],
     },
     moduleMetadata: {

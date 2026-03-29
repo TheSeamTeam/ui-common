@@ -2,7 +2,6 @@
 
 # compiled output
 /dist
-/docs
 /tmp
 /out-tsc
 
@@ -54,3 +53,6 @@ Thumbs.db
 
 *storybook.log
 storybook-static
+
+.claude/settings.local.json
+.superpowers/brainstorm

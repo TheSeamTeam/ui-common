@@ -19,13 +19,15 @@ export type SortsMapperFieldEntry =
   | ((prop: string, context: MapperContext) => string | null)
 
 /**
- * A map from every column prop name in `TColumns` to its GQL sort field.
+ * A partial map from column prop names to their GQL sort fields.
  *
- * Requiring every key at compile time provides exhaustiveness checking
- * without needing a switch statement.
+ * Each key must be a valid property of `TRow`, catching typos and
+ * copy-paste errors at compile time. Only columns that actually need
+ * sort mapping must be listed — unlisted columns are silently dropped
+ * (or throw in dev mode).
  */
-export type SortsMapperFieldMap<TColumns extends string> = {
-  [K in TColumns]: SortsMapperFieldEntry
+export type SortsMapperFieldMap<TRow extends Record<string, any>> = {
+  [K in keyof TRow & string]?: SortsMapperFieldEntry
 }
 
 /**
@@ -44,28 +46,28 @@ export type SortsMapperFieldMap<TColumns extends string> = {
  *
  * @example
  * // Simple static mapping
- * const mapSorts = createSortsMapper<'id' | 'name'>({
+ * const mapSorts = createSortsMapper<MyRow>({
  *   id: 'id',
  *   name: 'name',
  * })
  *
  * @example
  * // Dynamic mapping with context access
- * const mapSorts = createSortsMapper<'id' | 'name' | 'computed'>({
+ * const mapSorts = createSortsMapper<MyRow>({
  *   id: 'id',
  *   name: 'name',
  *   computed: (prop, context) =>
  *     context.extraVariables.useAlt ? 'altField' : prop,
  * })
  */
-export function createSortsMapper<TColumns extends string>(
-  fieldMap: SortsMapperFieldMap<TColumns>,
+export function createSortsMapper<TRow extends Record<string, any>>(
+  fieldMap: SortsMapperFieldMap<TRow>,
 ): SortsMapper {
   return (sorts: SortItem[], context: MapperContext): SortsMapperResult => {
     const result: SortsMapperResult = []
 
     for (const s of sorts) {
-      const prop = s?.prop as TColumns
+      const prop = s?.prop as keyof TRow & string
 
       if (!(prop in fieldMap)) {
         if (isDevMode()) {
