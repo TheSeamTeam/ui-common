@@ -60,7 +60,7 @@ export const Basic: Story = {
     })
     await expect(await sfSelectHarness.isRequired()).toBe(false)
     await expect(await sfSelectHarness.getValue()).toBe(null)
-    await sfSelectHarness.clickOption({ value: 'Red' })
+    await sfSelectHarness.clickOption({ label: 'Red' })
     await expect(await sfSelectHarness.getValue()).toBe('Red')
     const sfFormHarness = await getHarness(JsonSchemaFormHarness, {
       canvasElement,
@@ -91,7 +91,7 @@ export const Required: Story = {
     })
     await expect(await sfSelectHarness.isRequired()).toBe(true)
     await expect(await sfSelectHarness.getValue()).toBe(null)
-    await sfSelectHarness.clickOption({ value: 'Red' })
+    await sfSelectHarness.clickOption({ label: 'Red' })
     await expect(await sfSelectHarness.getValue()).toBe('Red')
     const sfFormHarness = await getHarness(JsonSchemaFormHarness, {
       canvasElement,

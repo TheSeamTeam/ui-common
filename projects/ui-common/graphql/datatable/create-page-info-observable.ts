@@ -1,5 +1,5 @@
-import { EMPTY, merge, Observable, Subscriber } from 'rxjs'
-import { auditTime, map, switchMap, tap } from 'rxjs/operators'
+import { EMPTY, Observable, Subscriber } from 'rxjs'
+import { switchMap, tap } from 'rxjs/operators'
 
 import { TheSeamPageInfo } from '@theseam/ui-common/datatable'
 import { notNullOrUndefined } from '@theseam/ui-common/utils'
@@ -33,13 +33,7 @@ export function createPageInfoObservable(
 
             handlePageInfo(getPageInfo(dt, defaultPageSize))
 
-            // `page` does not emit when the page size changes (e.g. on
-            // window resize). Merging the `resize` event is a workaround.
-            const resize$ = dt.resize.pipe(
-              auditTime(100),
-              map(() => dt.pageInfo),
-            )
-            return merge(dt.page, resize$).pipe(tap((p) => handlePageInfo(p)))
+            return dt.page.pipe(tap((p) => handlePageInfo(p)))
           }),
         )
         .subscribe()

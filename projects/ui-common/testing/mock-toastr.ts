@@ -1,18 +1,17 @@
-import { Injectable } from '@angular/core'
-
+import { Provider } from '@angular/core'
 import {
   ActiveToast,
   GlobalConfig,
   IndividualConfig,
   ToastContainerDirective,
+  ToastrService,
 } from 'ngx-toastr'
 
-@Injectable()
-export class StoryToastrService {
-  toastrConfig?: GlobalConfig
+export class MockToastrService {
+  toastrConfig!: GlobalConfig
   currentlyActive = 0
   toasts: ActiveToast<any>[] = []
-  overlayContainer?: ToastContainerDirective
+  overlayContainer!: ToastContainerDirective
   previousToastMessage: string | undefined
 
   /** show toast */
@@ -69,4 +68,8 @@ export class StoryToastrService {
     resetOnDuplicate: boolean,
     countDuplicates: boolean,
   ) {}
+}
+
+export function provideMockToastrService(): Provider {
+  return { provide: ToastrService, useClass: MockToastrService }
 }

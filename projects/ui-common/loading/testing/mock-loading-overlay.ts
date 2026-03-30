@@ -1,7 +1,10 @@
 import { Observable, throwError } from 'rxjs'
 import { catchError, finalize, tap } from 'rxjs/operators'
 
-export class FakeTheSeamLoadingOverlayService {
+import { TheSeamLoadingOverlayService } from '../loading-overlay.service'
+import { Provider } from '@angular/core'
+
+export class MockTheSeamLoadingOverlayService {
   private _enabled = false
 
   get enabled(): boolean {
@@ -43,5 +46,12 @@ export class FakeTheSeamLoadingOverlayService {
       }),
       finalize(() => this.disable()),
     )
+  }
+}
+
+export function provideMockLoadingService(): Provider {
+  return {
+    provide: TheSeamLoadingOverlayService,
+    useClass: MockTheSeamLoadingOverlayService,
   }
 }

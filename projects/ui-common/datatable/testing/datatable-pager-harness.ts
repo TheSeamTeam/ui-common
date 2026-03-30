@@ -1,4 +1,4 @@
-import { ComponentHarness, TestElement } from '@angular/cdk/testing'
+import { ComponentHarness } from '@angular/cdk/testing'
 
 import { TheSeamDatatablePagerButtonHarness } from './datatable-pager-button-harness'
 
@@ -7,23 +7,14 @@ export class TheSeamDatatablePagerHarness extends ComponentHarness {
 
   private readonly _activePageButton = this.locatorFor('.pager .pages.active')
 
-  // public async getTiles() {
-  //   return this.locatorForAll(TheSeamTiledSelectTileHarness)
-  // }
-
   public async getPageButtonHarness(
     pageNumber: number,
   ): Promise<TheSeamDatatablePagerButtonHarness> {
-    const getTileAtIndex = this.locatorFor(
+    const getBtnAtIndex = this.locatorFor(
       TheSeamDatatablePagerButtonHarness.with({ pageNumber }),
     )
-    return getTileAtIndex()
-    // return this.locatorFor(TheSeamTiledSelectTileHarness.with({ tileIndex: index }))
+    return getBtnAtIndex()
   }
-
-  // public async getTileByName(name: string) {
-
-  // }
 
   public async getCurrentPageNumber(): Promise<number> {
     const btn = await this._activePageButton()

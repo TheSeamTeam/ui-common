@@ -6,10 +6,7 @@ import {
 } from '@storybook/angular'
 import { expect, fn } from 'storybook/test'
 
-import {
-  addInjectorGetterToArgs,
-  getInjectorFromArgs,
-} from '@theseam/ui-common/story-helpers'
+import { addInjectorGetterToArgs } from '@theseam/ui-common/story-helpers'
 
 import {
   DatatablePreferencesAccessorLocalService,
@@ -176,15 +173,13 @@ export const Api: Story = {
       </div>
     `,
   }),
-  play: async ({ args, canvasElement }) => {
-    const injector = getInjectorFromArgs(args)
-    console.log('Story args:', args, injector)
-
+  play: async ({ args }) => {
     await expect(args.get).toHaveBeenCalledOnce()
 
-    await new Promise((resolve) => setTimeout(resolve, 6))
+    // Wait for the mock API delay (100ms) to complete so the preferences
+    // load, alterations apply, and refresh() triggers a second get() call.
+    await new Promise((resolve) => setTimeout(resolve, 250))
 
-    // TODO: Fix this test. It is inconsistent.
     await expect(args.get).toHaveBeenCalledTimes(2)
   },
 }
