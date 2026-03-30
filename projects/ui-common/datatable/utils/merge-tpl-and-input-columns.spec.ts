@@ -3,7 +3,13 @@ import { DatatableRowActionItemDirective } from './../directives/datatable-row-a
 import { TheSeamDatatableColumn } from './../models/table-column'
 import { DatatableColumnChangesService } from './../services/datatable-column-changes.service'
 
-import { KeyValueDiffer, KeyValueDiffers, TemplateRef } from '@angular/core'
+import {
+  KeyValueDiffer,
+  KeyValueDiffers,
+  SimpleChange,
+  SimpleChanges,
+  TemplateRef,
+} from '@angular/core'
 import { TestBed, waitForAsync } from '@angular/core/testing'
 import {
   DataTableColumnCellTreeToggle,
@@ -12,7 +18,6 @@ import {
   SelectionType,
   TableColumn,
 } from '@marklb/ngx-datatable'
-import { deleteProperties } from '@theseam/ui-common/utils/'
 import { mergeTplAndInpColumns } from './merge-tpl-and-input-columns'
 import { setColumnDefaults } from './set-column-defaults'
 
@@ -41,7 +46,8 @@ describe('mergeTplAndInpColumns', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [],
+      declarations: [DatatableColumnComponent],
+      providers: [DatatableColumnChangesService],
       teardown: { destroyAfterEach: false },
     }).compileComponents()
   }))
@@ -52,214 +58,123 @@ describe('mergeTplAndInpColumns', () => {
     differs = TestBed.inject(KeyValueDiffers)
   })
 
-  test.todo('fix tests')
+  it('should return Input columns with defaults', () => {
+    const tplCols: DatatableColumnComponent[] = []
+    const inpCols: TheSeamDatatableColumn[] = [
+      { prop: 'name', name: 'Name' },
+      { prop: 'age', name: 'Age' },
+      { prop: 'color', name: 'Color' },
+    ]
 
-  // it('should return Input columns with defaults', () => {
-  //   const tplCols: DatatableColumnComponent[] = []
-  //   const inpCols: TheSeamDatatableColumn[] = [
-  //     { prop: 'name', name: 'Name' },
-  //     { prop: 'age', name: 'Age' },
-  //     { prop: 'color', name: 'Color' }
-  //   ]
+    const result = mergeTplAndInpColumns(
+      tplCols,
+      inpCols,
+      ngxDatatableInternalColumns,
+      selectionType,
+      colDiffersInp,
+      colDiffersTpl,
+      rowActionItem,
+      actionMenuCellTpl,
+      blankHeaderTpl,
+      treeToggleTpl,
+      headerTpl,
+      cellTypeSelectorTpl,
+      differs,
+    )
 
-  //   const result = mergeTplAndInpColumns(
-  //     tplCols,
-  //     inpCols,
-  //     ngxDatatableInternalColumns,
-  //     selectionType,
-  //     colDiffersInp,
-  //     colDiffersTpl,
-  //     rowActionItem,
-  //     actionMenuCellTpl,
-  //     blankHeaderTpl,
-  //     treeToggleTpl,
-  //     headerTpl,
-  //     cellTypeSelectorTpl,
-  //     differs
-  //   )
+    expect(result).toEqual(
+      expect.arrayContaining([
+        ...defaultColumnWithIdentMatchers([
+          { prop: 'name', name: 'Name' },
+          { prop: 'age', name: 'Age' },
+          { prop: 'color', name: 'Color' },
+        ]).map((v) => expect.objectContaining(v)),
+      ]),
+    )
+  })
 
-  //   expect(result).toEqual(jasmine.arrayContaining([
-  //     ...defaultColumnWithIdentMatchers([
-  //       { prop: 'name', name: 'Name' },
-  //       { prop: 'age', name: 'Age' },
-  //       { prop: 'color', name: 'Color' }
-  //     ]).map(v => jasmine.objectContaining(v))
-  //   ]))
-  // })
+  it('should prioritize Template props', () => {
+    const tplCols: DatatableColumnComponent[] = initTemplateColumnComponents([
+      { prop: 'name', name: 'Name' },
+      { prop: 'age', name: 'Age', cellClass: 'tpl-class' },
+      { prop: 'color', name: 'Color' },
+    ])
+    const inpCols: TheSeamDatatableColumn[] = [
+      { prop: 'name', name: 'Name' },
+      { prop: 'age', name: 'Age', cellClass: 'inp-class' },
+      { prop: 'color', name: 'Color' },
+    ]
 
-  // TODO: Should this pass? I think it is intentional that template can only
-  // overwrite props of input columns.
-  // it('should return Template columns with defaults', () => {
-  //   const tplCols: DatatableColumnComponent[] = initTemplateColumnComponents([
-  //     { prop: 'name', name: 'Name' },
-  //     { prop: 'age', name: 'Age' },
-  //     { prop: 'color', name: 'Color' }
-  //   ])
-  //   const inpCols: TheSeamDatatableColumn[] = []
+    const result = mergeTplAndInpColumns(
+      tplCols,
+      inpCols,
+      ngxDatatableInternalColumns,
+      selectionType,
+      colDiffersInp,
+      colDiffersTpl,
+      rowActionItem,
+      actionMenuCellTpl,
+      blankHeaderTpl,
+      treeToggleTpl,
+      headerTpl,
+      cellTypeSelectorTpl,
+      differs,
+    )
 
-  //   const result = mergeTplAndInpColumns(
-  //     tplCols,
-  //     inpCols,
-  //     ngxDatatableInternalColumns,
-  //     selectionType,
-  //     colDiffersInp,
-  //     colDiffersTpl,
-  //     rowActionItem,
-  //     actionMenuCellTpl,
-  //     blankHeaderTpl,
-  //     treeToggleTpl,
-  //     headerTpl,
-  //     cellTypeSelectorTpl,
-  //     differs
-  //   )
-
-  //   expect(result).toEqual(jasmine.arrayContaining([
-  //     ...defaultColumnWithIdentMatchers([
-  //       { prop: 'name', name: 'Name' },
-  //       { prop: 'age', name: 'Age' },
-  //       { prop: 'color', name: 'Color' }
-  //     ]).map(v => jasmine.objectContaining(v))
-  //   ]))
-  // })
-
-  // it('should prioritize Template props', () => {
-  //   const tplCols: DatatableColumnComponent[] = initTemplateColumnComponents([
-  //     { prop: 'name', name: 'Name' },
-  //     { prop: 'age', name: 'Age', cellClass: 'tpl-class' },
-  //     { prop: 'color', name: 'Color' }
-  //   ])
-  //   const inpCols: TheSeamDatatableColumn[] = [
-  //     { prop: 'name', name: 'Name' },
-  //     { prop: 'age', name: 'Age', cellClass: 'inp-class' },
-  //     { prop: 'color', name: 'Color' }
-  //   ]
-
-  //   const result = mergeTplAndInpColumns(
-  //     tplCols,
-  //     inpCols,
-  //     ngxDatatableInternalColumns,
-  //     selectionType,
-  //     colDiffersInp,
-  //     colDiffersTpl,
-  //     rowActionItem,
-  //     actionMenuCellTpl,
-  //     blankHeaderTpl,
-  //     treeToggleTpl,
-  //     headerTpl,
-  //     cellTypeSelectorTpl,
-  //     differs
-  //   )
-
-  //   expect(result).toEqual(jasmine.arrayContaining([
-  //     ...defaultColumnWithIdentMatchers([
-  //       { prop: 'name', name: 'Name' },
-  //       { prop: 'age', name: 'Age', cellClass: 'tpl-class' },
-  //       { prop: 'color', name: 'Color' }
-  //     ]).map(v => jasmine.objectContaining(v))
-  //   ]))
-  // })
-
-  // it('should detect change in Input props', () => {
-  //   const tplCols: DatatableColumnComponent[] = initTemplateColumnComponents([
-  //     { prop: 'name', name: 'Name' },
-  //     { prop: 'age', name: 'Age' },
-  //     { prop: 'color', name: 'Color' }
-  //   ])
-  //   const inpCols: TheSeamDatatableColumn[] = [
-  //     { prop: 'name', name: 'Name' },
-  //     { prop: 'age', name: 'Age' },
-  //     { prop: 'color', name: 'Color' }
-  //   ]
-
-  //   const _result = mergeTplAndInpColumns(
-  //     tplCols,
-  //     inpCols,
-  //     ngxDatatableInternalColumns,
-  //     selectionType,
-  //     colDiffersInp,
-  //     colDiffersTpl,
-  //     rowActionItem,
-  //     actionMenuCellTpl,
-  //     blankHeaderTpl,
-  //     treeToggleTpl,
-  //     headerTpl,
-  //     cellTypeSelectorTpl,
-  //     differs
-  //   )
-
-  //   ngxDatatableInternalColumns = _result
-
-  //   inpCols[1].cellClass = 'inp-class'
-
-  //   const result = mergeTplAndInpColumns(
-  //     tplCols,
-  //     inpCols,
-  //     ngxDatatableInternalColumns,
-  //     selectionType,
-  //     colDiffersInp,
-  //     colDiffersTpl,
-  //     rowActionItem,
-  //     actionMenuCellTpl,
-  //     blankHeaderTpl,
-  //     treeToggleTpl,
-  //     headerTpl,
-  //     cellTypeSelectorTpl,
-  //     differs
-  //   )
-
-  //   const tmp = defaultColumnWithIdentMatchers([
-  //     { prop: 'name', name: 'Name' },
-  //     { prop: 'age', name: 'Age', cellClass: 'tpl-class' },
-  //     { prop: 'color', name: 'Color' }
-  //   ], true).map(v => jasmine.objectContaining(v))
-
-  //   expect(result).toEqual(jasmine.arrayContaining([
-  //     ...tmp
-  //   ]))
-  // })
+    expect(result).toEqual(
+      expect.arrayContaining([
+        ...defaultColumnWithIdentMatchers([
+          { prop: 'name', name: 'Name' },
+          { prop: 'age', name: 'Age', cellClass: 'tpl-class' },
+          { prop: 'color', name: 'Color' },
+        ]).map((v) => expect.objectContaining(v)),
+      ]),
+    )
+  })
 
   /**
    * Mainly just need to test `TheSeamDatatableColumn` objects, so this just
    * simplifies initializing column component objects.
-   *
-   * NOTE: I plan to remove the need for this here, but I want to slowly
-   * refactor to avoid breaking current functionality.
    */
-  // function initTemplateColumnComponents(
-  //   o: TheSeamDatatableColumn[],
-  // ): DatatableColumnComponent[] {
-  //   const comps: DatatableColumnComponent[] = []
-  //   for (const col of o) {
-  //     const comp: any = new DatatableColumnComponent(_colChangesService)
-  //     for (const key of Object.keys(col)) {
-  //       comp[key] = (col as any)[key]
-  //     }
-  //     comps.push(comp)
-  //   }
-  //   return comps
-  // }
+  function initTemplateColumnComponents(
+    o: TheSeamDatatableColumn[],
+  ): DatatableColumnComponent[] {
+    const comps: DatatableColumnComponent[] = []
+    for (const col of o) {
+      const comp: any = TestBed.createComponent(
+        DatatableColumnComponent,
+      ).componentInstance
+      const changes: SimpleChanges = {}
+      for (const key of Object.keys(col)) {
+        comp[key] = (col as any)[key]
+        changes[key] = new SimpleChange(null, (col as any)[key], true)
+      }
+      comp.ngOnChanges(changes)
+
+      comps.push(comp)
+    }
+    return comps
+  }
 })
 
 /**
  * Populates defaults, but replaces '$$id' with an "any string" matcher and
- * '$$valueGetter' with an "any function" mathcer.
+ * '$$valueGetter' with an "any function" matcher.
  */
-// function defaultColumnWithIdentMatchers(
-//   o: TheSeamDatatableColumn[],
-//   includesTplCols: boolean = false,
-// ): TheSeamDatatableColumn[] {
-//   setColumnDefaults(o)
-//   for (const col of o) {
-//     const _o: any = col
-//     _o.$$id = expect.any(String)
-//     _o.$$valueGetter = expect.any(Function)
+function defaultColumnWithIdentMatchers(
+  o: TheSeamDatatableColumn[],
+  includesTplCols: boolean = false,
+): TheSeamDatatableColumn[] {
+  setColumnDefaults(o)
+  for (const col of o) {
+    const _o: any = col
+    _o.$$id = expect.any(String)
+    _o.$$valueGetter = expect.any(Function)
 
-//     if (includesTplCols) {
-//       _o._columnChangesService = expect.anything()
-//       _o._isFirstChange = expect.any(Boolean)
-//     }
-
-//     // deleteProperties(col, [ '$$id', '$$valueGetter' ])
-//   }
-//   return o
-// }
+    if (includesTplCols) {
+      _o._columnChangesService = expect.anything()
+      _o._isFirstChange = expect.any(Boolean)
+    }
+  }
+  return o
+}

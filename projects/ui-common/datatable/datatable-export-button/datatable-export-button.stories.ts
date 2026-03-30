@@ -16,12 +16,11 @@ import {
   JexlEvaluator,
   THESEAM_DYNAMIC_VALUE_EVALUATOR,
 } from '@theseam/ui-common/dynamic'
-import { StoryToastrService } from '@theseam/ui-common/story-helpers'
 import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
-import { ToastrService } from 'ngx-toastr'
 
 import { TheSeamDatatableModule } from '../datatable.module'
 import { DatatableExportButtonComponent } from './datatable-export-button.component'
+import { provideMockToastrService } from '@theseam/ui-common/testing'
 
 const meta: Meta<DatatableExportButtonComponent> = {
   title: 'Datatable/Components',
@@ -30,6 +29,7 @@ const meta: Meta<DatatableExportButtonComponent> = {
     applicationConfig({
       providers: [
         provideAnimations(),
+        provideMockToastrService(),
         {
           provide: THESEAM_DYNAMIC_VALUE_EVALUATOR,
           useClass: JexlEvaluator,
@@ -44,7 +44,6 @@ const meta: Meta<DatatableExportButtonComponent> = {
     }),
     moduleMetadata({
       imports: [TheSeamDatatableModule, TheSeamTableCellTypesModule],
-      providers: [{ provide: ToastrService, useClass: StoryToastrService }],
     }),
   ],
   parameters: {

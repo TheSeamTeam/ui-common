@@ -1039,9 +1039,17 @@ export class DatatableComponent<TRow = any>
       this.ngxDatatableElement &&
       this.ngxDatatableElement.nativeElement
     ) {
+      const prevPageInfo = { ...this.pageInfo }
       // TODO: Consider integrating this into the ngx-datatable library to avoid
       // multiple resize calls when the table resizes itself.
       this.ngxDatatable.recalculate()
+      const newPageInfo = this.pageInfo
+      if (prevPageInfo.pageSize !== newPageInfo.pageSize) {
+        // TODO: Consider fixing this in the ngx-datatable fork's recalculatePages()
+        // so it emits the page event directly when pageSize changes. This wrapper
+        // fix works but the root cause is in the fork.
+        this.page.emit(newPageInfo)
+      }
     }
   }
 
