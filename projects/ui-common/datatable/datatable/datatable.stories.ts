@@ -1,4 +1,5 @@
 import { action } from 'storybook/actions'
+import { expect } from 'storybook/test'
 import {
   Meta,
   StoryObj,
@@ -160,6 +161,36 @@ export const Simple: Story = {
       { name: 'Joe', age: 33, color: 'green' },
     ],
   },
+  play: async ({ canvasElement }) => {
+    const harness = await getHarness(TheSeamDatatableHarness, { canvasElement })
+
+    // Verify rows rendered
+    const rowCount = await harness.getRowCount()
+    await expect(rowCount).toBeGreaterThan(0)
+    await expect(rowCount).toBeLessThan(32)
+
+    // Verify 3 header cells
+    const headers = await harness.getHeaderCells()
+    await expect(headers.length).toBe(3)
+    const name0 = await headers[0].getName()
+    await expect(name0).toBe('Name')
+
+    // Verify first cell text
+    const cellText = await harness.getCellText(0, 0)
+    await expect(cellText).toBe('Mark')
+
+    // Verify page 1 active
+    const currentPage = await harness.getCurrentPage()
+    await expect(currentPage).toBe(1)
+
+    // Navigate to page 2
+    const pager = await harness.getPager()
+    await expect(pager).not.toBeNull()
+    const page2Btn = await pager!.getPageButtonHarness(2)
+    await (await page2Btn.getAnchor()).click()
+    const newPage = await harness.getCurrentPage()
+    await expect(newPage).toBe(2)
+  },
 }
 
 export const ColumnTemplate: Story = {
@@ -188,6 +219,17 @@ export const ColumnTemplate: Story = {
       { name: 'Mark', age: 27, color: 'blue' },
       { name: 'Joe', age: 33, color: 'green' },
     ],
+  },
+  play: async ({ canvasElement }) => {
+    const harness = await getHarness(TheSeamDatatableHarness, { canvasElement })
+    const rowCount = await harness.getRowCount()
+    await expect(rowCount).toBe(2)
+
+    // Verify the custom template renders — the "blue" cell should have a styled span
+    const rows = await harness.getRows()
+    const cells = await rows[0].getCells()
+    const colorCellText = await cells[2].getText()
+    await expect(colorCellText).toBe('blue')
   },
 }
 
@@ -261,6 +303,25 @@ export const ActionMenu: Story = {
         petName: 'Mittens',
       },
     ],
+  },
+  play: async ({ canvasElement }) => {
+    const harness = await getHarness(TheSeamDatatableHarness, { canvasElement })
+
+    // Verify rows rendered with action menu column
+    const rowCount = await harness.getRowCount()
+    await expect(rowCount).toBe(2)
+
+    // Verify action menu is available on a row
+    const rows = await harness.getRows()
+    const actionMenu = await rows[0].getActionMenu()
+    await expect(actionMenu).not.toBeNull()
+
+    // Open action menu and verify items
+    await actionMenu!.open()
+    const items = await actionMenu!.getItems()
+    await expect(items.length).toBe(4)
+
+    await actionMenu!.close()
   },
 }
 
@@ -343,6 +404,28 @@ export const CheckboxSelection: Story = {
       { name: 'Jane', age: 25, color: 'orange' },
       { name: 'Doe', age: 14, color: 'purple' },
     ],
+  },
+  play: async ({ canvasElement }) => {
+    const harness = await getHarness(TheSeamDatatableHarness, { canvasElement })
+
+    // Verify checkbox column is present (3 data + 1 checkbox = 4)
+    const colCount = await harness.getColumnCount()
+    await expect(colCount).toBe(4)
+
+    // Verify rows rendered
+    const rowCount = await harness.getRowCount()
+    await expect(rowCount).toBe(5)
+
+    // Verify pre-selected row (Mark)
+    const selected = await harness.getSelectedRows()
+    await expect(selected.length).toBe(1)
+
+    // Click checkbox on another row to select it
+    const rows = await harness.getRows()
+    await rows[1].clickCheckbox()
+
+    const selectedAfter = await harness.getSelectedRows()
+    await expect(selectedAfter.length).toBe(2)
   },
 }
 
@@ -511,6 +594,18 @@ export const Detail: Story = {
       { name: 'Joe', age: 33, color: 'green' },
       { name: 'Mark', age: 27, color: 'blue' },
     ],
+  },
+  play: async ({ canvasElement }) => {
+    const harness = await getHarness(TheSeamDatatableHarness, { canvasElement })
+
+    // Verify 3 rows
+    const rowCount = await harness.getRowCount()
+    await expect(rowCount).toBe(3)
+
+    // Verify first row is not expanded initially
+    const rows = await harness.getRows()
+    const expanded = await rows[0].isExpanded()
+    await expect(expanded).toBe(false)
   },
 }
 
@@ -701,6 +796,17 @@ export const FooterTemplate: StoryObj<
       { name: 'Joe', age: 33, color: 'green' },
       { name: 'Shelby', age: 27, color: 'grey' },
     ],
+  },
+  play: async ({ canvasElement }) => {
+    const harness = await getHarness(TheSeamDatatableHarness, { canvasElement })
+
+    // Verify rows render
+    const rowCount = await harness.getRowCount()
+    await expect(rowCount).toBeGreaterThan(0)
+
+    // Verify the datatable is not showing empty message
+    const empty = await harness.isEmpty()
+    await expect(empty).toBe(false)
   },
 }
 

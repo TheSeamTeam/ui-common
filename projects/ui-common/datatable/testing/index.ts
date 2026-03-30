@@ -1,3 +1,4 @@
+export * from './fixtures/test-data'
 export * from './datatable-action-menu-harness'
 export * from './datatable-cell-harness'
 export * from './datatable-column-filter-menu-harness'
