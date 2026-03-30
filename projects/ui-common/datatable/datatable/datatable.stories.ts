@@ -6,7 +6,6 @@ import {
   moduleMetadata,
   applicationConfig,
 } from '@storybook/angular'
-import { expect } from 'storybook/test'
 
 import {
   AfterViewInit,
@@ -14,7 +13,6 @@ import {
   Input,
   OnInit,
   ViewChild,
-  importProvidersFrom,
 } from '@angular/core'
 import {
   FormControl,
@@ -59,10 +57,11 @@ import {
   mapSearchDateColumnsDataFilterStateToGql,
   DEFAULT_TO_REMOVE_ON_UNDEFINED,
 } from '@theseam/ui-common/graphql'
-import { StoryToastrService } from '@theseam/ui-common/story-helpers'
 import { TheSeamTableCellTypesModule } from '@theseam/ui-common/table-cell-types'
-import { getHarness } from '@theseam/ui-common/testing'
-import { ToastrModule, ToastrService } from 'ngx-toastr'
+import {
+  getHarness,
+  provideMockToastrService,
+} from '@theseam/ui-common/testing'
 
 import {
   SIMPLE_GQL_TEST_SEARCH_QUERY,
@@ -78,7 +77,7 @@ import {
   THESEAM_DATATABLE_CONFIG,
   TheSeamDatatableConfig,
 } from '../models/datatable-config'
-import { faAirFreshener, faSearch } from '@fortawesome/free-solid-svg-icons'
+import { faSearch } from '@fortawesome/free-solid-svg-icons'
 import {
   ColumnsDataFilter,
   ColumnsDataFilterState,
@@ -97,12 +96,7 @@ const meta: Meta<DatatableComponent> = {
       providers: [provideAnimations()],
     }),
     moduleMetadata({
-      imports: [
-        // BrowserAnimationsModule,
-        // RouterModule.forRoot([], { useHash: true }),
-        TheSeamDatatableModule,
-        TheSeamTableCellTypesModule,
-      ],
+      imports: [TheSeamDatatableModule, TheSeamTableCellTypesModule],
     }),
     componentWrapperDecorator(
       (story) => `<div class="vh-100 vw-100">${story}</div>`,
@@ -121,12 +115,9 @@ type Story = StoryObj<DatatableComponent>
 
 export const Simple: Story = {
   render: (args) => ({
-    // props: { ...args },
-    props: {
-      __hack: { ...args },
-    },
+    props: { ...args },
     template:
-      '<seam-datatable class="w-100 h-100" [columns]="__hack.columns" [rows]="__hack.rows"></seam-datatable>',
+      '<seam-datatable class="w-100 h-100" [columns]="columns" [rows]="rows"></seam-datatable>',
   }),
   args: {
     columns: [
@@ -173,15 +164,12 @@ export const Simple: Story = {
 
 export const ColumnTemplate: Story = {
   render: (args: any) => ({
-    // props: { ...args },
-    props: {
-      __hack: { ...args },
-    },
+    props: { ...args },
     template: `
       <seam-datatable
         class="w-100 h-100"
-        [columns]="__hack.columns"
-        [rows]="__hack.rows">
+        [columns]="columns"
+        [rows]="rows">
         <seam-datatable-column name="Color" prop="color">
           <ng-template seamDatatableCellTpl let-value="value">
             <span *ngIf="value === 'blue'; else notBlue" style="color: blue;">{{ value }}</span>
@@ -205,61 +193,13 @@ export const ColumnTemplate: Story = {
 
 export const ActionMenu: Story = {
   render: (args: any) => ({
-    props: {
-      __hack: {
-        ...args,
-        columns: [
-          { prop: 'name', name: 'Name' },
-          { prop: 'age', name: 'Age' },
-          { prop: 'email', name: 'Email Address' },
-          { prop: 'phone', name: 'Phone Number' },
-          { prop: 'streetAddress', name: 'Street Address' },
-          { prop: 'city', name: 'City' },
-          { prop: 'state', name: 'State' },
-          { prop: 'zip', name: 'Zip' },
-          { prop: 'country', name: 'Country' },
-          { prop: 'color', name: 'Favorite Color' },
-          { prop: 'iceCreamFlavor', name: 'Favorite Ice Cream Flavor' },
-          { prop: 'petName', name: "Pet's Name" },
-        ],
-        rows: [
-          {
-            name: 'Mark',
-            age: 27,
-            color: 'Blue',
-            email: 'mark.berry@theseam.com',
-            phone: '901-555-5555',
-            streetAddress: '123 Main St',
-            city: 'Arlington',
-            state: 'TN',
-            zip: '38111',
-            country: 'USA',
-            iceCreamFlavor: 'Chocolate',
-            petName: 'Spot',
-          },
-          {
-            name: 'Joe',
-            age: 33,
-            color: 'Green',
-            email: 'joe.schmoe@theseam.com',
-            phone: '901-888-8888',
-            streetAddress: '1600 Pennsylvaia Ave',
-            city: 'Washington',
-            state: 'DC',
-            zip: '35111',
-            country: 'USA',
-            iceCreamFlavor: 'Strawberry',
-            petName: 'Mittens',
-          },
-        ],
-      },
-    },
+    props: { ...args },
     template: `
       <seam-datatable
         class="w-100 h-100"
-        [columns]="__hack.columns"
-        [rows]="__hack.rows"
-        [actionItemColumnPosition]="__hack.actionItemColumnPosition">
+        [columns]="columns"
+        [rows]="rows"
+        [actionItemColumnPosition]="actionItemColumnPosition">
         <ng-template seamDatatableRowActionItem let-row>
           <seam-datatable-action-menu>
             <seam-datatable-action-menu-item label="Action One"></seam-datatable-action-menu-item>
@@ -280,11 +220,46 @@ export const ActionMenu: Story = {
     columns: [
       { prop: 'name', name: 'Name' },
       { prop: 'age', name: 'Age' },
-      { prop: 'color', name: 'Color' },
+      { prop: 'email', name: 'Email Address' },
+      { prop: 'phone', name: 'Phone Number' },
+      { prop: 'streetAddress', name: 'Street Address' },
+      { prop: 'city', name: 'City' },
+      { prop: 'state', name: 'State' },
+      { prop: 'zip', name: 'Zip' },
+      { prop: 'country', name: 'Country' },
+      { prop: 'color', name: 'Favorite Color' },
+      { prop: 'iceCreamFlavor', name: 'Favorite Ice Cream Flavor' },
+      { prop: 'petName', name: "Pet's Name" },
     ],
     rows: [
-      { name: 'Mark', age: 27, color: 'blue' },
-      { name: 'Joe', age: 33, color: 'green' },
+      {
+        name: 'Mark',
+        age: 27,
+        color: 'Blue',
+        email: 'mark.berry@theseam.com',
+        phone: '901-555-5555',
+        streetAddress: '123 Main St',
+        city: 'Arlington',
+        state: 'TN',
+        zip: '38111',
+        country: 'USA',
+        iceCreamFlavor: 'Chocolate',
+        petName: 'Spot',
+      },
+      {
+        name: 'Joe',
+        age: 33,
+        color: 'Green',
+        email: 'joe.schmoe@theseam.com',
+        phone: '901-888-8888',
+        streetAddress: '1600 Pennsylvaia Ave',
+        city: 'Washington',
+        state: 'DC',
+        zip: '35111',
+        country: 'USA',
+        iceCreamFlavor: 'Strawberry',
+        petName: 'Mittens',
+      },
     ],
   },
 }
@@ -295,35 +270,33 @@ export const InlineEdit: Story = {
       imports: [ReactiveFormsModule],
     },
     props: {
-      __hack: {
-        ...args,
-        columns: [
-          { prop: 'name', name: 'Name' },
-          { prop: 'age', name: 'Age' },
-          { prop: 'active', name: 'Active' },
-        ],
-        rows: [
-          {
-            name: 'Mark',
-            age: 27,
-            active: true,
-            control: new UntypedFormControl(true),
-          },
-          {
-            name: 'Joe',
-            age: 33,
-            active: false,
-            control: new UntypedFormControl(false),
-          },
-        ],
-        toggled: action('toggled'),
-      },
+      ...args,
+      columns: [
+        { prop: 'name', name: 'Name' },
+        { prop: 'age', name: 'Age' },
+        { prop: 'active', name: 'Active' },
+      ],
+      rows: [
+        {
+          name: 'Mark',
+          age: 27,
+          active: true,
+          control: new UntypedFormControl(true),
+        },
+        {
+          name: 'Joe',
+          age: 33,
+          active: false,
+          control: new UntypedFormControl(false),
+        },
+      ],
+      toggled: action('toggled'),
     },
     template: `
       <seam-datatable
         class="w-100 h-100"
-        [columns]="__hack.columns"
-        [rows]="__hack.rows">
+        [columns]="columns"
+        [rows]="rows">
         <seam-datatable-column name="Active" prop="active">
           <ng-template seamDatatableCellTpl let-value="value" let-row="row" let-rowIndex="rowIndex">
             <div class="custom-control custom-switch">
@@ -341,22 +314,20 @@ export const InlineEdit: Story = {
 export const CheckboxSelection: Story = {
   render: (args: any) => ({
     props: {
-      __hack: {
-        ...args,
-        selected: [{ name: 'Mark', age: 27, color: 'blue' }],
-        rowIdentity: (x: any) => `${x.name}${x.age}${x.color}`,
-        selectAllRowsOnPage: false,
-      },
+      ...args,
+      selected: [{ name: 'Mark', age: 27, color: 'blue' }],
+      rowIdentity: (x: any) => `${x.name}${x.age}${x.color}`,
+      selectAllRowsOnPage: false,
     },
     template: `
       <seam-datatable
         class="w-100 h-100"
-        [columns]="__hack.columns"
-        [rows]="__hack.rows"
+        [columns]="columns"
+        [rows]="rows"
         selectionType="checkbox"
-        [rowIdentity]="__hack.rowIdentity"
-        [selectAllRowsOnPage]="__hack.selectAllRowsOnPage"
-        [selected]="__hack.selected">
+        [rowIdentity]="rowIdentity"
+        [selectAllRowsOnPage]="selectAllRowsOnPage"
+        [selected]="selected">
       </seam-datatable>`,
   }),
   args: {
@@ -375,39 +346,32 @@ export const CheckboxSelection: Story = {
   },
 }
 
-// [selected]="selected"
-// [selectionType]="'checkbox'"
-// [selectAllRowsOnPage]="selectAllRowsOnPage"
-// (select)="onSelect($event)"
-
 export const ToggleDisplay: Story = {
   render: (args: any) => ({
     props: {
-      __hack: {
-        ...args,
-        selected: [],
-        selectAllRowsOnPage: false,
-        displayCheck(row: any) {
-          return row.name !== 'Adam'
-        },
-        onSelect({ selected }: { selected: any }) {
-          action('select')(selected)
+      ...args,
+      selected: [],
+      selectAllRowsOnPage: false,
+      displayCheck(row: any) {
+        return row.name !== 'Adam'
+      },
+      onSelect({ selected }: { selected: any }) {
+        action('select')(selected)
 
-          this.selected.splice(0, this.selected.length)
-          this.selected.push(...selected)
-        },
+        this.selected.splice(0, this.selected.length)
+        this.selected.push(...selected)
       },
     },
     template: `
       <seam-datatable
         class="w-100 h-100"
-        [columns]="__hack.columns"
-        [rows]="__hack.rows"
-        [selected]="__hack.selected"
+        [columns]="columns"
+        [rows]="rows"
+        [selected]="selected"
         [selectionType]="'checkbox'"
-        [selectAllRowsOnPage]="__hack.selectAllRowsOnPage"
-        [displayCheck]="__hack.displayCheck"
-        (select)="__hack.onSelect($event)">
+        [selectAllRowsOnPage]="selectAllRowsOnPage"
+        [displayCheck]="displayCheck"
+        (select)="onSelect($event)">
       </seam-datatable>`,
   }),
   args: {
@@ -427,12 +391,12 @@ export const ToggleDisplay: Story = {
 // NOTE: Still being worked on, but is usable.
 export const Tree: Story = {
   render: (args: any) => ({
-    props: { __hack: { ...args } },
+    props: { ...args },
     template: `
       <seam-datatable
         class="w-100 h-100"
-        [columns]="__hack.columns"
-        [rows]="__hack.rows"
+        [columns]="columns"
+        [rows]="rows"
         [treeFromRelation]="'parentCompany'"
         [treeToRelation]="'company'">
       </seam-datatable>`,
@@ -497,12 +461,12 @@ export const Tree: Story = {
 
 export const Detail: Story = {
   render: (args: any) => ({
-    props: { __hack: { ...args } },
+    props: { ...args },
     template: `
       <seam-datatable #table
         class="w-100 h-100"
-        [columns]="__hack.columns"
-        [rows]="__hack.rows">
+        [columns]="columns"
+        [rows]="rows">
 
         <seam-datatable-row-detail rowHeight="100">
           <ng-template let-row="row" let-expanded="expanded" seamDatatableRowDetailTpl>
@@ -540,7 +504,6 @@ export const Detail: Story = {
     columns: [
       { prop: 'detailToggle', name: '' },
       { prop: 'name', name: 'Name' },
-      // { prop: 'age', name: 'Age' },
       { prop: 'color', name: 'Color' },
     ],
     rows: [
@@ -550,41 +513,6 @@ export const Detail: Story = {
     ],
   },
 }
-
-// NOTE: Not Working Yet
-// storiesOf('Datatable', module)
-//   .add('Row Grouping', () => ({
-//     moduleMetadata: {
-//       imports: [
-//         BrowserAnimationsModule,
-//         TheSeamDatatableModule,
-//         TheSeamTableCellTypesModule
-//       ]
-//     },
-//     props: {
-//       columns: [
-//         { prop: 'name', name: 'Name' },
-//         { prop: 'age', name: 'Age' },
-//         { prop: 'color', name: 'Color' }
-//       ],
-//       rows: [
-//         { name: 'Mark', age: 27, color: 'blue' },
-//         { name: 'Joe', age: 33, color: 'green' },
-//         { name: 'Adam', age: 40, color: 'red' },
-//         { name: 'Alice', age: 33, color: 'yellow' },
-//         { name: 'Bob', age: 40, color: 'orange' },
-//       ],
-//     },
-//     template: `
-//       <div class="vh-100 vw-100">
-//         <seam-datatable
-//           class="w-100 h-100"
-//           [columns]="columns"
-//           [rows]="rows"
-//           [groupRowsBy]="'age'">
-//         </seam-datatable>
-//       </div>`
-//   }))
 
 @Component({
   selector: 'dt-filter-wrapper',
@@ -655,7 +583,7 @@ export const Filter: Story = {
   render: (args) => ({
     applicationConfig: {
       providers: [
-        importProvidersFrom(ToastrModule.forRoot()),
+        provideMockToastrService(),
         {
           provide: THESEAM_DYNAMIC_VALUE_EVALUATOR,
           useClass: JexlEvaluator,
@@ -687,30 +615,27 @@ export const Filter: Story = {
     moduleMetadata: {
       declarations: [DTFilterWrapperComponent],
       imports: [TheSeamDataFiltersModule],
-      providers: [{ provide: ToastrService, useClass: StoryToastrService }],
     },
     props: {
-      __hack: {
-        ...args,
-        filterButtons: [
-          {
-            name: 'Registered',
-            value: '',
-            comparator: (value: any, row: any) => (row.registered ? -1 : 1),
-          },
-          {
-            name: 'Over 30',
-            value: 'over-30',
-            comparator: (value: any, row: any) => (row.age > 30 ? 1 : -1),
-          },
-        ],
-      },
+      ...args,
+      filterButtons: [
+        {
+          name: 'Registered',
+          value: '',
+          comparator: (value: any, row: any) => (row.registered ? -1 : 1),
+        },
+        {
+          name: 'Over 30',
+          value: 'over-30',
+          comparator: (value: any, row: any) => (row.age > 30 ? 1 : -1),
+        },
+      ],
     },
     template: `
       <dt-filter-wrapper
-        [columns]="__hack.columns"
-        [rows]="__hack.rows"
-        [filterButtons]="__hack.filterButtons">
+        [columns]="columns"
+        [rows]="rows"
+        [filterButtons]="filterButtons">
       </dt-filter-wrapper>
     `,
   }),
@@ -730,44 +655,6 @@ export const Filter: Story = {
     ],
   },
 }
-
-// class StoryDataSource extends DatatableGqlDataSource<any> {
-
-// }
-
-// const dSource = new StoryDataSource()
-
-// export const DataSource: Story = (args) => ({
-//   props: {
-//     __hack: {
-//       ...args,
-//       dataSource: dSource,
-//     }
-//   },
-//   template: `
-//     <div class="vh-100 vw-100">
-//       <seam-datatable
-//         class="w-100 h-100"
-//         [columns]="__hack.columns"
-//         [dataSource]="__hack.dataSource"
-//         externalPaging="true"
-//         externalSorting="true"
-//         externalFiltering="true">
-//       </seam-datatable>
-//     </div>
-//   `
-// })
-// DataSource.args = {
-//   columns: [
-//     { prop: 'name', name: 'Name' },
-//     { prop: 'age', name: 'Age' },
-//     { prop: 'color', name: 'Color' }
-//   ],
-//   rows: [
-//     { name: 'Mark', age: 27, color: 'blue' },
-//     { name: 'Joe', age: 33, color: 'green' }
-//   ]
-// }
 
 export const FooterTemplate: StoryObj<
   DatatableComponent & { totalAge: number; oldestMember: string }
@@ -971,7 +858,6 @@ export const GraphQLQueryRef: Story = {
   render: (args) => ({
     applicationConfig: {
       providers: [
-        importProvidersFrom(ToastrModule.forRoot()),
         createMockApolloTestingProvider({
           resolve: (operation) => {
             const root = createSimpleGqlTestRoot(600)
@@ -992,11 +878,9 @@ export const GraphQLQueryRef: Story = {
       imports: [TheSeamDataFiltersModule],
     },
     props: {
-      __hack: {
-        columns: args.columns,
-      },
+      columns: args.columns,
     },
-    template: `<dt-gql-wrap [columns]="__hack.columns"></dt-gql-wrap>`,
+    template: `<dt-gql-wrap [columns]="columns"></dt-gql-wrap>`,
   }),
   args: {
     columns: [
@@ -1061,41 +945,32 @@ class ConditionalActionMenuComponent {
   }
 }
 
-export const ConditionalActionMenu = (args: any) => ({
-  moduleMetadata: {
-    declarations: [ConditionalActionMenuComponent],
-  },
-  props: {
-    __hack: {
-      ...args,
-      columns: [
-        { prop: 'name', name: 'Name' },
-        { prop: 'age', name: 'Age' },
-        { prop: 'color', name: 'Color' },
-      ],
-      rows: [
-        { name: 'Mark', age: 27, color: 'blue' },
-        { name: 'Joe', age: 33, color: 'green' },
-      ],
-    },
-  },
-  template: `
-    <dt-wrap
-      class="w-100 h-100"
-      [columns]="__hack.columns"
-      [rows]="__hack.rows">
-    </dt-wrap>`,
-})
-ConditionalActionMenu.args = {
-  columns: [
-    { prop: 'name', name: 'Name' },
-    { prop: 'age', name: 'Age' },
-    { prop: 'color', name: 'Color' },
+export const ConditionalActionMenu: Story = {
+  decorators: [
+    moduleMetadata({
+      declarations: [ConditionalActionMenuComponent],
+    }),
   ],
-  rows: [
-    { name: 'Mark', age: 27, color: 'blue' },
-    { name: 'Joe', age: 33, color: 'green' },
-  ],
+  render: (args: any) => ({
+    props: { ...args },
+    template: `
+      <dt-wrap
+        class="w-100 h-100"
+        [columns]="columns"
+        [rows]="rows">
+      </dt-wrap>`,
+  }),
+  args: {
+    columns: [
+      { prop: 'name', name: 'Name' },
+      { prop: 'age', name: 'Age' },
+      { prop: 'color', name: 'Color' },
+    ],
+    rows: [
+      { name: 'Mark', age: 27, color: 'blue' },
+      { name: 'Joe', age: 33, color: 'green' },
+    ],
+  },
 }
 
 class SearchCandy extends ColumnsDataFilter {
@@ -1192,7 +1067,7 @@ class SearchCandy extends ColumnsDataFilter {
   }
 }
 
-export class PreferencesAccessorService implements TheSeamPreferencesAccessor {
+class PreferencesAccessorService implements TheSeamPreferencesAccessor {
   private readonly _map = new Map<string, string>()
 
   public get(name: string): Observable<string> {
@@ -1217,15 +1092,12 @@ export class PreferencesAccessorService implements TheSeamPreferencesAccessor {
     if (!this._map.has(name)) {
       this._map.set(name, tmp)
     }
-    // return of(this._map.get(name) || tmp)
     return of(this._map.get(name) || '{}')
   }
 
   public update(name: string, value: string): Observable<string> {
     console.log(`Updating preference '${name}' to`, value)
     this._map.set(name, value)
-    // console.log(this._map.get(name))
-    // console.log(JSON.stringify(JSON.parse(this._map.get(name) || '{}'), null, 2))
     return of(value)
   }
 
@@ -1278,137 +1150,138 @@ class ColumnFiltersComponent {
   @Input() rows: any
 }
 
-export const ColumnFilters = (args: any) => ({
-  applicationConfig: {
-    providers: [
-      {
-        provide: THESEAM_DATATABLE_PREFERENCES_ACCESSOR,
-        useClass: PreferencesAccessorService,
-      },
-    ],
-  },
-  moduleMetadata: {
-    imports: [
-      ReactiveFormsModule,
-      TheSeamFormFieldModule,
-      TheSeamCheckboxModule,
-    ],
-    declarations: [ColumnFiltersComponent],
-    providers: [
-      {
-        provide: THESEAM_COLUMNS_DATA_FILTER,
-        useValue: {
-          name: 'search-candy',
-          class: SearchCandy,
-        },
-        multi: true,
-      },
-    ],
-  },
-  props: {
-    __hack: {
-      ...args,
-      columns: [
+export const ColumnFilters: Story = {
+  decorators: [
+    applicationConfig({
+      providers: [
         {
-          prop: 'name',
-          name: 'Name',
-          filterable: true,
-          cellClass: 'text-right',
-          headerClass: 'text-right',
+          provide: THESEAM_DATATABLE_PREFERENCES_ACCESSOR,
+          useClass: PreferencesAccessorService,
         },
+      ],
+    }),
+    moduleMetadata({
+      imports: [
+        ReactiveFormsModule,
+        TheSeamFormFieldModule,
+        TheSeamCheckboxModule,
+      ],
+      declarations: [ColumnFiltersComponent],
+      providers: [
         {
-          prop: 'age',
-          name: 'Age',
-          filterable: true,
-          filterOptions: { filterType: 'search-numeric' },
-        },
-        {
-          prop: 'startDate',
-          name: 'Start Date',
-          cellType: 'date',
-          cellTypeConfig: { type: 'date' },
-          filterable: true,
-          filterOptions: { dateType: 'datetime-local' },
-        },
-        { prop: 'color', name: 'Favorite Color', filterable: true },
-        {
-          prop: 'candy',
-          name: 'Favorite Candy',
-          filterable: true,
-          filterOptions: {
-            filterProp: 'candyAttributes',
-            filterType: 'search-candy',
+          provide: THESEAM_COLUMNS_DATA_FILTER,
+          useValue: {
+            name: 'search-candy',
+            class: SearchCandy,
           },
+          multi: true,
         },
       ],
-      rows: [
-        {
-          name: 'Mark',
-          age: 27,
-          color: 'blue',
-          candy: 'Reeses',
-          candyAttributes: ['chocolatey', 'nutty'],
-          startDate: '2017-01-21 20:15:20.4166667 +00:00',
+    }),
+  ],
+  render: (args) => ({
+    props: { ...args },
+    template: `
+      <dt-wrap
+        class="w-100 h-100"
+        [columns]="columns"
+        [rows]="rows">
+      </dt-wrap>
+      `,
+  }),
+  args: {
+    columns: [
+      {
+        prop: 'name',
+        name: 'Name',
+        filterable: true,
+        cellClass: 'text-right',
+        headerClass: 'text-right',
+      },
+      {
+        prop: 'age',
+        name: 'Age',
+        filterable: true,
+        filterOptions: { filterType: 'search-numeric' },
+      },
+      {
+        prop: 'startDate',
+        name: 'Start Date',
+        cellType: 'date',
+        cellTypeConfig: { type: 'date' },
+        filterable: true,
+        filterOptions: { dateType: 'datetime-local' },
+      },
+      { prop: 'color', name: 'Favorite Color', filterable: true },
+      {
+        prop: 'candy',
+        name: 'Favorite Candy',
+        filterable: true,
+        filterOptions: {
+          filterProp: 'candyAttributes',
+          filterType: 'search-candy',
         },
-        {
-          name: 'Joe',
-          age: 33,
-          color: 'green',
-          candy: 'Hershey Bar',
-          candyAttributes: ['chocolatey'],
-          startDate: '2012-04-25 17:29:36.4266667 +00:00',
-        },
-        {
-          name: 'Shelby',
-          age: 30,
-          color: 'purple',
-          candy: 'Snickers',
-          candyAttributes: ['chocolatey', 'nutty'],
-          startDate: '2020-11-18 20:47:25.1733333 +00:00',
-        },
-        {
-          name: 'Jason',
-          age: 'abc',
-          color: 'orange',
-          candy: 'Whoppers',
-          candyAttributes: ['chocolatey'],
-          startDate: '2016-05-24 23:13:26.3400000 +00:00',
-        },
-        {
-          name: 'David',
-          age: null,
-          color: 'blue',
-          candy: 'Skittles',
-          candyAttributes: ['fruity'],
-          startDate: '2021-06-29 16:31:37.2733333 +00:00',
-        },
-        {
-          name: 'Pam',
-          age: null,
-          color: 'red',
-          candy: 'Starbursts',
-          candyAttributes: ['fruity'],
-          startDate: '2012-08-11 04:00:00.000000 +00:00',
-        },
-        {
-          name: 'New Employee',
-          age: null,
-          color: null,
-          candy: null,
-          startDate: null,
-        },
-      ],
-    },
+      },
+    ],
+    rows: [
+      {
+        name: 'Mark',
+        age: 27,
+        color: 'blue',
+        candy: 'Reeses',
+        candyAttributes: ['chocolatey', 'nutty'],
+        startDate: '2017-01-21 20:15:20.4166667 +00:00',
+      },
+      {
+        name: 'Joe',
+        age: 33,
+        color: 'green',
+        candy: 'Hershey Bar',
+        candyAttributes: ['chocolatey'],
+        startDate: '2012-04-25 17:29:36.4266667 +00:00',
+      },
+      {
+        name: 'Shelby',
+        age: 30,
+        color: 'purple',
+        candy: 'Snickers',
+        candyAttributes: ['chocolatey', 'nutty'],
+        startDate: '2020-11-18 20:47:25.1733333 +00:00',
+      },
+      {
+        name: 'Jason',
+        age: 'abc',
+        color: 'orange',
+        candy: 'Whoppers',
+        candyAttributes: ['chocolatey'],
+        startDate: '2016-05-24 23:13:26.3400000 +00:00',
+      },
+      {
+        name: 'David',
+        age: null,
+        color: 'blue',
+        candy: 'Skittles',
+        candyAttributes: ['fruity'],
+        startDate: '2021-06-29 16:31:37.2733333 +00:00',
+      },
+      {
+        name: 'Pam',
+        age: null,
+        color: 'red',
+        candy: 'Starbursts',
+        candyAttributes: ['fruity'],
+        startDate: '2012-08-11 04:00:00.000000 +00:00',
+      },
+      {
+        name: 'New Employee',
+        age: null,
+        color: null,
+        candy: null,
+        startDate: null,
+      },
+    ],
   },
-  template: `
-    <dt-wrap
-      class="w-100 h-100"
-      [columns]="__hack.columns"
-      [rows]="__hack.rows">
-    </dt-wrap>
-    `,
-})
-ColumnFilters.args = {}
+}
 
 @Component({
   selector: 'dt-wrap',
@@ -1466,217 +1339,216 @@ class CustomConfigComponent {
   @Input() columns: any
   @Input() rows: any
 }
-export const CustomConfig = (args: any) => ({
-  moduleMetadata: {
-    declarations: [CustomConfigComponent],
-    providers: [
+export const CustomConfig: Story = {
+  decorators: [
+    moduleMetadata({
+      declarations: [CustomConfigComponent],
+      providers: [
+        {
+          provide: THESEAM_DATATABLE_CONFIG,
+          useValue: {
+            rowHeight: 45,
+            columnFilterIcon: faSearch,
+            columnFilterUpdateMethod: 'submit',
+            actionItemColumnPosition: 'frozenLeft',
+          } satisfies TheSeamDatatableConfig,
+        },
+      ],
+    }),
+  ],
+  render: (args) => ({
+    props: {
+      ...args,
+    },
+    template: `
+      <dt-wrap
+        class="w-100 h-100"
+        [columns]="columns"
+        [rows]="rows">
+      </dt-wrap>`,
+  }),
+  args: {
+    columns: [
+      { prop: 'name', name: 'Name', filterable: true },
       {
-        provide: THESEAM_DATATABLE_CONFIG,
-        useValue: {
-          rowHeight: 45,
-          columnFilterIcon: faSearch,
-          columnFilterUpdateMethod: 'submit',
-          actionItemColumnPosition: 'frozenLeft',
-        } satisfies TheSeamDatatableConfig,
+        prop: 'age',
+        name: 'Age',
+        filterable: true,
+        filterOptions: { filterType: 'search-numeric' },
+      },
+      {
+        prop: 'startDate',
+        name: 'Start Date',
+        cellType: 'date',
+        cellTypeConfig: { type: 'date' },
+        filterable: true,
+      },
+      { prop: 'color', name: 'Favorite Color', filterable: true },
+      { prop: 'candy', name: 'Favorite Candy', filterable: true },
+    ] satisfies TheSeamDatatableColumn[],
+    rows: [
+      {
+        name: 'Mark',
+        age: 27,
+        color: 'blue',
+        candy: 'Reeses',
+        startDate: '2017-01-21 20:15:20.4166667 +00:00',
+      },
+      {
+        name: 'Joe',
+        age: 33,
+        color: 'green',
+        candy: 'Hershey Bar',
+        startDate: '2012-04-25 17:29:36.4266667 +00:00',
+      },
+      {
+        name: 'Shelby',
+        age: 30,
+        color: 'purple',
+        candy: 'Snickers',
+        startDate: '2020-11-18 20:47:25.1733333 +00:00',
+      },
+      {
+        name: 'Jason',
+        age: 'abc',
+        color: 'orange',
+        candy: 'Whoppers',
+        startDate: '2016-05-24 23:13:26.3400000 +00:00',
+      },
+      {
+        name: 'David',
+        age: null,
+        color: 'blue',
+        candy: 'Skittles',
+        startDate: '2021-06-29 16:31:37.2733333 +00:00',
+      },
+      {
+        name: 'New Employee',
+        age: null,
+        color: null,
+        candy: null,
+        startDate: null,
       },
     ],
   },
-  props: {
-    __hack: {
-      ...args,
-      columns: [
-        { prop: 'name', name: 'Name', filterable: true },
-        {
-          prop: 'age',
-          name: 'Age',
-          filterable: true,
-          filterOptions: { filterType: 'search-numeric' },
-        },
-        {
-          prop: 'startDate',
-          name: 'Start Date',
-          cellType: 'date',
-          cellTypeConfig: { type: 'date' },
-          filterable: true,
-        },
-        { prop: 'color', name: 'Favorite Color', filterable: true },
-        { prop: 'candy', name: 'Favorite Candy', filterable: true },
-      ] satisfies TheSeamDatatableColumn[],
-      rows: [
-        {
-          name: 'Mark',
-          age: 27,
-          color: 'blue',
-          candy: 'Reeses',
-          startDate: '2017-01-21 20:15:20.4166667 +00:00',
-        },
-        {
-          name: 'Joe',
-          age: 33,
-          color: 'green',
-          candy: 'Hershey Bar',
-          startDate: '2012-04-25 17:29:36.4266667 +00:00',
-        },
-        {
-          name: 'Shelby',
-          age: 30,
-          color: 'purple',
-          candy: 'Snickers',
-          startDate: '2020-11-18 20:47:25.1733333 +00:00',
-        },
-        {
-          name: 'Jason',
-          age: 'abc',
-          color: 'orange',
-          candy: 'Whoppers',
-          startDate: '2016-05-24 23:13:26.3400000 +00:00',
-        },
-        {
-          name: 'David',
-          age: null,
-          color: 'blue',
-          candy: 'Skittles',
-          startDate: '2021-06-29 16:31:37.2733333 +00:00',
-        },
-        {
-          name: 'New Employee',
-          age: null,
-          color: null,
-          candy: null,
-          startDate: null,
-        },
-      ],
-      filterIcon: faAirFreshener,
-    },
-  },
-  template: `
-    <dt-wrap
-      class="w-100 h-100"
-      [columns]="__hack.columns"
-      [rows]="__hack.rows">
-    </dt-wrap>`,
-})
-CustomConfig.args = {}
+}
 
-export const ColumnAlign = {
+export const ColumnAlign: Story = {
   decorators: [
     componentWrapperDecorator(
       (story) => `
-    <seam-datatable class="w-100 h-100"
-      [columns]="columns"
-      [rows]="rows"
-      [sorts]="sorts"
-      [sortType]="'multi'">
-    </seam-datatable>
-  `,
+        <seam-datatable class="w-100 h-100"
+          [columns]="columns"
+          [rows]="rows"
+          [sorts]="sorts"
+          [sortType]="'multi'">
+        </seam-datatable>
+      `,
     ),
   ],
-  render: (args: any) => ({
-    props: {
-      ...args,
-      columns: [
-        {
-          prop: 'name',
-          name: 'Name',
-          filterable: true,
-          cellClass: 'text-right',
-          headerClass: 'text-right',
-        },
-        {
-          prop: 'title',
-          name: 'Title',
-          filterable: true,
-          cellClass: 'text-right',
-          headerClass: 'text-right',
-          sortable: false,
-        },
-        {
-          prop: 'age',
-          name: 'Age',
-          filterable: true,
-          filterOptions: { filterType: 'search-numeric' },
-          align: 'right',
-        },
-        {
-          prop: 'startDate',
-          name: 'Start Date',
-          cellType: 'date',
-          cellTypeConfig: { type: 'date' },
-          filterable: true,
-          filterOptions: { dateType: 'datetime-local' },
-        },
-        { prop: 'color', name: 'Favorite Color' },
-        { prop: 'status', name: 'Status', filterable: true, align: 'center' },
-        { prop: 'active', name: 'Active', filterable: true },
-      ],
-      rows: [
-        {
-          name: 'Mark',
-          title: 'Something',
-          age: 27,
-          color: 'blue',
-          startDate: '2017-01-21 20:15:20.4166667 +00:00',
-          status: 'Pending',
-          active: true,
-        },
-        {
-          name: 'Joe',
-          title: 'Something Else',
-          age: 33,
-          color: 'green',
-          startDate: '2012-04-25 17:29:36.4266667 +00:00',
-          status: 'InActive',
-          active: false,
-        },
-        {
-          name: 'Shelby',
-          title: 'Something',
-          age: 30,
-          color: 'purple',
-          startDate: '2020-11-18 20:47:25.1733333 +00:00',
-          status: 'Active',
-          active: true,
-        },
-        {
-          name: 'Jason',
-          title: 'Something Different',
-          age: 'abc',
-          color: 'orange',
-          startDate: '2016-05-24 23:13:26.3400000 +00:00',
-          status: 'Pending',
-          active: false,
-        },
-        {
-          name: 'David',
-          title: 'Another Thing',
-          age: null,
-          color: 'blue',
-          startDate: '2021-06-29 16:31:37.2733333 +00:00',
-          status: 'New',
-          active: true,
-        },
-        {
-          name: 'Pam',
-          age: null,
-          color: 'red',
-          startDate: '2012-08-11 04:00:00.000000 +00:00',
-          status: 'Expired',
-          active: false,
-        },
-        {
-          name: 'New Employee',
-          age: null,
-          color: null,
-          startDate: null,
-          status: null,
-          active: null,
-        },
-      ],
-      sorts: [
-        { prop: 'age', dir: 'desc' },
-        { prop: 'status', dir: 'asc' },
-        { prop: 'active', dir: 'asc' },
-      ],
-    },
-  }),
+  args: {
+    columns: [
+      {
+        prop: 'name',
+        name: 'Name',
+        filterable: true,
+        cellClass: 'text-right',
+        headerClass: 'text-right',
+      },
+      {
+        prop: 'title',
+        name: 'Title',
+        filterable: true,
+        cellClass: 'text-right',
+        headerClass: 'text-right',
+        sortable: false,
+      },
+      {
+        prop: 'age',
+        name: 'Age',
+        filterable: true,
+        filterOptions: { filterType: 'search-numeric' },
+        align: 'right',
+      },
+      {
+        prop: 'startDate',
+        name: 'Start Date',
+        cellType: 'date',
+        cellTypeConfig: { type: 'date' },
+        filterable: true,
+        filterOptions: { dateType: 'datetime-local' },
+      },
+      { prop: 'color', name: 'Favorite Color' },
+      { prop: 'status', name: 'Status', filterable: true, align: 'center' },
+      { prop: 'active', name: 'Active', filterable: true },
+    ],
+    rows: [
+      {
+        name: 'Mark',
+        title: 'Something',
+        age: 27,
+        color: 'blue',
+        startDate: '2017-01-21 20:15:20.4166667 +00:00',
+        status: 'Pending',
+        active: true,
+      },
+      {
+        name: 'Joe',
+        title: 'Something Else',
+        age: 33,
+        color: 'green',
+        startDate: '2012-04-25 17:29:36.4266667 +00:00',
+        status: 'InActive',
+        active: false,
+      },
+      {
+        name: 'Shelby',
+        title: 'Something',
+        age: 30,
+        color: 'purple',
+        startDate: '2020-11-18 20:47:25.1733333 +00:00',
+        status: 'Active',
+        active: true,
+      },
+      {
+        name: 'Jason',
+        title: 'Something Different',
+        age: 'abc',
+        color: 'orange',
+        startDate: '2016-05-24 23:13:26.3400000 +00:00',
+        status: 'Pending',
+        active: false,
+      },
+      {
+        name: 'David',
+        title: 'Another Thing',
+        age: null,
+        color: 'blue',
+        startDate: '2021-06-29 16:31:37.2733333 +00:00',
+        status: 'New',
+        active: true,
+      },
+      {
+        name: 'Pam',
+        age: null,
+        color: 'red',
+        startDate: '2012-08-11 04:00:00.000000 +00:00',
+        status: 'Expired',
+        active: false,
+      },
+      {
+        name: 'New Employee',
+        age: null,
+        color: null,
+        startDate: null,
+        status: null,
+        active: null,
+      },
+    ],
+    sorts: [
+      { prop: 'age', dir: 'desc' },
+      { prop: 'status', dir: 'asc' },
+      { prop: 'active', dir: 'asc' },
+    ],
+  },
 }

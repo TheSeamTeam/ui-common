@@ -6,7 +6,7 @@ import { ToastrService } from 'ngx-toastr'
 
 import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
 import { TheSeamIconModule } from '@theseam/ui-common/icon'
-import { TheSeamLoadingOverlayService } from '@theseam/ui-common/loading'
+import { provideMockLoadingService } from '@theseam/ui-common/loading'
 import { TheSeamMenuModule } from '@theseam/ui-common/menu'
 import {
   ExportersDataEvaluator,
@@ -14,8 +14,7 @@ import {
   THESEAM_DYNAMIC_VALUE_EVALUATOR,
 } from '@theseam/ui-common/dynamic'
 
-import { FakeTheSeamLoadingOverlayService } from '../../loading/fake-loading-overlay'
-import { FakeToastrService } from '../../testing/fake-toastr'
+import { provideMockToastrService } from '@theseam/ui-common/testing'
 
 import { THESEAM_DATATABLE } from '../datatable/datatable.component'
 import { TheSeamDatatableColumn } from '../models/table-column'
@@ -31,11 +30,8 @@ describe('DatatableExportButtonComponent', () => {
       imports: [TheSeamButtonsModule, TheSeamMenuModule, TheSeamIconModule],
       providers: [
         { provide: THESEAM_DATATABLE, useClass: FakeDatatableComponent },
-        { provide: ToastrService, useClass: FakeToastrService },
-        {
-          provide: TheSeamLoadingOverlayService,
-          useClass: FakeTheSeamLoadingOverlayService,
-        },
+        provideMockToastrService(),
+        provideMockLoadingService(),
         {
           provide: THESEAM_DYNAMIC_VALUE_EVALUATOR,
           useClass: JexlEvaluator,
