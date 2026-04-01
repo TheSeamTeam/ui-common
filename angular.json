@@ -3,88 +3,6 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "theseam-ui-common": {
-      "projectType": "application",
-      "schematics": {
-        "@schematics/angular:component": {
-          "style": "scss"
-        }
-      },
-      "root": "",
-      "sourceRoot": "src",
-      "prefix": "app",
-      "architect": {
-        "build": {
-          "builder": "@angular/build:application",
-          "options": {
-            "outputPath": {
-              "base": "dist/theseam-ui-common"
-            },
-            "index": "src/index.html",
-            "polyfills": ["projects/ui-common/polyfills.ts"],
-            "tsConfig": "tsconfig.app.json",
-            "aot": true,
-            "assets": [
-              "src/favicon.ico",
-              {
-                "glob": "**/*",
-                "input": "src/assets",
-                "output": "assets"
-              }
-            ],
-            "styles": [
-              "src/styles.scss",
-              "node_modules/@marklb/ngx-datatable/assets/icons.css"
-            ],
-            "scripts": [],
-            "browser": "src/main.ts"
-          },
-          "configurations": {
-            "production": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb"
-                }
-              ]
-            }
-          }
-        },
-        "serve": {
-          "builder": "@angular/build:dev-server",
-          "options": {
-            "buildTarget": "theseam-ui-common:build"
-          },
-          "configurations": {
-            "production": {
-              "buildTarget": "theseam-ui-common:build:production"
-            }
-          }
-        },
-        "extract-i18n": {
-          "builder": "@angular/build:extract-i18n",
-          "options": {
-            "buildTarget": "theseam-ui-common:build"
-          }
-        }
-      }
-    },
     "ui-common": {
       "projectType": "library",
       "root": "projects/ui-common",
@@ -131,7 +49,7 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "src/assets",
+                "input": "projects/ui-common/stories/assets",
                 "output": "assets"
               },
               {
@@ -240,7 +158,7 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "src/assets",
+                "input": "projects/ui-common/stories/assets",
                 "output": "assets"
               },
               {
@@ -255,7 +173,7 @@
               },
               {
                 "glob": "**/*.scss",
-                "input": "breadcrumbs",
+                "input": "projects/ui-common/breadcrumbs",
                 "output": "breadcrumbs"
               },
               {
@@ -272,6 +190,11 @@
                 "glob": "**/*.css",
                 "input": "projects/ui-common/framework/route-transitions",
                 "output": "framework/route-transitions"
+              },
+              {
+                "glob": "**/*.scss",
+                "input": "projects/ui-common/widget/nav",
+                "output": "framework/nav"
               },
               {
                 "glob": "**/*.scss",
@@ -314,132 +237,6 @@
                 "output": "assets/vendor/pdfjs-dist"
               }
             ]
-          }
-        }
-      }
-    },
-    "storybook": {
-      "projectType": "application",
-      "schematics": {
-        "@schematics/angular:component": {
-          "style": "scss"
-        }
-      },
-      "root": "",
-      "sourceRoot": "src",
-      "prefix": "app",
-      "architect": {
-        "build": {
-          "builder": "@angular/build:application",
-          "options": {
-            "outputPath": {
-              "base": "dist/theseam-ui-common"
-            },
-            "index": "src/index.html",
-            "polyfills": ["projects/ui-common/polyfills.ts"],
-            "tsConfig": "tsconfig.app.json",
-            "aot": true,
-            "assets": [
-              "src/favicon.ico",
-              "src/assets",
-              {
-                "glob": "**/*",
-                "input": "projects/ui-common/assets",
-                "output": "assets"
-              },
-              {
-                "glob": "**/*",
-                "input": "projects/ui-common/styles",
-                "output": "styles"
-              },
-              {
-                "glob": "**/*.scss",
-                "input": "breadcrumbs",
-                "output": "breadcrumbs"
-              },
-              {
-                "glob": "**/*.scss",
-                "input": "projects/ui-common/framework/base-layout",
-                "output": "framework/base-layout"
-              },
-              {
-                "glob": "**/*.scss",
-                "input": "projects/ui-common/framework/dashboard",
-                "output": "framework/dashboard"
-              },
-              {
-                "glob": "**/*.scss",
-                "input": "projects/ui-common/widget/nav",
-                "output": "framework/nav"
-              },
-              {
-                "glob": "**/*.scss",
-                "input": "projects/ui-common/framework/top-bar",
-                "output": "framework/top-bar"
-              },
-              {
-                "glob": "**/*.scss",
-                "input": "projects/ui-common/widget/side-nav",
-                "output": "framework/side-nav"
-              },
-              {
-                "glob": "**/*.scss",
-                "input": "projects/ui-common/progress/progress-circle",
-                "output": "progress/progress-circle"
-              },
-              {
-                "glob": "**/*.scss",
-                "input": "projects/ui-common/widget",
-                "output": "widget"
-              },
-              {
-                "glob": "**/*.min.css",
-                "input": "node_modules/intl-tel-input/build/css",
-                "output": "assets/vendor/intl-tel-input/css"
-              },
-              {
-                "glob": "**/*.png",
-                "input": "node_modules/intl-tel-input/build/img",
-                "output": "assets/vendor/intl-tel-input/img"
-              },
-              {
-                "glob": "**/utils.js",
-                "input": "node_modules/intl-tel-input/build/js",
-                "output": "assets/vendor/intl-tel-input/js"
-              }
-            ],
-            "styles": [
-              "src/styles.scss",
-              "node_modules/@marklb/ngx-datatable/assets/icons.css"
-            ],
-            "scripts": [],
-            "browser": "src/main.ts"
-          },
-          "configurations": {
-            "production": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb"
-                }
-              ]
-            }
           }
         }
       }

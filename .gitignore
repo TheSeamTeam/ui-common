@@ -56,3 +56,5 @@ storybook-static
 
 .claude/settings.local.json
 .superpowers/brainstorm
+
+eslint-out.log
