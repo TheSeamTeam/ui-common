@@ -31,38 +31,62 @@ export type SortsMapperFieldMap<TRow extends Record<string, any>> = {
 }
 
 /**
+ * Options for {@link createSortsMapper}.
+ */
+export interface CreateSortsMapperOptions {
+  /**
+   * When `true` (the default), sort items whose `prop` is not listed in
+   * the field map are automatically mapped using the prop value as the
+   * GQL field name, provided a column with that prop exists in the
+   * current datatable and has `sortable` not explicitly set to `false`.
+   *
+   * This eliminates boilerplate for the common case where column props
+   * match GQL field names. The field map becomes an override/exclusion
+   * map: list only columns that need a different GQL name or `null` to
+   * suppress sorting.
+   *
+   * Set to `false` to require every sortable column to be explicitly
+   * listed in the field map (with a dev-mode error for unmapped props).
+   */
+  autoMap?: boolean
+}
+
+/**
  * Creates a {@link SortsMapper} from a declarative field-name map.
  *
- * Each key must correspond to a datatable column `prop` value. The value
- * controls how that column's sort is translated to a GQL sort object:
+ * By default, `autoMap` is enabled: columns not listed in the field map
+ * are automatically mapped using their `prop` as the GQL field name,
+ * provided the column exists in the datatable and has `sortable` not
+ * explicitly set to `false`. This guards against stale sort preferences
+ * for removed columns.
+ *
+ * Each key in `fieldMap` must correspond to a datatable column `prop`
+ * value. The value controls how that column's sort is translated:
  *
  * - `string`   – emits `{ [gqlField]: 'ASC' | 'DESC' }`
  * - `null`     – column is not sortable; the sort item is dropped
  * - `function` – called with `(prop, context)` and may return a field
  *                name or `null` to drop the item dynamically
  *
- * In dev mode an error is thrown when a sort item's `prop` is not present
- * in the map. In production the item is silently dropped.
- *
  * @example
- * // Simple static mapping
+ * // Auto-map all columns, override one
  * const mapSorts = createSortsMapper<MyRow>({
- *   id: 'id',
- *   name: 'name',
+ *   computedField: 'gql_computed_field',
  * })
  *
  * @example
- * // Dynamic mapping with context access
+ * // Opt out of auto-mapping (explicit field map required)
  * const mapSorts = createSortsMapper<MyRow>({
  *   id: 'id',
  *   name: 'name',
- *   computed: (prop, context) =>
- *     context.extraVariables.useAlt ? 'altField' : prop,
- * })
+ * }, { autoMap: false })
  */
 export function createSortsMapper<TRow extends Record<string, any>>(
   fieldMap: SortsMapperFieldMap<TRow>,
+  options?: CreateSortsMapperOptions,
 ): SortsMapper {
+  const autoMap = options?.autoMap ?? true
+
   return (sorts: SortItem[], context: MapperContext): SortsMapperResult => {
     const result: SortsMapperResult = []
 
@@ -70,6 +94,25 @@ export function createSortsMapper<TRow extends Record<string, any>>(
       const prop = s?.prop as keyof TRow & string
 
       if (!(prop in fieldMap)) {
+        if (autoMap) {
+          const columns = context.columns
+          if (columns) {
+            const column = columns.find((c) => c.prop === prop)
+            if (column && column.sortable !== false) {
+              const dir = s?.dir?.toUpperCase()
+              result.push({ [prop]: dir })
+            }
+          } else if (isDevMode()) {
+            // autoMap is enabled but no columns in context — likely a
+            // wiring issue where columns$ is not being piped through.
+            console.warn(
+              `createSortsMapper: autoMap is enabled but no columns found in context for prop "${prop}". ` +
+                `Ensure columns are provided via MapperContext.`,
+            )
+          }
+          continue
+        }
+
         if (isDevMode()) {
           throw new Error(
             `createSortsMapper: no mapping found for column prop "${prop}". ` +
