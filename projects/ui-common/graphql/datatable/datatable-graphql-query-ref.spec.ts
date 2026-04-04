@@ -5,6 +5,7 @@ import { shareReplay } from 'rxjs/operators'
 import { DataFilterState } from '@theseam/ui-common/data-filters'
 import { currentTickTime } from '@theseam/ui-common/testing'
 
+import { TheSeamDatatableColumn } from '@theseam/ui-common/datatable'
 import { GqlDatatableAccessor, EmptyObject } from '../models'
 import {
   checkRecordsHaveValue,
@@ -242,7 +243,14 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
     GqlDatatableAccessor | undefined
   >(undefined)
   private readonly _rows$: Observable<TRow[]>
-  private readonly _gqlDtAccessor: MockDatatable = new MockDatatable()
+  private readonly _gqlDtAccessor: MockDatatable = (() => {
+    const dt = new MockDatatable()
+    dt.setColumns([
+      { prop: 'id' } as TheSeamDatatableColumn,
+      { prop: 'name' } as TheSeamDatatableColumn,
+    ])
+    return dt
+  })()
   private readonly _queryRef: DatatableGraphQLQueryRef<
     TData,
     SimpleGqlTestVariables,
@@ -289,10 +297,7 @@ class BasicDatatablePageFixture<TData, TRow = EmptyObject> {
       })
       .pipe(shareReplay({ bufferSize: 1, refCount: true }))
 
-    const _mapSorts = createSortsMapper<SimpleGqlTestRecord>({
-      id: 'id',
-      name: 'name',
-    })
+    const _mapSorts = createSortsMapper<SimpleGqlTestRecord>({})
 
     const _mapSearchFilterState = async (
       filterState: DataFilterState,
