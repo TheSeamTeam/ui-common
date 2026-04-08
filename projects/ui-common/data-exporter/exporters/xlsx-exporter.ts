@@ -3,7 +3,6 @@ import { from, Observable } from 'rxjs'
 import { mapTo, switchMap, tap } from 'rxjs/operators'
 
 import { faFileExcel } from '@fortawesome/free-solid-svg-icons'
-import { Buffer } from 'buffer/'
 import FileSaver from 'file-saver'
 
 import {
@@ -29,7 +28,7 @@ export class XLSXDataExporter implements IDataExporter {
         const wb = { Sheets: { data: ws }, SheetNames: ['data'] }
         const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
 
-        return from(fileDataFromBuffer(Buffer.from(excelBuffer))).pipe(
+        return from(fileDataFromBuffer(excelBuffer)).pipe(
           tap((fileData) => {
             FileSaver.saveAs(fileData.blob, `Export.xlsx`)
           }),

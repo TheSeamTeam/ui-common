@@ -1,6 +1,3 @@
-// eslint-disable-next-line no-redeclare
-import { Buffer } from 'buffer/'
-
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 // import { setCompodocJson } from '@storybook/addon-docs/angular'
@@ -195,7 +192,5 @@ export const parameters = {
 }
 
 // export const decorators = []
-
-global.Buffer = global.Buffer || Buffer
 
 export const tags = ['autodocs']
