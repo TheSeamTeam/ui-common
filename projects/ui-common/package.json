@@ -31,7 +31,6 @@
     "overlayscrollbars": "~1.7.3",
     "@types/overlayscrollbars": "~1.7.0",
     "bootstrap": "~4.6.0",
-    "buffer": "^5.2.1",
     "css-element-queries": "^1.2.3",
     "file-saver": "~2.0.2",
     "graphql": "^16.0.0",

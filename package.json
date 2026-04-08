@@ -54,7 +54,6 @@
     "@turf/kinks": "^7.2.0",
     "apollo-angular": "^11.0.0",
     "bootstrap": "~4.6.0",
-    "buffer": "^5.2.1",
     "cross-env": "^7.0.3",
     "css-element-queries": "~1.2.3",
     "file-saver": "~2.0.2",
