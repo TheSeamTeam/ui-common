@@ -901,10 +901,7 @@ class GqlDatatableWrapperComponent {
       }))
       .pipe(shareReplay({ bufferSize: 1, refCount: true }))
 
-    const _mapSorts = createSortsMapper<SimpleGqlTestRecord>({
-      id: 'id',
-      name: 'name',
-    })
+    const _mapSorts = createSortsMapper<SimpleGqlTestRecord>({})
 
     const _mapSearchFilterState = (
       filterState: DataFilterState,

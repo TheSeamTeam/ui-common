@@ -5,12 +5,19 @@ import { DataFilterState } from '@theseam/ui-common/data-filters'
 import {
   SortEvent,
   SortItem,
+  TheSeamDatatableColumn,
   TheSeamPageInfo,
 } from '@theseam/ui-common/datatable'
 
 import { GqlDatatableAccessor } from '../models'
 
 export class MockDatatable implements GqlDatatableAccessor {
+  private readonly _columnsSubject = new BehaviorSubject<
+    TheSeamDatatableColumn[]
+  >([])
+  public readonly columns$: Observable<TheSeamDatatableColumn[]> =
+    this._columnsSubject.asObservable()
+
   private readonly _filterStatesSubject = new BehaviorSubject<
     DataFilterState[]
   >([])
@@ -61,6 +68,10 @@ export class MockDatatable implements GqlDatatableAccessor {
       pageSize: this.getPageSize(),
       count: this._rows.length,
     }
+  }
+
+  setColumns(v: TheSeamDatatableColumn[]): void {
+    this._columnsSubject.next(v)
   }
 
   setSorts(v: SortItem[]): void {

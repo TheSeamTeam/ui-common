@@ -20,7 +20,7 @@ import {
 } from 'rxjs/operators'
 
 import { wrapIntoObservable } from '@theseam/ui-common/utils'
-import { SortItem } from '@theseam/ui-common/datatable'
+import { SortItem, TheSeamDatatableColumn } from '@theseam/ui-common/datatable'
 
 import { GqlDatatableAccessor, EmptyObject } from '../models'
 import { createPageInfoObservable } from './create-page-info-observable'
@@ -85,8 +85,10 @@ export function observeRowsWithGqlInputsHandling<
     switchMap(([_extraVariables, pageInfo]) => {
       const context: MapperContext = { extraVariables: _extraVariables }
 
-      const sorts$ = _createSortsObservable(datatable$).pipe(
-        switchMap((m) => wrapIntoObservable(sortsMapper(m, context))),
+      const sorts$ = _createSortsAndColumnsObservable(datatable$).pipe(
+        switchMap(({ sorts, columns }) =>
+          wrapIntoObservable(sortsMapper(sorts, { ...context, columns })),
+        ),
       )
 
       const filterInfo$ = _createFilterStatesObservable(datatable$).pipe(
@@ -156,9 +158,9 @@ export function observeRowsWithGqlInputsHandling<
   )
 }
 
-function _createSortsObservable(
+function _createSortsAndColumnsObservable(
   datatable$: Observable<GqlDatatableAccessor | undefined>,
-) {
+): Observable<{ sorts: SortItem[]; columns: TheSeamDatatableColumn[] }> {
   // NOTE: There is a bug in our datatable wrapper that isn't propagating
   // external sorting changes to the wrapped datatable component, which we observe
   // sort events from. This workaround observes our wrapper's internal column
@@ -182,7 +184,16 @@ function _createSortsObservable(
   }
 
   return datatable$.pipe(
-    switchMap((dt) => (dt ? _observeSortsWorkaround(dt) : of([]))),
+    switchMap((dt) =>
+      dt
+        ? combineLatest([_observeSortsWorkaround(dt), dt.columns$]).pipe(
+            map(([sorts, columns]) => ({ sorts, columns })),
+          )
+        : of({
+            sorts: [] as SortItem[],
+            columns: [] as TheSeamDatatableColumn[],
+          }),
+    ),
     shareReplay({ bufferSize: 1, refCount: true }),
   )
 }
