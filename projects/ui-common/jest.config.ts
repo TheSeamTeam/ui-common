@@ -6,8 +6,25 @@ import { pathsToModuleNameMapper } from 'ts-jest'
 // which contains the path mapping (ie the `compilerOptions.paths` option):
 import { compilerOptions } from './tsconfig.spec.json'
 
+// ESM-only packages that Jest must transform (file-type, shpjs, and their deps).
+const esmPackages = [
+  'file-type',
+  '@tokenizer/inflate',
+  'token-types',
+  '@borewit/text-codec',
+  'strtok3',
+  'uint8array-extras',
+  'shpjs',
+  'but-unzip',
+  'parsedbf',
+  'wkt-parser',
+]
+
 export default {
   ...createCjsPreset(),
+  transformIgnorePatterns: [
+    `node_modules/(?!(.*\\.mjs$|@angular/common/locales/.*\\.js$|${esmPackages.join('|')}))`,
+  ],
   displayName: 'ui-common',
   // preset: 'jest-preset-angular',
   setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],

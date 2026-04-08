@@ -7,7 +7,7 @@
   },
   "allowedNonPeerDependencies": [
     "@fortawesome/angular-fontawesome",
-    "@marklb/file-type",
+    "file-type",
     "@marklb/ngx-datatable",
     "ngx-loading",
     "@ng-select/ng-select",

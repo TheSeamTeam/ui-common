@@ -1,8 +1,5 @@
-import { isDevMode } from '@angular/core'
-
-import fileType from '@marklb/file-type'
+import { fileTypeFromBuffer } from 'file-type'
 import { FeatureCollection } from 'geojson'
-import { Buffer } from 'buffer/'
 import shp from 'shpjs'
 
 import { readFileAsync } from '../file-utils'
@@ -13,71 +10,35 @@ import { withoutProperty } from '../obj-utils'
  * and returns a GeoJSON `FeatureCollection`.
  */
 export async function readGeoFile(
-  fileOrBuffer: File | ArrayBuffer | Buffer,
+  fileOrBuffer: File | ArrayBuffer,
 ): Promise<FeatureCollection> {
-  const buffer = await coerceFileOrBufferToBuffer(fileOrBuffer)
+  const buffer = await coerceToArrayBuffer(fileOrBuffer)
+  const fType = await fileTypeFromBuffer(buffer)
 
-  if (isShpFile(buffer)) {
+  if (fType?.ext === 'shp') {
     return parseShpFile(buffer)
-  } else if (fileType(buffer)?.mime === 'application/zip') {
-    try {
-      return await parseShpZip(buffer)
-    } catch (e: any) {
-      // NOTE: If 'shpjs' updates or we switch to a fork, where it doesn't use
-      // node buffers, then we can remove this rethrow.
-      if (isDevMode()) {
-        if (e.message === 'nodebuffer is not supported by this platform') {
-          // eslint-disable-next-line no-console
-          console.warn(
-            'Try adding Buffer polyfill.\n' +
-              'Install: npm install buffer\n' +
-              'Add `global.Buffer = global.Buffer || require(\'buffer\').Buffer` to "src/polyfills.ts"',
-          )
-        }
-      }
-      throw e
-    }
+  } else if (fType?.mime === 'application/zip') {
+    return parseShpZip(buffer)
   }
 
   return parseGeoJson(buffer)
 }
 
-async function coerceFileOrBufferToBuffer(
-  fileOrBuffer: File | ArrayBuffer | Buffer,
-): Promise<Buffer> {
+async function coerceToArrayBuffer(
+  fileOrBuffer: File | ArrayBuffer,
+): Promise<ArrayBuffer> {
   if (fileOrBuffer instanceof File) {
     const arrBuf = await readFileAsync(fileOrBuffer)
     if (arrBuf === null) {
       throw new Error('Could not read file.')
     }
-    return Buffer.from(arrBuf)
+    return arrBuf
   }
 
-  return Buffer.from(fileOrBuffer as any) // TODO: Fix type
+  return fileOrBuffer
 }
 
-// NOTE: Our current version of file-type does not detect shp files. We can
-// remove this function when file-types is upgraded.
-function isShpFile(buffer: Buffer): boolean {
-  const header = [
-    0x27, 0x0a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  ]
-  const offset = 2
-
-  if (buffer.length < header.length + offset) {
-    return false
-  }
-
-  for (let i = 0; i < header.length; i++) {
-    if (header[i] !== buffer[i + offset]) {
-      return false
-    }
-  }
-
-  return true
-}
-
-async function parseShpFile(buffer: Buffer): Promise<FeatureCollection> {
+async function parseShpFile(buffer: ArrayBuffer): Promise<FeatureCollection> {
   const geometries = await shp.parseShp(buffer, undefined as any)
   const featCollection: FeatureCollection = {
     type: 'FeatureCollection',
@@ -90,7 +51,7 @@ async function parseShpFile(buffer: Buffer): Promise<FeatureCollection> {
   return featCollection
 }
 
-async function parseShpZip(buffer: Buffer): Promise<FeatureCollection> {
+async function parseShpZip(buffer: ArrayBuffer): Promise<FeatureCollection> {
   let featCollection = await shp.parseZip(buffer, undefined as any)
   if (Array.isArray(featCollection)) {
     if (featCollection.length === 0) {
@@ -103,8 +64,8 @@ async function parseShpZip(buffer: Buffer): Promise<FeatureCollection> {
   return withoutProperty(featCollection, 'fileName')
 }
 
-function parseGeoJson(buffer: Buffer): FeatureCollection {
-  const json = JSON.parse(buffer.toString())
+function parseGeoJson(buffer: ArrayBuffer): FeatureCollection {
+  const json = JSON.parse(new TextDecoder().decode(buffer))
 
   if (json?.type === 'FeatureCollection' && Array.isArray(json?.features)) {
     return json as FeatureCollection

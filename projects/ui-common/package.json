@@ -23,7 +23,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.3"
   },
   "dependencies": {
-    "@marklb/file-type": "~10.6.5",
+    "file-type": "~22.0.0",
     "@marklb/ngx-datatable": "21.0.0-alpha.2",
     "ngx-loading": "^17.0.0",
     "@ng-select/ng-select": "^20.2.2",
@@ -50,7 +50,7 @@
     "@turf/boolean-contains": "^7.2.0",
     "@turf/helpers": "^7.2.0",
     "@turf/kinks": "^7.2.0",
-    "shpjs": "^4.0.2",
+    "shpjs": "^6.2.0",
     "@types/geojson": "^7946.0.8"
   },
   "repository": {
