@@ -72,6 +72,8 @@ export class DataFilterSearchComponent
   public readonly name = 'search'
   public readonly uid = `search__${_uid++}`
 
+  @Input() filterName: string | undefined
+
   _control = new UntypedFormControl()
 
   @Input() properties: string[] | undefined | null =
@@ -146,7 +148,7 @@ export class DataFilterSearchComponent
   public filterState(): DataFilterState {
     return {
       // id:
-      name: this.name,
+      name: this.filterName ?? this.name,
       state: {
         value: this._control.value,
         options: this.options,
