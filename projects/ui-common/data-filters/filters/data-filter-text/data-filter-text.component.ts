@@ -106,6 +106,8 @@ export class DataFilterTextComponent implements OnInit, OnDestroy, IDataFilter {
   public readonly name = 'text'
   public readonly uid = `text__${_uid++}`
 
+  @Input() filterName: string | undefined
+
   _control = new UntypedFormControl()
 
   @Input() properties: string[] | undefined | null =
@@ -179,7 +181,7 @@ export class DataFilterTextComponent implements OnInit, OnDestroy, IDataFilter {
   public filterState(): DataFilterState {
     return {
       // id:
-      name: this.name,
+      name: this.filterName ?? this.name,
       state: {
         value: this._control.value,
         options: this.options,
