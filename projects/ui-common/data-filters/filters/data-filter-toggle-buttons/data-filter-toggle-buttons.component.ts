@@ -117,6 +117,8 @@ export class DataFilterToggleButtonsComponent
   public readonly name = 'toggle-buttons'
   public readonly uid = `toggle-buttons__${_uid++}`
 
+  @Input() filterName: string | undefined
+
   _control = new UntypedFormControl()
 
   @Input() properties = this._optDefault('properties')
@@ -205,7 +207,7 @@ export class DataFilterToggleButtonsComponent
   public filterState(): DataFilterState {
     return {
       // id:
-      name: this.name,
+      name: this.filterName ?? this.name,
       state: {
         value: this._control.value,
         options: this.options,

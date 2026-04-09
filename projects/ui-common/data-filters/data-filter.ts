@@ -33,6 +33,17 @@ export interface DataFilter {
   name: string
 
   /**
+   * Optional override for the filter name used in `filterState()`.
+   *
+   * When multiple instances of the same filter type exist on a page, each
+   * instance shares the same `name`. Set `filterName` to give an instance a
+   * distinct key so that filter-state mappers can differentiate them.
+   *
+   * If unset, `filterState()` falls back to `name`.
+   */
+  filterName?: string
+
+  /**
    * Unique value to prevent a filter being used more than once if it ends up
    * being registered more than once.
    */
