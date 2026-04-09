@@ -1,5 +1,9 @@
 @import '../styles/utilities';
 
+seam-dashboard-widgets .dashboard-widgets-list-item:not(:has(seam-widget)) {
+  display: none;
+}
+
 seam-dashboard-widgets {
   display: flex;
   justify-content: center;
