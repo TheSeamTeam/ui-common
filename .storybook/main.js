@@ -75,6 +75,24 @@ module.exports = {
       })
     }
 
+    // file-type v22 dynamically imports node:fs/promises inside fromFile(),
+    // which is never called in the browser. Webpack 5 doesn't handle the
+    // node: URI scheme, so we strip the prefix and provide an empty fallback.
+    const { default: webpack } = await import('webpack')
+    config.plugins.push(
+      new webpack.NormalModuleReplacementPlugin(/^node:/, (resource) => {
+        resource.request = resource.request.replace(/^node:/, '')
+      }),
+    )
+    config.resolve = {
+      ...config.resolve,
+      fallback: {
+        ...config.resolve?.fallback,
+        fs: false,
+        'fs/promises': false,
+      },
+    }
+
     return config
   },
 }

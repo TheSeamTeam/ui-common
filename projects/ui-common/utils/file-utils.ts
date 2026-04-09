@@ -1,7 +1,6 @@
-import fileType from '@marklb/file-type'
-import { Buffer } from 'buffer/'
+import { fileTypeFromBuffer } from 'file-type'
 
-export function readFileAsync(file: any): Promise<ArrayBuffer | null> {
+export function readFileAsync(file: Blob): Promise<ArrayBuffer | null> {
   return new Promise<ArrayBuffer | null>((resolve, reject) => {
     const reader = new FileReader()
     reader.onload = () => {
@@ -23,23 +22,33 @@ export async function readFileAsDataUrlAsync(
   })
 }
 
+/** Coerce a buffer to an ArrayBuffer suitable for use as a BlobPart. */
+function toArrayBuffer(buffer: Uint8Array | ArrayBuffer): ArrayBuffer {
+  if (buffer instanceof ArrayBuffer) {
+    return buffer
+  }
+  // Slice to get an owned ArrayBuffer, avoiding SharedArrayBuffer TS issues with BlobPart.
+  return buffer.buffer.slice(
+    buffer.byteOffset,
+    buffer.byteOffset + buffer.byteLength,
+  ) as ArrayBuffer
+}
+
 export async function fileBufferToBlob(
-  fileBuffer: Buffer,
+  buffer: Uint8Array | ArrayBuffer,
   defaultMime: string = 'application/octet-stream',
 ): Promise<Blob> {
-  const fType = fileType(fileBuffer)
+  const fType = await fileTypeFromBuffer(buffer)
   const mime = fType ? fType.mime : defaultMime
-  const blob = new Blob([fileBuffer as any], { type: mime })
-  return blob
+  return new Blob([toArrayBuffer(buffer)], { type: mime })
 }
 
 export async function fileBufferToObjectUrl(
-  fileBuffer: Buffer,
+  buffer: Uint8Array | ArrayBuffer,
   defaultMime: string = 'application/octet-stream',
 ): Promise<string> {
-  const file = await fileBufferToBlob(fileBuffer, defaultMime)
-  const fileURL = URL.createObjectURL(file)
-  return fileURL
+  const file = await fileBufferToBlob(buffer, defaultMime)
+  return URL.createObjectURL(file)
 }
 
 export interface IFileData {
@@ -49,16 +58,14 @@ export interface IFileData {
 }
 
 export async function fileDataFromBuffer(
-  fileBuffer: Buffer | Uint8Array | ArrayBuffer,
+  buffer: Uint8Array | ArrayBuffer,
   defaultMime: string = 'application/octet-stream',
 ): Promise<IFileData> {
-  const _fileBuffer = Buffer.from(fileBuffer as any) // TODO: Fix type
-  const fType = fileType(_fileBuffer as any)
-  const ext = (fType && fType.ext) || undefined
+  const fType = await fileTypeFromBuffer(buffer)
+  const ext = fType?.ext
   const mime = fType ? fType.mime : defaultMime
-  const blob = new Blob([_fileBuffer as any], { type: mime })
-  const fileData: IFileData = { ext, mime, blob }
-  return fileData
+  const blob = new Blob([toArrayBuffer(buffer)], { type: mime })
+  return { ext, mime, blob }
 }
 
 export function openBlob(blob: Blob, target?: string, filename?: string) {
