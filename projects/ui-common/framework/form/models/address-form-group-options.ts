@@ -1,13 +1,13 @@
 import { DestroyRef } from '@angular/core'
 import { FormControl, FormGroup } from '@angular/forms'
-import { Subscription } from 'rxjs'
+import { Observable, Subscription } from 'rxjs'
 
 import { TheSeamAddressFieldConfig } from './address-field-config'
 import { TheSeamAddressFormValue } from './address-form-value'
 
 export interface TheSeamAddressFormGroupOptions {
   config?: Partial<TheSeamAddressFieldConfig>
-  stateCodes: import('rxjs').Observable<string[]>
+  stateCodes: Observable<string[]>
   /** default: true */
   countryRequiredOutsideUSA?: boolean
   /** default: 'USA' */

@@ -46,7 +46,7 @@ export function createAddressFormGroup<
     tap(() => {
       const sv = getStateValidators(
         options.stateCodes,
-        group.controls.state,
+        countryCtrl,
         countryRequiredOutsideUSA,
         config,
       )

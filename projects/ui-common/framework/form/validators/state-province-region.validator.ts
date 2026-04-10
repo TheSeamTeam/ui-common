@@ -1,5 +1,5 @@
 import { AbstractControl, AsyncValidatorFn } from '@angular/forms'
-import { Observable } from 'rxjs'
+import { firstValueFrom, Observable } from 'rxjs'
 import { map, take } from 'rxjs/operators'
 
 import { isEmptyInputValue } from '@theseam/ui-common/utils'
@@ -31,12 +31,12 @@ export function stateProvinceRegionValidator(
     }
 
     if (isCountryUSA(countryControl)) {
-      const isValidStateCode = await stateCodes
-        .pipe(
+      const isValidStateCode = await firstValueFrom(
+        stateCodes.pipe(
           take(1),
           map((codes) => codes.indexOf(value) !== -1),
-        )
-        .toPromise()
+        ),
+      )
 
       return isValidStateCode
         ? null
