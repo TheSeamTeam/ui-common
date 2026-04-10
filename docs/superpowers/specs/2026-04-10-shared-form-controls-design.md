@@ -89,21 +89,37 @@ export const DEFAULT_USERNAME_FIELD_CONFIG: TheSeamUsernameFieldConfig = {
 
 Each returns `TheSeamControlValidators` (`{ validators: ValidatorFn[], asyncValidators: AsyncValidatorFn[] }`).
 
+All getters that include `Validators.required` by default accept an optional `overrides` parameter to exclude it:
+
 ```typescript
-export function getAddress1Validators(config?: Partial<TheSeamAddressFieldConfig>): TheSeamControlValidators
-export function getAddress2Validators(config?: Partial<TheSeamAddressFieldConfig>): TheSeamControlValidators
-export function getCityValidators(config?: Partial<TheSeamAddressFieldConfig>): TheSeamControlValidators
-export function getCountryValidators(config?: Partial<TheSeamAddressFieldConfig>, options?: TheSeamCreateCountryControlOptions): TheSeamControlValidators
-export function getStateValidators(stateCodes: Observable<string[]>, stateControl?: AbstractControl, requiredOutsideUSA?: boolean): TheSeamControlValidators
-export function getZipValidators(countryControl?: AbstractControl): TheSeamControlValidators
-export function getUsernameValidators(userExists: TheSeamUserExistsFn, config?: Partial<TheSeamUsernameFieldConfig>): TheSeamControlValidators
+export interface TheSeamValidatorOverrides {
+  required?: boolean  // default true — set false to exclude Validators.required
+}
 ```
 
-Apps that need to add custom validators call these, spread the result, and append:
+```typescript
+export function getAddress1Validators(config?: Partial<TheSeamAddressFieldConfig>, overrides?: TheSeamValidatorOverrides): TheSeamControlValidators
+export function getAddress2Validators(config?: Partial<TheSeamAddressFieldConfig>, overrides?: TheSeamValidatorOverrides): TheSeamControlValidators
+export function getCityValidators(config?: Partial<TheSeamAddressFieldConfig>, overrides?: TheSeamValidatorOverrides): TheSeamControlValidators
+export function getCountryValidators(config?: Partial<TheSeamAddressFieldConfig>, options?: TheSeamCreateCountryControlOptions, overrides?: TheSeamValidatorOverrides): TheSeamControlValidators
+export function getStateValidators(stateCodes: Observable<string[]>, stateControl?: AbstractControl, requiredOutsideUSA?: boolean): TheSeamControlValidators
+export function getZipValidators(countryControl?: AbstractControl): TheSeamControlValidators
+export function getUsernameValidators(userExists: TheSeamUserExistsFn, config?: Partial<TheSeamUsernameFieldConfig>, overrides?: TheSeamValidatorOverrides): TheSeamControlValidators
+```
+
+Note: `getStateValidators` and `getZipValidators` don't use `overrides` because their `required` behavior is already conditional on country (via `ifUSA` / `requiredOutsideUSA`).
+
+Apps can add validators by spreading:
 
 ```typescript
 const v = getAddress1Validators()
 const ctrl = new FormControl('', [...v.validators, myCustomValidator], v.asyncValidators)
+```
+
+Or exclude `required` for admin/override scenarios:
+
+```typescript
+const v = getAddress1Validators(undefined, { required: false })
 ```
 
 ### Layer 2 — Control Factories (convenience)
@@ -111,12 +127,13 @@ const ctrl = new FormControl('', [...v.validators, myCustomValidator], v.asyncVa
 Each returns a typed `FormControl<string | null>`.
 
 ```typescript
-export function createAddress1Control(formState?: string | null, config?: Partial<TheSeamAddressFieldConfig>): FormControl<string | null>
-export function createCountryControl(formState?: string | null, options?: TheSeamCreateCountryControlOptions): FormControl<string | null>
+export function createAddress1Control(formState?: string | null, config?: Partial<TheSeamAddressFieldConfig>, overrides?: TheSeamValidatorOverrides): FormControl<string | null>
+export function createAddress2Control(formState?: string | null, config?: Partial<TheSeamAddressFieldConfig>, overrides?: TheSeamValidatorOverrides): FormControl<string | null>
+export function createCityControl(formState?: string | null, config?: Partial<TheSeamAddressFieldConfig>, overrides?: TheSeamValidatorOverrides): FormControl<string | null>
+export function createCountryControl(formState?: string | null, options?: TheSeamCreateCountryControlOptions, overrides?: TheSeamValidatorOverrides): FormControl<string | null>
 export function createStateControl(formState?: string | null, stateCodes: Observable<string[]>, requiredOutsideUSA?: boolean): FormControl<string | null>
 export function createZipControl(formState?: string | null): FormControl<string | null>
-export function createUsernameControl(formState?: string | null, userExists: TheSeamUserExistsFn, config?: Partial<TheSeamUsernameFieldConfig>): FormControl<string | null>
-// ... etc.
+export function createUsernameControl(formState?: string | null, userExists: TheSeamUserExistsFn, config?: Partial<TheSeamUsernameFieldConfig>, overrides?: TheSeamValidatorOverrides): FormControl<string | null>
 ```
 
 ### Layer 3 — Address FormGroup Factory
