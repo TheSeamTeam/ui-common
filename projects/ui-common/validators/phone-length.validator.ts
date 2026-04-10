@@ -18,9 +18,11 @@ export function phoneLengthValidator(
 ): ValidatorFn {
   const c = { ...DEFAULT_CONFIG, ...config }
   return (control: AbstractControl) => {
-    return control.value.length === 0 ||
-      (control.value.length <= c.maxLength &&
-        control.value.length >= c.minLength)
+    const value = control.value
+    if (value == null || value.length === 0) {
+      return null
+    }
+    return value.length <= c.maxLength && value.length >= c.minLength
       ? null
       : { phoneLength: {} }
   }
