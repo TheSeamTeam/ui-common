@@ -35,6 +35,7 @@ export default {
     '**/graphql/**/*.spec.ts',
     '**/buttons/**/*.spec.ts',
     // '**/framework/side-nav/**/*.spec.ts',
+    '**/framework/form/**/*.spec.ts',
     '**/utils/**/*.spec.ts',
     '**/validators/**/*.spec.ts',
     '**/datatable/**/*.spec.ts',
