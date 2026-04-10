@@ -1,5 +1,7 @@
 import { AbstractControl, ValidatorFn } from '@angular/forms'
 
+import { isEmptyInputValue } from '@theseam/ui-common/utils'
+
 export interface TheSeamPhoneLengthConfig {
   minLength: number
   maxLength: number
@@ -18,11 +20,11 @@ export function phoneLengthValidator(
 ): ValidatorFn {
   const c = { ...DEFAULT_CONFIG, ...config }
   return (control: AbstractControl) => {
-    const value = control.value
-    if (value == null || value.length === 0) {
+    if (isEmptyInputValue(control.value)) {
       return null
     }
-    return value.length <= c.maxLength && value.length >= c.minLength
+    return control.value.length <= c.maxLength &&
+      control.value.length >= c.minLength
       ? null
       : { phoneLength: {} }
   }
