@@ -43,6 +43,9 @@ export * from './controls/create-state-control'
 export * from './controls/create-zip-control'
 export * from './controls/create-username-control'
 
+// Components
+export * from './components/password-validators-list/password-validators-list.component'
+
 // Layer 3 — FormGroup factories
 export * from './controls/create-address-form-group'
 export * from './controls/create-password-form-group'
