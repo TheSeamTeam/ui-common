@@ -1,13 +1,11 @@
-import { AbstractControl, ValidatorFn } from '@angular/forms'
+import { AbstractControl } from '@angular/forms'
 
 import { isEmptyInputValue } from '@theseam/ui-common/utils'
 
 /**
  * Rejects passwords that contain the word "password" (case-insensitive).
  */
-export const passwordContentValidator: ValidatorFn = (
-  control: AbstractControl,
-) => {
+export function passwordContentValidator(control: AbstractControl) {
   if (isEmptyInputValue(control.value)) {
     return null
   }

@@ -1,13 +1,11 @@
-import { AbstractControl, ValidatorFn } from '@angular/forms'
+import { AbstractControl } from '@angular/forms'
 
 import { isEmptyInputValue } from '@theseam/ui-common/utils'
 
 /**
  * Requires at least one special character.
  */
-export const passwordSpecialCharValidator: ValidatorFn = (
-  control: AbstractControl,
-) => {
+export function passwordSpecialCharValidator(control: AbstractControl) {
   if (isEmptyInputValue(control.value)) {
     return null
   }
