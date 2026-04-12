@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core'
-import { MediaObserver } from '@angular/flex-layout'
 import { BehaviorSubject, Observable } from 'rxjs'
 import { shareReplay, switchMap } from 'rxjs/operators'
 
@@ -20,7 +19,7 @@ export class TheSeamLayoutService {
   private _mobileBreakpoint = new BehaviorSubject<MediaQueryAliases>('lt-sm')
   public mobileBreakpoint$ = this._mobileBreakpoint.asObservable()
 
-  constructor(private _media: MediaObserver) {
+  constructor() {
     this.isMobile$ = this.mobileBreakpoint$.pipe(
       switchMap((breakpoint) => this.observe(breakpoint)),
       shareReplay({ bufferSize: 1, refCount: true }),
@@ -28,7 +27,7 @@ export class TheSeamLayoutService {
   }
 
   public observe(alias: MediaQueryAliases): Observable<boolean> {
-    return observeMediaQuery(this._media, alias)
+    return observeMediaQuery(alias)
   }
 
   /**

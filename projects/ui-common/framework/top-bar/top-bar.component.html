@@ -27,12 +27,14 @@
 
   <ng-template #logoTpl>
     <div>
-      <img
-        *ngIf="logo"
-        [src]="logo"
-        [src.lt-md]="logoSm ? logoSm : logo"
-        alt="Logo"
-      />
+      <picture *ngIf="logo">
+        <source
+          *ngIf="logoSm"
+          [attr.srcset]="logoSm"
+          media="(max-width: 959px)"
+        />
+        <img [src]="logo" alt="Logo" />
+      </picture>
     </div>
   </ng-template>
 

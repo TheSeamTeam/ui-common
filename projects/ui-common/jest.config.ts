@@ -43,6 +43,7 @@ export default {
     '**/tel-input/**/*.spec.ts',
     '**/tooltip/**/*.spec.ts',
     '**/tabbed/**/*.spec.ts',
+    '**/layout/**/*.spec.ts',
     '**/datatable-alterations-display/**/*.spec.ts',
     '**/route-transitions/**/*.spec.ts',
   ],
