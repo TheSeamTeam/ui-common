@@ -74,10 +74,7 @@ export const Pristine: Story = {
     await expect(messages).toContain('Both password fields must match.')
 
     // No icons when pristine
-    const iconTexts = await harness.getIconContainerTexts()
-    for (const text of iconTexts) {
-      await expect(text).toBe('')
-    }
+    await expect(await harness.getIconCount()).toBe(0)
   },
 }
 
@@ -111,14 +108,10 @@ export const WeakPassword: Story = {
 
     await expect(await harness.getItemCount()).toBe(7)
 
-    // Icons should be visible for field validators (password1 is dirty)
-    const iconTexts = await harness.getIconContainerTexts()
-    // First 6 are field validators — should have icon content
-    for (let i = 0; i < 6; i++) {
-      await expect(iconTexts[i]).not.toBe('')
-    }
-    // Last item (passwordMatch) is a group validator — only one field dirty, no icon
-    await expect(iconTexts[6]).toBe('')
+    // 6 field validators should show icons (password1 is dirty)
+    // Match validator hidden (only one field dirty)
+    await expect(await harness.getIconCount()).toBe(6)
+    await expect(await harness.getErrorCount()).toBeGreaterThan(0)
   },
 }
 
@@ -152,11 +145,9 @@ export const StrongPassword: Story = {
 
     await expect(await harness.getItemCount()).toBe(7)
 
-    // Field validators should all show icons (password1 dirty + strong)
-    const iconTexts = await harness.getIconContainerTexts()
-    for (let i = 0; i < 6; i++) {
-      await expect(iconTexts[i]).not.toBe('')
-    }
+    // All 6 field validators pass
+    await expect(await harness.getSuccessCount()).toBe(6)
+    await expect(await harness.getErrorCount()).toBe(0)
   },
 }
 
@@ -192,11 +183,10 @@ export const MatchingPasswords: Story = {
 
     await expect(await harness.getItemCount()).toBe(7)
 
-    // All validators should show icons (both fields dirty, all passing)
-    const iconTexts = await harness.getIconContainerTexts()
-    for (const text of iconTexts) {
-      await expect(text).not.toBe('')
-    }
+    // All 7 validators pass (both fields dirty, matching)
+    await expect(await harness.getIconCount()).toBe(7)
+    await expect(await harness.getSuccessCount()).toBe(7)
+    await expect(await harness.getErrorCount()).toBe(0)
   },
 }
 
@@ -232,15 +222,10 @@ export const MismatchedPasswords: Story = {
 
     await expect(await harness.getItemCount()).toBe(7)
 
-    // All validators should show icons (both fields dirty)
-    const iconTexts = await harness.getIconContainerTexts()
-    for (const text of iconTexts) {
-      await expect(text).not.toBe('')
-    }
-
-    // Verify messages still present
-    const messages = await harness.getItemMessages()
-    await expect(messages).toContain('Both password fields must match.')
+    // 6 field validators pass, 1 match validator fails
+    await expect(await harness.getIconCount()).toBe(7)
+    await expect(await harness.getSuccessCount()).toBe(6)
+    await expect(await harness.getErrorCount()).toBe(1)
   },
 }
 
@@ -274,11 +259,10 @@ export const CustomMinLength: Story = {
 
     await expect(await harness.getItemCount()).toBe(7)
 
-    // "MyStr0ng!" is 9 chars — should fail the 12-char minimum
-    // Field validators should all have icons since password1 is dirty
-    const iconTexts = await harness.getIconContainerTexts()
-    for (let i = 0; i < 6; i++) {
-      await expect(iconTexts[i]).not.toBe('')
-    }
+    // "MyStr0ng!" is 9 chars — fails 12-char minimum
+    // 5 pass, 1 fails (length), match hidden
+    await expect(await harness.getIconCount()).toBe(6)
+    await expect(await harness.getSuccessCount()).toBe(5)
+    await expect(await harness.getErrorCount()).toBe(1)
   },
 }

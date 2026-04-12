@@ -88,43 +88,71 @@ describe('TheSeamPasswordValidatorsListComponent', () => {
 
   it('should not show icons when fields are pristine', async () => {
     const { harness } = await setup()
-    const texts = await harness.getIconContainerTexts()
-    texts.forEach((text) => expect(text).toBe(''))
+    expect(await harness.getIconCount()).toBe(0)
   })
 
-  it('should show icons when password1 is dirty', async () => {
+  it('should show error icons when password1 is dirty and weak', async () => {
     const { fixture, harness } = await setup()
     const form = fixture.componentInstance.form
     form.controls.password1.setValue('weak')
     form.controls.password1.markAsDirty()
+    form.controls.password1.markAsTouched()
+    fixture.detectChanges()
     fixture.detectChanges()
 
-    const count = await harness.getItemCount()
-    expect(count).toBe(7)
+    // 6 field validators should show icons, match validator should not
+    expect(await harness.getIconCount()).toBe(6)
+    expect(await harness.getErrorCount()).toBeGreaterThan(0)
   })
 
-  it('should keep all items when password meets all criteria', async () => {
+  it('should show all success icons when password meets all criteria', async () => {
     const { fixture, harness } = await setup()
     const form = fixture.componentInstance.form
     form.controls.password1.setValue('MyStr0ng!')
     form.controls.password1.markAsDirty()
+    form.controls.password1.markAsTouched()
+    fixture.detectChanges()
     fixture.detectChanges()
 
-    const count = await harness.getItemCount()
-    expect(count).toBe(7)
+    // 6 field validators pass, match validator still hidden (only one field dirty)
+    expect(await harness.getIconCount()).toBe(6)
+    expect(await harness.getSuccessCount()).toBe(6)
+    expect(await harness.getErrorCount()).toBe(0)
   })
 
-  it('should handle both fields dirty for match validator', async () => {
+  it('should show all 7 icons when both fields dirty and matching', async () => {
     const { fixture, harness } = await setup()
     const form = fixture.componentInstance.form
     form.controls.password1.setValue('MyStr0ng!')
     form.controls.password1.markAsDirty()
+    form.controls.password1.markAsTouched()
     form.controls.password2.setValue('MyStr0ng!')
     form.controls.password2.markAsDirty()
+    form.controls.password2.markAsTouched()
+    fixture.detectChanges()
+    // Second detectChanges for ngDoCheck to pick up touched state
     fixture.detectChanges()
 
-    const count = await harness.getItemCount()
-    expect(count).toBe(7)
+    expect(await harness.getIconCount()).toBe(7)
+    expect(await harness.getSuccessCount()).toBe(7)
+    expect(await harness.getErrorCount()).toBe(0)
+  })
+
+  it('should show match error when passwords differ', async () => {
+    const { fixture, harness } = await setup()
+    const form = fixture.componentInstance.form
+    form.controls.password1.setValue('MyStr0ng!')
+    form.controls.password1.markAsDirty()
+    form.controls.password1.markAsTouched()
+    form.controls.password2.setValue('Different!')
+    form.controls.password2.markAsDirty()
+    form.controls.password2.markAsTouched()
+    fixture.detectChanges()
+    fixture.detectChanges()
+
+    expect(await harness.getIconCount()).toBe(7)
+    expect(await harness.getSuccessCount()).toBe(6)
+    expect(await harness.getErrorCount()).toBe(1)
   })
 })
 
