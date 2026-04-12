@@ -18,10 +18,7 @@ import { map, shareReplay, startWith, takeUntil } from 'rxjs/operators'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { faUserCircle } from '@fortawesome/free-regular-svg-icons'
 import { InputBoolean } from '@theseam/ui-common/core'
-import {
-  TheSeamLayoutModule,
-  TheSeamLayoutService,
-} from '@theseam/ui-common/layout'
+import { TheSeamLayoutService } from '@theseam/ui-common/layout'
 import { SeamIcon, TheSeamIconModule } from '@theseam/ui-common/icon'
 import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
 import { TheSeamMenuModule } from '@theseam/ui-common/menu'
@@ -64,7 +61,6 @@ import { TheSeamBaseLayoutModule } from '../base-layout/base-layout.module'
     TheSeamIconModule,
     TheSeamMenuModule,
     TheSeamBaseLayoutModule,
-    TheSeamLayoutModule,
     TopBarTitleComponent,
     TopBarMenuButtonComponent,
     // TheSeamBaseLayoutNavToggleDirective,

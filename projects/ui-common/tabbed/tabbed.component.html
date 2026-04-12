@@ -1,9 +1,12 @@
-<div [fxLayout]="direction === 'horizontal' ? 'column' : 'row'" fxFlexFill>
+<div
+  class="tabbed-root"
+  [style.flex-direction]="direction === 'horizontal' ? 'column' : 'row'"
+>
   <!-- Tabs -->
   <div
     *ngIf="!hideTabs"
-    [fxLayout]="direction === 'horizontal' ? 'row' : 'column'"
-    style="position: relative"
+    class="tabbed-tabs"
+    [style.flex-direction]="direction === 'horizontal' ? 'row' : 'column'"
   >
     <ng-container *ngFor="let tabbedItem of tabbedItems$ | async">
       <div
@@ -30,7 +33,7 @@
     <ng-template #notOnlyRouteContent>
       <ng-container *ngIf="selectedTab$ | async as selectedTab">
         <seam-tabbed-content
-          fxFlexFill
+          class="tabbed-content-fill"
           [tabbedItem]="selectedTab"
         ></seam-tabbed-content>
       </ng-container>

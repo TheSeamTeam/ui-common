@@ -1,12 +1,5 @@
-import { MediaObserver } from '@angular/flex-layout'
 import { Observable } from 'rxjs'
-import {
-  distinctUntilChanged,
-  map,
-  shareReplay,
-  startWith,
-  tap,
-} from 'rxjs/operators'
+import { distinctUntilChanged, shareReplay } from 'rxjs/operators'
 
 import { MediaQueryAliases } from './breakpoint-aliases'
 
@@ -27,32 +20,25 @@ const mediaQueriesMap: { [breakpoint: string]: string } = {
 }
 
 /**
- * TODO: Find out if the MediaObserver can return an immediate result on load
- * accurately like the native matchMedia. If not switch to another that can or
- * just implement it myself. I would rather use a well tested library for
- * something like that, since it could have a lot of affect on performance.
- */
-function isMediaQueryActive(query: string, fallback: MediaObserver) {
-  if (window && window.matchMedia) {
-    const x = window.matchMedia(mediaQueriesMap[query])
-    return x.matches
-  }
-  return fallback.isActive(query)
-}
-
-/**
- * Observable helper for observing a single breakpoint alias with
- * `@angular/flex-layout` MediaObserver.
+ * Observable helper for observing a single breakpoint alias using native
+ * `window.matchMedia`.
  */
 export function observeMediaQuery(
-  mediaObserver: MediaObserver,
   alias: MediaQueryAliases,
 ): Observable<boolean> {
-  // console.log(alias, mediaObserver.isActive(alias), isMediaQueryActive(alias, mediaObserver))
-  return mediaObserver.asObservable().pipe(
-    map((_) => mediaObserver.isActive(alias)),
-    // startWith(mediaObserver.isActive(alias)),
-    startWith(isMediaQueryActive(alias, mediaObserver)),
+  const query = mediaQueriesMap[alias]
+
+  return new Observable<boolean>((subscriber) => {
+    const mql = window.matchMedia(query)
+    subscriber.next(mql.matches)
+
+    const handler = (event: MediaQueryListEvent) => {
+      subscriber.next(event.matches)
+    }
+
+    mql.addEventListener('change', handler)
+    return () => mql.removeEventListener('change', handler)
+  }).pipe(
     distinctUntilChanged(),
     shareReplay({ refCount: true, bufferSize: 1 }),
   )

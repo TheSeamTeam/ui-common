@@ -11,7 +11,6 @@ import {
 } from '@angular/core'
 import { AsyncPipe, NgFor, NgIf } from '@angular/common'
 import { ActivatedRoute, Router, RouterModule } from '@angular/router'
-import { FlexLayoutModule } from '@angular/flex-layout'
 import { BehaviorSubject, combineLatest, shareReplay, tap } from 'rxjs'
 
 import { isNullOrUndefined } from '@theseam/ui-common/utils'
@@ -30,7 +29,6 @@ import { TheSeamTabbedService, TheSeamTabsDirection } from './tabbed.service'
     NgFor,
     AsyncPipe,
     RouterModule,
-    FlexLayoutModule,
     TheSeamTabbedContentComponent,
   ],
 })

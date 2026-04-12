@@ -4,3 +4,31 @@ seam-top-bar-title {
   flex-direction: row;
   align-items: center;
 }
+
+.top-bar-title__heading {
+  font-size: 32px;
+}
+
+// fxHide.gt-sm: hidden when screen > 960px
+.top-bar-title__break {
+  display: none;
+
+  @media screen and (max-width: 959px) {
+    display: block;
+  }
+}
+
+// ngStyle.lt-md: font-size 26px when screen <= 959px
+@media screen and (max-width: 959px) {
+  .top-bar-title__heading {
+    font-size: 26px;
+  }
+}
+
+// ngStyle.lt-sm: font-size 20px, line-height 1 when screen <= 599px
+@media screen and (max-width: 599px) {
+  .top-bar-title__heading {
+    font-size: 20px;
+    line-height: 1;
+  }
+}
