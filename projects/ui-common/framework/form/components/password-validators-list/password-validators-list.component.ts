@@ -61,7 +61,6 @@ const DEFAULT_VALIDATORS: TheSeamPasswordValidatorItem[] = [
   templateUrl: './password-validators-list.component.html',
   styleUrls: ['./password-validators-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [AsyncPipe, TheSeamIconModule],
 })
 export class TheSeamPasswordValidatorsListComponent implements DoCheck {
