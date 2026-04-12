@@ -4,212 +4,222 @@ import { integerValidator } from './integer.validator'
 
 describe('integerValidator', () => {
   it('should return null for empty control', () => {
-    expect(integerValidator(new UntypedFormControl())).toBeNull()
-    expect(integerValidator(new UntypedFormControl(null))).toBeNull()
-    expect(integerValidator(new UntypedFormControl(undefined))).toBeNull()
-    expect(integerValidator(new UntypedFormControl([]))).toBeNull()
-    expect(integerValidator(new UntypedFormControl(''))).toBeNull()
+    expect(integerValidator()(new UntypedFormControl())).toBeNull()
+    expect(integerValidator()(new UntypedFormControl(null))).toBeNull()
+    expect(integerValidator()(new UntypedFormControl(undefined))).toBeNull()
+    expect(integerValidator()(new UntypedFormControl([]))).toBeNull()
+    expect(integerValidator()(new UntypedFormControl(''))).toBeNull()
   })
 
   it('should succeed for valid integer control values', () => {
-    expect(integerValidator(new UntypedFormControl(0))).toBeNull()
-    expect(integerValidator(new UntypedFormControl(1))).toBeNull()
-    expect(integerValidator(new UntypedFormControl(-1))).toBeNull()
-    expect(integerValidator(new UntypedFormControl(1234))).toBeNull()
-    expect(integerValidator(new UntypedFormControl(10))).toBeNull()
-    expect(integerValidator(new UntypedFormControl('0'))).toBeNull()
-    expect(integerValidator(new UntypedFormControl('1'))).toBeNull()
-    expect(integerValidator(new UntypedFormControl('-1'))).toBeNull()
-    expect(integerValidator(new UntypedFormControl('1234'))).toBeNull()
-    expect(integerValidator(new UntypedFormControl('10'))).toBeNull()
-    expect(integerValidator(new UntypedFormControl('01'))).toBeNull()
+    expect(integerValidator()(new UntypedFormControl(0))).toBeNull()
+    expect(integerValidator()(new UntypedFormControl(1))).toBeNull()
+    expect(integerValidator()(new UntypedFormControl(-1))).toBeNull()
+    expect(integerValidator()(new UntypedFormControl(1234))).toBeNull()
+    expect(integerValidator()(new UntypedFormControl(10))).toBeNull()
+    expect(integerValidator()(new UntypedFormControl('0'))).toBeNull()
+    expect(integerValidator()(new UntypedFormControl('1'))).toBeNull()
+    expect(integerValidator()(new UntypedFormControl('-1'))).toBeNull()
+    expect(integerValidator()(new UntypedFormControl('1234'))).toBeNull()
+    expect(integerValidator()(new UntypedFormControl('10'))).toBeNull()
+    expect(integerValidator()(new UntypedFormControl('01'))).toBeNull()
   })
 
   it('should fail for non-valid integer control values', () => {
-    expect(integerValidator(new UntypedFormControl('a'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('a'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('a-'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('a-'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('a1'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('a1'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('a1-'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('a1-'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('1a'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('1a'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('1a-'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('1a-'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('a.1'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('a.1'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('a.1-'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('a.1-'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('1.a'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('1.a'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('1.a-'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('1.a-'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('--a'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('--a'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('a--'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('a--'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('-a1'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('-a1'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('-1a'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('-1a'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('-a.1'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('-a.1'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('-1.a'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('-1.a'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('-'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('-'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('+'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('+'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('--1'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('--1'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('-+1'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('-+1'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('+-1'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('+-1'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('++1'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('++1'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('1--'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('1--'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('1-+'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('1-+'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('1+-'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('1+-'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('1++'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('1++'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('1..1'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('1..1'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('-1..1'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('-1..1'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('..1'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('..1'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('1..'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('1..'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('.'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('.'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl('..'))).toEqual({
+    expect(integerValidator()(new UntypedFormControl('..'))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl({}))).toEqual({
+    expect(integerValidator()(new UntypedFormControl({}))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl(NaN))).toEqual({
+    expect(integerValidator()(new UntypedFormControl(NaN))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl(Infinity))).toEqual({
+    expect(integerValidator()(new UntypedFormControl(Infinity))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl(new Date()))).toEqual({
+    expect(integerValidator()(new UntypedFormControl(new Date()))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
 
     // eslint-disable-next-line no-object-constructor
-    expect(integerValidator(new UntypedFormControl(new Object()))).toEqual({
+    expect(integerValidator()(new UntypedFormControl(new Object()))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl(true))).toEqual({
+    expect(integerValidator()(new UntypedFormControl(true))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl(false))).toEqual({
+    expect(integerValidator()(new UntypedFormControl(false))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl([1]))).toEqual({
+    expect(integerValidator()(new UntypedFormControl([1]))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl(['1']))).toEqual({
+    expect(integerValidator()(new UntypedFormControl(['1']))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl(0.1))).toEqual({
+    expect(integerValidator()(new UntypedFormControl(0.1))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl(0.1))).toEqual({
+    expect(integerValidator()(new UntypedFormControl(0.1))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl(1.1))).toEqual({
+    expect(integerValidator()(new UntypedFormControl(1.1))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl(-0.1))).toEqual({
+    expect(integerValidator()(new UntypedFormControl(-0.1))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl(-0.1))).toEqual({
+    expect(integerValidator()(new UntypedFormControl(-0.1))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl(-1.1))).toEqual({
+    expect(integerValidator()(new UntypedFormControl(-1.1))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl(1234567.012345))).toEqual({
+    expect(integerValidator()(new UntypedFormControl(1234567.012345))).toEqual({
       integer: { reason: 'Must be valid integer.' },
     })
-    expect(integerValidator(new UntypedFormControl(-1234567.012345))).toEqual({
-      integer: { reason: 'Must be valid integer.' },
-    })
-    expect(integerValidator(new UntypedFormControl('.1'))).toEqual({
-      integer: { reason: 'Must be valid integer.' },
-    })
-    expect(integerValidator(new UntypedFormControl('1.'))).toEqual({
-      integer: { reason: 'Must be valid integer.' },
-    })
-    expect(integerValidator(new UntypedFormControl('0.1'))).toEqual({
-      integer: { reason: 'Must be valid integer.' },
-    })
-    expect(integerValidator(new UntypedFormControl('1.1'))).toEqual({
-      integer: { reason: 'Must be valid integer.' },
-    })
-    expect(integerValidator(new UntypedFormControl('1.0'))).toEqual({
-      integer: { reason: 'Must be valid integer.' },
-    })
-    expect(integerValidator(new UntypedFormControl('-.1'))).toEqual({
-      integer: { reason: 'Must be valid integer.' },
-    })
-    expect(integerValidator(new UntypedFormControl('-1.'))).toEqual({
-      integer: { reason: 'Must be valid integer.' },
-    })
-    expect(integerValidator(new UntypedFormControl('-0.1'))).toEqual({
-      integer: { reason: 'Must be valid integer.' },
-    })
-    expect(integerValidator(new UntypedFormControl('-1.0'))).toEqual({
-      integer: { reason: 'Must be valid integer.' },
-    })
-    expect(integerValidator(new UntypedFormControl('-1.1'))).toEqual({
-      integer: { reason: 'Must be valid integer.' },
-    })
-    expect(integerValidator(new UntypedFormControl('-1234567.012345'))).toEqual(
-      { integer: { reason: 'Must be valid integer.' } },
+    expect(integerValidator()(new UntypedFormControl(-1234567.012345))).toEqual(
+      {
+        integer: { reason: 'Must be valid integer.' },
+      },
     )
-    expect(integerValidator(new UntypedFormControl('-1234567.012345'))).toEqual(
-      { integer: { reason: 'Must be valid integer.' } },
-    )
+    expect(integerValidator()(new UntypedFormControl('.1'))).toEqual({
+      integer: { reason: 'Must be valid integer.' },
+    })
+    expect(integerValidator()(new UntypedFormControl('1.'))).toEqual({
+      integer: { reason: 'Must be valid integer.' },
+    })
+    expect(integerValidator()(new UntypedFormControl('0.1'))).toEqual({
+      integer: { reason: 'Must be valid integer.' },
+    })
+    expect(integerValidator()(new UntypedFormControl('1.1'))).toEqual({
+      integer: { reason: 'Must be valid integer.' },
+    })
+    expect(integerValidator()(new UntypedFormControl('1.0'))).toEqual({
+      integer: { reason: 'Must be valid integer.' },
+    })
+    expect(integerValidator()(new UntypedFormControl('-.1'))).toEqual({
+      integer: { reason: 'Must be valid integer.' },
+    })
+    expect(integerValidator()(new UntypedFormControl('-1.'))).toEqual({
+      integer: { reason: 'Must be valid integer.' },
+    })
+    expect(integerValidator()(new UntypedFormControl('-0.1'))).toEqual({
+      integer: { reason: 'Must be valid integer.' },
+    })
+    expect(integerValidator()(new UntypedFormControl('-1.0'))).toEqual({
+      integer: { reason: 'Must be valid integer.' },
+    })
+    expect(integerValidator()(new UntypedFormControl('-1.1'))).toEqual({
+      integer: { reason: 'Must be valid integer.' },
+    })
+    expect(
+      integerValidator()(new UntypedFormControl('-1234567.012345')),
+    ).toEqual({ integer: { reason: 'Must be valid integer.' } })
+    expect(
+      integerValidator()(new UntypedFormControl('-1234567.012345')),
+    ).toEqual({ integer: { reason: 'Must be valid integer.' } })
+  })
+
+  it('should accept custom regex config', () => {
+    const positiveOnly = integerValidator({ regex: /^\d+$/ })
+    expect(positiveOnly(new UntypedFormControl('123'))).toBeNull()
+    expect(positiveOnly(new UntypedFormControl('-1'))).toEqual({
+      integer: { reason: 'Must be valid integer.' },
+    })
   })
 })
