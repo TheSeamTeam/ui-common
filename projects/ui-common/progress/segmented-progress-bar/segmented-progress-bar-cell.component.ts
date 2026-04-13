@@ -33,7 +33,7 @@ export class SegmentedProgressBarCellComponent {
 
   protected readonly _state = computed<CellState>(() => {
     const s = this.step()
-    if (s.completed !== undefined && s.completed !== null) {
+    if (s.completed !== undefined) {
       return s.completed ? 'COMPLETE' : 'DEFAULT'
     }
     if (s.control) {
