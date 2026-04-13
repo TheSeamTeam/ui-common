@@ -1,5 +1,6 @@
-import { Meta, StoryObj } from '@storybook/angular'
+import { applicationConfig, Meta, StoryObj } from '@storybook/angular'
 import { expect, fn } from 'storybook/test'
+import { provideAnimations } from '@angular/platform-browser/animations'
 
 import { getHarness } from '@theseam/ui-common/testing'
 
@@ -17,6 +18,11 @@ const sampleSteps: TheSeamSegmentedProgressBarStep[] = [
 const meta: Meta<TheSeamSegmentedProgressBarComponent> = {
   title: 'Progress/Components/SegmentedProgressBar',
   component: TheSeamSegmentedProgressBarComponent,
+  decorators: [
+    applicationConfig({
+      providers: [provideAnimations()],
+    }),
+  ],
 }
 
 export default meta
