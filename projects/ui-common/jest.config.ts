@@ -46,6 +46,7 @@ export default {
     '**/layout/**/*.spec.ts',
     '**/datatable-alterations-display/**/*.spec.ts',
     '**/route-transitions/**/*.spec.ts',
+    '**/progress/**/*.spec.ts',
   ],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: '<rootDir>/',

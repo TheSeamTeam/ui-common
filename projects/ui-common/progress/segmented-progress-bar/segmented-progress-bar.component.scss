@@ -1,0 +1,17 @@
+.progress-bar--container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  .progress-bar--cell {
+    width: 25px;
+    height: 20px;
+    border-radius: 3px;
+
+    &.is-clickable {
+      &:hover:not(:disabled) {
+        cursor: pointer;
+      }
+    }
+  }
+}
