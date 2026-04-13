@@ -4,6 +4,24 @@
   display: block;
 }
 
+.tabbed-root {
+  display: flex;
+  flex: 1 1 100%;
+  width: 100%;
+  height: 100%;
+}
+
+.tabbed-tabs {
+  display: flex;
+  position: relative;
+}
+
+.tabbed-content-fill {
+  flex: 1 1 100%;
+  width: 100%;
+  height: 100%;
+}
+
 .tabbed-tab {
   box-sizing: border-box;
   font-weight: normal;
