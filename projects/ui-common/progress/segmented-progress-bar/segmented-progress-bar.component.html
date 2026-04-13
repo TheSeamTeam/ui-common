@@ -1,0 +1,14 @@
+<div class="progress-bar--container">
+  @for (step of progressSteps(); track step.value) {
+    <seam-segmented-progress-bar-cell
+      [step]="step"
+      class="progress-bar--cell border"
+      [class.is-clickable]="clickable()"
+      (click)="onClickProgressCell(step)"
+      [seamTooltip]="step.label"
+      placement="bottom"
+      container="body"
+      [disableTooltip]="!enableTooltip()"
+    />
+  }
+</div>
