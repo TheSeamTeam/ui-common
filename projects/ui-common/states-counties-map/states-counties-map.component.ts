@@ -1,4 +1,5 @@
 import {
+  booleanAttribute,
   ChangeDetectionStrategy,
   Component,
   ElementRef,
@@ -28,6 +29,7 @@ import {
   styleUrls: ['./states-counties-map.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { '[class.seam-interactive]': 'interactive()' },
 })
 export class TheSeamStatesCountiesMapComponent {
   /** FIPS state code (e.g., `"48"` for Texas). Null/undefined renders nothing. */
@@ -35,6 +37,9 @@ export class TheSeamStatesCountiesMapComponent {
 
   /** FIPS county codes to highlight with the `county-selected` class. */
   readonly selectedCountyIds = input<readonly string[]>([])
+
+  /** Enable pointer interaction (click, enter, leave) on counties. */
+  readonly interactive = input(false, { transform: booleanAttribute })
 
   readonly countyClick = output<TheSeamStatesCountiesMapCountyEvent>()
   readonly countyEnter = output<TheSeamStatesCountiesMapCountyEvent>()
@@ -47,14 +52,20 @@ export class TheSeamStatesCountiesMapComponent {
 
   private _topologyPromise: Promise<Topology> | null = null
   private _lastRenderedState: string | null = null
+  private _lastRenderedInteractive: boolean | null = null
   private _renderSerial = 0
 
   constructor() {
-    // Re-render whenever the state number changes.
+    // Re-render whenever the state number or interactive mode changes.
     effect(() => {
       const state = this.stateNumber() ?? null
-      if (state !== this._lastRenderedState) {
+      const inter = this.interactive()
+      if (
+        state !== this._lastRenderedState ||
+        inter !== this._lastRenderedInteractive
+      ) {
         this._lastRenderedState = state
+        this._lastRenderedInteractive = inter
         void this._render()
       }
     })
@@ -163,31 +174,45 @@ export class TheSeamStatesCountiesMapComponent {
       (d) => stateIdFromCountyId(d.id as string | number) === stateNum,
     )
 
-    svg
+    const isInteractive = this.interactive()
+
+    const countyPaths = svg
       .selectAll<SVGPathElement, Feature<Geometry>>('path[county-id]')
       .data(stateCounties)
       .enter()
       .append('path')
       .attr('d', path as unknown as string)
       .attr('county-id', (d) => `${d.id}`.padStart(5, '0'))
-      .on('click', (_event, d) => {
-        this.countyClick.emit({
-          id: `${d.id}`.padStart(5, '0'),
-          feature: d,
+
+    if (isInteractive) {
+      countyPaths
+        .on('click', (_event, d) => {
+          this.countyClick.emit({
+            id: `${d.id}`.padStart(5, '0'),
+            feature: d,
+          })
         })
-      })
-      .on('mouseenter', (_event, d) => {
-        this.countyEnter.emit({
-          id: `${d.id}`.padStart(5, '0'),
-          feature: d,
+        .on('mouseenter', (_event: MouseEvent, d) => {
+          select(_event.currentTarget as SVGPathElement).classed(
+            'county-hover',
+            true,
+          )
+          this.countyEnter.emit({
+            id: `${d.id}`.padStart(5, '0'),
+            feature: d,
+          })
         })
-      })
-      .on('mouseleave', (_event, d) => {
-        this.countyLeave.emit({
-          id: `${d.id}`.padStart(5, '0'),
-          feature: d,
+        .on('mouseleave', (_event: MouseEvent, d) => {
+          select(_event.currentTarget as SVGPathElement).classed(
+            'county-hover',
+            false,
+          )
+          this.countyLeave.emit({
+            id: `${d.id}`.padStart(5, '0'),
+            feature: d,
+          })
         })
-      })
+    }
 
     this._updateSelectedCounties()
   }
