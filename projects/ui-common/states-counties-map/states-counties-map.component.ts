@@ -159,19 +159,17 @@ export class TheSeamStatesCountiesMapComponent {
     ) as FeatureCollection<Geometry>
 
     const stateNum = `${parseInt(state, 10)}`
+    const stateCounties = counties.features.filter(
+      (d) => stateIdFromCountyId(d.id as string | number) === stateNum,
+    )
 
     svg
       .selectAll<SVGPathElement, Feature<Geometry>>('path[county-id]')
-      .data(counties.features)
+      .data(stateCounties)
       .enter()
       .append('path')
       .attr('d', path as unknown as string)
       .attr('county-id', (d) => `${d.id}`.padStart(5, '0'))
-      .style('stroke', (d) =>
-        stateIdFromCountyId(d.id as string | number) === stateNum
-          ? '#000'
-          : 'transparent',
-      )
       .on('click', (_event, d) => {
         this.countyClick.emit({
           id: `${d.id}`.padStart(5, '0'),
