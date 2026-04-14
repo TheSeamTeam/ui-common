@@ -44,15 +44,27 @@ export class TheSeamStatesCountiesMapHarness extends ComponentHarness {
     await path.click()
   }
 
-  /** Hover a county by FIPS id. Throws if the county is not rendered. */
-  async hoverCounty(countyId: string): Promise<void> {
+  /** Simulate pointer entering a county area. Throws if the county is not rendered. */
+  async enterCounty(countyId: string): Promise<void> {
     const path = await this.getCountyPath(countyId)
     if (!path) {
       throw new Error(
-        `TheSeamStatesCountiesMapHarness.hoverCounty: county ${countyId} is not rendered`,
+        `TheSeamStatesCountiesMapHarness.enterCounty: county ${countyId} is not rendered`,
       )
     }
     await path.hover()
+  }
+
+  /** Simulate pointer leaving a county area by hovering away from it. */
+  async leaveCounty(countyId: string): Promise<void> {
+    const path = await this.getCountyPath(countyId)
+    if (!path) {
+      throw new Error(
+        `TheSeamStatesCountiesMapHarness.leaveCounty: county ${countyId} is not rendered`,
+      )
+    }
+    // Move pointer to the wrapper (outside any county) to trigger mouseleave.
+    await (await this.locatorFor('.states-counties-map-wrapper')()).hover()
   }
 
   /** Rendered viewport dimensions, for layout-sensitive assertions. */

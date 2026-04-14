@@ -37,7 +37,8 @@ export class TheSeamStatesCountiesMapComponent {
   readonly selectedCountyIds = input<readonly string[]>([])
 
   readonly countyClick = output<TheSeamStatesCountiesMapCountyEvent>()
-  readonly countyHover = output<TheSeamStatesCountiesMapCountyEvent>()
+  readonly countyEnter = output<TheSeamStatesCountiesMapCountyEvent>()
+  readonly countyLeave = output<TheSeamStatesCountiesMapCountyEvent>()
 
   private readonly _wrapper =
     viewChild.required<ElementRef<HTMLDivElement>>('wrapper')
@@ -178,7 +179,13 @@ export class TheSeamStatesCountiesMapComponent {
         })
       })
       .on('mouseenter', (_event, d) => {
-        this.countyHover.emit({
+        this.countyEnter.emit({
+          id: `${d.id}`.padStart(5, '0'),
+          feature: d,
+        })
+      })
+      .on('mouseleave', (_event, d) => {
+        this.countyLeave.emit({
           id: `${d.id}`.padStart(5, '0'),
           feature: d,
         })

@@ -35,7 +35,7 @@ export const Basic: Story = {
     stateNumber: ALABAMA_FIPS,
     selectedCountyIds: [],
     countyClick: fn(),
-    countyHover: fn(),
+    countyEnter: fn(),
   },
   play: async ({ canvasElement }) => {
     const harness = await getHarness(TheSeamStatesCountiesMapHarness, {
@@ -55,7 +55,7 @@ export const WithSelection: Story = {
     stateNumber: ALABAMA_FIPS,
     selectedCountyIds: SELECTED_COUNTIES,
     countyClick: fn(),
-    countyHover: fn(),
+    countyEnter: fn(),
   },
   play: async ({ canvasElement }) => {
     const harness = await getHarness(TheSeamStatesCountiesMapHarness, {
@@ -68,12 +68,12 @@ export const WithSelection: Story = {
   },
 }
 
-export const EmitsClickAndHover: Story = {
+export const EmitsClickAndEnter: Story = {
   args: {
     stateNumber: ALABAMA_FIPS,
     selectedCountyIds: [],
     countyClick: fn(),
-    countyHover: fn(),
+    countyEnter: fn(),
   },
   play: async ({ canvasElement, args }) => {
     const harness = await getHarness(TheSeamStatesCountiesMapHarness, {
@@ -88,8 +88,8 @@ export const EmitsClickAndHover: Story = {
       expect.objectContaining({ id: '01001' }),
     )
 
-    await harness.hoverCounty('01003')
-    await expect(args.countyHover).toHaveBeenCalledWith(
+    await harness.enterCounty('01003')
+    await expect(args.countyEnter).toHaveBeenCalledWith(
       expect.objectContaining({ id: '01003' }),
     )
   },
@@ -100,7 +100,7 @@ export const NoStateSelected: Story = {
     stateNumber: null,
     selectedCountyIds: [],
     countyClick: fn(),
-    countyHover: fn(),
+    countyEnter: fn(),
   },
   play: async ({ canvasElement }) => {
     const harness = await getHarness(TheSeamStatesCountiesMapHarness, {

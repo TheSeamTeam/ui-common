@@ -28,7 +28,13 @@ seam-states-counties-map {
     stroke: #000;
   }
 
+  .county {
+    fill: transparent;
+    cursor: pointer;
+  }
+
   .county-selected {
     fill: blue;
+    cursor: pointer;
   }
 }

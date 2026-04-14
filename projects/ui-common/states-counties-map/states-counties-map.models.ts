@@ -1,7 +1,7 @@
 import type { Feature, Geometry } from 'geojson'
 
 /**
- * Payload emitted by `countyClick` / `countyHover` outputs.
+ * Payload emitted by `countyClick` / `countyEnter` / `countyLeave` outputs.
  *
  * `id` is the FIPS county code as a string (e.g., `"01001"`), matching the
  * format consumers pass to `selectedCountyIds`. `feature` is the raw
