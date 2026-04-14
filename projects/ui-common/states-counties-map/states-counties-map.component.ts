@@ -1,7 +1,6 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
   ElementRef,
   effect,
   inject,
@@ -44,11 +43,10 @@ export class TheSeamStatesCountiesMapComponent {
     viewChild.required<ElementRef<HTMLDivElement>>('wrapper')
 
   private readonly _data = inject(TheSeamStatesCountiesMapDataService)
-  private readonly _destroyRef = inject(DestroyRef)
 
   private _topologyPromise: Promise<Topology> | null = null
   private _lastRenderedState: string | null = null
-  private _resizeObserver: ResizeObserver | null = null
+  private _renderSerial = 0
 
   constructor() {
     // Re-render whenever the state number changes.
@@ -72,12 +70,7 @@ export class TheSeamStatesCountiesMapComponent {
       const host = this._wrapper().nativeElement
       const observer = new ResizeObserver(() => void this._render())
       observer.observe(host)
-      this._resizeObserver = observer
       onCleanup(() => observer.disconnect())
-    })
-
-    this._destroyRef.onDestroy(() => {
-      this._resizeObserver?.disconnect()
     })
   }
 
@@ -89,6 +82,7 @@ export class TheSeamStatesCountiesMapComponent {
   }
 
   private async _render(): Promise<void> {
+    const serial = ++this._renderSerial
     const host = this._wrapper().nativeElement
     const rect = host.getBoundingClientRect()
     const width = rect.width
@@ -102,6 +96,9 @@ export class TheSeamStatesCountiesMapComponent {
     }
 
     const topology = await this._loadTopology()
+    if (serial !== this._renderSerial) {
+      return
+    }
 
     const statesLayer = topology.objects['states'] as GeometryCollection
     const countiesLayer = topology.objects['counties'] as GeometryCollection
@@ -163,7 +160,7 @@ export class TheSeamStatesCountiesMapComponent {
     const stateNum = `${parseInt(state, 10)}`
 
     svg
-      .selectAll<SVGPathElement, Feature<Geometry>>('path.county')
+      .selectAll<SVGPathElement, Feature<Geometry>>('path[county-id]')
       .data(counties.features)
       .enter()
       .append('path')
@@ -185,10 +182,7 @@ export class TheSeamStatesCountiesMapComponent {
   }
 
   private _updateSelectedCounties(): void {
-    const host = this._wrapper?.().nativeElement
-    if (!host) {
-      return
-    }
+    const host = this._wrapper().nativeElement
     const selected = this.selectedCountyIds()
     select(host)
       .select<SVGSVGElement>('svg')
