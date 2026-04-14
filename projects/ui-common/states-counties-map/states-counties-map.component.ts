@@ -165,17 +165,23 @@ export class TheSeamStatesCountiesMapComponent {
       .enter()
       .append('path')
       .attr('d', path as unknown as string)
-      .attr('county-id', (d) => `${d.id}`)
+      .attr('county-id', (d) => `${d.id}`.padStart(5, '0'))
       .style('stroke', (d) =>
         stateIdFromCountyId(d.id as string | number) === stateNum
           ? '#000'
           : 'transparent',
       )
       .on('click', (_event, d) => {
-        this.countyClick.emit({ id: `${d.id}`, feature: d })
+        this.countyClick.emit({
+          id: `${d.id}`.padStart(5, '0'),
+          feature: d,
+        })
       })
       .on('mouseenter', (_event, d) => {
-        this.countyHover.emit({ id: `${d.id}`, feature: d })
+        this.countyHover.emit({
+          id: `${d.id}`.padStart(5, '0'),
+          feature: d,
+        })
       })
 
     this._updateSelectedCounties()
