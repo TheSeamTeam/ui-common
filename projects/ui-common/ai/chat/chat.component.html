@@ -1,0 +1,18 @@
+<div class="seam-chat">
+  <div class="seam-chat__messages" #messageList>
+    <seam-chat-message
+      *ngFor="let msg of _displayMessages"
+      [message]="msg"
+    ></seam-chat-message>
+
+    <div *ngIf="_loadingSubject | async" class="seam-chat__loading">
+      <span>Thinking...</span>
+    </div>
+  </div>
+
+  <seam-chat-input
+    [placeholder]="placeholder"
+    [disabled]="!!(_loadingSubject | async)"
+    (messageSent)="_onMessageSent($event)"
+  ></seam-chat-input>
+</div>

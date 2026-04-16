@@ -1,0 +1,25 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.seam-chat {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.seam-chat__messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+.seam-chat__loading {
+  padding: 8px 12px;
+  color: #6c757d;
+  font-style: italic;
+}
