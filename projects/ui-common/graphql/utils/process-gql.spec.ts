@@ -114,8 +114,17 @@ describe('processGql', () => {
   })
 
   // ---- Config: removeIfNotUsed -------------------------------------------
+  // NOTE: removeIfNotUsed uses containsVariable which finds variables inside
+  // their own VariableDefinition. This means it only removes a variable whose
+  // definition was already removed by a prior step (e.g. removeIfNotDefined
+  // called removeVariable on a related variable). This is intentional —
+  // variables that are still defined may be needed after later processing
+  // steps like inline (e.g. $search referenced inside an inlined $where).
   describe('Config "removeIfNotUsed"', () => {
-    it('removes variable definition when not referenced', () => {
+    it('keeps a still-defined variable even if not referenced in the body', () => {
+      // $search is defined but not used as an argument. containsVariable
+      // finds it in its own VariableDefinition, so it is kept. This is safe
+      // because it may be needed after a later inline step.
       expectProcessed(
         {
           query: gql`
@@ -130,7 +139,7 @@ describe('processGql', () => {
         },
         {
           query: gql`
-            query TestQuery {
+            query TestQuery($search: String) {
               example {
                 totalCount
               }
@@ -262,11 +271,11 @@ describe('processGql', () => {
 
   // ---- Cleanup: empty where ----------------------------------------------
   describe('Cleanup "empty where"', () => {
-    it('removes where argument when first field has empty values array', () => {
+    it('removes where argument when top-level field has empty values (e.g. { and: [] })', () => {
       const result = processGql(
         gql`
           query TestQuery($skip: Int) {
-            example(skip: $skip, where: { status: { in: [] } }) {
+            example(skip: $skip, where: { and: [] }) {
               totalCount
             }
           }
@@ -288,7 +297,19 @@ describe('processGql', () => {
     it('keeps where argument when values are present', () => {
       const query = gql`
         query TestQuery($skip: Int) {
-          example(skip: $skip, where: { status: { in: ["ACTIVE"] } }) {
+          example(skip: $skip, where: { and: [{ status: { eq: "ACTIVE" } }] }) {
+            totalCount
+          }
+        }
+      `
+      const result = processGql(query, { skip: 0 }, { variables: {} })
+      expect(print(result.query)).toBe(print(query))
+    })
+
+    it('does NOT remove where with deeper empty arrays (e.g. { status: { in: [] } })', () => {
+      const query = gql`
+        query TestQuery($skip: Int) {
+          example(skip: $skip, where: { status: { in: [] } }) {
             totalCount
           }
         }

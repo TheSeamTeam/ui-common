@@ -1,9 +1,10 @@
 import { isNullOrUndefined, withoutProperty } from '@theseam/ui-common/utils'
-import { ArgumentNode, BREAK, DocumentNode, parseValue, visit } from 'graphql'
+import { ArgumentNode, DocumentNode, parseValue, visit } from 'graphql'
 
 import { inlineVariableHintDef, removeNotDefinedHintDef } from '../hints'
 import { QueryProcessingConfig } from '../models'
 import {
+  containsVariable,
   hintsTokensContainingHint,
   inlineVariable,
   parseAst,
@@ -12,31 +13,6 @@ import {
   removeVariableDefinition,
   toGQL,
 } from './'
-
-/**
- * Checks whether a variable is referenced in the query body (i.e., as an
- * argument value), ignoring occurrences inside `VariableDefinition` nodes.
- * This is different from `containsVariable` which also finds the variable
- * inside its own definition.
- */
-function containsVariableReference(
-  node: DocumentNode,
-  variableName: string,
-): boolean {
-  let found = false
-  visit(node, {
-    VariableDefinition() {
-      return false // skip children of variable definitions
-    },
-    Variable(variable) {
-      if (variableName === variable.name.value) {
-        found = true
-        return BREAK
-      }
-    },
-  })
-  return found
-}
 
 /**
  * Transforms a GraphQL query and its variables according to the provided
@@ -102,7 +78,7 @@ export function processGql(
   // ---- Config: removeIfNotUsed -------------------------------------------
   for (const varName of queryProcessingConfig?.variables?.removeIfNotUsed ??
     []) {
-    if (!containsVariableReference(_ast, varName)) {
+    if (!containsVariable(_ast, varName)) {
       _ast = removeVariable(_ast, varName)
     }
   }
@@ -130,14 +106,17 @@ export function processGql(
   }
 
   // ---- Cleanup: empty where ----------------------------------------------
+  // Targets inlined filter results like `where: { and: [] }` where the
+  // datatable's automated filter merging produced an empty array. We
+  // intentionally do NOT match deeper nesting (e.g. `where: { status: { in: [] } }`)
+  // — an empty condition at that level likely indicates a real bug in the
+  // filter code that should surface as an error.
   _ast = visit(_ast, {
     Argument(node: ArgumentNode) {
       if (
         node.name.value === 'where' &&
         (node.value as any)?.fields?.length &&
-        (node.value as any)?.fields[0]?.value?.fields?.length &&
-        (node.value as any)?.fields[0]?.value?.fields[0]?.value?.values
-          ?.length === 0
+        (node.value as any)?.fields[0]?.value?.values?.length === 0
       ) {
         return null
       }
