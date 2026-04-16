@@ -140,6 +140,32 @@ describe('processGql', () => {
         },
       )
     })
+
+    it('keeps variable when it is referenced in the query body', () => {
+      expectProcessed(
+        {
+          query: gql`
+            query TestQuery($search: String) {
+              example(search: $search) {
+                totalCount
+              }
+            }
+          `,
+          variables: { search: 'hello' },
+          config: { variables: { removeIfNotUsed: ['search'] } },
+        },
+        {
+          query: gql`
+            query TestQuery($search: String) {
+              example(search: $search) {
+                totalCount
+              }
+            }
+          `,
+          variables: { search: 'hello' },
+        },
+      )
+    })
   })
 
   // ---- Config: inline ----------------------------------------------------

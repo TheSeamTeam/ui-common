@@ -124,7 +124,7 @@ export function processGql(
         (x: Record<string, any>) => x[orderTiebreaker] !== undefined,
       )
       if (idx === -1) {
-        order.push({ [orderTiebreaker]: 'DESC' })
+        _variables['order'] = [...order, { [orderTiebreaker]: 'DESC' }]
       }
     }
   }
