@@ -22,6 +22,13 @@ const esmPackages = [
   'd3-selection',
   'd3-array',
   'internmap',
+  'marked',
+  'ngx-markdown',
+  'quill',
+  'ngx-quill',
+  'quill-mention',
+  'lodash-es',
+  'parchment',
 ]
 
 export default {
