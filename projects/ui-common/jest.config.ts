@@ -52,6 +52,7 @@ export default {
     '**/route-transitions/**/*.spec.ts',
     '**/progress/**/*.spec.ts',
     '**/states-counties-map/**/*.spec.ts',
+    '**/ai/**/*.spec.ts',
   ],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: '<rootDir>/',
