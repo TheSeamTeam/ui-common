@@ -3,23 +3,20 @@ import { ComponentHarness } from '@angular/cdk/testing'
 export class TheSeamChatMessageHarness extends ComponentHarness {
   static hostSelector = 'seam-chat-message'
 
+  private readonly _role = this.locatorForOptional('.seam-chat-message__role')
+  private readonly _content = this.locatorForOptional(
+    '.seam-chat-message__content',
+  )
+
   async getRole(): Promise<string> {
-    const el = await this.host()
-    const roleEl = await el.querySelector('.seam-chat-message__role')
+    const roleEl = await this._role()
     const text = await roleEl?.text()
     return text?.trim().toLowerCase() ?? ''
   }
 
   async getText(): Promise<string> {
-    const el = await this.host()
-    const contentEl = await el.querySelector('.seam-chat-message__content')
+    const contentEl = await this._content()
     return (await contentEl?.text())?.trim() ?? ''
-  }
-
-  async hasCustomBlocks(): Promise<boolean> {
-    const el = await this.host()
-    const blocks = await el.querySelectorAll('[data-chat-block]')
-    return blocks.length > 0
   }
 }
 
@@ -41,6 +38,7 @@ export class TheSeamChatHarness extends ComponentHarness {
 
   private readonly _messages = this.locatorForAll(TheSeamChatMessageHarness)
   private readonly _input = this.locatorFor(TheSeamChatInputHarness)
+  private readonly _loading = this.locatorForOptional('.seam-chat__loading')
 
   async getMessages(): Promise<TheSeamChatMessageHarness[]> {
     return this._messages()
@@ -51,8 +49,6 @@ export class TheSeamChatHarness extends ComponentHarness {
   }
 
   async isLoading(): Promise<boolean> {
-    const host = await this.host()
-    const loadingEl = await host.querySelector('.seam-chat__loading')
-    return loadingEl !== null
+    return (await this._loading()) !== null
   }
 }
