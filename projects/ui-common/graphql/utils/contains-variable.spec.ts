@@ -1,55 +1,49 @@
 import { gql } from 'apollo-angular'
-import { parseValue, print } from 'graphql/language'
 
-import { toGQL } from './to-gql'
+import { containsVariable } from './contains-variable'
 
-describe('GraphQL Utils containsVariable', () => {
-  it('should determine if variable exists', () => {
-    // const where = {
-    //   and: [
-    //     // { sender: { contains: 'request' } }
-    //     { sender: { contains: { gqlVar: '$search' } } }
-    //   ]
-    // }
-
-    const QUERY = gql`
-      query ExampleQuery($skip: Int, $take: Int, $search: String) {
-        exampleOperation(order: {}, skip: $skip, take: $take, where: {}) {
-          items {
-            username
-            subject
-            body
-          }
+describe('containsVariable', () => {
+  it('returns true when variable is used as an argument', () => {
+    const query = gql`
+      query TestQuery($skip: Int) {
+        example(skip: $skip) {
           totalCount
         }
       }
     `
+    expect(containsVariable(query, 'skip')).toBe(true)
+  })
 
-    // console.log('~QUERY', QUERY)
+  it('returns true when variable exists only in its own definition', () => {
+    const query = gql`
+      query TestQuery($skip: Int, $search: String) {
+        example(skip: $skip) {
+          totalCount
+        }
+      }
+    `
+    expect(containsVariable(query, 'search')).toBe(true)
+  })
 
-    // const where = {
-    //   and: [
-    //     { sender: { contains: 'request' } }
-    //   ]
-    // }
+  it('returns false when variable is not in the document', () => {
+    const query = gql`
+      query TestQuery($skip: Int) {
+        example(skip: $skip) {
+          totalCount
+        }
+      }
+    `
+    expect(containsVariable(query, 'where')).toBe(false)
+  })
 
-    // console.log(parseValue(toGQL(where)))
-
-    // console.log(print(QUERY))
-
-    // console.log('~1')
-    // const WHERE_QUERY = gql`
-    //   {
-    //     and: [
-    //       { sender: { contains: 'request' } }
-    //     ]
-    //   }
-    // `
-    // console.log('~2')
-
-    // console.log('~WHERE_QUERY', WHERE_QUERY)
-    // console.log('~~~', print(WHERE_QUERY))
-
-    expect(QUERY).toBeTruthy()
+  it('returns true when variable is nested inside an inlined argument', () => {
+    const query = gql`
+      query TestQuery($skip: Int, $search: String) {
+        example(skip: $skip, where: { name: { contains: $search } }) {
+          totalCount
+        }
+      }
+    `
+    expect(containsVariable(query, 'search')).toBe(true)
   })
 })
