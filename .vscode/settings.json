@@ -46,7 +46,8 @@
   "typescript.tsdk": "node_modules/typescript/lib",
 
   "jest.autoRun": "off",
-  "jest.jestCommandLine": "npm run test -- --no-cache"
+  "jest.jestCommandLine": "npm run test -- --no-cache",
+  "js/ts.tsdk.path": "node_modules/typescript/lib"
 
 
   // Our custom schematics.
