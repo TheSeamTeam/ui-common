@@ -1,5 +1,5 @@
 <div class="seam-chat">
-  <div class="seam-chat__messages" #messageList>
+  <div class="seam-chat__messages" #messageList seamOverlayScrollbar>
     <seam-chat-message
       *ngFor="let msg of _displayMessages"
       [message]="msg"
