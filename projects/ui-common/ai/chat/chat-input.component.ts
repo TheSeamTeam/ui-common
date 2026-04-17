@@ -27,7 +27,8 @@ import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
           [formControl]="_control"
           [placeholder]="placeholder"
           [disableRichText]="true"
-          [rows]="2"
+          [rows]="2.7"
+          [resizable]="false"
           (keydown.enter)="_onEnterKey($event)"
         ></seam-rich-text>
       </seam-form-field>
