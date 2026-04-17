@@ -22,11 +22,8 @@ import {
 import { TheSeamPreferencesAccessor } from '@theseam/ui-common/services'
 
 import { TheSeamDatatablePrompterComponent } from './datatable-prompter.component'
-import {
-  THESEAM_DATATABLE_PROMPTER_PROVIDER,
-  TheSeamDatatablePrompterProvider,
-} from './datatable-prompter-prompt-provider'
-import { OpenRouterAiProvider } from './ai-providers/openrouter.ai-provider'
+import { THESEAM_DATATABLE_PROMPTER_PROVIDER } from './datatable-prompter-prompt-provider'
+import { MockAiProvider } from '../providers/mock.ai-provider'
 import { AsyncPipe, NgIf } from '@angular/common'
 
 export class PreferencesAccessorService implements TheSeamPreferencesAccessor {
@@ -70,23 +67,6 @@ export class PreferencesAccessorService implements TheSeamPreferencesAccessor {
     console.log(`Deleting preference '${name}'`)
     this._map.delete(name)
     return of(true)
-  }
-}
-
-export class MockAiProvider implements TheSeamDatatablePrompterProvider {
-  async submit(prompt: string): Promise<any> {
-    return Promise.resolve([
-      {
-        id: 'filter--age',
-        type: 'filter',
-        state: {
-          columnProp: 'age',
-          filterType: 'text',
-          operation: 'eq',
-          value: '33',
-        },
-      },
-    ] as any) as Promise<any>
   }
 }
 
@@ -253,8 +233,20 @@ const meta: Meta<StoryComponentType> = {
         },
         {
           provide: THESEAM_DATATABLE_PROMPTER_PROVIDER,
-          useClass: MockAiProvider,
-          // useClass: OpenRouterAiProvider,
+          useValue: new MockAiProvider(
+            JSON.stringify([
+              {
+                id: 'filter--age',
+                type: 'filter',
+                state: {
+                  columnProp: 'age',
+                  filterType: 'text',
+                  operation: 'eq',
+                  value: '33',
+                },
+              },
+            ]),
+          ),
         },
       ],
     }),

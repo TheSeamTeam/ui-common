@@ -36,7 +36,9 @@ import {
 } from '@theseam/ui-common/datatable-alterations-display'
 
 import {
+  assistantPrompt,
   getUserPrompt,
+  parseResponse,
   THESEAM_DATATABLE_PROMPTER_PROVIDER,
 } from './datatable-prompter-prompt-provider'
 
@@ -44,7 +46,6 @@ import {
   selector: 'seam-datatable-prompter',
   templateUrl: './datatable-prompter.component.html',
   styleUrls: ['./datatable-prompter.component.scss'],
-  standalone: true,
   imports: [
     ReactiveFormsModule,
     AsyncPipe,
@@ -223,8 +224,12 @@ export class TheSeamDatatablePrompterComponent {
       return
     }
     this._aiProvider
-      .submit(userPrompt)
-      .then(async (alterations) => {
+      .chat([
+        { role: 'system', content: assistantPrompt },
+        { role: 'user', content: userPrompt },
+      ])
+      .then(async (response) => {
+        const alterations = parseResponse(response.content, undefined)
         // this._form.reset()
         console.log('Received alterations:', alterations)
         const datatable = this._datatableSubject.value

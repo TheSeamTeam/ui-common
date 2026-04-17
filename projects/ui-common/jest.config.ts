@@ -22,6 +22,13 @@ const esmPackages = [
   'd3-selection',
   'd3-array',
   'internmap',
+  'marked',
+  'ngx-markdown',
+  'quill',
+  'ngx-quill',
+  'quill-mention',
+  'lodash-es',
+  'parchment',
 ]
 
 export default {
@@ -52,6 +59,7 @@ export default {
     '**/route-transitions/**/*.spec.ts',
     '**/progress/**/*.spec.ts',
     '**/states-counties-map/**/*.spec.ts',
+    '**/ai/**/*.spec.ts',
   ],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: '<rootDir>/',
