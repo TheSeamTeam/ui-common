@@ -3,6 +3,14 @@ import { isDevMode } from '@angular/core'
 import { hasProperty } from '@theseam/ui-common/utils'
 import { BREAK, DocumentNode, ValueNode, visit } from 'graphql'
 
+/**
+ * Replaces all references to a variable in the query body with a literal
+ * value. If the value represents `undefined`, the variable references are
+ * removed from the query instead.
+ *
+ * This does not remove the variable definition — use `removeVariableDefinition`
+ * separately if needed.
+ */
 export function inlineVariable(
   query: DocumentNode,
   variableName: string,
