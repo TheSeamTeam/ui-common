@@ -1,0 +1,33 @@
+:host {
+  display: block;
+}
+
+.seam-signature-input-panel {
+  background-color: white;
+  padding: 8px;
+  border-radius: 4px;
+  min-width: 516px;
+}
+
+.seam-signature-input-panel__options {
+  border-bottom: 1px solid black;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.seam-signature-input-panel__footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 2px;
+
+  > div > *:not(:last-child) {
+    margin-right: 6px;
+  }
+
+  button {
+    height: 36px;
+    margin-top: 6px;
+  }
+}

@@ -1,0 +1,12 @@
+<div
+  class="seam-signature-input-pen__canvas-wrap"
+  [style.width.px]="_canvasWidth()"
+  [style.height.px]="_canvasHeight()"
+>
+  <signature-pad
+    #sigPad
+    [options]="options()"
+    (drawStart)="_drawStart($event)"
+    (drawEnd)="_drawComplete($event)"
+  ></signature-pad>
+</div>
