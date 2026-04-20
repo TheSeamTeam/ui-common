@@ -4,7 +4,6 @@ import {
   Component,
   computed,
   DestroyRef,
-  HostBinding,
   inject,
   input,
   output,
@@ -71,13 +70,6 @@ export class TheSeamSignatureInputPenComponent
   protected readonly _canvasHeight = computed(
     () => this.options().canvasHeight ?? DEFAULT_OPTIONS.canvasHeight,
   )
-
-  @HostBinding('style.width.px') get _styleWidth() {
-    return this._canvasWidth()
-  }
-  @HostBinding('style.height.px') get _styleHeight() {
-    return this._canvasHeight()
-  }
 
   private _onChange: (value: string | null) => void = () => undefined
   private _onTouched: () => void = () => undefined

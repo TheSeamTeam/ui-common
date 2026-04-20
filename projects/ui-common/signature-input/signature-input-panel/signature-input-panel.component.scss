@@ -4,12 +4,15 @@
 
 .seam-signature-input-panel {
   background-color: white;
-  padding: 8px;
   border-radius: 4px;
-  min-width: 516px;
+  // No horizontal padding on the container itself: the signature canvas is
+  // 500px wide, and padding here would push the container past a 500px modal.
+  // The options row (tabs) and the footer apply their own side padding so the
+  // visual breathing room is preserved without squeezing the canvas.
 }
 
 .seam-signature-input-panel__options {
+  padding: 8px 8px 0;
   border-bottom: 1px solid black;
   display: flex;
   flex-direction: row;
@@ -17,6 +20,7 @@
 }
 
 .seam-signature-input-panel__footer {
+  padding: 0 8px 8px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;

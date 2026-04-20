@@ -1,83 +1,39 @@
-import { Component, signal } from '@angular/core'
-import {
-  applicationConfig,
-  componentWrapperDecorator,
-  Meta,
-  moduleMetadata,
-  StoryObj,
-} from '@storybook/angular'
+import { Meta, StoryObj } from '@storybook/angular'
 import { expect } from 'storybook/test'
-import { provideAnimations } from '@angular/platform-browser/animations'
 
+import { storyModalDecorator } from '@theseam/ui-common/story-helpers'
 import { getHarness } from '@theseam/ui-common/testing'
 
 import {
-  SignatureInputPanelResult,
   TheSeamSignatureInputPanelComponent,
   TheSeamSignatureInputPanelHarness,
 } from '@theseam/ui-common/signature-input'
-
-/**
- * Story host that lets the reader exercise the panel outside of a modal
- * (the panel emits a `result` output so it can be embedded anywhere).
- */
-@Component({
-  selector: 'story-signature-input-panel-host',
-  imports: [TheSeamSignatureInputPanelComponent],
-  template: `
-    <div class="mb-2">
-      <seam-signature-input-panel
-        (result)="onResult($event)"
-      ></seam-signature-input-panel>
-    </div>
-    @if (lastResult(); as r) {
-      <pre class="p-2 bg-light border rounded"
-        >{{ r.type
-        }}{{
-          r.type === 'submit'
-            ? ' — value received (' + r.value.length + ' chars)'
-            : ''
-        }}</pre
-      >
-    }
-  `,
-})
-class StoryPanelHostComponent {
-  readonly lastResult = signal<SignatureInputPanelResult | null>(null)
-  onResult(result: SignatureInputPanelResult) {
-    this.lastResult.set(result)
-  }
-}
 
 const meta: Meta<TheSeamSignatureInputPanelComponent> = {
   title: 'Signature Input/Panel',
   tags: ['autodocs'],
   component: TheSeamSignatureInputPanelComponent,
-  decorators: [
-    applicationConfig({ providers: [provideAnimations()] }),
-    componentWrapperDecorator(
-      (story) => `<div style="padding: 16px; width: 560px;">${story}</div>`,
-    ),
-  ],
+  decorators: [storyModalDecorator()],
+  parameters: {
+    docs: {
+      story: { height: '500px' },
+    },
+  },
 }
 
 export default meta
 type Story = StoryObj<TheSeamSignatureInputPanelComponent>
 
 /**
- * Default: rendered inline with a result listener. Flip between tabs to try
- * the pen, text, or upload variants. Submitting emits a `SignatureInputPanelResult`.
+ * The panel rendered inside a stand-in modal frame — the way it's used in
+ * production. Use the pen/type/upload tabs to try each input; submit and
+ * cancel fire the `result` output, which the Actions addon captures.
  */
-export const Default: Story = {
-  decorators: [moduleMetadata({ imports: [StoryPanelHostComponent] })],
-  render: () => ({
-    template: `<story-signature-input-panel-host></story-signature-input-panel-host>`,
-  }),
-}
+export const InModal: Story = {}
 
 /**
- * Verifies initial render: the panel mounts with submit disabled and no
- * registered input selected beyond the default "pen" tab.
+ * Verifies initial render: the panel mounts with submit disabled on the
+ * default "pen" tab.
  */
 export const InitialState: Story = {
   play: async ({ canvasElement }) => {
