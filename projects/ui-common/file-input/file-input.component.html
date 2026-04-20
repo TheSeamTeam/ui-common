@@ -3,7 +3,7 @@
   [seamFileDropZone]
   [accept]="accept()"
   [maxSize]="maxSize()"
-  [maxFiles]="maxFiles()"
+  [maxFiles]="_effectiveMaxFiles()"
   [disabled]="disabled()"
   (seamFileDrop)="_onFilesDropped($event)"
   (seamFileDropRejected)="_onRejected($event)"

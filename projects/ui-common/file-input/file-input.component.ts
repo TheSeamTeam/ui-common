@@ -40,8 +40,19 @@ export class TheSeamFileInputComponent {
 
   protected readonly _faUpload = faUpload
   protected readonly _lastRejections = signal<SeamFileRejection[]>([])
+  protected readonly _effectiveMaxFiles = computed(() => {
+    const explicit = this.maxFiles()
+    if (!this.multiple()) {
+      return explicit !== null ? Math.min(explicit, 1) : 1
+    }
+    return explicit
+  })
   protected readonly _errorMessage = computed(() =>
-    _formatErrors(this._lastRejections(), this.maxSize()),
+    _formatErrors(
+      this._lastRejections(),
+      this.maxSize(),
+      this._effectiveMaxFiles(),
+    ),
   )
 
   private readonly _nativeInput =
@@ -73,7 +84,7 @@ export class TheSeamFileInputComponent {
     const { accepted, rejected } = validateFiles(files, {
       accept: this.accept(),
       maxSize: this.maxSize(),
-      maxFiles: this.maxFiles(),
+      maxFiles: this._effectiveMaxFiles(),
     })
 
     if (rejected.length > 0) {
@@ -90,6 +101,7 @@ export class TheSeamFileInputComponent {
 function _formatErrors(
   rejections: SeamFileRejection[],
   maxSize: number | null,
+  maxFiles: number | null,
 ): string | null {
   if (rejections.length === 0) return null
   const firstReason: SeamFileRejectionReason = rejections[0].reasons[0]
@@ -103,7 +115,9 @@ function _formatErrors(
         : 'File exceeds the maximum size.'
     }
     case 'count':
-      return 'Too many files selected.'
+      return maxFiles !== null
+        ? `Only ${maxFiles} file(s) can be added.`
+        : 'Too many files selected.'
     default:
       return 'File could not be accepted.'
   }

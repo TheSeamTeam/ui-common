@@ -170,4 +170,35 @@ describe('TheSeamFileInputComponent — native change + errors', () => {
     spectator.detectChanges()
     expect(spectator.query('.seam-file-input__errors')).toBeNull()
   })
+
+  it('renders a count error line when maxFiles is exceeded', () => {
+    spectator = createHost(
+      `<seam-file-input [multiple]="true" [maxFiles]="1"></seam-file-input>`,
+    )
+    const native = spectator.query('input[type="file"]') as HTMLInputElement
+    dispatchChange(native, [new File(['a'], 'a.txt'), new File(['b'], 'b.txt')])
+    spectator.detectChanges()
+
+    const err = spectator.query('.seam-file-input__errors')
+    expect(err?.textContent).toContain('Only 1 file(s) can be added.')
+  })
+
+  it('caps to a single file on drop when multiple is false', () => {
+    spectator = createHost(`<seam-file-input></seam-file-input>`)
+    const added: File[][] = []
+    const rejected: SeamFileRejection[][] = []
+    spectator.component.filesAdded.subscribe((f) => added.push(f))
+    spectator.component.rejected.subscribe((r) => rejected.push(r))
+
+    // Simulate a drop of two files — bypass the picker path by emitting on the zone directly
+    // is awkward from a test; instead, the drop zone directive test already covers the drop
+    // path. Here we use the NATIVE input (which also honors accept/maxSize/maxFiles via validateFiles)
+    // to confirm _effectiveMaxFiles is the cap:
+    const native = spectator.query('input[type="file"]') as HTMLInputElement
+    dispatchChange(native, [new File(['a'], 'a.txt'), new File(['b'], 'b.txt')])
+
+    expect(added[0]?.length).toBe(1)
+    expect(rejected[0]?.length).toBe(1)
+    expect(rejected[0][0].reasons).toEqual(['count'])
+  })
 })
