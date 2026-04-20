@@ -62,7 +62,6 @@
     "graphql": "^16.0.0",
     "intl-tel-input": "^17.0.5",
     "jexl": "^2.3.0",
-    "ngx-file-drop": "~16.0.0",
     "ngx-loading": "^17.0.0",
     "ngx-quill": "^27.1.2",
     "ngx-toastr": "~16.1.0",
