@@ -1,0 +1,61 @@
+@if (_hasFile()) {
+  <seam-file-tile
+    [item]="_items()[0]"
+    [variant]="_tileVariant()"
+    [showName]="showTileName()"
+    [disabled]="_effectiveDisabled()"
+    (remove)="_onTileRemove($event)"
+  ></seam-file-tile>
+  <button
+    type="button"
+    class="seam-file-field__replace"
+    [disabled]="_effectiveDisabled()"
+    (click)="inputComponentWhenFilled._openPicker()"
+  >
+    or <strong>{{ replaceText() }}</strong>
+  </button>
+  <!-- Hidden mounted input so the replace button has a picker to delegate to. -->
+  <seam-file-input
+    #inputComponentWhenFilled
+    hidden
+    [multiple]="multiple()"
+    [accept]="accept()"
+    [maxSize]="maxSize()"
+    [maxFiles]="_remainingMaxFiles()"
+    [disabled]="_effectiveDisabled()"
+    [hideErrors]="true"
+    (filesAdded)="_onFilesAdded($event)"
+    (rejected)="_onRejected($event)"
+  ></seam-file-input>
+} @else {
+  <seam-file-input
+    #inputComponent
+    [multiple]="multiple()"
+    [accept]="accept()"
+    [maxSize]="maxSize()"
+    [maxFiles]="_remainingMaxFiles()"
+    [disabled]="_effectiveDisabled()"
+    [hideErrors]="hideErrors()"
+    [promptText]="promptText()"
+    [promptSuffix]="promptSuffix()"
+    (filesAdded)="_onFilesAdded($event)"
+    (rejected)="_onRejected($event)"
+  ></seam-file-input>
+
+  @if (multiple() && _items().length > 0) {
+    <div
+      class="seam-file-field__tiles"
+      [class.seam-file-field__tiles--preview]="previewMode()"
+    >
+      @for (item of _items(); track item.id ?? item.name) {
+        <seam-file-tile
+          [item]="item"
+          [variant]="_tileVariant()"
+          [showName]="showTileName()"
+          [disabled]="_effectiveDisabled()"
+          (remove)="_onTileRemove($event)"
+        ></seam-file-tile>
+      }
+    </div>
+  }
+}

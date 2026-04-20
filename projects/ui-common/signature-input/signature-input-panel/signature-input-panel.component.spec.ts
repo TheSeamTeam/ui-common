@@ -30,8 +30,8 @@ class HostComponent {
 
 // Skipping rendering tests to keep this close to other *.spec.ts files in the
 // codebase: the panel's child components depend on DOM APIs (signature_pad's
-// canvas, ngx-file-drop's drag machinery, webfontloader) that aren't reliable
-// in JSDOM. Storybook play functions cover the rendered behavior.
+// canvas, webfontloader) that aren't reliable in JSDOM. Storybook play
+// functions cover the rendered behavior.
 describe('TheSeamSignatureInputPanelComponent', () => {
   const originalMatchMedia = window.matchMedia
   const originalGetContext = HTMLCanvasElement.prototype.getContext

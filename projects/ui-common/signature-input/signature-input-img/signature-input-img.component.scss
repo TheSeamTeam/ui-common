@@ -31,15 +31,3 @@
 .seam-signature-input-img__size-error {
   color: var(--bs-danger, #dc3545);
 }
-
-ngx-file-drop ::ng-deep > div {
-  height: 100%;
-}
-
-ngx-file-drop ::ng-deep .content {
-  height: 100%;
-}
-
-ngx-file-drop ::ng-deep #dropZone {
-  min-height: 125px;
-}
