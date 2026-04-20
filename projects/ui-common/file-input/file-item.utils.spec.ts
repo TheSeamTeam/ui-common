@@ -73,3 +73,35 @@ describe('seamFileItemFromUrl', () => {
     expect(item.thumbnailUrl).toBe('https://example.com/logo-thumb.png')
   })
 })
+
+import { seamFilesFromItems } from './file-item.utils'
+
+describe('seamFilesFromItems', () => {
+  it('returns File objects from items with file source', () => {
+    const f1 = new File(['a'], 'a.txt')
+    const f2 = new File(['b'], 'b.txt')
+
+    const result = seamFilesFromItems([
+      { name: 'a.txt', source: { kind: 'file', file: f1 } },
+      { name: 'b.txt', source: { kind: 'file', file: f2 } },
+    ])
+
+    expect(result).toEqual([f1, f2])
+  })
+
+  it('omits items with non-file sources', () => {
+    const f = new File(['a'], 'a.txt')
+
+    const result = seamFilesFromItems([
+      { name: 'a.txt', source: { kind: 'file', file: f } },
+      { name: 'b.png', source: { kind: 'url', url: 'https://x/b.png' } },
+      { name: 'c.bin', source: { kind: 'blob', blob: new Blob(['c']) } },
+    ])
+
+    expect(result).toEqual([f])
+  })
+
+  it('returns an empty array for an empty input', () => {
+    expect(seamFilesFromItems([])).toEqual([])
+  })
+})

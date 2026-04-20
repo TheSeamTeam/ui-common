@@ -57,3 +57,18 @@ function _basenameFromUrl(url: string): string | null {
   // No basename (e.g., trailing slash or just protocol/domain), return null
   return null
 }
+
+/**
+ * Extracts native `File` objects from items whose source is `file`. Items
+ * backed by a URL or a Blob are ignored. Useful for submit-side mapping
+ * when the consumer only cares about newly-uploaded blobs.
+ */
+export function seamFilesFromItems(items: SeamFileItem[]): File[] {
+  const files: File[] = []
+  for (const item of items) {
+    if (item.source.kind === 'file') {
+      files.push(item.source.file)
+    }
+  }
+  return files
+}
