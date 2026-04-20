@@ -134,3 +134,24 @@
     }
   }
 }
+
+.seam-file-tile--clickable {
+  .seam-file-tile__clickable-body {
+    display: contents;
+    cursor: pointer;
+    outline: none;
+  }
+
+  .seam-file-tile__clickable-body:focus-visible {
+    outline: 2px solid #357ebd;
+    outline-offset: 2px;
+  }
+
+  &.seam-file-tile--row:hover {
+    background: rgba(0, 0, 0, 0.03);
+  }
+
+  &.seam-file-tile--preview:hover {
+    box-shadow: 0 0 0 1px #357ebd inset;
+  }
+}

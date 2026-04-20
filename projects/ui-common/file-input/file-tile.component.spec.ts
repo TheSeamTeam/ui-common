@@ -182,3 +182,60 @@ describe('TheSeamFileTileComponent — preview variant', () => {
     expect(spectator.query('.seam-file-tile__visual seam-icon')).not.toBeNull()
   })
 })
+
+describe('TheSeamFileTileComponent — opt-in itemClick', () => {
+  let spectator: SpectatorHost<TheSeamFileTileComponent>
+  const createHost = createHostFactory({
+    component: TheSeamFileTileComponent,
+    imports: [TheSeamFileTileComponent],
+  })
+
+  it('does not render a clickable wrapper when itemClick has no subscribers', () => {
+    spectator = createHost(`<seam-file-tile [item]="item"></seam-file-tile>`, {
+      hostProps: { item: textItem },
+    })
+    spectator.detectChanges()
+    const body = spectator.query('.seam-file-tile__clickable-body')
+    expect(body).toBeNull()
+  })
+
+  it('renders a clickable wrapper with role=button and tabindex=0 when itemClick is subscribed', () => {
+    spectator = createHost(
+      `<seam-file-tile [item]="item" (itemClick)="clicks.push($event)"></seam-file-tile>`,
+      { hostProps: { item: textItem, clicks: [] as SeamFileItem[] } },
+    )
+    spectator.detectChanges()
+    const clickable = spectator.query(
+      '.seam-file-tile__clickable-body',
+    ) as HTMLElement
+    expect(clickable).toBeTruthy()
+    expect(clickable.getAttribute('role')).toBe('button')
+    expect(clickable.getAttribute('tabindex')).toBe('0')
+  })
+
+  it('emits itemClick when the tile body is clicked (when wired)', () => {
+    const hostProps = { item: textItem, clicks: [] as SeamFileItem[] }
+    spectator = createHost(
+      `<seam-file-tile [item]="item" (itemClick)="clicks.push($event)"></seam-file-tile>`,
+      { hostProps },
+    )
+    spectator.detectChanges()
+    const clickable = spectator.query(
+      '.seam-file-tile__clickable-body',
+    ) as HTMLElement
+    clickable.click()
+    expect(hostProps.clicks).toEqual([textItem])
+  })
+
+  it('does not emit itemClick when the remove button is clicked (stops propagation)', () => {
+    const hostProps = { item: textItem, clicks: [] as SeamFileItem[] }
+    spectator = createHost(
+      `<seam-file-tile [item]="item" (itemClick)="clicks.push($event)"></seam-file-tile>`,
+      { hostProps },
+    )
+    spectator.detectChanges()
+    const remove = spectator.query('.seam-file-tile__remove') as HTMLElement
+    remove.click()
+    expect(hostProps.clicks).toEqual([])
+  })
+})

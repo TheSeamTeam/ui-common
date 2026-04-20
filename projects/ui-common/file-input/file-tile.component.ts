@@ -1,14 +1,20 @@
 import {
+  AfterViewInit,
   booleanAttribute,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   computed,
   effect,
+  inject,
   input,
   output,
+  signal,
 } from '@angular/core'
 
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
+
+import { NgTemplateOutlet } from '@angular/common'
 
 import { TheSeamIconModule } from '@theseam/ui-common/icon'
 
@@ -19,10 +25,11 @@ import { SeamFileItem, SeamFileTileVariant } from './file-item.models'
   selector: 'seam-file-tile',
   templateUrl: './file-tile.component.html',
   styleUrls: ['./file-tile.component.scss'],
-  imports: [TheSeamIconModule],
+  imports: [TheSeamIconModule, NgTemplateOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TheSeamFileTileComponent {
+export class TheSeamFileTileComponent implements AfterViewInit {
+  private readonly _cdr = inject(ChangeDetectorRef)
   readonly item = input.required<SeamFileItem>()
   readonly variant = input<SeamFileTileVariant>('row')
   readonly showName = input(true, { transform: booleanAttribute })
@@ -31,6 +38,7 @@ export class TheSeamFileTileComponent {
   readonly disabled = input(false, { transform: booleanAttribute })
 
   readonly remove = output<SeamFileItem>()
+  readonly itemClick = output<SeamFileItem>()
 
   protected readonly _faTimes = faTimes
 
@@ -72,6 +80,16 @@ export class TheSeamFileTileComponent {
     return null
   })
 
+  /**
+   * True once we detect that a consumer has wired (itemClick).
+   * Detected in ngAfterViewInit — by that point the parent's template binding
+   * has called subscribe() on the OutputEmitterRef, populating its internal
+   * `listeners` array (Option A: access via internal field on Angular 20's
+   * OutputEmitterRef). If the internal shape is absent, conservatively stays
+   * false (opt-out default — no unwanted role=button on inert tiles).
+   */
+  protected readonly _clickObserved = signal(false)
+
   constructor() {
     // When _thumbUrl changes, revoke the previous owned URL (if any).
     effect(() => {
@@ -95,9 +113,40 @@ export class TheSeamFileTileComponent {
     })
   }
 
+  ngAfterViewInit(): void {
+    // Detect whether (itemClick) is bound by checking the OutputEmitterRef's
+    // internal listeners array. By ngAfterViewInit, the parent's template
+    // bindings (including event bindings via subscribe()) have already been
+    // applied during the parent's change-detection pass.
+    //
+    // Option A: access (this.itemClick as any).listeners which is the internal
+    // array in Angular 20's OutputEmitterRef (null initially, an array once
+    // subscribed). If the internal shape changes, we conservatively keep false.
+    const ref = this.itemClick as unknown as { listeners?: unknown[] | null }
+    const observed =
+      ref.listeners !== undefined ? (ref.listeners?.length ?? 0) > 0 : false
+    if (observed) {
+      this._clickObserved.set(true)
+      this._cdr.markForCheck()
+    }
+  }
+
   protected _onRemove(event: MouseEvent): void {
     event.stopPropagation()
     this.remove.emit(this.item())
+  }
+
+  protected _onBodyClick(): void {
+    if (!this._clickObserved()) return
+    this.itemClick.emit(this.item())
+  }
+
+  protected _onBodyKey(event: KeyboardEvent): void {
+    if (!this._clickObserved()) return
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      this.itemClick.emit(this.item())
+    }
   }
 }
 

@@ -2,26 +2,23 @@
   class="seam-file-tile"
   [class.seam-file-tile--row]="variant() === 'row'"
   [class.seam-file-tile--preview]="variant() === 'preview'"
+  [class.seam-file-tile--clickable]="_clickObserved()"
 >
   @if (variant() === 'row') {
-    <span
-      class="seam-file-tile__visual"
-      [class.seam-file-tile__visual--image]="!!_thumbUrl()"
-    >
-      @if (_thumbUrl(); as url) {
-        <img class="seam-file-tile__thumb" [src]="url" [alt]="item().name" />
-      } @else {
-        <seam-icon [icon]="_mimeIcon()"></seam-icon>
-      }
-    </span>
-    <div class="seam-file-tile__body">
-      <div class="seam-file-tile__name" [attr.title]="item().name">
-        {{ item().name }}
+    @if (_clickObserved()) {
+      <div
+        class="seam-file-tile__clickable-body"
+        role="button"
+        tabindex="0"
+        (click)="_onBodyClick()"
+        (keydown)="_onBodyKey($event)"
+      >
+        <ng-container *ngTemplateOutlet="rowContent"></ng-container>
       </div>
-      @if (showMeta() && _metaLine(); as meta) {
-        <div class="seam-file-tile__meta">{{ meta }}</div>
-      }
-    </div>
+    } @else {
+      <ng-container *ngTemplateOutlet="rowContent"></ng-container>
+    }
+
     @if (_showRemoveBtn()) {
       <button
         type="button"
@@ -43,19 +40,56 @@
         <seam-icon [icon]="_faTimes"></seam-icon>
       </button>
     }
-    <span class="seam-file-tile__preview-media">
-      @if (_thumbUrl(); as url) {
-        <img class="seam-file-tile__thumb" [src]="url" [alt]="item().name" />
-      } @else {
-        <span class="seam-file-tile__visual">
-          <seam-icon [icon]="_mimeIcon()"></seam-icon>
-        </span>
-      }
-    </span>
-    @if (showName()) {
-      <div class="seam-file-tile__preview-name" [attr.title]="item().name">
-        {{ item().name }}
+    @if (_clickObserved()) {
+      <div
+        class="seam-file-tile__clickable-body"
+        role="button"
+        tabindex="0"
+        (click)="_onBodyClick()"
+        (keydown)="_onBodyKey($event)"
+      >
+        <ng-container *ngTemplateOutlet="previewContent"></ng-container>
       </div>
+    } @else {
+      <ng-container *ngTemplateOutlet="previewContent"></ng-container>
     }
   }
 </div>
+
+<ng-template #rowContent>
+  <span
+    class="seam-file-tile__visual"
+    [class.seam-file-tile__visual--image]="!!_thumbUrl()"
+  >
+    @if (_thumbUrl(); as url) {
+      <img class="seam-file-tile__thumb" [src]="url" [alt]="item().name" />
+    } @else {
+      <seam-icon [icon]="_mimeIcon()"></seam-icon>
+    }
+  </span>
+  <div class="seam-file-tile__body">
+    <div class="seam-file-tile__name" [attr.title]="item().name">
+      {{ item().name }}
+    </div>
+    @if (showMeta() && _metaLine(); as meta) {
+      <div class="seam-file-tile__meta">{{ meta }}</div>
+    }
+  </div>
+</ng-template>
+
+<ng-template #previewContent>
+  <span class="seam-file-tile__preview-media">
+    @if (_thumbUrl(); as url) {
+      <img class="seam-file-tile__thumb" [src]="url" [alt]="item().name" />
+    } @else {
+      <span class="seam-file-tile__visual">
+        <seam-icon [icon]="_mimeIcon()"></seam-icon>
+      </span>
+    }
+  </span>
+  @if (showName()) {
+    <div class="seam-file-tile__preview-name" [attr.title]="item().name">
+      {{ item().name }}
+    </div>
+  }
+</ng-template>
