@@ -29,3 +29,7 @@
   [attr.accept]="accept() || null"
   (change)="_onNativeChange($event)"
 />
+
+@if (!hideErrors() && _errorMessage(); as msg) {
+  <p class="seam-file-input__errors">{{ msg }}</p>
+}

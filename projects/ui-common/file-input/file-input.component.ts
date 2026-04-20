@@ -2,9 +2,11 @@ import {
   booleanAttribute,
   ChangeDetectionStrategy,
   Component,
+  computed,
   ElementRef,
   input,
   output,
+  signal,
   viewChild,
 } from '@angular/core'
 
@@ -13,7 +15,8 @@ import { faUpload } from '@fortawesome/free-solid-svg-icons'
 import { TheSeamIconModule } from '@theseam/ui-common/icon'
 
 import { TheSeamFileDropZoneDirective } from './file-drop-zone.directive'
-import { SeamFileRejection } from './file-item.models'
+import { validateFiles } from './file-input-validation'
+import { SeamFileRejection, SeamFileRejectionReason } from './file-item.models'
 
 @Component({
   selector: 'seam-file-input',
@@ -36,6 +39,10 @@ export class TheSeamFileInputComponent {
   readonly rejected = output<SeamFileRejection[]>()
 
   protected readonly _faUpload = faUpload
+  protected readonly _lastRejections = signal<SeamFileRejection[]>([])
+  protected readonly _errorMessage = computed(() =>
+    _formatErrors(this._lastRejections(), this.maxSize()),
+  )
 
   private readonly _nativeInput =
     viewChild.required<ElementRef<HTMLInputElement>>('native')
@@ -46,14 +53,58 @@ export class TheSeamFileInputComponent {
   }
 
   protected _onFilesDropped(files: File[]): void {
-    this.filesAdded.emit(files)
+    this._lastRejections.set([])
+    if (files.length > 0) this.filesAdded.emit(files)
   }
 
   protected _onRejected(rejections: SeamFileRejection[]): void {
+    this._lastRejections.set(rejections)
     this.rejected.emit(rejections)
   }
 
-  protected _onNativeChange(_event: Event): void {
-    // Implemented in Task 10.
+  protected _onNativeChange(event: Event): void {
+    const nativeInput = event.target as HTMLInputElement
+    const files = nativeInput.files ? Array.from(nativeInput.files) : []
+    // Clear the value so the same file can be re-selected next time.
+    nativeInput.value = ''
+
+    if (files.length === 0) return
+
+    const { accepted, rejected } = validateFiles(files, {
+      accept: this.accept(),
+      maxSize: this.maxSize(),
+      maxFiles: this.maxFiles(),
+    })
+
+    if (rejected.length > 0) {
+      this._lastRejections.set(rejected)
+      this.rejected.emit(rejected)
+    } else {
+      this._lastRejections.set([])
+    }
+
+    if (accepted.length > 0) this.filesAdded.emit(accepted)
+  }
+}
+
+function _formatErrors(
+  rejections: SeamFileRejection[],
+  maxSize: number | null,
+): string | null {
+  if (rejections.length === 0) return null
+  const firstReason: SeamFileRejectionReason = rejections[0].reasons[0]
+  switch (firstReason) {
+    case 'type':
+      return 'File type not accepted.'
+    case 'size': {
+      const mb = maxSize !== null ? (maxSize / (1024 * 1024)).toFixed(1) : null
+      return mb
+        ? `File exceeds the maximum size (${mb} MB).`
+        : 'File exceeds the maximum size.'
+    }
+    case 'count':
+      return 'Too many files selected.'
+    default:
+      return 'File could not be accepted.'
   }
 }
