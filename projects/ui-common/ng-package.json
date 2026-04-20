@@ -9,7 +9,7 @@
     "@almothafar/angular-signature-pad",
     "@fortawesome/angular-fontawesome",
     "file-type",
-"@marklb/ngx-datatable",
+    "@marklb/ngx-datatable",
     "ngx-loading",
     "@ng-select/ng-select",
     "overlayscrollbars",
