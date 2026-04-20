@@ -129,3 +129,128 @@ describe('TheSeamFileFieldComponent — single-mode CVA + C-pattern', () => {
     }
   })
 })
+
+// ---------------------------------------------------------------------------
+// Multi-mode
+// ---------------------------------------------------------------------------
+
+describe('TheSeamFileFieldComponent — multi-mode', () => {
+  let spectator: Spectator<FieldHost>
+  const createComponent = createComponentFactory({
+    component: FieldHost,
+    imports: [FieldHost],
+  })
+
+  beforeEach(() => {
+    spectator = createComponent()
+    spectator.component.multiple = true
+    spectator.detectChanges()
+  })
+
+  it('keeps the input visible and renders no tiles when empty', () => {
+    expect(spectator.query('seam-file-input')).not.toBeNull()
+    expect(spectator.queryAll('seam-file-tile').length).toBe(0)
+  })
+
+  it('renders tiles below the input after files are added', () => {
+    const f1 = new File(['a'], 'a.pdf', { type: 'application/pdf' })
+    const f2 = new File(['b'], 'b.pdf', { type: 'application/pdf' })
+    spectator.component.ctrl.setValue([
+      seamFileItemFromFile(f1),
+      seamFileItemFromFile(f2),
+    ])
+    spectator.detectChanges()
+
+    expect(spectator.query('seam-file-input')).not.toBeNull()
+    expect(spectator.queryAll('seam-file-tile').length).toBe(2)
+  })
+
+  it('accumulates new files rather than replacing them', () => {
+    const f1 = new File(['a'], 'a.pdf', { type: 'application/pdf' })
+    spectator.component.ctrl.setValue([seamFileItemFromFile(f1)])
+    spectator.detectChanges()
+
+    const inputCmp = findFileInputCmp(spectator)
+
+    const f2 = new File(['b'], 'b.pdf', { type: 'application/pdf' })
+    inputCmp!.filesAdded.emit([f2])
+    spectator.detectChanges()
+
+    expect(spectator.component.ctrl.value!.map((i) => i.name)).toEqual([
+      'a.pdf',
+      'b.pdf',
+    ])
+  })
+
+  it('applies preview layout wrapping when previewMode is true', () => {
+    spectator.component.previewMode = true
+    spectator.detectChanges()
+    spectator.component.ctrl.setValue([
+      seamFileItemFromFile(new File(['a'], 'a.png', { type: 'image/png' })),
+      seamFileItemFromFile(new File(['b'], 'b.png', { type: 'image/png' })),
+    ])
+    spectator.detectChanges()
+
+    const list = spectator.query(
+      '.seam-file-field__tiles',
+    ) as HTMLElement | null
+    expect(list).not.toBeNull()
+    expect(list?.classList).toContain('seam-file-field__tiles--preview')
+  })
+})
+
+// ---------------------------------------------------------------------------
+// Multi-mode with maxFiles cap
+// ---------------------------------------------------------------------------
+
+describe('TheSeamFileFieldComponent — multi-mode with maxFiles', () => {
+  @Component({
+    selector: 'test-max-host',
+    template: `
+      <seam-file-field
+        [formControl]="ctrl"
+        [multiple]="true"
+        [maxFiles]="2"
+      ></seam-file-field>
+    `,
+    imports: [TheSeamFileFieldComponent, ReactiveFormsModule],
+  })
+  class MaxHost {
+    ctrl = new FormControl<SeamFileItem[]>([])
+  }
+
+  let spectator: Spectator<MaxHost>
+  const createComponent = createComponentFactory({
+    component: MaxHost,
+    imports: [MaxHost],
+  })
+
+  it('caps accumulated files at maxFiles across subsequent adds', () => {
+    spectator = createComponent()
+    const inputCmp = spectator.debugElement
+      .queryAll(() => true)
+      .map((de) => de.componentInstance)
+      .find(
+        (cmp) => cmp && cmp.constructor.name === 'TheSeamFileInputComponent',
+      ) as TheSeamFileInputComponent | undefined
+
+    inputCmp!.filesAdded.emit([
+      new File(['a'], 'a.pdf'),
+      new File(['b'], 'b.pdf'),
+    ])
+    spectator.detectChanges()
+    expect(spectator.component.ctrl.value!.length).toBe(2)
+
+    // Verify the computed via the field component: _remainingMaxFiles reaches 0.
+    const fieldCmp = spectator.debugElement
+      .queryAll(() => true)
+      .map((de) => de.componentInstance)
+      .find(
+        (cmp) => cmp && cmp.constructor.name === 'TheSeamFileFieldComponent',
+      ) as TheSeamFileFieldComponent | undefined
+
+    expect(fieldCmp).toBeTruthy()
+    // @ts-expect-error protected access for testing
+    expect(fieldCmp!._remainingMaxFiles()).toBe(0)
+  })
+})

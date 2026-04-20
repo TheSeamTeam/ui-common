@@ -41,4 +41,21 @@
     (filesAdded)="_onFilesAdded($event)"
     (rejected)="_onRejected($event)"
   ></seam-file-input>
+
+  @if (multiple() && _items().length > 0) {
+    <div
+      class="seam-file-field__tiles"
+      [class.seam-file-field__tiles--preview]="previewMode()"
+    >
+      @for (item of _items(); track item.id ?? item.name) {
+        <seam-file-tile
+          [item]="item"
+          [variant]="_tileVariant()"
+          [showName]="showTileName()"
+          [disabled]="_effectiveDisabled()"
+          (remove)="_onTileRemove($event)"
+        ></seam-file-tile>
+      }
+    </div>
+  }
 }

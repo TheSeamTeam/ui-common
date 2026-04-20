@@ -47,3 +47,16 @@ seam-file-input[hidden] {
   flex-wrap: wrap;
   gap: 8px;
 }
+
+.seam-file-field__tiles {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.seam-file-field__tiles--preview {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
+}
