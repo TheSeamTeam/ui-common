@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   input,
   output,
 } from '@angular/core'
@@ -39,6 +40,61 @@ export class TheSeamFileTileComponent {
     () => this.removable() && !this.disabled(),
   )
 
+  /**
+   * Thumbnail URL for image items. Tracked across item changes so object
+   * URLs are revoked when the item changes or the component is destroyed.
+   */
+  private _ownedObjectUrl: string | null = null
+  private _pendingObjectUrl: string | null = null
+
+  protected readonly _thumbUrl = computed(() => {
+    const item = this.item()
+
+    if (item.thumbnailUrl) return item.thumbnailUrl
+
+    const isImage = _isImageMime(item.type)
+
+    if (
+      (item.source.kind === 'file' || item.source.kind === 'blob') &&
+      isImage
+    ) {
+      const blob =
+        item.source.kind === 'file' ? item.source.file : item.source.blob
+      const url = URL.createObjectURL(blob)
+      this._pendingObjectUrl = url
+      return url
+    }
+
+    if (item.source.kind === 'url' && _looksLikeImage(item)) {
+      return item.source.url
+    }
+
+    return null
+  })
+
+  constructor() {
+    // When _thumbUrl changes, revoke the previous owned URL (if any).
+    effect(() => {
+      // Read the signal so this effect re-runs when the thumbnail changes.
+      this._thumbUrl()
+      const previous = this._ownedObjectUrl
+      this._ownedObjectUrl = this._pendingObjectUrl
+      this._pendingObjectUrl = null
+      if (previous && previous !== this._ownedObjectUrl) {
+        URL.revokeObjectURL(previous)
+      }
+    })
+    // Destroy cleanup: revoke the last owned URL.
+    effect((onCleanup) => {
+      onCleanup(() => {
+        if (this._ownedObjectUrl) {
+          URL.revokeObjectURL(this._ownedObjectUrl)
+          this._ownedObjectUrl = null
+        }
+      })
+    })
+  }
+
   protected _onRemove(event: MouseEvent): void {
     event.stopPropagation()
     this.remove.emit(this.item())
@@ -56,4 +112,16 @@ function _formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}
+
+function _isImageMime(type: string | undefined): boolean {
+  return !!type && type.toLowerCase().startsWith('image/')
+}
+
+const IMAGE_EXT = /\.(png|jpe?g|gif|webp|bmp|svg)(\?|$)/i
+
+function _looksLikeImage(item: SeamFileItem): boolean {
+  if (_isImageMime(item.type)) return true
+  if (item.source.kind === 'url' && IMAGE_EXT.test(item.source.url)) return true
+  return false
 }

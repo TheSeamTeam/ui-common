@@ -80,6 +80,15 @@ if (typeof (globalThis as any).DragEvent === 'undefined') {
   }
 }
 
+// jsdom does not implement URL.createObjectURL / revokeObjectURL.
+// Provide no-op stubs so tests can spy on them.
+if (typeof URL.createObjectURL === 'undefined') {
+  URL.createObjectURL = () => ''
+}
+if (typeof URL.revokeObjectURL === 'undefined') {
+  URL.revokeObjectURL = () => undefined
+}
+
 Object.defineProperty(window, 'CSS', { value: null })
 Object.defineProperty(document, 'doctype', {
   value: '<!DOCTYPE html>',
