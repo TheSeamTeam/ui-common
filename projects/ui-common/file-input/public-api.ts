@@ -12,3 +12,5 @@ export {
   seamFilesFromItems,
   iconForMime,
 } from './file-item.utils'
+
+export { TheSeamFileDropZoneDirective } from './file-drop-zone.directive'
