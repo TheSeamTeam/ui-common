@@ -22,57 +22,63 @@ function dragEvent(type: string, files: File[] = []): DragEvent {
   return evt
 }
 
-describe('TheSeamFileDropZoneDirective', () => {
-  let spectator: SpectatorHost<TheSeamFileDropZoneDirective>
-  const createHost = createHostFactory({
-    component: TheSeamFileDropZoneDirective,
-  })
+// ---------------------------------------------------------------------------
+// Shared test-fixture setup — reused by both describe blocks below.
+// ---------------------------------------------------------------------------
 
-  const getZone = () => spectator.element as HTMLElement
+let spectator: SpectatorHost<TheSeamFileDropZoneDirective>
+const createHost = createHostFactory({
+  component: TheSeamFileDropZoneDirective,
+})
 
-  function setup(props: Partial<HostProps> = {}) {
-    const accept = props.accept ?? ''
-    const maxSize = props.maxSize ?? null
-    const maxFiles = props.maxFiles ?? null
-    const disabled = props.disabled ?? false
+const getZone = () => spectator.element as HTMLElement
 
-    let dropped: File[] | null = null
-    let rejected: SeamFileRejection[] | null = null
+function setup(props: Partial<HostProps> = {}) {
+  const accept = props.accept ?? ''
+  const maxSize = props.maxSize ?? null
+  const maxFiles = props.maxFiles ?? null
+  const disabled = props.disabled ?? false
 
-    spectator = createHost(
-      `<div
-        [seamFileDropZone]
-        [accept]="accept"
-        [maxSize]="maxSize"
-        [maxFiles]="maxFiles"
-        [disabled]="disabled"
-        (seamFileDrop)="onDrop($event)"
-        (seamFileDropRejected)="onReject($event)"
-        data-testid="zone">
-        drop here
-      </div>`,
-      {
-        hostProps: {
-          accept,
-          maxSize,
-          maxFiles,
-          disabled,
-          onDrop: (files: File[]) => {
-            dropped = files
-          },
-          onReject: (rejections: SeamFileRejection[]) => {
-            rejected = rejections
-          },
+  let dropped: File[] | null = null
+  let rejected: SeamFileRejection[] | null = null
+
+  spectator = createHost(
+    `<div
+      [seamFileDropZone]
+      [accept]="accept"
+      [maxSize]="maxSize"
+      [maxFiles]="maxFiles"
+      [disabled]="disabled"
+      (seamFileDrop)="onDrop($event)"
+      (seamFileDropRejected)="onReject($event)"
+      data-testid="zone">
+      drop here
+    </div>`,
+    {
+      hostProps: {
+        accept,
+        maxSize,
+        maxFiles,
+        disabled,
+        onDrop: (files: File[]) => {
+          dropped = files
+        },
+        onReject: (rejections: SeamFileRejection[]) => {
+          rejected = rejections
         },
       },
-    )
+    },
+  )
 
-    return {
-      getDropped: () => dropped,
-      getRejected: () => rejected,
-    }
+  return {
+    getDropped: () => dropped,
+    getRejected: () => rejected,
   }
+}
 
+// ---------------------------------------------------------------------------
+
+describe('TheSeamFileDropZoneDirective', () => {
   it('adds `seam-file-drop-zone--over` class during dragover', () => {
     setup()
     const zone = getZone()
@@ -120,56 +126,6 @@ describe('TheSeamFileDropZoneDirective', () => {
 })
 
 describe('TheSeamFileDropZoneDirective — drop validation', () => {
-  let spectator: SpectatorHost<TheSeamFileDropZoneDirective>
-  const createHost = createHostFactory({
-    component: TheSeamFileDropZoneDirective,
-  })
-
-  const getZone = () => spectator.element as HTMLElement
-
-  function setup(props: Partial<HostProps> = {}) {
-    const accept = props.accept ?? ''
-    const maxSize = props.maxSize ?? null
-    const maxFiles = props.maxFiles ?? null
-    const disabled = props.disabled ?? false
-
-    let dropped: File[] | null = null
-    let rejected: SeamFileRejection[] | null = null
-
-    spectator = createHost(
-      `<div
-        [seamFileDropZone]
-        [accept]="accept"
-        [maxSize]="maxSize"
-        [maxFiles]="maxFiles"
-        [disabled]="disabled"
-        (seamFileDrop)="onDrop($event)"
-        (seamFileDropRejected)="onReject($event)"
-        data-testid="zone">
-        drop here
-      </div>`,
-      {
-        hostProps: {
-          accept,
-          maxSize,
-          maxFiles,
-          disabled,
-          onDrop: (files: File[]) => {
-            dropped = files
-          },
-          onReject: (rejections: SeamFileRejection[]) => {
-            rejected = rejections
-          },
-        },
-      },
-    )
-
-    return {
-      getDropped: () => dropped,
-      getRejected: () => rejected,
-    }
-  }
-
   it('emits seamFileDrop with dropped files when no validation is set', () => {
     const { getDropped, getRejected } = setup()
     const zone = getZone()

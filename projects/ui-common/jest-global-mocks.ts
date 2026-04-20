@@ -51,6 +51,9 @@ if (typeof (globalThis as any).DataTransfer === 'undefined') {
 
   class DataTransferStub {
     readonly items: DataTransferItemList
+    // NOTE: stub `files` is a plain File[] array, NOT a real FileList.
+    // Code under test should consume it via Array.from(dt.files) or a for-of
+    // loop rather than FileList-specific APIs (.item(), instanceof FileList).
     readonly files: File[]
 
     constructor() {

@@ -36,24 +36,24 @@ export class TheSeamFileDropZoneDirective {
     () => !this.disabled() && this._dragDepth() > 0,
   )
 
-  _onDragEnter(event: DragEvent): void {
+  protected _onDragEnter(event: DragEvent): void {
     if (this.disabled()) return
     event.preventDefault()
     this._dragDepth.update((n) => n + 1)
   }
 
-  _onDragOver(event: DragEvent): void {
+  protected _onDragOver(event: DragEvent): void {
     if (this.disabled()) return
     // preventDefault is required for the drop event to fire.
     event.preventDefault()
   }
 
-  _onDragLeave(event: DragEvent): void {
+  protected _onDragLeave(event: DragEvent): void {
     if (this.disabled()) return
     this._dragDepth.update((n) => Math.max(0, n - 1))
   }
 
-  _onDrop(event: DragEvent): void {
+  protected _onDrop(event: DragEvent): void {
     if (this.disabled()) return
     event.preventDefault()
     this._dragDepth.set(0)
