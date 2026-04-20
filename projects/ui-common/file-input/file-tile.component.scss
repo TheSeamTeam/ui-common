@@ -75,6 +75,19 @@
   align-items: center;
   justify-content: center;
 
+  seam-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+
+    ::ng-deep .svg-inline--fa {
+      display: block;
+      vertical-align: middle;
+      overflow: hidden;
+    }
+  }
+
   &:hover {
     background: rgba(0, 0, 0, 0.06);
     color: #dc3545;
@@ -167,7 +180,8 @@
 }
 
 // Preview-variant-specific: clickable body wraps the media + name vertically.
-.seam-file-tile--preview.seam-file-tile--clickable .seam-file-tile__clickable-body {
+.seam-file-tile--preview.seam-file-tile--clickable
+  .seam-file-tile__clickable-body {
   display: block;
   width: 100%;
 }
