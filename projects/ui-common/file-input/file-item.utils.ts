@@ -1,3 +1,13 @@
+import {
+  faFile,
+  faFileExcel,
+  faFileImage,
+  faFilePdf,
+  faFileWord,
+} from '@fortawesome/free-solid-svg-icons'
+
+import { SeamIcon } from '@theseam/ui-common/icon'
+
 import { SeamFileItem } from './file-item.models'
 
 export function seamFileItemFromFile(file: File, id?: string): SeamFileItem {
@@ -71,4 +81,29 @@ export function seamFilesFromItems(items: SeamFileItem[]): File[] {
     }
   }
   return files
+}
+
+const WORD_MIMES = new Set<string>([
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+])
+
+const EXCEL_MIMES = new Set<string>([
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'text/csv',
+])
+
+/**
+ * Maps a MIME type to a built-in SeamIcon. Returns a generic file icon for
+ * unknown, empty, or missing types. Returns SeamIcon (not IconDefinition) so
+ * the icon set can change later without a breaking signature change.
+ */
+export function iconForMime(type: string | undefined): SeamIcon {
+  if (!type) return faFile
+  if (type === 'application/pdf') return faFilePdf
+  if (type.startsWith('image/')) return faFileImage
+  if (WORD_MIMES.has(type)) return faFileWord
+  if (EXCEL_MIMES.has(type)) return faFileExcel
+  return faFile
 }

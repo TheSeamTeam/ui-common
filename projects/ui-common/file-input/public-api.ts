@@ -10,4 +10,5 @@ export {
   seamFileItemFromFile,
   seamFileItemFromUrl,
   seamFilesFromItems,
+  iconForMime,
 } from './file-item.utils'

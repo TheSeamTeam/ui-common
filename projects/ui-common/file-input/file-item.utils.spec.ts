@@ -105,3 +105,49 @@ describe('seamFilesFromItems', () => {
     expect(seamFilesFromItems([])).toEqual([])
   })
 })
+
+import { iconForMime } from './file-item.utils'
+import {
+  faFile,
+  faFileExcel,
+  faFileImage,
+  faFilePdf,
+  faFileWord,
+} from '@fortawesome/free-solid-svg-icons'
+
+describe('iconForMime', () => {
+  it('returns the PDF icon for application/pdf', () => {
+    expect(iconForMime('application/pdf')).toBe(faFilePdf)
+  })
+
+  it('returns the image icon for any image/* type', () => {
+    expect(iconForMime('image/png')).toBe(faFileImage)
+    expect(iconForMime('image/jpeg')).toBe(faFileImage)
+    expect(iconForMime('image/svg+xml')).toBe(faFileImage)
+  })
+
+  it('returns the Word icon for Word document types', () => {
+    expect(iconForMime('application/msword')).toBe(faFileWord)
+    expect(
+      iconForMime(
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      ),
+    ).toBe(faFileWord)
+  })
+
+  it('returns the Excel icon for Excel/CSV types', () => {
+    expect(iconForMime('application/vnd.ms-excel')).toBe(faFileExcel)
+    expect(
+      iconForMime(
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      ),
+    ).toBe(faFileExcel)
+    expect(iconForMime('text/csv')).toBe(faFileExcel)
+  })
+
+  it('returns the generic file icon for unknown or missing types', () => {
+    expect(iconForMime('application/octet-stream')).toBe(faFile)
+    expect(iconForMime('')).toBe(faFile)
+    expect(iconForMime(undefined)).toBe(faFile)
+  })
+})
