@@ -6,8 +6,10 @@
     "entryFile": "./public_api.ts"
   },
   "allowedNonPeerDependencies": [
+    "@almothafar/angular-signature-pad",
     "@fortawesome/angular-fontawesome",
     "file-type",
+    "ngx-file-drop",
     "@marklb/ngx-datatable",
     "ngx-loading",
     "@ng-select/ng-select",

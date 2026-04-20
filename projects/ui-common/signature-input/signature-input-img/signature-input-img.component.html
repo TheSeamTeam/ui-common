@@ -1,0 +1,32 @@
+<div class="seam-signature-input-img">
+  <div class="seam-signature-input-img__upload-container">
+    <div class="seam-signature-input-img__header h-100">
+      <div
+        class="seam-signature-input-img__upload-box h-100"
+        [class.has-preview]="!!_previewDataUrl()"
+        [style.background-image]="_previewBackgroundImage()"
+        tabindex="0"
+        (click)="openFileBrowse()"
+        (keydown.enter)="openFileBrowse()"
+      >
+        <ngx-file-drop
+          contentClassName="border-0"
+          dropZoneClassName="border-0"
+          (onFileDrop)="_onFileDropped($event)"
+        >
+          <ng-template ngx-file-drop-content-tmp>
+            @if (!_previewDataUrl()) {
+              <div class="seam-signature-input-img__drop-prompt">
+                <strong>Choose a file</strong> or drag it here
+              </div>
+            }
+          </ng-template>
+        </ngx-file-drop>
+      </div>
+
+      @if (_sizeError(); as err) {
+        <div class="seam-signature-input-img__size-error">{{ err }}</div>
+      }
+    </div>
+  </div>
+</div>
