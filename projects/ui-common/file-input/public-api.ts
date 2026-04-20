@@ -6,4 +6,4 @@ export {
   SeamFileTileVariant,
 } from './file-item.models'
 
-export { seamFileItemFromFile } from './file-item.utils'
+export { seamFileItemFromFile, seamFileItemFromUrl } from './file-item.utils'
