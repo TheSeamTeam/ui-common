@@ -48,6 +48,11 @@ export class TheSeamFileTileComponent implements AfterViewInit {
     () => this.removable() && !this.disabled(),
   )
 
+  /** True when itemClick is observed AND the tile is not disabled. */
+  protected readonly _isInteractive = computed(
+    () => this._clickObserved() && !this.disabled(),
+  )
+
   /**
    * Thumbnail URL for image items. Tracked across item changes so object
    * URLs are revoked when the item changes or the component is destroyed.
@@ -137,12 +142,12 @@ export class TheSeamFileTileComponent implements AfterViewInit {
   }
 
   protected _onBodyClick(): void {
-    if (!this._clickObserved()) return
+    if (!this._clickObserved() || this.disabled()) return
     this.itemClick.emit(this.item())
   }
 
   protected _onBodyKey(event: KeyboardEvent): void {
-    if (!this._clickObserved()) return
+    if (!this._clickObserved() || this.disabled()) return
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault()
       this.itemClick.emit(this.item())

@@ -2,10 +2,10 @@
   class="seam-file-tile"
   [class.seam-file-tile--row]="variant() === 'row'"
   [class.seam-file-tile--preview]="variant() === 'preview'"
-  [class.seam-file-tile--clickable]="_clickObserved()"
+  [class.seam-file-tile--clickable]="_isInteractive()"
 >
   @if (variant() === 'row') {
-    @if (_clickObserved()) {
+    @if (_isInteractive()) {
       <div
         class="seam-file-tile__clickable-body"
         role="button"
@@ -40,7 +40,7 @@
         <seam-icon [icon]="_faTimes"></seam-icon>
       </button>
     }
-    @if (_clickObserved()) {
+    @if (_isInteractive()) {
       <div
         class="seam-file-tile__clickable-body"
         role="button"

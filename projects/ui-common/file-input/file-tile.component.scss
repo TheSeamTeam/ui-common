@@ -137,7 +137,6 @@
 
 .seam-file-tile--clickable {
   .seam-file-tile__clickable-body {
-    display: contents;
     cursor: pointer;
     outline: none;
   }
@@ -145,6 +144,7 @@
   .seam-file-tile__clickable-body:focus-visible {
     outline: 2px solid #357ebd;
     outline-offset: 2px;
+    border-radius: 4px;
   }
 
   &.seam-file-tile--row:hover {
@@ -154,4 +154,20 @@
   &.seam-file-tile--preview:hover {
     box-shadow: 0 0 0 1px #357ebd inset;
   }
+}
+
+// Row-variant-specific: the clickable body takes over the flex layout of the
+// tile body (name + meta) so the remove button stays outside the click target.
+.seam-file-tile--row.seam-file-tile--clickable .seam-file-tile__clickable-body {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+// Preview-variant-specific: clickable body wraps the media + name vertically.
+.seam-file-tile--preview.seam-file-tile--clickable .seam-file-tile__clickable-body {
+  display: block;
+  width: 100%;
 }

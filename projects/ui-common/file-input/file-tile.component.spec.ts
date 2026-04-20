@@ -181,6 +181,28 @@ describe('TheSeamFileTileComponent — preview variant', () => {
     expect(spectator.query('img.seam-file-tile__thumb')).toBeNull()
     expect(spectator.query('.seam-file-tile__visual seam-icon')).not.toBeNull()
   })
+
+  it('revokes the owned object URL on destroy', () => {
+    const createSpy = jest
+      .spyOn(URL, 'createObjectURL')
+      .mockReturnValue('blob:destroy-test')
+    const revokeSpy = jest.spyOn(URL, 'revokeObjectURL').mockImplementation()
+
+    spectator = createHost(
+      `<seam-file-tile [item]="item" variant="preview"></seam-file-tile>`,
+      { hostProps: { item: imgItem } },
+    )
+
+    expect(createSpy).toHaveBeenCalledWith(imgFile)
+
+    // Trigger destroy.
+    spectator.fixture.destroy()
+
+    expect(revokeSpy).toHaveBeenCalledWith('blob:destroy-test')
+
+    createSpy.mockRestore()
+    revokeSpy.mockRestore()
+  })
 })
 
 describe('TheSeamFileTileComponent — opt-in itemClick', () => {
@@ -236,6 +258,20 @@ describe('TheSeamFileTileComponent — opt-in itemClick', () => {
     spectator.detectChanges()
     const remove = spectator.query('.seam-file-tile__remove') as HTMLElement
     remove.click()
+    expect(hostProps.clicks).toEqual([])
+  })
+
+  it('does not emit itemClick when disabled, even if wired', () => {
+    const hostProps = { item: textItem, clicks: [] as SeamFileItem[] }
+    spectator = createHost(
+      `<seam-file-tile [item]="item" [disabled]="true" (itemClick)="clicks.push($event)"></seam-file-tile>`,
+      { hostProps },
+    )
+    spectator.detectChanges()
+
+    // Clickable wrapper should not be rendered at all when disabled.
+    const body = spectator.query('.seam-file-tile__clickable-body')
+    expect(body).toBeNull()
     expect(hostProps.clicks).toEqual([])
   })
 })
