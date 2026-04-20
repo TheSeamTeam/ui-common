@@ -6,22 +6,17 @@
         [class.has-preview]="!!_previewDataUrl()"
         [style.background-image]="_previewBackgroundImage()"
         tabindex="0"
+        seamFileDropZone
+        accept="image/*"
+        (seamFileDrop)="_onFilesDropped($event)"
         (click)="openFileBrowse()"
         (keydown.enter)="openFileBrowse()"
       >
-        <ngx-file-drop
-          contentClassName="border-0"
-          dropZoneClassName="border-0"
-          (onFileDrop)="_onFileDropped($event)"
-        >
-          <ng-template ngx-file-drop-content-tmp>
-            @if (!_previewDataUrl()) {
-              <div class="seam-signature-input-img__drop-prompt">
-                <strong>Choose a file</strong> or drag it here
-              </div>
-            }
-          </ng-template>
-        </ngx-file-drop>
+        @if (!_previewDataUrl()) {
+          <div class="seam-signature-input-img__drop-prompt">
+            <strong>Choose a file</strong> or drag it here
+          </div>
+        }
       </div>
 
       @if (_sizeError(); as err) {
@@ -29,4 +24,12 @@
       }
     </div>
   </div>
+
+  <input
+    #filesInput
+    type="file"
+    hidden
+    accept="image/*"
+    (change)="_onNativeChange($event)"
+  />
 </div>

@@ -37,8 +37,7 @@ function getPreviewValue(
   imgCmp: TheSeamSignatureInputImgComponent,
 ): string | null {
   // Read the component's preview signal directly rather than asserting on the
-  // DOM — the preview img lives inside ngx-file-drop's content template,
-  // which isn't reliably activated under jsdom.
+  // DOM — jsdom's FileReader doesn't settle reliably enough for DOM assertions.
   return (
     imgCmp as unknown as { _previewDataUrl: () => string | null }
   )._previewDataUrl()
