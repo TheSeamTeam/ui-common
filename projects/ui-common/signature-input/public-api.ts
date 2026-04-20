@@ -15,8 +15,10 @@ export {
   TheSeamSignatureInputTextComponent,
 } from './signature-input-text/signature-input-text.component'
 export { TheSeamSignatureInputImgComponent } from './signature-input-img/signature-input-img.component'
+export { TheSeamSignatureInputButtonDirective } from './signature-input-button.directive'
 
 export { TheSeamSignatureInputPanelHarness } from './testing/signature-input-panel.harness'
 export { TheSeamSignatureInputPenHarness } from './testing/signature-input-pen.harness'
 export { TheSeamSignatureInputTextHarness } from './testing/signature-input-text.harness'
 export { TheSeamSignatureInputImgHarness } from './testing/signature-input-img.harness'
+export { TheSeamSignatureInputButtonHarness } from './testing/signature-input-button.harness'
