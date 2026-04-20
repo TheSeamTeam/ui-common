@@ -28,6 +28,7 @@
   "private": true,
   "dependencies": {
     "@ajsf/core": "^0.8.0",
+    "@almothafar/angular-signature-pad": "~6.0.0",
     "@angular/animations": "^20.3.0",
     "@angular/cdk": "^20.2.3",
     "@angular/common": "^20.3.0",
@@ -62,6 +63,7 @@
     "intl-tel-input": "^17.0.5",
     "jexl": "^2.3.0",
     "marked": "^18.0.0",
+    "ngx-file-drop": "~16.0.0",
     "ngx-loading": "^17.0.0",
     "ngx-markdown": "^21.2.0",
     "ngx-quill": "^27.1.2",

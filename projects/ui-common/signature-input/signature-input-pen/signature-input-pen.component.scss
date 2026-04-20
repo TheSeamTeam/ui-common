@@ -1,0 +1,17 @@
+:host {
+  display: block;
+  overflow: hidden;
+  position: relative;
+}
+
+.seam-signature-input-pen__canvas-wrap {
+  border-bottom: 1px solid black;
+}
+
+signature-pad {
+  background: none !important;
+}
+
+signature-pad ::ng-deep .signature-pad-canvas {
+  border: none !important;
+}

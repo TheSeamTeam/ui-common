@@ -60,6 +60,7 @@ export default {
     '**/progress/**/*.spec.ts',
     '**/states-counties-map/**/*.spec.ts',
     '**/ai/**/*.spec.ts',
+    '**/signature-input/**/*.spec.ts',
   ],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: '<rootDir>/',

@@ -1,0 +1,102 @@
+<div class="seam-signature-input-panel">
+  <div class="seam-signature-input-panel__content" cdkTrapFocus>
+    <div class="seam-signature-input-panel__options pb-2 mb-1">
+      <button
+        seamButton
+        theme="primary"
+        [class.btn-sm]="_isSm()"
+        class="text-nowrap mr-1"
+        [class.active]="_activeType() === 'pen'"
+        (click)="showType('pen')"
+      >
+        <seam-icon [icon]="_faSignature" size="sm"></seam-icon> Draw
+      </button>
+      <button
+        seamButton
+        theme="primary"
+        [class.btn-sm]="_isSm()"
+        class="text-nowrap mx-1"
+        [class.active]="_activeType() === 'text'"
+        (click)="showType('text')"
+      >
+        <seam-icon [icon]="_faKeyboard" size="sm"></seam-icon> Type
+      </button>
+      <button
+        seamButton
+        theme="primary"
+        [class.btn-sm]="_isSm()"
+        class="text-nowrap ml-1"
+        [class.active]="_activeType() === 'img'"
+        (click)="showType('img')"
+      >
+        <seam-icon [icon]="_faUpload" size="sm"></seam-icon> Upload
+      </button>
+    </div>
+
+    <form [formGroup]="_form">
+      @switch (_activeType()) {
+        @case ('pen') {
+          <seam-signature-input-pen
+            formControlName="pen"
+          ></seam-signature-input-pen>
+        }
+        @case ('text') {
+          <seam-signature-input-text
+            formControlName="text"
+          ></seam-signature-input-text>
+        }
+        @case ('img') {
+          <seam-signature-input-img
+            formControlName="img"
+          ></seam-signature-input-img>
+        }
+      }
+    </form>
+
+    <div class="seam-signature-input-panel__footer mt-1">
+      <div>
+        @if (_resetType() === 'delete') {
+          <button
+            seamButton
+            theme="danger"
+            [class.btn-sm]="_isSm()"
+            [disabled]="_valueEmpty()"
+            (click)="_onClearBtnClick($event)"
+          >
+            Delete
+          </button>
+        } @else {
+          <button
+            seamButton
+            theme="lightgray"
+            [class.btn-sm]="_isSm()"
+            [disabled]="_valueEmpty()"
+            (click)="_onClearBtnClick($event)"
+          >
+            Clear
+          </button>
+        }
+      </div>
+      <div>
+        <button
+          seamButton
+          theme="lightgray"
+          [class.btn-sm]="_isSm()"
+          seamAutoFocus
+          (click)="_onCancelBtnClick($event)"
+        >
+          Cancel
+        </button>
+        <button
+          seamButton
+          theme="primary"
+          [class.btn-sm]="_isSm()"
+          [disabled]="!_canSubmit()"
+          (click)="_onSubmitBtnClick($event)"
+        >
+          Apply Signature
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
