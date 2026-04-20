@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/Metal/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.7/skills/brainstorming/**)",
+      "Bash(\"C:/Users/Metal/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.7/skills/brainstorming/scripts/start-server.sh\" --project-dir \"c:/Users/Metal/dev_home/git/TheSeam.Ui.Common\")",
+      "Bash(git -C \"c:/Users/Metal/dev_home/git/TheSeam.Ui.Common\" status)",
+      "Bash(git -C \"c:/Users/Metal/dev_home/git/TheSeam.Ui.Common\" log --oneline -5)",
+      "Bash(git -C \"c:/Users/Metal/dev_home/git/TheSeam.Ui.Common\" check-ignore -v .superpowers/ .claude/)",
+      "Read(//c/Users/Metal/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.7/skills/subagent-driven-development/**)",
+      "Bash(git -C \"c:/Users/Metal/dev_home/git/TheSeam.Ui.Common\" log --oneline -3)"
+    ]
+  }
+}

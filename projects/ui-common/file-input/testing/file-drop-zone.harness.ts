@@ -1,4 +1,5 @@
 import { ComponentHarness } from '@angular/cdk/testing'
+import { dataTransferFromFiles } from './_harness-utils'
 
 /**
  * Test harness for an element with `[seamFileDropZone]` attached.
@@ -23,13 +24,7 @@ export class TheSeamFileDropZoneHarness extends ComponentHarness {
   async dropFiles(files: File[]): Promise<void> {
     const host = await this.host()
     await host.dispatchEvent('drop', {
-      dataTransfer: _dataTransferFromFiles(files),
+      dataTransfer: dataTransferFromFiles(files),
     })
   }
-}
-
-function _dataTransferFromFiles(files: File[]): unknown {
-  const dt = new DataTransfer()
-  for (const f of files) dt.items.add(f)
-  return dt
 }

@@ -1,4 +1,5 @@
 import { ComponentHarness } from '@angular/cdk/testing'
+import { dataTransferFromFiles } from './_harness-utils'
 
 /**
  * Test harness for `<seam-file-input>`.
@@ -36,13 +37,7 @@ export class TheSeamFileInputHarness extends ComponentHarness {
   async dropFiles(files: File[]): Promise<void> {
     const zone = await this._zone()
     await zone.dispatchEvent('drop', {
-      dataTransfer: _dataTransferFromFiles(files),
+      dataTransfer: dataTransferFromFiles(files),
     })
   }
-}
-
-function _dataTransferFromFiles(files: File[]): unknown {
-  const dt = new DataTransfer()
-  for (const f of files) dt.items.add(f)
-  return dt
 }

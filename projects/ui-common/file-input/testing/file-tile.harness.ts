@@ -1,6 +1,5 @@
 import { ComponentHarness } from '@angular/cdk/testing'
-
-export type SeamFileTileVariantHarness = 'row' | 'preview'
+import { SeamFileTileVariant } from '../file-item.models'
 
 /**
  * Test harness for `<seam-file-tile>`.
@@ -26,7 +25,7 @@ export class TheSeamFileTileHarness extends ComponentHarness {
     return ''
   }
 
-  async getVariant(): Promise<SeamFileTileVariantHarness> {
+  async getVariant(): Promise<SeamFileTileVariant> {
     const root = await this._root()
     const cls = (await root.getAttribute('class')) ?? ''
     return cls.includes('seam-file-tile--preview') ? 'preview' : 'row'
