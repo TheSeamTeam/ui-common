@@ -58,7 +58,7 @@ export class TheSeamFileInputComponent {
   private readonly _nativeInput =
     viewChild.required<ElementRef<HTMLInputElement>>('native')
 
-  protected _openPicker(): void {
+  _openPicker(): void {
     if (this.disabled()) return
     this._nativeInput().nativeElement.click()
   }
