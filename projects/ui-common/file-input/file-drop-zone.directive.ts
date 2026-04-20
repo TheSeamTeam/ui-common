@@ -8,6 +8,7 @@ import {
 } from '@angular/core'
 
 import { SeamFileRejection } from './file-item.models'
+import { validateFiles } from './file-input-validation'
 
 @Directive({
   selector: '[seamFileDropZone]',
@@ -56,6 +57,17 @@ export class TheSeamFileDropZoneDirective {
     if (this.disabled()) return
     event.preventDefault()
     this._dragDepth.set(0)
-    // Drop payload handling comes in Task 8.
+
+    const files = event.dataTransfer ? Array.from(event.dataTransfer.files) : []
+    if (files.length === 0) return
+
+    const { accepted, rejected } = validateFiles(files, {
+      accept: this.accept(),
+      maxSize: this.maxSize(),
+      maxFiles: this.maxFiles(),
+    })
+
+    this.seamFileDrop.emit(accepted)
+    if (rejected.length > 0) this.seamFileDropRejected.emit(rejected)
   }
 }
