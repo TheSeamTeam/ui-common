@@ -1,0 +1,31 @@
+<div
+  class="seam-file-input__zone"
+  [seamFileDropZone]
+  [accept]="accept()"
+  [maxSize]="maxSize()"
+  [maxFiles]="maxFiles()"
+  [disabled]="disabled()"
+  (seamFileDrop)="_onFilesDropped($event)"
+  (seamFileDropRejected)="_onRejected($event)"
+  role="button"
+  [attr.tabindex]="disabled() ? -1 : 0"
+  (click)="_openPicker()"
+  (keydown.enter)="_openPicker(); $event.preventDefault()"
+  (keydown.space)="_openPicker(); $event.preventDefault()"
+>
+  <span class="seam-file-input__icon">
+    <seam-icon [icon]="_faUpload"></seam-icon>
+  </span>
+  <p class="seam-file-input__prompt">
+    <strong>{{ promptText() }}</strong> {{ promptSuffix() }}
+  </p>
+</div>
+
+<input
+  #native
+  type="file"
+  hidden
+  [multiple]="multiple()"
+  [attr.accept]="accept() || null"
+  (change)="_onNativeChange($event)"
+/>

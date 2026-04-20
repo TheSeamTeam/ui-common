@@ -14,3 +14,5 @@ export {
 } from './file-item.utils'
 
 export { TheSeamFileDropZoneDirective } from './file-drop-zone.directive'
+
+export { TheSeamFileInputComponent } from './file-input.component'
