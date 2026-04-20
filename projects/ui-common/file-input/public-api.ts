@@ -5,3 +5,5 @@ export {
   SeamFileRejectionReason,
   SeamFileTileVariant,
 } from './file-item.models'
+
+export { seamFileItemFromFile } from './file-item.utils'
