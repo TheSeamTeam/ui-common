@@ -118,15 +118,29 @@ describe('TheSeamFileFieldComponent — single-mode CVA + C-pattern', () => {
   })
 
   it('disables the embedded input and tile when the control is disabled', () => {
+    // Start with the empty state: embedded visible input should be tabindex=-1 when disabled.
     spectator.component.ctrl.disable()
     spectator.detectChanges()
 
     const inputZone = spectator.query(
       '.seam-file-input__zone',
     ) as HTMLElement | null
-    if (inputZone) {
-      expect(inputZone.getAttribute('tabindex')).toBe('-1')
-    }
+    expect(inputZone).not.toBeNull()
+    expect(inputZone!.getAttribute('tabindex')).toBe('-1')
+
+    // Now with a file present: the replace button should be disabled.
+    spectator.component.ctrl.enable()
+    spectator.component.ctrl.setValue([
+      seamFileItemFromFile(new File(['a'], 'a.png', { type: 'image/png' })),
+    ])
+    spectator.component.ctrl.disable()
+    spectator.detectChanges()
+
+    const replace = spectator.query(
+      '.seam-file-field__replace',
+    ) as HTMLButtonElement
+    expect(replace).not.toBeNull()
+    expect(replace.disabled).toBe(true)
   })
 })
 
@@ -252,5 +266,33 @@ describe('TheSeamFileFieldComponent — multi-mode with maxFiles', () => {
     expect(fieldCmp).toBeTruthy()
     // @ts-expect-error protected access for testing
     expect(fieldCmp!._remainingMaxFiles()).toBe(0)
+  })
+
+  it('caps bursts of additions to maxFiles — rejects extras past the cap', () => {
+    spectator = createComponent()
+    // Reset to empty with maxFiles=2
+    spectator.component.ctrl.setValue([])
+    spectator.detectChanges()
+
+    const inputCmp = spectator.debugElement
+      .queryAll(() => true)
+      .map((de) => de.componentInstance)
+      .find(
+        (cmp) => cmp && cmp.constructor.name === 'TheSeamFileInputComponent',
+      ) as TheSeamFileInputComponent | undefined
+
+    // Emit 3 files at once when maxFiles is 2 — should cap to 2 via field-level slice.
+    inputCmp!.filesAdded.emit([
+      new File(['a'], 'a.pdf'),
+      new File(['b'], 'b.pdf'),
+      new File(['c'], 'c.pdf'),
+    ])
+    spectator.detectChanges()
+
+    expect(spectator.component.ctrl.value!.length).toBe(2)
+    expect(spectator.component.ctrl.value!.map((i) => i.name)).toEqual([
+      'a.pdf',
+      'b.pdf',
+    ])
   })
 })

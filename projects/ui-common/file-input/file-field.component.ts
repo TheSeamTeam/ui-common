@@ -94,7 +94,10 @@ export class TheSeamFileFieldComponent implements ControlValueAccessor {
     if (!this.multiple()) {
       this._items.set(added.slice(0, 1))
     } else {
-      this._items.update((prev) => [...prev, ...added])
+      const remaining = this._remainingMaxFiles()
+      const toAdd = remaining !== null ? added.slice(0, remaining) : added
+      if (toAdd.length === 0) return
+      this._items.update((prev) => [...prev, ...toAdd])
     }
     this._emit()
   }
