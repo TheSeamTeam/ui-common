@@ -1,2 +1,7 @@
-// File input secondary entry point — populated by later tasks.
-export {}
+export {
+  SeamFileItem,
+  SeamFileItemSource,
+  SeamFileRejection,
+  SeamFileRejectionReason,
+  SeamFileTileVariant,
+} from './file-item.models'
