@@ -29,6 +29,7 @@ import { DatatableColumnPreferencesButtonComponent } from './datatable-column-pr
 import { DatatableColumnPreferencesComponent } from './datatable-column-preferences/datatable-column-preferences.component'
 import { DatatableColumnComponent } from './datatable-column/datatable-column.component'
 import { DatatableExportButtonComponent } from './datatable-export-button/datatable-export-button.component'
+import { DatatableRefreshButtonComponent } from './datatable-refresh-button/datatable-refresh-button.component'
 import { DatatableFooterTplDirective } from './datatable-footer/datatable-footer-tpl.directive'
 import { TheSeamDatatableFooterDirective } from './datatable-footer/datatable-footer.directive'
 import { DatatableMenuBarColumnCenterComponent } from './datatable-menu-bar-column-center/datatable-menu-bar-column-center.component'
@@ -109,6 +110,7 @@ import { DatatableColumnHeaderComponent } from './datatable-column-header/datata
     DatatableColumnFilterSearchTextComponent,
     DatatableColumnFilterSearchNumericComponent,
     DatatableColumnFilterSearchDateComponent,
+    DatatableRefreshButtonComponent,
   ],
   exports: [
     DatatableComponent,
@@ -120,6 +122,7 @@ import { DatatableColumnHeaderComponent } from './datatable-column-header/datata
     DatatableFilterDirective,
     DatatableRowActionItemDirective,
     DatatableExportButtonComponent,
+    DatatableRefreshButtonComponent,
     TheSeamDatatableRowDetailDirective,
     DatatableRowDetailTplDirective,
     TheSeamDatatableFooterDirective,

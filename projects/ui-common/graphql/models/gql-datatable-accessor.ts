@@ -9,6 +9,7 @@ export type GqlDatatableAccessor = Pick<
   | 'pageInfo'
   | 'externalSorting'
   | 'columns$'
+  | 'refreshRequested'
 > &
   // TODO: Remove when Datatable wrapper is fixed and exposes these.
   {
