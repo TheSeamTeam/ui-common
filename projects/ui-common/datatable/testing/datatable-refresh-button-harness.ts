@@ -1,3 +1,4 @@
+import { coerceBooleanProperty } from '@angular/cdk/coercion'
 import {
   BaseHarnessFilters,
   ComponentHarness,
@@ -26,8 +27,7 @@ export class TheSeamDatatableRefreshButtonHarness extends ComponentHarness {
 
   /** Whether the underlying button is disabled. */
   public async isDisabled(): Promise<boolean> {
-    const btn = await this._button()
-    const disabled = await btn.getAttribute('disabled')
-    return disabled !== null
+    const disabled = await (await this._button()).getAttribute('disabled')
+    return coerceBooleanProperty(disabled)
   }
 }

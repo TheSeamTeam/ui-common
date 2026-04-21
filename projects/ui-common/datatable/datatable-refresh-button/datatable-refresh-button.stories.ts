@@ -8,13 +8,11 @@ import { expect, fn } from 'storybook/test'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 
-import {
-  getHarness,
-  TheSeamDatatableRefreshButtonHarness,
-} from '@theseam/ui-common/testing'
+import { getHarness } from '@theseam/ui-common/testing'
 
 import { TheSeamDatatableModule } from '../datatable.module'
 import { DatatableRefreshButtonComponent } from './datatable-refresh-button.component'
+import { TheSeamDatatableRefreshButtonHarness } from '../testing'
 
 interface StoryArgs {
   columns: { prop: string; name: string }[]
