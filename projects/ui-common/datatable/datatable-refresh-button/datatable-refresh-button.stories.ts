@@ -31,6 +31,9 @@ const meta: Meta<DatatableRefreshButtonComponent & StoryArgs> = {
       imports: [TheSeamDatatableModule],
     }),
   ],
+  argTypes: {
+    refreshRequested: { action: 'refreshRequested' },
+  },
   parameters: {
     layout: 'fullscreen',
     docs: {
