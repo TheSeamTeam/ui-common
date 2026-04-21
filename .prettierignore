@@ -9,3 +9,7 @@ docs/
 node_modules/
 dist/
 memory-bank/
+
+projects/ui-common/stories/assets
+
+projects/ui-common/CHANGELOG.md
