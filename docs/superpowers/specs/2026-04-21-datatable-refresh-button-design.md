@@ -82,7 +82,6 @@ New standalone component in `projects/ui-common/datatable/datatable-refresh-butt
   `,
   styles: [`:host { display: block; }`],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [TheSeamButtonsModule, TheSeamIconModule],
 })
 export class DatatableRefreshButtonComponent {
@@ -96,7 +95,7 @@ export class DatatableRefreshButtonComponent {
 ```
 
 - Selector `seam-datatable-refresh-button` mirrors `seam-datatable-export-button`.
-- Standalone (preferred for new code per AGENTS.md).
+- Standalone by default (preferred for new code per AGENTS.md).
 - Injects `DatatableRefreshService` from the ancestor `seam-datatable` injection scope. If a consumer drops the button outside a datatable, Angular's DI raises an error — that's the right failure mode given this component only makes sense inside a datatable.
 - No directive, no `@ViewChild`, no patched property.
 
