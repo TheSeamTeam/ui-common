@@ -9,8 +9,15 @@ import { DatatableRefreshService } from '../services/datatable-refresh.service'
 @Component({
   selector: 'seam-datatable-refresh-button',
   template: `
-    <button seamButton theme="lightgray" size="sm" (click)="_onClick()">
+    <button
+      seamButton
+      theme="lightgray"
+      size="sm"
+      title="Refresh"
+      (click)="_onClick()"
+    >
       <seam-icon [icon]="_refreshIcon"></seam-icon>
+      <span class="sr-only">Refresh</span>
     </button>
   `,
   styles: [
