@@ -526,14 +526,25 @@ import {
   moduleMetadata,
   StoryObj,
 } from '@storybook/angular'
-import { expect } from 'storybook/test'
+import { expect, fn } from 'storybook/test'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
+
+import {
+  getHarness,
+  TheSeamDatatableRefreshButtonHarness,
+} from '@theseam/ui-common/testing'
 
 import { TheSeamDatatableModule } from '../datatable.module'
 import { DatatableRefreshButtonComponent } from './datatable-refresh-button.component'
 
-const meta: Meta<DatatableRefreshButtonComponent> = {
+interface StoryArgs {
+  columns: Array<{ prop: string; name: string }>
+  rows: Array<Record<string, unknown>>
+  refreshRequested: () => void
+}
+
+const meta: Meta<DatatableRefreshButtonComponent & StoryArgs> = {
   title: 'Datatable/Components',
   component: DatatableRefreshButtonComponent,
   decorators: [
@@ -553,30 +564,17 @@ const meta: Meta<DatatableRefreshButtonComponent> = {
 }
 
 export default meta
-type Story = StoryObj<DatatableRefreshButtonComponent>
+type Story = StoryObj<DatatableRefreshButtonComponent & StoryArgs>
 
 export const Refresh: Story = {
-  render: () => ({
-    props: {
-      columns: [
-        { prop: 'name', name: 'Name' },
-        { prop: 'age', name: 'Age' },
-        { prop: 'color', name: 'Color' },
-      ],
-      rows: [
-        { name: 'Mark', age: 27, color: 'blue' },
-        { name: 'Joe', age: 33, color: 'green' },
-      ],
-      onRefresh: function () {
-        ;(this as any).refreshCount = ((this as any).refreshCount || 0) + 1
-      },
-    },
+  render: (args) => ({
+    props: args,
     template: `
       <div class="vh-100 d-flex flex-column p-2">
         <seam-datatable
           [columns]="columns"
           [rows]="rows"
-          (refreshRequested)="onRefresh()">
+          (refreshRequested)="refreshRequested()">
 
           <seam-datatable-menu-bar>
             <div class="d-flex flex-row justify-content-end">
@@ -587,15 +585,30 @@ export const Refresh: Story = {
         </seam-datatable>
       </div>`,
   }),
-  play: async ({ canvasElement }) => {
-    const button = canvasElement.querySelector(
-      'seam-datatable-refresh-button button',
-    ) as HTMLButtonElement | null
-    expect(button).not.toBeNull()
-    button!.click()
+  args: {
+    columns: [
+      { prop: 'name', name: 'Name' },
+      { prop: 'age', name: 'Age' },
+      { prop: 'color', name: 'Color' },
+    ],
+    rows: [
+      { name: 'Mark', age: 27, color: 'blue' },
+      { name: 'Joe', age: 33, color: 'green' },
+    ],
+    refreshRequested: fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    await expect(args.refreshRequested).toHaveBeenCalledTimes(0)
+    const harness = await getHarness(TheSeamDatatableRefreshButtonHarness, {
+      canvasElement,
+    })
+    await harness.click()
+    await expect(args.refreshRequested).toHaveBeenCalledTimes(1)
   },
 }
 ```
+
+Note: `getHarness` is re-exported from `@theseam/ui-common/testing`. The harness export added in Step 2 flows through the same module, so the single import block above works.
 
 - [ ] **Step 4: Run jest to make sure the harness file compiles cleanly within the test runner**
 
