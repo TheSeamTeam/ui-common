@@ -24,6 +24,9 @@ export class MockDatatable implements GqlDatatableAccessor {
 
   private readonly _refreshSubject = new Subject<void>()
 
+  // Hand-rolled OutputRef so MockDatatable can be constructed outside an
+  // injection context (outputFromObservable requires one). outputToObservable
+  // tolerates a missing destroyRef via an optional chain.
   public readonly refreshRequested: OutputRef<void> = {
     subscribe: (cb: (value: void) => void) => {
       const sub = this._refreshSubject.subscribe(() => cb(undefined as void))
