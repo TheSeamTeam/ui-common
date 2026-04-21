@@ -3,7 +3,9 @@ import { ComponentHarness } from '@angular/cdk/testing'
 export class TheSeamSignatureInputImgHarness extends ComponentHarness {
   static hostSelector = 'seam-signature-input-img'
 
-  private readonly _fileDrop = this.locatorFor('ngx-file-drop')
+  private readonly _fileDrop = this.locatorFor(
+    '.seam-signature-input-img__upload-box',
+  )
   private readonly _sizeError = this.locatorForOptional(
     '.seam-signature-input-img__size-error',
   )
