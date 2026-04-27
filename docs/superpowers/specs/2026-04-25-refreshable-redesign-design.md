@@ -84,7 +84,7 @@ Both signal inputs are optional. A `Refreshable` with neither only fetches on fi
 - **Coalescing.** Multiple triggers in the same microtask collapse to a single `action()` invocation (`auditTime(0)` internally).
 - **Switch semantics.** A trigger fired while `action()` is still running cancels the in-flight observable (`switchMap`) and starts a new one. `loading$` stays `true` across the swap.
 - **Refcount-zero reset.** When `data$` drops to zero subscribers, the inner pipeline tears down, the cache clears, and `initialized$` resets. The next subscriber starts cold.
-- **Errors (v1).** If `action()` errors, the error propagates through `data$` to subscribers via the standard RxJS error channel. `loading$` emits `false`. `initialized$` is unchanged. There is no built-in retry, and the source instance does not auto-recover from an error: once errored, the same `Refreshable` cannot be revived by `refresh()`. Recovery requires either a refcount-zero gap followed by re-subscription (which rebuilds the inner pipeline) or constructing a new `Refreshable`. A future non-terminal variant is noted in Open Questions.
+- **Errors (v1).** If `action()` errors, the error propagates through `data$` to subscribers via the standard RxJS error channel. `loading$` emits `false`. Because errors are terminal for `data$` subscribers, the last subscriber tears down on error and the cache is cleared by the same teardown path used for refcount-zero reset, so `initialized$` flips to `false` as a side effect. There is no built-in retry, and the source instance does not auto-recover from an error: once errored, the same in-flight subscription cannot be revived by `refresh()`. Recovery requires re-subscription (which rebuilds the inner pipeline from scratch) or constructing a new `Refreshable`. A future non-terminal variant is noted in Open Questions.
 
 ### State table
 
@@ -98,7 +98,7 @@ Both signal inputs are optional. A `Refreshable` with neither only fetches on fi
 | Emission after poll/refresh | `false` | `true` |
 | `invalidate$` tick (with `data$` subscribed) | `true` | **`false`** |
 | Emission after invalidate | `false` | `true` |
-| Error from `action()` | `false` | (unchanged) |
+| Error from `action()` | `false` | `false` (last subscriber tears down) |
 | All `data$` subscribers leave (refcount → 0) | `false` (reset) | `false` (reset) |
 
 ## Scaffold integration
