@@ -1,4 +1,5 @@
-import { Observable } from 'rxjs'
+import { defer, Observable, of } from 'rxjs'
+import { switchMap, take } from 'rxjs/operators'
 
 export interface RefreshableOptions<T> {
   action: () => Observable<T>
@@ -7,12 +8,18 @@ export interface RefreshableOptions<T> {
 }
 
 export class Refreshable<T> {
-  public readonly data$: Observable<T> = new Observable<T>()
+  public readonly data$: Observable<T>
   public readonly loading$: Observable<boolean> = new Observable<boolean>()
   public readonly initialized$: Observable<boolean> = new Observable<boolean>()
 
   constructor(opts: RefreshableOptions<T>) {
-    void opts
+    const { action } = opts
+    this.data$ = defer(() =>
+      of(undefined).pipe(
+        switchMap(() => action()),
+        take(1),
+      ),
+    )
   }
 
   public refresh(): void {
