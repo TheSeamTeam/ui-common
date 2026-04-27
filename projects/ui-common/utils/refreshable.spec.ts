@@ -119,4 +119,64 @@ describe('Refreshable', () => {
     expect(data).toEqual([1, 2])
     expect(init).toEqual([false, true])
   }))
+
+  it('invalidate$ tick flips initialized$ to false until new value lands', fakeAsync(() => {
+    const inner$ = new Subject<number>()
+    const invalidate$ = new Subject<void>()
+    const r = new Refreshable<number>({
+      action: () => inner$.asObservable(),
+      invalidate$,
+    })
+
+    const init: boolean[] = []
+    r.initialized$.subscribe((v) => init.push(v))
+    r.data$.subscribe()
+    tick(0)
+    inner$.next(1)
+    tick(0)
+
+    expect(init).toEqual([false, true])
+
+    invalidate$.next()
+    tick(0)
+
+    expect(init).toEqual([false, true, false])
+
+    inner$.next(2)
+    tick(0)
+
+    expect(init).toEqual([false, true, false, true])
+  }))
+
+  it('late subscriber arriving after invalidate$ does NOT see the stale cached value', fakeAsync(() => {
+    const inner$ = new Subject<number>()
+    const invalidate$ = new Subject<void>()
+    const r = new Refreshable<number>({
+      action: () => inner$.asObservable(),
+      invalidate$,
+    })
+
+    const heldOpen: number[] = []
+    const heldOpenSub = r.data$.subscribe((v) => heldOpen.push(v))
+    tick(0)
+    inner$.next(1)
+    tick(0)
+
+    expect(heldOpen).toEqual([1])
+
+    invalidate$.next()
+    tick(0)
+
+    const late: number[] = []
+    r.data$.subscribe((v) => late.push(v))
+    tick(0)
+    expect(late).toEqual([])
+
+    inner$.next(2)
+    tick(0)
+    expect(late).toEqual([2])
+    expect(heldOpen).toEqual([1, 2])
+
+    heldOpenSub.unsubscribe()
+  }))
 })
