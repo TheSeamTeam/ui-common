@@ -179,4 +179,19 @@ describe('Refreshable', () => {
 
     heldOpenSub.unsubscribe()
   }))
+
+  it('multiple concurrent data$ subscribers share one action() invocation', fakeAsync(() => {
+    const action = jest.fn(() => of(99))
+    const r = new Refreshable<number>({ action })
+
+    const a: number[] = []
+    const b: number[] = []
+    r.data$.subscribe((v) => a.push(v))
+    r.data$.subscribe((v) => b.push(v))
+    tick(0)
+
+    expect(action).toHaveBeenCalledTimes(1)
+    expect(a).toEqual([99])
+    expect(b).toEqual([99])
+  }))
 })
