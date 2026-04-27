@@ -11,9 +11,8 @@ export class Refreshable<T> {
   public readonly loading$: Observable<boolean> = new Observable<boolean>()
   public readonly initialized$: Observable<boolean> = new Observable<boolean>()
 
-  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
-  constructor(_opts: RefreshableOptions<T>) {
-    // Implementation grows incrementally across tasks A2–A9.
+  constructor(opts: RefreshableOptions<T>) {
+    void opts
   }
 
   public refresh(): void {
