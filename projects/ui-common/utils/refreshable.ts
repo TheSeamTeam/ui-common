@@ -77,6 +77,6 @@ export class Refreshable<T> {
   }
 
   public refresh(): void {
-    // Implementation in Task A4.
+    this._refresh$.next()
   }
 }

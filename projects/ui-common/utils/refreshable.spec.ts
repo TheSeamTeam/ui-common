@@ -79,4 +79,20 @@ describe('Refreshable', () => {
 
     expect(init).toEqual([false, true])
   }))
+
+  it('refresh() runs action() again and emits the new value', fakeAsync(() => {
+    let counter = 0
+    const r = new Refreshable<number>({ action: () => of(++counter) })
+
+    const seen: number[] = []
+    r.data$.subscribe((v) => seen.push(v))
+    tick(0)
+
+    expect(seen).toEqual([1])
+
+    r.refresh()
+    tick(0)
+
+    expect(seen).toEqual([1, 2])
+  }))
 })
