@@ -1,5 +1,6 @@
 import { BehaviorSubject, EMPTY, merge, Observable, Subject } from 'rxjs'
 import {
+  auditTime,
   distinctUntilChanged,
   filter,
   map,
@@ -48,6 +49,7 @@ export class Refreshable<T> {
       invalidateSig$,
     ).pipe(
       startWith(undefined as unknown),
+      auditTime(0),
       tap(() => this._loading$.next(true)),
       switchMap(() => action()),
       tap({
