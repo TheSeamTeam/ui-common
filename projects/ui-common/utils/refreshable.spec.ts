@@ -293,4 +293,26 @@ describe('Refreshable', () => {
     expect(caught).toBe(err)
     expect(loading).toEqual([false, true, false])
   }))
+
+  it('initialized$ resets to false when action() errors after a successful emission', fakeAsync(() => {
+    const poll$ = new Subject<void>()
+    let callCount = 0
+    const r = new Refreshable<number>({
+      action: () =>
+        ++callCount === 1 ? of(1) : throwError(() => new Error('boom')),
+      poll$,
+    })
+
+    const init: boolean[] = []
+    r.initialized$.subscribe((v) => init.push(v))
+    r.data$.subscribe({ next: () => undefined, error: () => undefined })
+    tick(0)
+
+    expect(init).toEqual([false, true])
+
+    poll$.next()
+    tick(0)
+
+    expect(init).toEqual([false, true, false])
+  }))
 })
