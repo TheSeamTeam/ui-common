@@ -34,11 +34,12 @@ Build the library with:
 npm run build:ui-common
 ```
 
-### Task A1: Reset `refreshable.ts` and create empty spec
+### Task A1: Reset `refreshable.ts` to skeleton
 
 **Files:**
 - Modify: `projects/ui-common/utils/refreshable.ts`
-- Create: `projects/ui-common/utils/refreshable.spec.ts`
+
+(No spec file is created in this task. The Jest config in this repo refuses empty suites, so the spec file is created by Task A2 when the first real test is added.)
 
 - [ ] **Step 1: Replace `refreshable.ts` with skeleton**
 
@@ -58,9 +59,8 @@ export class Refreshable<T> {
   public readonly loading$: Observable<boolean> = new Observable<boolean>()
   public readonly initialized$: Observable<boolean> = new Observable<boolean>()
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  constructor(_opts: RefreshableOptions<T>) {
-    // Implementation grows incrementally across tasks A2–A9.
+  constructor(opts: RefreshableOptions<T>) {
+    void opts
   }
 
   public refresh(): void {
@@ -69,46 +69,34 @@ export class Refreshable<T> {
 }
 ```
 
-- [ ] **Step 2: Create `refreshable.spec.ts` with empty suite**
+`void opts` is a deliberate statement that consumes the parameter. It satisfies both `@typescript-eslint/no-unused-vars` (the param is used) and `@typescript-eslint/no-useless-constructor` (the constructor body is non-empty), without needing an `eslint-disable` comment.
 
-Create `projects/ui-common/utils/refreshable.spec.ts`:
-
-```ts
-import { fakeAsync, tick } from '@angular/core/testing'
-import { Subject, of, throwError } from 'rxjs'
-
-import { Refreshable } from './refreshable'
-
-describe('Refreshable', () => {
-  // Tests added incrementally across tasks A2–A8.
-})
-```
-
-- [ ] **Step 3: Run the spec to confirm Jest picks it up**
-
-```bash
-npm test -- refreshable.spec.ts
-```
-
-Expected: passes with 0 tests, no errors. (Empty suites are a pass.)
-
-- [ ] **Step 4: Verify lint clean**
+- [ ] **Step 2: Verify lint clean**
 
 ```bash
 npm run lint
 ```
 
-Expected: no errors related to `refreshable.ts` or `refreshable.spec.ts`.
+Expected: no errors related to `refreshable.ts`.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 3: Verify TypeScript compiles**
 
 ```bash
-git add projects/ui-common/utils/refreshable.ts projects/ui-common/utils/refreshable.spec.ts
+npx tsc --noEmit -p projects/ui-common/tsconfig.lib.json
+```
+
+Expected: no errors.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add projects/ui-common/utils/refreshable.ts
 git commit -m "refactor(refreshable): reset to skeleton ahead of redesign
 
 The old Refreshable class is unused and is being replaced by a generic
 primitive with invalidate\$/poll\$ inputs. Skeleton lands first so each
-behavior can be added test-first."
+behavior can be added test-first. The spec file is created by Task A2
+along with the first real test (Jest in this repo refuses empty suites)."
 ```
 
 ---
@@ -117,13 +105,19 @@ behavior can be added test-first."
 
 **Files:**
 - Modify: `projects/ui-common/utils/refreshable.ts`
-- Modify: `projects/ui-common/utils/refreshable.spec.ts`
+- Create: `projects/ui-common/utils/refreshable.spec.ts`
 
-- [ ] **Step 1: Add failing tests for laziness and first emission**
+- [ ] **Step 1: Create the spec file with the first failing tests**
 
-Append inside the `describe('Refreshable', ...)` block in `refreshable.spec.ts`:
+Create `projects/ui-common/utils/refreshable.spec.ts` with:
 
 ```ts
+import { fakeAsync, tick } from '@angular/core/testing'
+import { Subject, of, throwError } from 'rxjs'
+
+import { Refreshable } from './refreshable'
+
+describe('Refreshable', () => {
   it('does not call action() until data$ has a subscriber', () => {
     const action = jest.fn(() => of(1))
     new Refreshable<number>({ action })
@@ -141,7 +135,10 @@ Append inside the `describe('Refreshable', ...)` block in `refreshable.spec.ts`:
     expect(action).toHaveBeenCalledTimes(1)
     expect(received).toBe(42)
   }))
+})
 ```
+
+Note: `Subject` and `throwError` are imported even though they aren't used in this task's tests. They're used by tests added in subsequent tasks (A3 onward) and importing them upfront avoids re-touching the import block on every task. If your linter flags unused imports, remove the unused ones now and re-add them when needed in their respective tasks.
 
 - [ ] **Step 2: Run tests, verify they fail**
 
