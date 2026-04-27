@@ -95,4 +95,28 @@ describe('Refreshable', () => {
 
     expect(seen).toEqual([1, 2])
   }))
+
+  it('poll$ tick triggers action() and emits the new value without clearing cache', fakeAsync(() => {
+    let counter = 0
+    const poll$ = new Subject<void>()
+    const r = new Refreshable<number>({
+      action: () => of(++counter),
+      poll$,
+    })
+
+    const data: number[] = []
+    const init: boolean[] = []
+    r.initialized$.subscribe((v) => init.push(v))
+    r.data$.subscribe((v) => data.push(v))
+    tick(0)
+
+    expect(data).toEqual([1])
+    expect(init).toEqual([false, true])
+
+    poll$.next()
+    tick(0)
+
+    expect(data).toEqual([1, 2])
+    expect(init).toEqual([false, true])
+  }))
 })

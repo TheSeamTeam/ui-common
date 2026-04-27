@@ -38,7 +38,7 @@ export class Refreshable<T> {
   constructor(opts: RefreshableOptions<T>) {
     const { action } = opts
 
-    const driver$ = merge(this._refresh$, EMPTY).pipe(
+    const driver$ = merge(this._refresh$, opts.poll$ ?? EMPTY).pipe(
       startWith(undefined as unknown),
       tap(() => this._loading$.next(true)),
       switchMap(() => action()),
