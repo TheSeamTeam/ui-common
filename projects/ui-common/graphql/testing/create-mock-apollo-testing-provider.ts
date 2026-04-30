@@ -4,10 +4,12 @@ import { Provider } from '@angular/core'
 
 import { queryProcessingLink } from '../apollo-links/query-processing-link'
 import { mockGraphQLLink } from './mock-graphql-link'
+import { logQueryLink } from '../apollo-links'
 
 export interface MockApolloTestingProviderOptions {
   resolve: (operation: Operation) => any
   delay?: number
+  logQueryLink?: boolean
 }
 
 /**
@@ -22,7 +24,9 @@ export function createMockApolloTestingProvider(
   return provideApollo(() => ({
     cache: new InMemoryCache(),
     link: concat(
-      queryProcessingLink,
+      options.logQueryLink
+        ? logQueryLink(queryProcessingLink)
+        : queryProcessingLink,
       mockGraphQLLink({
         resolve: options.resolve,
         delay: options.delay,

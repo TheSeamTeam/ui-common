@@ -1,4 +1,5 @@
 export * from './contains-variable'
+export * from './gql-enum'
 export * from './gql-var'
 export * from './inline-variables'
 export * from './parse-comments'
