@@ -18,6 +18,7 @@ import {
   switchMap,
   tap,
 } from 'rxjs/operators'
+import { outputToObservable } from '@angular/core/rxjs-interop'
 
 import { wrapIntoObservable } from '@theseam/ui-common/utils'
 import { SortItem, TheSeamDatatableColumn } from '@theseam/ui-common/datatable'
@@ -118,19 +119,16 @@ export function observeRowsWithGqlInputsHandling<
   )
 
   return defer(() => {
-    // Observe the optional refresh-button patch attached externally to the
-    // datatable instance. When the user triggers a refresh, refetch the data.
+    // Observe the datatable's refreshRequested output. When the user clicks the
+    // refresh button (or any other consumer triggers DatatableRefreshService),
+    // refetch the data.
     let refreshBtnSub: Subscription = Subscription.EMPTY
     refreshBtnSub = datatable$
       .pipe(
-        switchMap((dt) => {
-          if (!dt || !(dt as any).__refreshPatch) {
-            return EMPTY
-          }
-          return (dt as any).__refreshPatch.refreshTriggered.pipe(
-            tap(() => queryRef.refetch(undefined, true)),
-          )
-        }),
+        switchMap((dt) =>
+          dt ? outputToObservable(dt.refreshRequested) : EMPTY,
+        ),
+        tap(() => queryRef.refetch(undefined, true)),
       )
       .subscribe()
 

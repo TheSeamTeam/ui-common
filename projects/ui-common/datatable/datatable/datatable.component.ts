@@ -32,6 +32,7 @@ import {
   TemplateRef,
   ViewChild,
 } from '@angular/core'
+import { outputFromObservable } from '@angular/core/rxjs-interop'
 import {
   BehaviorSubject,
   combineLatest,
@@ -100,6 +101,7 @@ import { SortItem } from '../models/sort-item'
 import { TheSeamDatatableColumn } from '../models/table-column'
 import { ColumnsManagerService } from '../services/columns-manager.service'
 import { DatatableColumnChangesService } from '../services/datatable-column-changes.service'
+import { DatatableRefreshService } from '../services/datatable-refresh.service'
 import { DatatablePreferencesService } from '../services/datatable-preferences.service'
 import { THESEAM_DATATABLE_ACCESSOR } from '../tokens/datatable-accessor'
 import { removeUnusedDiffs } from '../utils/remove-unused-diffs'
@@ -193,6 +195,7 @@ export const _THESEAM_DATATABLE_ACCESSOR: any = {
   providers: [
     _THESEAM_DATATABLE,
     DatatableColumnChangesService,
+    DatatableRefreshService,
     _THESEAM_DATATABLE_ACCESSOR,
     ColumnsManagerService,
     ColumnsAlterationsManagerService,
@@ -235,6 +238,10 @@ export class DatatableComponent<TRow = any>
   readonly _faSpinner = faSpinner
 
   _cdr = inject(ChangeDetectorRef)
+
+  readonly refreshRequested = outputFromObservable(
+    inject(DatatableRefreshService).refreshRequested$,
+  )
 
   private readonly _ngUnsubscribe = new Subject()
   private readonly _menuBarsFiltersSubject = new BehaviorSubject<DataFilter[]>(
