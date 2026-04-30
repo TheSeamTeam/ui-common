@@ -88,7 +88,19 @@ export function processGql(
     const varValue = _variables[varName]
     _variables = withoutProperty(_variables, varName)
     _ast = removeVariableDefinition(_ast, varName)
-    _ast = inlineVariable(_ast, varName, parseValue(toGQL(varValue)))
+    if (varValue === undefined) {
+      // Remove every reference to the variable instead of inlining a literal
+      // `null`. This lets later cleanup collapse e.g. `where: { and: [] }`.
+      _ast = visit(_ast, {
+        Variable(node) {
+          if (node.name.value === varName) {
+            return null
+          }
+        },
+      })
+    } else {
+      _ast = inlineVariable(_ast, varName, parseValue(toGQL(varValue)))
+    }
   }
 
   // ---- Config: orderTiebreaker -------------------------------------------

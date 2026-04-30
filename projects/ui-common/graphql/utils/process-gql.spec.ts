@@ -204,6 +204,53 @@ describe('processGql', () => {
         },
       )
     })
+
+    it('removes references when value is undefined (does not inline as null)', () => {
+      // Mirrors a real-world consumer config where `where` and `fixedFilters`
+      // are inlined but their values are undefined. The references inside
+      // `where: { and: [$fixedFilters, $where] }` must be removed (yielding
+      // an empty `and: []`), so the cleanup step can drop the `where:`
+      // argument entirely. The bug: undefined values were being inlined as
+      // literal `null`s, leaving `where: { and: [null, null] }`.
+      expectProcessed(
+        {
+          query: gql`
+            query SystemUserList(
+              $skip: Int
+              $take: Int
+              $where: SystemUserListModelFilterInput
+              $fixedFilters: String!
+            ) {
+              systemUserList(
+                skip: $skip
+                take: $take
+                where: { and: [$fixedFilters, $where] }
+              ) {
+                totalCount
+              }
+            }
+          `,
+          variables: { skip: 0, take: 42 },
+          config: {
+            variables: {
+              removeIfNotDefined: ['fixedFilters'],
+              removeIfNotUsed: ['fixedFilters', 'where'],
+              inline: ['where', 'fixedFilters'],
+            },
+          },
+        },
+        {
+          query: gql`
+            query SystemUserList($skip: Int, $take: Int) {
+              systemUserList(skip: $skip, take: $take) {
+                totalCount
+              }
+            }
+          `,
+          variables: { skip: 0, take: 42 },
+        },
+      )
+    })
   })
 
   // ---- Config: orderTiebreaker -------------------------------------------
