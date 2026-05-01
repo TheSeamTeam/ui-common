@@ -2,10 +2,10 @@
 
 ## Branches
 
-| Branch | Purpose | Publishing |
-|--------|---------|------------|
-| `master` | Production | Publishes `@latest` to npm via release-please |
-| `develop` | Integration / manual testing | Auto-publishes `@beta` to npm on every push |
+| Branch    | Purpose                      | Publishing                                    |
+| --------- | ---------------------------- | --------------------------------------------- |
+| `master`  | Production                   | Publishes `@latest` to npm via release-please |
+| `develop` | Integration / manual testing | Auto-publishes `@beta` to npm on every push   |
 
 ## Commit Messages
 
@@ -21,12 +21,12 @@ We use [Conventional Commits](https://www.conventionalcommits.org/) to automate 
 
 ### Types and version impact
 
-| Type | Version bump | Example |
-|------|-------------|---------|
-| `feat:` | Minor (1.1.0) | `feat: add date range filter to datatable` |
-| `fix:` | Patch (1.0.2) | `fix: resolve tel input validation on blur` |
-| `feat!:` or `BREAKING CHANGE:` footer | Major (2.0.0) | `feat!: redesign widget configuration API` |
-| `chore:`, `docs:`, `ci:`, `refactor:`, `test:` | No release | `docs: update storybook examples` |
+| Type                                           | Version bump  | Example                                     |
+| ---------------------------------------------- | ------------- | ------------------------------------------- |
+| `feat:`                                        | Minor (1.1.0) | `feat: add date range filter to datatable`  |
+| `fix:`                                         | Patch (1.0.2) | `fix: resolve tel input validation on blur` |
+| `feat!:` or `BREAKING CHANGE:` footer          | Major (2.0.0) | `feat!: redesign widget configuration API`  |
+| `chore:`, `docs:`, `ci:`, `refactor:`, `test:` | No release    | `docs: update storybook examples`           |
 
 ### PR titles
 
@@ -37,6 +37,7 @@ PR titles to `master` are validated against this format. Since we squash-merge, 
 ### Day-to-day development
 
 1. Create a feature branch from `master`:
+
    ```
    git checkout master && git pull
    git checkout -b your-name/feature-description
@@ -45,6 +46,7 @@ PR titles to `master` are validated against this format. Since we squash-merge, 
 2. Make changes, commit with conventional messages. Husky runs lint-staged (prettier + eslint) on each commit automatically.
 
 3. Push to the org repo and open a PR to `master`:
+
    ```
    git push -u real your-name/feature-description
    ```
@@ -67,6 +69,7 @@ You don't manually bump versions or run `npm publish` anymore. Here's what happe
 ### Beta releases
 
 Push or merge to the `develop` branch. CI automatically:
+
 - Runs lint, tests, and build
 - Publishes to npm with a beta version (e.g., `1.1.0-beta.42`) under the `@beta` tag
 
@@ -76,37 +79,41 @@ Install in apps with: `npm install @theseam/ui-common@beta`
 
 All jobs run on pushes to `master`/`develop` and PRs to `master`:
 
-| Job | What it does |
-|-----|-------------|
-| **lint** | `npm run lint` |
-| **test** | `npm run test:ci` (Jest) |
-| **build** | `npm run build:ui-common` |
-| **publish-beta** | Publishes `@beta` (develop only) |
-| **release-please** | Creates/updates Release PR (master only) |
-| **publish-latest** | Publishes `@latest` on release (master only) |
-| **deploy-docs** | Builds and deploys Storybook to GitHub Pages (master only) |
+| Job                | What it does                                               |
+| ------------------ | ---------------------------------------------------------- |
+| **lint**           | `npm run lint`                                             |
+| **test**           | `npm run test:ci` (Jest)                                   |
+| **build**          | `npm run build:ui-common`                                  |
+| **publish-beta**   | Publishes `@beta` (develop only)                           |
+| **release-please** | Creates/updates Release PR (master only)                   |
+| **publish-latest** | Publishes `@latest` on release (master only)               |
+| **deploy-docs**    | Builds and deploys Storybook to GitHub Pages (master only) |
 
 ## Local Development
 
 **Node version:** Use the version specified in `.nvmrc` (currently 22.12.0). Run `nvm use` if you use nvm.
 
 **Install dependencies:**
+
 ```
 npm ci --legacy-peer-deps
 ```
 
 **Run tests:**
+
 ```
 npm run test        # jest (watch mode)
 npm run test:ci     # jest (CI mode, single run)
 ```
 
 **Build the library:**
+
 ```
 npm run build:ui-common
 ```
 
 **Run Storybook:**
+
 ```
 npm run storybook
 ```

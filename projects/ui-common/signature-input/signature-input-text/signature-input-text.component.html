@@ -1,0 +1,54 @@
+<div class="seam-signature-input-text">
+  <div class="seam-signature-input-text__header d-flex flex-row">
+    <seam-form-field
+      [inline]="true"
+      class="flex-grow-1 mr-2"
+      [numPaddingErrors]="0"
+    >
+      <span *seamFormFieldLabelTpl class="text-nowrap mr-2"
+        >Enter Full Name:</span
+      >
+      <input
+        seamInput
+        [formControl]="_nameControl"
+        class="pl-1 flex-grow-1"
+        autocomplete="off"
+        (keydown.enter)="_onKeyDownEnter()"
+        (blur)="_onNameInputBlur()"
+        [seamDisableControl]="_disabledOrFontNotActive()"
+        seamAutoFocus
+      />
+    </seam-form-field>
+  </div>
+
+  <div
+    class="seam-signature-input-text__canvas-wrap overflow-hidden position-relative"
+    [style.height.px]="_canvasHeight"
+  >
+    @if (_fontLoading()) {
+      <div class="seam-signature-input-text__status">Font Loading</div>
+    }
+
+    @if (_fontInactive()) {
+      <div class="seam-signature-input-text__status text-warning">
+        <div class="seam-signature-input-text__status-headline">
+          Font failed to load.
+        </div>
+        <div>
+          To use the typed signature, try refreshing the page or using another
+          web browser. If you still have issues please contact support and let
+          us know.
+        </div>
+      </div>
+    }
+
+    <canvas
+      #typeCanvas
+      class="position-absolute"
+      [attr.width]="_canvasWidth"
+      [attr.height]="_canvasHeight"
+      [style.top.px]="0"
+      [style.left.px]="0"
+    ></canvas>
+  </div>
+</div>

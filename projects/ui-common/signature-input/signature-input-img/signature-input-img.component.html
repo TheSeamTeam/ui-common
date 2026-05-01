@@ -1,0 +1,35 @@
+<div class="seam-signature-input-img">
+  <div class="seam-signature-input-img__upload-container">
+    <div class="seam-signature-input-img__header h-100">
+      <div
+        class="seam-signature-input-img__upload-box h-100"
+        [class.has-preview]="!!_previewDataUrl()"
+        [style.background-image]="_previewBackgroundImage()"
+        tabindex="0"
+        seamFileDropZone
+        accept="image/*"
+        (seamFileDrop)="_onFilesDropped($event)"
+        (click)="openFileBrowse()"
+        (keydown.enter)="openFileBrowse()"
+      >
+        @if (!_previewDataUrl()) {
+          <div class="seam-signature-input-img__drop-prompt">
+            <strong>Choose a file</strong> or drag it here
+          </div>
+        }
+      </div>
+
+      @if (_sizeError(); as err) {
+        <div class="seam-signature-input-img__size-error">{{ err }}</div>
+      }
+    </div>
+  </div>
+
+  <input
+    #filesInput
+    type="file"
+    hidden
+    accept="image/*"
+    (change)="_onNativeChange($event)"
+  />
+</div>

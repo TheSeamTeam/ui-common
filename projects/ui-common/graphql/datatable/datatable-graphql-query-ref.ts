@@ -273,6 +273,20 @@ export class DatatableGraphQLQueryRef<
     )
   }
 
+  /**
+   * Returns an observable of mapped rows from the query result.
+   *
+   * The mapper transforms the raw GraphQL response data into the row format
+   * the datatable expects, and provides the total count for pagination.
+   *
+   * @example
+   * ```typescript
+   * this.rows$ = this._queryRef.rows((data) => ({
+   *   rows: data.items.items,
+   *   totalCount: data.items.totalCount,
+   * }))
+   * ```
+   */
   public rows(
     mapper: DatatableGraphQLDataMapper<TData, TRow>,
   ): Observable<TRow[]> {

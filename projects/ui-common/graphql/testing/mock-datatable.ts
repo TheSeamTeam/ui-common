@@ -1,5 +1,5 @@
-import { EventEmitter } from '@angular/core'
-import { BehaviorSubject, Observable } from 'rxjs'
+import { EventEmitter, OutputRef } from '@angular/core'
+import { BehaviorSubject, Observable, Subject } from 'rxjs'
 
 import { DataFilterState } from '@theseam/ui-common/data-filters'
 import {
@@ -21,6 +21,23 @@ export class MockDatatable implements GqlDatatableAccessor {
   private readonly _filterStatesSubject = new BehaviorSubject<
     DataFilterState[]
   >([])
+
+  private readonly _refreshSubject = new Subject<void>()
+
+  // Hand-rolled OutputRef so MockDatatable can be constructed outside an
+  // injection context (outputFromObservable requires one). outputToObservable
+  // tolerates a missing destroyRef via an optional chain.
+  public readonly refreshRequested: OutputRef<void> = {
+    subscribe: (cb: (value: void) => void) => {
+      const sub = this._refreshSubject.subscribe(() => cb(undefined as void))
+      return { unsubscribe: () => sub.unsubscribe() }
+    },
+  }
+
+  /** Test helper: simulate the refresh button being clicked. */
+  public triggerRefresh(): void {
+    this._refreshSubject.next()
+  }
 
   private _sorts: SortItem[] = []
   private _rows: any[] = []

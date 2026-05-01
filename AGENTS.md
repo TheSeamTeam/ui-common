@@ -97,7 +97,7 @@ Used like:
 
 ```typescript
 const _Base = mixinSize(mixinTheme(mixinDisabled(BaseClass), 'btn'), 'btn')
-export class TheSeamButtonComponent extends _Base { }
+export class TheSeamButtonComponent extends _Base {}
 ```
 
 ### Custom Input Decorators
@@ -127,17 +127,17 @@ Some modules have their own `styles/` directory (e.g., `breadcrumbs/styles/`, `f
 
 ## Commands
 
-| Command                      | Purpose                                          |
-| ---------------------------- | ------------------------------------------------ |
-| `npm run build:ui-common`    | Production build (ng-packagr)                    |
-| `npm run build-w:ui-common`  | Watch mode build (4GB memory)                    |
-| `npm run test`               | Jest (watch mode)                                |
-| `npm run test:ci`            | Jest single run, in-band                         |
-| `npm run test-storybook`     | Storybook test runner (runs story `play` funcs)  |
-| `npm run lint`               | ESLint check                                     |
-| `npm run lint:format`        | Prettier + ESLint auto-fix                       |
-| `npm run storybook`          | Storybook dev server                             |
-| `npm run build-storybook`    | Build static Storybook                           |
+| Command                     | Purpose                                         |
+| --------------------------- | ----------------------------------------------- |
+| `npm run build:ui-common`   | Production build (ng-packagr)                   |
+| `npm run build-w:ui-common` | Watch mode build (4GB memory)                   |
+| `npm run test`              | Jest (watch mode)                               |
+| `npm run test:ci`           | Jest single run, in-band                        |
+| `npm run test-storybook`    | Storybook test runner (runs story `play` funcs) |
+| `npm run lint`              | ESLint check                                    |
+| `npm run lint:format`       | Prettier + ESLint auto-fix                      |
+| `npm run storybook`         | Storybook dev server                            |
+| `npm run build-storybook`   | Build static Storybook                          |
 
 ## Testing
 

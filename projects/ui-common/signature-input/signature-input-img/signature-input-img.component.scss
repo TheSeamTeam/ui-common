@@ -1,0 +1,33 @@
+:host {
+  display: block;
+}
+
+.seam-signature-input-img {
+  border-bottom: 1px solid black;
+}
+
+.seam-signature-input-img__header {
+  font-weight: 500;
+}
+
+.seam-signature-input-img__upload-container {
+  height: 174px;
+  position: relative;
+}
+
+.seam-signature-input-img__upload-box {
+  position: relative;
+  text-align: center;
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+
+  &.has-preview {
+    background-color: white;
+  }
+}
+
+.seam-signature-input-img__size-error {
+  color: var(--bs-danger, #dc3545);
+}
