@@ -535,10 +535,11 @@ describe('queryProcessingLink', () => {
   // Combined: removeIfNotDefined then removeIfNotUsed
   // ---------------------------------------------------------------------------
   describe('Combined config: removeIfNotDefined + removeIfNotUsed', () => {
-    it('cleans up an orphaned variable after its dependent is removed', () => {
-      // $search is defined but not used as an argument — it would only matter
-      // if $where referenced it. Since $where is undefined and removed first,
-      // $search has no usages and is cleaned up by removeIfNotUsed.
+    it('removes $where but keeps $search (still defined, may be needed after inline)', () => {
+      // $search is defined but not used as an argument. removeIfNotUsed
+      // uses containsVariable which finds $search in its own VariableDefinition,
+      // so it is intentionally kept. This is correct because $search may be
+      // referenced inside a $where value that will be inlined in a later step.
       testOperation(
         {
           query: gql`
@@ -560,7 +561,7 @@ describe('queryProcessingLink', () => {
         },
         {
           query: gql`
-            query TestQuery($skip: Int) {
+            query TestQuery($skip: Int, $search: String) {
               example(skip: $skip) {
                 totalCount
               }

@@ -7,47 +7,63 @@ import { GQLDirection } from '../models'
 // TODO: Try to find a maintained library that will handle this. Ideally a
 // type-safe one, but that is becoming surprisingly harder to find than I
 // expected for GraphQL.
-export function toGQL(json: any): string {
-  // Handle primitive top-level values so callers can pass non-objects (e.g.
-  // when inlining a String or Int variable directly into a query argument).
-  if (json === null || json === undefined) {
+export function toGQL(value: any): string {
+  if (Array.isArray(value)) {
+    return formatArray(value)
+  }
+  if (value instanceof GQLDirection) {
+    return value.direction
+  }
+  if (isPlainObject(value)) {
+    return formatObject(value)
+  }
+  return formatScalar(value)
+}
+
+function isPlainObject(value: any): boolean {
+  return Object.prototype.toString.call(value) === '[object Object]'
+}
+
+function formatScalar(value: any): string {
+  // `null` is a valid GraphQL literal with distinct semantics from omission
+  // (e.g. `where: { x: { eq: null } }` filters where `x` IS null). `undefined`
+  // has no GraphQL representation, so we fail fast rather than silently
+  // coercing to `null` — callers should remove the field instead.
+  if (value === undefined) {
+    throw new Error(
+      `toGQL: cannot convert 'undefined' to a GraphQL value. Omit the field, or pass 'null' explicitly.`,
+    )
+  }
+  if (value === null) {
     return 'null'
   }
-  if (typeof json === 'string') {
-    return `"${json}"`
+  if (typeof value === 'string') {
+    return `"${value}"`
   }
-  if (typeof json === 'number' || typeof json === 'boolean') {
-    return `${json}`
+  if (typeof value === 'number' || typeof value === 'boolean') {
+    return `${value}`
   }
-  if (json instanceof GQLDirection) {
-    return `${json.direction}`
-  }
-  if (Array.isArray(json)) {
-    return `[${json.map((v) => toGQL(v)).join(',')}]`
-  }
+  // Anything else (function, symbol, bigint, non-plain object instance such
+  // as Date / Map / RegExp / a class instance other than GQLDirection) has no
+  // safe GraphQL representation. Coercing via template literal would silently
+  // produce nonsense like "function Date() { [native code] }" or
+  // "[object Date]". Fail loudly instead.
+  throw new Error(
+    `toGQL: cannot convert value of type '${typeof value}' (${Object.prototype.toString.call(value)}) to a GraphQL value.`,
+  )
+}
 
-  const props: string[] = Object.keys(json).map((prop) => {
-    const value = json[prop]
-    let resultValue: string | undefined
-    if (typeof value === 'string') {
-      resultValue = `"${value}"`
-    } else if (value instanceof GQLDirection) {
-      resultValue = `${value.direction}`
-    } else if (Array.isArray(value)) {
-      resultValue = `[${value.map((v) => toGQL(v)).join(',')}]`
-    } else if (typeof value === 'object') {
-      if (Object.prototype.hasOwnProperty.call(value, 'gqlVar')) {
-        resultValue = `${value.gqlVar}`
-      } else {
-        resultValue = toGQL(value)
-      }
-    } else {
-      resultValue = `${value}`
-    }
-    if (typeof resultValue !== 'string') {
-      throw Error(`Unexpected value.`)
-    }
-    return `${prop}: ${resultValue}`
-  })
+function formatArray(arr: any[]): string {
+  return `[${arr.map((v) => toGQL(v)).join(',')}]`
+}
+
+function formatObject(obj: Record<string, any>): string {
+  if (Object.prototype.hasOwnProperty.call(obj, 'gqlVar')) {
+    return `${obj['gqlVar']}`
+  }
+  if (Object.prototype.hasOwnProperty.call(obj, 'gqlEnum')) {
+    return `${obj['gqlEnum']}`
+  }
+  const props = Object.keys(obj).map((key) => `${key}: ${toGQL(obj[key])}`)
   return `{${props.join(', ')}}`
 }
