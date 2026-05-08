@@ -13,7 +13,6 @@ import { provideMarkdown } from 'ngx-markdown'
 
 import { getHarness } from '@theseam/ui-common/testing'
 
-import { ChatMessage } from '../providers/ai-provider'
 import { MockAiProvider } from '../providers/mock.ai-provider'
 import { THESEAM_CHAT_PROVIDER } from './chat-provider'
 import { THESEAM_CHAT_BLOCK_REGISTRY } from './chat-block-registry'
@@ -83,29 +82,6 @@ export const BasicChat: Story = {
   ],
   args: {
     placeholder: 'Ask about cotton prices...',
-  },
-}
-
-export const WithSystemPrompt: Story = {
-  decorators: [
-    applicationConfig({
-      providers: [
-        {
-          provide: THESEAM_CHAT_PROVIDER,
-          useValue: new MockAiProvider((messages: ChatMessage[]) => {
-            const system = messages.find((m) => m.role === 'system')
-            return system
-              ? `I received your system prompt: "${system.content}". How can I help with your farm operations?`
-              : 'No system prompt was set.'
-          }),
-        },
-      ],
-    }),
-  ],
-  args: {
-    systemPrompt:
-      'You are an agricultural assistant specializing in cotton and peanut farming operations in the southeastern United States.',
-    placeholder: 'Ask about farm operations...',
   },
 }
 
