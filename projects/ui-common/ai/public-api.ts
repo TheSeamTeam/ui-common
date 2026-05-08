@@ -1,8 +1,22 @@
 // Shared providers
-export { AiProvider, ChatMessage, ChatResponse } from './providers/ai-provider'
+export {
+  ChatMessage,
+  ChatResponse,
+  TheSeamAiChatRequest,
+  TheSeamAiProvider,
+} from './providers/ai-provider'
 export { LmStudioAiProvider } from './providers/lm-studio.ai-provider'
 export { OpenRouterAiProvider } from './providers/openrouter.ai-provider'
 export { MockAiProvider } from './providers/mock.ai-provider'
+
+// Context registry
+export { TheSeamChatContext, TheSeamChatContextPayload } from './chat-context'
+export { TheSeamChatContextRegistry } from './chat-context-registry.service'
+export {
+  TheSeamDatatableChatContext,
+  TheSeamDatatableChatContextOptions,
+  TheSeamDatatableChatContextData,
+} from './contexts/datatable-chat-context'
 
 // Chat
 export { TheSeamChatComponent } from './chat/chat.component'
