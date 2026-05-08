@@ -37,6 +37,8 @@ function makeSimulator(
 
       const contexts = (await registry?.snapshot()) ?? []
       const response = await provider.chat({
+        // Snapshot the array so FakeAiProvider.lastRequest.messages reflects the
+        // call-time state instead of the post-await mutation done a few lines down.
         messages: [...messages],
         contexts: contexts.length === 0 ? undefined : contexts,
       })
