@@ -1,14 +1,19 @@
-import { AiProvider, ChatMessage, ChatResponse } from './ai-provider'
+import {
+  ChatMessage,
+  ChatResponse,
+  TheSeamAiChatRequest,
+  TheSeamAiProvider,
+} from './ai-provider'
 
 type MockResponse = string | ((messages: ChatMessage[]) => string)
 
-export class MockAiProvider implements AiProvider {
+export class MockAiProvider implements TheSeamAiProvider {
   constructor(private readonly _response: MockResponse = 'Mock response') {}
 
-  async chat(messages: ChatMessage[]): Promise<ChatResponse> {
+  async chat(request: TheSeamAiChatRequest): Promise<ChatResponse> {
     const content =
       typeof this._response === 'function'
-        ? this._response(messages)
+        ? this._response(request.messages)
         : this._response
     return { content }
   }

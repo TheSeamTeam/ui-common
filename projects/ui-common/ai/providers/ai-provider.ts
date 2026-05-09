@@ -1,5 +1,7 @@
+import { TheSeamChatContextPayload } from '../chat-context'
+
 export interface ChatMessage {
-  role: 'system' | 'user' | 'assistant'
+  role: 'user' | 'assistant'
   content: string
 }
 
@@ -7,6 +9,11 @@ export interface ChatResponse {
   content: string
 }
 
-export interface AiProvider {
-  chat(messages: ChatMessage[]): Promise<ChatResponse>
+export interface TheSeamAiChatRequest {
+  messages: ChatMessage[]
+  contexts?: TheSeamChatContextPayload[]
+}
+
+export interface TheSeamAiProvider {
+  chat(request: TheSeamAiChatRequest): Promise<ChatResponse>
 }

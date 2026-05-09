@@ -224,10 +224,14 @@ export class TheSeamDatatablePrompterComponent {
       return
     }
     this._aiProvider
-      .chat([
-        { role: 'system', content: assistantPrompt },
-        { role: 'user', content: userPrompt },
-      ])
+      .chat({
+        messages: [
+          {
+            role: 'user',
+            content: `${assistantPrompt}\n\n---\n\n${userPrompt}`,
+          },
+        ],
+      })
       .then(async (response) => {
         const alterations = parseResponse(response.content, undefined)
         // this._form.reset()

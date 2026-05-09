@@ -1,6 +1,6 @@
 import { InjectionToken } from '@angular/core'
 
-import { AiProvider } from '../providers/ai-provider'
+import { TheSeamAiProvider } from '../providers/ai-provider'
 
 export const assistantPrompt = `You are a helpful assistant that provides formatting json code for a datatable.
 A datatable is a table that displays data in rows and columns, similar to a spreadsheet, with column sorting and data filtering.
@@ -298,4 +298,4 @@ export function parseResponse(
 }
 
 export const THESEAM_DATATABLE_PROMPTER_PROVIDER =
-  new InjectionToken<AiProvider>('TheSeamDatatablePrompterProvider')
+  new InjectionToken<TheSeamAiProvider>('TheSeamDatatablePrompterProvider')
