@@ -55,3 +55,5 @@ export * from './widget-registry.service'
 export * from './widget-token'
 export * from './widget.module'
 export * from './widget.models'
+
+export * from './testing/widget.harness'

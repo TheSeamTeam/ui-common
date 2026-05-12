@@ -4,3 +4,5 @@ export * from './icon-btn/icon-btn.component'
 export * from './icon-notification/icon-notification.component'
 export * from './icon'
 export * from './utils/index'
+
+export * from './testing/icon.harness'

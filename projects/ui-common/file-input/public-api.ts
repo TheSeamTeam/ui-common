@@ -20,3 +20,8 @@ export { TheSeamFileInputComponent } from './file-input.component'
 
 export { TheSeamFileTileComponent } from './file-tile.component'
 export { TheSeamFileFieldComponent } from './file-field.component'
+
+export { TheSeamFileDropZoneHarness } from './testing/file-drop-zone.harness'
+export { TheSeamFileInputHarness } from './testing/file-input.harness'
+export { TheSeamFileTileHarness } from './testing/file-tile.harness'
+export { TheSeamFileFieldHarness } from './testing/file-field.harness'
