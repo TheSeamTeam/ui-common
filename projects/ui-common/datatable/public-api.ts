@@ -62,3 +62,5 @@ export * from './utils/with-stored-column-info'
 export * from './utils/map-columns-alterations-states'
 
 export * from './datatable.module'
+
+export * from './testing'

@@ -7,8 +7,9 @@ import {
 } from '@angular/cdk/testing'
 
 import { IconDefinition, IconLookup } from '@fortawesome/fontawesome-svg-core'
-import { SeamIcon } from '@theseam/ui-common/icon'
 import { hasProperty } from '@theseam/ui-common/utils'
+
+import { SeamIcon } from '../icon'
 
 /**
  * Returns only IconLookup for FontAwesome icons
