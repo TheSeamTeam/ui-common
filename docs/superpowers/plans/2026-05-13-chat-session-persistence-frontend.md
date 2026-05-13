@@ -1184,7 +1184,7 @@ Replace the Task-7 transitional `_onMessageSent` with the session-aware version 
 Replace the existing `async _onMessageSent(...)` method body with:
 
 ```ts
-  _onMessageSent(text: string): void {
+  async _onMessageSent(text: string): Promise<void> {
     if (this._loadingSubject.value) return
     if (!this._provider) {
       console.error('No chat provider configured.')
@@ -1205,50 +1205,44 @@ Replace the existing `async _onMessageSent(...)` method body with:
     this._loadingSubject.next(true)
     this._cdr.markForCheck()
 
-    const contexts$ = this._chatContextRegistry
-      ? this._chatContextRegistry.snapshot()
-      : Promise.resolve([])
-
-    Promise.resolve(contexts$)
-      .then((contexts) => {
-        this._provider!
-          .chat({
-            messages: this._messages,
-            contexts: contexts.length === 0 ? undefined : contexts,
-            sessionId: this._currentSessionId,
-            expectedLeafMessageId: this._currentLeafMessageId,
-          })
-          .pipe(takeUntil(this._destroy$))
-          .subscribe({
-            next: (response) => {
-              this._messages.push({ role: 'assistant', content: response.content })
-              this._displayMessages = [
-                ...this._displayMessages,
-                {
-                  role: 'assistant',
-                  segments: parseChatResponse(response.content),
-                  timestamp: new Date(),
-                },
-              ]
-              const wasNoSession = this._currentSessionId === null
-              this._currentSessionId = response.sessionId
-              this._currentLeafMessageId = response.leafMessageId
-              if (wasNoSession) {
-                this.sessionIdChange.emit(response.sessionId)
-              }
-              this._loadingSubject.next(false)
-              this._cdr.markForCheck()
+    const contexts = (await this._chatContextRegistry?.snapshot()) ?? []
+    this._provider
+      .chat({
+        messages: this._messages,
+        contexts: contexts.length === 0 ? undefined : contexts,
+        sessionId: this._currentSessionId,
+        expectedLeafMessageId: this._currentLeafMessageId,
+      })
+      .pipe(takeUntil(this._destroy$))
+      .subscribe({
+        next: (response) => {
+          this._messages.push({ role: 'assistant', content: response.content })
+          this._displayMessages = [
+            ...this._displayMessages,
+            {
+              role: 'assistant',
+              segments: parseChatResponse(response.content),
+              timestamp: new Date(),
             },
-            error: (err) => {
-              if (err instanceof ChatSessionStaleError) {
-                this._handleStaleSession(text)
-              } else {
-                console.error('Chat provider error:', err)
-                this._loadingSubject.next(false)
-                this._cdr.markForCheck()
-              }
-            },
-          })
+          ]
+          const wasNoSession = this._currentSessionId === null
+          this._currentSessionId = response.sessionId
+          this._currentLeafMessageId = response.leafMessageId
+          if (wasNoSession) {
+            this.sessionIdChange.emit(response.sessionId)
+          }
+          this._loadingSubject.next(false)
+          this._cdr.markForCheck()
+        },
+        error: (err) => {
+          if (err instanceof ChatSessionStaleError) {
+            this._handleStaleSession(text)
+          } else {
+            console.error('Chat provider error:', err)
+            this._loadingSubject.next(false)
+            this._cdr.markForCheck()
+          }
+        },
       })
   }
 ```
@@ -2382,11 +2376,12 @@ import { HttpErrorResponse } from '@angular/common/http'
 
 import { ChatSessionStaleError } from '@theseam/ui-common/ai'
 
-import { mapChatError, mapSessionDto } from './ai-provider'
 import type {
   ApiChatSessionDto,
   ApiChatSessionStaleErrorBody,
 } from '@lib/api'
+
+import { mapChatError, mapSessionDto } from './ai-provider'
 
 describe('AppAiProvider helpers', () => {
   describe('mapChatError', () => {
@@ -2468,15 +2463,6 @@ import { ActivatedRoute } from '@angular/router'
 import { catchError, map, Observable, throwError } from 'rxjs'
 
 import {
-  ApiChatContextDto,
-  ApiChatService,
-  ApiChatSessionDto,
-  ApiChatSessionListItemDto,
-  ApiChatSessionMessageDto,
-  ApiChatSessionService,
-  ApiChatSessionStaleErrorBody,
-} from '@lib/api'
-import {
   ChatResponse,
   ChatSession,
   ChatSessionListItem,
@@ -2485,6 +2471,16 @@ import {
   TheSeamAiChatRequest,
   TheSeamAiProvider,
 } from '@theseam/ui-common/ai'
+
+import {
+  ApiChatContextDto,
+  ApiChatService,
+  ApiChatSessionDto,
+  ApiChatSessionListItemDto,
+  ApiChatSessionMessageDto,
+  ApiChatSessionService,
+  ApiChatSessionStaleErrorBody,
+} from '@lib/api'
 
 export class AppAiProvider implements TheSeamAiProvider {
   private readonly _chat = inject(ApiChatService)
