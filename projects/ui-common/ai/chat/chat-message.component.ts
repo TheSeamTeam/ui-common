@@ -15,7 +15,10 @@ import {
 } from './chat-block-registry'
 
 export interface ChatMessageDisplayModel {
-  role: 'user' | 'assistant'
+  /** Present for messages loaded from a persisted session. */
+  uid?: string
+  /** 'user' | 'assistant' rendered specially; other roles fall through to a neutral style. */
+  role: string
   segments: ChatContentSegment[]
   timestamp: Date
 }
