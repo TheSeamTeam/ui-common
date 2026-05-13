@@ -3,18 +3,26 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  effect,
   ElementRef,
   inject,
   input,
   NgZone,
+  OnDestroy,
+  output,
   ViewChild,
 } from '@angular/core'
 import { AsyncPipe } from '@angular/common'
-import { BehaviorSubject } from 'rxjs'
+import { BehaviorSubject, EMPTY, Observable, of, Subject } from 'rxjs'
+import { catchError, switchMap, takeUntil, tap } from 'rxjs/operators'
 
 import { TheSeamOverlayScrollbarDirective } from '@theseam/ui-common/scrollbar'
 
-import { ChatMessage } from '../providers/ai-provider'
+import {
+  ChatMessage,
+  ChatSession,
+  ChatSessionStaleError,
+} from '../providers/ai-provider'
 import { THESEAM_CHAT_PROVIDER } from './chat-provider'
 import { TheSeamChatContextRegistry } from '../chat-context-registry.service'
 import { parseChatResponse } from './chat-response-parser'
@@ -36,7 +44,7 @@ import { SeamChatInputComponent } from './chat-input.component'
   styleUrls: ['./chat.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TheSeamChatComponent implements AfterViewInit {
+export class TheSeamChatComponent implements AfterViewInit, OnDestroy {
   private readonly _provider = inject(THESEAM_CHAT_PROVIDER, { optional: true })
   private readonly _chatContextRegistry = inject(TheSeamChatContextRegistry, {
     optional: true,
@@ -47,8 +55,37 @@ export class TheSeamChatComponent implements AfterViewInit {
   @ViewChild('messageList') private _messageList?: ElementRef<HTMLElement>
   @ViewChild(TheSeamOverlayScrollbarDirective)
   private _messageListScrollbar?: TheSeamOverlayScrollbarDirective
+  @ViewChild(SeamChatInputComponent) private _chatInput?: SeamChatInputComponent
+
+  /**
+   * The session this chat should display.
+   *
+   * - `null` on first init: the component asks the provider for an initial
+   *   session via `getInitialSession()` (default app behavior: prefers
+   *   `?chatSession=<uid>`, falls back to the user's most recent session).
+   * - `null` after init: resets to a new empty chat. Equivalent to calling
+   *   `newSession()`.
+   * - A session uid: loads and displays that session.
+   *
+   * Pair with `(sessionIdChange)` for two-way binding.
+   */
+  readonly sessionId = input<string | null>(null)
 
   readonly placeholder = input<string>('Type a message...')
+
+  /**
+   * Emits whenever the chat's active session changes — after the initial
+   * load resolves, after a send creates a new session, after the input is
+   * reassigned, or after `newSession()` clears the chat.
+   */
+  readonly sessionIdChange = output<string | null>()
+
+  /**
+   * Emits after the chat has recovered from a server-reported stale-leaf
+   * 409. The component has already reloaded the session and restored the
+   * user's typed text; consuming apps typically respond by surfacing a toast.
+   */
+  readonly staleSession = output<void>()
 
   // Internal conversation state — same as before, just relocated for clarity.
   private _messages: ChatMessage[] = []
@@ -61,6 +98,56 @@ export class TheSeamChatComponent implements AfterViewInit {
 
   private readonly _loadingSubject = new BehaviorSubject<boolean>(false)
   readonly loading$ = this._loadingSubject.asObservable()
+
+  private _currentSessionId: string | null = null
+  private _currentLeafMessageId: string | null = null
+  private _initialized = false
+
+  private readonly _sessionLoadRequest$ = new Subject<
+    Observable<ChatSession | null>
+  >()
+  private readonly _destroy$ = new Subject<void>()
+
+  private readonly _initialLoadingSubject = new BehaviorSubject<boolean>(false)
+  readonly initialLoading$ = this._initialLoadingSubject.asObservable()
+
+  constructor() {
+    this._sessionLoadRequest$
+      .pipe(
+        tap(() =>
+          this._initialLoadingSubject.next(this._messages.length === 0),
+        ),
+        switchMap((load$) =>
+          load$.pipe(
+            catchError((err) => {
+              console.error('Chat session load failed:', err)
+              return of(null)
+            }),
+          ),
+        ),
+        takeUntil(this._destroy$),
+      )
+      .subscribe((session) => {
+        this._initialLoadingSubject.next(false)
+        if (session) {
+          const wasNoSession = this._currentSessionId === null
+          this._applySession(session)
+          if (wasNoSession) {
+            this.sessionIdChange.emit(session.uid)
+          }
+        }
+        this._cdr.markForCheck()
+      })
+
+    effect(() => {
+      const incoming = this.sessionId()
+      if (!this._initialized) {
+        this._initialize(incoming)
+      } else {
+        this._reactToSessionInputChange(incoming)
+      }
+    })
+  }
 
   ngAfterViewInit() {
     const scrollInstance = this._messageListScrollbar?.instance
@@ -75,6 +162,11 @@ export class TheSeamChatComponent implements AfterViewInit {
         },
       })
     })
+  }
+
+  ngOnDestroy() {
+    this._destroy$.next()
+    this._destroy$.complete()
   }
 
   async _onMessageSent(text: string) {
@@ -153,5 +245,56 @@ export class TheSeamChatComponent implements AfterViewInit {
       const state = scrollInstance.getState()
       scrollInstance.scroll({ y: state.contentScrollSize.height })
     }
+  }
+
+  private _initialize(incoming: string | null): void {
+    this._initialized = true
+    if (!this._provider) {
+      console.error('No chat provider configured.')
+      return
+    }
+    if (incoming) {
+      this._sessionLoadRequest$.next(this._provider.getSession(incoming))
+    } else {
+      this._sessionLoadRequest$.next(this._provider.getInitialSession())
+    }
+  }
+
+  private _reactToSessionInputChange(incoming: string | null): void {
+    if (incoming === this._currentSessionId) return
+    if (!this._provider) {
+      console.error('No chat provider configured.')
+      return
+    }
+    if (incoming === null) {
+      this._sessionLoadRequest$.next(EMPTY)
+      this._currentSessionId = null
+      this._currentLeafMessageId = null
+      this._messages = []
+      this._displayMessages = []
+      this.sessionIdChange.emit(null)
+      this._cdr.markForCheck()
+      return
+    }
+    this._sessionLoadRequest$.next(this._provider.getSession(incoming))
+  }
+
+  private _applySession(session: ChatSession): void {
+    this._currentSessionId = session.uid
+    this._currentLeafMessageId = session.leafMessageId
+    this._messages = session.messages.map((m) => ({
+      role: m.role,
+      content: m.content,
+    }))
+    this._displayMessages = session.messages.map((m) => ({
+      uid: m.uid,
+      role: m.role,
+      segments:
+        m.role === 'assistant'
+          ? parseChatResponse(m.content)
+          : [{ type: 'markdown', content: m.content }],
+      timestamp: new Date(m.created),
+    }))
+    this._forceScrollOnNextResize = true
   }
 }
