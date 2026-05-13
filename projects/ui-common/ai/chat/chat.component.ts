@@ -169,6 +169,24 @@ export class TheSeamChatComponent implements AfterViewInit, OnDestroy {
     this._destroy$.complete()
   }
 
+  /**
+   * Resets the chat to a new empty session. Idempotent — safe to call when
+   * the chat has no session loaded. Emits `(sessionIdChange)` with `null`.
+   */
+  newSession(): void {
+    // Push EMPTY through the load pipeline so switchMap cancels any
+    // in-flight session load before we clear state.
+    this._sessionLoadRequest$.next(EMPTY)
+    this._currentSessionId = null
+    this._currentLeafMessageId = null
+    this._messages = []
+    this._displayMessages = []
+    this._loadingSubject.next(false)
+    this._initialLoadingSubject.next(false)
+    this.sessionIdChange.emit(null)
+    this._cdr.markForCheck()
+  }
+
   async _onMessageSent(text: string): Promise<void> {
     if (this._loadingSubject.value) return
     if (!this._provider) {
@@ -276,13 +294,7 @@ export class TheSeamChatComponent implements AfterViewInit, OnDestroy {
       return
     }
     if (incoming === null) {
-      this._sessionLoadRequest$.next(EMPTY)
-      this._currentSessionId = null
-      this._currentLeafMessageId = null
-      this._messages = []
-      this._displayMessages = []
-      this.sessionIdChange.emit(null)
-      this._cdr.markForCheck()
+      this.newSession()
       return
     }
     this._sessionLoadRequest$.next(this._provider.getSession(incoming))
@@ -307,8 +319,34 @@ export class TheSeamChatComponent implements AfterViewInit, OnDestroy {
     this._forceScrollOnNextResize = true
   }
 
-  // Implemented in Task 10. Placeholder so _onMessageSent compiles.
-  private _handleStaleSession(_text: string): void {
-    /* TODO: Task 10 — reload session + restoreText + emit staleSession */
+  private _handleStaleSession(originalText: string): void {
+    const sessionId = this._currentSessionId
+    if (!sessionId || !this._provider) {
+      this._loadingSubject.next(false)
+      this._cdr.markForCheck()
+      return
+    }
+    this._provider
+      .getSession(sessionId)
+      .pipe(takeUntil(this._destroy$))
+      .subscribe({
+        next: (reloaded) => {
+          this._applySession(reloaded)
+          this._chatInput?.restoreText(originalText)
+          this._loadingSubject.next(false)
+          this.staleSession.emit()
+          this._cdr.markForCheck()
+        },
+        error: (reloadErr) => {
+          console.error(
+            'Chat session reload failed during stale-leaf recovery:',
+            reloadErr,
+          )
+          this._chatInput?.restoreText(originalText)
+          this._loadingSubject.next(false)
+          this.staleSession.emit()
+          this._cdr.markForCheck()
+        },
+      })
   }
 }
