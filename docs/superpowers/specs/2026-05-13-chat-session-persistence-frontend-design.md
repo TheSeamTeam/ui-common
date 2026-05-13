@@ -26,7 +26,7 @@ Three coordinated changes:
 
 1. **`TheSeamAiProvider` interface (ui-common)** — gains a session surface (`getInitialSession`, `getRecentSession`, `getSession`, `listSessions`, `renameSession`, `deleteSession`). The existing `chat()` request widens to carry `sessionId` and `expectedLeafMessageId`; the response widens to return `sessionId`, `label`, and `leafMessageId`. A new `ChatSessionStaleError` class surfaces the 409 in a transport-agnostic way.
 
-2. **`TheSeamChatComponent` (ui-common)** — migrated to signal inputs / `output()` / control-flow blocks in the same pass. Gains `sessionId` input, `sessionIdChange` and `staleSession` outputs, and a public `newSession()` method. Lifecycle handles initial load, input-driven session navigation, stale-leaf recovery, and concurrent-load suppression.
+2. **`TheSeamChatComponent` (ui-common)** — migrated to signal inputs / `output()` / control-flow blocks in the same pass. Gains `sessionId` input, `sessionIdChange` and `staleSession` outputs, and a public `newSession()` method. Lifecycle handles initial load, input-driven session navigation, stale-leaf recovery, and in-flight cancellation via `switchMap` over an Observable-based provider interface.
 
 3. **App API + provider (merchant services app)** — `ApiChatSessionService` added; chat DTOs widened; `ApiHttp` gains a `patch()` helper; `AppAiProvider` implements the new interface, including `getInitialSession()` that prefers `?chatSession=<uid>` over `getRecentSession()` and translates `HttpErrorResponse` 409 into `ChatSessionStaleError`.
 
@@ -42,7 +42,7 @@ Three coordinated changes:
 
 - **Stale-leaf recovery: restore + reload + emit.** The chat component reloads the session, restores the user's typed text via `SeamChatInputComponent.restoreText()`, and emits `staleSession`. The app surfaces a toast (library stays presentation-agnostic).
 
-- **Concurrent-load suppression via monotonic counter.** Late results from superseded `getSession`/`getInitialSession` calls are dropped. Same guard applies to stale-leaf recovery so navigation away mid-recovery doesn't clobber state.
+- **In-flight cancellation via `switchMap`.** Session loads run through a single `Subject<Observable<ChatSession | null>>` piped through `switchMap` — a new load unsubscribes the previous, which aborts the underlying `HttpClient` request when the provider is backed by HTTP. `takeUntil(this._destroy$)` on every subscription handles unmount.
 
 ## Architecture
 
@@ -148,38 +148,41 @@ export class ChatSessionStaleError extends Error {
 
 export interface TheSeamAiProvider {
   /**
-   * Send a chat turn. Throws `ChatSessionStaleError` when the session's leaf
-   * has advanced since the last observed state.
+   * Send a chat turn. Errors with `ChatSessionStaleError` when the session's
+   * leaf has advanced since the last observed state.
+   *
+   * Implementations should emit exactly once and complete (the chat component
+   * subscribes per-send and relies on completion to clear loading state).
    */
-  chat(request: TheSeamAiChatRequest): Promise<ChatResponse>
+  chat(request: TheSeamAiChatRequest): Observable<ChatResponse>
 
   /**
    * Hook for the chat component to ask the provider what session to load on
    * mount. The default app implementation prefers a query-param session uid
    * and falls back to the user's most recent session, but apps can override.
    */
-  getInitialSession(): Promise<ChatSession | null>
+  getInitialSession(): Observable<ChatSession | null>
 
   /** Returns the user's most-recently-active session, or null if none exists. */
-  getRecentSession(): Promise<ChatSession | null>
+  getRecentSession(): Observable<ChatSession | null>
 
   /** Loads a specific session with its active-path messages. */
-  getSession(uid: string): Promise<ChatSession>
+  getSession(uid: string): Observable<ChatSession>
 
   /** Returns session metadata for the user (no messages). */
-  listSessions(): Promise<ChatSessionListItem[]>
+  listSessions(): Observable<ChatSessionListItem[]>
 
   /** Updates a session's user-visible label. */
-  renameSession(uid: string, label: string): Promise<void>
+  renameSession(uid: string, label: string): Observable<void>
 
   /** Soft-deletes the session. */
-  deleteSession(uid: string): Promise<void>
+  deleteSession(uid: string): Observable<void>
 }
 ```
 
 ### Non-API providers
 
-`MockAiProvider`, `LmStudioAiProvider`, and `OpenRouterAiProvider` stay in the same file structure but implement the wider interface. The OpenAI-style providers don't speak the persistence API; their session methods throw `Error('Not supported')` and `getInitialSession()` returns `null`. The chat component handles this gracefully (storybook stories targeting these providers keep working — they just don't pre-load any history).
+`MockAiProvider`, `LmStudioAiProvider`, and `OpenRouterAiProvider` stay in the same file structure but implement the wider interface. The fetch-based providers wrap their `fetch` calls with `defer(() => from(fetch(...)))` so they participate in the cancellation chain (a superseded load actually aborts via the underlying `AbortController`; the legacy implementations can adopt this incrementally). The OpenAI-style providers don't speak the persistence API; their session methods return `throwError(() => new Error('Not supported'))` and `getInitialSession()` returns `of(null)`. The chat component handles this gracefully — storybook stories targeting these providers keep working, they just don't pre-load any history.
 
 ### `MockAiProvider` upgrade
 
@@ -190,7 +193,7 @@ export interface MockAiProviderConfig {
   sessionsByUid?: ReadonlyMap<string, ChatSession>
   sessionsList?: ChatSessionListItem[]
 
-  /** First chat() call throws this; subsequent calls succeed normally. */
+  /** First chat() call errors with this; subsequent calls succeed normally. */
   throwOnFirstChat?: Error
 
   /** Artificial delay (ms) applied uniformly. Overridable per method. */
@@ -204,7 +207,7 @@ export class MockAiProvider implements TheSeamAiProvider {
 }
 ```
 
-The delay support lets stories demonstrate the loading skeleton, in-flight send disabled state, and post-stale-recovery flow.
+Method implementations use `defer(() => of(value).pipe(delay(this._delayFor('chat'))))` so artificial delay is honored on every subscribe, the source is cold (resubscription replays), and unsubscription mid-delay cancels the pending emission. The delay support lets stories demonstrate the loading skeleton, in-flight send disabled state, and post-stale-recovery flow.
 
 ## Chat Component
 
@@ -224,7 +227,14 @@ Migrated to signals + control-flow blocks in this same pass (matches the user's 
   styleUrls: ['./chat.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TheSeamChatComponent implements OnInit {
+export class TheSeamChatComponent implements OnInit, OnDestroy {
+  private readonly _provider = inject(THESEAM_CHAT_PROVIDER, { optional: true })
+  private readonly _chatContextRegistry = inject(TheSeamChatContextRegistry, { optional: true })
+  private readonly _cdr = inject(ChangeDetectorRef)
+  private readonly _ngZone = inject(NgZone)
+
+  @ViewChild(SeamChatInputComponent) private _chatInput?: SeamChatInputComponent
+
   /**
    * The session this chat should display.
    *
@@ -255,26 +265,43 @@ export class TheSeamChatComponent implements OnInit {
    */
   readonly staleSession = output<void>()
 
-  // Implementation state
-  private readonly _provider = inject(THESEAM_CHAT_PROVIDER, { optional: true })
-  private readonly _chatContextRegistry = inject(TheSeamChatContextRegistry, { optional: true })
-
-  @ViewChild(SeamChatInputComponent) private _chatInput?: SeamChatInputComponent
-
+  // Internal state
   private _currentSessionId: string | null = null
   private _currentLeafMessageId: string | null = null
   private _messages: ChatMessage[] = []
   _displayMessages: ChatMessageDisplayModel[] = []   // template-bound
-  private _activeLoadId = 0
   private _initialized = false
 
-  readonly _loadingSubject = new BehaviorSubject<boolean>(false)
-  readonly _initialLoadingSubject = new BehaviorSubject<boolean>(false)
+  // Drives the load pipeline. switchMap on this subject cancels any
+  // in-flight session load when a new one is requested.
+  private readonly _sessionLoadRequest$ = new Subject<Observable<ChatSession | null>>()
+  private readonly _destroy$ = new Subject<void>()
+
+  private readonly _loadingSubject = new BehaviorSubject<boolean>(false)
+  private readonly _initialLoadingSubject = new BehaviorSubject<boolean>(false)
+  readonly loading$ = this._loadingSubject.asObservable()
+  readonly initialLoading$ = this._initialLoadingSubject.asObservable()
 
   constructor() {
+    this._sessionLoadRequest$.pipe(
+      tap(() => this._initialLoadingSubject.next(this._messages.length === 0)),
+      switchMap(load$ => load$.pipe(
+        catchError(err => {
+          console.error('Chat session load failed:', err)
+          return of(null)
+        }),
+      )),
+      takeUntil(this._destroy$),
+    ).subscribe(session => {
+      this._initialLoadingSubject.next(false)
+      if (session) {
+        this._applySession(session)
+        this._cdr.markForCheck()
+      }
+    })
+
     effect(() => {
       const incoming = this.sessionId()
-      // Effect fires once on first read, then on every change.
       if (!this._initialized) {
         this._initialize(incoming)
       } else {
@@ -285,12 +312,19 @@ export class TheSeamChatComponent implements OnInit {
 
   ngOnInit() { /* scrollbar hookup, unchanged */ }
 
+  ngOnDestroy() {
+    this._destroy$.next()
+    this._destroy$.complete()
+  }
+
   /**
    * Resets the chat to a new empty session. Idempotent — safe to call when
    * the chat has no session loaded. Emits `(sessionIdChange)` with `null`.
    */
   newSession(): void {
-    this._activeLoadId++ // cancel any in-flight loads
+    // Push a no-op observable through the pipeline so switchMap cancels any
+    // in-flight session load before we clear state.
+    this._sessionLoadRequest$.next(EMPTY)
     this._currentSessionId = null
     this._currentLeafMessageId = null
     this._messages = []
@@ -298,10 +332,11 @@ export class TheSeamChatComponent implements OnInit {
     this._loadingSubject.next(false)
     this._initialLoadingSubject.next(false)
     this.sessionIdChange.emit(null)
+    this._cdr.markForCheck()
   }
 
   // private helpers — _initialize, _reactToSessionInputChange,
-  // _loadSession, _applySession, _onMessageSent, _handleStaleSession, etc.
+  // _applySession, _onMessageSent, _handleStaleSession, etc.
 }
 ```
 
@@ -322,9 +357,9 @@ Loaded messages get `uid` populated from the DTO; live-sent messages omit it (we
 ### Template (control-flow blocks)
 
 ```html
-<div class="seam-chat" theSeamOverlayScrollbar>
+<div class="seam-chat" seamOverlayScrollbar>
   <div #messageList class="seam-chat-messages">
-    @if (_initialLoadingSubject | async) {
+    @if (initialLoading$ | async) {
       <div class="seam-chat-initial-loading">Loading…</div>
     } @else if (_displayMessages.length === 0) {
       <!-- empty state -->
@@ -336,7 +371,7 @@ Loaded messages get `uid` populated from the DTO; live-sent messages omit it (we
   </div>
   <seam-chat-input
     [placeholder]="placeholder()"
-    [disabled]="(_loadingSubject | async) || (_initialLoadingSubject | async)"
+    [disabled]="(loading$ | async) || (initialLoading$ | async)"
     (messageSent)="_onMessageSent($event)"
   />
 </div>
@@ -344,37 +379,23 @@ Loaded messages get `uid` populated from the DTO; live-sent messages omit it (we
 
 ### Lifecycle
 
+The session-load pipeline (in `constructor()`) is one `switchMap` over a `Subject<Observable<ChatSession | null>>`. Each entry to the pipeline cancels the previous via `switchMap`'s unsubscribe — if the previous emission was an `HttpClient` observable, the underlying `XMLHttpRequest` aborts. Errors are caught per-emission via `catchError` so a failed load doesn't terminate the pipeline.
+
 **First init** (effect's first read):
 
-1. Set `_initialized = true` synchronously, before any async work. Prevents the effect from re-entering `_initialize` if `sessionId` changes during the load.
-2. If `incoming` is a string → `_loadSession(() => provider.getSession(incoming))`.
-3. Else → `_loadSession(() => provider.getInitialSession())`. If result is non-null, `sessionIdChange.emit(result.uid)`.
+1. Set `_initialized = true` synchronously, before pushing to the load pipeline. Prevents the effect from re-entering `_initialize` if `sessionId` changes during the load.
+2. If `incoming` is a string → push `provider.getSession(incoming)` to `_sessionLoadRequest$`.
+3. Else → push `provider.getInitialSession()`. When it resolves to a non-null session, `_applySession` runs and the load-pipeline subscriber additionally emits `sessionIdChange(session.uid)` (only when `_currentSessionId` was previously null, so initial-load emissions distinguish from re-load emissions).
 
 **After init**, on `sessionId` input change:
 
 1. If `incoming === _currentSessionId` → no-op.
-2. If `incoming` is a string → `_loadSession(() => provider.getSession(incoming))`. After applied, `sessionIdChange.emit(incoming)` (round-trip safety; redundant for two-way binding).
-3. If `incoming` is null → `newSession()` (clears state, emits).
+2. If `incoming` is a string → push `provider.getSession(incoming)`. The load-pipeline subscriber emits `sessionIdChange(incoming)` after `_applySession` (round-trip safety; harmless for two-way binding because Angular dedupes by reference).
+3. If `incoming` is null → call `newSession()` (clears state, emits, and pushes `EMPTY` through the pipeline to cancel any in-flight load).
 
-**`_loadSession` (with concurrency guard):**
+**`_applySession`:**
 
 ```ts
-private async _loadSession(loader: () => Promise<ChatSession | null>) {
-  const id = ++this._activeLoadId
-  this._initialLoadingSubject.next(this._messages.length === 0)
-  try {
-    const session = await loader()
-    if (id !== this._activeLoadId) return
-    if (session) this._applySession(session)
-  } catch (err) {
-    if (id !== this._activeLoadId) return
-    console.error('Chat session load failed:', err)
-    // leave state empty; user can still type and start a new session
-  } finally {
-    if (id === this._activeLoadId) this._initialLoadingSubject.next(false)
-  }
-}
-
 private _applySession(session: ChatSession) {
   this._currentSessionId = session.uid
   this._currentLeafMessageId = session.leafMessageId
@@ -382,18 +403,23 @@ private _applySession(session: ChatSession) {
   this._displayMessages = session.messages.map(m => ({
     uid: m.uid,
     role: m.role,
-    segments: m.role === 'assistant' ? parseChatResponse(m.content) : [{ type: 'markdown', content: m.content }],
+    segments: m.role === 'assistant'
+      ? parseChatResponse(m.content)
+      : [{ type: 'markdown', content: m.content }],
     timestamp: new Date(m.created),
   }))
 }
 ```
 
+Note: the load-pipeline subscriber emits `sessionIdChange` (when applicable) rather than `_applySession` itself, so the emission rule lives in the subscriber where it can read the prior `_currentSessionId` before `_applySession` overwrites it.
+
 ### Send flow (`_onMessageSent`)
 
 ```ts
-async _onMessageSent(text: string) {
-  if (this._loadingSubject.value || !this._provider) {
-    if (!this._provider) console.error('No chat provider configured.')
+_onMessageSent(text: string) {
+  if (this._loadingSubject.value) return
+  if (!this._provider) {
+    console.error('No chat provider configured.')
     return
   }
 
@@ -404,50 +430,70 @@ async _onMessageSent(text: string) {
     { role: 'user', segments: [{ type: 'markdown', content: text }], timestamp: new Date() },
   ]
   this._loadingSubject.next(true)
+  this._cdr.markForCheck()
 
-  try {
-    const contexts = (await this._chatContextRegistry?.snapshot()) ?? []
-    const response = await this._provider.chat({
+  from(this._chatContextRegistry?.snapshot() ?? Promise.resolve([])).pipe(
+    switchMap(contexts => this._provider!.chat({
       messages: this._messages,
       contexts: contexts.length === 0 ? undefined : contexts,
       sessionId: this._currentSessionId,
       expectedLeafMessageId: this._currentLeafMessageId,
-    })
-
-    this._messages.push({ role: 'assistant', content: response.content })
-    this._displayMessages = [
-      ...this._displayMessages,
-      { role: 'assistant', segments: parseChatResponse(response.content), timestamp: new Date() },
-    ]
-
-    const newSession = this._currentSessionId === null
-    this._currentSessionId = response.sessionId
-    this._currentLeafMessageId = response.leafMessageId
-    if (newSession) this.sessionIdChange.emit(response.sessionId)
-  } catch (err) {
-    if (err instanceof ChatSessionStaleError) {
-      await this._handleStaleSession(text)
-    } else {
-      console.error('Chat provider error:', err)
-    }
-  } finally {
-    this._loadingSubject.next(false)
-  }
+    })),
+    takeUntil(this._destroy$),
+  ).subscribe({
+    next: response => {
+      this._messages.push({ role: 'assistant', content: response.content })
+      this._displayMessages = [
+        ...this._displayMessages,
+        { role: 'assistant', segments: parseChatResponse(response.content), timestamp: new Date() },
+      ]
+      const newSession = this._currentSessionId === null
+      this._currentSessionId = response.sessionId
+      this._currentLeafMessageId = response.leafMessageId
+      if (newSession) this.sessionIdChange.emit(response.sessionId)
+      this._loadingSubject.next(false)
+      this._cdr.markForCheck()
+    },
+    error: err => {
+      if (err instanceof ChatSessionStaleError) {
+        this._handleStaleSession(text)
+      } else {
+        console.error('Chat provider error:', err)
+        this._loadingSubject.next(false)
+        this._cdr.markForCheck()
+      }
+    },
+  })
 }
 
-private async _handleStaleSession(originalText: string) {
+private _handleStaleSession(originalText: string) {
   const sessionId = this._currentSessionId
-  if (!sessionId || !this._provider) return
-  try {
-    const reloaded = await this._provider.getSession(sessionId)
-    this._applySession(reloaded)
-  } catch (reloadErr) {
-    console.error('Chat session reload failed during stale-leaf recovery:', reloadErr)
+  if (!sessionId || !this._provider) {
+    this._loadingSubject.next(false)
+    return
   }
-  this._chatInput?.restoreText(originalText)
-  this.staleSession.emit()
+  this._provider.getSession(sessionId).pipe(
+    takeUntil(this._destroy$),
+  ).subscribe({
+    next: reloaded => {
+      this._applySession(reloaded)
+      this._chatInput?.restoreText(originalText)
+      this._loadingSubject.next(false)
+      this.staleSession.emit()
+      this._cdr.markForCheck()
+    },
+    error: reloadErr => {
+      console.error('Chat session reload failed during stale-leaf recovery:', reloadErr)
+      this._chatInput?.restoreText(originalText)
+      this._loadingSubject.next(false)
+      this.staleSession.emit()
+      this._cdr.markForCheck()
+    },
+  })
 }
 ```
+
+Note on lifecycle isolation: `takeUntil(this._destroy$)` on every subscription guarantees that a destroyed component drops in-flight HTTP without applying late callbacks. The send subscription is per-call (not held in a property), so a double-click on Send is gated by the `_loadingSubject.value` check at the top — no need to `switchMap` over send attempts.
 
 ### `SeamChatInputComponent` additions
 
@@ -574,52 +620,45 @@ export class AppAiProvider implements TheSeamAiProvider {
   private readonly _session = inject(ApiChatSessionService)
   private readonly _route = inject(ActivatedRoute)
 
-  async chat(request: TheSeamAiChatRequest): Promise<ChatResponse> {
-    try {
-      const dto = await firstValueFrom(this._chat.post({
-        messages: request.messages,
-        contexts: request.contexts as ApiChatContextDto[] | undefined,
-        sessionId: request.sessionId ?? null,
-        expectedLeafMessageId: request.expectedLeafMessageId ?? null,
-      }))
-      return dto
-    } catch (err) {
-      throw mapChatError(err)
-    }
+  chat(request: TheSeamAiChatRequest): Observable<ChatResponse> {
+    return this._chat.post({
+      messages: request.messages,
+      contexts: request.contexts as ApiChatContextDto[] | undefined,
+      sessionId: request.sessionId ?? null,
+      expectedLeafMessageId: request.expectedLeafMessageId ?? null,
+    }).pipe(catchError(err => throwError(() => mapChatError(err))))
   }
 
-  async getInitialSession(): Promise<ChatSession | null> {
+  getInitialSession(): Observable<ChatSession | null> {
     const idFromUrl = this._route.snapshot.queryParamMap.get('chatSession')
     if (idFromUrl) {
-      try {
-        return mapSessionDto(await firstValueFrom(this._session.get(idFromUrl)))
-      } catch {
+      return this._session.get(idFromUrl).pipe(
+        map(mapSessionDto),
         // Unknown / deleted / belongs to another user — silently fall back.
-      }
+        catchError(() => this.getRecentSession()),
+      )
     }
     return this.getRecentSession()
   }
 
-  async getRecentSession(): Promise<ChatSession | null> {
-    const dto = await firstValueFrom(this._session.recent())
-    return dto ? mapSessionDto(dto) : null
+  getRecentSession(): Observable<ChatSession | null> {
+    return this._session.recent().pipe(map(dto => dto ? mapSessionDto(dto) : null))
   }
 
-  async getSession(uid: string): Promise<ChatSession> {
-    return mapSessionDto(await firstValueFrom(this._session.get(uid)))
+  getSession(uid: string): Observable<ChatSession> {
+    return this._session.get(uid).pipe(map(mapSessionDto))
   }
 
-  async listSessions(): Promise<ChatSessionListItem[]> {
-    const items = await firstValueFrom(this._session.list())
-    return items.map(mapListItemDto)
+  listSessions(): Observable<ChatSessionListItem[]> {
+    return this._session.list().pipe(map(items => items.map(mapListItemDto)))
   }
 
-  async renameSession(uid: string, label: string): Promise<void> {
-    await firstValueFrom(this._session.rename(uid, label))
+  renameSession(uid: string, label: string): Observable<void> {
+    return this._session.rename(uid, label)
   }
 
-  async deleteSession(uid: string): Promise<void> {
-    await firstValueFrom(this._session.delete(uid))
+  deleteSession(uid: string): Observable<void> {
+    return this._session.delete(uid)
   }
 }
 
@@ -714,9 +753,9 @@ Existing exports are preserved. `MockAiProviderConfig` is exported alongside `Mo
 - **Send wires session/leaf**: request payload includes `sessionId` and `expectedLeafMessageId` from internal state.
 - **Send response updates state**: assistant message appended; `_currentSessionId` and `_currentLeafMessageId` updated from response.
 - **First send creates session**: starts with `_currentSessionId=null`; response carries one; `sessionIdChange` emits exactly once.
-- **Stale-leaf recovery**: provider throws `ChatSessionStaleError` → simulator verifies `getSession()` is called, state is replaced, `restoreText` is invoked with the original text, `staleSession` emits.
-- **`newSession()`**: clears messages/leaf/session and emits `sessionIdChange(null)`.
-- **Concurrent load suppression**: two rapid `getSession` triggers; only the second's resolved state is applied.
+- **Stale-leaf recovery**: provider's `chat()` errors with `ChatSessionStaleError` → simulator verifies `getSession()` is called, state is replaced, `restoreText` is invoked with the original text, `staleSession` emits.
+- **In-flight cancellation**: rapid `sessionId` change pushes two requests through the load pipeline; the harness asserts that an `HttpClient` test request for the first uid is cancelled (or for `MockAiProvider`, that its `defer`-based source is unsubscribed before its delay elapses).
+- **`newSession()`**: clears messages/leaf/session and emits `sessionIdChange(null)`; cancels any in-flight load via the pipeline.
 
 **`mock-ai-provider.spec.ts`** (new) — `delayMs` honored; `throwOnFirstChat` fires once then clears; `initialSession` returned by `getInitialSession()`.
 
@@ -730,7 +769,7 @@ Existing exports are preserved. `MockAiProviderConfig` is exported alongside `Mo
 | --- | --- |
 | **BasicChat** (existing) | No initial session, send works. Mock returns `null` from `getInitialSession()`. |
 | **WithInitialSession** | Mock returns a 3-message session from `getInitialSession()`; chat renders history on mount. `delayMs: 800` so the loading skeleton is visible. |
-| **StaleLeafRecovery** | Mock's `chat()` throws `ChatSessionStaleError` once; subsequent `getSession()` returns the updated session. Play function sends a message, asserts the message list reloads and the input text is restored. |
+| **StaleLeafRecovery** | Mock's `chat()` errors with `ChatSessionStaleError` once; subsequent `getSession()` returns the updated session. Play function sends a message, asserts the message list reloads and the input text is restored. |
 | **NewSessionFlow** | Renders the chat + a "New Session" button using `#chat` template ref. Play function sends → clicks button → asserts empty. |
 | **SessionSwitch** | Renders the chat + two buttons that set `[sessionId]` to different uids. Play function clicks each and asserts the message list changes. |
 
@@ -773,11 +812,12 @@ Commit and hand back; release pipeline publishes the beta tag.
 
 ## Failure modes
 
-- **`getInitialSession()` throws.** Logged; chat stays empty. User can still type; first send creates a new session.
-- **`getSession(uid)` throws on navigation.** Logged; chat keeps previous state. Future enhancement: surface an `(loadError)` output if it becomes useful.
-- **Stale-leaf reload throws.** Logged; user text still restored; `staleSession` still emits. App can offer a manual retry.
+- **`getInitialSession()` errors.** `catchError` in the load pipeline logs and emits `null`; chat stays empty. User can still type; first send creates a new session.
+- **`getSession(uid)` errors on navigation.** Same — logged, chat keeps previous state. Future enhancement: surface an `(loadError)` output if it becomes useful.
+- **Stale-leaf reload errors.** Logged; user text still restored; `staleSession` still emits. App can offer a manual retry.
+- **Cancelled load.** `switchMap` unsubscribes from the previous observable; for `HttpClient` sources, this aborts the request. No side effects from the cancelled load are applied.
 - **Provider not configured (`THESEAM_CHAT_PROVIDER` not provided).** Component logs to console on first send (same as today). No initial load attempt.
-- **Two `getSession` calls in flight, second resolves first.** First call's resolved state is dropped via the `_activeLoadId` counter.
+- **Two `getSession` calls in flight, second resolves first.** First call is cancelled by `switchMap` when the second is pushed; its `HttpClient` request aborts and no state update from it ever runs.
 - **App's `?chatSession=` points at a deleted/foreign session.** `getInitialSession()` silently falls back to recent — the app's URL stays "wrong" until the next navigation; acceptable for v1.
 
 ## Future Direction (informational, not designed)
