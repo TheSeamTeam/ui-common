@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core'
+import { Component, Inject, signal } from '@angular/core'
 import { NgForOf } from '@angular/common'
 import {
   applicationConfig,
@@ -7,12 +7,13 @@ import {
   moduleMetadata,
   StoryObj,
 } from '@storybook/angular'
-import { expect } from 'storybook/test'
+import { expect, waitFor } from 'storybook/test'
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { provideMarkdown } from 'ngx-markdown'
 
 import { getHarness } from '@theseam/ui-common/testing'
 
+import { ChatSession, ChatSessionStaleError } from '../providers/ai-provider'
 import { MockAiProvider } from '../providers/mock.ai-provider'
 import { THESEAM_CHAT_PROVIDER } from './chat-provider'
 import { THESEAM_CHAT_BLOCK_REGISTRY } from './chat-block-registry'
@@ -177,4 +178,191 @@ export const ConversationHistory: Story = {
     const input = await harness.getInput()
     await expect(input).toBeTruthy()
   },
+}
+
+const _historySession: ChatSession = {
+  uid: 'demo-session-1',
+  label: 'Cotton bale conversation',
+  created: '2026-05-13T08:00:00Z',
+  lastActivity: '2026-05-13T08:00:30Z',
+  leafMessageId: 'm2',
+  messages: [
+    {
+      uid: 'm1',
+      role: 'user',
+      content: 'How many bales did we receive last week?',
+      created: '2026-05-13T08:00:00Z',
+    },
+    {
+      uid: 'm2',
+      role: 'assistant',
+      content:
+        '777 bales were received across the three buying points. The North 40 led with 312 bales.',
+      created: '2026-05-13T08:00:30Z',
+    },
+  ],
+}
+
+export const WithInitialSession: Story = {
+  decorators: [
+    applicationConfig({
+      providers: [
+        {
+          provide: THESEAM_CHAT_PROVIDER,
+          useValue: new MockAiProvider({
+            response: 'OK!',
+            initialSession: _historySession,
+            delayMs: 800,
+          }),
+        },
+      ],
+    }),
+  ],
+  args: { placeholder: 'Continue the conversation...' },
+  play: async ({ canvasElement }) => {
+    const harness = await getHarness(TheSeamChatHarness, { canvasElement })
+    await waitFor(
+      async () => {
+        const messages = await harness.getMessages()
+        expect(messages).toHaveLength(2)
+      },
+      { timeout: 2000 },
+    )
+  },
+}
+
+export const StaleLeafRecovery: Story = {
+  decorators: [
+    applicationConfig({
+      providers: [
+        {
+          provide: THESEAM_CHAT_PROVIDER,
+          useValue: new MockAiProvider({
+            response: 'never gets sent — stale recovery replaces history',
+            initialSession: _historySession,
+            sessionsByUid: new Map([
+              [
+                _historySession.uid,
+                {
+                  ..._historySession,
+                  leafMessageId: 'm3-from-other-tab',
+                  messages: [
+                    ..._historySession.messages,
+                    {
+                      uid: 'm3-from-other-tab',
+                      role: 'assistant',
+                      content:
+                        'Update from another tab: 778 bales (one was recounted).',
+                      created: '2026-05-13T08:01:00Z',
+                    },
+                  ],
+                },
+              ],
+            ]),
+            throwOnFirstChat: new ChatSessionStaleError(
+              _historySession.uid,
+              'm3-from-other-tab',
+            ),
+          }),
+        },
+      ],
+    }),
+  ],
+  args: { placeholder: 'Try sending — server will report stale' },
+  play: async ({ canvasElement }) => {
+    const harness = await getHarness(TheSeamChatHarness, { canvasElement })
+    const input = await harness.getInput()
+    // Manual play: open the story and click Send after typing. The history
+    // should refresh and your text should reappear in the input.
+    await expect(input).toBeTruthy()
+  },
+}
+
+export const NewSessionFlow: Story = {
+  render: (args) => ({
+    props: args,
+    template: `
+      <div style="display: flex; flex-direction: column; gap: 8px; height: 100%;">
+        <button (click)="chat.newSession()" style="align-self: flex-start; padding: 4px 12px;">
+          New Session
+        </button>
+        <seam-chat #chat [placeholder]="placeholder" style="flex: 1;"></seam-chat>
+      </div>
+    `,
+  }),
+  decorators: [
+    applicationConfig({
+      providers: [
+        {
+          provide: THESEAM_CHAT_PROVIDER,
+          useValue: new MockAiProvider({
+            response: 'OK',
+            initialSession: _historySession,
+          }),
+        },
+      ],
+    }),
+  ],
+  args: { placeholder: 'Say something or click New Session...' },
+}
+
+export const SessionSwitch: Story = {
+  render: (args) => ({
+    props: {
+      ...args,
+      sessionId: signal<string | null>(null),
+      switchTo: (
+        uid: string | null,
+        sessionId: ReturnType<typeof signal<string | null>>,
+      ) => sessionId.set(uid),
+    },
+    template: `
+      <div style="display: flex; flex-direction: column; gap: 8px; height: 100%;">
+        <div style="display: flex; gap: 8px;">
+          <button (click)="switchTo('demo-session-1', sessionId)">Load A</button>
+          <button (click)="switchTo('demo-session-2', sessionId)">Load B</button>
+          <button (click)="switchTo(null, sessionId)">Clear</button>
+        </div>
+        <seam-chat [sessionId]="sessionId()" [placeholder]="placeholder" style="flex: 1;"></seam-chat>
+      </div>
+    `,
+  }),
+  decorators: [
+    applicationConfig({
+      providers: [
+        {
+          provide: THESEAM_CHAT_PROVIDER,
+          useValue: (() => {
+            const a: ChatSession = {
+              ..._historySession,
+              uid: 'demo-session-1',
+              label: 'A',
+            }
+            const b: ChatSession = {
+              ..._historySession,
+              uid: 'demo-session-2',
+              label: 'B',
+              messages: [
+                {
+                  uid: 'b1',
+                  role: 'user',
+                  content: 'Different session content',
+                  created: '2026-05-13T08:00:00Z',
+                },
+              ],
+              leafMessageId: 'b1',
+            }
+            return new MockAiProvider({
+              response: 'OK',
+              sessionsByUid: new Map([
+                ['demo-session-1', a],
+                ['demo-session-2', b],
+              ]),
+            })
+          })(),
+        },
+      ],
+    }),
+  ],
+  args: { placeholder: 'Pick a session above...' },
 }

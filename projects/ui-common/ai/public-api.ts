@@ -2,12 +2,19 @@
 export {
   ChatMessage,
   ChatResponse,
+  ChatSession,
+  ChatSessionListItem,
+  ChatSessionMessage,
+  ChatSessionStaleError,
   TheSeamAiChatRequest,
   TheSeamAiProvider,
 } from './providers/ai-provider'
 export { LmStudioAiProvider } from './providers/lm-studio.ai-provider'
 export { OpenRouterAiProvider } from './providers/openrouter.ai-provider'
-export { MockAiProvider } from './providers/mock.ai-provider'
+export {
+  MockAiProvider,
+  MockAiProviderConfig,
+} from './providers/mock.ai-provider'
 
 // Context registry
 export { TheSeamChatContext, TheSeamChatContextPayload } from './chat-context'
