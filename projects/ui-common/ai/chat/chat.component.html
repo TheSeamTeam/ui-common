@@ -1,19 +1,25 @@
 <div class="seam-chat">
   <div class="seam-chat__messages" #messageList seamOverlayScrollbar>
-    @for (msg of _displayMessages; track $index) {
-      <seam-chat-message [message]="msg"></seam-chat-message>
-    }
-
-    @if (loading$ | async) {
-      <div class="seam-chat__loading">
-        <span>Thinking...</span>
+    @if (initialLoading$ | async) {
+      <div class="seam-chat__initial-loading">
+        <span>Loading…</span>
       </div>
+    } @else {
+      @for (msg of _displayMessages; track $index) {
+        <seam-chat-message [message]="msg"></seam-chat-message>
+      }
+
+      @if (loading$ | async) {
+        <div class="seam-chat__loading">
+          <span>Thinking...</span>
+        </div>
+      }
     }
   </div>
 
   <seam-chat-input
     [placeholder]="placeholder()"
-    [disabled]="!!(loading$ | async)"
+    [disabled]="!!(loading$ | async) || !!(initialLoading$ | async)"
     (messageSent)="_onMessageSent($event)"
   ></seam-chat-input>
 </div>
