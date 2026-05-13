@@ -88,4 +88,13 @@ export class SeamChatInputComponent {
     this.messageSent.emit(value)
     this._control.reset()
   }
+
+  /**
+   * Restores the given text into the input control. Called by the parent
+   * chat component during stale-leaf recovery so the user can edit and
+   * resend their message after the conversation is refreshed.
+   */
+  restoreText(text: string): void {
+    this._control.setValue(text)
+  }
 }
