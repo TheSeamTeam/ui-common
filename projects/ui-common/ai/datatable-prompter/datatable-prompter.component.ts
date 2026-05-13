@@ -10,6 +10,7 @@ import {
 import {
   BehaviorSubject,
   combineLatest,
+  firstValueFrom,
   map,
   Observable,
   of,
@@ -223,15 +224,16 @@ export class TheSeamDatatablePrompterComponent {
       this._loadingSubject.next(false)
       return
     }
-    this._aiProvider
-      .chat({
+    firstValueFrom(
+      this._aiProvider.chat({
         messages: [
           {
             role: 'user',
             content: `${assistantPrompt}\n\n---\n\n${userPrompt}`,
           },
         ],
-      })
+      }),
+    )
       .then(async (response) => {
         const alterations = parseResponse(response.content, undefined)
         // this._form.reset()
