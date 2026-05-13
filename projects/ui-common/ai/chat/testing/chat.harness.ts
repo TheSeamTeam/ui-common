@@ -39,9 +39,16 @@ export class TheSeamChatHarness extends ComponentHarness {
   private readonly _messages = this.locatorForAll(TheSeamChatMessageHarness)
   private readonly _input = this.locatorFor(TheSeamChatInputHarness)
   private readonly _loading = this.locatorForOptional('.seam-chat__loading')
+  private readonly _initialLoading = this.locatorForOptional(
+    '.seam-chat__initial-loading',
+  )
 
   async getMessages(): Promise<TheSeamChatMessageHarness[]> {
     return this._messages()
+  }
+
+  async getMessageCount(): Promise<number> {
+    return (await this._messages()).length
   }
 
   async getInput(): Promise<TheSeamChatInputHarness> {
@@ -50,5 +57,9 @@ export class TheSeamChatHarness extends ComponentHarness {
 
   async isLoading(): Promise<boolean> {
     return (await this._loading()) !== null
+  }
+
+  async isInitialLoading(): Promise<boolean> {
+    return (await this._initialLoading()) !== null
   }
 }
