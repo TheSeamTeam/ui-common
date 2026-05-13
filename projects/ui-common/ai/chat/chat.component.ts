@@ -169,9 +169,10 @@ export class TheSeamChatComponent implements AfterViewInit, OnDestroy {
     this._destroy$.complete()
   }
 
-  async _onMessageSent(text: string) {
-    if (this._loadingSubject.value || !this._provider) {
-      if (!this._provider) console.error('No chat provider configured.')
+  async _onMessageSent(text: string): Promise<void> {
+    if (this._loadingSubject.value) return
+    if (!this._provider) {
+      console.error('No chat provider configured.')
       return
     }
 
@@ -186,40 +187,48 @@ export class TheSeamChatComponent implements AfterViewInit, OnDestroy {
       },
     ]
     this._forceScrollOnNextResize = true
+    this._loadingSubject.next(true)
     this._cdr.markForCheck()
 
-    this._loadingSubject.next(true)
-    try {
-      const contexts = (await this._chatContextRegistry?.snapshot()) ?? []
-      // NOTE: Observable provider — bridge with firstValueFrom until Task 9
-      // restructures this method around the new session flow.
-      const { firstValueFrom } = await import('rxjs')
-      const response = await firstValueFrom(
-        this._provider.chat({
-          messages: this._messages,
-          contexts: contexts.length === 0 ? undefined : contexts,
-        }),
-      )
-
-      const assistantMessage: ChatMessage = {
-        role: 'assistant',
-        content: response.content,
-      }
-      this._messages.push(assistantMessage)
-      this._displayMessages = [
-        ...this._displayMessages,
-        {
-          role: 'assistant',
-          segments: parseChatResponse(response.content),
-          timestamp: new Date(),
+    const contexts = (await this._chatContextRegistry?.snapshot()) ?? []
+    this._provider
+      .chat({
+        messages: this._messages,
+        contexts: contexts.length === 0 ? undefined : contexts,
+        sessionId: this._currentSessionId,
+        expectedLeafMessageId: this._currentLeafMessageId,
+      })
+      .pipe(takeUntil(this._destroy$))
+      .subscribe({
+        next: (response) => {
+          this._messages.push({ role: 'assistant', content: response.content })
+          this._displayMessages = [
+            ...this._displayMessages,
+            {
+              role: 'assistant',
+              segments: parseChatResponse(response.content),
+              timestamp: new Date(),
+            },
+          ]
+          const wasNoSession = this._currentSessionId === null
+          this._currentSessionId = response.sessionId
+          this._currentLeafMessageId = response.leafMessageId
+          if (wasNoSession) {
+            this.sessionIdChange.emit(response.sessionId)
+          }
+          this._loadingSubject.next(false)
+          this._cdr.markForCheck()
         },
-      ]
-    } catch (err) {
-      console.error('Chat provider error:', err)
-    } finally {
-      this._loadingSubject.next(false)
-      this._cdr.markForCheck()
-    }
+        error: (err) => {
+          if (err instanceof ChatSessionStaleError) {
+            this._handleStaleSession(text)
+          } else {
+            console.error('Chat provider error:', err)
+            this._loadingSubject.next(false)
+            this._cdr.markForCheck()
+          }
+        },
+      })
   }
 
   private _updatePinnedState() {
@@ -296,5 +305,10 @@ export class TheSeamChatComponent implements AfterViewInit, OnDestroy {
       timestamp: new Date(m.created),
     }))
     this._forceScrollOnNextResize = true
+  }
+
+  // Implemented in Task 10. Placeholder so _onMessageSent compiles.
+  private _handleStaleSession(_text: string): void {
+    /* TODO: Task 10 — reload session + restoreText + emit staleSession */
   }
 }
