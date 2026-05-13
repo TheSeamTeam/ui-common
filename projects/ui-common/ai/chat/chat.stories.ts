@@ -7,7 +7,7 @@ import {
   moduleMetadata,
   StoryObj,
 } from '@storybook/angular'
-import { expect } from 'storybook/test'
+import { expect, waitFor } from 'storybook/test'
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { provideMarkdown } from 'ngx-markdown'
 
@@ -221,9 +221,13 @@ export const WithInitialSession: Story = {
   args: { placeholder: 'Continue the conversation...' },
   play: async ({ canvasElement }) => {
     const harness = await getHarness(TheSeamChatHarness, { canvasElement })
-    // The 800ms delay should be over by the time play runs; messages render.
-    const messages = await harness.getMessages()
-    await expect(messages).toHaveLength(2)
+    await waitFor(
+      async () => {
+        const messages = await harness.getMessages()
+        expect(messages).toHaveLength(2)
+      },
+      { timeout: 2000 },
+    )
   },
 }
 
