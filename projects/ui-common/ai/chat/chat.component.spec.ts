@@ -1,6 +1,9 @@
+import { firstValueFrom, Observable, of } from 'rxjs'
+
 import {
   ChatMessage,
   ChatResponse,
+  ChatSession,
   TheSeamAiChatRequest,
   TheSeamAiProvider,
 } from '../providers/ai-provider'
@@ -12,9 +15,32 @@ class FakeAiProvider implements TheSeamAiProvider {
   lastRequest: TheSeamAiChatRequest | undefined
   response = 'Test response'
 
-  async chat(request: TheSeamAiChatRequest): Promise<ChatResponse> {
+  chat(request: TheSeamAiChatRequest): Observable<ChatResponse> {
     this.lastRequest = request
-    return { content: this.response }
+    return of({
+      content: this.response,
+      sessionId: 'mock',
+      label: 'Mock',
+      leafMessageId: 'leaf-1',
+    })
+  }
+  getInitialSession() {
+    return of(null)
+  }
+  getRecentSession() {
+    return of(null)
+  }
+  getSession(): Observable<ChatSession> {
+    return of({} as ChatSession)
+  }
+  listSessions() {
+    return of([])
+  }
+  renameSession() {
+    return of(undefined as void)
+  }
+  deleteSession() {
+    return of(undefined as void)
   }
 }
 
@@ -36,12 +62,14 @@ function makeSimulator(
       messages.push(userMessage)
 
       const contexts = (await registry?.snapshot()) ?? []
-      const response = await provider.chat({
-        // Snapshot the array so FakeAiProvider.lastRequest.messages reflects the
-        // call-time state instead of the post-await mutation done a few lines down.
-        messages: [...messages],
-        contexts: contexts.length === 0 ? undefined : contexts,
-      })
+      const response = await firstValueFrom(
+        provider.chat({
+          // Snapshot the array so FakeAiProvider.lastRequest.messages reflects the
+          // call-time state instead of the post-await mutation done a few lines down.
+          messages: [...messages],
+          contexts: contexts.length === 0 ? undefined : contexts,
+        }),
+      )
       const assistantMessage: ChatMessage = {
         role: 'assistant',
         content: response.content,

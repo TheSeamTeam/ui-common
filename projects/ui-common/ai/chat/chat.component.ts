@@ -5,11 +5,11 @@ import {
   Component,
   ElementRef,
   inject,
-  Input,
+  input,
   NgZone,
   ViewChild,
 } from '@angular/core'
-import { AsyncPipe, NgForOf, NgIf } from '@angular/common'
+import { AsyncPipe } from '@angular/common'
 import { BehaviorSubject } from 'rxjs'
 
 import { TheSeamOverlayScrollbarDirective } from '@theseam/ui-common/scrollbar'
@@ -28,8 +28,6 @@ import { SeamChatInputComponent } from './chat-input.component'
   selector: 'seam-chat',
   imports: [
     AsyncPipe,
-    NgForOf,
-    NgIf,
     SeamChatMessageComponent,
     SeamChatInputComponent,
     TheSeamOverlayScrollbarDirective,
@@ -46,14 +44,13 @@ export class TheSeamChatComponent implements AfterViewInit {
   private readonly _cdr = inject(ChangeDetectorRef)
   private readonly _ngZone = inject(NgZone)
 
-  @Input() placeholder = 'Type a message...'
-
   @ViewChild('messageList') private _messageList?: ElementRef<HTMLElement>
   @ViewChild(TheSeamOverlayScrollbarDirective)
   private _messageListScrollbar?: TheSeamOverlayScrollbarDirective
 
-  readonly _loadingSubject = new BehaviorSubject<boolean>(false)
+  readonly placeholder = input<string>('Type a message...')
 
+  // Internal conversation state — same as before, just relocated for clarity.
   private _messages: ChatMessage[] = []
   _displayMessages: ChatMessageDisplayModel[] = []
 
@@ -61,6 +58,9 @@ export class TheSeamChatComponent implements AfterViewInit {
   private readonly _pinnedThreshold = 32
   private _isPinnedToBottom = true
   private _forceScrollOnNextResize = false
+
+  private readonly _loadingSubject = new BehaviorSubject<boolean>(false)
+  readonly loading$ = this._loadingSubject.asObservable()
 
   ngAfterViewInit() {
     const scrollInstance = this._messageListScrollbar?.instance
@@ -79,9 +79,7 @@ export class TheSeamChatComponent implements AfterViewInit {
 
   async _onMessageSent(text: string) {
     if (this._loadingSubject.value || !this._provider) {
-      if (!this._provider) {
-        console.error('No chat provider configured.')
-      }
+      if (!this._provider) console.error('No chat provider configured.')
       return
     }
 
@@ -101,10 +99,15 @@ export class TheSeamChatComponent implements AfterViewInit {
     this._loadingSubject.next(true)
     try {
       const contexts = (await this._chatContextRegistry?.snapshot()) ?? []
-      const response = await this._provider.chat({
-        messages: this._messages,
-        contexts: contexts.length === 0 ? undefined : contexts,
-      })
+      // NOTE: Observable provider — bridge with firstValueFrom until Task 9
+      // restructures this method around the new session flow.
+      const { firstValueFrom } = await import('rxjs')
+      const response = await firstValueFrom(
+        this._provider.chat({
+          messages: this._messages,
+          contexts: contexts.length === 0 ? undefined : contexts,
+        }),
+      )
 
       const assistantMessage: ChatMessage = {
         role: 'assistant',
