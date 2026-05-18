@@ -8,6 +8,7 @@
       placeholder="Select search type"
       bindValue="value"
       [items]="searchTypes"
+      appendTo="body"
     ></ng-select>
   </seam-form-field>
   <ng-container *ngIf="showTextbox$ | async">
