@@ -23,19 +23,11 @@ import {
   HostListener,
   Input,
   OnDestroy,
-  OnInit,
   TemplateRef,
   ViewContainerRef,
 } from '@angular/core'
-import {
-  BehaviorSubject,
-  fromEvent,
-  merge,
-  of,
-  Subject,
-  Subscription,
-} from 'rxjs'
-import { switchMap, takeUntil } from 'rxjs/operators'
+import { BehaviorSubject, merge, of, Subject, Subscription } from 'rxjs'
+import { takeUntil } from 'rxjs/operators'
 
 import { PopoverComponent } from './popover/popover.component'
 
