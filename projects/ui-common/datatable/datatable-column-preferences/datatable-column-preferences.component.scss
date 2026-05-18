@@ -1,4 +1,12 @@
 :host {
   display: flex;
   flex-direction: column;
+  height: 100%;
+
+  $outside-margin: 0.75rem; // The default seam-popover padding, which needs to be accounted for in the column list margins
+  .columns-list {
+    // Offset the right margin slightly so that the scrollbar doesn't overlap the rounded bottom-right corner of the popover
+    margin: 0 calc($outside-margin * -1 + 2px) -0.5rem $outside-margin * -1;
+    padding: 0.5rem $outside-margin;
+  }
 }
