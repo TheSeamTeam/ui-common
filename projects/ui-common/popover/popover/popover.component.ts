@@ -10,7 +10,6 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  HostBinding,
   HostListener,
   Input,
   OnDestroy,

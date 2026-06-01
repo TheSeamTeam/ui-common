@@ -876,10 +876,10 @@ export class DatatableComponent<TRow = any>
           ),
         })),
       ),
+      switchMap((cols) => applyPrefs(cols)),
     )
 
     this.displayColumns$ = this.columns$.pipe(
-      switchMap((cols) => applyPrefs(cols)),
       map((cols) => cols.filter((c) => !c.hidden)),
       tap((v) =>
         removeUnusedDiffs(v, this._colDiffersInp, this._colDiffersTpl),

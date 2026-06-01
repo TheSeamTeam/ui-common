@@ -234,7 +234,101 @@ export const Popover: Story = {
     props: {},
     template: `
       <div class="popover m-2">
-        <div class="popover-body">
+        <div class="popover-body h-100 overflow-auto">
+          <seam-datatable-column-preferences></seam-datatable-column-preferences>
+        </div>
+      </div>`,
+  }),
+}
+
+class MockDatatableWithLotsOfColumns {
+  _columns = new BehaviorSubject<any>([
+    { prop: 'name', name: 'Name' },
+    { prop: 'age', name: 'Age' },
+    { prop: 'color', name: 'Color' },
+    { prop: 'color1', name: 'Color1' },
+    { prop: 'color2', name: 'Color2' },
+    { prop: 'color3', name: 'Color3' },
+    { prop: 'color4', name: 'Color4' },
+    { prop: 'color5', name: 'Color5' },
+    { prop: 'color6', name: 'Color6' },
+    { prop: 'color7', name: 'Color7' },
+    { prop: 'color8', name: 'Color8' },
+    { prop: 'color9', name: 'Color9' },
+    { prop: 'color10', name: 'Color10' },
+    { prop: 'color11', name: 'Color11' },
+    { prop: 'color12', name: 'Color12' },
+    { prop: 'color13', name: 'Color13' },
+    { prop: 'color14', name: 'Color14' },
+    { prop: 'color15', name: 'Color15' },
+    { prop: 'color16', name: 'Color16' },
+    { prop: 'color17', name: 'Color17' },
+    { prop: 'color18', name: 'Color18' },
+    { prop: 'color19', name: 'Color19' },
+    { prop: 'color20', name: 'Color20' },
+    { prop: 'color21', name: 'Color21' },
+    { prop: 'color22', name: 'Color22' },
+    { prop: 'color23', name: 'Color23' },
+    { prop: 'color24', name: 'Color24' },
+    { prop: 'color25', name: 'Color25' },
+    { prop: 'color26', name: 'Color26' },
+    { prop: 'color27', name: 'Color27' },
+    { prop: 'color28', name: 'Color28' },
+    { prop: 'color29', name: 'Color29' },
+    { prop: 'color30', name: 'Color30' },
+    { prop: 'color31', name: 'Color31' },
+    { prop: 'color32', name: 'Color32' },
+    { prop: 'color33', name: 'Color33' },
+    { prop: 'color34', name: 'Color34' },
+    { prop: 'color35', name: 'Color35' },
+    { prop: 'color36', name: 'Color36' },
+    { prop: 'color37', name: 'Color37' },
+    { prop: 'color38', name: 'Color38' },
+    { prop: 'color39', name: 'Color39' },
+    { prop: 'color40', name: 'Color40' },
+    { prop: 'color41', name: 'Color41' },
+    { prop: 'color42', name: 'Color42' },
+    { prop: 'color43', name: 'Color43' },
+    { prop: 'color44', name: 'Color44' },
+    { prop: 'color45', name: 'Color45' },
+    { prop: 'color46', name: 'Color46' },
+    { prop: 'color47', name: 'Color47' },
+    { prop: 'color48', name: 'Color48' },
+    { prop: 'color49', name: 'Color49' },
+    {
+      prop: 'color50',
+      name: 'Color50, which has a long name exceeding the max width of the popover ',
+    },
+  ])
+
+  get columns() {
+    return this._columns.value
+  }
+  set columns(value: any) {
+    this._columns.next(value)
+  }
+
+  columns$ = this._columns.asObservable()
+}
+
+export const PopoverWithScrollbar: Story = {
+  render: (args) => ({
+    moduleMetadata: {
+      providers: [
+        {
+          provide: THESEAM_DATATABLE,
+          useClass: MockDatatableWithLotsOfColumns,
+        },
+        {
+          provide: ColumnsAlterationsManagerService,
+          useClass: MockColumnsAlterationsManagerService,
+        },
+      ],
+    },
+    props: {},
+    template: `
+      <div class="popover m-2" style="height: calc(100vh - 100px);">
+        <div class="popover-body h-100 overflow-auto">
           <seam-datatable-column-preferences></seam-datatable-column-preferences>
         </div>
       </div>`,
