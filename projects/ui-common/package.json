@@ -42,7 +42,7 @@
     "@types/webfontloader": "^1.6.29",
     "intl-tel-input": "^17.0.5",
     "@ajsf/core": "^0.8.0",
-    "quill": "2.0.3",
+    "quill": "2.0.2",
     "ngx-quill": "^27.1.2",
     "@turf/area": "^7.2.0",
     "@turf/boolean-contains": "^7.2.0",
