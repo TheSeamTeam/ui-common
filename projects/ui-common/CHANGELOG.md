@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/TheSeamTeam/ui-common/compare/ui-common-v2.0.0...ui-common-v2.0.1) (2026-06-02)
+
+
+### Bug Fixes
+
+* **quill:** downgrade quill v2.0.3 to v2.0.2 in ui-common project to match repo ([#58](https://github.com/TheSeamTeam/ui-common/issues/58)) ([55a0583](https://github.com/TheSeamTeam/ui-common/commit/55a0583082bf6091a97485aafafa15e966561d55))
+
 ## [2.0.0](https://github.com/TheSeamTeam/ui-common/compare/ui-common-v1.0.2...ui-common-v2.0.0) (2026-06-01)
 
 
