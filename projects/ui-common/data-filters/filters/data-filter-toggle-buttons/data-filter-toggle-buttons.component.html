@@ -22,3 +22,12 @@
     </button>
   </ng-container>
 </div>
+
+<!-- Hidden measurement div: always in DOM, used to read natural btn-group width -->
+<div #measureDiv class="btn-group btn-group--measure" aria-hidden="true">
+  <ng-container *ngFor="let btn of buttons">
+    <button type="button" class="btn btn-sm px-4" tabindex="-1">
+      {{ btn.name || btn.value }}
+    </button>
+  </ng-container>
+</div>
