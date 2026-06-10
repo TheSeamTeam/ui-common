@@ -148,7 +148,6 @@ export class DataFilterToggleButtonsComponent
   @Input()
   set value(value: string | string[]) {
     const _value = !isNullOrUndefined(value) ? coerceArray(value) : undefined
-    // console.log('_value', _value, this._control.value)
     if (this._control.value !== _value) {
       this._control.setValue(_value)
     }
@@ -164,9 +163,7 @@ export class DataFilterToggleButtonsComponent
     private _filterOptions: IToggleButtonsFilterOptions | null,
   ) {
     this.filterStateChanges = this._control.valueChanges.pipe(
-      // tap(v => console.log('v', v)),
       switchMap(() => of(this.filterState())),
-      // tap(v => console.log('v2', v)),
       shareReplay({ bufferSize: 1, refCount: true }),
     )
   }
@@ -234,6 +231,9 @@ export class DataFilterToggleButtonsComponent
   }
 
   private _updateCollapsed(): void {
+    if (!this._measureDiv) {
+      return
+    }
     const measureWidth = this._measureDiv.nativeElement.scrollWidth
     const clientWidth = this._hostEl.nativeElement.clientWidth
     const threshold =
