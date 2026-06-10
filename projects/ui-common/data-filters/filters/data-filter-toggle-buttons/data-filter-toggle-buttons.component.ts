@@ -1,16 +1,22 @@
 import { coerceArray } from '@angular/cdk/coercion'
 import {
+  AfterViewInit,
   Component,
+  ElementRef,
   forwardRef,
+  inject,
   Inject,
   Input,
+  OnChanges,
   OnDestroy,
   OnInit,
   Optional,
+  SimpleChanges,
+  ViewChild,
 } from '@angular/core'
 import { UntypedFormControl } from '@angular/forms'
 import { Observable, of } from 'rxjs'
-import { map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators'
+import { map, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
 import { hasProperty, isNullOrUndefined } from '@theseam/ui-common/utils'
 
@@ -114,7 +120,7 @@ let _uid = 0
   standalone: false,
 })
 export class DataFilterToggleButtonsComponent
-  implements OnInit, OnDestroy, IDataFilter
+  implements OnInit, OnChanges, OnDestroy, AfterViewInit, IDataFilter
 {
   public readonly name = 'toggle-buttons'
   public readonly uid = `toggle-buttons__${_uid++}`
@@ -131,6 +137,13 @@ export class DataFilterToggleButtonsComponent
   @Input() exact = this._optDefault('exact')
   @Input() caseSensitive = this._optDefault('caseSensitive')
   @Input() maxWidth = this._optDefault('maxWidth')
+
+  _isCollapsed = false
+
+  @ViewChild('measureDiv') private _measureDiv!: ElementRef<HTMLElement>
+
+  private readonly _hostEl = inject(ElementRef<HTMLElement>)
+  private _resizeObserver: ResizeObserver | undefined
 
   @Input()
   set value(value: string | string[]) {
@@ -168,8 +181,20 @@ export class DataFilterToggleButtonsComponent
     }
   }
 
-  ngOnDestroy() {
+  ngAfterViewInit(): void {
+    this._resizeObserver = new ResizeObserver(() => this._updateCollapsed())
+    this._resizeObserver.observe(this._hostEl.nativeElement)
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['buttons'] && !changes['buttons'].firstChange) {
+      this._updateCollapsed()
+    }
+  }
+
+  ngOnDestroy(): void {
     this._filterContainer.removeFilter(this)
+    this._resizeObserver?.disconnect()
   }
 
   private _optDefault<K extends keyof IToggleButtonsFilterOptions>(prop: K) {
@@ -206,6 +231,14 @@ export class DataFilterToggleButtonsComponent
         ),
       ),
     )
+  }
+
+  private _updateCollapsed(): void {
+    const measureWidth = this._measureDiv.nativeElement.scrollWidth
+    const clientWidth = this._hostEl.nativeElement.clientWidth
+    const threshold =
+      this.maxWidth != null ? Math.min(clientWidth, this.maxWidth) : clientWidth
+    this._isCollapsed = measureWidth > threshold
   }
 
   public filterState(): DataFilterState {
