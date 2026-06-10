@@ -42,6 +42,7 @@ export interface IToggleButtonsFilterOptions extends ITextFilterOptions {
   multiple: boolean
   buttons: IToggleButton[]
   initialValue?: any
+  maxWidth?: number
 }
 
 export const DefaultToggleButtonsFilterOptions: IToggleButtonsFilterOptions = {
@@ -52,6 +53,7 @@ export const DefaultToggleButtonsFilterOptions: IToggleButtonsFilterOptions = {
   buttons: [],
   exact: false,
   caseSensitive: false,
+  maxWidth: undefined,
 }
 
 export function toggleButtonsFilter(
@@ -128,6 +130,7 @@ export class DataFilterToggleButtonsComponent
   @Input() buttons = this._optDefault('buttons')
   @Input() exact = this._optDefault('exact')
   @Input() caseSensitive = this._optDefault('caseSensitive')
+  @Input() maxWidth = this._optDefault('maxWidth')
 
   @Input()
   set value(value: string | string[]) {
@@ -188,6 +191,7 @@ export class DataFilterToggleButtonsComponent
       buttons: this.buttons,
       exact: this.exact,
       caseSensitive: this.caseSensitive,
+      maxWidth: this.maxWidth,
     }
   }
 
