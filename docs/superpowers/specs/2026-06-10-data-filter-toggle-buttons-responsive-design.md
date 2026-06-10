@@ -60,7 +60,7 @@ Because this div is always in the DOM, Angular keeps it updated whenever `button
 | `_measureDiv` | `ElementRef` (`@ViewChild`) | Reference to `.btn-group--measure` |
 | `_resizeObserver` | `ResizeObserver` | Observes the host element |
 
-Inject `ChangeDetectorRef` and `ElementRef` via `inject()`.
+Inject `ElementRef` via `inject()`. No `ChangeDetectorRef` needed — the component uses `ChangeDetectionStrategy.Default` and zone.js patches `ResizeObserver`, so callbacks fire inside the Angular zone and change detection runs automatically.
 
 ### Lifecycle
 
@@ -81,7 +81,6 @@ threshold    = maxWidth != null
                  ? Math.min(clientWidth, maxWidth)
                  : clientWidth
 _isCollapsed = measureWidth >= threshold
-_cdr.markForCheck()
 ```
 
 ### Edge cases
