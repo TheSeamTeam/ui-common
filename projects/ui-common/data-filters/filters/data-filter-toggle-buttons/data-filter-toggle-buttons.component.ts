@@ -4,13 +4,13 @@ import {
   Component,
   ElementRef,
   forwardRef,
-  inject,
   Inject,
   Input,
   OnChanges,
   OnDestroy,
   OnInit,
   Optional,
+  signal,
   SimpleChanges,
   ViewChild,
 } from '@angular/core'
@@ -18,7 +18,11 @@ import { UntypedFormControl } from '@angular/forms'
 import { Observable, of } from 'rxjs'
 import { map, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
-import { hasProperty, isNullOrUndefined } from '@theseam/ui-common/utils'
+import {
+  hasProperty,
+  isNullOrUndefined,
+  notNullOrUndefined,
+} from '@theseam/ui-common/utils'
 
 import {
   DataFilterState,
@@ -30,6 +34,8 @@ import { THESEAM_DATA_FILTER_CONTAINER } from '../../data-filter-container'
 import type { DataFilterContainer } from '../../data-filter-container'
 import { textDataFilter } from '../data-filter-text/data-filter-text.component'
 import { ITextFilterOptions } from '../data-filter-text/text-filter-options'
+
+export const DATA_FILTER_TOGGLE_BUTTON_DROPDOWN_TEXT = 'Select Filter'
 
 export const DATA_FILTER_TOGGLE_BUTTON: any = {
   provide: THESEAM_DATA_FILTER,
@@ -49,6 +55,10 @@ export interface IToggleButtonsFilterOptions extends ITextFilterOptions {
   buttons: IToggleButton[]
   initialValue?: any
   maxWidth?: number
+  /** The text shown when the button row is in the collapsed state and no filter is selected. */
+  filterDropdownLabel?: string
+  /** When true, will prevent the button row from collapsing into a dropdown on smaller screen sizes. */
+  disableCollapse?: boolean
 }
 
 export const DefaultToggleButtonsFilterOptions: IToggleButtonsFilterOptions = {
@@ -60,6 +70,8 @@ export const DefaultToggleButtonsFilterOptions: IToggleButtonsFilterOptions = {
   exact: false,
   caseSensitive: false,
   maxWidth: undefined,
+  filterDropdownLabel: DATA_FILTER_TOGGLE_BUTTON_DROPDOWN_TEXT,
+  disableCollapse: undefined,
 }
 
 export function toggleButtonsFilter(
@@ -137,12 +149,13 @@ export class DataFilterToggleButtonsComponent
   @Input() exact = this._optDefault('exact')
   @Input() caseSensitive = this._optDefault('caseSensitive')
   @Input() maxWidth = this._optDefault('maxWidth')
+  @Input() filterDropdownLabel = this._optDefault('filterDropdownLabel')
+  @Input() disableCollapse = this._optDefault('disableCollapse')
 
-  _isCollapsed = false
+  public readonly isCollapsed = signal(false)
 
   @ViewChild('measureDiv') private _measureDiv!: ElementRef<HTMLElement>
 
-  private readonly _hostEl = inject(ElementRef<HTMLElement>)
   private _resizeObserver: ResizeObserver | undefined
 
   @Input()
@@ -154,8 +167,10 @@ export class DataFilterToggleButtonsComponent
   }
 
   public readonly filterStateChanges: Observable<DataFilterState>
+  public activeFilterLabel!: Observable<string>
 
   constructor(
+    private _elementRef: ElementRef<HTMLElement>,
     @Inject(THESEAM_DATA_FILTER_CONTAINER)
     private _filterContainer: DataFilterContainer,
     @Optional()
@@ -176,11 +191,32 @@ export class DataFilterToggleButtonsComponent
     ) {
       this.value = this._optDefault('initialValue')
     }
+
+    this.activeFilterLabel = this.filterStateChanges.pipe(
+      startWith(undefined),
+      map(() => {
+        const state = this.filterState()
+        const options = state.state.options as IToggleButtonsFilterOptions
+        const selectedOptions = options.buttons
+          .filter((o) => coerceArray(state.state.value).includes(o.value))
+          .map((o) => o.name)
+
+        return selectedOptions.length > 0
+          ? selectedOptions.join(', ')
+          : this.filterDropdownLabel || DATA_FILTER_TOGGLE_BUTTON_DROPDOWN_TEXT
+      }),
+    )
   }
 
   ngAfterViewInit(): void {
     this._resizeObserver = new ResizeObserver(() => this._updateCollapsed())
-    this._resizeObserver.observe(this._hostEl.nativeElement)
+
+    if (
+      notNullOrUndefined(this._elementRef.nativeElement.parentElement) &&
+      this.disableCollapse !== true
+    ) {
+      this._resizeObserver.observe(this._elementRef.nativeElement.parentElement)
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -231,14 +267,33 @@ export class DataFilterToggleButtonsComponent
   }
 
   private _updateCollapsed(): void {
+    if (this.options.disableCollapse) {
+      if (this.isCollapsed()) {
+        this.isCollapsed.set(false)
+      }
+
+      return
+    }
     if (!this._measureDiv) {
       return
     }
     const measureWidth = this._measureDiv.nativeElement.scrollWidth
-    const clientWidth = this._hostEl.nativeElement.clientWidth
+
+    // Because of the flex layout, this element won't necessarily grow to its full
+    // potential width when in collapsed mode, meaning it stays collapsed even
+    // though there's room to expand. If this becomes a problem, we may need to use a
+    // different strategy to determine when it's safe to show the full filter bar.
+    const clientWidth =
+      this._elementRef.nativeElement.parentElement?.clientWidth
+
+    // Not enough information to determine collapsed state, so don't update it
+    if (isNullOrUndefined(clientWidth)) {
+      return
+    }
+
     const threshold =
       this.maxWidth != null ? Math.min(clientWidth, this.maxWidth) : clientWidth
-    this._isCollapsed = measureWidth > threshold
+    this.isCollapsed.set(measureWidth > threshold)
   }
 
   public filterState(): DataFilterState {

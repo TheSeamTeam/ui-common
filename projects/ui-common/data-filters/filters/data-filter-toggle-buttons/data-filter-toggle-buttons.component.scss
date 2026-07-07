@@ -1,3 +1,5 @@
+@import '../../../styles/utilities';
+
 :host {
   position: relative;
 }
@@ -9,4 +11,10 @@
   white-space: nowrap;
   top: 0;
   left: -9999px;
+}
+
+.seam-menu-item.seam-menu-item-active,
+.seam-menu-item.seam-menu-item-active.cdk-mouse-focused:not(:hover) {
+  background: $primary;
+  color: white;
 }
