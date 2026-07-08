@@ -35,8 +35,7 @@
 **Google Maps integration** (`projects/ui-common/google-maps/`):
 - Modify `google-maps.service.ts` — Terra Draw lifecycle + `finish` flow + drawing state.
 - Modify `google-maps-feature-helpers.ts` — add `dataPolygonFromGeoJson`, `geoJsonPolygonFromDataFeature`; retire `createDataFeatureFromPolygon`, `addInnerFeatureCutoutToExteriorFeature`, `featureContains`, `fixPathDifferentStartingAndEndingPoint`.
-- Create `google-maps-draw-button-control/google-maps-draw-button-control.component.{ts,html,scss}`.
-- Modify `google-maps.module.ts` — declare the new control component.
+- Create `google-maps-draw-button-control/google-maps-draw-button-control.component.{ts,html,scss}` (standalone — no NgModule declaration).
 - Modify `google-maps/google-maps.component.ts` + `.html` — register the draw control, gate on `editingEnabled`.
 - Modify `google-maps.stories.ts` — drop `'drawing'` from requested libraries.
 - Add `terra-draw`, `terra-draw-google-maps-adapter` to `package.json`.
@@ -1194,32 +1193,24 @@ git commit -m "feat(google-maps): draw polygons via Terra Draw GeoJSON finish fl
 - Create: `projects/ui-common/google-maps/google-maps-draw-button-control/google-maps-draw-button-control.component.ts`
 - Create: `projects/ui-common/google-maps/google-maps-draw-button-control/google-maps-draw-button-control.component.html`
 - Create: `projects/ui-common/google-maps/google-maps-draw-button-control/google-maps-draw-button-control.component.scss`
-- Modify: `projects/ui-common/google-maps/google-maps.module.ts`
 - Modify: `projects/ui-common/google-maps/google-maps/google-maps.component.ts`
 - Modify: `projects/ui-common/google-maps/google-maps/google-maps.component.html`
+
+(No `google-maps.module.ts` change: the component is standalone and instantiated dynamically via `ViewContainerRef.createComponent`, which does not require an NgModule declaration.)
 
 **Interfaces:**
 - Consumes: `GoogleMapsService.drawing$`, `isDrawing()`, `startDrawing()`, `stopDrawing()` (Task 7); `MAP_CONTROL_DATA`, `MapControl` (existing).
 
 - [ ] **Step 1: Create the control component**
 
-Create `google-maps-draw-button-control.component.ts` (mirrors the recenter control's pattern — attribute selector, `MAP_CONTROL_DATA` injection, OnPush):
+Create `google-maps-draw-button-control.component.ts`. It is **standalone** (imports `TheSeamIconModule`, since `seam-icon` is a non-standalone component exported by that module), uses `inject()` at the top, drives its active state from `drawing$` via `toSignal` (no manual subscription, no `DestroyRef`, no `ChangeDetectorRef`), and defaults `label`/`icon` from injected `MAP_CONTROL_DATA`:
 
 ```ts
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  HostListener,
-  Inject,
-  Input,
-  OnDestroy,
-  OnInit,
-  Optional,
-} from '@angular/core'
-import { Subject, takeUntil } from 'rxjs'
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
+import { toSignal } from '@angular/core/rxjs-interop'
 
-import { SeamIcon } from '@theseam/ui-common/icon'
+import { faDrawPolygon } from '@fortawesome/free-solid-svg-icons'
+import { SeamIcon, TheSeamIconModule } from '@theseam/ui-common/icon'
 
 import { GoogleMapsService } from '../google-maps.service'
 import { MAP_CONTROL_DATA } from '../map-controls-service'
@@ -1234,67 +1225,39 @@ export interface GoogleMapsDrawButtonControlData {
   selector: 'button[seam-google-maps-draw-button-control]',
   templateUrl: './google-maps-draw-button-control.component.html',
   styleUrls: ['./google-maps-draw-button-control.component.scss'],
+  imports: [TheSeamIconModule],
   host: {
+    '(click)': '_onClick()',
     '[attr.draggable]': 'false',
     '[attr.aria-label]': 'label',
     '[attr.title]': 'label',
-    '[attr.aria-pressed]': '_active',
-    '[class.active]': '_active',
+    '[attr.aria-pressed]': '_active()',
+    '[class.active]': '_active()',
     type: 'button',
     class: 'gmnoprint gm-control-active',
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
 })
-export class TheSeamGoogleMapsDrawButtonControlComponent
-  implements OnInit, OnDestroy
-{
-  private readonly _ngUnsubscribe = new Subject<void>()
+export class TheSeamGoogleMapsDrawButtonControlComponent {
+  private readonly _googleMaps = inject(GoogleMapsService)
+  private readonly _data = inject<GoogleMapsDrawButtonControlData>(
+    MAP_CONTROL_DATA,
+    { optional: true },
+  )
 
-  _active = false
+  protected readonly _active = toSignal(this._googleMaps.drawing$, {
+    initialValue: false,
+  })
 
-  @Input() label: string | undefined | null = 'Draw Field'
+  label: string | undefined | null = this._data?.label ?? 'Draw Field'
+  icon: SeamIcon = this._data?.icon ?? faDrawPolygon
 
-  @Input() icon: SeamIcon | undefined | null
-
-  @HostListener('click')
   _onClick() {
     if (this._googleMaps.isDrawing()) {
       this._googleMaps.stopDrawing()
     } else {
       this._googleMaps.startDrawing()
     }
-  }
-
-  constructor(
-    private readonly _googleMaps: GoogleMapsService,
-    private readonly _cdr: ChangeDetectorRef,
-    @Optional()
-    @Inject(MAP_CONTROL_DATA)
-    _data?: GoogleMapsDrawButtonControlData,
-  ) {
-    if (_data) {
-      if (Object.prototype.hasOwnProperty.call(_data, 'label')) {
-        this.label = _data.label
-      }
-      if (Object.prototype.hasOwnProperty.call(_data, 'icon')) {
-        this.icon = _data.icon
-      }
-    }
-  }
-
-  ngOnInit() {
-    this._googleMaps.drawing$
-      .pipe(takeUntil(this._ngUnsubscribe))
-      .subscribe((drawing) => {
-        this._active = drawing
-        this._cdr.markForCheck()
-      })
-  }
-
-  ngOnDestroy() {
-    this._ngUnsubscribe.next()
-    this._ngUnsubscribe.complete()
   }
 }
 ```
@@ -1317,41 +1280,24 @@ Create `google-maps-draw-button-control.component.scss`:
 }
 ```
 
-- [ ] **Step 4: Declare the component in the module**
+- [ ] **Step 4: Register the control in the map component**
 
-In `google-maps.module.ts`, add the import:
-
-```ts
-import { TheSeamGoogleMapsDrawButtonControlComponent } from './google-maps-draw-button-control/google-maps-draw-button-control.component'
-```
-
-Add `TheSeamGoogleMapsDrawButtonControlComponent` to the `declarations` array.
-
-- [ ] **Step 5: Register the control in the map component**
-
-In `google-maps/google-maps.component.ts`, add the import:
-
-```ts
-import { faDrawPolygon } from '@fortawesome/free-solid-svg-icons'
-```
-
-Add a control def property alongside `_reCenterControlDef` (after line 121):
-
-```ts
-  readonly _drawControlDef: MapControl = {
-    component: TheSeamGoogleMapsDrawButtonControlComponent,
-    data: { label: 'Draw Field', icon: faDrawPolygon },
-    position: 2 /* google.maps.ControlPosition.TOP_CENTER */,
-  }
-```
-
-Add the import for the component:
+In `google-maps/google-maps.component.ts`, add the component import:
 
 ```ts
 import { TheSeamGoogleMapsDrawButtonControlComponent } from '../google-maps-draw-button-control/google-maps-draw-button-control.component'
 ```
 
-- [ ] **Step 6: Render the control, gated on editing**
+Add a control def property alongside `_reCenterControlDef` (after line 121). `data` is omitted — the component defaults `label`/`icon` itself:
+
+```ts
+  readonly _drawControlDef: MapControl = {
+    component: TheSeamGoogleMapsDrawButtonControlComponent,
+    position: 2 /* google.maps.ControlPosition.TOP_CENTER */,
+  }
+```
+
+- [ ] **Step 5: Render the control, gated on editing**
 
 In `google-maps/google-maps.component.html`, after the recenter control block (lines 27-30), add:
 
@@ -1362,15 +1308,15 @@ In `google-maps/google-maps.component.html`, after the recenter control block (l
 ></seam-map-control>
 ```
 
-- [ ] **Step 7: Type-check and build the library**
+- [ ] **Step 6: Type-check and build the library**
 
 Run: `npx tsc -p projects/ui-common/tsconfig.spec.json --noEmit`
 Expected: compiles.
 
-- [ ] **Step 8: Commit**
+- [ ] **Step 7: Commit**
 
 ```bash
-git add projects/ui-common/google-maps/google-maps-draw-button-control projects/ui-common/google-maps/google-maps.module.ts projects/ui-common/google-maps/google-maps/google-maps.component.ts projects/ui-common/google-maps/google-maps/google-maps.component.html
+git add projects/ui-common/google-maps/google-maps-draw-button-control projects/ui-common/google-maps/google-maps/google-maps.component.ts projects/ui-common/google-maps/google-maps/google-maps.component.html
 git commit -m "feat(google-maps): add draw-toggle map control"
 ```
 
