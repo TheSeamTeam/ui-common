@@ -110,6 +110,9 @@ export class TableCellTypeProgressCircleIconComponent implements OnDestroy {
         tableData.colData.cellTypeConfig.displayIcon,
         tableData,
       )
+    } else {
+      this.icon = undefined
+      this.displayIcon = false
     }
   }
 
