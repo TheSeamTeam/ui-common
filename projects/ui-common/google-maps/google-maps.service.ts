@@ -1,4 +1,5 @@
 import { Injectable, NgZone, OnDestroy, ViewContainerRef } from '@angular/core'
+import { Polygon } from 'geojson'
 import { BehaviorSubject, from, Observable, Subject } from 'rxjs'
 import { switchMap, takeUntil, tap } from 'rxjs/operators'
 
@@ -6,11 +7,18 @@ import { TerraDraw, TerraDrawPolygonMode } from 'terra-draw'
 import { TerraDrawGoogleMapsAdapter } from 'terra-draw-google-maps-adapter'
 
 import { MenuComponent } from '@theseam/ui-common/menu'
-import { notNullOrUndefined } from '@theseam/ui-common/utils'
+import {
+  addHoleToPolygon,
+  notNullOrUndefined,
+  polygonContains,
+  polygonHasMinDistinctVertices,
+} from '@theseam/ui-common/utils'
 
 import { GoogleMapsContextMenu } from './google-maps-contextmenu'
 import {
   createFeatureChangeObservable,
+  dataPolygonFromGeoJson,
+  geoJsonPolygonFromDataFeature,
   getBoundsWithAllFeatures,
   getFeatureCenter,
   getFeaturesCount,
@@ -540,7 +548,63 @@ export class GoogleMapsService implements OnDestroy {
     }
   }
 
-  // TODO(Task 8): Implement the finish-event flow that converts a drawn
-  // polygon into a map feature. Temporary stub so Task 7 compiles on its own.
-  private _onDrawFinished(_id: string | number): void {}
+  private _onDrawFinished(id: string | number): void {
+    const feature = this._terraDraw?.getSnapshotFeature(id)
+    this._terraDraw?.removeFeatures([id])
+    this.stopDrawing()
+
+    if (!feature || feature.geometry.type !== 'Polygon') {
+      return
+    }
+    const drawn = feature.geometry as Polygon
+    if (!polygonHasMinDistinctVertices(drawn, 3)) {
+      return
+    }
+
+    this._assertInitialized()
+
+    const exteriorFeature = this._allowDrawingHoleInPolygon
+      ? this._getPossibleExteriorFeature(drawn)
+      : undefined
+
+    if (exteriorFeature) {
+      const exteriorPolygon = geoJsonPolygonFromDataFeature(exteriorFeature)
+      if (exteriorPolygon) {
+        const merged = addHoleToPolygon(exteriorPolygon, drawn)
+        // Mutate the EXISTING feature instance to preserve its identity and
+        // properties (see design constraints).
+        exteriorFeature.setGeometry(dataPolygonFromGeoJson(merged))
+        setFeatureSelected(exteriorFeature, true)
+        return
+      }
+    }
+
+    const newFeature = new google.maps.Data.Feature({
+      geometry: dataPolygonFromGeoJson(drawn),
+    })
+    this.googleMap.data.add(newFeature)
+    setFeatureSelected(newFeature, true)
+  }
+
+  /**
+   * Find an existing Polygon feature that fully contains the drawn polygon, so
+   * the drawing can be applied as a cutout. Returns the existing feature
+   * instance (never a copy).
+   */
+  private _getPossibleExteriorFeature(
+    drawn: Polygon,
+  ): google.maps.Data.Feature | undefined {
+    this._assertInitialized()
+    let match: google.maps.Data.Feature | undefined
+    this.googleMap.data.forEach((f) => {
+      if (match) {
+        return
+      }
+      const candidate = geoJsonPolygonFromDataFeature(f)
+      if (candidate && polygonContains(candidate, drawn)) {
+        match = f
+      }
+    })
+    return match
+  }
 }

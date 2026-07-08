@@ -1,13 +1,9 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
 import { NgZone } from '@angular/core'
+import { Polygon } from 'geojson'
 import { Observable } from 'rxjs'
 
-import { notNullOrUndefined } from '@theseam/ui-common/utils'
-import booleanContains from '@turf/boolean-contains'
-import {
-  multiPolygon as turfjsMultiPolygon,
-  polygon as turfjsPolygon,
-} from '@turf/helpers'
+import { closePolygons, notNullOrUndefined } from '@theseam/ui-common/utils'
 
 export enum AppFeaturePropertyName {
   IsSelected = `__app__isSelected`,
@@ -89,83 +85,6 @@ export function stripAppFeaturePropertiesFromJson(json: any) {
   }
 }
 
-/**
- * Searches for a Feature in Data that contains the provided Feature and can use
- * it as a cutout area.
- */
-export function getPossibleExteriorFeature(
-  data: google.maps.Data,
-  feature: google.maps.Data.Feature,
-): google.maps.Data.Feature | undefined {
-  let exteriorPolygonFeature: google.maps.Data.Feature | undefined
-  data.forEach((f) => {
-    if (f === feature) {
-      return
-    }
-
-    const geometry = f.getGeometry()
-    if (geometry === null) {
-      throw Error(`Geometry not found.`)
-    }
-    if (geometry.getType() === 'Polygon' && featureContains(f, feature)) {
-      exteriorPolygonFeature = f
-    }
-  })
-  return exteriorPolygonFeature
-}
-
-export function addInnerFeatureCutoutToExteriorFeature(
-  exteriorFeature: google.maps.Data.Feature,
-  innerFeature: google.maps.Data.Feature,
-): void {
-  const exteriorGeometry = exteriorFeature.getGeometry()
-  if (exteriorGeometry === null) {
-    throw Error(`Geometry not found.`)
-  }
-  const innerGeometry = innerFeature.getGeometry()
-  if (innerGeometry === null) {
-    throw Error(`Geometry not found.`)
-  }
-  // NOTE: Other geometries may support cutouts, but our map shapes editor only
-  // supports polygons currently, so we will need to handle other geometry types
-  // here if we start allowing users to draw shapes other than polygon.
-  if (
-    exteriorGeometry.getType() !== 'Polygon' ||
-    innerGeometry.getType() !== 'Polygon'
-  ) {
-    throw Error(`Inner cutout is only supported by Polygon gemoetry.`)
-  }
-
-  const featurePolygon = innerGeometry as google.maps.Data.Polygon
-  const exteriorPolygon = exteriorGeometry as google.maps.Data.Polygon
-  exteriorFeature.setGeometry(
-    new google.maps.Data.Polygon([
-      ...exteriorPolygon.getArray(),
-      featurePolygon.getAt(0).getArray().reverse(),
-    ]),
-  )
-}
-
-/**
- * Google maps paths don't always start and stop at the exact same position, so
- * this will fix that for turfjs.
- */
-export function fixPathDifferentStartingAndEndingPoint(
-  coordinates: number[][],
-): void {
-  if (coordinates.length <= 1) {
-    return
-  }
-
-  const start = coordinates[0]
-  const end = coordinates[coordinates.length - 1]
-  if (start[0] === end[0] && start[1] === end[1]) {
-    return
-  }
-
-  coordinates.push(coordinates[0])
-}
-
 export function polygonHasValidPathsLengths(
   polygon: google.maps.Polygon,
   minPointsInValidPath: number = 3,
@@ -182,62 +101,49 @@ export function polygonHasValidPathsLengths(
 export function polygonCoordinates(
   polygon: google.maps.Data.Polygon,
 ): number[][][] {
-  return polygon.getArray().map((linRing) => {
-    const coords = linRing.getArray().map((x) => [x.lng(), x.lat()])
-    fixPathDifferentStartingAndEndingPoint(coords)
-    return coords
-  })
+  const polygonGeoJson: Polygon = {
+    type: 'Polygon',
+    coordinates: polygon
+      .getArray()
+      .map((linRing) => linRing.getArray().map((x) => [x.lng(), x.lat()])),
+  }
+  closePolygons(polygonGeoJson)
+  return polygonGeoJson.coordinates
+}
+
+/** Build a google.maps.Data.Polygon from a GeoJSON Polygon (lng/lat order). */
+export function dataPolygonFromGeoJson(
+  polygon: Polygon,
+): google.maps.Data.Polygon {
+  const rings = polygon.coordinates.map((ring) =>
+    ring.map(([lng, lat]) => ({ lat, lng }) as google.maps.LatLngLiteral),
+  )
+  return new google.maps.Data.Polygon(rings)
+}
+
+/**
+ * Read an existing feature's Polygon geometry as a closed GeoJSON Polygon.
+ * Returns undefined for non-Polygon geometries. Does not mutate the feature.
+ */
+export function geoJsonPolygonFromDataFeature(
+  feature: google.maps.Data.Feature,
+): Polygon | undefined {
+  const geometry = feature.getGeometry()
+  if (geometry === null || geometry.getType() !== 'Polygon') {
+    return undefined
+  }
+  const polygon: Polygon = {
+    type: 'Polygon',
+    coordinates: polygonCoordinates(geometry as google.maps.Data.Polygon),
+  }
+  closePolygons(polygon)
+  return polygon
 }
 
 export function multiPolygonCoordinates(
   multiPolygon: google.maps.Data.MultiPolygon,
 ): number[][][][] {
   return multiPolygon.getArray().map((x) => polygonCoordinates(x))
-}
-
-export function toTurfJsPolygon(polygon: google.maps.Data.Polygon) {
-  return turfjsPolygon(polygonCoordinates(polygon))
-}
-
-export function toTurfJsMultiPolygon(
-  multiPolygon: google.maps.Data.MultiPolygon,
-) {
-  return turfjsMultiPolygon(multiPolygonCoordinates(multiPolygon))
-}
-
-export function toTurfJsFeature(googleFeature: google.maps.Data.Feature) {
-  const geometry = googleFeature.getGeometry()
-  if (geometry === null) {
-    throw Error(`Geometry not found.`)
-  }
-  if (geometry.getType() === 'Polygon') {
-    return toTurfJsPolygon(geometry as google.maps.Data.Polygon)
-  } else if (geometry.getType() === 'MultiPolygon') {
-    return toTurfJsMultiPolygon(geometry as google.maps.Data.MultiPolygon)
-  }
-
-  throw Error(`Unexpected geometry.`)
-}
-
-export function featureContains(
-  featureA: google.maps.Data.Feature,
-  featureB: google.maps.Data.Feature,
-): boolean {
-  const polygonA = toTurfJsFeature(featureA)
-  const polygonB = toTurfJsFeature(featureB)
-  return booleanContains(polygonA, polygonB)
-}
-
-export function createDataFeatureFromPolygon(
-  polygon: google.maps.Polygon,
-): google.maps.Data.Feature {
-  const arr = polygon
-    .getPaths()
-    .getArray()
-    .map((x) => x.getArray())
-  return new google.maps.Data.Feature({
-    geometry: new google.maps.Data.Polygon(arr),
-  })
 }
 
 export function getBoundsWithAllFeatures(
