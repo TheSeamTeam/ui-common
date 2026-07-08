@@ -140,12 +140,6 @@ export function geoJsonPolygonFromDataFeature(
   return polygon
 }
 
-export function multiPolygonCoordinates(
-  multiPolygon: google.maps.Data.MultiPolygon,
-): number[][][][] {
-  return multiPolygon.getArray().map((x) => polygonCoordinates(x))
-}
-
 export function getBoundsWithAllFeatures(
   data: google.maps.Data,
 ): google.maps.LatLngBounds {

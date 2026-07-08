@@ -47,4 +47,26 @@ describe('polygonContains', () => {
     }
     expect(polygonContains(outer, inner)).toBe(false)
   })
+
+  it('returns true when inner touches the outer boundary edge (boundary-inclusive, not strict interior)', () => {
+    // Shares the entire left edge (x=0) with outer's boundary. Turf's
+    // booleanContains checks each of inner's points with
+    // booleanPointInPolygon using the default `ignoreBoundary: false`, so
+    // points lying exactly on outer's boundary still count as "contained".
+    // This pins down that behavior: touching the boundary does NOT make an
+    // otherwise-inside polygon fail containment.
+    const inner: Polygon = {
+      type: 'Polygon',
+      coordinates: [
+        [
+          [0, 2],
+          [0, 4],
+          [2, 4],
+          [2, 2],
+          [0, 2],
+        ],
+      ],
+    }
+    expect(polygonContains(outer, inner)).toBe(true)
+  })
 })
