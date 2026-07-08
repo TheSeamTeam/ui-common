@@ -1,4 +1,4 @@
-import { Feature, MultiPolygon, Polygon } from 'geojson'
+import { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson'
 
 import { closePolygons } from './close-polygons'
 
@@ -84,5 +84,52 @@ describe('closePolygons', () => {
     }
     closePolygons(feature)
     expect((feature.geometry as Polygon).coordinates[0]).toHaveLength(4)
+  })
+
+  it('does not double-close an already-closed ring in a Feature (idempotent)', () => {
+    const feature: Feature = {
+      type: 'Feature',
+      properties: {},
+      geometry: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [0, 0],
+            [0, 1],
+            [1, 0],
+            [0, 0],
+          ],
+        ],
+      },
+    }
+    closePolygons(feature)
+    closePolygons(feature)
+    expect((feature.geometry as Polygon).coordinates[0]).toHaveLength(4)
+  })
+
+  it('does not double-close an already-closed ring in a FeatureCollection (idempotent)', () => {
+    const fc: FeatureCollection = {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          properties: {},
+          geometry: {
+            type: 'Polygon',
+            coordinates: [
+              [
+                [0, 0],
+                [0, 1],
+                [1, 0],
+                [0, 0],
+              ],
+            ],
+          },
+        },
+      ],
+    }
+    closePolygons(fc)
+    closePolygons(fc)
+    expect((fc.features[0].geometry as Polygon).coordinates[0]).toHaveLength(4)
   })
 })
