@@ -138,6 +138,61 @@ describe('minMaxPointsValidator', () => {
       ])
       expect(control.valid).toBe(false)
     })
+
+    it('should not be valid if value is a FeatureCollection, with polygon coordinate length below custom minimum', () => {
+      const featureCollection: FeatureCollection = {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [0, 0],
+                  [0, 1],
+                  [1, 1],
+                  [1, 0],
+                ],
+              ],
+            },
+            properties: {},
+          },
+        ],
+      }
+      const control = new UntypedFormControl(featureCollection, [
+        minMaxPointsValidator(6),
+      ])
+      expect(control.valid).toBe(false)
+      expect(control.errors?.['min-max-points']).toBeTruthy()
+    })
+
+    it('should not be valid if value is a FeatureCollection, with polygon coordinate length above custom maximum', () => {
+      const featureCollection: FeatureCollection = {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [0, 0],
+                  [0, 1],
+                  [1, 1],
+                  [1, 0],
+                ],
+              ],
+            },
+            properties: {},
+          },
+        ],
+      }
+      const control = new UntypedFormControl(featureCollection, [
+        minMaxPointsValidator(2, 3),
+      ])
+      expect(control.valid).toBe(false)
+    })
   })
 
   describe('string value', () => {
