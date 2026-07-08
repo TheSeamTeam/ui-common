@@ -27,7 +27,7 @@ export default {
           useValue: {
             // TODO: Add a way to set the api key.
             // apiKey: ,
-            libraries: ['drawing', 'places'],
+            libraries: ['places'],
           },
         },
       ],
