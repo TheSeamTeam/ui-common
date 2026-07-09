@@ -145,7 +145,12 @@ export class GoogleMapsService implements OnDestroy {
   public setMap(map: google.maps.Map): void {
     this.googleMap = map
     this._mapReadySubject.next(true)
-    this._initTerraDraw()
+    // Terra Draw's Google Maps adapter binds its event listeners to the map's
+    // rendered '.gm-style' DOM subtree (located via querySelector). That subtree
+    // does not exist yet when 'mapInitialized' fires, so initializing Terra Draw
+    // synchronously here makes the adapter register listeners on a null element
+    // and throw. Defer init until the map has rendered (first 'idle').
+    google.maps.event.addListenerOnce(map, 'idle', () => this._initTerraDraw())
     this._initFeatureStyling()
     this._initFeatureChangeListeners()
   }
@@ -243,8 +248,8 @@ export class GoogleMapsService implements OnDestroy {
     }
     this._assertInitialized()
 
-    // The Google Maps adapter attaches an OverlayView to the map's DOM element,
-    // which must have an id.
+    // The Google Maps adapter creates an OverlayView on the map; ensure the map
+    // element has an id (harmless if one is already present).
     const div = this.googleMap.getDiv() as HTMLElement
     if (!div.id) {
       div.id = `seam-google-map-${Math.floor(performance.now())}`
