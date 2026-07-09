@@ -259,6 +259,13 @@ export class GoogleMapsService implements OnDestroy {
       adapter: new TerraDrawGoogleMapsAdapter({
         lib: google.maps,
         map: this.googleMap,
+        // Render Terra Draw's in-progress/finished geometry on its OWN Data
+        // layer instead of the map's shared `map.data`. Without this, Terra
+        // Draw's features land in the same layer this service manages, so the
+        // exterior-feature search would match a just-drawn polygon against its
+        // own rendered copy (cutting a hole equal to itself) and getGeoJson
+        // would serialize Terra Draw's transient features.
+        isolatedData: true,
       }),
       modes: [new TerraDrawPolygonMode()],
     })
