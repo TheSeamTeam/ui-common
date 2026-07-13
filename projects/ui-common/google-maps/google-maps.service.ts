@@ -1,14 +1,15 @@
 import { Injectable, NgZone, OnDestroy, ViewContainerRef } from '@angular/core'
-import { Polygon } from 'geojson'
+import { Geometry, Polygon } from 'geojson'
 import { BehaviorSubject, from, Observable, Subject } from 'rxjs'
 import { switchMap, takeUntil, tap } from 'rxjs/operators'
 
-import { TerraDraw, TerraDrawPolygonMode } from 'terra-draw'
+import { TerraDraw, TerraDrawPolyLineMode } from 'terra-draw'
 import { TerraDrawGoogleMapsAdapter } from 'terra-draw-google-maps-adapter'
 
 import { MenuComponent } from '@theseam/ui-common/menu'
 import {
   addHoleToPolygon,
+  closePolygons,
   notNullOrUndefined,
   polygonContains,
   polygonHasMinDistinctVertices,
@@ -218,7 +219,7 @@ export class GoogleMapsService implements OnDestroy {
 
   /** Whether polygon drawing mode is currently active. */
   public isDrawing(): boolean {
-    return this._terraDraw?.getMode() === 'polygon'
+    return this._terraDraw?.getMode() === 'polyline'
   }
 
   /** Enter polygon drawing mode. */
@@ -226,13 +227,13 @@ export class GoogleMapsService implements OnDestroy {
     if (!this._terraDraw || !this._terraDrawReady || !this.isEditingEnabled()) {
       return
     }
-    this._terraDraw.setMode('polygon')
+    this._terraDraw.setMode('polyline')
     this._drawingSubject.next(true)
   }
 
   /**
    * Cancel any in-progress drawing and leave drawing mode. Switching to the
-   * `static` mode clears an unfinished polygon.
+   * `static` mode clears an unfinished line.
    */
   public stopDrawing(): void {
     if (!this._terraDraw || !this._terraDrawReady) {
@@ -267,7 +268,22 @@ export class GoogleMapsService implements OnDestroy {
         // would serialize Terra Draw's transient features.
         isolatedData: true,
       }),
-      modes: [new TerraDrawPolygonMode()],
+      modes: [
+        new TerraDrawPolyLineMode({
+          // Draw as an open line that closes into a polygon when the start point
+          // is clicked (the old Drawing manager's feel): while drawing you see a
+          // line, and the shape only "fills in" once committed to the map's Data
+          // layer, which is the clear "done" signal. No fill on Terra Draw's own
+          // transient polygon. Terra Draw requires hex colors.
+          styles: {
+            lineStringColor: '#0000ff',
+            lineStringWidth: 2,
+            polygonFillOpacity: 0,
+            polygonOutlineColor: '#0000ff',
+            polygonOutlineWidth: 2,
+          },
+        }),
+      ],
     })
 
     draw.on('ready', () => {
@@ -565,11 +581,8 @@ export class GoogleMapsService implements OnDestroy {
     this._terraDraw?.removeFeatures([id])
     this.stopDrawing()
 
-    if (!feature || feature.geometry.type !== 'Polygon') {
-      return
-    }
-    const drawn = feature.geometry as Polygon
-    if (!polygonHasMinDistinctVertices(drawn, 3)) {
+    const drawn = feature ? this._toDrawnPolygon(feature.geometry) : undefined
+    if (!drawn || !polygonHasMinDistinctVertices(drawn, 3)) {
       return
     }
 
@@ -596,6 +609,27 @@ export class GoogleMapsService implements OnDestroy {
     })
     this.googleMap.data.add(newFeature)
     setFeatureSelected(newFeature, true)
+  }
+
+  /**
+   * Normalize a finished Terra Draw geometry into a Polygon. A Polygon (the
+   * user closed the line on its start point) passes through; an open LineString
+   * (the user finished without closing) is closed into a polygon so nothing
+   * they drew is discarded. Any other geometry type yields undefined.
+   */
+  private _toDrawnPolygon(geometry: Geometry): Polygon | undefined {
+    if (geometry.type === 'Polygon') {
+      return geometry
+    }
+    if (geometry.type === 'LineString') {
+      const polygon: Polygon = {
+        type: 'Polygon',
+        coordinates: [[...geometry.coordinates]],
+      }
+      closePolygons(polygon)
+      return polygon
+    }
+    return undefined
   }
 
   /**
