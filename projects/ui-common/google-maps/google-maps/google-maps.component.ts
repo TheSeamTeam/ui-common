@@ -123,7 +123,7 @@ export class TheSeamGoogleMapsComponent
 
   readonly _drawControlDef: MapControl = {
     component: TheSeamGoogleMapsDrawButtonControlComponent,
-    position: 2 /* google.maps.ControlPosition.TOP_CENTER */,
+    position: 1 /* google.maps.ControlPosition.TOP_LEFT */,
   }
 
   private _focusOrigin: FocusOrigin = null
