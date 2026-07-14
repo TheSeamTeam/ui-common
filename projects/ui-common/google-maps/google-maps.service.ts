@@ -265,6 +265,15 @@ export class GoogleMapsService implements OnDestroy {
       div.id = `seam-google-map-${Math.floor(performance.now())}`
     }
 
+    const pointerDistance = 10
+
+    // KNOWN ISSUE (upstream, unresolved): after repeated draws, Terra Draw can
+    // intermittently lose pointer control of the Google Maps adapter, so input
+    // pans the map instead of drawing until the page is reloaded. This is a race
+    // between Terra Draw and the Google Maps adapter, tracked at
+    // https://github.com/JamesLMilner/terra-draw/issues/710 (open as of
+    // terra-draw 1.32.0 / adapter 1.6.1). It is not fixable in this wrapper;
+    // revisit when the upstream issue is resolved.
     const draw = new TerraDraw({
       adapter: new TerraDrawGoogleMapsAdapter({
         lib: google.maps,
@@ -279,17 +288,60 @@ export class GoogleMapsService implements OnDestroy {
       }),
       modes: [
         new TerraDrawPolyLineMode({
+          // Tighten how close a click must be to the first point to close the
+          // polygon (Terra Draw's default ~40px felt too far / closed too
+          // easily).
+          pointerDistance,
+          // Snap the moving vertex onto the line's OWN first point when the
+          // cursor is within a few pixels of it, so it's clear the ends are
+          // about to meet just before the click that closes the polygon.
+          // (Terra Draw's built-in `toCoordinate` only snaps to OTHER features'
+          // points — excluding the line being drawn — so it does nothing here.)
+          snapping: {
+            toCustom: (event, ctx) => {
+              const geometry = ctx.getCurrentGeometrySnapshot()
+              if (!geometry) {
+                return undefined
+              }
+              const ring =
+                geometry.type === 'LineString'
+                  ? geometry.coordinates
+                  : geometry.coordinates[0]
+              // Only offer the closing snap once enough points exist to form a
+              // polygon (placed points plus the live cursor point).
+              if (!ring || ring.length < 4) {
+                return undefined
+              }
+              const first = ring[0]
+              const firstPixel = ctx.project(first[0], first[1])
+              const distance = Math.hypot(
+                firstPixel.x - event.containerX,
+                firstPixel.y - event.containerY,
+              )
+              const SNAP_DISTANCE_PX = pointerDistance
+              return distance <= SNAP_DISTANCE_PX ? first : undefined
+            },
+          },
           // Draw as an open line that closes into a polygon when the start point
           // is clicked (the old Drawing manager's feel): while drawing you see a
           // line, and the shape only "fills in" once committed to the map's Data
-          // layer, which is the clear "done" signal. No fill on Terra Draw's own
-          // transient polygon. Terra Draw requires hex colors.
+          // layer, which is the clear "done" signal. Black line, small white
+          // closing/snapping dots (like the edit anchors), no fill on Terra
+          // Draw's transient polygon. Terra Draw requires hex colors.
           styles: {
-            lineStringColor: '#0000ff',
+            lineStringColor: '#000000',
             lineStringWidth: 2,
             polygonFillOpacity: 0,
-            polygonOutlineColor: '#0000ff',
+            polygonOutlineColor: '#000000',
             polygonOutlineWidth: 2,
+            closingPointColor: '#ffffff',
+            closingPointWidth: 4,
+            closingPointOutlineColor: '#000000',
+            closingPointOutlineWidth: 1,
+            snappingPointColor: '#ffffff',
+            snappingPointWidth: 4,
+            snappingPointOutlineColor: '#000000',
+            snappingPointOutlineWidth: 1,
           },
         }),
       ],
