@@ -227,6 +227,15 @@ export class GoogleMapsService implements OnDestroy {
     if (!this._terraDraw || !this._terraDrawReady || !this.isEditingEnabled()) {
       return
     }
+    // Clear any selection when entering drawing mode. Otherwise a selected
+    // feature and the shape being drawn both appear selected, reading as one
+    // shape even though they are unrelated.
+    this._assertInitialized()
+    this.googleMap.data.forEach((f) => {
+      if (isFeatureSelected(f)) {
+        setFeatureSelected(f, false)
+      }
+    })
     this._terraDraw.setMode('polyline')
     this._drawingSubject.next(true)
   }
@@ -393,6 +402,13 @@ export class GoogleMapsService implements OnDestroy {
       'click',
       (event: google.maps.Data.MouseEvent) => {
         this._assertInitialized()
+
+        // While drawing, a click on an existing polygon is placing a vertex,
+        // not selecting a feature. Selecting here would both steal the click
+        // and leave a misleading selection (see startDrawing's deselect).
+        if (this.isDrawing()) {
+          return
+        }
 
         setFeatureSelected(event.feature, true)
         this.googleMap.data.forEach((f) => {
