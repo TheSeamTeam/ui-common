@@ -1374,4 +1374,29 @@ git commit -m "chore(google-maps): stop requesting deprecated drawing library"
 - **Spec coverage:** §Dependencies → Task 7 Step 1 + Task 10. Pure GeoJSON logic (`addHoleToPolygon`, `polygonContains`, min-point) → Tasks 4, 5, 2. `closePolygons` fix → Task 3. Validator extraction + test relocation → Task 1. Terra Draw integration (init/finish/mode/stopDrawing/isDrawing/teardown) → Tasks 7-8. Feature-identity constraint → Task 8 Step 4 (`setGeometry` on existing instance) + `geoJsonPolygonFromDataFeature` read-only. Draw-toggle control → Task 9. Loader change → Task 10. Test strategy (pure only) → Tasks 1-5 specs; no service mocks. Winding upgrade → Task 5 (pure shoelace, fulfilling the spec's opposite-winding requirement without `@turf/rewind`).
 - **Type consistency:** `polygonViolatesMinMax(number, number, number?)` used identically in Tasks 1 & 2. `addHoleToPolygon(Polygon, Polygon): Polygon`, `polygonContains(Polygon, Polygon): boolean`, `dataPolygonFromGeoJson(Polygon): Data.Polygon`, `geoJsonPolygonFromDataFeature(Data.Feature): Polygon | undefined` consistent across Tasks 5/8. `drawing$`/`isDrawing`/`startDrawing`/`stopDrawing` consistent across Tasks 7/9.
 - **Known implementation note:** Task 7's `_initTerraDraw` references `_onDrawFinished` (added in Task 8). If executing strictly one task at a time, add the temporary stub called out in Task 7 Step 3.
+
+---
+
+## Known Issues (found during manual verification)
+
+- **Intermittent pointer-control loss (upstream, unresolved):** After repeated
+  draws, Terra Draw can intermittently stop capturing pointer input on the
+  Google Maps adapter, so clicks/drags pan the map instead of drawing until the
+  page is reloaded. This is a race between Terra Draw and its Google Maps
+  adapter — upstream issue
+  [terra-draw#710](https://github.com/JamesLMilner/terra-draw/issues/710), open
+  as of terra-draw 1.32.0 / adapter 1.6.1 (we run 1.31.2 / 1.6.1). Not fixable
+  in this wrapper; the reported mitigations (e.g. `setTimeout` around
+  `clear()`) only reduce, not eliminate, it. **Decision: documented and the
+  branch is held — do not merge until upstream resolves this or the real-world
+  impact (many draws in one session) is judged acceptable.** A code comment in
+  `google-maps.service.ts` (`_initTerraDraw`) points here.
+- **Drawing-mode snapping not yet working:** `TerraDrawPolyLineMode` was given
+  `snapping: { toCoordinate: true }` to snap the closing vertex onto the first
+  point, but no snapping is visible in practice (default distance likely too
+  small, or the mode wires snapping differently). Minor; deferred.
+- **Pre-existing, unrelated:** `TheSeamGoogleMapsComponent` declares
+  `mapTypeControlEnabled` / `streetViewControlEnabled` / `reCenterControlEnabled`
+  inputs that are not wired to the map `_options`. Not caused by this migration;
+  candidate for a separate cleanup.
 ```
