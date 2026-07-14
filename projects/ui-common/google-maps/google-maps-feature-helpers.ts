@@ -116,9 +116,26 @@ export function dataPolygonFromGeoJson(
   polygon: Polygon,
 ): google.maps.Data.Polygon {
   const rings = polygon.coordinates.map((ring) =>
-    ring.map(([lng, lat]) => ({ lat, lng }) as google.maps.LatLngLiteral),
+    // GeoJSON rings are explicitly closed (first coordinate repeated at the
+    // end), but google.maps.Data.Polygon paths are implicitly closed and must
+    // NOT include the repeated point — otherwise it becomes a duplicate vertex
+    // coincident with the first (two points that edit independently, and a
+    // double closing point when serialized back to GeoJSON).
+    openRing(ring).map(
+      ([lng, lat]) => ({ lat, lng }) as google.maps.LatLngLiteral,
+    ),
   )
   return new google.maps.Data.Polygon(rings)
+}
+
+/** Drop a ring's explicit closing point (a trailing copy of the first). */
+function openRing(ring: number[][]): number[][] {
+  if (ring.length < 2) {
+    return ring
+  }
+  const first = ring[0]
+  const last = ring[ring.length - 1]
+  return first[0] === last[0] && first[1] === last[1] ? ring.slice(0, -1) : ring
 }
 
 /**
