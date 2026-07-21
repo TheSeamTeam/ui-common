@@ -4,7 +4,8 @@ import { createCjsPreset } from 'jest-preset-angular/presets/index.js'
 import { pathsToModuleNameMapper } from 'ts-jest'
 // In the following statement, replace `./tsconfig` with the path to your `tsconfig` file
 // which contains the path mapping (ie the `compilerOptions.paths` option):
-import { compilerOptions } from './tsconfig.spec.json'
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { compilerOptions } = require('./tsconfig.spec.json')
 
 // ESM-only packages that Jest must transform (file-type, shpjs, d3, and their deps).
 const esmPackages = [
