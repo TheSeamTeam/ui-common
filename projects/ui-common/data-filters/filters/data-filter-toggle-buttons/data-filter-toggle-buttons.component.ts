@@ -4,6 +4,7 @@ import {
   Component,
   ElementRef,
   forwardRef,
+  HostBinding,
   Inject,
   Input,
   OnChanges,
@@ -54,6 +55,7 @@ export interface IToggleButtonsFilterOptions extends ITextFilterOptions {
   multiple: boolean
   buttons: IToggleButton[]
   initialValue?: any
+  /** The maximum width a button row can grow to before collapsing. If not set, the button row will grow until it overflows, then collapse. */
   maxWidth?: number
   /** The text shown when the button row is in the collapsed state and no filter is selected. */
   filterDropdownLabel?: string
@@ -151,6 +153,16 @@ export class DataFilterToggleButtonsComponent
   @Input() maxWidth = this._optDefault('maxWidth')
   @Input() filterDropdownLabel = this._optDefault('filterDropdownLabel')
   @Input() disableCollapse = this._optDefault('disableCollapse')
+
+  @HostBinding('class.seam-data-filter-toggle-buttons-collapsed')
+  get _collapsedClass() {
+    return this.isCollapsed()
+  }
+
+  @HostBinding('class.seam-data-filter-toggle-buttons-expanded')
+  get _expandedClass() {
+    return !this.isCollapsed()
+  }
 
   public readonly isCollapsed = signal(false)
 
@@ -250,6 +262,8 @@ export class DataFilterToggleButtonsComponent
       exact: this.exact,
       caseSensitive: this.caseSensitive,
       maxWidth: this.maxWidth,
+      filterDropdownLabel: this.filterDropdownLabel,
+      disableCollapse: this.disableCollapse,
     }
   }
 
@@ -267,7 +281,7 @@ export class DataFilterToggleButtonsComponent
   }
 
   private _updateCollapsed(): void {
-    if (this.options.disableCollapse) {
+    if (this.disableCollapse) {
       if (this.isCollapsed()) {
         this.isCollapsed.set(false)
       }
