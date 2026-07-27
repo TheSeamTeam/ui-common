@@ -1,5 +1,6 @@
-import { moduleMetadata } from '@storybook/angular'
+import { applicationConfig, moduleMetadata } from '@storybook/angular'
 
+import { provideAnimations } from '@angular/platform-browser/animations'
 import { CommonModule } from '@angular/common'
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
 
@@ -15,6 +16,9 @@ export default {
   title: 'GoogleMaps/Components',
   // component: TheSeamGoogleMapsComponent,
   decorators: [
+    applicationConfig({
+      providers: [provideAnimations()],
+    }),
     moduleMetadata({
       imports: [CommonModule, TheSeamGoogleMapsModule],
       providers: [
