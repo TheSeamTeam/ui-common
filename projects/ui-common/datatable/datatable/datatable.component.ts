@@ -87,7 +87,6 @@ import {
   waitOnConditionAsync,
 } from '@theseam/ui-common/utils'
 
-import { DatatableActionMenuComponent } from '../datatable-action-menu/datatable-action-menu.component'
 import { DatatableColumnComponent } from '../datatable-column/datatable-column.component'
 import { TheSeamDatatableFooterDirective } from '../datatable-footer/datatable-footer.directive'
 import { DatatableMenuBarComponent } from '../datatable-menu-bar/datatable-menu-bar.component'
@@ -596,9 +595,7 @@ export class DatatableComponent<TRow = any>
     )
   }
 
-  @ContentChild(DatatableActionMenuComponent, { static: true })
-  actionMenu?: DatatableActionMenuComponent
-  @ContentChild(DatatableRowActionItemDirective)
+  @ContentChild(DatatableRowActionItemDirective, { static: true })
   get rowActionItem(): DatatableRowActionItemDirective | undefined {
     return this._rowActionItem
   }

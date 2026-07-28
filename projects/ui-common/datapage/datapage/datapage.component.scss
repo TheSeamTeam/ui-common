@@ -1,0 +1,19 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .datapage-body {
+    flex-grow: 1;
+  }
+
+  .datapage-toggle {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: .5rem;
+
+    button {
+      padding: 3px 12px 0px;
+    }
+  }
+}

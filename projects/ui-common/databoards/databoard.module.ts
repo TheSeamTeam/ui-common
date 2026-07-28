@@ -6,6 +6,7 @@ import { TheSeamConfirmDialogModule } from '@theseam/ui-common/confirm-dialog'
 import { TheSeamDatatableModule } from '@theseam/ui-common/datatable'
 import { TheSeamSharedModule } from '@theseam/ui-common/shared'
 import { TheSeamOverlayScrollbarDirective } from '@theseam/ui-common/scrollbar'
+import { TheSeamActionMenuModule } from '@theseam/ui-common/action-menu'
 
 import { DataboardListComponent } from './databoard-list/databoard-list.component'
 import { DataboardBoardComponent } from './databoard-board/databoard-board.component'
@@ -33,6 +34,7 @@ import { DataboardEmptyBoardTplDirective } from './directives/databoard-empty-bo
     TheSeamConfirmDialogModule,
     TheSeamDatatableModule,
     TheSeamOverlayScrollbarDirective,
+    TheSeamActionMenuModule,
   ],
   exports: [
     DataboardListComponent,

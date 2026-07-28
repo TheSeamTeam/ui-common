@@ -1,7 +1,8 @@
 import { DynamicValue } from '@theseam/ui-common/dynamic'
-import { DataboardCard } from './databoard-card'
 import { ThemeTypes } from '@theseam/ui-common/models'
 import { CdkDrag, CdkDropList } from '@angular/cdk/drag-drop'
+
+import { DataboardCard } from './databoard-card'
 import { DataboardBoardCards } from './databoard-board-cards'
 
 export interface DataboardBoard {
