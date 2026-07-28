@@ -30,6 +30,9 @@ import {
 } from '@theseam/ui-common/datatable'
 import { TheSeamActionMenuModule } from '@theseam/ui-common/action-menu'
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
+import { TheSeamDataFiltersModule } from '@theseam/ui-common/data-filters'
+import { importProvidersFrom } from '@angular/core'
+import { provideMockToastrService } from '@theseam/ui-common/testing'
 
 const actionButtonIcon = faEllipsisV
 
@@ -368,6 +371,7 @@ export default {
         TheSeamDatatableModule,
         TheSeamButtonsModule,
         TheSeamActionMenuModule,
+        TheSeamDataFiltersModule,
       ],
       providers: [
         {
@@ -380,6 +384,7 @@ export default {
           useClass: ExportersDataEvaluator,
           multi: true,
         },
+        provideMockToastrService(),
       ],
     }),
     componentWrapperDecorator(
@@ -395,59 +400,95 @@ export default {
 } as Meta
 type Story = StoryObj<DatapageComponent & { [key: string]: any }>
 
-export const Simple: Story = (args: any) => ({
-  props: {
-    __hack: { ...args },
-    actionButtonIcon,
-    openViewModal(card: DataboardCard) {
-      console.log('open view modal', card)
-    },
-    openEditModal(card: DataboardCard) {
-      console.log('open edit modal', card)
-    },
-    getBoardBadgeClass(prop: string) {
-      switch (prop) {
-        case 'mEntry':
-        case 'pendingFinalize':
-        case 'pendingEOD':
-          return 'badge-warning'
-        case 'review':
-        case 'finalizeFailed':
-          return 'badge-danger'
-        case 'transmit':
-          return 'badge-success'
-        case 'ungraded':
-        default:
-          return 'badge-secondary'
-      }
-    },
-    log: (arg: any) => {
-      if (arg) {
-        console.log('log', arg)
-      }
-    },
+export const Simple: Story = {
+  args: {
+    items,
+    boards,
+    columns,
   },
-  template: `
-    <seam-datapage [enableDefaultView]="true">
+  render: (args: any) => ({
+    props: {
+      __hack: { ...args },
+      actionButtonIcon,
+      openViewModal(card: DataboardCard) {
+        console.log('open view modal', card)
+      },
+      openEditModal(card: DataboardCard) {
+        console.log('open edit modal', card)
+      },
+      getBoardBadgeClass(prop: string) {
+        switch (prop) {
+          case 'mEntry':
+          case 'pendingFinalize':
+          case 'pendingEOD':
+            return 'badge-warning'
+          case 'review':
+          case 'finalizeFailed':
+            return 'badge-danger'
+          case 'transmit':
+            return 'badge-success'
+          case 'ungraded':
+          default:
+            return 'badge-secondary'
+        }
+      },
+      log: (arg: any) => {
+        if (arg) {
+          console.log('log', arg)
+        }
+      },
+      filterButtons: [
+        { name: 'All', value: '' },
+        { name: 'Ungraded', value: 'ungraded' },
+        { name: 'MEntry', value: 'mEntry' },
+        { name: 'Review', value: 'review' },
+        { name: 'Pending Finalize', value: 'pendingFinalize' },
+        { name: 'Finalize Failed', value: 'finalizeFailed' },
+        { name: 'Pending EOD', value: 'pendingEOD' },
+        { name: 'Transmit', value: 'transmit' },
+      ],
+    },
+    template: `
+    <seam-datapage [enableDefaultView]="true" pageAnimation="slide">
       <ng-template seamDatapageDatatableTpl>
         <seam-datatable
           class="w-100 h-100"
           [columns]="__hack.columns"
           [rows]="__hack.items">
 
+          <seam-datatable-menu-bar>
+            <seam-datatable-menu-bar-row class="pb-2">
+            <seam-datatable-menu-bar-column-left>
+              <seam-data-filter-search seamDatatableFilter></seam-data-filter-search>
+            </seam-datatable-menu-bar-column-left>
+            <seam-datatable-menu-bar-column-center></seam-datatable-menu-bar-column-center>
+            <seam-datatable-menu-bar-column-right>
+              <seam-datatable-export-button [exporters]="exporters"></seam-datatable-export-button>
+              <seam-datatable-column-preferences-button class="ml-1"></seam-datatable-column-preferences-button>
+            </seam-datatable-menu-bar-column-right>
+            </seam-datatable-menu-bar-row>
+
+            <seam-datatable-menu-bar-row>
+              <seam-datatable-menu-bar-column-left></seam-datatable-menu-bar-column-left>
+              <seam-datatable-menu-bar-column-center>
+                <seam-data-filter-toggle-buttons seamDatatableFilter
+                  [buttons]="filterButtons"
+                  [multiple]="false"
+                  [selectionToggleable]="false"
+                  [value]="defaultFilter"
+                  [properties]="['status']">
+                </seam-data-filter-toggle-buttons>
+              </seam-datatable-menu-bar-column-center>
+              <seam-datatable-menu-bar-column-right></seam-datatable-menu-bar-column-right>
+            </seam-datatable-menu-bar-row>
+          </seam-datatable-menu-bar>
+
           <ng-template seamDatatableRowActionItem let-item>
-            <!-- Very silly workaround to rendering issue -->
+            <!-- wrapping <span> element is a very silly workaround to rendering issue -->
             <span>
               <ng-container *ngTemplateOutlet="actionMenu; context: { $implicit: item }"></ng-container>
             </span>
           </ng-template>
-
-          <seam-datatable-column name="Color" prop="color">
-            <ng-template seamDatatableCellTpl let-value="value">
-              <span *ngIf="value === 'blue'; else notBlue" style="color: blue;">{{ value }}</span>
-              <ng-template #notBlue>{{ value }}</ng-template>
-            </ng-template>
-          </seam-datatable-column>
         </seam-datatable>
       </ng-template>
 
@@ -461,13 +502,22 @@ export const Simple: Story = (args: any) => ({
           [boards]="__hack.boards"
           [cards]="__hack.items">
 
+          <seam-data-filter-menu-bar class="ml-1 mb-1">
+            <seam-data-filter-menu-bar-row>
+              <seam-data-filter-menu-bar-column-left>
+                <seam-data-filter-search seamDataFilter></seam-data-filter-search>
+              </seam-data-filter-menu-bar-column-left>
+              <seam-data-filter-menu-bar-column-right></seam-data-filter-menu-bar-column-right>
+            </seam-data-filter-menu-bar-row>
+          </seam-data-filter-menu-bar>
+
           <ng-template seamDataboardHeaderTpl let-board>
             <div class="d-flex align-items-center justify-content-between">
               <div>{{ board.headerText }}</div>
               <div
                 class="badge badge-pill font-weight-normal shadow-sm"
                 [class]="getBoardBadgeClass(board.prop)"
-                style="padding-top: 6px; padding-bottom: 6px;">{{ board.cardCount }} loads</div>
+                style="padding-top: 6px; padding-bottom: 6px;">{{ board.cardCount }} load{{ board.cardCount == 1 ? '' : 's' }}</div>
             </div>
           </ng-template>
 
@@ -509,9 +559,5 @@ export const Simple: Story = (args: any) => ({
       </ng-template>
 
     </seam-datapage>`,
-})
-Simple.args = {
-  items,
-  boards,
-  columns,
+  }),
 }

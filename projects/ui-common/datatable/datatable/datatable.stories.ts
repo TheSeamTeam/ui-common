@@ -88,6 +88,7 @@ import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 import { TheSeamCheckboxModule } from '@theseam/ui-common/checkbox'
 import { isNullOrUndefined } from '@theseam/ui-common/utils'
 import { TheSeamPreferencesAccessor } from '@theseam/ui-common/services'
+import { TheSeamActionMenuModule } from '@theseam/ui-common/action-menu'
 
 const meta: Meta<DatatableComponent> = {
   title: 'Datatable/Components',
@@ -97,7 +98,13 @@ const meta: Meta<DatatableComponent> = {
       providers: [provideAnimations()],
     }),
     moduleMetadata({
-      imports: [TheSeamDatatableModule, TheSeamTableCellTypesModule],
+      imports: [
+        // BrowserAnimationsModule,
+        // RouterModule.forRoot([], { useHash: true }),
+        TheSeamDatatableModule,
+        TheSeamTableCellTypesModule,
+        TheSeamActionMenuModule,
+      ],
     }),
     componentWrapperDecorator(
       (story) => `<div class="vh-100 vw-100">${story}</div>`,
@@ -161,36 +168,6 @@ export const Simple: Story = {
       { name: 'Joe', age: 33, color: 'green' },
     ],
   },
-  play: async ({ canvasElement }) => {
-    const harness = await getHarness(TheSeamDatatableHarness, { canvasElement })
-
-    // Verify rows rendered
-    const rowCount = await harness.getRowCount()
-    await expect(rowCount).toBeGreaterThan(0)
-    await expect(rowCount).toBeLessThan(32)
-
-    // Verify 3 header cells
-    const headers = await harness.getHeaderCells()
-    await expect(headers.length).toBe(3)
-    const name0 = await headers[0].getName()
-    await expect(name0).toBe('Name')
-
-    // Verify first cell text
-    const cellText = await harness.getCellText(0, 0)
-    await expect(cellText).toBe('Mark')
-
-    // Verify page 1 active
-    const currentPage = await harness.getCurrentPage()
-    await expect(currentPage).toBe(1)
-
-    // Navigate to page 2
-    const pager = await harness.getPager()
-    await expect(pager).not.toBeNull()
-    const page2Btn = await pager!.getPageButtonHarness(2)
-    await (await page2Btn.getAnchor()).click()
-    const newPage = await harness.getCurrentPage()
-    await expect(newPage).toBe(2)
-  },
 }
 
 export const ColumnTemplate: Story = {
@@ -243,18 +220,18 @@ export const ActionMenu: Story = {
         [rows]="rows"
         [actionItemColumnPosition]="actionItemColumnPosition">
         <ng-template seamDatatableRowActionItem let-row>
-          <seam-datatable-action-menu>
-            <seam-datatable-action-menu-item label="Action One"></seam-datatable-action-menu-item>
-            <seam-datatable-action-menu-item label="Action Two"></seam-datatable-action-menu-item>
-            <seam-datatable-action-menu-item label="Action Three" [subMenu]="subMenuOne"></seam-datatable-action-menu-item>
-            <seam-datatable-action-menu-item label="Action Four"></seam-datatable-action-menu-item>
-          </seam-datatable-action-menu>
+          <seam-action-menu>
+            <seam-action-menu-item label="Action One"></seam-action-menu-item>
+            <seam-action-menu-item label="Action Two"></seam-action-menu-item>
+            <seam-action-menu-item label="Action Three" [subMenu]="subMenuOne"></seam-action-menu-item>
+            <seam-action-menu-item label="Action Four"></seam-action-menu-item>
+          </seam-action-menu>
 
-            <seam-datatable-action-menu isSubMenu="true" #subMenuOne>
-              <seam-datatable-action-menu-item label="Action One"></seam-datatable-action-menu-item>
-              <seam-datatable-action-menu-item label="Action Two"></seam-datatable-action-menu-item>
-              <seam-datatable-action-menu-item label="Action Three"></seam-datatable-action-menu-item>
-            </seam-datatable-action-menu>
+            <seam-action-menu isSubMenu="true" #subMenuOne>
+              <seam-action-menu-item label="Action One"></seam-action-menu-item>
+              <seam-action-menu-item label="Action Two"></seam-action-menu-item>
+              <seam-action-menu-item label="Action Three"></seam-action-menu-item>
+            </seam-action-menu>
           </ng-template>
       </seam-datatable>`,
   }),
@@ -370,6 +347,36 @@ export const InlineEdit: Story = {
         </seam-datatable-column>
       </seam-datatable>`,
   }),
+  play: async ({ canvasElement }) => {
+    const harness = await getHarness(TheSeamDatatableHarness, { canvasElement })
+
+    // Verify rows rendered
+    const rowCount = await harness.getRowCount()
+    await expect(rowCount).toBeGreaterThan(0)
+    await expect(rowCount).toBeLessThan(32)
+
+    // Verify 3 header cells
+    const headers = await harness.getHeaderCells()
+    await expect(headers.length).toBe(3)
+    const name0 = await headers[0].getName()
+    await expect(name0).toBe('Name')
+
+    // Verify first cell text
+    const cellText = await harness.getCellText(0, 0)
+    await expect(cellText).toBe('Mark')
+
+    // Verify page 1 active
+    const currentPage = await harness.getCurrentPage()
+    await expect(currentPage).toBe(1)
+
+    // Navigate to page 2
+    const pager = await harness.getPager()
+    await expect(pager).not.toBeNull()
+    const page2Btn = await pager!.getPageButtonHarness(2)
+    await (await page2Btn.getAnchor()).click()
+    const newPage = await harness.getCurrentPage()
+    await expect(newPage).toBe(2)
+  },
 }
 
 export const CheckboxSelection: Story = {
@@ -998,35 +1005,23 @@ export const GraphQLQueryRef: Story = {
   template: `
     <seam-datatable #dt class="w-100 h-100" [columns]="columns" [rows]="rows">
       <ng-template seamDatatableRowActionItem let-row>
-        <seam-datatable-action-menu>
+        <seam-action-menu>
           <ng-container *ngIf="showActionMenu$ | async">
-            <seam-datatable-action-menu-item
-              label="Action One"
-            ></seam-datatable-action-menu-item>
-            <seam-datatable-action-menu-item
-              label="Action Two"
-            ></seam-datatable-action-menu-item>
-            <seam-datatable-action-menu-item
+            <seam-action-menu-item label="Action One"></seam-action-menu-item>
+            <seam-action-menu-item label="Action Two"></seam-action-menu-item>
+            <seam-action-menu-item
               label="Action Three"
               [subMenu]="subMenuOne"
-            ></seam-datatable-action-menu-item>
-            <seam-datatable-action-menu-item
-              label="Action Four"
-            ></seam-datatable-action-menu-item>
+            ></seam-action-menu-item>
+            <seam-action-menu-item label="Action Four"></seam-action-menu-item>
           </ng-container>
-        </seam-datatable-action-menu>
+        </seam-action-menu>
 
-        <seam-datatable-action-menu isSubMenu="true" #subMenuOne>
-          <seam-datatable-action-menu-item
-            label="Action One"
-          ></seam-datatable-action-menu-item>
-          <seam-datatable-action-menu-item
-            label="Action Two"
-          ></seam-datatable-action-menu-item>
-          <seam-datatable-action-menu-item
-            label="Action Three"
-          ></seam-datatable-action-menu-item>
-        </seam-datatable-action-menu>
+        <seam-action-menu isSubMenu="true" #subMenuOne>
+          <seam-action-menu-item label="Action One"></seam-action-menu-item>
+          <seam-action-menu-item label="Action Two"></seam-action-menu-item>
+          <seam-action-menu-item label="Action Three"></seam-action-menu-item>
+        </seam-action-menu>
       </ng-template>
     </seam-datatable>
   `,
@@ -1391,33 +1386,21 @@ export const ColumnFilters: Story = {
   template: `
     <seam-datatable #dt class="w-100 h-100" [columns]="columns" [rows]="rows">
       <ng-template seamDatatableRowActionItem let-row>
-        <seam-datatable-action-menu>
-          <seam-datatable-action-menu-item
-            label="Action One"
-          ></seam-datatable-action-menu-item>
-          <seam-datatable-action-menu-item
-            label="Action Two"
-          ></seam-datatable-action-menu-item>
-          <seam-datatable-action-menu-item
+        <seam-action-menu>
+          <seam-action-menu-item label="Action One"></seam-action-menu-item>
+          <seam-action-menu-item label="Action Two"></seam-action-menu-item>
+          <seam-action-menu-item
             label="Action Three"
             [subMenu]="subMenuOne"
-          ></seam-datatable-action-menu-item>
-          <seam-datatable-action-menu-item
-            label="Action Four"
-          ></seam-datatable-action-menu-item>
-        </seam-datatable-action-menu>
+          ></seam-action-menu-item>
+          <seam-action-menu-item label="Action Four"></seam-action-menu-item>
+        </seam-action-menu>
 
-        <seam-datatable-action-menu isSubMenu="true" #subMenuOne>
-          <seam-datatable-action-menu-item
-            label="Action One"
-          ></seam-datatable-action-menu-item>
-          <seam-datatable-action-menu-item
-            label="Action Two"
-          ></seam-datatable-action-menu-item>
-          <seam-datatable-action-menu-item
-            label="Action Three"
-          ></seam-datatable-action-menu-item>
-        </seam-datatable-action-menu>
+        <seam-action-menu isSubMenu="true" #subMenuOne>
+          <seam-action-menu-item label="Action One"></seam-action-menu-item>
+          <seam-action-menu-item label="Action Two"></seam-action-menu-item>
+          <seam-action-menu-item label="Action Three"></seam-action-menu-item>
+        </seam-action-menu>
       </ng-template>
 
       <seam-datatable-footer>

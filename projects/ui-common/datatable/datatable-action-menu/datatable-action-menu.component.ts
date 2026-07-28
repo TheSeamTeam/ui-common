@@ -6,6 +6,7 @@ import {
   Input,
   QueryList,
   ViewChild,
+  isDevMode,
 } from '@angular/core'
 import { NavigationExtras, Router } from '@angular/router'
 
@@ -15,9 +16,10 @@ import { InputBoolean } from '@theseam/ui-common/core'
 import { MenuComponent } from '@theseam/ui-common/menu'
 
 import { DatatableActionMenuItemComponent } from '../datatable-action-menu-item/datatable-action-menu-item.component'
+import { ActionMenuComponent } from '@theseam/ui-common/action-menu'
 
 /**
- * @deprecated Use `ActionMenuComponent instead`
+ * @deprecated Use `ActionMenuComponent` instead
  */
 @Component({
   selector: 'seam-datatable-action-menu',
@@ -69,7 +71,13 @@ export class DatatableActionMenuComponent {
   constructor(
     private _confirmDialog: SeamConfirmDialogService,
     private _router: Router,
-  ) {}
+  ) {
+    if (isDevMode()) {
+      console.warn(
+        `${DatatableActionMenuComponent.name} is deprecated. Use ${ActionMenuComponent.name} instead.`,
+      )
+    }
+  }
 
   activateItem(event: any, item: DatatableActionMenuItemComponent) {
     if (item.confirmDialog) {

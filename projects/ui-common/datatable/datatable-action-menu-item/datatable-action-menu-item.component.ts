@@ -4,12 +4,17 @@ import {
   EventEmitter,
   Input,
   Output,
+  isDevMode,
 } from '@angular/core'
 
 import { ThemeTypes } from '@theseam/ui-common/models'
 
 import { DatatableActionMenuComponent } from '../datatable-action-menu/datatable-action-menu.component'
+import { ActionMenuItemComponent } from '@theseam/ui-common/action-menu'
 
+/**
+ * @deprecated use `ActionMenutItemComponent` instead
+ */
 @Component({
   selector: 'seam-datatable-action-menu-item',
   template: ``,
@@ -47,4 +52,12 @@ export class DatatableActionMenuItemComponent {
 
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() readonly click = new EventEmitter<any>()
+
+  constructor() {
+    if (isDevMode()) {
+      console.warn(
+        `${DatatableActionMenuItemComponent.name} is deprecated. Use ${ActionMenuItemComponent.name} instead.`,
+      )
+    }
+  }
 }
