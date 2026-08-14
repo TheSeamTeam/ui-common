@@ -55,6 +55,7 @@ export default {
     '**/states-counties-map/**/*.spec.ts',
     '**/signature-input/**/*.spec.ts',
     '**/file-input/**/*.spec.ts',
+    '**/guide/**/*.spec.ts',
   ],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: '<rootDir>/',
