@@ -18,11 +18,38 @@
   font-weight: $font-weight-bold;
 }
 
+// driver.js hard-codes the arrow to `border: 5px solid #fff` and then zeroes
+// out three of the four sides per `driver-popover-arrow-side-*` class,
+// leaving the remaining side as the visible triangle. Follow
+// $seam-guide-popover-bg through so the arrow matches an overridden popover
+// background instead of staying stray white.
+.driver-popover-arrow {
+  border-color: transparent;
+
+  &.driver-popover-arrow-side-left {
+    border-left-color: $seam-guide-popover-bg;
+  }
+
+  &.driver-popover-arrow-side-right {
+    border-right-color: $seam-guide-popover-bg;
+  }
+
+  &.driver-popover-arrow-side-top {
+    border-top-color: $seam-guide-popover-bg;
+  }
+
+  &.driver-popover-arrow-side-bottom {
+    border-bottom-color: $seam-guide-popover-bg;
+  }
+}
+
 // `.btn`/`.btn-sm`/`.btn-primary`/`.btn-secondary` are not available to
 // `@extend` here: `./styles/utilities` (like the global `styles/utilities`
 // it wraps) only pulls in Bootstrap's variables, functions, and mixins, not
 // the `.btn` rule itself. Reproduce the button look with the same mixins
-// Bootstrap's own button classes use instead.
+// Bootstrap's own button classes use instead. These properties mirror
+// Bootstrap 4.6.x's `.btn` base rule in `bootstrap/scss/_buttons.scss` — diff
+// against that file on a Bootstrap version bump.
 .driver-popover-next-btn,
 .driver-popover-prev-btn {
   display: inline-block;
