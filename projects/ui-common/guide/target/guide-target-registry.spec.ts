@@ -35,20 +35,30 @@ describe('TheSeamGuideTargetRegistry', () => {
   })
 
   it('returns the most recently registered connected element for duplicates', () => {
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {})
+
     const first = connectedEl()
     const second = connectedEl()
     registry.register('a', first)
     registry.register('a', second)
     expect(registry.resolve('a')).toBe(second)
+
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('a'))
+    warn.mockRestore()
   })
 
   it('resolves the remaining element after one of a duplicate pair unregisters', () => {
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {})
+
     const first = connectedEl()
     const second = connectedEl()
     registry.register('a', first)
     registry.register('a', second)
     registry.unregister('a', second)
     expect(registry.resolve('a')).toBe(first)
+
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('a'))
+    warn.mockRestore()
   })
 
   it('waitFor emits immediately when already registered', fakeAsync(() => {
