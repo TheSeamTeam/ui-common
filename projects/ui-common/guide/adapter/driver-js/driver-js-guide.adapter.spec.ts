@@ -10,6 +10,7 @@ describe('DriverJsGuideAdapter', () => {
 
   afterEach(() => {
     adapter.destroy()
+    jest.useRealTimers()
   })
 
   const noopCallbacks = {
@@ -93,7 +94,9 @@ describe('DriverJsGuideAdapter', () => {
     expect(document.querySelector('.driver-popover')).not.toBeNull()
   })
 
-  it('re-resolves the step element on refresh rather than repositioning the stale one', async () => {
+  it('re-resolves the step element on refresh rather than repositioning the stale one', () => {
+    jest.useFakeTimers()
+
     const elA = document.createElement('div')
     elA.id = 'a'
     const elB = document.createElement('div')
@@ -114,20 +117,22 @@ describe('DriverJsGuideAdapter', () => {
     adapter.moveTo(0)
 
     // driver.js settles its internal "previous element" bookkeeping only
-    // after its highlight animation finishes (default duration 400ms),
-    // inside a requestAnimationFrame loop. Without waiting past that, the
-    // *next* transition's stale-element cleanup looks at unsettled state and
-    // fails to remove the class from the truly-previous element. Real guide
-    // usage never calls two transitions back to back within one animation
-    // window, so this wait reproduces realistic timing rather than masking
-    // a problem.
-    await new Promise<void>((resolve) => setTimeout(resolve, 500))
+    // after its highlight animation finishes (a wall-clock check,
+    // `Date.now() - start >= 400`ms default), inside a requestAnimationFrame
+    // loop. Without advancing past that, the *next* transition's
+    // stale-element cleanup looks at unsettled state and fails to remove the
+    // class from the truly-previous element. Fake timers (which jsdom's
+    // pretendToBeVisual-backed requestAnimationFrame supports) flush this
+    // deterministically in zero wall-clock time, rather than relying on a
+    // real sleep racing the animation window.
+    jest.advanceTimersByTime(500)
 
     expect(resolver).toHaveBeenCalledTimes(1)
     expect(elA.classList.contains('driver-active-element')).toBe(true)
 
     current = elB
     adapter.refresh()
+    jest.advanceTimersByTime(500)
 
     expect(resolver.mock.calls.length).toBeGreaterThan(1)
     expect(elB.classList.contains('driver-active-element')).toBe(true)

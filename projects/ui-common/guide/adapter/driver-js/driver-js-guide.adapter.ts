@@ -67,6 +67,11 @@ export class DriverJsGuideAdapter implements TheSeamGuideAdapter {
     // the cached active element — it never re-invokes the step's element
     // resolver. Re-driving the current index is what forces re-resolution,
     // which is the whole point of `refresh()` for mid-step recovery.
+    //
+    // This re-drive rebuilds the popover DOM every time, producing a visible
+    // flash even when the resolved element hasn't changed — driver.js has no
+    // primitive for "re-resolve without re-render". Callers should treat this
+    // as a recovery operation, not something to invoke speculatively.
     const index = this._driver?.getActiveIndex()
     if (index !== undefined) {
       this._driver?.moveTo(index)
