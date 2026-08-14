@@ -46,6 +46,12 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
   }>()
   private _transitionSub: Subscription | null = null
   private _recoverySub: Subscription | null = null
+  // Bumped by every `_disarmRecovery()` call. A re-arm queued on a microtask
+  // captures the generation in effect when it was queued and checks it before
+  // acting, so a re-arm for a step the session has since moved past (a
+  // transition disarmed-and-rearmed for a *different* step in between) is a
+  // no-op instead of clobbering the newer arming.
+  private _recoveryGeneration = 0
 
   private _closed = false
 
@@ -262,19 +268,25 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
    */
   protected _onStepPainted(index: number, step: TheSeamGuideStep): void {
     this._disarmRecovery()
+    const generation = this._recoveryGeneration
 
     const name = typeof step.element === 'string' ? step.element : null
     if (name === null) {
       return
     }
-    if (this._registry.resolve(name) === null) {
+    // `_resolveNow` — not the registry's own `resolve` — is the same lookup
+    // that feeds the popover's resolver closure (registry, then selector
+    // fallback). Arming and the loss check below must agree with it: a name
+    // that also happens to be a live selector (e.g. `'nav'`) must not be
+    // treated as lost while the selector still finds it on screen.
+    if (this._resolveNow(step) === null) {
       return
     }
 
     this._recoverySub = this._registry.changes$
       .pipe(
         filter((changed) => changed === name),
-        filter(() => this._registry.resolve(name) === null),
+        filter(() => this._resolveNow(step) === null),
         take(1),
         switchMap(() => {
           this._emit({ type: 'targetLost', index, step })
@@ -293,9 +305,12 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
             this._emit({ type: 'targetRecovered', index, step })
             // Re-arm on a microtask: `_onStepPainted` calls `_disarmRecovery`,
             // which would otherwise unsubscribe this subscription from inside
-            // its own `tap`.
+            // its own `tap`. Guarded by generation: if the session has moved
+            // on (another `_disarmRecovery()` ran in between — a transition,
+            // or a fresher arm for this same step), this queued re-arm must
+            // not resurrect detection for a step that is no longer active.
             queueMicrotask(() => {
-              if (!this._closed) {
+              if (!this._closed && this._recoveryGeneration === generation) {
                 this._onStepPainted(index, step)
               }
             })
@@ -303,6 +318,7 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
           }
           this._applyTargetLostPolicy(index, step)
         }),
+        catchError(() => EMPTY),
       )
       .subscribe()
   }
@@ -325,6 +341,7 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
   }
 
   private _disarmRecovery(): void {
+    this._recoveryGeneration++
     this._recoverySub?.unsubscribe()
     this._recoverySub = null
   }

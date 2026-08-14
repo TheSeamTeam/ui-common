@@ -84,7 +84,7 @@ describe('TheSeamGuideSession mid-step target loss', () => {
 
   it('re-points at a different element registered under the same name', fakeAsync(() => {
     const el = connectedEl()
-    const { adapter, registry, session } = makeSession({
+    const { adapter, events, registry, session } = makeSession({
       steps: [{ element: 'a', popover: { title: 'one' } }],
       targetLostGrace: 1000,
     })
@@ -99,7 +99,86 @@ describe('TheSeamGuideSession mid-step target loss', () => {
     registry.register('a', replacement)
     tick()
 
+    // Assert recovery actually ran before checking where it pointed — without
+    // this, the test is satisfied by Task 6's resolver closure alone and
+    // would pass even with no recovery code at all.
+    expect(events.some((e) => e.type === 'targetRecovered')).toBe(true)
+    expect(adapter.calls).toContain('refresh')
     expect(adapter.resolveStepElement(0)).toBe(replacement)
+  }))
+
+  it('does not treat a target as lost while a selector fallback can still find it', fakeAsync(() => {
+    const nav = document.createElement('nav')
+    document.body.appendChild(nav)
+    const registered = connectedEl()
+    const { events, registry, session } = makeSession({
+      steps: [{ element: 'nav', popover: { title: 'one' } }],
+      targetLostGrace: 500,
+    })
+    registry.register('nav', registered)
+
+    session.start()
+    tick()
+
+    // The registry entry disappears, but "nav" is also a live selector match
+    // (the real <nav> element is still connected) — detection must agree
+    // with what the popover would actually resolve to, so this must not read
+    // as lost.
+    registered.remove()
+    registry.unregister('nav', registered)
+    tick(1000)
+
+    expect(events.some((e) => e.type === 'targetLost')).toBe(false)
+  }))
+
+  it('re-arms the newly active step, not a stale one, when a queued recovery re-arm loses the race with a transition', fakeAsync(() => {
+    const elA = connectedEl()
+    const elB = connectedEl()
+    const { events, registry, session } = makeSession({
+      steps: [
+        { element: 'a', popover: { title: 'one' } },
+        { element: 'b', popover: { title: 'two' } },
+      ],
+      targetLostGrace: 1000,
+    })
+    registry.register('a', elA)
+    registry.register('b', elB)
+
+    session.start()
+    tick()
+
+    // Step 0 loses its target and enters grace.
+    elA.remove()
+    registry.unregister('a', elA)
+
+    // In one synchronous block: the app advances past step 0, and step 0's
+    // target reappears. This races the transition's `_disarmRecovery()`
+    // (which arms step 1) against the queued microtask re-arm from step 0's
+    // 'recovered' branch — the re-arm must lose.
+    session.next()
+    const replacementA = connectedEl()
+    registry.register('a', replacementA)
+
+    tick()
+    events.splice(0)
+
+    // Step 0's target disappears again. A correctly-scoped recovery is no
+    // longer watching it, because step 0 is no longer active.
+    replacementA.remove()
+    registry.unregister('a', replacementA)
+    tick()
+    expect(events.some((e) => e.type === 'targetLost' && e.index === 0)).toBe(
+      false,
+    )
+
+    // Step 1's target disappears. The actually active step's recovery must
+    // notice.
+    elB.remove()
+    registry.unregister('b', elB)
+    tick()
+    expect(events.some((e) => e.type === 'targetLost' && e.index === 1)).toBe(
+      true,
+    )
   }))
 
   it('collapses to elementless when grace expires with the default policy', fakeAsync(() => {
