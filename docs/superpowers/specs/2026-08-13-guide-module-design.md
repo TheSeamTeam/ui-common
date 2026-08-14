@@ -231,9 +231,23 @@ analytics — and would emit a second `stepChanged`, double-counting every step 
 a funnel. Recovery must therefore be a distinct operation.
 
 The existing architecture makes this cheap: each step's `element` is handed to
-the adapter as a **resolver function**, so re-pointing is just
-`adapter.refresh()`. driver.js re-runs the resolver and repositions on whatever
+the adapter as a **resolver function**, so re-pointing is a single
+`adapter.refresh()` call. The adapter re-resolves and repositions on whatever
 element is registered at that moment.
+
+> **Corrected 2026-08-14, during implementation.** This section previously
+> claimed the adapter could implement `refresh()` by delegating to driver.js's
+> own `refresh()`, on the assumption that doing so re-runs the step's `element`
+> resolver. That assumption was wrong and was never verified when this spec was
+> written. driver.js's `refresh()` repositions using its cached active element
+> and never re-invokes the resolver, so a delegating implementation would keep
+> highlighting the original — now detached — element, defeating this entire
+> section. The driver.js adapter therefore implements `refresh()` by re-driving
+> the currently active step index, which does re-invoke the resolver.
+>
+> The design is unchanged: the session still makes one `adapter.refresh()` call
+> and recovery is still not a transition. Only the adapter's internal mechanism
+> differs, and it stays behind the adapter boundary.
 
 ### Detection
 
