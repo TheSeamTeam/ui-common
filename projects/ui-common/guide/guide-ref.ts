@@ -7,7 +7,11 @@ import {
   TheSeamGuideResult,
 } from './models/guide-event'
 
-/** What a ref is allowed to ask its session to do. Internal. */
+/**
+ * The contract between a {@link TheSeamGuideRef} and the session backing it.
+ * `TheSeamGuideRef` delegates every member to an implementation of this
+ * interface, so it never depends on `TheSeamGuideSession` directly.
+ */
 export interface TheSeamGuideSessionController {
   /**
    * Replays every event emitted so far for this guide, from `started`
@@ -25,7 +29,21 @@ export interface TheSeamGuideSessionController {
   close(reason: TheSeamGuideCloseReason): void
 }
 
-/** Consumer-facing handle to a running guide. */
+/**
+ * Consumer-facing handle to a running guide.
+ *
+ * The caller owns this ref's lifetime. A guide is not closed automatically
+ * when the component that started it is destroyed — `TheSeamGuideService` is
+ * `providedIn: 'root'`, so its `ngOnDestroy` only fires when the root
+ * injector itself is destroyed, not on ordinary route/component teardown. A
+ * component that may be destroyed before its guide naturally ends should tie
+ * the ref to its own lifetime:
+ *
+ * ```ts
+ * const ref = this._guide.start(config)
+ * inject(DestroyRef).onDestroy(() => ref.close())
+ * ```
+ */
 export class TheSeamGuideRef {
   constructor(private readonly _session: TheSeamGuideSessionController) {}
 

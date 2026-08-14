@@ -32,6 +32,17 @@ export interface TheSeamGuideStep {
   /** Overrides the guide-level mid-step loss policy. */
   onTargetLost?: TheSeamGuideMissPolicy
 
+  /**
+   * Runs before this step paints. An Observable result must **emit**, not
+   * merely complete — the transition waits for the first emission and an
+   * Observable that completes without ever emitting will hang it forever.
+   */
   beforeStep?: () => void | Promise<void> | Observable<unknown>
+
+  /**
+   * Runs after this step is left. An Observable result must **emit**, not
+   * merely complete — the transition waits for the first emission and an
+   * Observable that completes without ever emitting will hang it forever.
+   */
   afterStep?: () => void | Promise<void> | Observable<unknown>
 }

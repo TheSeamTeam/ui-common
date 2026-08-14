@@ -35,6 +35,18 @@ export class TheSeamGuideService implements OnDestroy {
   /**
    * Starts a guide. One runs at a time: a dismissible active guide is
    * superseded, a non-dismissible one throws `TheSeamGuideBusyError`.
+   *
+   * The caller owns the returned ref's lifetime. A guide is **not** closed
+   * automatically when the component that started it is destroyed — only
+   * when the root injector is (this service is `providedIn: 'root'`), which
+   * does not happen on ordinary route/component teardown. A component that
+   * starts a guide and may be destroyed before it naturally ends should tie
+   * the ref to its own lifetime:
+   *
+   * ```ts
+   * const ref = this._guide.start(config)
+   * inject(DestroyRef).onDestroy(() => ref.close())
+   * ```
    */
   start(config: TheSeamGuideConfig): TheSeamGuideRef {
     const active = this._activeGuide()
@@ -73,7 +85,13 @@ export class TheSeamGuideService implements OnDestroy {
     return ref
   }
 
-  /** Highlights a single element. A one-step guide. */
+  /**
+   * Highlights a single element. A one-step guide.
+   *
+   * As with {@link start}, the caller owns the returned ref's lifetime: it is
+   * not closed automatically when the component that requested it is
+   * destroyed. See {@link start}'s doc comment for the `DestroyRef` pattern.
+   */
   highlight(step: TheSeamGuideStep): TheSeamGuideRef {
     return this.start({ steps: [step] })
   }
