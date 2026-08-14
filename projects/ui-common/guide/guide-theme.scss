@@ -1,8 +1,14 @@
 @import './styles/utilities';
 
-// driver.js base styles, resolved from the package. Matches how theme.scss
-// imports '@angular/cdk/overlay-prebuilt' and overlayscrollbars.
-@import 'driver.js/dist/driver';
+// driver.js base styles, resolved from the package.
+//
+// The `.css` extension is required and must not be dropped. driver.js's
+// package.json `exports` map publishes only `./dist/driver.css`, so the
+// extensionless form fails to resolve. This differs from the neighbouring
+// precedents in theme.scss: `@angular/cdk` deliberately publishes both
+// `./overlay-prebuilt.css` and `./overlay-prebuilt`, and `overlayscrollbars`
+// has no `exports` map at all, so both tolerate the extensionless form.
+@import 'driver.js/dist/driver.css';
 
 .driver-popover {
   background-color: $seam-guide-popover-bg;
