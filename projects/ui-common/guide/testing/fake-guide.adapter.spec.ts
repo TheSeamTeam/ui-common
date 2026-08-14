@@ -69,4 +69,28 @@ describe('FakeGuideAdapter', () => {
     adapter.destroy()
     expect(adapter.isActive()).toBe(false)
   })
+
+  it('drops its callbacks on destroy so emitted intent after destroy is not delivered', () => {
+    const adapter = new FakeGuideAdapter()
+    const next = jest.fn()
+    const previous = jest.fn()
+    const close = jest.fn()
+    adapter.start(
+      { steps: [], allowUserDismiss: true },
+      {
+        onNextRequested: next,
+        onPreviousRequested: previous,
+        onCloseRequested: close,
+      },
+    )
+
+    adapter.destroy()
+    adapter.emitNext()
+    adapter.emitPrevious()
+    adapter.emitClose()
+
+    expect(next).not.toHaveBeenCalled()
+    expect(previous).not.toHaveBeenCalled()
+    expect(close).not.toHaveBeenCalled()
+  })
 })

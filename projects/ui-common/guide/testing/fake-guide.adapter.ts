@@ -44,6 +44,11 @@ export class FakeGuideAdapter implements TheSeamGuideAdapter {
 
   destroy(): void {
     this._active = false
+    // Dropped, not merely inert-by-`_active`: `emitNext`/`emitPrevious`/
+    // `emitClose` call through `_callbacks` directly and do not consult
+    // `_active`, so a stale reference here would still fire callbacks a test
+    // simulates after destroy.
+    this._callbacks = null
     this.calls.push('destroy')
   }
 
