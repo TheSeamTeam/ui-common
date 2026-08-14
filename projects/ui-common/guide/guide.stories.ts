@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core'
-import { moduleMetadata, type Meta, type StoryObj } from '@storybook/angular'
+import { applicationConfig, type Meta, type StoryObj } from '@storybook/angular'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
 
 import { provideTheSeamGuide } from './guide-providers'
@@ -31,6 +31,17 @@ import { TheSeamGuideTargetDirective } from './target/guide-target.directive'
       <button type="button" class="btn btn-link" (click)="showLate.set(true)">
         Reveal late target
       </button>
+
+      <div class="mt-3">
+        <button
+          type="button"
+          class="btn btn-primary"
+          seamGuideTarget="locked"
+          (click)="runLocked()"
+        >
+          Start locked guide
+        </button>
+      </div>
     </div>
   `,
 })
@@ -59,12 +70,37 @@ class GuideDemoComponent {
       ],
     })
   }
+
+  // A separate, non-dismissible guide on the same host component — kept here
+  // rather than as its own component class because this Storybook version's
+  // CSF3 types have no way to override `meta.component` on a per-story basis
+  // (neither `StoryObj`'s fields nor `StoryFnAngularReturnType` include
+  // `component`; only `Meta` does).
+  runLocked(): void {
+    this._guide.start({
+      dismissible: false,
+      onMissingTarget: 'end',
+      steps: [
+        {
+          element: 'locked',
+          popover: {
+            title: 'Required',
+            description: 'Escape will not close this.',
+          },
+        },
+      ],
+    })
+  }
 }
 
 const meta: Meta<GuideDemoComponent> = {
   title: 'Guide/Guide',
   component: GuideDemoComponent,
-  decorators: [moduleMetadata({ providers: [provideTheSeamGuide()] })],
+  decorators: [
+    applicationConfig({
+      providers: [provideTheSeamGuide()],
+    }),
+  ],
 }
 
 export default meta
@@ -96,6 +132,12 @@ export const ElementlessStep: Story = {
     const next = () =>
       document.querySelector<HTMLElement>('.driver-popover-next-btn')
     await userEvent.click(next()!)
+
+    await waitFor(() =>
+      expect(document.querySelector('.driver-popover-title')?.textContent).toBe(
+        'Step two',
+      ),
+    )
     await userEvent.click(next()!)
 
     await waitFor(() =>
@@ -124,44 +166,7 @@ export const FocusMovesIntoThePopover: Story = {
   },
 }
 
-@Component({
-  standalone: true,
-  imports: [TheSeamGuideTargetDirective],
-  template: `
-    <div class="p-4">
-      <button
-        type="button"
-        class="btn btn-primary"
-        seamGuideTarget="locked"
-        (click)="run()"
-      >
-        Start locked guide
-      </button>
-    </div>
-  `,
-})
-class LockedGuideDemoComponent {
-  private readonly _guide = inject(TheSeamGuideService)
-
-  run(): void {
-    this._guide.start({
-      dismissible: false,
-      onMissingTarget: 'end',
-      steps: [
-        {
-          element: 'locked',
-          popover: {
-            title: 'Required',
-            description: 'Escape will not close this.',
-          },
-        },
-      ],
-    })
-  }
-}
-
-export const NonDismissible: StoryObj<LockedGuideDemoComponent> = {
-  render: () => ({ component: LockedGuideDemoComponent }),
+export const NonDismissible: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await userEvent.click(
@@ -172,8 +177,12 @@ export const NonDismissible: StoryObj<LockedGuideDemoComponent> = {
       expect(document.querySelector('.driver-popover')).toBeTruthy(),
     )
 
-    // No close button is rendered.
-    await expect(document.querySelector('.driver-popover-close-btn')).toBeNull()
+    // driver.js always creates the close button element; only its visibility
+    // is toggled by `allowClose`/`showButtons`, so assert it is hidden rather
+    // than absent from the DOM.
+    await expect(
+      document.querySelector('.driver-popover-close-btn'),
+    ).not.toBeVisible()
 
     // Escape is inert.
     await userEvent.keyboard('{Escape}')
