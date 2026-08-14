@@ -63,7 +63,14 @@ export class DriverJsGuideAdapter implements TheSeamGuideAdapter {
   }
 
   refresh(): void {
-    this._driver?.refresh()
+    // driver.js's own refresh() only repositions the overlay/popover around
+    // the cached active element — it never re-invokes the step's element
+    // resolver. Re-driving the current index is what forces re-resolution,
+    // which is the whole point of `refresh()` for mid-step recovery.
+    const index = this._driver?.getActiveIndex()
+    if (index !== undefined) {
+      this._driver?.moveTo(index)
+    }
   }
 
   destroy(): void {
@@ -71,8 +78,12 @@ export class DriverJsGuideAdapter implements TheSeamGuideAdapter {
       return
     }
     const instance = this._driver
-    // Null first: destroy() triggers onDestroyStarted, and the session has
-    // already decided to close.
+    // Null first, out of caution: if driver.js's public destroy() ever starts
+    // invoking onDestroyStarted synchronously, we don't want that callback
+    // re-entering this adapter through a non-null _driver. Today it doesn't —
+    // destroy() tears down with confirm=false and always skips
+    // onDestroyStarted — so this ordering isn't load-bearing for the current
+    // wiring, just defensive against a future driver.js change.
     this._driver = null
     instance.destroy()
   }
