@@ -66,10 +66,10 @@ projects/ui-common/guide/
     guide-adapter.ts             TheSeamGuideAdapter + THE_SEAM_GUIDE_ADAPTER
     driver-js/
       driver-js-guide.adapter.ts the only file that imports 'driver.js'
+  guide-theme.scss              app-facing style entry (the only import an app needs)
   styles/
     _variables.scss
     _utilities.scss              no CSS output
-  _guide-theme.scss
   testing/
     index.ts                     FakeGuideAdapter + CDK harness
   guide.stories.ts
@@ -445,26 +445,93 @@ from rendering an already-known component into a host node.
 
 ## Styling
 
-The application performs one import:
+The application performs one import, matching the `breadcrumbs` precedent:
 
 ```scss
-@import '@theseam/ui-common/guide/styles/guide';
+@import '@theseam/ui-common/guide/guide-theme';
 ```
 
-driver.js's stylesheet is pulled in by bare package path, the mechanism already
-proven in `projects/ui-common/styles/theme.scss`:
+### File roles
+
+Structured exactly like `breadcrumbs/`:
+
+| File | Role |
+| --- | --- |
+| `guide/guide-theme.scss` | App-facing entry. The only file an app imports. |
+| `guide/styles/_utilities.scss` | Imports `../../styles/utilities` and `./variables`. No CSS output. |
+| `guide/styles/_variables.scss` | Guide-specific variables. |
+
+**No leading underscore on `guide-theme.scss`**, deliberately diverging from
+`breadcrumbs/_breadcrumbs-theme.scss`. An underscore marks a Sass partial —
+a file never compiled on its own. This one *is* compiled on its own, because
+Storybook lists it in the `styles` array (see below). The consumer-facing import
+resolves identically either way, so nothing is lost.
+
+`guide-theme.scss` pulls driver.js's stylesheet in by bare package path — the
+mechanism already proven in `projects/ui-common/styles/theme.scss`, which
+imports `@angular/cdk/overlay-prebuilt` and
+`overlayscrollbars/css/OverlayScrollbars.min` the same way:
 
 ```scss
+@import './styles/utilities';
 @import 'driver.js/dist/driver';   // Sass resolves .css and inlines it
+// ... Bootstrap 4.6 variables layered over driver.js defaults
 ```
 
-Structured like `breadcrumbs/`: `guide/styles/_variables.scss`,
-`guide/styles/_utilities.scss` (variables, functions, and mixins only — no CSS
-output), and `guide/_guide-theme.scss` layering Bootstrap 4.6 variables over
-driver.js's defaults.
+The guide styles import the global **`styles/utilities`** (variables, functions,
+and mixins only, no CSS output) and never `theme.scss`, so they cannot duplicate
+rules or destabilize existing sheets.
 
-The guide styles depend only on Bootstrap variables and pull nothing from
-`theme.scss`, so they cannot destabilize existing sheets.
+### Build asset entry
+
+The stylesheets have no component to be inlined into, so ng-packagr will not
+include them unless they are declared as assets. **`projects/ui-common/ng-package.json`**
+needs one entry:
+
+```json
+{ "glob": "**/*.scss", "input": "guide", "output": "guide" }
+```
+
+This copies `guide-theme.scss` and everything under `guide/styles/` into
+`dist/ui-common/guide/`, matching the existing `breadcrumbs` entry.
+
+> **Do not** add a matching entry to the `assets` array in
+> `projects/ui-common/package.json`. That array is **dead config** — the build
+> target in `angular.json` uses `@angular/build:ng-packagr` pointed at
+> `projects/ui-common/ng-package.json`, and `package.json` has no `ngPackage`
+> key, so ng-packagr never reads it. Its entries also use inconsistent input
+> paths, which is further evidence it is vestigial. Cleaning it up is out of
+> scope for this work, but nothing new should be added to it.
+
+### Storybook
+
+Every other module's styles reach Storybook implicitly, through a component's
+own `.scss`. **The guide has no component** — driver.js injects its overlay and
+popover outside Angular — so its styles reach Storybook only if loaded globally.
+Without this, the module is developed against unstyled driver.js defaults.
+
+`angular.json` needs the theme added to the `styles` array of **both** the
+`storybook` and `build-storybook` targets:
+
+```json
+"styles": [
+  "projects/ui-common/styles/theme.scss",
+  "projects/ui-common/framework/route-transitions/route-transitions.css",
+  "node_modules/@marklb/ngx-datatable/assets/icons.css",
+  "projects/ui-common/guide/guide-theme.scss"
+]
+```
+
+Add to the `assets` array of both targets as well, for parity with the published
+layout. Note these use repo-relative inputs, unlike `ng-package.json`:
+
+```json
+{ "glob": "**/*.scss", "input": "projects/ui-common/guide", "output": "guide" }
+```
+
+The theme is **not** added to `projects/ui-common/styles/theme.scss`. That file
+is the app-level global, and importing the guide there would force its styles on
+every application, defeating the opt-in design.
 
 **Explicit non-goal: `@use` migration.** This module uses `@import`, matching the
 repository, which uses `@use` only for Sass built-in modules (`sass:color`,
@@ -505,12 +572,29 @@ accessibility is asserted explicitly instead.
 | --- | --- |
 | `package.json` (root) | add `driver.js` dependency |
 | `projects/ui-common/package.json` | add `driver.js` to `dependencies` |
-| `projects/ui-common/ng-package.json` | add `driver.js` to `allowedNonPeerDependencies`; add guide scss to `assets` |
+| `projects/ui-common/ng-package.json` | add `driver.js` to `allowedNonPeerDependencies`; add `{ "glob": "**/*.scss", "input": "guide", "output": "guide" }` to `assets` |
+| `angular.json` | add `guide-theme.scss` to `styles` **and** a guide `assets` entry, in **both** the `storybook` and `build-storybook` targets |
 | `projects/ui-common/guide/ng-package.json` | new: `{ "lib": { "entryFile": "public-api.ts" } }` |
 | `projects/ui-common/jest.config.ts` | add `'**/guide/**/*.spec.ts'` to `testMatch` |
 
 `driver.js` is a regular dependency plus `allowedNonPeerDependencies`, following
 the existing precedent set by `quill` and `intl-tel-input`.
+
+### Build verification
+
+Because a missing asset entry fails silently — the package builds and publishes,
+and only a consuming application discovers the stylesheet is absent — the
+implementation must verify against real build output rather than assume:
+
+1. `npm run build:ui-common`
+2. Confirm `dist/ui-common/guide/guide-theme.scss` and
+   `dist/ui-common/guide/styles/` exist.
+3. Confirm `@import '@theseam/ui-common/guide/guide-theme'` compiles from a
+   consumer, which also proves the bare-package `driver.js/dist/driver` import
+   resolves through the published package rather than only in this repository.
+4. Confirm the guide overlay renders **styled** in Storybook, not with driver.js
+   defaults — the visible signal that the `angular.json` `styles` entry took
+   effect.
 
 ## Deferred
 
