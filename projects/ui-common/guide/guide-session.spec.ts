@@ -304,21 +304,19 @@ describe('TheSeamGuideSession transitions', () => {
     expect(adapter.calls).toContain('moveTo:2')
   }))
 
-  it('stays responsive to a subsequent moveTo after a hook throws', fakeAsync(() => {
+  it('closes the guide when a hook throws, rather than wedging the transition pipeline', fakeAsync(() => {
     // The thrown error trips a dev-mode warning from the transition's own
     // catchError; suppress it here since this test isn't asserting on it.
     jest.spyOn(console, 'warn').mockImplementation(() => {})
-    const { adapter, session } = makeSession({
+    const { events, session } = makeSession({
       steps: [
         { popover: { title: 'one' } },
         {
           popover: { title: 'two' },
-          onMissingTarget: 'elementless',
           beforeStep: () => {
             throw new Error('boom')
           },
         },
-        { popover: { title: 'three' } },
       ],
     })
 
@@ -327,13 +325,45 @@ describe('TheSeamGuideSession transitions', () => {
     session.next()
     tick()
 
-    // The failing transition must be contained to itself rather than
-    // unsubscribing the outer transition pipeline; otherwise every
-    // subsequent call below would become a silent no-op.
-    session.moveTo(2)
+    // If the throw had escaped the transition's catchError, it would reach
+    // the outer, handler-less `_transitions` subscription and unsubscribe it
+    // permanently — the guide would then just sit open forever, with no
+    // `closed` event ever emitted (a later `moveTo` legitimately becoming a
+    // no-op on an already-closed guide would prove nothing either way).
+    // Seeing `closed` with the right reason here is proof the error was
+    // contained and handled, not swallowed into a dead subscription.
+    const closed = events.find((e) => e.type === 'closed')
+    expect(closed).toBeDefined()
+    expect(closed?.type === 'closed' && closed.result.reason).toBe('destroyed')
+  }))
+
+  it("closes with reason 'destroyed', not 'targetMissing', when a hook throws on an 'end'-policy step", fakeAsync(() => {
+    // Same reasoning as above: suppress the incidental dev-mode warning.
+    jest.spyOn(console, 'warn').mockImplementation(() => {})
+    const { events, session } = makeSession({
+      steps: [
+        { popover: { title: 'one' } },
+        {
+          popover: { title: 'two' },
+          onMissingTarget: 'end',
+          beforeStep: () => {
+            throw new Error('boom')
+          },
+        },
+      ],
+    })
+
+    session.start()
+    tick()
+    session.next()
     tick()
 
-    expect(adapter.calls).toContain('moveTo:2')
+    // A thrown hook is not a missing target: routing it through the miss
+    // policy would misreport this as 'targetMissing' for a step whose
+    // target was never the problem.
+    const closed = events.find((e) => e.type === 'closed')
+    expect(closed).toBeDefined()
+    expect(closed?.type === 'closed' && closed.result.reason).toBe('destroyed')
   }))
 
   it('treats an invalid CSS selector as a waitable name instead of throwing', fakeAsync(() => {

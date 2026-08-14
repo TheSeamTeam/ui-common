@@ -169,8 +169,14 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
    * subscriber has no error handler of its own and an uncaught error there
    * would unsubscribe it permanently, silently wedging the session (`next`,
    * `previous`, and `moveTo` would become no-ops forever). A caught failure
-   * is treated the same as a missing target: it goes through the incoming
-   * step's own miss policy rather than introducing a new outcome.
+   * closes the guide rather than running the miss policy: the miss policy
+   * exists for a target that never appeared, not an arbitrary thrown error,
+   * and reusing it would (a) misreport the close reason as `'targetMissing'`
+   * for an `'end'`-policy step that never had a target problem, and (b) run
+   * `_applyMissPolicy` unprotected as the last step of an error handler,
+   * where a further throw (e.g. from `_paint` → `_onStepPainted`, which
+   * Task 7 turns into real logic) would escape to the same unhandled outer
+   * subscriber this whole `catchError` exists to protect.
    */
   private _runTransition(
     index: number,
@@ -212,16 +218,26 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
         return EMPTY
       }),
       catchError((err) => {
-        if (this._closed) {
-          return EMPTY
+        // Deliberately no call-out to `_applyMissPolicy` or anything else
+        // that could itself throw: this handler is the last backstop before
+        // the outer, handler-less `_transitions` subscription, so the whole
+        // body is wrapped in `try/catch` and swallows on failure — there is
+        // nothing left to recover to.
+        try {
+          if (this._closed) {
+            return EMPTY
+          }
+          if (isDevMode()) {
+            console.warn(
+              `TheSeamGuideSession: step ${index} threw during its` +
+                ` transition (${String(err)}); closing the guide.`,
+            )
+          }
+          this.close('destroyed')
+        } catch {
+          // Nothing left to recover from.
         }
-        if (isDevMode()) {
-          console.warn(
-            `TheSeamGuideSession: step ${index} threw during its transition` +
-              ` (${String(err)}); applying the miss policy.`,
-          )
-        }
-        return this._applyMissPolicy(index, incoming, direction)
+        return EMPTY
       }),
     )
   }
