@@ -2667,7 +2667,7 @@ Create `projects/ui-common/guide/guide.stories.ts`:
 ```ts
 import { Component, inject, signal } from '@angular/core'
 import { moduleMetadata, type Meta, type StoryObj } from '@storybook/angular'
-import { expect, userEvent, waitFor, within } from '@storybook/test'
+import { expect, userEvent, waitFor, within } from 'storybook/test'
 
 import { provideTheSeamGuide } from './guide-providers'
 import { TheSeamGuideService } from './guide.service'
