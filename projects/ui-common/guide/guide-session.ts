@@ -1,5 +1,16 @@
-import { signal, Signal } from '@angular/core'
-import { Observable, ReplaySubject } from 'rxjs'
+import { isDevMode, signal, Signal } from '@angular/core'
+import {
+  defer,
+  EMPTY,
+  from,
+  isObservable,
+  Observable,
+  of,
+  ReplaySubject,
+  Subject,
+  Subscription,
+} from 'rxjs'
+import { catchError, map, switchMap, take } from 'rxjs/operators'
 
 import {
   TheSeamGuideAdapter,
@@ -16,7 +27,7 @@ import {
   TheSeamGuideEvent,
   TheSeamGuideResult,
 } from './models/guide-event'
-import { TheSeamGuideStep } from './models/guide-step'
+import { TheSeamGuideMissPolicy, TheSeamGuideStep } from './models/guide-step'
 import { TheSeamGuideTargetRegistry } from './target/guide-target-registry'
 
 export class TheSeamGuideSession implements TheSeamGuideSessionController {
@@ -28,6 +39,12 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
   private readonly _events = new ReplaySubject<TheSeamGuideEvent>()
   private readonly _afterClosed = new ReplaySubject<TheSeamGuideResult>(1)
   private readonly _activeIndex = signal(-1)
+
+  private readonly _transitions = new Subject<{
+    index: number
+    direction: 1 | -1
+  }>()
+  private _transitionSub: Subscription | null = null
 
   private _closed = false
 
@@ -47,6 +64,14 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
   ) {
     this.steps = config.steps
     this.options = { ...THE_SEAM_GUIDE_DEFAULTS, ...stripUndefined(config) }
+
+    this._transitionSub = this._transitions
+      .pipe(
+        switchMap((request) =>
+          this._runTransition(request.index, request.direction),
+        ),
+      )
+      .subscribe()
   }
 
   get dismissible(): boolean {
@@ -70,28 +95,35 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
   }
 
   next(): void {
-    this.moveTo(this._activeIndex() + 1)
+    this._request(this._activeIndex() + 1, 1)
   }
 
   previous(): void {
-    this.moveTo(this._activeIndex() - 1)
+    this._request(this._activeIndex() - 1, -1)
   }
 
-  /** Replaced in Task 6 by the full transition sequence. */
   moveTo(index: number): void {
+    this._request(index, index >= this._activeIndex() ? 1 : -1)
+  }
+
+  /**
+   * Requests a transition.
+   *
+   * The emission is deferred to a microtask because `_applyMissPolicy` calls
+   * this from *inside* the `switchMap` projection. Emitting synchronously there
+   * would make the transition cancel itself mid-flight. `fakeAsync`'s `tick()`
+   * flushes microtasks, so specs are unaffected.
+   */
+  private _request(index: number, direction: 1 | -1): void {
     if (this._closed) {
       return
     }
-    if (index >= this.steps.length) {
-      this.close('completed')
-      return
-    }
-    if (index < 0) {
-      return
-    }
-    this._activeIndex.set(index)
-    this._adapter.moveTo(index)
-    this._emit({ type: 'stepChanged', index, step: this.steps[index] })
+    queueMicrotask(() => {
+      if (this._closed) {
+        return
+      }
+      this._transitions.next({ index, direction })
+    })
   }
 
   refresh(): void {
@@ -103,6 +135,8 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
       return
     }
     this._closed = true
+    this._transitionSub?.unsubscribe()
+    this._transitionSub = null
     const result: TheSeamGuideResult = {
       reason,
       lastIndex: this._activeIndex(),
@@ -119,6 +153,138 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
     this._events.next(event)
   }
 
+  /**
+   * The one sequence every transition runs. Cancellable: a new request causes
+   * `switchMap` to unsubscribe from this, so nothing paints after teardown.
+   */
+  private _runTransition(
+    index: number,
+    direction: 1 | -1,
+  ): Observable<unknown> {
+    if (this._closed) {
+      return EMPTY
+    }
+    if (index >= this.steps.length) {
+      this.close('completed')
+      return EMPTY
+    }
+    if (index < 0) {
+      return EMPTY
+    }
+
+    const outgoing =
+      this._activeIndex() >= 0 ? this.steps[this._activeIndex()] : undefined
+    const incoming = this.steps[index]
+
+    return defer(() => this._runHook(outgoing?.afterStep)).pipe(
+      switchMap(() => this._runHook(incoming.beforeStep)),
+      switchMap(() => this._resolveTarget(incoming)),
+      switchMap((outcome) => {
+        if (this._closed) {
+          return EMPTY
+        }
+        if (outcome === 'missing') {
+          return this._applyMissPolicy(index, incoming, direction)
+        }
+        this._activeIndex.set(index)
+        this._adapter.moveTo(index)
+        this._emit({ type: 'stepChanged', index, step: incoming })
+        this._onStepPainted(index, incoming)
+        return EMPTY
+      }),
+    )
+  }
+
+  /** Overridden in Task 7 to arm mid-step loss detection. */
+  protected _onStepPainted(_index: number, _step: TheSeamGuideStep): void {
+    // no-op until Task 7
+  }
+
+  private _runHook(
+    hook: (() => void | Promise<void> | Observable<unknown>) | undefined,
+  ): Observable<unknown> {
+    if (hook === undefined) {
+      return of(null)
+    }
+    return defer(() => {
+      const result = hook()
+      if (result === undefined || result === null) {
+        return of(null)
+      }
+      if (isObservable(result)) {
+        return result.pipe(take(1))
+      }
+      return from(result)
+    })
+  }
+
+  /** Resolves `'resolved'` or `'missing'`. Never throws. */
+  private _resolveTarget(
+    step: TheSeamGuideStep,
+  ): Observable<'resolved' | 'missing'> {
+    const target = step.element
+    if (target === undefined) {
+      return of('resolved')
+    }
+    if (typeof target !== 'string') {
+      const el = target instanceof Element ? target : target.nativeElement
+      return of(el?.isConnected ? 'resolved' : 'missing')
+    }
+
+    const direct = this._registry.resolve(target)
+    if (direct !== null) {
+      return of('resolved')
+    }
+    const selectorMatch = safeQuerySelector(target)
+    if (selectorMatch !== null) {
+      return of('resolved')
+    }
+
+    const timeoutMs = step.targetTimeout ?? this.options.targetTimeout
+    return this._registry.waitFor(target, timeoutMs).pipe(
+      map(() => 'resolved' as const),
+      catchError(() => of('missing' as const)),
+    )
+  }
+
+  private _applyMissPolicy(
+    index: number,
+    step: TheSeamGuideStep,
+    direction: 1 | -1,
+  ): Observable<never> {
+    const policy: TheSeamGuideMissPolicy =
+      step.onMissingTarget ?? this.options.onMissingTarget
+
+    if (policy === 'end') {
+      this.close('targetMissing')
+      return EMPTY
+    }
+
+    if (policy === 'elementless') {
+      this._activeIndex.set(index)
+      this._adapter.moveTo(index)
+      this._emit({ type: 'stepChanged', index, step })
+      this._onStepPainted(index, step)
+      return EMPTY
+    }
+
+    if (isDevMode()) {
+      console.warn(
+        `TheSeamGuideSession: skipping step ${index} because its target` +
+          ` "${String(step.element)}" never appeared.`,
+      )
+    }
+    this._emit({ type: 'stepSkipped', index, step })
+
+    const nextIndex = index + direction
+    if (nextIndex < 0 || nextIndex >= this.steps.length) {
+      this.close(direction === 1 ? 'completed' : 'dismissed')
+      return EMPTY
+    }
+    this._request(nextIndex, direction)
+    return EMPTY
+  }
+
   /** Element is a resolver function so the engine re-resolves at paint time. */
   protected _toAdapterStep(step: TheSeamGuideStep): TheSeamGuideAdapterStep {
     return {
@@ -130,14 +296,18 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
     }
   }
 
-  /** Synchronous best-effort resolution. Task 6 adds the awaiting version. */
+  /**
+   * Synchronous best-effort resolution, used by the adapter's live element
+   * resolver at paint time. `_resolveTarget` is the awaiting version used to
+   * gate transitions.
+   */
   protected _resolveNow(step: TheSeamGuideStep): Element | null {
     const target = step.element
     if (target === undefined) {
       return null
     }
     if (typeof target === 'string') {
-      return this._registry.resolve(target) ?? document.querySelector(target)
+      return this._registry.resolve(target) ?? safeQuerySelector(target)
     }
     if (target instanceof Element) {
       return target
@@ -157,4 +327,13 @@ function stripUndefined(
     }
   }
   return out as Partial<TheSeamGuideResolvedConfig>
+}
+
+/** `querySelector` throws on an invalid selector; a registry name often is one. */
+function safeQuerySelector(selector: string): Element | null {
+  try {
+    return document.querySelector(selector)
+  } catch {
+    return null
+  }
 }
