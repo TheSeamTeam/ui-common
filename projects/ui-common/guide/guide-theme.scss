@@ -1,6 +1,12 @@
 @import './styles/utilities';
 
-// driver.js base styles, resolved from the package.
+// driver.js base styles.
+//
+// Because this specifier ends in `.css`, Sass does not resolve or inline it:
+// it emits a plain CSS `@import` verbatim and leaves resolution to whatever
+// bundles the emitted CSS afterward (Storybook works because webpack's
+// css-loader resolves it at that later stage). This is unlike a Sass partial
+// import, which Sass itself resolves and inlines at compile time.
 //
 // The `.css` extension is required and must not be dropped. driver.js's
 // package.json `exports` map publishes only `./dist/driver.css`, so the
@@ -66,7 +72,13 @@
   user-select: none;
   border: $btn-border-width solid transparent;
   @include transition($btn-transition);
-  @include button-size($btn-padding-y-sm, $btn-padding-x-sm, $btn-font-size-sm, $btn-line-height-sm, $btn-border-radius-sm);
+  @include button-size(
+    $btn-padding-y-sm,
+    $btn-padding-x-sm,
+    $btn-font-size-sm,
+    $btn-line-height-sm,
+    $btn-border-radius-sm
+  );
 
   &:focus,
   &.focus {
@@ -82,6 +94,12 @@
   @include button-variant($secondary, $secondary);
 }
 
-.driver-overlay {
-  fill: $seam-guide-overlay-color;
+// driver.js sets `fill` and `opacity` as inline styles on the overlay's
+// child `<path>`, not on `.driver-overlay` itself, and an inline style beats
+// any selector without `!important`. Same defect class as the
+// `.driver-popover-arrow` fix above: driver.js owns the element, so its
+// inline styles must be beaten explicitly rather than assumed away.
+.driver-overlay path {
+  fill: $seam-guide-overlay-color !important;
+  opacity: $seam-guide-overlay-opacity !important;
 }
