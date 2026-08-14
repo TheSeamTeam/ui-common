@@ -9,6 +9,11 @@ import {
 
 /** What a ref is allowed to ask its session to do. Internal. */
 export interface TheSeamGuideSessionController {
+  /**
+   * Replays every event emitted so far for this guide, from `started`
+   * onward, to each new subscriber — so attaching at any point yields the
+   * complete history rather than only future events.
+   */
   readonly events$: Observable<TheSeamGuideEvent>
   readonly afterClosed$: Observable<TheSeamGuideResult>
   readonly activeIndex: Signal<number>
@@ -24,6 +29,13 @@ export interface TheSeamGuideSessionController {
 export class TheSeamGuideRef {
   constructor(private readonly _session: TheSeamGuideSessionController) {}
 
+  /**
+   * Replays every event emitted so far for this guide, from `started`
+   * onward — a subscriber attached at any point sees the complete history,
+   * not just events emitted after it subscribes. This is why subscribing
+   * immediately after `start()` returns still observes `started`: `start()`
+   * runs synchronously, but the event is not lost, it is replayed.
+   */
   get events$(): Observable<TheSeamGuideEvent> {
     return this._session.events$
   }

@@ -3,7 +3,10 @@ import { inject, Injectable, isDevMode, signal, Signal } from '@angular/core'
 import { THE_SEAM_GUIDE_ADAPTER } from './adapter/guide-adapter'
 import { TheSeamGuideRef } from './guide-ref'
 import { TheSeamGuideSession } from './guide-session'
-import { TheSeamGuideConfig } from './models/guide-config'
+import {
+  TheSeamGuideConfig,
+  THE_SEAM_GUIDE_DEFAULTS,
+} from './models/guide-config'
 import { TheSeamGuideBusyError } from './models/guide-errors'
 import { TheSeamGuideStep } from './models/guide-step'
 import { TheSeamGuideTargetRegistry } from './target/guide-target-registry'
@@ -38,7 +41,8 @@ export class TheSeamGuideService {
     if (
       isDevMode() &&
       config.dismissible === false &&
-      (config.onMissingTarget ?? 'skip') === 'skip'
+      (config.onMissingTarget ?? THE_SEAM_GUIDE_DEFAULTS.onMissingTarget) ===
+        'skip'
     ) {
       console.warn(
         'TheSeamGuideService: this guide sets `dismissible: false` with' +

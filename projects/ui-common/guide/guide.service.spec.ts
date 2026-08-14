@@ -9,7 +9,6 @@ import { FakeGuideAdapter } from './testing/fake-guide.adapter'
 describe('TheSeamGuideService', () => {
   let service: TheSeamGuideService
   let adapter: FakeGuideAdapter
-  let warn: jest.SpyInstance
 
   beforeEach(() => {
     adapter = new FakeGuideAdapter()
@@ -17,15 +16,6 @@ describe('TheSeamGuideService', () => {
       providers: [{ provide: THE_SEAM_GUIDE_ADAPTER, useValue: adapter }],
     })
     service = TestBed.inject(TheSeamGuideService)
-    // Several tests below start a `dismissible: false` guide without
-    // overriding `onMissingTarget`, which defaults to 'skip' and so trips the
-    // service's dev-mode warning as a side effect. Suppress it here so only
-    // the test that specifically exercises the warning asserts on it.
-    warn = jest.spyOn(console, 'warn').mockImplementation(() => {})
-  })
-
-  afterEach(() => {
-    warn.mockRestore()
   })
 
   it('has no active guide before start', () => {
@@ -52,11 +42,18 @@ describe('TheSeamGuideService', () => {
   })
 
   it('starts the adapter with allowUserDismiss false when not dismissible', () => {
+    // dismissible: false with the default onMissingTarget ('skip') also
+    // trips the dev-mode warning tested separately below; suppress it here
+    // since this test isn't asserting on it.
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {})
+
     service.start({
       steps: [{ popover: { title: 'one' } }],
       dismissible: false,
     })
     expect(adapter.startedConfig?.allowUserDismiss).toBe(false)
+
+    warn.mockRestore()
   })
 
   it('supersedes a dismissible active guide', async () => {
@@ -73,6 +70,11 @@ describe('TheSeamGuideService', () => {
   })
 
   it('throws TheSeamGuideBusyError rather than superseding a non-dismissible guide', () => {
+    // The first start() below is dismissible: false with the default
+    // onMissingTarget ('skip'), which also trips the dev-mode warning tested
+    // separately; suppress it here since this test isn't asserting on it.
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {})
+
     service.start({
       steps: [{ popover: { title: 'one' } }],
       dismissible: false,
@@ -81,9 +83,16 @@ describe('TheSeamGuideService', () => {
     expect(() =>
       service.start({ steps: [{ popover: { title: 'two' } }] }),
     ).toThrow(TheSeamGuideBusyError)
+
+    warn.mockRestore()
   })
 
   it('closes a non-dismissible guide programmatically', async () => {
+    // dismissible: false with the default onMissingTarget ('skip') also
+    // trips the dev-mode warning tested separately below; suppress it here
+    // since this test isn't asserting on it.
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {})
+
     const ref = service.start({
       steps: [{ popover: { title: 'one' } }],
       dismissible: false,
@@ -94,6 +103,8 @@ describe('TheSeamGuideService', () => {
 
     expect((await closed).reason).toBe('dismissed')
     expect(service.activeGuide()).toBeNull()
+
+    warn.mockRestore()
   })
 
   it('clears the active guide once closed', async () => {
@@ -104,6 +115,8 @@ describe('TheSeamGuideService', () => {
   })
 
   it('warns in dev mode when a non-dismissible guide would silently skip steps', () => {
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {})
+
     service.start({
       steps: [{ popover: { title: 'one' } }],
       dismissible: false,
@@ -113,6 +126,7 @@ describe('TheSeamGuideService', () => {
     expect(warn).toHaveBeenCalledWith(
       expect.stringContaining('dismissible: false'),
     )
+    warn.mockRestore()
   })
 })
 
