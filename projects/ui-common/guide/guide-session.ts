@@ -10,7 +10,7 @@ import {
   Subject,
   Subscription,
 } from 'rxjs'
-import { catchError, map, switchMap, take } from 'rxjs/operators'
+import { catchError, filter, map, switchMap, take, tap } from 'rxjs/operators'
 
 import {
   TheSeamGuideAdapter,
@@ -45,6 +45,7 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
     direction: 1 | -1
   }>()
   private _transitionSub: Subscription | null = null
+  private _recoverySub: Subscription | null = null
 
   private _closed = false
 
@@ -144,6 +145,7 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
     this._closed = true
     this._transitionSub?.unsubscribe()
     this._transitionSub = null
+    this._disarmRecovery()
     const result: TheSeamGuideResult = {
       reason,
       lastIndex: this._activeIndex(),
@@ -185,6 +187,7 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
     if (this._closed) {
       return EMPTY
     }
+    this._disarmRecovery()
     if (index >= this.steps.length) {
       this.close('completed')
       return EMPTY
@@ -251,9 +254,79 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
     this._onStepPainted(index, step)
   }
 
-  /** Overridden in Task 7 to arm mid-step loss detection. */
-  protected _onStepPainted(_index: number, _step: TheSeamGuideStep): void {
-    // no-op until Task 7
+  /**
+   * Arms mid-step loss detection for a painted step.
+   *
+   * Only named targets are watched — a selector or `Element` has no
+   * notification channel, so recovery does not apply to them in v1.
+   */
+  protected _onStepPainted(index: number, step: TheSeamGuideStep): void {
+    this._disarmRecovery()
+
+    const name = typeof step.element === 'string' ? step.element : null
+    if (name === null) {
+      return
+    }
+    if (this._registry.resolve(name) === null) {
+      return
+    }
+
+    this._recoverySub = this._registry.changes$
+      .pipe(
+        filter((changed) => changed === name),
+        filter(() => this._registry.resolve(name) === null),
+        take(1),
+        switchMap(() => {
+          this._emit({ type: 'targetLost', index, step })
+          const grace = this.options.targetLostGrace
+          return this._registry.waitFor(name, grace).pipe(
+            map(() => 'recovered' as const),
+            catchError(() => of('lost' as const)),
+          )
+        }),
+        tap((outcome) => {
+          if (this._closed) {
+            return
+          }
+          if (outcome === 'recovered') {
+            this._adapter.refresh()
+            this._emit({ type: 'targetRecovered', index, step })
+            // Re-arm on a microtask: `_onStepPainted` calls `_disarmRecovery`,
+            // which would otherwise unsubscribe this subscription from inside
+            // its own `tap`.
+            queueMicrotask(() => {
+              if (!this._closed) {
+                this._onStepPainted(index, step)
+              }
+            })
+            return
+          }
+          this._applyTargetLostPolicy(index, step)
+        }),
+      )
+      .subscribe()
+  }
+
+  private _applyTargetLostPolicy(index: number, step: TheSeamGuideStep): void {
+    const policy: TheSeamGuideMissPolicy =
+      step.onTargetLost ?? this.options.onTargetLost
+
+    if (policy === 'end') {
+      this.close('targetMissing')
+      return
+    }
+    if (policy === 'skip') {
+      this._request(index + 1, 1)
+      return
+    }
+    // 'elementless' — the resolver now returns undefined, so a refresh collapses
+    // the popover to centered without a step transition.
+    this._adapter.refresh()
+  }
+
+  private _disarmRecovery(): void {
+    this._recoverySub?.unsubscribe()
+    this._recoverySub = null
   }
 
   private _runHook(
