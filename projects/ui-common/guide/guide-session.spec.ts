@@ -27,6 +27,14 @@ describe('TheSeamGuideSession transitions', () => {
     document.body.innerHTML = ''
   })
 
+  // Placed in afterEach rather than an inline `warn.mockRestore()` at the
+  // end of each test body: if an assertion above an inline restore throws,
+  // the restore never runs and the spy leaks into later tests, silently
+  // swallowing their warnings too.
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   it('runs beforeStep before painting the step', fakeAsync(() => {
     const order: string[] = []
     const { adapter, session } = makeSession({
@@ -127,7 +135,7 @@ describe('TheSeamGuideSession transitions', () => {
   it("skips a step whose target never appears when policy is 'skip'", fakeAsync(() => {
     // Default policy 'skip' trips the dev-mode warning tested separately
     // below; suppress it here since this test isn't asserting on it.
-    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {})
+    jest.spyOn(console, 'warn').mockImplementation(() => {})
     const { adapter, events, session } = makeSession({
       steps: [
         { element: 'never', popover: { title: 'one' } },
@@ -144,7 +152,6 @@ describe('TheSeamGuideSession transitions', () => {
       true,
     )
     expect(adapter.calls).toContain('moveTo:1')
-    warn.mockRestore()
   }))
 
   it("ends the guide when a required step's target never appears", fakeAsync(() => {
@@ -193,7 +200,7 @@ describe('TheSeamGuideSession transitions', () => {
     // Default policy 'skip' trips the dev-mode warning (once per missed
     // step) tested separately below; suppress it here since this test isn't
     // asserting on it.
-    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {})
+    jest.spyOn(console, 'warn').mockImplementation(() => {})
     const { events, session } = makeSession({
       steps: [
         { element: 'never-a', popover: { title: 'one' } },
@@ -209,7 +216,6 @@ describe('TheSeamGuideSession transitions', () => {
     tick()
 
     expect(events.some((e) => e.type === 'closed')).toBe(true)
-    warn.mockRestore()
   }))
 
   it('warns in dev mode when a step is skipped', fakeAsync(() => {
@@ -227,7 +233,6 @@ describe('TheSeamGuideSession transitions', () => {
     tick()
 
     expect(warn).toHaveBeenCalledWith(expect.stringContaining('never'))
-    warn.mockRestore()
   }))
 
   it('abandons an in-flight transition when a new one starts', fakeAsync(() => {
@@ -273,5 +278,82 @@ describe('TheSeamGuideSession transitions', () => {
     tick(1000)
 
     expect(adapter.calls).not.toContain('moveTo:0')
+  }))
+
+  it("does not re-run the outgoing step's afterStep when a later step is skipped", fakeAsync(() => {
+    // Default policy 'skip' trips the dev-mode warning tested separately
+    // above; suppress it here since this test isn't asserting on it.
+    jest.spyOn(console, 'warn').mockImplementation(() => {})
+    let afterCount = 0
+    const { adapter, session } = makeSession({
+      steps: [
+        { popover: { title: 'A' }, afterStep: () => void afterCount++ },
+        { element: 'never', popover: { title: 'B' } },
+        { popover: { title: 'C' } },
+      ],
+      targetTimeout: 500,
+    })
+
+    session.start()
+    tick() // paints A
+    session.next()
+    tick(500) // B's target times out; miss policy re-requests C
+    tick() // flushes that re-request, painting C
+
+    expect(afterCount).toBe(1)
+    expect(adapter.calls).toContain('moveTo:2')
+  }))
+
+  it('stays responsive to a subsequent moveTo after a hook throws', fakeAsync(() => {
+    // The thrown error trips a dev-mode warning from the transition's own
+    // catchError; suppress it here since this test isn't asserting on it.
+    jest.spyOn(console, 'warn').mockImplementation(() => {})
+    const { adapter, session } = makeSession({
+      steps: [
+        { popover: { title: 'one' } },
+        {
+          popover: { title: 'two' },
+          onMissingTarget: 'elementless',
+          beforeStep: () => {
+            throw new Error('boom')
+          },
+        },
+        { popover: { title: 'three' } },
+      ],
+    })
+
+    session.start()
+    tick()
+    session.next()
+    tick()
+
+    // The failing transition must be contained to itself rather than
+    // unsubscribing the outer transition pipeline; otherwise every
+    // subsequent call below would become a silent no-op.
+    session.moveTo(2)
+    tick()
+
+    expect(adapter.calls).toContain('moveTo:2')
+  }))
+
+  it('treats an invalid CSS selector as a waitable name instead of throwing', fakeAsync(() => {
+    // '#1-invalid' is not a valid CSS selector (an ID cannot start with a
+    // digit) — `document.querySelector` throws on it directly. 'my target'
+    // (the other name suggested for this case) turned out not to work: a
+    // bare space is a valid descendant-combinator selector, so it never
+    // reaches the catch branch.
+    const { adapter, registry, session } = makeSession({
+      steps: [{ element: '#1-invalid', popover: { title: 'one' } }],
+      targetTimeout: 5000,
+    })
+
+    expect(() => session.start()).not.toThrow()
+    tick(100)
+    expect(adapter.calls).not.toContain('moveTo:0')
+
+    registry.register('#1-invalid', connectedEl())
+    tick()
+
+    expect(adapter.calls).toContain('moveTo:0')
   }))
 })

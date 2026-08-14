@@ -48,6 +48,13 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
 
   private _closed = false
 
+  // Whether the currently active step's `afterStep` has already fired for
+  // this departure. A skip or a cancellation re-requests a transition
+  // without changing `_activeIndex` (the departed-from step never painted
+  // anything new), so without this guard the same step's `afterStep` would
+  // re-run on every retry. Reset to `false` whenever a step actually paints.
+  private _afterStepFired = false
+
   readonly steps: TheSeamGuideStep[]
   readonly options: TheSeamGuideResolvedConfig
 
@@ -156,6 +163,14 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
   /**
    * The one sequence every transition runs. Cancellable: a new request causes
    * `switchMap` to unsubscribe from this, so nothing paints after teardown.
+   *
+   * A `catchError` wraps the whole sequence: a hook that throws or rejects
+   * must not escape to the outer `_transitions` subscriber, because that
+   * subscriber has no error handler of its own and an uncaught error there
+   * would unsubscribe it permanently, silently wedging the session (`next`,
+   * `previous`, and `moveTo` would become no-ops forever). A caught failure
+   * is treated the same as a missing target: it goes through the incoming
+   * step's own miss policy rather than introducing a new outcome.
    */
   private _runTransition(
     index: number,
@@ -176,7 +191,14 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
       this._activeIndex() >= 0 ? this.steps[this._activeIndex()] : undefined
     const incoming = this.steps[index]
 
-    return defer(() => this._runHook(outgoing?.afterStep)).pipe(
+    const afterStep$ = this._afterStepFired
+      ? of(null)
+      : defer(() => {
+          this._afterStepFired = true
+          return this._runHook(outgoing?.afterStep)
+        })
+
+    return afterStep$.pipe(
       switchMap(() => this._runHook(incoming.beforeStep)),
       switchMap(() => this._resolveTarget(incoming)),
       switchMap((outcome) => {
@@ -186,13 +208,31 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
         if (outcome === 'missing') {
           return this._applyMissPolicy(index, incoming, direction)
         }
-        this._activeIndex.set(index)
-        this._adapter.moveTo(index)
-        this._emit({ type: 'stepChanged', index, step: incoming })
-        this._onStepPainted(index, incoming)
+        this._paint(index, incoming)
         return EMPTY
       }),
+      catchError((err) => {
+        if (this._closed) {
+          return EMPTY
+        }
+        if (isDevMode()) {
+          console.warn(
+            `TheSeamGuideSession: step ${index} threw during its transition` +
+              ` (${String(err)}); applying the miss policy.`,
+          )
+        }
+        return this._applyMissPolicy(index, incoming, direction)
+      }),
     )
+  }
+
+  /** Paints a step that is actually entering: real target or elementless. */
+  private _paint(index: number, step: TheSeamGuideStep): void {
+    this._activeIndex.set(index)
+    this._afterStepFired = false
+    this._adapter.moveTo(index)
+    this._emit({ type: 'stepChanged', index, step })
+    this._onStepPainted(index, step)
   }
 
   /** Overridden in Task 7 to arm mid-step loss detection. */
@@ -261,10 +301,7 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
     }
 
     if (policy === 'elementless') {
-      this._activeIndex.set(index)
-      this._adapter.moveTo(index)
-      this._emit({ type: 'stepChanged', index, step })
-      this._onStepPainted(index, step)
+      this._paint(index, step)
       return EMPTY
     }
 
