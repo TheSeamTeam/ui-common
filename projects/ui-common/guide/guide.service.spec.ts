@@ -128,6 +128,42 @@ describe('TheSeamGuideService', () => {
     )
     warn.mockRestore()
   })
+
+  describe('teardown', () => {
+    afterEach(() => jest.restoreAllMocks())
+
+    it('closes the active guide with reason destroyed when the injector is destroyed', async () => {
+      const ref = service.start({ steps: [{ popover: { title: 'one' } }] })
+      const closed = firstValueFromAfterClosed(ref)
+
+      TestBed.resetTestingModule()
+
+      expect(await closed).toEqual({
+        reason: 'destroyed',
+        lastIndex: expect.any(Number),
+      })
+      expect(adapter.calls).toContain('destroy')
+    })
+
+    it('closes a non-dismissible active guide when the injector is destroyed', async () => {
+      const ref = service.start({
+        steps: [{ popover: { title: 'one' } }],
+        dismissible: false,
+        onMissingTarget: 'end',
+      })
+      const closed = firstValueFromAfterClosed(ref)
+
+      TestBed.resetTestingModule()
+
+      expect((await closed).reason).toBe('destroyed')
+      expect(adapter.calls).toContain('destroy')
+    })
+
+    it('does not throw when the injector is destroyed with no active guide', () => {
+      expect(service.activeGuide()).toBeNull()
+      expect(() => TestBed.resetTestingModule()).not.toThrow()
+    })
+  })
 })
 
 function firstValueFromAfterClosed(ref: {

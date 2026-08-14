@@ -1,4 +1,11 @@
-import { inject, Injectable, isDevMode, signal, Signal } from '@angular/core'
+import {
+  inject,
+  Injectable,
+  isDevMode,
+  OnDestroy,
+  signal,
+  Signal,
+} from '@angular/core'
 
 import { THE_SEAM_GUIDE_ADAPTER } from './adapter/guide-adapter'
 import { TheSeamGuideRef } from './guide-ref'
@@ -12,7 +19,7 @@ import { TheSeamGuideStep } from './models/guide-step'
 import { TheSeamGuideTargetRegistry } from './target/guide-target-registry'
 
 @Injectable({ providedIn: 'root' })
-export class TheSeamGuideService {
+export class TheSeamGuideService implements OnDestroy {
   private readonly _adapter = inject(THE_SEAM_GUIDE_ADAPTER)
   private readonly _registry = inject(TheSeamGuideTargetRegistry)
 
@@ -69,6 +76,18 @@ export class TheSeamGuideService {
   /** Highlights a single element. A one-step guide. */
   highlight(step: TheSeamGuideStep): TheSeamGuideRef {
     return this.start({ steps: [step] })
+  }
+
+  /**
+   * Closes any active guide when the owning injector is destroyed —
+   * otherwise driver.js's overlay is left in the DOM, and its
+   * `pointer-events: none` blocks every click on the page with no recovery
+   * short of a reload. `close` always works programmatically even when the
+   * guide is `dismissible: false`, which is exactly the case that must not
+   * be left behind.
+   */
+  ngOnDestroy(): void {
+    this._activeGuide()?.close('destroyed')
   }
 
   private _clearIfCurrent(ref: TheSeamGuideRef): void {
