@@ -488,13 +488,38 @@ imports `@angular/cdk/overlay-prebuilt` and
 
 ```scss
 @import './styles/utilities';
-@import 'driver.js/dist/driver';   // Sass resolves .css and inlines it
+@import 'driver.js/dist/driver.css';   // see the correction note below
 // ... Bootstrap 4.6 variables layered over driver.js defaults
 ```
 
 The guide styles import the global **`styles/utilities`** (variables, functions,
 and mixins only, no CSS output) and never `theme.scss`, so they cannot duplicate
 rules or destabilize existing sheets.
+
+> **Corrected 2026-08-14, during implementation.** Two errors in the original
+> text, both of which shipped a working-looking stylesheet that could not
+> compile.
+>
+> **The specifier needs its `.css` extension.** driver.js's `package.json`
+> `exports` map publishes only `./dist/driver.css`, so the extensionless form is
+> unresolvable by any exports-aware resolver — Storybook's sass-loader failed
+> with "Can't find stylesheet to import". The two precedents cited above are
+> both special cases that hide this: `@angular/cdk` deliberately publishes
+> *both* `./overlay-prebuilt.css` and `./overlay-prebuilt`, and
+> `overlayscrollbars` has no `exports` map at all. Neither generalises.
+>
+> **Sass does not inline it.** Because the specifier ends in `.css`, Sass emits
+> a plain CSS `@import` verbatim and leaves resolution to whatever bundles the
+> emitted CSS afterwards. Storybook works because webpack's css-loader resolves
+> it at that later stage; esbuild resolves and inlines it for consuming apps.
+> The end result is equivalent, but the mechanism is not what this section
+> originally claimed.
+>
+> Root cause of both: the build verification below was structurally incapable of
+> catching them. `npm run build:ui-common` passes because ng-packagr *copies*
+> `**/*.scss` as assets without ever compiling them, and a standalone Dart Sass
+> check passes because plain Dart Sass probes the filesystem and ignores
+> `exports` maps. Neither exercises the resolver that actually matters.
 
 ### Build asset entry
 
