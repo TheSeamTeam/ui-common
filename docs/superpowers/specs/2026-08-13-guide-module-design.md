@@ -37,10 +37,13 @@ through the import path.
    acceptable; changes rippling into apps are not.
 4. Handle targets that are not in the DOM when the guide starts, and targets
    created or destroyed as the guide advances.
-5. Support guides the user cannot dismiss.
-6. Emit observable events sufficient for analytics to distinguish completion
+5. Handle a target that disappears while its step is painted, whether permanently
+   or temporarily, without re-firing step lifecycle hooks or emitting spurious
+   step-transition events.
+6. Support guides the user cannot dismiss.
+7. Emit observable events sufficient for analytics to distinguish completion
    from abandonment.
-7. Keyboard and screen-reader accessibility.
+8. Keyboard and screen-reader accessibility.
 
 ## Architecture
 
@@ -214,6 +217,69 @@ it will paint a step after the guide is gone.
 Transitions run through a request subject with `switchMap`, so a new transition
 cancels the in-flight one, and teardown cancels unconditionally.
 
+## Mid-step target loss
+
+Resolution at step entry is not sufficient. A target can leave the DOM while its
+step is painted — destroyed permanently (a route change, a collapsed panel), or
+temporarily (periodically refreshed data whose `trackBy` is missing or wrong, so
+rows are destroyed and recreated on every refresh).
+
+**Recovery is not a transition.** It reuses only the resolution step of the
+lifecycle, never the full sequence. Re-running the sequence would re-fire
+`beforeStep` and `afterStep` — which may open menus, navigate, or record
+analytics — and would emit a second `stepChanged`, double-counting every step in
+a funnel. Recovery must therefore be a distinct operation.
+
+The existing architecture makes this cheap: each step's `element` is handed to
+the adapter as a **resolver function**, so re-pointing is just
+`adapter.refresh()`. driver.js re-runs the resolver and repositions on whatever
+element is registered at that moment.
+
+### Detection
+
+Registry-based, at no additional cost: the target directive already calls
+`unregister` in `ngOnDestroy`, so the disappearance of a **named** target is
+known precisely and immediately.
+
+**Selector and `Element` targets get no mid-step recovery in v1.** There is no
+notification channel for them short of a `MutationObserver`, and this limitation
+is a reason to prefer named targets. Documented explicitly rather than left to
+be discovered.
+
+### Sequence
+
+1. Active step's target unregisters.
+2. Emit `targetLost`. Enter `recovering` state; the popover stays on screen.
+3. Start the `targetLostGrace` timer.
+4. Target re-registers within grace -> `adapter.refresh()` re-points at the new
+   element, emit `targetRecovered`. Invisible to the user.
+5. Grace expires -> apply `onTargetLost`.
+
+The element that re-registers may be a *different* element under the same name.
+That is the intended behavior and is exactly what makes the `trackBy` churn case
+recover cleanly.
+
+### Policy and defaults
+
+`onTargetLost` reuses the `'skip' | 'elementless' | 'end'` enum, but is a
+**separate setting with a different default**, because what is graceful differs
+by moment:
+
+- At **entry**, the user has never seen the step, so `'skip'` is right.
+- **Mid-step**, the user is actively reading the popover, so advancing is
+  jarring. Default `'elementless'` collapses to a centered popover and keeps the
+  content readable.
+
+Permanent destruction does **not** throw. Mid-guide exceptions are hostile to the
+user; an event is emitted and the policy decides. Applications wanting hard
+failure set `onTargetLost: 'end'`.
+
+### Interaction with cancellation
+
+The grace timer runs through the same `switchMap` teardown as transitions, so a
+user pressing Next, Previous, or Escape during recovery abandons the pending
+recovery and the normal transition wins.
+
 ## Dismissal and concurrency
 
 ```ts
@@ -226,8 +292,17 @@ export interface TheSeamGuideConfig {
   /** Milliseconds to wait for a target before the miss policy applies. Default 3000. */
   targetTimeout?: number
 
-  /** Guide-level miss policy. Default 'skip'. */
+  /** Guide-level miss policy, applied at step entry. Default 'skip'. */
   onMissingTarget?: TheSeamGuideMissPolicy
+
+  /**
+   * Milliseconds to wait for a target to return after it disappears mid-step,
+   * before `onTargetLost` applies. Default 1000.
+   */
+  targetLostGrace?: number
+
+  /** Policy for a target lost mid-step. Default 'elementless'. */
+  onTargetLost?: TheSeamGuideMissPolicy
 }
 
 export interface TheSeamGuideStep {
@@ -241,6 +316,9 @@ export interface TheSeamGuideStep {
 
   /** Overrides the guide-level policy. `'end'` marks this step required. */
   onMissingTarget?: TheSeamGuideMissPolicy
+
+  /** Overrides the guide-level mid-step loss policy. */
+  onTargetLost?: TheSeamGuideMissPolicy
 
   beforeStep?: () => void | Promise<void> | Observable<unknown>
   afterStep?: () => void | Promise<void> | Observable<unknown>
@@ -295,7 +373,13 @@ export class TheSeamGuideRef {
 }
 ```
 
-Events: `started`, `stepChanged`, `stepSkipped`, `closed`.
+Events: `started`, `stepChanged`, `stepSkipped`, `targetLost`,
+`targetRecovered`, `closed`.
+
+`targetLost` and `targetRecovered` are deliberately distinct from `stepChanged`.
+Mid-step recovery must never appear as a step transition, or analytics will
+double-count.
+
 Close reasons: `completed`, `dismissed`, `targetMissing`, `superseded`,
 `destroyed` — enough for analytics to distinguish "finished the guide" from
 "abandoned on step 2".
@@ -323,10 +407,41 @@ provideTheSeamGuide({ adapter: MyCustomAdapter })    // swap, no consumer change
 
 ### Popover content
 
-v1 accepts **strings** for `title` and `description`. driver.js also accepts a
-DOM node, so Angular `TemplateRef` support is feasible and the content type is
-designed as a discriminated union from the start to admit it later without a
-breaking change. Template rendering itself is deferred.
+**v1 accepts `string` only** for `title` and `description`. Nothing throws and no
+unimplemented surface is published.
+
+The eventual shape is a discriminated union covering both Angular content forms:
+
+```ts
+export type TheSeamGuideContent =
+  | string
+  | { template: TemplateRef<TheSeamGuideContentContext> }
+  | { component: Type<unknown>; inputs?: Record<string, unknown> }
+```
+
+A `component` arm matters as much as `template`: a guide defined in a service
+has no template declared anywhere, so `TemplateRef` alone would force awkward
+plumbing on the most common caller.
+
+Widening a parameter type is **not** a breaking change for callers, so both arms
+can be added later with no consumer changes. What must be right in v1 is the
+internal boundary, which is invisible to consumers:
+
+```ts
+// adapter sees only this, in v1 and after
+popover?: { title?: string; description?: string | HTMLElement }
+```
+
+Both non-string arms will render identically — create the view through
+`ViewContainerRef`, attach its `rootNodes` to a detached host element, hand the
+adapter that `HTMLElement`, and destroy the view on step exit. **The service
+performs all Angular work; the adapter only ever receives a string or a DOM
+node**, which is what keeps the adapter engine-agnostic.
+
+`TheSeamDynamicComponentLoader` (`@theseam/ui-common/dynamic-component-loader`)
+is **not** reused here. It resolves lazily loaded components by string id through
+the deprecated `NgModuleFactory` / `ComponentFactory` APIs — a different problem
+from rendering an already-known component into a host node.
 
 ## Styling
 
@@ -370,10 +485,19 @@ accessibility is asserted explicitly instead.
   `waitFor` timeout), transition sequencing, `switchMap` cancellation, each miss
   policy, and the supersede-versus-throw rule. All engine-free against
   `FakeGuideAdapter`, which is the payoff of the adapter boundary.
+- **Jest specs, mid-step loss** — called out separately because these are the
+  regressions that would be silent:
+  - target lost then recovered within grace emits `targetLost` and
+    `targetRecovered`, and **asserts `beforeStep` and `afterStep` were not
+    re-invoked and no `stepChanged` was emitted**
+  - recovery re-points at a *different* element registered under the same name
+  - grace expiry applies each `onTargetLost` policy
+  - Next/Previous/Escape during grace abandons the pending recovery
 - **Storybook play functions** — against real driver.js: a multi-step
-  walkthrough, an elementless step, a lazily rendered target, a non-dismissible
-  guide, and keyboard navigation asserting focus lands in the popover and that
-  Escape is inert when `dismissible: false`.
+  walkthrough, an elementless step, a lazily rendered target, a target destroyed
+  and recreated mid-step, a non-dismissible guide, and keyboard navigation
+  asserting focus lands in the popover and that Escape is inert when
+  `dismissible: false`.
 
 ## Packaging
 
@@ -396,6 +520,10 @@ without a breaking change:
 - **Seen-state persistence** — remembering that a user already completed a guide.
 - **Registered guide definitions** — a central registry of named guides that can
   be started by id.
-- **Angular `TemplateRef` popover content** — the content type admits it; the
-  rendering is not built.
+- **`TemplateRef` and standalone-component popover content** — v1 ships `string`;
+  widening the type later is non-breaking, and the adapter boundary already
+  accepts an `HTMLElement`.
+- **Mid-step recovery for selector and `Element` targets** — would require a
+  `MutationObserver` active for the duration of a guide. Named targets cover it
+  today via the registry.
 - **Grouped step dependencies** — see Miss policy above.
