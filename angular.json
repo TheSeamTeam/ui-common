@@ -40,6 +40,7 @@
             ],
             "styles": [
               "projects/ui-common/styles/theme.scss",
+              "projects/ui-common/guide/guide-theme.scss",
               "projects/ui-common/framework/route-transitions/route-transitions.css",
               "node_modules/@marklb/ngx-datatable/assets/icons.css"
             ],
@@ -66,6 +67,11 @@
                 "glob": "**/*.scss",
                 "input": "projects/ui-common/breadcrumbs",
                 "output": "breadcrumbs"
+              },
+              {
+                "glob": "**/*.scss",
+                "input": "projects/ui-common/guide",
+                "output": "guide"
               },
               {
                 "glob": "**/*.scss",
@@ -149,6 +155,7 @@
             "outputDir": "storybook-static",
             "styles": [
               "projects/ui-common/styles/theme.scss",
+              "projects/ui-common/guide/guide-theme.scss",
               "projects/ui-common/framework/route-transitions/route-transitions.css",
               "node_modules/@marklb/ngx-datatable/assets/icons.css"
             ],
@@ -175,6 +182,11 @@
                 "glob": "**/*.scss",
                 "input": "projects/ui-common/breadcrumbs",
                 "output": "breadcrumbs"
+              },
+              {
+                "glob": "**/*.scss",
+                "input": "projects/ui-common/guide",
+                "output": "guide"
               },
               {
                 "glob": "**/*.scss",

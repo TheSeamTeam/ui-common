@@ -1,0 +1,54 @@
+@import './styles/utilities';
+
+// driver.js base styles, resolved from the package. Matches how theme.scss
+// imports '@angular/cdk/overlay-prebuilt' and overlayscrollbars.
+@import 'driver.js/dist/driver';
+
+.driver-popover {
+  background-color: $seam-guide-popover-bg;
+  color: $seam-guide-popover-color;
+  border-radius: $seam-guide-popover-border-radius;
+  max-width: $seam-guide-popover-max-width;
+  font-family: $font-family-base;
+  font-size: $font-size-base;
+}
+
+.driver-popover-title {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+}
+
+// `.btn`/`.btn-sm`/`.btn-primary`/`.btn-secondary` are not available to
+// `@extend` here: `./styles/utilities` (like the global `styles/utilities`
+// it wraps) only pulls in Bootstrap's variables, functions, and mixins, not
+// the `.btn` rule itself. Reproduce the button look with the same mixins
+// Bootstrap's own button classes use instead.
+.driver-popover-next-btn,
+.driver-popover-prev-btn {
+  display: inline-block;
+  font-weight: $btn-font-weight;
+  text-align: center;
+  white-space: $btn-white-space;
+  vertical-align: middle;
+  user-select: none;
+  border: $btn-border-width solid transparent;
+  @include transition($btn-transition);
+  @include button-size($btn-padding-y-sm, $btn-padding-x-sm, $btn-font-size-sm, $btn-line-height-sm, $btn-border-radius-sm);
+
+  &:focus,
+  &.focus {
+    outline: 0;
+  }
+}
+
+.driver-popover-next-btn {
+  @include button-variant($primary, $primary);
+}
+
+.driver-popover-prev-btn {
+  @include button-variant($secondary, $secondary);
+}
+
+.driver-overlay {
+  fill: $seam-guide-overlay-color;
+}

@@ -59,6 +59,11 @@
     },
     {
       "glob": "**/*.scss",
+      "input": "guide",
+      "output": "guide"
+    },
+    {
+      "glob": "**/*.scss",
       "input": "framework/base-layout",
       "output": "framework/base-layout"
     },
