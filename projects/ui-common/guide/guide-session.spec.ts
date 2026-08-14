@@ -264,6 +264,34 @@ describe('TheSeamGuideSession transitions', () => {
     expect(adapter.calls).not.toContain('moveTo:1')
   }))
 
+  it('runs beforeStep only once when the same index is requested twice during an in-flight transition', fakeAsync(() => {
+    let beforeCount = 0
+    const { adapter, session } = makeSession({
+      steps: [
+        { popover: { title: 'one' } },
+        {
+          element: 'never',
+          popover: { title: 'two' },
+          beforeStep: () => void beforeCount++,
+        },
+      ],
+      targetTimeout: 5000,
+    })
+
+    session.start()
+    tick() // paints step 0
+
+    session.next()
+    tick(100)
+    // A second Next click while step 1's target is still unresolved:
+    // `_activeIndex()` still points at 0, so this re-requests index 1 too.
+    session.next()
+    tick(100)
+
+    expect(beforeCount).toBe(1)
+    expect(adapter.calls).not.toContain('moveTo:1')
+  }))
+
   it('does not paint after the guide is closed', fakeAsync(() => {
     const { adapter, registry, session } = makeSession({
       steps: [{ element: 'late', popover: { title: 'one' } }],
@@ -364,6 +392,23 @@ describe('TheSeamGuideSession transitions', () => {
     const closed = events.find((e) => e.type === 'closed')
     expect(closed).toBeDefined()
     expect(closed?.type === 'closed' && closed.result.reason).toBe('destroyed')
+  }))
+
+  it('passes popover side and align through to the adapter', fakeAsync(() => {
+    const { adapter, session } = makeSession({
+      steps: [
+        {
+          popover: { title: 'one', side: 'left', align: 'end' },
+        },
+      ],
+    })
+
+    session.start()
+    tick()
+
+    expect(adapter.startedConfig?.steps[0]?.popover).toEqual(
+      expect.objectContaining({ side: 'left', align: 'end' }),
+    )
   }))
 
   it('treats an invalid CSS selector as a waitable name instead of throwing', fakeAsync(() => {

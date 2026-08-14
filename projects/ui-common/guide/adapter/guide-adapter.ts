@@ -17,6 +17,8 @@ export interface TheSeamGuideAdapterStep {
      * passes a string.
      */
     description?: string | HTMLElement
+    side?: 'top' | 'right' | 'bottom' | 'left'
+    align?: 'start' | 'center' | 'end'
   }
 }
 

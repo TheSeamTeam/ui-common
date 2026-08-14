@@ -62,6 +62,16 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
   // re-run on every retry. Reset to `false` whenever a step actually paints.
   private _afterStepFired = false
 
+  // Index whose `beforeStep` has already been fired while its transition is
+  // still in flight (target not yet resolved), or `null`. driver.js leaves
+  // the Next/Previous buttons live during that wait, so a second click
+  // re-requests the same index; without this guard `switchMap` would restart
+  // the transition and run `beforeStep` a second time before the first
+  // attempt ever settles. Reset to `null` whenever a step actually paints —
+  // mirroring `_afterStepFired` — so a later, genuine re-entry to the same
+  // index still runs its `beforeStep`.
+  private _beforeStepFiredFor: number | null = null
+
   readonly steps: TheSeamGuideStep[]
   readonly options: TheSeamGuideResolvedConfig
 
@@ -213,8 +223,16 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
           return this._runHook(outgoing?.afterStep)
         })
 
+    const beforeStep$ =
+      this._beforeStepFiredFor === index
+        ? of(null)
+        : defer(() => {
+            this._beforeStepFiredFor = index
+            return this._runHook(incoming.beforeStep)
+          })
+
     return afterStep$.pipe(
-      switchMap(() => this._runHook(incoming.beforeStep)),
+      switchMap(() => beforeStep$),
       switchMap(() => this._resolveTarget(incoming)),
       switchMap((outcome) => {
         if (this._closed) {
@@ -255,6 +273,7 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
   private _paint(index: number, step: TheSeamGuideStep): void {
     this._activeIndex.set(index)
     this._afterStepFired = false
+    this._beforeStepFiredFor = null
     this._adapter.moveTo(index)
     this._emit({ type: 'stepChanged', index, step })
     this._onStepPainted(index, step)
@@ -318,7 +337,19 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
           }
           this._applyTargetLostPolicy(index, step)
         }),
-        catchError(() => EMPTY),
+        catchError((err) => {
+          // Swallowed deliberately, not silently: a broken recovery pipeline
+          // must not close a guide the user is actively reading, but it
+          // should still be visible to whoever is developing against it.
+          if (isDevMode()) {
+            console.warn(
+              `TheSeamGuideSession: mid-step recovery for step ${index}` +
+                ` threw (${String(err)}); recovery detection for this step` +
+                ' is now disarmed.',
+            )
+          }
+          return EMPTY
+        }),
       )
       .subscribe()
   }
@@ -336,7 +367,10 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
       return
     }
     // 'elementless' — the resolver now returns undefined, so a refresh collapses
-    // the popover to centered without a step transition.
+    // the popover to centered without a step transition. This is terminal:
+    // recovery detection was already disarmed on entry to this branch (the
+    // `take(1)` above), and nothing re-arms it afterwards, so if the target
+    // returns later the popover stays centered until the next transition.
     this._adapter.refresh()
   }
 
@@ -435,7 +469,15 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
         step.element === undefined
           ? undefined
           : () => this._resolveNow(step) ?? undefined,
-      popover: step.popover === undefined ? undefined : { ...step.popover },
+      popover:
+        step.popover === undefined
+          ? undefined
+          : {
+              title: step.popover.title,
+              description: step.popover.description,
+              side: step.popover.side,
+              align: step.popover.align,
+            },
     }
   }
 

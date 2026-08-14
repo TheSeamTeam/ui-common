@@ -99,11 +99,18 @@ export class DriverJsGuideAdapter implements TheSeamGuideAdapter {
 
   private _toDriveStep(step: TheSeamGuideAdapterStep): DriveStep {
     const description = step.popover?.description
+    // Typed honestly as `Element | undefined`, matching what the resolver
+    // can actually return — `undefined` is a real outcome, not an absent
+    // one, since the elementless path depends on it.
+    const resolveElement: (() => Element | undefined) | undefined =
+      step.element === undefined ? undefined : () => step.element?.()
     return {
-      element:
-        step.element === undefined
-          ? undefined
-          : () => step.element?.() as Element,
+      // driver.js's own public type only declares `() => Element`, but its
+      // runtime falls back to a centered popover when the resolver returns
+      // `undefined`. This cast crosses that documentation gap at the one
+      // point it matters; `resolveElement` above keeps `undefined` visible
+      // everywhere else in this method.
+      element: resolveElement as (() => Element) | undefined,
       popover:
         step.popover === undefined
           ? undefined
@@ -111,6 +118,8 @@ export class DriverJsGuideAdapter implements TheSeamGuideAdapter {
               title: step.popover.title,
               description:
                 typeof description === 'string' ? description : undefined,
+              side: step.popover.side,
+              align: step.popover.align,
               // A DOM node is appended after render, which is how template and
               // component content will work when it is added.
               onPopoverRender:
