@@ -2512,12 +2512,25 @@ git commit -m "feat(guide): add driver.js adapter and provideTheSeamGuide"
 
 `projects/ui-common/guide/styles/_variables.scss`:
 
+> **Variables are `$seam-` prefixed** because this stylesheet is imported by
+> consuming applications, which means the names land in the app's global Sass
+> scope and are meant to be overridden. Follow
+> `projects/ui-common/widget/styles/_variables.scss` (`$seam-widget-*`),
+> `framework/nav` (`$seam-nav-*`), and `framework/dashboard`
+> (`$seam-dashboard-*`).
+>
+> Do **not** copy the unprefixed style of `breadcrumbs/styles/_variables.scss`
+> (`$breadcrumb-color`) or `framework/base-layout` (`$base-header-*`). Those
+> predate the convention and belong to styles that stay encapsulated in a
+> component, so they never reach an app's scope. The guide has no component, so
+> its variables are unavoidably public.
+
 ```scss
-$guide-popover-bg: $white !default;
-$guide-popover-color: $body-color !default;
-$guide-popover-border-radius: $border-radius !default;
-$guide-popover-max-width: 20rem !default;
-$guide-overlay-color: rgba(0, 0, 0, 0.6) !default;
+$seam-guide-popover-bg: $white !default;
+$seam-guide-popover-color: $body-color !default;
+$seam-guide-popover-border-radius: $border-radius !default;
+$seam-guide-popover-max-width: 20rem !default;
+$seam-guide-overlay-color: rgba(0, 0, 0, 0.6) !default;
 ```
 
 `projects/ui-common/guide/styles/_utilities.scss`:
@@ -2539,10 +2552,10 @@ $guide-overlay-color: rgba(0, 0, 0, 0.6) !default;
 @import 'driver.js/dist/driver';
 
 .driver-popover {
-  background-color: $guide-popover-bg;
-  color: $guide-popover-color;
-  border-radius: $guide-popover-border-radius;
-  max-width: $guide-popover-max-width;
+  background-color: $seam-guide-popover-bg;
+  color: $seam-guide-popover-color;
+  border-radius: $seam-guide-popover-border-radius;
+  max-width: $seam-guide-popover-max-width;
   font-family: $font-family-base;
   font-size: $font-size-base;
 }
@@ -2567,7 +2580,7 @@ $guide-overlay-color: rgba(0, 0, 0, 0.6) !default;
 }
 
 .driver-overlay {
-  fill: $guide-overlay-color;
+  fill: $seam-guide-overlay-color;
 }
 ```
 
