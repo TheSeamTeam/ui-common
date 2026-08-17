@@ -3,7 +3,8 @@
 **Date:** 2026-08-13
 **Entry point:** `@theseam/ui-common/guide`
 **Branch:** `marklb/guide`
-**Status:** Approved design, pending implementation plan
+**Status:** Implemented, except **Popover content** — revised 2026-08-17 and
+pending implementation
 
 ## Purpose
 
@@ -317,6 +318,12 @@ export interface TheSeamGuideConfig {
 
   /** Policy for a target lost mid-step. Default 'elementless'. */
   onTargetLost?: TheSeamGuideMissPolicy
+
+  /**
+   * Popover defaults for every step in this guide. The middle of the three
+   * content layers — see Popover content below.
+   */
+  popover?: TheSeamGuidePopover
 }
 
 export interface TheSeamGuideStep {
@@ -408,6 +415,7 @@ export * from './target/guide-target-registry'
 export * from './models/guide-config'
 export * from './models/guide-step'
 export * from './models/guide-event'
+export * from './models/guide-content'    // content union, context, DI token
 export * from './adapter/guide-adapter'   // token + interface only
 ```
 
@@ -417,45 +425,374 @@ provider function so driver.js types never appear in a consumer's imports:
 ```ts
 provideTheSeamGuide()                                // driver.js adapter (default)
 provideTheSeamGuide({ adapter: MyCustomAdapter })    // swap, no consumer changes
+provideTheSeamGuide({ popover: { … } })              // application-wide look
 ```
+
+`TheSeamGuideContentRenderer` is internal. It is a separate `providedIn: 'root'`
+service rather than logic inside the session so that session specs can run
+against a fake renderer, keeping them free of a real `ApplicationRef`.
 
 ### Popover content
 
-**v1 accepts `string` only** for `title` and `description`. Nothing throws and no
-unimplemented surface is published.
+> **Revised 2026-08-17.** v1 shipped `string` only, and this section previously
+> described a three-arm union (`string | {template} | {component}`) as the
+> eventual shape, with `title` staying `string` forever. Both were wrong. The
+> union had nowhere to put per-step data, so a renderer shared across steps
+> could not vary its content; and a title that must carry an icon, a subtitle,
+> and a progress indicator cannot be a string. The section below replaces the
+> original in full. The **adapter boundary is unchanged** apart from `title`
+> widening to match `description`, so the v1 groundwork holds.
 
-The eventual shape is a discriminated union covering both Angular content forms:
-
-```ts
-export type TheSeamGuideContent =
-  | string
-  | { template: TemplateRef<TheSeamGuideContentContext> }
-  | { component: Type<unknown>; inputs?: Record<string, unknown> }
-```
-
-A `component` arm matters as much as `template`: a guide defined in a service
-has no template declared anywhere, so `TemplateRef` alone would force awkward
-plumbing on the most common caller.
-
-Widening a parameter type is **not** a breaking change for callers, so both arms
-can be added later with no consumer changes. What must be right in v1 is the
-internal boundary, which is invisible to consumers:
+`title` and `description` each accept a string, a `TemplateRef`, or a standalone
+component. A `component` arm matters as much as `template`: a guide defined in a
+service has no template declared anywhere, so `TemplateRef` alone would force
+awkward plumbing on the most common caller.
 
 ```ts
-// adapter sees only this, in v1 and after
-popover?: { title?: string; description?: string | HTMLElement }
+export interface TheSeamGuidePopover {
+  /** `null` opts a step out of a slot its session layer supplies. */
+  title?: TheSeamGuideContent | null
+  description?: TheSeamGuideContent | null
+  side?: 'top' | 'right' | 'bottom' | 'left'
+  align?: 'start' | 'center' | 'end'
+}
 ```
 
-Both non-string arms will render identically — create the view through
-`ViewContainerRef`, attach its `rootNodes` to a detached host element, hand the
-adapter that `HTMLElement`, and destroy the view on step exit. **The service
-performs all Angular work; the adapter only ever receives a string or a DOM
-node**, which is what keeps the adapter engine-agnostic.
+Widening a parameter type is **not** a breaking change for callers, so this is a
+minor release.
+
+`null` exists for exactly one case, and it is narrow. Omitting a slot at the
+step layer already excludes it — *unless the session layer supplies one*, since
+omission means "inherit". A guide that sets a default title for all its steps
+would otherwise force that title onto every step:
+
+```ts
+this._guide.start({
+  popover: { title: { component: AppPopoverTitle } },
+  steps: [
+    { popover: { description: 'Step one.' } },               // title renders
+    { popover: { title: null, description: 'Step two.' } },  // no title
+  ],
+})
+```
+
+`null` is never needed against the **provider** layer, which cannot create a
+slot at all — see Slot presence below.
+
+#### Two axes: renderer and data
+
+The hard part is not the union, it is that an application wants one popover
+*look* across every guide while each step supplies its own *content*. It is
+tempting to model that as layers of nested content — an app-level component
+wrapping a step-level one. That model fails: nothing in the config distinguishes
+"fill this chrome" from "replace this chrome", content projection is
+one-directional so an inner layer can never adjust the outer's padding, and the
+question of which layer owns the navigation buttons has no good answer.
+
+So the two concerns are separated instead:
+
+- **Renderer** (`template` or `component`) — resolved **nearest-wins**: step,
+  else session, else provider.
+- **Data** — **shallow-merged** across all three layers, step last.
+- **Text** (`text`) — the slot's plain text, resolved nearest-wins like the
+  renderer. A bare string is sugar for `{ text: '…' }`.
+
+```ts
+export type TheSeamGuideContentData = Record<string, unknown>
+
+export interface TheSeamGuideContentBase {
+  /** The slot's plain text. A bare string is sugar for this. Nearest-wins. */
+  text?: string
+  /** Application-defined. Shallow-merged provider -> session -> step. */
+  data?: TheSeamGuideContentData
+}
+
+export interface TheSeamGuideTemplateContent extends TheSeamGuideContentBase {
+  template: TemplateRef<TheSeamGuideContentContext>
+  component?: never
+}
+
+export interface TheSeamGuideComponentContent extends TheSeamGuideContentBase {
+  component: Type<unknown>
+  template?: never
+}
+
+/** Text and/or data for whichever renderer a lower layer supplies. */
+export interface TheSeamGuideInheritedContent extends TheSeamGuideContentBase {
+  template?: never
+  component?: never
+}
+
+export type TheSeamGuideContentSpec =
+  | TheSeamGuideTemplateContent
+  | TheSeamGuideComponentContent
+  | TheSeamGuideInheritedContent
+
+export type TheSeamGuideContent = string | TheSeamGuideContentSpec
+```
+
+The `never` guards make `template` and `component` on one object a **compile
+error** rather than a runtime precedence rule nobody remembers.
+
+`data` has **no reserved keys**. That is why `text` is a sibling field rather
+than a well-known key inside the bag: an application can name its own data
+whatever it likes without colliding with the library. For the same reason `data`
+is never spread — it stays one object, so a template's `let-index` is
+unambiguously the step index and never an application value.
+
+#### Three layers
+
+```ts
+provideTheSeamGuide({ popover: { … } })   // application-wide default look
+TheSeamGuideConfig.popover                 // defaults for one guide
+TheSeamGuideStep.popover                   // one step
+```
+
+All three are a `TheSeamGuidePopover`, so `side` and `align` layer too, by the
+same nearest-wins rule as the renderer.
+
+The provider layer exists because look-and-feel limitations are the ones
+applications route around. An application that has already written its guides
+and then needs an icon in every popover title — something CSS alone cannot do —
+changes one provider call rather than every step.
+
+Worked example:
+
+```ts
+provideTheSeamGuide({
+  popover: {
+    title: { component: AppPopoverTitle, data: { icon: AppStepIcon } },
+  },
+})
+
+this._guide.start({
+  steps: [
+    { popover: { title: 'Step One', description: 'Example one.' } },
+    {
+      popover: {
+        title: {
+          component: StepPopoverTitle,
+          data: { icon: StepTwoIcon, label: 'Step Two' },
+        },
+        description: 'Example two.',
+      },
+    },
+    {
+      popover: {
+        title: { template: tplRef, data: { label: 'Step Three' } },
+        description: 'Example three.',
+      },
+    },
+    {
+      popover: {
+        title: { text: 'Step Four', data: { icon: StepFourIcon } },
+        description: 'Example four.',
+      },
+    },
+  ],
+})
+```
+
+| Step | Renderer | `text` | `data` |
+| --- | --- | --- | --- |
+| 1 | `AppPopoverTitle` (provider) | `'Step One'` | `{ icon: AppStepIcon }` |
+| 2 | `StepPopoverTitle` (step) | — | `{ icon: StepTwoIcon, label: 'Step Two' }` |
+| 3 | `tplRef` (step) | — | `{ icon: AppStepIcon, label: 'Step Three' }` |
+| 4 | `AppPopoverTitle` (provider) | `'Step Four'` | `{ icon: StepFourIcon }` |
+
+Step 2 replaces the application's title chrome outright, which is what its name
+implies. An application that instead wants its own frame around a per-step piece
+composes that **inside its own component** — put a `Type` or `TemplateRef` in
+`data` and project it with `NgComponentOutlet` or `ngTemplateOutlet`. The
+application then controls the nesting, the padding, and the depth, none of which
+the library could have got right on its behalf.
+
+#### Slot presence
+
+**A slot renders only if the session or step layer supplies it.** Provider
+config decorates slots that exist; it never conjures a title onto a step that
+asked only for a description. This preserves driver.js's existing behavior — an
+absent title is a hidden title — and keeps the common `{ description: '…' }`
+step from silently growing chrome.
+
+Resolution order for one slot, given the three layers:
+
+1. **Presence.** Take the step layer if it mentions the slot, else the session
+   layer if it does. If neither does, or the one taken is `null`, the slot is
+   absent — stop.
+2. **Renderer** is the nearest `template` or `component`, searching step, then
+   session, then provider.
+3. **`text`** is the nearest `text`, searched the same way.
+4. **`data`** is the shallow merge of every layer's `data`, step last.
+5. No renderer and no `text` — absent.
+6. No renderer, but `text` — pass `text` to the adapter as a plain string,
+   exactly as in v1. **No Angular view is created, so the common case costs
+   nothing.**
+7. Otherwise render the renderer with the resolved context.
+
+Only rule 1 consults presence; rules 2–4 consult all three layers regardless of
+which one made the slot present. That is what lets step 1 of the worked example
+say `title: 'Step One'` and get the provider's component.
+
+`null` is therefore only meaningful at the step layer. At the session layer it
+is indistinguishable from omission, and at the provider layer it does nothing,
+since neither can make a slot present. The type permits it everywhere because
+all three layers share `TheSeamGuidePopover`; it is simply inert.
+
+#### How content receives its data
+
+Templates get a context; components get DI. Both carry the same values.
+
+```ts
+export interface TheSeamGuideContentContext {
+  $implicit: TheSeamGuideContentData   // === data, so `let-d` reads `d.icon`
+  data: TheSeamGuideContentData
+  text: string | undefined
+  step: TheSeamGuideStep
+  index: number
+  total: number
+  guide: TheSeamGuideRef
+}
+
+export const THE_SEAM_GUIDE_CONTENT =
+  new InjectionToken<TheSeamGuideContentContext>('THE_SEAM_GUIDE_CONTENT')
+```
+
+A component reads `inject(THE_SEAM_GUIDE_CONTENT)` for its data and
+`inject(TheSeamGuideRef)` to drive navigation — the ref is provided on the
+content component's element injector. This matches the `data`-plus-injector
+convention the modal components already use.
+
+**`ComponentRef.setInput` is deliberately not used.** It throws `NG0303` in dev
+mode for any name the component does not declare as an input, and merging
+guarantees extra keys: provider-level `data.icon` reaches step 2, whose
+`StepPopoverTitle` need not declare `icon`. Per-key input binding and layered
+defaults are fundamentally incompatible. One opaque bag is also what lets a
+renderer ignore data meant for a different renderer.
+
+#### Rendering mechanism
+
+The **service side performs all Angular work; the adapter only ever receives a
+string or a DOM node**, which is what keeps the adapter engine-agnostic.
+
+A `TheSeamGuideContentRenderer` (`providedIn: 'root'`) owns it, rather than
+`TheSeamGuideSession`, which is already large and otherwise free of Angular
+rendering concerns. It returns `{ host: HTMLElement; destroy(): void }`.
+
+- **template** — `template.createEmbeddedView(context)`, `appRef.attachView`,
+  append `rootNodes` to the host.
+- **component** — `createComponent(type, { environmentInjector, elementInjector })`,
+  `appRef.attachView(ref.hostView)`, append `ref.location.nativeElement`.
+
+> The original text said "create the view through `ViewContainerRef`". There is
+> no `ViewContainerRef` to reach from a `providedIn: 'root'` service.
+> `ApplicationRef.attachView` is the correct equivalent and gives the same
+> result: a change-detected view whose root nodes live wherever we put them.
 
 `TheSeamDynamicComponentLoader` (`@theseam/ui-common/dynamic-component-loader`)
 is **not** reused here. It resolves lazily loaded components by string id through
 the deprecated `NgModuleFactory` / `ComponentFactory` APIs — a different problem
 from rendering an already-known component into a host node.
+
+#### Lifecycle, and surviving mid-step recovery
+
+The session creates **one stable, empty host element per rendered slot** when the
+guide starts, and hands those to the adapter. Angular views are created into the
+host on step entry — before `adapter.moveTo` — and destroyed on step exit;
+`close()` destroys whatever is still live.
+
+driver.js tears down and rebuilds its **entire popover DOM on every render**,
+including the re-drive that implements `refresh()`. Because the host element is
+owned by the session and merely re-adopted by `onPopoverRender` each time, the
+Angular view is never re-created. Mid-step recovery therefore preserves content
+state — a scroll position, a typed-in value, an in-flight animation — instead of
+resetting it, and the invisible recoveries stay invisible.
+
+#### The adapter boundary
+
+Unchanged from v1 except that `title` widens to match `description`:
+
+```ts
+popover?: {
+  title?: string | HTMLElement
+  description?: string | HTMLElement
+  side?: …
+  align?: …
+}
+```
+
+> **The v1 `HTMLElement` branch was untested and did not work.** driver.js sets
+> `element.style.display = 'none'` whenever a slot's string is falsy, and the
+> adapter passed `description: undefined` for the element case — so the node was
+> appended into a hidden container. `onPopoverRender` must set
+> `display = 'block'` on any slot it fills. This applies to both slots.
+
+**Popover fields are enumerated by hand at two hops** — `_toAdapterStep` in the
+session and `_toDriveStep` in the driver.js adapter — because a wholesale spread
+once let `side` and `align` be silently dropped (TypeScript exempts spread
+properties from excess-property checking). A single shared mapper is not
+possible; the two hops map between different shapes. Instead each mapper's
+target is annotated with a mapped type that strips optionality:
+
+```ts
+const popover: {
+  [K in keyof TheSeamGuidePopover]-?: TheSeamGuideAdapterPopover[K] | undefined
+} = { … }
+```
+
+Every key must then be present in the literal, so **adding a field to
+`TheSeamGuidePopover` is a compile error at both hops** until it is carried
+through.
+
+#### What driver.js still owns
+
+Filling the two slots does not touch navigation. driver.js builds the popover as
+`wrapper > [title, description, footer[progress, previous, next, close], arrow]`;
+the footer is a sibling of both slots and its visibility comes from
+`showButtons`, which the adapter drives from `allowUserDismiss`.
+
+Two consequences worth knowing:
+
+- driver.js focuses the first focusable node in the popover, so an interactive
+  element in content takes initial focus instead of Next. Asserted in a story,
+  not prevented.
+- `aria-labelledby` points at the title element, so title content becomes the
+  dialog's accessible name. Decorative icons and progress indicators belong
+  behind `aria-hidden`.
+
+**Strings are inserted as HTML.** driver.js assigns a string slot with
+`innerHTML`. That is pre-existing v1 behavior and is not changed here, but it
+means a string is the wrong arm for untrusted content — `template` and
+`component` are the safe ones.
+
+#### Not in scope
+
+- **Whole-popover content.** `onPopoverRender` hands us the entire `PopoverDOM`,
+  so a slot that replaces the wrapper's children is mechanically easy and is the
+  right home for relocated buttons, custom progress indicators, and popover
+  padding. It also makes the application responsible for navigation UI and
+  keyboard accessibility that driver.js currently handles. Purely additive later
+  — one field on `TheSeamGuidePopover` — and deferred until a real consumer
+  needs it.
+- **Nested content layers.** Rejected above; applications compose inside their
+  own components instead.
+- **Deep-merging `data`.** Shallow only. A deep merge makes it impossible to
+  replace a nested object at a nearer layer.
+- **Content as a function of the step context.** A slot could accept
+  `(ctx: { step, index, total, guide }) => TheSeamGuideContentValue | null`,
+  evaluated at step entry, covering index-dependent text and conditionally
+  chosen renderers without writing a component. Deferred until real use shows it
+  is needed: a caller can interpolate the strings while building the steps array
+  today, and the cost is not free — any slot with a function in any layer stops
+  being statically resolvable at `start()`, so it must be allocated a host
+  element, losing the plain-string path that keeps the common case free of
+  Angular entirely.
+- **Dropping an inherited renderer while keeping the slot.** `null` clears a
+  whole slot, but nothing expresses "a plain string here, not the application's
+  title component". Additive later, in several possible shapes — a `'none'`
+  sentinel on the spec object being the obvious one — and deliberately not
+  invented before a consumer needs it, since it would introduce a second
+  null-like concept alongside slot-clearing `null`.
 
 ## Styling
 
@@ -604,6 +941,20 @@ accessibility is asserted explicitly instead.
   and recreated mid-step, a non-dismissible guide, and keyboard navigation
   asserting focus lands in the popover and that Escape is inert when
   `dismissible: false`.
+- **Jest specs, popover content** — layer resolution is a pure function and is
+  tested as one: renderer precedence across all three layers, shallow data
+  merge order, `text` sugar and precedence, the slot-presence rule, and the
+  no-renderer path staying a plain string. Separately, the renderer's two arms,
+  the context and DI values each receives, and that `destroy()` detaches from
+  `ApplicationRef`. Against `FakeGuideAdapter`: the host element reaching the
+  adapter, views created on entry and destroyed on exit, `refresh()` **not**
+  re-creating the view, and `close()` destroying live views.
+- **Storybook play functions, popover content** — provider-level default chrome
+  applied to a plain-string step, a per-step component override, and a template
+  slot. These assert the content is **visible** inside `.driver-popover-title`
+  and `.driver-popover-description` — a check no Jest spec can make, and the one
+  that would have caught the `display: none` defect above — plus that navigation
+  still works and the dialog keeps an accessible name.
 
 ## Packaging
 
@@ -643,9 +994,9 @@ without a breaking change:
 - **Seen-state persistence** — remembering that a user already completed a guide.
 - **Registered guide definitions** — a central registry of named guides that can
   be started by id.
-- **`TemplateRef` and standalone-component popover content** — v1 ships `string`;
-  widening the type later is non-breaking, and the adapter boundary already
-  accepts an `HTMLElement`.
+- **Whole-popover content** — see Popover content above. The two slots cover
+  everything except relocated navigation, custom progress indicators, and
+  popover padding.
 - **Mid-step recovery for selector and `Element` targets** — would require a
   `MutationObserver` active for the duration of a guide. Named targets cover it
   today via the registry.
