@@ -1,6 +1,20 @@
 import { InjectionToken } from '@angular/core'
 
 /**
+ * A popover as the presentation engine sees it.
+ *
+ * `HTMLElement` carries template and component content. The service creates,
+ * owns, and destroys that node; the adapter only places it, which is what
+ * keeps the adapter free of Angular.
+ */
+export interface TheSeamGuideAdapterPopover {
+  title?: string | HTMLElement
+  description?: string | HTMLElement
+  side?: 'top' | 'right' | 'bottom' | 'left'
+  align?: 'start' | 'center' | 'end'
+}
+
+/**
  * A step as the presentation engine sees it.
  *
  * `element` is a resolver function, not an element, so the engine re-resolves
@@ -9,17 +23,7 @@ import { InjectionToken } from '@angular/core'
  */
 export interface TheSeamGuideAdapterStep {
   element?: () => Element | undefined
-  popover?: {
-    title?: string
-    /**
-     * `HTMLElement` is accepted so that template and component popover content
-     * can be added later without changing the adapter boundary. v1 only ever
-     * passes a string.
-     */
-    description?: string | HTMLElement
-    side?: 'top' | 'right' | 'bottom' | 'left'
-    align?: 'start' | 'center' | 'end'
-  }
+  popover?: TheSeamGuideAdapterPopover
 }
 
 export interface TheSeamGuideAdapterConfig {

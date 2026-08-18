@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core'
-import { Config, DriveStep, driver, Driver } from 'driver.js'
+import { Config, DriveStep, driver, Driver, PopoverDOM } from 'driver.js'
 
 import {
   TheSeamGuideAdapter,
   TheSeamGuideAdapterCallbacks,
   TheSeamGuideAdapterConfig,
+  TheSeamGuideAdapterPopover,
   TheSeamGuideAdapterStep,
 } from '../guide-adapter'
+import { ExhaustiveMap } from '../../models/exhaustive-map'
 
 /**
  * driver.js implementation of the guide adapter.
@@ -98,7 +100,6 @@ export class DriverJsGuideAdapter implements TheSeamGuideAdapter {
   }
 
   private _toDriveStep(step: TheSeamGuideAdapterStep): DriveStep {
-    const description = step.popover?.description
     // Typed honestly as `Element | undefined`, matching what the resolver
     // can actually return — `undefined` is a real outcome, not an absent
     // one, since the elementless path depends on it.
@@ -114,21 +115,49 @@ export class DriverJsGuideAdapter implements TheSeamGuideAdapter {
       popover:
         step.popover === undefined
           ? undefined
-          : {
-              title: step.popover.title,
-              description:
-                typeof description === 'string' ? description : undefined,
-              side: step.popover.side,
-              align: step.popover.align,
-              // A DOM node is appended after render, which is how template and
-              // component content will work when it is added.
-              onPopoverRender:
-                description instanceof HTMLElement
-                  ? (popover: { description: HTMLElement }) => {
-                      popover.description.replaceChildren(description)
-                    }
-                  : undefined,
-            },
+          : this._toDrivePopover(step.popover),
+    }
+  }
+
+  /**
+   * `ExhaustiveMap` makes every key of `TheSeamGuideAdapterPopover` required
+   * in `mapped`, so adding a field to the boundary is a compile error here
+   * until it is carried through.
+   */
+  private _toDrivePopover(
+    popover: TheSeamGuideAdapterPopover,
+  ): NonNullable<DriveStep['popover']> {
+    const mapped: ExhaustiveMap<TheSeamGuideAdapterPopover> = {
+      title: popover.title,
+      description: popover.description,
+      side: popover.side,
+      align: popover.align,
+    }
+    const { title, description, side, align } = mapped
+    const hasNode =
+      title instanceof HTMLElement || description instanceof HTMLElement
+
+    return {
+      title: typeof title === 'string' ? title : undefined,
+      description: typeof description === 'string' ? description : undefined,
+      side,
+      align,
+      // driver.js hides a slot whose string is falsy, so a slot filled with a
+      // node must be un-hidden as well as populated. It also rebuilds the
+      // whole popover on every render, so this runs again on each re-drive
+      // and simply re-adopts the same host node.
+      onPopoverRender: hasNode
+        ? (dom: PopoverDOM) => {
+            if (title instanceof HTMLElement) {
+              dom.title.replaceChildren(title)
+              dom.title.style.display = 'block'
+            }
+            if (description instanceof HTMLElement) {
+              dom.description.replaceChildren(description)
+              dom.description.style.display = 'block'
+            }
+          }
+        : undefined,
     }
   }
 }

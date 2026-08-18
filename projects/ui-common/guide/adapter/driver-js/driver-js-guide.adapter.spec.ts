@@ -1,3 +1,4 @@
+import { TheSeamGuideAdapterPopover } from '../guide-adapter'
 import { DriverJsGuideAdapter } from './driver-js-guide.adapter'
 
 describe('DriverJsGuideAdapter', () => {
@@ -137,5 +138,95 @@ describe('DriverJsGuideAdapter', () => {
     expect(resolver.mock.calls.length).toBeGreaterThan(1)
     expect(elB.classList.contains('driver-active-element')).toBe(true)
     expect(elA.classList.contains('driver-active-element')).toBe(false)
+  })
+})
+
+describe('DriverJsGuideAdapter popover slots', () => {
+  let adapter: DriverJsGuideAdapter
+
+  beforeEach(() => {
+    document.body.innerHTML = ''
+    adapter = new DriverJsGuideAdapter()
+  })
+
+  afterEach(() => {
+    adapter.destroy()
+    jest.restoreAllMocks()
+  })
+
+  function drive(popover: TheSeamGuideAdapterPopover): void {
+    const el = document.createElement('div')
+    document.body.appendChild(el)
+    adapter.start(
+      { steps: [{ element: () => el, popover }], allowUserDismiss: true },
+      {
+        onNextRequested: () => {},
+        onPreviousRequested: () => {},
+        onCloseRequested: () => {},
+      },
+    )
+    adapter.moveTo(0)
+  }
+
+  function slot(name: 'title' | 'description'): HTMLElement {
+    const el = document.querySelector<HTMLElement>(`.driver-popover-${name}`)
+    expect(el).toBeTruthy()
+    return el as HTMLElement
+  }
+
+  it('renders a string title and description', () => {
+    drive({ title: 'a title', description: 'a description' })
+    expect(slot('title').textContent).toBe('a title')
+    expect(slot('description').textContent).toBe('a description')
+  })
+
+  it('places an element description and makes it visible', () => {
+    const host = document.createElement('div')
+    host.textContent = 'from a view'
+    drive({ description: host })
+
+    // The visibility half is the regression: driver.js hides a slot whose
+    // string is falsy, so populating it is not enough on its own.
+    expect(slot('description').contains(host)).toBe(true)
+    expect(slot('description').style.display).toBe('block')
+  })
+
+  it('places an element title and makes it visible', () => {
+    const host = document.createElement('div')
+    host.textContent = 'a view title'
+    drive({ title: host })
+
+    expect(slot('title').contains(host)).toBe(true)
+    expect(slot('title').style.display).toBe('block')
+  })
+
+  it('fills both slots with elements at once', () => {
+    const titleHost = document.createElement('div')
+    titleHost.textContent = 'view title'
+    const descHost = document.createElement('div')
+    descHost.textContent = 'view description'
+    drive({ title: titleHost, description: descHost })
+
+    expect(slot('title').contains(titleHost)).toBe(true)
+    expect(slot('description').contains(descHost)).toBe(true)
+  })
+
+  it('re-adopts the same host node when the step is re-driven', () => {
+    const host = document.createElement('div')
+    host.textContent = 'from a view'
+    drive({ description: host })
+
+    // driver.js rebuilds its whole popover on every render, so refresh()
+    // orphans the host and the hook must take it back. This is what lets a
+    // view survive mid-step recovery instead of being re-created.
+    adapter.refresh()
+
+    expect(slot('description').contains(host)).toBe(true)
+    expect(slot('description').style.display).toBe('block')
+  })
+
+  it('keeps side and align on the drive step', () => {
+    drive({ description: 'text', side: 'right', align: 'end' })
+    expect(document.querySelector('.driver-popover')).toBeTruthy()
   })
 })
