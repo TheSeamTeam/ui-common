@@ -188,13 +188,14 @@ export const ChromeSurvivesNavigation: Story = {
     // `display: none`, so without this check the story cannot catch a
     // regression in the one thing it's named for.
     await expect(titleEl()!.style.display).toBe('block')
-    // driver.js wires aria-labelledby to the title element unconditionally on
-    // every popover build, regardless of the title's content or visibility —
-    // on its own this assertion is invariant to the bug this story exists to
-    // catch. Combined with the visibility check above and the non-empty
-    // `chrome-text` content already asserted, it does establish a real
-    // accessible name: a visible, non-empty referenced element is what
-    // accessible-name computation actually needs.
+    // driver.js wires aria-labelledby (and the title's id) unconditionally on
+    // every popover build, so on its own this only detects driver.js changing
+    // its own markup — the title is the direct target of aria-labelledby, so
+    // its text feeds the accessible name whether or not it's visible, and
+    // visibility is not what this assertion protects. Together the three
+    // assertions above pin what this story is actually for: after a
+    // re-render, the title slot is still visible to a sighted user, still
+    // non-empty, and still wired to the dialog by id.
     await expect(
       document
         .querySelector('.driver-popover')
