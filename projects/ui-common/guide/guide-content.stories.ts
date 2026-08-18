@@ -181,8 +181,20 @@ export const ChromeSurvivesNavigation: Story = {
         .querySelector('[data-testid="chrome-progress"]')
         ?.textContent?.trim(),
     ).toBe('2/2')
-    // The dialog must keep an accessible name: driver.js points
-    // aria-labelledby at the title element we just filled with a view.
+    // Visibility, not just presence, on the *post-navigation* paint: clicking
+    // Next tears down and rebuilds the whole popover, so `onPopoverRender`
+    // must re-fire and re-apply `display: block` on the new DOM. `textContent`
+    // assertions alone pass identically whether this element is visible or
+    // `display: none`, so without this check the story cannot catch a
+    // regression in the one thing it's named for.
+    await expect(titleEl()!.style.display).toBe('block')
+    // driver.js wires aria-labelledby to the title element unconditionally on
+    // every popover build, regardless of the title's content or visibility —
+    // on its own this assertion is invariant to the bug this story exists to
+    // catch. Combined with the visibility check above and the non-empty
+    // `chrome-text` content already asserted, it does establish a real
+    // accessible name: a visible, non-empty referenced element is what
+    // accessible-name computation actually needs.
     await expect(
       document
         .querySelector('.driver-popover')
