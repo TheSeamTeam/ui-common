@@ -20,7 +20,7 @@
 - **Test output must be pristine.** `console.warn` spies go per-test, never suite-level, restored via `afterEach(() => jest.restoreAllMocks())`.
 - **In stories, import from `storybook/test`**, not `@storybook/test`. Use `applicationConfig({ providers: [...] })`, never `moduleMetadata` — `provideTheSeamGuide()` returns `EnvironmentProviders`.
 - **Nothing type-checks stories except `.storybook/tsconfig.json`.** `npx tsc --noEmit -p .storybook/tsconfig.json` is the only command that catches a TS error in a `.stories.ts` file.
-- Run Jest for this module with `npx jest projects/ui-common/guide`. Baseline before any change: **910 tests / 111 suites passing**.
+- **Two Jest invocations, two different numbers.** `npx jest projects/ui-common/guide` filters to the guide's own suites (**8 suites / 66 tests** at baseline) and is the fast loop while you work. `npx jest` runs everything the config enables (**111 suites / 910 tests** at baseline), and every "full suite" expectation below refers to that. Never read one command's output against the other's expected count.
 
 ---
 
@@ -461,7 +461,7 @@ export * from './models/guide-content'
 
 - [ ] **Step 7: Run the full module suite and lint**
 
-Run: `npx jest projects/ui-common/guide` — expected: PASS, 926 tests / 112 suites.
+Run: `npx jest` — expected: PASS, 926 tests / 112 suites (the full suite, not the guide-scoped filter).
 Run: `npm run lint` — expected: 0 errors (48 pre-existing warnings).
 
 - [ ] **Step 8: Commit**
@@ -750,7 +750,7 @@ Expected: exactly one line, `adapter/driver-js/driver-js-guide.adapter.ts:2`.
 
 - [ ] **Step 7: Run the full module suite and lint**
 
-Run: `npx jest projects/ui-common/guide` — expected: PASS, 932 tests / 113 suites.
+Run: `npx jest` — expected: PASS, 932 tests / 113 suites (the full suite, not the guide-scoped filter).
 Run: `npm run lint` — expected: 0 errors.
 
 - [ ] **Step 8: Commit**
@@ -1019,7 +1019,7 @@ If `appRef.tick()` throws `ApplicationRef.tick is called recursively`, replace t
 
 - [ ] **Step 5: Run the full module suite and lint**
 
-Run: `npx jest projects/ui-common/guide` — expected: PASS, 935 tests / 114 suites.
+Run: `npx jest` — expected: PASS, 935 tests / 114 suites (the full suite, not the guide-scoped filter).
 Run: `npm run lint` — expected: 0 errors.
 
 - [ ] **Step 6: Commit**
@@ -1438,7 +1438,7 @@ In `projects/ui-common/guide/guide-session.spec.ts` and `projects/ui-common/guid
 - [ ] **Step 9: Run the tests to verify they pass**
 
 Run: `npx jest projects/ui-common/guide/guide-session-content.spec.ts` — expected: PASS, 6 tests.
-Run: `npx jest projects/ui-common/guide` — expected: PASS, 941 tests / 115 suites. Every pre-existing session spec must still pass; if one fails, the deps refactor changed behavior and must be corrected rather than the spec.
+Run: `npx jest` — expected: PASS, 941 tests / 115 suites (the full suite, not the guide-scoped filter). Every pre-existing session spec must still pass; if one fails, the deps refactor changed behavior and must be corrected rather than the spec.
 
 - [ ] **Step 10: Lint and commit**
 
@@ -2045,7 +2045,7 @@ In `guide-session.spec.ts` and `guide-session-recovery.spec.ts`, extend each `ma
 - [ ] **Step 9: Run the tests to verify they pass**
 
 Run: `npx jest projects/ui-common/guide/guide-session-content.spec.ts` — expected: PASS, 14 tests.
-Run: `npx jest projects/ui-common/guide` — expected: PASS, 949 tests / 115 suites.
+Run: `npx jest` — expected: PASS, 949 tests / 115 suites (the full suite, not the guide-scoped filter).
 
 - [ ] **Step 10: Verify both exhaustiveness guards actually fire**
 
@@ -2320,7 +2320,7 @@ If the test runner cannot launch a browser: Playwright's install fails to extrac
 - [ ] **Step 4: Full verification**
 
 ```bash
-npx jest projects/ui-common/guide
+npx jest
 npx tsc --noEmit -p .storybook/tsconfig.json
 npm run lint
 npm run build:ui-common
@@ -2365,4 +2365,4 @@ Checked against the spec's **Popover content** section:
 
 **Known deliberate omissions**, all recorded in the spec's *Not in scope*: whole-popover content, nested content layers, deep-merged `data`, content as a function of the step context, and dropping an inherited renderer while keeping the slot.
 
-**Test-count arithmetic** in each task's expected output assumes the baseline of 910 tests / 111 suites and that no earlier task's counts drifted. If a count is off but every test passes, update the running total rather than treating it as a failure.
+**Test-count arithmetic** in each task's expected output assumes the full-suite baseline of 910 tests / 111 suites (`npx jest`, not the guide-scoped filter) and that no earlier task's counts drifted. If a count is off but every test passes, update the running total rather than treating it as a failure.
