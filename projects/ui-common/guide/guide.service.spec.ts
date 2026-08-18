@@ -1,8 +1,9 @@
-import { TestBed } from '@angular/core/testing'
+import { fakeAsync, TestBed, tick } from '@angular/core/testing'
 
 import { THE_SEAM_GUIDE_ADAPTER } from './adapter/guide-adapter'
 import { TheSeamGuideBusyError } from './models/guide-errors'
 import { TheSeamGuideEvent } from './models/guide-event'
+import { provideTheSeamGuide } from './guide-providers'
 import { TheSeamGuideService } from './guide.service'
 import { FakeGuideAdapter } from './testing/fake-guide.adapter'
 
@@ -163,6 +164,53 @@ describe('TheSeamGuideService', () => {
       expect(service.activeGuide()).toBeNull()
       expect(() => TestBed.resetTestingModule()).not.toThrow()
     })
+  })
+
+  describe('the provideTheSeamGuide() provider hop', () => {
+    afterEach(() => {
+      jest.restoreAllMocks()
+    })
+
+    // Every other test in this file passes `popoverDefaults` straight into
+    // `TheSeamGuideSession`'s constructor via a hand-built adapter, which
+    // never exercises `provideTheSeamGuide` itself. This pins the real chain:
+    // `provideTheSeamGuide({ popover }) -> THE_SEAM_GUIDE_POPOVER_DEFAULTS ->
+    // TheSeamGuideService._popoverDefaults -> TheSeamGuideSessionDeps.popoverDefaults`.
+    // `_popoverDefaults` falls back to `{}` via `{ optional: true } ?? {}` if
+    // the token is ever missing, which would make this test the only thing
+    // that notices — every mock-adapter-based spec would keep passing while
+    // an application's popover chrome silently vanished.
+    it('carries a provider-level popover default through to the adapter', fakeAsync(() => {
+      const providerAdapter = new FakeGuideAdapter()
+      TestBed.resetTestingModule()
+      TestBed.configureTestingModule({
+        providers: [
+          provideTheSeamGuide({ popover: { title: 'Provider title' } }),
+          { provide: THE_SEAM_GUIDE_ADAPTER, useValue: providerAdapter },
+        ],
+      })
+
+      const svc = TestBed.inject(TheSeamGuideService)
+      svc.start({
+        // The provider layer decorates a slot; it never creates one (see
+        // "Slot presence" in the design spec) — a step with no title key at
+        // all, and no session-layer title either, leaves the slot absent
+        // regardless of what the provider supplies. `title: {}` is the
+        // session layer marking the slot present without supplying its own
+        // renderer or text, so nearest-wins falls all the way through to the
+        // provider's default.
+        popover: { title: {} },
+        steps: [{ popover: { description: 'Step description.' } }],
+      })
+      tick()
+
+      expect(providerAdapter.startedConfig?.steps[0]?.popover?.title).toBe(
+        'Provider title',
+      )
+      expect(
+        providerAdapter.startedConfig?.steps[0]?.popover?.description,
+      ).toBe('Step description.')
+    }))
   })
 })
 
