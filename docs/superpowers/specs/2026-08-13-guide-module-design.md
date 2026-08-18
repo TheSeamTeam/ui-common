@@ -3,8 +3,9 @@
 **Date:** 2026-08-13
 **Entry point:** `@theseam/ui-common/guide`
 **Branch:** `marklb/guide`
-**Status:** Implemented, except **Popover content** — revised 2026-08-17 and
-pending implementation
+**Status:** Implemented. **Popover content** was revised 2026-08-17 and
+implemented against that revision; see
+`docs/superpowers/plans/2026-08-17-guide-popover-content.md`.
 
 ## Purpose
 
@@ -56,10 +57,18 @@ projects/ui-common/guide/
   public-api.ts
   guide.service.ts               TheSeamGuideService
   guide-ref.ts                   TheSeamGuideRef
+  guide-session.ts               TheSeamGuideSession — sequencing and slot lifecycle
+  guide-providers.ts             provideTheSeamGuide + popover defaults token
   models/
     guide-config.ts              TheSeamGuideConfig, TheSeamGuideMissPolicy
     guide-step.ts                TheSeamGuideStep, TheSeamGuidePopover
-    guide-event.ts               events, close reasons, TheSeamGuideBusyError
+    guide-event.ts               events and close reasons
+    guide-errors.ts              TheSeamGuideBusyError
+    guide-content.ts             content union, context, DI token, renderer interface
+    exhaustive-map.ts            makes a dropped popover field a compile error
+  content/
+    guide-content-resolver.ts    pure three-layer slot resolution
+    guide-content.renderer.ts    the only file touching ApplicationRef
   target/
     guide-target.directive.ts    [seamGuideTarget]
     guide-target-registry.ts     name -> Element, with waitFor()
@@ -72,8 +81,11 @@ projects/ui-common/guide/
     _variables.scss
     _utilities.scss              no CSS output
   testing/
-    index.ts                     FakeGuideAdapter + CDK harness
+    index.ts                     barrel
+    fake-guide.adapter.ts        FakeGuideAdapter
+    fake-guide-content.renderer.ts  FakeGuideContentRenderer
   guide.stories.ts
+  guide-content.stories.ts
   *.spec.ts
 ```
 
