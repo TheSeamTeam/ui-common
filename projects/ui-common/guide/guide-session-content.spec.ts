@@ -4,7 +4,11 @@ import { fakeAsync, tick } from '@angular/core/testing'
 import { TheSeamGuideRef } from './guide-ref'
 import { TheSeamGuideSession } from './guide-session'
 import { TheSeamGuideConfig } from './models/guide-config'
-import { TheSeamGuideContentContext } from './models/guide-content'
+import {
+  TheSeamGuideContentContext,
+  TheSeamGuideContentView,
+  TheSeamGuideViewSlot,
+} from './models/guide-content'
 import { TheSeamGuidePopover } from './models/guide-step'
 import { TheSeamGuideTargetRegistry } from './target/guide-target-registry'
 import { FakeGuideContentRenderer } from './testing/fake-guide-content.renderer'
@@ -257,10 +261,15 @@ describe('TheSeamGuideSession popover views', () => {
     session.refresh()
     tick()
 
-    // Read after the refresh, not before: the adapter's re-drive is what
-    // could hand the popover a fresh node, so the assertion must span it —
-    // comparing two reads both taken before `refresh()` would pass even if
-    // refresh silently rebuilt the host.
+    // `FakeGuideAdapter.refresh()` is a no-op and never rewrites
+    // `startedConfig`, so this read is equal to `contentRenderer.renders[0].host`
+    // whether or not a real engine would have re-adopted it — this fake
+    // cannot exercise re-adoption across a refresh at all. What this
+    // assertion actually pins is one layer down: that the session hands the
+    // adapter the *same* host reference on every render, not a fresh one.
+    // Re-adoption against a real engine is covered separately, against real
+    // driver.js, by `driver-js-guide.adapter.spec.ts`'s
+    // `'re-adopts the same host node when the step is re-driven'`.
     const hostAfterRefresh = popoverAt(adapter, 0)?.title
     expect(contentRenderer.renders[0].host).toBe(hostAfterRefresh)
     session.close('destroyed')
@@ -293,5 +302,77 @@ describe('TheSeamGuideSession popover views', () => {
       template,
     })
     session.close('destroyed')
+  }))
+})
+
+/**
+ * Wraps `FakeGuideContentRenderer` to call `close()` on the guide from
+ * inside `render()` itself — reproducing a content component that is given
+ * `TheSeamGuideRef` on its element injector and calls `ref.close()` from its
+ * own constructor, which runs synchronously inside `_renderSlots`.
+ */
+class CloseDuringRenderContentRenderer extends FakeGuideContentRenderer {
+  override render(
+    slot: TheSeamGuideViewSlot,
+    context: TheSeamGuideContentContext,
+    host: HTMLElement,
+  ): TheSeamGuideContentView {
+    const view = super.render(slot, context, host)
+    context.guide.close('dismissed')
+    return view
+  }
+}
+
+describe('TheSeamGuideSession re-entrant close during render', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  it('destroys the just-rendered view and never arms recovery when a slot calls close() from its own render', fakeAsync(() => {
+    const registry = new TheSeamGuideTargetRegistry()
+    const target = document.createElement('div')
+    document.body.appendChild(target)
+    registry.register('one', target)
+
+    const adapter = new FakeGuideAdapter()
+    const contentRenderer = new CloseDuringRenderContentRenderer()
+    // eslint-disable-next-line prefer-const -- captured by the closure below before assignment
+    let ref: TheSeamGuideRef
+    const session = new TheSeamGuideSession(
+      {
+        steps: [
+          { element: 'one', popover: { title: { component: TitleComponent } } },
+        ],
+      },
+      {
+        adapter,
+        registry,
+        contentRenderer,
+        popoverDefaults: {},
+        getRef: () => ref,
+        onClosed: () => {},
+      },
+    )
+    ref = new TheSeamGuideRef(session)
+
+    session.start()
+    tick()
+
+    // The view created during the re-entrant close must not be left attached.
+    expect(contentRenderer.renders).toHaveLength(1)
+    expect(contentRenderer.renders[0].destroyed).toBe(true)
+    expect(contentRenderer.live).toHaveLength(0)
+
+    // `_paint` must bail out before ever reaching `_onStepPainted`, so no
+    // recovery subscription is armed against the root-provided registry.
+    expect(
+      (registry as unknown as { _changes: { observers: unknown[] } })._changes
+        .observers,
+    ).toHaveLength(0)
+
+    // The adapter must not be driven any further once the session has closed.
+    expect(adapter.calls).toEqual(['start', 'destroy'])
+
+    target.remove()
   }))
 })

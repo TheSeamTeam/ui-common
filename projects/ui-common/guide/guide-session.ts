@@ -344,6 +344,17 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
     // Before `moveTo`: driver.js calls `onPopoverRender` synchronously from
     // there, so the host must already hold its view.
     this._renderSlots(index)
+    // A content component is given `TheSeamGuideRef` on its element injector,
+    // so its constructor runs synchronously inside `_renderSlots` above and
+    // can call `ref.close()` re-entrantly. `close()` cannot destroy the view
+    // `_renderSlots` just created — it is only assigned into `binding.view`
+    // after `render()` returns — so this must destroy it here instead, and
+    // must not touch the (already-destroyed) adapter or emit any further
+    // events for a session that is no longer open.
+    if (this._closed) {
+      this._destroySlots(index)
+      return
+    }
     this._activeIndex.set(index)
     this._afterStepFired = false
     this._beforeStepFiredFor = null
@@ -452,6 +463,15 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
    * notification channel, so recovery does not apply to them in v1.
    */
   protected _onStepPainted(index: number, step: TheSeamGuideStep): void {
+    // A re-entrant `close()` from inside `_renderSlots` (see `_paint`) can
+    // reach here via the same synchronous call stack that `close()` itself
+    // triggered — `_paint` returns before calling this when it detects that
+    // case, but a defensive check here is what stops `TheSeamGuideTargetRegistry`
+    // (`providedIn: 'root'`) from ever seeing a subscription arm for a session
+    // that no longer exists to disarm it.
+    if (this._closed) {
+      return
+    }
     this._disarmRecovery()
     const generation = this._recoveryGeneration
 
