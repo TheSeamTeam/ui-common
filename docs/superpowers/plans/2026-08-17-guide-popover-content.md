@@ -2068,9 +2068,11 @@ Run: `npx jest` — expected: PASS, 949 tests / 114 suites (the full suite, not 
 
 Each hop keys `ExhaustiveMap` off its own source type, so the two guards are checked separately. Do not skip this — a guard that silently passes is worse than none, because the comment claims protection that is not there.
 
+Use `npm run build:ui-common` for both checks. Do **not** reach for `npx tsc -p projects/ui-common/tsconfig.lib.json` — that config declares `"files": ["./public_api.ts"]`, and the root `public_api.ts` is intentionally empty, so it compiles nothing from `guide/`. Each secondary entry point is only type-checked by ng-packagr through its own `ng-package.json`.
+
 **Guard 1 — the session hop.** Temporarily add `foo?: string` to `TheSeamGuidePopover` in `models/guide-step.ts`, then run:
 
-`npx tsc --noEmit -p projects/ui-common/tsconfig.lib.json`
+`npm run build:ui-common`
 
 Expected: an error in `guide-session.ts` reporting `Property 'foo' is missing` in `_toAdapterPopover`. Remove `foo` again and re-run to confirm a clean build.
 
