@@ -18,7 +18,7 @@ import {
   TheSeamGuideAdapterStep,
 } from './adapter/guide-adapter'
 import { resolveGuideContentSlot } from './content/guide-content-resolver'
-import { TheSeamGuideSessionController } from './guide-ref'
+import { TheSeamGuideRef, TheSeamGuideSessionController } from './guide-ref'
 import {
   TheSeamGuideConfig,
   TheSeamGuideResolvedConfig,
@@ -30,6 +30,12 @@ import {
   TheSeamGuideResult,
 } from './models/guide-event'
 import { ExhaustiveMap } from './models/exhaustive-map'
+import {
+  TheSeamGuideContentContext,
+  TheSeamGuideContentRenderer,
+  TheSeamGuideContentView,
+  TheSeamGuideViewSlot,
+} from './models/guide-content'
 import {
   TheSeamGuideMissPolicy,
   TheSeamGuidePopover,
@@ -45,8 +51,36 @@ import { TheSeamGuideTargetRegistry } from './target/guide-target-registry'
 export interface TheSeamGuideSessionDeps {
   adapter: TheSeamGuideAdapter
   registry: TheSeamGuideTargetRegistry
+  contentRenderer: TheSeamGuideContentRenderer
   popoverDefaults: TheSeamGuidePopover
+  /**
+   * The ref is created after the session, so it is reached lazily. Only ever
+   * called at step-entry time, which is a microtask after `start()` returns.
+   */
+  getRef: () => TheSeamGuideRef
   onClosed: (session: TheSeamGuideSession) => void
+}
+
+/**
+ * One popover slot for one step.
+ *
+ * The host node is created once, when the guide starts, and handed to the
+ * adapter for the guide's lifetime. Only the Angular view inside it comes and
+ * goes. That is what lets driver.js rebuild its popover on every render — and
+ * on the re-drive behind `refresh()` — while the view survives untouched.
+ */
+type SlotBinding =
+  | { kind: 'text'; text: string }
+  | {
+      kind: 'view'
+      slot: TheSeamGuideViewSlot
+      host: HTMLElement
+      view: TheSeamGuideContentView | null
+    }
+
+interface StepSlots {
+  title: SlotBinding | null
+  description: SlotBinding | null
 }
 
 export class TheSeamGuideSession implements TheSeamGuideSessionController {
@@ -101,6 +135,9 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
 
   private readonly _adapter: TheSeamGuideAdapter
   private readonly _registry: TheSeamGuideTargetRegistry
+  private readonly _contentRenderer: TheSeamGuideContentRenderer
+  private readonly _getRef: () => TheSeamGuideRef
+  private readonly _slots: StepSlots[] = []
   private readonly _popoverDefaults: TheSeamGuidePopover
   private readonly _sessionPopover: TheSeamGuidePopover | undefined
   private readonly _onClosed: (session: TheSeamGuideSession) => void
@@ -108,6 +145,8 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
   constructor(config: TheSeamGuideConfig, deps: TheSeamGuideSessionDeps) {
     this._adapter = deps.adapter
     this._registry = deps.registry
+    this._contentRenderer = deps.contentRenderer
+    this._getRef = deps.getRef
     this._popoverDefaults = deps.popoverDefaults
     this._sessionPopover = config.popover
     this._onClosed = deps.onClosed
@@ -129,9 +168,12 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
   }
 
   start(): void {
+    this._buildSlots()
     this._adapter.start(
       {
-        steps: this.steps.map((step) => this._toAdapterStep(step)),
+        steps: this.steps.map((step, index) =>
+          this._toAdapterStep(step, index),
+        ),
         allowUserDismiss: this.options.dismissible,
       },
       {
@@ -193,6 +235,7 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
       lastIndex: this._activeIndex(),
     }
     this._adapter.destroy()
+    this._destroyAllSlots()
     this._emit({ type: 'closed', result })
     this._afterClosed.next(result)
     this._afterClosed.complete()
@@ -297,12 +340,109 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
 
   /** Paints a step that is actually entering: real target or elementless. */
   private _paint(index: number, step: TheSeamGuideStep): void {
+    const outgoing = this._activeIndex()
+    // Before `moveTo`: driver.js calls `onPopoverRender` synchronously from
+    // there, so the host must already hold its view.
+    this._renderSlots(index)
     this._activeIndex.set(index)
     this._afterStepFired = false
     this._beforeStepFiredFor = null
     this._adapter.moveTo(index)
+    if (outgoing !== index) {
+      this._destroySlots(outgoing)
+    }
     this._emit({ type: 'stepChanged', index, step })
     this._onStepPainted(index, step)
+  }
+
+  private _buildSlots(): void {
+    for (const step of this.steps) {
+      this._slots.push({
+        title: this._bindSlot(step, 'title'),
+        description: this._bindSlot(step, 'description'),
+      })
+    }
+  }
+
+  private _bindSlot(
+    step: TheSeamGuideStep,
+    name: 'title' | 'description',
+  ): SlotBinding | null {
+    const resolved = this._resolveSlot(step, name)
+    if (resolved === null) {
+      return null
+    }
+    if (resolved.kind === 'text') {
+      return { kind: 'text', text: resolved.text }
+    }
+    return {
+      kind: 'view',
+      slot: resolved,
+      host: document.createElement('div'),
+      view: null,
+    }
+  }
+
+  private _renderSlots(index: number): void {
+    const slots = this._slots[index]
+    if (slots === undefined) {
+      return
+    }
+    for (const binding of [slots.title, slots.description]) {
+      if (
+        binding === null ||
+        binding.kind !== 'view' ||
+        binding.view !== null
+      ) {
+        continue
+      }
+      binding.view = this._contentRenderer.render(
+        binding.slot,
+        this._contentContext(index, binding.slot),
+        binding.host,
+      )
+    }
+  }
+
+  private _destroySlots(index: number): void {
+    const slots = this._slots[index]
+    if (slots === undefined) {
+      return
+    }
+    for (const binding of [slots.title, slots.description]) {
+      if (
+        binding === null ||
+        binding.kind !== 'view' ||
+        binding.view === null
+      ) {
+        continue
+      }
+      binding.view.destroy()
+      binding.view = null
+      binding.host.replaceChildren()
+    }
+  }
+
+  private _destroyAllSlots(): void {
+    for (let index = 0; index < this._slots.length; index++) {
+      this._destroySlots(index)
+    }
+  }
+
+  /** `data` is per slot, so the context is built per slot rather than per step. */
+  private _contentContext(
+    index: number,
+    slot: TheSeamGuideViewSlot,
+  ): TheSeamGuideContentContext {
+    return {
+      $implicit: slot.data,
+      data: slot.data,
+      text: slot.text,
+      step: this.steps[index],
+      index,
+      total: this.steps.length,
+      guide: this._getRef(),
+    }
   }
 
   /**
@@ -489,14 +629,16 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
   }
 
   /** Element is a resolver function so the engine re-resolves at paint time. */
-  protected _toAdapterStep(step: TheSeamGuideStep): TheSeamGuideAdapterStep {
-    const popover = this._toAdapterPopover(step)
+  protected _toAdapterStep(
+    step: TheSeamGuideStep,
+    index: number,
+  ): TheSeamGuideAdapterStep {
     return {
       element:
         step.element === undefined
           ? undefined
           : () => this._resolveNow(step) ?? undefined,
-      popover,
+      popover: this._toAdapterPopover(step, index),
     }
   }
 
@@ -508,16 +650,15 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
    */
   private _toAdapterPopover(
     step: TheSeamGuideStep,
+    index: number,
   ): TheSeamGuideAdapterPopover | undefined {
-    const title = this._resolveSlot(step, 'title')
-    const description = this._resolveSlot(step, 'description')
-
+    const slots = this._slots[index]
     const mapped: ExhaustiveMap<
       TheSeamGuidePopover,
       TheSeamGuideAdapterPopover
     > = {
-      title: title?.kind === 'text' ? title.text : undefined,
-      description: description?.kind === 'text' ? description.text : undefined,
+      title: slotValue(slots?.title),
+      description: slotValue(slots?.description),
       side: this._nearestScalar(step, 'side'),
       align: this._nearestScalar(step, 'align'),
     }
@@ -577,6 +718,16 @@ function stripUndefined(
     }
   }
   return out as Partial<TheSeamGuideResolvedConfig>
+}
+
+/** A text slot goes to the engine as a string; a view slot as its host node. */
+function slotValue(
+  binding: SlotBinding | null | undefined,
+): string | HTMLElement | undefined {
+  if (binding === null || binding === undefined) {
+    return undefined
+  }
+  return binding.kind === 'text' ? binding.text : binding.host
 }
 
 /** `querySelector` throws on an invalid selector; a registry name often is one. */

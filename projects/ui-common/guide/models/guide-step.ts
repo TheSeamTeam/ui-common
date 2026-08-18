@@ -1,14 +1,21 @@
 import { ElementRef } from '@angular/core'
 import { Observable } from 'rxjs'
 
+import type { TheSeamGuideContent } from './guide-content'
+
 /** What to do when a step's target element cannot be resolved. */
 export type TheSeamGuideMissPolicy = 'skip' | 'elementless' | 'end'
 
 export interface TheSeamGuidePopover {
-  /** `null` opts a step out of a slot its guide layer supplies. */
-  title?: string | null
-  /** `null` opts a step out of a slot its guide layer supplies. */
-  description?: string | null
+  /**
+   * A string, a `TemplateRef`, or a standalone component.
+   *
+   * Omitting inherits from the guide and application layers. `null` opts this
+   * step out of a slot the guide layer supplies — omission cannot express
+   * that, because omission means "inherit".
+   */
+  title?: TheSeamGuideContent | null
+  description?: TheSeamGuideContent | null
   side?: 'top' | 'right' | 'bottom' | 'left'
   align?: 'start' | 'center' | 'end'
 }

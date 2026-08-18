@@ -8,6 +8,7 @@ import {
 } from '@angular/core'
 
 import { THE_SEAM_GUIDE_ADAPTER } from './adapter/guide-adapter'
+import { TheSeamGuideDomContentRenderer } from './content/guide-content.renderer'
 import { THE_SEAM_GUIDE_POPOVER_DEFAULTS } from './guide-providers'
 import { TheSeamGuideRef } from './guide-ref'
 import { TheSeamGuideSession } from './guide-session'
@@ -25,6 +26,7 @@ export class TheSeamGuideService implements OnDestroy {
   private readonly _registry = inject(TheSeamGuideTargetRegistry)
   private readonly _popoverDefaults =
     inject(THE_SEAM_GUIDE_POPOVER_DEFAULTS, { optional: true }) ?? {}
+  private readonly _contentRenderer = inject(TheSeamGuideDomContentRenderer)
 
   private readonly _activeGuide = signal<TheSeamGuideRef | null>(null)
 
@@ -79,7 +81,9 @@ export class TheSeamGuideService implements OnDestroy {
     const session = new TheSeamGuideSession(config, {
       adapter: this._adapter,
       registry: this._registry,
+      contentRenderer: this._contentRenderer,
       popoverDefaults: this._popoverDefaults,
+      getRef: () => ref,
       onClosed: () => this._clearIfCurrent(ref),
     })
     ref = new TheSeamGuideRef(session)

@@ -1,10 +1,12 @@
 import { fakeAsync, tick } from '@angular/core/testing'
 import { of } from 'rxjs'
 
+import { TheSeamGuideRef } from './guide-ref'
 import { TheSeamGuideSession } from './guide-session'
 import { TheSeamGuideConfig } from './models/guide-config'
 import { TheSeamGuideEvent } from './models/guide-event'
 import { TheSeamGuideTargetRegistry } from './target/guide-target-registry'
+import { FakeGuideContentRenderer } from './testing/fake-guide-content.renderer'
 import { FakeGuideAdapter } from './testing/fake-guide.adapter'
 
 function connectedEl(): HTMLElement {
@@ -17,12 +19,17 @@ function makeSession(config: TheSeamGuideConfig) {
   const adapter = new FakeGuideAdapter()
   const registry = new TheSeamGuideTargetRegistry()
   const events: TheSeamGuideEvent[] = []
+  // eslint-disable-next-line prefer-const -- captured by the closure below before assignment
+  let ref: TheSeamGuideRef
   const session = new TheSeamGuideSession(config, {
     adapter,
     registry,
+    contentRenderer: new FakeGuideContentRenderer(),
     popoverDefaults: {},
+    getRef: () => ref,
     onClosed: () => {},
   })
+  ref = new TheSeamGuideRef(session)
   session.events$.subscribe((e) => events.push(e))
   return { adapter, registry, events, session }
 }
