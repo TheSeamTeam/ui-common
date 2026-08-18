@@ -140,7 +140,7 @@ describe('TheSeamGuideSession popover views', () => {
   }))
 
   it('renders a slot on entry with the merged context', fakeAsync(() => {
-    const { session, contentRenderer } = makeSession(
+    const { session, contentRenderer, ref } = makeSession(
       {
         steps: [
           {
@@ -166,6 +166,11 @@ describe('TheSeamGuideSession popover views', () => {
     expect(render.context.text).toBe('Step One')
     expect(render.context.index).toBe(0)
     expect(render.context.total).toBe(1)
+    // Identity, not equality: this is the forward-reference hazard `getRef`
+    // exists to cross — `ref` is only constructed after the session, so a
+    // wrong closure (e.g. one that closes over a different session's ref)
+    // would slip past every other assertion in this file.
+    expect(render.context.guide).toBe(ref)
     session.close('destroyed')
   }))
 
@@ -203,6 +208,26 @@ describe('TheSeamGuideSession popover views', () => {
     session.close('destroyed')
   }))
 
+  it('does not destroy the current view when repainting the same index', fakeAsync(() => {
+    const { session, contentRenderer } = makeSession({
+      steps: [
+        { popover: { title: { component: TitleComponent, text: 'One' } } },
+      ],
+    })
+    session.start()
+    tick()
+    // `moveTo` the already-active index: `_paint`'s `outgoing === index` must
+    // skip `_destroySlots`, and `_renderSlots` must be a no-op for a slot that
+    // already has a live view — otherwise a repaint at the live index would
+    // silently empty the popover for the rest of the step.
+    session.moveTo(0)
+    tick()
+
+    expect(contentRenderer.renders).toHaveLength(1)
+    expect(contentRenderer.live).toHaveLength(1)
+    session.close('destroyed')
+  }))
+
   it('does not re-create the view on refresh', fakeAsync(() => {
     const { session, contentRenderer } = makeSession({
       steps: [
@@ -229,11 +254,15 @@ describe('TheSeamGuideSession popover views', () => {
     })
     session.start()
     tick()
-    const host = popoverAt(adapter, 0)?.title
     session.refresh()
     tick()
 
-    expect(contentRenderer.renders[0].host).toBe(host)
+    // Read after the refresh, not before: the adapter's re-drive is what
+    // could hand the popover a fresh node, so the assertion must span it —
+    // comparing two reads both taken before `refresh()` would pass even if
+    // refresh silently rebuilt the host.
+    const hostAfterRefresh = popoverAt(adapter, 0)?.title
+    expect(contentRenderer.renders[0].host).toBe(hostAfterRefresh)
     session.close('destroyed')
   }))
 
