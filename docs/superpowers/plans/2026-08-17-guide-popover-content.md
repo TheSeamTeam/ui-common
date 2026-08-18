@@ -1034,6 +1034,7 @@ git commit -m "feat(guide): add the popover content view renderer"
 ### Task 4: Three content layers, strings only
 
 **Files:**
+- Modify: `projects/ui-common/guide/models/guide-step.ts` (two fields only — see Step 3a)
 - Modify: `projects/ui-common/guide/guide-providers.ts`
 - Modify: `projects/ui-common/guide/models/guide-config.ts`
 - Modify: `projects/ui-common/guide/guide-session.ts`
@@ -1171,7 +1172,23 @@ describe('TheSeamGuideSession popover layers', () => {
 
 Run: `npx jest projects/ui-common/guide/guide-session-content.spec.ts`
 
-Expected: FAIL — TypeScript errors: `popover` does not exist on `TheSeamGuideConfig`, and the session constructor takes 4 arguments, not 2.
+Expected: FAIL — TypeScript errors: `popover` does not exist on `TheSeamGuideConfig`, the session constructor takes 4 arguments rather than 2, and `null` is not assignable to `TheSeamGuidePopover.title` (Step 3a fixes the last of these).
+
+- [ ] **Step 3a: Let a step clear a slot**
+
+The layering tests below use `title: null`, which `TheSeamGuidePopover` does not yet accept. In `projects/ui-common/guide/models/guide-step.ts`, widen the two content fields — and **only** to `| null`, not to the content union, which is Task 5's job:
+
+```ts
+export interface TheSeamGuidePopover {
+  /** `null` opts this step out of a slot its guide layer supplies. */
+  title?: string | null
+  description?: string | null
+  side?: 'top' | 'right' | 'bottom' | 'left'
+  align?: 'start' | 'center' | 'end'
+}
+```
+
+`null`-clearing is a layering feature, not a content feature: it only means anything once a session layer can supply a slot a step wants to opt out of, which is what this task introduces. `resolveGuideContentSlot` already accepts `TheSeamGuideContent | null | undefined` per layer, so this flows in without a cast — if you need one, something else is wrong.
 
 - [ ] **Step 3: Add the provider layer**
 
