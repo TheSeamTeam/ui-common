@@ -96,6 +96,30 @@ describe('TheSeamGuideDomContentRenderer', () => {
     view.destroy()
   })
 
+  it('detaches the template view from ApplicationRef on destroy', () => {
+    const fixture = TestBed.createComponent(TemplateHostComponent)
+    const before = appRef.viewCount
+    const view = renderer.render(
+      {
+        kind: 'template',
+        template: fixture.componentInstance.tpl,
+        text: 'the text',
+        data: { icon: 'star' },
+      },
+      makeContext(),
+      host,
+    )
+    expect(appRef.viewCount).toBe(before + 1)
+
+    view.destroy()
+
+    // Mirrors the component-arm assertion below: a deleted
+    // `this._appRef.detachView(view)` in the template branch would leave a
+    // destroyed view in `ApplicationRef`'s change-detection list, and nothing
+    // above this line would notice.
+    expect(appRef.viewCount).toBe(before)
+  })
+
   it('renders a component and gives it the context and the ref', () => {
     const guide = {} as TheSeamGuideRef
     const view = renderer.render(

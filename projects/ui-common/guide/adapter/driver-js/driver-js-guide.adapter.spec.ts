@@ -225,8 +225,28 @@ describe('DriverJsGuideAdapter popover slots', () => {
     expect(slot('description').style.display).toBe('block')
   })
 
-  it('keeps side and align on the drive step', () => {
+  it('carries side and align through to the driven config', () => {
     drive({ description: 'text', side: 'right', align: 'end' })
-    expect(document.querySelector('.driver-popover')).toBeTruthy()
+
+    // jsdom recomputes driver.js's actual on-screen placement from layout
+    // geometry that jsdom does not lay out, so a rendered-class or position
+    // assertion here would pass regardless of whether `side`/`align` ever
+    // reached driver.js. Reading them back off driver.js's own config is the
+    // one check that still fails if `_toDrivePopover` stops carrying them —
+    // deleting `side`/`align` from its return literal used to leave this
+    // test green, because the old assertion only checked that *a* popover
+    // rendered at all, not that these two fields reached it.
+    const config = (
+      adapter as unknown as {
+        _driver: {
+          getConfig(): {
+            steps: { popover?: { side?: string; align?: string } }[]
+          }
+        }
+      }
+    )._driver.getConfig()
+
+    expect(config.steps[0]?.popover?.side).toBe('right')
+    expect(config.steps[0]?.popover?.align).toBe('end')
   })
 })
