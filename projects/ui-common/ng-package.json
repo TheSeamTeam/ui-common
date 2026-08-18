@@ -16,6 +16,7 @@
     "@types/overlayscrollbars",
     "bootstrap",
     "css-element-queries",
+    "driver.js",
     "file-saver",
     "ngx-toastr",
     "pdfjs-dist",
@@ -57,6 +58,11 @@
       "glob": "**/*.scss",
       "input": "breadcrumbs",
       "output": "breadcrumbs"
+    },
+    {
+      "glob": "**/*.scss",
+      "input": "guide",
+      "output": "guide"
     },
     {
       "glob": "**/*.scss",

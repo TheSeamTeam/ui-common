@@ -63,6 +63,7 @@ export default {
     '**/ai/**/*.spec.ts',
     '**/signature-input/**/*.spec.ts',
     '**/file-input/**/*.spec.ts',
+    '**/guide/**/*.spec.ts',
   ],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: '<rootDir>/',
