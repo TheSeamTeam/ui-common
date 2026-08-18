@@ -36,7 +36,7 @@
 | `projects/ui-common/guide/content/guide-content-resolver.spec.ts` | Resolution rules. |
 | `projects/ui-common/guide/content/guide-content.renderer.ts` | `TheSeamGuideDomContentRenderer` — creates and destroys the Angular view. The only file that touches `ApplicationRef`. |
 | `projects/ui-common/guide/content/guide-content.renderer.spec.ts` | Both arms, the context and DI each receives, teardown. |
-| `projects/ui-common/guide/testing/fake-guide-content.renderer.ts` | `FakeGuideContentRenderer` — records calls, no Angular. |
+| `projects/ui-common/guide/testing/fake-guide-content.renderer.ts` | `TheSeamFakeGuideContentRenderer` — records calls, no Angular. |
 | `projects/ui-common/guide/guide-session-content.spec.ts` | Session slot lifecycle against the two fakes. |
 | `projects/ui-common/guide/guide-content.stories.ts` | Real driver.js, real Angular views, visibility assertions. |
 
@@ -1060,13 +1060,13 @@ import { TheSeamGuideSession } from './guide-session'
 import { TheSeamGuideConfig } from './models/guide-config'
 import { TheSeamGuidePopover } from './models/guide-step'
 import { TheSeamGuideTargetRegistry } from './target/guide-target-registry'
-import { FakeGuideAdapter } from './testing/fake-guide.adapter'
+import { TheSeamFakeGuideAdapter } from './testing/fake-guide.adapter'
 
 function makeSession(
   config: TheSeamGuideConfig,
   popoverDefaults: TheSeamGuidePopover = {},
 ) {
-  const adapter = new FakeGuideAdapter()
+  const adapter = new TheSeamFakeGuideAdapter()
   const registry = new TheSeamGuideTargetRegistry()
   const session = new TheSeamGuideSession(config, {
     adapter,
@@ -1077,7 +1077,7 @@ function makeSession(
   return { adapter, session }
 }
 
-function popoverAt(adapter: FakeGuideAdapter, index: number) {
+function popoverAt(adapter: TheSeamFakeGuideAdapter, index: number) {
   return adapter.startedConfig?.steps[index]?.popover
 }
 
@@ -1480,7 +1480,7 @@ git commit -m "feat(guide): layer popover defaults across provider, guide, and s
 
 **Interfaces:**
 - Consumes: everything from Tasks 1, 3, 4.
-- Produces: `TheSeamGuidePopover.title` / `.description` typed `TheSeamGuideContent | null`; `FakeGuideContentRenderer`; `TheSeamGuideSessionDeps` gains `contentRenderer: TheSeamGuideContentRenderer` and `getRef: () => TheSeamGuideRef`.
+- Produces: `TheSeamGuidePopover.title` / `.description` typed `TheSeamGuideContent | null`; `TheSeamFakeGuideContentRenderer`; `TheSeamGuideSessionDeps` gains `contentRenderer: TheSeamGuideContentRenderer` and `getRef: () => TheSeamGuideRef`.
 
 - [ ] **Step 1: Create the fake renderer**
 
@@ -1494,7 +1494,7 @@ import {
   TheSeamGuideViewSlot,
 } from '../models/guide-content'
 
-export interface FakeGuideContentRender {
+export interface TheSeamFakeGuideContentRender {
   slot: TheSeamGuideViewSlot
   context: TheSeamGuideContentContext
   host: HTMLElement
@@ -1505,15 +1505,15 @@ export interface FakeGuideContentRender {
  * Angular-free renderer for specs. Records what the session asked to render so
  * a test can assert view lifetime without a `TestBed`.
  */
-export class FakeGuideContentRenderer implements TheSeamGuideContentRenderer {
-  readonly renders: FakeGuideContentRender[] = []
+export class TheSeamFakeGuideContentRenderer implements TheSeamGuideContentRenderer {
+  readonly renders: TheSeamFakeGuideContentRender[] = []
 
   render(
     slot: TheSeamGuideViewSlot,
     context: TheSeamGuideContentContext,
     host: HTMLElement,
   ): TheSeamGuideContentView {
-    const record: FakeGuideContentRender = {
+    const record: TheSeamFakeGuideContentRender = {
       slot,
       context,
       host,
@@ -1529,7 +1529,7 @@ export class FakeGuideContentRenderer implements TheSeamGuideContentRenderer {
   }
 
   /** Renders that have not been destroyed. */
-  get live(): FakeGuideContentRender[] {
+  get live(): TheSeamFakeGuideContentRender[] {
     return this.renders.filter((r) => !r.destroyed)
   }
 }
@@ -1550,9 +1550,9 @@ function makeSession(
   config: TheSeamGuideConfig,
   popoverDefaults: TheSeamGuidePopover = {},
 ) {
-  const adapter = new FakeGuideAdapter()
+  const adapter = new TheSeamFakeGuideAdapter()
   const registry = new TheSeamGuideTargetRegistry()
-  const contentRenderer = new FakeGuideContentRenderer()
+  const contentRenderer = new TheSeamFakeGuideContentRenderer()
   // eslint-disable-next-line prefer-const -- captured by the closure below before assignment
   let ref: TheSeamGuideRef
   const session = new TheSeamGuideSession(config, {
@@ -1572,7 +1572,7 @@ Add these imports to the top of the file:
 
 ```ts
 import { TheSeamGuideRef } from './guide-ref'
-import { FakeGuideContentRenderer } from './testing/fake-guide-content.renderer'
+import { TheSeamFakeGuideContentRenderer } from './testing/fake-guide-content.renderer'
 ```
 
 Then append this describe block:
@@ -2043,7 +2043,7 @@ Then extend the session construction inside `start()`:
 
 - [ ] **Step 8: Update the two existing session spec helpers again**
 
-In `guide-session.spec.ts` and `guide-session-recovery.spec.ts`, extend each `makeSession` to supply the two new deps. Add the imports `TheSeamGuideRef` from `'./guide-ref'` and `FakeGuideContentRenderer` from `'./testing/fake-guide-content.renderer'`, then:
+In `guide-session.spec.ts` and `guide-session-recovery.spec.ts`, extend each `makeSession` to supply the two new deps. Add the imports `TheSeamGuideRef` from `'./guide-ref'` and `TheSeamFakeGuideContentRenderer` from `'./testing/fake-guide-content.renderer'`, then:
 
 ```ts
   // eslint-disable-next-line prefer-const -- captured by the closure below before assignment
@@ -2051,7 +2051,7 @@ In `guide-session.spec.ts` and `guide-session-recovery.spec.ts`, extend each `ma
   const session = new TheSeamGuideSession(config, {
     adapter,
     registry,
-    contentRenderer: new FakeGuideContentRenderer(),
+    contentRenderer: new TheSeamFakeGuideContentRenderer(),
     popoverDefaults: {},
     getRef: () => ref,
     onClosed: () => {},

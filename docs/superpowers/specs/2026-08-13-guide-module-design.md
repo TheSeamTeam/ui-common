@@ -82,8 +82,8 @@ projects/ui-common/guide/
     _utilities.scss              no CSS output
   testing/
     index.ts                     barrel
-    fake-guide.adapter.ts        FakeGuideAdapter
-    fake-guide-content.renderer.ts  FakeGuideContentRenderer
+    fake-guide.adapter.ts        TheSeamFakeGuideAdapter
+    fake-guide-content.renderer.ts  TheSeamFakeGuideContentRenderer
   guide.stories.ts
   guide-content.stories.ts
   *.spec.ts
@@ -948,12 +948,12 @@ followed in this repository today and may need configuration work, so
 accessibility is asserted explicitly instead.
 
 - **`testing/`** — a plain folder with `index.ts`, matching `buttons/testing/`
-  (not a nested entry point). Ships `FakeGuideAdapter`, which drives the
+  (not a nested entry point). Ships `TheSeamFakeGuideAdapter`, which drives the
   lifecycle with no DOM, plus a CDK harness.
 - **Jest specs** — registry behavior (duplicate names, re-registration,
   `waitFor` timeout), transition sequencing, `switchMap` cancellation, each miss
   policy, and the supersede-versus-throw rule. All engine-free against
-  `FakeGuideAdapter`, which is the payoff of the adapter boundary.
+  `TheSeamFakeGuideAdapter`, which is the payoff of the adapter boundary.
 - **Jest specs, mid-step loss** — called out separately because these are the
   regressions that would be silent:
   - target lost then recovered within grace emits `targetLost` and
@@ -972,7 +972,7 @@ accessibility is asserted explicitly instead.
   merge order, `text` sugar and precedence, the slot-presence rule, and the
   no-renderer path staying a plain string. Separately, the renderer's two arms,
   the context and DI values each receives, and that `destroy()` detaches from
-  `ApplicationRef`. Against `FakeGuideAdapter`: the host element reaching the
+  `ApplicationRef`. Against `TheSeamFakeGuideAdapter`: the host element reaching the
   adapter, views created on entry and destroyed on exit, `refresh()` **not**
   re-creating the view, and `close()` destroying live views.
 - **Storybook play functions, popover content** — provider-level default chrome

@@ -11,16 +11,16 @@ import {
 } from './models/guide-content'
 import { TheSeamGuidePopover } from './models/guide-step'
 import { TheSeamGuideTargetRegistry } from './target/guide-target-registry'
-import { FakeGuideContentRenderer } from './testing/fake-guide-content.renderer'
-import { FakeGuideAdapter } from './testing/fake-guide.adapter'
+import { TheSeamFakeGuideContentRenderer } from './testing/fake-guide-content.renderer'
+import { TheSeamFakeGuideAdapter } from './testing/fake-guide.adapter'
 
 function makeSession(
   config: TheSeamGuideConfig,
   popoverDefaults: TheSeamGuidePopover = {},
 ) {
-  const adapter = new FakeGuideAdapter()
+  const adapter = new TheSeamFakeGuideAdapter()
   const registry = new TheSeamGuideTargetRegistry()
-  const contentRenderer = new FakeGuideContentRenderer()
+  const contentRenderer = new TheSeamFakeGuideContentRenderer()
   // eslint-disable-next-line prefer-const -- captured by the closure below before assignment
   let ref: TheSeamGuideRef
   const session = new TheSeamGuideSession(config, {
@@ -35,7 +35,7 @@ function makeSession(
   return { adapter, session, contentRenderer, ref }
 }
 
-function popoverAt(adapter: FakeGuideAdapter, index: number) {
+function popoverAt(adapter: TheSeamFakeGuideAdapter, index: number) {
   return adapter.startedConfig?.steps[index]?.popover
 }
 
@@ -261,7 +261,7 @@ describe('TheSeamGuideSession popover views', () => {
     session.refresh()
     tick()
 
-    // `FakeGuideAdapter.refresh()` is a no-op and never rewrites
+    // `TheSeamFakeGuideAdapter.refresh()` is a no-op and never rewrites
     // `startedConfig`, so this read is equal to `contentRenderer.renders[0].host`
     // whether or not a real engine would have re-adopted it — this fake
     // cannot exercise re-adoption across a refresh at all. What this
@@ -306,12 +306,12 @@ describe('TheSeamGuideSession popover views', () => {
 })
 
 /**
- * Wraps `FakeGuideContentRenderer` to call `close()` on the guide from
+ * Wraps `TheSeamFakeGuideContentRenderer` to call `close()` on the guide from
  * inside `render()` itself — reproducing a content component that is given
  * `TheSeamGuideRef` on its element injector and calls `ref.close()` from its
  * own constructor, which runs synchronously inside `_renderSlots`.
  */
-class CloseDuringRenderContentRenderer extends FakeGuideContentRenderer {
+class CloseDuringRenderContentRenderer extends TheSeamFakeGuideContentRenderer {
   override render(
     slot: TheSeamGuideViewSlot,
     context: TheSeamGuideContentContext,
@@ -334,7 +334,7 @@ describe('TheSeamGuideSession re-entrant close during render', () => {
     document.body.appendChild(target)
     registry.register('one', target)
 
-    const adapter = new FakeGuideAdapter()
+    const adapter = new TheSeamFakeGuideAdapter()
     const contentRenderer = new CloseDuringRenderContentRenderer()
     // eslint-disable-next-line prefer-const -- captured by the closure below before assignment
     let ref: TheSeamGuideRef

@@ -5,8 +5,8 @@ import { TheSeamGuideSession } from './guide-session'
 import { TheSeamGuideConfig } from './models/guide-config'
 import { TheSeamGuideEvent } from './models/guide-event'
 import { TheSeamGuideTargetRegistry } from './target/guide-target-registry'
-import { FakeGuideContentRenderer } from './testing/fake-guide-content.renderer'
-import { FakeGuideAdapter } from './testing/fake-guide.adapter'
+import { TheSeamFakeGuideContentRenderer } from './testing/fake-guide-content.renderer'
+import { TheSeamFakeGuideAdapter } from './testing/fake-guide.adapter'
 
 function connectedEl(): HTMLElement {
   const el = document.createElement('div')
@@ -15,7 +15,7 @@ function connectedEl(): HTMLElement {
 }
 
 function makeSession(config: TheSeamGuideConfig) {
-  const adapter = new FakeGuideAdapter()
+  const adapter = new TheSeamFakeGuideAdapter()
   const registry = new TheSeamGuideTargetRegistry()
   const events: TheSeamGuideEvent[] = []
   // eslint-disable-next-line prefer-const -- captured by the closure below before assignment
@@ -23,7 +23,7 @@ function makeSession(config: TheSeamGuideConfig) {
   const session = new TheSeamGuideSession(config, {
     adapter,
     registry,
-    contentRenderer: new FakeGuideContentRenderer(),
+    contentRenderer: new TheSeamFakeGuideContentRenderer(),
     popoverDefaults: {},
     getRef: () => ref,
     onClosed: () => {},

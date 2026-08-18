@@ -5,14 +5,14 @@ import { TheSeamGuideBusyError } from './models/guide-errors'
 import { TheSeamGuideEvent } from './models/guide-event'
 import { provideTheSeamGuide } from './guide-providers'
 import { TheSeamGuideService } from './guide.service'
-import { FakeGuideAdapter } from './testing/fake-guide.adapter'
+import { TheSeamFakeGuideAdapter } from './testing/fake-guide.adapter'
 
 describe('TheSeamGuideService', () => {
   let service: TheSeamGuideService
-  let adapter: FakeGuideAdapter
+  let adapter: TheSeamFakeGuideAdapter
 
   beforeEach(() => {
-    adapter = new FakeGuideAdapter()
+    adapter = new TheSeamFakeGuideAdapter()
     TestBed.configureTestingModule({
       providers: [{ provide: THE_SEAM_GUIDE_ADAPTER, useValue: adapter }],
     })
@@ -181,7 +181,7 @@ describe('TheSeamGuideService', () => {
     // that notices — every mock-adapter-based spec would keep passing while
     // an application's popover chrome silently vanished.
     it('carries a provider-level popover default through to the adapter', fakeAsync(() => {
-      const providerAdapter = new FakeGuideAdapter()
+      const providerAdapter = new TheSeamFakeGuideAdapter()
       TestBed.resetTestingModule()
       TestBed.configureTestingModule({
         providers: [

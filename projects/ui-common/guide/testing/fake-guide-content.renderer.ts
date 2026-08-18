@@ -5,7 +5,7 @@ import {
   TheSeamGuideViewSlot,
 } from '../models/guide-content'
 
-export interface FakeGuideContentRender {
+export interface TheSeamFakeGuideContentRender {
   slot: TheSeamGuideViewSlot
   context: TheSeamGuideContentContext
   host: HTMLElement
@@ -16,15 +16,17 @@ export interface FakeGuideContentRender {
  * Angular-free renderer for specs. Records what the session asked to render so
  * a test can assert view lifetime without a `TestBed`.
  */
-export class FakeGuideContentRenderer implements TheSeamGuideContentRenderer {
-  readonly renders: FakeGuideContentRender[] = []
+export class TheSeamFakeGuideContentRenderer
+  implements TheSeamGuideContentRenderer
+{
+  readonly renders: TheSeamFakeGuideContentRender[] = []
 
   render(
     slot: TheSeamGuideViewSlot,
     context: TheSeamGuideContentContext,
     host: HTMLElement,
   ): TheSeamGuideContentView {
-    const record: FakeGuideContentRender = {
+    const record: TheSeamFakeGuideContentRender = {
       slot,
       context,
       host,
@@ -40,7 +42,7 @@ export class FakeGuideContentRenderer implements TheSeamGuideContentRenderer {
   }
 
   /** Renders that have not been destroyed. */
-  get live(): FakeGuideContentRender[] {
+  get live(): TheSeamFakeGuideContentRender[] {
     return this.renders.filter((r) => !r.destroyed)
   }
 }

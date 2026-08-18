@@ -1,8 +1,8 @@
-import { FakeGuideAdapter } from './fake-guide.adapter'
+import { TheSeamFakeGuideAdapter } from './fake-guide.adapter'
 
-describe('FakeGuideAdapter', () => {
+describe('TheSeamFakeGuideAdapter', () => {
   it('records the config it was started with and reports active', () => {
-    const adapter = new FakeGuideAdapter()
+    const adapter = new TheSeamFakeGuideAdapter()
     expect(adapter.isActive()).toBe(false)
 
     adapter.start(
@@ -19,7 +19,7 @@ describe('FakeGuideAdapter', () => {
   })
 
   it('records moveTo and refresh calls in order', () => {
-    const adapter = new FakeGuideAdapter()
+    const adapter = new TheSeamFakeGuideAdapter()
     adapter.start(
       { steps: [], allowUserDismiss: true },
       {
@@ -37,7 +37,7 @@ describe('FakeGuideAdapter', () => {
   })
 
   it('routes emitted user intent to the registered callbacks', () => {
-    const adapter = new FakeGuideAdapter()
+    const adapter = new TheSeamFakeGuideAdapter()
     const next = jest.fn()
     const close = jest.fn()
     adapter.start(
@@ -57,7 +57,7 @@ describe('FakeGuideAdapter', () => {
   })
 
   it('is no longer active after destroy', () => {
-    const adapter = new FakeGuideAdapter()
+    const adapter = new TheSeamFakeGuideAdapter()
     adapter.start(
       { steps: [], allowUserDismiss: true },
       {
@@ -71,7 +71,7 @@ describe('FakeGuideAdapter', () => {
   })
 
   it('drops its callbacks on destroy so emitted intent after destroy is not delivered', () => {
-    const adapter = new FakeGuideAdapter()
+    const adapter = new TheSeamFakeGuideAdapter()
     const next = jest.fn()
     const previous = jest.fn()
     const close = jest.fn()

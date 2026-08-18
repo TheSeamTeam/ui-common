@@ -8,7 +8,7 @@ import {
  * Engine-free adapter for specs. Records what the service asked for and lets a
  * test simulate user intent without a DOM.
  */
-export class FakeGuideAdapter implements TheSeamGuideAdapter {
+export class TheSeamFakeGuideAdapter implements TheSeamGuideAdapter {
   readonly calls: string[] = []
 
   startedConfig: TheSeamGuideAdapterConfig | null = null

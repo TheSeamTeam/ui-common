@@ -697,7 +697,7 @@ git commit -m "feat(guide): add seamGuideTarget directive"
   - `TheSeamGuideAdapterCallbacks` — `{ onNextRequested(): void; onPreviousRequested(): void; onCloseRequested(): void }`
   - `TheSeamGuideAdapter` — `start`, `next`, `previous`, `moveTo`, `refresh`, `destroy`, `isActive`
   - `THE_SEAM_GUIDE_ADAPTER` — `InjectionToken<TheSeamGuideAdapter>`
-  - `FakeGuideAdapter` — records calls, exposes `emitNext()`, `emitPrevious()`, `emitClose()`
+  - `TheSeamFakeGuideAdapter` — records calls, exposes `emitNext()`, `emitPrevious()`, `emitClose()`
 
 **Note on the popover type:** the adapter accepts `string | HTMLElement` even though v1's public API only produces `string`. This is the boundary the spec requires be correct in v1 so the deferred template/component content work needs no adapter change.
 
@@ -706,11 +706,11 @@ git commit -m "feat(guide): add seamGuideTarget directive"
 Create `projects/ui-common/guide/testing/fake-guide.adapter.spec.ts`:
 
 ```ts
-import { FakeGuideAdapter } from './fake-guide.adapter'
+import { TheSeamFakeGuideAdapter } from './fake-guide.adapter'
 
-describe('FakeGuideAdapter', () => {
+describe('TheSeamFakeGuideAdapter', () => {
   it('records the config it was started with and reports active', () => {
-    const adapter = new FakeGuideAdapter()
+    const adapter = new TheSeamFakeGuideAdapter()
     expect(adapter.isActive()).toBe(false)
 
     adapter.start(
@@ -723,7 +723,7 @@ describe('FakeGuideAdapter', () => {
   })
 
   it('records moveTo and refresh calls in order', () => {
-    const adapter = new FakeGuideAdapter()
+    const adapter = new TheSeamFakeGuideAdapter()
     adapter.start(
       { steps: [], allowUserDismiss: true },
       { onNextRequested: () => {}, onPreviousRequested: () => {}, onCloseRequested: () => {} },
@@ -737,7 +737,7 @@ describe('FakeGuideAdapter', () => {
   })
 
   it('routes emitted user intent to the registered callbacks', () => {
-    const adapter = new FakeGuideAdapter()
+    const adapter = new TheSeamFakeGuideAdapter()
     const next = jest.fn()
     const close = jest.fn()
     adapter.start(
@@ -753,7 +753,7 @@ describe('FakeGuideAdapter', () => {
   })
 
   it('is no longer active after destroy', () => {
-    const adapter = new FakeGuideAdapter()
+    const adapter = new TheSeamFakeGuideAdapter()
     adapter.start(
       { steps: [], allowUserDismiss: true },
       { onNextRequested: () => {}, onPreviousRequested: () => {}, onCloseRequested: () => {} },
@@ -839,7 +839,7 @@ import {
  * Engine-free adapter for specs. Records what the service asked for and lets a
  * test simulate user intent without a DOM.
  */
-export class FakeGuideAdapter implements TheSeamGuideAdapter {
+export class TheSeamFakeGuideAdapter implements TheSeamGuideAdapter {
   readonly calls: string[] = []
 
   startedConfig: TheSeamGuideAdapterConfig | null = null
@@ -956,14 +956,14 @@ import { THE_SEAM_GUIDE_ADAPTER } from './adapter/guide-adapter'
 import { TheSeamGuideBusyError } from './models/guide-errors'
 import { TheSeamGuideEvent } from './models/guide-event'
 import { TheSeamGuideService } from './guide.service'
-import { FakeGuideAdapter } from './testing/fake-guide.adapter'
+import { TheSeamFakeGuideAdapter } from './testing/fake-guide.adapter'
 
 describe('TheSeamGuideService', () => {
   let service: TheSeamGuideService
-  let adapter: FakeGuideAdapter
+  let adapter: TheSeamFakeGuideAdapter
 
   beforeEach(() => {
-    adapter = new FakeGuideAdapter()
+    adapter = new TheSeamFakeGuideAdapter()
     TestBed.configureTestingModule({
       providers: [{ provide: THE_SEAM_GUIDE_ADAPTER, useValue: adapter }],
     })
@@ -1399,7 +1399,7 @@ import { TheSeamGuideSession } from './guide-session'
 import { TheSeamGuideConfig } from './models/guide-config'
 import { TheSeamGuideEvent } from './models/guide-event'
 import { TheSeamGuideTargetRegistry } from './target/guide-target-registry'
-import { FakeGuideAdapter } from './testing/fake-guide.adapter'
+import { TheSeamFakeGuideAdapter } from './testing/fake-guide.adapter'
 
 function connectedEl(): HTMLElement {
   const el = document.createElement('div')
@@ -1408,7 +1408,7 @@ function connectedEl(): HTMLElement {
 }
 
 function makeSession(config: TheSeamGuideConfig) {
-  const adapter = new FakeGuideAdapter()
+  const adapter = new TheSeamFakeGuideAdapter()
   const registry = new TheSeamGuideTargetRegistry()
   const events: TheSeamGuideEvent[] = []
   const session = new TheSeamGuideSession(config, adapter, registry, () => {})
@@ -1897,7 +1897,7 @@ import { TheSeamGuideSession } from './guide-session'
 import { TheSeamGuideConfig } from './models/guide-config'
 import { TheSeamGuideEvent } from './models/guide-event'
 import { TheSeamGuideTargetRegistry } from './target/guide-target-registry'
-import { FakeGuideAdapter } from './testing/fake-guide.adapter'
+import { TheSeamFakeGuideAdapter } from './testing/fake-guide.adapter'
 
 function connectedEl(): HTMLElement {
   const el = document.createElement('div')
@@ -1906,7 +1906,7 @@ function connectedEl(): HTMLElement {
 }
 
 function makeSession(config: TheSeamGuideConfig) {
-  const adapter = new FakeGuideAdapter()
+  const adapter = new TheSeamFakeGuideAdapter()
   const registry = new TheSeamGuideTargetRegistry()
   const events: TheSeamGuideEvent[] = []
   const session = new TheSeamGuideSession(config, adapter, registry, () => {})
