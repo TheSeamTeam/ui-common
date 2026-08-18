@@ -2328,9 +2328,9 @@ Expected: no errors. This is the **only** config that checks `.stories.ts` files
 
 - [ ] **Step 3: Run the story tests**
 
-Ask the user before starting Storybook — it takes several minutes and they usually have it open already.
+**Storybook is already running on port 6007** — confirmed serving, with the 6 pre-existing guide stories in its index. Do NOT start another instance; `npm run test-storybook` targets `http://localhost:6007` and a second server would bind elsewhere. The dev server watches the filesystem, so your new stories file is picked up without a restart.
 
-Run: `npm run storybook` (if not already running), then `npm run test-storybook -- guide`
+Run: `npm run test-storybook -- guide`
 
 Expected: all guide stories pass, including the six pre-existing ones in `guide.stories.ts`.
 
