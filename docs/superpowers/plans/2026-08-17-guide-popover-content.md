@@ -36,7 +36,6 @@
 | `projects/ui-common/guide/content/guide-content-resolver.spec.ts` | Resolution rules. |
 | `projects/ui-common/guide/content/guide-content.renderer.ts` | `TheSeamGuideDomContentRenderer` — creates and destroys the Angular view. The only file that touches `ApplicationRef`. |
 | `projects/ui-common/guide/content/guide-content.renderer.spec.ts` | Both arms, the context and DI each receives, teardown. |
-| `projects/ui-common/guide/adapter/driver-js/driver-js-guide.adapter.spec.ts` | driver.js popover DOM, in jsdom. |
 | `projects/ui-common/guide/testing/fake-guide-content.renderer.ts` | `FakeGuideContentRenderer` — records calls, no Angular. |
 | `projects/ui-common/guide/guide-session-content.spec.ts` | Session slot lifecycle against the two fakes. |
 | `projects/ui-common/guide/guide-content.stories.ts` | Real driver.js, real Angular views, visibility assertions. |
@@ -49,6 +48,7 @@
 | `models/guide-config.ts` | `TheSeamGuideConfig.popover`; exclude it from `TheSeamGuideResolvedConfig`. |
 | `adapter/guide-adapter.ts` | Extract `TheSeamGuideAdapterPopover`; `title` widens to `string \| HTMLElement`. |
 | `adapter/driver-js/driver-js-guide.adapter.ts` | Both slots through `onPopoverRender`; un-hide filled slots; exhaustive mapper. |
+| `adapter/driver-js/driver-js-guide.adapter.spec.ts` | ALREADY EXISTS with 6 tests. Append a new `describe`; never overwrite. |
 | `guide-providers.ts` | `popover` option and `THE_SEAM_GUIDE_POPOVER_DEFAULTS` token. |
 | `guide-session.ts` | Constructor takes a deps object; slot resolution, host allocation, view lifecycle; exhaustive mapper. |
 | `guide.service.ts` | Inject renderer and provider defaults; pass `getRef`. |
@@ -481,7 +481,7 @@ git commit -m "feat(guide): add popover content types and layer resolver"
 - Create: `projects/ui-common/guide/models/exhaustive-map.ts`
 - Modify: `projects/ui-common/guide/adapter/guide-adapter.ts`
 - Modify: `projects/ui-common/guide/adapter/driver-js/driver-js-guide.adapter.ts`
-- Test: `projects/ui-common/guide/adapter/driver-js/driver-js-guide.adapter.spec.ts`
+- Test (APPEND to the existing file — it already holds 6 tests): `projects/ui-common/guide/adapter/driver-js/driver-js-guide.adapter.spec.ts`
 
 **Interfaces:**
 - Consumes: nothing from Task 1.
@@ -750,7 +750,7 @@ Expected: exactly one line, `adapter/driver-js/driver-js-guide.adapter.ts:2`.
 
 - [ ] **Step 7: Run the full module suite and lint**
 
-Run: `npx jest` — expected: PASS, 932 tests / 113 suites (the full suite, not the guide-scoped filter).
+Run: `npx jest` — expected: PASS, 932 tests / 112 suites (the full suite, not the guide-scoped filter).
 Run: `npm run lint` — expected: 0 errors.
 
 - [ ] **Step 8: Commit**
@@ -1019,7 +1019,7 @@ If `appRef.tick()` throws `ApplicationRef.tick is called recursively`, replace t
 
 - [ ] **Step 5: Run the full module suite and lint**
 
-Run: `npx jest` — expected: PASS, 935 tests / 114 suites (the full suite, not the guide-scoped filter).
+Run: `npx jest` — expected: PASS, 935 tests / 113 suites (the full suite, not the guide-scoped filter).
 Run: `npm run lint` — expected: 0 errors.
 
 - [ ] **Step 6: Commit**
@@ -1438,7 +1438,7 @@ In `projects/ui-common/guide/guide-session.spec.ts` and `projects/ui-common/guid
 - [ ] **Step 9: Run the tests to verify they pass**
 
 Run: `npx jest projects/ui-common/guide/guide-session-content.spec.ts` — expected: PASS, 6 tests.
-Run: `npx jest` — expected: PASS, 941 tests / 115 suites (the full suite, not the guide-scoped filter). Every pre-existing session spec must still pass; if one fails, the deps refactor changed behavior and must be corrected rather than the spec.
+Run: `npx jest` — expected: PASS, 941 tests / 114 suites (the full suite, not the guide-scoped filter). Every pre-existing session spec must still pass; if one fails, the deps refactor changed behavior and must be corrected rather than the spec.
 
 - [ ] **Step 10: Lint and commit**
 
@@ -2045,7 +2045,7 @@ In `guide-session.spec.ts` and `guide-session-recovery.spec.ts`, extend each `ma
 - [ ] **Step 9: Run the tests to verify they pass**
 
 Run: `npx jest projects/ui-common/guide/guide-session-content.spec.ts` — expected: PASS, 14 tests.
-Run: `npx jest` — expected: PASS, 949 tests / 115 suites (the full suite, not the guide-scoped filter).
+Run: `npx jest` — expected: PASS, 949 tests / 114 suites (the full suite, not the guide-scoped filter).
 
 - [ ] **Step 10: Verify both exhaustiveness guards actually fire**
 
@@ -2327,7 +2327,7 @@ npm run build:ui-common
 grep -rn "from 'driver\.js'" projects/ui-common/guide --include=*.ts
 ```
 
-Expected: 949 tests / 115 suites pass; no type errors; 0 lint errors (48 pre-existing warnings); build succeeds; exactly one `driver.js` import.
+Expected: 949 tests / 114 suites pass; no type errors; 0 lint errors (48 pre-existing warnings); build succeeds; exactly one `driver.js` import.
 
 - [ ] **Step 5: Commit**
 
