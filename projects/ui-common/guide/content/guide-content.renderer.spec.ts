@@ -4,7 +4,8 @@ import {
   Component,
   inject,
   TemplateRef,
-  ViewChild, OnDestroy,
+  ViewChild,
+  OnDestroy,
 } from '@angular/core'
 import { TestBed } from '@angular/core/testing'
 
