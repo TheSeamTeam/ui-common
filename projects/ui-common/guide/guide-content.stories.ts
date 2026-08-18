@@ -37,6 +37,16 @@ class AppPopoverTitleComponent {
 }
 
 @Component({
+  selector: 'seam-step-popover-title',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `<strong data-testid="step-title-text">{{ _ctx.text }}</strong>`,
+})
+class StepPopoverTitleComponent {
+  readonly _ctx = inject(THE_SEAM_GUIDE_CONTENT)
+}
+
+@Component({
   standalone: true,
   imports: [TheSeamGuideTargetDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -56,6 +66,16 @@ class AppPopoverTitleComponent {
       <div class="mt-3">
         <button type="button" class="btn btn-primary" (click)="runTemplate()">
           Start template guide
+        </button>
+      </div>
+
+      <div class="mt-3">
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="runStepOverride()"
+        >
+          Start step-override guide
         </button>
       </div>
 
@@ -98,6 +118,21 @@ class GuideContentDemoComponent {
               text: 'Body from a template',
               data: { detail: 'with step data' },
             },
+          },
+        },
+      ],
+    })
+  }
+
+  /** A step-level component replaces the provider's title chrome outright. */
+  runStepOverride(): void {
+    this._guide.start({
+      steps: [
+        {
+          element: 'one',
+          popover: {
+            title: { component: StepPopoverTitleComponent, text: 'Step title' },
+            description: 'Step-level override.',
           },
         },
       ],
@@ -201,6 +236,33 @@ export const ChromeSurvivesNavigation: Story = {
         .querySelector('.driver-popover')
         ?.getAttribute('aria-labelledby'),
     ).toBe('driver-popover-title')
+  },
+}
+
+export const StepComponentOverridesProviderChrome: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Start step-override guide' }),
+    )
+
+    await waitFor(() =>
+      expect(
+        titleEl()?.querySelector('[data-testid="step-title-text"]'),
+      ).toBeTruthy(),
+    )
+    // The step's component replaces the provider's title chrome outright —
+    // none of the provider's markup should be present alongside it.
+    await expect(
+      titleEl()!.querySelector('[data-testid="chrome-icon"]'),
+    ).toBeNull()
+    await expect(
+      titleEl()!.querySelector('[data-testid="step-title-text"]')?.textContent,
+    ).toBe('Step title')
+    // Visibility, not just presence — the property this story family exists
+    // to protect.
+    await expect(titleEl()!.style.display).toBe('block')
+    await expect(descEl()!.textContent).toBe('Step-level override.')
   },
 }
 
