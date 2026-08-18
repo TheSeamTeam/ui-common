@@ -5,8 +5,10 @@ import { Observable } from 'rxjs'
 export type TheSeamGuideMissPolicy = 'skip' | 'elementless' | 'end'
 
 export interface TheSeamGuidePopover {
-  title?: string
-  description?: string
+  /** `null` opts a step out of a slot its guide layer supplies. */
+  title?: string | null
+  /** `null` opts a step out of a slot its guide layer supplies. */
+  description?: string | null
   side?: 'top' | 'right' | 'bottom' | 'left'
   align?: 'start' | 'center' | 'end'
 }

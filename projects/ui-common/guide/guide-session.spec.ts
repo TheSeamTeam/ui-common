@@ -17,7 +17,12 @@ function makeSession(config: TheSeamGuideConfig) {
   const adapter = new FakeGuideAdapter()
   const registry = new TheSeamGuideTargetRegistry()
   const events: TheSeamGuideEvent[] = []
-  const session = new TheSeamGuideSession(config, adapter, registry, () => {})
+  const session = new TheSeamGuideSession(config, {
+    adapter,
+    registry,
+    popoverDefaults: {},
+    onClosed: () => {},
+  })
   session.events$.subscribe((e) => events.push(e))
   return { adapter, registry, events, session }
 }

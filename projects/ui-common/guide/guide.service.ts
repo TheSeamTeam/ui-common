@@ -8,6 +8,7 @@ import {
 } from '@angular/core'
 
 import { THE_SEAM_GUIDE_ADAPTER } from './adapter/guide-adapter'
+import { THE_SEAM_GUIDE_POPOVER_DEFAULTS } from './guide-providers'
 import { TheSeamGuideRef } from './guide-ref'
 import { TheSeamGuideSession } from './guide-session'
 import {
@@ -22,6 +23,8 @@ import { TheSeamGuideTargetRegistry } from './target/guide-target-registry'
 export class TheSeamGuideService implements OnDestroy {
   private readonly _adapter = inject(THE_SEAM_GUIDE_ADAPTER)
   private readonly _registry = inject(TheSeamGuideTargetRegistry)
+  private readonly _popoverDefaults =
+    inject(THE_SEAM_GUIDE_POPOVER_DEFAULTS, { optional: true }) ?? {}
 
   private readonly _activeGuide = signal<TheSeamGuideRef | null>(null)
 
@@ -73,12 +76,12 @@ export class TheSeamGuideService implements OnDestroy {
 
     // eslint-disable-next-line prefer-const -- captured by the closure below before assignment
     let ref: TheSeamGuideRef
-    const session = new TheSeamGuideSession(
-      config,
-      this._adapter,
-      this._registry,
-      () => this._clearIfCurrent(ref),
-    )
+    const session = new TheSeamGuideSession(config, {
+      adapter: this._adapter,
+      registry: this._registry,
+      popoverDefaults: this._popoverDefaults,
+      onClosed: () => this._clearIfCurrent(ref),
+    })
     ref = new TheSeamGuideRef(session)
     this._activeGuide.set(ref)
     session.start()

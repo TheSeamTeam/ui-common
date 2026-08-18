@@ -14,8 +14,10 @@ import { catchError, filter, map, switchMap, take, tap } from 'rxjs/operators'
 
 import {
   TheSeamGuideAdapter,
+  TheSeamGuideAdapterPopover,
   TheSeamGuideAdapterStep,
 } from './adapter/guide-adapter'
+import { resolveGuideContentSlot } from './content/guide-content-resolver'
 import { TheSeamGuideSessionController } from './guide-ref'
 import {
   TheSeamGuideConfig,
@@ -27,8 +29,25 @@ import {
   TheSeamGuideEvent,
   TheSeamGuideResult,
 } from './models/guide-event'
-import { TheSeamGuideMissPolicy, TheSeamGuideStep } from './models/guide-step'
+import { ExhaustiveMap } from './models/exhaustive-map'
+import {
+  TheSeamGuideMissPolicy,
+  TheSeamGuidePopover,
+  TheSeamGuideStep,
+} from './models/guide-step'
 import { TheSeamGuideTargetRegistry } from './target/guide-target-registry'
+
+/**
+ * Everything a session needs that it does not own. A bag rather than
+ * positional parameters: the list grows, and a mis-ordered pair of same-typed
+ * arguments is a silent bug.
+ */
+export interface TheSeamGuideSessionDeps {
+  adapter: TheSeamGuideAdapter
+  registry: TheSeamGuideTargetRegistry
+  popoverDefaults: TheSeamGuidePopover
+  onClosed: (session: TheSeamGuideSession) => void
+}
 
 export class TheSeamGuideSession implements TheSeamGuideSessionController {
   // ReplaySubject, not Subject: `start()` runs synchronously (including its
@@ -80,12 +99,19 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
     this._afterClosed.asObservable()
   readonly activeIndex: Signal<number> = this._activeIndex.asReadonly()
 
-  constructor(
-    config: TheSeamGuideConfig,
-    private readonly _adapter: TheSeamGuideAdapter,
-    private readonly _registry: TheSeamGuideTargetRegistry,
-    private readonly _onClosed: (session: TheSeamGuideSession) => void,
-  ) {
+  private readonly _adapter: TheSeamGuideAdapter
+  private readonly _registry: TheSeamGuideTargetRegistry
+  private readonly _popoverDefaults: TheSeamGuidePopover
+  private readonly _sessionPopover: TheSeamGuidePopover | undefined
+  private readonly _onClosed: (session: TheSeamGuideSession) => void
+
+  constructor(config: TheSeamGuideConfig, deps: TheSeamGuideSessionDeps) {
+    this._adapter = deps.adapter
+    this._registry = deps.registry
+    this._popoverDefaults = deps.popoverDefaults
+    this._sessionPopover = config.popover
+    this._onClosed = deps.onClosed
+
     this.steps = config.steps
     this.options = { ...THE_SEAM_GUIDE_DEFAULTS, ...stripUndefined(config) }
 
@@ -464,21 +490,60 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
 
   /** Element is a resolver function so the engine re-resolves at paint time. */
   protected _toAdapterStep(step: TheSeamGuideStep): TheSeamGuideAdapterStep {
+    const popover = this._toAdapterPopover(step)
     return {
       element:
         step.element === undefined
           ? undefined
           : () => this._resolveNow(step) ?? undefined,
-      popover:
-        step.popover === undefined
-          ? undefined
-          : {
-              title: step.popover.title,
-              description: step.popover.description,
-              side: step.popover.side,
-              align: step.popover.align,
-            },
+      popover,
     }
+  }
+
+  /**
+   * `ExhaustiveMap` makes every key of `TheSeamGuidePopover` required in
+   * `mapped`, so adding a field to the popover is a compile error here until
+   * it is carried through. This is the exact hop on which `side` and `align`
+   * were once silently dropped by a spread.
+   */
+  private _toAdapterPopover(
+    step: TheSeamGuideStep,
+  ): TheSeamGuideAdapterPopover | undefined {
+    const title = this._resolveSlot(step, 'title')
+    const description = this._resolveSlot(step, 'description')
+
+    const mapped: ExhaustiveMap<
+      TheSeamGuidePopover,
+      TheSeamGuideAdapterPopover
+    > = {
+      title: title?.kind === 'text' ? title.text : undefined,
+      description: description?.kind === 'text' ? description.text : undefined,
+      side: this._nearestScalar(step, 'side'),
+      align: this._nearestScalar(step, 'align'),
+    }
+
+    return Object.values(mapped).every((value) => value === undefined)
+      ? undefined
+      : mapped
+  }
+
+  private _resolveSlot(step: TheSeamGuideStep, name: 'title' | 'description') {
+    return resolveGuideContentSlot({
+      provider: this._popoverDefaults[name],
+      session: this._sessionPopover?.[name],
+      step: step.popover?.[name],
+    })
+  }
+
+  private _nearestScalar<K extends 'side' | 'align'>(
+    step: TheSeamGuideStep,
+    key: K,
+  ): TheSeamGuidePopover[K] {
+    return (
+      step.popover?.[key] ??
+      this._sessionPopover?.[key] ??
+      this._popoverDefaults[key]
+    )
   }
 
   /**
@@ -504,7 +569,7 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
 function stripUndefined(
   config: TheSeamGuideConfig,
 ): Partial<TheSeamGuideResolvedConfig> {
-  const { steps: _steps, ...rest } = config
+  const { steps: _steps, popover: _popover, ...rest } = config
   const out: Record<string, unknown> = {}
   for (const [key, value] of Object.entries(rest)) {
     if (value !== undefined) {

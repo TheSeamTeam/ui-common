@@ -1,4 +1,8 @@
-import { TheSeamGuideMissPolicy, TheSeamGuideStep } from './guide-step'
+import {
+  TheSeamGuideMissPolicy,
+  TheSeamGuidePopover,
+  TheSeamGuideStep,
+} from './guide-step'
 
 export interface TheSeamGuideConfig {
   steps: TheSeamGuideStep[]
@@ -20,10 +24,19 @@ export interface TheSeamGuideConfig {
 
   /** Policy for a target lost mid-step. Default 'elementless'. */
   onTargetLost?: TheSeamGuideMissPolicy
+
+  /**
+   * Popover defaults for every step in this guide — the middle content layer.
+   * Decorates slots a step supplies, and can supply a slot itself; a step
+   * opts out of one with `null`.
+   */
+  popover?: TheSeamGuidePopover
 }
 
+// `popover` is excluded rather than given a default: it is a content layer
+// resolved per slot, not a scalar option with a single fallback value.
 export type TheSeamGuideResolvedConfig = Required<
-  Omit<TheSeamGuideConfig, 'steps'>
+  Omit<TheSeamGuideConfig, 'steps' | 'popover'>
 >
 
 export const THE_SEAM_GUIDE_DEFAULTS: TheSeamGuideResolvedConfig = {
