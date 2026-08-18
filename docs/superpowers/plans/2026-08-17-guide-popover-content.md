@@ -449,7 +449,7 @@ export function resolveGuideContentSlot(
 
 Run: `npx jest projects/ui-common/guide/content/guide-content-resolver.spec.ts`
 
-Expected: PASS, 18 tests.
+Expected: PASS, 16 tests.
 
 - [ ] **Step 6: Export the content model**
 
@@ -461,7 +461,7 @@ export * from './models/guide-content'
 
 - [ ] **Step 7: Run the full module suite and lint**
 
-Run: `npx jest projects/ui-common/guide` — expected: PASS, 928 tests / 112 suites.
+Run: `npx jest projects/ui-common/guide` — expected: PASS, 926 tests / 112 suites.
 Run: `npm run lint` — expected: 0 errors (48 pre-existing warnings).
 
 - [ ] **Step 8: Commit**
@@ -750,7 +750,7 @@ Expected: exactly one line, `adapter/driver-js/driver-js-guide.adapter.ts:2`.
 
 - [ ] **Step 7: Run the full module suite and lint**
 
-Run: `npx jest projects/ui-common/guide` — expected: PASS, 934 tests / 113 suites.
+Run: `npx jest projects/ui-common/guide` — expected: PASS, 932 tests / 113 suites.
 Run: `npm run lint` — expected: 0 errors.
 
 - [ ] **Step 8: Commit**
@@ -1019,7 +1019,7 @@ If `appRef.tick()` throws `ApplicationRef.tick is called recursively`, replace t
 
 - [ ] **Step 5: Run the full module suite and lint**
 
-Run: `npx jest projects/ui-common/guide` — expected: PASS, 937 tests / 114 suites.
+Run: `npx jest projects/ui-common/guide` — expected: PASS, 935 tests / 114 suites.
 Run: `npm run lint` — expected: 0 errors.
 
 - [ ] **Step 6: Commit**
@@ -1438,7 +1438,7 @@ In `projects/ui-common/guide/guide-session.spec.ts` and `projects/ui-common/guid
 - [ ] **Step 9: Run the tests to verify they pass**
 
 Run: `npx jest projects/ui-common/guide/guide-session-content.spec.ts` — expected: PASS, 6 tests.
-Run: `npx jest projects/ui-common/guide` — expected: PASS, 943 tests / 115 suites. Every pre-existing session spec must still pass; if one fails, the deps refactor changed behavior and must be corrected rather than the spec.
+Run: `npx jest projects/ui-common/guide` — expected: PASS, 941 tests / 115 suites. Every pre-existing session spec must still pass; if one fails, the deps refactor changed behavior and must be corrected rather than the spec.
 
 - [ ] **Step 10: Lint and commit**
 
@@ -2045,7 +2045,7 @@ In `guide-session.spec.ts` and `guide-session-recovery.spec.ts`, extend each `ma
 - [ ] **Step 9: Run the tests to verify they pass**
 
 Run: `npx jest projects/ui-common/guide/guide-session-content.spec.ts` — expected: PASS, 14 tests.
-Run: `npx jest projects/ui-common/guide` — expected: PASS, 951 tests / 115 suites.
+Run: `npx jest projects/ui-common/guide` — expected: PASS, 949 tests / 115 suites.
 
 - [ ] **Step 10: Verify both exhaustiveness guards actually fire**
 
@@ -2327,7 +2327,7 @@ npm run build:ui-common
 grep -rn "from 'driver\.js'" projects/ui-common/guide --include=*.ts
 ```
 
-Expected: 951 tests / 115 suites pass; no type errors; 0 lint errors (48 pre-existing warnings); build succeeds; exactly one `driver.js` import.
+Expected: 949 tests / 115 suites pass; no type errors; 0 lint errors (48 pre-existing warnings); build succeeds; exactly one `driver.js` import.
 
 - [ ] **Step 5: Commit**
 
