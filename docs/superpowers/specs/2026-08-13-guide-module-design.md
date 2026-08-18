@@ -689,7 +689,8 @@ string or a DOM node**, which is what keeps the adapter engine-agnostic.
 
 A `TheSeamGuideContentRenderer` (`providedIn: 'root'`) owns it, rather than
 `TheSeamGuideSession`, which is already large and otherwise free of Angular
-rendering concerns. It returns `{ host: HTMLElement; destroy(): void }`.
+rendering concerns. It takes the host element as a parameter — the session
+creates and owns it, per Lifecycle below — and returns `{ destroy(): void }`.
 
 - **template** — `template.createEmbeddedView(context)`, `appRef.attachView`,
   append `rootNodes` to the host.
@@ -739,22 +740,30 @@ popover?: {
 > appended into a hidden container. `onPopoverRender` must set
 > `display = 'block'` on any slot it fills. This applies to both slots.
 
-**Popover fields are enumerated by hand at two hops** — `_toAdapterStep` in the
-session and `_toDriveStep` in the driver.js adapter — because a wholesale spread
-once let `side` and `align` be silently dropped (TypeScript exempts spread
-properties from excess-property checking). A single shared mapper is not
-possible; the two hops map between different shapes. Instead each mapper's
-target is annotated with a mapped type that strips optionality:
+**Popover fields are enumerated by hand at two hops** — `_toAdapterPopover` in
+the session and `_toDrivePopover` in the driver.js adapter — because a
+wholesale spread once let `side` and `align` be silently dropped (TypeScript
+exempts spread properties from excess-property checking). A single shared
+mapper is not possible; the two hops map between different shapes. Instead
+each mapper builds a local, exhaustively-typed `mapped` object that strips
+optionality:
 
 ```ts
-const popover: {
+const mapped: {
   [K in keyof TheSeamGuidePopover]-?: TheSeamGuideAdapterPopover[K] | undefined
 } = { … }
 ```
 
-Every key must then be present in the literal, so **adding a field to
-`TheSeamGuidePopover` is a compile error at both hops** until it is carried
-through.
+Every key must then be present in that literal, so adding a field to
+`TheSeamGuidePopover` is a compile error at both hops — but only the session
+hop actually **enforces carry-through**. `_toAdapterPopover` returns `mapped`
+itself, so a new field reaching that object is, by construction, a new field
+reaching the adapter. `_toDrivePopover` destructures `mapped` into a
+*separate* return object literal (built by hand, alongside `onPopoverRender`);
+the exhaustiveness check there only forces a new field to be acknowledged
+inside `mapped`, not threaded into the literal that actually reaches
+driver.js. A field could satisfy `ExhaustiveMap` at this hop and still never
+leave the function.
 
 #### What driver.js still owns
 
@@ -766,8 +775,10 @@ the footer is a sibling of both slots and its visibility comes from
 Two consequences worth knowing:
 
 - driver.js focuses the first focusable node in the popover, so an interactive
-  element in content takes initial focus instead of Next. Asserted in a story,
-  not prevented.
+  element in content would take initial focus instead of Next. This is
+  documented behavior, not prevented — and, as of this writing, untested: the
+  focus story (`FocusMovesIntoThePopover`) exercises only string popovers, so
+  no story currently puts an interactive element inside a content slot.
 - `aria-labelledby` points at the title element, so title content becomes the
   dialog's accessible name. Decorative icons and progress indicators belong
   behind `aria-hidden`.
