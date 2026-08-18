@@ -113,10 +113,11 @@ describe('TheSeamGuideDomContentRenderer', () => {
 
     view.destroy()
 
-    // Mirrors the component-arm assertion below: a deleted
-    // `this._appRef.detachView(view)` in the template branch would leave a
-    // destroyed view in `ApplicationRef`'s change-detection list, and nothing
-    // above this line would notice.
+    // This pins that no view is left attached to `ApplicationRef` after
+    // `destroy()`. It can't distinguish the explicit `detachView` call from
+    // Angular's own auto-detach (`ViewRef.destroy()` also calls
+    // `this._appRef.detachView(this)` as of 20.3.15), so the explicit call is
+    // kept deliberately rather than relying on that internal behavior.
     expect(appRef.viewCount).toBe(before)
   })
 

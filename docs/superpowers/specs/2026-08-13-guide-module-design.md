@@ -754,9 +754,12 @@ const mapped: {
 } = { … }
 ```
 
-Every key must then be present in that literal, so adding a field to
-`TheSeamGuidePopover` is a compile error at both hops — but only the session
-hop actually **enforces carry-through**. `_toAdapterPopover` returns `mapped`
+Every key must then be present in that literal. `_toAdapterPopover` is keyed off
+`TheSeamGuidePopover`, so a field added there is a compile error at the session
+hop; `_toDrivePopover` is keyed off `TheSeamGuideAdapterPopover`, so a field
+added there is a compile error at the driver hop — each guard catches
+additions only to its own source type. But only the session hop actually
+**enforces carry-through**. `_toAdapterPopover` returns `mapped`
 itself, so a new field reaching that object is, by construction, a new field
 reaching the adapter. `_toDrivePopover` destructures `mapped` into a
 *separate* return object literal (built by hand, alongside `onPopoverRender`);
