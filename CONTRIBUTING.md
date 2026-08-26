@@ -91,7 +91,7 @@ All jobs run on pushes to `master`/`develop` and PRs to `master`:
 
 ## Local Development
 
-**Node version:** Use the version specified in `.nvmrc` (currently 22.12.0). Run `nvm use` if you use nvm.
+**Node version:** Use the version specified in `.nvmrc` (currently 24.16.0). Run `nvm use` if you use nvm.
 
 **Install dependencies:**
 
