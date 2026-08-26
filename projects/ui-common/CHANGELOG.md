@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.1.0](https://github.com/TheSeamTeam/ui-common/compare/ui-common-v2.0.1...ui-common-v2.1.0) (2026-08-26)
+
+
+### Features
+
+* **geo-json:** add polygonContains, addHoleToPolygon, polygonHasMinDistinctVertices, and polygonViolatesMinMax ([866f84b](https://github.com/TheSeamTeam/ui-common/commit/866f84b08a01734168a1100bf1c02aec7bd504b7))
+* **google-maps:** replace deprecated google.maps.drawing with terra-draw ([866f84b](https://github.com/TheSeamTeam/ui-common/commit/866f84b08a01734168a1100bf1c02aec7bd504b7))
+
+
+### Bug Fixes
+
+* **geo-json:** make closePolygons idempotent and handle bare geometries ([866f84b](https://github.com/TheSeamTeam/ui-common/commit/866f84b08a01734168a1100bf1c02aec7bd504b7))
+* **google-maps:** isolate terra-draw's Data layer from map.data ([866f84b](https://github.com/TheSeamTeam/ui-common/commit/866f84b08a01734168a1100bf1c02aec7bd504b7))
+
 ## [2.0.1](https://github.com/TheSeamTeam/ui-common/compare/ui-common-v2.0.0...ui-common-v2.0.1) (2026-06-02)
 
 
