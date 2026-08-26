@@ -1,23 +1,31 @@
 import { Injectable, NgZone, OnDestroy, ViewContainerRef } from '@angular/core'
+import { Geometry, Polygon } from 'geojson'
 import { BehaviorSubject, from, Observable, Subject } from 'rxjs'
 import { switchMap, takeUntil, tap } from 'rxjs/operators'
 
+import { TerraDraw, TerraDrawPolyLineMode } from 'terra-draw'
+import { TerraDrawGoogleMapsAdapter } from 'terra-draw-google-maps-adapter'
+
 import { MenuComponent } from '@theseam/ui-common/menu'
-import { isNullOrUndefined, notNullOrUndefined } from '@theseam/ui-common/utils'
+import {
+  addHoleToPolygon,
+  closePolygons,
+  notNullOrUndefined,
+  polygonContains,
+  polygonHasMinDistinctVertices,
+} from '@theseam/ui-common/utils'
 
 import { GoogleMapsContextMenu } from './google-maps-contextmenu'
 import {
-  addInnerFeatureCutoutToExteriorFeature,
-  createDataFeatureFromPolygon,
   createFeatureChangeObservable,
+  dataPolygonFromGeoJson,
+  geoJsonPolygonFromDataFeature,
   getBoundsWithAllFeatures,
   getFeatureCenter,
   getFeaturesCount,
   getHoveredStyleOptionsDefinedByFeature,
-  getPossibleExteriorFeature,
   getStyleOptionsDefinedByFeature,
   isFeatureSelected,
-  polygonHasValidPathsLengths,
   removeAllFeatures,
   setFeatureSelected,
   stripAppFeaturePropertiesFromJson,
@@ -28,25 +36,6 @@ import {
 } from './map-value-manager.service'
 
 declare const ngDevMode: boolean | undefined
-
-const DEFAULT_POLYGON_OPTIONS = (
-  editingEnabled: boolean,
-): google.maps.PolygonOptions => ({
-  clickable: editingEnabled,
-  draggable: editingEnabled,
-  editable: editingEnabled,
-})
-
-const DEFAULT_DRAWING_MANAGER_OPTIONS = (
-  editingEnabled: boolean,
-): google.maps.drawing.DrawingManagerOptions => ({
-  drawingControl: editingEnabled,
-  drawingControlOptions: {
-    drawingModes: [google.maps.drawing.OverlayType.POLYGON],
-  },
-  polygonOptions: DEFAULT_POLYGON_OPTIONS(editingEnabled),
-  drawingMode: null,
-})
 
 const FEATURE_STYLE_OPTIONS_DEFAULT = (
   editingEnabled: boolean,
@@ -110,7 +99,10 @@ export class GoogleMapsService implements OnDestroy {
   private readonly _mapReadySubject = new BehaviorSubject<boolean>(false)
   private readonly _editingEnabledSubject = new BehaviorSubject<boolean>(true)
 
-  private _drawingManager?: google.maps.drawing.DrawingManager
+  private _terraDraw?: TerraDraw
+  private _terraDrawReady = false
+  private readonly _drawingSubject = new BehaviorSubject<boolean>(false)
+  public readonly drawing$ = this._drawingSubject.asObservable()
   private _featureContextMenu: MenuComponent | null = null
   private _activeContextMenu: GoogleMapsContextMenu | null = null
   private _baseLatLng?: google.maps.LatLngLiteral
@@ -141,6 +133,12 @@ export class GoogleMapsService implements OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this._terraDraw?.enabled) {
+      this._terraDraw.stop()
+    }
+    this._terraDraw = undefined
+    this._drawingSubject.complete()
+
     this._ngUnsubscribe.next()
     this._ngUnsubscribe.complete()
   }
@@ -148,7 +146,12 @@ export class GoogleMapsService implements OnDestroy {
   public setMap(map: google.maps.Map): void {
     this.googleMap = map
     this._mapReadySubject.next(true)
-    this._initDrawingManager()
+    // Terra Draw's Google Maps adapter binds its event listeners to the map's
+    // rendered '.gm-style' DOM subtree (located via querySelector). That subtree
+    // does not exist yet when 'mapInitialized' fires, so initializing Terra Draw
+    // synchronously here makes the adapter register listeners on a null element
+    // and throw. Defer init until the map has rendered (first 'idle').
+    google.maps.event.addListenerOnce(map, 'idle', () => this._initTerraDraw())
     this._initFeatureStyling()
     this._initFeatureChangeListeners()
   }
@@ -175,18 +178,11 @@ export class GoogleMapsService implements OnDestroy {
       this.googleMap.data.revertStyle()
       if (!enabled) {
         this.stopDrawing()
-        const options = DEFAULT_DRAWING_MANAGER_OPTIONS(this.isEditingEnabled())
-        this._drawingManager?.setOptions(options)
-        this._drawingManager?.setMap(null)
         this.googleMap.data.forEach((f) => {
           if (isFeatureSelected(f)) {
             setFeatureSelected(f, false)
           }
         })
-      } else {
-        const options = DEFAULT_DRAWING_MANAGER_OPTIONS(this.isEditingEnabled())
-        this._drawingManager?.setOptions(options)
-        this._drawingManager?.setMap(this.googleMap)
       }
     }
   }
@@ -221,73 +217,151 @@ export class GoogleMapsService implements OnDestroy {
     })
   }
 
-  /**
-   * Stops the current drawing.
-   */
-  public stopDrawing(): void {
-    this._ngZone.runOutsideAngular(() => {
-      if (
-        isNullOrUndefined(this._drawingManager) ||
-        this._drawingManager.getDrawingMode() === null
-      ) {
-        return
-      }
-
-      // Listening for the completion event of the overlay currently being drawn
-      // and removing it. I haven't found a way to cancel the current drawing,
-      // without this hack that assumes our listeners will not run into a race
-      // condition.
-      const listener = google.maps.event.addListener(
-        this._drawingManager,
-        'overlaycomplete',
-        (event: google.maps.drawing.OverlayCompleteEvent) => {
-          event.overlay?.setMap(null)
-          listener.remove()
-        },
-      )
-
-      // To fake canceling the current drawing, without disabling the drawing
-      // mode, the drawing mode is being unset then immediately set back. When
-      // the mode is unset the 'overlaycomplete' event will fire, which will
-      // give a reference to the current overlay to remove, then it is set back
-      // to the mode the user was using. To the user is should just seem like
-      // the current drawing was canceled and they can start drawing again.
-      const mode = this._drawingManager.getDrawingMode()
-      this._drawingManager.setDrawingMode(null)
-      this._drawingManager.setDrawingMode(mode)
-
-      // 'overlaycomplete' should fire immediately, unless an overlay hadn't
-      // started drawing. This timeout will make sure the listener gets removed.
-      setTimeout(() => {
-        listener.remove()
-      })
-    })
+  /** Whether polygon drawing mode is currently active. */
+  public isDrawing(): boolean {
+    return this._terraDraw?.getMode() === 'polyline'
   }
 
-  private _initDrawingManager(): void {
-    if (notNullOrUndefined(this._drawingManager)) {
-      throw Error(`DrawingManager is already initialized.`)
+  /** Enter polygon drawing mode. */
+  public startDrawing(): void {
+    if (!this._terraDraw || !this._terraDrawReady || !this.isEditingEnabled()) {
+      return
     }
-
+    // Clear any selection when entering drawing mode. Otherwise a selected
+    // feature and the shape being drawn both appear selected, reading as one
+    // shape even though they are unrelated.
     this._assertInitialized()
-
-    const options = DEFAULT_DRAWING_MANAGER_OPTIONS(this.isEditingEnabled())
-
-    const drawingManager = new google.maps.drawing.DrawingManager(options)
-    drawingManager.setMap(this.googleMap)
-
-    this._drawingManager = drawingManager
-
-    this._drawingManager.addListener('drawingmode_changed', (event: any) => {
-      if (this._drawingManager?.getDrawingMode() !== null) {
-        this._assertInitialized()
-        this.googleMap.data.forEach((f) => {
-          if (isFeatureSelected(f)) {
-            setFeatureSelected(f, false)
-          }
-        })
+    this.googleMap.data.forEach((f) => {
+      if (isFeatureSelected(f)) {
+        setFeatureSelected(f, false)
       }
     })
+    this._terraDraw.setMode('polyline')
+    this._drawingSubject.next(true)
+  }
+
+  /**
+   * Cancel any in-progress drawing and leave drawing mode. Switching to the
+   * `static` mode clears an unfinished line.
+   */
+  public stopDrawing(): void {
+    if (!this._terraDraw || !this._terraDrawReady) {
+      return
+    }
+    this._terraDraw.setMode('static')
+    this._drawingSubject.next(false)
+  }
+
+  private _initTerraDraw(): void {
+    if (notNullOrUndefined(this._terraDraw)) {
+      throw Error(`Terra Draw is already initialized.`)
+    }
+    this._assertInitialized()
+
+    // The Google Maps adapter creates an OverlayView on the map; ensure the map
+    // element has an id (harmless if one is already present).
+    const div = this.googleMap.getDiv() as HTMLElement
+    if (!div.id) {
+      div.id = `seam-google-map-${Math.floor(performance.now())}`
+    }
+
+    const pointerDistance = 10
+
+    // KNOWN ISSUE (upstream, unresolved): after repeated draws, Terra Draw can
+    // intermittently lose pointer control of the Google Maps adapter, so input
+    // pans the map instead of drawing until the page is reloaded. This is a race
+    // between Terra Draw and the Google Maps adapter, tracked at
+    // https://github.com/JamesLMilner/terra-draw/issues/710 (open as of
+    // terra-draw 1.32.0 / adapter 1.6.1). It is not fixable in this wrapper;
+    // revisit when the upstream issue is resolved.
+    const draw = new TerraDraw({
+      adapter: new TerraDrawGoogleMapsAdapter({
+        lib: google.maps,
+        map: this.googleMap,
+        // Render Terra Draw's in-progress/finished geometry on its OWN Data
+        // layer instead of the map's shared `map.data`. Without this, Terra
+        // Draw's features land in the same layer this service manages, so the
+        // exterior-feature search would match a just-drawn polygon against its
+        // own rendered copy (cutting a hole equal to itself) and getGeoJson
+        // would serialize Terra Draw's transient features.
+        isolatedData: true,
+      }),
+      modes: [
+        new TerraDrawPolyLineMode({
+          // Tighten how close a click must be to the first point to close the
+          // polygon (Terra Draw's default ~40px felt too far / closed too
+          // easily).
+          pointerDistance,
+          // Snap the moving vertex onto the line's OWN first point when the
+          // cursor is within a few pixels of it, so it's clear the ends are
+          // about to meet just before the click that closes the polygon.
+          // (Terra Draw's built-in `toCoordinate` only snaps to OTHER features'
+          // points — excluding the line being drawn — so it does nothing here.)
+          snapping: {
+            toCustom: (event, ctx) => {
+              const geometry = ctx.getCurrentGeometrySnapshot()
+              if (!geometry) {
+                return undefined
+              }
+              const ring =
+                geometry.type === 'LineString'
+                  ? geometry.coordinates
+                  : geometry.coordinates[0]
+              // Only offer the closing snap once enough points exist to form a
+              // polygon (placed points plus the live cursor point).
+              if (!ring || ring.length < 4) {
+                return undefined
+              }
+              const first = ring[0]
+              const firstPixel = ctx.project(first[0], first[1])
+              const distance = Math.hypot(
+                firstPixel.x - event.containerX,
+                firstPixel.y - event.containerY,
+              )
+              const SNAP_DISTANCE_PX = pointerDistance
+              return distance <= SNAP_DISTANCE_PX ? first : undefined
+            },
+          },
+          // Draw as an open line that closes into a polygon when the start point
+          // is clicked (the old Drawing manager's feel): while drawing you see a
+          // line, and the shape only "fills in" once committed to the map's Data
+          // layer, which is the clear "done" signal. Black line, small white
+          // closing/snapping dots (like the edit anchors), no fill on Terra
+          // Draw's transient polygon. Terra Draw requires hex colors.
+          styles: {
+            lineStringColor: '#000000',
+            lineStringWidth: 2,
+            polygonFillOpacity: 0,
+            polygonOutlineColor: '#000000',
+            polygonOutlineWidth: 2,
+            closingPointColor: '#ffffff',
+            closingPointWidth: 4,
+            closingPointOutlineColor: '#000000',
+            closingPointOutlineWidth: 1,
+            snappingPointColor: '#ffffff',
+            snappingPointWidth: 4,
+            snappingPointOutlineColor: '#000000',
+            snappingPointOutlineWidth: 1,
+          },
+        }),
+      ],
+    })
+
+    draw.on('ready', () => {
+      this._terraDrawReady = true
+      // Start in the resting (non-drawing) mode.
+      draw.setMode('static')
+    })
+
+    draw.on('finish', (id, context) => {
+      if (context.action !== 'draw') {
+        return
+      }
+      this._ngZone.run(() => this._onDrawFinished(id))
+    })
+
+    draw.start()
+    this._terraDraw = draw
   }
 
   public addControl(
@@ -381,6 +455,13 @@ export class GoogleMapsService implements OnDestroy {
       (event: google.maps.Data.MouseEvent) => {
         this._assertInitialized()
 
+        // While drawing, a click on an existing polygon is placing a vertex,
+        // not selecting a feature. Selecting here would both steal the click
+        // and leave a misleading selection (see startDrawing's deselect).
+        if (this.isDrawing()) {
+          return
+        }
+
         setFeatureSelected(event.feature, true)
         this.googleMap.data.forEach((f) => {
           if (f !== event.feature && isFeatureSelected(f)) {
@@ -470,68 +551,6 @@ export class GoogleMapsService implements OnDestroy {
         )
       },
     )
-
-    if (notNullOrUndefined(this._drawingManager)) {
-      google.maps.event.addListener(
-        this._drawingManager,
-        'polygoncomplete',
-        (polygon: google.maps.Polygon) => {
-          // The DrawingManager doesn't seem to have a way to access the overlays,
-          // so if the map is not set then it shouldn'y be considered a successful
-          // completion. I am canceling the active drawing by disabling drawing
-          // mode and setting the map null in the 'overlaycomplete' event, which
-          // fires before the 'polygoncomplete' event.
-          if (isNullOrUndefined(polygon.getMap())) {
-            return
-          }
-
-          this._assertInitialized()
-
-          // TODO: See if there is a way to prevent the polygon from completing
-          // without enough points. This is very low priority, because starting
-          // over after adding a single point isn't a major inconvenience.
-          if (!polygonHasValidPathsLengths(polygon)) {
-            // Remove the drawn polygon.
-            polygon.setMap(null)
-            // Stop drawing.
-            this._drawingManager?.setDrawingMode(null)
-            return
-          }
-
-          // Create a map feature of the drawn polygon.
-          const feature = createDataFeatureFromPolygon(polygon)
-          // Remove the drawn polygon.
-          polygon.setMap(null)
-
-          // Stop drawing.
-          this._drawingManager?.setDrawingMode(null)
-
-          // Check if the feature should be used as a cutout to an existing
-          // feature or added as it's own feature.
-          const exteriorPolygonFeature = this._allowDrawingHoleInPolygon
-            ? getPossibleExteriorFeature(this.googleMap.data, feature)
-            : undefined
-          if (exteriorPolygonFeature) {
-            addInnerFeatureCutoutToExteriorFeature(
-              exteriorPolygonFeature,
-              feature,
-            )
-            setFeatureSelected(exteriorPolygonFeature, true)
-          } else {
-            this.googleMap.data.add(feature)
-            setFeatureSelected(feature, true)
-          }
-        },
-      )
-    }
-  }
-
-  public isDrawing(): boolean {
-    if (isNullOrUndefined(this._drawingManager)) {
-      return true
-    }
-
-    return this._drawingManager.getDrawingMode() !== null
   }
 
   // TODO: Refactor out of the service meant to just wrap the google maps api.
@@ -623,5 +642,83 @@ export class GoogleMapsService implements OnDestroy {
           'Please wait for the API to load before trying to interact with it.',
       )
     }
+  }
+
+  private _onDrawFinished(id: string | number): void {
+    const feature = this._terraDraw?.getSnapshotFeature(id)
+    this._terraDraw?.removeFeatures([id])
+    this.stopDrawing()
+
+    const drawn = feature ? this._toDrawnPolygon(feature.geometry) : undefined
+    if (!drawn || !polygonHasMinDistinctVertices(drawn, 3)) {
+      return
+    }
+
+    this._assertInitialized()
+
+    const exteriorFeature = this._allowDrawingHoleInPolygon
+      ? this._getPossibleExteriorFeature(drawn)
+      : undefined
+
+    if (exteriorFeature) {
+      const exteriorPolygon = geoJsonPolygonFromDataFeature(exteriorFeature)
+      if (exteriorPolygon) {
+        const merged = addHoleToPolygon(exteriorPolygon, drawn)
+        // Mutate the EXISTING feature instance to preserve its identity and
+        // properties (see design constraints).
+        exteriorFeature.setGeometry(dataPolygonFromGeoJson(merged))
+        setFeatureSelected(exteriorFeature, true)
+        return
+      }
+    }
+
+    const newFeature = new google.maps.Data.Feature({
+      geometry: dataPolygonFromGeoJson(drawn),
+    })
+    this.googleMap.data.add(newFeature)
+    setFeatureSelected(newFeature, true)
+  }
+
+  /**
+   * Normalize a finished Terra Draw geometry into a Polygon. A Polygon (the
+   * user closed the line on its start point) passes through; an open LineString
+   * (the user finished without closing) is closed into a polygon so nothing
+   * they drew is discarded. Any other geometry type yields undefined.
+   */
+  private _toDrawnPolygon(geometry: Geometry): Polygon | undefined {
+    if (geometry.type === 'Polygon') {
+      return geometry
+    }
+    if (geometry.type === 'LineString') {
+      const polygon: Polygon = {
+        type: 'Polygon',
+        coordinates: [[...geometry.coordinates]],
+      }
+      closePolygons(polygon)
+      return polygon
+    }
+    return undefined
+  }
+
+  /**
+   * Find an existing Polygon feature that fully contains the drawn polygon, so
+   * the drawing can be applied as a cutout. Returns the existing feature
+   * instance (never a copy).
+   */
+  private _getPossibleExteriorFeature(
+    drawn: Polygon,
+  ): google.maps.Data.Feature | undefined {
+    this._assertInitialized()
+    let match: google.maps.Data.Feature | undefined
+    this.googleMap.data.forEach((f) => {
+      if (match) {
+        return
+      }
+      const candidate = geoJsonPolygonFromDataFeature(f)
+      if (candidate && polygonContains(candidate, drawn)) {
+        match = f
+      }
+    })
+    return match
   }
 }

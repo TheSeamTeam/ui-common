@@ -37,7 +37,9 @@
     "@types/geojson",
     "d3-geo",
     "d3-selection",
-    "topojson-client"
+    "topojson-client",
+    "terra-draw",
+    "terra-draw-google-maps-adapter"
   ],
   "inlineStyleLanguage": "scss",
   "assets": [
