@@ -163,14 +163,42 @@ With `featureGroupProperty` unset, every feature is its own group. That is
 precisely legacy semantics, which is why the two models can share the grouping
 code.
 
-This also gives the app a clean signal for hand-drawn boundaries: a drawn polygon
-carries **no** group property, so on save it appears as a feature with no
-`FIELD_ID` and is unambiguously new.
+### Drawn features and transient groups
+
+Every feature belongs to a group, drawn ones included. What differs is which:
+
+- Drawn with a group selected → it joins that group. When the group is not
+  transient, the library **writes** `properties[featureGroupProperty]` onto the
+  new feature. This is the one place the library sets a consumer-owned property,
+  and it is necessary — otherwise the join would not survive `getGeoJson()` and
+  the app could not tell which field the polygon belongs to. Only ever written
+  on features the map itself created; uploaded geometry is never given a group
+  value it did not arrive with.
+- Drawn with nothing selected → a new transient group, keyed by
+  `__app__groupKey` alone.
+
+So the signal for "this is a new field" is not the absence of a group. It is
+`transient: true` on the emitted group, which is equivalent to the feature
+having no value at `properties[featureGroupProperty]`. The app assigns its own
+identifier at save time; that identifier need not be a GeoJSON property at
+all.
 
 ### Emitted shape
 
-Groups are small (one to a few polygons), so emitting plain GeoJSON is cheap and
-far easier to consume than `Data.Feature` instances:
+Outputs emit plain GeoJSON rather than `google.maps.Data.Feature` instances, for
+two reasons that do not depend on how large a group turns out to be:
+
+- **A `Data.Feature` handed to a consumer goes stale.** `setData()` removes and
+  recreates every feature, so an instance a consumer stored is detached from the
+  map after the next value write, with no signal that it happened. GeoJSON is
+  inert data that cannot go stale.
+- **It keeps consumers off the Maps API.** The abstraction boundary this module
+  was originally meant to hold stays where it belongs, and the emitted types
+  match what consumers already handle everywhere else — `MapValue` is GeoJSON,
+  the validators take GeoJSON, `mergePolygons()` takes GeoJSON.
+
+The cost is a geometry conversion per emit. That is bounded by the size of one
+group rather than the whole map, and only on selection and hover changes.
 
 ```ts
 export interface TheSeamMapFeatureGroup {
@@ -347,7 +375,17 @@ repo.
 - Position: the centre of the group's combined bounds, via the existing
   `getFeatureBounds()` / `getBoundsWithAllFeatures()` helpers.
 - Text: `properties[featureLabelProperty]` from the first feature in the group
-  that carries it.
+  that carries a non-empty value. Other features' values are ignored.
+
+  The library does **not** require a group's features to agree, and does not
+  keep them in sync — a label is presentation, not state the map owns. But
+  because a disagreement renders as one plausible-looking label rather than as
+  anything wrong, it warns once in dev mode when features in one group carry
+  differing non-empty values. Which one wins in that case is deliberately
+  unspecified: `google.maps.Data`'s iteration order is not documented as stable,
+  so relying on "first" would be relying on an implementation detail. Keeping
+  them consistent is the app's business; being told when they are not is the
+  library's.
 - Hidden while drawing.
 - Hidden when the group's projected bounds are smaller than a pixel threshold.
   This self-tunes as the map zooms out, so no `minZoom` input is needed and a
@@ -414,6 +452,7 @@ something that is not there", which must not break a map:
 | `selectedGroupKey` names a group not in the current value | Selection clears and `selectionChange` emits `null`. Warns once in dev mode. |
 | `featureGroupProperty` names a property no feature has | Every feature becomes its own group. Legitimate, so no warning. |
 | `featureLabelProperty` names a property a group lacks | That group renders no label. |
+| Features in one group carry differing non-empty label values | One is rendered; which is unspecified. Warns once in dev mode. |
 | A feature is neither `Polygon` nor `MultiPolygon` | Excluded from groups, outputs, and labels; still renders. Warns once in dev mode. |
 
 ## Verification
