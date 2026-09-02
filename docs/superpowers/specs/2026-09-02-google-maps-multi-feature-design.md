@@ -512,19 +512,38 @@ armed and nothing selected, draw-creates-new-group, draw-joins-selected-group,
 the `Escape` cascade, `Delete` removing only the focused polygon, per-feature
 `editable: false` surviving selection, and labels appearing and hiding.
 
-The map does render in Storybook today without an API key, but with a
-"For development purposes only" watermark and a dismissible "This page can't
-load Google Maps correctly" dialog. That dialog is harmless when working by
-hand and likely to interfere with `play` functions. So:
+**Drive the Maps event system, not the cursor.** Data-layer polygons render
+into a canvas overlay with no DOM element per feature, so there is nothing to
+address with a locator. Play functions trigger
+`google.maps.event.trigger(map.data, 'click', { feature, latLng })` and its
+`mouseover`/`mouseout`/`contextmenu` siblings directly. That tests the listeners
+and the interaction model — which is what these stories are for — without
+depending on where anything happens to be painted. Map controls, being real DOM,
+are clicked normally.
 
-1. Add `.env.local` and `.env*.local` to `.gitignore` — it currently has no
-   `env` entry at all, and this library is on a **public** remote while the apps
-   are private. This lands before any key goes into a file.
-2. Read `process.env.STORYBOOK_GOOGLE_MAPS_API_KEY` in
-   `google-maps.stories.ts`. Storybook 9 loads `.env.local` and exposes
-   `STORYBOOK_`-prefixed variables to the preview with no `main.js` change.
-3. Have the play functions dismiss the dialog defensively, so stories pass with
-   or without a key.
+**The API key is optional.** The map renders without one, showing a
+"For development purposes only" watermark and a dismissible "This page can't
+load Google Maps correctly" dialog. The dialog does not block clicks on elements
+it is not covering, so with the event-triggering approach above it is a
+cosmetic annoyance rather than a blocker. It only matters where a test genuinely
+needs a coordinate-based click over the middle of the map; those tests dismiss
+it first.
+
+When a key is wanted, it reaches the page through `localStorage`, not the build:
+
+- Working by hand: set the key once in devtools. Nothing to configure, nothing
+  in the repo.
+- `test-storybook`: `.storybook/test-runner.js` (new) reads the key from
+  `process.env` in its `preVisit` hook and seeds it with
+  `page.addInitScript()`. Node is where `process.env` is unambiguous.
+
+Deliberately **not** `process.env.STORYBOOK_*` read from a story file. Storybook
+does define `STORYBOOK_`-prefixed vars for DefinePlugin, but
+`framework-preset-angular-cli` builds its own webpack config from the Angular
+CLI's and pushes only `STORYBOOK_ANGULAR_OPTIONS` — whether the base builder's
+substitution survives that is unverified. `localStorage` needs no build
+plumbing, works identically in both paths, and keeps a key belonging to a
+private app out of any file in this **public** repo.
 
 Storybook is not gated in CI — stories are neither type-checked nor run before
 merge — so these stories must be run by hand before merging.
