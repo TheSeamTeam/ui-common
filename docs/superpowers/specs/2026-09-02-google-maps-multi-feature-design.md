@@ -152,6 +152,10 @@ A feature's group key resolves as:
 1. `properties[featureGroupProperty]`, when present.
 2. Otherwise a map-assigned key, stored in a new `__app__groupKey` app property.
 
+The second case is the fallback for features that carry no group value. It is
+the **only** case in `'legacy'` mode, where `featureGroupProperty` is unset and
+no property is ever written.
+
 App properties are already stripped by `stripAppFeaturePropertiesFromJson()` and
 already skipped by the `setproperty` change listener, so a map-assigned key
 neither leaks into the value nor triggers a value change. Because the component
@@ -163,34 +167,44 @@ With `featureGroupProperty` unset, every feature is its own group. That is
 precisely legacy semantics, which is why the two models can share the grouping
 code.
 
-### Drawn features and assigned keys
+### Drawn features get a real group key
 
-Every feature belongs to a group, drawn ones included. What differs is which:
+When `featureGroupProperty` is set, the map **writes** it onto every feature it
+creates:
 
-- Drawn with a group selected → it joins that group. When that group's
-  `keySource` is `'property'`, the library **writes**
-  `properties[featureGroupProperty]` onto the
-  new feature. This is the one place the library sets a consumer-owned property,
-  and it is necessary — otherwise the join would not survive `getGeoJson()` and
-  the app could not tell which field the polygon belongs to. Only ever written
-  on features the map itself created; uploaded geometry is never given a group
-  value it did not arrive with.
-- Drawn with nothing selected → a new group with an assigned key, held in
-  `__app__groupKey` alone.
+- Drawn with a group selected → the new feature is given that group's key, so it
+  joins the field.
+- Drawn with nothing selected → a key from `newGroupKeyFactory` is generated and
+  written, starting a new group. The feature becomes the selection.
 
-So the signal for "this is a new field" is not the absence of a group. It is
-`keySource: 'assigned'`, which is equivalent to the features having no value at
-`properties[featureGroupProperty]`.
+This has to happen in the value, not beside it. `getGeoJson()` strips
+`__app__` properties, so a key held only in `__app__groupKey` never reaches the
+consumer's value — and two newly drawn fields would arrive as an
+undifferentiated set of features with no way to tell which polygons belong
+together. The grouping would be destroyed at precisely the boundary that has to
+carry it. Writing a real property also means a drawn group's key survives the
+value round trip, so `selectGroup(key)` keeps working after a write.
 
-`keySource` says nothing about what the app should do next. It is not a request
-to assign a group property — the app need never write anything into the GeoJSON,
-and its own field identifier need not be a GeoJSON property at all. What it
-reports is only that these features carry no identity from the consumer's own
-data, and that the key standing in for it is session-scoped.
+`newGroupKeyFactory` is a consumer input rather than a library convention,
+because the value lands in a property the consumer owns and will have to
+recognise later. A hardcoded `'pending-'` prefix would be the library inventing
+a format inside someone else's data. The default is `crypto.randomUUID()`;
+Cotton would supply something it can detect, and its detection is reliable
+because the format is its own.
 
-Note that in `'legacy'` mode, where `featureGroupProperty` is unset, every group
-has an assigned key. The flag is uniformly `'assigned'` there and carries no
-information — it is only meaningful once a grouping property is named.
+**Uploaded features are never written to.** A feature that arrives without a
+group value keeps the `__app__groupKey` fallback and becomes its own group. The
+map does not mutate imported geometry on load — doing so would fire a value
+change before the user has touched anything. A consumer using grouping is
+expected to assign the property during import, which is what Cotton's
+match-or-create flow already does. When `featureGroupProperty` is set and some
+features lack a value, the map warns once in dev mode.
+
+There is deliberately no "this group is new" flag. Once every grouped feature
+carries a real key, the library cannot distinguish a generated key from an
+imported one after a single round trip — and does not need to, because the app
+already resolves keys against its own records to decide match-or-create.
+A flag that were only correct for one hop would be worse than none.
 
 ### Emitted shape
 
@@ -211,20 +225,16 @@ group rather than the whole map, and only on selection and hover changes.
 
 ```ts
 export interface TheSeamMapFeatureGroup {
-  key: string
   /**
-   * Where `key` came from.
+   * `properties[featureGroupProperty]`.
    *
-   * `'property'` — read from `properties[featureGroupProperty]`. The
-   *   consumer's own value, as stable as the data it came from.
-   *
-   * `'assigned'` — generated by the map because these features carried no
-   *   group value. Held in `__app__groupKey`, so it survives feature edits but
-   *   NOT an external value write, which recreates every feature and assigns
-   *   fresh keys. Must not be persisted, used as an identifier, or held across
-   *   a write and passed back to `selectGroup()`.
+   * Falls back to a map-assigned key for features that carry no group value —
+   * always the case in `'legacy'` mode, and for imported features the consumer
+   * did not assign one to. An assigned key is session-scoped: it does not
+   * survive an external value write, so it must not be persisted or held
+   * across a write and passed back to `selectGroup()`.
    */
-  keySource: 'property' | 'assigned'
+  key: string
   features: Feature<Polygon | MultiPolygon>[]
 }
 
@@ -253,6 +263,7 @@ two structurally identical ones. It supersedes the `TheSeamMapSelection` /
 | `interactionMode` | `'legacy' \| 'grouped'` | `'legacy'` | Selects the interaction model. |
 | `featureGroupProperty` | `string \| undefined` | `undefined` | Property name that groups features into a field. Unset = one group per feature. |
 | `featureLabelProperty` | `string \| undefined` | `undefined` | Property name holding a group's label text. Unset = no labels. |
+| `newGroupKeyFactory` | `() => string` | `crypto.randomUUID` | Generates the key written to `properties[featureGroupProperty]` for a newly drawn group. Consumer-supplied so the format is one the app can recognise. Unused when `featureGroupProperty` is unset. |
 | `selectedGroupKey` | `string \| null` | `null` | Declarative preselection. Applied when the input value changes, on map-ready, and after each external value write — **not** on every change-detection pass, so it never fights a user's click. Not two-way; `selectionChange` is the read side. |
 
 ### Outputs
@@ -469,7 +480,9 @@ something that is not there", which must not break a map:
 | --- | --- |
 | `selectGroup`/`fitGroup`/`panToGroup` with an unknown key | Returns `false`. No throw, no selection change. |
 | `selectedGroupKey` names a group not in the current value | Selection clears and `selectionChange` emits `null`. Warns once in dev mode. |
-| `featureGroupProperty` names a property no feature has | Every feature becomes its own group. Legitimate, so no warning. |
+| `featureGroupProperty` set, but some features carry no value | Each becomes its own group under an assigned key. Warns once in dev mode — the consumer is expected to assign the property during import. |
+| `featureGroupProperty` names a property **no** feature has | Every feature becomes its own group. Warns once, same as above. |
+| `newGroupKeyFactory` returns a key already in use | The drawn feature joins the existing group. Warns in dev mode; the factory is the consumer's to make unique. |
 | `featureLabelProperty` names a property a group lacks | That group renders no label. |
 | Features in one group carry differing non-empty label values | One is rendered; which is unspecified. Warns once in dev mode. |
 | A feature is neither `Polygon` nor `MultiPolygon` | Excluded from groups, outputs, and labels; still renders. Warns once in dev mode. |
@@ -531,7 +544,7 @@ depend on it, so confirm it still works on the current version.
 
 | App | Call sites | Change needed |
 | --- | --- | --- |
-| `TheSeam.Sustainability.Cotton.App` | 1 | Opts in: `interactionMode`, `featureGroupProperty`, `featureLabelProperty`, `selectionChange`. Must also call `mergePolygons()` per group rather than over the whole value. |
+| `TheSeam.Sustainability.Cotton.App` | 1 | Opts in: `interactionMode`, `featureGroupProperty`, `featureLabelProperty`, `newGroupKeyFactory`, `selectionChange`. Must also assign the group property during import, and call `mergePolygons()` per group rather than over the whole value. |
 | `TheSeam.PeanutTrustClient` | 1 | **None.** |
 | `TheSeam.DataCommons.App` | 3 | **None required**, but see the note below. `modal-attributes-map` could later drop its `_mapControlItemHovered` workaround in favour of `featureHoverChange`. |
 
