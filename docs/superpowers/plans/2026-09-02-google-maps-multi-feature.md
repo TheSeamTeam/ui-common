@@ -20,7 +20,7 @@
 - **Exports** go through `projects/ui-common/google-maps/public-api.ts`. The root `public_api.ts` is intentionally empty — do not touch it.
 - **Do not add an `<ng-content>` slot** to `google-maps.component.html`. Controls mount via `addControl()` against the Maps JS API; the missing slot is deliberate.
 - **Commits:** conventional commits (`feat:`, `fix:`, `test:`, `chore:`, `refactor:`). The whole branch releases as `feat:` — a minor bump.
-- **Node:** 22.12.0 (`.nvmrc`). `npm ci --legacy-peer-deps`.
+- **Node:** 24.16.0 (`.nvmrc`). `npm ci --legacy-peer-deps`. Some comments still reference 22.12.0, which is what the repo used before; the checked-in `.nvmrc` is authoritative.
 - **Test commands:** `npm run test:ci` (single run, in-band). A single file: `npx jest --config projects/ui-common/jest.config.ts <path>`.
 
 ---
@@ -41,6 +41,13 @@ The `google-maps` directory has no specs and is not in `testMatch`. Everything d
 
 - Consumes: nothing.
 - Produces: `installFakeGoogleMaps(): void` and `uninstallFakeGoogleMaps(): void`, which set and delete `globalThis.google`. Every later task's spec calls `installFakeGoogleMaps()` in `beforeEach` and `uninstallFakeGoogleMaps()` in `afterEach`.
+
+**No delay argument.** `TheSeamLazyMapsApiLoader` means `google` genuinely is
+undefined for a while in the browser, so simulating that is a fair thing to
+want. But a test that cares about the pre-load window can just not install the
+fake, or install it inside a timer — the behaviour under test is the guard, not
+the fake. Building the delay into the installer would put an option in every
+spec's setup to serve a handful of them.
 
 - [ ] **Step 1: Add the directory to `testMatch`**
 
@@ -85,6 +92,14 @@ describe('google-maps-feature-helpers', () => {
   afterEach(() => uninstallFakeGoogleMaps())
 
   it('drops the explicit closing point when building a Data.Polygon', () => {
+    // Direction matters, and the two rules look contradictory until you notice
+    // which side of the boundary each applies to. GeoJSON rings are explicitly
+    // closed (RFC 7946 3.1.6), which is what `closePolygons` guarantees on the
+    // way OUT and what `data.addGeoJson()` expects. But a
+    // `google.maps.Data.Polygon` is built from LinearRings, which are
+    // IMPLICITLY closed — repeating the first point there creates a real
+    // duplicate vertex that edits independently and serializes as a double
+    // closing point. So a 5-position closed ring becomes 4 path points.
     const polygon = dataPolygonFromGeoJson(square)
     expect(polygon.getArray()[0].getArray()).toHaveLength(4)
   })
@@ -499,11 +514,11 @@ describe('MultiPolygon helpers', () => {
   it('reads a MultiPolygon feature as a GeoJSON Feature with properties', () => {
     const feature = new google.maps.Data.Feature({
       geometry: dataMultiPolygonFromGeoJson(twoSquares),
-      properties: { FIELD_NAME: 'Kerby East' },
+      properties: { FIELD_NAME: 'North Field' },
     })
     const result = geoJsonFeatureFromDataFeature(feature)
     expect(result?.geometry).toEqual(twoSquares)
-    expect(result?.properties).toEqual({ FIELD_NAME: 'Kerby East' })
+    expect(result?.properties).toEqual({ FIELD_NAME: 'North Field' })
   })
 
   it('omits properties the caller excludes', () => {
@@ -3977,3 +3992,11 @@ Recorded so it is not lost, and deliberately excluded:
 - **`modal-attributes-map` in `TheSeam.DataCommons.App`** needs looking at before this releases. Fixing the precedence chain means `properties.styleOptions` is no longer discarded when a feature is selected, and that component sets `fillColor` and `visible` through it. A selected feature will keep its consumer fill instead of reverting to the selected defaults, and a `visible: false` feature stays hidden when selected. Both are the intended behaviour; neither can throw. The handoff describes the component as a quickly-written proof of concept that may not be actively used — confirm which.
 - **Deprecate `interactionMode: 'legacy'`** in this release, and when a major is next cut, flip the default to `'grouped'` and delete `LegacyInteractionModel`. The strategy boundary is what makes that a deletion rather than an untangling.
 - **Label collision de-confliction** is a known limitation, documented in `MapFeatureLabelsOverlay`.
+- **Tighten the `closePolygons` doc comment** in
+  `projects/ui-common/utils/geo-json/close-polygons.ts`. It says "Google Maps
+  requires closed polygon rings", which reads as contradicting
+  `dataPolygonFromGeoJson`, which strips the closing point. Both are correct:
+  `data.addGeoJson()` consumes GeoJSON, which requires closed rings, while
+  `new google.maps.Data.Polygon()` takes implicitly-closed LinearRings that
+  must not repeat the first point. A one-line clarification, in `utils` rather
+  than `google-maps`, so it belongs in its own commit.
