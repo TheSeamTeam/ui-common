@@ -12,6 +12,7 @@ import {
   THESEAM_LAZY_MAPS_API_CONFIG,
 } from './google-maps-api-loader/lazy-google-maps-api-loader'
 import { isFeatureSelected } from './google-maps-feature-helpers'
+import { TheSeamGoogleMapsRecenterButtonControlComponent } from './google-maps-recenter-button-control/google-maps-recenter-button-control.component'
 import { TheSeamGoogleMapsModule } from './google-maps.module'
 
 export default {
@@ -427,5 +428,124 @@ export const LegacyClickStillArmsEditing = {
     // Regression guard for the two apps that are not being updated: in legacy
     // mode a click alone still arms handles.
     expect(style.editable).toBe(true)
+    expect(isFeatureSelected(feature)).toBe(true)
+  },
+}
+
+/**
+ * Automated stand-in for part of Task 13's manual legacy-path check: with no
+ * `interactionMode` set, the mounted draw control still reads "Draw Field"
+ * (not the grouped-mode "Edit Fields" label) and a click toggles drawing
+ * directly, with no intervening edit-mode concept.
+ */
+export const LegacyDrawButtonTogglesDrawing = {
+  render: () => ({
+    template: `<seam-google-maps [value]="value" style="height: 400px"></seam-google-maps>`,
+    props: { value: GROUPED_VALUE },
+  }),
+  play: async ({ canvasElement }: any) => {
+    const component = await mapComponent(canvasElement)
+    const button = canvasElement.querySelector(
+      '[title="Draw Field"]',
+    ) as HTMLButtonElement
+    expect(button).not.toBeNull()
+
+    expect(component._googleMaps.isDrawing()).toBe(false)
+    button.click()
+    expect(component._googleMaps.isDrawing()).toBe(true)
+    button.click()
+    expect(component._googleMaps.isDrawing()).toBe(false)
+  },
+}
+
+/**
+ * Automated stand-in for part of Task 13's manual legacy-path check:
+ * right-clicking a selected polygon opens a menu with exactly one item,
+ * "Delete" (not the grouped-mode "Delete Polygon" / "Delete Field" pair).
+ */
+export const LegacyContextMenuOnSelectedShowsSingleDelete = {
+  render: () => ({
+    template: `<seam-google-maps [value]="value" style="height: 400px"></seam-google-maps>`,
+    props: { value: GROUPED_VALUE },
+  }),
+  play: async ({ canvasElement }: any) => {
+    const component = await mapComponent(canvasElement)
+    const feature = featureWithGroup(component, 'A')
+    const data = component._googleMaps.googleMap.data
+
+    google.maps.event.trigger(data, 'click', { feature })
+    expect(isFeatureSelected(feature)).toBe(true)
+
+    google.maps.event.trigger(data, 'contextmenu', { feature })
+    // Let the menu's embedded view render and detect changes.
+    await new Promise((resolve) => setTimeout(resolve, 250))
+
+    const items = canvasElement.querySelectorAll('[role="menuitem"]')
+    expect(items).toHaveLength(1)
+    expect(items[0].textContent?.trim()).toBe('Delete')
+  },
+}
+
+/**
+ * Automated stand-in for part of Task 13's manual legacy-path check:
+ * right-clicking an unselected polygon opens no menu at all.
+ */
+export const LegacyContextMenuOnUnselectedDoesNothing = {
+  render: () => ({
+    template: `<seam-google-maps [value]="value" style="height: 400px"></seam-google-maps>`,
+    props: { value: GROUPED_VALUE },
+  }),
+  play: async ({ canvasElement }: any) => {
+    const component = await mapComponent(canvasElement)
+    const feature = featureWithGroup(component, 'A')
+    const data = component._googleMaps.googleMap.data
+
+    expect(isFeatureSelected(feature)).toBe(false)
+
+    google.maps.event.trigger(data, 'contextmenu', { feature })
+    await new Promise((resolve) => setTimeout(resolve, 250))
+
+    const items = canvasElement.querySelectorAll('[role="menuitem"]')
+    expect(items).toHaveLength(0)
+  },
+}
+
+/**
+ * Smoke-tests the consumer-supplied `seam-map-control` / `MAP_CONTROLS_SERVICE`
+ * path: `modal-attributes-map` in TheSeam.DataCommons.App is its only other
+ * exercise, and the Cotton modal will depend on it. Not part of the
+ * grouped-interaction feature itself — this exists to catch Angular-version
+ * drift on a ~2022-era path before the Cotton modal starts relying on it.
+ */
+export const ConsumerSuppliedControl = {
+  render: () => ({
+    template: `
+      <seam-google-maps
+        interactionMode="grouped"
+        featureGroupProperty="fieldId"
+        [value]="value"
+        style="height: 400px">
+        <seam-map-control [def]="controlDef"></seam-map-control>
+      </seam-google-maps>
+    `,
+    props: {
+      value: GROUPED_VALUE,
+      // Built here, not in `args` — args are serialized across the
+      // manager/preview boundary and a class instance comes back with its
+      // prototype stripped.
+      controlDef: {
+        component: TheSeamGoogleMapsRecenterButtonControlComponent,
+        data: { label: 'Smoke Test' },
+        position: 9,
+      },
+    },
+  }),
+  play: async ({ canvasElement }: any) => {
+    await mapComponent(canvasElement)
+    // The control mounts through addControl() against the Maps JS API, not
+    // through the DOM — google-maps.component.html has no <ng-content> slot,
+    // deliberately. So look for it in the map's rendered control container.
+    const button = canvasElement.querySelector('[title="Smoke Test"]')
+    expect(button).not.toBeNull()
   },
 }
