@@ -28,7 +28,10 @@ export const MAP_FEATURE_LABEL_CLASS = 'seam-map-feature-label'
  * frame updating N child positions instead of N overlays each doing
  * projection work.
  *
- * Labels live in the `overlayLayer` pane with `pointer-events: none`, so they
+ * Labels live in the `markerLayer` pane, which sits above the `overlayLayer`
+ * pane the Data layer renders polygons into (so labels are not decided by DOM
+ * insertion order) and below the `floatPane` `GoogleMapsContextMenu` uses (so
+ * the context menu still stays on top). `pointer-events: none` means labels
  * never take part in hit testing and cannot interfere with clicks, drawing, or
  * the context-menu overlay.
  *
@@ -68,7 +71,7 @@ export class MapFeatureLabelsOverlay {
 
     class Overlay extends google.maps.OverlayView {
       onAdd(): void {
-        this.getPanes()?.overlayLayer.appendChild(container)
+        this.getPanes()?.markerLayer.appendChild(container)
       }
 
       onRemove(): void {
