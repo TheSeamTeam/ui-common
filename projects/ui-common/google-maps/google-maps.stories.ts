@@ -25,11 +25,8 @@ const meta: Meta<TheSeamGoogleMapsComponent> = {
   component: TheSeamGoogleMapsComponent,
   decorators: [
     applicationConfig({
-      providers: [provideAnimations()],
-    }),
-    moduleMetadata({
-      imports: [CommonModule, TheSeamGoogleMapsModule],
       providers: [
+        provideAnimations(),
         {
           provide: TheSeamGoogleMapsApiLoader,
           useClass: TheSeamLazyMapsApiLoader,
@@ -49,6 +46,9 @@ const meta: Meta<TheSeamGoogleMapsComponent> = {
           },
         },
       ],
+    }),
+    moduleMetadata({
+      imports: [CommonModule, TheSeamGoogleMapsModule],
     }),
   ],
 }
@@ -168,7 +168,7 @@ export const MultiPolygonRoundTrip: Story = {
   args: {
     value: MULTI_POLYGON_VALUE,
   },
-  play: async ({ canvasElement }: any) => {
+  play: async ({ canvasElement }) => {
     const host = canvasElement.querySelector('seam-google-maps')
     // Wait for the map to load the value into its data layer.
     await new Promise((resolve) => setTimeout(resolve, 3000))
@@ -328,7 +328,7 @@ export const GroupedClickSelectsWholeField: Story = {
     value: GROUPED_VALUE,
     selectionChange: fn(),
   },
-  play: async ({ canvasElement, args }: any) => {
+  play: async ({ canvasElement, args }) => {
     const component = await mapComponent(canvasElement)
     const [featureA1, featureA2] = featuresWithGroup(component, 'A')
     const featureB = featureWithGroup(component, 'B')
@@ -395,7 +395,7 @@ export const GroupedEditModeIgnoresFeatureClicks: Story = {
     `,
     props: { value: GROUPED_VALUE },
   }),
-  play: async ({ canvasElement }: any) => {
+  play: async ({ canvasElement }) => {
     const component = await mapComponent(canvasElement)
     component.setEditMode(true)
 
@@ -419,7 +419,7 @@ export const GroupedRetiredFieldStaysUneditable: Story = {
     `,
     props: { value: RETIRED_FIELD_VALUE },
   }),
-  play: async ({ canvasElement }: any) => {
+  play: async ({ canvasElement }) => {
     const component = await mapComponent(canvasElement)
     component.setEditMode(true)
 
@@ -460,7 +460,7 @@ export const GroupedEscapeCascades: Story = {
     `,
     props: { value: GROUPED_VALUE },
   }),
-  play: async ({ canvasElement }: any) => {
+  play: async ({ canvasElement }) => {
     const component = await mapComponent(canvasElement)
     component.setEditMode(true)
     component.selectGroup('A')
@@ -486,7 +486,7 @@ export const LegacyClickStillArmsEditing: Story = {
     template: `<seam-google-maps [value]="value" style="height: 400px"></seam-google-maps>`,
     props: { value: GROUPED_VALUE },
   }),
-  play: async ({ canvasElement }: any) => {
+  play: async ({ canvasElement }) => {
     const component = await mapComponent(canvasElement)
     const feature = featureWithGroup(component, 'A')
 
@@ -513,7 +513,7 @@ export const LegacyDrawButtonTogglesDrawing: Story = {
     template: `<seam-google-maps [value]="value" style="height: 400px"></seam-google-maps>`,
     props: { value: GROUPED_VALUE },
   }),
-  play: async ({ canvasElement }: any) => {
+  play: async ({ canvasElement }) => {
     const component = await mapComponent(canvasElement)
     const button = canvasElement.querySelector(
       '[title="Draw Field"]',
@@ -533,12 +533,12 @@ export const LegacyDrawButtonTogglesDrawing: Story = {
  * right-clicking a selected polygon opens a menu with exactly one item,
  * "Delete" (not the grouped-mode "Delete Polygon" / "Delete Field" pair).
  */
-export const LegacyContextMenuOnSelectedShowsSingleDelete = {
+export const LegacyContextMenuOnSelectedShowsSingleDelete: Story = {
   render: () => ({
     template: `<seam-google-maps [value]="value" style="height: 400px"></seam-google-maps>`,
     props: { value: GROUPED_VALUE },
   }),
-  play: async ({ canvasElement }: any) => {
+  play: async ({ canvasElement }) => {
     const component = await mapComponent(canvasElement)
     const feature = featureWithGroup(component, 'A')
     const data = component._googleMaps.googleMap.data
@@ -565,7 +565,7 @@ export const LegacyContextMenuOnUnselectedDoesNothing: Story = {
     template: `<seam-google-maps [value]="value" style="height: 400px"></seam-google-maps>`,
     props: { value: GROUPED_VALUE },
   }),
-  play: async ({ canvasElement }: any) => {
+  play: async ({ canvasElement }) => {
     const component = await mapComponent(canvasElement)
     const feature = featureWithGroup(component, 'A')
     const data = component._googleMaps.googleMap.data
@@ -630,7 +630,7 @@ export const GroupedDrawCreatesNewGroup: Story = {
     value: GROUPED_VALUE,
     selectionChange: fn(),
   },
-  play: async ({ canvasElement, args }: any) => {
+  play: async ({ canvasElement, args }) => {
     const component = await mapComponent(canvasElement)
     component.setEditMode(true)
     // Nothing selected — GROUPED_VALUE's initial state has no selection.
@@ -643,7 +643,7 @@ export const GroupedDrawCreatesNewGroup: Story = {
 
     expect(component.getGroups().length).toBe(groupsBefore + 1)
 
-    const lastSelection = args.selectionChange.mock.calls.at(-1)?.[0]
+    const lastSelection = (args.selectionChange as any).mock.calls.at(-1)?.[0]
     expect(lastSelection).toBeTruthy()
     expect(lastSelection.group.features).toHaveLength(1)
     const newKey = lastSelection.group.key
@@ -678,7 +678,7 @@ export const GroupedDrawJoinsSelectedGroup: Story = {
     value: GROUPED_VALUE,
     selectionChange: fn(),
   },
-  play: async ({ canvasElement, args }: any) => {
+  play: async ({ canvasElement, args }) => {
     const component = await mapComponent(canvasElement)
     component.setEditMode(true)
     component.selectGroup('A')
@@ -689,7 +689,7 @@ export const GroupedDrawJoinsSelectedGroup: Story = {
     // starting a group of its own.
     expect(featuresWithGroup(component, 'A')).toHaveLength(3)
 
-    const lastSelection = args.selectionChange.mock.calls.at(-1)?.[0]
+    const lastSelection = (args.selectionChange as any).mock.calls.at(-1)?.[0]
     expect(lastSelection.group.key).toBe('A')
     expect(lastSelection.group.features).toHaveLength(3)
 
@@ -719,7 +719,7 @@ export const GroupedDeleteRemovesOnlyFocusedPolygon: Story = {
     value: GROUPED_VALUE,
     selectionChange: fn(),
   },
-  play: async ({ canvasElement, args }: any) => {
+  play: async ({ canvasElement, args }) => {
     const component = await mapComponent(canvasElement)
     const data = component._googleMaps.googleMap.data
     const [featureA1, featureA2] = featuresWithGroup(component, 'A')
@@ -746,7 +746,7 @@ export const GroupedDeleteRemovesOnlyFocusedPolygon: Story = {
     // F3 (Delete Field acting on the wrong group): if either regressed here,
     // this would either still report 2 features, or clear to null instead of
     // staying on A's one remaining polygon.
-    const lastSelection = args.selectionChange.mock.calls.at(-1)?.[0]
+    const lastSelection = (args.selectionChange as any).mock.calls.at(-1)?.[0]
     expect(lastSelection).toBeTruthy()
     expect(lastSelection.group.key).toBe('A')
     expect(lastSelection.group.features).toHaveLength(1)
@@ -769,7 +769,7 @@ export const GroupedDeleteFieldActsOnRightClickedGroup: Story = {
     `,
     props: { value: GROUPED_VALUE },
   }),
-  play: async ({ canvasElement }: any) => {
+  play: async ({ canvasElement }) => {
     const component = await mapComponent(canvasElement)
     const data = component._googleMaps.googleMap.data
 
@@ -818,7 +818,7 @@ export const GroupedContextMenuKeyTargetsCurrentSelection: Story = {
     `,
     props: { value: TWO_FIELDS_VALUE },
   }),
-  play: async ({ canvasElement }: any) => {
+  play: async ({ canvasElement }) => {
     const component = await mapComponent(canvasElement)
     const data = component._googleMaps.googleMap.data
 
@@ -885,7 +885,7 @@ export const ConsumerSuppliedControl: Story = {
       },
     },
   }),
-  play: async ({ canvasElement }: any) => {
+  play: async ({ canvasElement }) => {
     await mapComponent(canvasElement)
     // The control mounts through addControl() against the Maps JS API, not
     // through the DOM — google-maps.component.html has no <ng-content> slot,
