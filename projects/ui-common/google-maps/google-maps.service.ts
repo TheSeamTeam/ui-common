@@ -99,6 +99,17 @@ export class GoogleMapsService implements OnDestroy {
     new BehaviorSubject<TheSeamMapGroupTarget | null>(null)
   public readonly hover$ = this._hoverSubject.asObservable()
 
+  /**
+   * The group of the feature a `contextmenu` event last landed on — distinct
+   * from `selection$`, which the grouped "Delete Field" menu item must NOT
+   * use, since in `'grouped'` mode the menu opens for any feature regardless
+   * of what is selected.
+   */
+  private readonly _contextMenuTargetSubject =
+    new BehaviorSubject<TheSeamMapGroupTarget | null>(null)
+  public readonly contextMenuTarget$ =
+    this._contextMenuTargetSubject.asObservable()
+
   private readonly _editModeSubject = new BehaviorSubject<boolean>(false)
   public readonly editMode$ = this._editModeSubject.asObservable()
 
@@ -132,6 +143,7 @@ export class GoogleMapsService implements OnDestroy {
     this._drawingSubject.complete()
     this._selectionSubject.complete()
     this._hoverSubject.complete()
+    this._contextMenuTargetSubject.complete()
     this._editModeSubject.complete()
     this._interactionModeSubject.complete()
     this._groups = undefined
@@ -220,6 +232,31 @@ export class GoogleMapsService implements OnDestroy {
     // selected flag changes here (they were already false), so this is inert
     // there.
     this.clearSelection()
+  }
+
+  /**
+   * Delete every feature in `key`'s group, regardless of what is currently
+   * selected. Backs the grouped "Delete Field" context-menu item, which must
+   * act on the right-clicked feature's group rather than whichever group
+   * happens to be selected — see `deleteSelection()` for the
+   * selection-scoped equivalent used elsewhere (the 'legacy' Delete item, and
+   * the grouped Delete Field item's old, buggy wiring).
+   */
+  public deleteGroup(key: string): void {
+    this._assertInitialized()
+    const mapData = this.googleMap.data
+    const wasSelected = this._selectionSubject.value?.group.key === key
+    const focusedInGroup =
+      this._focusedFeature !== null &&
+      this._registry.keyOf(this._focusedFeature) === key
+
+    this._registry.featuresIn(key).forEach((f) => mapData.remove(f))
+
+    if (wasSelected) {
+      this._applySelection(null, null)
+    } else if (focusedInGroup) {
+      this._focusedFeature = null
+    }
   }
 
   /** Whether polygon drawing mode is currently active. */
@@ -387,6 +424,7 @@ export class GoogleMapsService implements OnDestroy {
     // features.
     this.clearSelection()
     this._hoverSubject.next(null)
+    this._contextMenuTargetSubject.next(null)
     this.googleMap.data.addGeoJson(data)
     this.googleMap.fitBounds(
       getBoundsWithAllFeatures(this.googleMap.data),
@@ -898,6 +936,12 @@ export class GoogleMapsService implements OnDestroy {
           return
         }
         this._focusedFeature = event.feature
+        const resolved = this._registry.groupWithSources(
+          this._registry.keyOf(event.feature),
+        )
+        this._contextMenuTargetSubject.next(
+          resolved ? this._targetFor(resolved, event.feature) : null,
+        )
         this._openContextMenuForFeature(
           event.feature,
           event.latLng ?? undefined,

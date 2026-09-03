@@ -300,9 +300,15 @@ export class TheSeamGoogleMapsComponent
 
     this._contextMenuItems$ = combineLatest([
       this._googleMaps.editingEnabled$,
-      this._googleMaps.selection$,
+      // The RIGHT-CLICKED feature's group, not the selected one: in
+      // 'grouped' mode the context menu opens for any feature regardless of
+      // selection, so "Delete Field" must act on (and be gated on) what the
+      // user actually pointed at, not on whatever else happens to be
+      // selected. Using selection$ here was the bug — right-clicking field A
+      // while field B was selected offered "Delete Field" and deleted B.
+      this._googleMaps.contextMenuTarget$,
     ]).pipe(
-      map(([enabled, selection]) => {
+      map(([enabled, target]) => {
         const items: TheSeamMapContextMenuItem[] = []
         if (!enabled) {
           return items
@@ -312,10 +318,10 @@ export class TheSeamGoogleMapsComponent
             label: 'Delete Polygon',
             action: () => this._googleMaps.deleteFocusedFeature(),
           })
-          if ((selection?.group.features.length ?? 0) > 1) {
+          if (target && target.group.features.length > 1) {
             items.push({
               label: 'Delete Field',
-              action: () => this._googleMaps.deleteSelection(),
+              action: () => this._googleMaps.deleteGroup(target.group.key),
             })
           }
           return items
