@@ -510,6 +510,241 @@ export const LegacyContextMenuOnUnselectedDoesNothing = {
   },
 }
 
+// Captured by the draw-completion stories' `onSelection` prop handler, the
+// same closure-array pattern `GroupedClickSelectsWholeField` uses above.
+let drawSelections: any[] = []
+
+/**
+ * Drives `GoogleMapsService._onDrawFinished()` directly rather than a real
+ * Terra Draw session. Data-layer polygons render into a canvas overlay with
+ * no per-feature DOM element, so `GroupedClickSelectsWholeField` et al.
+ * already trigger `google.maps.event.trigger(map.data, ...)` instead of
+ * clicking anything — but Terra Draw itself has no equivalent map-level
+ * event to trigger: its Google Maps adapter binds real pointer listeners to
+ * the map's rendered DOM subtree, so finishing an actual polyline draw from a
+ * `play` function would mean simulating a precise sequence of pixel-space
+ * pointer events against a real map projection, AND getting the result past
+ * Terra Draw's own per-mode store validation (`addFeatures` validates
+ * against whichever mode is registered, and the polyline mode's validator
+ * expects in-progress LineString geometry, not a finished Polygon). Neither
+ * is what these stories are for: F5 is about proving `_onDrawFinished`
+ * translates a `MapDrawOutcome` into the right map value, given a finished
+ * geometry — not about Terra Draw's own drawing UX, which is unit-tested
+ * elsewhere via the interaction models and has no coverage gap of its own.
+ * So this stubs the two `TerraDraw` calls `_onDrawFinished` makes
+ * (`getSnapshotFeature`, `removeFeatures`) to hand it a real, finished
+ * Polygon directly, then calls the private method itself — the actual
+ * outcome-translation path, exercised for real.
+ */
+function finishDrawWithPolygon(component: any, polygon: any): void {
+  const service = component._googleMaps
+  const id = 'story-finished-draw'
+  service._terraDraw.getSnapshotFeature = () => ({
+    type: 'Feature',
+    geometry: polygon,
+    properties: {},
+  })
+  service._terraDraw.removeFeatures = () => undefined
+  service._onDrawFinished(id)
+}
+
+export const GroupedDrawCreatesNewGroup = {
+  render: () => {
+    drawSelections = []
+    return {
+      template: `
+        <seam-google-maps
+          interactionMode="grouped"
+          featureGroupProperty="fieldId"
+          [value]="value"
+          (selectionChange)="onSelection($event)"
+          style="height: 400px"></seam-google-maps>
+      `,
+      props: {
+        value: GROUPED_VALUE,
+        onSelection(event: any) {
+          drawSelections.push(event)
+        },
+      },
+    }
+  },
+  play: async ({ canvasElement }: any) => {
+    const component = await mapComponent(canvasElement)
+    component.setEditMode(true)
+    // Nothing selected — GROUPED_VALUE's initial state has no selection.
+
+    const groupsBefore = component.getGroups().length
+    // Away from every existing square, so containment/hole logic (skipped
+    // entirely here since nothing is selected, but kept clean regardless)
+    // never enters into it.
+    finishDrawWithPolygon(component, squareAt(-98.5, 37.63))
+
+    expect(component.getGroups().length).toBe(groupsBefore + 1)
+
+    const lastSelection = drawSelections[drawSelections.length - 1]
+    expect(lastSelection).toBeTruthy()
+    expect(lastSelection.group.features).toHaveLength(1)
+    const newKey = lastSelection.group.key
+    expect(typeof newKey).toBe('string')
+    expect(newKey.length).toBeGreaterThan(0)
+
+    // The generated key must be a real GeoJSON property, not just the
+    // internal __app__ fallback — required so the grouping survives
+    // getGeoJson()'s round trip instead of being destroyed at the exact
+    // boundary meant to carry it.
+    const geoJson = await component.getGeoJson()
+    const written = (geoJson as any).features.find(
+      (f: any) => f.properties.fieldId === newKey,
+    )
+    expect(written).toBeTruthy()
+  },
+}
+
+export const GroupedDrawJoinsSelectedGroup = {
+  render: () => {
+    drawSelections = []
+    return {
+      template: `
+        <seam-google-maps
+          interactionMode="grouped"
+          featureGroupProperty="fieldId"
+          [value]="value"
+          (selectionChange)="onSelection($event)"
+          style="height: 400px"></seam-google-maps>
+      `,
+      props: {
+        value: GROUPED_VALUE,
+        onSelection(event: any) {
+          drawSelections.push(event)
+        },
+      },
+    }
+  },
+  play: async ({ canvasElement }: any) => {
+    const component = await mapComponent(canvasElement)
+    component.setEditMode(true)
+    component.selectGroup('A')
+
+    finishDrawWithPolygon(component, squareAt(-98.52, 37.63))
+
+    // Field A had two polygons; the new one joins it as a third rather than
+    // starting a group of its own.
+    expect(featuresWithGroup(component, 'A')).toHaveLength(3)
+
+    const lastSelection = drawSelections[drawSelections.length - 1]
+    expect(lastSelection.group.key).toBe('A')
+    expect(lastSelection.group.features).toHaveLength(3)
+
+    // The join is a written property, not just the in-memory selection —
+    // confirms _registry.assignKey wrote fieldId = 'A' onto the new feature.
+    const geoJson = await component.getGeoJson()
+    const aFeatures = (geoJson as any).features.filter(
+      (f: any) => f.properties.fieldId === 'A',
+    )
+    expect(aFeatures).toHaveLength(3)
+  },
+}
+
+let deleteFocusedSelections: any[] = []
+
+export const GroupedDeleteRemovesOnlyFocusedPolygon = {
+  render: () => {
+    deleteFocusedSelections = []
+    return {
+      template: `
+        <seam-google-maps
+          interactionMode="grouped"
+          featureGroupProperty="fieldId"
+          [value]="value"
+          (selectionChange)="onSelection($event)"
+          style="height: 400px"></seam-google-maps>
+      `,
+      props: {
+        value: GROUPED_VALUE,
+        onSelection(event: any) {
+          deleteFocusedSelections.push(event)
+        },
+      },
+    }
+  },
+  play: async ({ canvasElement }: any) => {
+    const component = await mapComponent(canvasElement)
+    const data = component._googleMaps.googleMap.data
+    const [featureA1, featureA2] = featuresWithGroup(component, 'A')
+
+    // Selecting A focuses featureA1 specifically (the feature the click
+    // landed on), while group-wide selection styles both of A's polygons.
+    google.maps.event.trigger(data, 'click', { feature: featureA1 })
+    expect(isFeatureSelected(featureA1)).toBe(true)
+    expect(isFeatureSelected(featureA2)).toBe(true)
+
+    // The real 'Delete' key path (not deleteFocusedFeature() called
+    // directly), so this also exercises the component's keydown handler.
+    window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Delete' }))
+
+    // Only the focused polygon is gone — its groupmate survives. Matches the
+    // design's granularity: a polygon added to the wrong field must have a
+    // way out that doesn't cost the rest of the field.
+    const remaining = featuresWithGroup(component, 'A')
+    expect(remaining).toHaveLength(1)
+    expect(remaining[0]).toBe(featureA2)
+
+    // Selection must track what remains, not what was deleted — the guard
+    // for F2 (deleteSelection leaving selection$/_focusedFeature stale) and
+    // F3 (Delete Field acting on the wrong group): if either regressed here,
+    // this would either still report 2 features, or clear to null instead of
+    // staying on A's one remaining polygon.
+    const lastSelection =
+      deleteFocusedSelections[deleteFocusedSelections.length - 1]
+    expect(lastSelection).toBeTruthy()
+    expect(lastSelection.group.key).toBe('A')
+    expect(lastSelection.group.features).toHaveLength(1)
+  },
+}
+
+/**
+ * Direct regression guard for F3: right-clicking a feature in one group while
+ * a DIFFERENT group is selected must offer a "Delete Field" that deletes the
+ * right-clicked group, never the selected one.
+ */
+export const GroupedDeleteFieldActsOnRightClickedGroup = {
+  render: () => ({
+    template: `
+      <seam-google-maps
+        interactionMode="grouped"
+        featureGroupProperty="fieldId"
+        [value]="value"
+        style="height: 400px"></seam-google-maps>
+    `,
+    props: { value: GROUPED_VALUE },
+  }),
+  play: async ({ canvasElement }: any) => {
+    const component = await mapComponent(canvasElement)
+    const data = component._googleMaps.googleMap.data
+
+    // Select field B (a single-polygon group)...
+    component.selectGroup('B')
+    // ...then right-click a polygon in field A (a two-polygon group),
+    // without ever selecting A.
+    const [featureA1] = featuresWithGroup(component, 'A')
+    google.maps.event.trigger(data, 'contextmenu', { feature: featureA1 })
+    await new Promise((resolve) => setTimeout(resolve, 250))
+
+    const items = Array.from(
+      canvasElement.querySelectorAll('[role="menuitem"]'),
+    ) as HTMLElement[]
+    const deleteField = items.find(
+      (item) => item.textContent?.trim() === 'Delete Field',
+    )
+    expect(deleteField).toBeTruthy()
+    deleteField!.click()
+
+    // A (right-clicked) is gone; B (selected, but never clicked on) survives.
+    expect(featuresWithGroup(component, 'A')).toHaveLength(0)
+    expect(featuresWithGroup(component, 'B')).toHaveLength(1)
+  },
+}
+
 /**
  * Smoke-tests the consumer-supplied `seam-map-control` / `MAP_CONTROLS_SERVICE`
  * path: `modal-attributes-map` in TheSeam.DataCommons.App is its only other
