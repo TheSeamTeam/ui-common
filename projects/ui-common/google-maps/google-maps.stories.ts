@@ -1,4 +1,5 @@
 import { applicationConfig, moduleMetadata } from '@storybook/angular'
+import { expect } from 'storybook/test'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { CommonModule } from '@angular/common'
@@ -29,8 +30,14 @@ export default {
         {
           provide: THESEAM_LAZY_MAPS_API_CONFIG,
           useValue: {
-            // TODO: Add a way to set the api key.
-            // apiKey: ,
+            // Optional. Set once in devtools for local work:
+            //   localStorage.setItem('seam.googleMapsApiKey', '<key>')
+            // The test runner seeds it from GOOGLE_MAPS_API_KEY (see
+            // .storybook/test-runner.js). Without one the map still renders,
+            // with a watermark and a dismissible dialog.
+            apiKey:
+              globalThis.localStorage?.getItem('seam.googleMapsApiKey') ??
+              undefined,
             libraries: ['places'],
           },
         },
@@ -75,3 +82,74 @@ export const PlacesMapBind = ({ ...args }) => ({
   `,
   props: {},
 })
+
+const MULTI_POLYGON_VALUE = {
+  type: 'FeatureCollection',
+  features: [
+    {
+      type: 'Feature',
+      properties: { FIELD_NAME: 'Simple' },
+      geometry: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [-98.58, 37.63],
+            [-98.58, 37.64],
+            [-98.57, 37.64],
+            [-98.57, 37.63],
+            [-98.58, 37.63],
+          ],
+        ],
+      },
+    },
+    {
+      type: 'Feature',
+      properties: { FIELD_NAME: 'Split' },
+      geometry: {
+        type: 'MultiPolygon',
+        coordinates: [
+          [
+            [
+              [-98.56, 37.63],
+              [-98.56, 37.64],
+              [-98.55, 37.64],
+              [-98.55, 37.63],
+              [-98.56, 37.63],
+            ],
+          ],
+          [
+            [
+              [-98.54, 37.63],
+              [-98.54, 37.64],
+              [-98.53, 37.64],
+              [-98.53, 37.63],
+              [-98.54, 37.63],
+            ],
+          ],
+        ],
+      },
+    },
+  ],
+}
+
+/**
+ * Gate story: proves google.maps.Data round-trips MultiPolygon rather than
+ * degrading it to a GeometryCollection. Consuming apps validate the map value
+ * with isOnlyGeometryTypesValidator(['Polygon', 'MultiPolygon']), so a
+ * GeometryCollection here would fail validation in the app.
+ */
+export const MultiPolygonRoundTrip = {
+  render: () => ({
+    template: `<seam-google-maps #map [value]="value" style="height: 400px"></seam-google-maps>`,
+    props: { value: MULTI_POLYGON_VALUE },
+  }),
+  play: async ({ canvasElement }: any) => {
+    const host = canvasElement.querySelector('seam-google-maps')
+    // Wait for the map to load the value into its data layer.
+    await new Promise((resolve) => setTimeout(resolve, 3000))
+    const component = (window as any).ng.getComponent(host)
+    const geoJson = await component.getGeoJson()
+    const types = geoJson.features.map((f: any) => f.geometry.type).sort()
+    expect(types).toEqual(['MultiPolygon', 'Polygon'])
+  },
+}
