@@ -11,6 +11,7 @@ import {
   TheSeamLazyMapsApiLoader,
   THESEAM_LAZY_MAPS_API_CONFIG,
 } from './google-maps-api-loader/lazy-google-maps-api-loader'
+import { isFeatureSelected } from './google-maps-feature-helpers'
 import { TheSeamGoogleMapsModule } from './google-maps.module'
 
 export default {
@@ -210,38 +211,72 @@ function featureWithGroup(component: any, key: string): any {
   return match
 }
 
+/** Every Data.Feature whose group property matches. */
+function featuresWithGroup(component: any, key: string): any[] {
+  const matches: any[] = []
+  component._googleMaps.googleMap.data.forEach((f: any) => {
+    if (f.getProperty('fieldId') === key) {
+      matches.push(f)
+    }
+  })
+  return matches
+}
+
+// Captured by `GroupedClickSelectsWholeField`'s `onSelection` prop handler,
+// bound in its template via `(selectionChange)="onSelection($event)"`. A
+// module-scoped array (reset at the top of `render()`) lets `play` read what
+// the template binding emitted without depending on Storybook's Angular
+// renderer exposing the mounted component's `props` object back to the play
+// function — it doesn't, so this closure is the reliable way to observe it.
+let groupClickSelections: any[] = []
+
 export const GroupedClickSelectsWholeField = {
-  render: () => ({
-    template: `
-      <seam-google-maps
-        interactionMode="grouped"
-        featureGroupProperty="fieldId"
-        featureLabelProperty="FIELD_NAME"
-        [value]="value"
-        (selectionChange)="onSelection($event)"
-        style="height: 400px"></seam-google-maps>
-    `,
-    props: {
-      value: GROUPED_VALUE,
-      selections: [] as any[],
-      onSelection(event: any) {
-        ;(this as any).selections.push(event)
+  render: () => {
+    groupClickSelections = []
+    return {
+      template: `
+        <seam-google-maps
+          interactionMode="grouped"
+          featureGroupProperty="fieldId"
+          featureLabelProperty="FIELD_NAME"
+          [value]="value"
+          (selectionChange)="onSelection($event)"
+          style="height: 400px"></seam-google-maps>
+      `,
+      props: {
+        value: GROUPED_VALUE,
+        onSelection(event: any) {
+          groupClickSelections.push(event)
+        },
       },
-    },
-  }),
+    }
+  },
   play: async ({ canvasElement }: any) => {
     const component = await mapComponent(canvasElement)
-    const feature = featureWithGroup(component, 'A')
+    const [featureA1, featureA2] = featuresWithGroup(component, 'A')
+    const featureB = featureWithGroup(component, 'B')
 
     google.maps.event.trigger(component._googleMaps.googleMap.data, 'click', {
-      feature,
+      feature: featureA1,
     })
 
-    const groups = component.getGroups()
-    expect(groups.map((g: any) => g.key).sort()).toEqual(['A', 'B'])
+    // The emitted event is the actual proof a click selected something: this
+    // assertion would fail if the trigger were removed, or if
+    // GroupedInteractionModel.onFeatureClick were gutted to a no-op — unlike
+    // getGroups(), which reflects grouping alone and is unaffected by
+    // selection state.
+    const lastSelection = groupClickSelections[groupClickSelections.length - 1]
+    expect(lastSelection).toBeTruthy()
+    expect(lastSelection.group.key).toBe('A')
     // Field A has two polygons; clicking one selects both.
-    const selected = groups.find((g: any) => g.key === 'A')
-    expect(selected.features).toHaveLength(2)
+    expect(lastSelection.group.features).toHaveLength(2)
+    expect(lastSelection.feature).toBeTruthy()
+
+    // Cross-check against the data layer itself: group-wide selection, not
+    // per-feature selection, and field B is untouched.
+    expect(isFeatureSelected(featureA1)).toBe(true)
+    expect(isFeatureSelected(featureA2)).toBe(true)
+    expect(isFeatureSelected(featureB)).toBe(false)
   },
 }
 
@@ -316,10 +351,17 @@ export const GroupedEscapeCascades = {
     component.setEditMode(true)
     component.selectGroup('A')
 
+    const [featureA1] = featuresWithGroup(component, 'A')
+    expect(isFeatureSelected(featureA1)).toBe(true)
+
+    // First Escape: nothing is drawing, so this clears the selection alone —
+    // proven by the feature actually losing its selected state — and does not
+    // yet leave edit mode.
     component._googleMaps.handleEscape()
-    expect(component.getGroups().length).toBeGreaterThan(0)
+    expect(isFeatureSelected(featureA1)).toBe(false)
     expect(component.isEditMode()).toBe(true)
 
+    // Second Escape: selection is already clear, so this leaves edit mode.
     component._googleMaps.handleEscape()
     expect(component.isEditMode()).toBe(false)
   },
