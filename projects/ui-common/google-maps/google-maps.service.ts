@@ -212,6 +212,14 @@ export class GoogleMapsService implements OnDestroy {
         mapData.remove(f)
       }
     })
+    // Every deleted feature was selected, so nothing should still read as
+    // selected afterward. Re-sync `selection$` and `_focusedFeature` the same
+    // way `deleteFocusedFeature()` and `setData()` already do, rather than
+    // leaving them pointing at a group that no longer exists. In 'legacy'
+    // mode nothing consumes selection$ today, and no remaining feature's raw
+    // selected flag changes here (they were already false), so this is inert
+    // there.
+    this.clearSelection()
   }
 
   /** Whether polygon drawing mode is currently active. */
@@ -541,7 +549,11 @@ export class GoogleMapsService implements OnDestroy {
       return
     }
     if (!enabled) {
+      const wasDrawing = this.isDrawing()
       this.stopDrawing()
+      if (wasDrawing) {
+        this._reapplyCurrentSelection()
+      }
     }
     this._editModeSubject.next(enabled)
     this._refreshStyles()
@@ -760,6 +772,7 @@ export class GoogleMapsService implements OnDestroy {
   public handleEscape(): void {
     if (this.isDrawing()) {
       this.stopDrawing()
+      this._reapplyCurrentSelection()
       return
     }
     if (this._selectionSubject.value !== null) {
@@ -769,6 +782,29 @@ export class GoogleMapsService implements OnDestroy {
     if (this.isEditMode()) {
       this.setEditMode(false)
     }
+  }
+
+  /**
+   * `startDrawing()` raw-deselects every feature (via `setFeatureSelected`)
+   * without touching `_selectionSubject`, so that `onDrawFinished` can still
+   * read `getSelectedKey()` for the group being drawn into. When a draw ends
+   * WITHOUT producing a finished feature — cancelled by `Escape` or
+   * `setEditMode(false)`, or a `finish` event with no valid geometry — nothing
+   * else re-applies those raw flags, so the map renders the selection as gone
+   * while `selection$`/`getSelectedKey()` still report it. Call this at every
+   * such stopping point to bring the two back in sync.
+   *
+   * Not called from the successful-finish path in `_onDrawFinished`: that
+   * path calls `_applySelection` itself with the new/joined selection, and
+   * doing it here first would only add a redundant, momentarily-stale
+   * `selectionChange` emission ahead of the real one.
+   */
+  private _reapplyCurrentSelection(): void {
+    if (this._model.id !== 'grouped') {
+      return
+    }
+    const currentKey = this._selectionSubject.value?.group.key ?? null
+    this._applySelection(currentKey, this._focusedFeature)
   }
 
   private _initFeatureStyling(): void {
@@ -968,6 +1004,9 @@ export class GoogleMapsService implements OnDestroy {
 
     const drawn = feature ? this._toDrawnPolygon(feature.geometry) : undefined
     if (!drawn || !polygonHasMinDistinctVertices(drawn, 3)) {
+      // A 'finish' event that produced no usable geometry is, for selection
+      // purposes, a cancelled draw — see _reapplyCurrentSelection().
+      this._reapplyCurrentSelection()
       return
     }
 
