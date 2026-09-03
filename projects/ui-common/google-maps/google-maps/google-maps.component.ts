@@ -345,7 +345,17 @@ export class TheSeamGoogleMapsComponent
               }
               break
             case 'Escape':
-              this._googleMaps.handleEscape()
+              if (this.interactionMode === 'grouped') {
+                this._googleMaps.handleEscape()
+              } else {
+                // Legacy parity: `handleEscape()`'s cascade also clears a
+                // selection, but in legacy mode clicking a feature populates
+                // the selection, so that would newly deselect it (and drop
+                // its vertex handles) on a key that previously only cancelled
+                // a draw. Two apps depend on legacy behaviour unchanged, so
+                // keep the narrower pre-existing call here.
+                this._googleMaps.stopDrawing()
+              }
               event.preventDefault()
               event.stopPropagation()
               break
@@ -519,12 +529,26 @@ export class TheSeamGoogleMapsComponent
     this._googleMaps.deleteSelection()
   }
 
+  // The service delegates below guard on `mapReady` themselves, the same way
+  // `_applySelectedGroupKey()` already does for the declarative
+  // `selectedGroupKey` input. Their service-side counterparts call
+  // `_assertInitialized()` and throw when the map hasn't finished loading;
+  // this component's public surface is documented as non-throwing (an
+  // unknown key returns `false` and changes nothing), so "not ready yet"
+  // must behave the same way, not worse.
+
   /** Select a group by key. Returns false when no such group exists. */
   public selectGroup(key: string): boolean {
+    if (!this._googleMaps.mapReady) {
+      return false
+    }
     return this._googleMaps.selectGroup(key)
   }
 
   public clearSelection(): void {
+    if (!this._googleMaps.mapReady) {
+      return
+    }
     this._googleMaps.clearSelection()
   }
 
@@ -533,15 +557,24 @@ export class TheSeamGoogleMapsComponent
     key: string,
     padding?: number | google.maps.Padding,
   ): boolean {
+    if (!this._googleMaps.mapReady) {
+      return false
+    }
     return this._googleMaps.fitGroup(key, padding)
   }
 
   /** Pan to a group's centre. Returns false when no such group exists. */
   public panToGroup(key: string): boolean {
+    if (!this._googleMaps.mapReady) {
+      return false
+    }
     return this._googleMaps.panToGroup(key)
   }
 
   public getGroups(): TheSeamMapFeatureGroup[] {
+    if (!this._googleMaps.mapReady) {
+      return []
+    }
     return this._googleMaps.getGroups()
   }
 
