@@ -1,43 +1,51 @@
 <ng-container *ngIf="isCollapsed(); else buttonsTpl">
-  <button
-    seamButton
-    theme="primary"
-    size="sm"
-    class="dropdown-toggle"
-    title="View filter options"
-    [seamMenuToggle]="buttonsDropdownTpl"
-  >
-    {{ activeFilterLabel | async }}
-  </button>
-  <seam-menu #buttonsDropdownTpl>
+  <div class="d-flex toggle-buttons-filter__collapsed">
     <div
-      role="group"
-      aria-label="Toggle Filters"
-      *ngIf="options as opts"
-      [formControl]="_control"
-      seamToggleGroup
-      [multiple]="opts.multiple"
-      [selectionToggleable]="opts.selectionToggleable"
+      *ngIf="prependLabel"
+      class="d-flex align-items-center toggle-buttons-filter__collapsed-prepend-label"
     >
-      <ng-container *ngFor="let btn of buttons">
-        <button
-          seamMenuItem
-          [seamToggleGroupOption]="btn.value"
-          #opt="seamToggleGroupOption"
-          [class.seam-menu-item-active]="opt.selected"
-          (click)="opt.selected = !opt.selected"
-          title="Apply filter"
-        >
-          {{ btn.name || btn.value }}
-        </button>
-      </ng-container>
+      {{ prependLabel }}
     </div>
-  </seam-menu>
+    <button
+      seamButton
+      theme="lightgray"
+      size="sm"
+      class="dropdown-toggle toggle-buttons-filter__collapsed-button"
+      title="View filter options"
+      [seamMenuToggle]="buttonsDropdownTpl"
+    >
+      {{ activeFilterLabel | async }}
+    </button>
+    <seam-menu #buttonsDropdownTpl>
+      <div
+        role="group"
+        aria-label="Toggle Filters"
+        *ngIf="options as opts"
+        [formControl]="_control"
+        seamToggleGroup
+        [multiple]="opts.multiple"
+        [selectionToggleable]="opts.selectionToggleable"
+      >
+        <ng-container *ngFor="let btn of buttons">
+          <button
+            seamMenuItem
+            [seamToggleGroupOption]="btn.value"
+            #opt="seamToggleGroupOption"
+            [class.seam-menu-item-active]="opt.selected"
+            (click)="opt.selected = !opt.selected"
+            title="Apply filter"
+          >
+            {{ btn.name || btn.value }}
+          </button>
+        </ng-container>
+      </div>
+    </seam-menu>
+  </div>
 </ng-container>
 
 <ng-template #buttonsTpl>
   <div
-    class="btn-group"
+    class="btn-group toggle-buttons-filter__expanded"
     role="group"
     aria-label="Toggle Filters"
     *ngIf="options as opts"

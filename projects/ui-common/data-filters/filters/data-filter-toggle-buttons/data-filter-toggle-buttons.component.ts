@@ -55,12 +55,25 @@ export interface IToggleButtonsFilterOptions extends ITextFilterOptions {
   multiple: boolean
   buttons: IToggleButton[]
   initialValue?: any
-  /** The maximum width a button row can grow to before collapsing. If not set, the button row will grow until it overflows, then collapse. */
+  /**
+   * The maximum width a button row can grow to before collapsing.
+   * If not set, the button row will grow until it overflows, then collapse.
+   * To force a button row to always be collapsed or expanded, use the `forceCollapseState` option instead.
+   */
   maxWidth?: number
-  /** The text shown when the button row is in the collapsed state and no filter is selected. */
+  /**
+   * The text shown before the button row when the button row is in the collapsed state.
+   * If not set, the button row will not show any text before the buttons when collapsed.
+   */
+  prependLabel?: string
+  /**
+   * The text shown when the button row is in the collapsed state and no filter is selected.
+   */
   filterDropdownLabel?: string
-  /** When true, will prevent the button row from collapsing into a dropdown on smaller screen sizes. */
-  disableCollapse?: boolean
+  /**
+   * When set, the button row will always be collapsed or expanded, regardless of the available width.
+   */
+  forceCollapseState?: 'collapsed' | 'expanded'
 }
 
 export const DefaultToggleButtonsFilterOptions: IToggleButtonsFilterOptions = {
@@ -72,8 +85,9 @@ export const DefaultToggleButtonsFilterOptions: IToggleButtonsFilterOptions = {
   exact: false,
   caseSensitive: false,
   maxWidth: undefined,
+  prependLabel: undefined,
   filterDropdownLabel: DATA_FILTER_TOGGLE_BUTTON_DROPDOWN_TEXT,
-  disableCollapse: undefined,
+  forceCollapseState: undefined,
 }
 
 export function toggleButtonsFilter(
@@ -151,8 +165,9 @@ export class DataFilterToggleButtonsComponent
   @Input() exact = this._optDefault('exact')
   @Input() caseSensitive = this._optDefault('caseSensitive')
   @Input() maxWidth = this._optDefault('maxWidth')
+  @Input() prependLabel = this._optDefault('prependLabel')
   @Input() filterDropdownLabel = this._optDefault('filterDropdownLabel')
-  @Input() disableCollapse = this._optDefault('disableCollapse')
+  @Input() forceCollapseState = this._optDefault('forceCollapseState')
 
   @HostBinding('class.seam-data-filter-toggle-buttons-collapsed')
   get _collapsedClass() {
@@ -222,17 +237,42 @@ export class DataFilterToggleButtonsComponent
 
   ngAfterViewInit(): void {
     this._resizeObserver = new ResizeObserver(() => this._updateCollapsed())
-
-    if (
-      notNullOrUndefined(this._elementRef.nativeElement.parentElement) &&
-      this.disableCollapse !== true
-    ) {
-      this._resizeObserver.observe(this._elementRef.nativeElement.parentElement)
-    }
+    this._syncResizeObserver()
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['buttons'] && !changes['buttons'].firstChange) {
+      this._updateCollapsed()
+    }
+
+    if (
+      changes['forceCollapseState'] &&
+      !changes['forceCollapseState'].firstChange
+    ) {
+      this._syncResizeObserver()
+    }
+  }
+
+  /**
+   * Observes the parent element only while the collapsed state is width driven.
+   * When `forceCollapseState` is set there is nothing to observe, so the
+   * observer is disconnected and the forced state is applied directly.
+   */
+  private _syncResizeObserver(): void {
+    if (isNullOrUndefined(this._resizeObserver)) {
+      return
+    }
+
+    this._resizeObserver.disconnect()
+
+    const parentElement = this._elementRef.nativeElement.parentElement
+    if (
+      notNullOrUndefined(parentElement) &&
+      isNullOrUndefined(this.forceCollapseState)
+    ) {
+      this._resizeObserver.observe(parentElement)
+    } else {
+      // The observer won't fire, so apply the collapsed state directly.
       this._updateCollapsed()
     }
   }
@@ -262,8 +302,9 @@ export class DataFilterToggleButtonsComponent
       exact: this.exact,
       caseSensitive: this.caseSensitive,
       maxWidth: this.maxWidth,
+      prependLabel: this.prependLabel,
       filterDropdownLabel: this.filterDropdownLabel,
-      disableCollapse: this.disableCollapse,
+      forceCollapseState: this.forceCollapseState,
     }
   }
 
@@ -281,13 +322,19 @@ export class DataFilterToggleButtonsComponent
   }
 
   private _updateCollapsed(): void {
-    if (this.disableCollapse) {
-      if (this.isCollapsed()) {
+    if (notNullOrUndefined(this.forceCollapseState)) {
+      if (this.isCollapsed() && this.forceCollapseState === 'expanded') {
         this.isCollapsed.set(false)
+      } else if (
+        !this.isCollapsed() &&
+        this.forceCollapseState === 'collapsed'
+      ) {
+        this.isCollapsed.set(true)
       }
 
       return
     }
+
     if (!this._measureDiv) {
       return
     }

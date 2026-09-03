@@ -18,3 +18,35 @@
   background: $primary;
   color: white;
 }
+
+.toggle-buttons-filter__collapsed {
+  font-size: $btn-font-size-sm;
+
+  &-prepend-label {
+    border-radius: $border-radius-sm 0 0 $border-radius-sm;
+    padding: $btn-padding-y-sm $btn-padding-x-sm;
+    background: $primary;
+    color: white;
+  }
+
+  &-button {
+    // The dropdown caret below is absolutely positioned against this button.
+    position: relative;
+    min-width: 100px;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+    padding-right: $btn-padding-x-sm * 2;
+    &::after {
+      position: absolute;
+      top: calc(50% - 3px);
+      right: calc($btn-padding-x-sm - 3px);
+    }
+
+    .toggle-buttons-filter__collapsed-prepend-label ~ & {
+      border-radius: 0 $border-radius-sm $border-radius-sm 0;
+    }
+  }
+}
