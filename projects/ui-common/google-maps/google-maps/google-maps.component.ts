@@ -23,7 +23,7 @@ import {
   ViewChild,
 } from '@angular/core'
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
-import { fromEvent, Observable, of, Subject } from 'rxjs'
+import { combineLatest, fromEvent, Observable, of, Subject } from 'rxjs'
 import { catchError, map, takeUntil, tap } from 'rxjs/operators'
 
 import { faCrosshairs, faFileImport } from '@fortawesome/free-solid-svg-icons'
@@ -298,15 +298,32 @@ export class TheSeamGoogleMapsComponent
       )
       .subscribe()
 
-    this._contextMenuItems$ = this._googleMaps.editingEnabled$.pipe(
-      map((enabled) => {
+    this._contextMenuItems$ = combineLatest([
+      this._googleMaps.editingEnabled$,
+      this._googleMaps.selection$,
+    ]).pipe(
+      map(([enabled, selection]) => {
         const items: TheSeamMapContextMenuItem[] = []
-        if (enabled) {
-          items.push({
-            label: 'Delete',
-            action: () => this._onClickDeleteFeature(),
-          })
+        if (!enabled) {
+          return items
         }
+        if (this.interactionMode === 'grouped') {
+          items.push({
+            label: 'Delete Polygon',
+            action: () => this._googleMaps.deleteFocusedFeature(),
+          })
+          if ((selection?.group.features.length ?? 0) > 1) {
+            items.push({
+              label: 'Delete Field',
+              action: () => this._googleMaps.deleteSelection(),
+            })
+          }
+          return items
+        }
+        items.push({
+          label: 'Delete',
+          action: () => this._onClickDeleteFeature(),
+        })
         return items
       }),
       tap((items) => {

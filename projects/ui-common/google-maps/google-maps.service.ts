@@ -75,6 +75,9 @@ export class GoogleMapsService implements OnDestroy {
   private _allowDrawingHoleInPolygon = false
 
   private _model: MapInteractionModel = new LegacyInteractionModel()
+  private readonly _interactionModeSubject =
+    new BehaviorSubject<TheSeamMapInteractionMode>('legacy')
+  public readonly interactionMode$ = this._interactionModeSubject.asObservable()
   private _groups?: FeatureGroupRegistry
   private _groupOptions: FeatureGroupRegistryOptions = {}
   private _focusedFeature: google.maps.Data.Feature | null = null
@@ -122,6 +125,7 @@ export class GoogleMapsService implements OnDestroy {
     this._selectionSubject.complete()
     this._hoverSubject.complete()
     this._editModeSubject.complete()
+    this._interactionModeSubject.complete()
     this._groups = undefined
 
     this._ngUnsubscribe.next()
@@ -412,6 +416,7 @@ export class GoogleMapsService implements OnDestroy {
     if (mode !== 'grouped') {
       this._editModeSubject.next(false)
     }
+    this._interactionModeSubject.next(mode)
     this._refreshStyles()
   }
 
