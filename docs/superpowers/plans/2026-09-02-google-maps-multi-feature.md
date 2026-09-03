@@ -33,8 +33,7 @@ The `google-maps` directory has no specs and is not in `testMatch`. Everything d
 
 - Modify: `projects/ui-common/jest.config.ts` (add to `testMatch`)
 - Create: `projects/ui-common/google-maps/testing/fake-google-maps.ts`
-- Create: `projects/ui-common/google-maps/testing/public-api.ts`
-- Create: `projects/ui-common/google-maps/testing/ng-package.json`
+- Create: `projects/ui-common/google-maps/testing/index.ts`
 - Test: `projects/ui-common/google-maps/google-maps-feature-helpers.spec.ts`
 
 **Interfaces:**
@@ -395,23 +394,24 @@ export function uninstallFakeGoogleMaps(): void {
 }
 ```
 
-- [ ] **Step 5: Add the testing secondary entry point**
+- [ ] **Step 5: Add the testing barrel**
 
-Create `projects/ui-common/google-maps/testing/ng-package.json`:
-
-```json
-{
-  "lib": {
-    "entryFile": "public-api.ts"
-  }
-}
-```
-
-Create `projects/ui-common/google-maps/testing/public-api.ts`:
+Create `projects/ui-common/google-maps/testing/index.ts`:
 
 ```ts
 export * from './fake-google-maps'
 ```
+
+Follow `projects/ui-common/buttons/testing/`, which is a plain directory with an
+`index.ts` and **no** `ng-package.json` — it is part of its module's entry point,
+not a separate one.
+
+Do **not** re-export this from `projects/ui-common/google-maps/public-api.ts`.
+The fake exists to test this module's internals; no consumer has asked for it,
+and shipping a `google.maps` stub in the public API is speculative. Specs import
+it by relative path. A separate entry point would also make Task 6's
+`../interaction/...` import a cross-entry-point relative import, which ng-packagr
+rejects.
 
 - [ ] **Step 6: Run the tests to verify they pass**
 
@@ -446,7 +446,7 @@ git commit -m "test(google-maps): add google.maps test double and enable jest fo
 - Consumes: `installFakeGoogleMaps` (Task 1).
 - Produces:
   - `polygonsFromDataFeature(feature: google.maps.Data.Feature): Polygon[]`
-  - `geoJsonFeatureFromDataFeature(feature: google.maps.Data.Feature, excludeProperties?: (name: string) => boolean): Feature<Polygon | MultiPolygon> | undefined`
+  - `geoJsonFeatureFromDataFeature(feature: google.maps.Data.Feature, excludeProperty?: (name: string) => boolean): Feature<Polygon | MultiPolygon> | undefined`
   - `dataMultiPolygonFromGeoJson(multiPolygon: MultiPolygon): google.maps.Data.MultiPolygon`
 
 - [ ] **Step 1: Write the failing tests**
@@ -852,7 +852,7 @@ Resolves which field each feature belongs to, and assigns keys to features the m
 - Produces:
   - `TheSeamMapFeatureGroup { key: string; features: Feature<Polygon | MultiPolygon>[] }`
   - `TheSeamMapGroupTarget { group: TheSeamMapFeatureGroup; feature: Feature<Polygon | MultiPolygon> | null }`
-  - `class FeatureGroupRegistry` with `keyOf(feature): string`, `featuresIn(key): google.maps.Data.Feature[]`, `groupOf(feature): TheSeamMapFeatureGroup | undefined`, `groups(): TheSeamMapFeatureGroup[]`, `assignNewKey(feature): string`, `assignKey(feature, key): void`, `setOptions(options): void`
+  - `class FeatureGroupRegistry` with `keyOf(feature): string`, `featuresIn(key): google.maps.Data.Feature[]`, `group(key): TheSeamMapFeatureGroup | undefined`, `groupWithSources(key): { group: TheSeamMapFeatureGroup; sources: google.maps.Data.Feature[] } | undefined`, `groupOf(feature): TheSeamMapFeatureGroup | undefined`, `groups(): TheSeamMapFeatureGroup[]`, `assignNewKey(feature): string`, `assignKey(feature, key): void`, `setOptions(options): void`
 
 - [ ] **Step 1: Add the group-key app property**
 
@@ -1268,8 +1268,13 @@ In `projects/ui-common/google-maps/public-api.ts`, add after the `google-maps-fe
 
 ```ts
 export * from './feature-groups/feature-group'
-export * from './feature-groups/feature-group-registry'
 ```
+
+`feature-group-registry.ts` is **not** exported. AGENTS.md requires exported
+types to carry the `TheSeam` prefix and exempts internal ones; the registry is
+an internal that no consumer names, so narrowing the surface is preferable to
+renaming it. The same reasoning applies to the interaction models and the labels
+overlay in later tasks.
 
 - [ ] **Step 8: Commit**
 
@@ -1574,6 +1579,10 @@ In `projects/ui-common/google-maps/public-api.ts`, add:
 export * from './feature-style/compute-feature-style'
 ```
 
+This one is public on purpose: `SUPPORTED_PROPERTY_STYLE_OPTIONS` documents
+exactly what a consumer may put in `properties.styleOptions`, and
+`TheSeamMapFeatureStyleContext` carries the required prefix.
+
 - [ ] **Step 6: Commit**
 
 ```bash
@@ -1589,6 +1598,7 @@ A behaviour-preserving extraction. The legacy model must reproduce today's behav
 
 **Files:**
 
+- Create: `projects/ui-common/google-maps/interaction/interaction-mode.ts`
 - Create: `projects/ui-common/google-maps/interaction/map-interaction-model.ts`
 - Create: `projects/ui-common/google-maps/interaction/legacy-interaction-model.ts`
 - Test: `projects/ui-common/google-maps/interaction/legacy-interaction-model.spec.ts`
@@ -1735,14 +1745,24 @@ Expected: FAIL — `Cannot find module './legacy-interaction-model'`.
 
 Create `projects/ui-common/google-maps/interaction/map-interaction-model.ts`:
 
+First create `projects/ui-common/google-maps/interaction/interaction-mode.ts`.
+This type is public — it is the type of the component's `interactionMode` input
+— and lives in its own file so `public-api.ts` can export it without also
+exporting the unprefixed model interface beside it:
+
+```ts
+/** Which interaction model a map uses. */
+export type TheSeamMapInteractionMode = 'legacy' | 'grouped'
+```
+
+Then `projects/ui-common/google-maps/interaction/map-interaction-model.ts`:
+
 ```ts
 import { Polygon } from 'geojson'
 
 import { FeatureGroupRegistry } from '../feature-groups/feature-group-registry'
 import { TheSeamMapFeatureStyleContext } from '../feature-style/compute-feature-style'
-
-/** Which interaction model a map uses. */
-export type TheSeamMapInteractionMode = 'legacy' | 'grouped'
+import { TheSeamMapInteractionMode } from './interaction-mode'
 
 /** What an interaction model decides for a single feature's style. */
 export type MapFeatureInteractionFlags = Pick<
@@ -1988,7 +2008,7 @@ export function createFakeInteractionContext(
 
 - [ ] **Step 6: Export the test helper**
 
-In `projects/ui-common/google-maps/testing/public-api.ts`:
+In `projects/ui-common/google-maps/testing/index.ts`:
 
 ```ts
 export * from './fake-google-maps'
@@ -2000,14 +2020,18 @@ export * from './fake-interaction-context'
 Run: `npx jest --config projects/ui-common/jest.config.ts legacy-interaction-model`
 Expected: PASS, 7 tests.
 
-- [ ] **Step 8: Export the interaction types**
+- [ ] **Step 8: Export the interaction mode**
 
 In `projects/ui-common/google-maps/public-api.ts`, add:
 
 ```ts
-export * from './interaction/map-interaction-model'
-export * from './interaction/legacy-interaction-model'
+export * from './interaction/interaction-mode'
 ```
+
+Only the mode type. `map-interaction-model.ts` and `legacy-interaction-model.ts`
+stay internal — their exports are unprefixed, and a consumer implementing a
+custom interaction model is not a requirement anyone has stated. Exporting them
+later is additive.
 
 - [ ] **Step 9: Commit**
 
@@ -2361,13 +2385,14 @@ export class GroupedInteractionModel implements MapInteractionModel {
 Run: `npx jest --config projects/ui-common/jest.config.ts grouped-interaction-model`
 Expected: PASS, 13 tests.
 
-- [ ] **Step 5: Export it**
+- [ ] **Step 5: Confirm it stays internal**
 
-In `projects/ui-common/google-maps/public-api.ts`, add:
+Do **not** add `grouped-interaction-model` to `public-api.ts`, for the same
+reason as the legacy model in Task 6: its exports are unprefixed and no
+consumer names them.
 
-```ts
-export * from './interaction/grouped-interaction-model'
-```
+Run: `grep -n "interaction/" projects/ui-common/google-maps/public-api.ts`
+Expected: one line only, `export * from './interaction/interaction-mode'`.
 
 - [ ] **Step 6: Commit**
 
@@ -2425,10 +2450,10 @@ import {
 } from './feature-groups/feature-group'
 import { GroupedInteractionModel } from './interaction/grouped-interaction-model'
 import { LegacyInteractionModel } from './interaction/legacy-interaction-model'
+import { TheSeamMapInteractionMode } from './interaction/interaction-mode'
 import {
   MapInteractionContext,
   MapInteractionModel,
-  TheSeamMapInteractionMode,
 } from './interaction/map-interaction-model'
 import {
   polygonsFromDataFeature,
@@ -2919,7 +2944,7 @@ Add near the existing inputs:
 Add the import:
 
 ```ts
-import { TheSeamMapInteractionMode } from '../interaction/map-interaction-model'
+import { TheSeamMapInteractionMode } from '../interaction/interaction-mode'
 import { TheSeamMapFeatureGroup, TheSeamMapGroupTarget } from '../feature-groups/feature-group'
 ```
 
@@ -3644,14 +3669,15 @@ Append to `projects/ui-common/google-maps/google-maps/google-maps.component.scss
 }
 ```
 
-- [ ] **Step 9: Export the label API**
+- [ ] **Step 9: Confirm the label internals stay internal**
 
-In `projects/ui-common/google-maps/public-api.ts`:
+Do **not** add either labels file to `public-api.ts`. `MapFeatureLabelsOverlay`,
+`MapFeatureLabel`, and `isLabelVisibleAtSize` are unprefixed internals that no
+consumer names — restyling labels is done through the
+`.seam-map-feature-label` class, not through this API.
 
-```ts
-export * from './labels/label-visibility'
-export * from './labels/map-feature-labels-overlay'
-```
+Run: `grep -n "labels/" projects/ui-common/google-maps/public-api.ts`
+Expected: no output.
 
 - [ ] **Step 10: Build and test**
 
@@ -3669,7 +3695,7 @@ If the rules do not apply, follow the fallback named in the SCSS comment: move t
 - [ ] **Step 12: Commit**
 
 ```bash
-git add projects/ui-common/google-maps/labels projects/ui-common/google-maps/google-maps.service.ts projects/ui-common/google-maps/google-maps/google-maps.component.ts projects/ui-common/google-maps/google-maps/google-maps.component.scss projects/ui-common/google-maps/public-api.ts
+git add projects/ui-common/google-maps/labels projects/ui-common/google-maps/google-maps.service.ts projects/ui-common/google-maps/google-maps/google-maps.component.ts projects/ui-common/google-maps/google-maps/google-maps.component.scss
 git commit -m "feat(google-maps): render per-group polygon labels"
 ```
 
