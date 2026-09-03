@@ -96,4 +96,28 @@ describe('computeFeatureStyle', () => {
     })
     expect(style.clickable).toBe(false)
   })
+
+  it('keeps an editable: false opt-out when styleOptionsSelected declares an unrelated key', () => {
+    // Regression: the opt-out flags used to resolve styleOptionsSelected as a
+    // whole object, falling back to styleOptions only when
+    // styleOptionsSelected was entirely absent. That silently opted a
+    // retired field back IN the moment it was selected, purely because it
+    // also wanted a different selected fill colour — the clamp is meant to
+    // be one-directional (opt out only), so this must not happen.
+    const feature = makeFeature({
+      styleOptions: { editable: false },
+      styleOptionsSelected: { fillColor: 'gray' },
+    })
+    setFeatureSelected(feature, true)
+    const style = computeFeatureStyle(feature, armed)
+    expect(style.editable).toBe(false)
+    expect(style.fillColor).toBe('gray')
+  })
+
+  it('lets styleOptionsSelected opt out on its own, for a key it does declare', () => {
+    const feature = makeFeature({ styleOptionsSelected: { editable: false } })
+    setFeatureSelected(feature, true)
+    const style = computeFeatureStyle(feature, armed)
+    expect(style.editable).toBe(false)
+  })
 })

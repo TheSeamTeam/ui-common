@@ -92,6 +92,15 @@ export function mergeStyleOptions(
  *     -> properties.styleOptionsSelected  (when selected)
  *     -> interaction clamp          (always last)
  *
+ * That chain governs the *visual* options (colours, etc.) only. The opt-out
+ * flags (`editable`/`draggable`/`clickable`) resolve separately, per key: a
+ * selected feature consults `styleOptionsSelected` first and falls back to
+ * `styleOptions` only for a key `styleOptionsSelected` doesn't itself
+ * mention — never a whole-object fallback. Otherwise a feature that declares
+ * `styleOptionsSelected` for an unrelated reason, such as a different
+ * selected fill colour, would silently lose an unrelated `editable: false`
+ * from `styleOptions` the moment it's selected.
+ *
  * The clamp is one-directional. A feature can only narrow what the context
  * permits, never widen it, so no property in an uploaded file can arm editing
  * when the mode says no.
@@ -101,10 +110,10 @@ export function computeFeatureStyle(
   context: TheSeamMapFeatureStyleContext,
 ): google.maps.Data.StyleOptions {
   const selected = isFeatureSelected(feature)
-  const declared = selected
-    ? (getSelectedStyleOptionsDefinedByFeature(feature) ??
-      getStyleOptionsDefinedByFeature(feature))
-    : getStyleOptionsDefinedByFeature(feature)
+  const baseDeclared = getStyleOptionsDefinedByFeature(feature)
+  const selectedDeclared = selected
+    ? getSelectedStyleOptionsDefinedByFeature(feature)
+    : undefined
 
   const options = FEATURE_STYLE_OPTIONS_DEFAULT()
   mergeStyleOptions(options, getStyleOptionsDefinedByFeature(feature))
@@ -114,8 +123,13 @@ export function computeFeatureStyle(
     mergeStyleOptions(options, getSelectedStyleOptionsDefinedByFeature(feature))
   }
 
+  // Resolved per key, not per object. A feature that opts out in
+  // `styleOptions` must stay opted out even when it also declares a
+  // `styleOptionsSelected` for unrelated reasons such as colour — otherwise
+  // the clamp stops being one-directional and a retired field becomes
+  // editable the moment it is selected.
   const wants = (option: 'editable' | 'draggable' | 'clickable') =>
-    declared?.[option] !== false
+    (selectedDeclared?.[option] ?? baseDeclared?.[option]) !== false
 
   const geometryEditable =
     wants('editable') &&
