@@ -36,18 +36,25 @@ import {
 } from '@theseam/ui-common/core'
 import { MenuComponent } from '@theseam/ui-common/menu'
 
+import {
+  TheSeamMapFeatureGroup,
+  TheSeamMapGroupTarget,
+} from '../feature-groups/feature-group'
 import { TheSeamGoogleMapsApiLoader } from '../google-maps-api-loader/google-maps-api-loader'
 import { GoogleMapsControlsService } from '../google-maps-controls.service'
 import { TheSeamGoogleMapsDrawButtonControlComponent } from '../google-maps-draw-button-control/google-maps-draw-button-control.component'
 import { TheSeamGoogleMapsRecenterButtonControlComponent } from '../google-maps-recenter-button-control/google-maps-recenter-button-control.component'
 import { TheSeamGoogleMapsUploadButtonControlComponent } from '../google-maps-upload-button-control/google-maps-upload-button-control.component'
 import { GoogleMapsService } from '../google-maps.service'
+import { TheSeamMapInteractionMode } from '../interaction/interaction-mode'
 import { MapControl, MAP_CONTROLS_SERVICE } from '../map-controls-service'
 import {
   MapValue,
   MapValueManagerService,
   MapValueSource,
 } from '../map-value-manager.service'
+
+declare const ngDevMode: boolean | undefined
 
 interface TheSeamMapContextMenuItem {
   label: string
@@ -102,6 +109,7 @@ export class TheSeamGoogleMapsComponent
   static ngAcceptInputType_streetViewControlEnabled: BooleanInput
   static ngAcceptInputType_allowDrawingHoleInPolygon: BooleanInput
   static ngAcceptInputType_editingEnabled: BooleanInput
+  static ngAcceptInputType_selectedGroupKey: string | null
 
   private readonly _changeDetectorRef = inject(ChangeDetectorRef)
 
@@ -186,7 +194,39 @@ export class TheSeamGoogleMapsComponent
 
   @Input() padding: number | google.maps.Padding | undefined = 0
 
+  /**
+   * Which interaction model the map uses.
+   *
+   * `'legacy'` is the single-boundary behaviour this component has always had
+   * and is the default, so existing consumers are unaffected. `'grouped'`
+   * separates selection from geometry editing; see the design doc.
+   */
+  @Input() interactionMode: TheSeamMapInteractionMode = 'legacy'
+
+  /**
+   * Name of the GeoJSON property that groups features into one logical thing,
+   * such as a field. Features sharing a value select, style, and edit together.
+   * Unset means every feature is its own group.
+   */
+  @Input() featureGroupProperty: string | undefined
+
+  /** Name of the GeoJSON property holding a group's label text. */
+  @Input() featureLabelProperty: string | undefined
+
+  /**
+   * Generates the key written to `featureGroupProperty` for a newly drawn
+   * group. Consumer-supplied so the format is one the app recognises.
+   */
+  @Input() newGroupKeyFactory: (() => string) | undefined
+
+  /** Preselect a group. Applied on map-ready and after each external value write. */
+  @Input() selectedGroupKey: string | null = null
+
   @Output() mapReady = new EventEmitter<google.maps.Map | undefined>()
+
+  @Output() selectionChange = new EventEmitter<TheSeamMapGroupTarget | null>()
+  @Output() featureHoverChange =
+    new EventEmitter<TheSeamMapGroupTarget | null>()
 
   @ViewChild('featureContextMenu', { static: true, read: MenuComponent })
   public featureContextMenu!: MenuComponent
@@ -237,8 +277,23 @@ export class TheSeamGoogleMapsComponent
             changed.source !== MapValueSource.FeatureChange
           ) {
             this._googleMaps.setData(changed.value)
+            this._applySelectedGroupKey()
           }
         }),
+        takeUntil(this._ngUnsubscribe),
+      )
+      .subscribe()
+
+    this._googleMaps.selection$
+      .pipe(
+        tap((selection) => this.selectionChange.emit(selection)),
+        takeUntil(this._ngUnsubscribe),
+      )
+      .subscribe()
+
+    this._googleMaps.hover$
+      .pipe(
+        tap((hover) => this.featureHoverChange.emit(hover)),
         takeUntil(this._ngUnsubscribe),
       )
       .subscribe()
@@ -280,13 +335,17 @@ export class TheSeamGoogleMapsComponent
           switch (event.code) {
             case 'Delete':
               if (this._googleMaps.isEditingEnabled()) {
-                this._googleMaps.deleteSelection()
+                if (this.interactionMode === 'grouped') {
+                  this._googleMaps.deleteFocusedFeature()
+                } else {
+                  this._googleMaps.deleteSelection()
+                }
                 event.preventDefault()
                 event.stopPropagation()
               }
               break
             case 'Escape':
-              this._googleMaps.stopDrawing()
+              this._googleMaps.handleEscape()
               event.preventDefault()
               event.stopPropagation()
               break
@@ -350,6 +409,45 @@ export class TheSeamGoogleMapsComponent
     if (Object.prototype.hasOwnProperty.call(changes, 'padding')) {
       this._googleMaps.setPadding(this.padding)
     }
+
+    if (Object.prototype.hasOwnProperty.call(changes, 'interactionMode')) {
+      this._googleMaps.setInteractionMode(this.interactionMode)
+    }
+
+    if (
+      Object.prototype.hasOwnProperty.call(changes, 'featureGroupProperty') ||
+      Object.prototype.hasOwnProperty.call(changes, 'newGroupKeyFactory')
+    ) {
+      this._googleMaps.setGroupOptions({
+        groupProperty: this.featureGroupProperty,
+        newGroupKeyFactory: this.newGroupKeyFactory,
+      })
+    }
+
+    if (Object.prototype.hasOwnProperty.call(changes, 'selectedGroupKey')) {
+      this._applySelectedGroupKey()
+    }
+  }
+
+  private _applySelectedGroupKey(): void {
+    if (!this._googleMaps.mapReady) {
+      return
+    }
+    if (this.selectedGroupKey === null) {
+      this._googleMaps.clearSelection()
+      return
+    }
+    if (!this._googleMaps.selectGroup(this.selectedGroupKey)) {
+      // The named group is not in the current value. Clearing keeps the map
+      // and the consumer's expectation from silently diverging.
+      this._googleMaps.clearSelection()
+      if (typeof ngDevMode === 'undefined' || ngDevMode) {
+        console.warn(
+          `[seam-google-maps] selectedGroupKey "${this.selectedGroupKey}" ` +
+            `matches no group in the current value.`,
+        )
+      }
+    }
   }
 
   writeValue(value: MapValue): void {
@@ -405,6 +503,12 @@ export class TheSeamGoogleMapsComponent
     this.idleListener = this._googleMaps.googleMap?.addListener('idle', () => {
       this._googleMaps.googleMap?.setZoom(this.zoom)
       this._googleMaps.reCenterOnFeatures()
+      this._googleMaps.setInteractionMode(this.interactionMode)
+      this._googleMaps.setGroupOptions({
+        groupProperty: this.featureGroupProperty,
+        newGroupKeyFactory: this.newGroupKeyFactory,
+      })
+      this._applySelectedGroupKey()
       this.mapReady.emit(this._googleMaps.googleMap)
 
       this.idleListener?.remove()
@@ -413,5 +517,39 @@ export class TheSeamGoogleMapsComponent
 
   _onClickDeleteFeature() {
     this._googleMaps.deleteSelection()
+  }
+
+  /** Select a group by key. Returns false when no such group exists. */
+  public selectGroup(key: string): boolean {
+    return this._googleMaps.selectGroup(key)
+  }
+
+  public clearSelection(): void {
+    this._googleMaps.clearSelection()
+  }
+
+  /** Fit the viewport to a group. Returns false when no such group exists. */
+  public fitGroup(
+    key: string,
+    padding?: number | google.maps.Padding,
+  ): boolean {
+    return this._googleMaps.fitGroup(key, padding)
+  }
+
+  /** Pan to a group's centre. Returns false when no such group exists. */
+  public panToGroup(key: string): boolean {
+    return this._googleMaps.panToGroup(key)
+  }
+
+  public getGroups(): TheSeamMapFeatureGroup[] {
+    return this._googleMaps.getGroups()
+  }
+
+  public setEditMode(enabled: boolean): void {
+    this._googleMaps.setEditMode(enabled)
+  }
+
+  public isEditMode(): boolean {
+    return this._googleMaps.isEditMode()
   }
 }
