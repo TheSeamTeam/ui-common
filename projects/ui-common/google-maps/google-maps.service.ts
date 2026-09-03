@@ -8,7 +8,6 @@ import { TerraDrawGoogleMapsAdapter } from 'terra-draw-google-maps-adapter'
 
 import { MenuComponent } from '@theseam/ui-common/menu'
 import {
-  addHoleToPolygon,
   closePolygons,
   notNullOrUndefined,
   polygonContains,
@@ -29,8 +28,8 @@ import {
 } from './feature-style/compute-feature-style'
 import { GoogleMapsContextMenu } from './google-maps-contextmenu'
 import {
+  applyHoleToFeature,
   createFeatureChangeObservable,
-  dataMultiPolygonFromGeoJson,
   dataPolygonFromGeoJson,
   getBoundsWithAllFeatures,
   getFeatureCenter,
@@ -120,6 +119,10 @@ export class GoogleMapsService implements OnDestroy {
     }
     this._terraDraw = undefined
     this._drawingSubject.complete()
+    this._selectionSubject.complete()
+    this._hoverSubject.complete()
+    this._editModeSubject.complete()
+    this._groups = undefined
 
     this._ngUnsubscribe.next()
     this._ngUnsubscribe.complete()
@@ -354,6 +357,11 @@ export class GoogleMapsService implements OnDestroy {
   public async setData(data: any): Promise<void> {
     this._assertInitialized()
     removeAllFeatures(this.googleMap.data)
+    // Every prior feature is gone, so nothing selected or hovered survives it —
+    // clear both rather than leaving selection$/hover$ referencing removed
+    // features.
+    this.clearSelection()
+    this._hoverSubject.next(null)
     this.googleMap.data.addGeoJson(data)
     this.googleMap.fitBounds(
       getBoundsWithAllFeatures(this.googleMap.data),
@@ -462,18 +470,24 @@ export class GoogleMapsService implements OnDestroy {
       getSelectedKey: () => this._selectionSubject.value?.group.key ?? null,
       selectGroup: (key, feature) => this._applySelection(key, feature),
       startDrawing: () => this.startDrawing(),
-      findContainingFeature: (polygon, groupKey) =>
-        this._findContainingFeature(polygon, groupKey),
+      findContainingFeature: (polygon, groupKey, accept) =>
+        this._findContainingFeature(polygon, groupKey, accept),
     }
   }
 
   /**
    * Find an existing feature that fully contains `polygon`, restricted to a
-   * group when `groupKey` is given. Matches any part of a MultiPolygon.
+   * group when `groupKey` is given and to features `accept` returns true for
+   * when given. Matches any part of a MultiPolygon.
+   *
+   * `accept` is applied DURING iteration — a rejected candidate is skipped,
+   * not treated as ending the search — so legacy mode's Polygon-only filter
+   * can let a later Polygon candidate still match.
    */
   private _findContainingFeature(
     polygon: Polygon,
     groupKey?: string,
+    accept?: (feature: google.maps.Data.Feature) => boolean,
   ): google.maps.Data.Feature | undefined {
     this._assertInitialized()
     let match: google.maps.Data.Feature | undefined
@@ -485,6 +499,9 @@ export class GoogleMapsService implements OnDestroy {
         groupKey !== undefined &&
         this._registry.keyOf(feature) !== groupKey
       ) {
+        return
+      }
+      if (accept && !accept(feature)) {
         return
       }
       const contains = polygonsFromDataFeature(feature).some((part) =>
@@ -604,15 +621,28 @@ export class GoogleMapsService implements OnDestroy {
     return true
   }
 
-  /** Delete only the polygon the last interaction landed on. */
+  /**
+   * Delete only the polygon the last interaction landed on.
+   *
+   * Re-applies the selection's group key afterward (with no focused feature)
+   * rather than leaving `selection$` holding a `TheSeamMapGroupTarget` whose
+   * `feature` no longer exists — `_applySelection` naturally clears to null
+   * when the group is now empty, via `groupWithSources`.
+   */
   public deleteFocusedFeature(): void {
     this._assertInitialized()
-    if (!this._focusedFeature) {
+    const key = this._focusedFeature
+      ? this._registry.keyOf(this._focusedFeature)
+      : (this._selectionSubject.value?.group.key ?? null)
+
+    if (this._focusedFeature) {
+      this.googleMap.data.remove(this._focusedFeature)
+      this._focusedFeature = null
+    } else {
       this.deleteSelection()
-      return
     }
-    this.googleMap.data.remove(this._focusedFeature)
-    this._focusedFeature = null
+
+    this._applySelection(key, null)
   }
 
   /** Escape cascades: cancel a draw, then clear selection, then leave edit mode. */
@@ -834,28 +864,9 @@ export class GoogleMapsService implements OnDestroy {
     const context = this._interactionContext()
     const outcome = this._model.onDrawFinished(drawn, context)
 
-    if (outcome.kind === 'hole') {
-      const parts = polygonsFromDataFeature(outcome.target)
-      const containingIndex = parts.findIndex((part) =>
-        polygonContains(part, drawn),
-      )
-      if (containingIndex !== -1) {
-        parts[containingIndex] = addHoleToPolygon(parts[containingIndex], drawn)
-        // Mutate the EXISTING feature to preserve its identity and properties.
-        outcome.target.setGeometry(
-          parts.length === 1
-            ? dataPolygonFromGeoJson(parts[0])
-            : dataMultiPolygonFromGeoJson({
-                type: 'MultiPolygon',
-                coordinates: parts.map((p) => p.coordinates),
-              }),
-        )
-        this._applySelection(
-          this._registry.keyOf(outcome.target),
-          outcome.target,
-        )
-        return
-      }
+    if (outcome.kind === 'hole' && applyHoleToFeature(outcome.target, drawn)) {
+      this._applySelection(this._registry.keyOf(outcome.target), outcome.target)
+      return
     }
 
     const newFeature = new google.maps.Data.Feature({

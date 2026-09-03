@@ -60,13 +60,16 @@ export function createFakeInteractionContext(
       selectedKey = key
     }),
     startDrawing: jest.fn(),
-    findContainingFeature: (polygon, groupKey) => {
+    findContainingFeature: (polygon, groupKey, accept) => {
       let match: google.maps.Data.Feature | undefined
       data.forEach((feature: any) => {
         if (match) {
           return
         }
         if (groupKey !== undefined && groups.keyOf(feature) !== groupKey) {
+          return
+        }
+        if (accept && !accept(feature)) {
           return
         }
         const contains = polygonsFromDataFeature(feature).some((part) =>

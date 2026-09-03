@@ -5,6 +5,7 @@ import {
   uninstallFakeGoogleMaps,
 } from './testing/fake-google-maps'
 import {
+  applyHoleToFeature,
   dataMultiPolygonFromGeoJson,
   dataPolygonFromGeoJson,
   geoJsonFeatureFromDataFeature,
@@ -130,5 +131,82 @@ describe('MultiPolygon helpers', () => {
     const feature = new google.maps.Data.Feature({ geometry: null })
     expect(geoJsonFeatureFromDataFeature(feature)).toBeUndefined()
     expect(polygonsFromDataFeature(feature)).toEqual([])
+  })
+})
+
+const hole: Polygon = {
+  type: 'Polygon',
+  coordinates: [
+    [
+      [1, 1],
+      [1, 2],
+      [2, 2],
+      [2, 1],
+      [1, 1],
+    ],
+  ],
+}
+
+const farAway: Polygon = {
+  type: 'Polygon',
+  coordinates: [
+    [
+      [50, 50],
+      [50, 51],
+      [51, 51],
+      [51, 50],
+      [50, 50],
+    ],
+  ],
+}
+
+describe('applyHoleToFeature', () => {
+  beforeEach(() => installFakeGoogleMaps())
+  afterEach(() => uninstallFakeGoogleMaps())
+
+  it('cuts a hole into a single-part Polygon feature, staying a Polygon', () => {
+    const feature = new google.maps.Data.Feature({
+      geometry: dataPolygonFromGeoJson(square),
+    })
+    expect(applyHoleToFeature(feature, hole)).toBe(true)
+    expect(feature.getGeometry()?.getType()).toBe('Polygon')
+    const parts = polygonsFromDataFeature(feature)
+    expect(parts).toHaveLength(1)
+    // The exterior ring plus one interior ring for the cut.
+    expect(parts[0].coordinates).toHaveLength(2)
+  })
+
+  it('cuts a hole into only the containing part of a MultiPolygon feature, staying a MultiPolygon', () => {
+    const feature = new google.maps.Data.Feature({
+      geometry: dataMultiPolygonFromGeoJson(twoSquares),
+    })
+    expect(applyHoleToFeature(feature, hole)).toBe(true)
+    expect(feature.getGeometry()?.getType()).toBe('MultiPolygon')
+    const parts = polygonsFromDataFeature(feature)
+    expect(parts).toHaveLength(2)
+    // The first part (which contains the hole) gained an interior ring; the
+    // second (which doesn't contain it) is untouched.
+    expect(parts[0].coordinates).toHaveLength(2)
+    expect(parts[1].coordinates).toEqual(twoSquares.coordinates[1])
+  })
+
+  it('mutates the EXISTING feature instance, so its identity and properties survive', () => {
+    const feature = new google.maps.Data.Feature({
+      geometry: dataPolygonFromGeoJson(square),
+      properties: { FIELD_NAME: 'North Field' },
+    })
+    expect(applyHoleToFeature(feature, hole)).toBe(true)
+    // Same reference, still carrying the property it was created with — the
+    // cut geometry was applied via setGeometry, not by building a
+    // replacement feature.
+    expect(feature.getProperty('FIELD_NAME')).toBe('North Field')
+  })
+
+  it('returns false and leaves the geometry untouched when the hole is in no part', () => {
+    const feature = new google.maps.Data.Feature({
+      geometry: dataPolygonFromGeoJson(square),
+    })
+    expect(applyHoleToFeature(feature, farAway)).toBe(false)
+    expect(geoJsonPolygonFromDataFeature(feature)).toEqual(square)
   })
 })

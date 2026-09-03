@@ -33,18 +33,24 @@ export class LegacyInteractionModel implements MapInteractionModel {
     polygon: Polygon,
     context: MapInteractionContext,
   ): MapDrawOutcome {
+    // Legacy parity: the pre-strategy service found the exterior feature with
+    // geoJsonPolygonFromDataFeature, which returns undefined for MultiPolygon
+    // geometry, and that function's caller SKIPPED such a candidate and kept
+    // iterating rather than giving up — so a Polygon further along could still
+    // match. The shared search is now MultiPolygon-aware for grouped mode;
+    // narrow it back here with an accept predicate, filtered DURING the
+    // search, so a MultiPolygon candidate is skipped rather than aborting the
+    // whole search the way discarding the result afterward would. Two apps
+    // depend on this behaviour and are not being updated.
     const target = context.allowHoles
-      ? context.findContainingFeature(polygon)
+      ? context.findContainingFeature(
+          polygon,
+          undefined,
+          (feature) => feature.getGeometry()?.getType() === 'Polygon',
+        )
       : undefined
 
-    // Legacy parity: the pre-strategy service found the exterior feature with
-    // geoJsonPolygonFromDataFeature, which returns undefined for MultiPolygon,
-    // so a MultiPolygon never matched. The shared search is now
-    // MultiPolygon-aware for grouped mode; narrow it back here. Two apps depend
-    // on this behaviour and are not being updated.
-    const isPolygon = target?.getGeometry()?.getType() === 'Polygon'
-
-    return target && isPolygon
+    return target
       ? { kind: 'hole', target }
       : { kind: 'newFeature', groupKey: null }
   }

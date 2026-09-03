@@ -3,7 +3,12 @@ import { NgZone } from '@angular/core'
 import { Feature, MultiPolygon, Polygon } from 'geojson'
 import { Observable } from 'rxjs'
 
-import { closePolygons, notNullOrUndefined } from '@theseam/ui-common/utils'
+import {
+  addHoleToPolygon,
+  closePolygons,
+  notNullOrUndefined,
+  polygonContains,
+} from '@theseam/ui-common/utils'
 
 export enum AppFeaturePropertyName {
   IsSelected = `__app__isSelected`,
@@ -205,6 +210,37 @@ export function polygonsFromDataFeature(
       })
   }
   return []
+}
+
+/**
+ * Cut `hole` into whichever part of `feature`'s geometry fully contains it.
+ *
+ * Mutates the EXISTING feature (via `setGeometry`) rather than replacing it,
+ * so its identity and properties survive. A single-part Polygon feature stays
+ * a Polygon; a MultiPolygon feature stays a MultiPolygon with only the
+ * containing part modified. Returns whether a containing part was found —
+ * when none is, the feature is left untouched.
+ */
+export function applyHoleToFeature(
+  feature: google.maps.Data.Feature,
+  hole: Polygon,
+): boolean {
+  const parts = polygonsFromDataFeature(feature)
+  const containingIndex = parts.findIndex((part) => polygonContains(part, hole))
+  if (containingIndex === -1) {
+    return false
+  }
+
+  parts[containingIndex] = addHoleToPolygon(parts[containingIndex], hole)
+  feature.setGeometry(
+    parts.length === 1
+      ? dataPolygonFromGeoJson(parts[0])
+      : dataMultiPolygonFromGeoJson({
+          type: 'MultiPolygon',
+          coordinates: parts.map((p) => p.coordinates),
+        }),
+  )
+  return true
 }
 
 /**

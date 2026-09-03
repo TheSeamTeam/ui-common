@@ -115,6 +115,51 @@ describe('LegacyInteractionModel', () => {
     expect(model.onDrawFinished(drawn, ctx).kind).toBe('newFeature')
   })
 
+  it('cuts a hole in a Polygon container added after a MultiPolygon that also contains the drawing', () => {
+    // The old code (geoJsonPolygonFromDataFeature returning undefined for a
+    // MultiPolygon) SKIPPED such a candidate and kept looking, rather than
+    // giving up on the whole search. A fix that filtered the result after the
+    // search, instead of during it, would stop at the first containing
+    // feature regardless of type and turn this into a stray overlapping
+    // feature instead of a hole in the Polygon.
+    const ctx = createFakeInteractionContext({ allowHoles: true })
+    const multiPolygonContainer: MultiPolygon = {
+      type: 'MultiPolygon',
+      coordinates: [
+        [
+          [
+            [0, 0],
+            [0, 10],
+            [10, 10],
+            [10, 0],
+            [0, 0],
+          ],
+        ],
+      ],
+    }
+    ctx.data.add(
+      new google.maps.Data.Feature({
+        geometry: dataMultiPolygonFromGeoJson(multiPolygonContainer),
+      }),
+    )
+    const polygonContainer = ctx.addFeatureWithPolygon({
+      type: 'Polygon',
+      coordinates: [
+        [
+          [0, 0],
+          [0, 10],
+          [10, 10],
+          [10, 0],
+          [0, 0],
+        ],
+      ],
+    })
+    expect(model.onDrawFinished(drawn, ctx)).toEqual({
+      kind: 'hole',
+      target: polygonContainer,
+    })
+  })
+
   it('does not cut a hole when holes are not allowed', () => {
     const ctx = createFakeInteractionContext({ allowHoles: false })
     ctx.addFeatureWithPolygon({

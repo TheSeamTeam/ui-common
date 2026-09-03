@@ -43,11 +43,19 @@ export interface MapInteractionContext {
   startDrawing(): void
   /**
    * An existing feature that fully contains `polygon`, restricted to a group
-   * when `groupKey` is given. Matches any part of a MultiPolygon.
+   * when `groupKey` is given, and to features `accept` returns true for when
+   * given. Matches any part of a MultiPolygon.
+   *
+   * `accept` filters candidates DURING the search rather than after it, so a
+   * rejected candidate does not stop the search the way discarding the whole
+   * result afterward would — the next candidate is still considered. That
+   * distinction is what legacy mode's Polygon-only filter relies on to match
+   * the pre-strategy service's search order exactly.
    */
   findContainingFeature(
     polygon: Polygon,
     groupKey?: string,
+    accept?: (feature: google.maps.Data.Feature) => boolean,
   ): google.maps.Data.Feature | undefined
 }
 
