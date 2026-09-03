@@ -15,6 +15,7 @@
     "@angular/forms": "^20.3.0",
     "@angular/animations": "^20.3.0",
     "@angular/router": "^20.3.0",
+    "@angular/google-maps": "^20.2.3",
     "rxjs": "~7.8.0",
     "@fortawesome/angular-fontawesome": "^0.13.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
@@ -49,7 +50,9 @@
     "@turf/helpers": "^7.2.0",
     "@turf/kinks": "^7.2.0",
     "shpjs": "^6.2.0",
-    "@types/geojson": "^7946.0.8"
+    "@types/geojson": "^7946.0.8",
+    "terra-draw": "^1.31.2",
+    "terra-draw-google-maps-adapter": "^1.6.1"
   },
   "repository": {
     "type": "git",

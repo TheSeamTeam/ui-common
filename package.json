@@ -71,6 +71,8 @@
     "quill-mention": "^6.0.2",
     "rxjs": "~7.8.0",
     "shpjs": "^6.2.0",
+    "terra-draw": "^1.31.2",
+    "terra-draw-google-maps-adapter": "^1.6.1",
     "topojson-client": "^3.1.0",
     "ts-dedent": "^1.1.0",
     "tslib": "^2.3.0",
