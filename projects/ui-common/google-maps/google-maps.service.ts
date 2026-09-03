@@ -48,6 +48,10 @@ import {
   MapInteractionModel,
 } from './interaction/map-interaction-model'
 import {
+  MapFeatureLabel,
+  MapFeatureLabelsOverlay,
+} from './labels/map-feature-labels-overlay'
+import {
   MapValueManagerService,
   MapValueSource,
 } from './map-value-manager.service'
@@ -82,6 +86,10 @@ export class GoogleMapsService implements OnDestroy {
   private _groupOptions: FeatureGroupRegistryOptions = {}
   private _focusedFeature: google.maps.Data.Feature | null = null
   private _styleFn?: google.maps.Data.StylingFunction
+
+  private _labelProperty: string | undefined
+  private _labelsOverlay?: MapFeatureLabelsOverlay
+  private _warnedAboutLabelDisagreement = false
 
   private readonly _selectionSubject =
     new BehaviorSubject<TheSeamMapGroupTarget | null>(null)
@@ -127,6 +135,9 @@ export class GoogleMapsService implements OnDestroy {
     this._editModeSubject.complete()
     this._interactionModeSubject.complete()
     this._groups = undefined
+
+    this._labelsOverlay?.destroy()
+    this._labelsOverlay = undefined
 
     this._ngUnsubscribe.next()
     this._ngUnsubscribe.complete()
@@ -224,6 +235,7 @@ export class GoogleMapsService implements OnDestroy {
     })
     this._terraDraw.setMode('polyline')
     this._drawingSubject.next(true)
+    this._labelsOverlay?.refresh()
   }
 
   /**
@@ -236,6 +248,7 @@ export class GoogleMapsService implements OnDestroy {
     }
     this._terraDraw.setMode('static')
     this._drawingSubject.next(false)
+    this._labelsOverlay?.refresh()
   }
 
   private _initTerraDraw(): void {
@@ -371,6 +384,7 @@ export class GoogleMapsService implements OnDestroy {
       getBoundsWithAllFeatures(this.googleMap.data),
       this._padding,
     )
+    this._labelsOverlay?.refresh()
   }
 
   // TODO: Refactor out of the service meant to just wrap the google maps api.
@@ -424,6 +438,98 @@ export class GoogleMapsService implements OnDestroy {
     this._groupOptions = options
     this._groups?.setOptions(options)
     this._refreshStyles()
+  }
+
+  /**
+   * Name of the GeoJSON property to render as a per-group label. `undefined`
+   * removes labels entirely (and, until now set, means the overlay is never
+   * even constructed).
+   */
+  public setLabelProperty(property: string | undefined): void {
+    this._labelProperty = property
+    if (!this.mapReady) {
+      return
+    }
+    if (!property) {
+      this._labelsOverlay?.destroy()
+      this._labelsOverlay = undefined
+      return
+    }
+    this._ensureLabelsOverlay()
+    this._labelsOverlay?.refresh()
+  }
+
+  private _ensureLabelsOverlay(): void {
+    this._assertInitialized()
+    if (this._labelsOverlay) {
+      return
+    }
+    this._labelsOverlay = new MapFeatureLabelsOverlay(() => this._buildLabels())
+    this._labelsOverlay.setMap(this.googleMap)
+  }
+
+  private _buildLabels(): MapFeatureLabel[] {
+    if (this.isDrawing()) {
+      return []
+    }
+    const property = this._labelProperty
+    if (!property) {
+      return []
+    }
+    this._assertInitialized()
+
+    const byKey = new Map<
+      string,
+      { text: string; bounds: google.maps.LatLngBounds; others: Set<string> }
+    >()
+
+    this.googleMap.data.forEach((feature) => {
+      const key = this._registry.keyOf(feature)
+      const raw = feature.getProperty(property)
+      const text =
+        raw === null || raw === undefined || raw === '' ? '' : String(raw)
+
+      const existing = byKey.get(key)
+      const bounds = existing?.bounds ?? new google.maps.LatLngBounds()
+      feature.getGeometry()?.forEachLatLng((latLng) => bounds.extend(latLng))
+
+      if (!existing) {
+        byKey.set(key, { text, bounds, others: new Set(text ? [text] : []) })
+        return
+      }
+      if (text) {
+        existing.others.add(text)
+        if (!existing.text) {
+          existing.text = text
+        }
+      }
+    })
+
+    const labels: MapFeatureLabel[] = []
+    for (const [key, entry] of byKey) {
+      if (entry.others.size > 1) {
+        this._warnAboutLabelDisagreement(key)
+      }
+      if (entry.text) {
+        labels.push({ key, text: entry.text, bounds: entry.bounds })
+      }
+    }
+    return labels
+  }
+
+  private _warnAboutLabelDisagreement(key: string): void {
+    if (
+      this._warnedAboutLabelDisagreement ||
+      (typeof ngDevMode !== 'undefined' && !ngDevMode)
+    ) {
+      return
+    }
+    this._warnedAboutLabelDisagreement = true
+    console.warn(
+      `[seam-google-maps] features in group "${key}" carry different ` +
+        `"${this._labelProperty}" values. One is rendered; which is ` +
+        `unspecified. Keeping them consistent is the consumer's business.`,
+    )
   }
 
   public isEditMode(): boolean {
@@ -731,12 +837,13 @@ export class GoogleMapsService implements OnDestroy {
       .pipe(
         switchMap(() =>
           from(this.getGeoJson()).pipe(
-            tap((geoJson) =>
+            tap((geoJson) => {
               this._mapValueManager.setValue(
                 geoJson,
                 MapValueSource.FeatureChange,
-              ),
-            ),
+              )
+              this._labelsOverlay?.refresh()
+            }),
           ),
         ),
         takeUntil(this._ngUnsubscribe),
@@ -871,6 +978,7 @@ export class GoogleMapsService implements OnDestroy {
 
     if (outcome.kind === 'hole' && applyHoleToFeature(outcome.target, drawn)) {
       this._applySelection(this._registry.keyOf(outcome.target), outcome.target)
+      this._labelsOverlay?.refresh()
       return
     }
 
@@ -886,6 +994,7 @@ export class GoogleMapsService implements OnDestroy {
         : this._registry.assignNewKey(newFeature)
 
     this._applySelection(key, newFeature)
+    this._labelsOverlay?.refresh()
   }
 
   /**

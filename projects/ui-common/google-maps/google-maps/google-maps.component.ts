@@ -454,6 +454,10 @@ export class TheSeamGoogleMapsComponent
     if (Object.prototype.hasOwnProperty.call(changes, 'selectedGroupKey')) {
       this._applySelectedGroupKey()
     }
+
+    if (Object.prototype.hasOwnProperty.call(changes, 'featureLabelProperty')) {
+      this._googleMaps.setLabelProperty(this.featureLabelProperty)
+    }
   }
 
   private _applySelectedGroupKey(): void {
@@ -535,6 +539,7 @@ export class TheSeamGoogleMapsComponent
         groupProperty: this.featureGroupProperty,
         newGroupKeyFactory: this.newGroupKeyFactory,
       })
+      this._googleMaps.setLabelProperty(this.featureLabelProperty)
       this._applySelectedGroupKey()
       this.mapReady.emit(this._googleMaps.googleMap)
 
