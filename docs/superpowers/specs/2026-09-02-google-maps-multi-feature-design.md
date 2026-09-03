@@ -368,8 +368,15 @@ effective clickable = declared(clickable, default true)
                       && model.allowsClicks(feature)
 ```
 
-`declared(x)` reads from `styleOptionsSelected` when selected, else
-`styleOptions`.
+`declared(x)` resolves **per key**: `styleOptionsSelected[x]` when the feature
+declares that key and is selected, otherwise `styleOptions[x]`.
+
+Per key, not per object. A whole-object fallback would let a feature that opted
+out in `styleOptions` be silently opted back **in** by declaring a
+`styleOptionsSelected` for an unrelated reason such as colour — which is exactly
+the retired-field case, and would break the one-directional guarantee stated
+above. An earlier draft of this spec specified the object-level fallback; it was
+wrong, and the implementation resolves each flag independently.
 
 This is the handoff's gap 4. A retired field sets `editable: false` and stays
 unreshapeable while its neighbours do not — and no property in an uploaded file
