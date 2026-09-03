@@ -1,6 +1,6 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion'
 import { NgZone } from '@angular/core'
-import { Polygon } from 'geojson'
+import { Feature, MultiPolygon, Polygon } from 'geojson'
 import { Observable } from 'rxjs'
 
 import { closePolygons, notNullOrUndefined } from '@theseam/ui-common/utils'
@@ -155,6 +155,91 @@ export function geoJsonPolygonFromDataFeature(
   }
   closePolygons(polygon)
   return polygon
+}
+
+/** Build a google.maps.Data.MultiPolygon from a GeoJSON MultiPolygon. */
+export function dataMultiPolygonFromGeoJson(
+  multiPolygon: MultiPolygon,
+): google.maps.Data.MultiPolygon {
+  return new google.maps.Data.MultiPolygon(
+    multiPolygon.coordinates.map((rings) =>
+      dataPolygonFromGeoJson({ type: 'Polygon', coordinates: rings }),
+    ),
+  )
+}
+
+/**
+ * Every Polygon part of a feature, as closed GeoJSON. A Polygon feature yields
+ * one; a MultiPolygon yields one per part; anything else yields none.
+ *
+ * Callers that need to match a drawn shape against existing geometry must use
+ * this rather than `geoJsonPolygonFromDataFeature`, which sees only Polygons
+ * and silently ignores MultiPolygon features.
+ */
+export function polygonsFromDataFeature(
+  feature: google.maps.Data.Feature,
+): Polygon[] {
+  const geometry = feature.getGeometry()
+  if (geometry === null) {
+    return []
+  }
+  if (geometry.getType() === 'Polygon') {
+    const polygon: Polygon = {
+      type: 'Polygon',
+      coordinates: polygonCoordinates(geometry as google.maps.Data.Polygon),
+    }
+    closePolygons(polygon)
+    return [polygon]
+  }
+  if (geometry.getType() === 'MultiPolygon') {
+    return (geometry as google.maps.Data.MultiPolygon)
+      .getArray()
+      .map((part) => {
+        const polygon: Polygon = {
+          type: 'Polygon',
+          coordinates: polygonCoordinates(part),
+        }
+        closePolygons(polygon)
+        return polygon
+      })
+  }
+  return []
+}
+
+/**
+ * Read a feature as a GeoJSON Feature, geometry and properties together.
+ *
+ * `excludeProperty` filters properties out by name — used to keep internal
+ * `__app__` bookkeeping out of anything handed to a consumer.
+ */
+export function geoJsonFeatureFromDataFeature(
+  feature: google.maps.Data.Feature,
+  excludeProperty?: (name: string) => boolean,
+): Feature<Polygon | MultiPolygon> | undefined {
+  const parts = polygonsFromDataFeature(feature)
+  if (parts.length === 0) {
+    return undefined
+  }
+
+  const geometry: Polygon | MultiPolygon =
+    feature.getGeometry()?.getType() === 'MultiPolygon'
+      ? { type: 'MultiPolygon', coordinates: parts.map((p) => p.coordinates) }
+      : parts[0]
+
+  const properties: Record<string, any> = {}
+  feature.forEachProperty((value, name) => {
+    if (!excludeProperty?.(name)) {
+      properties[name] = value
+    }
+  })
+
+  const id = feature.getId()
+  return {
+    type: 'Feature',
+    ...(id === undefined ? {} : { id }),
+    geometry,
+    properties,
+  }
 }
 
 export function getBoundsWithAllFeatures(
