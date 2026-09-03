@@ -88,6 +88,20 @@ describe('GroupedInteractionModel', () => {
       expect(ctx.selectGroup).not.toHaveBeenCalled()
     })
 
+    it('does nothing on a map click while already drawing', () => {
+      // F4: onMapClick calling startDrawing() again would reset Terra Draw's
+      // in-progress path via setMode('polyline'). The service already guards
+      // its map 'click' listener on isDrawing(), but this is the model's own
+      // defence against the same thing.
+      const ctx = createFakeInteractionContext({
+        editMode: true,
+        isDrawing: true,
+      })
+      model.onMapClick(ctx)
+      expect(ctx.startDrawing).not.toHaveBeenCalled()
+      expect(ctx.selectGroup).not.toHaveBeenCalled()
+    })
+
     it('makes every feature ignore clicks', () => {
       const ctx = createFakeInteractionContext({
         editMode: true,

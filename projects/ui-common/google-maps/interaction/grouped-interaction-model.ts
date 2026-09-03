@@ -43,6 +43,14 @@ export class GroupedInteractionModel implements MapInteractionModel {
   }
 
   onMapClick(context: MapInteractionContext): void {
+    // A click while a draw is already in progress is placing a vertex, not a
+    // map click. Defensive: the service's map `click` listener already guards
+    // on `isDrawing()` before calling in here, but `startDrawing()` calling
+    // `setMode('polyline')` again would reset the in-progress path, so this
+    // model does not rely solely on the caller's guard.
+    if (context.isDrawing) {
+      return
+    }
     if (context.editMode) {
       context.startDrawing()
       return

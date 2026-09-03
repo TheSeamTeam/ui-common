@@ -288,7 +288,17 @@ export class GoogleMapsService implements OnDestroy {
 
   /** Enter polygon drawing mode. */
   public startDrawing(): void {
-    if (!this._terraDraw || !this._terraDrawReady || !this.isEditingEnabled()) {
+    if (
+      !this._terraDraw ||
+      !this._terraDrawReady ||
+      !this.isEditingEnabled() ||
+      // Already drawing: `setMode('polyline')` resets the in-progress path,
+      // so a click that lands here mid-draw (F4) must not re-enter drawing
+      // mode. `onMapClick` already guards on `context.isDrawing` before
+      // calling in, and the map `click` listener guards on `isDrawing()`
+      // before calling the model at all — this is the last line of defence.
+      this.isDrawing()
+    ) {
       return
     }
     // Clear any selection when entering drawing mode, but only in 'legacy'
@@ -894,6 +904,13 @@ export class GoogleMapsService implements OnDestroy {
     this._assertInitialized()
 
     this.googleMap.addListener('click', () => {
+      // While drawing, a click on open map is placing a vertex, not a map
+      // click — mirrors the data 'click' listener's guard just below. Without
+      // this, `onMapClick` in 'grouped' mode calls `startDrawing()`, which
+      // calls `setMode('polyline')` again and resets the in-progress path.
+      if (this.isDrawing()) {
+        return
+      }
       this._model.onMapClick(this._interactionContext())
     })
 
