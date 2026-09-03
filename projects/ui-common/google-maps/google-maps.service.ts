@@ -15,80 +15,45 @@ import {
   polygonHasMinDistinctVertices,
 } from '@theseam/ui-common/utils'
 
+import {
+  FeatureGroupRegistry,
+  FeatureGroupRegistryOptions,
+} from './feature-groups/feature-group-registry'
+import {
+  TheSeamMapFeatureGroup,
+  TheSeamMapGroupTarget,
+} from './feature-groups/feature-group'
+import {
+  computeFeatureHoverStyle,
+  computeFeatureStyle,
+} from './feature-style/compute-feature-style'
 import { GoogleMapsContextMenu } from './google-maps-contextmenu'
 import {
   createFeatureChangeObservable,
+  dataMultiPolygonFromGeoJson,
   dataPolygonFromGeoJson,
-  geoJsonPolygonFromDataFeature,
   getBoundsWithAllFeatures,
   getFeatureCenter,
   getFeaturesCount,
-  getHoveredStyleOptionsDefinedByFeature,
-  getStyleOptionsDefinedByFeature,
   isFeatureSelected,
+  polygonsFromDataFeature,
   removeAllFeatures,
   setFeatureSelected,
   stripAppFeaturePropertiesFromJson,
 } from './google-maps-feature-helpers'
+import { GroupedInteractionModel } from './interaction/grouped-interaction-model'
+import { TheSeamMapInteractionMode } from './interaction/interaction-mode'
+import { LegacyInteractionModel } from './interaction/legacy-interaction-model'
+import {
+  MapInteractionContext,
+  MapInteractionModel,
+} from './interaction/map-interaction-model'
 import {
   MapValueManagerService,
   MapValueSource,
 } from './map-value-manager.service'
 
 declare const ngDevMode: boolean | undefined
-
-const FEATURE_STYLE_OPTIONS_DEFAULT = (
-  editingEnabled: boolean,
-): google.maps.Data.StyleOptions => ({
-  clickable: true,
-  // clickable: editingEnabled,
-  visible: true,
-  // zIndex?: number;
-
-  // cursor?: string;
-  draggable: false,
-  editable: false,
-  fillColor: 'teal',
-  fillOpacity: 0.3,
-  strokeColor: 'blue',
-  strokeOpacity: 1,
-  strokeWeight: 2,
-})
-
-const FEATURE_STYLE_OPTIONS_SELECTED = (
-  editingEnabled: boolean,
-): google.maps.Data.StyleOptions => ({
-  ...FEATURE_STYLE_OPTIONS_DEFAULT(editingEnabled),
-  draggable: editingEnabled,
-  editable: editingEnabled,
-  fillColor: 'green',
-  fillOpacity: 0.7,
-  strokeColor: 'limegreen',
-  strokeOpacity: 1,
-  strokeWeight: 2,
-})
-
-const FEATURE_STYLE_OVERRIDE_OPTIONS_HOVERED = (
-  editingEnabled: boolean,
-): google.maps.Data.StyleOptions => ({
-  strokeColor: 'black',
-  strokeOpacity: 1,
-  strokeWeight: 4,
-})
-
-const SUPPORTED_PROPERTY_STYLE_OPTIONS: (keyof google.maps.Data.StyleOptions)[] =
-  [
-    'fillColor',
-    'fillOpacity',
-    'strokeColor',
-    'strokeOpacity',
-    'strokeWeight',
-    'label',
-    'opacity',
-    'icon',
-    'clickable',
-    'visible',
-  ]
 
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 
@@ -109,6 +74,23 @@ export class GoogleMapsService implements OnDestroy {
   private _padding?: number | google.maps.Padding
 
   private _allowDrawingHoleInPolygon = false
+
+  private _model: MapInteractionModel = new LegacyInteractionModel()
+  private _groups?: FeatureGroupRegistry
+  private _groupOptions: FeatureGroupRegistryOptions = {}
+  private _focusedFeature: google.maps.Data.Feature | null = null
+  private _styleFn?: google.maps.Data.StylingFunction
+
+  private readonly _selectionSubject =
+    new BehaviorSubject<TheSeamMapGroupTarget | null>(null)
+  public readonly selection$ = this._selectionSubject.asObservable()
+
+  private readonly _hoverSubject =
+    new BehaviorSubject<TheSeamMapGroupTarget | null>(null)
+  public readonly hover$ = this._hoverSubject.asObservable()
+
+  private readonly _editModeSubject = new BehaviorSubject<boolean>(false)
+  public readonly editMode$ = this._editModeSubject.asObservable()
 
   // TODO: Move to a better place than the map wrapper service.
   private _fileInputHandler: ((file: File) => void) | undefined | null
@@ -178,11 +160,8 @@ export class GoogleMapsService implements OnDestroy {
       this.googleMap.data.revertStyle()
       if (!enabled) {
         this.stopDrawing()
-        this.googleMap.data.forEach((f) => {
-          if (isFeatureSelected(f)) {
-            setFeatureSelected(f, false)
-          }
-        })
+        this.setEditMode(false)
+        this.clearSelection()
       }
     }
   }
@@ -417,61 +396,265 @@ export class GoogleMapsService implements OnDestroy {
     return this._fileInputHandler
   }
 
+  public setInteractionMode(mode: TheSeamMapInteractionMode): void {
+    this._model =
+      mode === 'grouped'
+        ? new GroupedInteractionModel()
+        : new LegacyInteractionModel()
+    if (mode !== 'grouped') {
+      this._editModeSubject.next(false)
+    }
+    this._refreshStyles()
+  }
+
+  public setGroupOptions(options: FeatureGroupRegistryOptions): void {
+    this._groupOptions = options
+    this._groups?.setOptions(options)
+    this._refreshStyles()
+  }
+
+  public isEditMode(): boolean {
+    return this._editModeSubject.value
+  }
+
+  public setEditMode(enabled: boolean): void {
+    if (this._model.id !== 'grouped' || enabled === this.isEditMode()) {
+      return
+    }
+    if (!enabled) {
+      this.stopDrawing()
+    }
+    this._editModeSubject.next(enabled)
+    this._refreshStyles()
+  }
+
+  /**
+   * Re-run the style callback for every feature.
+   *
+   * Google re-evaluates the callback whenever the style is set, so handing
+   * back the same stored function is enough to repaint after a mode change.
+   */
+  private _refreshStyles(): void {
+    if (!this.mapReady || !this._styleFn) {
+      return
+    }
+    this._assertInitialized()
+    this.googleMap.data.setStyle(this._styleFn)
+  }
+
+  private get _registry(): FeatureGroupRegistry {
+    this._assertInitialized()
+    if (!this._groups) {
+      this._groups = new FeatureGroupRegistry(
+        this.googleMap.data,
+        this._groupOptions,
+      )
+    }
+    return this._groups
+  }
+
+  private _interactionContext(): MapInteractionContext {
+    return {
+      groups: this._registry,
+      editingEnabled: this.isEditingEnabled(),
+      allowHoles: this._allowDrawingHoleInPolygon,
+      editMode: this.isEditMode(),
+      getSelectedKey: () => this._selectionSubject.value?.group.key ?? null,
+      selectGroup: (key, feature) => this._applySelection(key, feature),
+      startDrawing: () => this.startDrawing(),
+      findContainingFeature: (polygon, groupKey) =>
+        this._findContainingFeature(polygon, groupKey),
+    }
+  }
+
+  /**
+   * Find an existing feature that fully contains `polygon`, restricted to a
+   * group when `groupKey` is given. Matches any part of a MultiPolygon.
+   */
+  private _findContainingFeature(
+    polygon: Polygon,
+    groupKey?: string,
+  ): google.maps.Data.Feature | undefined {
+    this._assertInitialized()
+    let match: google.maps.Data.Feature | undefined
+    this.googleMap.data.forEach((feature) => {
+      if (match) {
+        return
+      }
+      if (
+        groupKey !== undefined &&
+        this._registry.keyOf(feature) !== groupKey
+      ) {
+        return
+      }
+      const contains = polygonsFromDataFeature(feature).some((part) =>
+        polygonContains(part, polygon),
+      )
+      if (contains) {
+        match = feature
+      }
+    })
+    return match
+  }
+
+  private _applySelection(
+    key: string | null,
+    feature: google.maps.Data.Feature | null,
+  ): void {
+    this._assertInitialized()
+
+    this._focusedFeature = feature
+    const selectedFeatures = key === null ? [] : this._registry.featuresIn(key)
+
+    this.googleMap.data.forEach((f) => {
+      const shouldSelect = selectedFeatures.indexOf(f) !== -1
+      if (isFeatureSelected(f) !== shouldSelect) {
+        setFeatureSelected(f, shouldSelect)
+      }
+    })
+
+    if (key === null) {
+      this._selectionSubject.next(null)
+      return
+    }
+
+    const resolved = this._registry.groupWithSources(key)
+    if (!resolved) {
+      this._selectionSubject.next(null)
+      return
+    }
+    this._selectionSubject.next(this._targetFor(resolved, feature))
+  }
+
+  /**
+   * Pair a group with the emitted GeoJSON for one of its `Data.Feature`s.
+   *
+   * Indexes into the returned source array rather than `featuresIn()`, because
+   * a feature with unsupported geometry is dropped from the emitted list and
+   * would shift every index after it.
+   */
+  private _targetFor(
+    resolved: {
+      group: TheSeamMapFeatureGroup
+      sources: google.maps.Data.Feature[]
+    },
+    feature: google.maps.Data.Feature | null,
+  ): TheSeamMapGroupTarget {
+    const index = feature ? resolved.sources.indexOf(feature) : -1
+    return {
+      group: resolved.group,
+      feature: index === -1 ? null : resolved.group.features[index],
+    }
+  }
+
+  public selectGroup(key: string | null): boolean {
+    this._assertInitialized()
+    if (key === null) {
+      this._applySelection(null, null)
+      return true
+    }
+    const features = this._registry.featuresIn(key)
+    if (features.length === 0) {
+      return false
+    }
+    this._applySelection(key, features[0])
+    return true
+  }
+
+  public clearSelection(): void {
+    this._applySelection(null, null)
+  }
+
+  public getGroups(): TheSeamMapFeatureGroup[] {
+    return this._registry.groups()
+  }
+
+  private _boundsForGroup(key: string): google.maps.LatLngBounds | undefined {
+    const features = this._registry.featuresIn(key)
+    if (features.length === 0) {
+      return undefined
+    }
+    const bounds = new google.maps.LatLngBounds()
+    features.forEach((f) =>
+      f.getGeometry()?.forEachLatLng((latLng) => bounds.extend(latLng)),
+    )
+    return bounds
+  }
+
+  public fitGroup(
+    key: string,
+    padding?: number | google.maps.Padding,
+  ): boolean {
+    this._assertInitialized()
+    const bounds = this._boundsForGroup(key)
+    if (!bounds) {
+      return false
+    }
+    this.googleMap.fitBounds(bounds, padding ?? this._padding)
+    return true
+  }
+
+  public panToGroup(key: string): boolean {
+    this._assertInitialized()
+    const bounds = this._boundsForGroup(key)
+    if (!bounds) {
+      return false
+    }
+    this.googleMap.panTo(bounds.getCenter())
+    return true
+  }
+
+  /** Delete only the polygon the last interaction landed on. */
+  public deleteFocusedFeature(): void {
+    this._assertInitialized()
+    if (!this._focusedFeature) {
+      this.deleteSelection()
+      return
+    }
+    this.googleMap.data.remove(this._focusedFeature)
+    this._focusedFeature = null
+  }
+
+  /** Escape cascades: cancel a draw, then clear selection, then leave edit mode. */
+  public handleEscape(): void {
+    if (this.isDrawing()) {
+      this.stopDrawing()
+      return
+    }
+    if (this._selectionSubject.value !== null) {
+      this.clearSelection()
+      return
+    }
+    if (this.isEditMode()) {
+      this.setEditMode(false)
+    }
+  }
+
   private _initFeatureStyling(): void {
     this._assertInitialized()
 
-    // Disable any selection when clicking the map.
-    //
-    // TODO: There may be a better way to do this that would be more accurate or
-    // additional events that should be listened to, such as the disabling
-    // selection when the map looses focus.
-    this.googleMap.addListener(
-      'click',
-      (even: google.maps.MapMouseEvent | google.maps.IconMouseEvent) => {
-        this._assertInitialized()
-        this.googleMap.data.forEach((f) => setFeatureSelected(f, false))
-      },
-    )
-
-    // Determine what the style of the features are.
-    this.googleMap.data.setStyle((feature) => {
-      let opts = FEATURE_STYLE_OPTIONS_DEFAULT(this.isEditingEnabled())
-
-      const options = getStyleOptionsDefinedByFeature(feature)
-      this._mergeStyleOptions(opts, options ?? {})
-
-      if (isFeatureSelected(feature)) {
-        const hoverOptions = getHoveredStyleOptionsDefinedByFeature(feature)
-        opts = FEATURE_STYLE_OPTIONS_SELECTED(this.isEditingEnabled())
-        this._mergeStyleOptions(opts, hoverOptions ?? {})
-      }
-
-      return opts
+    this.googleMap.addListener('click', () => {
+      this._model.onMapClick(this._interactionContext())
     })
 
-    // Select a feature when clicked.
+    this._styleFn = (feature) =>
+      computeFeatureStyle(feature, {
+        editingEnabled: this.isEditingEnabled(),
+        ...this._model.featureFlags(feature, this._interactionContext()),
+      })
+    this.googleMap.data.setStyle(this._styleFn)
+
     this.googleMap.data.addListener(
       'click',
       (event: google.maps.Data.MouseEvent) => {
-        this._assertInitialized()
-
-        // While drawing, a click on an existing polygon is placing a vertex,
-        // not selecting a feature. Selecting here would both steal the click
-        // and leave a misleading selection (see startDrawing's deselect).
+        // While drawing, a click on a polygon is placing a vertex.
         if (this.isDrawing()) {
           return
         }
-
-        setFeatureSelected(event.feature, true)
-        this.googleMap.data.forEach((f) => {
-          if (f !== event.feature && isFeatureSelected(f)) {
-            setFeatureSelected(f, false)
-          }
-        })
+        this._model.onFeatureClick(event.feature, this._interactionContext())
       },
     )
 
-    // Set a style on hovered features that can be selected.
     this.googleMap.data.addListener(
       'mouseover',
       (event: google.maps.Data.MouseEvent) => {
@@ -481,42 +664,29 @@ export class GoogleMapsService implements OnDestroy {
         if (!this.isDrawing() && !isFeatureSelected(event.feature)) {
           this.setFeatureHoveredStyleOverride(event.feature)
         }
+
+        const resolved = this._registry.groupWithSources(
+          this._registry.keyOf(event.feature),
+        )
+        this._hoverSubject.next(
+          resolved ? this._targetFor(resolved, event.feature) : null,
+        )
       },
     )
 
-    // Remove any hover styles when mouse moves away.
-    this.googleMap.data.addListener(
-      'mouseout',
-      (event: google.maps.Data.MouseEvent) => {
-        this._assertInitialized()
-        this.googleMap.data.revertStyle()
-      },
-    )
+    this.googleMap.data.addListener('mouseout', () => {
+      this._assertInitialized()
+      this.googleMap.data.revertStyle()
+      this._hoverSubject.next(null)
+    })
   }
 
   public setFeatureHoveredStyleOverride(feature: google.maps.Data.Feature) {
     this._assertInitialized()
-    const overrideOpts = FEATURE_STYLE_OVERRIDE_OPTIONS_HOVERED(
-      this.isEditingEnabled(),
+    this.googleMap.data.overrideStyle(
+      feature,
+      computeFeatureHoverStyle(feature),
     )
-    const hoverOptions = getHoveredStyleOptionsDefinedByFeature(feature)
-    this._mergeStyleOptions(overrideOpts, hoverOptions ?? {})
-    this.googleMap.data.overrideStyle(feature, overrideOpts)
-  }
-
-  private _mergeStyleOptions(
-    options: google.maps.Data.StyleOptions,
-    propertiesStyleOptions: google.maps.Data.StyleOptions,
-  ): void {
-    if (Object.keys(propertiesStyleOptions).length === 0) {
-      return
-    }
-
-    for (const opt of SUPPORTED_PROPERTY_STYLE_OPTIONS) {
-      if (Object.prototype.hasOwnProperty.call(propertiesStyleOptions, opt)) {
-        options[opt] = propertiesStyleOptions[opt] as any
-      }
-    }
   }
 
   private _initFeatureChangeListeners(): void {
@@ -541,10 +711,15 @@ export class GoogleMapsService implements OnDestroy {
     this.googleMap.data.addListener(
       'contextmenu',
       (event: google.maps.Data.MouseEvent) => {
-        if (!isFeatureSelected(event.feature)) {
+        if (
+          !this._model.allowsContextMenu(
+            event.feature,
+            this._interactionContext(),
+          )
+        ) {
           return
         }
-
+        this._focusedFeature = event.feature
         this._openContextMenuForFeature(
           event.feature,
           event.latLng ?? undefined,
@@ -656,18 +831,29 @@ export class GoogleMapsService implements OnDestroy {
 
     this._assertInitialized()
 
-    const exteriorFeature = this._allowDrawingHoleInPolygon
-      ? this._getPossibleExteriorFeature(drawn)
-      : undefined
+    const context = this._interactionContext()
+    const outcome = this._model.onDrawFinished(drawn, context)
 
-    if (exteriorFeature) {
-      const exteriorPolygon = geoJsonPolygonFromDataFeature(exteriorFeature)
-      if (exteriorPolygon) {
-        const merged = addHoleToPolygon(exteriorPolygon, drawn)
-        // Mutate the EXISTING feature instance to preserve its identity and
-        // properties (see design constraints).
-        exteriorFeature.setGeometry(dataPolygonFromGeoJson(merged))
-        setFeatureSelected(exteriorFeature, true)
+    if (outcome.kind === 'hole') {
+      const parts = polygonsFromDataFeature(outcome.target)
+      const containingIndex = parts.findIndex((part) =>
+        polygonContains(part, drawn),
+      )
+      if (containingIndex !== -1) {
+        parts[containingIndex] = addHoleToPolygon(parts[containingIndex], drawn)
+        // Mutate the EXISTING feature to preserve its identity and properties.
+        outcome.target.setGeometry(
+          parts.length === 1
+            ? dataPolygonFromGeoJson(parts[0])
+            : dataMultiPolygonFromGeoJson({
+                type: 'MultiPolygon',
+                coordinates: parts.map((p) => p.coordinates),
+              }),
+        )
+        this._applySelection(
+          this._registry.keyOf(outcome.target),
+          outcome.target,
+        )
         return
       }
     }
@@ -676,7 +862,14 @@ export class GoogleMapsService implements OnDestroy {
       geometry: dataPolygonFromGeoJson(drawn),
     })
     this.googleMap.data.add(newFeature)
-    setFeatureSelected(newFeature, true)
+
+    const key =
+      outcome.kind === 'newFeature' && outcome.groupKey !== null
+        ? (this._registry.assignKey(newFeature, outcome.groupKey),
+          outcome.groupKey)
+        : this._registry.assignNewKey(newFeature)
+
+    this._applySelection(key, newFeature)
   }
 
   /**
@@ -698,27 +891,5 @@ export class GoogleMapsService implements OnDestroy {
       return polygon
     }
     return undefined
-  }
-
-  /**
-   * Find an existing Polygon feature that fully contains the drawn polygon, so
-   * the drawing can be applied as a cutout. Returns the existing feature
-   * instance (never a copy).
-   */
-  private _getPossibleExteriorFeature(
-    drawn: Polygon,
-  ): google.maps.Data.Feature | undefined {
-    this._assertInitialized()
-    let match: google.maps.Data.Feature | undefined
-    this.googleMap.data.forEach((f) => {
-      if (match) {
-        return
-      }
-      const candidate = geoJsonPolygonFromDataFeature(f)
-      if (candidate && polygonContains(candidate, drawn)) {
-        match = f
-      }
-    })
-    return match
   }
 }

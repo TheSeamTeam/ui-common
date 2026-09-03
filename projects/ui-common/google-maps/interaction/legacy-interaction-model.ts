@@ -36,7 +36,15 @@ export class LegacyInteractionModel implements MapInteractionModel {
     const target = context.allowHoles
       ? context.findContainingFeature(polygon)
       : undefined
-    return target
+
+    // Legacy parity: the pre-strategy service found the exterior feature with
+    // geoJsonPolygonFromDataFeature, which returns undefined for MultiPolygon,
+    // so a MultiPolygon never matched. The shared search is now
+    // MultiPolygon-aware for grouped mode; narrow it back here. Two apps depend
+    // on this behaviour and are not being updated.
+    const isPolygon = target?.getGeometry()?.getType() === 'Polygon'
+
+    return target && isPolygon
       ? { kind: 'hole', target }
       : { kind: 'newFeature', groupKey: null }
   }

@@ -1,6 +1,7 @@
-import { Polygon } from 'geojson'
+import { MultiPolygon, Polygon } from 'geojson'
 
 import {
+  dataMultiPolygonFromGeoJson,
   isFeatureSelected,
   setFeatureSelected,
 } from '../google-maps-feature-helpers'
@@ -84,6 +85,34 @@ describe('LegacyInteractionModel', () => {
       kind: 'hole',
       target: container,
     })
+  })
+
+  it('does not cut a hole in a MultiPolygon container, even with holes allowed', () => {
+    // Legacy parity: the pre-strategy service found the exterior feature with
+    // geoJsonPolygonFromDataFeature, which returns undefined for MultiPolygon,
+    // so a MultiPolygon never matched. Grouped mode's shared search is now
+    // MultiPolygon-aware, but legacy mode must keep never matching one.
+    const ctx = createFakeInteractionContext({ allowHoles: true })
+    const container: MultiPolygon = {
+      type: 'MultiPolygon',
+      coordinates: [
+        [
+          [
+            [0, 0],
+            [0, 10],
+            [10, 10],
+            [10, 0],
+            [0, 0],
+          ],
+        ],
+      ],
+    }
+    ctx.data.add(
+      new google.maps.Data.Feature({
+        geometry: dataMultiPolygonFromGeoJson(container),
+      }),
+    )
+    expect(model.onDrawFinished(drawn, ctx).kind).toBe('newFeature')
   })
 
   it('does not cut a hole when holes are not allowed', () => {
