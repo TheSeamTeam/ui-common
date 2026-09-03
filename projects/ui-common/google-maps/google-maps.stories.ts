@@ -193,6 +193,39 @@ const GROUPED_VALUE = {
   ],
 }
 
+/**
+ * Two retired-looking fields for `GroupedRetiredFieldStaysUneditable`:
+ * `B` declares both `styleOptions` (its resting colour) and
+ * `styleOptionsSelected` (a muted colour of its own, for while selected);
+ * `C` declares only `styleOptions`, no selected variant. Both opt out of
+ * editing. Kept separate from `GROUPED_VALUE` so this fixture's extra group
+ * doesn't change any other story's group count.
+ */
+const RETIRED_FIELD_VALUE = {
+  type: 'FeatureCollection',
+  features: [
+    {
+      type: 'Feature',
+      properties: {
+        fieldId: 'B',
+        FIELD_NAME: 'Retired South',
+        styleOptions: { fillColor: 'gray', editable: false },
+        styleOptionsSelected: { fillColor: 'dimgray' },
+      },
+      geometry: squareAt(-98.58, 37.61),
+    },
+    {
+      type: 'Feature',
+      properties: {
+        fieldId: 'C',
+        FIELD_NAME: 'Plainly Styled',
+        styleOptions: { fillColor: 'silver', editable: false },
+      },
+      geometry: squareAt(-98.56, 37.61),
+    },
+  ],
+}
+
 /** Wait for the map to render and load its value. */
 async function mapComponent(canvasElement: HTMLElement): Promise<any> {
   const host = canvasElement.querySelector('seam-google-maps')
@@ -313,25 +346,35 @@ export const GroupedRetiredFieldStaysUneditable = {
         [value]="value"
         style="height: 400px"></seam-google-maps>
     `,
-    props: { value: GROUPED_VALUE },
+    props: { value: RETIRED_FIELD_VALUE },
   }),
   play: async ({ canvasElement }: any) => {
     const component = await mapComponent(canvasElement)
     component.setEditMode(true)
+
+    // Field B opts out of editing AND wants its own muted colour while
+    // selected. Both must hold: declaring styleOptionsSelected for colour
+    // must not silently re-arm editing (compute-feature-style.ts resolves
+    // the editable/draggable/clickable opt-outs per key, falling back to
+    // styleOptions only for a key styleOptionsSelected doesn't itself
+    // mention).
     component.selectGroup('B')
-
     const retired = featureWithGroup(component, 'B')
-    const style = component._googleMaps.googleMap.data.getStyle()(retired)
+    const retiredStyle =
+      component._googleMaps.googleMap.data.getStyle()(retired)
+    expect(retiredStyle.editable).toBe(false)
+    expect(retiredStyle.fillColor).toBe('dimgray')
 
-    // Selected and in edit mode, but the feature declares editable: false.
-    expect(style.editable).toBe(false)
-    // computeFeatureStyle's selected-defaults pass (FEATURE_STYLE_OPTIONS_SELECTED)
-    // runs after properties.styleOptions and always sets fillColor to the
-    // selection highlight color; only a feature's own styleOptionsSelected can
-    // override it (see compute-feature-style.ts and its spec's "applies
-    // styleOptionsSelected, not styleOptionsHovered" case). This fixture only
-    // declares styleOptions, so the highlight color wins while selected.
-    expect(style.fillColor).toBe('green')
+    // Field C opts out of editing but declares no styleOptionsSelected, so
+    // the documented visual merge chain (defaults -> styleOptions ->
+    // selected defaults -> styleOptionsSelected) still applies the default
+    // selection highlight colour on top of its plain styleOptions fill —
+    // pinning that this precedence is unchanged by the opt-out fix above.
+    component.selectGroup('C')
+    const plain = featureWithGroup(component, 'C')
+    const plainStyle = component._googleMaps.googleMap.data.getStyle()(plain)
+    expect(plainStyle.editable).toBe(false)
+    expect(plainStyle.fillColor).toBe('green')
   },
 }
 
