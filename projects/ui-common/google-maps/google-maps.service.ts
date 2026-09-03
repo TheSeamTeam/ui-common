@@ -1023,7 +1023,10 @@ export class GoogleMapsService implements OnDestroy {
   // TODO: Refactor out of the service meant to just wrap the google maps api.
   public openContextMenu(): void {
     const feature = this.getSelectedFeature()
-    if (feature) {
+    if (
+      feature &&
+      this._model.allowsContextMenu(feature, this._interactionContext())
+    ) {
       this._setContextMenuTarget(feature)
       this._openContextMenuForFeature(feature)
     }

@@ -95,6 +95,16 @@ export class GroupedInteractionModel implements MapInteractionModel {
     feature: google.maps.Data.Feature,
     context: MapInteractionContext,
   ): boolean {
-    return true
+    // Every item this menu offers is a destructive edit (Delete Polygon,
+    // Delete Field), so it must not be reachable outside edit mode.
+    //
+    // Consequence: in edit mode, a non-selected group is `clickable: false`
+    // (see featureFlags below), so it cannot receive a right-click either —
+    // the menu can therefore only ever open on the SELECTED group. That makes
+    // `contextMenuTarget$` and `deleteGroup(key)` unable to diverge from the
+    // current selection today. They are kept anyway: it is the correct
+    // invariant, and it matters the moment a non-destructive menu item (one
+    // that should be reachable regardless of edit mode) is added.
+    return context.editMode
   }
 }

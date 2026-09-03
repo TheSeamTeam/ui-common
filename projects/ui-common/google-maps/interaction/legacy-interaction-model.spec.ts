@@ -185,4 +185,15 @@ describe('LegacyInteractionModel', () => {
     expect(model.allowsContextMenu(feature, ctx)).toBe(true)
     expect(isFeatureSelected(feature)).toBe(true)
   })
+
+  it('ignores editMode entirely for allowsContextMenu (unlike GroupedInteractionModel)', () => {
+    // F2 gates GroupedInteractionModel.allowsContextMenu on editMode. Legacy's
+    // gate has always been selection alone and must stay that way regardless
+    // of editMode, which is always false here in practice anyway.
+    const ctx = createFakeInteractionContext({ editMode: true })
+    const feature = ctx.addFeatureWithPolygon(drawn)
+    expect(model.allowsContextMenu(feature, ctx)).toBe(false)
+    setFeatureSelected(feature, true)
+    expect(model.allowsContextMenu(feature, ctx)).toBe(true)
+  })
 })

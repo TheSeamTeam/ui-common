@@ -201,9 +201,23 @@ describe('GroupedInteractionModel', () => {
     })
   })
 
-  it('always allows the context menu', () => {
-    const ctx = createFakeInteractionContext({ groupProperty: 'fieldId' })
-    const feature = ctx.addFeatureWithPolygon(big, { fieldId: 'A' })
-    expect(model.allowsContextMenu(feature, ctx)).toBe(true)
+  describe('allowsContextMenu', () => {
+    it('does not allow the context menu outside edit mode', () => {
+      const ctx = createFakeInteractionContext({
+        editMode: false,
+        groupProperty: 'fieldId',
+      })
+      const feature = ctx.addFeatureWithPolygon(big, { fieldId: 'A' })
+      expect(model.allowsContextMenu(feature, ctx)).toBe(false)
+    })
+
+    it('allows the context menu in edit mode', () => {
+      const ctx = createFakeInteractionContext({
+        editMode: true,
+        groupProperty: 'fieldId',
+      })
+      const feature = ctx.addFeatureWithPolygon(big, { fieldId: 'A' })
+      expect(model.allowsContextMenu(feature, ctx)).toBe(true)
+    })
   })
 })

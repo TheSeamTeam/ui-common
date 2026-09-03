@@ -251,10 +251,11 @@ const RETIRED_FIELD_VALUE = {
 }
 
 /**
- * Two two-polygon fields for `GroupedContextMenuKeyTargetsCurrentSelection`:
- * both need more than one feature so "Delete Field" is offered for whichever
- * one the menu's target actually lands on — X and Y, so neither collides
- * with `GROUPED_VALUE`'s A/B or `RETIRED_FIELD_VALUE`'s B/C.
+ * Two two-polygon fields for `GroupedContextMenuActsOnRightClickedPolygon`:
+ * both need more than one feature so "Delete Field" is offered, and X needs a
+ * second polygon so a right-click can land on one different from whichever
+ * was last focused by a plain click — X and Y, so neither collides with
+ * `GROUPED_VALUE`'s A/B or `RETIRED_FIELD_VALUE`'s B/C.
  */
 const TWO_FIELDS_VALUE = {
   type: 'FeatureCollection',
@@ -754,11 +755,19 @@ export const GroupedDeleteRemovesOnlyFocusedPolygon: Story = {
 }
 
 /**
- * Direct regression guard for F3: right-clicking a feature in one group while
- * a DIFFERENT group is selected must offer a "Delete Field" that deletes the
- * right-clicked group, never the selected one.
+ * Regression guard for F2: every item this menu offers (Delete Polygon,
+ * Delete Field) is a destructive edit, so it must not be reachable outside
+ * edit mode — even for a feature that IS selected. Right-clicking normally
+ * can't even reach an unselected feature in edit mode (`clickable: false`),
+ * so a selected-but-not-editing feature is the meaningful case left to guard:
+ * the ordinary click-to-select flow with edit mode never having been turned
+ * on. Replaces `GroupedDeleteFieldActsOnRightClickedGroup`, whose scenario (a
+ * DIFFERENT group selected than the one right-clicked) is no longer
+ * reachable — in edit mode a non-selected group can't receive a right-click
+ * at all, and outside edit mode the menu doesn't open regardless of what's
+ * selected.
  */
-export const GroupedDeleteFieldActsOnRightClickedGroup: Story = {
+export const GroupedContextMenuClosedOutsideEditMode: Story = {
   render: () => ({
     template: `
       <seam-google-maps
@@ -773,41 +782,75 @@ export const GroupedDeleteFieldActsOnRightClickedGroup: Story = {
     const component = await mapComponent(canvasElement)
     const data = component._googleMaps.googleMap.data
 
-    // Select field B (a single-polygon group)...
-    component.selectGroup('B')
-    // ...then right-click a polygon in field A (a two-polygon group),
-    // without ever selecting A.
+    // Select field A the ordinary way — a click, with edit mode never turned
+    // on.
     const [featureA1] = featuresWithGroup(component, 'A')
+    google.maps.event.trigger(data, 'click', { feature: featureA1 })
+    expect(isFeatureSelected(featureA1)).toBe(true)
+
     google.maps.event.trigger(data, 'contextmenu', { feature: featureA1 })
     await new Promise((resolve) => setTimeout(resolve, 250))
 
-    const items = Array.from(
-      canvasElement.querySelectorAll('[role="menuitem"]'),
-    ) as HTMLElement[]
-    const deleteField = items.find(
-      (item) => item.textContent?.trim() === 'Delete Field',
-    )
-    expect(deleteField).toBeTruthy()
-    deleteField!.click()
-
-    // A (right-clicked) is gone; B (selected, but never clicked on) survives.
-    expect(featuresWithGroup(component, 'A')).toHaveLength(0)
-    expect(featuresWithGroup(component, 'B')).toHaveLength(1)
+    const items = canvasElement.querySelectorAll('[role="menuitem"]')
+    expect(items).toHaveLength(0)
   },
 }
 
 /**
- * Regression guard for a bug the F1-F4 fix wave itself introduced:
- * `openContextMenu()` (the keyboard `ContextMenu` path) opened the menu for
- * the currently SELECTED feature but never updated `contextMenuTarget$` —
- * only the mouse `contextmenu` listener did. So a target set by an earlier
- * right-click could stick around stale, and a later keyboard-opened menu
- * would still offer a "Delete Field" bound to that stale group instead of
- * the one it visibly opened over. Same destructive shape as
- * `GroupedDeleteFieldActsOnRightClickedGroup`, just reached via the keyboard
- * path instead of a second right-click.
+ * Keyboard twin of `GroupedContextMenuClosedOutsideEditMode`: `openContextMenu()`
+ * (the `ContextMenu` keydown path) sources its feature from
+ * `getSelectedFeature()` and used to open unconditionally on it, bypassing
+ * `_model.allowsContextMenu()` entirely — so a selected-but-not-editing group
+ * could still reach the destructive menu via the keyboard even after F2 gated
+ * the mouse `contextmenu` listener on edit mode. `openContextMenu()` now
+ * consults the same predicate before opening.
  */
-export const GroupedContextMenuKeyTargetsCurrentSelection: Story = {
+export const GroupedContextMenuKeyClosedOutsideEditMode: Story = {
+  render: () => ({
+    template: `
+      <seam-google-maps
+        interactionMode="grouped"
+        featureGroupProperty="fieldId"
+        [value]="value"
+        style="height: 400px"></seam-google-maps>
+    `,
+    props: { value: GROUPED_VALUE },
+  }),
+  play: async ({ canvasElement }) => {
+    const component = await mapComponent(canvasElement)
+    const data = component._googleMaps.googleMap.data
+
+    // Select field A the ordinary way — a click, with edit mode never turned
+    // on.
+    const [featureA1] = featuresWithGroup(component, 'A')
+    google.maps.event.trigger(data, 'click', { feature: featureA1 })
+    expect(isFeatureSelected(featureA1)).toBe(true)
+
+    // The real keyboard path, not `_googleMaps.openContextMenu()` called
+    // directly — this also exercises the component's keydown handler.
+    window.dispatchEvent(new KeyboardEvent('keydown', { code: 'ContextMenu' }))
+    await new Promise((resolve) => setTimeout(resolve, 250))
+
+    const items = canvasElement.querySelectorAll('[role="menuitem"]')
+    expect(items).toHaveLength(0)
+  },
+}
+
+/**
+ * Regression guard for what remains reachable of the invariant
+ * `GroupedContextMenuKeyTargetsCurrentSelection` used to guard: the menu's
+ * items must act on the feature/group the menu actually opened for, not on
+ * whatever a PRIOR interaction happened to focus or select. That story's own
+ * scenario (a stale target from an earlier right-click surviving a
+ * keyboard-opened menu for a newly-selected DIFFERENT group) is no longer
+ * reachable, because F2 means edit mode must be on for any of this to open,
+ * and in edit mode a non-selected group is `clickable: false` — so the menu
+ * can now only ever open on the selected group. What's left to guard: WITHIN
+ * that one reachable group, right-clicking a different polygon than the one
+ * a plain click last focused must retarget the menu to it, and an unrelated
+ * bystander group must stay untouched throughout.
+ */
+export const GroupedContextMenuActsOnRightClickedPolygon: Story = {
   render: () => ({
     template: `
       <seam-google-maps
@@ -822,36 +865,36 @@ export const GroupedContextMenuKeyTargetsCurrentSelection: Story = {
     const component = await mapComponent(canvasElement)
     const data = component._googleMaps.googleMap.data
 
-    // Right-click field X first, setting contextMenuTarget$ to X.
-    const [featureX1] = featuresWithGroup(component, 'X')
-    google.maps.event.trigger(data, 'contextmenu', { feature: featureX1 })
-    await new Promise((resolve) => setTimeout(resolve, 250))
+    // Click field X's first polygon BEFORE entering edit mode: it becomes
+    // selected AND focused. (With edit mode already on and nothing selected,
+    // a click on any polygon is ignored by design — the "off" row of the
+    // interaction table — so selection has to happen first.)
+    const [featureX1, featureX2] = featuresWithGroup(component, 'X')
+    google.maps.event.trigger(data, 'click', { feature: featureX1 })
+    expect(isFeatureSelected(featureX1)).toBe(true)
 
-    // Select a DIFFERENT field, Y, by clicking it — no right-click involved,
-    // so contextMenuTarget$ must not follow this on its own.
-    const featureY = featureWithGroup(component, 'Y')
-    google.maps.event.trigger(data, 'click', { feature: featureY })
-    expect(isFeatureSelected(featureY)).toBe(true)
+    component.setEditMode(true)
 
-    // Open the menu via the real keyboard path. It opens over the currently
-    // selected feature (Y), so the target must follow it there too, rather
-    // than staying pinned to X's earlier right-click.
-    window.dispatchEvent(new KeyboardEvent('keydown', { code: 'ContextMenu' }))
+    // Right-click the OTHER polygon in the same group — the only group that
+    // can receive a right-click at all while edit mode is on.
+    google.maps.event.trigger(data, 'contextmenu', { feature: featureX2 })
     await new Promise((resolve) => setTimeout(resolve, 250))
 
     const items = Array.from(
       canvasElement.querySelectorAll('[role="menuitem"]'),
     ) as HTMLElement[]
-    const deleteField = items.find(
-      (item) => item.textContent?.trim() === 'Delete Field',
+    const deletePolygon = items.find(
+      (item) => item.textContent?.trim() === 'Delete Polygon',
     )
-    expect(deleteField).toBeTruthy()
-    deleteField!.click()
+    expect(deletePolygon).toBeTruthy()
+    deletePolygon!.click()
 
-    // Y — what the menu actually opened for — is gone. X — the stale target
-    // from the earlier right-click — survives untouched.
-    expect(featuresWithGroup(component, 'Y')).toHaveLength(0)
-    expect(featuresWithGroup(component, 'X')).toHaveLength(2)
+    // X2 — what the menu actually opened for — is gone. X1 — merely focused
+    // by the earlier click — survives, and bystander field Y is untouched.
+    const remainingX = featuresWithGroup(component, 'X')
+    expect(remainingX).toHaveLength(1)
+    expect(remainingX[0]).toBe(featureX1)
+    expect(featuresWithGroup(component, 'Y')).toHaveLength(2)
   },
 }
 
