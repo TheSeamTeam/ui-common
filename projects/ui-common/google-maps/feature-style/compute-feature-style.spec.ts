@@ -4,6 +4,7 @@ import {
   uninstallFakeGoogleMaps,
 } from '../testing/fake-google-maps'
 import {
+  computeFeatureHoverStyle,
   computeFeatureStyle,
   TheSeamMapFeatureStyleContext,
 } from './compute-feature-style'
@@ -119,5 +120,33 @@ describe('computeFeatureStyle', () => {
     setFeatureSelected(feature, true)
     const style = computeFeatureStyle(feature, armed)
     expect(style.editable).toBe(false)
+  })
+})
+
+describe('computeFeatureHoverStyle', () => {
+  beforeEach(() => installFakeGoogleMaps())
+  afterEach(() => uninstallFakeGoogleMaps())
+
+  it('never carries editable or draggable, even when styleOptionsHovered declares them', () => {
+    // Regression: mergeStyleOptions is shared with computeFeatureStyle, and
+    // SUPPORTED_PROPERTY_STYLE_OPTIONS includes editable/draggable so a
+    // feature can opt OUT via styleOptions. computeFeatureHoverStyle's result
+    // is applied via overrideStyle with no clamp downstream at all, unlike
+    // computeFeatureStyle's interaction clamp — so a consumer opting IN via
+    // styleOptionsHovered would apply completely unclamped. A hover override
+    // must never be able to touch either flag.
+    const feature = makeFeature({
+      styleOptionsHovered: { editable: true, draggable: true },
+    })
+    const style = computeFeatureHoverStyle(feature)
+    expect(style.editable).toBeUndefined()
+    expect(style.draggable).toBeUndefined()
+  })
+
+  it('still applies other styleOptionsHovered properties', () => {
+    const feature = makeFeature({
+      styleOptionsHovered: { strokeColor: 'purple' },
+    })
+    expect(computeFeatureHoverStyle(feature).strokeColor).toBe('purple')
   })
 })

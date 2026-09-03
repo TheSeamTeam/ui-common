@@ -148,12 +148,29 @@ export function computeFeatureStyle(
   return options
 }
 
-/** The hover override, merged with anything the feature declares for hover. */
+/**
+ * The hover override, merged with anything the feature declares for hover.
+ *
+ * `mergeStyleOptions` is shared with `computeFeatureStyle`, and
+ * `SUPPORTED_PROPERTY_STYLE_OPTIONS` includes `editable`/`draggable` so a
+ * feature can opt OUT of them via `styleOptions`/`styleOptionsSelected`. But
+ * this override is applied via `overrideStyle`, with no clamp downstream at
+ * all — unlike `computeFeatureStyle`, where the interaction clamp runs last
+ * and narrows whatever came before it. So if a consumer's
+ * `styleOptionsHovered` declared `editable` or `draggable`, it would apply
+ * unclamped: the one path where the "clamp is one-directional and always
+ * runs last" guarantee would not hold. A hover override has no business
+ * touching either, so both are stripped unconditionally, regardless of what
+ * `styleOptionsHovered` declares.
+ */
 export function computeFeatureHoverStyle(
   feature: google.maps.Data.Feature,
 ): google.maps.Data.StyleOptions {
-  return mergeStyleOptions(
+  const options = mergeStyleOptions(
     FEATURE_STYLE_OVERRIDE_OPTIONS_HOVERED(),
     getHoveredStyleOptionsDefinedByFeature(feature),
   )
+  delete options.editable
+  delete options.draggable
+  return options
 }
