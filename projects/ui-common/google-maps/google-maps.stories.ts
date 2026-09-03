@@ -1,5 +1,10 @@
-import { applicationConfig, moduleMetadata } from '@storybook/angular'
-import { expect } from 'storybook/test'
+import {
+  applicationConfig,
+  Meta,
+  moduleMetadata,
+  StoryObj,
+} from '@storybook/angular'
+import { expect, fn } from 'storybook/test'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { CommonModule } from '@angular/common'
@@ -15,9 +20,9 @@ import { isFeatureSelected } from './google-maps-feature-helpers'
 import { TheSeamGoogleMapsRecenterButtonControlComponent } from './google-maps-recenter-button-control/google-maps-recenter-button-control.component'
 import { TheSeamGoogleMapsModule } from './google-maps.module'
 
-export default {
+const meta: Meta<TheSeamGoogleMapsComponent> = {
   title: 'GoogleMaps/Components',
-  // component: TheSeamGoogleMapsComponent,
+  component: TheSeamGoogleMapsComponent,
   decorators: [
     applicationConfig({
       providers: [provideAnimations()],
@@ -48,42 +53,57 @@ export default {
   ],
 }
 
-export const Basic = ({ ...args }) => ({
-  template: `<seam-google-maps seamHoverClass="border border-warning"></seam-google-maps>`,
-})
+export default meta
+type Story = StoryObj<TheSeamGoogleMapsComponent>
 
-export const Control = ({ ...args }) => ({
-  moduleMetadata: {
-    imports: [ReactiveFormsModule],
-  },
-  template: `
-    <input type="text" />
-    <seam-google-maps [formControl]="control"></seam-google-maps>
-    <input type="text" />
-    [{{ control.value | json }}]
-  `,
-  props: {
-    control: new FormControl(),
-  },
-})
+export const Basic: Story = {
+  render: (args) => ({
+    template: `<seam-google-maps seamHoverClass="border border-warning"></seam-google-maps>`,
+    props: args,
+  }),
+}
 
-export const Places = ({ ...args }) => ({
-  template: `<input seamGoogleMapsPlacesAutocomplete />`,
-  props: {},
-})
+export const Control: Story = {
+  render: (args) => ({
+    moduleMetadata: {
+      imports: [ReactiveFormsModule],
+    },
+    template: `
+      <input type="text" />
+      <seam-google-maps [formControl]="control"></seam-google-maps>
+      <input type="text" />
+      [{{ control.value | json }}]
+    `,
+    props: {
+      ...args,
+      control: new FormControl(),
+    },
+  }),
+}
 
-export const PlacesComponent = ({ ...args }) => ({
-  template: `<seam-google-maps-places-autocomplete></seam-google-maps-places-autocomplete>`,
-  props: {},
-})
+export const Places: Story = {
+  render: (args) => ({
+    template: `<input seamGoogleMapsPlacesAutocomplete />`,
+    props: args,
+  }),
+}
 
-export const PlacesMapBind = ({ ...args }) => ({
-  template: `
-    <seam-google-maps-places-autocomplete></seam-google-maps-places-autocomplete>
-    <seam-google-maps></seam-google-maps>
-  `,
-  props: {},
-})
+export const PlacesComponent: Story = {
+  render: (args) => ({
+    template: `<seam-google-maps-places-autocomplete></seam-google-maps-places-autocomplete>`,
+    props: args,
+  }),
+}
+
+export const PlacesMapBind: Story = {
+  render: (args) => ({
+    template: `
+      <seam-google-maps-places-autocomplete></seam-google-maps-places-autocomplete>
+      <seam-google-maps></seam-google-maps>
+    `,
+    props: args,
+  }),
+}
 
 const MULTI_POLYGON_VALUE = {
   type: 'FeatureCollection',
@@ -140,11 +160,14 @@ const MULTI_POLYGON_VALUE = {
  * with isOnlyGeometryTypesValidator(['Polygon', 'MultiPolygon']), so a
  * GeometryCollection here would fail validation in the app.
  */
-export const MultiPolygonRoundTrip = {
-  render: () => ({
+export const MultiPolygonRoundTrip: Story = {
+  render: (args) => ({
     template: `<seam-google-maps #map [value]="value" style="height: 400px"></seam-google-maps>`,
-    props: { value: MULTI_POLYGON_VALUE },
+    props: args,
   }),
+  args: {
+    value: MULTI_POLYGON_VALUE,
+  },
   play: async ({ canvasElement }: any) => {
     const host = canvasElement.querySelector('seam-google-maps')
     // Wait for the map to load the value into its data layer.
@@ -174,12 +197,12 @@ const GROUPED_VALUE = {
   features: [
     {
       type: 'Feature',
-      properties: { fieldId: 'A', FIELD_NAME: 'North 40' },
+      properties: { fieldId: 'A', FIELD_NAME: 'North 40', plot: 1 },
       geometry: squareAt(-98.58, 37.63),
     },
     {
       type: 'Feature',
-      properties: { fieldId: 'A', FIELD_NAME: 'North 40' },
+      properties: { fieldId: 'A', FIELD_NAME: 'North 40', plot: 2 },
       geometry: squareAt(-98.56, 37.63),
     },
     {
@@ -288,55 +311,70 @@ function featuresWithGroup(component: any, key: string): any[] {
   return matches
 }
 
-// Captured by `GroupedClickSelectsWholeField`'s `onSelection` prop handler,
-// bound in its template via `(selectionChange)="onSelection($event)"`. A
-// module-scoped array (reset at the top of `render()`) lets `play` read what
-// the template binding emitted without depending on Storybook's Angular
-// renderer exposing the mounted component's `props` object back to the play
-// function — it doesn't, so this closure is the reliable way to observe it.
-let groupClickSelections: any[] = []
-
-export const GroupedClickSelectsWholeField = {
-  render: () => {
-    groupClickSelections = []
-    return {
-      template: `
-        <seam-google-maps
-          interactionMode="grouped"
-          featureGroupProperty="fieldId"
-          featureLabelProperty="FIELD_NAME"
-          [value]="value"
-          (selectionChange)="onSelection($event)"
-          style="height: 400px"></seam-google-maps>
-      `,
-      props: {
-        value: GROUPED_VALUE,
-        onSelection(event: any) {
-          groupClickSelections.push(event)
-        },
-      },
-    }
+export const GroupedClickSelectsWholeField: Story = {
+  render: (args) => ({
+    template: `
+      <seam-google-maps
+        interactionMode="grouped"
+        featureGroupProperty="fieldId"
+        featureLabelProperty="FIELD_NAME"
+        [value]="value"
+        (selectionChange)="selectionChange($event)"
+        style="height: 400px"></seam-google-maps>
+    `,
+    props: args,
+  }),
+  args: {
+    value: GROUPED_VALUE,
+    selectionChange: fn(),
   },
-  play: async ({ canvasElement }: any) => {
+  play: async ({ canvasElement, args }: any) => {
     const component = await mapComponent(canvasElement)
     const [featureA1, featureA2] = featuresWithGroup(component, 'A')
     const featureB = featureWithGroup(component, 'B')
+
+    // Nothing has been interacted with yet, so the output must be silent.
+    // An `@Output` reports a change, not initial state — several paths clear
+    // the selection defensively during setup, and each used to emit its own
+    // `null` before the user had touched anything.
+    expect(args.selectionChange).not.toHaveBeenCalled()
 
     google.maps.event.trigger(component._googleMaps.googleMap.data, 'click', {
       feature: featureA1,
     })
 
-    // The emitted event is the actual proof a click selected something: this
-    // assertion would fail if the trigger were removed, or if
-    // GroupedInteractionModel.onFeatureClick were gutted to a no-op — unlike
-    // getGroups(), which reflects grouping alone and is unaffected by
-    // selection state.
-    const lastSelection = groupClickSelections[groupClickSelections.length - 1]
-    expect(lastSelection).toBeTruthy()
-    expect(lastSelection.group.key).toBe('A')
-    // Field A has two polygons; clicking one selects both.
-    expect(lastSelection.group.features).toHaveLength(2)
-    expect(lastSelection.feature).toBeTruthy()
+    // Exactly one emission, and it is the click's. This is the actual proof a
+    // click selected something: it fails if the trigger is removed, or if
+    // GroupedInteractionModel.onFeatureClick is gutted to a no-op — unlike
+    // getGroups(), which reflects grouping alone and is blind to selection.
+    expect(args.selectionChange).toHaveBeenCalledTimes(1)
+
+    // `plot` distinguishes field A's two polygons, so this also pins that the
+    // focused feature is the one clicked and that the group holds two
+    // DIFFERENT features rather than the same one twice.
+    //
+    // The array literal pins the order as well as the length. Order comes from
+    // `data.forEach` iteration, which Google does not document as stable
+    // though it is insertion order in practice — if this ever flakes, that is
+    // the reason.
+    expect(args.selectionChange).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        feature: expect.objectContaining({
+          properties: expect.objectContaining({ fieldId: 'A', plot: 1 }),
+        }),
+        group: expect.objectContaining({
+          key: 'A',
+          features: [
+            expect.objectContaining({
+              properties: expect.objectContaining({ fieldId: 'A', plot: 1 }),
+            }),
+            expect.objectContaining({
+              properties: expect.objectContaining({ fieldId: 'A', plot: 2 }),
+            }),
+          ],
+        }),
+      }),
+    )
 
     // Cross-check against the data layer itself: group-wide selection, not
     // per-feature selection, and field B is untouched.
@@ -346,7 +384,7 @@ export const GroupedClickSelectsWholeField = {
   },
 }
 
-export const GroupedEditModeIgnoresFeatureClicks = {
+export const GroupedEditModeIgnoresFeatureClicks: Story = {
   render: () => ({
     template: `
       <seam-google-maps
@@ -370,7 +408,7 @@ export const GroupedEditModeIgnoresFeatureClicks = {
   },
 }
 
-export const GroupedRetiredFieldStaysUneditable = {
+export const GroupedRetiredFieldStaysUneditable: Story = {
   render: () => ({
     template: `
       <seam-google-maps
@@ -411,7 +449,7 @@ export const GroupedRetiredFieldStaysUneditable = {
   },
 }
 
-export const GroupedEscapeCascades = {
+export const GroupedEscapeCascades: Story = {
   render: () => ({
     template: `
       <seam-google-maps
@@ -443,7 +481,7 @@ export const GroupedEscapeCascades = {
   },
 }
 
-export const LegacyClickStillArmsEditing = {
+export const LegacyClickStillArmsEditing: Story = {
   render: () => ({
     template: `<seam-google-maps [value]="value" style="height: 400px"></seam-google-maps>`,
     props: { value: GROUPED_VALUE },
@@ -470,7 +508,7 @@ export const LegacyClickStillArmsEditing = {
  * (not the grouped-mode "Edit Fields" label) and a click toggles drawing
  * directly, with no intervening edit-mode concept.
  */
-export const LegacyDrawButtonTogglesDrawing = {
+export const LegacyDrawButtonTogglesDrawing: Story = {
   render: () => ({
     template: `<seam-google-maps [value]="value" style="height: 400px"></seam-google-maps>`,
     props: { value: GROUPED_VALUE },
@@ -522,7 +560,7 @@ export const LegacyContextMenuOnSelectedShowsSingleDelete = {
  * Automated stand-in for part of Task 13's manual legacy-path check:
  * right-clicking an unselected polygon opens no menu at all.
  */
-export const LegacyContextMenuOnUnselectedDoesNothing = {
+export const LegacyContextMenuOnUnselectedDoesNothing: Story = {
   render: () => ({
     template: `<seam-google-maps [value]="value" style="height: 400px"></seam-google-maps>`,
     props: { value: GROUPED_VALUE },
@@ -541,10 +579,6 @@ export const LegacyContextMenuOnUnselectedDoesNothing = {
     expect(items).toHaveLength(0)
   },
 }
-
-// Captured by the draw-completion stories' `onSelection` prop handler, the
-// same closure-array pattern `GroupedClickSelectsWholeField` uses above.
-let drawSelections: any[] = []
 
 /**
  * Drives `GoogleMapsService._onDrawFinished()` directly rather than a real
@@ -580,27 +614,23 @@ function finishDrawWithPolygon(component: any, polygon: any): void {
   service._onDrawFinished(id)
 }
 
-export const GroupedDrawCreatesNewGroup = {
-  render: () => {
-    drawSelections = []
-    return {
-      template: `
-        <seam-google-maps
-          interactionMode="grouped"
-          featureGroupProperty="fieldId"
-          [value]="value"
-          (selectionChange)="onSelection($event)"
-          style="height: 400px"></seam-google-maps>
-      `,
-      props: {
-        value: GROUPED_VALUE,
-        onSelection(event: any) {
-          drawSelections.push(event)
-        },
-      },
-    }
+export const GroupedDrawCreatesNewGroup: Story = {
+  render: (args) => ({
+    template: `
+      <seam-google-maps
+        interactionMode="grouped"
+        featureGroupProperty="fieldId"
+        [value]="value"
+        (selectionChange)="selectionChange($event)"
+        style="height: 400px"></seam-google-maps>
+    `,
+    props: args,
+  }),
+  args: {
+    value: GROUPED_VALUE,
+    selectionChange: fn(),
   },
-  play: async ({ canvasElement }: any) => {
+  play: async ({ canvasElement, args }: any) => {
     const component = await mapComponent(canvasElement)
     component.setEditMode(true)
     // Nothing selected — GROUPED_VALUE's initial state has no selection.
@@ -613,7 +643,7 @@ export const GroupedDrawCreatesNewGroup = {
 
     expect(component.getGroups().length).toBe(groupsBefore + 1)
 
-    const lastSelection = drawSelections[drawSelections.length - 1]
+    const lastSelection = args.selectionChange.mock.calls.at(-1)?.[0]
     expect(lastSelection).toBeTruthy()
     expect(lastSelection.group.features).toHaveLength(1)
     const newKey = lastSelection.group.key
@@ -632,27 +662,23 @@ export const GroupedDrawCreatesNewGroup = {
   },
 }
 
-export const GroupedDrawJoinsSelectedGroup = {
-  render: () => {
-    drawSelections = []
-    return {
-      template: `
-        <seam-google-maps
-          interactionMode="grouped"
-          featureGroupProperty="fieldId"
-          [value]="value"
-          (selectionChange)="onSelection($event)"
-          style="height: 400px"></seam-google-maps>
-      `,
-      props: {
-        value: GROUPED_VALUE,
-        onSelection(event: any) {
-          drawSelections.push(event)
-        },
-      },
-    }
+export const GroupedDrawJoinsSelectedGroup: Story = {
+  render: (args) => ({
+    template: `
+      <seam-google-maps
+        interactionMode="grouped"
+        featureGroupProperty="fieldId"
+        [value]="value"
+        (selectionChange)="selectionChange($event)"
+        style="height: 400px"></seam-google-maps>
+    `,
+    props: args,
+  }),
+  args: {
+    value: GROUPED_VALUE,
+    selectionChange: fn(),
   },
-  play: async ({ canvasElement }: any) => {
+  play: async ({ canvasElement, args }: any) => {
     const component = await mapComponent(canvasElement)
     component.setEditMode(true)
     component.selectGroup('A')
@@ -663,7 +689,7 @@ export const GroupedDrawJoinsSelectedGroup = {
     // starting a group of its own.
     expect(featuresWithGroup(component, 'A')).toHaveLength(3)
 
-    const lastSelection = drawSelections[drawSelections.length - 1]
+    const lastSelection = args.selectionChange.mock.calls.at(-1)?.[0]
     expect(lastSelection.group.key).toBe('A')
     expect(lastSelection.group.features).toHaveLength(3)
 
@@ -677,29 +703,23 @@ export const GroupedDrawJoinsSelectedGroup = {
   },
 }
 
-let deleteFocusedSelections: any[] = []
-
-export const GroupedDeleteRemovesOnlyFocusedPolygon = {
-  render: () => {
-    deleteFocusedSelections = []
-    return {
-      template: `
-        <seam-google-maps
-          interactionMode="grouped"
-          featureGroupProperty="fieldId"
-          [value]="value"
-          (selectionChange)="onSelection($event)"
-          style="height: 400px"></seam-google-maps>
-      `,
-      props: {
-        value: GROUPED_VALUE,
-        onSelection(event: any) {
-          deleteFocusedSelections.push(event)
-        },
-      },
-    }
+export const GroupedDeleteRemovesOnlyFocusedPolygon: Story = {
+  render: (args) => ({
+    template: `
+      <seam-google-maps
+        interactionMode="grouped"
+        featureGroupProperty="fieldId"
+        [value]="value"
+        (selectionChange)="selectionChange($event)"
+        style="height: 400px"></seam-google-maps>
+    `,
+    props: args,
+  }),
+  args: {
+    value: GROUPED_VALUE,
+    selectionChange: fn(),
   },
-  play: async ({ canvasElement }: any) => {
+  play: async ({ canvasElement, args }: any) => {
     const component = await mapComponent(canvasElement)
     const data = component._googleMaps.googleMap.data
     const [featureA1, featureA2] = featuresWithGroup(component, 'A')
@@ -726,8 +746,7 @@ export const GroupedDeleteRemovesOnlyFocusedPolygon = {
     // F3 (Delete Field acting on the wrong group): if either regressed here,
     // this would either still report 2 features, or clear to null instead of
     // staying on A's one remaining polygon.
-    const lastSelection =
-      deleteFocusedSelections[deleteFocusedSelections.length - 1]
+    const lastSelection = args.selectionChange.mock.calls.at(-1)?.[0]
     expect(lastSelection).toBeTruthy()
     expect(lastSelection.group.key).toBe('A')
     expect(lastSelection.group.features).toHaveLength(1)
@@ -739,7 +758,7 @@ export const GroupedDeleteRemovesOnlyFocusedPolygon = {
  * a DIFFERENT group is selected must offer a "Delete Field" that deletes the
  * right-clicked group, never the selected one.
  */
-export const GroupedDeleteFieldActsOnRightClickedGroup = {
+export const GroupedDeleteFieldActsOnRightClickedGroup: Story = {
   render: () => ({
     template: `
       <seam-google-maps
@@ -788,7 +807,7 @@ export const GroupedDeleteFieldActsOnRightClickedGroup = {
  * `GroupedDeleteFieldActsOnRightClickedGroup`, just reached via the keyboard
  * path instead of a second right-click.
  */
-export const GroupedContextMenuKeyTargetsCurrentSelection = {
+export const GroupedContextMenuKeyTargetsCurrentSelection: Story = {
   render: () => ({
     template: `
       <seam-google-maps
@@ -843,7 +862,7 @@ export const GroupedContextMenuKeyTargetsCurrentSelection = {
  * grouped-interaction feature itself — this exists to catch Angular-version
  * drift on a ~2022-era path before the Cotton modal starts relying on it.
  */
-export const ConsumerSuppliedControl = {
+export const ConsumerSuppliedControl: Story = {
   render: () => ({
     template: `
       <seam-google-maps
