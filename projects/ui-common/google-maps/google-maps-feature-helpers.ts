@@ -7,6 +7,7 @@ import { closePolygons, notNullOrUndefined } from '@theseam/ui-common/utils'
 
 export enum AppFeaturePropertyName {
   IsSelected = `__app__isSelected`,
+  GroupKey = `__app__groupKey`,
 }
 
 export function isAppFeatureProperty(
