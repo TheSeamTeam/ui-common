@@ -153,3 +153,194 @@ export const MultiPolygonRoundTrip = {
     expect(types).toEqual(['MultiPolygon', 'Polygon'])
   },
 }
+
+const squareAt = (lng: number, lat: number, size = 0.01) => ({
+  type: 'Polygon',
+  coordinates: [
+    [
+      [lng, lat],
+      [lng, lat + size],
+      [lng + size, lat + size],
+      [lng + size, lat],
+      [lng, lat],
+    ],
+  ],
+})
+
+const GROUPED_VALUE = {
+  type: 'FeatureCollection',
+  features: [
+    {
+      type: 'Feature',
+      properties: { fieldId: 'A', FIELD_NAME: 'North 40' },
+      geometry: squareAt(-98.58, 37.63),
+    },
+    {
+      type: 'Feature',
+      properties: { fieldId: 'A', FIELD_NAME: 'North 40' },
+      geometry: squareAt(-98.56, 37.63),
+    },
+    {
+      type: 'Feature',
+      properties: {
+        fieldId: 'B',
+        FIELD_NAME: 'Retired South',
+        styleOptions: { fillColor: 'gray', editable: false },
+      },
+      geometry: squareAt(-98.58, 37.61),
+    },
+  ],
+}
+
+/** Wait for the map to render and load its value. */
+async function mapComponent(canvasElement: HTMLElement): Promise<any> {
+  const host = canvasElement.querySelector('seam-google-maps')
+  await new Promise((resolve) => setTimeout(resolve, 3000))
+  return (window as any).ng.getComponent(host)
+}
+
+/** The first Data.Feature whose group property matches. */
+function featureWithGroup(component: any, key: string): any {
+  let match: any
+  component._googleMaps.googleMap.data.forEach((f: any) => {
+    if (!match && f.getProperty('fieldId') === key) {
+      match = f
+    }
+  })
+  return match
+}
+
+export const GroupedClickSelectsWholeField = {
+  render: () => ({
+    template: `
+      <seam-google-maps
+        interactionMode="grouped"
+        featureGroupProperty="fieldId"
+        featureLabelProperty="FIELD_NAME"
+        [value]="value"
+        (selectionChange)="onSelection($event)"
+        style="height: 400px"></seam-google-maps>
+    `,
+    props: {
+      value: GROUPED_VALUE,
+      selections: [] as any[],
+      onSelection(event: any) {
+        ;(this as any).selections.push(event)
+      },
+    },
+  }),
+  play: async ({ canvasElement }: any) => {
+    const component = await mapComponent(canvasElement)
+    const feature = featureWithGroup(component, 'A')
+
+    google.maps.event.trigger(component._googleMaps.googleMap.data, 'click', {
+      feature,
+    })
+
+    const groups = component.getGroups()
+    expect(groups.map((g: any) => g.key).sort()).toEqual(['A', 'B'])
+    // Field A has two polygons; clicking one selects both.
+    const selected = groups.find((g: any) => g.key === 'A')
+    expect(selected.features).toHaveLength(2)
+  },
+}
+
+export const GroupedEditModeIgnoresFeatureClicks = {
+  render: () => ({
+    template: `
+      <seam-google-maps
+        interactionMode="grouped"
+        featureGroupProperty="fieldId"
+        [value]="value"
+        style="height: 400px"></seam-google-maps>
+    `,
+    props: { value: GROUPED_VALUE },
+  }),
+  play: async ({ canvasElement }: any) => {
+    const component = await mapComponent(canvasElement)
+    component.setEditMode(true)
+
+    const feature = featureWithGroup(component, 'A')
+    const style = component._googleMaps.googleMap.data.getStyle()(feature)
+
+    // With edit mode armed and nothing selected, polygons must ignore clicks
+    // so a click can only ever mean "start drawing".
+    expect(style.clickable).toBe(false)
+  },
+}
+
+export const GroupedRetiredFieldStaysUneditable = {
+  render: () => ({
+    template: `
+      <seam-google-maps
+        interactionMode="grouped"
+        featureGroupProperty="fieldId"
+        [value]="value"
+        style="height: 400px"></seam-google-maps>
+    `,
+    props: { value: GROUPED_VALUE },
+  }),
+  play: async ({ canvasElement }: any) => {
+    const component = await mapComponent(canvasElement)
+    component.setEditMode(true)
+    component.selectGroup('B')
+
+    const retired = featureWithGroup(component, 'B')
+    const style = component._googleMaps.googleMap.data.getStyle()(retired)
+
+    // Selected and in edit mode, but the feature declares editable: false.
+    expect(style.editable).toBe(false)
+    // computeFeatureStyle's selected-defaults pass (FEATURE_STYLE_OPTIONS_SELECTED)
+    // runs after properties.styleOptions and always sets fillColor to the
+    // selection highlight color; only a feature's own styleOptionsSelected can
+    // override it (see compute-feature-style.ts and its spec's "applies
+    // styleOptionsSelected, not styleOptionsHovered" case). This fixture only
+    // declares styleOptions, so the highlight color wins while selected.
+    expect(style.fillColor).toBe('green')
+  },
+}
+
+export const GroupedEscapeCascades = {
+  render: () => ({
+    template: `
+      <seam-google-maps
+        interactionMode="grouped"
+        featureGroupProperty="fieldId"
+        [value]="value"
+        style="height: 400px"></seam-google-maps>
+    `,
+    props: { value: GROUPED_VALUE },
+  }),
+  play: async ({ canvasElement }: any) => {
+    const component = await mapComponent(canvasElement)
+    component.setEditMode(true)
+    component.selectGroup('A')
+
+    component._googleMaps.handleEscape()
+    expect(component.getGroups().length).toBeGreaterThan(0)
+    expect(component.isEditMode()).toBe(true)
+
+    component._googleMaps.handleEscape()
+    expect(component.isEditMode()).toBe(false)
+  },
+}
+
+export const LegacyClickStillArmsEditing = {
+  render: () => ({
+    template: `<seam-google-maps [value]="value" style="height: 400px"></seam-google-maps>`,
+    props: { value: GROUPED_VALUE },
+  }),
+  play: async ({ canvasElement }: any) => {
+    const component = await mapComponent(canvasElement)
+    const feature = featureWithGroup(component, 'A')
+
+    google.maps.event.trigger(component._googleMaps.googleMap.data, 'click', {
+      feature,
+    })
+
+    const style = component._googleMaps.googleMap.data.getStyle()(feature)
+    // Regression guard for the two apps that are not being updated: in legacy
+    // mode a click alone still arms handles.
+    expect(style.editable).toBe(true)
+  },
+}
