@@ -227,6 +227,38 @@ const RETIRED_FIELD_VALUE = {
   ],
 }
 
+/**
+ * Two two-polygon fields for `GroupedContextMenuKeyTargetsCurrentSelection`:
+ * both need more than one feature so "Delete Field" is offered for whichever
+ * one the menu's target actually lands on — X and Y, so neither collides
+ * with `GROUPED_VALUE`'s A/B or `RETIRED_FIELD_VALUE`'s B/C.
+ */
+const TWO_FIELDS_VALUE = {
+  type: 'FeatureCollection',
+  features: [
+    {
+      type: 'Feature',
+      properties: { fieldId: 'X' },
+      geometry: squareAt(-98.44, 37.63),
+    },
+    {
+      type: 'Feature',
+      properties: { fieldId: 'X' },
+      geometry: squareAt(-98.42, 37.63),
+    },
+    {
+      type: 'Feature',
+      properties: { fieldId: 'Y' },
+      geometry: squareAt(-98.44, 37.61),
+    },
+    {
+      type: 'Feature',
+      properties: { fieldId: 'Y' },
+      geometry: squareAt(-98.42, 37.61),
+    },
+  ],
+}
+
 /** Wait for the map to render and load its value. */
 async function mapComponent(canvasElement: HTMLElement): Promise<any> {
   const host = canvasElement.querySelector('seam-google-maps')
@@ -742,6 +774,65 @@ export const GroupedDeleteFieldActsOnRightClickedGroup = {
     // A (right-clicked) is gone; B (selected, but never clicked on) survives.
     expect(featuresWithGroup(component, 'A')).toHaveLength(0)
     expect(featuresWithGroup(component, 'B')).toHaveLength(1)
+  },
+}
+
+/**
+ * Regression guard for a bug the F1-F4 fix wave itself introduced:
+ * `openContextMenu()` (the keyboard `ContextMenu` path) opened the menu for
+ * the currently SELECTED feature but never updated `contextMenuTarget$` —
+ * only the mouse `contextmenu` listener did. So a target set by an earlier
+ * right-click could stick around stale, and a later keyboard-opened menu
+ * would still offer a "Delete Field" bound to that stale group instead of
+ * the one it visibly opened over. Same destructive shape as
+ * `GroupedDeleteFieldActsOnRightClickedGroup`, just reached via the keyboard
+ * path instead of a second right-click.
+ */
+export const GroupedContextMenuKeyTargetsCurrentSelection = {
+  render: () => ({
+    template: `
+      <seam-google-maps
+        interactionMode="grouped"
+        featureGroupProperty="fieldId"
+        [value]="value"
+        style="height: 400px"></seam-google-maps>
+    `,
+    props: { value: TWO_FIELDS_VALUE },
+  }),
+  play: async ({ canvasElement }: any) => {
+    const component = await mapComponent(canvasElement)
+    const data = component._googleMaps.googleMap.data
+
+    // Right-click field X first, setting contextMenuTarget$ to X.
+    const [featureX1] = featuresWithGroup(component, 'X')
+    google.maps.event.trigger(data, 'contextmenu', { feature: featureX1 })
+    await new Promise((resolve) => setTimeout(resolve, 250))
+
+    // Select a DIFFERENT field, Y, by clicking it — no right-click involved,
+    // so contextMenuTarget$ must not follow this on its own.
+    const featureY = featureWithGroup(component, 'Y')
+    google.maps.event.trigger(data, 'click', { feature: featureY })
+    expect(isFeatureSelected(featureY)).toBe(true)
+
+    // Open the menu via the real keyboard path. It opens over the currently
+    // selected feature (Y), so the target must follow it there too, rather
+    // than staying pinned to X's earlier right-click.
+    window.dispatchEvent(new KeyboardEvent('keydown', { code: 'ContextMenu' }))
+    await new Promise((resolve) => setTimeout(resolve, 250))
+
+    const items = Array.from(
+      canvasElement.querySelectorAll('[role="menuitem"]'),
+    ) as HTMLElement[]
+    const deleteField = items.find(
+      (item) => item.textContent?.trim() === 'Delete Field',
+    )
+    expect(deleteField).toBeTruthy()
+    deleteField!.click()
+
+    // Y — what the menu actually opened for — is gone. X — the stale target
+    // from the earlier right-click — survives untouched.
+    expect(featuresWithGroup(component, 'Y')).toHaveLength(0)
+    expect(featuresWithGroup(component, 'X')).toHaveLength(2)
   },
 }
 

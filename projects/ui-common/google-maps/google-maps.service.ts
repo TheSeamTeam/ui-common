@@ -249,6 +249,8 @@ export class GoogleMapsService implements OnDestroy {
     const focusedInGroup =
       this._focusedFeature !== null &&
       this._registry.keyOf(this._focusedFeature) === key
+    const contextMenuTargetInGroup =
+      this._contextMenuTargetSubject.value?.group.key === key
 
     this._registry.featuresIn(key).forEach((f) => mapData.remove(f))
 
@@ -256,6 +258,13 @@ export class GoogleMapsService implements OnDestroy {
       this._applySelection(null, null)
     } else if (focusedInGroup) {
       this._focusedFeature = null
+    }
+    // The whole group is gone, so a context-menu target pointing at it — set
+    // by whichever interaction opened the menu, not necessarily this one — is
+    // now a dangling reference. Only clear it when it actually named this
+    // group; an unrelated still-open menu's target must survive.
+    if (contextMenuTargetInGroup) {
+      this._contextMenuTargetSubject.next(null)
     }
   }
 
@@ -795,6 +804,8 @@ export class GoogleMapsService implements OnDestroy {
     const key = this._focusedFeature
       ? this._registry.keyOf(this._focusedFeature)
       : (this._selectionSubject.value?.group.key ?? null)
+    const contextMenuTargetInGroup =
+      key !== null && this._contextMenuTargetSubject.value?.group.key === key
 
     if (this._focusedFeature) {
       this.googleMap.data.remove(this._focusedFeature)
@@ -804,6 +815,12 @@ export class GoogleMapsService implements OnDestroy {
     }
 
     this._applySelection(key, null)
+    // Same reasoning as deleteGroup(): a context-menu target naming this
+    // group may now reference a removed feature (or a stale feature count),
+    // so clear it — but only when it actually named this group.
+    if (contextMenuTargetInGroup) {
+      this._contextMenuTargetSubject.next(null)
+    }
   }
 
   /** Escape cascades: cancel a draw, then clear selection, then leave edit mode. */
@@ -935,18 +952,34 @@ export class GoogleMapsService implements OnDestroy {
         ) {
           return
         }
-        this._focusedFeature = event.feature
-        const resolved = this._registry.groupWithSources(
-          this._registry.keyOf(event.feature),
-        )
-        this._contextMenuTargetSubject.next(
-          resolved ? this._targetFor(resolved, event.feature) : null,
-        )
+        this._setContextMenuTarget(event.feature)
         this._openContextMenuForFeature(
           event.feature,
           event.latLng ?? undefined,
         )
       },
+    )
+  }
+
+  /**
+   * Establish `feature` as what the context menu is about to open for:
+   * `_focusedFeature` (what "Delete Polygon" acts on) and
+   * `contextMenuTarget$` (what "Delete Field" is gated on and acts on) both
+   * follow it. Shared by the `contextmenu` mouse listener and
+   * `openContextMenu()`'s keyboard path so the two establish the target
+   * identically — the menu's target must always be the feature the menu was
+   * opened for, on either path. Before this, only the mouse listener set
+   * `contextMenuTarget$`, so pressing the `ContextMenu` key could open a menu
+   * over whatever was CURRENTLY selected while still offering "Delete Field"
+   * for whatever a PRIOR right-click had targeted.
+   */
+  private _setContextMenuTarget(feature: google.maps.Data.Feature): void {
+    this._focusedFeature = feature
+    const resolved = this._registry.groupWithSources(
+      this._registry.keyOf(feature),
+    )
+    this._contextMenuTargetSubject.next(
+      resolved ? this._targetFor(resolved, feature) : null,
     )
   }
 
@@ -978,6 +1011,7 @@ export class GoogleMapsService implements OnDestroy {
   public openContextMenu(): void {
     const feature = this.getSelectedFeature()
     if (feature) {
+      this._setContextMenuTarget(feature)
       this._openContextMenuForFeature(feature)
     }
   }
