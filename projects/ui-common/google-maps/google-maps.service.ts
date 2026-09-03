@@ -291,17 +291,25 @@ export class GoogleMapsService implements OnDestroy {
     if (!this._terraDraw || !this._terraDrawReady || !this.isEditingEnabled()) {
       return
     }
-    // Clear any selection when entering drawing mode. Otherwise a selected
-    // feature and the shape being drawn both appear selected, reading as one
-    // shape even though they are unrelated.
-    this._assertInitialized()
-    this.googleMap.data.forEach((f) => {
-      if (isFeatureSelected(f)) {
-        setFeatureSelected(f, false)
-      }
-    })
+    // Clear any selection when entering drawing mode, but only in 'legacy'
+    // mode. There, a selected feature and the shape being drawn are unrelated,
+    // so leaving the old one visibly selected would read as one shape. In
+    // 'grouped' mode they are related: the selected group is exactly the
+    // target the drawn polygon will join, so it keeps its selected styling —
+    // `GroupedInteractionModel.featureFlags()` disarms its edit handles for
+    // the duration instead (F3), so they don't compete with Terra Draw for
+    // pointer events.
+    if (this._model.id === 'legacy') {
+      this._assertInitialized()
+      this.googleMap.data.forEach((f) => {
+        if (isFeatureSelected(f)) {
+          setFeatureSelected(f, false)
+        }
+      })
+    }
     this._terraDraw.setMode('polyline')
     this._drawingSubject.next(true)
+    this._refreshStyles()
     this._labelsOverlay?.refresh()
   }
 
@@ -315,6 +323,12 @@ export class GoogleMapsService implements OnDestroy {
     }
     this._terraDraw.setMode('static')
     this._drawingSubject.next(false)
+    // Re-arms the selected group's edit handles in 'grouped' mode: nothing
+    // else changes a feature's own properties here, so nothing else would
+    // make Data re-evaluate the style function and pick up
+    // `featureFlags().geometryEditingArmed` no longer being disarmed by
+    // `isDrawing` (F3).
+    this._refreshStyles()
     this._labelsOverlay?.refresh()
   }
 
@@ -650,6 +664,7 @@ export class GoogleMapsService implements OnDestroy {
       editingEnabled: this.isEditingEnabled(),
       allowHoles: this._allowDrawingHoleInPolygon,
       editMode: this.isEditMode(),
+      isDrawing: this.isDrawing(),
       getSelectedKey: () => this._selectionSubject.value?.group.key ?? null,
       selectGroup: (key, feature) => this._applySelection(key, feature),
       startDrawing: () => this.startDrawing(),

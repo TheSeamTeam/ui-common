@@ -135,6 +135,25 @@ describe('GroupedInteractionModel', () => {
       expect(model.featureFlags(other, ctx).clicksAllowed).toBe(false)
     })
 
+    it('disarms geometry editing while drawing but keeps the group selected-styled', () => {
+      // F3: the selected group is the target a drawn polygon will join, so it
+      // stays visibly selected mid-draw (clicksAllowed follows selection, not
+      // isDrawing) — but its vertex/midpoint handles are disarmed so they
+      // don't compete with Terra Draw for pointer events near the polygon.
+      const ctx = createFakeInteractionContext({
+        editMode: true,
+        groupProperty: 'fieldId',
+        isDrawing: true,
+      })
+      const selected = ctx.addFeatureWithPolygon(big, { fieldId: 'A' })
+      ctx.setSelectedKey('A')
+
+      expect(model.featureFlags(selected, ctx)).toEqual({
+        geometryEditingArmed: false,
+        clicksAllowed: true,
+      })
+    })
+
     it('joins a drawn polygon to the selected group', () => {
       const ctx = createFakeInteractionContext({
         editMode: true,

@@ -59,6 +59,21 @@ describe('LegacyInteractionModel', () => {
     })
   })
 
+  it('ignores editMode and isDrawing entirely for featureFlags', () => {
+    // Legacy has no edit-mode/drawing-armed distinction (F3 is grouped-only):
+    // `editMode` is always false in practice for this model, but confirm
+    // featureFlags does not react to it or to isDrawing regardless.
+    const ctx = createFakeInteractionContext({
+      editMode: true,
+      isDrawing: true,
+    })
+    const feature = ctx.addFeatureWithPolygon(drawn)
+    expect(model.featureFlags(feature, ctx)).toEqual({
+      geometryEditingArmed: true,
+      clicksAllowed: true,
+    })
+  })
+
   it('creates a new ungrouped feature when a draw finishes', () => {
     const ctx = createFakeInteractionContext()
     expect(model.onDrawFinished(drawn, ctx)).toEqual({

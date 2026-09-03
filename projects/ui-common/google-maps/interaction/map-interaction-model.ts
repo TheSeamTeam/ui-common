@@ -29,6 +29,13 @@ export interface MapInteractionContext {
   readonly allowHoles: boolean
   /** Whether the map is currently in edit mode. Always false in legacy. */
   readonly editMode: boolean
+  /**
+   * Whether a Terra Draw draw is currently in progress. Used to disarm
+   * geometry editing while drawing — Google's vertex/midpoint handles are
+   * separate interactive elements that would otherwise compete with Terra
+   * Draw for pointer events near the polygon being drawn into.
+   */
+  readonly isDrawing: boolean
   /** The selected group key, or null. */
   getSelectedKey(): string | null
   /**

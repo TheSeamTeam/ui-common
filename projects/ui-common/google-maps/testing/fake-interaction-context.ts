@@ -32,6 +32,7 @@ export function createFakeInteractionContext(
     editingEnabled: boolean
     allowHoles: boolean
     editMode: boolean
+    isDrawing: boolean
     groupProperty: string
   }> = {},
 ): FakeInteractionContext {
@@ -52,6 +53,7 @@ export function createFakeInteractionContext(
     editingEnabled: overrides.editingEnabled ?? true,
     allowHoles: overrides.allowHoles ?? false,
     editMode: overrides.editMode ?? false,
+    isDrawing: overrides.isDrawing ?? false,
     getSelectedKey: () => selectedKey,
     setSelectedKey: (key) => {
       selectedKey = key

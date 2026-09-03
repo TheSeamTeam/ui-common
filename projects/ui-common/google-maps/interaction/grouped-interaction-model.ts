@@ -86,7 +86,12 @@ export class GroupedInteractionModel implements MapInteractionModel {
       selectedKey !== null && context.groups.keyOf(feature) === selectedKey
 
     return {
-      geometryEditingArmed: isSelectedGroup,
+      // The group stays visibly selected while a draw is in progress (F3) —
+      // it is the target the drawn polygon will join — but its vertex/midpoint
+      // handles are disarmed for the duration, since Google's edit handles are
+      // separate interactive elements that would otherwise compete with Terra
+      // Draw for pointer events near the polygon.
+      geometryEditingArmed: isSelectedGroup && !context.isDrawing,
       clicksAllowed: isSelectedGroup,
     }
   }
