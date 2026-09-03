@@ -1,7 +1,7 @@
 import { Injectable, NgZone, OnDestroy, ViewContainerRef } from '@angular/core'
 import { Geometry, Polygon } from 'geojson'
 import { BehaviorSubject, from, Observable, Subject } from 'rxjs'
-import { switchMap, takeUntil, tap } from 'rxjs/operators'
+import { distinctUntilChanged, switchMap, takeUntil, tap } from 'rxjs/operators'
 
 import { TerraDraw, TerraDrawPolyLineMode } from 'terra-draw'
 import { TerraDrawGoogleMapsAdapter } from 'terra-draw-google-maps-adapter'
@@ -93,11 +93,24 @@ export class GoogleMapsService implements OnDestroy {
 
   private readonly _selectionSubject =
     new BehaviorSubject<TheSeamMapGroupTarget | null>(null)
-  public readonly selection$ = this._selectionSubject.asObservable()
+  /**
+   * `distinctUntilChanged` collapses repeated `null`s. Several paths clear the
+   * selection defensively — `setData`, `clearSelection`, the declarative
+   * `selectedGroupKey` application on map-ready — and each would otherwise
+   * emit its own `null` to consumers before the user has touched anything.
+   *
+   * Non-null targets are rebuilt on every change, so reference equality never
+   * suppresses a real one, including re-selecting the same group with a
+   * different focused polygon.
+   */
+  public readonly selection$ = this._selectionSubject.pipe(
+    distinctUntilChanged(),
+  )
 
   private readonly _hoverSubject =
     new BehaviorSubject<TheSeamMapGroupTarget | null>(null)
-  public readonly hover$ = this._hoverSubject.asObservable()
+  /** Same reasoning as `selection$`; `mouseout` repeats `null` freely. */
+  public readonly hover$ = this._hoverSubject.pipe(distinctUntilChanged())
 
   /**
    * The group of the feature a `contextmenu` event last landed on — distinct

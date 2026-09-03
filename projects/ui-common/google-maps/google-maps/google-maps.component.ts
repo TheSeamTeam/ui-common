@@ -24,7 +24,7 @@ import {
 } from '@angular/core'
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
 import { combineLatest, fromEvent, Observable, of, Subject } from 'rxjs'
-import { catchError, map, takeUntil, tap } from 'rxjs/operators'
+import { catchError, map, skip, takeUntil, tap } from 'rxjs/operators'
 
 import { faCrosshairs, faFileImport } from '@fortawesome/free-solid-svg-icons'
 import {
@@ -284,8 +284,17 @@ export class TheSeamGoogleMapsComponent
       )
       .subscribe()
 
+    // `skip(1)` drops the value these BehaviorSubject-backed streams replay on
+    // subscribe. An Angular `@Output` should fire when something changes, not
+    // when someone starts listening — without this, a consumer binding
+    // `(selectionChange)` receives a `null` before the user has interacted at
+    // all, which reads as "the selection was cleared" and can wrongly reset a
+    // panel or dirty a form on open. The subscription happens in the
+    // constructor, when the replayed value is always the initial `null`, so
+    // nothing real is ever skipped.
     this._googleMaps.selection$
       .pipe(
+        skip(1),
         tap((selection) => this.selectionChange.emit(selection)),
         takeUntil(this._ngUnsubscribe),
       )
@@ -293,6 +302,7 @@ export class TheSeamGoogleMapsComponent
 
     this._googleMaps.hover$
       .pipe(
+        skip(1),
         tap((hover) => this.featureHoverChange.emit(hover)),
         takeUntil(this._ngUnsubscribe),
       )
