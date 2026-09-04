@@ -102,9 +102,51 @@ describe('GroupedInteractionModel', () => {
       expect(ctx.selectGroup).not.toHaveBeenCalled()
     })
 
-    it('makes every feature ignore clicks', () => {
+    it('still allows clicks and does not arm geometry editing', () => {
+      // No draw is in progress, so there is no ambiguity between "select
+      // this" and "place a vertex" — clicksAllowed follows isDrawing, not
+      // selection, so a feature with nothing selected stays clickable too.
       const ctx = createFakeInteractionContext({
         editMode: true,
+        groupProperty: 'fieldId',
+      })
+      const feature = ctx.addFeatureWithPolygon(big, { fieldId: 'A' })
+      expect(model.featureFlags(feature, ctx)).toEqual({
+        geometryEditingArmed: false,
+        clicksAllowed: true,
+      })
+    })
+
+    it('selects the clicked feature group', () => {
+      // Generalised onFeatureClick: with edit mode on and nothing selected, a
+      // click still selects — it no longer takes leaving edit mode first.
+      const ctx = createFakeInteractionContext({
+        editMode: true,
+        groupProperty: 'fieldId',
+      })
+      const feature = ctx.addFeatureWithPolygon(big, { fieldId: 'A' })
+      model.onFeatureClick(feature, ctx)
+      expect(ctx.selectGroup).toHaveBeenCalledWith('A', feature)
+    })
+
+    it('does nothing on a feature click while already drawing', () => {
+      // Defensive guard mirroring onMapClick's: the service's data 'click'
+      // listener already guards on isDrawing() before calling in here, but
+      // this model does not rely solely on that guard.
+      const ctx = createFakeInteractionContext({
+        editMode: true,
+        isDrawing: true,
+        groupProperty: 'fieldId',
+      })
+      const feature = ctx.addFeatureWithPolygon(big, { fieldId: 'A' })
+      model.onFeatureClick(feature, ctx)
+      expect(ctx.selectGroup).not.toHaveBeenCalled()
+    })
+
+    it('makes every feature ignore clicks while a draw is in progress', () => {
+      const ctx = createFakeInteractionContext({
+        editMode: true,
+        isDrawing: true,
         groupProperty: 'fieldId',
       })
       const feature = ctx.addFeatureWithPolygon(big, { fieldId: 'A' })
@@ -133,7 +175,7 @@ describe('GroupedInteractionModel', () => {
   })
 
   describe('edit mode on, a group selected', () => {
-    it('arms geometry editing for the selected group only', () => {
+    it('arms geometry editing for the selected group only, but leaves every group clickable', () => {
       const ctx = createFakeInteractionContext({
         editMode: true,
         groupProperty: 'fieldId',
@@ -146,14 +188,20 @@ describe('GroupedInteractionModel', () => {
         geometryEditingArmed: true,
         clicksAllowed: true,
       })
-      expect(model.featureFlags(other, ctx).clicksAllowed).toBe(false)
+      // Not drawing, so B stays clickable too — only geometry editing is
+      // restricted to the selected group.
+      expect(model.featureFlags(other, ctx)).toEqual({
+        geometryEditingArmed: false,
+        clicksAllowed: true,
+      })
     })
 
-    it('disarms geometry editing while drawing but keeps the group selected-styled', () => {
-      // F3: the selected group is the target a drawn polygon will join, so it
-      // stays visibly selected mid-draw (clicksAllowed follows selection, not
-      // isDrawing) — but its vertex/midpoint handles are disarmed so they
-      // don't compete with Terra Draw for pointer events near the polygon.
+    it('disarms geometry editing while drawing and stops taking clicks', () => {
+      // F3: geometryEditingArmed is disarmed for the selected group during a
+      // draw so its vertex/midpoint handles don't compete with Terra Draw for
+      // pointer events near the polygon. clicksAllowed follows isDrawing, not
+      // selection, so it is suppressed here too — the draw itself is what
+      // makes a click ambiguous, regardless of which group it would land in.
       const ctx = createFakeInteractionContext({
         editMode: true,
         groupProperty: 'fieldId',
@@ -164,7 +212,7 @@ describe('GroupedInteractionModel', () => {
 
       expect(model.featureFlags(selected, ctx)).toEqual({
         geometryEditingArmed: false,
-        clicksAllowed: true,
+        clicksAllowed: false,
       })
     })
 
@@ -221,7 +269,9 @@ describe('GroupedInteractionModel', () => {
       expect(ctx.selectGroup).toHaveBeenCalledWith('A', feature)
     })
 
-    it('ignores clicks on features outside the selected group', () => {
+    it('selects a different group when clicking outside the selected group', () => {
+      // Clicking B while A is selected switches the selection to B — the
+      // whole point of this change: no need to leave edit mode first.
       const ctx = createFakeInteractionContext({
         editMode: true,
         groupProperty: 'fieldId',
@@ -230,6 +280,18 @@ describe('GroupedInteractionModel', () => {
       const other = ctx.addFeatureWithPolygon(far, { fieldId: 'B' })
       ctx.setSelectedKey('A')
       model.onFeatureClick(other, ctx)
+      expect(ctx.selectGroup).toHaveBeenCalledWith('B', other)
+    })
+
+    it('ignores a click on any feature while a draw is in progress', () => {
+      const ctx = createFakeInteractionContext({
+        editMode: true,
+        groupProperty: 'fieldId',
+        isDrawing: true,
+      })
+      const selected = ctx.addFeatureWithPolygon(big, { fieldId: 'A' })
+      ctx.setSelectedKey('A')
+      model.onFeatureClick(selected, ctx)
       expect(ctx.selectGroup).not.toHaveBeenCalled()
     })
   })

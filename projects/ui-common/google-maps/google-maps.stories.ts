@@ -405,7 +405,18 @@ export const GroupedClickSelectsWholeField: Story = {
   },
 }
 
-export const GroupedEditModeIgnoresFeatureClicks: Story = {
+/**
+ * The rule this pins: clicks are suppressed only while Terra Draw is
+ * actually capturing pointer input — that is the one moment a click is
+ * genuinely ambiguous between "select this" and "place a vertex". Edit mode
+ * alone, with nothing selected and no draw in progress, is not that moment,
+ * so a polygon stays clickable and a click can select a field without
+ * leaving edit mode first. Replaces `GroupedEditModeIgnoresFeatureClicks`,
+ * which pinned the opposite (and since-reversed) rule: that edit mode alone
+ * made every non-selected polygon `clickable: false` for as long as edit mode
+ * stayed on, which left no way to switch fields without leaving edit mode.
+ */
+export const GroupedEditModeAllowsClicksBetweenDraws: Story = {
   render: () => ({
     template: `
       <seam-google-maps
@@ -418,14 +429,24 @@ export const GroupedEditModeIgnoresFeatureClicks: Story = {
   }),
   play: async ({ canvasElement }) => {
     const component = await mapComponent(canvasElement)
+    const service = component._googleMaps
     component.setEditMode(true)
 
     const feature = featureWithGroup(component, 'A')
-    const style = component._googleMaps.googleMap.data.getStyle()(feature)
+    const clickable = () => service.googleMap.data.getStyle()(feature).clickable
 
-    // With edit mode armed and nothing selected, polygons must ignore clicks
-    // so a click can only ever mean "start drawing".
-    await expect(style.clickable).toBe(false)
+    // Edit mode on, nothing selected, no draw in progress: still clickable.
+    await expect(clickable()).toBe(true)
+
+    // A draw starting is what actually makes a click ambiguous.
+    service.startDrawing()
+    await waitUntil(() => service.isDrawing() === true)
+    await expect(clickable()).toBe(false)
+
+    // Once the draw ends, the ambiguity is gone and clicks resume.
+    service.stopDrawing()
+    await expect(service.isDrawing()).toBe(false)
+    await expect(clickable()).toBe(true)
   },
 }
 
@@ -892,15 +913,8 @@ export const GroupedDeleteRemovesOnlyFocusedPolygon: Story = {
 /**
  * Regression guard for F2: every item this menu offers (Delete Polygon,
  * Delete Field) is a destructive edit, so it must not be reachable outside
- * edit mode — even for a feature that IS selected. Right-clicking normally
- * can't even reach an unselected feature in edit mode (`clickable: false`),
- * so a selected-but-not-editing feature is the meaningful case left to guard:
- * the ordinary click-to-select flow with edit mode never having been turned
- * on. Replaces `GroupedDeleteFieldActsOnRightClickedGroup`, whose scenario (a
- * DIFFERENT group selected than the one right-clicked) is no longer
- * reachable — in edit mode a non-selected group can't receive a right-click
- * at all, and outside edit mode the menu doesn't open regardless of what's
- * selected.
+ * edit mode — even for a feature that IS selected, via the ordinary
+ * click-to-select flow with edit mode never having been turned on.
  */
 export const GroupedContextMenuClosedOutsideEditMode: Story = {
   render: () => ({
@@ -972,18 +986,14 @@ export const GroupedContextMenuKeyClosedOutsideEditMode: Story = {
 }
 
 /**
- * Regression guard for what remains reachable of the invariant
- * `GroupedContextMenuKeyTargetsCurrentSelection` used to guard: the menu's
- * items must act on the feature/group the menu actually opened for, not on
- * whatever a PRIOR interaction happened to focus or select. That story's own
- * scenario (a stale target from an earlier right-click surviving a
- * keyboard-opened menu for a newly-selected DIFFERENT group) is no longer
- * reachable, because F2 means edit mode must be on for any of this to open,
- * and in edit mode a non-selected group is `clickable: false` — so the menu
- * can now only ever open on the selected group. What's left to guard: WITHIN
- * that one reachable group, right-clicking a different polygon than the one
- * a plain click last focused must retarget the menu to it, and an unrelated
- * bystander group must stay untouched throughout.
+ * Regression guard for the invariant `GroupedContextMenuKeyTargetsCurrentSelection`
+ * used to guard: the menu's items must act on the feature/group the menu
+ * actually opened for, not on whatever a PRIOR interaction happened to focus
+ * or select. Within one group: right-clicking a different polygon than the
+ * one a plain click last focused must retarget the menu to it, and an
+ * unrelated bystander group must stay untouched throughout.
+ * `GroupedDeleteFieldActsOnRightClickedGroup`, just below, is the sibling
+ * guard for the cross-GROUP case.
  */
 export const GroupedContextMenuActsOnRightClickedPolygon: Story = {
   render: () => ({
@@ -1001,17 +1011,15 @@ export const GroupedContextMenuActsOnRightClickedPolygon: Story = {
     const data = component._googleMaps.googleMap.data
 
     // Click field X's first polygon BEFORE entering edit mode: it becomes
-    // selected AND focused. (With edit mode already on and nothing selected,
-    // a click on any polygon is ignored by design — the "off" row of the
-    // interaction table — so selection has to happen first.)
+    // selected AND focused. (Selection works identically with edit mode on
+    // or off, so this ordering is just convenience, not a requirement.)
     const [featureX1, featureX2] = featuresWithGroup(component, 'X')
     google.maps.event.trigger(data, 'click', { feature: featureX1 })
     await expect(isFeatureSelected(featureX1)).toBe(true)
 
     component.setEditMode(true)
 
-    // Right-click the OTHER polygon in the same group — the only group that
-    // can receive a right-click at all while edit mode is on.
+    // Right-click the OTHER polygon in the same group X, not group Y.
     google.maps.event.trigger(data, 'contextmenu', { feature: featureX2 })
     await new Promise((resolve) => setTimeout(resolve, 250))
 
@@ -1030,6 +1038,60 @@ export const GroupedContextMenuActsOnRightClickedPolygon: Story = {
     await expect(remainingX).toHaveLength(1)
     await expect(remainingX[0]).toBe(featureX1)
     await expect(featuresWithGroup(component, 'Y')).toHaveLength(2)
+  },
+}
+
+/**
+ * Direct regression guard for this change: right-clicking a feature in one
+ * group while a DIFFERENT group is selected must offer a "Delete Field" that
+ * deletes the right-clicked group, never the selected one.
+ *
+ * This scenario briefly went unreachable (see git history around
+ * "gate the grouped context menu on edit mode") back when edit mode made
+ * every non-selected polygon `clickable: false`, since a right-click on a
+ * non-selected group's polygon could not reach the data layer's `contextmenu`
+ * listener at all. Clicks (and right-clicks) between draws are no longer
+ * restricted to the selected group, so this is reachable again — and
+ * `contextMenuTarget$` / `deleteGroup(key)`, kept through that gap for
+ * exactly this reason, are what make "Delete Field" act correctly here.
+ */
+export const GroupedDeleteFieldActsOnRightClickedGroup: Story = {
+  render: () => ({
+    template: `
+      <seam-google-maps
+        interactionMode="grouped"
+        featureGroupProperty="fieldId"
+        [value]="value"
+        style="height: 400px"></seam-google-maps>
+    `,
+    props: { value: GROUPED_VALUE },
+  }),
+  play: async ({ canvasElement }) => {
+    const component = await mapComponent(canvasElement)
+    const data = component._googleMaps.googleMap.data
+
+    // Select field B (a single-polygon group), then enter edit mode.
+    component.selectGroup('B')
+    component.setEditMode(true)
+
+    // ...then right-click a polygon in field A (a two-polygon group),
+    // without ever selecting A.
+    const [featureA1] = featuresWithGroup(component, 'A')
+    google.maps.event.trigger(data, 'contextmenu', { feature: featureA1 })
+    await new Promise((resolve) => setTimeout(resolve, 250))
+
+    const items = Array.from(
+      canvasElement.querySelectorAll('[role="menuitem"]'),
+    ) as HTMLElement[]
+    const deleteField = items.find(
+      (item) => item.textContent?.trim() === 'Delete Field',
+    )
+    await expect(deleteField).toBeTruthy()
+    deleteField!.click()
+
+    // A (right-clicked) is gone; B (selected, but never clicked on) survives.
+    await expect(featuresWithGroup(component, 'A')).toHaveLength(0)
+    await expect(featuresWithGroup(component, 'B')).toHaveLength(1)
   },
 }
 

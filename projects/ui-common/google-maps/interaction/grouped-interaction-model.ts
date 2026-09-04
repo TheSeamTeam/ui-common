@@ -11,14 +11,19 @@ import {
  * Multi-field behaviour, where selection and geometry editing are separate
  * concerns.
  *
- * With edit mode off, clicking a polygon selects its whole group and mutates
- * nothing — the point being that a stray click can never nudge a vertex on an
- * imported boundary, which is close to unrecoverable without an undo feature.
+ * Clicking a polygon selects its whole group and mutates nothing, whether
+ * edit mode is on or off — the point being that a stray click can never nudge
+ * a vertex on an imported boundary, which is close to unrecoverable without
+ * an undo feature. With edit mode on, the selected group's own geometry also
+ * goes to Google's vertex/midpoint editor, and a click on open map starts a
+ * new drawing.
  *
- * With edit mode on, the selected group is editable and a click on open map
- * starts a new drawing. Existing polygons stop taking clicks so that a click
- * never means both "select this" and "place a vertex". The cost is that
- * switching fields requires leaving edit mode, which is deliberate.
+ * A click on a polygon is suppressed only while a draw is actually in
+ * progress — that is the one moment a click is genuinely ambiguous between
+ * "select this" and "place a vertex". Between draws there is no ambiguity at
+ * all, since Terra Draw is not capturing pointer input, so every polygon
+ * stays clickable and selecting a different field never requires leaving
+ * edit mode first.
  */
 export class GroupedInteractionModel implements MapInteractionModel {
   readonly id = 'grouped' as const
@@ -27,19 +32,21 @@ export class GroupedInteractionModel implements MapInteractionModel {
     feature: google.maps.Data.Feature,
     context: MapInteractionContext,
   ): void {
-    const key = context.groups.keyOf(feature)
-
-    if (!context.editMode) {
-      context.selectGroup(key, feature)
+    // While a draw is in progress, a click on a polygon is placing a vertex,
+    // not a selection. Defensive: the service's data `click` listener already
+    // guards on `isDrawing()` before calling in here (see onMapClick's
+    // identical defence below), but this model does not rely solely on that
+    // guard.
+    if (context.isDrawing) {
       return
     }
 
-    // In edit mode, other groups are non-clickable, so this can only be the
-    // selected group. Note which polygon was touched, since `Delete` acts on
-    // that one alone. Google's vertex editor still receives the click.
-    if (key === context.getSelectedKey()) {
-      context.selectGroup(key, feature)
-    }
+    // Selecting mutates nothing, so it is safe on any group regardless of
+    // edit mode — including a group other than the one currently selected.
+    // Note which polygon was touched, since `Delete` acts on that one alone.
+    // Google's vertex editor still receives the click for the selected
+    // group's own geometry.
+    context.selectGroup(context.groups.keyOf(feature), feature)
   }
 
   onMapClick(context: MapInteractionContext): void {
@@ -98,9 +105,15 @@ export class GroupedInteractionModel implements MapInteractionModel {
       // it is the target the drawn polygon will join — but its vertex/midpoint
       // handles are disarmed for the duration, since Google's edit handles are
       // separate interactive elements that would otherwise compete with Terra
-      // Draw for pointer events near the polygon.
+      // Draw for pointer events near the polygon. Only the selected group is
+      // ever reshapeable; every group, selected or not, is merely selectable.
       geometryEditingArmed: isSelectedGroup && !context.isDrawing,
-      clicksAllowed: isSelectedGroup,
+      // Suppressed only while Terra Draw is actually capturing pointer input
+      // — the one window in which a click is ambiguous between selecting and
+      // placing a vertex. Between draws every polygon stays clickable
+      // regardless of selection, so a click can switch the selection to a
+      // different field without leaving edit mode.
+      clicksAllowed: !context.isDrawing,
     }
   }
 
@@ -111,13 +124,12 @@ export class GroupedInteractionModel implements MapInteractionModel {
     // Every item this menu offers is a destructive edit (Delete Polygon,
     // Delete Field), so it must not be reachable outside edit mode.
     //
-    // Consequence: in edit mode, a non-selected group is `clickable: false`
-    // (see featureFlags below), so it cannot receive a right-click either —
-    // the menu can therefore only ever open on the SELECTED group. That makes
-    // `contextMenuTarget$` and `deleteGroup(key)` unable to diverge from the
-    // current selection today. They are kept anyway: it is the correct
-    // invariant, and it matters the moment a non-destructive menu item (one
-    // that should be reachable regardless of edit mode) is added.
+    // Within edit mode this can open on any group, not just the selected one:
+    // clicksAllowed above is gated on drawing, not on selection, so a
+    // right-click can land on a non-selected group's polygon just as a plain
+    // click can. `contextMenuTarget$` and `deleteGroup(key)` exist for
+    // exactly this — "Delete Field" acts on the right-clicked group, not
+    // whichever group happens to be selected.
     return context.editMode
   }
 }

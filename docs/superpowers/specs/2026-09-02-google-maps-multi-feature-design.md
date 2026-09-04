@@ -110,8 +110,15 @@ Three pieces of state: `editMode` (toggled by the map's button control),
 | `editMode` | selection | click on a polygon | click on empty map | drag |
 | --- | --- | --- | --- | --- |
 | off | — | select its group, emit | clear selection | pan |
-| on | none | **ignored** (`clickable: false`) | start a draw | pan |
-| on | group G | G's own geometry goes to Google's vertex/midpoint editor; other polygons ignored | start a draw | vertex drag, or body drag to move that polygon; else pan |
+| on | none | select its group, emit — same as with edit mode off | start a draw | pan |
+| on | group G | select its group, emit — G again re-focuses it, a different group H switches the selection to H; G's own geometry additionally goes to Google's vertex/midpoint editor for as long as it stays selected | start a draw | vertex drag, or body drag to move G's polygon; else pan |
+
+A draw in progress overrides every row above: a click on a polygon places a
+vertex rather than selecting anything, and a click on empty map does too,
+rather than starting a second draw. That is the only moment a click is
+genuinely ambiguous between "select this" and "place a vertex" — between
+draws there is no ambiguity at all, since Terra Draw is not capturing pointer
+input, which is why edit mode by itself does not suppress clicks.
 
 Draw completion:
 
@@ -134,11 +141,18 @@ removes everything selected, which in `'grouped'` mode is the whole group, and
 is what the explicit **Delete Field** context-menu item calls. See
 [Context menu](#context-menu).
 
-**Known consequence.** With edit mode on, switching to a different field means
-turning edit mode off first. This is accepted. Nothing else can be true at the
-same time without a click meaning two things, and a mode the user toggles
-deliberately is the point — it is what stops a click from reshaping an imported
-boundary.
+**What actually suppresses a click.** A click on a polygon is ignored only
+while a draw is in progress — the one moment a click would mean two things at
+once, select this *and* place a vertex. An earlier version of this design
+suppressed clicks on every non-selected polygon for the whole of edit mode,
+on the theory that the ambiguity needed guarding against for as long as edit
+mode could turn into a draw at any moment. That over-applied the guard: it
+made switching fields require leaving edit mode first, which turned `Escape`
+— meant to cascade one concern per press — into a trap, since clearing the
+selection left nothing clickable to select a replacement with. Gating on
+`isDrawing` instead of on edit mode guards the actual ambiguous moment and
+nothing more; selecting a polygon mutates nothing, so there was never a
+mutation risk in letting it happen between draws.
 
 ## Identity and grouping
 
@@ -380,9 +394,9 @@ wrong, and the implementation resolves each flag independently.
 
 This is the handoff's gap 4. A retired field sets `editable: false` and stays
 unreshapeable while its neighbours do not — and no property in an uploaded file
-can arm editing when the mode says no. The `clickable` half is what makes
-"polygons ignore clicks while edit mode is armed with nothing selected" work,
-with the model, not the consumer, winning that decision.
+can arm editing when the mode says no. The `clickable` half is what lets the
+model suppress every click for the duration of an in-progress draw, with the
+model, not the consumer, winning that decision.
 
 Generalises beyond retired fields to any per-feature lock, such as a boundary
 frozen once its questionnaire is submitted.
@@ -514,9 +528,10 @@ Unit-testable without the Maps API:
   is the main reason the strategy is worth extracting
 
 **Storybook.** The interaction state machine gets stories with `play`
-functions covering: click-selects-group with edit off, click-ignored with edit
-armed and nothing selected, draw-creates-new-group, draw-joins-selected-group,
-the `Escape` cascade, `Delete` removing only the focused polygon, per-feature
+functions covering: click-selects-group with edit off, click-still-selects
+with edit armed and nothing selected, click-ignored while a draw is actually
+in progress, draw-creates-new-group, draw-joins-selected-group, the `Escape`
+cascade, `Delete` removing only the focused polygon, per-feature
 `editable: false` surviving selection, and labels appearing and hiding.
 
 **Drive the Maps event system, not the cursor.** Data-layer polygons render
