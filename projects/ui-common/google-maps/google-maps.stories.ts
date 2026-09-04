@@ -175,7 +175,7 @@ export const MultiPolygonRoundTrip: Story = {
     const component = (window as any).ng.getComponent(host)
     const geoJson = await component.getGeoJson()
     const types = geoJson.features.map((f: any) => f.geometry.type).sort()
-    expect(types).toEqual(['MultiPolygon', 'Polygon'])
+    await expect(types).toEqual(['MultiPolygon', 'Polygon'])
   },
 }
 
@@ -338,7 +338,7 @@ export const GroupedClickSelectsWholeField: Story = {
     // An `@Output` reports a change, not initial state — several paths clear
     // the selection defensively during setup, and each used to emit its own
     // `null` before the user had touched anything.
-    expect(args.selectionChange).not.toHaveBeenCalled()
+    await expect(args.selectionChange).not.toHaveBeenCalled()
 
     google.maps.event.trigger(component._googleMaps.googleMap.data, 'click', {
       feature: featureA1,
@@ -348,7 +348,7 @@ export const GroupedClickSelectsWholeField: Story = {
     // click selected something: it fails if the trigger is removed, or if
     // GroupedInteractionModel.onFeatureClick is gutted to a no-op — unlike
     // getGroups(), which reflects grouping alone and is blind to selection.
-    expect(args.selectionChange).toHaveBeenCalledTimes(1)
+    await expect(args.selectionChange).toHaveBeenCalledTimes(1)
 
     // `plot` distinguishes field A's two polygons, so this also pins that the
     // focused feature is the one clicked and that the group holds two
@@ -358,7 +358,7 @@ export const GroupedClickSelectsWholeField: Story = {
     // `data.forEach` iteration, which Google does not document as stable
     // though it is insertion order in practice — if this ever flakes, that is
     // the reason.
-    expect(args.selectionChange).toHaveBeenLastCalledWith(
+    await expect(args.selectionChange).toHaveBeenLastCalledWith(
       expect.objectContaining({
         feature: expect.objectContaining({
           properties: expect.objectContaining({ fieldId: 'A', plot: 1 }),
@@ -379,9 +379,9 @@ export const GroupedClickSelectsWholeField: Story = {
 
     // Cross-check against the data layer itself: group-wide selection, not
     // per-feature selection, and field B is untouched.
-    expect(isFeatureSelected(featureA1)).toBe(true)
-    expect(isFeatureSelected(featureA2)).toBe(true)
-    expect(isFeatureSelected(featureB)).toBe(false)
+    await expect(isFeatureSelected(featureA1)).toBe(true)
+    await expect(isFeatureSelected(featureA2)).toBe(true)
+    await expect(isFeatureSelected(featureB)).toBe(false)
   },
 }
 
@@ -405,7 +405,7 @@ export const GroupedEditModeIgnoresFeatureClicks: Story = {
 
     // With edit mode armed and nothing selected, polygons must ignore clicks
     // so a click can only ever mean "start drawing".
-    expect(style.clickable).toBe(false)
+    await expect(style.clickable).toBe(false)
   },
 }
 
@@ -434,8 +434,8 @@ export const GroupedRetiredFieldStaysUneditable: Story = {
     const retired = featureWithGroup(component, 'B')
     const retiredStyle =
       component._googleMaps.googleMap.data.getStyle()(retired)
-    expect(retiredStyle.editable).toBe(false)
-    expect(retiredStyle.fillColor).toBe('dimgray')
+    await expect(retiredStyle.editable).toBe(false)
+    await expect(retiredStyle.fillColor).toBe('dimgray')
 
     // Field C opts out of editing but declares no styleOptionsSelected, so
     // the documented visual merge chain (defaults -> styleOptions ->
@@ -445,8 +445,8 @@ export const GroupedRetiredFieldStaysUneditable: Story = {
     component.selectGroup('C')
     const plain = featureWithGroup(component, 'C')
     const plainStyle = component._googleMaps.googleMap.data.getStyle()(plain)
-    expect(plainStyle.editable).toBe(false)
-    expect(plainStyle.fillColor).toBe('green')
+    await expect(plainStyle.editable).toBe(false)
+    await expect(plainStyle.fillColor).toBe('green')
   },
 }
 
@@ -467,18 +467,18 @@ export const GroupedEscapeCascades: Story = {
     component.selectGroup('A')
 
     const [featureA1] = featuresWithGroup(component, 'A')
-    expect(isFeatureSelected(featureA1)).toBe(true)
+    await expect(isFeatureSelected(featureA1)).toBe(true)
 
     // First Escape: nothing is drawing, so this clears the selection alone —
     // proven by the feature actually losing its selected state — and does not
     // yet leave edit mode.
     component._googleMaps.handleEscape()
-    expect(isFeatureSelected(featureA1)).toBe(false)
-    expect(component.isEditMode()).toBe(true)
+    await expect(isFeatureSelected(featureA1)).toBe(false)
+    await expect(component.isEditMode()).toBe(true)
 
     // Second Escape: selection is already clear, so this leaves edit mode.
     component._googleMaps.handleEscape()
-    expect(component.isEditMode()).toBe(false)
+    await expect(component.isEditMode()).toBe(false)
   },
 }
 
@@ -498,8 +498,8 @@ export const LegacyClickStillArmsEditing: Story = {
     const style = component._googleMaps.googleMap.data.getStyle()(feature)
     // Regression guard for the two apps that are not being updated: in legacy
     // mode a click alone still arms handles.
-    expect(style.editable).toBe(true)
-    expect(isFeatureSelected(feature)).toBe(true)
+    await expect(style.editable).toBe(true)
+    await expect(isFeatureSelected(feature)).toBe(true)
   },
 }
 
@@ -519,13 +519,13 @@ export const LegacyDrawButtonTogglesDrawing: Story = {
     const button = canvasElement.querySelector(
       '[title="Draw Field"]',
     ) as HTMLButtonElement
-    expect(button).not.toBeNull()
+    await expect(button).not.toBeNull()
 
-    expect(component._googleMaps.isDrawing()).toBe(false)
+    await expect(component._googleMaps.isDrawing()).toBe(false)
     button.click()
-    expect(component._googleMaps.isDrawing()).toBe(true)
+    await expect(component._googleMaps.isDrawing()).toBe(true)
     button.click()
-    expect(component._googleMaps.isDrawing()).toBe(false)
+    await expect(component._googleMaps.isDrawing()).toBe(false)
   },
 }
 
@@ -545,15 +545,15 @@ export const LegacyContextMenuOnSelectedShowsSingleDelete: Story = {
     const data = component._googleMaps.googleMap.data
 
     google.maps.event.trigger(data, 'click', { feature })
-    expect(isFeatureSelected(feature)).toBe(true)
+    await expect(isFeatureSelected(feature)).toBe(true)
 
     google.maps.event.trigger(data, 'contextmenu', { feature })
     // Let the menu's embedded view render and detect changes.
     await new Promise((resolve) => setTimeout(resolve, 250))
 
     const items = canvasElement.querySelectorAll('[role="menuitem"]')
-    expect(items).toHaveLength(1)
-    expect(items[0].textContent?.trim()).toBe('Delete')
+    await expect(items).toHaveLength(1)
+    await expect(items[0].textContent?.trim()).toBe('Delete')
   },
 }
 
@@ -571,13 +571,13 @@ export const LegacyContextMenuOnUnselectedDoesNothing: Story = {
     const feature = featureWithGroup(component, 'A')
     const data = component._googleMaps.googleMap.data
 
-    expect(isFeatureSelected(feature)).toBe(false)
+    await expect(isFeatureSelected(feature)).toBe(false)
 
     google.maps.event.trigger(data, 'contextmenu', { feature })
     await new Promise((resolve) => setTimeout(resolve, 250))
 
     const items = canvasElement.querySelectorAll('[role="menuitem"]')
-    expect(items).toHaveLength(0)
+    await expect(items).toHaveLength(0)
   },
 }
 
@@ -642,14 +642,14 @@ export const GroupedDrawCreatesNewGroup: Story = {
     // never enters into it.
     finishDrawWithPolygon(component, squareAt(-98.5, 37.63))
 
-    expect(component.getGroups().length).toBe(groupsBefore + 1)
+    await expect(component.getGroups().length).toBe(groupsBefore + 1)
 
     const lastSelection = (args.selectionChange as any).mock.calls.at(-1)?.[0]
-    expect(lastSelection).toBeTruthy()
-    expect(lastSelection.group.features).toHaveLength(1)
+    await expect(lastSelection).toBeTruthy()
+    await expect(lastSelection.group.features).toHaveLength(1)
     const newKey = lastSelection.group.key
-    expect(typeof newKey).toBe('string')
-    expect(newKey.length).toBeGreaterThan(0)
+    await expect(typeof newKey).toBe('string')
+    await expect(newKey.length).toBeGreaterThan(0)
 
     // The generated key must be a real GeoJSON property, not just the
     // internal __app__ fallback — required so the grouping survives
@@ -659,7 +659,7 @@ export const GroupedDrawCreatesNewGroup: Story = {
     const written = (geoJson as any).features.find(
       (f: any) => f.properties.fieldId === newKey,
     )
-    expect(written).toBeTruthy()
+    await expect(written).toBeTruthy()
   },
 }
 
@@ -688,11 +688,11 @@ export const GroupedDrawJoinsSelectedGroup: Story = {
 
     // Field A had two polygons; the new one joins it as a third rather than
     // starting a group of its own.
-    expect(featuresWithGroup(component, 'A')).toHaveLength(3)
+    await expect(featuresWithGroup(component, 'A')).toHaveLength(3)
 
     const lastSelection = (args.selectionChange as any).mock.calls.at(-1)?.[0]
-    expect(lastSelection.group.key).toBe('A')
-    expect(lastSelection.group.features).toHaveLength(3)
+    await expect(lastSelection.group.key).toBe('A')
+    await expect(lastSelection.group.features).toHaveLength(3)
 
     // The join is a written property, not just the in-memory selection —
     // confirms _registry.assignKey wrote fieldId = 'A' onto the new feature.
@@ -700,7 +700,7 @@ export const GroupedDrawJoinsSelectedGroup: Story = {
     const aFeatures = (geoJson as any).features.filter(
       (f: any) => f.properties.fieldId === 'A',
     )
-    expect(aFeatures).toHaveLength(3)
+    await expect(aFeatures).toHaveLength(3)
   },
 }
 
@@ -728,8 +728,8 @@ export const GroupedDeleteRemovesOnlyFocusedPolygon: Story = {
     // Selecting A focuses featureA1 specifically (the feature the click
     // landed on), while group-wide selection styles both of A's polygons.
     google.maps.event.trigger(data, 'click', { feature: featureA1 })
-    expect(isFeatureSelected(featureA1)).toBe(true)
-    expect(isFeatureSelected(featureA2)).toBe(true)
+    await expect(isFeatureSelected(featureA1)).toBe(true)
+    await expect(isFeatureSelected(featureA2)).toBe(true)
 
     // The real 'Delete' key path (not deleteFocusedFeature() called
     // directly), so this also exercises the component's keydown handler.
@@ -739,8 +739,8 @@ export const GroupedDeleteRemovesOnlyFocusedPolygon: Story = {
     // design's granularity: a polygon added to the wrong field must have a
     // way out that doesn't cost the rest of the field.
     const remaining = featuresWithGroup(component, 'A')
-    expect(remaining).toHaveLength(1)
-    expect(remaining[0]).toBe(featureA2)
+    await expect(remaining).toHaveLength(1)
+    await expect(remaining[0]).toBe(featureA2)
 
     // Selection must track what remains, not what was deleted — the guard
     // for F2 (deleteSelection leaving selection$/_focusedFeature stale) and
@@ -748,9 +748,9 @@ export const GroupedDeleteRemovesOnlyFocusedPolygon: Story = {
     // this would either still report 2 features, or clear to null instead of
     // staying on A's one remaining polygon.
     const lastSelection = (args.selectionChange as any).mock.calls.at(-1)?.[0]
-    expect(lastSelection).toBeTruthy()
-    expect(lastSelection.group.key).toBe('A')
-    expect(lastSelection.group.features).toHaveLength(1)
+    await expect(lastSelection).toBeTruthy()
+    await expect(lastSelection.group.key).toBe('A')
+    await expect(lastSelection.group.features).toHaveLength(1)
   },
 }
 
@@ -786,13 +786,13 @@ export const GroupedContextMenuClosedOutsideEditMode: Story = {
     // on.
     const [featureA1] = featuresWithGroup(component, 'A')
     google.maps.event.trigger(data, 'click', { feature: featureA1 })
-    expect(isFeatureSelected(featureA1)).toBe(true)
+    await expect(isFeatureSelected(featureA1)).toBe(true)
 
     google.maps.event.trigger(data, 'contextmenu', { feature: featureA1 })
     await new Promise((resolve) => setTimeout(resolve, 250))
 
     const items = canvasElement.querySelectorAll('[role="menuitem"]')
-    expect(items).toHaveLength(0)
+    await expect(items).toHaveLength(0)
   },
 }
 
@@ -824,7 +824,7 @@ export const GroupedContextMenuKeyClosedOutsideEditMode: Story = {
     // on.
     const [featureA1] = featuresWithGroup(component, 'A')
     google.maps.event.trigger(data, 'click', { feature: featureA1 })
-    expect(isFeatureSelected(featureA1)).toBe(true)
+    await expect(isFeatureSelected(featureA1)).toBe(true)
 
     // The real keyboard path, not `_googleMaps.openContextMenu()` called
     // directly — this also exercises the component's keydown handler.
@@ -832,7 +832,7 @@ export const GroupedContextMenuKeyClosedOutsideEditMode: Story = {
     await new Promise((resolve) => setTimeout(resolve, 250))
 
     const items = canvasElement.querySelectorAll('[role="menuitem"]')
-    expect(items).toHaveLength(0)
+    await expect(items).toHaveLength(0)
   },
 }
 
@@ -871,7 +871,7 @@ export const GroupedContextMenuActsOnRightClickedPolygon: Story = {
     // interaction table — so selection has to happen first.)
     const [featureX1, featureX2] = featuresWithGroup(component, 'X')
     google.maps.event.trigger(data, 'click', { feature: featureX1 })
-    expect(isFeatureSelected(featureX1)).toBe(true)
+    await expect(isFeatureSelected(featureX1)).toBe(true)
 
     component.setEditMode(true)
 
@@ -886,15 +886,15 @@ export const GroupedContextMenuActsOnRightClickedPolygon: Story = {
     const deletePolygon = items.find(
       (item) => item.textContent?.trim() === 'Delete Polygon',
     )
-    expect(deletePolygon).toBeTruthy()
+    await expect(deletePolygon).toBeTruthy()
     deletePolygon!.click()
 
     // X2 — what the menu actually opened for — is gone. X1 — merely focused
     // by the earlier click — survives, and bystander field Y is untouched.
     const remainingX = featuresWithGroup(component, 'X')
-    expect(remainingX).toHaveLength(1)
-    expect(remainingX[0]).toBe(featureX1)
-    expect(featuresWithGroup(component, 'Y')).toHaveLength(2)
+    await expect(remainingX).toHaveLength(1)
+    await expect(remainingX[0]).toBe(featureX1)
+    await expect(featuresWithGroup(component, 'Y')).toHaveLength(2)
   },
 }
 
@@ -934,6 +934,6 @@ export const ConsumerSuppliedControl: Story = {
     // through the DOM — google-maps.component.html has no <ng-content> slot,
     // deliberately. So look for it in the map's rendered control container.
     const button = canvasElement.querySelector('[title="Smoke Test"]')
-    expect(button).not.toBeNull()
+    await expect(button).not.toBeNull()
   },
 }
