@@ -312,6 +312,26 @@ function featuresWithGroup(component: any, key: string): any[] {
   return matches
 }
 
+/**
+ * Poll `predicate` until it's true. Needed for the terra-draw#710 recovery:
+ * a `startDrawing()` call that lands while a recreated `TerraDraw` instance
+ * is still starting up finishes entering drawing mode from that instance's
+ * `ready` event, which fires asynchronously — so `isDrawing()` does not
+ * necessarily flip synchronously the way it does on a non-recreating call.
+ */
+async function waitUntil(
+  predicate: () => boolean,
+  timeoutMs = 2000,
+): Promise<void> {
+  const start = Date.now()
+  while (!predicate()) {
+    if (Date.now() - start > timeoutMs) {
+      throw new Error('waitUntil: condition was not met before timeout')
+    }
+    await new Promise((resolve) => setTimeout(resolve, 20))
+  }
+}
+
 export const GroupedClickSelectsWholeField: Story = {
   render: (args) => ({
     template: `
@@ -529,6 +549,71 @@ export const GroupedDrawingStateReleasesAfterStop: Story = {
 
     service.stopDrawing()
     await expect(service.isDrawing()).toBe(false)
+  },
+}
+
+/**
+ * Regression coverage for the terra-draw#710 recovery (see
+ * .superpowers/terra-draw-710-spike.md and
+ * .superpowers/terra-draw-recreate-report.md): `stopDrawing()` marks the
+ * just-used `TerraDraw` instance for recreation, and the NEXT
+ * `startDrawing()` call pays that cost lazily — recreating the instance and
+ * its adapter, then queuing itself past the new instance's async `ready`
+ * event rather than dropping the click that asked for it (see
+ * `_terraDrawNeedsRecreate` / `_pendingStartDrawing` in
+ * google-maps.service.ts).
+ *
+ * Drives several consecutive start/stop cycles and confirms every one of
+ * them reaches `isDrawing() === true` — the bug this mechanism exists for is
+ * exactly a SECOND (and later) draw silently failing to start — and that the
+ * underlying `TerraDraw` instance is actually swapped out on every cycle
+ * after the first, proving recreation really ran rather than being a no-op.
+ *
+ * What this cannot cover: the actual upstream pointer-capture defect only
+ * reproduces from a real, multi-click, mouse-driven draw against the
+ * adapter's own DOM-level listeners — calling `startDrawing()`/
+ * `stopDrawing()` programmatically never engages that capture at all, so it
+ * can't by itself prove the browser-level symptom (silently dropped clicks,
+ * a drag panning the map) is fixed. That verification was done by hand
+ * against a real Storybook session with real mouse events; see the recreate
+ * report referenced above. This story only proves the recreate wiring
+ * itself runs correctly, repeatedly, with no stuck state and no leaked
+ * instance reference.
+ */
+export const GroupedRepeatedDrawCyclesRecreateTerraDraw: Story = {
+  render: () => ({
+    template: `
+      <seam-google-maps
+        interactionMode="grouped"
+        featureGroupProperty="fieldId"
+        [value]="value"
+        style="height: 400px"></seam-google-maps>
+    `,
+    props: { value: GROUPED_VALUE },
+  }),
+  play: async ({ canvasElement }) => {
+    const component = await mapComponent(canvasElement)
+    const service = component._googleMaps
+    component.setEditMode(true)
+
+    const seenInstances = new Set<any>()
+    const CYCLES = 4
+
+    for (let i = 0; i < CYCLES; i++) {
+      await expect(service.isDrawing()).toBe(false)
+
+      service.startDrawing()
+      // Cycle 1 flips synchronously (no recreate needed yet); cycle 2+ waits
+      // on the recreated instance's async `ready` event.
+      await waitUntil(() => service.isDrawing() === true)
+
+      seenInstances.add(service._terraDraw)
+
+      service.stopDrawing()
+      await expect(service.isDrawing()).toBe(false)
+    }
+
+    await expect(seenInstances.size).toBe(CYCLES)
   },
 }
 

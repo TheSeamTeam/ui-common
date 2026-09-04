@@ -69,6 +69,21 @@ export class GoogleMapsService implements OnDestroy {
 
   private _terraDraw?: TerraDraw
   private _terraDrawReady = false
+  // Terra Draw's Google Maps adapter can lose pointer capture at the adapter
+  // level after a completed draw session (terra-draw#710): every click after
+  // that lands on nothing, and a drag pans the map instead of editing.
+  // Recreating the whole `TerraDraw` instance (and its adapter) is the only
+  // thing that restores it. `stopDrawing()` sets this whenever a real draw
+  // session just ended — finished OR cancelled, both exercise the adapter's
+  // pointer capture the same way — and the NEXT `startDrawing()` call
+  // consumes it lazily, so a session that never draws again pays nothing and
+  // the recreate never stalls the moment a draw finishes.
+  private _terraDrawNeedsRecreate = false
+  // Set while a recreate triggered by `startDrawing()` is in flight (the new
+  // instance's `ready` event fires asynchronously). Lets that `ready` handler
+  // finish entering drawing mode itself, so the click that asked for it is
+  // not silently dropped while Terra Draw finishes starting back up.
+  private _pendingStartDrawing = false
   private readonly _drawingSubject = new BehaviorSubject<boolean>(false)
   public readonly drawing$ = this._drawingSubject.asObservable()
   private _featureContextMenu: MenuComponent | null = null
@@ -149,10 +164,7 @@ export class GoogleMapsService implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this._terraDraw?.enabled) {
-      this._terraDraw.stop()
-    }
-    this._terraDraw = undefined
+    this._disposeTerraDraw()
     this._drawingSubject.complete()
     this._selectionSubject.complete()
     this._hoverSubject.complete()
@@ -313,23 +325,46 @@ export class GoogleMapsService implements OnDestroy {
     ) {
       return
     }
-    // Clear any selection when entering drawing mode, but only in 'legacy'
-    // mode. There, a selected feature and the shape being drawn are unrelated,
-    // so leaving the old one visibly selected would read as one shape. In
-    // 'grouped' mode they are related: the selected group is exactly the
-    // target the drawn polygon will join, so it keeps its selected styling —
-    // `GroupedInteractionModel.featureFlags()` disarms its edit handles for
-    // the duration instead (F3), so they don't compete with Terra Draw for
-    // pointer events.
+    if (this._terraDrawNeedsRecreate) {
+      // The instance that just finished/cancelled a draw may have lost the
+      // adapter's pointer capture (terra-draw#710). Recreate it before this
+      // draw starts. Recreation is synchronous, but the new instance's
+      // `ready` event is not (see `_createTerraDraw()`), so queue this click
+      // rather than silently dropping it — the `ready` handler finishes the
+      // job once the new instance is actually usable.
+      this._terraDrawNeedsRecreate = false
+      this._pendingStartDrawing = true
+      this._recreateTerraDraw()
+      return
+    }
+    this._enterDrawingMode()
+  }
+
+  /**
+   * Clear any selection when entering drawing mode, but only in 'legacy'
+   * mode. There, a selected feature and the shape being drawn are unrelated,
+   * so leaving the old one visibly selected would read as one shape. In
+   * 'grouped' mode they are related: the selected group is exactly the
+   * target the drawn polygon will join, so it keeps its selected styling —
+   * `GroupedInteractionModel.featureFlags()` disarms its edit handles for
+   * the duration instead (F3), so they don't compete with Terra Draw for
+   * pointer events.
+   *
+   * Split out of `startDrawing()` so a recreate-in-flight (see
+   * `_terraDrawNeedsRecreate`) can defer this until the new instance's
+   * `ready` event actually fires, instead of entering drawing mode against
+   * an instance that isn't ready yet.
+   */
+  private _enterDrawingMode(): void {
+    this._assertInitialized()
     if (this._model.id === 'legacy') {
-      this._assertInitialized()
       this.googleMap.data.forEach((f) => {
         if (isFeatureSelected(f)) {
           setFeatureSelected(f, false)
         }
       })
     }
-    this._terraDraw.setMode('polyline')
+    this._terraDraw?.setMode('polyline')
     this._drawingSubject.next(true)
     this._refreshStyles()
     this._labelsOverlay?.refresh()
@@ -343,8 +378,18 @@ export class GoogleMapsService implements OnDestroy {
     if (!this._terraDraw || !this._terraDrawReady) {
       return
     }
+    const wasDrawing = this.isDrawing()
     this._terraDraw.setMode('static')
     this._drawingSubject.next(false)
+    if (wasDrawing) {
+      // A real draw session (finished OR cancelled) just used this
+      // instance's adapter-level pointer capture, which is what
+      // terra-draw#710 can leave broken. Don't recreate right now — that
+      // would stall right after every draw in what may be a long
+      // multi-field session. Instead mark it and let the next
+      // `startDrawing()` pay that cost only if it happens.
+      this._terraDrawNeedsRecreate = true
+    }
     // Re-arms the selected group's edit handles in 'grouped' mode: nothing
     // else changes a feature's own properties here, so nothing else would
     // make Data re-evaluate the style function and pick up
@@ -354,10 +399,50 @@ export class GoogleMapsService implements OnDestroy {
     this._labelsOverlay?.refresh()
   }
 
+  /**
+   * Stop (if running) and drop the current `TerraDraw` instance. `TerraDraw#
+   * stop()` deregisters its adapter, which for the Google Maps adapter's
+   * `isolatedData: true` mode calls `this._data.setMap(null)` and drops the
+   * reference — so this never leaves an orphaned or duplicate Data layer
+   * behind, across any number of calls.
+   */
+  private _disposeTerraDraw(): void {
+    if (this._terraDraw?.enabled) {
+      this._terraDraw.stop()
+    }
+    this._terraDraw = undefined
+    this._terraDrawReady = false
+  }
+
+  /**
+   * Dispose the current `TerraDraw` instance (and its adapter) and build a
+   * fresh one in its place. This is the terra-draw#710 recovery: the old
+   * instance's listeners die with it (its adapter is deregistered by
+   * `stop()`, so nothing further reaches it), and `_createTerraDraw()` wires
+   * up brand new `ready`/`finish` listeners on the new instance — never the
+   * stale closures from a previous instance.
+   */
+  private _recreateTerraDraw(): void {
+    this._disposeTerraDraw()
+    this._terraDraw = this._createTerraDraw()
+  }
+
   private _initTerraDraw(): void {
     if (notNullOrUndefined(this._terraDraw)) {
       throw Error(`Terra Draw is already initialized.`)
     }
+    this._terraDraw = this._createTerraDraw()
+  }
+
+  /**
+   * Build and start a new `TerraDraw` instance with its Google Maps adapter,
+   * wiring up this instance's own `ready`/`finish` listeners. Called both by
+   * `_initTerraDraw()` (first-ever init, guarded against running twice) and
+   * by `_recreateTerraDraw()` (every terra-draw#710 recovery afterward) —
+   * the guard against accidental double-init only lives in `_initTerraDraw()`
+   * itself, so recreation is free to call this as many times as needed.
+   */
+  private _createTerraDraw(): TerraDraw {
     this._assertInitialized()
 
     // The Google Maps adapter creates an OverlayView on the map; ensure the map
@@ -453,6 +538,26 @@ export class GoogleMapsService implements OnDestroy {
       this._terraDrawReady = true
       // Start in the resting (non-drawing) mode.
       draw.setMode('static')
+      // A `startDrawing()` call arrived while THIS instance was still
+      // starting up (terra-draw#710 recovery, or plain first-time init) and
+      // queued itself rather than being dropped — finish the job now, but
+      // only if nothing since then made drawing invalid: editing disabled,
+      // somehow already drawing, or — grouped mode only, where edit mode is
+      // its own on/off concept `startDrawing()` itself never re-checks —
+      // edit mode having been turned off while this was in flight. Mirrors
+      // exactly the check `GroupedInteractionModel.onMapClick()` made before
+      // calling in, just re-run after the async gap instead of trusting it
+      // still holds.
+      if (this._pendingStartDrawing) {
+        this._pendingStartDrawing = false
+        const stillValid =
+          this.isEditingEnabled() &&
+          !this.isDrawing() &&
+          (this._model.id !== 'grouped' || this.isEditMode())
+        if (stillValid) {
+          this._enterDrawingMode()
+        }
+      }
     })
 
     draw.on('finish', (id, context) => {
@@ -463,7 +568,7 @@ export class GoogleMapsService implements OnDestroy {
     })
 
     draw.start()
-    this._terraDraw = draw
+    return draw
   }
 
   public addControl(
