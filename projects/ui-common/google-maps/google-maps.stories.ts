@@ -435,6 +435,11 @@ export const GroupedRetiredFieldStaysUneditable: Story = {
     const retiredStyle =
       component._googleMaps.googleMap.data.getStyle()(retired)
     await expect(retiredStyle.editable).toBe(false)
+    // A locked field must not be draggable either — moving the whole polygon
+    // changes the map's value exactly as much as reshaping it does, so a
+    // "lock" that still lets it be dragged to a new location is not a lock.
+    // editable: false implies draggable: false (compute-feature-style.ts).
+    await expect(retiredStyle.draggable).toBe(false)
     await expect(retiredStyle.fillColor).toBe('dimgray')
 
     // Field C opts out of editing but declares no styleOptionsSelected, so
@@ -446,6 +451,7 @@ export const GroupedRetiredFieldStaysUneditable: Story = {
     const plain = featureWithGroup(component, 'C')
     const plainStyle = component._googleMaps.googleMap.data.getStyle()(plain)
     await expect(plainStyle.editable).toBe(false)
+    await expect(plainStyle.draggable).toBe(false)
     await expect(plainStyle.fillColor).toBe('green')
   },
 }

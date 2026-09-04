@@ -60,12 +60,27 @@ describe('computeFeatureStyle', () => {
     expect(computeFeatureStyle(feature, armed).fillColor).toBe('gold')
   })
 
-  it('lets a feature opt out of editing while selected', () => {
+  it('lets a feature opt out of editing while selected, and implies draggable: false too', () => {
+    // A declared editable: false also clamps draggable: false — dragging the
+    // whole polygon changes the map's value exactly as much as reshaping it
+    // does, so a "locked" feature that could still be dragged would not
+    // actually be locked. See the doc comment on computeFeatureStyle.
     const feature = makeFeature({ styleOptions: { editable: false } })
     setFeatureSelected(feature, true)
     const style = computeFeatureStyle(feature, armed)
     expect(style.editable).toBe(false)
-    expect(style.draggable).toBe(true)
+    expect(style.draggable).toBe(false)
+  })
+
+  it('lets a feature opt out of dragging alone, while staying editable', () => {
+    // The implication is one-directional: draggable: false does NOT imply
+    // editable: false, so a feature may opt out of dragging while remaining
+    // reshapeable via its vertex handles.
+    const feature = makeFeature({ styleOptions: { draggable: false } })
+    setFeatureSelected(feature, true)
+    const style = computeFeatureStyle(feature, armed)
+    expect(style.editable).toBe(true)
+    expect(style.draggable).toBe(false)
   })
 
   it('never lets a feature opt IN beyond what the context allows', () => {

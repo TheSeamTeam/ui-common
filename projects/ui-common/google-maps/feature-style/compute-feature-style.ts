@@ -104,6 +104,16 @@ export function mergeStyleOptions(
  * The clamp is one-directional. A feature can only narrow what the context
  * permits, never widen it, so no property in an uploaded file can arm editing
  * when the mode says no.
+ *
+ * A declared `editable: false` also implies `draggable: false`: moving a
+ * polygon changes the map's value exactly as much as reshaping it does, so a
+ * feature that opts out of one opts out of the other. This implication runs
+ * only one way — `draggable: false` alone does not imply `editable: false`, so
+ * a feature may still opt out of dragging while remaining reshapeable via its
+ * vertex handles. Resolved through the same per-key `wants()` lookup as
+ * `editable` itself, so a feature that locks `editable: false` in
+ * `styleOptions` cannot be dragged even if `styleOptionsSelected` declares
+ * `draggable` for an unrelated reason (or not at all).
  */
 export function computeFeatureStyle(
   feature: google.maps.Data.Feature,
@@ -131,18 +141,15 @@ export function computeFeatureStyle(
   const wants = (option: 'editable' | 'draggable' | 'clickable') =>
     (selectedDeclared?.[option] ?? baseDeclared?.[option]) !== false
 
-  const geometryEditable =
-    wants('editable') &&
-    context.editingEnabled &&
-    context.geometryEditingArmed &&
-    selected
+  const editingArmed =
+    context.editingEnabled && context.geometryEditingArmed && selected
+  const wantsEditable = wants('editable')
 
-  options.editable = geometryEditable
-  options.draggable =
-    wants('draggable') &&
-    context.editingEnabled &&
-    context.geometryEditingArmed &&
-    selected
+  options.editable = wantsEditable && editingArmed
+  // editable: false implies draggable: false (see the doc comment above) —
+  // the reverse does not hold, so wants('draggable') is still consulted on
+  // its own for a feature that opts out of dragging alone.
+  options.draggable = wants('draggable') && wantsEditable && editingArmed
   options.clickable = wants('clickable') && context.clicksAllowed
 
   return options
