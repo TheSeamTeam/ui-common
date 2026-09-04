@@ -281,9 +281,21 @@ export class GoogleMapsService implements OnDestroy {
     }
   }
 
-  /** Whether polygon drawing mode is currently active. */
+  /**
+   * Whether polygon drawing mode is currently active.
+   *
+   * Reads `_drawingSubject` — set by `startDrawing()`/`stopDrawing()`, which
+   * this service fully controls — rather than asking Terra Draw's own
+   * `getMode()`. The two are kept in lockstep by every call to those two
+   * methods, so this is not a behaviour change; it exists so a stuck Terra
+   * Draw mode can never silently disagree with, and disarm, the rest of this
+   * service's drawing-state bookkeeping (F3's `geometryEditingArmed`
+   * included). `stopDrawing()` still always calls `_terraDraw.setMode('static')`
+   * to make Terra Draw itself release its cursor override and any
+   * in-progress geometry, regardless of which source `isDrawing()` reads.
+   */
   public isDrawing(): boolean {
-    return this._terraDraw?.getMode() === 'polyline'
+    return this._drawingSubject.value
   }
 
   /** Enter polygon drawing mode. */

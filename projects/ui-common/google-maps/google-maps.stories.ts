@@ -482,6 +482,50 @@ export const GroupedEscapeCascades: Story = {
   },
 }
 
+/**
+ * Probes F3's premise directly: `startDrawing()`/`stopDrawing()` are the only
+ * two places `_drawingSubject` changes, so a round trip through them must
+ * leave `isDrawing()` exactly where it started. This is the coverage whose
+ * absence let a stuck drawing mode go unnoticed — every other draw-related
+ * story (`GroupedDrawCreatesNewGroup` et al.) drives `_onDrawFinished`
+ * directly via a stubbed Terra Draw, without ever calling `startDrawing()`,
+ * so none of them exercised this transition at all.
+ *
+ * Investigation finding (see .superpowers/draw-release-report.md for detail):
+ * `isDrawing()` reading Terra Draw's own `getMode()` was not, in fact, the
+ * defect — `setMode('static')` always took effect and this round trip always
+ * passed. `isDrawing()` now reads `_drawingSubject` instead (see its doc
+ * comment in google-maps.service.ts) so that guarantee no longer depends on
+ * Terra Draw's own mode agreeing, which is what actually goes wrong on a
+ * later draw in the same session, via the upstream terra-draw/adapter
+ * pointer-capture race already documented in `_initTerraDraw()`.
+ */
+export const GroupedDrawingStateReleasesAfterStop: Story = {
+  render: () => ({
+    template: `
+      <seam-google-maps
+        interactionMode="grouped"
+        featureGroupProperty="fieldId"
+        [value]="value"
+        style="height: 400px"></seam-google-maps>
+    `,
+    props: { value: GROUPED_VALUE },
+  }),
+  play: async ({ canvasElement }) => {
+    const component = await mapComponent(canvasElement)
+    const service = component._googleMaps
+    component.setEditMode(true)
+
+    await expect(service.isDrawing()).toBe(false)
+
+    service.startDrawing()
+    await expect(service.isDrawing()).toBe(true)
+
+    service.stopDrawing()
+    await expect(service.isDrawing()).toBe(false)
+  },
+}
+
 export const LegacyClickStillArmsEditing: Story = {
   render: () => ({
     template: `<seam-google-maps [value]="value" style="height: 400px"></seam-google-maps>`,
