@@ -1,28 +1,18 @@
 import { BooleanInput, coerceArray } from '@angular/cdk/coercion'
 import {
-  AfterViewInit,
   ContentChildren,
   Directive,
   EventEmitter,
   forwardRef,
   Input,
-  OnDestroy,
   Output,
   QueryList,
 } from '@angular/core'
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
-import { combineLatest, from, Observable, of, Subject } from 'rxjs'
-import {
-  filter,
-  map,
-  startWith,
-  switchMap,
-  takeUntil,
-  tap,
-} from 'rxjs/operators'
 
 import { InputBoolean } from '@theseam/ui-common/core'
 
+import { THESEAM_TOGGLE_GROUP_PARENT } from './toggle-group-parent'
 import { ToggleGroupOptionDirective } from './toggle-group-option.directive'
 
 export const TOGGLE_GROUP_VALUE_ACCESSOR: any = {
@@ -34,16 +24,18 @@ export const TOGGLE_GROUP_VALUE_ACCESSOR: any = {
 @Directive({
   selector: '[seamToggleGroup]',
   exportAs: 'seamToggleGroup',
-  providers: [TOGGLE_GROUP_VALUE_ACCESSOR],
+  providers: [
+    TOGGLE_GROUP_VALUE_ACCESSOR,
+    {
+      provide: THESEAM_TOGGLE_GROUP_PARENT,
+      useExisting: forwardRef(() => ToggleGroupDirective),
+    },
+  ],
 })
-export class ToggleGroupDirective
-  implements OnDestroy, AfterViewInit, ControlValueAccessor
-{
+export class ToggleGroupDirective implements ControlValueAccessor {
   static ngAcceptInputType_disabled: BooleanInput
   static ngAcceptInputType_multiple: BooleanInput
   static ngAcceptInputType_selectionToggleable: BooleanInput
-
-  private readonly _ngUnsubscribe = new Subject<void>()
 
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('value') val: string | string[] | undefined | null
@@ -62,76 +54,8 @@ export class ToggleGroupDirective
   @ContentChildren(ToggleGroupOptionDirective)
   optionDirectives?: QueryList<ToggleGroupOptionDirective>
 
-  public options?: Observable<ToggleGroupOptionDirective[]>
-
   onChange: any
   onTouched: any
-
-  ngOnDestroy() {
-    this._ngUnsubscribe.next()
-    this._ngUnsubscribe.complete()
-  }
-
-  ngAfterViewInit() {
-    setTimeout(() => {
-      this._updateDirectiveStates()
-
-      if (this.optionDirectives) {
-        this.options = this.optionDirectives.changes.pipe(
-          startWith(this.optionDirectives),
-          map((v) => v.toArray() as ToggleGroupOptionDirective[]),
-          takeUntil(this._ngUnsubscribe),
-        )
-
-        this.options
-          .pipe(
-            switchMap((opts) => {
-              const _tmp = of(undefined)
-              if (opts) {
-                const _v: Observable<boolean>[] = []
-                for (const opt of opts) {
-                  _v.push(
-                    opt.selectionChange.pipe(
-                      filter(
-                        (v) => opt.selected !== this.isSelected(opt.value),
-                      ),
-                      tap((v) => {
-                        if (this.isSelected(opt.value)) {
-                          this.unselectValue(opt.value)
-                        } else {
-                          this.selectValue(opt.value)
-                        }
-                      }),
-                    ),
-                  )
-                }
-                return combineLatest(_v)
-              }
-              return _tmp
-            }),
-            takeUntil(this._ngUnsubscribe),
-          )
-          .subscribe()
-      }
-
-      this.change
-        .pipe(
-          switchMap((_) =>
-            from(this.optionDirectives?.toArray() || []).pipe(
-              tap((opt) => {
-                this._updateDirectiveState(opt)
-              }),
-            ),
-          ),
-          takeUntil(this._ngUnsubscribe),
-        )
-        .subscribe()
-    })
-
-    this.optionDirectives?.changes.subscribe(() =>
-      this._updateDirectiveStates(),
-    )
-  }
 
   get value(): string | string[] | undefined | null {
     return this.val
@@ -184,6 +108,30 @@ export class ToggleGroupDirective
     }
   }
 
+  /**
+   * Toggles an option's selected state by value.
+   */
+  toggleOptionSelect(value: string | undefined | null): void {
+    if (this.isSelected(value)) {
+      if (!this.selectionToggleable && this._selectedCount() <= 1) {
+        // Unselecting would leave nothing selected.
+        return
+      }
+      this.unselectValue(value)
+      return
+    }
+
+    this.selectValue(value)
+  }
+
+  private _selectedCount(): number {
+    if (this.multiple) {
+      return ((this.value as string[]) || []).length
+    }
+    const v = this.value
+    return v === null || v === undefined || v === '' ? 0 : 1
+  }
+
   unselectValue(value: string | undefined | null) {
     if (this.multiple) {
       this.value = ((this.value as string[]) || []).filter((v) => v !== value)
@@ -201,46 +149,13 @@ export class ToggleGroupDirective
     }
   }
 
-  getOptionDirectiveByValue(value: string) {
+  getOptionDirectiveByValue(
+    value: string,
+  ): ToggleGroupOptionDirective | null | undefined {
     if (!this.optionDirectives || this.optionDirectives.length < 1) {
       return null
     }
 
     return this.optionDirectives.toArray().find((opt) => opt.value === value)
-  }
-
-  private _updateDirectiveStates(): void {
-    if (this.optionDirectives) {
-      for (const opt of this.optionDirectives.toArray()) {
-        this._updateDirectiveState(opt)
-      }
-    }
-  }
-
-  private _updateDirectiveState(opt: ToggleGroupOptionDirective): void {
-    const selected = this.isSelected(opt.value)
-    if (opt.selected !== selected) {
-      if (!opt._canUnselect) {
-        opt._canUnselect = true
-      }
-      opt.selected = selected
-    }
-    if (!this.selectionToggleable) {
-      if (!this.multiple || (this.value && this.value.length <= 1)) {
-        if (opt.selected) {
-          if (opt._canUnselect) {
-            opt._canUnselect = false
-          }
-        } else {
-          if (!opt._canUnselect) {
-            opt._canUnselect = true
-          }
-        }
-      } else {
-        if (!opt._canUnselect) {
-          opt._canUnselect = true
-        }
-      }
-    }
   }
 }

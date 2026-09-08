@@ -1,45 +1,21 @@
-import { coerceBooleanProperty } from '@angular/cdk/coercion'
-import {
-  ChangeDetectorRef,
-  Directive,
-  EventEmitter,
-  HostBinding,
-  inject,
-  Input,
-  Output,
-} from '@angular/core'
+import { Directive, HostBinding, inject, Input } from '@angular/core'
+
+import { THESEAM_TOGGLE_GROUP_PARENT } from './toggle-group-parent'
 
 @Directive({
   selector: '[seamToggleGroupOption]',
   exportAs: 'seamToggleGroupOption',
 })
 export class ToggleGroupOptionDirective {
-  private readonly _cdr = inject(ChangeDetectorRef)
+  private readonly _group = inject(THESEAM_TOGGLE_GROUP_PARENT, {
+    optional: true,
+  })
 
   @Input() seamToggleGroupOption: string | undefined | null
 
-  @Input()
-  get selected(): boolean {
-    return this._selected
-  }
-  set selected(value: boolean) {
-    if (!this._canUnselect && !value) {
-      return
-    }
-    this._selected = coerceBooleanProperty(value)
-    this.selectionChange.emit(this._selected)
-    this._cdr.markForCheck()
-  }
-  private _selected = false
-
-  /** Internal use only for now. */
-  _canUnselect = true
-
-  @Output() selectionChange = new EventEmitter<boolean>()
-
   @HostBinding('class.lib-toggle-group-option-selected')
   get _checkioSelectedClass() {
-    return this._selected
+    return this._group?.isSelected(this.value) || false
   }
 
   get value(): string | undefined | null {
