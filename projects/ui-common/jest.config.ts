@@ -51,6 +51,8 @@ export default {
     '**/utils/**/*.spec.ts',
     '**/validators/**/*.spec.ts',
     '**/datatable/**/*.spec.ts',
+    '**/data-filters/**/*.spec.ts',
+    '**/toggle-group/**/*.spec.ts',
     '**/dynamic-component-loader/**/*.spec.ts',
     '**/tel-input/**/*.spec.ts',
     '**/tooltip/**/*.spec.ts',

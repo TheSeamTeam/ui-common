@@ -16,7 +16,7 @@ import {
   ViewChild,
 } from '@angular/core'
 import { UntypedFormControl } from '@angular/forms'
-import { Observable, of } from 'rxjs'
+import { merge, Observable, of, Subject } from 'rxjs'
 import { map, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
 import {
@@ -100,7 +100,7 @@ export function toggleButtonsFilter(
   }
 
   const customComparatorBtns: IToggleButton[] = []
-  for (const btn of options.buttons) {
+  for (const btn of options.buttons || []) {
     if (btn.comparator) {
       customComparatorBtns.push(btn)
     }
@@ -185,6 +185,11 @@ export class DataFilterToggleButtonsComponent
 
   private _resizeObserver: ResizeObserver | undefined
 
+  /**
+   * Emits when the `buttons` input changes.
+   */
+  private readonly _buttonsChanged = new Subject<void>()
+
   @Input()
   set value(value: string | string[]) {
     const _value = !isNullOrUndefined(value) ? coerceArray(value) : undefined
@@ -219,12 +224,18 @@ export class DataFilterToggleButtonsComponent
       this.value = this._optDefault('initialValue')
     }
 
-    this.activeFilterLabel = this.filterStateChanges.pipe(
+    this.activeFilterLabel = merge(
+      this.filterStateChanges,
+      this._buttonsChanged,
+    ).pipe(
       startWith(undefined),
       map(() => {
         const state = this.filterState()
-        const options = state.state.options as IToggleButtonsFilterOptions
-        const selectedOptions = options.buttons
+        // Depending on the timing of when this is called, the options may not be fully initialized yet.
+        // Cast as partial to avoid TypeError on uninitialized values.
+        const options = state.state
+          .options as Partial<IToggleButtonsFilterOptions>
+        const selectedOptions = (options.buttons || [])
           .filter((o) => coerceArray(state.state.value).includes(o.value))
           .map((o) => o.name)
 
@@ -243,6 +254,7 @@ export class DataFilterToggleButtonsComponent
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['buttons'] && !changes['buttons'].firstChange) {
       this._updateCollapsed()
+      this._buttonsChanged.next()
     }
 
     if (
@@ -280,6 +292,7 @@ export class DataFilterToggleButtonsComponent
   ngOnDestroy(): void {
     this._filterContainer.removeFilter(this)
     this._resizeObserver?.disconnect()
+    this._buttonsChanged.complete()
   }
 
   private _optDefault<K extends keyof IToggleButtonsFilterOptions>(prop: K) {
@@ -309,8 +322,18 @@ export class DataFilterToggleButtonsComponent
   }
 
   public filter<T>(data: T[]): Observable<T[]> {
-    return this._control.valueChanges.pipe(
-      map((v) => toggleButtonsFilter(data, coerceArray(v), this.options)),
+    // `buttons` is merged in because `toggleButtonsFilter` resolves each value's
+    // custom `comparator` from `options.buttons`. A `buttons` list that arrives
+    // after the value is set would otherwise keep filtering with the stale
+    // (empty) list until the next value change.
+    return merge(this._control.valueChanges, this._buttonsChanged).pipe(
+      map(() =>
+        toggleButtonsFilter(
+          data,
+          coerceArray(this._control.value),
+          this.options,
+        ),
+      ),
       startWith(
         toggleButtonsFilter(
           data,

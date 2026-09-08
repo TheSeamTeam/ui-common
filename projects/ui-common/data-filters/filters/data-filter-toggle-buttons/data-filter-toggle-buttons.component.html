@@ -23,6 +23,7 @@
         *ngIf="options as opts"
         [formControl]="_control"
         seamToggleGroup
+        #tg="seamToggleGroup"
         [multiple]="opts.multiple"
         [selectionToggleable]="opts.selectionToggleable"
       >
@@ -30,9 +31,8 @@
           <button
             seamMenuItem
             [seamToggleGroupOption]="btn.value"
-            #opt="seamToggleGroupOption"
-            [class.seam-menu-item-active]="opt.selected"
-            (click)="opt.selected = !opt.selected"
+            [class.seam-menu-item-active]="tg.isSelected(btn.value)"
+            (click)="tg.toggleOptionSelect(btn.value)"
             title="Apply filter"
           >
             {{ btn.name || btn.value }}
@@ -51,6 +51,7 @@
     *ngIf="options as opts"
     [formControl]="_control"
     seamToggleGroup
+    #tg="seamToggleGroup"
     [multiple]="opts.multiple"
     [selectionToggleable]="opts.selectionToggleable"
   >
@@ -59,10 +60,9 @@
         type="button"
         class="btn btn-sm px-4"
         [seamToggleGroupOption]="btn.value"
-        #opt="seamToggleGroupOption"
-        [class.btn-lightgray]="!opt.selected"
-        [class.btn-primary]="opt.selected"
-        (click)="opt.selected = !opt.selected"
+        [class.btn-lightgray]="!tg.isSelected(btn.value)"
+        [class.btn-primary]="tg.isSelected(btn.value)"
+        (click)="tg.toggleOptionSelect(btn.value)"
         title="Apply filter"
       >
         {{ btn.name || btn.value }}
