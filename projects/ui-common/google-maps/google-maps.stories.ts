@@ -334,6 +334,58 @@ async function waitUntil(
   }
 }
 
+/**
+ * Places one real drawing vertex via a synthetic `pointerdown`/`pointerup`
+ * pair dispatched on Terra Draw's own event-capturing overlay element —
+ * the same element and event types (`pointerdown`/`pointerup`, not `click`)
+ * its Google Maps adapter's `getAdapterListeners()` actually registers.
+ * Calling `startDrawing()`/`stopDrawing()` alone never places a vertex or
+ * touches the adapter's pointer capture at all — this does, which is what
+ * lets `GroupedEmptyArmDoesNotRecreateTerraDraw` and
+ * `GroupedRepeatedRealDrawsRecreateTerraDrawAndSurviveIt` (below) tell an
+ * armed-but-empty session apart from a real one entirely from a `play`
+ * function, with no manual mouse driving required.
+ */
+function placeVertex(
+  component: any,
+  containerX: number,
+  containerY: number,
+): void {
+  const el = component._googleMaps
+    .getDiv()
+    .querySelector('div[style*="z-index: 3;"]') as HTMLElement
+  const rect = el.getBoundingClientRect()
+  const opts: PointerEventInit = {
+    bubbles: true,
+    cancelable: true,
+    composed: true,
+    pointerId: 1,
+    isPrimary: true,
+    button: 0,
+    clientX: rect.left + containerX,
+    clientY: rect.top + containerY,
+    pointerType: 'mouse',
+  }
+  el.dispatchEvent(new PointerEvent('pointerdown', opts))
+  el.dispatchEvent(new PointerEvent('pointerup', opts))
+}
+
+/** Places 4 corners of a small square plus a closing click near the first
+ * corner, finishing a real polygon the same way a real mouse-driven draw
+ * would. */
+function drawSquare(component: any, x: number, y: number): void {
+  const pts: [number, number][] = [
+    [x, y],
+    [x + 80, y],
+    [x + 80, y + 80],
+    [x, y + 80],
+    [x + 2, y + 2],
+  ]
+  for (const [px, py] of pts) {
+    placeVertex(component, px, py)
+  }
+}
+
 export const GroupedClickSelectsWholeField: Story = {
   render: (args) => ({
     template: `
@@ -684,31 +736,48 @@ export const GroupedDrawingStateReleasesAfterStop: Story = {
 
 /**
  * Regression coverage for the terra-draw#710 recovery (see
- * .superpowers/terra-draw-710-spike.md and
- * .superpowers/terra-draw-recreate-report.md): `stopDrawing()` marks the
- * just-used `TerraDraw` instance for recreation, and the NEXT
- * `startDrawing()` call pays that cost lazily — recreating the instance and
- * its adapter, then queuing itself past the new instance's async `ready`
- * event rather than dropping the click that asked for it (see
- * `_terraDrawNeedsRecreate` / `_pendingStartDrawing` in
- * google-maps.service.ts).
+ * .superpowers/terra-draw-710-spike.md,
+ * .superpowers/terra-draw-recreate-report.md, and
+ * .superpowers/escape-draw-cursor-report.md for the narrowing below).
  *
- * Drives several consecutive start/stop cycles and confirms every one of
- * them reaches `isDrawing() === true` — the bug this mechanism exists for is
- * exactly a SECOND (and later) draw silently failing to start — and that the
- * underlying `TerraDraw` instance is actually swapped out on every cycle
- * after the first, proving recreation really ran rather than being a no-op.
+ * Two changes since the recreate was first added:
  *
- * What this cannot cover: the actual upstream pointer-capture defect only
- * reproduces from a real, multi-click, mouse-driven draw against the
- * adapter's own DOM-level listeners — calling `startDrawing()`/
- * `stopDrawing()` programmatically never engages that capture at all, so it
- * can't by itself prove the browser-level symptom (silently dropped clicks,
- * a drag panning the map) is fixed. That verification was done by hand
- * against a real Storybook session with real mouse events; see the recreate
- * report referenced above. This story only proves the recreate wiring
- * itself runs correctly, repeatedly, with no stuck state and no leaked
- * instance reference.
+ * 1. `stopDrawing()` only marks the instance for recreation when the session
+ *    that just ended actually placed a coordinate (`_hasPlacedVertex()`,
+ *    reading Terra Draw's own mode state) — an armed-but-empty session never
+ *    touched the adapter's pointer capture terra-draw#710 is about, so it no
+ *    longer pays for a recreate it doesn't need. See
+ *    `GroupedEmptyArmDoesNotRecreateTerraDraw`, right below, for that half.
+ * 2. The recreate for a session that DID place a vertex now runs EAGERLY,
+ *    inside `stopDrawing()` itself, rather than being deferred to the next
+ *    `startDrawing()` call. This story is about that half: each cycle places
+ *    ONE real vertex — via `placeVertex()`'s synthetic
+ *    `pointerdown`/`pointerup` pair on Terra Draw's own overlay element,
+ *    which (unlike calling `startDrawing()`/`stopDrawing()` alone) actually
+ *    exercises the adapter's real pointer-capture calls
+ *    (`setPointerCapture`/`releasePointerCapture`) — then cancels via
+ *    `stopDrawing()` directly, and asserts the underlying `TerraDraw`
+ *    instance has ALREADY been swapped by the time that call returns, with
+ *    no wait needed. That is the eager half: before this change, the swap
+ *    only happened lazily, on the NEXT `startDrawing()`.
+ *
+ * A single full close (`drawSquare()`, placing 4 corners plus a closing
+ * click) is included at the end to confirm the narrowed + eagerly-timed
+ * recreate does not stop an actual finished draw from working.
+ *
+ * What this still cannot cover: several consecutive real, physical,
+ * mouse-driven closes exercise the browser's pointer-capture semantics one
+ * step further than repeated synthetic `PointerEvent` dispatches can promise
+ * reliably from inside a `play` function — the very first attempt at
+ * repeating `drawSquare()` across 4 cycles here turned out flaky under the
+ * test runner even though it passed by hand against the live dev server,
+ * which is why this story only closes once and cancels (a cheaper, fully
+ * deterministic operation) for the other cycles. That "does #710 protection
+ * survive several consecutive REAL draws" question was instead verified by
+ * hand — 3 consecutive real `page.mouse.click()`-driven draws against the
+ * live Storybook session, every one closing successfully, feature count
+ * incrementing by exactly 1 each time — see
+ * `.superpowers/escape-draw-cursor-report.md`.
  */
 export const GroupedRepeatedDrawCyclesRecreateTerraDraw: Story = {
   render: () => ({
@@ -734,20 +803,155 @@ export const GroupedRepeatedDrawCyclesRecreateTerraDraw: Story = {
     const CYCLES = 4
 
     for (let i = 0; i < CYCLES; i++) {
-      await expect(service.isDrawing()).toBe(false)
+      await waitUntil(() => service.isDrawing() === false)
 
       service.startDrawing()
-      // Cycle 1 flips synchronously (no recreate needed yet); cycle 2+ waits
-      // on the recreated instance's async `ready` event.
+      // Cycle 1 flips synchronously (no recreate pending yet); a later
+      // cycle may still be mid recreate if the previous cycle's eager
+      // rebuild hasn't reported `ready` yet — `startDrawing()` queues itself
+      // via `_pendingStartDrawing` in that case, so this still resolves.
       await waitUntil(() => service.isDrawing() === true)
 
-      seenInstances.add(service._terraDraw)
+      const instanceBefore = service._terraDraw
+      seenInstances.add(instanceBefore)
+
+      // Place ONE real vertex, via a real pointer, so this cycle's
+      // stopDrawing() sees _hasPlacedVertex() true.
+      placeVertex(component, 300, 150)
+      await waitUntil(() => service['_hasPlacedVertex']())
 
       service.stopDrawing()
       await expect(service.isDrawing()).toBe(false)
+      // Eager: the instance must already differ right after stopDrawing()
+      // returns -- no wait for a later startDrawing() needed.
+      await expect(service._terraDraw).not.toBe(instanceBefore)
     }
 
+    // Every cycle used a genuinely different instance — the eager recreate
+    // really ran each time a real vertex was placed, not just once.
     await expect(seenInstances.size).toBe(CYCLES)
+
+    // One full close, to confirm the narrowed + eagerly-timed recreate
+    // still lets an actual finished draw work end to end.
+    await waitUntil(() => service.isDrawing() === false)
+    let before = 0
+    service.googleMap.data.forEach(() => before++)
+    service.startDrawing()
+    await waitUntil(() => service.isDrawing() === true)
+    drawSquare(component, 100, 300)
+    await waitUntil(() => service.isDrawing() === false)
+    let after = 0
+    service.googleMap.data.forEach(() => after++)
+    await expect(after).toBe(before + 1)
+  },
+}
+
+/**
+ * The other half of the narrowed terra-draw#710 trigger (see the previous
+ * story's doc comment): an armed session that places ZERO vertices before
+ * being cancelled must NOT mark Terra Draw for recreation, because it never
+ * touched the adapter's pointer capture in the first place. This is exactly
+ * the shape `setEditMode(true)`'s F6 auto-arm produces every time it gets
+ * cancelled before the user draws anything — e.g. by `Escape` — which is
+ * what let the swallowed-click bug reach a real re-arm through
+ * `startDrawing()`'s own `!_terraDrawReady` guard (see
+ * `.superpowers/escape-draw-cursor-report.md`). Confirms the `TerraDraw`
+ * instance is untouched and, cycling this twice, that `_terraDrawReady`
+ * never goes false in between — i.e. no async gap is ever introduced by an
+ * empty arm, so a re-arm right after one is always synchronous.
+ */
+export const GroupedEmptyArmDoesNotRecreateTerraDraw: Story = {
+  render: () => ({
+    template: `
+      <seam-google-maps
+        interactionMode="grouped"
+        featureGroupProperty="fieldId"
+        [value]="value"
+        style="height: 400px"></seam-google-maps>
+    `,
+    props: { value: GROUPED_VALUE },
+  }),
+  play: async ({ canvasElement }) => {
+    const component = await mapComponent(canvasElement)
+    const service = component._googleMaps
+    // Nothing selected: GROUPED_VALUE's initial state has no selection, so
+    // setEditMode(true) itself arms drawing (F6) — no vertex is ever placed
+    // in this story, matching the "armed, then cancelled empty" shape.
+    const instanceBefore = service._terraDraw
+
+    for (let i = 0; i < 2; i++) {
+      component.setEditMode(true)
+      await expect(service.isDrawing()).toBe(true)
+      await expect(service._terraDraw).toBe(instanceBefore)
+      await expect(service['_terraDrawReady']).toBe(true)
+
+      component.setEditMode(false)
+      await expect(service.isDrawing()).toBe(false)
+      // The instance and its readiness must be completely untouched — an
+      // armed-but-empty session is not the kind terra-draw#710 protects
+      // against, so it must not pay for (or need) a recreate.
+      await expect(service._terraDraw).toBe(instanceBefore)
+      await expect(service['_terraDrawReady']).toBe(true)
+    }
+  },
+}
+
+/**
+ * Direct regression test for the reported bug (see
+ * .superpowers/escape-draw-cursor-report.md): pressing `Escape` enough times
+ * to cancel the auto-armed draw (F6) AND leave edit mode, then re-entering
+ * edit mode via `setEditMode(true)` (standing in for the button) and drawing
+ * immediately — zero delay, the worst case for a swallowed click — must
+ * still make the new polygon the selection, with no vertex lost to a
+ * recreate's async `ready` gap. Before the narrowed + eagerly-timed
+ * recreate, the first Escape's cancel of the auto-armed (but empty) draw
+ * marked Terra Draw for recreation, so THIS re-arm paid for a recreate it
+ * didn't need and a real click landing before the new instance's `ready`
+ * fired was silently dropped by `startDrawing()`'s own `!_terraDrawReady`
+ * guard — which could leave the polygon never closing at all (stuck
+ * `isDrawing()`, permanent crosshair) depending on exactly how many clicks
+ * landed in the gap.
+ */
+export const GroupedEagerRecreateAvoidsSwallowedClick: Story = {
+  render: () => ({
+    template: `
+      <seam-google-maps
+        interactionMode="grouped"
+        featureGroupProperty="fieldId"
+        [value]="value"
+        style="height: 400px"></seam-google-maps>
+    `,
+    props: { value: GROUPED_VALUE },
+  }),
+  play: async ({ canvasElement }) => {
+    const component = await mapComponent(canvasElement)
+    const service = component._googleMaps
+    // Nothing selected: setEditMode(true) auto-arms (F6), matching the
+    // owner's reported starting point.
+    component.setEditMode(true)
+    await expect(service.isDrawing()).toBe(true)
+
+    // Escape cascade: cancel the auto-armed (empty) draw, then leave edit
+    // mode — exactly 2 presses, since nothing was ever selected.
+    service.handleEscape()
+    await expect(service.isDrawing()).toBe(false)
+    await expect(component.isEditMode()).toBe(true)
+    service.handleEscape()
+    await expect(component.isEditMode()).toBe(false)
+
+    // Re-enter edit mode (auto-arms again, nothing selected) and draw
+    // IMMEDIATELY — no waitUntil, no delay — the worst case for a click
+    // racing an async recreate gap.
+    component.setEditMode(true)
+    drawSquare(component, 100, 300)
+
+    await waitUntil(() => service.isDrawing() === false)
+    const selection = service['_selectionSubject'].value
+    await expect(selection).not.toBeNull()
+    const newFeature = featureWithGroup(component, selection.group.key)
+    await expect(newFeature).not.toBeUndefined()
+    const style = service.googleMap.data.getStyle()(newFeature)
+    await expect(style.editable).toBe(true)
   },
 }
 

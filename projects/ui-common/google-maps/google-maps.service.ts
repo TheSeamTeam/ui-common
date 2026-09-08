@@ -73,16 +73,22 @@ export class GoogleMapsService implements OnDestroy {
   // level after a completed draw session (terra-draw#710): every click after
   // that lands on nothing, and a drag pans the map instead of editing.
   // Recreating the whole `TerraDraw` instance (and its adapter) is the only
-  // thing that restores it. `stopDrawing()` sets this whenever a real draw
-  // session just ended — finished OR cancelled, both exercise the adapter's
-  // pointer capture the same way — and the NEXT `startDrawing()` call
-  // consumes it lazily, so a session that never draws again pays nothing and
-  // the recreate never stalls the moment a draw finishes.
-  private _terraDrawNeedsRecreate = false
-  // Set while a recreate triggered by `startDrawing()` is in flight (the new
-  // instance's `ready` event fires asynchronously). Lets that `ready` handler
-  // finish entering drawing mode itself, so the click that asked for it is
-  // not silently dropped while Terra Draw finishes starting back up.
+  // thing that restores it. `stopDrawing()` triggers this — EAGERLY, right
+  // when the session ends, not lazily on the next `startDrawing()` — but
+  // only for a session that actually placed a coordinate (see
+  // `_hasPlacedVertex()`): that is the only kind that ever touched the
+  // adapter's pointer capture, so an armed-but-empty session (armed, then
+  // cancelled with zero vertices placed — e.g. by `Escape`, or by
+  // `setEditMode(true)`'s auto-arm getting turned straight back off) does
+  // not need it and does not pay for it.
+  //
+  // Recreating eagerly (rather than deferring to the next `startDrawing()`)
+  // means the new instance's `ready` has every chance to have already fired
+  // by the time the user's NEXT click asks to start a second draw, so that
+  // click is not the one racing the async gap. A `startDrawing()` call that
+  // still arrives before `ready` fires — instance rebuild is fast but not
+  // free — queues itself via `_pendingStartDrawing` below rather than being
+  // dropped, so nothing is lost even in that case.
   private _pendingStartDrawing = false
   private readonly _drawingSubject = new BehaviorSubject<boolean>(false)
   public readonly drawing$ = this._drawingSubject.asObservable()
@@ -325,7 +331,6 @@ export class GoogleMapsService implements OnDestroy {
   public startDrawing(): void {
     if (
       !this._terraDraw ||
-      !this._terraDrawReady ||
       !this.isEditingEnabled() ||
       // Already drawing: `setMode('polyline')` resets the in-progress path,
       // so a click that lands here mid-draw (F4) must not re-enter drawing
@@ -336,16 +341,16 @@ export class GoogleMapsService implements OnDestroy {
     ) {
       return
     }
-    if (this._terraDrawNeedsRecreate) {
-      // The instance that just finished/cancelled a draw may have lost the
-      // adapter's pointer capture (terra-draw#710). Recreate it before this
-      // draw starts. Recreation is synchronous, but the new instance's
-      // `ready` event is not (see `_createTerraDraw()`), so queue this click
-      // rather than silently dropping it — the `ready` handler finishes the
-      // job once the new instance is actually usable.
-      this._terraDrawNeedsRecreate = false
+    if (!this._terraDrawReady) {
+      // A `TerraDraw` recreate is in flight — either the eager rebuild
+      // `stopDrawing()` kicks off after a real draw session ends (see
+      // `_hasPlacedVertex()`), or, rarely, first-ever init hasn't reported
+      // `ready` yet. Recreation itself is synchronous, but the new
+      // instance's `ready` event is not (see `_createTerraDraw()`), so queue
+      // this call rather than silently dropping the click that made it —
+      // the `ready` handler below finishes entering drawing mode once the
+      // new instance is actually usable.
       this._pendingStartDrawing = true
-      this._recreateTerraDraw()
       return
     }
     this._enterDrawingMode()
@@ -362,9 +367,9 @@ export class GoogleMapsService implements OnDestroy {
    * pointer events.
    *
    * Split out of `startDrawing()` so a recreate-in-flight (see
-   * `_terraDrawNeedsRecreate`) can defer this until the new instance's
-   * `ready` event actually fires, instead of entering drawing mode against
-   * an instance that isn't ready yet.
+   * `_pendingStartDrawing`) can defer this until the new instance's `ready`
+   * event actually fires, instead of entering drawing mode against an
+   * instance that isn't ready yet.
    */
   private _enterDrawingMode(): void {
     this._assertInitialized()
@@ -390,16 +395,28 @@ export class GoogleMapsService implements OnDestroy {
       return
     }
     const wasDrawing = this.isDrawing()
+    // Read BEFORE setMode('static') below — switching the active mode away
+    // stops it, which resets its own state, so this only means anything
+    // while the polyline mode is still the one active.
+    const placedVertex = wasDrawing && this._hasPlacedVertex()
     this._terraDraw.setMode('static')
     this._drawingSubject.next(false)
-    if (wasDrawing) {
-      // A real draw session (finished OR cancelled) just used this
-      // instance's adapter-level pointer capture, which is what
-      // terra-draw#710 can leave broken. Don't recreate right now — that
-      // would stall right after every draw in what may be a long
-      // multi-field session. Instead mark it and let the next
-      // `startDrawing()` pay that cost only if it happens.
-      this._terraDrawNeedsRecreate = true
+    if (placedVertex) {
+      // A real draw session — one that actually placed a coordinate, and so
+      // actually engaged the adapter's pointer capture — just ended
+      // (finished OR cancelled). That capture is what terra-draw#710 can
+      // leave broken. An armed-but-empty session (armed via a click, or via
+      // setEditMode(true)'s auto-arm, then cancelled — e.g. by Escape —
+      // with zero vertices placed) never touched it and does not need this.
+      //
+      // Recreate EAGERLY, right now, rather than deferring to the next
+      // startDrawing() call: the new instance then has the rest of this
+      // moment, plus however long the user takes to look at what they just
+      // did, to finish coming up — so the click that starts the NEXT draw
+      // does not itself race the async `ready` gap. `startDrawing()`'s own
+      // `!_terraDrawReady` branch (queuing via `_pendingStartDrawing`) is
+      // the safety net for a start that still arrives before `ready` fires.
+      this._recreateTerraDraw()
     }
     // Re-arms the selected group's edit handles in 'grouped' mode: nothing
     // else changes a feature's own properties here, so nothing else would
@@ -408,6 +425,21 @@ export class GoogleMapsService implements OnDestroy {
     // `isDrawing` (F3).
     this._refreshStyles()
     this._labelsOverlay?.refresh()
+  }
+
+  /**
+   * Whether the active Terra Draw mode has actually placed a coordinate.
+   * Terra Draw's own mode state machine transitions from `'started'`
+   * (armed, no coordinate committed yet) to `'drawing'` the instant the
+   * first vertex lands (`TerraDrawPolyLineMode`'s internal `setDrawing()`,
+   * confirmed against `terra-draw`'s own source). Read directly from Terra
+   * Draw's state rather than inferred from this service's own flags, so it
+   * reflects whether the adapter's pointer capture was actually
+   * engaged — the thing terra-draw#710 is actually about — rather than
+   * merely whether this service thought a draw was armed.
+   */
+  private _hasPlacedVertex(): boolean {
+    return this._terraDraw?.getModeState() === 'drawing'
   }
 
   /**
@@ -786,8 +818,10 @@ export class GoogleMapsService implements OnDestroy {
     // clickable or Escape becomes a trap with no way back to selecting.
     //
     // Goes through startDrawing(), the same path a click on open map already
-    // uses, so a lazy Terra Draw recreate (_terraDrawNeedsRecreate) is
-    // honoured rather than bypassed — a deferred start queues itself via
+    // uses, so a Terra Draw recreate still in flight from the PREVIOUS
+    // session (stopDrawing() now kicks it off eagerly — see
+    // _hasPlacedVertex()) is honoured rather than bypassed — a call that
+    // arrives before the new instance's `ready` fires queues itself via
     // _pendingStartDrawing exactly as it would from that click.
     if (enabled && this._selectionSubject.value === null) {
       this.startDrawing()
