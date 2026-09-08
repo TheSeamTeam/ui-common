@@ -769,6 +769,29 @@ export class GoogleMapsService implements OnDestroy {
     }
     this._editModeSubject.next(enabled)
     this._refreshStyles()
+    // Arm drawing immediately when edit mode is turned on with nothing
+    // selected, so the button press itself is what puts Terra Draw in
+    // crosshair mode — matching legacy's button, which calls startDrawing()
+    // directly. Without this, the very next click only arms Terra Draw
+    // (switching the cursor) without placing a vertex, and a SECOND click is
+    // what actually starts the polygon.
+    //
+    // Not when a group is already selected: the user is there to reshape that
+    // group by clicking its vertex/midpoint handles, and arming would make
+    // every click place a vertex instead — including the clicks on OTHER
+    // groups that let the user switch which one is selected. Also not on the
+    // selection merely being CLEARED while already in edit mode (e.g. via
+    // Escape, in handleEscape()): that path never calls setEditMode(), so it
+    // never reaches this arm — deliberately, since that state has to stay
+    // clickable or Escape becomes a trap with no way back to selecting.
+    //
+    // Goes through startDrawing(), the same path a click on open map already
+    // uses, so a lazy Terra Draw recreate (_terraDrawNeedsRecreate) is
+    // honoured rather than bypassed — a deferred start queues itself via
+    // _pendingStartDrawing exactly as it would from that click.
+    if (enabled && this._selectionSubject.value === null) {
+      this.startDrawing()
+    }
   }
 
   /**

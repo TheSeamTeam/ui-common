@@ -433,11 +433,18 @@ export const GroupedEditModeAllowsClicksBetweenDraws: Story = {
     const component = await mapComponent(canvasElement)
     const service = component._googleMaps
     component.setEditMode(true)
+    // Entering edit mode with nothing selected auto-arms drawing (F6) — cancel
+    // it the same way a first Escape would, to reach the "edit mode on,
+    // nothing selected, no draw in progress" state this story is actually
+    // about. GroupedEditModeArmsDrawingWhenNothingSelected covers the arm
+    // itself.
+    service.stopDrawing()
 
     const feature = featureWithGroup(component, 'A')
     const clickable = () => service.googleMap.data.getStyle()(feature).clickable
 
     // Edit mode on, nothing selected, no draw in progress: still clickable.
+    await expect(service.isDrawing()).toBe(false)
     await expect(clickable()).toBe(true)
 
     // A draw starting is what actually makes a click ambiguous.
@@ -449,6 +456,81 @@ export const GroupedEditModeAllowsClicksBetweenDraws: Story = {
     service.stopDrawing()
     await expect(service.isDrawing()).toBe(false)
     await expect(clickable()).toBe(true)
+  },
+}
+
+/**
+ * F6: pressing the edit-mode button with nothing selected arms nothing under
+ * the old behaviour — the cursor switches to a crosshair, but the user's
+ * FIRST click on the map only finishes arming Terra Draw and places no
+ * vertex; a second click is what actually starts the polygon. Legacy does not
+ * have this gap (its button calls startDrawing() directly), so grouped mode
+ * is made to match: setEditMode(true) itself arms drawing when nothing is
+ * selected, so the button press is what puts Terra Draw in crosshair mode
+ * and the very next click places a vertex.
+ */
+export const GroupedEditModeArmsDrawingWhenNothingSelected: Story = {
+  render: () => ({
+    template: `
+      <seam-google-maps
+        interactionMode="grouped"
+        featureGroupProperty="fieldId"
+        [value]="value"
+        style="height: 400px"></seam-google-maps>
+    `,
+    props: { value: GROUPED_VALUE },
+  }),
+  play: async ({ canvasElement }) => {
+    const component = await mapComponent(canvasElement)
+    const service = component._googleMaps
+
+    // GROUPED_VALUE's initial state has no selection.
+    await expect(service.isDrawing()).toBe(false)
+    component.setEditMode(true)
+
+    // The button press itself armed Terra Draw — no separate startDrawing()
+    // call needed for the very next click to place a vertex rather than being
+    // swallowed arming it.
+    await expect(service.isDrawing()).toBe(true)
+    // The draw button's `_active` signal follows editMode$ in grouped mode
+    // (not drawing$), so it still reads pressed while armed like this.
+    await expect(component.isEditMode()).toBe(true)
+  },
+}
+
+/**
+ * F6's other branch: entering edit mode with a group already selected must
+ * NOT arm drawing. The user is there to reshape that group via its
+ * vertex/midpoint handles, and arming would make every click place a vertex
+ * instead of selecting — including the clicks on OTHER groups that let the
+ * user switch which one is selected.
+ */
+export const GroupedEditModeDoesNotArmWithSelection: Story = {
+  render: () => ({
+    template: `
+      <seam-google-maps
+        interactionMode="grouped"
+        featureGroupProperty="fieldId"
+        [value]="value"
+        style="height: 400px"></seam-google-maps>
+    `,
+    props: { value: GROUPED_VALUE },
+  }),
+  play: async ({ canvasElement }) => {
+    const component = await mapComponent(canvasElement)
+    const service = component._googleMaps
+    component.selectGroup('A')
+
+    component.setEditMode(true)
+    await expect(service.isDrawing()).toBe(false)
+
+    // Proof arming did not suppress feature clicks: a click on a DIFFERENT
+    // field still switches the selection to it.
+    const data = service.googleMap.data
+    const featureB = featureWithGroup(component, 'B')
+    google.maps.event.trigger(data, 'click', { feature: featureB })
+    await expect(isFeatureSelected(featureB)).toBe(true)
+    await expect(service.isDrawing()).toBe(false)
   },
 }
 
@@ -512,8 +594,13 @@ export const GroupedEscapeCascades: Story = {
   }),
   play: async ({ canvasElement }) => {
     const component = await mapComponent(canvasElement)
-    component.setEditMode(true)
+    // Select A BEFORE entering edit mode: setEditMode(true) only auto-arms
+    // drawing (F6) when nothing is selected, and this story is about the
+    // selection/edit-mode/Escape cascade, not that arm — which
+    // GroupedEditModeArmsDrawingWhenNothingSelected covers on its own.
     component.selectGroup('A')
+    component.setEditMode(true)
+    await expect(component._googleMaps.isDrawing()).toBe(false)
 
     const [featureA1] = featuresWithGroup(component, 'A')
     await expect(isFeatureSelected(featureA1)).toBe(true)
@@ -525,7 +612,23 @@ export const GroupedEscapeCascades: Story = {
     await expect(isFeatureSelected(featureA1)).toBe(false)
     await expect(component.isEditMode()).toBe(true)
 
-    // Second Escape: selection is already clear, so this leaves edit mode.
+    // Clearing the selection via Escape must NOT itself arm drawing (F6 only
+    // arms from setEditMode(), and handleEscape()'s clear path never calls
+    // it) — this state has to stay clickable so the user can select a
+    // replacement, otherwise Escape traps them with nothing left to click.
+    const data = component._googleMaps.googleMap.data
+    await expect(component._googleMaps.isDrawing()).toBe(false)
+    const featureB = featureWithGroup(component, 'B')
+    google.maps.event.trigger(data, 'click', { feature: featureB })
+    await expect(isFeatureSelected(featureB)).toBe(true)
+
+    // Clear the selection again (via the API, standing in for a second
+    // Escape's worth of state) to reach "edit mode on, nothing selected" for
+    // the final cascade step.
+    component._googleMaps.clearSelection()
+
+    // Third Escape (second from this null-selection state): selection is
+    // already clear, so this leaves edit mode.
     component._googleMaps.handleEscape()
     await expect(component.isEditMode()).toBe(false)
   },
@@ -563,6 +666,10 @@ export const GroupedDrawingStateReleasesAfterStop: Story = {
   play: async ({ canvasElement }) => {
     const component = await mapComponent(canvasElement)
     const service = component._googleMaps
+    // Select a group first so setEditMode(true) does not auto-arm drawing
+    // (F6) — this story is about the startDrawing()/stopDrawing() round trip
+    // itself, not the arm-on-entry behaviour.
+    component.selectGroup('A')
     component.setEditMode(true)
 
     await expect(service.isDrawing()).toBe(false)
@@ -617,6 +724,10 @@ export const GroupedRepeatedDrawCyclesRecreateTerraDraw: Story = {
   play: async ({ canvasElement }) => {
     const component = await mapComponent(canvasElement)
     const service = component._googleMaps
+    // Select a group first so setEditMode(true) does not auto-arm drawing
+    // (F6) — this story is about the recreate cycling itself, not the
+    // arm-on-entry behaviour.
+    component.selectGroup('A')
     component.setEditMode(true)
 
     const seenInstances = new Set<any>()

@@ -113,6 +113,34 @@ Three pieces of state: `editMode` (toggled by the map's button control),
 | on | none | select its group, emit — same as with edit mode off | start a draw | pan |
 | on | group G | select its group, emit — G again re-focuses it, a different group H switches the selection to H; G's own geometry additionally goes to Google's vertex/midpoint editor for as long as it stays selected | start a draw | vertex drag, or body drag to move G's polygon; else pan |
 
+**Turning edit mode on arms drawing immediately when nothing is selected.**
+`setEditMode(true)` calls `startDrawing()` itself in that case, so the button
+press is what puts Terra Draw in crosshair mode — the very next click places a
+vertex rather than merely finishing the arm. Without this, the "on, none" row
+above only describes the state reached *after* a first click that placed no
+vertex; a second click was what actually started the polygon. Legacy does not
+have this gap — its button calls `startDrawing()` directly — and the repo
+owner, having used both, expects grouped to match. `setEditMode(true)` with a
+group already selected does **not** arm: the user is there to reshape that
+group via its vertex/midpoint handles, and arming would turn every click,
+including ones on other groups, into placing a vertex instead of switching the
+selection. Arming goes through the same `startDrawing()` path a click on open
+map already uses, so it defers correctly behind a lazy Terra Draw recreate
+(`_terraDrawNeedsRecreate` / `_pendingStartDrawing`) exactly as that click
+does. Selection being merely *cleared* while already in edit mode — the
+`Escape` cascade's first press, below — does not go through
+`setEditMode()` and so never re-arms; that state has to stay clickable or
+`Escape` becomes a trap with no way back to selecting.
+
+**The accepted cost.** With edit mode on and nothing selected, the map is
+armed, so clicking an existing polygon places a vertex on the new shape
+instead of selecting it — noted here rather than designed around. One
+`Escape` cancels the arm and restores click-to-select, matching the first step
+of the cascade below. The cursor is correct as a side effect, with no
+`draggableCursor` change needed: Terra Draw itself sets the crosshair the
+moment it arms, whether that arming came from a click or from
+`setEditMode(true)`.
+
 A draw in progress overrides every row above: a click on a polygon places a
 vertex rather than selecting anything, and a click on empty map does too,
 rather than starting a second draw. That is the only moment a click is
@@ -541,9 +569,12 @@ Unit-testable without the Maps API:
 
 **Storybook.** The interaction state machine gets stories with `play`
 functions covering: click-selects-group with edit off, click-still-selects
-with edit armed and nothing selected, click-ignored while a draw is actually
-in progress, draw-creates-new-group, draw-joins-selected-group, the `Escape`
-cascade, `Delete` removing only the focused polygon, per-feature
+with edit armed and nothing selected, entering edit mode arms drawing when
+nothing is selected and does not when a group is selected, click-ignored
+while a draw is actually in progress, draw-creates-new-group,
+draw-joins-selected-group, the `Escape` cascade — including that clearing the
+selection via `Escape` while still in edit mode stays clickable rather than
+re-arming — `Delete` removing only the focused polygon, per-feature
 `editable: false` surviving selection, and labels appearing and hiding.
 
 **Drive the Maps event system, not the cursor.** Data-layer polygons render
