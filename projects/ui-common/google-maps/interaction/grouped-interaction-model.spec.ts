@@ -297,21 +297,42 @@ describe('GroupedInteractionModel', () => {
   })
 
   describe('allowsContextMenu', () => {
-    it('does not allow the context menu outside edit mode', () => {
+    it('does not allow the context menu outside edit mode, even when the feature is selected', () => {
       const ctx = createFakeInteractionContext({
         editMode: false,
+        groupProperty: 'fieldId',
+      })
+      const feature = ctx.addFeatureWithPolygon(big, { fieldId: 'A' })
+      ctx.setSelectedKey('A')
+      expect(model.allowsContextMenu(feature, ctx)).toBe(false)
+    })
+
+    it('does not allow the context menu in edit mode when nothing is selected', () => {
+      const ctx = createFakeInteractionContext({
+        editMode: true,
         groupProperty: 'fieldId',
       })
       const feature = ctx.addFeatureWithPolygon(big, { fieldId: 'A' })
       expect(model.allowsContextMenu(feature, ctx)).toBe(false)
     })
 
-    it('allows the context menu in edit mode', () => {
+    it('does not allow the context menu in edit mode for a feature outside the selected group', () => {
       const ctx = createFakeInteractionContext({
         editMode: true,
         groupProperty: 'fieldId',
       })
       const feature = ctx.addFeatureWithPolygon(big, { fieldId: 'A' })
+      ctx.setSelectedKey('B')
+      expect(model.allowsContextMenu(feature, ctx)).toBe(false)
+    })
+
+    it('allows the context menu in edit mode for a feature in the selected group', () => {
+      const ctx = createFakeInteractionContext({
+        editMode: true,
+        groupProperty: 'fieldId',
+      })
+      const feature = ctx.addFeatureWithPolygon(big, { fieldId: 'A' })
+      ctx.setSelectedKey('A')
       expect(model.allowsContextMenu(feature, ctx)).toBe(true)
     })
   })

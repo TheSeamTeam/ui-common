@@ -328,7 +328,19 @@ Whether it opens becomes the model's fifth decision:
 - `'legacy'` — selected only. **Unchanged.** Right-clicking an unselected
   feature does nothing today and still does nothing, so no consumer sees a
   difference.
-- `'grouped'` — opens for the feature under the cursor regardless of selection.
+- `'grouped'` — edit mode **and** the feature's group being the current
+  selection. Every item this menu offers is a destructive edit, so offering
+  them for a field the user has not selected is more surprising than useful —
+  matching legacy's own `isFeatureSelected(feature)` gate. An earlier version
+  of this design opened the menu for any feature under the cursor once edit
+  mode was on, regardless of selection, so that "Delete Field" could act on
+  a right-clicked group other than the selected one; that read as more
+  capability than the menu should offer, since every path to it is
+  destructive. `deleteGroup(key)` and `contextMenuTarget$` stay as the plumbing
+  behind "Delete Field" even though its `key` is now always the selected
+  group's — they name what the menu item conceptually acts on independent of
+  that coincidence, which is worth keeping given how often this particular
+  rule has already moved.
 
 Items in `'grouped'` mode:
 

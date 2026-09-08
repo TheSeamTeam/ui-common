@@ -128,10 +128,16 @@ export class GoogleMapsService implements OnDestroy {
   public readonly hover$ = this._hoverSubject.pipe(distinctUntilChanged())
 
   /**
-   * The group of the feature a `contextmenu` event last landed on — distinct
-   * from `selection$`, which the grouped "Delete Field" menu item must NOT
-   * use, since in `'grouped'` mode the menu opens for any feature regardless
-   * of what is selected.
+   * The group of the feature a `contextmenu` event last landed on. Kept
+   * distinct from `selection$` even though `allowsContextMenu()` now requires
+   * the right-clicked feature's group to already be the selection — so, for
+   * as long as the menu stays open, the two are provably the same group.
+   * Collapsing onto `selection$` would re-couple "what the menu acts on" to
+   * "whatever is currently selected", which is exactly the coupling this
+   * subject was introduced to break when the menu could still open for a
+   * non-selected group. That rule has already moved twice; keeping this
+   * separate means a future loosening of `allowsContextMenu()` does not have
+   * to re-invent it.
    */
   private readonly _contextMenuTargetSubject =
     new BehaviorSubject<TheSeamMapGroupTarget | null>(null)
@@ -260,12 +266,17 @@ export class GoogleMapsService implements OnDestroy {
   }
 
   /**
-   * Delete every feature in `key`'s group, regardless of what is currently
-   * selected. Backs the grouped "Delete Field" context-menu item, which must
-   * act on the right-clicked feature's group rather than whichever group
-   * happens to be selected — see `deleteSelection()` for the
-   * selection-scoped equivalent used elsewhere (the 'legacy' Delete item, and
-   * the grouped Delete Field item's old, buggy wiring).
+   * Delete every feature in `key`'s group. Backs the grouped "Delete Field"
+   * context-menu item.
+   *
+   * `allowsContextMenu()` now requires the right-clicked feature's group to
+   * already be the selection, so `key` here is always the selected group's
+   * key by the time this runs — making this call equivalent in practice to
+   * `deleteSelection()`. Kept as its own method anyway: it names the thing
+   * the menu item actually acts on (the group the menu opened for) rather
+   * than relying on the coincidence that it currently matches whatever is
+   * selected, a coincidence this design has already stopped being true once
+   * before and could again.
    */
   public deleteGroup(key: string): void {
     this._assertInitialized()

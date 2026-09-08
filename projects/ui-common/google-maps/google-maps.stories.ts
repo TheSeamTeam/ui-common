@@ -994,8 +994,10 @@ export const GroupedContextMenuKeyClosedOutsideEditMode: Story = {
  * or select. Within one group: right-clicking a different polygon than the
  * one a plain click last focused must retarget the menu to it, and an
  * unrelated bystander group must stay untouched throughout.
- * `GroupedDeleteFieldActsOnRightClickedGroup`, just below, is the sibling
- * guard for the cross-GROUP case.
+ * `GroupedContextMenuNeverOpensOutsideSelectedGroup`, further below, is the
+ * sibling guard for the cross-GROUP case — now that the menu requires the
+ * right-clicked feature's group to already be the selection, that guard
+ * pins "never opens outside it" rather than "acts on the right group".
  */
 export const GroupedContextMenuActsOnRightClickedPolygon: Story = {
   render: () => ({
@@ -1044,20 +1046,23 @@ export const GroupedContextMenuActsOnRightClickedPolygon: Story = {
 }
 
 /**
- * Direct regression guard for this change: right-clicking a feature in one
- * group while a DIFFERENT group is selected must offer a "Delete Field" that
- * deletes the right-clicked group, never the selected one.
+ * Pins the invariant that survives however the click rules evolve: the
+ * grouped context menu never opens for a feature outside the currently
+ * selected group. Every item it offers (Delete Polygon, Delete Field) is a
+ * destructive edit, so a right-click on a field the user has not selected
+ * must not reach it — matching legacy's own `isFeatureSelected(feature)` gate.
  *
- * This scenario briefly went unreachable (see git history around
- * "gate the grouped context menu on edit mode") back when edit mode made
- * every non-selected polygon `clickable: false`, since a right-click on a
- * non-selected group's polygon could not reach the data layer's `contextmenu`
- * listener at all. Clicks (and right-clicks) between draws are no longer
- * restricted to the selected group, so this is reachable again — and
- * `contextMenuTarget$` / `deleteGroup(key)`, kept through that gap for
- * exactly this reason, are what make "Delete Field" act correctly here.
+ * This scenario has flipped three times as the design settled: written when
+ * a right-click could act on a non-selected group ("Delete Field" acting on
+ * the right-clicked group via `contextMenuTarget$` / `deleteGroup(key)`),
+ * made unreachable when edit mode gated clicks on selection, restored when
+ * clicks became ungated between draws, and unreachable once more now that
+ * `allowsContextMenu()` itself requires the right-clicked feature's group to
+ * already be the selection. Asserting the invariant directly — rather than
+ * one reachability path through it — is what stops this from needing a
+ * fourth flip.
  */
-export const GroupedDeleteFieldActsOnRightClickedGroup: Story = {
+export const GroupedContextMenuNeverOpensOutsideSelectedGroup: Story = {
   render: () => ({
     template: `
       <seam-google-maps
@@ -1072,28 +1077,26 @@ export const GroupedDeleteFieldActsOnRightClickedGroup: Story = {
     const component = await mapComponent(canvasElement)
     const data = component._googleMaps.googleMap.data
 
-    // Select field B (a single-polygon group), then enter edit mode.
+    // Select field B, then enter edit mode.
     component.selectGroup('B')
     component.setEditMode(true)
 
-    // ...then right-click a polygon in field A (a two-polygon group),
-    // without ever selecting A.
+    // Right-clicking a polygon of a DIFFERENT group (A) must open nothing.
     const [featureA1] = featuresWithGroup(component, 'A')
     google.maps.event.trigger(data, 'contextmenu', { feature: featureA1 })
     await new Promise((resolve) => setTimeout(resolve, 250))
 
-    const items = Array.from(
+    await expect(
       canvasElement.querySelectorAll('[role="menuitem"]'),
-    ) as HTMLElement[]
-    const deleteField = items.find(
-      (item) => item.textContent?.trim() === 'Delete Field',
-    )
-    await expect(deleteField).toBeTruthy()
-    deleteField!.click()
+    ).toHaveLength(0)
 
-    // A (right-clicked) is gone; B (selected, but never clicked on) survives.
-    await expect(featuresWithGroup(component, 'A')).toHaveLength(0)
-    await expect(featuresWithGroup(component, 'B')).toHaveLength(1)
+    // Right-clicking a polygon of the SELECTED group (B) opens it.
+    const [featureB1] = featuresWithGroup(component, 'B')
+    google.maps.event.trigger(data, 'contextmenu', { feature: featureB1 })
+    await new Promise((resolve) => setTimeout(resolve, 250))
+
+    const items = canvasElement.querySelectorAll('[role="menuitem"]')
+    await expect(items.length).toBeGreaterThan(0)
   },
 }
 

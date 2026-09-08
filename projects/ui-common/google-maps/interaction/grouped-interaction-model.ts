@@ -122,14 +122,18 @@ export class GroupedInteractionModel implements MapInteractionModel {
     context: MapInteractionContext,
   ): boolean {
     // Every item this menu offers is a destructive edit (Delete Polygon,
-    // Delete Field), so it must not be reachable outside edit mode.
-    //
-    // Within edit mode this can open on any group, not just the selected one:
-    // clicksAllowed above is gated on drawing, not on selection, so a
-    // right-click can land on a non-selected group's polygon just as a plain
-    // click can. `contextMenuTarget$` and `deleteGroup(key)` exist for
-    // exactly this — "Delete Field" acts on the right-clicked group, not
-    // whichever group happens to be selected.
-    return context.editMode
+    // Delete Field), so it must not be reachable outside edit mode, and —
+    // matching legacy's `isFeatureSelected(feature)` — not for a feature the
+    // user has not selected. clicksAllowed above stays gated on drawing alone
+    // (a non-selected group must remain clickable so it can BECOME the
+    // selection), but offering destructive actions for a field the user has
+    // not selected is more surprising than useful, so the menu is narrower
+    // than what is merely clickable.
+    const selectedKey = context.getSelectedKey()
+    return (
+      context.editMode &&
+      selectedKey !== null &&
+      context.groups.keyOf(feature) === selectedKey
+    )
   }
 }
