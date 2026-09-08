@@ -1,6 +1,17 @@
 import { Type, ɵgetLContext as getLContext } from '@angular/core'
 
-const CONTEXT = 8 // LView[CONTEXT]
+/**
+ * Index of the context slot in Angular's internal `LView` array.
+ *
+ * Unlike `ng.getComponent`, `ɵgetLContext` is a real (if private) export
+ * rather than a devMode-only global, so this helper works in a production
+ * build — verified by running the story suite against a built
+ * `storybook-static`. What it IS pinned to is Angular's internal `LView`
+ * layout: if this slot index ever moves, `getComponentInstance()` returns the
+ * wrong object or null rather than failing loudly. Re-verify on a major
+ * Angular upgrade, against a production build rather than the dev server.
+ */
+const CONTEXT = 8
 
 export function getComponentInstance<T>(
   element: Element | null | undefined,
