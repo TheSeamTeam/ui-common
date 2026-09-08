@@ -10,6 +10,8 @@ import { provideAnimations } from '@angular/platform-browser/animations'
 import { CommonModule } from '@angular/common'
 import { FormControl, ReactiveFormsModule } from '@angular/forms'
 
+import { getComponentInstance } from '@theseam/ui-common/story-helpers'
+
 import { TheSeamGoogleMapsComponent } from './google-maps/google-maps.component'
 import { TheSeamGoogleMapsApiLoader } from './google-maps-api-loader/google-maps-api-loader'
 import {
@@ -172,8 +174,8 @@ export const MultiPolygonRoundTrip: Story = {
     const host = canvasElement.querySelector('seam-google-maps')
     // Wait for the map to load the value into its data layer.
     await new Promise((resolve) => setTimeout(resolve, 3000))
-    const component = (window as any).ng.getComponent(host)
-    const geoJson = await component.getGeoJson()
+    const component = getComponentInstance(host, TheSeamGoogleMapsComponent)!
+    const geoJson: any = await component.getGeoJson()
     const types = geoJson.features.map((f: any) => f.geometry.type).sort()
     await expect(types).toEqual(['MultiPolygon', 'Polygon'])
   },
@@ -287,7 +289,7 @@ const TWO_FIELDS_VALUE = {
 async function mapComponent(canvasElement: HTMLElement): Promise<any> {
   const host = canvasElement.querySelector('seam-google-maps')
   await new Promise((resolve) => setTimeout(resolve, 3000))
-  return (window as any).ng.getComponent(host)
+  return getComponentInstance(host, TheSeamGoogleMapsComponent)
 }
 
 /** The first Data.Feature whose group property matches. */
