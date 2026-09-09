@@ -20,3 +20,20 @@
     }
   }
 }
+
+// The label divs are created outside Angular's view and appended to Google's
+// overlay pane, so emulated encapsulation does not reach them. `::ng-deep`
+// does, because the panes live inside this component's host element.
+//
+// If this turns out not to hold, move these rules to a stylesheet asset in a
+// `google-maps/styles/` directory and register it in the `assets` array of
+// `projects/ui-common/ng-package.json`, following `breadcrumbs/styles/`.
+:host ::ng-deep .seam-map-feature-label {
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-shadow:
+    0 0 3px rgba(0, 0, 0, 0.9),
+    0 0 6px rgba(0, 0, 0, 0.7);
+  user-select: none;
+}

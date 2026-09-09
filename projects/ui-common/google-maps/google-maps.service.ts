@@ -1,94 +1,62 @@
 import { Injectable, NgZone, OnDestroy, ViewContainerRef } from '@angular/core'
 import { Geometry, Polygon } from 'geojson'
 import { BehaviorSubject, from, Observable, Subject } from 'rxjs'
-import { switchMap, takeUntil, tap } from 'rxjs/operators'
+import { distinctUntilChanged, switchMap, takeUntil, tap } from 'rxjs/operators'
 
 import { TerraDraw, TerraDrawPolyLineMode } from 'terra-draw'
 import { TerraDrawGoogleMapsAdapter } from 'terra-draw-google-maps-adapter'
 
 import { MenuComponent } from '@theseam/ui-common/menu'
 import {
-  addHoleToPolygon,
   closePolygons,
   notNullOrUndefined,
   polygonContains,
   polygonHasMinDistinctVertices,
 } from '@theseam/ui-common/utils'
 
+import {
+  FeatureGroupRegistry,
+  FeatureGroupRegistryOptions,
+} from './feature-groups/feature-group-registry'
+import {
+  TheSeamMapFeatureGroup,
+  TheSeamMapGroupTarget,
+} from './feature-groups/feature-group'
+import {
+  computeFeatureHoverStyle,
+  computeFeatureStyle,
+} from './feature-style/compute-feature-style'
 import { GoogleMapsContextMenu } from './google-maps-contextmenu'
 import {
+  applyHoleToFeature,
   createFeatureChangeObservable,
   dataPolygonFromGeoJson,
-  geoJsonPolygonFromDataFeature,
   getBoundsWithAllFeatures,
   getFeatureCenter,
   getFeaturesCount,
-  getHoveredStyleOptionsDefinedByFeature,
-  getStyleOptionsDefinedByFeature,
   isFeatureSelected,
+  polygonsFromDataFeature,
   removeAllFeatures,
   setFeatureSelected,
   stripAppFeaturePropertiesFromJson,
 } from './google-maps-feature-helpers'
+import { GroupedInteractionModel } from './interaction/grouped-interaction-model'
+import { TheSeamMapInteractionMode } from './interaction/interaction-mode'
+import { LegacyInteractionModel } from './interaction/legacy-interaction-model'
+import {
+  MapInteractionContext,
+  MapInteractionModel,
+} from './interaction/map-interaction-model'
+import {
+  MapFeatureLabel,
+  MapFeatureLabelsOverlay,
+} from './labels/map-feature-labels-overlay'
 import {
   MapValueManagerService,
   MapValueSource,
 } from './map-value-manager.service'
 
 declare const ngDevMode: boolean | undefined
-
-const FEATURE_STYLE_OPTIONS_DEFAULT = (
-  editingEnabled: boolean,
-): google.maps.Data.StyleOptions => ({
-  clickable: true,
-  // clickable: editingEnabled,
-  visible: true,
-  // zIndex?: number;
-
-  // cursor?: string;
-  draggable: false,
-  editable: false,
-  fillColor: 'teal',
-  fillOpacity: 0.3,
-  strokeColor: 'blue',
-  strokeOpacity: 1,
-  strokeWeight: 2,
-})
-
-const FEATURE_STYLE_OPTIONS_SELECTED = (
-  editingEnabled: boolean,
-): google.maps.Data.StyleOptions => ({
-  ...FEATURE_STYLE_OPTIONS_DEFAULT(editingEnabled),
-  draggable: editingEnabled,
-  editable: editingEnabled,
-  fillColor: 'green',
-  fillOpacity: 0.7,
-  strokeColor: 'limegreen',
-  strokeOpacity: 1,
-  strokeWeight: 2,
-})
-
-const FEATURE_STYLE_OVERRIDE_OPTIONS_HOVERED = (
-  editingEnabled: boolean,
-): google.maps.Data.StyleOptions => ({
-  strokeColor: 'black',
-  strokeOpacity: 1,
-  strokeWeight: 4,
-})
-
-const SUPPORTED_PROPERTY_STYLE_OPTIONS: (keyof google.maps.Data.StyleOptions)[] =
-  [
-    'fillColor',
-    'fillOpacity',
-    'strokeColor',
-    'strokeOpacity',
-    'strokeWeight',
-    'label',
-    'opacity',
-    'icon',
-    'clickable',
-    'visible',
-  ]
 
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 
@@ -101,6 +69,46 @@ export class GoogleMapsService implements OnDestroy {
 
   private _terraDraw?: TerraDraw
   private _terraDrawReady = false
+  // Terra Draw's Google Maps adapter can lose pointer capture at the adapter
+  // level after a completed draw session (terra-draw#710): every click after
+  // that lands on nothing, and a drag pans the map instead of editing.
+  // Recreating the whole `TerraDraw` instance (and its adapter) is the only
+  // thing that restores it. `stopDrawing()` triggers this — EAGERLY, right
+  // when the session ends, not lazily on the next `startDrawing()` — but
+  // only for a session that actually placed a coordinate (see
+  // `_hasPlacedVertex()`): that is the only kind that ever touched the
+  // adapter's pointer capture, so an armed-but-empty session (armed, then
+  // cancelled with zero vertices placed — e.g. by `Escape`, or by
+  // `setEditMode(true)`'s auto-arm getting turned straight back off) does
+  // not need it and does not pay for it.
+  //
+  // Recreating eagerly (rather than deferring to the next `startDrawing()`)
+  // means the new instance's `ready` has every chance to have already fired
+  // by the time the user's NEXT click asks to start a second draw, so that
+  // click is not the one racing the async gap. A `startDrawing()` call that
+  // still arrives before `ready` fires — instance rebuild is fast but not
+  // free — queues itself via `_pendingStartDrawing` below rather than being
+  // dropped, so nothing is lost even in that case.
+  private _pendingStartDrawing = false
+  /**
+   * One-shot suppression for the map `click` listener, armed the instant a
+   * draw finishes (see `_armMapClickSuppression()` for why, and its call
+   * site in `_onDrawFinished()`).
+   *
+   * `domEvent.timeStamp` was tried first, since it is a `DOMHighResTimeStamp`
+   * on the same origin as `performance.now()` and looks like a clean,
+   * delay-free discriminator: a stale click's timestamp should predate the
+   * moment the draw finished. It does not hold up empirically. Driving real
+   * mouse draws against the live Storybook and logging both the map `click`
+   * listener and `stopDrawing()` (see .superpowers/closing-click-report.md)
+   * caught the echo repeatedly, and every single time its `domEvent.timeStamp`
+   * was a few milliseconds AFTER `stopDrawing()`'s own timestamp, not before
+   * — indistinguishable from a genuinely fresh click by timestamp alone.
+   * Google appears to stamp its own synthetic `click` at the moment IT
+   * dispatches, not at the original pointer event's time, so there is no
+   * "stale-looking" timestamp to compare against.
+   */
+  private _suppressNextMapClick = false
   private readonly _drawingSubject = new BehaviorSubject<boolean>(false)
   public readonly drawing$ = this._drawingSubject.asObservable()
   private _featureContextMenu: MenuComponent | null = null
@@ -109,6 +117,60 @@ export class GoogleMapsService implements OnDestroy {
   private _padding?: number | google.maps.Padding
 
   private _allowDrawingHoleInPolygon = false
+
+  private _model: MapInteractionModel = new LegacyInteractionModel()
+  private readonly _interactionModeSubject =
+    new BehaviorSubject<TheSeamMapInteractionMode>('legacy')
+  public readonly interactionMode$ = this._interactionModeSubject.asObservable()
+  private _groups?: FeatureGroupRegistry
+  private _groupOptions: FeatureGroupRegistryOptions = {}
+  private _focusedFeature: google.maps.Data.Feature | null = null
+  private _styleFn?: google.maps.Data.StylingFunction
+
+  private _labelProperty: string | undefined
+  private _labelsOverlay?: MapFeatureLabelsOverlay
+  private _warnedAboutLabelDisagreement = false
+
+  private readonly _selectionSubject =
+    new BehaviorSubject<TheSeamMapGroupTarget | null>(null)
+  /**
+   * `distinctUntilChanged` collapses repeated `null`s. Several paths clear the
+   * selection defensively — `setData`, `clearSelection`, the declarative
+   * `selectedGroupKey` application on map-ready — and each would otherwise
+   * emit its own `null` to consumers before the user has touched anything.
+   *
+   * Non-null targets are rebuilt on every change, so reference equality never
+   * suppresses a real one, including re-selecting the same group with a
+   * different focused polygon.
+   */
+  public readonly selection$ = this._selectionSubject.pipe(
+    distinctUntilChanged(),
+  )
+
+  private readonly _hoverSubject =
+    new BehaviorSubject<TheSeamMapGroupTarget | null>(null)
+  /** Same reasoning as `selection$`; `mouseout` repeats `null` freely. */
+  public readonly hover$ = this._hoverSubject.pipe(distinctUntilChanged())
+
+  /**
+   * The group of the feature a `contextmenu` event last landed on. Kept
+   * distinct from `selection$` even though `allowsContextMenu()` now requires
+   * the right-clicked feature's group to already be the selection — so, for
+   * as long as the menu stays open, the two are provably the same group.
+   * Collapsing onto `selection$` would re-couple "what the menu acts on" to
+   * "whatever is currently selected", which is exactly the coupling this
+   * subject was introduced to break when the menu could still open for a
+   * non-selected group. That rule has already moved twice; keeping this
+   * separate means a future loosening of `allowsContextMenu()` does not have
+   * to re-invent it.
+   */
+  private readonly _contextMenuTargetSubject =
+    new BehaviorSubject<TheSeamMapGroupTarget | null>(null)
+  public readonly contextMenuTarget$ =
+    this._contextMenuTargetSubject.asObservable()
+
+  private readonly _editModeSubject = new BehaviorSubject<boolean>(false)
+  public readonly editMode$ = this._editModeSubject.asObservable()
 
   // TODO: Move to a better place than the map wrapper service.
   private _fileInputHandler: ((file: File) => void) | undefined | null
@@ -133,11 +195,17 @@ export class GoogleMapsService implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this._terraDraw?.enabled) {
-      this._terraDraw.stop()
-    }
-    this._terraDraw = undefined
+    this._disposeTerraDraw()
     this._drawingSubject.complete()
+    this._selectionSubject.complete()
+    this._hoverSubject.complete()
+    this._contextMenuTargetSubject.complete()
+    this._editModeSubject.complete()
+    this._interactionModeSubject.complete()
+    this._groups = undefined
+
+    this._labelsOverlay?.destroy()
+    this._labelsOverlay = undefined
 
     this._ngUnsubscribe.next()
     this._ngUnsubscribe.complete()
@@ -178,11 +246,8 @@ export class GoogleMapsService implements OnDestroy {
       this.googleMap.data.revertStyle()
       if (!enabled) {
         this.stopDrawing()
-        this.googleMap.data.forEach((f) => {
-          if (isFeatureSelected(f)) {
-            setFeatureSelected(f, false)
-          }
-        })
+        this.setEditMode(false)
+        this.clearSelection()
       }
     }
   }
@@ -215,29 +280,129 @@ export class GoogleMapsService implements OnDestroy {
         mapData.remove(f)
       }
     })
+    // Every deleted feature was selected, so nothing should still read as
+    // selected afterward. Re-sync `selection$` and `_focusedFeature` the same
+    // way `deleteFocusedFeature()` and `setData()` already do, rather than
+    // leaving them pointing at a group that no longer exists. In 'legacy'
+    // mode nothing consumes selection$ today, and no remaining feature's raw
+    // selected flag changes here (they were already false), so this is inert
+    // there.
+    this.clearSelection()
   }
 
-  /** Whether polygon drawing mode is currently active. */
+  /**
+   * Delete every feature in `key`'s group. Backs the grouped "Delete Field"
+   * context-menu item.
+   *
+   * `allowsContextMenu()` now requires the right-clicked feature's group to
+   * already be the selection, so `key` here is always the selected group's
+   * key by the time this runs — making this call equivalent in practice to
+   * `deleteSelection()`. Kept as its own method anyway: it names the thing
+   * the menu item actually acts on (the group the menu opened for) rather
+   * than relying on the coincidence that it currently matches whatever is
+   * selected, a coincidence this design has already stopped being true once
+   * before and could again.
+   */
+  public deleteGroup(key: string): void {
+    this._assertInitialized()
+    const mapData = this.googleMap.data
+    const wasSelected = this._selectionSubject.value?.group.key === key
+    const focusedInGroup =
+      this._focusedFeature !== null &&
+      this._registry.keyOf(this._focusedFeature) === key
+    const contextMenuTargetInGroup =
+      this._contextMenuTargetSubject.value?.group.key === key
+
+    this._registry.featuresIn(key).forEach((f) => mapData.remove(f))
+
+    if (wasSelected) {
+      this._applySelection(null, null)
+    } else if (focusedInGroup) {
+      this._focusedFeature = null
+    }
+    // The whole group is gone, so a context-menu target pointing at it — set
+    // by whichever interaction opened the menu, not necessarily this one — is
+    // now a dangling reference. Only clear it when it actually named this
+    // group; an unrelated still-open menu's target must survive.
+    if (contextMenuTargetInGroup) {
+      this._contextMenuTargetSubject.next(null)
+    }
+  }
+
+  /**
+   * Whether polygon drawing mode is currently active.
+   *
+   * Reads `_drawingSubject` — set by `startDrawing()`/`stopDrawing()`, which
+   * this service fully controls — rather than asking Terra Draw's own
+   * `getMode()`. The two are kept in lockstep by every call to those two
+   * methods, so this is not a behaviour change; it exists so a stuck Terra
+   * Draw mode can never silently disagree with, and disarm, the rest of this
+   * service's drawing-state bookkeeping (F3's `geometryEditingArmed`
+   * included). `stopDrawing()` still always calls `_terraDraw.setMode('static')`
+   * to make Terra Draw itself release its cursor override and any
+   * in-progress geometry, regardless of which source `isDrawing()` reads.
+   */
   public isDrawing(): boolean {
-    return this._terraDraw?.getMode() === 'polyline'
+    return this._drawingSubject.value
   }
 
   /** Enter polygon drawing mode. */
   public startDrawing(): void {
-    if (!this._terraDraw || !this._terraDrawReady || !this.isEditingEnabled()) {
+    if (
+      !this._terraDraw ||
+      !this.isEditingEnabled() ||
+      // Already drawing: `setMode('polyline')` resets the in-progress path,
+      // so a click that lands here mid-draw (F4) must not re-enter drawing
+      // mode. `onMapClick` already guards on `context.isDrawing` before
+      // calling in, and the map `click` listener guards on `isDrawing()`
+      // before calling the model at all — this is the last line of defence.
+      this.isDrawing()
+    ) {
       return
     }
-    // Clear any selection when entering drawing mode. Otherwise a selected
-    // feature and the shape being drawn both appear selected, reading as one
-    // shape even though they are unrelated.
+    if (!this._terraDrawReady) {
+      // A `TerraDraw` recreate is in flight — either the eager rebuild
+      // `stopDrawing()` kicks off after a real draw session ends (see
+      // `_hasPlacedVertex()`), or, rarely, first-ever init hasn't reported
+      // `ready` yet. Recreation itself is synchronous, but the new
+      // instance's `ready` event is not (see `_createTerraDraw()`), so queue
+      // this call rather than silently dropping the click that made it —
+      // the `ready` handler below finishes entering drawing mode once the
+      // new instance is actually usable.
+      this._pendingStartDrawing = true
+      return
+    }
+    this._enterDrawingMode()
+  }
+
+  /**
+   * Clear any selection when entering drawing mode, but only in 'legacy'
+   * mode. There, a selected feature and the shape being drawn are unrelated,
+   * so leaving the old one visibly selected would read as one shape. In
+   * 'grouped' mode they are related: the selected group is exactly the
+   * target the drawn polygon will join, so it keeps its selected styling —
+   * `GroupedInteractionModel.featureFlags()` disarms its edit handles for
+   * the duration instead (F3), so they don't compete with Terra Draw for
+   * pointer events.
+   *
+   * Split out of `startDrawing()` so a recreate-in-flight (see
+   * `_pendingStartDrawing`) can defer this until the new instance's `ready`
+   * event actually fires, instead of entering drawing mode against an
+   * instance that isn't ready yet.
+   */
+  private _enterDrawingMode(): void {
     this._assertInitialized()
-    this.googleMap.data.forEach((f) => {
-      if (isFeatureSelected(f)) {
-        setFeatureSelected(f, false)
-      }
-    })
-    this._terraDraw.setMode('polyline')
+    if (this._model.id === 'legacy') {
+      this.googleMap.data.forEach((f) => {
+        if (isFeatureSelected(f)) {
+          setFeatureSelected(f, false)
+        }
+      })
+    }
+    this._terraDraw?.setMode('polyline')
     this._drawingSubject.next(true)
+    this._refreshStyles()
+    this._labelsOverlay?.refresh()
   }
 
   /**
@@ -248,14 +413,98 @@ export class GoogleMapsService implements OnDestroy {
     if (!this._terraDraw || !this._terraDrawReady) {
       return
     }
+    const wasDrawing = this.isDrawing()
+    // Read BEFORE setMode('static') below — switching the active mode away
+    // stops it, which resets its own state, so this only means anything
+    // while the polyline mode is still the one active.
+    const placedVertex = wasDrawing && this._hasPlacedVertex()
     this._terraDraw.setMode('static')
     this._drawingSubject.next(false)
+    if (placedVertex) {
+      // A real draw session — one that actually placed a coordinate, and so
+      // actually engaged the adapter's pointer capture — just ended
+      // (finished OR cancelled). That capture is what terra-draw#710 can
+      // leave broken. An armed-but-empty session (armed via a click, or via
+      // setEditMode(true)'s auto-arm, then cancelled — e.g. by Escape —
+      // with zero vertices placed) never touched it and does not need this.
+      //
+      // Recreate EAGERLY, right now, rather than deferring to the next
+      // startDrawing() call: the new instance then has the rest of this
+      // moment, plus however long the user takes to look at what they just
+      // did, to finish coming up — so the click that starts the NEXT draw
+      // does not itself race the async `ready` gap. `startDrawing()`'s own
+      // `!_terraDrawReady` branch (queuing via `_pendingStartDrawing`) is
+      // the safety net for a start that still arrives before `ready` fires.
+      this._recreateTerraDraw()
+    }
+    // Re-arms the selected group's edit handles in 'grouped' mode: nothing
+    // else changes a feature's own properties here, so nothing else would
+    // make Data re-evaluate the style function and pick up
+    // `featureFlags().geometryEditingArmed` no longer being disarmed by
+    // `isDrawing` (F3).
+    this._refreshStyles()
+    this._labelsOverlay?.refresh()
+  }
+
+  /**
+   * Whether the active Terra Draw mode has actually placed a coordinate.
+   * Terra Draw's own mode state machine transitions from `'started'`
+   * (armed, no coordinate committed yet) to `'drawing'` the instant the
+   * first vertex lands (`TerraDrawPolyLineMode`'s internal `setDrawing()`,
+   * confirmed against `terra-draw`'s own source). Read directly from Terra
+   * Draw's state rather than inferred from this service's own flags, so it
+   * reflects whether the adapter's pointer capture was actually
+   * engaged — the thing terra-draw#710 is actually about — rather than
+   * merely whether this service thought a draw was armed.
+   */
+  private _hasPlacedVertex(): boolean {
+    return this._terraDraw?.getModeState() === 'drawing'
+  }
+
+  /**
+   * Stop (if running) and drop the current `TerraDraw` instance. `TerraDraw#
+   * stop()` deregisters its adapter, which for the Google Maps adapter's
+   * `isolatedData: true` mode calls `this._data.setMap(null)` and drops the
+   * reference — so this never leaves an orphaned or duplicate Data layer
+   * behind, across any number of calls.
+   */
+  private _disposeTerraDraw(): void {
+    if (this._terraDraw?.enabled) {
+      this._terraDraw.stop()
+    }
+    this._terraDraw = undefined
+    this._terraDrawReady = false
+  }
+
+  /**
+   * Dispose the current `TerraDraw` instance (and its adapter) and build a
+   * fresh one in its place. This is the terra-draw#710 recovery: the old
+   * instance's listeners die with it (its adapter is deregistered by
+   * `stop()`, so nothing further reaches it), and `_createTerraDraw()` wires
+   * up brand new `ready`/`finish` listeners on the new instance — never the
+   * stale closures from a previous instance.
+   */
+  private _recreateTerraDraw(): void {
+    this._disposeTerraDraw()
+    this._terraDraw = this._createTerraDraw()
   }
 
   private _initTerraDraw(): void {
     if (notNullOrUndefined(this._terraDraw)) {
       throw Error(`Terra Draw is already initialized.`)
     }
+    this._terraDraw = this._createTerraDraw()
+  }
+
+  /**
+   * Build and start a new `TerraDraw` instance with its Google Maps adapter,
+   * wiring up this instance's own `ready`/`finish` listeners. Called both by
+   * `_initTerraDraw()` (first-ever init, guarded against running twice) and
+   * by `_recreateTerraDraw()` (every terra-draw#710 recovery afterward) —
+   * the guard against accidental double-init only lives in `_initTerraDraw()`
+   * itself, so recreation is free to call this as many times as needed.
+   */
+  private _createTerraDraw(): TerraDraw {
     this._assertInitialized()
 
     // The Google Maps adapter creates an OverlayView on the map; ensure the map
@@ -351,6 +600,26 @@ export class GoogleMapsService implements OnDestroy {
       this._terraDrawReady = true
       // Start in the resting (non-drawing) mode.
       draw.setMode('static')
+      // A `startDrawing()` call arrived while THIS instance was still
+      // starting up (terra-draw#710 recovery, or plain first-time init) and
+      // queued itself rather than being dropped — finish the job now, but
+      // only if nothing since then made drawing invalid: editing disabled,
+      // somehow already drawing, or — grouped mode only, where edit mode is
+      // its own on/off concept `startDrawing()` itself never re-checks —
+      // edit mode having been turned off while this was in flight. Mirrors
+      // exactly the check `GroupedInteractionModel.onMapClick()` made before
+      // calling in, just re-run after the async gap instead of trusting it
+      // still holds.
+      if (this._pendingStartDrawing) {
+        this._pendingStartDrawing = false
+        const stillValid =
+          this.isEditingEnabled() &&
+          !this.isDrawing() &&
+          (this._model.id !== 'grouped' || this.isEditMode())
+        if (stillValid) {
+          this._enterDrawingMode()
+        }
+      }
     })
 
     draw.on('finish', (id, context) => {
@@ -361,7 +630,7 @@ export class GoogleMapsService implements OnDestroy {
     })
 
     draw.start()
-    this._terraDraw = draw
+    return draw
   }
 
   public addControl(
@@ -375,11 +644,18 @@ export class GoogleMapsService implements OnDestroy {
   public async setData(data: any): Promise<void> {
     this._assertInitialized()
     removeAllFeatures(this.googleMap.data)
+    // Every prior feature is gone, so nothing selected or hovered survives it —
+    // clear both rather than leaving selection$/hover$ referencing removed
+    // features.
+    this.clearSelection()
+    this._hoverSubject.next(null)
+    this._contextMenuTargetSubject.next(null)
     this.googleMap.data.addGeoJson(data)
     this.googleMap.fitBounds(
       getBoundsWithAllFeatures(this.googleMap.data),
       this._padding,
     )
+    this._labelsOverlay?.refresh()
   }
 
   // TODO: Refactor out of the service meant to just wrap the google maps api.
@@ -417,61 +693,466 @@ export class GoogleMapsService implements OnDestroy {
     return this._fileInputHandler
   }
 
+  public setInteractionMode(mode: TheSeamMapInteractionMode): void {
+    this._model =
+      mode === 'grouped'
+        ? new GroupedInteractionModel()
+        : new LegacyInteractionModel()
+    if (mode !== 'grouped') {
+      this._editModeSubject.next(false)
+    }
+    this._interactionModeSubject.next(mode)
+    this._refreshStyles()
+  }
+
+  public setGroupOptions(options: FeatureGroupRegistryOptions): void {
+    this._groupOptions = options
+    this._groups?.setOptions(options)
+    this._refreshStyles()
+  }
+
+  /**
+   * Name of the GeoJSON property to render as a per-group label. `undefined`
+   * removes labels entirely (and, until now set, means the overlay is never
+   * even constructed).
+   */
+  public setLabelProperty(property: string | undefined): void {
+    this._labelProperty = property
+    if (!this.mapReady) {
+      return
+    }
+    if (!property) {
+      this._labelsOverlay?.destroy()
+      this._labelsOverlay = undefined
+      return
+    }
+    this._ensureLabelsOverlay()
+    this._labelsOverlay?.refresh()
+  }
+
+  private _ensureLabelsOverlay(): void {
+    this._assertInitialized()
+    if (this._labelsOverlay) {
+      return
+    }
+    this._labelsOverlay = new MapFeatureLabelsOverlay(() => this._buildLabels())
+    this._labelsOverlay.setMap(this.googleMap)
+  }
+
+  private _buildLabels(): MapFeatureLabel[] {
+    if (this.isDrawing()) {
+      return []
+    }
+    const property = this._labelProperty
+    if (!property) {
+      return []
+    }
+    this._assertInitialized()
+
+    const byKey = new Map<
+      string,
+      { text: string; bounds: google.maps.LatLngBounds; others: Set<string> }
+    >()
+
+    this.googleMap.data.forEach((feature) => {
+      const key = this._registry.keyOf(feature)
+      const raw = feature.getProperty(property)
+      const text =
+        raw === null || raw === undefined || raw === '' ? '' : String(raw)
+
+      const existing = byKey.get(key)
+      const bounds = existing?.bounds ?? new google.maps.LatLngBounds()
+      feature.getGeometry()?.forEachLatLng((latLng) => bounds.extend(latLng))
+
+      if (!existing) {
+        byKey.set(key, { text, bounds, others: new Set(text ? [text] : []) })
+        return
+      }
+      if (text) {
+        existing.others.add(text)
+        if (!existing.text) {
+          existing.text = text
+        }
+      }
+    })
+
+    const labels: MapFeatureLabel[] = []
+    for (const [key, entry] of byKey) {
+      if (entry.others.size > 1) {
+        this._warnAboutLabelDisagreement(key)
+      }
+      if (entry.text) {
+        labels.push({ key, text: entry.text, bounds: entry.bounds })
+      }
+    }
+    return labels
+  }
+
+  private _warnAboutLabelDisagreement(key: string): void {
+    if (
+      this._warnedAboutLabelDisagreement ||
+      (typeof ngDevMode !== 'undefined' && !ngDevMode)
+    ) {
+      return
+    }
+    this._warnedAboutLabelDisagreement = true
+    console.warn(
+      `[seam-google-maps] features in group "${key}" carry different ` +
+        `"${this._labelProperty}" values. One is rendered; which is ` +
+        `unspecified. Keeping them consistent is the consumer's business.`,
+    )
+  }
+
+  public isEditMode(): boolean {
+    return this._editModeSubject.value
+  }
+
+  public setEditMode(enabled: boolean): void {
+    if (this._model.id !== 'grouped' || enabled === this.isEditMode()) {
+      return
+    }
+    if (!enabled) {
+      const wasDrawing = this.isDrawing()
+      this.stopDrawing()
+      if (wasDrawing) {
+        this._reapplyCurrentSelection()
+      }
+    }
+    this._editModeSubject.next(enabled)
+    this._refreshStyles()
+    // Arm drawing immediately when edit mode is turned on with nothing
+    // selected, so the button press itself is what puts Terra Draw in
+    // crosshair mode — matching legacy's button, which calls startDrawing()
+    // directly. Without this, the very next click only arms Terra Draw
+    // (switching the cursor) without placing a vertex, and a SECOND click is
+    // what actually starts the polygon.
+    //
+    // Not when a group is already selected: the user is there to reshape that
+    // group by clicking its vertex/midpoint handles, and arming would make
+    // every click place a vertex instead — including the clicks on OTHER
+    // groups that let the user switch which one is selected. Also not on the
+    // selection merely being CLEARED while already in edit mode (e.g. via
+    // Escape, in handleEscape()): that path never calls setEditMode(), so it
+    // never reaches this arm — deliberately, since that state has to stay
+    // clickable or Escape becomes a trap with no way back to selecting.
+    //
+    // Goes through startDrawing(), the same path a click on open map already
+    // uses, so a Terra Draw recreate still in flight from the PREVIOUS
+    // session (stopDrawing() now kicks it off eagerly — see
+    // _hasPlacedVertex()) is honoured rather than bypassed — a call that
+    // arrives before the new instance's `ready` fires queues itself via
+    // _pendingStartDrawing exactly as it would from that click.
+    if (enabled && this._selectionSubject.value === null) {
+      this.startDrawing()
+    }
+  }
+
+  /**
+   * Re-run the style callback for every feature.
+   *
+   * Google re-evaluates the callback whenever the style is set, so handing
+   * back the same stored function is enough to repaint after a mode change.
+   */
+  private _refreshStyles(): void {
+    if (!this.mapReady || !this._styleFn) {
+      return
+    }
+    this._assertInitialized()
+    this.googleMap.data.setStyle(this._styleFn)
+  }
+
+  private get _registry(): FeatureGroupRegistry {
+    this._assertInitialized()
+    if (!this._groups) {
+      this._groups = new FeatureGroupRegistry(
+        this.googleMap.data,
+        this._groupOptions,
+      )
+    }
+    return this._groups
+  }
+
+  private _interactionContext(): MapInteractionContext {
+    return {
+      groups: this._registry,
+      editingEnabled: this.isEditingEnabled(),
+      allowHoles: this._allowDrawingHoleInPolygon,
+      editMode: this.isEditMode(),
+      isDrawing: this.isDrawing(),
+      getSelectedKey: () => this._selectionSubject.value?.group.key ?? null,
+      selectGroup: (key, feature) => this._applySelection(key, feature),
+      startDrawing: () => this.startDrawing(),
+      findContainingFeature: (polygon, groupKey, accept) =>
+        this._findContainingFeature(polygon, groupKey, accept),
+    }
+  }
+
+  /**
+   * Find an existing feature that fully contains `polygon`, restricted to a
+   * group when `groupKey` is given and to features `accept` returns true for
+   * when given. Matches any part of a MultiPolygon.
+   *
+   * `accept` is applied DURING iteration — a rejected candidate is skipped,
+   * not treated as ending the search — so legacy mode's Polygon-only filter
+   * can let a later Polygon candidate still match.
+   */
+  private _findContainingFeature(
+    polygon: Polygon,
+    groupKey?: string,
+    accept?: (feature: google.maps.Data.Feature) => boolean,
+  ): google.maps.Data.Feature | undefined {
+    this._assertInitialized()
+    let match: google.maps.Data.Feature | undefined
+    this.googleMap.data.forEach((feature) => {
+      if (match) {
+        return
+      }
+      if (
+        groupKey !== undefined &&
+        this._registry.keyOf(feature) !== groupKey
+      ) {
+        return
+      }
+      if (accept && !accept(feature)) {
+        return
+      }
+      const contains = polygonsFromDataFeature(feature).some((part) =>
+        polygonContains(part, polygon),
+      )
+      if (contains) {
+        match = feature
+      }
+    })
+    return match
+  }
+
+  private _applySelection(
+    key: string | null,
+    feature: google.maps.Data.Feature | null,
+  ): void {
+    this._assertInitialized()
+
+    this._focusedFeature = feature
+    const selectedFeatures = key === null ? [] : this._registry.featuresIn(key)
+
+    this.googleMap.data.forEach((f) => {
+      const shouldSelect = selectedFeatures.indexOf(f) !== -1
+      if (isFeatureSelected(f) !== shouldSelect) {
+        setFeatureSelected(f, shouldSelect)
+      }
+    })
+
+    if (key === null) {
+      this._selectionSubject.next(null)
+      return
+    }
+
+    const resolved = this._registry.groupWithSources(key)
+    if (!resolved) {
+      this._selectionSubject.next(null)
+      return
+    }
+    this._selectionSubject.next(this._targetFor(resolved, feature))
+  }
+
+  /**
+   * Pair a group with the emitted GeoJSON for one of its `Data.Feature`s.
+   *
+   * Indexes into the returned source array rather than `featuresIn()`, because
+   * a feature with unsupported geometry is dropped from the emitted list and
+   * would shift every index after it.
+   */
+  private _targetFor(
+    resolved: {
+      group: TheSeamMapFeatureGroup
+      sources: google.maps.Data.Feature[]
+    },
+    feature: google.maps.Data.Feature | null,
+  ): TheSeamMapGroupTarget {
+    const index = feature ? resolved.sources.indexOf(feature) : -1
+    return {
+      group: resolved.group,
+      feature: index === -1 ? null : resolved.group.features[index],
+    }
+  }
+
+  public selectGroup(key: string | null): boolean {
+    this._assertInitialized()
+    if (key === null) {
+      this._applySelection(null, null)
+      return true
+    }
+    const features = this._registry.featuresIn(key)
+    if (features.length === 0) {
+      return false
+    }
+    this._applySelection(key, features[0])
+    return true
+  }
+
+  public clearSelection(): void {
+    this._applySelection(null, null)
+  }
+
+  public getGroups(): TheSeamMapFeatureGroup[] {
+    return this._registry.groups()
+  }
+
+  private _boundsForGroup(key: string): google.maps.LatLngBounds | undefined {
+    const features = this._registry.featuresIn(key)
+    if (features.length === 0) {
+      return undefined
+    }
+    const bounds = new google.maps.LatLngBounds()
+    features.forEach((f) =>
+      f.getGeometry()?.forEachLatLng((latLng) => bounds.extend(latLng)),
+    )
+    return bounds
+  }
+
+  public fitGroup(
+    key: string,
+    padding?: number | google.maps.Padding,
+  ): boolean {
+    this._assertInitialized()
+    const bounds = this._boundsForGroup(key)
+    if (!bounds) {
+      return false
+    }
+    this.googleMap.fitBounds(bounds, padding ?? this._padding)
+    return true
+  }
+
+  public panToGroup(key: string): boolean {
+    this._assertInitialized()
+    const bounds = this._boundsForGroup(key)
+    if (!bounds) {
+      return false
+    }
+    this.googleMap.panTo(bounds.getCenter())
+    return true
+  }
+
+  /**
+   * Delete only the polygon the last interaction landed on.
+   *
+   * Re-applies the selection's group key afterward (with no focused feature)
+   * rather than leaving `selection$` holding a `TheSeamMapGroupTarget` whose
+   * `feature` no longer exists — `_applySelection` naturally clears to null
+   * when the group is now empty, via `groupWithSources`.
+   */
+  public deleteFocusedFeature(): void {
+    this._assertInitialized()
+    const key = this._focusedFeature
+      ? this._registry.keyOf(this._focusedFeature)
+      : (this._selectionSubject.value?.group.key ?? null)
+    const contextMenuTargetInGroup =
+      key !== null && this._contextMenuTargetSubject.value?.group.key === key
+
+    if (this._focusedFeature) {
+      this.googleMap.data.remove(this._focusedFeature)
+      this._focusedFeature = null
+    } else {
+      this.deleteSelection()
+    }
+
+    this._applySelection(key, null)
+    // Same reasoning as deleteGroup(): a context-menu target naming this
+    // group may now reference a removed feature (or a stale feature count),
+    // so clear it — but only when it actually named this group.
+    if (contextMenuTargetInGroup) {
+      this._contextMenuTargetSubject.next(null)
+    }
+  }
+
+  /** Escape cascades: cancel a draw, then clear selection, then leave edit mode. */
+  public handleEscape(): void {
+    if (this.isDrawing()) {
+      this.stopDrawing()
+      this._reapplyCurrentSelection()
+      return
+    }
+    if (this._selectionSubject.value !== null) {
+      this.clearSelection()
+      return
+    }
+    if (this.isEditMode()) {
+      this.setEditMode(false)
+    }
+  }
+
+  /**
+   * `startDrawing()` raw-deselects every feature (via `setFeatureSelected`)
+   * without touching `_selectionSubject`, so that `onDrawFinished` can still
+   * read `getSelectedKey()` for the group being drawn into. When a draw ends
+   * WITHOUT producing a finished feature — cancelled by `Escape` or
+   * `setEditMode(false)`, or a `finish` event with no valid geometry — nothing
+   * else re-applies those raw flags, so the map renders the selection as gone
+   * while `selection$`/`getSelectedKey()` still report it. Call this at every
+   * such stopping point to bring the two back in sync.
+   *
+   * Not called from the successful-finish path in `_onDrawFinished`: that
+   * path calls `_applySelection` itself with the new/joined selection, and
+   * doing it here first would only add a redundant, momentarily-stale
+   * `selectionChange` emission ahead of the real one.
+   */
+  private _reapplyCurrentSelection(): void {
+    if (this._model.id !== 'grouped') {
+      return
+    }
+    const currentKey = this._selectionSubject.value?.group.key ?? null
+    this._applySelection(currentKey, this._focusedFeature)
+  }
+
   private _initFeatureStyling(): void {
     this._assertInitialized()
 
-    // Disable any selection when clicking the map.
-    //
-    // TODO: There may be a better way to do this that would be more accurate or
-    // additional events that should be listened to, such as the disabling
-    // selection when the map looses focus.
-    this.googleMap.addListener(
-      'click',
-      (even: google.maps.MapMouseEvent | google.maps.IconMouseEvent) => {
-        this._assertInitialized()
-        this.googleMap.data.forEach((f) => setFeatureSelected(f, false))
-      },
-    )
-
-    // Determine what the style of the features are.
-    this.googleMap.data.setStyle((feature) => {
-      let opts = FEATURE_STYLE_OPTIONS_DEFAULT(this.isEditingEnabled())
-
-      const options = getStyleOptionsDefinedByFeature(feature)
-      this._mergeStyleOptions(opts, options ?? {})
-
-      if (isFeatureSelected(feature)) {
-        const hoverOptions = getHoveredStyleOptionsDefinedByFeature(feature)
-        opts = FEATURE_STYLE_OPTIONS_SELECTED(this.isEditingEnabled())
-        this._mergeStyleOptions(opts, hoverOptions ?? {})
+    this.googleMap.addListener('click', () => {
+      // The physical click that closes a polygon can reach this listener
+      // TWICE: once (fast) via Terra Draw's own pointer-driven close
+      // detection — which is what runs `_onDrawFinished()` / `stopDrawing()`
+      // and flips `isDrawing()` false — and, separately, via Google's own
+      // `click` recognition on this map, which this listener is bound to
+      // directly. By the time that second delivery arrives (confirmed
+      // against the live Storybook: consistently a few milliseconds later,
+      // comfortably within one animation frame — see
+      // .superpowers/closing-click-report.md), `isDrawing()` already reads
+      // false, so the guard just below cannot tell it apart from a fresh
+      // click on open map. `_suppressNextMapClick` exists to catch exactly
+      // that echo; see its doc comment for why a `domEvent.timeStamp`
+      // comparison does NOT work here.
+      if (this._suppressNextMapClick) {
+        this._suppressNextMapClick = false
+        return
       }
-
-      return opts
+      // While drawing, a click on open map is placing a vertex, not a map
+      // click — mirrors the data 'click' listener's guard just below. Without
+      // this, `onMapClick` in 'grouped' mode calls `startDrawing()`, which
+      // calls `setMode('polyline')` again and resets the in-progress path.
+      if (this.isDrawing()) {
+        return
+      }
+      this._model.onMapClick(this._interactionContext())
     })
 
-    // Select a feature when clicked.
+    this._styleFn = (feature) =>
+      computeFeatureStyle(feature, {
+        editingEnabled: this.isEditingEnabled(),
+        ...this._model.featureFlags(feature, this._interactionContext()),
+      })
+    this.googleMap.data.setStyle(this._styleFn)
+
     this.googleMap.data.addListener(
       'click',
       (event: google.maps.Data.MouseEvent) => {
-        this._assertInitialized()
-
-        // While drawing, a click on an existing polygon is placing a vertex,
-        // not selecting a feature. Selecting here would both steal the click
-        // and leave a misleading selection (see startDrawing's deselect).
+        // While drawing, a click on a polygon is placing a vertex.
         if (this.isDrawing()) {
           return
         }
-
-        setFeatureSelected(event.feature, true)
-        this.googleMap.data.forEach((f) => {
-          if (f !== event.feature && isFeatureSelected(f)) {
-            setFeatureSelected(f, false)
-          }
-        })
+        this._model.onFeatureClick(event.feature, this._interactionContext())
       },
     )
 
-    // Set a style on hovered features that can be selected.
     this.googleMap.data.addListener(
       'mouseover',
       (event: google.maps.Data.MouseEvent) => {
@@ -481,42 +1162,29 @@ export class GoogleMapsService implements OnDestroy {
         if (!this.isDrawing() && !isFeatureSelected(event.feature)) {
           this.setFeatureHoveredStyleOverride(event.feature)
         }
+
+        const resolved = this._registry.groupWithSources(
+          this._registry.keyOf(event.feature),
+        )
+        this._hoverSubject.next(
+          resolved ? this._targetFor(resolved, event.feature) : null,
+        )
       },
     )
 
-    // Remove any hover styles when mouse moves away.
-    this.googleMap.data.addListener(
-      'mouseout',
-      (event: google.maps.Data.MouseEvent) => {
-        this._assertInitialized()
-        this.googleMap.data.revertStyle()
-      },
-    )
+    this.googleMap.data.addListener('mouseout', () => {
+      this._assertInitialized()
+      this.googleMap.data.revertStyle()
+      this._hoverSubject.next(null)
+    })
   }
 
   public setFeatureHoveredStyleOverride(feature: google.maps.Data.Feature) {
     this._assertInitialized()
-    const overrideOpts = FEATURE_STYLE_OVERRIDE_OPTIONS_HOVERED(
-      this.isEditingEnabled(),
+    this.googleMap.data.overrideStyle(
+      feature,
+      computeFeatureHoverStyle(feature),
     )
-    const hoverOptions = getHoveredStyleOptionsDefinedByFeature(feature)
-    this._mergeStyleOptions(overrideOpts, hoverOptions ?? {})
-    this.googleMap.data.overrideStyle(feature, overrideOpts)
-  }
-
-  private _mergeStyleOptions(
-    options: google.maps.Data.StyleOptions,
-    propertiesStyleOptions: google.maps.Data.StyleOptions,
-  ): void {
-    if (Object.keys(propertiesStyleOptions).length === 0) {
-      return
-    }
-
-    for (const opt of SUPPORTED_PROPERTY_STYLE_OPTIONS) {
-      if (Object.prototype.hasOwnProperty.call(propertiesStyleOptions, opt)) {
-        options[opt] = propertiesStyleOptions[opt] as any
-      }
-    }
   }
 
   private _initFeatureChangeListeners(): void {
@@ -526,12 +1194,13 @@ export class GoogleMapsService implements OnDestroy {
       .pipe(
         switchMap(() =>
           from(this.getGeoJson()).pipe(
-            tap((geoJson) =>
+            tap((geoJson) => {
               this._mapValueManager.setValue(
                 geoJson,
                 MapValueSource.FeatureChange,
-              ),
-            ),
+              )
+              this._labelsOverlay?.refresh()
+            }),
           ),
         ),
         takeUntil(this._ngUnsubscribe),
@@ -541,15 +1210,42 @@ export class GoogleMapsService implements OnDestroy {
     this.googleMap.data.addListener(
       'contextmenu',
       (event: google.maps.Data.MouseEvent) => {
-        if (!isFeatureSelected(event.feature)) {
+        if (
+          !this._model.allowsContextMenu(
+            event.feature,
+            this._interactionContext(),
+          )
+        ) {
           return
         }
-
+        this._setContextMenuTarget(event.feature)
         this._openContextMenuForFeature(
           event.feature,
           event.latLng ?? undefined,
         )
       },
+    )
+  }
+
+  /**
+   * Establish `feature` as what the context menu is about to open for:
+   * `_focusedFeature` (what "Delete Polygon" acts on) and
+   * `contextMenuTarget$` (what "Delete Field" is gated on and acts on) both
+   * follow it. Shared by the `contextmenu` mouse listener and
+   * `openContextMenu()`'s keyboard path so the two establish the target
+   * identically — the menu's target must always be the feature the menu was
+   * opened for, on either path. Before this, only the mouse listener set
+   * `contextMenuTarget$`, so pressing the `ContextMenu` key could open a menu
+   * over whatever was CURRENTLY selected while still offering "Delete Field"
+   * for whatever a PRIOR right-click had targeted.
+   */
+  private _setContextMenuTarget(feature: google.maps.Data.Feature): void {
+    this._focusedFeature = feature
+    const resolved = this._registry.groupWithSources(
+      this._registry.keyOf(feature),
+    )
+    this._contextMenuTargetSubject.next(
+      resolved ? this._targetFor(resolved, feature) : null,
     )
   }
 
@@ -580,7 +1276,11 @@ export class GoogleMapsService implements OnDestroy {
   // TODO: Refactor out of the service meant to just wrap the google maps api.
   public openContextMenu(): void {
     const feature = this.getSelectedFeature()
-    if (feature) {
+    if (
+      feature &&
+      this._model.allowsContextMenu(feature, this._interactionContext())
+    ) {
+      this._setContextMenuTarget(feature)
       this._openContextMenuForFeature(feature)
     }
   }
@@ -644,39 +1344,71 @@ export class GoogleMapsService implements OnDestroy {
     }
   }
 
+  /**
+   * Arm `_suppressNextMapClick`, and guarantee it cannot linger forever if
+   * the echo it exists for never arrives — confirmed to be the normal case
+   * for most real closes, and true of every synthetic/`play()`-driven draw,
+   * per .superpowers/closing-click-report.md. A `setTimeout` would "solve"
+   * this by guessing a safe wall-clock delay, which is exactly the kind of
+   * timing window this fix is trying to avoid introducing. Two
+   * `requestAnimationFrame` callbacks bound the window instead: the observed
+   * echo arrives a few milliseconds after `stopDrawing()`, comfortably
+   * inside a single frame, so two frames is generous headroom without
+   * guessing at a duration — and two real user actions (even fast automated
+   * ones) are never going to land within two animation frames of each other,
+   * so an unrelated later click is never at risk of being swallowed.
+   */
+  private _armMapClickSuppression(): void {
+    this._suppressNextMapClick = true
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        this._suppressNextMapClick = false
+      })
+    })
+  }
+
   private _onDrawFinished(id: string | number): void {
+    // Armed first, before any other work below — including the early return
+    // for a draw that produced no usable geometry — since the closing
+    // click's late echo (see `_suppressNextMapClick`'s doc comment) can
+    // follow either outcome.
+    this._armMapClickSuppression()
     const feature = this._terraDraw?.getSnapshotFeature(id)
     this._terraDraw?.removeFeatures([id])
     this.stopDrawing()
 
     const drawn = feature ? this._toDrawnPolygon(feature.geometry) : undefined
     if (!drawn || !polygonHasMinDistinctVertices(drawn, 3)) {
+      // A 'finish' event that produced no usable geometry is, for selection
+      // purposes, a cancelled draw — see _reapplyCurrentSelection().
+      this._reapplyCurrentSelection()
       return
     }
 
     this._assertInitialized()
 
-    const exteriorFeature = this._allowDrawingHoleInPolygon
-      ? this._getPossibleExteriorFeature(drawn)
-      : undefined
+    const context = this._interactionContext()
+    const outcome = this._model.onDrawFinished(drawn, context)
 
-    if (exteriorFeature) {
-      const exteriorPolygon = geoJsonPolygonFromDataFeature(exteriorFeature)
-      if (exteriorPolygon) {
-        const merged = addHoleToPolygon(exteriorPolygon, drawn)
-        // Mutate the EXISTING feature instance to preserve its identity and
-        // properties (see design constraints).
-        exteriorFeature.setGeometry(dataPolygonFromGeoJson(merged))
-        setFeatureSelected(exteriorFeature, true)
-        return
-      }
+    if (outcome.kind === 'hole' && applyHoleToFeature(outcome.target, drawn)) {
+      this._applySelection(this._registry.keyOf(outcome.target), outcome.target)
+      this._labelsOverlay?.refresh()
+      return
     }
 
     const newFeature = new google.maps.Data.Feature({
       geometry: dataPolygonFromGeoJson(drawn),
     })
     this.googleMap.data.add(newFeature)
-    setFeatureSelected(newFeature, true)
+
+    const key =
+      outcome.kind === 'newFeature' && outcome.groupKey !== null
+        ? (this._registry.assignKey(newFeature, outcome.groupKey),
+          outcome.groupKey)
+        : this._registry.assignNewKey(newFeature)
+
+    this._applySelection(key, newFeature)
+    this._labelsOverlay?.refresh()
   }
 
   /**
@@ -698,27 +1430,5 @@ export class GoogleMapsService implements OnDestroy {
       return polygon
     }
     return undefined
-  }
-
-  /**
-   * Find an existing Polygon feature that fully contains the drawn polygon, so
-   * the drawing can be applied as a cutout. Returns the existing feature
-   * instance (never a copy).
-   */
-  private _getPossibleExteriorFeature(
-    drawn: Polygon,
-  ): google.maps.Data.Feature | undefined {
-    this._assertInitialized()
-    let match: google.maps.Data.Feature | undefined
-    this.googleMap.data.forEach((f) => {
-      if (match) {
-        return
-      }
-      const candidate = geoJsonPolygonFromDataFeature(f)
-      if (candidate && polygonContains(candidate, drawn)) {
-        match = f
-      }
-    })
-    return match
   }
 }

@@ -23,8 +23,8 @@ import {
   ViewChild,
 } from '@angular/core'
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
-import { fromEvent, Observable, of, Subject } from 'rxjs'
-import { catchError, map, takeUntil, tap } from 'rxjs/operators'
+import { combineLatest, fromEvent, Observable, of, Subject } from 'rxjs'
+import { catchError, map, skip, takeUntil, tap } from 'rxjs/operators'
 
 import { faCrosshairs, faFileImport } from '@fortawesome/free-solid-svg-icons'
 import {
@@ -36,18 +36,25 @@ import {
 } from '@theseam/ui-common/core'
 import { MenuComponent } from '@theseam/ui-common/menu'
 
+import {
+  TheSeamMapFeatureGroup,
+  TheSeamMapGroupTarget,
+} from '../feature-groups/feature-group'
 import { TheSeamGoogleMapsApiLoader } from '../google-maps-api-loader/google-maps-api-loader'
 import { GoogleMapsControlsService } from '../google-maps-controls.service'
 import { TheSeamGoogleMapsDrawButtonControlComponent } from '../google-maps-draw-button-control/google-maps-draw-button-control.component'
 import { TheSeamGoogleMapsRecenterButtonControlComponent } from '../google-maps-recenter-button-control/google-maps-recenter-button-control.component'
 import { TheSeamGoogleMapsUploadButtonControlComponent } from '../google-maps-upload-button-control/google-maps-upload-button-control.component'
 import { GoogleMapsService } from '../google-maps.service'
+import { TheSeamMapInteractionMode } from '../interaction/interaction-mode'
 import { MapControl, MAP_CONTROLS_SERVICE } from '../map-controls-service'
 import {
   MapValue,
   MapValueManagerService,
   MapValueSource,
 } from '../map-value-manager.service'
+
+declare const ngDevMode: boolean | undefined
 
 interface TheSeamMapContextMenuItem {
   label: string
@@ -102,6 +109,7 @@ export class TheSeamGoogleMapsComponent
   static ngAcceptInputType_streetViewControlEnabled: BooleanInput
   static ngAcceptInputType_allowDrawingHoleInPolygon: BooleanInput
   static ngAcceptInputType_editingEnabled: BooleanInput
+  static ngAcceptInputType_selectedGroupKey: string | null
 
   private readonly _changeDetectorRef = inject(ChangeDetectorRef)
 
@@ -186,7 +194,39 @@ export class TheSeamGoogleMapsComponent
 
   @Input() padding: number | google.maps.Padding | undefined = 0
 
+  /**
+   * Which interaction model the map uses.
+   *
+   * `'legacy'` is the single-boundary behaviour this component has always had
+   * and is the default, so existing consumers are unaffected. `'grouped'`
+   * separates selection from geometry editing; see the design doc.
+   */
+  @Input() interactionMode: TheSeamMapInteractionMode = 'legacy'
+
+  /**
+   * Name of the GeoJSON property that groups features into one logical thing,
+   * such as a field. Features sharing a value select, style, and edit together.
+   * Unset means every feature is its own group.
+   */
+  @Input() featureGroupProperty: string | undefined
+
+  /** Name of the GeoJSON property holding a group's label text. */
+  @Input() featureLabelProperty: string | undefined
+
+  /**
+   * Generates the key written to `featureGroupProperty` for a newly drawn
+   * group. Consumer-supplied so the format is one the app recognises.
+   */
+  @Input() newGroupKeyFactory: (() => string) | undefined
+
+  /** Preselect a group. Applied on map-ready and after each external value write. */
+  @Input() selectedGroupKey: string | null = null
+
   @Output() mapReady = new EventEmitter<google.maps.Map | undefined>()
+
+  @Output() selectionChange = new EventEmitter<TheSeamMapGroupTarget | null>()
+  @Output() featureHoverChange =
+    new EventEmitter<TheSeamMapGroupTarget | null>()
 
   @ViewChild('featureContextMenu', { static: true, read: MenuComponent })
   public featureContextMenu!: MenuComponent
@@ -237,21 +277,69 @@ export class TheSeamGoogleMapsComponent
             changed.source !== MapValueSource.FeatureChange
           ) {
             this._googleMaps.setData(changed.value)
+            this._applySelectedGroupKey()
           }
         }),
         takeUntil(this._ngUnsubscribe),
       )
       .subscribe()
 
-    this._contextMenuItems$ = this._googleMaps.editingEnabled$.pipe(
-      map((enabled) => {
+    // `skip(1)` drops the value these BehaviorSubject-backed streams replay on
+    // subscribe. An Angular `@Output` should fire when something changes, not
+    // when someone starts listening — without this, a consumer binding
+    // `(selectionChange)` receives a `null` before the user has interacted at
+    // all, which reads as "the selection was cleared" and can wrongly reset a
+    // panel or dirty a form on open. The subscription happens in the
+    // constructor, when the replayed value is always the initial `null`, so
+    // nothing real is ever skipped.
+    this._googleMaps.selection$
+      .pipe(
+        skip(1),
+        tap((selection) => this.selectionChange.emit(selection)),
+        takeUntil(this._ngUnsubscribe),
+      )
+      .subscribe()
+
+    this._googleMaps.hover$
+      .pipe(
+        skip(1),
+        tap((hover) => this.featureHoverChange.emit(hover)),
+        takeUntil(this._ngUnsubscribe),
+      )
+      .subscribe()
+
+    this._contextMenuItems$ = combineLatest([
+      this._googleMaps.editingEnabled$,
+      // The RIGHT-CLICKED feature's group. In 'grouped' mode the menu now
+      // only opens when that group is already the selection (see
+      // `GroupedInteractionModel.allowsContextMenu()`), so this and
+      // `selection$` always agree here — but this is still the one that
+      // names what "Delete Field" is conceptually acting on, independent of
+      // that coincidence. See `contextMenuTarget$`'s doc comment.
+      this._googleMaps.contextMenuTarget$,
+    ]).pipe(
+      map(([enabled, target]) => {
         const items: TheSeamMapContextMenuItem[] = []
-        if (enabled) {
-          items.push({
-            label: 'Delete',
-            action: () => this._onClickDeleteFeature(),
-          })
+        if (!enabled) {
+          return items
         }
+        if (this.interactionMode === 'grouped') {
+          items.push({
+            label: 'Delete Polygon',
+            action: () => this._googleMaps.deleteFocusedFeature(),
+          })
+          if (target && target.group.features.length > 1) {
+            items.push({
+              label: 'Delete Field',
+              action: () => this._googleMaps.deleteGroup(target.group.key),
+            })
+          }
+          return items
+        }
+        items.push({
+          label: 'Delete',
+          action: () => this._onClickDeleteFeature(),
+        })
         return items
       }),
       tap((items) => {
@@ -280,13 +368,27 @@ export class TheSeamGoogleMapsComponent
           switch (event.code) {
             case 'Delete':
               if (this._googleMaps.isEditingEnabled()) {
-                this._googleMaps.deleteSelection()
+                if (this.interactionMode === 'grouped') {
+                  this._googleMaps.deleteFocusedFeature()
+                } else {
+                  this._googleMaps.deleteSelection()
+                }
                 event.preventDefault()
                 event.stopPropagation()
               }
               break
             case 'Escape':
-              this._googleMaps.stopDrawing()
+              if (this.interactionMode === 'grouped') {
+                this._googleMaps.handleEscape()
+              } else {
+                // Legacy parity: `handleEscape()`'s cascade also clears a
+                // selection, but in legacy mode clicking a feature populates
+                // the selection, so that would newly deselect it (and drop
+                // its vertex handles) on a key that previously only cancelled
+                // a draw. Two apps depend on legacy behaviour unchanged, so
+                // keep the narrower pre-existing call here.
+                this._googleMaps.stopDrawing()
+              }
               event.preventDefault()
               event.stopPropagation()
               break
@@ -350,6 +452,49 @@ export class TheSeamGoogleMapsComponent
     if (Object.prototype.hasOwnProperty.call(changes, 'padding')) {
       this._googleMaps.setPadding(this.padding)
     }
+
+    if (Object.prototype.hasOwnProperty.call(changes, 'interactionMode')) {
+      this._googleMaps.setInteractionMode(this.interactionMode)
+    }
+
+    if (
+      Object.prototype.hasOwnProperty.call(changes, 'featureGroupProperty') ||
+      Object.prototype.hasOwnProperty.call(changes, 'newGroupKeyFactory')
+    ) {
+      this._googleMaps.setGroupOptions({
+        groupProperty: this.featureGroupProperty,
+        newGroupKeyFactory: this.newGroupKeyFactory,
+      })
+    }
+
+    if (Object.prototype.hasOwnProperty.call(changes, 'selectedGroupKey')) {
+      this._applySelectedGroupKey()
+    }
+
+    if (Object.prototype.hasOwnProperty.call(changes, 'featureLabelProperty')) {
+      this._googleMaps.setLabelProperty(this.featureLabelProperty)
+    }
+  }
+
+  private _applySelectedGroupKey(): void {
+    if (!this._googleMaps.mapReady) {
+      return
+    }
+    if (this.selectedGroupKey === null) {
+      this._googleMaps.clearSelection()
+      return
+    }
+    if (!this._googleMaps.selectGroup(this.selectedGroupKey)) {
+      // The named group is not in the current value. Clearing keeps the map
+      // and the consumer's expectation from silently diverging.
+      this._googleMaps.clearSelection()
+      if (typeof ngDevMode === 'undefined' || ngDevMode) {
+        console.warn(
+          `[seam-google-maps] selectedGroupKey "${this.selectedGroupKey}" ` +
+            `matches no group in the current value.`,
+        )
+      }
+    }
   }
 
   writeValue(value: MapValue): void {
@@ -405,6 +550,13 @@ export class TheSeamGoogleMapsComponent
     this.idleListener = this._googleMaps.googleMap?.addListener('idle', () => {
       this._googleMaps.googleMap?.setZoom(this.zoom)
       this._googleMaps.reCenterOnFeatures()
+      this._googleMaps.setInteractionMode(this.interactionMode)
+      this._googleMaps.setGroupOptions({
+        groupProperty: this.featureGroupProperty,
+        newGroupKeyFactory: this.newGroupKeyFactory,
+      })
+      this._googleMaps.setLabelProperty(this.featureLabelProperty)
+      this._applySelectedGroupKey()
       this.mapReady.emit(this._googleMaps.googleMap)
 
       this.idleListener?.remove()
@@ -413,5 +565,62 @@ export class TheSeamGoogleMapsComponent
 
   _onClickDeleteFeature() {
     this._googleMaps.deleteSelection()
+  }
+
+  // The service delegates below guard on `mapReady` themselves, the same way
+  // `_applySelectedGroupKey()` already does for the declarative
+  // `selectedGroupKey` input. Their service-side counterparts call
+  // `_assertInitialized()` and throw when the map hasn't finished loading;
+  // this component's public surface is documented as non-throwing (an
+  // unknown key returns `false` and changes nothing), so "not ready yet"
+  // must behave the same way, not worse.
+
+  /** Select a group by key. Returns false when no such group exists. */
+  public selectGroup(key: string): boolean {
+    if (!this._googleMaps.mapReady) {
+      return false
+    }
+    return this._googleMaps.selectGroup(key)
+  }
+
+  public clearSelection(): void {
+    if (!this._googleMaps.mapReady) {
+      return
+    }
+    this._googleMaps.clearSelection()
+  }
+
+  /** Fit the viewport to a group. Returns false when no such group exists. */
+  public fitGroup(
+    key: string,
+    padding?: number | google.maps.Padding,
+  ): boolean {
+    if (!this._googleMaps.mapReady) {
+      return false
+    }
+    return this._googleMaps.fitGroup(key, padding)
+  }
+
+  /** Pan to a group's centre. Returns false when no such group exists. */
+  public panToGroup(key: string): boolean {
+    if (!this._googleMaps.mapReady) {
+      return false
+    }
+    return this._googleMaps.panToGroup(key)
+  }
+
+  public getGroups(): TheSeamMapFeatureGroup[] {
+    if (!this._googleMaps.mapReady) {
+      return []
+    }
+    return this._googleMaps.getGroups()
+  }
+
+  public setEditMode(enabled: boolean): void {
+    this._googleMaps.setEditMode(enabled)
+  }
+
+  public isEditMode(): boolean {
+    return this._googleMaps.isEditMode()
   }
 }
