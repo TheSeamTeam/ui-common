@@ -4,7 +4,7 @@ import {
   moduleMetadata,
   StoryObj,
 } from '@storybook/angular'
-import { expect, fn } from 'storybook/test'
+import { expect, fn, userEvent } from 'storybook/test'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { CommonModule } from '@angular/common'
@@ -346,34 +346,34 @@ async function waitUntil(
  * armed-but-empty session apart from a real one entirely from a `play`
  * function, with no manual mouse driving required.
  */
-function placeVertex(
+async function placeVertex(
   component: any,
   containerX: number,
   containerY: number,
-): void {
+): Promise<void> {
   const el = component._googleMaps
     .getDiv()
     .querySelector('div[style*="z-index: 3;"]') as HTMLElement
   const rect = el.getBoundingClientRect()
-  const opts: PointerEventInit = {
-    bubbles: true,
-    cancelable: true,
-    composed: true,
-    pointerId: 1,
-    isPrimary: true,
-    button: 0,
-    clientX: rect.left + containerX,
-    clientY: rect.top + containerY,
-    pointerType: 'mouse',
-  }
-  el.dispatchEvent(new PointerEvent('pointerdown', opts))
-  el.dispatchEvent(new PointerEvent('pointerup', opts))
+  // `userEvent.pointer` rather than hand-dispatched PointerEvents: Storybook
+  // instruments it, so the interactions panel shows each click and its coords
+  // (`userEvent.pointer((3) { coords: { clientX: 316, ... }, keys:
+  // "[MouseLeft]", ... })`), which is what makes a failing draw debuggable
+  // step by step. It also drives the full gesture — pointerover/enter/move,
+  // pointerdown/mousedown, pointerup/mouseup, click — where the hand-rolled
+  // version only dispatched pointerdown/pointerup, so it exercises Terra
+  // Draw's listeners more faithfully rather than less.
+  await userEvent.pointer({
+    coords: { clientX: rect.left + containerX, clientY: rect.top + containerY },
+    keys: '[MouseLeft]',
+    target: el,
+  })
 }
 
 /** Places 4 corners of a small square plus a closing click near the first
  * corner, finishing a real polygon the same way a real mouse-driven draw
  * would. */
-function drawSquare(component: any, x: number, y: number): void {
+async function drawSquare(component: any, x: number, y: number): Promise<void> {
   const pts: [number, number][] = [
     [x, y],
     [x + 80, y],
@@ -382,7 +382,16 @@ function drawSquare(component: any, x: number, y: number): void {
     [x + 2, y + 2],
   ]
   for (const [px, py] of pts) {
-    placeVertex(component, px, py)
+    // Awaited deliberately, even though it costs the indentation under an
+    // enclosing `step()`. Storybook's instrumenter tracks the parent call
+    // synchronously, so only calls *initiated* inside the step callback's
+    // synchronous run get nested under it. Dropping the `await` fires all
+    // five clicks in one synchronous burst, which does nest them — but it
+    // also means five concurrent `userEvent.pointer` calls share
+    // user-event's internal pointer state, so their events can interleave.
+    // Correct sequencing beats nicer grouping. To get both, pass `step` in
+    // and wrap each vertex in its own step.
+    await placeVertex(component, px, py)
   }
 }
 
@@ -839,7 +848,7 @@ export const GroupedRepeatedDrawCyclesRecreateTerraDraw: Story = {
     service.googleMap.data.forEach(() => before++)
     service.startDrawing()
     await waitUntil(() => service.isDrawing() === true)
-    drawSquare(component, 100, 300)
+    await drawSquare(component, 100, 300)
     await waitUntil(() => service.isDrawing() === false)
     let after = 0
     service.googleMap.data.forEach(() => after++)
@@ -944,7 +953,7 @@ export const GroupedEagerRecreateAvoidsSwallowedClick: Story = {
     // IMMEDIATELY — no waitUntil, no delay — the worst case for a click
     // racing an async recreate gap.
     component.setEditMode(true)
-    drawSquare(component, 100, 300)
+    await drawSquare(component, 100, 300)
 
     await waitUntil(() => service.isDrawing() === false)
     const selection = service['_selectionSubject'].value
@@ -1084,7 +1093,7 @@ export const GroupedDrawCreatesNewGroup: Story = {
     await expect(service.isDrawing()).toBe(true)
 
     const groupsBefore = component.getGroups().length
-    drawSquare(component, 300, 150)
+    await drawSquare(component, 300, 150)
     await waitUntil(() => service.isDrawing() === false)
 
     await expect(component.getGroups().length).toBe(groupsBefore + 1)
@@ -1124,7 +1133,7 @@ export const GroupedDrawJoinsSelectedGroup: Story = {
     value: GROUPED_VALUE,
     selectionChange: fn(),
   },
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, step }) => {
     const component = await mapComponent(canvasElement)
     const service = component._googleMaps
     // Select the group BEFORE entering edit mode, so setEditMode(true) does
@@ -1138,7 +1147,9 @@ export const GroupedDrawJoinsSelectedGroup: Story = {
 
     service.startDrawing()
     await waitUntil(() => service.isDrawing() === true)
-    drawSquare(component, 300, 150)
+    await step('Draw square', async () => {
+      await drawSquare(component, 300, 150)
+    })
     await waitUntil(() => service.isDrawing() === false)
 
     // Field A had two polygons; the new one joins it as a third rather than
