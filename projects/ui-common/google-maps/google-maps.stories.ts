@@ -690,10 +690,11 @@ export const GroupedEscapeCascades: Story = {
  * Probes F3's premise directly: `startDrawing()`/`stopDrawing()` are the only
  * two places `_drawingSubject` changes, so a round trip through them must
  * leave `isDrawing()` exactly where it started. This is the coverage whose
- * absence let a stuck drawing mode go unnoticed — every other draw-related
- * story (`GroupedDrawCreatesNewGroup` et al.) drives `_onDrawFinished`
- * directly via a stubbed Terra Draw, without ever calling `startDrawing()`,
- * so none of them exercised this transition at all.
+ * absence let a stuck drawing mode go unnoticed — this is the one story that
+ * cycles the round trip on its own (with no draw in between) purely to pin
+ * that invariant in isolation, distinct from the real-draw stories
+ * (`GroupedDrawCreatesNewGroup` et al.) which exercise the same transition as
+ * a side effect of an actual finished polygon.
  *
  * Investigation finding (see .superpowers/draw-release-report.md for detail):
  * `isDrawing()` reading Terra Draw's own `getMode()` was not, in fact, the
@@ -1054,40 +1055,6 @@ export const LegacyContextMenuOnUnselectedDoesNothing: Story = {
   },
 }
 
-/**
- * Drives `GoogleMapsService._onDrawFinished()` directly rather than a real
- * Terra Draw session. Data-layer polygons render into a canvas overlay with
- * no per-feature DOM element, so `GroupedClickSelectsWholeField` et al.
- * already trigger `google.maps.event.trigger(map.data, ...)` instead of
- * clicking anything — but Terra Draw itself has no equivalent map-level
- * event to trigger: its Google Maps adapter binds real pointer listeners to
- * the map's rendered DOM subtree, so finishing an actual polyline draw from a
- * `play` function would mean simulating a precise sequence of pixel-space
- * pointer events against a real map projection, AND getting the result past
- * Terra Draw's own per-mode store validation (`addFeatures` validates
- * against whichever mode is registered, and the polyline mode's validator
- * expects in-progress LineString geometry, not a finished Polygon). Neither
- * is what these stories are for: F5 is about proving `_onDrawFinished`
- * translates a `MapDrawOutcome` into the right map value, given a finished
- * geometry — not about Terra Draw's own drawing UX, which is unit-tested
- * elsewhere via the interaction models and has no coverage gap of its own.
- * So this stubs the two `TerraDraw` calls `_onDrawFinished` makes
- * (`getSnapshotFeature`, `removeFeatures`) to hand it a real, finished
- * Polygon directly, then calls the private method itself — the actual
- * outcome-translation path, exercised for real.
- */
-function finishDrawWithPolygon(component: any, polygon: any): void {
-  const service = component._googleMaps
-  const id = 'story-finished-draw'
-  service._terraDraw.getSnapshotFeature = () => ({
-    type: 'Feature',
-    geometry: polygon,
-    properties: {},
-  })
-  service._terraDraw.removeFeatures = () => undefined
-  service._onDrawFinished(id)
-}
-
 export const GroupedDrawCreatesNewGroup: Story = {
   render: (args) => ({
     template: `
@@ -1106,14 +1073,19 @@ export const GroupedDrawCreatesNewGroup: Story = {
   },
   play: async ({ canvasElement, args }) => {
     const component = await mapComponent(canvasElement)
+    const service = component._googleMaps
     component.setEditMode(true)
-    // Nothing selected — GROUPED_VALUE's initial state has no selection.
+    // Nothing selected — GROUPED_VALUE's initial state has no selection, so
+    // setEditMode(true) itself arms drawing (F6) and this real draw runs
+    // directly against that armed session, via placeVertex()'s synthetic
+    // pointerdown/pointerup pairs on Terra Draw's own overlay element (see
+    // drawSquare(), above) — the same real `finish` event a mouse-driven
+    // draw fires, landing on `_onDrawFinished()` for real.
+    await expect(service.isDrawing()).toBe(true)
 
     const groupsBefore = component.getGroups().length
-    // Away from every existing square, so containment/hole logic (skipped
-    // entirely here since nothing is selected, but kept clean regardless)
-    // never enters into it.
-    finishDrawWithPolygon(component, squareAt(-98.5, 37.63))
+    drawSquare(component, 300, 150)
+    await waitUntil(() => service.isDrawing() === false)
 
     await expect(component.getGroups().length).toBe(groupsBefore + 1)
 
@@ -1154,10 +1126,20 @@ export const GroupedDrawJoinsSelectedGroup: Story = {
   },
   play: async ({ canvasElement, args }) => {
     const component = await mapComponent(canvasElement)
-    component.setEditMode(true)
+    const service = component._googleMaps
+    // Select the group BEFORE entering edit mode, so setEditMode(true) does
+    // NOT auto-arm drawing (F6 only arms when nothing is selected — see
+    // GroupedEditModeDoesNotArmWithSelection) — this story needs an explicit
+    // startDrawing() so the real draw below joins a stable, already-selected
+    // group rather than racing the auto-arm's own selection state.
     component.selectGroup('A')
+    component.setEditMode(true)
+    await expect(service.isDrawing()).toBe(false)
 
-    finishDrawWithPolygon(component, squareAt(-98.52, 37.63))
+    service.startDrawing()
+    await waitUntil(() => service.isDrawing() === true)
+    drawSquare(component, 300, 150)
+    await waitUntil(() => service.isDrawing() === false)
 
     // Field A had two polygons; the new one joins it as a third rather than
     // starting a group of its own.
