@@ -1170,6 +1170,112 @@ export const GroupedDrawJoinsSelectedGroup: Story = {
   },
 }
 
+/**
+ * Regression test for the closing-click race (see
+ * .superpowers/closing-click-report.md): the physical click that closes a
+ * polygon can reach the map's own `click` listener a beat late, AFTER
+ * `_onDrawFinished()` has already flipped `isDrawing()` false — a real
+ * mouse-driven closing click was caught doing exactly this against the live
+ * Storybook, repeatedly, with the late delivery landing a few milliseconds
+ * after `stopDrawing()`. Because `isDrawing()` already reads false by the
+ * time it arrives, the map `click` listener's guard cannot tell it apart
+ * from a fresh click on open map, so `GroupedInteractionModel.onMapClick()`
+ * called `startDrawing()` again — reverting straight back into drawing mode
+ * moments after a successful finish had just selected the new polygon.
+ *
+ * A `play()`-driven draw never reproduces the double delivery naturally
+ * (confirmed in the same investigation), so this forces the exact same late
+ * delivery `google.maps.event.trigger(map, 'click', { domEvent, latLng })`
+ * would produce in a real browser, immediately after a real finish — the
+ * only way automation can reach this deterministically.
+ */
+export const GroupedLateMapClickAfterFinishStaysInEditingState: Story = {
+  render: (args) => ({
+    template: `
+      <seam-google-maps
+        interactionMode="grouped"
+        featureGroupProperty="fieldId"
+        [value]="value"
+        (selectionChange)="selectionChange($event)"
+        style="height: 400px"></seam-google-maps>
+    `,
+    props: args,
+  }),
+  args: {
+    value: GROUPED_VALUE,
+    selectionChange: fn(),
+  },
+  play: async ({ canvasElement }) => {
+    const component = await mapComponent(canvasElement)
+    const service = component._googleMaps
+    component.setEditMode(true)
+    // Nothing selected — setEditMode(true) auto-arms drawing (F6).
+    await expect(service.isDrawing()).toBe(true)
+
+    await drawSquare(component, 300, 150)
+    await waitUntil(() => service.isDrawing() === false)
+
+    const selectionAfterDraw = service['_selectionSubject'].value
+    await expect(selectionAfterDraw).not.toBeNull()
+    const newKey = selectionAfterDraw.group.key
+
+    // Force the late map click the real closing click sometimes also
+    // produces, right after the finish — the worst-case timing the guard
+    // has to survive.
+    google.maps.event.trigger(service.googleMap, 'click', {
+      domEvent: { timeStamp: performance.now() },
+      latLng: null,
+    })
+
+    // Must NOT have reverted to (or restarted) drawing, and the new polygon
+    // must still be the selection, with its edit handles still armed.
+    await expect(service.isDrawing()).toBe(false)
+    const selectionAfterLateClick = service['_selectionSubject'].value
+    await expect(selectionAfterLateClick).not.toBeNull()
+    await expect(selectionAfterLateClick.group.key).toBe(newKey)
+    const newFeature = featureWithGroup(component, newKey)
+    const style = service.googleMap.data.getStyle()(newFeature)
+    await expect(style.editable).toBe(true)
+  },
+}
+
+/**
+ * Legacy twin of `GroupedLateMapClickAfterFinishStaysInEditingState`: the
+ * same late delivery reaches `LegacyInteractionModel.onMapClick()`, whose
+ * empty-map branch is `selectGroup(null, null)` — clearing the selection the
+ * draw just made and leaving the map in neither the editing nor the drawing
+ * state, matching the reported legacy symptom exactly.
+ */
+export const LegacyLateMapClickAfterFinishKeepsSelection: Story = {
+  render: () => ({
+    template: `<seam-google-maps [value]="value" style="height: 400px"></seam-google-maps>`,
+    props: { value: GROUPED_VALUE },
+  }),
+  play: async ({ canvasElement }) => {
+    const component = await mapComponent(canvasElement)
+    const service = component._googleMaps
+
+    service.startDrawing()
+    await waitUntil(() => service.isDrawing() === true)
+    await drawSquare(component, 300, 150)
+    await waitUntil(() => service.isDrawing() === false)
+
+    // Legacy: selection alone arms handles — confirm the freshly drawn
+    // polygon is selected before forcing the late click.
+    await expect(service.hasSelectedFeature()).toBe(true)
+    const selectedBefore = service.getSelectedFeature()
+
+    google.maps.event.trigger(service.googleMap, 'click', {
+      domEvent: { timeStamp: performance.now() },
+      latLng: null,
+    })
+
+    await expect(service.isDrawing()).toBe(false)
+    await expect(service.hasSelectedFeature()).toBe(true)
+    await expect(service.getSelectedFeature()).toBe(selectedBefore)
+  },
+}
+
 export const GroupedDeleteRemovesOnlyFocusedPolygon: Story = {
   render: (args) => ({
     template: `

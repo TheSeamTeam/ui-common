@@ -90,6 +90,25 @@ export class GoogleMapsService implements OnDestroy {
   // free — queues itself via `_pendingStartDrawing` below rather than being
   // dropped, so nothing is lost even in that case.
   private _pendingStartDrawing = false
+  /**
+   * One-shot suppression for the map `click` listener, armed the instant a
+   * draw finishes (see `_armMapClickSuppression()` for why, and its call
+   * site in `_onDrawFinished()`).
+   *
+   * `domEvent.timeStamp` was tried first, since it is a `DOMHighResTimeStamp`
+   * on the same origin as `performance.now()` and looks like a clean,
+   * delay-free discriminator: a stale click's timestamp should predate the
+   * moment the draw finished. It does not hold up empirically. Driving real
+   * mouse draws against the live Storybook and logging both the map `click`
+   * listener and `stopDrawing()` (see .superpowers/closing-click-report.md)
+   * caught the echo repeatedly, and every single time its `domEvent.timeStamp`
+   * was a few milliseconds AFTER `stopDrawing()`'s own timestamp, not before
+   * — indistinguishable from a genuinely fresh click by timestamp alone.
+   * Google appears to stamp its own synthetic `click` at the moment IT
+   * dispatches, not at the original pointer event's time, so there is no
+   * "stale-looking" timestamp to compare against.
+   */
+  private _suppressNextMapClick = false
   private readonly _drawingSubject = new BehaviorSubject<boolean>(false)
   public readonly drawing$ = this._drawingSubject.asObservable()
   private _featureContextMenu: MenuComponent | null = null
@@ -1089,6 +1108,23 @@ export class GoogleMapsService implements OnDestroy {
     this._assertInitialized()
 
     this.googleMap.addListener('click', () => {
+      // The physical click that closes a polygon can reach this listener
+      // TWICE: once (fast) via Terra Draw's own pointer-driven close
+      // detection — which is what runs `_onDrawFinished()` / `stopDrawing()`
+      // and flips `isDrawing()` false — and, separately, via Google's own
+      // `click` recognition on this map, which this listener is bound to
+      // directly. By the time that second delivery arrives (confirmed
+      // against the live Storybook: consistently a few milliseconds later,
+      // comfortably within one animation frame — see
+      // .superpowers/closing-click-report.md), `isDrawing()` already reads
+      // false, so the guard just below cannot tell it apart from a fresh
+      // click on open map. `_suppressNextMapClick` exists to catch exactly
+      // that echo; see its doc comment for why a `domEvent.timeStamp`
+      // comparison does NOT work here.
+      if (this._suppressNextMapClick) {
+        this._suppressNextMapClick = false
+        return
+      }
       // While drawing, a click on open map is placing a vertex, not a map
       // click — mirrors the data 'click' listener's guard just below. Without
       // this, `onMapClick` in 'grouped' mode calls `startDrawing()`, which
@@ -1308,7 +1344,35 @@ export class GoogleMapsService implements OnDestroy {
     }
   }
 
+  /**
+   * Arm `_suppressNextMapClick`, and guarantee it cannot linger forever if
+   * the echo it exists for never arrives — confirmed to be the normal case
+   * for most real closes, and true of every synthetic/`play()`-driven draw,
+   * per .superpowers/closing-click-report.md. A `setTimeout` would "solve"
+   * this by guessing a safe wall-clock delay, which is exactly the kind of
+   * timing window this fix is trying to avoid introducing. Two
+   * `requestAnimationFrame` callbacks bound the window instead: the observed
+   * echo arrives a few milliseconds after `stopDrawing()`, comfortably
+   * inside a single frame, so two frames is generous headroom without
+   * guessing at a duration — and two real user actions (even fast automated
+   * ones) are never going to land within two animation frames of each other,
+   * so an unrelated later click is never at risk of being swallowed.
+   */
+  private _armMapClickSuppression(): void {
+    this._suppressNextMapClick = true
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        this._suppressNextMapClick = false
+      })
+    })
+  }
+
   private _onDrawFinished(id: string | number): void {
+    // Armed first, before any other work below — including the early return
+    // for a draw that produced no usable geometry — since the closing
+    // click's late echo (see `_suppressNextMapClick`'s doc comment) can
+    // follow either outcome.
+    this._armMapClickSuppression()
     const feature = this._terraDraw?.getSnapshotFeature(id)
     this._terraDraw?.removeFeatures([id])
     this.stopDrawing()
