@@ -57,6 +57,10 @@ export class ToggleGroupDirective implements ControlValueAccessor {
   onChange: any
   onTouched: any
 
+  private _selectedSet: Set<string> | undefined
+  private _selectedSetSource: string | string[] | undefined | null
+  private _selectedSetMultiple: boolean | undefined
+
   get value(): string | string[] | undefined | null {
     return this.val
   }
@@ -94,18 +98,49 @@ export class ToggleGroupDirective implements ControlValueAccessor {
     this.disabled = isDisabled
   }
 
-  isSelected(value: string | undefined | null) {
-    if (this.multiple) {
-      const idx = ((this.value as string[]) || []).findIndex((v) => v === value)
-      return idx !== -1
-    } else {
-      // TODO: Clean this up when the directive no longer allows array value type when multiple is false
-      const v =
-        Array.isArray(this.value) && this.value.length === 1
-          ? this.value[0]
-          : this.value
-      return v === value
+  isSelected(value: string | undefined | null): boolean {
+    if (value === null || value === undefined) {
+      return false
     }
+    return this._selected().has(value)
+  }
+
+  /**
+   * The current selection as a set, rebuilt only when the value (or `multiple`)
+   * changes.
+   *
+   * `isSelected` is called from templates and from every option's host binding,
+   * so it runs several times per option per change detection pass. Hashing the
+   * selection once keeps those lookups O(1) instead of scanning the value array
+   * on every call.
+   *
+   * Invalidation is keyed on the `val` reference rather than done in the `value`
+   * setter, because `val` is also written directly by the `[value]` input, which
+   * does not go through the setter.
+   */
+  private _selected(): ReadonlySet<string> {
+    if (
+      this._selectedSet === undefined ||
+      this.val !== this._selectedSetSource ||
+      this.multiple !== this._selectedSetMultiple
+    ) {
+      this._selectedSetSource = this.val
+      this._selectedSetMultiple = this.multiple
+      this._selectedSet = this._buildSelectedSet()
+    }
+    return this._selectedSet
+  }
+
+  private _buildSelectedSet(): Set<string> {
+    const val = this.val
+
+    if (this.multiple) {
+      return new Set((val as string[]) ?? [])
+    }
+
+    // TODO: Clean this up when the directive no longer allows array value type when multiple is false
+    const v = Array.isArray(val) && val.length === 1 ? val[0] : val
+    return typeof v === 'string' ? new Set([v]) : new Set()
   }
 
   /**
