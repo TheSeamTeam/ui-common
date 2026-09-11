@@ -3,6 +3,7 @@ import { Component } from '@angular/core'
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms'
 
+import { ToggleGroupDirective } from './toggle-group.directive'
 import { TheSeamToggleGroupModule } from './toggle-group.module'
 
 /**
@@ -154,6 +155,86 @@ describe('ToggleGroupDirective', () => {
       fixture.detectChanges()
 
       expect(host.control.value).toEqual(['a'])
+    })
+  })
+
+  // `isSelected` caches the selection as a Set. These pin the invalidation
+  // paths, including `[value]`, which writes the backing field directly and
+  // never goes through the `value` setter.
+  describe('selection cache', () => {
+    @Component({
+      template: `
+        <div
+          seamToggleGroup
+          #tg="seamToggleGroup"
+          [value]="val"
+          [multiple]="multiple"
+        >
+          <button
+            *ngFor="let v of values"
+            type="button"
+            [seamToggleGroupOption]="v"
+            [class.is-selected]="tg.isSelected(v)"
+          >
+            {{ v }}
+          </button>
+        </div>
+      `,
+      standalone: false,
+    })
+    class ValueInputHostComponent {
+      val: string | string[] | undefined = 'a'
+      values = ['a', 'b']
+      multiple = false
+    }
+
+    let f: ComponentFixture<ValueInputHostComponent>
+
+    beforeEach(() => {
+      TestBed.resetTestingModule()
+      TestBed.configureTestingModule({
+        declarations: [ValueInputHostComponent],
+        imports: [CommonModule, ReactiveFormsModule, TheSeamToggleGroupModule],
+      })
+      f = TestBed.createComponent(ValueInputHostComponent)
+    })
+
+    function selected(): boolean[] {
+      return Array.from<HTMLElement>(
+        f.nativeElement.querySelectorAll('button'),
+      ).map((b) => b.classList.contains('is-selected'))
+    }
+
+    it('refreshes when the [value] input changes', () => {
+      f.detectChanges()
+      expect(selected()).toEqual([true, false])
+
+      f.componentInstance.val = 'b'
+      f.detectChanges()
+
+      expect(selected()).toEqual([false, true])
+    })
+
+    it('refreshes when the multiple input changes', () => {
+      f.componentInstance.val = ['a', 'b']
+      f.detectChanges()
+      // Not multiple, and an array of length 2 selects nothing.
+      expect(selected()).toEqual([false, false])
+
+      f.componentInstance.multiple = true
+      f.detectChanges()
+
+      expect(selected()).toEqual([true, true])
+    })
+
+    it('does not report a null or undefined value as selected', () => {
+      f.componentInstance.val = undefined
+      f.detectChanges()
+
+      const grp = f.debugElement.children[0].injector.get(ToggleGroupDirective)
+      expect(grp.isSelected(undefined)).toBe(false)
+      expect(grp.isSelected(null)).toBe(false)
+      expect(selected()).toEqual([false, false])
     })
   })
 })
