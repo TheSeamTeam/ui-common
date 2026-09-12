@@ -61,6 +61,26 @@ declare const ngDevMode: boolean | undefined
 
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 
+/**
+ * A delete that has been resolved to the features it would remove and the
+ * target to consult `canDelete` with. Built by `_deletionOf`; `null` there
+ * means there is nothing to delete at all, which is not a refusal.
+ */
+interface ResolvedDeletion {
+  removing: google.maps.Data.Feature[]
+  target: TheSeamMapGroupTarget
+  /**
+   * The delete removes a feature that no target can honestly name: it is
+   * absent from `groupWithSources().sources` (its geometry is neither Polygon
+   * nor MultiPolygon), so it appears in no `group.features` the consumer has
+   * ever seen, while the group itself survives the delete.
+   *
+   * Only ever true for a delete that does NOT empty the group — when the group
+   * is emptied, `feature: null` is honest regardless of what is being removed.
+   */
+  unnamable: boolean
+}
+
 @Injectable()
 export class GoogleMapsService implements OnDestroy {
   private readonly _ngUnsubscribe = new Subject<void>()
@@ -316,14 +336,17 @@ export class GoogleMapsService implements OnDestroy {
    * Pair a set of features to remove with the target to consult `canDelete`
    * with. `null` when there is nothing to delete — distinct from a refusal,
    * and the reason no honest target exists to report.
+   *
+   * Builds `target.feature` itself rather than delegating the decision to
+   * `_targetFor`. There, `feature: null` means only "no particular feature";
+   * here it is a promise that the whole group is about to cease to exist.
+   * Conflating the two is what let a delete of ONE polygon be consulted as a
+   * group delete — see `ResolvedDeletion.unnamable`.
    */
   private _deletionOf(
     key: string | null,
     removing: google.maps.Data.Feature[],
-  ): {
-    removing: google.maps.Data.Feature[]
-    target: TheSeamMapGroupTarget
-  } | null {
+  ): ResolvedDeletion | null {
     if (key === null || removing.length === 0) {
       return null
     }
@@ -340,9 +363,51 @@ export class GoogleMapsService implements OnDestroy {
     // group.
     const all = this._registry.featuresIn(key)
     const emptiesGroup = all.every((f) => removing.indexOf(f) !== -1)
+    if (emptiesGroup) {
+      // `feature: null` is honest here whatever `removing` holds: the group
+      // really is going, unsupported-geometry members included. This case is
+      // never at risk, so it is never `unnamable`.
+      return {
+        removing,
+        target: { group: resolved.group, feature: null },
+        unnamable: false,
+      }
+    }
+
+    // The group survives, so the target must name the polygon being removed.
+    const index = resolved.sources.indexOf(removing[0])
+    if (index === -1) {
+      // The feature being removed is absent from `sources`: its geometry is
+      // neither Polygon nor MultiPolygon, so `groupWithSources` dropped it and
+      // it has no emitted GeoJSON counterpart. It has never appeared in any
+      // `group.features` the consumer has seen, so NO value of
+      // `target.feature` describes it — which is exactly why this deletion is
+      // `unnamable` and `_mayDeleteResolved()` refuses it outright whenever a
+      // predicate is set.
+      //
+      // `feature: null` is the least dishonest option available. It overstates
+      // the scope — it reads as "the field is going" when only one polygon
+      // was asked for — but it names the right group, and it is only ever READ
+      // on the `deleteBlocked$` emission that reports the refusal: the
+      // predicate is refused before it is ever consulted with this target, and
+      // with no predicate set nothing observes it at all. A target that only
+      // ever reports a refusal cannot authorise a removal, so the overstatement
+      // is inert. The alternative was emitting nothing, which would leave a
+      // refused delete indistinguishable from a successful one on the design's
+      // only feedback channel.
+      return {
+        removing,
+        target: { group: resolved.group, feature: null },
+        unnamable: true,
+      }
+    }
     return {
       removing,
-      target: this._targetFor(resolved, emptiesGroup ? null : removing[0]),
+      target: {
+        group: resolved.group,
+        feature: resolved.group.features[index],
+      },
+      unnamable: false,
     }
   }
 
@@ -396,15 +461,40 @@ export class GoogleMapsService implements OnDestroy {
     return this._canDelete?.(target) ?? true
   }
 
+  /**
+   * Whether a resolved deletion may proceed. The single gate every query and
+   * every command goes through.
+   *
+   * Wraps `_mayDelete` with the one refusal that cannot be phrased as a
+   * question about a target: an `unnamable` delete. Consulting the predicate
+   * there would mean LYING to it — handing it `feature: null`, which promises
+   * the whole group is about to cease to exist, for a delete that removes one
+   * polygon and leaves the rest standing. A consumer whose rule is "a field
+   * may be deleted, an individual polygon may not" answers `true` to that and
+   * loses a polygon it meant to keep. Fail closed exactly where a consumer's
+   * rule could be subverted.
+   *
+   * Only when a predicate is actually set. With none there is nobody to lie
+   * to, so there is nothing to protect — and refusing unconditionally would
+   * change 'legacy' mode's behaviour for unsupported-geometry features, which
+   * two applications depend on and this work must not drift.
+   *
+   * Pure, like `_mayDelete`: it also answers menu-render questions.
+   */
+  private _mayDeleteResolved(deletion: ResolvedDeletion): boolean {
+    if (deletion.unnamable && this._canDelete !== undefined) {
+      return false
+    }
+    return this._mayDelete(deletion.removing, deletion.target)
+  }
+
   /** Whether "Delete Polygon" (or the `Delete` key) may act. */
   public canDeleteFocusedFeature(): boolean {
     if (!this.mapReady) {
       return false
     }
     const deletion = this._focusedFeatureDeletion()
-    return (
-      deletion !== null && this._mayDelete(deletion.removing, deletion.target)
-    )
+    return deletion !== null && this._mayDeleteResolved(deletion)
   }
 
   /** Whether "Delete Field" may act on `key`. */
@@ -413,9 +503,7 @@ export class GoogleMapsService implements OnDestroy {
       return false
     }
     const deletion = this._groupDeletion(key)
-    return (
-      deletion !== null && this._mayDelete(deletion.removing, deletion.target)
-    )
+    return deletion !== null && this._mayDeleteResolved(deletion)
   }
 
   /** Whether the legacy "Delete" item (or the `Delete` key) may act. */
@@ -424,9 +512,7 @@ export class GoogleMapsService implements OnDestroy {
       return false
     }
     const deletion = this._selectionDeletion()
-    return (
-      deletion !== null && this._mayDelete(deletion.removing, deletion.target)
-    )
+    return deletion !== null && this._mayDeleteResolved(deletion)
   }
 
   /**
@@ -437,10 +523,7 @@ export class GoogleMapsService implements OnDestroy {
   public deleteSelection(): void {
     this._assertInitialized()
     const deletion = this._selectionDeletion()
-    if (
-      deletion !== null &&
-      !this._mayDelete(deletion.removing, deletion.target)
-    ) {
+    if (deletion !== null && !this._mayDeleteResolved(deletion)) {
       this._deleteBlockedSubject.next(deletion.target)
       return
     }
@@ -494,10 +577,7 @@ export class GoogleMapsService implements OnDestroy {
   public deleteGroup(key: string): void {
     this._assertInitialized()
     const deletion = this._groupDeletion(key)
-    if (
-      deletion !== null &&
-      !this._mayDelete(deletion.removing, deletion.target)
-    ) {
+    if (deletion !== null && !this._mayDeleteResolved(deletion)) {
       this._deleteBlockedSubject.next(deletion.target)
       return
     }
@@ -1298,10 +1378,7 @@ export class GoogleMapsService implements OnDestroy {
   public deleteFocusedFeature(): void {
     this._assertInitialized()
     const deletion = this._focusedFeatureDeletion()
-    if (
-      deletion !== null &&
-      !this._mayDelete(deletion.removing, deletion.target)
-    ) {
+    if (deletion !== null && !this._mayDeleteResolved(deletion)) {
       this._deleteBlockedSubject.next(deletion.target)
       return
     }

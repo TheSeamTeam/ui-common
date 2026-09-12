@@ -1764,6 +1764,10 @@ export const GroupedRetiredFieldCannotBeDeleted: Story = {
     // reshaping must not be removable by another route either.
     const retired = featureWithGroup(component, 'B')
     google.maps.event.trigger(data, 'click', { feature: retired })
+    // One positive guard, so the all-negative assertions below cannot pass
+    // vacuously: if this click never focused the retired feature, "no menu
+    // items" and "the feature survives" would both hold for the wrong reason.
+    await expect(isFeatureSelected(retired)).toBe(true)
     google.maps.event.trigger(data, 'contextmenu', { feature: retired })
     await new Promise((resolve) => setTimeout(resolve, 250))
 

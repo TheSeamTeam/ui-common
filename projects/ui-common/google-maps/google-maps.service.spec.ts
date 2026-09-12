@@ -56,6 +56,36 @@ function addFeature(map: FakeMap, properties: Record<string, any>): any {
   )
 }
 
+/**
+ * Add a feature whose geometry is neither `Polygon` nor `MultiPolygon` — the
+ * one thing `geoJsonFeatureFromDataFeature` rejects. Such a feature still
+ * renders and still occupies its group (`featuresIn` finds it), but
+ * `groupWithSources` drops it, so it appears in neither `sources` nor the
+ * emitted `group.features` a consumer ever sees.
+ */
+function addUnsupportedGeometryFeature(
+  map: FakeMap,
+  properties: Record<string, any>,
+): any {
+  const point = {
+    getType: () => 'Point',
+    forEachLatLng: () => undefined,
+  }
+  return map.data.add(
+    new google.maps.Data.Feature({
+      geometry: point as any,
+      properties,
+    }),
+  )
+}
+
+/** Every feature currently on the data layer, unsupported geometry included. */
+function allFeatures(map: FakeMap): any[] {
+  const features: any[] = []
+  map.data.forEach((f) => features.push(f))
+  return features
+}
+
 describe('GoogleMapsService', () => {
   beforeEach(() => installFakeGoogleMaps())
   afterEach(() => uninstallFakeGoogleMaps())
@@ -303,6 +333,8 @@ describe('GoogleMapsService', () => {
 
     it('refuses a focused-feature delete the predicate rejects', () => {
       const { service, a1 } = grouped()
+      const blocked: any[] = []
+      service.deleteBlocked$.subscribe((target) => blocked.push(target))
       service.setCanDelete(() => false)
       service.selectGroup('A')
       service['_focusedFeature'] = a1
@@ -312,10 +344,17 @@ describe('GoogleMapsService', () => {
       expect(
         service.getGroups().find((g) => g.key === 'A')?.features,
       ).toHaveLength(2)
+      // `deleteBlocked$` is the design's only feedback channel for a refused
+      // delete, so every command must signal on it, not just `deleteGroup`.
+      expect(blocked).toHaveLength(1)
+      expect(blocked[0].group.key).toBe('A')
+      expect(blocked[0].feature).not.toBeNull()
     })
 
     it('refuses a selection delete the predicate rejects', () => {
       const { service } = grouped()
+      const blocked: any[] = []
+      service.deleteBlocked$.subscribe((target) => blocked.push(target))
       service.setCanDelete(() => false)
       service.selectGroup('A')
 
@@ -327,6 +366,11 @@ describe('GoogleMapsService', () => {
           .map((g) => g.key)
           .sort(),
       ).toEqual(['A', 'B'])
+      // The legacy `Delete`-key path signals too.
+      expect(blocked).toHaveLength(1)
+      expect(blocked[0].group.key).toBe('A')
+      // The selection covers all of A, so this is a group delete.
+      expect(blocked[0].feature).toBeNull()
     })
 
     it('consults a whole-group delete with feature: null', () => {
@@ -528,6 +572,84 @@ describe('GoogleMapsService', () => {
 
       expect(service.canDeleteSelection()).toBe(false)
       expect(predicate).not.toHaveBeenCalled()
+    })
+
+    /**
+     * A group holding one ordinary polygon plus one feature with unsupported
+     * geometry, with the latter focused — the state a right-click on it
+     * produces, since `_applySelection` sets the raw selected flag on every
+     * feature in `featuresIn(key)` and `allowsContextMenu` therefore passes.
+     */
+    function withUnnamableFocus() {
+      const { service, map } = createService()
+      service.setGroupOptions({ groupProperty: 'fieldId' })
+      service.setInteractionMode('grouped')
+      const a1 = addFeature(map, { fieldId: 'A' })
+      const odd = addUnsupportedGeometryFeature(map, { fieldId: 'A' })
+      service.selectGroup('A')
+      service['_focusedFeature'] = odd
+      return { service, map, a1, odd }
+    }
+
+    it('refuses a non-emptying delete of an unsupported-geometry feature when a predicate is set', () => {
+      const { service, map, odd } = withUnnamableFocus()
+      const blocked: any[] = []
+      service.deleteBlocked$.subscribe((target) => blocked.push(target))
+      // Permissive on purpose: the refusal below is not the predicate's
+      // answer, it is the gate declining to ask a dishonest question. The
+      // only target it could hand over is `feature: null`, which promises the
+      // whole group is going — untrue here, since a1 survives.
+      const predicate = jest.fn(() => true)
+      service.setCanDelete(predicate)
+
+      expect(service.canDeleteFocusedFeature()).toBe(false)
+      service.deleteFocusedFeature()
+
+      expect(predicate).not.toHaveBeenCalled()
+      expect(allFeatures(map)).toHaveLength(2)
+      expect(allFeatures(map)).toContain(odd)
+      // Refused like any other refusal: signalled, and nothing changed.
+      expect(blocked).toHaveLength(1)
+      expect(blocked[0].group.key).toBe('A')
+    })
+
+    it('leaves that same delete alone when no predicate is set', () => {
+      // Nobody to lie to, so nothing to protect — and refusing here would
+      // change 'legacy' behaviour for unsupported-geometry features, which
+      // must not drift.
+      const { service, map, a1, odd } = withUnnamableFocus()
+      const blocked: any[] = []
+      service.deleteBlocked$.subscribe((target) => blocked.push(target))
+
+      expect(service.canDeleteFocusedFeature()).toBe(true)
+      service.deleteFocusedFeature()
+
+      expect(allFeatures(map)).toEqual([a1])
+      expect(allFeatures(map)).not.toContain(odd)
+      expect(blocked).toHaveLength(0)
+    })
+
+    it('consults an emptying delete of an unsupported-geometry feature with feature: null', () => {
+      // `feature: null` is honest whenever the group is emptied, whatever the
+      // group holds — so this case is never refused.
+      const { service, map } = createService()
+      service.setGroupOptions({ groupProperty: 'fieldId' })
+      service.setInteractionMode('grouped')
+      const odd = addUnsupportedGeometryFeature(map, { fieldId: 'A' })
+      addFeature(map, { fieldId: 'B' })
+      const seen: any[] = []
+      service.setCanDelete((target) => {
+        seen.push(target)
+        return true
+      })
+      service.selectGroup('A')
+      service['_focusedFeature'] = odd
+
+      expect(service.canDeleteFocusedFeature()).toBe(true)
+
+      expect(seen).toHaveLength(1)
+      expect(seen[0].group.key).toBe('A')
+      expect(seen[0].feature).toBeNull()
     })
 
     it('reports false from every query before the map is ready', () => {
