@@ -616,6 +616,20 @@ export class TheSeamGoogleMapsComponent
     return this._googleMaps.getGroups()
   }
 
+  /**
+   * Set a group's label text in place. Returns false when no such group
+   * exists, or when no `featureLabelProperty` is set.
+   *
+   * Does not clear the selection or re-fit the viewport, so it is safe to
+   * call while the user is renaming the very group being displayed.
+   */
+  public setGroupLabel(key: string, label: string): boolean {
+    if (!this._googleMaps.mapReady) {
+      return false
+    }
+    return this._googleMaps.setGroupLabel(key, label)
+  }
+
   public setEditMode(enabled: boolean): void {
     this._googleMaps.setEditMode(enabled)
   }

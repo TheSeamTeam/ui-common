@@ -730,6 +730,56 @@ export class GoogleMapsService implements OnDestroy {
     this._labelsOverlay?.refresh()
   }
 
+  /**
+   * Write `label` into `featureLabelProperty` on every feature in `key`'s
+   * group, without re-adding any data. Returns `false` when no feature
+   * carries `key`, or when no `featureLabelProperty` is configured — there is
+   * then no property to write the label into.
+   *
+   * Unlike a write through the map's `value`, this does NOT go through
+   * `setData()`, so the selection and the viewport are untouched. The
+   * repaint and the value update fall out of the data layer's own
+   * `setproperty` event, which `_initFeatureChangeListeners()` already turns
+   * into a `_labelsOverlay.refresh()` and a `MapValueSource.FeatureChange`
+   * emission.
+   *
+   * It DOES emit a value change, because the label is part of the GeoJSON and
+   * the value genuinely changed. Writing that emitted value straight back
+   * through the `value` input is inert: `MapValueManagerService.setValue`
+   * finds the serialized form identical and returns without emitting.
+   */
+  public setGroupLabel(key: string, label: string): boolean {
+    this._assertInitialized()
+    const property = this._labelProperty
+    if (!property) {
+      if (typeof ngDevMode === 'undefined' || ngDevMode) {
+        console.warn(
+          `[seam-google-maps] setGroupLabel("${key}") was called with no ` +
+            `featureLabelProperty configured, so there is no property to ` +
+            `write the label into. Nothing changed.`,
+        )
+      }
+      return false
+    }
+
+    const features = this._registry.featuresIn(key)
+    if (features.length === 0) {
+      return false
+    }
+
+    for (const feature of features) {
+      // `setProperty` raises `setproperty` whether or not the value differs,
+      // and each one costs a full re-serialization of the map's value. A
+      // rename typed character by character would pay that per keystroke per
+      // feature for writes that change nothing.
+      if (feature.getProperty(property) === label) {
+        continue
+      }
+      feature.setProperty(property, label)
+    }
+    return true
+  }
+
   private _ensureLabelsOverlay(): void {
     this._assertInitialized()
     if (this._labelsOverlay) {

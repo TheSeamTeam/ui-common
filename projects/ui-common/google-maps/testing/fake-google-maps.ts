@@ -292,11 +292,43 @@ export class FakeMap extends FakeMapsEventTarget {
   }
 }
 
+/**
+ * A stand-in for `google.maps.OverlayView`, enough for `MapFeatureLabelsOverlay`
+ * (and anything else built the same way) to construct and attach/detach without
+ * throwing under Jest.
+ *
+ * `getProjection()` always returns `undefined`, matching the real API before an
+ * overlay has been added to a map. Nothing under test here asserts on rendered
+ * positions, so a subclass's `draw()` bailing out on a missing projection is the
+ * correct behaviour, not a gap.
+ */
+class FakeOverlayView {
+  private _map: any = null
+  private readonly _panes = { markerLayer: document.createElement('div') }
+
+  setMap(map: any): void {
+    if (map && !this._map) {
+      this._map = map
+      ;(this as any).onAdd?.()
+    } else if (!map && this._map) {
+      this._map = null
+      ;(this as any).onRemove?.()
+    }
+  }
+  getPanes(): any {
+    return this._map ? this._panes : null
+  }
+  getProjection(): any {
+    return undefined
+  }
+}
+
 const FAKE_GOOGLE = {
   maps: {
     LatLng: FakeLatLng,
     LatLngBounds: FakeLatLngBounds,
     Map: FakeMap,
+    OverlayView: FakeOverlayView,
     Data: Object.assign(FakeData, {
       Feature: FakeDataFeature,
       Polygon: FakeDataPolygon,

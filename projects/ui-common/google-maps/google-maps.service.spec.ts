@@ -1,0 +1,131 @@
+import { NgZone, ViewContainerRef } from '@angular/core'
+import { Polygon } from 'geojson'
+
+import { dataPolygonFromGeoJson } from './google-maps-feature-helpers'
+import { GoogleMapsService } from './google-maps.service'
+import { MapValueManagerService } from './map-value-manager.service'
+import {
+  FakeMap,
+  installFakeGoogleMaps,
+  uninstallFakeGoogleMaps,
+} from './testing/fake-google-maps'
+
+const square: Polygon = {
+  type: 'Polygon',
+  coordinates: [
+    [
+      [0, 0],
+      [0, 10],
+      [10, 10],
+      [10, 0],
+      [0, 0],
+    ],
+  ],
+}
+
+/** Runs callbacks straight through; the service only uses these two methods. */
+const zone = {
+  run: (fn: any) => fn(),
+  runOutsideAngular: (fn: any) => fn(),
+} as unknown as NgZone
+
+function createService(): {
+  service: GoogleMapsService
+  map: FakeMap
+} {
+  const service = new GoogleMapsService(
+    new MapValueManagerService(),
+    zone,
+    {} as ViewContainerRef,
+  )
+  const map = new FakeMap()
+  service.setMap(map as unknown as google.maps.Map)
+  return { service, map }
+}
+
+/** Add a feature to the map's data layer and return it. */
+function addFeature(map: FakeMap, properties: Record<string, any>): any {
+  return map.data.add(
+    new google.maps.Data.Feature({
+      geometry: dataPolygonFromGeoJson(square),
+      properties,
+    }),
+  )
+}
+
+describe('GoogleMapsService', () => {
+  beforeEach(() => installFakeGoogleMaps())
+  afterEach(() => uninstallFakeGoogleMaps())
+
+  describe('setGroupLabel', () => {
+    it('writes the label onto every feature in the group', () => {
+      const { service, map } = createService()
+      service.setGroupOptions({ groupProperty: 'fieldId' })
+      service.setLabelProperty('FIELD_NAME')
+      const a1 = addFeature(map, { fieldId: 'A', FIELD_NAME: 'Old' })
+      const a2 = addFeature(map, { fieldId: 'A', FIELD_NAME: 'Old' })
+
+      expect(service.setGroupLabel('A', 'North 40')).toBe(true)
+
+      expect(a1.getProperty('FIELD_NAME')).toBe('North 40')
+      expect(a2.getProperty('FIELD_NAME')).toBe('North 40')
+    })
+
+    it('leaves other groups alone', () => {
+      const { service, map } = createService()
+      service.setGroupOptions({ groupProperty: 'fieldId' })
+      service.setLabelProperty('FIELD_NAME')
+      addFeature(map, { fieldId: 'A', FIELD_NAME: 'Old' })
+      const b = addFeature(map, { fieldId: 'B', FIELD_NAME: 'Untouched' })
+
+      service.setGroupLabel('A', 'North 40')
+
+      expect(b.getProperty('FIELD_NAME')).toBe('Untouched')
+    })
+
+    it('returns false for a key no feature carries', () => {
+      const { service, map } = createService()
+      service.setGroupOptions({ groupProperty: 'fieldId' })
+      service.setLabelProperty('FIELD_NAME')
+      addFeature(map, { fieldId: 'A', FIELD_NAME: 'Old' })
+
+      expect(service.setGroupLabel('NOPE', 'North 40')).toBe(false)
+    })
+
+    it('returns false when no featureLabelProperty is configured', () => {
+      const { service, map } = createService()
+      service.setGroupOptions({ groupProperty: 'fieldId' })
+      const a = addFeature(map, { fieldId: 'A' })
+
+      expect(service.setGroupLabel('A', 'North 40')).toBe(false)
+      expect(a.getProperty('FIELD_NAME')).toBeUndefined()
+    })
+
+    it('raises no setproperty for a label that is already correct', () => {
+      const { service, map } = createService()
+      service.setGroupOptions({ groupProperty: 'fieldId' })
+      service.setLabelProperty('FIELD_NAME')
+      addFeature(map, { fieldId: 'A', FIELD_NAME: 'North 40' })
+
+      const events: any[] = []
+      map.data.addListener('setproperty', (event: any) => events.push(event))
+
+      expect(service.setGroupLabel('A', 'North 40')).toBe(true)
+      expect(events).toHaveLength(0)
+    })
+
+    it('raises one setproperty per feature that actually changes', () => {
+      const { service, map } = createService()
+      service.setGroupOptions({ groupProperty: 'fieldId' })
+      service.setLabelProperty('FIELD_NAME')
+      addFeature(map, { fieldId: 'A', FIELD_NAME: 'North 40' })
+      addFeature(map, { fieldId: 'A', FIELD_NAME: 'Stale' })
+
+      const events: any[] = []
+      map.data.addListener('setproperty', (event: any) => events.push(event))
+
+      service.setGroupLabel('A', 'North 40')
+      expect(events).toHaveLength(1)
+    })
+  })
+})
