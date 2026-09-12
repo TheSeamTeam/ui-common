@@ -272,7 +272,7 @@ export class GoogleMapsService implements OnDestroy {
   /**
    * Iterates the map's features and removes any that are selected.
    */
-  public deleteSelection(): void {
+  private _removeSelection(): void {
     this._assertInitialized()
     const mapData = this.googleMap.data
     mapData.forEach((f) => {
@@ -290,6 +290,10 @@ export class GoogleMapsService implements OnDestroy {
     this.clearSelection()
   }
 
+  public deleteSelection(): void {
+    this._removeSelection()
+  }
+
   /**
    * Delete every feature in `key`'s group. Backs the grouped "Delete Field"
    * context-menu item.
@@ -303,7 +307,7 @@ export class GoogleMapsService implements OnDestroy {
    * selected, a coincidence this design has already stopped being true once
    * before and could again.
    */
-  public deleteGroup(key: string): void {
+  private _removeGroup(key: string): void {
     this._assertInitialized()
     const mapData = this.googleMap.data
     const wasSelected = this._selectionSubject.value?.group.key === key
@@ -327,6 +331,10 @@ export class GoogleMapsService implements OnDestroy {
     if (contextMenuTargetInGroup) {
       this._contextMenuTargetSubject.next(null)
     }
+  }
+
+  public deleteGroup(key: string): void {
+    this._removeGroup(key)
   }
 
   /**
@@ -1091,7 +1099,7 @@ export class GoogleMapsService implements OnDestroy {
    * `feature` no longer exists — `_applySelection` naturally clears to null
    * when the group is now empty, via `groupWithSources`.
    */
-  public deleteFocusedFeature(): void {
+  private _removeFocusedFeature(): void {
     this._assertInitialized()
     const key = this._focusedFeature
       ? this._registry.keyOf(this._focusedFeature)
@@ -1103,7 +1111,7 @@ export class GoogleMapsService implements OnDestroy {
       this.googleMap.data.remove(this._focusedFeature)
       this._focusedFeature = null
     } else {
-      this.deleteSelection()
+      this._removeSelection()
     }
 
     this._applySelection(key, null)
@@ -1113,6 +1121,10 @@ export class GoogleMapsService implements OnDestroy {
     if (contextMenuTargetInGroup) {
       this._contextMenuTargetSubject.next(null)
     }
+  }
+
+  public deleteFocusedFeature(): void {
+    this._removeFocusedFeature()
   }
 
   /** Escape cascades: cancel a draw, then clear selection, then leave edit mode. */

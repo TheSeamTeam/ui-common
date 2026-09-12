@@ -128,4 +128,85 @@ describe('GoogleMapsService', () => {
       expect(events).toHaveLength(1)
     })
   })
+
+  describe('delete commands (characterization)', () => {
+    it('deleteGroup removes every feature in the group and nothing else', () => {
+      const { service, map } = createService()
+      service.setGroupOptions({ groupProperty: 'fieldId' })
+      addFeature(map, { fieldId: 'A' })
+      addFeature(map, { fieldId: 'A' })
+      addFeature(map, { fieldId: 'B' })
+
+      service.deleteGroup('A')
+
+      expect(service.getGroups().map((g) => g.key)).toEqual(['B'])
+    })
+
+    it('deleteGroup clears the selection when it deleted the selected group', () => {
+      const { service, map } = createService()
+      service.setGroupOptions({ groupProperty: 'fieldId' })
+      service.setInteractionMode('grouped')
+      addFeature(map, { fieldId: 'A' })
+      service.selectGroup('A')
+
+      service.deleteGroup('A')
+
+      expect(service.getSelectedFeature()).toBeNull()
+    })
+
+    it('deleteSelection removes the selected features', () => {
+      const { service, map } = createService()
+      service.setGroupOptions({ groupProperty: 'fieldId' })
+      service.setInteractionMode('grouped')
+      addFeature(map, { fieldId: 'A' })
+      addFeature(map, { fieldId: 'B' })
+      service.selectGroup('A')
+
+      service.deleteSelection()
+
+      expect(service.getGroups().map((g) => g.key)).toEqual(['B'])
+    })
+
+    it('deleteSelection with nothing selected removes nothing', () => {
+      const { service, map } = createService()
+      service.setGroupOptions({ groupProperty: 'fieldId' })
+      addFeature(map, { fieldId: 'A' })
+
+      service.deleteSelection()
+
+      expect(service.getGroups().map((g) => g.key)).toEqual(['A'])
+    })
+
+    it('deleteFocusedFeature falls back to the selection when nothing is focused', () => {
+      const { service, map } = createService()
+      service.setGroupOptions({ groupProperty: 'fieldId' })
+      service.setInteractionMode('grouped')
+      addFeature(map, { fieldId: 'A' })
+      addFeature(map, { fieldId: 'B' })
+      service.selectGroup('A')
+      // selectGroup focuses the group's first feature; clear it so the
+      // fallback path is the one under test.
+      service['_focusedFeature'] = null
+
+      service.deleteFocusedFeature()
+
+      expect(service.getGroups().map((g) => g.key)).toEqual(['B'])
+    })
+
+    it('deleteFocusedFeature removes only the focused polygon of a multi-polygon group', () => {
+      const { service, map } = createService()
+      service.setGroupOptions({ groupProperty: 'fieldId' })
+      service.setInteractionMode('grouped')
+      const a1 = addFeature(map, { fieldId: 'A' })
+      addFeature(map, { fieldId: 'A' })
+      service.selectGroup('A')
+      service['_focusedFeature'] = a1
+
+      service.deleteFocusedFeature()
+
+      const groups = service.getGroups()
+      expect(groups).toHaveLength(1)
+      expect(groups[0].features).toHaveLength(1)
+    })
+  })
 })
