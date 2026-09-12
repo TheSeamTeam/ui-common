@@ -13,7 +13,7 @@
   <button
     seamMenuItem
     *ngFor="let item of _contextMenuItems$ | async"
-    (click)="item.action(item)"
+    (click)="item.action()"
   >
     {{ item.label }}
   </button>
