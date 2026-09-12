@@ -1,7 +1,10 @@
 import { NgZone, ViewContainerRef } from '@angular/core'
 import { Polygon } from 'geojson'
 
-import { dataPolygonFromGeoJson } from './google-maps-feature-helpers'
+import {
+  dataPolygonFromGeoJson,
+  setFeatureSelected,
+} from './google-maps-feature-helpers'
 import { GoogleMapsService } from './google-maps.service'
 import { MapValueManagerService } from './map-value-manager.service'
 import {
@@ -491,6 +494,40 @@ describe('GoogleMapsService', () => {
 
       expect(predicate).not.toHaveBeenCalled()
       expect(blocked).toHaveLength(0)
+    })
+
+    it('deleteSelection falls through to the remover when there is nothing to delete, clearing _focusedFeature', () => {
+      // Distinguishes falling through to _removeSelection() from an early
+      // return: both leave the predicate uncalled and emit nothing, but only
+      // falling through reaches _removeSelection() -> clearSelection() ->
+      // _applySelection(null, null), which clears _focusedFeature. An early
+      // return would leave it untouched.
+      const { service, map } = createService()
+      const feature = addFeature(map, { fieldId: 'A' })
+      service['_focusedFeature'] = feature
+
+      expect(service.canDeleteSelection()).toBe(false)
+      service.deleteSelection()
+
+      expect(service['_focusedFeature']).toBeNull()
+    })
+
+    it('finds nothing to delete when the raw selection flag is off despite a selected group', () => {
+      // Reproduces the divergence startDrawing() can create: it raw-deselects
+      // every feature via setFeatureSelected without touching
+      // _selectionSubject, so the subject can hold a group key while no
+      // feature in it carries the raw selected flag. _selectionDeletion()
+      // must find nothing to remove here, the same as it reads the data
+      // layer's raw flags rather than looking the key up via featuresIn().
+      const { service, a1, a2 } = grouped()
+      service.selectGroup('A')
+      setFeatureSelected(a1, false)
+      setFeatureSelected(a2, false)
+      const predicate = jest.fn(() => false)
+      service.setCanDelete(predicate)
+
+      expect(service.canDeleteSelection()).toBe(false)
+      expect(predicate).not.toHaveBeenCalled()
     })
 
     it('reports false from every query before the map is ready', () => {
