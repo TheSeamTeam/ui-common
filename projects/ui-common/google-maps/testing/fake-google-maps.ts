@@ -111,6 +111,15 @@ class FakeDataFeature {
   private readonly _properties = new Map<string, any>()
   private readonly _id: string | number
 
+  /**
+   * The layer this feature was added to, or null. The real API raises
+   * `setproperty` / `removeproperty` / `setgeometry` on the Data layer a
+   * feature belongs to, and `GoogleMapsService` hangs its value-change and
+   * label-refresh pipeline off exactly those events. Set by `FakeData.add`
+   * and cleared by `FakeData.remove`.
+   */
+  _owner: FakeData | null = null
+
   constructor(options?: {
     geometry?: any
     id?: string | number
@@ -130,16 +139,26 @@ class FakeDataFeature {
     return this._geometry
   }
   setGeometry(geometry: any): void {
+    const oldGeometry = this._geometry
     this._geometry = geometry
+    this._owner?.emit('setgeometry', {
+      feature: this,
+      newGeometry: geometry,
+      oldGeometry,
+    })
   }
   getProperty(name: string): any {
     return this._properties.get(name)
   }
   setProperty(name: string, value: any): void {
+    const oldValue = this._properties.get(name)
     this._properties.set(name, value)
+    this._owner?.emit('setproperty', { feature: this, name, oldValue })
   }
   removeProperty(name: string): void {
+    const oldValue = this._properties.get(name)
     this._properties.delete(name)
+    this._owner?.emit('removeproperty', { feature: this, name, oldValue })
   }
   forEachProperty(cb: (value: any, name: string) => void): void {
     this._properties.forEach(cb)
@@ -184,6 +203,7 @@ export class FakeData extends FakeMapsEventTarget {
       feature instanceof FakeDataFeature
         ? feature
         : new FakeDataFeature(feature)
+    f._owner = this
     this._features.push(f)
     this.emit('addfeature', { feature: f })
     return f
@@ -192,6 +212,7 @@ export class FakeData extends FakeMapsEventTarget {
     const index = this._features.indexOf(feature)
     if (index !== -1) {
       this._features.splice(index, 1)
+      feature._owner = null
       this.emit('removefeature', { feature })
     }
   }
@@ -228,10 +249,54 @@ export class FakeData extends FakeMapsEventTarget {
   }
 }
 
+/**
+ * A stand-in for `google.maps.Map`, enough to construct `GoogleMapsService`.
+ *
+ * `setMap()` defers Terra Draw initialisation to the map's first `idle`, and
+ * this fake never fires `idle` unless a spec asks for it — so a spec can
+ * exercise the service without Terra Draw at all.
+ *
+ * Viewport calls are recorded rather than simulated: a spec asserts on
+ * `bounds` / `padding` / `center` instead of on a rendered map.
+ */
+export class FakeMap extends FakeMapsEventTarget {
+  readonly data = new FakeData()
+  /** One array per google.maps.ControlPosition slot. */
+  readonly controls: any[][] = Array.from({ length: 13 }, () => [])
+
+  bounds: any = null
+  padding: any = undefined
+  center: any = null
+
+  private readonly _div = document.createElement('div')
+  private _zoom = 14
+
+  getDiv(): HTMLDivElement {
+    return this._div
+  }
+  getZoom(): number {
+    return this._zoom
+  }
+  setZoom(zoom: number): void {
+    this._zoom = zoom
+  }
+  fitBounds(bounds: any, padding?: any): void {
+    this.bounds = bounds
+    this.padding = padding
+  }
+  panTo(latLng: any): void {
+    this.center = latLng
+  }
+  panToBounds(bounds: any): void {
+    this.bounds = bounds
+  }
+}
+
 const FAKE_GOOGLE = {
   maps: {
     LatLng: FakeLatLng,
     LatLngBounds: FakeLatLngBounds,
+    Map: FakeMap,
     Data: Object.assign(FakeData, {
       Feature: FakeDataFeature,
       Polygon: FakeDataPolygon,
