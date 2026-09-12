@@ -92,16 +92,30 @@ In that case:
 
 - the query returns `false` — there is no delete to offer, so no menu item
   renders;
-- the command returns without touching the data layer **and without emitting
-  `deleteBlocked$`** — nothing was refused, because nothing was asked for. There
-  is no honest target to emit.
+- the command does **not** emit `deleteBlocked$` — nothing was refused, because
+  nothing was asked for, and there is no honest target to emit.
 
 The consumer predicate is not consulted at all in this case. It answers "may this
 target be deleted?", and there is no target.
 
+The command does **not** early-return either. It falls through to its
+`_remove*()` body, which finds nothing to remove and does whatever bookkeeping
+it already did. This is deliberate, not an oversight: `deleteSelection()` with
+nothing selected already ran `_removeSelection()`, whose `clearSelection()` is
+observable — it clears `_focusedFeature` and re-syncs `selection$`. An early
+return would have removed that, which is a `'legacy'` behaviour change, and
+legacy must not drift. Gating therefore only ever *blocks* a delete; it never
+skips work a command already did.
+
 `canDeleteFocusedFeature()` resolves `removing` the way `deleteFocusedFeature()`
-does today: the focused feature when there is one, otherwise the selected group's
-features, otherwise empty.
+does today: the focused feature when there is one, otherwise **the features the
+data layer's own raw selected flags mark** — the same set `_removeSelection()`
+iterates — otherwise empty. Reading the raw flags rather than the selected
+group's `featuresIn()` is what the paragraph above demands (the query must
+resolve the same set the command removes), and the two genuinely diverge:
+`startDrawing()` raw-deselects every feature via `setFeatureSelected` without
+touching `_selectionSubject`, so the subject can name a group while no feature
+in it reads as selected.
 
 ### The empty-group invariant
 
@@ -121,6 +135,10 @@ Consequences, all intended:
 - `deleteGroup(key)` always consults as a group delete.
 - `deleteSelection()` in legacy always empties its group, so always consults as a
   group delete.
+
+One exception exists, for a feature no target can name at all — see the second
+**Known limit** below. It is resolved by refusing the delete, not by weakening
+what `feature: null` promises.
 
 ### Menu items
 
@@ -196,6 +214,36 @@ cannot express an operation that acts on a group without emptying it. A
 hypothetical "Delete all others" would carry the polygon being *kept*, which
 neither `feature: null` nor `feature: <polygon>` describes. That is the concrete
 need that would justify revisiting the signature. It does not exist today.
+
+**Second known limit, and the invariant's one exception.** The target also
+cannot name a feature whose geometry is neither `Polygon` nor `MultiPolygon`.
+`groupWithSources()` drops such a feature from `sources` and from the emitted
+`group.features`, so it has never appeared in anything the consumer has seen —
+yet it still occupies its group, and it is still reachable by a delete:
+`_applySelection` sets the raw selected flag on every feature in
+`featuresIn(key)`, so right-clicking one passes `allowsContextMenu()`, focuses
+it, and offers "Delete Polygon".
+
+Removing it from a group that survives therefore has no honest target. Reporting
+`feature: null` would be a lie in the one direction that matters: it promises the
+group is going, so a consumer whose rule is "a field may be deleted, an
+individual polygon may not" would answer `true` and lose a polygon it meant to
+keep.
+
+The resolution, in `_mayDeleteResolved()`: **refuse that delete outright, but
+only when a `canDelete` predicate is actually set.** The defect is lying to the
+predicate, so fail closed exactly where a consumer's rule could be subverted, and
+stay inert where there is none — there is nobody to lie to, and refusing
+unconditionally would change `'legacy'` behaviour for unsupported-geometry
+features, which is forbidden.
+
+So the invariant holds as stated for every feature a consumer can see, and the
+one feature it cannot see is not deleted behind its back instead of being
+misdescribed. The refusal signals on `deleteBlocked$` like any other, carrying
+`{ group, feature: null }` — an overstatement of scope, but the only value the
+type admits, and one that only ever reports a refusal, so it can never authorise
+a removal. Emitting nothing was the alternative, and that would leave a refused
+delete indistinguishable from a successful one.
 
 ### Internal refactor this requires
 
