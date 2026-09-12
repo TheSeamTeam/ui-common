@@ -1511,31 +1511,44 @@ export const GroupedContextMenuNeverOpensOutsideSelectedGroup: Story = {
         [value]="value"
         style="height: 400px"></seam-google-maps>
     `,
-    props: { value: GROUPED_VALUE },
+    props: { value: TWO_FIELDS_VALUE },
   }),
   play: async ({ canvasElement }) => {
     const component = await mapComponent(canvasElement)
     const data = component._googleMaps.googleMap.data
 
-    // Select field A, then enter edit mode. A has two polygons and no
-    // editable: false lock, so it stays deletable — this story's subject is
-    // allowsContextMenu()'s group gate, not canDelete, and must not
-    // accidentally depend on the selected group being deletable.
-    component.selectGroup('A')
+    // TWO_FIELDS_VALUE, not GROUPED_VALUE: both X and Y are two-polygon and
+    // unlocked (no styleOptions.editable: false anywhere), so BOTH halves of
+    // this assertion are decided by allowsContextMenu()'s group gate alone —
+    // neither is secretly decided by canDelete/the editable lock instead.
+    // GROUPED_VALUE's B (used here previously) carries editable: false and
+    // is a field this story would select as the "outside" group; with B
+    // locked, its own menu is always empty regardless of the group gate, so
+    // a right-click on it would read 0 items even if the gate regressed
+    // completely — an over-determined negative half. Picking a fixture where
+    // the non-selected group is just as deletable as the selected one is
+    // what keeps this story pinned to the gate specifically. If this
+    // fixture is ever "simplified" back to one with a locked or
+    // single-polygon field standing in for either group, that guarantee is
+    // lost silently — the story would still pass, but for the wrong reason.
+    component.selectGroup('X')
     component.setEditMode(true)
 
-    // Right-clicking a polygon of a DIFFERENT group (B) must open nothing.
-    const [featureB1] = featuresWithGroup(component, 'B')
-    google.maps.event.trigger(data, 'contextmenu', { feature: featureB1 })
+    // Right-clicking a polygon of a DIFFERENT group (Y) must open nothing.
+    const [featureY1] = featuresWithGroup(component, 'Y')
+    google.maps.event.trigger(data, 'contextmenu', { feature: featureY1 })
     await new Promise((resolve) => setTimeout(resolve, 250))
 
     await expect(
       canvasElement.querySelectorAll('[role="menuitem"]'),
     ).toHaveLength(0)
 
-    // Right-clicking a polygon of the SELECTED group (A) opens it.
-    const [featureA1] = featuresWithGroup(component, 'A')
-    google.maps.event.trigger(data, 'contextmenu', { feature: featureA1 })
+    // Right-clicking a polygon of the SELECTED group (X) opens it — X is
+    // unlocked and two-polygon, so it genuinely offers "Delete Polygon" and
+    // "Delete Field", proving the non-empty result is real rather than a
+    // count that would hold even if nothing were actually permitted.
+    const [featureX1] = featuresWithGroup(component, 'X')
+    google.maps.event.trigger(data, 'contextmenu', { feature: featureX1 })
     await new Promise((resolve) => setTimeout(resolve, 250))
 
     const items = canvasElement.querySelectorAll('[role="menuitem"]')
