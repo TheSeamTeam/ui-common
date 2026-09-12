@@ -262,4 +262,246 @@ describe('GoogleMapsService', () => {
       expect(service['_focusedFeature']).toBeNull()
     })
   })
+
+  describe('delete gating', () => {
+    /** A grouped-mode service with field A (two polygons) and field B (one). */
+    function grouped() {
+      const { service, map } = createService()
+      service.setGroupOptions({ groupProperty: 'fieldId' })
+      service.setInteractionMode('grouped')
+      const a1 = addFeature(map, { fieldId: 'A' })
+      const a2 = addFeature(map, { fieldId: 'A' })
+      const b = addFeature(map, { fieldId: 'B' })
+      return { service, map, a1, a2, b }
+    }
+
+    it('allows every delete when no predicate is set', () => {
+      const { service } = grouped()
+      service.selectGroup('A')
+      expect(service.canDeleteGroup('A')).toBe(true)
+      expect(service.canDeleteFocusedFeature()).toBe(true)
+      expect(service.canDeleteSelection()).toBe(true)
+    })
+
+    it('refuses a group delete the predicate rejects', () => {
+      const { service } = grouped()
+      service.setCanDelete(() => false)
+      service.selectGroup('A')
+
+      expect(service.canDeleteGroup('A')).toBe(false)
+      service.deleteGroup('A')
+      expect(
+        service
+          .getGroups()
+          .map((g) => g.key)
+          .sort(),
+      ).toEqual(['A', 'B'])
+    })
+
+    it('refuses a focused-feature delete the predicate rejects', () => {
+      const { service, a1 } = grouped()
+      service.setCanDelete(() => false)
+      service.selectGroup('A')
+      service['_focusedFeature'] = a1
+
+      expect(service.canDeleteFocusedFeature()).toBe(false)
+      service.deleteFocusedFeature()
+      expect(
+        service.getGroups().find((g) => g.key === 'A')?.features,
+      ).toHaveLength(2)
+    })
+
+    it('refuses a selection delete the predicate rejects', () => {
+      const { service } = grouped()
+      service.setCanDelete(() => false)
+      service.selectGroup('A')
+
+      expect(service.canDeleteSelection()).toBe(false)
+      service.deleteSelection()
+      expect(
+        service
+          .getGroups()
+          .map((g) => g.key)
+          .sort(),
+      ).toEqual(['A', 'B'])
+    })
+
+    it('consults a whole-group delete with feature: null', () => {
+      const { service } = grouped()
+      const seen: any[] = []
+      service.setCanDelete((target) => {
+        seen.push(target)
+        return true
+      })
+      service.canDeleteGroup('A')
+
+      expect(seen).toHaveLength(1)
+      expect(seen[0].group.key).toBe('A')
+      expect(seen[0].feature).toBeNull()
+    })
+
+    it('consults a polygon delete with that polygon, when the group survives', () => {
+      const { service, a1 } = grouped()
+      const seen: any[] = []
+      service.setCanDelete((target) => {
+        seen.push(target)
+        return true
+      })
+      service.selectGroup('A')
+      service['_focusedFeature'] = a1
+
+      service.canDeleteFocusedFeature()
+
+      expect(seen).toHaveLength(1)
+      expect(seen[0].group.key).toBe('A')
+      expect(seen[0].feature).not.toBeNull()
+    })
+
+    it('consults the last polygon of a group as a group delete', () => {
+      const { service, b } = grouped()
+      const seen: any[] = []
+      service.setCanDelete((target) => {
+        seen.push(target)
+        return true
+      })
+      service.selectGroup('B')
+      service['_focusedFeature'] = b
+
+      service.canDeleteFocusedFeature()
+
+      expect(seen).toHaveLength(1)
+      expect(seen[0].group.key).toBe('B')
+      // B has one polygon, so removing it empties the group: this is a group
+      // delete however it was asked for.
+      expect(seen[0].feature).toBeNull()
+    })
+
+    it('refuses to delete a feature that declares editable: false', () => {
+      const { service, map } = createService()
+      service.setGroupOptions({ groupProperty: 'fieldId' })
+      service.setInteractionMode('grouped')
+      const retired = addFeature(map, {
+        fieldId: 'R',
+        styleOptions: { editable: false },
+      })
+      service.selectGroup('R')
+      service['_focusedFeature'] = retired
+
+      expect(service.canDeleteFocusedFeature()).toBe(false)
+      expect(service.canDeleteGroup('R')).toBe(false)
+
+      service.deleteGroup('R')
+      expect(service.getGroups().map((g) => g.key)).toEqual(['R'])
+    })
+
+    it('refuses a group delete when any one member is locked', () => {
+      const { service, map } = createService()
+      service.setGroupOptions({ groupProperty: 'fieldId' })
+      service.setInteractionMode('grouped')
+      addFeature(map, { fieldId: 'A' })
+      addFeature(map, { fieldId: 'A', styleOptions: { editable: false } })
+
+      expect(service.canDeleteGroup('A')).toBe(false)
+    })
+
+    it('still allows deleting an unlocked sibling of a locked feature', () => {
+      const { service, map } = createService()
+      service.setGroupOptions({ groupProperty: 'fieldId' })
+      service.setInteractionMode('grouped')
+      const open = addFeature(map, { fieldId: 'A' })
+      addFeature(map, { fieldId: 'A', styleOptions: { editable: false } })
+      service.selectGroup('A')
+      service['_focusedFeature'] = open
+
+      expect(service.canDeleteFocusedFeature()).toBe(true)
+    })
+
+    it('applies the lock in legacy mode too', () => {
+      const { service, map } = createService()
+      service.setGroupOptions({ groupProperty: 'fieldId' })
+      const retired = addFeature(map, {
+        fieldId: 'R',
+        styleOptions: { editable: false },
+      })
+      service.selectGroup('R')
+      service['_focusedFeature'] = retired
+
+      expect(service.canDeleteSelection()).toBe(false)
+      service.deleteSelection()
+      expect(service.getGroups().map((g) => g.key)).toEqual(['R'])
+    })
+
+    it('emits deleteBlocked once per refused command', () => {
+      const { service } = grouped()
+      const blocked: any[] = []
+      service.deleteBlocked$.subscribe((target) => blocked.push(target))
+      service.setCanDelete(() => false)
+      service.selectGroup('A')
+
+      service.deleteGroup('A')
+
+      expect(blocked).toHaveLength(1)
+      expect(blocked[0].group.key).toBe('A')
+      expect(blocked[0].feature).toBeNull()
+    })
+
+    it('never emits deleteBlocked from a query', () => {
+      const { service } = grouped()
+      const blocked: any[] = []
+      service.deleteBlocked$.subscribe((target) => blocked.push(target))
+      service.setCanDelete(() => false)
+      service.selectGroup('A')
+
+      service.canDeleteGroup('A')
+      service.canDeleteFocusedFeature()
+      service.canDeleteSelection()
+
+      expect(blocked).toHaveLength(0)
+    })
+
+    it('leaves the selection and the context-menu target untouched when refused', () => {
+      const { service, a1 } = grouped()
+      service.selectGroup('A')
+      service['_focusedFeature'] = a1
+      // Establish a context-menu target the way a right-click would, before
+      // the predicate starts refusing.
+      service['_setContextMenuTarget'](a1)
+      const targetBefore = service['_contextMenuTargetSubject'].value
+      service.setCanDelete(() => false)
+
+      service.deleteFocusedFeature()
+
+      expect(service.getSelectedFeature()).not.toBeNull()
+      expect(service['_focusedFeature']).toBe(a1)
+      // A refused delete removed nothing, so the open menu's target is not
+      // dangling and must survive — unlike after a successful delete, which
+      // clears it.
+      expect(service['_contextMenuTargetSubject'].value).toBe(targetBefore)
+    })
+
+    it('does not consult the predicate, or emit, when there is nothing to delete', () => {
+      const { service } = createService()
+      const blocked: any[] = []
+      service.deleteBlocked$.subscribe((target) => blocked.push(target))
+      const predicate = jest.fn(() => false)
+      service.setCanDelete(predicate)
+
+      expect(service.canDeleteSelection()).toBe(false)
+      service.deleteSelection()
+
+      expect(predicate).not.toHaveBeenCalled()
+      expect(blocked).toHaveLength(0)
+    })
+
+    it('reports false from every query before the map is ready', () => {
+      const service = new GoogleMapsService(
+        new MapValueManagerService(),
+        zone,
+        {} as ViewContainerRef,
+      )
+      expect(service.canDeleteSelection()).toBe(false)
+      expect(service.canDeleteGroup('A')).toBe(false)
+      expect(service.canDeleteFocusedFeature()).toBe(false)
+    })
+  })
 })

@@ -25,6 +25,7 @@ import {
 import {
   computeFeatureHoverStyle,
   computeFeatureStyle,
+  featureAllows,
 } from './feature-style/compute-feature-style'
 import { GoogleMapsContextMenu } from './google-maps-contextmenu'
 import {
@@ -131,6 +132,16 @@ export class GoogleMapsService implements OnDestroy {
   private _labelsOverlay?: MapFeatureLabelsOverlay
   private _warnedAboutLabelDisagreement = false
 
+  private _canDelete: ((target: TheSeamMapGroupTarget) => boolean) | undefined
+
+  private readonly _deleteBlockedSubject = new Subject<TheSeamMapGroupTarget>()
+  /**
+   * A delete that was attempted and refused. Fires only from the three delete
+   * commands, never from their `canDelete*` queries — rendering a menu is not
+   * an attempt.
+   */
+  public readonly deleteBlocked$ = this._deleteBlockedSubject.asObservable()
+
   private readonly _selectionSubject =
     new BehaviorSubject<TheSeamMapGroupTarget | null>(null)
   /**
@@ -202,6 +213,7 @@ export class GoogleMapsService implements OnDestroy {
     this._contextMenuTargetSubject.complete()
     this._editModeSubject.complete()
     this._interactionModeSubject.complete()
+    this._deleteBlockedSubject.complete()
     this._groups = undefined
 
     this._labelsOverlay?.destroy()
@@ -290,7 +302,148 @@ export class GoogleMapsService implements OnDestroy {
     this.clearSelection()
   }
 
+  /**
+   * The consumer's veto. Consulted for every delete on every path, and for
+   * whether to offer a delete at all.
+   */
+  public setCanDelete(
+    predicate: ((target: TheSeamMapGroupTarget) => boolean) | undefined | null,
+  ): void {
+    this._canDelete = predicate ?? undefined
+  }
+
+  /**
+   * Pair a set of features to remove with the target to consult `canDelete`
+   * with. `null` when there is nothing to delete — distinct from a refusal,
+   * and the reason no honest target exists to report.
+   */
+  private _deletionOf(
+    key: string | null,
+    removing: google.maps.Data.Feature[],
+  ): {
+    removing: google.maps.Data.Feature[]
+    target: TheSeamMapGroupTarget
+  } | null {
+    if (key === null || removing.length === 0) {
+      return null
+    }
+    const resolved = this._registry.groupWithSources(key)
+    if (!resolved) {
+      return null
+    }
+    // The empty-group invariant: a delete that leaves the group with no
+    // features at all is a group delete, whichever path asked for it — so
+    // `feature: null` always means "this group is about to cease to exist"
+    // and a consumer never has to count features itself. Compared against
+    // `featuresIn`, not `resolved.sources`, because a feature with
+    // unsupported geometry is missing from `sources` but still occupies the
+    // group.
+    const all = this._registry.featuresIn(key)
+    const emptiesGroup = all.every((f) => removing.indexOf(f) !== -1)
+    return {
+      removing,
+      target: this._targetFor(resolved, emptiesGroup ? null : removing[0]),
+    }
+  }
+
+  /** Resolves the same features `_removeSelection()` would remove. */
+  private _selectionDeletion() {
+    this._assertInitialized()
+    const removing: google.maps.Data.Feature[] = []
+    this.googleMap.data.forEach((f) => {
+      if (isFeatureSelected(f)) {
+        removing.push(f)
+      }
+    })
+    if (removing.length === 0) {
+      return null
+    }
+    return this._deletionOf(this._registry.keyOf(removing[0]), removing)
+  }
+
+  /** Resolves the same features `_removeFocusedFeature()` would remove. */
+  private _focusedFeatureDeletion() {
+    const focused = this._focusedFeature
+    if (focused === null) {
+      return this._selectionDeletion()
+    }
+    return this._deletionOf(this._registry.keyOf(focused), [focused])
+  }
+
+  /** Resolves the same features `_removeGroup(key)` would remove. */
+  private _groupDeletion(key: string) {
+    return this._deletionOf(key, this._registry.featuresIn(key))
+  }
+
+  /**
+   * Whether `removing` may be deleted: the feature-declared lock first, then
+   * the consumer's predicate.
+   *
+   * MUST stay pure. It also answers menu-render questions, which are not
+   * delete attempts — a side effect here would fire on every right-click.
+   */
+  private _mayDelete(
+    removing: google.maps.Data.Feature[],
+    target: TheSeamMapGroupTarget,
+  ): boolean {
+    // A feature the consumer locked against reshaping must not be removable
+    // by another route: deleting a polygon changes the map's value at least
+    // as much as reshaping it does. Same precedent as editable: false
+    // implying draggable: false in compute-feature-style.ts.
+    if (removing.some((f) => !featureAllows(f, 'editable'))) {
+      return false
+    }
+    return this._canDelete?.(target) ?? true
+  }
+
+  /** Whether "Delete Polygon" (or the `Delete` key) may act. */
+  public canDeleteFocusedFeature(): boolean {
+    if (!this.mapReady) {
+      return false
+    }
+    const deletion = this._focusedFeatureDeletion()
+    return (
+      deletion !== null && this._mayDelete(deletion.removing, deletion.target)
+    )
+  }
+
+  /** Whether "Delete Field" may act on `key`. */
+  public canDeleteGroup(key: string): boolean {
+    if (!this.mapReady) {
+      return false
+    }
+    const deletion = this._groupDeletion(key)
+    return (
+      deletion !== null && this._mayDelete(deletion.removing, deletion.target)
+    )
+  }
+
+  /** Whether the legacy "Delete" item (or the `Delete` key) may act. */
+  public canDeleteSelection(): boolean {
+    if (!this.mapReady) {
+      return false
+    }
+    const deletion = this._selectionDeletion()
+    return (
+      deletion !== null && this._mayDelete(deletion.removing, deletion.target)
+    )
+  }
+
+  /**
+   * Remove every selected feature, unless `canDelete` or a feature's own
+   * `editable: false` refuses. A refused delete emits on `deleteBlocked$` and
+   * changes nothing.
+   */
   public deleteSelection(): void {
+    this._assertInitialized()
+    const deletion = this._selectionDeletion()
+    if (
+      deletion !== null &&
+      !this._mayDelete(deletion.removing, deletion.target)
+    ) {
+      this._deleteBlockedSubject.next(deletion.target)
+      return
+    }
     this._removeSelection()
   }
 
@@ -333,7 +486,21 @@ export class GoogleMapsService implements OnDestroy {
     }
   }
 
+  /**
+   * Remove every feature in `key`'s group, unless `canDelete` or a feature's
+   * own `editable: false` refuses. A refused delete emits on `deleteBlocked$`
+   * and changes nothing.
+   */
   public deleteGroup(key: string): void {
+    this._assertInitialized()
+    const deletion = this._groupDeletion(key)
+    if (
+      deletion !== null &&
+      !this._mayDelete(deletion.removing, deletion.target)
+    ) {
+      this._deleteBlockedSubject.next(deletion.target)
+      return
+    }
     this._removeGroup(key)
   }
 
@@ -1123,7 +1290,21 @@ export class GoogleMapsService implements OnDestroy {
     }
   }
 
+  /**
+   * Remove the focused polygon — or, with nothing focused, the selection —
+   * unless `canDelete` or a feature's own `editable: false` refuses. A
+   * refused delete emits on `deleteBlocked$` and changes nothing.
+   */
   public deleteFocusedFeature(): void {
+    this._assertInitialized()
+    const deletion = this._focusedFeatureDeletion()
+    if (
+      deletion !== null &&
+      !this._mayDelete(deletion.removing, deletion.target)
+    ) {
+      this._deleteBlockedSubject.next(deletion.target)
+      return
+    }
     this._removeFocusedFeature()
   }
 
