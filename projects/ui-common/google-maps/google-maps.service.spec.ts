@@ -154,6 +154,41 @@ describe('GoogleMapsService', () => {
       expect(service.getSelectedFeature()).toBeNull()
     })
 
+    it('deleteGroup leaves an unrelated selection and context-menu target untouched', () => {
+      const { service, map } = createService()
+      service.setGroupOptions({ groupProperty: 'fieldId' })
+      service.setInteractionMode('grouped')
+      const a = addFeature(map, { fieldId: 'A' })
+      addFeature(map, { fieldId: 'B' })
+      service.selectGroup('A')
+      // Establish a context-menu target the way a right-click does.
+      service['_setContextMenuTarget'](a)
+
+      service.deleteGroup('B')
+
+      expect(service.getSelectedFeature()).toBe(a)
+      expect(service['_contextMenuTargetSubject'].value?.group.key).toBe('A')
+    })
+
+    it('deleteGroup clears the context-menu target when it names the deleted group', () => {
+      const { service, map } = createService()
+      service.setGroupOptions({ groupProperty: 'fieldId' })
+      service.setInteractionMode('grouped')
+      addFeature(map, { fieldId: 'A' })
+      const b = addFeature(map, { fieldId: 'B' })
+      service.selectGroup('A')
+      // Establish a context-menu target on the group that is about to be
+      // deleted, distinct from the current selection.
+      service['_setContextMenuTarget'](b)
+
+      service.deleteGroup('B')
+
+      expect(service['_contextMenuTargetSubject'].value).toBeNull()
+      // The selection is untouched: only the context-menu-target branch
+      // should have fired.
+      expect(service.getSelectedFeature()).not.toBeNull()
+    })
+
     it('deleteSelection removes the selected features', () => {
       const { service, map } = createService()
       service.setGroupOptions({ groupProperty: 'fieldId' })
@@ -165,6 +200,19 @@ describe('GoogleMapsService', () => {
       service.deleteSelection()
 
       expect(service.getGroups().map((g) => g.key)).toEqual(['B'])
+    })
+
+    it('deleteSelection unconditionally clears the selection and the focused feature', () => {
+      const { service, map } = createService()
+      service.setGroupOptions({ groupProperty: 'fieldId' })
+      service.setInteractionMode('grouped')
+      addFeature(map, { fieldId: 'A' })
+      service.selectGroup('A')
+
+      service.deleteSelection()
+
+      expect(service.getSelectedFeature()).toBeNull()
+      expect(service['_focusedFeature']).toBeNull()
     })
 
     it('deleteSelection with nothing selected removes nothing', () => {
@@ -207,6 +255,11 @@ describe('GoogleMapsService', () => {
       const groups = service.getGroups()
       expect(groups).toHaveLength(1)
       expect(groups[0].features).toHaveLength(1)
+      // Distinctive behaviour vs. _removeSelection: the group's remaining
+      // polygon stays selected, and the focused feature (now removed) is
+      // cleared rather than the whole selection.
+      expect(service.getSelectedFeature()).not.toBeNull()
+      expect(service['_focusedFeature']).toBeNull()
     })
   })
 })

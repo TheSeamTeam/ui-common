@@ -282,7 +282,7 @@ export class GoogleMapsService implements OnDestroy {
     })
     // Every deleted feature was selected, so nothing should still read as
     // selected afterward. Re-sync `selection$` and `_focusedFeature` the same
-    // way `deleteFocusedFeature()` and `setData()` already do, rather than
+    // way `_removeFocusedFeature()` and `setData()` already do, rather than
     // leaving them pointing at a group that no longer exists. In 'legacy'
     // mode nothing consumes selection$ today, and no remaining feature's raw
     // selected flag changes here (they were already false), so this is inert
