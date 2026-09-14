@@ -121,7 +121,7 @@ export class GoogleMapsService implements OnDestroy {
    * delay-free discriminator: a stale click's timestamp should predate the
    * moment the draw finished. It does not hold up empirically. Driving real
    * mouse draws against the live Storybook and logging both the map `click`
-   * listener and `stopDrawing()` (see .superpowers/closing-click-report.md)
+   * listener and `stopDrawing()` (see docs/superpowers/reports/closing-click-report.md)
    * caught the echo repeatedly, and every single time its `domEvent.timeStamp`
    * was a few milliseconds AFTER `stopDrawing()`'s own timestamp, not before
    * — indistinguishable from a genuinely fresh click by timestamp alone.
@@ -1436,7 +1436,7 @@ export class GoogleMapsService implements OnDestroy {
       // directly. By the time that second delivery arrives (confirmed
       // against the live Storybook: consistently a few milliseconds later,
       // comfortably within one animation frame — see
-      // .superpowers/closing-click-report.md), `isDrawing()` already reads
+      // docs/superpowers/reports/closing-click-report.md), `isDrawing()` already reads
       // false, so the guard just below cannot tell it apart from a fresh
       // click on open map. `_suppressNextMapClick` exists to catch exactly
       // that echo; see its doc comment for why a `domEvent.timeStamp`
@@ -1668,7 +1668,7 @@ export class GoogleMapsService implements OnDestroy {
    * Arm `_suppressNextMapClick`, and guarantee it cannot linger forever if
    * the echo it exists for never arrives — confirmed to be the normal case
    * for most real closes, and true of every synthetic/`play()`-driven draw,
-   * per .superpowers/closing-click-report.md. A `setTimeout` would "solve"
+   * per docs/superpowers/reports/closing-click-report.md. A `setTimeout` would "solve"
    * this by guessing a safe wall-clock delay, which is exactly the kind of
    * timing window this fix is trying to avoid introducing. Two
    * `requestAnimationFrame` callbacks bound the window instead: the observed

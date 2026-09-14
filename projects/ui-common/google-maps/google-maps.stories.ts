@@ -731,7 +731,7 @@ export const GroupedEscapeCascades: Story = {
  * (`GroupedDrawCreatesNewGroup` et al.) which exercise the same transition as
  * a side effect of an actual finished polygon.
  *
- * Investigation finding (see .superpowers/draw-release-report.md for detail):
+ * Investigation finding (see docs/superpowers/reports/draw-release-report.md for detail):
  * `isDrawing()` reading Terra Draw's own `getMode()` was not, in fact, the
  * defect — `setMode('static')` always took effect and this round trip always
  * passed. `isDrawing()` now reads `_drawingSubject` instead (see its doc
@@ -772,9 +772,9 @@ export const GroupedDrawingStateReleasesAfterStop: Story = {
 
 /**
  * Regression coverage for the terra-draw#710 recovery (see
- * .superpowers/terra-draw-710-spike.md,
- * .superpowers/terra-draw-recreate-report.md, and
- * .superpowers/escape-draw-cursor-report.md for the narrowing below).
+ * docs/superpowers/reports/terra-draw-710-spike.md,
+ * docs/superpowers/reports/terra-draw-recreate-report.md, and
+ * docs/superpowers/reports/escape-draw-cursor-report.md for the narrowing below).
  *
  * Two changes since the recreate was first added:
  *
@@ -813,7 +813,7 @@ export const GroupedDrawingStateReleasesAfterStop: Story = {
  * hand — 3 consecutive real `page.mouse.click()`-driven draws against the
  * live Storybook session, every one closing successfully, feature count
  * incrementing by exactly 1 each time — see
- * `.superpowers/escape-draw-cursor-report.md`.
+ * `docs/superpowers/reports/escape-draw-cursor-report.md`.
  */
 export const GroupedRepeatedDrawCyclesRecreateTerraDraw: Story = {
   render: () => ({
@@ -891,7 +891,7 @@ export const GroupedRepeatedDrawCyclesRecreateTerraDraw: Story = {
  * cancelled before the user draws anything — e.g. by `Escape` — which is
  * what let the swallowed-click bug reach a real re-arm through
  * `startDrawing()`'s own `!_terraDrawReady` guard (see
- * `.superpowers/escape-draw-cursor-report.md`). Confirms the `TerraDraw`
+ * `docs/superpowers/reports/escape-draw-cursor-report.md`). Confirms the `TerraDraw`
  * instance is untouched and, cycling this twice, that `_terraDrawReady`
  * never goes false in between — i.e. no async gap is ever introduced by an
  * empty arm, so a re-arm right after one is always synchronous.
@@ -934,7 +934,7 @@ export const GroupedEmptyArmDoesNotRecreateTerraDraw: Story = {
 
 /**
  * Direct regression test for the reported bug (see
- * .superpowers/escape-draw-cursor-report.md): pressing `Escape` enough times
+ * docs/superpowers/reports/escape-draw-cursor-report.md): pressing `Escape` enough times
  * to cancel the auto-armed draw (F6) AND leave edit mode, then re-entering
  * edit mode via `setEditMode(true)` (standing in for the button) and drawing
  * immediately — zero delay, the worst case for a swallowed click — must
@@ -1198,7 +1198,7 @@ export const GroupedDrawJoinsSelectedGroup: Story = {
 
 /**
  * Regression test for the closing-click race (see
- * .superpowers/closing-click-report.md): the physical click that closes a
+ * docs/superpowers/reports/closing-click-report.md): the physical click that closes a
  * polygon can reach the map's own `click` listener a beat late, AFTER
  * `_onDrawFinished()` has already flipped `isDrawing()` false — a real
  * mouse-driven closing click was caught doing exactly this against the live
