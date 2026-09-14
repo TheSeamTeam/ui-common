@@ -25,6 +25,7 @@ import {
 import {
   computeFeatureHoverStyle,
   computeFeatureStyle,
+  featureAllows,
 } from './feature-style/compute-feature-style'
 import { GoogleMapsContextMenu } from './google-maps-contextmenu'
 import {
@@ -59,6 +60,26 @@ import {
 declare const ngDevMode: boolean | undefined
 
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
+
+/**
+ * A delete that has been resolved to the features it would remove and the
+ * target to consult `canDelete` with. Built by `_deletionOf`; `null` there
+ * means there is nothing to delete at all, which is not a refusal.
+ */
+interface ResolvedDeletion {
+  removing: google.maps.Data.Feature[]
+  target: TheSeamMapGroupTarget
+  /**
+   * The delete removes a feature that no target can honestly name: it is
+   * absent from `groupWithSources().sources` (its geometry is neither Polygon
+   * nor MultiPolygon), so it appears in no `group.features` the consumer has
+   * ever seen, while the group itself survives the delete.
+   *
+   * Only ever true for a delete that does NOT empty the group — when the group
+   * is emptied, `feature: null` is honest regardless of what is being removed.
+   */
+  unnamable: boolean
+}
 
 @Injectable()
 export class GoogleMapsService implements OnDestroy {
@@ -100,7 +121,7 @@ export class GoogleMapsService implements OnDestroy {
    * delay-free discriminator: a stale click's timestamp should predate the
    * moment the draw finished. It does not hold up empirically. Driving real
    * mouse draws against the live Storybook and logging both the map `click`
-   * listener and `stopDrawing()` (see .superpowers/closing-click-report.md)
+   * listener and `stopDrawing()` (see docs/superpowers/reports/closing-click-report.md)
    * caught the echo repeatedly, and every single time its `domEvent.timeStamp`
    * was a few milliseconds AFTER `stopDrawing()`'s own timestamp, not before
    * — indistinguishable from a genuinely fresh click by timestamp alone.
@@ -130,6 +151,16 @@ export class GoogleMapsService implements OnDestroy {
   private _labelProperty: string | undefined
   private _labelsOverlay?: MapFeatureLabelsOverlay
   private _warnedAboutLabelDisagreement = false
+
+  private _canDelete: ((target: TheSeamMapGroupTarget) => boolean) | undefined
+
+  private readonly _deleteBlockedSubject = new Subject<TheSeamMapGroupTarget>()
+  /**
+   * A delete that was attempted and refused. Fires only from the three delete
+   * commands, never from their `canDelete*` queries — rendering a menu is not
+   * an attempt.
+   */
+  public readonly deleteBlocked$ = this._deleteBlockedSubject.asObservable()
 
   private readonly _selectionSubject =
     new BehaviorSubject<TheSeamMapGroupTarget | null>(null)
@@ -202,6 +233,7 @@ export class GoogleMapsService implements OnDestroy {
     this._contextMenuTargetSubject.complete()
     this._editModeSubject.complete()
     this._interactionModeSubject.complete()
+    this._deleteBlockedSubject.complete()
     this._groups = undefined
 
     this._labelsOverlay?.destroy()
@@ -272,7 +304,7 @@ export class GoogleMapsService implements OnDestroy {
   /**
    * Iterates the map's features and removes any that are selected.
    */
-  public deleteSelection(): void {
+  private _removeSelection(): void {
     this._assertInitialized()
     const mapData = this.googleMap.data
     mapData.forEach((f) => {
@@ -282,12 +314,220 @@ export class GoogleMapsService implements OnDestroy {
     })
     // Every deleted feature was selected, so nothing should still read as
     // selected afterward. Re-sync `selection$` and `_focusedFeature` the same
-    // way `deleteFocusedFeature()` and `setData()` already do, rather than
+    // way `_removeFocusedFeature()` and `setData()` already do, rather than
     // leaving them pointing at a group that no longer exists. In 'legacy'
     // mode nothing consumes selection$ today, and no remaining feature's raw
     // selected flag changes here (they were already false), so this is inert
     // there.
     this.clearSelection()
+  }
+
+  /**
+   * The consumer's veto. Consulted for every delete on every path, and for
+   * whether to offer a delete at all.
+   */
+  public setCanDelete(
+    predicate: ((target: TheSeamMapGroupTarget) => boolean) | undefined | null,
+  ): void {
+    this._canDelete = predicate ?? undefined
+  }
+
+  /**
+   * Pair a set of features to remove with the target to consult `canDelete`
+   * with. `null` when there is nothing to delete — distinct from a refusal,
+   * and the reason no honest target exists to report.
+   *
+   * Builds `target.feature` itself rather than delegating the decision to
+   * `_targetFor`. There, `feature: null` means only "no particular feature";
+   * here it is a promise that the whole group is about to cease to exist.
+   * Conflating the two is what let a delete of ONE polygon be consulted as a
+   * group delete — see `ResolvedDeletion.unnamable`.
+   */
+  private _deletionOf(
+    key: string | null,
+    removing: google.maps.Data.Feature[],
+  ): ResolvedDeletion | null {
+    if (key === null || removing.length === 0) {
+      return null
+    }
+    const resolved = this._registry.groupWithSources(key)
+    if (!resolved) {
+      return null
+    }
+    // The empty-group invariant: a delete that leaves the group with no
+    // features at all is a group delete, whichever path asked for it — so
+    // `feature: null` always means "this group is about to cease to exist"
+    // and a consumer never has to count features itself. Compared against
+    // `featuresIn`, not `resolved.sources`, because a feature with
+    // unsupported geometry is missing from `sources` but still occupies the
+    // group.
+    const all = this._registry.featuresIn(key)
+    const emptiesGroup = all.every((f) => removing.indexOf(f) !== -1)
+    if (emptiesGroup) {
+      // `feature: null` is honest here whatever `removing` holds: the group
+      // really is going, unsupported-geometry members included. This case is
+      // never at risk, so it is never `unnamable`.
+      return {
+        removing,
+        target: { group: resolved.group, feature: null },
+        unnamable: false,
+      }
+    }
+
+    // The group survives, so the target must name the polygon being removed.
+    const index = resolved.sources.indexOf(removing[0])
+    if (index === -1) {
+      // The feature being removed is absent from `sources`: its geometry is
+      // neither Polygon nor MultiPolygon, so `groupWithSources` dropped it and
+      // it has no emitted GeoJSON counterpart. It has never appeared in any
+      // `group.features` the consumer has seen, so NO value of
+      // `target.feature` describes it — which is exactly why this deletion is
+      // `unnamable` and `_mayDeleteResolved()` refuses it outright whenever a
+      // predicate is set.
+      //
+      // `feature: null` is the least dishonest option available. It overstates
+      // the scope — it reads as "the field is going" when only one polygon
+      // was asked for — but it names the right group, and it is only ever READ
+      // on the `deleteBlocked$` emission that reports the refusal: the
+      // predicate is refused before it is ever consulted with this target, and
+      // with no predicate set nothing observes it at all. A target that only
+      // ever reports a refusal cannot authorise a removal, so the overstatement
+      // is inert. The alternative was emitting nothing, which would leave a
+      // refused delete indistinguishable from a successful one on the design's
+      // only feedback channel.
+      return {
+        removing,
+        target: { group: resolved.group, feature: null },
+        unnamable: true,
+      }
+    }
+    return {
+      removing,
+      target: {
+        group: resolved.group,
+        feature: resolved.group.features[index],
+      },
+      unnamable: false,
+    }
+  }
+
+  /** Resolves the same features `_removeSelection()` would remove. */
+  private _selectionDeletion() {
+    this._assertInitialized()
+    const removing: google.maps.Data.Feature[] = []
+    this.googleMap.data.forEach((f) => {
+      if (isFeatureSelected(f)) {
+        removing.push(f)
+      }
+    })
+    if (removing.length === 0) {
+      return null
+    }
+    return this._deletionOf(this._registry.keyOf(removing[0]), removing)
+  }
+
+  /** Resolves the same features `_removeFocusedFeature()` would remove. */
+  private _focusedFeatureDeletion() {
+    const focused = this._focusedFeature
+    if (focused === null) {
+      return this._selectionDeletion()
+    }
+    return this._deletionOf(this._registry.keyOf(focused), [focused])
+  }
+
+  /** Resolves the same features `_removeGroup(key)` would remove. */
+  private _groupDeletion(key: string) {
+    return this._deletionOf(key, this._registry.featuresIn(key))
+  }
+
+  /**
+   * Whether `removing` may be deleted: the feature-declared lock first, then
+   * the consumer's predicate.
+   *
+   * MUST stay pure. It also answers menu-render questions, which are not
+   * delete attempts — a side effect here would fire on every right-click.
+   */
+  private _mayDelete(
+    removing: google.maps.Data.Feature[],
+    target: TheSeamMapGroupTarget,
+  ): boolean {
+    // A feature the consumer locked against reshaping must not be removable
+    // by another route: deleting a polygon changes the map's value at least
+    // as much as reshaping it does. Same precedent as editable: false
+    // implying draggable: false in compute-feature-style.ts.
+    if (removing.some((f) => !featureAllows(f, 'editable'))) {
+      return false
+    }
+    return this._canDelete?.(target) ?? true
+  }
+
+  /**
+   * Whether a resolved deletion may proceed. The single gate every query and
+   * every command goes through.
+   *
+   * Wraps `_mayDelete` with the one refusal that cannot be phrased as a
+   * question about a target: an `unnamable` delete. Consulting the predicate
+   * there would mean LYING to it — handing it `feature: null`, which promises
+   * the whole group is about to cease to exist, for a delete that removes one
+   * polygon and leaves the rest standing. A consumer whose rule is "a field
+   * may be deleted, an individual polygon may not" answers `true` to that and
+   * loses a polygon it meant to keep. Fail closed exactly where a consumer's
+   * rule could be subverted.
+   *
+   * Only when a predicate is actually set. With none there is nobody to lie
+   * to, so there is nothing to protect — and refusing unconditionally would
+   * change 'legacy' mode's behaviour for unsupported-geometry features, which
+   * two applications depend on and this work must not drift.
+   *
+   * Pure, like `_mayDelete`: it also answers menu-render questions.
+   */
+  private _mayDeleteResolved(deletion: ResolvedDeletion): boolean {
+    if (deletion.unnamable && this._canDelete !== undefined) {
+      return false
+    }
+    return this._mayDelete(deletion.removing, deletion.target)
+  }
+
+  /** Whether "Delete Polygon" (or the `Delete` key) may act. */
+  public canDeleteFocusedFeature(): boolean {
+    if (!this.mapReady) {
+      return false
+    }
+    const deletion = this._focusedFeatureDeletion()
+    return deletion !== null && this._mayDeleteResolved(deletion)
+  }
+
+  /** Whether "Delete Field" may act on `key`. */
+  public canDeleteGroup(key: string): boolean {
+    if (!this.mapReady) {
+      return false
+    }
+    const deletion = this._groupDeletion(key)
+    return deletion !== null && this._mayDeleteResolved(deletion)
+  }
+
+  /** Whether the legacy "Delete" item (or the `Delete` key) may act. */
+  public canDeleteSelection(): boolean {
+    if (!this.mapReady) {
+      return false
+    }
+    const deletion = this._selectionDeletion()
+    return deletion !== null && this._mayDeleteResolved(deletion)
+  }
+
+  /**
+   * Remove every selected feature, unless `canDelete` or a feature's own
+   * `editable: false` refuses. A refused delete emits on `deleteBlocked$` and
+   * changes nothing.
+   */
+  public deleteSelection(): void {
+    this._assertInitialized()
+    const deletion = this._selectionDeletion()
+    if (deletion !== null && !this._mayDeleteResolved(deletion)) {
+      this._deleteBlockedSubject.next(deletion.target)
+      return
+    }
+    this._removeSelection()
   }
 
   /**
@@ -303,7 +543,7 @@ export class GoogleMapsService implements OnDestroy {
    * selected, a coincidence this design has already stopped being true once
    * before and could again.
    */
-  public deleteGroup(key: string): void {
+  private _removeGroup(key: string): void {
     this._assertInitialized()
     const mapData = this.googleMap.data
     const wasSelected = this._selectionSubject.value?.group.key === key
@@ -327,6 +567,21 @@ export class GoogleMapsService implements OnDestroy {
     if (contextMenuTargetInGroup) {
       this._contextMenuTargetSubject.next(null)
     }
+  }
+
+  /**
+   * Remove every feature in `key`'s group, unless `canDelete` or a feature's
+   * own `editable: false` refuses. A refused delete emits on `deleteBlocked$`
+   * and changes nothing.
+   */
+  public deleteGroup(key: string): void {
+    this._assertInitialized()
+    const deletion = this._groupDeletion(key)
+    if (deletion !== null && !this._mayDeleteResolved(deletion)) {
+      this._deleteBlockedSubject.next(deletion.target)
+      return
+    }
+    this._removeGroup(key)
   }
 
   /**
@@ -730,6 +985,56 @@ export class GoogleMapsService implements OnDestroy {
     this._labelsOverlay?.refresh()
   }
 
+  /**
+   * Write `label` into `featureLabelProperty` on every feature in `key`'s
+   * group, without re-adding any data. Returns `false` when no feature
+   * carries `key`, or when no `featureLabelProperty` is configured — there is
+   * then no property to write the label into.
+   *
+   * Unlike a write through the map's `value`, this does NOT go through
+   * `setData()`, so the selection and the viewport are untouched. The
+   * repaint and the value update fall out of the data layer's own
+   * `setproperty` event, which `_initFeatureChangeListeners()` already turns
+   * into a `_labelsOverlay.refresh()` and a `MapValueSource.FeatureChange`
+   * emission.
+   *
+   * It DOES emit a value change, because the label is part of the GeoJSON and
+   * the value genuinely changed. Writing that emitted value straight back
+   * through the `value` input is inert: `MapValueManagerService.setValue`
+   * finds the serialized form identical and returns without emitting.
+   */
+  public setGroupLabel(key: string, label: string): boolean {
+    this._assertInitialized()
+    const property = this._labelProperty
+    if (!property) {
+      if (typeof ngDevMode === 'undefined' || ngDevMode) {
+        console.warn(
+          `[seam-google-maps] setGroupLabel("${key}") was called with no ` +
+            `featureLabelProperty configured, so there is no property to ` +
+            `write the label into. Nothing changed.`,
+        )
+      }
+      return false
+    }
+
+    const features = this._registry.featuresIn(key)
+    if (features.length === 0) {
+      return false
+    }
+
+    for (const feature of features) {
+      // `setProperty` raises `setproperty` whether or not the value differs,
+      // and each one costs a full re-serialization of the map's value. A
+      // rename typed character by character would pay that per keystroke per
+      // feature for writes that change nothing.
+      if (feature.getProperty(property) === label) {
+        continue
+      }
+      feature.setProperty(property, label)
+    }
+    return true
+  }
+
   private _ensureLabelsOverlay(): void {
     this._assertInitialized()
     if (this._labelsOverlay) {
@@ -1041,7 +1346,7 @@ export class GoogleMapsService implements OnDestroy {
    * `feature` no longer exists — `_applySelection` naturally clears to null
    * when the group is now empty, via `groupWithSources`.
    */
-  public deleteFocusedFeature(): void {
+  private _removeFocusedFeature(): void {
     this._assertInitialized()
     const key = this._focusedFeature
       ? this._registry.keyOf(this._focusedFeature)
@@ -1053,7 +1358,7 @@ export class GoogleMapsService implements OnDestroy {
       this.googleMap.data.remove(this._focusedFeature)
       this._focusedFeature = null
     } else {
-      this.deleteSelection()
+      this._removeSelection()
     }
 
     this._applySelection(key, null)
@@ -1063,6 +1368,21 @@ export class GoogleMapsService implements OnDestroy {
     if (contextMenuTargetInGroup) {
       this._contextMenuTargetSubject.next(null)
     }
+  }
+
+  /**
+   * Remove the focused polygon — or, with nothing focused, the selection —
+   * unless `canDelete` or a feature's own `editable: false` refuses. A
+   * refused delete emits on `deleteBlocked$` and changes nothing.
+   */
+  public deleteFocusedFeature(): void {
+    this._assertInitialized()
+    const deletion = this._focusedFeatureDeletion()
+    if (deletion !== null && !this._mayDeleteResolved(deletion)) {
+      this._deleteBlockedSubject.next(deletion.target)
+      return
+    }
+    this._removeFocusedFeature()
   }
 
   /** Escape cascades: cancel a draw, then clear selection, then leave edit mode. */
@@ -1116,7 +1436,7 @@ export class GoogleMapsService implements OnDestroy {
       // directly. By the time that second delivery arrives (confirmed
       // against the live Storybook: consistently a few milliseconds later,
       // comfortably within one animation frame — see
-      // .superpowers/closing-click-report.md), `isDrawing()` already reads
+      // docs/superpowers/reports/closing-click-report.md), `isDrawing()` already reads
       // false, so the guard just below cannot tell it apart from a fresh
       // click on open map. `_suppressNextMapClick` exists to catch exactly
       // that echo; see its doc comment for why a `domEvent.timeStamp`
@@ -1348,7 +1668,7 @@ export class GoogleMapsService implements OnDestroy {
    * Arm `_suppressNextMapClick`, and guarantee it cannot linger forever if
    * the echo it exists for never arrives — confirmed to be the normal case
    * for most real closes, and true of every synthetic/`play()`-driven draw,
-   * per .superpowers/closing-click-report.md. A `setTimeout` would "solve"
+   * per docs/superpowers/reports/closing-click-report.md. A `setTimeout` would "solve"
    * this by guessing a safe wall-clock delay, which is exactly the kind of
    * timing window this fix is trying to avoid introducing. Two
    * `requestAnimationFrame` callbacks bound the window instead: the observed

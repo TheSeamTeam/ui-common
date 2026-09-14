@@ -84,6 +84,31 @@ export function mergeStyleOptions(
 }
 
 /**
+ * Whether the feature declines to opt OUT of `option`.
+ *
+ * Resolved per key, not per object: a selected feature consults
+ * `styleOptionsSelected` first and falls back to `styleOptions` only for a key
+ * `styleOptionsSelected` does not itself mention. Otherwise a feature
+ * declaring `styleOptionsSelected` for an unrelated reason, such as a
+ * different selected fill colour, would silently lose an unrelated
+ * `editable: false` from `styleOptions` the moment it is selected.
+ *
+ * Only an explicit `false` opts out. Shared by `computeFeatureStyle` and the
+ * delete gate in `GoogleMapsService`, so the lock a consumer declares means
+ * the same thing to both.
+ */
+export function featureAllows(
+  feature: google.maps.Data.Feature,
+  option: 'editable' | 'draggable' | 'clickable',
+): boolean {
+  const selectedDeclared = isFeatureSelected(feature)
+    ? getSelectedStyleOptionsDefinedByFeature(feature)
+    : undefined
+  const baseDeclared = getStyleOptionsDefinedByFeature(feature)
+  return (selectedDeclared?.[option] ?? baseDeclared?.[option]) !== false
+}
+
+/**
  * The style for a feature, in a fixed precedence order:
  *
  *   defaults
@@ -110,20 +135,16 @@ export function mergeStyleOptions(
  * feature that opts out of one opts out of the other. This implication runs
  * only one way — `draggable: false` alone does not imply `editable: false`, so
  * a feature may still opt out of dragging while remaining reshapeable via its
- * vertex handles. Resolved through the same per-key `wants()` lookup as
- * `editable` itself, so a feature that locks `editable: false` in
- * `styleOptions` cannot be dragged even if `styleOptionsSelected` declares
- * `draggable` for an unrelated reason (or not at all).
+ * vertex handles. Resolved through `featureAllows`, which the delete gate
+ * shares, so a feature that locks `editable: false` in `styleOptions` cannot
+ * be dragged even if `styleOptionsSelected` declares `draggable` for an
+ * unrelated reason (or not at all).
  */
 export function computeFeatureStyle(
   feature: google.maps.Data.Feature,
   context: TheSeamMapFeatureStyleContext,
 ): google.maps.Data.StyleOptions {
   const selected = isFeatureSelected(feature)
-  const baseDeclared = getStyleOptionsDefinedByFeature(feature)
-  const selectedDeclared = selected
-    ? getSelectedStyleOptionsDefinedByFeature(feature)
-    : undefined
 
   const options = FEATURE_STYLE_OPTIONS_DEFAULT()
   mergeStyleOptions(options, getStyleOptionsDefinedByFeature(feature))
@@ -133,24 +154,18 @@ export function computeFeatureStyle(
     mergeStyleOptions(options, getSelectedStyleOptionsDefinedByFeature(feature))
   }
 
-  // Resolved per key, not per object. A feature that opts out in
-  // `styleOptions` must stay opted out even when it also declares a
-  // `styleOptionsSelected` for unrelated reasons such as colour — otherwise
-  // the clamp stops being one-directional and a retired field becomes
-  // editable the moment it is selected.
-  const wants = (option: 'editable' | 'draggable' | 'clickable') =>
-    (selectedDeclared?.[option] ?? baseDeclared?.[option]) !== false
-
   const editingArmed =
     context.editingEnabled && context.geometryEditingArmed && selected
-  const wantsEditable = wants('editable')
+  const wantsEditable = featureAllows(feature, 'editable')
 
   options.editable = wantsEditable && editingArmed
   // editable: false implies draggable: false (see the doc comment above) —
-  // the reverse does not hold, so wants('draggable') is still consulted on
-  // its own for a feature that opts out of dragging alone.
-  options.draggable = wants('draggable') && wantsEditable && editingArmed
-  options.clickable = wants('clickable') && context.clicksAllowed
+  // the reverse does not hold, so 'draggable' is still resolved on its own
+  // for a feature that opts out of dragging alone.
+  options.draggable =
+    featureAllows(feature, 'draggable') && wantsEditable && editingArmed
+  options.clickable =
+    featureAllows(feature, 'clickable') && context.clicksAllowed
 
   return options
 }

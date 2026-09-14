@@ -285,6 +285,32 @@ const TWO_FIELDS_VALUE = {
   ],
 }
 
+/**
+ * One two-polygon field and one single-polygon field, for the delete-gating
+ * stories: D exercises the two-item menu, E the single-polygon case where
+ * "Delete Polygon" would empty the group and so is not offered.
+ */
+const DELETE_GATING_VALUE = {
+  type: 'FeatureCollection',
+  features: [
+    {
+      type: 'Feature',
+      properties: { fieldId: 'D', FIELD_NAME: 'Twin Creek', plot: 1 },
+      geometry: squareAt(-98.58, 37.65),
+    },
+    {
+      type: 'Feature',
+      properties: { fieldId: 'D', FIELD_NAME: 'Twin Creek', plot: 2 },
+      geometry: squareAt(-98.56, 37.65),
+    },
+    {
+      type: 'Feature',
+      properties: { fieldId: 'E', FIELD_NAME: 'Lone Elm' },
+      geometry: squareAt(-98.54, 37.65),
+    },
+  ],
+}
+
 /** Wait for the map to render and load its value. */
 async function mapComponent(canvasElement: HTMLElement): Promise<any> {
   const host = canvasElement.querySelector('seam-google-maps')
@@ -705,7 +731,7 @@ export const GroupedEscapeCascades: Story = {
  * (`GroupedDrawCreatesNewGroup` et al.) which exercise the same transition as
  * a side effect of an actual finished polygon.
  *
- * Investigation finding (see .superpowers/draw-release-report.md for detail):
+ * Investigation finding (see docs/superpowers/reports/draw-release-report.md for detail):
  * `isDrawing()` reading Terra Draw's own `getMode()` was not, in fact, the
  * defect — `setMode('static')` always took effect and this round trip always
  * passed. `isDrawing()` now reads `_drawingSubject` instead (see its doc
@@ -746,9 +772,9 @@ export const GroupedDrawingStateReleasesAfterStop: Story = {
 
 /**
  * Regression coverage for the terra-draw#710 recovery (see
- * .superpowers/terra-draw-710-spike.md,
- * .superpowers/terra-draw-recreate-report.md, and
- * .superpowers/escape-draw-cursor-report.md for the narrowing below).
+ * docs/superpowers/reports/terra-draw-710-spike.md,
+ * docs/superpowers/reports/terra-draw-recreate-report.md, and
+ * docs/superpowers/reports/escape-draw-cursor-report.md for the narrowing below).
  *
  * Two changes since the recreate was first added:
  *
@@ -787,7 +813,7 @@ export const GroupedDrawingStateReleasesAfterStop: Story = {
  * hand — 3 consecutive real `page.mouse.click()`-driven draws against the
  * live Storybook session, every one closing successfully, feature count
  * incrementing by exactly 1 each time — see
- * `.superpowers/escape-draw-cursor-report.md`.
+ * `docs/superpowers/reports/escape-draw-cursor-report.md`.
  */
 export const GroupedRepeatedDrawCyclesRecreateTerraDraw: Story = {
   render: () => ({
@@ -865,7 +891,7 @@ export const GroupedRepeatedDrawCyclesRecreateTerraDraw: Story = {
  * cancelled before the user draws anything — e.g. by `Escape` — which is
  * what let the swallowed-click bug reach a real re-arm through
  * `startDrawing()`'s own `!_terraDrawReady` guard (see
- * `.superpowers/escape-draw-cursor-report.md`). Confirms the `TerraDraw`
+ * `docs/superpowers/reports/escape-draw-cursor-report.md`). Confirms the `TerraDraw`
  * instance is untouched and, cycling this twice, that `_terraDrawReady`
  * never goes false in between — i.e. no async gap is ever introduced by an
  * empty arm, so a re-arm right after one is always synchronous.
@@ -908,7 +934,7 @@ export const GroupedEmptyArmDoesNotRecreateTerraDraw: Story = {
 
 /**
  * Direct regression test for the reported bug (see
- * .superpowers/escape-draw-cursor-report.md): pressing `Escape` enough times
+ * docs/superpowers/reports/escape-draw-cursor-report.md): pressing `Escape` enough times
  * to cancel the auto-armed draw (F6) AND leave edit mode, then re-entering
  * edit mode via `setEditMode(true)` (standing in for the button) and drawing
  * immediately — zero delay, the worst case for a swallowed click — must
@@ -1172,7 +1198,7 @@ export const GroupedDrawJoinsSelectedGroup: Story = {
 
 /**
  * Regression test for the closing-click race (see
- * .superpowers/closing-click-report.md): the physical click that closes a
+ * docs/superpowers/reports/closing-click-report.md): the physical click that closes a
  * polygon can reach the map's own `click` listener a beat late, AFTER
  * `_onDrawFinished()` has already flipped `isDrawing()` false — a real
  * mouse-driven closing click was caught doing exactly this against the live
@@ -1485,28 +1511,44 @@ export const GroupedContextMenuNeverOpensOutsideSelectedGroup: Story = {
         [value]="value"
         style="height: 400px"></seam-google-maps>
     `,
-    props: { value: GROUPED_VALUE },
+    props: { value: TWO_FIELDS_VALUE },
   }),
   play: async ({ canvasElement }) => {
     const component = await mapComponent(canvasElement)
     const data = component._googleMaps.googleMap.data
 
-    // Select field B, then enter edit mode.
-    component.selectGroup('B')
+    // TWO_FIELDS_VALUE, not GROUPED_VALUE: both X and Y are two-polygon and
+    // unlocked (no styleOptions.editable: false anywhere), so BOTH halves of
+    // this assertion are decided by allowsContextMenu()'s group gate alone —
+    // neither is secretly decided by canDelete/the editable lock instead.
+    // GROUPED_VALUE's B (used here previously) carries editable: false and
+    // is a field this story would select as the "outside" group; with B
+    // locked, its own menu is always empty regardless of the group gate, so
+    // a right-click on it would read 0 items even if the gate regressed
+    // completely — an over-determined negative half. Picking a fixture where
+    // the non-selected group is just as deletable as the selected one is
+    // what keeps this story pinned to the gate specifically. If this
+    // fixture is ever "simplified" back to one with a locked or
+    // single-polygon field standing in for either group, that guarantee is
+    // lost silently — the story would still pass, but for the wrong reason.
+    component.selectGroup('X')
     component.setEditMode(true)
 
-    // Right-clicking a polygon of a DIFFERENT group (A) must open nothing.
-    const [featureA1] = featuresWithGroup(component, 'A')
-    google.maps.event.trigger(data, 'contextmenu', { feature: featureA1 })
+    // Right-clicking a polygon of a DIFFERENT group (Y) must open nothing.
+    const [featureY1] = featuresWithGroup(component, 'Y')
+    google.maps.event.trigger(data, 'contextmenu', { feature: featureY1 })
     await new Promise((resolve) => setTimeout(resolve, 250))
 
     await expect(
       canvasElement.querySelectorAll('[role="menuitem"]'),
     ).toHaveLength(0)
 
-    // Right-clicking a polygon of the SELECTED group (B) opens it.
-    const [featureB1] = featuresWithGroup(component, 'B')
-    google.maps.event.trigger(data, 'contextmenu', { feature: featureB1 })
+    // Right-clicking a polygon of the SELECTED group (X) opens it — X is
+    // unlocked and two-polygon, so it genuinely offers "Delete Polygon" and
+    // "Delete Field", proving the non-empty result is real rather than a
+    // count that would hold even if nothing were actually permitted.
+    const [featureX1] = featuresWithGroup(component, 'X')
+    google.maps.event.trigger(data, 'contextmenu', { feature: featureX1 })
     await new Promise((resolve) => setTimeout(resolve, 250))
 
     const items = canvasElement.querySelectorAll('[role="menuitem"]')
@@ -1551,5 +1593,225 @@ export const ConsumerSuppliedControl: Story = {
     // deliberately. So look for it in the map's rendered control container.
     const button = canvasElement.querySelector('[title="Smoke Test"]')
     await expect(button).not.toBeNull()
+  },
+}
+
+export const GroupedSinglePolygonFieldOffersOnlyDeleteField: Story = {
+  render: () => ({
+    template: `
+      <seam-google-maps
+        interactionMode="grouped"
+        featureGroupProperty="fieldId"
+        featureLabelProperty="FIELD_NAME"
+        [value]="value"
+        style="height: 400px"></seam-google-maps>
+    `,
+    props: { value: DELETE_GATING_VALUE },
+  }),
+  play: async ({ canvasElement }) => {
+    const component = await mapComponent(canvasElement)
+    component.setEditMode(true)
+    // DELETE_GATING_VALUE starts with no selection, so setEditMode(true)
+    // itself auto-arms drawing (F6) — cancel it the same way
+    // GroupedEditModeAllowsClicksBetweenDraws does, so the click below (which
+    // the data 'click' listener no-ops while isDrawing()) actually lands.
+    component._googleMaps.stopDrawing()
+    const data = component._googleMaps.googleMap.data
+
+    // E has one polygon: deleting it empties the field, so the only honest
+    // name for the act is "Delete Field".
+    const lone = featureWithGroup(component, 'E')
+    google.maps.event.trigger(data, 'click', { feature: lone })
+    google.maps.event.trigger(data, 'contextmenu', { feature: lone })
+    await new Promise((resolve) => setTimeout(resolve, 250))
+
+    const items = canvasElement.querySelectorAll('[role="menuitem"]')
+    await expect(items).toHaveLength(1)
+    await expect(items[0].textContent?.trim()).toBe('Delete Field')
+  },
+}
+
+export const GroupedCanDeleteHidesRefusedItems: Story = {
+  render: () => ({
+    template: `
+      <seam-google-maps
+        interactionMode="grouped"
+        featureGroupProperty="fieldId"
+        featureLabelProperty="FIELD_NAME"
+        [canDelete]="canDelete"
+        [value]="value"
+        style="height: 400px"></seam-google-maps>
+    `,
+    props: {
+      value: DELETE_GATING_VALUE,
+      // Built here, not in `args`: this file's stories share one generated
+      // wrapper component, and `canDelete` is a brand-new `@Input` no
+      // existing story's template ever bound — routed through `args` (as
+      // `ConsumerSuppliedControl`'s comment warns for a class instance
+      // crossing the same boundary) it arrives on the child as `undefined`.
+      // Assigning it directly here, on the object `render()` itself returns,
+      // reaches the child correctly.
+      //
+      // Refuse only whole-field deletes, the way an app would for a producer
+      // without the field-delete permission. Removing one polygon of a
+      // multi-polygon field stays allowed.
+      canDelete: (target: any) => target.feature !== null,
+    },
+  }),
+  play: async ({ canvasElement }) => {
+    const component = await mapComponent(canvasElement)
+    component.setEditMode(true)
+    // DELETE_GATING_VALUE starts with no selection, so setEditMode(true)
+    // itself auto-arms drawing (F6) — cancel it the same way
+    // GroupedEditModeAllowsClicksBetweenDraws does, so the click below (which
+    // the data 'click' listener no-ops while isDrawing()) actually lands.
+    component._googleMaps.stopDrawing()
+    const data = component._googleMaps.googleMap.data
+
+    const twin = featureWithGroup(component, 'D')
+    google.maps.event.trigger(data, 'click', { feature: twin })
+    google.maps.event.trigger(data, 'contextmenu', { feature: twin })
+    await new Promise((resolve) => setTimeout(resolve, 250))
+
+    const items = canvasElement.querySelectorAll('[role="menuitem"]')
+    await expect(items).toHaveLength(1)
+    await expect(items[0].textContent?.trim()).toBe('Delete Polygon')
+  },
+}
+
+export const GroupedBlockedDeleteKeyEmits: Story = {
+  render: () => ({
+    template: `
+      <seam-google-maps
+        interactionMode="grouped"
+        featureGroupProperty="fieldId"
+        featureLabelProperty="FIELD_NAME"
+        [canDelete]="canDelete"
+        [value]="value"
+        style="height: 400px"></seam-google-maps>
+    `,
+    props: {
+      value: DELETE_GATING_VALUE,
+      // Built here, not in `args` — see GroupedCanDeleteHidesRefusedItems's
+      // comment: `canDelete` is a brand-new `@Input` no existing story's
+      // template bound before, and routing it through `args` arrives on the
+      // child as `undefined`.
+      canDelete: () => false,
+    },
+  }),
+  play: async ({ canvasElement }) => {
+    const component = await mapComponent(canvasElement)
+    component.setEditMode(true)
+    // DELETE_GATING_VALUE starts with no selection, so setEditMode(true)
+    // itself auto-arms drawing (F6) — cancel it the same way
+    // GroupedEditModeAllowsClicksBetweenDraws does, so the click below (which
+    // the data 'click' listener no-ops while isDrawing()) actually lands.
+    component._googleMaps.stopDrawing()
+    const data = component._googleMaps.googleMap.data
+
+    // Subscribed directly on the rendered component's own `deleteBlocked`
+    // Output, rather than through a `(deleteBlocked)="..."` template binding
+    // plus a `storybook/test` `fn()` arg: this file's stories share one
+    // generated wrapper component, and the fixture needed to relay a
+    // brand-new Output through it was not reliable — subscribing to the
+    // real, rendered `EventEmitter` sidesteps that and is just as direct a
+    // check of the actual wiring.
+    const blocked: any[] = []
+    component.deleteBlocked.subscribe((target: any) => blocked.push(target))
+
+    const lone = featureWithGroup(component, 'E')
+    google.maps.event.trigger(data, 'click', { feature: lone })
+
+    // The real 'Delete' key path, the same way GroupedDeleteRemovesOnlyFocusedPolygon
+    // drives it: userEvent.keyboard('{Delete}') never reaches the component's
+    // fromEvent(window, 'keydown') listener in this harness, so this dispatches
+    // the keydown directly.
+    window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Delete' }))
+
+    await expect(featuresWithGroup(component, 'E')).toHaveLength(1)
+    await expect(blocked).toHaveLength(1)
+    // E is a single-polygon field, so deleting it empties the group: the
+    // refused target names the whole field, not one polygon.
+    await expect(blocked[0].group.key).toBe('E')
+    await expect(blocked[0].feature).toBeNull()
+  },
+}
+
+export const GroupedRetiredFieldCannotBeDeleted: Story = {
+  render: () => ({
+    template: `
+      <seam-google-maps
+        interactionMode="grouped"
+        featureGroupProperty="fieldId"
+        [value]="value"
+        style="height: 400px"></seam-google-maps>
+    `,
+    props: { value: RETIRED_FIELD_VALUE },
+  }),
+  play: async ({ canvasElement }) => {
+    const component = await mapComponent(canvasElement)
+    component.setEditMode(true)
+    // RETIRED_FIELD_VALUE starts with no selection, so setEditMode(true)
+    // itself auto-arms drawing (F6) — cancel it the same way
+    // GroupedEditModeAllowsClicksBetweenDraws does, so the click below (which
+    // the data 'click' listener no-ops while isDrawing()) actually lands and
+    // this story exercises the real refusal instead of passing vacuously
+    // because the click never registered a selection.
+    component._googleMaps.stopDrawing()
+    const data = component._googleMaps.googleMap.data
+
+    // B declares styleOptions.editable: false. A feature locked against
+    // reshaping must not be removable by another route either.
+    const retired = featureWithGroup(component, 'B')
+    google.maps.event.trigger(data, 'click', { feature: retired })
+    // One positive guard, so the all-negative assertions below cannot pass
+    // vacuously: if this click never focused the retired feature, "no menu
+    // items" and "the feature survives" would both hold for the wrong reason.
+    await expect(isFeatureSelected(retired)).toBe(true)
+    google.maps.event.trigger(data, 'contextmenu', { feature: retired })
+    await new Promise((resolve) => setTimeout(resolve, 250))
+
+    // Every delete is refused, so no menu opens at all.
+    await expect(
+      canvasElement.querySelectorAll('[role="menuitem"]'),
+    ).toHaveLength(0)
+
+    // The real 'Delete' key path, the same way GroupedDeleteRemovesOnlyFocusedPolygon
+    // drives it: userEvent.keyboard('{Delete}') never reaches the component's
+    // fromEvent(window, 'keydown') listener in this harness, so this dispatches
+    // the keydown directly.
+    window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Delete' }))
+    await expect(featuresWithGroup(component, 'B')).toHaveLength(1)
+  },
+}
+
+export const GroupedSetGroupLabelKeepsSelection: Story = {
+  render: () => ({
+    template: `
+      <seam-google-maps
+        interactionMode="grouped"
+        featureGroupProperty="fieldId"
+        featureLabelProperty="FIELD_NAME"
+        [value]="value"
+        style="height: 400px"></seam-google-maps>
+    `,
+    props: { value: DELETE_GATING_VALUE },
+  }),
+  play: async ({ canvasElement }) => {
+    const component = await mapComponent(canvasElement)
+    component.selectGroup('D')
+    await expect(isFeatureSelected(featureWithGroup(component, 'D'))).toBe(true)
+
+    await expect(component.setGroupLabel('D', 'Twin Creek North')).toBe(true)
+
+    // The rename must land on every polygon of the field...
+    for (const feature of featuresWithGroup(component, 'D')) {
+      await expect(feature.getProperty('FIELD_NAME')).toBe('Twin Creek North')
+    }
+    // ...without the selection being cleared, which is what a full value
+    // write through setData() would have done on every keystroke.
+    await expect(isFeatureSelected(featureWithGroup(component, 'D'))).toBe(true)
+
+    await expect(component.setGroupLabel('NOPE', 'Nowhere')).toBe(false)
   },
 }

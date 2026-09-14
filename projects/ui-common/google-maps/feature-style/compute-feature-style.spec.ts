@@ -6,6 +6,7 @@ import {
 import {
   computeFeatureHoverStyle,
   computeFeatureStyle,
+  featureAllows,
   TheSeamMapFeatureStyleContext,
 } from './compute-feature-style'
 
@@ -163,5 +164,66 @@ describe('computeFeatureHoverStyle', () => {
       styleOptionsHovered: { strokeColor: 'purple' },
     })
     expect(computeFeatureHoverStyle(feature).strokeColor).toBe('purple')
+  })
+})
+
+describe('featureAllows', () => {
+  beforeEach(() => installFakeGoogleMaps())
+  afterEach(() => uninstallFakeGoogleMaps())
+
+  it('allows an option no declaration mentions', () => {
+    expect(featureAllows(makeFeature(), 'editable')).toBe(true)
+  })
+
+  it('refuses an option styleOptions declares false', () => {
+    const feature = makeFeature({ styleOptions: { editable: false } })
+    expect(featureAllows(feature, 'editable')).toBe(false)
+  })
+
+  it('allows an option styleOptions declares true', () => {
+    const feature = makeFeature({ styleOptions: { editable: true } })
+    expect(featureAllows(feature, 'editable')).toBe(true)
+  })
+
+  it('only an explicit false opts out', () => {
+    const feature = makeFeature({ styleOptions: { editable: undefined } })
+    expect(featureAllows(feature, 'editable')).toBe(true)
+  })
+
+  it('ignores styleOptionsSelected while unselected', () => {
+    const feature = makeFeature({
+      styleOptions: { editable: true },
+      styleOptionsSelected: { editable: false },
+    })
+    expect(featureAllows(feature, 'editable')).toBe(true)
+  })
+
+  it('prefers styleOptionsSelected while selected', () => {
+    const feature = makeFeature({
+      styleOptions: { editable: true },
+      styleOptionsSelected: { editable: false },
+    })
+    setFeatureSelected(feature, true)
+    expect(featureAllows(feature, 'editable')).toBe(false)
+  })
+
+  it('falls back per key, not per object, while selected', () => {
+    // styleOptionsSelected exists for an unrelated reason (colour). The
+    // editable opt-out in styleOptions must survive it.
+    const feature = makeFeature({
+      styleOptions: { editable: false },
+      styleOptionsSelected: { fillColor: 'gold' },
+    })
+    setFeatureSelected(feature, true)
+    expect(featureAllows(feature, 'editable')).toBe(false)
+  })
+
+  it('resolves each option independently', () => {
+    const feature = makeFeature({
+      styleOptions: { editable: true, draggable: false, clickable: false },
+    })
+    expect(featureAllows(feature, 'editable')).toBe(true)
+    expect(featureAllows(feature, 'draggable')).toBe(false)
+    expect(featureAllows(feature, 'clickable')).toBe(false)
   })
 })

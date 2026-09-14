@@ -53,13 +53,12 @@ import {
   MapValueManagerService,
   MapValueSource,
 } from '../map-value-manager.service'
+import {
+  buildDeleteMenuItems,
+  TheSeamMapContextMenuItem,
+} from '../context-menu/delete-menu-items'
 
 declare const ngDevMode: boolean | undefined
-
-interface TheSeamMapContextMenuItem {
-  label: string
-  action: (item: TheSeamMapContextMenuItem) => void
-}
 
 class TheSeamGoogleMapsComponentBase {
   constructor(public _elementRef: ElementRef) {}
@@ -120,7 +119,8 @@ export class TheSeamGoogleMapsComponent
   readonly _fileUploadControlDef: MapControl = {
     component: TheSeamGoogleMapsUploadButtonControlComponent,
     data: { label: 'Import Geo File', icon: faFileImport },
-    position: 6 /* google.maps.ControlPosition.LEFT_BOTTOM */,
+    // position: 6 /* google.maps.ControlPosition.LEFT_BOTTOM */,
+    position: 7, // Below top-right fullscreen button
   }
 
   readonly _reCenterControlDef: MapControl = {
@@ -222,11 +222,41 @@ export class TheSeamGoogleMapsComponent
   /** Preselect a group. Applied on map-ready and after each external value write. */
   @Input() selectedGroupKey: string | null = null
 
+  /**
+   * Vetoes a delete. Return `false` to refuse the target.
+   *
+   * `target.feature === null` means the whole group is about to cease to
+   * exist — every polygon of it is going, however the delete was asked for.
+   * A non-null `feature` means one polygon is being removed from a group that
+   * survives.
+   *
+   * **Consulted when no delete is happening.** It decides whether to render
+   * the context-menu items, so it runs on every context-menu open. A
+   * predicate that logs an attempt or flips state will do so on every
+   * right-click. It must also be deterministic for a given target, or the
+   * menu and the `Delete` key can disagree about the same target.
+   *
+   * That is a correctness warning, not a performance one. The context-menu
+   * target changes only on a right-click, a delete, and a value write, so
+   * this runs a handful of times per gesture.
+   *
+   * Passing nothing refuses nothing, which is the behaviour this component
+   * has always had.
+   */
+  @Input() canDelete: ((target: TheSeamMapGroupTarget) => boolean) | undefined
+
   @Output() mapReady = new EventEmitter<google.maps.Map | undefined>()
 
   @Output() selectionChange = new EventEmitter<TheSeamMapGroupTarget | null>()
   @Output() featureHoverChange =
     new EventEmitter<TheSeamMapGroupTarget | null>()
+
+  /**
+   * A delete was attempted and refused — in practice, the `Delete` key, since
+   * a refused menu item is never rendered. Emits the target that was refused
+   * so the consumer can explain why; only the consumer knows the reason.
+   */
+  @Output() deleteBlocked = new EventEmitter<TheSeamMapGroupTarget>()
 
   @ViewChild('featureContextMenu', { static: true, read: MenuComponent })
   public featureContextMenu!: MenuComponent
@@ -308,40 +338,36 @@ export class TheSeamGoogleMapsComponent
       )
       .subscribe()
 
+    // No `skip(1)` here, unlike `selection$` and `hover$`: `deleteBlocked$` is
+    // a plain Subject with no replayed initial value to drop.
+    this._googleMaps.deleteBlocked$
+      .pipe(
+        tap((target) => this.deleteBlocked.emit(target)),
+        takeUntil(this._ngUnsubscribe),
+      )
+      .subscribe()
+
     this._contextMenuItems$ = combineLatest([
       this._googleMaps.editingEnabled$,
-      // The RIGHT-CLICKED feature's group. In 'grouped' mode the menu now
-      // only opens when that group is already the selection (see
-      // `GroupedInteractionModel.allowsContextMenu()`), so this and
-      // `selection$` always agree here — but this is still the one that
-      // names what "Delete Field" is conceptually acting on, independent of
-      // that coincidence. See `contextMenuTarget$`'s doc comment.
+      // The RIGHT-CLICKED feature's group — what "Delete Field" is
+      // conceptually acting on, independent of what happens to be selected.
+      // See `contextMenuTarget$`'s doc comment.
       this._googleMaps.contextMenuTarget$,
     ]).pipe(
-      map(([enabled, target]) => {
-        const items: TheSeamMapContextMenuItem[] = []
-        if (!enabled) {
-          return items
-        }
-        if (this.interactionMode === 'grouped') {
-          items.push({
-            label: 'Delete Polygon',
-            action: () => this._googleMaps.deleteFocusedFeature(),
-          })
-          if (target && target.group.features.length > 1) {
-            items.push({
-              label: 'Delete Field',
-              action: () => this._googleMaps.deleteGroup(target.group.key),
-            })
-          }
-          return items
-        }
-        items.push({
-          label: 'Delete',
-          action: () => this._onClickDeleteFeature(),
-        })
-        return items
-      }),
+      map(([editingEnabled, target]) =>
+        buildDeleteMenuItems({
+          mode: this.interactionMode,
+          editingEnabled,
+          target,
+          canDeleteFocusedFeature: () =>
+            this._googleMaps.canDeleteFocusedFeature(),
+          canDeleteGroup: (key) => this._googleMaps.canDeleteGroup(key),
+          canDeleteSelection: () => this._googleMaps.canDeleteSelection(),
+          deleteFocusedFeature: () => this._googleMaps.deleteFocusedFeature(),
+          deleteGroup: (key) => this._googleMaps.deleteGroup(key),
+          deleteSelection: () => this._googleMaps.deleteSelection(),
+        }),
+      ),
       tap((items) => {
         if (items.length === 0) {
           this._googleMaps.setFeatureContextMenu(null)
@@ -471,6 +497,10 @@ export class TheSeamGoogleMapsComponent
       this._applySelectedGroupKey()
     }
 
+    if (Object.prototype.hasOwnProperty.call(changes, 'canDelete')) {
+      this._googleMaps.setCanDelete(this.canDelete)
+    }
+
     if (Object.prototype.hasOwnProperty.call(changes, 'featureLabelProperty')) {
       this._googleMaps.setLabelProperty(this.featureLabelProperty)
     }
@@ -563,10 +593,6 @@ export class TheSeamGoogleMapsComponent
     })
   }
 
-  _onClickDeleteFeature() {
-    this._googleMaps.deleteSelection()
-  }
-
   // The service delegates below guard on `mapReady` themselves, the same way
   // `_applySelectedGroupKey()` already does for the declarative
   // `selectedGroupKey` input. Their service-side counterparts call
@@ -614,6 +640,20 @@ export class TheSeamGoogleMapsComponent
       return []
     }
     return this._googleMaps.getGroups()
+  }
+
+  /**
+   * Set a group's label text in place. Returns false when no such group
+   * exists, or when no `featureLabelProperty` is set.
+   *
+   * Does not clear the selection or re-fit the viewport, so it is safe to
+   * call while the user is renaming the very group being displayed.
+   */
+  public setGroupLabel(key: string, label: string): boolean {
+    if (!this._googleMaps.mapReady) {
+      return false
+    }
+    return this._googleMaps.setGroupLabel(key, label)
   }
 
   public setEditMode(enabled: boolean): void {
