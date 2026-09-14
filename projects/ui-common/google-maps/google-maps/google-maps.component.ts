@@ -119,7 +119,8 @@ export class TheSeamGoogleMapsComponent
   readonly _fileUploadControlDef: MapControl = {
     component: TheSeamGoogleMapsUploadButtonControlComponent,
     data: { label: 'Import Geo File', icon: faFileImport },
-    position: 6 /* google.maps.ControlPosition.LEFT_BOTTOM */,
+    // position: 6 /* google.maps.ControlPosition.LEFT_BOTTOM */,
+    position: 7, // Below top-right fullscreen button
   }
 
   readonly _reCenterControlDef: MapControl = {
