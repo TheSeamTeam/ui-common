@@ -116,6 +116,13 @@ export class TheSeamGoogleMapsUploadButtonControlComponent
     this._resetInput()
   }
 
+  private _reportImportError(file: File | undefined, error: unknown): void {
+    if (file === undefined) {
+      return
+    }
+    this._googleMaps.notifyFileImportError(file, error)
+  }
+
   private _createHiddenInput(): HTMLInputElement {
     const fileInputElement = this._renderer.createElement('input')
     this._renderer.setAttribute(fileInputElement, 'type', 'file')
@@ -128,15 +135,28 @@ export class TheSeamGoogleMapsUploadButtonControlComponent
 
     this._listeners.push(
       this._renderer.listen(fileInputElement, 'change', (event: Event) => {
-        const file = this._getFile()
+        let file: File | null
+        try {
+          file = this._getFile()
+        } catch (err) {
+          // `_getFile` refuses a multi-file selection. Report it like any
+          // other reason the chosen files could not be imported.
+          this._reportImportError(this._fileInputElement.files?.[0], err)
+          return
+        }
+
         if (file === null) {
           return
         }
+
         const fileImportHandler = this._googleMaps.getFileInputHandler()
         if (fileImportHandler) {
+          // The consumer owns the file now, including reporting its failures.
           fileImportHandler(file)
         } else {
-          this._importFile(file)
+          this._importFile(file).catch((err) =>
+            this._reportImportError(file, err),
+          )
         }
       }),
     )
