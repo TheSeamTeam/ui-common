@@ -62,8 +62,18 @@ construction and `withoutProperty` is no longer needed here.
 
 **Errors.** `Shape data not found.` stays, wired to the condition that
 actually happens: shpjs's `no layers founds` is caught and rethrown as it, and
-it is also thrown when every member coerced away. Any other `parseZip` failure
-propagates unchanged.
+it is also thrown when every member coerced away — that is, when
+`coerceFeatureCollection` returned `null` for every one of them.
+
+That is deliberately *not* the same as "the archive yielded no features". A zip
+holding one shapefile with zero records is a legal export, the one a producer
+gets when the selection was empty. Its single member coerces fine and simply
+holds nothing, so it resolves to an empty `FeatureCollection` — which is what
+`readGeoFile` has always returned for that file, and what the library's own
+`no-empty-feature-collection.validator` exists to judge. Turning it into a
+parse failure would be a regression.
+
+Any other `parseZip` failure propagates unchanged.
 
 ## 2. The member name rides on each feature
 
@@ -136,10 +146,16 @@ Like `deleteBlocked$` it is a plain `Subject` with no replayed initial value,
 so no `skip(1)`.
 
 Both paths gain a `catch` — the drop's `.then` chain, and the upload button's
-floating `this._importFile(file)`.
+floating `this._importFile(file)`. The upload button reports one thing more:
+its `_getFile` refusal of a multi-file selection. That refusal happens before
+any handler is consulted, so the consumer never sees the files and this output
+is the only way it can learn the pick was rejected.
 
-It fires only for parsing the library owns. Once a consumer's
+Otherwise it fires only for parsing the library owns. Once a consumer's
 `fileImportHandler` takes the file, the outcome is theirs to report.
+
+The drop path has no matching multi-file report, because it refuses a
+multi-file drop earlier and for a different reason — see **Not doing**.
 
 Fixing item 1 removes the common cause but not the class: a corrupt file, a
 `.zip` of something else, or malformed GeoJSON still reach it.
@@ -180,7 +196,11 @@ visual.
 ## Not doing
 
 - **A parsed-shaped import hook.** Reasoned about in section 3.
-- **The `items[0]` multi-file TODO** in `_handleDropEvent`. The upload
-  button's `_getFile` throws on multiple files and the drop path silently
-  takes the first. Flagged in the handoff for completeness with no consumer
-  needing it.
+- **The `items[0]` multi-file TODO** in `_handleDropEvent`. The handoff
+  described the drop path as silently taking the first of several files; it
+  does not. `_isSupportedDataTransfer` requires `dataTransfer.files.length
+  === 1`, so a multi-file drop is refused outright and nothing is imported —
+  `items[0]` is only ever reached when there is exactly one file. The
+  behaviour is therefore already safe, just silent, and unlike the upload
+  button it reports nothing. Left alone: no consumer needs it, and the two
+  paths' multi-file handling is worth settling together rather than here.
