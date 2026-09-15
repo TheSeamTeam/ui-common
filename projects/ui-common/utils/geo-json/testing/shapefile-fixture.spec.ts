@@ -67,15 +67,15 @@ describe('shapefileZip', () => {
   it('should keep a zero-valued numeric property numeric', async () => {
     const zip = shapefileZip([
       {
-        name: '4Tower_HICALCI_3833_HenryCou',
+        name: '5North_LOWPHOS_4021_SampleCou',
         polygons: [square(0, 0)],
-        properties: [{ 'HI-CALCIUM': 0 }],
+        properties: [{ 'LOW-PHOS': 0 }],
       },
     ])
 
     const parsed = (await parseZip(toArrayBuffer(zip))) as any
 
-    expect(parsed.features[0].properties).toEqual({ 'HI-CALCIUM': 0 })
+    expect(parsed.features[0].properties).toEqual({ 'LOW-PHOS': 0 })
   })
 
   it('should build an archive shpjs rejects when it holds no shapefile', async () => {
