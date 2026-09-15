@@ -34,15 +34,24 @@ than assumed.
    archive down to `shp|dbf|json|prj|cpg` before parsing, so a `.shx` member
    would be discarded unread.
 
-## 1. `parseShpZip` merges members
+## 1. `parseShpZip` concatenates members
 
 `parseShpZip` normalizes `parseZip`'s return to an array, coerces each member
 through the existing `coerceFeatureCollection`, concatenates the `features`,
 and returns one freshly built `FeatureCollection`.
 
-Merging is what every consumer we have wants. The Deere export's 74 members
-become 74 features — the same value its single-shapefile twin already
-produces today. `Multiple shape files not supported.` is deleted.
+**Concatenation only.** Features are appended in member order and nothing
+else happens to them. No feature is combined with another, no property is
+inspected, and no member is treated as related to any other. Which features
+belong to the same logical thing is the consuming app's decision, not a
+parser's — `readGeoFile` reports what the archive holds.
+
+That makes the two forms of the same export agree. The Deere producer sent
+the same 74 fields twice: once as 74 single-feature members
+(`Export_20260806_1335.zip`, which throws today) and once as a single member
+holding 74 features (`Export_20260814_1fileallfields.zip`, which parses today
+into a 74-feature collection). After this change both yield 74 features.
+`Multiple shape files not supported.` is deleted.
 
 The coerce step is not ceremony: `parseZip` also treats `.json` members as
 layers, and one can parse to something that is not a `FeatureCollection`. A
@@ -59,7 +68,8 @@ propagates unchanged.
 
 ## 2. The member name rides on each feature
 
-Each merged feature gets its source member written into `properties`:
+Each feature gets the archive member it came from written into its
+`properties`:
 
 ```ts
 export const GEO_FILE_SOURCE_NAME_PROPERTY = 'seamSourceFileName'
@@ -81,8 +91,8 @@ bare `.shp` carries no member name) or by `parseGeoJson`.
 
 This is a widening of `readGeoFile`'s output contract: every feature from a
 zip now carries one more property, and consumers that persist the collection
-persist it too. That is the intent — after merging there is no other route
-back to the member name.
+persist it too. That is the intent — once the members are concatenated there
+is no other route back to the member name.
 
 ## 3. Drop routes through `fileImportHandler`
 
@@ -144,8 +154,8 @@ real bytes. The values are invented; no customer file enters the repo, and no
 opaque binary is checked in — the generator is reviewable source.
 
 This is worth its roughly 200 lines because the existing specs mock `shpjs`
-wholesale, which means they assert our merge logic against our belief about
-shpjs's return shape. Three of the four facts above contradict what those
+wholesale, which means they assert our concatenation logic against our belief
+about shpjs's return shape. Three of the four facts above contradict what those
 mocks currently encode, and the shpjs v6 ESM upgrade on this branch is a
 recent reminder that the belief can go stale without a test noticing.
 
