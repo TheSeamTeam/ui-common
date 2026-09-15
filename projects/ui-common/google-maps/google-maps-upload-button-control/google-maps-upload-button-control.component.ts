@@ -113,7 +113,6 @@ export class TheSeamGoogleMapsUploadButtonControlComponent
   private async _importFile(file: File): Promise<void> {
     const json = await readGeoFile(file)
     this._mapValueManager.setValue(json, MapValueSource.Input)
-    this._resetInput()
   }
 
   private _reportImportError(file: File | undefined, error: unknown): void {
@@ -140,8 +139,11 @@ export class TheSeamGoogleMapsUploadButtonControlComponent
           file = this._getFile()
         } catch (err) {
           // `_getFile` refuses a multi-file selection. Report it like any
-          // other reason the chosen files could not be imported.
+          // other reason the chosen files could not be imported. `_getFile`
+          // has already read `files` by this point, so resetting now cannot
+          // disturb the read.
           this._reportImportError(this._fileInputElement.files?.[0], err)
+          this._resetInput()
           return
         }
 
@@ -153,10 +155,11 @@ export class TheSeamGoogleMapsUploadButtonControlComponent
         if (fileImportHandler) {
           // The consumer owns the file now, including reporting its failures.
           fileImportHandler(file)
+          this._resetInput()
         } else {
-          this._importFile(file).catch((err) =>
-            this._reportImportError(file, err),
-          )
+          this._importFile(file)
+            .catch((err) => this._reportImportError(file, err))
+            .finally(() => this._resetInput())
         }
       }),
     )

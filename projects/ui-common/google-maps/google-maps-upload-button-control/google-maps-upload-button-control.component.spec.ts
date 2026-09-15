@@ -80,6 +80,20 @@ describe('TheSeamGoogleMapsUploadButtonControlComponent', () => {
     expect(mapValueManager.setValue).not.toHaveBeenCalled()
   })
 
+  it('should reset the input after a failed import, so the same file can be re-picked', async () => {
+    const file = new File(['nope'], 'boundaries.zip')
+    const error = new Error('Shape data not found.')
+    mockReadGeoFile.mockRejectedValue(error)
+
+    const { component, listeners } = createComponent(file)
+    const resetSpy = jest.spyOn(component as any, '_resetInput')
+
+    listeners.get('change')?.(new Event('change'))
+    await flush()
+
+    expect(resetSpy).toHaveBeenCalled()
+  })
+
   it('should set the map value for a file it can read', async () => {
     const file = new File(['{}'], 'boundaries.zip')
     const json = { type: 'FeatureCollection', features: [] }
@@ -104,6 +118,11 @@ describe('TheSeamGoogleMapsUploadButtonControlComponent', () => {
     expect(() => listeners.get('change')?.(new Event('change'))).not.toThrow()
     await flush()
 
-    expect(googleMaps.notifyFileImportError).toHaveBeenCalled()
+    expect(googleMaps.notifyFileImportError).toHaveBeenCalledWith(
+      expect.any(File),
+      expect.objectContaining({
+        message: 'Only one file can be imported at a time.',
+      }),
+    )
   })
 })
