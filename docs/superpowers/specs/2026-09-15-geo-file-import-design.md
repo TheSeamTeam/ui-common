@@ -47,10 +47,9 @@ belong to the same logical thing is the consuming app's decision, not a
 parser's — `readGeoFile` reports what the archive holds.
 
 That makes the two forms of the same export agree. The Deere producer sent
-the same 74 fields twice: once as 74 single-feature members
-(`Export_20260806_1335.zip`, which throws today) and once as a single member
-holding 74 features (`Export_20260814_1fileallfields.zip`, which parses today
-into a 74-feature collection). After this change both yield 74 features.
+the same 74 fields twice: once as 74 single-feature members, which throws
+today, and once as a single member holding 74 features, which parses today
+into a 74-feature collection. After this change both yield 74 features.
 `Multiple shape files not supported.` is deleted.
 
 The coerce step is not ceremony: `parseZip` also treats `.json` members as
@@ -79,11 +78,11 @@ Exported so consumers reference the constant instead of typing the string,
 which also makes the key cheap to change later. Branded to keep it clear of
 producer `.dbf` columns.
 
-The value is the **basename** — `4Tower_HICALCI_3833_HenryCou`, not
-`boundaries/4Tower_HICALCI_3833_HenryCou`. The directory is an artifact of how
-the producer zipped the export; the stem is the part an app can use as a
-default name. For the Rx file it is the only usable name at all, since that
-export's `.dbf` properties are `{"HI-CALCIUM": 0}`.
+The value is the **basename** — `5North_LOWPHOS_4021_SampleCou`, not
+`boundaries/5North_LOWPHOS_4021_SampleCou`. The directory is an artifact of
+how the producer zipped the export; the stem is the part an app can use as a
+default name. For the prescription export it is the only usable name at all,
+since that file's `.dbf` properties are a single zero-valued nutrient column.
 
 Written on every zip member, single or multiple, so the contract does not
 depend on how the producer chose to export. Not written by `parseShpFile` (a
