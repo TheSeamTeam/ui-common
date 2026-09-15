@@ -171,9 +171,36 @@ export class TheSeamMapFileDropComponent implements OnInit, OnDestroy {
 
     const item = event.dataTransfer.items[0]
     const file = item.getAsFile()
-    readGeoFile(file).then((json) => {
-      this._mapValueManager.setValue(json, MapValueSource.Input)
-    })
+    if (file === null) {
+      return
+    }
+
+    // These listeners are registered outside Angular's zone, so re-enter it
+    // before calling back into anything that expects change detection — the
+    // consumer's handler may well render a message from here.
+    this._ngZone.run(() => this._importDroppedFile(file))
+  }
+
+  /**
+   * Routes a dropped file the same way the upload button routes a chosen one,
+   * so `fileImportHandler` means "the consumer owns imported files" whichever
+   * way the file arrived.
+   */
+  private _importDroppedFile(file: File): void {
+    const fileImportHandler = this._googleMaps.getFileInputHandler()
+    if (fileImportHandler) {
+      // The consumer owns the file now, including reporting its failures.
+      fileImportHandler(file)
+      return
+    }
+
+    readGeoFile(file)
+      .then((json) => {
+        this._mapValueManager.setValue(json, MapValueSource.Input)
+      })
+      .catch((error) => {
+        this._googleMaps.notifyFileImportError(file, error)
+      })
   }
 
   private readonly _handleDragEnterEvent = (event: any) => {
