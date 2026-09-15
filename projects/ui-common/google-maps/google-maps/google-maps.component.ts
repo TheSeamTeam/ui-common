@@ -171,6 +171,17 @@ export class TheSeamGoogleMapsComponent
 
   @Input() @InputBoolean() editingEnabled = true
 
+  /**
+   * Intercepts a file the user chose or dropped, in place of the library's own
+   * import handling. Covers **both** import paths: a file picked through the
+   * upload button and one dropped onto the map (`fileDropEnabled` defaults to
+   * `true`, so setting this now also intercepts drops a consumer relying on
+   * the default previously had handled internally).
+   *
+   * Once called, the consumer owns the file, including reporting any failure
+   * in its own UI — `fileImportError` will not fire for a file handed to this
+   * handler.
+   */
   @Input()
   set fileImportHandler(value: ((file: File) => void) | undefined | null) {
     this._googleMaps.setFileInputHandler(value)
