@@ -6,20 +6,18 @@ jest.mock('file-type', () => ({
 
 jest.mock('shpjs', () => ({
   __esModule: true,
-  default: {
-    parseShp: jest.fn(),
-    parseZip: jest.fn(),
-  },
+  parseShp: jest.fn(),
+  parseZip: jest.fn(),
 }))
 
 import { fileTypeFromBuffer } from 'file-type'
-import shp from 'shpjs'
+import { parseShp, parseZip } from 'shpjs'
 
 import { readGeoFile } from './read-geo-file'
 
 const mockFileTypeFromBuffer = fileTypeFromBuffer as jest.Mock
-const mockParseShp = shp.parseShp as jest.Mock
-const mockParseZip = shp.parseZip as jest.Mock
+const mockParseShp = parseShp as jest.Mock
+const mockParseZip = parseZip as jest.Mock
 
 const sampleFeatureCollection: FeatureCollection = {
   type: 'FeatureCollection',
@@ -81,12 +79,12 @@ describe('readGeoFile', () => {
         { type: 'Point' as const, coordinates: [1, 2] },
         { type: 'Point' as const, coordinates: [3, 4] },
       ]
-      mockParseShp.mockResolvedValue(geometries)
+      mockParseShp.mockReturnValue(geometries)
 
       const buffer = new ArrayBuffer(100)
       const result = await readGeoFile(buffer)
 
-      expect(mockParseShp).toHaveBeenCalledWith(buffer, undefined)
+      expect(mockParseShp).toHaveBeenCalledWith(buffer)
       expect(result.type).toBe('FeatureCollection')
       expect(result.features).toHaveLength(2)
       expect(result.features[0].geometry).toEqual(geometries[0])
@@ -105,7 +103,7 @@ describe('readGeoFile', () => {
       const buffer = new ArrayBuffer(100)
       const result = await readGeoFile(buffer)
 
-      expect(mockParseZip).toHaveBeenCalledWith(buffer, undefined)
+      expect(mockParseZip).toHaveBeenCalledWith(buffer)
       expect(result.type).toBe('FeatureCollection')
     })
 
