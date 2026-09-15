@@ -67,6 +67,7 @@ async function parseShpZip(buffer: ArrayBuffer): Promise<FeatureCollection> {
   const parsed = await parseZipLayers(buffer)
 
   const features: Feature[] = []
+  let coercedAny = false
   for (const layer of parsed) {
     const collection = coerceFeatureCollection(layer)
     if (collection === null) {
@@ -75,6 +76,7 @@ async function parseShpZip(buffer: ArrayBuffer): Promise<FeatureCollection> {
       // archive whose shapefiles are perfectly good.
       continue
     }
+    coercedAny = true
 
     const sourceName = basename(layer.fileName)
     for (const feature of collection.features) {
@@ -92,7 +94,11 @@ async function parseShpZip(buffer: ArrayBuffer): Promise<FeatureCollection> {
     }
   }
 
-  if (features.length === 0) {
+  // Not "features.length === 0": a member that coerced fine but held zero
+  // records (an empty selection, legally exported) is a successful empty
+  // import, not a failure. Only "every member failed to coerce" means the
+  // archive held no usable shape data.
+  if (!coercedAny) {
     throw Error(`Shape data not found.`)
   }
 
@@ -123,7 +129,11 @@ async function parseZipLayers(
   return Array.isArray(parsed) ? parsed : [parsed]
 }
 
-/** Member name without its directory or extension, as a feature can use it. */
+/**
+ * Member name without its directory, as a feature can use it. Strips only the
+ * directory: shpjs has already stripped the extension from `layer.fileName`
+ * by the time it reaches here, so there is none left to remove.
+ */
 function basename(fileName: string | undefined): string | undefined {
   if (fileName === undefined || fileName.length === 0) {
     return undefined

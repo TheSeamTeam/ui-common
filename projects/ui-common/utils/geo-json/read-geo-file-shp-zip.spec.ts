@@ -151,4 +151,12 @@ describe('readGeoFile with real shapefile archives', () => {
       'Shape data not found.',
     )
   })
+
+  it('should resolve to an empty FeatureCollection for a zero-record member', async () => {
+    const zip = shapefileZip([{ name: 'boundaries/empty', polygons: [] }])
+
+    const result = await readGeoFile(toArrayBuffer(zip))
+
+    expect(result).toEqual({ type: 'FeatureCollection', features: [] })
+  })
 })
