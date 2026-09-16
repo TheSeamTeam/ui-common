@@ -47,6 +47,7 @@ import { TheSeamGoogleMapsRecenterButtonControlComponent } from '../google-maps-
 import { TheSeamGoogleMapsUploadButtonControlComponent } from '../google-maps-upload-button-control/google-maps-upload-button-control.component'
 import { GoogleMapsService } from '../google-maps.service'
 import { TheSeamMapInteractionMode } from '../interaction/interaction-mode'
+import { TheSeamMapFileImportError } from '../map-file-import-error'
 import { MapControl, MAP_CONTROLS_SERVICE } from '../map-controls-service'
 import {
   MapValue,
@@ -170,6 +171,17 @@ export class TheSeamGoogleMapsComponent
 
   @Input() @InputBoolean() editingEnabled = true
 
+  /**
+   * Intercepts a file the user chose or dropped, in place of the library's own
+   * import handling. Covers **both** import paths: a file picked through the
+   * upload button and one dropped onto the map (`fileDropEnabled` defaults to
+   * `true`, so setting this now also intercepts drops a consumer relying on
+   * the default previously had handled internally).
+   *
+   * Once called, the consumer owns the file, including reporting any failure
+   * in its own UI — `fileImportError` will not fire for a file handed to this
+   * handler.
+   */
   @Input()
   set fileImportHandler(value: ((file: File) => void) | undefined | null) {
     this._googleMaps.setFileInputHandler(value)
@@ -258,6 +270,16 @@ export class TheSeamGoogleMapsComponent
    */
   @Output() deleteBlocked = new EventEmitter<TheSeamMapGroupTarget>()
 
+  /**
+   * A file reached one of the import paths and could not be read — a corrupt
+   * archive, a `.zip` of something else, malformed GeoJSON. Emitted so the
+   * consumer can say so in its own UI; the library has nowhere to show it.
+   *
+   * Not emitted for a file a `fileImportHandler` took: once the consumer owns
+   * the file, it owns reporting the outcome too.
+   */
+  @Output() fileImportError = new EventEmitter<TheSeamMapFileImportError>()
+
   @ViewChild('featureContextMenu', { static: true, read: MenuComponent })
   public featureContextMenu!: MenuComponent
 
@@ -343,6 +365,15 @@ export class TheSeamGoogleMapsComponent
     this._googleMaps.deleteBlocked$
       .pipe(
         tap((target) => this.deleteBlocked.emit(target)),
+        takeUntil(this._ngUnsubscribe),
+      )
+      .subscribe()
+
+    // As with `deleteBlocked$`, a plain Subject with nothing to replay, so no
+    // `skip(1)`.
+    this._googleMaps.fileImportError$
+      .pipe(
+        tap((value) => this.fileImportError.emit(value)),
         takeUntil(this._ngUnsubscribe),
       )
       .subscribe()

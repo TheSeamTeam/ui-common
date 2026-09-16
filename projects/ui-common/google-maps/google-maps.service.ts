@@ -22,6 +22,7 @@ import {
   TheSeamMapFeatureGroup,
   TheSeamMapGroupTarget,
 } from './feature-groups/feature-group'
+import { TheSeamMapFileImportError } from './map-file-import-error'
 import {
   computeFeatureHoverStyle,
   computeFeatureStyle,
@@ -162,6 +163,15 @@ export class GoogleMapsService implements OnDestroy {
    */
   public readonly deleteBlocked$ = this._deleteBlockedSubject.asObservable()
 
+  /**
+   * A file reached one of the import paths and could not be read. Plain
+   * `Subject`, not `BehaviorSubject`: a consumer subscribing later should not
+   * be handed a failure from before it was listening.
+   */
+  private readonly _fileImportErrorSubject =
+    new Subject<TheSeamMapFileImportError>()
+  public readonly fileImportError$ = this._fileImportErrorSubject.asObservable()
+
   private readonly _selectionSubject =
     new BehaviorSubject<TheSeamMapGroupTarget | null>(null)
   /**
@@ -234,6 +244,7 @@ export class GoogleMapsService implements OnDestroy {
     this._editModeSubject.complete()
     this._interactionModeSubject.complete()
     this._deleteBlockedSubject.complete()
+    this._fileImportErrorSubject.complete()
     this._groups = undefined
 
     this._labelsOverlay?.destroy()
@@ -946,6 +957,15 @@ export class GoogleMapsService implements OnDestroy {
 
   public getFileInputHandler(): ((file: File) => void) | undefined | null {
     return this._fileInputHandler
+  }
+
+  /**
+   * Reports a file the library tried to import and could not read. Called by
+   * the import controls, not by consumers — a consumer that owns importing
+   * through `setFileInputHandler` reports its own failures.
+   */
+  public notifyFileImportError(file: File, error: unknown): void {
+    this._fileImportErrorSubject.next({ file, error })
   }
 
   public setInteractionMode(mode: TheSeamMapInteractionMode): void {

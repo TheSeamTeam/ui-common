@@ -663,4 +663,29 @@ describe('GoogleMapsService', () => {
       expect(service.canDeleteFocusedFeature()).toBe(false)
     })
   })
+
+  describe('notifyFileImportError', () => {
+    it('should emit the file and the error on fileImportError$', () => {
+      const { service } = createService()
+      const seen: any[] = []
+      service.fileImportError$.subscribe((v) => seen.push(v))
+
+      const file = new File(['{}'], 'boundaries.zip')
+      const error = new Error('Shape data not found.')
+      service.notifyFileImportError(file, error)
+
+      expect(seen).toEqual([{ file, error }])
+    })
+
+    it('should not replay an earlier error to a late subscriber', () => {
+      const { service } = createService()
+      const file = new File(['{}'], 'boundaries.zip')
+      service.notifyFileImportError(file, new Error('nope'))
+
+      const seen: any[] = []
+      service.fileImportError$.subscribe((v) => seen.push(v))
+
+      expect(seen).toEqual([])
+    })
+  })
 })
