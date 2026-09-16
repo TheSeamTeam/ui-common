@@ -146,16 +146,21 @@ Like `deleteBlocked$` it is a plain `Subject` with no replayed initial value,
 so no `skip(1)`.
 
 Both paths gain a `catch` — the drop's `.then` chain, and the upload button's
-floating `this._importFile(file)`. The upload button reports one thing more:
-its `_getFile` refusal of a multi-file selection. That refusal happens before
-any handler is consulted, so the consumer never sees the files and this output
-is the only way it can learn the pick was rejected.
+floating `this._importFile(file)`.
+
+Both also report a multi-file selection, which neither can import. The refusal
+happens before any handler is consulted, because `fileImportHandler` takes a
+single file and cannot be handed several — so the consumer never sees them, and
+this output is its only way to learn the pick was rejected. Both use the same
+message, `Only one file can be imported at a time.`, so a consumer matching on
+it needs one string rather than two.
+
+A drop of something that is not files at all — selected text, a link, an image
+dragged out of a page — stays silent. Nobody asked for an import and there is
+no file to name.
 
 Otherwise it fires only for parsing the library owns. Once a consumer's
 `fileImportHandler` takes the file, the outcome is theirs to report.
-
-The drop path has no matching multi-file report, because it refuses a
-multi-file drop earlier and for a different reason — see **Not doing**.
 
 Fixing item 1 removes the common cause but not the class: a corrupt file, a
 `.zip` of something else, or malformed GeoJSON still reach it.
@@ -196,11 +201,11 @@ visual.
 ## Not doing
 
 - **A parsed-shaped import hook.** Reasoned about in section 3.
-- **The `items[0]` multi-file TODO** in `_handleDropEvent`. The handoff
-  described the drop path as silently taking the first of several files; it
-  does not. `_isSupportedDataTransfer` requires `dataTransfer.files.length
-  === 1`, so a multi-file drop is refused outright and nothing is imported —
-  `items[0]` is only ever reached when there is exactly one file. The
-  behaviour is therefore already safe, just silent, and unlike the upload
-  button it reports nothing. Left alone: no consumer needs it, and the two
-  paths' multi-file handling is worth settling together rather than here.
+The `items[0]` multi-file TODO in `_handleDropEvent` **was** resolved, and is
+covered in section 4. For the record, the handoff described the drop path as
+silently taking the first of several files; it does not. The guard required
+`dataTransfer.files.length === 1`, so a multi-file drop was already refused
+outright — `items[0]` is only ever reached when there is exactly one file. The
+behaviour was safe, just silent, and the TODO was waiting for somewhere to
+report to. Section 4 is that somewhere, so the guard was split: the file-count
+half now reports, and the is-this-a-file-drag half stays silent.

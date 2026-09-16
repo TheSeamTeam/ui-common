@@ -33,6 +33,32 @@ function dropEventFor(file: File): any {
   }
 }
 
+/** A drop carrying several files, which the component refuses outright. */
+function multiFileDropEventFor(files: File[]): any {
+  return {
+    preventDefault: jest.fn(),
+    stopPropagation: jest.fn(),
+    dataTransfer: {
+      files,
+      types: ['Files'],
+      items: files.map((file) => ({ getAsFile: () => file })),
+    },
+  }
+}
+
+/** A drag of something that is not files at all, such as selected text. */
+function nonFileDropEvent(): any {
+  return {
+    preventDefault: jest.fn(),
+    stopPropagation: jest.fn(),
+    dataTransfer: {
+      files: [],
+      types: ['text/plain'],
+      items: [],
+    },
+  }
+}
+
 function createComponent(handler?: (file: File) => void) {
   const host = document.createElement('div')
   const mapDiv = document.createElement('div')
@@ -130,5 +156,48 @@ describe('TheSeamMapFileDropComponent', () => {
     await flush()
 
     expect(googleMaps.notifyFileImportError).not.toHaveBeenCalled()
+  })
+  it('should report a multi-file drop the way the upload button does', () => {
+    const first = new File(['{}'], 'north.zip')
+    const second = new File(['{}'], 'south.zip')
+    const { listeners, googleMaps, mapValueManager } =
+      createComponent(undefined)
+
+    listeners.get('host:drop')?.(multiFileDropEventFor([first, second]))
+
+    expect(googleMaps.notifyFileImportError).toHaveBeenCalledWith(
+      first,
+      expect.objectContaining({
+        message: 'Only one file can be imported at a time.',
+      }),
+    )
+    expect(mockReadGeoFile).not.toHaveBeenCalled()
+    expect(mapValueManager.setValue).not.toHaveBeenCalled()
+  })
+
+  it('should report a multi-file drop even when a handler is set', () => {
+    const handler = jest.fn()
+    const first = new File(['{}'], 'north.zip')
+    const second = new File(['{}'], 'south.zip')
+    const { listeners, googleMaps } = createComponent(handler)
+
+    listeners.get('host:drop')?.(multiFileDropEventFor([first, second]))
+
+    expect(handler).not.toHaveBeenCalled()
+    expect(googleMaps.notifyFileImportError).toHaveBeenCalledWith(
+      first,
+      expect.objectContaining({
+        message: 'Only one file can be imported at a time.',
+      }),
+    )
+  })
+
+  it('should stay silent when the drag is not files at all', () => {
+    const { listeners, googleMaps } = createComponent(undefined)
+
+    listeners.get('host:drop')?.(nonFileDropEvent())
+
+    expect(googleMaps.notifyFileImportError).not.toHaveBeenCalled()
+    expect(mockReadGeoFile).not.toHaveBeenCalled()
   })
 })
