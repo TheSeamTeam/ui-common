@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.1.0](https://github.com/TheSeamTeam/ui-common/compare/ui-common-v2.0.1...ui-common-v2.1.0) (2026-09-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* add auto-collapse behavior to data-filter-toggle-buttons and fix NG0100 errors on toggle-group option bindings ([#64](https://github.com/TheSeamTeam/ui-common/issues/64))
+
+### Features
+
+* add auto-collapse behavior to data-filter-toggle-buttons and fix NG0100 errors on toggle-group option bindings ([#64](https://github.com/TheSeamTeam/ui-common/issues/64)) ([518ff2d](https://github.com/TheSeamTeam/ui-common/commit/518ff2d3652020b6d49054e8e57d5a61bea448bc))
+* **geo-json:** add polygonContains, addHoleToPolygon, polygonHasMinDistinctVertices, and polygonViolatesMinMax ([866f84b](https://github.com/TheSeamTeam/ui-common/commit/866f84b08a01734168a1100bf1c02aec7bd504b7))
+* **google-maps:** replace deprecated google.maps.drawing with terra-draw ([866f84b](https://github.com/TheSeamTeam/ui-common/commit/866f84b08a01734168a1100bf1c02aec7bd504b7))
+
+
+### Bug Fixes
+
+* **geo-json:** make closePolygons idempotent and handle bare geometries ([866f84b](https://github.com/TheSeamTeam/ui-common/commit/866f84b08a01734168a1100bf1c02aec7bd504b7))
+* **google-maps:** isolate terra-draw's Data layer from map.data ([866f84b](https://github.com/TheSeamTeam/ui-common/commit/866f84b08a01734168a1100bf1c02aec7bd504b7))
+* **utils:** use named imports for shpjs v6 ESM build ([#63](https://github.com/TheSeamTeam/ui-common/issues/63)) ([5cacb1c](https://github.com/TheSeamTeam/ui-common/commit/5cacb1c7b634c563444c57e5425d514be615eae4))
+
 ## [2.0.1](https://github.com/TheSeamTeam/ui-common/compare/ui-common-v2.0.0...ui-common-v2.0.1) (2026-06-02)
 
 
