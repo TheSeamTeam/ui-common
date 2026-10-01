@@ -31,6 +31,7 @@ export * from './geo-json/close-polygons'
 export * from './geo-json/polygon-violates-min-max'
 export * from './geo-json/polygon-has-min-distinct-vertices'
 export * from './geo-json/polygon-contains'
+export * from './geo-json/polygon-label-point'
 export * from './geo-json/add-hole-to-polygon'
 
 export * from './array-move'

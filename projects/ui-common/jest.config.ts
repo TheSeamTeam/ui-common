@@ -23,6 +23,8 @@ const esmPackages = [
   'd3-selection',
   'd3-array',
   'internmap',
+  'polylabel',
+  'tinyqueue',
 ]
 
 export default {
