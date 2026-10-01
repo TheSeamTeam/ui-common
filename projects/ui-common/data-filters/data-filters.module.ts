@@ -7,6 +7,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 import { TheSeamFormFieldModule } from '@theseam/ui-common/form-field'
 import { TheSeamIconModule } from '@theseam/ui-common/icon'
 import { TheSeamToggleGroupModule } from '@theseam/ui-common/toggle-group'
+import { TheSeamMenuModule } from '@theseam/ui-common/menu'
+import { TheSeamButtonsModule } from '@theseam/ui-common/buttons'
 
 import { THESEAM_DATA_FILTER_DEF } from './data-filter-def'
 import { DataFilterSearchComponent } from './filters/data-filter-search/data-filter-search.component'
@@ -49,6 +51,8 @@ const filterDefProviders = [
     FontAwesomeModule,
     TheSeamToggleGroupModule,
     TheSeamIconModule,
+    TheSeamMenuModule,
+    TheSeamButtonsModule,
   ],
   providers: [...filterDefProviders],
   exports: [...filterComponents],

@@ -715,14 +715,33 @@ export const Filter: Story = {
       ...args,
       filterButtons: [
         {
-          name: 'Registered',
+          name: 'All',
           value: '',
-          comparator: (value: any, row: any) => (row.registered ? -1 : 1),
         },
         {
           name: 'Over 30',
           value: 'over-30',
           comparator: (value: any, row: any) => (row.age > 30 ? 1 : -1),
+        },
+        {
+          name: 'Likes Primary Color',
+          value: 'primary-color',
+          comparator: (value: any, row: any) =>
+            row.color === 'blue' ||
+            row.color === 'red' ||
+            row.color === 'yellow'
+              ? 1
+              : -1,
+        },
+        {
+          name: 'Likes Secondary Color',
+          value: 'secondary-color',
+          comparator: (value: any, row: any) =>
+            row.color === 'purple' ||
+            row.color === 'orange' ||
+            row.color === 'green'
+              ? 1
+              : -1,
         },
       ],
     },

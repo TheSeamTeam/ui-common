@@ -1,23 +1,80 @@
-<div
-  class="btn-group"
-  role="group"
-  aria-label="Progress Filter"
-  *ngIf="options as opts"
-  [formControl]="_control"
-  seamToggleGroup
-  [multiple]="opts.multiple"
-  [selectionToggleable]="opts.selectionToggleable"
->
-  <ng-container *ngFor="let btn of buttons">
-    <button
-      type="button"
-      class="btn btn-sm px-4"
-      [seamToggleGroupOption]="btn.value"
-      #opt="seamToggleGroupOption"
-      [class.btn-lightgray]="!opt.selected"
-      [class.btn-primary]="opt.selected"
-      (click)="opt.selected = !opt.selected"
+<ng-container *ngIf="isCollapsed(); else buttonsTpl">
+  <div class="d-flex toggle-buttons-filter__collapsed">
+    <div
+      *ngIf="prependLabel"
+      class="d-flex align-items-center toggle-buttons-filter__collapsed-prepend-label"
     >
+      {{ prependLabel }}
+    </div>
+    <button
+      seamButton
+      theme="lightgray"
+      size="sm"
+      class="dropdown-toggle toggle-buttons-filter__collapsed-button"
+      title="View filter options"
+      [seamMenuToggle]="buttonsDropdownTpl"
+    >
+      {{ activeFilterLabel | async }}
+    </button>
+    <seam-menu #buttonsDropdownTpl>
+      <div
+        role="group"
+        aria-label="Toggle Filters"
+        *ngIf="options as opts"
+        [formControl]="_control"
+        seamToggleGroup
+        #tg="seamToggleGroup"
+        [multiple]="opts.multiple"
+        [selectionToggleable]="opts.selectionToggleable"
+      >
+        <ng-container *ngFor="let btn of buttons">
+          <button
+            seamMenuItem
+            [seamToggleGroupOption]="btn.value"
+            [class.seam-menu-item-active]="tg.isSelected(btn.value)"
+            (click)="tg.toggleOptionSelect(btn.value)"
+            title="Apply filter"
+          >
+            {{ btn.name || btn.value }}
+          </button>
+        </ng-container>
+      </div>
+    </seam-menu>
+  </div>
+</ng-container>
+
+<ng-template #buttonsTpl>
+  <div
+    class="btn-group toggle-buttons-filter__expanded"
+    role="group"
+    aria-label="Toggle Filters"
+    *ngIf="options as opts"
+    [formControl]="_control"
+    seamToggleGroup
+    #tg="seamToggleGroup"
+    [multiple]="opts.multiple"
+    [selectionToggleable]="opts.selectionToggleable"
+  >
+    <ng-container *ngFor="let btn of buttons">
+      <button
+        type="button"
+        class="btn btn-sm px-4"
+        [seamToggleGroupOption]="btn.value"
+        [class.btn-lightgray]="!tg.isSelected(btn.value)"
+        [class.btn-primary]="tg.isSelected(btn.value)"
+        (click)="tg.toggleOptionSelect(btn.value)"
+        title="Apply filter"
+      >
+        {{ btn.name || btn.value }}
+      </button>
+    </ng-container>
+  </div>
+</ng-template>
+
+<!-- Hidden measurement div: always in DOM, used to read natural btn-group width -->
+<div #measureDiv class="btn-group btn-group--measure" aria-hidden="true">
+  <ng-container *ngFor="let btn of buttons">
+    <button type="button" class="btn btn-sm px-4" tabindex="-1">
       {{ btn.name || btn.value }}
     </button>
   </ng-container>
