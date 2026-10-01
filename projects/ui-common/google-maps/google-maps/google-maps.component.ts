@@ -226,6 +226,16 @@ export class TheSeamGoogleMapsComponent
   @Input() featureLabelProperty: string | undefined
 
   /**
+   * Label every polygon rather than every group.
+   *
+   * Off by default: a group gets one label, placed on its largest polygon. On,
+   * every polygon in the group carries the group's label, including each part
+   * of a `MultiPolygon` feature. Has no effect without
+   * `featureLabelProperty`, which is what supplies the text.
+   */
+  @Input() @InputBoolean() featureLabelPerPolygon = false
+
+  /**
    * Generates the key written to `featureGroupProperty` for a newly drawn
    * group. Consumer-supplied so the format is one the app recognises.
    */
@@ -535,6 +545,12 @@ export class TheSeamGoogleMapsComponent
     if (Object.prototype.hasOwnProperty.call(changes, 'featureLabelProperty')) {
       this._googleMaps.setLabelProperty(this.featureLabelProperty)
     }
+
+    if (
+      Object.prototype.hasOwnProperty.call(changes, 'featureLabelPerPolygon')
+    ) {
+      this._googleMaps.setLabelPerPolygon(this.featureLabelPerPolygon)
+    }
   }
 
   private _applySelectedGroupKey(): void {
@@ -616,6 +632,7 @@ export class TheSeamGoogleMapsComponent
         groupProperty: this.featureGroupProperty,
         newGroupKeyFactory: this.newGroupKeyFactory,
       })
+      this._googleMaps.setLabelPerPolygon(this.featureLabelPerPolygon)
       this._googleMaps.setLabelProperty(this.featureLabelProperty)
       this._applySelectedGroupKey()
       this.mapReady.emit(this._googleMaps.googleMap)

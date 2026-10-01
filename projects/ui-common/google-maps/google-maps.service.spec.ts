@@ -7,9 +7,11 @@ import {
 } from './google-maps-feature-helpers'
 import { GoogleMapsService } from './google-maps.service'
 import { MapValueManagerService } from './map-value-manager.service'
+import { MAP_FEATURE_LABEL_CLASS } from './labels/map-feature-labels-overlay'
 import {
   FakeMap,
   installFakeGoogleMaps,
+  setFakeProjection,
   uninstallFakeGoogleMaps,
 } from './testing/fake-google-maps'
 
@@ -79,6 +81,48 @@ function addUnsupportedGeometryFeature(
   )
 }
 
+/** A polygon `size` degrees square with its lower-left corner at `x, y`. */
+function squareAt(x: number, y: number, size = 10): Polygon {
+  return {
+    type: 'Polygon',
+    coordinates: [
+      [
+        [x, y],
+        [x + size, y],
+        [x + size, y + size],
+        [x, y + size],
+        [x, y],
+      ],
+    ],
+  }
+}
+
+/** Add a feature with a specific geometry, rather than the shared square. */
+function addFeatureWithGeometry(
+  map: FakeMap,
+  geometry: Polygon,
+  properties: Record<string, any>,
+): any {
+  return map.data.add(
+    new google.maps.Data.Feature({
+      geometry: dataPolygonFromGeoJson(geometry),
+      properties,
+    }),
+  )
+}
+
+/** The labels the overlay has actually rendered into the document. */
+function renderedLabels(): { text: string; left: string }[] {
+  return Array.from(
+    document.querySelectorAll<HTMLElement>(`.${MAP_FEATURE_LABEL_CLASS}`),
+  )
+    .filter((element) => !element.hidden)
+    .map((element) => ({
+      text: element.textContent ?? '',
+      left: element.style.left,
+    }))
+}
+
 /** Every feature currently on the data layer, unsupported geometry included. */
 function allFeatures(map: FakeMap): any[] {
   const features: any[] = []
@@ -89,6 +133,125 @@ function allFeatures(map: FakeMap): any[] {
 describe('GoogleMapsService', () => {
   beforeEach(() => installFakeGoogleMaps())
   afterEach(() => uninstallFakeGoogleMaps())
+
+  describe('label rendering', () => {
+    // 10 px per degree, so a 10-degree square is 100 px across and clears the
+    // minimum-size threshold.
+    beforeEach(() => setFakeProjection(10))
+
+    it('renders one label per group by default', () => {
+      const { service, map } = createService()
+      service.setGroupOptions({ groupProperty: 'GROUP' })
+      addFeatureWithGeometry(map, squareAt(0, 0), {
+        GROUP: 'A',
+        FIELD_NAME: 'North 40',
+      })
+      addFeatureWithGeometry(map, squareAt(20, 0), {
+        GROUP: 'A',
+        FIELD_NAME: 'North 40',
+      })
+
+      service.setLabelProperty('FIELD_NAME')
+
+      expect(renderedLabels()).toEqual([
+        { text: 'North 40', left: expect.any(String) },
+      ])
+    })
+
+    it('renders a label per polygon once per-polygon labelling is on', () => {
+      const { service, map } = createService()
+      service.setGroupOptions({ groupProperty: 'GROUP' })
+      addFeatureWithGeometry(map, squareAt(0, 0), {
+        GROUP: 'A',
+        FIELD_NAME: 'North 40',
+      })
+      addFeatureWithGeometry(map, squareAt(20, 0), {
+        GROUP: 'A',
+        FIELD_NAME: 'North 40',
+      })
+
+      service.setLabelProperty('FIELD_NAME')
+      service.setLabelPerPolygon(true)
+
+      const labels = renderedLabels()
+      expect(labels).toHaveLength(2)
+      expect(labels.map((l) => l.text)).toEqual(['North 40', 'North 40'])
+      expect(new Set(labels.map((l) => l.left)).size).toBe(2)
+    })
+
+    it('goes back to one label per group when the toggle is turned off', () => {
+      const { service, map } = createService()
+      service.setGroupOptions({ groupProperty: 'GROUP' })
+      addFeatureWithGeometry(map, squareAt(0, 0), {
+        GROUP: 'A',
+        FIELD_NAME: 'North 40',
+      })
+      addFeatureWithGeometry(map, squareAt(20, 0), {
+        GROUP: 'A',
+        FIELD_NAME: 'North 40',
+      })
+
+      service.setLabelProperty('FIELD_NAME')
+      service.setLabelPerPolygon(true)
+      expect(renderedLabels()).toHaveLength(2)
+
+      service.setLabelPerPolygon(false)
+      expect(renderedLabels()).toHaveLength(1)
+    })
+
+    it('anchors a label inside its polygon rather than on its bounding box', () => {
+      // A right triangle: the bounding-box centre lands on the hypotenuse at
+      // x = 5, so a correct anchor must sit left of that.
+      const triangle: Polygon = {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [0, 0],
+            [10, 0],
+            [0, 10],
+            [0, 0],
+          ],
+        ],
+      }
+      const { service, map } = createService()
+      addFeatureWithGeometry(map, triangle, { FIELD_NAME: 'Wedge' })
+
+      service.setLabelProperty('FIELD_NAME')
+
+      const left = Number.parseFloat(renderedLabels()[0].left)
+      expect(left).toBeLessThan(50)
+      expect(left).toBeGreaterThan(0)
+    })
+
+    it('moves a label as soon as its geometry changes, without awaiting the value', () => {
+      // A drag raises `setgeometry` on every frame. Labels must follow it
+      // synchronously: the value pipeline that also listens for this event
+      // serializes the whole map through a promise and `switchMap`s away the
+      // ones that are superseded, so a label waiting on it sits stale for the
+      // whole drag and then jumps when the last event finally lands.
+      const { service, map } = createService()
+      const feature = addFeatureWithGeometry(map, squareAt(0, 0), {
+        FIELD_NAME: 'North 40',
+      })
+      service.setLabelProperty('FIELD_NAME')
+      const before = renderedLabels()[0].left
+
+      feature.setGeometry(dataPolygonFromGeoJson(squareAt(40, 0)))
+
+      expect(renderedLabels()[0].left).not.toBe(before)
+    })
+
+    it('removes every label when the label property is cleared', () => {
+      const { service, map } = createService()
+      addFeatureWithGeometry(map, squareAt(0, 0), { FIELD_NAME: 'North 40' })
+      service.setLabelProperty('FIELD_NAME')
+      expect(renderedLabels()).toHaveLength(1)
+
+      service.setLabelProperty(undefined)
+
+      expect(renderedLabels()).toHaveLength(0)
+    })
+  })
 
   describe('setGroupLabel', () => {
     it('writes the label onto every feature in the group', () => {

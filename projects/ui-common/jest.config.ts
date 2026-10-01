@@ -30,6 +30,8 @@ const esmPackages = [
   'quill-mention',
   'lodash-es',
   'parchment',
+  'polylabel',
+  'tinyqueue',
 ]
 
 export default {
