@@ -1,9 +1,30 @@
+import {
+  DEFAULT_LABEL_GAP_PX,
+  DEFAULT_LABEL_MAX_STEPS,
+  LabelBox,
+  resolveLabelOverlaps,
+} from './label-layout'
 import { isLabelVisibleAtSize } from './label-visibility'
 
 export interface MapFeatureLabel {
   key: string
   text: string
+  /**
+   * Where the label anchors. This is the polygon's own label point, not the
+   * centre of `bounds` - see `polygonLabelPoint`.
+   */
+  position: google.maps.LatLng
+  /** Extent of the shape, used only to decide whether it is big enough. */
   bounds: google.maps.LatLngBounds
+  /** Higher keeps its position when two labels collide. */
+  priority: number
+}
+
+export interface MapFeatureLabelsOverlayOptions {
+  /** Clear space left between two stacked labels. */
+  gapPx?: number
+  /** How many box-heights a label may be pushed to avoid a collision. */
+  maxSteps?: number
 }
 
 export const MAP_FEATURE_LABEL_CLASS = 'seam-map-feature-label'
@@ -35,13 +56,41 @@ export const MAP_FEATURE_LABEL_CLASS = 'seam-map-feature-label'
  * never take part in hit testing and cannot interfere with clicks, drawing, or
  * the context-menu overlay.
  *
- * Known limitation: no collision de-confliction. Labels of nearby groups will
- * overlap at low zoom. The size threshold reduces but does not eliminate this.
+ * Overlapping labels are pushed above or below one another by
+ * `resolveLabelOverlaps`, and hidden when there is nowhere left to put them.
+ * Only the layout decision lives there; this class measures and applies,
+ * because only it has the DOM.
+ *
+ * `draw()` measures in one batch before it positions anything. Reading
+ * `offsetWidth` forces a synchronous layout, so interleaving a read and a
+ * write per label would cost one layout per label per frame; doing every read
+ * first and every write after costs one for the whole pass.
+ *
+ * It measures on every draw rather than caching, because a label's width
+ * depends on the font it is actually rendered in. Labels drawn before a
+ * webfont finishes loading measure in the fallback face, and a cache keyed on
+ * the text — which has not changed — would keep resolving collisions against
+ * metrics that are no longer on screen, displacing labels that overlap
+ * nothing.
+ *
+ * For the same reason it repaints on the document's `loadingdone` font event.
+ * The first paint of any map happens in the fallback face, and the Maps API
+ * loads a Roboto of its own that these labels inherit, so metrics can change
+ * well after the labels are on screen. `document.fonts.ready` is not enough:
+ * it settles once, and a font that starts loading after that never reopens
+ * it, leaving the view with a layout measured against a face it is no longer
+ * drawn in. `loadingdone` fires per batch, so each one gets a repaint.
  */
 export class MapFeatureLabelsOverlay {
   private readonly _overlay: google.maps.OverlayView & { refresh(): void }
 
-  constructor(getLabels: () => MapFeatureLabel[]) {
+  constructor(
+    getLabels: () => MapFeatureLabel[],
+    options: MapFeatureLabelsOverlayOptions = {},
+  ) {
+    const gapPx = options.gapPx ?? DEFAULT_LABEL_GAP_PX
+    const maxSteps = options.maxSteps ?? DEFAULT_LABEL_MAX_STEPS
+
     const container = document.createElement('div')
     container.style.position = 'absolute'
     container.style.left = '0'
@@ -69,12 +118,25 @@ export class MapFeatureLabelsOverlay {
       return element
     }
 
+    let onFontsLoaded: (() => void) | undefined
+
     class Overlay extends google.maps.OverlayView {
       onAdd(): void {
         this.getPanes()?.markerLayer.appendChild(container)
+
+        // Optional chaining: `FontFaceSet` is absent in some environments
+        // this runs in (jsdom under Jest, older browsers). Missing it only
+        // costs the corrective repaint — every later draw measures afresh
+        // regardless.
+        onFontsLoaded = () => this.draw()
+        document.fonts?.addEventListener?.('loadingdone', onFontsLoaded)
       }
 
       onRemove(): void {
+        if (onFontsLoaded) {
+          document.fonts?.removeEventListener?.('loadingdone', onFontsLoaded)
+          onFontsLoaded = undefined
+        }
         container.parentElement?.removeChild(container)
         elements.clear()
       }
@@ -93,33 +155,64 @@ export class MapFeatureLabelsOverlay {
 
         const seen = new Set<string>()
 
+        // Pass 1, writes only: settle the text, and project. A label too
+        // small to show, or off the projection, is dropped here and takes no
+        // further part - a label nobody can see must not displace one they
+        // can. Everything stays visible for now: a hidden element measures
+        // 0x0, and pass 2 is about to measure.
+        const candidates: {
+          label: MapFeatureLabel
+          element: HTMLDivElement
+          x: number
+          y: number
+        }[] = []
+
         for (const label of labels) {
           seen.add(label.key)
           const element = elementFor(label)
+          element.hidden = false
 
+          const anchor = projection.fromLatLngToDivPixel(label.position)
           const ne = projection.fromLatLngToDivPixel(
             label.bounds.getNorthEast(),
           )
           const sw = projection.fromLatLngToDivPixel(
             label.bounds.getSouthWest(),
           )
-          const centre = projection.fromLatLngToDivPixel(
-            label.bounds.getCenter(),
-          )
-          if (!ne || !sw || !centre) {
+
+          if (
+            anchor &&
+            ne &&
+            sw &&
+            isLabelVisibleAtSize(Math.abs(ne.x - sw.x), Math.abs(ne.y - sw.y))
+          ) {
+            candidates.push({ label, element, x: anchor.x, y: anchor.y })
+          } else {
             element.hidden = true
+          }
+        }
+
+        // Pass 2, reads only: one layout flush for every label, rather than
+        // one per label.
+        const boxes: LabelBox[] = candidates.map((candidate) => ({
+          key: candidate.label.key,
+          x: candidate.x,
+          y: candidate.y,
+          width: candidate.element.offsetWidth,
+          height: candidate.element.offsetHeight,
+          priority: candidate.label.priority,
+        }))
+
+        // Pass 3, writes only: place what fits, hide what does not.
+        const placements = resolveLabelOverlaps(boxes, { gapPx, maxSteps })
+        for (const candidate of candidates) {
+          const y = placements.get(candidate.label.key)
+          if (y === null || y === undefined) {
+            candidate.element.hidden = true
             continue
           }
-
-          const visible = isLabelVisibleAtSize(
-            Math.abs(ne.x - sw.x),
-            Math.abs(ne.y - sw.y),
-          )
-          element.hidden = !visible
-          if (visible) {
-            element.style.left = `${centre.x}px`
-            element.style.top = `${centre.y}px`
-          }
+          candidate.element.style.left = `${candidate.x}px`
+          candidate.element.style.top = `${y}px`
         }
 
         for (const [key, element] of elements) {

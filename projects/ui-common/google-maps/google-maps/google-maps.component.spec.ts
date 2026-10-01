@@ -2,6 +2,8 @@ import {
   ChangeDetectorRef,
   ElementRef,
   Injector,
+  SimpleChange,
+  SimpleChanges,
   runInInjectionContext,
 } from '@angular/core'
 import { FocusMonitor } from '@angular/cdk/a11y'
@@ -22,8 +24,10 @@ import { TheSeamGoogleMapsComponent } from './google-maps.component'
 function createFakeGoogleMaps(): {
   fakeGoogleMaps: GoogleMapsService
   fileImportError$: Subject<TheSeamMapFileImportError>
+  perPolygonCalls: boolean[]
 } {
   const fileImportError$ = new Subject<TheSeamMapFileImportError>()
+  const perPolygonCalls: boolean[] = []
   const fakeGoogleMaps = {
     selection$: new Subject(),
     hover$: new Subject(),
@@ -33,8 +37,9 @@ function createFakeGoogleMaps(): {
     fileImportError$,
     setBaseLatLng: () => undefined,
     setPadding: () => undefined,
+    setLabelPerPolygon: (value: boolean) => perPolygonCalls.push(value),
   } as unknown as GoogleMapsService
-  return { fakeGoogleMaps, fileImportError$ }
+  return { fakeGoogleMaps, fileImportError$, perPolygonCalls }
 }
 
 /** A `FocusMonitor` stand-in: the constructor only ever calls `monitor()`. */
@@ -62,8 +67,10 @@ function createFakeApiLoader(): TheSeamGoogleMapsApiLoader {
 function createComponent(): {
   component: TheSeamGoogleMapsComponent
   fileImportError$: Subject<TheSeamMapFileImportError>
+  perPolygonCalls: boolean[]
 } {
-  const { fakeGoogleMaps, fileImportError$ } = createFakeGoogleMaps()
+  const { fakeGoogleMaps, fileImportError$, perPolygonCalls } =
+    createFakeGoogleMaps()
   const fakeChangeDetectorRef = {
     markForCheck: () => undefined,
   } as unknown as ChangeDetectorRef
@@ -83,10 +90,47 @@ function createComponent(): {
         createFakeApiLoader(),
       ),
   )
-  return { component, fileImportError$ }
+  return { component, fileImportError$, perPolygonCalls }
+}
+
+/** An `ngOnChanges` payload for a single input. */
+function changeFor(name: string, value: unknown): SimpleChanges {
+  return { [name]: new SimpleChange(undefined, value, true) }
 }
 
 describe('TheSeamGoogleMapsComponent', () => {
+  describe('labelPerPolygon', () => {
+    it('defaults to one label per group', () => {
+      const { component } = createComponent()
+      expect(component.featureLabelPerPolygon).toBe(false)
+    })
+
+    it('pushes the value to the service when the input changes', () => {
+      const { component, perPolygonCalls } = createComponent()
+
+      component.featureLabelPerPolygon = true
+      component.ngOnChanges(changeFor('featureLabelPerPolygon', true))
+
+      expect(perPolygonCalls).toEqual([true])
+    })
+
+    it('leaves the service alone when some other input changes', () => {
+      const { component, perPolygonCalls } = createComponent()
+
+      component.ngOnChanges(changeFor('zoom', 12))
+
+      expect(perPolygonCalls).toEqual([])
+    })
+
+    it('coerces the bare attribute form to true', () => {
+      const { component } = createComponent()
+      ;(
+        component as unknown as { featureLabelPerPolygon: unknown }
+      ).featureLabelPerPolygon = ''
+      expect(component.featureLabelPerPolygon).toBe(true)
+    })
+  })
+
   describe('fileImportError', () => {
     it('emits exactly what the service reports', () => {
       const { component, fileImportError$ } = createComponent()

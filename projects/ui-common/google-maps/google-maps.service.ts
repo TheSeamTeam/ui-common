@@ -50,6 +50,10 @@ import {
   MapInteractionModel,
 } from './interaction/map-interaction-model'
 import {
+  LabelSourceFeature,
+  buildFeatureLabels,
+} from './labels/build-feature-labels'
+import {
   MapFeatureLabel,
   MapFeatureLabelsOverlay,
 } from './labels/map-feature-labels-overlay'
@@ -150,6 +154,7 @@ export class GoogleMapsService implements OnDestroy {
   private _styleFn?: google.maps.Data.StylingFunction
 
   private _labelProperty: string | undefined
+  private _labelPerPolygon = false
   private _labelsOverlay?: MapFeatureLabelsOverlay
   private _warnedAboutLabelDisagreement = false
 
@@ -1006,6 +1011,21 @@ export class GoogleMapsService implements OnDestroy {
   }
 
   /**
+   * Label every polygon in a group rather than the group as a whole.
+   *
+   * Off by default, which is one label per group. On, each polygon carries the
+   * group's label, and a `MultiPolygon` feature is labelled once per part, so
+   * a field split either side of a road reads on both halves.
+   */
+  public setLabelPerPolygon(perPolygon: boolean): void {
+    if (perPolygon === this._labelPerPolygon) {
+      return
+    }
+    this._labelPerPolygon = perPolygon
+    this._labelsOverlay?.refresh()
+  }
+
+  /**
    * Write `label` into `featureLabelProperty` on every feature in `key`'s
    * group, without re-adding any data. Returns `false` when no feature
    * carries `key`, or when no `featureLabelProperty` is configured — there is
@@ -1064,6 +1084,15 @@ export class GoogleMapsService implements OnDestroy {
     this._labelsOverlay.setMap(this.googleMap)
   }
 
+  /**
+   * The labels to draw, as `MapFeatureLabelsOverlay` wants them.
+   *
+   * This is only the adapter: it reads the data layer, hands plain GeoJSON to
+   * `buildFeatureLabels`, and converts the result back into `google.maps`
+   * types. Where each label goes, which polygons get one, and how they rank
+   * are all decided there, against GeoJSON, so they can be tested without a
+   * map.
+   */
   private _buildLabels(): MapFeatureLabel[] {
     if (this.isDrawing()) {
       return []
@@ -1074,43 +1103,66 @@ export class GoogleMapsService implements OnDestroy {
     }
     this._assertInitialized()
 
-    const byKey = new Map<
-      string,
-      { text: string; bounds: google.maps.LatLngBounds; others: Set<string> }
-    >()
+    const sources: LabelSourceFeature[] = []
+    const textsByKey = new Map<string, Set<string>>()
 
     this.googleMap.data.forEach((feature) => {
-      const key = this._registry.keyOf(feature)
+      const groupKey = this._registry.keyOf(feature)
       const raw = feature.getProperty(property)
       const text =
         raw === null || raw === undefined || raw === '' ? '' : String(raw)
 
-      const existing = byKey.get(key)
-      const bounds = existing?.bounds ?? new google.maps.LatLngBounds()
-      feature.getGeometry()?.forEachLatLng((latLng) => bounds.extend(latLng))
-
-      if (!existing) {
-        byKey.set(key, { text, bounds, others: new Set(text ? [text] : []) })
-        return
+      let texts = textsByKey.get(groupKey)
+      if (!texts) {
+        texts = new Set<string>()
+        textsByKey.set(groupKey, texts)
       }
       if (text) {
-        existing.others.add(text)
-        if (!existing.text) {
-          existing.text = text
-        }
+        texts.add(text)
       }
+
+      const parts = polygonsFromDataFeature(feature)
+      if (parts.length === 0) {
+        // Geometry this library cannot read - a Point, say. It still renders
+        // and still belongs to its group, but there is no polygon to label.
+        return
+      }
+
+      sources.push({
+        groupKey,
+        text,
+        geometry:
+          parts.length === 1
+            ? parts[0]
+            : {
+                type: 'MultiPolygon',
+                coordinates: parts.map((part) => part.coordinates),
+              },
+        selected: isFeatureSelected(feature),
+      })
     })
 
-    const labels: MapFeatureLabel[] = []
-    for (const [key, entry] of byKey) {
-      if (entry.others.size > 1) {
+    for (const [key, texts] of textsByKey) {
+      if (texts.size > 1) {
         this._warnAboutLabelDisagreement(key)
       }
-      if (entry.text) {
-        labels.push({ key, text: entry.text, bounds: entry.bounds })
-      }
     }
-    return labels
+
+    return buildFeatureLabels(sources, {
+      perPolygon: this._labelPerPolygon,
+    }).map((label) => {
+      const [[minX, minY], [maxX, maxY]] = label.bounds
+      const bounds = new google.maps.LatLngBounds()
+      bounds.extend(new google.maps.LatLng(minY, minX))
+      bounds.extend(new google.maps.LatLng(maxY, maxX))
+      return {
+        key: label.key,
+        text: label.text,
+        position: new google.maps.LatLng(label.position[1], label.position[0]),
+        bounds,
+        priority: label.priority,
+      }
+    })
   }
 
   private _warnAboutLabelDisagreement(key: string): void {
@@ -1532,6 +1584,20 @@ export class GoogleMapsService implements OnDestroy {
 
     createFeatureChangeObservable(this.googleMap.data, this._ngZone)
       .pipe(
+        // Labels repaint here, on the outer stream, NOT inside the
+        // `switchMap` below. A drag raises `setgeometry` every frame, and the
+        // inner observable serializes the entire map through a promise, so
+        // `switchMap` cancels nearly all of them — only the last one, after
+        // the mouse is released, ever reaches its `tap`. Labels refreshed
+        // there sat stale for the whole drag and then jumped into place on
+        // release, which read as the labels reshuffling on mouse-up.
+        //
+        // `_buildLabels()` is synchronous and needs nothing from the
+        // serialized value, so it belongs outside that pipeline. It does cost
+        // a label-point solve per polygon per frame of a drag, which is
+        // affordable at the handful of fields a map shows at a labellable
+        // size and is the price of labels that track the shape they name.
+        tap(() => this._labelsOverlay?.refresh()),
         switchMap(() =>
           from(this.getGeoJson()).pipe(
             tap((geoJson) => {
@@ -1539,7 +1605,6 @@ export class GoogleMapsService implements OnDestroy {
                 geoJson,
                 MapValueSource.FeatureChange,
               )
-              this._labelsOverlay?.refresh()
             }),
           ),
         ),

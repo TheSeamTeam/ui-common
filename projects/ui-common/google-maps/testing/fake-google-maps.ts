@@ -293,33 +293,68 @@ export class FakeMap extends FakeMapsEventTarget {
 }
 
 /**
+ * The projection every `FakeOverlayView` reports, or `undefined` for none.
+ *
+ * Module-level because `google.maps.OverlayView` is reached through the
+ * installed global, so a test never holds the instance a subclass creates.
+ * `installFakeGoogleMaps()` clears it, so it cannot leak between suites.
+ */
+let fakeProjection: any
+
+/**
+ * Give overlays a projection that places `[lng, lat]` at `[lng * scale, -lat *
+ * scale]` pixels.
+ *
+ * Linear, and north-up via the negated latitude, which is enough for anything
+ * asserting on relative placement. It is not Mercator: a test that depends on
+ * real projection maths wants the real API, not this.
+ */
+export function setFakeProjection(scale = 1): void {
+  fakeProjection = {
+    fromLatLngToDivPixel: (latLng: any) =>
+      latLng ? { x: latLng.lng() * scale, y: -latLng.lat() * scale } : null,
+  }
+}
+
+/** Restore the no-projection state, as before an overlay is added to a map. */
+export function clearFakeProjection(): void {
+  fakeProjection = undefined
+}
+
+/**
  * A stand-in for `google.maps.OverlayView`, enough for `MapFeatureLabelsOverlay`
  * (and anything else built the same way) to construct and attach/detach without
  * throwing under Jest.
  *
- * `getProjection()` always returns `undefined`, matching the real API before an
- * overlay has been added to a map. Nothing under test here asserts on rendered
- * positions, so a subclass's `draw()` bailing out on a missing projection is the
- * correct behaviour, not a gap.
+ * `getProjection()` returns `undefined` until a test calls
+ * `setFakeProjection()`, matching the real API before an overlay has been added
+ * to a map — so a subclass's `draw()` bailing out is correct behaviour, not a
+ * gap.
  */
 class FakeOverlayView {
   private _map: any = null
-  private readonly _panes = { markerLayer: document.createElement('div') }
+  private readonly _pane = document.createElement('div')
+  private readonly _panes = { markerLayer: this._pane }
 
   setMap(map: any): void {
     if (map && !this._map) {
       this._map = map
+      // The real panes live in the document, so anything an overlay appends
+      // is reachable from `document.querySelector`. Tests asserting on
+      // rendered labels depend on that.
+      document.body.appendChild(this._pane)
       ;(this as any).onAdd?.()
     } else if (!map && this._map) {
       this._map = null
       ;(this as any).onRemove?.()
+      this._pane.remove()
     }
   }
   getPanes(): any {
     return this._map ? this._panes : null
   }
   getProjection(): any {
-    return undefined
+    return fakeProjection
   }
 }
 
@@ -352,10 +387,19 @@ const FAKE_GOOGLE = {
 /** Install the fake on `globalThis.google`. Call in `beforeEach`. */
 export function installFakeGoogleMaps(): void {
   featureSeq = 0
+  clearFakeProjection()
   ;(globalThis as any).google = FAKE_GOOGLE
 }
 
-/** Remove the fake. Call in `afterEach` so suites cannot leak into each other. */
+/**
+ * Remove the fake. Call in `afterEach` so suites cannot leak into each other.
+ *
+ * Also drops any overlay panes still attached to `document.body` - an overlay
+ * that was never given `setMap(null)` would otherwise leave its labels in the
+ * document for the next test to find.
+ */
 export function uninstallFakeGoogleMaps(): void {
+  document.body.replaceChildren()
+  clearFakeProjection()
   delete (globalThis as any).google
 }

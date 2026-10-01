@@ -1815,3 +1815,163 @@ export const GroupedSetGroupLabelKeepsSelection: Story = {
     await expect(component.setGroupLabel('NOPE', 'Nowhere')).toBe(false)
   },
 }
+
+/**
+ * Shapes chosen to break naive label placement: a right triangle, whose
+ * bounding-box centre sits on the hypotenuse; a crescent, whose area centroid
+ * falls in the bite rather than on the field; and a two-parcel group, whose
+ * combined centre is the road between the parcels.
+ */
+const LABEL_PLACEMENT_VALUE = {
+  type: 'FeatureCollection',
+  features: [
+    {
+      type: 'Feature',
+      properties: { fieldId: 'T', FIELD_NAME: 'Wedge' },
+      geometry: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [-98.6, 37.6],
+            [-98.58, 37.6],
+            [-98.6, 37.62],
+            [-98.6, 37.6],
+          ],
+        ],
+      },
+    },
+    {
+      type: 'Feature',
+      properties: { fieldId: 'C', FIELD_NAME: 'Horseshoe' },
+      geometry: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [-98.57, 37.6],
+            [-98.55, 37.6],
+            [-98.55, 37.62],
+            [-98.5565, 37.62],
+            [-98.5565, 37.604],
+            [-98.5635, 37.604],
+            [-98.5635, 37.62],
+            [-98.57, 37.62],
+            [-98.57, 37.6],
+          ],
+        ],
+      },
+    },
+    {
+      type: 'Feature',
+      properties: { fieldId: 'P', FIELD_NAME: 'Two Parcels' },
+      geometry: squareAt(-98.54, 37.6),
+    },
+    {
+      type: 'Feature',
+      properties: { fieldId: 'P', FIELD_NAME: 'Two Parcels' },
+      geometry: squareAt(-98.52, 37.6),
+    },
+  ],
+}
+
+/**
+ * Label placement on shapes where the centre of the bounding box is the wrong
+ * answer. Every label should sit on its own field.
+ */
+export const LabelPlacement: Story = {
+  render: (args) => ({
+    template: `
+      <seam-google-maps
+        interactionMode="grouped"
+        featureGroupProperty="fieldId"
+        featureLabelProperty="FIELD_NAME"
+        [value]="value"
+        style="height: 400px"></seam-google-maps>
+    `,
+    props: args,
+  }),
+  args: { value: LABEL_PLACEMENT_VALUE },
+}
+
+/**
+ * The same fields with `featureLabelPerPolygon`, so the two-parcel group is
+ * labelled on both parcels rather than once for the group.
+ */
+export const LabelPerPolygon: Story = {
+  render: (args) => ({
+    template: `
+      <seam-google-maps
+        interactionMode="grouped"
+        featureGroupProperty="fieldId"
+        featureLabelProperty="FIELD_NAME"
+        featureLabelPerPolygon
+        [value]="value"
+        style="height: 400px"></seam-google-maps>
+    `,
+    props: args,
+  }),
+  args: { value: LABEL_PLACEMENT_VALUE },
+}
+
+/**
+ * Invented names, of varying length so the labels differ in width.
+ *
+ * Long on purpose. `fitBounds` scales the strip to the viewport, so each
+ * field is about one-twelfth of the map's width however wide the map is,
+ * while a label stays whatever its text measures. Names this long are wider
+ * than their field at any viewport size the story is likely to be opened at,
+ * which is what keeps the collision in the story rather than depending on the
+ * window.
+ */
+const CROWDED_FIELD_NAMES = [
+  'Hillside Pasture',
+  'Riverbend North Quarter',
+  'Oak Flat',
+  'Mill Creek Bottom Paddock',
+  'Stony Ridge West',
+  'The Narrows',
+  'Cedar Hollow East Quarter',
+  'Sandhill Terrace',
+  'Long Meadow South',
+  'Quarry Corner',
+  'Windbreak Strip',
+  'Lower Spring Lot',
+]
+
+/**
+ * A strip of fields that tile edge to edge without overlapping each other,
+ * each narrower on screen than the name it carries. The labels therefore
+ * collide even though the polygons do not, which is the case the layout pass
+ * exists for: they should stack above and below their own field rather than
+ * print on top of one another, and any that run out of room should drop out
+ * rather than pile up.
+ *
+ * The crowding is inherent to the geometry, so there is nothing to drive —
+ * the labels are already competing when the story opens. Dragging a field
+ * (in edit mode) is a way to watch them re-settle.
+ */
+export const CrowdedLabels: Story = {
+  render: (args) => ({
+    template: `
+      <seam-google-maps
+        interactionMode="grouped"
+        featureGroupProperty="fieldId"
+        featureLabelProperty="FIELD_NAME"
+        [value]="value"
+        style="height: 400px"></seam-google-maps>
+    `,
+    props: args,
+  }),
+  args: {
+    value: {
+      type: 'FeatureCollection',
+      // Adjacent, not overlapping: the step equals the square's side. With
+      // this many across, `fitBounds` leaves each one well under the width of
+      // its own label, which is what makes the labels compete.
+      features: CROWDED_FIELD_NAMES.map((name, i) => ({
+        type: 'Feature',
+        properties: { fieldId: `F${i}`, FIELD_NAME: name },
+        geometry: squareAt(-98.6 + i * 0.01, 37.6),
+      })),
+    },
+  },
+}

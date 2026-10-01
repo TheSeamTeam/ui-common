@@ -33,6 +33,7 @@
     "@turf/helpers",
     "@turf/area",
     "@turf/kinks",
+    "polylabel",
     "shpjs",
     "@types/geojson",
     "d3-geo",
