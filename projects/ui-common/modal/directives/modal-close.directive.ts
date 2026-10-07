@@ -46,8 +46,14 @@ export class ModalCloseDirective implements OnInit {
   @HostListener('click')
   _onClick() {
     if (this.modalRef) {
+      // The close can be blocked by `canClose`, so only open the next modal if
+      // this click is what closed the current one.
+      let closedByThisClick = false
       if (this.seamModalNext) {
         this.modalRef.afterClosed().subscribe(() => {
+          if (!closedByThisClick) {
+            return
+          }
           if (typeof this.seamModalNext === 'string') {
             this._modal
               .openFromLazyComponent(
@@ -63,7 +69,9 @@ export class ModalCloseDirective implements OnInit {
           }
         })
       }
-      this.modalRef.close(this.seamModalClose)
+      this.modalRef
+        .requestClose('close-directive', this.seamModalClose)
+        .then((closed) => (closedByThisClick = closed))
     }
   }
 

@@ -69,6 +69,7 @@ export default {
     '**/signature-input/**/*.spec.ts',
     '**/file-input/**/*.spec.ts',
     '**/guide/**/*.spec.ts',
+    '**/modal/modal-ref.spec.ts',
   ],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: '<rootDir>/',

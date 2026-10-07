@@ -4,10 +4,14 @@ import {
   OverlayRef,
   OverlaySizeConfig,
 } from '@angular/cdk/overlay'
-import { Observable } from 'rxjs'
+import { firstValueFrom, isObservable, Observable } from 'rxjs'
 import { filter, map } from 'rxjs/operators'
 
-import { IModalPosition } from './modal-config'
+import {
+  IModalPosition,
+  TheSeamModalCanCloseFn,
+  TheSeamModalCloseReason,
+} from './modal-config'
 import { ModalContainerComponent } from './modal-container/modal-container.component'
 
 const DRAG_CLOSE_THRESHOLD = 5
@@ -22,11 +26,27 @@ export class ModalRef<T, R = any> {
   /** The instance of the component in the dialog. */
   componentInstance: T | null = null
 
-  /** Whether the user is allowed to close the dialog. */
+  /** See `ModalConfig.disableClose`. */
   disableClose: boolean | undefined
+
+  /** See `ModalConfig.canClose`. */
+  canClose: TheSeamModalCanCloseFn<R> | null | undefined
+
+  /**
+   * Temporarily ignores clicks outside of the dialog, without touching the
+   * user's `disableClose` setting. Used while a scrollbar is being dragged.
+   * @docs-private
+   */
+  _suppressOutsideClose = false
 
   /** Result to be passed to afterClosed. */
   private _result: R | undefined
+
+  /** Whether `close()` has been called. */
+  private _closing = false
+
+  /** Whether a `canClose` guard is still deciding. */
+  private _closeRequestPending = false
 
   private _clickOutsideCleanup: (() => void) | null = null
 
@@ -38,13 +58,14 @@ export class ModalRef<T, R = any> {
     // Pass the id along to the container.
     _containerInstance._id = id
 
+    // Set before the content is attached, so the content component can
+    // override them from its constructor.
+    this.disableClose = _containerInstance._config.disableClose
+    this.canClose = _containerInstance._config.canClose
+
     // If the dialog has a backdrop, handle clicks from the backdrop.
     if (_containerInstance._config.hasBackdrop) {
-      _overlayRef.backdropClick().subscribe(() => {
-        if (!this.disableClose) {
-          this.close()
-        }
-      })
+      _overlayRef.backdropClick().subscribe(() => this._requestOutsideClose())
 
       this._clickOutsideCleanup = this._initCloseOnClickOutside()
     }
@@ -62,16 +83,18 @@ export class ModalRef<T, R = any> {
     // Close when escape keydown event occurs
     _overlayRef
       .keydownEvents()
-      .pipe(filter((event) => event.keyCode === ESCAPE && !this.disableClose))
-      .subscribe(() => this.close())
+      .pipe(filter((event) => event.keyCode === ESCAPE))
+      .subscribe(() => this.requestClose('escape'))
+  }
+
+  private _requestOutsideClose(): void {
+    if (!this._suppressOutsideClose) {
+      this.requestClose('backdrop')
+    }
   }
 
   private _initCloseOnClickOutside(): () => void {
-    const close = () => {
-      if (!this.disableClose) {
-        this.close()
-      }
-    }
+    const close = () => this._requestOutsideClose()
 
     const isInContainer = (target: HTMLElement | null) => {
       return this._containerInstance.getNativeElement().contains(target)
@@ -163,11 +186,82 @@ export class ModalRef<T, R = any> {
    * @param dialogResult Optional result to return to the dialog opener.
    */
   close(dialogResult?: R): void {
+    if (this._closing) {
+      return
+    }
+    this._closing = true
+
     this._result = dialogResult
     this._containerInstance._startExiting()
     if (this._clickOutsideCleanup) {
       this._clickOutsideCleanup()
     }
+  }
+
+  /**
+   * Closes the dialog if `disableClose` and `canClose` allow it, as if the
+   * user had requested the close.
+   *
+   * Resolves to whether this request closed the dialog. Requests made while
+   * the dialog is closing, or while a `canClose` guard is still deciding,
+   * resolve to `false`. Rejects if `canClose` throws or rejects, in which case
+   * the dialog stays open.
+   *
+   * @param reason The user interaction that requested the close.
+   * @param dialogResult Optional result to return to the dialog opener.
+   */
+  requestClose(
+    reason: TheSeamModalCloseReason,
+    dialogResult?: R,
+  ): Promise<boolean> {
+    if (this._closing || this._closeRequestPending) {
+      return Promise.resolve(false)
+    }
+
+    // `disableClose` only covers interactions that are easy to trigger by
+    // accident. A `seamModalClose` button is always a deliberate request.
+    if (this.disableClose && reason !== 'close-directive') {
+      return Promise.resolve(false)
+    }
+
+    if (!this.canClose) {
+      this.close(dialogResult)
+      return Promise.resolve(true)
+    }
+
+    let allowed: ReturnType<TheSeamModalCanCloseFn<R>>
+    try {
+      allowed = this.canClose(reason, dialogResult)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+
+    // Close synchronously when possible, like an unguarded close.
+    if (typeof allowed === 'boolean') {
+      if (allowed) {
+        this.close(dialogResult)
+      }
+      return Promise.resolve(allowed)
+    }
+
+    this._closeRequestPending = true
+    const decision = isObservable(allowed)
+      ? firstValueFrom(allowed)
+      : Promise.resolve(allowed)
+    return decision.then(
+      (canClose) => {
+        this._closeRequestPending = false
+        if (canClose !== true || this._closing) {
+          return false
+        }
+        this.close(dialogResult)
+        return true
+      },
+      (error) => {
+        this._closeRequestPending = false
+        throw error
+      },
+    )
   }
 
   /**
