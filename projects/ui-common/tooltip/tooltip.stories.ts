@@ -159,6 +159,54 @@ export const AllPlacements: Story = {
   },
 }
 
+/**
+ * Placements are tried in order. `"right auto"` prefers the right side, then
+ * falls back to the `auto` placements (top, bottom, right, left) when there is
+ * not enough room. A single placement like `"right"` never moves to another
+ * side; it is pushed back into the viewport instead.
+ */
+export const PlacementFallbacks: Story = {
+  render: () => ({
+    template: `
+      <div style="display: flex; justify-content: space-between; padding: 80px 4px;">
+        <button id="right-auto-room" class="btn btn-outline-primary"
+          seamTooltip="Preferring the right side" placement="right auto">
+          right auto (room on the right)
+        </button>
+        <button id="right-auto-edge" class="btn btn-outline-primary"
+          seamTooltip="Preferring the right side" placement="right auto">
+          right auto (at the edge)
+        </button>
+      </div>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const roomHarness = await getHarness(
+      TheSeamTooltipHarness.with({ selector: '#right-auto-room' }),
+      { canvasElement },
+    )
+    await roomHarness.hover()
+    await roomHarness.waitForTooltipToShow()
+    await expect(await roomHarness.getVisibleTooltipClasses()).toContain(
+      'bs-tooltip-right',
+    )
+    await roomHarness.mouseAway()
+    await roomHarness.waitForTooltipToHide()
+
+    const edgeHarness = await getHarness(
+      TheSeamTooltipHarness.with({ selector: '#right-auto-edge' }),
+      { canvasElement },
+    )
+    await edgeHarness.hover()
+    await edgeHarness.waitForTooltipToShow()
+    await expect(await edgeHarness.getVisibleTooltipClasses()).toContain(
+      'bs-tooltip-top',
+    )
+    await edgeHarness.mouseAway()
+    await edgeHarness.waitForTooltipToHide()
+  },
+}
+
 export const TriggerTypes: Story = {
   render: () => ({
     template: `

@@ -50,6 +50,22 @@ export type TheSeamTooltipPlacementInput =
  * - **Accessibility**: Full ARIA support and keyboard navigation
  * - **Performance**: Lazy creation and proper cleanup
  *
+ * ## Placement
+ * `placement` accepts a single placement, a space-delimited string, or an
+ * array. Placements are tried in the order given, and the first one that fits
+ * in the viewport is used.
+ * - `"right"`: only one position, so the tooltip never moves to another side.
+ *   If it does not fit, it is pushed back into the viewport instead.
+ * - `"auto"`: tries top, bottom, right, then left.
+ * - `"right auto"`: tries right first, then falls back to the `auto` order.
+ *
+ * ## Fullscreen
+ * Tooltips render in the CDK overlay container, which is attached to
+ * `document.body`, so they are not visible while another element is
+ * fullscreen. To support fullscreen, the app can provide
+ * `{ provide: OverlayContainer, useClass: FullscreenOverlayContainer }`
+ * (both from `@angular/cdk/overlay`).
+ *
  * ## Migration from ngbTooltip
  * ```typescript
  * // Before
@@ -62,7 +78,9 @@ export type TheSeamTooltipPlacementInput =
 @Directive({
   selector: '[seamTooltip]',
   host: {
-    '[attr.aria-describedby]': 'tooltipOpen() ? _tooltipId : null',
+    // Used by `TheSeamTooltipHarness`, because `[seamTooltip]` is not in the
+    // DOM when the input is bound.
+    class: 'seam-tooltip-trigger',
   },
   exportAs: 'seamTooltip',
 })
@@ -80,6 +98,11 @@ export class TheSeamTooltipDirective implements OnInit, OnChanges, OnDestroy {
 
   @Input() placement?: TheSeamTooltipPlacementInput | null = 'top'
 
+  /**
+   * @deprecated Has no effect. Tooltips always render in the CDK overlay
+   * container. See the "Fullscreen" section of the directive docs if the
+   * tooltip needs to show inside a fullscreen element.
+   */
   @Input() container?: string | HTMLElement
 
   @Input()
@@ -87,7 +110,12 @@ export class TheSeamTooltipDirective implements OnInit, OnChanges, OnDestroy {
     return this._disableTooltip.value
   }
   set disableTooltip(val: boolean) {
-    this._disableTooltip.next(coerceBooleanProperty(val))
+    const disabled = coerceBooleanProperty(val)
+    this._disableTooltip.next(disabled)
+    if (disabled) {
+      this._clearTimeouts()
+      this._closeTooltip()
+    }
   }
   private readonly _disableTooltip = new BehaviorSubject<boolean>(false)
 
@@ -113,7 +141,9 @@ export class TheSeamTooltipDirective implements OnInit, OnChanges, OnDestroy {
 
   private _active = false
   private _overlayRef: OverlayRef | null = null
+  private _positionStrategy: FlexibleConnectedPositionStrategy | null = null
   private _compRef: ComponentRef<TheSeamTooltipComponent> | null = null
+  private _isRepositioning = false
   private _showTimeoutId: any = null
   private _hideTimeoutId: any = null
   private _eventListenersSubject = new Subject<void>()
@@ -132,6 +162,20 @@ export class TheSeamTooltipDirective implements OnInit, OnChanges, OnDestroy {
       this._closeTooltip()
       // Re-setup event listeners with new trigger
       this._setupEventListeners()
+    }
+
+    if (
+      this._active &&
+      (changes['seamTooltip'] ||
+        changes['tooltipClass'] ||
+        changes['placement'])
+    ) {
+      if (this.seamTooltip) {
+        this._updateOpenTooltip()
+      } else {
+        this._clearTimeouts()
+        this._closeTooltip()
+      }
     }
   }
 
@@ -225,35 +269,38 @@ export class TheSeamTooltipDirective implements OnInit, OnChanges, OnDestroy {
 
     this._active = true
 
-    const positionStrategy = this._getOverlayPosition()
+    const positions = this._getPositions()
+    const positionStrategy = this._getOverlayPosition(positions)
     this._overlayRef = this._overlay.create({
       positionStrategy,
       scrollStrategy: this._overlay.scrollStrategies.reposition(),
     })
+    this._positionStrategy = positionStrategy
 
     this._compRef = this._overlayRef.attach(
       new ComponentPortal(TheSeamTooltipComponent, this._viewContainerRef),
     )
 
     // Set component properties
-    const parsedPlacements = this._parsePlacementInput(this.placement)
     this._compRef.instance.content = this.seamTooltip
     this._compRef.instance.tooltipClass = this.tooltipClass
-    this._compRef.instance.placement = parsedPlacements[0] || 'top' // Use first placement for initial display
+    // Use the first position for initial display, until the overlay reports
+    // the position it actually used.
+    this._compRef.instance.placement = this._getPlacementFromConnectionPair(
+      positions[0],
+    )
     this._compRef.instance.tooltipId = this._tooltipId
     this._compRef.instance.triggerElement = this._elementRef.nativeElement
     this._compRef.changeDetectorRef.markForCheck()
+
+    this._addAriaDescribedBy()
 
     // Listen for position changes to update placement class
     positionStrategy.positionChanges
       .pipe(takeUntil(this._ngUnsubscribe))
       .subscribe((positionChange) => {
         if (this._compRef && positionChange.connectionPair) {
-          const actualPlacement = this._getPlacementFromConnectionPair(
-            positionChange.connectionPair,
-          )
-          this._compRef.instance.actualPlacement = actualPlacement
-          this._compRef.changeDetectorRef.markForCheck()
+          this._onPositionChange(positionChange.connectionPair)
         }
       })
 
@@ -273,6 +320,89 @@ export class TheSeamTooltipDirective implements OnInit, OnChanges, OnDestroy {
 
     // Set up document-level Escape key listener
     this._setupDocumentKeydownListener()
+  }
+
+  /**
+   * Positions are emitted outside of the NgZone, so the tooltip is updated
+   * synchronously instead of waiting for the next change detection.
+   */
+  private _onPositionChange(connectionPair: ConnectionPositionPair): void {
+    if (!this._compRef) {
+      return
+    }
+
+    const instance = this._compRef.instance
+    const previousPlacement = instance.actualPlacement ?? instance.placement
+    const actualPlacement = this._getPlacementFromConnectionPair(connectionPair)
+    instance.actualPlacement = actualPlacement
+    this._compRef.changeDetectorRef.detectChanges()
+
+    // The placement class changes the tooltip's padding, which changes its
+    // size, so the position was calculated for the previous size.
+    if (
+      !this._isRepositioning &&
+      this._placementSide(previousPlacement) !==
+        this._placementSide(actualPlacement)
+    ) {
+      this._isRepositioning = true
+      try {
+        this._overlayRef?.updatePosition()
+        this._compRef?.changeDetectorRef.detectChanges()
+      } finally {
+        this._isRepositioning = false
+      }
+    }
+  }
+
+  private _placementSide(placement: TheSeamTooltipPlacement): string {
+    return placement.split('-')[0]
+  }
+
+  private _updateOpenTooltip(): void {
+    if (!this._compRef || !this._overlayRef || !this._positionStrategy) {
+      return
+    }
+
+    this._compRef.instance.content = this.seamTooltip
+    this._compRef.instance.tooltipClass = this.tooltipClass
+    this._positionStrategy.withPositions(this._getPositions())
+    // Render the new content before measuring, since it can change the size.
+    this._compRef.changeDetectorRef.detectChanges()
+    this._overlayRef.updatePosition()
+    this._compRef?.changeDetectorRef.detectChanges()
+  }
+
+  /**
+   * Adds the tooltip's id to `aria-describedby`, keeping any ids that are
+   * already there.
+   */
+  private _addAriaDescribedBy(): void {
+    const ids = this._getAriaDescribedByIds()
+    if (!ids.includes(this._tooltipId)) {
+      ids.push(this._tooltipId)
+    }
+    this._elementRef.nativeElement.setAttribute(
+      'aria-describedby',
+      ids.join(' '),
+    )
+  }
+
+  private _removeAriaDescribedBy(): void {
+    const element = this._elementRef.nativeElement
+    const ids = this._getAriaDescribedByIds().filter(
+      (id) => id !== this._tooltipId,
+    )
+    if (ids.length > 0) {
+      element.setAttribute('aria-describedby', ids.join(' '))
+    } else {
+      element.removeAttribute('aria-describedby')
+    }
+  }
+
+  private _getAriaDescribedByIds(): string[] {
+    const value =
+      this._elementRef.nativeElement.getAttribute('aria-describedby')
+    return value ? value.split(/\s+/).filter((id: string) => !!id) : []
   }
 
   private _setupDocumentKeydownListener(): void {
@@ -324,7 +454,9 @@ export class TheSeamTooltipDirective implements OnInit, OnChanges, OnDestroy {
       this._overlayRef = null
     }
 
+    this._positionStrategy = null
     this._compRef = null
+    this._removeAriaDescribedBy()
   }
 
   public tooltipOpen(): boolean {
@@ -377,9 +509,9 @@ export class TheSeamTooltipDirective implements OnInit, OnChanges, OnDestroy {
     return validPlacements.includes(placement as TheSeamTooltipPlacement)
   }
 
-  private _getOverlayPosition(): FlexibleConnectedPositionStrategy {
-    const positions = this._getPositions()
-
+  private _getOverlayPosition(
+    positions: ConnectionPositionPair[],
+  ): FlexibleConnectedPositionStrategy {
     return this._overlay
       .position()
       .flexibleConnectedTo(this._elementRef)
@@ -391,45 +523,36 @@ export class TheSeamTooltipDirective implements OnInit, OnChanges, OnDestroy {
   private _getPositions(): ConnectionPositionPair[] {
     const parsedPlacements = this._parsePlacementInput(this.placement)
 
-    // If 'auto' is specified or no valid placements, return all positions
-    if (parsedPlacements.includes('auto') || parsedPlacements.length === 0) {
-      return [
-        {
-          originX: 'center',
-          originY: 'top',
-          overlayX: 'center',
-          overlayY: 'bottom',
-        },
-        {
-          originX: 'center',
-          originY: 'bottom',
-          overlayX: 'center',
-          overlayY: 'top',
-        },
-        {
-          originX: 'end',
-          originY: 'center',
-          overlayX: 'start',
-          overlayY: 'center',
-        },
-        {
-          originX: 'start',
-          originY: 'center',
-          overlayX: 'end',
-          overlayY: 'center',
-        },
-      ]
+    // Specified placements are tried first, in the order given.
+    const positions: ConnectionPositionPair[] = []
+    for (const placement of parsedPlacements) {
+      if (placement !== 'auto') {
+        positions.push(...this._getPositionForPlacement(placement))
+      }
     }
 
-    // Return positions for specified placements only
-    const positions: ConnectionPositionPair[] = []
-
-    for (const placement of parsedPlacements) {
-      const placementPositions = this._getPositionForPlacement(placement)
-      positions.push(...placementPositions)
+    // 'auto', or no valid placements, falls back to the remaining auto positions.
+    if (parsedPlacements.includes('auto') || positions.length === 0) {
+      for (const autoPosition of this._getPositionForPlacement('auto')) {
+        if (!positions.some((p) => this._isSamePosition(p, autoPosition))) {
+          positions.push(autoPosition)
+        }
+      }
     }
 
     return positions
+  }
+
+  private _isSamePosition(
+    a: ConnectionPositionPair,
+    b: ConnectionPositionPair,
+  ): boolean {
+    return (
+      a.originX === b.originX &&
+      a.originY === b.originY &&
+      a.overlayX === b.overlayX &&
+      a.overlayY === b.overlayY
+    )
   }
 
   private _getPositionForPlacement(

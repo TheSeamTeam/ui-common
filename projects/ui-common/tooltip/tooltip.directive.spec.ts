@@ -3,16 +3,19 @@ import { ComponentFixture, TestBed } from '@angular/core/testing'
 import { OverlayModule } from '@angular/cdk/overlay'
 import { A11yModule } from '@angular/cdk/a11y'
 import { NoopAnimationsModule } from '@angular/platform-browser/animations'
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed'
 
 import userEvent from '@testing-library/user-event'
 
 import { TheSeamTooltipDirective } from './tooltip.directive'
 import { TheSeamTooltipModule } from './tooltip.module'
+import { TheSeamTooltipHarness } from './testing/tooltip.harness'
 
 @Component({
   template: `
     <button
-      seamTooltip="Test tooltip"
+      id="main-button"
+      [seamTooltip]="content"
       [placement]="placement"
       [disableTooltip]="disabled"
       [showDelay]="showDelay"
@@ -25,6 +28,15 @@ import { TheSeamTooltipModule } from './tooltip.module'
 
     <button [seamTooltip]="templateTooltip" placement="bottom">
       Template Button
+    </button>
+
+    <button
+      id="described-button"
+      seamTooltip="Described tooltip"
+      aria-describedby="existing-description"
+      [showDelay]="0"
+    >
+      Described Button
     </button>
 
     <ng-template #templateTooltip>
@@ -43,6 +55,7 @@ class TestComponent {
   @ViewChild('templateTooltip', { static: true })
   templateTooltip!: TemplateRef<any>
 
+  content: string | null = 'Test tooltip'
   placement = 'top'
   disabled = false
   showDelay = 100
@@ -390,6 +403,178 @@ describe('TheSeamTooltipDirective', () => {
       await user.keyboard('{Escape}')
       const isHidden = await waitForTooltipHide()
       expect(isHidden).toBe(true)
+    })
+  })
+
+  describe('Placement Fallbacks', () => {
+    it('should try the specified placement before the auto placements', async () => {
+      const user = userEvent.setup({ delay: null })
+      component.placement = 'right auto'
+      fixture.detectChanges()
+
+      await user.hover(buttonElement)
+      const tooltip = await waitForTooltipShow()
+      fixture.detectChanges()
+
+      expect(tooltip?.classList.contains('bs-tooltip-right')).toBe(true)
+    })
+
+    it('should use the auto placements when only "auto" is given', async () => {
+      const user = userEvent.setup({ delay: null })
+      component.placement = 'auto'
+      fixture.detectChanges()
+
+      await user.hover(buttonElement)
+      const tooltip = await waitForTooltipShow()
+      fixture.detectChanges()
+
+      expect(tooltip?.classList.contains('bs-tooltip-top')).toBe(true)
+    })
+  })
+
+  describe('Updating While Open', () => {
+    const showMainTooltip = async (user = userEvent.setup({ delay: null })) => {
+      await user.hover(buttonElement)
+      const tooltip = await waitForTooltipShow()
+      expect(tooltip).toBeTruthy()
+      return tooltip
+    }
+
+    it('should update the content', async () => {
+      await showMainTooltip()
+
+      component.content = 'Updated tooltip'
+      fixture.detectChanges()
+
+      const tooltip = document.querySelector('.tooltip.show')
+      expect(tooltip?.textContent?.trim()).toBe('Updated tooltip')
+    })
+
+    it('should update the tooltip class', async () => {
+      await showMainTooltip()
+
+      component.tooltipClass = 'other-tooltip'
+      fixture.detectChanges()
+
+      const tooltipInner = document.querySelector('.tooltip-inner')
+      expect(tooltipInner?.classList.contains('other-tooltip')).toBe(true)
+      expect(tooltipInner?.classList.contains('custom-tooltip')).toBe(false)
+    })
+
+    it('should update the placement', async () => {
+      await showMainTooltip()
+
+      component.placement = 'bottom'
+      fixture.detectChanges()
+
+      const tooltip = document.querySelector('.tooltip.show')
+      expect(tooltip?.classList.contains('bs-tooltip-bottom')).toBe(true)
+    })
+
+    it('should close when the content is cleared', async () => {
+      await showMainTooltip()
+
+      component.content = null
+      fixture.detectChanges()
+
+      expect(await waitForTooltipHide()).toBe(true)
+    })
+
+    it('should close when disabled', async () => {
+      await showMainTooltip()
+
+      component.disabled = true
+      fixture.detectChanges()
+
+      expect(await waitForTooltipHide()).toBe(true)
+    })
+
+    it('should not be closed by the exit animation of a previous tooltip', async () => {
+      const user = userEvent.setup({ delay: null })
+      const directive = fixture.debugElement.children[0].injector.get(
+        TheSeamTooltipDirective,
+      )
+
+      await showMainTooltip(user)
+      const previousTooltip = (directive as any)._compRef.instance
+
+      await user.unhover(buttonElement)
+      expect(await waitForTooltipHide()).toBe(true)
+
+      await showMainTooltip(user)
+      previousTooltip._onAnimationDone({ toState: 'void' })
+
+      expect(directive.tooltipOpen()).toBe(true)
+      expect(document.querySelector('.tooltip.show')).toBeTruthy()
+    })
+  })
+
+  describe('aria-describedby', () => {
+    it('should keep existing ids while open and restore them when closed', async () => {
+      const user = userEvent.setup({ delay: null })
+      const describedButton = fixture.nativeElement.querySelector(
+        '#described-button',
+      ) as HTMLElement
+
+      expect(describedButton.getAttribute('aria-describedby')).toBe(
+        'existing-description',
+      )
+
+      await user.hover(describedButton)
+      const tooltip = await waitForTooltipShow()
+      expect(tooltip).toBeTruthy()
+
+      const ids = describedButton.getAttribute('aria-describedby')!.split(' ')
+      expect(ids).toContain('existing-description')
+      expect(ids).toContain(tooltip!.id)
+
+      await user.unhover(describedButton)
+      expect(await waitForTooltipHide()).toBe(true)
+      expect(describedButton.getAttribute('aria-describedby')).toBe(
+        'existing-description',
+      )
+    })
+
+    it('should remove the attribute when there were no existing ids', async () => {
+      const user = userEvent.setup({ delay: null })
+      await user.hover(buttonElement)
+      expect(await waitForTooltipShow()).toBeTruthy()
+
+      await user.unhover(buttonElement)
+      expect(await waitForTooltipHide()).toBe(true)
+      expect(buttonElement.hasAttribute('aria-describedby')).toBe(false)
+    })
+  })
+
+  describe('Harness', () => {
+    it('should find a trigger with a bound seamTooltip input', async () => {
+      const loader = TestbedHarnessEnvironment.loader(fixture)
+      const harness = await loader.getHarness(
+        TheSeamTooltipHarness.with({ selector: '#main-button' }),
+      )
+
+      await harness.hover()
+      await harness.waitForTooltipToShow()
+
+      expect(await harness.getVisibleTooltipText()).toBe('Test tooltip')
+    })
+
+    it('should find the tooltip when aria-describedby has other ids', async () => {
+      const loader = TestbedHarnessEnvironment.loader(fixture)
+      const harness = await loader.getHarness(
+        TheSeamTooltipHarness.with({ selector: '#described-button' }),
+      )
+
+      await harness.hover()
+      await harness.waitForTooltipToShow()
+
+      expect(await harness.getVisibleTooltipText()).toBe('Described tooltip')
+    })
+
+    it('should find every trigger', async () => {
+      const loader = TestbedHarnessEnvironment.loader(fixture)
+      const harnesses = await loader.getAllHarnesses(TheSeamTooltipHarness)
+      expect(harnesses.length).toBe(3)
     })
   })
 })
