@@ -7,6 +7,7 @@ import {
 } from '@angular/animations'
 import { NgClass, NgIf, NgTemplateOutlet } from '@angular/common'
 import {
+  AfterViewChecked,
   ChangeDetectionStrategy,
   Component,
   ElementRef,
@@ -59,7 +60,7 @@ export type TheSeamTooltipPlacement =
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NgIf, NgClass, NgTemplateOutlet],
 })
-export class TheSeamTooltipComponent implements OnDestroy {
+export class TheSeamTooltipComponent implements AfterViewChecked, OnDestroy {
   @Input() content: string | TemplateRef<any> | null = null
   @Input() tooltipClass?: string
   @Input() context?: any
@@ -78,12 +79,17 @@ export class TheSeamTooltipComponent implements OnDestroy {
   get hostClasses(): string {
     const baseClass = 'tooltip show'
     const placementClass = this._getPlacementClass()
-    this._setArrowPosition()
     return `${baseClass} ${placementClass}`
   }
 
   @ViewChild('inner', { static: true }) innerElement!: ElementRef
   @ViewChild('arrow', { static: true }) arrowElement!: ElementRef
+
+  ngAfterViewChecked() {
+    // Measured after the view is checked, so the placement class is already
+    // applied to the host when the arrow is positioned.
+    this._setArrowPosition()
+  }
 
   ngOnDestroy() {
     this._afterEnter.complete()
