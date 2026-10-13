@@ -38,6 +38,7 @@ import { MenuComponent } from '@theseam/ui-common/menu'
 
 import { TheSeamGoogleMapsApiLoader } from '../google-maps-api-loader/google-maps-api-loader'
 import { GoogleMapsControlsService } from '../google-maps-controls.service'
+import { TheSeamGoogleMapsDrawButtonControlComponent } from '../google-maps-draw-button-control/google-maps-draw-button-control.component'
 import { TheSeamGoogleMapsRecenterButtonControlComponent } from '../google-maps-recenter-button-control/google-maps-recenter-button-control.component'
 import { TheSeamGoogleMapsUploadButtonControlComponent } from '../google-maps-upload-button-control/google-maps-upload-button-control.component'
 import { GoogleMapsService } from '../google-maps.service'
@@ -118,6 +119,11 @@ export class TheSeamGoogleMapsComponent
     component: TheSeamGoogleMapsRecenterButtonControlComponent,
     data: { label: 'Center on Field', icon: faCrosshairs },
     position: 9 /* google.maps.ControlPosition.RIGHT_BOTTOM */,
+  }
+
+  readonly _drawControlDef: MapControl = {
+    component: TheSeamGoogleMapsDrawButtonControlComponent,
+    position: 1 /* google.maps.ControlPosition.TOP_LEFT */,
   }
 
   private _focusOrigin: FocusOrigin = null

@@ -1,0 +1,28 @@
+:host {
+  box-sizing: border-box;
+  position: absolute;
+  height: 40px;
+  width: 40px;
+  margin: 10px;
+  padding: 8px;
+  border: 0px;
+  border-radius: 2px;
+  background: none rgb(255, 255, 255);
+  box-shadow: rgb(0 0 0 / 30%) 0px 1px 4px -1px;
+  color: rgb(102, 102, 102);
+  text-transform: none;
+  appearance: none;
+  cursor: pointer;
+  user-select: none;
+  overflow: hidden;
+}
+
+// Active (drawing) state: darken the icon and add an inner ring so it reads as
+// a pressed/selected control, similar to Google's old drawing toggle. Using an
+// inset box-shadow (not a border) keeps the 40x40 footprint stable.
+:host.active {
+  color: rgb(0, 0, 0);
+  box-shadow:
+    rgb(0 0 0 / 30%) 0px 1px 4px -1px,
+    inset 0 0 0 2px rgb(0, 0, 0);
+}

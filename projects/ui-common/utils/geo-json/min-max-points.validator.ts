@@ -5,6 +5,7 @@ import { FeatureCollection } from 'geojson'
 import { isEmptyInputValue } from '../form/is-empty-input-value'
 import { notNullOrUndefined } from '../not-null-or-undefined'
 import { coerceFeatureCollection } from './coerce-feature-collection'
+import { polygonViolatesMinMax } from './polygon-violates-min-max'
 
 export const MIN_MAX_POINTS_VALIDATOR_NAME = 'min-max-points'
 
@@ -60,21 +61,6 @@ function collectionViolatesMinMax(
         }
       }
     }
-  }
-
-  return false
-}
-
-function polygonViolatesMinMax(
-  coordinateLength: number,
-  min: number,
-  max: number | undefined,
-): boolean {
-  if (
-    coordinateLength < min ||
-    (notNullOrUndefined(max) && max > min && coordinateLength > max)
-  ) {
-    return true
   }
 
   return false

@@ -75,15 +75,15 @@ export const Basic: Story = {
       <div role="group"
         [formControl]="control"
         seamToggleGroup
+        #tg="seamToggleGroup"
         [multiple]="multiple"
         [selectionToggleable]="selectionToggleable">
         <ng-container *ngFor="let btn of options">
           <button type="button" class="btn btn-sm px-4"
             [seamToggleGroupOption]="btn.value"
-            #opt="seamToggleGroupOption"
-            [class.btn-lightgray]="!opt.selected"
-            [class.btn-primary]="opt.selected"
-            (click)="opt.selected=!opt.selected">
+            [class.btn-lightgray]="!tg.isSelected(btn.value)"
+            [class.btn-primary]="tg.isSelected(btn.value)"
+            (click)="tg.toggleOptionSelect(btn.value)">
             {{ btn.name || btn.value }}
           </button>
         </ng-container>
@@ -130,14 +130,14 @@ export const Checkbox: Story = {
       <div role="group"
         [formControl]="control"
         seamToggleGroup
+        #tg="seamToggleGroup"
         [multiple]="multiple"
         [selectionToggleable]="selectionToggleable">
         <ng-container *ngFor="let btn of options">
           <seam-checkbox
             [seamToggleGroupOption]="btn.value"
-            #opt="seamToggleGroupOption"
-            [checked]="opt.selected"
-            (change)="opt.selected=$event.checked">
+            [checked]="tg.isSelected(btn.value)"
+            (change)="tg.toggleOptionSelect(btn.value)">
             {{ btn.name || btn.value }}
           </seam-checkbox>
         </ng-container>

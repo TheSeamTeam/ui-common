@@ -1,6 +1,6 @@
 import { fileTypeFromBuffer } from 'file-type'
 import { FeatureCollection } from 'geojson'
-import shp from 'shpjs'
+import { parseShp, parseZip } from 'shpjs'
 
 import { readFileAsync } from '../file-utils'
 import { withoutProperty } from '../obj-utils'
@@ -39,7 +39,7 @@ async function coerceToArrayBuffer(
 }
 
 async function parseShpFile(buffer: ArrayBuffer): Promise<FeatureCollection> {
-  const geometries = await shp.parseShp(buffer, undefined as any)
+  const geometries = parseShp(buffer)
   const featCollection: FeatureCollection = {
     type: 'FeatureCollection',
     features: geometries.map((geom) => ({
@@ -52,7 +52,7 @@ async function parseShpFile(buffer: ArrayBuffer): Promise<FeatureCollection> {
 }
 
 async function parseShpZip(buffer: ArrayBuffer): Promise<FeatureCollection> {
-  let featCollection = await shp.parseZip(buffer, undefined as any)
+  let featCollection = await parseZip(buffer)
   if (Array.isArray(featCollection)) {
     if (featCollection.length === 0) {
       throw Error(`Shape data not found.`)
