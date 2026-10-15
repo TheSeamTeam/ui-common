@@ -20,7 +20,13 @@
     "@fortawesome/angular-fontawesome": "^0.13.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-regular-svg-icons": "^5.15.3",
-    "@fortawesome/free-solid-svg-icons": "^5.15.3"
+    "@fortawesome/free-solid-svg-icons": "^5.15.3",
+    "driver.js": "^1.8.0"
+  },
+  "peerDependenciesMeta": {
+    "driver.js": {
+      "optional": true
+    }
   },
   "dependencies": {
     "file-type": "~22.0.0",
@@ -32,7 +38,6 @@
     "@types/overlayscrollbars": "~1.7.0",
     "bootstrap": "~4.6.0",
     "css-element-queries": "^1.2.3",
-    "driver.js": "^1.8.0",
     "file-saver": "~2.0.2",
     "graphql": "^16.0.0",
     "ngx-toastr": "~16.1.0",

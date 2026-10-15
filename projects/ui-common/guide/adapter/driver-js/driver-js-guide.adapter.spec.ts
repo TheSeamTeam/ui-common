@@ -139,6 +139,103 @@ describe('DriverJsGuideAdapter', () => {
     expect(elB.classList.contains('driver-active-element')).toBe(true)
     expect(elA.classList.contains('driver-active-element')).toBe(false)
   })
+
+  it('leaves the highlight where it was when repositioning around a detached element', () => {
+    jest.useFakeTimers()
+
+    const el = document.createElement('div')
+    document.body.appendChild(el)
+    // What a browser does, which jsdom does not: a real size while attached,
+    // and zeros once removed.
+    el.getBoundingClientRect = () =>
+      el.isConnected ? new DOMRect(200, 150, 80, 40) : new DOMRect(0, 0, 0, 0)
+
+    adapter.start(
+      {
+        steps: [{ element: () => el, popover: { title: 'one' } }],
+        allowUserDismiss: true,
+      },
+      noopCallbacks,
+    )
+    adapter.moveTo(0)
+    jest.advanceTimersByTime(500)
+
+    const cutout = () =>
+      document.querySelector('.driver-overlay path')?.getAttribute('d')
+    const before = cutout()
+    expect(before).toContain('M')
+
+    el.remove()
+    adapter.reposition()
+    jest.advanceTimersByTime(100)
+
+    expect(cutout()).toBe(before)
+  })
+
+  describe('holding position', () => {
+    /** Attached, with a browser's measurements: real while attached, zeros once removed. */
+    function measuredEl(x: number, y: number): HTMLElement {
+      const el = document.createElement('div')
+      document.body.appendChild(el)
+      el.getBoundingClientRect = () =>
+        el.isConnected ? new DOMRect(x, y, 80, 40) : new DOMRect(0, 0, 0, 0)
+      return el
+    }
+
+    const cutout = () =>
+      document.querySelector('.driver-overlay path')?.getAttribute('d')
+
+    it('keeps the highlight in place when the target leaves before it has settled', () => {
+      jest.useFakeTimers()
+      const el = measuredEl(200, 150)
+      adapter.start(
+        {
+          steps: [{ element: () => el, popover: { title: 'one' } }],
+          allowUserDismiss: true,
+        },
+        noopCallbacks,
+      )
+      adapter.moveTo(0)
+      // Inside driver.js's 400ms highlight animation, which measures the
+      // target on every frame.
+      jest.advanceTimersByTime(200)
+      const before = cutout()
+
+      el.remove()
+      adapter.holdPosition()
+      jest.advanceTimersByTime(500)
+      adapter.reposition()
+      jest.advanceTimersByTime(100)
+
+      expect(cutout()).toBe(before)
+    })
+
+    it('stops holding once the step is drawn again', () => {
+      jest.useFakeTimers()
+      const first = measuredEl(200, 150)
+      let current = first
+      adapter.start(
+        {
+          steps: [{ element: () => current, popover: { title: 'one' } }],
+          allowUserDismiss: true,
+        },
+        noopCallbacks,
+      )
+      adapter.moveTo(0)
+      jest.advanceTimersByTime(500)
+
+      first.remove()
+      adapter.holdPosition()
+      current = measuredEl(300, 250)
+      adapter.refresh()
+      jest.advanceTimersByTime(500)
+
+      // The removed element measures as itself again.
+      expect(first.getBoundingClientRect().width).toBe(0)
+      expect(cutout()).not.toContain('M195,140')
+      expect(cutout()).toContain('M295,240')
+    })
+  })
 })
 
 describe('DriverJsGuideAdapter popover slots', () => {
@@ -248,5 +345,86 @@ describe('DriverJsGuideAdapter popover slots', () => {
 
     expect(config.steps[0]?.popover?.side).toBe('right')
     expect(config.steps[0]?.popover?.align).toBe('end')
+  })
+
+  function visible(selector: string): boolean {
+    const el = document.querySelector<HTMLElement>(selector)
+    return el !== null && el.style.display !== 'none'
+  }
+
+  it('renders button labels and progress text', () => {
+    drive({
+      description: 'text',
+      doneButtonText: 'Finish',
+      previousButtonText: 'Back',
+      showProgress: true,
+      progressText: 'Step {{current}}/{{total}}',
+    })
+
+    // A one-step guide: its Next button is the Done button.
+    expect(
+      document.querySelector('.driver-popover-next-btn')?.textContent,
+    ).toBe('Finish')
+    expect(
+      document.querySelector('.driver-popover-prev-btn')?.textContent,
+    ).toBe('Back')
+    expect(
+      document.querySelector('.driver-popover-progress-text')?.textContent,
+    ).toBe('Step 1/1')
+  })
+
+  it('keeps "Done" on the last step when every step sets a Next label', () => {
+    const popover = { description: 'text', nextButtonText: 'Onward' }
+    adapter.start(
+      { steps: [{ popover }, { popover }], allowUserDismiss: true },
+      {
+        onNextRequested: () => {},
+        onPreviousRequested: () => {},
+        onCloseRequested: () => {},
+      },
+    )
+    const nextLabel = () =>
+      document.querySelector('.driver-popover-next-btn')?.textContent
+
+    adapter.moveTo(0)
+    expect(nextLabel()).toBe('Onward')
+
+    adapter.moveTo(1)
+    expect(nextLabel()).toBe('Done')
+  })
+
+  it('shows only the listed buttons', () => {
+    drive({ description: 'text', showButtons: ['previous'] })
+
+    expect(visible('.driver-popover-next-btn')).toBe(false)
+    expect(visible('.driver-popover-prev-btn')).toBe(true)
+    expect(visible('.driver-popover-close-btn')).toBe(false)
+  })
+
+  it('shows no buttons for an empty list', () => {
+    drive({ description: 'text', showButtons: [] })
+
+    expect(visible('.driver-popover-close-btn')).toBe(false)
+    expect(visible('.driver-popover-footer')).toBe(false)
+  })
+
+  it('leaves keys to the session', () => {
+    const onCloseRequested = jest.fn()
+    const onNextRequested = jest.fn()
+    adapter.start(
+      {
+        steps: [{ popover: { title: 'one' } }, { popover: { title: 'two' } }],
+        allowUserDismiss: true,
+      },
+      { onCloseRequested, onNextRequested, onPreviousRequested: () => {} },
+    )
+    adapter.moveTo(0)
+
+    for (const key of ['Escape', 'ArrowRight']) {
+      window.dispatchEvent(new KeyboardEvent('keyup', { key }))
+    }
+
+    expect(onCloseRequested).not.toHaveBeenCalled()
+    expect(onNextRequested).not.toHaveBeenCalled()
   })
 })

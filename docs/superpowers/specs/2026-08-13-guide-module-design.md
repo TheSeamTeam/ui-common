@@ -129,6 +129,14 @@ in genericness — the adapter interface is identical either way. Default advanc
 is suppressed, the async work runs, then `adapter.next()` is called once the
 target is ready.
 
+> **Corrected 2026-10-13.** Two of the affordances this kept are no longer
+> driver.js's alone. Keyboard navigation is off in driver.js: it listened on
+> `window` and acted on keys typed into fields, so the session handles Escape
+> and the arrow keys itself. The progress indicator stays driver.js's, but is
+> off unless `showProgress` is set. And the session moves with
+> `adapter.moveTo()` only; `next()` and `previous()` were never called and are
+> gone from the adapter.
+
 Each step's `element` is passed to driver.js as a **resolver function**, so it
 re-resolves against the registry at paint time rather than against a reference
 captured at `start()`.
@@ -357,6 +365,17 @@ export interface TheSeamGuideStep {
   afterStep?: () => void | Promise<void> | Observable<unknown>
 }
 ```
+
+> **Corrected 2026-10-13, after use in an app.** Both hooks now take a context:
+> the ref, the step, and its index. `beforeStep`'s adds `exit$` and
+> `advanceWhenTarget`, which the app had built itself from `events$` and the
+> registry. `afterStep` now also runs when the guide closes or finishes, not
+> only between steps, and its context's `closeReason` tells those apart, so a
+> hook that navigates can skip doing so when the guide is torn down. Before a
+> step paints, the session also waits out animations moving its target, and
+> while it shows, a `ResizeObserver` calls the adapter's new `reposition()`.
+> These are meant to replace the app's fixed settle delays and its
+> `refreshOnChange`.
 
 Modeled on how important modals disable backdrop and Escape dismissal, requiring
 an explicit button choice. Maps onto driver.js via `allowClose: false` (which
@@ -884,6 +903,16 @@ rules or destabilize existing sheets.
 > check passes because plain Dart Sass probes the filesystem and ignores
 > `exports` maps. Neither exercises the resolver that actually matters.
 
+> **Corrected 2026-10-13, after use in an app.** The import is gone. "esbuild
+> resolves and inlines it for consuming apps" was wrong for how apps use this
+> file: they import it inside a theme block (`html[app-name='...'] { ... }`),
+> where the plain CSS `@import` ends up nested. Browsers drop a nested
+> `@import`, so driver.js's base styles never loaded, and the build warned.
+> Storybook only worked because css-loader resolved the `@import` first. Apps
+> now list `node_modules/driver.js/dist/driver.css` in `angular.json` `styles`
+> ahead of their own stylesheet, as Storybook's targets do. See the module's
+> README.
+
 ### Build asset entry
 
 The stylesheets have no component to be inlined into, so ng-packagr will not
@@ -995,6 +1024,11 @@ accessibility is asserted explicitly instead.
 
 `driver.js` is a regular dependency plus `allowedNonPeerDependencies`, following
 the existing precedent set by `quill` and `intl-tel-input`.
+
+> **Corrected 2026-10-13.** `driver.js` is now an optional peer dependency and
+> is out of `allowedNonPeerDependencies`. As a regular dependency, npm resolved
+> it to whatever `^1.8.0` allowed, so the app had to list and pin it to keep
+> 1.8.0. An app that uses guides installs it; one that does not, need not.
 
 ### Build verification
 

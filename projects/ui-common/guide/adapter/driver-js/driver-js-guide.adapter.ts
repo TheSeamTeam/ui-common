@@ -1,5 +1,12 @@
 import { Injectable } from '@angular/core'
-import { Config, DriveStep, driver, Driver, PopoverDOM } from 'driver.js'
+import {
+  Config,
+  DriveStep,
+  driver,
+  Driver,
+  PopoverDOM,
+  StageDefinition,
+} from 'driver.js'
 
 import {
   TheSeamGuideAdapter,
@@ -14,13 +21,19 @@ import { ExhaustiveMap } from '../../models/exhaustive-map'
  * driver.js implementation of the guide adapter.
  *
  * The whole step array is handed to driver.js so its buttons, progress
- * indicator, and keyboard handling are preserved, but every navigation click is
+ * indicator, and focus handling are preserved, but every navigation click is
  * intercepted and reported instead of acted on. The session decides what
  * happens next.
+ *
+ * driver.js's own keyboard navigation is off. It listens on `window` and acts
+ * on every Escape and arrow key, including ones typed into a field; the
+ * session handles keys instead.
  */
 @Injectable()
 export class DriverJsGuideAdapter implements TheSeamGuideAdapter {
   private _driver: Driver | null = null
+  // Undoes `holdPosition()`, while one is in effect.
+  private _releaseHold: (() => void) | null = null
 
   start(
     config: TheSeamGuideAdapterConfig,
@@ -31,6 +44,7 @@ export class DriverJsGuideAdapter implements TheSeamGuideAdapter {
     const driverConfig: Config = {
       steps: config.steps.map((step) => this._toDriveStep(step)),
       allowClose: config.allowUserDismiss,
+      allowKeyboardControl: false,
       showButtons: config.allowUserDismiss
         ? ['next', 'previous', 'close']
         : ['next', 'previous'],
@@ -45,15 +59,8 @@ export class DriverJsGuideAdapter implements TheSeamGuideAdapter {
     this._driver = driver(driverConfig)
   }
 
-  next(): void {
-    this._driver?.moveNext()
-  }
-
-  previous(): void {
-    this._driver?.movePrevious()
-  }
-
   moveTo(index: number): void {
+    this._release()
     if (this._driver === null) {
       return
     }
@@ -74,13 +81,70 @@ export class DriverJsGuideAdapter implements TheSeamGuideAdapter {
     // flash even when the resolved element hasn't changed — driver.js has no
     // primitive for "re-resolve without re-render". Callers should treat this
     // as a recovery operation, not something to invoke speculatively.
+    //
+    // Released first so a held position is where the move starts from, and
+    // is not left on the element being moved away from.
+    this._release()
     const index = this._driver?.getActiveIndex()
     if (index !== undefined) {
       this._driver?.moveTo(index)
     }
   }
 
+  reposition(): void {
+    // driver.js's own refresh() is exactly this: it re-measures the element
+    // it already highlights and moves the overlay and popover to fit.
+    //
+    // A detached element measures 0x0 at the page's corner, so fitting to it
+    // would move the highlight there. Leaving it where it was is better.
+    // driver.js's own scroll and resize listeners call the same refresh()
+    // and are not stopped by this.
+    if (this._driver?.getActiveElement()?.isConnected === false) {
+      return
+    }
+    this._driver?.refresh()
+  }
+
+  holdPosition(): void {
+    // driver.js measures the element it highlights itself, with no way to
+    // tell it to stop: on every frame of the 400ms animation after each
+    // highlight, and on every scroll and resize. A removed element measures
+    // 0x0 at the page's corner, and the highlight follows it there. So the
+    // removed element is made to measure where the highlight was last drawn.
+    //
+    // This matters most when a target is replaced soon after it is first
+    // highlighted, such as a view that re-renders once its data loads.
+    const element = this._driver?.getActiveElement()
+    const drawn: StageDefinition | undefined = this._driver?.getState(
+      '__activeStagePosition',
+    )
+    if (element === undefined || drawn === undefined) {
+      return
+    }
+    this._release()
+
+    // Held only while detached, so if the same element is put back it is
+    // measured where it really is.
+    const own = Object.getOwnPropertyDescriptor(
+      element,
+      'getBoundingClientRect',
+    )
+    const measure = element.getBoundingClientRect
+    element.getBoundingClientRect = () =>
+      element.isConnected
+        ? measure.call(element)
+        : new DOMRect(drawn.x, drawn.y, drawn.width, drawn.height)
+    this._releaseHold = () => {
+      if (own === undefined) {
+        delete (element as Partial<Element>).getBoundingClientRect
+      } else {
+        Object.defineProperty(element, 'getBoundingClientRect', own)
+      }
+    }
+  }
+
   destroy(): void {
+    this._release()
     if (this._driver === null) {
       return
     }
@@ -97,6 +161,11 @@ export class DriverJsGuideAdapter implements TheSeamGuideAdapter {
 
   isActive(): boolean {
     return this._driver?.isActive() ?? false
+  }
+
+  private _release(): void {
+    this._releaseHold?.()
+    this._releaseHold = null
   }
 
   private _toDriveStep(step: TheSeamGuideAdapterStep): DriveStep {
@@ -132,22 +201,26 @@ export class DriverJsGuideAdapter implements TheSeamGuideAdapter {
       description: popover.description,
       side: popover.side,
       align: popover.align,
+      showButtons: popover.showButtons,
+      nextButtonText: popover.nextButtonText,
+      previousButtonText: popover.previousButtonText,
+      doneButtonText: popover.doneButtonText,
+      showProgress: popover.showProgress,
+      progressText: popover.progressText,
     }
-    const { title, description, side, align } = mapped
+    const { title, description, showButtons, nextButtonText } = mapped
     const hasNode =
       title instanceof HTMLElement || description instanceof HTMLElement
+    // driver.js reads an empty list as "no preference" and shows every button.
+    const noButtons = showButtons !== undefined && showButtons.length === 0
 
-    return {
-      title: typeof title === 'string' ? title : undefined,
-      description: typeof description === 'string' ? description : undefined,
-      side,
-      align,
-      // driver.js hides a slot whose string is falsy, so a slot filled with a
-      // node must be un-hidden as well as populated. It also rebuilds the
-      // whole popover on every render, so this runs again on each re-drive
-      // and simply re-adopts the same host node.
-      onPopoverRender: hasNode
+    const onPopoverRender =
+      hasNode || noButtons || nextButtonText !== undefined
         ? (dom: PopoverDOM) => {
+            // driver.js hides a slot whose string is falsy, so a slot filled
+            // with a node must be un-hidden as well as populated. It also
+            // rebuilds the whole popover on every render, so this runs again
+            // on each re-drive and simply re-adopts the same host node.
             if (title instanceof HTMLElement) {
               dom.title.replaceChildren(title)
               dom.title.style.display = 'block'
@@ -156,8 +229,50 @@ export class DriverJsGuideAdapter implements TheSeamGuideAdapter {
               dom.description.replaceChildren(description)
               dom.description.style.display = 'block'
             }
+            // Set here, not as `nextBtnText`: driver.js lets a step's
+            // `nextBtnText` replace "Done" on the last step, so a label set
+            // for every step would hide it.
+            if (
+              nextButtonText !== undefined &&
+              !dom.nextButton.classList.contains('driver-popover-done-btn')
+            ) {
+              dom.nextButton.innerHTML = nextButtonText
+            }
+            if (noButtons) {
+              hideButtons(dom)
+            }
           }
-        : undefined,
-    }
+        : undefined
+
+    // driver.js spreads a step's popover over the values it worked out for
+    // it, so a key present as `undefined` would erase one. Only set keys go.
+    return withoutUndefined({
+      title: typeof title === 'string' ? title : undefined,
+      description: typeof description === 'string' ? description : undefined,
+      side: mapped.side,
+      align: mapped.align,
+      // driver.js itself leaves out `'close'` while `allowClose` is false.
+      showButtons: noButtons ? undefined : showButtons,
+      prevBtnText: mapped.previousButtonText,
+      doneBtnText: mapped.doneButtonText,
+      showProgress: mapped.showProgress,
+      progressText: mapped.progressText,
+      onPopoverRender,
+    })
+  }
+}
+
+function withoutUndefined<T extends object>(value: T): T {
+  return Object.fromEntries(
+    Object.entries(value).filter(([, entry]) => entry !== undefined),
+  ) as T
+}
+
+/** The footer stays only when it still has the progress text in it. */
+function hideButtons(dom: PopoverDOM): void {
+  dom.closeButton.style.display = 'none'
+  dom.footerButtons.style.display = 'none'
+  if (dom.progress.style.display !== 'block') {
+    dom.footer.style.display = 'none'
   }
 }

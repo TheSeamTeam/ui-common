@@ -57,5 +57,6 @@ storybook-static
 .claude/settings.local.json
 .superpowers/brainstorm
 .worktrees/
+.playwright-mcp/
 
 eslint-out.log

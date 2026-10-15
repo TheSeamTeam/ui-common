@@ -10,7 +10,20 @@ import {
   Subject,
   Subscription,
 } from 'rxjs'
-import { catchError, filter, map, switchMap, take, tap } from 'rxjs/operators'
+import {
+  catchError,
+  defaultIfEmpty,
+  distinctUntilChanged,
+  filter,
+  map,
+  skip,
+  startWith,
+  switchMap,
+  take,
+  takeUntil,
+  tap,
+  timeout,
+} from 'rxjs/operators'
 
 import {
   TheSeamGuideAdapter,
@@ -18,6 +31,7 @@ import {
   TheSeamGuideAdapterStep,
 } from './adapter/guide-adapter'
 import { resolveGuideContentSlot } from './content/guide-content-resolver'
+import { listenForGuideKeys } from './guide-keyboard'
 import { TheSeamGuideRef, TheSeamGuideSessionController } from './guide-ref'
 import {
   TheSeamGuideConfig,
@@ -37,10 +51,20 @@ import {
   TheSeamGuideViewSlot,
 } from './models/guide-content'
 import {
+  TheSeamGuideAfterStepContext,
+  TheSeamGuideBeforeStepContext,
+  TheSeamGuideButton,
   TheSeamGuideMissPolicy,
   TheSeamGuidePopover,
   TheSeamGuideStep,
+  TheSeamGuideStepContext,
+  TheSeamGuideTargetChange,
 } from './models/guide-step'
+import {
+  animationsSettled,
+  safeQuerySelector,
+  targetChanges,
+} from './target/guide-target-dom'
 import { TheSeamGuideTargetRegistry } from './target/guide-target-registry'
 
 /**
@@ -78,6 +102,13 @@ type SlotBinding =
       view: TheSeamGuideContentView | null
     }
 
+/** One entry into a step, from its `beforeStep` until it is left. */
+interface StepEntry {
+  index: number
+  /** Replays, so a late `exit$` subscriber still hears it. */
+  exit: ReplaySubject<void>
+}
+
 interface StepSlots {
   title: SlotBinding | null
   description: SlotBinding | null
@@ -107,6 +138,10 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
   private _recoveryGeneration = 0
 
   private _closed = false
+  private _stopKeys: (() => void) | null = null
+  private _resizeObserver: ResizeObserver | null = null
+  // The step whose `beforeStep` ran most recently, until it is left.
+  private _entry: StepEntry | null = null
 
   // Whether the currently active step's `afterStep` has already fired for
   // this departure. A skip or a cancellation re-requests a transition
@@ -182,8 +217,34 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
         onCloseRequested: () => this.close('dismissed'),
       },
     )
+    this._stopKeys = listenForGuideKeys({
+      next: () => this._onArrowKey('next'),
+      previous: () => this._onArrowKey('previous'),
+      escape: () => {
+        if (this.options.dismissible) {
+          this.close('dismissed')
+        }
+      },
+    })
     this._emit({ type: 'started' })
     this.moveTo(0)
+  }
+
+  /** An arrow key does what its button does, so hiding the button turns it off too. */
+  private _onArrowKey(button: 'next' | 'previous'): void {
+    const index = this._activeIndex()
+    if (index < 0) {
+      return
+    }
+    const shown = this._buttonsFor(this.steps[index])
+    if (shown !== undefined && !shown.includes(button)) {
+      return
+    }
+    if (button === 'next') {
+      this.next()
+    } else if (index > 0) {
+      this.previous()
+    }
   }
 
   next(): void {
@@ -227,6 +288,8 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
       return
     }
     this._closed = true
+    this._stopKeys?.()
+    this._stopKeys = null
     this._transitionSub?.unsubscribe()
     this._transitionSub = null
     this._disarmRecovery()
@@ -234,8 +297,16 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
       reason,
       lastIndex: this._activeIndex(),
     }
+    // The step on screen is being left, so its `afterStep` is owed, unless a
+    // transition away from it already ran it.
+    const owesAfterStep = result.lastIndex >= 0 && !this._afterStepFired
+    this._afterStepFired = true
     this._adapter.destroy()
     this._destroyAllSlots()
+    this._exitEntry()
+    if (owesAfterStep) {
+      this._runClosingAfterStep(result.lastIndex, reason)
+    }
     this._emit({ type: 'closed', result })
     this._afterClosed.next(result)
     this._afterClosed.complete()
@@ -245,6 +316,92 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
 
   protected _emit(event: TheSeamGuideEvent): void {
     this._events.next(event)
+  }
+
+  /**
+   * `afterStep` for a guide that is closing. Nothing waits for it, so a
+   * failure is only reported.
+   */
+  private _runClosingAfterStep(
+    index: number,
+    closeReason: TheSeamGuideCloseReason,
+  ): void {
+    const hook = this.steps[index]?.afterStep
+    if (hook === undefined) {
+      return
+    }
+    const warn = (err: unknown) => {
+      if (isDevMode()) {
+        console.warn(
+          `TheSeamGuideSession: afterStep of step ${index} threw while the` +
+            ` guide closed (${String(err)}).`,
+        )
+      }
+    }
+    try {
+      this._runHook(hook, () =>
+        this._afterContext(index, closeReason),
+      ).subscribe({ error: warn })
+    } catch (err) {
+      warn(err)
+    }
+  }
+
+  private _stepContext(index: number): TheSeamGuideStepContext {
+    return { guide: this._getRef(), step: this.steps[index], index }
+  }
+
+  private _afterContext(
+    index: number,
+    closeReason: TheSeamGuideCloseReason | null,
+  ): TheSeamGuideAfterStepContext {
+    return { ...this._stepContext(index), closeReason }
+  }
+
+  private _beforeContext(entry: StepEntry): TheSeamGuideBeforeStepContext {
+    return {
+      ...this._stepContext(entry.index),
+      exit$: entry.exit.asObservable(),
+      advanceWhenTarget: (target, on) =>
+        this._advanceWhenTarget(entry, target, on),
+    }
+  }
+
+  /**
+   * Starts a new entry into step `index`, ending the previous one. An entry
+   * begins when `beforeStep` runs, and lasts until the step is left, skipped,
+   * or the guide closes.
+   */
+  private _enterStep(index: number): StepEntry {
+    this._exitEntry()
+    this._entry = { index, exit: new ReplaySubject<void>(1) }
+    return this._entry
+  }
+
+  private _exitEntry(): void {
+    const entry = this._entry
+    this._entry = null
+    entry?.exit.next()
+    entry?.exit.complete()
+  }
+
+  private _advanceWhenTarget(
+    entry: StepEntry,
+    target: string,
+    on: TheSeamGuideTargetChange,
+  ): void {
+    const present = () => this._resolveString(target) !== null
+    targetChanges(this._registry, target)
+      .pipe(
+        map(present),
+        startWith(present()),
+        distinctUntilChanged(),
+        skip(1),
+        filter((isPresent) => isPresent === (on === 'appears')),
+        take(1),
+        takeUntil(entry.exit),
+      )
+      .subscribe(() => this._request(entry.index + 1, 1))
   }
 
   /**
@@ -261,9 +418,9 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
    * and reusing it would (a) misreport the close reason as `'targetMissing'`
    * for an `'end'`-policy step that never had a target problem, and (b) run
    * `_applyMissPolicy` unprotected as the last step of an error handler,
-   * where a further throw (e.g. from `_paint` → `_onStepPainted`, which
-   * Task 7 turns into real logic) would escape to the same unhandled outer
-   * subscriber this whole `catchError` exists to protect.
+   * where a further throw (e.g. from `_paint` → `_onStepPainted`) would
+   * escape to the same unhandled outer subscriber this whole `catchError`
+   * exists to protect.
    */
   private _runTransition(
     index: number,
@@ -272,24 +429,30 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
     if (this._closed) {
       return EMPTY
     }
+    // Before disarming: Previous on the first step changes nothing, so the
+    // step on screen must keep watching its target.
+    if (index < 0) {
+      return EMPTY
+    }
     this._disarmRecovery()
+    if (this._entry !== null && this._entry.index !== index) {
+      this._exitEntry()
+    }
     if (index >= this.steps.length) {
       this.close('completed')
       return EMPTY
     }
-    if (index < 0) {
-      return EMPTY
-    }
 
-    const outgoing =
-      this._activeIndex() >= 0 ? this.steps[this._activeIndex()] : undefined
+    const outgoingIndex = this._activeIndex()
     const incoming = this.steps[index]
 
     const afterStep$ = this._afterStepFired
       ? of(null)
       : defer(() => {
           this._afterStepFired = true
-          return this._runHook(outgoing?.afterStep)
+          return this._runHook(this.steps[outgoingIndex]?.afterStep, () =>
+            this._afterContext(outgoingIndex, null),
+          )
         })
 
     const beforeStep$ =
@@ -297,12 +460,20 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
         ? of(null)
         : defer(() => {
             this._beforeStepFiredFor = index
-            return this._runHook(incoming.beforeStep)
+            const entry = this._enterStep(index)
+            return this._runHook(incoming.beforeStep, () =>
+              this._beforeContext(entry),
+            )
           })
 
     return afterStep$.pipe(
       switchMap(() => beforeStep$),
       switchMap(() => this._resolveTarget(incoming)),
+      switchMap((outcome) =>
+        outcome === 'resolved'
+          ? this._targetSettled(incoming).pipe(map(() => outcome))
+          : of(outcome),
+      ),
       switchMap((outcome) => {
         if (this._closed) {
           return EMPTY
@@ -459,8 +630,9 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
   /**
    * Arms mid-step loss detection for a painted step.
    *
-   * Only named targets are watched — a selector or `Element` has no
-   * notification channel, so recovery does not apply to them in v1.
+   * Only named targets are watched for loss — a selector or `Element` has
+   * no notification channel, so recovery does not apply to them. Every
+   * target is followed for size changes.
    */
   protected _onStepPainted(index: number, step: TheSeamGuideStep): void {
     // A re-entrant `close()` from inside `_renderSlots` (see `_paint`) can
@@ -474,6 +646,7 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
     }
     this._disarmRecovery()
     const generation = this._recoveryGeneration
+    this._followSize(step)
 
     const name = typeof step.element === 'string' ? step.element : null
     if (name === null) {
@@ -494,6 +667,10 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
         filter(() => this._resolveNow(step) === null),
         take(1),
         switchMap(() => {
+          // The element being followed is gone. The highlight stays where it
+          // last was while the grace runs; recovery follows the new one.
+          this._stopFollowingSize()
+          this._adapter.holdPosition()
           this._emit({ type: 'targetLost', index, step })
           const grace = this.options.targetLostGrace
           return this._registry.waitFor(name, grace).pipe(
@@ -560,25 +737,77 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
     this._adapter.refresh()
   }
 
+  /** Stops watching the step's target: for loss, and for size changes. */
   private _disarmRecovery(): void {
     this._recoveryGeneration++
     this._recoverySub?.unsubscribe()
     this._recoverySub = null
+    this._stopFollowingSize()
   }
 
-  private _runHook(
-    hook: (() => void | Promise<void> | Observable<unknown>) | undefined,
+  private _stopFollowingSize(): void {
+    this._resizeObserver?.disconnect()
+    this._resizeObserver = null
+  }
+
+  /**
+   * Keeps the highlight on its target as the target changes size, such as a
+   * panel that expands. Cheap: the engine moves what it drew rather than
+   * drawing it again.
+   */
+  private _followSize(step: TheSeamGuideStep): void {
+    const element = this._resolveNow(step)
+    if (element === null || typeof ResizeObserver === 'undefined') {
+      return
+    }
+    // A ResizeObserver reports once when it starts observing. Only later
+    // reports are changes.
+    let first = true
+    this._resizeObserver = new ResizeObserver(() => {
+      if (first) {
+        first = false
+        return
+      }
+      // An element leaving the page reports 0x0, and fitting the highlight to
+      // that draws it in the corner. This report can come before the
+      // registry says the target is gone, so it is checked here too.
+      if (!this._closed && element.isConnected) {
+        this._adapter.reposition()
+      }
+    })
+    this._resizeObserver.observe(element)
+  }
+
+  /** Waits out the animations moving the step's target, such as a dialog opening. */
+  private _targetSettled(step: TheSeamGuideStep): Observable<unknown> {
+    const element = this._resolveNow(step)
+    if (element === null) {
+      return of(null)
+    }
+    return animationsSettled(
+      element,
+      step.targetTimeout ?? this.options.targetTimeout,
+    )
+  }
+
+  private _runHook<C>(
+    hook:
+      | ((context: C) => void | Promise<void> | Observable<unknown>)
+      | undefined,
+    context: () => C,
   ): Observable<unknown> {
     if (hook === undefined) {
       return of(null)
     }
     return defer(() => {
-      const result = hook()
+      const result = hook(context())
       if (result === undefined || result === null) {
         return of(null)
       }
       if (isObservable(result)) {
-        return result.pipe(take(1))
+        // Completing without a value counts as done, rather than holding the
+        // step forever.
+        return result.pipe(take(1), defaultIfEmpty(null))
       }
       return from(result)
     })
@@ -607,9 +836,11 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
     }
 
     const timeoutMs = step.targetTimeout ?? this.options.targetTimeout
-    return this._registry.waitFor(target, timeoutMs).pipe(
+    return targetChanges(this._registry, target).pipe(
+      filter(() => this._resolveNow(step) !== null),
+      take(1),
       map(() => 'resolved' as const),
-      catchError(() => of('missing' as const)),
+      timeout({ first: timeoutMs, with: () => of('missing' as const) }),
     )
   }
 
@@ -638,6 +869,9 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
       )
     }
     this._emit({ type: 'stepSkipped', index, step })
+    if (this._entry?.index === index) {
+      this._exitEntry()
+    }
 
     const nextIndex = index + direction
     if (nextIndex < 0 || nextIndex >= this.steps.length) {
@@ -681,6 +915,12 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
       description: slotValue(slots?.description),
       side: this._nearestScalar(step, 'side'),
       align: this._nearestScalar(step, 'align'),
+      showButtons: this._buttonsFor(step),
+      nextButtonText: this._nearestScalar(step, 'nextButtonText'),
+      previousButtonText: this._nearestScalar(step, 'previousButtonText'),
+      doneButtonText: this._nearestScalar(step, 'doneButtonText'),
+      showProgress: this._nearestScalar(step, 'showProgress'),
+      progressText: this._nearestScalar(step, 'progressText'),
     }
 
     return Object.values(mapped).every((value) => value === undefined)
@@ -696,10 +936,15 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
     })
   }
 
-  private _nearestScalar<K extends 'side' | 'align'>(
+  private _buttonsFor(
     step: TheSeamGuideStep,
-    key: K,
-  ): TheSeamGuidePopover[K] {
+  ): TheSeamGuideButton[] | undefined {
+    return this._nearestScalar(step, 'showButtons')
+  }
+
+  private _nearestScalar<
+    K extends Exclude<keyof TheSeamGuidePopover, 'title' | 'description'>,
+  >(step: TheSeamGuideStep, key: K): TheSeamGuidePopover[K] {
     return (
       step.popover?.[key] ??
       this._sessionPopover?.[key] ??
@@ -718,12 +963,17 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
       return null
     }
     if (typeof target === 'string') {
-      return this._registry.resolve(target) ?? safeQuerySelector(target)
+      return this._resolveString(target)
     }
     if (target instanceof Element) {
       return target
     }
     return target.nativeElement
+  }
+
+  /** A registered name first, then a selector. */
+  private _resolveString(target: string): Element | null {
+    return this._registry.resolve(target) ?? safeQuerySelector(target)
   }
 }
 
@@ -748,13 +998,4 @@ function slotValue(
     return undefined
   }
   return binding.kind === 'text' ? binding.text : binding.host
-}
-
-/** `querySelector` throws on an invalid selector; a registry name often is one. */
-function safeQuerySelector(selector: string): Element | null {
-  try {
-    return document.querySelector(selector)
-  } catch {
-    return null
-  }
 }

@@ -16,7 +16,6 @@
     "@types/overlayscrollbars",
     "bootstrap",
     "css-element-queries",
-    "driver.js",
     "file-saver",
     "ngx-toastr",
     "pdfjs-dist",

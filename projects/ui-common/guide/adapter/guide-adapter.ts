@@ -1,5 +1,7 @@
 import { InjectionToken } from '@angular/core'
 
+import type { TheSeamGuideButton } from '../models/guide-step'
+
 /**
  * A popover as the presentation engine sees it.
  *
@@ -22,6 +24,13 @@ export interface TheSeamGuideAdapterPopover {
   description?: string | HTMLElement
   side?: 'top' | 'right' | 'bottom' | 'left'
   align?: 'start' | 'center' | 'end'
+  /** `'close'` must still be left out while `allowUserDismiss` is false. */
+  showButtons?: TheSeamGuideButton[]
+  nextButtonText?: string
+  previousButtonText?: string
+  doneButtonText?: string
+  showProgress?: boolean
+  progressText?: string
 }
 
 /**
@@ -42,7 +51,14 @@ export interface TheSeamGuideAdapterConfig {
   allowUserDismiss: boolean
 }
 
-/** How the engine reports user intent. It never advances itself. */
+/**
+ * How the engine reports user intent. It never advances itself.
+ *
+ * Keys are not the engine's to handle: the session listens for Escape and
+ * the arrow keys itself, so it can leave alone the ones typed into a field or
+ * meant for a dialog opened during the guide. An engine with keyboard
+ * navigation of its own must have it turned off.
+ */
 export interface TheSeamGuideAdapterCallbacks {
   onNextRequested(): void
   onPreviousRequested(): void
@@ -54,8 +70,6 @@ export interface TheSeamGuideAdapter {
     config: TheSeamGuideAdapterConfig,
     callbacks: TheSeamGuideAdapterCallbacks,
   ): void
-  next(): void
-  previous(): void
   moveTo(index: number): void
   /**
    * Re-resolves and repositions the current step in place, without a step
@@ -72,6 +86,19 @@ export interface TheSeamGuideAdapter {
    * re-resolution.
    */
   refresh(): void
+  /**
+   * Fits the highlight and popover to the current step's element again, after
+   * it changed size or moved. The element is the same one, so unlike
+   * `refresh()` this need not re-resolve it, and should not re-render.
+   */
+  reposition(): void
+  /**
+   * The current step's element has left the page. Keeps the highlight and
+   * popover where they are drawn, rather than fitting them to an element that
+   * no longer has a position, until the next `refresh()`, `moveTo()`, or
+   * `destroy()`.
+   */
+  holdPosition(): void
   destroy(): void
   isActive(): boolean
 }
