@@ -40,6 +40,7 @@
             ],
             "styles": [
               "projects/ui-common/styles/theme.scss",
+              "node_modules/driver.js/dist/driver.css",
               "projects/ui-common/guide/guide-theme.scss",
               "projects/ui-common/framework/route-transitions/route-transitions.css",
               "node_modules/@marklb/ngx-datatable/assets/icons.css"
@@ -155,6 +156,7 @@
             "outputDir": "storybook-static",
             "styles": [
               "projects/ui-common/styles/theme.scss",
+              "node_modules/driver.js/dist/driver.css",
               "projects/ui-common/guide/guide-theme.scss",
               "projects/ui-common/framework/route-transitions/route-transitions.css",
               "node_modules/@marklb/ngx-datatable/assets/icons.css"
