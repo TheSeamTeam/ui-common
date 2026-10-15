@@ -249,4 +249,85 @@ describe('DriverJsGuideAdapter popover slots', () => {
     expect(config.steps[0]?.popover?.side).toBe('right')
     expect(config.steps[0]?.popover?.align).toBe('end')
   })
+
+  function visible(selector: string): boolean {
+    const el = document.querySelector<HTMLElement>(selector)
+    return el !== null && el.style.display !== 'none'
+  }
+
+  it('renders button labels and progress text', () => {
+    drive({
+      description: 'text',
+      doneButtonText: 'Finish',
+      previousButtonText: 'Back',
+      showProgress: true,
+      progressText: 'Step {{current}}/{{total}}',
+    })
+
+    // A one-step guide: its Next button is the Done button.
+    expect(
+      document.querySelector('.driver-popover-next-btn')?.textContent,
+    ).toBe('Finish')
+    expect(
+      document.querySelector('.driver-popover-prev-btn')?.textContent,
+    ).toBe('Back')
+    expect(
+      document.querySelector('.driver-popover-progress-text')?.textContent,
+    ).toBe('Step 1/1')
+  })
+
+  it('keeps "Done" on the last step when every step sets a Next label', () => {
+    const popover = { description: 'text', nextButtonText: 'Onward' }
+    adapter.start(
+      { steps: [{ popover }, { popover }], allowUserDismiss: true },
+      {
+        onNextRequested: () => {},
+        onPreviousRequested: () => {},
+        onCloseRequested: () => {},
+      },
+    )
+    const nextLabel = () =>
+      document.querySelector('.driver-popover-next-btn')?.textContent
+
+    adapter.moveTo(0)
+    expect(nextLabel()).toBe('Onward')
+
+    adapter.moveTo(1)
+    expect(nextLabel()).toBe('Done')
+  })
+
+  it('shows only the listed buttons', () => {
+    drive({ description: 'text', showButtons: ['previous'] })
+
+    expect(visible('.driver-popover-next-btn')).toBe(false)
+    expect(visible('.driver-popover-prev-btn')).toBe(true)
+    expect(visible('.driver-popover-close-btn')).toBe(false)
+  })
+
+  it('shows no buttons for an empty list', () => {
+    drive({ description: 'text', showButtons: [] })
+
+    expect(visible('.driver-popover-close-btn')).toBe(false)
+    expect(visible('.driver-popover-footer')).toBe(false)
+  })
+
+  it('leaves keys to the session', () => {
+    const onCloseRequested = jest.fn()
+    const onNextRequested = jest.fn()
+    adapter.start(
+      {
+        steps: [{ popover: { title: 'one' } }, { popover: { title: 'two' } }],
+        allowUserDismiss: true,
+      },
+      { onCloseRequested, onNextRequested, onPreviousRequested: () => {} },
+    )
+    adapter.moveTo(0)
+
+    for (const key of ['Escape', 'ArrowRight']) {
+      window.dispatchEvent(new KeyboardEvent('keyup', { key }))
+    }
+
+    expect(onCloseRequested).not.toHaveBeenCalled()
+    expect(onNextRequested).not.toHaveBeenCalled()
+  })
 })

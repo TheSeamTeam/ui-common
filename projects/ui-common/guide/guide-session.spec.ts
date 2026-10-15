@@ -1,5 +1,5 @@
 import { fakeAsync, tick } from '@angular/core/testing'
-import { of } from 'rxjs'
+import { EMPTY, of } from 'rxjs'
 
 import { TheSeamGuideRef } from './guide-ref'
 import { TheSeamGuideSession } from './guide-session'
@@ -443,4 +443,148 @@ describe('TheSeamGuideSession transitions', () => {
 
     expect(adapter.calls).toContain('moveTo:0')
   }))
+
+  it('waits for a selector target that appears later', async () => {
+    const { adapter, session } = makeSession({
+      steps: [{ element: '.late', popover: { title: 'one' } }],
+      targetTimeout: 5000,
+    })
+    session.start()
+    await settle()
+    expect(adapter.calls).not.toContain('moveTo:0')
+
+    connectedEl().className = 'late'
+    await settle()
+
+    expect(adapter.calls).toContain('moveTo:0')
+    session.close('destroyed')
+  })
+
+  it('treats a beforeStep Observable that completes without a value as done', fakeAsync(() => {
+    const { adapter, session } = makeSession({
+      steps: [{ popover: { title: 'one' }, beforeStep: () => EMPTY }],
+    })
+
+    session.start()
+    tick()
+
+    expect(adapter.calls).toContain('moveTo:0')
+  }))
+
+  it('runs afterStep of the step on screen when the guide is closed', fakeAsync(() => {
+    const afterStep = jest.fn()
+    const { session } = makeSession({
+      steps: [{ popover: { title: 'one' }, afterStep }],
+    })
+    session.start()
+    tick()
+
+    session.close('dismissed')
+
+    expect(afterStep).toHaveBeenCalledTimes(1)
+  }))
+
+  it('runs afterStep of the last step when the guide finishes', fakeAsync(() => {
+    const afterStep = jest.fn()
+    const { events, session } = makeSession({
+      steps: [{ popover: { title: 'one' }, afterStep }],
+    })
+    session.start()
+    tick()
+
+    session.next()
+    tick()
+
+    expect(afterStep).toHaveBeenCalledTimes(1)
+    const closed = events.find((e) => e.type === 'closed')
+    expect(closed?.type === 'closed' && closed.result.reason).toBe('completed')
+  }))
+
+  it('does not run afterStep again when closing after leaving its step', fakeAsync(() => {
+    const afterStep = jest.fn()
+    const { session } = makeSession({
+      steps: [
+        { popover: { title: 'one' }, afterStep },
+        { element: 'never', popover: { title: 'two' } },
+      ],
+      targetTimeout: 5000,
+    })
+    session.start()
+    tick()
+    session.next()
+    tick(100)
+    expect(afterStep).toHaveBeenCalledTimes(1)
+
+    session.close('dismissed')
+
+    expect(afterStep).toHaveBeenCalledTimes(1)
+  }))
+
+  it('does not run afterStep for a step that never showed', fakeAsync(() => {
+    const afterStep = jest.fn()
+    const { session } = makeSession({
+      steps: [{ element: 'never', popover: { title: 'one' }, afterStep }],
+      targetTimeout: 5000,
+    })
+    session.start()
+    tick(100)
+
+    session.close('dismissed')
+
+    expect(afterStep).not.toHaveBeenCalled()
+  }))
+
+  it('reports, and does not throw, when afterStep fails while closing', fakeAsync(() => {
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {})
+    const { session } = makeSession({
+      steps: [
+        {
+          popover: { title: 'one' },
+          afterStep: () => {
+            throw new Error('boom')
+          },
+        },
+      ],
+    })
+    session.start()
+    tick()
+
+    expect(() => session.close('dismissed')).not.toThrow()
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('boom'))
+  }))
+
+  it('passes button, label, and progress options to the adapter, nearest layer first', fakeAsync(() => {
+    const { adapter, session } = makeSession({
+      popover: { nextButtonText: 'Onward', showProgress: true },
+      steps: [
+        {
+          popover: {
+            title: 'one',
+            showButtons: ['previous'],
+            doneButtonText: 'Finish',
+            nextButtonText: 'Go',
+          },
+        },
+      ],
+    })
+
+    session.start()
+    tick()
+
+    expect(adapter.startedConfig?.steps[0]?.popover).toEqual(
+      expect.objectContaining({
+        showButtons: ['previous'],
+        nextButtonText: 'Go',
+        doneButtonText: 'Finish',
+        showProgress: true,
+      }),
+    )
+  }))
 })
+
+/** Lets a MutationObserver callback, and the transition it starts, run. */
+async function settle(): Promise<void> {
+  for (let i = 0; i < 10; i++) {
+    await Promise.resolve()
+  }
+}

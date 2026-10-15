@@ -26,20 +26,16 @@ export class TheSeamFakeGuideAdapter implements TheSeamGuideAdapter {
     this.calls.push('start')
   }
 
-  next(): void {
-    this.calls.push('next')
-  }
-
-  previous(): void {
-    this.calls.push('previous')
-  }
-
   moveTo(index: number): void {
     this.calls.push(`moveTo:${index}`)
   }
 
   refresh(): void {
     this.calls.push('refresh')
+  }
+
+  reposition(): void {
+    this.calls.push('reposition')
   }
 
   destroy(): void {
