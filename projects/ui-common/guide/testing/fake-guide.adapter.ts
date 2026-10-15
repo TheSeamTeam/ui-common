@@ -38,6 +38,10 @@ export class TheSeamFakeGuideAdapter implements TheSeamGuideAdapter {
     this.calls.push('reposition')
   }
 
+  holdPosition(): void {
+    this.calls.push('holdPosition')
+  }
+
   destroy(): void {
     this._active = false
     // Dropped, not merely inert-by-`_active`: `emitNext`/`emitPrevious`/

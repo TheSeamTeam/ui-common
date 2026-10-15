@@ -399,6 +399,49 @@ describe('TheSeamGuideSession following its target', () => {
     session.close('destroyed')
   }))
 
+  it('does not reposition for the report a target makes as it leaves the page', fakeAsync(() => {
+    const target = connectedEl()
+    const { adapter, session } = makeSession({
+      steps: [{ element: target }],
+    })
+    session.start()
+    tick()
+    observers[0].report()
+
+    // A removed element reports 0x0. Fitting to that would draw the
+    // highlight in the corner of the page.
+    target.remove()
+    observers[0].report()
+
+    expect(adapter.calls).not.toContain('reposition')
+    session.close('destroyed')
+  }))
+
+  it('stops following a lost target, and follows the one that replaces it', fakeAsync(() => {
+    const first = connectedEl()
+    const { adapter, registry, session } = makeSession({
+      steps: [{ element: 'a' }],
+      targetLostGrace: 1000,
+    })
+    registry.register('a', first)
+    session.start()
+    tick()
+
+    first.remove()
+    registry.unregister('a', first)
+    tick()
+    expect(observers[0].disconnected).toBe(true)
+    expect(adapter.calls).toContain('holdPosition')
+
+    const second = connectedEl()
+    registry.register('a', second)
+    tick()
+
+    expect(observers[observers.length - 1].observed).toEqual([second])
+    expect(observers[observers.length - 1].disconnected).toBe(false)
+    session.close('destroyed')
+  }))
+
   it('stops following when the guide closes', fakeAsync(() => {
     const { session } = makeSession({ steps: [{ element: connectedEl() }] })
     session.start()

@@ -667,6 +667,10 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
         filter(() => this._resolveNow(step) === null),
         take(1),
         switchMap(() => {
+          // The element being followed is gone. The highlight stays where it
+          // last was while the grace runs; recovery follows the new one.
+          this._stopFollowingSize()
+          this._adapter.holdPosition()
           this._emit({ type: 'targetLost', index, step })
           const grace = this.options.targetLostGrace
           return this._registry.waitFor(name, grace).pipe(
@@ -738,6 +742,10 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
     this._recoveryGeneration++
     this._recoverySub?.unsubscribe()
     this._recoverySub = null
+    this._stopFollowingSize()
+  }
+
+  private _stopFollowingSize(): void {
     this._resizeObserver?.disconnect()
     this._resizeObserver = null
   }
@@ -760,7 +768,10 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
         first = false
         return
       }
-      if (!this._closed) {
+      // An element leaving the page reports 0x0, and fitting the highlight to
+      // that draws it in the corner. This report can come before the
+      // registry says the target is gone, so it is checked here too.
+      if (!this._closed && element.isConnected) {
         this._adapter.reposition()
       }
     })

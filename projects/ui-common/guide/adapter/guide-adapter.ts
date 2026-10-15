@@ -92,6 +92,13 @@ export interface TheSeamGuideAdapter {
    * `refresh()` this need not re-resolve it, and should not re-render.
    */
   reposition(): void
+  /**
+   * The current step's element has left the page. Keeps the highlight and
+   * popover where they are drawn, rather than fitting them to an element that
+   * no longer has a position, until the next `refresh()`, `moveTo()`, or
+   * `destroy()`.
+   */
+  holdPosition(): void
   destroy(): void
   isActive(): boolean
 }

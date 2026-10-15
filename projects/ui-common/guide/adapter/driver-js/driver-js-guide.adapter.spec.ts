@@ -139,6 +139,103 @@ describe('DriverJsGuideAdapter', () => {
     expect(elB.classList.contains('driver-active-element')).toBe(true)
     expect(elA.classList.contains('driver-active-element')).toBe(false)
   })
+
+  it('leaves the highlight where it was when repositioning around a detached element', () => {
+    jest.useFakeTimers()
+
+    const el = document.createElement('div')
+    document.body.appendChild(el)
+    // What a browser does, which jsdom does not: a real size while attached,
+    // and zeros once removed.
+    el.getBoundingClientRect = () =>
+      el.isConnected ? new DOMRect(200, 150, 80, 40) : new DOMRect(0, 0, 0, 0)
+
+    adapter.start(
+      {
+        steps: [{ element: () => el, popover: { title: 'one' } }],
+        allowUserDismiss: true,
+      },
+      noopCallbacks,
+    )
+    adapter.moveTo(0)
+    jest.advanceTimersByTime(500)
+
+    const cutout = () =>
+      document.querySelector('.driver-overlay path')?.getAttribute('d')
+    const before = cutout()
+    expect(before).toContain('M')
+
+    el.remove()
+    adapter.reposition()
+    jest.advanceTimersByTime(100)
+
+    expect(cutout()).toBe(before)
+  })
+
+  describe('holding position', () => {
+    /** Attached, with a browser's measurements: real while attached, zeros once removed. */
+    function measuredEl(x: number, y: number): HTMLElement {
+      const el = document.createElement('div')
+      document.body.appendChild(el)
+      el.getBoundingClientRect = () =>
+        el.isConnected ? new DOMRect(x, y, 80, 40) : new DOMRect(0, 0, 0, 0)
+      return el
+    }
+
+    const cutout = () =>
+      document.querySelector('.driver-overlay path')?.getAttribute('d')
+
+    it('keeps the highlight in place when the target leaves before it has settled', () => {
+      jest.useFakeTimers()
+      const el = measuredEl(200, 150)
+      adapter.start(
+        {
+          steps: [{ element: () => el, popover: { title: 'one' } }],
+          allowUserDismiss: true,
+        },
+        noopCallbacks,
+      )
+      adapter.moveTo(0)
+      // Inside driver.js's 400ms highlight animation, which measures the
+      // target on every frame.
+      jest.advanceTimersByTime(200)
+      const before = cutout()
+
+      el.remove()
+      adapter.holdPosition()
+      jest.advanceTimersByTime(500)
+      adapter.reposition()
+      jest.advanceTimersByTime(100)
+
+      expect(cutout()).toBe(before)
+    })
+
+    it('stops holding once the step is drawn again', () => {
+      jest.useFakeTimers()
+      const first = measuredEl(200, 150)
+      let current = first
+      adapter.start(
+        {
+          steps: [{ element: () => current, popover: { title: 'one' } }],
+          allowUserDismiss: true,
+        },
+        noopCallbacks,
+      )
+      adapter.moveTo(0)
+      jest.advanceTimersByTime(500)
+
+      first.remove()
+      adapter.holdPosition()
+      current = measuredEl(300, 250)
+      adapter.refresh()
+      jest.advanceTimersByTime(500)
+
+      // The removed element measures as itself again.
+      expect(first.getBoundingClientRect().width).toBe(0)
+      expect(cutout()).not.toContain('M195,140')
+      expect(cutout()).toContain('M295,240')
+    })
+  })
 })
 
 describe('DriverJsGuideAdapter popover slots', () => {

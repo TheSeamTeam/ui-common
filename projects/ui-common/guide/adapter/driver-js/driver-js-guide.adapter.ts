@@ -1,5 +1,12 @@
 import { Injectable } from '@angular/core'
-import { Config, DriveStep, driver, Driver, PopoverDOM } from 'driver.js'
+import {
+  Config,
+  DriveStep,
+  driver,
+  Driver,
+  PopoverDOM,
+  StageDefinition,
+} from 'driver.js'
 
 import {
   TheSeamGuideAdapter,
@@ -25,6 +32,8 @@ import { ExhaustiveMap } from '../../models/exhaustive-map'
 @Injectable()
 export class DriverJsGuideAdapter implements TheSeamGuideAdapter {
   private _driver: Driver | null = null
+  // Undoes `holdPosition()`, while one is in effect.
+  private _releaseHold: (() => void) | null = null
 
   start(
     config: TheSeamGuideAdapterConfig,
@@ -51,6 +60,7 @@ export class DriverJsGuideAdapter implements TheSeamGuideAdapter {
   }
 
   moveTo(index: number): void {
+    this._release()
     if (this._driver === null) {
       return
     }
@@ -71,6 +81,10 @@ export class DriverJsGuideAdapter implements TheSeamGuideAdapter {
     // flash even when the resolved element hasn't changed — driver.js has no
     // primitive for "re-resolve without re-render". Callers should treat this
     // as a recovery operation, not something to invoke speculatively.
+    //
+    // Released first so a held position is where the move starts from, and
+    // is not left on the element being moved away from.
+    this._release()
     const index = this._driver?.getActiveIndex()
     if (index !== undefined) {
       this._driver?.moveTo(index)
@@ -80,10 +94,57 @@ export class DriverJsGuideAdapter implements TheSeamGuideAdapter {
   reposition(): void {
     // driver.js's own refresh() is exactly this: it re-measures the element
     // it already highlights and moves the overlay and popover to fit.
+    //
+    // A detached element measures 0x0 at the page's corner, so fitting to it
+    // would move the highlight there. Leaving it where it was is better.
+    // driver.js's own scroll and resize listeners call the same refresh()
+    // and are not stopped by this.
+    if (this._driver?.getActiveElement()?.isConnected === false) {
+      return
+    }
     this._driver?.refresh()
   }
 
+  holdPosition(): void {
+    // driver.js measures the element it highlights itself, with no way to
+    // tell it to stop: on every frame of the 400ms animation after each
+    // highlight, and on every scroll and resize. A removed element measures
+    // 0x0 at the page's corner, and the highlight follows it there. So the
+    // removed element is made to measure where the highlight was last drawn.
+    //
+    // This matters most when a target is replaced soon after it is first
+    // highlighted, such as a view that re-renders once its data loads.
+    const element = this._driver?.getActiveElement()
+    const drawn: StageDefinition | undefined = this._driver?.getState(
+      '__activeStagePosition',
+    )
+    if (element === undefined || drawn === undefined) {
+      return
+    }
+    this._release()
+
+    // Held only while detached, so if the same element is put back it is
+    // measured where it really is.
+    const own = Object.getOwnPropertyDescriptor(
+      element,
+      'getBoundingClientRect',
+    )
+    const measure = element.getBoundingClientRect
+    element.getBoundingClientRect = () =>
+      element.isConnected
+        ? measure.call(element)
+        : new DOMRect(drawn.x, drawn.y, drawn.width, drawn.height)
+    this._releaseHold = () => {
+      if (own === undefined) {
+        delete (element as Partial<Element>).getBoundingClientRect
+      } else {
+        Object.defineProperty(element, 'getBoundingClientRect', own)
+      }
+    }
+  }
+
   destroy(): void {
+    this._release()
     if (this._driver === null) {
       return
     }
@@ -100,6 +161,11 @@ export class DriverJsGuideAdapter implements TheSeamGuideAdapter {
 
   isActive(): boolean {
     return this._driver?.isActive() ?? false
+  }
+
+  private _release(): void {
+    this._releaseHold?.()
+    this._releaseHold = null
   }
 
   private _toDriveStep(step: TheSeamGuideAdapterStep): DriveStep {
