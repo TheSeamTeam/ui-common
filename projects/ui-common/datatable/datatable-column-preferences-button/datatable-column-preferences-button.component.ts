@@ -1,8 +1,12 @@
 import { ConnectionPositionPair } from '@angular/cdk/overlay'
-import { ChangeDetectionStrategy, Component } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core'
 
-import { faColumns } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faColumns } from '@fortawesome/free-solid-svg-icons'
 
+import {
+  DatatableComponent,
+  THESEAM_DATATABLE,
+} from '../datatable/datatable.component'
 import { ColumnsAlterationsManagerService } from '../services/columns-alterations-manager.service'
 
 @Component({
@@ -14,6 +18,7 @@ import { ColumnsAlterationsManagerService } from '../services/columns-alteration
 })
 export class DatatableColumnPreferencesButtonComponent {
   icon = faColumns
+  checkIcon = faCheck
 
   /** @ignore */
   _actionMenuPositions: ConnectionPositionPair[] = [
@@ -44,10 +49,17 @@ export class DatatableColumnPreferencesButtonComponent {
   ]
 
   constructor(
+    @Inject(THESEAM_DATATABLE) readonly _datatable: DatatableComponent,
     private readonly _columnsAlterationsManager: ColumnsAlterationsManagerService,
   ) {}
 
   _resetColumns(event: any) {
     this._columnsAlterationsManager.clear()
+  }
+
+  _toggleAutoHeaderHeight() {
+    this._datatable.setUserHeaderHeight(
+      this._datatable.userHeaderHeight === 'auto' ? undefined : 'auto',
+    )
   }
 }
