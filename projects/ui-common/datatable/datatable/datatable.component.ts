@@ -1,5 +1,10 @@
 import { animate, style, transition, trigger } from '@angular/animations'
-import { BooleanInput, coerceArray, NumberInput } from '@angular/cdk/coercion'
+import {
+  BooleanInput,
+  coerceArray,
+  coerceNumberProperty,
+  NumberInput,
+} from '@angular/cdk/coercion'
 import {
   CollectionViewer,
   DataSource,
@@ -423,13 +428,13 @@ export class DatatableComponent<TRow = any>
   @Input() @InputBoolean() virtualization = true
 
   @Input()
-  @InputNumber()
-  get headerHeight(): number | undefined | null {
+  get headerHeight(): number | 'auto' | undefined | null {
     return this._headerHeight
   }
-  set headerHeight(value: number | undefined | null) {
-    if (notNullOrUndefined(value)) {
-      this._headerHeight = value
+  set headerHeight(value: number | 'auto' | undefined | null) {
+    const val = value === 'auto' ? value : coerceNumberProperty(value, null)
+    if (notNullOrUndefined(val)) {
+      this._headerHeight = val
     } else if (notNullOrUndefined(this._config?.headerHeight)) {
       this._headerHeight = this._config?.headerHeight
     } else {
@@ -437,7 +442,38 @@ export class DatatableComponent<TRow = any>
     }
   }
   private readonly _headerHeightDefault: number = 50
-  _headerHeight: number | undefined | null
+  _headerHeight: number | 'auto' | undefined | null
+
+  /** Header height the user chose, saved in the datatable preferences. */
+  private _userHeaderHeight: 'auto' | undefined
+
+  get allowUserAutoHeaderHeight(): boolean {
+    return this._config?.allowUserAutoHeaderHeight === true
+  }
+
+  get userHeaderHeight(): 'auto' | undefined {
+    return this._userHeaderHeight
+  }
+
+  /** Bound to the wrapped datatable. */
+  get _effectiveHeaderHeight(): number | 'auto' | undefined | null {
+    return this.allowUserAutoHeaderHeight && this._userHeaderHeight
+      ? this._userHeaderHeight
+      : this.headerHeight
+  }
+
+  /**
+   * Sets the user's header height choice and saves it to the preferences, if
+   * the datatable has a `preferencesKey`.
+   */
+  public setUserHeaderHeight(value: 'auto' | undefined): void {
+    this._userHeaderHeight = value
+    this._cdr.markForCheck()
+    const key = this.preferencesKey
+    if (notNullOrUndefined(key) && key.length > 0) {
+      this._preferences.setDisplay(key, { headerHeight: value })
+    }
+  }
 
   @Input()
   @InputNumber()
@@ -857,6 +893,12 @@ export class DatatableComponent<TRow = any>
               }
               // console.log('%cSetting columns alterations from preferences', 'color: blue', alterations)
               this._columnsAlterationsManager.add(alterations)
+
+              this._userHeaderHeight =
+                preferences.display?.headerHeight === 'auto'
+                  ? 'auto'
+                  : undefined
+              this._cdr.markForCheck()
             }),
           )
         }),

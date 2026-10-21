@@ -13,9 +13,22 @@ export interface TheSeamDatatablePreferences_v1 {
   columns?: TheSeamDatatablePreferencesColumn[]
 }
 
+/**
+ * Table-wide display choices the user made. These are not column alterations,
+ * so resetting the columns does not reset them.
+ */
+export interface TheSeamDatatablePreferencesDisplay {
+  /**
+   * Only applied when `allowUserAutoHeaderHeight` is enabled in
+   * `TheSeamDatatableConfig`.
+   */
+  headerHeight?: 'auto'
+}
+
 export interface TheSeamDatatablePreferences_v2 extends TheSeamPreferencesBase {
   version: 2
   alterations: ColumnsAlterationState[]
+  display?: TheSeamDatatablePreferencesDisplay
 }
 
 export type TheSeamDatatablePreferences = TheSeamDatatablePreferences_v2

@@ -42,7 +42,16 @@ export interface TheSeamDatatableConfig {
    *
    * @default 50
    */
-  headerHeight?: number | undefined | null
+  headerHeight?: number | 'auto' | undefined | null
+
+  /**
+   * Lets the user choose an auto header height from the column preferences
+   * menu. Their choice is saved in the datatable preferences and overrides
+   * `headerHeight`.
+   *
+   * @default false
+   */
+  allowUserAutoHeaderHeight?: boolean
 
   /**
    * Row height in pixels, necessary for calculating scroll height.

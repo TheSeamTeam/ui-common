@@ -28,6 +28,7 @@ import {
 } from '../services/columns-alterations-manager.service'
 import { DatatablePreferencesAccessorLocalService } from '../stories/preferences-accessor-local'
 import { TheSeamDatatableHarness } from '../testing'
+import { THESEAM_DATATABLE_CONFIG } from '../models/datatable-config'
 import { THESEAM_DATATABLE_PREFERENCES_ACCESSOR } from '../tokens/datatable-preferences-accessor'
 import { DatatableColumnPreferencesButtonComponent } from './datatable-column-preferences-button.component'
 
@@ -117,6 +118,14 @@ type Story = StoryObj<DatatableColumnPreferencesButtonComponent>
 
 export const Example: Story = {
   render: (args) => ({
+    moduleMetadata: {
+      providers: [
+        {
+          provide: THESEAM_DATATABLE_CONFIG,
+          useValue: { allowUserAutoHeaderHeight: true },
+        },
+      ],
+    },
     props: {
       __hack: {
         columns: [
@@ -130,7 +139,7 @@ export const Example: Story = {
             resizeable: false,
           },
           { prop: 'age', name: 'Age' },
-          { prop: 'color', name: 'Color' },
+          { prop: 'color', name: 'Color As Long Example' },
           { prop: 'color1', name: 'Color1' },
           { prop: 'color2', name: 'Color2' },
         ],
