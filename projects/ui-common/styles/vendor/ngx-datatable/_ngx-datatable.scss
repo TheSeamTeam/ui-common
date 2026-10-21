@@ -182,6 +182,11 @@
     color: $datatable-header-color;
     height: unset !important;
 
+    // Lift the group being dragged so its header can cross the frozen left/right areas.
+    .datatable-header-inner > div:has(.dragging) {
+      z-index: 10;
+    }
+
     .datatable-header-cell {
       vertical-align: bottom;
       // ngx-datatable only clips both axes for a fixed height header. With just

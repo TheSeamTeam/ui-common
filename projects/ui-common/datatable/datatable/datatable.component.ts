@@ -109,6 +109,7 @@ import { DatatableColumnChangesService } from '../services/datatable-column-chan
 import { DatatableRefreshService } from '../services/datatable-refresh.service'
 import { DatatablePreferencesService } from '../services/datatable-preferences.service'
 import { THESEAM_DATATABLE_ACCESSOR } from '../tokens/datatable-accessor'
+import { freezeFirstDataColumn } from '../utils/freeze-first-data-column'
 import { removeUnusedDiffs } from '../utils/remove-unused-diffs'
 import { translateTemplateColumns } from '../utils/translate-templates'
 import { ColumnsAlterationsManagerService } from '../services/columns-alterations-manager.service'
@@ -549,6 +550,22 @@ export class DatatableComponent<TRow = any>
     'frozenRight'
   _actionItemColumnPosition: ActionItemColumnPosition | undefined
 
+  @Input() get freezeFirstDataColumn(): boolean | undefined | null {
+    return this._freezeFirstDataColumnInput
+  }
+  set freezeFirstDataColumn(value: boolean | undefined | null) {
+    this._freezeFirstDataColumnInput = value
+    if (notNullOrUndefined(value)) {
+      this._freezeFirstDataColumn$.next(value)
+    } else if (notNullOrUndefined(this._config?.freezeFirstDataColumn)) {
+      this._freezeFirstDataColumn$.next(this._config!.freezeFirstDataColumn!)
+    } else {
+      this._freezeFirstDataColumn$.next(false)
+    }
+  }
+  private _freezeFirstDataColumnInput: boolean | undefined | null = undefined
+  private readonly _freezeFirstDataColumn$ = new BehaviorSubject<boolean>(false)
+
   @Input() get columnFilterIcon(): SeamIcon | undefined | null {
     return this._columnFilterIcon
   }
@@ -921,8 +938,13 @@ export class DatatableComponent<TRow = any>
       switchMap((cols) => applyPrefs(cols)),
     )
 
-    this.displayColumns$ = this.columns$.pipe(
-      map((cols) => cols.filter((c) => !c.hidden)),
+    this.displayColumns$ = combineLatest([
+      this.columns$.pipe(map((cols) => cols.filter((c) => !c.hidden))),
+      this._freezeFirstDataColumn$,
+    ]).pipe(
+      map(([visible, freeze]) =>
+        freeze ? freezeFirstDataColumn(visible) : visible,
+      ),
       tap((v) =>
         removeUnusedDiffs(v, this._colDiffersInp, this._colDiffersTpl),
       ),
@@ -1036,6 +1058,9 @@ export class DatatableComponent<TRow = any>
     }
     if (isNullOrUndefined(this.actionItemColumnPosition)) {
       this.actionItemColumnPosition = undefined
+    }
+    if (isNullOrUndefined(this.freezeFirstDataColumn)) {
+      this.freezeFirstDataColumn = undefined
     }
   }
 
