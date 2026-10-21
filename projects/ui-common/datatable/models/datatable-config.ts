@@ -104,6 +104,15 @@ export interface TheSeamDatatableConfig {
    * @default frozenRight
    */
   actionItemColumnPosition?: ActionItemColumnPosition
+
+  /**
+   * When `true`, the first visible data column (excluding checkbox and
+   * unnamed utility columns) is pinned to the left alongside any leading
+   * utility columns. Individual tables can override with the matching input.
+   *
+   * @default false
+   */
+  freezeFirstDataColumn?: boolean | undefined | null
 }
 
 export const THESEAM_DATATABLE_CONFIG =
