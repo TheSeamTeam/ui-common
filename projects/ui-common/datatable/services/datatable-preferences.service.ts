@@ -1,6 +1,6 @@
 import { Inject, Injectable, Optional } from '@angular/core'
 import { Observable, of } from 'rxjs'
-import { map, switchMap, take, tap } from 'rxjs/operators'
+import { filter, map, switchMap, take, tap } from 'rxjs/operators'
 
 import {
   TheSeamPreferencesAccessor,
@@ -12,6 +12,7 @@ import {
   CURRENT_DATATABLE_PREFERENCES_VERSION,
   EMPTY_DATATABLE_PREFERENCES,
   TheSeamDatatablePreferences,
+  TheSeamDatatablePreferencesDisplay,
 } from '../models/preferences'
 import { THESEAM_DATATABLE_PREFERENCES_ACCESSOR } from '../tokens/datatable-preferences-accessor'
 import { ColumnsAlterationState } from '../models/columns-alteration'
@@ -28,6 +29,12 @@ export class DatatablePreferencesService {
    * Used to prevent multiple updates from happening at the same time, but it is not per key.
    */
   private _pending = false
+
+  /** Last value written for each key whose writes have not all finished. */
+  private readonly _unsaved = new Map<
+    string,
+    { prefs: TheSeamDatatablePreferences; writes: number }
+  >()
 
   constructor(
     private readonly _preferencesManager: TheSeamPreferencesManagerService,
@@ -80,6 +87,28 @@ export class DatatablePreferencesService {
     preferenceKey: string,
     alterations: ColumnsAlterationState[],
   ): void {
+    this._update(preferenceKey, (prefs) => ({ ...prefs, alterations }))
+  }
+
+  public setDisplay(
+    preferenceKey: string,
+    display: TheSeamDatatablePreferencesDisplay,
+  ): void {
+    this._update(preferenceKey, (prefs) => ({
+      ...prefs,
+      display: { ...prefs.display, ...display },
+    }))
+  }
+
+  /**
+   * Every write goes through here so that one kind of change does not
+   * overwrite another. While a write is in flight the cached preferences are
+   * stale, so later writes build on the last value written instead.
+   */
+  private _update(
+    preferenceKey: string,
+    change: (prefs: TheSeamDatatablePreferences) => TheSeamDatatablePreferences,
+  ): void {
     if (!this._prefsAccessor) {
       return
     }
@@ -87,32 +116,23 @@ export class DatatablePreferencesService {
     this._pending = true
     this.preferences(preferenceKey)
       .pipe(
+        // After a refresh the cache replays the old value until the new one
+        // loads.
+        filter(() => this._preferencesManager.isLoaded(preferenceKey)),
+        take(1),
         map((prefs) => {
-          // Making the preferences immutable may not be necessary, but for now
-          // this obj->str->obj will work as a naive clone.
-          // const columns = JSON.parse(JSON.stringify(prefs.columns || []))
-          // const _colPref = columns.find((c: any) => c.prop === column.prop)
-          // // console.log('has', _colPref)
-          // if (_colPref) {
-          //   // console.log('hasProperty(column, "width"))', hasProperty(column, 'width'))
-          //   if (hasProperty(column, 'width')) { _colPref.width = column.width }
-          //   if (hasProperty(column, 'canAutoResize')) { _colPref.canAutoResize = column.canAutoResize }
-          //   if (hasProperty(column, 'hidden')) { _colPref.hidden = column.hidden }
-          // } else {
-          //   columns.push({ ...column })
-          // }
-          // const newPrefs: TheSeamDatatablePreferences = { ...prefs, columns }
-          // return newPrefs
-
-          const newPrefs: TheSeamDatatablePreferences = {
+          const unsaved = this._unsaved.get(preferenceKey)
+          const newPrefs = change({
             ...EMPTY_DATATABLE_PREFERENCES,
-            alterations,
-          }
+            ...(unsaved?.prefs ?? prefs),
+          })
+          this._unsaved.set(preferenceKey, {
+            prefs: newPrefs,
+            writes: (unsaved?.writes ?? 0) + 1,
+          })
           this._pending = false
           return newPrefs
         }),
-        // tap(v => console.log('newPrefs', v)),
-        take(1),
         switchMap((newPrefs) =>
           this._prefsAccessor
             ? this._prefsAccessor.update(
@@ -121,7 +141,13 @@ export class DatatablePreferencesService {
               )
             : of(newPrefs),
         ),
-        tap(() => this.refresh(preferenceKey)),
+        tap(() => {
+          const unsaved = this._unsaved.get(preferenceKey)
+          if (unsaved && --unsaved.writes === 0) {
+            this._unsaved.delete(preferenceKey)
+          }
+          this.refresh(preferenceKey)
+        }),
       )
       .subscribe()
   }

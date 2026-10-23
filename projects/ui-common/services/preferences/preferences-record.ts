@@ -44,7 +44,7 @@ export class TheSeamPreferencesMapRecord {
 
   private _createObservable(): Observable<TheSeamPreferencesBase> {
     if (!this._accessor) {
-      return of(this._emptyPrefs)
+      return of(this._cloneEmptyPrefs())
     }
 
     const accessor = (key: string): Observable<string> =>
@@ -72,7 +72,7 @@ export class TheSeamPreferencesMapRecord {
               return null
             }
           }),
-          map((v) => (notNullOrUndefined(v) ? v : this._emptyPrefs)),
+          map((v) => (notNullOrUndefined(v) ? v : this._cloneEmptyPrefs())),
           tap(() => {
             this._setStatus('loaded')
           }),
@@ -117,6 +117,11 @@ export class TheSeamPreferencesMapRecord {
     const prev = this._status
     this._status = status
     this._statusChangeSubject.next({ previous: prev, current: status })
+  }
+
+  /** Consumers must never be handed the shared empty prefs object itself. */
+  private _cloneEmptyPrefs(): TheSeamPreferencesBase {
+    return JSON.parse(JSON.stringify(this._emptyPrefs))
   }
 
   private _descerializePreferences(serialized: string): TheSeamPreferencesBase {

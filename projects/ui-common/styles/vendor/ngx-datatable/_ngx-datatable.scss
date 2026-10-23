@@ -189,6 +189,10 @@
 
     .datatable-header-cell {
       vertical-align: bottom;
+      // ngx-datatable only clips both axes for a fixed height header. With just
+      // `overflow-x: hidden`, the y axis computes to `auto` and the drag
+      // indicator below overflows into a scrollbar.
+      overflow: hidden;
       text-align: $datatable-header-cell-text-align;
       padding: $datatable-header-cell-padding;
       font-size: $datatable-header-cell-font-size;
@@ -274,6 +278,15 @@
       width: 2px;
       background-color: $datatable-header-resize-handle-color;
     }
+  }
+
+  // An auto height header stretches every cell to the tallest one, so align
+  // the shorter headers to the bottom. The template wrap is the only in-flow
+  // child of a cell.
+  &:not(.fixed-header) .datatable-header .datatable-header-cell {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
   }
 
   /**
