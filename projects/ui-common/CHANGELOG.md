@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.0](https://github.com/TheSeamTeam/ui-common/compare/ui-common-v2.2.0...ui-common-v2.3.0) (2026-10-23)
+
+
+### Features
+
+* **datatable:** Add datatable column height 'auto' as a preference toggle ([#67](https://github.com/TheSeamTeam/ui-common/issues/67)) ([acddd6d](https://github.com/TheSeamTeam/ui-common/commit/acddd6d1f1880d9abc3bae4ba2613d0c803ed426))
+
 ## [2.2.0](https://github.com/TheSeamTeam/ui-common/compare/ui-common-v2.1.0...ui-common-v2.2.0) (2026-10-21)
 
 
