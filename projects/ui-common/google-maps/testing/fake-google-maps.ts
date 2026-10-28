@@ -259,10 +259,40 @@ export class FakeData extends FakeMapsEventTarget {
  * Viewport calls are recorded rather than simulated: a spec asserts on
  * `bounds` / `padding` / `center` instead of on a rendered map.
  */
+/** The slice of `google.maps.MVCArray` the map's control slots are used through. */
+export class FakeMVCArray<T> {
+  private readonly _items: T[] = []
+
+  getArray(): T[] {
+    return this._items
+  }
+  getLength(): number {
+    return this._items.length
+  }
+  getAt(index: number): T {
+    return this._items[index]
+  }
+  push(item: T): number {
+    return this._items.push(item)
+  }
+  insertAt(index: number, item: T): void {
+    this._items.splice(index, 0, item)
+  }
+  removeAt(index: number): T {
+    return this._items.splice(index, 1)[0]
+  }
+  forEach(callback: (item: T, index: number) => void): void {
+    this._items.forEach(callback)
+  }
+}
+
 export class FakeMap extends FakeMapsEventTarget {
   readonly data = new FakeData()
   /** One array per google.maps.ControlPosition slot. */
-  readonly controls: any[][] = Array.from({ length: 13 }, () => [])
+  readonly controls: FakeMVCArray<HTMLElement>[] = Array.from(
+    { length: 13 },
+    () => new FakeMVCArray<HTMLElement>(),
+  )
 
   bounds: any = null
   padding: any = undefined

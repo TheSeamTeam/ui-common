@@ -86,6 +86,9 @@ interface ResolvedDeletion {
   unnamable: boolean
 }
 
+/** The `order` each control was added with, read when placing later ones. */
+const controlOrders = new WeakMap<HTMLElement, number>()
+
 @Injectable()
 export class GoogleMapsService implements OnDestroy {
   private readonly _ngUnsubscribe = new Subject<void>()
@@ -904,12 +907,37 @@ export class GoogleMapsService implements OnDestroy {
     return draw
   }
 
+  /**
+   * Adds a control to the map at `position`.
+   *
+   * Without an `order` the control is appended, as it always has been. With
+   * one, it goes before the first control in that position that has a
+   * greater order or none at all, so ordered controls sit ahead of unordered
+   * ones regardless of which was added first. Google no longer documents its
+   * own ordering of a position's controls, so this does not rely on it.
+   */
   public addControl(
     element: HTMLElement,
     position: google.maps.ControlPosition,
+    order?: number,
   ): void {
     this._assertInitialized()
-    this.googleMap.controls[position].push(element)
+    const controls = this.googleMap.controls[position]
+    if (order === undefined) {
+      controls.push(element)
+      return
+    }
+
+    controlOrders.set(element, order)
+    let index = controls.getLength()
+    for (let i = 0; i < controls.getLength(); i++) {
+      const existing = controlOrders.get(controls.getAt(i))
+      if (existing === undefined || existing > order) {
+        index = i
+        break
+      }
+    }
+    controls.insertAt(index, element)
   }
 
   public async setData(data: any): Promise<void> {

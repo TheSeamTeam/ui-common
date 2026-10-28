@@ -24,7 +24,7 @@ import {
 } from '@angular/core'
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
 import { combineLatest, fromEvent, Observable, of, Subject } from 'rxjs'
-import { catchError, map, skip, takeUntil, tap } from 'rxjs/operators'
+import { catchError, filter, map, skip, takeUntil, tap } from 'rxjs/operators'
 
 import { faCrosshairs, faFileImport } from '@fortawesome/free-solid-svg-icons'
 import {
@@ -43,6 +43,7 @@ import {
 import { TheSeamGoogleMapsApiLoader } from '../google-maps-api-loader/google-maps-api-loader'
 import { GoogleMapsControlsService } from '../google-maps-controls.service'
 import { TheSeamGoogleMapsDrawButtonControlComponent } from '../google-maps-draw-button-control/google-maps-draw-button-control.component'
+import { TheSeamGoogleMapsPlacesSearchControlComponent } from '../google-maps-places-search-control/google-maps-places-search-control.component'
 import { TheSeamGoogleMapsRecenterButtonControlComponent } from '../google-maps-recenter-button-control/google-maps-recenter-button-control.component'
 import { TheSeamGoogleMapsUploadButtonControlComponent } from '../google-maps-upload-button-control/google-maps-upload-button-control.component'
 import { GoogleMapsService } from '../google-maps.service'
@@ -60,6 +61,19 @@ import {
 } from '../context-menu/delete-menu-items'
 
 declare const ngDevMode: boolean | undefined
+
+/** Whether a key event's target takes text, where Delete edits the text. */
+function isEditableTarget(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) {
+    return false
+  }
+  return (
+    target instanceof HTMLInputElement ||
+    target instanceof HTMLTextAreaElement ||
+    target instanceof HTMLSelectElement ||
+    target.isContentEditable
+  )
+}
 
 class TheSeamGoogleMapsComponentBase {
   constructor(public _elementRef: ElementRef) {}
@@ -166,6 +180,28 @@ export class TheSeamGoogleMapsComponent
   @Input() @InputBoolean() reCenterControlEnabled = true
   @Input() @InputBoolean() mapTypeControlEnabled = true
   @Input() @InputBoolean() streetViewControlEnabled = false
+
+  /**
+   * Adds a button that opens a places search on the map. Choosing a place
+   * fits the map to it. Off by default.
+   */
+  @Input() @InputBoolean() placesSearchControlEnabled = false
+
+  /**
+   * Where the places search button sits. Defaults to `LEFT_TOP`, the column
+   * under the `TOP_LEFT` row.
+   */
+  @Input() placesSearchControlPosition: google.maps.ControlPosition =
+    5 /* google.maps.ControlPosition.LEFT_TOP */
+
+  /**
+   * The places search button's place among the other controls in its
+   * position, lowest first. See `MapControl.order`.
+   */
+  @Input() placesSearchControlOrder: number | undefined
+
+  // Declared after the inputs it reads, so their defaults are already set.
+  _placesSearchControlDef: MapControl = this._buildPlacesSearchControlDef()
 
   @Input() @InputBoolean() allowDrawingHoleInPolygon = false
 
@@ -429,8 +465,13 @@ export class TheSeamGoogleMapsComponent
   }
 
   ngOnInit() {
-    fromEvent<KeyboardEvent>(window, 'keydown')
+    // Only keys pressed with focus in the map act on it. Clicking the map
+    // focuses an element inside it, so a Delete right after selecting still
+    // lands here; one typed into a text field elsewhere on the page does not.
+    fromEvent<KeyboardEvent>(this._elementRef.nativeElement, 'keydown')
       .pipe(
+        // Controls render inside the map, so their inputs are excluded too.
+        filter((event) => !isEditableTarget(event.target)),
         tap((event: KeyboardEvent) => {
           switch (event.code) {
             case 'Delete':
@@ -514,6 +555,16 @@ export class TheSeamGoogleMapsComponent
 
     if (Object.prototype.hasOwnProperty.call(changes, 'editingEnabled')) {
       this._googleMaps.setEditingEnabled(this.editingEnabled)
+    }
+
+    if (
+      Object.prototype.hasOwnProperty.call(
+        changes,
+        'placesSearchControlPosition',
+      ) ||
+      Object.prototype.hasOwnProperty.call(changes, 'placesSearchControlOrder')
+    ) {
+      this._placesSearchControlDef = this._buildPlacesSearchControlDef()
     }
 
     if (Object.prototype.hasOwnProperty.call(changes, 'padding')) {
@@ -613,6 +664,18 @@ export class TheSeamGoogleMapsComponent
 
   private _getHostElement() {
     return this._elementRef.nativeElement
+  }
+
+  /**
+   * A new def, never a mutated one: `seam-map-control` only re-places its
+   * control when it is handed a different def.
+   */
+  private _buildPlacesSearchControlDef(): MapControl {
+    return {
+      component: TheSeamGoogleMapsPlacesSearchControlComponent,
+      position: this.placesSearchControlPosition,
+      order: this.placesSearchControlOrder,
+    }
   }
 
   _onMapReady(theMap: google.maps.Map) {

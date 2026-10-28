@@ -107,6 +107,113 @@ export const PlacesMapBind: Story = {
   }),
 }
 
+/**
+ * The places search as a map control: the button opens the input beside it,
+ * and Escape closes it again with focus back on the button.
+ */
+export const PlacesSearchControl: Story = {
+  render: () => ({
+    template: `<seam-google-maps placesSearchControlEnabled style="height: 400px"></seam-google-maps>`,
+  }),
+  play: async ({ canvasElement }) => {
+    await mapComponent(canvasElement)
+    const button = canvasElement.querySelector(
+      '[title="Search for a place"]',
+    ) as HTMLButtonElement
+    await expect(button).not.toBeNull()
+    const input = canvasElement.querySelector(
+      'seam-google-maps-places-search-control input',
+    ) as HTMLInputElement
+    await expect(input.offsetParent).toBeNull()
+
+    await userEvent.click(button)
+    await expect(button.getAttribute('aria-expanded')).toBe('true')
+    await expect(input.offsetParent).not.toBeNull()
+    await expect(document.activeElement).toBe(input)
+
+    await userEvent.keyboard('{Escape}')
+    await expect(button.getAttribute('aria-expanded')).toBe('false')
+    await expect(input.offsetParent).toBeNull()
+    await expect(document.activeElement).toBe(button)
+  },
+}
+
+/**
+ * The map deletes its selection on Delete. Delete typed into the open search,
+ * or into a text field outside the map, must not reach that handler; pressed
+ * on the map itself, it still deletes.
+ */
+export const PlacesSearchControlKeepsDeleteFromMap: Story = {
+  render: () => ({
+    template: `
+      <input class="outside-input" />
+      <seam-google-maps placesSearchControlEnabled [value]="value" style="height: 400px"></seam-google-maps>
+    `,
+    props: { value: GROUPED_VALUE },
+  }),
+  play: async ({ canvasElement }) => {
+    const component = await mapComponent(canvasElement)
+    const feature = featureWithGroup(component, 'A')
+    const before = featuresWithGroup(component, 'A').length
+    google.maps.event.trigger(component._googleMaps.googleMap.data, 'click', {
+      feature,
+    })
+    await expect(isFeatureSelected(feature)).toBe(true)
+
+    const pressDeleteOn = (target: Element) =>
+      target.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          code: 'Delete',
+          key: 'Delete',
+          bubbles: true,
+        }),
+      )
+
+    const button = canvasElement.querySelector(
+      '[title="Search for a place"]',
+    ) as HTMLButtonElement
+    await userEvent.click(button)
+    pressDeleteOn(
+      canvasElement.querySelector(
+        'seam-google-maps-places-search-control input',
+      ) as HTMLInputElement,
+    )
+    pressDeleteOn(canvasElement.querySelector('.outside-input') as Element)
+    await expect(featuresWithGroup(component, 'A')).toHaveLength(before)
+
+    // The same key from the map itself still deletes, so the checks above
+    // cannot pass because the key never reached the handler at all.
+    pressInMap(component, 'Delete')
+    await expect(featuresWithGroup(component, 'A')).not.toContain(feature)
+  },
+}
+
+/**
+ * `placesSearchControlOrder` places the button among the other controls in
+ * its position. Here it shares `TOP_LEFT` with the draw button and is ordered
+ * ahead of it, though the draw control is added first.
+ */
+export const PlacesSearchControlOrdered: Story = {
+  render: () => ({
+    template: `
+      <seam-google-maps
+        placesSearchControlEnabled
+        [placesSearchControlPosition]="1"
+        [placesSearchControlOrder]="0"
+        style="height: 400px"
+      ></seam-google-maps>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const component = await mapComponent(canvasElement)
+    const topLeft = component._googleMaps.googleMap.controls[1].getArray()
+    await expect(topLeft[0].tagName).toBe(
+      'SEAM-GOOGLE-MAPS-PLACES-SEARCH-CONTROL',
+    )
+    await expect(topLeft[1].getAttribute('title')).toBe('Draw Field')
+  },
+}
+
 const MULTI_POLYGON_VALUE = {
   type: 'FeatureCollection',
   features: [
@@ -316,6 +423,17 @@ async function mapComponent(canvasElement: HTMLElement): Promise<any> {
   const host = canvasElement.querySelector('seam-google-maps')
   await new Promise((resolve) => setTimeout(resolve, 3000))
   return getComponentInstance(host, TheSeamGoogleMapsComponent)
+}
+
+/**
+ * Press a key with focus in the map, as a click on the map leaves it. The map
+ * only handles keys from inside itself, and dispatches here directly because
+ * `userEvent.keyboard` does not reliably reach the listener in this harness.
+ */
+function pressInMap(component: any, code: string): void {
+  component._googleMaps
+    .getDiv()
+    .dispatchEvent(new KeyboardEvent('keydown', { code, bubbles: true }))
 }
 
 /** The first Data.Feature whose group property matches. */
@@ -1331,7 +1449,7 @@ export const GroupedDeleteRemovesOnlyFocusedPolygon: Story = {
 
     // The real 'Delete' key path (not deleteFocusedFeature() called
     // directly), so this also exercises the component's keydown handler.
-    window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Delete' }))
+    pressInMap(component, 'Delete')
 
     // Only the focused polygon is gone — its groupmate survives. Matches the
     // design's granularity: a polygon added to the wrong field must have a
@@ -1419,7 +1537,7 @@ export const GroupedContextMenuKeyClosedOutsideEditMode: Story = {
 
     // The real keyboard path, not `_googleMaps.openContextMenu()` called
     // directly — this also exercises the component's keydown handler.
-    window.dispatchEvent(new KeyboardEvent('keydown', { code: 'ContextMenu' }))
+    pressInMap(component, 'ContextMenu')
     await new Promise((resolve) => setTimeout(resolve, 250))
 
     const items = canvasElement.querySelectorAll('[role="menuitem"]')
@@ -1724,9 +1842,9 @@ export const GroupedBlockedDeleteKeyEmits: Story = {
 
     // The real 'Delete' key path, the same way GroupedDeleteRemovesOnlyFocusedPolygon
     // drives it: userEvent.keyboard('{Delete}') never reaches the component's
-    // fromEvent(window, 'keydown') listener in this harness, so this dispatches
+    // keydown listener in this harness, so this dispatches
     // the keydown directly.
-    window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Delete' }))
+    pressInMap(component, 'Delete')
 
     await expect(featuresWithGroup(component, 'E')).toHaveLength(1)
     await expect(blocked).toHaveLength(1)
@@ -1778,9 +1896,9 @@ export const GroupedRetiredFieldCannotBeDeleted: Story = {
 
     // The real 'Delete' key path, the same way GroupedDeleteRemovesOnlyFocusedPolygon
     // drives it: userEvent.keyboard('{Delete}') never reaches the component's
-    // fromEvent(window, 'keydown') listener in this harness, so this dispatches
+    // keydown listener in this harness, so this dispatches
     // the keydown directly.
-    window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Delete' }))
+    pressInMap(component, 'Delete')
     await expect(featuresWithGroup(component, 'B')).toHaveLength(1)
   },
 }
