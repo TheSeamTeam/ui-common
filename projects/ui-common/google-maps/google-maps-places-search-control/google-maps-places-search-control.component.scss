@@ -1,0 +1,50 @@
+// Google sizes a position's controls when they are added and does not re-lay
+// them out when one grows, so the open input floats beside the button rather
+// than widening the control into its neighbours in a row position.
+:host {
+  display: block;
+  margin: 10px;
+
+  &.places-search-control--open {
+    z-index: 1;
+  }
+}
+
+// Matches the draw and recenter buttons.
+.places-search-control--button {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  height: 40px;
+  width: 40px;
+  padding: 9px;
+  border: 0px;
+  border-radius: 2px;
+  background: none rgb(255, 255, 255);
+  box-shadow: rgb(0 0 0 / 30%) 0px 1px 4px -1px;
+  color: rgb(102, 102, 102);
+  text-transform: none;
+  appearance: none;
+  cursor: pointer;
+  user-select: none;
+  overflow: hidden;
+
+  &.active {
+    color: rgb(0, 0, 0);
+  }
+}
+
+// Kept in the DOM while closed, so the `Autocomplete` is not rebuilt, and its
+// text not lost, every time the input is opened.
+.places-search-control--panel {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 48px;
+  width: 320px;
+  border-radius: 2px;
+  box-shadow: rgb(0 0 0 / 30%) 0px 1px 4px -1px;
+
+  &.places-search-control--panel-open {
+    display: block;
+  }
+}

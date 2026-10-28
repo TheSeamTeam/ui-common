@@ -32,6 +32,11 @@ export class TheSeamMapsControlComponent implements OnInit, OnDestroy {
     if (value !== this._def) {
       this._remove()
       this._def = value
+      // A def swapped after the map is ready gets no further `mapReady$`
+      // emission to add it, so add it here.
+      if (this._googleMaps.mapReady) {
+        this._add()
+      }
     }
   }
   _def: MapControl | null | undefined

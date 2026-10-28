@@ -124,6 +124,11 @@ export class TheSeamGoogleMapsPlacesAutoCompleteComponent implements OnDestroy {
   }
   _autoCompleteDirective!: TheSeamGoogleMapsPlacesAutocompleteDirective
 
+  @HostBinding('class.search-container--has-icon')
+  get _hasIcon(): boolean {
+    return !!this.icon
+  }
+
   @HostBinding('attr.tabindex')
   get _attrTabIndex() {
     return this.disabled ? -1 : this.tabIndex || 0

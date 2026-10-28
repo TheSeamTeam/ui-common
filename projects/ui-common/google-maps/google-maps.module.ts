@@ -10,6 +10,7 @@ import { TheSeamSharedModule } from '@theseam/ui-common/shared'
 
 import { TheSeamGoogleMapsPlacesAutoCompleteComponent } from './google-maps-places-autocomplete/google-maps-places-autocomplete.component'
 import { TheSeamGoogleMapsPlacesAutocompleteDirective } from './google-maps-places-autocomplete/google-maps-places-autocomplete.directive'
+import { TheSeamGoogleMapsPlacesSearchControlComponent } from './google-maps-places-search-control/google-maps-places-search-control.component'
 import { TheSeamGoogleMapsRecenterButtonControlComponent } from './google-maps-recenter-button-control/google-maps-recenter-button-control.component'
 import { TheSeamGoogleMapsUploadButtonControlComponent } from './google-maps-upload-button-control/google-maps-upload-button-control.component'
 import { TheSeamGoogleMapsComponent } from './google-maps/google-maps.component'
@@ -24,6 +25,7 @@ import { TheSeamMapFileDropComponent } from './map-file-drop/map-file-drop.compo
     TheSeamGoogleMapsRecenterButtonControlComponent,
     TheSeamMapsControlComponent,
     TheSeamGoogleMapsPlacesAutoCompleteComponent,
+    TheSeamGoogleMapsPlacesSearchControlComponent,
   ],
   imports: [
     CommonModule,
