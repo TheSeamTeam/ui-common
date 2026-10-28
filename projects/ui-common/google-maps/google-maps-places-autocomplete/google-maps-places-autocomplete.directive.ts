@@ -20,6 +20,11 @@ import {
   takeUntil,
 } from 'rxjs/operators'
 
+import {
+  claimNextPacContainer,
+  syncPacContainerWithFullscreen,
+} from './pac-container'
+
 declare const ngDevMode: boolean | undefined
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 
@@ -43,6 +48,15 @@ export class TheSeamGoogleMapsPlacesAutocompleteDirective
     subscriber: Subscriber<any>
   }[] = []
   private _listeners: google.maps.MapsEventListener[] = []
+
+  /** The suggestion list Google rendered for this input, once it exists. */
+  private _pacContainer: HTMLElement | undefined
+  private _withdrawPacContainerClaim: (() => void) | undefined
+  private readonly _onFullscreenChange = () => {
+    if (this._pacContainer !== undefined) {
+      syncPacContainerWithFullscreen(this._pacContainer, this.getHostElement())
+    }
+  }
 
   public autoComplete?: google.maps.places.Autocomplete
 
@@ -83,6 +97,13 @@ export class TheSeamGoogleMapsPlacesAutocompleteDirective
       this._untilGoogleMapsApiLoaded()
         .pipe(takeUntil(this._ngUnsubscribe))
         .subscribe(() => {
+          this._withdrawPacContainerClaim = claimNextPacContainer(
+            (container) => {
+              this._withdrawPacContainerClaim = undefined
+              this._pacContainer = container
+              this._onFullscreenChange()
+            },
+          )
           this.autoComplete = new google.maps.places.Autocomplete(
             this.getHostElement(),
             this._options,
@@ -94,12 +115,24 @@ export class TheSeamGoogleMapsPlacesAutocompleteDirective
 
           this._autoCompleteReadySubject.next(undefined)
         })
+
+      document.addEventListener('fullscreenchange', this._onFullscreenChange)
     })
   }
 
   ngOnDestroy(): void {
     this._listeners.forEach((l) => l.remove())
     this._listeners = []
+
+    // `Autocomplete` has no teardown of its own, so release what it holds.
+    document.removeEventListener('fullscreenchange', this._onFullscreenChange)
+    this._withdrawPacContainerClaim?.()
+    this._withdrawPacContainerClaim = undefined
+    this._pacContainer?.remove()
+    this._pacContainer = undefined
+    if (this.autoComplete !== undefined) {
+      google.maps.event.clearInstanceListeners(this.autoComplete)
+    }
 
     this._ngUnsubscribe.next(undefined)
     this._ngUnsubscribe.complete()

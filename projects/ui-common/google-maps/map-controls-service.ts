@@ -6,6 +6,12 @@ export interface MapControl<TData = any> {
   component: ComponentType<any>
   data?: TData
   position?: google.maps.ControlPosition
+  /**
+   * Where the control sits among the others in its `position`, lowest first.
+   * A control without one is appended after the ordered ones, in the order
+   * it was added.
+   */
+  order?: number
 }
 
 export interface MapControlsService {

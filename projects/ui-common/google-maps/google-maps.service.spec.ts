@@ -851,4 +851,51 @@ describe('GoogleMapsService', () => {
       expect(seen).toEqual([])
     })
   })
+
+  describe('addControl', () => {
+    const TOP_LEFT = 1 as google.maps.ControlPosition
+
+    function named(name: string): HTMLElement {
+      const el = document.createElement('div')
+      el.id = name
+      return el
+    }
+
+    function idsAt(map: FakeMap, position: number): string[] {
+      return map.controls[position].getArray().map((el: HTMLElement) => el.id)
+    }
+
+    it('should append a control without an order', () => {
+      const { service, map } = createService()
+      service.addControl(named('a'), TOP_LEFT)
+      service.addControl(named('b'), TOP_LEFT)
+
+      expect(idsAt(map, TOP_LEFT)).toEqual(['a', 'b'])
+    })
+
+    it('should place controls by order, whatever order they are added in', () => {
+      const { service, map } = createService()
+      service.addControl(named('third'), TOP_LEFT, 30)
+      service.addControl(named('first'), TOP_LEFT, 10)
+      service.addControl(named('second'), TOP_LEFT, 20)
+
+      expect(idsAt(map, TOP_LEFT)).toEqual(['first', 'second', 'third'])
+    })
+
+    it('should place an ordered control before unordered ones', () => {
+      const { service, map } = createService()
+      service.addControl(named('unordered'), TOP_LEFT)
+      service.addControl(named('ordered'), TOP_LEFT, 100)
+
+      expect(idsAt(map, TOP_LEFT)).toEqual(['ordered', 'unordered'])
+    })
+
+    it('should keep insertion order between controls of equal order', () => {
+      const { service, map } = createService()
+      service.addControl(named('a'), TOP_LEFT, 1)
+      service.addControl(named('b'), TOP_LEFT, 1)
+
+      expect(idsAt(map, TOP_LEFT)).toEqual(['a', 'b'])
+    })
+  })
 })

@@ -1,0 +1,27 @@
+<button
+  #toggleButton
+  type="button"
+  class="places-search-control--button gm-control-active"
+  draggable="false"
+  [class.active]="_open()"
+  [attr.aria-label]="label"
+  [attr.title]="label"
+  [attr.aria-expanded]="_open()"
+  [attr.aria-controls]="_panelId"
+  (click)="toggle()"
+>
+  <seam-icon [icon]="icon" iconType="image-fill"></seam-icon>
+</button>
+<div
+  class="places-search-control--panel"
+  [id]="_panelId"
+  [class.places-search-control--panel-open]="_open()"
+>
+  <seam-google-maps-places-autocomplete
+    [label]="label"
+    [icon]="null"
+    [placeholder]="placeholder"
+    [options]="_autocompleteOptions"
+    (placeChanged)="_onPlaceChanged()"
+  ></seam-google-maps-places-autocomplete>
+</div>

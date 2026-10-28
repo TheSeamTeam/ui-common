@@ -155,4 +155,112 @@ describe('TheSeamGoogleMapsComponent', () => {
       expect(emitted).toEqual([])
     })
   })
+
+  describe('placesSearchControl', () => {
+    it('is off by default and placed at LEFT_TOP', () => {
+      const { component } = createComponent()
+
+      expect(component.placesSearchControlEnabled).toBe(false)
+      expect(component._placesSearchControlDef.position).toBe(5)
+      expect(component._placesSearchControlDef.order).toBeUndefined()
+    })
+
+    it('builds a new def when the position or order changes', () => {
+      const { component } = createComponent()
+      const before = component._placesSearchControlDef
+
+      component.placesSearchControlPosition = 1 as google.maps.ControlPosition
+      component.placesSearchControlOrder = 20
+      component.ngOnChanges({
+        ...changeFor('placesSearchControlPosition', 1),
+        ...changeFor('placesSearchControlOrder', 20),
+      })
+
+      expect(component._placesSearchControlDef).not.toBe(before)
+      expect(component._placesSearchControlDef.position).toBe(1)
+      expect(component._placesSearchControlDef.order).toBe(20)
+    })
+
+    it('keeps the same def when some other input changes', () => {
+      const { component } = createComponent()
+      const before = component._placesSearchControlDef
+
+      component.ngOnChanges(changeFor('zoom', 12))
+
+      expect(component._placesSearchControlDef).toBe(before)
+    })
+  })
+
+  describe('keyboard', () => {
+    /**
+     * A component whose host is in the document, with `ngOnInit` run so its
+     * keydown listener is attached, and spies on the service calls the keys
+     * make.
+     */
+    function createKeyboardComponent() {
+      const { component } = createComponent()
+      const host: HTMLElement = component._elementRef.nativeElement
+      document.body.appendChild(host)
+      const googleMaps = (component as any)._googleMaps
+      googleMaps.isEditingEnabled = () => true
+      googleMaps.deleteSelection = jest.fn()
+      googleMaps.stopDrawing = jest.fn()
+      googleMaps.openContextMenu = jest.fn()
+      component.ngOnInit()
+      return { component, host, googleMaps }
+    }
+
+    function pressOn(target: EventTarget, code: string): void {
+      target.dispatchEvent(
+        new KeyboardEvent('keydown', { code, bubbles: true }),
+      )
+    }
+
+    afterEach(() => document.body.replaceChildren())
+
+    it('deletes on Delete pressed inside the map', () => {
+      const { host, googleMaps } = createKeyboardComponent()
+      const mapDiv = document.createElement('div')
+      host.appendChild(mapDiv)
+
+      pressOn(mapDiv, 'Delete')
+
+      expect(googleMaps.deleteSelection).toHaveBeenCalledTimes(1)
+    })
+
+    it('ignores Delete pressed outside the map', () => {
+      const { googleMaps } = createKeyboardComponent()
+      const elsewhere = document.createElement('input')
+      document.body.appendChild(elsewhere)
+
+      pressOn(elsewhere, 'Delete')
+      pressOn(document.body, 'Delete')
+
+      expect(googleMaps.deleteSelection).not.toHaveBeenCalled()
+    })
+
+    it('ignores keys typed into an input inside the map', () => {
+      const { host, googleMaps } = createKeyboardComponent()
+      const controlInput = document.createElement('input')
+      host.appendChild(controlInput)
+
+      pressOn(controlInput, 'Delete')
+      pressOn(controlInput, 'Escape')
+      pressOn(controlInput, 'ContextMenu')
+
+      expect(googleMaps.deleteSelection).not.toHaveBeenCalled()
+      expect(googleMaps.stopDrawing).not.toHaveBeenCalled()
+      expect(googleMaps.openContextMenu).not.toHaveBeenCalled()
+    })
+
+    it('handles Escape and ContextMenu pressed inside the map', () => {
+      const { host, googleMaps } = createKeyboardComponent()
+
+      pressOn(host, 'Escape')
+      pressOn(host, 'ContextMenu')
+
+      expect(googleMaps.stopDrawing).toHaveBeenCalledTimes(1)
+      expect(googleMaps.openContextMenu).toHaveBeenCalledTimes(1)
+    })
+  })
 })
