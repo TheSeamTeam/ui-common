@@ -65,9 +65,9 @@ export class TheSeamGoogleMapsPlacesSearchControlComponent
   readonly _panelId = `seam-google-maps-places-search-control-${nextId++}`
 
   /**
-   * Only the viewport is read, so only it is asked for. Without `fields` the
-   * legacy `Autocomplete` requests every field of the place, and is billed
-   * for every field it requests.
+   * Only the viewport is read, so only it is asked for. The default options
+   * ask for the same field; it is set here too so the control keeps working
+   * if that default changes.
    */
   readonly _autocompleteOptions: google.maps.places.AutocompleteOptions = {
     ...SEAM_GOOGLE_PLACES_AUTOCOMPLETE_DEFAULT_OPTIONS,

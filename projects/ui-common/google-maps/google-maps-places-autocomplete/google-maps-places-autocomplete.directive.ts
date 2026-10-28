@@ -28,9 +28,18 @@ import {
 declare const ngDevMode: boolean | undefined
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 
+/**
+ * Used when no `options` are given. An `options` value replaces these rather
+ * than merging with them.
+ *
+ * `fields` limits `getPlace()` to the viewport. Without `fields` the legacy
+ * `Autocomplete` requests every field of the place, and is billed for every
+ * field it requests.
+ */
 export const SEAM_GOOGLE_PLACES_AUTOCOMPLETE_DEFAULT_OPTIONS: google.maps.places.AutocompleteOptions =
   {
     componentRestrictions: { country: 'US' },
+    fields: ['geometry.viewport'],
   }
 
 @Directive({
