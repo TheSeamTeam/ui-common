@@ -1,6 +1,6 @@
 // Google sizes a position's controls when they are added and does not re-lay
-// them out when one grows, so the open input floats beside the button rather
-// than widening the control into its neighbours in a row position.
+// them out when one grows, so the open input floats next to the button rather
+// than widening the control into its neighbours.
 :host {
   display: block;
   margin: 10px;
@@ -38,13 +38,32 @@
 .places-search-control--panel {
   display: none;
   position: absolute;
-  top: 0;
-  left: 48px;
   width: 320px;
   border-radius: 2px;
   box-shadow: rgb(0 0 0 / 30%) 0px 1px 4px -1px;
 
   &.places-search-control--panel-open {
     display: block;
+  }
+
+  // 48px is the 40px button plus an 8px gap.
+  &.places-search-control--panel-below-start {
+    top: 48px;
+    left: 0;
+  }
+
+  &.places-search-control--panel-below-end {
+    top: 48px;
+    right: 0;
+  }
+
+  &.places-search-control--panel-beside-end {
+    top: 0;
+    left: 48px;
+  }
+
+  &.places-search-control--panel-beside-start {
+    top: 0;
+    right: 48px;
   }
 }

@@ -14,6 +14,7 @@
 </button>
 <div
   class="places-search-control--panel"
+  [ngClass]="'places-search-control--panel-' + _panelPlacement"
   [id]="_panelId"
   [class.places-search-control--panel-open]="_open()"
 >

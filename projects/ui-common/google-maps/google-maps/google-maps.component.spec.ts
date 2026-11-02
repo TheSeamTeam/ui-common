@@ -157,11 +157,12 @@ describe('TheSeamGoogleMapsComponent', () => {
   })
 
   describe('placesSearchControl', () => {
-    it('is off by default and placed at LEFT_TOP', () => {
+    it('is off by default and placed at TOP_LEFT', () => {
       const { component } = createComponent()
 
       expect(component.placesSearchControlEnabled).toBe(false)
-      expect(component._placesSearchControlDef.position).toBe(5)
+      expect(component._placesSearchControlDef.position).toBe(1)
+      expect(component._placesSearchControlDef.data).toEqual({ position: 1 })
       expect(component._placesSearchControlDef.order).toBeUndefined()
     })
 
@@ -178,6 +179,7 @@ describe('TheSeamGoogleMapsComponent', () => {
 
       expect(component._placesSearchControlDef).not.toBe(before)
       expect(component._placesSearchControlDef.position).toBe(1)
+      expect(component._placesSearchControlDef.data).toEqual({ position: 1 })
       expect(component._placesSearchControlDef.order).toBe(20)
     })
 
@@ -188,6 +190,34 @@ describe('TheSeamGoogleMapsComponent', () => {
       component.ngOnChanges(changeFor('zoom', 12))
 
       expect(component._placesSearchControlDef).toBe(before)
+    })
+  })
+
+  describe('mapTypeControl', () => {
+    it('shows the control with Google default options by default', () => {
+      const { component } = createComponent()
+
+      expect(component._options.mapTypeControl).toBe(true)
+      expect(component._options.mapTypeControlOptions).toBeUndefined()
+    })
+
+    it('passes the inputs on to the map options', () => {
+      const { component } = createComponent()
+      const before = component._options
+      const options = { style: 2 } as google.maps.MapTypeControlOptions
+
+      component.mapTypeControlEnabled = false
+      component.mapTypeControlOptions = options
+      component.ngOnChanges({
+        ...changeFor('mapTypeControlEnabled', false),
+        ...changeFor('mapTypeControlOptions', options),
+      })
+
+      // A new object, so the map picks the change up.
+      expect(component._options).not.toBe(before)
+      expect(component._options.mapTypeControl).toBe(false)
+      expect(component._options.mapTypeControlOptions).toBe(options)
+      expect(component._options.mapTypeId).toBe('hybrid')
     })
   })
 

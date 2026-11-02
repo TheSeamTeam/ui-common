@@ -9,7 +9,10 @@ import {
 import { TheSeamGoogleMapsPlacesAutoCompleteComponent } from '../google-maps-places-autocomplete/google-maps-places-autocomplete.component'
 import { GoogleMapsService } from '../google-maps.service'
 import { MAP_CONTROL_DATA } from '../map-controls-service'
-import { TheSeamGoogleMapsPlacesSearchControlComponent } from './google-maps-places-search-control.component'
+import {
+  placesSearchPanelPlacement,
+  TheSeamGoogleMapsPlacesSearchControlComponent,
+} from './google-maps-places-search-control.component'
 
 /** Runs callbacks straight through; the control only uses these two methods. */
 const zone = {
@@ -225,5 +228,33 @@ describe('TheSeamGoogleMapsPlacesSearchControlComponent', () => {
     expect(control.label).toBe('Find a farm')
     expect(control.icon).toBe(icon)
     expect(control.placeholder).toBe('Farm address')
+  })
+
+  it('opens the input below the button when given no position', () => {
+    const { control } = createControl()
+
+    expect(control._panelPlacement).toBe('below-start')
+  })
+
+  it('opens the input where the control data position puts it', () => {
+    const { control } = createControl({ data: { position: 7 } })
+
+    expect(control._panelPlacement).toBe('beside-start')
+  })
+})
+
+describe('placesSearchPanelPlacement', () => {
+  it.each([
+    [1, 'TOP_LEFT', 'below-start'],
+    [2, 'TOP_CENTER', 'below-start'],
+    [3, 'TOP_RIGHT', 'below-end'],
+    [5, 'LEFT_TOP', 'beside-end'],
+    [4, 'LEFT_CENTER', 'beside-end'],
+    [7, 'RIGHT_TOP', 'beside-start'],
+    [8, 'RIGHT_CENTER', 'beside-start'],
+  ])('places %s (%s) %s', (position, _name, placement) => {
+    expect(
+      placesSearchPanelPlacement(position as google.maps.ControlPosition),
+    ).toBe(placement)
   })
 })

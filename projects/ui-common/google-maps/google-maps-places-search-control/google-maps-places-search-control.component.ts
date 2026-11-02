@@ -22,6 +22,46 @@ export interface GoogleMapsPlacesSearchControlData {
   label?: string | undefined | null
   icon?: SeamIcon | undefined | null
   placeholder?: string | undefined | null
+  /**
+   * The position the control was added at, which decides where the input
+   * opens. Defaults to opening below the button, as in the top row.
+   */
+  position?: google.maps.ControlPosition | undefined | null
+}
+
+/** Where the input opens relative to the button. */
+export type GoogleMapsPlacesSearchPanelPlacement =
+  | 'below-start'
+  | 'below-end'
+  | 'beside-end'
+  | 'beside-start'
+
+/**
+ * The top row opens the input below the button, toward the middle of the map;
+ * the side columns open it beside the button. The bottom positions are not
+ * supported, and get the placement of the column on their side.
+ */
+export function placesSearchPanelPlacement(
+  position: google.maps.ControlPosition | undefined | null,
+): GoogleMapsPlacesSearchPanelPlacement {
+  // Numeric values, so this runs without the `google` global loaded.
+  switch (position) {
+    case 3 /* TOP_RIGHT */:
+      return 'below-end'
+    case 5 /* LEFT_TOP */:
+    case 4 /* LEFT_CENTER */:
+    case 6 /* LEFT_BOTTOM */:
+    case 10 /* BOTTOM_LEFT */:
+    case 11 /* BOTTOM_CENTER */:
+      return 'beside-end'
+    case 7 /* RIGHT_TOP */:
+    case 8 /* RIGHT_CENTER */:
+    case 9 /* RIGHT_BOTTOM */:
+    case 12 /* BOTTOM_RIGHT */:
+      return 'beside-start'
+    default:
+      return 'below-start'
+  }
 }
 
 let nextId = 0
@@ -61,6 +101,8 @@ export class TheSeamGoogleMapsPlacesSearchControlComponent
   readonly icon: SeamIcon = this._data?.icon ?? faSearchLocation
   readonly placeholder: string =
     this._data?.placeholder ?? 'Enter address, place or name'
+  readonly _panelPlacement: GoogleMapsPlacesSearchPanelPlacement =
+    placesSearchPanelPlacement(this._data?.position)
 
   readonly _panelId = `seam-google-maps-places-search-control-${nextId++}`
 
@@ -144,9 +186,9 @@ export class TheSeamGoogleMapsPlacesSearchControlComponent
     if (!this._open()) {
       return
     }
-    // The map handles Delete, Escape and ContextMenu on `window`, so a key
-    // pressed while typing here would otherwise also act on the map — Delete
-    // would delete the selected feature.
+    // The map already ignores keys typed into an input, but a listener
+    // further up, in the app, may not: keep Delete and Escape typed here from
+    // acting on anything else.
     event.stopPropagation()
     if (event.key === 'Escape') {
       event.preventDefault()

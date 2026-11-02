@@ -108,8 +108,30 @@ export const PlacesMapBind: Story = {
 }
 
 /**
- * The places search as a map control: the button opens the input beside it,
- * and Escape closes it again with focus back on the button.
+ * Opens the places search and returns the button's and the open input's
+ * boxes, to check where the input opened.
+ */
+async function openPlacesSearch(canvasElement: HTMLElement) {
+  await mapComponent(canvasElement)
+  const button = canvasElement.querySelector(
+    '[title="Search for a place"]',
+  ) as HTMLButtonElement
+  await userEvent.click(button)
+  const input = canvasElement.querySelector(
+    'seam-google-maps-places-search-control input',
+  ) as HTMLInputElement
+  const map = canvasElement.querySelector('seam-google-maps') as HTMLElement
+  return {
+    button: button.getBoundingClientRect(),
+    input: input.getBoundingClientRect(),
+    map: map.getBoundingClientRect(),
+  }
+}
+
+/**
+ * The places search as a map control: the button opens the input, and Escape
+ * closes it again with focus back on the button. By default it sits in the
+ * top row, and the input opens below it.
  */
 export const PlacesSearchControl: Story = {
   render: () => ({
@@ -130,6 +152,10 @@ export const PlacesSearchControl: Story = {
     await expect(button.getAttribute('aria-expanded')).toBe('true')
     await expect(input.offsetParent).not.toBeNull()
     await expect(document.activeElement).toBe(input)
+    const buttonBox = button.getBoundingClientRect()
+    const inputBox = input.getBoundingClientRect()
+    await expect(inputBox.top).toBeGreaterThanOrEqual(buttonBox.bottom)
+    await expect(inputBox.left).toBeCloseTo(buttonBox.left, 0)
 
     await userEvent.keyboard('{Escape}')
     await expect(button.getAttribute('aria-expanded')).toBe('false')
@@ -185,6 +211,49 @@ export const PlacesSearchControlKeepsDeleteFromMap: Story = {
     // cannot pass because the key never reached the handler at all.
     pressInMap(component, 'Delete')
     await expect(featuresWithGroup(component, 'A')).not.toContain(feature)
+  },
+}
+
+/**
+ * In the top-right corner's row, the input opens below the button and toward
+ * the middle of the map, so it stays inside the map.
+ */
+export const PlacesSearchControlTopRight: Story = {
+  render: () => ({
+    template: `
+      <seam-google-maps
+        placesSearchControlEnabled
+        [placesSearchControlPosition]="3"
+        style="height: 400px"
+      ></seam-google-maps>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const { button, input, map } = await openPlacesSearch(canvasElement)
+    await expect(input.top).toBeGreaterThanOrEqual(button.bottom)
+    await expect(input.right).toBeCloseTo(button.right, 0)
+    await expect(input.left).toBeGreaterThanOrEqual(map.left)
+  },
+}
+
+/**
+ * In the right-hand column, the input opens to the left of the button.
+ */
+export const PlacesSearchControlRightTop: Story = {
+  render: () => ({
+    template: `
+      <seam-google-maps
+        placesSearchControlEnabled
+        [placesSearchControlPosition]="7"
+        style="height: 400px"
+      ></seam-google-maps>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const { button, input, map } = await openPlacesSearch(canvasElement)
+    await expect(input.right).toBeLessThanOrEqual(button.left)
+    await expect(input.top).toBeCloseTo(button.top, 0)
+    await expect(input.left).toBeGreaterThanOrEqual(map.left)
   },
 }
 

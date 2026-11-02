@@ -43,7 +43,10 @@ import {
 import { TheSeamGoogleMapsApiLoader } from '../google-maps-api-loader/google-maps-api-loader'
 import { GoogleMapsControlsService } from '../google-maps-controls.service'
 import { TheSeamGoogleMapsDrawButtonControlComponent } from '../google-maps-draw-button-control/google-maps-draw-button-control.component'
-import { TheSeamGoogleMapsPlacesSearchControlComponent } from '../google-maps-places-search-control/google-maps-places-search-control.component'
+import {
+  GoogleMapsPlacesSearchControlData,
+  TheSeamGoogleMapsPlacesSearchControlComponent,
+} from '../google-maps-places-search-control/google-maps-places-search-control.component'
 import { TheSeamGoogleMapsRecenterButtonControlComponent } from '../google-maps-recenter-button-control/google-maps-recenter-button-control.component'
 import { TheSeamGoogleMapsUploadButtonControlComponent } from '../google-maps-upload-button-control/google-maps-upload-button-control.component'
 import { GoogleMapsService } from '../google-maps.service'
@@ -182,17 +185,32 @@ export class TheSeamGoogleMapsComponent
   @Input() @InputBoolean() streetViewControlEnabled = false
 
   /**
+   * Google's options for the map type (Map/Satellite) control, such as its
+   * `style` and `position`. Has no effect while `mapTypeControlEnabled` is
+   * off.
+   */
+  @Input() mapTypeControlOptions:
+    | google.maps.MapTypeControlOptions
+    | undefined
+    | null = undefined
+
+  /**
    * Adds a button that opens a places search on the map. Choosing a place
    * fits the map to it. Off by default.
    */
   @Input() @InputBoolean() placesSearchControlEnabled = false
 
   /**
-   * Where the places search button sits. Defaults to `LEFT_TOP`, the column
-   * under the `TOP_LEFT` row.
+   * Where the places search button sits. Defaults to `TOP_LEFT`, the row
+   * along the top.
+   *
+   * The input opens below the button in the top row (`TOP_LEFT`,
+   * `TOP_CENTER`, `TOP_RIGHT`), and beside it in the side columns (`LEFT_*`
+   * opens to the right, `RIGHT_*` to the left). The bottom positions are not
+   * supported: the suggestion list would open off the bottom of the map.
    */
   @Input() placesSearchControlPosition: google.maps.ControlPosition =
-    5 /* google.maps.ControlPosition.LEFT_TOP */
+    1 /* google.maps.ControlPosition.TOP_LEFT */
 
   /**
    * The places search button's place among the other controls in its
@@ -329,8 +347,9 @@ export class TheSeamGoogleMapsComponent
   @ViewChild('featureContextMenu', { static: true, read: MenuComponent })
   public featureContextMenu!: MenuComponent
 
-  _options = {
-    mapTypeControl: true,
+  _options: google.maps.MapOptions = {
+    mapTypeControl: this.mapTypeControlEnabled,
+    mapTypeControlOptions: this.mapTypeControlOptions ?? undefined,
     mapTypeId: 'hybrid',
     streetViewControl: false,
     fullscreenControl: this.fullscreenControlEnabled,
@@ -553,6 +572,17 @@ export class TheSeamGoogleMapsComponent
       }
     }
 
+    if (
+      Object.prototype.hasOwnProperty.call(changes, 'mapTypeControlEnabled') ||
+      Object.prototype.hasOwnProperty.call(changes, 'mapTypeControlOptions')
+    ) {
+      this._options = {
+        ...this._options,
+        mapTypeControl: this.mapTypeControlEnabled,
+        mapTypeControlOptions: this.mapTypeControlOptions ?? undefined,
+      }
+    }
+
     if (Object.prototype.hasOwnProperty.call(changes, 'editingEnabled')) {
       this._googleMaps.setEditingEnabled(this.editingEnabled)
     }
@@ -673,6 +703,9 @@ export class TheSeamGoogleMapsComponent
   private _buildPlacesSearchControlDef(): MapControl {
     return {
       component: TheSeamGoogleMapsPlacesSearchControlComponent,
+      data: {
+        position: this.placesSearchControlPosition,
+      } satisfies GoogleMapsPlacesSearchControlData,
       position: this.placesSearchControlPosition,
       order: this.placesSearchControlOrder,
     }
