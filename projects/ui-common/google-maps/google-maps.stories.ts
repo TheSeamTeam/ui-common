@@ -4,7 +4,7 @@ import {
   moduleMetadata,
   StoryObj,
 } from '@storybook/angular'
-import { expect, fn, userEvent } from 'storybook/test'
+import { expect, fn, userEvent, waitFor } from 'storybook/test'
 
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { CommonModule } from '@angular/common'
@@ -254,6 +254,45 @@ export const PlacesSearchControlRightTop: Story = {
     await expect(input.right).toBeLessThanOrEqual(button.left)
     await expect(input.top).toBeCloseTo(button.top, 0)
     await expect(input.left).toBeGreaterThanOrEqual(map.left)
+  },
+}
+
+/**
+ * `placesSearchControlOrder` is set as the control's `index`, which Google
+ * lays the row out by, so the button is drawn ahead of the draw button. A
+ * negative order also puts it ahead of Google's Map/Satellite button, which
+ * shares `TOP_LEFT`; Google only draws that button with an API key, so this
+ * story cannot show it. (The fullscreen button is the exception: Google keeps
+ * it first in its column whatever the index.)
+ */
+export const PlacesSearchControlNegativeOrder: Story = {
+  render: () => ({
+    template: `
+      <seam-google-maps
+        placesSearchControlEnabled
+        [placesSearchControlPosition]="1"
+        [placesSearchControlOrder]="-1"
+        style="height: 400px"
+      ></seam-google-maps>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    await mapComponent(canvasElement)
+    const control = canvasElement.querySelector(
+      'seam-google-maps-places-search-control',
+    ) as HTMLElement & { index?: number }
+    await expect(control.index).toBe(-1)
+    const search = canvasElement.querySelector(
+      '[title="Search for a place"]',
+    ) as HTMLElement
+    const draw = canvasElement.querySelector(
+      '[title="Draw Field"]',
+    ) as HTMLElement
+    await waitFor(() =>
+      expect(search.getBoundingClientRect().right).toBeLessThanOrEqual(
+        draw.getBoundingClientRect().left,
+      ),
+    )
   },
 }
 

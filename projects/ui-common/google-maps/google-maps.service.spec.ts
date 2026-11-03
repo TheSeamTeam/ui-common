@@ -897,5 +897,26 @@ describe('GoogleMapsService', () => {
 
       expect(idsAt(map, TOP_LEFT)).toEqual(['a', 'b'])
     })
+
+    it('should set the order as the index Google lays controls out by', () => {
+      const { service } = createService()
+      const ordered = named('ordered')
+      const unordered = named('unordered')
+      service.addControl(ordered, TOP_LEFT, -2)
+      service.addControl(unordered, TOP_LEFT)
+
+      expect((ordered as any).index).toBe(-2)
+      expect((unordered as any).index).toBeUndefined()
+    })
+
+    it('should place by an index the element already has', () => {
+      const { service, map } = createService()
+      const preset = Object.assign(named('preset'), { index: -1 })
+      service.addControl(named('ordered'), TOP_LEFT, 5)
+      service.addControl(preset, TOP_LEFT)
+
+      expect(idsAt(map, TOP_LEFT)).toEqual(['preset', 'ordered'])
+      expect((preset as any).index).toBe(-1)
+    })
   })
 })

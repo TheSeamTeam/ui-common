@@ -86,8 +86,12 @@ interface ResolvedDeletion {
   unnamable: boolean
 }
 
-/** The `order` each control was added with, read when placing later ones. */
-const controlOrders = new WeakMap<HTMLElement, number>()
+/**
+ * A control element as Google reads it: Google lays out a position's controls
+ * by each element's `index`, and puts one with a negative `index` ahead of its
+ * own controls, such as the map type and fullscreen buttons.
+ */
+type ControlElement = HTMLElement & { index?: number }
 
 @Injectable()
 export class GoogleMapsService implements OnDestroy {
@@ -910,11 +914,14 @@ export class GoogleMapsService implements OnDestroy {
   /**
    * Adds a control to the map at `position`.
    *
-   * Without an `order` the control is appended, as it always has been. With
-   * one, it goes before the first control in that position that has a
-   * greater order or none at all, so ordered controls sit ahead of unordered
-   * ones regardless of which was added first. Google no longer documents its
-   * own ordering of a position's controls, so this does not rely on it.
+   * An `order` is set as the element's `index`, which is what Google lays the
+   * position out by; a negative one puts the control ahead of Google's own
+   * controls. An element given no `order` keeps any `index` it already has.
+   *
+   * The control is also inserted into the position's controls in the same
+   * order, before the first control with a greater `index` or none at all,
+   * so the array matches what Google draws. Without an `index` it is
+   * appended, as it always has been.
    */
   public addControl(
     element: HTMLElement,
@@ -923,21 +930,25 @@ export class GoogleMapsService implements OnDestroy {
   ): void {
     this._assertInitialized()
     const controls = this.googleMap.controls[position]
-    if (order === undefined) {
+    const control: ControlElement = element
+    if (order !== undefined) {
+      control.index = order
+    }
+    const index = control.index
+    if (index === undefined) {
       controls.push(element)
       return
     }
 
-    controlOrders.set(element, order)
-    let index = controls.getLength()
+    let at = controls.getLength()
     for (let i = 0; i < controls.getLength(); i++) {
-      const existing = controlOrders.get(controls.getAt(i))
-      if (existing === undefined || existing > order) {
-        index = i
+      const existing = (controls.getAt(i) as ControlElement).index
+      if (existing === undefined || existing > index) {
+        at = i
         break
       }
     }
-    controls.insertAt(index, element)
+    controls.insertAt(at, element)
   }
 
   public async setData(data: any): Promise<void> {

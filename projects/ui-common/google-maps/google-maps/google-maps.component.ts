@@ -214,7 +214,8 @@ export class TheSeamGoogleMapsComponent
 
   /**
    * The places search button's place among the other controls in its
-   * position, lowest first. See `MapControl.order`.
+   * position, lowest first. A negative order puts it ahead of Google's own
+   * controls. See `MapControl.order`.
    */
   @Input() placesSearchControlOrder: number | undefined
 
