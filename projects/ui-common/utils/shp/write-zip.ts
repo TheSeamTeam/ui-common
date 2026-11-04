@@ -23,6 +23,9 @@ export function crc32(bytes: Uint8Array): number {
 /** General purpose flag bit 11: file names are UTF-8. */
 const UTF8_NAME_FLAG = 0x0800
 
+/** Fixed DOS date 1980-01-01, so output is deterministic. */
+const DOS_DATE = 0x0021
+
 export interface ZipEntry {
   name: string
   data: Uint8Array
@@ -46,6 +49,8 @@ export function writeStoredZip(entries: ZipEntry[]): Uint8Array {
     localView.setUint16(4, 20, true) // version needed
     localView.setUint16(6, UTF8_NAME_FLAG, true) // general purpose flags
     localView.setUint16(8, 0, true) // compression method: stored
+    localView.setUint16(10, 0, true) // DOS time
+    localView.setUint16(12, DOS_DATE, true) // DOS date
     localView.setUint32(14, crc, true)
     localView.setUint32(18, data.length, true) // compressed size
     localView.setUint32(22, data.length, true) // uncompressed size
@@ -61,6 +66,8 @@ export function writeStoredZip(entries: ZipEntry[]): Uint8Array {
     centralView.setUint16(6, 20, true) // version needed
     centralView.setUint16(8, UTF8_NAME_FLAG, true) // general purpose flags
     centralView.setUint16(10, 0, true) // compression method: stored
+    centralView.setUint16(12, 0, true) // DOS time
+    centralView.setUint16(14, DOS_DATE, true) // DOS date
     centralView.setUint32(16, crc, true)
     centralView.setUint32(20, data.length, true)
     centralView.setUint32(24, data.length, true)

@@ -24,7 +24,9 @@ describe('write-zip', () => {
   })
 
   it('sets the UTF-8 file name flag in local and central headers', () => {
-    const zip = writeStoredZip([{ name: 'caf�.txt', data: Uint8Array.of(1) }])
+    const zip = writeStoredZip([
+      { name: 'caf\u00e9.txt', data: Uint8Array.of(1) },
+    ])
     const view = new DataView(zip.buffer, zip.byteOffset, zip.byteLength)
     const end = zip.length - 22
     const centralStart = view.getUint32(end + 16, true)
@@ -32,5 +34,23 @@ describe('write-zip', () => {
     expect(view.getUint16(6, true) & 0x0800).toBe(0x0800)
     expect(view.getUint32(centralStart, true)).toBe(0x02014b50)
     expect(view.getUint16(centralStart + 8, true) & 0x0800).toBe(0x0800)
+
+    const nameLength = view.getUint16(centralStart + 28, true)
+    const nameBytes = zip.slice(
+      centralStart + 46,
+      centralStart + 46 + nameLength,
+    )
+    expect(new TextDecoder().decode(nameBytes)).toBe('caf\u00e9.txt')
+  })
+
+  it('writes the fixed DOS date 1980-01-01 in both headers', () => {
+    const zip = writeStoredZip([{ name: 'a.txt', data: Uint8Array.of(1) }])
+    const view = new DataView(zip.buffer, zip.byteOffset, zip.byteLength)
+    const centralStart = view.getUint32(zip.length - 22 + 16, true)
+
+    expect(view.getUint16(10, true)).toBe(0)
+    expect(view.getUint16(12, true)).toBe(0x0021)
+    expect(view.getUint16(centralStart + 12, true)).toBe(0)
+    expect(view.getUint16(centralStart + 14, true)).toBe(0x0021)
   })
 })

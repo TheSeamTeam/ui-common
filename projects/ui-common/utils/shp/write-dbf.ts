@@ -1,4 +1,3 @@
- 
 import { GeoJsonProperties } from 'geojson'
 
 /** ESRI's limit for a double column. */
@@ -158,6 +157,12 @@ function buildColumn(name: string, values: unknown[]): Column {
         cells: values.map((v) => {
           if (isEmpty(v)) return ascii(' '.repeat(8))
           const d = v as Date
+          const year = d.getFullYear()
+          if (year < 0 || year > 9999) {
+            throw new Error(
+              `Attribute "${name}" has a Date with year ${year}; a .dbf date column holds years 0 to 9999.`,
+            )
+          }
           return ascii(
             twoDigits(d.getFullYear(), 4) +
               twoDigits(d.getMonth() + 1) +
@@ -170,7 +175,13 @@ function buildColumn(name: string, values: unknown[]): Column {
 
 /**
  * Writes a dBASE III `.dbf` with one record per row, in row order. `null` rows
- * are treated as `{}`. Throws rather than shorten, rename or drop any value.
+ * are treated as `{}`. Text, names and dates are never shortened, renamed or
+ * dropped: they throw instead. Numbers are rounded in two ways:
+ * - Decimals are capped at 15 for every column, so `1.23456789e-10` is written
+ *   as `0.000000000123457` and a magnitude below 5e-16 is written as `0`.
+ * - A column too wide for 19 characters sheds decimals down to a minimum of 8,
+ *   so in `[1234567890, 0.123456789012345]` the second value becomes
+ *   `0.12345679`.
  */
 export function writeDbf(rows: GeoJsonProperties[]): Uint8Array {
   const records = rows.map((row) => row ?? {})

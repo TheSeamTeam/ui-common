@@ -153,6 +153,14 @@ describe('writeDbf', () => {
     it('for an invalid Date', () => {
       expect(() => writeDbf([{ DT: new Date(NaN) }])).toThrow(/DT/)
     })
+    it('for a Date year above 9999', () => {
+      expect(() => writeDbf([{ DT: new Date(10000, 0, 1) }])).toThrow(/DT/)
+    })
+    it('for a Date with a negative year', () => {
+      const d = new Date(2000, 0, 1)
+      d.setFullYear(-5)
+      expect(() => writeDbf([{ DT: d }])).toThrow(/DT/)
+    })
     it('for a number too wide', () => {
       expect(() => writeDbf([{ BIG: 1e25 }])).toThrow(/BIG/)
     })
