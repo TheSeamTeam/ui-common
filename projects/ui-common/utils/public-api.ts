@@ -64,3 +64,5 @@ export * from './fractional-digits-count'
 export * from './strip-outer'
 export * from './trim-repeated'
 export * from './sanitize-filename'
+
+export * from './shp/to-shapefile-zip'

@@ -1,3 +1,5 @@
+/* eslint-disable no-bitwise */
+
 import { crc32, writeStoredZip } from './write-zip'
 
 describe('write-zip', () => {
@@ -19,5 +21,16 @@ describe('write-zip', () => {
     expect(view.getUint32(end, true)).toBe(0x06054b50)
     expect(view.getUint16(end + 8, true)).toBe(2)
     expect(view.getUint16(end + 10, true)).toBe(2)
+  })
+
+  it('sets the UTF-8 file name flag in local and central headers', () => {
+    const zip = writeStoredZip([{ name: 'caf�.txt', data: Uint8Array.of(1) }])
+    const view = new DataView(zip.buffer, zip.byteOffset, zip.byteLength)
+    const end = zip.length - 22
+    const centralStart = view.getUint32(end + 16, true)
+
+    expect(view.getUint16(6, true) & 0x0800).toBe(0x0800)
+    expect(view.getUint32(centralStart, true)).toBe(0x02014b50)
+    expect(view.getUint16(centralStart + 8, true) & 0x0800).toBe(0x0800)
   })
 })
