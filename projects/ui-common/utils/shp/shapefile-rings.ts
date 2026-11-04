@@ -3,11 +3,16 @@ import { MultiPolygon, Polygon, Position } from 'geojson'
 /** A closed ring of `[x, y]` (lon, lat) positions. */
 export type ShpRing = [number, number][]
 
-/** Shoelace signed area. Positive means counter-clockwise. */
-export function ringSignedArea(ring: ShpRing): number {
+/**
+ * Shoelace signed area of a ring, using each position's `[0]`/`[1]`. Positive
+ * means counter-clockwise. Open and closed rings give the same result.
+ */
+export function ringSignedArea(ring: readonly Position[]): number {
   let sum = 0
-  for (let i = 0; i < ring.length - 1; i++) {
-    sum += ring[i][0] * ring[i + 1][1] - ring[i + 1][0] * ring[i][1]
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i]
+    const b = ring[(i + 1) % ring.length]
+    sum += a[0] * b[1] - b[0] * a[1]
   }
   return sum / 2
 }

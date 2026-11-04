@@ -42,8 +42,6 @@ handles the file formats.
   and pairs their map geometry (`geometryForGroup`) with form values.
 - Points, lines and other geometry types.
 - Projections other than WGS84 (EPSG:4326).
-- Changing GeoJSON winding in the GeoJSON export. It writes geometry as
-  given.
 
 ## Anti-goals
 
@@ -177,6 +175,13 @@ GeoJSON export applies none of these rules. It writes the properties as
 given. Its only check is that the input is a `FeatureCollection`, so it stays
 a drop-in replacement for the old app's export. The Polygon-only and
 non-empty rules in "Accepted input" apply to the Shapefile export only.
+
+The GeoJSON export does orient Polygon and MultiPolygon rings to the RFC 7946
+right-hand rule (outer counter-clockwise, holes clockwise). It works on a copy
+and changes nothing else. This was added after implementation, at the user's
+request. RFC 7946 §3.1.6 says writers MUST follow the rule, while readers
+SHOULD accept either direction. Google Maps keeps whatever direction a ring was
+drawn or loaded in, so `getGeoJson()` output can be backwards.
 
 ### API shape
 

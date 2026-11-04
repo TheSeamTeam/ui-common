@@ -2,6 +2,7 @@ import FileSaver from 'file-saver'
 import type { FeatureCollection } from 'geojson'
 import { sanitizeFilename } from '../sanitize-filename'
 import { toShapefileZip } from '../shp/to-shapefile-zip'
+import { rewindToRightHandRule } from './right-hand-rule'
 
 export interface TheSeamGeoExportFile {
   blob: Blob
@@ -28,8 +29,12 @@ function baseName(filename: string | undefined, extension: RegExp): string {
 }
 
 /**
- * Packages a FeatureCollection as a GeoJSON file. Applies no geometry or
- * attribute rules.
+ * Packages a FeatureCollection as a GeoJSON file.
+ *
+ * Polygon and MultiPolygon rings are written in the RFC 7946 right-hand-rule
+ * direction (outer counter-clockwise, holes clockwise), whatever direction the
+ * input used. Nothing else changes: no other geometry or attribute rules are
+ * applied, and the input is not mutated.
  *
  * Intended app flow: `TheSeamGoogleMapsComponent.getGeoJson()`, then
  * `mapFeaturesForExport(collection, f => props | null)` to filter features and
@@ -49,7 +54,7 @@ export function exportGeoJson(
   }
   const base = baseName(options?.filename, /\.(geojson|json)$/i)
   return {
-    blob: new Blob([JSON.stringify(collection)], {
+    blob: new Blob([JSON.stringify(rewindToRightHandRule(collection))], {
       type: 'application/geo+json',
     }),
     filename: `${base}.geojson`,
