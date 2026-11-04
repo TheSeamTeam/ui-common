@@ -66,3 +66,5 @@ export * from './trim-repeated'
 export * from './sanitize-filename'
 
 export * from './shp/to-shapefile-zip'
+export * from './geo-export/geo-export'
+export * from './geo-export/map-features-for-export'
