@@ -1,4 +1,4 @@
-import { shapefileZip, toArrayBuffer } from './testing/shapefile-fixture'
+import { shapefileZip, toArrayBuffer } from '../shp/testing/shapefile-fixture'
 
 import { GEO_FILE_SOURCE_NAME_PROPERTY, readGeoFile } from './read-geo-file'
 

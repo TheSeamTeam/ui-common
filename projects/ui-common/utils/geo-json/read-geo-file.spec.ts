@@ -50,6 +50,64 @@ describe('readGeoFile', () => {
       expect(result.features[0].properties).toEqual({ name: 'test' })
     })
 
+    it('should wrap a top-level Feature in a FeatureCollection', async () => {
+      mockFileTypeFromBuffer.mockResolvedValue(undefined)
+      const feature = sampleFeatureCollection.features[0]
+      const buffer = new TextEncoder().encode(JSON.stringify(feature)).buffer
+
+      const result = await readGeoFile(buffer as ArrayBuffer)
+
+      expect(result).toEqual({ type: 'FeatureCollection', features: [feature] })
+    })
+
+    it('should wrap a top-level Geometry in a Feature and FeatureCollection', async () => {
+      mockFileTypeFromBuffer.mockResolvedValue(undefined)
+      const geometry = {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [0, 0],
+            [1, 0],
+            [1, 1],
+            [0, 0],
+          ],
+        ],
+      }
+      const buffer = new TextEncoder().encode(JSON.stringify(geometry)).buffer
+
+      const result = await readGeoFile(buffer as ArrayBuffer)
+
+      expect(result).toEqual({
+        type: 'FeatureCollection',
+        features: [{ type: 'Feature', geometry, properties: {} }],
+      })
+    })
+
+    it('should wrap a top-level GeometryCollection', async () => {
+      mockFileTypeFromBuffer.mockResolvedValue(undefined)
+      const geometry = {
+        type: 'GeometryCollection',
+        geometries: [{ type: 'Point', coordinates: [0, 0] }],
+      }
+      const buffer = new TextEncoder().encode(JSON.stringify(geometry)).buffer
+
+      const result = await readGeoFile(buffer as ArrayBuffer)
+
+      expect(result.features).toEqual([
+        { type: 'Feature', geometry, properties: {} },
+      ])
+    })
+
+    it('should throw for a Geometry without coordinates', async () => {
+      mockFileTypeFromBuffer.mockResolvedValue(undefined)
+      const json = JSON.stringify({ type: 'Polygon' })
+      const buffer = new TextEncoder().encode(json).buffer
+
+      await expect(readGeoFile(buffer as ArrayBuffer)).rejects.toThrow(
+        'Unable to parse as GeoJSON.',
+      )
+    })
+
     it('should throw for invalid GeoJSON', async () => {
       mockFileTypeFromBuffer.mockResolvedValue(undefined)
       const json = JSON.stringify({ type: 'Other', data: [] })
