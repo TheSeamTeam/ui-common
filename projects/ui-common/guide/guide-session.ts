@@ -83,6 +83,12 @@ export interface TheSeamGuideSessionDeps {
    */
   getRef: () => TheSeamGuideRef
   onClosed: (session: TheSeamGuideSession) => void
+  /**
+   * Pauses the focus trap of a modal the guide is shown over, and returns
+   * the function that resumes it. See `pauseFocusTraps`. Optional so a
+   * session can be tested without one.
+   */
+  pauseFocusTraps?: () => () => void
 }
 
 /**
@@ -139,6 +145,7 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
 
   private _closed = false
   private _stopKeys: (() => void) | null = null
+  private _resumeFocusTraps: (() => void) | null = null
   private _resizeObserver: ResizeObserver | null = null
   // The step whose `beforeStep` ran most recently, until it is left.
   private _entry: StepEntry | null = null
@@ -176,6 +183,7 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
   private readonly _popoverDefaults: TheSeamGuidePopover
   private readonly _sessionPopover: TheSeamGuidePopover | undefined
   private readonly _onClosed: (session: TheSeamGuideSession) => void
+  private readonly _pauseFocusTraps: (() => () => void) | undefined
 
   constructor(config: TheSeamGuideConfig, deps: TheSeamGuideSessionDeps) {
     this._adapter = deps.adapter
@@ -185,6 +193,7 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
     this._popoverDefaults = deps.popoverDefaults
     this._sessionPopover = config.popover
     this._onClosed = deps.onClosed
+    this._pauseFocusTraps = deps.pauseFocusTraps
 
     this.steps = config.steps
     this.options = { ...THE_SEAM_GUIDE_DEFAULTS, ...stripUndefined(config) }
@@ -204,6 +213,9 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
 
   start(): void {
     this._buildSlots()
+    // Before the adapter starts, since driver.js focuses its popover as soon
+    // as the first step shows.
+    this._resumeFocusTraps = this._pauseFocusTraps?.() ?? null
     this._adapter.start(
       {
         steps: this.steps.map((step, index) =>
@@ -302,6 +314,10 @@ export class TheSeamGuideSession implements TheSeamGuideSessionController {
     const owesAfterStep = result.lastIndex >= 0 && !this._afterStepFired
     this._afterStepFired = true
     this._adapter.destroy()
+    // After the adapter, which hands focus back to the element focused
+    // before the guide moved it.
+    this._resumeFocusTraps?.()
+    this._resumeFocusTraps = null
     this._destroyAllSlots()
     this._exitEntry()
     if (owesAfterStep) {

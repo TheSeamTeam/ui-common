@@ -1,3 +1,7 @@
+import {
+  ConfigurableFocusTrap,
+  ConfigurableFocusTrapFactory,
+} from '@angular/cdk/a11y'
 import { fakeAsync, TestBed, tick } from '@angular/core/testing'
 
 import { THE_SEAM_GUIDE_ADAPTER } from './adapter/guide-adapter'
@@ -210,6 +214,66 @@ describe('TheSeamGuideService', () => {
       expect(
         providerAdapter.startedConfig?.steps[0]?.popover?.description,
       ).toBe('Step description.')
+    }))
+  })
+
+  describe('a focus trap the guide is shown over', () => {
+    // A modal's trap, as `ModalContainerComponent` creates it. driver.js puts
+    // its popover on `<body>`, outside the modal, and focuses it each step.
+    let modal: HTMLElement
+    let outside: HTMLButtonElement
+    let trap: ConfigurableFocusTrap
+    let refocus: jest.SpyInstance
+
+    beforeEach(() => {
+      modal = document.createElement('div')
+      modal.appendChild(document.createElement('button'))
+      outside = document.createElement('button')
+      document.body.append(modal, outside)
+      trap = TestBed.inject(ConfigurableFocusTrapFactory).create(modal, {
+        defer: true,
+      })
+      // jsdom has no layout, so the trap finds nothing tabbable to focus.
+      // Watching the call is enough to see whether it tried to.
+      refocus = jest
+        .spyOn(trap, 'focusFirstTabbableElement')
+        .mockReturnValue(true)
+    })
+
+    afterEach(() => {
+      trap.destroy()
+      modal.remove()
+      outside.remove()
+    })
+
+    it('pulls focus back while no guide is shown', fakeAsync(() => {
+      outside.focus()
+      tick()
+
+      expect(refocus).toHaveBeenCalled()
+    }))
+
+    it('does not pull focus back while a guide is shown', fakeAsync(() => {
+      const ref = service.start({ steps: [{ popover: { title: 'one' } }] })
+      tick()
+
+      outside.focus()
+      tick()
+
+      expect(refocus).not.toHaveBeenCalled()
+      ref.close()
+    }))
+
+    it('pulls focus back again after the guide closes', fakeAsync(() => {
+      const ref = service.start({ steps: [{ popover: { title: 'one' } }] })
+      tick()
+      ref.close()
+      tick()
+
+      outside.focus()
+      tick()
+
+      expect(refocus).toHaveBeenCalled()
     }))
   })
 })
