@@ -1,3 +1,4 @@
+import { ConfigurableFocusTrapFactory } from '@angular/cdk/a11y'
 import {
   inject,
   Injectable,
@@ -9,6 +10,7 @@ import {
 
 import { THE_SEAM_GUIDE_ADAPTER } from './adapter/guide-adapter'
 import { TheSeamGuideDomContentRenderer } from './content/guide-content.renderer'
+import { pauseFocusTraps } from './guide-focus-trap'
 import { THE_SEAM_GUIDE_POPOVER_DEFAULTS } from './guide-providers'
 import { TheSeamGuideRef } from './guide-ref'
 import { TheSeamGuideSession } from './guide-session'
@@ -27,6 +29,7 @@ export class TheSeamGuideService implements OnDestroy {
   private readonly _popoverDefaults =
     inject(THE_SEAM_GUIDE_POPOVER_DEFAULTS, { optional: true }) ?? {}
   private readonly _contentRenderer = inject(TheSeamGuideDomContentRenderer)
+  private readonly _focusTrapFactory = inject(ConfigurableFocusTrapFactory)
 
   private readonly _activeGuide = signal<TheSeamGuideRef | null>(null)
 
@@ -85,6 +88,7 @@ export class TheSeamGuideService implements OnDestroy {
       popoverDefaults: this._popoverDefaults,
       getRef: () => ref,
       onClosed: () => this._clearIfCurrent(ref),
+      pauseFocusTraps: () => pauseFocusTraps(this._focusTrapFactory),
     })
     ref = new TheSeamGuideRef(session)
     this._activeGuide.set(ref)
