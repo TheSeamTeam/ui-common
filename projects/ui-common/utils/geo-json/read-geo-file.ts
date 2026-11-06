@@ -1,5 +1,5 @@
 import { fileTypeFromBuffer } from 'file-type'
-import { FeatureCollection } from 'geojson'
+import { Feature, FeatureCollection, Geometry } from 'geojson'
 
 import { readFileAsync } from '../file-utils'
 import { readShpFile, readShpZip } from '../shp/read-shapefile'
@@ -39,6 +39,22 @@ async function coerceToArrayBuffer(
   return fileOrBuffer
 }
 
+const GEOMETRY_TYPES = new Set<Geometry['type']>([
+  'Point',
+  'MultiPoint',
+  'LineString',
+  'MultiLineString',
+  'Polygon',
+  'MultiPolygon',
+])
+
+/**
+ * Parses GeoJSON text into a `FeatureCollection`.
+ *
+ * RFC 7946 §2 allows the top-level object to be a FeatureCollection, a
+ * Feature, or a bare Geometry, so a Feature is wrapped in a collection and a
+ * Geometry is wrapped in a Feature first.
+ */
 function parseGeoJson(buffer: ArrayBuffer): FeatureCollection {
   const json = JSON.parse(new TextDecoder().decode(buffer))
 
@@ -46,5 +62,23 @@ function parseGeoJson(buffer: ArrayBuffer): FeatureCollection {
     return json as FeatureCollection
   }
 
+  if (json?.type === 'Feature' && json?.geometry !== undefined) {
+    return { type: 'FeatureCollection', features: [json as Feature] }
+  }
+
+  if (isGeometry(json)) {
+    return {
+      type: 'FeatureCollection',
+      features: [{ type: 'Feature', geometry: json, properties: {} }],
+    }
+  }
+
   throw Error(`Unable to parse as GeoJSON.`)
+}
+
+function isGeometry(value: any): value is Geometry {
+  if (value?.type === 'GeometryCollection') {
+    return Array.isArray(value?.geometries)
+  }
+  return GEOMETRY_TYPES.has(value?.type) && Array.isArray(value?.coordinates)
 }
