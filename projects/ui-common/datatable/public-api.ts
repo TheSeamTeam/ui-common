@@ -58,6 +58,7 @@ export * from './services/datatable-scrollbar-helper.service'
 export * from './tokens/datatable-preferences-accessor'
 export * from './tokens/menubar-item-data'
 
+export * from './utils/freeze-first-data-column'
 export * from './utils/with-stored-column-info'
 export * from './utils/map-columns-alterations-states'
 

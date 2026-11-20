@@ -1,5 +1,10 @@
 import { animate, style, transition, trigger } from '@angular/animations'
-import { BooleanInput, coerceArray, NumberInput } from '@angular/cdk/coercion'
+import {
+  BooleanInput,
+  coerceArray,
+  coerceNumberProperty,
+  NumberInput,
+} from '@angular/cdk/coercion'
 import {
   CollectionViewer,
   DataSource,
@@ -104,6 +109,7 @@ import { DatatableColumnChangesService } from '../services/datatable-column-chan
 import { DatatableRefreshService } from '../services/datatable-refresh.service'
 import { DatatablePreferencesService } from '../services/datatable-preferences.service'
 import { THESEAM_DATATABLE_ACCESSOR } from '../tokens/datatable-accessor'
+import { freezeFirstDataColumn } from '../utils/freeze-first-data-column'
 import { removeUnusedDiffs } from '../utils/remove-unused-diffs'
 import { translateTemplateColumns } from '../utils/translate-templates'
 import { ColumnsAlterationsManagerService } from '../services/columns-alterations-manager.service'
@@ -423,13 +429,13 @@ export class DatatableComponent<TRow = any>
   @Input() @InputBoolean() virtualization = true
 
   @Input()
-  @InputNumber()
-  get headerHeight(): number | undefined | null {
+  get headerHeight(): number | 'auto' | undefined | null {
     return this._headerHeight
   }
-  set headerHeight(value: number | undefined | null) {
-    if (notNullOrUndefined(value)) {
-      this._headerHeight = value
+  set headerHeight(value: number | 'auto' | undefined | null) {
+    const val = value === 'auto' ? value : coerceNumberProperty(value, null)
+    if (notNullOrUndefined(val)) {
+      this._headerHeight = val
     } else if (notNullOrUndefined(this._config?.headerHeight)) {
       this._headerHeight = this._config?.headerHeight
     } else {
@@ -437,7 +443,38 @@ export class DatatableComponent<TRow = any>
     }
   }
   private readonly _headerHeightDefault: number = 50
-  _headerHeight: number | undefined | null
+  _headerHeight: number | 'auto' | undefined | null
+
+  /** Header height the user chose, saved in the datatable preferences. */
+  private _userHeaderHeight: 'auto' | undefined
+
+  get allowUserAutoHeaderHeight(): boolean {
+    return this._config?.allowUserAutoHeaderHeight === true
+  }
+
+  get userHeaderHeight(): 'auto' | undefined {
+    return this._userHeaderHeight
+  }
+
+  /** Bound to the wrapped datatable. */
+  get _effectiveHeaderHeight(): number | 'auto' | undefined | null {
+    return this.allowUserAutoHeaderHeight && this._userHeaderHeight
+      ? this._userHeaderHeight
+      : this.headerHeight
+  }
+
+  /**
+   * Sets the user's header height choice and saves it to the preferences, if
+   * the datatable has a `preferencesKey`.
+   */
+  public setUserHeaderHeight(value: 'auto' | undefined): void {
+    this._userHeaderHeight = value
+    this._cdr.markForCheck()
+    const key = this.preferencesKey
+    if (notNullOrUndefined(key) && key.length > 0) {
+      this._preferences.setDisplay(key, { headerHeight: value })
+    }
+  }
 
   @Input()
   @InputNumber()
@@ -512,6 +549,22 @@ export class DatatableComponent<TRow = any>
   private readonly _actionItemColumnPositionDefault: ActionItemColumnPosition =
     'frozenRight'
   _actionItemColumnPosition: ActionItemColumnPosition | undefined
+
+  @Input() get freezeFirstDataColumn(): boolean | undefined | null {
+    return this._freezeFirstDataColumnInput
+  }
+  set freezeFirstDataColumn(value: boolean | undefined | null) {
+    this._freezeFirstDataColumnInput = value
+    if (notNullOrUndefined(value)) {
+      this._freezeFirstDataColumn$.next(value)
+    } else if (notNullOrUndefined(this._config?.freezeFirstDataColumn)) {
+      this._freezeFirstDataColumn$.next(this._config!.freezeFirstDataColumn!)
+    } else {
+      this._freezeFirstDataColumn$.next(false)
+    }
+  }
+  private _freezeFirstDataColumnInput: boolean | undefined | null = undefined
+  private readonly _freezeFirstDataColumn$ = new BehaviorSubject<boolean>(false)
 
   @Input() get columnFilterIcon(): SeamIcon | undefined | null {
     return this._columnFilterIcon
@@ -857,6 +910,12 @@ export class DatatableComponent<TRow = any>
               }
               // console.log('%cSetting columns alterations from preferences', 'color: blue', alterations)
               this._columnsAlterationsManager.add(alterations)
+
+              this._userHeaderHeight =
+                preferences.display?.headerHeight === 'auto'
+                  ? 'auto'
+                  : undefined
+              this._cdr.markForCheck()
             }),
           )
         }),
@@ -879,8 +938,13 @@ export class DatatableComponent<TRow = any>
       switchMap((cols) => applyPrefs(cols)),
     )
 
-    this.displayColumns$ = this.columns$.pipe(
-      map((cols) => cols.filter((c) => !c.hidden)),
+    this.displayColumns$ = combineLatest([
+      this.columns$.pipe(map((cols) => cols.filter((c) => !c.hidden))),
+      this._freezeFirstDataColumn$,
+    ]).pipe(
+      map(([visible, freeze]) =>
+        freeze ? freezeFirstDataColumn(visible) : visible,
+      ),
       tap((v) =>
         removeUnusedDiffs(v, this._colDiffersInp, this._colDiffersTpl),
       ),
@@ -994,6 +1058,9 @@ export class DatatableComponent<TRow = any>
     }
     if (isNullOrUndefined(this.actionItemColumnPosition)) {
       this.actionItemColumnPosition = undefined
+    }
+    if (isNullOrUndefined(this.freezeFirstDataColumn)) {
+      this.freezeFirstDataColumn = undefined
     }
   }
 

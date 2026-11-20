@@ -24,6 +24,22 @@
   >
     Reset Columns
   </button>
+
+  @if (_datatable.allowUserAutoHeaderHeight) {
+    <button
+      seamMenuItem
+      type="button"
+      class="list-group-item list-group-item-action py-1 d-flex align-items-center"
+      role="menuitemcheckbox"
+      [attr.aria-checked]="_datatable.userHeaderHeight === 'auto'"
+      (click)="_toggleAutoHeaderHeight()"
+    >
+      Fit Header Text
+      @if (_datatable.userHeaderHeight === 'auto') {
+        <seam-icon class="ml-auto pl-2" [icon]="checkIcon"></seam-icon>
+      }
+    </button>
+  }
 </seam-menu>
 
 <button

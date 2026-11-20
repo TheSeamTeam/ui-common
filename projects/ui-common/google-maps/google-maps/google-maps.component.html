@@ -13,7 +13,7 @@
   <button
     seamMenuItem
     *ngFor="let item of _contextMenuItems$ | async"
-    (click)="item.action(item)"
+    (click)="item.action()"
   >
     {{ item.label }}
   </button>
@@ -31,4 +31,8 @@
 <seam-map-control
   *ngIf="editingEnabled"
   [def]="_drawControlDef"
+></seam-map-control>
+<seam-map-control
+  *ngIf="placesSearchControlEnabled"
+  [def]="_placesSearchControlDef"
 ></seam-map-control>

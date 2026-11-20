@@ -1,9 +1,10 @@
 import { fileTypeFromBuffer } from 'file-type'
-import { FeatureCollection } from 'geojson'
-import { parseShp, parseZip } from 'shpjs'
+import { Feature, FeatureCollection, Geometry } from 'geojson'
 
 import { readFileAsync } from '../file-utils'
-import { withoutProperty } from '../obj-utils'
+import { readShpFile, readShpZip } from '../shp/read-shapefile'
+
+export { GEO_FILE_SOURCE_NAME_PROPERTY } from '../shp/read-shapefile'
 
 /**
  * Reads a File, or buffer of file content, in GeoJSON or ESRI Shapefile format
@@ -16,9 +17,9 @@ export async function readGeoFile(
   const fType = await fileTypeFromBuffer(buffer)
 
   if (fType?.ext === 'shp') {
-    return parseShpFile(buffer)
+    return readShpFile(buffer)
   } else if (fType?.mime === 'application/zip') {
-    return parseShpZip(buffer)
+    return readShpZip(buffer)
   }
 
   return parseGeoJson(buffer)
@@ -38,32 +39,22 @@ async function coerceToArrayBuffer(
   return fileOrBuffer
 }
 
-async function parseShpFile(buffer: ArrayBuffer): Promise<FeatureCollection> {
-  const geometries = parseShp(buffer)
-  const featCollection: FeatureCollection = {
-    type: 'FeatureCollection',
-    features: geometries.map((geom) => ({
-      type: 'Feature',
-      geometry: geom,
-      properties: {},
-    })),
-  }
-  return featCollection
-}
+const GEOMETRY_TYPES = new Set<Geometry['type']>([
+  'Point',
+  'MultiPoint',
+  'LineString',
+  'MultiLineString',
+  'Polygon',
+  'MultiPolygon',
+])
 
-async function parseShpZip(buffer: ArrayBuffer): Promise<FeatureCollection> {
-  let featCollection = await parseZip(buffer)
-  if (Array.isArray(featCollection)) {
-    if (featCollection.length === 0) {
-      throw Error(`Shape data not found.`)
-    } else if (featCollection.length > 1) {
-      throw Error(`Multiple shape files not supported.`)
-    }
-    featCollection = featCollection[0]
-  }
-  return withoutProperty(featCollection, 'fileName')
-}
-
+/**
+ * Parses GeoJSON text into a `FeatureCollection`.
+ *
+ * RFC 7946 §2 allows the top-level object to be a FeatureCollection, a
+ * Feature, or a bare Geometry, so a Feature is wrapped in a collection and a
+ * Geometry is wrapped in a Feature first.
+ */
 function parseGeoJson(buffer: ArrayBuffer): FeatureCollection {
   const json = JSON.parse(new TextDecoder().decode(buffer))
 
@@ -71,5 +62,23 @@ function parseGeoJson(buffer: ArrayBuffer): FeatureCollection {
     return json as FeatureCollection
   }
 
+  if (json?.type === 'Feature' && json?.geometry !== undefined) {
+    return { type: 'FeatureCollection', features: [json as Feature] }
+  }
+
+  if (isGeometry(json)) {
+    return {
+      type: 'FeatureCollection',
+      features: [{ type: 'Feature', geometry: json, properties: {} }],
+    }
+  }
+
   throw Error(`Unable to parse as GeoJSON.`)
+}
+
+function isGeometry(value: any): value is Geometry {
+  if (value?.type === 'GeometryCollection') {
+    return Array.isArray(value?.geometries)
+  }
+  return GEOMETRY_TYPES.has(value?.type) && Array.isArray(value?.coordinates)
 }

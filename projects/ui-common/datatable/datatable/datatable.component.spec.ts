@@ -11,6 +11,12 @@ import {
 } from '../testing/fixtures/test-data'
 import { DatatableComponent } from './datatable.component'
 import { TheSeamDatatableColumn } from '../models/table-column'
+import {
+  TheSeamDatatableConfig,
+  THESEAM_DATATABLE_CONFIG,
+} from '../models/datatable-config'
+import { TheSeamDatatablePreferences } from '../models/preferences'
+import { provideMockPrefsApiService } from '../testing/fixtures/mock-prefs-api'
 
 @Component({
   template: `
@@ -264,5 +270,99 @@ describe('DatatableComponent', () => {
       // Verify the method exists and doesn't throw
       expect(host.datatable.onDatatableResize).toBeDefined()
     })
+  })
+})
+
+@Component({
+  template: `
+    <seam-datatable
+      preferencesKey="test-key"
+      [columns]="columns"
+      [rows]="rows"
+      [headerHeight]="headerHeight"
+    >
+    </seam-datatable>
+  `,
+  standalone: false,
+})
+class PrefsTestHostComponent {
+  @ViewChild(DatatableComponent) datatable!: DatatableComponent
+
+  columns: TheSeamDatatableColumn[] = SIMPLE_COLUMNS
+  rows: any[] = SIMPLE_ROWS
+  headerHeight: number | 'auto' | undefined = 60
+}
+
+describe('DatatableComponent user header height', () => {
+  const autoPrefs: TheSeamDatatablePreferences = {
+    version: 2,
+    alterations: [],
+    display: { headerHeight: 'auto' },
+  }
+
+  // The preferences load uses a native `await`, which fakeAsync cannot flush.
+  const settle = () => new Promise((resolve) => setTimeout(resolve, 100))
+
+  async function createComponent(
+    config: TheSeamDatatableConfig,
+    stored?: TheSeamDatatablePreferences,
+  ) {
+    const update = jest.fn()
+    TestBed.configureTestingModule({
+      imports: [TheSeamDatatableModule],
+      declarations: [PrefsTestHostComponent],
+      providers: [
+        provideNoopAnimations(),
+        { provide: THESEAM_DATATABLE_CONFIG, useValue: config },
+        ...provideMockPrefsApiService(
+          {},
+          stored ? { 'test-key': JSON.stringify(stored) } : {},
+          { update },
+        ),
+      ],
+      teardown: { destroyAfterEach: false },
+    })
+    const fixture = TestBed.createComponent(PrefsTestHostComponent)
+    fixture.detectChanges()
+    await settle()
+    fixture.detectChanges()
+    return { fixture, datatable: fixture.componentInstance.datatable, update }
+  }
+
+  it('should apply the stored choice when allowed', async () => {
+    const { datatable } = await createComponent(
+      { allowUserAutoHeaderHeight: true },
+      autoPrefs,
+    )
+    expect(datatable.userHeaderHeight).toBe('auto')
+    expect(datatable._effectiveHeaderHeight).toBe('auto')
+  })
+
+  it('should ignore the stored choice when not allowed', async () => {
+    const { datatable } = await createComponent({}, autoPrefs)
+    expect(datatable._effectiveHeaderHeight).toBe(60)
+  })
+
+  it('should use the input when the user has not chosen', async () => {
+    const { datatable } = await createComponent({
+      allowUserAutoHeaderHeight: true,
+    })
+    expect(datatable.userHeaderHeight).toBeUndefined()
+    expect(datatable._effectiveHeaderHeight).toBe(60)
+  })
+
+  it('should save the choice without dropping alterations', async () => {
+    const { datatable, update } = await createComponent({
+      allowUserAutoHeaderHeight: true,
+    })
+    update.mockClear()
+
+    datatable.setUserHeaderHeight('auto')
+    await settle()
+
+    expect(datatable._effectiveHeaderHeight).toBe('auto')
+    const saved = JSON.parse(update.mock.calls.at(-1)[1])
+    expect(saved.display).toEqual({ headerHeight: 'auto' })
+    expect(saved.alterations).toEqual(expect.any(Array))
   })
 })

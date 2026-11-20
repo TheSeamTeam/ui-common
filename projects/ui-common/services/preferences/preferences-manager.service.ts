@@ -50,7 +50,7 @@ export class TheSeamPreferencesManagerService {
         // NOTE: May remove this, when a more generic preferences implementation
         // is finished.
         if (Object.keys(v).length === 0) {
-          return emptyPrefs
+          return JSON.parse(JSON.stringify(emptyPrefs))
         }
 
         return v

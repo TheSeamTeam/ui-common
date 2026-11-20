@@ -1,6 +1,6 @@
 {
   "name": "@theseam/ui-common",
-  "version": "2.1.0",
+  "version": "2.3.0",
   "scripts": {
     "build": "../../node_modules/.bin/tsc -p tsconfig.schematics.json",
     "copy:schemas": "cp --parents schematics/*/schema.json ../../dist/ui-common/",
@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "file-type": "~22.0.0",
-    "@marklb/ngx-datatable": "21.0.0-alpha.2",
+    "@marklb/ngx-datatable": "21.0.0-alpha.3",
     "ngx-loading": "^17.0.0",
     "@ng-select/ng-select": "^20.2.2",
     "apollo-angular": "^11.0.0",
@@ -55,6 +55,7 @@
     "@turf/boolean-contains": "^7.2.0",
     "@turf/helpers": "^7.2.0",
     "@turf/kinks": "^7.2.0",
+    "polylabel": "^2.1.0",
     "shpjs": "^6.2.0",
     "@types/geojson": "^7946.0.8",
     "terra-draw": "^1.31.2",

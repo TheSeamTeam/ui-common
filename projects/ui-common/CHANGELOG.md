@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.3.0](https://github.com/TheSeamTeam/ui-common/compare/ui-common-v2.2.0...ui-common-v2.3.0) (2026-10-23)
+
+
+### Features
+
+* **datatable:** Add datatable column height 'auto' as a preference toggle ([#67](https://github.com/TheSeamTeam/ui-common/issues/67)) ([acddd6d](https://github.com/TheSeamTeam/ui-common/commit/acddd6d1f1880d9abc3bae4ba2613d0c803ed426))
+
+## [2.2.0](https://github.com/TheSeamTeam/ui-common/compare/ui-common-v2.1.0...ui-common-v2.2.0) (2026-10-21)
+
+
+### Features
+
+* **datatable:** add freezeFirstDataColumn config and input ([#65](https://github.com/TheSeamTeam/ui-common/issues/65)) ([cd3a05b](https://github.com/TheSeamTeam/ui-common/commit/cd3a05b3738f2bbbce0d1bf7fc13fc4ea15e4ace))
+
 ## [2.1.0](https://github.com/TheSeamTeam/ui-common/compare/ui-common-v2.0.1...ui-common-v2.1.0) (2026-09-18)
 
 

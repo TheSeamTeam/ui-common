@@ -144,6 +144,93 @@ describe('DatatablePreferencesService', () => {
       )
     }))
 
+    describe('writes keep the other preferences', () => {
+      const hideNameAlteration = {
+        id: 'hide--name',
+        type: 'hide-column',
+        state: { columnProp: 'name', hidden: true },
+      }
+
+      const setup = (stored: TheSeamDatatablePreferences) => {
+        TestBed.resetTestingModule()
+        TestBed.configureTestingModule({
+          providers: [
+            ...provideMockPrefsApiService(
+              { get: 0, update: 0 },
+              { 'test-key': JSON.stringify(stored) },
+              actions,
+            ),
+          ],
+          teardown: { destroyAfterEach: false },
+        })
+        service = TestBed.inject(DatatablePreferencesService)
+      }
+
+      const lastSaved = (): TheSeamDatatablePreferences =>
+        JSON.parse(actions.update.mock.calls.at(-1)[1])
+
+      it('setDisplay() should keep stored alterations', fakeAsync(() => {
+        setup({ version: 2, alterations: [hideNameAlteration] })
+
+        service.setDisplay('test-key', { headerHeight: 'auto' })
+        tick()
+
+        expect(lastSaved()).toEqual({
+          version: 2,
+          alterations: [hideNameAlteration],
+          display: { headerHeight: 'auto' },
+        })
+      }))
+
+      it('setAlterations() should keep stored display', fakeAsync(() => {
+        setup({
+          version: 2,
+          alterations: [],
+          display: { headerHeight: 'auto' },
+        })
+
+        service.setAlterations('test-key', [hideNameAlteration])
+        tick()
+
+        expect(lastSaved()).toEqual({
+          version: 2,
+          alterations: [hideNameAlteration],
+          display: { headerHeight: 'auto' },
+        })
+      }))
+
+      it('should not lose a write made while another is in flight', fakeAsync(() => {
+        setup({ version: 2, alterations: [] })
+
+        service.setDisplay('test-key', { headerHeight: 'auto' })
+        service.setAlterations('test-key', [hideNameAlteration])
+        tick()
+
+        expect(lastSaved()).toEqual({
+          version: 2,
+          alterations: [hideNameAlteration],
+          display: { headerHeight: 'auto' },
+        })
+      }))
+
+      it('setDisplay() should drop a cleared value', fakeAsync(() => {
+        setup({
+          version: 2,
+          alterations: [],
+          display: { headerHeight: 'auto' },
+        })
+
+        service.setDisplay('test-key', { headerHeight: undefined })
+        tick()
+
+        expect(lastSaved()).toEqual({
+          version: 2,
+          alterations: [],
+          display: {},
+        })
+      }))
+    })
+
     it('isPending() should return false initially', () => {
       expect(service.isPending('test-key')).toBe(false)
     })

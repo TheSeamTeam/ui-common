@@ -38,7 +38,7 @@
         [summaryPosition]="$any(summaryPosition)"
         [rows]="rows$ | async"
         [columns]="$any(displayColumns$ | async)"
-        [headerHeight]="$any(headerHeight)"
+        [headerHeight]="$any(_effectiveHeaderHeight)"
         [rowHeight]="$any(rowHeight)"
         [footerHeight]="$any(footerHeight)"
         (scroll)="scroll.emit($event)"

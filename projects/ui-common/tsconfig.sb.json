@@ -1,5 +1,9 @@
 {
   "extends": "./tsconfig.lib.json",
   "include": ["**/*.stories.ts", "**/*.tsx", "**/*.ts"],
-  "exclude": ["**/*.spec.ts", "**/schematics/**/*"]
+  "exclude": [
+    "**/*.spec.ts",
+    "**/schematics/**/*",
+    "google-maps/testing/fake-interaction-context.ts"
+  ]
 }

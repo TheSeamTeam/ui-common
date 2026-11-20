@@ -13,7 +13,7 @@ jest.mock('shpjs', () => ({
 import { fileTypeFromBuffer } from 'file-type'
 import { parseShp, parseZip } from 'shpjs'
 
-import { readGeoFile } from './read-geo-file'
+import { GEO_FILE_SOURCE_NAME_PROPERTY, readGeoFile } from './read-geo-file'
 
 const mockFileTypeFromBuffer = fileTypeFromBuffer as jest.Mock
 const mockParseShp = parseShp as jest.Mock
@@ -48,6 +48,64 @@ describe('readGeoFile', () => {
       expect(result.type).toBe('FeatureCollection')
       expect(result.features).toHaveLength(1)
       expect(result.features[0].properties).toEqual({ name: 'test' })
+    })
+
+    it('should wrap a top-level Feature in a FeatureCollection', async () => {
+      mockFileTypeFromBuffer.mockResolvedValue(undefined)
+      const feature = sampleFeatureCollection.features[0]
+      const buffer = new TextEncoder().encode(JSON.stringify(feature)).buffer
+
+      const result = await readGeoFile(buffer as ArrayBuffer)
+
+      expect(result).toEqual({ type: 'FeatureCollection', features: [feature] })
+    })
+
+    it('should wrap a top-level Geometry in a Feature and FeatureCollection', async () => {
+      mockFileTypeFromBuffer.mockResolvedValue(undefined)
+      const geometry = {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [0, 0],
+            [1, 0],
+            [1, 1],
+            [0, 0],
+          ],
+        ],
+      }
+      const buffer = new TextEncoder().encode(JSON.stringify(geometry)).buffer
+
+      const result = await readGeoFile(buffer as ArrayBuffer)
+
+      expect(result).toEqual({
+        type: 'FeatureCollection',
+        features: [{ type: 'Feature', geometry, properties: {} }],
+      })
+    })
+
+    it('should wrap a top-level GeometryCollection', async () => {
+      mockFileTypeFromBuffer.mockResolvedValue(undefined)
+      const geometry = {
+        type: 'GeometryCollection',
+        geometries: [{ type: 'Point', coordinates: [0, 0] }],
+      }
+      const buffer = new TextEncoder().encode(JSON.stringify(geometry)).buffer
+
+      const result = await readGeoFile(buffer as ArrayBuffer)
+
+      expect(result.features).toEqual([
+        { type: 'Feature', geometry, properties: {} },
+      ])
+    })
+
+    it('should throw for a Geometry without coordinates', async () => {
+      mockFileTypeFromBuffer.mockResolvedValue(undefined)
+      const json = JSON.stringify({ type: 'Polygon' })
+      const buffer = new TextEncoder().encode(json).buffer
+
+      await expect(readGeoFile(buffer as ArrayBuffer)).rejects.toThrow(
+        'Unable to parse as GeoJSON.',
+      )
     })
 
     it('should throw for invalid GeoJSON', async () => {
@@ -113,7 +171,7 @@ describe('readGeoFile', () => {
         mime: 'application/zip',
       })
       mockParseZip.mockResolvedValue([
-        { ...sampleFeatureCollection, fileName: 'test.shp' },
+        { ...sampleFeatureCollection, fileName: 'test' },
       ])
 
       const buffer = new ArrayBuffer(100)
@@ -121,9 +179,25 @@ describe('readGeoFile', () => {
 
       expect(result.type).toBe('FeatureCollection')
       expect(result).not.toHaveProperty('fileName')
+      expect(result.features[0].properties).toEqual({
+        name: 'test',
+        [GEO_FILE_SOURCE_NAME_PROPERTY]: 'test',
+      })
     })
 
-    it('should throw when parseZip returns empty array', async () => {
+    it('should translate the shpjs no-layers error', async () => {
+      mockFileTypeFromBuffer.mockResolvedValue({
+        ext: 'zip',
+        mime: 'application/zip',
+      })
+      mockParseZip.mockRejectedValue(new Error('no layers founds'))
+
+      const buffer = new ArrayBuffer(100)
+
+      await expect(readGeoFile(buffer)).rejects.toThrow('Shape data not found.')
+    })
+
+    it('should throw when parseZip returns no usable layer', async () => {
       mockFileTypeFromBuffer.mockResolvedValue({
         ext: 'zip',
         mime: 'application/zip',
@@ -135,20 +209,17 @@ describe('readGeoFile', () => {
       await expect(readGeoFile(buffer)).rejects.toThrow('Shape data not found.')
     })
 
-    it('should throw when parseZip returns multiple collections', async () => {
+    it('should let an unrecognised parseZip failure through unchanged', async () => {
       mockFileTypeFromBuffer.mockResolvedValue({
         ext: 'zip',
         mime: 'application/zip',
       })
-      mockParseZip.mockResolvedValue([
-        sampleFeatureCollection,
-        sampleFeatureCollection,
-      ])
+      mockParseZip.mockRejectedValue(new Error('corrupt central directory'))
 
       const buffer = new ArrayBuffer(100)
 
       await expect(readGeoFile(buffer)).rejects.toThrow(
-        'Multiple shape files not supported.',
+        'corrupt central directory',
       )
     })
   })

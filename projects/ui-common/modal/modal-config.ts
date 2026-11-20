@@ -1,8 +1,29 @@
 import { Direction } from '@angular/cdk/bidi'
 import { ComponentType } from '@angular/cdk/overlay'
 import { InjectionToken, ViewContainerRef } from '@angular/core'
+import { Observable } from 'rxjs'
 
 import { ModalContainerComponent } from './modal-container/modal-container.component'
+
+/**
+ * The user interaction that requested a modal to close.
+ *
+ * - `backdrop`: A click outside of the modal's content.
+ * - `escape`: The Escape key.
+ * - `close-directive`: A `seamModalClose` button.
+ */
+export type TheSeamModalCloseReason = 'backdrop' | 'escape' | 'close-directive'
+
+/**
+ * Decides whether a user-requested close is allowed. Returning `false`, or a
+ * Promise/Observable that resolves to `false`, keeps the modal open.
+ *
+ * Only the first value of an Observable is used.
+ */
+export type TheSeamModalCanCloseFn<R = any> = (
+  reason: TheSeamModalCloseReason,
+  result: R | undefined,
+) => boolean | Promise<boolean> | Observable<boolean>
 
 /** Valid ARIA roles for a dialog element. */
 export type DialogRole = 'dialog' | 'alertdialog'
@@ -42,8 +63,20 @@ export class ModalConfig<D = any> {
   /** Custom class(es) for the backdrop. */
   backdropClass?: string | undefined = ''
 
-  /** Whether the dialog can be closed by user interaction. */
+  /**
+   * Whether the dialog can be closed by clicking outside of it or pressing
+   * Escape. Does not affect `seamModalClose` buttons or `ModalRef.close()`.
+   */
   disableClose?: boolean = false
+
+  /**
+   * Called when the user tries to close the dialog by clicking outside of it,
+   * pressing Escape, or clicking a `seamModalClose` button. Not called for
+   * `ModalRef.close()`.
+   *
+   * The content component can also set this on its `ModalRef`.
+   */
+  canClose?: TheSeamModalCanCloseFn | null
 
   /** The width of the dialog. */
   width?: string = '100%'

@@ -235,13 +235,13 @@ export class Modal implements OnDestroy {
   private _registerDialogRefScrollEvents(dialogRef: ModalRef<any>): () => void {
     const _scrollbarMouseDownListener = () => {
       if (dialogRef) {
-        dialogRef.disableClose = true
+        dialogRef._suppressOutsideClose = true
       }
     }
     const _scrollbarMouseUpListener = () => {
       setTimeout(() => {
         if (dialogRef) {
-          dialogRef.disableClose = false
+          dialogRef._suppressOutsideClose = false
         }
       })
     }
@@ -437,7 +437,6 @@ export class Modal implements OnDestroy {
     )
 
     dialogRef.componentInstance = contentRef.instance
-    dialogRef.disableClose = config.disableClose
 
     dialogRef
       .updateSize({ width: config.width, height: config.height })
