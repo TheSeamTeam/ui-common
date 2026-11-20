@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.4.0](https://github.com/TheSeamTeam/ui-common/compare/ui-common-v2.3.0...ui-common-v2.4.0) (2026-11-20)
+
+
+### Features
+
+* **google-maps:** map improvements for multi-field support ([#72](https://github.com/TheSeamTeam/ui-common/issues/72)) ([798990f](https://github.com/TheSeamTeam/ui-common/commit/798990f3c37556314ef6acbc9edb612e5518da2a))
+* **guide:** Add guide ([#73](https://github.com/TheSeamTeam/ui-common/issues/73)) ([ebc17e6](https://github.com/TheSeamTeam/ui-common/commit/ebc17e6da04c1cc6c9762139d04f6ad443c31570))
+* **modal:** add canClose guard and fix disableClose for template modals ([#69](https://github.com/TheSeamTeam/ui-common/issues/69)) ([319d2ef](https://github.com/TheSeamTeam/ui-common/commit/319d2ef17c7881fcbf75bd59ca1e8bbc1761eb93))
+
+
+### Bug Fixes
+
+* **tooltip:** honor placement order with auto, fix harness, preserve aria-describedby ([#71](https://github.com/TheSeamTeam/ui-common/issues/71)) ([ef3b21f](https://github.com/TheSeamTeam/ui-common/commit/ef3b21fa09286700a67b9d7bbb3bfad35a289a70))
+
 ## [2.3.0](https://github.com/TheSeamTeam/ui-common/compare/ui-common-v2.2.0...ui-common-v2.3.0) (2026-10-23)
 
 
