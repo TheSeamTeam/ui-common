@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+} from '@angular/core'
 import { toSignal } from '@angular/core/rxjs-interop'
 
 import { faDrawPolygon } from '@fortawesome/free-solid-svg-icons'
@@ -37,14 +42,43 @@ export class TheSeamGoogleMapsDrawButtonControlComponent {
     { optional: true },
   )
 
-  protected readonly _active = toSignal(this._googleMaps.drawing$, {
+  private readonly _mode = toSignal(this._googleMaps.interactionMode$, {
+    initialValue: 'legacy' as const,
+  })
+
+  private readonly _drawing = toSignal(this._googleMaps.drawing$, {
     initialValue: false,
   })
 
-  label: string | undefined | null = this._data?.label ?? 'Draw Field'
+  private readonly _editMode = toSignal(this._googleMaps.editMode$, {
+    initialValue: false,
+  })
+
+  /**
+   * In 'legacy' the button toggles drawing directly. In 'grouped' it toggles
+   * edit mode, which is what makes a click on open map begin a drawing.
+   */
+  protected readonly _active = computed(() =>
+    this._mode() === 'grouped' ? this._editMode() : this._drawing(),
+  )
+
+  protected readonly _label = computed(
+    () =>
+      this._data?.label ??
+      (this._mode() === 'grouped' ? 'Edit Fields' : 'Draw Field'),
+  )
+
+  get label(): string {
+    return this._label()
+  }
+
   icon: SeamIcon = this._data?.icon ?? faDrawPolygon
 
   _onClick() {
+    if (this._mode() === 'grouped') {
+      this._googleMaps.setEditMode(!this._googleMaps.isEditMode())
+      return
+    }
     if (this._googleMaps.isDrawing()) {
       this._googleMaps.stopDrawing()
     } else {

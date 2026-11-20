@@ -23,6 +23,8 @@ const esmPackages = [
   'd3-selection',
   'd3-array',
   'internmap',
+  'polylabel',
+  'tinyqueue',
 ]
 
 export default {
@@ -42,6 +44,7 @@ export default {
     // '**/framework/side-nav/**/*.spec.ts',
     '**/framework/form/**/*.spec.ts',
     '**/utils/**/*.spec.ts',
+    '**/google-maps/**/*.spec.ts',
     '**/validators/**/*.spec.ts',
     '**/datatable/**/*.spec.ts',
     '**/data-filters/**/*.spec.ts',

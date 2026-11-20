@@ -164,16 +164,64 @@ export class TheSeamMapFileDropComponent implements OnInit, OnDestroy {
     event.stopPropagation()
     this._renderer.setStyle(this._elementRef.nativeElement, 'display', 'none')
 
-    // TODO: Show error if multiple files?
-    if (!this._isSupportedDataTransfer(event.dataTransfer)) {
+    if (!this._isSupportedDataTransferTypes(event.dataTransfer)) {
+      // Not a file drag at all — selected text, a link, an image dragged out
+      // of a page. Nobody asked for an import and there is no file to name,
+      // so this stays silent rather than reporting a failure.
+      return
+    }
+
+    const files: FileList = event.dataTransfer.files
+    if (files.length !== 1) {
+      if (files.length > 1) {
+        // Refused before any handler is consulted, exactly as the upload
+        // button's `_getFile` does: `fileImportHandler` takes a single file
+        // and cannot be handed several, so the consumer never sees these and
+        // this output is its only way to learn the drop was rejected. Same
+        // message as the button, so a consumer matching on it needs one
+        // string rather than two.
+        this._ngZone.run(() =>
+          this._googleMaps.notifyFileImportError(
+            files[0],
+            Error('Only one file can be imported at a time.'),
+          ),
+        )
+      }
       return
     }
 
     const item = event.dataTransfer.items[0]
     const file = item.getAsFile()
-    readGeoFile(file).then((json) => {
-      this._mapValueManager.setValue(json, MapValueSource.Input)
-    })
+    if (file === null) {
+      return
+    }
+
+    // These listeners are registered outside Angular's zone, so re-enter it
+    // before calling back into anything that expects change detection — the
+    // consumer's handler may well render a message from here.
+    this._ngZone.run(() => this._importDroppedFile(file))
+  }
+
+  /**
+   * Routes a dropped file the same way the upload button routes a chosen one,
+   * so `fileImportHandler` means "the consumer owns imported files" whichever
+   * way the file arrived.
+   */
+  private _importDroppedFile(file: File): void {
+    const fileImportHandler = this._googleMaps.getFileInputHandler()
+    if (fileImportHandler) {
+      // The consumer owns the file now, including reporting its failures.
+      fileImportHandler(file)
+      return
+    }
+
+    readGeoFile(file)
+      .then((json) => {
+        this._mapValueManager.setValue(json, MapValueSource.Input)
+      })
+      .catch((error) => {
+        this._googleMaps.notifyFileImportError(file, error)
+      })
   }
 
   private readonly _handleDragEnterEvent = (event: any) => {
@@ -198,10 +246,6 @@ export class TheSeamMapFileDropComponent implements OnInit, OnDestroy {
 
   private _dropAllowed(): boolean {
     return !this._globalDragInProgress
-  }
-
-  private _isSupportedDataTransfer(dataTransfer: DataTransfer): boolean {
-    return dataTransfer.files.length === 1 && dataTransfer.types[0] === 'Files'
   }
 
   private _isSupportedDataTransferTypes(dataTransfer: DataTransfer): boolean {

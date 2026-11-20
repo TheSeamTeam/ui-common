@@ -58,6 +58,7 @@ export class MapControlRef {
     this._googleMaps.addControl(
       this._componentRef.location.nativeElement,
       position,
+      this._controlDef.order,
     )
 
     this._addedAtPosition = position

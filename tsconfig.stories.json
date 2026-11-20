@@ -13,6 +13,7 @@
     "projects/ui-common/**/*.stories.ts",
     "projects/ui-common/**/stories/**/*",
     "projects/ui-common/**/_story-data/**/*",
-    "projects/ui-common/**/schematics/**/*"
+    "projects/ui-common/**/schematics/**/*",
+    "projects/ui-common/google-maps/testing/fake-interaction-context.ts"
   ]
 }

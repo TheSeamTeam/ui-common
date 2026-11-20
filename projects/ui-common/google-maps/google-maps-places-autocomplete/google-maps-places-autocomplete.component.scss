@@ -3,7 +3,8 @@
 
   width: 100%;
 
-  > input {
+  // Room for the icon, which sits over the start of the input.
+  &.search-container--has-icon > input {
     padding-left: 40px;
   }
 
