@@ -225,4 +225,4 @@ Required for all PRs to `master`. Since PRs are squash-merged, the PR title beco
 
 ## Node Version
 
-Specified in `.nvmrc`: **22.12.0**. CI uses `npm ci --legacy-peer-deps`.
+Specified in `.nvmrc`: **24.16.0**. CI uses `npm ci --legacy-peer-deps`.

@@ -1,0 +1,97 @@
+@import './styles/utilities';
+
+// The guide's look, over driver.js's base styles. Those are not imported
+// here: add `node_modules/driver.js/dist/driver.css` to the app's
+// `angular.json` `styles`, ahead of the stylesheet that imports this one.
+//
+// An `@import` of a `.css` file is not inlined by Sass. It stays a plain CSS
+// `@import`, which a browser ignores anywhere but the top of a stylesheet,
+// such as inside the theme block an app imports this file into.
+
+.driver-popover {
+  background-color: $seam-guide-popover-bg;
+  color: $seam-guide-popover-color;
+  border-radius: $seam-guide-popover-border-radius;
+  max-width: $seam-guide-popover-max-width;
+  font-family: $font-family-base;
+  font-size: $font-size-base;
+}
+
+.driver-popover-title {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+}
+
+// driver.js hard-codes the arrow to `border: 5px solid #fff` and then zeroes
+// out three of the four sides per `driver-popover-arrow-side-*` class,
+// leaving the remaining side as the visible triangle. Follow
+// $seam-guide-popover-bg through so the arrow matches an overridden popover
+// background instead of staying stray white.
+.driver-popover-arrow {
+  border-color: transparent;
+
+  &.driver-popover-arrow-side-left {
+    border-left-color: $seam-guide-popover-bg;
+  }
+
+  &.driver-popover-arrow-side-right {
+    border-right-color: $seam-guide-popover-bg;
+  }
+
+  &.driver-popover-arrow-side-top {
+    border-top-color: $seam-guide-popover-bg;
+  }
+
+  &.driver-popover-arrow-side-bottom {
+    border-bottom-color: $seam-guide-popover-bg;
+  }
+}
+
+// `.btn`/`.btn-sm`/`.btn-primary`/`.btn-secondary` are not available to
+// `@extend` here: `./styles/utilities` (like the global `styles/utilities`
+// it wraps) only pulls in Bootstrap's variables, functions, and mixins, not
+// the `.btn` rule itself. Reproduce the button look with the same mixins
+// Bootstrap's own button classes use instead. These properties mirror
+// Bootstrap 4.6.x's `.btn` base rule in `bootstrap/scss/_buttons.scss` — diff
+// against that file on a Bootstrap version bump.
+.driver-popover-next-btn,
+.driver-popover-prev-btn {
+  display: inline-block;
+  font-weight: $btn-font-weight;
+  text-align: center;
+  white-space: $btn-white-space;
+  vertical-align: middle;
+  user-select: none;
+  border: $btn-border-width solid transparent;
+  @include transition($btn-transition);
+  @include button-size(
+    $btn-padding-y-sm,
+    $btn-padding-x-sm,
+    $btn-font-size-sm,
+    $btn-line-height-sm,
+    $btn-border-radius-sm
+  );
+
+  &:focus,
+  &.focus {
+    outline: 0;
+  }
+}
+
+.driver-popover-next-btn {
+  @include button-variant($primary, $primary);
+}
+
+.driver-popover-prev-btn {
+  @include button-variant($secondary, $secondary);
+}
+
+// driver.js sets `fill` and `opacity` as inline styles on the overlay's
+// child `<path>`, not on `.driver-overlay` itself, and an inline style beats
+// any selector without `!important`. Same defect class as the
+// `.driver-popover-arrow` fix above: driver.js owns the element, so its
+// inline styles must be beaten explicitly rather than assumed away.
+.driver-overlay path {
+  fill: $seam-guide-overlay-color !important;
+  opacity: $seam-guide-overlay-opacity !important;
+}
