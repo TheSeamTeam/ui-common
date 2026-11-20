@@ -5,16 +5,38 @@ import {
   ElementDimensions,
 } from '@angular/cdk/testing'
 
+/**
+ * There are no tooltip-specific filters. Use `selector` from
+ * `BaseHarnessFilters` to pick a specific trigger element, since a page
+ * usually has many tooltips.
+ */
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface TheSeamTooltipHarnessFilters extends BaseHarnessFilters {
-  // Empty - use selector-based filtering
-}
+export interface TheSeamTooltipHarnessFilters extends BaseHarnessFilters {}
 
 /**
- * Harness for interacting with tooltip directives in tests
+ * Harness for interacting with an element that has the `seamTooltip`
+ * directive.
+ *
+ * Matches both `seamTooltip="text"` and `[seamTooltip]="value"`. Use the
+ * `selector` filter to pick a specific trigger:
+ *
+ * ```ts
+ * const tooltip = await loader.getHarness(
+ *   TheSeamTooltipHarness.with({ selector: '#save-button' }),
+ * )
+ * await tooltip.hover()
+ * await tooltip.waitForTooltipToShow()
+ * expect(await tooltip.getVisibleTooltipText()).toBe('Save changes')
+ * ```
  */
 export class TheSeamTooltipHarness extends ComponentHarness {
-  static hostSelector = '[seamTooltip]'
+  // The directive adds this class, because `[seamTooltip]` is not in the DOM
+  // when the input is bound.
+  static hostSelector = '.seam-tooltip-trigger'
+
+  // Created when the harness is, because TestBed requires it to be created in
+  // the ProxyZone, which is lost after an `await`.
+  private readonly _documentRootLocator = this.documentRootLocatorFactory()
 
   /**
    * Gets a `HarnessPredicate` that can be used to search for a tooltip with specific attributes
@@ -56,7 +78,7 @@ export class TheSeamTooltipHarness extends ComponentHarness {
     if (!tooltipId) {
       return false
     }
-    const tooltip = await this.documentRootLocatorFactory().locatorForOptional(
+    const tooltip = await this._documentRootLocator.locatorForOptional(
       `#${tooltipId}.tooltip.show`,
     )()
     return tooltip !== null
@@ -68,10 +90,9 @@ export class TheSeamTooltipHarness extends ComponentHarness {
     if (!tooltipId) {
       return null
     }
-    const tooltipInner =
-      await this.documentRootLocatorFactory().locatorForOptional(
-        `#${tooltipId} .tooltip-inner`,
-      )()
+    const tooltipInner = await this._documentRootLocator.locatorForOptional(
+      `#${tooltipId} .tooltip-inner`,
+    )()
     if (!tooltipInner) {
       return null
     }
@@ -84,7 +105,7 @@ export class TheSeamTooltipHarness extends ComponentHarness {
     if (!tooltipId) {
       return []
     }
-    const tooltip = await this.documentRootLocatorFactory().locatorForOptional(
+    const tooltip = await this._documentRootLocator.locatorForOptional(
       `#${tooltipId}.tooltip.show`,
     )()
     if (!tooltip) {
@@ -94,9 +115,18 @@ export class TheSeamTooltipHarness extends ComponentHarness {
     return classAttr ? classAttr.split(' ').filter((c) => c.trim()) : []
   }
 
-  /** Gets the tooltip ID from the aria-describedby attribute */
+  /**
+   * Gets the tooltip ID from the aria-describedby attribute, which can also
+   * contain ids that were not added by the tooltip.
+   */
   private async _getTooltipId(): Promise<string | null> {
-    return (await this.host()).getAttribute('aria-describedby')
+    const describedBy = await (
+      await this.host()
+    ).getAttribute('aria-describedby')
+    return (
+      describedBy?.split(/\s+/).find((id) => id.startsWith('seam-tooltip-')) ??
+      null
+    )
   }
 
   /** Waits for the tooltip to appear */
@@ -133,7 +163,7 @@ export class TheSeamTooltipHarness extends ComponentHarness {
     if (!tooltipId) {
       return null
     }
-    const tooltip = await this.documentRootLocatorFactory().locatorForOptional(
+    const tooltip = await this._documentRootLocator.locatorForOptional(
       `#${tooltipId}.tooltip.show`,
     )()
     if (!tooltip) {
